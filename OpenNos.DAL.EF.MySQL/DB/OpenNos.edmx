@@ -1,0 +1,797 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="opennosModel.Store" Alias="Self" Provider="MySql.Data.MySqlClient" ProviderManifestToken="5.6" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityContainer Name="opennosModelStoreContainer">
+    <EntitySet Name="Account" EntityType="opennosModel.Store.Account" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Character" EntityType="opennosModel.Store.Character" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="charafamily" EntityType="opennosModel.Store.charafamily" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="family" EntityType="opennosModel.Store.family" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="familyhistory" EntityType="opennosModel.Store.familyhistory" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="friend" EntityType="opennosModel.Store.friend" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="inventory" EntityType="opennosModel.Store.inventory" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="items" EntityType="opennosModel.Store.items" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="listskill" EntityType="opennosModel.Store.listskill" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="miniland" EntityType="opennosModel.Store.miniland" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="monsters" EntityType="opennosModel.Store.monsters" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="npcs" EntityType="opennosModel.Store.npcs" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="partner" EntityType="opennosModel.Store.partner" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="pet" EntityType="opennosModel.Store.pet" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="portals" EntityType="opennosModel.Store.portals" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="runes" EntityType="opennosModel.Store.runes" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="shop" EntityType="opennosModel.Store.shop" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="warehouse" EntityType="opennosModel.Store.warehouse" store:Type="Tables" Schema="dbo" />
+    <AssociationSet Name="AccountCharacter" Association="opennosModel.Store.AccountCharacter">
+      <End Role="Account" EntitySet="Account" />
+      <End Role="Character" EntitySet="Character" />
+    </AssociationSet>
+  </EntityContainer>
+  <EntityType Name="Account">
+    <Key>
+      <PropertyRef Name="AccountId" />
+    </Key>
+    <Property Name="AccountId" Type="bigint" Nullable="false" />
+    <Property Name="Name" Type="longtext" Nullable="false" />
+    <Property Name="Password" Type="varchar" Nullable="false" MaxLength="255" />
+    <Property Name="LastIp" Type="varchar" Nullable="false" MaxLength="255" />
+    <Property Name="Authority" Type="smallint" Nullable="false" />
+    <Property Name="LastSession" Type="int" Nullable="false" />
+    <Property Name="LastConnect" Type="datetime" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Character">
+    <Key>
+      <PropertyRef Name="CharacterId" />
+    </Key>
+    <Property Name="CharacterId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="AccountId" Type="bigint" Nullable="false" />
+    <Property Name="Name" Type="varchar" Nullable="false" MaxLength="255" />
+    <Property Name="Slot" Type="int" Nullable="false" />
+    <Property Name="Gender" Type="int" Nullable="false" />
+    <Property Name="Class" Type="int" Nullable="false" />
+    <Property Name="HairStyle" Type="int" Nullable="false" />
+    <Property Name="HairColor" Type="int" Nullable="false" />
+    <Property Name="Map" Type="int" Nullable="false" />
+    <Property Name="X" Type="int" Nullable="false" />
+    <Property Name="Y" Type="int" Nullable="false" />
+    <Property Name="Hp" Type="int" Nullable="false" />
+    <Property Name="Mp" Type="int" Nullable="false" />
+    <Property Name="ArenaWinner" Type="int" Nullable="false" />
+    <Property Name="Reput" Type="int" Nullable="false" />
+    <Property Name="Dignite" Type="int" Nullable="false" />
+    <Property Name="Gold" Type="int" Nullable="false" />
+    <Property Name="Backpack" Type="int" Nullable="false" />
+    <Property Name="Level" Type="int" Nullable="false" />
+    <Property Name="LevelXp" Type="int" Nullable="false" />
+    <Property Name="JobLevel" Type="int" Nullable="false" />
+    <Property Name="JobLevelXp" Type="int" Nullable="false" />
+    <Property Name="Dead" Type="int" Nullable="false" />
+    <Property Name="Kill" Type="int" Nullable="false" />
+    <Property Name="Contribution" Type="int" Nullable="false" />
+    <Property Name="faction" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="charafamily">
+    <Key>
+      <PropertyRef Name="CharacterId" />
+    </Key>
+    <Property Name="CharacterId" Type="int" Nullable="false" />
+    <Property Name="FamilyName" Type="varchar" Nullable="false" MaxLength="255" />
+    <Property Name="Xp" Type="varchar" Nullable="false" MaxLength="255" />
+    <Property Name="Authority" Type="varchar" Nullable="false" MaxLength="255" />
+    <Property Name="Message" Type="varchar" Nullable="true" MaxLength="255" />
+  </EntityType>
+  <EntityType Name="family">
+    <Key>
+      <PropertyRef Name="FamilyName" />
+    </Key>
+    <Property Name="FamilyName" Type="varchar" Nullable="false" MaxLength="255" />
+    <Property Name="FamilyLevel" Type="int" Nullable="true" />
+    <Property Name="FamilyInventory" Type="int" Nullable="true" />
+    <Property Name="FamilySizeMax" Type="int" Nullable="true" />
+  </EntityType>
+  <EntityType Name="familyhistory">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" Nullable="false" />
+    <Property Name="Family" Type="varchar" Nullable="false" MaxLength="255" />
+    <Property Name="Message" Type="varchar" Nullable="false" MaxLength="255" />
+  </EntityType>
+  <EntityType Name="friend">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" Nullable="false" />
+    <Property Name="CharacterId" Type="int" Nullable="false" />
+    <Property Name="Friend1" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="inventory">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Character" Type="varchar" Nullable="false" MaxLength="255" />
+    <Property Name="Slot" Type="varchar" Nullable="false" MaxLength="255" />
+    <Property Name="Pos" Type="varchar" Nullable="false" MaxLength="255" />
+    <Property Name="Item" Type="varchar" Nullable="false" MaxLength="255" />
+  </EntityType>
+  <EntityType Name="items">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="VNUM" Type="int" Nullable="false" />
+    <Property Name="Quantity" Type="int" Nullable="false" />
+    <Property Name="Rare" Type="int" Nullable="false" />
+    <Property Name="Upgraded" Type="int" Nullable="false" />
+    <Property Name="Color" Type="int" Nullable="false" />
+    <Property Name="DamageMin" Type="int" Nullable="false" />
+    <Property Name="DamageMax" Type="int" Nullable="false" />
+    <Property Name="ProtectHit" Type="int" Nullable="false" />
+    <Property Name="ProtectDist" Type="int" Nullable="false" />
+    <Property Name="ProtectMagic" Type="int" Nullable="false" />
+    <Property Name="DodgeHit" Type="int" Nullable="false" />
+    <Property Name="DodgeDist" Type="int" Nullable="false" />
+    <Property Name="Rune" Type="int" Nullable="true" />
+    <Property Name="FireRez" Type="int" Nullable="false" />
+    <Property Name="LightRez" Type="int" Nullable="false" />
+    <Property Name="WaterRez" Type="int" Nullable="false" />
+    <Property Name="DarkRez" Type="int" Nullable="false" />
+    <Property Name="SlHit" Type="int" Nullable="true" />
+    <Property Name="SlDef" Type="int" Nullable="true" />
+    <Property Name="SlMp" Type="int" Nullable="true" />
+    <Property Name="SlEle" Type="int" Nullable="true" />
+  </EntityType>
+  <EntityType Name="listskill">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Name" Type="varchar" Nullable="true" MaxLength="255" />
+  </EntityType>
+  <EntityType Name="miniland">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" Nullable="false" />
+    <Property Name="Owner" Type="int" Nullable="false" />
+    <Property Name="Item" Type="varchar" Nullable="true" MaxLength="255" />
+    <Property Name="X" Type="varchar" Nullable="true" MaxLength="255" />
+    <Property Name="Y" Type="varchar" Nullable="true" MaxLength="255" />
+  </EntityType>
+  <EntityType Name="monsters">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" Nullable="false" />
+    <Property Name="VNUM" Type="int" Nullable="false" />
+    <Property Name="Map" Type="int" Nullable="false" />
+    <Property Name="X" Type="int" Nullable="false" />
+    <Property Name="Y" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="npcs">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="VNUM" Type="int" Nullable="false" />
+    <Property Name="Map" Type="int" Nullable="false" />
+    <Property Name="X" Type="int" Nullable="false" />
+    <Property Name="Y" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="partner">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="owner" Type="int" Nullable="false" />
+    <Property Name="Level" Type="int" Nullable="true" />
+    <Property Name="isBackpacked" Type="int" Nullable="true" />
+    <Property Name="SP" Type="int" Nullable="true" />
+    <Property Name="Weapon" Type="int" Nullable="true" />
+    <Property Name="Armor" Type="int" Nullable="true" />
+    <Property Name="Gloves" Type="int" Nullable="true" />
+    <Property Name="Boots" Type="int" Nullable="true" />
+    <Property Name="IsTeamed" Type="int" Nullable="true" />
+    <Property Name="Hp" Type="int" Nullable="true" />
+    <Property Name="Mp" Type="int" Nullable="true" />
+  </EntityType>
+  <EntityType Name="pet">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="CharacterId" Type="int" Nullable="false" />
+    <Property Name="IsHelper" Type="int" Nullable="false" />
+    <Property Name="Owner" Type="varchar" Nullable="false" MaxLength="255" />
+    <Property Name="Level" Type="int" Nullable="false" />
+    <Property Name="Def" Type="int" Nullable="false" />
+    <Property Name="Hit" Type="int" Nullable="false" />
+    <Property Name="isWareHouseAccess" Type="int" Nullable="true" />
+    <Property Name="isTeamed" Type="int" Nullable="true" />
+    <Property Name="Hp" Type="int" Nullable="true" />
+    <Property Name="Mp" Type="int" Nullable="true" />
+  </EntityType>
+  <EntityType Name="portals">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" Nullable="false" />
+    <Property Name="SrcMap" Type="int" Nullable="false" />
+    <Property Name="SrcX" Type="int" Nullable="false" />
+    <Property Name="SrcY" Type="int" Nullable="false" />
+    <Property Name="DestMap" Type="int" Nullable="false" />
+    <Property Name="DestX" Type="int" Nullable="false" />
+    <Property Name="DestY" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="runes">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+  </EntityType>
+  <EntityType Name="shop">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" Nullable="false" />
+    <Property Name="Npc" Type="int" Nullable="false" />
+    <Property Name="Slot" Type="int" Nullable="false" />
+    <Property Name="Item" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="warehouse">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" Nullable="false" />
+    <Property Name="Owner" Type="int" Nullable="false" />
+    <Property Name="Item" Type="int" Nullable="false" />
+    <Property Name="Pos" Type="int" Nullable="false" />
+  </EntityType>
+  <Association Name="AccountCharacter">
+    <End Role="Account" Type="opennosModel.Store.Account" Multiplicity="1" />
+    <End Role="Character" Type="opennosModel.Store.Character" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Account">
+        <PropertyRef Name="AccountId" />
+      </Principal>
+      <Dependent Role="Character">
+        <PropertyRef Name="AccountId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+</Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="opennosModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="account">
+          <Key>
+            <PropertyRef Name="AccountId" />
+          </Key>
+          <Property Name="AccountId" Type="Int64" Nullable="false" />
+          <Property Name="Name" Type="String" Nullable="false" />
+          <Property Name="Password" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="LastIp" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Authority" Type="Int16" Nullable="false" />
+          <Property Name="LastSession" Type="Int32" Nullable="false" />
+          <Property Name="LastConnect" Type="DateTime" Nullable="false" />
+          <NavigationProperty Name="Character" Relationship="opennosModel.AccountCharacter" FromRole="Account" ToRole="Character" />
+        </EntityType>
+        <EntityType Name="character">
+          <Key>
+            <PropertyRef Name="CharacterId" />
+          </Key>
+          <Property Name="CharacterId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="AccountId" Type="Int64" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Slot" Type="Int32" Nullable="false" />
+          <Property Name="Gender" Type="Int32" Nullable="false" />
+          <Property Name="Class" Type="Int32" Nullable="false" />
+          <Property Name="HairStyle" Type="Int32" Nullable="false" />
+          <Property Name="HairColor" Type="Int32" Nullable="false" />
+          <Property Name="Map" Type="Int32" Nullable="false" />
+          <Property Name="X" Type="Int32" Nullable="false" />
+          <Property Name="Y" Type="Int32" Nullable="false" />
+          <Property Name="Hp" Type="Int32" Nullable="false" />
+          <Property Name="Mp" Type="Int32" Nullable="false" />
+          <Property Name="ArenaWinner" Type="Int32" Nullable="false" />
+          <Property Name="Reput" Type="Int32" Nullable="false" />
+          <Property Name="Dignite" Type="Int32" Nullable="false" />
+          <Property Name="Gold" Type="Int32" Nullable="false" />
+          <Property Name="Backpack" Type="Int32" Nullable="false" />
+          <Property Name="Level" Type="Int32" Nullable="false" />
+          <Property Name="LevelXp" Type="Int32" Nullable="false" />
+          <Property Name="JobLevel" Type="Int32" Nullable="false" />
+          <Property Name="JobLevelXp" Type="Int32" Nullable="false" />
+          <Property Name="Dead" Type="Int32" Nullable="false" />
+          <Property Name="Kill" Type="Int32" Nullable="false" />
+          <Property Name="Contribution" Type="Int32" Nullable="false" />
+          <Property Name="faction" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Account" Relationship="opennosModel.AccountCharacter" FromRole="Character" ToRole="Account" />
+        </EntityType>
+        <EntityType Name="charafamily">
+          <Key>
+            <PropertyRef Name="CharacterId" />
+          </Key>
+          <Property Name="CharacterId" Type="Int32" Nullable="false" />
+          <Property Name="FamilyName" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Xp" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Authority" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Message" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="family">
+          <Key>
+            <PropertyRef Name="FamilyName" />
+          </Key>
+          <Property Name="FamilyName" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="FamilyLevel" Type="Int32" />
+          <Property Name="FamilyInventory" Type="Int32" />
+          <Property Name="FamilySizeMax" Type="Int32" />
+        </EntityType>
+        <EntityType Name="familyhistory">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="Family" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Message" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+        </EntityType>
+        <EntityType Name="friend">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="CharacterId" Type="Int32" Nullable="false" />
+          <Property Name="Friend1" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="inventory">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Character" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Slot" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Pos" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Item" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+        </EntityType>
+        <EntityType Name="items">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="VNUM" Type="Int32" Nullable="false" />
+          <Property Name="Quantity" Type="Int32" Nullable="false" />
+          <Property Name="Rare" Type="Int32" Nullable="false" />
+          <Property Name="Upgraded" Type="Int32" Nullable="false" />
+          <Property Name="Color" Type="Int32" Nullable="false" />
+          <Property Name="DamageMin" Type="Int32" Nullable="false" />
+          <Property Name="DamageMax" Type="Int32" Nullable="false" />
+          <Property Name="ProtectHit" Type="Int32" Nullable="false" />
+          <Property Name="ProtectDist" Type="Int32" Nullable="false" />
+          <Property Name="ProtectMagic" Type="Int32" Nullable="false" />
+          <Property Name="DodgeHit" Type="Int32" Nullable="false" />
+          <Property Name="DodgeDist" Type="Int32" Nullable="false" />
+          <Property Name="Rune" Type="Int32" />
+          <Property Name="FireRez" Type="Int32" Nullable="false" />
+          <Property Name="LightRez" Type="Int32" Nullable="false" />
+          <Property Name="WaterRez" Type="Int32" Nullable="false" />
+          <Property Name="DarkRez" Type="Int32" Nullable="false" />
+          <Property Name="SlHit" Type="Int32" />
+          <Property Name="SlDef" Type="Int32" />
+          <Property Name="SlMp" Type="Int32" />
+          <Property Name="SlEle" Type="Int32" />
+        </EntityType>
+        <EntityType Name="listskill">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="miniland">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="Owner" Type="Int32" Nullable="false" />
+          <Property Name="Item" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="X" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="Y" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="monsters">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="VNUM" Type="Int32" Nullable="false" />
+          <Property Name="Map" Type="Int32" Nullable="false" />
+          <Property Name="X" Type="Int32" Nullable="false" />
+          <Property Name="Y" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="npcs">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="VNUM" Type="Int32" Nullable="false" />
+          <Property Name="Map" Type="Int32" Nullable="false" />
+          <Property Name="X" Type="Int32" Nullable="false" />
+          <Property Name="Y" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="partner">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="owner" Type="Int32" Nullable="false" />
+          <Property Name="Level" Type="Int32" />
+          <Property Name="isBackpacked" Type="Int32" />
+          <Property Name="SP" Type="Int32" />
+          <Property Name="Weapon" Type="Int32" />
+          <Property Name="Armor" Type="Int32" />
+          <Property Name="Gloves" Type="Int32" />
+          <Property Name="Boots" Type="Int32" />
+          <Property Name="IsTeamed" Type="Int32" />
+          <Property Name="Hp" Type="Int32" />
+          <Property Name="Mp" Type="Int32" />
+        </EntityType>
+        <EntityType Name="pet">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CharacterId" Type="Int32" Nullable="false" />
+          <Property Name="IsHelper" Type="Int32" Nullable="false" />
+          <Property Name="Owner" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Level" Type="Int32" Nullable="false" />
+          <Property Name="Def" Type="Int32" Nullable="false" />
+          <Property Name="Hit" Type="Int32" Nullable="false" />
+          <Property Name="isWareHouseAccess" Type="Int32" />
+          <Property Name="isTeamed" Type="Int32" />
+          <Property Name="Hp" Type="Int32" />
+          <Property Name="Mp" Type="Int32" />
+        </EntityType>
+        <EntityType Name="portals">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" />
+          <Property Name="SrcMap" Type="Int32" Nullable="false" />
+          <Property Name="SrcX" Type="Int32" Nullable="false" />
+          <Property Name="SrcY" Type="Int32" Nullable="false" />
+          <Property Name="DestMap" Type="Int32" Nullable="false" />
+          <Property Name="DestX" Type="Int32" Nullable="false" />
+          <Property Name="DestY" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="runes">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+        </EntityType>
+        <EntityType Name="shop">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" />
+          <Property Name="Npc" Type="Int32" Nullable="false" />
+          <Property Name="Slot" Type="Int32" Nullable="false" />
+          <Property Name="Item" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="warehouse">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" />
+          <Property Name="Owner" Type="Int32" Nullable="false" />
+          <Property Name="Item" Type="Int32" Nullable="false" />
+          <Property Name="Pos" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityContainer Name="OpenNosContainer" annotation:LazyLoadingEnabled="false">
+          <EntitySet Name="Account" EntityType="opennosModel.account" />
+          <EntitySet Name="Character" EntityType="opennosModel.character" />
+          <EntitySet Name="charafamily" EntityType="Self.charafamily" />
+          <EntitySet Name="family" EntityType="Self.family" />
+          <EntitySet Name="familyhistory" EntityType="Self.familyhistory" />
+          <EntitySet Name="friend" EntityType="Self.friend" />
+          <EntitySet Name="inventory" EntityType="Self.inventory" />
+          <EntitySet Name="items" EntityType="Self.items" />
+          <EntitySet Name="listskill" EntityType="Self.listskill" />
+          <EntitySet Name="miniland" EntityType="Self.miniland" />
+          <EntitySet Name="monsters" EntityType="Self.monsters" />
+          <EntitySet Name="npcs" EntityType="Self.npcs" />
+          <EntitySet Name="partner" EntityType="Self.partner" />
+          <EntitySet Name="pet" EntityType="Self.pet" />
+          <EntitySet Name="portals" EntityType="Self.portals" />
+          <EntitySet Name="runes" EntityType="Self.runes" />
+          <EntitySet Name="shop" EntityType="Self.shop" />
+          <EntitySet Name="warehouse" EntityType="Self.warehouse" />
+          <AssociationSet Name="AccountCharacter" Association="opennosModel.AccountCharacter">
+            <End Role="Account" EntitySet="Account" />
+            <End Role="Character" EntitySet="Character" />
+          </AssociationSet>
+        </EntityContainer>
+        <Association Name="AccountCharacter">
+          <End Type="opennosModel.account" Role="Account" Multiplicity="1" />
+          <End Type="opennosModel.character" Role="Character" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Account">
+              <PropertyRef Name="AccountId" />
+            </Principal>
+            <Dependent Role="Character">
+              <PropertyRef Name="AccountId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+    <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="opennosModelStoreContainer" CdmEntityContainer="OpenNosContainer">
+    <EntitySetMapping Name="Account">
+      <EntityTypeMapping TypeName="IsTypeOf(opennosModel.account)">
+        <MappingFragment StoreEntitySet="Account">
+          <ScalarProperty Name="AccountId" ColumnName="AccountId" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="Password" ColumnName="Password" />
+          <ScalarProperty Name="LastIp" ColumnName="LastIp" />
+          <ScalarProperty Name="Authority" ColumnName="Authority" />
+          <ScalarProperty Name="LastSession" ColumnName="LastSession" />
+          <ScalarProperty Name="LastConnect" ColumnName="LastConnect" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Character">
+      <EntityTypeMapping TypeName="IsTypeOf(opennosModel.character)">
+        <MappingFragment StoreEntitySet="Character">
+          <ScalarProperty Name="CharacterId" ColumnName="CharacterId" />
+          <ScalarProperty Name="AccountId" ColumnName="AccountId" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="Slot" ColumnName="Slot" />
+          <ScalarProperty Name="Gender" ColumnName="Gender" />
+          <ScalarProperty Name="Class" ColumnName="Class" />
+          <ScalarProperty Name="HairStyle" ColumnName="HairStyle" />
+          <ScalarProperty Name="HairColor" ColumnName="HairColor" />
+          <ScalarProperty Name="Map" ColumnName="Map" />
+          <ScalarProperty Name="X" ColumnName="X" />
+          <ScalarProperty Name="Y" ColumnName="Y" />
+          <ScalarProperty Name="Hp" ColumnName="Hp" />
+          <ScalarProperty Name="Mp" ColumnName="Mp" />
+          <ScalarProperty Name="ArenaWinner" ColumnName="ArenaWinner" />
+          <ScalarProperty Name="Reput" ColumnName="Reput" />
+          <ScalarProperty Name="Dignite" ColumnName="Dignite" />
+          <ScalarProperty Name="Gold" ColumnName="Gold" />
+          <ScalarProperty Name="Backpack" ColumnName="Backpack" />
+          <ScalarProperty Name="Level" ColumnName="Level" />
+          <ScalarProperty Name="LevelXp" ColumnName="LevelXp" />
+          <ScalarProperty Name="JobLevel" ColumnName="JobLevel" />
+          <ScalarProperty Name="JobLevelXp" ColumnName="JobLevelXp" />
+          <ScalarProperty Name="Dead" ColumnName="Dead" />
+          <ScalarProperty Name="Kill" ColumnName="Kill" />
+          <ScalarProperty Name="Contribution" ColumnName="Contribution" />
+          <ScalarProperty Name="faction" ColumnName="faction" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="charafamily">
+      <EntityTypeMapping TypeName="IsTypeOf(opennosModel.charafamily)">
+        <MappingFragment StoreEntitySet="charafamily">
+          <ScalarProperty Name="CharacterId" ColumnName="CharacterId" />
+          <ScalarProperty Name="FamilyName" ColumnName="FamilyName" />
+          <ScalarProperty Name="Xp" ColumnName="Xp" />
+          <ScalarProperty Name="Authority" ColumnName="Authority" />
+          <ScalarProperty Name="Message" ColumnName="Message" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="family">
+      <EntityTypeMapping TypeName="IsTypeOf(opennosModel.family)">
+        <MappingFragment StoreEntitySet="family">
+          <ScalarProperty Name="FamilyName" ColumnName="FamilyName" />
+          <ScalarProperty Name="FamilyLevel" ColumnName="FamilyLevel" />
+          <ScalarProperty Name="FamilyInventory" ColumnName="FamilyInventory" />
+          <ScalarProperty Name="FamilySizeMax" ColumnName="FamilySizeMax" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="familyhistory">
+      <EntityTypeMapping TypeName="IsTypeOf(opennosModel.familyhistory)">
+        <MappingFragment StoreEntitySet="familyhistory">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Family" ColumnName="Family" />
+          <ScalarProperty Name="Message" ColumnName="Message" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="friend">
+      <EntityTypeMapping TypeName="IsTypeOf(opennosModel.friend)">
+        <MappingFragment StoreEntitySet="friend">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="CharacterId" ColumnName="CharacterId" />
+          <ScalarProperty Name="Friend1" ColumnName="Friend1" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="inventory">
+      <EntityTypeMapping TypeName="IsTypeOf(opennosModel.inventory)">
+        <MappingFragment StoreEntitySet="inventory">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Character" ColumnName="Character" />
+          <ScalarProperty Name="Slot" ColumnName="Slot" />
+          <ScalarProperty Name="Pos" ColumnName="Pos" />
+          <ScalarProperty Name="Item" ColumnName="Item" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="items">
+      <EntityTypeMapping TypeName="IsTypeOf(opennosModel.items)">
+        <MappingFragment StoreEntitySet="items">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="VNUM" ColumnName="VNUM" />
+          <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+          <ScalarProperty Name="Rare" ColumnName="Rare" />
+          <ScalarProperty Name="Upgraded" ColumnName="Upgraded" />
+          <ScalarProperty Name="Color" ColumnName="Color" />
+          <ScalarProperty Name="DamageMin" ColumnName="DamageMin" />
+          <ScalarProperty Name="DamageMax" ColumnName="DamageMax" />
+          <ScalarProperty Name="ProtectHit" ColumnName="ProtectHit" />
+          <ScalarProperty Name="ProtectDist" ColumnName="ProtectDist" />
+          <ScalarProperty Name="ProtectMagic" ColumnName="ProtectMagic" />
+          <ScalarProperty Name="DodgeHit" ColumnName="DodgeHit" />
+          <ScalarProperty Name="DodgeDist" ColumnName="DodgeDist" />
+          <ScalarProperty Name="Rune" ColumnName="Rune" />
+          <ScalarProperty Name="FireRez" ColumnName="FireRez" />
+          <ScalarProperty Name="LightRez" ColumnName="LightRez" />
+          <ScalarProperty Name="WaterRez" ColumnName="WaterRez" />
+          <ScalarProperty Name="DarkRez" ColumnName="DarkRez" />
+          <ScalarProperty Name="SlHit" ColumnName="SlHit" />
+          <ScalarProperty Name="SlDef" ColumnName="SlDef" />
+          <ScalarProperty Name="SlMp" ColumnName="SlMp" />
+          <ScalarProperty Name="SlEle" ColumnName="SlEle" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="listskill">
+      <EntityTypeMapping TypeName="IsTypeOf(opennosModel.listskill)">
+        <MappingFragment StoreEntitySet="listskill">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="miniland">
+      <EntityTypeMapping TypeName="IsTypeOf(opennosModel.miniland)">
+        <MappingFragment StoreEntitySet="miniland">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Owner" ColumnName="Owner" />
+          <ScalarProperty Name="Item" ColumnName="Item" />
+          <ScalarProperty Name="X" ColumnName="X" />
+          <ScalarProperty Name="Y" ColumnName="Y" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="monsters">
+      <EntityTypeMapping TypeName="IsTypeOf(opennosModel.monsters)">
+        <MappingFragment StoreEntitySet="monsters">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="VNUM" ColumnName="VNUM" />
+          <ScalarProperty Name="Map" ColumnName="Map" />
+          <ScalarProperty Name="X" ColumnName="X" />
+          <ScalarProperty Name="Y" ColumnName="Y" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="npcs">
+      <EntityTypeMapping TypeName="IsTypeOf(opennosModel.npcs)">
+        <MappingFragment StoreEntitySet="npcs">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="VNUM" ColumnName="VNUM" />
+          <ScalarProperty Name="Map" ColumnName="Map" />
+          <ScalarProperty Name="X" ColumnName="X" />
+          <ScalarProperty Name="Y" ColumnName="Y" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="partner">
+      <EntityTypeMapping TypeName="IsTypeOf(opennosModel.partner)">
+        <MappingFragment StoreEntitySet="partner">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="owner" ColumnName="owner" />
+          <ScalarProperty Name="Level" ColumnName="Level" />
+          <ScalarProperty Name="isBackpacked" ColumnName="isBackpacked" />
+          <ScalarProperty Name="SP" ColumnName="SP" />
+          <ScalarProperty Name="Weapon" ColumnName="Weapon" />
+          <ScalarProperty Name="Armor" ColumnName="Armor" />
+          <ScalarProperty Name="Gloves" ColumnName="Gloves" />
+          <ScalarProperty Name="Boots" ColumnName="Boots" />
+          <ScalarProperty Name="IsTeamed" ColumnName="IsTeamed" />
+          <ScalarProperty Name="Hp" ColumnName="Hp" />
+          <ScalarProperty Name="Mp" ColumnName="Mp" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="pet">
+      <EntityTypeMapping TypeName="IsTypeOf(opennosModel.pet)">
+        <MappingFragment StoreEntitySet="pet">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="CharacterId" ColumnName="CharacterId" />
+          <ScalarProperty Name="IsHelper" ColumnName="IsHelper" />
+          <ScalarProperty Name="Owner" ColumnName="Owner" />
+          <ScalarProperty Name="Level" ColumnName="Level" />
+          <ScalarProperty Name="Def" ColumnName="Def" />
+          <ScalarProperty Name="Hit" ColumnName="Hit" />
+          <ScalarProperty Name="isWareHouseAccess" ColumnName="isWareHouseAccess" />
+          <ScalarProperty Name="isTeamed" ColumnName="isTeamed" />
+          <ScalarProperty Name="Hp" ColumnName="Hp" />
+          <ScalarProperty Name="Mp" ColumnName="Mp" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="portals">
+      <EntityTypeMapping TypeName="IsTypeOf(opennosModel.portals)">
+        <MappingFragment StoreEntitySet="portals">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="SrcMap" ColumnName="SrcMap" />
+          <ScalarProperty Name="SrcX" ColumnName="SrcX" />
+          <ScalarProperty Name="SrcY" ColumnName="SrcY" />
+          <ScalarProperty Name="DestMap" ColumnName="DestMap" />
+          <ScalarProperty Name="DestX" ColumnName="DestX" />
+          <ScalarProperty Name="DestY" ColumnName="DestY" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="runes">
+      <EntityTypeMapping TypeName="IsTypeOf(opennosModel.runes)">
+        <MappingFragment StoreEntitySet="runes">
+          <ScalarProperty Name="id" ColumnName="id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="shop">
+      <EntityTypeMapping TypeName="IsTypeOf(opennosModel.shop)">
+        <MappingFragment StoreEntitySet="shop">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="Npc" ColumnName="Npc" />
+          <ScalarProperty Name="Slot" ColumnName="Slot" />
+          <ScalarProperty Name="Item" ColumnName="Item" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="warehouse">
+      <EntityTypeMapping TypeName="IsTypeOf(opennosModel.warehouse)">
+        <MappingFragment StoreEntitySet="warehouse">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="Owner" ColumnName="Owner" />
+          <ScalarProperty Name="Item" ColumnName="Item" />
+          <ScalarProperty Name="Pos" ColumnName="Pos" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+  </EntityContainerMapping>
+</Mapping></edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="False" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="Kein" />
+        <DesignerProperty Name="DDLGenerationTemplate" Value="$(VSEFTools)\DBGen\SSDLToMySQL.tt" />
+        <DesignerProperty Name="SynchronizePropertyFacets" Value="True" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

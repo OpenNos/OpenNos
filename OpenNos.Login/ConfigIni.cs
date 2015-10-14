@@ -1,7 +1,7 @@
 using Microsoft.VisualBasic;
 using System.Runtime.InteropServices;
 using System.Text;
-namespace OpenNosLogin
+namespace OpenNos.Login
 {
 	public class ConfigIni
 	{
