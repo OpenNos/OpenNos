@@ -1,9 +1,9 @@
 using System;
 namespace OpenNos.Login
 {
-	internal struct User
+	public class User
 	{
 		public string Name;
-		public string Psw;
+		public string Password;
 	}
 }

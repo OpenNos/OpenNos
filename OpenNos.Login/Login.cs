@@ -1,6 +1,9 @@
 using Microsoft.VisualBasic.CompilerServices;
+using OpenNos.DAL;
+using OpenNos.Domain;
 using System;
 using System.Net.Sockets;
+
 namespace OpenNos.Login
 {
 	internal class Login
@@ -31,10 +34,10 @@ namespace OpenNos.Login
 		}
 		public User GetUser(string str)
 		{
-			User result = default(User);
+			User result = new User();
 			string[] array = str.Split(new char[]{' '});
 			result.Name = array[2];
-			result.Psw =  Encryption.sha256(Encryption.GetPassword(array[3]));
+			result.Password =  Encryption.sha256(Encryption.GetPassword(array[3]));
 			return result;
 		}
 		public string MakeChannel(int Session)
@@ -68,9 +71,9 @@ namespace OpenNos.Login
 		{
             NetWorkStream.Write(Encryption.LoginEncrypt(str + " "), 0, checked(Encryption.LoginEncrypt(str).Length + 1));
 		}
-		public void CheckUser(User User, Mysql SqlCore, NetworkStream network, int session)
+		public void CheckUser(User user, NetworkStream network, int session)
 		{
-			ConfigIni ConfIni = new ConfigIni(MainFile.AppPath(true) + "config/LoginServer.ini");
+			ConfigIni ConfIni = new ConfigIni(MainFile.AppPath(true) + "config.ini");
             //fermé
             bool flag = true;
 			if (flag)
@@ -79,22 +82,20 @@ namespace OpenNos.Login
                 bool flag2 = true;
                 if (flag2)
 				{
-                    User.Name = AntiSqlInjection.ValidateSqlValue(User.Name);
-                    Console.WriteLine(User.Psw);
-                    flag2 = Operators.ConditionalCompareObjectEqual(SqlCore.MysqlQuery("SELECT Pass FROM Accounts WHERE AccountName='" + User.Name + "';"),User.Psw, false);
-					if (flag2)
+                    Console.WriteLine(user.Password);
+					if (DAOFactory.AccountDAO.CheckPasswordValiditiy(user.Name, user.Password))
 					{
                         //0 banned 1 register 2 user 3 GM
-                        flag = Operators.ConditionalCompareObjectGreater(SqlCore.MysqlQuery("SELECT Authority FROM Accounts WHERE AccountName='" + User.Name + "';"), 0, false);
+                        AuthorityType type = DAOFactory.AccountDAO.LoadAuthorityType(user.Name);
 						if (flag)
 						{
                             bool flag3 = true;
                             //Is logged?
                             if (flag3)
 							{
-                                SqlCore.MysqlQuery("UPDATE Accounts set  LastSession = " + session + "  WHERE AccountName='" + User.Name + "';");
+                                DAOFactory.AccountDAO.UpdateLastSession(user.Name, session);
                                 SendMsg(MakeChannel(session), network);
-                                ConsoleTools.WriteConsole("CONNECT", User.Name + " Connected -- session:" + session);
+                                ConsoleTools.WriteConsole("CONNECT", user.Name + " Connected -- session:" + session);
 							}
 							else
 							{
