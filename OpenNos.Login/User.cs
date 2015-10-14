@@ -1,5 +1,5 @@
 using System;
-namespace LoginServer
+namespace OpenNos.Login
 {
 	internal struct User
 	{

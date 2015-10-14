@@ -1,7 +1,7 @@
 using Microsoft.VisualBasic;
 using System.Runtime.InteropServices;
 using System.Text;
-namespace LoginServer
+namespace OpenNosLogin
 {
 	public class ConfigIni
 	{
@@ -39,7 +39,5 @@ namespace LoginServer
 		{
 			return ConfigIni.GetPrivateProfileInt(ref Section, ref Key, (((Default) ? true : false)) ? 1 : 0, ref this.strFilename) == 1;
 		}
-
-
 	}
 }

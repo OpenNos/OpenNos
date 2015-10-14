@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-namespace LoginServer
+
+namespace OpenNos.Login
 {
     class ConsoleTools
     {
-
         public static void WriteConsole(String level, string text)
         {
             ConsoleColor originalColor = Console.ForegroundColor;

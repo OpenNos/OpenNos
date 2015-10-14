@@ -2,7 +2,7 @@ using Microsoft.VisualBasic;
 using Microsoft.VisualBasic.CompilerServices;
 using MySql.Data.MySqlClient;
 using System;
-namespace LoginServer
+namespace OpenNos.Login
 {
 	internal class Mysql
 	{
@@ -11,7 +11,6 @@ namespace LoginServer
 		private string user;
 		private string password;
 		private string database;
-
 		public Mysql()
 		{
 			this.con = new MySqlConnection();

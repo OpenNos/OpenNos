@@ -1,7 +1,7 @@
 using Microsoft.VisualBasic.CompilerServices;
 using System;
 using System.Net.Sockets;
-namespace LoginServer
+namespace OpenNos.Login
 {
 	internal class Login
 	{
