@@ -4,7 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-namespace LoginServer
+namespace OpenNos.Login
 {
     public class AntiSqlInjection
     {
