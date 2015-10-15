@@ -60,7 +60,7 @@ namespace OpenNos.Login
                 }
                 catch (Exception ex)
                 {
-                    ConsoleTools.WriteConsole("ERROR", ex.Message);
+                    Logger.Log.Error(ex.Message);
                     Console.ReadKey();
                 }
             }

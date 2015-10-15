@@ -105,7 +105,7 @@ namespace OpenNos.Login
                                     {
                                         DAOFactory.AccountDAO.UpdateLastSession(user.Name, session);
                                         SendMsg(MakeChannel(session), network);
-                                        ConsoleTools.WriteConsole("CONNECT", user.Name + " Connected -- session:" + session);
+                                        Logger.Log.Debug(String.Format("CONNECT {0} Connected -- session:{1}", user.Name, session));
                                     }
                                     else
                                     {
