@@ -1,5 +1,4 @@
 using log4net;
-using Microsoft.VisualBasic.CompilerServices;
 using System;
 using System.IO;
 using System.Net;
@@ -32,7 +31,7 @@ namespace OpenNos.Login
                     {
                         log.Error("Config.ini not found!");
                         Console.ReadKey();
-                        ProjectData.EndApp();
+                        System.Environment.Exit(1);
                     }
                     log.Info("Loading Configurations !");
                     
@@ -60,10 +59,8 @@ namespace OpenNos.Login
                 }
                 catch (Exception ex)
                 {
-                    ProjectData.SetProjectError(ex);
-                    ConsoleTools.WriteConsole("ERROR", ex.Message);
+                    log.Error(ex.Message);
                     Console.ReadKey();
-                    ProjectData.ClearProjectError();
                 }
             }
         }

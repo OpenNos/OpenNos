@@ -1,4 +1,4 @@
-using Microsoft.VisualBasic.CompilerServices;
+
 using OpenNos.DAL;
 using OpenNos.Domain;
 using System;
@@ -43,7 +43,7 @@ namespace OpenNos.Login
 		public string MakeChannel(int Session)
 		{
 			string str = "NsTeST ";
-			str = str + Conversions.ToString(Session) + " ";
+			str = str + Session.ToString() + " ";
 			int num = this.countch;
 			int num2 = 1;
             int world = 1;
@@ -60,7 +60,7 @@ namespace OpenNos.Login
                         {
                             break;
                         }
-                        str += this.game_ip + ":" + Conversions.ToString(this.gameport + num2 - 1) + ":0:1." + Conversions.ToString(num2) + "." + this.channel_name + " ";
+                        str += this.game_ip + ":" + (this.gameport + num2 - 1).ToString() + ":0:1." + (num2).ToString() + "." + this.channel_name + " ";
                         num2++;
                     }
                 }
@@ -82,7 +82,6 @@ namespace OpenNos.Login
                 bool flag2 = true;
                 if (flag2)
 				{
-                    Console.WriteLine(user.Password);
 					if (DAOFactory.AccountDAO.CheckPasswordValiditiy(user.Name, user.Password))
 					{
                         //0 banned 1 register 2 user 3 GM

@@ -1,4 +1,3 @@
-using Microsoft.VisualBasic;
 using System.Runtime.InteropServices;
 using System.Text;
 namespace OpenNos.Login
@@ -28,7 +27,7 @@ namespace OpenNos.Login
 			int privateProfileString = ConfigIni.GetPrivateProfileString(ref Section, ref Key, ref Default, stringBuilder, stringBuilder.Capacity, ref this.strFilename);
 			bool flag = privateProfileString > 0;
 			string result;
-            result = (flag)? Strings.Left(stringBuilder.ToString(), privateProfileString):result = null;
+            result = (flag)? stringBuilder.ToString().Substring(0, privateProfileString) :result = null;
 			return result;
 		}
 		public int GetInteger(string Section, string Key, int Default = 5)
