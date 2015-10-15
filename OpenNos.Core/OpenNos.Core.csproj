@@ -46,7 +46,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ConfigIni.cs" />
-    <Compile Include="ConsoleTools.cs" />
     <Compile Include="Encryption.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

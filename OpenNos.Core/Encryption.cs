@@ -17,7 +17,6 @@ namespace OpenNos.Core
                   .Select(item => item.ToString("x2")));
             }
         }
-
         public static string LoginDecrypt(byte[] tmp, int size)
         {
             string result;
