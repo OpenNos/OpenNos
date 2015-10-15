@@ -1,5 +1,5 @@
 using log4net;
-using Microsoft.VisualBasic.CompilerServices;
+using OpenNos.Core;
 using System;
 using System.IO;
 using System.Net;
@@ -32,11 +32,11 @@ namespace OpenNos.Login
                     {
                         log.Error("Config.ini not found!");
                         Console.ReadKey();
-                        ProjectData.EndApp();
+                        return;
                     }
                     log.Info("Loading Configurations !");
                     
-                    ConfigIni ConfIni = new ConfigIni(MainFile.AppPath(true) + "config.ini");
+                    Config ConfIni = new Config(MainFile.AppPath(true) + "config.ini");
 
                     loginCore.SetData(ConfIni.GetString("CONFIGURATION", "Ip", "error"), ConfIni.GetString("CONFIGURATION", "Ip_Game", "error"), ConfIni.GetInteger("CONFIGURATION", "Login_Port", 5), ConfIni.GetString("CONFIGURATION", "Nom_serveur", "error"), ConfIni.GetInteger("CONFIGURATION", "Canaux", 5), ConfIni.GetInteger("CONFIGURATION", "Game_Port", 5));
                     log.Info("Config Loaded !");
@@ -60,10 +60,8 @@ namespace OpenNos.Login
                 }
                 catch (Exception ex)
                 {
-                    ProjectData.SetProjectError(ex);
                     ConsoleTools.WriteConsole("ERROR", ex.Message);
                     Console.ReadKey();
-                    ProjectData.ClearProjectError();
                 }
             }
         }
