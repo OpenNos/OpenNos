@@ -73,11 +73,11 @@ namespace OpenNos.Login
         }
         public void SendMsg(string str, NetworkStream NetWorkStream)
         {
-            NetWorkStream.Write(Encryption.LoginEncrypt(str + " "), 0, checked(Encryption.LoginEncrypt(str).Length + 1));
+            NetWorkStream.Write(Encryption.LoginEncrypt(String.Format("{0} ", str)), 0, checked(Encryption.LoginEncrypt(str).Length + 1));
         }
         public void CheckUser(User user, NetworkStream network, int session)
         {
-            Config ConfIni = new Config(Program.AppPath(true) + "config.ini");
+            Config ConfIni = new Config(String.Format("{0}config.ini", Program.AppPath(true)));
             //fermé
             bool flag = true;
             if (flag)
@@ -96,7 +96,7 @@ namespace OpenNos.Login
                         {
                             case AuthorityType.Banned:
                                 {
-                                    SendMsg("fail " + ConfIni.GetString("MESSAGE", "Banned", "error"), network);
+                                    SendMsg(String.Format("fail {0}", ConfIni.GetString("MESSAGE", "Banned", "error")), network);
                                     break;
                                 }
                             default:
@@ -109,7 +109,7 @@ namespace OpenNos.Login
                                     }
                                     else
                                     {
-                                        SendMsg("fail " + ConfIni.GetString("MESSAGE", "Online", "error"), network);
+                                        SendMsg(String.Format("fail {0}", ConfIni.GetString("MESSAGE", "Online", "error")), network);
                                     }
                                     break;
                                 }
@@ -118,17 +118,17 @@ namespace OpenNos.Login
                     }
                     else
                     {
-                        SendMsg("fail " + ConfIni.GetString("MESSAGE", "IDError", "error"), network);
+                        SendMsg(String.Format("fail {0}", ConfIni.GetString("MESSAGE", "IDError", "error")), network);
                     }
                 }
                 else
                 {
-                    SendMsg("fail " + ConfIni.GetString("MESSAGE", "Close", "error"), network);
+                    SendMsg(String.Format("fail {0}",  ConfIni.GetString("MESSAGE", "Close", "error")), network);
                 }
             }
             else
             {
-                SendMsg("fail " + ConfIni.GetString("MESSAGE", "Waiting", "error"), network);
+                SendMsg(String.Format("fail {0}", ConfIni.GetString("MESSAGE", "Waiting", "error")), network);
             }
         }
     }

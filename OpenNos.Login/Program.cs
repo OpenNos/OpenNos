@@ -28,7 +28,7 @@ namespace OpenNos.Login
                                      + "                 AUTHENTICATION SERVER VERSION 1 by 0Lucifer0\n" +
                                      "==============================================================================\n");
 
-                    if (!File.Exists(Program.AppPath(true) + "config.ini"))
+                    if (!File.Exists(String.Format("{0}config.ini",Program.AppPath(true))))
                     {
                         Logger.Log.Error("Config.ini not found!");
                         Console.ReadKey();
@@ -36,7 +36,7 @@ namespace OpenNos.Login
                     }
                     Logger.Log.Info("Loading Configurations !");
                     
-                    Config config = new Config(Program.AppPath(true) + "config.ini");
+                    Config config = new Config(String.Format("{0}config.ini", Program.AppPath(true)));
 
                     loginCore.SetData(config.GetString("CONFIGURATION", "Ip", "error"), config.GetString("CONFIGURATION", "Ip_Game", "error"), config.GetInteger("CONFIGURATION", "Login_Port", 5), config.GetString("CONFIGURATION", "Nom_serveur", "error"), config.GetInteger("CONFIGURATION", "Canaux", 5), config.GetInteger("CONFIGURATION", "Game_Port", 5));
                     Logger.Log.Info("Config Loaded !");
