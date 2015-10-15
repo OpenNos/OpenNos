@@ -1,3 +1,4 @@
+using log4net;
 using Microsoft.VisualBasic.CompilerServices;
 using System;
 using System.IO;
@@ -10,6 +11,8 @@ namespace OpenNos.Login
     class MainFile
     {
         private static int session = 0;
+        private static readonly ILog log = LogManager.GetLogger(typeof(MainFile));
+
         public static void Main()
         {
             checked
@@ -27,20 +30,21 @@ namespace OpenNos.Login
                     bool flag = !File.Exists(MainFile.AppPath(true) + "config.ini");
                     if (flag)
                     {
-                        ConsoleTools.WriteConsole("ERROR", "Config.ini not found!");
+                        log.Error("Config.ini not found!");
                         Console.ReadKey();
                         ProjectData.EndApp();
                     }
-                    ConsoleTools.WriteConsole("INFO", "Loading Configurations !");
+                    log.Info("Loading Configurations !");
+                    
                     ConfigIni ConfIni = new ConfigIni(MainFile.AppPath(true) + "config.ini");
 
                     loginCore.SetData(ConfIni.GetString("CONFIGURATION", "Ip", "error"), ConfIni.GetString("CONFIGURATION", "Ip_Game", "error"), ConfIni.GetInteger("CONFIGURATION", "Login_Port", 5), ConfIni.GetString("CONFIGURATION", "Nom_serveur", "error"), ConfIni.GetInteger("CONFIGURATION", "Canaux", 5), ConfIni.GetInteger("CONFIGURATION", "Game_Port", 5));
-
-                    ConsoleTools.WriteConsole("INFO", "Loading Config !");
+                    log.Info("Config Loaded !");
 
                     TcpListener tcpListener = new TcpListener(IPAddress.Parse(loginCore.GetIp()), loginCore.GetPort());
                     tcpListener.Start();
-                    ConsoleTools.WriteConsole("INFO", "Serveur ON !");
+                  
+                    log.Info("Server ON !");
 
                     do
                     {
