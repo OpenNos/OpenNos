@@ -1,15 +1,14 @@
-using Microsoft.VisualBasic;
-using Microsoft.VisualBasic.CompilerServices;
 using System;
+using Microsoft.VisualBasic;
 using System.Collections;
 using System.Text;
 using System.Security.Cryptography;
 using System.Linq;
+using Microsoft.VisualBasic.CompilerServices;
 
-namespace OpenNos.Login
+namespace OpenNos.Core
 {
-    [StandardModule]
-    internal sealed class Encryption
+    public static class Encryption
     {
         public static string sha256(string inputString)
         {
@@ -149,9 +148,7 @@ namespace OpenNos.Login
                 }
                 catch (Exception ex)
                 {
-                    ProjectData.SetProjectError(ex);
                     result = "Error";
-                    ProjectData.ClearProjectError();
                 }
                 return result;
 

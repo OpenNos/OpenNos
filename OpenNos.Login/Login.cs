@@ -1,8 +1,10 @@
-using Microsoft.VisualBasic.CompilerServices;
+using OpenNos.Core;
 using OpenNos.DAL;
+using OpenNos.Data;
 using OpenNos.Domain;
 using System;
 using System.Net.Sockets;
+
 
 namespace OpenNos.Login
 {
@@ -43,7 +45,7 @@ namespace OpenNos.Login
 		public string MakeChannel(int Session)
 		{
 			string str = "NsTeST ";
-			str = str + Conversions.ToString(Session) + " ";
+			str = str + Session + " ";
 			int num = this.countch;
 			int num2 = 1;
             int world = 1;
@@ -60,7 +62,7 @@ namespace OpenNos.Login
                         {
                             break;
                         }
-                        str += this.game_ip + ":" + Conversions.ToString(this.gameport + num2 - 1) + ":0:1." + Conversions.ToString(num2) + "." + this.channel_name + " ";
+                        str += this.game_ip + ":" + (this.gameport + num2 - 1) + ":0:1." + num2 + "." + this.channel_name + " ";
                         num2++;
                     }
                 }
@@ -73,7 +75,7 @@ namespace OpenNos.Login
 		}
 		public void CheckUser(User user, NetworkStream network, int session)
 		{
-			ConfigIni ConfIni = new ConfigIni(MainFile.AppPath(true) + "config.ini");
+			Config ConfIni = new Config(MainFile.AppPath(true) + "config.ini");
             //fermé
             bool flag = true;
 			if (flag)
