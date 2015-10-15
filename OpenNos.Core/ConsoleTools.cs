@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace OpenNos.Login
+namespace OpenNos.Core
 {
-    class ConsoleTools
+    public class ConsoleTools
     {
         public static void WriteConsole(String level, string text)
         {

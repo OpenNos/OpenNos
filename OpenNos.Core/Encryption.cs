@@ -1,13 +1,12 @@
-
 using System;
 using System.Collections;
 using System.Text;
 using System.Security.Cryptography;
 using System.Linq;
 
-namespace OpenNos.Login
+namespace OpenNos.Core
 {
-    internal sealed class Encryption
+    public static class Encryption
     {
         public static string sha256(string inputString)
         {
@@ -59,7 +58,7 @@ namespace OpenNos.Login
         public static string GetPassword(string pswd)
         {
             int length = pswd.Length;
-            bool flag = length % 2 != 0 ? false: true;
+            bool flag = length % 2 != 0? false:true;
             checked
             {
                 string result;
@@ -83,7 +82,7 @@ namespace OpenNos.Login
                             {
                                 break;
                             }
-                            text2 =String.Format("{0}{1}",text2, arrayList[num2]).ToString();
+                            text2 = String.Format("{0}{1}", text2, arrayList[num2]);
                             num2 += 2;
                         }
                         ArrayList arrayList2 = new ArrayList();
@@ -100,9 +99,7 @@ namespace OpenNos.Login
                             {
                                 break;
                             }
-       
-                            text3 += Convert.ToChar(Convert.ToUInt32(String.Format("{0}{1}", arrayList2[num5].ToString(), arrayList2[num5 + 1].ToString()).ToString(), 16)).ToString();
-
+                            text3 += Convert.ToChar(Convert.ToUInt32(String.Format("{0}{1}",arrayList2[num5], arrayList2[num5 + 1]), 16)).ToString();
                             num5 += 2;
                         }
                         result = text3;
@@ -124,7 +121,7 @@ namespace OpenNos.Login
                             {
                                 break;
                             }
-                            text5 = String.Format("{0}{1}", text5, arrayList3[num7]).ToString();
+                            text5 = String.Format("{0}{1}", text5, arrayList3[num7]);
                             num7 += 2;
                         }
                         ArrayList arrayList4 = new ArrayList();
@@ -141,7 +138,7 @@ namespace OpenNos.Login
                             {
                                 break;
                             }
-                            text6 += Convert.ToChar(Convert.ToUInt32((String.Format("{0}{1}", arrayList4[num9], arrayList4[num9 + 1])).ToString() , 16)).ToString();
+                            text6 += Convert.ToChar(Convert.ToUInt32(String.Format("{0}{1}", arrayList4[num9], arrayList4[num9 + 1]), 16).ToString());
                             num9 += 2;
                         }
                         result = text6;
@@ -149,7 +146,6 @@ namespace OpenNos.Login
                 }
                 catch (Exception ex)
                 {
-                   
                     result = "Error";
                 }
                 return result;
