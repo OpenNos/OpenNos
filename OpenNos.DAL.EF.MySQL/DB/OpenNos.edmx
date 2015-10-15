@@ -40,6 +40,7 @@
     <Property Name="Authority" Type="smallint" Nullable="false" />
     <Property Name="LastSession" Type="int" Nullable="false" />
     <Property Name="LastConnect" Type="datetime" Nullable="false" />
+    <Property Name="LoggedIn" Type="bool" Nullable="false" />
   </EntityType>
   <EntityType Name="Character">
     <Key>
@@ -278,6 +279,7 @@
           <Property Name="LastSession" Type="Int32" Nullable="false" />
           <Property Name="LastConnect" Type="DateTime" Nullable="false" />
           <NavigationProperty Name="Character" Relationship="opennosModel.AccountCharacter" FromRole="Account" ToRole="Character" />
+          <Property Name="LoggedIn" Type="Boolean" Nullable="false" />
         </EntityType>
         <EntityType Name="character">
           <Key>
@@ -541,6 +543,7 @@
           <ScalarProperty Name="Authority" ColumnName="Authority" />
           <ScalarProperty Name="LastSession" ColumnName="LastSession" />
           <ScalarProperty Name="LastConnect" ColumnName="LastConnect" />
+          <ScalarProperty Name="LoggedIn" ColumnName="LoggedIn" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

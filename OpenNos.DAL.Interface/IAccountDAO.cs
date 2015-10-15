@@ -17,6 +17,10 @@ namespace OpenNos.DAL.Interface
 
         void UpdateLastSession(string name, int session);
 
+        bool IsLoggedIn(string name);
+
+        void LogIn(string name);
+
         #endregion
     }
 }

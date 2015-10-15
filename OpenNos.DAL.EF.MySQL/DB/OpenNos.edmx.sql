@@ -44,9 +44,9 @@
 -- -----------------------------------------------------------
 -- Entity Designer DDL Script for MySQL Server 4.1 and higher
 -- -----------------------------------------------------------
--- Date Created: 10/14/2015 11:36:34
+-- Date Created: 10/15/2015 20:42:16
 
--- Generated from EDMX file: C:\Users\Alex\Documents\GitHub\OpenNos\OpenNos.DAL.EF.MySQL\OpenNos.edmx
+-- Generated from EDMX file: C:\Users\Alex\Documents\GitHub\OpenNos\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
 -- Target version: 3.0.0.0
 
 -- --------------------------------------------------
@@ -117,7 +117,8 @@ CREATE TABLE `Account`(
 	`LastIp` varchar (255) NOT NULL, 
 	`Authority` smallint NOT NULL, 
 	`LastSession` int NOT NULL, 
-	`LastConnect` datetime NOT NULL);
+	`LastConnect` datetime NOT NULL, 
+	`LoggedIn` bool NOT NULL);
 
 ALTER TABLE `Account` ADD PRIMARY KEY (AccountId);
 
