@@ -8,7 +8,7 @@ using System.Reflection;
 
 namespace OpenNos.Login
 {
-    class MainFile
+    class Program
     {
         private static int session = 0;
 
@@ -21,15 +21,14 @@ namespace OpenNos.Login
                     Login loginCore = new Login();
 
                     //initialize Logger
-                    Logger.InitializeLogger(LogManager.GetLogger(typeof(MainFile)));
+                    Logger.InitializeLogger(LogManager.GetLogger(typeof(Program)));
 
                     Console.Title = "OpenNos_Login ";
                     Console.WriteLine("===============================================================================\n"
                                      + "                 AUTHENTICATION SERVER VERSION 1 by 0Lucifer0\n" +
                                      "==============================================================================\n");
 
-                    bool flag = !File.Exists(MainFile.AppPath(true) + "config.ini");
-                    if (flag)
+                    if (!File.Exists(Program.AppPath(true) + "config.ini"))
                     {
                         Logger.Log.Error("Config.ini not found!");
                         Console.ReadKey();
@@ -37,9 +36,9 @@ namespace OpenNos.Login
                     }
                     Logger.Log.Info("Loading Configurations !");
                     
-                    Config ConfIni = new Config(MainFile.AppPath(true) + "config.ini");
+                    Config config = new Config(Program.AppPath(true) + "config.ini");
 
-                    loginCore.SetData(ConfIni.GetString("CONFIGURATION", "Ip", "error"), ConfIni.GetString("CONFIGURATION", "Ip_Game", "error"), ConfIni.GetInteger("CONFIGURATION", "Login_Port", 5), ConfIni.GetString("CONFIGURATION", "Nom_serveur", "error"), ConfIni.GetInteger("CONFIGURATION", "Canaux", 5), ConfIni.GetInteger("CONFIGURATION", "Game_Port", 5));
+                    loginCore.SetData(config.GetString("CONFIGURATION", "Ip", "error"), config.GetString("CONFIGURATION", "Ip_Game", "error"), config.GetInteger("CONFIGURATION", "Login_Port", 5), config.GetString("CONFIGURATION", "Nom_serveur", "error"), config.GetInteger("CONFIGURATION", "Canaux", 5), config.GetInteger("CONFIGURATION", "Game_Port", 5));
                     Logger.Log.Info("Config Loaded !");
 
                     TcpListener tcpListener = new TcpListener(IPAddress.Parse(loginCore.GetIp()), loginCore.GetPort());
@@ -53,9 +52,9 @@ namespace OpenNos.Login
                         byte[] array = new byte[tcpClient.ReceiveBufferSize + 1];
                         NetworkStream stream = tcpClient.GetStream();
                         stream.Read(array, 0, tcpClient.ReceiveBufferSize);
-                        loginCore.CheckUser(loginCore.GetUser(Encryption.LoginDecrypt(array, array.Length)), stream, MainFile.session);
+                        loginCore.CheckUser(loginCore.GetUser(Encryption.LoginDecrypt(array, array.Length)), stream, Program.session);
                         tcpClient.Close();
-                        MainFile.session += 2;
+                        Program.session += 2;
                     }
                     while (true);
                 }

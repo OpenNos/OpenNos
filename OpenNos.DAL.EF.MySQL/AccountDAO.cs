@@ -19,11 +19,30 @@ namespace OpenNos.DAL.EF.MySQL
             }
         }
 
+        public bool IsLoggedIn(string name)
+        {
+            using (var context = DBHelper.Context)
+            {
+                return context.Account.Any(a => a.Name.Equals(name) && a.LoggedIn);
+            }
+        }
+
         public AuthorityType LoadAuthorityType(string name)
         {
             using (var context = DBHelper.Context)
             {
                 return (AuthorityType)context.Account.SingleOrDefault(a => a.Name.Equals(name)).Authority;
+            }
+        }
+
+        public void LogIn(string name)
+        {
+            using (var context = DBHelper.Context)
+            {
+                account account = context.Account.SingleOrDefault(a => a.Name.Equals(name));
+                account.LoggedIn = true;
+                account.LastConnect = DateTime.Now;
+                context.SaveChanges();
             }
         }
 
