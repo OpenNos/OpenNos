@@ -11,7 +11,6 @@ namespace OpenNos.Login
     class MainFile
     {
         private static int session = 0;
-        private static readonly ILog log = LogManager.GetLogger(typeof(MainFile));
 
         public static void Main()
         {
@@ -21,6 +20,8 @@ namespace OpenNos.Login
                 {
                     Login loginCore = new Login();
 
+                    //initialize Logger
+                    Logger.InitializeLogger(LogManager.GetLogger(typeof(MainFile)));
 
                     Console.Title = "OpenNos_Login ";
                     Console.WriteLine("===============================================================================\n"
@@ -30,21 +31,21 @@ namespace OpenNos.Login
                     bool flag = !File.Exists(MainFile.AppPath(true) + "config.ini");
                     if (flag)
                     {
-                        log.Error("Config.ini not found!");
+                        Logger.Log.Error("Config.ini not found!");
                         Console.ReadKey();
                         return;
                     }
-                    log.Info("Loading Configurations !");
+                    Logger.Log.Info("Loading Configurations !");
                     
                     Config ConfIni = new Config(MainFile.AppPath(true) + "config.ini");
 
                     loginCore.SetData(ConfIni.GetString("CONFIGURATION", "Ip", "error"), ConfIni.GetString("CONFIGURATION", "Ip_Game", "error"), ConfIni.GetInteger("CONFIGURATION", "Login_Port", 5), ConfIni.GetString("CONFIGURATION", "Nom_serveur", "error"), ConfIni.GetInteger("CONFIGURATION", "Canaux", 5), ConfIni.GetInteger("CONFIGURATION", "Game_Port", 5));
-                    log.Info("Config Loaded !");
+                    Logger.Log.Info("Config Loaded !");
 
                     TcpListener tcpListener = new TcpListener(IPAddress.Parse(loginCore.GetIp()), loginCore.GetPort());
                     tcpListener.Start();
-                  
-                    log.Info("Server ON !");
+
+                    Logger.Log.Info("Server ON !");
 
                     do
                     {
