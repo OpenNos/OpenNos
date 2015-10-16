@@ -19,8 +19,6 @@ namespace OpenNos.DAL.EF.MySQL
 
         #region Members
 
-        private static string _entityConnectionString;
-        private static string _providerConnectionString;
         private static OpenNosContainer _context;
 
         #endregion
