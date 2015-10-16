@@ -49,30 +49,20 @@ namespace OpenNos.Login
             //TODO cleanup
             string channelPacket = String.Format("NsTeST {0} ",session);
             int num = this._channelCount;
-            int num2 = 1;
-            int worlds = 3;
             int channels = 5;
+            int worlds = 3;
             checked
             {
-                for (int w = 0; w < worlds; w++)
+                for (int w = 1; w <= worlds; w++)
                 {
-                    for (int j = 0; j < channels; j++)
+                    for (int j = 1; j <= channels; j++)
                     {
-                        int arg = num2;
-                        int num3 = num;
-
                         channelPacket += String.Format("{0}:{1}:1:{2}.{3}.{4} ",
                             this._gameIp,
-                            (this._gamePort + num2 - 1),
+                            (this._gamePort + j - 1),
                             w,
-                            num2,
+                            j,
                             this._worldName);
-
-                        if (arg > num3)
-                        {
-                            break;
-                        }
-                        num2++;
                     }
                 }
                 return String.Format("{0}", channelPacket);
