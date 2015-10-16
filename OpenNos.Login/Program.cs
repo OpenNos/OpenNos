@@ -44,7 +44,7 @@ namespace OpenNos.Login
                     LoginPacketHandler loginHandler = new LoginPacketHandler();
                     packetHandlers.Add(loginHandler.ToString(), loginHandler);
 
-                    NetworkManager<LoginEncryption> networkManager = new NetworkManager<LoginEncryption>(loginCore.GetIp(), loginCore.GetPort(), packetHandlers);
+                    NetworkManager<LoginEncryption> networkManager = new NetworkManager<LoginEncryption>(loginCore.GetIp(), loginCore.GetPort(), packetHandlers, false);
                 }
                 catch (Exception ex)
                 {

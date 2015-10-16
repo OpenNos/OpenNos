@@ -22,7 +22,7 @@ namespace OpenNos.Core
 
         #region Instantiation
 
-        public NetworkManager(string ipAddress, int port, Dictionary<String, Object> packetHandlers)
+        public NetworkManager(string ipAddress, int port, Dictionary<String, Object> packetHandlers, bool useFraming)
         {
             _packetHandlers = packetHandlers;
 
@@ -32,7 +32,7 @@ namespace OpenNos.Core
             //Register events of the server to be informed about clients
             server.ClientConnected += Server_ClientConnected;
             server.ClientDisconnected += Server_ClientDisconnected;
-            server.WireProtocolFactory = new WireProtocolFactory<EncryptorT>();
+            server.WireProtocolFactory = new WireProtocolFactory<EncryptorT>(useFraming);
 
             server.Start(); //Start the server
 
@@ -76,7 +76,7 @@ namespace OpenNos.Core
             {
                 foreach (Type type in handlerAssembly.GetTypes())
                 {
-                    MethodInfo methodInfo = GetMethodInfo(packetHeader,type);
+                    MethodInfo methodInfo = GetMethodInfo(packetHeader, type);
 
                     if (methodInfo != null)
                     {
@@ -85,6 +85,10 @@ namespace OpenNos.Core
                         ScsMessage resultMessage = (ScsMessage)result;
                         Logger.Log.DebugFormat("Message sent {0} to client {1}", resultMessage, client.ClientId);
                         client.SendMessage(resultMessage);
+                    }
+                    else
+                    {
+                        Logger.Log.ErrorFormat("No Method found for Packet Header: {0}", packetHeader);
                     }
                 }
             }
