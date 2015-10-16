@@ -14,7 +14,7 @@ namespace OpenNos.Login
     {
         private string _loginIp;
         private string _gameIp;
-        private string _channelName;
+        private string _worldName;
         private int _port;
         private int _channelCount;
         private int _gamePort;
@@ -24,7 +24,7 @@ namespace OpenNos.Login
             this._loginIp = loginIp;
             this._gameIp = gameId;
             this._port = port;
-            this._channelName = channelName;
+            this._worldName = channelName;
             this._channelCount = channelCount;
             this._gamePort = gamePort;
         }
@@ -50,22 +50,23 @@ namespace OpenNos.Login
             string channelPacket = String.Format("NsTeST {0} ",session);
             int num = this._channelCount;
             int num2 = 1;
-            int worlds = 1;
-            int channels = 1;
+            int worlds = 3;
+            int channels = 5;
             checked
             {
-                for (int i = 0; i < worlds; i++)
+                for (int w = 0; w < worlds; w++)
                 {
                     for (int j = 0; j < channels; j++)
                     {
                         int arg = num2;
                         int num3 = num;
 
-                        channelPacket += String.Format("{0}:{1}:0:1.{2}.{3} ",
+                        channelPacket += String.Format("{0}:{1}:1:{2}.{3}.{4} ",
                             this._gameIp,
                             (this._gamePort + num2 - 1),
+                            w,
                             num2,
-                            this._channelName);
+                            this._worldName);
 
                         if (arg > num3)
                         {
@@ -74,7 +75,7 @@ namespace OpenNos.Login
                         num2++;
                     }
                 }
-                return String.Format("{0}:1.1.1 ", channelPacket);
+                return String.Format("{0}", channelPacket);
             }
         }
 
