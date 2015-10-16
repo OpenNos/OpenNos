@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace OpenNos.Core
 {
-    public static class Encryption
+    public class LoginEncryption : EncryptionBase
     {
         public static string sha256(string inputString)
         {
@@ -17,33 +17,34 @@ namespace OpenNos.Core
                   .Select(item => item.ToString("x2")));
             }
         }
-        public static string LoginDecrypt(byte[] tmp, int size)
+        public override string Decrypt(byte[] data, int size)
         {
             string result;
             try
             {
                 for (int i = 0; i < size; i++)
                 {
-                    tmp[i] = (byte)(tmp[i] - 15 ^ 195);
+                    data[i] = (byte)(data[i] - 15 ^ 195);
                 }
-                result = Encoding.ASCII.GetString(tmp).Substring(0, size);
+                result = Encoding.ASCII.GetString(data).Substring(0, size);
             }
             catch
             {
-                result = "error";
+                result = String.Empty;
             }
             return result;
         }
-        public static byte[] LoginEncrypt(string str)
+
+        public override byte[] Encrypt(string data)
         {
             byte[] result;
             try
             {
-                byte[] array = new byte[str.Length + 1];
-                array = Encoding.ASCII.GetBytes(str);
-                for (int i = 0; i < str.Length; i++)
+                byte[] array = new byte[data.Length + 1];
+                array = Encoding.ASCII.GetBytes(data);
+                for (int i = 0; i < data.Length; i++)
                 {
-                    array[i] = Convert.ToByte((int)(str[i] + '\u000f'));
+                    array[i] = Convert.ToByte((int)(data[i] + '\u000f'));
                 }
                 array[array.Length - 1] = 25;
                 result = array;
@@ -54,10 +55,11 @@ namespace OpenNos.Core
             }
             return result;
         }
+
         public static string GetPassword(string pswd)
         {
             int length = pswd.Length;
-            bool flag = length % 2 != 0? false:true;
+            bool flag = length % 2 != 0 ? false : true;
             checked
             {
                 string result;
@@ -98,7 +100,7 @@ namespace OpenNos.Core
                             {
                                 break;
                             }
-                            text3 += Convert.ToChar(Convert.ToUInt32(String.Format("{0}{1}",arrayList2[num5], arrayList2[num5 + 1]), 16)).ToString();
+                            text3 += Convert.ToChar(Convert.ToUInt32(String.Format("{0}{1}", arrayList2[num5], arrayList2[num5 + 1]), 16)).ToString();
                             num5 += 2;
                         }
                         result = text3;
@@ -145,7 +147,7 @@ namespace OpenNos.Core
                 }
                 catch (Exception ex)
                 {
-                    result = "Error";
+                    result = String.Empty;
                 }
                 return result;
 
