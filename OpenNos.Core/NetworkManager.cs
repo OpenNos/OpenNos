@@ -22,7 +22,7 @@ namespace OpenNos.Core
 
         #region Instantiation
 
-        public NetworkManager(string ipAddress, int port, Dictionary<String,Object> packetHandlers)
+        public NetworkManager(string ipAddress, int port, Dictionary<String, Object> packetHandlers)
         {
             _packetHandlers = packetHandlers;
 
@@ -66,37 +66,39 @@ namespace OpenNos.Core
             //Get a reference to the client
             var client = (IScsServerClient)sender;
 
-            Logger.Log.InfoFormat("Message received {0} on client {1}", message,client.ClientId);
+            Logger.Log.DebugFormat("Message received {0} on client {1}", message, client.ClientId);
 
             string packetHeader = message.Text.Split(' ')[0];
 
             Assembly handlerAssembly = Assembly.Load("OpenNos.Handler");
 
-            if(handlerAssembly != null)
+            if (handlerAssembly != null)
             {
-                //TODO: optimize, pretty inperformant
-                foreach(Type type in handlerAssembly.GetTypes())
+                foreach (Type type in handlerAssembly.GetTypes())
                 {
-                    foreach(MethodInfo methodInfo in type.GetMethods())
+                    MethodInfo methodInfo = GetMethodInfo(packetHeader,type);
+
+                    if (methodInfo != null)
                     {
-                        foreach (Packet packet in methodInfo.GetCustomAttributes<Packet>())
-                        {
-                            if(packet.Header.Equals(packetHeader))
-                            {
-                                object result = methodInfo.Invoke(client.Handlers.SingleOrDefault(h => h.Key.Equals(type.ToString())).Value, new object[] { message.Text, client.ClientId });
-                                //Send reply message to the client
-                                ScsMessage resultMessage = (ScsMessage)result;
-                                client.SendMessage(resultMessage);
-                            }
-                        }
+                        object result = methodInfo.Invoke(client.Handlers.SingleOrDefault(h => h.Key.Equals(type.ToString())).Value, new object[] { message.Text, client.ClientId });
+                        //Send reply message to the client
+                        ScsMessage resultMessage = (ScsMessage)result;
+                        Logger.Log.DebugFormat("Message sent {0} to client {1}", resultMessage, client.ClientId);
+                        client.SendMessage(resultMessage);
                     }
-                    
-                }                                       
+                }
             }
             else
             {
                 Logger.Log.Error("OpenNos.Handler not found, could not retrieve Packet handlers.");
             }
+        }
+
+        private static MethodInfo GetMethodInfo(string packetHeader, Type t)
+        {
+            return t.GetMethods().
+                Where(x => x.GetCustomAttributes(false).OfType<Packet>().Any())
+                .FirstOrDefault(x => x.GetCustomAttributes(false).OfType<Packet>().First().Header.Equals(packetHeader));
         }
     }
 }
