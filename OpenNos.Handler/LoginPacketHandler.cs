@@ -46,6 +46,7 @@ namespace OpenNos.Login
         }
         public string MakeChannel(int session)
         {
+            //TODO cleanup
             string channelPacket = String.Format("NsTeST {0} ",session);
             int num = this._channelCount;
             int num2 = 1;
@@ -59,15 +60,17 @@ namespace OpenNos.Login
                     {
                         int arg = num2;
                         int num3 = num;
+
+                        channelPacket += String.Format("{0}:{1}:0:1.{2}.{3} ",
+                            this._gameIp,
+                            (this._gamePort + num2 - 1),
+                            num2,
+                            this._channelName);
+
                         if (arg > num3)
                         {
                             break;
                         }
-                        channelPacket += String.Format("{0}:{1}:0:1.{2}.{3} ",
-                            this._gameIp, 
-                            (this._gamePort + num2 - 1),
-                            num2,
-                            this._channelName);
                         num2++;
                     }
                 }
