@@ -48,9 +48,9 @@ namespace OpenNos.Login
         {
             //TODO cleanup
             string channelPacket = String.Format("NsTeST {0} ",session);
-            int num = this._channelCount;
-            int channels = 5;
-            int worlds = 3;
+            int channels = this._channelCount;//count of channels
+            int worlds = 3;//count of server
+            //this._worldName TODO one name for each server
             checked
             {
                 for (int w = 1; w <= worlds; w++)
