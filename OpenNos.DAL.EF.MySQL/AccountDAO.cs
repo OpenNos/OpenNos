@@ -13,7 +13,7 @@ namespace OpenNos.DAL.EF.MySQL
     {
         public bool CheckPasswordValiditiy(string name, string passwordHashed)
         {
-            using (var context = DBHelper.Context)
+            using (var context = DBHelper.CreateContext())
             {
                 return context.Account.Any(a => a.Name.Equals(name) && a.Password.Equals(passwordHashed));
             }
@@ -21,7 +21,7 @@ namespace OpenNos.DAL.EF.MySQL
 
         public bool IsLoggedIn(string name)
         {
-            using (var context = DBHelper.Context)
+            using (var context = DBHelper.CreateContext())
             {
                 return context.Account.Any(a => a.Name.Equals(name) && a.LoggedIn);
             }
@@ -29,7 +29,7 @@ namespace OpenNos.DAL.EF.MySQL
 
         public AuthorityType LoadAuthorityType(string name)
         {
-            using (var context = DBHelper.Context)
+            using (var context = DBHelper.CreateContext())
             {
                 return (AuthorityType)context.Account.SingleOrDefault(a => a.Name.Equals(name)).Authority;
             }
@@ -37,7 +37,7 @@ namespace OpenNos.DAL.EF.MySQL
 
         public void LogIn(string name)
         {
-            using (var context = DBHelper.Context)
+            using (var context = DBHelper.CreateContext())
             {
                 account account = context.Account.SingleOrDefault(a => a.Name.Equals(name));
                 account.LoggedIn = true;
@@ -48,7 +48,7 @@ namespace OpenNos.DAL.EF.MySQL
 
         public void UpdateLastSession(string name, int session)
         {
-            using (var context = DBHelper.Context)
+            using (var context = DBHelper.CreateContext())
             {
                 account account = context.Account.SingleOrDefault(a => a.Name.Equals(name));
                 account.LastSession = session;

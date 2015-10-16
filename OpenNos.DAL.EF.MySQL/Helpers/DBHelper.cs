@@ -19,8 +19,6 @@ namespace OpenNos.DAL.EF.MySQL
 
         #region Members
 
-        private static string _entityConnectionString;
-        private static string _providerConnectionString;
         private static OpenNosContainer _context;
 
         #endregion
@@ -40,75 +38,6 @@ namespace OpenNos.DAL.EF.MySQL
                 return _context;
             }
         }
-
-        //public static string ProviderConnectionString
-        //{
-        //    get
-        //    {
-        //        if (_providerConnectionString == null)
-        //        {
-        //            SqlConnectionStringBuilder sqlConnectionStringBuilder = null;
-        //            AssemblyName callingAppName = Assembly.GetCallingAssembly().GetName();
-        //            try
-        //            {
-        //                sqlConnectionStringBuilder = new SqlConnectionStringBuilder();
-        //                sqlConnectionStringBuilder.IntegratedSecurity = false;
-        //                sqlConnectionStringBuilder.MultipleActiveResultSets = true;
-        //                sqlConnectionStringBuilder.DataSource = "localhost";//TODO read from config
-        //                sqlConnectionStringBuilder.InitialCatalog = "opennos"; //todo read from config
-        //                sqlConnectionStringBuilder.UserID = "root";
-        //                sqlConnectionStringBuilder.Password = "root";
-        //                sqlConnectionStringBuilder.ApplicationName = "OpenNos";
-
-        //                _providerConnectionString = sqlConnectionStringBuilder.ToString();
-        //            }
-        //            finally
-        //            {
-        //                if (sqlConnectionStringBuilder != null)
-        //                {
-        //                    sqlConnectionStringBuilder.Clear();
-        //                    sqlConnectionStringBuilder = null;
-        //                }
-        //            }
-        //        }
-
-        //        return _providerConnectionString;
-        //    }
-        //}
-
-        //#endregion
-
-        //#region Private
-
-        //private static string EntityConnectionString
-        //{
-        //    get
-        //    {
-        //        if (_entityConnectionString == null)
-        //        {
-        //            EntityConnectionStringBuilder entityConnectionStringBuilder = null;
-        //            try
-        //            {
-        //                entityConnectionStringBuilder = new EntityConnectionStringBuilder();
-        //                entityConnectionStringBuilder.Provider = "System.Data.MySQLClient";
-        //                entityConnectionStringBuilder.ProviderConnectionString = ProviderConnectionString;
-        //                entityConnectionStringBuilder.Metadata = @"res://*/opennos.csdl|res://*/opennos.ssdl|res://*/opennos.msl";
-
-        //                _entityConnectionString = entityConnectionStringBuilder.ToString();
-        //            }
-        //            finally
-        //            {
-        //                if (entityConnectionStringBuilder != null)
-        //                {
-        //                    entityConnectionStringBuilder.Clear();
-        //                    entityConnectionStringBuilder = null;
-        //                }
-        //            }
-        //        }
-
-        //        return _entityConnectionString;
-        //    }
-        //}
 
         #endregion
 
