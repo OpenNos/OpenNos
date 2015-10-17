@@ -159,6 +159,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="DB\OpenNos.Additional.sql" />
     <Content Include="DB\OpenNos.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>OpenNos.edmx</DependentUpon>
