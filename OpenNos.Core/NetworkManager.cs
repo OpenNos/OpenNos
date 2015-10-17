@@ -29,13 +29,13 @@ namespace OpenNos.Core
 
         #region Members
 
-        private static Dictionary<String, Object> _packetHandlers;
+        private static IList<Type> _packetHandlers;
 
         #endregion
 
         #region Instantiation
 
-        public NetworkManager(string ipAddress, int port, Dictionary<String, Object> packetHandlers, bool useFraming)
+        public NetworkManager(string ipAddress, int port, IList<Type> packetHandlers, bool useFraming)
         {
             _packetHandlers = packetHandlers;
 
@@ -60,7 +60,12 @@ namespace OpenNos.Core
 
             //Register to MessageReceived event to receive messages from new client
             e.Client.MessageReceived += Client_MessageReceived;
-            e.Client.Handlers = _packetHandlers;
+
+            //dynamically create instances of packethandlers
+            foreach(Type handler in _packetHandlers)
+            {
+                e.Client.Handlers.Add(handler.ToString(), Activator.CreateInstance(handler));
+            }
         }
 
         static void Server_ClientDisconnected(object sender, ServerClientEventArgs e)

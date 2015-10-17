@@ -101,7 +101,6 @@ namespace OpenNos.Login
                 bool maintenanceCheck = true;
                 if (maintenanceCheck)
                 {
-                    Console.WriteLine(user.Password);
                     if (DAOFactory.AccountDAO.CheckPasswordValiditiy(user.Name, user.Password))
                     {
                         //0 banned 1 register 2 user 3 GM
