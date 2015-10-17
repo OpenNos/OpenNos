@@ -39,7 +39,6 @@ namespace OpenNos.Core
         {
             _packetHandlers = packetHandlers;
 
-            //Create a server that listens 10085 TCP port for incoming connections
             var server = ScsServerFactory.CreateServer(new ScsTcpEndPoint(ipAddress, port));
 
             //Register events of the server to be informed about clients
@@ -56,7 +55,7 @@ namespace OpenNos.Core
 
         static void Server_ClientConnected(object sender, ServerClientEventArgs e)
         {
-            Logger.Log.Info("A new client is connected. Client Id = " + e.Client.ClientId);
+            Logger.Log.Info("A new client is connected. SessionId = " + e.Client.ClientId);
 
             //Register to MessageReceived event to receive messages from new client
             e.Client.MessageReceived += Client_MessageReceived;
@@ -64,13 +63,13 @@ namespace OpenNos.Core
             //dynamically create instances of packethandlers
             foreach(Type handler in _packetHandlers)
             {
-                e.Client.Handlers.Add(handler.ToString(), Activator.CreateInstance(handler));
+                e.Client.Handlers.Add(handler.ToString(), Activator.CreateInstance(handler, new object[] { e.Client}));
             }
         }
 
         static void Server_ClientDisconnected(object sender, ServerClientEventArgs e)
         {
-            Logger.Log.Info("A client is disconnected! Client Id = " + e.Client.ClientId);
+            Logger.Log.Info("A client is has been disconnected! SessionId = " + e.Client.ClientId);
         }
 
         static void Client_MessageReceived(object sender, MessageEventArgs e)

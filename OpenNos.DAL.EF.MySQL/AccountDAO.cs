@@ -59,12 +59,13 @@ namespace OpenNos.DAL.EF.MySQL
             }
         }
 
-        public void UpdateLastSession(string name, int session)
+        public void UpdateLastSessionAndIp(string name, int session, string ip)
         {
             using (var context = DBHelper.CreateContext())
             {
                 account account = context.Account.SingleOrDefault(a => a.Name.Equals(name));
                 account.LastSession = session;
+                account.LastIp = ip;
                 account.LastConnect = DateTime.Now;
                 context.SaveChanges();
             }

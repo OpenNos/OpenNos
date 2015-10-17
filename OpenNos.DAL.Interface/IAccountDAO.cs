@@ -28,7 +28,7 @@ namespace OpenNos.DAL.Interface
 
         AuthorityType LoadAuthorityType(string name);
 
-        void UpdateLastSession(string name, int session);
+        void UpdateLastSessionAndIp(string name, int session, string ip);
 
         bool IsLoggedIn(string name);
 

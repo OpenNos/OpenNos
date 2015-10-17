@@ -32,8 +32,18 @@ namespace OpenNos.Login
         private int _channelCount;
         private int _gamePort;
 
+        private readonly IScsServerClient _client;
+
+        public LoginPacketHandler(IScsServerClient client)
+        {
+            _client = client;
+        }
+
         public void SetData(string loginIp, string gameId, int port, string channelName, int channelCount, int gamePort)
         {
+            //TODO initialize values in constructor of LoginPacketHandler
+            //-> LoginPacketHandler will be instantiated when client connects
+            //each connected clients gots it own LoginPacketHandler
             this._loginIp = loginIp;
             this._gameIp = gameId;
             this._port = port;
@@ -116,8 +126,8 @@ namespace OpenNos.Login
                                 {
                                     if (!DAOFactory.AccountDAO.IsLoggedIn(user.Name))
                                     {
-                                        DAOFactory.AccountDAO.UpdateLastSession(user.Name, (int)session);
-                                        Logger.Log.Debug(String.Format("CONNECT {0} Connected -- session:{1}", user.Name, session));
+                                        DAOFactory.AccountDAO.UpdateLastSessionAndIp(user.Name, (int)session, _client.RemoteEndPoint.ToString());
+                                        Logger.Log.DebugFormat("CONNECT {0} Connected -- session:{1}", user.Name, session);
                                         return SendMsg(MakeChannel((int)session));                                    
                                     }
                                     else
