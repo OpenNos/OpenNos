@@ -65,6 +65,7 @@ namespace OpenNos.DAL.EF.MySQL
             {
                 account account = context.Account.SingleOrDefault(a => a.Name.Equals(name));
                 account.LastSession = session;
+                account.LastConnect = DateTime.Now;
                 context.SaveChanges();
             }
         }
