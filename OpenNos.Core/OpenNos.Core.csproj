@@ -36,6 +36,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -46,7 +47,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Application.cs" />
-    <Compile Include="ConfigIni.cs" />
+    <Compile Include="ServerConfig.cs" />
     <Compile Include="LoginEncryption.cs" />
     <Compile Include="EncryptionBase.cs" />
     <Compile Include="Logger.cs" />
