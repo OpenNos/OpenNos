@@ -88,10 +88,6 @@
       <Project>{a6748a8d-0d96-41b9-a110-dbf692afc56d}</Project>
       <Name>OpenNos.Handler</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SCS\Scs.csproj">
-      <Project>{0dc81b09-3abf-4bb3-8c08-4e8ee4432bdc}</Project>
-      <Name>Scs</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
