@@ -11,13 +11,23 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  */
+using OpenNos.Core;
 using System;
 
 namespace OpenNos.Data
 {
 	public class User
 	{
+        public string Unknown { get; set; }
 		public string Name { get; set; }
-		public string Password { get; set; }
+		public string PasswordEncrypted { get; set; }
+
+        public string PasswordDecrypted
+        {
+            get
+            {
+                return LoginEncryption.sha256(LoginEncryption.GetPassword(PasswordEncrypted));
+            }
+        }
 	}
 }

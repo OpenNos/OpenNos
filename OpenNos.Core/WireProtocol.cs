@@ -32,6 +32,8 @@ namespace OpenNos.Core
         /// </summary>
         private const short MaxMessageLength = 4096;
 
+        private IDictionary<String, DateTime> _connectionHistory;
+
         /// <summary>
         /// This MemoryStream object is used to collect receiving bytes to build messages.
         /// </summary>
@@ -50,6 +52,7 @@ namespace OpenNos.Core
             _receiveMemoryStream = new MemoryStream();
             _framingDelimiter = framingDelimiter;
             _useFraming = useFraming;
+            _connectionHistory = new Dictionary<String, DateTime>();
         }
 
         protected byte[] SerializeMessage(IScsMessage message)
@@ -181,5 +184,6 @@ namespace OpenNos.Core
                 _receiveMemoryStream = new MemoryStream();
             }
         }
+
     }
 }
