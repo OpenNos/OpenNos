@@ -1,6 +1,6 @@
 ﻿using System;
 using OpenNos.Core.Communication.Scs.Communication;
-using OpenNos.CoreThreading;
+using OpenNos.Core.Threading;
 
 namespace OpenNos.Core.Communication.Scs.Client
 {

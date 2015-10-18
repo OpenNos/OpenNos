@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
-using OpenNos.CoreCollections;
+using OpenNos.Core.Collections;
 using OpenNos.Core.Communication.Scs.Communication.Messages;
 using OpenNos.Core.Communication.Scs.Communication.Messengers;
 using OpenNos.Core.Communication.Scs.Server;
