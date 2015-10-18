@@ -61,23 +61,12 @@ namespace OpenNos.Login
         {
             return this._loginIp;
         }
-        public User GetUser(string str)
-        {
-            User result = new User();
-            string[] array = str.Split(new char[] { ' ' });
-            result.Name = array[2];
-            result.Password = LoginEncryption.sha256(LoginEncryption.GetPassword(array[3]));
-            return result;
-        }
-        public string MakeChannel(int session)
-        {
-            //TODO cleanup
-            string channelPacket = String.Format("NsTeST {0} ",session);
-      
-            List<ServerConfig.Server> myServs = (List<ServerConfig.Server>)ConfigurationManager.GetSection("Servers");
 
-           
-              
+        public string CreateServers(int session)
+        {
+            string channelPacket = String.Format("NsTeST {0} ",session);  
+            List<ServerConfig.Server> myServs = (List<ServerConfig.Server>)ConfigurationManager.GetSection("Servers");
+                 
             checked
             {
                 int w = 0;
@@ -106,7 +95,7 @@ namespace OpenNos.Login
         [Packet("NoS0575")]
         public ScsMessage CheckUser(string packet, long session)
         {
-            User user = GetUser(packet);
+            User user = PacketFactory.Deserialize<User>(packet);
 
             //fermé
             bool flag = true;
@@ -116,7 +105,7 @@ namespace OpenNos.Login
                 bool maintenanceCheck = true;
                 if (maintenanceCheck)
                 {
-                    if (DAOFactory.AccountDAO.CheckPasswordValiditiy(user.Name, user.Password))
+                    if (DAOFactory.AccountDAO.CheckPasswordValiditiy(user.Name, user.PasswordDecrypted))
                     {
                         //0 banned 1 register 2 user 3 GM
                         AuthorityType type = DAOFactory.AccountDAO.LoadAuthorityType(user.Name);
@@ -133,7 +122,7 @@ namespace OpenNos.Login
                                     {
                                         DAOFactory.AccountDAO.UpdateLastSessionAndIp(user.Name, (int)session, _client.RemoteEndPoint.ToString());
                                         Logger.Log.DebugFormat("CONNECT {0} Connected -- session:{1}", user.Name, session);
-                                        return SendMsg(MakeChannel((int)session));                                    
+                                        return SendMsg(CreateServers((int)session));                                    
                                     }
                                     else
                                     {
