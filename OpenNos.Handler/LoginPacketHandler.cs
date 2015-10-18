@@ -12,9 +12,6 @@
  * GNU General Public License for more details.
  */
 using OpenNos.Core;
-using Hik.Communication.Scs.Communication.EndPoints.Tcp;
-using Hik.Communication.Scs.Communication.Messages;
-using Hik.Communication.Scs.Server;
 using OpenNos.DAL;
 using OpenNos.Data;
 using OpenNos.Domain;
@@ -22,6 +19,8 @@ using System;
 using System.Net.Sockets;
 using System.Collections.Generic;
 using System.Configuration;
+using OpenNos.Core.Communication.Scs.Communication.Messages;
+using OpenNos.Core.Communication.Scs.Server;
 
 namespace OpenNos.Login
 {
@@ -34,9 +33,9 @@ namespace OpenNos.Login
         private int _channelCount;
         private int _gamePort;
 
-        private readonly IScsServerClient _client;
+        private readonly CustomScsServerClient _client;
 
-        public LoginPacketHandler(IScsServerClient client)
+        public LoginPacketHandler(CustomScsServerClient client)
         {
             _client = client;
         }

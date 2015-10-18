@@ -68,10 +68,6 @@
       <Project>{20addddd-dad9-44f3-9beb-026c73090660}</Project>
       <Name>OpenNos.Domain</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SCS\Scs.csproj">
-      <Project>{0dc81b09-3abf-4bb3-8c08-4e8ee4432bdc}</Project>
-      <Name>Scs</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

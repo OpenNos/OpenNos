@@ -47,6 +47,66 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Application.cs" />
+    <Compile Include="Collections\ThreadSafeSortedList.cs" />
+    <Compile Include="Networking\Communication\ScsServices\Client\IScsServiceClient.cs" />
+    <Compile Include="Networking\Communication\ScsServices\Client\ScsServiceClient.cs" />
+    <Compile Include="Networking\Communication\ScsServices\Client\ScsServiceClientBuilder.cs" />
+    <Compile Include="Networking\Communication\ScsServices\Communication\AutoConnectRemoteInvokeProxy.cs" />
+    <Compile Include="Networking\Communication\ScsServices\Communication\Messages\ScsRemoteException.cs" />
+    <Compile Include="Networking\Communication\ScsServices\Communication\Messages\ScsRemoteInvokeMessage.cs" />
+    <Compile Include="Networking\Communication\ScsServices\Communication\Messages\ScsRemoteInvokeReturnMessage.cs" />
+    <Compile Include="Networking\Communication\ScsServices\Communication\RemoteInvokeProxy.cs" />
+    <Compile Include="Networking\Communication\ScsServices\Service\IScsServiceApplication.cs" />
+    <Compile Include="Networking\Communication\ScsServices\Service\IScsServiceClient.cs" />
+    <Compile Include="Networking\Communication\ScsServices\Service\ScsService.cs" />
+    <Compile Include="Networking\Communication\ScsServices\Service\ScsServiceApplication.cs" />
+    <Compile Include="Networking\Communication\ScsServices\Service\ScsServiceAttribute.cs" />
+    <Compile Include="Networking\Communication\ScsServices\Service\ScsServiceBuilder.cs" />
+    <Compile Include="Networking\Communication\ScsServices\Service\ScsServiceClient.cs" />
+    <Compile Include="Networking\Communication\ScsServices\Service\ScsServiceClientFactory.cs" />
+    <Compile Include="Networking\Communication\ScsServices\Service\ServiceClientEventArgs.cs" />
+    <Compile Include="Networking\Communication\Scs\Client\ClientReConnecter.cs" />
+    <Compile Include="Networking\Communication\Scs\Client\IConnectableClient.cs" />
+    <Compile Include="Networking\Communication\Scs\Client\IScsClient.cs" />
+    <Compile Include="Networking\Communication\Scs\Client\ScsClientBase.cs" />
+    <Compile Include="Networking\Communication\Scs\Client\ScsClientFactory.cs" />
+    <Compile Include="Networking\Communication\Scs\Client\Tcp\ScsTcpClient.cs" />
+    <Compile Include="Networking\Communication\Scs\Client\Tcp\TcpHelper.cs" />
+    <Compile Include="Networking\Communication\Scs\Communication\Channels\CommunicationChannelBase.cs" />
+    <Compile Include="Networking\Communication\Scs\Communication\Channels\CommunicationChannelEventArgs.cs" />
+    <Compile Include="Networking\Communication\Scs\Communication\Channels\ConnectionListenerBase.cs" />
+    <Compile Include="Networking\Communication\Scs\Communication\Channels\ICommunicationChannel.cs" />
+    <Compile Include="Networking\Communication\Scs\Communication\Channels\IConnectionListener.cs" />
+    <Compile Include="Networking\Communication\Scs\Communication\Channels\Tcp\TcpCommunicationChannel.cs" />
+    <Compile Include="Networking\Communication\Scs\Communication\Channels\Tcp\TcpConnectionListener.cs" />
+    <Compile Include="Networking\Communication\Scs\Communication\CommunicationException.cs" />
+    <Compile Include="Networking\Communication\Scs\Communication\CommunicationStateException.cs" />
+    <Compile Include="Networking\Communication\Scs\Communication\CommunicationStates.cs" />
+    <Compile Include="Networking\Communication\Scs\Communication\EndPoints\ScsEndPoint.cs" />
+    <Compile Include="Networking\Communication\Scs\Communication\EndPoints\Tcp\ScsTcpEndPoint.cs" />
+    <Compile Include="Networking\Communication\Scs\Communication\Messages\IScsMessage.cs" />
+    <Compile Include="Networking\Communication\Scs\Communication\Messages\MessageEventArgs.cs" />
+    <Compile Include="Networking\Communication\Scs\Communication\Messages\PingMessage.cs" />
+    <Compile Include="Networking\Communication\Scs\Communication\Messages\ScsMessage.cs" />
+    <Compile Include="Networking\Communication\Scs\Communication\Messages\ScsRawDataMessage.cs" />
+    <Compile Include="Networking\Communication\Scs\Communication\Messages\ScsTextMessage.cs" />
+    <Compile Include="Networking\Communication\Scs\Communication\Messengers\IMessenger.cs" />
+    <Compile Include="Networking\Communication\Scs\Communication\Messengers\RequestReplyMessenger.cs" />
+    <Compile Include="Networking\Communication\Scs\Communication\Messengers\SynchronizedMessenger.cs" />
+    <Compile Include="Networking\Communication\Scs\Communication\Protocols\BinarySerialization\BinarySerializationProtocol.cs" />
+    <Compile Include="Networking\Communication\Scs\Communication\Protocols\BinarySerialization\BinarySerializationProtocolFactory.cs" />
+    <Compile Include="Networking\Communication\Scs\Communication\Protocols\IScsWireProtocol.cs" />
+    <Compile Include="Networking\Communication\Scs\Communication\Protocols\IScsWireProtocolFactory.cs" />
+    <Compile Include="Networking\Communication\Scs\Communication\Protocols\WireProtocolManager.cs" />
+    <Compile Include="Networking\Communication\Scs\Server\IScsServer.cs" />
+    <Compile Include="Networking\Communication\Scs\Server\IScsServerClient.cs" />
+    <Compile Include="Networking\Communication\Scs\Server\ScsServerBase.cs" />
+    <Compile Include="Networking\Communication\Scs\Server\ScsServerClient.cs" />
+    <Compile Include="Networking\Communication\Scs\Server\ScsServerFactory.cs" />
+    <Compile Include="Networking\Communication\Scs\Server\ScsServerManager.cs" />
+    <Compile Include="Networking\Communication\Scs\Server\ServerClientEventArgs.cs" />
+    <Compile Include="Networking\Communication\Scs\Server\Tcp\ScsTcpServer.cs" />
+    <Compile Include="Networking\CustomScsServerClient.cs" />
     <Compile Include="PacketFactory.cs" />
     <Compile Include="ServerConfig.cs" />
     <Compile Include="LoginEncryption.cs" />
@@ -54,19 +114,15 @@
     <Compile Include="Logger.cs" />
     <Compile Include="PacketAttribute.cs" />
     <Compile Include="PacketHandlerBase.cs" />
-    <Compile Include="WireProtocol.cs" />
-    <Compile Include="WireProtocolFactory.cs" />
-    <Compile Include="NetworkManager.cs" />
+    <Compile Include="Networking\WireProtocol.cs" />
+    <Compile Include="Networking\WireProtocolFactory.cs" />
+    <Compile Include="Networking\NetworkManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Threading\SequentialItemProcessor.cs" />
+    <Compile Include="Threading\Timer.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\SCS\Scs.csproj">
-      <Project>{0dc81b09-3abf-4bb3-8c08-4e8ee4432bdc}</Project>
-      <Name>Scs</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
