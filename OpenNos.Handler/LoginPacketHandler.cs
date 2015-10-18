@@ -20,6 +20,8 @@ using OpenNos.Data;
 using OpenNos.Domain;
 using System;
 using System.Net.Sockets;
+using System.Collections.Generic;
+using System.Configuration;
 
 namespace OpenNos.Login
 {
@@ -71,21 +73,25 @@ namespace OpenNos.Login
         {
             //TODO cleanup
             string channelPacket = String.Format("NsTeST {0} ",session);
-            int channels = this._channelCount;//count of channels
-            int worlds = 3;//count of server
-            //this._worldName TODO one name for each server
+      
+            List<ServerConfig.Server> myServs = (List<ServerConfig.Server>)ConfigurationManager.GetSection("Servers");
+
+           
+              
             checked
             {
-                for (int w = 1; w <= worlds; w++)
+                int w = 0;
+                foreach (ServerConfig.Server serv in myServs)
                 {
-                    for (int j = 1; j <= channels; j++)
+                    w++;
+                    for (int j = 1; j <= serv.channelAmount; j++)
                     {
                         channelPacket += String.Format("{0}:{1}:1:{2}.{3}.{4} ",
-                            this._gameIp,
-                            (this._gamePort + j - 1),
+                            serv.WorldIp,
+                            (serv.WorldPort + j - 1),
                             w,
                             j,
-                            this._worldName);
+                            serv.name);
                     }
                 }
                 return String.Format("{0}", channelPacket);
@@ -102,7 +108,6 @@ namespace OpenNos.Login
         {
             User user = GetUser(packet);
 
-            Config ConfIni = new Config(String.Format("{0}config.ini", Application.AppPath(true)));
             //fermé
             bool flag = true;
             if (flag)
@@ -120,7 +125,7 @@ namespace OpenNos.Login
                         {
                             case AuthorityType.Banned:
                                 {
-                                    return SendMsg(String.Format("fail {0}", ConfIni.GetString("MESSAGE", "Banned", "error")));
+                                    return SendMsg(String.Format("fail Banned"));
                                 }
                             default:
                                 {
@@ -132,7 +137,7 @@ namespace OpenNos.Login
                                     }
                                     else
                                     {
-                                        return SendMsg(String.Format("fail {0}", ConfIni.GetString("MESSAGE", "Online", "error")));
+                                        return SendMsg(String.Format("fail Online"));
                                     }
                                 }
 
@@ -140,17 +145,17 @@ namespace OpenNos.Login
                     }
                     else
                     {
-                        return SendMsg(String.Format("fail {0}", ConfIni.GetString("MESSAGE", "IDError", "error")));
+                        return SendMsg(String.Format("fail IDError"));
                     }
                 }
                 else
                 {
-                    return SendMsg(String.Format("fail {0}",  ConfIni.GetString("MESSAGE", "Close", "error")));
+                    return SendMsg(String.Format("fail Close"));
                 }
             }
             else
             {
-                return SendMsg(String.Format("fail {0}", ConfIni.GetString("MESSAGE", "Waiting", "error")));
+                return SendMsg(String.Format("fail Waiting"));
             }
         }
     }
