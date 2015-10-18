@@ -1,5 +1,5 @@
 ﻿using System;
-using OpenNos.CoreCollections;
+using OpenNos.Core.Collections;
 using OpenNos.Core.Communication.Scs.Communication.Channels;
 using OpenNos.Core.Communication.Scs.Communication.Protocols;
 
