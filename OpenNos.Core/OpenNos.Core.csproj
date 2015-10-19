@@ -109,16 +109,6 @@
     <Compile Include="Networking\CustomScsServerClient.cs" />
     <Compile Include="Language.cs" />
     <Compile Include="PacketFactory.cs" />
-    <Compile Include="Resource\LocalizedResources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>LocalizedResources.resx</DependentUpon>
-    </Compile>
-    <Compile Include="Resource\LocalizedResources.fr.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>LocalizedResources.fr.resx</DependentUpon>
-    </Compile>
     <Compile Include="ServerConfig.cs" />
     <Compile Include="LoginEncryption.cs" />
     <Compile Include="EncryptionBase.cs" />
@@ -134,16 +124,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Resource\LocalizedResources.fr.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>LocalizedResources.fr.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Resource\LocalizedResources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>LocalizedResources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
