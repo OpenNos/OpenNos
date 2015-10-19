@@ -61,11 +61,11 @@ namespace Resource {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à hello my name is.
+        ///   Recherche une chaîne localisée semblable à Config Loaded !.
         /// </summary>
-        internal static string test {
+        internal static string Config_Loaded {
             get {
-                return ResourceManager.GetString("test", resourceCulture);
+                return ResourceManager.GetString("Config_Loaded", resourceCulture);
             }
         }
     }
