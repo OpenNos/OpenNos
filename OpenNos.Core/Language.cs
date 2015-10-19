@@ -11,16 +11,29 @@ namespace OpenNos.Core
 {
     public class Language
     {
-        public Language()
-        {
+        private static Language instance = null;
+        private static readonly object myLock = new object();
+
+        private Language() {
             CultureInfo newCultureInfo = new System.Globalization.CultureInfo(System.Configuration.ConfigurationManager.AppSettings["language"]);
             Thread.CurrentThread.CurrentCulture = newCultureInfo;
             Thread.CurrentThread.CurrentUICulture = newCultureInfo;
         }
-        public string i18n(string message)
+
+        public static Language getInstance()
+        {
+            lock (myLock)
+            {
+                if (instance == null) instance = new Language();
+                return instance;
+            }
+        }
+
+      
+        public string GetMessageFromKey(string message)
         {
             
-            ResourceManager resourceManager = new ResourceManager("OpenNos.Core.Resource.LocalizedResources", Assembly.GetExecutingAssembly());
+            ResourceManager resourceManager = new ResourceManager("Resource.LocalizedResources", Assembly.Load("OpenNos.Login"));
             if (resourceManager.GetString(message) != null && resourceManager.GetString(message) != "")
                 return resourceManager.GetString(message);
             else

@@ -95,7 +95,7 @@ namespace OpenNos.Login
         public ScsMessage CheckUser(string packet, long session)
         {
             User user = PacketFactory.Deserialize<User>(packet);
-
+            Language lang = Language.getInstance();
             //fermé
             bool flag = true;
             if (flag)
@@ -108,12 +108,12 @@ namespace OpenNos.Login
                     {
                         //0 banned 1 register 2 user 3 GM
                         AuthorityType type = DAOFactory.AccountDAO.LoadAuthorityType(user.Name);
-
+                      
                         switch (type)
                         {
                             case AuthorityType.Banned:
                                 {
-                                    return SendMsg(String.Format("fail Banned"));
+                                    return SendMsg(String.Format("fail {O}", lang.GetMessageFromKey("BANNED")));
                                 }
                             default:
                                 {
@@ -121,11 +121,12 @@ namespace OpenNos.Login
                                     {
                                         DAOFactory.AccountDAO.UpdateLastSessionAndIp(user.Name, (int)session, _client.RemoteEndPoint.ToString());
                                         Logger.Log.DebugFormat("CONNECT {0} Connected -- session:{1}", user.Name, session);
+
                                         return SendMsg(CreateServers((int)session));                                    
                                     }
                                     else
                                     {
-                                        return SendMsg(String.Format("fail Online"));
+                                        return SendMsg(String.Format("fail {O}", lang.GetMessageFromKey("ONLINE")));
                                     }
                                 }
 
@@ -133,17 +134,17 @@ namespace OpenNos.Login
                     }
                     else
                     {
-                        return SendMsg(String.Format("fail IDError"));
+                        return SendMsg(String.Format("fail {O}", lang.GetMessageFromKey("IDERROR")));
                     }
                 }
                 else
                 {
-                    return SendMsg(String.Format("fail Close"));
+                    return SendMsg(String.Format("fail {O}", lang.GetMessageFromKey("CLOSE")));
                 }
             }
             else
             {
-                return SendMsg(String.Format("fail Waiting"));
+                return SendMsg(String.Format("fail {O}", lang.GetMessageFromKey("WAITING")));
             }
         }
     }
