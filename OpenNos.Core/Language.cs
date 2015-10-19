@@ -20,16 +20,15 @@ namespace OpenNos.Core
             Thread.CurrentThread.CurrentUICulture = newCultureInfo;
         }
 
-        public static Language getInstance()
+        public static Language Instance
         {
-            lock (myLock)
+            get
             {
                 if (instance == null) instance = new Language();
                 return instance;
             }
         }
 
-      
         public string GetMessageFromKey(string message)
         {
             

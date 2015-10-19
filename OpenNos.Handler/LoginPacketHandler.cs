@@ -95,7 +95,6 @@ namespace OpenNos.Login
         public ScsMessage CheckUser(string packet, long session)
         {
             User user = PacketFactory.Deserialize<User>(packet);
-            Language lang = Language.getInstance();
             //fermé
             bool flag = true;
             if (flag)
@@ -113,7 +112,7 @@ namespace OpenNos.Login
                         {
                             case AuthorityType.Banned:
                                 {
-                                    return SendMsg(String.Format("fail {O}", lang.GetMessageFromKey("BANNED")));
+                                    return SendMsg(String.Format("fail {O}", Language.Instance.GetMessageFromKey("BANNED")));
                                 }
                             default:
                                 {
@@ -126,7 +125,7 @@ namespace OpenNos.Login
                                     }
                                     else
                                     {
-                                        return SendMsg(String.Format("fail {O}", lang.GetMessageFromKey("ONLINE")));
+                                        return SendMsg(String.Format("fail {O}", Language.Instance.GetMessageFromKey("ONLINE")));
                                     }
                                 }
 
@@ -134,17 +133,17 @@ namespace OpenNos.Login
                     }
                     else
                     {
-                        return SendMsg(String.Format("fail {O}", lang.GetMessageFromKey("IDERROR")));
+                        return SendMsg(String.Format("fail {O}", Language.Instance.GetMessageFromKey("IDERROR")));
                     }
                 }
                 else
                 {
-                    return SendMsg(String.Format("fail {O}", lang.GetMessageFromKey("CLOSE")));
+                    return SendMsg(String.Format("fail {O}", Language.Instance.GetMessageFromKey("CLOSE")));
                 }
             }
             else
             {
-                return SendMsg(String.Format("fail {O}", lang.GetMessageFromKey("WAITING")));
+                return SendMsg(String.Format("fail {O}", Language.Instance.GetMessageFromKey("WAITING")));
             }
         }
     }
