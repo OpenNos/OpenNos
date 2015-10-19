@@ -21,6 +21,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Reflection;
 using System.Configuration;
+[assembly: log4net.Config.XmlConfigurator(Watch = true)]
 
 namespace OpenNos.Login
 {
@@ -43,12 +44,6 @@ namespace OpenNos.Login
                     Console.WriteLine("===============================================================================\n"
                                      + "                 LOGIN SERVER VERSION 1.0.0 by OpenNos Team\n" +
                                      "===============================================================================\n");
-
-                   
-    
-                    //take this logic directly to LoginPacketHandler, maybe make config static and accessible from everywhere
-                    //loginCore.SetData(config.GetString("CONFIGURATION", "Ip", "error"), config.GetString("CONFIGURATION", "Ip_Game", "error"), config.GetInteger("CONFIGURATION", "Login_Port", 5), config.GetString("CONFIGURATION", "Nom_serveur", "error"), config.GetInteger("CONFIGURATION", "Canaux", 5), config.GetInteger("CONFIGURATION", "Game_Port", 5));
-                   
 
                     string ip = System.Configuration.ConfigurationManager.AppSettings["LoginIp"];
                     int port = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["LoginPort"]);

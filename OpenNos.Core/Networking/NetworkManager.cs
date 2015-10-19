@@ -65,9 +65,9 @@ namespace OpenNos.Core
             e.Client.MessageReceived += Client_MessageReceived;
 
             //dynamically create instances of packethandlers
-            foreach(Type handler in _packetHandlers)
+            foreach (Type handler in _packetHandlers)
             {
-                customClient.Handlers.Add(handler.ToString(), Activator.CreateInstance(handler, new object[] { e.Client}));
+                customClient.Handlers.Add(handler.ToString(), Activator.CreateInstance(handler, new object[] { e.Client }));
             }
         }
 
@@ -95,20 +95,34 @@ namespace OpenNos.Core
                 client.LastKeepAliveIdentity = Convert.ToInt32(sessionParts[0]);
                 client.SessionId = Convert.ToInt32(sessionParts[1].Split('\\').FirstOrDefault());
                 Logger.Log.DebugFormat("Client arrived, SessionId: {0}", client.SessionId);
+
+                foreach (Type type in _packetHandlers)
+                {
+                    MethodInfo methodInfo = GetMethodInfo("OpenNos.EntryPoint", type);
+                    object result = methodInfo.Invoke(client.Handlers.SingleOrDefault(h => h.Key.Equals(type.ToString())).Value, new object[] { client.ClientId });
+                    //Send reply message to the client
+                    ScsTextMessage resultMessage = (ScsTextMessage)result;
+                    Logger.Log.DebugFormat("Message sent {0} to client {1}", resultMessage.Text, client.SessionId);
+
+                    if (!String.IsNullOrEmpty(resultMessage.Text))
+                    {
+                        ScsRawDataMessage rawMessage = new ScsRawDataMessage(_encryptor.Encrypt(resultMessage.Text));
+                        client.SendMessage(rawMessage);
+                    }
+                }
+
                 return;
-            }         
+            }
 
             string packet = _encryptor.Decrypt(message.MessageData, message.MessageData.Length, (int)client.SessionId);
 
-            Logger.Log.DebugFormat("Message received {0} on client {1}", message, client.ClientId);
+            Logger.Log.DebugFormat("Message received {0} on client {1}", packet, client.ClientId);
 
             string packetHeader = packet.Split(' ')[0];
 
-            Assembly handlerAssembly = Assembly.Load("OpenNos.Handler");
-
-            if (handlerAssembly != null)
+            if (_packetHandlers != null)
             {
-                foreach (Type type in handlerAssembly.GetTypes())
+                foreach (Type type in _packetHandlers)
                 {
                     MethodInfo methodInfo = GetMethodInfo(packetHeader, type);
 
@@ -117,19 +131,18 @@ namespace OpenNos.Core
                         object result = methodInfo.Invoke(client.Handlers.SingleOrDefault(h => h.Key.Equals(type.ToString())).Value, new object[] { packet, client.ClientId });
                         //Send reply message to the client
                         ScsTextMessage resultMessage = (ScsTextMessage)result;
-                        Logger.Log.DebugFormat("Message sent {0} to client {1}", resultMessage.Text, client.SessionId);
-                        ScsRawDataMessage rawMessage = new ScsRawDataMessage(_encryptor.Encrypt(resultMessage.Text));
-                        client.SendMessage(rawMessage);
+                        if (!String.IsNullOrEmpty(resultMessage.Text))
+                        {
+                            Logger.Log.DebugFormat("Message sent {0} to client {1}", resultMessage.Text, client.SessionId);
+                            ScsRawDataMessage rawMessage = new ScsRawDataMessage(_encryptor.Encrypt(resultMessage.Text));
+                            client.SendMessage(rawMessage);
+                        }
                     }
                     else
                     {
                         Logger.Log.ErrorFormat("No Method found for Packet Header: {0}", packetHeader);
                     }
                 }
-            }
-            else
-            {
-                Logger.Log.Error("OpenNos.Handler not found, could not retrieve Packet handlers.");
             }
         }
 
