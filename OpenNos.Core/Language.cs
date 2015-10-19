@@ -31,8 +31,7 @@ namespace OpenNos.Core
 
         public string GetMessageFromKey(string message)
         {
-            
-            ResourceManager resourceManager = new ResourceManager("Resource.LocalizedResources", Assembly.Load("OpenNos.Login"));
+            ResourceManager resourceManager = new ResourceManager("Resource.localizedresources", Assembly.GetCallingAssembly());
             if (resourceManager.GetString(message) != null && resourceManager.GetString(message) != "")
                 return resourceManager.GetString(message);
             else

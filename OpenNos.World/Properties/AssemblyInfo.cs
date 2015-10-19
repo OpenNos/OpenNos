@@ -12,7 +12,6 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyProduct("OpenNos.World")]
 [assembly: AssemblyCopyright("Copyright ©  2015")]
 [assembly: AssemblyTrademark("")]
-[assembly: AssemblyCulture("")]
 
 // Durch Festlegen von ComVisible auf "false" werden die Typen in dieser Assembly unsichtbar 
 // für COM-Komponenten.  Wenn Sie auf einen Typ in dieser Assembly von 

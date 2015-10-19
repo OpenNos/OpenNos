@@ -33,15 +33,15 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public virtual DbSet<familyhistory> familyhistory { get; set; }
         public virtual DbSet<friend> friend { get; set; }
         public virtual DbSet<inventory> inventory { get; set; }
-        public virtual DbSet<items> items { get; set; }
+        public virtual DbSet<item> items { get; set; }
         public virtual DbSet<listskill> listskill { get; set; }
         public virtual DbSet<miniland> miniland { get; set; }
-        public virtual DbSet<monsters> monsters { get; set; }
-        public virtual DbSet<npcs> npcs { get; set; }
+        public virtual DbSet<monster> monsters { get; set; }
+        public virtual DbSet<npc> npcs { get; set; }
         public virtual DbSet<partner> partner { get; set; }
         public virtual DbSet<pet> pet { get; set; }
-        public virtual DbSet<portals> portals { get; set; }
-        public virtual DbSet<runes> runes { get; set; }
+        public virtual DbSet<portal> portals { get; set; }
+        public virtual DbSet<rune> runes { get; set; }
         public virtual DbSet<shop> shop { get; set; }
         public virtual DbSet<warehouse> warehouse { get; set; }
     }

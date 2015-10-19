@@ -14,7 +14,7 @@ namespace OpenNos.DAL.EF.MySQL.DB
     
     public partial class warehouse
     {
-        public int id { get; set; }
+        public int WareHouseId { get; set; }
         public int Owner { get; set; }
         public int Item { get; set; }
         public int Pos { get; set; }

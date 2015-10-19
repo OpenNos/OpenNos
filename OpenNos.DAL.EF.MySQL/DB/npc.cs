@@ -12,10 +12,21 @@ namespace OpenNos.DAL.EF.MySQL.DB
     using System;
     using System.Collections.Generic;
     
-    public partial class runes
+    public partial class npc
     {
-        public int id { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public npc()
+        {
+            this.shop = new HashSet<shop>();
+        }
     
-        public virtual items items { get; set; }
+        public int Id { get; set; }
+        public int VNUM { get; set; }
+        public int Map { get; set; }
+        public int X { get; set; }
+        public int Y { get; set; }
+    
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<shop> shop { get; set; }
     }
 }

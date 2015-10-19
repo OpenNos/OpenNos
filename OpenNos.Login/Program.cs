@@ -14,14 +14,7 @@
 using log4net;
 using OpenNos.Core;
 using System;
-using System.Linq;
 using System.Collections.Generic;
-using System.IO;
-using System.Net;
-using System.Net.Sockets;
-using System.Reflection;
-using System.Configuration;
-[assembly: log4net.Config.XmlConfigurator(Watch = true)]
 
 namespace OpenNos.Login
 {

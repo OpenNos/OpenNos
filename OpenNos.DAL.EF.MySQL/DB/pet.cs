@@ -14,7 +14,7 @@ namespace OpenNos.DAL.EF.MySQL.DB
     
     public partial class pet
     {
-        public int Id { get; set; }
+        public int PetId { get; set; }
         public int CharacterId { get; set; }
         public int IsHelper { get; set; }
         public string Owner { get; set; }

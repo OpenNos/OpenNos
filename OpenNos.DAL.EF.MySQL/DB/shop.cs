@@ -14,12 +14,12 @@ namespace OpenNos.DAL.EF.MySQL.DB
     
     public partial class shop
     {
-        public int id { get; set; }
+        public int ShopId { get; set; }
         public int Npc { get; set; }
         public int Slot { get; set; }
         public int Item { get; set; }
         public int npcsId { get; set; }
     
-        public virtual npcs npcs { get; set; }
+        public virtual npc npcs { get; set; }
     }
 }

@@ -12,15 +12,15 @@
         <EntityTypeShape EntityType="opennosModel.familyhistory" Width="1.5" PointX="6.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="opennosModel.friend" Width="1.5" PointX="6.75" PointY="3.75" IsExpanded="true" />
         <EntityTypeShape EntityType="opennosModel.inventory" Width="1.5" PointX="4.75" PointY="6.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="opennosModel.items" Width="1.5" PointX="6.75" PointY="6.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="opennosModel.item" Width="1.5" PointX="6.75" PointY="6.75" IsExpanded="true" />
         <EntityTypeShape EntityType="opennosModel.listskill" Width="1.5" PointX="0.75" PointY="7.75" IsExpanded="true" />
         <EntityTypeShape EntityType="opennosModel.miniland" Width="1.5" PointX="8.75" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="opennosModel.monsters" Width="1.5" PointX="8.75" PointY="3.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="opennosModel.npcs" Width="1.5" PointX="8.75" PointY="6.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="opennosModel.monster" Width="1.5" PointX="8.75" PointY="3.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="opennosModel.npc" Width="1.5" PointX="8.75" PointY="6.75" IsExpanded="true" />
         <EntityTypeShape EntityType="opennosModel.partner" Width="1.5" PointX="2.75" PointY="9.75" IsExpanded="true" />
         <EntityTypeShape EntityType="opennosModel.pet" Width="1.5" PointX="8.75" PointY="9.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="opennosModel.portals" Width="1.5" PointX="10.75" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="opennosModel.runes" Width="1.5" PointX="10.75" PointY="4.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="opennosModel.portal" Width="1.5" PointX="10.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="opennosModel.rune" Width="1.5" PointX="10.75" PointY="4.75" IsExpanded="true" />
         <EntityTypeShape EntityType="opennosModel.shop" Width="1.5" PointX="10.75" PointY="6.75" IsExpanded="true" />
         <EntityTypeShape EntityType="opennosModel.warehouse" Width="1.5" PointX="10.75" PointY="9.75" IsExpanded="true" />
         <AssociationConnector Association="opennosModel.AccountCharacter" />

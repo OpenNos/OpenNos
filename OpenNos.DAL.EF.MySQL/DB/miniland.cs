@@ -14,7 +14,7 @@ namespace OpenNos.DAL.EF.MySQL.DB
     
     public partial class miniland
     {
-        public int Id { get; set; }
+        public int MinilandId { get; set; }
         public int Owner { get; set; }
         public string Item { get; set; }
         public string X { get; set; }

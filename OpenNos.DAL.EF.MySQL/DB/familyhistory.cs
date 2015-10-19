@@ -14,7 +14,7 @@ namespace OpenNos.DAL.EF.MySQL.DB
     
     public partial class familyhistory
     {
-        public int Id { get; set; }
+        public int FamilyHistoryId { get; set; }
         public string Family { get; set; }
         public string Message { get; set; }
     

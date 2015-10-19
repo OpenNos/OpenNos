@@ -12,12 +12,10 @@ namespace OpenNos.DAL.EF.MySQL.DB
     using System;
     using System.Collections.Generic;
     
-    public partial class monsters
+    public partial class rune
     {
-        public int Id { get; set; }
-        public int VNUM { get; set; }
-        public int Map { get; set; }
-        public int X { get; set; }
-        public int Y { get; set; }
+        public int RunesId { get; set; }
+    
+        public virtual item items { get; set; }
     }
 }

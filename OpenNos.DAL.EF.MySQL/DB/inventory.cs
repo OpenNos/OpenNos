@@ -14,13 +14,13 @@ namespace OpenNos.DAL.EF.MySQL.DB
     
     public partial class inventory
     {
-        public int Id { get; set; }
+        public int InventoryId { get; set; }
         public string Character { get; set; }
         public string Slot { get; set; }
         public string Pos { get; set; }
         public int characterCharacterId { get; set; }
     
         public virtual character character { get; set; }
-        public virtual items items { get; set; }
+        public virtual item items { get; set; }
     }
 }

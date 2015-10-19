@@ -61,7 +61,7 @@ namespace Resource {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Config Loaded !.
+        ///   Recherche une chaîne localisée semblable à test.
         /// </summary>
         internal static string Config_Loaded {
             get {
