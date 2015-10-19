@@ -12,9 +12,9 @@ namespace OpenNos.DAL.EF.MySQL.DB
     using System;
     using System.Collections.Generic;
     
-    public partial class items
+    public partial class item
     {
-        public int id { get; set; }
+        public int ItemId { get; set; }
         public int VNUM { get; set; }
         public int Quantity { get; set; }
         public int Rare { get; set; }
@@ -38,6 +38,6 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public Nullable<int> SlEle { get; set; }
     
         public virtual inventory inventory { get; set; }
-        public virtual runes runes { get; set; }
+        public virtual rune runes { get; set; }
     }
 }

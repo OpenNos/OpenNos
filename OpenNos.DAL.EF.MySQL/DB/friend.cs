@@ -20,7 +20,7 @@ namespace OpenNos.DAL.EF.MySQL.DB
             this.character = new HashSet<character>();
         }
     
-        public int Id { get; set; }
+        public int FriendId { get; set; }
         public int CharacterId { get; set; }
         public int Friend1 { get; set; }
     

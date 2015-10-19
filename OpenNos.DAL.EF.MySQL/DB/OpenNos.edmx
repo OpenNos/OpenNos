@@ -343,30 +343,31 @@
           <Property Name="FamilySizeMax" Type="Int32" />
           <NavigationProperty Name="familyhistory" Relationship="opennosModel.familyhistoryfamily" FromRole="family" ToRole="familyhistory" />
           <NavigationProperty Name="warehouse" Relationship="opennosModel.familywarehouse" FromRole="family" ToRole="warehouse" />
+          <Property Name="FamilyAnnounce" Type="String" Nullable="true" />
         </EntityType>
         <EntityType Name="familyhistory">
           <Key>
-            <PropertyRef Name="Id" />
+            <PropertyRef Name="FamilyHistoryId" />
           </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="FamilyHistoryId" Type="Int32" Nullable="false" />
           <Property Name="Family" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="Message" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
           <NavigationProperty Name="family" Relationship="opennosModel.familyhistoryfamily" FromRole="familyhistory" ToRole="family" />
         </EntityType>
         <EntityType Name="friend">
           <Key>
-            <PropertyRef Name="Id" />
+            <PropertyRef Name="FriendId" />
           </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="FriendId" Type="Int32" Nullable="false" />
           <Property Name="CharacterId" Type="Int32" Nullable="false" />
           <Property Name="Friend1" Type="Int32" Nullable="false" />
           <NavigationProperty Name="character" Relationship="opennosModel.characterfriend" FromRole="friend" ToRole="character" />
         </EntityType>
         <EntityType Name="inventory">
           <Key>
-            <PropertyRef Name="Id" />
+            <PropertyRef Name="InventoryId" />
           </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="InventoryId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Character" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="Slot" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="Pos" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
@@ -374,11 +375,11 @@
           <Property Name="characterCharacterId" Type="Int32" Nullable="false" />
           <NavigationProperty Name="items" Relationship="opennosModel.inventoryitems" FromRole="inventory" ToRole="items" />
         </EntityType>
-        <EntityType Name="items">
+        <EntityType Name="item">
           <Key>
-            <PropertyRef Name="id" />
+            <PropertyRef Name="ItemId" />
           </Key>
-          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ItemId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="VNUM" Type="Int32" Nullable="false" />
           <Property Name="Quantity" Type="Int32" Nullable="false" />
           <Property Name="Rare" Type="Int32" Nullable="false" />
@@ -405,34 +406,34 @@
         </EntityType>
         <EntityType Name="listskill">
           <Key>
-            <PropertyRef Name="Id" />
+            <PropertyRef Name="ListSkillId" />
           </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ListSkillId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Name" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="character" Relationship="opennosModel.characterlistskill" FromRole="listskill" ToRole="character" />
         </EntityType>
         <EntityType Name="miniland">
           <Key>
-            <PropertyRef Name="Id" />
+            <PropertyRef Name="MinilandId" />
           </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="MinilandId" Type="Int32" Nullable="false" />
           <Property Name="Owner" Type="Int32" Nullable="false" />
           <Property Name="Item" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
           <Property Name="X" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
           <Property Name="Y" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="character" Relationship="opennosModel.characterminiland" FromRole="miniland" ToRole="character" />
         </EntityType>
-        <EntityType Name="monsters">
+        <EntityType Name="monster">
           <Key>
-            <PropertyRef Name="Id" />
+            <PropertyRef Name="MonsterId" />
           </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="MonsterId" Type="Int32" Nullable="false" />
           <Property Name="VNUM" Type="Int32" Nullable="false" />
           <Property Name="Map" Type="Int32" Nullable="false" />
           <Property Name="X" Type="Int32" Nullable="false" />
           <Property Name="Y" Type="Int32" Nullable="false" />
         </EntityType>
-        <EntityType Name="npcs">
+        <EntityType Name="npc">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
@@ -445,9 +446,9 @@
         </EntityType>
         <EntityType Name="partner">
           <Key>
-            <PropertyRef Name="id" />
+            <PropertyRef Name="PartnerId" />
           </Key>
-          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PartnerId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="owner" Type="Int32" Nullable="false" />
           <Property Name="Level" Type="Int32" />
           <Property Name="isBackpacked" Type="Int32" />
@@ -464,9 +465,9 @@
         </EntityType>
         <EntityType Name="pet">
           <Key>
-            <PropertyRef Name="Id" />
+            <PropertyRef Name="PetId" />
           </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PetId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="CharacterId" Type="Int32" Nullable="false" />
           <Property Name="IsHelper" Type="Int32" Nullable="false" />
           <Property Name="Owner" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
@@ -480,11 +481,11 @@
           <NavigationProperty Name="character" Relationship="opennosModel.characterpet" FromRole="pet" ToRole="character" />
           <Property Name="characterCharacterId" Type="Int32" Nullable="false" />
         </EntityType>
-        <EntityType Name="portals">
+        <EntityType Name="portal">
           <Key>
-            <PropertyRef Name="id" />
+            <PropertyRef Name="PortalsId" />
           </Key>
-          <Property Name="id" Type="Int32" Nullable="false" />
+          <Property Name="PortalsId" Type="Int32" Nullable="false" />
           <Property Name="SrcMap" Type="Int32" Nullable="false" />
           <Property Name="SrcX" Type="Int32" Nullable="false" />
           <Property Name="SrcY" Type="Int32" Nullable="false" />
@@ -492,18 +493,18 @@
           <Property Name="DestX" Type="Int32" Nullable="false" />
           <Property Name="DestY" Type="Int32" Nullable="false" />
         </EntityType>
-        <EntityType Name="runes">
+        <EntityType Name="rune">
           <Key>
-            <PropertyRef Name="id" />
+            <PropertyRef Name="RunesId" />
           </Key>
-          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="RunesId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <NavigationProperty Name="items" Relationship="opennosModel.itemsrunes" FromRole="runes" ToRole="items" />
         </EntityType>
         <EntityType Name="shop">
           <Key>
-            <PropertyRef Name="id" />
+            <PropertyRef Name="ShopId" />
           </Key>
-          <Property Name="id" Type="Int32" Nullable="false" />
+          <Property Name="ShopId" Type="Int32" Nullable="false" />
           <Property Name="Npc" Type="Int32" Nullable="false" />
           <Property Name="Slot" Type="Int32" Nullable="false" />
           <Property Name="Item" Type="Int32" Nullable="false" />
@@ -512,9 +513,9 @@
         </EntityType>
         <EntityType Name="warehouse">
           <Key>
-            <PropertyRef Name="id" />
+            <PropertyRef Name="WareHouseId" />
           </Key>
-          <Property Name="id" Type="Int32" Nullable="false" />
+          <Property Name="WareHouseId" Type="Int32" Nullable="false" />
           <Property Name="Owner" Type="Int32" Nullable="false" />
           <Property Name="Item" Type="Int32" Nullable="false" />
           <Property Name="Pos" Type="Int32" Nullable="false" />
@@ -529,15 +530,15 @@
           <EntitySet Name="familyhistory" EntityType="Self.familyhistory" />
           <EntitySet Name="friend" EntityType="Self.friend" />
           <EntitySet Name="inventory" EntityType="Self.inventory" />
-          <EntitySet Name="items" EntityType="Self.items" />
+          <EntitySet Name="items" EntityType="opennosModel.item" />
           <EntitySet Name="listskill" EntityType="Self.listskill" />
           <EntitySet Name="miniland" EntityType="Self.miniland" />
-          <EntitySet Name="monsters" EntityType="Self.monsters" />
-          <EntitySet Name="npcs" EntityType="Self.npcs" />
+          <EntitySet Name="monsters" EntityType="opennosModel.monster" />
+          <EntitySet Name="npcs" EntityType="opennosModel.npc" />
           <EntitySet Name="partner" EntityType="Self.partner" />
           <EntitySet Name="pet" EntityType="Self.pet" />
-          <EntitySet Name="portals" EntityType="Self.portals" />
-          <EntitySet Name="runes" EntityType="Self.runes" />
+          <EntitySet Name="portals" EntityType="opennosModel.portal" />
+          <EntitySet Name="runes" EntityType="opennosModel.rune" />
           <EntitySet Name="shop" EntityType="Self.shop" />
           <EntitySet Name="warehouse" EntityType="Self.warehouse" />
           <AssociationSet Name="AccountCharacter" Association="opennosModel.AccountCharacter">
@@ -659,15 +660,15 @@
         </Association>
         <Association Name="inventoryitems">
           <End Type="opennosModel.inventory" Role="inventory" Multiplicity="1" />
-          <End Type="opennosModel.items" Role="items" Multiplicity="1" />
+          <End Type="opennosModel.item" Role="items" Multiplicity="1" />
         </Association>
         <Association Name="itemsrunes">
-          <End Type="opennosModel.items" Role="items" Multiplicity="1" />
-          <End Type="opennosModel.runes" Role="runes" Multiplicity="0..1" />
+          <End Type="opennosModel.item" Role="items" Multiplicity="1" />
+          <End Type="opennosModel.rune" Role="runes" Multiplicity="0..1" />
         </Association>
         <Association Name="shopnpcs">
           <End Type="opennosModel.shop" Role="shop" Multiplicity="*" />
-          <End Type="opennosModel.npcs" Role="npcs" Multiplicity="1" />
+          <End Type="opennosModel.npc" Role="npcs" Multiplicity="1" />
           <ReferentialConstraint>
             <Principal Role="npcs">
               <PropertyRef Name="Id" />
@@ -785,7 +786,7 @@
     <EntitySetMapping Name="familyhistory">
       <EntityTypeMapping TypeName="IsTypeOf(opennosModel.familyhistory)">
         <MappingFragment StoreEntitySet="familyhistory">
-          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="FamilyHistoryId" ColumnName="Id" />
           <ScalarProperty Name="Family" ColumnName="Family" />
           <ScalarProperty Name="Message" ColumnName="Message" />
         </MappingFragment>
@@ -794,7 +795,7 @@
     <EntitySetMapping Name="friend">
       <EntityTypeMapping TypeName="IsTypeOf(opennosModel.friend)">
         <MappingFragment StoreEntitySet="friend">
-          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="FriendId" ColumnName="Id" />
           <ScalarProperty Name="CharacterId" ColumnName="CharacterId" />
           <ScalarProperty Name="Friend1" ColumnName="Friend1" />
         </MappingFragment>
@@ -803,7 +804,7 @@
     <EntitySetMapping Name="inventory">
       <EntityTypeMapping TypeName="IsTypeOf(opennosModel.inventory)">
         <MappingFragment StoreEntitySet="inventory">
-          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="InventoryId" ColumnName="Id" />
           <ScalarProperty Name="Character" ColumnName="Character" />
           <ScalarProperty Name="Slot" ColumnName="Slot" />
           <ScalarProperty Name="Pos" ColumnName="Pos" />
@@ -811,9 +812,9 @@
       </EntityTypeMapping>
     </EntitySetMapping>
     <EntitySetMapping Name="items">
-      <EntityTypeMapping TypeName="IsTypeOf(opennosModel.items)">
+      <EntityTypeMapping TypeName="IsTypeOf(opennosModel.item)">
         <MappingFragment StoreEntitySet="items">
-          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="ItemId" ColumnName="id" />
           <ScalarProperty Name="VNUM" ColumnName="VNUM" />
           <ScalarProperty Name="Quantity" ColumnName="Quantity" />
           <ScalarProperty Name="Rare" ColumnName="Rare" />
@@ -841,7 +842,7 @@
     <EntitySetMapping Name="listskill">
       <EntityTypeMapping TypeName="IsTypeOf(opennosModel.listskill)">
         <MappingFragment StoreEntitySet="listskill">
-          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="ListSkillId" ColumnName="Id" />
           <ScalarProperty Name="Name" ColumnName="Name" />
         </MappingFragment>
       </EntityTypeMapping>
@@ -849,7 +850,7 @@
     <EntitySetMapping Name="miniland">
       <EntityTypeMapping TypeName="IsTypeOf(opennosModel.miniland)">
         <MappingFragment StoreEntitySet="miniland">
-          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="MinilandId" ColumnName="Id" />
           <ScalarProperty Name="Owner" ColumnName="Owner" />
           <ScalarProperty Name="Item" ColumnName="Item" />
           <ScalarProperty Name="X" ColumnName="X" />
@@ -858,9 +859,9 @@
       </EntityTypeMapping>
     </EntitySetMapping>
     <EntitySetMapping Name="monsters">
-      <EntityTypeMapping TypeName="IsTypeOf(opennosModel.monsters)">
+      <EntityTypeMapping TypeName="IsTypeOf(opennosModel.monster)">
         <MappingFragment StoreEntitySet="monsters">
-          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="MonsterId" ColumnName="Id" />
           <ScalarProperty Name="VNUM" ColumnName="VNUM" />
           <ScalarProperty Name="Map" ColumnName="Map" />
           <ScalarProperty Name="X" ColumnName="X" />
@@ -869,7 +870,7 @@
       </EntityTypeMapping>
     </EntitySetMapping>
     <EntitySetMapping Name="npcs">
-      <EntityTypeMapping TypeName="IsTypeOf(opennosModel.npcs)">
+      <EntityTypeMapping TypeName="IsTypeOf(opennosModel.npc)">
         <MappingFragment StoreEntitySet="npcs">
           <ScalarProperty Name="Id" ColumnName="Id" />
           <ScalarProperty Name="VNUM" ColumnName="VNUM" />
@@ -882,7 +883,7 @@
     <EntitySetMapping Name="partner">
       <EntityTypeMapping TypeName="IsTypeOf(opennosModel.partner)">
         <MappingFragment StoreEntitySet="partner">
-          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="PartnerId" ColumnName="id" />
           <ScalarProperty Name="owner" ColumnName="owner" />
           <ScalarProperty Name="Level" ColumnName="Level" />
           <ScalarProperty Name="isBackpacked" ColumnName="isBackpacked" />
@@ -900,7 +901,7 @@
     <EntitySetMapping Name="pet">
       <EntityTypeMapping TypeName="IsTypeOf(opennosModel.pet)">
         <MappingFragment StoreEntitySet="pet">
-          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="PetId" ColumnName="Id" />
           <ScalarProperty Name="CharacterId" ColumnName="CharacterId" />
           <ScalarProperty Name="IsHelper" ColumnName="IsHelper" />
           <ScalarProperty Name="Owner" ColumnName="Owner" />
@@ -915,9 +916,9 @@
       </EntityTypeMapping>
     </EntitySetMapping>
     <EntitySetMapping Name="portals">
-      <EntityTypeMapping TypeName="IsTypeOf(opennosModel.portals)">
+      <EntityTypeMapping TypeName="IsTypeOf(opennosModel.portal)">
         <MappingFragment StoreEntitySet="portals">
-          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="PortalsId" ColumnName="id" />
           <ScalarProperty Name="SrcMap" ColumnName="SrcMap" />
           <ScalarProperty Name="SrcX" ColumnName="SrcX" />
           <ScalarProperty Name="SrcY" ColumnName="SrcY" />
@@ -928,16 +929,16 @@
       </EntityTypeMapping>
     </EntitySetMapping>
     <EntitySetMapping Name="runes">
-      <EntityTypeMapping TypeName="IsTypeOf(opennosModel.runes)">
+      <EntityTypeMapping TypeName="IsTypeOf(opennosModel.rune)">
         <MappingFragment StoreEntitySet="runes">
-          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="RunesId" ColumnName="id" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
     <EntitySetMapping Name="shop">
       <EntityTypeMapping TypeName="IsTypeOf(opennosModel.shop)">
         <MappingFragment StoreEntitySet="shop">
-          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="ShopId" ColumnName="id" />
           <ScalarProperty Name="Npc" ColumnName="Npc" />
           <ScalarProperty Name="Slot" ColumnName="Slot" />
           <ScalarProperty Name="Item" ColumnName="Item" />
@@ -947,7 +948,7 @@
     <EntitySetMapping Name="warehouse">
       <EntityTypeMapping TypeName="IsTypeOf(opennosModel.warehouse)">
         <MappingFragment StoreEntitySet="warehouse">
-          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="WareHouseId" ColumnName="id" />
           <ScalarProperty Name="Owner" ColumnName="Owner" />
           <ScalarProperty Name="Item" ColumnName="Item" />
           <ScalarProperty Name="Pos" ColumnName="Pos" />

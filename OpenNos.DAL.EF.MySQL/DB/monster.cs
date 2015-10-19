@@ -12,14 +12,12 @@ namespace OpenNos.DAL.EF.MySQL.DB
     using System;
     using System.Collections.Generic;
     
-    public partial class portals
+    public partial class monster
     {
-        public int id { get; set; }
-        public int SrcMap { get; set; }
-        public int SrcX { get; set; }
-        public int SrcY { get; set; }
-        public int DestMap { get; set; }
-        public int DestX { get; set; }
-        public int DestY { get; set; }
+        public int MonsterId { get; set; }
+        public int VNUM { get; set; }
+        public int Map { get; set; }
+        public int X { get; set; }
+        public int Y { get; set; }
     }
 }

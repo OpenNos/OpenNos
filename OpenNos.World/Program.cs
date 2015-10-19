@@ -14,13 +14,8 @@
 using log4net;
 using OpenNos.Core;
 using OpenNos.Handler;
-using OpenNos.Login;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-[assembly: log4net.Config.XmlConfigurator(Watch = true)]
 
 namespace OpenNos.World
 {
@@ -39,7 +34,7 @@ namespace OpenNos.World
             Console.WriteLine("===============================================================================\n"
                              + "                 WORLD SERVER VERSION 1.0.0 by OpenNos Team\n" +
                              "===============================================================================\n");
-
+          //  Logger.Log.Info(Language.Instance.GetMessageFromKey("Config_Loaded"));
             NetworkManager<WorldEncryption> networkManager = new NetworkManager<WorldEncryption>("127.0.0.1", 1337, handlers, true);
         }
     }

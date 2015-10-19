@@ -91,7 +91,7 @@
     <Compile Include="DB\inventory.cs">
       <DependentUpon>OpenNos.tt</DependentUpon>
     </Compile>
-    <Compile Include="DB\items.cs">
+    <Compile Include="DB\item.cs">
       <DependentUpon>OpenNos.tt</DependentUpon>
     </Compile>
     <Compile Include="DB\listskill.cs">
@@ -100,10 +100,10 @@
     <Compile Include="DB\miniland.cs">
       <DependentUpon>OpenNos.tt</DependentUpon>
     </Compile>
-    <Compile Include="DB\monsters.cs">
+    <Compile Include="DB\monster.cs">
       <DependentUpon>OpenNos.tt</DependentUpon>
     </Compile>
-    <Compile Include="DB\npcs.cs">
+    <Compile Include="DB\npc.cs">
       <DependentUpon>OpenNos.tt</DependentUpon>
     </Compile>
     <Compile Include="DB\OpenNos.Context.cs">
@@ -127,14 +127,14 @@
     <Compile Include="DB\pet.cs">
       <DependentUpon>OpenNos.tt</DependentUpon>
     </Compile>
-    <Compile Include="DB\portals.cs">
+    <Compile Include="DB\portal.cs">
+      <DependentUpon>OpenNos.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DB\rune.cs">
       <DependentUpon>OpenNos.tt</DependentUpon>
     </Compile>
     <Compile Include="Helpers\DBHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="DB\runes.cs">
-      <DependentUpon>OpenNos.tt</DependentUpon>
-    </Compile>
     <Compile Include="DB\shop.cs">
       <DependentUpon>OpenNos.tt</DependentUpon>
     </Compile>

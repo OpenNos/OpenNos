@@ -24,6 +24,7 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public Nullable<int> FamilyLevel { get; set; }
         public Nullable<int> FamilyInventory { get; set; }
         public Nullable<int> FamilySizeMax { get; set; }
+        public string FamilyAnnounce { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<familyhistory> familyhistory { get; set; }

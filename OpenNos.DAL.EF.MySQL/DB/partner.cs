@@ -14,7 +14,7 @@ namespace OpenNos.DAL.EF.MySQL.DB
     
     public partial class partner
     {
-        public int id { get; set; }
+        public int PartnerId { get; set; }
         public int owner { get; set; }
         public Nullable<int> Level { get; set; }
         public Nullable<int> isBackpacked { get; set; }
