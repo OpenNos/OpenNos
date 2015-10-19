@@ -1,0 +1,16 @@
+C:\Users\ERWAN\Desktop\OpenNos GIT\OpenNos\OpenNos.DAL\bin\Release\OpenNos.DAL.dll
+C:\Users\ERWAN\Desktop\OpenNos GIT\OpenNos\OpenNos.DAL\bin\Release\OpenNos.DAL.pdb
+C:\Users\ERWAN\Desktop\OpenNos GIT\OpenNos\OpenNos.DAL\bin\Release\log4net.dll
+C:\Users\ERWAN\Desktop\OpenNos GIT\OpenNos\OpenNos.DAL\bin\Release\OpenNos.DAL.EF.MySQL.dll
+C:\Users\ERWAN\Desktop\OpenNos GIT\OpenNos\OpenNos.DAL\bin\Release\OpenNos.DAL.Interface.dll
+C:\Users\ERWAN\Desktop\OpenNos GIT\OpenNos\OpenNos.DAL\bin\Release\OpenNos.Domain.dll
+C:\Users\ERWAN\Desktop\OpenNos GIT\OpenNos\OpenNos.DAL\bin\Release\EntityFramework.dll
+C:\Users\ERWAN\Desktop\OpenNos GIT\OpenNos\OpenNos.DAL\bin\Release\OpenNos.DAL.EF.MySQL.pdb
+C:\Users\ERWAN\Desktop\OpenNos GIT\OpenNos\OpenNos.DAL\bin\Release\OpenNos.DAL.Interface.pdb
+C:\Users\ERWAN\Desktop\OpenNos GIT\OpenNos\OpenNos.DAL\bin\Release\log4net.xml
+C:\Users\ERWAN\Desktop\OpenNos GIT\OpenNos\OpenNos.DAL\bin\Release\OpenNos.Domain.pdb
+C:\Users\ERWAN\Desktop\OpenNos GIT\OpenNos\OpenNos.DAL\bin\Release\EntityFramework.xml
+C:\Users\ERWAN\Desktop\OpenNos GIT\OpenNos\OpenNos.DAL\bin\Release\de\EntityFramework.resources.dll
+C:\Users\ERWAN\Desktop\OpenNos GIT\OpenNos\OpenNos.DAL\obj\Release\OpenNos.DAL.csprojResolveAssemblyReference.cache
+C:\Users\ERWAN\Desktop\OpenNos GIT\OpenNos\OpenNos.DAL\obj\Release\OpenNos.DAL.dll
+C:\Users\ERWAN\Desktop\OpenNos GIT\OpenNos\OpenNos.DAL\obj\Release\OpenNos.DAL.pdb
