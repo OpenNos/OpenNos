@@ -33,6 +33,7 @@ namespace OpenNos.DAL.Interface
         bool IsLoggedIn(string name);
 
         void LogIn(string name);
+        
 
         #endregion
     }
