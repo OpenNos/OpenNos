@@ -1,5 +1,6 @@
 ﻿using log4net;
 using OpenNos.Core;
+using OpenNos.Handler;
 using OpenNos.Login;
 using System;
 using System.Collections.Generic;
@@ -16,7 +17,7 @@ namespace OpenNos.World
         {
             //define handers for received packets
             IList<Type> handlers = new List<Type>();
-            handlers.Add(typeof(LoginPacketHandler));
+            handlers.Add(typeof(UserPacketHandler));
 
             //initialize Logger
             Logger.InitializeLogger(LogManager.GetLogger(typeof(Program)));
