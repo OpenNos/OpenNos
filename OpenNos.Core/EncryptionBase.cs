@@ -21,9 +21,26 @@ namespace OpenNos.Core
 {
     public abstract class EncryptionBase
     {
+        #region Instantiation
+
+        public EncryptionBase(bool hasCustomParameter)
+        {
+            HasCustomParameter = hasCustomParameter;
+        }
+
+        #endregion
+
+        #region Properties
+
+        public bool HasCustomParameter { get; set; }
+
+        #endregion
+
         #region Methods
 
-        public abstract string Decrypt(byte[] data, int size);
+        public abstract string DecryptCustomParameter(byte[] data, int size);
+
+        public abstract string Decrypt(byte[] data, int size, int customParameter = 0);
 
         public abstract byte[] Encrypt(string data);
 
