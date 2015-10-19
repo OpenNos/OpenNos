@@ -27,7 +27,7 @@ namespace OpenNos.Core
 
         public IScsWireProtocol CreateWireProtocol()
         {
-            return new WireProtocol<EncryptorT>(255, _useFraming);
+            return new WireProtocol(255, _useFraming);
         }
     }
 }

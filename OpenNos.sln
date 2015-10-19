@@ -19,6 +19,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenNos.Core", "OpenNos.Cor
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenNos.Handler", "OpenNos.Handler\OpenNos.Handler.csproj", "{A6748A8D-0D96-41B9-A110-DBF692AFC56D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenNos.World", "OpenNos.World\OpenNos.World.csproj", "{EC300279-181E-4E6E-A94C-E8BAF0EAB2AD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug_FR|Any CPU = Debug_FR|Any CPU
@@ -124,6 +126,18 @@ Global
 		{A6748A8D-0D96-41B9-A110-DBF692AFC56D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A6748A8D-0D96-41B9-A110-DBF692AFC56D}.Release|x86.ActiveCfg = Release|Any CPU
 		{A6748A8D-0D96-41B9-A110-DBF692AFC56D}.Release|x86.Build.0 = Release|Any CPU
+		{EC300279-181E-4E6E-A94C-E8BAF0EAB2AD}.Debug_FR|Any CPU.ActiveCfg = Debug|Any CPU
+		{EC300279-181E-4E6E-A94C-E8BAF0EAB2AD}.Debug_FR|Any CPU.Build.0 = Debug|Any CPU
+		{EC300279-181E-4E6E-A94C-E8BAF0EAB2AD}.Debug_FR|x86.ActiveCfg = Debug|Any CPU
+		{EC300279-181E-4E6E-A94C-E8BAF0EAB2AD}.Debug_FR|x86.Build.0 = Debug|Any CPU
+		{EC300279-181E-4E6E-A94C-E8BAF0EAB2AD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EC300279-181E-4E6E-A94C-E8BAF0EAB2AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EC300279-181E-4E6E-A94C-E8BAF0EAB2AD}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{EC300279-181E-4E6E-A94C-E8BAF0EAB2AD}.Debug|x86.Build.0 = Debug|Any CPU
+		{EC300279-181E-4E6E-A94C-E8BAF0EAB2AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EC300279-181E-4E6E-A94C-E8BAF0EAB2AD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EC300279-181E-4E6E-A94C-E8BAF0EAB2AD}.Release|x86.ActiveCfg = Release|Any CPU
+		{EC300279-181E-4E6E-A94C-E8BAF0EAB2AD}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

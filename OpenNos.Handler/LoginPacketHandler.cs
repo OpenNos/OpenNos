@@ -63,10 +63,11 @@ namespace OpenNos.Login
 
         public string CreateServers(int session)
         {
-            string channelPacket = String.Format("NsTeST {0} ",session);  
+            string channelPacket = String.Format("NsTeST {0} ", session + 10000);
             List<ServerConfig.Server> myServs = (List<ServerConfig.Server>)ConfigurationManager.GetSection("Servers");
-                 
-            
+
+            checked
+            {
                 int w = 0;
                 foreach (ServerConfig.Server serv in myServs)
                 {
@@ -81,8 +82,8 @@ namespace OpenNos.Login
                             serv.name);
                     }
                 }
-                return String.Format("{0}", channelPacket);
-            
+                return channelPacket;
+            }
         }
 
         public ScsMessage SendMsg(string packet)
@@ -107,7 +108,7 @@ namespace OpenNos.Login
                     {
                         //0 banned 1 register 2 user 3 GM
                         AuthorityType type = DAOFactory.AccountDAO.LoadAuthorityType(user.Name);
-                      
+
                         switch (type)
                         {
                             case AuthorityType.Banned:
@@ -121,7 +122,7 @@ namespace OpenNos.Login
                                         DAOFactory.AccountDAO.UpdateLastSessionAndIp(user.Name, (int)session, _client.RemoteEndPoint.ToString());
                                         Logger.Log.DebugFormat("CONNECT {0} Connected -- session:{1}", user.Name, session);
 
-                                        return SendMsg(CreateServers((int)session));                                    
+                                        return SendMsg(CreateServers((int)session));
                                     }
                                     else
                                     {

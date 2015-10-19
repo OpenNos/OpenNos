@@ -98,7 +98,6 @@ namespace OpenNos.Core.Communication.Scs.Server
         /// The communication channel that is used by client to send and receive messages.
         /// </summary>
         private readonly ICommunicationChannel _communicationChannel;
-        private IDictionary<string,object> _handlers;
 
         #endregion
 

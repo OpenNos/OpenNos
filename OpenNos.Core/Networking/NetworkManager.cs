@@ -30,6 +30,7 @@ namespace OpenNos.Core
         #region Members
 
         private static IList<Type> _packetHandlers;
+        private static EncryptorT _encryptor;
 
         #endregion
 
@@ -38,6 +39,7 @@ namespace OpenNos.Core
         public NetworkManager(string ipAddress, int port, IList<Type> packetHandlers, bool useFraming)
         {
             _packetHandlers = packetHandlers;
+            _encryptor = (EncryptorT)Activator.CreateInstance(typeof(EncryptorT));
 
             var server = ScsServerFactory.CreateServer(new ScsTcpEndPoint(ipAddress, port));
 
@@ -76,7 +78,7 @@ namespace OpenNos.Core
 
         static void Client_MessageReceived(object sender, MessageEventArgs e)
         {
-            var message = e.Message as ScsTextMessage; //Server only accepts text messages
+            var message = e.Message as ScsRawDataMessage; //Server only accepts text messages
             if (message == null)
             {
                 return;
@@ -85,9 +87,22 @@ namespace OpenNos.Core
             //Get a reference to the client
             CustomScsServerClient client = sender as CustomScsServerClient;
 
+            //determine first packet
+            if (_encryptor.HasCustomParameter && client.SessionId == 0)
+            {
+                string sessionPacket = _encryptor.DecryptCustomParameter(message.MessageData, message.MessageData.Length);
+                string[] sessionParts = sessionPacket.Split(' ');
+                client.LastKeepAliveIdentity = Convert.ToInt32(sessionParts[0]);
+                client.SessionId = Convert.ToInt32(sessionParts[1].Split('\\').FirstOrDefault());
+                Logger.Log.DebugFormat("Client arrived, SessionId: {0}", client.SessionId);
+                return;
+            }         
+
+            string packet = _encryptor.Decrypt(message.MessageData, message.MessageData.Length, (int)client.SessionId);
+
             Logger.Log.DebugFormat("Message received {0} on client {1}", message, client.ClientId);
 
-            string packetHeader = message.Text.Split(' ')[0];
+            string packetHeader = packet.Split(' ')[0];
 
             Assembly handlerAssembly = Assembly.Load("OpenNos.Handler");
 
@@ -99,11 +114,12 @@ namespace OpenNos.Core
 
                     if (methodInfo != null)
                     {
-                        object result = methodInfo.Invoke(client.Handlers.SingleOrDefault(h => h.Key.Equals(type.ToString())).Value, new object[] { message.Text, client.ClientId });
+                        object result = methodInfo.Invoke(client.Handlers.SingleOrDefault(h => h.Key.Equals(type.ToString())).Value, new object[] { packet, client.ClientId });
                         //Send reply message to the client
-                        ScsMessage resultMessage = (ScsMessage)result;
-                        Logger.Log.DebugFormat("Message sent {0} to client {1}", resultMessage, client.ClientId);
-                        client.SendMessage(resultMessage);
+                        ScsTextMessage resultMessage = (ScsTextMessage)result;
+                        Logger.Log.DebugFormat("Message sent {0} to client {1}", resultMessage.Text, client.SessionId);
+                        ScsRawDataMessage rawMessage = new ScsRawDataMessage(_encryptor.Encrypt(resultMessage.Text));
+                        client.SendMessage(rawMessage);
                     }
                     else
                     {

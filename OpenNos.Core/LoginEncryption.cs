@@ -20,7 +20,9 @@ using System.Linq;
 namespace OpenNos.Core
 {
     public class LoginEncryption : EncryptionBase
-    {
+    { 
+        public LoginEncryption() : base(false) { }
+
         public static string sha256(string inputString)
         {
             using (SHA256 hash = SHA256Managed.Create())
@@ -30,7 +32,7 @@ namespace OpenNos.Core
                   .Select(item => item.ToString("x2")));
             }
         }
-        public override string Decrypt(byte[] data, int size)
+        public override string Decrypt(byte[] data, int size, int customParameter = 0)
         {
             string result;
             try
@@ -88,6 +90,11 @@ namespace OpenNos.Core
             decpass = temp.ToString();
 
             return decpass;
+        }
+
+        public override string DecryptCustomParameter(byte[] data, int size)
+        {
+            throw new NotImplementedException();
         }
     }
 }

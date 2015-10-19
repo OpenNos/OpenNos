@@ -11,9 +11,13 @@ namespace OpenNos.Core
     public class CustomScsServerClient : ScsServerClient
     {
         private IDictionary<string, object> _handlers { get; set; }
+ 
+        public int SessionId { get; set; }
+        public int LastKeepAliveIdentity { get; set; }
 
         public CustomScsServerClient(ICommunicationChannel communicationChannel) : base(communicationChannel)
         {
+            SessionId = 0;
         }
 
         public IDictionary<string, object> Handlers
