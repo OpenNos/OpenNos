@@ -52,8 +52,7 @@ namespace OpenNos.Login
 
                     string ip = System.Configuration.ConfigurationManager.AppSettings["LoginIp"];
                     int port = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["LoginPort"]);
-                    Language lang = Language.getInstance();
-                    Logger.Log.Info(lang.GetMessageFromKey("Config_Loaded"));
+                    Logger.Log.Info(Language.Instance.GetMessageFromKey("Config_Loaded"));
                     NetworkManager<LoginEncryption> networkManager = new NetworkManager<LoginEncryption>(ip,port, handlers, false);
                 }
                 catch (Exception ex)

@@ -24,6 +24,20 @@
         <EntityTypeShape EntityType="opennosModel.shop" Width="1.5" PointX="10.75" PointY="6.75" IsExpanded="true" />
         <EntityTypeShape EntityType="opennosModel.warehouse" Width="1.5" PointX="10.75" PointY="9.75" IsExpanded="true" />
         <AssociationConnector Association="opennosModel.AccountCharacter" />
+        <AssociationConnector Association="opennosModel.charafamilyfamily" />
+        <AssociationConnector Association="opennosModel.charactercharafamily" />
+        <AssociationConnector Association="opennosModel.characterfriend" />
+        <AssociationConnector Association="opennosModel.characterminiland" />
+        <AssociationConnector Association="opennosModel.familyhistoryfamily" />
+        <AssociationConnector Association="opennosModel.inventorycharacter" />
+        <AssociationConnector Association="opennosModel.characterlistskill" />
+        <AssociationConnector Association="opennosModel.inventoryitems" />
+        <AssociationConnector Association="opennosModel.itemsrunes" />
+        <AssociationConnector Association="opennosModel.shopnpcs" />
+        <AssociationConnector Association="opennosModel.characterpet" />
+        <AssociationConnector Association="opennosModel.characterpartner" />
+        <AssociationConnector Association="opennosModel.accountwarehouse" />
+        <AssociationConnector Association="opennosModel.familywarehouse" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
