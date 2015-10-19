@@ -22,8 +22,7 @@ using System.IO;
 
 namespace OpenNos.Core
 {
-    public class WireProtocol<EncryptorT> : IScsWireProtocol
-        where EncryptorT : EncryptionBase
+    public class WireProtocol : IScsWireProtocol
     {
         #region Private fields
 
@@ -39,8 +38,6 @@ namespace OpenNos.Core
         /// </summary>
         private MemoryStream _receiveMemoryStream;
 
-        private EncryptionBase _encryptor;
-
         private byte _framingDelimiter;
         private bool _useFraming;
 
@@ -48,29 +45,16 @@ namespace OpenNos.Core
 
         public WireProtocol(byte framingDelimiter, bool useFraming = true)
         {
-            _encryptor = (EncryptorT)Activator.CreateInstance(typeof(EncryptorT));
             _receiveMemoryStream = new MemoryStream();
             _framingDelimiter = framingDelimiter;
             _useFraming = useFraming;
             _connectionHistory = new Dictionary<String, DateTime>();
         }
 
-        protected byte[] SerializeMessage(IScsMessage message)
-        {
-            return _encryptor.Encrypt(((ScsTextMessage)message).Text);
-        }
-
-        protected IScsMessage DeserializeMessage(byte[] bytes)
-        {
-            //TODO: optimize, this endecoding stuff is pretty slow
-            byte[] differentEncoding = Encoding.Default.GetBytes(System.Text.Encoding.Default.GetString(bytes));
-            return new ScsTextMessage(_encryptor.Decrypt(differentEncoding, differentEncoding.Length));
-        }
-
         public byte[] GetBytes(IScsMessage message)
         {
             //Serialize the message to a byte array
-            var serializedMessage = SerializeMessage(message);
+            var serializedMessage = ((ScsRawDataMessage)message).MessageData;
 
             //Check for message length
             var messageLength = serializedMessage.Length;
@@ -136,7 +120,7 @@ namespace OpenNos.Core
 
             //Read bytes of serialized message and deserialize it
             var serializedMessageBytes = ReadByteArray(_receiveMemoryStream, frameLength);
-            messages.Add(DeserializeMessage(serializedMessageBytes));
+            messages.Add(new ScsRawDataMessage(serializedMessageBytes));
 
             //Read remaining bytes to an array
             if (_receiveMemoryStream.Length > frameLength)
