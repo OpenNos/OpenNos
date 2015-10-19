@@ -66,8 +66,7 @@ namespace OpenNos.Login
             string channelPacket = String.Format("NsTeST {0} ",session);  
             List<ServerConfig.Server> myServs = (List<ServerConfig.Server>)ConfigurationManager.GetSection("Servers");
                  
-            checked
-            {
+            
                 int w = 0;
                 foreach (ServerConfig.Server serv in myServs)
                 {
@@ -83,7 +82,7 @@ namespace OpenNos.Login
                     }
                 }
                 return String.Format("{0}", channelPacket);
-            }
+            
         }
 
         public ScsMessage SendMsg(string packet)
