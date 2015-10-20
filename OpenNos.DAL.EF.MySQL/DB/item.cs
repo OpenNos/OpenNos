@@ -14,6 +14,12 @@ namespace OpenNos.DAL.EF.MySQL.DB
     
     public partial class item
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public item()
+        {
+            this.runes = new HashSet<rune>();
+        }
+    
         public int ItemId { get; set; }
         public int VNUM { get; set; }
         public int Quantity { get; set; }
@@ -38,6 +44,7 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public Nullable<int> SlEle { get; set; }
     
         public virtual inventory inventory { get; set; }
-        public virtual rune runes { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<rune> runes { get; set; }
     }
 }

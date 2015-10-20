@@ -22,7 +22,7 @@ namespace OpenNos.DAL.EF.MySQL.DB
     
         public int FriendId { get; set; }
         public int CharacterId { get; set; }
-        public int Friend1 { get; set; }
+        public int Friend { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<character> character { get; set; }

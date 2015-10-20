@@ -14,7 +14,10 @@ namespace OpenNos.DAL.EF.MySQL.DB
     
     public partial class rune
     {
-        public int RunesId { get; set; }
+        public int RuneId { get; set; }
+        public int Type { get; set; }
+        public int SubType { get; set; }
+        public int Value { get; set; }
     
         public virtual item items { get; set; }
     }

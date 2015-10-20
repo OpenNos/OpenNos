@@ -12,10 +12,12 @@ namespace OpenNos.DAL.EF.MySQL.DB
     using System;
     using System.Collections.Generic;
     
-    public partial class listskill
+    public partial class action
     {
-        public int ListSkillId { get; set; }
-        public string Name { get; set; }
+        public int ActionId { get; set; }
+        public string Action { get; set; }
+        public int Key { get; set; }
+        public int Slot { get; set; }
     
         public virtual character character { get; set; }
     }

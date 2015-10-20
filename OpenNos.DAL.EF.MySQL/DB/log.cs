@@ -12,14 +12,14 @@ namespace OpenNos.DAL.EF.MySQL.DB
     using System;
     using System.Collections.Generic;
     
-    public partial class portal
+    public partial class log
     {
-        public int PortalId { get; set; }
-        public int SrcMap { get; set; }
-        public int SrcX { get; set; }
-        public int SrcY { get; set; }
-        public int DestMap { get; set; }
-        public int DestX { get; set; }
-        public int DestY { get; set; }
+        public int LogId { get; set; }
+        public string Ip { get; set; }
+        public string Connection { get; set; }
+        public int characterCharacterId { get; set; }
+        public long accountAccountId { get; set; }
+    
+        public virtual account account { get; set; }
     }
 }
