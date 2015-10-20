@@ -73,6 +73,9 @@
       <DependentUpon>OpenNos.tt</DependentUpon>
     </Compile>
     <Compile Include="AccountDAO.cs" />
+    <Compile Include="DB\action.cs">
+      <DependentUpon>OpenNos.tt</DependentUpon>
+    </Compile>
     <Compile Include="DB\character.cs">
       <DependentUpon>OpenNos.tt</DependentUpon>
     </Compile>
@@ -94,7 +97,7 @@
     <Compile Include="DB\item.cs">
       <DependentUpon>OpenNos.tt</DependentUpon>
     </Compile>
-    <Compile Include="DB\listskill.cs">
+    <Compile Include="DB\log.cs">
       <DependentUpon>OpenNos.tt</DependentUpon>
     </Compile>
     <Compile Include="DB\miniland.cs">
@@ -131,6 +134,9 @@
       <DependentUpon>OpenNos.tt</DependentUpon>
     </Compile>
     <Compile Include="DB\rune.cs">
+      <DependentUpon>OpenNos.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DB\skill.cs">
       <DependentUpon>OpenNos.tt</DependentUpon>
     </Compile>
     <Compile Include="Helpers\DBHelper.cs" />

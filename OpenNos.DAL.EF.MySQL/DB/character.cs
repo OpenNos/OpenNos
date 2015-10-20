@@ -19,9 +19,10 @@ namespace OpenNos.DAL.EF.MySQL.DB
         {
             this.friend = new HashSet<friend>();
             this.inventory = new HashSet<inventory>();
-            this.listskill = new HashSet<listskill>();
+            this.skill = new HashSet<skill>();
             this.pet = new HashSet<pet>();
             this.partner = new HashSet<partner>();
+            this.action = new HashSet<action>();
         }
     
         public int CharacterId { get; set; }
@@ -59,10 +60,12 @@ namespace OpenNos.DAL.EF.MySQL.DB
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<inventory> inventory { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<listskill> listskill { get; set; }
+        public virtual ICollection<skill> skill { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<pet> pet { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<partner> partner { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<action> action { get; set; }
     }
 }

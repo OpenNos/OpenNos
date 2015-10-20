@@ -54,7 +54,7 @@ namespace OpenNos.DAL.EF.MySQL
             {
                 account account = context.Account.SingleOrDefault(a => a.Name.Equals(name));
                 account.LoggedIn = true;
-                account.LastConnect = DateTime.Now;
+               // account.LastConnect = DateTime.Now;
                 context.SaveChanges();
             }
         }
@@ -65,8 +65,8 @@ namespace OpenNos.DAL.EF.MySQL
             {
                 account account = context.Account.SingleOrDefault(a => a.Name.Equals(name));
                 account.LastSession = session;
-                account.LastIp = ip;
-                account.LastConnect = DateTime.Now;
+               // account.LastIp = ip;
+               // account.LastConnect = DateTime.Now;
                 context.SaveChanges();
             }
         }

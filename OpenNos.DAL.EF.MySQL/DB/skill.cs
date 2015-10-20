@@ -12,26 +12,18 @@ namespace OpenNos.DAL.EF.MySQL.DB
     using System;
     using System.Collections.Generic;
     
-    public partial class account
+    public partial class skill
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public account()
+        public skill()
         {
-            this.Character = new HashSet<character>();
-            this.log = new HashSet<log>();
+            this.character = new HashSet<character>();
         }
     
-        public long AccountId { get; set; }
-        public string Name { get; set; }
-        public string Password { get; set; }
-        public short Authority { get; set; }
-        public int LastSession { get; set; }
-        public bool LoggedIn { get; set; }
+        public int SkillId { get; set; }
+        public Nullable<int> Vnum { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<character> Character { get; set; }
-        public virtual warehouse warehouse { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<log> log { get; set; }
+        public virtual ICollection<character> character { get; set; }
     }
 }

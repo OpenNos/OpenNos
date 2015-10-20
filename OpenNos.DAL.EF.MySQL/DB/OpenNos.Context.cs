@@ -34,7 +34,7 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public virtual DbSet<friend> friend { get; set; }
         public virtual DbSet<inventory> inventory { get; set; }
         public virtual DbSet<item> items { get; set; }
-        public virtual DbSet<listskill> listskill { get; set; }
+        public virtual DbSet<skill> listskill { get; set; }
         public virtual DbSet<miniland> miniland { get; set; }
         public virtual DbSet<monster> monsters { get; set; }
         public virtual DbSet<npc> npcs { get; set; }
@@ -44,5 +44,7 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public virtual DbSet<rune> runes { get; set; }
         public virtual DbSet<shop> shop { get; set; }
         public virtual DbSet<warehouse> warehouse { get; set; }
+        public virtual DbSet<action> actionSet1 { get; set; }
+        public virtual DbSet<log> logSet { get; set; }
     }
 }

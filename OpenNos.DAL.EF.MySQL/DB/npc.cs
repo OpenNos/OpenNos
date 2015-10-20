@@ -20,7 +20,7 @@ namespace OpenNos.DAL.EF.MySQL.DB
             this.shop = new HashSet<shop>();
         }
     
-        public int Id { get; set; }
+        public int NpcId { get; set; }
         public int VNUM { get; set; }
         public int Map { get; set; }
         public int X { get; set; }
