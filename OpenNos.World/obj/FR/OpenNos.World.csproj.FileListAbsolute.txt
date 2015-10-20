@@ -29,8 +29,5 @@ C:\Users\ERWAN\Desktop\OpenNos GIT\OpenNos\OpenNos.World\obj\FR\fr\OpenNos.World
 C:\Users\ERWAN\Desktop\OpenNos GIT\OpenNos\OpenNos.World\obj\FR\OpenNos.World.exe
 C:\Users\ERWAN\Desktop\OpenNos GIT\OpenNos\OpenNos.World\obj\FR\OpenNos.World.pdb
 C:\Users\ERWAN\Desktop\OpenNos GIT\OpenNos\OpenNos.World\obj\FR\OpenNos.World.Resource.LocalizedResources.resources
-C:\Users\ERWAN\Desktop\OpenNos GIT\OpenNos\OpenNos.World\bin\FR\Resource\LocalizedResources.resx
 C:\Users\ERWAN\Desktop\OpenNos GIT\OpenNos\OpenNos.World\bin\FR\Resource\LocalizedResources.fr.resx
 C:\Users\ERWAN\Desktop\OpenNos GIT\OpenNos\OpenNos.World\bin\FR\Resource\LocalizedResources.fr.Designer.cs
-C:\Users\ERWAN\Desktop\OpenNos GIT\OpenNos\OpenNos.World\bin\FR\Resource\LocalizedResources.Designer.cs
-C:\Users\ERWAN\Desktop\OpenNos GIT\OpenNos\OpenNos.World\obj\FR\OpenNos.World.Properties.Resources.resources

@@ -16,6 +16,7 @@ using OpenNos.Core;
 using OpenNos.Handler;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 
 namespace OpenNos.World
 {
@@ -34,7 +35,6 @@ namespace OpenNos.World
             Console.WriteLine("===============================================================================\n"
                              + "                 WORLD SERVER VERSION 1.0.0 by OpenNos Team\n" +
                              "===============================================================================\n");
-            Logger.Log.Info(Language.Instance.GetMessageFromKey("Config_Loaded"));
             NetworkManager<WorldEncryption> networkManager = new NetworkManager<WorldEncryption>("127.0.0.1", 1337, handlers, true);
         }
     }
