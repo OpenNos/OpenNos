@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Resource {
+namespace OpenNos.Login.Resource {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace Resource {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Resource.LocalizedResources", typeof(LocalizedResources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("OpenNos.Login.Resource.LocalizedResources", typeof(LocalizedResources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -61,7 +61,7 @@ namespace Resource {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à test.
+        ///   Recherche une chaîne localisée semblable à Config loaded !.
         /// </summary>
         internal static string Config_Loaded {
             get {

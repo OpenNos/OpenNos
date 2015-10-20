@@ -7,6 +7,8 @@ using System.Resources;
 using System.Reflection;
 using System.Globalization;
 using System.Threading;
+using System.IO;
+
 namespace OpenNos.Core
 {
     public class Language
@@ -31,7 +33,7 @@ namespace OpenNos.Core
 
         public string GetMessageFromKey(string message)
         {
-            ResourceManager resourceManager = new ResourceManager("Resource.localizedresources", Assembly.GetCallingAssembly());
+            ResourceManager resourceManager = new ResourceManager(Assembly.GetCallingAssembly().GetName().Name + ".Resource.LocalizedResources", Assembly.GetCallingAssembly());
             if (resourceManager.GetString(message) != null && resourceManager.GetString(message) != "")
                 return resourceManager.GetString(message);
             else

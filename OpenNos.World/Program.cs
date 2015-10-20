@@ -16,6 +16,7 @@ using OpenNos.Core;
 using OpenNos.Handler;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 
 namespace OpenNos.World
 {
