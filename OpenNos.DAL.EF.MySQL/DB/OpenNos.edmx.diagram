@@ -5,8 +5,8 @@
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
       <Diagram DiagramId="f76ed05649d94abe8fc46f3ecc52e312" Name="Diagram1">
-        <EntityTypeShape EntityType="opennosModel.account" Width="1.5" PointX="0.5" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="opennosModel.character" Width="1.5" PointX="2.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="opennosModel.Account" Width="1.5" PointX="0.5" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="opennosModel.Character" Width="1.5" PointX="2.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="opennosModel.characterfamily" Width="1.5" PointX="4.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="opennosModel.family" Width="1.5" PointX="4.75" PointY="3.75" IsExpanded="true" />
         <EntityTypeShape EntityType="opennosModel.familyhistory" Width="1.5" PointX="6.75" PointY="0.75" IsExpanded="true" />
@@ -24,7 +24,6 @@
         <EntityTypeShape EntityType="opennosModel.shop" Width="1.5" PointX="10.75" PointY="6.75" IsExpanded="true" />
         <EntityTypeShape EntityType="opennosModel.warehouse" Width="1.5" PointX="10.75" PointY="9.75" IsExpanded="true" />
         <AssociationConnector Association="opennosModel.AccountCharacter" />
-        <AssociationConnector Association="opennosModel.charafamilyfamily" />
         <AssociationConnector Association="opennosModel.charactercharafamily" />
         <AssociationConnector Association="opennosModel.characterfriend" />
         <AssociationConnector Association="opennosModel.characterminiland" />
@@ -33,15 +32,16 @@
         <AssociationConnector Association="opennosModel.characterlistskill" />
         <AssociationConnector Association="opennosModel.inventoryitems" />
         <AssociationConnector Association="opennosModel.itemsrunes" />
-        <AssociationConnector Association="opennosModel.shopnpcs" />
         <AssociationConnector Association="opennosModel.characterpet" />
-        <AssociationConnector Association="opennosModel.characterpartner" />
         <AssociationConnector Association="opennosModel.accountwarehouse" />
         <AssociationConnector Association="opennosModel.familywarehouse" />
         <EntityTypeShape EntityType="opennosModel.action" Width="1.5" PointX="0.5" PointY="6.375" />
         <AssociationConnector Association="opennosModel.actioncharacter" />
         <EntityTypeShape EntityType="opennosModel.log" Width="1.5" PointX="0.5" PointY="3.875" />
+        <AssociationConnector Association="opennosModel.npcshop" />
+        <AssociationConnector Association="opennosModel.characterpartner" />
         <AssociationConnector Association="opennosModel.accountlog" />
+        <AssociationConnector Association="opennosModel.familycharacterfamily" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
