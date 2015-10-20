@@ -27,7 +27,7 @@ using System.Text;
 
 namespace OpenNos.DAL.EF.MySQL
 {
-    public static class DBHelper
+    public static class DataAccessHelper
     {
 
         #region Members
@@ -88,14 +88,14 @@ namespace OpenNos.DAL.EF.MySQL
         public static DbTransaction BeginTransaction()
         {
             // an open connection is needed for a transaction
-            if (DBHelper.Context.Database.Connection.State == System.Data.ConnectionState.Broken ||
-                DBHelper.Context.Database.Connection.State == System.Data.ConnectionState.Closed)
+            if (DataAccessHelper.Context.Database.Connection.State == System.Data.ConnectionState.Broken ||
+                DataAccessHelper.Context.Database.Connection.State == System.Data.ConnectionState.Closed)
             {
-                DBHelper.Context.Database.Connection.Open();
+                DataAccessHelper.Context.Database.Connection.Open();
             }
 
             // begin and return new transaction
-            return DBHelper.Context.Database.Connection.BeginTransaction();
+            return DataAccessHelper.Context.Database.Connection.BeginTransaction();
         }
 
         #endregion

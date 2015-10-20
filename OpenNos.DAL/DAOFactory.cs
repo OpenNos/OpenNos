@@ -26,6 +26,7 @@ namespace OpenNos.DAL
         #region Members
 
         private static IAccountDAO _accountDAO;
+        private static ICharacterDAO _characterDAO;
 
         #endregion
 
@@ -42,6 +43,19 @@ namespace OpenNos.DAL
 
                 return _accountDAO;
             }          
+        }
+
+        public static ICharacterDAO CharacterDAO
+        {
+            get
+            {
+                if (_characterDAO == null)
+                {
+                    _characterDAO = new MySQL.CharacterDAO();
+                }
+
+                return _characterDAO;
+            }
         }
 
         #endregion

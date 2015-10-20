@@ -45,9 +45,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="IAccountDAO.cs" />
+    <Compile Include="ICharacterDAO.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\OpenNos.Data\OpenNos.Data.csproj">
+      <Project>{f1071ded-3d92-4416-9b9c-8664441ade64}</Project>
+      <Name>OpenNos.Data</Name>
+    </ProjectReference>
     <ProjectReference Include="..\OpenNos.Domain\OpenNos.Domain.csproj">
       <Project>{20addddd-dad9-44f3-9beb-026c73090660}</Project>
       <Name>OpenNos.Domain</Name>

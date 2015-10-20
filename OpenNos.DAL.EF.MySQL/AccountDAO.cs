@@ -26,33 +26,33 @@ namespace OpenNos.DAL.EF.MySQL
     {
         public bool CheckPasswordValiditiy(string name, string passwordHashed)
         {
-            using (var context = DBHelper.CreateContext())
+            using (var context = DataAccessHelper.CreateContext())
             {
-                return context.Account.Any(a => a.Name.Equals(name) && a.Password.Equals(passwordHashed));
+                return context.account.Any(a => a.Name.Equals(name) && a.Password.Equals(passwordHashed));
             }
         }
 
         public bool IsLoggedIn(string name)
         {
-            using (var context = DBHelper.CreateContext())
+            using (var context = DataAccessHelper.CreateContext())
             {
-                return context.Account.Any(a => a.Name.Equals(name) && a.LoggedIn);
+                return context.account.Any(a => a.Name.Equals(name) && a.LoggedIn);
             }
         }
 
         public AuthorityType LoadAuthorityType(string name)
         {
-            using (var context = DBHelper.CreateContext())
+            using (var context = DataAccessHelper.CreateContext())
             {
-                return (AuthorityType)context.Account.SingleOrDefault(a => a.Name.Equals(name)).Authority;
+                return (AuthorityType)context.account.SingleOrDefault(a => a.Name.Equals(name)).Authority;
             }
         }
 
         public void LogIn(string name)
         {
-            using (var context = DBHelper.CreateContext())
+            using (var context = DataAccessHelper.CreateContext())
             {
-                account account = context.Account.SingleOrDefault(a => a.Name.Equals(name));
+                Account account = context.account.SingleOrDefault(a => a.Name.Equals(name));
                 account.LoggedIn = true;
                // account.LastConnect = DateTime.Now;
                 context.SaveChanges();
@@ -61,9 +61,9 @@ namespace OpenNos.DAL.EF.MySQL
 
         public void UpdateLastSessionAndIp(string name, int session, string ip)
         {
-            using (var context = DBHelper.CreateContext())
+            using (var context = DataAccessHelper.CreateContext())
             {
-                account account = context.Account.SingleOrDefault(a => a.Name.Equals(name));
+                Account account = context.account.SingleOrDefault(a => a.Name.Equals(name));
                 account.LastSession = session;
                // account.LastIp = ip;
                // account.LastConnect = DateTime.Now;
