@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using OpenNos.Data;
 
 namespace OpenNos.DAL.EF.MySQL
 {
@@ -46,6 +47,30 @@ namespace OpenNos.DAL.EF.MySQL
             {
                 return (AuthorityType)context.account.SingleOrDefault(a => a.Name.Equals(name)).Authority;
             }
+        }
+
+        public AccountDTO LoadBySessionId(int sessionId)
+        {
+            using (var context = DataAccessHelper.CreateContext())
+            {
+                Account account = context.account.FirstOrDefault(a => a.LastSession.Equals(sessionId));
+
+                if(account != null)
+                {
+                    //TODO implement ObjectMapper
+                    return new AccountDTO()
+                    {
+                        AccountId = account.AccountId,
+                        Authortiy = (AuthorityType)account.Authority,
+                        LastSession = account.LastSession,
+                        LoggedIn = account.LoggedIn,
+                        Name = account.Name,
+                        Password = account.Password
+                    };
+                }
+            }
+
+            return null;
         }
 
         public void LogIn(string name)

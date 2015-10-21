@@ -35,6 +35,7 @@ namespace OpenNos.World
             Console.WriteLine("===============================================================================\n"
                              + "                 WORLD SERVER VERSION 1.0.0 by OpenNos Team\n" +
                              "===============================================================================\n");
+
             NetworkManager<WorldEncryption> networkManager = new NetworkManager<WorldEncryption>("127.0.0.1", 1337, handlers, true);
         }
     }

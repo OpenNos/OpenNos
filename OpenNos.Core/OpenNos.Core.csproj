@@ -48,6 +48,7 @@
   <ItemGroup>
     <Compile Include="Application.cs" />
     <Compile Include="Collections\ThreadSafeSortedList.cs" />
+    <Compile Include="LoginEncryption.cs" />
     <Compile Include="Networking\Communication\ScsServices\Client\IScsServiceClient.cs" />
     <Compile Include="Networking\Communication\ScsServices\Client\ScsServiceClient.cs" />
     <Compile Include="Networking\Communication\ScsServices\Client\ScsServiceClientBuilder.cs" />
@@ -110,7 +111,6 @@
     <Compile Include="Language.cs" />
     <Compile Include="PacketFactory.cs" />
     <Compile Include="ServerConfig.cs" />
-    <Compile Include="LoginEncryption.cs" />
     <Compile Include="EncryptionBase.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="PacketAttribute.cs" />
