@@ -17,6 +17,7 @@ namespace OpenNos.Core
 
         public CustomScsServerClient(ICommunicationChannel communicationChannel) : base(communicationChannel)
         {
+            //absolutely new instantiated Client has no SessionId
             SessionId = 0;
         }
 

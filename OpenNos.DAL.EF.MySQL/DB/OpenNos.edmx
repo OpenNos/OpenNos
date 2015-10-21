@@ -76,10 +76,6 @@
       <End Role="character" EntitySet="character" />
       <End Role="pet" EntitySet="pet" />
     </AssociationSet>
-    <AssociationSet Name="accountwarehouse" Association="opennosModel.Store.accountwarehouse">
-      <End Role="account" EntitySet="account" />
-      <End Role="warehouse" EntitySet="warehouse" />
-    </AssociationSet>
     <AssociationSet Name="familywarehouse" Association="opennosModel.Store.familywarehouse">
       <End Role="family" EntitySet="family" />
       <End Role="warehouse" EntitySet="warehouse" />
@@ -115,7 +111,6 @@
     <Property Name="Authority" Type="smallint" Nullable="false" />
     <Property Name="LastSession" Type="int" Nullable="false" />
     <Property Name="LoggedIn" Type="bool" Nullable="false" />
-    <Property Name="warehouse_WareHouseId" Type="int" Nullable="false" />
   </EntityType>
   <EntityType Name="character">
     <Key>
@@ -468,18 +463,6 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="accountwarehouse">
-    <End Role="account" Type="opennosModel.Store.account" Multiplicity="*" />
-    <End Role="warehouse" Type="opennosModel.Store.warehouse" Multiplicity="1" />
-    <ReferentialConstraint>
-      <Principal Role="warehouse">
-        <PropertyRef Name="WareHouseId" />
-      </Principal>
-      <Dependent Role="account">
-        <PropertyRef Name="warehouse_WareHouseId" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
   <Association Name="familywarehouse">
     <End Role="family" Type="opennosModel.Store.family" Multiplicity="*" />
     <End Role="warehouse" Type="opennosModel.Store.warehouse" Multiplicity="1" />
@@ -615,7 +598,6 @@
           <Property Name="LastSession" Type="Int32" Nullable="false" />
           <NavigationProperty Name="character" Relationship="opennosModel.AccountCharacter" FromRole="Account" ToRole="Character" />
           <Property Name="LoggedIn" Type="Boolean" Nullable="false" />
-          <NavigationProperty Name="warehouse" Relationship="opennosModel.accountwarehouse" FromRole="account" ToRole="warehouse" />
           <NavigationProperty Name="log" Relationship="opennosModel.accountlog" FromRole="account" ToRole="log" />
         </EntityType>
         <EntityType Name="Character">
@@ -858,7 +840,6 @@
           <Property Name="Owner" Type="Int32" Nullable="false" />
           <Property Name="Item" Type="Int32" Nullable="false" />
           <Property Name="Pos" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="account" Relationship="opennosModel.accountwarehouse" FromRole="warehouse" ToRole="account" />
           <NavigationProperty Name="family" Relationship="opennosModel.familywarehouse" FromRole="warehouse" ToRole="family" />
         </EntityType>
         <EntityContainer Name="OpenNosContainer" annotation:LazyLoadingEnabled="false">
@@ -919,10 +900,6 @@
           <AssociationSet Name="characterpet" Association="opennosModel.characterpet">
             <End Role="character" EntitySet="character" />
             <End Role="pet" EntitySet="pet" />
-          </AssociationSet>
-          <AssociationSet Name="accountwarehouse" Association="opennosModel.accountwarehouse">
-            <End Role="account" EntitySet="account" />
-            <End Role="warehouse" EntitySet="warehouse" />
           </AssociationSet>
           <AssociationSet Name="familywarehouse" Association="opennosModel.familywarehouse">
             <End Role="family" EntitySet="family" />
@@ -1014,10 +991,6 @@
               <PropertyRef Name="CharacterId" />
             </Dependent>
           </ReferentialConstraint>
-        </Association>
-        <Association Name="accountwarehouse">
-          <End Type="opennosModel.Account" Role="account" Multiplicity="0..1" />
-          <End Type="opennosModel.warehouse" Role="warehouse" Multiplicity="1" />
         </Association>
         <Association Name="familywarehouse">
           <End Type="opennosModel.family" Role="family" Multiplicity="1" />
@@ -1418,14 +1391,6 @@
       </EndProperty>
       <EndProperty Name="runes">
         <ScalarProperty Name="RuneId" ColumnName="RuneId" />
-      </EndProperty>
-    </AssociationSetMapping>
-    <AssociationSetMapping Name="accountwarehouse" TypeName="opennosModel.accountwarehouse" StoreEntitySet="account">
-      <EndProperty Name="warehouse">
-        <ScalarProperty Name="WareHouseId" ColumnName="warehouse_WareHouseId" />
-      </EndProperty>
-      <EndProperty Name="account">
-        <ScalarProperty Name="AccountId" ColumnName="AccountId" />
       </EndProperty>
     </AssociationSetMapping>
     <AssociationSetMapping Name="familywarehouse" TypeName="opennosModel.familywarehouse" StoreEntitySet="family">

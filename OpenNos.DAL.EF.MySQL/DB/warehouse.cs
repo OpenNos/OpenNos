@@ -19,7 +19,6 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public int Item { get; set; }
         public int Pos { get; set; }
     
-        public virtual Account account { get; set; }
         public virtual family family { get; set; }
     }
 }

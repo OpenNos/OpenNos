@@ -63,7 +63,7 @@ namespace OpenNos.Login
 
         public string CreateServers(int session)
         {
-            string channelPacket = String.Format("NsTeST {0} ", session + 10000);
+            string channelPacket = String.Format("NsTeST {0} ", session);
             List<ServerConfig.Server> myServs = (List<ServerConfig.Server>)ConfigurationManager.GetSection("Servers");
 
             checked
@@ -92,7 +92,7 @@ namespace OpenNos.Login
         }
 
         [Packet("NoS0575")]
-        public ScsMessage CheckUser(string packet, long session)
+        public ScsMessage CheckUser(string packet, long clientId)
         {
             User user = PacketFactory.Deserialize<User>(packet);
             //fermé
@@ -118,10 +118,12 @@ namespace OpenNos.Login
                                 {
                                     if (!DAOFactory.AccountDAO.IsLoggedIn(user.Name))
                                     {
-                                        DAOFactory.AccountDAO.UpdateLastSessionAndIp(user.Name, (int)session, _client.RemoteEndPoint.ToString());
-                                        Logger.Log.DebugFormat("CONNECT {0} Connected -- session:{1}", user.Name, session);
+                                        int newSessionId = SessionFactory.Instance.GenerateSessionId();
 
-                                        return SendMsg(CreateServers((int)session));
+                                        DAOFactory.AccountDAO.UpdateLastSessionAndIp(user.Name, (int)newSessionId, _client.RemoteEndPoint.ToString());
+                                        Logger.Log.DebugFormat("CONNECT {0} Connected -- session:{1}", user.Name, newSessionId);
+
+                                        return SendMsg(CreateServers((int)newSessionId));
                                     }
                                     else
                                     {

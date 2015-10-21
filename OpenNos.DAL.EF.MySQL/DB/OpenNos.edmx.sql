@@ -44,7 +44,7 @@
 -- -----------------------------------------------------------
 -- Entity Designer DDL Script for MySQL Server 4.1 and higher
 -- -----------------------------------------------------------
--- Date Created: 10/21/2015 16:33:22
+-- Date Created: 10/21/2015 19:06:25
 
 -- Generated from EDMX file: C:\Users\Alex\Documents\GitHub\OpenNos\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
 -- Target version: 3.0.0.0
@@ -160,8 +160,7 @@ CREATE TABLE `account`(
 	`Password` varchar (255) NOT NULL, 
 	`Authority` smallint NOT NULL, 
 	`LastSession` int NOT NULL, 
-	`LoggedIn` bool NOT NULL, 
-	`warehouse_WareHouseId` int NOT NULL);
+	`LoggedIn` bool NOT NULL);
 
 ALTER TABLE `account` ADD PRIMARY KEY (AccountId);
 
@@ -691,24 +690,6 @@ ADD CONSTRAINT `FK_characterpet`
 CREATE INDEX `IX_FK_characterpet`
     ON `pet`
     (`CharacterId`);
-
-
-
--- Creating foreign key on `warehouse_WareHouseId` in table 'account'
-
-ALTER TABLE `account`
-ADD CONSTRAINT `FK_accountwarehouse`
-    FOREIGN KEY (`warehouse_WareHouseId`)
-    REFERENCES `warehouse`
-        (`WareHouseId`)
-    ON DELETE NO ACTION ON UPDATE NO ACTION;
-
-
--- Creating non-clustered index for FOREIGN KEY 'FK_accountwarehouse'
-
-CREATE INDEX `IX_FK_accountwarehouse`
-    ON `account`
-    (`warehouse_WareHouseId`);
 
 
 
