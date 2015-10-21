@@ -15,7 +15,19 @@ namespace OpenNos.Data
 
         public string Password { get; set; }
 
-        public AuthorityType Authortiy { get; set; }
+        public byte Authority { get; set; }
+
+        public AuthorityType AuthorityEnum
+        {
+            get
+            {
+                return (AuthorityType)Authority;
+            }
+            set
+            {
+                Authority = (byte)value;
+            }
+        }
 
         public int LastSession { get; set; }
 

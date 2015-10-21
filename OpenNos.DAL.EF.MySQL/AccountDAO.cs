@@ -20,6 +20,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using OpenNos.Data;
+using AutoMapper;
 
 namespace OpenNos.DAL.EF.MySQL
 {
@@ -57,16 +58,7 @@ namespace OpenNos.DAL.EF.MySQL
 
                 if(account != null)
                 {
-                    //TODO implement ObjectMapper
-                    return new AccountDTO()
-                    {
-                        AccountId = account.AccountId,
-                        Authortiy = (AuthorityType)account.Authority,
-                        LastSession = account.LastSession,
-                        LoggedIn = account.LoggedIn,
-                        Name = account.Name,
-                        Password = account.Password
-                    };
+                    return Mapper.Map<AccountDTO>(account); 
                 }
             }
 
@@ -79,7 +71,6 @@ namespace OpenNos.DAL.EF.MySQL
             {
                 Account account = context.account.SingleOrDefault(a => a.Name.Equals(name));
                 account.LoggedIn = true;
-               // account.LastConnect = DateTime.Now;
                 context.SaveChanges();
             }
         }
@@ -90,8 +81,6 @@ namespace OpenNos.DAL.EF.MySQL
             {
                 Account account = context.account.SingleOrDefault(a => a.Name.Equals(name));
                 account.LastSession = session;
-               // account.LastIp = ip;
-               // account.LastConnect = DateTime.Now;
                 context.SaveChanges();
             }
         }
