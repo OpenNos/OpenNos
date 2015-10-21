@@ -1,9 +1,0 @@
-C:\Users\ERWAN\Desktop\OpenNos GIT\OpenNos\OpenNos.DAL.Interface\bin\Release\OpenNos.DAL.Interface.dll
-C:\Users\ERWAN\Desktop\OpenNos GIT\OpenNos\OpenNos.DAL.Interface\bin\Release\OpenNos.DAL.Interface.pdb
-C:\Users\ERWAN\Desktop\OpenNos GIT\OpenNos\OpenNos.DAL.Interface\bin\Release\log4net.dll
-C:\Users\ERWAN\Desktop\OpenNos GIT\OpenNos\OpenNos.DAL.Interface\bin\Release\OpenNos.Domain.dll
-C:\Users\ERWAN\Desktop\OpenNos GIT\OpenNos\OpenNos.DAL.Interface\bin\Release\OpenNos.Domain.pdb
-C:\Users\ERWAN\Desktop\OpenNos GIT\OpenNos\OpenNos.DAL.Interface\bin\Release\log4net.xml
-C:\Users\ERWAN\Desktop\OpenNos GIT\OpenNos\OpenNos.DAL.Interface\obj\Release\OpenNos.DAL.Interface.csprojResolveAssemblyReference.cache
-C:\Users\ERWAN\Desktop\OpenNos GIT\OpenNos\OpenNos.DAL.Interface\obj\Release\OpenNos.DAL.Interface.dll
-C:\Users\ERWAN\Desktop\OpenNos GIT\OpenNos\OpenNos.DAL.Interface\obj\Release\OpenNos.DAL.Interface.pdb

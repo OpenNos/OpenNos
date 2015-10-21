@@ -1,7 +1,0 @@
-C:\Users\ERWAN\Desktop\OpenNos GIT\OpenNos\OpenNos.Core\bin\Release\OpenNos.Core.dll
-C:\Users\ERWAN\Desktop\OpenNos GIT\OpenNos\OpenNos.Core\bin\Release\OpenNos.Core.pdb
-C:\Users\ERWAN\Desktop\OpenNos GIT\OpenNos\OpenNos.Core\bin\Release\log4net.dll
-C:\Users\ERWAN\Desktop\OpenNos GIT\OpenNos\OpenNos.Core\bin\Release\log4net.xml
-C:\Users\ERWAN\Desktop\OpenNos GIT\OpenNos\OpenNos.Core\obj\Release\OpenNos.Core.csprojResolveAssemblyReference.cache
-C:\Users\ERWAN\Desktop\OpenNos GIT\OpenNos\OpenNos.Core\obj\Release\OpenNos.Core.dll
-C:\Users\ERWAN\Desktop\OpenNos GIT\OpenNos\OpenNos.Core\obj\Release\OpenNos.Core.pdb
