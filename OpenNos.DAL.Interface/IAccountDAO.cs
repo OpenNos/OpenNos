@@ -11,6 +11,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  */
+using OpenNos.Data;
 using OpenNos.Domain;
 using System;
 using System.Collections.Generic;
@@ -23,6 +24,8 @@ namespace OpenNos.DAL.Interface
     public interface IAccountDAO
     {
         #region Methods
+
+        AccountDTO LoadBySessionId(int sessionId);
 
         bool CheckPasswordValiditiy(string name, string passwordHashed);
 
