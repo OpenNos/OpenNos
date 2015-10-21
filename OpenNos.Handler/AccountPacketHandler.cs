@@ -13,6 +13,8 @@
  */
 using OpenNos.Core;
 using OpenNos.Core.Communication.Scs.Communication.Messages;
+using OpenNos.DAL;
+using OpenNos.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,8 +33,12 @@ namespace OpenNos.Handler
         }
 
         [Packet("OpenNos.EntryPoint")]
-        public ScsTextMessage Initialize(long clientId)
+        public ScsTextMessage Initialize(int sessionId)
         {
+            //load account by given SessionId
+            AccountDTO account = DAOFactory.AccountDAO.LoadBySessionId(sessionId);
+            Logger.Log.InfoFormat("Account with SessionId {0} has arrived.", sessionId);
+
             //TODO Initialize User
             return new ScsTextMessage();
         }

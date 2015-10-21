@@ -33,7 +33,6 @@
         <AssociationConnector Association="opennosModel.inventoryitems" />
         <AssociationConnector Association="opennosModel.itemsrunes" />
         <AssociationConnector Association="opennosModel.characterpet" />
-        <AssociationConnector Association="opennosModel.accountwarehouse" />
         <AssociationConnector Association="opennosModel.familywarehouse" />
         <EntityTypeShape EntityType="opennosModel.action" Width="1.5" PointX="0.5" PointY="6.375" />
         <AssociationConnector Association="opennosModel.actioncharacter" />

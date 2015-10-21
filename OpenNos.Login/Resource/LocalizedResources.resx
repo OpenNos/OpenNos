@@ -120,4 +120,7 @@
   <data name="Config_Loaded" xml:space="preserve">
     <value>Config loaded !</value>
   </data>
+  <data name="IDERROR" xml:space="preserve">
+    <value>Wrong Id!</value>
+  </data>
 </root>

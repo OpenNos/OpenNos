@@ -57,7 +57,7 @@ namespace OpenNos.Core
 
         static void Server_ClientConnected(object sender, ServerClientEventArgs e)
         {
-            Logger.Log.Info("A new client is connected. SessionId = " + e.Client.ClientId);
+            Logger.Log.Info("A new client is connected. ClientId = " + e.Client.ClientId);
 
             CustomScsServerClient customClient = e.Client as CustomScsServerClient;
 
@@ -73,7 +73,7 @@ namespace OpenNos.Core
 
         static void Server_ClientDisconnected(object sender, ServerClientEventArgs e)
         {
-            Logger.Log.Info("A client is has been disconnected! SessionId = " + e.Client.ClientId);
+            Logger.Log.Info("A client is has been disconnected! CliendId = " + e.Client.ClientId);
         }
 
         static void Client_MessageReceived(object sender, MessageEventArgs e)
@@ -93,13 +93,15 @@ namespace OpenNos.Core
                 string sessionPacket = _encryptor.DecryptCustomParameter(message.MessageData, message.MessageData.Length);
                 string[] sessionParts = sessionPacket.Split(' ');
                 client.LastKeepAliveIdentity = Convert.ToInt32(sessionParts[0]);
+
+                //set the SessionId if Session Packet arrives
                 client.SessionId = Convert.ToInt32(sessionParts[1].Split('\\').FirstOrDefault());
                 Logger.Log.DebugFormat("Client arrived, SessionId: {0}", client.SessionId);
 
                 foreach (Type type in _packetHandlers)
                 {
                     MethodInfo methodInfo = GetMethodInfo("OpenNos.EntryPoint", type);
-                    object result = methodInfo.Invoke(client.Handlers.SingleOrDefault(h => h.Key.Equals(type.ToString())).Value, new object[] { client.ClientId });
+                    object result = methodInfo.Invoke(client.Handlers.SingleOrDefault(h => h.Key.Equals(type.ToString())).Value, new object[] { client.SessionId });
                     //Send reply message to the client
                     ScsTextMessage resultMessage = (ScsTextMessage)result;
                     Logger.Log.DebugFormat("Message sent {0} to client {1}", resultMessage.Text, client.SessionId);
@@ -115,7 +117,6 @@ namespace OpenNos.Core
             }
 
             string packet = _encryptor.Decrypt(message.MessageData, message.MessageData.Length, (int)client.SessionId);
-
             Logger.Log.DebugFormat("Message received {0} on client {1}", packet, client.ClientId);
 
             string packetHeader = packet.Split(' ')[0];
@@ -128,7 +129,7 @@ namespace OpenNos.Core
 
                     if (methodInfo != null)
                     {
-                        object result = methodInfo.Invoke(client.Handlers.SingleOrDefault(h => h.Key.Equals(type.ToString())).Value, new object[] { packet, client.ClientId });
+                        object result = methodInfo.Invoke(client.Handlers.SingleOrDefault(h => h.Key.Equals(type.ToString())).Value, new object[] { packet, client.SessionId });
                         //Send reply message to the client
                         ScsTextMessage resultMessage = (ScsTextMessage)result;
                         if (!String.IsNullOrEmpty(resultMessage.Text))
