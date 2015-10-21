@@ -109,7 +109,7 @@ namespace OpenNos.Core.Communication.Scs.Server
         /// <param name="e">Event arguments</param>
         private void ConnectionListener_CommunicationChannelConnected(object sender, CommunicationChannelEventArgs e)
         {
-            var client = new CustomScsServerClient(e.Channel)
+            var client = new NetworkClient(e.Channel)
             {
                 ClientId = ScsServerManager.GetClientId(),
                 WireProtocol = WireProtocolFactory.CreateWireProtocol()

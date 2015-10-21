@@ -107,7 +107,7 @@
     <Compile Include="Networking\Communication\Scs\Server\ScsServerManager.cs" />
     <Compile Include="Networking\Communication\Scs\Server\ServerClientEventArgs.cs" />
     <Compile Include="Networking\Communication\Scs\Server\Tcp\ScsTcpServer.cs" />
-    <Compile Include="Networking\CustomScsServerClient.cs" />
+    <Compile Include="Networking\NetworkClient.cs" />
     <Compile Include="Language.cs" />
     <Compile Include="PacketFactory.cs" />
     <Compile Include="ServerConfig.cs" />
