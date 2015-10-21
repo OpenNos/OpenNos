@@ -11,7 +11,9 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  */
+using AutoMapper;
 using OpenNos.DAL.EF.MySQL.DB;
+using OpenNos.Data;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -33,6 +35,17 @@ namespace OpenNos.DAL.EF.MySQL
         #region Members
 
         private static OpenNosContainer _context;
+
+        #endregion
+
+        #region Instantiation
+
+        static DataAccessHelper()
+        {
+            //Mapper needs to Create Maps, this is a bit uncool, but the Framework itself is nice
+            Mapper.CreateMap<Account, AccountDTO>();
+            Mapper.CreateMap<Character, Character>();
+        }
 
         #endregion
 
