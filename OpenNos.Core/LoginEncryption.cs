@@ -92,7 +92,7 @@ namespace OpenNos.Core
             return decpass;
         }
 
-        public override string DecryptCustomParameter(byte[] data, int size)
+        public override string DecryptCustomParameter(byte[] data)
         {
             throw new NotImplementedException();
         }
