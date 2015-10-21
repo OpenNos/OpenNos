@@ -33,9 +33,9 @@ namespace OpenNos.Login
         private int _channelCount;
         private int _gamePort;
 
-        private readonly CustomScsServerClient _client;
+        private readonly NetworkClient _client;
 
-        public LoginPacketHandler(CustomScsServerClient client)
+        public LoginPacketHandler(NetworkClient client)
         {
             _client = client;
         }

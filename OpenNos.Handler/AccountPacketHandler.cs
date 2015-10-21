@@ -25,15 +25,15 @@ namespace OpenNos.Handler
 {
     public class AccountPacketHandler : PacketHandlerBase
     {
-        private readonly CustomScsServerClient _client;
+        private readonly NetworkClient _client;
 
-        public AccountPacketHandler(CustomScsServerClient client)
+        public AccountPacketHandler(NetworkClient client)
         {
             _client = client;
         }
 
         [Packet("OpenNos.EntryPoint")]
-        public ScsTextMessage Initialize(int sessionId)
+        public ScsTextMessage Initialize(string packet, int sessionId)
         {
             //load account by given SessionId
             AccountDTO account = DAOFactory.AccountDAO.LoadBySessionId(sessionId);
