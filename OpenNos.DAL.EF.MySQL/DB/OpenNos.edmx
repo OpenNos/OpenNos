@@ -1016,7 +1016,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="accountwarehouse">
-          <End Type="opennosModel.Account" Role="account" Multiplicity="1" />
+          <End Type="opennosModel.Account" Role="account" Multiplicity="0..1" />
           <End Type="opennosModel.warehouse" Role="warehouse" Multiplicity="1" />
         </Association>
         <Association Name="familywarehouse">
