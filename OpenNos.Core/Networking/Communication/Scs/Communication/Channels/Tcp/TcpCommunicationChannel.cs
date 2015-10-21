@@ -188,10 +188,11 @@ namespace OpenNos.Core.Communication.Scs.Communication.Channels.Tcp
                         OnMessageReceived(message);
                     }
                 }
-                //else
-                //{
-                //    throw new CommunicationException("Tcp socket is closed");
-                //}
+                else
+                {
+                    Logger.Log.Warn("Connection closed by Client.");
+                    Disconnect();
+                }
 
                 //Read more bytes if still running
                 if (_running)
