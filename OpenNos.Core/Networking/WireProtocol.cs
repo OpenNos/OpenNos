@@ -54,7 +54,9 @@ namespace OpenNos.Core
         public byte[] GetBytes(IScsMessage message)
         {
             //Serialize the message to a byte array
-            var serializedMessage = ((ScsRawDataMessage)message).MessageData;
+            var serializedMessage = message is ScsTextMessage ? 
+                Encoding.Default.GetBytes(((ScsTextMessage)message).Text) :
+                ((ScsRawDataMessage)message).MessageData;
 
             //Check for message length
             var messageLength = serializedMessage.Length;

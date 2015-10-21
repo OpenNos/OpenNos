@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using OpenNos.Core.Communication.Scs.Communication.Channels;
 using OpenNos.Core.Communication.Scs.Communication.Messages;
 using System.Reflection;
+using System.Threading;
 
 namespace OpenNos.Core
 {
@@ -83,16 +84,20 @@ namespace OpenNos.Core
                 if (methodInfo != null)
                 {
                     object result = methodInfo.Invoke(handler.Value, new object[] { packet, this.SessionId });
-                    //Send reply message to the client
-                    ScsTextMessage resultMessage = (ScsTextMessage)result;
-                    Logger.Log.DebugFormat("Message sent {0} to client {1}", resultMessage.Text, this.SessionId);
 
-                    if (!String.IsNullOrEmpty(resultMessage.Text))
+                    if(result != null)
                     {
-                        ScsRawDataMessage rawMessage = new ScsRawDataMessage(_encryptor.Encrypt(resultMessage.Text));
-                        this.SendMessage(rawMessage);
-                    }
+                        //Send reply message to the client
+                        ScsTextMessage resultMessage = (ScsTextMessage)result;
+                        Logger.Log.DebugFormat("Message sent {0} to client {1}", resultMessage.Text, this.SessionId);
 
+                        if (!String.IsNullOrEmpty(resultMessage.Text))
+                        {
+                            ScsRawDataMessage rawMessage = new ScsRawDataMessage(_encryptor.Encrypt(resultMessage.Text));
+                            this.SendMessage(rawMessage);
+                        }
+                    }
+                    
                     return true;
                 }
             }
