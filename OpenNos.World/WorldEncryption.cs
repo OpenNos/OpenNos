@@ -24,245 +24,242 @@ namespace OpenNos.World
     {
         public WorldEncryption() : base(true) { }
 
-        public override string Decrypt(byte[] data, int size, int customParameter = 0)
+        public override string Decrypt(byte[] str, int length, int session_id)
         {
-            string decryptedPacket = String.Empty;
-            int session_key = customParameter & 0xFF;
-            uint session_number = (uint)(customParameter >> 6);
-            session_number &= (uint)0xFF;
-            session_number &= (uint)2147483651;
+            string encrypted_string = "";
+            byte session_key = (byte)(session_id & 0xFF);
+            byte session_number = (byte)(session_id >> 6);
+            session_number &= (byte)0xFF;
+            session_number &= unchecked((byte)0x80000003);
 
             switch (session_number)
             {
                 case 0:
-                    for (int i = 0; i < size; i++)
+                    for (int i = 0; i < length; i++)
                     {
                         byte firstbyte = (byte)(session_key + 0x40);
-                        byte highbyte = (byte)(data[i] - firstbyte);
-                        decryptedPacket += Convert.ToChar(highbyte);
+                        byte highbyte = (byte)(str[i] - firstbyte);
+                        encrypted_string += highbyte + " ";
                     }
                     break;
 
                 case 1:
-                    for (int i = 0; i < size; i++)
+                    for (int i = 0; i < length; i++)
                     {
                         byte firstbyte = (byte)(session_key + 0x40);
-                        byte highbyte = (byte)(data[i] + firstbyte);
-                        decryptedPacket += Convert.ToChar(highbyte);
+                        byte highbyte = (byte)(str[i] + firstbyte);
+                        encrypted_string += highbyte + " ";
                     }
                     break;
 
                 case 2:
-                    for (int i = 0; i < size; i++)
+                    for (int i = 0; i < length; i++)
                     {
                         byte firstbyte = (byte)(session_key + 0x40);
-                        byte highbyte = (byte)(data[i] - firstbyte ^ 0xC3);
-                        decryptedPacket += Convert.ToChar(highbyte);
+                        byte highbyte = (byte)(str[i] - firstbyte ^ 0xC3);
+                        encrypted_string += highbyte + " ";
                     }
                     break;
 
                 case 3:
-                    for (int i = 0; i < size; i++)
+                    for (int i = 0; i < length; i++)
                     {
                         byte firstbyte = (byte)(session_key + 0x40);
-                        byte highbyte = (byte)(data[i] + firstbyte ^ 0xC3);
-                        decryptedPacket += Convert.ToChar(highbyte);
+                        byte highbyte = (byte)(str[i] + firstbyte ^ 0xC3);
+                        encrypted_string += highbyte + " ";
                     }
                     break;
 
                 default:
-                    decryptedPacket += Convert.ToChar(0xF);
+                    encrypted_string += 0xF;
                     break;
             }
 
-            string[] decryptedParts = decryptedPacket.Split('ÿ');
 
-            String decryptedPart = String.Empty;
-
-            for (int i = 0; i < decryptedParts.Length; i++)
+            string[] var2 = encrypted_string.Split(new string[] { "255 " }, StringSplitOptions.None);// return string less 255 (2 strings)
+            byte[][] bytes = new byte[var2.Length - 1][];
+            for (int i = 0; i < bytes.Length; i++)
             {
-                decryptedPart += Decrypt2(decryptedParts[i]);
-                decryptedPart += Convert.ToChar(0xFF);
+                string[] temp = var2[i].Split(' ');
+                bytes[i] = new byte[temp.Length - 1];
+                for (int j = 0; j < bytes[i].Length; j++)
+                {
+                    bytes[i][j] = Byte.Parse(temp[j]);
+                }
+            }
+            string save = "";
+            for (int i = 0; i < bytes.Length; i++)
+            {
+                save += Decrypt2(bytes[i]);
+                save += (char)0xFF;
             }
 
-            return decryptedPart;
+            return save;
         }
 
-        public static string Decrypt2(string str)
+        public static string Decrypt2(byte[] str)
         {
-            String decryptedPacket = String.Empty;
 
-            char[] table = new char[] { ' ', '-', '.', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '\n' };
+            string decrypted_string = "";
+            char[] table = { ' ', '-', '.', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'n' };
             int count = 0;
 
-            for (count = 0; count < str.Length;)
-            {
-                if ((byte)str[count] <= 0x7A)
-                {
-                    byte len = (byte)str[count];
 
-                    for (int i = 0; i < len; i++)
+            for (count = 0; count < str.Length - 1;)
+            {
+                if (str[count] <= 0x7A)
+                {
+                    byte len = str[count];
+
+                    for (int i = 0; i < (int)len; i++)
                     {
                         count++;
-                        decryptedPacket += Convert.ToChar((byte)str[count] ^ 0xFF);
-                    }
 
+                        decrypted_string += getextendedascii((count < str.Length ? str[count] : 0) ^ 0xFF);
+                    }
+                    int x = decrypted_string[1];
                     count++;
                 }
                 else
                 {
                     byte len = (byte)str[count];
-                    len &= 0x7F;
+                    len &= (byte)0x7F;
 
                     for (int i = 0; i < (int)len;)
                     {
                         count++;
 
-                        byte highbyte = (byte)str[count];
+                        byte highbyte = str[count];
                         highbyte &= 0xF0;
                         highbyte >>= 0x4;
 
-                        byte lowbyte = (byte)str[count];
+                        byte lowbyte = str[count];
                         lowbyte &= 0x0F;
 
                         if (highbyte != 0x0 && highbyte != 0xF)
                         {
-                            decryptedPacket += Convert.ToChar(table[highbyte - 1]);
+
+                            decrypted_string += table[highbyte - 1];
                             i++;
                         }
 
                         if (lowbyte != 0x0 && lowbyte != 0xF)
                         {
-                            decryptedPacket += Convert.ToChar(table[lowbyte - 1]);
+                            decrypted_string += table[lowbyte - 1];
                             i++;
                         }
                     }
                     count++;
                 }
-
             }
 
-            return decryptedPacket;
+            return decrypted_string;
         }
 
-        public override byte[] Encrypt(string data)
+        public override byte[] Encrypt(string str)
         {
-            String encryptedString = String.Empty;
-            while (data.Length > 60)
+            string encrypted_string = "";
+            int length = str.Length;
+            int secondlength = (length / 122);
+            int compteur = 0;
+
+            for (int i = 0; i < length; i++)
             {
-
-                encryptedString += Encrypt2(data.Substring(0, 60));
-                encryptedString = encryptedString.Substring(0, encryptedString.Length - 1);
-                data = data.Substring(60, data.Length - 60);
-            }
-
-            if (data.Length > 0)
-                encryptedString += Encrypt2(data);
-            else
-                encryptedString += 0xFF;
-
-            byte[] encryptedData = new byte[encryptedString.Length];
-
-            for (int i = 0; i < encryptedString.Length; i++)
-                encryptedData[i] = (byte)encryptedString[i];
-
-            return encryptedData;
-        }
-
-        public static string Encrypt2(String str)
-        {
-            String encryptedString = String.Empty;
-
-            for (int i = 0; i < str.Length; i++)
-            {
-                if (i % 0x7A == 0)
+                if (i == (122 * compteur))
                 {
-                    if ((str.Length - i) > 0x7A)
+                    if (secondlength == 0)
                     {
-                        encryptedString += Convert.ToChar(0x7A);
+                        encrypted_string += getextendedascii((char)Math.Abs((((length / 122) * 122) - length)));
                     }
                     else
                     {
-                        encryptedString += Convert.ToChar(str.Length - i);
+                        encrypted_string += getextendedascii((char)0x7A);
+                        secondlength--;
+                        compteur++;
                     }
                 }
 
-                encryptedString += Convert.ToChar((byte)str[i] ^ 0xFF);
+                encrypted_string += getextendedascii((byte)(str[i] ^ (byte)0xFF));
             }
 
-            encryptedString += Convert.ToChar(0xFF);
+            encrypted_string += getextendedascii((char)0xFF);
+            byte[] ret = Encoding.GetEncoding(1252).GetBytes(encrypted_string);
+            return ret;
+        }
+        public static string getextendedascii(int x)
+        {
+            var e = Encoding.GetEncoding("Windows-1252");
+            var s = e.GetString(new byte[] { Convert.ToByte(x) });
 
-            return encryptedString;
+            return s;
         }
 
-        public override string DecryptCustomParameter(byte[] data, int size)
+        public override string DecryptCustomParameter(byte[] str)
         {
-            string decryptedSessionPacket = String.Empty;
 
-            for (int i = 1; i < size; i++)
+            string encrypted_string = "";
+            for (int i = 1; i < str.Length; i++)
             {
+                if (Convert.ToChar(str[i]) == 0xE) { return encrypted_string; }
+                string var = (str[i] - 0xF).ToString();
 
-                if (data[i] == 14)
-                {
-                    return decryptedSessionPacket;
-                }
-
-                byte firstbyte = (byte)(data[i] - 15);
-                byte secondbyte = firstbyte;
-                secondbyte &= 240;
-                firstbyte = (byte)(firstbyte - secondbyte);
-                secondbyte >>= 4;
+                int firstbyte = Convert.ToInt32((int)str[i] - (int)0xF);
+                int secondbyte = firstbyte;
+                secondbyte &= 0xF0;
+                firstbyte = Convert.ToInt32(firstbyte - secondbyte);
+                secondbyte >>= 0x4;
 
                 switch (secondbyte)
                 {
                     case 0:
-                        decryptedSessionPacket += '\0';
+                        encrypted_string += ' ';
                         break;
 
                     case 1:
-                        decryptedSessionPacket += ' ';
+                        encrypted_string += ' ';
                         break;
 
                     case 2:
-                        decryptedSessionPacket += '-';
+                        encrypted_string += '-';
                         break;
 
                     case 3:
-                        decryptedSessionPacket += '.';
+                        encrypted_string += '.';
                         break;
 
                     default:
                         secondbyte += 0x2C;
-                        decryptedSessionPacket += Convert.ToChar(secondbyte);
+                        encrypted_string += getextendedascii(secondbyte);
                         break;
                 }
 
                 switch (firstbyte)
                 {
                     case 0:
-                        decryptedSessionPacket += '\0';
+                        encrypted_string += ' ';
                         break;
 
                     case 1:
-                        decryptedSessionPacket += ' ';
+                        encrypted_string += ' ';
                         break;
 
                     case 2:
-                        decryptedSessionPacket += '-';
+                        encrypted_string += '-';
                         break;
 
                     case 3:
-                        decryptedSessionPacket += '.';
+                        encrypted_string += '.';
                         break;
 
                     default:
                         firstbyte += 0x2C;
-                        decryptedSessionPacket += Convert.ToChar(firstbyte);
+                        encrypted_string += getextendedascii(firstbyte);
                         break;
                 }
             }
 
-            return decryptedSessionPacket;
+            return encrypted_string;
+
         }
     }
 

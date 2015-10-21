@@ -38,7 +38,7 @@ namespace OpenNos.Core
 
         #region Methods
 
-        public abstract string DecryptCustomParameter(byte[] data, int size);
+        public abstract string DecryptCustomParameter(byte[] data);
 
         public abstract string Decrypt(byte[] data, int size, int customParameter = 0);
 
