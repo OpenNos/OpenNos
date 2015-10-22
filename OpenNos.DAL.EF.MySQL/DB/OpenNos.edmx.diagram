@@ -17,8 +17,8 @@
         <EntityTypeShape EntityType="opennosModel.miniland" Width="1.5" PointX="8.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="opennosModel.monster" Width="1.5" PointX="8.75" PointY="3.75" IsExpanded="true" />
         <EntityTypeShape EntityType="opennosModel.npc" Width="1.5" PointX="8.75" PointY="6.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="opennosModel.partner" Width="1.5" PointX="2.75" PointY="9.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="opennosModel.pet" Width="1.5" PointX="8.75" PointY="9.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="opennosModel.partner" Width="1.5" PointX="1.75" PointY="10.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="opennosModel.pet" Width="1.5" PointX="3.875" PointY="10.625" IsExpanded="true" />
         <EntityTypeShape EntityType="opennosModel.portal" Width="1.5" PointX="10.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="opennosModel.rune" Width="1.5" PointX="10.75" PointY="4.25" IsExpanded="true" />
         <EntityTypeShape EntityType="opennosModel.shop" Width="1.5" PointX="10.75" PointY="6.75" IsExpanded="true" />
