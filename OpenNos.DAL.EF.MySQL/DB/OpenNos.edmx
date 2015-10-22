@@ -633,7 +633,6 @@
           <NavigationProperty Name="account" Relationship="opennosModel.AccountCharacter" FromRole="Character" ToRole="Account" />
           <NavigationProperty Name="characterfamily" Relationship="opennosModel.charactercharafamily" FromRole="character" ToRole="charafamily" />
           <NavigationProperty Name="friend" Relationship="opennosModel.characterfriend" FromRole="character" ToRole="friend" />
-          <NavigationProperty Name="miniland" Relationship="opennosModel.characterminiland" FromRole="character" ToRole="miniland" />
           <NavigationProperty Name="inventory" Relationship="opennosModel.inventorycharacter" FromRole="character" ToRole="inventory" />
           <NavigationProperty Name="skill" Relationship="opennosModel.characterlistskill" FromRole="character" ToRole="skill" />
           <NavigationProperty Name="pet" Relationship="opennosModel.characterpet" FromRole="character" ToRole="pet" />
@@ -741,7 +740,6 @@
           <Property Name="Item" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
           <Property Name="X" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
           <Property Name="Y" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="character" Relationship="opennosModel.characterminiland" FromRole="miniland" ToRole="character" />
         </EntityType>
         <EntityType Name="monster">
           <Key>
@@ -873,10 +871,6 @@
             <End Role="character" EntitySet="character" />
             <End Role="friend" EntitySet="friend" />
           </AssociationSet>
-          <AssociationSet Name="characterminiland" Association="opennosModel.characterminiland">
-            <End Role="character" EntitySet="character" />
-            <End Role="miniland" EntitySet="miniland" />
-          </AssociationSet>
           <AssociationSet Name="familyhistoryfamily" Association="opennosModel.familyhistoryfamily">
             <End Role="familyhistory" EntitySet="familyhistory" />
             <End Role="family" EntitySet="family" />
@@ -947,10 +941,6 @@
         <Association Name="characterfriend">
           <End Type="opennosModel.Character" Role="character" Multiplicity="*" />
           <End Type="opennosModel.friend" Role="friend" Multiplicity="*" />
-        </Association>
-        <Association Name="characterminiland">
-          <End Type="opennosModel.Character" Role="character" Multiplicity="1" />
-          <End Type="opennosModel.miniland" Role="miniland" Multiplicity="1" />
         </Association>
         <Association Name="familyhistoryfamily">
           <End Type="opennosModel.familyhistory" Role="familyhistory" Multiplicity="*" />
@@ -1351,14 +1341,6 @@
       </EndProperty>
       <EndProperty Name="friend">
         <ScalarProperty Name="FriendId" ColumnName="friend_FriendId" />
-      </EndProperty>
-    </AssociationSetMapping>
-    <AssociationSetMapping Name="characterminiland" TypeName="opennosModel.characterminiland" StoreEntitySet="character">
-      <EndProperty Name="miniland">
-        <ScalarProperty Name="MinilandId" ColumnName="miniland_MinilandId" />
-      </EndProperty>
-      <EndProperty Name="character">
-        <ScalarProperty Name="CharacterId" ColumnName="CharacterId" />
       </EndProperty>
     </AssociationSetMapping>
     <AssociationSetMapping Name="familyhistoryfamily" TypeName="opennosModel.familyhistoryfamily" StoreEntitySet="familyhistory">

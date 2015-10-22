@@ -65,6 +65,21 @@ namespace OpenNos.DAL.EF.MySQL
             return null;
         }
 
+        public AccountDTO LoadByName(string name)
+        {
+            using (var context = DataAccessHelper.CreateContext())
+            {
+                Account account = context.account.FirstOrDefault(a => a.Name.Equals(name));
+
+                if (account != null)
+                {
+                    return Mapper.Map<AccountDTO>(account);
+                }
+            }
+
+            return null;
+        }
+
         public void LogIn(string name)
         {
             using (var context = DataAccessHelper.CreateContext())
