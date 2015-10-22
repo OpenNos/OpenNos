@@ -31,15 +31,26 @@ namespace OpenNos.Handler
         {
             _client = client;
         }
+        [Packet("char_NEW")]
+        public string CreateChar(string packet, int sessionId)
+        {
 
+            return String.Empty;
+        }
         [Packet("OpenNos.EntryPoint")]
         public string Initialize(string packet, int sessionId)
         {
             //load account by given SessionId
             AccountDTO account = DAOFactory.AccountDAO.LoadBySessionId(sessionId);
+            IEnumerable<CharacterDTO> characters = DAOFactory.CharacterDAO.LoadByAccount(account.AccountId);
             Logger.Log.InfoFormat("Account with SessionId {0} has arrived.", sessionId);
-            _client.SendPacket("info Dude, i cannot speak French!");
             _client.SendPacket("clist_start 0");
+            for (int i = 0; i < characters.Count(); i++)
+            {
+                
+                _client.SendPacket(String.Format("clist {0} {1} {2} {3} {4} {5} {6} {7} {8} {9}.{10}.{11}.{12}.{13}.{14}.{15}.{16} {17} {18} {19} {20}.{21} {22} {23}",
+                    characters.ElementAt(i).Slot, characters.ElementAt(i).Name, characters.ElementAt(i).Gender, 0, characters.ElementAt(i).HairStyle, characters.ElementAt(i).HairColor, 5, characters.ElementAt(i).Class, characters.ElementAt(i).Level, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, -1, -1, characters.ElementAt(i).HairColor,0));
+            }
             _client.SendPacket("clist_end");
          
             //  
