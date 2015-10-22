@@ -38,7 +38,10 @@ namespace OpenNos.Handler
             //load account by given SessionId
             AccountDTO account = DAOFactory.AccountDAO.LoadBySessionId(sessionId);
             Logger.Log.InfoFormat("Account with SessionId {0} has arrived.", sessionId);
-            _client.SendMessage(new ScsTextMessage("info test"));
+            _client.SendMessage(new ScsTextMessage("info Utilisateur déja connecté"));
+            //_client.SendMessage(new ScsTextMessage("clist_end"));
+         
+            //  
             //TODO Initialize User
             return new ScsTextMessage();
         }
