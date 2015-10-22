@@ -163,7 +163,7 @@ namespace OpenNos.Core.Communication.ScsServices.Service
             {
                 return;
             }
-
+            e.Client.Disconnect();
             _serviceClients.Remove(e.Client.ClientId);
             OnClientDisconnected(serviceClient);
         }

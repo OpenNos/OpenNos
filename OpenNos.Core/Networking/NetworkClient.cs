@@ -48,6 +48,7 @@ namespace OpenNos.Core
             //determine first packet
             if (_encryptor.HasCustomParameter && this.SessionId == 0)
             {
+
                 string sessionPacket = _encryptor.DecryptCustomParameter(message.MessageData);
                 Logger.Log.DebugFormat("Packet arrived, packet: {0}", sessionPacket);
 
