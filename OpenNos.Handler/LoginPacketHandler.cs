@@ -86,13 +86,8 @@ namespace OpenNos.Login
             }
         }
 
-        public ScsMessage SendMsg(string packet)
-        {
-            return new ScsTextMessage(String.Format("{0} ",packet));
-        }
-
         [Packet("NoS0575")]
-        public ScsMessage CheckUser(string packet, long clientId)
+        public string CheckUser(string packet, long clientId)
         {
             User user = PacketFactory.Deserialize<User>(packet);
             //fermé
@@ -112,7 +107,7 @@ namespace OpenNos.Login
                         {
                             case AuthorityType.Banned:
                                 {
-                                    return SendMsg(String.Format("fail {O}", Language.Instance.GetMessageFromKey("BANNED").ToString()));
+                                    return String.Format("fail {O}", Language.Instance.GetMessageFromKey("BANNED").ToString());
                                 }
                             default:
                                 {
@@ -123,11 +118,11 @@ namespace OpenNos.Login
                                         DAOFactory.AccountDAO.UpdateLastSessionAndIp(user.Name, (int)newSessionId, _client.RemoteEndPoint.ToString());
                                         Logger.Log.DebugFormat("CONNECT {0} Connected -- session:{1}", user.Name, newSessionId);
 
-                                        return SendMsg(CreateServers((int)newSessionId));
+                                        return CreateServers((int)newSessionId);
                                     }
                                     else
                                     {
-                                        return SendMsg(String.Format("fail {O}", Language.Instance.GetMessageFromKey("ONLINE").ToString()));
+                                        return String.Format("fail {O}", Language.Instance.GetMessageFromKey("ONLINE").ToString());
                                     }
                                 }
 
@@ -135,17 +130,17 @@ namespace OpenNos.Login
                     }
                     else
                     {
-                        return SendMsg(String.Format("fail {0}", Language.Instance.GetMessageFromKey("IDERROR").ToString()));
+                        return String.Format("fail {0}", Language.Instance.GetMessageFromKey("IDERROR").ToString());
                     }
                 }
                 else
                 {
-                    return SendMsg(String.Format("fail {O}", Language.Instance.GetMessageFromKey("CLOSE").ToString()));
+                    return String.Format("fail {O}", Language.Instance.GetMessageFromKey("CLOSE").ToString());
                 }
             }
             else
             {
-                return SendMsg(String.Format("fail {O}", Language.Instance.GetMessageFromKey("WAITING").ToString()));
+                return String.Format("fail {O}", Language.Instance.GetMessageFromKey("WAITING").ToString());
             }
         }
     }
