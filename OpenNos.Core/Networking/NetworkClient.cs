@@ -37,6 +37,34 @@ namespace OpenNos.Core
             }
         }
 
+        public bool SendPacket(string packet)
+        {
+            try
+            {
+                ScsRawDataMessage rawMessage = new ScsRawDataMessage(_encryptor.Encrypt(packet));
+                SendMessage(rawMessage);
+                return true;
+            }
+            catch (Exception e)
+            {
+                Logger.Log.ErrorFormat("Failed to send packet {0} to client {1}.", packet, ClientId);
+                return false;
+            }
+        }
+
+        public bool SendPackets(IEnumerable<String> packets)
+        {
+            bool result = true;
+
+            //TODO maybe send at once with delimiter
+            foreach (string packet in packets)
+            {
+                result = result && SendPacket(packet);
+            }
+
+            return result;
+        }
+
         private void CustomScsServerClient_MessageReceived(object sender, MessageEventArgs e)
         {
             var message = e.Message as ScsRawDataMessage; //Server only accepts text messages
@@ -59,7 +87,7 @@ namespace OpenNos.Core
                 this.SessionId = Convert.ToInt32(sessionParts[1].Split('\\').FirstOrDefault());
                 Logger.Log.DebugFormat("Client arrived, SessionId: {0}", this.SessionId);
 
-                if(!TriggerHandler("OpenNos.EntryPoint", String.Empty))
+                if (!TriggerHandler("OpenNos.EntryPoint", String.Empty))
                 {
                     Logger.Log.ErrorFormat("No EntryPoint found");
                 }
@@ -86,21 +114,16 @@ namespace OpenNos.Core
 
                 if (methodInfo != null)
                 {
-                    object result = methodInfo.Invoke(handler.Value, new object[] { packet, this.SessionId });
+                    string result = (string)methodInfo.Invoke(handler.Value, new object[] { packet, this.SessionId });
 
-                    if(result != null)
+                    //check for returned packet
+                    if (!String.IsNullOrEmpty(result))
                     {
                         //Send reply message to the client
-                        ScsTextMessage resultMessage = (ScsTextMessage)result;
-                        Logger.Log.DebugFormat("Message sent {0} to client {1}", resultMessage.Text, this.SessionId);
-
-                        if (!String.IsNullOrEmpty(resultMessage.Text))
-                        {
-                            ScsRawDataMessage rawMessage = new ScsRawDataMessage(_encryptor.Encrypt(resultMessage.Text));
-                            this.SendMessage(rawMessage);
-                        }
+                        Logger.Log.DebugFormat("Message sent {0} to client {1}", result, this.ClientId);
+                        SendPacket(result);
                     }
-                    
+
                     return true;
                 }
             }

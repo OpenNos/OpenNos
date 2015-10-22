@@ -33,17 +33,18 @@ namespace OpenNos.Handler
         }
 
         [Packet("OpenNos.EntryPoint")]
-        public ScsTextMessage Initialize(string packet, int sessionId)
+        public string Initialize(string packet, int sessionId)
         {
             //load account by given SessionId
             AccountDTO account = DAOFactory.AccountDAO.LoadBySessionId(sessionId);
             Logger.Log.InfoFormat("Account with SessionId {0} has arrived.", sessionId);
-            _client.SendMessage(new ScsTextMessage("info Utilisateur déja connecté"));
-            //_client.SendMessage(new ScsTextMessage("clist_end"));
+            _client.SendPacket("info Dude, i cannot speak French!");
+            _client.SendPacket("clist_start 0");
+            _client.SendPacket("clist_end");
          
             //  
             //TODO Initialize User
-            return new ScsTextMessage();
+            return String.Empty;
         }
     }
 }
