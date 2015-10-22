@@ -44,7 +44,7 @@
 -- -----------------------------------------------------------
 -- Entity Designer DDL Script for MySQL Server 4.1 and higher
 -- -----------------------------------------------------------
--- Date Created: 10/21/2015 19:06:25
+-- Date Created: 10/22/2015 22:22:56
 
 -- Generated from EDMX file: C:\Users\Alex\Documents\GitHub\OpenNos\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
 -- Target version: 3.0.0.0
@@ -67,8 +67,6 @@
 
 --    ALTER TABLE `characterfriend` DROP CONSTRAINT `FK_characterfriend_friend`;
 
---    ALTER TABLE `character` DROP CONSTRAINT `FK_characterminiland`;
-
 --    ALTER TABLE `familyhistory` DROP CONSTRAINT `FK_familyhistoryfamily`;
 
 --    ALTER TABLE `inventory` DROP CONSTRAINT `FK_inventorycharacter`;
@@ -82,8 +80,6 @@
 --    ALTER TABLE `runes` DROP CONSTRAINT `FK_itemsrunes`;
 
 --    ALTER TABLE `pet` DROP CONSTRAINT `FK_characterpet`;
-
---    ALTER TABLE `account` DROP CONSTRAINT `FK_accountwarehouse`;
 
 --    ALTER TABLE `family` DROP CONSTRAINT `FK_familywarehouse`;
 
@@ -194,8 +190,7 @@ CREATE TABLE `character`(
 	`Dead` int NOT NULL, 
 	`Kill` int NOT NULL, 
 	`Contribution` int NOT NULL, 
-	`Faction` int NOT NULL, 
-	`miniland_MinilandId` int NOT NULL);
+	`Faction` int NOT NULL);
 
 ALTER TABLE `character` ADD PRIMARY KEY (CharacterId);
 
@@ -553,24 +548,6 @@ ADD CONSTRAINT `FK_characterfriend_friend`
 CREATE INDEX `IX_FK_characterfriend_friend`
     ON `characterfriend`
     (`friend_FriendId`);
-
-
-
--- Creating foreign key on `miniland_MinilandId` in table 'character'
-
-ALTER TABLE `character`
-ADD CONSTRAINT `FK_characterminiland`
-    FOREIGN KEY (`miniland_MinilandId`)
-    REFERENCES `miniland`
-        (`MinilandId`)
-    ON DELETE NO ACTION ON UPDATE NO ACTION;
-
-
--- Creating non-clustered index for FOREIGN KEY 'FK_characterminiland'
-
-CREATE INDEX `IX_FK_characterminiland`
-    ON `character`
-    (`miniland_MinilandId`);
 
 
 

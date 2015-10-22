@@ -52,9 +52,7 @@ namespace OpenNos.Handler
                     characters.ElementAt(i).Slot, characters.ElementAt(i).Name, characters.ElementAt(i).Gender, 0, characters.ElementAt(i).HairStyle, characters.ElementAt(i).HairColor, 5, characters.ElementAt(i).Class, characters.ElementAt(i).Level, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, -1, -1, characters.ElementAt(i).HairColor,0));
             }
             _client.SendPacket("clist_end");
-         
-            //  
-            //TODO Initialize User
+        
             return String.Empty;
         }
     }

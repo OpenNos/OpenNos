@@ -44,10 +44,6 @@
       <End Role="friend" EntitySet="friend" />
       <End Role="characterfriend" EntitySet="characterfriend" />
     </AssociationSet>
-    <AssociationSet Name="characterminiland" Association="opennosModel.Store.characterminiland">
-      <End Role="character" EntitySet="character" />
-      <End Role="miniland" EntitySet="miniland" />
-    </AssociationSet>
     <AssociationSet Name="familyhistoryfamily" Association="opennosModel.Store.familyhistoryfamily">
       <End Role="familyhistory" EntitySet="familyhistory" />
       <End Role="family" EntitySet="family" />
@@ -142,7 +138,6 @@
     <Property Name="Kill" Type="int" Nullable="false" />
     <Property Name="Contribution" Type="int" Nullable="false" />
     <Property Name="Faction" Type="int" Nullable="false" />
-    <Property Name="miniland_MinilandId" Type="int" Nullable="false" />
   </EntityType>
   <EntityType Name="CharacterFamily">
     <Key>
@@ -388,18 +383,6 @@
       </Principal>
       <Dependent Role="charafamily">
         <PropertyRef Name="character_CharacterId" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
-  <Association Name="characterminiland">
-    <End Role="character" Type="opennosModel.Store.character" Multiplicity="*" />
-    <End Role="miniland" Type="opennosModel.Store.miniland" Multiplicity="1" />
-    <ReferentialConstraint>
-      <Principal Role="miniland">
-        <PropertyRef Name="MinilandId" />
-      </Principal>
-      <Dependent Role="character">
-        <PropertyRef Name="miniland_MinilandId" />
       </Dependent>
     </ReferentialConstraint>
   </Association>

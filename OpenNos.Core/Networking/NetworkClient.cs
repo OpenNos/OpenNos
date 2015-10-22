@@ -67,7 +67,7 @@ namespace OpenNos.Core
 
         private void CustomScsServerClient_MessageReceived(object sender, MessageEventArgs e)
         {
-            var message = e.Message as ScsRawDataMessage; //Server only accepts text messages
+            var message = e.Message as ScsRawDataMessage;
             if (message == null)
             {
                 return;
