@@ -88,7 +88,7 @@ namespace OpenNos.Login
 
         public ScsMessage SendMsg(string packet)
         {
-            return new ScsTextMessage(packet);
+            return new ScsTextMessage(String.Format("{0} ",packet));
         }
 
         [Packet("NoS0575")]
@@ -112,7 +112,7 @@ namespace OpenNos.Login
                         {
                             case AuthorityType.Banned:
                                 {
-                                    return SendMsg(String.Format("fail {O}", Language.Instance.GetMessageFromKey("BANNED")));
+                                    return SendMsg(String.Format("fail {O}", Language.Instance.GetMessageFromKey("BANNED").ToString()));
                                 }
                             default:
                                 {
@@ -127,7 +127,7 @@ namespace OpenNos.Login
                                     }
                                     else
                                     {
-                                        return SendMsg(String.Format("fail {O}", Language.Instance.GetMessageFromKey("ONLINE")));
+                                        return SendMsg(String.Format("fail {O}", Language.Instance.GetMessageFromKey("ONLINE").ToString()));
                                     }
                                 }
 
@@ -135,17 +135,17 @@ namespace OpenNos.Login
                     }
                     else
                     {
-                        return SendMsg(String.Format("fail {O}", Language.Instance.GetMessageFromKey("IDERROR")));
+                        return SendMsg(String.Format("fail {0}", Language.Instance.GetMessageFromKey("IDERROR").ToString()));
                     }
                 }
                 else
                 {
-                    return SendMsg(String.Format("fail {O}", Language.Instance.GetMessageFromKey("CLOSE")));
+                    return SendMsg(String.Format("fail {O}", Language.Instance.GetMessageFromKey("CLOSE").ToString()));
                 }
             }
             else
             {
-                return SendMsg(String.Format("fail {O}", Language.Instance.GetMessageFromKey("WAITING")));
+                return SendMsg(String.Format("fail {O}", Language.Instance.GetMessageFromKey("WAITING").ToString()));
             }
         }
     }

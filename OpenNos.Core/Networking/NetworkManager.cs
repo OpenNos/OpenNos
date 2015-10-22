@@ -65,6 +65,8 @@ namespace OpenNos.Core
 
         static void Server_ClientDisconnected(object sender, ServerClientEventArgs e)
         {
+
+            e.Client.Disconnect();
             Logger.Log.Info("A client is has been disconnected! CliendId = " + e.Client.ClientId);
         }
     }
