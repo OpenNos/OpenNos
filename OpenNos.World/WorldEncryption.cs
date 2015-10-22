@@ -158,6 +158,7 @@ namespace OpenNos.World
 
         public override byte[] Encrypt(string str)
         {
+            
             string encrypted_string = "";
             int length = str.Length;
             int secondlength = (length / 122);
