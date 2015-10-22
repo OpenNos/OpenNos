@@ -76,7 +76,6 @@ namespace OpenNos.Core
             //determine first packet
             if (_encryptor.HasCustomParameter && this.SessionId == 0)
             {
-
                 string sessionPacket = _encryptor.DecryptCustomParameter(message.MessageData);
                 Logger.Log.DebugFormat("Packet arrived, packet: {0}", sessionPacket);
 
@@ -95,14 +94,52 @@ namespace OpenNos.Core
                 return;
             }
 
-            string packet = _encryptor.Decrypt(message.MessageData, message.MessageData.Length, (int)this.SessionId);
-            Logger.Log.DebugFormat("Message received {0} on client {1}", packet, this.ClientId);
+            string packetConcatenated = _encryptor.Decrypt(message.MessageData, message.MessageData.Length, (int)this.SessionId);
 
-            string packetHeader = packet.Split(' ')[0];
-
-            if (!TriggerHandler(packetHeader, packet))
+            foreach (string packet in packetConcatenated.Split(new char[] { (char)0xFF }, StringSplitOptions.RemoveEmptyEntries))
             {
-                Logger.Log.ErrorFormat("Could not found Handler implementation for Packet with Header {0}", packetHeader);
+                Logger.Log.DebugFormat("Message received {0} on client {1}", packet, this.ClientId);
+      
+                if (_encryptor.HasCustomParameter)
+                {
+                    //keep alive
+                    string nextKeepAliveRaw = packet.Split(' ')[0];
+                    Int32 nextKeepaliveIdentity;
+                    if(!Int32.TryParse(nextKeepAliveRaw, out nextKeepaliveIdentity) && nextKeepaliveIdentity != (this.LastKeepAliveIdentity + 1))
+                    {
+                        Logger.Log.ErrorFormat("Corrupted Keepalive on client {0}.", ClientId);
+                        Disconnect();
+                        return;
+                    }
+                    else if(nextKeepaliveIdentity == 0)
+                    {
+                        if(LastKeepAliveIdentity == UInt16.MaxValue)
+                            LastKeepAliveIdentity = nextKeepaliveIdentity;
+                    }
+                    else
+                    {
+                        LastKeepAliveIdentity = nextKeepaliveIdentity;
+                    }
+
+                    string packetHeader = packet.Split(' ')[1];
+
+                    //0 is a keep alive packet with no content to handle
+                    if (packetHeader != "0" && !TriggerHandler(packetHeader, packet))
+                    {
+                        Logger.Log.ErrorFormat("Could not found Handler implementation for Packet with Header {0}", packetHeader);
+                    }
+                }
+                else
+                {
+                    //simple messaging
+                    string packetHeader = packet.Split(' ')[0];
+
+                    if (!TriggerHandler(packetHeader, packet))
+                    {
+                        Logger.Log.ErrorFormat("Could not found Handler implementation for Packet with Header {0}", packetHeader);
+                    }
+                }
+
             }
         }
 
