@@ -33,14 +33,14 @@ namespace OpenNos.Handler
         }
 
         [Packet("Char_DEL")]
-        public string DeleteChar(string packet, int sessionId)
+        public string DeleteCharacter(string packet, int sessionId)
         {
             string[] packetsplit = packet.Split(' ');
             AccountDTO account = DAOFactory.AccountDAO.LoadBySessionId(sessionId);
             if (account.Password == OpenNos.Core.EncryptionBase.sha256(packetsplit[3]))
             {
                 DAOFactory.CharacterDAO.Delete(account.AccountId, Convert.ToByte(packetsplit[2]));
-                Initialize(packet, sessionId);
+                LoadCharacters(packet, sessionId);
             }
             else
             {
@@ -50,7 +50,7 @@ namespace OpenNos.Handler
             return String.Empty;
         }
         [Packet("Char_NEW")]
-        public string CreateChar(string packet, int sessionId)
+        public string CreateCharacter(string packet, int sessionId)
         {
             //todo, hold Account Information in Authorized object
             //load account by given SessionId
@@ -83,7 +83,7 @@ namespace OpenNos.Handler
                     };
 
                     SaveResult insertResult = DAOFactory.CharacterDAO.InsertOrUpdate(ref newCharacter);
-                    Initialize(packet, sessionId);
+                    LoadCharacters(packet, sessionId);
                 }
                 else _client.SendPacket("info this name is already taken");
             }
@@ -92,7 +92,7 @@ namespace OpenNos.Handler
         }
 
         [Packet("OpenNos.EntryPoint")]
-        public string Initialize(string packet, int sessionId)
+        public string LoadCharacters(string packet, int sessionId)
         {
             //load account by given SessionId
             AccountDTO account = DAOFactory.AccountDAO.LoadBySessionId(sessionId);
