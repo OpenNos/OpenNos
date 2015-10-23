@@ -21,6 +21,7 @@ using System.Text;
 using System.Threading.Tasks;
 using OpenNos.Data;
 using AutoMapper;
+using OpenNos.Core;
 
 namespace OpenNos.DAL.EF.MySQL
 {
@@ -99,5 +100,90 @@ namespace OpenNos.DAL.EF.MySQL
                 context.SaveChanges();
             }
         }
+
+        public AccountDTO LoadById(long accountId)
+        {
+            using (var context = DataAccessHelper.CreateContext())
+            {
+                Account account = context.account.FirstOrDefault(a => a.AccountId.Equals(accountId));
+
+                if (account != null)
+                {
+                    return Mapper.Map<AccountDTO>(account);
+                }
+            }
+
+            return null;
+        }
+
+        public SaveResult InsertOrUpdate(ref AccountDTO account)
+        {
+            try
+            {
+                using (var context = DataAccessHelper.CreateContext())
+                {
+                    long accountId = account.AccountId;
+                    Account entity = context.account.SingleOrDefault(c => c.AccountId.Equals(accountId));
+
+                    if (entity == null) //new entity
+                    {
+                        account = Insert(account, context);
+                        return SaveResult.Inserted;
+                    }
+                    else //existing entity
+                    {
+                        account = Update(entity, account, context);
+                        return SaveResult.Updated;
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Log.ErrorFormat("Error inserting or updating Account {0} , {1}", account.AccountId, e.Message);
+                return SaveResult.Error;
+            }
+        }
+
+        public DeleteResult Delete(long accountId)
+        {
+            try
+            {
+                using (var context = DataAccessHelper.CreateContext())
+                {
+                    Account account = context.account.SingleOrDefault(c => c.AccountId.Equals(accountId));
+
+                    if (account != null)
+                    {
+                        context.account.Remove(account);
+                        context.SaveChanges();
+                    }
+
+                    return DeleteResult.Deleted;
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Log.ErrorFormat("Error deleting Account with Id {0} , {1}", accountId, e.Message);
+                return DeleteResult.Error;
+            }
+        }
+
+        #region Private
+
+        private AccountDTO Insert(AccountDTO account, OpenNosContainer context)
+        {
+            Account entity = Mapper.Map<Account>(account);
+            context.account.Add(entity);
+            context.SaveChanges();
+            return Mapper.Map<AccountDTO>(entity);
+        }
+        private AccountDTO Update(Account entity, AccountDTO account, OpenNosContainer context)
+        {
+            entity = Mapper.Map<Account>(account);
+            context.SaveChanges();
+            return Mapper.Map<AccountDTO>(entity);
+        }
+
+        #endregion
     }
 }

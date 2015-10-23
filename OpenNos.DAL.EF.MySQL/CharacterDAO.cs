@@ -36,7 +36,7 @@ namespace OpenNos.DAL.EF.MySQL
             }
             catch (Exception e)
             {
-                Logger.Log.ErrorFormat("Error deleting Character with Id {0} , {1}", characterSlot, e.Message);
+                Logger.Log.ErrorFormat("Error deleting Character with Slot {0} , {1}", characterSlot, e.Message);
                 return DeleteResult.Error;
             }
         }

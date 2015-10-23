@@ -25,7 +25,11 @@ namespace OpenNos.DAL.Interface
     {
         #region Methods
 
+        AccountDTO LoadById(long accountId);
+
         AccountDTO LoadBySessionId(int sessionId);
+
+        AccountDTO LoadByName(string Name);
 
         void UpdateLastSessionAndIp(string name, int session, string ip);
 
@@ -33,9 +37,11 @@ namespace OpenNos.DAL.Interface
 
         void LogIn(string name);
 
-        AccountDTO LoadByName(string Name);
-
         void WriteConnectionLog(long accountId, string ipAddress);
+
+        SaveResult InsertOrUpdate(ref AccountDTO account);
+
+        DeleteResult Delete(long accountId);
 
         #endregion
     }
