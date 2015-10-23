@@ -10,6 +10,8 @@ namespace OpenNos.Data
     {
         public long CharacterId { get; set; }
 
+        public long AccountId { get; set; }
+
         public string Name { get; set; }
 
         public byte Slot { get; set; }

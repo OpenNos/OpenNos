@@ -9,6 +9,14 @@ namespace OpenNos.DAL.Interface
 {
     public interface ICharacterDAO
     {
+        CharacterDTO LoadById(long characterId);
+
+        CharacterDTO LoadBySlot(long accountId, byte slot);
+
         IEnumerable<CharacterDTO> LoadByAccount(long accountId);
+
+        SaveResult InsertOrUpdate(ref CharacterDTO character);
+
+        DeleteResult Delete(long characterId);
     }
 }

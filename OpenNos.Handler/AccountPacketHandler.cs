@@ -31,12 +31,43 @@ namespace OpenNos.Handler
         {
             _client = client;
         }
-        [Packet("char_NEW")]
+        [Packet("Char_NEW")]
         public string CreateChar(string packet, int sessionId)
         {
+            //todo, hold Account Information in Authorized object
+            //load account by given SessionId
+            AccountDTO account = DAOFactory.AccountDAO.LoadBySessionId(sessionId);
+
+            CharacterDTO newCharacter = new CharacterDTO() {
+                Class = 0,
+                Gender = 1,
+                Gold = 10000,
+                HairColor = 5,
+                HairStyle = 3,
+                Hp = 200,
+                JobLevel = 99,
+                JobLevelXp = 0,
+                Level = 99,
+                LevelXp = 0,
+                Map = 1,
+                MapX = 40,
+                MapY = 40,
+                Mp = 200,
+                Name = "Testdude",
+                Slot = 0,
+                AccountId = account.AccountId
+            };
+
+            SaveResult insertResult = DAOFactory.CharacterDAO.InsertOrUpdate(ref newCharacter);
+
+            //change class
+            newCharacter.Class = 2;
+
+            SaveResult updateResult = DAOFactory.CharacterDAO.InsertOrUpdate(ref newCharacter);
 
             return String.Empty;
         }
+
         [Packet("OpenNos.EntryPoint")]
         public string Initialize(string packet, int sessionId)
         {

@@ -15,7 +15,7 @@ namespace OpenNos.DAL.EF.MySQL.DB
     public partial class pet
     {
         public int PetId { get; set; }
-        public int CharacterId { get; set; }
+        public long CharacterId { get; set; }
         public int IsHelper { get; set; }
         public string Owner { get; set; }
         public int Level { get; set; }
@@ -25,7 +25,5 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public Nullable<int> isTeamed { get; set; }
         public Nullable<int> Hp { get; set; }
         public Nullable<int> Mp { get; set; }
-    
-        public virtual Character character { get; set; }
     }
 }
