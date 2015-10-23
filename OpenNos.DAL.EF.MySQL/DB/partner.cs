@@ -15,7 +15,7 @@ namespace OpenNos.DAL.EF.MySQL.DB
     public partial class partner
     {
         public int PartnerId { get; set; }
-        public int CharacterId { get; set; }
+        public long CharacterId { get; set; }
         public int owner { get; set; }
         public Nullable<int> Level { get; set; }
         public Nullable<int> isBackpacked { get; set; }
@@ -27,7 +27,5 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public Nullable<int> IsTeamed { get; set; }
         public Nullable<int> Hp { get; set; }
         public Nullable<int> Mp { get; set; }
-    
-        public virtual Character character { get; set; }
     }
 }

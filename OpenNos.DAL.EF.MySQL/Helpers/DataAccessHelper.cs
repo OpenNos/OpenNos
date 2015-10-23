@@ -45,6 +45,7 @@ namespace OpenNos.DAL.EF.MySQL
             //Mapper needs to Create Maps, this is a bit uncool, but the Framework itself is nice
             Mapper.CreateMap<Account, AccountDTO>();
             Mapper.CreateMap<Character, CharacterDTO>();
+            Mapper.CreateMap<CharacterDTO, Character>();
         }
 
         #endregion
