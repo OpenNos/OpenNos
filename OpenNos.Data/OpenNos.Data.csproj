@@ -42,6 +42,8 @@
   <ItemGroup>
     <Compile Include="AccountDTO.cs" />
     <Compile Include="CharacterDTO.cs" />
+    <Compile Include="Enums\DeleteResult.cs" />
+    <Compile Include="Enums\SaveResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="User.cs" />
   </ItemGroup>

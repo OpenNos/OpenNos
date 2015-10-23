@@ -14,16 +14,7 @@ namespace OpenNos.DAL.EF.MySQL.DB
     
     public partial class skill
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public skill()
-        {
-            this.character = new HashSet<Character>();
-        }
-    
         public int SkillId { get; set; }
         public string Vnum { get; set; }
-    
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Character> character { get; set; }
     }
 }
