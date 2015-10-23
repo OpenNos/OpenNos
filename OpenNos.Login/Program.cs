@@ -13,6 +13,7 @@
  */
 using log4net;
 using OpenNos.Core;
+using OpenNos.DAL.EF.MySQL;
 using System;
 using System.Collections.Generic;
 
@@ -37,6 +38,10 @@ namespace OpenNos.Login
                     Console.WriteLine("===============================================================================\n"
                                      + "                 LOGIN SERVER VERSION 1.0.0 by OpenNos Team\n" +
                                      "===============================================================================\n");
+
+                    //initialize DB
+                    DataAccessHelper.Initialize();
+                    Logger.Log.Info("Database has been initialized.");
 
                     string ip = System.Configuration.ConfigurationManager.AppSettings["LoginIp"];
                     int port = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["LoginPort"]);
