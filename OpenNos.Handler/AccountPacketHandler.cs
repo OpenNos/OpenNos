@@ -31,12 +31,27 @@ namespace OpenNos.Handler
         {
             _client = client;
         }
-        [Packet("char_NEW")]
+        [Packet("Char_NEW")]
         public string CreateChar(string packet, int sessionId)
         {
+           
+                //if name > 4char & name < 14
+                //if charname ever taken
+                //create char
+                Initialize(packet, sessionId);
+
 
             return String.Empty;
         }
+        [Packet("Char_DEL")]
+        public string DeleteChar(string packet, int sessionId)
+        {
+            //if pass true
+            //delete character
+            _client.SendPacket("success");
+            return String.Empty;
+        }
+        
         [Packet("OpenNos.EntryPoint")]
         public string Initialize(string packet, int sessionId)
         {
@@ -45,11 +60,11 @@ namespace OpenNos.Handler
             IEnumerable<CharacterDTO> characters = DAOFactory.CharacterDAO.LoadByAccount(account.AccountId);
             Logger.Log.InfoFormat("Account with SessionId {0} has arrived.", sessionId);
             _client.SendPacket("clist_start 0");
-            for (int i = 0; i < characters.Count(); i++)
+            foreach( CharacterDTO character in characters)
             {
                 
                 _client.SendPacket(String.Format("clist {0} {1} {2} {3} {4} {5} {6} {7} {8} {9}.{10}.{11}.{12}.{13}.{14}.{15}.{16} {17} {18} {19} {20}.{21} {22} {23}",
-                    characters.ElementAt(i).Slot, characters.ElementAt(i).Name, characters.ElementAt(i).Gender, 0, characters.ElementAt(i).HairStyle, characters.ElementAt(i).HairColor, 5, characters.ElementAt(i).Class, characters.ElementAt(i).Level, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, -1, -1, characters.ElementAt(i).HairColor,0));
+                    character.Slot, character.Name, character.Gender, 0, character.HairStyle, character.HairColor, 5, character.Class, character.Level, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, -1, -1, character.HairColor,0));
             }
             _client.SendPacket("clist_end");
         

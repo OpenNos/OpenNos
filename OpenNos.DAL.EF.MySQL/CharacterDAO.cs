@@ -22,5 +22,6 @@ namespace OpenNos.DAL.EF.MySQL
                 }
             }
         }
+       
     }
 }
