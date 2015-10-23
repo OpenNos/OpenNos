@@ -25,7 +25,7 @@
     <EntitySet Name="shop" EntityType="opennosModel.Store.shop" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="warehouse" EntityType="opennosModel.Store.warehouse" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="actionSet1" EntityType="opennosModel.Store.actionSet1" store:Type="Tables" Schema="dbo" />
-    <EntitySet Name="logSet" EntityType="opennosModel.Store.logSet" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="connectionlog" EntityType="opennosModel.Store.connectionlog" store:Type="Tables" Schema="dbo" />
     <AssociationSet Name="AccountCharacter" Association="opennosModel.Store.AccountCharacter">
       <End Role="Account" EntitySet="account" />
       <End Role="Character" EntitySet="character" />
@@ -52,7 +52,7 @@
     </AssociationSet>
     <AssociationSet Name="accountlog" Association="opennosModel.Store.accountlog">
       <End Role="account" EntitySet="account" />
-      <End Role="log" EntitySet="logSet" />
+      <End Role="log" EntitySet="connectionlog" />
     </AssociationSet>
     <AssociationSet Name="familycharacterfamily" Association="opennosModel.Store.familycharacterfamily">
       <End Role="family" EntitySet="family" />
@@ -297,14 +297,14 @@
     <Property Name="Key" Type="int" Nullable="false" />
     <Property Name="Slot" Type="int" Nullable="false" />
   </EntityType>
-  <EntityType Name="logSet">
+  <EntityType Name="connectionlog">
     <Key>
       <PropertyRef Name="LogId" />
     </Key>
-    <Property Name="LogId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="LogId" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="AccountId" Type="bigint" Nullable="false" />
-    <Property Name="Ip" Type="longtext" Nullable="false" />
-    <Property Name="Connection" Type="longtext" Nullable="false" />
+    <Property Name="IpAddress" Type="longtext" Nullable="false" />
+    <Property Name="Timestamp" Type="datetime" Nullable="false" />
   </EntityType>
   <Association Name="AccountCharacter">
     <End Role="Account" Type="opennosModel.Store.account" Multiplicity="1" />
@@ -380,7 +380,7 @@
   </Association>
   <Association Name="accountlog">
     <End Role="account" Type="opennosModel.Store.account" Multiplicity="1" />
-    <End Role="log" Type="opennosModel.Store.logSet" Multiplicity="*" />
+    <End Role="log" Type="opennosModel.Store.connectionlog" Multiplicity="*" />
     <ReferentialConstraint>
       <Principal Role="account">
         <PropertyRef Name="AccountId" />
@@ -686,14 +686,14 @@
             <End Role="warehouse" EntitySet="warehouse" />
           </AssociationSet>
           <EntitySet Name="actionSet1" EntityType="opennosModel.action" />
-          <EntitySet Name="logSet" EntityType="opennosModel.log" />
+          <EntitySet Name="connectionlog" EntityType="opennosModel.ConnectionLog" />
           <AssociationSet Name="npcshop" Association="opennosModel.npcshop">
             <End Role="npc" EntitySet="npcs" />
             <End Role="shop" EntitySet="shop" />
           </AssociationSet>
           <AssociationSet Name="accountlog" Association="opennosModel.accountlog">
             <End Role="account" EntitySet="account" />
-            <End Role="log" EntitySet="logSet" />
+            <End Role="log" EntitySet="connectionlog" />
           </AssociationSet>
           <AssociationSet Name="familycharacterfamily" Association="opennosModel.familycharacterfamily">
             <End Role="family" EntitySet="family" />
@@ -737,14 +737,14 @@
           <Property Name="Key" Type="Int32" Nullable="false" />
           <Property Name="Slot" Type="Int32" Nullable="false" />
         </EntityType>
-        <EntityType Name="log">
+        <EntityType Name="ConnectionLog">
           <Key>
             <PropertyRef Name="LogId" />
           </Key>
-          <Property Name="LogId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="LogId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="AccountId" Type="Int64" Nullable="false" />
-          <Property Name="Ip" Type="String" Nullable="false" />
-          <Property Name="Connection" Type="String" Nullable="false" />
+          <Property Name="IpAddress" Type="String" Nullable="false" />
+          <Property Name="Timestamp" Type="DateTime" Nullable="false" />
           <NavigationProperty Name="account" Relationship="opennosModel.accountlog" FromRole="log" ToRole="account" />
         </EntityType>
         <Association Name="npcshop">
@@ -761,7 +761,7 @@
         </Association>
         <Association Name="accountlog">
           <End Type="opennosModel.Account" Role="account" Multiplicity="1" />
-          <End Type="opennosModel.log" Role="log" Multiplicity="*" />
+          <End Type="opennosModel.ConnectionLog" Role="log" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="account">
               <PropertyRef Name="AccountId" />
@@ -1042,13 +1042,13 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
-    <EntitySetMapping Name="logSet">
-      <EntityTypeMapping TypeName="IsTypeOf(opennosModel.log)">
-        <MappingFragment StoreEntitySet="logSet">
+    <EntitySetMapping Name="connectionlog">
+      <EntityTypeMapping TypeName="IsTypeOf(opennosModel.ConnectionLog)">
+        <MappingFragment StoreEntitySet="connectionlog">
           <ScalarProperty Name="LogId" ColumnName="LogId" />
           <ScalarProperty Name="AccountId" ColumnName="AccountId" />
-          <ScalarProperty Name="Ip" ColumnName="Ip" />
-          <ScalarProperty Name="Connection" ColumnName="Connection" />
+          <ScalarProperty Name="IpAddress" ColumnName="IpAddress" />
+          <ScalarProperty Name="Timestamp" ColumnName="Timestamp" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

@@ -12,12 +12,12 @@ namespace OpenNos.DAL.EF.MySQL.DB
     using System;
     using System.Collections.Generic;
     
-    public partial class log
+    public partial class ConnectionLog
     {
-        public int LogId { get; set; }
+        public long LogId { get; set; }
         public long AccountId { get; set; }
-        public string Ip { get; set; }
-        public string Connection { get; set; }
+        public string IpAddress { get; set; }
+        public System.DateTime Timestamp { get; set; }
     
         public virtual Account account { get; set; }
     }

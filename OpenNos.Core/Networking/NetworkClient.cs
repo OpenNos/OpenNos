@@ -13,11 +13,39 @@ namespace OpenNos.Core
 {
     public class NetworkClient : ScsServerClient
     {
+        #region Members
+
         private IDictionary<Type, object> _PacketHandlers { get; set; }
         private static EncryptionBase _encryptor;
 
+        #endregion
+
+        #region Properties
+
         public int SessionId { get; set; }
         public int LastKeepAliveIdentity { get; set; }
+
+        public IDictionary<Type, object> Handlers
+        {
+            get
+            {
+                if (_PacketHandlers == null)
+                {
+                    _PacketHandlers = new Dictionary<Type, object>();
+                }
+
+                return _PacketHandlers;
+            }
+
+            set
+            {
+                _PacketHandlers = value;
+            }
+        }
+
+        #endregion
+
+        #region Methods
 
         public NetworkClient(ICommunicationChannel communicationChannel) : base(communicationChannel)
         {
@@ -37,6 +65,11 @@ namespace OpenNos.Core
             }
         }
 
+        public bool SendPacketFormat(string packet, params object[] param)
+        {
+            return SendPacket(String.Format(packet, param));
+        }
+
         public bool SendPacket(string packet)
         {
             try
@@ -47,11 +80,10 @@ namespace OpenNos.Core
             }
             catch (Exception e)
             {
-                Logger.Log.ErrorFormat("Failed to send packet {0} to client {1}.", packet, ClientId);
+                Logger.Log.ErrorFormat("Failed to send packet {0} to client {1}, {2}.", packet, ClientId, e.Message);
                 return false;
             }
         }
-
         public bool SendPackets(IEnumerable<String> packets)
         {
             bool result = true;
@@ -175,22 +207,6 @@ namespace OpenNos.Core
                 .FirstOrDefault(x => x.GetCustomAttributes(false).OfType<Packet>().First().Header.Equals(packetHeader));
         }
 
-        public IDictionary<Type, object> Handlers
-        {
-            get
-            {
-                if (_PacketHandlers == null)
-                {
-                    _PacketHandlers = new Dictionary<Type, object>();
-                }
-
-                return _PacketHandlers;
-            }
-
-            set
-            {
-                _PacketHandlers = value;
-            }
-        }
+        #endregion
     }
 }

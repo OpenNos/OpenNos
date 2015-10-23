@@ -31,6 +31,7 @@ namespace OpenNos.Core
 
         private static IList<Type> _packetHandlers;
         private static EncryptorT _encryptor;
+        private static IDictionary<String, DateTime> _connectionLog;
 
         #endregion
 
@@ -55,19 +56,81 @@ namespace OpenNos.Core
 
         #endregion
 
+        #region Event Handlers
+
         static void Server_ClientConnected(object sender, ServerClientEventArgs e)
         {
             Logger.Log.Info("A new client is connected. ClientId = " + e.Client.ClientId);
-
             NetworkClient customClient = e.Client as NetworkClient;
+
+            if(!CheckConnectionLog(customClient))
+            {
+                Logger.Log.WarnFormat("Forced Disconnecting of client {0}, too much connections.", customClient.ClientId);
+                customClient.Disconnect();
+                return;
+            }
+
             customClient.Initialize(_encryptor, _packetHandlers);
         }
 
         static void Server_ClientDisconnected(object sender, ServerClientEventArgs e)
         {
-
             e.Client.Disconnect();
             Logger.Log.Info("A client is has been disconnected! CliendId = " + e.Client.ClientId);
         }
+
+        #endregion
+
+        #region Methods
+
+        private static bool CheckConnectionLog(NetworkClient client)
+        {
+            if (ConnectionLog.Any())
+            {
+                IEnumerable<KeyValuePair<string, DateTime>> logsToDelete = ConnectionLog
+                    .Where(cl => cl.Key.Equals(client.RemoteEndPoint.ToString()) && (DateTime.Now - cl.Value).Seconds > 5);
+
+                foreach (KeyValuePair<string, DateTime> connectionLogEntry in logsToDelete)
+                {
+                    ConnectionLog.Remove(connectionLogEntry);
+                }
+            }
+
+            if (ConnectionLog.ContainsKey(client.RemoteEndPoint.ToString()))
+            {
+                return false;
+            }
+            else
+            {
+                ConnectionLog.Add(client.RemoteEndPoint.ToString(),DateTime.Now);
+                return true;
+            }
+        }
+
+        #endregion
+
+        #region Properties
+
+        public static IDictionary<String, DateTime> ConnectionLog
+        {
+            get
+            {
+                if (_connectionLog == null)
+                {
+                    _connectionLog = new Dictionary<String, DateTime>();
+                }
+
+                return _connectionLog;
+            }
+            set
+            {
+                if (_connectionLog != value)
+                {
+                    _connectionLog = value;
+                }
+            }
+        }
+
+        #endregion
     }
 }

@@ -18,7 +18,7 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public Account()
         {
             this.character = new HashSet<Character>();
-            this.log = new HashSet<log>();
+            this.log = new HashSet<ConnectionLog>();
         }
     
         public long AccountId { get; set; }
@@ -31,6 +31,6 @@ namespace OpenNos.DAL.EF.MySQL.DB
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Character> character { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<log> log { get; set; }
+        public virtual ICollection<ConnectionLog> log { get; set; }
     }
 }

@@ -115,7 +115,7 @@ namespace OpenNos.DAL.EF.MySQL
             Character entity = Mapper.Map<Character>(character);
             context.character.Add(entity);
             context.SaveChanges();
-            return Mapper.Map<CharacterDTO>(entity); ;
+            return Mapper.Map<CharacterDTO>(entity);
         }
         private CharacterDTO Update(Character entity, CharacterDTO character, OpenNosContainer context)
         {
