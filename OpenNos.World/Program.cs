@@ -13,6 +13,7 @@
  */
 using log4net;
 using OpenNos.Core;
+using OpenNos.DAL.EF.MySQL;
 using OpenNos.Handler;
 using System;
 using System.Collections.Generic;
@@ -35,6 +36,11 @@ namespace OpenNos.World
             Console.WriteLine("===============================================================================\n"
                              + "                 WORLD SERVER VERSION 1.0.0 by OpenNos Team\n" +
                              "===============================================================================\n");
+
+            //initialize DB
+            DataAccessHelper.Initialize();
+            Logger.Log.Info("Database has been initialized.");
+
             string ip = System.Configuration.ConfigurationManager.AppSettings["WorldIp"];
             int port = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["WorldPort"]);
             NetworkManager<WorldEncryption> networkManager = new NetworkManager<WorldEncryption>(ip, port, handlers, true);

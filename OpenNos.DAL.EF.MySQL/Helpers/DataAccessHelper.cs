@@ -67,6 +67,14 @@ namespace OpenNos.DAL.EF.MySQL
             }
         }
 
+        public static void Initialize()
+        {
+            using (var context = CreateContext())
+            {
+                context.Database.Initialize(force: true);
+            }
+        }
+
         #endregion
 
         #endregion
