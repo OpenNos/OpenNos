@@ -14,6 +14,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -22,7 +23,15 @@ namespace OpenNos.Core
     public abstract class EncryptionBase
     {
         #region Instantiation
-
+        public static string sha256(string inputString)
+        {
+            using (SHA256 hash = SHA256Managed.Create())
+            {
+                return String.Join("", hash
+                  .ComputeHash(Encoding.UTF8.GetBytes(inputString))
+                  .Select(item => item.ToString("x2")));
+            }
+        }
         public EncryptionBase(bool hasCustomParameter)
         {
             HasCustomParameter = hasCustomParameter;

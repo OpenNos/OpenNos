@@ -22,16 +22,6 @@ namespace OpenNos.Core
     public class LoginEncryption : EncryptionBase
     { 
         public LoginEncryption() : base(false) { }
-
-        public static string sha256(string inputString)
-        {
-            using (SHA256 hash = SHA256Managed.Create())
-            {
-                return String.Join("", hash
-                  .ComputeHash(Encoding.UTF8.GetBytes(inputString))
-                  .Select(item => item.ToString("x2")));
-            }
-        }
         public override string Decrypt(byte[] data, int size, int customParameter = 0)
         {
             string result;

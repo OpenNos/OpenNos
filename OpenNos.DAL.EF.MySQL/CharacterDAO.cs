@@ -17,13 +17,13 @@ namespace OpenNos.DAL.EF.MySQL
 
         #region Public
 
-        public DeleteResult Delete(long characterId)
+        public DeleteResult Delete(long accountId, byte characterSlot)
         {
             try
             {
                 using (var context = DataAccessHelper.CreateContext())
                 {
-                    Character character = context.character.SingleOrDefault(c => c.CharacterId.Equals(characterId));
+                    Character character = context.character.SingleOrDefault(c => c.AccountId.Equals(accountId) && c.Slot.Equals(characterSlot));
 
                     if (character != null)
                     {
@@ -36,7 +36,7 @@ namespace OpenNos.DAL.EF.MySQL
             }
             catch (Exception e)
             {
-                Logger.Log.ErrorFormat("Error deleting Character with Id {0} , {1}", characterId, e.Message);
+                Logger.Log.ErrorFormat("Error deleting Character with Id {0} , {1}", characterSlot, e.Message);
                 return DeleteResult.Error;
             }
         }
@@ -87,7 +87,17 @@ namespace OpenNos.DAL.EF.MySQL
                 return Mapper.Map<CharacterDTO>(context.character.SingleOrDefault(c => c.CharacterId.Equals(characterId)));
             }
         }
-
+        public bool IsAlreadyDefined(string name)
+        {
+            using (var context = DataAccessHelper.CreateContext())
+            {
+                Character character = context.character.SingleOrDefault(c => c.Name.Equals(name));
+                if (character == null)
+                    return false;
+                else
+                    return true;
+            }
+        }
         public CharacterDTO LoadBySlot(long accountId, byte slot)
         {
             using (var context = DataAccessHelper.CreateContext())
