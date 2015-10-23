@@ -44,7 +44,7 @@
 -- -----------------------------------------------------------
 -- Entity Designer DDL Script for MySQL Server 4.1 and higher
 -- -----------------------------------------------------------
--- Date Created: 10/23/2015 08:21:46
+-- Date Created: 10/23/2015 19:03:40
 
 -- Generated from EDMX file: C:\Users\Alex\Documents\GitHub\OpenNos\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
 -- Target version: 3.0.0.0
@@ -423,13 +423,13 @@ ALTER TABLE `actionSet1` ADD PRIMARY KEY (ActionId);
 
 
 
-CREATE TABLE `logSet`(
-	`LogId` int NOT NULL AUTO_INCREMENT UNIQUE, 
+CREATE TABLE `connectionlog`(
+	`LogId` bigint NOT NULL AUTO_INCREMENT UNIQUE, 
 	`AccountId` bigint NOT NULL, 
-	`Ip` longtext NOT NULL, 
-	`Connection` longtext NOT NULL);
+	`IpAddress` longtext NOT NULL, 
+	`Timestamp` datetime NOT NULL);
 
-ALTER TABLE `logSet` ADD PRIMARY KEY (LogId);
+ALTER TABLE `connectionlog` ADD PRIMARY KEY (LogId);
 
 
 
@@ -550,9 +550,9 @@ CREATE INDEX `IX_FK_npcshop`
 
 
 
--- Creating foreign key on `AccountId` in table 'logSet'
+-- Creating foreign key on `AccountId` in table 'connectionlog'
 
-ALTER TABLE `logSet`
+ALTER TABLE `connectionlog`
 ADD CONSTRAINT `FK_accountlog`
     FOREIGN KEY (`AccountId`)
     REFERENCES `account`
@@ -563,7 +563,7 @@ ADD CONSTRAINT `FK_accountlog`
 -- Creating non-clustered index for FOREIGN KEY 'FK_accountlog'
 
 CREATE INDEX `IX_FK_accountlog`
-    ON `logSet`
+    ON `connectionlog`
     (`AccountId`);
 
 

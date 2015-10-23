@@ -70,10 +70,14 @@ namespace OpenNos.Login
                 bool maintenanceCheck = true;
                 if (maintenanceCheck)
                 {
-                    if (DAOFactory.AccountDAO.CheckPasswordValiditiy(user.Name, user.PasswordDecrypted))
+                    AccountDTO loadedAccount = DAOFactory.AccountDAO.LoadByName(user.Name);
+
+                    if (loadedAccount != null && loadedAccount.Password.Equals(user.PasswordDecrypted))
                     {
+                        DAOFactory.AccountDAO.WriteConnectionLog(loadedAccount.AccountId, _client.RemoteEndPoint.ToString());
+
                         //0 banned 1 register 2 user 3 GM
-                        AuthorityType type = DAOFactory.AccountDAO.LoadAuthorityType(user.Name);
+                        AuthorityType type = loadedAccount.AuthorityEnum;
 
                         switch (type)
                         {

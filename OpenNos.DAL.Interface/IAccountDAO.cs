@@ -27,17 +27,15 @@ namespace OpenNos.DAL.Interface
 
         AccountDTO LoadBySessionId(int sessionId);
 
-        bool CheckPasswordValiditiy(string name, string passwordHashed);
-
-        AuthorityType LoadAuthorityType(string name);
-
         void UpdateLastSessionAndIp(string name, int session, string ip);
 
         bool IsLoggedIn(string name);
 
         void LogIn(string name);
+
         AccountDTO LoadByName(string Name);
 
+        void WriteConnectionLog(long accountId, string ipAddress);
 
         #endregion
     }

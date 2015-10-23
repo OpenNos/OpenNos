@@ -29,7 +29,7 @@
         <AssociationConnector Association="opennosModel.itemsrunes" />
         <AssociationConnector Association="opennosModel.familywarehouse" />
         <EntityTypeShape EntityType="opennosModel.action" Width="1.5" PointX="0.5" PointY="6.375" />
-        <EntityTypeShape EntityType="opennosModel.log" Width="1.5" PointX="0.5" PointY="3.875" />
+        <EntityTypeShape EntityType="opennosModel.ConnectionLog" Width="1.5" PointX="0.5" PointY="3.875" />
         <AssociationConnector Association="opennosModel.npcshop" />
         <AssociationConnector Association="opennosModel.accountlog" />
         <AssociationConnector Association="opennosModel.familycharacterfamily" />

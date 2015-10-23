@@ -70,7 +70,7 @@ namespace OpenNos.Login.Resource {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Wrong Id! ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Wrong Id or Password! ähnelt.
         /// </summary>
         internal static string IDERROR {
             get {

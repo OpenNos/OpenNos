@@ -26,27 +26,11 @@ namespace OpenNos.DAL.EF.MySQL
 {
     public class AccountDAO : IAccountDAO
     {
-        public bool CheckPasswordValiditiy(string name, string passwordHashed)
-        {
-            using (var context = DataAccessHelper.CreateContext())
-            {
-                return context.account.Any(a => a.Name.Equals(name) && a.Password.Equals(passwordHashed));
-            }
-        }
-
         public bool IsLoggedIn(string name)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
                 return context.account.Any(a => a.Name.Equals(name) && a.LoggedIn);
-            }
-        }
-
-        public AuthorityType LoadAuthorityType(string name)
-        {
-            using (var context = DataAccessHelper.CreateContext())
-            {
-                return (AuthorityType)context.account.SingleOrDefault(a => a.Name.Equals(name)).Authority;
             }
         }
 
@@ -96,6 +80,22 @@ namespace OpenNos.DAL.EF.MySQL
             {
                 Account account = context.account.SingleOrDefault(a => a.Name.Equals(name));
                 account.LastSession = session;
+                context.SaveChanges();
+            }
+        }
+
+        public void WriteConnectionLog(long accountId, string ipAddress)
+        {
+            using (var context = DataAccessHelper.CreateContext())
+            {
+                ConnectionLog log = new ConnectionLog()
+                {
+                    AccountId = accountId,
+                    IpAddress = ipAddress,
+                    Timestamp = DateTime.Now
+                };
+
+                context.connectionlog.Add(log);
                 context.SaveChanges();
             }
         }
