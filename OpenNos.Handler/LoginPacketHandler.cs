@@ -26,13 +26,6 @@ namespace OpenNos.Login
 {
     public class LoginPacketHandler : PacketHandlerBase
     {
-        private string _loginIp;
-        private string _gameIp;
-        private string _worldName;
-        private int _port;
-        private int _channelCount;
-        private int _gamePort;
-
         private readonly NetworkClient _client;
 
         public LoginPacketHandler(NetworkClient client)
@@ -40,28 +33,7 @@ namespace OpenNos.Login
             _client = client;
         }
 
-        public void SetData(string loginIp, string gameId, int port, string channelName, int channelCount, int gamePort)
-        {
-            //TODO initialize values in constructor of LoginPacketHandler
-            //-> LoginPacketHandler will be instantiated when client connects
-            //each connected clients gots it own LoginPacketHandler
-            this._loginIp = loginIp;
-            this._gameIp = gameId;
-            this._port = port;
-            this._worldName = channelName;
-            this._channelCount = channelCount;
-            this._gamePort = gamePort;
-        }
-        public int GetPort()
-        {
-            return this._port;
-        }
-        public string GetIp()
-        {
-            return this._loginIp;
-        }
-
-        public string CreateServers(int session)
+        public string BuildServersPacket(int session)
         {
             string channelPacket = String.Format("NsTeST {0} ", session);
             List<ServerConfig.Server> myServs = (List<ServerConfig.Server>)ConfigurationManager.GetSection("Servers");
@@ -87,7 +59,7 @@ namespace OpenNos.Login
         }
 
         [Packet("NoS0575")]
-        public string CheckUser(string packet, long clientId)
+        public string VerifyLogin(string packet, long clientId)
         {
             User user = PacketFactory.Deserialize<User>(packet);
             //fermé
@@ -118,7 +90,7 @@ namespace OpenNos.Login
                                         DAOFactory.AccountDAO.UpdateLastSessionAndIp(user.Name, (int)newSessionId, _client.RemoteEndPoint.ToString());
                                         Logger.Log.DebugFormat("CONNECT {0} Connected -- session:{1}", user.Name, newSessionId);
 
-                                        return CreateServers((int)newSessionId);
+                                        return BuildServersPacket((int)newSessionId);
                                     }
                                     else
                                     {
