@@ -14,18 +14,7 @@ namespace OpenNos.DAL.EF.MySQL.DB
     
     public partial class Character
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Character()
-        {
-            this.friend = new HashSet<friend>();
-            this.inventory = new HashSet<inventory>();
-            this.skill = new HashSet<skill>();
-            this.pet = new HashSet<pet>();
-            this.action = new HashSet<action>();
-            this.partner = new HashSet<partner>();
-        }
-    
-        public int CharacterId { get; set; }
+        public long CharacterId { get; set; }
         public long AccountId { get; set; }
         public string Name { get; set; }
         public byte Slot { get; set; }
@@ -53,18 +42,5 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public int Faction { get; set; }
     
         public virtual Account account { get; set; }
-        public virtual characterfamily characterfamily { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<friend> friend { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<inventory> inventory { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<skill> skill { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<pet> pet { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<action> action { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<partner> partner { get; set; }
     }
 }

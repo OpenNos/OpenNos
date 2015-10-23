@@ -18,7 +18,5 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public string Action { get; set; }
         public int Key { get; set; }
         public int Slot { get; set; }
-    
-        public virtual Character character { get; set; }
     }
 }

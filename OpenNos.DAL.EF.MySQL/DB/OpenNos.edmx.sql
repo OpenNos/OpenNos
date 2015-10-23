@@ -44,7 +44,7 @@
 -- -----------------------------------------------------------
 -- Entity Designer DDL Script for MySQL Server 4.1 and higher
 -- -----------------------------------------------------------
--- Date Created: 10/22/2015 22:22:56
+-- Date Created: 10/23/2015 08:21:46
 
 -- Generated from EDMX file: C:\Users\Alex\Documents\GitHub\OpenNos\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
 -- Target version: 3.0.0.0
@@ -61,33 +61,15 @@
 
 --    ALTER TABLE `character` DROP CONSTRAINT `FK_AccountCharacter`;
 
---    ALTER TABLE `CharacterFamily` DROP CONSTRAINT `FK_charactercharafamily`;
-
---    ALTER TABLE `characterfriend` DROP CONSTRAINT `FK_characterfriend_character`;
-
---    ALTER TABLE `characterfriend` DROP CONSTRAINT `FK_characterfriend_friend`;
-
 --    ALTER TABLE `familyhistory` DROP CONSTRAINT `FK_familyhistoryfamily`;
-
---    ALTER TABLE `inventory` DROP CONSTRAINT `FK_inventorycharacter`;
-
---    ALTER TABLE `characterlistskill` DROP CONSTRAINT `FK_characterlistskill_character`;
-
---    ALTER TABLE `characterlistskill` DROP CONSTRAINT `FK_characterlistskill_skill`;
 
 --    ALTER TABLE `inventory` DROP CONSTRAINT `FK_inventoryitems`;
 
 --    ALTER TABLE `runes` DROP CONSTRAINT `FK_itemsrunes`;
 
---    ALTER TABLE `pet` DROP CONSTRAINT `FK_characterpet`;
-
 --    ALTER TABLE `family` DROP CONSTRAINT `FK_familywarehouse`;
 
---    ALTER TABLE `actionSet1` DROP CONSTRAINT `FK_actioncharacter`;
-
 --    ALTER TABLE `shop` DROP CONSTRAINT `FK_npcshop`;
-
---    ALTER TABLE `partner` DROP CONSTRAINT `FK_characterpartner`;
 
 --    ALTER TABLE `logSet` DROP CONSTRAINT `FK_accountlog`;
 
@@ -139,10 +121,6 @@ SET foreign_key_checks = 0;
 
     DROP TABLE IF EXISTS `logSet`;
 
-    DROP TABLE IF EXISTS `characterfriend`;
-
-    DROP TABLE IF EXISTS `characterlistskill`;
-
 SET foreign_key_checks = 1;
 
 -- --------------------------------------------------
@@ -165,7 +143,7 @@ ALTER TABLE `account` ADD PRIMARY KEY (AccountId);
 
 
 CREATE TABLE `character`(
-	`CharacterId` int NOT NULL AUTO_INCREMENT UNIQUE, 
+	`CharacterId` bigint NOT NULL AUTO_INCREMENT UNIQUE, 
 	`AccountId` bigint NOT NULL, 
 	`Name` varchar (255) NOT NULL, 
 	`Slot` TINYINT UNSIGNED NOT NULL, 
@@ -199,12 +177,11 @@ ALTER TABLE `character` ADD PRIMARY KEY (CharacterId);
 
 
 CREATE TABLE `CharacterFamily`(
-	`CharacterId` int NOT NULL, 
+	`CharacterId` bigint NOT NULL, 
 	`Xp` varchar (255) NOT NULL, 
 	`Authority` varchar (255) NOT NULL, 
 	`Message` varchar (255), 
-	`FamilyName` varchar (255) NOT NULL, 
-	`character_CharacterId` int NOT NULL);
+	`FamilyName` varchar (255) NOT NULL);
 
 ALTER TABLE `CharacterFamily` ADD PRIMARY KEY (CharacterId);
 
@@ -254,7 +231,7 @@ CREATE TABLE `inventory`(
 	`Character` varchar (255) NOT NULL, 
 	`Slot` varchar (255) NOT NULL, 
 	`Pos` varchar (255) NOT NULL, 
-	`characterCharacterId` int NOT NULL, 
+	`CharacterId` bigint NOT NULL, 
 	`items_ItemId` int NOT NULL);
 
 ALTER TABLE `inventory` ADD PRIMARY KEY (InventoryId);
@@ -344,7 +321,7 @@ ALTER TABLE `npcs` ADD PRIMARY KEY (NpcId);
 
 CREATE TABLE `partner`(
 	`PartnerId` int NOT NULL AUTO_INCREMENT UNIQUE, 
-	`CharacterId` int NOT NULL, 
+	`CharacterId` bigint NOT NULL, 
 	`owner` int NOT NULL, 
 	`Level` int, 
 	`isBackpacked` int, 
@@ -365,7 +342,7 @@ ALTER TABLE `partner` ADD PRIMARY KEY (PartnerId);
 
 CREATE TABLE `pet`(
 	`PetId` int NOT NULL AUTO_INCREMENT UNIQUE, 
-	`CharacterId` int NOT NULL, 
+	`CharacterId` bigint NOT NULL, 
 	`IsHelper` int NOT NULL, 
 	`Owner` varchar (255) NOT NULL, 
 	`Level` int NOT NULL, 
@@ -438,8 +415,7 @@ CREATE TABLE `actionSet1`(
 	`ActionId` int NOT NULL AUTO_INCREMENT UNIQUE, 
 	`Action` varchar (255), 
 	`Key` int NOT NULL, 
-	`Slot` int NOT NULL, 
-	`character_CharacterId` int NOT NULL);
+	`Slot` int NOT NULL);
 
 ALTER TABLE `actionSet1` ADD PRIMARY KEY (ActionId);
 
@@ -454,26 +430,6 @@ CREATE TABLE `logSet`(
 	`Connection` longtext NOT NULL);
 
 ALTER TABLE `logSet` ADD PRIMARY KEY (LogId);
-
-
-
-
-
-CREATE TABLE `characterfriend`(
-	`character_CharacterId` int NOT NULL, 
-	`friend_FriendId` int NOT NULL);
-
-ALTER TABLE `characterfriend` ADD PRIMARY KEY (character_CharacterId, friend_FriendId);
-
-
-
-
-
-CREATE TABLE `characterlistskill`(
-	`character_CharacterId` int NOT NULL, 
-	`skill_SkillId` int NOT NULL);
-
-ALTER TABLE `characterlistskill` ADD PRIMARY KEY (character_CharacterId, skill_SkillId);
 
 
 
@@ -504,53 +460,6 @@ CREATE INDEX `IX_FK_AccountCharacter`
 
 
 
--- Creating foreign key on `character_CharacterId` in table 'CharacterFamily'
-
-ALTER TABLE `CharacterFamily`
-ADD CONSTRAINT `FK_charactercharafamily`
-    FOREIGN KEY (`character_CharacterId`)
-    REFERENCES `character`
-        (`CharacterId`)
-    ON DELETE NO ACTION ON UPDATE NO ACTION;
-
-
--- Creating non-clustered index for FOREIGN KEY 'FK_charactercharafamily'
-
-CREATE INDEX `IX_FK_charactercharafamily`
-    ON `CharacterFamily`
-    (`character_CharacterId`);
-
-
-
--- Creating foreign key on `character_CharacterId` in table 'characterfriend'
-
-ALTER TABLE `characterfriend`
-ADD CONSTRAINT `FK_characterfriend_character`
-    FOREIGN KEY (`character_CharacterId`)
-    REFERENCES `character`
-        (`CharacterId`)
-    ON DELETE NO ACTION ON UPDATE NO ACTION;
-
-
-
--- Creating foreign key on `friend_FriendId` in table 'characterfriend'
-
-ALTER TABLE `characterfriend`
-ADD CONSTRAINT `FK_characterfriend_friend`
-    FOREIGN KEY (`friend_FriendId`)
-    REFERENCES `friend`
-        (`FriendId`)
-    ON DELETE NO ACTION ON UPDATE NO ACTION;
-
-
--- Creating non-clustered index for FOREIGN KEY 'FK_characterfriend_friend'
-
-CREATE INDEX `IX_FK_characterfriend_friend`
-    ON `characterfriend`
-    (`friend_FriendId`);
-
-
-
 -- Creating foreign key on `family_FamilyName` in table 'familyhistory'
 
 ALTER TABLE `familyhistory`
@@ -566,53 +475,6 @@ ADD CONSTRAINT `FK_familyhistoryfamily`
 CREATE INDEX `IX_FK_familyhistoryfamily`
     ON `familyhistory`
     (`family_FamilyName`);
-
-
-
--- Creating foreign key on `characterCharacterId` in table 'inventory'
-
-ALTER TABLE `inventory`
-ADD CONSTRAINT `FK_inventorycharacter`
-    FOREIGN KEY (`characterCharacterId`)
-    REFERENCES `character`
-        (`CharacterId`)
-    ON DELETE NO ACTION ON UPDATE NO ACTION;
-
-
--- Creating non-clustered index for FOREIGN KEY 'FK_inventorycharacter'
-
-CREATE INDEX `IX_FK_inventorycharacter`
-    ON `inventory`
-    (`characterCharacterId`);
-
-
-
--- Creating foreign key on `character_CharacterId` in table 'characterlistskill'
-
-ALTER TABLE `characterlistskill`
-ADD CONSTRAINT `FK_characterlistskill_character`
-    FOREIGN KEY (`character_CharacterId`)
-    REFERENCES `character`
-        (`CharacterId`)
-    ON DELETE NO ACTION ON UPDATE NO ACTION;
-
-
-
--- Creating foreign key on `skill_SkillId` in table 'characterlistskill'
-
-ALTER TABLE `characterlistskill`
-ADD CONSTRAINT `FK_characterlistskill_skill`
-    FOREIGN KEY (`skill_SkillId`)
-    REFERENCES `listskill`
-        (`SkillId`)
-    ON DELETE NO ACTION ON UPDATE NO ACTION;
-
-
--- Creating non-clustered index for FOREIGN KEY 'FK_characterlistskill_skill'
-
-CREATE INDEX `IX_FK_characterlistskill_skill`
-    ON `characterlistskill`
-    (`skill_SkillId`);
 
 
 
@@ -652,24 +514,6 @@ CREATE INDEX `IX_FK_itemsrunes`
 
 
 
--- Creating foreign key on `CharacterId` in table 'pet'
-
-ALTER TABLE `pet`
-ADD CONSTRAINT `FK_characterpet`
-    FOREIGN KEY (`CharacterId`)
-    REFERENCES `character`
-        (`CharacterId`)
-    ON DELETE NO ACTION ON UPDATE NO ACTION;
-
-
--- Creating non-clustered index for FOREIGN KEY 'FK_characterpet'
-
-CREATE INDEX `IX_FK_characterpet`
-    ON `pet`
-    (`CharacterId`);
-
-
-
 -- Creating foreign key on `warehouse_WareHouseId` in table 'family'
 
 ALTER TABLE `family`
@@ -688,24 +532,6 @@ CREATE INDEX `IX_FK_familywarehouse`
 
 
 
--- Creating foreign key on `character_CharacterId` in table 'actionSet1'
-
-ALTER TABLE `actionSet1`
-ADD CONSTRAINT `FK_actioncharacter`
-    FOREIGN KEY (`character_CharacterId`)
-    REFERENCES `character`
-        (`CharacterId`)
-    ON DELETE NO ACTION ON UPDATE NO ACTION;
-
-
--- Creating non-clustered index for FOREIGN KEY 'FK_actioncharacter'
-
-CREATE INDEX `IX_FK_actioncharacter`
-    ON `actionSet1`
-    (`character_CharacterId`);
-
-
-
 -- Creating foreign key on `NpcId` in table 'shop'
 
 ALTER TABLE `shop`
@@ -721,24 +547,6 @@ ADD CONSTRAINT `FK_npcshop`
 CREATE INDEX `IX_FK_npcshop`
     ON `shop`
     (`NpcId`);
-
-
-
--- Creating foreign key on `CharacterId` in table 'partner'
-
-ALTER TABLE `partner`
-ADD CONSTRAINT `FK_characterpartner`
-    FOREIGN KEY (`CharacterId`)
-    REFERENCES `character`
-        (`CharacterId`)
-    ON DELETE NO ACTION ON UPDATE NO ACTION;
-
-
--- Creating non-clustered index for FOREIGN KEY 'FK_characterpartner'
-
-CREATE INDEX `IX_FK_characterpartner`
-    ON `partner`
-    (`CharacterId`);
 
 
 

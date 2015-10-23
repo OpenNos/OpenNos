@@ -14,13 +14,12 @@ namespace OpenNos.DAL.EF.MySQL.DB
     
     public partial class characterfamily
     {
-        public int CharacterId { get; set; }
+        public long CharacterId { get; set; }
         public string Xp { get; set; }
         public string Authority { get; set; }
         public string Message { get; set; }
         public string FamilyName { get; set; }
     
-        public virtual Character character { get; set; }
         public virtual family family { get; set; }
     }
 }

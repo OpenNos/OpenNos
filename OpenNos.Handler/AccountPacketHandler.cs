@@ -34,24 +34,40 @@ namespace OpenNos.Handler
         [Packet("Char_NEW")]
         public string CreateChar(string packet, int sessionId)
         {
-           
-                //if name > 4char & name < 14
-                //if charname ever taken
-                //create char
-                Initialize(packet, sessionId);
+            //todo, hold Account Information in Authorized object
+            //load account by given SessionId
+            AccountDTO account = DAOFactory.AccountDAO.LoadBySessionId(sessionId);
 
+            CharacterDTO newCharacter = new CharacterDTO() {
+                Class = 0,
+                Gender = 1,
+                Gold = 10000,
+                HairColor = 5,
+                HairStyle = 3,
+                Hp = 200,
+                JobLevel = 99,
+                JobLevelXp = 0,
+                Level = 99,
+                LevelXp = 0,
+                Map = 1,
+                MapX = 40,
+                MapY = 40,
+                Mp = 200,
+                Name = "Testdude",
+                Slot = 0,
+                AccountId = account.AccountId
+            };
+
+            SaveResult insertResult = DAOFactory.CharacterDAO.InsertOrUpdate(ref newCharacter);
+
+            //change class
+            newCharacter.Class = 2;
+
+            SaveResult updateResult = DAOFactory.CharacterDAO.InsertOrUpdate(ref newCharacter);
 
             return String.Empty;
         }
-        [Packet("Char_DEL")]
-        public string DeleteChar(string packet, int sessionId)
-        {
-            //if pass true
-            //delete character
-            _client.SendPacket("success");
-            return String.Empty;
-        }
-        
+
         [Packet("OpenNos.EntryPoint")]
         public string Initialize(string packet, int sessionId)
         {
@@ -60,11 +76,11 @@ namespace OpenNos.Handler
             IEnumerable<CharacterDTO> characters = DAOFactory.CharacterDAO.LoadByAccount(account.AccountId);
             Logger.Log.InfoFormat("Account with SessionId {0} has arrived.", sessionId);
             _client.SendPacket("clist_start 0");
-            foreach( CharacterDTO character in characters)
+            for (int i = 0; i < characters.Count(); i++)
             {
                 
                 _client.SendPacket(String.Format("clist {0} {1} {2} {3} {4} {5} {6} {7} {8} {9}.{10}.{11}.{12}.{13}.{14}.{15}.{16} {17} {18} {19} {20}.{21} {22} {23}",
-                    character.Slot, character.Name, character.Gender, 0, character.HairStyle, character.HairColor, 5, character.Class, character.Level, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, -1, -1, character.HairColor,0));
+                    characters.ElementAt(i).Slot, characters.ElementAt(i).Name, characters.ElementAt(i).Gender, 0, characters.ElementAt(i).HairStyle, characters.ElementAt(i).HairColor, 5, characters.ElementAt(i).Class, characters.ElementAt(i).Level, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, -1, -1, characters.ElementAt(i).HairColor,0));
             }
             _client.SendPacket("clist_end");
         
