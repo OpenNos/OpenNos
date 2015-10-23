@@ -37,15 +37,16 @@ namespace OpenNos.Handler
         {
             string[] packetsplit = packet.Split(' ');
             AccountDTO account = DAOFactory.AccountDAO.LoadBySessionId(sessionId);
-            if(account.Password == OpenNos.Core.EncryptionBase.sha256(packetsplit[3]))
+            if (account.Password == OpenNos.Core.EncryptionBase.sha256(packetsplit[3]))
             {
-               DAOFactory.CharacterDAO.Delete(account.AccountId, Convert.ToByte(packetsplit[2]));
+                DAOFactory.CharacterDAO.Delete(account.AccountId, Convert.ToByte(packetsplit[2]));
                 Initialize(packet, sessionId);
             }
             else
             {
-                _client.SendPacket("info Bad Password"); 
+                _client.SendPacket("info Bad Password");
             }
+
             return String.Empty;
         }
         [Packet("Char_NEW")]
@@ -61,30 +62,30 @@ namespace OpenNos.Handler
                 if (!DAOFactory.CharacterDAO.IsAlreadyDefined(packetsplit[2]))
                 {
                     CharacterDTO newCharacter = new CharacterDTO()
-                {
-                    Class = 0,
-                    Gender = Convert.ToByte(packetsplit[4]),
-                    Gold = 10000,
-                    HairColor = Convert.ToByte(packetsplit[6]),
-                    HairStyle = Convert.ToByte(packetsplit[5]),
-                    Hp = 200,
-                    JobLevel = 1,
-                    JobLevelXp = 0,
-                    Level = 1,
-                    LevelXp = 0,
-                    Map = 1,
-                    MapX = 40,
-                    MapY = 40,
-                    Mp = 200,
-                    Name = packetsplit[2],
-                    Slot = Convert.ToByte(packetsplit[3]),
-                    AccountId = account.AccountId
-                };
+                    {
+                        Class = 0,
+                        Gender = Convert.ToByte(packetsplit[4]),
+                        Gold = 10000,
+                        HairColor = Convert.ToByte(packetsplit[6]),
+                        HairStyle = Convert.ToByte(packetsplit[5]),
+                        Hp = 200,
+                        JobLevel = 1,
+                        JobLevelXp = 0,
+                        Level = 1,
+                        LevelXp = 0,
+                        Map = 1,
+                        MapX = 40,
+                        MapY = 40,
+                        Mp = 200,
+                        Name = packetsplit[2],
+                        Slot = Convert.ToByte(packetsplit[3]),
+                        AccountId = account.AccountId
+                    };
 
-                SaveResult insertResult = DAOFactory.CharacterDAO.InsertOrUpdate(ref newCharacter);
-                Initialize(packet, sessionId);
-            }
-            else _client.SendPacket("info this name is already taken");
+                    SaveResult insertResult = DAOFactory.CharacterDAO.InsertOrUpdate(ref newCharacter);
+                    Initialize(packet, sessionId);
+                }
+                else _client.SendPacket("info this name is already taken");
             }
             else _client.SendPacket("info the name must use beetween 4 and 14 key");
             return String.Empty;
@@ -100,12 +101,12 @@ namespace OpenNos.Handler
             _client.SendPacket("clist_start 0");
             foreach (CharacterDTO character in characters)
             {
-                
+
                 _client.SendPacket(String.Format("clist {0} {1} {2} {3} {4} {5} {6} {7} {8} {9}.{10}.{11}.{12}.{13}.{14}.{15}.{16} {17} {18} {19} {20}.{21} {22} {23}",
-                    character.Slot, character.Name,0, character.Gender, character.HairStyle, character.HairColor, 5, character.Class, character.Level, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, -1, -1, character.HairColor,0));
+                    character.Slot, character.Name, 0, character.Gender, character.HairStyle, character.HairColor, 5, character.Class, character.Level, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, -1, -1, character.HairColor, 0));
             }
             _client.SendPacket("clist_end");
-        
+
             return String.Empty;
         }
     }
