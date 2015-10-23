@@ -31,40 +31,62 @@ namespace OpenNos.Handler
         {
             _client = client;
         }
+
+        [Packet("Char_DEL")]
+        public string DeleteChar(string packet, int sessionId)
+        {
+            string[] packetsplit = packet.Split(' ');
+            AccountDTO account = DAOFactory.AccountDAO.LoadBySessionId(sessionId);
+            if(account.Password == OpenNos.Core.EncryptionBase.sha256(packetsplit[3]))
+            {
+               DAOFactory.CharacterDAO.Delete(account.AccountId, Convert.ToByte(packetsplit[2]));
+                Initialize(packet, sessionId);
+            }
+            else
+            {
+                _client.SendPacket("info Bad Password"); 
+            }
+            return String.Empty;
+        }
         [Packet("Char_NEW")]
         public string CreateChar(string packet, int sessionId)
         {
             //todo, hold Account Information in Authorized object
             //load account by given SessionId
             AccountDTO account = DAOFactory.AccountDAO.LoadBySessionId(sessionId);
+            string[] packetsplit = packet.Split(' ');
+            if (packetsplit[2].Length > 3 && packetsplit[2].Length < 15)
+            {
 
-            CharacterDTO newCharacter = new CharacterDTO() {
-                Class = 0,
-                Gender = 1,
-                Gold = 10000,
-                HairColor = 5,
-                HairStyle = 3,
-                Hp = 200,
-                JobLevel = 99,
-                JobLevelXp = 0,
-                Level = 99,
-                LevelXp = 0,
-                Map = 1,
-                MapX = 40,
-                MapY = 40,
-                Mp = 200,
-                Name = "Testdude",
-                Slot = 0,
-                AccountId = account.AccountId
-            };
+                if (!DAOFactory.CharacterDAO.IsAlreadyDefined(packetsplit[2]))
+                {
+                    CharacterDTO newCharacter = new CharacterDTO()
+                {
+                    Class = 0,
+                    Gender = Convert.ToByte(packetsplit[4]),
+                    Gold = 10000,
+                    HairColor = Convert.ToByte(packetsplit[6]),
+                    HairStyle = Convert.ToByte(packetsplit[5]),
+                    Hp = 200,
+                    JobLevel = 1,
+                    JobLevelXp = 0,
+                    Level = 1,
+                    LevelXp = 0,
+                    Map = 1,
+                    MapX = 40,
+                    MapY = 40,
+                    Mp = 200,
+                    Name = packetsplit[2],
+                    Slot = Convert.ToByte(packetsplit[3]),
+                    AccountId = account.AccountId
+                };
 
-            SaveResult insertResult = DAOFactory.CharacterDAO.InsertOrUpdate(ref newCharacter);
-
-            //change class
-            newCharacter.Class = 2;
-
-            SaveResult updateResult = DAOFactory.CharacterDAO.InsertOrUpdate(ref newCharacter);
-
+                SaveResult insertResult = DAOFactory.CharacterDAO.InsertOrUpdate(ref newCharacter);
+                Initialize(packet, sessionId);
+            }
+            else _client.SendPacket("info this name is already taken");
+            }
+            else _client.SendPacket("info the name must use beetween 4 and 14 key");
             return String.Empty;
         }
 
@@ -76,11 +98,11 @@ namespace OpenNos.Handler
             IEnumerable<CharacterDTO> characters = DAOFactory.CharacterDAO.LoadByAccount(account.AccountId);
             Logger.Log.InfoFormat("Account with SessionId {0} has arrived.", sessionId);
             _client.SendPacket("clist_start 0");
-            for (int i = 0; i < characters.Count(); i++)
+            foreach (CharacterDTO character in characters)
             {
                 
                 _client.SendPacket(String.Format("clist {0} {1} {2} {3} {4} {5} {6} {7} {8} {9}.{10}.{11}.{12}.{13}.{14}.{15}.{16} {17} {18} {19} {20}.{21} {22} {23}",
-                    characters.ElementAt(i).Slot, characters.ElementAt(i).Name, characters.ElementAt(i).Gender, 0, characters.ElementAt(i).HairStyle, characters.ElementAt(i).HairColor, 5, characters.ElementAt(i).Class, characters.ElementAt(i).Level, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, -1, -1, characters.ElementAt(i).HairColor,0));
+                    character.Slot, character.Name,0, character.Gender, character.HairStyle, character.HairColor, 5, character.Class, character.Level, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, -1, -1, character.HairColor,0));
             }
             _client.SendPacket("clist_end");
         

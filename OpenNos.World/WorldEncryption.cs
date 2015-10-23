@@ -15,6 +15,7 @@ using OpenNos.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -23,7 +24,7 @@ namespace OpenNos.World
     public class WorldEncryption : EncryptionBase
     {
         public WorldEncryption() : base(true) { }
-
+    
         public override string Decrypt(byte[] str, int length, int session_id)
         {
             string encrypted_string = "";
