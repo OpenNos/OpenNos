@@ -190,7 +190,7 @@ namespace OpenNos.Core.Communication.Scs.Communication.Channels.Tcp
                 }
                 else
                 {
-                    Logger.Log.Warn("Connection closed by Client.");
+                    Logger.Log.Warn(Language.Instance.GetMessageFromKey("CLIENT_CLOSED"));
                     Disconnect();
                 }
 

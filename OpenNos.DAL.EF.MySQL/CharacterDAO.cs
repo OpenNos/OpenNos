@@ -36,7 +36,7 @@ namespace OpenNos.DAL.EF.MySQL
             }
             catch (Exception e)
             {
-                Logger.Log.ErrorFormat("Error deleting Character with Slot {0} , {1}", characterSlot, e.Message);
+                Logger.Log.ErrorFormat("DELETE_ERROR", characterSlot, e.Message);
                 return DeleteResult.Error;
             }
         }
@@ -64,7 +64,7 @@ namespace OpenNos.DAL.EF.MySQL
             }
             catch(Exception e)
             {
-                Logger.Log.ErrorFormat("Error inserting or updating character {0} , {1}", character, e.Message);
+                Logger.Log.ErrorFormat("", character, e.Message);
                 return SaveResult.Error;
             }
         }

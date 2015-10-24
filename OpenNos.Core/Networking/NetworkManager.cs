@@ -51,7 +51,7 @@ namespace OpenNos.Core
 
             server.Start(); //Start the server
 
-            Logger.Log.Info("Server is started successfully.");
+            Logger.Log.Info(Language.Instance.GetMessageFromKey("STARTED"));
         }
 
         #endregion
@@ -60,12 +60,12 @@ namespace OpenNos.Core
 
         static void Server_ClientConnected(object sender, ServerClientEventArgs e)
         {
-            Logger.Log.Info("A new client is connected. ClientId = " + e.Client.ClientId);
+            Logger.Log.Info(Language.Instance.GetMessageFromKey("NEW_CONNECT") + e.Client.ClientId);
             NetworkClient customClient = e.Client as NetworkClient;
 
             if(!CheckConnectionLog(customClient))
             {
-                Logger.Log.WarnFormat("Forced Disconnecting of client {0}, too much connections.", customClient.ClientId);
+                Logger.Log.WarnFormat(Language.Instance.GetMessageFromKey("FORCED_DISCONNECT"), customClient.ClientId);
                 customClient.Disconnect();
                 return;
             }
@@ -76,7 +76,7 @@ namespace OpenNos.Core
         static void Server_ClientDisconnected(object sender, ServerClientEventArgs e)
         {
             e.Client.Disconnect();
-            Logger.Log.Info("A client is has been disconnected! CliendId = " + e.Client.ClientId);
+            Logger.Log.Info(Language.Instance.GetMessageFromKey("DISCONNECT") + e.Client.ClientId);
         }
 
         #endregion

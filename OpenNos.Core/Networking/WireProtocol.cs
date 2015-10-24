@@ -62,7 +62,7 @@ namespace OpenNos.Core
             var messageLength = serializedMessage.Length;
             if (messageLength > MaxMessageLength)
             {
-                Logger.Log.ErrorFormat("Message is too big ({0} bytes). Max allowed length is {1} bytes.", messageLength, MaxMessageLength);
+                Logger.Log.ErrorFormat(Language.Instance.GetMessageFromKey("TOO_BIG"), messageLength, MaxMessageLength);
             }
 
             var bytes = new byte[messageLength];

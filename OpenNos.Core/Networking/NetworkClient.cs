@@ -80,7 +80,7 @@ namespace OpenNos.Core
             }
             catch (Exception e)
             {
-                Logger.Log.ErrorFormat("Failed to send packet {0} to client {1}, {2}.", packet, ClientId, e.Message);
+                Logger.Log.ErrorFormat(Language.Instance.GetMessageFromKey("PACKET_FAILURE"), packet, ClientId, e.Message);
                 return false;
             }
         }
