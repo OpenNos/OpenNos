@@ -139,7 +139,7 @@ namespace OpenNos.DAL.EF.MySQL
             }
             catch (Exception e)
             {
-                Logger.Log.ErrorFormat("Error inserting or updating Account {0} , {1}", account.AccountId, e.Message);
+                Logger.Log.ErrorFormat(Language.Instance.GetMessageFromKey("UPDATE_ACCOUNT_ERROR"), account.AccountId, e.Message);
                 return SaveResult.Error;
             }
         }
@@ -163,7 +163,7 @@ namespace OpenNos.DAL.EF.MySQL
             }
             catch (Exception e)
             {
-                Logger.Log.ErrorFormat("Error deleting Account with Id {0} , {1}", accountId, e.Message);
+                Logger.Log.ErrorFormat(Language.Instance.GetMessageFromKey("DELETE_ACCOUNT_ERROR"), accountId, e.Message);
                 return DeleteResult.Error;
             }
         }

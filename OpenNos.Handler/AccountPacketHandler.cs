@@ -44,7 +44,7 @@ namespace OpenNos.Handler
             }
             else
             {
-                _client.SendPacket("info Bad Password");
+                _client.SendPacket(String.Format("info {0}", Language.Instance.GetMessageFromKey("BAD_PASSWORD")));
             }
 
             return String.Empty;
@@ -85,9 +85,9 @@ namespace OpenNos.Handler
                     SaveResult insertResult = DAOFactory.CharacterDAO.InsertOrUpdate(ref newCharacter);
                     LoadCharacters(packet, sessionId);
                 }
-                else _client.SendPacket("info this name is already taken");
+
+                else _client.SendPacket(String.Format("info {0}", Language.Instance.GetMessageFromKey("ALREADY_TAKEN")));
             }
-            else _client.SendPacket("info the name must use beetween 4 and 14 key");
             return String.Empty;
         }
 

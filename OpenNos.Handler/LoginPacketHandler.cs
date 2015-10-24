@@ -92,7 +92,7 @@ namespace OpenNos.Login
                                         int newSessionId = SessionFactory.Instance.GenerateSessionId();
 
                                         DAOFactory.AccountDAO.UpdateLastSessionAndIp(user.Name, (int)newSessionId, _client.RemoteEndPoint.ToString());
-                                        Logger.Log.DebugFormat("CONNECT {0} Connected -- session:{1}", user.Name, newSessionId);
+                                        Logger.Log.DebugFormat(Language.Instance.GetMessageFromKey("CONNECTION"), user.Name, newSessionId);
 
                                         return BuildServersPacket((int)newSessionId);
                                     }

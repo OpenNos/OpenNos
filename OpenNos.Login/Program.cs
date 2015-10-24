@@ -41,7 +41,7 @@ namespace OpenNos.Login
 
                     //initialize DB
                     DataAccessHelper.Initialize();
-                    Logger.Log.Info("Database has been initialized.");
+                    Logger.Log.Info("DATABASE_HAS_BEEN_INITIALISE");
 
                     string ip = System.Configuration.ConfigurationManager.AppSettings["LoginIp"];
                     int port = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["LoginPort"]);

@@ -39,7 +39,7 @@ namespace OpenNos.World
 
             //initialize DB
             DataAccessHelper.Initialize();
-            Logger.Log.Info("Database has been initialized.");
+            Logger.Log.Info(Language.Instance.GetMessageFromKey("DATABASE_HAS_BEEN_INITIALISE"));
 
             string ip = System.Configuration.ConfigurationManager.AppSettings["WorldIp"];
             int port = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["WorldPort"]);

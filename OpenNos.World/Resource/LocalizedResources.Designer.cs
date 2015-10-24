@@ -61,11 +61,128 @@ namespace OpenNos.World.Resource {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à test.
+        ///   Recherche une chaîne localisée semblable à This name is already taken!.
         /// </summary>
-        public static string test {
+        public static string ALREADY_TAKEN {
             get {
-                return ResourceManager.GetString("test", resourceCulture);
+                return ResourceManager.GetString("ALREADY_TAKEN", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Bad Password.
+        /// </summary>
+        public static string BAD_PASSWORD {
+            get {
+                return ResourceManager.GetString("BAD_PASSWORD", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Connection closed by Client..
+        /// </summary>
+        public static string CLIENT_CLOSE {
+            get {
+                return ResourceManager.GetString("CLIENT_CLOSE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Database has been initialized..
+        /// </summary>
+        public static string DATABASE_HAS_BEEN_INITIALISE {
+            get {
+                return ResourceManager.GetString("DATABASE_HAS_BEEN_INITIALISE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Error deleting Account with Id {0} , {1}.
+        /// </summary>
+        public static string DELETE_ACCOUNT_ERROR {
+            get {
+                return ResourceManager.GetString("DELETE_ACCOUNT_ERROR", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Error deleting Character with Slot {0} , {1}.
+        /// </summary>
+        public static string DELETE_ERROR {
+            get {
+                return ResourceManager.GetString("DELETE_ERROR", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à A client is has been disconnected! CliendId =.
+        /// </summary>
+        public static string DISCONNECT {
+            get {
+                return ResourceManager.GetString("DISCONNECT", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Forced Disconnecting of client {0}, too much connections..
+        /// </summary>
+        public static string FORCED_DISCONNECT {
+            get {
+                return ResourceManager.GetString("FORCED_DISCONNECT", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Error inserting or updating character {0} , {1}.
+        /// </summary>
+        public static string INSERT_ERROR {
+            get {
+                return ResourceManager.GetString("INSERT_ERROR", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à A new client is connected. ClientId =.
+        /// </summary>
+        public static string NEW_CONNECT {
+            get {
+                return ResourceManager.GetString("NEW_CONNECT", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Failed to send packet {0} to client {1}, {2}..
+        /// </summary>
+        public static string PACKET_FAILURE {
+            get {
+                return ResourceManager.GetString("PACKET_FAILURE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Server is started successfully..
+        /// </summary>
+        public static string STARTED {
+            get {
+                return ResourceManager.GetString("STARTED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Message is too big ({0} bytes). Max allowed length is {1} bytes..
+        /// </summary>
+        public static string TOO_BIG {
+            get {
+                return ResourceManager.GetString("TOO_BIG", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Error inserting or updating Account {0} , {1}.
+        /// </summary>
+        public static string UPDATE_ACCOUNT_ERROR {
+            get {
+                return ResourceManager.GetString("UPDATE_ACCOUNT_ERROR", resourceCulture);
             }
         }
     }
