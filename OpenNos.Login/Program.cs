@@ -41,11 +41,11 @@ namespace OpenNos.Login
 
                     //initialize DB
                     DataAccessHelper.Initialize();
-                    Logger.Log.Info("DATABASE_HAS_BEEN_INITIALISE");
+                    Logger.Log.Info(Language.Instance.GetMessageFromKey("DATABASE_HAS_BEEN_INITIALISE"));
 
                     string ip = System.Configuration.ConfigurationManager.AppSettings["LoginIp"];
                     int port = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["LoginPort"]);
-                    Logger.Log.Info(Language.Instance.GetMessageFromKey("Config_Loaded"));
+                    Logger.Log.Info(Language.Instance.GetMessageFromKey("CONFIG_LOADED"));
                     NetworkManager<LoginEncryption> networkManager = new NetworkManager<LoginEncryption>(ip,port, handlers, false);
                 }
                 catch (Exception ex)

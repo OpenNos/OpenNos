@@ -120,7 +120,7 @@
   <data name="CLIENT_CLOSE" xml:space="preserve">
     <value>Connection closed by Client.</value>
   </data>
-  <data name="Config_Loaded" xml:space="preserve">
+  <data name="CONFIG_LOADED" xml:space="preserve">
     <value>Config loaded !</value>
   </data>
   <data name="CONNECTION" xml:space="preserve">
@@ -137,6 +137,9 @@
   </data>
   <data name="IDERROR" xml:space="preserve">
     <value>Wrong Id or Password!</value>
+  </data>
+  <data name="MESSAGE_RECEIVED" xml:space="preserve">
+    <value>Message received {0} on client {1}</value>
   </data>
   <data name="NEW_CONNECT" xml:space="preserve">
     <value>A new client is connected. ClientId =</value>

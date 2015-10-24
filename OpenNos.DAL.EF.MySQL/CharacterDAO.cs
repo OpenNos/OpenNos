@@ -64,7 +64,7 @@ namespace OpenNos.DAL.EF.MySQL
             }
             catch(Exception e)
             {
-                Logger.Log.ErrorFormat("", character, e.Message);
+                Logger.Log.ErrorFormat("INSERT_ERROR", character, e.Message);
                 return SaveResult.Error;
             }
         }

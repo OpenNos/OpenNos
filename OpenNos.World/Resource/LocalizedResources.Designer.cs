@@ -61,6 +61,15 @@ namespace OpenNos.World.Resource {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à Account with SessionId {0} has arrived..
+        /// </summary>
+        public static string ACCOUNT_ARRIVED {
+            get {
+                return ResourceManager.GetString("ACCOUNT_ARRIVED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à This name is already taken!.
         /// </summary>
         public static string ALREADY_TAKEN {
@@ -79,11 +88,29 @@ namespace OpenNos.World.Resource {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à Client arrived, SessionId: {0}.
+        /// </summary>
+        public static string CLIENT_ARRIVED {
+            get {
+                return ResourceManager.GetString("CLIENT_ARRIVED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Connection closed by Client..
         /// </summary>
         public static string CLIENT_CLOSE {
             get {
                 return ResourceManager.GetString("CLIENT_CLOSE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Corrupted Keepalive on client {0}..
+        /// </summary>
+        public static string CORRUPT_KEEPALIVE {
+            get {
+                return ResourceManager.GetString("CORRUPT_KEEPALIVE", resourceCulture);
             }
         }
         
@@ -133,6 +160,15 @@ namespace OpenNos.World.Resource {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à Could not found Handler implementation for Packet with Header {0}.
+        /// </summary>
+        public static string HANDLER_NOT_FOUND {
+            get {
+                return ResourceManager.GetString("HANDLER_NOT_FOUND", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Error inserting or updating character {0} , {1}.
         /// </summary>
         public static string INSERT_ERROR {
@@ -142,11 +178,47 @@ namespace OpenNos.World.Resource {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à Message received {0} on client {1}.
+        /// </summary>
+        public static string MESSAGE_RECEIVED {
+            get {
+                return ResourceManager.GetString("MESSAGE_RECEIVED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Message sent {0} to client {1}.
+        /// </summary>
+        public static string MSG_SENT {
+            get {
+                return ResourceManager.GetString("MSG_SENT", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à A new client is connected. ClientId =.
         /// </summary>
         public static string NEW_CONNECT {
             get {
                 return ResourceManager.GetString("NEW_CONNECT", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à No EntryPoint found.
+        /// </summary>
+        public static string NO_ENTRY {
+            get {
+                return ResourceManager.GetString("NO_ENTRY", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Packet arrived, packet: {0}.
+        /// </summary>
+        public static string PACKET_ARRIVED {
+            get {
+                return ResourceManager.GetString("PACKET_ARRIVED", resourceCulture);
             }
         }
         
