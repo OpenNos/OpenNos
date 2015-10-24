@@ -97,7 +97,7 @@ namespace OpenNos.Handler
             //load account by given SessionId
             AccountDTO account = DAOFactory.AccountDAO.LoadBySessionId(sessionId);
             IEnumerable<CharacterDTO> characters = DAOFactory.CharacterDAO.LoadByAccount(account.AccountId);
-            Logger.Log.InfoFormat("Account with SessionId {0} has arrived.", sessionId);
+            Logger.Log.InfoFormat(Language.Instance.GetMessageFromKey("ACCOUNT_ARRIVED"), sessionId);
             _client.SendPacket("clist_start 0");
             foreach (CharacterDTO character in characters)
             {

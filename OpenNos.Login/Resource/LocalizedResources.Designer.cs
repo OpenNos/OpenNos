@@ -72,9 +72,9 @@ namespace OpenNos.Login.Resource {
         /// <summary>
         ///   Recherche une chaîne localisée semblable à Config loaded !.
         /// </summary>
-        internal static string Config_Loaded {
+        internal static string CONFIG_LOADED {
             get {
-                return ResourceManager.GetString("Config_Loaded", resourceCulture);
+                return ResourceManager.GetString("CONFIG_LOADED", resourceCulture);
             }
         }
         
@@ -120,6 +120,15 @@ namespace OpenNos.Login.Resource {
         internal static string IDERROR {
             get {
                 return ResourceManager.GetString("IDERROR", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Message received {0} on client {1}.
+        /// </summary>
+        internal static string MESSAGE_RECEIVED {
+            get {
+                return ResourceManager.GetString("MESSAGE_RECEIVED", resourceCulture);
             }
         }
         

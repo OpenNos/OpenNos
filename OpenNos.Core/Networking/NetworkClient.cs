@@ -109,18 +109,18 @@ namespace OpenNos.Core
             if (_encryptor.HasCustomParameter && this.SessionId == 0)
             {
                 string sessionPacket = _encryptor.DecryptCustomParameter(message.MessageData);
-                Logger.Log.DebugFormat("Packet arrived, packet: {0}", sessionPacket);
+                Logger.Log.DebugFormat(Language.Instance.GetMessageFromKey("PACKET_ARRIVED"), sessionPacket);
 
                 string[] sessionParts = sessionPacket.Split(' ');
                 this.LastKeepAliveIdentity = Convert.ToInt32(sessionParts[0]);
 
                 //set the SessionId if Session Packet arrives
                 this.SessionId = Convert.ToInt32(sessionParts[1].Split('\\').FirstOrDefault());
-                Logger.Log.DebugFormat("Client arrived, SessionId: {0}", this.SessionId);
+                Logger.Log.DebugFormat(Language.Instance.GetMessageFromKey("CLIENT_ARRIVED"), this.SessionId);
 
                 if (!TriggerHandler("OpenNos.EntryPoint", String.Empty))
                 {
-                    Logger.Log.ErrorFormat("No EntryPoint found");
+                    Logger.Log.ErrorFormat(Language.Instance.GetMessageFromKey("NO_ENTRY"));
                 }
 
                 return;
@@ -130,7 +130,7 @@ namespace OpenNos.Core
 
             foreach (string packet in packetConcatenated.Split(new char[] { (char)0xFF }, StringSplitOptions.RemoveEmptyEntries))
             {
-                Logger.Log.DebugFormat("Message received {0} on client {1}", packet, this.ClientId);
+                Logger.Log.DebugFormat(Language.Instance.GetMessageFromKey("MESSAGE_RECEIVED"), packet, this.ClientId);
       
                 if (_encryptor.HasCustomParameter)
                 {
@@ -139,7 +139,7 @@ namespace OpenNos.Core
                     Int32 nextKeepaliveIdentity;
                     if(!Int32.TryParse(nextKeepAliveRaw, out nextKeepaliveIdentity) && nextKeepaliveIdentity != (this.LastKeepAliveIdentity + 1))
                     {
-                        Logger.Log.ErrorFormat("Corrupted Keepalive on client {0}.", ClientId);
+                        Logger.Log.ErrorFormat(Language.Instance.GetMessageFromKey("CORRUPT_KEEPALIVE"), ClientId);
                         Disconnect();
                         return;
                     }
@@ -158,7 +158,7 @@ namespace OpenNos.Core
                     //0 is a keep alive packet with no content to handle
                     if (packetHeader != "0" && !TriggerHandler(packetHeader, packet))
                     {
-                        Logger.Log.ErrorFormat("Could not found Handler implementation for Packet with Header {0}", packetHeader);
+                        Logger.Log.ErrorFormat(Language.Instance.GetMessageFromKey("HANDLER_NOT_FOUND"), packetHeader);
                     }
                 }
                 else
@@ -168,7 +168,7 @@ namespace OpenNos.Core
 
                     if (!TriggerHandler(packetHeader, packet))
                     {
-                        Logger.Log.ErrorFormat("Could not found Handler implementation for Packet with Header {0}", packetHeader);
+                        Logger.Log.ErrorFormat(Language.Instance.GetMessageFromKey("HANDLER_NOT_FOUND"), packetHeader);
                     }
                 }
 
@@ -189,7 +189,7 @@ namespace OpenNos.Core
                     if (!String.IsNullOrEmpty(result))
                     {
                         //Send reply message to the client
-                        Logger.Log.DebugFormat("Message sent {0} to client {1}", result, this.ClientId);
+                        Logger.Log.DebugFormat(Language.Instance.GetMessageFromKey("MSG_SENT"), result, this.ClientId);
                         SendPacket(result);
                     }
 

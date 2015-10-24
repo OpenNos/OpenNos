@@ -117,7 +117,70 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Config_Loaded" xml:space="preserve">
-    <value>Config Chargé ! </value>
+  <data name="ACCOUNT_ARRIVED" xml:space="preserve">
+    <value>Account with SessionId {0} has arrived.</value>
+  </data>
+  <data name="ALREADY_TAKEN" xml:space="preserve">
+    <value>This name is already taken!</value>
+  </data>
+  <data name="BAD_PASSWORD" xml:space="preserve">
+    <value>Bad Password</value>
+  </data>
+  <data name="CLIENT_ARRIVED" xml:space="preserve">
+    <value>Client arrived, SessionId: {0}</value>
+  </data>
+  <data name="CLIENT_CLOSE" xml:space="preserve">
+    <value>Connection closed by Client.</value>
+  </data>
+  <data name="CORRUPT_KEEPALIVE" xml:space="preserve">
+    <value>Corrupted Keepalive on client {0}.</value>
+  </data>
+  <data name="DATABASE_HAS_BEEN_INITIALISE" xml:space="preserve">
+    <value>Database has been initialized.</value>
+  </data>
+  <data name="DELETE_ACCOUNT_ERROR" xml:space="preserve">
+    <value>Error deleting Account with Id {0} , {1}</value>
+  </data>
+  <data name="DELETE_ERROR" xml:space="preserve">
+    <value>Error deleting Character with Slot {0} , {1}</value>
+  </data>
+  <data name="DISCONNECT" xml:space="preserve">
+    <value>A client is has been disconnected! CliendId =</value>
+  </data>
+  <data name="FORCED_DISCONNECT" xml:space="preserve">
+    <value>Forced Disconnecting of client {0}, too much connections.</value>
+  </data>
+  <data name="HANDLER_NOT_FOUND" xml:space="preserve">
+    <value>Could not found Handler implementation for Packet with Header {0}</value>
+  </data>
+  <data name="INSERT_ERROR" xml:space="preserve">
+    <value>Error inserting or updating character {0} , {1}</value>
+  </data>
+  <data name="MESSAGE_RECEIVED" xml:space="preserve">
+    <value>Message received {0} on client {1}</value>
+  </data>
+  <data name="MSG_SENT" xml:space="preserve">
+    <value>Message sent {0} to client {1}</value>
+  </data>
+  <data name="NEW_CONNECT" xml:space="preserve">
+    <value>A new client is connected. ClientId =</value>
+  </data>
+  <data name="NO_ENTRY" xml:space="preserve">
+    <value>No EntryPoint found</value>
+  </data>
+  <data name="PACKET_ARRIVED" xml:space="preserve">
+    <value>Packet arrived, packet: {0}</value>
+  </data>
+  <data name="PACKET_FAILURE" xml:space="preserve">
+    <value>Failed to send packet {0} to client {1}, {2}.</value>
+  </data>
+  <data name="STARTED" xml:space="preserve">
+    <value>Server is started successfully.</value>
+  </data>
+  <data name="TOO_BIG" xml:space="preserve">
+    <value>Message is too big ({0} bytes). Max allowed length is {1} bytes.</value>
+  </data>
+  <data name="UPDATE_ACCOUNT_ERROR" xml:space="preserve">
+    <value>Error inserting or updating Account {0} , {1}</value>
   </data>
 </root>
