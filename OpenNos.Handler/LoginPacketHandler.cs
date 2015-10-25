@@ -22,15 +22,15 @@ using System.Configuration;
 using OpenNos.Core.Communication.Scs.Communication.Messages;
 using OpenNos.Core.Communication.Scs.Server;
 
-namespace OpenNos.Login
+namespace OpenNos.Handler
 {
     public class LoginPacketHandler : PacketHandlerBase
     {
-        private readonly NetworkClient _client;
+        private readonly ClientSession _session;
 
-        public LoginPacketHandler(NetworkClient client)
+        public LoginPacketHandler(ClientSession session)
         {
-            _client = client;
+            _session = session;
         }
 
         public string BuildServersPacket(int session)
@@ -59,7 +59,7 @@ namespace OpenNos.Login
         }
 
         [Packet("NoS0575")]
-        public string VerifyLogin(string packet, long clientId)
+        public string VerifyLogin(string packet)
         {
             User user = PacketFactory.Deserialize<User>(packet);
             //fermé
@@ -74,7 +74,7 @@ namespace OpenNos.Login
 
                     if (loadedAccount != null && loadedAccount.Password.Equals(user.PasswordDecrypted))
                     {
-                        DAOFactory.AccountDAO.WriteConnectionLog(loadedAccount.AccountId, _client.RemoteEndPoint.ToString());
+                        DAOFactory.AccountDAO.WriteConnectionLog(loadedAccount.AccountId, _session.Client.RemoteEndPoint.ToString());
 
                         //0 banned 1 register 2 user 3 GM
                         AuthorityType type = loadedAccount.AuthorityEnum;
@@ -91,7 +91,7 @@ namespace OpenNos.Login
                                     {
                                         int newSessionId = SessionFactory.Instance.GenerateSessionId();
 
-                                        DAOFactory.AccountDAO.UpdateLastSessionAndIp(user.Name, (int)newSessionId, _client.RemoteEndPoint.ToString());
+                                        DAOFactory.AccountDAO.UpdateLastSessionAndIp(user.Name, (int)newSessionId, _session.Client.RemoteEndPoint.ToString());
                                         Logger.Log.DebugFormat(Language.Instance.GetMessageFromKey("CONNECTION"), user.Name, newSessionId);
 
                                         return BuildServersPacket((int)newSessionId);
