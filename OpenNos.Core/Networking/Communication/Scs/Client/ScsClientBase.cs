@@ -3,7 +3,7 @@ using OpenNos.Core.Communication.Scs.Communication;
 using OpenNos.Core.Communication.Scs.Communication.Messages;
 using OpenNos.Core.Communication.Scs.Communication.Channels;
 using OpenNos.Core.Communication.Scs.Communication.Protocols;
-using OpenNos.Core.Threading;
+using OpenNos.Core;
 using System.Collections.Generic;
 
 namespace OpenNos.Core.Communication.Scs.Client

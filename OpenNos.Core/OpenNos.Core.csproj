@@ -49,6 +49,7 @@
     <Compile Include="Application.cs" />
     <Compile Include="Collections\ThreadSafeSortedList.cs" />
     <Compile Include="LoginEncryption.cs" />
+    <Compile Include="Networking\ClientSession.cs" />
     <Compile Include="Networking\Communication\ScsServices\Client\IScsServiceClient.cs" />
     <Compile Include="Networking\Communication\ScsServices\Client\ScsServiceClient.cs" />
     <Compile Include="Networking\Communication\ScsServices\Client\ScsServiceClientBuilder.cs" />
@@ -125,6 +126,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\OpenNos.GameObject\OpenNos.GameObject.csproj">
+      <Project>{eadd17be-20a4-4589-830e-e41be9314928}</Project>
+      <Name>OpenNos.GameObject</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

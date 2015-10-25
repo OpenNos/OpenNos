@@ -25,36 +25,35 @@ namespace OpenNos.Handler
 {
     public class AccountPacketHandler : PacketHandlerBase
     {
-        private readonly NetworkClient _client;
+        private readonly ClientSession _session;
 
-        public AccountPacketHandler(NetworkClient client)
+        public AccountPacketHandler(ClientSession session)
         {
-            _client = client;
+            _session = session;
         }
 
         [Packet("Char_DEL")]
-        public string DeleteCharacter(string packet, int sessionId)
+        public string DeleteCharacter(string packet)
         {
             string[] packetsplit = packet.Split(' ');
-            AccountDTO account = DAOFactory.AccountDAO.LoadBySessionId(sessionId);
+            AccountDTO account = DAOFactory.AccountDAO.LoadBySessionId(_session.SessionId);
             if (account.Password == OpenNos.Core.EncryptionBase.sha256(packetsplit[3]))
             {
                 DAOFactory.CharacterDAO.Delete(account.AccountId, Convert.ToByte(packetsplit[2]));
-                LoadCharacters(packet, sessionId);
+                LoadCharacters(packet);
             }
             else
             {
-                _client.SendPacket(String.Format("info {0}", Language.Instance.GetMessageFromKey("BAD_PASSWORD")));
+                _session.Client.SendPacket(String.Format("info {0}", Language.Instance.GetMessageFromKey("BAD_PASSWORD")));
             }
 
             return String.Empty;
         }
         [Packet("Char_NEW")]
-        public string CreateCharacter(string packet, int sessionId)
+        public string CreateCharacter(string packet)
         {
             //todo, hold Account Information in Authorized object
-            //load account by given SessionId
-            AccountDTO account = DAOFactory.AccountDAO.LoadBySessionId(sessionId);
+            long accountId = _session.Account.AccountId;
             string[] packetsplit = packet.Split(' ');
             if (packetsplit[2].Length > 3 && packetsplit[2].Length < 15)
             {
@@ -79,33 +78,40 @@ namespace OpenNos.Handler
                         Mp = 200,
                         Name = packetsplit[2],
                         Slot = Convert.ToByte(packetsplit[3]),
-                        AccountId = account.AccountId
+                        AccountId = accountId
                     };
 
                     SaveResult insertResult = DAOFactory.CharacterDAO.InsertOrUpdate(ref newCharacter);
-                    LoadCharacters(packet, sessionId);
+                    LoadCharacters(packet);
                 }
 
-                else _client.SendPacket(String.Format("info {0}", Language.Instance.GetMessageFromKey("ALREADY_TAKEN")));
+                else _session.Client.SendPacketFormat("info {0}", Language.Instance.GetMessageFromKey("ALREADY_TAKEN"));
             }
             return String.Empty;
         }
 
         [Packet("OpenNos.EntryPoint")]
-        public string LoadCharacters(string packet, int sessionId)
+        public string LoadCharacters(string packet)
         {
             //load account by given SessionId
-            AccountDTO account = DAOFactory.AccountDAO.LoadBySessionId(sessionId);
+            AccountDTO account = DAOFactory.AccountDAO.LoadBySessionId(_session.SessionId);
+            _session.Account = new GameObject.Account()
+            {
+                AccountId = account.AccountId,
+                Name = account.Name,
+                Password = account.Password
+            };
+
             IEnumerable<CharacterDTO> characters = DAOFactory.CharacterDAO.LoadByAccount(account.AccountId);
-            Logger.Log.InfoFormat(Language.Instance.GetMessageFromKey("ACCOUNT_ARRIVED"), sessionId);
-            _client.SendPacket("clist_start 0");
+            Logger.Log.InfoFormat(Language.Instance.GetMessageFromKey("ACCOUNT_ARRIVED"), _session.SessionId);
+            _session.Client.SendPacket("clist_start 0");
             foreach (CharacterDTO character in characters)
             {
 
-                _client.SendPacket(String.Format("clist {0} {1} {2} {3} {4} {5} {6} {7} {8} {9}.{10}.{11}.{12}.{13}.{14}.{15}.{16} {17} {18} {19} {20}.{21} {22} {23}",
+                _session.Client.SendPacket(String.Format("clist {0} {1} {2} {3} {4} {5} {6} {7} {8} {9}.{10}.{11}.{12}.{13}.{14}.{15}.{16} {17} {18} {19} {20}.{21} {22} {23}",
                     character.Slot, character.Name, 0, character.Gender, character.HairStyle, character.HairColor, 5, character.Class, character.Level, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, -1, -1, character.HairColor, 0));
             }
-            _client.SendPacket("clist_end");
+            _session.Client.SendPacket("clist_end");
 
             return String.Empty;
         }

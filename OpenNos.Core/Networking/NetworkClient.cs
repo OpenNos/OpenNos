@@ -15,33 +15,7 @@ namespace OpenNos.Core
     {
         #region Members
 
-        private IDictionary<Type, object> _PacketHandlers { get; set; }
-        private static EncryptionBase _encryptor;
-
-        #endregion
-
-        #region Properties
-
-        public int SessionId { get; set; }
-        public int LastKeepAliveIdentity { get; set; }
-
-        public IDictionary<Type, object> Handlers
-        {
-            get
-            {
-                if (_PacketHandlers == null)
-                {
-                    _PacketHandlers = new Dictionary<Type, object>();
-                }
-
-                return _PacketHandlers;
-            }
-
-            set
-            {
-                _PacketHandlers = value;
-            }
-        }
+        private EncryptionBase _encryptor;
 
         #endregion
 
@@ -49,20 +23,12 @@ namespace OpenNos.Core
 
         public NetworkClient(ICommunicationChannel communicationChannel) : base(communicationChannel)
         {
-            //absolutely new instantiated Client has no SessionId
-            SessionId = 0;
-            base.MessageReceived += CustomScsServerClient_MessageReceived;
+
         }
 
-        public void Initialize(EncryptionBase encryptor, IList<Type> _packetHandlers)
+        public void Initialize(EncryptionBase encryptor)
         {
             _encryptor = encryptor;
-
-            //dynamically create instances of packethandlers
-            foreach (Type handler in _packetHandlers)
-            {
-                Handlers.Add(handler, Activator.CreateInstance(handler, new object[] { this }));
-            }
         }
 
         public bool SendPacketFormat(string packet, params object[] param)
@@ -95,116 +61,6 @@ namespace OpenNos.Core
             }
 
             return result;
-        }
-
-        private void CustomScsServerClient_MessageReceived(object sender, MessageEventArgs e)
-        {
-            var message = e.Message as ScsRawDataMessage;
-            if (message == null)
-            {
-                return;
-            }
-
-            //determine first packet
-            if (_encryptor.HasCustomParameter && this.SessionId == 0)
-            {
-                string sessionPacket = _encryptor.DecryptCustomParameter(message.MessageData);
-                Logger.Log.DebugFormat(Language.Instance.GetMessageFromKey("PACKET_ARRIVED"), sessionPacket);
-
-                string[] sessionParts = sessionPacket.Split(' ');
-                this.LastKeepAliveIdentity = Convert.ToInt32(sessionParts[0]);
-
-                //set the SessionId if Session Packet arrives
-                this.SessionId = Convert.ToInt32(sessionParts[1].Split('\\').FirstOrDefault());
-                Logger.Log.DebugFormat(Language.Instance.GetMessageFromKey("CLIENT_ARRIVED"), this.SessionId);
-
-                if (!TriggerHandler("OpenNos.EntryPoint", String.Empty))
-                {
-                    Logger.Log.ErrorFormat(Language.Instance.GetMessageFromKey("NO_ENTRY"));
-                }
-
-                return;
-            }
-
-            string packetConcatenated = _encryptor.Decrypt(message.MessageData, message.MessageData.Length, (int)this.SessionId);
-
-            foreach (string packet in packetConcatenated.Split(new char[] { (char)0xFF }, StringSplitOptions.RemoveEmptyEntries))
-            {
-                Logger.Log.DebugFormat(Language.Instance.GetMessageFromKey("MESSAGE_RECEIVED"), packet, this.ClientId);
-      
-                if (_encryptor.HasCustomParameter)
-                {
-                    //keep alive
-                    string nextKeepAliveRaw = packet.Split(' ')[0];
-                    Int32 nextKeepaliveIdentity;
-                    if(!Int32.TryParse(nextKeepAliveRaw, out nextKeepaliveIdentity) && nextKeepaliveIdentity != (this.LastKeepAliveIdentity + 1))
-                    {
-                        Logger.Log.ErrorFormat(Language.Instance.GetMessageFromKey("CORRUPT_KEEPALIVE"), ClientId);
-                        Disconnect();
-                        return;
-                    }
-                    else if(nextKeepaliveIdentity == 0)
-                    {
-                        if(LastKeepAliveIdentity == UInt16.MaxValue)
-                            LastKeepAliveIdentity = nextKeepaliveIdentity;
-                    }
-                    else
-                    {
-                        LastKeepAliveIdentity = nextKeepaliveIdentity;
-                    }
-
-                    string packetHeader = packet.Split(' ')[1];
-
-                    //0 is a keep alive packet with no content to handle
-                    if (packetHeader != "0" && !TriggerHandler(packetHeader, packet))
-                    {
-                        Logger.Log.ErrorFormat(Language.Instance.GetMessageFromKey("HANDLER_NOT_FOUND"), packetHeader);
-                    }
-                }
-                else
-                {
-                    //simple messaging
-                    string packetHeader = packet.Split(' ')[0];
-
-                    if (!TriggerHandler(packetHeader, packet))
-                    {
-                        Logger.Log.ErrorFormat(Language.Instance.GetMessageFromKey("HANDLER_NOT_FOUND"), packetHeader);
-                    }
-                }
-
-            }
-        }
-
-        private bool TriggerHandler(string packetHeader, string packet)
-        {
-            foreach (KeyValuePair<Type, Object> handler in _PacketHandlers)
-            {
-                MethodInfo methodInfo = GetMethodInfo(packetHeader, handler.Key);
-
-                if (methodInfo != null)
-                {
-                    string result = (string)methodInfo.Invoke(handler.Value, new object[] { packet, this.SessionId });
-
-                    //check for returned packet
-                    if (!String.IsNullOrEmpty(result))
-                    {
-                        //Send reply message to the client
-                        Logger.Log.DebugFormat(Language.Instance.GetMessageFromKey("MSG_SENT"), result, this.ClientId);
-                        SendPacket(result);
-                    }
-
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        private static MethodInfo GetMethodInfo(string packetHeader, Type t)
-        {
-            return t.GetMethods().
-                Where(x => x.GetCustomAttributes(false).OfType<Packet>().Any())
-                .FirstOrDefault(x => x.GetCustomAttributes(false).OfType<Packet>().First().Header.Equals(packetHeader));
         }
 
         #endregion

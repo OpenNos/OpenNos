@@ -21,6 +21,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenNos.Handler", "OpenNos.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenNos.World", "OpenNos.World\OpenNos.World.csproj", "{EC300279-181E-4E6E-A94C-E8BAF0EAB2AD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenNos.GameObject", "OpenNos.GameObject\OpenNos.GameObject.csproj", "{EADD17BE-20A4-4589-830E-E41BE9314928}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug_FR|Any CPU = Debug_FR|Any CPU
@@ -138,6 +140,18 @@ Global
 		{EC300279-181E-4E6E-A94C-E8BAF0EAB2AD}.Release|Any CPU.Build.0 = Release|Any CPU
 		{EC300279-181E-4E6E-A94C-E8BAF0EAB2AD}.Release|x86.ActiveCfg = Release|Any CPU
 		{EC300279-181E-4E6E-A94C-E8BAF0EAB2AD}.Release|x86.Build.0 = Release|Any CPU
+		{EADD17BE-20A4-4589-830E-E41BE9314928}.Debug_FR|Any CPU.ActiveCfg = Debug|Any CPU
+		{EADD17BE-20A4-4589-830E-E41BE9314928}.Debug_FR|Any CPU.Build.0 = Debug|Any CPU
+		{EADD17BE-20A4-4589-830E-E41BE9314928}.Debug_FR|x86.ActiveCfg = Debug|Any CPU
+		{EADD17BE-20A4-4589-830E-E41BE9314928}.Debug_FR|x86.Build.0 = Debug|Any CPU
+		{EADD17BE-20A4-4589-830E-E41BE9314928}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EADD17BE-20A4-4589-830E-E41BE9314928}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EADD17BE-20A4-4589-830E-E41BE9314928}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{EADD17BE-20A4-4589-830E-E41BE9314928}.Debug|x86.Build.0 = Debug|Any CPU
+		{EADD17BE-20A4-4589-830E-E41BE9314928}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EADD17BE-20A4-4589-830E-E41BE9314928}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EADD17BE-20A4-4589-830E-E41BE9314928}.Release|x86.ActiveCfg = Release|Any CPU
+		{EADD17BE-20A4-4589-830E-E41BE9314928}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

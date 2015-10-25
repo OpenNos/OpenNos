@@ -54,21 +54,10 @@ namespace OpenNos.Core
         public byte[] GetBytes(IScsMessage message)
         {
             //Serialize the message to a byte array
-            var serializedMessage = message is ScsTextMessage ? 
+            byte[] bytes = message is ScsTextMessage ? 
                 Encoding.Default.GetBytes(((ScsTextMessage)message).Text) :
                 ((ScsRawDataMessage)message).MessageData;
 
-            //Check for message length
-            var messageLength = serializedMessage.Length;
-            if (messageLength > MaxMessageLength)
-            {
-                Logger.Log.ErrorFormat(Language.Instance.GetMessageFromKey("TOO_BIG"), messageLength, MaxMessageLength);
-            }
-
-            var bytes = new byte[messageLength];
-            Array.Copy(serializedMessage, 0, bytes, 0, messageLength);
-
-            //Return serialized message by this protocol
             return bytes;
         }
 

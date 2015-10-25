@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace OpenNos.Core.Threading
+namespace OpenNos.Core
 {
     /// <summary>
     /// This class is used to process items sequentially in a multithreaded manner.
