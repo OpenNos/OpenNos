@@ -1,4 +1,5 @@
-﻿using OpenNos.Core.Communication.Scs.Communication.Messages;
+﻿using OpenNos.Core;
+using OpenNos.Core.Communication.Scs.Communication.Messages;
 using OpenNos.GameObject;
 using System;
 using System.Collections.Generic;
@@ -7,7 +8,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OpenNos.Core
+namespace OpenNos.GameObject
 {
     public class ClientSession
     {
@@ -79,6 +80,8 @@ namespace OpenNos.Core
                 _client = value;
             }
         }
+
+        public Map CurrentMap { get; set; }
 
         #endregion
 
@@ -163,6 +166,17 @@ namespace OpenNos.Core
                 }
 
             }
+        }
+
+        public void RegisterForMapNotification()
+        {
+            CurrentMap.NotifyClients += GetNotification;
+        }
+
+        private void GetNotification(object sender, EventArgs e)
+        {
+            String packet = sender as String;
+            _client.SendPacket(packet);
         }
 
         public void Initialize(EncryptionBase encryptor, IList<Type> _packetHandlers, Guid uniqueIdentifier)

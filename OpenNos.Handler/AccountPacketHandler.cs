@@ -15,6 +15,7 @@ using OpenNos.Core;
 using OpenNos.Core.Communication.Scs.Communication.Messages;
 using OpenNos.DAL;
 using OpenNos.Data;
+using OpenNos.GameObject;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -113,6 +114,24 @@ namespace OpenNos.Handler
             }
             _session.Client.SendPacket("clist_end");
 
+            return String.Empty;
+        }
+
+        [Packet("select")]
+        public string SelectCharacter(string packet)
+        {
+            _session.CurrentMap = MapManager.GetMap(1);
+            _session.RegisterForMapNotification();
+
+            _session.Client.SendPacket("OK");
+            return String.Empty;
+        }
+
+        [Packet("game_start")]
+        public string StartGame(string packet)
+        {
+            _session.Client.SendPacket("c_map 1 1 1");
+            _session.CurrentMap.Queue.EnqueueMessage(new KeyValuePair<string, ClientSession>(String.Format("info INFORMATION FROM {0}", _session.Client.ClientId), _session));
             return String.Empty;
         }
     }

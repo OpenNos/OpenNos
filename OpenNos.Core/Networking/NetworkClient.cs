@@ -8,6 +8,7 @@ using OpenNos.Core.Communication.Scs.Communication.Channels;
 using OpenNos.Core.Communication.Scs.Communication.Messages;
 using System.Reflection;
 using System.Threading;
+using OpenNos.Core;
 
 namespace OpenNos.Core
 {

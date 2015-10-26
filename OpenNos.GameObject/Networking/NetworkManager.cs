@@ -22,8 +22,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
 using System.Collections.Concurrent;
+using OpenNos.Core;
 
-namespace OpenNos.Core
+namespace OpenNos.GameObject
 {
     public class NetworkManager<EncryptorT>
         where EncryptorT : EncryptionBase
@@ -46,6 +47,9 @@ namespace OpenNos.Core
             _encryptor = (EncryptorT)Activator.CreateInstance(typeof(EncryptorT));
 
             var server = ScsServerFactory.CreateServer(new ScsTcpEndPoint(ipAddress, port));
+
+            //initialilize maps
+            MapManager.Initialize();
 
             //Register events of the server to be informed about clients
             server.ClientConnected += Server_ClientConnected;
