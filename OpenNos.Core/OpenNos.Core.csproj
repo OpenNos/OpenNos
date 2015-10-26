@@ -114,7 +114,6 @@
     <Compile Include="EncryptionBase.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="PacketAttribute.cs" />
-    <Compile Include="PacketHandlerBase.cs" />
     <Compile Include="Networking\WireProtocol.cs" />
     <Compile Include="Networking\WireProtocolFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

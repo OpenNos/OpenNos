@@ -24,7 +24,7 @@ using System.Threading.Tasks;
 
 namespace OpenNos.Handler
 {
-    public class AccountPacketHandler : PacketHandlerBase
+    public class AccountPacketHandler
     {
         private readonly ClientSession _session;
 
@@ -91,19 +91,43 @@ namespace OpenNos.Handler
             return String.Empty;
         }
 
-        [Packet("OpenNos.EntryPoint")]
+        [Packet("OpenNos.EntryPoint", 3)]
         public string LoadCharacters(string packet)
         {
-            //load account by given SessionId
-            AccountDTO account = DAOFactory.AccountDAO.LoadBySessionId(_session.SessionId);
-            _session.Account = new GameObject.Account()
-            {
-                AccountId = account.AccountId,
-                Name = account.Name,
-                Password = account.Password
-            };
+            string[] loginPacketParts = packet.Split(' ');
 
-            IEnumerable<CharacterDTO> characters = DAOFactory.CharacterDAO.LoadByAccount(account.AccountId);
+            //load account by given SessionId
+            if (_session.Account == null)
+            {
+                AccountDTO accountDTO = DAOFactory.AccountDAO.LoadByName(loginPacketParts[4]);
+
+                if (accountDTO != null)
+                {
+                    if (accountDTO.Password.Equals(EncryptionBase.sha256(loginPacketParts[6]))
+                        && accountDTO.LastSession.Equals(_session.SessionId))
+                    {
+                        _session.Account = new GameObject.Account()
+                        {
+                            AccountId = accountDTO.AccountId,
+                            Name = accountDTO.Name,
+                            Password = accountDTO.Password
+                        };
+                    }
+                    else
+                    {
+                        Logger.Log.ErrorFormat("Client {0} forced Disconnection, invalid Password or SessionId.", _session.Client.ClientId);
+                        _session.Client.Disconnect();
+                    }
+                }
+                else
+                {
+                    Logger.Log.ErrorFormat("Client {0} forced Disconnection, invalid AccountName.", _session.Client.ClientId);
+                    _session.Client.Disconnect();
+                }
+
+            }
+
+            IEnumerable<CharacterDTO> characters = DAOFactory.CharacterDAO.LoadByAccount(_session.Account.AccountId);
             Logger.Log.InfoFormat(Language.Instance.GetMessageFromKey("ACCOUNT_ARRIVED"), _session.SessionId);
             _session.Client.SendPacket("clist_start 0");
             foreach (CharacterDTO character in characters)
