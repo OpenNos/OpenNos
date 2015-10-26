@@ -49,7 +49,6 @@
     <Compile Include="Application.cs" />
     <Compile Include="Collections\ThreadSafeSortedList.cs" />
     <Compile Include="LoginEncryption.cs" />
-    <Compile Include="Networking\ClientSession.cs" />
     <Compile Include="Networking\Communication\ScsServices\Client\IScsServiceClient.cs" />
     <Compile Include="Networking\Communication\ScsServices\Client\ScsServiceClient.cs" />
     <Compile Include="Networking\Communication\ScsServices\Client\ScsServiceClientBuilder.cs" />
@@ -118,20 +117,14 @@
     <Compile Include="PacketHandlerBase.cs" />
     <Compile Include="Networking\WireProtocol.cs" />
     <Compile Include="Networking\WireProtocolFactory.cs" />
-    <Compile Include="Networking\NetworkManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SessionFactory.cs" />
     <Compile Include="Threading\SequentialItemProcessor.cs" />
+    <Compile Include="Threading\ThreadedBase.cs" />
     <Compile Include="Threading\Timer.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\OpenNos.GameObject\OpenNos.GameObject.csproj">
-      <Project>{eadd17be-20a4-4589-830e-e41be9314928}</Project>
-      <Name>OpenNos.GameObject</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

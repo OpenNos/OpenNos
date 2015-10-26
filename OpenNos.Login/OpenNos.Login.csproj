@@ -163,6 +163,10 @@
       <Project>{20addddd-dad9-44f3-9beb-026c73090660}</Project>
       <Name>OpenNos.Domain</Name>
     </ProjectReference>
+    <ProjectReference Include="..\OpenNos.GameObject\OpenNos.GameObject.csproj">
+      <Project>{eadd17be-20a4-4589-830e-e41be9314928}</Project>
+      <Name>OpenNos.GameObject</Name>
+    </ProjectReference>
     <ProjectReference Include="..\OpenNos.Handler\OpenNos.Handler.csproj">
       <Project>{a6748a8d-0d96-41b9-a110-dbf692afc56d}</Project>
       <Name>OpenNos.Handler</Name>

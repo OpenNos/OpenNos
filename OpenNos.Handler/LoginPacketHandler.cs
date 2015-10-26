@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using OpenNos.Core.Communication.Scs.Communication.Messages;
 using OpenNos.Core.Communication.Scs.Server;
+using OpenNos.GameObject;
 
 namespace OpenNos.Handler
 {
