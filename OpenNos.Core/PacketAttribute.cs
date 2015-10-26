@@ -23,10 +23,12 @@ namespace OpenNos.Core
     public class Packet : System.Attribute
     {
         private string _header;
+        private int _amount;
 
-        public Packet(string header)
+        public Packet(string header, int amount = 1)
         {
             this._header = header;
+            this._amount = amount;
         }
 
         #region Properties
@@ -36,6 +38,14 @@ namespace OpenNos.Core
             get
             {
                 return _header;
+            }
+        }
+
+        public int Amount
+        {
+            get
+            {
+                return _amount;
             }
         }
 

@@ -25,7 +25,7 @@ using OpenNos.GameObject;
 
 namespace OpenNos.Handler
 {
-    public class LoginPacketHandler : PacketHandlerBase
+    public class LoginPacketHandler 
     {
         private readonly ClientSession _session;
 

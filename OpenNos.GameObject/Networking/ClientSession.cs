@@ -18,9 +18,13 @@ namespace OpenNos.GameObject
         private NetworkClient _client;
         private Guid _uniqueIdentifier;
         private Account _account;
-        private IDictionary<Type, object> _PacketHandlers { get; set; }
+        private IDictionary<Packet, Tuple<MethodInfo, object>> _packetHandlers;
         private static EncryptionBase _encryptor;
         private SequentialItemProcessor<byte[]> _processor;
+
+        private bool _waitForPackets;
+        private int _waitForPacketsAmount;
+        private IList<String> _packetQueue = new List<String>();
 
         #endregion
 
@@ -39,21 +43,21 @@ namespace OpenNos.GameObject
         public int SessionId { get; set; }
         public int LastKeepAliveIdentity { get; set; }
 
-        public IDictionary<Type, object> Handlers
+        public IDictionary<Packet, Tuple<MethodInfo, object>> Handlers
         {
             get
             {
-                if (_PacketHandlers == null)
+                if (_packetHandlers == null)
                 {
-                    _PacketHandlers = new Dictionary<Type, object>();
+                    _packetHandlers = new Dictionary<Packet, Tuple<MethodInfo, object>>();
                 }
 
-                return _PacketHandlers;
+                return _packetHandlers;
             }
 
             set
             {
-                _PacketHandlers = value;
+                _packetHandlers = value;
             }
         }
 
@@ -111,9 +115,12 @@ namespace OpenNos.GameObject
                 this.SessionId = Convert.ToInt32(sessionParts[1].Split('\\').FirstOrDefault());
                 Logger.Log.DebugFormat(Language.Instance.GetMessageFromKey("CLIENT_ARRIVED"), this.SessionId);
 
-                if (!TriggerHandler("OpenNos.EntryPoint", String.Empty))
+                if (!_waitForPackets)
                 {
-                    Logger.Log.ErrorFormat(Language.Instance.GetMessageFromKey("NO_ENTRY"));
+                    if (!TriggerHandler("OpenNos.EntryPoint", String.Empty,false))
+                    {
+                        Logger.Log.ErrorFormat(Language.Instance.GetMessageFromKey("NO_ENTRY"));
+                    }
                 }
 
                 return;
@@ -146,20 +153,38 @@ namespace OpenNos.GameObject
                         LastKeepAliveIdentity = nextKeepaliveIdentity;
                     }
 
+                    if (_waitForPackets)
+                    {
+                        if (_packetQueue.Count != _waitForPacketsAmount - 1)
+                        {
+                            _packetQueue.Add(packet);
+                        }
+                        else
+                        {
+                            _packetQueue.Add(packet);
+                            _waitForPackets = false;
+                            string queuedPackets = String.Join(" ", _packetQueue.ToArray());
+                            string header = queuedPackets.Split(' ')[1];
+                            TriggerHandler(header, queuedPackets, true);
+                            _packetQueue.Clear();
+                            return;
+                        }
+                    }
+
                     string packetHeader = packet.Split(' ')[1];
 
                     //0 is a keep alive packet with no content to handle
-                    if (packetHeader != "0" && !TriggerHandler(packetHeader, packet))
+                    if (packetHeader != "0" && !TriggerHandler(packetHeader, packet, false))
                     {
                         Logger.Log.ErrorFormat(Language.Instance.GetMessageFromKey("HANDLER_NOT_FOUND"), packetHeader);
                     }
                 }
                 else
-                {
+                {                  
                     //simple messaging
                     string packetHeader = packet.Split(' ')[0];
 
-                    if (!TriggerHandler(packetHeader, packet))
+                    if (!TriggerHandler(packetHeader, packet, false))
                     {
                         Logger.Log.ErrorFormat(Language.Instance.GetMessageFromKey("HANDLER_NOT_FOUND"), packetHeader);
                     }
@@ -179,50 +204,65 @@ namespace OpenNos.GameObject
             _client.SendPacket(packet);
         }
 
-        public void Initialize(EncryptionBase encryptor, IList<Type> _packetHandlers, Guid uniqueIdentifier)
+        public void Initialize(EncryptionBase encryptor, IList<Type> packetHandlers, Guid uniqueIdentifier)
         {
             _encryptor = encryptor;
             _uniqueIdentifier = uniqueIdentifier;
             _client.Initialize(encryptor);
 
             //dynamically create instances of packethandlers
-            foreach (Type handler in _packetHandlers)
-            {
-                Handlers.Add(handler, Activator.CreateInstance(handler, new object[] { this }));
-            }
+            GenerateHandlerReferences(packetHandlers);
         }
 
-        private bool TriggerHandler(string packetHeader, string packet)
+        private bool TriggerHandler(string packetHeader, string packet, bool force)
         {
-            foreach (KeyValuePair<Type, Object> handler in _PacketHandlers)
+            KeyValuePair<Packet, Tuple<MethodInfo, object>> methodInfo = Handlers.SingleOrDefault(h => h.Key.Header.Equals(packetHeader));
+
+            if (methodInfo.Value != null)
             {
-                MethodInfo methodInfo = GetMethodInfo(packetHeader, handler.Key);
-
-                if (methodInfo != null)
+                if (!force && methodInfo.Key.Amount > 1 && !_waitForPackets)
                 {
-                    string result = (string)methodInfo.Invoke(handler.Value, new object[] { packet });
-
-                    //check for returned packet
-                    if (!String.IsNullOrEmpty(result))
-                    {
-                        //Send reply message to the client
-                        Logger.Log.DebugFormat(Language.Instance.GetMessageFromKey("MSG_SENT"), result);
-                        _client.SendPacket(result);
-                    }
-
-                    return true;
+                    //we need to wait for more
+                    _waitForPackets = true;
+                    _waitForPacketsAmount = methodInfo.Key.Amount;
+                    _packetQueue.Add(packet != String.Empty ? packet : String.Format("1 {0} ", packetHeader));
+                    return false;
                 }
+
+                string result = (string)methodInfo.Value.Item1.Invoke(methodInfo.Value.Item2, new object[] { packet });
+
+                //check for returned packet
+                if (!String.IsNullOrEmpty(result))
+                {
+                    //Send reply message to the client
+                    Logger.Log.DebugFormat(Language.Instance.GetMessageFromKey("MSG_SENT"), result);
+                    _client.SendPacket(result);
+                }
+
+                return true;
             }
 
             return false;
         }
 
-        private static MethodInfo GetMethodInfo(string packetHeader, Type t)
+        private bool GenerateHandlerReferences(IList<Type> handlerTypes)
         {
-            return t.GetMethods().
-                Where(x => x.GetCustomAttributes(false).OfType<Packet>().Any())
-                .FirstOrDefault(x => x.GetCustomAttributes(false).OfType<Packet>().First().Header.Equals(packetHeader));
-        }
+            foreach (Type handlerType in handlerTypes)
+            {
+                object handler = Activator.CreateInstance(handlerType, new object[] { this });
 
+                foreach (MethodInfo methodInfo in handlerType.GetMethods().Where(x => x.GetCustomAttributes(false).OfType<Packet>().Any()))
+                {
+                    Packet packetAttribute = methodInfo.GetCustomAttributes(false).OfType<Packet>().SingleOrDefault();
+
+                    if (packetAttribute != null)
+                    {
+                        Handlers.Add(packetAttribute, new Tuple<MethodInfo, object>(methodInfo, handler));
+                    }
+                }
+            }
+
+            return false;
+        }
     }
 }
