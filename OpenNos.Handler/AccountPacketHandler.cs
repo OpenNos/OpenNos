@@ -146,20 +146,58 @@ namespace OpenNos.Handler
         public string SelectCharacter(string packet)
         {
             string[] packetsplit = packet.Split(' ');
-            _session.character = DAOFactory.CharacterDAO.LoadByAccount(_session.Account.AccountId).ElementAt(Convert.ToInt32(packetsplit[2]));
+            CharacterDTO characterDTO = DAOFactory.CharacterDAO.LoadByAccount(_session.Account.AccountId).ElementAt(Convert.ToInt32(packetsplit[2]));
+            _session.character = new GameObject.Character()
+            {
+                AccountId = characterDTO.AccountId,
+                CharacterId = characterDTO.CharacterId,
+                Class = characterDTO.Class,
+                Dignite = characterDTO.Dignite,
+                Gender = characterDTO.Gender,
+                Gold = characterDTO.Gold,
+                HairColor = characterDTO.HairColor,
+                HairStyle = characterDTO.HairStyle,
+                Hp = characterDTO.Hp,
+                JobLevel = characterDTO.JobLevel,
+                JobLevelXp = characterDTO.JobLevelXp,
+                Level = characterDTO.Level,
+                LevelXp = characterDTO.LevelXp,
+                Map = characterDTO.Map,
+                MapX = characterDTO.MapX,
+                MapY = characterDTO.MapY,
+                Mp = characterDTO.Mp,
+                Name = characterDTO.Name,
+                Reput = characterDTO.Reput,
+                Slot = characterDTO.Slot,
+                LastPulse = 0
+            };
+
             _session.CurrentMap = MapManager.GetMap(1);
             _session.RegisterForMapNotification();
             _session.Client.SendPacket("OK");
             return String.Empty;
         }
-
+        [Packet("pulse")]
+        public string Pulse(string packet)
+        {
+            string[] packetsplit = packet.Split(' ');
+            _session.character.LastPulse += 60;
+            if (Convert.ToInt32(packetsplit[2]) != _session.character.LastPulse) { _session.Client.Disconnect(); }
+            return String.Empty;
+        }
+        [Packet("lbs")]
+        public string lbs(string packet)
+        {
+            return string.Empty;
+        }
         [Packet("game_start")]
         public string StartGame(string packet)
         {
-            _session.Client.SendPacket(String.Format("tit {0} {1}", "Aventurier", _session.character.Name));
-            //_session.Client.SendPacket("fd 260 0 79 1");
-            //_session.Client.SendPacket("fd 260 4 79 1");//reput
-            _session.Client.SendPacket(String.Format("c_info {0} - {1} {2} - {3} {4} {5} {6} {7} {8} {9} {10} {11} {12} {13} {14} {15} ", _session.character.Name, -1, -1, _session.character.CharacterId, _session.Account.Authority, _session.character.Gender, _session.character.HairStyle, _session.character.HairColor, _session.character.Class, 1, 0, 0, 0, 0, 0, 0));
+            _session.Client.SendPacket(String.Format("tit {0} {1}", Language.Instance.GetMessageFromKey(_session.character.Class == 0 ? "ADVENTURER" : _session.character.Class == 1?"SWORDMAN": _session.character.Class == 2?"ARCHER" : "MAGICIAN"), _session.character.Name));
+            _session.Client.SendPacket(String.Format("fd {0} 0 {1} {2}", _session.character.Reput, _session.character.Dignite, Math.Abs(_session.character.GetDigniteIco())));
+            _session.Client.SendPacket(String.Format("c_info {0} - {1} {2} - {3} {4} {5} {6} {7} {8} {9} {10} {11} {12} {13} {14} {15} ", _session.character.Name, -1, -1, _session.character.CharacterId, _session.Account.Authority, _session.character.Gender, _session.character.HairStyle, _session.character.HairColor, _session.character.Class, _session.character.GetReputIco(), 0, 0, 0, 0, 0, 0));
+            _session.Client.SendPacket(String.Format("fd {0} {1} {2} {3}", _session.character.Reput, _session.character.GetReputIco(), _session.character.Dignite, _session.character.GetDigniteIco()));
+
             //TODO if first connect add _session.Client.SendPacket(String.Format("scene 40"));
             _session.Client.SendPacket(String.Format("lev {0} {1} {2} {3} 300 2200 0 2", _session.character.Level, _session.character.LevelXp, _session.character.JobLevel, _session.character.JobLevelXp));
             //stat
@@ -179,14 +217,12 @@ namespace OpenNos.Handler
             //gidx
             _session.Client.SendPacket("mlinfo 3800 2000 100 0 0 10 0 Mélodie^du^printemps Bienvenue");
             //cond
-            _session.Client.SendPacket("p_clear");
+            _session.Client.SendPacket("p_clear"); 
             //sc_p pet
-            _session.Client.SendPacket("sc_p_stc 0");
-            _session.Client.SendPacket("npinfo 0");
             _session.Client.SendPacket("pinit 0");
             _session.Client.SendPacket("zzim");
             _session.Client.SendPacket(String.Format("twk 1 {0} {1} {2} shtmxpdlfeoqkr", _session.character.CharacterId, _session.Account.Name, _session.character.Name));
-            
+           
 
             _session.CurrentMap.Queue.EnqueueMessage(new KeyValuePair<string, ClientSession>(String.Format("info INFORMATION FROM {0}", _session.Client.ClientId), _session));
             return String.Empty;

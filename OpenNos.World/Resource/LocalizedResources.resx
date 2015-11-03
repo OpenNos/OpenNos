@@ -120,8 +120,14 @@
   <data name="ACCOUNT_ARRIVED" xml:space="preserve">
     <value>Account with SessionId {0} has arrived.</value>
   </data>
+  <data name="ADVENTURER" xml:space="preserve">
+    <value>Adventurer</value>
+  </data>
   <data name="ALREADY_TAKEN" xml:space="preserve">
     <value>This name is already taken!</value>
+  </data>
+  <data name="ARCHER" xml:space="preserve">
+    <value>Archer</value>
   </data>
   <data name="BAD_PASSWORD" xml:space="preserve">
     <value>Bad Password</value>
@@ -156,7 +162,13 @@
   <data name="INSERT_ERROR" xml:space="preserve">
     <value>Error inserting or updating character {0} , {1}</value>
   </data>
+  <data name="MAGICIAN" xml:space="preserve">
+    <value>Magician</value>
+  </data>
   <data name="MAP_LOADED" xml:space="preserve">
+    <value>{0} Maps Loaded !</value>
+  </data>
+  <data name="MAP_LOADED1" xml:space="preserve">
     <value>{0} Maps Loaded !</value>
   </data>
   <data name="MESSAGE_RECEIVED" xml:space="preserve">
@@ -179,6 +191,9 @@
   </data>
   <data name="STARTED" xml:space="preserve">
     <value>Server is started successfully.</value>
+  </data>
+  <data name="SWORDMAN" xml:space="preserve">
+    <value>Swordman</value>
   </data>
   <data name="TOO_BIG" xml:space="preserve">
     <value>Message is too big ({0} bytes). Max allowed length is {1} bytes.</value>

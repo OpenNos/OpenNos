@@ -70,6 +70,15 @@ namespace OpenNos.Login.Resource {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à Connection closed..
+        /// </summary>
+        internal static string CLIENT_CLOSED {
+            get {
+                return ResourceManager.GetString("CLIENT_CLOSED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Config loaded !.
         /// </summary>
         internal static string CONFIG_LOADED {
@@ -129,6 +138,15 @@ namespace OpenNos.Login.Resource {
         internal static string MESSAGE_RECEIVED {
             get {
                 return ResourceManager.GetString("MESSAGE_RECEIVED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Message sent to client .
+        /// </summary>
+        internal static string MSG_SENT {
+            get {
+                return ResourceManager.GetString("MSG_SENT", resourceCulture);
             }
         }
         

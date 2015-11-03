@@ -70,11 +70,29 @@ namespace OpenNos.World.Resource {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à Adventurer.
+        /// </summary>
+        public static string ADVENTURER {
+            get {
+                return ResourceManager.GetString("ADVENTURER", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à This name is already taken!.
         /// </summary>
         public static string ALREADY_TAKEN {
             get {
                 return ResourceManager.GetString("ALREADY_TAKEN", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Archer.
+        /// </summary>
+        public static string ARCHER {
+            get {
+                return ResourceManager.GetString("ARCHER", resourceCulture);
             }
         }
         
@@ -178,11 +196,29 @@ namespace OpenNos.World.Resource {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à Magician.
+        /// </summary>
+        public static string MAGICIAN {
+            get {
+                return ResourceManager.GetString("MAGICIAN", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à {0} Maps Loaded !.
         /// </summary>
         public static string MAP_LOADED {
             get {
                 return ResourceManager.GetString("MAP_LOADED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à {0} Maps Loaded !.
+        /// </summary>
+        public static string MAP_LOADED1 {
+            get {
+                return ResourceManager.GetString("MAP_LOADED1", resourceCulture);
             }
         }
         
@@ -246,6 +282,15 @@ namespace OpenNos.World.Resource {
         public static string STARTED {
             get {
                 return ResourceManager.GetString("STARTED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Swordman.
+        /// </summary>
+        public static string SWORDMAN {
+            get {
+                return ResourceManager.GetString("SWORDMAN", resourceCulture);
             }
         }
         
