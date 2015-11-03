@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -15,12 +16,15 @@ namespace OpenNos.GameObject
 
         public static void Initialize()
         {
-            for (short i = 0; i < 10; i++)
+            DirectoryInfo dir = new DirectoryInfo(@"./Resource/zones");
+            FileInfo[] files = dir.GetFiles();
+            foreach (FileInfo file in files)
             {
                 Guid guid = Guid.NewGuid();
-                Map newMap = new Map(i, guid);
+                Map newMap = new Map(Convert.ToInt16(file.Name), guid);
                 _maps.TryAdd(guid, newMap);
             }
+            Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("MAP_LOADED"), files.Length));
         }
 
         public static Map GetMap(short id)

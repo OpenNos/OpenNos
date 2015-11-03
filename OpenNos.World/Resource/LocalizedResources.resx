@@ -156,6 +156,9 @@
   <data name="INSERT_ERROR" xml:space="preserve">
     <value>Error inserting or updating character {0} , {1}</value>
   </data>
+  <data name="MAP_LOADED" xml:space="preserve">
+    <value>{0} Maps Loaded !</value>
+  </data>
   <data name="MESSAGE_RECEIVED" xml:space="preserve">
     <value>Message received {0} on client {1}</value>
   </data>
