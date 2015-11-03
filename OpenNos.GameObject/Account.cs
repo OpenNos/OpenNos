@@ -12,6 +12,8 @@ namespace OpenNos.GameObject
 
         public string Name { get; set; }
 
+        public byte Authority { get; set; }
+
         public string Password { get; set; }
     }
 }

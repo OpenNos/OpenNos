@@ -74,8 +74,8 @@ namespace OpenNos.Handler
                         Level = 1,
                         LevelXp = 0,
                         Map = 1,
-                        MapX = 40,
-                        MapY = 40,
+                        MapX = 80,
+                        MapY = 118,
                         Mp = 200,
                         Name = packetsplit[2],
                         Slot = Convert.ToByte(packetsplit[3]),
@@ -110,7 +110,8 @@ namespace OpenNos.Handler
                         {
                             AccountId = accountDTO.AccountId,
                             Name = accountDTO.Name,
-                            Password = accountDTO.Password
+                            Password = accountDTO.Password,
+                            Authority = accountDTO.Authority
                         };
                     }
                     else
@@ -144,8 +145,10 @@ namespace OpenNos.Handler
         [Packet("select")]
         public string SelectCharacter(string packet)
         {
+            string[] packetsplit = packet.Split(' ');
+            _session.character = DAOFactory.CharacterDAO.LoadByAccount(_session.Account.AccountId).ElementAt(Convert.ToInt32(packetsplit[2]));
             _session.CurrentMap = MapManager.GetMap(1);
-            _session.RegisterForMapNotification(); 
+            _session.RegisterForMapNotification();
             _session.Client.SendPacket("OK");
             return String.Empty;
         }
@@ -153,13 +156,38 @@ namespace OpenNos.Handler
         [Packet("game_start")]
         public string StartGame(string packet)
         {
-            _session.Client.SendPacket(String.Format("tit {0} {1}","classe","Test"));
-            _session.Client.SendPacket("fd 260 0 79 1");
-            _session.Client.SendPacket("fd 260 4 79 1");
-            _session.Client.SendPacket(String.Format("c_info {0} - {1} {2} - {3} {4} {5} {6} {7} {8} {9} {10} {11} {12} {13} {14} {15} ", "Test", -1, -1, 1000, 0, 0, 0, 5, 1, 4, 0, 0, 0, 0, 0, 0));
+            _session.Client.SendPacket(String.Format("tit {0} {1}", "Aventurier", _session.character.Name));
+            //_session.Client.SendPacket("fd 260 0 79 1");
+            //_session.Client.SendPacket("fd 260 4 79 1");//reput
+            _session.Client.SendPacket(String.Format("c_info {0} - {1} {2} - {3} {4} {5} {6} {7} {8} {9} {10} {11} {12} {13} {14} {15} ", _session.character.Name, -1, -1, _session.character.CharacterId, _session.Account.Authority, _session.character.Gender, _session.character.HairStyle, _session.character.HairColor, _session.character.Class, 1, 0, 0, 0, 0, 0, 0));
+            //TODO if first connect add _session.Client.SendPacket(String.Format("scene 40"));
+            _session.Client.SendPacket(String.Format("lev {0} {1} {2} {3} 300 2200 0 2", _session.character.Level, _session.character.LevelXp, _session.character.JobLevel, _session.character.JobLevelXp));
+            //stat
+            //TODO add max HP MP
+            _session.Client.SendPacket(String.Format("stat {0} {1} {2} {3} 0 1024", _session.character.Hp, _session.character.Hp, _session.character.Mp, _session.character.Mp));
+            //ski
+            _session.Client.SendPacket(String.Format("at {0} {1} {2} {3} 2 0 0 1", _session.character.CharacterId, _session.character.Map, _session.character.MapX, _session.character.MapY));
             _session.Client.SendPacket("c_map 0 1 1");
+            //sc
+            _session.Client.SendPacket(String.Format("cond 1 {0} 0 0 11", _session.character.CharacterId));
+            //pairy
+            _session.Client.SendPacket(String.Format("rsfi 1 1 0 9 0 9")); //why it change? 0 became 4 in an other account but why
+            _session.Client.SendPacket(String.Format("rank_cool 0 0 18000"));//add rank cool
             _session.Client.SendPacket("scr 0 0 0 0 0 0");
+            //bn
+            _session.Client.SendPacket("exts 0 48 48 48");
+            //gidx
+            _session.Client.SendPacket("mlinfo 3800 2000 100 0 0 10 0 Mélodie^du^printemps Bienvenue");
+            //cond
+            _session.Client.SendPacket("p_clear");
+            //sc_p pet
+            _session.Client.SendPacket("sc_p_stc 0");
+            _session.Client.SendPacket("npinfo 0");
             _session.Client.SendPacket("pinit 0");
+            _session.Client.SendPacket("zzim");
+            _session.Client.SendPacket(String.Format("twk 1 {0} {1} {2} shtmxpdlfeoqkr", _session.character.CharacterId, _session.Account.Name, _session.character.Name));
+            
+
             _session.CurrentMap.Queue.EnqueueMessage(new KeyValuePair<string, ClientSession>(String.Format("info INFORMATION FROM {0}", _session.Client.ClientId), _session));
             return String.Empty;
         }

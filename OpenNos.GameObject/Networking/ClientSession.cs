@@ -7,7 +7,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-
+using OpenNos.Data;
 namespace OpenNos.GameObject
 {
     public class ClientSession
@@ -18,6 +18,7 @@ namespace OpenNos.GameObject
         private NetworkClient _client;
         private Guid _uniqueIdentifier;
         private Account _account;
+        private CharacterDTO _character;
         private IDictionary<Packet, Tuple<MethodInfo, object>> _packetHandlers;
         private static EncryptionBase _encryptor;
         private SequentialItemProcessor<byte[]> _processor;
@@ -72,7 +73,17 @@ namespace OpenNos.GameObject
                 _account = value;
             }
         }
-
+        public CharacterDTO character
+        {
+            get
+            {
+                return _character;
+            }
+            set
+            {
+                _character = value;
+            }
+        }
         public NetworkClient Client
         {
             get
