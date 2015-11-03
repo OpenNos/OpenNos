@@ -59,7 +59,7 @@ namespace OpenNos.Handler
             if (packetsplit[2].Length > 3 && packetsplit[2].Length < 15)
             {
 
-                if (!DAOFactory.CharacterDAO.IsAlreadyDefined(packetsplit[2]))
+                if (DAOFactory.CharacterDAO.LoadByName(packetsplit[2]) == null)
                 {
                     CharacterDTO newCharacter = new CharacterDTO()
                     {
@@ -145,8 +145,7 @@ namespace OpenNos.Handler
         public string SelectCharacter(string packet)
         {
             _session.CurrentMap = MapManager.GetMap(1);
-            _session.RegisterForMapNotification();
-
+            _session.RegisterForMapNotification(); 
             _session.Client.SendPacket("OK");
             return String.Empty;
         }
@@ -154,7 +153,13 @@ namespace OpenNos.Handler
         [Packet("game_start")]
         public string StartGame(string packet)
         {
-            _session.Client.SendPacket("c_map 1 1 1");
+            _session.Client.SendPacket(String.Format("tit {0} {1}","classe","Test"));
+            _session.Client.SendPacket("fd 260 0 79 1");
+            _session.Client.SendPacket("fd 260 4 79 1");
+            _session.Client.SendPacket(String.Format("c_info {0} - {1} {2} - {3} {4} {5} {6} {7} {8} {9} {10} {11} {12} {13} {14} {15} ", "Test", -1, -1, 1000, 0, 0, 0, 5, 1, 4, 0, 0, 0, 0, 0, 0));
+            _session.Client.SendPacket("c_map 0 1 1");
+            _session.Client.SendPacket("scr 0 0 0 0 0 0");
+            _session.Client.SendPacket("pinit 0");
             _session.CurrentMap.Queue.EnqueueMessage(new KeyValuePair<string, ClientSession>(String.Format("info INFORMATION FROM {0}", _session.Client.ClientId), _session));
             return String.Empty;
         }

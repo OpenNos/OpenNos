@@ -16,7 +16,7 @@ namespace OpenNos.DAL.Interface
         IEnumerable<CharacterDTO> LoadByAccount(long accountId);
 
         SaveResult InsertOrUpdate(ref CharacterDTO character);
-        bool IsAlreadyDefined(string name);
+        CharacterDTO LoadByName(string name);
         DeleteResult Delete(long accountId, byte characterSlot);
     }
 }

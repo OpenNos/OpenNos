@@ -87,15 +87,11 @@ namespace OpenNos.DAL.EF.MySQL
                 return Mapper.Map<CharacterDTO>(context.character.SingleOrDefault(c => c.CharacterId.Equals(characterId)));
             }
         }
-        public bool IsAlreadyDefined(string name)
+        public CharacterDTO LoadByName(string name)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                Character character = context.character.SingleOrDefault(c => c.Name.Equals(name));
-                if (character == null)
-                    return false;
-                else
-                    return true;
+               return Mapper.Map<CharacterDTO>(context.character.SingleOrDefault(c => c.Name.Equals(name)));
             }
         }
         public CharacterDTO LoadBySlot(long accountId, byte slot)
