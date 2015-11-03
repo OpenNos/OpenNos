@@ -41,6 +41,8 @@ namespace OpenNos.World
             //initialize DB
             DataAccessHelper.Initialize();
             Logger.Log.Info(Language.Instance.GetMessageFromKey("DATABASE_HAS_BEEN_INITIALISE"));
+            //initialilize maps
+            MapManager.Initialize();
 
             string ip = System.Configuration.ConfigurationManager.AppSettings["WorldIp"];
             int port = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["WorldPort"]);
