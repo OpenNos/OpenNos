@@ -44,6 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Account.cs" />
+    <Compile Include="Character.cs" />
     <Compile Include="Networking\ClientSession.cs" />
     <Compile Include="Map.cs" />
     <Compile Include="Networking\MapManager.cs" />

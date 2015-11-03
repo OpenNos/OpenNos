@@ -18,7 +18,7 @@ namespace OpenNos.GameObject
         private NetworkClient _client;
         private Guid _uniqueIdentifier;
         private Account _account;
-        private CharacterDTO _character;
+        private Character _character;
         private IDictionary<Packet, Tuple<MethodInfo, object>> _packetHandlers;
         private static EncryptionBase _encryptor;
         private SequentialItemProcessor<byte[]> _processor;
@@ -73,7 +73,7 @@ namespace OpenNos.GameObject
                 _account = value;
             }
         }
-        public CharacterDTO character
+        public Character character
         {
             get
             {
@@ -141,12 +141,14 @@ namespace OpenNos.GameObject
 
             foreach (string packet in packetConcatenated.Split(new char[] { (char)0xFF }, StringSplitOptions.RemoveEmptyEntries))
             {
+                string[] packetsplit = packet.Split(' ');
+                if (packetsplit[1] != "0")
                 Logger.Log.DebugFormat(Language.Instance.GetMessageFromKey("MESSAGE_RECEIVED"), packet, _client.ClientId);
 
                 if (_encryptor.HasCustomParameter)
                 {
                     //keep alive
-                    string nextKeepAliveRaw = packet.Split(' ')[0];
+                    string nextKeepAliveRaw = packetsplit[0];
                     Int32 nextKeepaliveIdentity;
                     if (!Int32.TryParse(nextKeepAliveRaw, out nextKeepaliveIdentity) && nextKeepaliveIdentity != (this.LastKeepAliveIdentity + 1))
                     {
