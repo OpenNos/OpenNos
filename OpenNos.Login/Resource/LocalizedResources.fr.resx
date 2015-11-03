@@ -138,6 +138,9 @@
   <data name="IDERROR" xml:space="preserve">
     <value>Wrong Id or Password!</value>
   </data>
+  <data name="MAP_LOADED" xml:space="preserve">
+    <value>{0} Maps Loaded !</value>
+  </data>
   <data name="NEW_CONNECT" xml:space="preserve">
     <value>A new client is connected. ClientId =</value>
   </data>

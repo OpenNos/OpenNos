@@ -178,6 +178,15 @@ namespace OpenNos.World.Resource {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à {0} Maps Loaded !.
+        /// </summary>
+        public static string MAP_LOADED {
+            get {
+                return ResourceManager.GetString("MAP_LOADED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Message received {0} on client {1}.
         /// </summary>
         public static string MESSAGE_RECEIVED {

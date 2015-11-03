@@ -47,10 +47,6 @@ namespace OpenNos.GameObject
             _encryptor = (EncryptorT)Activator.CreateInstance(typeof(EncryptorT));
 
             var server = ScsServerFactory.CreateServer(new ScsTcpEndPoint(ipAddress, port));
-
-            //initialilize maps
-            MapManager.Initialize();
-
             //Register events of the server to be informed about clients
             server.ClientConnected += Server_ClientConnected;
             server.ClientDisconnected += Server_ClientDisconnected;
