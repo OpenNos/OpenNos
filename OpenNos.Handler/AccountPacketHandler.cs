@@ -172,7 +172,7 @@ namespace OpenNos.Handler
                 LastPulse = 0
             };
 
-            _session.CurrentMap = MapManager.GetMap(1);
+            _session.CurrentMap = MapManager.GetMap(_session.character.Map);
             _session.RegisterForMapNotification();
             _session.Client.SendPacket("OK");
             return String.Empty;
@@ -188,6 +188,19 @@ namespace OpenNos.Handler
         [Packet("lbs")]
         public string lbs(string packet)
         {
+            //i don't know why there is this packet
+            return string.Empty;
+        }
+        [Packet("c_close")]
+        public string c_close(string packet)
+        {
+            //i don't know why there is this packet
+            return string.Empty;
+        }
+        [Packet("f_stash_end")]
+        public string f_stash_end(string packet)
+        {
+            //i don't know why there is this packet
             return string.Empty;
         }
         [Packet("game_start")]
@@ -210,7 +223,7 @@ namespace OpenNos.Handler
             _session.Client.SendPacket(String.Format("cond 1 {0} 0 0 11", _session.character.CharacterId));
             //pairy
             _session.Client.SendPacket(String.Format("rsfi 1 1 0 9 0 9")); //why it change? 0 became 4 in an other account but why
-            _session.Client.SendPacket(String.Format("rank_cool 0 0 18000"));//add rank cool
+            _session.Client.SendPacket(String.Format("rank_cool 0 0 18000"));//TODO add rank cool
             _session.Client.SendPacket("scr 0 0 0 0 0 0");
             //bn
             _session.Client.SendPacket("exts 0 48 48 48");
@@ -225,6 +238,7 @@ namespace OpenNos.Handler
            
 
             _session.CurrentMap.Queue.EnqueueMessage(new KeyValuePair<string, ClientSession>(String.Format("info INFORMATION FROM {0}", _session.Client.ClientId), _session));
+            
             return String.Empty;
         }
     }
