@@ -124,6 +124,15 @@ namespace OpenNos.World.Resource {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à Connection closed by Client..
+        /// </summary>
+        public static string CLIENT_CLOSED {
+            get {
+                return ResourceManager.GetString("CLIENT_CLOSED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Corrupted Keepalive on client {0}..
         /// </summary>
         public static string CORRUPT_KEEPALIVE {
@@ -210,15 +219,6 @@ namespace OpenNos.World.Resource {
         public static string MAP_LOADED {
             get {
                 return ResourceManager.GetString("MAP_LOADED", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à {0} Maps Loaded !.
-        /// </summary>
-        public static string MAP_LOADED1 {
-            get {
-                return ResourceManager.GetString("MAP_LOADED1", resourceCulture);
             }
         }
         

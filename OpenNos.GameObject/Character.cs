@@ -50,6 +50,14 @@ namespace OpenNos.GameObject
 
         public int LastPulse { get; set; }
 
+        public int sp { get; set; }
+
+        public int invisible { get; set; }
+
+        public int arenaWinner { get; set; }
+
+        public int spUpgrade { get; set; }
+
         public int GetDigniteIco()
         {
             int icoDignite = 1;

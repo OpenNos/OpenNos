@@ -138,6 +138,9 @@
   <data name="CLIENT_CLOSE" xml:space="preserve">
     <value>Connection closed by Client.</value>
   </data>
+  <data name="CLIENT_CLOSED" xml:space="preserve">
+    <value>Connection closed by Client.</value>
+  </data>
   <data name="CORRUPT_KEEPALIVE" xml:space="preserve">
     <value>Corrupted Keepalive on client {0}.</value>
   </data>
@@ -166,9 +169,6 @@
     <value>Magician</value>
   </data>
   <data name="MAP_LOADED" xml:space="preserve">
-    <value>{0} Maps Loaded !</value>
-  </data>
-  <data name="MAP_LOADED1" xml:space="preserve">
     <value>{0} Maps Loaded !</value>
   </data>
   <data name="MESSAGE_RECEIVED" xml:space="preserve">
