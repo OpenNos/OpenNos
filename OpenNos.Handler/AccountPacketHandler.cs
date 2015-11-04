@@ -79,10 +79,10 @@ namespace OpenNos.Handler
                         Mp = 200,
                         Name = packetsplit[2],
                         Slot = Convert.ToByte(packetsplit[3]),
-                        AccountId = accountId
+                        AccountId = accountId,  
                     };
-
-                    SaveResult insertResult = DAOFactory.CharacterDAO.InsertOrUpdate(ref newCharacter);
+               
+        SaveResult insertResult = DAOFactory.CharacterDAO.InsertOrUpdate(ref newCharacter);
                     LoadCharacters(packet);
                 }
 
@@ -169,7 +169,11 @@ namespace OpenNos.Handler
                 Name = characterDTO.Name,
                 Reput = characterDTO.Reput,
                 Slot = characterDTO.Slot,
-                LastPulse = 0
+                LastPulse = 0,
+                invisible = 0,
+                arenaWinner = 0,
+                sp = 0,
+                spUpgrade = 0,
             };
 
             _session.CurrentMap = MapManager.GetMap(_session.character.Map);
@@ -208,7 +212,7 @@ namespace OpenNos.Handler
         {
             _session.Client.SendPacket(String.Format("tit {0} {1}", Language.Instance.GetMessageFromKey(_session.character.Class == 0 ? "ADVENTURER" : _session.character.Class == 1?"SWORDMAN": _session.character.Class == 2?"ARCHER" : "MAGICIAN"), _session.character.Name));
             _session.Client.SendPacket(String.Format("fd {0} 0 {1} {2}", _session.character.Reput, _session.character.Dignite, Math.Abs(_session.character.GetDigniteIco())));
-            _session.Client.SendPacket(String.Format("c_info {0} - {1} {2} - {3} {4} {5} {6} {7} {8} {9} {10} {11} {12} {13} {14} {15} ", _session.character.Name, -1, -1, _session.character.CharacterId, _session.Account.Authority, _session.character.Gender, _session.character.HairStyle, _session.character.HairColor, _session.character.Class, _session.character.GetReputIco(), 0, 0, 0, 0, 0, 0));
+            _session.Client.SendPacket(String.Format("c_info {0} - {1} {2} - {3} {4} {5} {6} {7} {8} {9} {10} {11} {12} {13} {14} {15} ", _session.character.Name, -1, -1, _session.character.CharacterId, _session.Account.Authority, _session.character.Gender, _session.character.HairStyle, _session.character.HairColor, _session.character.Class, _session.character.GetReputIco(), 0, _session.character.sp, _session.character.invisible, 0, _session.character.spUpgrade, _session.character.arenaWinner));
             _session.Client.SendPacket(String.Format("fd {0} {1} {2} {3}", _session.character.Reput, _session.character.GetReputIco(), _session.character.Dignite, _session.character.GetDigniteIco()));
 
             //TODO if first connect add _session.Client.SendPacket(String.Format("scene 40"));
@@ -218,11 +222,11 @@ namespace OpenNos.Handler
             _session.Client.SendPacket(String.Format("stat {0} {1} {2} {3} 0 1024", _session.character.Hp, _session.character.Hp, _session.character.Mp, _session.character.Mp));
             //ski
             _session.Client.SendPacket(String.Format("at {0} {1} {2} {3} 2 0 0 1", _session.character.CharacterId, _session.character.Map, _session.character.MapX, _session.character.MapY));
-            _session.Client.SendPacket("c_map 0 1 1");
+            _session.Client.SendPacket(String.Format("c_map 0 {0} 1",_session.character.Map));
             //sc
             _session.Client.SendPacket(String.Format("cond 1 {0} 0 0 11", _session.character.CharacterId));
             //pairy
-            _session.Client.SendPacket(String.Format("rsfi 1 1 0 9 0 9")); //why it change? 0 became 4 in an other account but why
+            _session.Client.SendPacket(String.Format("rsfi {0} {1} {2} {3} {4} {5}",1,1,4,9,4,9)); //rsfi act actpart ts maxts ts maxts
             _session.Client.SendPacket(String.Format("rank_cool 0 0 18000"));//TODO add rank cool
             _session.Client.SendPacket("scr 0 0 0 0 0 0");
             //bn
