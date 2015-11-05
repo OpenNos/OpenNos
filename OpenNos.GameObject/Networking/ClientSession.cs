@@ -215,8 +215,11 @@ namespace OpenNos.GameObject
 
         private void GetNotification(object sender, EventArgs e)
         {
-            String packet = sender as String;
-            _client.SendPacket(packet);
+            KeyValuePair<String, ClientSession> packet = (KeyValuePair<String, ClientSession>)sender;
+
+            //exclude myself from passive notification
+            if(packet.Value.Client.ClientId != this.Client.ClientId)
+                _client.SendPacket(packet.Key);
         }
 
         public void Initialize(EncryptionBase encryptor, IList<Type> packetHandlers, Guid uniqueIdentifier)

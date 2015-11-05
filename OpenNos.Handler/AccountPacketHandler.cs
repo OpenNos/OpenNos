@@ -242,7 +242,7 @@ namespace OpenNos.Handler
             _session.Client.SendPacket(String.Format("twk 1 {0} {1} {2} shtmxpdlfeoqkr", _session.character.CharacterId, _session.Account.Name, _session.character.Name));
            
 
-            _session.CurrentMap.Queue.EnqueueMessage(new KeyValuePair<string, ClientSession>(String.Format("info INFORMATION FROM {0}", _session.Client.ClientId), _session));
+            _session.CurrentMap.QueuePacket(new KeyValuePair<string, ClientSession>(String.Format("info INFORMATION FROM {0}", _session.Client.ClientId), _session));
             
             return String.Empty;
         }
