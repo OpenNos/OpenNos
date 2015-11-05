@@ -211,18 +211,18 @@ namespace OpenNos.Handler
         [Packet("game_start")]
         public string StartGame(string packet)
         {
-            _session.Client.SendPacket(_session.character.tit());
-            _session.Client.SendPacket(_session.character.c_info());
-            _session.Client.SendPacket(_session.character.fd());
+            _session.Client.SendPacket(_session.character.GenerateTit());
+            _session.Client.SendPacket(_session.character.GenerateCInfo());
+            _session.Client.SendPacket(_session.character.GenerateFd());
             //TODO if first connect add _session.Client.SendPacket(String.Format("scene 40"));
-            _session.Client.SendPacket(_session.character.lev());
+            _session.Client.SendPacket(_session.character.GenerateLev());
             //stat
-            _session.Client.SendPacket(_session.character.stat());
+            _session.Client.SendPacket(_session.character.GenerateStat());
             //ski
-            _session.Client.SendPacket(_session.character.at());
-            _session.Client.SendPacket(_session.character.c_map());
+            _session.Client.SendPacket(_session.character.GenerateAt());
+            _session.Client.SendPacket(_session.character.GenerateCMap());
             //sc
-            _session.Client.SendPacket(_session.character.cond());
+            _session.Client.SendPacket(_session.character.GenerateCond());
             //pairy
             _session.Client.SendPacket(String.Format("rsfi {0} {1} {2} {3} {4} {5}", 1, 1, 4, 9, 4, 9));
 
@@ -230,7 +230,7 @@ namespace OpenNos.Handler
            
             _session.Client.SendPacket("scr 0 0 0 0 0 0");
             //bn
-            _session.Client.SendPacket(_session.character.exts());
+            _session.Client.SendPacket(_session.character.GenerateExts());
             
             //gidx
             _session.Client.SendPacket("mlinfo 3800 2000 100 0 0 10 0 Mélodie^du^printemps Bienvenue");

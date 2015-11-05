@@ -62,15 +62,15 @@ namespace OpenNos.GameObject
 
         public int SpUpgrade { get; set; }
 
-        public string fd()
+        public string GenerateFd()
         {
            return String.Format("fd {0} {1} {2} {3}", Reput, GetReputIco(), Dignite, Math.Abs(GetDigniteIco()));
         }
         public int XPLoad()
         {
-            int u0 = 300, v0 = 540, v1 = 960;
-            int[] u = new int[99];
-            int[] v = new int[110];
+           
+            int[] u = new int[102];
+            int[] v = new int[102];
             double var = 1;
             v[0] = 540;
             v[1] = 960;
@@ -82,7 +82,10 @@ namespace OpenNos.GameObject
             for (int i = 1; i < u.Length; i++)
             {
                 if (i == 14) var = 6 / 3;
-                if (i == 39) var = (double)(19 / (double)3);
+                else if (i == 39) var = (double)(19 / (double)3);
+                else if (i == 59) var = (double)(70 / (double)3);
+                else if (i == 79) var = (double)(250 / (double)3);
+
                 u[i] = Convert.ToInt32(u[i - 1] + var * v[i - 1]);
                 //Console.WriteLine("lvl " + (i) + ":" + u[i - 1]);
             }
@@ -91,13 +94,37 @@ namespace OpenNos.GameObject
 
         public int JobXPLoad()
         {
-            return Class == 0 ? JobLevel-1 * 700 + 2200: 16200 + JobLevel*1400;
+            int[] firstJob = new int[21];
+            int[] secondJob = new int[81];
+            firstJob[0] = 2200;
+            secondJob[0] = 17600;
+            for (int i = 1; i < firstJob.Length; i++)
+            {
+                firstJob[i] = firstJob[i - 1] + 700;
+            }
+            if (Class == 0)
+            {
+                return firstJob[JobLevel - 1];
+            }
+            else
+            {
+                for (int i = 1; i < secondJob.Length; i++)
+                {
+                    int var = 400;
+                    if (i > 3)
+                        var = 4500;
+
+                    secondJob[i] = secondJob[i - 1] + var;
+                }
+            }
+            return secondJob[JobLevel - 1];
+
         }
-        public string lev()
+        public string GenerateLev()
         {
            return String.Format("lev {0} {1} {2} {3} {4} {5} 0 2", Level, LevelXp, JobLevel, JobLevelXp,XPLoad(),JobXPLoad());
         }
-        public string c_info()
+        public string GenerateCInfo()
         {
            return String.Format("c_info {0} - {1} {2} - {3} {4} {5} {6} {7} {8} {9} {10} {11} {12} {13} {14} {15} ", Name, -1, -1, CharacterId, Authority, Gender, HairStyle, HairColor, Class, GetReputIco(), 0, Sp, Invisible, 0, SpUpgrade, ArenaWinner);
         }
@@ -127,38 +154,38 @@ namespace OpenNos.GameObject
 
         }
 
-        public string tit()
+        public string GenerateTit()
         {
            return String.Format("tit {0} {1}", Language.Instance.GetMessageFromKey(Class == 0 ? "ADVENTURER" : Class == 1 ? "SWORDMAN" : Class == 2 ? "ARCHER" : "MAGICIAN"), Name);
             
         }
 
-        public string stat()
+        public string GenerateStat()
         {
             //TODO add max HP MP
             return String.Format("stat {0} {1} {2} {3} 0 1024", Hp, Hp, Mp, Mp);
            
         }
 
-        public string at()
+        public string GenerateAt()
         {
             return String.Format("at {0} {1} {2} {3} 2 0 0 1", CharacterId, Map, MapX, MapY);
            
         }
 
-        public string c_map()
+        public string GenerateCMap()
         {
            return String.Format("c_map 0 {0} 1", Map);
            
         }
 
-        public string cond()
+        public string GenerateCond()
         {
            return String.Format("cond 1 {0} 0 0 11", CharacterId);
 
         }
 
-        public string exts()
+        public string GenerateExts()
         {
            return String.Format("exts 0 48 48 48"); 
         }
