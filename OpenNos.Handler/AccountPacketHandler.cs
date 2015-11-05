@@ -79,10 +79,10 @@ namespace OpenNos.Handler
                         Mp = 200,
                         Name = packetsplit[2],
                         Slot = Convert.ToByte(packetsplit[3]),
-                        AccountId = accountId,  
+                        AccountId = accountId,
                     };
-               
-        SaveResult insertResult = DAOFactory.CharacterDAO.InsertOrUpdate(ref newCharacter);
+
+                    SaveResult insertResult = DAOFactory.CharacterDAO.InsertOrUpdate(ref newCharacter);
                     LoadCharacters(packet);
                 }
 
@@ -91,6 +91,11 @@ namespace OpenNos.Handler
             return String.Empty;
         }
 
+        /// <summary>
+        /// Load Characters, this is the Entrypoint for the Client, Wait for 3 Packets.
+        /// </summary>
+        /// <param name="packet"></param>
+        /// <returns></returns>
         [Packet("OpenNos.EntryPoint", 3)]
         public string LoadCharacters(string packet)
         {
@@ -169,7 +174,7 @@ namespace OpenNos.Handler
                 Name = characterDTO.Name,
                 Reput = characterDTO.Reput,
                 Slot = characterDTO.Slot,
-                Authority  = _session.Account.Authority,
+                Authority = _session.Account.Authority,
                 LastPulse = 0,
                 Invisible = 0,
                 ArenaWinner = 0,
@@ -227,23 +232,23 @@ namespace OpenNos.Handler
             _session.Client.SendPacket(String.Format("rsfi {0} {1} {2} {3} {4} {5}", 1, 1, 4, 9, 4, 9));
 
             _session.Client.SendPacket("rank_cool 0 0 18000");//TODO add rank cool
-           
+
             _session.Client.SendPacket("scr 0 0 0 0 0 0");
             //bn
             _session.Client.SendPacket(_session.character.exts());
-            
+
             //gidx
             _session.Client.SendPacket("mlinfo 3800 2000 100 0 0 10 0 Mélodie^du^printemps Bienvenue");
             //cond
-            _session.Client.SendPacket("p_clear"); 
+            _session.Client.SendPacket("p_clear");
             //sc_p pet
             _session.Client.SendPacket("pinit 0");
             _session.Client.SendPacket("zzim");
             _session.Client.SendPacket(String.Format("twk 1 {0} {1} {2} shtmxpdlfeoqkr", _session.character.CharacterId, _session.Account.Name, _session.character.Name));
-           
+
 
             _session.CurrentMap.QueuePacket(new KeyValuePair<string, ClientSession>(String.Format("info INFORMATION FROM {0}", _session.Client.ClientId), _session));
-            
+
             return String.Empty;
         }
     }

@@ -108,7 +108,6 @@ namespace OpenNos.Core.Communication.Scs.Communication.Channels.Tcp
                     {
                         return;
                     }
-
                     try
                     {
                         StartSocket();
