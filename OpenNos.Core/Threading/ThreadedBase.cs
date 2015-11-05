@@ -8,35 +8,30 @@ using System.Threading.Tasks;
 
 namespace OpenNos.Core
 {
-    public abstract class ThreadedBase<TValue>
+    public class ThreadedBase<TValue>
     {
-        private Thread _thread;
-        private ConcurrentQueue<TValue> _queue;
+        private SequentialItemProcessor<TValue> _queue;
+        private Action<TValue> _action;
+        private Task _task;
 
-        public ThreadedBase()
+        public ThreadedBase(long milliseconds, Action<TValue> triggeredMethod)
         {
-            _thread = new Thread(Run);
+            _action = triggeredMethod;
+            var cancellationTokenSource = new CancellationTokenSource();
+            //this will cost a lot of resource
+            //_task = Repeat.Interval(
+            //        TimeSpan.FromMilliseconds(milliseconds),
+            //        () => triggeredMethod((TValue)Activator.CreateInstance(typeof(TValue))), cancellationTokenSource.Token);
+            Queue.Start();
         }
 
-        public void Start()
-        {
-            _thread.Start();
-        }
-
-        public abstract void Run();
-
-        public void Stop()
-        {
-            _thread.Interrupt();
-        }
-
-        public ConcurrentQueue<TValue> Queue
+        public SequentialItemProcessor<TValue> Queue
         {
             get
             {
-                if(_queue == null)
+                if (_queue == null)
                 {
-                    _queue = new ConcurrentQueue<TValue>();
+                    _queue = new SequentialItemProcessor<TValue>(_action);
                 }
 
                 return _queue;
@@ -45,6 +40,39 @@ namespace OpenNos.Core
             {
                 _queue = value;
             }
+        }
+    }
+
+    internal static class Repeat
+    {
+        public static Task Interval(
+            TimeSpan pollInterval,
+            Action action,
+            CancellationToken token)
+        {
+            // We don't use Observable.Interval:
+            // If we block, the values start bunching up behind each other.
+            return Task.Factory.StartNew(
+                () =>
+                {
+                    for (;;)
+                    {
+                        if (token.WaitCancellationRequested(pollInterval))
+                            break;
+
+                        action();
+                    }
+                }, token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
+        }
+    }
+
+    static class CancellationTokenExtensions
+    {
+        public static bool WaitCancellationRequested(
+            this CancellationToken token,
+            TimeSpan timeout)
+        {
+            return token.WaitHandle.WaitOne(timeout);
         }
     }
 }

@@ -10,25 +10,21 @@ using System.Threading.Tasks;
 
 namespace OpenNos.GameObject
 {
-    public class Map // ThreadedBase<KeyValuePair<String, ClientSession>>
+    public class Map
     {
-        private bool _isRunning;
         private char[,] _grid;
         private short _mapId;
         private int _xLength;
         private int _yLength;
         private Guid _uniqueIdentifier;
+        private ThreadedBase<KeyValuePair<String, ClientSession>> threadedBase;
 
-        public SequentialItemProcessor<KeyValuePair<String, ClientSession>> Queue;
-
-        public Map(short mapId, Guid uniqueIdentifier)
+        public Map(short mapId, Guid uniqueIdentifier) 
         {
-            _isRunning = true;
-            _mapId = mapId;
+            threadedBase = new ThreadedBase<KeyValuePair<String, ClientSession>>(500, HandlePacket);
+                _mapId = mapId;
             _uniqueIdentifier = uniqueIdentifier;
             LoadZone();
-            Queue = new SequentialItemProcessor<KeyValuePair<string, ClientSession>>(OnBroadCast);
-            Queue.Start();
         }
 
         public short MapId
@@ -78,8 +74,22 @@ namespace OpenNos.GameObject
             var handler = NotifyClients;
             if (handler != null)
             {
-                handler(packet.Key, new EventArgs());
+                handler(packet, new EventArgs());
             }
+        }
+
+        public void HandlePacket(KeyValuePair<String, ClientSession> parameter)
+        {
+
+            //handle iterative operations
+
+            //notify clients about changes
+            OnBroadCast(parameter);
+        }
+
+        public void QueuePacket(KeyValuePair<String, ClientSession> packet)
+        {
+            threadedBase.Queue.EnqueueMessage(packet);
         }
 
         public EventHandler NotifyClients { get; set; }
