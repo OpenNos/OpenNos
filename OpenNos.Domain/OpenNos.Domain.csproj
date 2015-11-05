@@ -49,6 +49,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ClassType.cs" />
     <Compile Include="AuthorityType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

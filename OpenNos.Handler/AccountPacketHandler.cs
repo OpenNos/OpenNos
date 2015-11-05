@@ -169,11 +169,12 @@ namespace OpenNos.Handler
                 Name = characterDTO.Name,
                 Reput = characterDTO.Reput,
                 Slot = characterDTO.Slot,
+                Authority  = _session.Account.Authority,
                 LastPulse = 0,
-                invisible = 0,
-                arenaWinner = 0,
-                sp = 0,
-                spUpgrade = 0,
+                Invisible = 0,
+                ArenaWinner = 0,
+                Sp = 0,
+                SpUpgrade = 0,
             };
 
             _session.CurrentMap = MapManager.GetMap(_session.character.Map);
@@ -210,27 +211,27 @@ namespace OpenNos.Handler
         [Packet("game_start")]
         public string StartGame(string packet)
         {
-            _session.Client.SendPacket(String.Format("tit {0} {1}", Language.Instance.GetMessageFromKey(_session.character.Class == 0 ? "ADVENTURER" : _session.character.Class == 1?"SWORDMAN": _session.character.Class == 2?"ARCHER" : "MAGICIAN"), _session.character.Name));
-            _session.Client.SendPacket(String.Format("fd {0} 0 {1} {2}", _session.character.Reput, _session.character.Dignite, Math.Abs(_session.character.GetDigniteIco())));
-            _session.Client.SendPacket(String.Format("c_info {0} - {1} {2} - {3} {4} {5} {6} {7} {8} {9} {10} {11} {12} {13} {14} {15} ", _session.character.Name, -1, -1, _session.character.CharacterId, _session.Account.Authority, _session.character.Gender, _session.character.HairStyle, _session.character.HairColor, _session.character.Class, _session.character.GetReputIco(), 0, _session.character.sp, _session.character.invisible, 0, _session.character.spUpgrade, _session.character.arenaWinner));
-            _session.Client.SendPacket(String.Format("fd {0} {1} {2} {3}", _session.character.Reput, _session.character.GetReputIco(), _session.character.Dignite, _session.character.GetDigniteIco()));
-
+            _session.Client.SendPacket(_session.character.tit());
+            _session.Client.SendPacket(_session.character.c_info());
+            _session.Client.SendPacket(_session.character.fd());
             //TODO if first connect add _session.Client.SendPacket(String.Format("scene 40"));
-            _session.Client.SendPacket(String.Format("lev {0} {1} {2} {3} 300 2200 0 2", _session.character.Level, _session.character.LevelXp, _session.character.JobLevel, _session.character.JobLevelXp));
+            _session.Client.SendPacket(_session.character.lev());
             //stat
-            //TODO add max HP MP
-            _session.Client.SendPacket(String.Format("stat {0} {1} {2} {3} 0 1024", _session.character.Hp, _session.character.Hp, _session.character.Mp, _session.character.Mp));
+            _session.Client.SendPacket(_session.character.stat());
             //ski
-            _session.Client.SendPacket(String.Format("at {0} {1} {2} {3} 2 0 0 1", _session.character.CharacterId, _session.character.Map, _session.character.MapX, _session.character.MapY));
-            _session.Client.SendPacket(String.Format("c_map 0 {0} 1",_session.character.Map));
+            _session.Client.SendPacket(_session.character.at());
+            _session.Client.SendPacket(_session.character.c_map());
             //sc
-            _session.Client.SendPacket(String.Format("cond 1 {0} 0 0 11", _session.character.CharacterId));
+            _session.Client.SendPacket(_session.character.cond());
             //pairy
-            _session.Client.SendPacket(String.Format("rsfi {0} {1} {2} {3} {4} {5}",1,1,4,9,4,9)); //rsfi act actpart ts maxts ts maxts
-            _session.Client.SendPacket(String.Format("rank_cool 0 0 18000"));//TODO add rank cool
+            _session.Client.SendPacket(String.Format("rsfi {0} {1} {2} {3} {4} {5}", 1, 1, 4, 9, 4, 9));
+
+            _session.Client.SendPacket("rank_cool 0 0 18000");//TODO add rank cool
+           
             _session.Client.SendPacket("scr 0 0 0 0 0 0");
             //bn
-            _session.Client.SendPacket("exts 0 48 48 48");
+            _session.Client.SendPacket(_session.character.exts());
+            
             //gidx
             _session.Client.SendPacket("mlinfo 3800 2000 100 0 0 10 0 Mélodie^du^printemps Bienvenue");
             //cond
