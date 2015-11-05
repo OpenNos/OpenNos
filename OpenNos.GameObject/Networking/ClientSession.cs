@@ -34,7 +34,6 @@ namespace OpenNos.GameObject
             _client = client;
             //absolutely new instantiated Client has no SessionId
             SessionId = 0;
-            packetNumber = 0;
             _client.MessageReceived += NetworkClient_MessageReceived;
             _processor = new SequentialItemProcessor<byte[]>(HandlePacket);
             _processor.Start();
@@ -43,7 +42,6 @@ namespace OpenNos.GameObject
         #region Properties
 
         public int SessionId { get; set; }
-        public int packetNumber { get; set; }
         public int LastKeepAliveIdentity { get; set; }
 
         public IDictionary<Packet, Tuple<MethodInfo, object>> Handlers
@@ -130,10 +128,7 @@ namespace OpenNos.GameObject
 
                 if (!_waitForPackets)
                 {
-                    if (!TriggerHandler("OpenNos.EntryPoint", String.Empty,false))
-                    {
-                        Logger.Log.ErrorFormat(Language.Instance.GetMessageFromKey("NO_ENTRY"));
-                    }
+                    TriggerHandler("OpenNos.EntryPoint", String.Empty, false);
                 }
 
                 return;
@@ -143,10 +138,10 @@ namespace OpenNos.GameObject
 
             foreach (string packet in packetConcatenated.Split(new char[] { (char)0xFF }, StringSplitOptions.RemoveEmptyEntries))
             {
-                this.packetNumber++;
                 string[] packetsplit = packet.Split(' ');
+
                 if (packetsplit[1] != "0")
-                Logger.Log.DebugFormat(Language.Instance.GetMessageFromKey("MESSAGE_RECEIVED"), packet, _client.ClientId);
+                    Logger.Log.DebugFormat(Language.Instance.GetMessageFromKey("MESSAGE_RECEIVED"), packet, _client.ClientId);
 
                 if (_encryptor.HasCustomParameter)
                 {
@@ -186,19 +181,21 @@ namespace OpenNos.GameObject
                             return;
                         }
                     }
-
-                    string packetHeader = packet.Split(' ')[1];
-                    //0 is a keep alive packet with no content to handle
-                    if (this.packetNumber != 1 && packetHeader != "0" && !TriggerHandler(packetHeader, packet, false))
+                    else
                     {
-                        Logger.Log.ErrorFormat(Language.Instance.GetMessageFromKey("HANDLER_NOT_FOUND"), packetHeader);
-                    }
+                        string packetHeader = packet.Split(' ')[1];
+                        //0 is a keep alive packet with no content to handle
+                        if (packetHeader != "0" && !TriggerHandler(packetHeader, packet, false))
+                        {
+                            Logger.Log.ErrorFormat(Language.Instance.GetMessageFromKey("HANDLER_NOT_FOUND"), packetHeader);
+                        }
+                    }                 
                 }
                 else
-                {                  
+                {
                     //simple messaging
                     string packetHeader = packet.Split(' ')[0];
-                  
+
                     if (!TriggerHandler(packetHeader, packet, false))
                     {
                         Logger.Log.ErrorFormat(Language.Instance.GetMessageFromKey("HANDLER_NOT_FOUND"), packetHeader);
@@ -218,7 +215,7 @@ namespace OpenNos.GameObject
             KeyValuePair<String, ClientSession> packet = (KeyValuePair<String, ClientSession>)sender;
 
             //exclude myself from passive notification
-            if(packet.Value.Client.ClientId != this.Client.ClientId)
+            if (packet.Value.Client.ClientId != this.Client.ClientId)
                 _client.SendPacket(packet.Key);
         }
 
