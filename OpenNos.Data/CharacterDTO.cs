@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OpenNos.Domain;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,6 +20,18 @@ namespace OpenNos.Data
         public byte Gender { get; set; }
 
         public byte Class { get; set; }
+
+        public ClassType ClassEnum
+        {
+            get
+            {
+                return (ClassType)Class;
+            }
+            set
+            {
+                Class = (byte)value;
+            }
+        }
 
         public byte HairStyle { get; set; }
 

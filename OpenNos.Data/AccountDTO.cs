@@ -29,6 +29,7 @@ namespace OpenNos.Data
             }
         }
 
+        
         public int LastSession { get; set; }
 
         public bool LoggedIn { get; set; }

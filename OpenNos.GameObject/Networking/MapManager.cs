@@ -16,16 +16,20 @@ namespace OpenNos.GameObject
 
         public static void Initialize()
         {
-            DirectoryInfo dir = new DirectoryInfo(@"./Resource/zones");
-            FileInfo[] files = dir.GetFiles();
-            foreach (FileInfo file in files)
-            {
-                Guid guid = Guid.NewGuid();
-                Map newMap = new Map(Convert.ToInt16(file.Name), guid);
-                _maps.TryAdd(guid, newMap);
+            try {
+                DirectoryInfo dir = new DirectoryInfo(@"./Resource/zones");
+                FileInfo[] files = dir.GetFiles();
+                foreach (FileInfo file in files)
+                {
+                    Guid guid = Guid.NewGuid();
+                    Map newMap = new Map(Convert.ToInt16(file.Name), guid);
+                    _maps.TryAdd(guid, newMap);
+                }
+                Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("MAP_LOADED"), files.Length));
             }
-            Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("MAP_LOADED"), files.Length));
-        }
+            catch (Exception ex) { Logger.Log.Error(ex.Message); }
+             
+            }
 
         public static Map GetMap(short id)
         {

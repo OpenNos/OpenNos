@@ -19,12 +19,11 @@ using System.Threading.Tasks;
 
 namespace OpenNos.Domain
 {
-    public enum AuthorityType : short
+    public enum ClassType : short
     {
-        Unknown = 0,
-        User = 1,
-        Admin = 2,
-        Banned = 3
+        Adventurer = 0,
+        Swordman = 1,
+        Archer = 2,
+        Magician = 3
     }
-
 }
