@@ -23,8 +23,7 @@ namespace OpenNos.GameObject
         private SequentialItemProcessor<byte[]> _queue;
 
         //Packetwait Packets
-        private bool _waitForPackets;
-        private int _waitForPacketsAmount;
+        private int? _waitForPacketsAmount;
         private IList<String> _waitForPacketList = new List<String>();
 
         #endregion
@@ -138,7 +137,7 @@ namespace OpenNos.GameObject
                 this.SessionId = Convert.ToInt32(sessionParts[1].Split('\\').FirstOrDefault());
                 Logger.Log.DebugFormat(Language.Instance.GetMessageFromKey("CLIENT_ARRIVED"), this.SessionId);
 
-                if (!_waitForPackets)
+                if (!_waitForPacketsAmount.HasValue)
                 {
                     TriggerHandler("OpenNos.EntryPoint", String.Empty, false);
                 }
@@ -176,7 +175,7 @@ namespace OpenNos.GameObject
                         LastKeepAliveIdentity = nextKeepaliveIdentity;
                     }
 
-                    if (_waitForPackets)
+                    if (_waitForPacketsAmount.HasValue)
                     {
                         if (_waitForPacketList.Count != _waitForPacketsAmount - 1)
                         {
@@ -185,7 +184,7 @@ namespace OpenNos.GameObject
                         else
                         {
                             _waitForPacketList.Add(packet);
-                            _waitForPackets = false;
+                            _waitForPacketsAmount = null;
                             string queuedPackets = String.Join(" ", _waitForPacketList.ToArray());
                             string header = queuedPackets.Split(' ')[1];
                             TriggerHandler(header, queuedPackets, true);
@@ -201,7 +200,7 @@ namespace OpenNos.GameObject
                         {
                             Logger.Log.ErrorFormat(Language.Instance.GetMessageFromKey("HANDLER_NOT_FOUND"), packetHeader);
                         }
-                    }                 
+                    }
                 }
                 else
                 {
@@ -253,13 +252,12 @@ namespace OpenNos.GameObject
         private bool TriggerHandler(string packetHeader, string packet, bool force)
         {
             KeyValuePair<Packet, Tuple<MethodInfo, object>> methodInfo = Handlers.SingleOrDefault(h => h.Key.Header.Equals(packetHeader));
-
+            
             if (methodInfo.Value != null)
             {
-                if (!force && methodInfo.Key.Amount > 1 && !_waitForPackets)
+                if (!force && methodInfo.Key.Amount > 1 && !_waitForPacketsAmount.HasValue)
                 {
                     //we need to wait for more
-                    _waitForPackets = true;
                     _waitForPacketsAmount = methodInfo.Key.Amount;
                     _waitForPacketList.Add(packet != String.Empty ? packet : String.Format("1 {0} ", packetHeader));
                     return false;
