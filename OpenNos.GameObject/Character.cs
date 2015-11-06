@@ -64,6 +64,8 @@ namespace OpenNos.GameObject
 
         public int SpUpgrade { get; set; }
 
+        public int Direction { get; set; }
+
         public string GenerateEff(int effectid)
         {
             return String.Format("eff 1 {0} {1}", CharacterId, effectid);
@@ -217,6 +219,18 @@ namespace OpenNos.GameObject
         {
             return String.Format("mv 1 {0} {1} {2} {3}", CharacterId, x, y, Speed);
 
+        }
+
+        public string GenerateSay(string message,int type)
+        {
+            return String.Format("say 1 {0} {1} {2}", CharacterId,type, message);
+           
+        }
+
+        public string GenerateIn()
+        {
+            return String.Format("in 1 {0} - {1} {2} {3} {4} {5} {6} {7} {8} {9} -1.-1.-1.-1.-1.-1.-1.-1 {10} {11} {12} -1 0 0 0 0 0 0 0 0 -1 - {13} 0 0 0 0 {14} 0 {15} 0 10", Name, CharacterId, MapX, MapY, Direction, (Authority == 2 ? 2 : 0), Gender, HairStyle, HairColor, Class, 100, 100, Sp, (GetDigniteIco() == 1) ? GetReputIco() : -GetDigniteIco(), ArenaWinner);
+          
         }
     }
 }
