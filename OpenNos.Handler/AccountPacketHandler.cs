@@ -181,6 +181,7 @@ namespace OpenNos.Handler
                 ArenaWinner = 0,
                 Sp = 0,
                 SpUpgrade = 0,
+                Direction = 0
             };
 
             _session.CurrentMap = MapManager.GetMap(_session.Character.Map);
@@ -195,6 +196,20 @@ namespace OpenNos.Handler
             _session.Character.LastPulse += 60;
             if (Convert.ToInt32(packetsplit[2]) != _session.Character.LastPulse) { _session.Client.Disconnect(); }
             return String.Empty;
+        }
+
+        [Packet("say")]
+        public string say(string packet)
+        {
+            string[] packetsplit = packet.Split(' ');
+            string message=String.Empty;
+            for (int i = 0; i < packetsplit.Length; i++)
+                message = packetsplit[i] + " ";
+            message.Trim();
+            
+           _session.CurrentMap.QueuePacket(new KeyValuePair<string, ClientSession>(_session.Character.GenerateSay(packetsplit[2],0), _session));
+
+                return string.Empty;
         }
         [Packet("lbs")]
         public string lbs(string packet)
@@ -255,6 +270,7 @@ namespace OpenNos.Handler
             _session.Client.SendPacket(_session.Character.GenerateCond());
             //pairy
             _session.Client.SendPacket(String.Format("rsfi {0} {1} {2} {3} {4} {5}", 1, 1, 4, 9, 4, 9));
+            _session.CurrentMap.QueuePacket(new KeyValuePair<string, ClientSession>(_session.Character.GenerateIn(), _session));
 
             _session.Client.SendPacket("rank_cool 0 0 18000");//TODO add rank cool
 
