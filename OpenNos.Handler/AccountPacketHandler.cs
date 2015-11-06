@@ -177,6 +177,7 @@ namespace OpenNos.Handler
                 Authority = _session.Account.Authority,
                 LastPulse = 0,
                 Invisible = 0,
+                Speed = 11,
                 ArenaWinner = 0,
                 Sp = 0,
                 SpUpgrade = 0,
@@ -211,6 +212,30 @@ namespace OpenNos.Handler
         public string f_stash_end(string packet)
         {
             //i don't know why there is this packet
+            return string.Empty;
+        }
+        [Packet("walk")]
+        public string walk(string packet)
+        {
+            string[] packetsplit = packet.Split(' ');
+
+            _session.character.MapX = Convert.ToInt16(packetsplit[2]);
+            _session.character.MapY = Convert.ToInt16(packetsplit[3]);
+            _session.CurrentMap.QueuePacket(new KeyValuePair<string, ClientSession>(_session.character.GenerateMv(_session.character.MapX, _session.character.MapY), _session));
+            _session.Client.SendPacket(_session.character.GenerateCond());
+            return string.Empty;
+        }
+        [Packet("guri")]
+        public string guri(string packet)
+        {
+            string[] packetsplit = packet.Split(' ');
+            if (packetsplit[2] == "10" && Convert.ToInt32(packetsplit[5]) >= 973 && Convert.ToInt32(packetsplit[5]) <= 999)
+            {
+
+                _session.Client.SendPacket(_session.character.GenerateEff(Convert.ToInt32(packetsplit[5]) + 4099));
+                _session.CurrentMap.QueuePacket(new KeyValuePair<string, ClientSession>(_session.character.GenerateEff(Convert.ToInt32(packetsplit[5]) + 4099), _session));
+
+            }
             return string.Empty;
         }
         [Packet("game_start")]

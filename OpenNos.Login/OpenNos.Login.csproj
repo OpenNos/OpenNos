@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\AppConfigTransform.1.0.0\build\AppConfigTransform.props" Condition="Exists('..\packages\AppConfigTransform.1.0.0\build\AppConfigTransform.props')" />
   <PropertyGroup>
     <ProjectGuid>{AB3A47F3-3B2A-484A-B768-7C6CF5C83386}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -102,11 +103,15 @@
     </Reference>
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.configuration" />
-    <Reference Include="System.Data" />
+    <Reference Include="System.Data">
+      <HintPath>..\..\..\..\..\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\System.Data.dll</HintPath>
+    </Reference>
     <Reference Include="System.Drawing" />
     <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Xml.Linq" />
-    <Reference Include="System" />
+    <Reference Include="System">
+      <HintPath>..\..\..\..\..\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\System.dll</HintPath>
+    </Reference>
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
@@ -201,6 +206,9 @@
       <ErrorText>Ce projet fait référence à des packages NuGet qui sont manquants sur cet ordinateur. Utilisez l'option de restauration des packages NuGet pour les télécharger. Pour plus d'informations, consultez http://go.microsoft.com/fwlink/?LinkID=322105. Le fichier manquant est : {0}.</ErrorText>
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\AppConfigTransforms.0.9.26\build\AppConfigTransforms.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\AppConfigTransforms.0.9.26\build\AppConfigTransforms.targets'))" />
+    <Error Condition="!Exists('..\packages\AppConfigTransform.1.0.0\build\AppConfigTransform.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\AppConfigTransform.1.0.0\build\AppConfigTransform.props'))" />
+    <Error Condition="!Exists('..\packages\AppConfigTransform.1.0.0\build\AppConfigTransform.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\AppConfigTransform.1.0.0\build\AppConfigTransform.targets'))" />
   </Target>
   <Import Project="$(SlowCheetahTargets)" Condition="Exists('$(SlowCheetahTargets)')" Label="SlowCheetah" />
+  <Import Project="..\packages\AppConfigTransform.1.0.0\build\AppConfigTransform.targets" Condition="Exists('..\packages\AppConfigTransform.1.0.0\build\AppConfigTransform.targets')" />
 </Project>

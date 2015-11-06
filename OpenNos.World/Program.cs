@@ -37,7 +37,7 @@ namespace OpenNos.World
             Console.WriteLine("===============================================================================\n"
                              + "                 WORLD SERVER VERSION 1.0.0 by OpenNos Team\n" +
                              "===============================================================================\n");
-
+          
             //initialize DB
             DataAccessHelper.Initialize();
             Logger.Log.Info(Language.Instance.GetMessageFromKey("DATABASE_HAS_BEEN_INITIALISE"));

@@ -58,13 +58,36 @@ namespace OpenNos.GameObject
 
         public int Invisible { get; set; }
 
+        public int Speed { get; set; }
+
         public int ArenaWinner { get; set; }
 
         public int SpUpgrade { get; set; }
 
+        public string GenerateEff(int effectid)
+        {
+            return String.Format("eff 1 {0} {1}", CharacterId, effectid);
+       
+        }
+
         public string GenerateFd()
         {
            return String.Format("fd {0} {1} {2} {3}", Reput, GetReputIco(), Dignite, Math.Abs(GetDigniteIco()));
+        }
+        public int SPXPLoad()
+        {
+            int[] u = new int[99];
+            u[0] = 15000;
+            u[19] = 218000;
+            for (int i = 1; i < 19; i++)
+            {
+                u[i] = u[i - 1] + 10000;
+            }
+            for (int i = 20; i < u.Length; i++)
+            {
+                u[i] = u[i - 1] + 6 * (3 * i * (i + 1) + 1);
+            }
+            return u[Level - 1];
         }
         public int XPLoad()
         {
@@ -181,13 +204,19 @@ namespace OpenNos.GameObject
 
         public string GenerateCond()
         {
-           return String.Format("cond 1 {0} 0 0 11", CharacterId);
+           return String.Format("cond 1 {0} 0 0 {1}", CharacterId,Speed);
 
         }
 
         public string GenerateExts()
         {
            return String.Format("exts 0 48 48 48"); 
+        }
+
+        public string GenerateMv(int x,int y )
+        {
+            return String.Format("mv 1 {0} {1} {2} {3}", CharacterId, x, y, Speed);
+
         }
     }
 }
