@@ -16,33 +16,40 @@ namespace OpenNos.GameObject
         #region Members
 
         private NetworkClient _client;
-        private Guid _uniqueIdentifier;
         private Account _account;
         private Character _character;
         private IDictionary<Packet, Tuple<MethodInfo, object>> _packetHandlers;
         private static EncryptionBase _encryptor;
-        private SequentialItemProcessor<byte[]> _processor;
+        private SequentialItemProcessor<byte[]> _queue;
 
+        //Packetwait Packets
         private bool _waitForPackets;
         private int _waitForPacketsAmount;
-        private IList<String> _packetQueue = new List<String>();
+        private IList<String> _waitForPacketList = new List<String>();
 
         #endregion
 
         public ClientSession(NetworkClient client)
         {
             _client = client;
+
             //absolutely new instantiated Client has no SessionId
             SessionId = 0;
+
+            //register for NetworkClient events
             _client.MessageReceived += NetworkClient_MessageReceived;
-            _processor = new SequentialItemProcessor<byte[]>(HandlePacket);
-            _processor.Start();
+
+            //start queue
+            _queue = new SequentialItemProcessor<byte[]>(HandlePacket);
+            _queue.Start();
         }
 
         #region Properties
 
         public int SessionId { get; set; }
         public int LastKeepAliveIdentity { get; set; }
+
+        public Map CurrentMap { get; set; }
 
         public IDictionary<Packet, Tuple<MethodInfo, object>> Handlers
         {
@@ -73,7 +80,7 @@ namespace OpenNos.GameObject
                 _account = value;
             }
         }
-        public Character character
+        public Character Character
         {
             get
             {
@@ -96,10 +103,15 @@ namespace OpenNos.GameObject
             }
         }
 
-        public Map CurrentMap { get; set; }
-
         #endregion
 
+        #region Methods
+
+        /// <summary>
+        /// This will be triggered when the underlying NetworkCleint receives a packet.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void NetworkClient_MessageReceived(object sender, MessageEventArgs e)
         {
             var message = e.Message as ScsRawDataMessage;
@@ -108,7 +120,7 @@ namespace OpenNos.GameObject
                 return;
             }
 
-            _processor.EnqueueMessage(message.MessageData);
+            _queue.EnqueueMessage(message.MessageData);
         }
 
         private void HandlePacket(byte[] packetData)
@@ -166,18 +178,18 @@ namespace OpenNos.GameObject
 
                     if (_waitForPackets)
                     {
-                        if (_packetQueue.Count != _waitForPacketsAmount - 1)
+                        if (_waitForPacketList.Count != _waitForPacketsAmount - 1)
                         {
-                            _packetQueue.Add(packet);
+                            _waitForPacketList.Add(packet);
                         }
                         else
                         {
-                            _packetQueue.Add(packet);
+                            _waitForPacketList.Add(packet);
                             _waitForPackets = false;
-                            string queuedPackets = String.Join(" ", _packetQueue.ToArray());
+                            string queuedPackets = String.Join(" ", _waitForPacketList.ToArray());
                             string header = queuedPackets.Split(' ')[1];
                             TriggerHandler(header, queuedPackets, true);
-                            _packetQueue.Clear();
+                            _waitForPacketList.Clear();
                             return;
                         }
                     }
@@ -205,9 +217,19 @@ namespace OpenNos.GameObject
             }
         }
 
+        internal void Destroy()
+        {
+            //do everything necessary before removing client, DB save, Whatever
+        }
+
         public void RegisterForMapNotification()
         {
             CurrentMap.NotifyClients += GetNotification;
+        }
+
+        public void UnregisterForMapNotification()
+        {
+            CurrentMap.NotifyClients -= GetNotification;
         }
 
         private void GetNotification(object sender, EventArgs e)
@@ -219,10 +241,9 @@ namespace OpenNos.GameObject
                 _client.SendPacket(packet.Key);
         }
 
-        public void Initialize(EncryptionBase encryptor, IList<Type> packetHandlers, Guid uniqueIdentifier)
+        public void Initialize(EncryptionBase encryptor, IList<Type> packetHandlers)
         {
             _encryptor = encryptor;
-            _uniqueIdentifier = uniqueIdentifier;
             _client.Initialize(encryptor);
 
             //dynamically create instances of packethandlers
@@ -240,7 +261,7 @@ namespace OpenNos.GameObject
                     //we need to wait for more
                     _waitForPackets = true;
                     _waitForPacketsAmount = methodInfo.Key.Amount;
-                    _packetQueue.Add(packet != String.Empty ? packet : String.Format("1 {0} ", packetHeader));
+                    _waitForPacketList.Add(packet != String.Empty ? packet : String.Format("1 {0} ", packetHeader));
                     return false;
                 }
 
@@ -279,5 +300,7 @@ namespace OpenNos.GameObject
 
             return false;
         }
+
+        #endregion
     }
 }
