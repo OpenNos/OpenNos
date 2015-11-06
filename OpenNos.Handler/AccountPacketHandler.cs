@@ -152,7 +152,7 @@ namespace OpenNos.Handler
         {
             string[] packetsplit = packet.Split(' ');
             CharacterDTO characterDTO = DAOFactory.CharacterDAO.LoadByAccount(_session.Account.AccountId).ElementAt(Convert.ToInt32(packetsplit[2]));
-            _session.character = new GameObject.Character()
+            _session.Character = new GameObject.Character()
             {
                 AccountId = characterDTO.AccountId,
                 CharacterId = characterDTO.CharacterId,
@@ -183,7 +183,7 @@ namespace OpenNos.Handler
                 SpUpgrade = 0,
             };
 
-            _session.CurrentMap = MapManager.GetMap(_session.character.Map);
+            _session.CurrentMap = MapManager.GetMap(_session.Character.Map);
             _session.RegisterForMapNotification();
             _session.Client.SendPacket("OK");
             return String.Empty;
@@ -192,8 +192,8 @@ namespace OpenNos.Handler
         public string Pulse(string packet)
         {
             string[] packetsplit = packet.Split(' ');
-            _session.character.LastPulse += 60;
-            if (Convert.ToInt32(packetsplit[2]) != _session.character.LastPulse) { _session.Client.Disconnect(); }
+            _session.Character.LastPulse += 60;
+            if (Convert.ToInt32(packetsplit[2]) != _session.Character.LastPulse) { _session.Client.Disconnect(); }
             return String.Empty;
         }
         [Packet("lbs")]
@@ -219,10 +219,10 @@ namespace OpenNos.Handler
         {
             string[] packetsplit = packet.Split(' ');
 
-            _session.character.MapX = Convert.ToInt16(packetsplit[2]);
-            _session.character.MapY = Convert.ToInt16(packetsplit[3]);
-            _session.CurrentMap.QueuePacket(new KeyValuePair<string, ClientSession>(_session.character.GenerateMv(_session.character.MapX, _session.character.MapY), _session));
-            _session.Client.SendPacket(_session.character.GenerateCond());
+            _session.Character.MapX = Convert.ToInt16(packetsplit[2]);
+            _session.Character.MapY = Convert.ToInt16(packetsplit[3]);
+            _session.CurrentMap.QueuePacket(new KeyValuePair<string, ClientSession>(_session.Character.GenerateMv(_session.Character.MapX, _session.Character.MapY), _session));
+            _session.Client.SendPacket(_session.Character.GenerateCond());
             return string.Empty;
         }
         [Packet("guri")]
@@ -232,8 +232,8 @@ namespace OpenNos.Handler
             if (packetsplit[2] == "10" && Convert.ToInt32(packetsplit[5]) >= 973 && Convert.ToInt32(packetsplit[5]) <= 999)
             {
 
-                _session.Client.SendPacket(_session.character.GenerateEff(Convert.ToInt32(packetsplit[5]) + 4099));
-                _session.CurrentMap.QueuePacket(new KeyValuePair<string, ClientSession>(_session.character.GenerateEff(Convert.ToInt32(packetsplit[5]) + 4099), _session));
+                _session.Client.SendPacket(_session.Character.GenerateEff(Convert.ToInt32(packetsplit[5]) + 4099));
+                _session.CurrentMap.QueuePacket(new KeyValuePair<string, ClientSession>(_session.Character.GenerateEff(Convert.ToInt32(packetsplit[5]) + 4099), _session));
 
             }
             return string.Empty;
@@ -241,18 +241,18 @@ namespace OpenNos.Handler
         [Packet("game_start")]
         public string StartGame(string packet)
         {
-            _session.Client.SendPacket(_session.character.GenerateTit());
-            _session.Client.SendPacket(_session.character.GenerateCInfo());
-            _session.Client.SendPacket(_session.character.GenerateFd());
+            _session.Client.SendPacket(_session.Character.GenerateTit());
+            _session.Client.SendPacket(_session.Character.GenerateCInfo());
+            _session.Client.SendPacket(_session.Character.GenerateFd());
             //TODO if first connect add _session.Client.SendPacket(String.Format("scene 40"));
-            _session.Client.SendPacket(_session.character.GenerateLev());
+            _session.Client.SendPacket(_session.Character.GenerateLev());
             //stat
-            _session.Client.SendPacket(_session.character.GenerateStat());
+            _session.Client.SendPacket(_session.Character.GenerateStat());
             //ski
-            _session.Client.SendPacket(_session.character.GenerateAt());
-            _session.Client.SendPacket(_session.character.GenerateCMap());
+            _session.Client.SendPacket(_session.Character.GenerateAt());
+            _session.Client.SendPacket(_session.Character.GenerateCMap());
             //sc
-            _session.Client.SendPacket(_session.character.GenerateCond());
+            _session.Client.SendPacket(_session.Character.GenerateCond());
             //pairy
             _session.Client.SendPacket(String.Format("rsfi {0} {1} {2} {3} {4} {5}", 1, 1, 4, 9, 4, 9));
 
@@ -260,7 +260,7 @@ namespace OpenNos.Handler
 
             _session.Client.SendPacket("scr 0 0 0 0 0 0");
             //bn
-            _session.Client.SendPacket(_session.character.GenerateExts());
+            _session.Client.SendPacket(_session.Character.GenerateExts());
             
             //gidx
             _session.Client.SendPacket("mlinfo 3800 2000 100 0 0 10 0 Mélodie^du^printemps Bienvenue");
@@ -269,7 +269,7 @@ namespace OpenNos.Handler
             //sc_p pet
             _session.Client.SendPacket("pinit 0");
             _session.Client.SendPacket("zzim");
-            _session.Client.SendPacket(String.Format("twk 1 {0} {1} {2} shtmxpdlfeoqkr", _session.character.CharacterId, _session.Account.Name, _session.character.Name));
+            _session.Client.SendPacket(String.Format("twk 1 {0} {1} {2} shtmxpdlfeoqkr", _session.Character.CharacterId, _session.Account.Name, _session.Character.Name));
 
 
             _session.CurrentMap.QueuePacket(new KeyValuePair<string, ClientSession>(String.Format("info INFORMATION FROM {0}", _session.Client.ClientId), _session));

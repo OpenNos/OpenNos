@@ -16,7 +16,8 @@ namespace OpenNos.GameObject
 
         public static void Initialize()
         {
-            try {
+            try
+            {
                 DirectoryInfo dir = new DirectoryInfo(@"./Resource/zones");
                 FileInfo[] files = dir.GetFiles();
                 foreach (FileInfo file in files)
@@ -28,8 +29,8 @@ namespace OpenNos.GameObject
                 Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("MAP_LOADED"), files.Length));
             }
             catch (Exception ex) { Logger.Log.Error(ex.Message); }
-             
-            }
+
+        }
 
         public static Map GetMap(short id)
         {

@@ -35,7 +35,7 @@ namespace OpenNos.GameObject
         private IList<Type> _packetHandlers;
         private EncryptorT _encryptor;
         private IDictionary<String, DateTime> _connectionLog;
-        private ConcurrentDictionary<Guid, ClientSession> _sessions = new ConcurrentDictionary<Guid, ClientSession>();
+        private ConcurrentDictionary<long, ClientSession> _sessions = new ConcurrentDictionary<long, ClientSession>();
 
         #endregion
 
@@ -66,29 +66,32 @@ namespace OpenNos.GameObject
             Logger.Log.Info(Language.Instance.GetMessageFromKey("NEW_CONNECT") + e.Client.ClientId);
             NetworkClient customClient = e.Client as NetworkClient;
 
-            if(!CheckConnectionLog(customClient))
+            if (!CheckConnectionLog(customClient))
             {
                 Logger.Log.WarnFormat(Language.Instance.GetMessageFromKey("FORCED_DISCONNECT"), customClient.ClientId);
                 customClient.Disconnect();
                 return;
             }
 
-            Guid guid = Guid.NewGuid();      
             ClientSession session = new ClientSession(customClient);
-            session.Initialize(_encryptor, _packetHandlers, guid);
-            if (!_sessions.TryAdd(guid, session))
+            session.Initialize(_encryptor, _packetHandlers);
+            if (!_sessions.TryAdd(customClient.ClientId, session))
             {
                 Logger.Log.WarnFormat(Language.Instance.GetMessageFromKey("FORCED_DISCONNECT"), customClient.ClientId);
                 customClient.Disconnect();
-                _sessions.TryRemove(guid, out session);
+                _sessions.TryRemove(customClient.ClientId, out session);
                 return;
             };
         }
 
         void Server_ClientDisconnected(object sender, ServerClientEventArgs e)
         {
+            ClientSession session;
+            _sessions.TryRemove(e.Client.ClientId, out session);
+            session.Destroy();
             e.Client.Disconnect();
             Logger.Log.Info(Language.Instance.GetMessageFromKey("DISCONNECT") + e.Client.ClientId);
+            session = null;
         }
 
         #endregion
@@ -114,7 +117,7 @@ namespace OpenNos.GameObject
             }
             else
             {
-                ConnectionLog.Add(client.RemoteEndPoint.ToString(),DateTime.Now);
+                ConnectionLog.Add(client.RemoteEndPoint.ToString(), DateTime.Now);
                 return true;
             }
         }
