@@ -33,10 +33,21 @@ namespace OpenNos.Domain
     }
     public enum HairColorType : byte
     {
-
+        DarkPurple = 0,
+        Yello = 1,
+        Blue = 2,
+        Purple = 3,
+        Orange = 4,
+        Brown = 5,
+        Green = 6,
+        Black = 7,
+        Grey = 8,
+        Red = 9
+      
     }
     public enum HairStyleType : byte
     {
-
+        HairTypeA = 0,
+        HairTypeB = 1           
     }
 }
