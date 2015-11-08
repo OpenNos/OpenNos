@@ -86,7 +86,7 @@ namespace OpenNos.GameObject
         }
         public double JobXPLoad()
         {
-            if(Class == 0)
+            if(Class == (byte)ClassType.Adventurer)
                 return ServersData.FirstJobXPData[JobLevel - 1];
             else
                 return ServersData.SecondJobXPData[JobLevel - 1];
@@ -127,7 +127,7 @@ namespace OpenNos.GameObject
 
         public string GenerateTit()
         {
-           return String.Format("tit {0} {1}", Language.Instance.GetMessageFromKey(Class == 0 ? "ADVENTURER" : Class == 1 ? "SWORDMAN" : Class == 2 ? "ARCHER" : "MAGICIAN"), Name);
+           return String.Format("tit {0} {1}", Language.Instance.GetMessageFromKey(Class == (byte)ClassType.Adventurer ? "ADVENTURER" : Class == (byte)ClassType.Swordman ? "SWORDMAN" : Class == (byte)ClassType.Archer ? "ARCHER" : "MAGICIAN"), Name);
             
         }
 
@@ -175,7 +175,7 @@ namespace OpenNos.GameObject
 
         public string GenerateIn()
         {
-            return String.Format("in 1 {0} - {1} {2} {3} {4} {5} {6} {7} {8} {9} -1.-1.-1.-1.-1.-1.-1.-1 {10} {11} {12} -1 0 0 0 0 0 0 0 0 -1 - {13} 0 0 0 0 {14} 0 {15} 0 10", Name, CharacterId, MapX, MapY, Direction, (Authority == 2 ? 2 : 0), Gender, HairStyle, HairColor, Class, 100, 100, Sp, (GetDigniteIco() == 1) ? GetReputIco() : -GetDigniteIco(), ArenaWinner);
+            return String.Format("in 1 {0} - {1} {2} {3} {4} {5} {6} {7} {8} {9} -1.-1.-1.-1.-1.-1.-1.-1 {10} {11} {12} -1 0 0 0 0 0 0 0 0 -1 - {13} 0 0 0 0 {14} 0 {15} 0 10", Name, CharacterId, MapX, MapY, Direction, (Authority == 2 ? 2 : 0), Gender, HairStyle, HairColor, Class, 100, 100, Sp, (GetDigniteIco() == 1) ? GetReputIco() : -GetDigniteIco(), ArenaWinner,0);
           
         }
     }
