@@ -41,6 +41,7 @@ namespace OpenNos.World
             //initialize DB
             DataAccessHelper.Initialize();
             Logger.Log.Info(Language.Instance.GetMessageFromKey("DATABASE_HAS_BEEN_INITIALISE"));
+            
             //initialilize maps
             MapManager.Initialize();
 
