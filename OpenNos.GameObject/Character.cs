@@ -76,74 +76,20 @@ namespace OpenNos.GameObject
         {
            return String.Format("fd {0} {1} {2} {3}", Reput, GetReputIco(), Dignite, Math.Abs(GetDigniteIco()));
         }
-        public int SPXPLoad()
-        {
-            int[] u = new int[99];
-            u[0] = 15000;
-            u[19] = 218000;
-            for (int i = 1; i < 19; i++)
-            {
-                u[i] = u[i - 1] + 10000;
-            }
-            for (int i = 20; i < u.Length; i++)
-            {
-                u[i] = u[i - 1] + 6 * (3 * i * (i + 1) + 1);
-            }
-            return u[Level - 1];
+        public double SPXPLoad()
+        {           
+            return ServersData.SpXPData[Level - 1];
         }
-        public int XPLoad()
-        {
-           
-            int[] u = new int[102];
-            int[] v = new int[102];
-            double var = 1;
-            v[0] = 540;
-            v[1] = 960;
-            u[0] = 300;
-            for (int i = 2; i < v.Length; i++)
-            {
-                v[i] = v[i - 1] + 420 + 120 * (i - 1);
-            }
-            for (int i = 1; i < u.Length; i++)
-            {
-                if (i == 14) var = 6 / 3;
-                else if (i == 39) var = (double)(19 / (double)3);
-                else if (i == 59) var = (double)(70 / (double)3);
-                else if (i == 79) var = (double)(250 / (double)3);
-
-                u[i] = Convert.ToInt32(u[i - 1] + var * v[i - 1]);
-                //Console.WriteLine("lvl " + (i) + ":" + u[i - 1]);
-            }
-            return u[Level - 1];
+        public double XPLoad()
+        {   
+            return ServersData.XPData[JobLevel - 1];
         }
-
-        public int JobXPLoad()
+        public double JobXPLoad()
         {
-            int[] firstJob = new int[21];
-            int[] secondJob = new int[81];
-            firstJob[0] = 2200;
-            secondJob[0] = 17600;
-            for (int i = 1; i < firstJob.Length; i++)
-            {
-                firstJob[i] = firstJob[i - 1] + 700;
-            }
-            if (Class == 0)
-            {
-                return firstJob[JobLevel - 1];
-            }
+            if(Class == 0)
+                return ServersData.FirstJobXPData[JobLevel - 1];
             else
-            {
-                for (int i = 1; i < secondJob.Length; i++)
-                {
-                    int var = 400;
-                    if (i > 3)
-                        var = 4500;
-
-                    secondJob[i] = secondJob[i - 1] + var;
-                }
-            }
-            return secondJob[JobLevel - 1];
-
+                return ServersData.SecondJobXPData[JobLevel - 1];
         }
         public string GenerateLev()
         {
