@@ -1,21 +1,71 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using OpenNos.Domain;
+using System;
 
 namespace OpenNos.GameObject
 {
-    class ServersData
+    public class ServersData
     {
         private static double[] xpData = null;
         private static double[] firstjobxpData = null;
         private static double[] secondjobxpData = null;
         private static double[] spxpData = null;
+        private static int[] speedData = null;
+        private static int[,] HP = null;
+        private static int[,] MP = null;
+        private void LoadHpData()
+        {
+            HP = new int[4,100];
+            //Adventurer HP
+            for (int i=1;i<HP.GetLength(1);i++)
+            {
+                HP[(int)ClassType.Adventurer, i] = (int)(1 / 2.0 * i * i + 31 / 2.0 * i + 205);
+            }
+            //Swordman HP
+            HP[(int)ClassType.Swordman, 15] = 905;
+            for (int i = 16; i < HP.GetLength(1); i++)
+            {
+                HP[(int)ClassType.Swordman, i] = HP[(int)ClassType.Swordman, i-1] + 4 * (i+4) + 3;
+            }
 
+        }
+        private void LoadMpData()
+        {
+            //ADVENTURER MP
+            MP = new int[4, 101];
+           
+           int U0 = 9;
+            int U1 = 10;
+            MP[(int)ClassType.Adventurer, 0] = 60;
+            MP[(int)ClassType.Adventurer, 1] = 69;
+            MP[(int)ClassType.Adventurer, 2] = 78;
+            MP[(int)ClassType.Adventurer, 3] = 87;
+            MP[(int)ClassType.Adventurer, 4] = 97;
 
-        private ServersData() {
+            for (int i = 5; i < MP.GetLength(1); i+=4)
+            {
+                MP[(int)ClassType.Adventurer, i] = MP[(int)ClassType.Adventurer, i-1] + (U0+i/2);
+                MP[(int)ClassType.Adventurer, i+1] = MP[(int)ClassType.Adventurer, i] + (U0 + i/2);
+                MP[(int)ClassType.Adventurer, i+2] = MP[(int)ClassType.Adventurer, i+1] + (U0 + i/2);
+                MP[(int)ClassType.Adventurer, i+3] = MP[(int)ClassType.Adventurer, i+2] + (U1 + i/2);
+            }
+            //SWORDMAN MP
+            for (int i = 15; i < MP.GetLength(1); i++)
+            {
+                MP[(int)ClassType.Swordman, i] = MP[(int)ClassType.Adventurer, i];
+            }
 
+        }
+        private void LoadSpeedData()
+        {
+            speedData = new int[4];
+            speedData[(int)ClassType.Archer] = 12;
+            speedData[(int)ClassType.Adventurer] = 11;
+            speedData[(int)ClassType.Swordman] = 11;
+            speedData[(int)ClassType.Magician] = 10;
+        }
+        private void LoadJobXpData()
+        {
+            //Load JobData
             firstjobxpData = new double[21];
             secondjobxpData = new double[81];
             firstjobxpData[0] = 2200;
@@ -24,18 +74,21 @@ namespace OpenNos.GameObject
             {
                 firstjobxpData[i] = firstjobxpData[i - 1] + 700;
             }
-            
+
             for (int i = 1; i < secondjobxpData.Length; i++)
             {
-                    int var2 = 400;
-                    if (i > 3)
-                        var2 = 4500;
-                    if (i > 40)
-                        var2 = 15000;
-                    secondjobxpData[i] = secondjobxpData[i - 1] + var2;
-                
-            }
+                int var2 = 400;
+                if (i > 3)
+                    var2 = 4500;
+                if (i > 40)
+                    var2 = 15000;
+                secondjobxpData[i] = secondjobxpData[i - 1] + var2;
 
+            }
+        }
+        private void LoadSpXpData()
+        {
+            //Load SpData
             spxpData = new double[99];
             spxpData[0] = 15000;
             spxpData[19] = 218000;
@@ -47,8 +100,11 @@ namespace OpenNos.GameObject
             {
                 spxpData[i] = spxpData[i - 1] + 6 * (3 * i * (i + 1) + 1);
             }
-
-           xpData = new double[100];
+        }
+        private void LoadXpData()
+            {
+            //Load XpData
+            xpData = new double[100];
             double[] v = new double[100];
             double var = 1;
             v[0] = 540;
@@ -82,7 +138,38 @@ namespace OpenNos.GameObject
                 //Console.WriteLine("lvl " + (i) + ":" + u[i - 1]);
             }
         }
+        private ServersData() {
 
+            LoadSpeedData();
+            LoadJobXpData();
+            LoadSpXpData();
+            LoadHpData();
+            LoadMpData();
+
+        }
+        public static int[,] MPData
+        {
+            get
+            {
+                if (MP == null)
+                {
+                    new ServersData();
+                }
+                return MP;
+            }
+        }
+
+        public static int[,] HPData
+        {
+            get
+            {
+                if (HP == null)
+                {
+                    new ServersData();
+                }
+                return HP;
+            }
+        }
         public static double[] XPData
         {
             get
@@ -125,6 +212,17 @@ namespace OpenNos.GameObject
                     new ServersData();
                 }
                 return spxpData;
+            }
+        }
+        public static int[] SpeedData
+        {
+            get
+            {
+                if (speedData == null)
+                {
+                    new ServersData();
+                }
+                return speedData;
             }
         }
 

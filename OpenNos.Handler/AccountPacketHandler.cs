@@ -178,11 +178,11 @@ namespace OpenNos.Handler
                 Authority = _session.Account.Authority,
                 LastPulse = 0,
                 Invisible = 0,
-                Speed = 11,
                 ArenaWinner = 0,
                 Sp = 0,
                 SpUpgrade = 0,
-                Direction = 0
+                Direction = 0,
+                Speed = ServersData.SpeedData[characterDTO.Class]
             };
 
             _session.CurrentMap = MapManager.GetMap(_session.Character.Map);

@@ -127,7 +127,7 @@ namespace OpenNos.GameObject
 
         public string GenerateTit()
         {
-           return String.Format("tit {0} {1}", Language.Instance.GetMessageFromKey(Class == (byte)ClassType.Adventurer ? "ADVENTURER" : Class == (byte)ClassType.Swordman ? "SWORDMAN" : Class == (byte)ClassType.Archer ? "ARCHER" : "MAGICIAN"), Name);
+            return String.Format("tit {0} {1}", Language.Instance.GetMessageFromKey(Class == (byte)ClassType.Adventurer ? ClassType.Adventurer.ToString().ToUpper() : Class == (byte)ClassType.Swordman ? ClassType.Swordman.ToString().ToUpper() : Class == (byte)ClassType.Archer ? ClassType.Archer.ToString().ToUpper() : ClassType.Magician.ToString().ToUpper()), Name);
             
         }
 
@@ -152,7 +152,7 @@ namespace OpenNos.GameObject
 
         public string GenerateCond()
         {
-           return String.Format("cond 1 {0} 0 0 {1}", CharacterId,Speed);
+           return String.Format("cond 1 {0} 0 0 {1}", CharacterId, Speed);
 
         }
 
