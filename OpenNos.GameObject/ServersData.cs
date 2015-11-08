@@ -36,7 +36,7 @@ namespace OpenNos.GameObject
                 
             }
 
-            double[] spxpData = new double[99];
+            spxpData = new double[99];
             spxpData[0] = 15000;
             spxpData[19] = 218000;
             for (int i = 1; i < 19; i++)
@@ -48,7 +48,7 @@ namespace OpenNos.GameObject
                 spxpData[i] = spxpData[i - 1] + 6 * (3 * i * (i + 1) + 1);
             }
 
-            double[] xpData = new double[100];
+           xpData = new double[100];
             double[] v = new double[100];
             double var = 1;
             v[0] = 540;

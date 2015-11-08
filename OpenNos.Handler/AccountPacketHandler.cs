@@ -15,6 +15,7 @@ using OpenNos.Core;
 using OpenNos.Core.Communication.Scs.Communication.Messages;
 using OpenNos.DAL;
 using OpenNos.Data;
+using OpenNos.Domain;
 using OpenNos.GameObject;
 using System;
 using System.Collections.Generic;
@@ -63,7 +64,7 @@ namespace OpenNos.Handler
                 {
                     CharacterDTO newCharacter = new CharacterDTO()
                     {
-                        Class = 0,
+                        Class = (byte)ClassType.Adventurer,
                         Gender = Convert.ToByte(packetsplit[4]),
                         Gold = 10000,
                         HairColor = Convert.ToByte(packetsplit[6]),

@@ -19,11 +19,24 @@ using System.Threading.Tasks;
 
 namespace OpenNos.Domain
 {
-    public enum ClassType : short
+    public enum ClassType : byte
     {
         Adventurer = 0,
         Swordman = 1,
         Archer = 2,
         Magician = 3
+    }
+    public enum GenderType : byte
+    {
+        Male = 0,
+        Female = 1
+    }
+    public enum HairColorType : byte
+    {
+
+    }
+    public enum HairStyleType : byte
+    {
+
     }
 }
