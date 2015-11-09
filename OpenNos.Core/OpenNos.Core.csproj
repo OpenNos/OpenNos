@@ -113,7 +113,6 @@
     <Compile Include="Networking\NetworkClient.cs" />
     <Compile Include="Language.cs" />
     <Compile Include="PacketFactory.cs" />
-    <Compile Include="ServerConfig.cs" />
     <Compile Include="EncryptionBase.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="PacketAttribute.cs" />
