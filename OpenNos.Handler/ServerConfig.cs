@@ -8,7 +8,7 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Xml;
 
-namespace OpenNos.Core
+namespace OpenNos.Handler
 {
 
     public class ServerConfig : IConfigurationSectionHandler
