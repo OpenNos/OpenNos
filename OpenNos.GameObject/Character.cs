@@ -76,14 +76,26 @@ namespace OpenNos.GameObject
         {
            return String.Format("fd {0} {1} {2} {3}", Reput, GetReputIco(), Dignite, Math.Abs(GetDigniteIco()));
         }
+        public double HPLoad()
+        {
+            return ServersData.HPData[Class,Level];
+        }
+
+        public double MPLoad()
+        {
+            return ServersData.MPData[Class,Level];
+        }
+
         public double SPXPLoad()
         {           
             return ServersData.SpXPData[JobLevel - 1];
         }
+
         public double XPLoad()
         {   
             return ServersData.XPData[Level - 1];
         }
+
         public double JobXPLoad()
         {
             if(Class == (byte)ClassType.Adventurer)
@@ -91,14 +103,17 @@ namespace OpenNos.GameObject
             else
                 return ServersData.SecondJobXPData[JobLevel - 1];
         }
+
         public string GenerateLev()
         {
            return String.Format("lev {0} {1} {2} {3} {4} {5} 0 2", Level, LevelXp, JobLevel, JobLevelXp,XPLoad(),JobXPLoad());
         }
+
         public string GenerateCInfo()
         {
            return String.Format("c_info {0} - {1} {2} - {3} {4} {5} {6} {7} {8} {9} {10} {11} {12} {13} {14} {15} ", Name, -1, -1, CharacterId, Authority, Gender, HairStyle, HairColor, Class, GetReputIco(), 0, Sp, Invisible, 0, SpUpgrade, ArenaWinner);
         }
+
         public int GetDigniteIco()
         {
             int icoDignite = 1;
@@ -116,6 +131,7 @@ namespace OpenNos.GameObject
             return icoDignite;
 
         }
+
         public int GetReputIco()
         {
             return Convert.ToInt64(Reput) <= 100 ? 1 : Convert.ToInt64(Reput) <= 300 ? 2 : Convert.ToInt64(Reput) <= 500 ? 3 : Convert.ToInt64(Reput) <= 1000 ? 4 : Convert.ToInt64(Reput) <= 1500 ? 5 : Convert.ToInt64(Reput) <= 2000 ? 6 : Convert.ToInt64(Reput) <= 4500 ? 7 :
@@ -134,7 +150,7 @@ namespace OpenNos.GameObject
         public string GenerateStat()
         {
             //TODO add max HP MP
-            return String.Format("stat {0} {1} {2} {3} 0 1024", Hp, Hp, Mp, Mp);
+            return String.Format("stat {0} {1} {2} {3} 0 1024", Hp, HPLoad(), Mp, MPLoad());
            
         }
 
