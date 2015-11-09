@@ -5,26 +5,135 @@ namespace OpenNos.GameObject
 {
     public class ServersData
     {
+        private ServersData()
+        {
+
+            LoadSpeedData();
+            LoadJobXpData();
+            LoadSpXpData();
+            LoadXpData();
+            LoadHpData();
+            LoadMpData();
+            LoadStats();
+        }
+        //same for all class
         private static double[] xpData = null;
         private static double[] firstjobxpData = null;
         private static double[] secondjobxpData = null;
         private static double[] spxpData = null;
+        //difference between class
+        private static int[,] minHit = null;
+        private static int[,] maxHit = null;
+        private static int[,] hitRate = null;
+        private static int[,] criticalHitRate = null;
+        private static int[,] criticalHit = null;
+        private static int[,] minDist = null;
+        private static int[,] maxDist = null;
+        private static int[,] distRate = null;
+        private static int[,] criticalDistRate = null;
+        private static int[,] criticalDist = null;
+        private static int[,] hitDef = null;
+        private static int[,] hitDodge = null;
+        private static int[,] DistDef = null;
+        private static int[,] DistDodge = null;
+        private static int[,] magicalDef = null;
+        //STAT DATA
         private static int[] speedData = null;
         private static int[,] HP = null;
         private static int[,] MP = null;
+        private void LoadStats()
+        {
+            minHit = new int[4, 99];
+            maxHit = new int[4, 99];
+            hitRate = new int[4, 99];
+            criticalHitRate = new int[4, 99];
+            criticalHit = new int[4, 99];
+            minDist = new int[4, 99];
+            maxDist = new int[4, 99];
+            distRate = new int[4, 99];
+            criticalDistRate = new int[4, 99];
+            criticalDist = new int[4, 99];
+            hitDef = new int[4, 99];
+            hitDodge = new int[4, 99];
+            DistDef = new int[4, 99];
+            DistDodge = new int[4, 99];
+            magicalDef = new int[4, 99];
+
+           
+            for (int i = 0; i < 99; i++)
+            {
+                //ADVENTURER
+                minHit[(int)ClassType.Adventurer, i] = i + 9;
+                maxHit[(int)ClassType.Adventurer, i] = i + 9;
+                hitRate[(int)ClassType.Adventurer, i] = i + 9;
+                criticalHitRate[(int)ClassType.Adventurer, i] = 0;
+                criticalHit[(int)ClassType.Adventurer, i] = 0;
+                minDist[(int)ClassType.Adventurer, i] = i + 9;
+                maxDist[(int)ClassType.Adventurer, i] = i + 9;
+                distRate[(int)ClassType.Adventurer, i] = (i + 9) * 2;
+                criticalDistRate[(int)ClassType.Adventurer, i] = 0;
+                criticalDist[(int)ClassType.Adventurer, i] = 0;
+                hitDef[(int)ClassType.Adventurer, i]  = (int)(i + 9) / 2;
+                hitDodge[(int)ClassType.Adventurer, i] = i + 9;
+                DistDef[(int)ClassType.Adventurer, i] = (int)(i + 9) / 2;
+                DistDodge[(int)ClassType.Adventurer, i] = i + 9;
+                magicalDef[(int)ClassType.Adventurer, i] = (int)(i + 9) / 2;
+
+                //SWORDMAN
+                minHit[(int)ClassType.Swordman, i] = i +22;
+                maxHit[(int)ClassType.Swordman, i] = i + 22;
+                hitRate[(int)ClassType.Swordman, i] = i + 27;
+                criticalHitRate[(int)ClassType.Swordman, i] = 0;
+                criticalHit[(int)ClassType.Swordman, i] = 0;
+                minDist[(int)ClassType.Swordman, i] = i -3;
+                maxDist[(int)ClassType.Swordman, i] = i -3;
+                distRate[(int)ClassType.Swordman, i] = 2 * i - 6;
+                criticalDistRate[(int)ClassType.Swordman, i] = 0;
+                criticalDist[(int)ClassType.Swordman, i] = 0;
+                hitDef[(int)ClassType.Swordman, i] = i+2;
+                hitDodge[(int)ClassType.Swordman, i] = i -3;
+                DistDef[(int)ClassType.Swordman, i] = (i+1)/2-4;
+                DistDodge[(int)ClassType.Swordman, i] = i + -3;
+                magicalDef[(int)ClassType.Swordman, i] = i / 2 -3;
+
+                //MAGICIAN
+                minHit[(int)ClassType.Magician, i] = 9+i*2;
+                maxHit[(int)ClassType.Magician, i] = 9 + i * 2;
+                hitRate[(int)ClassType.Magician, i] = 0;
+                criticalHitRate[(int)ClassType.Magician, i] = 0;
+                criticalHit[(int)ClassType.Magician, i] = 0;
+                minDist[(int)ClassType.Magician, i] = 2*i - 1;
+                maxDist[(int)ClassType.Magician, i] = 2 * i - 1;
+                distRate[(int)ClassType.Magician, i] = (2 * i - 1)*2;
+                criticalDistRate[(int)ClassType.Magician, i] = 0;
+                criticalDist[(int)ClassType.Magician, i] = 0;
+                hitDef[(int)ClassType.Magician, i] = (i + 1)/2+5;
+                hitDodge[(int)ClassType.Magician, i] = 25+i;
+                DistDef[(int)ClassType.Magician, i] = (i + 1) / 2 - 4;
+                DistDodge[(int)ClassType.Magician, i] = 19 + i;
+                magicalDef[(int)ClassType.Magician, i] = i+4;
+
+                //ARCHER
+   
+            }
+        }
         private void LoadHpData()
         {
-            HP = new int[4,100];
+            HP = new int[4, 100];
             //Adventurer HP
-            for (int i=1;i<HP.GetLength(1);i++)
+            for (int i = 1; i < HP.GetLength(1); i++)
             {
                 HP[(int)ClassType.Adventurer, i] = (int)(1 / 2.0 * i * i + 31 / 2.0 * i + 205);
             }
+
             //Swordman HP
-            HP[(int)ClassType.Swordman, 15] = 905;
+            for (int i = 0; i < 16; i++)
+            {
+                HP[(int)ClassType.Swordman, i] = 905;
+            }
             for (int i = 16; i < HP.GetLength(1); i++)
             {
-                HP[(int)ClassType.Swordman, i] = HP[(int)ClassType.Swordman, i-1] + 4 * (i+4) + 3;
+                HP[(int)ClassType.Swordman, i] = HP[(int)ClassType.Swordman, i - 1] + 4 * (i + 4) + 3;
             }
 
         }
@@ -32,8 +141,8 @@ namespace OpenNos.GameObject
         {
             //ADVENTURER MP
             MP = new int[4, 101];
-           
-           int U0 = 9;
+
+            int U0 = 9;
             int U1 = 10;
             MP[(int)ClassType.Adventurer, 0] = 60;
             MP[(int)ClassType.Adventurer, 1] = 69;
@@ -41,12 +150,12 @@ namespace OpenNos.GameObject
             MP[(int)ClassType.Adventurer, 3] = 87;
             MP[(int)ClassType.Adventurer, 4] = 97;
 
-            for (int i = 5; i < MP.GetLength(1); i+=4)
+            for (int i = 5; i < MP.GetLength(1); i += 4)
             {
-                MP[(int)ClassType.Adventurer, i] = MP[(int)ClassType.Adventurer, i-1] + (U0+i/2);
-                MP[(int)ClassType.Adventurer, i+1] = MP[(int)ClassType.Adventurer, i] + (U0 + i/2);
-                MP[(int)ClassType.Adventurer, i+2] = MP[(int)ClassType.Adventurer, i+1] + (U0 + i/2);
-                MP[(int)ClassType.Adventurer, i+3] = MP[(int)ClassType.Adventurer, i+2] + (U1 + i/2);
+                MP[(int)ClassType.Adventurer, i] = MP[(int)ClassType.Adventurer, i - 1] + (U0 + i / 2);
+                MP[(int)ClassType.Adventurer, i + 1] = MP[(int)ClassType.Adventurer, i] + (U0 + i / 2);
+                MP[(int)ClassType.Adventurer, i + 2] = MP[(int)ClassType.Adventurer, i + 1] + (U0 + i / 2);
+                MP[(int)ClassType.Adventurer, i + 3] = MP[(int)ClassType.Adventurer, i + 2] + (U1 + i / 2);
             }
             //SWORDMAN MP
             for (int i = 15; i < MP.GetLength(1); i++)
@@ -102,7 +211,7 @@ namespace OpenNos.GameObject
             }
         }
         private void LoadXpData()
-            {
+        {
             //Load XpData
             xpData = new double[100];
             double[] v = new double[100];
@@ -117,6 +226,7 @@ namespace OpenNos.GameObject
             for (int i = 1; i < xpData.Length; i++)
             {
                 if (i < 79)
+
                 {
 
                     if (i == 14) var = 6 / 3;
@@ -138,16 +248,6 @@ namespace OpenNos.GameObject
                 //Console.WriteLine("lvl " + (i) + ":" + u[i - 1]);
             }
         }
-        private ServersData() {
-
-            LoadSpeedData();
-            LoadJobXpData();
-            LoadSpXpData();
-            LoadXpData();
-            LoadHpData();
-            LoadMpData();
-
-        }
         public static int[,] MPData
         {
             get
@@ -159,7 +259,6 @@ namespace OpenNos.GameObject
                 return MP;
             }
         }
-
         public static int[,] HPData
         {
             get
@@ -171,6 +270,19 @@ namespace OpenNos.GameObject
                 return HP;
             }
         }
+        public static int[] SpeedData
+        {
+            get
+            {
+                if (speedData == null)
+                {
+                    new ServersData();
+                }
+                return speedData;
+            }
+        }
+
+        //XP DATA
         public static double[] XPData
         {
             get
@@ -213,17 +325,6 @@ namespace OpenNos.GameObject
                     new ServersData();
                 }
                 return spxpData;
-            }
-        }
-        public static int[] SpeedData
-        {
-            get
-            {
-                if (speedData == null)
-                {
-                    new ServersData();
-                }
-                return speedData;
             }
         }
 
