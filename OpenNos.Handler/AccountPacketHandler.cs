@@ -152,7 +152,7 @@ namespace OpenNos.Handler
         public string SelectCharacter(string packet)
         {
             string[] packetsplit = packet.Split(' ');
-            CharacterDTO characterDTO = DAOFactory.CharacterDAO.LoadByAccount(_session.Account.AccountId).ElementAt(Convert.ToInt32(packetsplit[2]));
+            CharacterDTO characterDTO = DAOFactory.CharacterDAO.LoadBySlot(_session.Account.AccountId, Convert.ToByte(packetsplit[2]));
             _session.Character = new GameObject.Character()
             {
                 AccountId = characterDTO.AccountId,

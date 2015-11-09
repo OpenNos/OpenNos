@@ -143,6 +143,7 @@ namespace OpenNos.GameObject
             LoadSpeedData();
             LoadJobXpData();
             LoadSpXpData();
+            LoadXpData();
             LoadHpData();
             LoadMpData();
 
