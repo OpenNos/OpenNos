@@ -79,7 +79,7 @@ namespace OpenNos.DAL.EF.MySQL
                 }
             }
         }
-
+       
         public CharacterDTO LoadById(long characterId)
         {
             using (var context = DataAccessHelper.CreateContext())

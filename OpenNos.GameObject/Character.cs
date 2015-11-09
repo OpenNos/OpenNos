@@ -78,11 +78,11 @@ namespace OpenNos.GameObject
         }
         public double SPXPLoad()
         {           
-            return ServersData.SpXPData[Level - 1];
+            return ServersData.SpXPData[JobLevel - 1];
         }
         public double XPLoad()
         {   
-            return ServersData.XPData[JobLevel - 1];
+            return ServersData.XPData[Level - 1];
         }
         public double JobXPLoad()
         {

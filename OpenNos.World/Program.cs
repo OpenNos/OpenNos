@@ -44,8 +44,7 @@ namespace OpenNos.World
             
             //initialilize maps
             MapManager.Initialize();
-            for (int i = 0; i < ServersData.HPData.GetLength(1);i++)
-                Console.WriteLine("LVL :" + i + ":" + ServersData.HPData[1, i]);
+   
             string ip = System.Configuration.ConfigurationManager.AppSettings["WorldIp"];
             int port = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["WorldPort"]);
             NetworkManager<WorldEncryption> networkManager = new NetworkManager<WorldEncryption>(ip, port, handlers, true);
