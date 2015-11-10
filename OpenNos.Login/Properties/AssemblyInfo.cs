@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 [assembly: Debuggable(DebuggableAttribute.DebuggingModes.Default | DebuggableAttribute.DebuggingModes.DisableOptimizations | DebuggableAttribute.DebuggingModes.IgnoreSymbolStoreSequencePoints | DebuggableAttribute.DebuggingModes.EnableEditAndContinue)]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyDescription("")]
-[assembly: AssemblyFileVersion("1.0.0.0")]
+[assembly: AssemblyFileVersion("1.0.1.0")]
 [assembly: AssemblyProduct("LoginServer")]
 [assembly: AssemblyTitle("LoginServer")]
 [assembly: AssemblyTrademark("")]
