@@ -18,6 +18,7 @@ using OpenNos.GameObject;
 using OpenNos.Handler;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Reflection;
 
 namespace OpenNos.World
@@ -32,11 +33,12 @@ namespace OpenNos.World
 
             //initialize Logger
             Logger.InitializeLogger(LogManager.GetLogger(typeof(Program)));
-
-            Console.Title = "OpenNos World Server v1.0.0";
-            Console.WriteLine("===============================================================================\n"
-                             + "                 WORLD SERVER VERSION 1.0.0 by OpenNos Team\n" +
-                             "===============================================================================\n");
+            Assembly assembly = Assembly.GetExecutingAssembly();
+            FileVersionInfo fileVersionInfo = FileVersionInfo.GetVersionInfo(assembly.Location);
+            Console.Title = String.Format("OpenNos World Server v{0}", fileVersionInfo.ProductVersion);
+            Console.WriteLine(String.Format("===============================================================================\n"
+                             + "                 WORLD SERVER VERSION {0} by OpenNos Team\n" +
+                             "===============================================================================\n", fileVersionInfo.ProductVersion));
           
             //initialize DB
             DataAccessHelper.Initialize();

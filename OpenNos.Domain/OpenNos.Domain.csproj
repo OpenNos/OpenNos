@@ -51,6 +51,9 @@
   <ItemGroup>
     <Compile Include="ClassType.cs" />
     <Compile Include="AuthorityType.cs" />
+    <Compile Include="GenderType.cs" />
+    <Compile Include="HairColorType.cs" />
+    <Compile Include="HairStyleType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
