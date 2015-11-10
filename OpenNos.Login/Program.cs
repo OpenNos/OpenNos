@@ -18,6 +18,8 @@ using OpenNos.GameObject;
 using OpenNos.Handler;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Reflection;
 
 namespace OpenNos.Login
 {
@@ -35,12 +37,14 @@ namespace OpenNos.Login
 
                     //initialize Logger
                     Logger.InitializeLogger(LogManager.GetLogger(typeof(Program)));
+                    Assembly assembly = Assembly.GetExecutingAssembly();
+                    FileVersionInfo fileVersionInfo = FileVersionInfo.GetVersionInfo(assembly.Location);
+                    Console.Title = String.Format("OpenNos Login Server v{0}", fileVersionInfo.ProductVersion);
+                    Console.WriteLine(String.Format("===============================================================================\n"
+                                     + "                 LOGIN SERVER VERSION {0} by OpenNos Team\n" +
+                                     "===============================================================================\n", fileVersionInfo.ProductVersion));
 
-                    Console.Title = "OpenNos Login Server v1.0.0";
-                    Console.WriteLine("===============================================================================\n"
-                                     + "                 LOGIN SERVER VERSION 1.0.0 by OpenNos Team\n" +
-                                     "===============================================================================\n");
-
+                  
                     //initialize DB
                     DataAccessHelper.Initialize();
                     Logger.Log.Info(Language.Instance.GetMessageFromKey("DATABASE_HAS_BEEN_INITIALISE"));
