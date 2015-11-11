@@ -46,7 +46,7 @@
   <ItemGroup>
     <Compile Include="LoginPacketHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="AccountPacketHandler.cs" />
+    <Compile Include="WorldPacketHandler.cs" />
     <Compile Include="ServerConfig.cs" />
   </ItemGroup>
   <ItemGroup>
