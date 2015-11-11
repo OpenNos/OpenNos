@@ -12,12 +12,18 @@ namespace OpenNos.GameObject
 {
     public class Map
     {
+        #region Members
+
         private char[,] _grid;
         private short _mapId;
         private int _xLength;
         private int _yLength;
         private Guid _uniqueIdentifier;
         private ThreadedBase<MapPacket> threadedBase;
+
+        #endregion
+
+        #region Instantiation
 
         public Map(short mapId, Guid uniqueIdentifier)
         {
@@ -27,6 +33,10 @@ namespace OpenNos.GameObject
             LoadZone();
         }
 
+        #endregion
+
+        #region Properties
+
         public short MapId
         {
             get
@@ -34,7 +44,14 @@ namespace OpenNos.GameObject
                 return _mapId;
             }
         }
-        public bool isBlockedZone(int x, int y)
+
+        public EventHandler NotifyClients { get; set; }
+
+        #endregion
+
+        #region Methods
+
+        public bool IsBlockedZone(int x, int y)
         {
             if (x > _xLength || x < 1 || y > _yLength || y < 1 || _grid[y - 1, x - 1] == 1)
             {
@@ -43,6 +60,7 @@ namespace OpenNos.GameObject
 
             return false;
         }
+
         public void LoadZone()
         {
             FileStream fsSource = new FileStream("Resource/zones/" + _mapId, FileMode.Open, FileAccess.Read);
@@ -69,7 +87,7 @@ namespace OpenNos.GameObject
                 }
             }
         }
-        protected virtual void OnBroadCast(MapPacket mapPacket)
+        public void OnBroadCast(MapPacket mapPacket)
         {
             var handler = NotifyClients;
             if (handler != null)
@@ -78,6 +96,10 @@ namespace OpenNos.GameObject
             }
         }
 
+        /// <summary>
+        /// Sequentialitemsprocessor triggers this tasked based
+        /// </summary>
+        /// <param name="parameter"></param>
         public void HandlePacket(MapPacket parameter)
         {
             //handle iterative operations
@@ -86,11 +108,21 @@ namespace OpenNos.GameObject
             OnBroadCast(parameter);
         }
 
+        /// <summary>
+        /// Enqueue a packet for the Map.
+        /// </summary>
+        /// <param name="mapPacket"></param>
         private void QueuePacket(MapPacket mapPacket)
         {
             threadedBase.Queue.EnqueueMessage(mapPacket);
         }
 
+        /// <summary>
+        /// Inform client(s) about the Packet.
+        /// </summary>
+        /// <param name="session">Session of the sender.</param>
+        /// <param name="packet">The packet content to send.</param>
+        /// <param name="receiver">The receiver(s) of the Packet.</param>
         public void BroadCast(ClientSession session, string packet, ReceiverType receiver)
         {
             QueuePacket(new MapPacket(session, packet, receiver));
@@ -105,6 +137,17 @@ namespace OpenNos.GameObject
             QueuePacket(mapPacket);
         }
 
-        public EventHandler NotifyClients { get; set; }
+        /// <summary>
+        /// Get notificated from outside the Session.
+        /// </summary>
+        /// <param name="sender">Sender of the packet.</param>
+        /// <param name="e">Eventargs e.</param>
+        public void GetNotification(object sender, EventArgs e)
+        {
+            //pass thru to clients
+            QueuePacket((MapPacket)sender);
+        }
+
+        #endregion
     }
 }

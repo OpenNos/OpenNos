@@ -23,6 +23,7 @@ using System.Threading.Tasks;
 using System.Threading;
 using System.Collections.Concurrent;
 using OpenNos.Core;
+using System.IO;
 
 namespace OpenNos.GameObject
 {
@@ -36,6 +37,7 @@ namespace OpenNos.GameObject
         private EncryptorT _encryptor;
         private IDictionary<String, DateTime> _connectionLog;
         private ConcurrentDictionary<long, ClientSession> _sessions = new ConcurrentDictionary<long, ClientSession>();
+        private ConcurrentDictionary<Guid, Map> _maps = new ConcurrentDictionary<Guid, Map>();
 
         #endregion
 

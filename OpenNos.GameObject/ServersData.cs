@@ -7,7 +7,6 @@ namespace OpenNos.GameObject
     {
         private ServersData()
         {
-
             LoadSpeedData();
             LoadJobXpData();
             LoadSpXpData();
@@ -16,6 +15,7 @@ namespace OpenNos.GameObject
             LoadMpData();
             LoadStats();
         }
+
         //same for all class
         private static double[] xpData = null;
         private static double[] firstjobxpData = null;
