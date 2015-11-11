@@ -11,6 +11,8 @@ namespace OpenNos.GameObject
         Unknown = 0,
         All = 1,
         AllExceptMe = 2,
-        OnlyMe = 3
+        OnlyMe = 3,
+        ClientRegisters = 4, //maybe improvable
+        ClientUnregisters = 5 //maybe improvable
     }
 }

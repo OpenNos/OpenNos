@@ -138,7 +138,7 @@ namespace OpenNos.Handler
             _session.Client.SendPacket("clist_start 0");
             foreach (CharacterDTO character in characters)
             {
-
+                //move to character
                 _session.Client.SendPacket(String.Format("clist {0} {1} {2} {3} {4} {5} {6} {7} {8} {9}.{10}.{11}.{12}.{13}.{14}.{15}.{16} {17} {18} {19} {20}.{21} {22} {23}",
                     character.Slot, character.Name, 0, character.Gender, character.HairStyle, character.HairColor, 5, character.Class, character.Level, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, -1, -1, character.HairColor, 0));
             }
