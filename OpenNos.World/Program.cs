@@ -29,7 +29,7 @@ namespace OpenNos.World
         {
             //define handers for received packets
             IList<Type> handlers = new List<Type>();
-            handlers.Add(typeof(AccountPacketHandler));
+            handlers.Add(typeof(WorldPacketHandler));
 
             //initialize Logger
             Logger.InitializeLogger(LogManager.GetLogger(typeof(Program)));

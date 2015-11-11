@@ -25,15 +25,16 @@ using System.Threading.Tasks;
 
 namespace OpenNos.Handler
 {
-    public class AccountPacketHandler
+    public class WorldPacketHandler
     {
         private readonly ClientSession _session;
 
-        public AccountPacketHandler(ClientSession session)
+        public WorldPacketHandler(ClientSession session)
         {
             _session = session;
         }
 
+        #region OpenNos.Handler CharacterSelection
         [Packet("Char_DEL")]
         public string DeleteCharacter(string packet)
         {
@@ -91,7 +92,6 @@ namespace OpenNos.Handler
             }
             return String.Empty;
         }
-
         /// <summary>
         /// Load Characters, this is the Entrypoint for the Client, Wait for 3 Packets.
         /// </summary>
@@ -147,12 +147,12 @@ namespace OpenNos.Handler
 
             return String.Empty;
         }
-
         [Packet("select")]
         public string SelectCharacter(string packet)
         {
             string[] packetsplit = packet.Split(' ');
             CharacterDTO characterDTO = DAOFactory.CharacterDAO.LoadBySlot(_session.Account.AccountId, Convert.ToByte(packetsplit[2]));
+            if(characterDTO != null)
             _session.Character = new GameObject.Character()
             {
                 AccountId = characterDTO.AccountId,
@@ -190,6 +190,8 @@ namespace OpenNos.Handler
             _session.Client.SendPacket("OK");
             return String.Empty;
         }
+        #endregion
+        #region OpenNos.Handler Map
         [Packet("pulse")]
         public string Pulse(string packet)
         {
@@ -198,7 +200,6 @@ namespace OpenNos.Handler
             if (Convert.ToInt32(packetsplit[2]) != _session.Character.LastPulse) { _session.Client.Disconnect(); }
             return String.Empty;
         }
-
         [Packet("say")]
         public string say(string packet)
         {
@@ -211,24 +212,6 @@ namespace OpenNos.Handler
            _session.CurrentMap.QueuePacket(new KeyValuePair<string, ClientSession>(_session.Character.GenerateSay(packetsplit[2],0), _session));
 
                 return string.Empty;
-        }
-        [Packet("lbs")]
-        public string lbs(string packet)
-        {
-            //i don't know why there is this packet
-            return string.Empty;
-        }
-        [Packet("c_close")]
-        public string c_close(string packet)
-        {
-            //i don't know why there is this packet
-            return string.Empty;
-        }
-        [Packet("f_stash_end")]
-        public string f_stash_end(string packet)
-        {
-            //i don't know why there is this packet
-            return string.Empty;
         }
         [Packet("walk")]
         public string walk(string packet)
@@ -293,5 +276,26 @@ namespace OpenNos.Handler
 
             return String.Empty;
         }
+        #endregion
+        #region OpenNos.Handler UselessPacket
+        [Packet("lbs")]
+        public string lbs(string packet)
+        {
+            //i don't know why there is this packet
+            return string.Empty;
+        }
+        [Packet("c_close")]
+        public string c_close(string packet)
+        {
+            //i don't know why there is this packet
+            return string.Empty;
+        }
+        [Packet("f_stash_end")]
+        public string f_stash_end(string packet)
+        {
+            //i don't know why there is this packet
+            return string.Empty;
+        }
+        #endregion 
     }
 }
