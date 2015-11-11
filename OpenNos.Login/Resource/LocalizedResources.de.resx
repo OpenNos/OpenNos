@@ -117,4 +117,43 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="CLIENT_CLOSE" xml:space="preserve">
+    <value>Verbindung wurde vom Client getrennt.</value>
+  </data>
+  <data name="CLIENT_CLOSED" xml:space="preserve">
+    <value>Verbindung zum Client getrennt.</value>
+  </data>
+  <data name="CONFIG_LOADED" xml:space="preserve">
+    <value>Konfiguration geladen!</value>
+  </data>
+  <data name="CONNECTION" xml:space="preserve">
+    <value>CONNECT {0} Verbunden -- Sessions:{1}</value>
+  </data>
+  <data name="DATABASE_HAS_BEEN_INITIALISE" xml:space="preserve">
+    <value>Datenbank wurde initialisiert!</value>
+  </data>
+  <data name="DISCONNECT" xml:space="preserve">
+    <value>Die Verbindung zu einem Client wurde getrennt! CliendId =</value>
+  </data>
+  <data name="FORCED_DISCONNECT" xml:space="preserve">
+    <value>Die Verbindung zum Client {0} wurde getrennt, zu viele Verbindungen.</value>
+  </data>
+  <data name="IDERROR" xml:space="preserve">
+    <value>ID oder Passwort ist falsch!</value>
+  </data>
+  <data name="MESSAGE_RECEIVED" xml:space="preserve">
+    <value>Nachricht {0} von Client {1} empfangen</value>
+  </data>
+  <data name="MSG_SENT" xml:space="preserve">
+    <value>Nachricht zum Client gesendet</value>
+  </data>
+  <data name="NEW_CONNECT" xml:space="preserve">
+    <value>Ein neuer Client hat sich verbunden. ClientId =</value>
+  </data>
+  <data name="STARTED" xml:space="preserve">
+    <value>Server erfolgreich gestartet.</value>
+  </data>
+  <data name="TOO_BIG" xml:space="preserve">
+    <value>Nachricht ist zu groß ({0} bytes). Die maximale Länge beträgt{1} bytes.</value>
+  </data>
 </root>
