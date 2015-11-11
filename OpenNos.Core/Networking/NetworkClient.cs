@@ -20,17 +20,18 @@ namespace OpenNos.Core
 
         #endregion
 
-        #region Methods
+        #region Instantiation
 
-        public NetworkClient(ICommunicationChannel communicationChannel) : base(communicationChannel)
-        {
-
-        }
+        public NetworkClient(ICommunicationChannel communicationChannel) : base(communicationChannel) { }
 
         public void Initialize(EncryptionBase encryptor)
         {
             _encryptor = encryptor;
         }
+
+        #endregion
+
+        #region Methods
 
         public bool SendPacketFormat(string packet, params object[] param)
         {

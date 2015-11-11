@@ -17,12 +17,12 @@ namespace OpenNos.GameObject
         private int _xLength;
         private int _yLength;
         private Guid _uniqueIdentifier;
-        private ThreadedBase<KeyValuePair<String, ClientSession>> threadedBase;
+        private ThreadedBase<MapPacket> threadedBase;
 
-        public Map(short mapId, Guid uniqueIdentifier) 
+        public Map(short mapId, Guid uniqueIdentifier)
         {
-            threadedBase = new ThreadedBase<KeyValuePair<String, ClientSession>>(500, HandlePacket);
-                _mapId = mapId;
+            threadedBase = new ThreadedBase<MapPacket>(500, HandlePacket);
+            _mapId = mapId;
             _uniqueIdentifier = uniqueIdentifier;
             LoadZone();
         }
@@ -69,27 +69,40 @@ namespace OpenNos.GameObject
                 }
             }
         }
-        protected virtual void OnBroadCast(KeyValuePair<string, ClientSession> packet)
+        protected virtual void OnBroadCast(MapPacket mapPacket)
         {
             var handler = NotifyClients;
             if (handler != null)
             {
-                handler(packet, new EventArgs());
+                handler(mapPacket, new EventArgs());
             }
         }
 
-        public void HandlePacket(KeyValuePair<String, ClientSession> parameter)
+        public void HandlePacket(MapPacket parameter)
         {
-
             //handle iterative operations
 
             //notify clients about changes
             OnBroadCast(parameter);
         }
 
-        public void QueuePacket(KeyValuePair<String, ClientSession> packet)
+        private void QueuePacket(MapPacket mapPacket)
         {
-            threadedBase.Queue.EnqueueMessage(packet);
+            threadedBase.Queue.EnqueueMessage(mapPacket);
+        }
+
+        public void BroadCast(ClientSession session, string packet, ReceiverType receiver)
+        {
+            QueuePacket(new MapPacket(session, packet, receiver));
+        }
+
+        /// <summary>
+        /// Send packet to all clients
+        /// </summary>
+        /// <param name="mapPacket">The MapPacket to send.</param>
+        public void BroadCast(MapPacket mapPacket)
+        {
+            QueuePacket(mapPacket);
         }
 
         public EventHandler NotifyClients { get; set; }
