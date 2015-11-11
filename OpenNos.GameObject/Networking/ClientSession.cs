@@ -281,7 +281,7 @@ namespace OpenNos.GameObject
                     }
                 default:
                     {
-                        Logger.Log.ErrorFormat("Unknown Notification ReceiverType for client, {0}");
+                        Logger.Log.ErrorFormat("Unknown Notification ReceiverType for client, {0}", Client.ClientId);
                         break;
                     }
             }
@@ -310,15 +310,7 @@ namespace OpenNos.GameObject
                     return false;
                 }
 
-                string result = (string)methodInfo.Value.Item1.Invoke(methodInfo.Value.Item2, new object[] { packet });
-
-                //check for returned packet
-                if (!String.IsNullOrEmpty(result))
-                {
-                    //Send reply message to the client
-                    Logger.Log.DebugFormat(Language.Instance.GetMessageFromKey("MSG_SENT"), result);
-                    _client.SendPacket(result);
-                }
+                methodInfo.Value.Item1.Invoke(methodInfo.Value.Item2, new object[] { packet });
 
                 return true;
             }
