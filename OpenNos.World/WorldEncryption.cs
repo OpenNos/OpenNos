@@ -155,6 +155,7 @@ namespace OpenNos.World
             }
 
             return decrypted_string;
+
         }
 
         public override byte[] Encrypt(string str)

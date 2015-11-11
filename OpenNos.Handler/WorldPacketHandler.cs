@@ -36,7 +36,7 @@ namespace OpenNos.Handler
 
         #region OpenNos.Handler CharacterSelection
         [Packet("Char_DEL")]
-        public string DeleteCharacter(string packet)
+        public void DeleteCharacter(string packet)
         {
             string[] packetsplit = packet.Split(' ');
             AccountDTO account = DAOFactory.AccountDAO.LoadBySessionId(_session.SessionId);
@@ -49,11 +49,10 @@ namespace OpenNos.Handler
             {
                 _session.Client.SendPacket(String.Format("info {0}", Language.Instance.GetMessageFromKey("BAD_PASSWORD")));
             }
-
-            return String.Empty;
+            
         }
         [Packet("Char_NEW")]
-        public string CreateCharacter(string packet)
+        public void CreateCharacter(string packet)
         {
             //todo, hold Account Information in Authorized object
             long accountId = _session.Account.AccountId;
@@ -90,7 +89,6 @@ namespace OpenNos.Handler
 
                 else _session.Client.SendPacketFormat("info {0}", Language.Instance.GetMessageFromKey("ALREADY_TAKEN"));
             }
-            return String.Empty;
         }
         /// <summary>
         /// Load Characters, this is the Entrypoint for the Client, Wait for 3 Packets.
@@ -98,7 +96,7 @@ namespace OpenNos.Handler
         /// <param name="packet"></param>
         /// <returns></returns>
         [Packet("OpenNos.EntryPoint", 3)]
-        public string LoadCharacters(string packet)
+        public void LoadCharacters(string packet)
         {
             string[] loginPacketParts = packet.Split(' ');
 
@@ -144,11 +142,10 @@ namespace OpenNos.Handler
                     character.Slot, character.Name, 0, character.Gender, character.HairStyle, character.HairColor, 5, character.Class, character.Level, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, -1, -1, character.HairColor, 0));
             }
             _session.Client.SendPacket("clist_end");
-
-            return String.Empty;
+           
         }
         [Packet("select")]
-        public string SelectCharacter(string packet)
+        public void SelectCharacter(string packet)
         {
             string[] packetsplit = packet.Split(' ');
             CharacterDTO characterDTO = DAOFactory.CharacterDAO.LoadBySlot(_session.Account.AccountId, Convert.ToByte(packetsplit[2]));
@@ -188,20 +185,19 @@ namespace OpenNos.Handler
             _session.CurrentMap = MapManager.GetMap(_session.Character.Map);
             _session.RegisterForMapNotification();
             _session.Client.SendPacket("OK");
-            return String.Empty;
         }
         #endregion
         #region OpenNos.Handler Map
         [Packet("pulse")]
-        public string Pulse(string packet)
+        public void Pulse(string packet)
         {
             string[] packetsplit = packet.Split(' ');
             _session.Character.LastPulse += 60;
             if (Convert.ToInt32(packetsplit[2]) != _session.Character.LastPulse) { _session.Client.Disconnect(); }
-            return String.Empty;
+     
         }
         [Packet("say")]
-        public string say(string packet)
+        public void say(string packet)
         {
             string[] packetsplit = packet.Split(' ');
             string message=String.Empty;
@@ -210,11 +206,10 @@ namespace OpenNos.Handler
             message.Trim();
             
            _session.CurrentMap.QueuePacket(new KeyValuePair<string, ClientSession>(_session.Character.GenerateSay(packetsplit[2],0), _session));
-
-                return string.Empty;
+            
         }
         [Packet("walk")]
-        public string walk(string packet)
+        public void walk(string packet)
         {
             string[] packetsplit = packet.Split(' ');
 
@@ -222,10 +217,10 @@ namespace OpenNos.Handler
             _session.Character.MapY = Convert.ToInt16(packetsplit[3]);
             _session.CurrentMap.QueuePacket(new KeyValuePair<string, ClientSession>(_session.Character.GenerateMv(_session.Character.MapX, _session.Character.MapY), _session));
             _session.Client.SendPacket(_session.Character.GenerateCond());
-            return string.Empty;
+        
         }
         [Packet("guri")]
-        public string guri(string packet)
+        public void guri(string packet)
         {
             string[] packetsplit = packet.Split(' ');
             if (packetsplit[2] == "10" && Convert.ToInt32(packetsplit[5]) >= 973 && Convert.ToInt32(packetsplit[5]) <= 999)
@@ -235,10 +230,9 @@ namespace OpenNos.Handler
                 _session.CurrentMap.QueuePacket(new KeyValuePair<string, ClientSession>(_session.Character.GenerateEff(Convert.ToInt32(packetsplit[5]) + 4099), _session));
 
             }
-            return string.Empty;
         }
         [Packet("game_start")]
-        public string StartGame(string packet)
+        public void StartGame(string packet)
         {
             _session.Client.SendPacket(_session.Character.GenerateTit());
             _session.Client.SendPacket(_session.Character.GenerateCInfo());
@@ -274,27 +268,24 @@ namespace OpenNos.Handler
 
             _session.CurrentMap.QueuePacket(new KeyValuePair<string, ClientSession>(String.Format("info INFORMATION FROM {0}", _session.Client.ClientId), _session));
 
-            return String.Empty;
         }
         #endregion
         #region OpenNos.Handler UselessPacket
         [Packet("lbs")]
-        public string lbs(string packet)
+        public void lbs(string packet)
         {
             //i don't know why there is this packet
-            return string.Empty;
+
         }
         [Packet("c_close")]
-        public string c_close(string packet)
+        public void c_close(string packet)
         {
             //i don't know why there is this packet
-            return string.Empty;
         }
         [Packet("f_stash_end")]
-        public string f_stash_end(string packet)
+        public void f_stash_end(string packet)
         {
             //i don't know why there is this packet
-            return string.Empty;
         }
         #endregion 
     }
