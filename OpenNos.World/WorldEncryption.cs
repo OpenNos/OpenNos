@@ -76,7 +76,16 @@ namespace OpenNos.World
                     break;
             }
 
+            /* string[] var2 = encrypted_string.Split(' ');
+             byte[] bytes = new byte[var2.Length-1];
+          for (int i = 0; i < bytes.Length; i++)
+          {
+              bytes[i] = Byte.Parse(var2[i]);
+          }
 
+          string save = "";
+           save += DecryptGamePacket2(bytes);
+           */
             string[] var2 = encrypted_string.Split(new string[] { "255 " }, StringSplitOptions.None);// return string less 255 (2 strings)
             byte[][] bytes = new byte[var2.Length - 1][];
             for (int i = 0; i < bytes.Length; i++)
@@ -155,6 +164,7 @@ namespace OpenNos.World
             }
 
             return decrypted_string;
+
 
         }
 
