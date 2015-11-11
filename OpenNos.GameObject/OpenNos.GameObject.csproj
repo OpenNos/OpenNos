@@ -47,7 +47,7 @@
     <Compile Include="Character.cs" />
     <Compile Include="Networking\ClientSession.cs" />
     <Compile Include="Map.cs" />
-    <Compile Include="Networking\MapManager.cs" />
+    <Compile Include="Networking\ServerManager.cs" />
     <Compile Include="Networking\MapPacket.cs" />
     <Compile Include="Networking\NetworkManager.cs" />
     <Compile Include="Networking\ReceiverType.cs" />

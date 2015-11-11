@@ -184,7 +184,7 @@ namespace OpenNos.Handler
                     Speed = ServersData.SpeedData[characterDTO.Class]
                 };
 
-            _session.CurrentMap = MapManager.GetMap(_session.Character.Map);
+            _session.CurrentMap = ServerManager.GetMap(_session.Character.Map);
             _session.RegisterForMapNotification();
             _session.Client.SendPacket("OK");
         }
