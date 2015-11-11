@@ -12,7 +12,6 @@ namespace OpenNos.GameObject
 {
     public class ClientSession
     {
-
         #region Members
 
         private NetworkClient _client;
@@ -28,6 +27,8 @@ namespace OpenNos.GameObject
 
         #endregion
 
+        #region Instantiation
+
         public ClientSession(NetworkClient client)
         {
             _client = client;
@@ -42,6 +43,8 @@ namespace OpenNos.GameObject
             _queue = new SequentialItemProcessor<byte[]>(HandlePacket);
             _queue.Start();
         }
+
+        #endregion
 
         #region Properties
 
@@ -122,6 +125,10 @@ namespace OpenNos.GameObject
             _queue.EnqueueMessage(message.MessageData);
         }
 
+        /// <summary>
+        /// Handle the packet received by the Client.
+        /// </summary>
+        /// <param name="packetData"></param>
         private void HandlePacket(byte[] packetData)
         {
             //determine first packet
@@ -216,28 +223,68 @@ namespace OpenNos.GameObject
             }
         }
 
+        /// <summary>
+        /// Destroy ClientSession
+        /// </summary>
         internal void Destroy()
         {
             //do everything necessary before removing client, DB save, Whatever
         }
 
+        /// <summary>
+        /// Register for Map notifications.
+        /// </summary>
         public void RegisterForMapNotification()
         {
             CurrentMap.NotifyClients += GetNotification;
         }
 
+        /// <summary>
+        /// Unregister for Map notifications.
+        /// </summary>
         public void UnregisterForMapNotification()
         {
             CurrentMap.NotifyClients -= GetNotification;
         }
 
+        /// <summary>
+        /// Get notificated from outside the Session.
+        /// </summary>
+        /// <param name="sender">Sender of the packet.</param>
+        /// <param name="e">Eventargs e.</param>
         private void GetNotification(object sender, EventArgs e)
         {
-            KeyValuePair<String, ClientSession> packet = (KeyValuePair<String, ClientSession>)sender;
+            MapPacket mapPacket = (MapPacket)sender;
 
-            //exclude myself from passive notification
-            if (packet.Value.Client.ClientId != this.Client.ClientId)
-                _client.SendPacket(packet.Key);
+            switch (mapPacket.Receiver)
+            {
+                case ReceiverType.All:
+                    {
+                        _client.SendPacket(mapPacket.Content);
+                        break;
+                    }
+                case ReceiverType.AllExceptMe:
+                    {
+                        if (mapPacket.Session.Client.ClientId != this.Client.ClientId)
+                        {
+                            _client.SendPacket(mapPacket.Content);
+                        }
+                        break;
+                    }
+                case ReceiverType.OnlyMe:
+                    {
+                        if (mapPacket.Session.Client.ClientId == this.Client.ClientId)
+                        {
+                            _client.SendPacket(mapPacket.Content);
+                        }
+                        break;
+                    }
+                default:
+                    {
+                        Logger.Log.ErrorFormat("Unknown Notification ReceiverType for client, {0}");
+                        break;
+                    }
+            }
         }
 
         public void Initialize(EncryptionBase encryptor, IList<Type> packetHandlers)
@@ -252,7 +299,7 @@ namespace OpenNos.GameObject
         private bool TriggerHandler(string packetHeader, string packet, bool force)
         {
             KeyValuePair<Packet, Tuple<MethodInfo, object>> methodInfo = Handlers.SingleOrDefault(h => h.Key.Header.Equals(packetHeader));
-            
+
             if (methodInfo.Value != null)
             {
                 if (!force && methodInfo.Key.Amount > 1 && !_waitForPacketsAmount.HasValue)

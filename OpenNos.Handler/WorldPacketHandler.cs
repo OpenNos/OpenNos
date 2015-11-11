@@ -34,7 +34,8 @@ namespace OpenNos.Handler
             _session = session;
         }
 
-        #region OpenNos.Handler CharacterSelection
+        #region CharacterSelection
+
         [Packet("Char_DEL")]
         public void DeleteCharacter(string packet)
         {
@@ -49,7 +50,7 @@ namespace OpenNos.Handler
             {
                 _session.Client.SendPacket(String.Format("info {0}", Language.Instance.GetMessageFromKey("BAD_PASSWORD")));
             }
-            
+
         }
         [Packet("Char_NEW")]
         public void CreateCharacter(string packet)
@@ -142,72 +143,81 @@ namespace OpenNos.Handler
                     character.Slot, character.Name, 0, character.Gender, character.HairStyle, character.HairColor, 5, character.Class, character.Level, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, -1, -1, character.HairColor, 0));
             }
             _session.Client.SendPacket("clist_end");
-           
+
         }
+
         [Packet("select")]
         public void SelectCharacter(string packet)
         {
             string[] packetsplit = packet.Split(' ');
             CharacterDTO characterDTO = DAOFactory.CharacterDAO.LoadBySlot(_session.Account.AccountId, Convert.ToByte(packetsplit[2]));
-            if(characterDTO != null)
-            _session.Character = new GameObject.Character()
-            {
-                AccountId = characterDTO.AccountId,
-                CharacterId = characterDTO.CharacterId,
-                Class = characterDTO.Class,
-                Dignite = characterDTO.Dignite,
-                Gender = characterDTO.Gender,
-                Gold = characterDTO.Gold,
-                HairColor = characterDTO.HairColor,
-                HairStyle = characterDTO.HairStyle,
-                Hp = characterDTO.Hp,
-                JobLevel = characterDTO.JobLevel,
-                JobLevelXp = characterDTO.JobLevelXp,
-                Level = characterDTO.Level,
-                LevelXp = characterDTO.LevelXp,
-                Map = characterDTO.Map,
-                MapX = characterDTO.MapX,
-                MapY = characterDTO.MapY,
-                Mp = characterDTO.Mp,
-                Name = characterDTO.Name,
-                Reput = characterDTO.Reput,
-                Slot = characterDTO.Slot,
-                Authority = _session.Account.Authority,
-                LastPulse = 0,
-                Invisible = 0,
-                ArenaWinner = 0,
-                Sp = 0,
-                SpUpgrade = 0,
-                Direction = 0,
-                Speed = ServersData.SpeedData[characterDTO.Class]
-            };
+            if (characterDTO != null)
+                _session.Character = new GameObject.Character()
+                {
+                    AccountId = characterDTO.AccountId,
+                    CharacterId = characterDTO.CharacterId,
+                    Class = characterDTO.Class,
+                    Dignite = characterDTO.Dignite,
+                    Gender = characterDTO.Gender,
+                    Gold = characterDTO.Gold,
+                    HairColor = characterDTO.HairColor,
+                    HairStyle = characterDTO.HairStyle,
+                    Hp = characterDTO.Hp,
+                    JobLevel = characterDTO.JobLevel,
+                    JobLevelXp = characterDTO.JobLevelXp,
+                    Level = characterDTO.Level,
+                    LevelXp = characterDTO.LevelXp,
+                    Map = characterDTO.Map,
+                    MapX = characterDTO.MapX,
+                    MapY = characterDTO.MapY,
+                    Mp = characterDTO.Mp,
+                    Name = characterDTO.Name,
+                    Reput = characterDTO.Reput,
+                    Slot = characterDTO.Slot,
+                    Authority = _session.Account.Authority,
+                    LastPulse = 0,
+                    Invisible = 0,
+                    ArenaWinner = 0,
+                    Sp = 0,
+                    SpUpgrade = 0,
+                    Direction = 0,
+                    Speed = ServersData.SpeedData[characterDTO.Class]
+                };
 
             _session.CurrentMap = MapManager.GetMap(_session.Character.Map);
             _session.RegisterForMapNotification();
             _session.Client.SendPacket("OK");
         }
+
         #endregion
-        #region OpenNos.Handler Map
+
+        #region Map
+
         [Packet("pulse")]
         public void Pulse(string packet)
         {
             string[] packetsplit = packet.Split(' ');
             _session.Character.LastPulse += 60;
-            if (Convert.ToInt32(packetsplit[2]) != _session.Character.LastPulse) { _session.Client.Disconnect(); }
-     
+            if (Convert.ToInt32(packetsplit[2]) != _session.Character.LastPulse)
+            {
+                _session.Client.Disconnect();
+            }
         }
+
         [Packet("say")]
         public void Say(string packet)
         {
             string[] packetsplit = packet.Split(' ');
-            string message=String.Empty;
+            string message = String.Empty;
             for (int i = 0; i < packetsplit.Length; i++)
                 message = packetsplit[i] + " ";
             message.Trim();
-            
-           _session.CurrentMap.QueuePacket(new KeyValuePair<string, ClientSession>(_session.Character.GenerateSay(packetsplit[2],0), _session));
-            
+
+            _session.CurrentMap.BroadCast(_session,
+                _session.Character.GenerateSay(packetsplit[2], 0),
+                ReceiverType.All);
         }
+
         [Packet("walk")]
         public void Walk(string packet)
         {
@@ -215,10 +225,14 @@ namespace OpenNos.Handler
 
             _session.Character.MapX = Convert.ToInt16(packetsplit[2]);
             _session.Character.MapY = Convert.ToInt16(packetsplit[3]);
-            _session.CurrentMap.QueuePacket(new KeyValuePair<string, ClientSession>(_session.Character.GenerateMv(_session.Character.MapX, _session.Character.MapY), _session));
+
+            _session.CurrentMap.BroadCast(_session,
+                _session.Character.GenerateMv(_session.Character.MapX, _session.Character.MapY),
+                ReceiverType.AllExceptMe);
             _session.Client.SendPacket(_session.Character.GenerateCond());
-        
+
         }
+
         [Packet("guri")]
         public void Guri(string packet)
         {
@@ -227,10 +241,12 @@ namespace OpenNos.Handler
             {
 
                 _session.Client.SendPacket(_session.Character.GenerateEff(Convert.ToInt32(packetsplit[5]) + 4099));
-                _session.CurrentMap.QueuePacket(new KeyValuePair<string, ClientSession>(_session.Character.GenerateEff(Convert.ToInt32(packetsplit[5]) + 4099), _session));
-
+                _session.CurrentMap.BroadCast(_session,
+                    _session.Character.GenerateEff(Convert.ToInt32(packetsplit[5]) + 4099),
+                    ReceiverType.All);
             }
         }
+
         [Packet("game_start")]
         public void StartGame(string packet)
         {
@@ -248,14 +264,17 @@ namespace OpenNos.Handler
             _session.Client.SendPacket(_session.Character.GenerateCond());
             //pairy
             _session.Client.SendPacket(String.Format("rsfi {0} {1} {2} {3} {4} {5}", 1, 1, 4, 9, 4, 9));
-            _session.CurrentMap.QueuePacket(new KeyValuePair<string, ClientSession>(_session.Character.GenerateIn(), _session));
+
+            _session.CurrentMap.BroadCast(_session,
+                    _session.Character.GenerateIn(),
+                    ReceiverType.All);
 
             _session.Client.SendPacket("rank_cool 0 0 18000");//TODO add rank cool
 
             _session.Client.SendPacket("scr 0 0 0 0 0 0");
             //bn
             _session.Client.SendPacket(_session.Character.GenerateExts());
-            
+
             //gidx
             _session.Client.SendPacket("mlinfo 3800 2000 100 0 0 10 0 Mélodie^du^printemps Bienvenue");
             //cond
@@ -265,28 +284,30 @@ namespace OpenNos.Handler
             _session.Client.SendPacket("zzim");
             _session.Client.SendPacket(String.Format("twk 1 {0} {1} {2} shtmxpdlfeoqkr", _session.Character.CharacterId, _session.Account.Name, _session.Character.Name));
 
-
-            _session.CurrentMap.QueuePacket(new KeyValuePair<string, ClientSession>(String.Format("info INFORMATION FROM {0}", _session.Client.ClientId), _session));
-
         }
+
         #endregion
-        #region OpenNos.Handler UselessPacket
+
+        #region UselessPacket
+
         [Packet("lbs")]
         public void Lbs(string packet)
         {
             //i don't know why there is this packet
-
         }
+
         [Packet("c_close")]
         public void CClose(string packet)
         {
             //i don't know why there is this packet
         }
+
         [Packet("f_stash_end")]
         public void FStashEnd(string packet)
         {
             //i don't know why there is this packet
         }
+
         #endregion 
     }
 }
