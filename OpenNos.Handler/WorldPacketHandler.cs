@@ -197,7 +197,7 @@ namespace OpenNos.Handler
      
         }
         [Packet("say")]
-        public void say(string packet)
+        public void Say(string packet)
         {
             string[] packetsplit = packet.Split(' ');
             string message=String.Empty;
@@ -209,7 +209,7 @@ namespace OpenNos.Handler
             
         }
         [Packet("walk")]
-        public void walk(string packet)
+        public void Walk(string packet)
         {
             string[] packetsplit = packet.Split(' ');
 
@@ -220,7 +220,7 @@ namespace OpenNos.Handler
         
         }
         [Packet("guri")]
-        public void guri(string packet)
+        public void Guri(string packet)
         {
             string[] packetsplit = packet.Split(' ');
             if (packetsplit[2] == "10" && Convert.ToInt32(packetsplit[5]) >= 973 && Convert.ToInt32(packetsplit[5]) <= 999)
@@ -272,18 +272,18 @@ namespace OpenNos.Handler
         #endregion
         #region OpenNos.Handler UselessPacket
         [Packet("lbs")]
-        public void lbs(string packet)
+        public void Lbs(string packet)
         {
             //i don't know why there is this packet
 
         }
         [Packet("c_close")]
-        public void c_close(string packet)
+        public void CClose(string packet)
         {
             //i don't know why there is this packet
         }
         [Packet("f_stash_end")]
-        public void f_stash_end(string packet)
+        public void FStashEnd(string packet)
         {
             //i don't know why there is this packet
         }
