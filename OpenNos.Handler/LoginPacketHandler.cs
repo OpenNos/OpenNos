@@ -60,7 +60,7 @@ namespace OpenNos.Handler
         }
 
         [Packet("NoS0575")]
-        public string VerifyLogin(string packet)
+        public void VerifyLogin(string packet)
         {
             User user = PacketFactory.Deserialize<User>(packet);
             //fermé
@@ -84,8 +84,9 @@ namespace OpenNos.Handler
                         {
                             case AuthorityType.Banned:
                                 {
-                                    return String.Format("fail {O}", Language.Instance.GetMessageFromKey("BANNED").ToString());
+                                    _session.Client.SendPacket(String.Format("fail {O}", Language.Instance.GetMessageFromKey("BANNED").ToString()));
                                 }
+                                break;
                             default:
                                 {
                                     if (!DAOFactory.AccountDAO.IsLoggedIn(user.Name))
@@ -94,30 +95,30 @@ namespace OpenNos.Handler
 
                                         DAOFactory.AccountDAO.UpdateLastSessionAndIp(user.Name, (int)newSessionId, _session.Client.RemoteEndPoint.ToString());
                                         Logger.Log.DebugFormat(Language.Instance.GetMessageFromKey("CONNECTION"), user.Name, newSessionId);
-
-                                        return BuildServersPacket((int)newSessionId);
+                                        _session.Client.SendPacket(BuildServersPacket((int)newSessionId));
                                     }
                                     else
                                     {
-                                        return String.Format("fail {O}", Language.Instance.GetMessageFromKey("ONLINE").ToString());
+                                        _session.Client.SendPacket(String.Format("fail {O}", Language.Instance.GetMessageFromKey("ONLINE").ToString()));
                                     }
                                 }
+                                break;
 
                         }
                     }
                     else
                     {
-                        return String.Format("fail {0}", Language.Instance.GetMessageFromKey("IDERROR").ToString());
+                        _session.Client.SendPacket(String.Format("fail {0}", Language.Instance.GetMessageFromKey("IDERROR").ToString()));
                     }
                 }
                 else
                 {
-                    return String.Format("fail {O}", Language.Instance.GetMessageFromKey("CLOSE").ToString());
+                    _session.Client.SendPacket(String.Format("fail {O}", Language.Instance.GetMessageFromKey("CLOSE").ToString()));
                 }
             }
             else
             {
-                return String.Format("fail {O}", Language.Instance.GetMessageFromKey("WAITING").ToString());
+                _session.Client.SendPacket(String.Format("fail {O}", Language.Instance.GetMessageFromKey("WAITING").ToString()));
             }
         }
     }
