@@ -191,6 +191,7 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Resource\LocalizedResources.de.resx" />
     <EmbeddedResource Include="Resource\LocalizedResources.fr.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>LocalizedResources.fr.Designer.cs</LastGenOutput>

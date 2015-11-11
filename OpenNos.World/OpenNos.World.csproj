@@ -1685,6 +1685,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Resource\LocalizedResources.de.resx" />
     <EmbeddedResource Include="Resource\LocalizedResources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>LocalizedResources.Designer.cs</LastGenOutput>
