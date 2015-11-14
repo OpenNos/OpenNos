@@ -255,7 +255,6 @@ namespace OpenNos.Handler
             _session.Client.SendPacket(_session.Character.GenerateFd());
             //TODO if first connect add _session.Client.SendPacket(String.Format("scene 40"));
             _session.Client.SendPacket(_session.Character.GenerateLev());
-            //stat
             _session.Client.SendPacket(_session.Character.GenerateStat());
             //ski
             _session.Client.SendPacket(_session.Character.GenerateAt());

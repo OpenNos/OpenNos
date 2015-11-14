@@ -136,6 +136,18 @@ namespace OpenNos.GameObject
                 HP[(int)ClassType.Swordman, i] = HP[(int)ClassType.Swordman, i - 1] + 4 * (i + 4) + 3;
             }
 
+            //Magician HP
+            for (int i = 0; i < 16; i++)
+            {
+                HP[(int)ClassType.Magician, i] = 550;
+            }
+            for (int i = 16; i < HP.GetLength(1); i++)
+            {
+                double var = 0;
+                for (int j = 2; j < i + 24; j++)
+                    var += Math.Floor(1 / 2 + Math.Sqrt(2 * j + 4));
+                HP[(int)ClassType.Magician, i] = (int)((i+24) * (i+24 + 1) / 2 - 4 - var-7);
+            }
         }
         private void LoadMpData()
         {
@@ -158,10 +170,11 @@ namespace OpenNos.GameObject
                 MP[(int)ClassType.Adventurer, i + 3] = MP[(int)ClassType.Adventurer, i + 2] + (U1 + i / 2);
             }
             //SWORDMAN MP
-            for (int i = 15; i < MP.GetLength(1); i++)
+            for (int i = 0; i < MP.GetLength(1); i++)
             {
                 MP[(int)ClassType.Swordman, i] = MP[(int)ClassType.Adventurer, i];
             }
+            //MAGICIAN MP
 
         }
         private void LoadSpeedData()

@@ -14,6 +14,7 @@
 using log4net;
 using OpenNos.Core;
 using OpenNos.DAL.EF.MySQL;
+using OpenNos.Domain;
 using OpenNos.GameObject;
 using OpenNos.Handler;
 using System;
@@ -43,12 +44,12 @@ namespace OpenNos.World
             //initialize DB
             DataAccessHelper.Initialize();
             Logger.Log.Info(Language.Instance.GetMessageFromKey("DATABASE_HAS_BEEN_INITIALISE"));
-            
             //initialilize maps
             ServerManager.Initialize();
             string ip = System.Configuration.ConfigurationManager.AppSettings["WorldIp"];
             int port = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["WorldPort"]);
             NetworkManager<WorldEncryption> networkManager = new NetworkManager<WorldEncryption>(ip, port, handlers, true);
+            
         }
     }
 }
