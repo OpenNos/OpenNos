@@ -148,6 +148,8 @@ namespace OpenNos.GameObject
                     var += Math.Floor(1 / 2 + Math.Sqrt(2 * j + 4));
                 HP[(int)ClassType.Magician, i] = (int)((i+24) * (i+24 + 1) / 2 - 4 - var-7);
             }
+
+            //Archer HP
         }
         private void LoadMpData()
         {
@@ -173,6 +175,25 @@ namespace OpenNos.GameObject
             for (int i = 0; i < MP.GetLength(1); i++)
             {
                 MP[(int)ClassType.Swordman, i] = MP[(int)ClassType.Adventurer, i];
+            }
+            //ARCHER MP
+            for (int i = 0; i < 15; i++)
+            {
+                MP[(int)ClassType.Archer, i] = MP[(int)ClassType.Adventurer, i];
+            }
+            MP[(int)ClassType.Archer, 15] = 240;
+            MP[(int)ClassType.Archer, 16] = 256;
+            MP[(int)ClassType.Archer, 17] = 273;
+            MP[(int)ClassType.Archer, 18] = 290;
+            MP[(int)ClassType.Archer, 19] = 307;
+            U0 = 18;
+            for (int i = 20; i < MP.GetLength(1)-1; i+=4)
+            {
+                MP[(int)ClassType.Archer, i] = MP[(int)ClassType.Archer, i - 1] + U0 + ((i- 19) / 2);
+                MP[(int)ClassType.Archer, i + 1] = MP[(int)ClassType.Archer, i] + U0 + 1 + ((i - 19) / 2);
+                MP[(int)ClassType.Archer, i + 2] = MP[(int)ClassType.Archer, i + 1] + U0 + 1 + ((i - 19) / 2);
+                MP[(int)ClassType.Archer, i + 3] = MP[(int)ClassType.Archer, i + 2] + U0 +1+ ((i - 19) / 2);
+                
             }
             //MAGICIAN MP
 

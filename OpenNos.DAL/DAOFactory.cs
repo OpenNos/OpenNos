@@ -27,7 +27,7 @@ namespace OpenNos.DAL
 
         private static IAccountDAO _accountDAO;
         private static ICharacterDAO _characterDAO;
-
+        private static IPortalDAO _portalDAO;
         #endregion
 
         #region Properties
@@ -55,6 +55,18 @@ namespace OpenNos.DAL
                 }
 
                 return _characterDAO;
+            }
+        }
+        public static IPortalDAO PortalDAO
+        {
+            get
+            {
+                if (_portalDAO == null)
+                {
+                    _portalDAO = new MySQL.PortalDAO();
+                }
+
+                return _portalDAO;
             }
         }
 
