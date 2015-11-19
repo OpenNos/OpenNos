@@ -73,6 +73,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="PortalDAO.cs" />
     <Compile Include="AccountDAO.cs" />
     <Compile Include="CharacterDAO.cs" />
     <Compile Include="DB\Account.cs">
