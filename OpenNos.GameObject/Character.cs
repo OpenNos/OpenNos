@@ -1,4 +1,5 @@
 ﻿using OpenNos.Core;
+using OpenNos.Data;
 using OpenNos.Domain;
 using System;
 using System.Collections.Generic;
@@ -69,9 +70,14 @@ namespace OpenNos.GameObject
         public string GenerateEff(int effectid)
         {
             return String.Format("eff 1 {0} {1}", CharacterId, effectid);
-       
         }
-
+        public List<String> GenerateGp()
+        {
+            List<String> gpList = new List<String>();
+            foreach (PortalDTO portal in ServerManager.GetMap(this.Map).Portals)
+                gpList.Add(String.Format("gp {0} {1} {2} {3} {4}", portal.SrcX, portal.SrcY, portal.DestMap, -1 , 0));
+            return gpList;
+        }
         public string GenerateFd()
         {
            return String.Format("fd {0} {1} {2} {3}", Reput, GetReputIco(), Dignite, Math.Abs(GetDigniteIco()));
