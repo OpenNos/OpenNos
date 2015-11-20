@@ -16,20 +16,19 @@ namespace OpenNos.GameObject
         private int _xLength;
         private int _yLength;
         private Guid _uniqueIdentifier;
-        private IEnumerable<PortalDTO> portals;
+        private IEnumerable<PortalDTO> _portals;
         private ThreadedBase<MapPacket> threadedBase;
 
         #endregion
 
         #region Instantiation
-        
         public Map(short mapId, Guid uniqueIdentifier)
         {
             threadedBase = new ThreadedBase<MapPacket>(500, HandlePacket);
             _mapId = mapId;
             _uniqueIdentifier = uniqueIdentifier;
             LoadZone();
-            this.portals = DAOFactory.PortalDAO.LoadFromMap((int)_mapId);
+            _portals = DAOFactory.PortalDAO.LoadFromMap((int)_mapId);
         }
 
         #endregion
@@ -49,6 +48,14 @@ namespace OpenNos.GameObject
         #endregion
 
         #region Methods
+
+        public IEnumerable<PortalDTO> Portals
+        {
+            get
+            {
+                return _portals;
+            }
+        }
 
         public bool IsBlockedZone(int x, int y)
         {

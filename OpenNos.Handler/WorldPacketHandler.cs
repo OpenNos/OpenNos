@@ -259,6 +259,8 @@ namespace OpenNos.Handler
             //ski
             _session.Client.SendPacket(_session.Character.GenerateAt());
             _session.Client.SendPacket(_session.Character.GenerateCMap());
+            foreach (String portalPacket in _session.Character.GenerateGp())
+            _session.Client.SendPacket(portalPacket);
             //sc
             _session.Client.SendPacket(_session.Character.GenerateCond());
             //pairy
@@ -288,6 +290,11 @@ namespace OpenNos.Handler
         #endregion
 
         #region UselessPacket
+        [Packet("snap")]
+        public void Snap(string packet)
+        {
+            //i don't need this for the moment
+        }
 
         [Packet("lbs")]
         public void Lbs(string packet)
