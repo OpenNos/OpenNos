@@ -176,6 +176,7 @@ namespace OpenNos.Handler
                     Slot = characterDTO.Slot,
                     Authority = _session.Account.Authority,
                     LastPulse = 0,
+                    LastPortal = 0,
                     Invisible = 0,
                     ArenaWinner = 0,
                     Sp = 0,
@@ -192,7 +193,26 @@ namespace OpenNos.Handler
         #endregion
 
         #region Map
+        public void ChangeMap()
+        {
+            _session.Client.SendPacket(_session.Character.GenerateCInfo());
+            _session.Client.SendPacket(_session.Character.GenerateFd());
+            //TODO if first connect add _session.Client.SendPacket(String.Format("scene 40"));
+            _session.Client.SendPacket(_session.Character.GenerateLev());
+            _session.Client.SendPacket(_session.Character.GenerateStat());
+            //ski
+            _session.Client.SendPacket(_session.Character.GenerateAt());
+            _session.Client.SendPacket(_session.Character.GenerateCMap());
+            foreach (String portalPacket in _session.Character.GenerateGp())
+                _session.Client.SendPacket(portalPacket);
+            //sc
+            _session.Client.SendPacket(_session.Character.GenerateCond());
+            //pairy
+            _session.Client.SendPacket(String.Format("rsfi {0} {1} {2} {3} {4} {5}", 1, 1, 4, 9, 4, 9));
 
+            _session.CurrentMap.BroadCast(_session, _session.Character.GenerateIn(), ReceiverType.All);
+
+        }
         [Packet("pulse")]
         public void Pulse(string packet)
         {
@@ -215,7 +235,7 @@ namespace OpenNos.Handler
 
             _session.CurrentMap.BroadCast(_session,
                 _session.Character.GenerateSay(packetsplit[2], 0),
-                ReceiverType.All);
+                ReceiverType.AllExceptMe);
         }
 
         [Packet("walk")]
@@ -246,30 +266,37 @@ namespace OpenNos.Handler
                     ReceiverType.All);
             }
         }
-
+        [Packet("preq")]
+        public void Preq(string packet)
+        {
+            bool teleported = false;
+            double def = (((TimeSpan)(DateTime.Now - new DateTime(2010, 1, 1, 0, 0, 0))).TotalSeconds) - (_session.Character.LastPortal);
+            if (def >= 4)
+            {
+                foreach (PortalDTO portal in ServerManager.GetMap(_session.Character.Map).Portals)
+                {
+                    if (!teleported && _session.Character.MapY >= portal.SrcY - 1 && _session.Character.MapY >= portal.SrcY + 1 && _session.Character.MapX >= portal.SrcX - 1 && _session.Character.MapX >= portal.SrcX + 1)
+                    {
+                        _session.Character.Map = Convert.ToInt16(portal.DestMap);
+                        _session.Character.MapX = Convert.ToInt16(portal.DestX);
+                        _session.Character.MapY = Convert.ToInt16(portal.DestY);
+                        _session.Character.LastPortal = (((TimeSpan)(DateTime.Now - new DateTime(2010, 1, 1, 0, 0, 0))).TotalSeconds);
+                        ChangeMap();
+                        teleported = true;
+                    }
+                }
+                
+            }
+            else
+            {
+                _session.Client.SendPacket(String.Format("say 1 {0} 1 Ne peut pas encore bouger.", _session.Character.CharacterId));
+            }
+        }
         [Packet("game_start")]
         public void StartGame(string packet)
         {
             _session.Client.SendPacket(_session.Character.GenerateTit());
-            _session.Client.SendPacket(_session.Character.GenerateCInfo());
-            _session.Client.SendPacket(_session.Character.GenerateFd());
-            //TODO if first connect add _session.Client.SendPacket(String.Format("scene 40"));
-            _session.Client.SendPacket(_session.Character.GenerateLev());
-            _session.Client.SendPacket(_session.Character.GenerateStat());
-            //ski
-            _session.Client.SendPacket(_session.Character.GenerateAt());
-            _session.Client.SendPacket(_session.Character.GenerateCMap());
-            foreach (String portalPacket in _session.Character.GenerateGp())
-            _session.Client.SendPacket(portalPacket);
-            //sc
-            _session.Client.SendPacket(_session.Character.GenerateCond());
-            //pairy
-            _session.Client.SendPacket(String.Format("rsfi {0} {1} {2} {3} {4} {5}", 1, 1, 4, 9, 4, 9));
-
-            _session.CurrentMap.BroadCast(_session,
-                    _session.Character.GenerateIn(),
-                    ReceiverType.All);
-
+            ChangeMap();
             _session.Client.SendPacket("rank_cool 0 0 18000");//TODO add rank cool
 
             _session.Client.SendPacket("scr 0 0 0 0 0 0");
