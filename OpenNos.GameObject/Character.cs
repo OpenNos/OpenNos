@@ -53,6 +53,8 @@ namespace OpenNos.GameObject
 
         public int LastPulse { get; set; }
 
+        public double LastPortal { get; set; }
+
         public int Sp { get; set; }
 
         public int Authority { get; set; }
