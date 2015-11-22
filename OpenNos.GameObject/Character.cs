@@ -69,6 +69,8 @@ namespace OpenNos.GameObject
 
         public int Direction { get; set; }
 
+        public int Rested { get; set; }
+
         public string GenerateEff(int effectid)
         {
             return String.Format("eff 1 {0} {1}", CharacterId, effectid);
@@ -201,6 +203,16 @@ namespace OpenNos.GameObject
         {
             return String.Format("in 1 {0} - {1} {2} {3} {4} {5} {6} {7} {8} {9} -1.-1.-1.-1.-1.-1.-1.-1 {10} {11} {12} -1 0 0 0 0 0 0 0 0 -1 - {13} 0 0 0 0 {14} 0 {15} 0 10", Name, CharacterId, MapX, MapY, Direction, (Authority == 2 ? 2 : 0), Gender, HairStyle, HairColor, Class, 100, 100, Sp, (GetDigniteIco() == 1) ? GetReputIco() : -GetDigniteIco(), ArenaWinner,0);
           
+        }
+
+        public string GenerateRest()
+        {
+            return String.Format("rest 1 {0} {1}", CharacterId, Rested);
+        }
+
+        public string GenerateDir()
+        {
+            return String.Format("dir 1 {0} {1}", CharacterId, Direction);
         }
     }
 }

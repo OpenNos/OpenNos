@@ -182,6 +182,7 @@ namespace OpenNos.Handler
                     Sp = 0,
                     SpUpgrade = 0,
                     Direction = 0,
+                    Rested = 0,
                     Speed = ServersData.SpeedData[characterDTO.Class]
                 };
 
@@ -275,7 +276,7 @@ namespace OpenNos.Handler
             {
                 foreach (PortalDTO portal in ServerManager.GetMap(_session.Character.Map).Portals)
                 {
-                    if (!teleported && _session.Character.MapY >= portal.SrcY - 1 && _session.Character.MapY >= portal.SrcY + 1 && _session.Character.MapX >= portal.SrcX - 1 && _session.Character.MapX >= portal.SrcX + 1)
+                    if (!teleported && _session.Character.MapY >= portal.SrcY - 1 && _session.Character.MapY <= portal.SrcY + 1 && _session.Character.MapX >= portal.SrcX - 1 && _session.Character.MapX <= portal.SrcX + 1)
                     {
                         _session.Character.Map = Convert.ToInt16(portal.DestMap);
                         _session.Character.MapX = Convert.ToInt16(portal.DestX);
@@ -290,6 +291,25 @@ namespace OpenNos.Handler
             else
             {
                 _session.Client.SendPacket(String.Format("say 1 {0} 1 Ne peut pas encore bouger.", _session.Character.CharacterId));
+            }
+        }
+        [Packet("rest")]
+        public void Rest(string packet)
+        {
+            _session.Character.Rested = (_session.Character.Rested==0)?1:0;
+            _session.CurrentMap.BroadCast(_session, _session.Character.GenerateRest(),ReceiverType.All);
+              
+        }
+        [Packet("dir")]
+        public void Dir(string packet)
+        {
+            string[] packetsplit = packet.Split(' ');
+
+            if (Convert.ToInt32(packetsplit[4]) == _session.Character.CharacterId)
+            {
+                _session.Character.Direction = Convert.ToInt32(packetsplit[2]);
+               _session.CurrentMap.BroadCast(_session, _session.Character.GenerateDir(), ReceiverType.All);
+               
             }
         }
         [Packet("game_start")]
