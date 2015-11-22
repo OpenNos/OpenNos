@@ -151,8 +151,10 @@ namespace OpenNos.GameObject
 
                 return;
             }
+            
+                string packetConcatenated = _encryptor.Decrypt(packetData, packetData.Length, (int)this.SessionId);
 
-            string packetConcatenated = _encryptor.Decrypt(packetData, packetData.Length, (int)this.SessionId);
+          
 
             foreach (string packet in packetConcatenated.Split(new char[] { (char)0xFF }, StringSplitOptions.RemoveEmptyEntries))
             {
@@ -220,9 +222,9 @@ namespace OpenNos.GameObject
                     }
                 }
 
-            }
+            
         }
-
+        }
         /// <summary>
         /// Destroy ClientSession
         /// </summary>
