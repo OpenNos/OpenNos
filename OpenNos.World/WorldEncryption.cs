@@ -111,9 +111,10 @@ namespace OpenNos.World
         {
 
             string decrypted_string = "";
-            char[] table = { ' ', '-', '.', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'n' };
+            char[] table = { ' ', '-', '.', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '\n' };
             int count = 0;
-            Array.Resize(ref str, str.Length+1);
+
+
             for (count = 0; count < str.Length - 1;)
             {
                 if (str[count] <= 0x7A)
@@ -164,8 +165,8 @@ namespace OpenNos.World
 
             return decrypted_string;
 
-        }
 
+        }
         public override byte[] Encrypt(string str)
         {
             
