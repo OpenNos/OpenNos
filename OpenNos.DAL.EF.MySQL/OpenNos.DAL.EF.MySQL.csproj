@@ -82,46 +82,19 @@
     <Compile Include="DB\Map.cs">
       <DependentUpon>OpenNos.tt</DependentUpon>
     </Compile>
+    <Compile Include="DB\Portal.cs">
+      <DependentUpon>OpenNos.tt</DependentUpon>
+    </Compile>
     <Compile Include="PortalDAO.cs" />
     <Compile Include="AccountDAO.cs" />
     <Compile Include="CharacterDAO.cs" />
     <Compile Include="DB\Account.cs">
       <DependentUpon>OpenNos.tt</DependentUpon>
     </Compile>
-    <Compile Include="DB\action.cs">
-      <DependentUpon>OpenNos.tt</DependentUpon>
-    </Compile>
     <Compile Include="DB\Character.cs">
       <DependentUpon>OpenNos.tt</DependentUpon>
     </Compile>
-    <Compile Include="DB\characterfamily.cs">
-      <DependentUpon>OpenNos.tt</DependentUpon>
-    </Compile>
     <Compile Include="DB\ConnectionLog.cs">
-      <DependentUpon>OpenNos.tt</DependentUpon>
-    </Compile>
-    <Compile Include="DB\family.cs">
-      <DependentUpon>OpenNos.tt</DependentUpon>
-    </Compile>
-    <Compile Include="DB\familyhistory.cs">
-      <DependentUpon>OpenNos.tt</DependentUpon>
-    </Compile>
-    <Compile Include="DB\friend.cs">
-      <DependentUpon>OpenNos.tt</DependentUpon>
-    </Compile>
-    <Compile Include="DB\inventory.cs">
-      <DependentUpon>OpenNos.tt</DependentUpon>
-    </Compile>
-    <Compile Include="DB\item.cs">
-      <DependentUpon>OpenNos.tt</DependentUpon>
-    </Compile>
-    <Compile Include="DB\miniland.cs">
-      <DependentUpon>OpenNos.tt</DependentUpon>
-    </Compile>
-    <Compile Include="DB\monster.cs">
-      <DependentUpon>OpenNos.tt</DependentUpon>
-    </Compile>
-    <Compile Include="DB\npc.cs">
       <DependentUpon>OpenNos.tt</DependentUpon>
     </Compile>
     <Compile Include="DB\OpenNos.Context.cs">
@@ -138,27 +111,6 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>OpenNos.edmx</DependentUpon>
-    </Compile>
-    <Compile Include="DB\partner.cs">
-      <DependentUpon>OpenNos.tt</DependentUpon>
-    </Compile>
-    <Compile Include="DB\pet.cs">
-      <DependentUpon>OpenNos.tt</DependentUpon>
-    </Compile>
-    <Compile Include="DB\portal.cs">
-      <DependentUpon>OpenNos.tt</DependentUpon>
-    </Compile>
-    <Compile Include="DB\rune.cs">
-      <DependentUpon>OpenNos.tt</DependentUpon>
-    </Compile>
-    <Compile Include="DB\shop.cs">
-      <DependentUpon>OpenNos.tt</DependentUpon>
-    </Compile>
-    <Compile Include="DB\skill.cs">
-      <DependentUpon>OpenNos.tt</DependentUpon>
-    </Compile>
-    <Compile Include="DB\warehouse.cs">
-      <DependentUpon>OpenNos.tt</DependentUpon>
     </Compile>
     <Compile Include="Helpers\DataAccessHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -31,7 +31,7 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                foreach (portal portalobject in context.portals.Where(c => c.SrcMap.Equals(MapId)))
+                foreach (Portal portalobject in context.portal.Where(c => c.SourceMapId.Equals(MapId)))
                 {
                     yield return Mapper.Map<PortalDTO>(portalobject);
                 }

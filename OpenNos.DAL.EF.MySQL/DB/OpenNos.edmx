@@ -8,15 +8,24 @@
   <EntityContainer Name="opennosModelStoreContainer">
     <EntitySet Name="account" EntityType="opennosModel.Store.account" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="character" EntityType="opennosModel.Store.character" store:Type="Tables" Schema="dbo" />
-    <EntitySet Name="portals" EntityType="opennosModel.Store.portals" store:Type="Tables" Schema="dbo" />
-    <EntitySet Name="connectionlog" EntityType="opennosModel.Store.connectionlog" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="portal" EntityType="opennosModel.Store.portal" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="connectionlog" EntityType="opennosModel.Store.connectionlog" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="map" EntityType="opennosModel.Store.map" store:Type="Tables" Schema="dbo" />
     <AssociationSet Name="AccountCharacter" Association="opennosModel.Store.AccountCharacter">
       <End Role="Account" EntitySet="account" />
       <End Role="Character" EntitySet="character" />
     </AssociationSet>
     <AssociationSet Name="accountlog" Association="opennosModel.Store.accountlog">
-      <End EntitySet="account" Role="account" />
-      <End EntitySet="connectionlog" Role="log" />
+      <End Role="account" EntitySet="account" />
+      <End Role="log" EntitySet="connectionlog" />
+    </AssociationSet>
+    <AssociationSet Name="portalMap" Association="opennosModel.Store.portalMap">
+      <End Role="portal" EntitySet="portal" />
+      <End Role="Map" EntitySet="map" />
+    </AssociationSet>
+    <AssociationSet Name="portalMap1" Association="opennosModel.Store.portalMap1">
+      <End Role="portal" EntitySet="portal" />
+      <End Role="Map" EntitySet="map" />
     </AssociationSet>
   </EntityContainer>
   <EntityType Name="account">
@@ -61,26 +70,34 @@
     <Property Name="Contribution" Type="int" Nullable="false" />
     <Property Name="Faction" Type="int" Nullable="false" />
   </EntityType>
-  <EntityType Name="portals">
+  <EntityType Name="portal">
     <Key>
       <PropertyRef Name="PortalId" />
     </Key>
     <Property Name="PortalId" Type="int" Nullable="false" />
-    <Property Name="SourceMapId" Type="int" Nullable="false" />
-    <Property Name="SourceX" Type="int" Nullable="false" />
-    <Property Name="SourceY" Type="int" Nullable="false" />
-    <Property Name="DestinationMapId" Type="int" Nullable="false" />
-    <Property Name="DestinationX" Type="int" Nullable="false" />
-    <Property Name="DestinationY" Type="int" Nullable="false" />
+    <Property Name="SourceX" Type="smallint" Nullable="false" />
+    <Property Name="SourceY" Type="smallint" Nullable="false" />
+    <Property Name="DestinationX" Type="smallint" Nullable="false" />
+    <Property Name="DestinationY" Type="smallint" Nullable="false" />
+    <Property Name="Type" Type="smallint" Nullable="false" />
+    <Property Name="DestinationMapId" Type="smallint" Nullable="false" />
+    <Property Name="SourceMapId" Type="smallint" Nullable="false" />
   </EntityType>
   <EntityType Name="connectionlog">
     <Key>
       <PropertyRef Name="LogId" />
     </Key>
-    <Property Name="LogId" Nullable="false" StoreGeneratedPattern="Identity" Type="bigint" />
-    <Property Name="AccountId" Nullable="false" Type="bigint" />
-    <Property Name="IpAddress" Nullable="false" Type="longtext" />
-    <Property Name="Timestamp" Nullable="false" Type="datetime" />
+    <Property Name="LogId" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="AccountId" Type="bigint" Nullable="false" />
+    <Property Name="IpAddress" Type="longtext" Nullable="false" />
+    <Property Name="Timestamp" Type="datetime" Nullable="false" />
+  </EntityType>
+  <EntityType Name="map">
+    <Key>
+      <PropertyRef Name="MapId" />
+    </Key>
+    <Property Name="MapId" Type="smallint" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Name" Type="longtext" Nullable="false" />
   </EntityType>
   <Association Name="AccountCharacter">
     <End Role="Account" Type="opennosModel.Store.account" Multiplicity="1" />
@@ -95,14 +112,38 @@
     </ReferentialConstraint>
   </Association>
   <Association Name="accountlog">
-    <End Type="opennosModel.Store.account" Multiplicity="1" Role="account" />
-    <End Type="opennosModel.Store.connectionlog" Multiplicity="*" Role="log" />
+    <End Role="account" Type="opennosModel.Store.account" Multiplicity="1" />
+    <End Role="log" Type="opennosModel.Store.connectionlog" Multiplicity="*" />
     <ReferentialConstraint>
       <Principal Role="account">
         <PropertyRef Name="AccountId" />
       </Principal>
       <Dependent Role="log">
         <PropertyRef Name="AccountId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="portalMap">
+    <End Role="portal" Type="opennosModel.Store.portal" Multiplicity="*" />
+    <End Role="Map" Type="opennosModel.Store.map" Multiplicity="1" />
+    <ReferentialConstraint>
+      <Principal Role="Map">
+        <PropertyRef Name="MapId" />
+      </Principal>
+      <Dependent Role="portal">
+        <PropertyRef Name="DestinationMapId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="portalMap1">
+    <End Role="portal" Type="opennosModel.Store.portal" Multiplicity="*" />
+    <End Role="Map" Type="opennosModel.Store.map" Multiplicity="1" />
+    <ReferentialConstraint>
+      <Principal Role="Map">
+        <PropertyRef Name="MapId" />
+      </Principal>
+      <Dependent Role="portal">
+        <PropertyRef Name="SourceMapId" />
       </Dependent>
     </ReferentialConstraint>
   </Association>
@@ -312,12 +353,15 @@
     </EntitySetMapping>
     <EntitySetMapping Name="portal">
       <EntityTypeMapping TypeName="IsTypeOf(opennosModel.Portal)">
-        <MappingFragment StoreEntitySet="portals">
+        <MappingFragment StoreEntitySet="portal">
           <ScalarProperty Name="PortalId" ColumnName="PortalId" />
           <ScalarProperty Name="SourceX" ColumnName="SourceX" />
           <ScalarProperty Name="SourceY" ColumnName="SourceY" />
           <ScalarProperty Name="DestinationX" ColumnName="DestinationX" />
           <ScalarProperty Name="DestinationY" ColumnName="DestinationY" />
+          <ScalarProperty Name="Type" ColumnName="Type" />
+          <ScalarProperty Name="DestinationMapId" ColumnName="DestinationMapId" />
+          <ScalarProperty Name="SourceMapId" ColumnName="SourceMapId" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -328,6 +372,14 @@
           <ScalarProperty Name="AccountId" ColumnName="AccountId" />
           <ScalarProperty Name="IpAddress" ColumnName="IpAddress" />
           <ScalarProperty Name="Timestamp" ColumnName="Timestamp" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="map">
+      <EntityTypeMapping TypeName="IsTypeOf(opennosModel.Map)">
+        <MappingFragment StoreEntitySet="map">
+          <ScalarProperty Name="MapId" ColumnName="MapId" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
