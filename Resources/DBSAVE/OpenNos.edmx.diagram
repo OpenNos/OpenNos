@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="f76ed05649d94abe8fc46f3ecc52e312" Name="Diagram1" ZoomLevel="102">
+        <EntityTypeShape EntityType="opennosModel.Account" Width="1.5" PointX="0.5" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="opennosModel.Character" Width="1.5" PointX="2.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="opennosModel.characterfamily" Width="1.5" PointX="4.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="opennosModel.family" Width="1.5" PointX="4.75" PointY="3.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="opennosModel.familyhistory" Width="1.5" PointX="6.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="opennosModel.friend" Width="1.5" PointX="6.75" PointY="3.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="opennosModel.inventory" Width="1.5" PointX="4.75" PointY="6.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="opennosModel.item" Width="1.5" PointX="6.75" PointY="6.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="opennosModel.skill" Width="1.5" PointX="0.75" PointY="8.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="opennosModel.miniland" Width="1.5" PointX="8.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="opennosModel.monster" Width="1.5" PointX="8.75" PointY="3.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="opennosModel.npc" Width="1.5" PointX="8.75" PointY="6.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="opennosModel.partner" Width="1.5" PointX="1.75" PointY="10.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="opennosModel.pet" Width="1.5" PointX="3.875" PointY="10.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="opennosModel.Portal" Width="1.5" PointX="10.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="opennosModel.rune" Width="1.5" PointX="10.75" PointY="4.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="opennosModel.shop" Width="1.5" PointX="10.75" PointY="6.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="opennosModel.warehouse" Width="1.5" PointX="10.75" PointY="9.75" IsExpanded="true" />
+        <AssociationConnector Association="opennosModel.AccountCharacter" />
+        <AssociationConnector Association="opennosModel.familyhistoryfamily" />
+        <AssociationConnector Association="opennosModel.inventoryitems" />
+        <AssociationConnector Association="opennosModel.itemsrunes" />
+        <AssociationConnector Association="opennosModel.familywarehouse" />
+        <EntityTypeShape EntityType="opennosModel.action" Width="1.5" PointX="0.5" PointY="6.375" />
+        <EntityTypeShape EntityType="opennosModel.ConnectionLog" Width="1.5" PointX="0.5" PointY="3.875" />
+        <AssociationConnector Association="opennosModel.npcshop" />
+        <AssociationConnector Association="opennosModel.accountlog" />
+        <AssociationConnector Association="opennosModel.familycharacterfamily" />
+        <EntityTypeShape EntityType="opennosModel.Map" Width="1.5" PointX="13.125" PointY="1.25" />
+        <AssociationConnector Association="opennosModel.portalMap" />
+        <AssociationConnector Association="opennosModel.portalMap1" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>
