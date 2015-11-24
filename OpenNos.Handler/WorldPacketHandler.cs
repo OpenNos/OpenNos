@@ -278,9 +278,9 @@ namespace OpenNos.Handler
                 {
                     if (!teleported && _session.Character.MapY >= portal.SrcY - 1 && _session.Character.MapY <= portal.SrcY + 1 && _session.Character.MapX >= portal.SrcX - 1 && _session.Character.MapX <= portal.SrcX + 1)
                     {
-                        _session.Character.Map = Convert.ToInt16(portal.DestMap);
-                        _session.Character.MapX = Convert.ToInt16(portal.DestX);
-                        _session.Character.MapY = Convert.ToInt16(portal.DestY);
+                        _session.Character.Map = portal.DestMap;
+                        _session.Character.MapX = portal.DestX;
+                        _session.Character.MapY = portal.DestY;
                         _session.Character.LastPortal = (((TimeSpan)(DateTime.Now - new DateTime(2010, 1, 1, 0, 0, 0))).TotalSeconds);
                         ChangeMap();
                         teleported = true;

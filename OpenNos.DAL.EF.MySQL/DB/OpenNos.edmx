@@ -501,7 +501,7 @@
           <Property Name="Slot" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="Pos" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="CharacterId" Type="Int64" Nullable="false" />
-          <NavigationProperty Name="items" Relationship="opennosModel.inventoryitems" FromRole="inventory" ToRole="items" />
+          <NavigationProperty Name="item" Relationship="opennosModel.inventoryitems" FromRole="inventory" ToRole="items" />
         </EntityType>
         <EntityType Name="item">
           <Key>
@@ -530,7 +530,7 @@
           <Property Name="SlMp" Type="Int32" />
           <Property Name="SlEle" Type="Int32" />
           <NavigationProperty Name="inventory" Relationship="opennosModel.inventoryitems" FromRole="items" ToRole="inventory" />
-          <NavigationProperty Name="runes" Relationship="opennosModel.itemsrunes" FromRole="items" ToRole="runes" />
+          <NavigationProperty Name="rune" Relationship="opennosModel.itemsrunes" FromRole="items" ToRole="runes" />
         </EntityType>
         <EntityType Name="skill">
           <Key>
@@ -609,12 +609,13 @@
             <PropertyRef Name="PortalId" />
           </Key>
           <Property Name="PortalId" Type="Int32" Nullable="false" />
-          <Property Name="SrcMap" Type="Int32" Nullable="false" />
-          <Property Name="SrcX" Type="Int32" Nullable="false" />
-          <Property Name="SrcY" Type="Int32" Nullable="false" />
-          <Property Name="DestMap" Type="Int32" Nullable="false" />
-          <Property Name="DestX" Type="Int32" Nullable="false" />
-          <Property Name="DestY" Type="Int32" Nullable="false" />
+          <Property Name="SrcMap" Type="Int16" Nullable="false" />
+          <Property Name="SrcX" Type="Int16" Nullable="false" />
+          <Property Name="SrcY" Type="Int16" Nullable="false" />
+          <Property Name="DestMap" Type="Int16" Nullable="false" />
+          <Property Name="DestX" Type="Int16" Nullable="false" />
+          <Property Name="DestY" Type="Int16" Nullable="false" />
+          <Property Name="Type" Type="Int16" Nullable="false" />
         </EntityType>
         <EntityType Name="rune">
           <Key>

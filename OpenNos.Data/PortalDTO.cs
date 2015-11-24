@@ -11,18 +11,19 @@ namespace OpenNos.Data
     {
         public int PortalId { get; set; }
 
-        public int SrcMap { get; set; }
+        public short SrcMap { get; set; }
 
-        public int SrcX { get; set; }
+        public short SrcX { get; set; }
 
-        public int SrcY { get; set; }
+        public short SrcY { get; set; }
 
+        public short DestMap { get; set; }
 
-        public int DestMap { get; set; }
+        public short DestX { get; set; }
 
-        public int DestX { get; set; }
+        public short DestY { get; set; }
 
-        public int DestY { get; set; }
+        public short Type { get; set; }
 
     }
 }
