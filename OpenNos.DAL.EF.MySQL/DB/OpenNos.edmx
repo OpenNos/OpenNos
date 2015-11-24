@@ -173,7 +173,7 @@
         <EntityContainer Name="OpenNosContainer" annotation:LazyLoadingEnabled="false">
           <EntitySet Name="account" EntityType="opennosModel.Account" />
           <EntitySet Name="character" EntityType="opennosModel.Character" />
-          <EntitySet Name="portals" EntityType="opennosModel.Portal" />
+          <EntitySet Name="portal" EntityType="opennosModel.Portal" />
           <AssociationSet Name="AccountCharacter" Association="opennosModel.AccountCharacter">
             <End Role="Account" EntitySet="account" />
             <End Role="Character" EntitySet="character" />
@@ -183,14 +183,14 @@
             <End EntitySet="account" Role="account" />
             <End EntitySet="connectionlog" Role="log" />
           </AssociationSet>
-          <EntitySet Name="MapSet" EntityType="opennosModel.Map" />
+          <EntitySet Name="map" EntityType="opennosModel.Map" />
           <AssociationSet Name="portalMap" Association="opennosModel.portalMap">
-            <End Role="portal" EntitySet="portals" />
-            <End Role="Map" EntitySet="MapSet" />
+            <End Role="portal" EntitySet="portal" />
+            <End Role="Map" EntitySet="map" />
           </AssociationSet>
           <AssociationSet Name="portalMap1" Association="opennosModel.portalMap1">
-            <End Role="portal" EntitySet="portals" />
-            <End Role="Map" EntitySet="MapSet" />
+            <End Role="portal" EntitySet="portal" />
+            <End Role="Map" EntitySet="map" />
           </AssociationSet>
         </EntityContainer>
         <Association Name="AccountCharacter">
@@ -310,7 +310,7 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
-    <EntitySetMapping Name="portals">
+    <EntitySetMapping Name="portal">
       <EntityTypeMapping TypeName="IsTypeOf(opennosModel.Portal)">
         <MappingFragment StoreEntitySet="portals">
           <ScalarProperty Name="PortalId" ColumnName="PortalId" />
