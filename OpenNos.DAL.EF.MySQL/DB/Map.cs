@@ -14,7 +14,19 @@ namespace OpenNos.DAL.EF.MySQL.DB
     
     public partial class Map
     {
-        public long MapId { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public Map()
+        {
+            this.sourceportal = new HashSet<Portal>();
+            this.destinationportal = new HashSet<Portal>();
+        }
+    
+        public short MapId { get; set; }
         public string Name { get; set; }
+    
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Portal> sourceportal { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Portal> destinationportal { get; set; }
     }
 }
