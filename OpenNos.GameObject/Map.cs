@@ -28,7 +28,7 @@ namespace OpenNos.GameObject
             _mapId = mapId;
             _uniqueIdentifier = uniqueIdentifier;
             LoadZone();
-            _portals = DAOFactory.PortalDAO.LoadFromMap((int)_mapId);
+            _portals = DAOFactory.PortalDAO.LoadFromMap(_mapId);
         }
 
         #endregion

@@ -20,6 +20,6 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public string Pos { get; set; }
         public long CharacterId { get; set; }
     
-        public virtual item items { get; set; }
+        public virtual item item { get; set; }
     }
 }

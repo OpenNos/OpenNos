@@ -79,7 +79,7 @@ namespace OpenNos.GameObject
         {
             List<String> gpList = new List<String>();
             foreach (PortalDTO portal in ServerManager.GetMap(this.Map).Portals)
-                gpList.Add(String.Format("gp {0} {1} {2} {3} {4}", portal.SrcX, portal.SrcY, portal.DestMap, -1 , 0));
+                gpList.Add(String.Format("gp {0} {1} {2} {3} {4}", portal.SrcX, portal.SrcY, portal.DestMap, portal.Type, 0));
             return gpList;
         }
         public string GenerateFd()
