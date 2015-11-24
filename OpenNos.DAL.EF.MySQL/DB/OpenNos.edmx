@@ -609,13 +609,13 @@
             <PropertyRef Name="PortalId" />
           </Key>
           <Property Name="PortalId" Type="Int32" Nullable="false" />
-          <Property Name="SrcMap" Type="Int16" Nullable="false" />
           <Property Name="SrcX" Type="Int16" Nullable="false" />
           <Property Name="SrcY" Type="Int16" Nullable="false" />
-          <Property Name="DestMap" Type="Int16" Nullable="false" />
           <Property Name="DestX" Type="Int16" Nullable="false" />
           <Property Name="DestY" Type="Int16" Nullable="false" />
           <Property Name="Type" Type="Int16" Nullable="false" />
+          <Property Name="SrcMap" Type="Int16" Nullable="false" />
+          <Property Name="DestMap" Type="Int16" Nullable="false" />
         </EntityType>
         <EntityType Name="rune">
           <Key>
@@ -700,6 +700,7 @@
             <End Role="family" EntitySet="family" />
             <End Role="characterfamily" EntitySet="CharacterFamily" />
           </AssociationSet>
+          <EntitySet Name="MapSet" EntityType="opennosModel.Map" />
         </EntityContainer>
         <Association Name="AccountCharacter">
           <End Type="opennosModel.Account" Role="Account" Multiplicity="1" />
@@ -784,6 +785,13 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="Map">
+          <Key>
+            <PropertyRef Name="MapId" />
+          </Key>
+          <Property Name="MapId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" Nullable="false" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -994,10 +1002,8 @@
       <EntityTypeMapping TypeName="IsTypeOf(opennosModel.portal)">
         <MappingFragment StoreEntitySet="portals">
           <ScalarProperty Name="PortalId" ColumnName="PortalId" />
-          <ScalarProperty Name="SrcMap" ColumnName="SrcMap" />
           <ScalarProperty Name="SrcX" ColumnName="SrcX" />
           <ScalarProperty Name="SrcY" ColumnName="SrcY" />
-          <ScalarProperty Name="DestMap" ColumnName="DestMap" />
           <ScalarProperty Name="DestX" ColumnName="DestX" />
           <ScalarProperty Name="DestY" ColumnName="DestY" />
         </MappingFragment>

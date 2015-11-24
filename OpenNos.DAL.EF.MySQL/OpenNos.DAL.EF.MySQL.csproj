@@ -79,6 +79,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DB\Map.cs">
+      <DependentUpon>OpenNos.tt</DependentUpon>
+    </Compile>
     <Compile Include="PortalDAO.cs" />
     <Compile Include="AccountDAO.cs" />
     <Compile Include="CharacterDAO.cs" />

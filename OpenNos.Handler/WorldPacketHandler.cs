@@ -274,7 +274,7 @@ namespace OpenNos.Handler
             double def = (((TimeSpan)(DateTime.Now - new DateTime(2010, 1, 1, 0, 0, 0))).TotalSeconds) - (_session.Character.LastPortal);
             if (def >= 4)
             {
-                foreach (PortalDTO portal in ServerManager.GetMap(_session.Character.Map).Portals)
+                foreach (Portal portal in ServerManager.GetMap(_session.Character.Map).Portals)
                 {
                     if (!teleported && _session.Character.MapY >= portal.SrcY - 1 && _session.Character.MapY <= portal.SrcY + 1 && _session.Character.MapX >= portal.SrcX - 1 && _session.Character.MapX <= portal.SrcX + 1)
                     {
