@@ -46,5 +46,6 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public virtual DbSet<warehouse> warehouse { get; set; }
         public virtual DbSet<action> actionSet1 { get; set; }
         public virtual DbSet<ConnectionLog> connectionlog { get; set; }
+        public virtual DbSet<Map> MapSet { get; set; }
     }
 }

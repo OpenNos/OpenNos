@@ -33,6 +33,7 @@
         <AssociationConnector Association="opennosModel.npcshop" />
         <AssociationConnector Association="opennosModel.accountlog" />
         <AssociationConnector Association="opennosModel.familycharacterfamily" />
+        <EntityTypeShape EntityType="opennosModel.Map" Width="1.5" PointX="13.125" PointY="1.25" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

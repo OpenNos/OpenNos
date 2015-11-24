@@ -12,15 +12,9 @@ namespace OpenNos.DAL.EF.MySQL.DB
     using System;
     using System.Collections.Generic;
     
-    public partial class portal
+    public partial class Map
     {
-        public int PortalId { get; set; }
-        public short SrcX { get; set; }
-        public short SrcY { get; set; }
-        public short DestX { get; set; }
-        public short DestY { get; set; }
-        public short Type { get; set; }
-        public short SrcMap { get; set; }
-        public short DestMap { get; set; }
+        public long MapId { get; set; }
+        public string Name { get; set; }
     }
 }

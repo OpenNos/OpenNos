@@ -78,7 +78,7 @@ namespace OpenNos.GameObject
         public List<String> GenerateGp()
         {
             List<String> gpList = new List<String>();
-            foreach (PortalDTO portal in ServerManager.GetMap(this.Map).Portals)
+            foreach (Portal portal in ServerManager.GetMap(this.Map).Portals)
                 gpList.Add(String.Format("gp {0} {1} {2} {3} {4}", portal.SrcX, portal.SrcY, portal.DestMap, portal.Type, 0));
             return gpList;
         }

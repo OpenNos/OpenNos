@@ -16,7 +16,7 @@ namespace OpenNos.GameObject
         private int _xLength;
         private int _yLength;
         private Guid _uniqueIdentifier;
-        private IEnumerable<PortalDTO> _portals;
+        private List<Portal> _portals;
         private ThreadedBase<MapPacket> threadedBase;
 
         #endregion
@@ -28,7 +28,23 @@ namespace OpenNos.GameObject
             _mapId = mapId;
             _uniqueIdentifier = uniqueIdentifier;
             LoadZone();
-            _portals = DAOFactory.PortalDAO.LoadFromMap(_mapId);
+            IEnumerable<PortalDTO> portalsDTO = DAOFactory.PortalDAO.LoadFromMap(_mapId);
+            _portals = new List<Portal>();
+            foreach (PortalDTO portal in portalsDTO)
+            {
+                _portals.Add( new GameObject.Portal()
+                {
+                    DestMap = portal.DestMap,
+                    SrcMap = portal.SrcMap,
+                    SrcX = portal.SrcX,
+                    SrcY = portal.SrcX,
+                    DestX = portal.DestX,
+                    DestY = portal.DestX,
+                    Type = portal.Type,
+                    PortalId = portal.PortalId
+
+                });
+            }
         }
 
         #endregion
@@ -49,7 +65,7 @@ namespace OpenNos.GameObject
 
         #region Methods
 
-        public IEnumerable<PortalDTO> Portals
+        public List<Portal> Portals
         {
             get
             {

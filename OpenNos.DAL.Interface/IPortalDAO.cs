@@ -5,6 +5,6 @@ namespace  OpenNos.DAL.Interface
 {
     public interface IPortalDAO
     {
-        IEnumerable<PortalDTO> LoadFromMap(int MapId);
+        IEnumerable<PortalDTO> LoadFromMap(short MapId);
     }
 }
