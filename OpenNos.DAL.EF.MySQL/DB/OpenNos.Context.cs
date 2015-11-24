@@ -28,8 +28,8 @@ namespace OpenNos.DAL.EF.MySQL.DB
     
         public virtual DbSet<Account> account { get; set; }
         public virtual DbSet<Character> character { get; set; }
-        public virtual DbSet<Portal> portals { get; set; }
+        public virtual DbSet<Portal> portal { get; set; }
         public virtual DbSet<ConnectionLog> connectionlog { get; set; }
-        public virtual DbSet<Map> MapSet { get; set; }
+        public virtual DbSet<Map> map { get; set; }
     }
 }
