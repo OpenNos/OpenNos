@@ -34,12 +34,12 @@ namespace OpenNos.GameObject
             {
                 _portals.Add( new GameObject.Portal()
                 {
-                    DestMap = portal.DestMap,
-                    SrcMap = portal.SrcMap,
-                    SrcX = portal.SrcX,
-                    SrcY = portal.SrcX,
-                    DestX = portal.DestX,
-                    DestY = portal.DestX,
+                    DestMap = portal.DestinationMapId,
+                    SrcMap = portal.SourceMapId,
+                    SrcX = portal.SourceX,
+                    SrcY = portal.SourceY,
+                    DestX = portal.DestinationX,
+                    DestY = portal.DestinationY,
                     Type = portal.Type,
                     PortalId = portal.PortalId
 
