@@ -44,7 +44,7 @@ namespace OpenNos.GameObject
 
         }
 
-        public static Map GetMap(long id)
+        public static Map GetMap(short id)
         {
             return _maps.SingleOrDefault(m => m.Value.MapId.Equals(id)).Value;
         }
