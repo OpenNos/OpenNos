@@ -94,6 +94,7 @@ namespace OpenNos.DAL.EF.MySQL
                return Mapper.Map<CharacterDTO>(context.character.SingleOrDefault(c => c.Name.Equals(name)));
             }
         }
+      
         public CharacterDTO LoadBySlot(long accountId, byte slot)
         {
             using (var context = DataAccessHelper.CreateContext())

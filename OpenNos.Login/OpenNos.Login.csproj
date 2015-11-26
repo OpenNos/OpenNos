@@ -189,6 +189,14 @@
       <Project>{4aecc47d-098a-4493-8e1e-d10edbb7a189}</Project>
       <Name>OpenNos.DAL.EF.MySQL</Name>
     </ProjectReference>
+    <ProjectReference Include="..\OpenNos.DAL.Interface\OpenNos.DAL.Interface.csproj">
+      <Project>{175c851b-8dc8-43a5-af93-af32d106cd77}</Project>
+      <Name>OpenNos.DAL.Interface</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\OpenNos.DAL\OpenNos.DAL.csproj">
+      <Project>{d8c8a266-3d46-42c5-a492-28c75db85ba8}</Project>
+      <Name>OpenNos.DAL</Name>
+    </ProjectReference>
     <ProjectReference Include="..\OpenNos.Data\OpenNos.Data.csproj">
       <Project>{f1071ded-3d92-4416-9b9c-8664441ade64}</Project>
       <Name>OpenNos.Data</Name>
@@ -222,14 +230,17 @@
     <EmbeddedResource Include="Resource\LocalizedResources.de.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>LocalizedResources.de.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Resource\LocalizedResources.fr.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>LocalizedResources.fr.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Resource\LocalizedResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>LocalizedResources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

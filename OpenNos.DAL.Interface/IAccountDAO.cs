@@ -42,6 +42,7 @@ namespace OpenNos.DAL.Interface
         SaveResult InsertOrUpdate(ref AccountDTO account);
 
         DeleteResult Delete(long accountId);
+       
 
         #endregion
     }
