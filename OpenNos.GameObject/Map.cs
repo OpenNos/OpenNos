@@ -13,6 +13,7 @@ namespace OpenNos.GameObject
 
         private char[,] _grid;
         private short _mapId;
+        private string Name { get; set; }
         private int _xLength;
         private int _yLength;
         private Guid _uniqueIdentifier;
