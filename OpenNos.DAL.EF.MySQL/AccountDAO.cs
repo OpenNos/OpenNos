@@ -27,6 +27,7 @@ namespace OpenNos.DAL.EF.MySQL
 {
     public class AccountDAO : IAccountDAO
     {
+
         public bool IsLoggedIn(string name)
         {
             using (var context = DataAccessHelper.CreateContext())
@@ -64,6 +65,7 @@ namespace OpenNos.DAL.EF.MySQL
 
             return null;
         }
+     
 
         public void LogIn(string name)
         {

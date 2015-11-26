@@ -28,10 +28,19 @@ namespace OpenNos.DAL
         private static IAccountDAO _accountDAO;
         private static ICharacterDAO _characterDAO;
         private static IPortalDAO _portalDAO;
+        private static IMapDAO _mapDAO;
         #endregion
 
         #region Properties
-
+        public DAOFactory()
+        {
+             
+                if (_accountDAO == null)
+                {
+                    _accountDAO = new MySQL.AccountDAO();
+                }
+                      
+        }
         public static IAccountDAO AccountDAO
         {
             get
@@ -67,6 +76,18 @@ namespace OpenNos.DAL
                 }
 
                 return _portalDAO;
+            }
+        }
+        public static IMapDAO MapDAO
+        {
+            get
+            {
+                if (_mapDAO == null)
+                {
+                    _mapDAO = new MySQL.MapDAO();
+                }
+
+                return _mapDAO;
             }
         }
 

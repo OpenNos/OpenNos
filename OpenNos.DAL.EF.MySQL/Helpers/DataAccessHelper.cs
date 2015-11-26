@@ -12,6 +12,7 @@
  * GNU General Public License for more details.
  */
 using AutoMapper;
+using OpenNos.Core;
 using OpenNos.DAL.EF.MySQL.DB;
 using OpenNos.Data;
 using System;
@@ -71,11 +72,23 @@ namespace OpenNos.DAL.EF.MySQL
             }
         }
 
-        public static void Initialize()
+        public static bool Initialize()
         {
             using (var context = CreateContext())
             {
                 context.Database.Initialize(force: true);
+                try
+                {
+                    context.Database.Connection.Open();
+
+                    Logger.Log.Info(Language.Instance.GetMessageFromKey("DATABASE_HAS_BEEN_INITIALISE"));
+                }
+                catch(Exception ex)
+                {
+                    Logger.Log.Error(ex.Message);
+                    return false;
+                }
+                return true;
             }
         }
 

@@ -13,6 +13,7 @@
  */
 using log4net;
 using OpenNos.Core;
+using OpenNos.DAL;
 using OpenNos.DAL.EF.MySQL;
 using OpenNos.Domain;
 using OpenNos.GameObject;
@@ -43,7 +44,6 @@ namespace OpenNos.World
           
             //initialize DB
             DataAccessHelper.Initialize();
-            Logger.Log.Info(Language.Instance.GetMessageFromKey("DATABASE_HAS_BEEN_INITIALISE"));
             //initialilize maps
             ServerManager.Initialize();
             string ip = System.Configuration.ConfigurationManager.AppSettings["WorldIp"];
