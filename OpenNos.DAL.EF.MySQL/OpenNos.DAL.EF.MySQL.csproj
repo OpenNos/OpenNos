@@ -85,6 +85,7 @@
     <Compile Include="DB\Portal.cs">
       <DependentUpon>OpenNos.tt</DependentUpon>
     </Compile>
+    <Compile Include="MapDAO.cs" />
     <Compile Include="PortalDAO.cs" />
     <Compile Include="AccountDAO.cs" />
     <Compile Include="CharacterDAO.cs" />

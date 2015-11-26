@@ -40,6 +40,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MapDTO.cs" />
     <Compile Include="PortalDTO.cs" />
     <Compile Include="AccountDTO.cs" />
     <Compile Include="CharacterDTO.cs" />

@@ -49,6 +49,8 @@ namespace OpenNos.DAL.EF.MySQL
             Mapper.CreateMap<CharacterDTO, Character>();
             Mapper.CreateMap<Portal, PortalDTO>();
             Mapper.CreateMap<PortalDTO, Portal>();
+            Mapper.CreateMap<Map, MapDTO>();
+            Mapper.CreateMap<MapDTO, Map>();
         }
 
         #endregion
