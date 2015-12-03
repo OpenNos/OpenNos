@@ -27,7 +27,7 @@ namespace OpenNos.DAL.EF.MySQL
 {
     public class AccountDAO : IAccountDAO
     {
-
+       
         public bool IsLoggedIn(string name)
         {
             using (var context = DataAccessHelper.CreateContext())
@@ -38,6 +38,7 @@ namespace OpenNos.DAL.EF.MySQL
 
         public AccountDTO LoadBySessionId(int sessionId)
         {
+          
             using (var context = DataAccessHelper.CreateContext())
             {
                 Account account = context.account.FirstOrDefault(a => a.LastSession.Equals(sessionId));

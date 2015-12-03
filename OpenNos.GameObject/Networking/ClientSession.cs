@@ -152,7 +152,7 @@ namespace OpenNos.GameObject
                 return;
             }
             
-                string packetConcatenated = _encryptor.Decrypt(packetData, packetData.Length, (int)this.SessionId);
+                string packetConcatenated = _encryptor.Decrypt(packetData, (int)this.SessionId);
 
           
 

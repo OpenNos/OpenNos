@@ -80,7 +80,15 @@ namespace OpenNos.DAL.EF.MySQL
                 try
                 {
                     context.Database.Connection.Open();
-
+                    /*add on line as above for each tableset
+                   (it will load the table at startup and will speedup the first query)
+                   */
+                    context.account.Any();
+                    context.map.Any();
+                    context.portal.Any();
+                    context.connectionlog.Any();
+                    context.character.Any();
+                   
                     Logger.Log.Info(Language.Instance.GetMessageFromKey("DATABASE_HAS_BEEN_INITIALISE"));
                 }
                 catch(Exception ex)

@@ -22,8 +22,9 @@ namespace OpenNos.Core
     public class LoginEncryption : EncryptionBase
     { 
         public LoginEncryption() : base(false) { }
-        public override string Decrypt(byte[] data, int size, int customParameter = 0)
+        public override string Decrypt(byte[] data, int customParameter = 0)
         {
+            int size = data.Length;
             string result;
             try
             {
