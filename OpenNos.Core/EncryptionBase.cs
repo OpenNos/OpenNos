@@ -49,7 +49,7 @@ namespace OpenNos.Core
 
         public abstract string DecryptCustomParameter(byte[] data);
 
-        public abstract string Decrypt(byte[] data, int size, int customParameter = 0);
+        public abstract string Decrypt(byte[] data, int customParameter = 0);
 
         public abstract byte[] Encrypt(string data);
 

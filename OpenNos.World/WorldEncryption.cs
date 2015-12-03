@@ -25,8 +25,9 @@ namespace OpenNos.World
     {
         public WorldEncryption() : base(true) { }
     
-        public override string Decrypt(byte[] str, int length, int session_id)
+        public override string Decrypt(byte[] str, int session_id)
         {
+            int length = str.Length ;
             string encrypted_string = "";
             byte session_key = (byte)(session_id & 0xFF);
             byte session_number = (byte)(session_id >> 6);
@@ -100,11 +101,13 @@ namespace OpenNos.World
             string save = "";
             for (int i = 0; i < bytes.Length; i++)
             {
-                save += Decrypt2(bytes[i]);
+                
+                save += Decrypt2(bytes[i]);         
                 save += (char)0xFF;
-            }
 
+            }
             return save;
+          
         }
 
         public static string Decrypt2(byte[] str)
@@ -138,12 +141,17 @@ namespace OpenNos.World
                     for (int i = 0; i < (int)len;)
                     {
                         count++;
-
-                        byte highbyte = str[count];
+                        byte highbyte = 0xF;
+                        byte lowbyte = 0xF;
+                        if (count > 0 && count <= str.Length-1)
+                        { 
+                            highbyte = str[count];
+                            lowbyte = str[count];
+                        }
                         highbyte &= 0xF0;
                         highbyte >>= 0x4;
 
-                        byte lowbyte = str[count];
+                       
                         lowbyte &= 0x0F;
 
                         if (highbyte != 0x0 && highbyte != 0xF)
