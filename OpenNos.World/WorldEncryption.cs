@@ -73,7 +73,6 @@ namespace OpenNos.World
                     break;
 
                 default:
-                    encrypted_string += 0xF;
                     break;
             }
 
@@ -111,7 +110,6 @@ namespace OpenNos.World
 
                         decrypted_string += getextendedascii((count < str.Length ? str[count] : 0) ^ 0xFF);
                     }
-                    int x = decrypted_string[1];
                     count++;
                 }
                 else
