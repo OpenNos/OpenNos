@@ -41,7 +41,7 @@ namespace OpenNos.World
                     {
                         byte firstbyte = (byte)(session_key + 0x40);
                         byte highbyte = (byte)(str[i] - firstbyte);
-                        encrypted_string += highbyte + " ";
+                        encrypted_string += getextendedascii(highbyte);
                     }
                     break;
 
@@ -50,7 +50,7 @@ namespace OpenNos.World
                     {
                         byte firstbyte = (byte)(session_key + 0x40);
                         byte highbyte = (byte)(str[i] + firstbyte);
-                        encrypted_string += highbyte + " ";
+                        encrypted_string += getextendedascii(highbyte);
                     }
                     break;
 
@@ -59,7 +59,7 @@ namespace OpenNos.World
                     {
                         byte firstbyte = (byte)(session_key + 0x40);
                         byte highbyte = (byte)(str[i] - firstbyte ^ 0xC3);
-                        encrypted_string += highbyte + " ";
+                        encrypted_string += getextendedascii(highbyte);
                     }
                     break;
 
@@ -68,7 +68,7 @@ namespace OpenNos.World
                     {
                         byte firstbyte = (byte)(session_key + 0x40);
                         byte highbyte = (byte)(str[i] + firstbyte ^ 0xC3);
-                        encrypted_string += highbyte + " ";
+                        encrypted_string += getextendedascii(highbyte);
                     }
                     break;
 
@@ -77,32 +77,13 @@ namespace OpenNos.World
                     break;
             }
 
-            /* string[] var2 = encrypted_string.Split(' ');
-             byte[] bytes = new byte[var2.Length-1];
-          for (int i = 0; i < bytes.Length; i++)
-          {
-              bytes[i] = Byte.Parse(var2[i]);
-          }
-
-          string save = "";
-           save += DecryptGamePacket2(bytes);
-           */
-            string[] var2 = encrypted_string.Split(new string[] { "255 " }, StringSplitOptions.None);// return string less 255 (2 strings)
-            byte[][] bytes = new byte[var2.Length - 1][];
-            for (int i = 0; i < bytes.Length; i++)
-            {
-                string[] temp = var2[i].Split(' ');
-                bytes[i] = new byte[temp.Length - 1];
-                for (int j = 0; j < bytes[i].Length; j++)
-                {
-                    bytes[i][j] = Byte.Parse(temp[j]);
-                }
-            }
+            string[] bytes = encrypted_string.Split((char)0xFF);// return string less 255 (2 strings)
+        
             string save = "";
             for (int i = 0; i < bytes.Length; i++)
             {
                 
-                save += Decrypt2(bytes[i]);         
+                save += Decrypt2(System.Text.ASCIIEncoding.Default.GetBytes(bytes[i]));         
                 save += (char)0xFF;
 
             }
@@ -114,7 +95,7 @@ namespace OpenNos.World
         {
 
             string decrypted_string = "";
-            char[] table = { ' ', '-', '.', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '\n' };
+            char[] table = { ' ', '-', '.', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'n' };
             int count = 0;
 
 
