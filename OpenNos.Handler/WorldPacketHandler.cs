@@ -196,6 +196,8 @@ namespace OpenNos.Handler
         #region Map
         public void ChangeMap()
         {
+            _session.Client.SendPacket(_session.Character.GenerateMapOut());
+            _session.CurrentMap.BroadCast(_session, _session.Character.GenerateOut(), ReceiverType.AllExceptMe);
             _session.Client.SendPacket(_session.Character.GenerateCInfo());
             _session.Client.SendPacket(_session.Character.GenerateFd());
             //TODO if first connect add _session.Client.SendPacket(String.Format("scene 40"));
@@ -208,9 +210,10 @@ namespace OpenNos.Handler
                 _session.Client.SendPacket(portalPacket);
             //sc
             _session.Client.SendPacket(_session.Character.GenerateCond());
-            //pairy
+            //pairyz
             _session.Client.SendPacket(String.Format("rsfi {0} {1} {2} {3} {4} {5}", 1, 1, 4, 9, 4, 9));
-
+            foreach (String inPacket in ServerManager.GetMap(_session.Character.Map).GetInPacketArray(_session.Character.CharacterId))
+                _session.Client.SendPacket(inPacket);
             _session.CurrentMap.BroadCast(_session, _session.Character.GenerateIn(), ReceiverType.All);
 
         }

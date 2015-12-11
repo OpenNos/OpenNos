@@ -18,6 +18,7 @@ namespace OpenNos.GameObject
         private int _yLength;
         private Guid _uniqueIdentifier;
         private List<Portal> _portals;
+        private Dictionary<String,Character> _characterRegistered;
         private ThreadedBase<MapPacket> threadedBase;
 
         #endregion
@@ -27,6 +28,7 @@ namespace OpenNos.GameObject
         {
             threadedBase = new ThreadedBase<MapPacket>(500, HandlePacket);
             _mapId = mapId;
+            _characterRegistered = new Dictionary<String,Character>();
             _uniqueIdentifier = uniqueIdentifier;
             LoadZone();
             IEnumerable<PortalDTO> portalsDTO = DAOFactory.PortalDAO.LoadFromMap(_mapId);
@@ -59,13 +61,42 @@ namespace OpenNos.GameObject
                 return _mapId;
             }
         }
-
+        public List<String> GetInPacketArray(long ExcludeCharacterId)
+        {
+            List<String> list = new List<String>();
+            foreach (Character character in _characterRegistered.Values)
+            {
+                if(character.CharacterId != ExcludeCharacterId)
+                list.Add(character.GenerateIn());
+            }
+            
+            return list;
+        }
         public EventHandler NotifyClients { get; set; }
 
         #endregion
 
         #region Methods
-
+        public void RegisterCharacter(Character character)
+        {
+            if(character.Name != null)
+            if(_characterRegistered.ContainsKey(character.Name))
+            {
+                _characterRegistered[character.Name] = character;
+            }
+             else
+            {
+                _characterRegistered.Add(character.Name, character);
+            }
+        }
+        public void UnregisterCharacter(Character character)
+        {
+            if (character.Name != null)
+                if (_characterRegistered.ContainsKey(character.Name))
+                {
+                    _characterRegistered.Remove(character.Name);
+                }
+        }
         public List<Portal> Portals
         {
             get

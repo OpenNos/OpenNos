@@ -90,6 +90,7 @@ namespace OpenNos.GameObject
         {
             ClientSession session;
             _sessions.TryRemove(e.Client.ClientId, out session);
+            session.CurrentMap.BroadCast(session, session.Character.GenerateOut(), ReceiverType.AllExceptMe);
             session.UnregisterForMapNotification();
             session.Destroy();
             e.Client.Disconnect();
