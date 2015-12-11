@@ -174,14 +174,11 @@ namespace OpenNos.Core.Communication.Scs.Communication.Channels.Tcp
                 if (bytesRead > 0)
                 {
                     LastReceivedMessageTime = DateTime.Now;
-
                     //Copy received bytes to a new byte array
                     var receivedBytes = new byte[bytesRead];
-                    Array.Copy(_buffer, 0, receivedBytes, 0, bytesRead);
-
+                    Array.Copy(_buffer, receivedBytes, bytesRead);
                     //Read messages according to current wire protocol
                     var messages = WireProtocol.CreateMessages(receivedBytes);
-                    
                     //Raise MessageReceived event for all received messages
                     foreach (var message in messages)
                     {

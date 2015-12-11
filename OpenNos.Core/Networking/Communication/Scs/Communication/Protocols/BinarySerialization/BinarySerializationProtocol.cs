@@ -97,8 +97,9 @@ namespace OpenNos.Core.Communication.Scs.Communication.Protocols.BinarySerializa
             _receiveMemoryStream.Write(receivedBytes, 0, receivedBytes.Length);
             //Create a list to collect messages
             var messages = new List<IScsMessage>();
+           
             //Read all available messages and add to messages collection
-            while (ReadSingleMessage(messages)) { }
+            while (ReadSingleMessage(messages)) {  }
             //Return message list
             return messages;
         }
@@ -226,7 +227,6 @@ namespace OpenNos.Core.Communication.Scs.Communication.Protocols.BinarySerializa
             //Read bytes of serialized message and deserialize it
             var serializedMessageBytes = ReadByteArray(_receiveMemoryStream, messageLength);
             messages.Add(DeserializeMessage(serializedMessageBytes));
-
             //Read remaining bytes to an array
             if (_receiveMemoryStream.Length != _receiveMemoryStream.Position)
             {
