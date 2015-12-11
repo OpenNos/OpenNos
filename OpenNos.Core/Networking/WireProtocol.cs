@@ -19,6 +19,7 @@ using System.Linq;
 using OpenNos.Core.Communication.Scs.Communication.Protocols;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace OpenNos.Core
 {
@@ -70,8 +71,10 @@ namespace OpenNos.Core
             //Read all available messages and add to messages collection
             while (ReadSingleMessage(messages)) { }
             //Return message list
+
             return messages;
         }
+
 
         /// <summary>
         /// This method tries to read a single message and add to the messages collection. 
@@ -113,7 +116,7 @@ namespace OpenNos.Core
             var serializedMessageBytes = ReadByteArray(_receiveMemoryStream, frameLength);
             messages.Add(new ScsRawDataMessage(serializedMessageBytes));
 
-            //Read remaining bytes to an array
+           //Read remaining bytes to an array
             if (_receiveMemoryStream.Length > frameLength)
             {
                 var remainingBytes = ReadByteArray(_receiveMemoryStream, (short)(_receiveMemoryStream.Length - frameLength));
