@@ -43,7 +43,7 @@ namespace OpenNos.GameObject
 
         #region Instantiation
 
-        public NetworkManager(string ipAddress, int port, IList<Type> packetHandlers, bool useFraming)
+        public NetworkManager(string ipAddress, int port, IList<Type> packetHandlers)
         {
             _packetHandlers = packetHandlers;
             _encryptor = (EncryptorT)Activator.CreateInstance(typeof(EncryptorT));
@@ -52,7 +52,7 @@ namespace OpenNos.GameObject
             //Register events of the server to be informed about clients
             server.ClientConnected += Server_ClientConnected;
             server.ClientDisconnected += Server_ClientDisconnected;
-            server.WireProtocolFactory = new WireProtocolFactory<EncryptorT>(useFraming);
+            server.WireProtocolFactory = new WireProtocolFactory<EncryptorT>();
 
             server.Start(); //Start the server
 
