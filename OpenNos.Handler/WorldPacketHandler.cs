@@ -336,6 +336,68 @@ namespace OpenNos.Handler
 
         #endregion
 
+        #region AdminCommand
+        [Packet("$Teleport")]
+        public void Teleport(string packet)
+        {
+            if (_session.Character.Authority == 2)//if gm
+            {
+                string[] packetsplit = packet.Split(' ');
+                short[] arg = new short[3];
+                bool verify = false;
+                if (packetsplit.Length > 4)
+                {
+                    verify = (short.TryParse(packetsplit[2], out arg[0]) && short.TryParse(packetsplit[3], out arg[1]) && short.TryParse(packetsplit[4], out arg[2]));
+                }
+                switch (packetsplit.Length)
+                {
+
+
+                    case 5:
+                        if(verify)
+                        {
+                            _session.Character.Map = arg[0];
+                            _session.Character.MapX = arg[1];
+                            _session.Character.MapY = arg[2];
+                            ChangeMap();
+                        }
+                        break;
+                    default:
+                        _session.Client.SendPacket(String.Format("say 1 {0} 1 $Teleport Map X Y", _session.Character.CharacterId));
+                        break;
+                }
+            }
+        }
+        [Packet("$Speed")]
+        public void Speed(string packet)
+        {
+            if (_session.Character.Authority == 2)//if gm
+            {
+                string[] packetsplit = packet.Split(' ');
+                int arg = 0;
+                bool verify = false;
+                if (packetsplit.Length > 2)
+                {
+                    verify = (int.TryParse(packetsplit[2], out arg));
+                }
+                switch (packetsplit.Length)
+                {
+
+
+                    case 3:
+                        if (verify)
+                        {
+                            _session.Character.Speed = arg;
+                        }
+                        break;
+                    default:
+                        _session.Client.SendPacket(String.Format("say 1 {0} 1  $Speed SPEED", _session.Character.CharacterId));
+                        break;
+                }
+            }
+        }
+        #endregion
+
         #region UselessPacket
         [Packet("snap")]
         public void Snap(string packet)
