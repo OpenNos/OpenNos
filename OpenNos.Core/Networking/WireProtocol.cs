@@ -39,16 +39,11 @@ namespace OpenNos.Core
         /// </summary>
         private MemoryStream _receiveMemoryStream;
 
-        private byte _framingDelimiter;
-        private bool _useFraming;
-
         #endregion
 
-        public WireProtocol(byte framingDelimiter, bool useFraming = true)
+        public WireProtocol()
         {
             _receiveMemoryStream = new MemoryStream();
-            _framingDelimiter = framingDelimiter;
-            _useFraming = useFraming;
             _connectionHistory = new Dictionary<String, DateTime>();
         }
 
@@ -95,16 +90,8 @@ namespace OpenNos.Core
                 return false;
             }
 
-            //get length of frame to read in this iteration with fake index
-            short frameLength = (short)_receiveMemoryStream.ToArray().Select((s, i) => new { i, s })
-                .Where(t => t.s == _framingDelimiter)
-                .Select(t => t.i).FirstOrDefault();
-
-            //read full buffer if the framing is deactivated or the packet is the last packet without framing offset
-            if(!_useFraming || (frameLength == 0 && frameLength < _receiveMemoryStream.Length))
-            {
-                frameLength = (short)_receiveMemoryStream.Length;
-            }
+            //get length of frame
+            short frameLength = (short)_receiveMemoryStream.Length;
 
             //Read length of the message
             if (frameLength > MaxMessageLength)
