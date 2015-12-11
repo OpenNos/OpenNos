@@ -3,73 +3,303 @@ using OpenNos.Data;
 using OpenNos.Domain;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace OpenNos.GameObject
 {
-    public class Character
+    public class Character : INotifyPropertyChanged
     {
-        public long CharacterId { get; set; }
+        private void OnPropertyChanged()
+        {
+             ServerManager.GetMap(Map).RegisterCharacter(this);          
+        }
+        private long characterId;
+        public long CharacterId
+        {
+            get { return characterId; }
+            set
+            {
+                characterId = value;
+                OnPropertyChanged();
+            }
+        }
 
-        public long AccountId { get; set; }
+        public long accountId;
+        public long AccountId
+        {
+            get { return accountId; }
+            set
+            {
+                accountId = value;
+                OnPropertyChanged();
+            }
+        }
+        public string name;
+        public string Name
+        {
+            get { return name; }
+            set
+            {
+                name = value;
+                OnPropertyChanged();
+            }
+        }
+        public byte slot;
+        public byte Slot
+        {
+            get { return slot; }
+            set
+            {
+                slot = value;
+                OnPropertyChanged();
+            }
+        }
+        public byte gender;
+        public byte Gender
+        {
+            get { return gender; }
+            set
+            {
+                gender = value;
+                OnPropertyChanged();
+            }
+        }
 
-        public string Name { get; set; }
+        public byte classobj;
+        public byte Class
+        {
+            get { return classobj; }
+            set
+            {
+                classobj = value;
+                OnPropertyChanged();
+            }
+        }
+        public byte hairStyle;
+        public byte HairStyle
+        {
+            get { return hairStyle; }
+            set
+            {
+                hairStyle = value;
+                OnPropertyChanged();
+            }
+        }
+        public byte hairColor;
+        public byte HairColor
+        {
+            get { return hairColor; }
+            set
+            {
+                hairColor = value;
+                OnPropertyChanged();
+            }
+        }
+        public short map;
+        public short Map {
+            get { return map; }
+            set
+            {
+                ServerManager.GetMap(Map).UnregisterCharacter(this);
+                map = value;
+                OnPropertyChanged();
+            }
+        }
+        public short mapX;
+        public short MapX {
+            get { return mapX; }
+            set
+            {
+                mapX = value;
+                OnPropertyChanged();
+            }
+        }
+        public short mapY;
+        public short MapY {
+            get { return mapY; }
+            set
+            {
+                mapY = value;
+                OnPropertyChanged();
+            }
+        }
+        public int hp;
+        public int Hp {
+            get { return hp; }
+            set
+            {
+                hp = value;
+                OnPropertyChanged();
+            }
+        }
+        public int mp;
+        public int Mp {
+            get { return mp; }
+            set
+            {
+                mp = value;
+                OnPropertyChanged();
+            }
+        }
+        public long gold;
+        public long Gold {
+            get { return gold; }
+            set
+            {
+                gold = value;
+                OnPropertyChanged();
+            }
+        }
+        public byte jobLevel;
+        public byte JobLevel {
+            get { return jobLevel; }
+            set
+            {
+                jobLevel = value;
+                OnPropertyChanged();
+            }
+        }
+        public long jobLevelXp;
+        public long JobLevelXp {
+            get { return jobLevelXp; }
+            set
+            {
+                jobLevelXp = value;
+                OnPropertyChanged();
+            }
+        }
+        public byte level;
+        public byte Level {
+            get { return level; }
+            set
+            {
+                level = value;
+                OnPropertyChanged();
+            }
+        }
+        public long levelXp;
+        public long LevelXp {
+            get { return levelXp; }
+            set
+            {
+                levelXp = value;
+                OnPropertyChanged();
+            }
+        }
+        public int reput;
+        public int Reput {
+            get { return reput; }
+            set
+            {
+                reput = value;
+                OnPropertyChanged();
+            }
+        }
+        public int dignite;
+        public int Dignite {
+            get { return dignite; }
+            set
+            {
+                dignite = value;
+                OnPropertyChanged();
+            }
+        }
+        public int lastPulse;
+        public int LastPulse {
+            get { return lastPulse; }
+            set
+            {
+                lastPulse = value;
+                OnPropertyChanged();
+            }
+        }
+        public double lastPortal;
+        public double LastPortal
+        {
+            get { return lastPortal; }
+            set
+            {
+                lastPortal = value;
+                OnPropertyChanged();
+            }
+        }
+        public int sp;
+        public int Sp {
+            get { return sp; }
+            set
+            {
+                sp = value;
+                OnPropertyChanged();
+            }
+        }
+        public int authority;
+        public int Authority {
+            get { return authority; }
+            set
+            {
+                authority = value;
+                OnPropertyChanged();
+            }
+        }
+        public int invisible;
+        public int Invisible {
+            get { return invisible; }
+            set
+            {
+                invisible = value;
+                OnPropertyChanged();
+            }
+        }
+        public int speed;
+        public int Speed {
+            get { return speed; }
+            set
+            {
+                speed = value;
+                OnPropertyChanged();
+            }
+        }
+        public int arenaWinner;
+        public int ArenaWinner {
+            get { return arenaWinner; }
+            set
+            {
+                arenaWinner = value;
+                OnPropertyChanged();
+            }
+        }
+        public int spUpgrade;
+        public int SpUpgrade {
+            get { return spUpgrade; }
+            set
+            {
+                spUpgrade = value;
+                OnPropertyChanged();
+            }
+        }
+        public int direction;
+        public int Direction {
+            get { return direction; }
+            set
+            {
+                direction = value;
+                OnPropertyChanged();
+            }
+        }
+        public int rested;
+        public int Rested {
+            get { return rested; }
+            set
+            {
+                rested = value;
+                OnPropertyChanged();
+            }
+        }
 
-        public byte Slot { get; set; }
-
-        public byte Gender { get; set; }
-
-        public byte Class { get; set; }
-
-        public byte HairStyle { get; set; }
-
-        public byte HairColor { get; set; }
-
-        public short Map { get; set; }
-
-        public short MapX { get; set; }
-
-        public short MapY { get; set; }
-
-        public int Hp { get; set; }
-
-        public int Mp { get; set; }
-
-        public long Gold { get; set; }
-
-        public byte JobLevel { get; set; }
-
-        public long JobLevelXp { get; set; }
-
-        public byte Level { get; set; }
-
-        public long LevelXp { get; set; }
-
-        public int Reput { get; set; }
-
-        public int Dignite { get; set; }
-
-        public int LastPulse { get; set; }
-
-        public double LastPortal { get; set; }
-
-        public int Sp { get; set; }
-
-        public int Authority { get; set; }
-
-        public int Invisible { get; set; }
-
-        public int Speed { get; set; }
-
-        public int ArenaWinner { get; set; }
-
-        public int SpUpgrade { get; set; }
-
-        public int Direction { get; set; }
-
-        public int Rested { get; set; }
+        public event PropertyChangedEventHandler PropertyChanged;
 
         public string GenerateEff(int effectid)
         {
@@ -86,6 +316,15 @@ namespace OpenNos.GameObject
         {
            return String.Format("fd {0} {1} {2} {3}", Reput, GetReputIco(), Dignite, Math.Abs(GetDigniteIco()));
         }
+        public string GenerateMapOut()
+        {
+            return String.Format("mapout");
+        }
+
+        public string GenerateOut()
+        {
+            return String.Format("out 1 {0}",CharacterId);
+        }
         public double HPLoad()
         {
             return ServersData.HPData[Class,Level];
@@ -101,10 +340,12 @@ namespace OpenNos.GameObject
             return ServersData.SpXPData[JobLevel - 1];
         }
 
+      
         public double XPLoad()
         {   
             return ServersData.XPData[Level - 1];
         }
+
 
         public double JobXPLoad()
         {
