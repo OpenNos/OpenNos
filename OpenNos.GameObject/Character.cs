@@ -1,4 +1,5 @@
 ﻿using OpenNos.Core;
+using OpenNos.DAL;
 using OpenNos.Data;
 using OpenNos.Domain;
 using System;
@@ -14,7 +15,33 @@ namespace OpenNos.GameObject
     {
         private void OnPropertyChanged()
         {
-             ServerManager.GetMap(Map).RegisterCharacter(this);          
+             ServerManager.GetMap(Map).RegisterCharacter(this);
+            CharacterDTO UpdatedCharacter = new CharacterDTO()
+            {
+                CharacterId = this.CharacterId,
+                Class = this.Class,
+                Gender = this.Gender,
+                Gold = this.Gold,
+                HairColor = this.HairColor,
+                HairStyle = this.HairStyle,
+                Hp = this.Hp,
+                Dignite = this.Dignite,
+                Reput = this.Reput,
+                JobLevel = this.JobLevel,
+                JobLevelXp = this.JobLevelXp,
+                Level = this.Level,
+                LevelXp = this.LevelXp,
+                Map = this.Map,
+                MapX = this.mapX,
+                MapY = this.MapY,
+                Mp = this.Mp,
+                Name = this.Name,
+                Slot = this.Slot,
+                AccountId = this.AccountId,
+            };
+            if (Name != null)
+            DAOFactory.CharacterDAO.InsertOrUpdate(ref UpdatedCharacter);
+
         }
         private long characterId;
         public long CharacterId

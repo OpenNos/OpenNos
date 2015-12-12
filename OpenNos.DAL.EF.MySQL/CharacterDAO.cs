@@ -116,8 +116,36 @@ namespace OpenNos.DAL.EF.MySQL
         }
         private CharacterDTO Update(Character entity, CharacterDTO character, OpenNosContainer context)
         {
-            entity = Mapper.Map<Character>(character);
-            context.SaveChanges();
+            using (context)
+            {
+                var result = context.character.SingleOrDefault(c => c.CharacterId == character.CharacterId);
+                if (result != null)
+                {
+                    result.AccountId = character.AccountId;
+                    result.CharacterId = character.CharacterId;
+                    result.Class = character.Class;
+                    result.Dignite = character.Dignite;
+                    result.Gender = character.Gender;
+                    result.Gold = character.Gold;
+                    result.HairColor = character.HairColor;
+                    result.HairStyle = character.HairStyle;
+                    result.Hp = character.Hp;
+                    result.JobLevel = character.JobLevel;
+                    result.JobLevelXp = Convert.ToInt32(character.JobLevelXp);
+                    result.Level = character.Level;
+                    result.LevelXp = Convert.ToInt32( character.LevelXp);
+                    result.Map = character.Map;
+                    result.MapX = character.MapX;
+                    result.MapY = character.MapY;
+                    result.Mp = character.Mp;
+                    result.Name = character.Name;
+                    result.Reput = character.Reput;
+                    result.Slot = character.Slot;
+
+                    context.SaveChanges();
+                }
+            }
+
             return Mapper.Map<CharacterDTO>(entity);
         }
 
