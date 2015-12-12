@@ -35,7 +35,7 @@ namespace OpenNos.GameObject
 
         #region Members
 
-        private IList<Type> _packetHandlers;
+        private Type _packetHandler;
         private EncryptorT _encryptor;
         private IDictionary<String, DateTime> _connectionLog;
         private ConcurrentDictionary<long, ClientSession> _sessions = new ConcurrentDictionary<long, ClientSession>();
@@ -45,9 +45,9 @@ namespace OpenNos.GameObject
 
         #region Instantiation
 
-        public NetworkManager(string ipAddress, int port, IList<Type> packetHandlers)
+        public NetworkManager(string ipAddress, int port, Type packetHandler)
         {
-            _packetHandlers = packetHandlers;
+            _packetHandler = packetHandler;
             _encryptor = (EncryptorT)Activator.CreateInstance(typeof(EncryptorT));
 
             var server = ScsServerFactory.CreateServer(new ScsTcpEndPoint(ipAddress, port));
@@ -78,7 +78,7 @@ namespace OpenNos.GameObject
             }
 
             ClientSession session = new ClientSession(customClient);
-            session.Initialize(_encryptor, _packetHandlers);
+            session.Initialize(_encryptor, _packetHandler);
             if (!_sessions.TryAdd(customClient.ClientId, session))
             {
                 Logger.Log.WarnFormat(Language.Instance.GetMessageFromKey("FORCED_DISCONNECT"), customClient.ClientId);
@@ -92,7 +92,12 @@ namespace OpenNos.GameObject
         {
             ClientSession session;
             _sessions.TryRemove(e.Client.ClientId, out session);
-            session.CurrentMap.BroadCast(session, session.Character.GenerateOut(), ReceiverType.AllExceptMe);
+
+            if(session.Character != null)
+            {
+                //only remove the character from map if the character has been set
+                session.CurrentMap.BroadCast(session, session.Character.GenerateOut(), ReceiverType.AllExceptMe);
+            }
             session.UnregisterForMapNotification();
             session.Destroy();
             e.Client.Disconnect();
