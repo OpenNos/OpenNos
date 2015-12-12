@@ -140,7 +140,7 @@ namespace OpenNos.DAL.EF.MySQL
                     result.Mp = character.Mp;
                     result.Name = character.Name;
                     result.Reput = character.Reput;
-                    result.Slot = character.Slot;
+
 
                     context.SaveChanges();
                 }

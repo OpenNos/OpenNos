@@ -179,8 +179,8 @@ namespace OpenNos.Handler
                     LastPortal = 0,
                     Invisible = 0,
                     ArenaWinner = 0,
-                    Sp = 0,
-                    SpUpgrade = 0,
+                    Morph = 0,
+                    MorphUpgrade = 0,
                     Direction = 0,
                     Rested = 0,
                     Speed = ServersData.SpeedData[characterDTO.Class]
@@ -215,7 +215,7 @@ namespace OpenNos.Handler
             foreach (String inPacket in ServerManager.GetMap(_session.Character.Map).GetInPacketArray(_session.Character.CharacterId))
                 _session.Client.SendPacket(inPacket);
             _session.CurrentMap.BroadCast(_session, _session.Character.GenerateIn(), ReceiverType.All);
-
+            _session.CurrentMap.BroadCast(_session, _session.Character.GenerateCMode(), ReceiverType.All);
         }
         [Packet("pulse")]
         public void Pulse(string packet)
@@ -234,12 +234,12 @@ namespace OpenNos.Handler
         {
             string[] packetsplit = packet.Split(' ');
             string message = String.Empty;
-            for (int i = 0; i < packetsplit.Length; i++)
-                message = packetsplit[i] + " ";
+            for (int i = 2; i < packetsplit.Length; i++)
+                message += packetsplit[i] + " ";
             message.Trim();
 
             _session.CurrentMap.BroadCast(_session,
-                _session.Character.GenerateSay(packetsplit[2], 0),
+                _session.Character.GenerateSay(message, 0),
                 ReceiverType.AllExceptMe);
         }
 
@@ -342,6 +342,49 @@ namespace OpenNos.Handler
         #endregion
 
         #region AdminCommand
+        [Packet("$Command")]
+        public void Command(string packet)
+        {
+            if (_session.Character.Authority == 2)
+            {
+                _session.Client.SendPacket(_session.Character.GenerateSay("$Teleport Map X Y", 0));
+                _session.Client.SendPacket(_session.Character.GenerateSay("$Speed SPEED", 0));
+                _session.Client.SendPacket(_session.Character.GenerateSay("$Morph MORPHID UPGRADE WINGS", 0));
+
+            }
+        }
+        [Packet("$Morph")]
+        public void Morph(string packet)
+        {
+            if (_session.Character.Authority == 2)//if gm
+            {
+                string[] packetsplit = packet.Split(' ');
+                short[] arg = new short[3];
+                bool verify = false;
+                if (packetsplit.Length > 4)
+                {
+                    verify = (short.TryParse(packetsplit[2], out arg[0]) && short.TryParse(packetsplit[3], out arg[1]) && short.TryParse(packetsplit[4], out arg[2]));
+                }
+                switch (packetsplit.Length)
+                {
+
+
+                    case 5:
+                        if (verify)
+                        {
+                            _session.Character.Morph = arg[0];
+                            _session.Character.MorphUpgrade = arg[1];
+                            _session.Character.arenaWinner = arg[2];
+                            _session.CurrentMap.BroadCast(_session, _session.Character.GenerateCMode(), ReceiverType.All);
+
+                        }
+                        break;
+                    default:
+                        _session.Client.SendPacket(String.Format("say 1 {0} 1 $Morph MORPHID UPGRADE WINGS", _session.Character.CharacterId));
+                        break;
+                }
+            }
+        }
         [Packet("$Teleport")]
         public void Teleport(string packet)
         {

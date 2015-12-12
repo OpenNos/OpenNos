@@ -4,6 +4,7 @@ using OpenNos.DAL;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace OpenNos.GameObject
 {
@@ -67,7 +68,10 @@ namespace OpenNos.GameObject
             foreach (Character character in _characterRegistered.Values)
             {
                 if(character.CharacterId != ExcludeCharacterId)
+                { 
                 list.Add(character.GenerateIn());
+                list.Add(character.GenerateCMode());
+                }
             }
             
             return list;
