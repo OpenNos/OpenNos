@@ -30,14 +30,18 @@ namespace OpenNos.GameObject
             {
                 DirectoryInfo dir = new DirectoryInfo(@"./Resource/zones");
                 FileInfo[] files = dir.GetFiles();
+                
                 foreach (FileInfo file in files)
                 {
+                   
+
                     Guid guid = Guid.NewGuid();
                     Map newMap = new Map(Convert.ToInt16(file.Name), guid);
                     //register for broadcast
                     NotifyChildren += newMap.GetNotification;
                     _maps.TryAdd(guid, newMap);
                 }
+              
                 Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("MAP_LOADED"), files.Length));
             }
             catch (Exception ex) { Logger.Log.Error(ex.Message); }

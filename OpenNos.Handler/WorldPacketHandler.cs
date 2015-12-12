@@ -220,6 +220,7 @@ namespace OpenNos.Handler
         [Packet("pulse")]
         public void Pulse(string packet)
         {
+     
             string[] packetsplit = packet.Split(' ');
             _session.Character.LastPulse += 60;
             if (Convert.ToInt32(packetsplit[2]) != _session.Character.LastPulse)
@@ -245,6 +246,7 @@ namespace OpenNos.Handler
         [Packet("walk")]
         public void Walk(string packet)
         {
+          
             string[] packetsplit = packet.Split(' ');
 
             _session.Character.MapX = Convert.ToInt16(packetsplit[2]);
