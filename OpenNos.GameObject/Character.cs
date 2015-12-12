@@ -254,7 +254,7 @@ namespace OpenNos.GameObject
             }
         }
         public int sp;
-        public int Sp {
+        public int Morph {
             get { return sp; }
             set
             {
@@ -299,7 +299,7 @@ namespace OpenNos.GameObject
             }
         }
         public int spUpgrade;
-        public int SpUpgrade {
+        public int MorphUpgrade {
             get { return spUpgrade; }
             set
             {
@@ -307,6 +307,7 @@ namespace OpenNos.GameObject
                 OnPropertyChanged();
             }
         }
+      
         public int direction;
         public int Direction {
             get { return direction; }
@@ -389,7 +390,7 @@ namespace OpenNos.GameObject
 
         public string GenerateCInfo()
         {
-           return String.Format("c_info {0} - {1} {2} - {3} {4} {5} {6} {7} {8} {9} {10} {11} {12} {13} {14} {15} ", Name, -1, -1, CharacterId, Authority, Gender, HairStyle, HairColor, Class, GetReputIco(), 0, Sp, Invisible, 0, SpUpgrade, ArenaWinner);
+           return String.Format("c_info {0} - {1} {2} - {3} {4} {5} {6} {7} {8} {9} {10} {11} {12} {13} {14} {15} ", Name, -1, -1, CharacterId, Authority, Gender, HairStyle, HairColor, Class, GetReputIco(), 0, Morph, Invisible, 0, MorphUpgrade, ArenaWinner);
         }
 
         public int GetDigniteIco()
@@ -460,7 +461,12 @@ namespace OpenNos.GameObject
             return String.Format("mv 1 {0} {1} {2} {3}", CharacterId, x, y, Speed);
 
         }
+        public string GenerateCMode()
+        {
+            return String.Format("c_mode 1 {0} {1} {2} {3}", CharacterId, Morph, MorphUpgrade, ArenaWinner);
 
+        }
+       
         public string GenerateSay(string message,int type)
         {
             return String.Format("say 1 {0} {1} {2}", CharacterId,type, message);
@@ -469,7 +475,7 @@ namespace OpenNos.GameObject
 
         public string GenerateIn()
         {
-            return String.Format("in 1 {0} - {1} {2} {3} {4} {5} {6} {7} {8} {9} -1.-1.-1.-1.-1.-1.-1.-1 {10} {11} {12} -1 0 0 0 0 0 0 0 0 -1 - {13} 0 0 0 0 {14} 0 {15} 0 10", Name, CharacterId, MapX, MapY, Direction, (Authority == 2 ? 2 : 0), Gender, HairStyle, HairColor, Class, 100, 100, Sp, (GetDigniteIco() == 1) ? GetReputIco() : -GetDigniteIco(), ArenaWinner,0);
+            return String.Format("in 1 {0} - {1} {2} {3} {4} {5} {6} {7} {8} {9} -1.-1.-1.-1.-1.-1.-1.-1 {10} {11} {12} -1 0 0 0 0 0 0 0 0 -1 - {13} 0 0 0 0 {14} 0 {15} 0 10", Name, CharacterId, MapX, MapY, Direction, (Authority == 2 ? 2 : 0), Gender, HairStyle, HairColor, Class, 100, 100, Morph, (GetDigniteIco() == 1) ? GetReputIco() : -GetDigniteIco(), ArenaWinner,0);
           
         }
 
