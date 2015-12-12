@@ -32,10 +32,6 @@ namespace OpenNos.Login
             {
                 try
                 {
-                    //define handers for received packets
-                    IList<Type> handlers = new List<Type>();
-                    handlers.Add(typeof(LoginPacketHandler));
-
                     //initialize Logger
                     Logger.InitializeLogger(LogManager.GetLogger(typeof(Program)));
                     Assembly assembly = Assembly.GetExecutingAssembly();
@@ -51,7 +47,7 @@ namespace OpenNos.Login
                     string ip = System.Configuration.ConfigurationManager.AppSettings["LoginIp"];
                     int port = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["LoginPort"]);
                     Logger.Log.Info(Language.Instance.GetMessageFromKey("CONFIG_LOADED"));
-                    NetworkManager<LoginEncryption> networkManager = new NetworkManager<LoginEncryption>(ip,port, handlers);
+                    NetworkManager<LoginEncryption> networkManager = new NetworkManager<LoginEncryption>(ip,port, typeof(LoginPacketHandler));
                     
                 }
                 catch (Exception ex)

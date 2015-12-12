@@ -29,10 +29,6 @@ namespace OpenNos.World
     {
         public static void Main(string[] args)
         {
-            //define handers for received packets
-            IList<Type> handlers = new List<Type>();
-            handlers.Add(typeof(WorldPacketHandler));
-
             //initialize Logger
             Logger.InitializeLogger(LogManager.GetLogger(typeof(Program)));
             Assembly assembly = Assembly.GetExecutingAssembly();
@@ -48,7 +44,7 @@ namespace OpenNos.World
             ServerManager.Initialize();
             string ip = System.Configuration.ConfigurationManager.AppSettings["WorldIp"];
             int port = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["WorldPort"]);
-            NetworkManager<WorldEncryption> networkManager = new NetworkManager<WorldEncryption>(ip, port, handlers);
+            NetworkManager<WorldEncryption> networkManager = new NetworkManager<WorldEncryption>(ip, port, typeof(WorldPacketHandler));
             
         }
     }

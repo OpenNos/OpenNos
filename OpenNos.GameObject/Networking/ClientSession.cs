@@ -17,7 +17,7 @@ namespace OpenNos.GameObject
         private NetworkClient _client;
         private Account _account;
         private Character _character;
-        private IDictionary<Packet, Tuple<MethodInfo, object>> _packetHandlers;
+        private IDictionary<Packet, Tuple<MethodInfo, object>> _handlerMethods;
         private static EncryptionBase _encryptor;
         private SequentialItemProcessor<byte[]> _queue;
 
@@ -53,21 +53,21 @@ namespace OpenNos.GameObject
 
         public Map CurrentMap { get; set; }
 
-        public IDictionary<Packet, Tuple<MethodInfo, object>> Handlers
+        public IDictionary<Packet, Tuple<MethodInfo, object>> HandlerMethods
         {
             get
             {
-                if (_packetHandlers == null)
+                if (_handlerMethods == null)
                 {
-                    _packetHandlers = new Dictionary<Packet, Tuple<MethodInfo, object>>();
+                    _handlerMethods = new Dictionary<Packet, Tuple<MethodInfo, object>>();
                 }
 
-                return _packetHandlers;
+                return _handlerMethods;
             }
 
             set
             {
-                _packetHandlers = value;
+                _handlerMethods = value;
             }
         }
 
@@ -290,18 +290,18 @@ namespace OpenNos.GameObject
             }
         }
 
-        public void Initialize(EncryptionBase encryptor, IList<Type> packetHandlers)
+        public void Initialize(EncryptionBase encryptor, Type packetHandler)
         {
             _encryptor = encryptor;
             _client.Initialize(encryptor);
 
-            //dynamically create instances of packethandlers
-            GenerateHandlerReferences(packetHandlers);
+            //dynamically create packethandler references
+            GenerateHandlerReferences(packetHandler);
         }
 
         private bool TriggerHandler(string packetHeader, string packet, bool force)
         {
-            KeyValuePair<Packet, Tuple<MethodInfo, object>> methodInfo = Handlers.SingleOrDefault(h => h.Key.Header.Equals(packetHeader));
+            KeyValuePair<Packet, Tuple<MethodInfo, object>> methodInfo = HandlerMethods.SingleOrDefault(h => h.Key.Header.Equals(packetHeader));
 
             if (methodInfo.Value != null)
             {
@@ -321,20 +321,17 @@ namespace OpenNos.GameObject
             return false;
         }
 
-        private bool GenerateHandlerReferences(IList<Type> handlerTypes)
+        private bool GenerateHandlerReferences(Type handlerType)
         {
-            foreach (Type handlerType in handlerTypes)
+            object handler = Activator.CreateInstance(handlerType, new object[] { this });
+
+            foreach (MethodInfo methodInfo in handlerType.GetMethods().Where(x => x.GetCustomAttributes(false).OfType<Packet>().Any()))
             {
-                object handler = Activator.CreateInstance(handlerType, new object[] { this });
+                Packet packetAttribute = methodInfo.GetCustomAttributes(false).OfType<Packet>().SingleOrDefault();
 
-                foreach (MethodInfo methodInfo in handlerType.GetMethods().Where(x => x.GetCustomAttributes(false).OfType<Packet>().Any()))
+                if (packetAttribute != null)
                 {
-                    Packet packetAttribute = methodInfo.GetCustomAttributes(false).OfType<Packet>().SingleOrDefault();
-
-                    if (packetAttribute != null)
-                    {
-                        Handlers.Add(packetAttribute, new Tuple<MethodInfo, object>(methodInfo, handler));
-                    }
+                    HandlerMethods.Add(packetAttribute, new Tuple<MethodInfo, object>(methodInfo, handler));
                 }
             }
 
