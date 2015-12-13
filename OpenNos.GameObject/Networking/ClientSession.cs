@@ -365,11 +365,7 @@ namespace OpenNos.GameObject
             return false;
         }
 
-        public void BroadCast(string v1, char v2)
-        {
-            throw new NotImplementedException();
-        }
-
+   
         #endregion
     }
 }
