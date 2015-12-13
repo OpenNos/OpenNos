@@ -305,7 +305,16 @@ namespace OpenNos.GameObject
                 OnPropertyChanged();
             }
         }
-      
+        public int spUpgrade2;
+        public int MorphUpgrade2
+        {
+            get { return spUpgrade2; }
+            set
+            {
+                spUpgrade2 = value;
+                OnPropertyChanged();
+            }
+        }
         public int direction;
         public int Direction {
             get { return direction; }
@@ -461,7 +470,7 @@ namespace OpenNos.GameObject
         }
         public string GenerateCMode()
         {
-            return String.Format("c_mode 1 {0} {1} {2} {3}", CharacterId, Morph, MorphUpgrade, ArenaWinner);
+            return String.Format("c_mode 1 {0} {1} {2} {3} {4}", CharacterId, Morph, MorphUpgrade,MorphUpgrade2, ArenaWinner);
 
         }
        

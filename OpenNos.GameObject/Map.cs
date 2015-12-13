@@ -5,10 +5,11 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.ComponentModel;
 
 namespace OpenNos.GameObject
 {
-    public class Map
+    public class Map : INotifyPropertyChanged
     {
         #region Members
 
@@ -21,6 +22,23 @@ namespace OpenNos.GameObject
         private List<Portal> _portals;
         private ThreadedBase<MapPacket> threadedBase;
 
+        public event PropertyChangedEventHandler PropertyChanged;
+        private int dance;
+        public int Dance
+        {
+            get
+            {
+                return dance;
+            }
+            set
+            {
+              
+                dance = value;
+                OnPropertyChanged();
+            }
+        }
+       
+      
         #endregion
 
         #region Instantiation
@@ -30,6 +48,7 @@ namespace OpenNos.GameObject
             _mapId = mapId;
             _uniqueIdentifier = uniqueIdentifier;
             LoadZone();
+            dance = 0;
             IEnumerable<PortalDTO> portalsDTO = DAOFactory.PortalDAO.LoadFromMap(_mapId);
             _portals = new List<Portal>();
             foreach (PortalDTO portal in portalsDTO)
@@ -66,7 +85,11 @@ namespace OpenNos.GameObject
         #endregion
 
         #region Methods
- 
+        public void OnPropertyChanged()
+        {
+            if(this.dance == 1)
+            ChatManager.Instance.BroadcastFromMap(MapId, "guri 2 1 ");
+        }
         public List<Portal> Portals
         {
             get
@@ -74,6 +97,8 @@ namespace OpenNos.GameObject
                 return _portals;
             }
         }
+
+        
 
         public bool IsBlockedZone(int x, int y)
         {

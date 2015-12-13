@@ -88,6 +88,16 @@ namespace OpenNos.GameObject
             }
         }
 
+        internal void BroadcastFromMap(short MapId, string Message)
+        {
+                foreach (ClientSession session in sessions)
+                {
+                    if (session.Character.Map == MapId)
+                        session.Client.SendPacket(Message+ session.Character.CharacterId);
+                }
+            
+        }
+
         public void Kick(String CharacterName)
         {
             foreach (ClientSession session in sessions)
