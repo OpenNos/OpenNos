@@ -8,6 +8,9 @@ namespace OpenNos.GameObject
 {
     public class MapPacket
     {
+        private string characterName;
+        private string packet;
+        private ReceiverType all;
         #region Instantiation
 
         public MapPacket(ClientSession session, string content, ReceiverType receiver)
@@ -15,6 +18,13 @@ namespace OpenNos.GameObject
             Session = session;
             Content = content;
             Receiver = receiver;
+        }
+
+        public MapPacket(string characterName, string packet, ReceiverType all)
+        {
+            this.characterName = characterName;
+            this.packet = packet;
+            this.all = all;
         }
 
         #endregion

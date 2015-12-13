@@ -81,6 +81,7 @@ namespace OpenNos.GameObject
         #endregion
 
         #region Methods
+  
         public void RegisterCharacter(Character character)
         {
             if(character.Name != null)

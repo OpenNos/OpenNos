@@ -197,7 +197,7 @@ namespace OpenNos.Handler
         public void ChangeMap()
         {
             _session.Client.SendPacket(_session.Character.GenerateMapOut());
-            _session.CurrentMap.BroadCast(_session, _session.Character.GenerateOut(), ReceiverType.AllExceptMe);
+            _session.BroadCast( _session.Character.GenerateOut(), ReceiverType.AllOnMapExceptMe);
             _session.Client.SendPacket(_session.Character.GenerateCInfo());
             _session.Client.SendPacket(_session.Character.GenerateFd());
             //TODO if first connect add _session.Client.SendPacket(String.Format("scene 40"));
@@ -214,8 +214,8 @@ namespace OpenNos.Handler
             _session.Client.SendPacket(String.Format("rsfi {0} {1} {2} {3} {4} {5}", 1, 1, 4, 9, 4, 9));
             foreach (String inPacket in ServerManager.GetMap(_session.Character.Map).GetInPacketArray(_session.Character.CharacterId))
                 _session.Client.SendPacket(inPacket);
-            _session.CurrentMap.BroadCast(_session, _session.Character.GenerateIn(), ReceiverType.All);
-            _session.CurrentMap.BroadCast(_session, _session.Character.GenerateCMode(), ReceiverType.All);
+            _session.BroadCast(_session.Character.GenerateIn(), ReceiverType.AllOnMap);
+            _session.BroadCast(_session.Character.GenerateCMode(), ReceiverType.AllOnMap);
         }
         [Packet("pulse")]
         public void Pulse(string packet)
@@ -238,9 +238,9 @@ namespace OpenNos.Handler
                 message += packetsplit[i] + " ";
             message.Trim();
 
-            _session.CurrentMap.BroadCast(_session,
+            _session.BroadCast(
                 _session.Character.GenerateSay(message, 0),
-                ReceiverType.AllExceptMe);
+                ReceiverType.AllOnMapExceptMe);
         }
 
         [Packet("walk")]
@@ -252,9 +252,9 @@ namespace OpenNos.Handler
             _session.Character.MapX = Convert.ToInt16(packetsplit[2]);
             _session.Character.MapY = Convert.ToInt16(packetsplit[3]);
 
-            _session.CurrentMap.BroadCast(_session,
+            _session.BroadCast(
                 _session.Character.GenerateMv(_session.Character.MapX, _session.Character.MapY),
-                ReceiverType.AllExceptMe);
+                ReceiverType.AllOnMapExceptMe);
             _session.Client.SendPacket(_session.Character.GenerateCond());
 
         }
@@ -267,9 +267,8 @@ namespace OpenNos.Handler
             {
 
                 _session.Client.SendPacket(_session.Character.GenerateEff(Convert.ToInt32(packetsplit[5]) + 4099));
-                _session.CurrentMap.BroadCast(_session,
-                    _session.Character.GenerateEff(Convert.ToInt32(packetsplit[5]) + 4099),
-                    ReceiverType.All);
+                _session.BroadCast(_session.Character.GenerateEff(Convert.ToInt32(packetsplit[5]) + 4099),
+                    ReceiverType.AllOnMap);
             }
         }
         [Packet("preq")]
@@ -302,7 +301,7 @@ namespace OpenNos.Handler
         public void Rest(string packet)
         {
             _session.Character.Rested = (_session.Character.Rested==0)?1:0;
-            _session.CurrentMap.BroadCast(_session, _session.Character.GenerateRest(),ReceiverType.All);
+            _session.BroadCast( _session.Character.GenerateRest(),ReceiverType.AllOnMap);
               
         }
         [Packet("dir")]
@@ -313,7 +312,7 @@ namespace OpenNos.Handler
             if (Convert.ToInt32(packetsplit[4]) == _session.Character.CharacterId)
             {
                 _session.Character.Direction = Convert.ToInt32(packetsplit[2]);
-               _session.CurrentMap.BroadCast(_session, _session.Character.GenerateDir(), ReceiverType.All);
+               _session.BroadCast( _session.Character.GenerateDir(), ReceiverType.AllOnMap);
                
             }
         }
@@ -336,7 +335,8 @@ namespace OpenNos.Handler
             _session.Client.SendPacket("pinit 0");
             _session.Client.SendPacket("zzim");
             _session.Client.SendPacket(String.Format("twk 1 {0} {1} {2} shtmxpdlfeoqkr", _session.Character.CharacterId, _session.Account.Name, _session.Character.Name));
-
+            
+           
         }
 
         #endregion
@@ -350,9 +350,38 @@ namespace OpenNos.Handler
                 _session.Client.SendPacket(_session.Character.GenerateSay("$Teleport Map X Y", 0));
                 _session.Client.SendPacket(_session.Character.GenerateSay("$Speed SPEED", 0));
                 _session.Client.SendPacket(_session.Character.GenerateSay("$Morph MORPHID UPGRADE WINGS", 0));
+                _session.Client.SendPacket(_session.Character.GenerateSay("$Shout MESSAGE", 0));
 
             }
         }
+        [Packet("$Shout")]
+        public void Shout(string packet)
+        {
+            if (_session.Character.Authority == 2)//if gm
+            {
+                string[] packetsplit = packet.Split(' ');
+                string message = String.Empty;
+                for (int i = 2; i < packetsplit.Length; i++)
+                    message += packetsplit[i] + " ";
+                message.Trim();
+
+                _session.BroadCast(_session.Character.GenerateMsg(message, 0), ReceiverType.All);
+            }
+        }
+        [Packet("$Whisper")]
+        public void Whisper(string packet)
+        {
+          
+                string[] packetsplit = packet.Split(' ');
+                string message = String.Empty;
+                for (int i = 3; i < packetsplit.Length; i++)
+                    message += packetsplit[i] + " ";
+                message.Trim();
+
+                _session.BroadCast(_session.Character.GenerateMsg(message, 0), packet[2]);
+            
+        }
+
         [Packet("$Morph")]
         public void Morph(string packet)
         {
@@ -375,7 +404,7 @@ namespace OpenNos.Handler
                             _session.Character.Morph = arg[0];
                             _session.Character.MorphUpgrade = arg[1];
                             _session.Character.arenaWinner = arg[2];
-                            _session.CurrentMap.BroadCast(_session, _session.Character.GenerateCMode(), ReceiverType.All);
+                            _session.BroadCast( _session.Character.GenerateCMode(), ReceiverType.AllOnMap);
 
                         }
                         break;

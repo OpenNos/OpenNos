@@ -488,5 +488,10 @@ namespace OpenNos.GameObject
         {
             return String.Format("dir 1 {0} {1}", CharacterId, Direction);
         }
+
+        public string GenerateMsg(string message, int v)
+        {
+            return String.Format("msg {0} {1}", v, message);
+        }
     }
 }

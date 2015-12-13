@@ -12,7 +12,9 @@ namespace OpenNos.GameObject
         All = 1,
         AllExceptMe = 2,
         OnlyMe = 3,
-        ClientRegisters = 4, //maybe improvable
-        ClientUnregisters = 5 //maybe improvable
+        AllOnMapExceptMe = 4,
+        AllOnMap = 5,
+        OnlySomeone = 6
+
     }
 }
