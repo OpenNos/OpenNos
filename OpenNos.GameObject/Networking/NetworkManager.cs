@@ -108,7 +108,27 @@ namespace OpenNos.GameObject
         #endregion
 
         #region Methods
-
+ 
+        public List<ClientSession> getSessionOnMap(short mapId)
+        {
+            List<ClientSession> temp = new List<ClientSession>();
+            foreach (ClientSession session in _sessions.Values)
+            {
+                if (session.Character.map == mapId)
+                    temp.Add(session);
+            }
+            return temp;
+        }
+        public ClientSession getSessionWithCharacterName(string name)
+        {
+            ClientSession temp = null;
+            foreach (ClientSession session in _sessions.Values)
+            {
+                if (session.Character.Name == name)
+                    temp = session;
+            }
+            return temp;
+        }
         private bool CheckConnectionLog(NetworkClient client)
         {
             if (ConnectionLog.Any())
