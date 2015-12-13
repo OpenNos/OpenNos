@@ -15,7 +15,6 @@ namespace OpenNos.GameObject
     {
         private void OnPropertyChanged()
         {
-             ServerManager.GetMap(Map).RegisterCharacter(this);
             CharacterDTO UpdatedCharacter = new CharacterDTO()
             {
                 CharacterId = this.CharacterId,
@@ -130,7 +129,6 @@ namespace OpenNos.GameObject
             get { return map; }
             set
             {
-                ServerManager.GetMap(Map).UnregisterCharacter(this);
                 map = value;
                 OnPropertyChanged();
             }

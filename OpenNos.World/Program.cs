@@ -42,6 +42,8 @@ namespace OpenNos.World
             DataAccessHelper.Initialize();
             //initialilize maps
             ServerManager.Initialize();
+            //initialize ChatManager
+        
             string ip = System.Configuration.ConfigurationManager.AppSettings["WorldIp"];
             int port = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["WorldPort"]);
             NetworkManager<WorldEncryption> networkManager = new NetworkManager<WorldEncryption>(ip, port, typeof(WorldPacketHandler));

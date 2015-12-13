@@ -79,8 +79,10 @@ namespace OpenNos.GameObject
 
             ClientSession session = new ClientSession(customClient);
             session.Initialize(_encryptor, _packetHandler);
+            ChatManager.Instance.sessions.Add(session);
             if (!_sessions.TryAdd(customClient.ClientId, session))
             {
+                ChatManager.Instance.sessions.Remove(session);
                 Logger.Log.WarnFormat(Language.Instance.GetMessageFromKey("FORCED_DISCONNECT"), customClient.ClientId);
                 customClient.Disconnect();
                 _sessions.TryRemove(customClient.ClientId, out session);
@@ -92,8 +94,8 @@ namespace OpenNos.GameObject
         {
             ClientSession session;
             _sessions.TryRemove(e.Client.ClientId, out session);
-
-            if(session.Character != null)
+            ChatManager.Instance.sessions.Remove(session);
+            if (session.Character != null)
             {
                 //only remove the character from map if the character has been set
                 session.CurrentMap.BroadCast(session, session.Character.GenerateOut(), ReceiverType.AllExceptMe);
@@ -109,26 +111,7 @@ namespace OpenNos.GameObject
 
         #region Methods
  
-        public List<ClientSession> getSessionOnMap(short mapId)
-        {
-            List<ClientSession> temp = new List<ClientSession>();
-            foreach (ClientSession session in _sessions.Values)
-            {
-                if (session.Character.map == mapId)
-                    temp.Add(session);
-            }
-            return temp;
-        }
-        public ClientSession getSessionWithCharacterName(string name)
-        {
-            ClientSession temp = null;
-            foreach (ClientSession session in _sessions.Values)
-            {
-                if (session.Character.Name == name)
-                    temp = session;
-            }
-            return temp;
-        }
+
         private bool CheckConnectionLog(NetworkClient client)
         {
             if (ConnectionLog.Any())
