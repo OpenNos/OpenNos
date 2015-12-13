@@ -87,5 +87,14 @@ namespace OpenNos.GameObject
                         break;
             }
         }
+
+        public void Kick(String CharacterName)
+        {
+            foreach (ClientSession session in sessions)
+            {
+                if (session.Character.Name == CharacterName)
+                    session.Client.Disconnect();
+            }
+        }
     }
 }
