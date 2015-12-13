@@ -368,19 +368,6 @@ namespace OpenNos.Handler
                 _session.BroadCast(_session.Character.GenerateMsg(message, 0), ReceiverType.All);
             }
         }
-        [Packet("$Whisper")]
-        public void Whisper(string packet)
-        {
-          
-                string[] packetsplit = packet.Split(' ');
-                string message = String.Empty;
-                for (int i = 3; i < packetsplit.Length; i++)
-                    message += packetsplit[i] + " ";
-                message.Trim();
-
-                _session.BroadCast(_session.Character.GenerateMsg(message, 0), packet[2]);
-            
-        }
 
         [Packet("$Morph")]
         public void Morph(string packet)
