@@ -181,6 +181,7 @@ namespace OpenNos.Handler
                     ArenaWinner = 0,
                     Morph = 0,
                     MorphUpgrade = 0,
+                    MorphUpgrade2 = 0,
                     Direction = 0,
                     Rested = 0,
                     Speed = ServersData.SpeedData[characterDTO.Class]
@@ -354,10 +355,10 @@ namespace OpenNos.Handler
             {
                 _session.Client.SendPacket(_session.Character.GenerateSay("$Teleport Map X Y", 0));
                 _session.Client.SendPacket(_session.Character.GenerateSay("$Speed SPEED", 0));
-                _session.Client.SendPacket(_session.Character.GenerateSay("$Morph MORPHID UPGRADE WINGS", 0));
+                _session.Client.SendPacket(_session.Character.GenerateSay("$Morph MORPHID UPGRADE WINGS ARENA", 0));
                 _session.Client.SendPacket(_session.Character.GenerateSay("$Shout MESSAGE", 0));
                 _session.Client.SendPacket(_session.Character.GenerateSay("$Kick USERNAME", 0));
-
+                _session.Client.SendPacket(_session.Character.GenerateSay("$MapDance", 0));
             }
         }
         [Packet("$Kick")]
@@ -384,35 +385,44 @@ namespace OpenNos.Handler
                 ChatManager.Instance.Broadcast(_session, _session.Character.GenerateMsg(message, 2), ReceiverType.All);
             }
         }
-
+    
+        [Packet("$MapDance")]
+        public void MapDance(string packet)
+        {
+            if (_session.Character.Authority == 2)//if gm
+            {
+                _session.CurrentMap.Dance = _session.CurrentMap.Dance == 1?0:1 ;
+            }
+        }
         [Packet("$Morph")]
         public void Morph(string packet)
         {
             if (_session.Character.Authority == 2)//if gm
             {
                 string[] packetsplit = packet.Split(' ');
-                short[] arg = new short[3];
+                short[] arg = new short[4];
                 bool verify = false;
-                if (packetsplit.Length > 4)
+                if (packetsplit.Length > 5)
                 {
-                    verify = (short.TryParse(packetsplit[2], out arg[0]) && short.TryParse(packetsplit[3], out arg[1]) && short.TryParse(packetsplit[4], out arg[2]));
+                    verify = (short.TryParse(packetsplit[2], out arg[0]) && short.TryParse(packetsplit[3], out arg[1]) && short.TryParse(packetsplit[4], out arg[2]) && short.TryParse(packetsplit[5], out arg[3]));
                 }
                 switch (packetsplit.Length)
                 {
 
 
-                    case 5:
+                    case 6:
                         if (verify)
                         {
                             _session.Character.Morph = arg[0];
                             _session.Character.MorphUpgrade = arg[1];
-                            _session.Character.arenaWinner = arg[2];
+                            _session.Character.MorphUpgrade2 = arg[2];
+                            _session.Character.arenaWinner = arg[3];
                             ChatManager.Instance.Broadcast(_session, _session.Character.GenerateCMode(), ReceiverType.AllOnMap);
 
                         }
                         break;
                     default:
-                        _session.Client.SendPacket(String.Format("say 1 {0} 1 $Morph MORPHID UPGRADE WINGS", _session.Character.CharacterId));
+                        _session.Client.SendPacket(String.Format("say 1 {0} 1 $Morph MORPHID UPGRADE WINGS ARENA", _session.Character.CharacterId));
                         break;
                 }
             }
