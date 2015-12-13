@@ -108,34 +108,7 @@ namespace OpenNos.GameObject
         #endregion
 
         #region Methods
-        public void BroadCast(string packet, ReceiverType receiver)
-        {
-            switch (receiver) {
-                case ReceiverType.All:
-                    foreach (Map map in ServerManager.GetAllMap().Values)
-                        map.BroadCast(this, packet, receiver);
-                    break;
-                case ReceiverType.AllExceptMe:
-                    foreach (Map map in ServerManager.GetAllMap().Values)
-                        map.BroadCast(this, packet, receiver);
-                    break;
-                case ReceiverType.AllOnMapExceptMe:
-
-                    this.CurrentMap.BroadCast(this, packet, ReceiverType.AllExceptMe);
-                    break;
-                case ReceiverType.AllOnMap:
-                    this.CurrentMap.BroadCast(this, packet, ReceiverType.All);
-                    break;
-                case ReceiverType.OnlyMe: 
-                        this.CurrentMap.BroadCast(this, packet, receiver);
-                    break;
-            }
-
-                
             
-           
-
-        }
         /// <summary>
         /// This will be triggered when the underlying NetworkCleint receives a packet.
         /// </summary>
