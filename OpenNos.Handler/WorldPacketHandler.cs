@@ -194,10 +194,14 @@ namespace OpenNos.Handler
         #endregion
 
         #region Map
-        public void ChangeMap()
+        public void MapOut()
         {
             _session.Client.SendPacket(_session.Character.GenerateMapOut());
-           ChatManager.Instance.Broadcast( _session, _session.Character.GenerateOut(), ReceiverType.AllOnMapExceptMe);
+            ChatManager.Instance.Broadcast(_session, _session.Character.GenerateOut(), ReceiverType.AllExceptMe); 
+        }
+        public void ChangeMap()
+        {
+          
             _session.Client.SendPacket(_session.Character.GenerateCInfo());
             _session.Client.SendPacket(_session.Character.GenerateFd());
             //TODO if first connect add _session.Client.SendPacket(String.Format("scene 40"));
@@ -286,6 +290,7 @@ namespace OpenNos.Handler
                         _session.Character.MapX = portal.DestX;
                         _session.Character.MapY = portal.DestY;
                         _session.Character.LastPortal = (((TimeSpan)(DateTime.Now - new DateTime(2010, 1, 1, 0, 0, 0))).TotalSeconds);
+                        MapOut();
                         ChangeMap();
                         teleported = true;
                     }
@@ -351,7 +356,17 @@ namespace OpenNos.Handler
                 _session.Client.SendPacket(_session.Character.GenerateSay("$Speed SPEED", 0));
                 _session.Client.SendPacket(_session.Character.GenerateSay("$Morph MORPHID UPGRADE WINGS", 0));
                 _session.Client.SendPacket(_session.Character.GenerateSay("$Shout MESSAGE", 0));
+                _session.Client.SendPacket(_session.Character.GenerateSay("$Kick USERNAME", 0));
 
+            }
+        }
+        [Packet("$Kick")]
+        public void Kick(string packet)
+        {
+            if (_session.Character.Authority == 2)//if gm
+            {
+                string[] packetsplit = packet.Split(' ');
+                ChatManager.Instance.Kick(packetsplit[2]);
             }
         }
         [Packet("$Shout")]
@@ -364,8 +379,9 @@ namespace OpenNos.Handler
                 for (int i = 2; i < packetsplit.Length; i++)
                     message += packetsplit[i] + " ";
                 message.Trim();
-
-                ChatManager.Instance.Broadcast(_session, _session.Character.GenerateMsg(message, 0), ReceiverType.All);
+                
+                ChatManager.Instance.Broadcast(_session, "say 1 0 10 [Administrateur]:"+message, ReceiverType.All);
+                ChatManager.Instance.Broadcast(_session, _session.Character.GenerateMsg(message, 2), ReceiverType.All);
             }
         }
 
@@ -423,6 +439,7 @@ namespace OpenNos.Handler
                             _session.Character.Map = arg[0];
                             _session.Character.MapX = arg[1];
                             _session.Character.MapY = arg[2];
+                            MapOut();
                             ChangeMap();
                         }
                         break;
