@@ -75,7 +75,7 @@ namespace OpenNos.Handler
 
                     if (loadedAccount != null && loadedAccount.Password.Equals(user.PasswordDecrypted))
                     {
-                        DAOFactory.AccountDAO.WriteConnectionLog(loadedAccount.AccountId, _session.Client.RemoteEndPoint.ToString());
+                        DAOFactory.AccountDAO.WriteConnectionLog(loadedAccount.AccountId, _session.Client.RemoteEndPoint.ToString(),null,"Connexion","LoginServer");
 
                         //0 banned 1 register 2 user 3 GM
                         AuthorityType type = loadedAccount.AuthorityEnum;

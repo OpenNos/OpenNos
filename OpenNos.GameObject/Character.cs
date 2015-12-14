@@ -386,7 +386,7 @@ namespace OpenNos.GameObject
         {   if(rested == 1)
             return ServersData.HpHealth[Class];
         else
-                return ServersData.HpHealthStand[Class];
+            return ServersData.HpHealthStand[Class];
         }
         public int HealthMPLoad()
         {
