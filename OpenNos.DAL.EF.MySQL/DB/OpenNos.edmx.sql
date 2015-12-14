@@ -44,7 +44,7 @@
 -- -----------------------------------------------------------
 -- Entity Designer DDL Script for MySQL Server 4.1 and higher
 -- -----------------------------------------------------------
--- Date Created: 12/14/2015 20:22:33
+-- Date Created: 12/14/2015 20:56:15
 
 -- Generated from EDMX file: C:\Users\Alex\Documents\GitHub\OpenNos\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
 -- Target version: 3.0.0.0
@@ -66,6 +66,8 @@
 --    ALTER TABLE `portal` DROP CONSTRAINT `FK_portalMap`;
 
 --    ALTER TABLE `portal` DROP CONSTRAINT `FK_portalMap1`;
+
+--    ALTER TABLE `connectionlog` DROP CONSTRAINT `FK_GeneralLogCharacter`;
 
 
 -- --------------------------------------------------
