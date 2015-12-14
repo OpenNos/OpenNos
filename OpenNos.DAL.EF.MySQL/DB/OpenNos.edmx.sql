@@ -44,7 +44,7 @@
 -- -----------------------------------------------------------
 -- Entity Designer DDL Script for MySQL Server 4.1 and higher
 -- -----------------------------------------------------------
--- Date Created: 11/24/2015 20:41:00
+-- Date Created: 12/14/2015 20:22:33
 
 -- Generated from EDMX file: C:\Users\Alex\Documents\GitHub\OpenNos\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
 -- Target version: 3.0.0.0
@@ -158,7 +158,11 @@ CREATE TABLE `connectionlog`(
 	`LogId` bigint NOT NULL AUTO_INCREMENT UNIQUE, 
 	`AccountId` bigint NOT NULL, 
 	`IpAddress` longtext NOT NULL, 
-	`Timestamp` datetime NOT NULL);
+	`Timestamp` datetime NOT NULL, 
+	`CharacterId` bigint, 
+	`LogType` longtext NOT NULL, 
+	`LogData` longtext NOT NULL, 
+	`CharacterCharacterId` bigint);
 
 ALTER TABLE `connectionlog` ADD PRIMARY KEY (LogId);
 
@@ -252,6 +256,24 @@ ADD CONSTRAINT `FK_portalMap1`
 CREATE INDEX `IX_FK_portalMap1`
     ON `portal`
     (`SourceMapId`);
+
+
+
+-- Creating foreign key on `CharacterCharacterId` in table 'connectionlog'
+
+ALTER TABLE `connectionlog`
+ADD CONSTRAINT `FK_GeneralLogCharacter`
+    FOREIGN KEY (`CharacterCharacterId`)
+    REFERENCES `character`
+        (`CharacterId`)
+    ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+
+-- Creating non-clustered index for FOREIGN KEY 'FK_GeneralLogCharacter'
+
+CREATE INDEX `IX_FK_GeneralLogCharacter`
+    ON `connectionlog`
+    (`CharacterCharacterId`);
 
 
 
