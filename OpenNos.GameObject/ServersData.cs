@@ -14,6 +14,8 @@ namespace OpenNos.GameObject
             LoadHpData();
             LoadMpData();
             LoadStats();
+            LoadHpHealth();
+            LoadMpHealth();
         }
 
         //same for all class
@@ -37,6 +39,8 @@ namespace OpenNos.GameObject
         private static int[,] DistDef = null;
         private static int[,] DistDodge = null;
         private static int[,] magicalDef = null;
+        private static int[] hpHealth = null;
+        private static int[] mpHealth = null;
         //STAT DATA
         private static int[] speedData = null;
         private static int[,] HP = null;
@@ -198,6 +202,22 @@ namespace OpenNos.GameObject
             //MAGICIAN MP
 
         }
+        private void LoadHpHealth()
+        {
+            hpHealth = new int[4];
+            hpHealth[(int)ClassType.Archer] = 60;
+            hpHealth[(int)ClassType.Adventurer] = 30;
+            hpHealth[(int)ClassType.Swordman] = 90;
+            hpHealth[(int)ClassType.Magician] = 30;
+        }
+        private void LoadMpHealth()
+        {
+            mpHealth = new int[4];
+            mpHealth[(int)ClassType.Archer] = 50;
+            mpHealth[(int)ClassType.Adventurer] = 10;
+            mpHealth[(int)ClassType.Swordman] = 30;
+            mpHealth[(int)ClassType.Magician] = 80;
+        }
         private void LoadSpeedData()
         {
             speedData = new int[4];
@@ -291,6 +311,28 @@ namespace OpenNos.GameObject
                     new ServersData();
                 }
                 return MP;
+            }
+        }
+        public static int[] HpHealth
+        {
+            get
+            {
+                if (hpHealth == null)
+                {
+                    new ServersData();
+                }
+                return hpHealth;
+            }
+        }
+        public static int[] MpHealth
+        {
+            get
+            {
+                if (mpHealth == null)
+                {
+                    new ServersData();
+                }
+                return mpHealth;
             }
         }
         public static int[,] HPData

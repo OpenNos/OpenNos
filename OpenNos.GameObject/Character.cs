@@ -42,6 +42,7 @@ namespace OpenNos.GameObject
             DAOFactory.CharacterDAO.InsertOrUpdate(ref UpdatedCharacter);
 
         }
+  
         private long characterId;
         public long CharacterId
         {
@@ -381,7 +382,14 @@ namespace OpenNos.GameObject
             return ServersData.XPData[Level - 1];
         }
 
-
+        public int HealthHPLoad()
+        {
+            return ServersData.HpHealth[Class];
+        }
+        public int HealthMPLoad()
+        {
+            return ServersData.MpHealth[Class];
+        }
         public double JobXPLoad()
         {
             if(Class == (byte)ClassType.Adventurer)
@@ -499,6 +507,17 @@ namespace OpenNos.GameObject
         public string GenerateMsg(string message, int v)
         {
             return String.Format("msg {0} {1}", v, message);
+        }
+
+        public string GenerateSpk(object message, int v)
+        {
+            return String.Format("spk 1 {0} {1} {2} {3}", CharacterId, v, Name, message);
+        }
+
+        public string GenerateInfo(string message)
+        {
+            string str2 = "info " + name + " ne joue pas.";
+            return String.Format("info {0}", message);
         }
     }
 }

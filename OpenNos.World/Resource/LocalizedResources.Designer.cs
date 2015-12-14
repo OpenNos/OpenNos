@@ -311,5 +311,14 @@ namespace OpenNos.World.Resource {
                 return ResourceManager.GetString("UPDATE_ACCOUNT_ERROR", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à User is not connected..
+        /// </summary>
+        public static string USER_NOT_CONNECTED {
+            get {
+                return ResourceManager.GetString("USER_NOT_CONNECTED", resourceCulture);
+            }
+        }
     }
 }

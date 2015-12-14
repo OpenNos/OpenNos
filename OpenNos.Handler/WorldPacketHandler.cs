@@ -21,6 +21,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace OpenNos.Handler
@@ -28,6 +29,7 @@ namespace OpenNos.Handler
     public class WorldPacketHandler
     {
         private readonly ClientSession _session;
+        private Thread HealthThread;
 
         public WorldPacketHandler(ClientSession session)
         {
@@ -70,7 +72,7 @@ namespace OpenNos.Handler
                         Gold = 10000,
                         HairColor = Convert.ToByte(packetsplit[6]),
                         HairStyle = Convert.ToByte(packetsplit[5]),
-                        Hp = 200,
+                        Hp = 221,
                         JobLevel = 1,
                         JobLevelXp = 0,
                         Level = 1,
@@ -78,7 +80,7 @@ namespace OpenNos.Handler
                         Map = 1,
                         MapX = 80,
                         MapY = 118,
-                        Mp = 200,
+                        Mp = 221,
                         Name = packetsplit[2],
                         Slot = Convert.ToByte(packetsplit[3]),
                         AccountId = accountId,
@@ -303,10 +305,47 @@ namespace OpenNos.Handler
                 _session.Client.SendPacket(String.Format("say 1 {0} 1 Ne peut pas encore bouger.", _session.Character.CharacterId));
             }
         }
+        public void healthThread()
+        {
+           while(true)
+            {
+                Thread.Sleep(3000);
+                if (_session.Character.Hp + _session.Character.HealthHPLoad() < _session.Character.HPLoad())
+                    _session.Character.Hp += _session.Character.HealthHPLoad();
+                else
+                    _session.Character.Hp = (int)_session.Character.HPLoad();
+
+                if (_session.Character.Mp + _session.Character.HealthMPLoad() < _session.Character.MPLoad())
+                    _session.Character.Mp += _session.Character.HealthMPLoad();
+                else
+                    _session.Character.Mp = (int) _session.Character.MPLoad();
+
+
+
+                ChatManager.Instance.Broadcast(_session,
+                  _session.Character.GenerateStat(),
+                    ReceiverType.AllOnMap);
+            }
+        }
         [Packet("rest")]
         public void Rest(string packet)
         {
-            _session.Character.Rested = (_session.Character.Rested==0)?1:0;
+            _session.Character.Rested = _session.Character.Rested == 1 ? 0 : 1;
+            if (_session.Character.Rested == 1)
+            {
+                HealthThread = new Thread(new ThreadStart(healthThread));
+                HealthThread.Start();
+              
+
+            }
+            else
+            {
+                if (HealthThread!=null && HealthThread.IsAlive)
+                    HealthThread.Abort();
+         
+            }
+
+        
             ChatManager.Instance.Broadcast(_session, _session.Character.GenerateRest(),ReceiverType.AllOnMap);
               
         }
@@ -344,7 +383,21 @@ namespace OpenNos.Handler
             
            
         }
+        [Packet("/")]
+        public void whisper(string packet)
+        {
+            string[] packetsplit = packet.Split(' ');
+            string message = String.Empty;
+            for (int i = 2; i < packetsplit.Length; i++)
+                message += packetsplit[i] + " ";
+            message.Trim();
 
+            ChatManager.Instance.Broadcast(_session, _session.Character.GenerateSpk(message, 5), ReceiverType.OnlyMe);
+            if(!ChatManager.Instance.Broadcast(_session, _session.Character.GenerateSpk(message, 5), ReceiverType.OnlySomeone, packetsplit[1].Substring(1)));
+            ChatManager.Instance.Broadcast(_session, _session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("USER_NOT_CONNECTED")), ReceiverType.OnlyMe);
+            //TODO add verification on receiver
+         
+        }
         #endregion
 
         #region AdminCommand
@@ -359,6 +412,7 @@ namespace OpenNos.Handler
                 _session.Client.SendPacket(_session.Character.GenerateSay("$Shout MESSAGE", 0));
                 _session.Client.SendPacket(_session.Character.GenerateSay("$Kick USERNAME", 0));
                 _session.Client.SendPacket(_session.Character.GenerateSay("$MapDance", 0));
+                _session.Client.SendPacket(_session.Character.GenerateSay("$Effect EFFECTID", 0));
             }
         }
         [Packet("$Kick")]
@@ -391,9 +445,25 @@ namespace OpenNos.Handler
         {
             if (_session.Character.Authority == 2)//if gm
             {
-                _session.CurrentMap.Dance = _session.CurrentMap.Dance == 1?0:1 ;
+
+                ChatManager.Instance.RequiereBroadcastFromMap(_session.Character.Map,"guri 2 1 {0}"); 
             }
         }
+        [Packet("$Effect")]
+        public void Effect(string packet)
+        {
+            if (_session.Character.Authority == 2)//if gm
+            {
+                string[] packetsplit = packet.Split(' ');
+                short arg = 0;
+                if (packetsplit.Length > 1)
+                {
+                    short.TryParse(packetsplit[2], out arg);
+                    ChatManager.Instance.Broadcast(_session, _session.Character.GenerateEff(arg),ReceiverType.AllOnMap);
+                }            
+             }
+        }
+       
         [Packet("$Morph")]
         public void Morph(string packet)
         {
