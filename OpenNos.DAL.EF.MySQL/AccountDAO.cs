@@ -98,15 +98,20 @@ namespace OpenNos.DAL.EF.MySQL
             }
         }
 
-        public void WriteConnectionLog(long accountId, string ipAddress)
+        public void WriteConnectionLog(long accountId, string ipAddress, Nullable<long> characterId, string logType,string logData)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-               GeneralLog log = new GeneralLog()
+                GeneralLog log = new GeneralLog()
                 {
                     AccountId = accountId,
                     IpAddress = ipAddress,
-                    Timestamp = DateTime.Now
+                    Timestamp = DateTime.Now,
+                    LogType = logType,
+                    LogData = logData,
+                    CharacterId = characterId
+
+
                 };
 
                 context.connectionlog.Add(log);

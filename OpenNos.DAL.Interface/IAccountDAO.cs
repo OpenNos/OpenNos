@@ -37,7 +37,7 @@ namespace OpenNos.DAL.Interface
 
         void LogIn(string name);
 
-        void WriteConnectionLog(long accountId, string ipAddress);
+        void WriteConnectionLog(long accountId, string ipAddress, Nullable<long> characterId, string logType, string logData);
 
         SaveResult InsertOrUpdate(ref AccountDTO account);
 

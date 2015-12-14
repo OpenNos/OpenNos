@@ -224,19 +224,19 @@ namespace OpenNos.GameObject
         }
         private void LoadHpHealthStand()
         {
-            hpHealth = new int[4];
-            hpHealth[(int)ClassType.Archer] = 32;
-            hpHealth[(int)ClassType.Adventurer] = 25;
-            hpHealth[(int)ClassType.Swordman] = 26;
-            hpHealth[(int)ClassType.Magician] = 20;
+            hpHealthStand = new int[4];
+            hpHealthStand[(int)ClassType.Archer] = 32;
+            hpHealthStand[(int)ClassType.Adventurer] = 25;
+            hpHealthStand[(int)ClassType.Swordman] = 26;
+            hpHealthStand[(int)ClassType.Magician] = 20;
         }
         private void LoadMpHealthStand()
         {
-            mpHealth = new int[4];
-            mpHealth[(int)ClassType.Archer] = 28;
-            mpHealth[(int)ClassType.Adventurer] = 5;
-            mpHealth[(int)ClassType.Swordman] = 16;
-            mpHealth[(int)ClassType.Magician] = 40;
+            mpHealthStand = new int[4];
+            mpHealthStand[(int)ClassType.Archer] = 28;
+            mpHealthStand[(int)ClassType.Adventurer] = 5;
+            mpHealthStand[(int)ClassType.Swordman] = 16;
+            mpHealthStand[(int)ClassType.Magician] = 40;
         }
         private void LoadSpeedData()
         {
