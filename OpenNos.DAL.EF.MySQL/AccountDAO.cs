@@ -77,6 +77,16 @@ namespace OpenNos.DAL.EF.MySQL
                 context.SaveChanges();
             }
         }
+        
+       public void BanUnBan(long id)
+        {
+            using (var context = DataAccessHelper.CreateContext())
+            {
+                Account account = context.account.SingleOrDefault(a => a.AccountId.Equals(id));
+                account.Authority = account.Authority > 1 ? (short)0 : (short)1;
+                context.SaveChanges();
+            }
+        }
 
         public void UpdateLastSessionAndIp(string name, int session, string ip)
         {

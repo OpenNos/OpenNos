@@ -70,6 +70,15 @@ namespace OpenNos.World.Resource {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à Administrator.
+        /// </summary>
+        public static string ADMINISTRATOR {
+            get {
+                return ResourceManager.GetString("ADMINISTRATOR", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Adventurer.
         /// </summary>
         public static string ADVENTURER {
@@ -102,6 +111,15 @@ namespace OpenNos.World.Resource {
         public static string BAD_PASSWORD {
             get {
                 return ResourceManager.GetString("BAD_PASSWORD", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à User can&apos;t move..
+        /// </summary>
+        public static string CANT_MOVE {
+            get {
+                return ResourceManager.GetString("CANT_MOVE", resourceCulture);
             }
         }
         

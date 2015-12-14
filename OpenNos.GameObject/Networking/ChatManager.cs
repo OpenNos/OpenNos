@@ -104,13 +104,17 @@ namespace OpenNos.GameObject
             
         }
 
-        public void Kick(String CharacterName)
+        public bool Kick(String CharacterName)
         {
             foreach (ClientSession session in sessions)
             {
                 if (session.Character.Name == CharacterName)
+                {
                     session.Client.Disconnect();
+                    return true;
+                }
             }
+            return false;
         }
     }
 }
