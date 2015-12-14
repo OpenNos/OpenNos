@@ -383,12 +383,17 @@ namespace OpenNos.GameObject
         }
 
         public int HealthHPLoad()
-        {
+        {   if(rested == 1)
             return ServersData.HpHealth[Class];
+        else
+                return ServersData.HpHealthStand[Class];
         }
         public int HealthMPLoad()
         {
-            return ServersData.MpHealth[Class];
+            if (rested == 1)
+                return ServersData.MpHealth[Class];
+            else
+                return ServersData.MpHealthStand[Class];
         }
         public double JobXPLoad()
         {
