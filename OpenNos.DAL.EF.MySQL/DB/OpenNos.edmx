@@ -27,6 +27,10 @@
       <End Role="portal" EntitySet="portal" />
       <End Role="Map" EntitySet="map" />
     </AssociationSet>
+    <AssociationSet Name="GeneralLogCharacter" Association="opennosModel.Store.GeneralLogCharacter">
+      <End Role="GeneralLog" EntitySet="connectionlog" />
+      <End Role="Character" EntitySet="character" />
+    </AssociationSet>
   </EntityContainer>
   <EntityType Name="account">
     <Key>
@@ -91,6 +95,10 @@
     <Property Name="AccountId" Type="bigint" Nullable="false" />
     <Property Name="IpAddress" Type="longtext" Nullable="false" />
     <Property Name="Timestamp" Type="datetime" Nullable="false" />
+    <Property Name="CharacterId" Type="bigint" Nullable="true" />
+    <Property Name="LogType" Type="longtext" Nullable="false" />
+    <Property Name="LogData" Type="longtext" Nullable="false" />
+    <Property Name="CharacterCharacterId" Type="bigint" Nullable="true" />
   </EntityType>
   <EntityType Name="map">
     <Key>
@@ -144,6 +152,18 @@
       </Principal>
       <Dependent Role="portal">
         <PropertyRef Name="SourceMapId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="GeneralLogCharacter">
+    <End Role="GeneralLog" Type="opennosModel.Store.connectionlog" Multiplicity="*" />
+    <End Role="Character" Type="opennosModel.Store.character" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="Character">
+        <PropertyRef Name="CharacterId" />
+      </Principal>
+      <Dependent Role="GeneralLog">
+        <PropertyRef Name="CharacterCharacterId" />
       </Dependent>
     </ReferentialConstraint>
   </Association>
@@ -394,6 +414,10 @@
           <ScalarProperty Name="AccountId" ColumnName="AccountId" />
           <ScalarProperty Name="IpAddress" ColumnName="IpAddress" />
           <ScalarProperty Name="Timestamp" ColumnName="Timestamp" />
+          <ScalarProperty Name="CharacterId" ColumnName="CharacterId" />
+          <ScalarProperty Name="LogType" ColumnName="LogType" />
+          <ScalarProperty Name="LogData" ColumnName="LogData" />
+          <ScalarProperty Name="CharacterCharacterId" ColumnName="CharacterCharacterId" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
