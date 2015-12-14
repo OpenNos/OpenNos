@@ -205,7 +205,12 @@ namespace OpenNos.GameObject
                     {
                         string packetHeader = packet.Split(' ')[1];
                         //0 is a keep alive packet with no content to handle
-                        if (packetHeader != "0" && !TriggerHandler(packetHeader, packet, false))
+                        if (packetHeader[0] == '/' || packetHeader[0] == ':')
+                        {
+                            TriggerHandler(packetHeader[0].ToString(), packet, false);
+                        }
+                        else
+                       if (packetHeader != "0" && !TriggerHandler(packetHeader, packet, false))
                         {
                             Logger.Log.ErrorFormat(Language.Instance.GetMessageFromKey("HANDLER_NOT_FOUND"), packetHeader);
                         }
@@ -215,8 +220,12 @@ namespace OpenNos.GameObject
                 {
                     //simple messaging
                     string packetHeader = packet.Split(' ')[0];
-
-                    if (!TriggerHandler(packetHeader, packet, false))
+                    if (packetHeader[0] == '/' || packetHeader[0] == ':')
+                    {
+                        TriggerHandler(packetHeader[0].ToString(), packet, false);
+                    }
+                    else
+                   if (!TriggerHandler(packetHeader, packet, false))
                     {
                         Logger.Log.ErrorFormat(Language.Instance.GetMessageFromKey("HANDLER_NOT_FOUND"), packetHeader);
                     }

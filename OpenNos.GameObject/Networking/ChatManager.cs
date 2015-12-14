@@ -40,7 +40,7 @@ namespace OpenNos.GameObject
             return list;
         }
 
-        public void Broadcast(ClientSession client, String message, ReceiverType receiver, String CharacterName ="", int CharacterId = -1)
+        public bool Broadcast(ClientSession client, String message, ReceiverType receiver, String CharacterName ="", int CharacterId = -1)
         {
             switch (receiver)
             {
@@ -82,18 +82,24 @@ namespace OpenNos.GameObject
                     foreach (ClientSession session in sessions)
                     {
                         if (session.Character.Name == CharacterName || session.Character.CharacterId == CharacterId)
+                        {
                             session.Client.SendPacket(message);
+                            return true;
+                        }
+                           
                     }
-                        break;
+                    return false;
+                      
             }
+            return true;
         }
 
-        internal void BroadcastFromMap(short MapId, string Message)
+        public void RequiereBroadcastFromMap(short MapId, string Message)
         {
                 foreach (ClientSession session in sessions)
                 {
-                    if (session.Character.Map == MapId)
-                        session.Client.SendPacket(Message+ session.Character.CharacterId);
+                if (session.Character.Map == MapId)
+                    Broadcast(session, String.Format(Message, session.Character.CharacterId),ReceiverType.AllOnMap);
                 }
             
         }

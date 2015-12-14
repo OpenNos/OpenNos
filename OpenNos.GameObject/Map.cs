@@ -23,20 +23,6 @@ namespace OpenNos.GameObject
         private ThreadedBase<MapPacket> threadedBase;
 
         public event PropertyChangedEventHandler PropertyChanged;
-        private int dance;
-        public int Dance
-        {
-            get
-            {
-                return dance;
-            }
-            set
-            {
-              
-                dance = value;
-                OnPropertyChanged();
-            }
-        }
        
       
         #endregion
@@ -48,7 +34,6 @@ namespace OpenNos.GameObject
             _mapId = mapId;
             _uniqueIdentifier = uniqueIdentifier;
             LoadZone();
-            dance = 0;
             IEnumerable<PortalDTO> portalsDTO = DAOFactory.PortalDAO.LoadFromMap(_mapId);
             _portals = new List<Portal>();
             foreach (PortalDTO portal in portalsDTO)
@@ -85,11 +70,6 @@ namespace OpenNos.GameObject
         #endregion
 
         #region Methods
-        public void OnPropertyChanged()
-        {
-            if(this.dance == 1)
-            ChatManager.Instance.BroadcastFromMap(MapId, "guri 2 1 ");
-        }
         public List<Portal> Portals
         {
             get
