@@ -543,7 +543,7 @@ namespace OpenNos.Handler
                 bool verify = false;
                 if (packetsplit.Length > 4)
                 {
-                    verify = (short.TryParse(packetsplit[2], out arg[0]) && short.TryParse(packetsplit[3], out arg[1]) && short.TryParse(packetsplit[4], out arg[2]));
+                    verify = (short.TryParse(packetsplit[2], out arg[0]) && short.TryParse(packetsplit[3], out arg[1]) && short.TryParse(packetsplit[4], out arg[2]) && DAOFactory.MapDAO.LoadById(arg[0]) != null);
                 }
                 switch (packetsplit.Length)
                 {
