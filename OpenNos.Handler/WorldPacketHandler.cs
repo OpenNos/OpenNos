@@ -302,25 +302,32 @@ namespace OpenNos.Handler
             }
             else
             {
-                _session.Client.SendPacket(String.Format("say 1 {0} 1 Ne peut pas encore bouger.", _session.Character.CharacterId));
+                _session.Client.SendPacket(String.Format("say 1 {0} 1 {1}", _session.Character.CharacterId,Language.Instance.GetMessageFromKey("CANT_MOVE")));
             }
         }
         public void healthThread()
         {
+            int x = 1;
            while(true)
             {
-                Thread.Sleep(3000);
+                Thread.Sleep(1500);
+                if (x == 0)
+                    x = 1;
+
                 if (_session.Character.Hp + _session.Character.HealthHPLoad() < _session.Character.HPLoad())
                     _session.Character.Hp += _session.Character.HealthHPLoad();
                 else
                     _session.Character.Hp = (int)_session.Character.HPLoad();
 
-                if (_session.Character.Mp + _session.Character.HealthMPLoad() < _session.Character.MPLoad())
-                    _session.Character.Mp += _session.Character.HealthMPLoad();
-                else
-                    _session.Character.Mp = (int) _session.Character.MPLoad();
-
-
+                if(x == 1)
+                {
+                    if (_session.Character.Mp + _session.Character.HealthMPLoad() < _session.Character.MPLoad())
+                        _session.Character.Mp += _session.Character.HealthMPLoad();
+                    else
+                        _session.Character.Mp = (int) _session.Character.MPLoad();
+                    x = 0;
+                }
+              
 
                 ChatManager.Instance.Broadcast(_session,
                   _session.Character.GenerateStat(),
@@ -413,6 +420,7 @@ namespace OpenNos.Handler
                 _session.Client.SendPacket(_session.Character.GenerateSay("$Kick USERNAME", 0));
                 _session.Client.SendPacket(_session.Character.GenerateSay("$MapDance", 0));
                 _session.Client.SendPacket(_session.Character.GenerateSay("$Effect EFFECTID", 0));
+                _session.Client.SendPacket(_session.Character.GenerateSay("$Ban CHARACTERNAME", 0));
             }
         }
         [Packet("$Kick")]
@@ -424,6 +432,19 @@ namespace OpenNos.Handler
                 ChatManager.Instance.Kick(packetsplit[2]);
             }
         }
+        [Packet("$Ban")]
+        public void Ban(string packet)
+        {
+            if (_session.Character.Authority == 2)//if gm
+            {
+                string[] packetsplit = packet.Split(' ');
+                ChatManager.Instance.Kick(packetsplit[2]);
+                if (DAOFactory.CharacterDAO.LoadByName(packetsplit[2]) != null)
+                    DAOFactory.AccountDAO.BanUnBan(DAOFactory.CharacterDAO.LoadByName(packetsplit[2]).AccountId);
+            }
+        
+
+        }
         [Packet("$Shout")]
         public void Shout(string packet)
         {
@@ -434,8 +455,8 @@ namespace OpenNos.Handler
                 for (int i = 2; i < packetsplit.Length; i++)
                     message += packetsplit[i] + " ";
                 message.Trim();
-                
-                ChatManager.Instance.Broadcast(_session, "say 1 0 10 [Administrateur]:"+message, ReceiverType.All);
+
+                ChatManager.Instance.Broadcast(_session, String.Format("say 1 0 10 [{0}] {1}:", Language.Instance.GetMessageFromKey("ADMINISTRATOR"), message), ReceiverType.All);
                 ChatManager.Instance.Broadcast(_session, _session.Character.GenerateMsg(message, 2), ReceiverType.All);
             }
         }

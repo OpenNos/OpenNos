@@ -120,6 +120,9 @@
   <data name="ACCOUNT_ARRIVED" xml:space="preserve">
     <value>Account with SessionId {0} has arrived.</value>
   </data>
+  <data name="ADMINISTRATOR" xml:space="preserve">
+    <value>Administrator</value>
+  </data>
   <data name="ADVENTURER" xml:space="preserve">
     <value>Adventurer</value>
   </data>
@@ -131,6 +134,9 @@
   </data>
   <data name="BAD_PASSWORD" xml:space="preserve">
     <value>Bad Password</value>
+  </data>
+  <data name="CANT_MOVE" xml:space="preserve">
+    <value>User can't move.</value>
   </data>
   <data name="CLIENT_ARRIVED" xml:space="preserve">
     <value>Client arrived, SessionId: {0}</value>
