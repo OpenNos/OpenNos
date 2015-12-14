@@ -43,6 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GeneralLog.cs" />
     <Compile Include="Account.cs" />
     <Compile Include="Character.cs" />
     <Compile Include="Networking\ChatManager.cs" />

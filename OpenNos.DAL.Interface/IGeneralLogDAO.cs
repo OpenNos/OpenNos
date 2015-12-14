@@ -11,28 +11,25 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  */
-using OpenNos.DAL.EF.MySQL.DB;
-using OpenNos.DAL.Interface;
+using OpenNos.Data;
 using OpenNos.Domain;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using OpenNos.Data;
-using AutoMapper;
-using OpenNos.Core;
 
-namespace OpenNos.DAL.EF.MySQL
+namespace OpenNos.DAL.Interface
 {
-    public class MapDAO : IMapDAO
+    public interface IGeneralLogDAO
     {
-        public MapDTO LoadById(short mapId)
-        {
-            using (var context = DataAccessHelper.CreateContext())
-            {
-                return Mapper.Map<MapDTO>(context.map.SingleOrDefault(c => c.MapId.Equals(mapId)));
-            }
-        }
+        #region Methods
+
+      
+        void WriteConnectionLog(long accountId, string ipAddress, Nullable<long> characterId, string logType, string logData);
+
+        IEnumerable<GeneralLogDTO> LoadByLogType(string LogType, Nullable<long> CharacterId);
+
+        #endregion
     }
 }

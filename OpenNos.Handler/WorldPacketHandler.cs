@@ -151,6 +151,7 @@ namespace OpenNos.Handler
         [Packet("select")]
         public void SelectCharacter(string packet)
         {
+
             string[] packetsplit = packet.Split(' ');
             CharacterDTO characterDTO = DAOFactory.CharacterDAO.LoadBySlot(_session.Account.AccountId, Convert.ToByte(packetsplit[2]));
             if (characterDTO != null)
@@ -188,7 +189,7 @@ namespace OpenNos.Handler
                     Rested = 0,
                     Speed = ServersData.SpeedData[characterDTO.Class]
                 };
-
+            DAOFactory.AccountDAO.WriteConnectionLog(_session.Character.AccountId, _session.Client.RemoteEndPoint.ToString(), _session.Character.CharacterId, "Connexion", "World");
             _session.CurrentMap = ServerManager.GetMap(_session.Character.Map);
             _session.RegisterForMapNotification();
             _session.Client.SendPacket("OK");
@@ -368,7 +369,7 @@ namespace OpenNos.Handler
 
             if (packetsplit[2] == "1")
             {
-                ChatManager.Instance.Broadcast(_session, _session.Character.generateStatInfo(), ReceiverType.OnlyMe);
+                ChatManager.Instance.RequiereBroadcastFromUser(_session,Convert.ToInt64(packetsplit[3]), "GenerateStatInfo");
             }
             if (packetsplit[2] == "2")
             {
@@ -378,6 +379,11 @@ namespace OpenNos.Handler
         [Packet("game_start")]
         public void StartGame(string packet)
         {
+            if(DAOFactory.GeneralLogDAO.LoadByLogType("Connexion", _session.Character.CharacterId).Count() == 1)
+                _session.Client.SendPacket("scene 40");
+            
+
+
             _session.Client.SendPacket(_session.Character.GenerateTit());
             ChangeMap();
             _session.Client.SendPacket("rank_cool 0 0 18000");//TODO add rank cool
@@ -472,7 +478,7 @@ namespace OpenNos.Handler
                     message += packetsplit[i] + " ";
                 message.Trim();
 
-                ChatManager.Instance.Broadcast(_session, String.Format("say 1 0 10 [{0}] {1}:", Language.Instance.GetMessageFromKey("ADMINISTRATOR"), message), ReceiverType.All);
+                ChatManager.Instance.Broadcast(_session, String.Format("say 1 0 10 [{0}]: {1}", Language.Instance.GetMessageFromKey("ADMINISTRATOR"), message), ReceiverType.All);
                 ChatManager.Instance.Broadcast(_session, _session.Character.GenerateMsg(message, 2), ReceiverType.All);
             }
         }

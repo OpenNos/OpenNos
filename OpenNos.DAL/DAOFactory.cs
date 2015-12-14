@@ -29,6 +29,7 @@ namespace OpenNos.DAL
         private static ICharacterDAO _characterDAO;
         private static IPortalDAO _portalDAO;
         private static IMapDAO _mapDAO;
+        private static IGeneralLogDAO _generallogDAO;
         #endregion
 
         #region Properties
@@ -54,6 +55,18 @@ namespace OpenNos.DAL
             }          
         }
 
+        public static IGeneralLogDAO GeneralLogDAO
+        {
+            get
+            {
+                if (_generallogDAO == null)
+                {
+                    _generallogDAO = new MySQL.GeneralLogDAO();
+                }
+
+                return _generallogDAO;
+            }
+        }
         public static ICharacterDAO CharacterDAO
         {
             get

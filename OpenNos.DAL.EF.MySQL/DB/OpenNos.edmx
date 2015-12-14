@@ -280,11 +280,10 @@
           <Property Name="IpAddress" Nullable="false" Type="String" />
           <Property Name="Timestamp" Nullable="false" Type="DateTime" />
           <NavigationProperty Name="account" Relationship="opennosModel.accountlog" FromRole="log" ToRole="account" />
-          <Property Name="CharacterId" Type="Int64" Nullable="true" />
           <Property Name="LogType" Type="String" Nullable="false" />
           <Property Name="LogData" Type="String" Nullable="false" />
           <NavigationProperty Name="character" Relationship="opennosModel.GeneralLogCharacter" FromRole="GeneralLog" ToRole="Character" />
-          <Property Name="CharacterCharacterId" Type="Int64" Nullable="true" />
+          <Property Name="CharacterId" Type="Int64" Nullable="true" />
         </EntityType>
         <Association Name="accountlog">
           <End Type="opennosModel.Account" Multiplicity="1" Role="account" />
@@ -339,7 +338,7 @@
               <PropertyRef Name="CharacterId" />
             </Principal>
             <Dependent Role="GeneralLog">
-              <PropertyRef Name="CharacterCharacterId" />
+              <PropertyRef Name="CharacterId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -414,10 +413,9 @@
           <ScalarProperty Name="AccountId" ColumnName="AccountId" />
           <ScalarProperty Name="IpAddress" ColumnName="IpAddress" />
           <ScalarProperty Name="Timestamp" ColumnName="Timestamp" />
-          <ScalarProperty Name="CharacterId" ColumnName="CharacterId" />
           <ScalarProperty Name="LogType" ColumnName="LogType" />
           <ScalarProperty Name="LogData" ColumnName="LogData" />
-          <ScalarProperty Name="CharacterCharacterId" ColumnName="CharacterCharacterId" />
+          <ScalarProperty Name="CharacterId" ColumnName="CharacterCharacterId" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
