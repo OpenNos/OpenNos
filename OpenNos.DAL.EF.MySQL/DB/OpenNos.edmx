@@ -195,6 +195,7 @@
           <Property Name="Contribution" Type="Int32" Nullable="false" />
           <Property Name="Faction" Type="Int32" Nullable="false" />
           <NavigationProperty Name="account" Relationship="opennosModel.AccountCharacter" FromRole="Character" ToRole="Account" />
+          <NavigationProperty Name="generallog" Relationship="opennosModel.GeneralLogCharacter" FromRole="Character" ToRole="GeneralLog" />
         </EntityType>
         <EntityType Name="Portal">
           <Key>
@@ -219,7 +220,7 @@
             <End Role="Account" EntitySet="account" />
             <End Role="Character" EntitySet="character" />
           </AssociationSet>
-          <EntitySet Name="connectionlog" EntityType="opennosModel.ConnectionLog" />
+          <EntitySet Name="connectionlog" EntityType="opennosModel.GeneralLog" />
           <AssociationSet Name="accountlog" Association="opennosModel.accountlog">
             <End EntitySet="account" Role="account" />
             <End EntitySet="connectionlog" Role="log" />
@@ -232,6 +233,10 @@
           <AssociationSet Name="portalMap1" Association="opennosModel.portalMap1">
             <End Role="portal" EntitySet="portal" />
             <End Role="Map" EntitySet="map" />
+          </AssociationSet>
+          <AssociationSet Name="GeneralLogCharacter" Association="opennosModel.GeneralLogCharacter">
+            <End Role="GeneralLog" EntitySet="connectionlog" />
+            <End Role="Character" EntitySet="character" />
           </AssociationSet>
         </EntityContainer>
         <Association Name="AccountCharacter">
@@ -246,7 +251,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityType Name="ConnectionLog">
+        <EntityType Name="GeneralLog">
           <Key>
             <PropertyRef Name="LogId" />
           </Key>
@@ -255,10 +260,15 @@
           <Property Name="IpAddress" Nullable="false" Type="String" />
           <Property Name="Timestamp" Nullable="false" Type="DateTime" />
           <NavigationProperty Name="account" Relationship="opennosModel.accountlog" FromRole="log" ToRole="account" />
+          <Property Name="CharacterId" Type="Int64" Nullable="true" />
+          <Property Name="LogType" Type="String" Nullable="false" />
+          <Property Name="LogData" Type="String" Nullable="false" />
+          <NavigationProperty Name="character" Relationship="opennosModel.GeneralLogCharacter" FromRole="GeneralLog" ToRole="Character" />
+          <Property Name="CharacterCharacterId" Type="Int64" Nullable="true" />
         </EntityType>
         <Association Name="accountlog">
           <End Type="opennosModel.Account" Multiplicity="1" Role="account" />
-          <End Type="opennosModel.ConnectionLog" Multiplicity="*" Role="log" />
+          <End Type="opennosModel.GeneralLog" Multiplicity="*" Role="log" />
           <ReferentialConstraint>
             <Principal Role="account">
               <PropertyRef Name="AccountId" />
@@ -298,6 +308,18 @@
             </Principal>
             <Dependent Role="portal">
               <PropertyRef Name="SourceMapId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="GeneralLogCharacter">
+          <End Type="opennosModel.GeneralLog" Role="GeneralLog" Multiplicity="*" />
+          <End Type="opennosModel.Character" Role="Character" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="Character">
+              <PropertyRef Name="CharacterId" />
+            </Principal>
+            <Dependent Role="GeneralLog">
+              <PropertyRef Name="CharacterCharacterId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -366,7 +388,7 @@
       </EntityTypeMapping>
     </EntitySetMapping>
     <EntitySetMapping Name="connectionlog">
-      <EntityTypeMapping TypeName="IsTypeOf(opennosModel.ConnectionLog)">
+      <EntityTypeMapping TypeName="IsTypeOf(opennosModel.GeneralLog)">
         <MappingFragment StoreEntitySet="connectionlog">
           <ScalarProperty Name="LogId" ColumnName="LogId" />
           <ScalarProperty Name="AccountId" ColumnName="AccountId" />

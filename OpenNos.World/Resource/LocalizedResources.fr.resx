@@ -132,6 +132,27 @@
   <data name="BAD_PASSWORD" xml:space="preserve">
     <value>Bad Password</value>
   </data>
+  <data name="BN0" xml:space="preserve">
+    <value>Lisez^le^règlement,^vous^éviterez^des^embêtements^!</value>
+  </data>
+  <data name="BN1" xml:space="preserve">
+    <value>Ne^donnez^JAMAIS^vos^identifiants^de^connexion^!</value>
+  </data>
+  <data name="BN2" xml:space="preserve">
+    <value>Besoin^d´un^GM^?^http://support.nostale.fr/</value>
+  </data>
+  <data name="BN3" xml:space="preserve">
+    <value>Peur^d´un^vol^?^Lisez^le^guide^anti-arnaques^!</value>
+  </data>
+  <data name="BN4" xml:space="preserve">
+    <value>Besoin^d´aide^pour^un^TS^?^Contactez^un^NosHelper^!</value>
+  </data>
+  <data name="BN5" xml:space="preserve">
+    <value>Forum^officiel:^http://board.fr.nostale.gameforge.com</value>
+  </data>
+  <data name="BN6" xml:space="preserve">
+    <value>Entrez^dans^la^légende,^découvrez^le^Panthéon</value>
+  </data>
   <data name="CLIENT_ARRIVED" xml:space="preserve">
     <value>Client arrived, SessionId: {0}</value>
   </data>

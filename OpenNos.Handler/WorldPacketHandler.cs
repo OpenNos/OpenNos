@@ -368,6 +368,20 @@ namespace OpenNos.Handler
                
             }
         }
+        [Packet("ncif")]
+        public void ncif(string packet)
+        {
+            string[] packetsplit = packet.Split(' ');
+
+            if (packetsplit[2] == "1")
+            {
+                ChatManager.Instance.Broadcast(_session, _session.Character.generateStatInfo(), ReceiverType.OnlyMe);
+            }
+            if (packetsplit[2] == "2")
+            {
+                ChatManager.Instance.Broadcast(_session, String.Format("st 2 {0} 99 100 100 50000 50000", packetsplit[2]), ReceiverType.OnlyMe);
+            }
+        }
         [Packet("game_start")]
         public void StartGame(string packet)
         {
@@ -376,7 +390,15 @@ namespace OpenNos.Handler
             _session.Client.SendPacket("rank_cool 0 0 18000");//TODO add rank cool
 
             _session.Client.SendPacket("scr 0 0 0 0 0 0");
-            //bn
+
+            _session.Client.SendPacket(String.Format("bn 0 {0}",Language.Instance.GetMessageFromKey("bn0")));
+            _session.Client.SendPacket(String.Format("bn 1 {0}", Language.Instance.GetMessageFromKey("bn1")));
+            _session.Client.SendPacket(String.Format("bn 2 {0}", Language.Instance.GetMessageFromKey("bn2")));
+            _session.Client.SendPacket(String.Format("bn 3 {0}", Language.Instance.GetMessageFromKey("bn3")));
+            _session.Client.SendPacket(String.Format("bn 4 {0}", Language.Instance.GetMessageFromKey("bn4")));
+            _session.Client.SendPacket(String.Format("bn 5 {0}", Language.Instance.GetMessageFromKey("bn5")));
+            _session.Client.SendPacket(String.Format("bn 6 {0}", Language.Instance.GetMessageFromKey("bn6")));
+
             _session.Client.SendPacket(_session.Character.GenerateExts());
 
             //gidx
