@@ -63,7 +63,7 @@ namespace OpenNos.GameObject
                 case ReceiverType.AllOnMap:
                     foreach (ClientSession session in sessions)
                     {
-                        if (client.Character.Map == session.Character.Map)
+                        if (session.Character !=null && client.Character.Map == session.Character.Map)
                             session.Client.SendPacket(message);
                     }
                   
@@ -71,7 +71,7 @@ namespace OpenNos.GameObject
                 case ReceiverType.AllOnMapExceptMe:
                     foreach (ClientSession session in sessions)
                     {
-                        if (session != client && client.Character.Map == session.Character.Map)
+                        if (session.Character != null && session != client && client.Character.Map == session.Character.Map)
                             session.Client.SendPacket(message);
                     }
                     break;
@@ -81,7 +81,7 @@ namespace OpenNos.GameObject
                 case ReceiverType.OnlySomeone:
                     foreach (ClientSession session in sessions)
                     {
-                        if (session.Character.Name == CharacterName || session.Character.CharacterId == CharacterId)
+                        if (session.Character != null &&  (session.Character.Name == CharacterName || session.Character.CharacterId == CharacterId))
                         {
                             session.Client.SendPacket(message);
                             return true;
@@ -98,7 +98,7 @@ namespace OpenNos.GameObject
         {
                 foreach (ClientSession session in sessions)
                 {
-                if (session.Character.Map == MapId)
+                if (session.Character != null && session.Character.Map == MapId)
                     Broadcast(session, String.Format(Message, session.Character.CharacterId),ReceiverType.AllOnMap);
                 }
             
@@ -108,7 +108,7 @@ namespace OpenNos.GameObject
         {
             foreach (ClientSession session in sessions)
             {
-                if (session.Character.Name == CharacterName)
+                if (session.Character != null && session.Character.Name == CharacterName)
                 {
                     session.Client.Disconnect();
                     return true;

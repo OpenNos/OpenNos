@@ -8,6 +8,8 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using OpenNos.Data;
+using System.Threading;
+
 namespace OpenNos.GameObject
 {
     public class ClientSession
@@ -20,7 +22,7 @@ namespace OpenNos.GameObject
         private IDictionary<Packet, Tuple<MethodInfo, object>> _handlerMethods;
         private static EncryptionBase _encryptor;
         private SequentialItemProcessor<byte[]> _queue;
-
+        private Thread healthThread;
         //Packetwait Packets
         private int? _waitForPacketsAmount;
         private IList<String> _waitForPacketList = new List<String>();
@@ -80,6 +82,18 @@ namespace OpenNos.GameObject
             set
             {
                 _account = value;
+            }
+        }
+
+        public Thread HealthThread
+        {
+            get
+            {
+                return healthThread;
+            }
+            set
+            {
+                healthThread = value;
             }
         }
         public Character Character
