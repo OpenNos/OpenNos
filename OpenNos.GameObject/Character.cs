@@ -495,7 +495,7 @@ namespace OpenNos.GameObject
 
         public string GenerateIn()
         {
-            return String.Format("in 1 {0} - {1} {2} {3} {4} {5} {6} {7} {8} {9} -1.-1.-1.-1.-1.-1.-1.-1 {10} {11} {12} -1 0 0 0 0 0 0 0 0 -1 - {13} 0 0 0 0 {14} 0 {15} 0 10", Name, CharacterId, MapX, MapY, Direction, (Authority == 2 ? 2 : 0), Gender, HairStyle, HairColor, Class, (int)((Hp / HPLoad()) * 100), (int)((Mp / MPLoad()) * 100), Morph, (GetDigniteIco() == 1) ? GetReputIco() : -GetDigniteIco(), ArenaWinner,0);
+            return String.Format("in 1 {0} - {1} {2} {3} {4} {5} {6} {7} {8} {9} -1.-1.-1.-1.-1.-1.-1.-1 {10} {11} {12} -1 0 0 0 0 0 0 0 0 -1 - {13} {16} 0 0 0 {14} 0 {15} 0 10", Name, CharacterId, MapX, MapY, Direction, (Authority == 2 ? 2 : 0), Gender, HairStyle, HairColor, Class, (int)((Hp / HPLoad()) * 100), (int)((Mp / MPLoad()) * 100), Morph, (GetDigniteIco() == 1) ? GetReputIco() : -GetDigniteIco(), ArenaWinner,0, invisible);
           
         }
 

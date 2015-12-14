@@ -436,6 +436,7 @@ namespace OpenNos.Handler
                 _session.Client.SendPacket(_session.Character.GenerateSay("$MapDance", 0));
                 _session.Client.SendPacket(_session.Character.GenerateSay("$Effect EFFECTID", 0));
                 _session.Client.SendPacket(_session.Character.GenerateSay("$Ban CHARACTERNAME", 0));
+                _session.Client.SendPacket(_session.Character.GenerateSay("$Invisible", 0));
             }
         }
         [Packet("$Kick")]
@@ -483,6 +484,15 @@ namespace OpenNos.Handler
             {
 
                 ChatManager.Instance.RequiereBroadcastFromMap(_session.Character.Map,"guri 2 1 {0}"); 
+            }
+        }
+        [Packet("$Invisible")]
+        public void Invisible(string packet)
+        {
+            if (_session.Character.Authority == 2)//if gm
+            {
+                _session.Character.invisible = _session.Character.invisible == 0 ? 1 : 0;
+                ChangeMap();
             }
         }
         [Packet("$Effect")]
