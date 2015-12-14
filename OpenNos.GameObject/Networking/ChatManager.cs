@@ -103,6 +103,14 @@ namespace OpenNos.GameObject
                 }
             
         }
+        public void RequiereBroadcastFromUser(ClientSession client, long CharacterId, string methodName)
+        {
+            foreach (ClientSession session in sessions)
+            {
+                if (session.Character != null && session.Character.CharacterId == CharacterId)
+                    client.Client.SendPacket(session.Character.generateStatInfo());
+            }
+        }
 
         public bool Kick(String CharacterName)
         {
