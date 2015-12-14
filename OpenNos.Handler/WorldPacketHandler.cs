@@ -192,6 +192,9 @@ namespace OpenNos.Handler
             _session.CurrentMap = ServerManager.GetMap(_session.Character.Map);
             _session.RegisterForMapNotification();
             _session.Client.SendPacket("OK");
+            HealthThread = new Thread(new ThreadStart(healthThread));
+            if(HealthThread !=null && !HealthThread.IsAlive)
+            HealthThread.Start();
         }
 
         #endregion
@@ -340,19 +343,7 @@ namespace OpenNos.Handler
         public void Rest(string packet)
         {
             _session.Character.Rested = _session.Character.Rested == 1 ? 0 : 1;
-            if (_session.Character.Rested == 1)
-            {
-                HealthThread = new Thread(new ThreadStart(healthThread));
-                HealthThread.Start();
-              
-
-            }
-            else
-            {
-                if (HealthThread!=null && HealthThread.IsAlive)
-                    HealthThread.Abort();
-         
-            }
+            
 
         
             ChatManager.Instance.Broadcast(_session, _session.Character.GenerateRest(),ReceiverType.AllOnMap);
