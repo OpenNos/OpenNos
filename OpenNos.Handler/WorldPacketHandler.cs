@@ -309,8 +309,10 @@ namespace OpenNos.Handler
         {
             int x = 1;
            while(true)
-            {
-                Thread.Sleep(1500);
+            {if (_session.Character.Rested == 1)
+                    Thread.Sleep(1500);
+                else
+                    Thread.Sleep(2000);
                 if (x == 0)
                     x = 1;
 
