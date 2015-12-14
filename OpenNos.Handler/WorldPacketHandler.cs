@@ -422,7 +422,7 @@ namespace OpenNos.Handler
             message.Trim();
 
             ChatManager.Instance.Broadcast(_session, _session.Character.GenerateSpk(message, 5), ReceiverType.OnlyMe);
-            if(!ChatManager.Instance.Broadcast(_session, _session.Character.GenerateSpk(message, 5), ReceiverType.OnlySomeone, packetsplit[1].Substring(1)));
+            if(!ChatManager.Instance.Broadcast(_session, _session.Character.GenerateSpk(message, 5), ReceiverType.OnlySomeone, packetsplit[1].Substring(1)))
             ChatManager.Instance.Broadcast(_session, _session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("USER_NOT_CONNECTED")), ReceiverType.OnlyMe);
             //TODO add verification on receiver
          
