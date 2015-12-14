@@ -29,7 +29,7 @@ namespace OpenNos.Handler
     public class WorldPacketHandler
     {
         private readonly ClientSession _session;
-        private Thread HealthThread;
+      
 
         public WorldPacketHandler(ClientSession session)
         {
@@ -192,9 +192,9 @@ namespace OpenNos.Handler
             _session.CurrentMap = ServerManager.GetMap(_session.Character.Map);
             _session.RegisterForMapNotification();
             _session.Client.SendPacket("OK");
-            HealthThread = new Thread(new ThreadStart(healthThread));
-            if(HealthThread !=null && !HealthThread.IsAlive)
-            HealthThread.Start();
+            _session.HealthThread = new Thread(new ThreadStart(healthThread));
+            if (_session.HealthThread != null && !_session.HealthThread.IsAlive)
+                _session.HealthThread.Start();
         }
 
         #endregion

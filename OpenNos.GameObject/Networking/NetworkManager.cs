@@ -101,6 +101,8 @@ namespace OpenNos.GameObject
                 session.CurrentMap.BroadCast(session, session.Character.GenerateOut(), ReceiverType.AllExceptMe);
             }
             session.UnregisterForMapNotification();
+            if (session.HealthThread != null && session.HealthThread.IsAlive)
+                session.HealthThread.Abort();
             session.Destroy();
             e.Client.Disconnect();
             Logger.Log.Info(Language.Instance.GetMessageFromKey("DISCONNECT") + e.Client.ClientId);
