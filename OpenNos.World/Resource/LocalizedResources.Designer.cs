@@ -115,6 +115,69 @@ namespace OpenNos.World.Resource {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à read the rules.
+        /// </summary>
+        public static string BN0 {
+            get {
+                return ResourceManager.GetString("BN0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à don&apos;t give id.
+        /// </summary>
+        public static string BN1 {
+            get {
+                return ResourceManager.GetString("BN1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à need a gm? go on website..
+        /// </summary>
+        public static string BN2 {
+            get {
+                return ResourceManager.GetString("BN2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à .
+        /// </summary>
+        public static string BN3 {
+            get {
+                return ResourceManager.GetString("BN3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à .
+        /// </summary>
+        public static string BN4 {
+            get {
+                return ResourceManager.GetString("BN4", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à .
+        /// </summary>
+        public static string BN5 {
+            get {
+                return ResourceManager.GetString("BN5", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à .
+        /// </summary>
+        public static string BN6 {
+            get {
+                return ResourceManager.GetString("BN6", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à User can&apos;t move..
         /// </summary>
         public static string CANT_MOVE {

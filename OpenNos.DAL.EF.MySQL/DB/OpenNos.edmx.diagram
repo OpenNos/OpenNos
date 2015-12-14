@@ -6,14 +6,15 @@
     <edmx:Diagrams>
       <Diagram DiagramId="f76ed05649d94abe8fc46f3ecc52e312" Name="Diagram1" ZoomLevel="102">
         <EntityTypeShape EntityType="opennosModel.Account" Width="1.5" PointX="0.5" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="opennosModel.Character" Width="1.5" PointX="2.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="opennosModel.Character" Width="1.5" PointX="3.25" PointY="0.625" IsExpanded="true" />
         <EntityTypeShape EntityType="opennosModel.Portal" Width="1.5" PointX="5.75" PointY="1" IsExpanded="true" />
         <AssociationConnector Association="opennosModel.AccountCharacter" />
-        <EntityTypeShape EntityType="opennosModel.ConnectionLog" PointX="0.5" PointY="4.75" Width="1.5" />
+        <EntityTypeShape EntityType="opennosModel.GeneralLog" PointX="0.5" PointY="4.75" Width="1.5" />
         <AssociationConnector Association="opennosModel.accountlog" />
         <EntityTypeShape EntityType="opennosModel.Map" Width="1.5" PointX="8" PointY="1.625" />
         <AssociationConnector Association="opennosModel.portalMap" />
         <AssociationConnector Association="opennosModel.portalMap1" />
+        <AssociationConnector Association="opennosModel.GeneralLogCharacter" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

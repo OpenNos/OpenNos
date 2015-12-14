@@ -135,6 +135,27 @@
   <data name="BAD_PASSWORD" xml:space="preserve">
     <value>Bad Password</value>
   </data>
+  <data name="BN0" xml:space="preserve">
+    <value>read the rules</value>
+  </data>
+  <data name="BN1" xml:space="preserve">
+    <value>don't give id</value>
+  </data>
+  <data name="BN2" xml:space="preserve">
+    <value>need a gm? go on website.</value>
+  </data>
+  <data name="BN3" xml:space="preserve">
+    <value />
+  </data>
+  <data name="BN4" xml:space="preserve">
+    <value />
+  </data>
+  <data name="BN5" xml:space="preserve">
+    <value />
+  </data>
+  <data name="BN6" xml:space="preserve">
+    <value />
+  </data>
   <data name="CANT_MOVE" xml:space="preserve">
     <value>User can't move.</value>
   </data>
