@@ -317,7 +317,9 @@ namespace OpenNos.Handler
         {
             int x = 1;
            while(true)
-            {if (_session.Character.Rested == 1)
+            {
+                bool change = false;
+                if (_session.Character.Rested == 1)
                     Thread.Sleep(1500);
                 else
                     Thread.Sleep(2000);
@@ -325,23 +327,33 @@ namespace OpenNos.Handler
                     x = 1;
 
                 if (_session.Character.Hp + _session.Character.HealthHPLoad() < _session.Character.HPLoad())
+                {
+                    change = true;
                     _session.Character.Hp += _session.Character.HealthHPLoad();
+                }
+                  
                 else
                     _session.Character.Hp = (int)_session.Character.HPLoad();
 
                 if(x == 1)
                 {
                     if (_session.Character.Mp + _session.Character.HealthMPLoad() < _session.Character.MPLoad())
+                    {
                         _session.Character.Mp += _session.Character.HealthMPLoad();
+                        change = true;
+                    }
                     else
-                        _session.Character.Mp = (int) _session.Character.MPLoad();
+                        _session.Character.Mp = (int)_session.Character.MPLoad();
                     x = 0;
                 }
-              
+              if(change)
+                {
+                    ChatManager.Instance.Broadcast(_session,
+         _session.Character.GenerateStat(),
+           ReceiverType.AllOnMap);
+                }
 
-                ChatManager.Instance.Broadcast(_session,
-                  _session.Character.GenerateStat(),
-                    ReceiverType.AllOnMap);
+         
             }
         }
         [Packet("rest")]
