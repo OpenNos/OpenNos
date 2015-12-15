@@ -65,6 +65,7 @@ namespace OpenNos.Handler
 
                 if (DAOFactory.CharacterDAO.LoadByName(packetsplit[2]) == null)
                 {
+                    Random r = new Random();
                     CharacterDTO newCharacter = new CharacterDTO()
                     {
                         Class = (byte)ClassType.Adventurer,
@@ -78,8 +79,8 @@ namespace OpenNos.Handler
                         Level = 1,
                         LevelXp = 0,
                         Map = 1,
-                        MapX = 80,
-                        MapY = 118,
+                        MapX = (short)(77 + r.Next(82 - 77)),
+                        MapY = (short)(112 + r.Next(120 - 112)),
                         Mp = 221,
                         Name = packetsplit[2],
                         Slot = Convert.ToByte(packetsplit[3]),
