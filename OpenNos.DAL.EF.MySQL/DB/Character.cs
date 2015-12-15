@@ -28,7 +28,6 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public byte Class { get; set; }
         public byte HairStyle { get; set; }
         public byte HairColor { get; set; }
-        public short Map { get; set; }
         public short MapX { get; set; }
         public short MapY { get; set; }
         public int Hp { get; set; }
@@ -46,9 +45,11 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public int Kill { get; set; }
         public int Contribution { get; set; }
         public int Faction { get; set; }
+        public short Map { get; set; }
     
         public virtual Account account { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<GeneralLog> generallog { get; set; }
+        public virtual Map map { get; set; }
     }
 }

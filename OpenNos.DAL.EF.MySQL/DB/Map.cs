@@ -19,6 +19,7 @@ namespace OpenNos.DAL.EF.MySQL.DB
         {
             this.sourceportal = new HashSet<Portal>();
             this.destinationportal = new HashSet<Portal>();
+            this.character = new HashSet<Character>();
         }
     
         public short MapId { get; set; }
@@ -28,5 +29,7 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public virtual ICollection<Portal> sourceportal { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Portal> destinationportal { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Character> character { get; set; }
     }
 }

@@ -15,6 +15,7 @@
         <AssociationConnector Association="opennosModel.portalMap" />
         <AssociationConnector Association="opennosModel.portalMap1" />
         <AssociationConnector Association="opennosModel.GeneralLogCharacter" />
+        <AssociationConnector Association="opennosModel.CharacterMap" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
