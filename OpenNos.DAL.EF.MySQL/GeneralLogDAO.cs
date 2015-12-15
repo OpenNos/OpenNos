@@ -36,6 +36,20 @@ namespace OpenNos.DAL.EF.MySQL
                 }
             }
         }
+
+        public void SetCharIdNull(long? CharacterId)
+        {
+            using (var context = DataAccessHelper.CreateContext())
+            {
+                foreach (GeneralLog log in context.connectionlog.Where(c=> c.CharacterId == CharacterId))
+                {
+                    log.CharacterId = null;
+                }
+                context.SaveChanges();
+            }
+
+        }
+
         public void WriteConnectionLog(long accountId, string ipAddress, Nullable<long> characterId, string logType,string logData)
         {
             using (var context = DataAccessHelper.CreateContext())

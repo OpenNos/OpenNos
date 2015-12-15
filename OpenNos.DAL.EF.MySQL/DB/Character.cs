@@ -45,7 +45,7 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public int Kill { get; set; }
         public int Contribution { get; set; }
         public int Faction { get; set; }
-        public short Map { get; set; }
+        public short MapId { get; set; }
     
         public virtual Account account { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

@@ -30,7 +30,7 @@ namespace OpenNos.GameObject
                 JobLevelXp = this.JobLevelXp,
                 Level = this.Level,
                 LevelXp = this.LevelXp,
-                Map = this.Map,
+                MapId = this.MapId,
                 MapX = this.mapX,
                 MapY = this.MapY,
                 Mp = this.Mp,
@@ -126,7 +126,7 @@ namespace OpenNos.GameObject
             }
         }
         public short map;
-        public short Map {
+        public short MapId {
             get { return map; }
             set
             {
@@ -344,7 +344,7 @@ namespace OpenNos.GameObject
         public List<String> GenerateGp()
         {
             List<String> gpList = new List<String>();
-            foreach (Portal portal in ServerManager.GetMap(this.Map).Portals)
+            foreach (Portal portal in ServerManager.GetMap(this.MapId).Portals)
                 gpList.Add(String.Format("gp {0} {1} {2} {3} {4}", portal.SrcX, portal.SrcY, portal.DestMap, portal.Type, 0));
             return gpList;
         }
@@ -455,13 +455,13 @@ namespace OpenNos.GameObject
 
         public string GenerateAt()
         {
-            return String.Format("at {0} {1} {2} {3} 2 0 0 1", CharacterId, Map, MapX, MapY);
+            return String.Format("at {0} {1} {2} {3} 2 0 0 1", CharacterId, MapId, MapX, MapY);
            
         }
 
         public string GenerateCMap()
         {
-           return String.Format("c_map 0 {0} 1", Map);
+           return String.Format("c_map 0 {0} 1", MapId);
            
         }
 

@@ -31,6 +31,10 @@
       <End Role="GeneralLog" EntitySet="connectionlog" />
       <End Role="Character" EntitySet="character" />
     </AssociationSet>
+    <AssociationSet Name="CharacterMap" Association="opennosModel.Store.CharacterMap">
+      <End Role="Character" EntitySet="character" />
+      <End Role="Map" EntitySet="map" />
+    </AssociationSet>
   </EntityContainer>
   <EntityType Name="account">
     <Key>
@@ -55,7 +59,6 @@
     <Property Name="Class" Type="utinyint" Nullable="false" />
     <Property Name="HairStyle" Type="utinyint" Nullable="false" />
     <Property Name="HairColor" Type="utinyint" Nullable="false" />
-    <Property Name="Map" Type="smallint" Nullable="false" />
     <Property Name="MapX" Type="smallint" Nullable="false" />
     <Property Name="MapY" Type="smallint" Nullable="false" />
     <Property Name="Hp" Type="int" Nullable="false" />
@@ -73,6 +76,7 @@
     <Property Name="Kill" Type="int" Nullable="false" />
     <Property Name="Contribution" Type="int" Nullable="false" />
     <Property Name="Faction" Type="int" Nullable="false" />
+    <Property Name="MapId" Type="smallint" Nullable="false" />
   </EntityType>
   <EntityType Name="portal">
     <Key>
@@ -95,10 +99,9 @@
     <Property Name="AccountId" Type="bigint" Nullable="false" />
     <Property Name="IpAddress" Type="longtext" Nullable="false" />
     <Property Name="Timestamp" Type="datetime" Nullable="false" />
-    <Property Name="CharacterId" Type="bigint" Nullable="true" />
     <Property Name="LogType" Type="longtext" Nullable="false" />
     <Property Name="LogData" Type="longtext" Nullable="false" />
-    <Property Name="CharacterCharacterId" Type="bigint" Nullable="true" />
+    <Property Name="CharacterId" Type="bigint" Nullable="true" />
   </EntityType>
   <EntityType Name="map">
     <Key>
@@ -163,7 +166,19 @@
         <PropertyRef Name="CharacterId" />
       </Principal>
       <Dependent Role="GeneralLog">
-        <PropertyRef Name="CharacterCharacterId" />
+        <PropertyRef Name="CharacterId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="CharacterMap">
+    <End Role="Character" Type="opennosModel.Store.character" Multiplicity="*" />
+    <End Role="Map" Type="opennosModel.Store.map" Multiplicity="1" />
+    <ReferentialConstraint>
+      <Principal Role="Map">
+        <PropertyRef Name="MapId" />
+      </Principal>
+      <Dependent Role="Character">
+        <PropertyRef Name="MapId" />
       </Dependent>
     </ReferentialConstraint>
   </Association>
@@ -216,7 +231,7 @@
           <NavigationProperty Name="account" Relationship="opennosModel.AccountCharacter" FromRole="Character" ToRole="Account" />
           <NavigationProperty Name="generallog" Relationship="opennosModel.GeneralLogCharacter" FromRole="Character" ToRole="GeneralLog" />
           <NavigationProperty Name="map" Relationship="opennosModel.CharacterMap" FromRole="Character" ToRole="Map" />
-          <Property Name="Map" Type="Int16" Nullable="false" />
+          <Property Name="MapId" Type="Int16" Nullable="false" />
         </EntityType>
         <EntityType Name="Portal">
           <Key>
@@ -356,7 +371,7 @@
               <PropertyRef Name="MapId" />
             </Principal>
             <Dependent Role="Character">
-              <PropertyRef Name="Map" />
+              <PropertyRef Name="MapId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -381,8 +396,7 @@
     <EntitySetMapping Name="character">
       <EntityTypeMapping TypeName="IsTypeOf(opennosModel.Character)">
         <MappingFragment StoreEntitySet="character">
-          <ScalarProperty Name="Map" ColumnName="Map" />
-                <ScalarProperty Name="CharacterId" ColumnName="CharacterId" />
+          <ScalarProperty Name="CharacterId" ColumnName="CharacterId" />
           <ScalarProperty Name="AccountId" ColumnName="AccountId" />
           <ScalarProperty Name="Name" ColumnName="Name" />
           <ScalarProperty Name="Slot" ColumnName="Slot" />
@@ -407,6 +421,7 @@
           <ScalarProperty Name="Kill" ColumnName="Kill" />
           <ScalarProperty Name="Contribution" ColumnName="Contribution" />
           <ScalarProperty Name="Faction" ColumnName="Faction" />
+          <ScalarProperty Name="MapId" ColumnName="MapId" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -433,7 +448,7 @@
           <ScalarProperty Name="Timestamp" ColumnName="Timestamp" />
           <ScalarProperty Name="LogType" ColumnName="LogType" />
           <ScalarProperty Name="LogData" ColumnName="LogData" />
-          <ScalarProperty Name="CharacterId" ColumnName="CharacterCharacterId" />
+          <ScalarProperty Name="CharacterId" ColumnName="CharacterId" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

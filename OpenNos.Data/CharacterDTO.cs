@@ -37,7 +37,7 @@ namespace OpenNos.Data
 
         public byte HairColor { get; set; }
 
-        public short Map { get; set; }
+        public short MapId { get; set; }
 
         public short MapX { get; set; }
 
