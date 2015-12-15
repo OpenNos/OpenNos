@@ -44,7 +44,7 @@
 -- -----------------------------------------------------------
 -- Entity Designer DDL Script for MySQL Server 4.1 and higher
 -- -----------------------------------------------------------
--- Date Created: 12/15/2015 14:26:04
+-- Date Created: 12/16/2015 00:16:53
 
 -- Generated from EDMX file: C:\Users\ERWAN\Desktop\OpenNos GIT\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
 -- Target version: 3.0.0.0
@@ -178,6 +178,54 @@ CREATE TABLE `map`(
 	`Name` longtext NOT NULL);
 
 ALTER TABLE `map` ADD PRIMARY KEY (MapId);
+
+
+
+
+
+CREATE TABLE `itemlist`(
+	`ItemId` smallint NOT NULL AUTO_INCREMENT UNIQUE, 
+	`Price` bigint NOT NULL, 
+	`Name` longtext NOT NULL, 
+	`Inventory` TINYINT UNSIGNED NOT NULL, 
+	`ItemType` TINYINT UNSIGNED NOT NULL, 
+	`EqSlot` TINYINT UNSIGNED NOT NULL, 
+	`Morph` TINYINT UNSIGNED NOT NULL, 
+	`Type` TINYINT UNSIGNED NOT NULL, 
+	`Classe` TINYINT UNSIGNED NOT NULL, 
+	`Blocked` TINYINT UNSIGNED NOT NULL, 
+	`Droppable` TINYINT UNSIGNED NOT NULL, 
+	`Transaction` TINYINT UNSIGNED NOT NULL, 
+	`Soldable` TINYINT UNSIGNED NOT NULL, 
+	`MinilandObject` TINYINT UNSIGNED NOT NULL, 
+	`isWareHouse` TINYINT UNSIGNED NOT NULL, 
+	`LvlMin` smallint NOT NULL, 
+	`DamageMin` smallint NOT NULL, 
+	`DamageMax` smallint NOT NULL, 
+	`Concentrate` smallint NOT NULL, 
+	`HitRate` smallint NOT NULL, 
+	`CriticalLuckRate` smallint NOT NULL, 
+	`CriticalRate` smallint NOT NULL, 
+	`RangeDef` smallint NOT NULL, 
+	`DistanceDef` smallint NOT NULL, 
+	`MagicDef` smallint NOT NULL, 
+	`Dodge` longtext NOT NULL, 
+	`Hp` smallint NOT NULL, 
+	`Mp` smallint NOT NULL, 
+	`MaxCellon` smallint NOT NULL, 
+	`MaxCellonLvl` smallint NOT NULL, 
+	`FireRez` smallint NOT NULL, 
+	`EauRez` smallint NOT NULL, 
+	`LightRez` smallint NOT NULL, 
+	`DarkRez` smallint NOT NULL, 
+	`PvpStrength` smallint NOT NULL, 
+	`Speed` smallint NOT NULL, 
+	`Element` smallint NOT NULL, 
+	`ElementRate` smallint NOT NULL, 
+	`PvpDef` smallint NOT NULL, 
+	`DimOposantRez` smallint NOT NULL);
+
+ALTER TABLE `itemlist` ADD PRIMARY KEY (ItemId);
 
 
 
