@@ -79,9 +79,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DB\ItemList.cs">
-      <DependentUpon>OpenNos.tt</DependentUpon>
-    </Compile>
     <Compile Include="GeneralLogDAO.cs" />
     <Compile Include="DB\GeneralLog.cs">
       <DependentUpon>OpenNos.tt</DependentUpon>
