@@ -196,7 +196,6 @@
           <Property Name="Class" Type="Byte" Nullable="false" />
           <Property Name="HairStyle" Type="Byte" Nullable="false" />
           <Property Name="HairColor" Type="Byte" Nullable="false" />
-          <Property Name="Map" Type="Int16" Nullable="false" />
           <Property Name="MapX" Type="Int16" Nullable="false" />
           <Property Name="MapY" Type="Int16" Nullable="false" />
           <Property Name="Hp" Type="Int32" Nullable="false" />
@@ -216,6 +215,8 @@
           <Property Name="Faction" Type="Int32" Nullable="false" />
           <NavigationProperty Name="account" Relationship="opennosModel.AccountCharacter" FromRole="Character" ToRole="Account" />
           <NavigationProperty Name="generallog" Relationship="opennosModel.GeneralLogCharacter" FromRole="Character" ToRole="GeneralLog" />
+          <NavigationProperty Name="map" Relationship="opennosModel.CharacterMap" FromRole="Character" ToRole="Map" />
+          <Property Name="Map" Type="Int16" Nullable="false" />
         </EntityType>
         <EntityType Name="Portal">
           <Key>
@@ -257,6 +258,10 @@
           <AssociationSet Name="GeneralLogCharacter" Association="opennosModel.GeneralLogCharacter">
             <End Role="GeneralLog" EntitySet="connectionlog" />
             <End Role="Character" EntitySet="character" />
+          </AssociationSet>
+          <AssociationSet Name="CharacterMap" Association="opennosModel.CharacterMap">
+            <End Role="Character" EntitySet="character" />
+            <End Role="Map" EntitySet="map" />
           </AssociationSet>
         </EntityContainer>
         <Association Name="AccountCharacter">
@@ -305,6 +310,7 @@
           <Property Name="Name" Type="String" Nullable="false" />
           <NavigationProperty Name="sourceportal" Relationship="opennosModel.portalMap" FromRole="Map" ToRole="portal" />
           <NavigationProperty Name="destinationportal" Relationship="opennosModel.portalMap1" FromRole="Map" ToRole="portal" />
+          <NavigationProperty Name="character" Relationship="opennosModel.CharacterMap" FromRole="Map" ToRole="Character" />
         </EntityType>
         <Association Name="portalMap">
           <End Type="opennosModel.Portal" Role="portal" Multiplicity="*" />
@@ -342,6 +348,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="CharacterMap">
+          <End Type="opennosModel.Character" Role="Character" Multiplicity="*" />
+          <End Type="opennosModel.Map" Role="Map" Multiplicity="1" />
+          <ReferentialConstraint>
+            <Principal Role="Map">
+              <PropertyRef Name="MapId" />
+            </Principal>
+            <Dependent Role="Character">
+              <PropertyRef Name="Map" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -363,7 +381,8 @@
     <EntitySetMapping Name="character">
       <EntityTypeMapping TypeName="IsTypeOf(opennosModel.Character)">
         <MappingFragment StoreEntitySet="character">
-          <ScalarProperty Name="CharacterId" ColumnName="CharacterId" />
+          <ScalarProperty Name="Map" ColumnName="Map" />
+                <ScalarProperty Name="CharacterId" ColumnName="CharacterId" />
           <ScalarProperty Name="AccountId" ColumnName="AccountId" />
           <ScalarProperty Name="Name" ColumnName="Name" />
           <ScalarProperty Name="Slot" ColumnName="Slot" />
@@ -371,7 +390,6 @@
           <ScalarProperty Name="Class" ColumnName="Class" />
           <ScalarProperty Name="HairStyle" ColumnName="HairStyle" />
           <ScalarProperty Name="HairColor" ColumnName="HairColor" />
-          <ScalarProperty Name="Map" ColumnName="Map" />
           <ScalarProperty Name="MapX" ColumnName="MapX" />
           <ScalarProperty Name="MapY" ColumnName="MapY" />
           <ScalarProperty Name="Hp" ColumnName="Hp" />
