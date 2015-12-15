@@ -525,7 +525,7 @@ namespace OpenNos.GameObject
             return String.Format("info {0}", message);
         }
 
-        public string generateStatInfo()
+        public string GenerateStatInfo()
         {
             return String.Format("st 1 {0} {1} {2} {3} {4} {5}", CharacterId, Level, (int)((Hp / HPLoad()) * 100), (int)((Mp /MPLoad()) * 100),Hp,Mp);
         }

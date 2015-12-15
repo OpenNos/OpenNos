@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -103,12 +104,16 @@ namespace OpenNos.GameObject
                 }
             
         }
+        
         public void RequiereBroadcastFromUser(ClientSession client, long CharacterId, string methodName)
         {
             foreach (ClientSession session in sessions)
             {
+                Type t = session.Character.GetType();
+                MethodInfo method = t.GetMethod(methodName);
+                string result = (string)method.Invoke(session.Character,null);
                 if (session.Character != null && session.Character.CharacterId == CharacterId)
-                    client.Client.SendPacket(session.Character.generateStatInfo());
+                    client.Client.SendPacket(result);
             }
         }
 
