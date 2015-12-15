@@ -31,5 +31,6 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public virtual DbSet<Portal> portal { get; set; }
         public virtual DbSet<GeneralLog> connectionlog { get; set; }
         public virtual DbSet<Map> map { get; set; }
+        public virtual DbSet<ItemList> itemlist { get; set; }
     }
 }

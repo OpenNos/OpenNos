@@ -11,6 +11,7 @@
     <EntitySet Name="portal" EntityType="opennosModel.Store.portal" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="connectionlog" EntityType="opennosModel.Store.connectionlog" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="map" EntityType="opennosModel.Store.map" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="itemlist" EntityType="opennosModel.Store.itemlist" store:Type="Tables" Schema="dbo" />
     <AssociationSet Name="AccountCharacter" Association="opennosModel.Store.AccountCharacter">
       <End Role="Account" EntitySet="account" />
       <End Role="Character" EntitySet="character" />
@@ -109,6 +110,51 @@
     </Key>
     <Property Name="MapId" Type="smallint" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="Name" Type="longtext" Nullable="false" />
+  </EntityType>
+  <EntityType Name="itemlist">
+    <Key>
+      <PropertyRef Name="ItemId" />
+    </Key>
+    <Property Name="ItemId" Type="smallint" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Price" Type="bigint" Nullable="false" />
+    <Property Name="Name" Type="longtext" Nullable="false" />
+    <Property Name="Inventory" Type="utinyint" Nullable="false" />
+    <Property Name="ItemType" Type="utinyint" Nullable="false" />
+    <Property Name="EqSlot" Type="utinyint" Nullable="false" />
+    <Property Name="Morph" Type="utinyint" Nullable="false" />
+    <Property Name="Type" Type="utinyint" Nullable="false" />
+    <Property Name="Classe" Type="utinyint" Nullable="false" />
+    <Property Name="Blocked" Type="utinyint" Nullable="false" />
+    <Property Name="Droppable" Type="utinyint" Nullable="false" />
+    <Property Name="Transaction" Type="utinyint" Nullable="false" />
+    <Property Name="Soldable" Type="utinyint" Nullable="false" />
+    <Property Name="MinilandObject" Type="utinyint" Nullable="false" />
+    <Property Name="isWareHouse" Type="utinyint" Nullable="false" />
+    <Property Name="LvlMin" Type="smallint" Nullable="false" />
+    <Property Name="DamageMin" Type="smallint" Nullable="false" />
+    <Property Name="DamageMax" Type="smallint" Nullable="false" />
+    <Property Name="Concentrate" Type="smallint" Nullable="false" />
+    <Property Name="HitRate" Type="smallint" Nullable="false" />
+    <Property Name="CriticalLuckRate" Type="smallint" Nullable="false" />
+    <Property Name="CriticalRate" Type="smallint" Nullable="false" />
+    <Property Name="RangeDef" Type="smallint" Nullable="false" />
+    <Property Name="DistanceDef" Type="smallint" Nullable="false" />
+    <Property Name="MagicDef" Type="smallint" Nullable="false" />
+    <Property Name="Dodge" Type="longtext" Nullable="false" />
+    <Property Name="Hp" Type="smallint" Nullable="false" />
+    <Property Name="Mp" Type="smallint" Nullable="false" />
+    <Property Name="MaxCellon" Type="smallint" Nullable="false" />
+    <Property Name="MaxCellonLvl" Type="smallint" Nullable="false" />
+    <Property Name="FireRez" Type="smallint" Nullable="false" />
+    <Property Name="EauRez" Type="smallint" Nullable="false" />
+    <Property Name="LightRez" Type="smallint" Nullable="false" />
+    <Property Name="DarkRez" Type="smallint" Nullable="false" />
+    <Property Name="PvpStrength" Type="smallint" Nullable="false" />
+    <Property Name="Speed" Type="smallint" Nullable="false" />
+    <Property Name="Element" Type="smallint" Nullable="false" />
+    <Property Name="ElementRate" Type="smallint" Nullable="false" />
+    <Property Name="PvpDef" Type="smallint" Nullable="false" />
+    <Property Name="DimOposantRez" Type="smallint" Nullable="false" />
   </EntityType>
   <Association Name="AccountCharacter">
     <End Role="Account" Type="opennosModel.Store.account" Multiplicity="1" />
@@ -278,6 +324,7 @@
             <End Role="Character" EntitySet="character" />
             <End Role="Map" EntitySet="map" />
           </AssociationSet>
+          <EntitySet Name="itemlist" EntityType="opennosModel.ItemList" />
         </EntityContainer>
         <Association Name="AccountCharacter">
           <End Type="opennosModel.Account" Role="Account" Multiplicity="1" />
@@ -375,6 +422,51 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="ItemList">
+          <Key>
+            <PropertyRef Name="ItemId" />
+          </Key>
+          <Property Name="ItemId" Type="Int16" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Price" Type="Int64" Nullable="false" />
+          <Property Name="Name" Type="String" Nullable="false" />
+          <Property Name="Inventory" Type="Byte" Nullable="false" />
+          <Property Name="ItemType" Type="Byte" Nullable="false" />
+          <Property Name="EqSlot" Type="Byte" Nullable="false" />
+          <Property Name="Morph" Type="Byte" Nullable="false" />
+          <Property Name="Type" Type="Byte" Nullable="false" />
+          <Property Name="Classe" Type="Byte" Nullable="false" />
+          <Property Name="Blocked" Type="Byte" Nullable="false" />
+          <Property Name="Droppable" Type="Byte" Nullable="false" />
+          <Property Name="Transaction" Type="Byte" Nullable="false" />
+          <Property Name="Soldable" Type="Byte" Nullable="false" />
+          <Property Name="MinilandObject" Type="Byte" Nullable="false" />
+          <Property Name="isWareHouse" Type="Byte" Nullable="false" />
+          <Property Name="LvlMin" Type="Int16" Nullable="false" />
+          <Property Name="DamageMin" Type="Int16" Nullable="false" />
+          <Property Name="DamageMax" Type="Int16" Nullable="false" />
+          <Property Name="Concentrate" Type="Int16" Nullable="false" />
+          <Property Name="HitRate" Type="Int16" Nullable="false" />
+          <Property Name="CriticalLuckRate" Type="Int16" Nullable="false" />
+          <Property Name="CriticalRate" Type="Int16" Nullable="false" />
+          <Property Name="RangeDef" Type="Int16" Nullable="false" />
+          <Property Name="DistanceDef" Type="Int16" Nullable="false" />
+          <Property Name="MagicDef" Type="Int16" Nullable="false" />
+          <Property Name="Dodge" Type="String" Nullable="false" />
+          <Property Name="Hp" Type="Int16" Nullable="false" />
+          <Property Name="Mp" Type="Int16" Nullable="false" />
+          <Property Name="MaxCellon" Type="Int16" Nullable="false" />
+          <Property Name="MaxCellonLvl" Type="Int16" Nullable="false" />
+          <Property Name="FireRez" Type="Int16" Nullable="false" />
+          <Property Name="EauRez" Type="Int16" Nullable="false" />
+          <Property Name="LightRez" Type="Int16" Nullable="false" />
+          <Property Name="DarkRez" Type="Int16" Nullable="false" />
+          <Property Name="PvpStrength" Type="Int16" Nullable="false" />
+          <Property Name="Speed" Type="Int16" Nullable="false" />
+          <Property Name="Element" Type="Int16" Nullable="false" />
+          <Property Name="ElementRate" Type="Int16" Nullable="false" />
+          <Property Name="PvpDef" Type="Int16" Nullable="false" />
+          <Property Name="DimOposantRez" Type="Int16" Nullable="false" />
+          </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -457,6 +549,52 @@
         <MappingFragment StoreEntitySet="map">
           <ScalarProperty Name="MapId" ColumnName="MapId" />
           <ScalarProperty Name="Name" ColumnName="Name" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="itemlist">
+      <EntityTypeMapping TypeName="IsTypeOf(opennosModel.ItemList)">
+        <MappingFragment StoreEntitySet="itemlist">
+          <ScalarProperty Name="ItemId" ColumnName="ItemId" />
+          <ScalarProperty Name="Price" ColumnName="Price" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="Inventory" ColumnName="Inventory" />
+          <ScalarProperty Name="ItemType" ColumnName="ItemType" />
+          <ScalarProperty Name="EqSlot" ColumnName="EqSlot" />
+          <ScalarProperty Name="Morph" ColumnName="Morph" />
+          <ScalarProperty Name="Type" ColumnName="Type" />
+          <ScalarProperty Name="Classe" ColumnName="Classe" />
+          <ScalarProperty Name="Blocked" ColumnName="Blocked" />
+          <ScalarProperty Name="Droppable" ColumnName="Droppable" />
+          <ScalarProperty Name="Transaction" ColumnName="Transaction" />
+          <ScalarProperty Name="Soldable" ColumnName="Soldable" />
+          <ScalarProperty Name="MinilandObject" ColumnName="MinilandObject" />
+          <ScalarProperty Name="isWareHouse" ColumnName="isWareHouse" />
+          <ScalarProperty Name="LvlMin" ColumnName="LvlMin" />
+          <ScalarProperty Name="DamageMin" ColumnName="DamageMin" />
+          <ScalarProperty Name="DamageMax" ColumnName="DamageMax" />
+          <ScalarProperty Name="Concentrate" ColumnName="Concentrate" />
+          <ScalarProperty Name="HitRate" ColumnName="HitRate" />
+          <ScalarProperty Name="CriticalLuckRate" ColumnName="CriticalLuckRate" />
+          <ScalarProperty Name="CriticalRate" ColumnName="CriticalRate" />
+          <ScalarProperty Name="RangeDef" ColumnName="RangeDef" />
+          <ScalarProperty Name="DistanceDef" ColumnName="DistanceDef" />
+          <ScalarProperty Name="MagicDef" ColumnName="MagicDef" />
+          <ScalarProperty Name="Dodge" ColumnName="Dodge" />
+          <ScalarProperty Name="Hp" ColumnName="Hp" />
+          <ScalarProperty Name="Mp" ColumnName="Mp" />
+          <ScalarProperty Name="MaxCellon" ColumnName="MaxCellon" />
+          <ScalarProperty Name="MaxCellonLvl" ColumnName="MaxCellonLvl" />
+          <ScalarProperty Name="FireRez" ColumnName="FireRez" />
+          <ScalarProperty Name="EauRez" ColumnName="EauRez" />
+          <ScalarProperty Name="LightRez" ColumnName="LightRez" />
+          <ScalarProperty Name="DarkRez" ColumnName="DarkRez" />
+          <ScalarProperty Name="PvpStrength" ColumnName="PvpStrength" />
+          <ScalarProperty Name="Speed" ColumnName="Speed" />
+          <ScalarProperty Name="Element" ColumnName="Element" />
+          <ScalarProperty Name="ElementRate" ColumnName="ElementRate" />
+          <ScalarProperty Name="PvpDef" ColumnName="PvpDef" />
+          <ScalarProperty Name="DimOposantRez" ColumnName="DimOposantRez" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
