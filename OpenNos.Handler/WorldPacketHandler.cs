@@ -443,6 +443,15 @@ namespace OpenNos.Handler
                 _session.Client.SendPacket(_session.Character.GenerateSay("$Effect EFFECTID", 0));
                 _session.Client.SendPacket(_session.Character.GenerateSay("$Ban CHARACTERNAME", 0));
                 _session.Client.SendPacket(_session.Character.GenerateSay("$Invisible", 0));
+                _session.Client.SendPacket(_session.Character.GenerateSay("$Position", 0));
+            }
+        }
+        [Packet("$Position")]
+        public void Position(string packet)
+        {
+            if (_session.Character.Authority == 2)//if gm
+            {
+                _session.Client.SendPacket(_session.Character.GenerateSay(String.Format("Map:{0} - X:{1} - Y:{2}", _session.Character.Map, _session.Character.MapX, _session.Character.MapY), 0));
             }
         }
         [Packet("$Kick")]
@@ -478,7 +487,7 @@ namespace OpenNos.Handler
                     message += packetsplit[i] + " ";
                 message.Trim();
 
-                ChatManager.Instance.Broadcast(_session, String.Format("say 1 0 10 [{0}]: {1}", Language.Instance.GetMessageFromKey("ADMINISTRATOR"), message), ReceiverType.All);
+                ChatManager.Instance.Broadcast(_session, String.Format("say 1 0 10 [{0}]:{1}", Language.Instance.GetMessageFromKey("ADMINISTRATOR"), message), ReceiverType.All);
                 ChatManager.Instance.Broadcast(_session, _session.Character.GenerateMsg(message, 2), ReceiverType.All);
             }
         }
