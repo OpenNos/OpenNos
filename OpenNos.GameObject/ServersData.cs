@@ -132,32 +132,58 @@ namespace OpenNos.GameObject
             for (int i = 1; i < HP.GetLength(1); i++)
             {
                 HP[(int)ClassType.Adventurer, i] = (int)(1 / 2.0 * i * i + 31 / 2.0 * i + 205);
+                
             }
 
             //Swordman HP
-            for (int i = 0; i < 16; i++)
+            for (int i = 0; i < HP.GetLength(1); i++)
             {
-                HP[(int)ClassType.Swordman, i] = 905;
-            }
-            for (int i = 16; i < HP.GetLength(1); i++)
-            {
-                HP[(int)ClassType.Swordman, i] = HP[(int)ClassType.Swordman, i - 1] + 4 * (i + 4) + 3;
+                int j = 16;
+                int hp = 946;
+                int inc = 85;
+                while (j <= i)
+                {
+                    if (j % 5 == 2)
+                    {
+                        hp += inc / 2;
+                        inc += 2;
+                    }
+                    else
+                    {
+                        hp += inc;
+                        inc += 4;
+                    }
+                    ++j;
+                }
+                HP[(int)ClassType.Swordman, i] = hp;
+                
             }
 
             //Magician HP
-            for (int i = 0; i < 16; i++)
+            for (int i = 0; i < HP.GetLength(1); i++)
             {
-                HP[(int)ClassType.Magician, i] = 550;
-            }
-            for (int i = 16; i < HP.GetLength(1); i++)
-            {
-                double var = 0;
-                for (int j = 2; j < i + 24; j++)
-                    var += Math.Floor(1 / 2 + Math.Sqrt(2 * j + 4));
-                HP[(int)ClassType.Magician, i] = (int)((i+24) * (i+24 + 1) / 2 - 4 - var-7);
+                HP[(int)ClassType.Magician, i] = (int)(((i + 15) * (i + 15) + i + 15.0) / 2.0 - 465 + 550);
             }
 
             //Archer HP
+            for (int i = 0; i < HP.GetLength(1); i++)
+            {
+                int hp = 680;
+                int inc = 35;
+                int j = 16;
+                while (j <= i)
+                {
+                    hp += inc;
+                    ++inc;
+                    if (j % 10 == 1 || j % 10 == 5 || j % 10 == 8)
+                    {
+                        hp += inc;
+                        ++inc;
+                    }
+                    ++j;
+                }
+                HP[(int)ClassType.Archer, i] = hp;
+            }
         }
         private void LoadMpData()
         {
@@ -178,12 +204,18 @@ namespace OpenNos.GameObject
                 MP[(int)ClassType.Adventurer, i + 1] = MP[(int)ClassType.Adventurer, i] + (U0 + i / 2);
                 MP[(int)ClassType.Adventurer, i + 2] = MP[(int)ClassType.Adventurer, i + 1] + (U0 + i / 2);
                 MP[(int)ClassType.Adventurer, i + 3] = MP[(int)ClassType.Adventurer, i + 2] + (U1 + i / 2);
+               
             }
+        
             //SWORDMAN MP
-            for (int i = 0; i < MP.GetLength(1); i++)
+            for (int i = 0; i < MP.GetLength(1)-1; i++)
             {
-                MP[(int)ClassType.Swordman, i] = MP[(int)ClassType.Adventurer, i];
+              
+                MP[(int)ClassType.Swordman, i+1] = MP[(int)ClassType.Adventurer, i];
+                MP[(int)ClassType.Adventurer, i] = MP[(int)ClassType.Swordman, i + 1];
+
             }
+   
             //ARCHER MP
             for (int i = 0; i < 15; i++)
             {
@@ -202,6 +234,10 @@ namespace OpenNos.GameObject
                 MP[(int)ClassType.Archer, i + 2] = MP[(int)ClassType.Archer, i + 1] + U0 + 1 + ((i - 19) / 2);
                 MP[(int)ClassType.Archer, i + 3] = MP[(int)ClassType.Archer, i + 2] + U0 +1+ ((i - 19) / 2);
                 
+            }
+            for (int i = 0; i < MP.GetLength(1); i++)
+            {
+                Console.WriteLine(i + ":" + MP[(int)ClassType.Swordman, i]);
             }
             //MAGICIAN MP
 
