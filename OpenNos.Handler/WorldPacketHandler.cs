@@ -224,8 +224,9 @@ namespace OpenNos.Handler
             _session.Client.SendPacket(_session.Character.GenerateCond());
             //pairyz
             _session.Client.SendPacket(String.Format("rsfi {0} {1} {2} {3} {4} {5}", 1, 1, 4, 9, 4, 9));
-            foreach (String inPacket in ChatManager.Instance.GetInPacketArray(_session))
-                _session.Client.SendPacket(inPacket);
+            ChatManager.Instance.RequiereBroadcastFromAllMapUsers(_session, "GenerateIn");
+            ChatManager.Instance.RequiereBroadcastFromAllMapUsers(_session, "GenerateCMode");
+
             ChatManager.Instance.Broadcast(_session, _session.Character.GenerateIn(), ReceiverType.AllOnMap);
             ChatManager.Instance.Broadcast(_session, _session.Character.GenerateCMode(), ReceiverType.AllOnMap);
         }
