@@ -134,7 +134,7 @@ namespace OpenNos.DAL.EF.MySQL
                     result.JobLevelXp = Convert.ToInt32(character.JobLevelXp);
                     result.Level = character.Level;
                     result.LevelXp = Convert.ToInt32( character.LevelXp);
-                    result.Map = character.Map;
+                    result.MapId = character.MapId;
                     result.MapX = character.MapX;
                     result.MapY = character.MapY;
                     result.Mp = character.Mp;

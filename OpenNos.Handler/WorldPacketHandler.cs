@@ -18,6 +18,7 @@ using OpenNos.Data;
 using OpenNos.Domain;
 using OpenNos.GameObject;
 using System;
+using log4net;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -45,6 +46,7 @@ namespace OpenNos.Handler
             AccountDTO account = DAOFactory.AccountDAO.LoadBySessionId(_session.SessionId);
             if (account.Password == OpenNos.Core.EncryptionBase.sha256(packetsplit[3]))
             {
+                DAOFactory.GeneralLogDAO.SetCharIdNull((long?)Convert.ToInt64(DAOFactory.CharacterDAO.LoadBySlot(account.AccountId, Convert.ToByte(packetsplit[2])).CharacterId));
                 DAOFactory.CharacterDAO.Delete(account.AccountId, Convert.ToByte(packetsplit[2]));
                 LoadCharacters(packet);
             }
@@ -78,7 +80,7 @@ namespace OpenNos.Handler
                         JobLevelXp = 0,
                         Level = 1,
                         LevelXp = 0,
-                        Map = 1,
+                        MapId = 1,
                         MapX = (short)(77 + r.Next(82 - 77)),
                         MapY = (short)(112 + r.Next(120 - 112)),
                         Mp = 221,
@@ -171,7 +173,7 @@ namespace OpenNos.Handler
                     JobLevelXp = characterDTO.JobLevelXp,
                     Level = characterDTO.Level,
                     LevelXp = characterDTO.LevelXp,
-                    Map = characterDTO.Map,
+                    MapId = characterDTO.MapId,
                     MapX = characterDTO.MapX,
                     MapY = characterDTO.MapY,
                     Mp = characterDTO.Mp,
@@ -191,7 +193,7 @@ namespace OpenNos.Handler
                     Speed = ServersData.SpeedData[characterDTO.Class]
                 };
             DAOFactory.AccountDAO.WriteConnectionLog(_session.Character.AccountId, _session.Client.RemoteEndPoint.ToString(), _session.Character.CharacterId, "Connexion", "World");
-            _session.CurrentMap = ServerManager.GetMap(_session.Character.Map);
+            _session.CurrentMap = ServerManager.GetMap(_session.Character.MapId);
             _session.RegisterForMapNotification();
             _session.Client.SendPacket("OK");
             _session.HealthThread = new Thread(new ThreadStart(healthThread));
@@ -291,11 +293,11 @@ namespace OpenNos.Handler
             double def = (((TimeSpan)(DateTime.Now - new DateTime(2010, 1, 1, 0, 0, 0))).TotalSeconds) - (_session.Character.LastPortal);
             if (def >= 4)
             {
-                foreach (Portal portal in ServerManager.GetMap(_session.Character.Map).Portals)
+                foreach (Portal portal in ServerManager.GetMap(_session.Character.MapId).Portals)
                 {
                     if (!teleported && _session.Character.MapY >= portal.SrcY - 1 && _session.Character.MapY <= portal.SrcY + 1 && _session.Character.MapX >= portal.SrcX - 1 && _session.Character.MapX <= portal.SrcX + 1)
                     {
-                        _session.Character.Map = portal.DestMap;
+                        _session.Character.MapId = portal.DestMap;
                         _session.Character.MapX = portal.DestX;
                         _session.Character.MapY = portal.DestY;
                         _session.Character.LastPortal = (((TimeSpan)(DateTime.Now - new DateTime(2010, 1, 1, 0, 0, 0))).TotalSeconds);
@@ -453,7 +455,7 @@ namespace OpenNos.Handler
         {
             if (_session.Character.Authority == 2)//if gm
             {
-                _session.Client.SendPacket(_session.Character.GenerateSay(String.Format("Map:{0} - X:{1} - Y:{2}", _session.Character.Map, _session.Character.MapX, _session.Character.MapY), 0));
+                _session.Client.SendPacket(_session.Character.GenerateSay(String.Format("Map:{0} - X:{1} - Y:{2}", _session.Character.MapId, _session.Character.MapX, _session.Character.MapY), 0));
             }
         }
         [Packet("$Kick")]
@@ -500,7 +502,7 @@ namespace OpenNos.Handler
             if (_session.Character.Authority == 2)//if gm
             {
 
-                ChatManager.Instance.RequiereBroadcastFromMap(_session.Character.Map,"guri 2 1 {0}"); 
+                ChatManager.Instance.RequiereBroadcastFromMap(_session.Character.MapId,"guri 2 1 {0}"); 
             }
         }
         [Packet("$Invisible")]
@@ -579,7 +581,7 @@ namespace OpenNos.Handler
                     case 5:
                         if(verify)
                         {
-                            _session.Character.Map = arg[0];
+                            _session.Character.MapId = arg[0];
                             _session.Character.MapX = arg[1];
                             _session.Character.MapY = arg[2];
                             MapOut();

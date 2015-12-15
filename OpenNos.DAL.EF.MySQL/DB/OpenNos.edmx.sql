@@ -44,9 +44,9 @@
 -- -----------------------------------------------------------
 -- Entity Designer DDL Script for MySQL Server 4.1 and higher
 -- -----------------------------------------------------------
--- Date Created: 12/14/2015 20:56:15
+-- Date Created: 12/15/2015 14:26:04
 
--- Generated from EDMX file: C:\Users\Alex\Documents\GitHub\OpenNos\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
+-- Generated from EDMX file: C:\Users\ERWAN\Desktop\OpenNos GIT\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
 -- Target version: 3.0.0.0
 
 -- --------------------------------------------------
@@ -68,6 +68,8 @@
 --    ALTER TABLE `portal` DROP CONSTRAINT `FK_portalMap1`;
 
 --    ALTER TABLE `connectionlog` DROP CONSTRAINT `FK_GeneralLogCharacter`;
+
+--    ALTER TABLE `character` DROP CONSTRAINT `FK_CharacterMap`;
 
 
 -- --------------------------------------------------
@@ -115,7 +117,6 @@ CREATE TABLE `character`(
 	`Class` TINYINT UNSIGNED NOT NULL, 
 	`HairStyle` TINYINT UNSIGNED NOT NULL, 
 	`HairColor` TINYINT UNSIGNED NOT NULL, 
-	`Map` smallint NOT NULL, 
 	`MapX` smallint NOT NULL, 
 	`MapY` smallint NOT NULL, 
 	`Hp` int NOT NULL, 
@@ -132,7 +133,8 @@ CREATE TABLE `character`(
 	`Dead` int NOT NULL, 
 	`Kill` int NOT NULL, 
 	`Contribution` int NOT NULL, 
-	`Faction` int NOT NULL);
+	`Faction` int NOT NULL, 
+	`MapId` smallint NOT NULL);
 
 ALTER TABLE `character` ADD PRIMARY KEY (CharacterId);
 
@@ -161,10 +163,9 @@ CREATE TABLE `connectionlog`(
 	`AccountId` bigint NOT NULL, 
 	`IpAddress` longtext NOT NULL, 
 	`Timestamp` datetime NOT NULL, 
-	`CharacterId` bigint, 
 	`LogType` longtext NOT NULL, 
 	`LogData` longtext NOT NULL, 
-	`CharacterCharacterId` bigint);
+	`CharacterId` bigint);
 
 ALTER TABLE `connectionlog` ADD PRIMARY KEY (LogId);
 
@@ -261,11 +262,11 @@ CREATE INDEX `IX_FK_portalMap1`
 
 
 
--- Creating foreign key on `CharacterCharacterId` in table 'connectionlog'
+-- Creating foreign key on `CharacterId` in table 'connectionlog'
 
 ALTER TABLE `connectionlog`
 ADD CONSTRAINT `FK_GeneralLogCharacter`
-    FOREIGN KEY (`CharacterCharacterId`)
+    FOREIGN KEY (`CharacterId`)
     REFERENCES `character`
         (`CharacterId`)
     ON DELETE NO ACTION ON UPDATE NO ACTION;
@@ -275,7 +276,25 @@ ADD CONSTRAINT `FK_GeneralLogCharacter`
 
 CREATE INDEX `IX_FK_GeneralLogCharacter`
     ON `connectionlog`
-    (`CharacterCharacterId`);
+    (`CharacterId`);
+
+
+
+-- Creating foreign key on `MapId` in table 'character'
+
+ALTER TABLE `character`
+ADD CONSTRAINT `FK_CharacterMap`
+    FOREIGN KEY (`MapId`)
+    REFERENCES `map`
+        (`MapId`)
+    ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+
+-- Creating non-clustered index for FOREIGN KEY 'FK_CharacterMap'
+
+CREATE INDEX `IX_FK_CharacterMap`
+    ON `character`
+    (`MapId`);
 
 
 

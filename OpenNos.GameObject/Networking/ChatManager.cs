@@ -52,7 +52,7 @@ namespace OpenNos.GameObject
                 case ReceiverType.AllOnMap:
                     foreach (ClientSession session in sessions)
                     {
-                        if (session.Character !=null && client.Character.Map == session.Character.Map)
+                        if (session.Character !=null && client.Character.MapId == session.Character.MapId)
                             session.Client.SendPacket(message);
                     }
                   
@@ -60,7 +60,7 @@ namespace OpenNos.GameObject
                 case ReceiverType.AllOnMapExceptMe:
                     foreach (ClientSession session in sessions)
                     {
-                        if (session.Character != null && session != client && client.Character.Map == session.Character.Map)
+                        if (session.Character != null && session != client && client.Character.MapId == session.Character.MapId)
                             session.Client.SendPacket(message);
                     }
                     break;
@@ -87,7 +87,7 @@ namespace OpenNos.GameObject
         {
                 foreach (ClientSession session in sessions)
                 {
-                if (session.Character != null && session.Character.Map == MapId)
+                if (session.Character != null && session.Character.MapId == MapId)
                     Broadcast(session, String.Format(Message, session.Character.CharacterId),ReceiverType.AllOnMap);
                 }
             
