@@ -278,6 +278,7 @@
             <End Role="Character" EntitySet="character" />
             <End Role="Map" EntitySet="map" />
           </AssociationSet>
+          <EntitySet Name="ItemListSet1" EntityType="opennosModel.ItemList" />
         </EntityContainer>
         <Association Name="AccountCharacter">
           <End Type="opennosModel.Account" Role="Account" Multiplicity="1" />
@@ -375,6 +376,87 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="ItemList">
+          <Key>
+            <PropertyRef Name="ItemId" />
+          </Key>
+          <Property Name="ItemId" Type="Int16" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Price" Type="Int64" Nullable="false" />
+          <Property Name="Name" Type="String" Nullable="false" />
+          <Property Name="Inventory" Type="Byte" Nullable="false" />
+          <Property Name="ItemType" Type="Byte" Nullable="false" />
+          <Property Name="Index3" Type="Byte" Nullable="false" />
+          <Property Name="EqSlot" Type="Byte" Nullable="false" />
+          <Property Name="Index4" Type="Byte" Nullable="false" />
+          <Property Name="Morph" Type="Byte" Nullable="false" />
+          <Property Name="Type" Type="Byte" Nullable="false" />
+          <Property Name="Classe" Type="Byte" Nullable="false" />
+          <Property Name="Flag1" Type="Byte" Nullable="false" />
+          <Property Name="Flag2" Type="Byte" Nullable="false" />
+          <Property Name="Blocked" Type="Byte" Nullable="false" />
+          <Property Name="Droppable" Type="Byte" Nullable="false" />
+          <Property Name="Transaction" Type="Byte" Nullable="false" />
+          <Property Name="Soldable" Type="Byte" Nullable="false" />
+          <Property Name="MinilandObject" Type="Byte" Nullable="false" />
+          <Property Name="isWareHouse" Type="Byte" Nullable="false" />
+          <Property Name="Flag9" Type="Byte" Nullable="false" />
+          <Property Name="Flag10" Type="Byte" Nullable="false" />
+          <Property Name="Flag11" Type="Byte" Nullable="false" />
+          <Property Name="Flag12" Type="Byte" Nullable="false" />
+          <Property Name="Flag13" Type="Byte" Nullable="false" />
+          <Property Name="Flag14" Type="Byte" Nullable="false" />
+          <Property Name="Flag15" Type="Byte" Nullable="false" />
+          <Property Name="Flag16" Type="Byte" Nullable="false" />
+          <Property Name="Flag17" Type="Byte" Nullable="false" />
+          <Property Name="Flag18" Type="Byte" Nullable="false" />
+          <Property Name="Flag19" Type="Byte" Nullable="false" />
+          <Property Name="Flag20" Type="Byte" Nullable="false" />
+          <Property Name="LvlMin" Type="Int16" Nullable="false" />
+          <Property Name="Data2" Type="Int16" Nullable="false" />
+          <Property Name="Data3" Type="Int16" Nullable="false" />
+          <Property Name="Data4" Type="Int16" Nullable="false" />
+          <Property Name="Data5" Type="Int16" Nullable="false" />
+          <Property Name="Data6" Type="Int16" Nullable="false" />
+          <Property Name="Data7" Type="Int16" Nullable="false" />
+          <Property Name="Data8" Type="Int16" Nullable="false" />
+          <Property Name="Data9" Type="Int16" Nullable="false" />
+          <Property Name="Data10" Type="Int16" Nullable="false" />
+          <Property Name="Data11" Type="Int16" Nullable="false" />
+          <Property Name="Data12" Type="Int16" Nullable="false" />
+          <Property Name="Data13" Type="Int16" Nullable="false" />
+          <Property Name="Data14" Type="Int16" Nullable="false" />
+          <Property Name="Data15" Type="Int16" Nullable="false" />
+          <Property Name="Data16" Type="Int16" Nullable="false" />
+          <Property Name="Data17" Type="Int16" Nullable="false" />
+          <Property Name="Data18" Type="Int16" Nullable="false" />
+          <Property Name="Data19" Type="Int16" Nullable="false" />
+          <Property Name="Data20" Type="Int16" Nullable="false" />
+          <Property Name="Buff1Id" Type="Int16" Nullable="false" />
+          <Property Name="Buff1Value1" Type="Int16" Nullable="false" />
+          <Property Name="Buff1Value2" Type="Int16" Nullable="false" />
+          <Property Name="Buff1SubType" Type="Int16" Nullable="false" />
+          <Property Name="Buff1Positivity" Type="Int16" Nullable="false" />
+          <Property Name="Buff2Id" Type="Int16" Nullable="false" />
+          <Property Name="Buff2Value1" Type="Int16" Nullable="false" />
+          <Property Name="Buff2Value2" Type="Int16" Nullable="false" />
+          <Property Name="Buff2SubType" Type="Int16" Nullable="false" />
+          <Property Name="Buff2Positivity" Type="Int16" Nullable="false" />
+          <Property Name="Buff3Id" Type="Int16" Nullable="false" />
+          <Property Name="Buff3Value1" Type="Int16" Nullable="false" />
+          <Property Name="Buff3Value2" Type="Int16" Nullable="false" />
+          <Property Name="Buff3SubType" Type="Int16" Nullable="false" />
+          <Property Name="Buff3Positivity" Type="Int16" Nullable="false" />
+          <Property Name="Buff4Id" Type="Int16" Nullable="false" />
+          <Property Name="Buff4Value1" Type="Int16" Nullable="false" />
+          <Property Name="Buff4Value2" Type="Int16" Nullable="false" />
+          <Property Name="Buff4SubType" Type="Int16" Nullable="false" />
+          <Property Name="Buff4Positivity" Type="Int16" Nullable="false" />
+          <Property Name="Buff5Id" Type="Int16" Nullable="false" />
+          <Property Name="Buff5Value1" Type="Int16" Nullable="false" />
+          <Property Name="Buff5Value2" Type="Int16" Nullable="false" />
+          <Property Name="BuffId5SubType" Type="Int16" Nullable="false" />
+          <Property Name="BuffId5Positivity" Type="Int16" Nullable="false" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
