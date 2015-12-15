@@ -29,18 +29,6 @@ namespace OpenNos.GameObject
             }
         }
 
-        public List<String> GetInPacketArray(ClientSession client)
-        {
-            List<String> list = new List<String>();
-            foreach (ClientSession session in sessions)
-                if (session != client && client.Character.Map == session.Character.Map)
-                {
-                    list.Add(session.Character.GenerateIn());
-                    list.Add(session.Character.GenerateCMode());
-                }
-            return list;
-        }
-
         public bool Broadcast(ClientSession client, String message, ReceiverType receiver, String CharacterName ="", int CharacterId = -1)
         {
             switch (receiver)
@@ -104,19 +92,49 @@ namespace OpenNos.GameObject
                 }
             
         }
-        
+        public void RequiereBroadcastFromAllMapUsers(ClientSession client, string methodName)
+        {
+            foreach (ClientSession session in sessions)
+            {
+
+                if (session.Character != null && session.Character.Name != client.Character.Name)
+                {
+                    Type t = session.Character.GetType();
+                    MethodInfo method = t.GetMethod(methodName);
+                    string result = (string)method.Invoke(session.Character, null);
+                    client.Client.SendPacket(result);
+                }
+            }
+        }
         public void RequiereBroadcastFromUser(ClientSession client, long CharacterId, string methodName)
         {
             foreach (ClientSession session in sessions)
             {
-                Type t = session.Character.GetType();
-                MethodInfo method = t.GetMethod(methodName);
-                string result = (string)method.Invoke(session.Character,null);
+           
                 if (session.Character != null && session.Character.CharacterId == CharacterId)
+                {
+                    Type t = session.Character.GetType();
+                    MethodInfo method = t.GetMethod(methodName);
+                    string result = (string)method.Invoke(session.Character, null);
                     client.Client.SendPacket(result);
+                }
             }
         }
-
+        public void RequiereBroadcastFromUser(ClientSession client, string CharacterName, string methodName)
+        {
+            foreach (ClientSession session in sessions)
+            {
+      
+                if (session.Character != null && session.Character.Name == CharacterName)
+                {
+                    Type t = session.Character.GetType();
+                    MethodInfo method = t.GetMethod(methodName);
+                    string result = (string)method.Invoke(session.Character, null);
+                    client.Client.SendPacket(result);
+                }
+                  
+            }
+        }
         public bool Kick(String CharacterName)
         {
             foreach (ClientSession session in sessions)
