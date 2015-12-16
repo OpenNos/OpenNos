@@ -8,6 +8,7 @@ using OpenNos.Data;
 using OpenNos.DAL.EF.MySQL.DB;
 using AutoMapper;
 using OpenNos.Core;
+using OpenNos.Domain;
 
 namespace OpenNos.DAL.EF.MySQL
 {
@@ -17,27 +18,41 @@ namespace OpenNos.DAL.EF.MySQL
 
         #region Public
 
-        public DeleteResult Delete(long accountId, byte characterSlot)
+        public IEnumerable<CharacterDTO> LoadByAccount(long accountId)
         {
-            try
+            using (var context = DataAccessHelper.CreateContext())
             {
-                using (var context = DataAccessHelper.CreateContext())
+                byte state = (byte)CharacterState.Active;
+                foreach (Character character in context.character.Where(c => c.AccountId.Equals(accountId) && c.State.Equals(state)).OrderByDescending(c => c.Slot))
                 {
-                    Character character = context.character.SingleOrDefault(c => c.AccountId.Equals(accountId) && c.Slot.Equals(characterSlot));
-
-                    if (character != null)
-                    {
-                        context.character.Remove(character);
-                        context.SaveChanges();
-                    }
-
-                    return DeleteResult.Deleted;
+                    yield return Mapper.Map<CharacterDTO>(character);
                 }
             }
-            catch (Exception e)
+        }
+
+        public CharacterDTO LoadById(long characterId)
+        {
+            using (var context = DataAccessHelper.CreateContext())
             {
-                Logger.Log.ErrorFormat("DELETE_ERROR", characterSlot, e.Message);
-                return DeleteResult.Error;
+                return Mapper.Map<CharacterDTO>(context.character.SingleOrDefault(c => c.CharacterId.Equals(characterId)));
+            }
+        }
+        public CharacterDTO LoadByName(string name)
+        {
+            using (var context = DataAccessHelper.CreateContext())
+            {
+                byte state = (byte)CharacterState.Active;
+                return Mapper.Map<CharacterDTO>(context.character.SingleOrDefault(c => c.Name.Equals(name) && c.State.Equals(state)));
+            }
+        }
+
+        public CharacterDTO LoadBySlot(long accountId, byte slot)
+        {
+            using (var context = DataAccessHelper.CreateContext())
+            {
+                byte state = (byte)CharacterState.Active;
+                return Mapper.Map<CharacterDTO>(context.character.SingleOrDefault(c => c.AccountId.Equals(accountId) && c.Slot.Equals(slot)
+                                                                                        && c.State.Equals(state)));
             }
         }
 
@@ -50,56 +65,50 @@ namespace OpenNos.DAL.EF.MySQL
                     long characterId = character.CharacterId;
                     Character entity = context.character.SingleOrDefault(c => c.CharacterId.Equals(characterId));
 
-                    if(entity == null) //new entity
+                    if (entity == null) //new entity
                     {
                         character = Insert(character, context);
                         return SaveResult.Inserted;
                     }
                     else //existing entity
                     {
-                        character =  Update(entity, character, context);
+                        character = Update(entity, character, context);
                         return SaveResult.Updated;
                     }
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Logger.Log.ErrorFormat("INSERT_ERROR", character, e.Message);
                 return SaveResult.Error;
             }
         }
 
-        public IEnumerable<CharacterDTO> LoadByAccount(long accountId)
+        public DeleteResult Delete(long accountId, byte characterSlot)
         {
-            using (var context = DataAccessHelper.CreateContext())
+            try
             {
-                foreach (Character character in context.character.Where(c => c.AccountId.Equals(accountId)).OrderByDescending(c => c.Slot))
+                using (var context = DataAccessHelper.CreateContext())
                 {
-                    yield return Mapper.Map<CharacterDTO>(character);
+                    //actually a character wont be deleted, it just will be disabled for future traces
+                    byte state = (byte)CharacterState.Active;
+                    Character character = context.character.SingleOrDefault(c => c.AccountId.Equals(accountId) && c.Slot.Equals(characterSlot)
+                                            && c.State.Equals(state));
+
+                    if (character != null)
+                    {
+                        byte obsoleteState = (byte)CharacterState.Inactive;
+                        character.State = obsoleteState;
+                        Update(character, Mapper.Map<CharacterDTO>(character), context);
+                    }
+
+                    return DeleteResult.Deleted;
                 }
             }
-        }
-       
-        public CharacterDTO LoadById(long characterId)
-        {
-            using (var context = DataAccessHelper.CreateContext())
+            catch (Exception e)
             {
-                return Mapper.Map<CharacterDTO>(context.character.SingleOrDefault(c => c.CharacterId.Equals(characterId)));
-            }
-        }
-        public CharacterDTO LoadByName(string name)
-        {
-            using (var context = DataAccessHelper.CreateContext())
-            {
-               return Mapper.Map<CharacterDTO>(context.character.SingleOrDefault(c => c.Name.Equals(name)));
-            }
-        }
-      
-        public CharacterDTO LoadBySlot(long accountId, byte slot)
-        {
-            using (var context = DataAccessHelper.CreateContext())
-            {
-                return Mapper.Map<CharacterDTO>(context.character.SingleOrDefault(c => c.AccountId.Equals(accountId) && c.Slot.Equals(slot)));
+                Logger.Log.ErrorFormat("DELETE_ERROR", characterSlot, e.Message);
+                return DeleteResult.Error;
             }
         }
 
@@ -121,27 +130,7 @@ namespace OpenNos.DAL.EF.MySQL
                 var result = context.character.SingleOrDefault(c => c.CharacterId == character.CharacterId);
                 if (result != null)
                 {
-                    result.AccountId = character.AccountId;
-                    result.CharacterId = character.CharacterId;
-                    result.Class = character.Class;
-                    result.Dignite = character.Dignite;
-                    result.Gender = character.Gender;
-                    result.Gold = character.Gold;
-                    result.HairColor = character.HairColor;
-                    result.HairStyle = character.HairStyle;
-                    result.Hp = character.Hp;
-                    result.JobLevel = character.JobLevel;
-                    result.JobLevelXp = Convert.ToInt32(character.JobLevelXp);
-                    result.Level = character.Level;
-                    result.LevelXp = Convert.ToInt32( character.LevelXp);
-                    result.MapId = character.MapId;
-                    result.MapX = character.MapX;
-                    result.MapY = character.MapY;
-                    result.Mp = character.Mp;
-                    result.Name = character.Name;
-                    result.Reput = character.Reput;
-
-
+                    result = Mapper.Map<CharacterDTO, Character>(character, entity);
                     context.SaveChanges();
                 }
             }

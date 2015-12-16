@@ -54,6 +54,7 @@
     </Key>
     <Property Name="CharacterId" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="AccountId" Type="bigint" Nullable="false" />
+    <Property Name="MapId" Type="smallint" Nullable="false" />
     <Property Name="Name" Type="varchar" Nullable="false" MaxLength="255" />
     <Property Name="Slot" Type="utinyint" Nullable="false" />
     <Property Name="Gender" Type="utinyint" Nullable="false" />
@@ -77,7 +78,7 @@
     <Property Name="Kill" Type="int" Nullable="false" />
     <Property Name="Contribution" Type="int" Nullable="false" />
     <Property Name="Faction" Type="int" Nullable="false" />
-    <Property Name="MapId" Type="smallint" Nullable="false" />
+    <Property Name="State" Type="utinyint" Nullable="false" />
   </EntityType>
   <EntityType Name="portal">
     <Key>
@@ -251,6 +252,7 @@
           </Key>
           <Property Name="CharacterId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="AccountId" Type="Int64" Nullable="false" />
+          <Property Name="MapId" Type="Int16" Nullable="false" />
           <Property Name="Name" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="Slot" Type="Byte" Nullable="false" />
           <Property Name="Gender" Type="Byte" Nullable="false" />
@@ -277,7 +279,7 @@
           <NavigationProperty Name="account" Relationship="opennosModel.AccountCharacter" FromRole="Character" ToRole="Account" />
           <NavigationProperty Name="generallog" Relationship="opennosModel.GeneralLogCharacter" FromRole="Character" ToRole="GeneralLog" />
           <NavigationProperty Name="map" Relationship="opennosModel.CharacterMap" FromRole="Character" ToRole="Map" />
-          <Property Name="MapId" Type="Int16" Nullable="false" />
+          <Property Name="State" Type="Byte" Nullable="false" />
         </EntityType>
         <EntityType Name="Portal">
           <Key>
@@ -490,6 +492,7 @@
         <MappingFragment StoreEntitySet="character">
           <ScalarProperty Name="CharacterId" ColumnName="CharacterId" />
           <ScalarProperty Name="AccountId" ColumnName="AccountId" />
+          <ScalarProperty Name="MapId" ColumnName="MapId" />
           <ScalarProperty Name="Name" ColumnName="Name" />
           <ScalarProperty Name="Slot" ColumnName="Slot" />
           <ScalarProperty Name="Gender" ColumnName="Gender" />
@@ -513,7 +516,7 @@
           <ScalarProperty Name="Kill" ColumnName="Kill" />
           <ScalarProperty Name="Contribution" ColumnName="Contribution" />
           <ScalarProperty Name="Faction" ColumnName="Faction" />
-          <ScalarProperty Name="MapId" ColumnName="MapId" />
+          <ScalarProperty Name="State" ColumnName="State" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

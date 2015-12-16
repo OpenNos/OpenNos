@@ -44,9 +44,9 @@
 -- -----------------------------------------------------------
 -- Entity Designer DDL Script for MySQL Server 4.1 and higher
 -- -----------------------------------------------------------
--- Date Created: 12/16/2015 00:16:53
+-- Date Created: 12/16/2015 22:05:56
 
--- Generated from EDMX file: C:\Users\ERWAN\Desktop\OpenNos GIT\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
+-- Generated from EDMX file: C:\Users\Alex\Documents\GitHub\OpenNos\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
 -- Target version: 3.0.0.0
 
 -- --------------------------------------------------
@@ -87,6 +87,8 @@ SET foreign_key_checks = 0;
 
     DROP TABLE IF EXISTS `map`;
 
+    DROP TABLE IF EXISTS `itemlist`;
+
 SET foreign_key_checks = 1;
 
 -- --------------------------------------------------
@@ -111,6 +113,7 @@ ALTER TABLE `account` ADD PRIMARY KEY (AccountId);
 CREATE TABLE `character`(
 	`CharacterId` bigint NOT NULL AUTO_INCREMENT UNIQUE, 
 	`AccountId` bigint NOT NULL, 
+	`MapId` smallint NOT NULL, 
 	`Name` varchar (255) NOT NULL, 
 	`Slot` TINYINT UNSIGNED NOT NULL, 
 	`Gender` TINYINT UNSIGNED NOT NULL, 
@@ -134,7 +137,7 @@ CREATE TABLE `character`(
 	`Kill` int NOT NULL, 
 	`Contribution` int NOT NULL, 
 	`Faction` int NOT NULL, 
-	`MapId` smallint NOT NULL);
+	`State` TINYINT UNSIGNED NOT NULL);
 
 ALTER TABLE `character` ADD PRIMARY KEY (CharacterId);
 
