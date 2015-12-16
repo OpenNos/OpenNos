@@ -13,6 +13,8 @@ namespace OpenNos.Data
 
         public long AccountId { get; set; }
 
+        public short MapId { get; set; }
+
         public string Name { get; set; }
 
         public byte Slot { get; set; }
@@ -37,8 +39,6 @@ namespace OpenNos.Data
 
         public byte HairColor { get; set; }
 
-        public short MapId { get; set; }
-
         public short MapX { get; set; }
 
         public short MapY { get; set; }
@@ -60,5 +60,20 @@ namespace OpenNos.Data
         public int Reput { get; set; }
 
         public int Dignite { get; set; }
+
+        public byte State { get; set; }
+
+        public CharacterState StateEnum
+        {
+            get
+            {
+                return (CharacterState)State;
+            }
+            set
+            {
+                State = (byte)value;
+            }
+        }
+
     }
 }

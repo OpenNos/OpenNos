@@ -78,7 +78,7 @@ namespace OpenNos.DAL.EF.MySQL
             }
         }
         
-       public void BanUnBan(long id)
+       public void ToggleBan(long id)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
