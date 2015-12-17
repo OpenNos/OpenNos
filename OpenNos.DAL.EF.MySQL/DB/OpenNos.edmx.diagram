@@ -17,6 +17,8 @@
         <AssociationConnector Association="opennosModel.GeneralLogCharacter" />
         <AssociationConnector Association="opennosModel.CharacterMap" />
         <EntityTypeShape EntityType="opennosModel.ItemList" Width="1.375" PointX="12.875" PointY="0.5" />
+        <EntityTypeShape EntityType="opennosModel.Npc" Width="1.5" PointX="10.25" PointY="1" />
+        <AssociationConnector Association="opennosModel.NpcMap" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

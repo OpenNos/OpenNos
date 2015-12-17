@@ -42,6 +42,7 @@
   <ItemGroup>
     <Compile Include="GeneralLogDTO.cs" />
     <Compile Include="MapDTO.cs" />
+    <Compile Include="NpcDTO.cs" />
     <Compile Include="PortalDTO.cs" />
     <Compile Include="AccountDTO.cs" />
     <Compile Include="CharacterDTO.cs" />

@@ -380,6 +380,13 @@ namespace OpenNos.GameObject
                 gpList.Add(String.Format("gp {0} {1} {2} {3} {4}", portal.SrcX, portal.SrcY, portal.DestMap, portal.Type, 0));
             return gpList;
         }
+        public List<String> Generatein2()
+        {
+            List<String> in2List = new List<String>();
+            foreach (Npc npc in ServerManager.GetMap(this.MapId).Npcs)
+                in2List.Add(String.Format("in 2 {0} {1} {2} {3} {4} 100 100 9632 0 0 - 1 1 0 - 1 - 0 - 1 0 0 0 0 0 0 0 0", npc.Vnum, npc.NpcId,npc.MapX,npc.MapY,npc.Position));
+            return in2List;
+        }
         public string GenerateFd()
         {
             return String.Format("fd {0} {1} {2} {3}", Reput, GetReputIco(), Dignite, Math.Abs(GetDigniteIco()));

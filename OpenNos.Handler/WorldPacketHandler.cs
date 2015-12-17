@@ -224,6 +224,9 @@ namespace OpenNos.Handler
             _session.Client.SendPacket(_session.Character.GenerateCMap());
             foreach (String portalPacket in _session.Character.GenerateGp())
                 _session.Client.SendPacket(portalPacket);
+            foreach (String npcPacket in _session.Character.Generatein2())
+                _session.Client.SendPacket(npcPacket);
+            
             //sc
             _session.Client.SendPacket(_session.Character.GenerateCond());
             //pairyz
@@ -381,9 +384,8 @@ namespace OpenNos.Handler
             }
         }
 
-        //TODO: create better naming for NCIF, what does it do?
         [Packet("ncif")]
-        public void Ncif(string packet)
+        public void GetNamedCharacterInformation(string packet)
         {
             string[] packetsplit = packet.Split(' ');
 
@@ -393,7 +395,9 @@ namespace OpenNos.Handler
             }
             if (packetsplit[2] == "2")
             {
-                ChatManager.Instance.Broadcast(_session, String.Format("st 2 {0} 99 100 100 50000 50000", packetsplit[2]), ReceiverType.OnlyMe);
+                foreach (Npc npc in ServerManager.GetMap(_session.Character.MapId).Npcs)
+                    if(npc.NpcId == Convert.ToInt16(packetsplit[3]))
+                    ChatManager.Instance.Broadcast(_session, String.Format("st 2 {0} {1} 100 100 50000 50000", packetsplit[3], npc.Level), ReceiverType.OnlyMe);
             }
         }
         [Packet("game_start")]

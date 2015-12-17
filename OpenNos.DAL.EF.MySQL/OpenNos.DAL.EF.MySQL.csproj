@@ -82,6 +82,9 @@
     <Compile Include="DB\ItemList.cs">
       <DependentUpon>OpenNos.tt</DependentUpon>
     </Compile>
+    <Compile Include="DB\Npc.cs">
+      <DependentUpon>OpenNos.tt</DependentUpon>
+    </Compile>
     <Compile Include="GeneralLogDAO.cs" />
     <Compile Include="DB\GeneralLog.cs">
       <DependentUpon>OpenNos.tt</DependentUpon>
@@ -93,6 +96,7 @@
       <DependentUpon>OpenNos.tt</DependentUpon>
     </Compile>
     <Compile Include="MapDAO.cs" />
+    <Compile Include="NpcDAO.cs" />
     <Compile Include="PortalDAO.cs" />
     <Compile Include="AccountDAO.cs" />
     <Compile Include="CharacterDAO.cs" />
