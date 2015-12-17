@@ -217,7 +217,6 @@ namespace OpenNos.Handler
           
             _session.Client.SendPacket(_session.Character.GenerateCInfo());
             _session.Client.SendPacket(_session.Character.GenerateFd());
-            //TODO if first connect add _session.Client.SendPacket(String.Format("scene 40"));
             _session.Client.SendPacket(_session.Character.GenerateLev());
             _session.Client.SendPacket(_session.Character.GenerateStat());
             //ski
@@ -400,7 +399,7 @@ namespace OpenNos.Handler
         [Packet("game_start")]
         public void StartGame(string packet)
         {
-            if(DAOFactory.GeneralLogDAO.LoadByLogType("Connexion", _session.Character.CharacterId).Count() == 1)
+            if (System.Configuration.ConfigurationManager.AppSettings["SceneOnCreate"].ToLower() == "true" & DAOFactory.GeneralLogDAO.LoadByLogType("Connexion", _session.Character.CharacterId).Count() == 1)
                 _session.Client.SendPacket("scene 40");
             
 
@@ -453,7 +452,7 @@ namespace OpenNos.Handler
         [Packet("$Command")]
         public void Command(string packet)
         {
-            if (_session.Character.Authority == 2)
+          if (_session.Character.Authority == (int)AuthorityType.Admin)
             {
                 _session.Client.SendPacket(_session.Character.GenerateSay("$Teleport Map X Y", 0));
                 _session.Client.SendPacket(_session.Character.GenerateSay("$Speed SPEED", 0));
@@ -470,7 +469,7 @@ namespace OpenNos.Handler
         [Packet("$Position")]
         public void Position(string packet)
         {
-            if (_session.Character.Authority == 2)//if gm
+            if (_session.Character.Authority == (int)AuthorityType.Admin)//if gm
             {
                 _session.Client.SendPacket(_session.Character.GenerateSay(String.Format("Map:{0} - X:{1} - Y:{2}", _session.Character.MapId, _session.Character.MapX, _session.Character.MapY), 0));
             }
@@ -478,7 +477,7 @@ namespace OpenNos.Handler
         [Packet("$Kick")]
         public void Kick(string packet)
         {
-            if (_session.Character.Authority == 2)//if gm
+          if (_session.Character.Authority == (int)AuthorityType.Admin)//if gm
             {
                 string[] packetsplit = packet.Split(' ');
                 ChatManager.Instance.Kick(packetsplit[2]);
@@ -487,7 +486,7 @@ namespace OpenNos.Handler
         [Packet("$Ban")]
         public void Ban(string packet)
         {
-            if (_session.Character.Authority == 2)//if gm
+          if (_session.Character.Authority == (int)AuthorityType.Admin)//if gm
             {
                 string[] packetsplit = packet.Split(' ');
                 ChatManager.Instance.Kick(packetsplit[2]);
@@ -500,7 +499,7 @@ namespace OpenNos.Handler
         [Packet("$Shout")]
         public void Shout(string packet)
         {
-            if (_session.Character.Authority == 2)//if gm
+          if (_session.Character.Authority == (int)AuthorityType.Admin)//if gm
             {
                 string[] packetsplit = packet.Split(' ');
                 string message = String.Empty;
@@ -508,7 +507,7 @@ namespace OpenNos.Handler
                     message += packetsplit[i] + " ";
                 message.Trim();
 
-                ChatManager.Instance.Broadcast(_session, String.Format("say 1 0 10 [{0}]:{1}", Language.Instance.GetMessageFromKey("ADMINISTRATOR"), message), ReceiverType.All);
+                ChatManager.Instance.Broadcast(_session, String.Format("say 1 0 10 ({0}){1}", Language.Instance.GetMessageFromKey("ADMINISTRATOR"), message), ReceiverType.All);
                 ChatManager.Instance.Broadcast(_session, _session.Character.GenerateMsg(message, 2), ReceiverType.All);
             }
         }
@@ -516,7 +515,7 @@ namespace OpenNos.Handler
         [Packet("$MapDance")]
         public void MapDance(string packet)
         {
-            if (_session.Character.Authority == 2)//if gm
+          if (_session.Character.Authority == (int)AuthorityType.Admin)//if gm
             {
 
                 ChatManager.Instance.RequiereBroadcastFromMap(_session.Character.MapId,"guri 2 1 {0}"); 
@@ -525,7 +524,7 @@ namespace OpenNos.Handler
         [Packet("$Invisible")]
         public void Invisible(string packet)
         {
-            if (_session.Character.Authority == 2)//if gm
+          if (_session.Character.Authority == (int)AuthorityType.Admin)//if gm
             {
                 _session.Character.invisible = _session.Character.invisible == 0 ? 1 : 0;
                 ChangeMap();
@@ -534,7 +533,7 @@ namespace OpenNos.Handler
         [Packet("$Effect")]
         public void Effect(string packet)
         {
-            if (_session.Character.Authority == 2)//if gm
+          if (_session.Character.Authority == (int)AuthorityType.Admin)//if gm
             {
                 string[] packetsplit = packet.Split(' ');
                 short arg = 0;
@@ -549,7 +548,7 @@ namespace OpenNos.Handler
         [Packet("$Morph")]
         public void Morph(string packet)
         {
-            if (_session.Character.Authority == 2)//if gm
+          if (_session.Character.Authority == (int)AuthorityType.Admin)//if gm
             {
                 string[] packetsplit = packet.Split(' ');
                 short[] arg = new short[4];
@@ -582,7 +581,7 @@ namespace OpenNos.Handler
         [Packet("$Teleport")]
         public void Teleport(string packet)
         {
-            if (_session.Character.Authority == 2)//if gm
+          if (_session.Character.Authority == (int)AuthorityType.Admin)//if gm
             {
                 string[] packetsplit = packet.Split(' ');
                 short[] arg = new short[3];
@@ -614,7 +613,7 @@ namespace OpenNos.Handler
         [Packet("$Speed")]
         public void Speed(string packet)
         {
-            if (_session.Character.Authority == 2)//if gm
+          if (_session.Character.Authority == (int)AuthorityType.Admin)//if gm
             {
                 string[] packetsplit = packet.Split(' ');
                 int arg = 0;
