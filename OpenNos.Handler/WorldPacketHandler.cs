@@ -496,6 +496,32 @@ namespace OpenNos.Handler
         
 
         }
+        [Packet("$Shutdown")]
+        public void Shutdown(string packet)
+        {
+            if (_session.Character.Authority == (int)AuthorityType.Admin)//if gm
+            {
+                Thread ThreadShutdown = new Thread(new ThreadStart(ShutdownThread));
+                ThreadShutdown.Start();
+            }
+        }
+        public void ShutdownThread()
+        {
+            string message = Language.Instance.GetMessageFromKey(String.Format("SHUTDOWN_MIN", 5));
+            ChatManager.Instance.Broadcast(_session, String.Format("say 1 0 10 ({0}){1}", Language.Instance.GetMessageFromKey("ADMINISTRATOR"), message), ReceiverType.All);
+            ChatManager.Instance.Broadcast(_session, _session.Character.GenerateMsg(message, 2), ReceiverType.All);
+            Thread.Sleep(60000 * 4);
+            message = Language.Instance.GetMessageFromKey(String.Format("SHUTDOWN_MIN", 1));
+            ChatManager.Instance.Broadcast(_session, String.Format("say 1 0 10 ({0}){1}", Language.Instance.GetMessageFromKey("ADMINISTRATOR"), message), ReceiverType.All);
+            ChatManager.Instance.Broadcast(_session, _session.Character.GenerateMsg(message, 2), ReceiverType.All);
+            Thread.Sleep(30000);
+            message = Language.Instance.GetMessageFromKey(String.Format("SHUTDOWN_SEC", 30));  
+            ChatManager.Instance.Broadcast(_session, String.Format("say 1 0 10 ({0}){1}", Language.Instance.GetMessageFromKey("ADMINISTRATOR"), message), ReceiverType.All);
+            ChatManager.Instance.Broadcast(_session, _session.Character.GenerateMsg(message, 2), ReceiverType.All);
+            Thread.Sleep(30000);
+            //save
+            //shutdown
+        }
         [Packet("$Shout")]
         public void Shout(string packet)
         {
