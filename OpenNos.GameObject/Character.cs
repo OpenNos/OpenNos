@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace OpenNos.GameObject
 {
-    public class Character : INotifyPropertyChanged
+    public class Character
     {
         public Character()
         {
@@ -36,7 +36,7 @@ namespace OpenNos.GameObject
             set
             {
                 characterId = value;
-                OnPropertyChanged();
+                
             }
         }
 
@@ -47,7 +47,7 @@ namespace OpenNos.GameObject
             set
             {
                 accountId = value;
-                OnPropertyChanged();
+                
             }
         }
         public string name;
@@ -57,7 +57,7 @@ namespace OpenNos.GameObject
             set
             {
                 name = value;
-                OnPropertyChanged();
+                
             }
         }
         public byte slot;
@@ -67,7 +67,7 @@ namespace OpenNos.GameObject
             set
             {
                 slot = value;
-                OnPropertyChanged();
+                
             }
         }
         public byte gender;
@@ -77,7 +77,7 @@ namespace OpenNos.GameObject
             set
             {
                 gender = value;
-                OnPropertyChanged();
+                
             }
         }
 
@@ -88,7 +88,7 @@ namespace OpenNos.GameObject
             set
             {
                 classobj = value;
-                OnPropertyChanged();
+                
             }
         }
         public byte hairStyle;
@@ -98,7 +98,7 @@ namespace OpenNos.GameObject
             set
             {
                 hairStyle = value;
-                OnPropertyChanged();
+                
             }
         }
         public byte hairColor;
@@ -108,7 +108,7 @@ namespace OpenNos.GameObject
             set
             {
                 hairColor = value;
-                OnPropertyChanged();
+                
             }
         }
         public short map;
@@ -118,7 +118,7 @@ namespace OpenNos.GameObject
             set
             {
                 map = value;
-                OnPropertyChanged();
+                
             }
         }
         public short mapX;
@@ -128,7 +128,7 @@ namespace OpenNos.GameObject
             set
             {
                 mapX = value;
-                OnPropertyChanged();
+                
             }
         }
         public short mapY;
@@ -138,7 +138,7 @@ namespace OpenNos.GameObject
             set
             {
                 mapY = value;
-                OnPropertyChanged();
+                
             }
         }
         public int hp;
@@ -148,7 +148,7 @@ namespace OpenNos.GameObject
             set
             {
                 hp = value;
-                OnPropertyChanged();
+                
             }
         }
         public int mp;
@@ -158,7 +158,7 @@ namespace OpenNos.GameObject
             set
             {
                 mp = value;
-                OnPropertyChanged();
+                
             }
         }
         public long gold;
@@ -168,7 +168,7 @@ namespace OpenNos.GameObject
             set
             {
                 gold = value;
-                OnPropertyChanged();
+                
             }
         }
         public byte jobLevel;
@@ -178,7 +178,7 @@ namespace OpenNos.GameObject
             set
             {
                 jobLevel = value;
-                OnPropertyChanged();
+                
             }
         }
         public long jobLevelXp;
@@ -188,7 +188,7 @@ namespace OpenNos.GameObject
             set
             {
                 jobLevelXp = value;
-                OnPropertyChanged();
+                
             }
         }
         public byte level;
@@ -198,7 +198,7 @@ namespace OpenNos.GameObject
             set
             {
                 level = value;
-                OnPropertyChanged();
+                
             }
         }
         public long levelXp;
@@ -208,7 +208,7 @@ namespace OpenNos.GameObject
             set
             {
                 levelXp = value;
-                OnPropertyChanged();
+                
             }
         }
         public int reput;
@@ -218,7 +218,7 @@ namespace OpenNos.GameObject
             set
             {
                 reput = value;
-                OnPropertyChanged();
+                
             }
         }
         public int dignite;
@@ -228,7 +228,7 @@ namespace OpenNos.GameObject
             set
             {
                 dignite = value;
-                OnPropertyChanged();
+                
             }
         }
         public int lastPulse;
@@ -238,7 +238,7 @@ namespace OpenNos.GameObject
             set
             {
                 lastPulse = value;
-                OnPropertyChanged();
+                
             }
         }
         public double lastPortal;
@@ -248,7 +248,7 @@ namespace OpenNos.GameObject
             set
             {
                 lastPortal = value;
-                OnPropertyChanged();
+                
             }
         }
         public int sp;
@@ -258,7 +258,7 @@ namespace OpenNos.GameObject
             set
             {
                 sp = value;
-                OnPropertyChanged();
+                
             }
         }
         public int authority;
@@ -268,7 +268,7 @@ namespace OpenNos.GameObject
             set
             {
                 authority = value;
-                OnPropertyChanged();
+                
             }
         }
         public int invisible;
@@ -278,7 +278,7 @@ namespace OpenNos.GameObject
             set
             {
                 invisible = value;
-                OnPropertyChanged();
+                
             }
         }
         public int speed;
@@ -288,7 +288,7 @@ namespace OpenNos.GameObject
             set
             {
                 speed = value;
-                OnPropertyChanged();
+                
             }
         }
         public int arenaWinner;
@@ -298,7 +298,7 @@ namespace OpenNos.GameObject
             set
             {
                 arenaWinner = value;
-                OnPropertyChanged();
+                
             }
         }
         public int spUpgrade;
@@ -308,7 +308,7 @@ namespace OpenNos.GameObject
             set
             {
                 spUpgrade = value;
-                OnPropertyChanged();
+                
             }
         }
         public int spUpgrade2;
@@ -318,7 +318,7 @@ namespace OpenNos.GameObject
             set
             {
                 spUpgrade2 = value;
-                OnPropertyChanged();
+                
             }
         }
         public int direction;
@@ -328,7 +328,7 @@ namespace OpenNos.GameObject
             set
             {
                 direction = value;
-                OnPropertyChanged();
+                
             }
         }
         public int rested;
@@ -338,7 +338,7 @@ namespace OpenNos.GameObject
             set
             {
                 rested = value;
-                OnPropertyChanged();
+                
             }
         }
 
@@ -349,11 +349,9 @@ namespace OpenNos.GameObject
             set
             {
                 state = value;
-                OnPropertyChanged();
+                
             }
         }
-
-        public event PropertyChangedEventHandler PropertyChanged;
 
         public bool Update()
         {

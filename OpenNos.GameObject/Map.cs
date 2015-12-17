@@ -9,7 +9,7 @@ using System.ComponentModel;
 
 namespace OpenNos.GameObject
 {
-    public class Map : INotifyPropertyChanged
+    public class Map
     {
         #region Members
 
@@ -22,9 +22,6 @@ namespace OpenNos.GameObject
         private List<Portal> _portals;
         private ThreadedBase<MapPacket> threadedBase;
 
-        public event PropertyChangedEventHandler PropertyChanged;
-       
-      
         #endregion
 
         #region Instantiation
