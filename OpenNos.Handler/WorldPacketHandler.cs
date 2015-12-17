@@ -87,6 +87,7 @@ namespace OpenNos.Handler
                         Name = packetsplit[2],
                         Slot = Convert.ToByte(packetsplit[3]),
                         AccountId = accountId,
+                        StateEnum = CharacterState.Active
                     };
 
                     SaveResult insertResult = DAOFactory.CharacterDAO.InsertOrUpdate(ref newCharacter);
@@ -177,6 +178,7 @@ namespace OpenNos.Handler
                     MapX = characterDTO.MapX,
                     MapY = characterDTO.MapY,
                     Mp = characterDTO.Mp,
+                    State = characterDTO.State,
                     Name = characterDTO.Name,
                     Reput = characterDTO.Reput,
                     Slot = characterDTO.Slot,
@@ -192,6 +194,7 @@ namespace OpenNos.Handler
                     Rested = 0,
                     Speed = ServersData.SpeedData[characterDTO.Class]
                 };
+            _session.Character.Update();
             DAOFactory.AccountDAO.WriteConnectionLog(_session.Character.AccountId, _session.Client.RemoteEndPoint.ToString(), _session.Character.CharacterId, "Connexion", "World");
             _session.CurrentMap = ServerManager.GetMap(_session.Character.MapId);
             _session.RegisterForMapNotification();
@@ -378,8 +381,10 @@ namespace OpenNos.Handler
                
             }
         }
+
+        //TODO: create better naming for NCIF, what does it do?
         [Packet("ncif")]
-        public void ncif(string packet)
+        public void Ncif(string packet)
         {
             string[] packetsplit = packet.Split(' ');
 
@@ -428,7 +433,7 @@ namespace OpenNos.Handler
            
         }
         [Packet("/")]
-        public void whisper(string packet)
+        public void Whisper(string packet)
         {
             string[] packetsplit = packet.Split(' ');
             string message = String.Empty;
@@ -487,7 +492,7 @@ namespace OpenNos.Handler
                 string[] packetsplit = packet.Split(' ');
                 ChatManager.Instance.Kick(packetsplit[2]);
                 if (DAOFactory.CharacterDAO.LoadByName(packetsplit[2]) != null)
-                    DAOFactory.AccountDAO.BanUnBan(DAOFactory.CharacterDAO.LoadByName(packetsplit[2]).AccountId);
+                    DAOFactory.AccountDAO.ToggleBan(DAOFactory.CharacterDAO.LoadByName(packetsplit[2]).AccountId);
             }
         
 

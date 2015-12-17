@@ -43,7 +43,7 @@ namespace OpenNos.DAL.Interface
 
         DeleteResult Delete(long accountId);
 
-        void BanUnBan(long id);
+        void ToggleBan(long id);
 
         #endregion
     }

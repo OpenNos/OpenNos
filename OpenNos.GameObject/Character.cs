@@ -1,4 +1,5 @@
-﻿using OpenNos.Core;
+﻿using AutoMapper;
+using OpenNos.Core;
 using OpenNos.DAL;
 using OpenNos.Data;
 using OpenNos.Domain;
@@ -13,36 +14,21 @@ namespace OpenNos.GameObject
 {
     public class Character : INotifyPropertyChanged
     {
+        public Character()
+        {
+            Mapper.CreateMap<CharacterDTO, Character>();
+            Mapper.CreateMap<Character, CharacterDTO>();
+        }
+
         private void OnPropertyChanged()
         {
-            CharacterDTO UpdatedCharacter = new CharacterDTO()
-            {
-                CharacterId = this.CharacterId,
-                Class = this.Class,
-                Gender = this.Gender,
-                Gold = this.Gold,
-                HairColor = this.HairColor,
-                HairStyle = this.HairStyle,
-                Hp = this.Hp,
-                Dignite = this.Dignite,
-                Reput = this.Reput,
-                JobLevel = this.JobLevel,
-                JobLevelXp = this.JobLevelXp,
-                Level = this.Level,
-                LevelXp = this.LevelXp,
-                MapId = this.MapId,
-                MapX = this.mapX,
-                MapY = this.MapY,
-                Mp = this.Mp,
-                Name = this.Name,
-                Slot = this.Slot,
-                AccountId = this.AccountId,
-            };
-            if (Name != null)
-            DAOFactory.CharacterDAO.InsertOrUpdate(ref UpdatedCharacter);
+            //CharacterDTO characterToUpdate = Mapper.Map<CharacterDTO>(this);
+
+            //if (Name != null)
+            //    DAOFactory.CharacterDAO.InsertOrUpdate(ref characterToUpdate);
 
         }
-  
+
         private long characterId;
         public long CharacterId
         {
@@ -126,7 +112,8 @@ namespace OpenNos.GameObject
             }
         }
         public short map;
-        public short MapId {
+        public short MapId
+        {
             get { return map; }
             set
             {
@@ -135,7 +122,8 @@ namespace OpenNos.GameObject
             }
         }
         public short mapX;
-        public short MapX {
+        public short MapX
+        {
             get { return mapX; }
             set
             {
@@ -144,7 +132,8 @@ namespace OpenNos.GameObject
             }
         }
         public short mapY;
-        public short MapY {
+        public short MapY
+        {
             get { return mapY; }
             set
             {
@@ -153,7 +142,8 @@ namespace OpenNos.GameObject
             }
         }
         public int hp;
-        public int Hp {
+        public int Hp
+        {
             get { return hp; }
             set
             {
@@ -162,7 +152,8 @@ namespace OpenNos.GameObject
             }
         }
         public int mp;
-        public int Mp {
+        public int Mp
+        {
             get { return mp; }
             set
             {
@@ -171,7 +162,8 @@ namespace OpenNos.GameObject
             }
         }
         public long gold;
-        public long Gold {
+        public long Gold
+        {
             get { return gold; }
             set
             {
@@ -180,7 +172,8 @@ namespace OpenNos.GameObject
             }
         }
         public byte jobLevel;
-        public byte JobLevel {
+        public byte JobLevel
+        {
             get { return jobLevel; }
             set
             {
@@ -189,7 +182,8 @@ namespace OpenNos.GameObject
             }
         }
         public long jobLevelXp;
-        public long JobLevelXp {
+        public long JobLevelXp
+        {
             get { return jobLevelXp; }
             set
             {
@@ -198,7 +192,8 @@ namespace OpenNos.GameObject
             }
         }
         public byte level;
-        public byte Level {
+        public byte Level
+        {
             get { return level; }
             set
             {
@@ -207,7 +202,8 @@ namespace OpenNos.GameObject
             }
         }
         public long levelXp;
-        public long LevelXp {
+        public long LevelXp
+        {
             get { return levelXp; }
             set
             {
@@ -216,7 +212,8 @@ namespace OpenNos.GameObject
             }
         }
         public int reput;
-        public int Reput {
+        public int Reput
+        {
             get { return reput; }
             set
             {
@@ -225,7 +222,8 @@ namespace OpenNos.GameObject
             }
         }
         public int dignite;
-        public int Dignite {
+        public int Dignite
+        {
             get { return dignite; }
             set
             {
@@ -234,7 +232,8 @@ namespace OpenNos.GameObject
             }
         }
         public int lastPulse;
-        public int LastPulse {
+        public int LastPulse
+        {
             get { return lastPulse; }
             set
             {
@@ -253,7 +252,8 @@ namespace OpenNos.GameObject
             }
         }
         public int sp;
-        public int Morph {
+        public int Morph
+        {
             get { return sp; }
             set
             {
@@ -262,7 +262,8 @@ namespace OpenNos.GameObject
             }
         }
         public int authority;
-        public int Authority {
+        public int Authority
+        {
             get { return authority; }
             set
             {
@@ -271,7 +272,8 @@ namespace OpenNos.GameObject
             }
         }
         public int invisible;
-        public int Invisible {
+        public int Invisible
+        {
             get { return invisible; }
             set
             {
@@ -280,7 +282,8 @@ namespace OpenNos.GameObject
             }
         }
         public int speed;
-        public int Speed {
+        public int Speed
+        {
             get { return speed; }
             set
             {
@@ -289,7 +292,8 @@ namespace OpenNos.GameObject
             }
         }
         public int arenaWinner;
-        public int ArenaWinner {
+        public int ArenaWinner
+        {
             get { return arenaWinner; }
             set
             {
@@ -298,7 +302,8 @@ namespace OpenNos.GameObject
             }
         }
         public int spUpgrade;
-        public int MorphUpgrade {
+        public int MorphUpgrade
+        {
             get { return spUpgrade; }
             set
             {
@@ -317,7 +322,8 @@ namespace OpenNos.GameObject
             }
         }
         public int direction;
-        public int Direction {
+        public int Direction
+        {
             get { return direction; }
             set
             {
@@ -326,7 +332,8 @@ namespace OpenNos.GameObject
             }
         }
         public int rested;
-        public int Rested {
+        public int Rested
+        {
             get { return rested; }
             set
             {
@@ -335,12 +342,39 @@ namespace OpenNos.GameObject
             }
         }
 
+        public byte state;
+        public byte State
+        {
+            get { return state; }
+            set
+            {
+                state = value;
+                OnPropertyChanged();
+            }
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
+
+        public bool Update()
+        {
+            try
+            {
+                CharacterDTO characterToUpdate = Mapper.Map<CharacterDTO>(this);
+                DAOFactory.CharacterDAO.InsertOrUpdate(ref characterToUpdate);
+                return true;
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
+
+        }
 
         public string GenerateEff(int effectid)
         {
             return String.Format("eff 1 {0} {1}", CharacterId, effectid);
         }
+
         public List<String> GenerateGp()
         {
             List<String> gpList = new List<String>();
@@ -350,7 +384,7 @@ namespace OpenNos.GameObject
         }
         public string GenerateFd()
         {
-           return String.Format("fd {0} {1} {2} {3}", Reput, GetReputIco(), Dignite, Math.Abs(GetDigniteIco()));
+            return String.Format("fd {0} {1} {2} {3}", Reput, GetReputIco(), Dignite, Math.Abs(GetDigniteIco()));
         }
         public string GenerateMapOut()
         {
@@ -359,34 +393,35 @@ namespace OpenNos.GameObject
 
         public string GenerateOut()
         {
-            return String.Format("out 1 {0}",CharacterId);
+            return String.Format("out 1 {0}", CharacterId);
         }
         public double HPLoad()
         {
-            return ServersData.HPData[Class,Level];
+            return ServersData.HPData[Class, Level];
         }
 
         public double MPLoad()
         {
-            return ServersData.MPData[Class,Level];
+            return ServersData.MPData[Class, Level];
         }
 
         public double SPXPLoad()
-        {           
+        {
             return ServersData.SpXPData[JobLevel - 1];
         }
 
-      
+
         public double XPLoad()
-        {   
+        {
             return ServersData.XPData[Level - 1];
         }
 
         public int HealthHPLoad()
-        {   if(rested == 1)
-            return ServersData.HpHealth[Class];
-        else
-            return ServersData.HpHealthStand[Class];
+        {
+            if (rested == 1)
+                return ServersData.HpHealth[Class];
+            else
+                return ServersData.HpHealthStand[Class];
         }
         public int HealthMPLoad()
         {
@@ -397,7 +432,7 @@ namespace OpenNos.GameObject
         }
         public double JobXPLoad()
         {
-            if(Class == (byte)ClassType.Adventurer)
+            if (Class == (byte)ClassType.Adventurer)
                 return ServersData.FirstJobXPData[JobLevel - 1];
             else
                 return ServersData.SecondJobXPData[JobLevel - 1];
@@ -405,12 +440,12 @@ namespace OpenNos.GameObject
 
         public string GenerateLev()
         {
-           return String.Format("lev {0} {1} {2} {3} {4} {5} 0 2", Level, LevelXp, JobLevel, JobLevelXp,XPLoad(),JobXPLoad());
+            return String.Format("lev {0} {1} {2} {3} {4} {5} 0 2", Level, LevelXp, JobLevel, JobLevelXp, XPLoad(), JobXPLoad());
         }
 
         public string GenerateCInfo()
         {
-           return String.Format("c_info {0} - {1} {2} - {3} {4} {5} {6} {7} {8} {9} {10} {11} {12} {13} {14} {15} ", Name, -1, -1, CharacterId, Authority, Gender, HairStyle, HairColor, Class, GetReputIco(), 0, Morph, Invisible, 0, MorphUpgrade, ArenaWinner);
+            return String.Format("c_info {0} - {1} {2} - {3} {4} {5} {6} {7} {8} {9} {10} {11} {12} {13} {14} {15} ", Name, -1, -1, CharacterId, Authority, Gender, HairStyle, HairColor, Class, GetReputIco(), 0, Morph, Invisible, 0, MorphUpgrade, ArenaWinner);
         }
 
         public int GetDigniteIco()
@@ -443,60 +478,60 @@ namespace OpenNos.GameObject
         public string GenerateTit()
         {
             return String.Format("tit {0} {1}", Language.Instance.GetMessageFromKey(Class == (byte)ClassType.Adventurer ? ClassType.Adventurer.ToString().ToUpper() : Class == (byte)ClassType.Swordman ? ClassType.Swordman.ToString().ToUpper() : Class == (byte)ClassType.Archer ? ClassType.Archer.ToString().ToUpper() : ClassType.Magician.ToString().ToUpper()), Name);
-            
+
         }
 
         public string GenerateStat()
         {
             //TODO add max HP MP
             return String.Format("stat {0} {1} {2} {3} 0 1024", Hp, HPLoad(), Mp, MPLoad());
-           
+
         }
 
         public string GenerateAt()
         {
             return String.Format("at {0} {1} {2} {3} 2 0 0 1", CharacterId, MapId, MapX, MapY);
-           
+
         }
 
         public string GenerateCMap()
         {
-           return String.Format("c_map 0 {0} 1", MapId);
-           
+            return String.Format("c_map 0 {0} 1", MapId);
+
         }
 
         public string GenerateCond()
         {
-           return String.Format("cond 1 {0} 0 0 {1}", CharacterId, Speed);
+            return String.Format("cond 1 {0} 0 0 {1}", CharacterId, Speed);
 
         }
 
         public string GenerateExts()
         {
-           return String.Format("exts 0 48 48 48"); 
+            return String.Format("exts 0 48 48 48");
         }
 
-        public string GenerateMv(int x,int y )
+        public string GenerateMv(int x, int y)
         {
             return String.Format("mv 1 {0} {1} {2} {3}", CharacterId, x, y, Speed);
 
         }
         public string GenerateCMode()
         {
-            return String.Format("c_mode 1 {0} {1} {2} {3} {4}", CharacterId, Morph, MorphUpgrade,MorphUpgrade2, ArenaWinner);
+            return String.Format("c_mode 1 {0} {1} {2} {3} {4}", CharacterId, Morph, MorphUpgrade, MorphUpgrade2, ArenaWinner);
 
         }
-       
-        public string GenerateSay(string message,int type)
+
+        public string GenerateSay(string message, int type)
         {
-            return String.Format("say 1 {0} {1} {2}", CharacterId,type, message);
-           
+            return String.Format("say 1 {0} {1} {2}", CharacterId, type, message);
+
         }
 
         public string GenerateIn()
         {
-            return String.Format("in 1 {0} - {1} {2} {3} {4} {5} {6} {7} {8} {9} -1.-1.-1.-1.-1.-1.-1.-1 {10} {11} {12} -1 0 0 0 0 0 0 0 0 -1 - {13} {16} 0 0 0 {14} 0 {15} 0 10", Name, CharacterId, MapX, MapY, Direction, (Authority == 2 ? 2 : 0), Gender, HairStyle, HairColor, Class, (int)((Hp / HPLoad()) * 100), (int)((Mp / MPLoad()) * 100), rested, (GetDigniteIco() == 1) ? GetReputIco() : -GetDigniteIco(), ArenaWinner,0, invisible);
-          
+            return String.Format("in 1 {0} - {1} {2} {3} {4} {5} {6} {7} {8} {9} -1.-1.-1.-1.-1.-1.-1.-1 {10} {11} {12} -1 0 0 0 0 0 0 0 0 -1 - {13} {16} 0 0 0 {14} 0 {15} 0 10", Name, CharacterId, MapX, MapY, Direction, (Authority == 2 ? 2 : 0), Gender, HairStyle, HairColor, Class, (int)((Hp / HPLoad()) * 100), (int)((Mp / MPLoad()) * 100), rested, (GetDigniteIco() == 1) ? GetReputIco() : -GetDigniteIco(), ArenaWinner, 0, invisible);
+
         }
 
         public string GenerateRest()
@@ -527,7 +562,7 @@ namespace OpenNos.GameObject
 
         public string GenerateStatInfo()
         {
-            return String.Format("st 1 {0} {1} {2} {3} {4} {5}", CharacterId, Level, (int)((Hp / HPLoad()) * 100), (int)((Mp /MPLoad()) * 100),Hp,Mp);
+            return String.Format("st 1 {0} {1} {2} {3} {4} {5}", CharacterId, Level, (int)((Hp / HPLoad()) * 100), (int)((Mp / MPLoad()) * 100), Hp, Mp);
         }
     }
 }
