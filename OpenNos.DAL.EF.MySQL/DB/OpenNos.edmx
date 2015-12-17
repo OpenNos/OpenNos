@@ -12,6 +12,7 @@
     <EntitySet Name="connectionlog" EntityType="opennosModel.Store.connectionlog" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="map" EntityType="opennosModel.Store.map" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="itemlist" EntityType="opennosModel.Store.itemlist" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="npc" EntityType="opennosModel.Store.npc" store:Type="Tables" Schema="dbo" />
     <AssociationSet Name="AccountCharacter" Association="opennosModel.Store.AccountCharacter">
       <End Role="Account" EntitySet="account" />
       <End Role="Character" EntitySet="character" />
@@ -34,6 +35,10 @@
     </AssociationSet>
     <AssociationSet Name="CharacterMap" Association="opennosModel.Store.CharacterMap">
       <End Role="Character" EntitySet="character" />
+      <End Role="Map" EntitySet="map" />
+    </AssociationSet>
+    <AssociationSet Name="NpcMap" Association="opennosModel.Store.NpcMap">
+      <End Role="Npc" EntitySet="npc" />
       <End Role="Map" EntitySet="map" />
     </AssociationSet>
   </EntityContainer>
@@ -161,6 +166,20 @@
     <Property Name="PvpDef" Type="smallint" Nullable="false" />
     <Property Name="DimOposantRez" Type="smallint" Nullable="false" />
   </EntityType>
+  <EntityType Name="npc">
+    <Key>
+      <PropertyRef Name="NpcId" />
+    </Key>
+    <Property Name="NpcId" Type="smallint" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Name" Type="longtext" Nullable="false" />
+    <Property Name="Vnum" Type="smallint" Nullable="false" />
+    <Property Name="Dialog" Type="smallint" Nullable="false" />
+    <Property Name="MapId" Type="smallint" Nullable="false" />
+    <Property Name="MapX" Type="smallint" Nullable="false" />
+    <Property Name="MapY" Type="smallint" Nullable="false" />
+    <Property Name="Position" Type="smallint" Nullable="false" />
+    <Property Name="Level" Type="smallint" Nullable="false" />
+  </EntityType>
   <Association Name="AccountCharacter">
     <End Role="Account" Type="opennosModel.Store.account" Multiplicity="1" />
     <End Role="Character" Type="opennosModel.Store.character" Multiplicity="*" />
@@ -229,6 +248,18 @@
         <PropertyRef Name="MapId" />
       </Principal>
       <Dependent Role="Character">
+        <PropertyRef Name="MapId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="NpcMap">
+    <End Role="Npc" Type="opennosModel.Store.npc" Multiplicity="*" />
+    <End Role="Map" Type="opennosModel.Store.map" Multiplicity="1" />
+    <ReferentialConstraint>
+      <Principal Role="Map">
+        <PropertyRef Name="MapId" />
+      </Principal>
+      <Dependent Role="Npc">
         <PropertyRef Name="MapId" />
       </Dependent>
     </ReferentialConstraint>
@@ -331,6 +362,11 @@
             <End Role="Map" EntitySet="map" />
           </AssociationSet>
           <EntitySet Name="itemlist" EntityType="opennosModel.ItemList" />
+          <EntitySet Name="npc" EntityType="opennosModel.Npc" />
+          <AssociationSet Name="NpcMap" Association="opennosModel.NpcMap">
+            <End Role="Npc" EntitySet="npc" />
+            <End Role="Map" EntitySet="map" />
+          </AssociationSet>
         </EntityContainer>
         <Association Name="AccountCharacter">
           <End Type="opennosModel.Account" Role="Account" Multiplicity="1" />
@@ -379,6 +415,7 @@
           <NavigationProperty Name="sourceportal" Relationship="opennosModel.portalMap" FromRole="Map" ToRole="portal" />
           <NavigationProperty Name="destinationportal" Relationship="opennosModel.portalMap1" FromRole="Map" ToRole="portal" />
           <NavigationProperty Name="character" Relationship="opennosModel.CharacterMap" FromRole="Map" ToRole="Character" />
+          <NavigationProperty Name="npc" Relationship="opennosModel.NpcMap" FromRole="Map" ToRole="Npc" />
         </EntityType>
         <Association Name="portalMap">
           <End Type="opennosModel.Portal" Role="portal" Multiplicity="*" />
@@ -477,6 +514,33 @@
           <Property Name="PvpDef" Type="Int16" Nullable="false" />
           <Property Name="DimOposantRez" Type="Int16" Nullable="false" />
           </EntityType>
+        <EntityType Name="Npc">
+          <Key>
+            <PropertyRef Name="NpcId" />
+          </Key>
+          <Property Name="NpcId" Type="Int16" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" Nullable="false" />
+          <Property Name="Vnum" Type="Int16" Nullable="false" />
+          <Property Name="Dialog" Type="Int16" Nullable="false" />
+          <Property Name="MapId" Type="Int16" Nullable="false" />
+          <Property Name="MapX" Type="Int16" Nullable="false" />
+          <Property Name="MapY" Type="Int16" Nullable="false" />
+          <Property Name="Position" Type="Int16" Nullable="false" />
+          <NavigationProperty Name="map" Relationship="opennosModel.NpcMap" FromRole="Npc" ToRole="Map" />
+          <Property Name="Level" Type="Int16" Nullable="false" />
+        </EntityType>
+        <Association Name="NpcMap">
+          <End Type="opennosModel.Npc" Role="Npc" Multiplicity="*" />
+          <End Type="opennosModel.Map" Role="Map" Multiplicity="1" />
+          <ReferentialConstraint>
+            <Principal Role="Map">
+              <PropertyRef Name="MapId" />
+            </Principal>
+            <Dependent Role="Npc">
+              <PropertyRef Name="MapId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -610,6 +674,21 @@
           <ScalarProperty Name="ElementRate" ColumnName="ElementRate" />
           <ScalarProperty Name="PvpDef" ColumnName="PvpDef" />
           <ScalarProperty Name="DimOposantRez" ColumnName="DimOposantRez" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="npc">
+      <EntityTypeMapping TypeName="IsTypeOf(opennosModel.Npc)">
+        <MappingFragment StoreEntitySet="npc">
+          <ScalarProperty Name="NpcId" ColumnName="NpcId" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="Vnum" ColumnName="Vnum" />
+          <ScalarProperty Name="Dialog" ColumnName="Dialog" />
+          <ScalarProperty Name="MapId" ColumnName="MapId" />
+          <ScalarProperty Name="MapX" ColumnName="MapX" />
+          <ScalarProperty Name="MapY" ColumnName="MapY" />
+          <ScalarProperty Name="Position" ColumnName="Position" />
+          <ScalarProperty Name="Level" ColumnName="Level" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

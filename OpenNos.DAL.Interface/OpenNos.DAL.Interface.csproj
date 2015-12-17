@@ -48,6 +48,7 @@
     <Compile Include="IAccountDAO.cs" />
     <Compile Include="ICharacterDAO.cs" />
     <Compile Include="IMapDAO.cs" />
+    <Compile Include="INpcDAO.cs" />
     <Compile Include="IPortalDAO.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -50,6 +50,8 @@ namespace OpenNos.DAL.EF.MySQL
             Mapper.CreateMap<CharacterDTO, Character>();
             Mapper.CreateMap<Portal, PortalDTO>();
             Mapper.CreateMap<PortalDTO, Portal>();
+            Mapper.CreateMap<Npc, NpcDTO>();
+            Mapper.CreateMap<NpcDTO, Npc>();
             Mapper.CreateMap<Map, MapDTO>();
             Mapper.CreateMap<MapDTO, Map>();
             Mapper.CreateMap<GeneralLog, GeneralLogDTO>();

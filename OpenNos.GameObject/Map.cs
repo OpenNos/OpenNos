@@ -20,6 +20,7 @@ namespace OpenNos.GameObject
         private int _yLength;
         private Guid _uniqueIdentifier;
         private List<Portal> _portals;
+        private List<Npc> _npcs;
         private ThreadedBase<MapPacket> threadedBase;
 
         #endregion
@@ -45,6 +46,26 @@ namespace OpenNos.GameObject
                     DestY = portal.DestinationY,
                     Type = portal.Type,
                     PortalId = portal.PortalId
+
+                });
+            }
+            IEnumerable<NpcDTO> npcsDTO = DAOFactory.NpcDAO.LoadFromMap(_mapId);
+            _npcs = new List<Npc>();
+            foreach (NpcDTO npc in npcsDTO)
+            {
+                _npcs.Add(new GameObject.Npc()
+                {
+                Dialog = npc.Dialog,
+                MapId = npc.MapId,
+                MapX = npc.MapX,
+                MapY = npc.MapY,
+                Name = npc.Name,
+                Level = npc.Level,
+                NpcId = npc.NpcId,
+                Position = npc.Position,
+                Vnum = npc.Vnum
+                
+            
 
                 });
             }
@@ -74,8 +95,14 @@ namespace OpenNos.GameObject
                 return _portals;
             }
         }
+        public List<Npc> Npcs
+        {
+            get
+            {
+                return _npcs;
+            }
+        }
 
-        
 
         public bool IsBlockedZone(int x, int y)
         {

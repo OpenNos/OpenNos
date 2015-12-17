@@ -44,9 +44,9 @@
 -- -----------------------------------------------------------
 -- Entity Designer DDL Script for MySQL Server 4.1 and higher
 -- -----------------------------------------------------------
--- Date Created: 12/16/2015 22:05:56
+-- Date Created: 12/17/2015 22:29:20
 
--- Generated from EDMX file: C:\Users\Alex\Documents\GitHub\OpenNos\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
+-- Generated from EDMX file: C:\Users\ERWAN\Desktop\OpenNos GIT\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
 -- Target version: 3.0.0.0
 
 -- --------------------------------------------------
@@ -238,6 +238,23 @@ ALTER TABLE `itemlist` ADD PRIMARY KEY (ItemId);
 
 
 
+CREATE TABLE `npc`(
+	`NpcId` smallint NOT NULL AUTO_INCREMENT UNIQUE, 
+	`Name` longtext NOT NULL, 
+	`Vnum` smallint NOT NULL, 
+	`Dialog` smallint NOT NULL, 
+	`MapId` smallint NOT NULL, 
+	`MapX` smallint NOT NULL, 
+	`MapY` smallint NOT NULL, 
+	`Position` smallint NOT NULL, 
+	`Level` smallint NOT NULL);
+
+ALTER TABLE `npc` ADD PRIMARY KEY (NpcId);
+
+
+
+
+
 
 
 -- --------------------------------------------------
@@ -349,6 +366,24 @@ ADD CONSTRAINT `FK_CharacterMap`
 
 CREATE INDEX `IX_FK_CharacterMap`
     ON `character`
+    (`MapId`);
+
+
+
+-- Creating foreign key on `MapId` in table 'npc'
+
+ALTER TABLE `npc`
+ADD CONSTRAINT `FK_NpcMap`
+    FOREIGN KEY (`MapId`)
+    REFERENCES `map`
+        (`MapId`)
+    ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+
+-- Creating non-clustered index for FOREIGN KEY 'FK_NpcMap'
+
+CREATE INDEX `IX_FK_NpcMap`
+    ON `npc`
     (`MapId`);
 
 
