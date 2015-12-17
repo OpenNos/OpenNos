@@ -44,7 +44,7 @@
 -- -----------------------------------------------------------
 -- Entity Designer DDL Script for MySQL Server 4.1 and higher
 -- -----------------------------------------------------------
--- Date Created: 12/16/2015 00:16:53
+-- Date Created: 12/16/2015 12:06:55
 
 -- Generated from EDMX file: C:\Users\ERWAN\Desktop\OpenNos GIT\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
 -- Target version: 3.0.0.0
@@ -86,6 +86,8 @@ SET foreign_key_checks = 0;
     DROP TABLE IF EXISTS `connectionlog`;
 
     DROP TABLE IF EXISTS `map`;
+
+    DROP TABLE IF EXISTS `itemlist`;
 
 SET foreign_key_checks = 1;
 
@@ -218,6 +220,10 @@ CREATE TABLE `itemlist`(
 	`EauRez` smallint NOT NULL, 
 	`LightRez` smallint NOT NULL, 
 	`DarkRez` smallint NOT NULL, 
+	`DarkElementAdd` smallint NOT NULL, 
+	`LightElementAdd` smallint NOT NULL, 
+	`FireElementAdd` smallint NOT NULL, 
+	`WaterElementAdd` smallint NOT NULL, 
 	`PvpStrength` smallint NOT NULL, 
 	`Speed` smallint NOT NULL, 
 	`Element` smallint NOT NULL, 

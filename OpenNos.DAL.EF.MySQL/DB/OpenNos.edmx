@@ -149,6 +149,10 @@
     <Property Name="EauRez" Type="smallint" Nullable="false" />
     <Property Name="LightRez" Type="smallint" Nullable="false" />
     <Property Name="DarkRez" Type="smallint" Nullable="false" />
+    <Property Name="DarkElementAdd" Type="smallint" Nullable="false" />
+    <Property Name="LightElementAdd" Type="smallint" Nullable="false" />
+    <Property Name="FireElementAdd" Type="smallint" Nullable="false" />
+    <Property Name="WaterElementAdd" Type="smallint" Nullable="false" />
     <Property Name="PvpStrength" Type="smallint" Nullable="false" />
     <Property Name="Speed" Type="smallint" Nullable="false" />
     <Property Name="Element" Type="smallint" Nullable="false" />
@@ -460,6 +464,10 @@
           <Property Name="EauRez" Type="Int16" Nullable="false" />
           <Property Name="LightRez" Type="Int16" Nullable="false" />
           <Property Name="DarkRez" Type="Int16" Nullable="false" />
+          <Property Name="DarkElementAdd" Type="Int16" Nullable="false" />
+          <Property Name="LightElementAdd" Type="Int16" Nullable="false" />
+          <Property Name="FireElementAdd" Type="Int16" Nullable="false" />
+          <Property Name="WaterElementAdd" Type="Int16" Nullable="false" />
           <Property Name="PvpStrength" Type="Int16" Nullable="false" />
           <Property Name="Speed" Type="Int16" Nullable="false" />
           <Property Name="Element" Type="Int16" Nullable="false" />
@@ -589,6 +597,10 @@
           <ScalarProperty Name="EauRez" ColumnName="EauRez" />
           <ScalarProperty Name="LightRez" ColumnName="LightRez" />
           <ScalarProperty Name="DarkRez" ColumnName="DarkRez" />
+          <ScalarProperty Name="DarkElementAdd" ColumnName="DarkElementAdd" />
+          <ScalarProperty Name="LightElementAdd" ColumnName="LightElementAdd" />
+          <ScalarProperty Name="FireElementAdd" ColumnName="FireElementAdd" />
+          <ScalarProperty Name="WaterElementAdd" ColumnName="WaterElementAdd" />
           <ScalarProperty Name="PvpStrength" ColumnName="PvpStrength" />
           <ScalarProperty Name="Speed" ColumnName="Speed" />
           <ScalarProperty Name="Element" ColumnName="Element" />
