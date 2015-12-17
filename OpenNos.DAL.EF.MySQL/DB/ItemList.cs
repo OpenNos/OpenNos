@@ -48,6 +48,10 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public short EauRez { get; set; }
         public short LightRez { get; set; }
         public short DarkRez { get; set; }
+        public short DarkElementAdd { get; set; }
+        public short LightElementAdd { get; set; }
+        public short FireElementAdd { get; set; }
+        public short WaterElementAdd { get; set; }
         public short PvpStrength { get; set; }
         public short Speed { get; set; }
         public short Element { get; set; }
