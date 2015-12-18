@@ -268,6 +268,24 @@ namespace OpenNos.World.Resource {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à You get the protection power of angel..
+        /// </summary>
+        public static string GET_PROTECTION_POWER_0 {
+            get {
+                return ResourceManager.GetString("GET_PROTECTION_POWER_0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à You get the protection power of daemon..
+        /// </summary>
+        public static string GET_PROTECTION_POWER_1 {
+            get {
+                return ResourceManager.GetString("GET_PROTECTION_POWER_1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Could not found Handler implementation for Packet with Header {0}.
         /// </summary>
         public static string HANDLER_NOT_FOUND {
@@ -282,6 +300,24 @@ namespace OpenNos.World.Resource {
         public static string INSERT_ERROR {
             get {
                 return ResourceManager.GetString("INSERT_ERROR", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Job has been changed..
+        /// </summary>
+        public static string JOB_CHANGED {
+            get {
+                return ResourceManager.GetString("JOB_CHANGED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Level has been increased!.
+        /// </summary>
+        public static string LEVEL_CHANGED {
+            get {
+                return ResourceManager.GetString("LEVEL_CHANGED", resourceCulture);
             }
         }
         
@@ -354,6 +390,24 @@ namespace OpenNos.World.Resource {
         public static string PACKET_FAILURE {
             get {
                 return ResourceManager.GetString("PACKET_FAILURE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Server will be shut in {0} Minutes..
+        /// </summary>
+        public static string SHUTDOWN_MIN {
+            get {
+                return ResourceManager.GetString("SHUTDOWN_MIN", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Server will be shut in {0} Secondes..
+        /// </summary>
+        public static string SHUTDOWN_SEC {
+            get {
+                return ResourceManager.GetString("SHUTDOWN_SEC", resourceCulture);
             }
         }
         

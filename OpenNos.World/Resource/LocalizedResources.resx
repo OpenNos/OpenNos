@@ -186,11 +186,23 @@
   <data name="FORCED_DISCONNECT" xml:space="preserve">
     <value>Forced Disconnecting of client {0}, too much connections.</value>
   </data>
+  <data name="GET_PROTECTION_POWER_0" xml:space="preserve">
+    <value>You get the protection power of angel.</value>
+  </data>
+  <data name="GET_PROTECTION_POWER_1" xml:space="preserve">
+    <value>You get the protection power of daemon.</value>
+  </data>
   <data name="HANDLER_NOT_FOUND" xml:space="preserve">
     <value>Could not found Handler implementation for Packet with Header {0}</value>
   </data>
   <data name="INSERT_ERROR" xml:space="preserve">
     <value>Error inserting or updating character {0} , {1}</value>
+  </data>
+  <data name="JOB_CHANGED" xml:space="preserve">
+    <value>Job has been changed.</value>
+  </data>
+  <data name="LEVEL_CHANGED" xml:space="preserve">
+    <value>Level has been increased!</value>
   </data>
   <data name="MAGICIAN" xml:space="preserve">
     <value>Magician</value>
@@ -215,6 +227,12 @@
   </data>
   <data name="PACKET_FAILURE" xml:space="preserve">
     <value>Failed to send packet {0} to client {1}, {2}.</value>
+  </data>
+  <data name="SHUTDOWN_MIN" xml:space="preserve">
+    <value>Server will be shut in {0} Minutes.</value>
+  </data>
+  <data name="SHUTDOWN_SEC" xml:space="preserve">
+    <value>Server will be shut in {0} Secondes.</value>
   </data>
   <data name="STARTED" xml:space="preserve">
     <value>Server is started successfully.</value>
