@@ -500,13 +500,14 @@ namespace OpenNos.Handler
             byte classe;
             if(packetsplit.Length > 3)
                 _session.Client.SendPacket(_session.Character.GenerateSay("$ChangeClass CLASS", 0));
-            if (Byte.TryParse(packetsplit[2], out classe))
+            if (Byte.TryParse(packetsplit[2], out classe) && classe < 4)
             {
                 _session.Client.SendPacket("npinfo 0");
                 _session.Client.SendPacket("p_clear");
 
                 _session.Character.Class = classe;
-
+                _session.Character.Hp = (int)_session.Character.HPLoad();
+                _session.Character.Mp = (int)_session.Character.MPLoad();
                 _session.Client.SendPacket(_session.Character.GenerateTit());
 
                 // eq 37 0 1 0 9 3 -1.120.46.86.-1.-1.-1.-1 0 0
@@ -515,7 +516,7 @@ namespace OpenNos.Handler
                 //equip 0 0 0.46.0.0.0 1.120.0.0.0 5.86.0.0.0
 
                 _session.Client.SendPacket(_session.Character.GenerateLev());
-
+                _session.Client.SendPacket(_session.Character.GenerateStat());
                 ChatManager.Instance.Broadcast(_session, _session.Character.GenerateEff(8), ReceiverType.AllOnMap);
                 _session.Client.SendPacket(_session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("JOB_CHANGED"), 0));
                 ChatManager.Instance.Broadcast(_session, _session.Character.GenerateEff(196), ReceiverType.AllOnMap);
@@ -539,13 +540,16 @@ namespace OpenNos.Handler
             byte level;
             if (packetsplit.Length > 3)
                 _session.Client.SendPacket(_session.Character.GenerateSay("$LevelUp LEVEL", 0));
-            if (Byte.TryParse(packetsplit[2], out level))
+            if (Byte.TryParse(packetsplit[2], out level) && level < 100 && level > 0)
             {
+                _session.Character.Hp = (int)_session.Character.HPLoad();
+                _session.Character.Mp = (int)_session.Character.MPLoad();
                 _session.Character.level = level;
                 _session.Client.SendPacket(_session.Character.GenerateStat());
                 //sc 0 0 31 39 31 4 70 1 0 33 35 43 2 70 0 17 35 19 35 17 0 0 0 0
                 _session.Client.SendPacket(_session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("LEVEL_CHANGED"), 0));
                 _session.Client.SendPacket(_session.Character.GenerateLev());
+                ChatManager.Instance.Broadcast(_session, _session.Character.GenerateIn(), ReceiverType.AllOnMapExceptMe);
                 ChatManager.Instance.Broadcast(_session,_session.Character.GenerateEff(6), ReceiverType.AllOnMap);
                 ChatManager.Instance.Broadcast(_session, _session.Character.GenerateEff(198), ReceiverType.AllOnMap);
             }
