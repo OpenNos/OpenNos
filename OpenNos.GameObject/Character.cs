@@ -572,7 +572,7 @@ namespace OpenNos.GameObject
 
         public string GenerateEq()
         {
-             return String.Format("eq {0} 0 {1} {2} {3} {4} -1.-1.-1.-1.-1.-1.-1.-1 0 0", CharacterId,Gender,HairStyle,HairColor,Class);
+             return String.Format("eq {0} {1} {2} {3} {4} {5} -1.-1.-1.-1.-1.-1.-1.-1 0 0", CharacterId, (Authority == 2 ? 2 : 0),Gender,HairStyle,HairColor,Class);
         }
     }
 }

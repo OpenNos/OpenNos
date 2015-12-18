@@ -216,7 +216,7 @@ namespace OpenNos.GameObject
                 int hp = 680;
                 int inc = 35;
                 int j = 16;
-                while (j <= 99)
+                while (j <= i)
                 {
                     hp += inc;
                     ++inc;
