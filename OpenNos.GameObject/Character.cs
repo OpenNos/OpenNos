@@ -569,5 +569,10 @@ namespace OpenNos.GameObject
         {
             return String.Format("st 1 {0} {1} {2} {3} {4} {5}", CharacterId, Level, (int)((Hp / HPLoad()) * 100), (int)((Mp / MPLoad()) * 100), Hp, Mp);
         }
+
+        public string GenerateEq()
+        {
+             return String.Format("eq {0} 0 {1} {2} {3} {4} -1.-1.-1.-1.-1.-1.-1.-1 0 0", CharacterId,Gender,HairStyle,HairColor,Class);
+        }
     }
 }
