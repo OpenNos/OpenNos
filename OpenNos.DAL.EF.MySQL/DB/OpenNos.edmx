@@ -13,6 +13,7 @@
     <EntitySet Name="map" EntityType="opennosModel.Store.map" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="itemlist" EntityType="opennosModel.Store.itemlist" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="npc" EntityType="opennosModel.Store.npc" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="item" EntityType="opennosModel.Store.item" store:Type="Tables" Schema="dbo" />
     <AssociationSet Name="AccountCharacter" Association="opennosModel.Store.AccountCharacter">
       <End Role="Account" EntitySet="account" />
       <End Role="Character" EntitySet="character" />
@@ -40,6 +41,10 @@
     <AssociationSet Name="NpcMap" Association="opennosModel.Store.NpcMap">
       <End Role="Npc" EntitySet="npc" />
       <End Role="Map" EntitySet="map" />
+    </AssociationSet>
+    <AssociationSet Name="ItemListItem" Association="opennosModel.Store.ItemListItem">
+      <End Role="Item" EntitySet="item" />
+      <End Role="ItemList" EntitySet="itemlist" />
     </AssociationSet>
   </EntityContainer>
   <EntityType Name="account">
@@ -119,9 +124,9 @@
   </EntityType>
   <EntityType Name="itemlist">
     <Key>
-      <PropertyRef Name="ItemId" />
+      <PropertyRef Name="VNum" />
     </Key>
-    <Property Name="ItemId" Type="smallint" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="VNum" Type="smallint" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="Price" Type="bigint" Nullable="false" />
     <Property Name="Name" Type="longtext" Nullable="false" />
     <Property Name="Inventory" Type="utinyint" Nullable="false" />
@@ -155,16 +160,17 @@
     <Property Name="EauRez" Type="smallint" Nullable="false" />
     <Property Name="LightRez" Type="smallint" Nullable="false" />
     <Property Name="DarkRez" Type="smallint" Nullable="false" />
-    <Property Name="DarkElementAdd" Type="smallint" Nullable="false" />
-    <Property Name="LightElementAdd" Type="smallint" Nullable="false" />
-    <Property Name="FireElementAdd" Type="smallint" Nullable="false" />
-    <Property Name="WaterElementAdd" Type="smallint" Nullable="false" />
+    <Property Name="DarkElement" Type="smallint" Nullable="false" />
+    <Property Name="LightElement" Type="smallint" Nullable="false" />
+    <Property Name="FireElement" Type="smallint" Nullable="false" />
+    <Property Name="WaterElement" Type="smallint" Nullable="false" />
     <Property Name="PvpStrength" Type="smallint" Nullable="false" />
     <Property Name="Speed" Type="smallint" Nullable="false" />
     <Property Name="Element" Type="smallint" Nullable="false" />
     <Property Name="ElementRate" Type="smallint" Nullable="false" />
     <Property Name="PvpDef" Type="smallint" Nullable="false" />
     <Property Name="DimOposantRez" Type="smallint" Nullable="false" />
+    <Property Name="Colored" Type="bool" Nullable="false" />
   </EntityType>
   <EntityType Name="npc">
     <Key>
@@ -179,6 +185,37 @@
     <Property Name="MapY" Type="smallint" Nullable="false" />
     <Property Name="Position" Type="smallint" Nullable="false" />
     <Property Name="Level" Type="smallint" Nullable="false" />
+  </EntityType>
+  <EntityType Name="item">
+    <Key>
+      <PropertyRef Name="ItemId" />
+    </Key>
+    <Property Name="ItemId" Type="smallint" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="DamageMin" Type="smallint" Nullable="false" />
+    <Property Name="DamageMax" Type="smallint" Nullable="false" />
+    <Property Name="Concentrate" Type="smallint" Nullable="false" />
+    <Property Name="HitRate" Type="smallint" Nullable="false" />
+    <Property Name="CriticalLuckRate" Type="smallint" Nullable="false" />
+    <Property Name="CriticalRate" Type="smallint" Nullable="false" />
+    <Property Name="RangeDef" Type="smallint" Nullable="false" />
+    <Property Name="DistanceDef" Type="smallint" Nullable="false" />
+    <Property Name="MagicDef" Type="smallint" Nullable="false" />
+    <Property Name="Dodge" Type="longtext" Nullable="false" />
+    <Property Name="ElementRate" Type="smallint" Nullable="false" />
+    <Property Name="Upgrade" Type="smallint" Nullable="false" />
+    <Property Name="Rare" Type="smallint" Nullable="false" />
+    <Property Name="Color" Type="longtext" Nullable="false" />
+    <Property Name="Amount" Type="longtext" Nullable="false" />
+    <Property Name="Level" Type="smallint" Nullable="false" />
+    <Property Name="SlElement" Type="smallint" Nullable="false" />
+    <Property Name="SlHit" Type="smallint" Nullable="false" />
+    <Property Name="SlDefence" Type="smallint" Nullable="false" />
+    <Property Name="SlHP" Type="smallint" Nullable="false" />
+    <Property Name="DarkElement" Type="smallint" Nullable="false" />
+    <Property Name="LightElement" Type="smallint" Nullable="false" />
+    <Property Name="WaterElement" Type="smallint" Nullable="false" />
+    <Property Name="FireElement" Type="smallint" Nullable="false" />
+    <Property Name="ItemListVNum" Type="smallint" Nullable="false" />
   </EntityType>
   <Association Name="AccountCharacter">
     <End Role="Account" Type="opennosModel.Store.account" Multiplicity="1" />
@@ -261,6 +298,18 @@
       </Principal>
       <Dependent Role="Npc">
         <PropertyRef Name="MapId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="ItemListItem">
+    <End Role="Item" Type="opennosModel.Store.item" Multiplicity="*" />
+    <End Role="ItemList" Type="opennosModel.Store.itemlist" Multiplicity="1" />
+    <ReferentialConstraint>
+      <Principal Role="ItemList">
+        <PropertyRef Name="VNum" />
+      </Principal>
+      <Dependent Role="Item">
+        <PropertyRef Name="ItemListVNum" />
       </Dependent>
     </ReferentialConstraint>
   </Association>
@@ -367,6 +416,11 @@
             <End Role="Npc" EntitySet="npc" />
             <End Role="Map" EntitySet="map" />
           </AssociationSet>
+          <EntitySet Name="item" EntityType="opennosModel.Item" />
+          <AssociationSet Name="ItemListItem" Association="opennosModel.ItemListItem">
+            <End Role="Item" EntitySet="item" />
+            <End Role="ItemList" EntitySet="itemlist" />
+          </AssociationSet>
         </EntityContainer>
         <Association Name="AccountCharacter">
           <End Type="opennosModel.Account" Role="Account" Multiplicity="1" />
@@ -467,9 +521,9 @@
         </Association>
         <EntityType Name="ItemList">
           <Key>
-            <PropertyRef Name="ItemId" />
+            <PropertyRef Name="VNum" />
           </Key>
-          <Property Name="ItemId" Type="Int16" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="VNum" Type="Int16" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Price" Type="Int64" Nullable="false" />
           <Property Name="Name" Type="String" Nullable="false" />
           <Property Name="Inventory" Type="Byte" Nullable="false" />
@@ -503,16 +557,18 @@
           <Property Name="EauRez" Type="Int16" Nullable="false" />
           <Property Name="LightRez" Type="Int16" Nullable="false" />
           <Property Name="DarkRez" Type="Int16" Nullable="false" />
-          <Property Name="DarkElementAdd" Type="Int16" Nullable="false" />
-          <Property Name="LightElementAdd" Type="Int16" Nullable="false" />
-          <Property Name="FireElementAdd" Type="Int16" Nullable="false" />
-          <Property Name="WaterElementAdd" Type="Int16" Nullable="false" />
+          <Property Name="DarkElement" Type="Int16" Nullable="false" />
+          <Property Name="LightElement" Type="Int16" Nullable="false" />
+          <Property Name="FireElement" Type="Int16" Nullable="false" />
+          <Property Name="WaterElement" Type="Int16" Nullable="false" />
           <Property Name="PvpStrength" Type="Int16" Nullable="false" />
           <Property Name="Speed" Type="Int16" Nullable="false" />
           <Property Name="Element" Type="Int16" Nullable="false" />
           <Property Name="ElementRate" Type="Int16" Nullable="false" />
           <Property Name="PvpDef" Type="Int16" Nullable="false" />
           <Property Name="DimOposantRez" Type="Int16" Nullable="false" />
+          <Property Name="Colored" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="item" Relationship="opennosModel.ItemListItem" FromRole="ItemList" ToRole="Item" />
           </EntityType>
         <EntityType Name="Npc">
           <Key>
@@ -538,6 +594,50 @@
             </Principal>
             <Dependent Role="Npc">
               <PropertyRef Name="MapId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="Item">
+          <Key>
+            <PropertyRef Name="ItemId" />
+          </Key>
+          <Property Name="ItemId" Type="Int16" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="DamageMin" Type="Int16" Nullable="false" />
+          <Property Name="DamageMax" Type="Int16" Nullable="false" />
+          <Property Name="Concentrate" Type="Int16" Nullable="false" />
+          <Property Name="HitRate" Type="Int16" Nullable="false" />
+          <Property Name="CriticalLuckRate" Type="Int16" Nullable="false" />
+          <Property Name="CriticalRate" Type="Int16" Nullable="false" />
+          <Property Name="RangeDef" Type="Int16" Nullable="false" />
+          <Property Name="DistanceDef" Type="Int16" Nullable="false" />
+          <Property Name="MagicDef" Type="Int16" Nullable="false" />
+          <Property Name="Dodge" Type="String" Nullable="false" />
+          <Property Name="ElementRate" Type="Int16" Nullable="false" />
+          <Property Name="Upgrade" Type="Int16" Nullable="false" />
+          <Property Name="Rare" Type="Int16" Nullable="false" />
+          <Property Name="Color" Type="String" Nullable="false" />
+          <Property Name="Amount" Type="String" Nullable="false" />
+          <Property Name="Level" Type="Int16" Nullable="false" />
+          <Property Name="SlElement" Type="Int16" Nullable="false" />
+          <Property Name="SlHit" Type="Int16" Nullable="false" />
+          <Property Name="SlDefence" Type="Int16" Nullable="false" />
+          <Property Name="SlHP" Type="Int16" Nullable="false" />
+          <Property Name="DarkElement" Type="Int16" Nullable="false" />
+          <Property Name="LightElement" Type="Int16" Nullable="false" />
+          <Property Name="WaterElement" Type="Int16" Nullable="false" />
+          <Property Name="FireElement" Type="Int16" Nullable="false" />
+          <NavigationProperty Name="itemlist" Relationship="opennosModel.ItemListItem" FromRole="Item" ToRole="ItemList" />
+          <Property Name="ItemListVNum" Type="Int16" Nullable="false" />
+        </EntityType>
+        <Association Name="ItemListItem">
+          <End Type="opennosModel.Item" Role="Item" Multiplicity="*" />
+          <End Type="opennosModel.ItemList" Role="ItemList" Multiplicity="1" />
+          <ReferentialConstraint>
+            <Principal Role="ItemList">
+              <PropertyRef Name="VNum" />
+            </Principal>
+            <Dependent Role="Item">
+              <PropertyRef Name="ItemListVNum" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -630,7 +730,7 @@
     <EntitySetMapping Name="itemlist">
       <EntityTypeMapping TypeName="IsTypeOf(opennosModel.ItemList)">
         <MappingFragment StoreEntitySet="itemlist">
-          <ScalarProperty Name="ItemId" ColumnName="ItemId" />
+          <ScalarProperty Name="VNum" ColumnName="VNum" />
           <ScalarProperty Name="Price" ColumnName="Price" />
           <ScalarProperty Name="Name" ColumnName="Name" />
           <ScalarProperty Name="Inventory" ColumnName="Inventory" />
@@ -664,16 +764,17 @@
           <ScalarProperty Name="EauRez" ColumnName="EauRez" />
           <ScalarProperty Name="LightRez" ColumnName="LightRez" />
           <ScalarProperty Name="DarkRez" ColumnName="DarkRez" />
-          <ScalarProperty Name="DarkElementAdd" ColumnName="DarkElementAdd" />
-          <ScalarProperty Name="LightElementAdd" ColumnName="LightElementAdd" />
-          <ScalarProperty Name="FireElementAdd" ColumnName="FireElementAdd" />
-          <ScalarProperty Name="WaterElementAdd" ColumnName="WaterElementAdd" />
+          <ScalarProperty Name="DarkElement" ColumnName="DarkElement" />
+          <ScalarProperty Name="LightElement" ColumnName="LightElement" />
+          <ScalarProperty Name="FireElement" ColumnName="FireElement" />
+          <ScalarProperty Name="WaterElement" ColumnName="WaterElement" />
           <ScalarProperty Name="PvpStrength" ColumnName="PvpStrength" />
           <ScalarProperty Name="Speed" ColumnName="Speed" />
           <ScalarProperty Name="Element" ColumnName="Element" />
           <ScalarProperty Name="ElementRate" ColumnName="ElementRate" />
           <ScalarProperty Name="PvpDef" ColumnName="PvpDef" />
           <ScalarProperty Name="DimOposantRez" ColumnName="DimOposantRez" />
+          <ScalarProperty Name="Colored" ColumnName="Colored" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -689,6 +790,38 @@
           <ScalarProperty Name="MapY" ColumnName="MapY" />
           <ScalarProperty Name="Position" ColumnName="Position" />
           <ScalarProperty Name="Level" ColumnName="Level" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="item">
+      <EntityTypeMapping TypeName="IsTypeOf(opennosModel.Item)">
+        <MappingFragment StoreEntitySet="item">
+          <ScalarProperty Name="ItemId" ColumnName="ItemId" />
+          <ScalarProperty Name="DamageMin" ColumnName="DamageMin" />
+          <ScalarProperty Name="DamageMax" ColumnName="DamageMax" />
+          <ScalarProperty Name="Concentrate" ColumnName="Concentrate" />
+          <ScalarProperty Name="HitRate" ColumnName="HitRate" />
+          <ScalarProperty Name="CriticalLuckRate" ColumnName="CriticalLuckRate" />
+          <ScalarProperty Name="CriticalRate" ColumnName="CriticalRate" />
+          <ScalarProperty Name="RangeDef" ColumnName="RangeDef" />
+          <ScalarProperty Name="DistanceDef" ColumnName="DistanceDef" />
+          <ScalarProperty Name="MagicDef" ColumnName="MagicDef" />
+          <ScalarProperty Name="Dodge" ColumnName="Dodge" />
+          <ScalarProperty Name="ElementRate" ColumnName="ElementRate" />
+          <ScalarProperty Name="Upgrade" ColumnName="Upgrade" />
+          <ScalarProperty Name="Rare" ColumnName="Rare" />
+          <ScalarProperty Name="Color" ColumnName="Color" />
+          <ScalarProperty Name="Amount" ColumnName="Amount" />
+          <ScalarProperty Name="Level" ColumnName="Level" />
+          <ScalarProperty Name="SlElement" ColumnName="SlElement" />
+          <ScalarProperty Name="SlHit" ColumnName="SlHit" />
+          <ScalarProperty Name="SlDefence" ColumnName="SlDefence" />
+          <ScalarProperty Name="SlHP" ColumnName="SlHP" />
+          <ScalarProperty Name="DarkElement" ColumnName="DarkElement" />
+          <ScalarProperty Name="LightElement" ColumnName="LightElement" />
+          <ScalarProperty Name="WaterElement" ColumnName="WaterElement" />
+          <ScalarProperty Name="FireElement" ColumnName="FireElement" />
+          <ScalarProperty Name="ItemListVNum" ColumnName="ItemListVNum" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

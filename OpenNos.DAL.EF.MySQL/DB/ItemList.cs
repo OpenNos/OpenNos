@@ -14,7 +14,13 @@ namespace OpenNos.DAL.EF.MySQL.DB
     
     public partial class ItemList
     {
-        public short ItemId { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public ItemList()
+        {
+            this.item = new HashSet<Item>();
+        }
+    
+        public short VNum { get; set; }
         public long Price { get; set; }
         public string Name { get; set; }
         public byte Inventory { get; set; }
@@ -48,15 +54,19 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public short EauRez { get; set; }
         public short LightRez { get; set; }
         public short DarkRez { get; set; }
-        public short DarkElementAdd { get; set; }
-        public short LightElementAdd { get; set; }
-        public short FireElementAdd { get; set; }
-        public short WaterElementAdd { get; set; }
+        public short DarkElement { get; set; }
+        public short LightElement { get; set; }
+        public short FireElement { get; set; }
+        public short WaterElement { get; set; }
         public short PvpStrength { get; set; }
         public short Speed { get; set; }
         public short Element { get; set; }
         public short ElementRate { get; set; }
         public short PvpDef { get; set; }
         public short DimOposantRez { get; set; }
+        public bool Colored { get; set; }
+    
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Item> item { get; set; }
     }
 }

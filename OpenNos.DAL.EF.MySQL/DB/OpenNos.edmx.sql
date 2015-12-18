@@ -44,7 +44,7 @@
 -- -----------------------------------------------------------
 -- Entity Designer DDL Script for MySQL Server 4.1 and higher
 -- -----------------------------------------------------------
--- Date Created: 12/17/2015 22:29:20
+-- Date Created: 12/18/2015 22:50:28
 
 -- Generated from EDMX file: C:\Users\ERWAN\Desktop\OpenNos GIT\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
 -- Target version: 3.0.0.0
@@ -71,6 +71,8 @@
 
 --    ALTER TABLE `character` DROP CONSTRAINT `FK_CharacterMap`;
 
+--    ALTER TABLE `npc` DROP CONSTRAINT `FK_NpcMap`;
+
 
 -- --------------------------------------------------
 -- Dropping existing tables
@@ -88,6 +90,8 @@ SET foreign_key_checks = 0;
     DROP TABLE IF EXISTS `map`;
 
     DROP TABLE IF EXISTS `itemlist`;
+
+    DROP TABLE IF EXISTS `npc`;
 
 SET foreign_key_checks = 1;
 
@@ -187,7 +191,7 @@ ALTER TABLE `map` ADD PRIMARY KEY (MapId);
 
 
 CREATE TABLE `itemlist`(
-	`ItemId` smallint NOT NULL AUTO_INCREMENT UNIQUE, 
+	`VNum` smallint NOT NULL AUTO_INCREMENT UNIQUE, 
 	`Price` bigint NOT NULL, 
 	`Name` longtext NOT NULL, 
 	`Inventory` TINYINT UNSIGNED NOT NULL, 
@@ -221,18 +225,19 @@ CREATE TABLE `itemlist`(
 	`EauRez` smallint NOT NULL, 
 	`LightRez` smallint NOT NULL, 
 	`DarkRez` smallint NOT NULL, 
-	`DarkElementAdd` smallint NOT NULL, 
-	`LightElementAdd` smallint NOT NULL, 
-	`FireElementAdd` smallint NOT NULL, 
-	`WaterElementAdd` smallint NOT NULL, 
+	`DarkElement` smallint NOT NULL, 
+	`LightElement` smallint NOT NULL, 
+	`FireElement` smallint NOT NULL, 
+	`WaterElement` smallint NOT NULL, 
 	`PvpStrength` smallint NOT NULL, 
 	`Speed` smallint NOT NULL, 
 	`Element` smallint NOT NULL, 
 	`ElementRate` smallint NOT NULL, 
 	`PvpDef` smallint NOT NULL, 
-	`DimOposantRez` smallint NOT NULL);
+	`DimOposantRez` smallint NOT NULL, 
+	`Colored` bool NOT NULL);
 
-ALTER TABLE `itemlist` ADD PRIMARY KEY (ItemId);
+ALTER TABLE `itemlist` ADD PRIMARY KEY (VNum);
 
 
 
@@ -250,6 +255,40 @@ CREATE TABLE `npc`(
 	`Level` smallint NOT NULL);
 
 ALTER TABLE `npc` ADD PRIMARY KEY (NpcId);
+
+
+
+
+
+CREATE TABLE `item`(
+	`ItemId` smallint NOT NULL AUTO_INCREMENT UNIQUE, 
+	`DamageMin` smallint NOT NULL, 
+	`DamageMax` smallint NOT NULL, 
+	`Concentrate` smallint NOT NULL, 
+	`HitRate` smallint NOT NULL, 
+	`CriticalLuckRate` smallint NOT NULL, 
+	`CriticalRate` smallint NOT NULL, 
+	`RangeDef` smallint NOT NULL, 
+	`DistanceDef` smallint NOT NULL, 
+	`MagicDef` smallint NOT NULL, 
+	`Dodge` longtext NOT NULL, 
+	`ElementRate` smallint NOT NULL, 
+	`Upgrade` smallint NOT NULL, 
+	`Rare` smallint NOT NULL, 
+	`Color` longtext NOT NULL, 
+	`Amount` longtext NOT NULL, 
+	`Level` smallint NOT NULL, 
+	`SlElement` smallint NOT NULL, 
+	`SlHit` smallint NOT NULL, 
+	`SlDefence` smallint NOT NULL, 
+	`SlHP` smallint NOT NULL, 
+	`DarkElement` smallint NOT NULL, 
+	`LightElement` smallint NOT NULL, 
+	`WaterElement` smallint NOT NULL, 
+	`FireElement` smallint NOT NULL, 
+	`ItemListVNum` smallint NOT NULL);
+
+ALTER TABLE `item` ADD PRIMARY KEY (ItemId);
 
 
 
@@ -385,6 +424,24 @@ ADD CONSTRAINT `FK_NpcMap`
 CREATE INDEX `IX_FK_NpcMap`
     ON `npc`
     (`MapId`);
+
+
+
+-- Creating foreign key on `ItemListVNum` in table 'item'
+
+ALTER TABLE `item`
+ADD CONSTRAINT `FK_ItemListItem`
+    FOREIGN KEY (`ItemListVNum`)
+    REFERENCES `itemlist`
+        (`VNum`)
+    ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+
+-- Creating non-clustered index for FOREIGN KEY 'FK_ItemListItem'
+
+CREATE INDEX `IX_FK_ItemListItem`
+    ON `item`
+    (`ItemListVNum`);
 
 
 
