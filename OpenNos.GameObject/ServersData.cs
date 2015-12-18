@@ -400,9 +400,9 @@ namespace OpenNos.GameObject
                 hitRate[(int)ClassType.Swordman, i] = i + 27;//approx
                 hitDef[(int)ClassType.Swordman, i] = i + 2;//approx
 
-                minHit[(int)ClassType.Swordman, i] = 0;// 	Numbers n such that 10n+9 is prime. 
-                maxHit[(int)ClassType.Swordman, i] = 0;// 	Numbers n such that 10n+9 is prime. 
-                DistDef[(int)ClassType.Swordman, i] = 0;
+                minHit[(int)ClassType.Swordman, i] = 2*i+5;//approx 	Numbers n such that 10n+9 is prime. 
+                maxHit[(int)ClassType.Swordman, i] = 2 * i + 5;//approx  	Numbers n such that 10n+9 is prime. 
+                DistDef[(int)ClassType.Swordman, i] = i;//approx
 
 
                 //MAGICIAN
@@ -420,9 +420,9 @@ namespace OpenNos.GameObject
                 hitDodge[(int)ClassType.Magician, i] = 24 + i;//approx
                 DistDodge[(int)ClassType.Magician, i] = 14 + i;//approx
 
-                minHit[(int)ClassType.Magician, i] = 0; //Numbers n such that n ^ 2 is of form x^ 2 + 40y ^ 2 with positive x,y.
-                maxHit[(int)ClassType.Magician, i] = 0; //Numbers n such that n^2 is of form x^2+40y^2 with positive x,y. 
-                DistDef[(int)ClassType.Magician, i] = 0;
+                minHit[(int)ClassType.Magician, i] = 2 * i + 9;//approx Numbers n such that n ^ 2 is of form x^ 2 + 40y ^ 2 with positive x,y.
+                maxHit[(int)ClassType.Magician, i] = 2 * i + 9;//approx Numbers n such that n^2 is of form x^2+40y^2 with positive x,y. 
+                DistDef[(int)ClassType.Magician, i] = 20 + i;//approx
 
                 //ARCHER
                 criticalHitRate[(int)ClassType.Archer, i] = 0;//sure
@@ -430,18 +430,20 @@ namespace OpenNos.GameObject
                 criticalDistRate[(int)ClassType.Archer, i] = 0;//sure
                 criticalDist[(int)ClassType.Archer, i] = 0;//sure
 
-                hitRate[(int)ClassType.Archer, i] = 0;
-                minDist[(int)ClassType.Archer, i] = 0;
-                maxDist[(int)ClassType.Archer, i] = 0;
-                distRate[(int)ClassType.Archer, i] = 0;
-                hitDef[(int)ClassType.Archer, i] = 0;
-                magicalDef[(int)ClassType.Archer, i] = 0;
-                hitDodge[(int)ClassType.Archer, i] = 0;
-                DistDodge[(int)ClassType.Archer, i] = 0;
+                minHit[(int)ClassType.Archer, i] = 9 + i * 3;//approximate
+                maxHit[(int)ClassType.Archer, i] = 9 + i * 3;//aproximate
+                int add = (i % 2 == 0) ? 2 : 4;
+                hitRate[(int)ClassType.Archer, 1] = 41;
+                hitRate[(int)ClassType.Archer, i] = hitRate[(int)ClassType.Archer, i] + add ;//approximate
+                minDist[(int)ClassType.Archer, i] = 2*i;//approximate
+                maxDist[(int)ClassType.Archer, i] = 2 * i;//approximate
 
-                minHit[(int)ClassType.Archer, i] = 0;
-                maxHit[(int)ClassType.Archer, i] = 0;
-                DistDef[(int)ClassType.Archer, i] = 0;
+                distRate[(int)ClassType.Archer, i] = 20+2 * i;//approximate;
+                hitDef[(int)ClassType.Archer, i] = i;//approximate;
+                magicalDef[(int)ClassType.Archer, i] = i+2;//approximate;
+                hitDodge[(int)ClassType.Archer, i] = 41+i;//approximate;
+                DistDodge[(int)ClassType.Archer, i] = i+2;//approximate;
+                DistDef[(int)ClassType.Archer, i] = i;//approximate;
             }
         }
         private void LoadMpData()
@@ -495,6 +497,12 @@ namespace OpenNos.GameObject
                 
             }
             //MAGICIAN MP
+            for (int i = 0; i < MP.GetLength(1) - 1; i++)
+            {
+
+                MP[(int)ClassType.Magician, i ] = 3*MP[(int)ClassType.Adventurer, i];
+
+            }
 
         }
 
