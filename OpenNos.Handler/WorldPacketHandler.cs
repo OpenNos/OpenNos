@@ -542,9 +542,10 @@ namespace OpenNos.Handler
                 _session.Client.SendPacket(_session.Character.GenerateSay("$LevelUp LEVEL", 0));
             if (Byte.TryParse(packetsplit[2], out level) && level < 100 && level > 0)
             {
+          
+                _session.Character.level = level;
                 _session.Character.Hp = (int)_session.Character.HPLoad();
                 _session.Character.Mp = (int)_session.Character.MPLoad();
-                _session.Character.level = level;
                 _session.Client.SendPacket(_session.Character.GenerateStat());
                 //sc 0 0 31 39 31 4 70 1 0 33 35 43 2 70 0 17 35 19 35 17 0 0 0 0
                 _session.Client.SendPacket(_session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("LEVEL_CHANGED"), 0));
