@@ -270,18 +270,18 @@ namespace OpenNos.World.Resource {
         /// <summary>
         ///   Recherche une chaîne localisée semblable à You get the protection power of angel..
         /// </summary>
-        public static string GET_PROTECTION_POWER_0 {
+        public static string GET_PROTECTION_POWER_1 {
             get {
-                return ResourceManager.GetString("GET_PROTECTION_POWER_0", resourceCulture);
+                return ResourceManager.GetString("GET_PROTECTION_POWER_1", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Recherche une chaîne localisée semblable à You get the protection power of daemon..
         /// </summary>
-        public static string GET_PROTECTION_POWER_1 {
+        public static string GET_PROTECTION_POWER_2 {
             get {
-                return ResourceManager.GetString("GET_PROTECTION_POWER_1", resourceCulture);
+                return ResourceManager.GetString("GET_PROTECTION_POWER_2", resourceCulture);
             }
         }
         

@@ -60,6 +60,16 @@ namespace OpenNos.GameObject
                 
             }
         }
+        public int faction;
+        public int Faction
+        {
+            get { return faction; }
+            set
+            {
+                faction = value;
+
+            }
+        }
         public byte slot;
         public byte Slot
         {
@@ -573,6 +583,12 @@ namespace OpenNos.GameObject
         public string GenerateEq()
         {
              return String.Format("eq {0} {1} {2} {3} {4} {5} -1.-1.-1.-1.-1.-1.-1.-1 0 0", CharacterId, (Authority == 2 ? 2 : 0),Gender,HairStyle,HairColor,Class);
+        }
+
+        public string GenerateFaction()
+        {
+            return String.Format("fs {0}", Faction);
+
         }
     }
 }

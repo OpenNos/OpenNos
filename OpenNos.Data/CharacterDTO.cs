@@ -21,6 +21,8 @@ namespace OpenNos.Data
 
         public byte Gender { get; set; }
 
+        public int Faction { get; set; }
+
         public byte Class { get; set; }
 
         public ClassType ClassEnum
