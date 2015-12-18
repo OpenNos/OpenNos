@@ -186,10 +186,10 @@
   <data name="FORCED_DISCONNECT" xml:space="preserve">
     <value>Forced Disconnecting of client {0}, too much connections.</value>
   </data>
-  <data name="GET_PROTECTION_POWER_0" xml:space="preserve">
+  <data name="GET_PROTECTION_POWER_1" xml:space="preserve">
     <value>You get the protection power of angel.</value>
   </data>
-  <data name="GET_PROTECTION_POWER_1" xml:space="preserve">
+  <data name="GET_PROTECTION_POWER_2" xml:space="preserve">
     <value>You get the protection power of daemon.</value>
   </data>
   <data name="HANDLER_NOT_FOUND" xml:space="preserve">

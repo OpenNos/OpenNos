@@ -179,6 +179,7 @@ namespace OpenNos.Handler
                     MapY = characterDTO.MapY,
                     Mp = characterDTO.Mp,
                     State = characterDTO.State,
+                    Faction = characterDTO.Faction,
                     Name = characterDTO.Name,
                     Reput = characterDTO.Reput,
                     Slot = characterDTO.Slot,
@@ -216,6 +217,7 @@ namespace OpenNos.Handler
         {
 
             _session.Client.SendPacket(_session.Character.GenerateCInfo());
+            _session.Client.SendPacket(_session.Character.GenerateFaction());
             _session.Client.SendPacket(_session.Character.GenerateFd());
             _session.Client.SendPacket(_session.Character.GenerateLev());
             _session.Client.SendPacket(_session.Character.GenerateStat());
@@ -506,6 +508,7 @@ namespace OpenNos.Handler
                 _session.Client.SendPacket("p_clear");
 
                 _session.Character.Class = classe;
+                _session.Character.Speed = ServersData.SpeedData[_session.Character.Class];
                 _session.Character.Hp = (int)_session.Character.HPLoad();
                 _session.Character.Mp = (int)_session.Character.MPLoad();
                 _session.Client.SendPacket(_session.Character.GenerateTit());
@@ -520,16 +523,16 @@ namespace OpenNos.Handler
                 ChatManager.Instance.Broadcast(_session, _session.Character.GenerateEff(8), ReceiverType.AllOnMap);
                 _session.Client.SendPacket(_session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("JOB_CHANGED"), 0));
                 ChatManager.Instance.Broadcast(_session, _session.Character.GenerateEff(196), ReceiverType.AllOnMap);
-                int faction = 0;
+                Random rand = new Random();
+                int faction = 1+(int)rand.Next(0,2);
+                _session.Character.Faction = faction;
                 _session.Client.SendPacket(_session.Character.GenerateMsg(Language.Instance.GetMessageFromKey(String.Format("GET_PROTECTION_POWER_{0}",faction)), 0));
-                //chara.Send("msg 0 Tu as obtenu le pouvoir de Ange grâce à l'oeuf de Latheore.");
-
                 _session.Client.SendPacket("scr 0 0 0 0 0 0");
 
-                _session.Client.SendPacket("fs 1");
+                _session.Client.SendPacket(_session.Character.GenerateFaction());
                 // fs 1
 
-                _session.Client.SendPacket(_session.Character.GenerateEff(4800));
+                _session.Client.SendPacket(_session.Character.GenerateEff(4799+ faction));
             } 
         }
         [Packet("$LevelUp")]
