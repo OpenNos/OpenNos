@@ -12,6 +12,10 @@ namespace OpenNos.GameObject
     {
         private static ChatManager _instance;
         public List<ClientSession> sessions { get; set; }
+        public bool shutdownActive
+        {
+            get; set;
+        }
 
         private ChatManager()
         {

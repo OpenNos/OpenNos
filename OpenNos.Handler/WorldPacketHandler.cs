@@ -464,7 +464,6 @@ namespace OpenNos.Handler
         [Packet("$Command")]
         public void Command(string packet)
         {
-
             _session.Client.SendPacket(_session.Character.GenerateSay("$Teleport Map X Y", 0));
             _session.Client.SendPacket(_session.Character.GenerateSay("$Speed SPEED", 0));
             _session.Client.SendPacket(_session.Character.GenerateSay("$Morph MORPHID UPGRADE WINGS ARENA", 0));
@@ -477,7 +476,7 @@ namespace OpenNos.Handler
             _session.Client.SendPacket(_session.Character.GenerateSay("$Ban CHARACTERNAME", 0));
             _session.Client.SendPacket(_session.Character.GenerateSay("$Invisible", 0));
             _session.Client.SendPacket(_session.Character.GenerateSay("$Position", 0));
-
+            _session.Client.SendPacket(_session.Character.GenerateSay("$Shutdown", 0));
         }
         [Packet("$Position")]
         public void Position(string packet)
@@ -573,9 +572,13 @@ namespace OpenNos.Handler
         [Packet("$Shutdown")]
         public void Shutdown(string packet)
         {
+            if (ChatManager.Instance.shutdownActive == false)
+            {
                 Thread ThreadShutdown = new Thread(new ThreadStart(ShutdownThread));
                 ThreadShutdown.Start();
-            
+                ChatManager.Instance.shutdownActive = true;
+            }
+
         }
         public void ShutdownThread()
         {
@@ -592,7 +595,7 @@ namespace OpenNos.Handler
             ChatManager.Instance.Broadcast(_session, _session.Character.GenerateMsg(message, 2), ReceiverType.All);
             Thread.Sleep(30000);
             //save
-            //shutdown
+            Environment.Exit(0);
         }
         [Packet("$Shout")]
         public void Shout(string packet)

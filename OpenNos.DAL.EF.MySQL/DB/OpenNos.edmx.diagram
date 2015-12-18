@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="f76ed05649d94abe8fc46f3ecc52e312" Name="Diagram1" ZoomLevel="54">
+      <Diagram DiagramId="f76ed05649d94abe8fc46f3ecc52e312" Name="Diagram1" ZoomLevel="73">
         <EntityTypeShape EntityType="opennosModel.Account" Width="1.5" PointX="0.5" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="opennosModel.Character" Width="1.5" PointX="3.25" PointY="0.625" IsExpanded="true" />
         <EntityTypeShape EntityType="opennosModel.Portal" Width="1.5" PointX="5.75" PointY="1" IsExpanded="true" />
@@ -19,6 +19,8 @@
         <EntityTypeShape EntityType="opennosModel.ItemList" Width="1.375" PointX="12.875" PointY="0.5" />
         <EntityTypeShape EntityType="opennosModel.Npc" Width="1.5" PointX="10.25" PointY="1" />
         <AssociationConnector Association="opennosModel.NpcMap" />
+        <EntityTypeShape EntityType="opennosModel.Item" Width="1.5" PointX="15.25" PointY="2" />
+        <AssociationConnector Association="opennosModel.ItemListItem" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
