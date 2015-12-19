@@ -443,6 +443,23 @@ namespace OpenNos.Handler
 
 
         }
+        [Packet("npc_req")]
+        public void NpcReq(string packet)
+        {
+            string[] packetsplit = packet.Split(' ');
+            foreach (Npc npc in ServerManager.GetMap(_session.Character.MapId).Npcs)
+                if (npc.NpcId == Convert.ToInt16(packetsplit[3]))
+                    if (npc.GetNpcDialog() != String.Empty)
+                    _session.Client.SendPacket( npc.GetNpcDialog());
+
+
+        }
+        [Packet("req_info")]
+        public void ReqInfo(string packet)
+        {
+            string[] packetsplit = packet.Split(' ');
+            ChatManager.Instance.RequiereBroadcastFromUser(_session, Convert.ToInt64(packetsplit[3]), "GenerateReqInfo");
+        }
         [Packet("/")]
         public void Whisper(string packet)
         {
@@ -455,7 +472,6 @@ namespace OpenNos.Handler
             ChatManager.Instance.Broadcast(_session, _session.Character.GenerateSpk(message, 5), ReceiverType.OnlyMe);
             if (!ChatManager.Instance.Broadcast(_session, _session.Character.GenerateSpk(message, 5), ReceiverType.OnlySomeone, packetsplit[1].Substring(1)))
                 ChatManager.Instance.Broadcast(_session, _session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("USER_NOT_CONNECTED")), ReceiverType.OnlyMe);
-            //TODO add verification on receiver
 
         }
         #endregion
@@ -485,6 +501,8 @@ namespace OpenNos.Handler
             _session.Client.SendPacket(_session.Character.GenerateSay(String.Format("Map:{0} - X:{1} - Y:{2}", _session.Character.MapId, _session.Character.MapX, _session.Character.MapY), 0));
 
         }
+    
+        
         [Packet("$Kick")]
         public void Kick(string packet)
         {

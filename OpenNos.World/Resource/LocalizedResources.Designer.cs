@@ -376,6 +376,24 @@ namespace OpenNos.World.Resource {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à No Familly.
+        /// </summary>
+        public static string NO_FAMILY {
+            get {
+                return ResourceManager.GetString("NO_FAMILY", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à No Presentation Message..
+        /// </summary>
+        public static string NO_PREZ_MESSAGE {
+            get {
+                return ResourceManager.GetString("NO_PREZ_MESSAGE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Packet arrived, packet: {0}.
         /// </summary>
         public static string PACKET_ARRIVED {

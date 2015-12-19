@@ -219,6 +219,12 @@
   <data name="NO_ENTRY" xml:space="preserve">
     <value>No EntryPoint found</value>
   </data>
+  <data name="NO_FAMILY" xml:space="preserve">
+    <value>Aucune</value>
+  </data>
+  <data name="NO_PREZ_MESSAGE" xml:space="preserve">
+    <value>Aucun message de presentation.</value>
+  </data>
   <data name="PACKET_ARRIVED" xml:space="preserve">
     <value>Packet arrived, packet: {0}</value>
   </data>

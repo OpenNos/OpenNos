@@ -17,5 +17,19 @@ namespace OpenNos.GameObject
         public short MapY { get; set; }
         public short Position { get; set; }
         public short Level { get; set; }
+
+        public string GetNpcDialog()
+        {
+            string dialog = String.Empty;
+            if (false)// shop == true)
+            {
+                //open npcshop
+            }
+            else
+            {
+                dialog = String.Format("npc_req 2 {0} {1}", NpcId, Dialog);
+            }
+            return dialog;
+        }
     }
 }

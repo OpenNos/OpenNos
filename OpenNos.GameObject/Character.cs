@@ -508,7 +508,13 @@ namespace OpenNos.GameObject
             return String.Format("at {0} {1} {2} {3} 2 0 0 1", CharacterId, MapId, MapX, MapY);
 
         }
+        public string GenerateReqInfo()
+        {
+            
+            return String.Format("tc_info {0} {1} {2} {3} {4} 0 0 {8} {5} {6} 0 0 1 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 {7}", Level, Name, 0, 0, Class, GetReputIco(), GetDigniteIco(),Language.Instance.GetMessageFromKey("NO_PREZ_MESSAGE"), Language.Instance.GetMessageFromKey("NO_FAMILY"));
 
+        }
+        
         public string GenerateCMap()
         {
             return String.Format("c_map 0 {0} 1", MapId);
