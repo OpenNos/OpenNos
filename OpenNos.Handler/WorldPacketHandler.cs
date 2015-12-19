@@ -422,13 +422,13 @@ namespace OpenNos.Handler
 
             _session.Client.SendPacket("scr 0 0 0 0 0 0");
 
-            _session.Client.SendPacket(String.Format("bn 0 {0}", Language.Instance.GetMessageFromKey("bn0")));
-            _session.Client.SendPacket(String.Format("bn 1 {0}", Language.Instance.GetMessageFromKey("bn1")));
-            _session.Client.SendPacket(String.Format("bn 2 {0}", Language.Instance.GetMessageFromKey("bn2")));
-            _session.Client.SendPacket(String.Format("bn 3 {0}", Language.Instance.GetMessageFromKey("bn3")));
-            _session.Client.SendPacket(String.Format("bn 4 {0}", Language.Instance.GetMessageFromKey("bn4")));
-            _session.Client.SendPacket(String.Format("bn 5 {0}", Language.Instance.GetMessageFromKey("bn5")));
-            _session.Client.SendPacket(String.Format("bn 6 {0}", Language.Instance.GetMessageFromKey("bn6")));
+            _session.Client.SendPacket(String.Format("bn 0 {0}", Language.Instance.GetMessageFromKey("BN0")));
+            _session.Client.SendPacket(String.Format("bn 1 {0}", Language.Instance.GetMessageFromKey("BN1")));
+            _session.Client.SendPacket(String.Format("bn 2 {0}", Language.Instance.GetMessageFromKey("BN2")));
+            _session.Client.SendPacket(String.Format("bn 3 {0}", Language.Instance.GetMessageFromKey("BN3")));
+            _session.Client.SendPacket(String.Format("bn 4 {0}", Language.Instance.GetMessageFromKey("BN4")));
+            _session.Client.SendPacket(String.Format("bn 5 {0}", Language.Instance.GetMessageFromKey("BN5")));
+            _session.Client.SendPacket(String.Format("bn 6 {0}", Language.Instance.GetMessageFromKey("BN6")));
 
             _session.Client.SendPacket(_session.Character.GenerateExts());
 
