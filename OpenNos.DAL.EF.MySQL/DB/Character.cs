@@ -18,6 +18,7 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public Character()
         {
             this.generallog = new HashSet<GeneralLog>();
+            this.inventory = new HashSet<Inventory>();
         }
     
         public long CharacterId { get; set; }
@@ -52,5 +53,7 @@ namespace OpenNos.DAL.EF.MySQL.DB
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<GeneralLog> generallog { get; set; }
         public virtual Map map { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Inventory> inventory { get; set; }
     }
 }

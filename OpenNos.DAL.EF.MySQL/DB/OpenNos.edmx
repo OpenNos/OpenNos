@@ -14,6 +14,7 @@
     <EntitySet Name="itemlist" EntityType="opennosModel.Store.itemlist" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="npc" EntityType="opennosModel.Store.npc" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="item" EntityType="opennosModel.Store.item" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="inventory" EntityType="opennosModel.Store.inventory" store:Type="Tables" Schema="dbo" />
     <AssociationSet Name="AccountCharacter" Association="opennosModel.Store.AccountCharacter">
       <End Role="Account" EntitySet="account" />
       <End Role="Character" EntitySet="character" />
@@ -45,6 +46,14 @@
     <AssociationSet Name="ItemListItem" Association="opennosModel.Store.ItemListItem">
       <End Role="Item" EntitySet="item" />
       <End Role="ItemList" EntitySet="itemlist" />
+    </AssociationSet>
+    <AssociationSet Name="CharacterInventory" Association="opennosModel.Store.CharacterInventory">
+      <End Role="Character" EntitySet="character" />
+      <End Role="Inventory" EntitySet="inventory" />
+    </AssociationSet>
+    <AssociationSet Name="InventoryItem" Association="opennosModel.Store.InventoryItem">
+      <End Role="Inventory" EntitySet="inventory" />
+      <End Role="Item" EntitySet="item" />
     </AssociationSet>
   </EntityContainer>
   <EntityType Name="account">
@@ -170,7 +179,12 @@
     <Property Name="ElementRate" Type="smallint" Nullable="false" />
     <Property Name="PvpDef" Type="smallint" Nullable="false" />
     <Property Name="DimOposantRez" Type="smallint" Nullable="false" />
+    <Property Name="HpRegen" Type="longtext" Nullable="false" />
+    <Property Name="MpRegen" Type="longtext" Nullable="false" />
+    <Property Name="MoreHp" Type="smallint" Nullable="false" />
+    <Property Name="MoreMp" Type="smallint" Nullable="false" />
     <Property Name="Colored" Type="bool" Nullable="false" />
+    <Property Name="isConsumable" Type="bool" Nullable="false" />
   </EntityType>
   <EntityType Name="npc">
     <Key>
@@ -216,6 +230,16 @@
     <Property Name="WaterElement" Type="smallint" Nullable="false" />
     <Property Name="FireElement" Type="smallint" Nullable="false" />
     <Property Name="ItemListVNum" Type="smallint" Nullable="false" />
+  </EntityType>
+  <EntityType Name="inventory">
+    <Key>
+      <PropertyRef Name="InventoryId" />
+    </Key>
+    <Property Name="InventoryId" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="CharacterId" Type="bigint" Nullable="false" />
+    <Property Name="Type" Type="smallint" Nullable="false" />
+    <Property Name="Slot" Type="smallint" Nullable="false" />
+    <Property Name="item_ItemId" Type="smallint" Nullable="false" />
   </EntityType>
   <Association Name="AccountCharacter">
     <End Role="Account" Type="opennosModel.Store.account" Multiplicity="1" />
@@ -313,6 +337,30 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
+  <Association Name="CharacterInventory">
+    <End Role="Character" Type="opennosModel.Store.character" Multiplicity="1" />
+    <End Role="Inventory" Type="opennosModel.Store.inventory" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Character">
+        <PropertyRef Name="CharacterId" />
+      </Principal>
+      <Dependent Role="Inventory">
+        <PropertyRef Name="CharacterId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="InventoryItem">
+    <End Role="Inventory" Type="opennosModel.Store.inventory" Multiplicity="*" />
+    <End Role="Item" Type="opennosModel.Store.item" Multiplicity="1" />
+    <ReferentialConstraint>
+      <Principal Role="Item">
+        <PropertyRef Name="ItemId" />
+      </Principal>
+      <Dependent Role="Inventory">
+        <PropertyRef Name="item_ItemId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
 </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
@@ -364,6 +412,7 @@
           <NavigationProperty Name="generallog" Relationship="opennosModel.GeneralLogCharacter" FromRole="Character" ToRole="GeneralLog" />
           <NavigationProperty Name="map" Relationship="opennosModel.CharacterMap" FromRole="Character" ToRole="Map" />
           <Property Name="State" Type="Byte" Nullable="false" />
+          <NavigationProperty Name="inventory" Relationship="opennosModel.CharacterInventory" FromRole="Character" ToRole="Inventory" />
         </EntityType>
         <EntityType Name="Portal">
           <Key>
@@ -421,7 +470,16 @@
             <End Role="Item" EntitySet="item" />
             <End Role="ItemList" EntitySet="itemlist" />
           </AssociationSet>
-        </EntityContainer>
+          <EntitySet Name="inventory" EntityType="opennosModel.Inventory" />
+          <AssociationSet Name="CharacterInventory" Association="opennosModel.CharacterInventory">
+            <End Role="Character" EntitySet="character" />
+            <End Role="Inventory" EntitySet="inventory" />
+          </AssociationSet>
+          <AssociationSet Name="InventoryItem" Association="opennosModel.InventoryItem">
+            <End Role="Inventory" EntitySet="inventory" />
+            <End Role="Item" EntitySet="item" />
+          </AssociationSet>
+          </EntityContainer>
         <Association Name="AccountCharacter">
           <End Type="opennosModel.Account" Role="Account" Multiplicity="1" />
           <End Type="opennosModel.Character" Role="Character" Multiplicity="*" />
@@ -567,7 +625,12 @@
           <Property Name="ElementRate" Type="Int16" Nullable="false" />
           <Property Name="PvpDef" Type="Int16" Nullable="false" />
           <Property Name="DimOposantRez" Type="Int16" Nullable="false" />
+          <Property Name="HpRegen" Type="String" Nullable="false" />
+          <Property Name="MpRegen" Type="String" Nullable="false" />
+          <Property Name="MoreHp" Type="Int16" Nullable="false" />
+          <Property Name="MoreMp" Type="Int16" Nullable="false" />
           <Property Name="Colored" Type="Boolean" Nullable="false" />
+          <Property Name="isConsumable" Type="Boolean" Nullable="false" />
           <NavigationProperty Name="item" Relationship="opennosModel.ItemListItem" FromRole="ItemList" ToRole="Item" />
           </EntityType>
         <EntityType Name="Npc">
@@ -628,7 +691,8 @@
           <Property Name="FireElement" Type="Int16" Nullable="false" />
           <NavigationProperty Name="itemlist" Relationship="opennosModel.ItemListItem" FromRole="Item" ToRole="ItemList" />
           <Property Name="ItemListVNum" Type="Int16" Nullable="false" />
-        </EntityType>
+          <NavigationProperty Name="inventory" Relationship="opennosModel.InventoryItem" FromRole="Item" ToRole="Inventory" />
+          </EntityType>
         <Association Name="ItemListItem">
           <End Type="opennosModel.Item" Role="Item" Multiplicity="*" />
           <End Type="opennosModel.ItemList" Role="ItemList" Multiplicity="1" />
@@ -641,7 +705,34 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-      </Schema>
+        <EntityType Name="Inventory">
+          <Key>
+            <PropertyRef Name="InventoryId" />
+          </Key>
+          <Property Name="InventoryId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CharacterId" Type="Int64" Nullable="false" />
+          <Property Name="Type" Type="Int16" Nullable="false" />
+          <Property Name="Slot" Type="Int16" Nullable="false" />
+          <NavigationProperty Name="character" Relationship="opennosModel.CharacterInventory" FromRole="Inventory" ToRole="Character" />
+          <NavigationProperty Name="item" Relationship="opennosModel.InventoryItem" FromRole="Inventory" ToRole="Item" />
+        </EntityType>
+        <Association Name="CharacterInventory">
+          <End Type="opennosModel.Character" Role="Character" Multiplicity="1" />
+          <End Type="opennosModel.Inventory" Role="Inventory" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Character">
+              <PropertyRef Name="CharacterId" />
+            </Principal>
+            <Dependent Role="Inventory">
+              <PropertyRef Name="CharacterId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="InventoryItem">
+          <End Type="opennosModel.Inventory" Role="Inventory" Multiplicity="0..1" />
+          <End Type="opennosModel.Item" Role="Item" Multiplicity="1" />
+        </Association>
+        </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
@@ -774,7 +865,12 @@
           <ScalarProperty Name="ElementRate" ColumnName="ElementRate" />
           <ScalarProperty Name="PvpDef" ColumnName="PvpDef" />
           <ScalarProperty Name="DimOposantRez" ColumnName="DimOposantRez" />
+          <ScalarProperty Name="HpRegen" ColumnName="HpRegen" />
+          <ScalarProperty Name="MpRegen" ColumnName="MpRegen" />
+          <ScalarProperty Name="MoreHp" ColumnName="MoreHp" />
+          <ScalarProperty Name="MoreMp" ColumnName="MoreMp" />
           <ScalarProperty Name="Colored" ColumnName="Colored" />
+          <ScalarProperty Name="isConsumable" ColumnName="isConsumable" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -825,6 +921,24 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
+    <EntitySetMapping Name="inventory">
+      <EntityTypeMapping TypeName="IsTypeOf(opennosModel.Inventory)">
+        <MappingFragment StoreEntitySet="inventory">
+          <ScalarProperty Name="InventoryId" ColumnName="InventoryId" />
+          <ScalarProperty Name="CharacterId" ColumnName="CharacterId" />
+          <ScalarProperty Name="Type" ColumnName="Type" />
+          <ScalarProperty Name="Slot" ColumnName="Slot" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <AssociationSetMapping Name="InventoryItem" TypeName="opennosModel.InventoryItem" StoreEntitySet="inventory">
+      <EndProperty Name="Item">
+        <ScalarProperty Name="ItemId" ColumnName="item_ItemId" />
+      </EndProperty>
+      <EndProperty Name="Inventory">
+        <ScalarProperty Name="InventoryId" ColumnName="InventoryId" />
+      </EndProperty>
+    </AssociationSetMapping>
   </EntityContainerMapping>
 </Mapping></edmx:Mappings>
   </edmx:Runtime>
