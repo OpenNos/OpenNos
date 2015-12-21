@@ -3,8 +3,8 @@ using System.Collections.Generic;
 
 namespace  OpenNos.DAL.Interface
 {
-    public interface IItemListDAO
+    public interface IItemInstanceDAO
     {
-        ItemListDTO LoadById(short Vnum);
+        ItemInstanceDTO LoadById(long ItemId);
     }
 }

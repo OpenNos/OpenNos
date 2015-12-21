@@ -51,8 +51,8 @@
     <Compile Include="GeneralLog.cs" />
     <Compile Include="Account.cs" />
     <Compile Include="Character.cs" />
-    <Compile Include="ItemList.cs" />
     <Compile Include="Item.cs" />
+    <Compile Include="ItemInstance.cs" />
     <Compile Include="Inventory.cs" />
     <Compile Include="Networking\ChatManager.cs" />
     <Compile Include="Networking\ClientSession.cs" />

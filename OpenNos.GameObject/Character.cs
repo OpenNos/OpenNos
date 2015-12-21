@@ -22,8 +22,8 @@ namespace OpenNos.GameObject
             Inventory = new List<Inventory>();
             foreach (InventoryDTO inventory in inventorysDTO)
             {
-                ItemDTO itemDTO = DAOFactory.ItemDAO.LoadById(inventory.Item.ItemId);
-                Item item = new Item();
+                ItemInstanceDTO itemDTO = DAOFactory.ItemDAO.LoadById(inventory.Item.ItemId);
+                ItemInstance item = new ItemInstance();
 
                 Inventory.Add(new GameObject.Inventory()
                 {
@@ -32,7 +32,7 @@ namespace OpenNos.GameObject
                     Slot = inventory.Slot,
                     InventoryId = inventory.InventoryId,
                     Type = inventory.Type,
-                    Item = new GameObject.Item() {
+                    Item = new GameObject.ItemInstance() {
                         ItemId = item.ItemId, Dodge = item.Dodge,
                         DistanceDef = item.DistanceDef, Level = item.Level,
                         DarkElement = item.DarkElement, LightElement = item.LightElement, DamageMin = item.DamageMin,

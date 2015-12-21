@@ -25,13 +25,13 @@ using OpenNos.Core;
 
 namespace OpenNos.DAL.EF.MySQL
 {
-    public class ItemListDAO : IItemListDAO
+    public class ItemInstanceDAO : IItemInstanceDAO
     {
-        public ItemListDTO LoadById(short ItemVnum)
+        public ItemInstanceDTO LoadById(long ItemId)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                return Mapper.Map<ItemListDTO>(context.itemlist.SingleOrDefault(i => i.VNum.Equals(ItemVnum)));
+                return Mapper.Map<ItemInstanceDTO>(context.item.SingleOrDefault(i => i.ItemId.Equals(ItemId)));
             }
         }
     }

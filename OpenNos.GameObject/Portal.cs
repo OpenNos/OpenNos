@@ -1,4 +1,6 @@
-﻿using System;
+﻿using AutoMapper;
+using OpenNos.Data;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +10,12 @@ namespace OpenNos.GameObject
 {
    public class Portal
     {
+        public Portal()
+        {
+
+            Mapper.CreateMap<PortalDTO, Portal>();
+            Mapper.CreateMap<Portal, PortalDTO>();
+        }
         public int PortalId { get; set; }
 
         public short SrcMap { get; set; }

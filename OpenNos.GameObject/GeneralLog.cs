@@ -1,4 +1,6 @@
-﻿using System;
+﻿using AutoMapper;
+using OpenNos.Data;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +10,12 @@ namespace OpenNos.GameObject
 {
     public class GeneralLog
     {
+        public GeneralLog()
+        {
+            Mapper.CreateMap<GeneralLogDTO, GeneralLog>();
+            Mapper.CreateMap<GeneralLog, GeneralLogDTO>();
+        }
+
         public long LogId { get; set; }
         public long AccountId { get; set; }
         public string IpAddress { get; set; }
@@ -16,6 +24,5 @@ namespace OpenNos.GameObject
         public string LogType { get; set; }
         public string LogData { get; set; }
         public Nullable<long> CharacterCharacterId { get; set; }
-
     }
 }

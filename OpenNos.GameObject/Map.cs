@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.ComponentModel;
+using AutoMapper;
 
 namespace OpenNos.GameObject
 {
@@ -32,7 +33,11 @@ namespace OpenNos.GameObject
         #region Instantiation
         public Map(short mapId, Guid uniqueIdentifier)
         {
-            threadedBase = new ThreadedBase<MapPacket>(500, HandlePacket);
+              
+            Mapper.CreateMap<MapDTO, Map>();
+            Mapper.CreateMap<Map, MapDTO>();
+        
+        threadedBase = new ThreadedBase<MapPacket>(500, HandlePacket);
             _mapId = mapId;
             _uniqueIdentifier = uniqueIdentifier;
             LoadZone();

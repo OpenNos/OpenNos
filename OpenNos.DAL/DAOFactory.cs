@@ -31,8 +31,8 @@ namespace OpenNos.DAL
         private static IMapDAO _mapDAO;
         private static INpcDAO _npcDAO;
         private static IGeneralLogDAO _generallogDAO;
-        private static IItemDAO _itemDAO;
-        private static IItemListDAO _itemlistDAO;
+        private static IItemInstanceDAO _itemDAO;
+        private static IItemDAO _itemlistDAO;
         private static IInventoryDAO _inventoryDAO;
         #endregion
 
@@ -60,26 +60,26 @@ namespace OpenNos.DAL
             }
         }
 
-        public static IItemListDAO ItemListDAO
+        public static IItemDAO ItemListDAO
         {
             get
             {
                 if (_itemlistDAO == null)
                 {
-                    _itemlistDAO = new MySQL.ItemListDAO();
+                    _itemlistDAO = new MySQL.ItemDAO();
                 }
 
                 return _itemlistDAO;
             }
         }
 
-        public static IItemDAO ItemDAO
+        public static IItemInstanceDAO ItemDAO
         {
             get
             {
                 if (_itemDAO == null)
                 {
-                    _itemDAO = new MySQL.ItemDAO();
+                    _itemDAO = new MySQL.ItemInstanceDAO();
                 }
 
                 return _itemDAO;
