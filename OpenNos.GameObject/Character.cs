@@ -18,6 +18,7 @@ namespace OpenNos.GameObject
         {
             Mapper.CreateMap<CharacterDTO, Character>();
             Mapper.CreateMap<Character, CharacterDTO>();
+
             IEnumerable<InventoryDTO> inventorysDTO = DAOFactory.InventoryDAO.Load(CharacterId);
             Inventory = new List<Inventory>();
             foreach (InventoryDTO inventory in inventorysDTO)
@@ -34,16 +35,17 @@ namespace OpenNos.GameObject
                     Type = inventory.Type,
                     Item = new GameObject.ItemInstance() {
                         ItemId = item.ItemId, Dodge = item.Dodge,
-                        DistanceDef = item.DistanceDef, Level = item.Level,
-                        DarkElement = item.DarkElement, LightElement = item.LightElement, DamageMin = item.DamageMin,
-                        DamageMax = item.DamageMax, HitRate = item.HitRate, MagicDef = item.MagicDef, RangeDef = item.RangeDef,
+                        DistanceDefence = item.DistanceDefence, Level = item.Level,
+                        DarkElement = item.DarkElement, LightElement = item.LightElement,
+                        DamageMinimum = item.DamageMinimum,
+                        DamageMaximum = item.DamageMaximum, HitRate = item.HitRate, MagicDefence = item.MagicDefence, RangeDefence = item.RangeDefence,
                         CriticalLuckRate = item.CriticalLuckRate, FireElement = item.FireElement, ElementRate = item.ElementRate, Concentrate = item.Concentrate,
                         Amount = item.Amount, Color = item.Color,
                         CriticalRate = item.CriticalRate, Rare = item.Rare, SlDefence = item.SlDefence
                         , SlElement = item.SlElement, SlHit = item.SlHit, SlHP = item.SlHP, WaterElement = item.WaterElement, Upgrade = item.Upgrade,
-                        ItemListVNum = item.ItemListVNum
-                       
-                        },
+                        ItemVNum = item.ItemVNum
+
+                    },
                 });
             }
         }
