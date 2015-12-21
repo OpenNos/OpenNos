@@ -27,7 +27,7 @@ namespace OpenNos.DAL.EF.MySQL
 {
     public class ItemDAO : IItemDAO
     {
-        public ItemDTO LoadById(short ItemId)
+        public ItemDTO LoadById(long ItemId)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
