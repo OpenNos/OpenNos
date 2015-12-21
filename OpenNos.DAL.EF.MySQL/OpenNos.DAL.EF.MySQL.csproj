@@ -85,7 +85,7 @@
     <Compile Include="DB\Item.cs">
       <DependentUpon>OpenNos.tt</DependentUpon>
     </Compile>
-    <Compile Include="DB\ItemList.cs">
+    <Compile Include="DB\ItemInstance.cs">
       <DependentUpon>OpenNos.tt</DependentUpon>
     </Compile>
     <Compile Include="DB\Npc.cs">
@@ -102,8 +102,8 @@
       <DependentUpon>OpenNos.tt</DependentUpon>
     </Compile>
     <Compile Include="InventoryDAO.cs" />
+    <Compile Include="ItemInstanceDAO.cs" />
     <Compile Include="ItemDAO.cs" />
-    <Compile Include="ItemListDAO.cs" />
     <Compile Include="MapDAO.cs" />
     <Compile Include="NpcDAO.cs" />
     <Compile Include="PortalDAO.cs" />

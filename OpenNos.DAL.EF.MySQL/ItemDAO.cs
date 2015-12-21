@@ -27,11 +27,11 @@ namespace OpenNos.DAL.EF.MySQL
 {
     public class ItemDAO : IItemDAO
     {
-        public ItemDTO LoadById(long ItemId)
+        public ItemDTO LoadById(short ItemVnum)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                return Mapper.Map<ItemDTO>(context.item.SingleOrDefault(i => i.ItemId.Equals(ItemId)));
+                return Mapper.Map<ItemDTO>(context.itemlist.SingleOrDefault(i => i.VNum.Equals(ItemVnum)));
             }
         }
     }

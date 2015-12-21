@@ -1,4 +1,6 @@
-﻿using System;
+﻿using AutoMapper;
+using OpenNos.Data;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +10,12 @@ namespace OpenNos.GameObject
 {
    public class Npc
     {
+        public Npc()
+        {
+
+            Mapper.CreateMap<NpcDTO, Npc>();
+            Mapper.CreateMap<Npc, NpcDTO>();
+        }
         public short NpcId { get; set; }
         public string Name { get; set; }
         public short Vnum { get; set; }

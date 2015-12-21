@@ -44,7 +44,7 @@
 -- -----------------------------------------------------------
 -- Entity Designer DDL Script for MySQL Server 4.1 and higher
 -- -----------------------------------------------------------
--- Date Created: 12/21/2015 15:45:04
+-- Date Created: 12/21/2015 23:18:09
 
 -- Generated from EDMX file: C:\Users\ERWAN\Desktop\OpenNos GIT\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
 -- Target version: 3.0.0.0
@@ -73,7 +73,7 @@
 
 --    ALTER TABLE `npc` DROP CONSTRAINT `FK_NpcMap`;
 
---    ALTER TABLE `item` DROP CONSTRAINT `FK_ItemListItem`;
+--    ALTER TABLE `iteminstance` DROP CONSTRAINT `FK_ItemListItem`;
 
 --    ALTER TABLE `inventory` DROP CONSTRAINT `FK_CharacterInventory`;
 
@@ -95,11 +95,11 @@ SET foreign_key_checks = 0;
 
     DROP TABLE IF EXISTS `map`;
 
-    DROP TABLE IF EXISTS `itemlist`;
+    DROP TABLE IF EXISTS `item`;
 
     DROP TABLE IF EXISTS `npc`;
 
-    DROP TABLE IF EXISTS `item`;
+    DROP TABLE IF EXISTS `iteminstance`;
 
     DROP TABLE IF EXISTS `inventory`;
 
@@ -200,13 +200,13 @@ ALTER TABLE `map` ADD PRIMARY KEY (MapId);
 
 
 
-CREATE TABLE `itemlist`(
+CREATE TABLE `item`(
 	`VNum` smallint NOT NULL AUTO_INCREMENT UNIQUE, 
 	`Price` bigint NOT NULL, 
 	`Name` longtext NOT NULL, 
 	`Inventory` TINYINT UNSIGNED NOT NULL, 
 	`ItemType` TINYINT UNSIGNED NOT NULL, 
-	`EqSlot` TINYINT UNSIGNED NOT NULL, 
+	`EquipmentSlot` TINYINT UNSIGNED NOT NULL, 
 	`Morph` TINYINT UNSIGNED NOT NULL, 
 	`Type` TINYINT UNSIGNED NOT NULL, 
 	`Classe` TINYINT UNSIGNED NOT NULL, 
@@ -216,25 +216,25 @@ CREATE TABLE `itemlist`(
 	`Soldable` TINYINT UNSIGNED NOT NULL, 
 	`MinilandObject` TINYINT UNSIGNED NOT NULL, 
 	`isWareHouse` TINYINT UNSIGNED NOT NULL, 
-	`LvlMin` smallint NOT NULL, 
-	`DamageMin` smallint NOT NULL, 
-	`DamageMax` smallint NOT NULL, 
+	`LevelMinimum` smallint NOT NULL, 
+	`DamageMinimum` smallint NOT NULL, 
+	`DamageMaximum` smallint NOT NULL, 
 	`Concentrate` smallint NOT NULL, 
 	`HitRate` smallint NOT NULL, 
 	`CriticalLuckRate` smallint NOT NULL, 
 	`CriticalRate` smallint NOT NULL, 
-	`RangeDef` smallint NOT NULL, 
-	`DistanceDef` smallint NOT NULL, 
-	`MagicDef` smallint NOT NULL, 
+	`RangeDefence` smallint NOT NULL, 
+	`DistanceDefence` smallint NOT NULL, 
+	`MagicDefence` smallint NOT NULL, 
 	`Dodge` longtext NOT NULL, 
 	`Hp` smallint NOT NULL, 
 	`Mp` smallint NOT NULL, 
 	`MaxCellon` smallint NOT NULL, 
 	`MaxCellonLvl` smallint NOT NULL, 
-	`FireRez` smallint NOT NULL, 
-	`EauRez` smallint NOT NULL, 
-	`LightRez` smallint NOT NULL, 
-	`DarkRez` smallint NOT NULL, 
+	`FireResistance` smallint NOT NULL, 
+	`WaterResistance` smallint NOT NULL, 
+	`LightResistance` smallint NOT NULL, 
+	`DarkResistance` smallint NOT NULL, 
 	`DarkElement` smallint NOT NULL, 
 	`LightElement` smallint NOT NULL, 
 	`FireElement` smallint NOT NULL, 
@@ -243,16 +243,16 @@ CREATE TABLE `itemlist`(
 	`Speed` smallint NOT NULL, 
 	`Element` smallint NOT NULL, 
 	`ElementRate` smallint NOT NULL, 
-	`PvpDef` smallint NOT NULL, 
-	`DimOposantRez` smallint NOT NULL, 
-	`HpRegen` longtext NOT NULL, 
-	`MpRegen` longtext NOT NULL, 
+	`PvpDefence` smallint NOT NULL, 
+	`DimOposantResistance` smallint NOT NULL, 
+	`HpRegeneration` longtext NOT NULL, 
+	`MpRegeneration` longtext NOT NULL, 
 	`MoreHp` smallint NOT NULL, 
 	`MoreMp` smallint NOT NULL, 
 	`Colored` bool NOT NULL, 
 	`isConsumable` bool NOT NULL);
 
-ALTER TABLE `itemlist` ADD PRIMARY KEY (VNum);
+ALTER TABLE `item` ADD PRIMARY KEY (VNum);
 
 
 
@@ -275,17 +275,17 @@ ALTER TABLE `npc` ADD PRIMARY KEY (NpcId);
 
 
 
-CREATE TABLE `item`(
+CREATE TABLE `iteminstance`(
 	`ItemId` smallint NOT NULL AUTO_INCREMENT UNIQUE, 
-	`DamageMin` smallint NOT NULL, 
-	`DamageMax` smallint NOT NULL, 
+	`DamageMinimum` smallint NOT NULL, 
+	`DamageMaximum` smallint NOT NULL, 
 	`Concentrate` smallint NOT NULL, 
 	`HitRate` smallint NOT NULL, 
 	`CriticalLuckRate` smallint NOT NULL, 
 	`CriticalRate` smallint NOT NULL, 
-	`RangeDef` smallint NOT NULL, 
-	`DistanceDef` smallint NOT NULL, 
-	`MagicDef` smallint NOT NULL, 
+	`RangeDefence` smallint NOT NULL, 
+	`DistanceDefence` smallint NOT NULL, 
+	`MagicDefence` smallint NOT NULL, 
 	`Dodge` longtext NOT NULL, 
 	`ElementRate` smallint NOT NULL, 
 	`Upgrade` smallint NOT NULL, 
@@ -301,9 +301,9 @@ CREATE TABLE `item`(
 	`LightElement` smallint NOT NULL, 
 	`WaterElement` smallint NOT NULL, 
 	`FireElement` smallint NOT NULL, 
-	`ItemListVNum` smallint NOT NULL);
+	`ItemVNum` smallint NOT NULL);
 
-ALTER TABLE `item` ADD PRIMARY KEY (ItemId);
+ALTER TABLE `iteminstance` ADD PRIMARY KEY (ItemId);
 
 
 
@@ -455,12 +455,12 @@ CREATE INDEX `IX_FK_NpcMap`
 
 
 
--- Creating foreign key on `ItemListVNum` in table 'item'
+-- Creating foreign key on `ItemVNum` in table 'iteminstance'
 
-ALTER TABLE `item`
+ALTER TABLE `iteminstance`
 ADD CONSTRAINT `FK_ItemListItem`
-    FOREIGN KEY (`ItemListVNum`)
-    REFERENCES `itemlist`
+    FOREIGN KEY (`ItemVNum`)
+    REFERENCES `item`
         (`VNum`)
     ON DELETE NO ACTION ON UPDATE NO ACTION;
 
@@ -468,8 +468,8 @@ ADD CONSTRAINT `FK_ItemListItem`
 -- Creating non-clustered index for FOREIGN KEY 'FK_ItemListItem'
 
 CREATE INDEX `IX_FK_ItemListItem`
-    ON `item`
-    (`ItemListVNum`);
+    ON `iteminstance`
+    (`ItemVNum`);
 
 
 
@@ -496,7 +496,7 @@ CREATE INDEX `IX_FK_CharacterInventory`
 ALTER TABLE `inventory`
 ADD CONSTRAINT `FK_InventoryItem`
     FOREIGN KEY (`item_ItemId`)
-    REFERENCES `item`
+    REFERENCES `iteminstance`
         (`ItemId`)
     ON DELETE NO ACTION ON UPDATE NO ACTION;
 
