@@ -79,6 +79,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DB\Inventory.cs">
+      <DependentUpon>OpenNos.tt</DependentUpon>
+    </Compile>
     <Compile Include="DB\Item.cs">
       <DependentUpon>OpenNos.tt</DependentUpon>
     </Compile>
@@ -98,6 +101,9 @@
     <Compile Include="DB\Portal.cs">
       <DependentUpon>OpenNos.tt</DependentUpon>
     </Compile>
+    <Compile Include="InventoryDAO.cs" />
+    <Compile Include="ItemDAO.cs" />
+    <Compile Include="ItemListDAO.cs" />
     <Compile Include="MapDAO.cs" />
     <Compile Include="NpcDAO.cs" />
     <Compile Include="PortalDAO.cs" />
@@ -149,9 +155,12 @@
     </None>
     <None Include="DB\OpenNos.edmx.diagram">
       <DependentUpon>OpenNos.edmx</DependentUpon>
+      <SubType>Designer</SubType>
     </None>
     <None Include="packages.config" />
-    <None Include="Properties\SlowCheetah\SlowCheetah.Transforms.targets" />
+    <None Include="Properties\SlowCheetah\SlowCheetah.Transforms.targets">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Content Include="DB\OpenNos.Additional.sql" />

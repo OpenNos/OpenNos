@@ -44,7 +44,7 @@
 -- -----------------------------------------------------------
 -- Entity Designer DDL Script for MySQL Server 4.1 and higher
 -- -----------------------------------------------------------
--- Date Created: 12/18/2015 22:50:28
+-- Date Created: 12/21/2015 15:45:04
 
 -- Generated from EDMX file: C:\Users\ERWAN\Desktop\OpenNos GIT\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
 -- Target version: 3.0.0.0
@@ -73,6 +73,12 @@
 
 --    ALTER TABLE `npc` DROP CONSTRAINT `FK_NpcMap`;
 
+--    ALTER TABLE `item` DROP CONSTRAINT `FK_ItemListItem`;
+
+--    ALTER TABLE `inventory` DROP CONSTRAINT `FK_CharacterInventory`;
+
+--    ALTER TABLE `inventory` DROP CONSTRAINT `FK_InventoryItem`;
+
 
 -- --------------------------------------------------
 -- Dropping existing tables
@@ -92,6 +98,10 @@ SET foreign_key_checks = 0;
     DROP TABLE IF EXISTS `itemlist`;
 
     DROP TABLE IF EXISTS `npc`;
+
+    DROP TABLE IF EXISTS `item`;
+
+    DROP TABLE IF EXISTS `inventory`;
 
 SET foreign_key_checks = 1;
 
@@ -235,7 +245,12 @@ CREATE TABLE `itemlist`(
 	`ElementRate` smallint NOT NULL, 
 	`PvpDef` smallint NOT NULL, 
 	`DimOposantRez` smallint NOT NULL, 
-	`Colored` bool NOT NULL);
+	`HpRegen` longtext NOT NULL, 
+	`MpRegen` longtext NOT NULL, 
+	`MoreHp` smallint NOT NULL, 
+	`MoreMp` smallint NOT NULL, 
+	`Colored` bool NOT NULL, 
+	`isConsumable` bool NOT NULL);
 
 ALTER TABLE `itemlist` ADD PRIMARY KEY (VNum);
 
@@ -289,6 +304,19 @@ CREATE TABLE `item`(
 	`ItemListVNum` smallint NOT NULL);
 
 ALTER TABLE `item` ADD PRIMARY KEY (ItemId);
+
+
+
+
+
+CREATE TABLE `inventory`(
+	`InventoryId` bigint NOT NULL AUTO_INCREMENT UNIQUE, 
+	`CharacterId` bigint NOT NULL, 
+	`Type` smallint NOT NULL, 
+	`Slot` smallint NOT NULL, 
+	`item_ItemId` smallint NOT NULL);
+
+ALTER TABLE `inventory` ADD PRIMARY KEY (InventoryId);
 
 
 
@@ -442,6 +470,42 @@ ADD CONSTRAINT `FK_ItemListItem`
 CREATE INDEX `IX_FK_ItemListItem`
     ON `item`
     (`ItemListVNum`);
+
+
+
+-- Creating foreign key on `CharacterId` in table 'inventory'
+
+ALTER TABLE `inventory`
+ADD CONSTRAINT `FK_CharacterInventory`
+    FOREIGN KEY (`CharacterId`)
+    REFERENCES `character`
+        (`CharacterId`)
+    ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+
+-- Creating non-clustered index for FOREIGN KEY 'FK_CharacterInventory'
+
+CREATE INDEX `IX_FK_CharacterInventory`
+    ON `inventory`
+    (`CharacterId`);
+
+
+
+-- Creating foreign key on `item_ItemId` in table 'inventory'
+
+ALTER TABLE `inventory`
+ADD CONSTRAINT `FK_InventoryItem`
+    FOREIGN KEY (`item_ItemId`)
+    REFERENCES `item`
+        (`ItemId`)
+    ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+
+-- Creating non-clustered index for FOREIGN KEY 'FK_InventoryItem'
+
+CREATE INDEX `IX_FK_InventoryItem`
+    ON `inventory`
+    (`item_ItemId`);
 
 
 

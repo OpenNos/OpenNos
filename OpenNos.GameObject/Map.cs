@@ -22,6 +22,10 @@ namespace OpenNos.GameObject
         private List<Portal> _portals;
         private List<Npc> _npcs;
         private ThreadedBase<MapPacket> threadedBase;
+        public int dancing
+        {
+            get; set;
+        }
 
         #endregion
 

@@ -341,6 +341,17 @@ namespace OpenNos.GameObject
                 
             }
         }
+
+        public int isDancing;
+        public int IsDancing
+        {
+            get { return isDancing; }
+            set
+            {
+                isDancing = value;
+
+            }
+        }
         public int rested;
         public int Rested
         {
@@ -594,6 +605,12 @@ namespace OpenNos.GameObject
         {
             return String.Format("fs {0}", Faction);
 
+        }
+
+        public string Dance()
+        {
+            IsDancing = IsDancing == 0 ? 1 : 0;
+            return String.Empty;
         }
     }
 }

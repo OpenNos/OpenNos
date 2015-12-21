@@ -41,6 +41,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GeneralLogDTO.cs" />
+    <Compile Include="InventoryDTO.cs" />
+    <Compile Include="ItemDTO.cs" />
+    <Compile Include="ItemListDTO.cs" />
     <Compile Include="MapDTO.cs" />
     <Compile Include="NpcDTO.cs" />
     <Compile Include="PortalDTO.cs" />

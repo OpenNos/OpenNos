@@ -12,7 +12,7 @@ namespace OpenNos.GameObject
         private string packet;
         private ReceiverType all;
         #region Instantiation
-
+    
         public MapPacket(ClientSession session, string content, ReceiverType receiver)
         {
             Session = session;

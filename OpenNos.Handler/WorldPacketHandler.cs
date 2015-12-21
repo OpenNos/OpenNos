@@ -215,7 +215,7 @@ namespace OpenNos.Handler
         }
         public void ChangeMap()
         {
-
+            _session.CurrentMap = ServerManager.GetMap(_session.Character.MapId);
             _session.Client.SendPacket(_session.Character.GenerateCInfo());
             _session.Client.SendPacket(_session.Character.GenerateFaction());
             _session.Client.SendPacket(_session.Character.GenerateFd());
@@ -238,6 +238,15 @@ namespace OpenNos.Handler
 
             ChatManager.Instance.Broadcast(_session, _session.Character.GenerateIn(), ReceiverType.AllOnMap);
             ChatManager.Instance.Broadcast(_session, _session.Character.GenerateCMode(), ReceiverType.AllOnMap);
+            if (_session.CurrentMap.dancing == 2 && _session.Character.isDancing == 0)
+                ChatManager.Instance.RequiereBroadcastFromMap(_session.Character.MapId, "dance 2");
+            else if (_session.CurrentMap.dancing == 0 && _session.Character.isDancing == 1)
+            {
+                _session.Character.isDancing = 0;
+                ChatManager.Instance.RequiereBroadcastFromMap(_session.Character.MapId, "dance");
+
+            }
+
         }
         [Packet("pulse")]
         public void Pulse(string packet)
@@ -489,6 +498,7 @@ namespace OpenNos.Handler
             _session.Client.SendPacket(_session.Character.GenerateSay("$Kick USERNAME", 0));
             _session.Client.SendPacket(_session.Character.GenerateSay("$MapDance", 0));
             _session.Client.SendPacket(_session.Character.GenerateSay("$Effect EFFECTID", 0));
+            _session.Client.SendPacket(_session.Character.GenerateSay("$PlayMusic MUSIC", 0));
             _session.Client.SendPacket(_session.Character.GenerateSay("$Ban CHARACTERNAME", 0));
             _session.Client.SendPacket(_session.Character.GenerateSay("$Invisible", 0));
             _session.Client.SendPacket(_session.Character.GenerateSay("$Position", 0));
@@ -633,9 +643,21 @@ namespace OpenNos.Handler
         [Packet("$MapDance")]
         public void MapDance(string packet)
         {
-        
-                ChatManager.Instance.RequiereBroadcastFromMap(_session.Character.MapId,"guri 2 1 {0}"); 
-           
+            _session.CurrentMap.dancing = _session.CurrentMap.dancing == 0 ? 2 : 0;
+            if (_session.CurrentMap.dancing == 2)
+            {
+                _session.Character.Dance();
+                ChatManager.Instance.RequiereBroadcastFromAllMapUsers(_session, "Dance");
+                ChatManager.Instance.RequiereBroadcastFromMap(_session.Character.MapId, "dance 2");
+            }
+            else
+            {
+                _session.Character.Dance();
+                ChatManager.Instance.RequiereBroadcastFromAllMapUsers(_session, "Dance");
+                ChatManager.Instance.RequiereBroadcastFromMap(_session.Character.MapId, "dance");
+            }
+               
+
         }
         [Packet("$Invisible")]
         public void Invisible(string packet)
@@ -656,7 +678,20 @@ namespace OpenNos.Handler
                 }            
              
         }
-       
+        [Packet("$PlayMusic")]
+        public void PlayMusic(string packet)
+        {
+            string[] packetsplit = packet.Split(' ');
+            short arg = -1;
+            if (packetsplit.Length > 1)
+            {
+                short.TryParse(packetsplit[2], out arg);
+                if(arg > -1)
+                ChatManager.Instance.Broadcast(_session, String.Format("bgm {0}", arg), ReceiverType.AllOnMap);
+            }
+
+        }
+
         [Packet("$Morph")]
         public void Morph(string packet)
         {
