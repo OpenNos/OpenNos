@@ -18,6 +18,34 @@ namespace OpenNos.GameObject
         {
             Mapper.CreateMap<CharacterDTO, Character>();
             Mapper.CreateMap<Character, CharacterDTO>();
+            IEnumerable<InventoryDTO> inventorysDTO = DAOFactory.InventoryDAO.Load(CharacterId);
+            Inventory = new List<Inventory>();
+            foreach (InventoryDTO inventory in inventorysDTO)
+            {
+                ItemDTO itemDTO = DAOFactory.ItemDAO.LoadById(inventory.Item.ItemId);
+                Item item = new Item();
+
+                Inventory.Add(new GameObject.Inventory()
+                {
+                    CharacterId = inventory.CharacterId,
+
+                    Slot = inventory.Slot,
+                    InventoryId = inventory.InventoryId,
+                    Type = inventory.Type,
+                    Item = new GameObject.Item() {
+                        ItemId = item.ItemId, Dodge = item.Dodge,
+                        DistanceDef = item.DistanceDef, Level = item.Level,
+                        DarkElement = item.DarkElement, LightElement = item.LightElement, DamageMin = item.DamageMin,
+                        DamageMax = item.DamageMax, HitRate = item.HitRate, MagicDef = item.MagicDef, RangeDef = item.RangeDef,
+                        CriticalLuckRate = item.CriticalLuckRate, FireElement = item.FireElement, ElementRate = item.ElementRate, Concentrate = item.Concentrate,
+                        Amount = item.Amount, Color = item.Color,
+                        CriticalRate = item.CriticalRate, Rare = item.Rare, SlDefence = item.SlDefence
+                        , SlElement = item.SlElement, SlHit = item.SlHit, SlHP = item.SlHP, WaterElement = item.WaterElement, Upgrade = item.Upgrade,
+                        ItemListVNum = item.ItemListVNum
+                       
+                        },
+                });
+            }
         }
 
         private void OnPropertyChanged()
@@ -27,6 +55,17 @@ namespace OpenNos.GameObject
             //if (Name != null)
             //    DAOFactory.CharacterDAO.InsertOrUpdate(ref characterToUpdate);
 
+        }
+
+        private List<Inventory> inventory;
+        public List<Inventory> Inventory
+        {
+            get { return inventory; }
+            set
+            {
+                inventory = value;
+
+            }
         }
 
         private long characterId;
