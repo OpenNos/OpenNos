@@ -14,6 +14,12 @@ namespace OpenNos.DAL.EF.MySQL.DB
     
     public partial class ItemInstance
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public ItemInstance()
+        {
+            this.inventory = new HashSet<Inventory>();
+        }
+    
         public short ItemInstanceId { get; set; }
         public short DamageMinimum { get; set; }
         public short DamageMaximum { get; set; }
@@ -24,12 +30,12 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public short RangeDefence { get; set; }
         public short DistanceDefence { get; set; }
         public short MagicDefence { get; set; }
-        public string Dodge { get; set; }
+        public short Dodge { get; set; }
         public short ElementRate { get; set; }
         public short Upgrade { get; set; }
         public short Rare { get; set; }
-        public string Color { get; set; }
-        public string Amount { get; set; }
+        public short Color { get; set; }
+        public short Amount { get; set; }
         public short Level { get; set; }
         public short SlElement { get; set; }
         public short SlHit { get; set; }
@@ -41,7 +47,8 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public short FireElement { get; set; }
         public short ItemVNum { get; set; }
     
-        public virtual Inventory inventory { get; set; }
         public virtual Item item { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Inventory> inventory { get; set; }
     }
 }

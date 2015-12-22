@@ -44,7 +44,7 @@
 -- -----------------------------------------------------------
 -- Entity Designer DDL Script for MySQL Server 4.1 and higher
 -- -----------------------------------------------------------
--- Date Created: 12/22/2015 12:41:30
+-- Date Created: 12/22/2015 16:04:10
 
 -- Generated from EDMX file: C:\Users\ERWAN\Desktop\OpenNos GIT\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
 -- Target version: 3.0.0.0
@@ -75,9 +75,9 @@
 
 --    ALTER TABLE `inventory` DROP CONSTRAINT `FK_CharacterInventory`;
 
---    ALTER TABLE `inventory` DROP CONSTRAINT `FK_InventoryItem`;
-
 --    ALTER TABLE `iteminstance` DROP CONSTRAINT `FK_ItemInstanceItem`;
+
+--    ALTER TABLE `inventory` DROP CONSTRAINT `FK_InventoryItemInstance`;
 
 
 -- --------------------------------------------------
@@ -286,12 +286,12 @@ CREATE TABLE `iteminstance`(
 	`RangeDefence` smallint NOT NULL, 
 	`DistanceDefence` smallint NOT NULL, 
 	`MagicDefence` smallint NOT NULL, 
-	`Dodge` longtext NOT NULL, 
+	`Dodge` smallint NOT NULL, 
 	`ElementRate` smallint NOT NULL, 
 	`Upgrade` smallint NOT NULL, 
 	`Rare` smallint NOT NULL, 
-	`Color` longtext NOT NULL, 
-	`Amount` longtext NOT NULL, 
+	`Color` smallint NOT NULL, 
+	`Amount` smallint NOT NULL, 
 	`Level` smallint NOT NULL, 
 	`SlElement` smallint NOT NULL, 
 	`SlHit` smallint NOT NULL, 
@@ -314,7 +314,7 @@ CREATE TABLE `inventory`(
 	`CharacterId` bigint NOT NULL, 
 	`Type` smallint NOT NULL, 
 	`Slot` smallint NOT NULL, 
-	`iteminstance_ItemInstanceId` smallint NOT NULL);
+	`ItemInstanceId` smallint NOT NULL);
 
 ALTER TABLE `inventory` ADD PRIMARY KEY (InventoryId);
 
@@ -473,24 +473,6 @@ CREATE INDEX `IX_FK_CharacterInventory`
 
 
 
--- Creating foreign key on `iteminstance_ItemInstanceId` in table 'inventory'
-
-ALTER TABLE `inventory`
-ADD CONSTRAINT `FK_InventoryItem`
-    FOREIGN KEY (`iteminstance_ItemInstanceId`)
-    REFERENCES `iteminstance`
-        (`ItemInstanceId`)
-    ON DELETE NO ACTION ON UPDATE NO ACTION;
-
-
--- Creating non-clustered index for FOREIGN KEY 'FK_InventoryItem'
-
-CREATE INDEX `IX_FK_InventoryItem`
-    ON `inventory`
-    (`iteminstance_ItemInstanceId`);
-
-
-
 -- Creating foreign key on `ItemVNum` in table 'iteminstance'
 
 ALTER TABLE `iteminstance`
@@ -506,6 +488,24 @@ ADD CONSTRAINT `FK_ItemInstanceItem`
 CREATE INDEX `IX_FK_ItemInstanceItem`
     ON `iteminstance`
     (`ItemVNum`);
+
+
+
+-- Creating foreign key on `ItemInstanceId` in table 'inventory'
+
+ALTER TABLE `inventory`
+ADD CONSTRAINT `FK_InventoryItemInstance`
+    FOREIGN KEY (`ItemInstanceId`)
+    REFERENCES `iteminstance`
+        (`ItemInstanceId`)
+    ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+
+-- Creating non-clustered index for FOREIGN KEY 'FK_InventoryItemInstance'
+
+CREATE INDEX `IX_FK_InventoryItemInstance`
+    ON `inventory`
+    (`ItemInstanceId`);
 
 
 

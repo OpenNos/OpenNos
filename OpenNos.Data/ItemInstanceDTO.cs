@@ -19,12 +19,12 @@ namespace OpenNos.Data
         public short RangeDefence { get; set; }
         public short DistanceDefence { get; set; }
         public short MagicDefence { get; set; }
-        public string Dodge { get; set; }
+        public short Dodge { get; set; }
         public short ElementRate { get; set; }
         public short Upgrade { get; set; }
         public short Rare { get; set; }
-        public string Color { get; set; }
-        public string Amount { get; set; }
+        public short Color { get; set; }
+        public short Amount { get; set; }
         public short Level { get; set; }
         public short SlElement { get; set; }
         public short SlHit { get; set; }

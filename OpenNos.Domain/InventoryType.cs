@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace OpenNos.Domain
 {
-    public enum InventoryType : byte
+    public enum InventoryType : short
     {
         Wear = 0,
         Main = 1,
