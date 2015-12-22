@@ -239,11 +239,11 @@ namespace OpenNos.Handler
 
             ChatManager.Instance.Broadcast(_session, _session.Character.GenerateIn(), ReceiverType.AllOnMap);
             ChatManager.Instance.Broadcast(_session, _session.Character.GenerateCMode(), ReceiverType.AllOnMap);
-            if (_session.CurrentMap.dancing == 2 && _session.Character.isDancing == 0)
+            if (_session.CurrentMap.IsDancing == 2 && _session.Character._isDancing == 0)
                 ChatManager.Instance.RequiereBroadcastFromMap(_session.Character.MapId, "dance 2");
-            else if (_session.CurrentMap.dancing == 0 && _session.Character.isDancing == 1)
+            else if (_session.CurrentMap.IsDancing == 0 && _session.Character._isDancing == 1)
             {
-                _session.Character.isDancing = 0;
+                _session.Character._isDancing = 0;
                 ChatManager.Instance.RequiereBroadcastFromMap(_session.Character.MapId, "dance");
 
             }
@@ -651,8 +651,8 @@ namespace OpenNos.Handler
         [Packet("$MapDance")]
         public void MapDance(string packet)
         {
-            _session.CurrentMap.dancing = _session.CurrentMap.dancing == 0 ? 2 : 0;
-            if (_session.CurrentMap.dancing == 2)
+            _session.CurrentMap.IsDancing = _session.CurrentMap.IsDancing == 0 ? 2 : 0;
+            if (_session.CurrentMap.IsDancing == 2)
             {
                 _session.Character.Dance();
                 ChatManager.Instance.RequiereBroadcastFromAllMapUsers(_session, "Dance");
@@ -670,7 +670,7 @@ namespace OpenNos.Handler
         [Packet("$Invisible")]
         public void Invisible(string packet)
         {
-                _session.Character.invisible = _session.Character.invisible == 0 ? 1 : 0;
+                _session.Character._invisible = _session.Character._invisible == 0 ? 1 : 0;
                 ChangeMap();
             
         }
@@ -721,7 +721,7 @@ namespace OpenNos.Handler
                             _session.Character.Morph = arg[0];
                             _session.Character.MorphUpgrade = arg[1];
                             _session.Character.MorphUpgrade2 = arg[2];
-                            _session.Character.arenaWinner = arg[3];
+                            _session.Character._arenaWinner = arg[3];
                             ChatManager.Instance.Broadcast(_session, _session.Character.GenerateCMode(), ReceiverType.AllOnMap);
 
                         }

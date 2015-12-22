@@ -11,8 +11,6 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  */
-using AutoMapper;
-using OpenNos.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,39 +19,11 @@ using System.Threading.Tasks;
 
 namespace OpenNos.GameObject
 {
-    public class Npc : NpcDTO, IGameObject
+    public interface IGameObject
     {
-        #region Instantiation
-
-        public Npc()
-        {
-
-            Mapper.CreateMap<NpcDTO, Npc>();
-            Mapper.CreateMap<Npc, NpcDTO>();
-        }
-
-        #endregion
-
         #region Methods
 
-        public string GetNpcDialog()
-        {
-            string dialog = String.Empty;
-            if (false)// shop == true)
-            {
-                //open npcshop
-            }
-            else
-            {
-                dialog = String.Format("npc_req 2 {0} {1}", NpcId, Dialog);
-            }
-            return dialog;
-        }
-
-        public void Save()
-        {
-            throw new NotImplementedException();
-        }
+        void Save();
 
         #endregion
     }
