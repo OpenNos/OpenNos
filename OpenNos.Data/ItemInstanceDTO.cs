@@ -9,16 +9,16 @@ namespace OpenNos.Data
 {
     public class ItemInstanceDTO
     {
-        public short ItemId { get; set; }
-        public short DamageMin { get; set; }
-        public short DamageMax { get; set; }
+        public short ItemInstanceId { get; set; }
+        public short DamageMinimum { get; set; }
+        public short DamageMaximum { get; set; }
         public short Concentrate { get; set; }
         public short HitRate { get; set; }
         public short CriticalLuckRate { get; set; }
         public short CriticalRate { get; set; }
-        public short RangeDef { get; set; }
-        public short DistanceDef { get; set; }
-        public short MagicDef { get; set; }
+        public short RangeDefence { get; set; }
+        public short DistanceDefence { get; set; }
+        public short MagicDefence { get; set; }
         public string Dodge { get; set; }
         public short ElementRate { get; set; }
         public short Upgrade { get; set; }
@@ -34,6 +34,6 @@ namespace OpenNos.Data
         public short LightElement { get; set; }
         public short WaterElement { get; set; }
         public short FireElement { get; set; }
-        public short ItemListVNum { get; set; }
+        public short ItemVNum { get; set; }
     }
 }

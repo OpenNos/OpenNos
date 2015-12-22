@@ -311,11 +311,11 @@ namespace OpenNos.Handler
             {
                 foreach (Portal portal in ServerManager.GetMap(_session.Character.MapId).Portals)
                 {
-                    if (!teleported && _session.Character.MapY >= portal.SrcY - 1 && _session.Character.MapY <= portal.SrcY + 1 && _session.Character.MapX >= portal.SrcX - 1 && _session.Character.MapX <= portal.SrcX + 1)
+                    if (!teleported && _session.Character.MapY >= portal.SourceY - 1 && _session.Character.MapY <= portal.SourceY + 1 && _session.Character.MapX >= portal.SourceX - 1 && _session.Character.MapX <= portal.SourceX + 1)
                     {
-                        _session.Character.MapId = portal.DestMap;
-                        _session.Character.MapX = portal.DestX;
-                        _session.Character.MapY = portal.DestY;
+                        _session.Character.MapId = portal.DestinationMapId;
+                        _session.Character.MapX = portal.DestinationX;
+                        _session.Character.MapY = portal.DestinationY;
                         _session.Character.LastPortal = (((TimeSpan)(DateTime.Now - new DateTime(2010, 1, 1, 0, 0, 0))).TotalSeconds);
                         MapOut();
                         ChangeMap();
@@ -573,7 +573,7 @@ namespace OpenNos.Handler
             if (Byte.TryParse(packetsplit[2], out level) && level < 100 && level > 0)
             {
           
-                _session.Character.level = level;
+                _session.Character.Level = level;
                 _session.Character.Hp = (int)_session.Character.HPLoad();
                 _session.Character.Mp = (int)_session.Character.MPLoad();
                 _session.Client.SendPacket(_session.Character.GenerateStat());

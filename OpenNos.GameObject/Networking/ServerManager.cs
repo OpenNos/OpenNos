@@ -52,6 +52,7 @@ namespace OpenNos.GameObject
         {
             return _maps.SingleOrDefault(m => m.Value.MapId.Equals(id)).Value;
         }
+
         public static ConcurrentDictionary<Guid, Map> GetAllMap()
         {
             return _maps;

@@ -17,7 +17,7 @@ namespace OpenNos.DAL.EF.MySQL.DB
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Item()
         {
-            this.item = new HashSet<ItemInstance>();
+            this.iteminstance = new HashSet<ItemInstance>();
         }
     
         public short VNum { get; set; }
@@ -72,6 +72,6 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public bool isConsumable { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<ItemInstance> item { get; set; }
+        public virtual ICollection<ItemInstance> iteminstance { get; set; }
     }
 }

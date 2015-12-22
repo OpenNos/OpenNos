@@ -14,7 +14,7 @@ namespace OpenNos.DAL.EF.MySQL.DB
     
     public partial class ItemInstance
     {
-        public short ItemId { get; set; }
+        public short ItemInstanceId { get; set; }
         public short DamageMinimum { get; set; }
         public short DamageMaximum { get; set; }
         public short Concentrate { get; set; }
@@ -41,7 +41,7 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public short FireElement { get; set; }
         public short ItemVNum { get; set; }
     
-        public virtual Item itemlist { get; set; }
         public virtual Inventory inventory { get; set; }
+        public virtual Item item { get; set; }
     }
 }

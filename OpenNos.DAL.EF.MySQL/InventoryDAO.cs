@@ -34,21 +34,11 @@ namespace OpenNos.DAL.EF.MySQL
                 return Mapper.Map<InventoryDTO>(context.inventory.SingleOrDefault(i => i.Slot.Equals(slot) && i.Type.Equals(type) && i.CharacterId.Equals(characterId)));
             }
         }
-        public IEnumerable<InventoryDTO> Load(long characterId)
+        public IEnumerable<InventoryDTO> LoadByCharacterId(long characterId)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
                 foreach (Inventory inventoryobject in context.inventory.Where(i => i.CharacterId.Equals(characterId)))
-                {
-                    yield return Mapper.Map<InventoryDTO>(inventoryobject);
-                }
-            }
-        }
-        public IEnumerable<InventoryDTO> LoadBySlot(long characterId, short slot)
-        {
-            using (var context = DataAccessHelper.CreateContext())
-            {
-                foreach (Inventory inventoryobject in context.inventory.Where(i => i.Slot.Equals(slot) && i.CharacterId.Equals(characterId)))
                 {
                     yield return Mapper.Map<InventoryDTO>(inventoryobject);
                 }
