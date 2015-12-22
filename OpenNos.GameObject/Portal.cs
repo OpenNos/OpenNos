@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace OpenNos.GameObject
 {
-   public class Portal
+   public class Portal : PortalDTO
     {
         public Portal()
         {
@@ -16,21 +16,6 @@ namespace OpenNos.GameObject
             Mapper.CreateMap<PortalDTO, Portal>();
             Mapper.CreateMap<Portal, PortalDTO>();
         }
-        public int PortalId { get; set; }
-
-        public short SrcMap { get; set; }
-
-        public short SrcX { get; set; }
-
-        public short SrcY { get; set; }
-
-        public short DestMap { get; set; }
-
-        public short DestX { get; set; }
-
-        public short DestY { get; set; }
-
-        public short Type { get; set; }
 
     }
 }

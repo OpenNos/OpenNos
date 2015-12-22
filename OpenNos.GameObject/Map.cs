@@ -10,13 +10,11 @@ using AutoMapper;
 
 namespace OpenNos.GameObject
 {
-    public class Map
+    public class Map : MapDTO
     {
         #region Members
 
         private char[,] _grid;
-        private short _mapId;
-        private string Name { get; set; }
         private int _xLength;
         private int _yLength;
         private Guid _uniqueIdentifier;
@@ -38,27 +36,27 @@ namespace OpenNos.GameObject
             Mapper.CreateMap<Map, MapDTO>();
         
         threadedBase = new ThreadedBase<MapPacket>(500, HandlePacket);
-            _mapId = mapId;
+            MapId = mapId;
             _uniqueIdentifier = uniqueIdentifier;
             LoadZone();
-            IEnumerable<PortalDTO> portalsDTO = DAOFactory.PortalDAO.LoadFromMap(_mapId);
+            IEnumerable<PortalDTO> portalsDTO = DAOFactory.PortalDAO.LoadFromMap(MapId);
             _portals = new List<Portal>();
             foreach (PortalDTO portal in portalsDTO)
             {
                 _portals.Add( new GameObject.Portal()
                 {
-                    DestMap = portal.DestinationMapId,
-                    SrcMap = portal.SourceMapId,
-                    SrcX = portal.SourceX,
-                    SrcY = portal.SourceY,
-                    DestX = portal.DestinationX,
-                    DestY = portal.DestinationY,
+                    DestinationMapId = portal.DestinationMapId,
+                    SourceMapId = portal.SourceMapId,
+                    SourceX = portal.SourceX,
+                    SourceY = portal.SourceY,
+                    DestinationX = portal.DestinationX,
+                    DestinationY = portal.DestinationY,
                     Type = portal.Type,
                     PortalId = portal.PortalId
 
                 });
             }
-            IEnumerable<NpcDTO> npcsDTO = DAOFactory.NpcDAO.LoadFromMap(_mapId);
+            IEnumerable<NpcDTO> npcsDTO = DAOFactory.NpcDAO.LoadFromMap(MapId);
             _npcs = new List<Npc>();
             foreach (NpcDTO npc in npcsDTO)
             {
@@ -84,13 +82,7 @@ namespace OpenNos.GameObject
 
         #region Properties
 
-        public short MapId
-        {
-            get
-            {
-                return _mapId;
-            }
-        }
+      
        
         public EventHandler NotifyClients { get; set; }
 
@@ -125,7 +117,7 @@ namespace OpenNos.GameObject
 
         public void LoadZone()
         {
-            FileStream fsSource = new FileStream("Resource/zones/" + _mapId, FileMode.Open, FileAccess.Read);
+            FileStream fsSource = new FileStream("Resource/zones/" + MapId, FileMode.Open, FileAccess.Read);
 
             byte[] bytes = new byte[fsSource.Length];
             int numBytesToRead = 1;

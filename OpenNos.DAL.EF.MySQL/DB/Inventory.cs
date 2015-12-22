@@ -20,6 +20,6 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public short Slot { get; set; }
     
         public virtual Character character { get; set; }
-        public virtual ItemInstance item { get; set; }
+        public virtual ItemInstance iteminstance { get; set; }
     }
 }

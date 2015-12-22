@@ -43,10 +43,6 @@
       <End Role="Npc" EntitySet="npc" />
       <End Role="Map" EntitySet="map" />
     </AssociationSet>
-    <AssociationSet Name="ItemListItem" Association="opennosModel.Store.ItemListItem">
-      <End Role="Item" EntitySet="iteminstance" />
-      <End Role="ItemList" EntitySet="item" />
-    </AssociationSet>
     <AssociationSet Name="CharacterInventory" Association="opennosModel.Store.CharacterInventory">
       <End Role="Character" EntitySet="character" />
       <End Role="Inventory" EntitySet="inventory" />
@@ -54,6 +50,10 @@
     <AssociationSet Name="InventoryItem" Association="opennosModel.Store.InventoryItem">
       <End Role="Inventory" EntitySet="inventory" />
       <End Role="Item" EntitySet="iteminstance" />
+    </AssociationSet>
+    <AssociationSet Name="ItemInstanceItem" Association="opennosModel.Store.ItemInstanceItem">
+      <End Role="ItemInstance" EntitySet="iteminstance" />
+      <End Role="Item" EntitySet="item" />
     </AssociationSet>
   </EntityContainer>
   <EntityType Name="account">
@@ -202,9 +202,9 @@
   </EntityType>
   <EntityType Name="iteminstance">
     <Key>
-      <PropertyRef Name="ItemId" />
+      <PropertyRef Name="ItemInstanceId" />
     </Key>
-    <Property Name="ItemId" Type="smallint" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="ItemInstanceId" Type="smallint" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="DamageMinimum" Type="smallint" Nullable="false" />
     <Property Name="DamageMaximum" Type="smallint" Nullable="false" />
     <Property Name="Concentrate" Type="smallint" Nullable="false" />
@@ -239,7 +239,7 @@
     <Property Name="CharacterId" Type="bigint" Nullable="false" />
     <Property Name="Type" Type="smallint" Nullable="false" />
     <Property Name="Slot" Type="smallint" Nullable="false" />
-    <Property Name="item_ItemId" Type="smallint" Nullable="false" />
+    <Property Name="iteminstance_ItemInstanceId" Type="smallint" Nullable="false" />
   </EntityType>
   <Association Name="AccountCharacter">
     <End Role="Account" Type="opennosModel.Store.account" Multiplicity="1" />
@@ -325,18 +325,6 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="ItemListItem">
-    <End Role="Item" Type="opennosModel.Store.iteminstance" Multiplicity="*" />
-    <End Role="ItemList" Type="opennosModel.Store.item" Multiplicity="1" />
-    <ReferentialConstraint>
-      <Principal Role="ItemList">
-        <PropertyRef Name="VNum" />
-      </Principal>
-      <Dependent Role="Item">
-        <PropertyRef Name="ItemVNum" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
   <Association Name="CharacterInventory">
     <End Role="Character" Type="opennosModel.Store.character" Multiplicity="1" />
     <End Role="Inventory" Type="opennosModel.Store.inventory" Multiplicity="*" />
@@ -354,10 +342,22 @@
     <End Role="Item" Type="opennosModel.Store.iteminstance" Multiplicity="1" />
     <ReferentialConstraint>
       <Principal Role="Item">
-        <PropertyRef Name="ItemId" />
+        <PropertyRef Name="ItemInstanceId" />
       </Principal>
       <Dependent Role="Inventory">
-        <PropertyRef Name="item_ItemId" />
+        <PropertyRef Name="iteminstance_ItemInstanceId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="ItemInstanceItem">
+    <End Role="ItemInstance" Type="opennosModel.Store.iteminstance" Multiplicity="*" />
+    <End Role="Item" Type="opennosModel.Store.item" Multiplicity="1" />
+    <ReferentialConstraint>
+      <Principal Role="Item">
+        <PropertyRef Name="VNum" />
+      </Principal>
+      <Dependent Role="ItemInstance">
+        <PropertyRef Name="ItemVNum" />
       </Dependent>
     </ReferentialConstraint>
   </Association>
@@ -466,10 +466,6 @@
             <End Role="Map" EntitySet="map" />
           </AssociationSet>
           <EntitySet Name="iteminstance" EntityType="opennosModel.ItemInstance" />
-          <AssociationSet Name="ItemListItem" Association="opennosModel.ItemListItem">
-            <End Role="Item" EntitySet="iteminstance" />
-            <End Role="ItemList" EntitySet="item" />
-          </AssociationSet>
           <EntitySet Name="inventory" EntityType="opennosModel.Inventory" />
           <AssociationSet Name="CharacterInventory" Association="opennosModel.CharacterInventory">
             <End Role="Character" EntitySet="character" />
@@ -478,6 +474,10 @@
           <AssociationSet Name="InventoryItem" Association="opennosModel.InventoryItem">
             <End Role="Inventory" EntitySet="inventory" />
             <End Role="Item" EntitySet="iteminstance" />
+          </AssociationSet>
+          <AssociationSet Name="ItemInstanceItem" Association="opennosModel.ItemInstanceItem">
+            <End Role="ItemInstance" EntitySet="iteminstance" />
+            <End Role="Item" EntitySet="item" />
           </AssociationSet>
           </EntityContainer>
         <Association Name="AccountCharacter">
@@ -631,7 +631,7 @@
           <Property Name="MoreMp" Type="Int16" Nullable="false" />
           <Property Name="Colored" Type="Boolean" Nullable="false" />
           <Property Name="isConsumable" Type="Boolean" Nullable="false" />
-          <NavigationProperty Name="item" Relationship="opennosModel.ItemListItem" FromRole="ItemList" ToRole="Item" />
+          <NavigationProperty Name="iteminstance" Relationship="opennosModel.ItemInstanceItem" FromRole="Item" ToRole="ItemInstance" />
           </EntityType>
         <EntityType Name="Npc">
           <Key>
@@ -662,9 +662,9 @@
         </Association>
         <EntityType Name="ItemInstance">
           <Key>
-            <PropertyRef Name="ItemId" />
+            <PropertyRef Name="ItemInstanceId" />
           </Key>
-          <Property Name="ItemId" Type="Int16" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ItemInstanceId" Type="Int16" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="DamageMinimum" Type="Int16" Nullable="false" />
           <Property Name="DamageMaximum" Type="Int16" Nullable="false" />
           <Property Name="Concentrate" Type="Int16" Nullable="false" />
@@ -689,22 +689,10 @@
           <Property Name="LightElement" Type="Int16" Nullable="false" />
           <Property Name="WaterElement" Type="Int16" Nullable="false" />
           <Property Name="FireElement" Type="Int16" Nullable="false" />
-          <NavigationProperty Name="itemlist" Relationship="opennosModel.ItemListItem" FromRole="Item" ToRole="ItemList" />
-          <Property Name="ItemVNum" Type="Int16" Nullable="false" />
           <NavigationProperty Name="inventory" Relationship="opennosModel.InventoryItem" FromRole="Item" ToRole="Inventory" />
+          <NavigationProperty Name="item" Relationship="opennosModel.ItemInstanceItem" FromRole="ItemInstance" ToRole="Item" />
+          <Property Name="ItemVNum" Type="Int16" Nullable="false" />
           </EntityType>
-        <Association Name="ItemListItem">
-          <End Type="opennosModel.ItemInstance" Role="Item" Multiplicity="*" />
-          <End Type="opennosModel.Item" Role="ItemList" Multiplicity="1" />
-          <ReferentialConstraint>
-            <Principal Role="ItemList">
-              <PropertyRef Name="VNum" />
-            </Principal>
-            <Dependent Role="Item">
-              <PropertyRef Name="ItemVNum" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EntityType Name="Inventory">
           <Key>
             <PropertyRef Name="InventoryId" />
@@ -714,7 +702,7 @@
           <Property Name="Type" Type="Int16" Nullable="false" />
           <Property Name="Slot" Type="Int16" Nullable="false" />
           <NavigationProperty Name="character" Relationship="opennosModel.CharacterInventory" FromRole="Inventory" ToRole="Character" />
-          <NavigationProperty Name="item" Relationship="opennosModel.InventoryItem" FromRole="Inventory" ToRole="Item" />
+          <NavigationProperty Name="iteminstance" Relationship="opennosModel.InventoryItem" FromRole="Inventory" ToRole="Item" />
         </EntityType>
         <Association Name="CharacterInventory">
           <End Type="opennosModel.Character" Role="Character" Multiplicity="1" />
@@ -731,6 +719,18 @@
         <Association Name="InventoryItem">
           <End Type="opennosModel.Inventory" Role="Inventory" Multiplicity="0..1" />
           <End Type="opennosModel.ItemInstance" Role="Item" Multiplicity="1" />
+        </Association>
+        <Association Name="ItemInstanceItem">
+          <End Type="opennosModel.ItemInstance" Role="ItemInstance" Multiplicity="*" />
+          <End Type="opennosModel.Item" Role="Item" Multiplicity="1" />
+          <ReferentialConstraint>
+            <Principal Role="Item">
+              <PropertyRef Name="VNum" />
+            </Principal>
+            <Dependent Role="ItemInstance">
+              <PropertyRef Name="ItemVNum" />
+            </Dependent>
+          </ReferentialConstraint>
         </Association>
         </Schema>
     </edmx:ConceptualModels>
@@ -892,7 +892,7 @@
     <EntitySetMapping Name="iteminstance">
       <EntityTypeMapping TypeName="IsTypeOf(opennosModel.ItemInstance)">
         <MappingFragment StoreEntitySet="iteminstance">
-          <ScalarProperty Name="ItemId" ColumnName="ItemId" />
+          <ScalarProperty Name="ItemInstanceId" ColumnName="ItemInstanceId" />
           <ScalarProperty Name="DamageMinimum" ColumnName="DamageMinimum" />
           <ScalarProperty Name="DamageMaximum" ColumnName="DamageMaximum" />
           <ScalarProperty Name="Concentrate" ColumnName="Concentrate" />
@@ -933,7 +933,7 @@
     </EntitySetMapping>
     <AssociationSetMapping Name="InventoryItem" TypeName="opennosModel.InventoryItem" StoreEntitySet="inventory">
       <EndProperty Name="Item">
-        <ScalarProperty Name="ItemId" ColumnName="item_ItemId" />
+        <ScalarProperty Name="ItemInstanceId" ColumnName="iteminstance_ItemInstanceId" />
       </EndProperty>
       <EndProperty Name="Inventory">
         <ScalarProperty Name="InventoryId" ColumnName="InventoryId" />

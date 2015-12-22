@@ -1,4 +1,6 @@
-﻿using System;
+﻿using AutoMapper;
+using OpenNos.Data;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,14 +8,14 @@ using System.Threading.Tasks;
 
 namespace OpenNos.GameObject
 {
-    public class Account
+    public class Account : AccountDTO
     {
-        public long AccountId { get; set; }
+        public Account()
+        {
+            Mapper.CreateMap<AccountDTO, Account>();
+            Mapper.CreateMap<Account, AccountDTO>();
 
-        public string Name { get; set; }
-
-        public byte Authority { get; set; }
-
-        public string Password { get; set; }
+        }
     }
+
 }

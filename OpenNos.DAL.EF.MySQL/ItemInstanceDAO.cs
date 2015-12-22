@@ -31,7 +31,7 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                return Mapper.Map<ItemInstanceDTO>(context.iteminstance.SingleOrDefault(i => i.ItemId.Equals(ItemId)));
+                return Mapper.Map<ItemInstanceDTO>(context.iteminstance.SingleOrDefault(i => i.ItemInstanceId.Equals(ItemId)));
             }
         }
     }

@@ -12,18 +12,18 @@ using System.Threading.Tasks;
 
 namespace OpenNos.GameObject
 {
-    public class Character
+    public class Character : CharacterDTO
     {
         public Character()
         {
             Mapper.CreateMap<CharacterDTO, Character>();
             Mapper.CreateMap<Character, CharacterDTO>();
 
-            IEnumerable<InventoryDTO> inventorysDTO = DAOFactory.InventoryDAO.Load(CharacterId);
+            IEnumerable<InventoryDTO> inventorysDTO = DAOFactory.InventoryDAO.LoadByCharacterId(CharacterId);
             Inventory = new List<Inventory>();
             foreach (InventoryDTO inventory in inventorysDTO)
             {
-                ItemInstanceDTO itemDTO = DAOFactory.ItemDAO.LoadById(inventory.Item.ItemId);
+                ItemInstanceDTO itemDTO = DAOFactory.ItemDAO.LoadById(inventory.Item.ItemInstanceId);
                 ItemInstance item = new ItemInstance();
 
                 Inventory.Add(new GameObject.Inventory()
@@ -34,10 +34,10 @@ namespace OpenNos.GameObject
                     InventoryId = inventory.InventoryId,
                     Type = inventory.Type,
                     Item = new GameObject.ItemInstance() {
-                        ItemId = item.ItemId, Dodge = item.Dodge,
+                        ItemInstanceId = item.ItemInstanceId, Dodge = item.Dodge,
                         DistanceDefence = item.DistanceDefence, Level = item.Level,
                         DarkElement = item.DarkElement, LightElement = item.LightElement,
-                        DamageMinimum = item.DamageMinimum,
+                        DamageMinimum = item.DamageMaximum,
                         DamageMaximum = item.DamageMaximum, HitRate = item.HitRate, MagicDefence = item.MagicDefence, RangeDefence = item.RangeDefence,
                         CriticalLuckRate = item.CriticalLuckRate, FireElement = item.FireElement, ElementRate = item.ElementRate, Concentrate = item.Concentrate,
                         Amount = item.Amount, Color = item.Color,
@@ -70,218 +70,9 @@ namespace OpenNos.GameObject
             }
         }
 
-        private long characterId;
-        public long CharacterId
-        {
-            get { return characterId; }
-            set
-            {
-                characterId = value;
-                
-            }
-        }
-
-        public long accountId;
-        public long AccountId
-        {
-            get { return accountId; }
-            set
-            {
-                accountId = value;
-                
-            }
-        }
-        public string name;
-        public string Name
-        {
-            get { return name; }
-            set
-            {
-                name = value;
-                
-            }
-        }
-        public int faction;
-        public int Faction
-        {
-            get { return faction; }
-            set
-            {
-                faction = value;
-
-            }
-        }
-        public byte slot;
-        public byte Slot
-        {
-            get { return slot; }
-            set
-            {
-                slot = value;
-                
-            }
-        }
-        public byte gender;
-        public byte Gender
-        {
-            get { return gender; }
-            set
-            {
-                gender = value;
-                
-            }
-        }
-
-        public byte classobj;
-        public byte Class
-        {
-            get { return classobj; }
-            set
-            {
-                classobj = value;
-                
-            }
-        }
-        public byte hairStyle;
-        public byte HairStyle
-        {
-            get { return hairStyle; }
-            set
-            {
-                hairStyle = value;
-                
-            }
-        }
-        public byte hairColor;
-        public byte HairColor
-        {
-            get { return hairColor; }
-            set
-            {
-                hairColor = value;
-                
-            }
-        }
-        public short map;
-        public short MapId
-        {
-            get { return map; }
-            set
-            {
-                map = value;
-                
-            }
-        }
-        public short mapX;
-        public short MapX
-        {
-            get { return mapX; }
-            set
-            {
-                mapX = value;
-                
-            }
-        }
-        public short mapY;
-        public short MapY
-        {
-            get { return mapY; }
-            set
-            {
-                mapY = value;
-                
-            }
-        }
-        public int hp;
-        public int Hp
-        {
-            get { return hp; }
-            set
-            {
-                hp = value;
-                
-            }
-        }
-        public int mp;
-        public int Mp
-        {
-            get { return mp; }
-            set
-            {
-                mp = value;
-                
-            }
-        }
-        public long gold;
-        public long Gold
-        {
-            get { return gold; }
-            set
-            {
-                gold = value;
-                
-            }
-        }
-        public byte jobLevel;
-        public byte JobLevel
-        {
-            get { return jobLevel; }
-            set
-            {
-                jobLevel = value;
-                
-            }
-        }
-        public long jobLevelXp;
-        public long JobLevelXp
-        {
-            get { return jobLevelXp; }
-            set
-            {
-                jobLevelXp = value;
-                
-            }
-        }
-        public byte level;
-        public byte Level
-        {
-            get { return level; }
-            set
-            {
-                level = value;
-                
-            }
-        }
-        public long levelXp;
-        public long LevelXp
-        {
-            get { return levelXp; }
-            set
-            {
-                levelXp = value;
-                
-            }
-        }
-        public int reput;
-        public int Reput
-        {
-            get { return reput; }
-            set
-            {
-                reput = value;
-                
-            }
-        }
-        public int dignite;
-        public int Dignite
-        {
-            get { return dignite; }
-            set
-            {
-                dignite = value;
-                
-            }
-        }
+        
+      
+ 
         public int lastPulse;
         public int LastPulse
         {
@@ -404,16 +195,7 @@ namespace OpenNos.GameObject
             }
         }
 
-        public byte state;
-        public byte State
-        {
-            get { return state; }
-            set
-            {
-                state = value;
-                
-            }
-        }
+    
 
         public bool Update()
         {
@@ -439,7 +221,7 @@ namespace OpenNos.GameObject
         {
             List<String> gpList = new List<String>();
             foreach (Portal portal in ServerManager.GetMap(this.MapId).Portals)
-                gpList.Add(String.Format("gp {0} {1} {2} {3} {4}", portal.SrcX, portal.SrcY, portal.DestMap, portal.Type, 0));
+                gpList.Add(String.Format("gp {0} {1} {2} {3} {4}", portal.SourceX, portal.SourceY, portal.DestinationMapId, portal.Type, 0));
             return gpList;
         }
         public List<String> Generatein2()
@@ -628,7 +410,7 @@ namespace OpenNos.GameObject
 
         public string GenerateInfo(string message)
         {
-            string str2 = "info " + name + " ne joue pas.";
+            string str2 = "info " + Name + " ne joue pas.";
             return String.Format("info {0}", message);
         }
 
