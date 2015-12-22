@@ -196,6 +196,7 @@ namespace OpenNos.Handler
                     Speed = ServersData.SpeedData[characterDTO.Class]
                 };
             _session.Character.Update();
+            _session.Character.LoadInventory();
             DAOFactory.AccountDAO.WriteConnectionLog(_session.Character.AccountId, _session.Client.RemoteEndPoint.ToString(), _session.Character.CharacterId, "Connexion", "World");
             _session.CurrentMap = ServerManager.GetMap(_session.Character.MapId);
             _session.RegisterForMapNotification();
@@ -327,6 +328,8 @@ namespace OpenNos.Handler
             else
             {
                 _session.Client.SendPacket(String.Format("say 1 {0} 1 {1}", _session.Character.CharacterId, Language.Instance.GetMessageFromKey("CANT_MOVE")));
+                _session.Client.SendPacket(_session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("CANT_MOVE"),2));
+
             }
         }
         public void healthThread()
@@ -440,7 +443,12 @@ namespace OpenNos.Handler
             _session.Client.SendPacket(String.Format("bn 6 {0}", Language.Instance.GetMessageFromKey("BN6")));
 
             _session.Client.SendPacket(_session.Character.GenerateExts());
-
+            _session.Client.SendPacket(_session.Character.GenerateGold());
+            foreach(String inv in _session.Character.GenerateInventory())
+            {
+                if (inv.Length > 5)
+                    _session.Client.SendPacket(inv);
+            }
             //gidx
             _session.Client.SendPacket("mlinfo 3800 2000 100 0 0 10 0 Mélodie^du^printemps Bienvenue");
             //cond

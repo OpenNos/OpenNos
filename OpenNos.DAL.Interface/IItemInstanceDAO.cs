@@ -5,6 +5,6 @@ namespace  OpenNos.DAL.Interface
 {
     public interface IItemInstanceDAO
     {
-        ItemInstanceDTO LoadById(long ItemId);
+        ItemInstanceDTO LoadById(short ItemId);
     }
 }

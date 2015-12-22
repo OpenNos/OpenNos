@@ -22,8 +22,8 @@
         <EntityTypeShape EntityType="opennosModel.ItemInstance" Width="1.5" PointX="9.5" PointY="4.625" />
         <EntityTypeShape EntityType="opennosModel.Inventory" Width="1.5" PointX="6.25" PointY="6.375" />
         <AssociationConnector Association="opennosModel.CharacterInventory" />
-        <AssociationConnector Association="opennosModel.InventoryItem" />
         <AssociationConnector Association="opennosModel.ItemInstanceItem" />
+        <AssociationConnector Association="opennosModel.InventoryItemInstance" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
