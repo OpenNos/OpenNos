@@ -15,5 +15,6 @@ namespace OpenNos.GameObject
             Mapper.CreateMap<InventoryDTO, Inventory>();
             Mapper.CreateMap<Inventory, InventoryDTO>();
         }
+       public ItemInstance ItemInstance { get; set; }
     }
 }
