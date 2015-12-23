@@ -205,6 +205,7 @@ namespace OpenNos.Handler
                     MorphUpgrade2 = 0,
                     Direction = 0,
                     Rested = 0,
+                    BackPack = characterDTO.Backpack,
                     Speed = ServersData.SpeedData[characterDTO.Class]
                 };
             Session.Character.Update();

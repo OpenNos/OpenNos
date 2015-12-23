@@ -23,6 +23,10 @@ namespace OpenNos.GameObject
 {
     public class ItemInstance : ItemInstanceDTO, IGameObject
     {
+        public Item Item
+        {
+            get; set;
+        }
         #region Instantiation
 
         public ItemInstance()
@@ -30,7 +34,7 @@ namespace OpenNos.GameObject
             Mapper.CreateMap<ItemInstanceDTO, ItemInstance>();
             Mapper.CreateMap<ItemInstance, ItemInstanceDTO>();
         }
-
+      
         #endregion
 
         #region Methods
