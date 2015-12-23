@@ -220,6 +220,7 @@ namespace OpenNos.GameObject
 
             IEnumerable<InventoryDTO> inventorysDTO = DAOFactory.InventoryDAO.LoadByCharacterId(CharacterId);
             Inventory = new List<Inventory>();
+            Equipment = new List<Inventory>();
             foreach (InventoryDTO inventory in inventorysDTO)
             {
                 if (inventory.Type != (short)InventoryType.Equipment)
@@ -232,6 +233,16 @@ namespace OpenNos.GameObject
                         ItemInstanceId = inventory.ItemInstanceId,
                         
                 });
+                else
+                    Equipment.Add(new GameObject.Inventory(inventory.ItemInstanceId)
+                    {
+                        CharacterId = inventory.CharacterId,
+                        Slot = inventory.Slot,
+                        InventoryId = inventory.InventoryId,
+                        Type = inventory.Type,
+                        ItemInstanceId = inventory.ItemInstanceId,
+
+                    });
             }
         }
 
