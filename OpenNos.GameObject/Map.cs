@@ -1,4 +1,17 @@
-﻿using OpenNos.Core;
+﻿/*
+ * This file is part of the OpenNos Emulator Project. See AUTHORS file for Copyright information
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+using OpenNos.Core;
 using OpenNos.Data;
 using OpenNos.DAL;
 using System;
@@ -10,7 +23,7 @@ using AutoMapper;
 
 namespace OpenNos.GameObject
 {
-    public class Map : MapDTO
+    public class Map : MapDTO, IGameObject
     {
         #region Members
 
@@ -21,21 +34,17 @@ namespace OpenNos.GameObject
         private List<Portal> _portals;
         private List<Npc> _npcs;
         private ThreadedBase<MapPacket> threadedBase;
-        public int dancing
-        {
-            get; set;
-        }
 
         #endregion
 
         #region Instantiation
         public Map(short mapId, Guid uniqueIdentifier)
         {
-              
+
             Mapper.CreateMap<MapDTO, Map>();
             Mapper.CreateMap<Map, MapDTO>();
-        
-        threadedBase = new ThreadedBase<MapPacket>(500, HandlePacket);
+
+            threadedBase = new ThreadedBase<MapPacket>(500, HandlePacket);
             MapId = mapId;
             _uniqueIdentifier = uniqueIdentifier;
             LoadZone();
@@ -43,7 +52,7 @@ namespace OpenNos.GameObject
             _portals = new List<Portal>();
             foreach (PortalDTO portal in portalsDTO)
             {
-                _portals.Add( new GameObject.Portal()
+                _portals.Add(new GameObject.Portal()
                 {
                     DestinationMapId = portal.DestinationMapId,
                     SourceMapId = portal.SourceMapId,
@@ -62,18 +71,15 @@ namespace OpenNos.GameObject
             {
                 _npcs.Add(new GameObject.Npc()
                 {
-                Dialog = npc.Dialog,
-                MapId = npc.MapId,
-                MapX = npc.MapX,
-                MapY = npc.MapY,
-                Name = npc.Name,
-                Level = npc.Level,
-                NpcId = npc.NpcId,
-                Position = npc.Position,
-                Vnum = npc.Vnum
-                
-            
-
+                    Dialog = npc.Dialog,
+                    MapId = npc.MapId,
+                    MapX = npc.MapX,
+                    MapY = npc.MapY,
+                    Name = npc.Name,
+                    Level = npc.Level,
+                    NpcId = npc.NpcId,
+                    Position = npc.Position,
+                    Vnum = npc.Vnum
                 });
             }
         }
@@ -82,13 +88,8 @@ namespace OpenNos.GameObject
 
         #region Properties
 
-      
-       
         public EventHandler NotifyClients { get; set; }
 
-        #endregion
-
-        #region Methods
         public List<Portal> Portals
         {
             get
@@ -104,6 +105,11 @@ namespace OpenNos.GameObject
             }
         }
 
+        public int IsDancing { get; set; }
+
+        #endregion
+
+        #region Methods
 
         public bool IsBlockedZone(int x, int y)
         {
@@ -200,6 +206,11 @@ namespace OpenNos.GameObject
         {
             //pass thru to clients
             QueuePacket((MapPacket)sender);
+        }
+
+        public void Save()
+        {
+            throw new NotImplementedException();
         }
 
         #endregion
