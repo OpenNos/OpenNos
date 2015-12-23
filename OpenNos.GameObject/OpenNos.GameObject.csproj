@@ -64,7 +64,6 @@
     <Compile Include="Npc.cs" />
     <Compile Include="Portal.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="InventoryType.cs" />
     <Compile Include="ServersData.cs" />
   </ItemGroup>
   <ItemGroup>

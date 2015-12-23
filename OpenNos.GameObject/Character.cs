@@ -20,8 +20,17 @@ namespace OpenNos.GameObject
             Mapper.CreateMap<Character, CharacterDTO>();
 
         }
-        
-      
+
+        private List<Inventory> equipment;
+        public List<Inventory> Equipment
+        {
+            get { return equipment; }
+            set
+            {
+                equipment = value;
+
+            }
+        }
 
         private List<Inventory> inventory;
         public List<Inventory> Inventory
@@ -163,14 +172,15 @@ namespace OpenNos.GameObject
         {
             return String.Format("gold {0}", Gold); 
         }
-        public void LoadInventory()
+        public void LoadInventoryAndEquipment()
         {
 
             IEnumerable<InventoryDTO> inventorysDTO = DAOFactory.InventoryDAO.LoadByCharacterId(CharacterId);
             Inventory = new List<Inventory>();
+            Equipment = new List<Inventory>();
             foreach (InventoryDTO inventory in inventorysDTO)
             {
-               
+               if(inventory.Type != (short)InventoryType.Equipment)
                 Inventory.Add(new GameObject.Inventory()
                 {
                     CharacterId = inventory.CharacterId,
@@ -179,45 +189,54 @@ namespace OpenNos.GameObject
                     InventoryId = inventory.InventoryId,
                     Type = inventory.Type,
                     ItemInstanceId = inventory.ItemInstanceId,
-                });
+                    ItemInstance = (ItemInstance)DAOFactory.ItemInstanceDAO.LoadById(inventory.ItemInstanceId)
+
+            } as Inventory);
+                else
+                    Equipment.Add(new GameObject.Inventory()
+                    {
+                        CharacterId = inventory.CharacterId,
+
+                        Slot = inventory.Slot,
+                        InventoryId = inventory.InventoryId,
+                        Type = inventory.Type,
+                        ItemInstanceId = inventory.ItemInstanceId,
+                        ItemInstance = (ItemInstance)DAOFactory.ItemInstanceDAO.LoadById(inventory.ItemInstanceId)
+                    } as Inventory);
             }
         }
-        public List<String> GenerateInventory()
+        public List<String> GenerateStartupInventory()
         {
-            List<String> inventories = new List<String>();
-            String inv0 = "ivn 0", inv1 = "ivn 1", inv2 = "ivn 2", inv6 = "ivn 6", inv7 = "ivn 7", equipment = "";
+            List<String> inventoriesPacketString = new List<String>();
+            String inv0 = "inv 0", inv1 = "inv 1", inv2 = "inv 2", inv6 = "inv 6", inv7 = "inv 7";
            foreach(Inventory inv in Inventory)
             {
-                ItemInstanceDTO item = DAOFactory.ItemInstanceDAO.LoadById(inv.ItemInstanceId);
-
+                ItemDTO itemInfo = DAOFactory.ItemDAO.LoadById(inv.ItemInstance.ItemVNum);
                 switch (inv.Type)
                 {
                     case (short)InventoryType.Costume:
-                        inv7 += String.Format(" {0}.{1}.{2}.{3}", inv.Slot, item.ItemVNum, item.Rare, item.Upgrade);
+                        inv7 += String.Format(" {0}.{1}.{2}.{3}", inv.Slot, inv.ItemInstance.ItemVNum, inv.ItemInstance.Rare, inv.ItemInstance.Upgrade);
                         break;
                     case (short)InventoryType.Wear:
-                            inv0 += String.Format(" {0}.{1}.{2}.{3}", inv.Slot, item.ItemVNum, item.Rare, item.Upgrade);
+                        inv0 += String.Format(" {0}.{1}.{2}.{3}", inv.Slot, inv.ItemInstance.ItemVNum, inv.ItemInstance.Rare, ((itemInfo.Colored) ? inv.ItemInstance.Color: inv.ItemInstance.Upgrade));
                         break;
                     case (short)InventoryType.Main:
-                            inv1 += String.Format(" {0}.{1}.{2}.{3}", inv.Slot, item.ItemVNum, item.Rare, item.Upgrade);
+                        inv1 += String.Format(" {0}.{1}.{2}", inv.Slot, inv.ItemInstance.ItemVNum, inv.ItemInstance.Amount);
                         break;
                     case (short)InventoryType.Etc:
-                            inv2 += String.Format(" {0}.{1}.{2}", inv.Slot, item.ItemVNum, item.Amount);
+                            inv2 += String.Format(" {0}.{1}.{2}", inv.Slot, inv.ItemInstance.ItemVNum, inv.ItemInstance.Amount);
                         break;
                     case (short)InventoryType.Sp:
-                            inv6 += String.Format(" {0}.{1}.{2}.{3}", inv.Slot, item.ItemVNum, item.Rare, item.Upgrade);
-                        break;
-                    case (short)InventoryType.Equipment:
+                            inv6 += String.Format(" {0}.{1}.{2}.{3}", inv.Slot, inv.ItemInstance.ItemVNum, inv.ItemInstance.Rare, inv.ItemInstance.Upgrade);
                         break;
                 }
-              
-            }
-            inventories.Add(inv0);
-            inventories.Add(inv1);
-            inventories.Add(inv2);
-            inventories.Add(inv6);
-            inventories.Add(inv7);
-            return inventories;
+                }
+            inventoriesPacketString.Add(inv0 as String);
+            inventoriesPacketString.Add(inv1 as String);
+            inventoriesPacketString.Add(inv2 as String);
+            inventoriesPacketString.Add(inv6 as String);
+            inventoriesPacketString.Add(inv7 as String);
+            return inventoriesPacketString;
         }
         public bool Update()
         {
