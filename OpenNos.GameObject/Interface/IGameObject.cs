@@ -11,8 +11,6 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  */
-using AutoMapper;
-using OpenNos.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,13 +19,12 @@ using System.Threading.Tasks;
 
 namespace OpenNos.GameObject
 {
-    public class GeneralLog : GeneralLogDTO
+    public interface IGameObject
     {
-        public GeneralLog()
-        {
-            Mapper.CreateMap<GeneralLogDTO, GeneralLog>();
-            Mapper.CreateMap<GeneralLog, GeneralLogDTO>();
-        }
+        #region Methods
 
+        void Save();
+
+        #endregion
     }
 }

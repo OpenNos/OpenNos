@@ -1,4 +1,17 @@
-﻿using AutoMapper;
+﻿/*
+ * This file is part of the OpenNos Emulator Project. See AUTHORS file for Copyright information
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+using AutoMapper;
 using OpenNos.Core;
 using OpenNos.DAL;
 using OpenNos.Data;
@@ -12,8 +25,29 @@ using System.Threading.Tasks;
 
 namespace OpenNos.GameObject
 {
-    public class Character : CharacterDTO
+    public class Character : CharacterDTO, IGameObject
     {
+        #region Members
+
+        public int _lastPulse;
+        public double _lastPortal;
+        public int _morph;
+        public int _authority;
+        public int _invisible;
+        public int _speed;
+        public int _arenaWinner;
+        public int _morphUpgrade;
+        public int _morphUpgrade2;
+        public int _direction;
+        public int _isDancing;
+        public int _rested;
+
+        private List<Inventory> _inventory;
+
+        #endregion 
+
+        #region Instantiation
+
         public Character()
         {
             Mapper.CreateMap<CharacterDTO, Character>();
@@ -21,166 +55,157 @@ namespace OpenNos.GameObject
 
         }
 
-        private List<Inventory> equipment;
-        public List<Inventory> Equipment
-        {
-            get { return equipment; }
-            set
-            {
-                equipment = value;
+        #endregion
 
-            }
-        }
+        #region Properties
 
-        private List<Inventory> inventory;
         public List<Inventory> Inventory
         {
-            get { return inventory; }
+            get { return _inventory; }
             set
             {
-                inventory = value;
+                _inventory = value;
 
             }
         }
 
-        
-      
- 
-        public int lastPulse;
         public int LastPulse
         {
-            get { return lastPulse; }
+            get { return _lastPulse; }
             set
             {
-                lastPulse = value;
-                
+                _lastPulse = value;
+
             }
         }
-        public double lastPortal;
+
         public double LastPortal
         {
-            get { return lastPortal; }
+            get { return _lastPortal; }
             set
             {
-                lastPortal = value;
-                
+                _lastPortal = value;
+
             }
         }
-        public int sp;
+
         public int Morph
         {
-            get { return sp; }
+            get { return _morph; }
             set
             {
-                sp = value;
-                
+                _morph = value;
+
             }
         }
-        public int authority;
+
         public int Authority
         {
-            get { return authority; }
+            get { return _authority; }
             set
             {
-                authority = value;
-                
+                _authority = value;
+
             }
         }
-        public int invisible;
+
         public int Invisible
         {
-            get { return invisible; }
+            get { return _invisible; }
             set
             {
-                invisible = value;
-                
+                _invisible = value;
+
             }
         }
-        public int speed;
+
         public int Speed
         {
-            get { return speed; }
+            get { return _speed; }
             set
             {
-                speed = value;
-                
+                _speed = value;
+
             }
         }
-        public int arenaWinner;
+
         public int ArenaWinner
         {
-            get { return arenaWinner; }
+            get { return _arenaWinner; }
             set
             {
-                arenaWinner = value;
-                
+                _arenaWinner = value;
+
             }
         }
-        public int spUpgrade;
+
         public int MorphUpgrade
         {
-            get { return spUpgrade; }
+            get { return _morphUpgrade; }
             set
             {
-                spUpgrade = value;
-                
+                _morphUpgrade = value;
+
             }
         }
-        public int spUpgrade2;
+
         public int MorphUpgrade2
         {
-            get { return spUpgrade2; }
+            get { return _morphUpgrade2; }
             set
             {
-                spUpgrade2 = value;
-                
+                _morphUpgrade2 = value;
+
             }
         }
-        public int direction;
+
         public int Direction
         {
-            get { return direction; }
+            get { return _direction; }
             set
             {
-                direction = value;
-                
+                _direction = value;
+
             }
         }
 
-        public int isDancing;
         public int IsDancing
         {
-            get { return isDancing; }
+            get { return _isDancing; }
             set
             {
-                isDancing = value;
+                _isDancing = value;
 
             }
         }
-        public int rested;
+
         public int Rested
         {
-            get { return rested; }
+            get { return _rested; }
             set
             {
-                rested = value;
-                
+                _rested = value;
+
             }
         }
+
+        #endregion
+
+        #region Methods
 
         public String GenerateGold()
         {
-            return String.Format("gold {0}", Gold); 
+            return String.Format("gold {0}", Gold);
         }
-        public void LoadInventoryAndEquipment()
+
+        public void LoadInventory()
         {
 
             IEnumerable<InventoryDTO> inventorysDTO = DAOFactory.InventoryDAO.LoadByCharacterId(CharacterId);
             Inventory = new List<Inventory>();
-            Equipment = new List<Inventory>();
             foreach (InventoryDTO inventory in inventorysDTO)
             {
-               if(inventory.Type != (short)InventoryType.Equipment)
+
                 Inventory.Add(new GameObject.Inventory()
                 {
                     CharacterId = inventory.CharacterId,
@@ -189,55 +214,49 @@ namespace OpenNos.GameObject
                     InventoryId = inventory.InventoryId,
                     Type = inventory.Type,
                     ItemInstanceId = inventory.ItemInstanceId,
-                    ItemInstance = (ItemInstance)DAOFactory.ItemInstanceDAO.LoadById(inventory.ItemInstanceId)
-
-            } as Inventory);
-                else
-                    Equipment.Add(new GameObject.Inventory()
-                    {
-                        CharacterId = inventory.CharacterId,
-
-                        Slot = inventory.Slot,
-                        InventoryId = inventory.InventoryId,
-                        Type = inventory.Type,
-                        ItemInstanceId = inventory.ItemInstanceId,
-                        ItemInstance = (ItemInstance)DAOFactory.ItemInstanceDAO.LoadById(inventory.ItemInstanceId)
-                    } as Inventory);
+                });
             }
         }
-        public List<String> GenerateStartupInventory()
+
+        public List<String> GenerateInventory()
         {
-            List<String> inventoriesPacketString = new List<String>();
-            String inv0 = "inv 0", inv1 = "inv 1", inv2 = "inv 2", inv6 = "inv 6", inv7 = "inv 7";
-           foreach(Inventory inv in Inventory)
+            List<String> inventories = new List<String>();
+            String inv0 = "ivn 0", inv1 = "ivn 1", inv2 = "ivn 2", inv6 = "ivn 6", inv7 = "ivn 7", equipment = "";
+
+            foreach (Inventory inv in Inventory)
             {
-                ItemDTO itemInfo = DAOFactory.ItemDAO.LoadById(inv.ItemInstance.ItemVNum);
+                ItemInstanceDTO item = DAOFactory.ItemInstanceDAO.LoadById(inv.ItemInstanceId);
+
                 switch (inv.Type)
                 {
                     case (short)InventoryType.Costume:
-                        inv7 += String.Format(" {0}.{1}.{2}.{3}", inv.Slot, inv.ItemInstance.ItemVNum, inv.ItemInstance.Rare, inv.ItemInstance.Upgrade);
+                        inv7 += String.Format(" {0}.{1}.{2}.{3}", inv.Slot, item.ItemVNum, item.Rare, item.Upgrade);
                         break;
                     case (short)InventoryType.Wear:
-                        inv0 += String.Format(" {0}.{1}.{2}.{3}", inv.Slot, inv.ItemInstance.ItemVNum, inv.ItemInstance.Rare, ((itemInfo.Colored) ? inv.ItemInstance.Color: inv.ItemInstance.Upgrade));
+                        inv0 += String.Format(" {0}.{1}.{2}.{3}", inv.Slot, item.ItemVNum, item.Rare, item.Upgrade);
                         break;
                     case (short)InventoryType.Main:
-                        inv1 += String.Format(" {0}.{1}.{2}", inv.Slot, inv.ItemInstance.ItemVNum, inv.ItemInstance.Amount);
+                        inv1 += String.Format(" {0}.{1}.{2}.{3}", inv.Slot, item.ItemVNum, item.Rare, item.Upgrade);
                         break;
                     case (short)InventoryType.Etc:
-                            inv2 += String.Format(" {0}.{1}.{2}", inv.Slot, inv.ItemInstance.ItemVNum, inv.ItemInstance.Amount);
+                        inv2 += String.Format(" {0}.{1}.{2}", inv.Slot, item.ItemVNum, item.Amount);
                         break;
                     case (short)InventoryType.Sp:
-                            inv6 += String.Format(" {0}.{1}.{2}.{3}", inv.Slot, inv.ItemInstance.ItemVNum, inv.ItemInstance.Rare, inv.ItemInstance.Upgrade);
+                        inv6 += String.Format(" {0}.{1}.{2}.{3}", inv.Slot, item.ItemVNum, item.Rare, item.Upgrade);
+                        break;
+                    case (short)InventoryType.Equipment:
                         break;
                 }
-                }
-            inventoriesPacketString.Add(inv0 as String);
-            inventoriesPacketString.Add(inv1 as String);
-            inventoriesPacketString.Add(inv2 as String);
-            inventoriesPacketString.Add(inv6 as String);
-            inventoriesPacketString.Add(inv7 as String);
-            return inventoriesPacketString;
+
+            }
+            inventories.Add(inv0);
+            inventories.Add(inv1);
+            inventories.Add(inv2);
+            inventories.Add(inv6);
+            inventories.Add(inv7);
+            return inventories;
         }
+
         public bool Update()
         {
             try
@@ -265,17 +284,20 @@ namespace OpenNos.GameObject
                 gpList.Add(String.Format("gp {0} {1} {2} {3} {4}", portal.SourceX, portal.SourceY, portal.DestinationMapId, portal.Type, 0));
             return gpList;
         }
+
         public List<String> Generatein2()
         {
             List<String> in2List = new List<String>();
             foreach (Npc npc in ServerManager.GetMap(this.MapId).Npcs)
-                in2List.Add(String.Format("in 2 {0} {1} {2} {3} {4} 100 100 9632 0 0 - 1 1 0 - 1 - 0 - 1 0 0 0 0 0 0 0 0", npc.Vnum, npc.NpcId,npc.MapX,npc.MapY,npc.Position));
+                in2List.Add(String.Format("in 2 {0} {1} {2} {3} {4} 100 100 9632 0 0 - 1 1 0 - 1 - 0 - 1 0 0 0 0 0 0 0 0", npc.Vnum, npc.NpcId, npc.MapX, npc.MapY, npc.Position));
             return in2List;
         }
+
         public string GenerateFd()
         {
             return String.Format("fd {0} {1} {2} {3}", Reput, GetReputIco(), Dignite, Math.Abs(GetDigniteIco()));
         }
+
         public string GenerateMapOut()
         {
             return String.Format("mapout");
@@ -285,6 +307,7 @@ namespace OpenNos.GameObject
         {
             return String.Format("out 1 {0}", CharacterId);
         }
+
         public double HPLoad()
         {
             return ServersData.HPData[Class, Level];
@@ -300,7 +323,6 @@ namespace OpenNos.GameObject
             return ServersData.SpXPData[JobLevel - 1];
         }
 
-
         public double XPLoad()
         {
             return ServersData.XPData[Level - 1];
@@ -308,18 +330,20 @@ namespace OpenNos.GameObject
 
         public int HealthHPLoad()
         {
-            if (rested == 1)
+            if (_rested == 1)
                 return ServersData.HpHealth[Class];
             else
                 return ServersData.HpHealthStand[Class];
         }
+
         public int HealthMPLoad()
         {
-            if (rested == 1)
+            if (_rested == 1)
                 return ServersData.MpHealth[Class];
             else
                 return ServersData.MpHealthStand[Class];
         }
+
         public double JobXPLoad()
         {
             if (Class == (byte)ClassType.Adventurer)
@@ -353,7 +377,6 @@ namespace OpenNos.GameObject
                 icoDignite = 6;
 
             return icoDignite;
-
         }
 
         public int GetReputIco()
@@ -368,37 +391,31 @@ namespace OpenNos.GameObject
         public string GenerateTit()
         {
             return String.Format("tit {0} {1}", Language.Instance.GetMessageFromKey(Class == (byte)ClassType.Adventurer ? ClassType.Adventurer.ToString().ToUpper() : Class == (byte)ClassType.Swordman ? ClassType.Swordman.ToString().ToUpper() : Class == (byte)ClassType.Archer ? ClassType.Archer.ToString().ToUpper() : ClassType.Magician.ToString().ToUpper()), Name);
-
         }
 
         public string GenerateStat()
         {
             //TODO add max HP MP
             return String.Format("stat {0} {1} {2} {3} 0 1024", Hp, HPLoad(), Mp, MPLoad());
-
         }
 
         public string GenerateAt()
         {
             return String.Format("at {0} {1} {2} {3} 2 0 0 1", CharacterId, MapId, MapX, MapY);
-
         }
         public string GenerateReqInfo()
         {
-            return String.Format("tc_info {0} {1} {2} {3} {4} {9} 0 {8} {5} {6} 0 0 1 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 {7}", Level, Name, 0, 0, Class, GetReputIco(), GetDigniteIco(),Language.Instance.GetMessageFromKey("NO_PREZ_MESSAGE"), Language.Instance.GetMessageFromKey("NO_FAMILY"),Gender);
-
+            return String.Format("tc_info {0} {1} {2} {3} {4} {9} 0 {8} {5} {6} 0 0 1 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 {7}", Level, Name, 0, 0, Class, GetReputIco(), GetDigniteIco(), Language.Instance.GetMessageFromKey("NO_PREZ_MESSAGE"), Language.Instance.GetMessageFromKey("NO_FAMILY"), Gender);
         }
-        
+
         public string GenerateCMap()
         {
             return String.Format("c_map 0 {0} 1", MapId);
-
         }
 
         public string GenerateCond()
         {
             return String.Format("cond 1 {0} 0 0 {1}", CharacterId, Speed);
-
         }
 
         public string GenerateExts()
@@ -409,24 +426,21 @@ namespace OpenNos.GameObject
         public string GenerateMv(int x, int y)
         {
             return String.Format("mv 1 {0} {1} {2} {3}", CharacterId, x, y, Speed);
-
         }
+
         public string GenerateCMode()
         {
             return String.Format("c_mode 1 {0} {1} {2} {3} {4}", CharacterId, Morph, MorphUpgrade, MorphUpgrade2, ArenaWinner);
-
         }
 
         public string GenerateSay(string message, int type)
         {
             return String.Format("say 1 {0} {1} {2}", CharacterId, type, message);
-
         }
 
         public string GenerateIn()
         {
-            return String.Format("in 1 {0} - {1} {2} {3} {4} {5} {6} {7} {8} {9} -1.-1.-1.-1.-1.-1.-1.-1 {10} {11} {12} -1 0 0 0 0 0 0 0 0 -1 - {13} {16} 0 0 0 {14} 0 {15} 0 10", Name, CharacterId, MapX, MapY, Direction, (Authority == 2 ? 2 : 0), Gender, HairStyle, HairColor, Class, (int)((Hp / HPLoad()) * 100), (int)((Mp / MPLoad()) * 100), rested, (GetDigniteIco() == 1) ? GetReputIco() : -GetDigniteIco(), ArenaWinner, 0, invisible);
-
+            return String.Format("in 1 {0} - {1} {2} {3} {4} {5} {6} {7} {8} {9} -1.-1.-1.-1.-1.-1.-1.-1 {10} {11} {12} -1 0 0 0 0 0 0 0 0 -1 - {13} {16} 0 0 0 {14} 0 {15} 0 10", Name, CharacterId, MapX, MapY, Direction, (Authority == 2 ? 2 : 0), Gender, HairStyle, HairColor, Class, (int)((Hp / HPLoad()) * 100), (int)((Mp / MPLoad()) * 100), _rested, (GetDigniteIco() == 1) ? GetReputIco() : -GetDigniteIco(), ArenaWinner, 0, _invisible);
         }
 
         public string GenerateRest()
@@ -462,13 +476,12 @@ namespace OpenNos.GameObject
 
         public string GenerateEq()
         {
-             return String.Format("eq {0} {1} {2} {3} {4} {5} -1.-1.-1.-1.-1.-1.-1.-1 0 0", CharacterId, (Authority == 2 ? 2 : 0),Gender,HairStyle,HairColor,Class);
+            return String.Format("eq {0} {1} {2} {3} {4} {5} -1.-1.-1.-1.-1.-1.-1.-1 0 0", CharacterId, (Authority == 2 ? 2 : 0), Gender, HairStyle, HairColor, Class);
         }
 
         public string GenerateFaction()
         {
             return String.Format("fs {0}", Faction);
-
         }
 
         public string Dance()
@@ -476,5 +489,12 @@ namespace OpenNos.GameObject
             IsDancing = IsDancing == 0 ? 1 : 0;
             return String.Empty;
         }
+
+        public void Save()
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
     }
 }
