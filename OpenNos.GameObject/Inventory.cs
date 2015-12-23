@@ -23,8 +23,11 @@ namespace OpenNos.GameObject
 {
     public class Inventory : InventoryDTO, IGameObject
     {
-        #region Instantiation
+        ItemInstance ItemInstance {
+            get; set; }
 
+        #region Instantiation
+        
         public Inventory()
         {
             Mapper.CreateMap<InventoryDTO, Inventory>();
