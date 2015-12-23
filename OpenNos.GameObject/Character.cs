@@ -29,21 +29,21 @@ namespace OpenNos.GameObject
     {
         #region Members
 
-        public int _lastPulse;
-        public double _lastPortal;
-        public int _morph;
-        public int _authority;
-        public int _invisible;
-        public int _speed;
-        public int _arenaWinner;
-        public int _morphUpgrade;
-        public int _morphUpgrade2;
-        public int _direction;
-        public int _isDancing;
-        public int _rested;
+        private int _lastPulse;
+        private double _lastPortal;
+        private int _morph;
+        private int _authority;
+        private int _invisible;
+        private int _speed;
+        private int _arenaWinner;
+        private int _morphUpgrade;
+        private int _morphUpgrade2;
+        private int _direction;
+        private int _isDancing;
+        private int _rested;
 
         private List<Inventory> _inventory;
-
+        private List<Inventory> _equipment;
         #endregion 
 
         #region Instantiation
@@ -68,7 +68,15 @@ namespace OpenNos.GameObject
 
             }
         }
+        public List<Inventory> Equipment
+        {
+            get { return _equipment; }
+            set
+            {
+                _equipment = value;
 
+            }
+        }
         public int LastPulse
         {
             get { return _lastPulse; }
@@ -205,7 +213,7 @@ namespace OpenNos.GameObject
             Inventory = new List<Inventory>();
             foreach (InventoryDTO inventory in inventorysDTO)
             {
-
+                if(inventory.Type != (short)InventoryType.Equipment)
                 Inventory.Add(new GameObject.Inventory()
                 {
                     CharacterId = inventory.CharacterId,
@@ -218,10 +226,10 @@ namespace OpenNos.GameObject
             }
         }
 
-        public List<String> GenerateInventory()
+        public List<String> GenerateStartupInventory()
         {
-            List<String> inventories = new List<String>();
-            String inv0 = "ivn 0", inv1 = "ivn 1", inv2 = "ivn 2", inv6 = "ivn 6", inv7 = "ivn 7", equipment = "";
+            List<String> inventoriesStringPacket = new List<String>();
+            String inv0 = "ivn 0", inv1 = "ivn 1", inv2 = "ivn 2", inv6 = "ivn 6", inv7 = "ivn 7";
 
             foreach (Inventory inv in Inventory)
             {
@@ -236,7 +244,7 @@ namespace OpenNos.GameObject
                         inv0 += String.Format(" {0}.{1}.{2}.{3}", inv.Slot, item.ItemVNum, item.Rare, item.Upgrade);
                         break;
                     case (short)InventoryType.Main:
-                        inv1 += String.Format(" {0}.{1}.{2}.{3}", inv.Slot, item.ItemVNum, item.Rare, item.Upgrade);
+                        inv1 += String.Format(" {0}.{1}.{2}", inv.Slot, item.ItemVNum, item.Amount);
                         break;
                     case (short)InventoryType.Etc:
                         inv2 += String.Format(" {0}.{1}.{2}", inv.Slot, item.ItemVNum, item.Amount);
@@ -249,12 +257,12 @@ namespace OpenNos.GameObject
                 }
 
             }
-            inventories.Add(inv0);
-            inventories.Add(inv1);
-            inventories.Add(inv2);
-            inventories.Add(inv6);
-            inventories.Add(inv7);
-            return inventories;
+            inventoriesStringPacket.Add(inv0 as String);
+            inventoriesStringPacket.Add(inv1 as String);
+            inventoriesStringPacket.Add(inv2 as String);
+            inventoriesStringPacket.Add(inv6 as String);
+            inventoriesStringPacket.Add(inv7 as String);
+            return inventoriesStringPacket;
         }
 
         public bool Update()
