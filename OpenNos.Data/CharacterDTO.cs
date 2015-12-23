@@ -65,6 +65,8 @@ namespace OpenNos.Data
 
         public byte State { get; set; }
 
+        public int Backpack { get; set; }
+
         public CharacterState StateEnum
         {
             get

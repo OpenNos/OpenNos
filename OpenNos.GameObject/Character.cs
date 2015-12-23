@@ -41,6 +41,7 @@ namespace OpenNos.GameObject
         private int _direction;
         private int _isDancing;
         private int _rested;
+        private int _backpack;
 
         private List<Inventory> _inventory;
         private List<Inventory> _equipment;
@@ -186,7 +187,15 @@ namespace OpenNos.GameObject
 
             }
         }
+        public int BackPack
+        {
+            get { return _backpack; }
+            set
+            {
+                _backpack = value;
 
+            }
+        }
         public int Rested
         {
             get { return _rested; }
@@ -213,15 +222,15 @@ namespace OpenNos.GameObject
             Inventory = new List<Inventory>();
             foreach (InventoryDTO inventory in inventorysDTO)
             {
-                if(inventory.Type != (short)InventoryType.Equipment)
-                Inventory.Add(new GameObject.Inventory()
-                {
-                    CharacterId = inventory.CharacterId,
-
-                    Slot = inventory.Slot,
-                    InventoryId = inventory.InventoryId,
-                    Type = inventory.Type,
-                    ItemInstanceId = inventory.ItemInstanceId,
+                if (inventory.Type != (short)InventoryType.Equipment)
+                    Inventory.Add(new GameObject.Inventory(inventory.ItemInstanceId)
+                    {
+                        CharacterId = inventory.CharacterId,
+                        Slot = inventory.Slot,
+                        InventoryId = inventory.InventoryId,
+                        Type = inventory.Type,
+                        ItemInstanceId = inventory.ItemInstanceId,
+                        
                 });
             }
         }
@@ -233,24 +242,23 @@ namespace OpenNos.GameObject
 
             foreach (Inventory inv in Inventory)
             {
-                ItemInstanceDTO item = DAOFactory.ItemInstanceDAO.LoadById(inv.ItemInstanceId);
-
+              
                 switch (inv.Type)
                 {
                     case (short)InventoryType.Costume:
-                        inv7 += String.Format(" {0}.{1}.{2}.{3}", inv.Slot, item.ItemVNum, item.Rare, item.Upgrade);
+                        inv7 += String.Format(" {0}.{1}.{2}.{3}", inv.Slot, inv.ItemInstance.ItemVNum, inv.ItemInstance.Rare, inv.ItemInstance.Upgrade);
                         break;
                     case (short)InventoryType.Wear:
-                        inv0 += String.Format(" {0}.{1}.{2}.{3}", inv.Slot, item.ItemVNum, item.Rare, item.Upgrade);
+                        inv0 += String.Format(" {0}.{1}.{2}.{3}", inv.Slot, inv.ItemInstance.ItemVNum, inv.ItemInstance.Rare, inv.ItemInstance.Item.Colored ? inv.ItemInstance.Color:inv.ItemInstance.Upgrade);
                         break;
                     case (short)InventoryType.Main:
-                        inv1 += String.Format(" {0}.{1}.{2}", inv.Slot, item.ItemVNum, item.Amount);
+                        inv1 += String.Format(" {0}.{1}.{2}", inv.Slot, inv.ItemInstance.ItemVNum, inv.ItemInstance.Amount);
                         break;
                     case (short)InventoryType.Etc:
-                        inv2 += String.Format(" {0}.{1}.{2}", inv.Slot, item.ItemVNum, item.Amount);
+                        inv2 += String.Format(" {0}.{1}.{2}", inv.Slot, inv.ItemInstance.ItemVNum, inv.ItemInstance.Amount);
                         break;
                     case (short)InventoryType.Sp:
-                        inv6 += String.Format(" {0}.{1}.{2}.{3}", inv.Slot, item.ItemVNum, item.Rare, item.Upgrade);
+                        inv6 += String.Format(" {0}.{1}.{2}.{3}", inv.Slot, inv.ItemInstance.ItemVNum, inv.ItemInstance.Rare, inv.ItemInstance.Upgrade);
                         break;
                     case (short)InventoryType.Equipment:
                         break;
@@ -428,7 +436,8 @@ namespace OpenNos.GameObject
 
         public string GenerateExts()
         {
-            return String.Format("exts 0 48 48 48");
+            return String.Format("exts 0 {0} {0} {0}", 48 + BackPack * 12);
+                
         }
 
         public string GenerateMv(int x, int y)

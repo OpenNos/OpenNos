@@ -23,12 +23,12 @@ namespace OpenNos.GameObject
 {
    public class Item : ItemDTO
     {
+        private short itemVNum;
+
         public Item()
         {
             Mapper.CreateMap<ItemDTO, Item>();
             Mapper.CreateMap<Item, ItemDTO>();
         }
-      
-
     }
 }
