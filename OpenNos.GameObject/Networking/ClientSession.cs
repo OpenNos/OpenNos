@@ -184,9 +184,9 @@ namespace OpenNos.GameObject
 
 
 
-            foreach (string packet in packetConcatenated.Split(new char[] { (char)0xFF }, StringSplitOptions.RemoveEmptyEntries))
+            foreach (string packet in packetConcatenated.Split(new char[] { (char)0xFF}, StringSplitOptions.RemoveEmptyEntries))
             {
-                string[] packetsplit = packet.Split(' ');
+                string[] packetsplit = packet.Split(' ', '^');
 
                 if (packetsplit[1] != "0")
                     Logger.Log.DebugFormat(Language.Instance.GetMessageFromKey("MESSAGE_RECEIVED"), packet, _client.ClientId);
@@ -223,7 +223,7 @@ namespace OpenNos.GameObject
                             _waitForPacketList.Add(packet);
                             _waitForPacketsAmount = null;
                             string queuedPackets = String.Join(" ", _waitForPacketList.ToArray());
-                            string header = queuedPackets.Split(' ')[1];
+                            string header = queuedPackets.Split(' ', '^')[1];
                             TriggerHandler(header, queuedPackets, true);
                             _waitForPacketList.Clear();
                             return;
@@ -231,7 +231,7 @@ namespace OpenNos.GameObject
                     }
                     else
                     {
-                        string packetHeader = packet.Split(' ')[1];
+                        string packetHeader = packet.Split(' ', '^')[1];
                         //0 is a keep alive packet with no content to handle
                         int permit = 1;
                         if (packetHeader[0] == '$')

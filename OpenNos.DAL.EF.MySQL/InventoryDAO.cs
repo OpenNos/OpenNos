@@ -122,5 +122,20 @@ namespace OpenNos.DAL.EF.MySQL
             return Mapper.Map<InventoryDTO>(entity);
         }
 
+        public short getFirstPlace(long characterId, byte type,int backpack)
+        {
+            using (var context = DataAccessHelper.CreateContext())
+            {
+               Inventory result;
+                for (short i = 0; i < 48 + backpack * 12; i++)
+                {
+                    result = context.inventory.SingleOrDefault(c => c.CharacterId.Equals(characterId) && c.Type.Equals(type) && c.Slot.Equals(i));
+                    if (result == null)
+                        return i;
+                }
+                   
+            }
+            return -1;
+        }
     }
 }

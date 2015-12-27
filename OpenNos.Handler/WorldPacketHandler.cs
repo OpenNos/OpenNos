@@ -480,6 +480,40 @@ namespace OpenNos.Handler
 
 
         }
+        [Packet("b_i")]
+        public void askToDelete(string packet)
+        {
+            string[] packetsplit = packet.Split(' ');
+            short type; short.TryParse(packetsplit[2], out type);
+            short slot; short.TryParse(packetsplit[3], out slot);
+            Session.Client.SendPacket(Session.Character.GenerateDialog(String.Format("#b_i^{0}^{1}^1 #b_i^0^0^5 {2}",type, slot,Language.Instance.GetMessageFromKey("ASK_TO_DELETE"))));
+           // DeleteItem(type, slot);
+        }
+        [Packet("#b_i")]
+        public void answerToDelete(string packet)
+        {
+            string[] packetsplit = packet.Split(' ','^');
+            short type; short.TryParse(packetsplit[2], out type);
+            short slot; short.TryParse(packetsplit[3], out slot);
+
+            if (Convert.ToInt32(packetsplit[4]) == 1)
+            {
+                Session.Client.SendPacket(Session.Character.GenerateDialog(String.Format("#b_i^{0}^{1}^2 #b_i^0^0^5 {2}", type, slot,Language.Instance.GetMessageFromKey("SURE_TO_DELETE"))));
+            }
+            else if (Convert.ToInt32(packetsplit[4]) == 2)
+            {
+                DeleteItem( type, slot);
+            }
+        }
+        public void DeleteItem(short type,short slot)
+        {
+        
+            InventoryDTO inv = DAOFactory.InventoryDAO.LoadBySlotAndType(Session.Character.CharacterId, slot, type);    
+            DAOFactory.InventoryDAO.DeleteFromSlotAndType(Session.Character.CharacterId, slot, type);
+            DAOFactory.ItemInstanceDAO.DeleteById(inv.ItemInstanceId);
+            Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, type, slot, 0, 0, 0));
+         
+        }
         [Packet("req_info")]
         public void ReqInfo(string packet)
         {
@@ -519,7 +553,89 @@ namespace OpenNos.Handler
             Session.Client.SendPacket(Session.Character.GenerateSay("$Ban CHARACTERNAME", 0));
             Session.Client.SendPacket(Session.Character.GenerateSay("$Invisible", 0));
             Session.Client.SendPacket(Session.Character.GenerateSay("$Position", 0));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID RARE UPGRADE", 0));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID COLOR", 0));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID AMOUNT", 0));
             Session.Client.SendPacket(Session.Character.GenerateSay("$Shutdown", 0));
+        }
+        [Packet("$CreateItem")]
+        public void CreateItem(string packet)
+        {
+            string[] packetsplit = packet.Split(' ');
+            short amount = 1;
+            short vnum, rare = 0, upgrade = 0, color = 0;
+            ItemDTO iteminfo = null;
+            if(packetsplit.Length != 3 && packetsplit.Length != 4)
+            {
+                Session.Client.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID RARE UPGRADE", 0));
+                Session.Client.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID COLOR", 0));
+                Session.Client.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID AMOUNT", 0));
+            }
+            else if (Int16.TryParse(packetsplit[2], out vnum))
+            {
+                iteminfo = DAOFactory.ItemDAO.LoadById(vnum);
+                if(iteminfo != null)
+                {
+                if ( iteminfo.Colored)
+                {
+                    Int16.TryParse(packetsplit[3], out color);
+                }
+                else if(iteminfo.Type ==0)
+                {
+                    Int16.TryParse(packetsplit[3], out rare);
+                    Int16.TryParse(packetsplit[4], out upgrade);
+                }
+                else
+                {
+                    Int16.TryParse(packetsplit[3], out amount);
+                }
+                ItemInstanceDTO newItem = new ItemInstanceDTO()
+                {
+                    Amount = amount,
+                    ItemVNum = vnum,
+                    Rare = rare,
+                    Upgrade = upgrade,
+                    Color = color,
+                    Concentrate = 0,
+                    CriticalLuckRate = 0,
+                    CriticalRate = 0,
+                    DamageMaximum = 0,
+                    DamageMinimum = 0,
+                    DarkElement = 0,
+                    DistanceDefence = 0,
+                    Dodge = 0,
+                    ElementRate = 0,
+                    FireElement = 0,
+                    HitRate = 0,
+                    Level = 0,
+                    LightElement = 0,
+                    MagicDefence = 0,
+                    RangeDefence = 0,
+                    SlDefence = 0,
+                    SlElement = 0,
+                    SlHit = 0,
+                    SlHP = 0,
+                    WaterElement = 0,
+                };
+                    short Slot = -1;
+                    Slot = DAOFactory.InventoryDAO.getFirstPlace(Session.Character.CharacterId, iteminfo.Type, Session.Character.BackPack);
+                    if (Slot != -1)
+                    {
+                        SaveResult insertResult = DAOFactory.ItemInstanceDAO.InsertOrUpdate(ref newItem);
+                        InventoryDTO newInventory = new InventoryDTO()
+                        {
+                            CharacterId = Session.Character.CharacterId,
+                            ItemInstanceId = newItem.ItemInstanceId,
+                            Slot = Slot,
+                            Type = iteminfo.Type
+
+                        };
+                        insertResult = DAOFactory.InventoryDAO.InsertOrUpdate(ref newInventory);
+                        Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(vnum, amount, iteminfo.Type, Slot,rare,color,upgrade));
+                    }
+
+                }
+                }
         }
         [Packet("$Position")]
         public void Position(string packet)
