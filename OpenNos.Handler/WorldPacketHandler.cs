@@ -514,15 +514,130 @@ namespace OpenNos.Handler
                 DeleteItem( type, slot);
             }
         }
-        public void DeleteItem(short type,short slot)
+        [Packet("mvi")]
+        public void moveItem(string packet)
         {
-        
-            InventoryDTO inv = DAOFactory.InventoryDAO.LoadBySlotAndType(Session.Character.CharacterId, slot, type);    
-            DAOFactory.InventoryDAO.DeleteFromSlotAndType(Session.Character.CharacterId, slot, type);
-            DAOFactory.ItemInstanceDAO.DeleteById(inv.ItemInstanceId);
-            Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, type, slot, 0, 0, 0));
-         
+            string[] packetsplit = packet.Split(' ');
+            short type; short.TryParse(packetsplit[2], out type);
+            short slot; short.TryParse(packetsplit[3], out slot);
+            short amount; short.TryParse(packetsplit[4], out amount);
+            short destslot; short.TryParse(packetsplit[5], out destslot);
+            InventoryDTO inv = DAOFactory.InventoryDAO.LoadBySlotAndType(Session.Character.CharacterId, slot, type);
+            ItemInstanceDTO item = DAOFactory.ItemInstanceDAO.LoadById(inv.ItemInstanceId);
+            InventoryDTO invdest = DAOFactory.InventoryDAO.LoadBySlotAndType(Session.Character.CharacterId, destslot, type);
+            if (amount <= item.Amount)
+            { 
+            if (invdest == null)
+            {
+                if(item.Amount == amount) {
+                inv.Slot = destslot;
+                DAOFactory.InventoryDAO.InsertOrUpdate(ref inv);
+                Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, type, slot, 0, 0, 0));
+                Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(item.ItemVNum, item.Amount, type, destslot, item.Rare, item.Color, item.Upgrade));
+
+                }
+                else
+                {
+                        item.Amount = (short)(item.Amount - amount);
+                        ItemInstanceDTO itemDest = new ItemInstanceDTO
+                        {
+                            Amount = amount,
+                            Color = item.Color,
+                            Concentrate = item.Concentrate,
+                            CriticalLuckRate = item.CriticalLuckRate,
+                            CriticalRate = item.CriticalRate,
+                            DamageMaximum = item.DamageMaximum,
+                            DamageMinimum = item.DamageMinimum,
+                            DarkElement = item.DarkElement,
+                            DistanceDefence = item.DistanceDefence,
+                            Dodge = item.Dodge,
+                            ElementRate = item.ElementRate,
+                            FireElement = item.FireElement,
+                            HitRate = item.HitRate,
+                            ItemVNum = item.ItemVNum,
+                            Level = item.Level,
+                            LightElement = item.LightElement,
+                            MagicDefence = item.MagicDefence,
+                            RangeDefence = item.RangeDefence,
+                            Rare = item.Rare,
+                            SlDefence = item.SlDefence
+                            ,
+                            SlElement = item.SlElement,
+                            SlHit = item.SlHit,
+                            SlHP = item.SlHP,
+                            Upgrade = item.Upgrade,
+                            WaterElement = item.WaterElement
+
+
+                        };
+                    
+                        DAOFactory.ItemInstanceDAO.InsertOrUpdate(ref item);
+                        DAOFactory.ItemInstanceDAO.InsertOrUpdate(ref itemDest);
+                        InventoryDTO invDest = new InventoryDTO
+                        {
+                            CharacterId = Session.Character.CharacterId,
+                            ItemInstanceId = itemDest.ItemInstanceId,
+                            Slot = destslot,
+                            Type = inv.Type
+                        };
+                        DAOFactory.InventoryDAO.InsertOrUpdate(ref invDest);
+                        Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(item.ItemVNum, item.Amount, type, inv.Slot, item.Rare, item.Color, item.Upgrade));
+                        Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(itemDest.ItemVNum, itemDest.Amount, type, invDest.Slot, itemDest.Rare, itemDest.Color, itemDest.Upgrade));
+
+                    }
+                }
+                else
+            {
+                ItemInstanceDTO itemDest = DAOFactory.ItemInstanceDAO.LoadById(invdest.ItemInstanceId);
+
+                if (itemDest.ItemVNum == item.ItemVNum && inv.Type != 0)
+                {
+                  
+                    if (itemDest.Amount + amount > 99)
+                    {
+                        short saveItemCount = itemDest.Amount;
+                        itemDest.Amount = 99;
+                        item.Amount = (short)(saveItemCount + item.Amount - 99);
+                        DAOFactory.ItemInstanceDAO.InsertOrUpdate(ref item);
+                        DAOFactory.ItemInstanceDAO.InsertOrUpdate(ref itemDest);
+                        Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(item.ItemVNum, item.Amount, type, inv.Slot, item.Rare, item.Color, item.Upgrade));
+                        Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(itemDest.ItemVNum, itemDest.Amount, type, invdest.Slot, itemDest.Rare, itemDest.Color, itemDest.Upgrade));
+
+                    }
+                    else
+                    {
+                            short saveItemCount = itemDest.Amount;
+                            itemDest.Amount = (short)(saveItemCount+amount);
+                            item.Amount = (short)(item.Amount - amount);
+                            DAOFactory.ItemInstanceDAO.InsertOrUpdate(ref item);
+                            DAOFactory.ItemInstanceDAO.InsertOrUpdate(ref itemDest);
+                            if (item.Amount == 0)
+                            {
+                                DAOFactory.InventoryDAO.DeleteFromSlotAndType(Session.Character.CharacterId, inv.Slot, inv.Type);
+                                DAOFactory.ItemInstanceDAO.DeleteById(item.ItemInstanceId);
+
+                            }
+                            Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(item.ItemVNum, item.Amount, type, inv.Slot, item.Rare, item.Color, item.Upgrade));
+                            Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(itemDest.ItemVNum, itemDest.Amount, type, invdest.Slot, itemDest.Rare, itemDest.Color, itemDest.Upgrade));
+
+                        }
+                    }
+                else
+                {
+                    invdest.Slot = inv.Slot;
+                    inv.Slot = 99;
+                    DAOFactory.InventoryDAO.InsertOrUpdate(ref inv);
+                    DAOFactory.InventoryDAO.InsertOrUpdate(ref invdest);
+                    inv.Slot = destslot;
+                    DAOFactory.InventoryDAO.InsertOrUpdate(ref inv);
+                    Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(item.ItemVNum, item.Amount, type, inv.Slot, item.Rare, item.Color, item.Upgrade));
+                    Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(itemDest.ItemVNum, itemDest.Amount, type, invdest.Slot, itemDest.Rare, itemDest.Color, itemDest.Upgrade));
+
+                }
+            }
         }
+        }
+
         [Packet("req_info")]
         public void ReqInfo(string packet)
         {
@@ -750,23 +865,7 @@ namespace OpenNos.Handler
             }
 
         }
-        public void ShutdownThread()
-        {
-            string message = String.Format(Language.Instance.GetMessageFromKey("SHUTDOWN_MIN"), 5);
-            ChatManager.Instance.Broadcast(Session, String.Format("say 1 0 10 ({0}){1}", Language.Instance.GetMessageFromKey("ADMINISTRATOR"), message), ReceiverType.All);
-            ChatManager.Instance.Broadcast(Session, Session.Character.GenerateMsg(message, 2), ReceiverType.All);
-            Thread.Sleep(60000 * 4);
-            message = String.Format(Language.Instance.GetMessageFromKey("SHUTDOWN_MIN"), 1);
-            ChatManager.Instance.Broadcast(Session, String.Format("say 1 0 10 ({0}){1}", Language.Instance.GetMessageFromKey("ADMINISTRATOR"), message), ReceiverType.All);
-            ChatManager.Instance.Broadcast(Session, Session.Character.GenerateMsg(message, 2), ReceiverType.All);
-            Thread.Sleep(30000);
-            message = String.Format(Language.Instance.GetMessageFromKey("SHUTDOWN_SEC"), 30);
-            ChatManager.Instance.Broadcast(Session, String.Format("say 1 0 10 ({0}){1}", Language.Instance.GetMessageFromKey("ADMINISTRATOR"), message), ReceiverType.All);
-            ChatManager.Instance.Broadcast(Session, Session.Character.GenerateMsg(message, 2), ReceiverType.All);
-            Thread.Sleep(30000);
-            //save
-            Environment.Exit(0);
-        }
+       
         [Packet("$Shout")]
         public void Shout(string packet)
         {
@@ -923,7 +1022,34 @@ namespace OpenNos.Handler
 
         }
         #endregion
+        #region Methods
+        public void ShutdownThread()
+        {
+            string message = String.Format(Language.Instance.GetMessageFromKey("SHUTDOWN_MIN"), 5);
+            ChatManager.Instance.Broadcast(Session, String.Format("say 1 0 10 ({0}){1}", Language.Instance.GetMessageFromKey("ADMINISTRATOR"), message), ReceiverType.All);
+            ChatManager.Instance.Broadcast(Session, Session.Character.GenerateMsg(message, 2), ReceiverType.All);
+            Thread.Sleep(60000 * 4);
+            message = String.Format(Language.Instance.GetMessageFromKey("SHUTDOWN_MIN"), 1);
+            ChatManager.Instance.Broadcast(Session, String.Format("say 1 0 10 ({0}){1}", Language.Instance.GetMessageFromKey("ADMINISTRATOR"), message), ReceiverType.All);
+            ChatManager.Instance.Broadcast(Session, Session.Character.GenerateMsg(message, 2), ReceiverType.All);
+            Thread.Sleep(30000);
+            message = String.Format(Language.Instance.GetMessageFromKey("SHUTDOWN_SEC"), 30);
+            ChatManager.Instance.Broadcast(Session, String.Format("say 1 0 10 ({0}){1}", Language.Instance.GetMessageFromKey("ADMINISTRATOR"), message), ReceiverType.All);
+            ChatManager.Instance.Broadcast(Session, Session.Character.GenerateMsg(message, 2), ReceiverType.All);
+            Thread.Sleep(30000);
+            //save
+            Environment.Exit(0);
+        }
+        public void DeleteItem(short type, short slot)
+        {
 
+            InventoryDTO inv = DAOFactory.InventoryDAO.LoadBySlotAndType(Session.Character.CharacterId, slot, type);
+            DAOFactory.InventoryDAO.DeleteFromSlotAndType(Session.Character.CharacterId, slot, type);
+            DAOFactory.ItemInstanceDAO.DeleteById(inv.ItemInstanceId);
+            Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, type, slot, 0, 0, 0));
+
+        }
+        #endregion
         #region UselessPacket
         [Packet("snap")]
         public void Snap(string packet)
