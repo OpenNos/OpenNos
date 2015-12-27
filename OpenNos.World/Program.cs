@@ -18,6 +18,7 @@ using OpenNos.DAL.EF.MySQL;
 using OpenNos.Domain;
 using OpenNos.GameObject;
 using OpenNos.Handler;
+using OpenNos.ServiceRef.Internal;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -42,7 +43,9 @@ namespace OpenNos.World
             DataAccessHelper.Initialize();
             //initialilize maps
             ServerManager.Initialize();
+
             //initialize ChatManager
+            //TODO?
         
             string ip = System.Configuration.ConfigurationManager.AppSettings["WorldIp"];
             int port = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["WorldPort"]);
