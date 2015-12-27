@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{A6748A8D-0D96-41B9-A110-DBF692AFC56D}</ProjectGuid>
+    <ProjectGuid>{C4D62DCF-483B-4B8A-9BB6-651D07FF467B}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>OpenNos.Handler</RootNamespace>
-    <AssemblyName>OpenNos.Handler</AssemblyName>
+    <RootNamespace>OpenNos.ServiceRef.Internal</RootNamespace>
+    <AssemblyName>OpenNos.ServiceRef.Internal</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -30,13 +30,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="log4net, Version=1.2.15.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
-      <HintPath>..\packages\log4net.2.0.5\lib\net45-full\log4net.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System" />
-    <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -46,43 +42,52 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="LoginPacketHandler.cs" />
+    <Compile Include="CommunicationCallback.cs" />
+    <Compile Include="Service References\CommunicationServiceReference\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="ServiceFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="WorldPacketHandler.cs" />
-    <Compile Include="ServerConfig.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\OpenNos.Core\OpenNos.Core.csproj">
-      <Project>{c93a0a40-0551-4732-b594-171b87679ac1}</Project>
-      <Name>OpenNos.Core</Name>
+    <ProjectReference Include="..\OpenNos.WCF.Interface\OpenNos.WCF.Interface.csproj">
+      <Project>{cd4abd2c-e5d2-4a7d-bb80-606b92c33e8e}</Project>
+      <Name>OpenNos.WCF.Interface</Name>
     </ProjectReference>
-    <ProjectReference Include="..\OpenNos.DAL.Interface\OpenNos.DAL.Interface.csproj">
-      <Project>{175c851b-8dc8-43a5-af93-af32d106cd77}</Project>
-      <Name>OpenNos.DAL.Interface</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\OpenNos.DAL\OpenNos.DAL.csproj">
-      <Project>{d8c8a266-3d46-42c5-a492-28c75db85ba8}</Project>
-      <Name>OpenNos.DAL</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\OpenNos.Data\OpenNos.Data.csproj">
-      <Project>{f1071ded-3d92-4416-9b9c-8664441ade64}</Project>
-      <Name>OpenNos.Data</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\OpenNos.Domain\OpenNos.Domain.csproj">
-      <Project>{20addddd-dad9-44f3-9beb-026c73090660}</Project>
-      <Name>OpenNos.Domain</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\OpenNos.GameObject\OpenNos.GameObject.csproj">
-      <Project>{eadd17be-20a4-4589-830e-e41be9314928}</Project>
-      <Name>OpenNos.GameObject</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\OpenNos.ServiceRef.Internal\OpenNos.ServiceRef.Internal.csproj">
-      <Project>{c4d62dcf-483b-4b8a-9bb6-651d07ff467b}</Project>
-      <Name>OpenNos.ServiceRef.Internal</Name>
+    <ProjectReference Include="..\OpenNos.WCF\OpenNos.WCF.csproj">
+      <Project>{d30674c8-15a6-4fee-8a79-82416f078725}</Project>
+      <Name>OpenNos.WCF</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="Service References\CommunicationServiceReference\service.wsdl" />
+    <None Include="Service References\CommunicationServiceReference\service.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\CommunicationServiceReference\service1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadataStorage Include="Service References\CommunicationServiceReference\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\CommunicationServiceReference\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\CommunicationServiceReference\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\CommunicationServiceReference\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
