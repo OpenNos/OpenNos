@@ -132,6 +132,9 @@
   <data name="ARCHER" xml:space="preserve">
     <value>Archer</value>
   </data>
+  <data name="ASK_TO_DELETE" xml:space="preserve">
+    <value>Do you want to delete?</value>
+  </data>
   <data name="BAD_PASSWORD" xml:space="preserve">
     <value>Bad Password</value>
   </data>
@@ -242,6 +245,9 @@
   </data>
   <data name="STARTED" xml:space="preserve">
     <value>Server is started successfully.</value>
+  </data>
+  <data name="SURE_TO_DELETE" xml:space="preserve">
+    <value>Are you sure to delete?</value>
   </data>
   <data name="SWORDMAN" xml:space="preserve">
     <value>Swordman</value>

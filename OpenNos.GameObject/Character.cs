@@ -249,7 +249,7 @@ namespace OpenNos.GameObject
         public List<String> GenerateStartupInventory()
         {
             List<String> inventoriesStringPacket = new List<String>();
-            String inv0 = "ivn 0", inv1 = "ivn 1", inv2 = "ivn 2", inv6 = "ivn 6", inv7 = "ivn 7";
+            String inv0 = "inv 0", inv1 = "inv 1", inv2 = "inv 2", inv6 = "inv 6", inv7 = "inv 7";
 
             foreach (Inventory inv in Inventory)
             {
@@ -521,6 +521,30 @@ namespace OpenNos.GameObject
         public void Save()
         {
             throw new NotImplementedException();
+        }
+
+        public string GenerateInventoryAdd(short vnum, short amount, short type, short slot, short rare, short color, short upgrade)
+        {
+
+            switch (type)
+            {
+                case (short)InventoryType.Costume:
+                    return String.Format("ivn 7 {0}.{1}.{2}.{3}", slot, vnum, rare, upgrade);
+                case (short)InventoryType.Wear:
+                    return String.Format("ivn 0 {0}.{1}.{2}.{3}", slot, vnum, rare, color !=0 ?color : upgrade);
+                case (short)InventoryType.Main:
+                    return String.Format("ivn 1 {0}.{1}.{2}", slot, vnum, amount);
+                case (short)InventoryType.Etc:
+                    return String.Format("ivn 2 {0}.{1}.{2}", slot, vnum, amount);
+                case (short)InventoryType.Sp:
+                    return String.Format("ivn 6 {0}.{1}.{2}.{3}", slot,vnum, rare, upgrade);    
+            }
+            return String.Empty;
+            }
+
+        public string GenerateDialog(string dialog)
+        {
+            return String.Format("dlg {0}", dialog);
         }
 
         #endregion
