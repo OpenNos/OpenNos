@@ -89,7 +89,7 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (context)
             {
-                var result = context.iteminstance.SingleOrDefault(c => c.ItemInstanceId == iteminstance.ItemInstanceId);
+                var result = context.iteminstance.SingleOrDefault(c => c.ItemInstanceId.Equals(iteminstance.ItemInstanceId));
                 if (result != null)
                 {
                     result = Mapper.Map<ItemInstanceDTO, ItemInstance>(iteminstance, entity);
