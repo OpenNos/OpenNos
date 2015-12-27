@@ -1,0 +1,1 @@
+﻿<%@ ServiceHost Language="C#" Debug="true" Service="OpenNos.WCF.CommunicationService" CodeBehind="CommunicationService.svc.cs" %>

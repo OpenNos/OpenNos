@@ -37,6 +37,7 @@ namespace OpenNos.DAL
         #endregion
 
         #region Properties
+
         public DAOFactory()
         {
              

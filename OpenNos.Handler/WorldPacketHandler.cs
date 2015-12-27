@@ -24,6 +24,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using OpenNos.ServiceRef.Internal;
 
 namespace OpenNos.Handler
 {
@@ -39,7 +40,9 @@ namespace OpenNos.Handler
         {
             _session = session;
         }
-        #region methods
+
+        #region Methods
+
         public void GetStartupInventory()
         {
             foreach (String inv in Session.Character.GenerateStartupInventory())
@@ -48,7 +51,9 @@ namespace OpenNos.Handler
                     Session.Client.SendPacket(inv);
             }
         }
+
         #endregion
+
         #region CharacterSelection
 
         [Packet("Char_DEL")]
@@ -93,7 +98,7 @@ namespace OpenNos.Handler
                         Level = 1,
                         LevelXp = 0,
                         MapId = 1,
-                        MapX = (short)(r.Next(77,82)),
+                        MapX = (short)(r.Next(77, 82)),
                         MapY = (short)(r.Next(112, 120)),
                         Mp = 221,
                         Name = packetsplit[2],
@@ -122,33 +127,37 @@ namespace OpenNos.Handler
             //load account by given SessionId
             if (Session.Account == null)
             {
-                AccountDTO accountDTO = DAOFactory.AccountDAO.LoadByName(loginPacketParts[4]);
-
-                if (accountDTO != null)
+                //ServiceFactory.Instance.CommunicationService.HasRegisteredPlayerLogin(loginPacketParts, )
+                if (loginPacketParts.Length > 4 && ServiceFactory.Instance.CommunicationService.HasRegisteredPlayerLogin(loginPacketParts[4], Session.SessionId))
                 {
-                    if (accountDTO.Password.Equals(EncryptionBase.sha256(loginPacketParts[6]))
-                        && accountDTO.LastSession.Equals(Session.SessionId))
+
+                    AccountDTO accountDTO = DAOFactory.AccountDAO.LoadByName(loginPacketParts[4]);
+
+                    if (accountDTO != null)
                     {
-                        Session.Account = new GameObject.Account()
+                        if (accountDTO.Password.Equals(EncryptionBase.sha256(loginPacketParts[6]))
+                            && accountDTO.LastSession.Equals(Session.SessionId))
                         {
-                            AccountId = accountDTO.AccountId,
-                            Name = accountDTO.Name,
-                            Password = accountDTO.Password,
-                            Authority = accountDTO.Authority
-                        };
+                            Session.Account = new GameObject.Account()
+                            {
+                                AccountId = accountDTO.AccountId,
+                                Name = accountDTO.Name,
+                                Password = accountDTO.Password,
+                                Authority = accountDTO.Authority
+                            };
+                        }
+                        else
+                        {
+                            Logger.Log.ErrorFormat("Client {0} forced Disconnection, invalid Password or SessionId.", Session.Client.ClientId);
+                            Session.Client.Disconnect();
+                        }
                     }
                     else
                     {
-                        Logger.Log.ErrorFormat("Client {0} forced Disconnection, invalid Password or SessionId.", Session.Client.ClientId);
+                        Logger.Log.ErrorFormat("Client {0} forced Disconnection, invalid AccountName.", Session.Client.ClientId);
                         Session.Client.Disconnect();
                     }
                 }
-                else
-                {
-                    Logger.Log.ErrorFormat("Client {0} forced Disconnection, invalid AccountName.", Session.Client.ClientId);
-                    Session.Client.Disconnect();
-                }
-
             }
 
             IEnumerable<CharacterDTO> characters = DAOFactory.CharacterDAO.LoadByAccount(Session.Account.AccountId);
@@ -341,7 +350,7 @@ namespace OpenNos.Handler
             else
             {
                 Session.Client.SendPacket(String.Format("say 1 {0} 1 {1}", Session.Character.CharacterId, Language.Instance.GetMessageFromKey("CANT_MOVE")));
-                Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("CANT_MOVE"),2));
+                Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("CANT_MOVE"), 2));
 
             }
         }
@@ -476,7 +485,7 @@ namespace OpenNos.Handler
             foreach (Npc npc in ServerManager.GetMap(Session.Character.MapId).Npcs)
                 if (npc.NpcId == Convert.ToInt16(packetsplit[3]))
                     if (npc.GetNpcDialog() != String.Empty)
-                    Session.Client.SendPacket( npc.GetNpcDialog());
+                        Session.Client.SendPacket(npc.GetNpcDialog());
 
 
         }
@@ -644,8 +653,8 @@ namespace OpenNos.Handler
             Session.Client.SendPacket(Session.Character.GenerateSay(String.Format("Map:{0} - X:{1} - Y:{2}", Session.Character.MapId, Session.Character.MapX, Session.Character.MapY), 0));
 
         }
-    
-        
+
+
         [Packet("$Kick")]
         public void Kick(string packet)
         {
@@ -657,10 +666,10 @@ namespace OpenNos.Handler
         [Packet("$ChangeClass")]
         public void ChangeClass(string packet)
         {
-        
+
             string[] packetsplit = packet.Split(' ');
             byte classe;
-            if(packetsplit.Length > 3)
+            if (packetsplit.Length > 3)
                 Session.Client.SendPacket(Session.Character.GenerateSay("$ChangeClass CLASS", 0));
             if (Byte.TryParse(packetsplit[2], out classe) && classe < 4)
             {
@@ -684,16 +693,16 @@ namespace OpenNos.Handler
                 Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("JOB_CHANGED"), 0));
                 ChatManager.Instance.Broadcast(Session, Session.Character.GenerateEff(196), ReceiverType.AllOnMap);
                 Random rand = new Random();
-                int faction = 1+(int)rand.Next(0,2);
+                int faction = 1 + (int)rand.Next(0, 2);
                 Session.Character.Faction = faction;
-                Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey(String.Format("GET_PROTECTION_POWER_{0}",faction)), 0));
+                Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey(String.Format("GET_PROTECTION_POWER_{0}", faction)), 0));
                 Session.Client.SendPacket("scr 0 0 0 0 0 0");
 
                 Session.Client.SendPacket(Session.Character.GenerateFaction());
                 // fs 1
 
-                Session.Client.SendPacket(Session.Character.GenerateEff(4799+ faction));
-            } 
+                Session.Client.SendPacket(Session.Character.GenerateEff(4799 + faction));
+            }
         }
         [Packet("$LevelUp")]
         public void LevelUp(string packet)
@@ -705,7 +714,7 @@ namespace OpenNos.Handler
                 Session.Client.SendPacket(Session.Character.GenerateSay("$LevelUp LEVEL", 0));
             if (Byte.TryParse(packetsplit[2], out level) && level < 100 && level > 0)
             {
-          
+
                 Session.Character.Level = level;
                 Session.Character.Hp = (int)Session.Character.HPLoad();
                 Session.Character.Mp = (int)Session.Character.MPLoad();
@@ -714,20 +723,20 @@ namespace OpenNos.Handler
                 Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("LEVEL_CHANGED"), 0));
                 Session.Client.SendPacket(Session.Character.GenerateLev());
                 ChatManager.Instance.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllOnMapExceptMe);
-                ChatManager.Instance.Broadcast(Session,Session.Character.GenerateEff(6), ReceiverType.AllOnMap);
+                ChatManager.Instance.Broadcast(Session, Session.Character.GenerateEff(6), ReceiverType.AllOnMap);
                 ChatManager.Instance.Broadcast(Session, Session.Character.GenerateEff(198), ReceiverType.AllOnMap);
             }
         }
         [Packet("$Ban")]
         public void Ban(string packet)
         {
-    
-                string[] packetsplit = packet.Split(' ');
-                ChatManager.Instance.Kick(packetsplit[2]);
-                if (DAOFactory.CharacterDAO.LoadByName(packetsplit[2]) != null)
-                    DAOFactory.AccountDAO.ToggleBan(DAOFactory.CharacterDAO.LoadByName(packetsplit[2]).AccountId);
-            
-        
+
+            string[] packetsplit = packet.Split(' ');
+            ChatManager.Instance.Kick(packetsplit[2]);
+            if (DAOFactory.CharacterDAO.LoadByName(packetsplit[2]) != null)
+                DAOFactory.AccountDAO.ToggleBan(DAOFactory.CharacterDAO.LoadByName(packetsplit[2]).AccountId);
+
+
 
         }
         [Packet("$Shutdown")]
@@ -761,18 +770,18 @@ namespace OpenNos.Handler
         [Packet("$Shout")]
         public void Shout(string packet)
         {
-         
-                string[] packetsplit = packet.Split(' ');
-                string message = String.Empty;
-                for (int i = 2; i < packetsplit.Length; i++)
-                    message += packetsplit[i] + " ";
-                message.Trim();
 
-                ChatManager.Instance.Broadcast(Session, String.Format("say 1 0 10 ({0}){1}", Language.Instance.GetMessageFromKey("ADMINISTRATOR"), message), ReceiverType.All);
-                ChatManager.Instance.Broadcast(Session, Session.Character.GenerateMsg(message, 2), ReceiverType.All);
-            
+            string[] packetsplit = packet.Split(' ');
+            string message = String.Empty;
+            for (int i = 2; i < packetsplit.Length; i++)
+                message += packetsplit[i] + " ";
+            message.Trim();
+
+            ChatManager.Instance.Broadcast(Session, String.Format("say 1 0 10 ({0}){1}", Language.Instance.GetMessageFromKey("ADMINISTRATOR"), message), ReceiverType.All);
+            ChatManager.Instance.Broadcast(Session, Session.Character.GenerateMsg(message, 2), ReceiverType.All);
+
         }
-    
+
         [Packet("$MapDance")]
         public void MapDance(string packet)
         {
@@ -789,27 +798,27 @@ namespace OpenNos.Handler
                 ChatManager.Instance.RequiereBroadcastFromAllMapUsers(Session, "Dance");
                 ChatManager.Instance.RequiereBroadcastFromMap(Session.Character.MapId, "dance");
             }
-               
+
 
         }
         [Packet("$Invisible")]
         public void Invisible(string packet)
         {
-                Session.Character.Invisible = Session.Character.Invisible == 0 ? 1 : 0;
-                ChangeMap();
-            
+            Session.Character.Invisible = Session.Character.Invisible == 0 ? 1 : 0;
+            ChangeMap();
+
         }
         [Packet("$Effect")]
         public void Effect(string packet)
         {
-                string[] packetsplit = packet.Split(' ');
-                short arg = 0;
-                if (packetsplit.Length > 1)
-                {
-                    short.TryParse(packetsplit[2], out arg);
-                    ChatManager.Instance.Broadcast(Session, Session.Character.GenerateEff(arg),ReceiverType.AllOnMap);
-                }            
-             
+            string[] packetsplit = packet.Split(' ');
+            short arg = 0;
+            if (packetsplit.Length > 1)
+            {
+                short.TryParse(packetsplit[2], out arg);
+                ChatManager.Instance.Broadcast(Session, Session.Character.GenerateEff(arg), ReceiverType.AllOnMap);
+            }
+
         }
         [Packet("$PlayMusic")]
         public void PlayMusic(string packet)
@@ -819,8 +828,8 @@ namespace OpenNos.Handler
             if (packetsplit.Length > 1)
             {
                 short.TryParse(packetsplit[2], out arg);
-                if(arg > -1)
-                ChatManager.Instance.Broadcast(Session, String.Format("bgm {0}", arg), ReceiverType.AllOnMap);
+                if (arg > -1)
+                    ChatManager.Instance.Broadcast(Session, String.Format("bgm {0}", arg), ReceiverType.AllOnMap);
             }
 
         }
@@ -828,90 +837,90 @@ namespace OpenNos.Handler
         [Packet("$Morph")]
         public void Morph(string packet)
         {
-          
-                string[] packetsplit = packet.Split(' ');
-                short[] arg = new short[4];
-                bool verify = false;
-                if (packetsplit.Length > 5)
-                {
-                    verify = (short.TryParse(packetsplit[2], out arg[0]) && short.TryParse(packetsplit[3], out arg[1]) && short.TryParse(packetsplit[4], out arg[2]) && short.TryParse(packetsplit[5], out arg[3]));
-                }
-                switch (packetsplit.Length)
-                {
+
+            string[] packetsplit = packet.Split(' ');
+            short[] arg = new short[4];
+            bool verify = false;
+            if (packetsplit.Length > 5)
+            {
+                verify = (short.TryParse(packetsplit[2], out arg[0]) && short.TryParse(packetsplit[3], out arg[1]) && short.TryParse(packetsplit[4], out arg[2]) && short.TryParse(packetsplit[5], out arg[3]));
+            }
+            switch (packetsplit.Length)
+            {
 
 
-                    case 6:
-                        if (verify)
-                        {
-                            Session.Character.Morph = arg[0];
-                            Session.Character.MorphUpgrade = arg[1];
-                            Session.Character.MorphUpgrade2 = arg[2];
-                            Session.Character.ArenaWinner = arg[3];
-                            ChatManager.Instance.Broadcast(Session, Session.Character.GenerateCMode(), ReceiverType.AllOnMap);
+                case 6:
+                    if (verify)
+                    {
+                        Session.Character.Morph = arg[0];
+                        Session.Character.MorphUpgrade = arg[1];
+                        Session.Character.MorphUpgrade2 = arg[2];
+                        Session.Character.ArenaWinner = arg[3];
+                        ChatManager.Instance.Broadcast(Session, Session.Character.GenerateCMode(), ReceiverType.AllOnMap);
 
-                        }
-                        break;
-                    default:
-                        Session.Client.SendPacket(String.Format("say 1 {0} 1 $Morph MORPHID UPGRADE WINGS ARENA", Session.Character.CharacterId));
-                        break;
-                }
-            
+                    }
+                    break;
+                default:
+                    Session.Client.SendPacket(String.Format("say 1 {0} 1 $Morph MORPHID UPGRADE WINGS ARENA", Session.Character.CharacterId));
+                    break;
+            }
+
         }
         [Packet("$Teleport")]
         public void Teleport(string packet)
         {
-                string[] packetsplit = packet.Split(' ');
-                short[] arg = new short[3];
-                bool verify = false;
-                if (packetsplit.Length > 4)
-                {
-                    verify = (short.TryParse(packetsplit[2], out arg[0]) && short.TryParse(packetsplit[3], out arg[1]) && short.TryParse(packetsplit[4], out arg[2]) && DAOFactory.MapDAO.LoadById(arg[0]) != null);
-                }
-                switch (packetsplit.Length)
-                {
+            string[] packetsplit = packet.Split(' ');
+            short[] arg = new short[3];
+            bool verify = false;
+            if (packetsplit.Length > 4)
+            {
+                verify = (short.TryParse(packetsplit[2], out arg[0]) && short.TryParse(packetsplit[3], out arg[1]) && short.TryParse(packetsplit[4], out arg[2]) && DAOFactory.MapDAO.LoadById(arg[0]) != null);
+            }
+            switch (packetsplit.Length)
+            {
 
 
-                    case 5:
-                        if(verify)
-                        {
-                            Session.Character.MapId = arg[0];
-                            Session.Character.MapX = arg[1];
-                            Session.Character.MapY = arg[2];
-                            MapOut();
-                            ChangeMap();
-                        }
-                        break;
-                    default:
-                        Session.Client.SendPacket(String.Format("say 1 {0} 1 $Teleport Map X Y", Session.Character.CharacterId));
-                        break;
-                }
-            
+                case 5:
+                    if (verify)
+                    {
+                        Session.Character.MapId = arg[0];
+                        Session.Character.MapX = arg[1];
+                        Session.Character.MapY = arg[2];
+                        MapOut();
+                        ChangeMap();
+                    }
+                    break;
+                default:
+                    Session.Client.SendPacket(String.Format("say 1 {0} 1 $Teleport Map X Y", Session.Character.CharacterId));
+                    break;
+            }
+
         }
         [Packet("$Speed")]
         public void Speed(string packet)
         {
-                string[] packetsplit = packet.Split(' ');
-                int arg = 0;
-                bool verify = false;
-                if (packetsplit.Length > 2)
-                {
-                    verify = (int.TryParse(packetsplit[2], out arg));
-                }
-                switch (packetsplit.Length)
-                {
+            string[] packetsplit = packet.Split(' ');
+            int arg = 0;
+            bool verify = false;
+            if (packetsplit.Length > 2)
+            {
+                verify = (int.TryParse(packetsplit[2], out arg));
+            }
+            switch (packetsplit.Length)
+            {
 
 
-                    case 3:
-                        if (verify)
-                        {
-                            Session.Character.Speed = arg;
-                        }
-                        break;
-                    default:
-                        Session.Client.SendPacket(String.Format("say 1 {0} 1  $Speed SPEED", Session.Character.CharacterId));
-                        break;
-                }
-            
+                case 3:
+                    if (verify)
+                    {
+                        Session.Character.Speed = arg;
+                    }
+                    break;
+                default:
+                    Session.Client.SendPacket(String.Format("say 1 {0} 1  $Speed SPEED", Session.Character.CharacterId));
+                    break;
+            }
+
         }
         #endregion
 
