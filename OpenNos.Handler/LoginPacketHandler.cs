@@ -22,6 +22,7 @@ using System.Configuration;
 using OpenNos.Core.Communication.Scs.Communication.Messages;
 using OpenNos.Core.Communication.Scs.Server;
 using OpenNos.GameObject;
+using OpenNos.ServiceRef.Internal;
 
 namespace OpenNos.Handler
 {
@@ -95,6 +96,10 @@ namespace OpenNos.Handler
 
                                         DAOFactory.AccountDAO.UpdateLastSessionAndIp(user.Name, (int)newSessionId, _session.Client.RemoteEndPoint.ToString());
                                         Logger.Log.DebugFormat(Language.Instance.GetMessageFromKey("CONNECTION"), user.Name, newSessionId);
+
+                                        //inform communication service about new player from login server 
+                                        ServiceFactory.Instance.CommunicationService.RegisterPlayerLogin(user.Name, newSessionId);
+
                                         _session.Client.SendPacket(BuildServersPacket((int)newSessionId));
                                     }
                                     else
