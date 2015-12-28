@@ -266,7 +266,7 @@ namespace OpenNos.Handler
             else if (Session.CurrentMap.IsDancing == 0 && Session.Character.IsDancing == 1)
             {
                 Session.Character.IsDancing = 0;
-                ChatManager.Instance.RequiereBroadcastFromMap(Session.Character.MapId, "dance");
+                ChatManager.Instance.RequiereBroadcastFromMap(Session.Character.MapId, "dance 0");
 
             }
 
@@ -555,7 +555,6 @@ namespace OpenNos.Handler
                             FireElement = item.FireElement,
                             HitRate = item.HitRate,
                             ItemVNum = item.ItemVNum,
-                            Level = item.Level,
                             LightElement = item.LightElement,
                             MagicDefence = item.MagicDefence,
                             RangeDefence = item.RangeDefence,
@@ -731,7 +730,6 @@ namespace OpenNos.Handler
                     ElementRate = 0,
                     FireElement = 0,
                     HitRate = 0,
-                    Level = 0,
                     LightElement = 0,
                     MagicDefence = 0,
                     RangeDefence = 0,
@@ -895,7 +893,7 @@ namespace OpenNos.Handler
             {
                 Session.Character.Dance();
                 ChatManager.Instance.RequiereBroadcastFromAllMapUsers(Session, "Dance");
-                ChatManager.Instance.RequiereBroadcastFromMap(Session.Character.MapId, "dance");
+                ChatManager.Instance.RequiereBroadcastFromMap(Session.Character.MapId, "dance 0");
             }
 
 

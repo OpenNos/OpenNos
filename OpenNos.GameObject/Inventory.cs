@@ -54,7 +54,6 @@ namespace OpenNos.GameObject
                 HitRate = item.HitRate,
                 ItemInstanceId = item.ItemInstanceId,
                 ItemVNum = item.ItemVNum,
-                Level = item.Level,
                 LightElement = item.LightElement,
                 MagicDefence = item.MagicDefence,
                 RangeDefence = item.RangeDefence,

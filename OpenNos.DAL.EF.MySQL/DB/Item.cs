@@ -48,6 +48,7 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public string Dodge { get; set; }
         public short Hp { get; set; }
         public short Mp { get; set; }
+        public short Level { get; set; }
         public short MaxCellon { get; set; }
         public short MaxCellonLvl { get; set; }
         public short FireResistance { get; set; }

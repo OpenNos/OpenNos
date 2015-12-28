@@ -25,7 +25,6 @@ namespace OpenNos.Data
         public short Rare { get; set; }
         public short Color { get; set; }
         public short Amount { get; set; }
-        public short Level { get; set; }
         public short SlElement { get; set; }
         public short SlHit { get; set; }
         public short SlDefence { get; set; }
