@@ -48,7 +48,6 @@ namespace OpenNos.Handler
         {
             foreach (String inv in Session.Character.GenerateStartupInventory())
             {
-                if (inv.Length > 5)
                     Session.Client.SendPacket(inv);
             }
         }
