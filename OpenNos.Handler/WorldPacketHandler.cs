@@ -129,36 +129,47 @@ namespace OpenNos.Handler
             if (Session.Account == null)
             {
                 //ServiceFactory.Instance.CommunicationService.HasRegisteredPlayerLogin(loginPacketParts, )
-                if (loginPacketParts.Length > 4 && ServiceFactory.Instance.CommunicationService.HasRegisteredPlayerLogin(loginPacketParts[4], Session.SessionId))
+
+
+
+                bool value = true;
+                try
+                { value = ServiceFactory.Instance.CommunicationService.HasRegisteredPlayerLogin(loginPacketParts[4], Session.SessionId); }
+                catch (Exception ex)
                 {
-
-                    AccountDTO accountDTO = DAOFactory.AccountDAO.LoadByName(loginPacketParts[4]);
-
-                    if (accountDTO != null)
+                    Logger.Log.Error(ex.Message);
+                }
+                if (loginPacketParts.Length > 4 && value)
                     {
-                        if (accountDTO.Password.Equals(EncryptionBase.sha256(loginPacketParts[6]))
-                            && accountDTO.LastSession.Equals(Session.SessionId))
+
+                        AccountDTO accountDTO = DAOFactory.AccountDAO.LoadByName(loginPacketParts[4]);
+
+                        if (accountDTO != null)
                         {
-                            Session.Account = new GameObject.Account()
+                            if (accountDTO.Password.Equals(EncryptionBase.sha256(loginPacketParts[6]))
+                                && accountDTO.LastSession.Equals(Session.SessionId))
                             {
-                                AccountId = accountDTO.AccountId,
-                                Name = accountDTO.Name,
-                                Password = accountDTO.Password,
-                                Authority = accountDTO.Authority
-                            };
+                                Session.Account = new GameObject.Account()
+                                {
+                                    AccountId = accountDTO.AccountId,
+                                    Name = accountDTO.Name,
+                                    Password = accountDTO.Password,
+                                    Authority = accountDTO.Authority
+                                };
+                            }
+                            else
+                            {
+                                Logger.Log.ErrorFormat("Client {0} forced Disconnection, invalid Password or SessionId.", Session.Client.ClientId);
+                                Session.Client.Disconnect();
+                            }
                         }
                         else
                         {
-                            Logger.Log.ErrorFormat("Client {0} forced Disconnection, invalid Password or SessionId.", Session.Client.ClientId);
+                            Logger.Log.ErrorFormat("Client {0} forced Disconnection, invalid AccountName.", Session.Client.ClientId);
                             Session.Client.Disconnect();
                         }
                     }
-                    else
-                    {
-                        Logger.Log.ErrorFormat("Client {0} forced Disconnection, invalid AccountName.", Session.Client.ClientId);
-                        Session.Client.Disconnect();
-                    }
-                }
+                
             }
 
             IEnumerable<CharacterDTO> characters = DAOFactory.CharacterDAO.LoadByAccount(Session.Account.AccountId);
@@ -232,48 +243,6 @@ namespace OpenNos.Handler
         #endregion
 
         #region Map
-        public void MapOut()
-        {
-            Session.Client.SendPacket(Session.Character.GenerateMapOut());
-            ChatManager.Instance.Broadcast(Session, Session.Character.GenerateOut(), ReceiverType.AllExceptMe);
-        }
-        public void ChangeMap()
-        {
-            Session.CurrentMap = ServerManager.GetMap(Session.Character.MapId);
-            Session.Client.SendPacket(Session.Character.GenerateCInfo());
-            Session.Client.SendPacket(Session.Character.GenerateFaction());
-            Session.Client.SendPacket(Session.Character.GenerateFd());
-            Session.Client.SendPacket(Session.Character.GenerateLev());
-            Session.Client.SendPacket(Session.Character.GenerateStat());
-            //ski
-            Session.Client.SendPacket(Session.Character.GenerateAt());
-            Session.Client.SendPacket(Session.Character.GenerateCMap());
-            foreach (String portalPacket in Session.Character.GenerateGp())
-                Session.Client.SendPacket(portalPacket);
-            foreach (String npcPacket in Session.Character.Generatein2())
-                Session.Client.SendPacket(npcPacket);
-            foreach (String droppedPacket in Session.Character.GenerateDroppedItem())
-                Session.Client.SendPacket(droppedPacket);
-
-            //sc
-            Session.Client.SendPacket(Session.Character.GenerateCond());
-            //pairyz
-            Session.Client.SendPacket(String.Format("rsfi {0} {1} {2} {3} {4} {5}", 1, 1, 4, 9, 4, 9));//stone act
-            ChatManager.Instance.RequiereBroadcastFromAllMapUsers(Session, "GenerateIn");
-            ChatManager.Instance.RequiereBroadcastFromAllMapUsers(Session, "GenerateCMode");
-
-            ChatManager.Instance.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllOnMap);
-            ChatManager.Instance.Broadcast(Session, Session.Character.GenerateCMode(), ReceiverType.AllOnMap);
-            if (Session.CurrentMap.IsDancing == 2 && Session.Character.IsDancing == 0)
-                ChatManager.Instance.RequiereBroadcastFromMap(Session.Character.MapId, "dance 2");
-            else if (Session.CurrentMap.IsDancing == 0 && Session.Character.IsDancing == 1)
-            {
-                Session.Character.IsDancing = 0;
-                ChatManager.Instance.RequiereBroadcastFromMap(Session.Character.MapId, "dance 0");
-
-            }
-
-        }
         [Packet("pulse")]
         public void Pulse(string packet)
         {
@@ -285,7 +254,6 @@ namespace OpenNos.Handler
                 Session.Client.Disconnect();
             }
         }
-
         [Packet("say")]
         public void Say(string packet)
         {
@@ -299,7 +267,6 @@ namespace OpenNos.Handler
                 Session.Character.GenerateSay(message, 0),
                 ReceiverType.AllOnMapExceptMe);
         }
-
         [Packet("walk")]
         public void Walk(string packet)
         {
@@ -315,7 +282,6 @@ namespace OpenNos.Handler
             Session.Client.SendPacket(Session.Character.GenerateCond());
 
         }
-
         [Packet("guri")]
         public void Guri(string packet)
         {
@@ -354,49 +320,6 @@ namespace OpenNos.Handler
             {
                 Session.Client.SendPacket(String.Format("say 1 {0} 1 {1}", Session.Character.CharacterId, Language.Instance.GetMessageFromKey("CANT_MOVE")));
                 Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("CANT_MOVE"), 2));
-
-            }
-        }
-        public void healthThread()
-        {
-            int x = 1;
-            while (true)
-            {
-                bool change = false;
-                if (Session.Character.Rested == 1)
-                    Thread.Sleep(1500);
-                else
-                    Thread.Sleep(2000);
-                if (x == 0)
-                    x = 1;
-
-                if (Session.Character.Hp + Session.Character.HealthHPLoad() < Session.Character.HPLoad())
-                {
-                    change = true;
-                    Session.Character.Hp += Session.Character.HealthHPLoad();
-                }
-
-                else
-                    Session.Character.Hp = (int)Session.Character.HPLoad();
-
-                if (x == 1)
-                {
-                    if (Session.Character.Mp + Session.Character.HealthMPLoad() < Session.Character.MPLoad())
-                    {
-                        Session.Character.Mp += Session.Character.HealthMPLoad();
-                        change = true;
-                    }
-                    else
-                        Session.Character.Mp = (int)Session.Character.MPLoad();
-                    x = 0;
-                }
-                if (change)
-                {
-                    ChatManager.Instance.Broadcast(Session,
-         Session.Character.GenerateStat(),
-           ReceiverType.AllOnMap);
-                }
-
 
             }
         }
@@ -600,7 +523,7 @@ namespace OpenNos.Handler
                         };
                         insertResult = DAOFactory.InventoryDAO.InsertOrUpdate(ref newInventory);
                         Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(newItem.ItemVNum, newItem.Amount, newInventory.Type, newInventory.Slot, newItem.Rare, newItem.Color, newItem.Upgrade));
-
+                        Session.Client.SendPacket(Session.Character.GenerateSay(String.Format("{0}: {1} x {2}",Language.Instance.GetMessageFromKey("YOU_GET_OBJECT"),itemInfo.Name,newItem.Amount), 12));
                     }
 
                 }
@@ -615,6 +538,8 @@ namespace OpenNos.Handler
                         {
                             item.Amount = (short)(item.Amount + mapitem.Amount);
                             DAOFactory.ItemInstanceDAO.InsertOrUpdate(ref item);
+                            Session.Client.SendPacket(Session.Character.GenerateSay(String.Format("{0}: {1} x {2}", Language.Instance.GetMessageFromKey("YOU_GET_OBJECT"), itemInfo.Name, mapitem.Amount), 12));
+
                             Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(item.ItemVNum, item.Amount, inv.Type, inv.Slot, item.Rare, item.Color, item.Upgrade));
                             ChatManager.Instance.Broadcast(Session, Session.Character.GenerateGet(DropId), ReceiverType.AllOnMap);
                             Session.CurrentMap.DroppedList.Remove(DropId);
@@ -1183,6 +1108,92 @@ namespace OpenNos.Handler
         }
         #endregion
         #region Methods
+        public void MapOut()
+        {
+            Session.Client.SendPacket(Session.Character.GenerateMapOut());
+            ChatManager.Instance.Broadcast(Session, Session.Character.GenerateOut(), ReceiverType.AllExceptMe);
+        }
+        public void ChangeMap()
+        {
+            Session.CurrentMap = ServerManager.GetMap(Session.Character.MapId);
+            Session.Client.SendPacket(Session.Character.GenerateCInfo());
+            Session.Client.SendPacket(Session.Character.GenerateFaction());
+            Session.Client.SendPacket(Session.Character.GenerateFd());
+            Session.Client.SendPacket(Session.Character.GenerateLev());
+            Session.Client.SendPacket(Session.Character.GenerateStat());
+            //ski
+            Session.Client.SendPacket(Session.Character.GenerateAt());
+            Session.Client.SendPacket(Session.Character.GenerateCMap());
+            foreach (String portalPacket in Session.Character.GenerateGp())
+                Session.Client.SendPacket(portalPacket);
+            foreach (String npcPacket in Session.Character.Generatein2())
+                Session.Client.SendPacket(npcPacket);
+            foreach (String droppedPacket in Session.Character.GenerateDroppedItem())
+                Session.Client.SendPacket(droppedPacket);
+
+            //sc
+            Session.Client.SendPacket(Session.Character.GenerateCond());
+            //pairyz
+            Session.Client.SendPacket(String.Format("rsfi {0} {1} {2} {3} {4} {5}", 1, 1, 4, 9, 4, 9));//stone act
+            ChatManager.Instance.RequiereBroadcastFromAllMapUsers(Session, "GenerateIn");
+            ChatManager.Instance.RequiereBroadcastFromAllMapUsers(Session, "GenerateCMode");
+
+            ChatManager.Instance.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllOnMap);
+            ChatManager.Instance.Broadcast(Session, Session.Character.GenerateCMode(), ReceiverType.AllOnMap);
+            if (Session.CurrentMap.IsDancing == 2 && Session.Character.IsDancing == 0)
+                ChatManager.Instance.RequiereBroadcastFromMap(Session.Character.MapId, "dance 2");
+            else if (Session.CurrentMap.IsDancing == 0 && Session.Character.IsDancing == 1)
+            {
+                Session.Character.IsDancing = 0;
+                ChatManager.Instance.RequiereBroadcastFromMap(Session.Character.MapId, "dance 0");
+
+            }
+
+        }
+        public void healthThread()
+        {
+            int x = 1;
+            while (true)
+            {
+                bool change = false;
+                if (Session.Character.Rested == 1)
+                    Thread.Sleep(1500);
+                else
+                    Thread.Sleep(2000);
+                if (x == 0)
+                    x = 1;
+
+                if (Session.Character.Hp + Session.Character.HealthHPLoad() < Session.Character.HPLoad())
+                {
+                    change = true;
+                    Session.Character.Hp += Session.Character.HealthHPLoad();
+                }
+
+                else
+                    Session.Character.Hp = (int)Session.Character.HPLoad();
+
+                if (x == 1)
+                {
+                    if (Session.Character.Mp + Session.Character.HealthMPLoad() < Session.Character.MPLoad())
+                    {
+                        Session.Character.Mp += Session.Character.HealthMPLoad();
+                        change = true;
+                    }
+                    else
+                        Session.Character.Mp = (int)Session.Character.MPLoad();
+                    x = 0;
+                }
+                if (change)
+                {
+                    ChatManager.Instance.Broadcast(Session,
+         Session.Character.GenerateStat(),
+           ReceiverType.AllOnMap);
+                }
+
+
+            }
+        }
+
         public void ShutdownThread()
         {
             string message = String.Format(Language.Instance.GetMessageFromKey("SHUTDOWN_MIN"), 5);

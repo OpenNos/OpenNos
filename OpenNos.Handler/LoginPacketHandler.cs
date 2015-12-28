@@ -98,7 +98,15 @@ namespace OpenNos.Handler
                                         Logger.Log.DebugFormat(Language.Instance.GetMessageFromKey("CONNECTION"), user.Name, newSessionId);
 
                                         //inform communication service about new player from login server 
-                                        ServiceFactory.Instance.CommunicationService.RegisterPlayerLogin(user.Name, newSessionId);
+                                        try {
+                                            ServiceFactory.Instance.CommunicationService.RegisterPlayerLogin(user.Name, newSessionId);
+                                        }
+
+                                        catch(Exception ex)
+                                        {
+                                            Logger.Log.Error(ex.Message);
+                                        }
+
 
                                         _session.Client.SendPacket(BuildServersPacket((int)newSessionId));
                                     }
