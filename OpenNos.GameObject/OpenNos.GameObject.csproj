@@ -53,6 +53,7 @@
     <Compile Include="Character.cs" />
     <Compile Include="Interface\IGameObject.cs" />
     <Compile Include="Item.cs" />
+    <Compile Include="MapItem.cs" />
     <Compile Include="ItemInstance.cs" />
     <Compile Include="Inventory.cs" />
     <Compile Include="Networking\ChatManager.cs" />

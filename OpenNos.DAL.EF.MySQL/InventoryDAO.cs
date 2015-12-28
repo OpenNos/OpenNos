@@ -121,6 +121,8 @@ namespace OpenNos.DAL.EF.MySQL
             return Mapper.Map<InventoryDTO>(entity);
         }
 
+ 
+
         public short getFirstPlace(long characterId, byte type,int backpack)
         {
             using (var context = DataAccessHelper.CreateContext())
@@ -135,6 +137,22 @@ namespace OpenNos.DAL.EF.MySQL
                    
             }
             return -1;
+        }
+
+        public InventoryDTO LoadByItemInstance(short itemInstanceId)
+        {
+            using (var context = DataAccessHelper.CreateContext())
+            {
+                return Mapper.Map<InventoryDTO>(context.inventory.SingleOrDefault(i => i.ItemInstanceId.Equals(itemInstanceId)));
+            }
+        }
+
+        public InventoryDTO getFirstSlot(List<short> iteminstanceids)
+        {
+            using (var context = DataAccessHelper.CreateContext())
+            {
+                return Mapper.Map<InventoryDTO>(context.inventory.Where(i => iteminstanceids.Contains(i.ItemInstanceId)).OrderBy(i => i.Slot).FirstOrDefault());
+            }
         }
     }
 }

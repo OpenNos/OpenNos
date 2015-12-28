@@ -263,10 +263,10 @@ namespace OpenNos.GameObject
                         inv0 += String.Format(" {0}.{1}.{2}.{3}", inv.Slot, inv.ItemInstance.ItemVNum, inv.ItemInstance.Rare, inv.ItemInstance.Item.Colored ? inv.ItemInstance.Color:inv.ItemInstance.Upgrade);
                         break;
                     case (short)InventoryType.Main:
-                        inv1 += String.Format(" {0}.{1}.{2}", inv.Slot, inv.ItemInstance.ItemVNum, inv.ItemInstance.Amount);
+                        inv1 += String.Format(" {0}.{1}.{2}.0", inv.Slot, inv.ItemInstance.ItemVNum, inv.ItemInstance.Amount);
                         break;
                     case (short)InventoryType.Etc:
-                        inv2 += String.Format(" {0}.{1}.{2}", inv.Slot, inv.ItemInstance.ItemVNum, inv.ItemInstance.Amount);
+                        inv2 += String.Format(" {0}.{1}.{2}.0", inv.Slot, inv.ItemInstance.ItemVNum, inv.ItemInstance.Amount);
                         break;
                     case (short)InventoryType.Sp:
                         inv6 += String.Format(" {0}.{1}.{2}.{3}", inv.Slot, inv.ItemInstance.ItemVNum, inv.ItemInstance.Rare, inv.ItemInstance.Upgrade);
@@ -303,7 +303,13 @@ namespace OpenNos.GameObject
         {
             return String.Format("eff 1 {0} {1}", CharacterId, effectid);
         }
-
+        public List<string> GenerateDroppedItem()
+        {
+            List<String> droplist = new List<String>();
+            foreach (KeyValuePair<long, MapItem> item in ServerManager.GetMap(this.MapId).DroppedList)
+                droplist.Add(String.Format("drop {0} {1} {2} {3} {4} {5} {6}", item.Value.ItemVNum, item.Key, item.Value.PositionX, item.Value.PositionY, item.Value.Amount, 0, -1));
+            return droplist;
+        }
         public List<String> GenerateGp()
         {
             List<String> gpList = new List<String>();
@@ -545,6 +551,11 @@ namespace OpenNos.GameObject
         public string GenerateDialog(string dialog)
         {
             return String.Format("dlg {0}", dialog);
+        }
+
+        public string GenerateGet(long id)
+        {
+            return String.Format("get 1 {0} {1} 0", CharacterId,id);
         }
 
         #endregion
