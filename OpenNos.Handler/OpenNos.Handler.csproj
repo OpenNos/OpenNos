@@ -80,6 +80,10 @@
       <Project>{c4d62dcf-483b-4b8a-9bb6-651d07ff467b}</Project>
       <Name>OpenNos.ServiceRef.Internal</Name>
     </ProjectReference>
+    <ProjectReference Include="..\OpenNos.WCF\OpenNos.WCF.csproj">
+      <Project>{d30674c8-15a6-4fee-8a79-82416f078725}</Project>
+      <Name>OpenNos.WCF</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

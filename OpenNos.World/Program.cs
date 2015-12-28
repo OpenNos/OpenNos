@@ -49,6 +49,14 @@ namespace OpenNos.World
         
             string ip = System.Configuration.ConfigurationManager.AppSettings["WorldIp"];
             int port = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["WorldPort"]);
+            try
+            {
+                ServiceFactory.Instance.CommunicationService.Open();
+            }
+            catch (Exception ex)
+            {
+                Logger.Log.Error(ex.Message);
+            }
             NetworkManager<WorldEncryption> networkManager = new NetworkManager<WorldEncryption>(ip, port, typeof(WorldPacketHandler));
             
         }

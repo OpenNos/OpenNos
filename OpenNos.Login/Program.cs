@@ -17,6 +17,7 @@ using OpenNos.DAL;
 using OpenNos.DAL.EF.MySQL;
 using OpenNos.GameObject;
 using OpenNos.Handler;
+using OpenNos.ServiceRef.Internal;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -47,6 +48,14 @@ namespace OpenNos.Login
                     string ip = System.Configuration.ConfigurationManager.AppSettings["LoginIp"];
                     int port = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["LoginPort"]);
                     Logger.Log.Info(Language.Instance.GetMessageFromKey("CONFIG_LOADED"));
+                    try
+                    { 
+                      ServiceFactory.Instance.CommunicationService.Open();
+                    }
+                    catch(Exception ex)
+                    {
+                        Logger.Log.Error(ex.Message);
+                    }
                     NetworkManager<LoginEncryption> networkManager = new NetworkManager<LoginEncryption>(ip,port, typeof(LoginPacketHandler));
                     
                 }

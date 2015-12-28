@@ -218,6 +218,10 @@
       <Project>{a6748a8d-0d96-41b9-a110-dbf692afc56d}</Project>
       <Name>OpenNos.Handler</Name>
     </ProjectReference>
+    <ProjectReference Include="..\OpenNos.ServiceRef.Internal\OpenNos.ServiceRef.Internal.csproj">
+      <Project>{c4d62dcf-483b-4b8a-9bb6-651d07ff467b}</Project>
+      <Name>OpenNos.ServiceRef.Internal</Name>
+    </ProjectReference>
     <ProjectReference Include="..\OpenNos.WCF.Interface\OpenNos.WCF.Interface.csproj">
       <Project>{cd4abd2c-e5d2-4a7d-bb80-606b92c33e8e}</Project>
       <Name>OpenNos.WCF.Interface</Name>
