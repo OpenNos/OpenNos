@@ -163,6 +163,7 @@
     <Property Name="Dodge" Type="longtext" Nullable="false" />
     <Property Name="Hp" Type="smallint" Nullable="false" />
     <Property Name="Mp" Type="smallint" Nullable="false" />
+    <Property Name="Level" Type="smallint" Nullable="false" />
     <Property Name="MaxCellon" Type="smallint" Nullable="false" />
     <Property Name="MaxCellonLvl" Type="smallint" Nullable="false" />
     <Property Name="FireResistance" Type="smallint" Nullable="false" />
@@ -220,7 +221,6 @@
     <Property Name="Rare" Type="smallint" Nullable="false" />
     <Property Name="Color" Type="smallint" Nullable="false" />
     <Property Name="Amount" Type="smallint" Nullable="false" />
-    <Property Name="Level" Type="smallint" Nullable="false" />
     <Property Name="SlElement" Type="smallint" Nullable="false" />
     <Property Name="SlHit" Type="smallint" Nullable="false" />
     <Property Name="SlDefence" Type="smallint" Nullable="false" />
@@ -609,6 +609,7 @@
           <Property Name="Dodge" Type="String" Nullable="false" />
           <Property Name="Hp" Type="Int16" Nullable="false" />
           <Property Name="Mp" Type="Int16" Nullable="false" />
+          <Property Name="Level" Type="Int16" Nullable="false" />
           <Property Name="MaxCellon" Type="Int16" Nullable="false" />
           <Property Name="MaxCellonLvl" Type="Int16" Nullable="false" />
           <Property Name="FireResistance" Type="Int16" Nullable="false" />
@@ -680,7 +681,6 @@
           <Property Name="Rare" Type="Int16" Nullable="false" />
           <Property Name="Color" Type="Int16" Nullable="false" />
           <Property Name="Amount" Type="Int16" Nullable="false" />
-          <Property Name="Level" Type="Int16" Nullable="false" />
           <Property Name="SlElement" Type="Int16" Nullable="false" />
           <Property Name="SlHit" Type="Int16" Nullable="false" />
           <Property Name="SlDefence" Type="Int16" Nullable="false" />
@@ -858,6 +858,7 @@
           <ScalarProperty Name="Dodge" ColumnName="Dodge" />
           <ScalarProperty Name="Hp" ColumnName="Hp" />
           <ScalarProperty Name="Mp" ColumnName="Mp" />
+          <ScalarProperty Name="Level" ColumnName="Level" />
           <ScalarProperty Name="MaxCellon" ColumnName="MaxCellon" />
           <ScalarProperty Name="MaxCellonLvl" ColumnName="MaxCellonLvl" />
           <ScalarProperty Name="FireResistance" ColumnName="FireResistance" />
@@ -917,7 +918,6 @@
           <ScalarProperty Name="Rare" ColumnName="Rare" />
           <ScalarProperty Name="Color" ColumnName="Color" />
           <ScalarProperty Name="Amount" ColumnName="Amount" />
-          <ScalarProperty Name="Level" ColumnName="Level" />
           <ScalarProperty Name="SlElement" ColumnName="SlElement" />
           <ScalarProperty Name="SlHit" ColumnName="SlHit" />
           <ScalarProperty Name="SlDefence" ColumnName="SlDefence" />
