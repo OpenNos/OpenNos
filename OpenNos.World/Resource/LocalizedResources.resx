@@ -261,4 +261,7 @@
   <data name="USER_NOT_CONNECTED" xml:space="preserve">
     <value>User is not connected.</value>
   </data>
+  <data name="YOU_GET_OBJECT" xml:space="preserve">
+    <value>You get an object</value>
+  </data>
 </root>
