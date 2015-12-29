@@ -33,7 +33,7 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public virtual DbSet<Map> map { get; set; }
         public virtual DbSet<Item> item { get; set; }
         public virtual DbSet<Npc> npc { get; set; }
-        public virtual DbSet<ItemInstance> iteminstance { get; set; }
+        public virtual DbSet<InventoryItem> inventoryitem { get; set; }
         public virtual DbSet<Inventory> inventory { get; set; }
     }
 }

@@ -13,7 +13,7 @@ namespace OpenNos.Data
         public long CharacterId { get; set; }
         public short Type { get; set; }
         public short Slot { get; set; }
-        public short ItemInstanceId { get; set; }
+        public long InventoryItemId { get; set; }
 
     }
 }

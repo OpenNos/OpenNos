@@ -201,6 +201,9 @@
   <data name="INSERT_ERROR" xml:space="preserve">
     <value>Error inserting or updating character {0} , {1}</value>
   </data>
+  <data name="ITEM_LOADED" xml:space="preserve">
+    <value>{0} Items Loaded !</value>
+  </data>
   <data name="JOB_CHANGED" xml:space="preserve">
     <value>Job has been changed.</value>
   </data>

@@ -79,42 +79,42 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DB\Inventory.cs">
-      <DependentUpon>OpenNos.tt</DependentUpon>
-    </Compile>
-    <Compile Include="DB\Item.cs">
-      <DependentUpon>OpenNos.tt</DependentUpon>
-    </Compile>
-    <Compile Include="DB\ItemInstance.cs">
-      <DependentUpon>OpenNos.tt</DependentUpon>
-    </Compile>
-    <Compile Include="DB\Npc.cs">
-      <DependentUpon>OpenNos.tt</DependentUpon>
-    </Compile>
-    <Compile Include="GeneralLogDAO.cs" />
-    <Compile Include="DB\GeneralLog.cs">
-      <DependentUpon>OpenNos.tt</DependentUpon>
-    </Compile>
-    <Compile Include="DB\Map.cs">
-      <DependentUpon>OpenNos.tt</DependentUpon>
-    </Compile>
-    <Compile Include="DB\Portal.cs">
-      <DependentUpon>OpenNos.tt</DependentUpon>
-    </Compile>
-    <Compile Include="InventoryDAO.cs" />
-    <Compile Include="ItemInstanceDAO.cs" />
-    <Compile Include="ItemDAO.cs" />
-    <Compile Include="MapDAO.cs" />
-    <Compile Include="NpcDAO.cs" />
-    <Compile Include="PortalDAO.cs" />
-    <Compile Include="AccountDAO.cs" />
-    <Compile Include="CharacterDAO.cs" />
     <Compile Include="DB\Account.cs">
       <DependentUpon>OpenNos.tt</DependentUpon>
     </Compile>
     <Compile Include="DB\Character.cs">
       <DependentUpon>OpenNos.tt</DependentUpon>
     </Compile>
+    <Compile Include="DB\GeneralLog.cs">
+      <DependentUpon>OpenNos.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DB\Inventory.cs">
+      <DependentUpon>OpenNos.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DB\InventoryItem.cs">
+      <DependentUpon>OpenNos.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DB\Item.cs">
+      <DependentUpon>OpenNos.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DB\Map.cs">
+      <DependentUpon>OpenNos.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DB\Npc.cs">
+      <DependentUpon>OpenNos.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DB\Portal.cs">
+      <DependentUpon>OpenNos.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GeneralLogDAO.cs" />
+    <Compile Include="InventoryDAO.cs" />
+    <Compile Include="InventoryItemDAO.cs" />
+    <Compile Include="ItemDAO.cs" />
+    <Compile Include="MapDAO.cs" />
+    <Compile Include="NpcDAO.cs" />
+    <Compile Include="PortalDAO.cs" />
+    <Compile Include="AccountDAO.cs" />
+    <Compile Include="CharacterDAO.cs" />
     <Compile Include="DB\OpenNos.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

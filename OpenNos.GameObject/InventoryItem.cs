@@ -21,18 +21,15 @@ using System.Threading.Tasks;
 
 namespace OpenNos.GameObject
 {
-    public class ItemInstance : ItemInstanceDTO, IGameObject
+    public class InventoryItem : InventoryItemDTO, IGameObject
     {
-        public Item Item
-        {
-            get; set;
-        }
+     
         #region Instantiation
 
-        public ItemInstance()
+        public InventoryItem()
         {
-            Mapper.CreateMap<ItemInstanceDTO, ItemInstance>();
-            Mapper.CreateMap<ItemInstance, ItemInstanceDTO>();
+            Mapper.CreateMap<InventoryItemDTO, InventoryItem>();
+            Mapper.CreateMap<InventoryItem, InventoryItemDTO>();
         }
       
         #endregion

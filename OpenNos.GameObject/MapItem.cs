@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace OpenNos.GameObject
 {
-    public class MapItem : ItemInstance
+    public class MapItem : InventoryItem
     {
 
         #region Instantiation

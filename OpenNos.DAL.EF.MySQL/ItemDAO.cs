@@ -27,6 +27,16 @@ namespace OpenNos.DAL.EF.MySQL
 {
     public class ItemDAO : IItemDAO
     {
+        public IEnumerable<ItemDTO> LoadAll()
+        {
+            using (var context = DataAccessHelper.CreateContext())
+            {
+                foreach (Item item in context.item)
+                {
+                    yield return Mapper.Map < ItemDTO > (item);
+                }
+            }
+        }
         public ItemDTO LoadById(short ItemVnum)
         {
             using (var context = DataAccessHelper.CreateContext())
