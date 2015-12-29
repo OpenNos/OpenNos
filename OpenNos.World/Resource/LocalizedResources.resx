@@ -139,13 +139,13 @@
     <value>Bad Password</value>
   </data>
   <data name="BN0" xml:space="preserve">
-    <value>read the rules</value>
+    <value>read^the^rules</value>
   </data>
   <data name="BN1" xml:space="preserve">
-    <value>don't give id</value>
+    <value>don't^give^id</value>
   </data>
   <data name="BN2" xml:space="preserve">
-    <value>need a gm? go on website.</value>
+    <value>need^a^gm?^go^on^website.</value>
   </data>
   <data name="BN3" xml:space="preserve">
     <value />
@@ -226,10 +226,10 @@
     <value>No EntryPoint found</value>
   </data>
   <data name="NO_FAMILY" xml:space="preserve">
-    <value>No Familly</value>
+    <value>No^Familly</value>
   </data>
   <data name="NO_PREZ_MESSAGE" xml:space="preserve">
-    <value>No Presentation Message.</value>
+    <value>No^Presentation^Message.</value>
   </data>
   <data name="PACKET_ARRIVED" xml:space="preserve">
     <value>Packet arrived, packet: {0}</value>

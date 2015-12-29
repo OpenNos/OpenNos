@@ -8,6 +8,6 @@ namespace  OpenNos.DAL.Interface
         ItemInstanceDTO LoadById(short ItemId);
         DeleteResult DeleteById(short ItemId);
         SaveResult InsertOrUpdate(ref ItemInstanceDTO item);
-        IEnumerable<ItemInstanceDTO> LoadBySlotAllowed(long characterId, short itemVNum, short amount);
+        IEnumerable<ItemInstanceDTO> LoadBySlotAllowed( short itemVNum, short amount);
     }
 }
