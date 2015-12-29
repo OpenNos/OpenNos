@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="f76ed05649d94abe8fc46f3ecc52e312" Name="Diagram1" ZoomLevel="63">
+      <Diagram DiagramId="f76ed05649d94abe8fc46f3ecc52e312" Name="Diagram1" ZoomLevel="47">
         <EntityTypeShape EntityType="opennosModel.Account" Width="1.5" PointX="0.5" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="opennosModel.Character" Width="1.5" PointX="3.25" PointY="0.625" IsExpanded="true" />
         <EntityTypeShape EntityType="opennosModel.Portal" Width="1.5" PointX="5.75" PointY="1" IsExpanded="true" />
@@ -19,11 +19,13 @@
         <EntityTypeShape EntityType="opennosModel.Item" Width="2" PointX="13.25" PointY="0.75" />
         <EntityTypeShape EntityType="opennosModel.Npc" Width="1.5" PointX="10.25" PointY="1" />
         <AssociationConnector Association="opennosModel.NpcMap" />
-        <EntityTypeShape EntityType="opennosModel.ItemInstance" Width="1.625" PointX="9.5" PointY="4.625" />
+        <EntityTypeShape EntityType="opennosModel.InventoryItem" Width="1.625" PointX="9.5" PointY="4.625" />
         <EntityTypeShape EntityType="opennosModel.Inventory" Width="1.5" PointX="6.25" PointY="6.375" />
         <AssociationConnector Association="opennosModel.CharacterInventory" />
-        <AssociationConnector Association="opennosModel.ItemInstanceItem" />
+        <AssociationConnector Association="opennosModel.InventoryItemItem" />
         <AssociationConnector Association="opennosModel.InventoryItemInstance" />
+        <AssociationConnector Association="opennosModel.InventoryItemInventory" />
+        <AssociationConnector Association="opennosModel.InventoryItemItem" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

@@ -46,7 +46,7 @@ namespace OpenNos.GameObject
             }
         }
 
-        public bool Broadcast(ClientSession client, String message, ReceiverType receiver, String CharacterName ="", int CharacterId = -1)
+        public bool Broadcast(ClientSession client, String message, ReceiverType receiver, String CharacterName ="", long CharacterId = -1)
         {
             switch (receiver)
             {
@@ -165,6 +165,17 @@ namespace OpenNos.GameObject
             return false;
         }
 
-     
+        public object RequiereProperties(long charId, string properties)
+        {
+            foreach (ClientSession session in sessions)
+            {
+
+                if (session.Character != null && session.Character.CharacterId == charId)
+                {
+                    return session.Character.GetType().GetProperties().Single(pi => pi.Name == properties).GetValue(session.Character, null);
+                }
+            }
+            return "";
+        }
     }
 }

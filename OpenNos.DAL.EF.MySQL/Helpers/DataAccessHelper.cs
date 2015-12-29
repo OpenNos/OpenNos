@@ -58,8 +58,8 @@ namespace OpenNos.DAL.EF.MySQL
             Mapper.CreateMap<ItemDTO, Item>();
             Mapper.CreateMap<Inventory, InventoryDTO>();
             Mapper.CreateMap<InventoryDTO, Inventory>();
-            Mapper.CreateMap<ItemInstance, ItemInstanceDTO>();
-            Mapper.CreateMap<ItemInstanceDTO, ItemInstance>();
+            Mapper.CreateMap<InventoryItem, InventoryItemDTO>();
+            Mapper.CreateMap<InventoryItemDTO, InventoryItem>();
             Mapper.CreateMap<GeneralLog, GeneralLogDTO>();
             Mapper.CreateMap<GeneralLogDTO, GeneralLog>();
 
@@ -101,7 +101,7 @@ namespace OpenNos.DAL.EF.MySQL
                     context.character.Any();
                     context.npc.Any();
                     context.inventory.Any();
-                    context.iteminstance.Any();
+                    context.inventoryitem.Any();
                     context.item.Any();
                     Logger.Log.Info(Language.Instance.GetMessageFromKey("DATABASE_HAS_BEEN_INITIALISE"));
                 }

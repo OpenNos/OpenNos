@@ -42,7 +42,7 @@
   <ItemGroup>
     <Compile Include="GeneralLogDTO.cs" />
     <Compile Include="InventoryDTO.cs" />
-    <Compile Include="ItemInstanceDTO.cs" />
+    <Compile Include="InventoryItemDTO.cs" />
     <Compile Include="ItemDTO.cs" />
     <Compile Include="MapDTO.cs" />
     <Compile Include="NpcDTO.cs" />

@@ -42,9 +42,9 @@ namespace OpenNos.GameObject
         private int _isDancing;
         private int _rested;
         private int _backpack;
-
-        private List<Inventory> _inventory;
-        private List<Inventory> _equipment;
+        private long _exctarget;
+        private InventoryList _inventorylist;
+        private InventoryList _equipmentlist;
         #endregion 
 
         #region Instantiation
@@ -60,21 +60,21 @@ namespace OpenNos.GameObject
 
         #region Properties
 
-        public List<Inventory> Inventory
+        public InventoryList InventoryList
         {
-            get { return _inventory; }
+            get { return _inventorylist; }
             set
             {
-                _inventory = value;
+                _inventorylist = value;
 
             }
         }
-        public List<Inventory> Equipment
+        public InventoryList EquipmentList
         {
-            get { return _equipment; }
+            get { return _equipmentlist; }
             set
             {
-                _equipment = value;
+                _equipmentlist = value;
 
             }
         }
@@ -117,7 +117,15 @@ namespace OpenNos.GameObject
 
             }
         }
+        public long ExcTarget
+        {
+            get { return _exctarget; }
+            set
+            {
+                _exctarget = value;
 
+            }
+        }
         public int Invisible
         {
             get { return _invisible; }
@@ -219,28 +227,61 @@ namespace OpenNos.GameObject
         {
 
             IEnumerable<InventoryDTO> inventorysDTO = DAOFactory.InventoryDAO.LoadByCharacterId(CharacterId);
-            Inventory = new List<Inventory>();
-            Equipment = new List<Inventory>();
+         
+            InventoryList = new InventoryList();
+            EquipmentList = new InventoryList();
             foreach (InventoryDTO inventory in inventorysDTO)
             {
+                InventoryItemDTO inventoryItemDTO = DAOFactory.InventoryItemDAO.LoadById(inventory.InventoryItemId);
+               Item item = ServerManager.GetItem(inventoryItemDTO.ItemVNum);
+
                 if (inventory.Type != (short)InventoryType.Equipment)
-                    Inventory.Add(new GameObject.Inventory(inventory.ItemInstanceId)
+                    InventoryList.Inventory.Add(new GameObject.Inventory()
                     {
                         CharacterId = inventory.CharacterId,
                         Slot = inventory.Slot,
                         InventoryId = inventory.InventoryId,
                         Type = inventory.Type,
-                        ItemInstanceId = inventory.ItemInstanceId,
-                        
+                        InventoryItemId = inventory.InventoryItemId,
+                        InventoryItem = new InventoryItem
+                        {
+                            Amount = inventoryItemDTO.Amount,
+                            ElementRate = inventoryItemDTO.ElementRate
+                            , HitRate = inventoryItemDTO.HitRate,
+                            Color = inventoryItemDTO.Color,
+                            Concentrate = inventoryItemDTO.Concentrate,
+                            CriticalLuckRate = inventoryItemDTO.CriticalLuckRate,
+                            CriticalRate = inventoryItemDTO.CriticalRate,
+                            DamageMaximum = inventoryItemDTO.DamageMaximum,
+                            DamageMinimum = inventoryItemDTO.DamageMinimum,
+                            DarkElement = inventoryItemDTO.DarkElement,
+                            DistanceDefence = inventoryItemDTO.DistanceDefence,
+                            Dodge = inventoryItemDTO.Dodge,
+                            FireElement = inventoryItemDTO.FireElement,
+                            InventoryItemId = inventoryItemDTO.InventoryItemId,
+                            ItemVNum = inventoryItemDTO.ItemVNum,
+                            LightElement = inventoryItemDTO.LightElement,
+                            MagicDefence = inventoryItemDTO.MagicDefence,
+                            RangeDefence = inventoryItemDTO.RangeDefence,
+                            Rare = inventoryItemDTO.Rare,
+                            SlDefence = inventoryItemDTO.SlDefence,
+                            SlElement = inventoryItemDTO.SlElement,
+                            SlHit = inventoryItemDTO.SlHit,
+                            SlHP = inventoryItemDTO.SlHP,
+                            Upgrade = inventoryItemDTO.Upgrade,
+                            WaterElement = inventoryItemDTO.WaterElement,
+                           
+                            
+                        }
                 });
                 else
-                    Equipment.Add(new GameObject.Inventory(inventory.ItemInstanceId)
+                    EquipmentList.Inventory.Add(new GameObject.Inventory()
                     {
                         CharacterId = inventory.CharacterId,
                         Slot = inventory.Slot,
                         InventoryId = inventory.InventoryId,
                         Type = inventory.Type,
-                        ItemInstanceId = inventory.ItemInstanceId,
+                        InventoryItemId = inventory.InventoryItemId,
 
                     });
             }
@@ -251,25 +292,25 @@ namespace OpenNos.GameObject
             List<String> inventoriesStringPacket = new List<String>();
             String inv0 = "inv 0", inv1 = "inv 1", inv2 = "inv 2", inv6 = "inv 6", inv7 = "inv 7";
 
-            foreach (Inventory inv in Inventory)
+            foreach (Inventory inv in InventoryList.Inventory)
             {
-              
+               Item item = ServerManager.GetItem(inv.InventoryItem.ItemVNum);
                 switch (inv.Type)
                 {
                     case (short)InventoryType.Costume:
-                        inv7 += String.Format(" {0}.{1}.{2}.{3}", inv.Slot, inv.ItemInstance.ItemVNum, inv.ItemInstance.Rare, inv.ItemInstance.Upgrade);
+                        inv7 += String.Format(" {0}.{1}.{2}.{3}", inv.Slot, inv.InventoryItem.ItemVNum, inv.InventoryItem.Rare, inv.InventoryItem.Upgrade);
                         break;
                     case (short)InventoryType.Wear:
-                        inv0 += String.Format(" {0}.{1}.{2}.{3}", inv.Slot, inv.ItemInstance.ItemVNum, inv.ItemInstance.Rare, inv.ItemInstance.Item.Colored ? inv.ItemInstance.Color:inv.ItemInstance.Upgrade);
+                        inv0 += String.Format(" {0}.{1}.{2}.{3}", inv.Slot, inv.InventoryItem.ItemVNum, inv.InventoryItem.Rare, item.Colored ? inv.InventoryItem.Color:inv.InventoryItem.Upgrade);
                         break;
                     case (short)InventoryType.Main:
-                        inv1 += String.Format(" {0}.{1}.{2}.0", inv.Slot, inv.ItemInstance.ItemVNum, inv.ItemInstance.Amount);
+                        inv1 += String.Format(" {0}.{1}.{2}.0", inv.Slot, inv.InventoryItem.ItemVNum, inv.InventoryItem.Amount);
                         break;
                     case (short)InventoryType.Etc:
-                        inv2 += String.Format(" {0}.{1}.{2}.0", inv.Slot, inv.ItemInstance.ItemVNum, inv.ItemInstance.Amount);
+                        inv2 += String.Format(" {0}.{1}.{2}.0", inv.Slot, inv.InventoryItem.ItemVNum, inv.InventoryItem.Amount);
                         break;
                     case (short)InventoryType.Sp:
-                        inv6 += String.Format(" {0}.{1}.{2}.{3}", inv.Slot, inv.ItemInstance.ItemVNum, inv.ItemInstance.Rare, inv.ItemInstance.Upgrade);
+                        inv6 += String.Format(" {0}.{1}.{2}.{3}", inv.Slot, inv.InventoryItem.ItemVNum, inv.InventoryItem.Rare, inv.InventoryItem.Upgrade);
                         break;
                     case (short)InventoryType.Equipment:
                         break;
@@ -548,6 +589,14 @@ namespace OpenNos.GameObject
             return String.Empty;
             }
 
+        public IEnumerable<InventoryItem> LoadBySlotAllowed(short itemVNum, short amount)
+        {
+            foreach (Inventory inventoryitemobject in InventoryList.Inventory.Where(i => i.InventoryItem.ItemVNum.Equals(itemVNum) && i.InventoryItem.Amount + amount < 100))
+            {
+                yield return inventoryitemobject.InventoryItem;
+            }
+        }
+
         public string GenerateDialog(string dialog)
         {
             return String.Format("dlg {0}", dialog);
@@ -556,6 +605,10 @@ namespace OpenNos.GameObject
         public string GenerateGet(long id)
         {
             return String.Format("get 1 {0} {1} 0", CharacterId,id);
+        }
+        public string generateModal(string message, int type)
+        {
+            return String.Format("modal {1} {0}", message,type);
         }
 
         #endregion

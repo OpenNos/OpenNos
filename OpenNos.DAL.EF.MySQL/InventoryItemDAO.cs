@@ -25,17 +25,17 @@ using OpenNos.Core;
 
 namespace OpenNos.DAL.EF.MySQL
 {
-    public class ItemInstanceDAO : IItemInstanceDAO
+    public class InventoryItemDAO : IInventoryItemDAO
     {
-        public SaveResult InsertOrUpdate(ref ItemInstanceDTO item)
+        public SaveResult InsertOrUpdate(ref InventoryItemDTO item)
         {
             try
             {
                 using (var context = DataAccessHelper.CreateContext())
                 {
 
-                    short ItemInstanceId = item.ItemInstanceId;
-                    ItemInstance entity = context.iteminstance.SingleOrDefault(c => c.ItemInstanceId.Equals(ItemInstanceId));
+                    long InventoryItemId = item.InventoryItemId;
+                    InventoryItem entity = context.inventoryitem.SingleOrDefault(c => c.InventoryItemId.Equals(InventoryItemId));
 
                     if (entity == null) //new entity
                     {
@@ -51,7 +51,7 @@ namespace OpenNos.DAL.EF.MySQL
             }
             catch (Exception e)
             {
-                Logger.Log.ErrorFormat(Language.Instance.GetMessageFromKey("UPDATE_ACCOUNT_ERROR"), item.ItemInstanceId, e.Message);
+                Logger.Log.ErrorFormat(Language.Instance.GetMessageFromKey("UPDATE_ACCOUNT_ERROR"), item.InventoryItemId, e.Message);
                 return SaveResult.Error;
             }
         }
@@ -59,53 +59,53 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                ItemInstance item = context.iteminstance.SingleOrDefault(i => i.ItemInstanceId.Equals(ItemId));
+                InventoryItem item = context.inventoryitem.SingleOrDefault(i => i.InventoryItemId.Equals(ItemId));
 
                 if (item != null)
                 {
-                    context.iteminstance.Remove(item);
+                    context.inventoryitem.Remove(item);
                     context.SaveChanges();
                 }
 
                 return DeleteResult.Deleted;
             }
         }
-        public ItemInstanceDTO LoadById(short ItemId)
+        public InventoryItemDTO LoadById(long ItemId)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                return Mapper.Map<ItemInstanceDTO>(context.iteminstance.SingleOrDefault(i => i.ItemInstanceId.Equals(ItemId)));
+                return Mapper.Map<InventoryItemDTO>(context.inventoryitem.SingleOrDefault(i => i.InventoryItemId.Equals(ItemId)));
             }
         }
-        private ItemInstanceDTO Insert(ItemInstanceDTO iteminstance, OpenNosContainer context)
+        private InventoryItemDTO Insert(InventoryItemDTO inventoryitem, OpenNosContainer context)
         {
-            ItemInstance entity = Mapper.Map<ItemInstance>(iteminstance);
-            context.iteminstance.Add(entity);
+            InventoryItem entity = Mapper.Map<InventoryItem>(inventoryitem);
+            context.inventoryitem.Add(entity);
             context.SaveChanges();
-            return Mapper.Map<ItemInstanceDTO>(entity);
+            return Mapper.Map<InventoryItemDTO>(entity);
         }
 
-        private ItemInstanceDTO Update(ItemInstance entity, ItemInstanceDTO iteminstance, OpenNosContainer context)
+        private InventoryItemDTO Update(InventoryItem entity, InventoryItemDTO inventoryitem, OpenNosContainer context)
         {
             using (context)
             {
-                var result = context.iteminstance.SingleOrDefault(c => c.ItemInstanceId.Equals(iteminstance.ItemInstanceId));
+                var result = context.inventoryitem.SingleOrDefault(c => c.InventoryItemId.Equals(inventoryitem.InventoryItemId));
                 if (result != null)
                 {
-                    result = Mapper.Map<ItemInstanceDTO, ItemInstance>(iteminstance, entity);
+                    result = Mapper.Map<InventoryItemDTO, InventoryItem>(inventoryitem, entity);
                     context.SaveChanges();
                 }
             }
 
-            return Mapper.Map<ItemInstanceDTO>(entity);
+            return Mapper.Map<InventoryItemDTO>(entity);
         }
-        public IEnumerable<ItemInstanceDTO> LoadBySlotAllowed( short itemVNum, short amount)
+        public IEnumerable<InventoryItemDTO> LoadBySlotAllowed( short itemVNum, short amount)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                foreach (ItemInstance iteminstanceobject in context.iteminstance.Where(i => i.ItemVNum.Equals(itemVNum) && i.Amount + amount < 100))
+                foreach (InventoryItem inventoryitemobject in context.inventoryitem.Where(i => i.ItemVNum.Equals(itemVNum) && i.Amount + amount < 100))
                 {
-                    yield return Mapper.Map<ItemInstanceDTO>(iteminstanceobject);
+                    yield return Mapper.Map<InventoryItemDTO>(inventoryitemobject);
                 }
             }
         }

@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace OpenNos.Data
 {
-    public class ItemInstanceDTO
+    public class InventoryItemDTO
     {
-        public short ItemInstanceId { get; set; }
+        public long InventoryItemId { get; set; }
         public short DamageMinimum { get; set; }
         public short DamageMaximum { get; set; }
         public short Concentrate { get; set; }

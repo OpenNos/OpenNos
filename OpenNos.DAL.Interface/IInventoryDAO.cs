@@ -11,7 +11,7 @@ namespace  OpenNos.DAL.Interface
         IEnumerable<InventoryDTO> LoadByType(long characterId, short type);
         IEnumerable<InventoryDTO> LoadByCharacterId(long characterId);
         short getFirstPlace(long characterId, byte type,int backpack);
-        InventoryDTO LoadByItemInstance(short itemInstanceId);
-        InventoryDTO getFirstSlot(long characterId, List<short> iteminstanceids);
+        InventoryDTO LoadByInventoryItem(long InventoryItemId);
+        InventoryDTO getFirstSlot(long characterId, List<long> inventoryitemids);
     }
 }

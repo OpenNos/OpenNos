@@ -12,15 +12,15 @@ namespace OpenNos.DAL.EF.MySQL.DB
     using System;
     using System.Collections.Generic;
     
-    public partial class ItemInstance
+    public partial class InventoryItem
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public ItemInstance()
+        public InventoryItem()
         {
             this.inventory = new HashSet<Inventory>();
         }
     
-        public short ItemInstanceId { get; set; }
+        public long InventoryItemId { get; set; }
         public short DamageMinimum { get; set; }
         public short DamageMaximum { get; set; }
         public short Concentrate { get; set; }
@@ -46,8 +46,8 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public short FireElement { get; set; }
         public short ItemVNum { get; set; }
     
-        public virtual Item item { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Inventory> inventory { get; set; }
+        public virtual Item item { get; set; }
     }
 }
