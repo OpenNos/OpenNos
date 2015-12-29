@@ -99,7 +99,7 @@ namespace OpenNos.DAL.EF.MySQL
 
             return Mapper.Map<ItemInstanceDTO>(entity);
         }
-        public IEnumerable<ItemInstanceDTO> LoadBySlotAllowed(long characterId, short itemVNum, short amount)
+        public IEnumerable<ItemInstanceDTO> LoadBySlotAllowed( short itemVNum, short amount)
         {
             using (var context = DataAccessHelper.CreateContext())
             {

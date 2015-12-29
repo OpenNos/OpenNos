@@ -469,13 +469,13 @@ namespace OpenNos.Handler
             if (Session.CurrentMap.DroppedList.TryGetValue(DropId, out mapitem))
             {
                 ItemDTO itemInfo = DAOFactory.ItemDAO.LoadById(mapitem.ItemVNum);
-                IEnumerable<ItemInstanceDTO> slotfree =  DAOFactory.ItemInstanceDAO.LoadBySlotAllowed(Session.Character.CharacterId,mapitem.ItemVNum, mapitem.Amount);
+                IEnumerable<ItemInstanceDTO> slotfree =  DAOFactory.ItemInstanceDAO.LoadBySlotAllowed(mapitem.ItemVNum, mapitem.Amount);
                 List<short> iteminstanceids = new List<short>();
                 foreach(ItemInstanceDTO itemfree in slotfree)
                 {
                     iteminstanceids.Add(itemfree.ItemInstanceId);
                 }
-             InventoryDTO invtest=   DAOFactory.InventoryDAO.getFirstSlot(iteminstanceids);
+             InventoryDTO invtest=   DAOFactory.InventoryDAO.getFirstSlot( Session.Character.CharacterId, iteminstanceids);
                 if (invtest == null || invtest.Type == 0)
                 {
 
