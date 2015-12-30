@@ -79,10 +79,10 @@ namespace OpenNos.GameObject
 
             ClientSession session = new ClientSession(customClient);
             session.Initialize(_encryptor, _packetHandler);
-            ChatManager.Instance.sessions.Add(session);
+            ClientLinkManager.Instance.sessions.Add(session);
             if (!_sessions.TryAdd(customClient.ClientId, session))
             {
-                ChatManager.Instance.sessions.Remove(session);
+                ClientLinkManager.Instance.sessions.Remove(session);
                 Logger.Log.WarnFormat(Language.Instance.GetMessageFromKey("FORCED_DISCONNECT"), customClient.ClientId);
                 customClient.Disconnect();
                 _sessions.TryRemove(customClient.ClientId, out session);
@@ -94,7 +94,7 @@ namespace OpenNos.GameObject
         {
             ClientSession session;
             _sessions.TryRemove(e.Client.ClientId, out session);
-            ChatManager.Instance.sessions.Remove(session);
+            ClientLinkManager.Instance.sessions.Remove(session);
             if (session.Character != null)
             {
                 //only remove the character from map if the character has been set

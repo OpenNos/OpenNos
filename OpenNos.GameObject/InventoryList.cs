@@ -82,6 +82,20 @@ namespace OpenNos.GameObject
             return -1;
         }
 
+        public short getFreePlaceAmount(InventoryItem item, int backPack)
+        {
+            Inventory result;
+            short j = (short)(48 + backPack * 12);
+            for (short i = 0; i < 48 + backPack * 12; i++)
+            {
+               
+                    result = Inventory.SingleOrDefault(c => c.Type.Equals(ServerManager.GetItem(item.ItemVNum).Type) && c.Slot.Equals(i));     
+                if (( ServerManager.GetItem(item.ItemVNum).Type == 0 && result != null) || (ServerManager.GetItem(item.ItemVNum).Type != 0 && result != null && result.InventoryItem.ItemVNum == item.ItemVNum && result.InventoryItem.Amount + item.Amount > 99))
+                    j--;
+              
+            }
+            return j;
+        }
         public Inventory LoadBySlotAndType(short slot, short type)
         {
            

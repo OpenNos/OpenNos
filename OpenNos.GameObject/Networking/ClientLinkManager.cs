@@ -21,31 +21,28 @@ using System.Threading.Tasks;
 
 namespace OpenNos.GameObject
 {
-    public class ChatManager
+    public class ClientLinkManager
     {
-        private static ChatManager _instance;
+        private static ClientLinkManager _instance;
         public List<ClientSession> sessions { get; set; }
         public bool shutdownActive
         {
             get; set;
         }
-
-        private ChatManager()
+        private ClientLinkManager()
         {
             sessions = new List<ClientSession>();
         }
-
-        public static ChatManager Instance
+        public static ClientLinkManager Instance
         {
             get
             {
                 if (_instance == null)
-                    _instance = new ChatManager();
+                    _instance = new ClientLinkManager();
 
                 return _instance;
             }
         }
-
         public bool Broadcast(ClientSession client, String message, ReceiverType receiver, String CharacterName ="", long CharacterId = -1)
         {
             switch (receiver)
@@ -99,7 +96,6 @@ namespace OpenNos.GameObject
             }
             return true;
         }
-
         public void RequiereBroadcastFromMap(short MapId, string Message)
         {
                 foreach (ClientSession session in sessions)
@@ -164,7 +160,6 @@ namespace OpenNos.GameObject
             }
             return false;
         }
-
         public object RequiereProperties(long charId, string properties)
         {
             foreach (ClientSession session in sessions)

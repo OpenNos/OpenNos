@@ -223,7 +223,7 @@
     <value>Aucun</value>
   </data>
   <data name="NO_PREZ_MESSAGE" xml:space="preserve">
-    <value>Aucun^message^de^présentation.</value>
+    <value>Aucun message de présentation.</value>
   </data>
   <data name="PACKET_ARRIVED" xml:space="preserve">
     <value>Packet arrived, packet: {0}</value>

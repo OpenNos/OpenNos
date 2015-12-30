@@ -42,9 +42,10 @@ namespace OpenNos.GameObject
         private int _isDancing;
         private int _rested;
         private int _backpack;
-        private long _exctarget;
+     
         private InventoryList _inventorylist;
         private InventoryList _equipmentlist;
+
         #endregion 
 
         #region Instantiation
@@ -59,7 +60,7 @@ namespace OpenNos.GameObject
         #endregion
 
         #region Properties
-
+       public ExchangeInfo ExchangeInfo { get; set; }
         public InventoryList InventoryList
         {
             get { return _inventorylist; }
@@ -117,15 +118,7 @@ namespace OpenNos.GameObject
 
             }
         }
-        public long ExcTarget
-        {
-            get { return _exctarget; }
-            set
-            {
-                _exctarget = value;
-
-            }
-        }
+     
         public int Invisible
         {
             get { return _invisible; }
