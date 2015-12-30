@@ -52,12 +52,13 @@
     <Compile Include="Account.cs" />
     <Compile Include="Character.cs" />
     <Compile Include="Interface\IGameObject.cs" />
+    <Compile Include="ExchangeInfo.cs" />
     <Compile Include="Item.cs" />
     <Compile Include="InventoryList.cs" />
     <Compile Include="MapItem.cs" />
     <Compile Include="InventoryItem.cs" />
     <Compile Include="Inventory.cs" />
-    <Compile Include="Networking\ChatManager.cs" />
+    <Compile Include="Networking\ClientLinkManager.cs" />
     <Compile Include="Networking\ClientSession.cs" />
     <Compile Include="Map.cs" />
     <Compile Include="Networking\ServerManager.cs" />

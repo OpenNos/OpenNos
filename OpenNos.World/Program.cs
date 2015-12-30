@@ -44,7 +44,7 @@ namespace OpenNos.World
             //initialilize maps
             ServerManager.Initialize();
 
-            //initialize ChatManager
+            //initialize ClientLinkManager
             //TODO?
         
             string ip = System.Configuration.ConfigurationManager.AppSettings["WorldIp"];
