@@ -464,8 +464,7 @@ namespace OpenNos.Handler
             short destslot; short.TryParse(packetsplit[5], out destslot);
             Inventory inv = Session.Character.InventoryList.moveInventory(type, slot, desttype, destslot);
             if (inv !=null)
-            {  //packet
-
+            {
                 Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(inv.InventoryItem.ItemVNum, inv.InventoryItem.Amount, type, inv.Slot, inv.InventoryItem.Rare, inv.InventoryItem.Color, inv.InventoryItem.Upgrade));
                 DeleteItem(type, slot);
                 
@@ -541,6 +540,7 @@ namespace OpenNos.Handler
                 item.Amount = qty[i];
                 packetList += String.Format("{0}.{1}.{2}.{3} ", i, type[i], item.ItemVNum, qty[i]);
             }
+            Session.Character.ExchangeInfo.Gold = Gold;
             ClientLinkManager.Instance.Broadcast(Session, String.Format("exc_list 1 {0} {1} {2}", Session.Character.CharacterId, Gold, packetList), ReceiverType.OnlySomeone, "", Session.Character.ExchangeInfo.CharId);
             Session.Character.ExchangeInfo.Validate = true;
         }
@@ -574,7 +574,8 @@ namespace OpenNos.Handler
             if (mode == 3)
             {
                 ExchangeInfo exchange = (ExchangeInfo)ClientLinkManager.Instance.RequiereProperties(Session.Character.ExchangeInfo.CharId, "ExchangeInfo");
-
+                int backpack = (int)ClientLinkManager.Instance.RequiereProperties(Session.Character.ExchangeInfo.CharId, "BackPack");
+                InventoryList inventory = (InventoryList)ClientLinkManager.Instance.RequiereProperties(Session.Character.ExchangeInfo.CharId, "InventoryList");
                 if (Session.Character.ExchangeInfo.Validate && exchange.Validate)
                 {
                     Session.Character.ExchangeInfo.Confirm = true;
@@ -584,11 +585,17 @@ namespace OpenNos.Handler
                         ClientLinkManager.Instance.Broadcast(Session, String.Format("exc_close 1"), ReceiverType.OnlySomeone, "", Session.Character.ExchangeInfo.CharId);
                         bool continu = true;
 
-                        foreach (InventoryItem item in Session.Character.ExchangeInfo.ExchangeList)
-                            if (Session.Character.InventoryList.getFreePlaceAmount(item, Session.Character.BackPack) == 0)
+                            if (!Session.Character.InventoryList.getFreePlaceAmount(Session.Character.ExchangeInfo.ExchangeList, Session.Character.BackPack))
                             {
                                 continu = false;
                             }
+
+                       
+                            if (!inventory.getFreePlaceAmount(exchange.ExchangeList, backpack))
+                            {
+                                continu = false;
+                            }
+
                         if (continu == false)
                         {
                             Session.Client.SendPacket("exc_close 0");
@@ -598,9 +605,25 @@ namespace OpenNos.Handler
                         {
                             foreach (InventoryItem item in Session.Character.ExchangeInfo.ExchangeList)
                             {
-                                //TODO ADD item
-                                //Force oponent to addItem
+                                Inventory inv = Session.Character.InventoryList.getInventoryByInventoryItemId(item.InventoryItemId);
+                                Session.Character.InventoryList.DeleteByInventoryItemId(item.InventoryItemId);
+                                Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, inv.Type, inv.Slot, 0, 0, 0));
+
                             }
+                            foreach (InventoryItem item in exchange.ExchangeList)
+                            {
+                               Inventory inv = Session.Character.InventoryList.CreateItem(item, Session.Character);
+                                if (inv != null)
+                                {
+                                    short Slot = inv.Slot;
+                                    if (Slot != -1)
+                                        Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(inv.InventoryItem.ItemVNum, inv.InventoryItem.Amount, inv.Type, Slot, inv.InventoryItem.Rare, inv.InventoryItem.Color, inv.InventoryItem.Upgrade));
+                                }
+                            }
+                           
+                            Session.Character.Gold = Session.Character.Gold- Session.Character.ExchangeInfo.Gold+ exchange.Gold;
+                            Session.Client.SendPacket(Session.Character.GenerateGold());
+                            ClientLinkManager.Instance.ExchangeValidate(Session,Session.Character.ExchangeInfo.CharId);
 
                         }
                     }

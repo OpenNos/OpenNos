@@ -27,27 +27,28 @@ namespace OpenNos.GameObject
 
         #region Instantiation
         public List<Inventory> Inventory { get; set; }
-  
-        public InventoryList(){
-                Inventory = new List<Inventory>();
-            }
+
+        public InventoryList()
+        {
+            Inventory = new List<Inventory>();
+        }
         #endregion
 
         #region Methods
         public void InsertOrUpdate(ref Inventory newInventory)
         {
-                    long inventoryId = newInventory.InventoryId;
+            long inventoryId = newInventory.InventoryId;
 
-                    Inventory entity = Inventory.SingleOrDefault(c => c.InventoryId.Equals(inventoryId));
+            Inventory entity = Inventory.SingleOrDefault(c => c.InventoryId.Equals(inventoryId));
 
-                    if (entity == null) //new entity
-                    {
-                        newInventory = Insert(newInventory);
-                    }
-                    else //existing entity
-                    {
-                         newInventory = Update(entity, newInventory);
-                    }
+            if (entity == null) //new entity
+            {
+                newInventory = Insert(newInventory);
+            }
+            else //existing entity
+            {
+                newInventory = Update(entity, newInventory);
+            }
         }
 
         private Inventory Insert(Inventory inventory)
@@ -59,52 +60,71 @@ namespace OpenNos.GameObject
 
         private Inventory Update(Inventory entity, Inventory inventory)
         {
-           
-                var result = Inventory.SingleOrDefault(c => c.InventoryId == inventory.InventoryId);
-                if (result != null)
-                {
+
+            var result = Inventory.SingleOrDefault(c => c.InventoryId == inventory.InventoryId);
+            if (result != null)
+            {
                 Inventory.Remove(result);
                 Inventory.Add(inventory);
-                 
-                }
-            
+
+            }
+
 
             return inventory;
         }
 
 
-        public short getFirstPlace( byte type, int backPack,InventoryItem item)
+        public short getFirstPlace(byte type, int backPack, InventoryItem item)
         {
             Inventory result;
             for (short i = 0; i < 48 + backPack * 12; i++)
             {
-                result =Inventory.SingleOrDefault(c=> c.Type.Equals(type) && c.Slot.Equals(i));
-                if(result == null)
-                        return i;
+                result = Inventory.SingleOrDefault(c => c.Type.Equals(type) && c.Slot.Equals(i));
+                if (result == null)
+                    return i;
             }
             return -1;
         }
 
-        public short getFreePlaceAmount(InventoryItem item, int backPack)
+        public bool getFreePlaceAmount(List<InventoryItem> item, int backPack)
         {
-            Inventory result;
-            short j = (short)(48 + backPack * 12);
-            for (short i = 0; i < 48 + backPack * 12; i++)
+            short[] place = new short[10];
+            for (short k = 0; k < place.Count(); k++)
             {
-               
-                    result = Inventory.SingleOrDefault(c => c.Type.Equals(ServerManager.GetItem(item.ItemVNum).Type) && c.Slot.Equals(i));     
-                if (( ServerManager.GetItem(item.ItemVNum).Type == 0 && result != null) || (ServerManager.GetItem(item.ItemVNum).Type != 0 && result != null && result.InventoryItem.ItemVNum == item.ItemVNum && result.InventoryItem.Amount + item.Amount > 99))
-                    j--;
-              
+                place[k] = (short)(48 + backPack * 12);
+                for (short i = 0; i < 48 + backPack * 12; i++)
+                {
+                    Inventory result = LoadBySlotAndType(i, k);
+                    if (result != null && result.Type == 0)
+                        place[k]--;
+                    else if(result != null)
+                    {
+                        bool test = false;
+                        //si un item colle
+                        foreach(InventoryItem itemins in item)
+                        {
+                            if (ServerManager.GetItem(itemins.ItemVNum).Type != 0 && itemins.Amount + result.InventoryItem.Amount <= 99)
+                                test = true;
+                        }
+                        if(!test)
+                            place[k]--;
+                    }
+                }
             }
-            return j;
+            bool test2 = true;
+            foreach (InventoryItem itemins in item)
+            {
+                if (place[ServerManager.GetItem(itemins.ItemVNum).Type] == 0)
+                    test2 = false;
+            }
+                return test2;
         }
 
         public Inventory LoadBySlotAndType(short slot, short type)
         {
-           
-                return Inventory.SingleOrDefault(i => i.Slot.Equals(slot) && i.Type.Equals(type));
-            
+
+            return Inventory.SingleOrDefault(i => i.Slot.Equals(slot) && i.Type.Equals(type));
+
         }
 
         public void DeleteFromSlotAndType(short slot, short type)
@@ -115,7 +135,7 @@ namespace OpenNos.GameObject
             {
                 Inventory.Remove(inv);
             }
-            
+
         }
 
         public Inventory getFirstSlot(IEnumerable<InventoryItem> slotfree)
@@ -161,8 +181,8 @@ namespace OpenNos.GameObject
             while (boolean)
             {
                 boolean = false;
-                 inventoryitemId =  (long)((r.NextDouble() * 2.0 - 1.0) * long.MaxValue);
-                foreach(Inventory inv in Inventory)
+                inventoryitemId = (long)((r.NextDouble() * 2.0 - 1.0) * long.MaxValue);
+                foreach (Inventory inv in Inventory)
                 {
                     if (inv.InventoryItemId == inventoryitemId)
                     { boolean = true; break; }
@@ -183,22 +203,22 @@ namespace OpenNos.GameObject
                 Slot = inv.Slot;
                 newItem.Amount = (short)(newItem.Amount + inv.InventoryItem.Amount);
                 modified = true;
-            }        
+            }
             else
-            Slot = getFirstPlace(ServerManager.GetItem(newItem.ItemVNum).Type, character.BackPack, newItem);
+                Slot = getFirstPlace(ServerManager.GetItem(newItem.ItemVNum).Type, character.BackPack, newItem);
             if (Slot != -1)
             {
-           
+
                 if (modified == false)
-                 newInventory = new Inventory()
-                {
-                    CharacterId = character.CharacterId,
-                    InventoryItemId = newItem.InventoryItemId,
-                    Slot = Slot,
-                    Type = ServerManager.GetItem(newItem.ItemVNum).Type,
-                    InventoryItem = newItem,
-                    InventoryId = generateInventoryId(),
-                };
+                    newInventory = new Inventory()
+                    {
+                        CharacterId = character.CharacterId,
+                        InventoryItemId = newItem.InventoryItemId,
+                        Slot = Slot,
+                        Type = ServerManager.GetItem(newItem.ItemVNum).Type,
+                        InventoryItem = newItem,
+                        InventoryId = generateInventoryId(),
+                    };
                 else
                     newInventory = new Inventory()
                     {
@@ -215,7 +235,7 @@ namespace OpenNos.GameObject
             return newInventory;
         }
 
-        public MapItem PutItem(ClientSession Session, short type, short slot, short amount,out Inventory inv)
+        public MapItem PutItem(ClientSession Session, short type, short slot, short amount, out Inventory inv)
         {
             Random rnd = new Random();
             int random = 0;
@@ -256,7 +276,7 @@ namespace OpenNos.GameObject
                 Session.CurrentMap.DroppedList.Add(random, DroppedItem);
                 inv.InventoryItem.Amount = (short)(inv.InventoryItem.Amount - amount);
                 Session.Character.InventoryList.InsertOrUpdate(ref inv);
-              
+
 
             }
             return DroppedItem;
@@ -264,23 +284,23 @@ namespace OpenNos.GameObject
 
         public Inventory moveInventory(short type, short slot, short desttype, short destslot)
         {
-            Inventory inv =LoadBySlotAndType(slot, type);
+            Inventory inv = LoadBySlotAndType(slot, type);
             Item iteminfo = ServerManager.GetItem(inv.InventoryItem.ItemVNum);
             Inventory invdest = LoadBySlotAndType(destslot, desttype);
             if (invdest == null && ((slot == 6 && iteminfo.ItemType == 4) || (slot == 7 && iteminfo.ItemType == 2) || slot == 0))
             {
                 inv.Slot = destslot;
                 inv.Type = desttype;
-               InsertOrUpdate(ref inv);
-              
+                InsertOrUpdate(ref inv);
+
             }
             return invdest;
         }
 
-        public void MoveItem(Character character,short type, short slot, short amount, short destslot, out Inventory inv, out Inventory invdest)
+        public void MoveItem(Character character, short type, short slot, short amount, short destslot, out Inventory inv, out Inventory invdest)
         {
-             inv = LoadBySlotAndType(slot, type);
-             invdest = LoadBySlotAndType(destslot, type);
+            inv = LoadBySlotAndType(slot, type);
+            invdest = LoadBySlotAndType(destslot, type);
             if (amount <= inv.InventoryItem.Amount)
             {
                 if (invdest == null)
@@ -337,7 +357,7 @@ namespace OpenNos.GameObject
                             InventoryId = generateInventoryId(),
                             InventoryItem = itemDest,
                         };
-                     InsertOrUpdate(ref invDest);
+                        InsertOrUpdate(ref invDest);
                         invdest = invDest;
                     }
 
@@ -354,8 +374,8 @@ namespace OpenNos.GameObject
                             invdest.InventoryItem.Amount = 99;
                             inv.InventoryItem.Amount = (short)(saveItemCount + inv.InventoryItem.Amount - 99);
 
-                           InsertOrUpdate(ref inv);
-                        InsertOrUpdate(ref invdest);
+                            InsertOrUpdate(ref inv);
+                            InsertOrUpdate(ref invdest);
 
                         }
                         else
@@ -363,9 +383,9 @@ namespace OpenNos.GameObject
                             short saveItemCount = invdest.InventoryItem.Amount;
                             invdest.InventoryItem.Amount = (short)(saveItemCount + amount);
                             inv.InventoryItem.Amount = (short)(inv.InventoryItem.Amount - amount);
-                           InsertOrUpdate(ref inv);
-                           InsertOrUpdate(ref invdest);
-                          
+                            InsertOrUpdate(ref inv);
+                            InsertOrUpdate(ref invdest);
+
 
                         }
                     }
@@ -373,8 +393,8 @@ namespace OpenNos.GameObject
                     {
                         invdest.Slot = inv.Slot;
                         inv.Slot = 99;
-                       InsertOrUpdate(ref inv);
-                       InsertOrUpdate(ref invdest);
+                        InsertOrUpdate(ref inv);
+                        InsertOrUpdate(ref invdest);
                         inv.Slot = destslot;
                         InsertOrUpdate(ref inv);
                     }
@@ -382,6 +402,22 @@ namespace OpenNos.GameObject
             }
             inv = LoadBySlotAndType(slot, type);
             invdest = LoadBySlotAndType(destslot, type);
+        }
+
+        public void DeleteByInventoryItemId(long inventoryItemId)
+        {
+            Inventory inv = Inventory.SingleOrDefault(i => i.InventoryItemId.Equals(inventoryItemId));
+
+            if (inv != null)
+            {
+                Inventory.Remove(inv);
+            }
+        }
+
+        public Inventory getInventoryByInventoryItemId(long inventoryItemId)
+        {
+            return Inventory.SingleOrDefault(i => i.InventoryItemId.Equals(inventoryItemId));
+
         }
 
 
