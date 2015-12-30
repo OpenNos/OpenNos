@@ -287,14 +287,16 @@ namespace OpenNos.GameObject
             Inventory inv = LoadBySlotAndType(slot, type);
             Item iteminfo = ServerManager.GetItem(inv.InventoryItem.ItemVNum);
             Inventory invdest = LoadBySlotAndType(destslot, desttype);
-            if (invdest == null && ((slot == 6 && iteminfo.ItemType == 4) || (slot == 7 && iteminfo.ItemType == 2) || slot == 0))
+
+            if (invdest == null && ((desttype == 6 && iteminfo.ItemType == 4) || (desttype == 7 && iteminfo.ItemType == 2) || slot == 0))
             {
                 inv.Slot = destslot;
                 inv.Type = desttype;
                 InsertOrUpdate(ref inv);
 
             }
-            return invdest;
+          
+            return inv;
         }
 
         public void MoveItem(Character character, short type, short slot, short amount, short destslot, out Inventory inv, out Inventory invdest)

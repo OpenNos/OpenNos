@@ -533,7 +533,6 @@ namespace OpenNos.GameObject
 
         public string GenerateInfo(string message)
         {
-            string str2 = "info " + Name + " ne joue pas.";
             return String.Format("info {0}", message);
         }
 
@@ -602,6 +601,11 @@ namespace OpenNos.GameObject
         public string generateModal(string message, int type)
         {
             return String.Format("modal {1} {0}", message,type);
+        }
+
+        public string GenerateInfo(string v1, int v2)
+        {
+            throw new NotImplementedException();
         }
 
         #endregion

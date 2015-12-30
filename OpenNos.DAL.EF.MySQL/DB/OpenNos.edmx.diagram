@@ -25,7 +25,6 @@
         <AssociationConnector Association="opennosModel.InventoryItemItem" />
         <AssociationConnector Association="opennosModel.InventoryItemInstance" />
         <AssociationConnector Association="opennosModel.InventoryItemInventory" />
-        <AssociationConnector Association="opennosModel.InventoryItemItem" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
