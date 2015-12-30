@@ -43,7 +43,7 @@ namespace OpenNos.GameObject
                 return _instance;
             }
         }
-        public bool Broadcast(ClientSession client, String message, ReceiverType receiver, String CharacterName ="", long CharacterId = -1)
+        public bool Broadcast(ClientSession client, String message, ReceiverType receiver, String CharacterName = "", long CharacterId = -1)
         {
             switch (receiver)
             {
@@ -58,18 +58,18 @@ namespace OpenNos.GameObject
                 case ReceiverType.AllExceptMe:
                     foreach (ClientSession session in sessions)
                     {
-                        if(session != client)
-                        session.Client.SendPacket(message);
+                        if (session != client)
+                            session.Client.SendPacket(message);
                     }
                     break;
 
                 case ReceiverType.AllOnMap:
                     foreach (ClientSession session in sessions)
                     {
-                        if (session.Character !=null && client.Character.MapId == session.Character.MapId)
+                        if (session.Character != null && client.Character.MapId == session.Character.MapId)
                             session.Client.SendPacket(message);
                     }
-                  
+
                     break;
                 case ReceiverType.AllOnMapExceptMe:
                     foreach (ClientSession session in sessions)
@@ -84,26 +84,26 @@ namespace OpenNos.GameObject
                 case ReceiverType.OnlySomeone:
                     foreach (ClientSession session in sessions)
                     {
-                        if (session.Character != null &&  (session.Character.Name == CharacterName || session.Character.CharacterId == CharacterId))
+                        if (session.Character != null && (session.Character.Name == CharacterName || session.Character.CharacterId == CharacterId))
                         {
                             session.Client.SendPacket(message);
                             return true;
                         }
-                           
+
                     }
                     return false;
-                      
+
             }
             return true;
         }
         public void RequiereBroadcastFromMap(short MapId, string Message)
         {
-                foreach (ClientSession session in sessions)
-                {
+            foreach (ClientSession session in sessions)
+            {
                 if (session.Character != null && session.Character.MapId == MapId)
-                    Broadcast(session, String.Format(Message, session.Character.CharacterId),ReceiverType.AllOnMap);
-                }
-            
+                    Broadcast(session, String.Format(Message, session.Character.CharacterId), ReceiverType.AllOnMap);
+            }
+
         }
         public void RequiereBroadcastFromAllMapUsers(ClientSession client, string methodName)
         {
@@ -123,7 +123,7 @@ namespace OpenNos.GameObject
         {
             foreach (ClientSession session in sessions)
             {
-           
+
                 if (session.Character != null && session.Character.CharacterId == CharacterId)
                 {
                     Type t = session.Character.GetType();
@@ -137,7 +137,7 @@ namespace OpenNos.GameObject
         {
             foreach (ClientSession session in sessions)
             {
-      
+
                 if (session.Character != null && session.Character.Name == CharacterName)
                 {
                     Type t = session.Character.GetType();
@@ -145,7 +145,7 @@ namespace OpenNos.GameObject
                     string result = (string)method.Invoke(session.Character, null);
                     client.Client.SendPacket(result);
                 }
-                  
+
             }
         }
         public bool Kick(String CharacterName)
@@ -171,6 +171,35 @@ namespace OpenNos.GameObject
                 }
             }
             return "";
+        }
+        public void ExchangeValidate(ClientSession Session, long charId)
+        {
+            foreach (ClientSession session in sessions)
+            {
+               
+                if (session.Character != null && session.Character.CharacterId == charId)
+                {
+                    foreach (InventoryItem item in session.Character.ExchangeInfo.ExchangeList)
+                    {
+                        Inventory inv = session.Character.InventoryList.getInventoryByInventoryItemId(item.InventoryItemId);
+                        session.Character.InventoryList.DeleteByInventoryItemId(item.InventoryItemId);
+                        session.Client.SendPacket(session.Character.GenerateInventoryAdd(-1, 0, inv.Type, inv.Slot, 0, 0, 0));
+
+                    }
+                    foreach (InventoryItem item in Session.Character.ExchangeInfo.ExchangeList)
+                    {
+                        Inventory inv = session.Character.InventoryList.CreateItem(item, Session.Character);
+                        if (inv != null)
+                        {
+                            short Slot = inv.Slot;
+                            if (Slot != -1)
+                                session.Client.SendPacket(session.Character.GenerateInventoryAdd(inv.InventoryItem.ItemVNum, inv.InventoryItem.Amount, inv.Type, Slot, inv.InventoryItem.Rare, inv.InventoryItem.Color, inv.InventoryItem.Upgrade));
+                        }
+                    }
+                    session.Character.Gold = session.Character.Gold - session.Character.ExchangeInfo.Gold + Session.Character.ExchangeInfo.Gold;
+                    session.Client.SendPacket(session.Character.GenerateGold());
+                }
+            }
         }
     }
 }
