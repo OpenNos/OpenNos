@@ -201,6 +201,9 @@
   <data name="INSERT_ERROR" xml:space="preserve">
     <value>Error inserting or updating character {0} , {1}</value>
   </data>
+  <data name="IN_WAITING_FOR" xml:space="preserve">
+    <value>In Waiting for {0}</value>
+  </data>
   <data name="ITEM_LOADED" xml:space="preserve">
     <value>{0} Items Loaded !</value>
   </data>
@@ -224,6 +227,9 @@
   </data>
   <data name="NEW_CONNECT" xml:space="preserve">
     <value>A new client is connected. ClientId =</value>
+  </data>
+  <data name="NOT_ENOUGH_PLACE" xml:space="preserve">
+    <value>Not enought places</value>
   </data>
   <data name="NO_ENTRY" xml:space="preserve">
     <value>No EntryPoint found</value>
@@ -263,6 +269,9 @@
   </data>
   <data name="USER_NOT_CONNECTED" xml:space="preserve">
     <value>User is not connected.</value>
+  </data>
+  <data name="YOU_ASK_FOR_EXCHANGE" xml:space="preserve">
+    <value>You ask for an echange with</value>
   </data>
   <data name="YOU_GET_OBJECT" xml:space="preserve">
     <value>You get an object</value>

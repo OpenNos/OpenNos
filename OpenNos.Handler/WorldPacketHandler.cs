@@ -465,9 +465,10 @@ namespace OpenNos.Handler
             Inventory inv = Session.Character.InventoryList.moveInventory(type, slot, desttype, destslot);
             if (inv !=null)
             {
-                Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(inv.InventoryItem.ItemVNum, inv.InventoryItem.Amount, type, inv.Slot, inv.InventoryItem.Rare, inv.InventoryItem.Color, inv.InventoryItem.Upgrade));
-                DeleteItem(type, slot);
-                
+                Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(inv.InventoryItem.ItemVNum, inv.InventoryItem.Amount, desttype, inv.Slot, inv.InventoryItem.Rare, inv.InventoryItem.Color, inv.InventoryItem.Upgrade));
+                Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, type, slot, 0, 0, 0));
+
+
             }
         }
 
@@ -598,6 +599,9 @@ namespace OpenNos.Handler
 
                         if (continu == false)
                         {
+                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_PLACE"), 0));              
+                            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_PLACE"), 0), ReceiverType.OnlySomeone, "", Session.Character.ExchangeInfo.CharId);
+
                             Session.Client.SendPacket("exc_close 0");
                             ClientLinkManager.Instance.Broadcast(Session, String.Format("exc_close 0"), ReceiverType.OnlySomeone, "", Session.Character.ExchangeInfo.CharId);
                         }
@@ -626,6 +630,14 @@ namespace OpenNos.Handler
                             ClientLinkManager.Instance.ExchangeValidate(Session,Session.Character.ExchangeInfo.CharId);
 
                         }
+
+
+                    }
+                    else
+                    {
+                        CharName = (string)ClientLinkManager.Instance.RequiereProperties(charId, "Name");
+
+                        Session.Client.SendPacket(Session.Character.GenerateInfo(String.Format(Language.Instance.GetMessageFromKey("IN_WAITING_FOR"), CharName)));
                     }
                 }
             }
@@ -701,7 +713,7 @@ namespace OpenNos.Handler
             short amount = 1;
             short vnum, rare = 0, upgrade = 0, color = 0;
             ItemDTO iteminfo = null;
-            if (packetsplit.Length != 3 && packetsplit.Length != 4)
+            if (packetsplit.Length != 5 && packetsplit.Length != 4)
             {
                 Session.Client.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID RARE UPGRADE", 0));
                 Session.Client.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID COLOR", 0));
