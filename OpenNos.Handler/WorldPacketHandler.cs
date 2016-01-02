@@ -458,10 +458,14 @@ namespace OpenNos.Handler
         public void MoveInventory(string packet)
         {
             string[] packetsplit = packet.Split(' ');
-            short type; short.TryParse(packetsplit[2], out type);
-            short slot; short.TryParse(packetsplit[3], out slot);
-            short desttype; short.TryParse(packetsplit[4], out desttype);
-            short destslot; short.TryParse(packetsplit[5], out destslot);
+            short type;
+            short.TryParse(packetsplit[2], out type);
+            short slot;
+            short.TryParse(packetsplit[3], out slot);
+            short desttype;
+            short.TryParse(packetsplit[4], out desttype);
+            short destslot;
+            short.TryParse(packetsplit[5], out destslot);
             Inventory inv = Session.Character.InventoryList.moveInventory(type, slot, desttype, destslot);
             if (inv !=null)
             {
@@ -730,8 +734,11 @@ namespace OpenNos.Handler
                     }
                     else if (iteminfo.Type == 0)
                     {
-                        Int16.TryParse(packetsplit[3], out rare);
-                        Int16.TryParse(packetsplit[4], out upgrade);
+                        if (packetsplit.Length == 5)
+                        { 
+                            Int16.TryParse(packetsplit[3], out rare);
+                          Int16.TryParse(packetsplit[4], out upgrade);
+                        }
                     }
                     else
                     {
