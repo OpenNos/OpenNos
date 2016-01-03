@@ -99,7 +99,7 @@ namespace OpenNos.Handler
 
                                         //inform communication service about new player from login server 
                                         try {
-                                            ServiceFactory.Instance.CommunicationService.RegisterPlayerLogin(user.Name, newSessionId);
+                                            ServiceFactory.Instance.CommunicationService.RegisterAccountLogin(user.Name, newSessionId);
                                         }
 
                                         catch(Exception ex)

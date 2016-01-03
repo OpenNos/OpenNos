@@ -103,7 +103,7 @@
       </wsp:All>
     </wsp:ExactlyOne>
   </wsp:Policy>
-  <wsp:Policy wsu:Id="duplexendpoint_RegisterPlayerLogin_Input_policy">
+  <wsp:Policy wsu:Id="duplexendpoint_RegisterAccountLogin_Input_policy">
     <wsp:ExactlyOne>
       <wsp:All>
         <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
@@ -126,7 +126,7 @@
       </wsp:All>
     </wsp:ExactlyOne>
   </wsp:Policy>
-  <wsp:Policy wsu:Id="duplexendpoint_HasRegisteredPlayerLogin_Input_policy">
+  <wsp:Policy wsu:Id="duplexendpoint_HasRegisteredAccountLogin_Input_policy">
     <wsp:ExactlyOne>
       <wsp:All>
         <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
@@ -149,7 +149,7 @@
       </wsp:All>
     </wsp:ExactlyOne>
   </wsp:Policy>
-  <wsp:Policy wsu:Id="duplexendpoint_HasRegisteredPlayerLogin_output_policy">
+  <wsp:Policy wsu:Id="duplexendpoint_HasRegisteredAccountLogin_output_policy">
     <wsp:ExactlyOne>
       <wsp:All>
         <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
@@ -172,7 +172,99 @@
       </wsp:All>
     </wsp:ExactlyOne>
   </wsp:Policy>
-  <wsp:Policy wsu:Id="duplexendpoint_RegisterPlayerLoginCallback_output_policy">
+  <wsp:Policy wsu:Id="duplexendpoint_ConnectCharacter_Input_policy">
+    <wsp:ExactlyOne>
+      <wsp:All>
+        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+          <sp:Header Name="Sequence" Namespace="http://schemas.xmlsoap.org/ws/2005/02/rm" />
+          <sp:Header Name="SequenceAcknowledgement" Namespace="http://schemas.xmlsoap.org/ws/2005/02/rm" />
+          <sp:Header Name="AckRequested" Namespace="http://schemas.xmlsoap.org/ws/2005/02/rm" />
+          <sp:Header Name="ChannelInstance" Namespace="http://schemas.microsoft.com/ws/2005/02/duplex" />
+          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
+        </sp:SignedParts>
+        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+        </sp:EncryptedParts>
+      </wsp:All>
+    </wsp:ExactlyOne>
+  </wsp:Policy>
+  <wsp:Policy wsu:Id="duplexendpoint_ConnectCharacter_output_policy">
+    <wsp:ExactlyOne>
+      <wsp:All>
+        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+          <sp:Header Name="Sequence" Namespace="http://schemas.xmlsoap.org/ws/2005/02/rm" />
+          <sp:Header Name="SequenceAcknowledgement" Namespace="http://schemas.xmlsoap.org/ws/2005/02/rm" />
+          <sp:Header Name="AckRequested" Namespace="http://schemas.xmlsoap.org/ws/2005/02/rm" />
+          <sp:Header Name="ChannelInstance" Namespace="http://schemas.microsoft.com/ws/2005/02/duplex" />
+          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
+        </sp:SignedParts>
+        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+        </sp:EncryptedParts>
+      </wsp:All>
+    </wsp:ExactlyOne>
+  </wsp:Policy>
+  <wsp:Policy wsu:Id="duplexendpoint_DisconnectCharacter_Input_policy">
+    <wsp:ExactlyOne>
+      <wsp:All>
+        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+          <sp:Header Name="Sequence" Namespace="http://schemas.xmlsoap.org/ws/2005/02/rm" />
+          <sp:Header Name="SequenceAcknowledgement" Namespace="http://schemas.xmlsoap.org/ws/2005/02/rm" />
+          <sp:Header Name="AckRequested" Namespace="http://schemas.xmlsoap.org/ws/2005/02/rm" />
+          <sp:Header Name="ChannelInstance" Namespace="http://schemas.microsoft.com/ws/2005/02/duplex" />
+          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
+        </sp:SignedParts>
+        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+        </sp:EncryptedParts>
+      </wsp:All>
+    </wsp:ExactlyOne>
+  </wsp:Policy>
+  <wsp:Policy wsu:Id="duplexendpoint_ConnectCharacterCallback_output_policy">
+    <wsp:ExactlyOne>
+      <wsp:All>
+        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+          <sp:Header Name="Sequence" Namespace="http://schemas.xmlsoap.org/ws/2005/02/rm" />
+          <sp:Header Name="SequenceAcknowledgement" Namespace="http://schemas.xmlsoap.org/ws/2005/02/rm" />
+          <sp:Header Name="AckRequested" Namespace="http://schemas.xmlsoap.org/ws/2005/02/rm" />
+          <sp:Header Name="ChannelInstance" Namespace="http://schemas.microsoft.com/ws/2005/02/duplex" />
+          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
+        </sp:SignedParts>
+        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+        </sp:EncryptedParts>
+      </wsp:All>
+    </wsp:ExactlyOne>
+  </wsp:Policy>
+  <wsp:Policy wsu:Id="duplexendpoint_DisconnectCharacterCallback_output_policy">
     <wsp:ExactlyOne>
       <wsp:All>
         <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
@@ -201,55 +293,102 @@
       <xsd:import namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
     </xsd:schema>
   </wsdl:types>
-  <wsdl:message name="ICommunicationService_RegisterPlayerLogin_InputMessage">
-    <wsdl:part name="parameters" element="tns:RegisterPlayerLogin" />
+  <wsdl:message name="ICommunicationService_RegisterAccountLogin_InputMessage">
+    <wsdl:part name="parameters" element="tns:RegisterAccountLogin" />
   </wsdl:message>
-  <wsdl:message name="ICommunicationService_HasRegisteredPlayerLogin_InputMessage">
-    <wsdl:part name="parameters" element="tns:HasRegisteredPlayerLogin" />
+  <wsdl:message name="ICommunicationService_HasRegisteredAccountLogin_InputMessage">
+    <wsdl:part name="parameters" element="tns:HasRegisteredAccountLogin" />
   </wsdl:message>
-  <wsdl:message name="ICommunicationService_HasRegisteredPlayerLogin_OutputMessage">
-    <wsdl:part name="parameters" element="tns:HasRegisteredPlayerLoginResponse" />
+  <wsdl:message name="ICommunicationService_HasRegisteredAccountLogin_OutputMessage">
+    <wsdl:part name="parameters" element="tns:HasRegisteredAccountLoginResponse" />
   </wsdl:message>
-  <wsdl:message name="ICommunicationService_RegisterPlayerLoginCallback_OutputCallbackMessage">
-    <wsdl:part name="parameters" element="tns:RegisterPlayerLoginCallback" />
+  <wsdl:message name="ICommunicationService_ConnectCharacter_InputMessage">
+    <wsdl:part name="parameters" element="tns:ConnectCharacter" />
+  </wsdl:message>
+  <wsdl:message name="ICommunicationService_ConnectCharacter_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ConnectCharacterResponse" />
+  </wsdl:message>
+  <wsdl:message name="ICommunicationService_DisconnectCharacter_InputMessage">
+    <wsdl:part name="parameters" element="tns:DisconnectCharacter" />
+  </wsdl:message>
+  <wsdl:message name="ICommunicationService_ConnectCharacterCallback_OutputCallbackMessage">
+    <wsdl:part name="parameters" element="tns:ConnectCharacterCallback" />
+  </wsdl:message>
+  <wsdl:message name="ICommunicationService_DisconnectCharacterCallback_OutputCallbackMessage">
+    <wsdl:part name="parameters" element="tns:DisconnectCharacterCallback" />
   </wsdl:message>
   <wsdl:portType name="ICommunicationService">
-    <wsdl:operation name="RegisterPlayerLogin">
-      <wsdl:input wsaw:Action="http://tempuri.org/ICommunicationService/RegisterPlayerLogin" message="tns:ICommunicationService_RegisterPlayerLogin_InputMessage" />
+    <wsdl:operation name="RegisterAccountLogin">
+      <wsdl:input wsaw:Action="http://tempuri.org/ICommunicationService/RegisterAccountLogin" message="tns:ICommunicationService_RegisterAccountLogin_InputMessage" />
     </wsdl:operation>
-    <wsdl:operation name="HasRegisteredPlayerLogin">
-      <wsdl:input wsaw:Action="http://tempuri.org/ICommunicationService/HasRegisteredPlayerLogin" message="tns:ICommunicationService_HasRegisteredPlayerLogin_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/ICommunicationService/HasRegisteredPlayerLoginResponse" message="tns:ICommunicationService_HasRegisteredPlayerLogin_OutputMessage" />
+    <wsdl:operation name="HasRegisteredAccountLogin">
+      <wsdl:input wsaw:Action="http://tempuri.org/ICommunicationService/HasRegisteredAccountLogin" message="tns:ICommunicationService_HasRegisteredAccountLogin_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ICommunicationService/HasRegisteredAccountLoginResponse" message="tns:ICommunicationService_HasRegisteredAccountLogin_OutputMessage" />
     </wsdl:operation>
-    <wsdl:operation name="RegisterPlayerLoginCallback">
-      <wsdl:output wsaw:Action="http://tempuri.org/ICommunicationService/RegisterPlayerLoginCallback" message="tns:ICommunicationService_RegisterPlayerLoginCallback_OutputCallbackMessage" />
+    <wsdl:operation name="ConnectCharacter">
+      <wsdl:input wsaw:Action="http://tempuri.org/ICommunicationService/ConnectCharacter" message="tns:ICommunicationService_ConnectCharacter_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ICommunicationService/ConnectCharacterResponse" message="tns:ICommunicationService_ConnectCharacter_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="DisconnectCharacter">
+      <wsdl:input wsaw:Action="http://tempuri.org/ICommunicationService/DisconnectCharacter" message="tns:ICommunicationService_DisconnectCharacter_InputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ConnectCharacterCallback">
+      <wsdl:output wsaw:Action="http://tempuri.org/ICommunicationService/ConnectCharacterCallback" message="tns:ICommunicationService_ConnectCharacterCallback_OutputCallbackMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="DisconnectCharacterCallback">
+      <wsdl:output wsaw:Action="http://tempuri.org/ICommunicationService/DisconnectCharacterCallback" message="tns:ICommunicationService_DisconnectCharacterCallback_OutputCallbackMessage" />
     </wsdl:operation>
   </wsdl:portType>
   <wsdl:binding name="duplexendpoint" type="tns:ICommunicationService">
     <wsp:PolicyReference URI="#duplexendpoint_policy" />
     <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
-    <wsdl:operation name="RegisterPlayerLogin">
-      <soap12:operation soapAction="http://tempuri.org/ICommunicationService/RegisterPlayerLogin" style="document" />
+    <wsdl:operation name="RegisterAccountLogin">
+      <soap12:operation soapAction="http://tempuri.org/ICommunicationService/RegisterAccountLogin" style="document" />
       <wsdl:input>
-        <wsp:PolicyReference URI="#duplexendpoint_RegisterPlayerLogin_Input_policy" />
+        <wsp:PolicyReference URI="#duplexendpoint_RegisterAccountLogin_Input_policy" />
         <soap12:body use="literal" />
       </wsdl:input>
     </wsdl:operation>
-    <wsdl:operation name="HasRegisteredPlayerLogin">
-      <soap12:operation soapAction="http://tempuri.org/ICommunicationService/HasRegisteredPlayerLogin" style="document" />
+    <wsdl:operation name="HasRegisteredAccountLogin">
+      <soap12:operation soapAction="http://tempuri.org/ICommunicationService/HasRegisteredAccountLogin" style="document" />
       <wsdl:input>
-        <wsp:PolicyReference URI="#duplexendpoint_HasRegisteredPlayerLogin_Input_policy" />
+        <wsp:PolicyReference URI="#duplexendpoint_HasRegisteredAccountLogin_Input_policy" />
         <soap12:body use="literal" />
       </wsdl:input>
       <wsdl:output>
-        <wsp:PolicyReference URI="#duplexendpoint_HasRegisteredPlayerLogin_output_policy" />
+        <wsp:PolicyReference URI="#duplexendpoint_HasRegisteredAccountLogin_output_policy" />
         <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
-    <wsdl:operation name="RegisterPlayerLoginCallback">
-      <soap12:operation soapAction="http://tempuri.org/ICommunicationService/RegisterPlayerLoginCallback" style="document" />
+    <wsdl:operation name="ConnectCharacter">
+      <soap12:operation soapAction="http://tempuri.org/ICommunicationService/ConnectCharacter" style="document" />
+      <wsdl:input>
+        <wsp:PolicyReference URI="#duplexendpoint_ConnectCharacter_Input_policy" />
+        <soap12:body use="literal" />
+      </wsdl:input>
       <wsdl:output>
-        <wsp:PolicyReference URI="#duplexendpoint_RegisterPlayerLoginCallback_output_policy" />
+        <wsp:PolicyReference URI="#duplexendpoint_ConnectCharacter_output_policy" />
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="DisconnectCharacter">
+      <soap12:operation soapAction="http://tempuri.org/ICommunicationService/DisconnectCharacter" style="document" />
+      <wsdl:input>
+        <wsp:PolicyReference URI="#duplexendpoint_DisconnectCharacter_Input_policy" />
+        <soap12:body use="literal" />
+      </wsdl:input>
+    </wsdl:operation>
+    <wsdl:operation name="ConnectCharacterCallback">
+      <soap12:operation soapAction="http://tempuri.org/ICommunicationService/ConnectCharacterCallback" style="document" />
+      <wsdl:output>
+        <wsp:PolicyReference URI="#duplexendpoint_ConnectCharacterCallback_output_policy" />
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="DisconnectCharacterCallback">
+      <soap12:operation soapAction="http://tempuri.org/ICommunicationService/DisconnectCharacterCallback" style="document" />
+      <wsdl:output>
+        <wsp:PolicyReference URI="#duplexendpoint_DisconnectCharacterCallback_output_policy" />
         <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
