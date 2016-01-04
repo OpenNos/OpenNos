@@ -159,6 +159,9 @@
   <data name="BN6" xml:space="preserve">
     <value />
   </data>
+  <data name="BUY_ITEM" xml:space="preserve">
+    <value>{0}: buy &lt;{1} {2}: piece &gt;</value>
+  </data>
   <data name="CANT_MOVE" xml:space="preserve">
     <value>User can't move.</value>
   </data>
