@@ -24,7 +24,8 @@ namespace OpenNos.Core
         public LoginEncryption() : base(false) { }
         public override string Decrypt(byte[] data, int customParameter = 0)
         {
-            for (int i = 0; i < data.Length; i++) data[i] = (byte)(data[i] - 0xF ^ 0xC3);
+            for (int i = 0; i < data.Length; i++)
+                data[i] = (byte)(data[i] - 0xF ^ 0xC3);
             return Encoding.UTF8.GetString(data).Substring(0, data.Length);
         }
 

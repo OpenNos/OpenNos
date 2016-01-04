@@ -340,10 +340,18 @@ namespace OpenNos.GameObject
         public List<string> GenerateDroppedItem()
         {
             List<String> droplist = new List<String>();
-            foreach (KeyValuePair<long, MapItem> item in ServerManager.GetMap(this.MapId).DroppedList)
-                droplist.Add(String.Format("drop {0} {1} {2} {3} {4} {5} {6}", item.Value.ItemVNum, item.Key, item.Value.PositionX, item.Value.PositionY, item.Value.Amount, 0, -1));
+           // foreach (KeyValuePair<long, MapItem> item in ServerManager.GetMap(this.MapId).DroppedList)
+             //   droplist.Add(String.Format("drop {0} {1} {2} {3} {4} {5} {6}", item.Value.ItemVNum, item.Key, item.Value.PositionX, item.Value.PositionY, item.Value.Amount, 0, -1));
             return droplist;
         }
+        public List<string> GenerateShopOnMap()
+        {
+            List<String> droplist = new List<String>();
+           // foreach (KeyValuePair<long, MapShop> shop in ServerManager.GetMap(this.MapId).ShopUserList)
+            //    droplist.Add(String.Format("shop 1 {0} 1 3 0 {1}", shop.Key+1, shop.Value.Name));
+            return droplist;
+        }
+        
         public List<String> GenerateGp()
         {
             List<String> gpList = new List<String>();
@@ -589,24 +597,48 @@ namespace OpenNos.GameObject
             }
         }
 
+        public string GeneratePlayerFlag(long pflag)
+        {      
+                 return String.Format("pflag 1 {0} {1}", CharacterId, pflag+1);
+        }
+        public string GenerateEndPlayerFlag()
+        {
+            return String.Format("pflag 1 {0} 0", CharacterId);
+        }
+        public List<string> GeneratePlayerShopOnMap()
+        {
+            List<String> droplist = new List<String>();
+           // foreach (KeyValuePair<long, MapShop> shop in ServerManager.GetMap(this.MapId).ShopUserList)
+             //   droplist.Add(String.Format("pflag 1 {0} {1}", shop.Value.OwnerId, shop.Key+1));
+            return droplist;
+        }
         public string GenerateDialog(string dialog)
         {
             return String.Format("dlg {0}", dialog);
+        }
+
+        public string GenerateShop(string shopname)
+        {
+                return String.Format("shop 1 {0} 1 3 0 {1}", CharacterId,shopname); 
         }
 
         public string GenerateGet(long id)
         {
             return String.Format("get 1 {0} {1} 0", CharacterId,id);
         }
+
+        public string GenerateShopEnd()
+        {
+            return String.Format("shop 1 {0} 0 0", CharacterId);
+
+
+        }
+
         public string generateModal(string message, int type)
         {
             return String.Format("modal {1} {0}", message,type);
         }
 
-        public string GenerateInfo(string v1, int v2)
-        {
-            throw new NotImplementedException();
-        }
 
         #endregion
     }
