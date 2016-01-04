@@ -51,6 +51,8 @@ namespace OpenNos.GameObject
             IEnumerable<PortalDTO> portalsDTO = DAOFactory.PortalDAO.LoadFromMap(MapId);
             _portals = new List<Portal>();
             DroppedList = new Dictionary<long, MapItem>();
+
+            ShopUserList = new Dictionary<long, MapShop>();
             foreach (PortalDTO portal in portalsDTO)
             {
                 _portals.Add(new GameObject.Portal()
@@ -105,6 +107,8 @@ namespace OpenNos.GameObject
                 return _npcs;
             }
         }
+        public Dictionary<long, MapShop> ShopUserList { get; set; }
+
         public IDictionary<long, MapItem> DroppedList { get; set; }
 
         public int IsDancing { get; set; }

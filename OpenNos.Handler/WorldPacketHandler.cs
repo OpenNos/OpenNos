@@ -430,6 +430,117 @@ namespace OpenNos.Handler
             ClientLinkManager.Instance.Broadcast(Session, String.Format("drop {0} {1} {2} {3} {4} {5} {6}", DroppedItem.ItemVNum, DroppedItem.InventoryItemId, DroppedItem.PositionX, DroppedItem.PositionY, DroppedItem.Amount, 0, -1), ReceiverType.AllOnMap);
 
         }
+        [Packet("npc_req")]
+        public void ShowShop(string packet)
+        {
+            /*//n_inv 1 2 0 0 0.0.302.7.0.990000. 0.1.264.5.6.2500000. 0.2.69.7.0.650000. 0.3.4106.0.0.4200000. -1 0.5.4240.0.0.11200000. 0.6.4240.0.5.24000000. 0.7.4801.0.0.6200000. 0.8.4240.0.10.32000000. 0.9.712.0.3.250000. 0.10.997.0.4.250000. 1.11.1895.4.16000.-1.-1 1.12.1897.6.18000.-1.-1 -1 1.14.1902.3.35000.-1.-1 1.15.1237.2.12000.-1.-1 -1 -1 1.18.1249.3.92000.-1.-1 0.19.4240.0.1.10500000. -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+            string[] packetsplit = packet.Split(' ');
+            if (packetsplit.Length > 2) { 
+                int mode; int.TryParse(packetsplit[2], out mode);
+                if(mode == 1)//personnal
+                {
+                    if (packetsplit.Length > 3)
+                    {
+                        long owner; long.TryParse(packetsplit[3], out owner);
+                        string packetToSend = String.Format("n_inv 1 {0} 0 0", owner);
+                        foreach (KeyValuePair<long, MapShop> shop in Session.CurrentMap.ShopUserList)
+                        {
+                            if(shop.Value.OwnerId == owner)
+                            {
+                                for(int i=0;i<20;i++)
+                                {
+                                    ShopItem item = shop.Value.Items.First(it => it.Slot.Equals(i));
+                                    if (item != null)
+                                    {
+                                        if (ServerManager.GetItem(item.ItemVNum).Type == 0)
+                                            packetToSend += String.Format(" {0}.{1}.{2}.{3}.{4}.{5}.{6}.", 0, i, item.Rare, item.Upgrade, item.Price);
+                                        else
+                                            packetToSend += String.Format(" {0}.{1}.{2}.{3}.{4}.{5}.{6}.", 0, i, item.Price, -1, -1);
+                                    }
+                                    else
+                                    {
+                                        packetToSend += " -1";
+                                    }
+                                    packetToSend += " -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1";
+                                    }
+                                }
+                            }
+                        }
+                       
+                    }
+                }*/
+            }
+        [Packet("m_shop")]
+        public void createShop(string packet)
+        {
+            string[] packetsplit = packet.Split(' ');
+            short[] type = new short[20];
+            long[] gold = new long[20];
+            short[] slot = new short[20];
+            short[] qty = new short[20];
+            string packetList ="";
+
+          string shopname="";
+            if (packetsplit.Length>2)
+            { 
+                short typePacket;
+                short.TryParse(packetsplit[2], out typePacket);
+                if (typePacket == 2)
+                { 
+                    Session.Client.SendPacket("ishop");
+                }
+                else if(typePacket == 0)
+                {
+                    MapShop myShop = new MapShop();
+                    if (packetsplit.Length > 2)
+                        for (short j = 2, i = 0; j <= packetsplit.Length-5; j += 4, i++)
+                        {
+                            short.TryParse(packetsplit[j], out type[i]);
+                            short.TryParse(packetsplit[j+1], out slot[i]);
+                            short.TryParse(packetsplit[j+2], out qty[i]);
+                            long.TryParse(packetsplit[j + 3], out gold[i]);
+                            if (qty[i] != 0)
+                            {
+                                Inventory inv = Session.Character.InventoryList.LoadBySlotAndType(slot[i], type[i]);
+                              
+                            }
+
+
+                        }
+
+                    for (int i = 83; i < packetsplit.Length; i++)
+                        shopname += String.Format("{0} ", packetsplit[i]);
+                    shopname.TrimEnd(' ');
+                    myShop.OwnerId = Session.Character.CharacterId;
+                    myShop.Name = shopname;
+                    Session.CurrentMap.ShopUserList.Add(Session.CurrentMap.ShopUserList.Count(), myShop);
+                    
+                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GeneratePlayerFlag(Session.CurrentMap.ShopUserList.Count()-1), ReceiverType.AllOnMapExceptMe);
+                   
+                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateShop(shopname), ReceiverType.AllOnMap);
+                    
+                    Session.Client.SendPacket(Session.Character.GenerateCond());
+                    Session.Client.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("SHOP_OPEN")));
+                 
+                 
+                }
+                else if(typePacket == 1)
+               {
+                    foreach (KeyValuePair<long, MapShop> mapshop in Session.CurrentMap.ShopUserList)
+                    {
+                        if (mapshop.Value.OwnerId == Session.Character.CharacterId)
+                            Session.CurrentMap.ShopUserList.Remove(mapshop.Key);
+                    }
+                    Session.CurrentMap.ShopUserList.Remove(Session.Character.CharacterId);
+                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateShopEnd(), ReceiverType.AllOnMap);
+                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEndPlayerFlag(), ReceiverType.AllOnMapExceptMe);
+                   
+
+
+                }
+            }
+            
+        }
         [Packet("b_i")]
         public void askToDelete(string packet)
         {
@@ -1065,7 +1176,7 @@ namespace OpenNos.Handler
                 Session.Client.SendPacket(npcPacket);
             foreach (String droppedPacket in Session.Character.GenerateDroppedItem())
                 Session.Client.SendPacket(droppedPacket);
-
+           
             //sc
             Session.Client.SendPacket(Session.Character.GenerateCond());
             //pairyz
@@ -1083,6 +1194,11 @@ namespace OpenNos.Handler
                 ClientLinkManager.Instance.RequiereBroadcastFromMap(Session.Character.MapId, "dance 0");
 
             }
+            foreach (String ShopPacket in Session.Character.GenerateShopOnMap())
+                Session.Client.SendPacket(ShopPacket);
+            foreach (String ShopPacketChar in Session.Character.GeneratePlayerShopOnMap())
+                Session.Client.SendPacket(ShopPacketChar);
+            
 
         }
         public void healthThread()
