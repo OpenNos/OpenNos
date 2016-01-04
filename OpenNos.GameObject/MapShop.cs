@@ -28,10 +28,12 @@ namespace OpenNos.GameObject
         public long OwnerId { get; set; }
         public string Name { get; set; }
         public List<ShopItem> Items { get; set; }
+        public long Sell { get; internal set; }
 
         public MapShop()
         {
             Items = new List<ShopItem>();
+            Sell = 0;
         }
       
         #endregion

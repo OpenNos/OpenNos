@@ -597,6 +597,11 @@ namespace OpenNos.GameObject
             }
         }
 
+        public string GenerateShopMemo(int type, string message)
+        {
+           return String.Format("s_memo {0} {1}", type, message);
+        }
+
         public string GeneratePlayerFlag(long pflag)
         {      
                  return String.Format("pflag 1 {0} {1}", CharacterId, pflag+1);
