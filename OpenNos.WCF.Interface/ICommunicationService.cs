@@ -11,9 +11,15 @@ namespace OpenNos.WCF.Interface
     public interface ICommunicationService
     {
         [OperationContract(IsOneWay = true)]
-        void RegisterPlayerLogin(string name, long sessionId);
+        void RegisterAccountLogin(string name, long sessionId);
 
         [OperationContract]
-        bool HasRegisteredPlayerLogin(string name, long sessionId);
+        bool HasRegisteredAccountLogin(string name, long sessionId);
+
+        [OperationContract]
+        bool ConnectCharacter(string characterName);
+
+        [OperationContract(IsOneWay = true)]
+        void DisconnectCharacter(string characterName);
     }
 }

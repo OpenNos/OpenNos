@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <xs:schema xmlns:tns="http://tempuri.org/" elementFormDefault="qualified" targetNamespace="http://tempuri.org/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
-  <xs:element name="RegisterPlayerLogin">
+  <xs:element name="RegisterAccountLogin">
     <xs:complexType>
       <xs:sequence>
         <xs:element minOccurs="0" name="name" nillable="true" type="xs:string" />
@@ -8,7 +8,7 @@
       </xs:sequence>
     </xs:complexType>
   </xs:element>
-  <xs:element name="HasRegisteredPlayerLogin">
+  <xs:element name="HasRegisteredAccountLogin">
     <xs:complexType>
       <xs:sequence>
         <xs:element minOccurs="0" name="name" nillable="true" type="xs:string" />
@@ -16,17 +16,45 @@
       </xs:sequence>
     </xs:complexType>
   </xs:element>
-  <xs:element name="HasRegisteredPlayerLoginResponse">
+  <xs:element name="HasRegisteredAccountLoginResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element minOccurs="0" name="HasRegisteredPlayerLoginResult" type="xs:boolean" />
+        <xs:element minOccurs="0" name="HasRegisteredAccountLoginResult" type="xs:boolean" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
-  <xs:element name="RegisterPlayerLoginCallback">
+  <xs:element name="ConnectCharacter">
     <xs:complexType>
       <xs:sequence>
-        <xs:element minOccurs="0" name="value" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="characterName" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ConnectCharacterResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="ConnectCharacterResult" type="xs:boolean" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="DisconnectCharacter">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="characterName" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ConnectCharacterCallback">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="characterName" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="DisconnectCharacterCallback">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="characterName" nillable="true" type="xs:string" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
