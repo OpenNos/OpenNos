@@ -15,24 +15,39 @@ namespace OpenNos.ServiceRef.Internal.CommunicationServiceReference {
     [System.ServiceModel.ServiceContractAttribute(ConfigurationName="CommunicationServiceReference.ICommunicationService", CallbackContract=typeof(OpenNos.ServiceRef.Internal.CommunicationServiceReference.ICommunicationServiceCallback))]
     public interface ICommunicationService {
         
-        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/ICommunicationService/RegisterPlayerLogin")]
-        void RegisterPlayerLogin(string name, long sessionId);
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/ICommunicationService/RegisterAccountLogin")]
+        void RegisterAccountLogin(string name, long sessionId);
         
-        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/ICommunicationService/RegisterPlayerLogin")]
-        System.Threading.Tasks.Task RegisterPlayerLoginAsync(string name, long sessionId);
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/ICommunicationService/RegisterAccountLogin")]
+        System.Threading.Tasks.Task RegisterAccountLoginAsync(string name, long sessionId);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ICommunicationService/HasRegisteredPlayerLogin", ReplyAction="http://tempuri.org/ICommunicationService/HasRegisteredPlayerLoginResponse")]
-        bool HasRegisteredPlayerLogin(string name, long sessionId);
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ICommunicationService/HasRegisteredAccountLogin", ReplyAction="http://tempuri.org/ICommunicationService/HasRegisteredAccountLoginResponse")]
+        bool HasRegisteredAccountLogin(string name, long sessionId);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ICommunicationService/HasRegisteredPlayerLogin", ReplyAction="http://tempuri.org/ICommunicationService/HasRegisteredPlayerLoginResponse")]
-        System.Threading.Tasks.Task<bool> HasRegisteredPlayerLoginAsync(string name, long sessionId);
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ICommunicationService/HasRegisteredAccountLogin", ReplyAction="http://tempuri.org/ICommunicationService/HasRegisteredAccountLoginResponse")]
+        System.Threading.Tasks.Task<bool> HasRegisteredAccountLoginAsync(string name, long sessionId);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ICommunicationService/ConnectCharacter", ReplyAction="http://tempuri.org/ICommunicationService/ConnectCharacterResponse")]
+        bool ConnectCharacter(string characterName);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ICommunicationService/ConnectCharacter", ReplyAction="http://tempuri.org/ICommunicationService/ConnectCharacterResponse")]
+        System.Threading.Tasks.Task<bool> ConnectCharacterAsync(string characterName);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/ICommunicationService/DisconnectCharacter")]
+        void DisconnectCharacter(string characterName);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/ICommunicationService/DisconnectCharacter")]
+        System.Threading.Tasks.Task DisconnectCharacterAsync(string characterName);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
     public interface ICommunicationServiceCallback {
         
-        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/ICommunicationService/RegisterPlayerLoginCallback")]
-        void RegisterPlayerLoginCallback(string value);
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/ICommunicationService/ConnectCharacterCallback")]
+        void ConnectCharacterCallback(string characterName);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/ICommunicationService/DisconnectCharacterCallback")]
+        void DisconnectCharacterCallback(string characterName);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -63,20 +78,36 @@ namespace OpenNos.ServiceRef.Internal.CommunicationServiceReference {
                 base(callbackInstance, binding, remoteAddress) {
         }
         
-        public void RegisterPlayerLogin(string name, long sessionId) {
-            base.Channel.RegisterPlayerLogin(name, sessionId);
+        public void RegisterAccountLogin(string name, long sessionId) {
+            base.Channel.RegisterAccountLogin(name, sessionId);
         }
         
-        public System.Threading.Tasks.Task RegisterPlayerLoginAsync(string name, long sessionId) {
-            return base.Channel.RegisterPlayerLoginAsync(name, sessionId);
+        public System.Threading.Tasks.Task RegisterAccountLoginAsync(string name, long sessionId) {
+            return base.Channel.RegisterAccountLoginAsync(name, sessionId);
         }
         
-        public bool HasRegisteredPlayerLogin(string name, long sessionId) {
-            return base.Channel.HasRegisteredPlayerLogin(name, sessionId);
+        public bool HasRegisteredAccountLogin(string name, long sessionId) {
+            return base.Channel.HasRegisteredAccountLogin(name, sessionId);
         }
         
-        public System.Threading.Tasks.Task<bool> HasRegisteredPlayerLoginAsync(string name, long sessionId) {
-            return base.Channel.HasRegisteredPlayerLoginAsync(name, sessionId);
+        public System.Threading.Tasks.Task<bool> HasRegisteredAccountLoginAsync(string name, long sessionId) {
+            return base.Channel.HasRegisteredAccountLoginAsync(name, sessionId);
+        }
+        
+        public bool ConnectCharacter(string characterName) {
+            return base.Channel.ConnectCharacter(characterName);
+        }
+        
+        public System.Threading.Tasks.Task<bool> ConnectCharacterAsync(string characterName) {
+            return base.Channel.ConnectCharacterAsync(characterName);
+        }
+        
+        public void DisconnectCharacter(string characterName) {
+            base.Channel.DisconnectCharacter(characterName);
+        }
+        
+        public System.Threading.Tasks.Task DisconnectCharacterAsync(string characterName) {
+            return base.Channel.DisconnectCharacterAsync(characterName);
         }
     }
 }

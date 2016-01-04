@@ -10,6 +10,9 @@ namespace OpenNos.WCF.Interface
     public interface ICommunicationCallback
     {
         [OperationContract(IsOneWay = true)]
-        void RegisterPlayerLoginCallback(string value);
+        void ConnectCharacterCallback(string characterName);
+
+        [OperationContract(IsOneWay = true)]
+        void DisconnectCharacterCallback(string characterName);
     }
 }
