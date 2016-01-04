@@ -589,8 +589,11 @@ namespace OpenNos.Handler
                     
                     Session.Client.SendPacket(Session.Character.GenerateCond());
                     Session.Client.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("SHOP_OPEN")));
-                 
-                 
+                    Session.Character.Rested = 1;
+
+                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateRest(), ReceiverType.AllOnMap);
+
+
                 }
                 else if(typePacket == 1)
                {
