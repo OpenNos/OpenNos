@@ -34,6 +34,8 @@ namespace OpenNos.DAL
         private static IInventoryItemDAO _inventoryitemDAO;
         private static IItemDAO _itemDAO;
         private static IInventoryDAO _inventoryDAO;
+        private static IShopDAO _shopDAO;
+        private static IShopItemDAO _shopitemDAO;
         #endregion
 
         #region Properties
@@ -71,6 +73,32 @@ namespace OpenNos.DAL
                 }
 
                 return _itemDAO;
+            }
+        }
+
+        public static IShopDAO ShopDAO
+        {
+            get
+            {
+                if (_shopDAO == null)
+                {
+                    _shopDAO = new MySQL.ShopDAO();
+                }
+
+                return _shopDAO;
+            }
+        }
+
+        public static IShopItemDAO ShopItemDAO
+        {
+            get
+            {
+                if (_shopitemDAO == null)
+                {
+                    _shopitemDAO = new MySQL.ShopItemDAO();
+                }
+
+                return _shopitemDAO;
             }
         }
 

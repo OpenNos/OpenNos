@@ -114,6 +114,8 @@
     </Compile>
     <Compile Include="GeneralLogDAO.cs" />
     <Compile Include="InventoryDAO.cs" />
+    <Compile Include="ShopDAO.cs" />
+    <Compile Include="ShopItemDAO.cs" />
     <Compile Include="InventoryItemDAO.cs" />
     <Compile Include="ItemDAO.cs" />
     <Compile Include="MapDAO.cs" />

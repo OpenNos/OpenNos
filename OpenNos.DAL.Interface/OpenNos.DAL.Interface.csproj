@@ -47,6 +47,8 @@
     <Compile Include="IGeneralLogDAO.cs" />
     <Compile Include="IAccountDAO.cs" />
     <Compile Include="ICharacterDAO.cs" />
+    <Compile Include="IShopDAO.cs" />
+    <Compile Include="IShopItemDAO.cs" />
     <Compile Include="IInventoryItemDAO.cs" />
     <Compile Include="IInventoryDAO.cs" />
     <Compile Include="IItemDAO.cs" />

@@ -11,53 +11,30 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  */
-using AutoMapper;
-using OpenNos.DAL;
-using OpenNos.Data;
+using OpenNos.DAL.EF.MySQL.DB;
+using OpenNos.DAL.Interface;
+using OpenNos.Domain;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using OpenNos.Data;
+using AutoMapper;
+using OpenNos.Core;
 
-namespace OpenNos.GameObject
+namespace OpenNos.DAL.EF.MySQL
 {
-    public class Npc : NpcDTO, IGameObject
+    public class ShopDAO : IShopDAO
     {
-        #region Instantiation
-        public List<Shop> Shops { get; set; }
-
-        public Npc()
-        {
-
-            Mapper.CreateMap<NpcDTO, Npc>();
-            Mapper.CreateMap<Npc, NpcDTO>();
-           DAOFactory.
-        }
-
-        #endregion
-
-        #region Methods
-
-        public string GetNpcDialog()
-        {
-            string dialog = String.Empty;
-            if (false)// shop == true)
-            {
-                //open npcshop
-            }
-            else
-            {
-                dialog = String.Format("npc_req 2 {0} {1}", NpcId, Dialog);
-            }
-            return dialog;
-        }
-
-        public void Save()
+        public ShopDTO LoadById(int ShopItemId)
         {
             throw new NotImplementedException();
         }
 
-        #endregion
+        public IEnumerable<ShopDTO> LoadByNpc(short NpcId)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

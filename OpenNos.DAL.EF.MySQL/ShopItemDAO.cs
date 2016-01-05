@@ -25,17 +25,33 @@ using OpenNos.Core;
 
 namespace OpenNos.DAL.EF.MySQL
 {
-    public class InventoryItemDAO : IInventoryItemDAO
+    public class ShopItemDAO : IShopItemDAO
     {
-        public SaveResult InsertOrUpdate(ref InventoryItemDTO item)
+        public DeleteResult DeleteById(int ItemId)
+        {
+            using (var context = DataAccessHelper.CreateContext())
+            {
+                ShopItem item = context.shopitem.SingleOrDefault(i => i.ShopItemId.Equals(ItemId));
+
+                if (item != null)
+                {
+                    context.shopitem.Remove(item);
+                    context.SaveChanges();
+                }
+
+                return DeleteResult.Deleted;
+            }
+        }
+
+        public SaveResult InsertOrUpdate(ref ShopItemDTO item)
         {
             try
             {
                 using (var context = DataAccessHelper.CreateContext())
                 {
 
-                    long InventoryItemId = item.InventoryItemId;
-                    InventoryItem entity = context.inventoryitem.SingleOrDefault(c => c.InventoryItemId.Equals(InventoryItemId));
+                    long ShopItemId = item.ShopItemId;
+                    ShopItem entity = context.shopitem.SingleOrDefault(c => c.ShopItemId.Equals(ShopItemId));
 
                     if (entity == null) //new entity
                     {
@@ -51,53 +67,39 @@ namespace OpenNos.DAL.EF.MySQL
             }
             catch (Exception e)
             {
-                Logger.Log.ErrorFormat(Language.Instance.GetMessageFromKey("UPDATE_ACCOUNT_ERROR"), item.InventoryItemId, e.Message);
+                Logger.Log.ErrorFormat(Language.Instance.GetMessageFromKey("UPDATE_ACCOUNT_ERROR"), item.ShopItemId, e.Message);
                 return SaveResult.Error;
             }
         }
-        private InventoryItemDTO Insert(InventoryItemDTO inventoryitem, OpenNosContainer context)
+        private ShopItemDTO Insert(ShopItemDTO shopitem, OpenNosContainer context)
         {
-            InventoryItem entity = Mapper.Map<InventoryItem>(inventoryitem);
-            context.inventoryitem.Add(entity);
+            ShopItem entity = Mapper.Map<ShopItem>(shopitem);
+            context.shopitem.Add(entity);
             context.SaveChanges();
-            return Mapper.Map<InventoryItemDTO>(entity);
+            return Mapper.Map<ShopItemDTO>(entity);
         }
-        private InventoryItemDTO Update(InventoryItem entity, InventoryItemDTO inventoryitem, OpenNosContainer context)
+        private ShopItemDTO Update(ShopItem entity, ShopItemDTO shopitem, OpenNosContainer context)
         {
             using (context)
             {
-                var result = context.inventoryitem.SingleOrDefault(c => c.InventoryItemId.Equals(inventoryitem.InventoryItemId));
+                var result = context.shopitem.SingleOrDefault(c => c.ShopItemId.Equals(shopitem.ShopItemId));
                 if (result != null)
                 {
-                    result = Mapper.Map<InventoryItemDTO, InventoryItem>(inventoryitem, entity);
+                    result = Mapper.Map<ShopItemDTO, ShopItem>(shopitem, entity);
                     context.SaveChanges();
                 }
             }
 
-            return Mapper.Map<InventoryItemDTO>(entity);
+            return Mapper.Map<ShopItemDTO>(entity);
         }
-        public DeleteResult DeleteById(short ItemId)
+
+
+        public ShopItemDTO LoadById(int ItemId)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                InventoryItem item = context.inventoryitem.SingleOrDefault(i => i.InventoryItemId.Equals(ItemId));
-
-                if (item != null)
-                {
-                    context.inventoryitem.Remove(item);
-                    context.SaveChanges();
-                }
-
-                return DeleteResult.Deleted;
+                return Mapper.Map<ShopItemDTO>(context.shopitem.SingleOrDefault(i => i.ShopItemId.Equals(ItemId)));
             }
         }
-        public InventoryItemDTO LoadById(long ItemId)
-        {
-            using (var context = DataAccessHelper.CreateContext())
-            {
-                return Mapper.Map<InventoryItemDTO>(context.inventoryitem.SingleOrDefault(i => i.InventoryItemId.Equals(ItemId)));
-            }
-        }
-
     }
 }
