@@ -15,7 +15,8 @@
     <EntitySet Name="npc" EntityType="opennosModel.Store.npc" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="inventoryitem" EntityType="opennosModel.Store.inventoryitem" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="inventory" EntityType="opennosModel.Store.inventory" store:Type="Tables" Schema="dbo" />
-    <EntitySet Name="ShopSet" EntityType="opennosModel.Store.ShopSet" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="shopitem" EntityType="opennosModel.Store.shopitem" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="shop" EntityType="opennosModel.Store.shop" store:Type="Tables" Schema="dbo" />
     <AssociationSet Name="AccountCharacter" Association="opennosModel.Store.AccountCharacter">
       <End Role="Account" EntitySet="account" />
       <End Role="Character" EntitySet="character" />
@@ -57,11 +58,15 @@
       <End Role="Item" EntitySet="item" />
     </AssociationSet>
     <AssociationSet Name="ShopNpc" Association="opennosModel.Store.ShopNpc">
-      <End Role="Shop" EntitySet="ShopSet" />
+      <End Role="Shop" EntitySet="shop" />
       <End Role="Npc" EntitySet="npc" />
     </AssociationSet>
-    <AssociationSet Name="ShopItem" Association="opennosModel.Store.ShopItem">
-      <End Role="Shop" EntitySet="ShopSet" />
+    <AssociationSet Name="ShopItemShop" Association="opennosModel.Store.ShopItemShop">
+      <End Role="ShopItem" EntitySet="shopitem" />
+      <End Role="Shop" EntitySet="shop" />
+    </AssociationSet>
+    <AssociationSet Name="ShopItemItem" Association="opennosModel.Store.ShopItemItem">
+      <End Role="ShopItem" EntitySet="shopitem" />
       <End Role="Item" EntitySet="item" />
     </AssociationSet>
   </EntityContainer>
@@ -251,15 +256,24 @@
     <Property Name="Slot" Type="smallint" Nullable="false" />
     <Property Name="InventoryItemId" Type="bigint" Nullable="false" />
   </EntityType>
-  <EntityType Name="ShopSet">
+  <EntityType Name="shopitem">
+    <Key>
+      <PropertyRef Name="ShopItemId" />
+    </Key>
+    <Property Name="ShopItemId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Slot" Type="smallint" Nullable="false" />
+    <Property Name="ShopShopId" Type="int" Nullable="false" />
+    <Property Name="ItemVNum" Type="smallint" Nullable="false" />
+  </EntityType>
+  <EntityType Name="shop">
     <Key>
       <PropertyRef Name="ShopId" />
     </Key>
     <Property Name="ShopId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-    <Property Name="ShopType" Type="longtext" Nullable="false" />
-    <Property Name="ShopSlot" Type="longtext" Nullable="false" />
+    <Property Name="Name" Type="longtext" Nullable="false" />
+    <Property Name="Type" Type="int" Nullable="false" />
     <Property Name="NpcId" Type="smallint" Nullable="false" />
-    <Property Name="ItemVNum" Type="smallint" Nullable="false" />
+    <Property Name="ShopItemId" Type="int" Nullable="false" />
   </EntityType>
   <Association Name="AccountCharacter">
     <End Role="Account" Type="opennosModel.Store.account" Multiplicity="1" />
@@ -382,7 +396,7 @@
     </ReferentialConstraint>
   </Association>
   <Association Name="ShopNpc">
-    <End Role="Shop" Type="opennosModel.Store.ShopSet" Multiplicity="*" />
+    <End Role="Shop" Type="opennosModel.Store.shop" Multiplicity="*" />
     <End Role="Npc" Type="opennosModel.Store.npc" Multiplicity="1" />
     <ReferentialConstraint>
       <Principal Role="Npc">
@@ -393,14 +407,26 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="ShopItem">
-    <End Role="Shop" Type="opennosModel.Store.ShopSet" Multiplicity="*" />
+  <Association Name="ShopItemShop">
+    <End Role="ShopItem" Type="opennosModel.Store.shopitem" Multiplicity="1" />
+    <End Role="Shop" Type="opennosModel.Store.shop" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="ShopItem">
+        <PropertyRef Name="ShopItemId" />
+      </Principal>
+      <Dependent Role="Shop">
+        <PropertyRef Name="ShopItemId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="ShopItemItem">
+    <End Role="ShopItem" Type="opennosModel.Store.shopitem" Multiplicity="*" />
     <End Role="Item" Type="opennosModel.Store.item" Multiplicity="1" />
     <ReferentialConstraint>
       <Principal Role="Item">
         <PropertyRef Name="VNum" />
       </Principal>
-      <Dependent Role="Shop">
+      <Dependent Role="ShopItem">
         <PropertyRef Name="ItemVNum" />
       </Dependent>
     </ReferentialConstraint>
@@ -523,13 +549,18 @@
             <End Role="InventoryItem" EntitySet="inventoryitem" />
             <End Role="Item" EntitySet="item" />
           </AssociationSet>
-          <EntitySet Name="ShopSet" EntityType="opennosModel.Shop" />
+          <EntitySet Name="shopitem" EntityType="opennosModel.ShopItem" />
+          <EntitySet Name="shop" EntityType="opennosModel.Shop" />
           <AssociationSet Name="ShopNpc" Association="opennosModel.ShopNpc">
-            <End Role="Shop" EntitySet="ShopSet" />
+            <End Role="Shop" EntitySet="shop" />
             <End Role="Npc" EntitySet="npc" />
           </AssociationSet>
-          <AssociationSet Name="ShopItem" Association="opennosModel.ShopItem">
-            <End Role="Shop" EntitySet="ShopSet" />
+          <AssociationSet Name="ShopItemShop" Association="opennosModel.ShopItemShop">
+            <End Role="ShopItem" EntitySet="shopitem" />
+            <End Role="Shop" EntitySet="shop" />
+          </AssociationSet>
+          <AssociationSet Name="ShopItemItem" Association="opennosModel.ShopItemItem">
+            <End Role="ShopItem" EntitySet="shopitem" />
             <End Role="Item" EntitySet="item" />
           </AssociationSet>
           </EntityContainer>
@@ -687,7 +718,7 @@
           <Property Name="Colored" Type="Boolean" Nullable="false" />
           <Property Name="isConsumable" Type="Boolean" Nullable="false" />
           <NavigationProperty Name="inventoryitem" Relationship="opennosModel.InventoryItemItem" FromRole="Item" ToRole="InventoryItem" />
-          <NavigationProperty Name="shop" Relationship="opennosModel.ShopItem" FromRole="Item" ToRole="Shop" />
+          <NavigationProperty Name="shopitem" Relationship="opennosModel.ShopItemItem" FromRole="Item" ToRole="ShopItem" />
           </EntityType>
         <EntityType Name="Npc">
           <Key>
@@ -797,17 +828,28 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="ShopItem">
+          <Key>
+            <PropertyRef Name="ShopItemId" />
+          </Key>
+          <Property Name="ShopItemId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Slot" Type="Int16" Nullable="false" />
+          <Property Name="ShopShopId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="shop" Relationship="opennosModel.ShopItemShop" FromRole="ShopItem" ToRole="Shop" />
+          <NavigationProperty Name="item" Relationship="opennosModel.ShopItemItem" FromRole="ShopItem" ToRole="Item" />
+          <Property Name="ItemVNum" Type="Int16" Nullable="false" />
+        </EntityType>
         <EntityType Name="Shop">
           <Key>
             <PropertyRef Name="ShopId" />
           </Key>
           <Property Name="ShopId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="ShopType" Type="String" Nullable="false" />
-          <Property Name="ShopSlot" Type="String" Nullable="false" />
+          <Property Name="Name" Type="String" Nullable="false" />
+          <Property Name="Type" Type="Int32" Nullable="false" />
           <NavigationProperty Name="npc" Relationship="opennosModel.ShopNpc" FromRole="Shop" ToRole="Npc" />
           <Property Name="NpcId" Type="Int16" Nullable="false" />
-          <NavigationProperty Name="item" Relationship="opennosModel.ShopItem" FromRole="Shop" ToRole="Item" />
-          <Property Name="ItemVNum" Type="Int16" Nullable="false" />
+          <NavigationProperty Name="shopitem" Relationship="opennosModel.ShopItemShop" FromRole="Shop" ToRole="ShopItem" />
+          <Property Name="ShopItemId" Type="Int32" Nullable="false" />
         </EntityType>
         <Association Name="ShopNpc">
           <End Type="opennosModel.Shop" Role="Shop" Multiplicity="*" />
@@ -821,14 +863,26 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="ShopItem">
+        <Association Name="ShopItemShop">
+          <End Type="opennosModel.ShopItem" Role="ShopItem" Multiplicity="1" />
           <End Type="opennosModel.Shop" Role="Shop" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ShopItem">
+              <PropertyRef Name="ShopItemId" />
+            </Principal>
+            <Dependent Role="Shop">
+              <PropertyRef Name="ShopItemId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="ShopItemItem">
+          <End Type="opennosModel.ShopItem" Role="ShopItem" Multiplicity="*" />
           <End Type="opennosModel.Item" Role="Item" Multiplicity="1" />
           <ReferentialConstraint>
             <Principal Role="Item">
               <PropertyRef Name="VNum" />
             </Principal>
-            <Dependent Role="Shop">
+            <Dependent Role="ShopItem">
               <PropertyRef Name="ItemVNum" />
             </Dependent>
           </ReferentialConstraint>
@@ -1034,14 +1088,24 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
-    <EntitySetMapping Name="ShopSet">
-      <EntityTypeMapping TypeName="IsTypeOf(opennosModel.Shop)">
-        <MappingFragment StoreEntitySet="ShopSet">
-          <ScalarProperty Name="ShopId" ColumnName="ShopId" />
-          <ScalarProperty Name="ShopType" ColumnName="ShopType" />
-          <ScalarProperty Name="ShopSlot" ColumnName="ShopSlot" />
-          <ScalarProperty Name="NpcId" ColumnName="NpcId" />
+    <EntitySetMapping Name="shopitem">
+      <EntityTypeMapping TypeName="IsTypeOf(opennosModel.ShopItem)">
+        <MappingFragment StoreEntitySet="shopitem">
+          <ScalarProperty Name="ShopItemId" ColumnName="ShopItemId" />
+          <ScalarProperty Name="Slot" ColumnName="Slot" />
+          <ScalarProperty Name="ShopShopId" ColumnName="ShopShopId" />
           <ScalarProperty Name="ItemVNum" ColumnName="ItemVNum" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="shop">
+      <EntityTypeMapping TypeName="IsTypeOf(opennosModel.Shop)">
+        <MappingFragment StoreEntitySet="shop">
+          <ScalarProperty Name="ShopId" ColumnName="ShopId" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="Type" ColumnName="Type" />
+          <ScalarProperty Name="NpcId" ColumnName="NpcId" />
+          <ScalarProperty Name="ShopItemId" ColumnName="ShopItemId" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

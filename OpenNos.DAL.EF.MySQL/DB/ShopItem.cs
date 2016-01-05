@@ -12,15 +12,21 @@ namespace OpenNos.DAL.EF.MySQL.DB
     using System;
     using System.Collections.Generic;
     
-    public partial class Shop
+    public partial class ShopItem
     {
-        public int ShopId { get; set; }
-        public string Name { get; set; }
-        public int Type { get; set; }
-        public short NpcId { get; set; }
-        public int ShopItemId { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public ShopItem()
+        {
+            this.shop = new HashSet<Shop>();
+        }
     
-        public virtual Npc npc { get; set; }
-        public virtual ShopItem shopitem { get; set; }
+        public int ShopItemId { get; set; }
+        public short Slot { get; set; }
+        public int ShopShopId { get; set; }
+        public short ItemVNum { get; set; }
+    
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Shop> shop { get; set; }
+        public virtual Item item { get; set; }
     }
 }
