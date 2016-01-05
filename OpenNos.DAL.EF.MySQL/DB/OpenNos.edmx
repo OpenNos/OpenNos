@@ -215,6 +215,7 @@
     <Property Name="MapY" Type="smallint" Nullable="false" />
     <Property Name="Position" Type="smallint" Nullable="false" />
     <Property Name="Level" Type="smallint" Nullable="false" />
+    <Property Name="MenuType" Type="smallint" Nullable="false" />
   </EntityType>
   <EntityType Name="inventoryitem">
     <Key>
@@ -736,6 +737,7 @@
           <NavigationProperty Name="map" Relationship="opennosModel.NpcMap" FromRole="Npc" ToRole="Map" />
           <Property Name="Level" Type="Int16" Nullable="false" />
           <NavigationProperty Name="shop" Relationship="opennosModel.ShopNpc" FromRole="Npc" ToRole="Shop" />
+          <Property Name="MenuType" Type="Int16" Nullable="false" />
         </EntityType>
         <Association Name="NpcMap">
           <End Type="opennosModel.Npc" Role="Npc" Multiplicity="*" />
@@ -1045,6 +1047,7 @@
           <ScalarProperty Name="MapY" ColumnName="MapY" />
           <ScalarProperty Name="Position" ColumnName="Position" />
           <ScalarProperty Name="Level" ColumnName="Level" />
+          <ScalarProperty Name="MenuType" ColumnName="MenuType" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

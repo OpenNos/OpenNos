@@ -340,15 +340,19 @@ namespace OpenNos.GameObject
         public List<string> GenerateDroppedItem()
         {
             List<String> droplist = new List<String>();
-           // foreach (KeyValuePair<long, MapItem> item in ServerManager.GetMap(this.MapId).DroppedList)
-             //   droplist.Add(String.Format("drop {0} {1} {2} {3} {4} {5} {6}", item.Value.ItemVNum, item.Key, item.Value.PositionX, item.Value.PositionY, item.Value.Amount, 0, -1));
+            foreach (KeyValuePair<long, MapItem> item in ServerManager.GetMap(this.MapId).DroppedList)
+                droplist.Add(String.Format("drop {0} {1} {2} {3} {4} {5} {6}", item.Value.ItemVNum, item.Key, item.Value.PositionX, item.Value.PositionY, item.Value.Amount, 0, -1));
             return droplist;
         }
         public List<string> GenerateShopOnMap()
         {
             List<String> droplist = new List<String>();
-           // foreach (KeyValuePair<long, MapShop> shop in ServerManager.GetMap(this.MapId).ShopUserList)
-            //    droplist.Add(String.Format("shop 1 {0} 1 3 0 {1}", shop.Key+1, shop.Value.Name));
+            foreach (KeyValuePair<long, MapShop> shop in ServerManager.GetMap(this.MapId).ShopUserList)
+                droplist.Add(String.Format("shop 1 {0} 1 3 0 {1}", shop.Key+1, shop.Value.Name));
+            foreach (Npc npc in ServerManager.GetMap(this.MapId).Npcs)
+                if(npc.Shops.Count> 0)
+                droplist.Add(String.Format("shop 2 {0} {1} {2} {3} {4}", npc.NpcId, 1, npc.MenuType, npc.Shops.First().Type, npc.Shops.First().Name));
+         
             return droplist;
         }
         
