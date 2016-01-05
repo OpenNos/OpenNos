@@ -73,7 +73,7 @@ namespace OpenNos.GameObject
             _npcs = new List<Npc>();
             foreach (NpcDTO npc in npcsDTO)
             {
-                _npcs.Add(new GameObject.Npc()
+                _npcs.Add(new GameObject.Npc(npc.NpcId)
                 {
                     Dialog = npc.Dialog,
                     MapId = npc.MapId,
@@ -81,7 +81,6 @@ namespace OpenNos.GameObject
                     MapY = npc.MapY,
                     Name = npc.Name,
                     Level = npc.Level,
-                    NpcId = npc.NpcId,
                     Position = npc.Position,
                     Vnum = npc.Vnum,
                     MenuType = npc.MenuType,

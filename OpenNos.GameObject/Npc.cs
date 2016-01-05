@@ -27,12 +27,13 @@ namespace OpenNos.GameObject
         #region Instantiation
         public List<Shop> Shops { get; set; }
 
-        public Npc()
+        public Npc(short npcId)
         {
 
             Mapper.CreateMap<NpcDTO, Npc>();
             Mapper.CreateMap<Npc, NpcDTO>();
             Shops = new List<Shop>();
+            NpcId = npcId;
             foreach (ShopDTO shop in DAOFactory.ShopDAO.LoadByNpc(NpcId))
                 Shops.Add(new Shop() { Name = shop.Name, NpcId = NpcId, ShopId = shop.ShopId,Type=shop.Type });
         }
