@@ -25,6 +25,8 @@ namespace OpenNos.DAL.EF.MySQL.DB
     
         public short MapId { get; set; }
         public string Name { get; set; }
+        public byte[] Data { get; set; }
+        public int Music { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Portal> sourceportal { get; set; }

@@ -18,6 +18,7 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public Item()
         {
             this.inventoryitem = new HashSet<InventoryItem>();
+            this.shop = new HashSet<Shop>();
         }
     
         public short VNum { get; set; }
@@ -73,5 +74,7 @@ namespace OpenNos.DAL.EF.MySQL.DB
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<InventoryItem> inventoryitem { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Shop> shop { get; set; }
     }
 }

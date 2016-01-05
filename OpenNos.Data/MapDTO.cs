@@ -13,5 +13,8 @@ namespace OpenNos.Data
 
         public string Name { get; set; }
 
+        public byte[] Data { get; set; }
+
+        public int Music { get; set; }
     }
 }

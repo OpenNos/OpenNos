@@ -56,21 +56,20 @@ namespace OpenNos.GameObject
 
             try
             {
-                DirectoryInfo dir = new DirectoryInfo(@"./Resource/zones");
-                FileInfo[] files = dir.GetFiles();
-                
-                foreach (FileInfo file in files)
+                int i = 0;
+                foreach (MapDTO map in DAOFactory.MapDAO.LoadAll())
                 {
-                   
-
                     Guid guid = Guid.NewGuid();
-                    Map newMap = new Map(Convert.ToInt16(file.Name), guid);
+                    Map newMap = new Map(Convert.ToInt16(map.MapId), guid,map.Data);
+                    newMap.Data = map.Data;
+                    newMap.Music = map.Music;
                     //register for broadcast
                     NotifyChildren += newMap.GetNotification;
                     _maps.TryAdd(guid, newMap);
+                    i++;
                 }
-              
-                Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("MAP_LOADED"), files.Length));
+
+                Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("MAP_LOADED"), i));
             }
             catch (Exception ex) { Logger.Log.Error(ex.Message); }
 
