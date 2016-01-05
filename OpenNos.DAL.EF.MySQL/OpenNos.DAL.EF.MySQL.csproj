@@ -106,6 +106,9 @@
     <Compile Include="DB\Portal.cs">
       <DependentUpon>OpenNos.tt</DependentUpon>
     </Compile>
+    <Compile Include="DB\Shop.cs">
+      <DependentUpon>OpenNos.tt</DependentUpon>
+    </Compile>
     <Compile Include="GeneralLogDAO.cs" />
     <Compile Include="InventoryDAO.cs" />
     <Compile Include="InventoryItemDAO.cs" />

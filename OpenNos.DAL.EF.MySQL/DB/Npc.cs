@@ -14,6 +14,12 @@ namespace OpenNos.DAL.EF.MySQL.DB
     
     public partial class Npc
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public Npc()
+        {
+            this.shop = new HashSet<Shop>();
+        }
+    
         public short NpcId { get; set; }
         public string Name { get; set; }
         public short Vnum { get; set; }
@@ -25,5 +31,7 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public short Level { get; set; }
     
         public virtual Map map { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Shop> shop { get; set; }
     }
 }

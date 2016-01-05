@@ -34,5 +34,15 @@ namespace OpenNos.DAL.EF.MySQL
                 return Mapper.Map<MapDTO>(context.map.SingleOrDefault(c => c.MapId.Equals(mapId)));
             }
         }
+        public IEnumerable<MapDTO> LoadAll()
+        {
+            using (var context = DataAccessHelper.CreateContext())
+            {
+                foreach (Map map in context.map)
+                {
+                    yield return Mapper.Map<MapDTO>(map);
+                }
+            }
+        }
     }
 }

@@ -38,7 +38,7 @@ namespace OpenNos.GameObject
         #endregion
 
         #region Instantiation
-        public Map(short mapId, Guid uniqueIdentifier)
+        public Map(short mapId, Guid uniqueIdentifier,byte[] data)
         {
 
             Mapper.CreateMap<MapDTO, Map>();
@@ -47,6 +47,7 @@ namespace OpenNos.GameObject
             threadedBase = new ThreadedBase<MapPacket>(500, HandlePacket);
             MapId = mapId;
             _uniqueIdentifier = uniqueIdentifier;
+            Data = data;
             LoadZone();
             IEnumerable<PortalDTO> portalsDTO = DAOFactory.PortalDAO.LoadFromMap(MapId);
             _portals = new List<Portal>();
@@ -100,6 +101,7 @@ namespace OpenNos.GameObject
                 return _portals;
             }
         }
+    
         public List<Npc> Npcs
         {
             get
@@ -129,17 +131,17 @@ namespace OpenNos.GameObject
 
         public void LoadZone()
         {
-            FileStream fsSource = new FileStream("Resource/zones/" + MapId, FileMode.Open, FileAccess.Read);
+            Stream stream = new MemoryStream(Data);
 
-            byte[] bytes = new byte[fsSource.Length];
+            byte[] bytes = new byte[stream.Length];
             int numBytesToRead = 1;
             int numBytesRead = 0;
 
 
-            fsSource.Read(bytes, numBytesRead, numBytesToRead);
+            stream.Read(bytes, numBytesRead, numBytesToRead);
             _xLength = bytes[0];
-            fsSource.Read(bytes, numBytesRead, numBytesToRead);
-            fsSource.Read(bytes, numBytesRead, numBytesToRead);
+            stream.Read(bytes, numBytesRead, numBytesToRead);
+            stream.Read(bytes, numBytesRead, numBytesToRead);
             _yLength = bytes[0];
 
             _grid = new char[_yLength, _xLength];
@@ -148,7 +150,7 @@ namespace OpenNos.GameObject
 
                 for (int t = 0; t < _xLength; ++t)
                 {
-                    fsSource.Read(bytes, numBytesRead, numBytesToRead);
+                    stream.Read(bytes, numBytesRead, numBytesToRead);
                     _grid[i, t] = Convert.ToChar(bytes[0]);
                 }
             }
