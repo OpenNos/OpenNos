@@ -29,6 +29,7 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public short MapY { get; set; }
         public short Position { get; set; }
         public short Level { get; set; }
+        public short MenuType { get; set; }
     
         public virtual Map map { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

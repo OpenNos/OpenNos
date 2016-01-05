@@ -61,7 +61,6 @@ namespace OpenNos.GameObject
                 {
                     Guid guid = Guid.NewGuid();
                     Map newMap = new Map(Convert.ToInt16(map.MapId), guid,map.Data);
-                    newMap.Data = map.Data;
                     newMap.Music = map.Music;
                     //register for broadcast
                     NotifyChildren += newMap.GetNotification;
@@ -71,7 +70,8 @@ namespace OpenNos.GameObject
 
                 Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("MAP_LOADED"), i));
             }
-            catch (Exception ex) { Logger.Log.Error(ex.Message); }
+            catch (Exception ex) {
+                Logger.Log.Error(ex.Message); }
 
         }
         public static Item GetItem(short vnum)
