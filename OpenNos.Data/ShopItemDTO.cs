@@ -11,8 +11,9 @@ namespace OpenNos.Data
     {
         public int ShopItemId { get; set; }
         public short Slot { get; set; }
-        public int ShopShopId { get; set; }
         public short ItemVNum { get; set; }
+        public short Upgrade { get; set; }
+        public short Rare { get; set; }
 
 
     }

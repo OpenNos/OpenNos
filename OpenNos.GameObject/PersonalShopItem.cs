@@ -21,26 +21,11 @@ using System.Threading.Tasks;
 
 namespace OpenNos.GameObject
 {
-    public class MapShop
+    public class PersonalShopItem : InventoryItem
     {
-
-        #region Instantiation
-        public long OwnerId { get; set; }
-        public string Name { get; set; }
-        public List<PersonalShopItem> Items { get; set; }
-        public long Sell { get; internal set; }
-
-        public MapShop()
-        {
-            Items = new List<PersonalShopItem>();
-            Sell = 0;
-        }
-      
-        #endregion
-
-        #region Methods
-
-
-        #endregion
+        public long Price{ get; set; }
+        public short InvSlot { get; set; }
+        public short InvType { get; set; }
+        public short Slot { get; set; }
     }
 }

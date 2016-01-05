@@ -101,5 +101,16 @@ namespace OpenNos.DAL.EF.MySQL
                 return Mapper.Map<ShopItemDTO>(context.shopitem.SingleOrDefault(i => i.ShopItemId.Equals(ItemId)));
             }
         }
+
+        public IEnumerable<ShopItemDTO> LoadByShopId(int ShopId)
+        {
+            using (var context = DataAccessHelper.CreateContext())
+            {
+                foreach (ShopItem shopitem in context.shopitem.Where(i => i.ShopId.Equals(ShopId)))
+                {
+                    yield return Mapper.Map<ShopItemDTO>(shopitem);
+                }
+            }
+        }
     }
 }

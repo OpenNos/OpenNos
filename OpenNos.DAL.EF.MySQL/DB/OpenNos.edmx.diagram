@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="f76ed05649d94abe8fc46f3ecc52e312" Name="Diagram1" ZoomLevel="66">
+      <Diagram DiagramId="f76ed05649d94abe8fc46f3ecc52e312" Name="Diagram1" ZoomLevel="85">
         <EntityTypeShape EntityType="opennosModel.Account" Width="1.5" PointX="0.5" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="opennosModel.Character" Width="1.5" PointX="3.25" PointY="0.625" IsExpanded="true" />
         <EntityTypeShape EntityType="opennosModel.Portal" Width="1.5" PointX="6.25" PointY="0.5" IsExpanded="true" />
@@ -25,11 +25,11 @@
         <AssociationConnector Association="opennosModel.InventoryItemItem" />
         <AssociationConnector Association="opennosModel.InventoryItemInstance" />
         <AssociationConnector Association="opennosModel.InventoryItemInventory" />
-        <EntityTypeShape EntityType="opennosModel.ShopItem" Width="1.5" PointX="12.125" PointY="3.125" />
+        <EntityTypeShape EntityType="opennosModel.ShopItem" Width="1.5" PointX="12.125" PointY="3.75" />
         <EntityTypeShape EntityType="opennosModel.Shop" Width="1.875" PointX="11.875" PointY="0.5" />
         <AssociationConnector Association="opennosModel.ShopNpc" />
-        <AssociationConnector Association="opennosModel.ShopItemShop" />
         <AssociationConnector Association="opennosModel.ShopItemItem" />
+        <AssociationConnector Association="opennosModel.ShopShopItem" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

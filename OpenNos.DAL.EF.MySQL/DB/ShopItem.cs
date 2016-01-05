@@ -14,18 +14,14 @@ namespace OpenNos.DAL.EF.MySQL.DB
     
     public partial class ShopItem
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public ShopItem()
-        {
-            this.shop = new HashSet<Shop>();
-        }
-    
         public int ShopItemId { get; set; }
         public short Slot { get; set; }
         public short ItemVNum { get; set; }
+        public short Upgrade { get; set; }
+        public short Rare { get; set; }
+        public int ShopId { get; set; }
     
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Shop> shop { get; set; }
         public virtual Item item { get; set; }
+        public virtual Shop shop { get; set; }
     }
 }

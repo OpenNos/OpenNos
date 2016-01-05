@@ -8,5 +8,6 @@ namespace  OpenNos.DAL.Interface
         ShopItemDTO LoadById(int ItemId);
         DeleteResult DeleteById(int ItemId);
         SaveResult InsertOrUpdate(ref ShopItemDTO item);
+        IEnumerable<ShopItemDTO> LoadByShopId(int ShopId);
     }
 }
