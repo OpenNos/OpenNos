@@ -61,13 +61,13 @@
       <End Role="Shop" EntitySet="shop" />
       <End Role="Npc" EntitySet="npc" />
     </AssociationSet>
-    <AssociationSet Name="ShopItemShop" Association="opennosModel.Store.ShopItemShop">
-      <End Role="ShopItem" EntitySet="shopitem" />
-      <End Role="Shop" EntitySet="shop" />
-    </AssociationSet>
     <AssociationSet Name="ShopItemItem" Association="opennosModel.Store.ShopItemItem">
       <End Role="ShopItem" EntitySet="shopitem" />
       <End Role="Item" EntitySet="item" />
+    </AssociationSet>
+    <AssociationSet Name="ShopShopItem" Association="opennosModel.Store.ShopShopItem">
+      <End Role="Shop" EntitySet="shop" />
+      <End Role="ShopItem" EntitySet="shopitem" />
     </AssociationSet>
   </EntityContainer>
   <EntityType Name="account">
@@ -265,6 +265,7 @@
     <Property Name="ItemVNum" Type="smallint" Nullable="false" />
     <Property Name="Upgrade" Type="smallint" Nullable="false" />
     <Property Name="Rare" Type="smallint" Nullable="false" />
+    <Property Name="ShopId" Type="int" Nullable="false" />
   </EntityType>
   <EntityType Name="shop">
     <Key>
@@ -274,7 +275,6 @@
     <Property Name="Name" Type="longtext" Nullable="false" />
     <Property Name="Type" Type="int" Nullable="false" />
     <Property Name="NpcId" Type="smallint" Nullable="false" />
-    <Property Name="ShopItemId" Type="int" Nullable="false" />
   </EntityType>
   <Association Name="AccountCharacter">
     <End Role="Account" Type="opennosModel.Store.account" Multiplicity="1" />
@@ -408,18 +408,6 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="ShopItemShop">
-    <End Role="ShopItem" Type="opennosModel.Store.shopitem" Multiplicity="1" />
-    <End Role="Shop" Type="opennosModel.Store.shop" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="ShopItem">
-        <PropertyRef Name="ShopItemId" />
-      </Principal>
-      <Dependent Role="Shop">
-        <PropertyRef Name="ShopItemId" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
   <Association Name="ShopItemItem">
     <End Role="ShopItem" Type="opennosModel.Store.shopitem" Multiplicity="*" />
     <End Role="Item" Type="opennosModel.Store.item" Multiplicity="1" />
@@ -429,6 +417,18 @@
       </Principal>
       <Dependent Role="ShopItem">
         <PropertyRef Name="ItemVNum" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="ShopShopItem">
+    <End Role="Shop" Type="opennosModel.Store.shop" Multiplicity="1" />
+    <End Role="ShopItem" Type="opennosModel.Store.shopitem" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Shop">
+        <PropertyRef Name="ShopId" />
+      </Principal>
+      <Dependent Role="ShopItem">
+        <PropertyRef Name="ShopId" />
       </Dependent>
     </ReferentialConstraint>
   </Association>
@@ -1098,6 +1098,7 @@
           <ScalarProperty Name="ItemVNum" ColumnName="ItemVNum" />
           <ScalarProperty Name="Upgrade" ColumnName="Upgrade" />
           <ScalarProperty Name="Rare" ColumnName="Rare" />
+          <ScalarProperty Name="ShopId" ColumnName="ShopId" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
