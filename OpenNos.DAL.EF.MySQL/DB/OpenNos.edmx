@@ -262,7 +262,6 @@
     </Key>
     <Property Name="ShopItemId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="Slot" Type="smallint" Nullable="false" />
-    <Property Name="ShopShopId" Type="int" Nullable="false" />
     <Property Name="ItemVNum" Type="smallint" Nullable="false" />
   </EntityType>
   <EntityType Name="shop">
@@ -834,7 +833,6 @@
           </Key>
           <Property Name="ShopItemId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Slot" Type="Int16" Nullable="false" />
-          <Property Name="ShopShopId" Type="Int32" Nullable="false" />
           <NavigationProperty Name="shop" Relationship="opennosModel.ShopItemShop" FromRole="ShopItem" ToRole="Shop" />
           <NavigationProperty Name="item" Relationship="opennosModel.ShopItemItem" FromRole="ShopItem" ToRole="Item" />
           <Property Name="ItemVNum" Type="Int16" Nullable="false" />
@@ -1093,7 +1091,6 @@
         <MappingFragment StoreEntitySet="shopitem">
           <ScalarProperty Name="ShopItemId" ColumnName="ShopItemId" />
           <ScalarProperty Name="Slot" ColumnName="Slot" />
-          <ScalarProperty Name="ShopShopId" ColumnName="ShopShopId" />
           <ScalarProperty Name="ItemVNum" ColumnName="ItemVNum" />
         </MappingFragment>
       </EntityTypeMapping>

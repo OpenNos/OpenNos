@@ -21,23 +21,24 @@ using System.Threading.Tasks;
 
 namespace OpenNos.GameObject
 {
-    public class ShopItem : InventoryItem
+    public class ShopItem : ShopItemDTO
     {
-
         #region Instantiation
-        public long Price { get; set; }
-        public long Slot { get; set; }
-        public short InvSlot { get; set; }
-        public short InvType { get; set; }
 
         public ShopItem()
         {
+            Mapper.CreateMap<ShopItemDTO, ShopItem>();
+            Mapper.CreateMap<ShopItem, ShopItemDTO>();
         }
-      
+
         #endregion
 
         #region Methods
 
+        public void Save()
+        {
+            throw new NotImplementedException();
+        }
 
         #endregion
     }

@@ -22,7 +22,6 @@ namespace OpenNos.DAL.EF.MySQL.DB
     
         public int ShopItemId { get; set; }
         public short Slot { get; set; }
-        public int ShopShopId { get; set; }
         public short ItemVNum { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

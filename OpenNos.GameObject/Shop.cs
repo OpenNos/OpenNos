@@ -14,6 +14,7 @@
 using AutoMapper;
 using OpenNos.DAL;
 using OpenNos.Data;
+using OpenNos.GameObject;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,37 +23,26 @@ using System.Threading.Tasks;
 
 namespace OpenNos.GameObject
 {
-    public class Npc : NpcDTO, IGameObject
+    public class Shop : ShopDTO, IGameObject
     {
-        #region Instantiation
-        public List<Shop> Shops { get; set; }
-
-        public Npc()
+        public ShopItem ShopItem
         {
+            get; set; }
 
-            Mapper.CreateMap<NpcDTO, Npc>();
-            Mapper.CreateMap<Npc, NpcDTO>();
-           DAOFactory.
+        #region Instantiation
+        
+
+        public Shop()
+        {
+            Mapper.CreateMap<ShopDTO, Shop>();
+            Mapper.CreateMap<Shop, ShopDTO>();
         }
+
 
         #endregion
 
         #region Methods
-
-        public string GetNpcDialog()
-        {
-            string dialog = String.Empty;
-            if (false)// shop == true)
-            {
-                //open npcshop
-            }
-            else
-            {
-                dialog = String.Format("npc_req 2 {0} {1}", NpcId, Dialog);
-            }
-            return dialog;
-        }
-
+     
         public void Save()
         {
             throw new NotImplementedException();
