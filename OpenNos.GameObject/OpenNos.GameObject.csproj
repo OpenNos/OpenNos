@@ -56,6 +56,7 @@
     <Compile Include="Shop.cs" />
     <Compile Include="Item.cs" />
     <Compile Include="InventoryList.cs" />
+    <Compile Include="PersonalShopItem.cs" />
     <Compile Include="ShopItem.cs" />
     <Compile Include="MapShop.cs" />
     <Compile Include="MapItem.cs" />

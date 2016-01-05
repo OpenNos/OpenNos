@@ -175,9 +175,9 @@ namespace OpenNos.GameObject
         }
         public void BuyValidate(ClientSession Session, KeyValuePair<long, MapShop> shop,short slot, short amount)
         {
-            ShopItem itemshop =  Session.CurrentMap.ShopUserList[shop.Key].Items.FirstOrDefault(i => i.Slot.Equals(slot));
+            PersonalShopItem itemshop =  Session.CurrentMap.ShopUserList[shop.Key].Items.FirstOrDefault(i => i.Slot.Equals(slot));
             Session.CurrentMap.ShopUserList[shop.Key].Items.FirstOrDefault(i => i.Slot.Equals(slot)).Amount -= amount;
-            ShopItem itemDelete = Session.CurrentMap.ShopUserList[shop.Key].Items.FirstOrDefault(i => i.Slot.Equals(slot));
+            PersonalShopItem itemDelete = Session.CurrentMap.ShopUserList[shop.Key].Items.FirstOrDefault(i => i.Slot.Equals(slot));
             if (itemDelete.Amount <= 0)
                 Session.CurrentMap.ShopUserList[shop.Key].Items.Remove(itemDelete);
 

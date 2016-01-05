@@ -25,7 +25,7 @@ namespace OpenNos.GameObject
 {
     public class Shop : ShopDTO, IGameObject
     {
-        public ShopItem ShopItem
+        public List<ShopItem> ShopItems
         {
             get; set; }
 
@@ -36,6 +36,11 @@ namespace OpenNos.GameObject
         {
             Mapper.CreateMap<ShopDTO, Shop>();
             Mapper.CreateMap<Shop, ShopDTO>();
+            ShopItems = new List<ShopItem>();
+            foreach(ShopItemDTO item in DAOFactory.ShopItemDAO.LoadByShopId(ShopId))
+            {
+                ShopItems.Add(new ShopItem() { ItemVNum = item.ItemVNum, Rare = item.Rare, ShopItemId = item.ShopItemId, Slot = item.Slot, Upgrade = item.Upgrade });
+            }
         }
 
 

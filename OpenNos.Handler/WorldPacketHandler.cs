@@ -425,7 +425,7 @@ namespace OpenNos.Handler
             short slot; short.TryParse(packetsplit[4], out slot);
             short amount; short.TryParse(packetsplit[5], out amount);
             KeyValuePair<long, MapShop> shop = Session.CurrentMap.ShopUserList.FirstOrDefault(mapshop => mapshop.Value.OwnerId.Equals(owner));
-            ShopItem item = shop.Value.Items.FirstOrDefault(i => i.Slot.Equals(slot));
+            PersonalShopItem item = shop.Value.Items.FirstOrDefault(i => i.Slot.Equals(slot));
             if (amount > item.Amount)
                 amount = item.Amount;
             if (item.Price * amount < Session.Character.Gold)
@@ -539,7 +539,7 @@ namespace OpenNos.Handler
                             if (qty[i] != 0)
                             {
                                 Inventory inv = Session.Character.InventoryList.LoadBySlotAndType(slot[i], type[i]);
-                                ShopItem shopitem = new ShopItem()
+                                PersonalShopItem personalshopitem = new PersonalShopItem()
                                 {   InvSlot = slot[i],
                                     InvType = type[i],
                                     Amount = qty[i],
@@ -570,7 +570,7 @@ namespace OpenNos.Handler
                                     Upgrade = inv.InventoryItem.Upgrade,
                                     WaterElement = inv.InventoryItem.WaterElement
                                 };
-                                myShop.Items.Add(shopitem);
+                                myShop.Items.Add(personalshopitem);
                             }
 
 
@@ -1319,7 +1319,7 @@ namespace OpenNos.Handler
             string packetToSend = String.Format("n_inv 1 {0} 0 0", owner);
             for (int i = 0; i < 20; i++)
             {
-                ShopItem item = shop.Value.Items.FirstOrDefault(it => it.Slot.Equals(i));
+                PersonalShopItem item = shop.Value.Items.FirstOrDefault(it => it.Slot.Equals(i));
                 if (item != null)
                 {
                     if (ServerManager.GetItem(item.ItemVNum).Type == 0)

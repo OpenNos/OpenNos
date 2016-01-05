@@ -32,7 +32,8 @@ namespace OpenNos.GameObject
 
             Mapper.CreateMap<NpcDTO, Npc>();
             Mapper.CreateMap<Npc, NpcDTO>();
-           DAOFactory.
+            foreach (ShopDTO shop in DAOFactory.ShopDAO.LoadByNpc(NpcId))
+                Shops.Add(new Shop() { Name = shop.Name, NpcId = NpcId, ShopId = shop.ShopId,Type=shop.Type });
         }
 
         #endregion
