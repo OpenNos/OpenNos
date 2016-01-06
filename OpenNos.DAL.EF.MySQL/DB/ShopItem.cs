@@ -15,6 +15,7 @@ namespace OpenNos.DAL.EF.MySQL.DB
     public partial class ShopItem
     {
         public int ShopItemId { get; set; }
+        public short Type { get; set; }
         public short Slot { get; set; }
         public short ItemVNum { get; set; }
         public short Upgrade { get; set; }

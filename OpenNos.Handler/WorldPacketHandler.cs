@@ -486,7 +486,7 @@ namespace OpenNos.Handler
 
                 Npc npc= Session.CurrentMap.Npcs.FirstOrDefault(n=>n.NpcId.Equals((short)owner));
 
-                ShopItem item = npc.Shops.FirstOrDefault().ShopItems.FirstOrDefault(it => it.Slot.Equals(slot));
+                ShopItem item = npc.Shop.ShopItems.FirstOrDefault(it => it.Slot.Equals(slot));
                 long price =ServerManager.GetItem(item.ItemVNum).Price * amount;
 
                 if (price > 0 && price <= Session.Character.Gold)
@@ -552,15 +552,16 @@ namespace OpenNos.Handler
             short.TryParse(packetsplit[2], out type);
             Npc npc = Session.CurrentMap.Npcs.FirstOrDefault(n => n.NpcId.Equals(NpcId));
             string shoplist = String.Empty;
-            Shop shop = npc.Shops.FirstOrDefault(s => s.Type.Equals(type));
+            Shop shop = npc.Shop;
             if (shop != null)
             {
-                foreach (ShopItem item in shop.ShopItems)
+                short typeshop = 0;
+                foreach (ShopItem item in shop.ShopItems.Where(s => s.Type.Equals(typeshop)))
                 {
                     shoplist += String.Format(" {0}.{1}.{2}.{3}.{4}", ServerManager.GetItem(item.ItemVNum).Type, item.Slot, item.ItemVNum, -1, ServerManager.GetItem(item.ItemVNum).Price);
                 }
 
-                Session.Client.SendPacket(String.Format("n_inv 2 {0} 0 0 {1}", npc.NpcId, shoplist));
+                Session.Client.SendPacket(String.Format("n_inv 2 {0} 0 0{1}", npc.NpcId, shoplist));
             }
         }
         [Packet("npc_req")]
