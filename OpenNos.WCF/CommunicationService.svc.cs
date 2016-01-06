@@ -17,7 +17,7 @@ namespace OpenNos.WCF
         #region Members
 
         private IDictionary<String, long> _registeredAccountLogins;
-        private IList<String> _connectedCharacters;
+        private IDictionary<String, String> _connectedCharacters;
 
         #endregion
 
@@ -45,13 +45,13 @@ namespace OpenNos.WCF
             }
         }
 
-        public IList<String> ConnectedCharacters
+        public IDictionary<String, String> ConnectedCharacters
         {
             get
             {
                 if (_connectedCharacters == null)
                 {
-                    _connectedCharacters = new List<String>();
+                    _connectedCharacters = new Dictionary<String, String>();
                 }
 
                 return _connectedCharacters;
@@ -93,7 +93,7 @@ namespace OpenNos.WCF
 
             return false;
         }
-        
+
         /// <summary>
         /// Register Account for Login (Verification for Security)
         /// </summary>
@@ -123,20 +123,23 @@ namespace OpenNos.WCF
         /// Registers that the given Character has now logged in
         /// </summary>
         /// <param name="characterName">Name of the Character.</param>
-        public bool ConnectCharacter(string characterName)
+        /// <param name="accountName">Account of the Character to login.</param>
+        public bool ConnectCharacter(string characterName, string accountName)
         {
             try
             {
                 //character cant connect twice
-                if (ConnectedCharacters.Contains(characterName))
+                if (ConnectedCharacters.ContainsKey(characterName))
                 {
                     Logger.Log.DebugFormat("[WCF] Character {0} is already connected.", characterName);
                     return false;
                 }
                 else
                 {
+                    //TODO move in own method, cannot do this here because it needs to be called by a client who wants to know if the 
+                    //character is allowed to connect without doing it actually
                     Logger.Log.DebugFormat("[WCF] Character {0} has connected.", characterName);
-                    ConnectedCharacters.Add(characterName);
+                    ConnectedCharacters.Add(characterName, accountName);
 
                     //inform clients
                     ICommunicationCallback callback = OperationContext.Current.GetCallbackChannel<ICommunicationCallback>();
@@ -170,6 +173,24 @@ namespace OpenNos.WCF
             catch (Exception ex)
             {
                 Logger.Log.Error(ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Checks if the Account has a connected Character
+        /// </summary>
+        /// <param name="accountName">Name of the Account</param>
+        /// <returns></returns>
+        public bool AccountHasCharacterConnection(string accountName)
+        {
+            try
+            {
+                return ConnectedCharacters.Any(cc => cc.Value.Equals(accountName));
+            }
+            catch (Exception ex)
+            {
+                Logger.Log.Error(ex.Message);
+                return false;
             }
         }
 
