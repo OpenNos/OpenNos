@@ -21,12 +21,11 @@ using System.Threading.Tasks;
 
 namespace OpenNos.GameObject
 {
-   public class Item : ItemDTO
+    public class PersonalShopItem : InventoryItem
     {
-        public Item()
-        {
-            Mapper.CreateMap<ItemDTO, Item>();
-            Mapper.CreateMap<Item, ItemDTO>();
-        }
+        public long Price{ get; set; }
+        public short InvSlot { get; set; }
+        public short InvType { get; set; }
+        public short Slot { get; set; }
     }
 }

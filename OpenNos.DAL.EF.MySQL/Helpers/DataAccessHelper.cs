@@ -56,6 +56,11 @@ namespace OpenNos.DAL.EF.MySQL
             Mapper.CreateMap<MapDTO, Map>();
             Mapper.CreateMap<Item, ItemDTO>();
             Mapper.CreateMap<ItemDTO, Item>();
+            Mapper.CreateMap<Shop, ShopDTO>();
+            Mapper.CreateMap<ShopDTO, Shop>();
+            Mapper.CreateMap<ShopItem, ShopItemDTO>();
+            Mapper.CreateMap<ShopItemDTO, ShopItem>();
+
             Mapper.CreateMap<Inventory, InventoryDTO>();
             Mapper.CreateMap<InventoryDTO, Inventory>();
             Mapper.CreateMap<InventoryItem, InventoryItemDTO>();

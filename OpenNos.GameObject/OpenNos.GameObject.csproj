@@ -54,8 +54,12 @@
     <Compile Include="Character.cs" />
     <Compile Include="Interface\IGameObject.cs" />
     <Compile Include="ExchangeInfo.cs" />
+    <Compile Include="Shop.cs" />
     <Compile Include="Item.cs" />
     <Compile Include="InventoryList.cs" />
+    <Compile Include="PersonalShopItem.cs" />
+    <Compile Include="ShopItem.cs" />
+    <Compile Include="MapShop.cs" />
     <Compile Include="MapItem.cs" />
     <Compile Include="InventoryItem.cs" />
     <Compile Include="Inventory.cs" />
@@ -99,7 +103,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

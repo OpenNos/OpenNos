@@ -12,7 +12,6 @@
  * GNU General Public License for more details.
  */
 using AutoMapper;
-using OpenNos.DAL;
 using OpenNos.Data;
 using System;
 using System.Collections.Generic;
@@ -22,39 +21,19 @@ using System.Threading.Tasks;
 
 namespace OpenNos.GameObject
 {
-    public class Npc : NpcDTO, IGameObject
+    public class ShopItem : ShopItemDTO
     {
         #region Instantiation
-        public List<Shop> Shops { get; set; }
 
-        public Npc(short npcId)
+        public ShopItem()
         {
-
-            Mapper.CreateMap<NpcDTO, Npc>();
-            Mapper.CreateMap<Npc, NpcDTO>();
-            Shops = new List<Shop>();
-            NpcId = npcId;
-            foreach (ShopDTO shop in DAOFactory.ShopDAO.LoadByNpc(NpcId))
-                Shops.Add(new Shop() { Name = shop.Name, NpcId = NpcId, ShopId = shop.ShopId,Type=shop.Type });
+            Mapper.CreateMap<ShopItemDTO, ShopItem>();
+            Mapper.CreateMap<ShopItem, ShopItemDTO>();
         }
 
         #endregion
 
         #region Methods
-
-        public string GetNpcDialog()
-        {
-            string dialog = String.Empty;
-            if (false)// shop == true)
-            {
-                //open npcshop
-            }
-            else
-            {
-                dialog = String.Format("npc_req 2 {0} {1}", NpcId, Dialog);
-            }
-            return dialog;
-        }
 
         public void Save()
         {

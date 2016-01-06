@@ -413,17 +413,6 @@ namespace OpenNos.Handler
 
 
         }
-        [Packet("npc_req")]
-        public void NpcReq(string packet)
-        {
-            string[] packetsplit = packet.Split(' ');
-            foreach (Npc npc in ServerManager.GetMap(Session.Character.MapId).Npcs)
-                if (npc.NpcId == Convert.ToInt16(packetsplit[3]))
-                    if (npc.GetNpcDialog() != String.Empty)
-                        Session.Client.SendPacket(npc.GetNpcDialog());
-
-
-        }
         [Packet("put")]
         public void PutItem(string packet)
         {
@@ -439,6 +428,199 @@ namespace OpenNos.Handler
             Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(inv.InventoryItem.ItemVNum, inv.InventoryItem.Amount, type, inv.Slot, inv.InventoryItem.Rare, inv.InventoryItem.Color, inv.InventoryItem.Upgrade));
             ClientLinkManager.Instance.Broadcast(Session, String.Format("drop {0} {1} {2} {3} {4} {5} {6}", DroppedItem.ItemVNum, DroppedItem.InventoryItemId, DroppedItem.PositionX, DroppedItem.PositionY, DroppedItem.Amount, 0, -1), ReceiverType.AllOnMap);
 
+        }
+        [Packet("buy")]
+        public void BuyShop(string packet)
+        {
+            string[] packetsplit = packet.Split(' ');
+            long owner; long.TryParse(packetsplit[3], out owner);
+            short slot; short.TryParse(packetsplit[4], out slot);
+            short amount; short.TryParse(packetsplit[5], out amount);
+            KeyValuePair<long, MapShop> shop = Session.CurrentMap.ShopUserList.FirstOrDefault(mapshop => mapshop.Value.OwnerId.Equals(owner));
+            PersonalShopItem item = shop.Value.Items.FirstOrDefault(i => i.Slot.Equals(slot));
+            if (amount > item.Amount)
+                amount = item.Amount;
+            if (item.Price * amount < Session.Character.Gold)
+            {
+                Session.Character.Gold -= item.Price * amount;
+                Session.Client.SendPacket(Session.Character.GenerateGold());    
+                InventoryItem newItem = new InventoryItem()
+                {
+                    InventoryItemId = Session.Character.InventoryList.generateInventoryItemId(),
+                    Amount = amount,
+                    ItemVNum = item.ItemVNum,
+                    Rare = item.Rare,
+                    Upgrade = item.Upgrade,
+                    Color = item.Color,
+                    Concentrate = item.Concentrate,
+                    CriticalLuckRate = item.CriticalLuckRate,
+                    CriticalRate = item.CriticalRate,
+                    DamageMaximum = item.DamageMaximum,
+                    DamageMinimum = item.DamageMinimum,
+                    DarkElement = item.DarkElement,
+                    DistanceDefence = item.DistanceDefence,
+                    Dodge = item.Dodge,
+                    ElementRate = item.ElementRate,
+                    FireElement = item.FireElement,
+                    HitRate = item.HitRate,
+                    LightElement = item.LightElement,
+                    MagicDefence = item.MagicDefence,
+                    RangeDefence = item.RangeDefence,
+                    SlDefence = item.SlDefence,
+                    SlElement = item.SlElement,
+                    SlHit = item.SlHit,
+                    SlHP = item.SlHP,
+                    WaterElement = item.WaterElement,
+                };
+
+                Inventory inv = Session.Character.InventoryList.CreateItem(newItem, Session.Character);
+                if (inv != null)
+                {
+                    short Slot = inv.Slot;
+                    if (Slot != -1)
+                        Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(newItem.ItemVNum, inv.InventoryItem.Amount, inv.Type, Slot, newItem.Rare, newItem.Color, newItem.Upgrade));
+                }
+                ClientLinkManager.Instance.BuyValidate(Session, shop, slot, amount);
+                KeyValuePair<long, MapShop> shop2 = Session.CurrentMap.ShopUserList.FirstOrDefault(s => s.Value.OwnerId.Equals(owner));
+                loadShopItem(owner, shop2);
+            }
+            else
+            {
+                Session.Client.SendPacket(Session.Character.GenerateShopMemo( 3, Language.Instance.GetMessageFromKey("NOT_ENOUGH_MONEY")));
+            }
+        }
+        [Packet("npc_req")]
+        public void ShowShop(string packet)
+        {
+            //n_inv 1 2 0 0 0.0.302.7.0.990000. 0.1.264.5.6.2500000. 0.2.69.7.0.650000. 0.3.4106.0.0.4200000. -1 0.5.4240.0.0.11200000. 0.6.4240.0.5.24000000. 0.7.4801.0.0.6200000. 0.8.4240.0.10.32000000. 0.9.712.0.3.250000. 0.10.997.0.4.250000. 1.11.1895.4.16000.-1.-1 1.12.1897.6.18000.-1.-1 -1 1.14.1902.3.35000.-1.-1 1.15.1237.2.12000.-1.-1 -1 -1 1.18.1249.3.92000.-1.-1 0.19.4240.0.1.10500000. -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+            string[] packetsplit = packet.Split(' ');
+            if (packetsplit.Length > 2) { 
+                int mode; int.TryParse(packetsplit[2], out mode);
+                if(mode == 1)//personnal
+                {
+                    if (packetsplit.Length > 3)
+                    {
+                        long owner; long.TryParse(packetsplit[3], out owner);
+                       
+                            KeyValuePair<long, MapShop> shop = Session.CurrentMap.ShopUserList.FirstOrDefault(s => s.Value.OwnerId.Equals(owner));
+                            loadShopItem(owner,shop);
+                            
+
+                            
+                        }
+                       
+                    }
+                }else
+            {
+                foreach (Npc npc in ServerManager.GetMap(Session.Character.MapId).Npcs)
+                    if (npc.NpcId == Convert.ToInt16(packetsplit[3]))
+                        if (npc.GetNpcDialog() != String.Empty)
+                            Session.Client.SendPacket(npc.GetNpcDialog());
+
+
+            }
+        }
+        [Packet("m_shop")]
+        public void createShop(string packet)
+        {
+            string[] packetsplit = packet.Split(' ');
+            short[] type = new short[20];
+            long[] gold = new long[20];
+            short[] slot = new short[20];
+            short[] qty = new short[20];
+
+          string shopname="";
+            if (packetsplit.Length>2)
+            { 
+                short typePacket;
+                short.TryParse(packetsplit[2], out typePacket);
+                if (typePacket == 2)
+                { 
+                    Session.Client.SendPacket("ishop");
+                }
+                else if(typePacket == 0)
+                {
+                    MapShop myShop = new MapShop();
+                    if (packetsplit.Length > 2)
+                        for (short j = 3, i = 0; j <= packetsplit.Length-5; j += 4, i++)
+                        {
+                            short.TryParse(packetsplit[j], out type[i]);
+                            short.TryParse(packetsplit[j+1], out slot[i]);
+                            short.TryParse(packetsplit[j+2], out qty[i]);
+                            long.TryParse(packetsplit[j + 3], out gold[i]);
+                            if (qty[i] != 0)
+                            {
+                                Inventory inv = Session.Character.InventoryList.LoadBySlotAndType(slot[i], type[i]);
+                                PersonalShopItem personalshopitem = new PersonalShopItem()
+                                {   InvSlot = slot[i],
+                                    InvType = type[i],
+                                    Amount = qty[i],
+                                    Price = gold[i],
+                                    Slot = i,
+                                    Color = inv.InventoryItem.Color,
+                                    Concentrate = inv.InventoryItem.Concentrate,
+                                    CriticalLuckRate = inv.InventoryItem.CriticalLuckRate,
+                                    CriticalRate = inv.InventoryItem.CriticalRate,
+                                    DamageMaximum = inv.InventoryItem.DamageMaximum,
+                                    DamageMinimum = inv.InventoryItem.DamageMinimum,
+                                    DarkElement = inv.InventoryItem.DarkElement,
+                                    DistanceDefence = inv.InventoryItem.DistanceDefence,
+                                    Dodge = inv.InventoryItem.Dodge,
+                                    ElementRate = inv.InventoryItem.ElementRate,
+                                    FireElement = inv.InventoryItem.FireElement,
+                                    HitRate = inv.InventoryItem.HitRate,
+                                    InventoryItemId = inv.InventoryItemId,
+                                    ItemVNum = inv.InventoryItem.ItemVNum,
+                                    LightElement = inv.InventoryItem.LightElement,
+                                    MagicDefence = inv.InventoryItem.MagicDefence,
+                                    RangeDefence = inv.InventoryItem.RangeDefence,
+                                    Rare = inv.InventoryItem.Rare,
+                                    SlDefence = inv.InventoryItem.SlDefence,
+                                    SlElement = inv.InventoryItem.SlElement,
+                                    SlHit = inv.InventoryItem.SlHit,
+                                    SlHP = inv.InventoryItem.SlHP,
+                                    Upgrade = inv.InventoryItem.Upgrade,
+                                    WaterElement = inv.InventoryItem.WaterElement
+                                };
+                                myShop.Items.Add(personalshopitem);
+                            }
+
+
+                        }
+
+                    for (int i = 83; i < packetsplit.Length; i++)
+                        shopname += String.Format("{0} ", packetsplit[i]);
+                    shopname.TrimEnd(' ');
+                    myShop.OwnerId = Session.Character.CharacterId;
+                    myShop.Name = shopname;
+                    Session.CurrentMap.ShopUserList.Add(Session.CurrentMap.ShopUserList.Count(), myShop);
+                    
+                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GeneratePlayerFlag(Session.CurrentMap.ShopUserList.Count()-1), ReceiverType.AllOnMapExceptMe);
+                   
+                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateShop(shopname), ReceiverType.AllOnMap);
+                    
+                    Session.Client.SendPacket(Session.Character.GenerateCond());
+                    Session.Client.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("SHOP_OPEN")));
+                    Session.Character.Rested = 1;
+
+                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateRest(), ReceiverType.AllOnMap);
+
+
+                }
+                else if(typePacket == 1)
+               {
+
+                    KeyValuePair<long, MapShop> shop = Session.CurrentMap.ShopUserList.FirstOrDefault(mapshop => mapshop.Value.OwnerId.Equals(Session.Character.CharacterId));
+                    Session.CurrentMap.ShopUserList.Remove(shop.Key);
+                   
+                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateShopEnd(), ReceiverType.AllOnMap);
+                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEndPlayerFlag(), ReceiverType.AllOnMapExceptMe);
+                   
+
+
+                }
+            }
+            
         }
         [Packet("b_i")]
         public void askToDelete(string packet)
@@ -468,10 +650,14 @@ namespace OpenNos.Handler
         public void MoveInventory(string packet)
         {
             string[] packetsplit = packet.Split(' ');
-            short type; short.TryParse(packetsplit[2], out type);
-            short slot; short.TryParse(packetsplit[3], out slot);
-            short desttype; short.TryParse(packetsplit[4], out desttype);
-            short destslot; short.TryParse(packetsplit[5], out destslot);
+            short type;
+            short.TryParse(packetsplit[2], out type);
+            short slot;
+            short.TryParse(packetsplit[3], out slot);
+            short desttype;
+            short.TryParse(packetsplit[4], out desttype);
+            short destslot;
+            short.TryParse(packetsplit[5], out destslot);
             Inventory inv = Session.Character.InventoryList.moveInventory(type, slot, desttype, destslot);
             if (inv != null)
             {
@@ -740,8 +926,11 @@ namespace OpenNos.Handler
                     }
                     else if (iteminfo.Type == 0)
                     {
-                        Int16.TryParse(packetsplit[3], out rare);
-                        Int16.TryParse(packetsplit[4], out upgrade);
+                        if (packetsplit.Length == 5)
+                        { 
+                            Int16.TryParse(packetsplit[3], out rare);
+                          Int16.TryParse(packetsplit[4], out upgrade);
+                        }
                     }
                     else
                     {
@@ -1068,7 +1257,7 @@ namespace OpenNos.Handler
                 Session.Client.SendPacket(npcPacket);
             foreach (String droppedPacket in Session.Character.GenerateDroppedItem())
                 Session.Client.SendPacket(droppedPacket);
-
+           
             //sc
             Session.Client.SendPacket(Session.Character.GenerateCond());
             //pairyz
@@ -1086,6 +1275,11 @@ namespace OpenNos.Handler
                 ClientLinkManager.Instance.RequiereBroadcastFromMap(Session.Character.MapId, "dance 0");
 
             }
+            foreach (String ShopPacket in Session.Character.GenerateShopOnMap())
+                Session.Client.SendPacket(ShopPacket);
+            foreach (String ShopPacketChar in Session.Character.GeneratePlayerShopOnMap())
+                Session.Client.SendPacket(ShopPacketChar);
+            
 
         }
         public void healthThread()
@@ -1131,7 +1325,29 @@ namespace OpenNos.Handler
 
             }
         }
+        public void loadShopItem(long owner, KeyValuePair<long, MapShop> shop)
+        {
 
+            string packetToSend = String.Format("n_inv 1 {0} 0 0", owner);
+            for (int i = 0; i < 20; i++)
+            {
+                PersonalShopItem item = shop.Value.Items.FirstOrDefault(it => it.Slot.Equals(i));
+                if (item != null)
+                {
+                    if (ServerManager.GetItem(item.ItemVNum).Type == 0)
+                        packetToSend += String.Format(" {0}.{1}.{2}.{3}.{4}.{5}.", 0, i, ServerManager.GetItem(item.ItemVNum).VNum, item.Rare, item.Upgrade, item.Price);
+                    else
+                        packetToSend += String.Format(" {0}.{1}.{2}.{3}.{4}.{5}.", ServerManager.GetItem(item.ItemVNum).Type, i, ServerManager.GetItem(item.ItemVNum).VNum, item.Amount, item.Price, -1);
+                }
+                else
+                {
+                    packetToSend += " -1";
+                }
+            }
+            packetToSend += " -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1";
+
+            Session.Client.SendPacket(packetToSend);
+        }
         public void ShutdownThread()
         {
             string message = String.Format(Language.Instance.GetMessageFromKey("SHUTDOWN_MIN"), 5);

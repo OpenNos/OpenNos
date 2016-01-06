@@ -21,12 +21,26 @@ using System.Threading.Tasks;
 
 namespace OpenNos.GameObject
 {
-   public class Item : ItemDTO
+    public class MapShop
     {
-        public Item()
+
+        #region Instantiation
+        public long OwnerId { get; set; }
+        public string Name { get; set; }
+        public List<PersonalShopItem> Items { get; set; }
+        public long Sell { get; internal set; }
+
+        public MapShop()
         {
-            Mapper.CreateMap<ItemDTO, Item>();
-            Mapper.CreateMap<Item, ItemDTO>();
+            Items = new List<PersonalShopItem>();
+            Sell = 0;
         }
+      
+        #endregion
+
+        #region Methods
+
+
+        #endregion
     }
 }

@@ -9,6 +9,7 @@ namespace OpenNos.Data
 {
     public class NpcDTO
     {
+
         public short NpcId { get; set; }
         public string Name { get; set; }
         public short Vnum { get; set; }
@@ -18,7 +19,7 @@ namespace OpenNos.Data
         public short MapY { get; set; }
         public short Position { get; set; }
         public short Level { get; set; }
-
+        public short MenuType { get; set; }
 
     }
 }

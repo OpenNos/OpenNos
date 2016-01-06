@@ -38,7 +38,7 @@ namespace OpenNos.GameObject
         #endregion
 
         #region Instantiation
-        public Map(short mapId, Guid uniqueIdentifier)
+        public Map(short mapId, Guid uniqueIdentifier,byte[] data)
         {
 
             Mapper.CreateMap<MapDTO, Map>();
@@ -47,10 +47,13 @@ namespace OpenNos.GameObject
             threadedBase = new ThreadedBase<MapPacket>(500, HandlePacket);
             MapId = mapId;
             _uniqueIdentifier = uniqueIdentifier;
+            Data = data;
             LoadZone();
             IEnumerable<PortalDTO> portalsDTO = DAOFactory.PortalDAO.LoadFromMap(MapId);
             _portals = new List<Portal>();
             DroppedList = new Dictionary<long, MapItem>();
+
+            ShopUserList = new Dictionary<long, MapShop>();
             foreach (PortalDTO portal in portalsDTO)
             {
                 _portals.Add(new GameObject.Portal()
@@ -70,7 +73,7 @@ namespace OpenNos.GameObject
             _npcs = new List<Npc>();
             foreach (NpcDTO npc in npcsDTO)
             {
-                _npcs.Add(new GameObject.Npc()
+                _npcs.Add(new GameObject.Npc(npc.NpcId)
                 {
                     Dialog = npc.Dialog,
                     MapId = npc.MapId,
@@ -78,9 +81,9 @@ namespace OpenNos.GameObject
                     MapY = npc.MapY,
                     Name = npc.Name,
                     Level = npc.Level,
-                    NpcId = npc.NpcId,
                     Position = npc.Position,
-                    Vnum = npc.Vnum
+                    Vnum = npc.Vnum,
+                    MenuType = npc.MenuType,
                 });
             }
         }
@@ -98,6 +101,7 @@ namespace OpenNos.GameObject
                 return _portals;
             }
         }
+    
         public List<Npc> Npcs
         {
             get
@@ -105,6 +109,8 @@ namespace OpenNos.GameObject
                 return _npcs;
             }
         }
+        public Dictionary<long, MapShop> ShopUserList { get; set; }
+
         public IDictionary<long, MapItem> DroppedList { get; set; }
 
         public int IsDancing { get; set; }
@@ -125,17 +131,17 @@ namespace OpenNos.GameObject
 
         public void LoadZone()
         {
-            FileStream fsSource = new FileStream("Resource/zones/" + MapId, FileMode.Open, FileAccess.Read);
+            Stream stream = new MemoryStream(Data);
 
-            byte[] bytes = new byte[fsSource.Length];
+            byte[] bytes = new byte[stream.Length];
             int numBytesToRead = 1;
             int numBytesRead = 0;
 
 
-            fsSource.Read(bytes, numBytesRead, numBytesToRead);
+            stream.Read(bytes, numBytesRead, numBytesToRead);
             _xLength = bytes[0];
-            fsSource.Read(bytes, numBytesRead, numBytesToRead);
-            fsSource.Read(bytes, numBytesRead, numBytesToRead);
+            stream.Read(bytes, numBytesRead, numBytesToRead);
+            stream.Read(bytes, numBytesRead, numBytesToRead);
             _yLength = bytes[0];
 
             _grid = new char[_yLength, _xLength];
@@ -144,7 +150,7 @@ namespace OpenNos.GameObject
 
                 for (int t = 0; t < _xLength; ++t)
                 {
-                    fsSource.Read(bytes, numBytesRead, numBytesToRead);
+                    stream.Read(bytes, numBytesRead, numBytesToRead);
                     _grid[i, t] = Convert.ToChar(bytes[0]);
                 }
             }

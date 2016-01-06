@@ -24,42 +24,20 @@ namespace OpenNos.Core
         public LoginEncryption() : base(false) { }
         public override string Decrypt(byte[] data, int customParameter = 0)
         {
-            int size = data.Length;
-            string result;
-            try
-            {
-                for (int i = 0; i < size; i++)
-                {
-                    data[i] = (byte)(data[i] - 15 ^ 195);
-                }
-                result = Encoding.ASCII.GetString(data).Substring(0, size);
-            }
-            catch
-            {
-                result = String.Empty;
-            }
-            return result;
+            for (int i = 0; i < data.Length; i++)
+                data[i] = (byte)(data[i] - 0xF ^ 0xC3);
+            return Encoding.UTF8.GetString(data).Substring(0, data.Length);
         }
 
         public override byte[] Encrypt(string data)
         {
-            byte[] result;
-            try
-            {
-                byte[] array = new byte[data.Length + 1];
-                array = Encoding.ASCII.GetBytes(data);
-                for (int i = 0; i < data.Length; i++)
-                {
-                    array[i] = Convert.ToByte((int)(data[i] + '\u000f'));
-                }
-                array[array.Length - 1] = 25;
-                result = array;
-            }
-            catch
-            {
-                result = new byte[0];
-            }
-            return result;
+            data += " ";
+            char[] tmp = new char[(data.Length + 1)];
+            tmp = Encoding.UTF8.GetChars(Encoding.UTF8.GetBytes(data));
+            for (int i = 0; i < data.Length; i++)
+                tmp[i] = Convert.ToChar(data[i] + 15);
+            tmp[tmp.Length - 1] = (char)25;
+            return Encoding.UTF8.GetBytes(new string(tmp));
         }
 
         public static string GetPassword(string passcrypt)

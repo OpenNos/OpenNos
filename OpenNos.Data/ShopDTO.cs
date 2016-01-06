@@ -7,14 +7,13 @@ using System.Threading.Tasks;
 
 namespace OpenNos.Data
 {
-    public class MapDTO
+    public class ShopDTO
     {
-        public short MapId { get; set; }
 
+        public int ShopId { get; set; }
         public string Name { get; set; }
+        public int Type { get; set; }
+        public short NpcId { get; set; }
 
-        public byte[] Data { get; set; }
-
-        public int Music { get; set; }
     }
 }

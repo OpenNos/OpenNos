@@ -14,6 +14,7 @@
 using AutoMapper;
 using OpenNos.DAL;
 using OpenNos.Data;
+using OpenNos.GameObject;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,40 +23,31 @@ using System.Threading.Tasks;
 
 namespace OpenNos.GameObject
 {
-    public class Npc : NpcDTO, IGameObject
+    public class Shop : ShopDTO, IGameObject
     {
-        #region Instantiation
-        public List<Shop> Shops { get; set; }
-
-        public Npc(short npcId)
+        public List<ShopItem> ShopItems
         {
+            get; set; }
 
-            Mapper.CreateMap<NpcDTO, Npc>();
-            Mapper.CreateMap<Npc, NpcDTO>();
-            Shops = new List<Shop>();
-            NpcId = npcId;
-            foreach (ShopDTO shop in DAOFactory.ShopDAO.LoadByNpc(NpcId))
-                Shops.Add(new Shop() { Name = shop.Name, NpcId = NpcId, ShopId = shop.ShopId,Type=shop.Type });
+        #region Instantiation
+        
+
+        public Shop()
+        {
+            Mapper.CreateMap<ShopDTO, Shop>();
+            Mapper.CreateMap<Shop, ShopDTO>();
+            ShopItems = new List<ShopItem>();
+            foreach(ShopItemDTO item in DAOFactory.ShopItemDAO.LoadByShopId(ShopId))
+            {
+                ShopItems.Add(new ShopItem() { ItemVNum = item.ItemVNum, Rare = item.Rare, ShopItemId = item.ShopItemId, Slot = item.Slot, Upgrade = item.Upgrade });
+            }
         }
+
 
         #endregion
 
         #region Methods
-
-        public string GetNpcDialog()
-        {
-            string dialog = String.Empty;
-            if (false)// shop == true)
-            {
-                //open npcshop
-            }
-            else
-            {
-                dialog = String.Format("npc_req 2 {0} {1}", NpcId, Dialog);
-            }
-            return dialog;
-        }
-
+     
         public void Save()
         {
             throw new NotImplementedException();

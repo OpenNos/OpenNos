@@ -97,16 +97,16 @@ namespace OpenNos.GameObject
                     Inventory result = LoadBySlotAndType(i, k);
                     if (result != null && result.Type == 0)
                         place[k]--;
-                    else if(result != null)
+                    else if (result != null)
                     {
                         bool test = false;
                         //si un item colle
-                        foreach(InventoryItem itemins in item)
+                        foreach (InventoryItem itemins in item)
                         {
                             if (ServerManager.GetItem(itemins.ItemVNum).Type != 0 && itemins.Amount + result.InventoryItem.Amount <= 99)
                                 test = true;
                         }
-                        if(!test)
+                        if (!test)
                             place[k]--;
                     }
                 }
@@ -117,7 +117,7 @@ namespace OpenNos.GameObject
                 if (place[ServerManager.GetItem(itemins.ItemVNum).Type] == 0)
                     test2 = false;
             }
-                return test2;
+            return test2;
         }
 
         public Inventory LoadBySlotAndType(short slot, short type)
@@ -282,6 +282,22 @@ namespace OpenNos.GameObject
             return DroppedItem;
         }
 
+        internal Inventory AmountMinusFromSlotAndType(short amount, short invSlot, short invType)
+        {
+            Inventory inv = Inventory.SingleOrDefault(i => i.Slot.Equals(invSlot) && i.Type.Equals(invType));
+
+            if (inv != null)
+            {
+                inv.InventoryItem.Amount -= amount;
+            }
+            if (inv.InventoryItem.Amount <= 0)
+            {
+                Inventory.Remove(inv);
+                return null;
+            }
+            return inv;
+        }
+
         public Inventory moveInventory(short type, short slot, short desttype, short destslot)
         {
             Inventory inv = LoadBySlotAndType(slot, type);
@@ -295,7 +311,7 @@ namespace OpenNos.GameObject
                 InsertOrUpdate(ref inv);
 
             }
-          
+
             return inv;
         }
 
