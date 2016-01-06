@@ -40,6 +40,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -94,6 +95,10 @@
     <ProjectReference Include="..\OpenNos.Domain\OpenNos.Domain.csproj">
       <Project>{20addddd-dad9-44f3-9beb-026c73090660}</Project>
       <Name>OpenNos.Domain</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\OpenNos.ServiceRef.Internal\OpenNos.ServiceRef.Internal.csproj">
+      <Project>{c4d62dcf-483b-4b8a-9bb6-651d07ff467b}</Project>
+      <Name>OpenNos.ServiceRef.Internal</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

@@ -28,16 +28,22 @@ namespace OpenNos.ServiceRef.Internal.CommunicationServiceReference {
         System.Threading.Tasks.Task<bool> HasRegisteredAccountLoginAsync(string name, long sessionId);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ICommunicationService/ConnectCharacter", ReplyAction="http://tempuri.org/ICommunicationService/ConnectCharacterResponse")]
-        bool ConnectCharacter(string characterName);
+        bool ConnectCharacter(string characterName, string accountName);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ICommunicationService/ConnectCharacter", ReplyAction="http://tempuri.org/ICommunicationService/ConnectCharacterResponse")]
-        System.Threading.Tasks.Task<bool> ConnectCharacterAsync(string characterName);
+        System.Threading.Tasks.Task<bool> ConnectCharacterAsync(string characterName, string accountName);
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/ICommunicationService/DisconnectCharacter")]
         void DisconnectCharacter(string characterName);
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/ICommunicationService/DisconnectCharacter")]
         System.Threading.Tasks.Task DisconnectCharacterAsync(string characterName);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ICommunicationService/AccountHasCharacterConnection", ReplyAction="http://tempuri.org/ICommunicationService/AccountHasCharacterConnectionResponse")]
+        bool AccountHasCharacterConnection(string accountName);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ICommunicationService/AccountHasCharacterConnection", ReplyAction="http://tempuri.org/ICommunicationService/AccountHasCharacterConnectionResponse")]
+        System.Threading.Tasks.Task<bool> AccountHasCharacterConnectionAsync(string accountName);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -94,12 +100,12 @@ namespace OpenNos.ServiceRef.Internal.CommunicationServiceReference {
             return base.Channel.HasRegisteredAccountLoginAsync(name, sessionId);
         }
         
-        public bool ConnectCharacter(string characterName) {
-            return base.Channel.ConnectCharacter(characterName);
+        public bool ConnectCharacter(string characterName, string accountName) {
+            return base.Channel.ConnectCharacter(characterName, accountName);
         }
         
-        public System.Threading.Tasks.Task<bool> ConnectCharacterAsync(string characterName) {
-            return base.Channel.ConnectCharacterAsync(characterName);
+        public System.Threading.Tasks.Task<bool> ConnectCharacterAsync(string characterName, string accountName) {
+            return base.Channel.ConnectCharacterAsync(characterName, accountName);
         }
         
         public void DisconnectCharacter(string characterName) {
@@ -108,6 +114,14 @@ namespace OpenNos.ServiceRef.Internal.CommunicationServiceReference {
         
         public System.Threading.Tasks.Task DisconnectCharacterAsync(string characterName) {
             return base.Channel.DisconnectCharacterAsync(characterName);
+        }
+        
+        public bool AccountHasCharacterConnection(string accountName) {
+            return base.Channel.AccountHasCharacterConnection(accountName);
+        }
+        
+        public System.Threading.Tasks.Task<bool> AccountHasCharacterConnectionAsync(string accountName) {
+            return base.Channel.AccountHasCharacterConnectionAsync(accountName);
         }
     }
 }

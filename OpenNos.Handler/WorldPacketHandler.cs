@@ -186,56 +186,67 @@ namespace OpenNos.Handler
         [Packet("select")]
         public void SelectCharacter(string packet)
         {
+            try
+            {
+                string[] packetsplit = packet.Split(' ');
+                CharacterDTO characterDTO = DAOFactory.CharacterDAO.LoadBySlot(Session.Account.AccountId, Convert.ToByte(packetsplit[2]));
+                if (characterDTO != null)
+                    Session.Character = new GameObject.Character()
+                    {
+                        AccountId = characterDTO.AccountId,
+                        CharacterId = characterDTO.CharacterId,
+                        Class = characterDTO.Class,
+                        Dignite = characterDTO.Dignite,
+                        Gender = characterDTO.Gender,
+                        Gold = characterDTO.Gold,
+                        HairColor = characterDTO.HairColor,
+                        HairStyle = characterDTO.HairStyle,
+                        Hp = characterDTO.Hp,
+                        JobLevel = characterDTO.JobLevel,
+                        JobLevelXp = characterDTO.JobLevelXp,
+                        Level = characterDTO.Level,
+                        LevelXp = characterDTO.LevelXp,
+                        MapId = characterDTO.MapId,
+                        MapX = characterDTO.MapX,
+                        MapY = characterDTO.MapY,
+                        Mp = characterDTO.Mp,
+                        State = characterDTO.State,
+                        Faction = characterDTO.Faction,
+                        Name = characterDTO.Name,
+                        Reput = characterDTO.Reput,
+                        Slot = characterDTO.Slot,
+                        Authority = Session.Account.Authority,
+                        LastPulse = 0,
+                        LastPortal = 0,
+                        Invisible = 0,
+                        ArenaWinner = 0,
+                        Morph = 0,
+                        MorphUpgrade = 0,
+                        MorphUpgrade2 = 0,
+                        Direction = 0,
+                        Rested = 0,
+                        BackPack = characterDTO.Backpack,
+                        Speed = ServersData.SpeedData[characterDTO.Class]
+                    };
 
-            string[] packetsplit = packet.Split(' ');
-            CharacterDTO characterDTO = DAOFactory.CharacterDAO.LoadBySlot(Session.Account.AccountId, Convert.ToByte(packetsplit[2]));
-            if (characterDTO != null)
-                Session.Character = new GameObject.Character()
-                {
-                    AccountId = characterDTO.AccountId,
-                    CharacterId = characterDTO.CharacterId,
-                    Class = characterDTO.Class,
-                    Dignite = characterDTO.Dignite,
-                    Gender = characterDTO.Gender,
-                    Gold = characterDTO.Gold,
-                    HairColor = characterDTO.HairColor,
-                    HairStyle = characterDTO.HairStyle,
-                    Hp = characterDTO.Hp,
-                    JobLevel = characterDTO.JobLevel,
-                    JobLevelXp = characterDTO.JobLevelXp,
-                    Level = characterDTO.Level,
-                    LevelXp = characterDTO.LevelXp,
-                    MapId = characterDTO.MapId,
-                    MapX = characterDTO.MapX,
-                    MapY = characterDTO.MapY,
-                    Mp = characterDTO.Mp,
-                    State = characterDTO.State,
-                    Faction = characterDTO.Faction,
-                    Name = characterDTO.Name,
-                    Reput = characterDTO.Reput,
-                    Slot = characterDTO.Slot,
-                    Authority = Session.Account.Authority,
-                    LastPulse = 0,
-                    LastPortal = 0,
-                    Invisible = 0,
-                    ArenaWinner = 0,
-                    Morph = 0,
-                    MorphUpgrade = 0,
-                    MorphUpgrade2 = 0,
-                    Direction = 0,
-                    Rested = 0,
-                    BackPack = characterDTO.Backpack,
-                    Speed = ServersData.SpeedData[characterDTO.Class]
-                };
-            Session.Character.Update();
-            Session.Character.LoadInventory();
-            DAOFactory.AccountDAO.WriteConnectionLog(Session.Character.AccountId, Session.Client.RemoteEndPoint.ToString(), Session.Character.CharacterId, "Connexion", "World");
-            Session.CurrentMap = ServerManager.GetMap(Session.Character.MapId);
-            Session.RegisterForMapNotification();
-            Session.Client.SendPacket("OK");
-            Session.HealthThread = new Thread(new ThreadStart(healthThread));
-            if (Session.HealthThread != null && !Session.HealthThread.IsAlive)
-                Session.HealthThread.Start();
+                Session.Character.Update();
+                Session.Character.LoadInventory();
+                DAOFactory.AccountDAO.WriteConnectionLog(Session.Character.AccountId, Session.Client.RemoteEndPoint.ToString(), Session.Character.CharacterId, "Connexion", "World");
+                Session.CurrentMap = ServerManager.GetMap(Session.Character.MapId);
+                Session.RegisterForMapNotification();
+                Session.Client.SendPacket("OK");
+                Session.HealthThread = new Thread(new ThreadStart(healthThread));
+
+                if (Session.HealthThread != null && !Session.HealthThread.IsAlive)
+                    Session.HealthThread.Start();
+
+                //inform everyone about connected character
+                ServiceFactory.Instance.CommunicationService.ConnectCharacter(Session.Character.Name, Session.Account.Name);
+            }
+            catch(Exception ex)
+            {
+                Logger.Log.Error(ex);
+            }
         }
 
         #endregion

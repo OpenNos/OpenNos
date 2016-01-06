@@ -57,6 +57,8 @@ namespace OpenNos.World
             {
                 Logger.Log.Error(ex.Message);
             }
+
+            //start up network manager
             NetworkManager<WorldEncryption> networkManager = new NetworkManager<WorldEncryption>(ip, port, typeof(WorldPacketHandler));
             
         }
