@@ -35,14 +35,11 @@ namespace OpenNos.DAL.EF.MySQL
          }
         }
 
-        public IEnumerable<ShopDTO> LoadByNpc(short NpcId)
+        public ShopDTO LoadByNpc(short npcId)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                foreach (Shop shopitem in context.shop.Where(i => i.NpcId.Equals(NpcId)))
-                {
-                    yield return Mapper.Map<ShopDTO>(shopitem);
-                }
+                return Mapper.Map<ShopDTO>(context.shop.FirstOrDefault(s => s.NpcId.Equals(npcId)));
             }
         }
     }

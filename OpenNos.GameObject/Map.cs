@@ -83,7 +83,6 @@ namespace OpenNos.GameObject
                     Level = npc.Level,
                     Position = npc.Position,
                     Vnum = npc.Vnum,
-                    MenuType = npc.MenuType,
                 });
             }
         }

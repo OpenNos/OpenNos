@@ -12,8 +12,7 @@ namespace OpenNos.Data
 
         public int ShopId { get; set; }
         public string Name { get; set; }
-        public int Type { get; set; }
         public short NpcId { get; set; }
-
+        public short MenuType { get; set; }
     }
 }

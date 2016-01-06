@@ -348,8 +348,8 @@ namespace OpenNos.GameObject
         {
             List<String> droplist = new List<String>();
             foreach (Npc npc in ServerManager.GetMap(this.MapId).Npcs)
-                if (npc.Shops.Count > 0)
-                    droplist.Add(String.Format("shop 2 {0} {1} {2} {3} {4}", npc.NpcId, 1,  0, npc.MenuType, npc.Shops.First().Name));
+                if (npc.Shop !=null)
+                    droplist.Add(String.Format("shop 2 {0} {1} {2} {3} {4}", npc.NpcId, 1,  0, npc.Shop.MenuType, npc.Shop.Name));
             return droplist;
         }
         public List<string> GenerateShopOnMap()

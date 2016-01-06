@@ -19,7 +19,6 @@ namespace OpenNos.Data
         public short MapY { get; set; }
         public short Position { get; set; }
         public short Level { get; set; }
-        public short MenuType { get; set; }
 
     }
 }

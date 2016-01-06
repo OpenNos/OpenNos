@@ -215,7 +215,6 @@
     <Property Name="MapY" Type="smallint" Nullable="false" />
     <Property Name="Position" Type="smallint" Nullable="false" />
     <Property Name="Level" Type="smallint" Nullable="false" />
-    <Property Name="MenuType" Type="smallint" Nullable="false" />
   </EntityType>
   <EntityType Name="inventoryitem">
     <Key>
@@ -262,6 +261,7 @@
       <PropertyRef Name="ShopItemId" />
     </Key>
     <Property Name="ShopItemId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Type" Type="smallint" Nullable="false" />
     <Property Name="Slot" Type="smallint" Nullable="false" />
     <Property Name="ItemVNum" Type="smallint" Nullable="false" />
     <Property Name="Upgrade" Type="smallint" Nullable="false" />
@@ -274,8 +274,8 @@
     </Key>
     <Property Name="ShopId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="Name" Type="longtext" Nullable="false" />
-    <Property Name="Type" Type="int" Nullable="false" />
     <Property Name="NpcId" Type="smallint" Nullable="false" />
+    <Property Name="MenuType" Type="smallint" Nullable="false" />
   </EntityType>
   <Association Name="AccountCharacter">
     <End Role="Account" Type="opennosModel.Store.account" Multiplicity="1" />
@@ -737,7 +737,6 @@
           <NavigationProperty Name="map" Relationship="opennosModel.NpcMap" FromRole="Npc" ToRole="Map" />
           <Property Name="Level" Type="Int16" Nullable="false" />
           <NavigationProperty Name="shop" Relationship="opennosModel.ShopNpc" FromRole="Npc" ToRole="Shop" />
-          <Property Name="MenuType" Type="Int16" Nullable="false" />
         </EntityType>
         <Association Name="NpcMap">
           <End Type="opennosModel.Npc" Role="Npc" Multiplicity="*" />
@@ -836,6 +835,7 @@
             <PropertyRef Name="ShopItemId" />
           </Key>
           <Property Name="ShopItemId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Type" Type="Int16" Nullable="false" />
           <Property Name="Slot" Type="Int16" Nullable="false" />
           <NavigationProperty Name="item" Relationship="opennosModel.ShopItemItem" FromRole="ShopItem" ToRole="Item" />
           <Property Name="ItemVNum" Type="Int16" Nullable="false" />
@@ -850,9 +850,9 @@
           </Key>
           <Property Name="ShopId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Name" Type="String" Nullable="false" />
-          <Property Name="Type" Type="Int32" Nullable="false" />
           <NavigationProperty Name="npc" Relationship="opennosModel.ShopNpc" FromRole="Shop" ToRole="Npc" />
           <Property Name="NpcId" Type="Int16" Nullable="false" />
+          <Property Name="MenuType" Type="Int16" Nullable="false" />
           <NavigationProperty Name="shopitem" Relationship="opennosModel.ShopShopItem" FromRole="Shop" ToRole="ShopItem" />
         </EntityType>
         <Association Name="ShopNpc">
@@ -1047,7 +1047,6 @@
           <ScalarProperty Name="MapY" ColumnName="MapY" />
           <ScalarProperty Name="Position" ColumnName="Position" />
           <ScalarProperty Name="Level" ColumnName="Level" />
-          <ScalarProperty Name="MenuType" ColumnName="MenuType" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -1097,6 +1096,7 @@
       <EntityTypeMapping TypeName="IsTypeOf(opennosModel.ShopItem)">
         <MappingFragment StoreEntitySet="shopitem">
           <ScalarProperty Name="ShopItemId" ColumnName="ShopItemId" />
+          <ScalarProperty Name="Type" ColumnName="Type" />
           <ScalarProperty Name="Slot" ColumnName="Slot" />
           <ScalarProperty Name="ItemVNum" ColumnName="ItemVNum" />
           <ScalarProperty Name="Upgrade" ColumnName="Upgrade" />
@@ -1110,8 +1110,8 @@
         <MappingFragment StoreEntitySet="shop">
           <ScalarProperty Name="ShopId" ColumnName="ShopId" />
           <ScalarProperty Name="Name" ColumnName="Name" />
-          <ScalarProperty Name="Type" ColumnName="Type" />
           <ScalarProperty Name="NpcId" ColumnName="NpcId" />
+          <ScalarProperty Name="MenuType" ColumnName="MenuType" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
