@@ -17,9 +17,12 @@ namespace OpenNos.WCF.Interface
         bool HasRegisteredAccountLogin(string name, long sessionId);
 
         [OperationContract]
-        bool ConnectCharacter(string characterName);
+        bool ConnectCharacter(string characterName, string accountName);
 
         [OperationContract(IsOneWay = true)]
         void DisconnectCharacter(string characterName);
+
+        [OperationContract]
+        bool AccountHasCharacterConnection(string accountName);
     }
 }
