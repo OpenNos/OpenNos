@@ -26,7 +26,7 @@ using OpenNos.ServiceRef.Internal;
 
 namespace OpenNos.Handler
 {
-    public class LoginPacketHandler 
+    public class LoginPacketHandler
     {
         private readonly ClientSession _session;
 
@@ -76,47 +76,55 @@ namespace OpenNos.Handler
 
                     if (loadedAccount != null && loadedAccount.Password.Equals(user.PasswordDecrypted))
                     {
-                        DAOFactory.AccountDAO.WriteConnectionLog(loadedAccount.AccountId, _session.Client.RemoteEndPoint.ToString(),null,"Connexion","LoginServer");
+                        DAOFactory.AccountDAO.WriteConnectionLog(loadedAccount.AccountId, _session.Client.RemoteEndPoint.ToString(), null, "Connection", "LoginServer");
 
-                        //0 banned 1 register 2 user 3 GM
-                        AuthorityType type = loadedAccount.AuthorityEnum;
-
-                        switch (type)
+                        if (!ServiceFactory.Instance.CommunicationService.AccountHasCharacterConnection(loadedAccount.Name))
                         {
-                            case AuthorityType.Banned:
-                                {
-                                    _session.Client.SendPacket(String.Format("fail {O}", Language.Instance.GetMessageFromKey("BANNED").ToString()));
-                                }
-                                break;
-                            default:
-                                {
-                                    if (!DAOFactory.AccountDAO.IsLoggedIn(user.Name))
+                            //0 banned 1 register 2 user 3 GM
+                            AuthorityType type = loadedAccount.AuthorityEnum;
+
+                            switch (type)
+                            {
+                                case AuthorityType.Banned:
                                     {
-                                        int newSessionId = SessionFactory.Instance.GenerateSessionId();
-
-                                        DAOFactory.AccountDAO.UpdateLastSessionAndIp(user.Name, (int)newSessionId, _session.Client.RemoteEndPoint.ToString());
-                                        Logger.Log.DebugFormat(Language.Instance.GetMessageFromKey("CONNECTION"), user.Name, newSessionId);
-
-                                        //inform communication service about new player from login server 
-                                        try {
-                                            ServiceFactory.Instance.CommunicationService.RegisterAccountLogin(user.Name, newSessionId);
-                                        }
-
-                                        catch(Exception ex)
+                                        _session.Client.SendPacket(String.Format("fail {O}", Language.Instance.GetMessageFromKey("BANNED").ToString()));
+                                    }
+                                    break;
+                                default:
+                                    {
+                                        if (!DAOFactory.AccountDAO.IsLoggedIn(user.Name))
                                         {
-                                            Logger.Log.Error(ex.Message);
+                                            int newSessionId = SessionFactory.Instance.GenerateSessionId();
+
+                                            DAOFactory.AccountDAO.UpdateLastSessionAndIp(user.Name, (int)newSessionId, _session.Client.RemoteEndPoint.ToString());
+                                            Logger.Log.DebugFormat(Language.Instance.GetMessageFromKey("CONNECTION"), user.Name, newSessionId);
+
+                                            //inform communication service about new player from login server 
+                                            try
+                                            {
+                                                ServiceFactory.Instance.CommunicationService.RegisterAccountLogin(user.Name, newSessionId);
+                                            }
+                                            catch (Exception ex)
+                                            {
+                                                Logger.Log.Error(ex.Message);
+                                            }
+
+
+                                            _session.Client.SendPacket(BuildServersPacket((int)newSessionId));
                                         }
-
-
-                                        _session.Client.SendPacket(BuildServersPacket((int)newSessionId));
+                                        else
+                                        {
+                                            _session.Client.SendPacket(String.Format("fail {O}", Language.Instance.GetMessageFromKey("ONLINE").ToString()));
+                                        }
                                     }
-                                    else
-                                    {
-                                        _session.Client.SendPacket(String.Format("fail {O}", Language.Instance.GetMessageFromKey("ONLINE").ToString()));
-                                    }
-                                }
-                                break;
+                                    break;
 
+                            }
+
+                        }
+                        else
+                        {
+                            _session.Client.SendPacket(String.Format("fail {0}", Language.Instance.GetMessageFromKey("ALREADY_CONNECTED").ToString()));
                         }
                     }
                     else

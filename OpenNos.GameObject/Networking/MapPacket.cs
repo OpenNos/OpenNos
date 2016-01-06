@@ -21,11 +21,16 @@ namespace OpenNos.GameObject
 {
     public class MapPacket
     {
+        #region Members
+
         private string characterName;
         private string packet;
         private ReceiverType all;
+
+        #endregion
+
         #region Instantiation
-    
+
         public MapPacket(ClientSession session, string content, ReceiverType receiver)
         {
             Session = session;

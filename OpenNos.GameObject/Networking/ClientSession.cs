@@ -23,6 +23,7 @@ using System.Threading.Tasks;
 using OpenNos.Data;
 using System.Threading;
 using OpenNos.Domain;
+using OpenNos.ServiceRef.Internal;
 
 namespace OpenNos.GameObject
 {
@@ -274,9 +275,15 @@ namespace OpenNos.GameObject
         /// <summary>
         /// Destroy ClientSession
         /// </summary>
-        internal void Destroy()
+        public void Destroy()
         {
             //do everything necessary before removing client, DB save, Whatever
+
+            if(Character != null)
+            {
+                //disconnect client
+                ServiceFactory.Instance.CommunicationService.DisconnectCharacter(Character.Name);
+            }
         }
 
         /// <summary>
