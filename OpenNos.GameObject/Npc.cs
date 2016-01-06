@@ -34,8 +34,8 @@ namespace OpenNos.GameObject
             Mapper.CreateMap<Npc, NpcDTO>();
             Shops = new List<Shop>();
             NpcId = npcId;
-            foreach (ShopDTO shop in DAOFactory.ShopDAO.LoadByNpc(NpcId))
-                Shops.Add(new Shop() { Name = shop.Name, NpcId = NpcId, ShopId = shop.ShopId,Type=shop.Type });
+           foreach (ShopDTO shop in DAOFactory.ShopDAO.LoadByNpc(NpcId))
+                Shops.Add(new Shop(shop.ShopId) { Name = shop.Name, NpcId = NpcId,Type=shop.Type });
         }
 
         #endregion
@@ -45,14 +45,9 @@ namespace OpenNos.GameObject
         public string GetNpcDialog()
         {
             string dialog = String.Empty;
-            if (false)// shop == true)
-            {
-                //open npcshop
-            }
-            else
-            {
-                dialog = String.Format("npc_req 2 {0} {1}", NpcId, Dialog);
-            }
+          
+             dialog = String.Format("npc_req 2 {0} {1}", NpcId, Dialog);
+            
             return dialog;
         }
 
