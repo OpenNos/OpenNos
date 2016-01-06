@@ -11,6 +11,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  */
+using OpenNos.Core;
 using OpenNos.GameObject;
 using System;
 using System.Collections.Generic;
@@ -171,6 +172,35 @@ namespace OpenNos.GameObject
                 }
             }
             return "";
+        }
+        public void BuyValidate(ClientSession Session, KeyValuePair<long, MapShop> shop,short slot, short amount)
+        {
+            PersonalShopItem itemshop =  Session.CurrentMap.ShopUserList[shop.Key].Items.FirstOrDefault(i => i.Slot.Equals(slot));
+            Session.CurrentMap.ShopUserList[shop.Key].Items.FirstOrDefault(i => i.Slot.Equals(slot)).Amount -= amount;
+            PersonalShopItem itemDelete = Session.CurrentMap.ShopUserList[shop.Key].Items.FirstOrDefault(i => i.Slot.Equals(slot));
+            if (itemDelete.Amount <= 0)
+                Session.CurrentMap.ShopUserList[shop.Key].Items.Remove(itemDelete);
+
+            foreach (ClientSession session in sessions)
+            {
+
+                if (session.Character != null && session.Character.CharacterId == shop.Value.OwnerId)
+                {
+                    session.Character.Gold += itemshop.Price* amount;
+                    session.Client.SendPacket(session.Character.GenerateGold());
+                    session.Client.SendPacket(session.Character.GenerateShopMemo(1, String.Format(Language.Instance.GetMessageFromKey("BUY_ITEM"), session.Character.Name, ServerManager.GetItem(itemshop.ItemVNum).Name, amount)));
+                    Session.CurrentMap.ShopUserList[shop.Key].Sell += itemshop.Price * amount;
+                    session.Client.SendPacket(String.Format("sell_list {0} {1}.{2}.{3}", shop.Value.Sell, slot, amount, itemshop.Amount));
+                  Inventory inv = session.Character.InventoryList.AmountMinusFromSlotAndType(amount, itemshop.InvSlot, itemshop.InvType);
+                    if(inv != null)
+                    {
+                        session.Client.SendPacket(session.Character.GenerateInventoryAdd(inv.InventoryItem.ItemVNum, inv.InventoryItem.Amount, inv.Type, inv.Slot, inv.InventoryItem.Rare, inv.InventoryItem.Color, inv.InventoryItem.Upgrade));
+                    }
+                    else
+                        session.Client.SendPacket(session.Character.GenerateInventoryAdd(-1, 0, itemshop.InvType, itemshop.InvSlot, 0, 0, 0));
+
+                }
+            }
         }
         public void ExchangeValidate(ClientSession Session, long charId)
         {

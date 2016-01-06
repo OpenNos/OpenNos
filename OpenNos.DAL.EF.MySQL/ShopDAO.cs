@@ -25,22 +25,23 @@ using OpenNos.Core;
 
 namespace OpenNos.DAL.EF.MySQL
 {
-    public class MapDAO : IMapDAO
+    public class ShopDAO : IShopDAO
     {
-        public MapDTO LoadById(short mapId)
+        public ShopDTO LoadById(int ShopId)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                return Mapper.Map<MapDTO>(context.map.SingleOrDefault(c => c.MapId.Equals(mapId)));
-            }
+                return Mapper.Map < ShopDTO > (context.shop.FirstOrDefault(s => s.ShopId.Equals(ShopId)));
+         }
         }
-        public IEnumerable<MapDTO> LoadAll()
+
+        public IEnumerable<ShopDTO> LoadByNpc(short NpcId)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                foreach (Map map in context.map)
+                foreach (Shop shopitem in context.shop.Where(i => i.NpcId.Equals(NpcId)))
                 {
-                    yield return Mapper.Map<MapDTO>(map);
+                    yield return Mapper.Map<ShopDTO>(shopitem);
                 }
             }
         }

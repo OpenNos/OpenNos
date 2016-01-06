@@ -8,6 +8,5 @@ namespace  OpenNos.DAL.Interface
         InventoryItemDTO LoadById(long ItemId);
         DeleteResult DeleteById(short ItemId);
         SaveResult InsertOrUpdate(ref InventoryItemDTO item);
-        IEnumerable<InventoryItemDTO> LoadBySlotAllowed( short itemVNum, short amount);
     }
 }
