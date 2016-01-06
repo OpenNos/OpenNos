@@ -344,15 +344,19 @@ namespace OpenNos.GameObject
                 droplist.Add(String.Format("drop {0} {1} {2} {3} {4} {5} {6}", item.Value.ItemVNum, item.Key, item.Value.PositionX, item.Value.PositionY, item.Value.Amount, 0, -1));
             return droplist;
         }
+        public List<string> GenerateNPCShopOnMap()
+        {
+            List<String> droplist = new List<String>();
+            foreach (Npc npc in ServerManager.GetMap(this.MapId).Npcs)
+                if (npc.Shops.Count > 0)
+                    droplist.Add(String.Format("shop 2 {0} {1} {2} {3} {4}", npc.NpcId, 1,  0, npc.MenuType, npc.Shops.First().Name));
+            return droplist;
+        }
         public List<string> GenerateShopOnMap()
         {
             List<String> droplist = new List<String>();
             foreach (KeyValuePair<long, MapShop> shop in ServerManager.GetMap(this.MapId).ShopUserList)
-                droplist.Add(String.Format("shop 1 {0} 1 3 0 {1}", shop.Key+1, shop.Value.Name));
-            foreach (Npc npc in ServerManager.GetMap(this.MapId).Npcs)
-                if(npc.Shops.Count> 0)
-                droplist.Add(String.Format("shop 2 {0} {1} {2} {3} {4}", npc.NpcId, 1, npc.MenuType, npc.Shops.First().Type, npc.Shops.First().Name));
-         
+                droplist.Add(String.Format("shop 1 {0} 1 3 0 {1}", shop.Key+1, shop.Value.Name));  
             return droplist;
         }
         

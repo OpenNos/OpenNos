@@ -32,12 +32,13 @@ namespace OpenNos.GameObject
         #region Instantiation
         
 
-        public Shop()
+        public Shop(int shopId)
         {
             Mapper.CreateMap<ShopDTO, Shop>();
             Mapper.CreateMap<Shop, ShopDTO>();
             ShopItems = new List<ShopItem>();
-            foreach(ShopItemDTO item in DAOFactory.ShopItemDAO.LoadByShopId(ShopId))
+            ShopId = shopId;
+            foreach (ShopItemDTO item in DAOFactory.ShopItemDAO.LoadByShopId(ShopId))
             {
                 ShopItems.Add(new ShopItem() { ItemVNum = item.ItemVNum, Rare = item.Rare, ShopItemId = item.ShopItemId, Slot = item.Slot, Upgrade = item.Upgrade });
             }
