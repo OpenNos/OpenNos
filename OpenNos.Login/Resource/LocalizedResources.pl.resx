@@ -148,7 +148,7 @@
     <value>Wiadomosc otrzymana {0} uzytkownik {1}</value>
   </data>
   <data name="MSG_SENT" xml:space="preserve">
-    <value>Wiadomosc wyslana</value>
+    <value>Wiadomosc wyslana.</value>
   </data>
   <data name="NEW_CONNECT" xml:space="preserve">
     <value>Nowy uzytkownik polaczyl sie. ClientId =</value>
