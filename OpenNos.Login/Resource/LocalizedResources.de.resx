@@ -133,7 +133,7 @@
     <value>Datenbank wurde initialisiert!</value>
   </data>
   <data name="DISCONNECT" xml:space="preserve">
-    <value>Die Verbindung zu einem Client wurde getrennt! CliendId =</value>
+    <value>Die Verbindung zu einem Client wurde getrennt! ClientId =</value>
   </data>
   <data name="FORCED_DISCONNECT" xml:space="preserve">
     <value>Die Verbindung zum Client {0} wurde getrennt, zu viele Verbindungen.</value>
