@@ -118,40 +118,40 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ACCOUNT_ARRIVED" xml:space="preserve">
-    <value>Account with SessionId {0} has arrived.</value>
+    <value>Konto z numerem sesji SessionId {0} dolaczylo.</value>
   </data>
   <data name="ADMINISTRATOR" xml:space="preserve">
     <value>Administrator</value>
   </data>
   <data name="ADVENTURER" xml:space="preserve">
-    <value>Adventurer</value>
+    <value>Poszukiwacz przygod</value>
   </data>
   <data name="ALREADY_TAKEN" xml:space="preserve">
-    <value>This name is already taken!</value>
+    <value>To imie jest zajete!</value>
   </data>
   <data name="ARCHER" xml:space="preserve">
-    <value>Archer</value>
+    <value>Lucznik</value>
   </data>
   <data name="ASK_TO_DELETE" xml:space="preserve">
-    <value>Do you want to delete?</value>
+    <value>Czy chcesz usunac?</value>
   </data>
   <data name="BAD_PASSWORD" xml:space="preserve">
-    <value>Bad Password</value>
+    <value>Zle haslo</value>
   </data>
   <data name="BN0" xml:space="preserve">
-    <value>read^the^rules</value>
+    <value>przeczytaj^zasady</value>
   </data>
   <data name="BN1" xml:space="preserve">
-    <value>don't^give^id</value>
+    <value>nie^podawaj^nicku^ani^hasla</value>
   </data>
   <data name="BN2" xml:space="preserve">
-    <value>need^a^gm?^go^on^website.</value>
+    <value>potrzebujesz^pomocy^gm'a^zajrzyj^na^nasza^strone</value>
   </data>
   <data name="BN3" xml:space="preserve">
-    <value />
+    <value>admin^nigdy^nie^poprosi^cie^o^haslo</value>
   </data>
   <data name="BN4" xml:space="preserve">
-    <value />
+    <value>pozdrowienia^od^teamu!</value>
   </data>
   <data name="BN5" xml:space="preserve">
     <value />
@@ -160,88 +160,88 @@
     <value />
   </data>
   <data name="BUY_ITEM" xml:space="preserve">
-    <value>{0}: buy &lt;{1} {2}: piece &gt;</value>
+    <value>{0}: kup &lt;{1} {2}: sztuk &gt;</value>
   </data>
   <data name="CANT_MOVE" xml:space="preserve">
-    <value>User can't move.</value>
+    <value>Nie mozesz sie ruszac.</value>
   </data>
   <data name="CLIENT_ARRIVED" xml:space="preserve">
-    <value>Client arrived, SessionId: {0}</value>
+    <value>Uzytkownik dolaczyl, SessionId: {0}</value>
   </data>
   <data name="CLIENT_CLOSE" xml:space="preserve">
-    <value>Connection closed by Client.</value>
+    <value>Polaczenie zamykane przez uzytkownika.</value>
   </data>
   <data name="CLIENT_CLOSED" xml:space="preserve">
-    <value>Connection closed by Client.</value>
+    <value>Polaczenie zamkniete przez uzytkownika.</value>
   </data>
   <data name="CORRUPT_KEEPALIVE" xml:space="preserve">
-    <value>Corrupted Keepalive on client {0}.</value>
+    <value>Uszkodzone Keepalive miedzy uzytkownikiem {0}.</value>
   </data>
   <data name="DATABASE_HAS_BEEN_INITIALISE" xml:space="preserve">
-    <value>Database has been initialized.</value>
+    <value>Baza danych zostala zainicjowana.</value>
   </data>
   <data name="DELETE_ACCOUNT_ERROR" xml:space="preserve">
-    <value>Error deleting Account with Id {0} , {1}</value>
+    <value>Blad usuwania konta z Id {0} , {1}</value>
   </data>
   <data name="DELETE_ERROR" xml:space="preserve">
-    <value>Error deleting Character with Slot {0} , {1}</value>
+    <value>Blad usuwania postaci ze Slotem {0} , {1}</value>
   </data>
   <data name="DISCONNECT" xml:space="preserve">
-    <value>A client is has been disconnected! CliendId =</value>
+    <value>Uzytkownik zostal rozlaczony! ClientId =</value>
   </data>
   <data name="FORCED_DISCONNECT" xml:space="preserve">
-    <value>Forced Disconnecting of client {0}, too much connections.</value>
+    <value>Rozlaczanie uzytkownika {0}, zbyt duzo polaczen.</value>
   </data>
   <data name="GET_PROTECTION_POWER_1" xml:space="preserve">
-    <value>You get the protection power of angel.</value>
+    <value>Jestes pod wplywem ochrony aniola stroza.</value>
   </data>
   <data name="GET_PROTECTION_POWER_2" xml:space="preserve">
-    <value>You get the protection power of daemon.</value>
+    <value>Jestes pod wplywem mocy demona.</value>
   </data>
   <data name="HANDLER_NOT_FOUND" xml:space="preserve">
     <value>Could not found Handler implementation for Packet with Header {0}</value>
   </data>
   <data name="INSERT_ERROR" xml:space="preserve">
-    <value>Error inserting or updating character {0} , {1}</value>
+    <value>Blad zapisywania badz odswiezania postaci {0} , {1}</value>
   </data>
   <data name="IN_WAITING_FOR" xml:space="preserve">
-    <value>In Waiting for {0}</value>
+    <value>Czekam na {0}</value>
   </data>
   <data name="ITEM_LOADED" xml:space="preserve">
-    <value>{0} Items Loaded !</value>
+    <value>{0} Zaladowanych przedmiotow!</value>
   </data>
   <data name="JOB_CHANGED" xml:space="preserve">
-    <value>Job has been changed.</value>
+    <value>Zawod zostal zmieniony.</value>
   </data>
   <data name="LEVEL_CHANGED" xml:space="preserve">
-    <value>Level has been increased!</value>
+    <value>Poziom podniesiony!</value>
   </data>
   <data name="MAGICIAN" xml:space="preserve">
-    <value>Magician</value>
+    <value>Mag</value>
   </data>
   <data name="MAP_LOADED" xml:space="preserve">
-    <value>{0} Maps Loaded !</value>
+    <value>{0} Zaladowanych map!</value>
   </data>
   <data name="MESSAGE_RECEIVED" xml:space="preserve">
-    <value>Message received {0} on client {1}</value>
+    <value>Wiadomosc otrzymana {0} u uzytkownika {1}</value>
   </data>
   <data name="MSG_SENT" xml:space="preserve">
-    <value>Message sent {0} to client {1}</value>
+    <value>Wiadomosc wyslana {0} do uzytkownika {1}</value>
   </data>
   <data name="NEW_CONNECT" xml:space="preserve">
-    <value>A new client is connected. ClientId =</value>
+    <value>Polaczono uzytkownika. ClientId =</value>
   </data>
   <data name="NOT_ENOUGH_PLACE" xml:space="preserve">
-    <value>Not enought places</value>
+    <value>Niewystarczajaca ilosc miejsc.</value>
   </data>
   <data name="NO_ENTRY" xml:space="preserve">
-    <value>No EntryPoint found</value>
+    <value>Nie znaleziono EntryPoint</value>
   </data>
   <data name="NO_FAMILY" xml:space="preserve">
-    <value>NoFamilly</value>
+    <value>Brak rodziny.</value>
   </data>
   <data name="NO_PREZ_MESSAGE" xml:space="preserve">
-    <value>No Presentation Message.</value>
+    <value>Brak opisu.</value>
   </data>
   <data name="PACKET_ARRIVED" xml:space="preserve">
     <value>Packet arrived, packet: {0}</value>
@@ -250,33 +250,33 @@
     <value>Failed to send packet {0} to client {1}, {2}.</value>
   </data>
   <data name="SHUTDOWN_MIN" xml:space="preserve">
-    <value>Server will be shut in {0} Minutes.</value>
+    <value>Server zostanie wylaczony za {0} Minut.</value>
   </data>
   <data name="SHUTDOWN_SEC" xml:space="preserve">
-    <value>Server will be shut in {0} Secondes.</value>
+    <value>Server zostanie wylaczony za {0} Sekund.</value>
   </data>
   <data name="STARTED" xml:space="preserve">
-    <value>Server is started successfully.</value>
+    <value>Server swiata uruchomiony poprawnie!</value>
   </data>
   <data name="SURE_TO_DELETE" xml:space="preserve">
-    <value>Are you sure to delete?</value>
+    <value>Czy chcesz usunac?</value>
   </data>
   <data name="SWORDMAN" xml:space="preserve">
-    <value>Swordman</value>
+    <value>Wojownik</value>
   </data>
   <data name="TOO_BIG" xml:space="preserve">
-    <value>Message is too big ({0} bytes). Max allowed length is {1} bytes.</value>
+    <value>Wiadomosc jest za duza ({0} bytes). maksymalna dlugosc {1} bytes.</value>
   </data>
   <data name="UPDATE_ACCOUNT_ERROR" xml:space="preserve">
-    <value>Error inserting or updating Account {0} , {1}</value>
+    <value>Blad przy zapisywaniu badz odswiezaniu konta {0} , {1}</value>
   </data>
   <data name="USER_NOT_CONNECTED" xml:space="preserve">
-    <value>User is not connected.</value>
+    <value>Uzytkownik nie polaczony.</value>
   </data>
   <data name="YOU_ASK_FOR_EXCHANGE" xml:space="preserve">
-    <value>You ask for an echange with</value>
+    <value>Prosisz sie o wymiane</value>
   </data>
   <data name="YOU_GET_OBJECT" xml:space="preserve">
-    <value>You get an object</value>
+    <value>Otrzymujesz obiekt</value>
   </data>
 </root>
