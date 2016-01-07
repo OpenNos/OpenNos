@@ -57,25 +57,22 @@ namespace OpenNos.GameObject
                     break;
 
                 case ReceiverType.AllExceptMe:
-                    foreach (ClientSession session in sessions)
+                    foreach (ClientSession session in sessions.Where(c=>c != client))
                     {
-                        if (session != client)
                             session.Client.SendPacket(message);
                     }
                     break;
 
                 case ReceiverType.AllOnMap:
-                    foreach (ClientSession session in sessions)
+                    foreach (ClientSession session in sessions.Where(s=> s.Character.MapId.Equals(client.Character.MapId)))
                     {
-                        if (session.Character != null && client.Character.MapId == session.Character.MapId)
                             session.Client.SendPacket(message);
                     }
 
                     break;
                 case ReceiverType.AllOnMapExceptMe:
-                    foreach (ClientSession session in sessions)
+                    foreach (ClientSession session in sessions.Where(s => s.Character.MapId.Equals(client.Character.MapId) && s.Character.CharacterId != client.Character.CharacterId))
                     {
-                        if (session.Character != null && session != client && client.Character.MapId == session.Character.MapId)
                             session.Client.SendPacket(message);
                     }
                     break;
@@ -83,15 +80,15 @@ namespace OpenNos.GameObject
                     client.Client.SendPacket(message);
                     break;
                 case ReceiverType.OnlySomeone:
-                    foreach (ClientSession session in sessions)
-                    {
-                        if (session.Character != null && (session.Character.Name == CharacterName || session.Character.CharacterId == CharacterId))
+                    ClientSession session2 = sessions.FirstOrDefault(s => s.Character.Name.Equals(CharacterName) || s.Character.CharacterId.Equals(CharacterId));
+                    
+                        if (session2 != null)
                         {
-                            session.Client.SendPacket(message);
+                            session2.Client.SendPacket(message);
                             return true;
                         }
 
-                    }
+                    
                     return false;
 
             }
@@ -99,78 +96,73 @@ namespace OpenNos.GameObject
         }
         public void RequiereBroadcastFromMap(short MapId, string Message)
         {
-            foreach (ClientSession session in sessions)
+            foreach (ClientSession session in sessions.Where(s => s.Character.MapId.Equals(MapId)))
             {
-                if (session.Character != null && session.Character.MapId == MapId)
                     Broadcast(session, String.Format(Message, session.Character.CharacterId), ReceiverType.AllOnMap);
             }
 
         }
         public void RequiereBroadcastFromAllMapUsers(ClientSession client, string methodName)
         {
-            foreach (ClientSession session in sessions)
+            foreach (ClientSession session in sessions.Where(s=>s.Character.Name != client.Character.Name))
             {
-
-                if (session.Character != null && session.Character.Name != client.Character.Name)
-                {
+                
                     Type t = session.Character.GetType();
                     MethodInfo method = t.GetMethod(methodName);
                     string result = (string)method.Invoke(session.Character, null);
                     client.Client.SendPacket(result);
-                }
+                
             }
         }
         public void RequiereBroadcastFromUser(ClientSession client, long CharacterId, string methodName)
         {
-            foreach (ClientSession session in sessions)
-            {
+            ClientSession session = sessions.FirstOrDefault(s=>s.Character.CharacterId.Equals(CharacterId));
 
-                if (session.Character != null && session.Character.CharacterId == CharacterId)
+                if (session != null)
                 {
                     Type t = session.Character.GetType();
                     MethodInfo method = t.GetMethod(methodName);
                     string result = (string)method.Invoke(session.Character, null);
                     client.Client.SendPacket(result);
                 }
-            }
+            
         }
         public void RequiereBroadcastFromUser(ClientSession client, string CharacterName, string methodName)
         {
-            foreach (ClientSession session in sessions)
-            {
+            ClientSession session = sessions.FirstOrDefault(s => s.Character.Name.Equals(CharacterName));
 
-                if (session.Character != null && session.Character.Name == CharacterName)
-                {
-                    Type t = session.Character.GetType();
+            if (session != null)
+            {
+                Type t = session.Character.GetType();
                     MethodInfo method = t.GetMethod(methodName);
                     string result = (string)method.Invoke(session.Character, null);
                     client.Client.SendPacket(result);
                 }
 
-            }
+            
         }
         public bool Kick(String CharacterName)
         {
-            foreach (ClientSession session in sessions)
-            {
-                if (session.Character != null && session.Character.Name == CharacterName)
+
+            ClientSession session = sessions.FirstOrDefault(s => s.Character.Name.Equals(CharacterName));
+
+            if (session != null)
                 {
                     session.Client.Disconnect();
                     return true;
                 }
-            }
+            
             return false;
         }
         public object RequiereProperties(long charId, string properties)
         {
-            foreach (ClientSession session in sessions)
-            {
+            ClientSession session = sessions.FirstOrDefault(s => s.Character.CharacterId.Equals(charId));
 
-                if (session.Character != null && session.Character.CharacterId == charId)
+            if (session != null)
                 {
                     return session.Character.GetType().GetProperties().Single(pi => pi.Name == properties).GetValue(session.Character, null);
                 }
-            }
+            
             return "";
         }
         public void BuyValidate(ClientSession Session, KeyValuePair<long, MapShop> shop,short slot, short amount)
@@ -181,10 +173,10 @@ namespace OpenNos.GameObject
             if (itemDelete.Amount <= 0)
                 Session.CurrentMap.ShopUserList[shop.Key].Items.Remove(itemDelete);
 
-            foreach (ClientSession session in sessions)
+            ClientSession session = sessions.FirstOrDefault(s => s.Character.CharacterId.Equals(shop.Value.OwnerId));
             {
 
-                if (session.Character != null && session.Character.CharacterId == shop.Value.OwnerId)
+                if (session != null)
                 {
                     session.Character.Gold += itemshop.Price* amount;
                     session.Client.SendPacket(session.Character.GenerateGold());
@@ -204,10 +196,10 @@ namespace OpenNos.GameObject
         }
         public void ExchangeValidate(ClientSession Session, long charId)
         {
-            foreach (ClientSession session in sessions)
+            ClientSession session = sessions.FirstOrDefault(s => s.Character.CharacterId.Equals(charId));
             {
-               
-                if (session.Character != null && session.Character.CharacterId == charId)
+
+                if (session != null)
                 {
                     foreach (InventoryItem item in session.Character.ExchangeInfo.ExchangeList)
                     {
