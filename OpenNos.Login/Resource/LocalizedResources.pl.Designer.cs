@@ -19,17 +19,29 @@ namespace OpenNos.Login.Resource {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
+#pragma warning disable CS0579 // Duplicate 'global::System.CodeDom.Compiler.GeneratedCodeAttribute' attribute
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+#pragma warning restore CS0579 // Duplicate 'global::System.CodeDom.Compiler.GeneratedCodeAttribute' attribute
+
+#pragma warning disable CS0579 // Duplicate 'global::System.Diagnostics.DebuggerNonUserCodeAttribute' attribute
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+#pragma warning restore CS0579 // Duplicate 'global::System.Diagnostics.DebuggerNonUserCodeAttribute' attribute
+
+#pragma warning disable CS0579 // Duplicate 'global::System.Runtime.CompilerServices.CompilerGeneratedAttribute' attribute
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
+#pragma warning restore CS0579 // Duplicate 'global::System.Runtime.CompilerServices.CompilerGeneratedAttribute' attribute
+#pragma warning disable CS0101 // The namespace 'OpenNos.Login.Resource' already contains a definition for 'LocalizedResources'
     internal class LocalizedResources {
+#pragma warning restore CS0101 // The namespace 'OpenNos.Login.Resource' already contains a definition for 'LocalizedResources'
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
+#pragma warning disable CS0111 // Type 'LocalizedResources' already defines a member called '.ctor' with the same parameter types
         internal LocalizedResources() {
+#pragma warning restore CS0111 // Type 'LocalizedResources' already defines a member called '.ctor' with the same parameter types
         }
         
         /// <summary>
