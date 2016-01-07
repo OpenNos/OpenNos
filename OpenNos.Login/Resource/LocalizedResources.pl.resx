@@ -124,10 +124,10 @@
     <value>Polaczenie zakonczone przez uzytkownika</value>
   </data>
   <data name="CLIENT_CLOSED" xml:space="preserve">
-    <value>Polaczenie zakonczone</value>
+    <value>Użytkownik rozlaczony</value>
   </data>
   <data name="CONFIG_LOADED" xml:space="preserve">
-    <value>Konfiguracja zaladowana</value>
+    <value>Konfiguracja zaladowana!</value>
   </data>
   <data name="CONNECTION" xml:space="preserve">
     <value>CONNECT {0} Connected -- session:{1}</value>
@@ -136,10 +136,10 @@
     <value>Baza danych zostala zaladowana!</value>
   </data>
   <data name="DISCONNECT" xml:space="preserve">
-    <value>Uzytkownik rozlaczyl sie! ClientId =</value>
+    <value>Rozlaczono użytkownika! ClientId =</value>
   </data>
   <data name="FORCED_DISCONNECT" xml:space="preserve">
-    <value>Rozlaczanie uzytkownika {0}, zbyt duzo polaczen.</value>
+    <value>Rozlaczanie użytkownika {0}, zbyt duzo polaczen.</value>
   </data>
   <data name="IDERROR" xml:space="preserve">
     <value>Zla nazwa uzytkownika badz haslo</value>
@@ -151,10 +151,10 @@
     <value>Wiadomosc wyslana.</value>
   </data>
   <data name="NEW_CONNECT" xml:space="preserve">
-    <value>Nowy uzytkownik polaczyl sie. ClientId =</value>
+    <value>Polaczono nowego użytkownika. ClientId =</value>
   </data>
   <data name="STARTED" xml:space="preserve">
-    <value>Server zostal uruchomiony poprawnie</value>
+    <value>Server zostal uruchomiony!</value>
   </data>
   <data name="TOO_BIG" xml:space="preserve">
     <value>Wiadomosc jest za duza ({0} bytes). maksymalna dlugosc {1} bytes.</value>
