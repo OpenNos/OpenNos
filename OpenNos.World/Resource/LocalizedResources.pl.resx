@@ -1,0 +1,282 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="ACCOUNT_ARRIVED" xml:space="preserve">
+    <value>Account with SessionId {0} has arrived.</value>
+  </data>
+  <data name="ADMINISTRATOR" xml:space="preserve">
+    <value>Administrator</value>
+  </data>
+  <data name="ADVENTURER" xml:space="preserve">
+    <value>Adventurer</value>
+  </data>
+  <data name="ALREADY_TAKEN" xml:space="preserve">
+    <value>This name is already taken!</value>
+  </data>
+  <data name="ARCHER" xml:space="preserve">
+    <value>Archer</value>
+  </data>
+  <data name="ASK_TO_DELETE" xml:space="preserve">
+    <value>Do you want to delete?</value>
+  </data>
+  <data name="BAD_PASSWORD" xml:space="preserve">
+    <value>Bad Password</value>
+  </data>
+  <data name="BN0" xml:space="preserve">
+    <value>read^the^rules</value>
+  </data>
+  <data name="BN1" xml:space="preserve">
+    <value>don't^give^id</value>
+  </data>
+  <data name="BN2" xml:space="preserve">
+    <value>need^a^gm?^go^on^website.</value>
+  </data>
+  <data name="BN3" xml:space="preserve">
+    <value />
+  </data>
+  <data name="BN4" xml:space="preserve">
+    <value />
+  </data>
+  <data name="BN5" xml:space="preserve">
+    <value />
+  </data>
+  <data name="BN6" xml:space="preserve">
+    <value />
+  </data>
+  <data name="BUY_ITEM" xml:space="preserve">
+    <value>{0}: buy &lt;{1} {2}: piece &gt;</value>
+  </data>
+  <data name="CANT_MOVE" xml:space="preserve">
+    <value>User can't move.</value>
+  </data>
+  <data name="CLIENT_ARRIVED" xml:space="preserve">
+    <value>Client arrived, SessionId: {0}</value>
+  </data>
+  <data name="CLIENT_CLOSE" xml:space="preserve">
+    <value>Connection closed by Client.</value>
+  </data>
+  <data name="CLIENT_CLOSED" xml:space="preserve">
+    <value>Connection closed by Client.</value>
+  </data>
+  <data name="CORRUPT_KEEPALIVE" xml:space="preserve">
+    <value>Corrupted Keepalive on client {0}.</value>
+  </data>
+  <data name="DATABASE_HAS_BEEN_INITIALISE" xml:space="preserve">
+    <value>Database has been initialized.</value>
+  </data>
+  <data name="DELETE_ACCOUNT_ERROR" xml:space="preserve">
+    <value>Error deleting Account with Id {0} , {1}</value>
+  </data>
+  <data name="DELETE_ERROR" xml:space="preserve">
+    <value>Error deleting Character with Slot {0} , {1}</value>
+  </data>
+  <data name="DISCONNECT" xml:space="preserve">
+    <value>A client is has been disconnected! CliendId =</value>
+  </data>
+  <data name="FORCED_DISCONNECT" xml:space="preserve">
+    <value>Forced Disconnecting of client {0}, too much connections.</value>
+  </data>
+  <data name="GET_PROTECTION_POWER_1" xml:space="preserve">
+    <value>You get the protection power of angel.</value>
+  </data>
+  <data name="GET_PROTECTION_POWER_2" xml:space="preserve">
+    <value>You get the protection power of daemon.</value>
+  </data>
+  <data name="HANDLER_NOT_FOUND" xml:space="preserve">
+    <value>Could not found Handler implementation for Packet with Header {0}</value>
+  </data>
+  <data name="INSERT_ERROR" xml:space="preserve">
+    <value>Error inserting or updating character {0} , {1}</value>
+  </data>
+  <data name="IN_WAITING_FOR" xml:space="preserve">
+    <value>In Waiting for {0}</value>
+  </data>
+  <data name="ITEM_LOADED" xml:space="preserve">
+    <value>{0} Items Loaded !</value>
+  </data>
+  <data name="JOB_CHANGED" xml:space="preserve">
+    <value>Job has been changed.</value>
+  </data>
+  <data name="LEVEL_CHANGED" xml:space="preserve">
+    <value>Level has been increased!</value>
+  </data>
+  <data name="MAGICIAN" xml:space="preserve">
+    <value>Magician</value>
+  </data>
+  <data name="MAP_LOADED" xml:space="preserve">
+    <value>{0} Maps Loaded !</value>
+  </data>
+  <data name="MESSAGE_RECEIVED" xml:space="preserve">
+    <value>Message received {0} on client {1}</value>
+  </data>
+  <data name="MSG_SENT" xml:space="preserve">
+    <value>Message sent {0} to client {1}</value>
+  </data>
+  <data name="NEW_CONNECT" xml:space="preserve">
+    <value>A new client is connected. ClientId =</value>
+  </data>
+  <data name="NOT_ENOUGH_PLACE" xml:space="preserve">
+    <value>Not enought places</value>
+  </data>
+  <data name="NO_ENTRY" xml:space="preserve">
+    <value>No EntryPoint found</value>
+  </data>
+  <data name="NO_FAMILY" xml:space="preserve">
+    <value>NoFamilly</value>
+  </data>
+  <data name="NO_PREZ_MESSAGE" xml:space="preserve">
+    <value>No Presentation Message.</value>
+  </data>
+  <data name="PACKET_ARRIVED" xml:space="preserve">
+    <value>Packet arrived, packet: {0}</value>
+  </data>
+  <data name="PACKET_FAILURE" xml:space="preserve">
+    <value>Failed to send packet {0} to client {1}, {2}.</value>
+  </data>
+  <data name="SHUTDOWN_MIN" xml:space="preserve">
+    <value>Server will be shut in {0} Minutes.</value>
+  </data>
+  <data name="SHUTDOWN_SEC" xml:space="preserve">
+    <value>Server will be shut in {0} Secondes.</value>
+  </data>
+  <data name="STARTED" xml:space="preserve">
+    <value>Server is started successfully.</value>
+  </data>
+  <data name="SURE_TO_DELETE" xml:space="preserve">
+    <value>Are you sure to delete?</value>
+  </data>
+  <data name="SWORDMAN" xml:space="preserve">
+    <value>Swordman</value>
+  </data>
+  <data name="TOO_BIG" xml:space="preserve">
+    <value>Message is too big ({0} bytes). Max allowed length is {1} bytes.</value>
+  </data>
+  <data name="UPDATE_ACCOUNT_ERROR" xml:space="preserve">
+    <value>Error inserting or updating Account {0} , {1}</value>
+  </data>
+  <data name="USER_NOT_CONNECTED" xml:space="preserve">
+    <value>User is not connected.</value>
+  </data>
+  <data name="YOU_ASK_FOR_EXCHANGE" xml:space="preserve">
+    <value>You ask for an echange with</value>
+  </data>
+  <data name="YOU_GET_OBJECT" xml:space="preserve">
+    <value>You get an object</value>
+  </data>
+</root>

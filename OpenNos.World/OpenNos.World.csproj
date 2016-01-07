@@ -116,6 +116,10 @@
       <DependentUpon>App.config</DependentUpon>
       <IsTransformFile>True</IsTransformFile>
     </None>
+    <None Include="App.PL.config">
+      <DependentUpon>App.config</DependentUpon>
+      <IsTransformFile>True</IsTransformFile>
+    </None>
     <None Include="App.FR.config">
       <DependentUpon>App.config</DependentUpon>
       <IsTransformFile>True</IsTransformFile>
@@ -168,6 +172,7 @@
   <ItemGroup>
     <EmbeddedResource Include="Resource\LocalizedResources.de.resx" />
     <EmbeddedResource Include="Resource\LocalizedResources.fr.resx" />
+    <EmbeddedResource Include="Resource\LocalizedResources.pl.resx" />
     <EmbeddedResource Include="Resource\LocalizedResources.resx" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
