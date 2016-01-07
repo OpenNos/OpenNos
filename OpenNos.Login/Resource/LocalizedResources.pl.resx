@@ -118,45 +118,45 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ALREADY_CONNECTED" xml:space="preserve">
-    <value>Konto jest aktualnie zajete</value>
+    <value>Account is already connected.</value>
   </data>
   <data name="CLIENT_CLOSE" xml:space="preserve">
-    <value>Polaczenie zakonczone przez uzytkownika</value>
+    <value>Connection closed by Client.</value>
   </data>
   <data name="CLIENT_CLOSED" xml:space="preserve">
-    <value>Polaczenie zakonczone</value>
+    <value>Connection closed.</value>
   </data>
   <data name="CONFIG_LOADED" xml:space="preserve">
-    <value>Konfiguracja zaladowana</value>
+    <value>Config loaded !</value>
   </data>
   <data name="CONNECTION" xml:space="preserve">
     <value>CONNECT {0} Connected -- session:{1}</value>
   </data>
   <data name="DATABASE_HAS_BEEN_INITIALISE" xml:space="preserve">
-    <value>Baza danych zostala zaladowana!</value>
+    <value>Database has been initialized!</value>
   </data>
   <data name="DISCONNECT" xml:space="preserve">
-    <value>Uzytkownik rozlaczyl sie! ClientId =</value>
+    <value>A client is has been disconnected! CliendId =</value>
   </data>
   <data name="FORCED_DISCONNECT" xml:space="preserve">
-    <value>Rozlaczanie uzytkownika {0}, zbyt duzo polaczen.</value>
+    <value>Forced Disconnecting of client {0}, too much connections.</value>
   </data>
   <data name="IDERROR" xml:space="preserve">
-    <value>Zla nazwa uzytkownika badz haslo</value>
+    <value>Wrong Id or Password!</value>
   </data>
   <data name="MESSAGE_RECEIVED" xml:space="preserve">
-    <value>Wiadomosc otrzymana {0} uzytkownik {1}</value>
+    <value>Message received {0} on client {1}</value>
   </data>
   <data name="MSG_SENT" xml:space="preserve">
-    <value>Wiadomosc wyslana</value>
+    <value>Message sent to client </value>
   </data>
   <data name="NEW_CONNECT" xml:space="preserve">
-    <value>Nowy uzytkownik polaczyl sie. ClientId =</value>
+    <value>A new client is connected. ClientId =</value>
   </data>
   <data name="STARTED" xml:space="preserve">
-    <value>Server zostal uruchomiony poprawnie</value>
+    <value>Server is started successfully.</value>
   </data>
   <data name="TOO_BIG" xml:space="preserve">
-    <value>Wiadomosc jest za duza ({0} bytes). maksymalna dlugosc {1} bytes.</value>
+    <value>Message is too big ({0} bytes). Max allowed length is {1} bytes.</value>
   </data>
 </root>
