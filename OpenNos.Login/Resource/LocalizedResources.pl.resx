@@ -117,43 +117,46 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="ALREADY_CONNECTED" xml:space="preserve">
+    <value>Konto jest aktualnie zajete</value>
+  </data>
   <data name="CLIENT_CLOSE" xml:space="preserve">
-    <value>Verbindung wurde vom Client getrennt.</value>
+    <value>Polaczenie zakonczone przez uzytkownika</value>
   </data>
   <data name="CLIENT_CLOSED" xml:space="preserve">
-    <value>Verbindung zum Client getrennt.</value>
+    <value>Użytkownik rozlaczony</value>
   </data>
   <data name="CONFIG_LOADED" xml:space="preserve">
-    <value>Konfiguration geladen!</value>
+    <value>Konfiguracja zaladowana!</value>
   </data>
   <data name="CONNECTION" xml:space="preserve">
-    <value>CONNECT {0} Verbunden -- Sessions:{1}</value>
+    <value>CONNECT {0} Connected -- session:{1}</value>
   </data>
   <data name="DATABASE_HAS_BEEN_INITIALISE" xml:space="preserve">
-    <value>Datenbank wurde initialisiert!</value>
+    <value>Baza danych zostala zaladowana!</value>
   </data>
   <data name="DISCONNECT" xml:space="preserve">
-    <value>Die Verbindung zu einem Client wurde getrennt! ClientId =</value>
+    <value>Rozlaczono użytkownika! ClientId =</value>
   </data>
   <data name="FORCED_DISCONNECT" xml:space="preserve">
-    <value>Die Verbindung zum Client {0} wurde getrennt, zu viele Verbindungen.</value>
+    <value>Rozlaczanie użytkownika {0}, zbyt duzo polaczen.</value>
   </data>
   <data name="IDERROR" xml:space="preserve">
-    <value>ID oder Passwort ist falsch!</value>
+    <value>Zla nazwa uzytkownika badz haslo</value>
   </data>
   <data name="MESSAGE_RECEIVED" xml:space="preserve">
-    <value>Nachricht {0} von Client {1} empfangen</value>
+    <value>Wiadomosc otrzymana {0} uzytkownik {1}</value>
   </data>
   <data name="MSG_SENT" xml:space="preserve">
-    <value>Nachricht zum Client gesendet</value>
+    <value>Wiadomosc wyslana.</value>
   </data>
   <data name="NEW_CONNECT" xml:space="preserve">
-    <value>Ein neuer Client hat sich verbunden. ClientId =</value>
+    <value>Polaczono nowego użytkownika. ClientId =</value>
   </data>
   <data name="STARTED" xml:space="preserve">
-    <value>Server erfolgreich gestartet.</value>
+    <value>Server zostal uruchomiony!</value>
   </data>
   <data name="TOO_BIG" xml:space="preserve">
-    <value>Nachricht ist zu groß ({0} bytes). Die maximale Länge beträgt{1} bytes.</value>
+    <value>Wiadomosc jest za duza ({0} bytes). maksymalna dlugosc {1} bytes.</value>
   </data>
 </root>

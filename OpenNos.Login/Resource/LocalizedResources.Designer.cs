@@ -115,7 +115,7 @@ namespace OpenNos.Login.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A client is has been disconnected! CliendId =.
+        ///   Looks up a localized string similar to A client is has been disconnected! ClientId =.
         /// </summary>
         internal static string DISCONNECT {
             get {
