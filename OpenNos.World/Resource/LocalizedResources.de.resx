@@ -154,7 +154,7 @@
     <value>Fehler beim Löschen des Charakters auf Slot {0} , {1}</value>
   </data>
   <data name="DISCONNECT" xml:space="preserve">
-    <value>Ein Client hat die Verbindung getrennt! CliendId =</value>
+    <value>Ein Client hat die Verbindung getrennt! ClientId =</value>
   </data>
   <data name="FORCED_DISCONNECT" xml:space="preserve">
     <value>Die Verbindung zum Client {0} wurde getrennt, zu viele Verbindungen.</value>
