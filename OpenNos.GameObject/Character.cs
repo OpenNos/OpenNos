@@ -564,7 +564,7 @@ namespace OpenNos.GameObject
                     }
                     else if (iteminfo.EquipmentSlot == (short)EquipmentType.MainWeapon)
                     {
-                        WeaponRare =inv.InventoryItem.Rare;
+                        WeaponRare = inv.InventoryItem.Rare;
                         WeaponUpgrade = inv.InventoryItem.Upgrade;
                     }
                     eqlist += String.Format(" {0}.{1}.{2}.{3}.{4}", i, iteminfo.VNum, inv.InventoryItem.Rare, inv.InventoryItem.Upgrade, 0);
@@ -576,6 +576,7 @@ namespace OpenNos.GameObject
         public string GenerateStatChar()
         {
             //TODO sc packet
+            //string eqstats = String.Empty;
             return String.Empty;
         }
 
