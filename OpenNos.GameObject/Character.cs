@@ -542,6 +542,37 @@ namespace OpenNos.GameObject
             return String.Format("msg {0} {1}", v, message);
         }
 
+        public string GenerateEquipment()
+        {
+            //equip 86 0 0.4903.6.8.0 2.340.0.0.0 3.4931.0.5.0 4.4845.3.5.0 5.4912.7.9.0 6.4848.1.0.0 7.4849.3.0.0 8.4850.2.0.0 9.227.0.0.0 10.281.0.0.0 11.347.0.0.0 13.4150.0.0.0 14.4076.0.0.0
+            string eqlist = String.Empty;
+            short WeaponRare = 0;
+            short WeaponUpgrade = 0;
+            short ArmorRare = 0;
+            short ArmorUpgrade = 0;
+            
+            for (short i=0;i<15;i++)
+            {
+                Inventory inv = EquipmentList.LoadBySlotAndType( i, (short)InventoryType.Equipment);
+                if (inv !=null)
+                {
+                    Item iteminfo = ServerManager.GetItem(inv.InventoryItem.ItemVNum);
+                    if (iteminfo.EquipmentSlot == (short)EquipmentType.Armor)
+                    {
+                        ArmorRare = inv.InventoryItem.Rare;
+                        ArmorUpgrade = inv.InventoryItem.Upgrade;
+                    }
+                    else if (iteminfo.EquipmentSlot == (short)EquipmentType.MainWeapon)
+                    {
+                        WeaponRare =inv.InventoryItem.Rare;
+                        WeaponUpgrade = inv.InventoryItem.Upgrade;
+                    }
+                    eqlist += String.Format(" {0}.{1}.{2}.{3}.{4}", i, iteminfo.VNum, inv.InventoryItem.Rare, inv.InventoryItem.Upgrade, 0);
+                }
+            }
+            return String.Format("equip {0}{1} {2}{3}{4}", WeaponUpgrade, WeaponRare, ArmorUpgrade, ArmorRare,eqlist);
+        }
+
         public string GenerateSpk(object message, int v)
         {
             return String.Format("spk 1 {0} {1} {2} {3}", CharacterId, v, Name, message);

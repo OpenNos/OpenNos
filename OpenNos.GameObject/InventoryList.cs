@@ -194,8 +194,12 @@ namespace OpenNos.GameObject
         public Inventory CreateItem(InventoryItem newItem, Character character)
         {
             short Slot = -1;
-            IEnumerable<InventoryItem> slotfree = character.LoadBySlotAllowed(newItem.ItemVNum, newItem.Amount);
-            Inventory inv = getFirstSlot(slotfree);
+            IEnumerable<InventoryItem> slotfree = null;
+            Inventory inv = null;
+            if (ServerManager.GetItem(newItem.ItemVNum).Type != 0) {  
+            slotfree = character.LoadBySlotAllowed(newItem.ItemVNum, newItem.Amount);
+             inv = getFirstSlot(slotfree);
+            }
             bool modified = false;
             Inventory newInventory = null;
             if (inv != null)

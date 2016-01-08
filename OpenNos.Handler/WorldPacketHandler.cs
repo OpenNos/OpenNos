@@ -413,6 +413,56 @@ namespace OpenNos.Handler
 
 
         }
+        [Packet("wear")]
+        public void Wear(string packet)
+        {
+            string[] packetsplit = packet.Split(' ');
+            if (packetsplit.Length > 3)
+            {
+                short type = 0;
+                short slot = 0;
+                short.TryParse(packetsplit[2], out slot);
+                short.TryParse(packetsplit[3], out type);
+                Item iteminfo;
+                
+                Inventory inventory = Session.Character.InventoryList.LoadBySlotAndType(slot, type);
+ 
+                if (inventory != null)
+                {
+                    iteminfo= ServerManager.GetItem(inventory.InventoryItem.ItemVNum);
+                    Inventory equip = Session.Character.EquipmentList.LoadBySlotAndType(iteminfo.EquipmentSlot, (short)InventoryType.Equipment);
+                    if(equip == null)
+                    {
+                        inventory.Type = (short)InventoryType.Equipment;
+                        inventory.Slot = iteminfo.EquipmentSlot;
+
+                        Session.Character.EquipmentList.InsertOrUpdate(ref inventory);
+                        Session.Client.SendPacket(Session.Character.GenerateEquipment());
+                        DeleteItem(type, slot);
+                        //generateeq
+                        //generatesc
+                    }
+                    else
+                    {
+                        inventory.Type = (short)InventoryType.Equipment;
+                        inventory.Slot = iteminfo.EquipmentSlot;
+
+                        equip.Slot = slot;
+                        equip.Type = type;
+
+                        DeleteItem(type, slot);
+                        Session.Character.EquipmentList.DeleteFromSlotAndType(slot,type);
+
+                        Session.Character.InventoryList.InsertOrUpdate(ref equip);
+                        Session.Character.EquipmentList.InsertOrUpdate(ref inventory);
+                        Session.Client.SendPacket(Session.Character.GenerateEquipment());
+                        Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(equip.InventoryItem.ItemVNum, equip.InventoryItem.Amount, type, equip.Slot, equip.InventoryItem.Rare, equip.InventoryItem.Color, equip.InventoryItem.Upgrade));
+                        //generateeq
+                        //generatesc
+                    }
+                }
+            }
+        }
         [Packet("n_run")]
         public void npcRunFunction(string packet)
         {
