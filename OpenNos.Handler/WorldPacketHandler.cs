@@ -413,6 +413,35 @@ namespace OpenNos.Handler
 
 
         }
+        [Packet("remove")]
+        public void unwear(string packet)
+        {
+            string[] packetsplit = packet.Split(' ');
+            if (packetsplit.Length > 3)
+            {
+                short type = (short)InventoryType.Equipment;
+                short slot = 0;
+                short.TryParse(packetsplit[2], out slot);
+
+                Inventory inventory = Session.Character.EquipmentList.LoadBySlotAndType(slot, type);
+
+                if (inventory != null)
+                {
+                  Inventory inv = Session.Character.InventoryList.CreateItem(inventory.InventoryItem, Session.Character);
+                    if (inv != null)
+                    {
+                        short Slot = inv.Slot;
+                        if (Slot != -1)
+                            Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(inventory.InventoryItem.ItemVNum, inv.InventoryItem.Amount, inv.Type, Slot, inventory.InventoryItem.Rare, inventory.InventoryItem.Color, inventory.InventoryItem.Upgrade));
+                        Session.Character.EquipmentList.DeleteFromSlotAndType(slot, type);
+                        Session.Client.SendPacket(Session.Character.GenerateEquipment());
+                        Session.Client.SendPacket(Session.Character.GenerateStatChar());
+                        ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEq(), ReceiverType.AllOnMapExceptMe);
+
+                    }
+                }
+            }
+        }
         [Packet("wear")]
         public void Wear(string packet)
         {
@@ -439,8 +468,10 @@ namespace OpenNos.Handler
                         Session.Character.EquipmentList.InsertOrUpdate(ref inventory);
                         Session.Client.SendPacket(Session.Character.GenerateEquipment());
                         DeleteItem(type, slot);
-                        //generateeq
-                        //generatesc
+
+                        Session.Client.SendPacket(Session.Character.GenerateStatChar());
+                        ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEq(), ReceiverType.AllOnMapExceptMe);
+
                     }
                     else
                     {
@@ -457,8 +488,11 @@ namespace OpenNos.Handler
                         Session.Character.EquipmentList.InsertOrUpdate(ref inventory);
                         Session.Client.SendPacket(Session.Character.GenerateEquipment());
                         Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(equip.InventoryItem.ItemVNum, equip.InventoryItem.Amount, type, equip.Slot, equip.InventoryItem.Rare, equip.InventoryItem.Color, equip.InventoryItem.Upgrade));
-                        //generateeq
-                        //generatesc
+                        
+                        Session.Client.SendPacket(Session.Character.GenerateStatChar());
+                        ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEq(), ReceiverType.AllOnMapExceptMe);
+                        
+                        
                     }
                 }
             }
