@@ -26,18 +26,17 @@ namespace OpenNos.Core
         {
             for (int i = 0; i < data.Length; i++)
                 data[i] = (byte)(data[i] - 0xF ^ 0xC3);
-            return Encoding.UTF8.GetString(data).Substring(0, data.Length);
+            return Encoding.ASCII.GetString(data).Substring(0, data.Length);
         }
 
         public override byte[] Encrypt(string data)
         {
             data += " ";
-            char[] tmp = new char[(data.Length + 1)];
-            tmp = Encoding.UTF8.GetChars(Encoding.UTF8.GetBytes(data));
-            for (int i = 0; i < data.Length; i++)
-                tmp[i] = Convert.ToChar(data[i] + 15);
-            tmp[tmp.Length - 1] = (char)25;
-            return Encoding.UTF8.GetBytes(new string(tmp));
+            byte[] tmp = new byte[data.Length + 1];
+            tmp = Encoding.ASCII.GetBytes(data);
+            for (int i = 0; i < data.Length; i++) tmp[i] = Convert.ToByte(data[i] + 15);
+            tmp[tmp.Length - 1] = 25;
+            return tmp;
         }
 
         public static string GetPassword(string passcrypt)
