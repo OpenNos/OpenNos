@@ -178,7 +178,7 @@
     <Property Name="Dodge" Type="longtext" Nullable="false" />
     <Property Name="Hp" Type="smallint" Nullable="false" />
     <Property Name="Mp" Type="smallint" Nullable="false" />
-    <Property Name="Level" Type="smallint" Nullable="false" />
+    <Property Name="LevelJobMinimum" Type="smallint" Nullable="false" />
     <Property Name="MaxCellon" Type="smallint" Nullable="false" />
     <Property Name="MaxCellonLvl" Type="smallint" Nullable="false" />
     <Property Name="FireResistance" Type="smallint" Nullable="false" />
@@ -696,7 +696,7 @@
           <Property Name="Dodge" Type="String" Nullable="false" />
           <Property Name="Hp" Type="Int16" Nullable="false" />
           <Property Name="Mp" Type="Int16" Nullable="false" />
-          <Property Name="Level" Type="Int16" Nullable="false" />
+          <Property Name="LevelJobMinimum" Type="Int16" Nullable="false" />
           <Property Name="MaxCellon" Type="Int16" Nullable="false" />
           <Property Name="MaxCellonLvl" Type="Int16" Nullable="false" />
           <Property Name="FireResistance" Type="Int16" Nullable="false" />
@@ -1009,7 +1009,7 @@
           <ScalarProperty Name="Dodge" ColumnName="Dodge" />
           <ScalarProperty Name="Hp" ColumnName="Hp" />
           <ScalarProperty Name="Mp" ColumnName="Mp" />
-          <ScalarProperty Name="Level" ColumnName="Level" />
+          <ScalarProperty Name="LevelJobMinimum" ColumnName="LevelJobMinimum" />
           <ScalarProperty Name="MaxCellon" ColumnName="MaxCellon" />
           <ScalarProperty Name="MaxCellonLvl" ColumnName="MaxCellonLvl" />
           <ScalarProperty Name="FireResistance" ColumnName="FireResistance" />

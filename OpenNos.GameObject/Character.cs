@@ -129,6 +129,17 @@ namespace OpenNos.GameObject
             }
         }
 
+        public bool UseSp
+        {
+            get;
+            set;
+        }
+
+        public bool UseVehicule
+        {
+            get;
+            set;
+        }
         public int Speed
         {
             get { return _speed; }
@@ -478,7 +489,6 @@ namespace OpenNos.GameObject
 
         public string GenerateStat()
         {
-            //TODO add max HP MP
             return String.Format("stat {0} {1} {2} {3} 0 1024", Hp, HPLoad(), Mp, MPLoad());
         }
 
@@ -488,7 +498,15 @@ namespace OpenNos.GameObject
         }
         public string GenerateReqInfo()
         {
-            return String.Format("tc_info {0} {1} {2} {3} {4} {9} 0 {8} {5} {6} 0 0 1 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 {7}", Level, Name, 0, 0, Class, GetReputIco(), GetDigniteIco(), Language.Instance.GetMessageFromKey("NO_PREZ_MESSAGE"), Language.Instance.GetMessageFromKey("NO_FAMILY"), Gender);
+            Inventory Fairy = EquipmentList.LoadBySlotAndType((short)EquipmentType.Fairy, (short)InventoryType.Equipment);
+            Inventory Armor = EquipmentList.LoadBySlotAndType((short)EquipmentType.Armor, (short)InventoryType.Equipment);
+            Inventory Weapon2 = EquipmentList.LoadBySlotAndType((short)EquipmentType.SecondaryWeapon,(short) InventoryType.Equipment);
+           Inventory Weapon = EquipmentList.LoadBySlotAndType((short)EquipmentType.MainWeapon, (short)InventoryType.Equipment);
+            return String.Format("tc_info {0} {1} {2} {3} {4} {9} 0 {8} {5} {6} {10} {11} {12} {13} {14} {15} 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 {7}", Level, Name, Fairy != null ? ServerManager.GetItem(Fairy.InventoryItem.ItemVNum).Element : 0, Fairy !=null? Fairy.InventoryItem.ElementRate:0, Class, GetReputIco(), GetDigniteIco(),
+                Language.Instance.GetMessageFromKey("NO_PREZ_MESSAGE"), Language.Instance.GetMessageFromKey("NO_FAMILY"),
+                Gender, Weapon != null ? 1 : 0, Weapon != null ? Weapon.InventoryItem.Rare : 0, Weapon != null ? Weapon.InventoryItem.Upgrade : 0,
+                Weapon2 != null ? 1 : 0, Weapon2 != null ? Weapon2.InventoryItem.Rare : 0, Weapon2 != null ? Weapon2.InventoryItem.Upgrade : 0,
+                Armor != null ? 1 : 0, Armor != null ? Armor.InventoryItem.Rare : 0, Armor != null ? Armor.InventoryItem.Upgrade : 0);
         }
 
         public string GenerateCMap()
@@ -524,7 +542,12 @@ namespace OpenNos.GameObject
 
         public string GenerateIn()
         {
-            return String.Format("in 1 {0} - {1} {2} {3} {4} {5} {6} {7} {8} {9} {17} {10} {11} {12} -1 0 0 0 0 0 0 {18} -1 - {13} {16} 0 0 0 {14} 0 {15} 0 10", Name, CharacterId, MapX, MapY, Direction, (Authority == 2 ? 2 : 0), Gender, HairStyle, HairColor, Class, (int)((Hp / HPLoad()) * 100), (int)((Mp / MPLoad()) * 100), _rested, (GetDigniteIco() == 1) ? GetReputIco() : -GetDigniteIco(), ArenaWinner, 0, _invisible, generateEqListForPacket(),generateEqRareUpgradeForPacket());
+            int Color = HairColor;
+            Inventory head = EquipmentList.LoadBySlotAndType((short)EquipmentType.Hat, (short)InventoryType.Equipment);
+            if (head != null && ServerManager.GetItem(head.InventoryItem.ItemVNum).Colored)
+                Color = head.InventoryItem.Color;
+
+            return String.Format("in 1 {0} - {1} {2} {3} {4} {5} {6} {7} {8} {9} {17} {10} {11} {12} -1 0 0 0 0 0 {19} {18} -1 - {13} {16} {20} 0 {21} {14} 0 {15} 0 10", Name, CharacterId, MapX, MapY, Direction, (Authority == 2 ? 2 : 0), Gender, HairStyle, Color, Class, (int)((Hp / HPLoad()) * 100), (int)((Mp / MPLoad()) * 100), _rested, (GetDigniteIco() == 1) ? GetReputIco() : -GetDigniteIco(), 0,ArenaWinner, _invisible, generateEqListForPacket(),generateEqRareUpgradeForPacket(), (UseSp == true? Morph : 0), (UseSp == true  ? MorphUpgrade : 0), (UseSp == true? MorphUpgrade2 : 0));
         }
 
         public string GenerateRest()
@@ -567,7 +590,7 @@ namespace OpenNos.GameObject
                         WeaponRare =inv.InventoryItem.Rare;
                         WeaponUpgrade = inv.InventoryItem.Upgrade;
                     }
-                    eqlist += String.Format(" {0}.{1}.{2}.{3}.{4}", i, iteminfo.VNum, inv.InventoryItem.Rare, inv.InventoryItem.Upgrade, 0);
+                    eqlist += String.Format(" {0}.{1}.{2}.{3}.{4}", i, iteminfo.VNum, inv.InventoryItem.Rare, iteminfo.Colored? inv.InventoryItem.Color : inv.InventoryItem.Upgrade, 0);
                 }
             }
             return String.Format("equip {0}{1} {2}{3}{4}", WeaponUpgrade, WeaponRare, ArmorUpgrade, ArmorRare,eqlist);
@@ -640,9 +663,12 @@ namespace OpenNos.GameObject
            
         public string GenerateEq()
         {
-            
+            int color = HairColor;
+            Inventory head = EquipmentList.LoadBySlotAndType((short)EquipmentType.Hat, (short)InventoryType.Equipment);
+            if (head != null && ServerManager.GetItem(head.InventoryItem.ItemVNum).Colored)
+                color = head.InventoryItem.Color;
 
-            return String.Format("eq {0} {1} {2} {3} {4} {5} {6} {7}", CharacterId, (Authority == 2 ? 2 : 0), Gender, HairStyle, HairColor, Class, generateEqListForPacket(), generateEqRareUpgradeForPacket());
+            return String.Format("eq {0} {1} {2} {3} {4} {5} {6} {7}", CharacterId, (Authority == 2 ? 2 : 0), Gender, HairStyle, color, Class, generateEqListForPacket(), generateEqRareUpgradeForPacket());
         }
 
         public string GenerateFaction()

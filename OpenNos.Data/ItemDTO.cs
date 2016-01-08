@@ -35,7 +35,7 @@ namespace OpenNos.Data
         public short DistanceDefence { get; set; }
         public short MagicDefence { get; set; }
         public string Dodge { get; set; }
-        public short Level { get; set; }
+        public short LevelJobMinimum { get; set; }
         public short Hp { get; set; }
         public short Mp { get; set; }
         public short MaxCellon { get; set; }

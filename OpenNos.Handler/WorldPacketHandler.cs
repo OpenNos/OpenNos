@@ -243,7 +243,7 @@ namespace OpenNos.Handler
                 //inform everyone about connected character
                 ServiceFactory.Instance.CommunicationService.ConnectCharacter(Session.Character.Name, Session.Account.Name);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Logger.Log.Error(ex);
             }
@@ -427,16 +427,18 @@ namespace OpenNos.Handler
 
                 if (inventory != null)
                 {
-                  Inventory inv = Session.Character.InventoryList.CreateItem(inventory.InventoryItem, Session.Character);
+                    Inventory inv = Session.Character.InventoryList.CreateItem(inventory.InventoryItem, Session.Character);
                     if (inv != null)
                     {
                         short Slot = inv.Slot;
                         if (Slot != -1)
                             Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(inventory.InventoryItem.ItemVNum, inv.InventoryItem.Amount, inv.Type, Slot, inventory.InventoryItem.Rare, inventory.InventoryItem.Color, inventory.InventoryItem.Upgrade));
                         Session.Character.EquipmentList.DeleteFromSlotAndType(slot, type);
-                        Session.Client.SendPacket(Session.Character.GenerateEquipment());
+
                         Session.Client.SendPacket(Session.Character.GenerateStatChar());
-                        ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEq(), ReceiverType.AllOnMapExceptMe);
+                        Thread.Sleep(100);
+                        ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEq(), ReceiverType.AllOnMap);
+                        Session.Client.SendPacket(Session.Character.GenerateEquipment());
 
                     }
                 }
@@ -453,46 +455,50 @@ namespace OpenNos.Handler
                 short.TryParse(packetsplit[2], out slot);
                 short.TryParse(packetsplit[3], out type);
                 Item iteminfo;
-                
+
                 Inventory inventory = Session.Character.InventoryList.LoadBySlotAndType(slot, type);
- 
+
                 if (inventory != null)
                 {
-                    iteminfo= ServerManager.GetItem(inventory.InventoryItem.ItemVNum);
-                    Inventory equip = Session.Character.EquipmentList.LoadBySlotAndType(iteminfo.EquipmentSlot, (short)InventoryType.Equipment);
-                    if(equip == null)
+                    iteminfo = ServerManager.GetItem(inventory.InventoryItem.ItemVNum);
+                    if (iteminfo.LevelMinimum <= Session.Character.Level && ((iteminfo.Classe >> Session.Character.Class) & 1) == 1)
                     {
-                        inventory.Type = (short)InventoryType.Equipment;
-                        inventory.Slot = iteminfo.EquipmentSlot;
+                        Inventory equip = Session.Character.EquipmentList.LoadBySlotAndType(iteminfo.EquipmentSlot, (short)InventoryType.Equipment);
+                        if (equip == null)
+                        {
+                            inventory.Type = (short)InventoryType.Equipment;
+                            inventory.Slot = iteminfo.EquipmentSlot;
 
-                        Session.Character.EquipmentList.InsertOrUpdate(ref inventory);
-                        Session.Client.SendPacket(Session.Character.GenerateEquipment());
-                        DeleteItem(type, slot);
+                            Session.Character.EquipmentList.InsertOrUpdate(ref inventory);
+                             DeleteItem(type, slot);
 
-                        Session.Client.SendPacket(Session.Character.GenerateStatChar());
-                        ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEq(), ReceiverType.AllOnMapExceptMe);
+                            Session.Client.SendPacket(Session.Character.GenerateStatChar());
+                            Thread.Sleep(100);
+                            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEq(), ReceiverType.AllOnMap);
+                            Session.Client.SendPacket(Session.Character.GenerateEquipment());
 
-                    }
-                    else
-                    {
-                        inventory.Type = (short)InventoryType.Equipment;
-                        inventory.Slot = iteminfo.EquipmentSlot;
+                        }
+                        else
+                        {
+                            inventory.Type = (short)InventoryType.Equipment;
+                            inventory.Slot = iteminfo.EquipmentSlot;
 
-                        equip.Slot = slot;
-                        equip.Type = type;
+                            equip.Slot = slot;
+                            equip.Type = type;
 
-                        DeleteItem(type, slot);
-                        Session.Character.EquipmentList.DeleteFromSlotAndType(slot,type);
+                            DeleteItem(type, slot);
+                            Session.Character.EquipmentList.DeleteFromSlotAndType(slot, type);
 
-                        Session.Character.InventoryList.InsertOrUpdate(ref equip);
-                        Session.Character.EquipmentList.InsertOrUpdate(ref inventory);
-                        Session.Client.SendPacket(Session.Character.GenerateEquipment());
-                        Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(equip.InventoryItem.ItemVNum, equip.InventoryItem.Amount, type, equip.Slot, equip.InventoryItem.Rare, equip.InventoryItem.Color, equip.InventoryItem.Upgrade));
-                        
-                        Session.Client.SendPacket(Session.Character.GenerateStatChar());
-                        ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEq(), ReceiverType.AllOnMapExceptMe);
-                        
-                        
+                            Session.Character.InventoryList.InsertOrUpdate(ref equip);
+                            Session.Character.EquipmentList.InsertOrUpdate(ref inventory);
+                            Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(equip.InventoryItem.ItemVNum, equip.InventoryItem.Amount, type, equip.Slot, equip.InventoryItem.Rare, equip.InventoryItem.Color, equip.InventoryItem.Upgrade));
+
+                            Session.Client.SendPacket(Session.Character.GenerateStatChar());
+                            Thread.Sleep(100);
+                            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEq(), ReceiverType.AllOnMap);
+                            Session.Client.SendPacket(Session.Character.GenerateEquipment());
+
+                        }
                     }
                 }
             }
@@ -501,11 +507,12 @@ namespace OpenNos.Handler
         public void npcRunFunction(string packet)
         {
             string[] packetsplit = packet.Split(' ');
-            if(packetsplit.Length>2)
-            { 
+            if (packetsplit.Length > 2)
+            {
                 short type; short.TryParse(packetsplit[3], out type);
                 short runner; short.TryParse(packetsplit[2], out runner);
-                switch (runner){
+                switch (runner)
+                {
                     case 2:
                         Session.Client.SendPacket(String.Format("wopen {0} 0", 1));
                         break;
@@ -513,7 +520,7 @@ namespace OpenNos.Handler
                         Session.Client.SendPacket(String.Format("wopen {0} 0", 3));
                         break;
                     case 12:
-                            Session.Client.SendPacket(String.Format("wopen {0} 0", type));
+                        Session.Client.SendPacket(String.Format("wopen {0} 0", type));
                         break;
                     case 14:
                         //m_list 2 1002 1003 1004 1005 1006 1007 1008 1009 1010 180 181 2127 2178 1242 1243 1244 2504 2505 - 100
@@ -521,7 +528,7 @@ namespace OpenNos.Handler
                         break;
 
                 }
-             
+
             }
         }
         [Packet("put")]
@@ -606,10 +613,10 @@ namespace OpenNos.Handler
             else
             {
 
-                Npc npc= Session.CurrentMap.Npcs.FirstOrDefault(n=>n.NpcId.Equals((short)owner));
+                Npc npc = Session.CurrentMap.Npcs.FirstOrDefault(n => n.NpcId.Equals((short)owner));
 
                 ShopItem item = npc.Shop.ShopItems.FirstOrDefault(it => it.Slot.Equals(slot));
-                long price =ServerManager.GetItem(item.ItemVNum).Price * amount;
+                long price = ServerManager.GetItem(item.ItemVNum).Price * amount;
 
                 if (price > 0 && price <= Session.Character.Gold)
                 {
@@ -711,9 +718,9 @@ namespace OpenNos.Handler
                 else
                 {
                     Npc npc = ServerManager.GetMap(Session.Character.MapId).Npcs.FirstOrDefault(n => n.NpcId.Equals(Convert.ToInt16(packetsplit[3])));
-                            if (npc.GetNpcDialog() != String.Empty)
-                                Session.Client.SendPacket(npc.GetNpcDialog());
-                                 
+                    if (npc.GetNpcDialog() != String.Empty)
+                        Session.Client.SendPacket(npc.GetNpcDialog());
+
 
 
                 }
@@ -1363,6 +1370,7 @@ namespace OpenNos.Handler
                 case 6:
                     if (verify)
                     {
+                        Session.Character.UseSp = true;
                         Session.Character.Morph = arg[0];
                         Session.Character.MorphUpgrade = arg[1];
                         Session.Character.MorphUpgrade2 = arg[2];
@@ -1465,10 +1473,9 @@ namespace OpenNos.Handler
             //pairyz
             Session.Client.SendPacket(String.Format("rsfi {0} {1} {2} {3} {4} {5}", 1, 1, 4, 9, 4, 9));//stone act
             ClientLinkManager.Instance.RequiereBroadcastFromAllMapUsers(Session, "GenerateIn");
-            ClientLinkManager.Instance.RequiereBroadcastFromAllMapUsers(Session, "GenerateCMode");
+          //need to see if changeMap change the sp :D  ClientLinkManager.Instance.RequiereBroadcastFromAllMapUsers(Session, "GenerateCMode");
 
             ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllOnMap);
-            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateCMode(), ReceiverType.AllOnMap);
             if (Session.CurrentMap.IsDancing == 2 && Session.Character.IsDancing == 0)
                 ClientLinkManager.Instance.RequiereBroadcastFromMap(Session.Character.MapId, "dance 2");
             else if (Session.CurrentMap.IsDancing == 0 && Session.Character.IsDancing == 1)
