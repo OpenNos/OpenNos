@@ -64,14 +64,14 @@ namespace OpenNos.GameObject
                     break;
 
                 case ReceiverType.AllOnMap:
-                    foreach (ClientSession session in sessions.Where(s=> s.Character.MapId.Equals(client.Character.MapId)))
+                    foreach (ClientSession session in sessions.Where(s=> s.Character != null && s.Character.MapId.Equals(client.Character.MapId)))
                     {
                             session.Client.SendPacket(message);
                     }
 
                     break;
                 case ReceiverType.AllOnMapExceptMe:
-                    foreach (ClientSession session in sessions.Where(s => s.Character.MapId.Equals(client.Character.MapId) && s.Character.CharacterId != client.Character.CharacterId))
+                    foreach (ClientSession session in sessions.Where(s => s.Character != null && s.Character.MapId.Equals(client.Character.MapId) && s.Character.CharacterId != client.Character.CharacterId))
                     {
                             session.Client.SendPacket(message);
                     }
@@ -80,7 +80,7 @@ namespace OpenNos.GameObject
                     client.Client.SendPacket(message);
                     break;
                 case ReceiverType.OnlySomeone:
-                    ClientSession session2 = sessions.FirstOrDefault(s => s.Character.Name.Equals(CharacterName) || s.Character.CharacterId.Equals(CharacterId));
+                    ClientSession session2 = sessions.FirstOrDefault(s => s.Character != null && s.Character.Name.Equals(CharacterName) || s.Character.CharacterId.Equals(CharacterId));
                     
                         if (session2 != null)
                         {
@@ -96,7 +96,7 @@ namespace OpenNos.GameObject
         }
         public void RequiereBroadcastFromMap(short MapId, string Message)
         {
-            foreach (ClientSession session in sessions.Where(s => s.Character.MapId.Equals(MapId)))
+            foreach (ClientSession session in sessions.Where(s => s.Character != null && s.Character.MapId.Equals(MapId)))
             {
                     Broadcast(session, String.Format(Message, session.Character.CharacterId), ReceiverType.AllOnMap);
             }
@@ -104,7 +104,7 @@ namespace OpenNos.GameObject
         }
         public void RequiereBroadcastFromAllMapUsers(ClientSession client, string methodName)
         {
-            foreach (ClientSession session in sessions.Where(s=>s.Character.Name != client.Character.Name))
+            foreach (ClientSession session in sessions.Where(s=> s.Character != null && s.Character.Name != client.Character.Name))
             {
                 
                     Type t = session.Character.GetType();
@@ -116,7 +116,7 @@ namespace OpenNos.GameObject
         }
         public void RequiereBroadcastFromUser(ClientSession client, long CharacterId, string methodName)
         {
-            ClientSession session = sessions.FirstOrDefault(s=>s.Character.CharacterId.Equals(CharacterId));
+            ClientSession session = sessions.FirstOrDefault(s=> s.Character != null && s.Character.CharacterId.Equals(CharacterId));
 
                 if (session != null)
                 {
@@ -129,7 +129,7 @@ namespace OpenNos.GameObject
         }
         public void RequiereBroadcastFromUser(ClientSession client, string CharacterName, string methodName)
         {
-            ClientSession session = sessions.FirstOrDefault(s => s.Character.Name.Equals(CharacterName));
+            ClientSession session = sessions.FirstOrDefault(s => s.Character != null && s.Character.Name.Equals(CharacterName));
 
             if (session != null)
             {
@@ -144,7 +144,7 @@ namespace OpenNos.GameObject
         public bool Kick(String CharacterName)
         {
 
-            ClientSession session = sessions.FirstOrDefault(s => s.Character.Name.Equals(CharacterName));
+            ClientSession session = sessions.FirstOrDefault(s => s.Character != null && s.Character.Name.Equals(CharacterName));
 
             if (session != null)
                 {
@@ -156,7 +156,7 @@ namespace OpenNos.GameObject
         }
         public object RequiereProperties(long charId, string properties)
         {
-            ClientSession session = sessions.FirstOrDefault(s => s.Character.CharacterId.Equals(charId));
+            ClientSession session = sessions.FirstOrDefault(s => s.Character != null && s.Character.CharacterId.Equals(charId));
 
             if (session != null)
                 {

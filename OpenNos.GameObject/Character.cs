@@ -524,7 +524,7 @@ namespace OpenNos.GameObject
 
         public string GenerateIn()
         {
-            return String.Format("in 1 {0} - {1} {2} {3} {4} {5} {6} {7} {8} {9} -1.-1.-1.-1.-1.-1.-1.-1 {10} {11} {12} -1 0 0 0 0 0 0 0 0 -1 - {13} {16} 0 0 0 {14} 0 {15} 0 10", Name, CharacterId, MapX, MapY, Direction, (Authority == 2 ? 2 : 0), Gender, HairStyle, HairColor, Class, (int)((Hp / HPLoad()) * 100), (int)((Mp / MPLoad()) * 100), _rested, (GetDigniteIco() == 1) ? GetReputIco() : -GetDigniteIco(), ArenaWinner, 0, _invisible);
+            return String.Format("in 1 {0} - {1} {2} {3} {4} {5} {6} {7} {8} {9} {17} {10} {11} {12} -1 0 0 0 0 0 0 {18} -1 - {13} {16} 0 0 0 {14} 0 {15} 0 10", Name, CharacterId, MapX, MapY, Direction, (Authority == 2 ? 2 : 0), Gender, HairStyle, HairColor, Class, (int)((Hp / HPLoad()) * 100), (int)((Mp / MPLoad()) * 100), _rested, (GetDigniteIco() == 1) ? GetReputIco() : -GetDigniteIco(), ArenaWinner, 0, _invisible, generateEqListForPacket(),generateEqRareUpgradeForPacket());
         }
 
         public string GenerateRest()
@@ -573,6 +573,12 @@ namespace OpenNos.GameObject
             return String.Format("equip {0}{1} {2}{3}{4}", WeaponUpgrade, WeaponRare, ArmorUpgrade, ArmorRare,eqlist);
         }
 
+        public string GenerateStatChar()
+        {
+            //TODO sc packet
+            return String.Empty;
+        }
+
         public string GenerateSpk(object message, int v)
         {
             return String.Format("spk 1 {0} {1} {2} {3}", CharacterId, v, Name, message);
@@ -587,10 +593,56 @@ namespace OpenNos.GameObject
         {
             return String.Format("st 1 {0} {1} {2} {3} {4} {5}", CharacterId, Level, (int)((Hp / HPLoad()) * 100), (int)((Mp / MPLoad()) * 100), Hp, Mp);
         }
+        public string generateEqListForPacket()
+        {
+            string[] invarray = new string[15];
+            for (short i = 0; i < 15; i++)
+            {
+                Inventory inv = EquipmentList.LoadBySlotAndType(i, (short)InventoryType.Equipment);
+                if (inv != null)
+                {
+                    invarray[i] = inv.InventoryItem.ItemVNum.ToString() ;
+                  
+                }
+                else invarray[i] = "-1";
+            }
 
+            return String.Format("{0}.{1}.{2}.{3}.{4}.{5}.{6}.{7}", invarray[(short)EquipmentType.Hat], invarray[(short)EquipmentType.Armor], invarray[(short)EquipmentType.MainWeapon], invarray[(short)EquipmentType.SecondaryWeapon], invarray[(short)EquipmentType.Mask], invarray[(short)EquipmentType.Fairy], invarray[(short)EquipmentType.CostumeSuite], invarray[(short)EquipmentType.CostumeHat]);
+        }
+
+        public string generateEqRareUpgradeForPacket()
+        {
+            short WeaponRare = 0;
+            short WeaponUpgrade = 0;
+            short ArmorRare = 0;
+            short ArmorUpgrade = 0;
+            for (short i = 0; i < 15; i++)
+            {
+                Inventory inv = EquipmentList.LoadBySlotAndType(i, (short)InventoryType.Equipment);
+                if (inv != null)
+                {
+                    Item iteminfo = ServerManager.GetItem(inv.InventoryItem.ItemVNum);
+
+                    if (iteminfo.EquipmentSlot == (short)EquipmentType.Armor)
+                    {
+                        ArmorRare = inv.InventoryItem.Rare;
+                        ArmorUpgrade = inv.InventoryItem.Upgrade;
+                    }
+                    else if (iteminfo.EquipmentSlot == (short)EquipmentType.MainWeapon)
+                    {
+                        WeaponRare = inv.InventoryItem.Rare;
+                        WeaponUpgrade = inv.InventoryItem.Upgrade;
+                    }
+                }
+            }
+            return String.Format("{0}{1} {2}{3}", WeaponUpgrade, WeaponRare, ArmorUpgrade, ArmorRare);
+        }
+           
         public string GenerateEq()
         {
-            return String.Format("eq {0} {1} {2} {3} {4} {5} -1.-1.-1.-1.-1.-1.-1.-1 0 0", CharacterId, (Authority == 2 ? 2 : 0), Gender, HairStyle, HairColor, Class);
+            
+
+            return String.Format("eq {0} {1} {2} {3} {4} {5} {6} {7}", CharacterId, (Authority == 2 ? 2 : 0), Gender, HairStyle, HairColor, Class, generateEqListForPacket(), generateEqRareUpgradeForPacket());
         }
 
         public string GenerateFaction()
