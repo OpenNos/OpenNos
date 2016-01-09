@@ -24,12 +24,12 @@ namespace OpenNos.Core
 
             string[] packetParts = packet.Split(' ');
 
-            if(packetParts.Length > 1)
+            if (packetParts.Length > 1)
             {
                 int packetIndex = 1;
                 foreach (PropertyInfo property in deserializedObject.GetType().GetProperties())
                 {
-                    if(property.CanWrite)
+                    if (property.CanWrite)
                     {
                         // Get the type code so we can switch
                         System.TypeCode typeCode = System.Type.GetTypeCode(property.PropertyType);

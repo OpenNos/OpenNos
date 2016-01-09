@@ -33,7 +33,7 @@ namespace OpenNos.DAL.EF.MySQL
             {
                 foreach (Item item in context.item)
                 {
-                    yield return Mapper.Map < ItemDTO > (item);
+                    yield return Mapper.Map<ItemDTO>(item);
                 }
             }
         }

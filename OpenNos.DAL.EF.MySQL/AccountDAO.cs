@@ -43,7 +43,7 @@ namespace OpenNos.DAL.EF.MySQL
             {
                 Account account = context.account.FirstOrDefault(a => a.LastSession.Equals(sessionId));
 
-                if(account != null)
+                if (account != null)
                 {
                     return Mapper.Map<AccountDTO>(account); 
                 }
