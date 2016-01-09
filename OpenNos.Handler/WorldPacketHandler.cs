@@ -1149,7 +1149,7 @@ namespace OpenNos.Handler
             Session.Client.SendPacket(Session.Character.GenerateSay("$Speed SPEED", 0));
             Session.Client.SendPacket(Session.Character.GenerateSay("$Morph MORPHID UPGRADE WINGS ARENA", 0));
             Session.Client.SendPacket(Session.Character.GenerateSay("$Shout MESSAGE", 0));
-            Session.Client.SendPacket(Session.Character.GenerateSay("$lvl LEVEL", 0));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$Lvl LEVEL", 0));
             // Session.Client.SendPacket(Session.Character.GenerateSay("$jlvl JOBLEVEL", 0));
             Session.Client.SendPacket(Session.Character.GenerateSay("$ChangeClass CLASS", 0));
             Session.Client.SendPacket(Session.Character.GenerateSay("$Kick USERNAME", 0));
@@ -1294,14 +1294,14 @@ namespace OpenNos.Handler
                 Session.Client.SendPacket(Session.Character.GenerateEff(4799 + faction));
             }
         }
-        [Packet("$lvl")]
+        [Packet("$Lvl")]
         public void lvl(string packet)
         {
 
             string[] packetsplit = packet.Split(' ');
             byte level;
             if (packetsplit.Length > 3)
-                Session.Client.SendPacket(Session.Character.GenerateSay("$lvl LEVEL", 0));
+                Session.Client.SendPacket(Session.Character.GenerateSay("$Lvl LEVEL", 0));
             if (Byte.TryParse(packetsplit[2], out level) && level < 100 && level > 0)
             {
 
