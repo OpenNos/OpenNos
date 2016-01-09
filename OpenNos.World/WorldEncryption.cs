@@ -82,7 +82,7 @@ namespace OpenNos.World
             for (int i = 0; i < bytes.Length; i++)
             {
                 
-                save += Decrypt2(System.Text.ASCIIEncoding.Default.GetBytes(bytes[i]));         
+                save += Decrypt2(System.Text.UTF8Encoding.Default.GetBytes(bytes[i]));         
                 save += (char)0xFF;
 
             }
@@ -108,7 +108,7 @@ namespace OpenNos.World
                     {
                         count++;
 
-                        decrypted_string += getextendedascii((count < str.Length ? str[count] : 0) ^ 0xFF);
+                        decrypted_string += Convert.ToChar((count < str.Length ? str[count] : 0) ^ 0xFF);
                     }
                     count++;
                 }
@@ -185,6 +185,7 @@ namespace OpenNos.World
             byte[] ret = Encoding.GetEncoding(1252).GetBytes(encrypted_string);
             return ret;
         }
+
         public static string getextendedascii(int x)
         {
             var e = Encoding.GetEncoding("Windows-1252");
