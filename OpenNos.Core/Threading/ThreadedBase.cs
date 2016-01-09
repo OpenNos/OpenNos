@@ -12,7 +12,7 @@ namespace OpenNos.Core
     {
         private SequentialItemProcessor<TValue> _queue;
         private Action<TValue> _action;
-        //private Task _task;
+        private Task _task;
 
         public ThreadedBase(long milliseconds, Action<TValue> triggeredMethod)
         {
