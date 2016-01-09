@@ -246,7 +246,7 @@ namespace OpenNos.GameObject
                             TriggerHandler(packetHeader[0].ToString(), packet, false);
                         }
                    else
-                        if(permit == 1){ 
+                        if (permit == 1){ 
                            if (packetHeader != "0" && !TriggerHandler(packetHeader, packet, false))
                             {
                                 Logger.Log.ErrorFormat(Language.Instance.GetMessageFromKey("HANDLER_NOT_FOUND"), packetHeader);
@@ -279,7 +279,7 @@ namespace OpenNos.GameObject
         {
             //do everything necessary before removing client, DB save, Whatever
 
-            if(Character != null)
+            if (Character != null)
             {
                 //disconnect client
                 ServiceFactory.Instance.CommunicationService.DisconnectCharacter(Character.Name);
