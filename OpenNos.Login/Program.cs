@@ -52,7 +52,7 @@ namespace OpenNos.Login
                     { 
                       ServiceFactory.Instance.CommunicationService.Open();
                     }
-                    catch(Exception ex)
+                    catch (Exception ex)
                     {
                         Logger.Log.Error(ex.Message);
                     }

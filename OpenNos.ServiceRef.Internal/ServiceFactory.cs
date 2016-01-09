@@ -48,7 +48,7 @@ namespace OpenNos.ServiceRef.Internal
         {
             get
             {
-                if(_communicationServiceClient == null)
+                if (_communicationServiceClient == null)
                 {
                     
                     _communicationServiceClient = new CommunicationServiceReference.CommunicationServiceClient(_instanceContext);
