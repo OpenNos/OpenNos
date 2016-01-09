@@ -184,7 +184,7 @@ namespace OpenNos.GameObject
                     Session.CurrentMap.ShopUserList[shop.Key].Sell += itemshop.Price * amount;
                     session.Client.SendPacket(String.Format("sell_list {0} {1}.{2}.{3}", shop.Value.Sell, slot, amount, itemshop.Amount));
                   Inventory inv = session.Character.InventoryList.AmountMinusFromSlotAndType(amount, itemshop.InvSlot, itemshop.InvType);
-                    if(inv != null)
+                    if (inv != null)
                     {
                         session.Client.SendPacket(session.Character.GenerateInventoryAdd(inv.InventoryItem.ItemVNum, inv.InventoryItem.Amount, inv.Type, inv.Slot, inv.InventoryItem.Rare, inv.InventoryItem.Color, inv.InventoryItem.Upgrade));
                     }
