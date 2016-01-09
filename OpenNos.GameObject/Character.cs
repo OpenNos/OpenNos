@@ -236,7 +236,7 @@ namespace OpenNos.GameObject
             EquipmentList = new InventoryList();
             foreach (InventoryDTO inventory in inventorysDTO)
             {
-                InventoryItemDTO inventoryItemDTO = DAOFactory.InventoryItemDAO.LoadById(inventory.InventoryItemId);
+               InventoryItemDTO inventoryItemDTO = DAOFactory.InventoryItemDAO.LoadById(inventory.InventoryItemId);
                Item item = ServerManager.GetItem(inventoryItemDTO.ItemVNum);
 
                 if (inventory.Type != (short)InventoryType.Equipment)
@@ -501,7 +501,7 @@ namespace OpenNos.GameObject
             Inventory Fairy = EquipmentList.LoadBySlotAndType((short)EquipmentType.Fairy, (short)InventoryType.Equipment);
             Inventory Armor = EquipmentList.LoadBySlotAndType((short)EquipmentType.Armor, (short)InventoryType.Equipment);
             Inventory Weapon2 = EquipmentList.LoadBySlotAndType((short)EquipmentType.SecondaryWeapon,(short) InventoryType.Equipment);
-           Inventory Weapon = EquipmentList.LoadBySlotAndType((short)EquipmentType.MainWeapon, (short)InventoryType.Equipment);
+            Inventory Weapon = EquipmentList.LoadBySlotAndType((short)EquipmentType.MainWeapon, (short)InventoryType.Equipment);
             return String.Format("tc_info {0} {1} {2} {3} {4} {9} 0 {8} {5} {6} {10} {11} {12} {13} {14} {15} 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 {7}", Level, Name, Fairy != null ? ServerManager.GetItem(Fairy.InventoryItem.ItemVNum).Element : 0, Fairy !=null? Fairy.InventoryItem.ElementRate:0, Class, GetReputIco(), GetDigniteIco(),
                 Language.Instance.GetMessageFromKey("NO_PREZ_MESSAGE"), Language.Instance.GetMessageFromKey("NO_FAMILY"),
                 Gender, Weapon != null ? 1 : 0, Weapon != null ? Weapon.InventoryItem.Rare : 0, Weapon != null ? Weapon.InventoryItem.Upgrade : 0,
@@ -599,7 +599,7 @@ namespace OpenNos.GameObject
         public string GenerateStatChar()
         {
             //TODO sc packet
-            //string eqstats = String.Empty;
+            //string charstat = String.Empty;
             return String.Empty;
         }
 
