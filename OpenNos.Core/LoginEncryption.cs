@@ -22,21 +22,46 @@ namespace OpenNos.Core
     public class LoginEncryption : EncryptionBase
     { 
         public LoginEncryption() : base(false) { }
-        public override string Decrypt(byte[] data, int customParameter = 0)
+        public override string Decrypt(byte[] packet, int customParameter = 0)
         {
-            for (int i = 0; i < data.Length; i++)
-                data[i] = (byte)(data[i] - 0xF ^ 0xC3);
-            return Encoding.ASCII.GetString(data).Substring(0, data.Length);
+             try
+            {
+                string decryptedPacket = String.Empty;
+
+                for (int i = 0; i < packet.Length; i++)
+                {
+                    if (packet[i] > 14)// (x - 15) ^ 195
+                    {
+                        decryptedPacket += Convert.ToChar((packet[i] - 15) ^ 195);
+                    }
+                    else //if (packet[i])// (256 - ( 15 - (x)))
+                    {
+                        decryptedPacket += Convert.ToChar((256 - (15 - (packet[i]))) ^ 195);
+                    }
+                }
+
+                return decryptedPacket;
+            }
+            catch
+            {
+                return String.Empty;
+            }
         }
 
-        public override byte[] Encrypt(string data)
+        public override byte[] Encrypt(string packet)
         {
-            data += " ";
-            byte[] tmp = new byte[data.Length + 1];
-            tmp = Encoding.ASCII.GetBytes(data);
-            for (int i = 0; i < data.Length; i++) tmp[i] = Convert.ToByte(data[i] + 15);
-            tmp[tmp.Length - 1] = 25;
-            return tmp;
+                byte[] encryptedPacket = new byte[
+                    packet.Length + 1];
+
+                for (int i = 0; i < packet.Length; i++)
+                {
+                    encryptedPacket[i] = Convert.ToByte(packet[i] + 15);
+                }
+
+                encryptedPacket[encryptedPacket.Length - 1] = 25; //endpacket -> shows the server that the packet ends
+
+                return encryptedPacket;
+            
         }
 
         public static string GetPassword(string passcrypt)

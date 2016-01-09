@@ -89,6 +89,11 @@ namespace OpenNos.GameObject
 
             }
         }
+        public double LastSp
+        {
+            get;
+            set;
+        }
 
         public double LastPortal
         {
@@ -558,7 +563,7 @@ namespace OpenNos.GameObject
             Inventory fairy = EquipmentList.LoadBySlotAndType((short)EquipmentType.Fairy, (short)InventoryType.Equipment);
 
 
-            return String.Format("in 1 {0} - {1} {2} {3} {4} {5} {6} {7} {8} {9} {17} {10} {11} {12} -1 2 {22} 0 {23} 0 {19} {18} -1 - {13} {16} {20} 0 {21} {14} 0 {15} 0 {24}", Name, CharacterId, MapX, MapY, Direction, (Authority == 2 ? 2 : 0), Gender, HairStyle, Color, Class, (int)((Hp / HPLoad()) * 100), (int)((Mp / MPLoad()) * 100), _rested, (GetDigniteIco() == 1) ? GetReputIco() : -GetDigniteIco(), 0,ArenaWinner, _invisible, generateEqListForPacket(),generateEqRareUpgradeForPacket(), (UseSp == true? Morph : 0), (UseSp == true  ? MorphUpgrade : 0), (UseSp == true? MorphUpgrade2 : 0), fairy != null ? ServerManager.GetItem(fairy.InventoryItem.ItemVNum).Element:0, fairy!=null? ServerManager.GetItem(fairy.InventoryItem.ItemVNum).Morph:0,Size);
+            return String.Format("in 1 {0} - {1} {2} {3} {4} {5} {6} {7} {8} {9} {17} {10} {11} {12} -1 {25} {22} 0 {23} 0 {19} {18} -1 - {13} {16} {20} 0 {21} {14} 0 {15} 0 {24}", Name, CharacterId, MapX, MapY, Direction, (Authority == 2 ? 2 : 0), Gender, HairStyle, Color, Class, (int)((Hp / HPLoad()) * 100), (int)((Mp / MPLoad()) * 100), _rested, (GetDigniteIco() == 1) ? GetReputIco() : -GetDigniteIco(), 0,ArenaWinner, _invisible, generateEqListForPacket(),generateEqRareUpgradeForPacket(), (UseSp == true? Morph : 0), (UseSp == true  ? MorphUpgrade : 0), (UseSp == true? MorphUpgrade2 : 0), fairy != null ? ServerManager.GetItem(fairy.InventoryItem.ItemVNum).Element:0, fairy!=null? ServerManager.GetItem(fairy.InventoryItem.ItemVNum).Morph:0,Size, fairy!= null?2:0);
         }
 
         public string GenerateRest()
