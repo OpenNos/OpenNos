@@ -425,7 +425,8 @@ namespace OpenNos.Handler
 
                 Inventory inventory = Session.Character.EquipmentList.LoadBySlotAndType(slot, type);
 
-                if (inventory != null)
+                
+if (inventory != null)
                 {
                     Inventory inv = Session.Character.InventoryList.CreateItem(inventory.InventoryItem, Session.Character);
                     if (inv != null)
@@ -439,6 +440,7 @@ namespace OpenNos.Handler
                         Thread.Sleep(100);
                         ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEq(), ReceiverType.AllOnMap);
                         Session.Client.SendPacket(Session.Character.GenerateEquipment());
+                        ClientLinkManager.Instance.Broadcast(Session, Session.Character.GeneratePairy(), ReceiverType.AllOnMap);
 
                     }
                 }
@@ -476,6 +478,7 @@ namespace OpenNos.Handler
                             Thread.Sleep(100);
                             ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEq(), ReceiverType.AllOnMap);
                             Session.Client.SendPacket(Session.Character.GenerateEquipment());
+                            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GeneratePairy(), ReceiverType.AllOnMap);
 
                         }
                         else
@@ -497,6 +500,8 @@ namespace OpenNos.Handler
                             Thread.Sleep(100);
                             ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEq(), ReceiverType.AllOnMap);
                             Session.Client.SendPacket(Session.Character.GenerateEquipment());
+                            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GeneratePairy(), ReceiverType.AllOnMap);
+                    
 
                         }
                     }
@@ -1108,6 +1113,7 @@ namespace OpenNos.Handler
             Session.Client.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID COLOR", 0));
             Session.Client.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID AMOUNT", 0));
             Session.Client.SendPacket(Session.Character.GenerateSay("$Shutdown", 0));
+           
         }
         [Packet("$CreateItem")]
         public void CreateItem(string packet)
@@ -1415,6 +1421,7 @@ namespace OpenNos.Handler
             }
 
         }
+       
         [Packet("$Speed")]
         public void Speed(string packet)
         {
@@ -1470,7 +1477,7 @@ namespace OpenNos.Handler
 
             //sc
             Session.Client.SendPacket(Session.Character.GenerateCond());
-            //pairyz
+            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GeneratePairy(), ReceiverType.AllOnMap);
             Session.Client.SendPacket(String.Format("rsfi {0} {1} {2} {3} {4} {5}", 1, 1, 4, 9, 4, 9));//stone act
             ClientLinkManager.Instance.RequiereBroadcastFromAllMapUsers(Session, "GenerateIn");
           //need to see if changeMap change the sp :D  ClientLinkManager.Instance.RequiereBroadcastFromAllMapUsers(Session, "GenerateCMode");
