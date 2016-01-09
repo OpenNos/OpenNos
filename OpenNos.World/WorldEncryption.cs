@@ -39,36 +39,36 @@ namespace OpenNos.World
                 case 0:
                     for (int i = 0; i < length; i++)
                     {
-                        byte firstbyte = (byte)(session_key + 0x40);
-                        byte highbyte = (byte)(str[i] - firstbyte);
-                        encrypted_string += getextendedascii(highbyte);
+                        int firstbyte = (int)(byte)(session_key + 0x40);
+                        int highbyte = (int)(byte)(str[i] - firstbyte);
+                        encrypted_string += Convert.ToChar(highbyte);
                     }
                     break;
 
                 case 1:
                     for (int i = 0; i < length; i++)
                     {
-                        byte firstbyte = (byte)(session_key + 0x40);
-                        byte highbyte = (byte)(str[i] + firstbyte);
-                        encrypted_string += getextendedascii(highbyte);
+                        int firstbyte = (int)(byte)(session_key + 0x40);
+                        int highbyte = (int)(byte)(str[i] + firstbyte);
+                        encrypted_string += Convert.ToChar(highbyte);
                     }
                     break;
 
                 case 2:
                     for (int i = 0; i < length; i++)
                     {
-                        byte firstbyte = (byte)(session_key + 0x40);
-                        byte highbyte = (byte)(str[i] - firstbyte ^ 0xC3);
-                        encrypted_string += getextendedascii(highbyte);
+                        int firstbyte = (int)(byte)(session_key + 0x40);
+                        int highbyte = (int)(byte)(str[i] - firstbyte ^ 0xC3);
+                        encrypted_string += Convert.ToChar(highbyte);
                     }
                     break;
 
                 case 3:
                     for (int i = 0; i < length; i++)
                     {
-                        byte firstbyte = (byte)(session_key + 0x40);
-                        byte highbyte = (byte)(str[i] + firstbyte ^ 0xC3);
-                        encrypted_string += getextendedascii(highbyte);
+                        int firstbyte = (int)(byte)(session_key + 0x40);
+                        int highbyte = (int)(byte)(str[i] + firstbyte ^ 0xC3);
+                        encrypted_string += Convert.ToChar(highbyte);
                     }
                     break;
 
@@ -76,21 +76,22 @@ namespace OpenNos.World
                     break;
             }
 
-            string[] bytes = encrypted_string.Split((char)0xFF);// return string less 255 (2 strings)
+            string[] bytes = encrypted_string.Split(Convert.ToChar(0xFF));// return string less 255 (2 strings)
         
             string save = "";
             for (int i = 0; i < bytes.Length; i++)
             {
                 
-                save += Decrypt2(System.Text.UTF8Encoding.Default.GetBytes(bytes[i]));         
-                save += (char)0xFF;
+                save += Decrypt2(bytes[i].ToCharArray());         
+                save += Convert.ToChar(0xFF);
 
             }
             return save;
           
         }
 
-        public static string Decrypt2(byte[] str)
+
+        public static string Decrypt2(char[] str)
         {
 
             string decrypted_string = "";
@@ -102,7 +103,7 @@ namespace OpenNos.World
             {
                 if (str[count] <= 0x7A)
                 {
-                    byte len = str[count];
+                    int len = str[count];
 
                     for (int i = 0; i < (int)len; i++)
                     {
@@ -114,23 +115,23 @@ namespace OpenNos.World
                 }
                 else
                 {
-                    byte len = (byte)str[count];
-                    len &= (byte)0x7F;
+                    int len = str[count];
+                    len &= 0x7F;
 
                     for (int i = 0; i < (int)len;)
                     {
                         count++;
-                        byte highbyte = 0xF;
-                        byte lowbyte = 0xF;
-                        if (count > 0 && count <= str.Length-1)
-                        { 
+                        int highbyte = 0xF;
+                        int lowbyte = 0xF;
+                        if (count > 0 && count <= str.Length - 1)
+                        {
                             highbyte = str[count];
                             lowbyte = str[count];
                         }
                         highbyte &= 0xF0;
                         highbyte >>= 0x4;
 
-                       
+
                         lowbyte &= 0x0F;
 
                         if (highbyte != 0x0 && highbyte != 0xF)
@@ -229,7 +230,7 @@ namespace OpenNos.World
 
                     default:
                         secondbyte += 0x2C;
-                        encrypted_string += getextendedascii(secondbyte);
+                        encrypted_string += Convert.ToChar(secondbyte);
                         break;
                 }
 
@@ -253,7 +254,7 @@ namespace OpenNos.World
 
                     default:
                         firstbyte += 0x2C;
-                        encrypted_string += getextendedascii(firstbyte);
+                        encrypted_string += Convert.ToChar(firstbyte);
                         break;
                 }
             }
