@@ -165,6 +165,9 @@
   <data name="INSERT_ERROR" xml:space="preserve">
     <value>Fehler beim Einfügen/Aktualisieren des Charakters {0} , {1}</value>
   </data>
+  <data name="JOBLEVEL_CHANGED" xml:space="preserve">
+    <value>Job level has been increased</value>
+  </data>
   <data name="MAGICIAN" xml:space="preserve">
     <value>Magier</value>
   </data>
