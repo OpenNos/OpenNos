@@ -81,7 +81,7 @@ namespace OpenNos.WCF
                 }
                 else
                 {
-                    Logger.Log.DebugFormat("[WCF] Account {0} is not permitted to loginw with SessionId {1}.", accountName, sessionId);
+                    Logger.Log.DebugFormat("[WCF] Account {0} is not permitted to login with SessionId {1}.", accountName, sessionId);
                 }
 
                 return successful;
