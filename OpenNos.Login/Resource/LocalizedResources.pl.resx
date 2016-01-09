@@ -145,7 +145,7 @@
     <value>Zla nazwa uzytkownika badz haslo</value>
   </data>
   <data name="MESSAGE_RECEIVED" xml:space="preserve">
-    <value>Wiadomosc otrzymana {0} uzytkownik {1}</value>
+    <value>Uzytkownik {1} otrzymal wiadomosc {0}</value>
   </data>
   <data name="MSG_SENT" xml:space="preserve">
     <value>Wiadomosc wyslana.</value>

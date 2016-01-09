@@ -1100,7 +1100,8 @@ if (inventory != null)
             Session.Client.SendPacket(Session.Character.GenerateSay("$Speed SPEED", 0));
             Session.Client.SendPacket(Session.Character.GenerateSay("$Morph MORPHID UPGRADE WINGS ARENA", 0));
             Session.Client.SendPacket(Session.Character.GenerateSay("$Shout MESSAGE", 0));
-            Session.Client.SendPacket(Session.Character.GenerateSay("$LevelUp LEVEL", 0));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$lvl LEVEL", 0));
+           // Session.Client.SendPacket(Session.Character.GenerateSay("$jlvl JOBLEVEL", 0));
             Session.Client.SendPacket(Session.Character.GenerateSay("$ChangeClass CLASS", 0));
             Session.Client.SendPacket(Session.Character.GenerateSay("$Kick USERNAME", 0));
             Session.Client.SendPacket(Session.Character.GenerateSay("$MapDance", 0));
@@ -1244,14 +1245,14 @@ if (inventory != null)
                 Session.Client.SendPacket(Session.Character.GenerateEff(4799 + faction));
             }
         }
-        [Packet("$LevelUp")]
-        public void LevelUp(string packet)
+        [Packet("$lvl")]
+        public void lvl(string packet)
         {
 
             string[] packetsplit = packet.Split(' ');
             byte level;
             if (packetsplit.Length > 3)
-                Session.Client.SendPacket(Session.Character.GenerateSay("$LevelUp LEVEL", 0));
+                Session.Client.SendPacket(Session.Character.GenerateSay("$lvl LEVEL", 0));
             if (Byte.TryParse(packetsplit[2], out level) && level < 100 && level > 0)
             {
 
@@ -1267,6 +1268,27 @@ if (inventory != null)
                 ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(198), ReceiverType.AllOnMap);
             }
         }
+       /*   [Packet("$jlvl")]
+          public void jlvl(string packet)
+          {
+
+              string[] packetsplit = packet.Split(' ');
+              byte joblevel;
+              if (packetsplit.Length > 3)
+                  Session.Client.SendPacket(Session.Character.GenerateSay("$jlvl JOBLEVEL", 0));
+              if (Byte.TryParse(packetsplit[2], out joblevel) && joblevel < 100 && joblevel > 0)
+              {
+
+                  Session.Character.JobLevel = joblevel;
+                  Session.Client.SendPacket(Session.Character.GenerateLev());
+                  Session.Client.SendPacket(Session.Character.GenerateStat());
+                  //sc 0 0 31 39 31 4 70 1 0 33 35 43 2 70 0 17 35 19 35 17 0 0 0 0
+                  Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("JOBLEVEL_CHANGED"), 0));
+                  ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllOnMapExceptMe);
+                  ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(6), ReceiverType.AllOnMap);
+                  ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(198), ReceiverType.AllOnMap);
+              }
+          } */ 
         [Packet("$Ban")]
         public void Ban(string packet)
         {
