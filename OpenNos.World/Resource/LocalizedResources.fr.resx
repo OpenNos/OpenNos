@@ -195,6 +195,9 @@
   <data name="INSERT_ERROR" xml:space="preserve">
     <value>Error inserting or updating character {0} , {1}</value>
   </data>
+  <data name="JOBLEVEL_CHANGED" xml:space="preserve">
+    <value>Job level has been increased</value>
+  </data>
   <data name="JOB_CHANGED" xml:space="preserve">
     <value>Félicitations. Tu as changé de Métier !</value>
   </data>
