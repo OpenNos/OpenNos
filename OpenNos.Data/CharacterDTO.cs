@@ -67,6 +67,10 @@ namespace OpenNos.Data
 
         public int Backpack { get; set; }
 
+        public int SpPoint { get; set; }
+
+        public int SpAdditionPoint { get; set; }
+
         public CharacterState StateEnum
         {
             get
