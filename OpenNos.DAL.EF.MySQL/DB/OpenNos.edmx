@@ -111,6 +111,8 @@
     <Property Name="Kill" Type="int" Nullable="false" />
     <Property Name="Contribution" Type="int" Nullable="false" />
     <Property Name="Faction" Type="int" Nullable="false" />
+    <Property Name="SpPoint" Type="int" Nullable="false" />
+    <Property Name="SpAdditionPoint" Type="int" Nullable="false" />
     <Property Name="State" Type="utinyint" Nullable="false" />
   </EntityType>
   <EntityType Name="portal">
@@ -940,6 +942,8 @@
           <ScalarProperty Name="Kill" ColumnName="Kill" />
           <ScalarProperty Name="Contribution" ColumnName="Contribution" />
           <ScalarProperty Name="Faction" ColumnName="Faction" />
+          <ScalarProperty Name="SpPoint" ColumnName="SpPoint" />
+          <ScalarProperty Name="SpAdditionPoint" ColumnName="SpAdditionPoint" />
           <ScalarProperty Name="State" ColumnName="State" />
         </MappingFragment>
       </EntityTypeMapping>
