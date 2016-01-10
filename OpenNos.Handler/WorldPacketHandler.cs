@@ -216,6 +216,8 @@ namespace OpenNos.Handler
                         Reput = characterDTO.Reput,
                         Slot = characterDTO.Slot,
                         Authority = Session.Account.Authority,
+                        SpAdditionPoint = characterDTO.SpAdditionPoint,
+                        SpPoint = characterDTO.SpPoint,
                         LastPulse = 0,
                         LastPortal = 0,
                         LastSp = 0,
@@ -880,6 +882,7 @@ namespace OpenNos.Handler
                     Session.Character.Speed = Session.Character.LastSpeed;
                     Session.Character.Rested = 0;
                     Session.Client.SendPacket(Session.Character.GenerateCond());
+                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateRest(), ReceiverType.AllOnMap);
 
 
 
