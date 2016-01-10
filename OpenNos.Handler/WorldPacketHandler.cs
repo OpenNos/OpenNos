@@ -576,7 +576,7 @@ namespace OpenNos.Handler
             short slot; short.TryParse(packetsplit[3], out slot);
             short amount; short.TryParse(packetsplit[4], out amount);
             Inventory inv;
-            Inventory invitem = Session.Character.EquipmentList.LoadBySlotAndType(slot, type);
+            Inventory invitem = Session.Character.InventoryList.LoadBySlotAndType(slot, type);
             if (invitem != null && ServerManager.GetItem(invitem.InventoryItem.ItemVNum).Droppable == 1)
             {
                 MapItem DroppedItem = Session.Character.EquipmentList.PutItem(Session, type, slot, amount, out inv);
@@ -1067,7 +1067,14 @@ namespace OpenNos.Handler
                         {
                             continu = false;
                         }
-
+                        foreach (InventoryItem item in Session.Character.ExchangeInfo.ExchangeList)
+                        {
+                            Inventory inv = Session.Character.InventoryList.getInventoryByInventoryItemId(item.InventoryItemId);
+                            if (inv != null && ServerManager.GetItem(inv.InventoryItem.ItemVNum).Transaction != 1)
+                                Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("ITEM_NOT_TRADABLE"), 0));
+                            continu = false;
+                            break;
+                        }
                         if (continu == false)
                         {
                             Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_PLACE"), 0));
@@ -1090,16 +1097,14 @@ namespace OpenNos.Handler
                                 Inventory inv = Session.Character.InventoryList.CreateItem(item, Session.Character);
                                 if (inv != null)
                                 {
-                                    if (ServerManager.GetItem(inv.InventoryItem.ItemVNum).Transaction == 1)
-                                    {
-                                        short Slot = inv.Slot;
-                                        if (Slot != -1)
-                                            Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(inv.InventoryItem.ItemVNum, inv.InventoryItem.Amount, inv.Type, Slot, inv.InventoryItem.Rare, inv.InventoryItem.Color, inv.InventoryItem.Upgrade));
-                                    }
-                                    else
-                                    {
-                                        Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("ITEM_NOT_TRADABLE"), 0));
-                                    }
+
+                                    short Slot = inv.Slot;
+                                    if (Slot != -1)
+                                        Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(inv.InventoryItem.ItemVNum, inv.InventoryItem.Amount, inv.Type, Slot, inv.InventoryItem.Rare, inv.InventoryItem.Color, inv.InventoryItem.Upgrade));
+
+
+
+
                                 }
                             }
 
