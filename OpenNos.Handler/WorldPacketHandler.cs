@@ -1778,7 +1778,6 @@ namespace OpenNos.Handler
                 ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateCond(), ReceiverType.AllOnMap);
 
             }
-            else
             {
                 Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("BAD_FAIRY"), 0));
             }
