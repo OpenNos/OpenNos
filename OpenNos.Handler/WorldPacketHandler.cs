@@ -576,11 +576,18 @@ namespace OpenNos.Handler
             short slot; short.TryParse(packetsplit[3], out slot);
             short amount; short.TryParse(packetsplit[4], out amount);
             Inventory inv;
-            MapItem DroppedItem = Session.Character.EquipmentList.PutItem(Session, type, slot, amount, out inv);
-            if (inv.InventoryItem.Amount == 0)
-                DeleteItem(type, inv.Slot);
-            ClientLinkManager.Instance.Broadcast(Session, String.Format("drop {0} {1} {2} {3} {4} {5} {6}", DroppedItem.ItemVNum, DroppedItem.InventoryItemId, DroppedItem.PositionX, DroppedItem.PositionY, DroppedItem.Amount, 0, -1), ReceiverType.AllOnMap);
-
+            Inventory invitem = Session.Character.EquipmentList.LoadBySlotAndType(slot, type);
+            if (invitem != null && ServerManager.GetItem(invitem.InventoryItem.ItemVNum).Droppable == 1)
+            {
+                MapItem DroppedItem = Session.Character.EquipmentList.PutItem(Session, type, slot, amount, out inv);
+                if (inv.InventoryItem.Amount == 0)
+                    DeleteItem(type, inv.Slot);
+                ClientLinkManager.Instance.Broadcast(Session, String.Format("drop {0} {1} {2} {3} {4} {5} {6}", DroppedItem.ItemVNum, DroppedItem.InventoryItemId, DroppedItem.PositionX, DroppedItem.PositionY, DroppedItem.Amount, 0, -1), ReceiverType.AllOnMap);
+            }
+            else
+            {
+                Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("ITEM_NOT_DROPPABLE"), 0));
+            }
         }
         [Packet("sell")]
         public void SellShop(string packet)
@@ -594,12 +601,18 @@ namespace OpenNos.Handler
                 Inventory inv = Session.Character.InventoryList.LoadBySlotAndType(slot, type);
                 if (inv != null && amount <= inv.InventoryItem.Amount)
                 {
-                    Item item = ServerManager.GetItem(inv.InventoryItem.ItemVNum);
-                    Session.Character.Gold += item.Price * amount;
-                    DeleteItem(type, slot);
-                    Session.Client.SendPacket(Session.Character.GenerateGold());
-                    Session.Client.SendPacket(Session.Character.GenerateShopMemo(1, String.Format(Language.Instance.GetMessageFromKey("SELL_ITEM_VALIDE"), item.Name, amount)));
-
+                    if (ServerManager.GetItem(inv.InventoryItem.ItemVNum).Soldable == 1)
+                    {
+                        Item item = ServerManager.GetItem(inv.InventoryItem.ItemVNum);
+                        Session.Character.Gold += item.Price * amount;
+                        DeleteItem(type, slot);
+                        Session.Client.SendPacket(Session.Character.GenerateGold());
+                        Session.Client.SendPacket(Session.Character.GenerateShopMemo(1, String.Format(Language.Instance.GetMessageFromKey("SELL_ITEM_VALIDE"), item.Name, amount)));
+                    }
+                    else
+                    {
+                        Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("ITEM_NOT_SOLDABLE"), 0));//need to see if on global it's a MSG packet^^
+                    }
                 }
             }
 
@@ -733,21 +746,28 @@ namespace OpenNos.Handler
         {
             //n_inv 2 1834 0 100 0.13.13.0.0.330 0.14.15.0.0.2299 0.18.120.0.0.3795 0.19.107.0.0.3795 0.20.94.0.0.3795 0.37.95.0.0.5643 0.38.97.0.0.11340 0.39.99.0.0.18564 0.48.108.0.0.5643 0.49.110.0.0.11340 0.50.112.0.0.18564 0.59.121.0.0.5643 0.60.123.0.0.11340 0.61.125.0.0.18564
             string[] packetsplit = packet.Split(' ');
-            short NpcId;
-            short.TryParse(packetsplit[5], out NpcId);
-            short type;
-            short.TryParse(packetsplit[2], out type);
+            short NpcId; short.TryParse(packetsplit[5], out NpcId);
+            short type; short.TryParse(packetsplit[2], out type);
+            short slot; short.TryParse(packetsplit[4], out slot);
             Npc npc = Session.CurrentMap.Npcs.FirstOrDefault(n => n.NpcId.Equals(NpcId));
             string shoplist = String.Empty;
             Shop shop = npc.Shop;
+            Inventory invitem = Session.Character.EquipmentList.LoadBySlotAndType(slot, type);
             if (shop != null)
             {
-                foreach (ShopItem item in shop.ShopItems.Where(s => s.Type.Equals(type)))
+                if (ServerManager.GetItem(invitem.InventoryItem.ItemVNum).Transaction == 1)
                 {
-                    shoplist += String.Format(" {0}.{1}.{2}.{3}.{4}", ServerManager.GetItem(item.ItemVNum).Type, item.Slot, item.ItemVNum, -1, ServerManager.GetItem(item.ItemVNum).Price);
-                }
+                    foreach (ShopItem item in shop.ShopItems.Where(s => s.Type.Equals(type)))
+                    {
+                        shoplist += String.Format(" {0}.{1}.{2}.{3}.{4}", ServerManager.GetItem(item.ItemVNum).Type, item.Slot, item.ItemVNum, -1, ServerManager.GetItem(item.ItemVNum).Price);
+                    }
 
-                Session.Client.SendPacket(String.Format("n_inv 2 {0} 0 0{1}", npc.NpcId, shoplist));
+                    Session.Client.SendPacket(String.Format("n_inv 2 {0} 0 0{1}", npc.NpcId, shoplist));
+                }
+                else
+                {
+                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("ITEM_NOT_TRADABLE"), 0));
+                }
             }
         }
         [Packet("npc_req")]
