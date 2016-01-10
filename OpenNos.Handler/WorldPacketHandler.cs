@@ -433,7 +433,7 @@ namespace OpenNos.Handler
 
                 if (inventory != null)
                 {
-                    if(slot == (short)EquipmentType.Sp && Session.Character.UseSp)
+                    if (slot == (short)EquipmentType.Sp && Session.Character.UseSp)
                     {
                         Session.Character.LastSp = (((TimeSpan)(DateTime.Now - new DateTime(2010, 1, 1, 0, 0, 0))).TotalSeconds);
                         Thread removeSP = new Thread(() => RemoveSP());
@@ -584,11 +584,11 @@ namespace OpenNos.Handler
         public void SellShop(string packet)
         {
             string[] packetsplit = packet.Split(' ');
-            if(packetsplit.Length > 6)
+            if (packetsplit.Length > 6)
             {
-            short type; short.TryParse(packetsplit[4], out type);
-            short slot; short.TryParse(packetsplit[5], out slot);
-            short amount; short.TryParse(packetsplit[6], out amount);
+                short type; short.TryParse(packetsplit[4], out type);
+                short slot; short.TryParse(packetsplit[5], out slot);
+                short amount; short.TryParse(packetsplit[6], out amount);
                 Inventory inv = Session.Character.InventoryList.LoadBySlotAndType(slot, type);
                 if (inv != null && amount <= inv.InventoryItem.Amount)
                 {
@@ -1361,7 +1361,7 @@ namespace OpenNos.Handler
             byte joblevel;
             if (packetsplit.Length > 3)
                 Session.Client.SendPacket(Session.Character.GenerateSay("$JLvl JOBLEVEL", 0));
-            if (Byte.TryParse(packetsplit[2], out joblevel) && joblevel <=80 && joblevel > 0)
+            if (Byte.TryParse(packetsplit[2], out joblevel) && joblevel <= 80 && joblevel > 0)
             {
 
                 Session.Character.JobLevel = joblevel;
@@ -1695,7 +1695,7 @@ namespace OpenNos.Handler
             s = "cond 1 " + chara.id + " 0 0 12";
             chara.Send(s);
             */
-            ClientLinkManager.Instance.Broadcast(Session,Session.Character.GenerateCMode(), ReceiverType.AllOnMap);
+            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateCMode(), ReceiverType.AllOnMap);
 
             ClientLinkManager.Instance.Broadcast(Session, String.Format("guri 6 1 {0} 0 0", Session.Character.CharacterId), ReceiverType.AllOnMap);
 
@@ -1708,7 +1708,7 @@ namespace OpenNos.Handler
             Thread.Sleep(30000);
             Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("TRANSFORM_DISAPEAR")), 11));
             Session.Client.SendPacket("sd 0");
-            
+
         }
         public void ChangeSP()
         {
