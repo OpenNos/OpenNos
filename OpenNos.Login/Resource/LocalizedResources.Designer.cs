@@ -169,6 +169,15 @@ namespace OpenNos.Login.Resource {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à {0}: sell &lt;{1} {2}: piece &gt;.
+        /// </summary>
+        internal static string SELL_ITEM_VALIDE {
+            get {
+                return ResourceManager.GetString("SELL_ITEM_VALIDE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Server is started successfully..
         /// </summary>
         internal static string STARTED {

@@ -580,6 +580,28 @@ namespace OpenNos.Handler
             ClientLinkManager.Instance.Broadcast(Session, String.Format("drop {0} {1} {2} {3} {4} {5} {6}", DroppedItem.ItemVNum, DroppedItem.InventoryItemId, DroppedItem.PositionX, DroppedItem.PositionY, DroppedItem.Amount, 0, -1), ReceiverType.AllOnMap);
 
         }
+        [Packet("sell")]
+        public void SellShop(string packet)
+        {
+            string[] packetsplit = packet.Split(' ');
+            if(packetsplit.Length > 6)
+            {
+            short type; short.TryParse(packetsplit[4], out type);
+            short slot; short.TryParse(packetsplit[5], out slot);
+            short amount; short.TryParse(packetsplit[6], out amount);
+                Inventory inv = Session.Character.InventoryList.LoadBySlotAndType(slot, type);
+                if (inv != null && amount <= inv.InventoryItem.Amount)
+                {
+                    Item item = ServerManager.GetItem(inv.InventoryItem.ItemVNum);
+                    Session.Character.Gold += item.Price * amount;
+                    DeleteItem(type, slot);
+                    Session.Client.SendPacket(Session.Character.GenerateGold());
+                    Session.Client.SendPacket(Session.Character.GenerateShopMemo(1, String.Format(Language.Instance.GetMessageFromKey("SELL_ITEM_VALIDE"), item.Name, amount)));
+
+                }
+            }
+
+        }
         [Packet("buy")]
         public void BuyShop(string packet)
         {
