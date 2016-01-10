@@ -216,6 +216,8 @@ namespace OpenNos.Handler
                         Reput = characterDTO.Reput,
                         Slot = characterDTO.Slot,
                         Authority = Session.Account.Authority,
+                        SpAdditionPoint = characterDTO.SpAdditionPoint,
+                        SpPoint = characterDTO.SpPoint,
                         LastPulse = 0,
                         LastPortal = 0,
                         LastSp = 0,
