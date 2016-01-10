@@ -1200,7 +1200,6 @@ namespace OpenNos.Handler
             Session.Client.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID COLOR", 0));
             Session.Client.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID AMOUNT", 0));
             Session.Client.SendPacket(Session.Character.GenerateSay("$Shutdown", 0));
-
         }
         [Packet("$CreateItem")]
         public void CreateItem(string packet)
@@ -1707,7 +1706,7 @@ namespace OpenNos.Handler
 
             //  lev 40 2288403 23 47450 3221180 113500 20086 5
             Thread.Sleep(30000);
-            Session.Client.SendPacket(Session.Character.GenerateSay("TRANSFORM_DISAPEAR",11));
+            Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("TRANSFORM_DISAPEAR")), 11));
             Session.Client.SendPacket("sd 0");
             
         }
