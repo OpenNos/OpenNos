@@ -755,7 +755,7 @@ namespace OpenNos.GameObject
 
         public string GeneratePlayerFlag(long pflag)
         {      
-                 return String.Format("pflag 1 {0} {1}", CharacterId, pflag+1);
+                 return String.Format("pflag 1 {0} {1}", CharacterId, pflag);
         }
         public string GenerateEndPlayerFlag()
         {
