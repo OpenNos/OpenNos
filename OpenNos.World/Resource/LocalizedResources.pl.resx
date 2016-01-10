@@ -210,6 +210,15 @@
   <data name="ITEM_LOADED" xml:space="preserve">
     <value>{0} Zaladowanych przedmiotow!</value>
   </data>
+  <data name="ITEM_NOT_DROPPABLE" xml:space="preserve">
+    <value>Ten przedmiot nie moze zostac upuszczony.</value>
+  </data>
+  <data name="ITEM_NOT_SOLDABLE" xml:space="preserve">
+    <value>Nie mozesz sprzedac tego przedmiotu.</value>
+  </data>
+  <data name="ITEM_NOT_TRADABLE" xml:space="preserve">
+    <value>Nie mozesz sie wymieniac tym przedmiotem!</value>
+  </data>
   <data name="JOBLEVEL_CHANGED" xml:space="preserve">
     <value>Poziom profesji podniesiony!</value>
   </data>

@@ -165,6 +165,15 @@
   <data name="INSERT_ERROR" xml:space="preserve">
     <value>Fehler beim Einfügen/Aktualisieren des Charakters {0} , {1}</value>
   </data>
+  <data name="ITEM_NOT_DROPPABLE" xml:space="preserve">
+    <value>You cant drop that item!</value>
+  </data>
+  <data name="ITEM_NOT_SOLDABLE" xml:space="preserve">
+    <value>Item cannot be sold!</value>
+  </data>
+  <data name="ITEM_NOT_TRADABLE" xml:space="preserve">
+    <value>Item cannot be traded!</value>
+  </data>
   <data name="JOBLEVEL_CHANGED" xml:space="preserve">
     <value>Job level has been increased</value>
   </data>
