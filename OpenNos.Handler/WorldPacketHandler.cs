@@ -1593,7 +1593,7 @@ namespace OpenNos.Handler
             else if (Session.CurrentMap.IsDancing == 0 && Session.Character.IsDancing == 1)
             {
                 Session.Character.IsDancing = 0;
-                ClientLinkManager.Instance.RequiereBroadcastFromMap(Session.Character.MapId, "dance 0");
+                ClientLinkManager.Instance.RequiereBroadcastFromMap(Session.Character.MapId, "dance");
 
             }
             foreach (String ShopPacket in Session.Character.GenerateShopOnMap())
