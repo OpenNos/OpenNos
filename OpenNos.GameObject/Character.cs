@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace OpenNos.GameObject
@@ -79,6 +80,11 @@ namespace OpenNos.GameObject
                 _equipmentlist = value;
 
             }
+        }
+
+        public Thread ThreadCharChange
+        {
+            get;set;
         }
         public int LastPulse
         {
@@ -516,11 +522,11 @@ namespace OpenNos.GameObject
             Inventory Armor = EquipmentList.LoadBySlotAndType((short)EquipmentType.Armor, (short)InventoryType.Equipment);
             Inventory Weapon2 = EquipmentList.LoadBySlotAndType((short)EquipmentType.SecondaryWeapon,(short) InventoryType.Equipment);
             Inventory Weapon = EquipmentList.LoadBySlotAndType((short)EquipmentType.MainWeapon, (short)InventoryType.Equipment);
-            return String.Format("tc_info {0} {1} {2} {3} {4} {9} 0 {8} {5} {6} {10} {11} {12} {13} {14} {15} 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 {7}", Level, Name, Fairy != null ? ServerManager.GetItem(Fairy.InventoryItem.ItemVNum).Element : 0, Fairy !=null? Fairy.InventoryItem.ElementRate:0, Class, GetReputIco(), GetDigniteIco(),
+            return String.Format("tc_info {0} {1} {2} {3} {4} {9} 0 {8} {5} {6} {10} {11} {12} {13} {14} {15} {16} {17} {18} 0 0 0 0 0 0 {19} 0 0 0 0 0 0 0 0 0 0 {7}", Level, Name, Fairy != null ? ServerManager.GetItem(Fairy.InventoryItem.ItemVNum).Element : 0, Fairy !=null? Fairy.InventoryItem.ElementRate:0, Class, GetReputIco(), GetDigniteIco(),
                 Language.Instance.GetMessageFromKey("NO_PREZ_MESSAGE"), Language.Instance.GetMessageFromKey("NO_FAMILY"),
                 Gender, Weapon != null ? 1 : 0, Weapon != null ? Weapon.InventoryItem.Rare : 0, Weapon != null ? Weapon.InventoryItem.Upgrade : 0,
                 Weapon2 != null ? 1 : 0, Weapon2 != null ? Weapon2.InventoryItem.Rare : 0, Weapon2 != null ? Weapon2.InventoryItem.Upgrade : 0,
-                Armor != null ? 1 : 0, Armor != null ? Armor.InventoryItem.Rare : 0, Armor != null ? Armor.InventoryItem.Upgrade : 0);
+                Armor != null ? 1 : 0, Armor != null ? Armor.InventoryItem.Rare : 0, Armor != null ? Armor.InventoryItem.Upgrade : 0, UseSp?Morph:0);
         }
 
         public string GenerateCMap()
@@ -546,7 +552,7 @@ namespace OpenNos.GameObject
 
         public string GenerateCMode()
         {
-            return String.Format("c_mode 1 {0} {1} {2} {3} {4}", CharacterId, Morph, MorphUpgrade, MorphUpgrade2, ArenaWinner);
+            return String.Format("c_mode 1 {0} {1} {2} {3} {4}", CharacterId, UseSp?Morph:0, UseSp ? MorphUpgrade:0, UseSp ? MorphUpgrade2:0, ArenaWinner);
         }
 
         public string GenerateSay(string message, int type)
@@ -787,6 +793,11 @@ namespace OpenNos.GameObject
         public string generateModal(string message, int type)
         {
             return String.Format("modal {1} {0}", message,type);
+        }
+
+        public string GenerateSpPoint()
+        {
+           return String.Format("sp {0} 1000000 10000 10000",CharacterId);
         }
 
 
