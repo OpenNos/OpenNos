@@ -607,9 +607,10 @@ namespace OpenNos.Handler
         {
             string[] packetsplit = packet.Split(' ');
             long owner; long.TryParse(packetsplit[3], out owner);
+            short type; short.TryParse(packetsplit[2], out type);
             short slot; short.TryParse(packetsplit[4], out slot);
             short amount; short.TryParse(packetsplit[5], out amount);
-            if (owner >= 200000)//usershop
+            if (type == 1)//usershop
             {
                 KeyValuePair<long, MapShop> shop = Session.CurrentMap.ShopUserList.FirstOrDefault(mapshop => mapshop.Value.OwnerId.Equals(owner));
                 PersonalShopItem item = shop.Value.Items.FirstOrDefault(i => i.Slot.Equals(slot));
@@ -763,9 +764,6 @@ namespace OpenNos.Handler
 
                         KeyValuePair<long, MapShop> shop = Session.CurrentMap.ShopUserList.FirstOrDefault(s => s.Value.OwnerId.Equals(owner));
                         loadShopItem(owner, shop);
-
-
-
                     }
 
 
@@ -855,9 +853,9 @@ namespace OpenNos.Handler
                     shopname.TrimEnd(' ');
                     myShop.OwnerId = Session.Character.CharacterId;
                     myShop.Name = shopname;
-                    Session.CurrentMap.ShopUserList.Add(Session.CurrentMap.ShopUserList.Count() + 200000, myShop);
+                    Session.CurrentMap.ShopUserList.Add(Session.CurrentMap.ShopUserList.Count(), myShop);
 
-                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GeneratePlayerFlag(Session.CurrentMap.ShopUserList.Count() - 1), ReceiverType.AllOnMapExceptMe);
+                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GeneratePlayerFlag(Session.CurrentMap.ShopUserList.Count()), ReceiverType.AllOnMapExceptMe);
 
                     ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateShop(shopname), ReceiverType.AllOnMap);
 
@@ -1428,7 +1426,7 @@ namespace OpenNos.Handler
             {
                 Session.Character.Dance();
                 ClientLinkManager.Instance.RequiereBroadcastFromAllMapUsers(Session, "Dance");
-                ClientLinkManager.Instance.RequiereBroadcastFromMap(Session.Character.MapId, "dance 0");
+                ClientLinkManager.Instance.RequiereBroadcastFromMap(Session.Character.MapId, "dance");
             }
 
 
@@ -1654,7 +1652,7 @@ namespace OpenNos.Handler
         {
 
             string packetToSend = String.Format("n_inv 1 {0} 0 0", owner);
-            for (int i = 0; i < 20; i++)
+            for (short i = 0; i < 20; i++)
             {
                 PersonalShopItem item = shop.Value.Items.FirstOrDefault(it => it.Slot.Equals(i));
                 if (item != null)
