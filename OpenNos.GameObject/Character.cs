@@ -801,7 +801,7 @@ namespace OpenNos.GameObject
 
         public string GenerateSpPoint()
         {
-           return String.Format("sp {0} 1000000 10000 10000",CharacterId);
+           return String.Format("sp {0} 1000000 {1} 10000",SpAdditionPoint,SpPoint);
         }
 
 
