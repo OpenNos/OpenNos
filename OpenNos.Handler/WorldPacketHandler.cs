@@ -1165,7 +1165,7 @@ namespace OpenNos.Handler
             Session.Client.SendPacket(Session.Character.GenerateSay("$Morph MORPHID UPGRADE WINGS ARENA", 0));
             Session.Client.SendPacket(Session.Character.GenerateSay("$Shout MESSAGE", 0));
             Session.Client.SendPacket(Session.Character.GenerateSay("$Lvl LEVEL", 0));
-            Session.Client.SendPacket(Session.Character.GenerateSay("$Jlvl JOBLEVEL", 0));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$JLvl JOBLEVEL", 0));
             Session.Client.SendPacket(Session.Character.GenerateSay("$ChangeClass CLASS", 0));
             Session.Client.SendPacket(Session.Character.GenerateSay("$Kick USERNAME", 0));
             Session.Client.SendPacket(Session.Character.GenerateSay("$MapDance", 0));
@@ -1332,14 +1332,14 @@ namespace OpenNos.Handler
                 ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(198), ReceiverType.AllOnMap);
             }
         }
-        [Packet("$Jlvl")]
+        [Packet("$JLvl")]
         public void jlvl(string packet)
         {
 
             string[] packetsplit = packet.Split(' ');
             byte joblevel;
             if (packetsplit.Length > 3)
-                Session.Client.SendPacket(Session.Character.GenerateSay("$Jlvl JOBLEVEL", 0));
+                Session.Client.SendPacket(Session.Character.GenerateSay("$JLvl JOBLEVEL", 0));
             if (Byte.TryParse(packetsplit[2], out joblevel) && joblevel <=80 && joblevel > 0)
             {
 
