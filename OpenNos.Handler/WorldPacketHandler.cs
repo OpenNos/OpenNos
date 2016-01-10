@@ -880,6 +880,7 @@ namespace OpenNos.Handler
                     Session.Character.Speed = Session.Character.LastSpeed;
                     Session.Character.Rested = 0;
                     Session.Client.SendPacket(Session.Character.GenerateCond());
+                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateRest(), ReceiverType.AllOnMap);
 
 
 
