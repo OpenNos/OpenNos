@@ -859,9 +859,11 @@ namespace OpenNos.Handler
 
                     ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateShop(shopname), ReceiverType.AllOnMap);
 
-                    Session.Client.SendPacket(Session.Character.GenerateCond());
                     Session.Client.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("SHOP_OPEN")));
                     Session.Character.Rested = 1;
+                    Session.Character.LastSpeed = Session.Character.Speed;
+                    Session.Character.Speed = 0;
+                    Session.Client.SendPacket(Session.Character.GenerateCond());
 
                     ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateRest(), ReceiverType.AllOnMap);
 
@@ -875,6 +877,9 @@ namespace OpenNos.Handler
 
                     ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateShopEnd(), ReceiverType.AllOnMap);
                     ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEndPlayerFlag(), ReceiverType.AllOnMapExceptMe);
+                    Session.Character.Speed = Session.Character.LastSpeed;
+                    Session.Character.Rested = 0;
+                    Session.Client.SendPacket(Session.Character.GenerateCond());
 
 
 
