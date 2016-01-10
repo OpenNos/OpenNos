@@ -243,11 +243,17 @@
   <data name="STARTED" xml:space="preserve">
     <value>Server is started successfully.</value>
   </data>
+  <data name="STAY_TIME" xml:space="preserve">
+    <value>SP transformation needs cooldown, 30 seconds</value>
+  </data>
   <data name="SWORDMAN" xml:space="preserve">
     <value>Swordman</value>
   </data>
   <data name="TOO_BIG" xml:space="preserve">
     <value>Message is too big ({0} bytes). Max allowed length is {1} bytes.</value>
+  </data>
+  <data name="TRANSFORM_DISAPEAR" xml:space="preserve">
+    <value>Cooldown finished.</value>
   </data>
   <data name="UPDATE_ACCOUNT_ERROR" xml:space="preserve">
     <value>Error inserting or updating Account {0} , {1}</value>
