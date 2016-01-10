@@ -483,6 +483,8 @@
           <NavigationProperty Name="account" Relationship="opennosModel.AccountCharacter" FromRole="Character" ToRole="Account" />
           <NavigationProperty Name="generallog" Relationship="opennosModel.GeneralLogCharacter" FromRole="Character" ToRole="GeneralLog" />
           <NavigationProperty Name="map" Relationship="opennosModel.CharacterMap" FromRole="Character" ToRole="Map" />
+          <Property Name="SpPoint" Type="Int32" Nullable="false" />
+          <Property Name="SpAdditionPoint" Type="Int32" Nullable="false" />
           <Property Name="State" Type="Byte" Nullable="false" />
           <NavigationProperty Name="inventory" Relationship="opennosModel.CharacterInventory" FromRole="Character" ToRole="Inventory" />
         </EntityType>
