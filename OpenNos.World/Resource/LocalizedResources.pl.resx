@@ -261,6 +261,9 @@
   <data name="STARTED" xml:space="preserve">
     <value>Server swiata uruchomiony poprawnie!</value>
   </data>
+  <data name="STAY_TIME" xml:space="preserve">
+    <value>Transformacja potrzebuje 30 sekund na odswiezenie</value>
+  </data>
   <data name="SURE_TO_DELETE" xml:space="preserve">
     <value>Czy chcesz usunac?</value>
   </data>
@@ -269,6 +272,9 @@
   </data>
   <data name="TOO_BIG" xml:space="preserve">
     <value>Wiadomosc jest za duza ({0} bytes). maksymalna dlugosc {1} bytes.</value>
+  </data>
+  <data name="TRANSFORM_DISAPEAR" xml:space="preserve">
+    <value>Odswiezenie zakonczone.</value>
   </data>
   <data name="UPDATE_ACCOUNT_ERROR" xml:space="preserve">
     <value>Blad przy zapisywaniu badz odswiezaniu konta {0} , {1}</value>
