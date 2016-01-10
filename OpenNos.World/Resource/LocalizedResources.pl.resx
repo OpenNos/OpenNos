@@ -210,6 +210,9 @@
   <data name="ITEM_LOADED" xml:space="preserve">
     <value>{0} Zaladowanych przedmiotow!</value>
   </data>
+  <data name="JOBLEVEL_CHANGED" xml:space="preserve">
+    <value>Poziom profesji podniesiony!</value>
+  </data>
   <data name="JOB_CHANGED" xml:space="preserve">
     <value>Zawod zostal zmieniony.</value>
   </data>
