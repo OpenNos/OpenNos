@@ -497,7 +497,8 @@ namespace OpenNos.Handler
                                     ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEq(), ReceiverType.AllOnMap);
                                     Session.Client.SendPacket(Session.Character.GenerateEquipment());
                                     ClientLinkManager.Instance.Broadcast(Session, Session.Character.GeneratePairy(), ReceiverType.AllOnMap);
-
+                                    if (inventory.Slot == (short)InventoryType.Sp)
+                                        ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateSpPoint(), ReceiverType.AllOnMap);
                                 }
                                 else
                                 {
@@ -519,7 +520,9 @@ namespace OpenNos.Handler
                                     ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEq(), ReceiverType.AllOnMap);
                                     Session.Client.SendPacket(Session.Character.GenerateEquipment());
                                     ClientLinkManager.Instance.Broadcast(Session, Session.Character.GeneratePairy(), ReceiverType.AllOnMap);
-
+                                    if (inventory.Slot == (short)InventoryType.Sp)
+                                        ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateSpPoint(), ReceiverType.AllOnMap);
+                                 
                                 }
                             }
                             else
@@ -1101,10 +1104,6 @@ namespace OpenNos.Handler
                                     short Slot = inv.Slot;
                                     if (Slot != -1)
                                         Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(inv.InventoryItem.ItemVNum, inv.InventoryItem.Amount, inv.Type, Slot, inv.InventoryItem.Rare, inv.InventoryItem.Color, inv.InventoryItem.Upgrade));
-
-
-
-
                                 }
                             }
 
