@@ -748,26 +748,17 @@ namespace OpenNos.Handler
             string[] packetsplit = packet.Split(' ');
             short NpcId; short.TryParse(packetsplit[5], out NpcId);
             short type; short.TryParse(packetsplit[2], out type);
-            short slot; short.TryParse(packetsplit[4], out slot);
             Npc npc = Session.CurrentMap.Npcs.FirstOrDefault(n => n.NpcId.Equals(NpcId));
             string shoplist = String.Empty;
             Shop shop = npc.Shop;
-            Inventory invitem = Session.Character.EquipmentList.LoadBySlotAndType(slot, type);
             if (shop != null)
             {
-                if (ServerManager.GetItem(invitem.InventoryItem.ItemVNum).Transaction == 1)
+                foreach (ShopItem item in shop.ShopItems.Where(s => s.Type.Equals(type)))
                 {
-                    foreach (ShopItem item in shop.ShopItems.Where(s => s.Type.Equals(type)))
-                    {
-                        shoplist += String.Format(" {0}.{1}.{2}.{3}.{4}", ServerManager.GetItem(item.ItemVNum).Type, item.Slot, item.ItemVNum, -1, ServerManager.GetItem(item.ItemVNum).Price);
-                    }
+                    shoplist += String.Format(" {0}.{1}.{2}.{3}.{4}", ServerManager.GetItem(item.ItemVNum).Type, item.Slot, item.ItemVNum, -1, ServerManager.GetItem(item.ItemVNum).Price);
+                }
 
-                    Session.Client.SendPacket(String.Format("n_inv 2 {0} 0 0{1}", npc.NpcId, shoplist));
-                }
-                else
-                {
-                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("ITEM_NOT_TRADABLE"), 0));
-                }
+                Session.Client.SendPacket(String.Format("n_inv 2 {0} 0 0{1}", npc.NpcId, shoplist));
             }
         }
         [Packet("npc_req")]
@@ -938,14 +929,10 @@ namespace OpenNos.Handler
         public void MoveInventory(string packet)
         {
             string[] packetsplit = packet.Split(' ');
-            short type;
-            short.TryParse(packetsplit[2], out type);
-            short slot;
-            short.TryParse(packetsplit[3], out slot);
-            short desttype;
-            short.TryParse(packetsplit[4], out desttype);
-            short destslot;
-            short.TryParse(packetsplit[5], out destslot);
+            short type; short.TryParse(packetsplit[2], out type);
+            short slot; short.TryParse(packetsplit[3], out slot);
+            short desttype; short.TryParse(packetsplit[4], out desttype);
+            short destslot; short.TryParse(packetsplit[5], out destslot);
             Inventory inv = Session.Character.InventoryList.moveInventory(type, slot, desttype, destslot);
             if (inv != null)
             {
@@ -1034,6 +1021,8 @@ namespace OpenNos.Handler
         {
             string[] packetsplit = packet.Split(' ');
             short mode; short.TryParse(packetsplit[2], out mode);
+            short type; short.TryParse(packetsplit[2], out type);
+            short slot; short.TryParse(packetsplit[3], out slot);
             long charId = -1;
 
             string CharName;
@@ -1043,7 +1032,6 @@ namespace OpenNos.Handler
                 Session.Character.ExchangeInfo = new ExchangeInfo();
                 Session.Character.ExchangeInfo.CharId = charId;
                 CharName = (string)ClientLinkManager.Instance.RequiereProperties(charId, "Name");
-
                 Session.Client.SendPacket(Session.Character.generateModal(String.Format("{0}{1}", Language.Instance.GetMessageFromKey("YOU_ASK_FOR_EXCHANGE"), "", charId), 0));
                 ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateDialog(String.Format("#req_exc^2^{0} #req_exc^5^{0} {1}", Session.Character.CharacterId, "accept?")), ReceiverType.OnlySomeone, CharName);
                 Session.Character.ExchangeInfo.Confirm = false;
@@ -1075,7 +1063,6 @@ namespace OpenNos.Handler
                             continu = false;
                         }
 
-
                         if (!inventory.getFreePlaceAmount(exchange.ExchangeList, backpack))
                         {
                             continu = false;
@@ -1103,9 +1090,16 @@ namespace OpenNos.Handler
                                 Inventory inv = Session.Character.InventoryList.CreateItem(item, Session.Character);
                                 if (inv != null)
                                 {
-                                    short Slot = inv.Slot;
-                                    if (Slot != -1)
-                                        Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(inv.InventoryItem.ItemVNum, inv.InventoryItem.Amount, inv.Type, Slot, inv.InventoryItem.Rare, inv.InventoryItem.Color, inv.InventoryItem.Upgrade));
+                                    if (ServerManager.GetItem(inv.InventoryItem.ItemVNum).Transaction == 1)
+                                    {
+                                        short Slot = inv.Slot;
+                                        if (Slot != -1)
+                                            Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(inv.InventoryItem.ItemVNum, inv.InventoryItem.Amount, inv.Type, Slot, inv.InventoryItem.Rare, inv.InventoryItem.Color, inv.InventoryItem.Upgrade));
+                                    }
+                                    else
+                                    {
+                                        Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("ITEM_NOT_TRADABLE"), 0));
+                                    }
                                 }
                             }
 
