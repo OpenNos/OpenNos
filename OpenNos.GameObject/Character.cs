@@ -161,7 +161,11 @@ namespace OpenNos.GameObject
 
             }
         }
-
+        public int LastSpeed
+        {
+            get;
+            set;
+        }
         public int ArenaWinner
         {
             get { return _arenaWinner; }
