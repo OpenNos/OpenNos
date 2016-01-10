@@ -156,7 +156,13 @@
   <data name="STARTED" xml:space="preserve">
     <value>Server is started successfully.</value>
   </data>
+  <data name="STAY_TIME" xml:space="preserve">
+    <value>It stay {0} secondes.</value>
+  </data>
   <data name="TOO_BIG" xml:space="preserve">
     <value>Message is too big ({0} bytes). Max allowed length is {1} bytes.</value>
+  </data>
+  <data name="TRANSFORM_DISAPEAR" xml:space="preserve">
+    <value>The transformation is finished.</value>
   </data>
 </root>
