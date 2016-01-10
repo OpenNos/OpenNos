@@ -477,7 +477,7 @@ namespace OpenNos.GameObject
 
         public string GenerateCInfo()
         {
-            return String.Format("c_info {0} - {1} {2} - {3} {4} {5} {6} {7} {8} {9} {10} {11} {12} {13} {14} {15} ", Name, -1, -1, CharacterId, Authority, Gender, HairStyle, HairColor, Class, GetReputIco(), 0, Morph, Invisible, 0, MorphUpgrade, ArenaWinner);
+            return String.Format("c_info {0} - {1} {2} - {3} {4} {5} {6} {7} {8} {9} {10} {11} {12} {13} {14} {15} ", Name, -1, -1, CharacterId, Authority, Gender, HairStyle, HairColor, Class, GetReputIco(), 0, UseSp?Morph:0, Invisible, 0, UseSp ? MorphUpgrade:0, ArenaWinner);
         }
 
         public int GetDigniteIco()
