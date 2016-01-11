@@ -488,7 +488,7 @@ namespace OpenNos.Handler
                                 {
                                     inventory.Type = (short)InventoryType.Equipment;
                                     inventory.Slot = iteminfo.EquipmentSlot;
-
+                                    
                                     Session.Character.EquipmentList.InsertOrUpdate(ref inventory);
                                     DeleteItem(type, slot);
 
