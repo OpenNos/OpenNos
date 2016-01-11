@@ -261,6 +261,9 @@
   <data name="NO_PREZ_MESSAGE" xml:space="preserve">
     <value>No Presentation Message.</value>
   </data>
+  <data name="NO_SP" xml:space="preserve">
+    <value>You're not wearing specialist card</value>
+  </data>
   <data name="PACKET_ARRIVED" xml:space="preserve">
     <value>Packet arrived, packet: {0}</value>
   </data>

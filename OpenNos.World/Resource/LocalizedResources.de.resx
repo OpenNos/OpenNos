@@ -195,6 +195,9 @@
   <data name="NO_ENTRY" xml:space="preserve">
     <value>Kein Einsprungspunkt gefunden!</value>
   </data>
+  <data name="NO_SP" xml:space="preserve">
+    <value>You're not wearing specialist card</value>
+  </data>
   <data name="PACKET_ARRIVED" xml:space="preserve">
     <value>Paket erhalten: {0}</value>
   </data>
