@@ -1168,7 +1168,7 @@ namespace OpenNos.Handler
                     }
                     else
                     {
-                        Session.Client.SendPacket(Session.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("SP_INLOADING"), 0), 30 - (int)def));
+                        Session.Client.SendPacket(Session.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("SP_INLOADING"), 30 - (int)def),0));
                     }
                 }
                 else

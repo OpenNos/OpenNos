@@ -153,9 +153,6 @@
   <data name="NEW_CONNECT" xml:space="preserve">
     <value>A new client is connected. ClientId =</value>
   </data>
-  <data name="SELL_ITEM_VALIDE" xml:space="preserve">
-    <value>{0}: sell &lt;{1} {2}: piece &gt;</value>
-  </data>
   <data name="STARTED" xml:space="preserve">
     <value>Server is started successfully.</value>
   </data>
@@ -164,8 +161,5 @@
   </data>
   <data name="TOO_BIG" xml:space="preserve">
     <value>Message is too big ({0} bytes). Max allowed length is {1} bytes.</value>
-  </data>
-  <data name="TRANSFORM_DISAPEAR" xml:space="preserve">
-    <value>The transformation is finished.</value>
   </data>
 </root>

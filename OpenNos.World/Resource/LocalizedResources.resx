@@ -270,6 +270,9 @@
   <data name="PACKET_FAILURE" xml:space="preserve">
     <value>Failed to send packet {0} to client {1}, {2}.</value>
   </data>
+  <data name="SELL_ITEM_VALIDE" xml:space="preserve">
+    <value>{0}: sell &lt;{1} {2}: piece &gt;</value>
+  </data>
   <data name="SHUTDOWN_MIN" xml:space="preserve">
     <value>Server will be shut in {0} Minutes.</value>
   </data>
@@ -278,6 +281,9 @@
   </data>
   <data name="SP_BLOCKED" xml:space="preserve">
     <value>You can't change sp now!</value>
+  </data>
+  <data name="SP_INLOADING" xml:space="preserve">
+    <value>Wait {0} sec!</value>
   </data>
   <data name="STARTED" xml:space="preserve">
     <value>Server is started successfully.</value>
@@ -296,6 +302,9 @@
   </data>
   <data name="TRANSFORM_DISAPEAR" xml:space="preserve">
     <value>Cooldown finished.</value>
+  </data>
+  <data name="TRANSFORM_DISAPEAR1" xml:space="preserve">
+    <value>The transformation is finished.</value>
   </data>
   <data name="UPDATE_ACCOUNT_ERROR" xml:space="preserve">
     <value>Error inserting or updating Account {0} , {1}</value>
