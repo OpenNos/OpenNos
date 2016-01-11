@@ -207,6 +207,9 @@
   <data name="PACKET_FAILURE" xml:space="preserve">
     <value>Fehler beim Senden von Packet {0} an Client {1}, {2}.</value>
   </data>
+  <data name="SP_INLOADING" xml:space="preserve">
+    <value>SP card is loading {0} seconds</value>
+  </data>
   <data name="STARTED" xml:space="preserve">
     <value>Server erfolgreich gestartet.</value>
   </data>
