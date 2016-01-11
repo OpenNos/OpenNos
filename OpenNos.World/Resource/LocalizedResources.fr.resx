@@ -255,6 +255,9 @@
   <data name="SHUTDOWN_SEC" xml:space="preserve">
     <value>Le serveur sera fermé dans {0} secondes.</value>
   </data>
+  <data name="SP_BLOCKED" xml:space="preserve">
+    <value>You can't change sp now!</value>
+  </data>
   <data name="SP_INLOADING" xml:space="preserve">
     <value>SP card is loading {0} seconds</value>
   </data>
