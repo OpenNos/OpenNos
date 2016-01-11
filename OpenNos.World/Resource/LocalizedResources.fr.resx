@@ -132,6 +132,9 @@
   <data name="ARCHER" xml:space="preserve">
     <value>Archer</value>
   </data>
+  <data name="BAD_FAIRY" xml:space="preserve">
+    <value>The fairy element is not the same like sp!</value>
+  </data>
   <data name="BAD_PASSWORD" xml:space="preserve">
     <value>Vérifiez vos identifiants.</value>
   </data>
