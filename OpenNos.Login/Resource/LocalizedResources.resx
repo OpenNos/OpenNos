@@ -165,7 +165,4 @@
   <data name="TOO_BIG" xml:space="preserve">
     <value>Message is too big ({0} bytes). Max allowed length is {1} bytes.</value>
   </data>
-  <data name="TRANSFORM_DISAPEAR" xml:space="preserve">
-    <value>The transformation is finished.</value>
-  </data>
 </root>

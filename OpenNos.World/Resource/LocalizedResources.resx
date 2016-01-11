@@ -279,6 +279,9 @@
   <data name="SP_BLOCKED" xml:space="preserve">
     <value>You can't change sp now!</value>
   </data>
+  <data name="SP_INLOADING" xml:space="preserve">
+    <value>SP card is loading {0} seconds</value>
+  </data>
   <data name="STARTED" xml:space="preserve">
     <value>Server is started successfully.</value>
   </data>
