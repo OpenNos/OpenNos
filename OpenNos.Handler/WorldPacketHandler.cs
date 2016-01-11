@@ -465,10 +465,8 @@ namespace OpenNos.Handler
             string[] packetsplit = packet.Split(' ');
             if (packetsplit.Length > 3)
             {
-                short type = 0;
-                short slot = 0;
-                short.TryParse(packetsplit[2], out slot);
-                short.TryParse(packetsplit[3], out type);
+                short type = 0; short.TryParse(packetsplit[3], out type);
+                short slot = 0; short.TryParse(packetsplit[2], out slot);
                 Item iteminfo;
 
                 Inventory inventory = Session.Character.InventoryList.LoadBySlotAndType(slot, type);
@@ -522,7 +520,6 @@ namespace OpenNos.Handler
                                     ClientLinkManager.Instance.Broadcast(Session, Session.Character.GeneratePairy(), ReceiverType.AllOnMap);
                                     if (inventory.Slot == (short)InventoryType.Sp)
                                         ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateSpPoint(), ReceiverType.AllOnMap);
-                                 
                                 }
                             }
                             else
@@ -1777,6 +1774,7 @@ namespace OpenNos.Handler
                 ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateCond(), ReceiverType.AllOnMap);
 
             }
+            else
             {
                 Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("BAD_FAIRY"), 0));
             }
