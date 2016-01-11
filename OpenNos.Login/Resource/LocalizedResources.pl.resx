@@ -153,9 +153,6 @@
   <data name="NEW_CONNECT" xml:space="preserve">
     <value>Polaczono nowego użytkownika. ClientId =</value>
   </data>
-  <data name="SELL_ITEM_VALIDE" xml:space="preserve">
-    <value>{0}: sprzedarz &lt;{1} {2}: sztuk &gt;</value>
-  </data>
   <data name="STARTED" xml:space="preserve">
     <value>Server zostal uruchomiony!</value>
   </data>

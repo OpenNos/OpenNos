@@ -150,9 +150,6 @@
   <data name="NEW_CONNECT" xml:space="preserve">
     <value>A new client is connected. ClientId =</value>
   </data>
-  <data name="SELL_ITEM_VALIDE" xml:space="preserve">
-    <value>{0}: sell &lt;{1} {2}: piece &gt;</value>
-  </data>
   <data name="STARTED" xml:space="preserve">
     <value>Server is started successfully.</value>
   </data>
