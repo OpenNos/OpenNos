@@ -135,6 +135,9 @@
   <data name="ASK_TO_DELETE" xml:space="preserve">
     <value>Czy chcesz usunac?</value>
   </data>
+  <data name="BAD_FAIRY" xml:space="preserve">
+    <value>Atrybut wrózki rózni sie od atrybutu specjalisty</value>
+  </data>
   <data name="BAD_PASSWORD" xml:space="preserve">
     <value>Zle haslo</value>
   </data>
@@ -254,6 +257,9 @@
   </data>
   <data name="NO_PREZ_MESSAGE" xml:space="preserve">
     <value>Brak opisu.</value>
+  </data>
+  <data name="NO_SP" xml:space="preserve">
+    <value>Nie zalozyles karty specjalisty</value>
   </data>
   <data name="PACKET_ARRIVED" xml:space="preserve">
     <value>Wyslano packet, packet: {0}</value>

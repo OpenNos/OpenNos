@@ -139,7 +139,7 @@
     <value>You can't wear this item!</value>
   </data>
   <data name="BAD_FAIRY" xml:space="preserve">
-    <value>The fairy element is bad for this sp!</value>
+    <value>The fairy element is not the same like sp!</value>
   </data>
   <data name="BAD_PASSWORD" xml:space="preserve">
     <value>Bad Password</value>
@@ -260,6 +260,9 @@
   </data>
   <data name="NO_PREZ_MESSAGE" xml:space="preserve">
     <value>No Presentation Message.</value>
+  </data>
+  <data name="NO_SP" xml:space="preserve">
+    <value>You're not wearing specialist card</value>
   </data>
   <data name="PACKET_ARRIVED" xml:space="preserve">
     <value>Packet arrived, packet: {0}</value>
