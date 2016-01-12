@@ -249,6 +249,9 @@
   <data name="PACKET_FAILURE" xml:space="preserve">
     <value>Failed to send packet {0} to client {1}, {2}.</value>
   </data>
+  <data name="SHOP_OPEN" xml:space="preserve">
+    <value>Shop has ben opened</value>
+  </data>
   <data name="SHUTDOWN_MIN" xml:space="preserve">
     <value>Le serveur sera fermé dans {0} minutes.</value>
   </data>
