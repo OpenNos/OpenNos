@@ -26,6 +26,8 @@ namespace OpenNos.Data
         public short Color { get; set; }
         public short Amount { get; set; }
         public short SlElement { get; set; }
+        public short SpLevel { get; set; }
+        public short SpXp { get; set; }
         public short SlHit { get; set; }
         public short SlDefence { get; set; }
         public short SlHP { get; set; }
