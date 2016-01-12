@@ -289,7 +289,7 @@
     <value>Transformacja potrzebuje 30 sekund na odswiezenie</value>
   </data>
   <data name="SURE_TO_DELETE" xml:space="preserve">
-    <value>Czy chcesz usunac?</value>
+    <value>Juz nigdy nie odzyskasz tego przedmiotu, jestes pewien?</value>
   </data>
   <data name="SWORDMAN" xml:space="preserve">
     <value>Wojownik</value>
