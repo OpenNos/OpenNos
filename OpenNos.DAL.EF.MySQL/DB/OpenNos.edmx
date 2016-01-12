@@ -238,6 +238,8 @@
     <Property Name="Rare" Type="smallint" Nullable="false" />
     <Property Name="Color" Type="smallint" Nullable="false" />
     <Property Name="Amount" Type="smallint" Nullable="false" />
+    <Property Name="SpLevel" Type="smallint" Nullable="false" />
+    <Property Name="SpXp" Type="smallint" Nullable="false" />
     <Property Name="SlElement" Type="smallint" Nullable="false" />
     <Property Name="SlHit" Type="smallint" Nullable="false" />
     <Property Name="SlDefence" Type="smallint" Nullable="false" />
@@ -774,6 +776,8 @@
           <Property Name="Rare" Type="Int16" Nullable="false" />
           <Property Name="Color" Type="Int16" Nullable="false" />
           <Property Name="Amount" Type="Int16" Nullable="false" />
+          <Property Name="SpLevel" Type="Int16" Nullable="false" />
+          <Property Name="SpXp" Type="Int16" Nullable="false" />
           <Property Name="SlElement" Type="Int16" Nullable="false" />
           <Property Name="SlHit" Type="Int16" Nullable="false" />
           <Property Name="SlDefence" Type="Int16" Nullable="false" />
@@ -1075,6 +1079,8 @@
           <ScalarProperty Name="Rare" ColumnName="Rare" />
           <ScalarProperty Name="Color" ColumnName="Color" />
           <ScalarProperty Name="Amount" ColumnName="Amount" />
+          <ScalarProperty Name="SpLevel" ColumnName="SpLevel" />
+          <ScalarProperty Name="SpXp" ColumnName="SpXp" />
           <ScalarProperty Name="SlElement" ColumnName="SlElement" />
           <ScalarProperty Name="SlHit" ColumnName="SlHit" />
           <ScalarProperty Name="SlDefence" ColumnName="SlDefence" />
