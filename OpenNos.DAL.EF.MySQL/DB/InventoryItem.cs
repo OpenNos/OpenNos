@@ -36,6 +36,8 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public short Rare { get; set; }
         public short Color { get; set; }
         public short Amount { get; set; }
+        public short SpLevel { get; set; }
+        public short SpXp { get; set; }
         public short SlElement { get; set; }
         public short SlHit { get; set; }
         public short SlDefence { get; set; }
