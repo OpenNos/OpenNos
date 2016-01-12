@@ -556,12 +556,40 @@ namespace OpenNos.Handler
         public void npcRunFunction(string packet)
         {
             string[] packetsplit = packet.Split(' ');
-            if (packetsplit.Length > 2)
+            if (packetsplit.Length > 5)
             {
                 short type; short.TryParse(packetsplit[3], out type);
                 short runner; short.TryParse(packetsplit[2], out runner);
+                short data3; short.TryParse(packetsplit[4], out data3);
+                short npcid; short.TryParse(packetsplit[5], out npcid);
                 switch (runner)
                 {
+                    case 1:
+                        if (Session.Character.Class == (short)ClassType.Adventurer)
+                        {
+                            if (Session.Character.Level >= 15 && Session.Character.JobLevel >= 20)
+                            {
+                                {
+                                    if (Session.Character.EquipmentList.isEmpty())
+                                    {
+                                        ClassChange(Convert.ToByte(type));
+                                    }
+                                    else
+                                    {
+                                        Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("EQ_NOT_EMPTY"), 0));
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("LOW_LVL"), 0));
+                            }
+                        }
+                        else
+                        {
+                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ADVENTURER"), 0));
+                        }
+                        break;
                     case 2:
                         Session.Client.SendPacket(String.Format("wopen {0} 0", 1));
                         break;
@@ -1296,7 +1324,7 @@ namespace OpenNos.Handler
                         MagicDefence = 0,
                         RangeDefence = 0,
                         SpXp = 0,
-                        SpLevel =0,
+                        SpLevel = 0,
                         SlDefence = 0,
                         SlElement = 0,
                         SlHit = 0,
@@ -1332,42 +1360,13 @@ namespace OpenNos.Handler
         [Packet("$ChangeClass")]
         public void ChangeClass(string packet)
         {
-
             string[] packetsplit = packet.Split(' ');
             byte classe;
             if (packetsplit.Length > 3)
                 Session.Client.SendPacket(Session.Character.GenerateSay("$ChangeClass CLASS", 0));
             if (Byte.TryParse(packetsplit[2], out classe) && classe < 4)
             {
-                Session.Client.SendPacket("npinfo 0");
-                Session.Client.SendPacket("p_clear");
-
-                Session.Character.Class = classe;
-                Session.Character.Speed = ServersData.SpeedData[Session.Character.Class];
-                Session.Character.Hp = (int)Session.Character.HPLoad();
-                Session.Character.Mp = (int)Session.Character.MPLoad();
-                Session.Client.SendPacket(Session.Character.GenerateTit());
-
-                // eq 37 0 1 0 9 3 -1.120.46.86.-1.-1.-1.-1 0 0
-                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEq(), ReceiverType.AllOnMap);
-
-                //equip 0 0 0.46.0.0.0 1.120.0.0.0 5.86.0.0.0
-
-                Session.Client.SendPacket(Session.Character.GenerateLev());
-                Session.Client.SendPacket(Session.Character.GenerateStat());
-                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(8), ReceiverType.AllOnMap);
-                Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("JOB_CHANGED"), 0));
-                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(196), ReceiverType.AllOnMap);
-                Random rand = new Random();
-                int faction = 1 + (int)rand.Next(0, 2);
-                Session.Character.Faction = faction;
-                Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey(String.Format("GET_PROTECTION_POWER_{0}", faction)), 0));
-                Session.Client.SendPacket("scr 0 0 0 0 0 0");
-
-                Session.Client.SendPacket(Session.Character.GenerateFaction());
-                // fs 1
-
-                Session.Client.SendPacket(Session.Character.GenerateEff(4799 + faction));
+                ClassChange(classe);
             }
         }
         [Packet("$Lvl")]
@@ -1764,7 +1763,6 @@ namespace OpenNos.Handler
             {
 
 
-
                 Session.Character.UseSp = true;
                 Session.Character.Morph = ServerManager.GetItem(sp.InventoryItem.ItemVNum).Morph;
                 Session.Character.MorphUpgrade = sp.InventoryItem.Upgrade;
@@ -1823,6 +1821,38 @@ namespace OpenNos.Handler
             Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, type, slot, 0, 0, 0));
 
         }
+        public void ClassChange(byte classe)
+        {
+            Session.Client.SendPacket("npinfo 0");
+            Session.Client.SendPacket("p_clear");
+
+            Session.Character.Class = classe;
+            Session.Character.Speed = ServersData.SpeedData[Session.Character.Class];
+            Session.Character.Hp = (int)Session.Character.HPLoad();
+            Session.Character.Mp = (int)Session.Character.MPLoad();
+            Session.Client.SendPacket(Session.Character.GenerateTit());
+
+            // eq 37 0 1 0 9 3 -1.120.46.86.-1.-1.-1.-1 0 0
+            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEq(), ReceiverType.AllOnMap);
+
+            //equip 0 0 0.46.0.0.0 1.120.0.0.0 5.86.0.0.0
+
+            Session.Client.SendPacket(Session.Character.GenerateLev());
+            Session.Client.SendPacket(Session.Character.GenerateStat());
+            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(8), ReceiverType.AllOnMap);
+            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("JOB_CHANGED"), 0));
+            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(196), ReceiverType.AllOnMap);
+            Random rand = new Random();
+            int faction = 1 + (int)rand.Next(0, 2);
+            Session.Character.Faction = faction;
+            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey(String.Format("GET_PROTECTION_POWER_{0}", faction)), 0));
+            Session.Client.SendPacket("scr 0 0 0 0 0 0");
+
+            Session.Client.SendPacket(Session.Character.GenerateFaction());
+            // fs 1
+
+            Session.Client.SendPacket(Session.Character.GenerateEff(4799 + faction));
+        }
         #endregion
         #region UselessPacket
         [Packet("snap")]
@@ -1849,6 +1879,6 @@ namespace OpenNos.Handler
             //i don't know why there is this packet
         }
 
-        #endregion 
+        #endregion
     }
 }

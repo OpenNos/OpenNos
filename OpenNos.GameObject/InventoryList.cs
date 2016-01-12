@@ -35,6 +35,10 @@ namespace OpenNos.GameObject
         #endregion
 
         #region Methods
+        public bool isEmpty()
+        {
+            return Inventory.Count > 0 ? false : true;
+        }
         public void InsertOrUpdate(ref Inventory newInventory)
         {
             long inventoryId = newInventory.InventoryId;
