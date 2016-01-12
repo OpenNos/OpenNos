@@ -408,6 +408,10 @@ namespace OpenNos.Handler
 
             Session.Client.SendPacket(Session.Character.GenerateExts());
             Session.Client.SendPacket(Session.Character.GenerateGold());
+            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEq(), ReceiverType.AllOnMap);
+            Session.Client.SendPacket(Session.Character.GenerateEquipment());
+            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GeneratePairy(), ReceiverType.AllOnMap);
+            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateSpPoint(), ReceiverType.AllOnMap);
             GetStartupInventory();
             //gidx
             Session.Client.SendPacket("mlinfo 3800 2000 100 0 0 10 0 Mélodie^du^printemps Bienvenue");
@@ -495,8 +499,6 @@ namespace OpenNos.Handler
                                     ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEq(), ReceiverType.AllOnMap);
                                     Session.Client.SendPacket(Session.Character.GenerateEquipment());
                                     ClientLinkManager.Instance.Broadcast(Session, Session.Character.GeneratePairy(), ReceiverType.AllOnMap);
-                                    if (inventory.Slot == (short)InventoryType.Sp)
-                                        ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateSpPoint(), ReceiverType.AllOnMap);
                                 }
                                 else
                                 {
@@ -518,8 +520,6 @@ namespace OpenNos.Handler
                                     ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEq(), ReceiverType.AllOnMap);
                                     Session.Client.SendPacket(Session.Character.GenerateEquipment());
                                     ClientLinkManager.Instance.Broadcast(Session, Session.Character.GeneratePairy(), ReceiverType.AllOnMap);
-                                    if (inventory.Slot == (short)InventoryType.Sp)
-                                        ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateSpPoint(), ReceiverType.AllOnMap);
                                 }
                             }
                             else
