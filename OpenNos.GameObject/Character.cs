@@ -292,6 +292,8 @@ namespace OpenNos.GameObject
                             MagicDefence = inventoryItemDTO.MagicDefence,
                             RangeDefence = inventoryItemDTO.RangeDefence,
                             Rare = inventoryItemDTO.Rare,
+                            SpXp = inventoryItemDTO.SpXp,
+                            SpLevel = inventoryItemDTO.SpLevel,
                             SlDefence = inventoryItemDTO.SlDefence,
                             SlElement = inventoryItemDTO.SlElement,
                             SlHit = inventoryItemDTO.SlHit,
