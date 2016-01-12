@@ -176,8 +176,22 @@ namespace OpenNos.Handler
             foreach (CharacterDTO character in characters)
             {
                 //move to character
+                 InventoryItemDTO[] item = new InventoryItemDTO[15];
+                for (short i = 0; i < 15; i++)
+                {
+                    InventoryDTO inv = DAOFactory.InventoryDAO.LoadBySlotAndType(character.CharacterId,i, (short)InventoryType.Equipment);
+                    if (inv != null)
+                    {
+                        item[i] = DAOFactory.InventoryItemDAO.LoadById(inv.InventoryItemId);
+
+                    }
+                  
+                   
+                }
+
+
                 Session.Client.SendPacket(String.Format("clist {0} {1} {2} {3} {4} {5} {6} {7} {8} {9}.{10}.{11}.{12}.{13}.{14}.{15}.{16} {17} {18} {19} {20}.{21} {22} {23}",
-                    character.Slot, character.Name, 0, character.Gender, character.HairStyle, character.HairColor, 5, character.Class, character.Level, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, -1, -1, character.HairColor, 0));
+                    character.Slot, character.Name, 0, character.Gender, character.HairStyle, character.HairColor, 5, character.Class, character.Level, item[(short)EquipmentType.Hat] != null ? item[(short)EquipmentType.Hat].ItemVNum : 0, item[(short)EquipmentType.Armor] != null ? item[(short)EquipmentType.Armor].ItemVNum : 0, item[(short)EquipmentType.MainWeapon] != null ? item[(short)EquipmentType.MainWeapon].ItemVNum : 0, item[(short)EquipmentType.SecondaryWeapon] != null ? item[(short)EquipmentType.SecondaryWeapon].ItemVNum : 0, item[(short)EquipmentType.Mask] != null ? item[(short)EquipmentType.Mask].ItemVNum : 0, item[(short)EquipmentType.Fairy] != null ? item[(short)EquipmentType.Fairy].ItemVNum : 0, item[(short)EquipmentType.CostumeSuite] != null ? item[(short)EquipmentType.CostumeSuite].ItemVNum:0, item[(short)EquipmentType.CostumeHat] != null ? item[(short)EquipmentType.CostumeHat].ItemVNum:0, 1, 0, 0, -1, -1, item[(short)EquipmentType.Hat] != null?(ServerManager.GetItem(item[(short)EquipmentType.Hat].ItemVNum).Colored ? item[(short)EquipmentType.Hat].Color : character.HairColor) : character.HairColor, 0));
             }
             Session.Client.SendPacket("clist_end");
 
