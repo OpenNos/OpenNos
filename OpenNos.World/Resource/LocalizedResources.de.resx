@@ -207,6 +207,9 @@
   <data name="PACKET_FAILURE" xml:space="preserve">
     <value>Fehler beim Senden von Packet {0} an Client {1}, {2}.</value>
   </data>
+  <data name="SHOP_OPEN" xml:space="preserve">
+    <value>Shop has ben opened</value>
+  </data>
   <data name="SP_BLOCKED" xml:space="preserve">
     <value>You can't change sp now!</value>
   </data>
