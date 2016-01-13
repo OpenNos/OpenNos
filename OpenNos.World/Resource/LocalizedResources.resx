@@ -195,6 +195,9 @@
   <data name="DISCONNECT" xml:space="preserve">
     <value>A client is has been disconnected! ClientId =</value>
   </data>
+  <data name="EQ_NOT_EMPTY" xml:space="preserve">
+    <value>Your equipment is not empty</value>
+  </data>
   <data name="FORCED_DISCONNECT" xml:space="preserve">
     <value>Forced Disconnecting of client {0}, too much connections.</value>
   </data>
@@ -234,6 +237,9 @@
   <data name="LEVEL_CHANGED" xml:space="preserve">
     <value>Level has been increased!</value>
   </data>
+  <data name="LOW_LVL" xml:space="preserve">
+    <value>Your level is too low</value>
+  </data>
   <data name="MAGICIAN" xml:space="preserve">
     <value>Magician</value>
   </data>
@@ -248,6 +254,9 @@
   </data>
   <data name="NEW_CONNECT" xml:space="preserve">
     <value>A new client is connected. ClientId =</value>
+  </data>
+  <data name="NOT_ADVENTURER" xml:space="preserve">
+    <value>You can change class only once</value>
   </data>
   <data name="NOT_ENOUGH_PLACE" xml:space="preserve">
     <value>Not enought places</value>
