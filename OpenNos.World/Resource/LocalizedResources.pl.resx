@@ -192,6 +192,9 @@
   <data name="DISCONNECT" xml:space="preserve">
     <value>Uzytkownik zostal rozlaczony! ClientId =</value>
   </data>
+  <data name="EQ_NOT_EMPTY" xml:space="preserve">
+    <value>Twoj ekwipunek nie jest pusty</value>
+  </data>
   <data name="FORCED_DISCONNECT" xml:space="preserve">
     <value>Rozlaczanie uzytkownika {0}, zbyt duzo polaczen.</value>
   </data>
@@ -231,6 +234,9 @@
   <data name="LEVEL_CHANGED" xml:space="preserve">
     <value>Poziom podniesiony!</value>
   </data>
+  <data name="LOW_LVL" xml:space="preserve">
+    <value>Masz zbyt maly level</value>
+  </data>
   <data name="MAGICIAN" xml:space="preserve">
     <value>Mag</value>
   </data>
@@ -245,6 +251,9 @@
   </data>
   <data name="NEW_CONNECT" xml:space="preserve">
     <value>Polaczono uzytkownika. ClientId =</value>
+  </data>
+  <data name="NOT_ADVENTURER" xml:space="preserve">
+    <value>Mozesz zmienic klase tylko raz</value>
   </data>
   <data name="NOT_ENOUGH_PLACE" xml:space="preserve">
     <value>Niewystarczajaca ilosc miejsc.</value>
@@ -289,7 +298,7 @@
     <value>Transformacja potrzebuje 30 sekund na odswiezenie</value>
   </data>
   <data name="SURE_TO_DELETE" xml:space="preserve">
-    <value>Czy chcesz usunac?</value>
+    <value>Juz nigdy nie odzyskasz tego przedmiotu, jestes pewien?</value>
   </data>
   <data name="SWORDMAN" xml:space="preserve">
     <value>Wojownik</value>

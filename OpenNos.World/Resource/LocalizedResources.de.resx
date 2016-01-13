@@ -159,6 +159,9 @@
   <data name="DISCONNECT" xml:space="preserve">
     <value>Ein Client hat die Verbindung getrennt! ClientId =</value>
   </data>
+  <data name="EQ_NOT_EMPTY" xml:space="preserve">
+    <value>Your equipment is not empty</value>
+  </data>
   <data name="FORCED_DISCONNECT" xml:space="preserve">
     <value>Die Verbindung zum Client {0} wurde getrennt, zu viele Verbindungen.</value>
   </data>
@@ -180,6 +183,9 @@
   <data name="JOBLEVEL_CHANGED" xml:space="preserve">
     <value>Job level has been increased</value>
   </data>
+  <data name="LOW_LVL" xml:space="preserve">
+    <value>Your level is too low</value>
+  </data>
   <data name="MAGICIAN" xml:space="preserve">
     <value>Magier</value>
   </data>
@@ -194,6 +200,9 @@
   </data>
   <data name="NEW_CONNECT" xml:space="preserve">
     <value>Ein neuer Client hat sich verbunden. ClientId =</value>
+  </data>
+  <data name="NOT_ADVENTURER" xml:space="preserve">
+    <value>You can change class only once</value>
   </data>
   <data name="NO_ENTRY" xml:space="preserve">
     <value>Kein Einsprungspunkt gefunden!</value>
