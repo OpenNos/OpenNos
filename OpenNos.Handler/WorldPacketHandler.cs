@@ -573,6 +573,16 @@ namespace OpenNos.Handler
                                     if (Session.Character.EquipmentList.isEmpty())
                                     {
                                         ClassChange(Convert.ToByte(type));
+                                        byte joblevel;
+                                        if (Byte.TryParse(packetsplit[2], out joblevel) && joblevel <= 80 && joblevel > 0)
+                                        {
+                                            Session.Character.JobLevel = joblevel;
+                                            Session.Client.SendPacket(Session.Character.GenerateLev());
+                                            joblevel = 1;
+                                            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllOnMapExceptMe);
+                                            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(6), ReceiverType.AllOnMap);
+                                            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(198), ReceiverType.AllOnMap);
+                                        }
                                     }
                                     else
                                     {
@@ -1405,7 +1415,6 @@ namespace OpenNos.Handler
 
                 Session.Character.JobLevel = joblevel;
                 Session.Client.SendPacket(Session.Character.GenerateLev());
-                Session.Client.SendPacket(Session.Character.GenerateStat());
 
                 Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("JOBLEVEL_CHANGED"), 0));
                 ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllOnMapExceptMe);

@@ -627,7 +627,6 @@ namespace OpenNos.GameObject
         public string GenerateStatChar()
         {
             //TODO sc packet
-            //string charstat = String.Empty;
             return String.Empty;
         }
 
