@@ -1946,6 +1946,11 @@ namespace OpenNos.Handler
         {
             //i don't know why there is this packet
         }
+        [Packet("#sl")]
+        public void sl(string packet)
+        {
+            //i don't know why there is this packet
+        }
 
         [Packet("c_close")]
         public void CClose(string packet)
