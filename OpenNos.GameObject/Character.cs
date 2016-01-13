@@ -44,7 +44,7 @@ namespace OpenNos.GameObject
         private int _isDancing;
         private int _rested;
         private int _backpack;
-     
+
         private InventoryList _inventorylist;
         private InventoryList _equipmentlist;
 
@@ -62,7 +62,7 @@ namespace OpenNos.GameObject
         #endregion
 
         #region Properties
-       public ExchangeInfo ExchangeInfo { get; set; }
+        public ExchangeInfo ExchangeInfo { get; set; }
         public InventoryList InventoryList
         {
             get { return _inventorylist; }
@@ -84,7 +84,7 @@ namespace OpenNos.GameObject
 
         public Thread ThreadCharChange
         {
-            get;set;
+            get; set;
         }
         public int LastPulse
         {
@@ -130,7 +130,7 @@ namespace OpenNos.GameObject
 
             }
         }
-     
+
         public int Invisible
         {
             get { return _invisible; }
@@ -147,7 +147,7 @@ namespace OpenNos.GameObject
             set;
         }
 
-      
+
         public int Speed
         {
             get { return _speed; }
@@ -253,13 +253,13 @@ namespace OpenNos.GameObject
         {
 
             IEnumerable<InventoryDTO> inventorysDTO = DAOFactory.InventoryDAO.LoadByCharacterId(CharacterId);
-         
+
             InventoryList = new InventoryList();
             EquipmentList = new InventoryList();
             foreach (InventoryDTO inventory in inventorysDTO)
             {
-               InventoryItemDTO inventoryItemDTO = DAOFactory.InventoryItemDAO.LoadById(inventory.InventoryItemId);
-               Item item = ServerManager.GetItem(inventoryItemDTO.ItemVNum);
+                InventoryItemDTO inventoryItemDTO = DAOFactory.InventoryItemDAO.LoadById(inventory.InventoryItemId);
+                Item item = ServerManager.GetItem(inventoryItemDTO.ItemVNum);
 
                 if (inventory.Type != (short)InventoryType.Equipment)
                     InventoryList.Inventory.Add(new GameObject.Inventory()
@@ -273,7 +273,8 @@ namespace OpenNos.GameObject
                         {
                             Amount = inventoryItemDTO.Amount,
                             ElementRate = inventoryItemDTO.ElementRate
-                            , HitRate = inventoryItemDTO.HitRate,
+                            ,
+                            HitRate = inventoryItemDTO.HitRate,
                             Color = inventoryItemDTO.Color,
                             Concentrate = inventoryItemDTO.Concentrate,
                             CriticalLuckRate = inventoryItemDTO.CriticalLuckRate,
@@ -298,10 +299,10 @@ namespace OpenNos.GameObject
                             SlHP = inventoryItemDTO.SlHP,
                             Upgrade = inventoryItemDTO.Upgrade,
                             WaterElement = inventoryItemDTO.WaterElement,
-                           
-                            
+
+
                         }
-                });
+                    });
                 else
                     EquipmentList.Inventory.Add(new GameObject.Inventory()
                     {
@@ -322,14 +323,14 @@ namespace OpenNos.GameObject
 
             foreach (Inventory inv in InventoryList.Inventory)
             {
-               Item item = ServerManager.GetItem(inv.InventoryItem.ItemVNum);
+                Item item = ServerManager.GetItem(inv.InventoryItem.ItemVNum);
                 switch (inv.Type)
                 {
                     case (short)InventoryType.Costume:
                         inv7 += String.Format(" {0}.{1}.{2}.{3}", inv.Slot, inv.InventoryItem.ItemVNum, inv.InventoryItem.Rare, inv.InventoryItem.Upgrade);
                         break;
                     case (short)InventoryType.Wear:
-                        inv0 += String.Format(" {0}.{1}.{2}.{3}", inv.Slot, inv.InventoryItem.ItemVNum, inv.InventoryItem.Rare, item.Colored ? inv.InventoryItem.Color:inv.InventoryItem.Upgrade);
+                        inv0 += String.Format(" {0}.{1}.{2}.{3}", inv.Slot, inv.InventoryItem.ItemVNum, inv.InventoryItem.Rare, item.Colored ? inv.InventoryItem.Color : inv.InventoryItem.Upgrade);
                         break;
                     case (short)InventoryType.Main:
                         inv1 += String.Format(" {0}.{1}.{2}.0", inv.Slot, inv.InventoryItem.ItemVNum, inv.InventoryItem.Amount);
@@ -383,18 +384,18 @@ namespace OpenNos.GameObject
         {
             List<String> droplist = new List<String>();
             foreach (Npc npc in ServerManager.GetMap(this.MapId).Npcs)
-                if (npc.Shop !=null)
-                    droplist.Add(String.Format("shop 2 {0} {1} {2} {3} {4}", npc.NpcId, 1,  0, npc.Shop.MenuType, npc.Shop.Name));
+                if (npc.Shop != null)
+                    droplist.Add(String.Format("shop 2 {0} {1} {2} {3} {4}", npc.NpcId, 1, 0, npc.Shop.MenuType, npc.Shop.Name));
             return droplist;
         }
         public List<string> GenerateShopOnMap()
         {
             List<String> droplist = new List<String>();
             foreach (KeyValuePair<long, MapShop> shop in ServerManager.GetMap(this.MapId).ShopUserList)
-                droplist.Add(String.Format("shop 1 {0} 1 3 0 {1}", shop.Key+1, shop.Value.Name));  
+                droplist.Add(String.Format("shop 1 {0} 1 3 0 {1}", shop.Key + 1, shop.Value.Name));
             return droplist;
         }
-        
+
         public List<String> GenerateGp()
         {
             List<String> gpList = new List<String>();
@@ -472,12 +473,14 @@ namespace OpenNos.GameObject
 
         public string GenerateLev()
         {
-            return String.Format("lev {0} {1} {2} {3} {4} {5} 0 2", Level, LevelXp, JobLevel, JobLevelXp, XPLoad(), JobXPLoad());
+            Inventory specialist = EquipmentList.LoadBySlotAndType((short)EquipmentType.Sp, (short)InventoryType.Equipment);
+
+            return String.Format("lev {0} {1} {2} {3} {4} {5} 0 2", Level, LevelXp, !UseSp ? JobLevel : specialist.InventoryItem.SpLevel, !UseSp ? JobLevelXp : specialist.InventoryItem.SpXp, XPLoad(), JobXPLoad());
         }
 
         public string GenerateCInfo()
         {
-            return String.Format("c_info {0} - {1} {2} - {3} {4} {5} {6} {7} {8} {9} {10} {11} {12} {13} {14} {15} ", Name, -1, -1, CharacterId, Authority, Gender, HairStyle, HairColor, Class, GetReputIco(), 0, UseSp || IsVehiculed ? Morph:0, Invisible, 0, UseSp ? MorphUpgrade:0, ArenaWinner);
+            return String.Format("c_info {0} - {1} {2} - {3} {4} {5} {6} {7} {8} {9} {10} {11} {12} {13} {14} {15} ", Name, -1, -1, CharacterId, Authority, Gender, HairStyle, HairColor, Class, GetReputIco(), 0, UseSp || IsVehiculed ? Morph : 0, Invisible, 0, UseSp ? MorphUpgrade : 0, ArenaWinner);
         }
 
         public int GetDigniteIco()
@@ -524,13 +527,13 @@ namespace OpenNos.GameObject
         {
             Inventory Fairy = EquipmentList.LoadBySlotAndType((short)EquipmentType.Fairy, (short)InventoryType.Equipment);
             Inventory Armor = EquipmentList.LoadBySlotAndType((short)EquipmentType.Armor, (short)InventoryType.Equipment);
-            Inventory Weapon2 = EquipmentList.LoadBySlotAndType((short)EquipmentType.SecondaryWeapon,(short) InventoryType.Equipment);
+            Inventory Weapon2 = EquipmentList.LoadBySlotAndType((short)EquipmentType.SecondaryWeapon, (short)InventoryType.Equipment);
             Inventory Weapon = EquipmentList.LoadBySlotAndType((short)EquipmentType.MainWeapon, (short)InventoryType.Equipment);
-            return String.Format("tc_info {0} {1} {2} {3} {4} {9} 0 {8} {5} {6} {10} {11} {12} {13} {14} {15} {16} {17} {18} 0 0 0 0 0 0 {19} 0 0 0 0 0 0 0 0 0 0 {7}", Level, Name, Fairy != null ? ServerManager.GetItem(Fairy.InventoryItem.ItemVNum).Element : 0, Fairy !=null? Fairy.InventoryItem.ElementRate:0, Class, GetReputIco(), GetDigniteIco(),
+            return String.Format("tc_info {0} {1} {2} {3} {4} {9} 0 {8} {5} {6} {10} {11} {12} {13} {14} {15} {16} {17} {18} 0 0 0 0 0 0 {19} 0 0 0 0 0 0 0 0 0 0 {7}", Level, Name, Fairy != null ? ServerManager.GetItem(Fairy.InventoryItem.ItemVNum).Element : 0, Fairy != null ? Fairy.InventoryItem.ElementRate : 0, Class, GetReputIco(), GetDigniteIco(),
                 Language.Instance.GetMessageFromKey("NO_PREZ_MESSAGE"), Language.Instance.GetMessageFromKey("NO_FAMILY"),
                 Gender, Weapon != null ? 1 : 0, Weapon != null ? Weapon.InventoryItem.Rare : 0, Weapon != null ? Weapon.InventoryItem.Upgrade : 0,
                 Weapon2 != null ? 1 : 0, Weapon2 != null ? Weapon2.InventoryItem.Rare : 0, Weapon2 != null ? Weapon2.InventoryItem.Upgrade : 0,
-                Armor != null ? 1 : 0, Armor != null ? Armor.InventoryItem.Rare : 0, Armor != null ? Armor.InventoryItem.Upgrade : 0, UseSp?Morph:0);
+                Armor != null ? 1 : 0, Armor != null ? Armor.InventoryItem.Rare : 0, Armor != null ? Armor.InventoryItem.Upgrade : 0, UseSp ? Morph : 0);
         }
 
         public string GenerateCMap()
@@ -546,7 +549,7 @@ namespace OpenNos.GameObject
         public string GenerateExts()
         {
             return String.Format("exts 0 {0} {0} {0}", 48 + BackPack * 12);
-                
+
         }
 
         public string GenerateMv(int x, int y)
@@ -556,7 +559,7 @@ namespace OpenNos.GameObject
 
         public string GenerateCMode()
         {
-            return String.Format("c_mode 1 {0} {1} {2} {3} {4}", CharacterId, UseSp || IsVehiculed? Morph:0, UseSp ? MorphUpgrade:0, UseSp ? MorphUpgrade2:0, ArenaWinner);
+            return String.Format("c_mode 1 {0} {1} {2} {3} {4}", CharacterId, UseSp || IsVehiculed ? Morph : 0, UseSp ? MorphUpgrade : 0, UseSp ? MorphUpgrade2 : 0, ArenaWinner);
         }
 
         public string GenerateSay(string message, int type)
@@ -573,7 +576,7 @@ namespace OpenNos.GameObject
             Inventory fairy = EquipmentList.LoadBySlotAndType((short)EquipmentType.Fairy, (short)InventoryType.Equipment);
 
 
-            return String.Format("in 1 {0} - {1} {2} {3} {4} {5} {6} {7} {8} {9} {17} {10} {11} {12} -1 {25} {22} 0 {23} 0 {19} {18} -1 - {13} {16} {20} 0 {21} {14} 0 {15} 0 {24}", Name, CharacterId, MapX, MapY, Direction, (Authority == 2 ? 2 : 0), Gender, HairStyle, Color, Class, (int)((Hp / HPLoad()) * 100), (int)((Mp / MPLoad()) * 100), _rested, (GetDigniteIco() == 1) ? GetReputIco() : -GetDigniteIco(), 0,ArenaWinner, _invisible, generateEqListForPacket(),generateEqRareUpgradeForPacket(), (UseSp == true? Morph : 0), (UseSp == true  ? MorphUpgrade : 0), (UseSp == true? MorphUpgrade2 : 0), fairy != null ? ServerManager.GetItem(fairy.InventoryItem.ItemVNum).Element:0, fairy!=null? ServerManager.GetItem(fairy.InventoryItem.ItemVNum).Morph:0,Size, fairy!= null?2:0);
+            return String.Format("in 1 {0} - {1} {2} {3} {4} {5} {6} {7} {8} {9} {17} {10} {11} {12} -1 {25} {22} 0 {23} 0 {19} {18} -1 - {13} {16} {20} 0 {21} {14} 0 {15} 0 {24}", Name, CharacterId, MapX, MapY, Direction, (Authority == 2 ? 2 : 0), Gender, HairStyle, Color, Class, (int)((Hp / HPLoad()) * 100), (int)((Mp / MPLoad()) * 100), _rested, (GetDigniteIco() == 1) ? GetReputIco() : -GetDigniteIco(), 0, ArenaWinner, _invisible, generateEqListForPacket(), generateEqRareUpgradeForPacket(), (UseSp == true ? Morph : 0), (UseSp == true ? MorphUpgrade : 0), (UseSp == true ? MorphUpgrade2 : 0), fairy != null ? ServerManager.GetItem(fairy.InventoryItem.ItemVNum).Element : 0, fairy != null ? ServerManager.GetItem(fairy.InventoryItem.ItemVNum).Morph : 0, Size, fairy != null ? 2 : 0);
         }
 
         public string GenerateRest()
@@ -599,11 +602,11 @@ namespace OpenNos.GameObject
             short WeaponUpgrade = 0;
             short ArmorRare = 0;
             short ArmorUpgrade = 0;
-            
-            for (short i=0;i<15;i++)
+
+            for (short i = 0; i < 15; i++)
             {
-                Inventory inv = EquipmentList.LoadBySlotAndType( i, (short)InventoryType.Equipment);
-                if (inv !=null)
+                Inventory inv = EquipmentList.LoadBySlotAndType(i, (short)InventoryType.Equipment);
+                if (inv != null)
                 {
                     Item iteminfo = ServerManager.GetItem(inv.InventoryItem.ItemVNum);
                     if (iteminfo.EquipmentSlot == (short)EquipmentType.Armor)
@@ -616,10 +619,10 @@ namespace OpenNos.GameObject
                         WeaponRare = inv.InventoryItem.Rare;
                         WeaponUpgrade = inv.InventoryItem.Upgrade;
                     }
-                    eqlist += String.Format(" {0}.{1}.{2}.{3}.{4}", i, iteminfo.VNum, inv.InventoryItem.Rare, iteminfo.Colored? inv.InventoryItem.Color : inv.InventoryItem.Upgrade, 0);
+                    eqlist += String.Format(" {0}.{1}.{2}.{3}.{4}", i, iteminfo.VNum, inv.InventoryItem.Rare, iteminfo.Colored ? inv.InventoryItem.Color : inv.InventoryItem.Upgrade, 0);
                 }
             }
-            return String.Format("equip {0}{1} {2}{3}{4}", WeaponUpgrade, WeaponRare, ArmorUpgrade, ArmorRare,eqlist);
+            return String.Format("equip {0}{1} {2}{3}{4}", WeaponUpgrade, WeaponRare, ArmorUpgrade, ArmorRare, eqlist);
         }
 
         public string GenerateStatChar()
@@ -630,13 +633,13 @@ namespace OpenNos.GameObject
 
         public string GeneratePairy()
         {
-         Inventory fairy =  EquipmentList.LoadBySlotAndType((short)EquipmentType.Fairy,(short)InventoryType.Equipment);
+            Inventory fairy = EquipmentList.LoadBySlotAndType((short)EquipmentType.Fairy, (short)InventoryType.Equipment);
 
             if (fairy != null)
-                return String.Format("pairy 1 {0} 4 {1} {2} {3}", CharacterId, ServerManager.GetItem(fairy.InventoryItem.ItemVNum).Element,fairy.InventoryItem.ElementRate, ServerManager.GetItem(fairy.InventoryItem.ItemVNum).Morph);
+                return String.Format("pairy 1 {0} 4 {1} {2} {3}", CharacterId, ServerManager.GetItem(fairy.InventoryItem.ItemVNum).Element, fairy.InventoryItem.ElementRate, ServerManager.GetItem(fairy.InventoryItem.ItemVNum).Morph);
             else
                 return String.Format("pairy 1 {0} 0 0 0 40", CharacterId);
-           
+
         }
 
         public string GenerateSpk(object message, int v)
@@ -661,8 +664,8 @@ namespace OpenNos.GameObject
                 Inventory inv = EquipmentList.LoadBySlotAndType(i, (short)InventoryType.Equipment);
                 if (inv != null)
                 {
-                    invarray[i] = inv.InventoryItem.ItemVNum.ToString() ;
-                  
+                    invarray[i] = inv.InventoryItem.ItemVNum.ToString();
+
                 }
                 else invarray[i] = "-1";
             }
@@ -697,7 +700,7 @@ namespace OpenNos.GameObject
             }
             return String.Format("{0}{1} {2}{3}", WeaponUpgrade, WeaponRare, ArmorUpgrade, ArmorRare);
         }
-           
+
         public string GenerateEq()
         {
             int color = HairColor;
@@ -732,16 +735,16 @@ namespace OpenNos.GameObject
                 case (short)InventoryType.Costume:
                     return String.Format("ivn 7 {0}.{1}.{2}.{3}", slot, vnum, rare, upgrade);
                 case (short)InventoryType.Wear:
-                    return String.Format("ivn 0 {0}.{1}.{2}.{3}", slot, vnum, rare, color !=0 ?color : upgrade);
+                    return String.Format("ivn 0 {0}.{1}.{2}.{3}", slot, vnum, rare, color != 0 ? color : upgrade);
                 case (short)InventoryType.Main:
                     return String.Format("ivn 1 {0}.{1}.{2}", slot, vnum, amount);
                 case (short)InventoryType.Etc:
                     return String.Format("ivn 2 {0}.{1}.{2}", slot, vnum, amount);
                 case (short)InventoryType.Sp:
-                    return String.Format("ivn 6 {0}.{1}.{2}.{3}", slot,vnum, rare, upgrade);    
+                    return String.Format("ivn 6 {0}.{1}.{2}.{3}", slot, vnum, rare, upgrade);
             }
             return String.Empty;
-            }
+        }
 
         public IEnumerable<InventoryItem> LoadBySlotAllowed(short itemVNum, short amount)
         {
@@ -753,12 +756,12 @@ namespace OpenNos.GameObject
 
         public string GenerateShopMemo(int type, string message)
         {
-           return String.Format("s_memo {0} {1}", type, message);
+            return String.Format("s_memo {0} {1}", type, message);
         }
 
         public string GeneratePlayerFlag(long pflag)
-        {      
-                 return String.Format("pflag 1 {0} {1}", CharacterId, pflag);
+        {
+            return String.Format("pflag 1 {0} {1}", CharacterId, pflag);
         }
         public string GenerateEndPlayerFlag()
         {
@@ -767,8 +770,8 @@ namespace OpenNos.GameObject
         public List<string> GeneratePlayerShopOnMap()
         {
             List<String> droplist = new List<String>();
-           // foreach (KeyValuePair<long, MapShop> shop in ServerManager.GetMap(this.MapId).ShopUserList)
-             //   droplist.Add(String.Format("pflag 1 {0} {1}", shop.Value.OwnerId, shop.Key+1));
+            // foreach (KeyValuePair<long, MapShop> shop in ServerManager.GetMap(this.MapId).ShopUserList)
+            //   droplist.Add(String.Format("pflag 1 {0} {1}", shop.Value.OwnerId, shop.Key+1));
             return droplist;
         }
         public string GenerateDialog(string dialog)
@@ -778,12 +781,12 @@ namespace OpenNos.GameObject
 
         public string GenerateShop(string shopname)
         {
-                return String.Format("shop 1 {0} 1 3 0 {1}", CharacterId,shopname); 
+            return String.Format("shop 1 {0} 1 3 0 {1}", CharacterId, shopname);
         }
 
         public string GenerateGet(long id)
         {
-            return String.Format("get 1 {0} {1} 0", CharacterId,id);
+            return String.Format("get 1 {0} {1} 0", CharacterId, id);
         }
 
         public string GenerateShopEnd()
@@ -795,12 +798,12 @@ namespace OpenNos.GameObject
 
         public string generateModal(string message, int type)
         {
-            return String.Format("modal {1} {0}", message,type);
+            return String.Format("modal {1} {0}", message, type);
         }
 
         public string GenerateSpPoint()
         {
-           return String.Format("sp {0} 1000000 {1} 10000",SpAdditionPoint,SpPoint);
+            return String.Format("sp {0} 1000000 {1} 10000", SpAdditionPoint, SpPoint);
         }
 
 
