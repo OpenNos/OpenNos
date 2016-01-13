@@ -453,7 +453,7 @@ namespace OpenNos.Handler
                     if (slot == (short)EquipmentType.Sp && Session.Character.UseSp)
                     {
                         Session.Character.LastSp = (((TimeSpan)(DateTime.Now - new DateTime(2010, 1, 1, 0, 0, 0))).TotalSeconds);
-                        Thread removeSP = new Thread(() => RemoveSP());
+                        Thread removeSP = new Thread(() => RemoveSP(inventory.InventoryItem.ItemVNum));
                         removeSP.Start();
                     }
                     Inventory inv = Session.Character.InventoryList.CreateItem(inventory.InventoryItem, Session.Character);
@@ -1226,7 +1226,7 @@ namespace OpenNos.Handler
                 else
                 {
                     Session.Character.LastSp = (((TimeSpan)(DateTime.Now - new DateTime(2010, 1, 1, 0, 0, 0))).TotalSeconds);
-                    Thread removeSP = new Thread(() => RemoveSP());
+                    Thread removeSP = new Thread(() => RemoveSP(sp.InventoryItem.ItemVNum));
                     removeSP.Start();
                 }
             }
@@ -1766,11 +1766,11 @@ namespace OpenNos.Handler
 
             Session.Client.SendPacket(packetToSend);
         }
-        public void RemoveSP()
+        public void RemoveSP(short vnum)
         {
             Inventory sp = Session.Character.EquipmentList.LoadBySlotAndType((short)EquipmentType.Sp, (short)InventoryType.Equipment);
 
-            Session.Character.Speed -= ServerManager.GetItem(sp.InventoryItem.ItemVNum).Speed;
+            Session.Character.Speed -= ServerManager.GetItem(vnum).Speed;
             Session.Character.UseSp = false;
 
             // string s2 = "c_info " + chara.name + " - -1 -1 - " + chara.id + " " + ((chara.isGm) ? 2 : 0) + " " + +chara.sex + " " + +chara.Hair.style + " " + +chara.Hair.color + " " + chara.user_class + " " + Stats.GetReput(chara.Reput, chara.dignite.ToString()) + " " + (chara.Sp.inUsing ? chara.Sp.sprite : 0) + " 0 - " + (chara.Sp.inUsing ? chara.Sp.upgrade == 15 ? chara.Sp.wings > 4 ? 0 : 15 : chara.Sp.upgrade : 0) + " " + (chara.Sp.inUsing ? (chara.Sp.wings > 4) ? chara.Sp.wings - 4 : chara.Sp.wings : 0) + " " + (chara.Sp.wings_arena ? 1 : 0);
