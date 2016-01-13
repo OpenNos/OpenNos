@@ -726,13 +726,13 @@ namespace OpenNos.GameObject
 
         public string GenerateInventoryAdd(short vnum, short amount, short type, short slot, short rare, short color, short upgrade)
         {
-
+            Item iteminfo = ServerManager.GetItem(vnum);
             switch (type)
-            {
+            { 
                 case (short)InventoryType.Costume:
                     return String.Format("ivn 7 {0}.{1}.{2}.{3}", slot, vnum, rare, upgrade);
                 case (short)InventoryType.Wear:
-                    return String.Format("ivn 0 {0}.{1}.{2}.{3}", slot, vnum, rare, color !=0 ?color : upgrade);
+                    return String.Format("ivn 0 {0}.{1}.{2}.{3}", slot, vnum, rare, iteminfo.Colored ? color : upgrade);
                 case (short)InventoryType.Main:
                     return String.Format("ivn 1 {0}.{1}.{2}", slot, vnum, amount);
                 case (short)InventoryType.Etc:
