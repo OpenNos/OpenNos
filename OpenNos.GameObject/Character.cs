@@ -147,11 +147,7 @@ namespace OpenNos.GameObject
             set;
         }
 
-        public bool UseVehicule
-        {
-            get;
-            set;
-        }
+      
         public int Speed
         {
             get { return _speed; }
@@ -241,6 +237,8 @@ namespace OpenNos.GameObject
 
             }
         }
+
+        public bool IsVehiculed { get; set; }
 
         #endregion
 
@@ -558,7 +556,7 @@ namespace OpenNos.GameObject
 
         public string GenerateCMode()
         {
-            return String.Format("c_mode 1 {0} {1} {2} {3} {4}", CharacterId, UseSp?Morph:0, UseSp ? MorphUpgrade:0, UseSp ? MorphUpgrade2:0, ArenaWinner);
+            return String.Format("c_mode 1 {0} {1} {2} {3} {4}", CharacterId, UseSp || IsVehiculed? Morph:0, UseSp ? MorphUpgrade:0, UseSp ? MorphUpgrade2:0, ArenaWinner);
         }
 
         public string GenerateSay(string message, int type)

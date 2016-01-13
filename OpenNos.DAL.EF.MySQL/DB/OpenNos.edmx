@@ -158,7 +158,7 @@
     <Property Name="Name" Type="longtext" Nullable="false" />
     <Property Name="ItemType" Type="utinyint" Nullable="false" />
     <Property Name="EquipmentSlot" Type="utinyint" Nullable="false" />
-    <Property Name="Morph" Type="utinyint" Nullable="false" />
+    <Property Name="Morph" Type="smallint" Nullable="false" />
     <Property Name="Type" Type="utinyint" Nullable="false" />
     <Property Name="Classe" Type="utinyint" Nullable="false" />
     <Property Name="Blocked" Type="utinyint" Nullable="false" />
@@ -680,7 +680,7 @@
           <Property Name="Name" Type="String" Nullable="false" />
           <Property Name="ItemType" Type="Byte" Nullable="false" />
           <Property Name="EquipmentSlot" Type="Byte" Nullable="false" />
-          <Property Name="Morph" Type="Byte" Nullable="false" />
+          <Property Name="Morph" Type="Int16" Nullable="false" />
           <Property Name="Type" Type="Byte" Nullable="false" />
           <Property Name="Classe" Type="Byte" Nullable="false" />
           <Property Name="Blocked" Type="Byte" Nullable="false" />
