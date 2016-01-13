@@ -420,8 +420,7 @@ namespace OpenNos.Handler
 
             Session.Client.SendPacket(Session.Character.GenerateExts());
             Session.Client.SendPacket(Session.Character.GenerateGold());
-            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEq(), ReceiverType.AllOnMap);
-            Session.Client.SendPacket(Session.Character.GenerateEquipment());
+    
             ClientLinkManager.Instance.Broadcast(Session, Session.Character.GeneratePairy(), ReceiverType.AllOnMap);
             ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateSpPoint(), ReceiverType.AllOnMap);
             GetStartupInventory();
@@ -1717,7 +1716,8 @@ namespace OpenNos.Handler
             foreach (String ShopPacketChar in Session.Character.GeneratePlayerShopOnMap())
                 Session.Client.SendPacket(ShopPacketChar);
 
-
+            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEq(), ReceiverType.AllOnMap);
+            Session.Client.SendPacket(Session.Character.GenerateEquipment());
         }
         public void healthThread()
         {
