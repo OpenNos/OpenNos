@@ -576,9 +576,8 @@ namespace OpenNos.Handler
                                         byte joblevel;
                                         if (Byte.TryParse(packetsplit[2], out joblevel) && joblevel <= 80 && joblevel > 0)
                                         {
-                                            Session.Character.JobLevel = joblevel;
-                                            Session.Client.SendPacket(Session.Character.GenerateLev());
                                             joblevel = 1;
+                                            Session.Client.SendPacket(Session.Character.GenerateLev());
                                             ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllOnMapExceptMe);
                                             ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(6), ReceiverType.AllOnMap);
                                             ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(198), ReceiverType.AllOnMap);
