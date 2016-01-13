@@ -15,7 +15,7 @@ namespace OpenNos.Data
         public byte Inventory { get; set; }
         public byte ItemType { get; set; }
         public byte EquipmentSlot { get; set; }
-        public byte Morph { get; set; }
+        public short Morph { get; set; }
         public byte Type { get; set; }
         public byte Classe { get; set; }
         public byte Blocked { get; set; }
