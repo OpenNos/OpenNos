@@ -1261,6 +1261,7 @@ namespace OpenNos.Handler
             Session.Client.SendPacket(Session.Character.GenerateSay("$Shout MESSAGE", 0));
             Session.Client.SendPacket(Session.Character.GenerateSay("$Lvl LEVEL", 0));
             Session.Client.SendPacket(Session.Character.GenerateSay("$JLvl JOBLEVEL", 0));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$SPLvl SPLEVEL", 0));
             Session.Client.SendPacket(Session.Character.GenerateSay("$ChangeClass CLASS", 0));
             Session.Client.SendPacket(Session.Character.GenerateSay("$Kick USERNAME", 0));
             Session.Client.SendPacket(Session.Character.GenerateSay("$MapDance", 0));
@@ -1280,7 +1281,7 @@ namespace OpenNos.Handler
         {
             string[] packetsplit = packet.Split(' ');
             short amount = 1;
-            short vnum, rare = 0, upgrade = 0, color = 0,level = 0;
+            short vnum, rare = 0, upgrade = 0, color = 0, level = 0;
             ItemDTO iteminfo = null;
             if (packetsplit.Length != 5 && packetsplit.Length != 4)
             {
@@ -1302,7 +1303,7 @@ namespace OpenNos.Handler
                     {
                         if (packetsplit.Length == 5)
                         {
-                            if(iteminfo.EquipmentSlot == Convert.ToByte((short)EquipmentType.Sp))
+                            if (iteminfo.EquipmentSlot == Convert.ToByte((short)EquipmentType.Sp))
                             {
                                 Int16.TryParse(packetsplit[3], out upgrade);
                                 Int16.TryParse(packetsplit[4], out color);
@@ -1313,7 +1314,7 @@ namespace OpenNos.Handler
                                 Int16.TryParse(packetsplit[3], out rare);
                                 Int16.TryParse(packetsplit[4], out upgrade);
                             }
-                       
+
                         }
                     }
                     else
@@ -1349,7 +1350,7 @@ namespace OpenNos.Handler
                         SlHit = 0,
                         SlHP = 0,
                         WaterElement = 0,
-                        
+
                     };
                     Inventory inv = Session.Character.InventoryList.CreateItem(newItem, Session.Character);
                     if (inv != null)
@@ -1414,18 +1415,36 @@ namespace OpenNos.Handler
         [Packet("$JLvl")]
         public void jlvl(string packet)
         {
-
             string[] packetsplit = packet.Split(' ');
             byte joblevel;
             if (packetsplit.Length > 3)
                 Session.Client.SendPacket(Session.Character.GenerateSay("$JLvl JOBLEVEL", 0));
             if (Byte.TryParse(packetsplit[2], out joblevel) && ((Session.Character.Class == 0 && joblevel <= 20) || (Session.Character.Class != 0 && joblevel <= 80)) && joblevel > 0)
             {
-                // add splvl
+                // add splvl to one command
                 Session.Character.JobLevel = joblevel;
                 Session.Client.SendPacket(Session.Character.GenerateLev());
 
                 Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("JOBLEVEL_CHANGED"), 0));
+                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllOnMapExceptMe);
+                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(6), ReceiverType.AllOnMap);
+                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(198), ReceiverType.AllOnMap);
+            }
+        }
+        [Packet("$SPLvl")]
+        public void splvl(string packet)
+        {
+            string[] packetsplit = packet.Split(' ');
+            byte splevel;
+            Inventory sp = Session.Character.EquipmentList.LoadBySlotAndType((short)EquipmentType.Sp, (short)InventoryType.Equipment);
+            if (packetsplit.Length > 3)
+                Session.Client.SendPacket(Session.Character.GenerateSay("$SPLvl SPLEVEL", 0));
+            if (Byte.TryParse(packetsplit[2], out splevel) && splevel <= 99 && splevel > 0)
+            {
+                sp.InventoryItem.SpLevel = splevel;
+                Session.Client.SendPacket(Session.Character.GenerateLev());
+
+                Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SPLEVEL_CHANGED"), 0));
                 ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllOnMapExceptMe);
                 ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(6), ReceiverType.AllOnMap);
                 ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(198), ReceiverType.AllOnMap);
