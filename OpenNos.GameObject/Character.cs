@@ -472,7 +472,7 @@ namespace OpenNos.GameObject
 
         public string GenerateLev()
         {
-            return String.Format("lev {0} {1} {2} {3} {4} {5} 0 2", Level, LevelXp, JobLevel, JobLevelXp, XPLoad(), JobXPLoad());
+            return String.Format("lev {0} {1} {2} {3} {4} {5} 0 2", Level, LevelXp, UseSp?JobLevel:99, UseSp ? JobLevelXp:99, XPLoad(), JobXPLoad());
         }
 
         public string GenerateCInfo()
