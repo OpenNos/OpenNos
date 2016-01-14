@@ -354,6 +354,8 @@ namespace OpenNos.Handler
         public void Rest(string packet)
         {
             Session.Character.Rested = Session.Character.Rested == 1 ? 0 : 1;
+            if (Session.Character.IsVehiculed)
+                Session.Character.Rested = 0;
             if (Session.Character.ThreadCharChange != null && Session.Character.ThreadCharChange.IsAlive)
                 Session.Character.ThreadCharChange.Abort();
 
@@ -1883,7 +1885,7 @@ namespace OpenNos.Handler
             Session.Character.Morph = item.Morph + Session.Character.Gender;
             ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateCMode(), ReceiverType.AllOnMap);
             ClientLinkManager.Instance.Broadcast(Session, String.Format("guri 6 1 {0} 0 0", Session.Character.CharacterId), ReceiverType.AllOnMap);
-
+            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(196), ReceiverType.AllOnMap);
         }
         public void RemoveVehicule()
         {
