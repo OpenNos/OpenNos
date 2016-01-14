@@ -1045,8 +1045,8 @@ namespace OpenNos.Handler
             }
             if (mode == 5)
             {
-                Session.Client.SendPacket(Session.Character.generateModal("refused", 0));
-                ClientLinkManager.Instance.Broadcast(Session, Session.Character.generateModal("refused", 0), ReceiverType.OnlySomeone, "", charId);
+                Session.Client.SendPacket(Session.Character.GenerateModal("refused", 0));
+                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateModal("refused", 0), ReceiverType.OnlySomeone, "", charId);
             }
 
         }
@@ -1090,7 +1090,7 @@ namespace OpenNos.Handler
                 Session.Character.ExchangeInfo = new ExchangeInfo();
                 Session.Character.ExchangeInfo.CharId = charId;
                 CharName = (string)ClientLinkManager.Instance.RequiereProperties(charId, "Name");
-                Session.Client.SendPacket(Session.Character.generateModal(String.Format("{0}{1}", Language.Instance.GetMessageFromKey("YOU_ASK_FOR_EXCHANGE"), "", charId), 0));
+                Session.Client.SendPacket(Session.Character.GenerateModal(String.Format("{0}{1}", Language.Instance.GetMessageFromKey("YOU_ASK_FOR_EXCHANGE"), "", charId), 0));
                 ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateDialog(String.Format("#req_exc^2^{0} #req_exc^5^{0} {1}", Session.Character.CharacterId, "accept?")), ReceiverType.OnlySomeone, CharName);
                 Session.Character.ExchangeInfo.Confirm = false;
 
@@ -1269,6 +1269,7 @@ namespace OpenNos.Handler
             Session.Client.SendPacket(Session.Character.GenerateSay("$JLvl JOBLEVEL", 0));
             Session.Client.SendPacket(Session.Character.GenerateSay("$SPLvl SPLEVEL", 0));
             Session.Client.SendPacket(Session.Character.GenerateSay("$ChangeClass CLASS", 0));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$ChangeRep REPUTATION", 0));
             Session.Client.SendPacket(Session.Character.GenerateSay("$Kick USERNAME", 0));
             Session.Client.SendPacket(Session.Character.GenerateSay("$MapDance", 0));
             Session.Client.SendPacket(Session.Character.GenerateSay("$Effect EFFECTID", 0));
@@ -1393,6 +1394,23 @@ namespace OpenNos.Handler
             if (Byte.TryParse(packetsplit[2], out classe) && classe < 4)
             {
                 ClassChange(classe);
+            }
+        }
+        [Packet("$ChangeRep")]
+        public void rep(string packet)
+        {
+
+            string[] packetsplit = packet.Split(' ');
+            long reput;
+            if (packetsplit.Length > 3)
+                Session.Client.SendPacket(Session.Character.GenerateSay("$ChangeRep REPUTATION", 0));
+            if (Int64.TryParse(packetsplit[2], out reput) && reput > 0)
+            {
+
+                Session.Character.Reput = reput;
+                Session.Client.SendPacket(Session.Character.GenerateFd());
+                Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("REP_CHANGED"), 0));
+                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllOnMapExceptMe);
             }
         }
         [Packet("$Lvl")]

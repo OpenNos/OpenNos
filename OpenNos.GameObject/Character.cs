@@ -502,10 +502,10 @@ namespace OpenNos.GameObject
 
         public int GetReputIco()
         {
-            return Convert.ToInt64(Reput) <= 100 ? 1 : Convert.ToInt64(Reput) <= 300 ? 2 : Convert.ToInt64(Reput) <= 500 ? 3 : Convert.ToInt64(Reput) <= 1000 ? 4 : Convert.ToInt64(Reput) <= 1500 ? 5 : Convert.ToInt64(Reput) <= 2000 ? 6 : Convert.ToInt64(Reput) <= 4500 ? 7 :
-            Convert.ToInt64(Reput) <= 7000 ? 8 : Convert.ToInt64(Reput) <= 10000 ? 9 : Convert.ToInt64(Reput) <= 19000 ? 10 : Convert.ToInt64(Reput) <= 38000 ? 11 : Convert.ToInt64(Reput) <= 50000 ? 12 : Convert.ToInt64(Reput) <= 80000 ? 13 : Convert.ToInt64(Reput) <= 120000 ? 14 :
-                    Convert.ToInt64(Reput) <= 170000 ? 15 : Convert.ToInt64(Reput) <= 230000 ? 16 : Convert.ToInt64(Reput) <= 300000 ? 17 : Convert.ToInt64(Reput) <= 380000 ? 18 : Convert.ToInt64(Reput) <= 470000 ? 19 : Convert.ToInt64(Reput) <= 570000 ? 20 : Convert.ToInt64(Reput) <= 700000 ? 21 :
-                    Convert.ToInt64(Reput) <= 1000000 ? 22 : Convert.ToInt64(Reput) <= 3000000 ? 23 : Convert.ToInt64(Reput) <= 5000000 ? 24 : Convert.ToInt64(Reput) <= 7000000 ? 25 : Convert.ToInt64(Reput) <= 10000000 ? 26 : Convert.ToInt64(Reput) <= 50000000 ? 27 : 30;
+            return Reput <= 50 ? 1 : Reput <= 150 ? 2 : Reput <= 250 ? 3 : Reput <= 500 ? 4 : Reput <= 750 ? 5 : Reput <= 1000 ? 6 : Reput <= 2250 ? 7 :
+            Reput <= 3500 ? 8 : Reput <= 5000 ? 9 : Reput <= 9500 ? 10 : Reput <= 19000 ? 11 : Reput <= 25000 ? 12 : Reput <= 40000 ? 13 : Reput <= 60000 ? 14 :
+                    Reput <= 85000 ? 15 : Reput <= 115000 ? 16 : Reput <= 150000 ? 17 : Reput <= 190000 ? 18 : Reput <= 235000 ? 19 : Reput <= 285000 ? 20 : Reput <= 350000 ? 21 :
+                    Reput <= 500000 ? 22 : Reput <= 1500000 ? 23 : Reput <= 2500000 ? 24 : Reput <= 3750000 ? 25 : Reput <= 5000000 ? 26 : Reput >= 5000001 ? 27 : 30;
 
         }
 
@@ -791,7 +791,7 @@ namespace OpenNos.GameObject
 
         }
 
-        public string generateModal(string message, int type)
+        public string GenerateModal(string message, int type)
         {
             return String.Format("modal {1} {0}", message, type);
         }

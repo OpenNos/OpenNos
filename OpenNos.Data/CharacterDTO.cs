@@ -59,7 +59,7 @@ namespace OpenNos.Data
 
         public long LevelXp { get; set; }
 
-        public int Reput { get; set; }
+        public long Reput { get; set; }
 
         public int Dignite { get; set; }
 
