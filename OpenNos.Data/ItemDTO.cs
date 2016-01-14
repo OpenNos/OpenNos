@@ -60,5 +60,6 @@ namespace OpenNos.Data
         public short MoreMp { get; set; }
         public bool Colored { get; set; }
         public bool isConsumable { get; set; }
+        public long ReputationMinimum { get; set; }
     }
 }

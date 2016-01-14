@@ -203,6 +203,7 @@
     <Property Name="MoreMp" Type="smallint" Nullable="false" />
     <Property Name="Colored" Type="bool" Nullable="false" />
     <Property Name="isConsumable" Type="bool" Nullable="false" />
+    <Property Name="ReputationMinimum" Type="bigint" Nullable="false" />
   </EntityType>
   <EntityType Name="npc">
     <Key>
@@ -728,6 +729,7 @@
           <Property Name="isConsumable" Type="Boolean" Nullable="false" />
           <NavigationProperty Name="inventoryitem" Relationship="opennosModel.InventoryItemItem" FromRole="Item" ToRole="InventoryItem" />
           <NavigationProperty Name="shopitem" Relationship="opennosModel.ShopItemItem" FromRole="Item" ToRole="ShopItem" />
+          <Property Name="ReputationMinimum" Type="Int64" Nullable="false" />
           </EntityType>
         <EntityType Name="Npc">
           <Key>
@@ -1044,6 +1046,7 @@
           <ScalarProperty Name="MoreMp" ColumnName="MoreMp" />
           <ScalarProperty Name="Colored" ColumnName="Colored" />
           <ScalarProperty Name="isConsumable" ColumnName="isConsumable" />
+          <ScalarProperty Name="ReputationMinimum" ColumnName="ReputationMinimum" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
