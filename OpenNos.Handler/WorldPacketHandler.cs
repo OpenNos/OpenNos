@@ -422,7 +422,7 @@ namespace OpenNos.Handler
 
             Session.Client.SendPacket(Session.Character.GenerateExts());
             Session.Client.SendPacket(Session.Character.GenerateGold());
-    
+
             ClientLinkManager.Instance.Broadcast(Session, Session.Character.GeneratePairy(), ReceiverType.AllOnMap);
             ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateSpPoint(), ReceiverType.AllOnMap);
             GetStartupInventory();
@@ -755,7 +755,7 @@ namespace OpenNos.Handler
                         ItemVNum = item.ItemVNum,
                         Rare = item.Rare,
                         Upgrade = item.Upgrade,
-                        Color = 0,
+                        Color = item.Color,
                         Concentrate = 0,
                         CriticalLuckRate = 0,
                         CriticalRate = 0,
@@ -808,7 +808,12 @@ namespace OpenNos.Handler
             {
                 foreach (ShopItem item in shop.ShopItems.Where(s => s.Type.Equals(type)))
                 {
-                    shoplist += String.Format(" {0}.{1}.{2}.{3}.{4}", ServerManager.GetItem(item.ItemVNum).Type, item.Slot, item.ItemVNum, -1, ServerManager.GetItem(item.ItemVNum).Price);
+                    Item iteminfo = ServerManager.GetItem(item.ItemVNum);
+                    if(iteminfo.Type != 0)
+                        shoplist += String.Format(" {0}.{1}.{2}.{3}.{4}", iteminfo.Type, item.Slot, item.ItemVNum, -1, ServerManager.GetItem(item.ItemVNum).Price);
+                    else
+                        shoplist += String.Format(" {0}.{1}.{2}.{3}.{4}.{5}", iteminfo.Type, item.Slot, item.ItemVNum, item.Rare,iteminfo.Colored?item.Color : item.Upgrade, ServerManager.GetItem(item.ItemVNum).Price);
+
                 }
 
                 Session.Client.SendPacket(String.Format("n_inv 2 {0} 0 0{1}", npc.NpcId, shoplist));

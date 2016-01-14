@@ -270,6 +270,7 @@
     <Property Name="ItemVNum" Type="smallint" Nullable="false" />
     <Property Name="Upgrade" Type="smallint" Nullable="false" />
     <Property Name="Rare" Type="smallint" Nullable="false" />
+    <Property Name="Color" Type="smallint" Nullable="false" />
     <Property Name="ShopId" Type="int" Nullable="false" />
   </EntityType>
   <EntityType Name="shop">
@@ -850,6 +851,7 @@
           <Property Name="Upgrade" Type="Int16" Nullable="false" />
           <Property Name="Rare" Type="Int16" Nullable="false" />
           <NavigationProperty Name="shop" Relationship="opennosModel.ShopShopItem" FromRole="ShopItem" ToRole="Shop" />
+          <Property Name="Color" Type="Int16" Nullable="false" />
           <Property Name="ShopId" Type="Int32" Nullable="false" />
         </EntityType>
         <EntityType Name="Shop">
@@ -1113,6 +1115,7 @@
           <ScalarProperty Name="ItemVNum" ColumnName="ItemVNum" />
           <ScalarProperty Name="Upgrade" ColumnName="Upgrade" />
           <ScalarProperty Name="Rare" ColumnName="Rare" />
+          <ScalarProperty Name="Color" ColumnName="Color" />
           <ScalarProperty Name="ShopId" ColumnName="ShopId" />
         </MappingFragment>
       </EntityTypeMapping>
