@@ -1840,44 +1840,50 @@ namespace OpenNos.Handler
             Inventory sp = Session.Character.EquipmentList.LoadBySlotAndType((short)EquipmentType.Sp, (short)InventoryType.Equipment);
             Inventory fairy = Session.Character.EquipmentList.LoadBySlotAndType((short)EquipmentType.Fairy, (short)InventoryType.Equipment);
 
-            if (!(fairy != null && ServerManager.GetItem(fairy.InventoryItem.ItemVNum).Element != ServerManager.GetItem(sp.InventoryItem.ItemVNum).Element))
+            if (sp != null && Session.Character.JobLevel >= ServerManager.GetItem(sp.InventoryItem.ItemVNum).LevelJobMinimum)
             {
+                if (!(fairy != null && ServerManager.GetItem(fairy.InventoryItem.ItemVNum).Element != ServerManager.GetItem(sp.InventoryItem.ItemVNum).Element))
+                {
 
 
-                Session.Character.UseSp = true;
-                Session.Character.Morph = ServerManager.GetItem(sp.InventoryItem.ItemVNum).Morph;
-                Session.Character.MorphUpgrade = sp.InventoryItem.Upgrade;
-                Session.Character.MorphUpgrade2 = sp.InventoryItem.Color;
-                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateCMode(), ReceiverType.AllOnMap);
+                    Session.Character.UseSp = true;
+                    Session.Character.Morph = ServerManager.GetItem(sp.InventoryItem.ItemVNum).Morph;
+                    Session.Character.MorphUpgrade = sp.InventoryItem.Upgrade;
+                    Session.Character.MorphUpgrade2 = sp.InventoryItem.Color;
+                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateCMode(), ReceiverType.AllOnMap);
 
 
-                /*s = "ski 833 833 833 834 835 836 837 838 839 840 841 21 25 28 37 41 44 49 53 56 340 341 345 352";
-                MainFile.maps.SendMap(chara, s, true);
-                /*
-                 qslot 0 1.1.2 1.1.1 1.1.3 0.7.-1 1.1.0 0.7.-1 0.7.-1 0.1.10 1.3.2 1.3.1
+                    /*s = "ski 833 833 833 834 835 836 837 838 839 840 841 21 25 28 37 41 44 49 53 56 340 341 345 352";
+                    MainFile.maps.SendMap(chara, s, true);
+                    /*
+                     qslot 0 1.1.2 1.1.1 1.1.3 0.7.-1 1.1.0 0.7.-1 0.7.-1 0.1.10 1.3.2 1.3.1
 
-                 qslot 1 1.1.2 1.1.3 1.1.4 1.1.5 1.1.6 7.7.-1 7.7.-1 7.7.-1 7.7.-1 7.7.-1
+                     qslot 1 1.1.2 1.1.3 1.1.4 1.1.5 1.1.6 7.7.-1 7.7.-1 7.7.-1 7.7.-1 7.7.-1
 
-                 qslot 2 7.7.-1 7.7.-1 7.7.-1 7.7.-1 7.7.-1 7.7.-1 7.7.-1 7.7.-1 7.7.-1 7.7.-1
-                 */
+                     qslot 2 7.7.-1 7.7.-1 7.7.-1 7.7.-1 7.7.-1 7.7.-1 7.7.-1 7.7.-1 7.7.-1 7.7.-1
+                     */
 
 
 
-                //  lev 40 2288403 14 72745 3221180 145000 20086 5
+                    //  lev 40 2288403 14 72745 3221180 145000 20086 5
 
-                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(196), ReceiverType.AllOnMap);
+                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(196), ReceiverType.AllOnMap);
 
-                ClientLinkManager.Instance.Broadcast(Session, String.Format("guri 6 1 {0} 0 0", Session.Character.CharacterId), ReceiverType.AllOnMap);
-                Session.Client.SendPacket(Session.Character.GenerateSpPoint());
-                Session.Character.Speed += ServerManager.GetItem(sp.InventoryItem.ItemVNum).Speed;
-                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateCond(), ReceiverType.AllOnMap);
-                Session.Client.SendPacket(Session.Character.GenerateLev());
+                    ClientLinkManager.Instance.Broadcast(Session, String.Format("guri 6 1 {0} 0 0", Session.Character.CharacterId), ReceiverType.AllOnMap);
+                    Session.Client.SendPacket(Session.Character.GenerateSpPoint());
+                    Session.Character.Speed += ServerManager.GetItem(sp.InventoryItem.ItemVNum).Speed;
+                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateCond(), ReceiverType.AllOnMap);
+                    Session.Client.SendPacket(Session.Character.GenerateLev());
+                }
+                else
+                {
+                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("BAD_FAIRY"), 0));
+                }
             }
             else
             {
-                Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("BAD_FAIRY"), 0));
+                Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("LOW_JOB_LVL"), 0));
             }
-
         }
         public void ChangeVehicule(Item item)
         {
