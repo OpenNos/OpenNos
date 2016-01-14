@@ -16,7 +16,7 @@ namespace OpenNos.Data
         public short Upgrade { get; set; }
         public short Rare { get; set; }
         public int ShopId { get; set; }
-
+        public short Color { get; set; }
 
     }
 }
