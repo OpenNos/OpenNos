@@ -99,7 +99,7 @@
     <Property Name="Hp" Type="int" Nullable="false" />
     <Property Name="Mp" Type="int" Nullable="false" />
     <Property Name="ArenaWinner" Type="int" Nullable="false" />
-    <Property Name="Reput" Type="int" Nullable="false" />
+    <Property Name="Reput" Type="bigint" Nullable="false" />
     <Property Name="Dignite" Type="int" Nullable="false" />
     <Property Name="Gold" Type="bigint" Nullable="false" />
     <Property Name="Backpack" Type="int" Nullable="false" />
@@ -474,7 +474,7 @@
           <Property Name="Hp" Type="Int32" Nullable="false" />
           <Property Name="Mp" Type="Int32" Nullable="false" />
           <Property Name="ArenaWinner" Type="Int32" Nullable="false" />
-          <Property Name="Reput" Type="Int32" Nullable="false" />
+          <Property Name="Reput" Type="Int64" Nullable="false" />
           <Property Name="Dignite" Type="Int32" Nullable="false" />
           <Property Name="Gold" Type="Int64" Nullable="false" />
           <Property Name="Backpack" Type="Int32" Nullable="false" />
