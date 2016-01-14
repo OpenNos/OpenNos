@@ -249,7 +249,7 @@ namespace OpenNos.GameObject
                         if (permit == 1){ 
                            if (packetHeader != "0" && !TriggerHandler(packetHeader, packet, false))
                             {
-                                Logger.Log.ErrorFormat(Language.Instance.GetMessageFromKey("HANDLER_NOT_FOUND"), packetHeader);
+                                Logger.Log.WarnFormat(Language.Instance.GetMessageFromKey("HANDLER_NOT_FOUND"), packetHeader);
                             }
                         }
                     }
@@ -265,7 +265,7 @@ namespace OpenNos.GameObject
                     else
                    if (!TriggerHandler(packetHeader, packet, false))
                     {
-                        Logger.Log.ErrorFormat(Language.Instance.GetMessageFromKey("HANDLER_NOT_FOUND"), packetHeader);
+                        Logger.Log.WarnFormat(Language.Instance.GetMessageFromKey("HANDLER_NOT_FOUND"), packetHeader);
                     }
                 }
 
