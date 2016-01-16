@@ -79,7 +79,6 @@
     <Property Name="Password" Type="varchar" Nullable="false" MaxLength="255" />
     <Property Name="Authority" Type="smallint" Nullable="false" />
     <Property Name="LastSession" Type="int" Nullable="false" />
-    <Property Name="LoggedIn" Type="bool" Nullable="false" />
   </EntityType>
   <EntityType Name="character">
     <Key>
@@ -453,7 +452,6 @@
           <Property Name="Authority" Type="Int16" Nullable="false" />
           <Property Name="LastSession" Type="Int32" Nullable="false" />
           <NavigationProperty Name="character" Relationship="opennosModel.AccountCharacter" FromRole="Account" ToRole="Character" />
-          <Property Name="LoggedIn" Type="Boolean" Nullable="false" />
           <NavigationProperty Name="log" Relationship="opennosModel.accountlog" FromRole="account" ToRole="log" />
         </EntityType>
         <EntityType Name="Character">
@@ -917,7 +915,6 @@
           <ScalarProperty Name="Password" ColumnName="Password" />
           <ScalarProperty Name="Authority" ColumnName="Authority" />
           <ScalarProperty Name="LastSession" ColumnName="LastSession" />
-          <ScalarProperty Name="LoggedIn" ColumnName="LoggedIn" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
