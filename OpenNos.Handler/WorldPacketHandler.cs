@@ -954,7 +954,7 @@ namespace OpenNos.Handler
                     Session.CurrentMap.ShopUserList.Remove(shop.Key);
 
                     ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateShopEnd(), ReceiverType.AllOnMap);
-                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEndPlayerFlag(), ReceiverType.AllOnMapExceptMe);
+                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GeneratePlayerFlag(0), ReceiverType.AllOnMapExceptMe);
                     Session.Character.Speed = Session.Character.LastSpeed;
                     Session.Character.Rested = 0;
                     Session.Client.SendPacket(Session.Character.GenerateCond());
@@ -1716,6 +1716,7 @@ namespace OpenNos.Handler
             //ski
             Session.Client.SendPacket(Session.Character.GenerateAt());
             Session.Client.SendPacket(Session.Character.GenerateCMap());
+   
             foreach (String portalPacket in Session.Character.GenerateGp())
                 Session.Client.SendPacket(portalPacket);
             foreach (String npcPacket in Session.Character.Generatein2())
@@ -1906,7 +1907,7 @@ namespace OpenNos.Handler
             }
             else
             {
-                Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("LOW_REPUT"), 0));
+                Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("LOW_REP"), 0));
             }
 
         }

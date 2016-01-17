@@ -219,8 +219,14 @@
   <data name="LEVEL_CHANGED" xml:space="preserve">
     <value>Ton niveau a augmenté.</value>
   </data>
+  <data name="LOW_JOB_LVL" xml:space="preserve">
+    <value>Joblevel is too low</value>
+  </data>
   <data name="LOW_LVL" xml:space="preserve">
     <value>Your level is too low</value>
+  </data>
+  <data name="LOW_REP" xml:space="preserve">
+    <value>Reputation is too low</value>
   </data>
   <data name="MAGICIAN" xml:space="preserve">
     <value>Magician</value>
@@ -240,6 +246,9 @@
   <data name="NOT_ADVENTURER" xml:space="preserve">
     <value>You can change class only once</value>
   </data>
+  <data name="NOT_ENOUGH_MONEY" xml:space="preserve">
+    <value>Not enough money</value>
+  </data>
   <data name="NO_ENTRY" xml:space="preserve">
     <value>No EntryPoint found</value>
   </data>
@@ -257,6 +266,9 @@
   </data>
   <data name="PACKET_FAILURE" xml:space="preserve">
     <value>Failed to send packet {0} to client {1}, {2}.</value>
+  </data>
+  <data name="REP_CHANGED" xml:space="preserve">
+    <value>Reputation changed</value>
   </data>
   <data name="SHOP_OPEN" xml:space="preserve">
     <value>Shop has ben opened</value>

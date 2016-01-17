@@ -135,6 +135,9 @@
   <data name="BAD_PASSWORD" xml:space="preserve">
     <value>Falsches Passwort</value>
   </data>
+  <data name="BUY_ITEM_VALIDE" xml:space="preserve">
+    <value>Item bought</value>
+  </data>
   <data name="CLIENT_ARRIVED" xml:space="preserve">
     <value>Client verbunden, SessionId: {0}</value>
   </data>
@@ -183,8 +186,14 @@
   <data name="JOBLEVEL_CHANGED" xml:space="preserve">
     <value>Job level has been increased</value>
   </data>
+  <data name="LOW_JOB_LVL" xml:space="preserve">
+    <value>Joblevel is too low</value>
+  </data>
   <data name="LOW_LVL" xml:space="preserve">
     <value>Your level is too low</value>
+  </data>
+  <data name="LOW_REP" xml:space="preserve">
+    <value>Reputation is too low</value>
   </data>
   <data name="MAGICIAN" xml:space="preserve">
     <value>Magier</value>
@@ -204,6 +213,9 @@
   <data name="NOT_ADVENTURER" xml:space="preserve">
     <value>You can change class only once</value>
   </data>
+  <data name="NOT_ENOUGH_MONEY" xml:space="preserve">
+    <value>Not enough money</value>
+  </data>
   <data name="NO_ENTRY" xml:space="preserve">
     <value>Kein Einsprungspunkt gefunden!</value>
   </data>
@@ -215,6 +227,9 @@
   </data>
   <data name="PACKET_FAILURE" xml:space="preserve">
     <value>Fehler beim Senden von Packet {0} an Client {1}, {2}.</value>
+  </data>
+  <data name="REP_CHANGED" xml:space="preserve">
+    <value>Reputation changed</value>
   </data>
   <data name="SHOP_OPEN" xml:space="preserve">
     <value>Shop has ben opened</value>
