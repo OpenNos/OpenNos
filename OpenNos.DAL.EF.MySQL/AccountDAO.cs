@@ -28,13 +28,6 @@ namespace OpenNos.DAL.EF.MySQL
     public class AccountDAO : IAccountDAO
     {
        
-        public bool IsLoggedIn(string name)
-        {
-            using (var context = DataAccessHelper.CreateContext())
-            {
-                return context.account.Any(a => a.Name.Equals(name) && a.LoggedIn);
-            }
-        }
 
         public AccountDTO LoadBySessionId(int sessionId)
         {
@@ -73,7 +66,6 @@ namespace OpenNos.DAL.EF.MySQL
             using (var context = DataAccessHelper.CreateContext())
             {
                 Account account = context.account.SingleOrDefault(a => a.Name.Equals(name));
-                account.LoggedIn = true;
                 context.SaveChanges();
             }
         }
