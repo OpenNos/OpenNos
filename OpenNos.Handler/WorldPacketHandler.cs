@@ -1716,6 +1716,7 @@ namespace OpenNos.Handler
             //ski
             Session.Client.SendPacket(Session.Character.GenerateAt());
             Session.Client.SendPacket(Session.Character.GenerateCMap());
+   
             foreach (String portalPacket in Session.Character.GenerateGp())
                 Session.Client.SendPacket(portalPacket);
             foreach (String npcPacket in Session.Character.Generatein2())
