@@ -92,8 +92,7 @@ namespace OpenNos.Handler
                                     break;
                                 default:
                                     {
-                                        if (!DAOFactory.AccountDAO.IsLoggedIn(user.Name))
-                                        {
+                                      
                                             int newSessionId = SessionFactory.Instance.GenerateSessionId();
 
                                             DAOFactory.AccountDAO.UpdateLastSessionAndIp(user.Name, (int)newSessionId, _session.Client.RemoteEndPoint.ToString());
@@ -111,11 +110,7 @@ namespace OpenNos.Handler
 
 
                                             _session.Client.SendPacket(BuildServersPacket((int)newSessionId));
-                                        }
-                                        else
-                                        {
-                                            _session.Client.SendPacket(String.Format("fail {O}", Language.Instance.GetMessageFromKey("ONLINE").ToString()));
-                                        }
+                                       
                                     }
                                     break;
 
