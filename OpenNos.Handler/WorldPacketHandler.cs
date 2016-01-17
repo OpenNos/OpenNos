@@ -1907,7 +1907,7 @@ namespace OpenNos.Handler
             }
             else
             {
-                Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("LOW_REPUT"), 0));
+                Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("LOW_REP"), 0));
             }
 
         }
