@@ -27,18 +27,18 @@ namespace OpenNos.DAL.EF.MySQL
 {
     public class AccountDAO : IAccountDAO
     {
-       
+
 
         public AccountDTO LoadBySessionId(int sessionId)
         {
-          
+
             using (var context = DataAccessHelper.CreateContext())
             {
                 Account account = context.account.FirstOrDefault(a => a.LastSession.Equals(sessionId));
 
                 if (account != null)
                 {
-                    return Mapper.Map<AccountDTO>(account); 
+                    return Mapper.Map<AccountDTO>(account);
                 }
             }
 
@@ -59,7 +59,7 @@ namespace OpenNos.DAL.EF.MySQL
 
             return null;
         }
-     
+
 
         public void LogIn(string name)
         {
@@ -69,8 +69,8 @@ namespace OpenNos.DAL.EF.MySQL
                 context.SaveChanges();
             }
         }
-        
-       public void ToggleBan(long id)
+
+        public void ToggleBan(long id)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
@@ -90,7 +90,7 @@ namespace OpenNos.DAL.EF.MySQL
             }
         }
 
-        public void WriteConnectionLog(long accountId, string ipAddress, Nullable<long> characterId, string logType,string logData)
+        public void WriteConnectionLog(long accountId, string ipAddress, Nullable<long> characterId, string logType, string logData)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
