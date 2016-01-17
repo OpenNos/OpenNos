@@ -32,7 +32,7 @@ namespace OpenNos.DAL.EF.MySQL
             using (var context = DataAccessHelper.CreateContext())
             {
                 return Mapper.Map<ShopDTO>(context.shop.FirstOrDefault(s => s.ShopId.Equals(ShopId)));
-         }
+            }
         }
 
         public ShopDTO LoadByNpc(short npcId)

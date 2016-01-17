@@ -137,7 +137,7 @@ namespace OpenNos.GameObject
         #endregion
 
         #region Methods
-            
+
         /// <summary>
         /// This will be triggered when the underlying NetworkCleint receives a packet.
         /// </summary>
@@ -185,7 +185,7 @@ namespace OpenNos.GameObject
 
 
 
-            foreach (string packet in packetConcatenated.Split(new char[] { (char)0xFF}, StringSplitOptions.RemoveEmptyEntries))
+            foreach (string packet in packetConcatenated.Split(new char[] { (char)0xFF }, StringSplitOptions.RemoveEmptyEntries))
             {
                 string[] packetsplit = packet.Split(' ', '^');
 
@@ -245,9 +245,10 @@ namespace OpenNos.GameObject
                         {
                             TriggerHandler(packetHeader[0].ToString(), packet, false);
                         }
-                   else
-                        if (permit == 1){ 
-                           if (packetHeader != "0" && !TriggerHandler(packetHeader, packet, false))
+                        else
+                        if (permit == 1)
+                        {
+                            if (packetHeader != "0" && !TriggerHandler(packetHeader, packet, false))
                             {
                                 Logger.Log.WarnFormat(Language.Instance.GetMessageFromKey("HANDLER_NOT_FOUND"), packetHeader);
                             }
@@ -391,7 +392,7 @@ namespace OpenNos.GameObject
             return false;
         }
 
-   
+
         #endregion
     }
 }

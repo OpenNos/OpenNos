@@ -35,7 +35,7 @@ namespace OpenNos.GameObject
             Items = new List<PersonalShopItem>();
             Sell = 0;
         }
-      
+
         #endregion
 
         #region Methods

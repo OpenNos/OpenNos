@@ -25,10 +25,10 @@ namespace OpenNos.DAL.Interface
     {
         #region Methods
 
-      
+
         void WriteConnectionLog(long accountId, string ipAddress, Nullable<long> characterId, string logType, string logData);
 
-       void SetCharIdNull(Nullable<long> CharacterId);
+        void SetCharIdNull(Nullable<long> CharacterId);
 
         IEnumerable<GeneralLogDTO> LoadByLogType(string LogType, Nullable<long> CharacterId);
 

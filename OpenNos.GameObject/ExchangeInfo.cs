@@ -26,20 +26,21 @@ namespace OpenNos.GameObject
     {
 
         #region Instantiation
-        public List<InventoryItem> ExchangeList {get;set; }
+        public List<InventoryItem> ExchangeList { get; set; }
         public bool Confirm { get; set; }
         public bool Validate { get; set; }
         public long Gold { get; set; }
         public long CharId { get; set; }
 
-        public ExchangeInfo(){
+        public ExchangeInfo()
+        {
             Confirm = false;
             Gold = 0;
             CharId = -1;
             ExchangeList = new List<InventoryItem>();
             Validate = false;
-            }
-        
+        }
+
         #endregion
 
         #region Methods
