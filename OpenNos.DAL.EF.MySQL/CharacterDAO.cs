@@ -119,10 +119,10 @@ namespace OpenNos.DAL.EF.MySQL
                 List<Character> heroes = context.character.OrderByDescending(c => c.Reput).Take(42).ToList();
 
                 int i = 0;
-                foreach(Character c in heroes)
+                foreach (Character c in heroes)
                 {
                     i++;
-                    if(c.CharacterId == characterId)
+                    if (c.CharacterId == characterId)
                     {
                         if (i == 1)
                         {

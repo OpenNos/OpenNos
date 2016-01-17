@@ -379,7 +379,7 @@ namespace OpenNos.GameObject
             DistDodge = new int[4, 100];
             magicalDef = new int[4, 100];
 
-           
+
             for (int i = 0; i < 100; i++)
             {
                 //ADVENTURER
@@ -393,7 +393,7 @@ namespace OpenNos.GameObject
                 distRate[(int)ClassType.Adventurer, i] = (i + 9) * 2;//approx
                 criticalDistRate[(int)ClassType.Adventurer, i] = 0;//sure
                 criticalDist[(int)ClassType.Adventurer, i] = 0;//sure
-                hitDef[(int)ClassType.Adventurer, i]  = (int)(i + 9) / 2;//approx
+                hitDef[(int)ClassType.Adventurer, i] = (int)(i + 9) / 2;//approx
                 hitDodge[(int)ClassType.Adventurer, i] = i + 9;//approx
                 DistDef[(int)ClassType.Adventurer, i] = (int)(i + 9) / 2;//approx
                 DistDodge[(int)ClassType.Adventurer, i] = i + 9;//approx
@@ -406,14 +406,14 @@ namespace OpenNos.GameObject
                 criticalDistRate[(int)ClassType.Swordman, i] = 0;//approx
                 minDist[(int)ClassType.Swordman, i] = i + 12;//approx
                 maxDist[(int)ClassType.Swordman, i] = i + 12;//approx
-                distRate[(int)ClassType.Swordman, i] = 2 * (i +12);//approx
+                distRate[(int)ClassType.Swordman, i] = 2 * (i + 12);//approx
                 hitDodge[(int)ClassType.Swordman, i] = i + 12;//approx
                 DistDodge[(int)ClassType.Swordman, i] = i + 12;//approx
-                magicalDef[(int)ClassType.Swordman, i] = (i+9)/2;//approx
+                magicalDef[(int)ClassType.Swordman, i] = (i + 9) / 2;//approx
                 hitRate[(int)ClassType.Swordman, i] = i + 27;//approx
                 hitDef[(int)ClassType.Swordman, i] = i + 2;//approx
 
-                minHit[(int)ClassType.Swordman, i] = 2*i+5;//approx 	Numbers n such that 10n+9 is prime. 
+                minHit[(int)ClassType.Swordman, i] = 2 * i + 5;//approx 	Numbers n such that 10n+9 is prime. 
                 maxHit[(int)ClassType.Swordman, i] = 2 * i + 5;//approx  	Numbers n such that 10n+9 is prime. 
                 DistDef[(int)ClassType.Swordman, i] = i;//approx
 
@@ -433,7 +433,7 @@ namespace OpenNos.GameObject
                 hitDodge[(int)ClassType.Magician, i] = 24 + i;//approx
                 DistDodge[(int)ClassType.Magician, i] = 14 + i;//approx
 
-                minHit[(int)ClassType.Magician, i] = 2 * i + 9;//approx Numbers n such that n ^ 2 is of form x^ 2 + 40y ^ 2 with positive x,y.
+                minHit[(int)ClassType.Magician, i] = 2 * i + 9;//approx Numbers n such that n^2 is of form x^ 2 + 40y ^ 2 with positive x,y.
                 maxHit[(int)ClassType.Magician, i] = 2 * i + 9;//approx Numbers n such that n^2 is of form x^2+40y^2 with positive x,y. 
                 DistDef[(int)ClassType.Magician, i] = 20 + i;//approx
 
@@ -447,15 +447,15 @@ namespace OpenNos.GameObject
                 maxHit[(int)ClassType.Archer, i] = 9 + i * 3;//aproximate
                 int add = (i % 2 == 0) ? 2 : 4;
                 hitRate[(int)ClassType.Archer, 1] = 41;
-                hitRate[(int)ClassType.Archer, i] = hitRate[(int)ClassType.Archer, i] + add ;//approximate
-                minDist[(int)ClassType.Archer, i] = 2*i;//approximate
+                hitRate[(int)ClassType.Archer, i] = hitRate[(int)ClassType.Archer, i] + add;//approximate
+                minDist[(int)ClassType.Archer, i] = 2 * i;//approximate
                 maxDist[(int)ClassType.Archer, i] = 2 * i;//approximate
 
-                distRate[(int)ClassType.Archer, i] = 20+2 * i;//approximate;
+                distRate[(int)ClassType.Archer, i] = 20 + 2 * i;//approximate;
                 hitDef[(int)ClassType.Archer, i] = i;//approximate;
-                magicalDef[(int)ClassType.Archer, i] = i+2;//approximate;
-                hitDodge[(int)ClassType.Archer, i] = 41+i;//approximate;
-                DistDodge[(int)ClassType.Archer, i] = i+2;//approximate;
+                magicalDef[(int)ClassType.Archer, i] = i + 2;//approximate;
+                hitDodge[(int)ClassType.Archer, i] = 41 + i;//approximate;
+                DistDodge[(int)ClassType.Archer, i] = i + 2;//approximate;
                 DistDef[(int)ClassType.Archer, i] = i;//approximate;
             }
         }
@@ -478,18 +478,18 @@ namespace OpenNos.GameObject
                 MP[(int)ClassType.Adventurer, i + 1] = MP[(int)ClassType.Adventurer, i] + (U0 + i / 2);
                 MP[(int)ClassType.Adventurer, i + 2] = MP[(int)ClassType.Adventurer, i + 1] + (U0 + i / 2);
                 MP[(int)ClassType.Adventurer, i + 3] = MP[(int)ClassType.Adventurer, i + 2] + (U1 + i / 2);
-               
+
             }
-        
+
             //SWORDMAN MP
-            for (int i = 0; i < MP.GetLength(1)-1; i++)
+            for (int i = 0; i < MP.GetLength(1) - 1; i++)
             {
-              
-                MP[(int)ClassType.Swordman, i+1] = MP[(int)ClassType.Adventurer, i];
+
+                MP[(int)ClassType.Swordman, i + 1] = MP[(int)ClassType.Adventurer, i];
                 MP[(int)ClassType.Adventurer, i] = MP[(int)ClassType.Swordman, i + 1];
 
             }
-   
+
             //ARCHER MP
             for (int i = 0; i < 15; i++)
             {
@@ -501,19 +501,19 @@ namespace OpenNos.GameObject
             MP[(int)ClassType.Archer, 18] = 290;
             MP[(int)ClassType.Archer, 19] = 307;
             U0 = 18;
-            for (int i = 20; i < MP.GetLength(1)-1; i+=4)
+            for (int i = 20; i < MP.GetLength(1) - 1; i += 4)
             {
-                MP[(int)ClassType.Archer, i] = MP[(int)ClassType.Archer, i - 1] + U0 + ((i- 19) / 2);
+                MP[(int)ClassType.Archer, i] = MP[(int)ClassType.Archer, i - 1] + U0 + ((i - 19) / 2);
                 MP[(int)ClassType.Archer, i + 1] = MP[(int)ClassType.Archer, i] + U0 + 1 + ((i - 19) / 2);
                 MP[(int)ClassType.Archer, i + 2] = MP[(int)ClassType.Archer, i + 1] + U0 + 1 + ((i - 19) / 2);
-                MP[(int)ClassType.Archer, i + 3] = MP[(int)ClassType.Archer, i + 2] + U0 +1+ ((i - 19) / 2);
-                
+                MP[(int)ClassType.Archer, i + 3] = MP[(int)ClassType.Archer, i + 2] + U0 + 1 + ((i - 19) / 2);
+
             }
             //MAGICIAN MP
             for (int i = 0; i < MP.GetLength(1) - 1; i++)
             {
 
-                MP[(int)ClassType.Magician, i ] = 3*MP[(int)ClassType.Adventurer, i];
+                MP[(int)ClassType.Magician, i] = 3 * MP[(int)ClassType.Adventurer, i];
 
             }
 

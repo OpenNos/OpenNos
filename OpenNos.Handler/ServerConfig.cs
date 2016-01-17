@@ -30,18 +30,18 @@ namespace OpenNos.Handler
             public string WorldIp { get; set; }
             public int channelAmount { get; set; }
             public int WorldPort { get; set; }
-   
+
         }
         public Server GetServer(XmlNode str)
         {
             Server result = new Server();
-         
+
             result.name = str.Attributes["Name"].Value;
             result.WorldIp = str.Attributes["WorldIp"].Value;
             result.channelAmount = Convert.ToInt32(str.Attributes["channelAmount"].Value);
-            result.WorldPort = Convert.ToInt32(str.Attributes["WorldPort"].Value);   
+            result.WorldPort = Convert.ToInt32(str.Attributes["WorldPort"].Value);
             return result;
         }
     }
- 
+
 }

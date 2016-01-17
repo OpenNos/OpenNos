@@ -20,5 +20,5 @@ namespace OpenNos.Domain
         Red = 9
 
     }
-   
+
 }
