@@ -38,7 +38,7 @@ namespace OpenNos.World
             Console.WriteLine(String.Format("===============================================================================\n"
                              + "                 WORLD SERVER VERSION {0} by OpenNos Team\n" +
                              "===============================================================================\n", fileVersionInfo.ProductVersion));
-          
+
             //initialize DB
             DataAccessHelper.Initialize();
             //initialilize maps
@@ -46,7 +46,7 @@ namespace OpenNos.World
 
             //initialize ClientLinkManager
             //TODO?
-        
+
             string ip = System.Configuration.ConfigurationManager.AppSettings["WorldIp"];
             int port = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["WorldPort"]);
             try
@@ -60,7 +60,7 @@ namespace OpenNos.World
 
             //start up network manager
             NetworkManager<WorldEncryption> networkManager = new NetworkManager<WorldEncryption>(ip, port, typeof(WorldPacketHandler));
-            
+
         }
     }
 }
