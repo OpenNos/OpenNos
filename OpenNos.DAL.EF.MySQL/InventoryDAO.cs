@@ -35,7 +35,7 @@ namespace OpenNos.DAL.EF.MySQL
                 {
 
                     long inventoryId = inventory.InventoryId;
-          
+
                     Inventory entity = context.inventory.SingleOrDefault(c => c.InventoryId.Equals(inventoryId));
 
                     if (entity == null) //new entity
@@ -71,7 +71,7 @@ namespace OpenNos.DAL.EF.MySQL
                 return DeleteResult.Deleted;
             }
         }
-        public InventoryDTO LoadBySlotAndType(long characterId, short slot,short type)
+        public InventoryDTO LoadBySlotAndType(long characterId, short slot, short type)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
@@ -120,7 +120,7 @@ namespace OpenNos.DAL.EF.MySQL
 
             return Mapper.Map<InventoryDTO>(entity);
         }
-      
+
         public InventoryDTO LoadByInventoryItem(long inventoryItemId)
         {
             using (var context = DataAccessHelper.CreateContext())
@@ -129,6 +129,6 @@ namespace OpenNos.DAL.EF.MySQL
             }
         }
 
-       
+
     }
 }

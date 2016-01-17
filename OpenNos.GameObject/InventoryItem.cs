@@ -23,7 +23,7 @@ namespace OpenNos.GameObject
 {
     public class InventoryItem : InventoryItemDTO, IGameObject
     {
-     
+
         #region Instantiation
 
         public InventoryItem()
@@ -31,7 +31,7 @@ namespace OpenNos.GameObject
             Mapper.CreateMap<InventoryItemDTO, InventoryItem>();
             Mapper.CreateMap<InventoryItem, InventoryItemDTO>();
         }
-      
+
         #endregion
 
         #region Methods

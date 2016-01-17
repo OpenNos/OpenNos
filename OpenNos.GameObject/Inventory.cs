@@ -27,10 +27,11 @@ namespace OpenNos.GameObject
     {
         public InventoryItem InventoryItem
         {
-            get; set; }
+            get; set;
+        }
 
         #region Instantiation
-        
+
 
         public Inventory()
         {
@@ -42,7 +43,7 @@ namespace OpenNos.GameObject
         #endregion
 
         #region Methods
-     
+
         public void Save()
         {
             throw new NotImplementedException();

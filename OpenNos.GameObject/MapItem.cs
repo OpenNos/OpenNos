@@ -31,9 +31,9 @@ namespace OpenNos.GameObject
         public MapItem(short x, short y)
         {
             PositionX = x;
-            PositionY = y;  
+            PositionY = y;
         }
-      
+
         #endregion
 
         #region Methods

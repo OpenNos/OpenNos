@@ -238,7 +238,7 @@ namespace OpenNos.GameObject
             }
         }
 
-        public bool IsVehiculed { get; set; }
+        public bool IsVehicled { get; set; }
 
         #endregion
 
@@ -473,14 +473,14 @@ namespace OpenNos.GameObject
 
         public string GenerateLev()
         {
-           Inventory specialist = EquipmentList.LoadBySlotAndType((short)EquipmentType.Sp, (short)InventoryType.Equipment);
+            Inventory specialist = EquipmentList.LoadBySlotAndType((short)EquipmentType.Sp, (short)InventoryType.Equipment);
 
-            return String.Format("lev {0} {1} {2} {3} {4} {5} {6} 2", Level, LevelXp, !UseSp ? JobLevel : specialist.InventoryItem.SpLevel, !UseSp ? JobLevelXp : specialist.InventoryItem.SpXp, XPLoad(), JobXPLoad(),Reput);
+            return String.Format("lev {0} {1} {2} {3} {4} {5} {6} 2", Level, LevelXp, !UseSp ? JobLevel : specialist.InventoryItem.SpLevel, !UseSp ? JobLevelXp : specialist.InventoryItem.SpXp, XPLoad(), JobXPLoad(), Reput);
         }
 
         public string GenerateCInfo()
         {
-            return String.Format("c_info {0} - {1} {2} - {3} {4} {5} {6} {7} {8} {9} {10} {11} {12} {13} {14} {15} ", Name, -1, -1, CharacterId, Authority, Gender, HairStyle, HairColor, Class, GetReputIco(), 0, UseSp || IsVehiculed ? Morph : 0, Invisible, 0, UseSp ? MorphUpgrade : 0, ArenaWinner);
+            return String.Format("c_info {0} - {1} {2} - {3} {4} {5} {6} {7} {8} {9} {10} {11} {12} {13} {14} {15} ", Name, -1, -1, CharacterId, Authority, Gender, HairStyle, HairColor, Class, GetReputIco(), 0, UseSp || IsVehicled ? Morph : 0, Invisible, 0, UseSp ? MorphUpgrade : 0, ArenaWinner);
         }
 
         public int GetDigniteIco()
@@ -505,8 +505,8 @@ namespace OpenNos.GameObject
             return Reput <= 50 ? 1 : Reput <= 150 ? 2 : Reput <= 250 ? 3 : Reput <= 500 ? 4 : Reput <= 750 ? 5 : Reput <= 1000 ? 6 : Reput <= 2250 ? 7 :
             Reput <= 3500 ? 8 : Reput <= 5000 ? 9 : Reput <= 9500 ? 10 : Reput <= 19000 ? 11 : Reput <= 25000 ? 12 : Reput <= 40000 ? 13 : Reput <= 60000 ? 14 :
                     Reput <= 85000 ? 15 : Reput <= 115000 ? 16 : Reput <= 150000 ? 17 : Reput <= 190000 ? 18 : Reput <= 235000 ? 19 : Reput <= 285000 ? 20 : Reput <= 350000 ? 21 :
-                    Reput <= 500000 ? 22 : Reput <= 1500000 ? 23 : Reput <= 2500000 ? 24 : Reput <= 3750000 ? 25 : Reput <= 5000000 ? 26 :27;
-     
+                    Reput <= 500000 ? 22 : Reput <= 1500000 ? 23 : Reput <= 2500000 ? 24 : Reput <= 3750000 ? 25 : Reput <= 5000000 ? 26 : 27;
+
         }
 
         public string GenerateTit()
@@ -559,7 +559,7 @@ namespace OpenNos.GameObject
 
         public string GenerateCMode()
         {
-            return String.Format("c_mode 1 {0} {1} {2} {3} {4}", CharacterId, UseSp || IsVehiculed ? Morph : 0, UseSp ? MorphUpgrade : 0, UseSp ? MorphUpgrade2 : 0, ArenaWinner);
+            return String.Format("c_mode 1 {0} {1} {2} {3} {4}", CharacterId, UseSp || IsVehicled ? Morph : 0, UseSp ? MorphUpgrade : 0, UseSp ? MorphUpgrade2 : 0, ArenaWinner);
         }
 
         public string GenerateSay(string message, int type)
@@ -730,7 +730,7 @@ namespace OpenNos.GameObject
                 case (short)InventoryType.Costume:
                     return String.Format("ivn 7 {0}.{1}.{2}.{3}", slot, vnum, rare, upgrade);
                 case (short)InventoryType.Wear:
-                    return String.Format("ivn 0 {0}.{1}.{2}.{3}", slot, vnum, rare, item !=null?(item.Colored? color: upgrade ): upgrade);
+                    return String.Format("ivn 0 {0}.{1}.{2}.{3}", slot, vnum, rare, item != null ? (item.Colored ? color : upgrade) : upgrade);
                 case (short)InventoryType.Main:
                     return String.Format("ivn 1 {0}.{1}.{2}", slot, vnum, amount);
                 case (short)InventoryType.Etc:

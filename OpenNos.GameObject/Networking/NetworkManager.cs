@@ -112,7 +112,7 @@ namespace OpenNos.GameObject
         #endregion
 
         #region Methods
- 
+
 
         private bool CheckConnectionLog(NetworkClient client)
         {
