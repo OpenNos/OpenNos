@@ -24,10 +24,10 @@ namespace OpenNos.World
     public class WorldEncryption : EncryptionBase
     {
         public WorldEncryption() : base(true) { }
-    
+
         public override string Decrypt(byte[] str, int session_id)
         {
-            int length = str.Length ;
+            int length = str.Length;
             string encrypted_string = "";
             byte session_key = (byte)(session_id & 0xFF);
             byte session_number = (byte)(session_id >> 6);
@@ -77,17 +77,17 @@ namespace OpenNos.World
             }
 
             string[] bytes = encrypted_string.Split(Convert.ToChar(0xFF));// return string less 255 (2 strings)
-        
+
             string save = "";
             for (int i = 0; i < bytes.Length; i++)
             {
-                
-                save += Decrypt2(bytes[i].ToCharArray());         
+
+                save += Decrypt2(bytes[i].ToCharArray());
                 save += Convert.ToChar(0xFF);
 
             }
             return save;
-          
+
         }
 
 
@@ -157,7 +157,7 @@ namespace OpenNos.World
         }
         public override byte[] Encrypt(string str)
         {
-            
+
             string encrypted_string = "";
             int length = str.Length;
             int secondlength = (length / 122);

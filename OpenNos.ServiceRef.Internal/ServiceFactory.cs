@@ -31,7 +31,7 @@ namespace OpenNos.ServiceRef.Internal
             {
                 if (_instance == null)
                 {
-                    _instance = new ServiceFactory();                   
+                    _instance = new ServiceFactory();
                 }
 
                 return _instance;
@@ -50,7 +50,7 @@ namespace OpenNos.ServiceRef.Internal
             {
                 if (_communicationServiceClient == null)
                 {
-                    
+
                     _communicationServiceClient = new CommunicationServiceReference.CommunicationServiceClient(_instanceContext);
                 }
 
