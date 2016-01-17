@@ -758,10 +758,6 @@ namespace OpenNos.GameObject
         {
             return String.Format("pflag 1 {0} {1}", CharacterId, pflag);
         }
-        public string GenerateEndPlayerFlag()
-        {
-            return String.Format("pflag 1 {0} 0", CharacterId);
-        }
         public List<string> GeneratePlayerShopOnMap()
         {
             List<String> droplist = new List<String>();

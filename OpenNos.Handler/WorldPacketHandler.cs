@@ -954,7 +954,7 @@ namespace OpenNos.Handler
                     Session.CurrentMap.ShopUserList.Remove(shop.Key);
 
                     ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateShopEnd(), ReceiverType.AllOnMap);
-                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEndPlayerFlag(), ReceiverType.AllOnMapExceptMe);
+                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GeneratePlayerFlag(0), ReceiverType.AllOnMapExceptMe);
                     Session.Character.Speed = Session.Character.LastSpeed;
                     Session.Character.Rested = 0;
                     Session.Client.SendPacket(Session.Character.GenerateCond());
