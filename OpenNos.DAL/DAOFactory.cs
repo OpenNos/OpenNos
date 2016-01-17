@@ -144,7 +144,7 @@ namespace OpenNos.DAL
             get
             {
                 if (_characterDAO == null)
-                {
+                { 
                     _characterDAO = new MySQL.CharacterDAO();
                 }
 
