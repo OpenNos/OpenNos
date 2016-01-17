@@ -112,6 +112,44 @@ namespace OpenNos.DAL.EF.MySQL
             }
         }
 
+        public int IsReputHero(long characterId)
+        {
+            using (var context = DataAccessHelper.CreateContext())
+            {
+                List<Character> heroes = context.character.OrderByDescending(c => c.Reput).Take(42).ToList();
+
+                int i = 0;
+                foreach(Character c in heroes)
+                {
+                    i++;
+                    if(c.CharacterId == characterId)
+                    {
+                        if (i == 1)
+                        {
+                            return 5;
+                        }
+                        if (i == 2)
+                        {
+                            return 4;
+                        }
+                        if (i == 3)
+                        {
+                            return 3;
+                        }
+                        if (i <= 13)
+                        {
+                            return 2;
+                        }
+                        if (i <= 42)
+                        {
+                            return 1;
+                        }
+                    }
+                }
+                return 0;
+            }
+        }
+
         #endregion
 
         #region Private
