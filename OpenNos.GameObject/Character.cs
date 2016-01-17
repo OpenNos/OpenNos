@@ -473,9 +473,9 @@ namespace OpenNos.GameObject
 
         public string GenerateLev()
         {
-            Inventory specialist = EquipmentList.LoadBySlotAndType((short)EquipmentType.Sp, (short)InventoryType.Equipment);
+           Inventory specialist = EquipmentList.LoadBySlotAndType((short)EquipmentType.Sp, (short)InventoryType.Equipment);
 
-            return String.Format("lev {0} {1} {2} {3} {4} {5} 0 2", Level, LevelXp, !UseSp ? JobLevel : specialist.InventoryItem.SpLevel, !UseSp ? JobLevelXp : specialist.InventoryItem.SpXp, XPLoad(), JobXPLoad());
+            return String.Format("lev {0} {1} {2} {3} {4} {5} {6} 2", Level, LevelXp, !UseSp ? JobLevel : specialist.InventoryItem.SpLevel, !UseSp ? JobLevelXp : specialist.InventoryItem.SpXp, XPLoad(), JobXPLoad(),Reput);
         }
 
         public string GenerateCInfo()
