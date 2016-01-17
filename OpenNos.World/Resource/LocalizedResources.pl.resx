@@ -165,6 +165,9 @@
   <data name="BUY_ITEM" xml:space="preserve">
     <value>{0}: kup &lt;{1} {2}: sztuk &gt;</value>
   </data>
+  <data name="BUY_ITEM_VALIDE" xml:space="preserve">
+    <value>Przedmiot zakupiony</value>
+  </data>
   <data name="CANT_MOVE" xml:space="preserve">
     <value>Nie mozesz sie ruszac.</value>
   </data>
@@ -234,8 +237,14 @@
   <data name="LEVEL_CHANGED" xml:space="preserve">
     <value>Poziom podniesiony!</value>
   </data>
+  <data name="LOW_JOB_LVL" xml:space="preserve">
+    <value>Za niski poziom profesji</value>
+  </data>
   <data name="LOW_LVL" xml:space="preserve">
     <value>Masz zbyt maly level</value>
+  </data>
+  <data name="LOW_REP" xml:space="preserve">
+    <value>Za niska reputacja</value>
   </data>
   <data name="MAGICIAN" xml:space="preserve">
     <value>Mag</value>
@@ -254,6 +263,9 @@
   </data>
   <data name="NOT_ADVENTURER" xml:space="preserve">
     <value>Mozesz zmienic klase tylko raz</value>
+  </data>
+  <data name="NOT_ENOUGH_MONEY" xml:space="preserve">
+    <value>Za malo pieniedzy</value>
   </data>
   <data name="NOT_ENOUGH_PLACE" xml:space="preserve">
     <value>Niewystarczajaca ilosc miejsc.</value>
@@ -275,6 +287,9 @@
   </data>
   <data name="PACKET_FAILURE" xml:space="preserve">
     <value>Nie udalo sie wyslac packet {0} do uzytkownika {1}, {2}.</value>
+  </data>
+  <data name="REP_CHANGED" xml:space="preserve">
+    <value>Reputacja zmieniona</value>
   </data>
   <data name="SHOP_OPEN" xml:space="preserve">
     <value>Sklep zostal otwarty</value>
