@@ -438,7 +438,8 @@ namespace OpenNos.Handler
 
         }
         [Packet("remove")]
-        public void unwear(string packet)
+        public void un
+            (string packet)
         {
             string[] packetsplit = packet.Split(' ');
             if (packetsplit.Length > 3)
@@ -542,7 +543,7 @@ namespace OpenNos.Handler
                             }
                             else
                             {
-                                Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SP_BLOCKED"), 0));
+                                Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("SP_BLOCKED"), 10));
                             }
                         }
                         else
