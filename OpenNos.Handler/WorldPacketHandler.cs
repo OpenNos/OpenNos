@@ -345,8 +345,7 @@ namespace OpenNos.Handler
             }
             else
             {
-                Session.Client.SendPacket(String.Format("say 1 {0} 1 {1}", Session.Character.CharacterId, Language.Instance.GetMessageFromKey("CANT_MOVE")));
-                Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("CANT_MOVE"), 2));
+                Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("CANT_MOVE"), 10));
 
             }
         }
@@ -1544,6 +1543,14 @@ namespace OpenNos.Handler
         {
             Session.Character.Invisible = Session.Character.Invisible == 0 ? 1 : 0;
             ChangeMap();
+
+        }
+        [Packet("$TryEffect")]
+        public void TryEffect(string packet)
+        {
+          for(int i=0;i< 10000;i++)
+                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(i), ReceiverType.OnlyMe);
+            
 
         }
         [Packet("$Effect")]
