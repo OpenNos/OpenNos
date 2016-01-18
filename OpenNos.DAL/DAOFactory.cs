@@ -42,12 +42,12 @@ namespace OpenNos.DAL
 
         public DAOFactory()
         {
-             
-                if (_accountDAO == null)
-                {
-                    _accountDAO = new MySQL.AccountDAO();
-                }
-                      
+
+            if (_accountDAO == null)
+            {
+                _accountDAO = new MySQL.AccountDAO();
+            }
+
         }
 
         public static IInventoryDAO InventoryDAO
@@ -124,7 +124,7 @@ namespace OpenNos.DAL
                 }
 
                 return _accountDAO;
-            }          
+            }
         }
 
         public static IGeneralLogDAO GeneralLogDAO
@@ -144,7 +144,7 @@ namespace OpenNos.DAL
             get
             {
                 if (_characterDAO == null)
-                { 
+                {
                     _characterDAO = new MySQL.CharacterDAO();
                 }
 

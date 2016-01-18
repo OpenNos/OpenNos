@@ -49,15 +49,15 @@ namespace OpenNos.Login
                     int port = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["LoginPort"]);
                     Logger.Log.Info(Language.Instance.GetMessageFromKey("CONFIG_LOADED"));
                     try
-                    { 
-                      ServiceFactory.Instance.CommunicationService.Open();
+                    {
+                        ServiceFactory.Instance.CommunicationService.Open();
                     }
                     catch (Exception ex)
                     {
                         Logger.Log.Error(ex.Message);
                     }
-                    NetworkManager<LoginEncryption> networkManager = new NetworkManager<LoginEncryption>(ip,port, typeof(LoginPacketHandler));
-                    
+                    NetworkManager<LoginEncryption> networkManager = new NetworkManager<LoginEncryption>(ip, port, typeof(LoginPacketHandler));
+
                 }
                 catch (Exception ex)
                 {

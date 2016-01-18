@@ -57,23 +57,23 @@ namespace OpenNos.GameObject
                     break;
 
                 case ReceiverType.AllExceptMe:
-                    foreach (ClientSession session in sessions.Where(c=>c != client))
+                    foreach (ClientSession session in sessions.Where(c => c != client))
                     {
-                            session.Client.SendPacket(message);
+                        session.Client.SendPacket(message);
                     }
                     break;
 
                 case ReceiverType.AllOnMap:
-                    foreach (ClientSession session in sessions.Where(s=> s.Character != null && s.Character.MapId.Equals(client.Character.MapId)))
+                    foreach (ClientSession session in sessions.Where(s => s.Character != null && s.Character.MapId.Equals(client.Character.MapId)))
                     {
-                            session.Client.SendPacket(message);
+                        session.Client.SendPacket(message);
                     }
 
                     break;
                 case ReceiverType.AllOnMapExceptMe:
                     foreach (ClientSession session in sessions.Where(s => s.Character != null && s.Character.MapId.Equals(client.Character.MapId) && s.Character.CharacterId != client.Character.CharacterId))
                     {
-                            session.Client.SendPacket(message);
+                        session.Client.SendPacket(message);
                     }
                     break;
                 case ReceiverType.OnlyMe:
@@ -81,14 +81,14 @@ namespace OpenNos.GameObject
                     break;
                 case ReceiverType.OnlySomeone:
                     ClientSession session2 = sessions.FirstOrDefault(s => s.Character != null && s.Character.Name.Equals(CharacterName) || s.Character.CharacterId.Equals(CharacterId));
-                    
-                        if (session2 != null)
-                        {
-                            session2.Client.SendPacket(message);
-                            return true;
-                        }
 
-                    
+                    if (session2 != null)
+                    {
+                        session2.Client.SendPacket(message);
+                        return true;
+                    }
+
+
                     return false;
 
             }
@@ -98,34 +98,34 @@ namespace OpenNos.GameObject
         {
             foreach (ClientSession session in sessions.Where(s => s.Character != null && s.Character.MapId.Equals(MapId)))
             {
-                    Broadcast(session, String.Format(Message, session.Character.CharacterId), ReceiverType.AllOnMap);
+                Broadcast(session, String.Format(Message, session.Character.CharacterId), ReceiverType.AllOnMap);
             }
 
         }
         public void RequiereBroadcastFromAllMapUsers(ClientSession client, string methodName)
         {
-            foreach (ClientSession session in sessions.Where(s=> s.Character != null && s.Character.Name != client.Character.Name))
+            foreach (ClientSession session in sessions.Where(s => s.Character != null && s.Character.Name != client.Character.Name))
             {
-                
-                    Type t = session.Character.GetType();
-                    MethodInfo method = t.GetMethod(methodName);
-                    string result = (string)method.Invoke(session.Character, null);
-                    client.Client.SendPacket(result);
-                
+
+                Type t = session.Character.GetType();
+                MethodInfo method = t.GetMethod(methodName);
+                string result = (string)method.Invoke(session.Character, null);
+                client.Client.SendPacket(result);
+
             }
         }
         public void RequiereBroadcastFromUser(ClientSession client, long CharacterId, string methodName)
         {
-            ClientSession session = sessions.FirstOrDefault(s=> s.Character != null && s.Character.CharacterId.Equals(CharacterId));
+            ClientSession session = sessions.FirstOrDefault(s => s.Character != null && s.Character.CharacterId.Equals(CharacterId));
 
-                if (session != null)
-                {
-                    Type t = session.Character.GetType();
-                    MethodInfo method = t.GetMethod(methodName);
-                    string result = (string)method.Invoke(session.Character, null);
-                    client.Client.SendPacket(result);
-                }
-            
+            if (session != null)
+            {
+                Type t = session.Character.GetType();
+                MethodInfo method = t.GetMethod(methodName);
+                string result = (string)method.Invoke(session.Character, null);
+                client.Client.SendPacket(result);
+            }
+
         }
         public void RequiereBroadcastFromUser(ClientSession client, string CharacterName, string methodName)
         {
@@ -134,12 +134,12 @@ namespace OpenNos.GameObject
             if (session != null)
             {
                 Type t = session.Character.GetType();
-                    MethodInfo method = t.GetMethod(methodName);
-                    string result = (string)method.Invoke(session.Character, null);
-                    client.Client.SendPacket(result);
-                }
+                MethodInfo method = t.GetMethod(methodName);
+                string result = (string)method.Invoke(session.Character, null);
+                client.Client.SendPacket(result);
+            }
 
-            
+
         }
         public bool Kick(String CharacterName)
         {
@@ -147,11 +147,11 @@ namespace OpenNos.GameObject
             ClientSession session = sessions.FirstOrDefault(s => s.Character != null && s.Character.Name.Equals(CharacterName));
 
             if (session != null)
-                {
-                    session.Client.Disconnect();
-                    return true;
-                }
-            
+            {
+                session.Client.Disconnect();
+                return true;
+            }
+
             return false;
         }
         public object RequiereProperties(long charId, string properties)
@@ -159,15 +159,15 @@ namespace OpenNos.GameObject
             ClientSession session = sessions.FirstOrDefault(s => s.Character != null && s.Character.CharacterId.Equals(charId));
 
             if (session != null)
-                {
-                    return session.Character.GetType().GetProperties().Single(pi => pi.Name == properties).GetValue(session.Character, null);
-                }
-            
+            {
+                return session.Character.GetType().GetProperties().Single(pi => pi.Name == properties).GetValue(session.Character, null);
+            }
+
             return "";
         }
-        public void BuyValidate(ClientSession Session, KeyValuePair<long, MapShop> shop,short slot, short amount)
+        public void BuyValidate(ClientSession Session, KeyValuePair<long, MapShop> shop, short slot, short amount)
         {
-            PersonalShopItem itemshop =  Session.CurrentMap.ShopUserList[shop.Key].Items.FirstOrDefault(i => i.Slot.Equals(slot));
+            PersonalShopItem itemshop = Session.CurrentMap.ShopUserList[shop.Key].Items.FirstOrDefault(i => i.Slot.Equals(slot));
             Session.CurrentMap.ShopUserList[shop.Key].Items.FirstOrDefault(i => i.Slot.Equals(slot)).Amount -= amount;
             PersonalShopItem itemDelete = Session.CurrentMap.ShopUserList[shop.Key].Items.FirstOrDefault(i => i.Slot.Equals(slot));
             if (itemDelete.Amount <= 0)
@@ -178,12 +178,12 @@ namespace OpenNos.GameObject
 
                 if (session != null)
                 {
-                    session.Character.Gold += itemshop.Price* amount;
+                    session.Character.Gold += itemshop.Price * amount;
                     session.Client.SendPacket(session.Character.GenerateGold());
                     session.Client.SendPacket(session.Character.GenerateShopMemo(1, String.Format(Language.Instance.GetMessageFromKey("BUY_ITEM"), session.Character.Name, ServerManager.GetItem(itemshop.ItemVNum).Name, amount)));
                     Session.CurrentMap.ShopUserList[shop.Key].Sell += itemshop.Price * amount;
                     session.Client.SendPacket(String.Format("sell_list {0} {1}.{2}.{3}", shop.Value.Sell, slot, amount, itemshop.Amount));
-                  Inventory inv = session.Character.InventoryList.AmountMinusFromSlotAndType(amount, itemshop.InvSlot, itemshop.InvType);
+                    Inventory inv = session.Character.InventoryList.AmountMinusFromSlotAndType(amount, itemshop.InvSlot, itemshop.InvType);
                     if (inv != null)
                     {
                         session.Client.SendPacket(session.Character.GenerateInventoryAdd(inv.InventoryItem.ItemVNum, inv.InventoryItem.Amount, inv.Type, inv.Slot, inv.InventoryItem.Rare, inv.InventoryItem.Color, inv.InventoryItem.Upgrade));

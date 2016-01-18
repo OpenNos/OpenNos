@@ -23,7 +23,7 @@ namespace OpenNos.GameObject
 {
     public class PersonalShopItem : InventoryItem
     {
-        public long Price{ get; set; }
+        public long Price { get; set; }
         public short InvSlot { get; set; }
         public short InvType { get; set; }
         public short Slot { get; set; }
