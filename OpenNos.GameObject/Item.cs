@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace OpenNos.GameObject
 {
-   public class Item : ItemDTO
+    public class Item : ItemDTO
     {
         public Item()
         {

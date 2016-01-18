@@ -42,14 +42,63 @@ namespace OpenNos.GameObject
 
         public static void Initialize()
         {
-            foreach(ItemDTO item in DAOFactory.ItemDAO.LoadAll())
+            foreach (ItemDTO item in DAOFactory.ItemDAO.LoadAll())
             {
-                _items.Add(new Item { WaterResistance = item.WaterResistance,
-                    PvpDefence = item.PvpDefence, Price = item.Price,
-                    Name = item.Name, Classe = item.Classe, Blocked = item.Blocked, Colored = item.Colored, CriticalLuckRate = item.CriticalLuckRate, Concentrate = item.Concentrate, CriticalRate = item.CriticalRate, DamageMaximum = item.DamageMaximum, DamageMinimum = item.DamageMinimum, DarkElement = item.DarkElement, DarkResistance = item.DarkResistance, DimOposantResistance = item.DimOposantResistance, DistanceDefence = item.DistanceDefence,Dodge= item.Dodge,Droppable= item.Droppable,Element=item.Element,ElementRate=item.ElementRate,FireElement= item.FireElement,EquipmentSlot=item.EquipmentSlot,FireResistance=item.FireResistance,HitRate=item.HitRate,Hp=item.Hp,HpRegeneration=item.HpRegeneration,Inventory=item.Inventory,isConsumable=item.isConsumable,isWareHouse=item.isWareHouse,ItemType=item.ItemType,LevelJobMinimum=item.LevelJobMinimum,ReputationMinimum = item.ReputationMinimum,
-                    LevelMinimum=item.LevelMinimum,LightElement=item.LightElement,LightResistance=item.LightResistance,MagicDefence=item.MagicDefence,MaxCellon=item.MaxCellon,MaxCellonLvl=item.MaxCellonLvl,MinilandObject=item.MinilandObject,MoreHp=item.MoreHp,MoreMp=item.MoreMp,Morph=item.Morph,Mp=item.Mp,MpRegeneration=item.MpRegeneration,PvpStrength=item.PvpStrength,RangeDefence=item.RangeDefence,Soldable=item.Soldable,
-                    Transaction=item.Transaction,Speed=item.Speed,Type=item.Type,VNum=item.VNum,WaterElement=item.WaterElement
-                } );
+                _items.Add(new Item
+                {
+                    WaterResistance = item.WaterResistance,
+                    PvpDefence = item.PvpDefence,
+                    Price = item.Price,
+                    Name = item.Name,
+                    Classe = item.Classe,
+                    Blocked = item.Blocked,
+                    Colored = item.Colored,
+                    CriticalLuckRate = item.CriticalLuckRate,
+                    Concentrate = item.Concentrate,
+                    CriticalRate = item.CriticalRate,
+                    DamageMaximum = item.DamageMaximum,
+                    DamageMinimum = item.DamageMinimum,
+                    DarkElement = item.DarkElement,
+                    DarkResistance = item.DarkResistance,
+                    DimOposantResistance = item.DimOposantResistance,
+                    DistanceDefence = item.DistanceDefence,
+                    Dodge = item.Dodge,
+                    Droppable = item.Droppable,
+                    Element = item.Element,
+                    ElementRate = item.ElementRate,
+                    FireElement = item.FireElement,
+                    EquipmentSlot = item.EquipmentSlot,
+                    FireResistance = item.FireResistance,
+                    HitRate = item.HitRate,
+                    Hp = item.Hp,
+                    HpRegeneration = item.HpRegeneration,
+                    Inventory = item.Inventory,
+                    isConsumable = item.isConsumable,
+                    isWareHouse = item.isWareHouse,
+                    ItemType = item.ItemType,
+                    LevelJobMinimum = item.LevelJobMinimum,
+                    ReputationMinimum = item.ReputationMinimum,
+                    LevelMinimum = item.LevelMinimum,
+                    LightElement = item.LightElement,
+                    LightResistance = item.LightResistance,
+                    MagicDefence = item.MagicDefence,
+                    MaxCellon = item.MaxCellon,
+                    MaxCellonLvl = item.MaxCellonLvl,
+                    MinilandObject = item.MinilandObject,
+                    MoreHp = item.MoreHp,
+                    MoreMp = item.MoreMp,
+                    Morph = item.Morph,
+                    Mp = item.Mp,
+                    MpRegeneration = item.MpRegeneration,
+                    PvpStrength = item.PvpStrength,
+                    RangeDefence = item.RangeDefence,
+                    Soldable = item.Soldable,
+                    Transaction = item.Transaction,
+                    Speed = item.Speed,
+                    Type = item.Type,
+                    VNum = item.VNum,
+                    WaterElement = item.WaterElement
+                });
             }
 
             Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("ITEM_LOADED"), _items.Count()));
@@ -60,7 +109,7 @@ namespace OpenNos.GameObject
                 foreach (MapDTO map in DAOFactory.MapDAO.LoadAll())
                 {
                     Guid guid = Guid.NewGuid();
-                    Map newMap = new Map(Convert.ToInt16(map.MapId), guid,map.Data);
+                    Map newMap = new Map(Convert.ToInt16(map.MapId), guid, map.Data);
                     newMap.Music = map.Music;
                     //register for broadcast
                     NotifyChildren += newMap.GetNotification;
@@ -70,8 +119,10 @@ namespace OpenNos.GameObject
 
                 Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("MAP_LOADED"), i));
             }
-            catch (Exception ex) {
-                Logger.Log.Error(ex.Message); }
+            catch (Exception ex)
+            {
+                Logger.Log.Error(ex.Message);
+            }
 
         }
         public static Item GetItem(short vnum)
@@ -86,7 +137,7 @@ namespace OpenNos.GameObject
         {
             return _maps;
         }
-      
+
         public static void OnBroadCast(MapPacket mapPacket)
         {
             var handler = NotifyChildren;

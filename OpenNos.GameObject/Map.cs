@@ -38,7 +38,7 @@ namespace OpenNos.GameObject
         #endregion
 
         #region Instantiation
-        public Map(short mapId, Guid uniqueIdentifier,byte[] data)
+        public Map(short mapId, Guid uniqueIdentifier, byte[] data)
         {
 
             Mapper.CreateMap<MapDTO, Map>();
@@ -100,7 +100,7 @@ namespace OpenNos.GameObject
                 return _portals;
             }
         }
-    
+
         public List<Npc> Npcs
         {
             get

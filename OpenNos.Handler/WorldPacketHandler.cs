@@ -353,7 +353,7 @@ namespace OpenNos.Handler
         public void Rest(string packet)
         {
             Session.Character.Rested = Session.Character.Rested == 1 ? 0 : 1;
-            if (Session.Character.IsVehiculed)
+            if (Session.Character.IsVehicled)
                 Session.Character.Rested = 0;
             if (Session.Character.ThreadCharChange != null && Session.Character.ThreadCharChange.IsAlive)
                 Session.Character.ThreadCharChange.Abort();
@@ -1598,16 +1598,16 @@ namespace OpenNos.Handler
                             item.Amount--;
                         if (itemInfo.Morph != 0)
                         {
-                            if (!Session.Character.IsVehiculed)
+                            if (!Session.Character.IsVehicled)
                             {
                                 if (Session.Character.ThreadCharChange != null && Session.Character.ThreadCharChange.IsAlive)
                                     Session.Character.ThreadCharChange.Abort();
-                                Session.Character.ThreadCharChange = new Thread(() => ChangeVehicule(itemInfo));
+                                Session.Character.ThreadCharChange = new Thread(() => ChangeVehicle(itemInfo));
                                 Session.Character.ThreadCharChange.Start();
                             }
                             else
                             {
-                                RemoveVehicule();
+                                RemoveVehicle();
                             }
                         }
 
@@ -1724,7 +1724,7 @@ namespace OpenNos.Handler
             //ski
             Session.Client.SendPacket(Session.Character.GenerateAt());
             Session.Client.SendPacket(Session.Character.GenerateCMap());
-   
+
             foreach (String portalPacket in Session.Character.GenerateGp())
                 Session.Client.SendPacket(portalPacket);
             foreach (String npcPacket in Session.Character.Generatein2())
@@ -1919,22 +1919,22 @@ namespace OpenNos.Handler
             }
 
         }
-        public void ChangeVehicule(Item item)
+        public void ChangeVehicle(Item item)
         {
             Session.Client.SendPacket("delay 2500 3 #sl^1");
             ClientLinkManager.Instance.Broadcast(Session, String.Format("guri 2 1 {0}", Session.Character.CharacterId), ReceiverType.AllOnMap);
 
             Thread.Sleep(2500);
-            Session.Character.IsVehiculed = true;
+            Session.Character.IsVehicled = true;
             Session.Character.Speed = item.Speed;
             Session.Character.Morph = item.Morph + Session.Character.Gender;
             ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateCMode(), ReceiverType.AllOnMap);
             ClientLinkManager.Instance.Broadcast(Session, String.Format("guri 6 1 {0} 0 0", Session.Character.CharacterId), ReceiverType.AllOnMap);
             ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(196), ReceiverType.AllOnMap);
         }
-        public void RemoveVehicule()
+        public void RemoveVehicle()
         {
-            Session.Character.IsVehiculed = false;
+            Session.Character.IsVehicled = false;
             Session.Character.Speed = ServersData.SpeedData[Session.Character.Class];
             if (Session.Character.UseSp)
             {

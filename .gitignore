@@ -228,7 +228,3 @@ _Pvt_Extensions
 
 # FAKE - F# Make
 .fake/
-
-# EDMX Cleanup - WIP
-OpenNos.DAL.EF.MySQL/DB/OpenNos.edmx.sql
-OpenNos.DAL.EF.MySQL/DB/OpenNos.Designer.cs

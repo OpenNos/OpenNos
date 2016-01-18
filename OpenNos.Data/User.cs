@@ -16,11 +16,11 @@ using OpenNos.Core;
 
 namespace OpenNos.Data
 {
-	public class User
-	{
+    public class User
+    {
         public string Unknown { get; set; }
-		public string Name { get; set; }
-		public string PasswordEncrypted { get; set; }
+        public string Name { get; set; }
+        public string PasswordEncrypted { get; set; }
 
         public string PasswordDecrypted
         {
@@ -29,5 +29,5 @@ namespace OpenNos.Data
                 return LoginEncryption.sha256(LoginEncryption.GetPassword(PasswordEncrypted));
             }
         }
-	}
+    }
 }
