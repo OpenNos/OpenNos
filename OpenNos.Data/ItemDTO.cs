@@ -61,5 +61,7 @@ namespace OpenNos.Data
         public bool Colored { get; set; }
         public bool isConsumable { get; set; }
         public long ReputationMinimum { get; set; }
+        public short FairyMaxLevel { get; set; }
+        public short Ammo { get; set; }
     }
 }
