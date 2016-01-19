@@ -790,6 +790,8 @@
           <NavigationProperty Name="inventory" Relationship="opennosModel.InventoryItemInventory" FromRole="InventoryItem" ToRole="Inventory" />
           <NavigationProperty Name="item" Relationship="opennosModel.InventoryItemItem" FromRole="InventoryItem" ToRole="Item" />
           <Property Name="ItemVNum" Type="Int16" Nullable="false" />
+          <Property Name="FairyMaxLevel" Type="Int16" Nullable="false" />
+          <Property Name="MaxAmmo" Type="Int16" Nullable="false" />
           </EntityType>
         <EntityType Name="Inventory">
           <Key>
