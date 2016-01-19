@@ -36,6 +36,6 @@ namespace OpenNos.Data
         public short WaterElement { get; set; }
         public short FireElement { get; set; }
         public short ItemVNum { get; set; }
-        public short MaxAmmo { get; set; }
+        public short Ammo { get; set; }
     }
 }
