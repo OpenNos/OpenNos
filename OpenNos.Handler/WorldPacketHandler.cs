@@ -1261,6 +1261,25 @@ namespace OpenNos.Handler
                 ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("USER_NOT_CONNECTED")), ReceiverType.OnlyMe);
 
         }
+        [Packet("hero")]
+        public void Hero(string packet)
+        {
+
+            if (DAOFactory.CharacterDAO.IsReputHero(Session.Character.CharacterId) >= 3)
+            {
+                string[] packetsplit = packet.Split(' ');
+                string message = String.Empty;
+                for (int i = 2; i < packetsplit.Length; i++)
+                    message += packetsplit[i] + " ";
+                message.Trim();
+
+                ClientLinkManager.Instance.Broadcast(Session, String.Format("msg 5 [{0}]{1}", Session.Character.Name, message), ReceiverType.All);
+            }
+            else
+            {
+                Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("USER_NOT_HERO"), 11));
+            }
+        }
         #endregion
 
         #region AdminCommand

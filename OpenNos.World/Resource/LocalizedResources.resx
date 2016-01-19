@@ -336,6 +336,9 @@
   <data name="USER_NOT_CONNECTED" xml:space="preserve">
     <value>User is not connected.</value>
   </data>
+  <data name="USER_NOT_HERO" xml:space="preserve">
+    <value>Only heroes may use hero messages.</value>
+  </data>
   <data name="YOU_ASK_FOR_EXCHANGE" xml:space="preserve">
     <value>You ask for an echange with</value>
   </data>

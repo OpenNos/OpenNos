@@ -303,4 +303,7 @@
   <data name="UPDATE_ACCOUNT_ERROR" xml:space="preserve">
     <value>Error inserting or updating Account {0} , {1}</value>
   </data>
+  <data name="USER_NOT_HERO" xml:space="preserve">
+    <value>Only heroes may use hero messages.</value>
+  </data>
 </root>
