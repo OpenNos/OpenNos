@@ -730,6 +730,8 @@
           <NavigationProperty Name="inventoryitem" Relationship="opennosModel.InventoryItemItem" FromRole="Item" ToRole="InventoryItem" />
           <NavigationProperty Name="shopitem" Relationship="opennosModel.ShopItemItem" FromRole="Item" ToRole="ShopItem" />
           <Property Name="ReputationMinimum" Type="Int64" Nullable="false" />
+          <Property Name="FairyMaxLevel" Type="Int16" Nullable="false" />
+          <Property Name="Ammo" Type="Int16" Nullable="false" />
           </EntityType>
         <EntityType Name="Npc">
           <Key>
@@ -792,7 +794,6 @@
           <NavigationProperty Name="inventory" Relationship="opennosModel.InventoryItemInventory" FromRole="InventoryItem" ToRole="Inventory" />
           <NavigationProperty Name="item" Relationship="opennosModel.InventoryItemItem" FromRole="InventoryItem" ToRole="Item" />
           <Property Name="ItemVNum" Type="Int16" Nullable="false" />
-          <Property Name="FairyMaxLevel" Type="Int16" Nullable="false" />
           <Property Name="MaxAmmo" Type="Int16" Nullable="false" />
           </EntityType>
         <EntityType Name="Inventory">
