@@ -249,6 +249,8 @@
     <Property Name="WaterElement" Type="smallint" Nullable="false" />
     <Property Name="FireElement" Type="smallint" Nullable="false" />
     <Property Name="ItemVNum" Type="smallint" Nullable="false" />
+    <Property Name="FairyMaxLevel" Type="smallint" Nullable="false" />
+    <Property Name="MaxAmmo" Type="smallint" Nullable="false" />
   </EntityType>
   <EntityType Name="inventory">
     <Key>
@@ -1094,6 +1096,8 @@
           <ScalarProperty Name="WaterElement" ColumnName="WaterElement" />
           <ScalarProperty Name="FireElement" ColumnName="FireElement" />
           <ScalarProperty Name="ItemVNum" ColumnName="ItemVNum" />
+          <ScalarProperty Name="FairyMaxLevel" ColumnName="FairyMaxLevel" />
+          <ScalarProperty Name="MaxAmmo" ColumnName="MaxAmmo" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
