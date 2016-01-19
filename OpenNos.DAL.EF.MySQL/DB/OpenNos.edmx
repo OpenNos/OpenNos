@@ -720,7 +720,7 @@
           <Property Name="Element" Type="Int16" Nullable="false" />
           <Property Name="ElementRate" Type="Int16" Nullable="false" />
           <Property Name="PvpDefence" Type="Int16" Nullable="false" />
-          <Property Name="DimOposantResistance" Type="Int16" Nullable="false" />
+          <Property Name="LessOposantResistance" Type="Int16" Nullable="false" />
           <Property Name="HpRegeneration" Type="String" Nullable="false" />
           <Property Name="MpRegeneration" Type="String" Nullable="false" />
           <Property Name="MoreHp" Type="Int16" Nullable="false" />
@@ -730,8 +730,8 @@
           <NavigationProperty Name="inventoryitem" Relationship="opennosModel.InventoryItemItem" FromRole="Item" ToRole="InventoryItem" />
           <NavigationProperty Name="shopitem" Relationship="opennosModel.ShopItemItem" FromRole="Item" ToRole="ShopItem" />
           <Property Name="ReputationMinimum" Type="Int64" Nullable="false" />
-          <Property Name="FairyMaxLevel" Type="Int16" Nullable="false" />
-          <Property Name="MaxAmmo" Type="Int16" Nullable="false" />
+          <Property Name="FairyMaximumLevel" Type="Int16" Nullable="false" />
+          <Property Name="MaximumAmmo" Type="Int16" Nullable="false" />
           </EntityType>
         <EntityType Name="Npc">
           <Key>
@@ -1041,7 +1041,7 @@
           <ScalarProperty Name="Element" ColumnName="Element" />
           <ScalarProperty Name="ElementRate" ColumnName="ElementRate" />
           <ScalarProperty Name="PvpDefence" ColumnName="PvpDefence" />
-          <ScalarProperty Name="DimOposantResistance" ColumnName="DimOposantResistance" />
+          <ScalarProperty Name="LessOposantResistance" ColumnName="DimOposantResistance" />
           <ScalarProperty Name="HpRegeneration" ColumnName="HpRegeneration" />
           <ScalarProperty Name="MpRegeneration" ColumnName="MpRegeneration" />
           <ScalarProperty Name="MoreHp" ColumnName="MoreHp" />
