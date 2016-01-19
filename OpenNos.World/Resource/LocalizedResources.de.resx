@@ -258,4 +258,7 @@
   <data name="UPDATE_ACCOUNT_ERROR" xml:space="preserve">
     <value>Fehler beim Einfügen/Aktualisieren des Accounts {0} , {1}</value>
   </data>
+  <data name="USER_NOT_HERO" xml:space="preserve">
+    <value>Nur Helden dürfen die Heldennachrichten benutzen.</value>
+  </data>
 </root>

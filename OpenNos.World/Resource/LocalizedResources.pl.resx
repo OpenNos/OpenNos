@@ -330,6 +330,9 @@
   <data name="USER_NOT_CONNECTED" xml:space="preserve">
     <value>Uzytkownik nie polaczony.</value>
   </data>
+  <data name="USER_NOT_HERO" xml:space="preserve">
+    <value>Only heroes may use hero messages.</value>
+  </data>
   <data name="YOU_ASK_FOR_EXCHANGE" xml:space="preserve">
     <value>Prosisz sie o wymiane</value>
   </data>
