@@ -64,7 +64,7 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public short Element { get; set; }
         public short ElementRate { get; set; }
         public short PvpDefence { get; set; }
-        public short DimOposantResistance { get; set; }
+        public short LessOposantResistance { get; set; }
         public string HpRegeneration { get; set; }
         public string MpRegeneration { get; set; }
         public short MoreHp { get; set; }
@@ -72,8 +72,8 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public bool Colored { get; set; }
         public bool isConsumable { get; set; }
         public long ReputationMinimum { get; set; }
-        public short FairyMaxLevel { get; set; }
-        public short Ammo { get; set; }
+        public short FairyMaximumLevel { get; set; }
+        public short MaximumAmmo { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<InventoryItem> inventoryitem { get; set; }
