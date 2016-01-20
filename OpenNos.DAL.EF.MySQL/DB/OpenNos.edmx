@@ -195,7 +195,7 @@
     <Property Name="Element" Type="smallint" Nullable="false" />
     <Property Name="ElementRate" Type="smallint" Nullable="false" />
     <Property Name="PvpDefence" Type="smallint" Nullable="false" />
-    <Property Name="LessOposantResistance" Type="smallint" Nullable="false" />
+    <Property Name="ReduceOposantResistance" Type="smallint" Nullable="false" />
     <Property Name="HpRegeneration" Type="longtext" Nullable="false" />
     <Property Name="MpRegeneration" Type="longtext" Nullable="false" />
     <Property Name="MoreHp" Type="smallint" Nullable="false" />
@@ -721,7 +721,7 @@
           <Property Name="Element" Type="Int16" Nullable="false" />
           <Property Name="ElementRate" Type="Int16" Nullable="false" />
           <Property Name="PvpDefence" Type="Int16" Nullable="false" />
-          <Property Name="LessOposantResistance" Type="Int16" Nullable="false" />
+          <Property Name="ReduceOposantResistance" Type="Int16" Nullable="false" />
           <Property Name="HpRegeneration" Type="String" Nullable="false" />
           <Property Name="MpRegeneration" Type="String" Nullable="false" />
           <Property Name="MoreHp" Type="Int16" Nullable="false" />
@@ -1042,7 +1042,7 @@
           <ScalarProperty Name="Element" ColumnName="Element" />
           <ScalarProperty Name="ElementRate" ColumnName="ElementRate" />
           <ScalarProperty Name="PvpDefence" ColumnName="PvpDefence" />
-          <ScalarProperty Name="LessOposantResistance" ColumnName="LessOposantResistance" />
+          <ScalarProperty Name="ReduceOposantResistance" ColumnName="ReduceOposantResistance" />
           <ScalarProperty Name="HpRegeneration" ColumnName="HpRegeneration" />
           <ScalarProperty Name="MpRegeneration" ColumnName="MpRegeneration" />
           <ScalarProperty Name="MoreHp" ColumnName="MoreHp" />

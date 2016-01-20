@@ -818,6 +818,11 @@ namespace OpenNos.GameObject
             throw new NotImplementedException();
         }
 
+        public string GenerateScal()
+        {
+            return String.Format("char_sc 1 {0} {1}", CharacterId, Size);
+        }
+
         #endregion
     }
 }

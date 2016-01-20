@@ -1298,6 +1298,7 @@ namespace OpenNos.Handler
             Session.Client.SendPacket(Session.Character.GenerateSay("$Kick USERNAME", 0));
             Session.Client.SendPacket(Session.Character.GenerateSay("$MapDance", 0));
             Session.Client.SendPacket(Session.Character.GenerateSay("$Effect EFFECTID", 0));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$Resize Size", 0));
             Session.Client.SendPacket(Session.Character.GenerateSay("$PlayMusic MUSIC", 0));
             Session.Client.SendPacket(Session.Character.GenerateSay("$Ban CHARACTERNAME", 0));
             Session.Client.SendPacket(Session.Character.GenerateSay("$Invisible", 0));
@@ -1584,6 +1585,26 @@ namespace OpenNos.Handler
             }
 
         }
+        [Packet("$Resize")]
+        public void Resize(string packet)
+        {
+            string[] packetsplit = packet.Split(' ');
+            short arg = -1; if (packetsplit.Length > 3)
+                Session.Client.SendPacket(Session.Character.GenerateSay("Resize SIZE", 0));
+            if (packetsplit.Length > 1)
+            {
+                short.TryParse(packetsplit[2], out arg);
+             
+                if (arg > -1)
+
+                {
+                    Session.Character.Size = arg;
+                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateScal(), ReceiverType.AllOnMap);
+
+                }
+            }
+
+        }
         [Packet("$PlayMusic")]
         public void PlayMusic(string packet)
         {
@@ -1743,7 +1764,8 @@ namespace OpenNos.Handler
             //ski
             Session.Client.SendPacket(Session.Character.GenerateAt());
             Session.Client.SendPacket(Session.Character.GenerateCMap());
-
+            if(Session.Character.Size != 10)
+                Session.Client.SendPacket(Session.Character.GenerateScal());
             foreach (String portalPacket in Session.Character.GenerateGp())
                 Session.Client.SendPacket(portalPacket);
             foreach (String npcPacket in Session.Character.Generatein2())
