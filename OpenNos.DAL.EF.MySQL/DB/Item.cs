@@ -64,7 +64,7 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public short Element { get; set; }
         public short ElementRate { get; set; }
         public short PvpDefence { get; set; }
-        public short LessOposantResistance { get; set; }
+        public short ReduceOposantResistance { get; set; }
         public string HpRegeneration { get; set; }
         public string MpRegeneration { get; set; }
         public short MoreHp { get; set; }

@@ -12,7 +12,6 @@ namespace OpenNos.Data
         public short VNum { get; set; }
         public long Price { get; set; }
         public string Name { get; set; }
-        public byte Inventory { get; set; }
         public byte ItemType { get; set; }
         public byte EquipmentSlot { get; set; }
         public short Morph { get; set; }
@@ -35,9 +34,9 @@ namespace OpenNos.Data
         public short DistanceDefence { get; set; }
         public short MagicDefence { get; set; }
         public string Dodge { get; set; }
-        public short LevelJobMinimum { get; set; }
         public short Hp { get; set; }
         public short Mp { get; set; }
+        public short LevelJobMinimum { get; set; }
         public short MaxCellon { get; set; }
         public short MaxCellonLvl { get; set; }
         public short FireResistance { get; set; }
@@ -53,7 +52,7 @@ namespace OpenNos.Data
         public short Element { get; set; }
         public short ElementRate { get; set; }
         public short PvpDefence { get; set; }
-        public short DimOposantResistance { get; set; }
+        public short ReduceOposantResistance { get; set; }
         public string HpRegeneration { get; set; }
         public string MpRegeneration { get; set; }
         public short MoreHp { get; set; }
