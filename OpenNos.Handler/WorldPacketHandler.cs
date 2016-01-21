@@ -1211,6 +1211,44 @@ namespace OpenNos.Handler
             string[] packetsplit = packet.Split(' ');
             ClientLinkManager.Instance.RequiereBroadcastFromUser(Session, Convert.ToInt64(packetsplit[3]), "GenerateReqInfo");
         }
+
+        [Packet("u_i")]
+        public void UseItem(string packet)
+        {
+            string[] packetsplit = packet.Split(' ');
+            if (packetsplit.Length > 8)
+            {
+                short uitype; short.TryParse(packetsplit[2], out uitype);
+                short type; short.TryParse(packetsplit[4], out type);
+                short slot; short.TryParse(packetsplit[5], out slot);
+                switch (uitype)
+                {
+                    case 1:
+                        Inventory inv = Session.Character.InventoryList.LoadBySlotAndType(slot, type);
+                        InventoryItem item = inv.InventoryItem;
+                        Item itemInfo = ServerManager.GetItem(item.ItemVNum);
+                        if (itemInfo.isConsumable)
+                            item.Amount--;
+                        if (itemInfo.Morph != 0)
+                        {
+                            if (!Session.Character.IsVehicled)
+                            {
+                                if (Session.Character.ThreadCharChange != null && Session.Character.ThreadCharChange.IsAlive)
+                                    Session.Character.ThreadCharChange.Abort();
+                                Session.Character.ThreadCharChange = new Thread(() => ChangeVehicle(itemInfo));
+                                Session.Character.ThreadCharChange.Start();
+                            }
+                            else
+                            {
+                                RemoveVehicle();
+                            }
+                        }
+
+                        break;
+
+                }
+            }
+        }
         [Packet("sl")]
         public void SpTransform(string packet)
         {
@@ -1287,6 +1325,7 @@ namespace OpenNos.Handler
         public void Command(string packet)
         {
             Session.Client.SendPacket(Session.Character.GenerateSay("$Teleport Map X Y", 0));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$Teleport CharacterName", 0));
             Session.Client.SendPacket(Session.Character.GenerateSay("$Speed SPEED", 0));
             Session.Client.SendPacket(Session.Character.GenerateSay("$Morph MORPHID UPGRADE WINGS ARENA", 0));
             Session.Client.SendPacket(Session.Character.GenerateSay("$Shout MESSAGE", 0));
@@ -1610,7 +1649,7 @@ namespace OpenNos.Handler
             if (packetsplit.Length > 1)
             {
                 short.TryParse(packetsplit[2], out arg);
-             
+
                 if (arg > -1)
 
                 {
@@ -1634,43 +1673,6 @@ namespace OpenNos.Handler
                     ClientLinkManager.Instance.Broadcast(Session, String.Format("bgm {0}", arg), ReceiverType.AllOnMap);
             }
 
-        }
-        [Packet("u_i")]
-        public void UseItem(string packet)
-        {
-            string[] packetsplit = packet.Split(' ');
-            if (packetsplit.Length > 8)
-            {
-                short uitype; short.TryParse(packetsplit[2], out uitype);
-                short type; short.TryParse(packetsplit[4], out type);
-                short slot; short.TryParse(packetsplit[5], out slot);
-                switch (uitype)
-                {
-                    case 1:
-                        Inventory inv = Session.Character.InventoryList.LoadBySlotAndType(slot, type);
-                        InventoryItem item = inv.InventoryItem;
-                        Item itemInfo = ServerManager.GetItem(item.ItemVNum);
-                        if (itemInfo.isConsumable)
-                            item.Amount--;
-                        if (itemInfo.Morph != 0)
-                        {
-                            if (!Session.Character.IsVehicled)
-                            {
-                                if (Session.Character.ThreadCharChange != null && Session.Character.ThreadCharChange.IsAlive)
-                                    Session.Character.ThreadCharChange.Abort();
-                                Session.Character.ThreadCharChange = new Thread(() => ChangeVehicle(itemInfo));
-                                Session.Character.ThreadCharChange.Start();
-                            }
-                            else
-                            {
-                                RemoveVehicle();
-                            }
-                        }
-
-                        break;
-
-                }
-            }
         }
         [Packet("$Morph")]
         public void Morph(string packet)
@@ -1711,6 +1713,7 @@ namespace OpenNos.Handler
             string[] packetsplit = packet.Split(' ');
             short[] arg = new short[3];
             bool verify = false;
+
             if (packetsplit.Length > 4)
             {
                 verify = (short.TryParse(packetsplit[2], out arg[0]) && short.TryParse(packetsplit[3], out arg[1]) && short.TryParse(packetsplit[4], out arg[2]) && DAOFactory.MapDAO.LoadById(arg[0]) != null);
@@ -1718,7 +1721,21 @@ namespace OpenNos.Handler
             switch (packetsplit.Length)
             {
 
+                case 3:
+                    string name = packetsplit[2];
+                    object mapy = ClientLinkManager.Instance.RequiereProperties(name, "MapY");
+                    object mapx = ClientLinkManager.Instance.RequiereProperties(name, "MapX");
+                    object mapId = ClientLinkManager.Instance.RequiereProperties(name, "MapId");
+                    if ((string)mapy != "" && (string)mapx != "" && (string)mapId != "")
+                    {
+                        Session.Character.MapId = (short)mapId;
+                        Session.Character.MapX = (short)((short)(mapx)+ (short)2);
+                        Session.Character.MapY = (short)((short)(mapy) + (short)2);
+                        MapOut();
 
+                        ChangeMap();
+                    }
+                    break;
                 case 5:
                     if (verify)
                     {
@@ -1780,7 +1797,7 @@ namespace OpenNos.Handler
             //ski
             Session.Client.SendPacket(Session.Character.GenerateAt());
             Session.Client.SendPacket(Session.Character.GenerateCMap());
-            if(Session.Character.Size != 10)
+            if (Session.Character.Size != 10)
                 Session.Client.SendPacket(Session.Character.GenerateScal());
             foreach (String portalPacket in Session.Character.GenerateGp())
                 Session.Client.SendPacket(portalPacket);
