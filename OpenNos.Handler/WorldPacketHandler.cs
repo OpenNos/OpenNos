@@ -1729,8 +1729,8 @@ namespace OpenNos.Handler
                     if (String.Format("{0}", mapy) != "" && String.Format("{0}", mapx) != "" && String.Format("{0}", mapId) != "")
                     {
                         Session.Character.MapId = (short)mapId;
-                        Session.Character.MapX = (short)((short)(mapx)+ (short)2);
-                        Session.Character.MapY = (short)((short)(mapy) + (short)2);
+                        Session.Character.MapX = (short)((short)(mapx)+ (short)1);
+                        Session.Character.MapY = (short)((short)(mapy) + (short)1);
                         MapOut();
 
                         ChangeMap();
