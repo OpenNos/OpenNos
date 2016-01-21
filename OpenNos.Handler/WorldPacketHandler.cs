@@ -1273,7 +1273,7 @@ namespace OpenNos.Handler
                     message += packetsplit[i] + " ";
                 message.Trim();
 
-                ClientLinkManager.Instance.Broadcast(Session, String.Format("msg 5 [{0}]{1}", Session.Character.Name, message), ReceiverType.All);
+                ClientLinkManager.Instance.Broadcast(Session, String.Format("msg 5 [{0}]:{1}", Session.Character.Name, message), ReceiverType.All);
             }
             else
             {
