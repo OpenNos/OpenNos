@@ -277,7 +277,7 @@
     <value>No EntryPoint found</value>
   </data>
   <data name="NO_FAMILY" xml:space="preserve">
-    <value>No Family</value>
+    <value>None</value>
   </data>
   <data name="NO_PREZ_MESSAGE" xml:space="preserve">
     <value>No Presentation Message.</value>
