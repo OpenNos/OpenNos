@@ -147,6 +147,21 @@
   <data name="CLIENT_CLOSED" xml:space="preserve">
     <value>Die Verbindung zum Client wurde getrennt.</value>
   </data>
+  <data name="COMPLIMENT_COOLDOWN" xml:space="preserve">
+    <value>Du kannst nur einen Spieler pro Tag anhimmeln.</value>
+  </data>
+  <data name="COMPLIMENT_GIVEN" xml:space="preserve">
+    <value>Du hast {0} angehimmelt.</value>
+  </data>
+  <data name="COMPLIMENT_LOGIN_COOLDOWN" xml:space="preserve">
+    <value>Du musst {0} Minuten warten, bevor du jemanden anhimmeln kannst.</value>
+  </data>
+  <data name="COMPLIMENT_NOT_MINLVL" xml:space="preserve">
+    <value>Du musst erst Level 30 erreicht haben, bevor du einen Spieler anhimmeln kannst.</value>
+  </data>
+  <data name="COMPLIMENT_RECEIVED" xml:space="preserve">
+    <value>Du wurdest von {0} angehimmelt.</value>
+  </data>
   <data name="CORRUPT_KEEPALIVE" xml:space="preserve">
     <value>Fehlerhaftes KeepAlive von Client {0}.</value>
   </data>

@@ -83,5 +83,6 @@ namespace OpenNos.Data
             }
         }
 
+        public short Compliment { get; set; }
     }
 }

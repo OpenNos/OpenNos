@@ -32,6 +32,10 @@ namespace OpenNos.Data
 
         public int LastSession { get; set; }
 
+        public DateTime LastLogin { get; set; }
+
+        public DateTime LastCompliment { get; set; }
+
         public bool LoggedIn { get; set; }
     }
 }

@@ -14,13 +14,19 @@ namespace OpenNos.DAL.Interface
         CharacterDTO LoadBySlot(long accountId, byte slot);
 
         IEnumerable<CharacterDTO> LoadByAccount(long accountId);
-
-        int IsReputHero(long characterId);
      
         SaveResult InsertOrUpdate(ref CharacterDTO character);
 
         CharacterDTO LoadByName(string name);
 
         DeleteResult Delete(long accountId, byte characterSlot);
+
+        int IsReputHero(long characterId);
+
+        IEnumerable<CharacterDTO> GetTopComplimented();
+
+        IEnumerable<CharacterDTO> GetTopReputation();
+
+        IEnumerable<CharacterDTO> GetTopPoints();
     }
 }

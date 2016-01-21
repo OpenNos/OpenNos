@@ -79,6 +79,8 @@
     <Property Name="Password" Type="varchar" Nullable="false" MaxLength="255" />
     <Property Name="Authority" Type="smallint" Nullable="false" />
     <Property Name="LastSession" Type="int" Nullable="false" />
+    <Property Name="LastLogin" Type="datetime" Nullable="false" />
+    <Property Name="LastCompliment" Type="datetime" Nullable="false" />
   </EntityType>
   <EntityType Name="character">
     <Key>
@@ -113,6 +115,7 @@
     <Property Name="SpPoint" Type="int" Nullable="false" />
     <Property Name="SpAdditionPoint" Type="int" Nullable="false" />
     <Property Name="State" Type="utinyint" Nullable="false" />
+    <Property Name="Compliment" Type="smallint" Nullable="false" />
   </EntityType>
   <EntityType Name="portal">
     <Key>
@@ -456,6 +459,8 @@
           <Property Name="LastSession" Type="Int32" Nullable="false" />
           <NavigationProperty Name="character" Relationship="opennosModel.AccountCharacter" FromRole="Account" ToRole="Character" />
           <NavigationProperty Name="log" Relationship="opennosModel.accountlog" FromRole="account" ToRole="log" />
+          <Property Name="LastLogin" Type="DateTime" Nullable="false" />
+          <Property Name="LastCompliment" Type="DateTime" Nullable="false" />
         </EntityType>
         <EntityType Name="Character">
           <Key>
@@ -494,6 +499,7 @@
           <Property Name="SpAdditionPoint" Type="Int32" Nullable="false" />
           <Property Name="State" Type="Byte" Nullable="false" />
           <NavigationProperty Name="inventory" Relationship="opennosModel.CharacterInventory" FromRole="Character" ToRole="Inventory" />
+          <Property Name="Compliment" Type="Int16" Nullable="false" />
         </EntityType>
         <EntityType Name="Portal">
           <Key>
@@ -921,6 +927,8 @@
           <ScalarProperty Name="Password" ColumnName="Password" />
           <ScalarProperty Name="Authority" ColumnName="Authority" />
           <ScalarProperty Name="LastSession" ColumnName="LastSession" />
+          <ScalarProperty Name="LastLogin" ColumnName="LastLogin" />
+          <ScalarProperty Name="LastCompliment" ColumnName="LastCompliment" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -956,6 +964,7 @@
           <ScalarProperty Name="SpPoint" ColumnName="SpPoint" />
           <ScalarProperty Name="SpAdditionPoint" ColumnName="SpAdditionPoint" />
           <ScalarProperty Name="State" ColumnName="State" />
+          <ScalarProperty Name="Compliment" ColumnName="Compliment" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

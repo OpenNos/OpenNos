@@ -183,6 +183,21 @@
   <data name="CLIENT_CLOSED" xml:space="preserve">
     <value>Connection closed by Client.</value>
   </data>
+  <data name="COMPLIMENT_COOLDOWN" xml:space="preserve">
+    <value>You can only compliment one player per day.</value>
+  </data>
+  <data name="COMPLIMENT_GIVEN" xml:space="preserve">
+    <value>You complimented {0}.</value>
+  </data>
+  <data name="COMPLIMENT_LOGIN_COOLDOWN" xml:space="preserve">
+    <value>You have to wait {0} minutes before you can compliment someone.</value>
+  </data>
+  <data name="COMPLIMENT_NOT_MINLVL" xml:space="preserve">
+    <value>You can only compliment a player if you have reached Lv 30.</value>
+  </data>
+  <data name="COMPLIMENT_RECEIVED" xml:space="preserve">
+    <value>You have been complimented by {0}.</value>
+  </data>
   <data name="CORRUPT_KEEPALIVE" xml:space="preserve">
     <value>Corrupted Keepalive on client {0}.</value>
   </data>
