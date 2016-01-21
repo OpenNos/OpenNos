@@ -44,9 +44,9 @@
 -- -----------------------------------------------------------
 -- Entity Designer DDL Script for MySQL Server 4.1 and higher
 -- -----------------------------------------------------------
--- Date Created: 01/20/2016 22:25:26
+-- Date Created: 01/21/2016 17:27:59
 
--- Generated from EDMX file: C:\Users\ERWAN\Desktop\OpenNos GIT\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
+-- Generated from EDMX file: C:\Users\Markus\Desktop\OpenNos\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
 -- Target version: 3.0.0.0
 
 -- --------------------------------------------------
@@ -125,7 +125,9 @@ CREATE TABLE `account`(
 	`Name` varchar (255) NOT NULL, 
 	`Password` varchar (255) NOT NULL, 
 	`Authority` smallint NOT NULL, 
-	`LastSession` int NOT NULL);
+	`LastSession` int NOT NULL, 
+	`LastLogin` datetime NOT NULL, 
+	`LastCompliment` datetime NOT NULL);
 
 ALTER TABLE `account` ADD PRIMARY KEY (AccountId);
 
@@ -162,7 +164,8 @@ CREATE TABLE `character`(
 	`Faction` int NOT NULL, 
 	`SpPoint` int NOT NULL, 
 	`SpAdditionPoint` int NOT NULL, 
-	`State` TINYINT UNSIGNED NOT NULL);
+	`State` TINYINT UNSIGNED NOT NULL, 
+	`Compliment` smallint NOT NULL);
 
 ALTER TABLE `character` ADD PRIMARY KEY (CharacterId);
 

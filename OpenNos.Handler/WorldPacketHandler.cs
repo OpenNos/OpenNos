@@ -241,7 +241,8 @@ namespace OpenNos.Handler
                         Direction = 0,
                         Rested = 0,
                         BackPack = characterDTO.Backpack,
-                        Speed = ServersData.SpeedData[characterDTO.Class]
+                        Speed = ServersData.SpeedData[characterDTO.Class],
+                        Compliment = characterDTO.Compliment
                     };
 
                 Session.Character.Update();
@@ -1336,6 +1337,42 @@ namespace OpenNos.Handler
                 Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("USER_NOT_HERO"), 11));
             }
         }
+        [Packet("compl")]
+        public void Compliment(string packet)
+        {
+            string[] packetsplit = packet.Split(' ');
+            long complimentCharacterId = 0;
+            if (long.TryParse(packetsplit[3], out complimentCharacterId))
+            {
+                if (Session.Character.Level >= 30)
+                {
+                    if (Session.Account.LastLogin.AddMinutes(60) <= DateTime.Now)
+                    {
+                        if (Session.Account.LastCompliment.Date.AddDays(1) <= DateTime.Now.Date)
+                        {
+                            CharacterDTO complimentCharacter = DAOFactory.CharacterDAO.LoadById(complimentCharacterId);
+                            complimentCharacter.Compliment++;
+                            Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey(String.Format("COMPLIMENT_GIVEN", complimentCharacter.Name)), 12));
+                            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateSay(Language.Instance.GetMessageFromKey(String.Format("COMPLIMENT_RECEIVED", Session.Character.Name)), 12), ReceiverType.OnlySomeone, packetsplit[1].Substring(1));
+                        }
+                        else
+                        {
+                            Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("COMPLIMENT_COOLDOWN"), 11));
+                        }
+                    }
+                    else
+                    {
+                        Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey(String.Format("COMPLIMENT_LOGIN_COOLDOWN", (Session.Account.LastLogin - DateTime.Now).Minutes)), 11));
+                    }
+                }
+                else
+                {
+                    Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("COMPLIMENT_NOT_MINLVL"), 11));
+                }
+            }
+        }
+
+
         #endregion
 
         #region AdminCommand
@@ -1850,6 +1887,7 @@ namespace OpenNos.Handler
 
             ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEq(), ReceiverType.AllOnMap);
             Session.Client.SendPacket(Session.Character.GenerateEquipment());
+            GenerateRankings();
         }
         public void healthThread()
         {
@@ -2010,6 +2048,29 @@ namespace OpenNos.Handler
                 Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("LOW_REP"), 0));
             }
 
+        }
+        public void GenerateRankings()
+        {
+            string clinit = "clinit";
+            string flinit = "flinit";
+            string kdlinit = "kdlinit";
+
+            foreach (CharacterDTO character in DAOFactory.CharacterDAO.GetTopComplimented())
+            {
+                clinit += String.Format(" {0}|{1}|{2}|{3}", character.CharacterId, character.Level, character.Compliment, character.Name);
+            }
+            foreach (CharacterDTO character in DAOFactory.CharacterDAO.GetTopReputation())
+            {
+                flinit += String.Format(" {0}|{1}|{2}|{3}", character.CharacterId, character.Level, character.Reput, character.Name);
+            }
+            foreach (CharacterDTO character in DAOFactory.CharacterDAO.GetTopPoints())
+            {
+                kdlinit += String.Format(" {0}|{1}|{2}|{3}", character.CharacterId, character.Level, 0/*replace with true var*/, character.Name);
+            }
+
+            Session.Client.SendPacket(clinit);
+            Session.Client.SendPacket(flinit);
+            Session.Client.SendPacket(kdlinit);
         }
         public void ChangeVehicle(Item item)
         {

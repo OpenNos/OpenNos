@@ -50,6 +50,7 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public int SpPoint { get; set; }
         public int SpAdditionPoint { get; set; }
         public byte State { get; set; }
+        public short Compliment { get; set; }
     
         public virtual Account account { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
