@@ -241,7 +241,8 @@ namespace OpenNos.Handler
                         Direction = 0,
                         Rested = 0,
                         BackPack = characterDTO.Backpack,
-                        Speed = ServersData.SpeedData[characterDTO.Class]
+                        Speed = ServersData.SpeedData[characterDTO.Class],
+                        Compliment = characterDTO.Compliment
                     };
 
                 Session.Character.Update();
@@ -1352,6 +1353,8 @@ namespace OpenNos.Handler
                 }
             }
         }
+
+
         #endregion
 
         #region AdminCommand
