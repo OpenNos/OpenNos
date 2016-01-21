@@ -1726,7 +1726,7 @@ namespace OpenNos.Handler
                     object mapy = ClientLinkManager.Instance.RequiereProperties(name, "MapY");
                     object mapx = ClientLinkManager.Instance.RequiereProperties(name, "MapX");
                     object mapId = ClientLinkManager.Instance.RequiereProperties(name, "MapId");
-                    if ((string)mapy != "" && (string)mapx != "" && (string)mapId != "")
+                    if (String.Format("{0}", mapy) != "" && String.Format("{0}", mapx) != "" && String.Format("{0}", mapId) != "")
                     {
                         Session.Character.MapId = (short)mapId;
                         Session.Character.MapX = (short)((short)(mapx)+ (short)2);
