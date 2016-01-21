@@ -546,11 +546,11 @@ namespace OpenNos.GameObject
             Inventory Armor = EquipmentList.LoadBySlotAndType((short)EquipmentType.Armor, (short)InventoryType.Equipment);
             Inventory Weapon2 = EquipmentList.LoadBySlotAndType((short)EquipmentType.SecondaryWeapon, (short)InventoryType.Equipment);
             Inventory Weapon = EquipmentList.LoadBySlotAndType((short)EquipmentType.MainWeapon, (short)InventoryType.Equipment);
-            return String.Format("tc_info {0} {1} {2} {3} {4} {9} 0 {8} {5} {6} {10} {11} {12} {13} {14} {15} {16} {17} {18} 0 0 0 0 0 0 {19} 0 0 0 0 0 0 0 0 0 0 {7}", Level, Name, Fairy != null ? ServerManager.GetItem(Fairy.InventoryItem.ItemVNum).Element : 0, Fairy != null ? Fairy.InventoryItem.ElementRate : 0, Class, GetReputIco(), GetDigniteIco(),
+            return String.Format("tc_info {0} {1} {2} {3} {4} {9} 0 {8} {5} {6} {10} {11} {12} {13} {14} {15} {16} {17} {18} 0 {20} 0 0 0 0 {19} 0 0 0 0 0 0 0 0 0 0 {7}", Level, Name, Fairy != null ? ServerManager.GetItem(Fairy.InventoryItem.ItemVNum).Element : 0, Fairy != null ? Fairy.InventoryItem.ElementRate : 0, Class, GetReputIco(), GetDigniteIco(),
                 Language.Instance.GetMessageFromKey("NO_PREZ_MESSAGE"), Language.Instance.GetMessageFromKey("NO_FAMILY"),
                 Gender, Weapon != null ? 1 : 0, Weapon != null ? Weapon.InventoryItem.Rare : 0, Weapon != null ? Weapon.InventoryItem.Upgrade : 0,
                 Weapon2 != null ? 1 : 0, Weapon2 != null ? Weapon2.InventoryItem.Rare : 0, Weapon2 != null ? Weapon2.InventoryItem.Upgrade : 0,
-                Armor != null ? 1 : 0, Armor != null ? Armor.InventoryItem.Rare : 0, Armor != null ? Armor.InventoryItem.Upgrade : 0, UseSp ? Morph : 0);
+                Armor != null ? 1 : 0, Armor != null ? Armor.InventoryItem.Rare : 0, Armor != null ? Armor.InventoryItem.Upgrade : 0, UseSp ? Morph : 0, Reput);
         }
 
         public string GenerateCMap()
