@@ -274,7 +274,7 @@
     <value>Nie znaleziono EntryPoint</value>
   </data>
   <data name="NO_FAMILY" xml:space="preserve">
-    <value>Brak rodziny.</value>
+    <value>Brak</value>
   </data>
   <data name="NO_PREZ_MESSAGE" xml:space="preserve">
     <value>Brak opisu.</value>
