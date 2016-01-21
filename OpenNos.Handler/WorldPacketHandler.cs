@@ -1293,6 +1293,7 @@ namespace OpenNos.Handler
             Session.Client.SendPacket(Session.Character.GenerateSay("$Lvl LEVEL", 0));
             Session.Client.SendPacket(Session.Character.GenerateSay("$JLvl JOBLEVEL", 0));
             Session.Client.SendPacket(Session.Character.GenerateSay("$SPLvl SPLEVEL", 0));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$ChangeSex SEX", 0));
             Session.Client.SendPacket(Session.Character.GenerateSay("$ChangeClass CLASS", 0));
             Session.Client.SendPacket(Session.Character.GenerateSay("$ChangeRep REPUTATION", 0));
             Session.Client.SendPacket(Session.Character.GenerateSay("$Kick USERNAME", 0));
@@ -1422,7 +1423,7 @@ namespace OpenNos.Handler
             }
         }
         [Packet("$ChangeRep")]
-        public void rep(string packet)
+        public void Rep(string packet)
         {
 
             string[] packetsplit = packet.Split(' ');
@@ -1439,7 +1440,7 @@ namespace OpenNos.Handler
             }
         }
         [Packet("$Lvl")]
-        public void lvl(string packet)
+        public void Lvl(string packet)
         {
 
             string[] packetsplit = packet.Split(' ');
@@ -1462,7 +1463,7 @@ namespace OpenNos.Handler
             }
         }
         [Packet("$JLvl")]
-        public void jlvl(string packet)
+        public void JLvl(string packet)
         {
             string[] packetsplit = packet.Split(' ');
             byte joblevel;
@@ -1470,7 +1471,6 @@ namespace OpenNos.Handler
                 Session.Client.SendPacket(Session.Character.GenerateSay("$JLvl JOBLEVEL", 0));
             if (Byte.TryParse(packetsplit[2], out joblevel) && ((Session.Character.Class == 0 && joblevel <= 20) || (Session.Character.Class != 0 && joblevel <= 80)) && joblevel > 0)
             {
-                // add splvl to one command
                 Session.Character.JobLevel = joblevel;
                 Session.Client.SendPacket(Session.Character.GenerateLev());
 
@@ -1481,7 +1481,7 @@ namespace OpenNos.Handler
             }
         }
         [Packet("$SPLvl")]
-        public void splvl(string packet)
+        public void SPLvl(string packet)
         {
             string[] packetsplit = packet.Split(' ');
             byte splevel;
@@ -1496,6 +1496,22 @@ namespace OpenNos.Handler
                 Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SPLEVEL_CHANGED"), 0));
                 ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllOnMapExceptMe);
                 ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(6), ReceiverType.AllOnMap);
+                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(198), ReceiverType.AllOnMap);
+            }
+        }
+        [Packet("$ChangeSex")]
+        public void Gender(string packet)
+        {
+            string[] packetsplit = packet.Split(' ');
+            byte gender;
+            if (packetsplit.Length > 3)
+                Session.Client.SendPacket(Session.Character.GenerateSay("$ChangeSex GENDER", 0));
+            if (Byte.TryParse(packetsplit[2], out gender) && gender < 2 && gender >= 0)
+            {
+                Session.Character.Gender = gender;
+                Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SEX_CHANGED"), 0));
+                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEq(), ReceiverType.OnlyMe);
+                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllOnMapExceptMe);
                 ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(198), ReceiverType.AllOnMap);
             }
         }
@@ -1567,9 +1583,9 @@ namespace OpenNos.Handler
         [Packet("$TryEffect")]
         public void TryEffect(string packet)
         {
-          for(int i=0;i< 10000;i++)
+            for (int i = 0; i < 10000; i++)
                 ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(i), ReceiverType.OnlyMe);
-            
+
 
         }
         [Packet("$Effect")]
