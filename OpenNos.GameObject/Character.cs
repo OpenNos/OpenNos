@@ -23,6 +23,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using OpenNos.Core.Communication.Scs.Communication.Messages;
 
 namespace OpenNos.GameObject
 {
@@ -813,16 +814,21 @@ namespace OpenNos.GameObject
         {
             return String.Format("sp {0} 1000000 {1} 10000", SpAdditionPoint, SpPoint);
         }
-        public void Save()
-        {
-            throw new NotImplementedException();
-        }
-
+   
         public string GenerateScal()
         {
             return String.Format("char_sc 1 {0} {1}", CharacterId, Size);
         }
 
+        public IScsMessage GenerateEInfo(InventoryItem item)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Save()
+        {
+            throw new NotImplementedException();
+        }
         #endregion
     }
 }

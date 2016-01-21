@@ -1249,6 +1249,24 @@ namespace OpenNos.Handler
                 }
             }
         }
+
+        [Packet("eqinfo")]
+        public void EqInfo(string packet)
+        {
+            string[] packetsplit = packet.Split(' ');
+            if (packetsplit.Length > 3)
+            {
+                short type = 0; short.TryParse(packetsplit[3], out type);
+                short slot = 0; short.TryParse(packetsplit[2], out slot);
+
+                Inventory inventory = Session.Character.InventoryList.LoadBySlotAndType(slot, type);
+
+                if (inventory != null)
+                {
+                    Session.Client.SendMessage(Session.Character.GenerateEInfo(inventory.InventoryItem));
+                }
+            }
+        }
         [Packet("sl")]
         public void SpTransform(string packet)
         {
