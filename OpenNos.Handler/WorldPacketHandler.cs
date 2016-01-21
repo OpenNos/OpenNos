@@ -1869,6 +1869,7 @@ namespace OpenNos.Handler
 
             ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEq(), ReceiverType.AllOnMap);
             Session.Client.SendPacket(Session.Character.GenerateEquipment());
+            GenerateRankings();
         }
         public void healthThread()
         {
@@ -2029,6 +2030,29 @@ namespace OpenNos.Handler
                 Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("LOW_REP"), 0));
             }
 
+        }
+        public void GenerateRankings()
+        {
+            string clinit = "clinit";
+            string flinit = "flinit";
+            string kdlinit = "kdlinit";
+
+            foreach (CharacterDTO character in DAOFactory.CharacterDAO.GetTopComplimented())
+            {
+                clinit += String.Format(" {0}|{1}|{2}|{3}", character.CharacterId, character.Level, character.Compliment, character.Name);
+            }
+            foreach (CharacterDTO character in DAOFactory.CharacterDAO.GetTopReputation())
+            {
+                flinit += String.Format(" {0}|{1}|{2}|{3}", character.CharacterId, character.Level, character.Reput, character.Name);
+            }
+            foreach (CharacterDTO character in DAOFactory.CharacterDAO.GetTopPoints())
+            {
+                kdlinit += String.Format(" {0}|{1}|{2}|{3}", character.CharacterId, character.Level, 0/*replace with true var*/, character.Name);
+            }
+
+            Session.Client.SendPacket(clinit);
+            Session.Client.SendPacket(flinit);
+            Session.Client.SendPacket(kdlinit);
         }
         public void ChangeVehicle(Item item)
         {
