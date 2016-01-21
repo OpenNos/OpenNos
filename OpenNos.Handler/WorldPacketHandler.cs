@@ -1299,7 +1299,7 @@ namespace OpenNos.Handler
             Session.Client.SendPacket(Session.Character.GenerateSay("$Kick USERNAME", 0));
             Session.Client.SendPacket(Session.Character.GenerateSay("$MapDance", 0));
             Session.Client.SendPacket(Session.Character.GenerateSay("$Effect EFFECTID", 0));
-            Session.Client.SendPacket(Session.Character.GenerateSay("$Resize Size", 0));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$Resize SIZE", 0));
             Session.Client.SendPacket(Session.Character.GenerateSay("$PlayMusic MUSIC", 0));
             Session.Client.SendPacket(Session.Character.GenerateSay("$Ban CHARACTERNAME", 0));
             Session.Client.SendPacket(Session.Character.GenerateSay("$Invisible", 0));
