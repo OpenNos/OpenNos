@@ -1318,6 +1318,40 @@ namespace OpenNos.Handler
                 Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("USER_NOT_HERO"), 11));
             }
         }
+        [Packet("compl")]
+        public void Compliment(string packet)
+        {
+            string[] packetsplit = packet.Split(' ');
+            long complimentCharacterId = 0;
+            if (long.TryParse(packetsplit[3], out complimentCharacterId))
+            {
+                if (Session.Character.Level >= 30)
+                {
+                    if (Session.Account.LastLogin.AddMinutes(60) <= DateTime.Now)
+                    {
+                        if (Session.Account.LastCompliment.Date.AddDays(1) <= DateTime.Now.Date)
+                        {
+                            CharacterDTO complimentCharacter = DAOFactory.CharacterDAO.LoadById(complimentCharacterId);
+                            complimentCharacter.Compliment++;
+                            Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey(String.Format("COMPLIMENT_GIVEN", complimentCharacter.Name)), 12));
+                            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateSay(Language.Instance.GetMessageFromKey(String.Format("COMPLIMENT_RECEIVED", Session.Character.Name)), 12), ReceiverType.OnlySomeone, packetsplit[1].Substring(1));
+                        }
+                        else
+                        {
+                            Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("COMPLIMENT_COOLDOWN"), 11));
+                        }
+                    }
+                    else
+                    {
+                        Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey(String.Format("COMPLIMENT_LOGIN_COOLDOWN", (Session.Account.LastLogin - DateTime.Now).Minutes)), 11));
+                    }
+                }
+                else
+                {
+                    Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("COMPLIMENT_NOT_MINLVL"), 11));
+                }
+            }
+        }
         #endregion
 
         #region AdminCommand

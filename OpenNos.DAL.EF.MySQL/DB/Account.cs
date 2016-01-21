@@ -26,6 +26,8 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public string Password { get; set; }
         public short Authority { get; set; }
         public int LastSession { get; set; }
+        public System.DateTime LastLogin { get; set; }
+        public System.DateTime LastCompliment { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Character> character { get; set; }
