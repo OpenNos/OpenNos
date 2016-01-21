@@ -235,22 +235,25 @@ namespace OpenNos.GameObject
                         string packetHeader = packet.Split(' ', '^')[1];
                         //0 is a keep alive packet with no content to handle
                         int permit = 1;
-                        if (packetHeader[0] == '$')
+                        if (packetHeader.Length > 0)
                         {
-                            if (Account.Authority != (int)AuthorityType.Admin)
-                                permit = 0;
-                        }
-
-                        if (packetHeader[0] == '/' || packetHeader[0] == ':')
-                        {
-                            TriggerHandler(packetHeader[0].ToString(), packet, false);
-                        }
-                        else
-                        if (permit == 1)
-                        {
-                            if (packetHeader != "0" && !TriggerHandler(packetHeader, packet, false))
+                            if (packetHeader[0] == '$')
                             {
-                                Logger.Log.WarnFormat(Language.Instance.GetMessageFromKey("HANDLER_NOT_FOUND"), packetHeader);
+                                if (Account.Authority != (int)AuthorityType.Admin)
+                                    permit = 0;
+                            }
+
+                            if (packetHeader[0] == '/' || packetHeader[0] == ':')
+                            {
+                                TriggerHandler(packetHeader[0].ToString(), packet, false);
+                            }
+                            else
+                            if (permit == 1)
+                            {
+                                if (packetHeader != "0" && !TriggerHandler(packetHeader, packet, false))
+                                {
+                                    Logger.Log.WarnFormat(Language.Instance.GetMessageFromKey("HANDLER_NOT_FOUND"), packetHeader);
+                                }
                             }
                         }
                     }
