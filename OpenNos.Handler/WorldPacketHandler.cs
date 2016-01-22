@@ -2155,8 +2155,9 @@ namespace OpenNos.Handler
             {
                 flinit += String.Format(" {0}|{1}|{2}|{3}", character.CharacterId, character.Level, character.Reput, character.Name);
             }
+           if(false)/*Need to delete it when gettoppoint will not return null*/
             foreach (CharacterDTO character in DAOFactory.CharacterDAO.GetTopPoints())
-            {
+           {
                 kdlinit += String.Format(" {0}|{1}|{2}|{3}", character.CharacterId, character.Level, 0/*replace with true var*/, character.Name);
             }
 
