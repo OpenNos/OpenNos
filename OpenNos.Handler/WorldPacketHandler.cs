@@ -104,7 +104,15 @@ namespace OpenNos.Handler
                         Name = packetsplit[2],
                         Slot = Convert.ToByte(packetsplit[3]),
                         AccountId = accountId,
-                        StateEnum = CharacterState.Active
+                        StateEnum = CharacterState.Active,
+                        Compliment = 0,
+                        Backpack = 0,
+                       State = 1,
+                       SpPoint=0,
+                       Reput = 0,
+                       Dignite=0,
+                       Faction=0,
+                       SpAdditionPoint=0
                     };
 
                     SaveResult insertResult = DAOFactory.CharacterDAO.InsertOrUpdate(ref newCharacter);
