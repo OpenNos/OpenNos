@@ -1264,7 +1264,7 @@ namespace OpenNos.Handler
 
                 if (inventory != null)
                 {
-                    Session.Client.SendPacket(Session.Character.GenerateEInfo(inventory.InventoryItem));
+                    Session.Client.SendMessage(Session.Character.GenerateEInfo(inventory.InventoryItem));
                 }
             }
         }
