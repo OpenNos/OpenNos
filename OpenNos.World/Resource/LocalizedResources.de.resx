@@ -282,6 +282,18 @@
   <data name="UPDATE_ACCOUNT_ERROR" xml:space="preserve">
     <value>Fehler beim Einfügen/Aktualisieren des Accounts {0} , {1}</value>
   </data>
+  <data name="UPGRADE_FAILED" xml:space="preserve">
+    <value>Die Verbesserung ist fehlgeschlagen. Das Item ist verschwunden.</value>
+  </data>
+  <data name="UPGRADE_FAILED_ITEM_SAVED" xml:space="preserve">
+    <value>Die Verbesserung ist fehlgeschlagen, doch das Item wurde vor der Zerstörung geschützt.</value>
+  </data>
+  <data name="UPGRADE_FIXED" xml:space="preserve">
+    <value>Fixiertes Level!</value>
+  </data>
+  <data name="UPGRADE_SUCCESS" xml:space="preserve">
+    <value>Die Verbesserung war erfolgreich!</value>
+  </data>
   <data name="USER_NOT_HERO" xml:space="preserve">
     <value>Nur Helden dürfen die Heldennachrichten benutzen.</value>
   </data>

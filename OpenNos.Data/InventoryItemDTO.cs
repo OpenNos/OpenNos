@@ -37,5 +37,6 @@ namespace OpenNos.Data
         public short FireElement { get; set; }
         public short ItemVNum { get; set; }
         public short Ammo { get; set; }
+        public short IsFixed { get; set; }
     }
 }
