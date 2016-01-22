@@ -34,6 +34,33 @@ namespace OpenNos.GameObject
 
         #endregion
 
+        public enum RarifyMode
+        {
+            Normal,
+            Reduced,
+            Free
+        }
+        
+        public enum RarifyProtection
+        {
+            None,
+            BlueAmulet,
+            RedAmulet
+        }
+
+        public enum UpgradeMode
+        {
+            Normal,
+            Reduced,
+            Free
+        }
+
+        public enum UpgradeProtection
+        {
+            None,
+            Protected
+        }
+
         #region Methods
 
         public void Save()
