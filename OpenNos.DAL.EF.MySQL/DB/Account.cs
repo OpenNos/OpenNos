@@ -17,6 +17,8 @@ namespace OpenNos.DAL.EF.MySQL.DB
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Account()
         {
+            this.LastLogin = new DateTime(621355968000000000, DateTimeKind.Unspecified);
+            this.LastCompliment = new DateTime(621355968000000000, DateTimeKind.Unspecified);
             this.character = new HashSet<Character>();
             this.log = new HashSet<GeneralLog>();
         }
