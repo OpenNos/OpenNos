@@ -1382,6 +1382,8 @@ namespace OpenNos.Handler
             Session.Client.SendPacket(Session.Character.GenerateSay("$Teleport Map X Y", 0));
             Session.Client.SendPacket(Session.Character.GenerateSay("$Teleport CharacterName", 0));
             Session.Client.SendPacket(Session.Character.GenerateSay("$Speed SPEED", 0));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$Rarify SLOT MODE PROTECTION", 0));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$Upgrade SLOT MODE PROTECTION", 0));
             Session.Client.SendPacket(Session.Character.GenerateSay("$Morph MORPHID UPGRADE WINGS ARENA", 0));
             Session.Client.SendPacket(Session.Character.GenerateSay("$Shout MESSAGE", 0));
             Session.Client.SendPacket(Session.Character.GenerateSay("$Lvl LEVEL", 0));
@@ -1840,7 +1842,7 @@ namespace OpenNos.Handler
             string[] packetsplit = packet.Split(' ');
             if (packetsplit.Length != 5)
             {
-                Session.Client.SendPacket(Session.Character.GenerateSay("$Rarify ITEMSLOT MODE PROTECTION", 0));
+                Session.Client.SendPacket(Session.Character.GenerateSay("$Rarify SLOT MODE PROTECTION", 0));
             }
             else
             {
@@ -1869,6 +1871,49 @@ namespace OpenNos.Handler
                     else
                     {
                         Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey(String.Format("RARIFY_SUCCESS", result)), 12));
+                    }
+                }
+            }
+        }
+        [Packet("$Upgrade")]
+        public void Upgrade(string packet)
+        {
+            string[] packetsplit = packet.Split(' ');
+            if (packetsplit.Length != 5)
+            {
+                Session.Client.SendPacket(Session.Character.GenerateSay("$UPGRADE SLOT MODE PROTECTION", 0));
+            }
+            else
+            {
+
+                short itemslot = -1;
+                short mode = -1;
+                short protection = -1;
+                short.TryParse(packetsplit[2], out itemslot);
+                short.TryParse(packetsplit[3], out mode);
+                short.TryParse(packetsplit[4], out protection);
+
+
+                if (itemslot > -1 && mode > -1 && protection > -1)
+                {
+                    InventoryDTO inventoryDTO = DAOFactory.InventoryDAO.LoadBySlotAndType(Session.Character.CharacterId, itemslot, 0);
+                    InventoryItemDTO item = DAOFactory.InventoryItemDAO.LoadById(inventoryDTO.InventoryItemId);
+                    int result = UpgradeItem(item, (InventoryItem.UpgradeMode)mode, (InventoryItem.UpgradeProtection)protection);
+                    if (result == -1)
+                    {
+                        Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADE_FAILED"), 11));
+                    }
+                    else if (result == 0)
+                    {
+                        Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADE_FAILED_ITEM_SAVED"), 11));
+                    }
+                    else if (result == 1)
+                    {
+                        Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADE_FIXED"), 11));
+                    }
+                    else
+                    {
+                        Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADE_SUCCESS"), 12));
                     }
                 }
             }
@@ -2263,6 +2308,56 @@ namespace OpenNos.Handler
             else
             {
                 if (protection == InventoryItem.RarifyProtection.None)
+                {
+                    //TODO: Item Destroy
+                    return -1;
+                }
+                else
+                {
+                    return 0;
+                }
+            }
+        }
+        public int UpgradeItem(InventoryItemDTO item, InventoryItem.UpgradeMode mode, InventoryItem.UpgradeProtection protection)
+        {
+            #region Upgrade Stats
+            short[] upsuccess = { 100, 100, 90, 80, 60, 40, 20, 10, 5, 1 };
+            short[] upfix = { 0, 0, 10, 15, 20, 20, 20, 20, 15, 14 };
+            #endregion
+            short itempricevnum1 = 0;
+            short itempricevnum2 = 0;
+            short goldprice = 500;
+            double reducedpricefactor = 0.5;
+
+            switch (mode)
+            {
+                case InventoryItem.UpgradeMode.Free:
+                    break;
+                case InventoryItem.UpgradeMode.Reduced:
+                    //TODO: Reduced Item Amount
+                    Session.Character.Gold = Session.Character.Gold - (long)(goldprice * reducedpricefactor);
+                    break;
+                case InventoryItem.UpgradeMode.Normal:
+                    //TODO: Normal Item Amount
+                    Session.Character.Gold = Session.Character.Gold - goldprice;
+                    break;
+            }
+
+            Random r = new Random();
+            int rnd = r.Next(100);
+            if (rnd <= upsuccess[item.Upgrade + 1])
+            {
+                item.Upgrade++;
+                return 2;
+            }
+            else if (rnd <= upfix[item.Upgrade + 1])
+            {
+
+                return 1;
+            }
+            else
+            {
+                if (protection == InventoryItem.UpgradeProtection.None)
                 {
                     //TODO: Item Destroy
                     return -1;
