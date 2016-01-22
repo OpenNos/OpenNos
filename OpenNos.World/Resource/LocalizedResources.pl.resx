@@ -303,6 +303,15 @@
   <data name="PACKET_FAILURE" xml:space="preserve">
     <value>Nie udalo sie wyslac packet {0} do uzytkownika {1}, {2}.</value>
   </data>
+  <data name="RARIFY_FAILED" xml:space="preserve">
+    <value>Gambling failed! The item disappeared.</value>
+  </data>
+  <data name="RARIFY_FAILED_ITEM_SAVED" xml:space="preserve">
+    <value>Gambling failed, but the Item was saved from destruction.</value>
+  </data>
+  <data name="RARIFY_SUCCESS" xml:space="preserve">
+    <value>Gambling succeeded! New Rare level: {0}</value>
+  </data>
   <data name="REP_CHANGED" xml:space="preserve">
     <value>Reputacja zmieniona</value>
   </data>

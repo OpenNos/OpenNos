@@ -243,6 +243,15 @@
   <data name="PACKET_FAILURE" xml:space="preserve">
     <value>Fehler beim Senden von Packet {0} an Client {1}, {2}.</value>
   </data>
+  <data name="RARIFY_FAILED" xml:space="preserve">
+    <value>Das Wetten ist fehlgeschlagen. Das Item ist verschwunden.</value>
+  </data>
+  <data name="RARIFY_FAILED_ITEM_SAVED" xml:space="preserve">
+    <value>Das Wetten ist fehlgeschlagen, doch das Item wurde vor der Zerstörung geschützt.</value>
+  </data>
+  <data name="RARIFY_SUCCESS" xml:space="preserve">
+    <value>Das Wetten war erfolgreich! Neues Seltenheitslevel: {0}</value>
+  </data>
   <data name="REP_CHANGED" xml:space="preserve">
     <value>Reputation changed</value>
   </data>

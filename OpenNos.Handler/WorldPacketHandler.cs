@@ -1264,7 +1264,7 @@ namespace OpenNos.Handler
 
                 if (inventory != null)
                 {
-                    Session.Client.SendMessage(Session.Character.GenerateEInfo(inventory.InventoryItem));
+                    Session.Client.SendPacket(Session.Character.GenerateEInfo(inventory.InventoryItem));
                 }
             }
         }
@@ -1834,6 +1834,45 @@ namespace OpenNos.Handler
             }
 
         }
+        [Packet("$Rarify")]
+        public void Rarify(string packet)
+        {
+            string[] packetsplit = packet.Split(' ');
+            if (packetsplit.Length != 5)
+            {
+                Session.Client.SendPacket(Session.Character.GenerateSay("$Rarify ITEMSLOT MODE PROTECTION", 0));
+            }
+            else
+            {
+
+                short itemslot = -1;
+                short mode = -1;
+                short protection = -1;
+                short.TryParse(packetsplit[2], out itemslot);
+                short.TryParse(packetsplit[3], out mode);
+                short.TryParse(packetsplit[4], out protection);
+
+
+                if (itemslot > -1 && mode > -1 && protection > -1)
+                {
+                    InventoryDTO inventoryDTO = DAOFactory.InventoryDAO.LoadBySlotAndType(Session.Character.CharacterId, itemslot, 0);
+                    InventoryItemDTO item = DAOFactory.InventoryItemDAO.LoadById(inventoryDTO.InventoryItemId);
+                    int result = RarifyItem(item, (InventoryItem.RarifyMode)mode, (InventoryItem.RarifyProtection)protection);
+                    if(result == -1)
+                    {
+                        Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("RARIFY_FAILED"), 11));
+                    }
+                    else if(result == 0)
+                    {
+                        Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("RARIFY_FAILED_ITEM_SAVED"), 11));
+                    }
+                    else
+                    {
+                        Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey(String.Format("RARIFY_SUCCESS", result)), 12));
+                    }
+                }
+            }
+        }
         #endregion
         #region Methods
         public void MapOut()
@@ -2151,6 +2190,88 @@ namespace OpenNos.Handler
             // fs 1
 
             Session.Client.SendPacket(Session.Character.GenerateEff(4799 + faction));
+        }
+        public int RarifyItem(InventoryItemDTO item, InventoryItem.RarifyMode mode, InventoryItem.RarifyProtection protection)
+        {
+            double rare1 = 50;
+            double rare2 = 35;
+            double rare3 = 25;
+            double rare4 = 10;
+            double rare5 = 10;
+            double rare6 = 5;
+            double rare7 = 1;
+            double reducedchancefactor = 1.1;
+
+            short itempricevnum = 0;
+            short goldprice = 500;
+            double reducedpricefactor = 0.5;
+
+            if(protection == InventoryItem.RarifyProtection.RedAmulet)
+            {
+                rare1 = rare1 * reducedchancefactor;
+                rare2 = rare2 * reducedchancefactor;
+                rare3 = rare3 * reducedchancefactor;
+                rare4 = rare4 * reducedchancefactor;
+                rare5 = rare5 * reducedchancefactor;
+                rare6 = rare6 * reducedchancefactor;
+                rare7 = rare7 * reducedchancefactor;
+            }
+            switch (mode)
+            {
+                case InventoryItem.RarifyMode.Free:
+                    break;
+                case InventoryItem.RarifyMode.Reduced:
+                    //TODO: Reduced Item Amount
+                    Session.Character.Gold = Session.Character.Gold - (long)(goldprice*reducedpricefactor);
+                    break;
+                case InventoryItem.RarifyMode.Normal:
+                    //TODO: Normal Item Amount
+                    Session.Character.Gold = Session.Character.Gold - goldprice;
+                    break;
+            }
+
+            Random r = new Random();
+            int rnd = r.Next(100);
+            if(rnd <= rare7)
+            {
+                return item.Rare = 7;
+            }
+            else if (rnd <= rare6)
+            {
+                return item.Rare = 6;
+            }
+            else if (rnd <= rare5)
+            {
+                return item.Rare = 5;
+            }
+            else if (rnd <= rare4)
+            {
+                return item.Rare = 4;
+            }
+            else if (rnd <= rare3)
+            {
+                return item.Rare = 3;
+            }
+            else if (rnd <= rare2)
+            {
+                return item.Rare = 2;
+            }
+            else if (rnd <= rare1)
+            {
+                return item.Rare = 1;
+            }
+            else
+            {
+                if (protection == InventoryItem.RarifyProtection.None)
+                {
+                    //TODO: Item Destroy
+                    return -1;
+                }
+                else
+                {
+                    return 0;
+                }
+            }
         }
         #endregion
         #region UselessPacket
