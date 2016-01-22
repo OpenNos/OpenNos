@@ -460,8 +460,8 @@
           <Property Name="LastSession" Type="Int32" Nullable="false" />
           <NavigationProperty Name="character" Relationship="opennosModel.AccountCharacter" FromRole="Account" ToRole="Character" />
           <NavigationProperty Name="log" Relationship="opennosModel.accountlog" FromRole="account" ToRole="log" />
-          <Property Name="LastLogin" Type="DateTime" Nullable="false" />
-          <Property Name="LastCompliment" Type="DateTime" Nullable="false" />
+          <Property Name="LastLogin" Type="DateTime" Nullable="false" DefaultValue="1970-01-01 00:00:00.000Z" />
+          <Property Name="LastCompliment" Type="DateTime" Nullable="false" DefaultValue="1970-01-01 00:00:00.000Z" ConcurrencyMode="None" />
         </EntityType>
         <EntityType Name="Character">
           <Key>
