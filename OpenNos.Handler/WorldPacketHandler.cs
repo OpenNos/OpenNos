@@ -1099,7 +1099,7 @@ namespace OpenNos.Handler
         {
             string[] packetsplit = packet.Split(' ');
             short mode; short.TryParse(packetsplit[2], out mode);
-        
+
             long charId = -1;
 
             string CharName;
@@ -1402,7 +1402,7 @@ namespace OpenNos.Handler
             Session.Client.SendPacket(Session.Character.GenerateSay("$Lvl LEVEL", 14));
             Session.Client.SendPacket(Session.Character.GenerateSay("$JLvl JOBLEVEL", 14));
             Session.Client.SendPacket(Session.Character.GenerateSay("$SPLvl SPLEVEL", 14));
-            Session.Client.SendPacket(Session.Character.GenerateSay("$ChangeSex SEX", 14));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$ChangeSex", 14));
             Session.Client.SendPacket(Session.Character.GenerateSay("$ChangeClass CLASS", 14));
             Session.Client.SendPacket(Session.Character.GenerateSay("$ChangeRep REPUTATION", 14));
             Session.Client.SendPacket(Session.Character.GenerateSay("$Kick USERNAME", 14));
@@ -1612,23 +1612,11 @@ namespace OpenNos.Handler
         [Packet("$ChangeSex")]
         public void Gender(string packet)
         {
-            Session.Character.Gender = Convert.ToByte(Session.Character.Gender == 1 ? 0 : 1);
-            if (Session.Character.Gender == 1)
-            {
-                Session.Character.Gender = 1;
-                Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SEX_CHANGED"), 0));
-                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEq(), ReceiverType.OnlyMe);
-                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllOnMapExceptMe);
-                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(198), ReceiverType.AllOnMap);
-            }
-            else
-            {
-                Session.Character.Gender = 0;
-                Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SEX_CHANGED"), 0));
-                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEq(), ReceiverType.OnlyMe);
-                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllOnMapExceptMe);
-                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(198), ReceiverType.AllOnMap);
-            }
+            Session.Character.Gender = Session.Character.Gender == (byte)1 ? (byte)0 : (byte)1;
+            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SEX_CHANGED"), 0));
+            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEq(), ReceiverType.OnlyMe);
+            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllOnMapExceptMe);
+            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(198), ReceiverType.AllOnMap);
         }
         [Packet("$Ban")]
         public void Ban(string packet)
