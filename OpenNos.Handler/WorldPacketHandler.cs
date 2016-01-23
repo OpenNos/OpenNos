@@ -1099,8 +1099,7 @@ namespace OpenNos.Handler
         {
             string[] packetsplit = packet.Split(' ');
             short mode; short.TryParse(packetsplit[2], out mode);
-            short type; short.TryParse(packetsplit[2], out type);
-            short slot; short.TryParse(packetsplit[3], out slot);
+        
             long charId = -1;
 
             string CharName;
