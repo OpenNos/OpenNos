@@ -15,6 +15,12 @@ namespace OpenNos.ServiceRef.Internal.CommunicationServiceReference {
     [System.ServiceModel.ServiceContractAttribute(ConfigurationName="CommunicationServiceReference.ICommunicationService", CallbackContract=typeof(OpenNos.ServiceRef.Internal.CommunicationServiceReference.ICommunicationServiceCallback))]
     public interface ICommunicationService {
         
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/ICommunicationService/Cleanup")]
+        void Cleanup();
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/ICommunicationService/Cleanup")]
+        System.Threading.Tasks.Task CleanupAsync();
+        
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/ICommunicationService/RegisterAccountLogin")]
         void RegisterAccountLogin(string name, long sessionId);
         
@@ -39,11 +45,23 @@ namespace OpenNos.ServiceRef.Internal.CommunicationServiceReference {
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/ICommunicationService/DisconnectCharacter")]
         System.Threading.Tasks.Task DisconnectCharacterAsync(string characterName);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ICommunicationService/AccountHasCharacterConnection", ReplyAction="http://tempuri.org/ICommunicationService/AccountHasCharacterConnectionResponse")]
-        bool AccountHasCharacterConnection(string accountName);
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ICommunicationService/ConnectAccount", ReplyAction="http://tempuri.org/ICommunicationService/ConnectAccountResponse")]
+        bool ConnectAccount(string accountName, int sessionId);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ICommunicationService/AccountHasCharacterConnection", ReplyAction="http://tempuri.org/ICommunicationService/AccountHasCharacterConnectionResponse")]
-        System.Threading.Tasks.Task<bool> AccountHasCharacterConnectionAsync(string accountName);
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ICommunicationService/ConnectAccount", ReplyAction="http://tempuri.org/ICommunicationService/ConnectAccountResponse")]
+        System.Threading.Tasks.Task<bool> ConnectAccountAsync(string accountName, int sessionId);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ICommunicationService/AccountIsConnected", ReplyAction="http://tempuri.org/ICommunicationService/AccountIsConnectedResponse")]
+        bool AccountIsConnected(string accountName);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/ICommunicationService/AccountIsConnected", ReplyAction="http://tempuri.org/ICommunicationService/AccountIsConnectedResponse")]
+        System.Threading.Tasks.Task<bool> AccountIsConnectedAsync(string accountName);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/ICommunicationService/DisconnectAccount")]
+        void DisconnectAccount(string accountName);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/ICommunicationService/DisconnectAccount")]
+        System.Threading.Tasks.Task DisconnectAccountAsync(string accountName);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -54,6 +72,12 @@ namespace OpenNos.ServiceRef.Internal.CommunicationServiceReference {
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/ICommunicationService/DisconnectCharacterCallback")]
         void DisconnectCharacterCallback(string characterName);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/ICommunicationService/ConnectAccountCallback")]
+        void ConnectAccountCallback(string accountName, int sessionId);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/ICommunicationService/DisconnectAccountCallback")]
+        void DisconnectAccountCallback(string accountName);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -82,6 +106,14 @@ namespace OpenNos.ServiceRef.Internal.CommunicationServiceReference {
         
         public CommunicationServiceClient(System.ServiceModel.InstanceContext callbackInstance, System.ServiceModel.Channels.Binding binding, System.ServiceModel.EndpointAddress remoteAddress) : 
                 base(callbackInstance, binding, remoteAddress) {
+        }
+        
+        public void Cleanup() {
+            base.Channel.Cleanup();
+        }
+        
+        public System.Threading.Tasks.Task CleanupAsync() {
+            return base.Channel.CleanupAsync();
         }
         
         public void RegisterAccountLogin(string name, long sessionId) {
@@ -116,12 +148,28 @@ namespace OpenNos.ServiceRef.Internal.CommunicationServiceReference {
             return base.Channel.DisconnectCharacterAsync(characterName);
         }
         
-        public bool AccountHasCharacterConnection(string accountName) {
-            return base.Channel.AccountHasCharacterConnection(accountName);
+        public bool ConnectAccount(string accountName, int sessionId) {
+            return base.Channel.ConnectAccount(accountName, sessionId);
         }
         
-        public System.Threading.Tasks.Task<bool> AccountHasCharacterConnectionAsync(string accountName) {
-            return base.Channel.AccountHasCharacterConnectionAsync(accountName);
+        public System.Threading.Tasks.Task<bool> ConnectAccountAsync(string accountName, int sessionId) {
+            return base.Channel.ConnectAccountAsync(accountName, sessionId);
+        }
+        
+        public bool AccountIsConnected(string accountName) {
+            return base.Channel.AccountIsConnected(accountName);
+        }
+        
+        public System.Threading.Tasks.Task<bool> AccountIsConnectedAsync(string accountName) {
+            return base.Channel.AccountIsConnectedAsync(accountName);
+        }
+        
+        public void DisconnectAccount(string accountName) {
+            base.Channel.DisconnectAccount(accountName);
+        }
+        
+        public System.Threading.Tasks.Task DisconnectAccountAsync(string accountName) {
+            return base.Channel.DisconnectAccountAsync(accountName);
         }
     }
 }
