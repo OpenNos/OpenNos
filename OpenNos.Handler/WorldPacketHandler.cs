@@ -1612,13 +1612,18 @@ namespace OpenNos.Handler
         [Packet("$ChangeSex")]
         public void Gender(string packet)
         {
-            string[] packetsplit = packet.Split(' ');
-            byte gender;
-            if (packetsplit.Length > 3)
-                Session.Client.SendPacket(Session.Character.GenerateSay("$ChangeSex GENDER", 14));
-            if (Byte.TryParse(packetsplit[2], out gender) && gender < 2 && gender >= 0)
+            Session.Character.Gender = Convert.ToByte(Session.Character.Gender == 1 ? 0 : 1);
+            if (Session.Character.Gender == 1)
             {
-                Session.Character.Gender = gender;
+                Session.Character.Gender = 1;
+                Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SEX_CHANGED"), 0));
+                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEq(), ReceiverType.OnlyMe);
+                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllOnMapExceptMe);
+                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(198), ReceiverType.AllOnMap);
+            }
+            else
+            {
+                Session.Character.Gender = 0;
                 Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SEX_CHANGED"), 0));
                 ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEq(), ReceiverType.OnlyMe);
                 ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllOnMapExceptMe);
