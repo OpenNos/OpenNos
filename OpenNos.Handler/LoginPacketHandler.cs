@@ -78,7 +78,7 @@ namespace OpenNos.Handler
                     {
                         DAOFactory.AccountDAO.WriteConnectionLog(loadedAccount.AccountId, _session.Client.RemoteEndPoint.ToString(), null, "Connection", "LoginServer");
 
-                        if (!ServiceFactory.Instance.CommunicationService.AccountHasCharacterConnection(loadedAccount.Name))
+                        if (!ServiceFactory.Instance.CommunicationService.AccountIsConnected(loadedAccount.Name))
                         {
                             //0 banned 1 register 2 user 3 GM
                             AuthorityType type = loadedAccount.AuthorityEnum;

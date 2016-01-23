@@ -40,9 +40,9 @@ namespace OpenNos.World
                              "===============================================================================\n", fileVersionInfo.ProductVersion));
 
             //initialize DB
-           if(DataAccessHelper.Initialize())
-            //initialilize maps
-            ServerManager.Initialize();
+            if (DataAccessHelper.Initialize())
+                //initialilize maps
+                ServerManager.Initialize();
 
             //initialize ClientLinkManager
             //TODO?

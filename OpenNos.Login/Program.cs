@@ -42,7 +42,6 @@ namespace OpenNos.Login
                                      + "                 LOGIN SERVER VERSION {0} by OpenNos Team\n" +
                                      "===============================================================================\n", fileVersionInfo.ProductVersion));
 
-
                     //initialize DB
                     DataAccessHelper.Initialize();
                     string ip = System.Configuration.ConfigurationManager.AppSettings["LoginIp"];
@@ -58,6 +57,8 @@ namespace OpenNos.Login
                     }
                     NetworkManager<LoginEncryption> networkManager = new NetworkManager<LoginEncryption>(ip, port, typeof(LoginPacketHandler));
 
+                    //refresh WCF
+                    ServiceFactory.Instance.CommunicationService.CleanupAsync();
                 }
                 catch (Exception ex)
                 {

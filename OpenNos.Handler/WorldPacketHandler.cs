@@ -31,7 +31,11 @@ namespace OpenNos.Handler
 {
     public class WorldPacketHandler
     {
+
+        #region Instantiation
+
         private readonly ClientSession _session;
+
         public ClientSession Session
         {
             get { return _session; }
@@ -41,6 +45,8 @@ namespace OpenNos.Handler
         {
             _session = session;
         }
+
+        #endregion
 
         #region Methods
 
@@ -105,7 +111,7 @@ namespace OpenNos.Handler
                         Slot = Convert.ToByte(packetsplit[3]),
                         AccountId = accountId,
                         StateEnum = CharacterState.Active,
-                      
+
                     };
 
                     SaveResult insertResult = DAOFactory.CharacterDAO.InsertOrUpdate(ref newCharacter);
@@ -128,33 +134,33 @@ namespace OpenNos.Handler
             //load account by given SessionId
             if (Session.Account == null)
             {
-                bool value = true;
+                bool hasRegisteredAccountLogin = true;
                 try
                 {
-                    value = ServiceFactory.Instance.CommunicationService.HasRegisteredAccountLogin(loginPacketParts[4], Session.SessionId);
+                    hasRegisteredAccountLogin = ServiceFactory.Instance.CommunicationService.HasRegisteredAccountLogin(loginPacketParts[4], Session.SessionId);
                 }
                 catch (Exception ex)
                 {
                     Logger.Log.Error(ex.Message);
                 }
 
-                if (loginPacketParts.Length > 4 && value)
+                if (loginPacketParts.Length > 4 && hasRegisteredAccountLogin)
                 {
-
                     AccountDTO accountDTO = DAOFactory.AccountDAO.LoadByName(loginPacketParts[4]);
 
                     if (accountDTO != null)
                     {
-                        if (accountDTO.Password.Equals(EncryptionBase.sha256(loginPacketParts[6]))
-                            && accountDTO.LastSession.Equals(Session.SessionId))
+                        if (accountDTO.Password.Equals(EncryptionBase.sha256(loginPacketParts[6])))
                         {
-                            Session.Account = new GameObject.Account()
+                            var account = new GameObject.Account()
                             {
                                 AccountId = accountDTO.AccountId,
                                 Name = accountDTO.Name,
                                 Password = accountDTO.Password,
                                 Authority = accountDTO.Authority
                             };
+
+                            Session.InitializeAccount(account);
                         }
                         else
                         {
@@ -168,7 +174,13 @@ namespace OpenNos.Handler
                         Session.Client.Disconnect();
                     }
                 }
-
+                else
+                {
+                    Logger.Log.ErrorFormat("Client {0} forced Disconnection, login has not been registered or Account has already logged in.", Session.Client.ClientId);
+                    Session.Client.Disconnect();
+                    Session.Destroy();
+                    return;
+                }
             }
 
             IEnumerable<CharacterDTO> characters = DAOFactory.CharacterDAO.LoadByAccount(Session.Account.AccountId);
@@ -1787,7 +1799,7 @@ namespace OpenNos.Handler
                     if (String.Format("{0}", mapy) != "" && String.Format("{0}", mapx) != "" && String.Format("{0}", mapId) != "")
                     {
                         Session.Character.MapId = (short)mapId;
-                        Session.Character.MapX = (short)((short)(mapx)+ (short)1);
+                        Session.Character.MapX = (short)((short)(mapx) + (short)1);
                         Session.Character.MapY = (short)((short)(mapy) + (short)1);
                         MapOut();
 
@@ -1861,11 +1873,11 @@ namespace OpenNos.Handler
                     InventoryDTO inventoryDTO = DAOFactory.InventoryDAO.LoadBySlotAndType(Session.Character.CharacterId, itemslot, 0);
                     InventoryItemDTO item = DAOFactory.InventoryItemDAO.LoadById(inventoryDTO.InventoryItemId);
                     int result = RarifyItem(item, (InventoryItem.RarifyMode)mode, (InventoryItem.RarifyProtection)protection);
-                    if(result == -1)
+                    if (result == -1)
                     {
                         Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("RARIFY_FAILED"), 11));
                     }
-                    else if(result == 0)
+                    else if (result == 0)
                     {
                         Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("RARIFY_FAILED_ITEM_SAVED"), 11));
                     }
@@ -1920,6 +1932,7 @@ namespace OpenNos.Handler
             }
         }
         #endregion
+
         #region Methods
         public void MapOut()
         {
@@ -2148,11 +2161,11 @@ namespace OpenNos.Handler
             {
                 flinit += String.Format(" {0}|{1}|{2}|{3}", character.CharacterId, character.Level, character.Reput, character.Name);
             }
-           if(false)/*Need to delete it when gettoppoint will not return null*/
-            foreach (CharacterDTO character in DAOFactory.CharacterDAO.GetTopPoints())
-           {
-                kdlinit += String.Format(" {0}|{1}|{2}|{3}", character.CharacterId, character.Level, 0/*replace with true var*/, character.Name);
-            }
+            if (false)/*Need to delete it when gettoppoint will not return null*/
+                foreach (CharacterDTO character in DAOFactory.CharacterDAO.GetTopPoints())
+                {
+                    kdlinit += String.Format(" {0}|{1}|{2}|{3}", character.CharacterId, character.Level, 0/*replace with true var*/, character.Name);
+                }
 
             Session.Client.SendPacket(clinit);
             Session.Client.SendPacket(flinit);
@@ -2253,7 +2266,7 @@ namespace OpenNos.Handler
             short goldprice = 500;
             double reducedpricefactor = 0.5;
 
-            if(protection == InventoryItem.RarifyProtection.RedAmulet)
+            if (protection == InventoryItem.RarifyProtection.RedAmulet)
             {
                 rare1 = rare1 * reducedchancefactor;
                 rare2 = rare2 * reducedchancefactor;
@@ -2269,7 +2282,7 @@ namespace OpenNos.Handler
                     break;
                 case InventoryItem.RarifyMode.Reduced:
                     //TODO: Reduced Item Amount
-                    Session.Character.Gold = Session.Character.Gold - (long)(goldprice*reducedpricefactor);
+                    Session.Character.Gold = Session.Character.Gold - (long)(goldprice * reducedpricefactor);
                     break;
                 case InventoryItem.RarifyMode.Normal:
                     //TODO: Normal Item Amount
@@ -2279,7 +2292,7 @@ namespace OpenNos.Handler
 
             Random r = new Random();
             int rnd = r.Next(100);
-            if(rnd <= rare7)
+            if (rnd <= rare7)
             {
                 return item.Rare = 7;
             }
@@ -2371,6 +2384,7 @@ namespace OpenNos.Handler
             }
         }
         #endregion
+
         #region UselessPacket
         [Packet("snap")]
         public void Snap(string packet)

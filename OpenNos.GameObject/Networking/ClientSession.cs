@@ -276,6 +276,7 @@ namespace OpenNos.GameObject
 
             }
         }
+
         /// <summary>
         /// Destroy ClientSession
         /// </summary>
@@ -288,6 +289,11 @@ namespace OpenNos.GameObject
                 //disconnect client
                 ServiceFactory.Instance.CommunicationService.DisconnectCharacter(Character.Name);
             }
+
+            if(Account != null)
+            {
+                ServiceFactory.Instance.CommunicationService.DisconnectAccount(Account.Name);
+            }        
         }
 
         /// <summary>
@@ -354,6 +360,12 @@ namespace OpenNos.GameObject
 
             //dynamically create packethandler references
             GenerateHandlerReferences(packetHandler);
+        }
+
+        public void InitializeAccount(Account account)
+        {
+            Account = account;
+            ServiceFactory.Instance.CommunicationService.ConnectAccount(account.Name, SessionId);
         }
 
         private bool TriggerHandler(string packetHeader, string packet, bool force)

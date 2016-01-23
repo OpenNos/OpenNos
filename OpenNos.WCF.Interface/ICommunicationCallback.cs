@@ -14,5 +14,11 @@ namespace OpenNos.WCF.Interface
 
         [OperationContract(IsOneWay = true)]
         void DisconnectCharacterCallback(string characterName);
+
+        [OperationContract(IsOneWay = true)]
+        void ConnectAccountCallback(string accountName, int sessionId);
+
+        [OperationContract(IsOneWay = true)]
+        void DisconnectAccountCallback(string accountName);
     }
 }
