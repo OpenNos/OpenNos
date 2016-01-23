@@ -1612,7 +1612,7 @@ namespace OpenNos.Handler
         [Packet("$ChangeSex")]
         public void Gender(string packet)
         {
-            Session.Character.Gender = Session.Character.Gender == (byte)1 ? (byte)0 : (byte)1;
+            Session.Character.Gender = Session.Character.Gender == 1 ? (byte)0 : (byte)1;
             Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SEX_CHANGED"), 0));
             ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEq(), ReceiverType.OnlyMe);
             ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllOnMapExceptMe);
