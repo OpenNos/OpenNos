@@ -116,7 +116,7 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                List<Character> heroes = context.character.OrderByDescending(c => c.Reput).Take(43).ToList();
+                List<Character> heroes = context.character.Where(c => c.account.Authority != (short)AuthorityType.Admin).OrderByDescending(c => c.Reput).Take(43).ToList();
 
                 int i = 0;
                 foreach (Character c in heroes)
@@ -154,7 +154,7 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                foreach (Character character in context.character.OrderByDescending(c => c.Compliment).Take(30).ToList())
+                foreach (Character character in context.character.Where(c => c.account.Authority != (short)AuthorityType.Admin).OrderByDescending(c => c.Compliment).Take(30).ToList())
                 {
                     yield return Mapper.Map<CharacterDTO>(character);
                 }
@@ -165,7 +165,7 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                foreach (Character character in context.character.OrderByDescending(c => c.Reput).Take(43).ToList())
+                foreach (Character character in context.character.Where(c=>c.account.Authority != (short)AuthorityType.Admin).OrderByDescending(c =>c.Reput).Take(43).ToList())
                 {
                     yield return Mapper.Map<CharacterDTO>(character);
                 }
@@ -177,7 +177,7 @@ namespace OpenNos.DAL.EF.MySQL
             //POINTS NOT IMPLEMENTED RIGHT NOW, STUB
             //using (var context = DataAccessHelper.CreateContext())
             //{
-            //    foreach (Character character in context.character.OrderByDescending(c => c.Compliment).Take(30).ToList())
+            //    foreach (Character character in context.character.Where(c=>c.account.Authority != (short)AuthorityType.Admin).OrderByDescending(c => c.Compliment).Take(30).ToList())
             //    {
             //        yield return Mapper.Map<CharacterDTO>(character);
             //    }
