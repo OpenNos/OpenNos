@@ -18,6 +18,7 @@ namespace OpenNos.WCF
 
         private IDictionary<String, long> _registeredAccountLogins;
         private IDictionary<String, String> _connectedCharacters;
+        private IDictionary<String, int> _connectedAccounts;
 
         #endregion
 
@@ -58,9 +59,32 @@ namespace OpenNos.WCF
             }
         }
 
+        public IDictionary<String, int> ConnectedAccounts
+        {
+            get
+            {
+                if (_connectedAccounts == null)
+                {
+                    _connectedAccounts = new Dictionary<String, int>();
+                }
+
+                return _connectedAccounts;
+            }
+        }
+
         #endregion
 
         #region Methods
+
+        /// <summary>
+        /// Cleanup hold Data, this is for restarting the server
+        /// </summary>
+        public void Cleanup()
+        {
+            _registeredAccountLogins = null;
+            _connectedAccounts = null;
+            _connectedCharacters = null;
+        }
 
         /// <summary>
         /// Checks if the Account is allowed to login, removes the permission to login
@@ -177,15 +201,72 @@ namespace OpenNos.WCF
         }
 
         /// <summary>
+        /// Registers that the given Account has now logged in
+        /// </summary>
+        /// <param name="accountName">Name of the Account.</param>
+        /// <param name="sessionId">SessionId of the login.</param>
+        public bool ConnectAccount(string accountName, int sessionId)
+        {
+            try
+            {
+                //Account cant connect twice
+                if (ConnectedAccounts.ContainsKey(accountName))
+                {
+                    Logger.Log.DebugFormat("[WCF] Account {0} is already connected.", accountName);
+                    return false;
+                }
+                else
+                {
+                    //TODO move in own method, cannot do this here because it needs to be called by a client who wants to know if the 
+                    //Account is allowed to connect without doing it actually
+                    Logger.Log.DebugFormat("[WCF] Account {0} has connected.", accountName);
+                    ConnectedAccounts.Add(accountName, sessionId);
+
+                    //inform clients
+                    ICommunicationCallback callback = OperationContext.Current.GetCallbackChannel<ICommunicationCallback>();
+                    callback.ConnectAccountCallback(accountName, sessionId);
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Log.Error(ex.Message);
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Disconnect Account from server.
+        /// </summary>
+        /// <param name="accountName">Account who wants to disconnect.</param>
+        public void DisconnectAccount(string accountName)
+        {
+            try
+            {
+                ConnectedAccounts.Remove(accountName);
+
+                //inform clients
+                ICommunicationCallback callback = OperationContext.Current.GetCallbackChannel<ICommunicationCallback>();
+                callback.DisconnectAccountCallback(accountName);
+
+                Logger.Log.DebugFormat("[WCF] Account {0} has been disconnected.", accountName);
+            }
+            catch (Exception ex)
+            {
+                Logger.Log.Error(ex.Message);
+            }
+        }
+
+        /// <summary>
         /// Checks if the Account has a connected Character
         /// </summary>
         /// <param name="accountName">Name of the Account</param>
         /// <returns></returns>
-        public bool AccountHasCharacterConnection(string accountName)
+        public bool AccountIsConnected(string accountName)
         {
             try
             {
-                return ConnectedCharacters.Any(cc => cc.Value.Equals(accountName));
+                return ConnectedAccounts.Any(cc => cc.Key.Equals(accountName));
             }
             catch (Exception ex)
             {

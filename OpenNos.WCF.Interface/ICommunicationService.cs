@@ -11,6 +11,9 @@ namespace OpenNos.WCF.Interface
     public interface ICommunicationService
     {
         [OperationContract(IsOneWay = true)]
+        void Cleanup();
+
+        [OperationContract(IsOneWay = true)]
         void RegisterAccountLogin(string name, long sessionId);
 
         [OperationContract]
@@ -23,6 +26,12 @@ namespace OpenNos.WCF.Interface
         void DisconnectCharacter(string characterName);
 
         [OperationContract]
-        bool AccountHasCharacterConnection(string accountName);
+        bool ConnectAccount(string accountName, int sessionId);
+
+        [OperationContract]
+        bool AccountIsConnected(string accountName);
+
+        [OperationContract(IsOneWay = true)]
+        void DisconnectAccount(string accountName);       
     }
 }
