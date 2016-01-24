@@ -1570,22 +1570,25 @@ namespace OpenNos.Handler
 
             string[] packetsplit = packet.Split(' ');
             byte level;
-            if (packetsplit.Length > 3)
-                Session.Client.SendPacket(Session.Character.GenerateSay("$Lvl LEVEL", 14));
-            if (Byte.TryParse(packetsplit[2], out level) && level < 100 && level > 0)
+            if (packetsplit.Length > 2)
             {
+                if (Byte.TryParse(packetsplit[2], out level) && level < 100 && level > 0)
+                {
 
-                Session.Character.Level = level;
-                Session.Character.Hp = (int)Session.Character.HPLoad();
-                Session.Character.Mp = (int)Session.Character.MPLoad();
-                Session.Client.SendPacket(Session.Character.GenerateStat());
-                //sc 0 0 31 39 31 4 70 1 0 33 35 43 2 70 0 17 35 19 35 17 0 0 0 0
-                Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("LEVEL_CHANGED"), 0));
-                Session.Client.SendPacket(Session.Character.GenerateLev());
-                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllOnMapExceptMe);
-                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(6), ReceiverType.AllOnMap);
-                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(198), ReceiverType.AllOnMap);
+                    Session.Character.Level = level;
+                    Session.Character.Hp = (int)Session.Character.HPLoad();
+                    Session.Character.Mp = (int)Session.Character.MPLoad();
+                    Session.Client.SendPacket(Session.Character.GenerateStat());
+                    //sc 0 0 31 39 31 4 70 1 0 33 35 43 2 70 0 17 35 19 35 17 0 0 0 0
+                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("LEVEL_CHANGED"), 0));
+                    Session.Client.SendPacket(Session.Character.GenerateLev());
+                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllOnMapExceptMe);
+                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(6), ReceiverType.AllOnMap);
+                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(198), ReceiverType.AllOnMap);
+                }
             }
+            else
+                Session.Client.SendPacket(Session.Character.GenerateSay("$Lvl LEVEL", 14));
         }
         [Packet("$JLvl")]
         public void JLvl(string packet)
@@ -1626,7 +1629,8 @@ namespace OpenNos.Handler
                     ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(6), ReceiverType.AllOnMap);
                     ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(198), ReceiverType.AllOnMap);
                 }
-            }else
+            }
+            else
 
                 Session.Client.SendPacket(Session.Character.GenerateSay("$SPLvl SPLVL", 14));
         }
@@ -1674,9 +1678,9 @@ namespace OpenNos.Handler
 
             string[] packetsplit = packet.Split(' ');
             string message = String.Empty;
-            if(packetsplit.Length>2)
-            for (int i = 2; i < packetsplit.Length; i++)
-                message += packetsplit[i] + " ";
+            if (packetsplit.Length > 2)
+                for (int i = 2; i < packetsplit.Length; i++)
+                    message += packetsplit[i] + " ";
             message.Trim();
 
             ClientLinkManager.Instance.Broadcast(Session, String.Format("say 1 0 10 ({0}){1}", Language.Instance.GetMessageFromKey("ADMINISTRATOR"), message), ReceiverType.All);
