@@ -1592,18 +1592,21 @@ namespace OpenNos.Handler
         {
             string[] packetsplit = packet.Split(' ');
             byte joblevel;
-            if (packetsplit.Length > 3)
-                Session.Client.SendPacket(Session.Character.GenerateSay("$JLvl JLVL", 14));
-            if (Byte.TryParse(packetsplit[2], out joblevel) && ((Session.Character.Class == 0 && joblevel <= 20) || (Session.Character.Class != 0 && joblevel <= 80)) && joblevel > 0)
+            if (packetsplit.Length > 2)
             {
-                Session.Character.JobLevel = joblevel;
-                Session.Client.SendPacket(Session.Character.GenerateLev());
+                if (Byte.TryParse(packetsplit[2], out joblevel) && ((Session.Character.Class == 0 && joblevel <= 20) || (Session.Character.Class != 0 && joblevel <= 80)) && joblevel > 0)
+                {
+                    Session.Character.JobLevel = joblevel;
+                    Session.Client.SendPacket(Session.Character.GenerateLev());
 
-                Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("JOBLEVEL_CHANGED"), 0));
-                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllOnMapExceptMe);
-                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(6), ReceiverType.AllOnMap);
-                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(198), ReceiverType.AllOnMap);
+                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("JOBLEVEL_CHANGED"), 0));
+                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllOnMapExceptMe);
+                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(6), ReceiverType.AllOnMap);
+                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(198), ReceiverType.AllOnMap);
+                }
             }
+            else
+                Session.Client.SendPacket(Session.Character.GenerateSay("$JLvl JLVL", 14));
         }
         [Packet("$SPLvl")]
         public void SPLvl(string packet)
@@ -1611,18 +1614,21 @@ namespace OpenNos.Handler
             string[] packetsplit = packet.Split(' ');
             byte splevel;
             Inventory sp = Session.Character.EquipmentList.LoadBySlotAndType((short)EquipmentType.Sp, (short)InventoryType.Equipment);
-            if (packetsplit.Length > 3)
-                Session.Client.SendPacket(Session.Character.GenerateSay("$SPLvl SPLVL", 14));
-            if (Byte.TryParse(packetsplit[2], out splevel) && splevel <= 99 && splevel > 0)
+            if (packetsplit.Length > 2)
             {
-                sp.InventoryItem.SpLevel = splevel;
-                Session.Client.SendPacket(Session.Character.GenerateLev());
+                if (Byte.TryParse(packetsplit[2], out splevel) && splevel <= 99 && splevel > 0)
+                {
+                    sp.InventoryItem.SpLevel = splevel;
+                    Session.Client.SendPacket(Session.Character.GenerateLev());
 
-                Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SPLEVEL_CHANGED"), 0));
-                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllOnMapExceptMe);
-                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(6), ReceiverType.AllOnMap);
-                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(198), ReceiverType.AllOnMap);
-            }
+                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SPLEVEL_CHANGED"), 0));
+                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllOnMapExceptMe);
+                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(6), ReceiverType.AllOnMap);
+                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(198), ReceiverType.AllOnMap);
+                }
+            }else
+
+                Session.Client.SendPacket(Session.Character.GenerateSay("$SPLvl SPLVL", 14));
         }
         [Packet("$ChangeSex")]
         public void Gender(string packet)
@@ -1668,6 +1674,7 @@ namespace OpenNos.Handler
 
             string[] packetsplit = packet.Split(' ');
             string message = String.Empty;
+            if(packetsplit.Length>2)
             for (int i = 2; i < packetsplit.Length; i++)
                 message += packetsplit[i] + " ";
             message.Trim();
@@ -1714,6 +1721,8 @@ namespace OpenNos.Handler
                 short.TryParse(packetsplit[2], out arg);
                 ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(arg), ReceiverType.AllOnMap);
             }
+            else
+                Session.Client.SendPacket(Session.Character.GenerateSay("$Effect EFFECT", 14));
 
         }
         [Packet("$Resize")]
@@ -1742,15 +1751,18 @@ namespace OpenNos.Handler
         public void PlayMusic(string packet)
         {
             string[] packetsplit = packet.Split(' ');
-            short arg = -1; if (packetsplit.Length > 3)
-                Session.Client.SendPacket(Session.Character.GenerateSay("$PlayMusic BGMUSIC", 14));
-            if (packetsplit.Length > 1)
+            short arg = -1;
+            if (packetsplit.Length > 2)
             {
-                short.TryParse(packetsplit[2], out arg);
-                if (arg > -1)
-                    ClientLinkManager.Instance.Broadcast(Session, String.Format("bgm {0}", arg), ReceiverType.AllOnMap);
+                if (packetsplit.Length > 1)
+                {
+                    short.TryParse(packetsplit[2], out arg);
+                    if (arg > -1)
+                        ClientLinkManager.Instance.Broadcast(Session, String.Format("bgm {0}", arg), ReceiverType.AllOnMap);
+                }
             }
-
+            else
+                Session.Client.SendPacket(Session.Character.GenerateSay("$PlayMusic BGMUSIC", 14));
         }
         [Packet("$Morph")]
         public void Morph(string packet)
