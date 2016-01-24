@@ -1526,8 +1526,8 @@ namespace OpenNos.Handler
         {
 
             string[] packetsplit = packet.Split(' ');
-            if(packetsplit.Length>2)
-            ClientLinkManager.Instance.Kick(packetsplit[2]);
+            if (packetsplit.Length > 2)
+                ClientLinkManager.Instance.Kick(packetsplit[2]);
             else
                 Session.Client.SendPacket(Session.Character.GenerateSay("$Kick USERNAME", 14));
 
@@ -1537,12 +1537,15 @@ namespace OpenNos.Handler
         {
             string[] packetsplit = packet.Split(' ');
             byte classe;
-            if (packetsplit.Length > 3)
-                Session.Client.SendPacket(Session.Character.GenerateSay("$ChangeClass CLASS", 14));
-            if (Byte.TryParse(packetsplit[2], out classe) && classe < 4)
+            if (packetsplit.Length > 2)
             {
-                ClassChange(classe);
+                if (Byte.TryParse(packetsplit[2], out classe) && classe < 4)
+                {
+                    ClassChange(classe);
+                }
             }
+            else
+                Session.Client.SendPacket(Session.Character.GenerateSay("$ChangeClass CLASS", 14));
         }
         [Packet("$ChangeRep")]
         public void Rep(string packet)
@@ -1636,10 +1639,11 @@ namespace OpenNos.Handler
         {
 
             string[] packetsplit = packet.Split(' ');
-            if (packetsplit.Length > 2) {
+            if (packetsplit.Length > 2)
+            {
                 ClientLinkManager.Instance.Kick(packetsplit[2]);
-            if (DAOFactory.CharacterDAO.LoadByName(packetsplit[2]) != null)
-                DAOFactory.AccountDAO.ToggleBan(DAOFactory.CharacterDAO.LoadByName(packetsplit[2]).AccountId);
+                if (DAOFactory.CharacterDAO.LoadByName(packetsplit[2]) != null)
+                    DAOFactory.AccountDAO.ToggleBan(DAOFactory.CharacterDAO.LoadByName(packetsplit[2]).AccountId);
             }
             else
                 Session.Client.SendPacket(Session.Character.GenerateSay("$Ban CHARACTERNAME", 14));
@@ -1716,8 +1720,8 @@ namespace OpenNos.Handler
         public void Resize(string packet)
         {
             string[] packetsplit = packet.Split(' ');
-            short arg = -1; 
-              
+            short arg = -1;
+
             if (packetsplit.Length > 2)
             {
                 short.TryParse(packetsplit[2], out arg);
