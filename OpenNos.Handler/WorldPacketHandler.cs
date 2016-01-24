@@ -1615,8 +1615,8 @@ namespace OpenNos.Handler
             Session.Character.Gender = Session.Character.Gender == 1 ? (byte)0 : (byte)1;
             Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SEX_CHANGED"), 0));
             ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEq(), ReceiverType.OnlyMe);
+            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateGender(), ReceiverType.OnlyMe);
             ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllOnMapExceptMe);
-            Session.Client.SendPacket(Session.Character.GenerateTit());
             ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(198), ReceiverType.AllOnMap);
         }
         [Packet("$Ban")]

@@ -819,6 +819,10 @@ namespace OpenNos.GameObject
         {
             return String.Format("char_sc 1 {0} {1}", CharacterId, Size);
         }
+        public string GenerateGender()
+        {
+            return String.Format("p_sex {0}", Gender);
+        }
 
         public IScsMessage GenerateEInfo(InventoryItem item)
         {
@@ -830,6 +834,7 @@ namespace OpenNos.GameObject
             throw new NotImplementedException();
         }
 
+      
         #endregion
     }
 }
