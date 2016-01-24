@@ -115,8 +115,10 @@ namespace OpenNos.GameObject
                     _maps.TryAdd(guid, newMap);
                     i++;
                 }
-
+                if(i!=0)
                 Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("MAP_LOADED"), i));
+                else
+                    Logger.Log.Error(Language.Instance.GetMessageFromKey("NO_MAP"));
             }
             catch (Exception ex)
             {
