@@ -1699,20 +1699,13 @@ namespace OpenNos.Handler
             ChangeMap();
 
         }
-        [Packet("$TryEffect")]
-        public void TryEffect(string packet)
-        {
-            for (int i = 0; i < 10000; i++)
-                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(i), ReceiverType.OnlyMe);
 
-
-        }
         [Packet("$Effect")]
         public void Effect(string packet)
         {
             string[] packetsplit = packet.Split(' ');
             short arg = 0;
-            if (packetsplit.Length > 1)
+            if (packetsplit.Length > 2)
             {
                 short.TryParse(packetsplit[2], out arg);
                 ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(arg), ReceiverType.AllOnMap);
