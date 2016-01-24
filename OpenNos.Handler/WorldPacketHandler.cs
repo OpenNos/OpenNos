@@ -1723,9 +1723,9 @@ namespace OpenNos.Handler
         public void Resize(string packet)
         {
             string[] packetsplit = packet.Split(' ');
-            short arg = -1; if (packetsplit.Length > 3)
-                Session.Client.SendPacket(Session.Character.GenerateSay("$Resize SIZE", 14));
-            if (packetsplit.Length > 1)
+            short arg = -1; 
+              
+            if (packetsplit.Length > 2)
             {
                 short.TryParse(packetsplit[2], out arg);
 
@@ -1737,6 +1737,8 @@ namespace OpenNos.Handler
 
                 }
             }
+            else
+                Session.Client.SendPacket(Session.Character.GenerateSay("$Resize SIZE", 14));
 
         }
         [Packet("$PlayMusic")]
