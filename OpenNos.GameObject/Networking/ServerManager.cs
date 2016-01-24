@@ -18,8 +18,10 @@ using OpenNos.Data;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -39,6 +41,17 @@ namespace OpenNos.GameObject
         #endregion
 
         #region Methods
+        public static void MemoryWatch()
+        {
+            Assembly assembly = Assembly.GetEntryAssembly();
+            FileVersionInfo fileVersionInfo = FileVersionInfo.GetVersionInfo(assembly.Location);
+            while (true)
+            {
+
+                Console.Title = String.Format("OpenNos World Server v{0} - Memory: {1}MB", fileVersionInfo.ProductVersion, GC.GetTotalMemory(true) / (1024 * 1024));
+                Thread.Sleep(1000);
+            }
+        }
 
         public static void Initialize()
         {

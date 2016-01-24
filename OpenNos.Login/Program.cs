@@ -22,6 +22,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
+using System.Threading;
 
 namespace OpenNos.Login
 {
@@ -44,6 +45,8 @@ namespace OpenNos.Login
 
                     //initialize DB
                     DataAccessHelper.Initialize();
+                    Thread memory = new Thread(() => ServerManager.MemoryWatch());
+                    memory.Start();
                     string ip = System.Configuration.ConfigurationManager.AppSettings["LoginIp"];
                     int port = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["LoginPort"]);
                     Logger.Log.Info(Language.Instance.GetMessageFromKey("CONFIG_LOADED"));

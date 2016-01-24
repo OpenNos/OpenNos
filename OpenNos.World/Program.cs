@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
+using System.Threading;
 
 namespace OpenNos.World
 {
@@ -38,11 +39,14 @@ namespace OpenNos.World
             Console.WriteLine(String.Format("===============================================================================\n"
                              + "                 WORLD SERVER VERSION {0} by OpenNos Team\n" +
                              "===============================================================================\n", fileVersionInfo.ProductVersion));
-
+      
             //initialize DB
             if (DataAccessHelper.Initialize())
                 //initialilize maps
                 ServerManager.Initialize();
+
+            Thread memory = new Thread(() => ServerManager.MemoryWatch());
+            memory.Start();
 
             //initialize ClientLinkManager
             //TODO?
@@ -62,5 +66,7 @@ namespace OpenNos.World
             NetworkManager<WorldEncryption> networkManager = new NetworkManager<WorldEncryption>(ip, port, typeof(WorldPacketHandler));
 
         }
+
+     
     }
 }
