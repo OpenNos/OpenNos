@@ -26,6 +26,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using OpenNos.ServiceRef.Internal;
 using System.Security.Cryptography;
+using System.Diagnostics;
+using System.Reflection;
 
 namespace OpenNos.Handler
 {
@@ -417,7 +419,14 @@ namespace OpenNos.Handler
         {
             if (System.Configuration.ConfigurationManager.AppSettings["SceneOnCreate"].ToLower() == "true" & DAOFactory.GeneralLogDAO.LoadByLogType("Connexion", Session.Character.CharacterId).Count() == 1)
                 Session.Client.SendPacket("scene 40");
-
+            if (System.Configuration.ConfigurationManager.AppSettings["WorldInformation"].ToLower() == "true")
+            {
+                Session.Client.SendPacket(Session.Character.GenerateSay("-----------World Information-----------",10));
+                Assembly assembly = Assembly.GetEntryAssembly();
+                FileVersionInfo fileVersionInfo = FileVersionInfo.GetVersionInfo(assembly.Location);
+                Session.Client.SendPacket(Session.Character.GenerateSay(String.Format("OpenNos by OpenNos Team\nVersion: v{0}", fileVersionInfo.ProductVersion), 6));
+                Session.Client.SendPacket(Session.Character.GenerateSay("-----------------------------------------------", 10));
+            }
 
             Session.Client.SendPacket(Session.Character.GenerateTit());
             ChangeMap();
