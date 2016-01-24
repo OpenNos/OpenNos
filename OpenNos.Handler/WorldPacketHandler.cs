@@ -1401,32 +1401,35 @@ namespace OpenNos.Handler
         [Packet("$Command")]
         public void Command(string packet)
         {
-            Session.Client.SendPacket(Session.Character.GenerateSay("$Teleport Map X Y", 14));
-            Session.Client.SendPacket(Session.Character.GenerateSay("$Teleport CharacterName", 14));
-            Session.Client.SendPacket(Session.Character.GenerateSay("$Speed SPEED", 14));
-            Session.Client.SendPacket(Session.Character.GenerateSay("$Rarify SLOT MODE PROTECTION", 14));
-            Session.Client.SendPacket(Session.Character.GenerateSay("$Upgrade SLOT MODE PROTECTION", 14));
-            Session.Client.SendPacket(Session.Character.GenerateSay("$Morph MORPHID UPGRADE WINGS ARENA", 14));
-            Session.Client.SendPacket(Session.Character.GenerateSay("$Shout MESSAGE", 14));
-            Session.Client.SendPacket(Session.Character.GenerateSay("$Lvl LEVEL", 14));
-            Session.Client.SendPacket(Session.Character.GenerateSay("$JLvl JOBLEVEL", 14));
-            Session.Client.SendPacket(Session.Character.GenerateSay("$SPLvl SPLEVEL", 14));
-            Session.Client.SendPacket(Session.Character.GenerateSay("$ChangeSex", 14));
-            Session.Client.SendPacket(Session.Character.GenerateSay("$ChangeClass CLASS", 14));
-            Session.Client.SendPacket(Session.Character.GenerateSay("$ChangeRep REPUTATION", 14));
-            Session.Client.SendPacket(Session.Character.GenerateSay("$Kick USERNAME", 14));
-            Session.Client.SendPacket(Session.Character.GenerateSay("$MapDance", 14));
-            Session.Client.SendPacket(Session.Character.GenerateSay("$Effect EFFECTID", 14));
-            Session.Client.SendPacket(Session.Character.GenerateSay("$Resize SIZE", 14));
-            Session.Client.SendPacket(Session.Character.GenerateSay("$PlayMusic MUSIC", 14));
-            Session.Client.SendPacket(Session.Character.GenerateSay("$Ban CHARACTERNAME", 14));
-            Session.Client.SendPacket(Session.Character.GenerateSay("$Invisible", 14));
-            Session.Client.SendPacket(Session.Character.GenerateSay("$Position", 14));
-            Session.Client.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID RARE UPGRADE", 14));
-            Session.Client.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID COLOR", 14));
-            Session.Client.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID AMOUNT", 14));
-            Session.Client.SendPacket(Session.Character.GenerateSay("$CreateItem SPID UPGRADE WINGS", 14));
-            Session.Client.SendPacket(Session.Character.GenerateSay("$Shutdown", 14));
+            Session.Client.SendPacket(Session.Character.GenerateSay("-----------Commands Info--------------", 10));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$Teleport Map X Y", 6));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$Teleport CharacterName", 6));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$Speed SPEED", 6));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$Rarify SLOT MODE PROTECTION", 6));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$Upgrade SLOT MODE PROTECTION", 6));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$Morph MORPHID UPGRADE WINGS ARENA", 6));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$Shout MESSAGE", 6));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$Lvl LEVEL", 6));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$JLvl JOBLEVEL", 6));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$SPLvl SPLEVEL", 6));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$ChangeSex", 6));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$ChangeClass CLASS", 6));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$ChangeRep REPUTATION", 6));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$Kick USERNAME", 6));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$MapDance", 6));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$Effect EFFECTID", 6));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$Resize SIZE", 6));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$PlayMusic MUSIC", 6));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$Ban CHARACTERNAME", 6));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$Invisible", 6));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$Position", 6));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID RARE UPGRADE", 6));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID COLOR", 6));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID AMOUNT", 6));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$CreateItem SPID UPGRADE WINGS", 6));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$Shutdown", 6));
+            Session.Client.SendPacket(Session.Character.GenerateSay("-----------------------------------------------", 10));
+
         }
         [Packet("$CreateItem")]
         public void CreateItem(string packet)
@@ -1437,10 +1440,10 @@ namespace OpenNos.Handler
             ItemDTO iteminfo = null;
             if (packetsplit.Length != 5 && packetsplit.Length != 4)
             {
-                Session.Client.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID RARE UPGRADE", 14));
-                Session.Client.SendPacket(Session.Character.GenerateSay("$CreateItem SPID UPGRADE WINGS", 14));
-                Session.Client.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID COLOR", 14));
-                Session.Client.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID AMOUNT", 14));
+                Session.Client.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID RARE UPGRADE", 10));
+                Session.Client.SendPacket(Session.Character.GenerateSay("$CreateItem SPID UPGRADE WINGS", 10));
+                Session.Client.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID COLOR", 10));
+                Session.Client.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID AMOUNT", 10));
             }
             else if (Int16.TryParse(packetsplit[2], out vnum))
             {
@@ -1529,7 +1532,7 @@ namespace OpenNos.Handler
             if (packetsplit.Length > 2)
                 ClientLinkManager.Instance.Kick(packetsplit[2]);
             else
-                Session.Client.SendPacket(Session.Character.GenerateSay("$Kick USERNAME", 14));
+                Session.Client.SendPacket(Session.Character.GenerateSay("$Kick USERNAME", 10));
 
         }
         [Packet("$ChangeClass")]
@@ -1545,7 +1548,7 @@ namespace OpenNos.Handler
                 }
             }
             else
-                Session.Client.SendPacket(Session.Character.GenerateSay("$ChangeClass CLASS", 14));
+                Session.Client.SendPacket(Session.Character.GenerateSay("$ChangeClass CLASS", 10));
         }
         [Packet("$ChangeRep")]
         public void Rep(string packet)
@@ -1554,7 +1557,7 @@ namespace OpenNos.Handler
             string[] packetsplit = packet.Split(' ');
             long reput;
             if (packetsplit.Length > 3)
-                Session.Client.SendPacket(Session.Character.GenerateSay("$ChangeRep REPUTATION", 14));
+                Session.Client.SendPacket(Session.Character.GenerateSay("$ChangeRep REPUTATION", 10));
             if (Int64.TryParse(packetsplit[2], out reput) && reput > 0)
             {
 
@@ -1588,7 +1591,7 @@ namespace OpenNos.Handler
                 }
             }
             else
-                Session.Client.SendPacket(Session.Character.GenerateSay("$Lvl LEVEL", 14));
+                Session.Client.SendPacket(Session.Character.GenerateSay("$Lvl LEVEL", 10));
         }
         [Packet("$JLvl")]
         public void JLvl(string packet)
@@ -1609,7 +1612,7 @@ namespace OpenNos.Handler
                 }
             }
             else
-                Session.Client.SendPacket(Session.Character.GenerateSay("$JLvl JLVL", 14));
+                Session.Client.SendPacket(Session.Character.GenerateSay("$JLvl JLVL", 10));
         }
         [Packet("$SPLvl")]
         public void SPLvl(string packet)
@@ -1632,7 +1635,7 @@ namespace OpenNos.Handler
             }
             else
 
-                Session.Client.SendPacket(Session.Character.GenerateSay("$SPLvl SPLVL", 14));
+                Session.Client.SendPacket(Session.Character.GenerateSay("$SPLvl SPLVL", 10));
         }
         [Packet("$ChangeSex")]
         public void Gender(string packet)
@@ -1656,7 +1659,7 @@ namespace OpenNos.Handler
                     DAOFactory.AccountDAO.ToggleBan(DAOFactory.CharacterDAO.LoadByName(packetsplit[2]).AccountId);
             }
             else
-                Session.Client.SendPacket(Session.Character.GenerateSay("$Ban CHARACTERNAME", 14));
+                Session.Client.SendPacket(Session.Character.GenerateSay("$Ban CHARACTERNAME", 10));
 
 
         }
@@ -1726,7 +1729,7 @@ namespace OpenNos.Handler
                 ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(arg), ReceiverType.AllOnMap);
             }
             else
-                Session.Client.SendPacket(Session.Character.GenerateSay("$Effect EFFECT", 14));
+                Session.Client.SendPacket(Session.Character.GenerateSay("$Effect EFFECT", 10));
 
         }
         [Packet("$Resize")]
@@ -1748,7 +1751,7 @@ namespace OpenNos.Handler
                 }
             }
             else
-                Session.Client.SendPacket(Session.Character.GenerateSay("$Resize SIZE", 14));
+                Session.Client.SendPacket(Session.Character.GenerateSay("$Resize SIZE", 10));
 
         }
         [Packet("$PlayMusic")]
@@ -1766,7 +1769,7 @@ namespace OpenNos.Handler
                 }
             }
             else
-                Session.Client.SendPacket(Session.Character.GenerateSay("$PlayMusic BGMUSIC", 14));
+                Session.Client.SendPacket(Session.Character.GenerateSay("$PlayMusic BGMUSIC", 10));
         }
         [Packet("$Morph")]
         public void Morph(string packet)
@@ -1796,7 +1799,7 @@ namespace OpenNos.Handler
                     }
                     break;
                 default:
-                    Session.Client.SendPacket(Session.Character.GenerateSay("$Morph MORPHID UPGRADE WINGS ARENA", 14));
+                    Session.Client.SendPacket(Session.Character.GenerateSay("$Morph MORPHID UPGRADE WINGS ARENA", 10));
                     break;
             }
 
@@ -1841,7 +1844,7 @@ namespace OpenNos.Handler
                     }
                     break;
                 default:
-                    Session.Client.SendPacket(Session.Character.GenerateSay("$Teleport MAP X Y", 14));
+                    Session.Client.SendPacket(Session.Character.GenerateSay("$Teleport MAP X Y", 10));
                     break;
             }
 
@@ -1868,7 +1871,7 @@ namespace OpenNos.Handler
                     }
                     break;
                 default:
-                    Session.Client.SendPacket(Session.Character.GenerateSay("$Speed SPEED", 14));
+                    Session.Client.SendPacket(Session.Character.GenerateSay("$Speed SPEED", 10));
                     break;
             }
 
@@ -1879,7 +1882,7 @@ namespace OpenNos.Handler
             string[] packetsplit = packet.Split(' ');
             if (packetsplit.Length != 5)
             {
-                Session.Client.SendPacket(Session.Character.GenerateSay("$Rarify SLOT MODE PROTECTION", 14));
+                Session.Client.SendPacket(Session.Character.GenerateSay("$Rarify SLOT MODE PROTECTION", 10));
             }
             else
             {
@@ -1918,7 +1921,7 @@ namespace OpenNos.Handler
             string[] packetsplit = packet.Split(' ');
             if (packetsplit.Length != 5)
             {
-                Session.Client.SendPacket(Session.Character.GenerateSay("$Upgrade SLOT MODE PROTECTION", 14));
+                Session.Client.SendPacket(Session.Character.GenerateSay("$Upgrade SLOT MODE PROTECTION", 10));
             }
             else
             {
@@ -2361,7 +2364,7 @@ namespace OpenNos.Handler
         {
             #region Upgrade Stats
             short[] upsuccess = { 100, 100, 90, 80, 60, 40, 20, 10, 5, 1 };
-            short[] upfix = { 0, 0, 10, 15, 20, 20, 20, 20, 15, 14 };
+            short[] upfix = { 0, 0, 10, 15, 20, 20, 20, 20, 15, 10 };
             #endregion
             short itempricevnum1 = 0;
             short itempricevnum2 = 0;
