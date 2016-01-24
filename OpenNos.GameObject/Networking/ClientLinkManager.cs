@@ -104,7 +104,7 @@ namespace OpenNos.GameObject
         }
         public void RequiereBroadcastFromAllMapUsers(ClientSession client, string methodName)
         {
-            foreach (ClientSession session in sessions.Where(s => s.Character != null && s.Character.Name != client.Character.Name))
+            foreach (ClientSession session in sessions.Where(s => s.Character != null && s.Character.MapId.Equals(client.Character.MapId) && s.Character.Name != client.Character.Name))
             {
 
                 Type t = session.Character.GetType();
