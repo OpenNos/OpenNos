@@ -1526,7 +1526,10 @@ namespace OpenNos.Handler
         {
 
             string[] packetsplit = packet.Split(' ');
+            if(packetsplit.Length>2)
             ClientLinkManager.Instance.Kick(packetsplit[2]);
+            else
+                Session.Client.SendPacket(Session.Character.GenerateSay("$Kick USERNAME", 14));
 
         }
         [Packet("$ChangeClass")]
@@ -1633,10 +1636,13 @@ namespace OpenNos.Handler
         {
 
             string[] packetsplit = packet.Split(' ');
-            ClientLinkManager.Instance.Kick(packetsplit[2]);
+            if (packetsplit.Length > 2) {
+                ClientLinkManager.Instance.Kick(packetsplit[2]);
             if (DAOFactory.CharacterDAO.LoadByName(packetsplit[2]) != null)
                 DAOFactory.AccountDAO.ToggleBan(DAOFactory.CharacterDAO.LoadByName(packetsplit[2]).AccountId);
-
+            }
+            else
+                Session.Client.SendPacket(Session.Character.GenerateSay("$Ban CHARACTERNAME", 14));
 
 
         }
