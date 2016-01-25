@@ -981,7 +981,18 @@ namespace OpenNos.Handler
                     if (myShop.Items.Count == 0)
                     {
                         {
+
+                            KeyValuePair<long, MapShop> shop = Session.CurrentMap.ShopUserList.FirstOrDefault(mapshop => mapshop.Value.OwnerId.Equals(Session.Character.CharacterId));
+                            Session.CurrentMap.ShopUserList.Remove(shop.Key);
+
                             ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateShopEnd(), ReceiverType.AllOnMap);
+                            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GeneratePlayerFlag(0), ReceiverType.AllOnMapExceptMe);
+                            Session.Character.Speed = Session.Character.LastSpeed;
+                            Session.Character.Rested = 0;
+                            Session.Client.SendPacket(Session.Character.GenerateCond());
+                            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateRest(), ReceiverType.AllOnMap);
+
+
                             Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("SHOP_VOID"), 10));
                         }
                     }
