@@ -44,9 +44,9 @@
 -- -----------------------------------------------------------
 -- Entity Designer DDL Script for MySQL Server 4.1 and higher
 -- -----------------------------------------------------------
--- Date Created: 01/23/2016 10:06:04
+-- Date Created: 01/25/2016 12:38:47
 
--- Generated from EDMX file: C:\Users\Alex\Source\Repos\OpenNos\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
+-- Generated from EDMX file: C:\Users\ERWAN\Desktop\OpenNos GIT\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
 -- Target version: 3.0.0.0
 
 -- --------------------------------------------------
@@ -241,7 +241,8 @@ CREATE TABLE `item`(
 	`RangeDefence` smallint NOT NULL, 
 	`DistanceDefence` smallint NOT NULL, 
 	`MagicDefence` smallint NOT NULL, 
-	`Dodge` longtext NOT NULL, 
+	`DistanceDefenceDodge` smallint NOT NULL, 
+	`DefenceDodge` smallint NOT NULL, 
 	`Hp` smallint NOT NULL, 
 	`Mp` smallint NOT NULL, 
 	`LevelJobMinimum` smallint NOT NULL, 
@@ -305,7 +306,8 @@ CREATE TABLE `inventoryitem`(
 	`RangeDefence` smallint NOT NULL, 
 	`DistanceDefence` smallint NOT NULL, 
 	`MagicDefence` smallint NOT NULL, 
-	`Dodge` smallint NOT NULL, 
+	`DistanceDefenceDodge` smallint NOT NULL, 
+	`DefenceDodge` smallint NOT NULL, 
 	`ElementRate` smallint NOT NULL, 
 	`Upgrade` smallint NOT NULL, 
 	`Rare` smallint NOT NULL, 
