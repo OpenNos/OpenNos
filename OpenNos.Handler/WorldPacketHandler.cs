@@ -670,7 +670,7 @@ namespace OpenNos.Handler
             }
             else
             {
-                Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("ITEM_NOT_DROPPABLE"), 10));
+                Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("ITEM_NOT_DROPPABLE"), 0));
             }
         }
         [Packet("sell")]
@@ -984,8 +984,7 @@ namespace OpenNos.Handler
                     else
                     {
                         ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateShopEnd(), ReceiverType.AllOnMap);
-                        Session.Client.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("SHOP_VOID")));
-
+                        Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("SHOP_VOID"),10));
                     }
                 }
                 else if (typePacket == 1)
