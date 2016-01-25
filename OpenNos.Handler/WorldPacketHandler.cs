@@ -1970,11 +1970,11 @@ namespace OpenNos.Handler
         {
             Session.CurrentMap = ServerManager.GetMap(Session.Character.MapId);
             Session.Client.SendPacket(Session.Character.GenerateCInfo());
+            Session.Client.SendPacket(Session.Character.GenerateCMode());
             Session.Client.SendPacket(Session.Character.GenerateFaction());
             Session.Client.SendPacket(Session.Character.GenerateFd());
             Session.Client.SendPacket(Session.Character.GenerateLev());
             Session.Client.SendPacket(Session.Character.GenerateStat());
-            Session.Client.SendPacket(Session.Character.GenerateCMode());
             //ski
             Session.Client.SendPacket(Session.Character.GenerateAt());
             Session.Client.SendPacket(Session.Character.GenerateCMap());
