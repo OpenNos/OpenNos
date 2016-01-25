@@ -645,6 +645,12 @@ namespace OpenNos.Handler
 
             }
         }
+        [Packet("npinfo")]
+        public void GetStats(string packet)
+        {
+
+            Session.Client.SendPacket(Session.Character.GenerateStatChar()); 
+        }
         [Packet("put")]
         public void PutItem(string packet)
         {
@@ -1285,7 +1291,7 @@ namespace OpenNos.Handler
 
                 if (inventory != null)
                 {
-                    Session.Client.SendMessage(Session.Character.GenerateEInfo(inventory.InventoryItem));
+                    Session.Client.SendPacket(Session.Character.GenerateEInfo(inventory.InventoryItem));
                 }
             }
         }
