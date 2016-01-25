@@ -594,7 +594,7 @@ namespace OpenNos.GameObject
             Inventory fairy = EquipmentList.LoadBySlotAndType((short)EquipmentType.Fairy, (short)InventoryType.Equipment);
 
 
-            return String.Format("in 1 {0} - {1} {2} {3} {4} {5} {6} {7} {8} {9} {17} {10} {11} {12} -1 {25} {22} 0 {23} 0 {19} {18} -1 - {13} {16} {20} 0 {21} {14} 0 {15} {26} {24}", Name, CharacterId, MapX, MapY, Direction, (Authority == 2 ? 2 : 0), Gender, HairStyle, Color, Class, (int)((Hp / HPLoad()) * 100), (int)((Mp / MPLoad()) * 100), _rested, (GetDigniteIco() == 1) ? GetReputIco() : -GetDigniteIco(), 0, ArenaWinner, _invisible, generateEqListForPacket(), generateEqRareUpgradeForPacket(), (UseSp? Morph : 0), (UseSp? MorphUpgrade : 0), (UseSp? MorphUpgrade2 : 0), fairy != null ? ServerManager.GetItem(fairy.InventoryItem.ItemVNum).Element : 0, fairy != null ? ServerManager.GetItem(fairy.InventoryItem.ItemVNum).Morph : 0, Size, fairy != null ? 2 : 0, Compliment);
+            return String.Format("in 1 {0} - {1} {2} {3} {4} {5} {6} {7} {8} {9} {17} {10} {11} {12} -1 {25} {22} 0 {23} 0 {19} {18} -1 - {13} {16} {20} 0 {21} {14} 0 {15} {26} {24}", Name, CharacterId, MapX, MapY, Direction, (Authority == 2 ? 2 : 0), Gender, HairStyle, Color, Class, (int)((Hp / HPLoad()) * 100), (int)((Mp / MPLoad()) * 100), _rested, (GetDigniteIco() == 1) ? GetReputIco() : -GetDigniteIco(), 0, ArenaWinner, _invisible, generateEqListForPacket(), generateEqRareUpgradeForPacket(), (UseSp ? Morph : 0), (UseSp ? MorphUpgrade : 0), (UseSp ? MorphUpgrade2 : 0), fairy != null ? ServerManager.GetItem(fairy.InventoryItem.ItemVNum).Element : 0, fairy != null ? ServerManager.GetItem(fairy.InventoryItem.ItemVNum).Morph : 0, Size, fairy != null ? 2 : 0, Compliment);
         }
 
         public string GenerateRest()
@@ -645,8 +645,31 @@ namespace OpenNos.GameObject
 
         public string GenerateStatChar()
         {
-            //TODO sc packet
-            return String.Empty;
+            int type = 0;
+            int WeaponUpgrade = 0;
+            int MinHit = 0;
+            int MaxHit = 0;
+            int HitRate = 0;
+            int HitCCRate = 0;
+            int HitCC = 0;
+            int type2 = 0;
+            int SecondaryUpgrade = 0;
+            int MinDist = 0;
+            int MaxDist = 0;
+            int DistRate = 0;
+            int DistCCRate = 0;
+            int DistCC = 0;
+            int ArmorUpgrade = 0;
+            int def = 0;
+            int defrate = 0;
+            int distdef = 0;
+            int distrate = 0;
+            int magic = 0;
+            int fire = 0;
+            int water = 0;
+            int lulu = 0;
+            int obs = 0;
+            return String.Format("sc {0} {1} {2} {3} {4} {5} {6} {7} {8} {9} {10} {11} {12} {13} {14} {15} {16} {17} {18} {19} {20} {21} {22} {23}", type, WeaponUpgrade, MinHit, MaxHit, HitRate, HitCCRate, HitCC, type2, SecondaryUpgrade, MinDist, MaxDist, DistRate, DistCCRate, DistCC, ArmorUpgrade, def, defrate, distdef, distrate, magic, fire, water, lulu, obs);
         }
 
         public string GeneratePairy()
@@ -814,7 +837,7 @@ namespace OpenNos.GameObject
         {
             return String.Format("sp {0} 1000000 {1} 10000", SpAdditionPoint, SpPoint);
         }
-   
+
         public string GenerateScal()
         {
             return String.Format("char_sc 1 {0} {1}", CharacterId, Size);
@@ -824,7 +847,7 @@ namespace OpenNos.GameObject
             return String.Format("p_sex {0}", Gender);
         }
 
-        public IScsMessage GenerateEInfo(InventoryItem item)
+        public string GenerateEInfo(InventoryItem item)
         {
             throw new NotImplementedException();
         }
@@ -834,7 +857,7 @@ namespace OpenNos.GameObject
             throw new NotImplementedException();
         }
 
-      
+
         #endregion
     }
 }
