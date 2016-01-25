@@ -120,6 +120,9 @@
   <data name="ALREADY_CONNECTED" xml:space="preserve">
     <value>Account is already connected.</value>
   </data>
+  <data name="BANNED" xml:space="preserve">
+    <value>Account Banned!</value>
+  </data>
   <data name="CLIENT_CLOSE" xml:space="preserve">
     <value>Connection closed by Client.</value>
   </data>
@@ -152,6 +155,9 @@
   </data>
   <data name="NEW_CONNECT" xml:space="preserve">
     <value>A new client is connected. ClientId =</value>
+  </data>
+  <data name="NOTVALIDATE" xml:space="preserve">
+    <value>Account not validate!</value>
   </data>
   <data name="STARTED" xml:space="preserve">
     <value>Server is started successfully.</value>
