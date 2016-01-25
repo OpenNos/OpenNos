@@ -734,7 +734,8 @@ namespace OpenNos.Handler
                         DamageMinimum = item.DamageMinimum,
                         DarkElement = item.DarkElement,
                         DistanceDefence = item.DistanceDefence,
-                        Dodge = item.Dodge,
+                        DistanceDefenceDodge = item.DistanceDefenceDodge,
+                        DefenceDodge = item.DefenceDodge,
                         ElementRate = item.ElementRate,
                         FireElement = item.FireElement,
                         HitRate = item.HitRate,
@@ -798,7 +799,8 @@ namespace OpenNos.Handler
                         DamageMinimum = 0,
                         DarkElement = 0,
                         DistanceDefence = 0,
-                        Dodge = 0,
+                        DistanceDefenceDodge= 0,
+                        DefenceDodge = 0,
                         ElementRate = 0,
                         FireElement = 0,
                         HitRate = 0,
@@ -930,7 +932,8 @@ namespace OpenNos.Handler
                                     DamageMinimum = inv.InventoryItem.DamageMinimum,
                                     DarkElement = inv.InventoryItem.DarkElement,
                                     DistanceDefence = inv.InventoryItem.DistanceDefence,
-                                    Dodge = inv.InventoryItem.Dodge,
+                                    DistanceDefenceDodge = inv.InventoryItem.DistanceDefenceDodge,
+                                   DefenceDodge = inv.InventoryItem.DefenceDodge,
                                     ElementRate = inv.InventoryItem.ElementRate,
                                     FireElement = inv.InventoryItem.FireElement,
                                     HitRate = inv.InventoryItem.HitRate,
@@ -1497,7 +1500,8 @@ namespace OpenNos.Handler
                         DamageMinimum = 0,
                         DarkElement = 0,
                         DistanceDefence = 0,
-                        Dodge = 0,
+                        DistanceDefenceDodge = 0,
+                        DefenceDodge = 0,
                         ElementRate = 0,
                         FireElement = 0,
                         HitRate = 0,
@@ -2281,7 +2285,7 @@ namespace OpenNos.Handler
             Session.Client.SendPacket("scr 0 0 0 0 0 0");
 
             Session.Client.SendPacket(Session.Character.GenerateFaction());
-            // fs 1
+            this.GetStats(String.Empty);
 
             Session.Client.SendPacket(Session.Character.GenerateEff(4799 + faction));
         }

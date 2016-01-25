@@ -284,7 +284,8 @@ namespace OpenNos.GameObject
                             DamageMinimum = inventoryItemDTO.DamageMinimum,
                             DarkElement = inventoryItemDTO.DarkElement,
                             DistanceDefence = inventoryItemDTO.DistanceDefence,
-                            Dodge = inventoryItemDTO.Dodge,
+                            DistanceDefenceDodge = inventoryItemDTO.DistanceDefenceDodge,
+                            DefenceDodge = inventoryItemDTO.DefenceDodge,
                             FireElement = inventoryItemDTO.FireElement,
                             InventoryItemId = inventoryItemDTO.InventoryItemId,
                             ItemVNum = inventoryItemDTO.ItemVNum,
@@ -646,13 +647,33 @@ namespace OpenNos.GameObject
         public string GenerateStatChar()
         {
             int type = 0;
+            int type2 = 0;
+            switch(Class)
+            {
+                case (byte)ClassType.Adventurer:
+                    type= 0;
+                    type2 = 1;
+                    break;
+                case (byte)ClassType.Magician:
+                    type = 2;
+                    type2 = 1;
+                    break;
+                case (byte)ClassType.Swordman:
+                    type = 0;
+                    type2 = 1;
+                    break;
+                case (byte)ClassType.Archer:
+                    type = 1;
+                    type2 = 0;
+                    break;
+            }
+            
             int WeaponUpgrade = 0;
             int MinHit = 0;
             int MaxHit = 0;
             int HitRate = 0;
             int HitCCRate = 0;
             int HitCC = 0;
-            int type2 = 0;
             int SecondaryUpgrade = 0;
             int MinDist = 0;
             int MaxDist = 0;
@@ -662,14 +683,71 @@ namespace OpenNos.GameObject
             int ArmorUpgrade = 0;
             int def = 0;
             int defrate = 0;
+            int distdefrate = 0;
             int distdef = 0;
-            int distrate = 0;
             int magic = 0;
             int fire = 0;
             int water = 0;
-            int lulu = 0;
-            int obs = 0;
-            return String.Format("sc {0} {1} {2} {3} {4} {5} {6} {7} {8} {9} {10} {11} {12} {13} {14} {15} {16} {17} {18} {19} {20} {21} {22} {23}", type, WeaponUpgrade, MinHit, MaxHit, HitRate, HitCCRate, HitCC, type2, SecondaryUpgrade, MinDist, MaxDist, DistRate, DistCCRate, DistCC, ArmorUpgrade, def, defrate, distdef, distrate, magic, fire, water, lulu, obs);
+            int light = 0;
+            int dark = 0;
+
+            Inventory weapon = EquipmentList.LoadBySlotAndType((short)EquipmentType.MainWeapon, (short)InventoryType.Equipment);
+            if (weapon != null)
+            {
+                Item iteminfo = ServerManager.GetItem(weapon.InventoryItem.ItemVNum);
+                WeaponUpgrade = weapon.InventoryItem.Upgrade;
+                MinHit = weapon.InventoryItem.DamageMinimum+ iteminfo.DamageMinimum;
+                MaxHit = weapon.InventoryItem.DamageMaximum + iteminfo.DamageMaximum;
+                HitRate = weapon.InventoryItem.HitRate + iteminfo.HitRate;
+                HitCCRate = weapon.InventoryItem.CriticalLuckRate + iteminfo.CriticalLuckRate;
+                HitCC = weapon.InventoryItem.CriticalRate + iteminfo.CriticalRate;
+            }
+      
+            Inventory weapon2 = EquipmentList.LoadBySlotAndType((short)EquipmentType.SecondaryWeapon, (short)InventoryType.Equipment);
+            if (weapon2 != null)
+            {
+                Item iteminfo = ServerManager.GetItem(weapon2.InventoryItem.ItemVNum);
+                SecondaryUpgrade = weapon2.InventoryItem.Upgrade;
+                MinDist = weapon2.InventoryItem.DamageMinimum + iteminfo.DamageMinimum;
+                MaxDist = weapon2.InventoryItem.DamageMaximum + iteminfo.DamageMaximum;
+                DistRate = weapon2.InventoryItem.HitRate + iteminfo.HitRate;
+                DistCCRate = weapon2.InventoryItem.CriticalLuckRate + iteminfo.CriticalLuckRate;
+                DistCC = weapon2.InventoryItem.CriticalRate + iteminfo.CriticalRate;
+            }
+          
+            Inventory armor = EquipmentList.LoadBySlotAndType((short)EquipmentType.Armor, (short)InventoryType.Equipment);
+            if (armor != null)
+            {//TODO add base stats
+                Item iteminfo = ServerManager.GetItem(armor.InventoryItem.ItemVNum);
+                ArmorUpgrade = armor.InventoryItem.Upgrade;
+                def = armor.InventoryItem.RangeDefence + iteminfo.RangeDefence;
+                defrate = armor.InventoryItem.DefenceDodge + iteminfo.DefenceDodge;
+                distdef = armor.InventoryItem.DistanceDefence + iteminfo.DistanceDefence;
+                distdefrate = armor.InventoryItem.DistanceDefenceDodge + iteminfo.DistanceDefenceDodge;
+                magic = armor.InventoryItem.MagicDefence + iteminfo.MagicDefence;
+            }
+
+            Inventory gloves = EquipmentList.LoadBySlotAndType((short)EquipmentType.Gloves, (short)InventoryType.Equipment);
+            Inventory boots = EquipmentList.LoadBySlotAndType((short)EquipmentType.Boots, (short)InventoryType.Equipment);
+
+            if (gloves != null)
+            {
+
+                fire += gloves.InventoryItem.FireElement;
+                light += gloves.InventoryItem.LightElement;
+                water += gloves.InventoryItem.WaterElement;
+                dark += gloves.InventoryItem.DarkElement;
+            }
+            if (boots != null)
+            {
+
+                fire += boots.InventoryItem.FireElement;
+                light += boots.InventoryItem.LightElement;
+                water += boots.InventoryItem.WaterElement;
+                dark += boots.InventoryItem.DarkElement;
+            }
+
+            return String.Format("sc {0} {1} {2} {3} {4} {5} {6} {7} {8} {9} {10} {11} {12} {13} {14} {15} {16} {17} {18} {19} {20} {21} {22} {23}", type, WeaponUpgrade, MinHit, MaxHit, HitRate, HitCCRate, HitCC, type2, SecondaryUpgrade, MinDist, MaxDist, DistRate, DistCCRate, DistCC, ArmorUpgrade, def, defrate, distdef, distdefrate, magic, fire, water, light, dark);
         }
 
         public string GeneratePairy()

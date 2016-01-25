@@ -30,7 +30,8 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public short RangeDefence { get; set; }
         public short DistanceDefence { get; set; }
         public short MagicDefence { get; set; }
-        public short Dodge { get; set; }
+        public short DistanceDefenceDodge { get; set; }
+        public short DefenceDodge { get; set; }
         public short ElementRate { get; set; }
         public short Upgrade { get; set; }
         public short Rare { get; set; }

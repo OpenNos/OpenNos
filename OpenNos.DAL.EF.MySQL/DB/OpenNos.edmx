@@ -179,7 +179,8 @@
     <Property Name="RangeDefence" Type="smallint" Nullable="false" />
     <Property Name="DistanceDefence" Type="smallint" Nullable="false" />
     <Property Name="MagicDefence" Type="smallint" Nullable="false" />
-    <Property Name="Dodge" Type="longtext" Nullable="false" />
+    <Property Name="DistanceDefenceDodge" Type="smallint" Nullable="false" />
+    <Property Name="DefenceDodge" Type="smallint" Nullable="false" />
     <Property Name="Hp" Type="smallint" Nullable="false" />
     <Property Name="Mp" Type="smallint" Nullable="false" />
     <Property Name="LevelJobMinimum" Type="smallint" Nullable="false" />
@@ -237,7 +238,8 @@
     <Property Name="RangeDefence" Type="smallint" Nullable="false" />
     <Property Name="DistanceDefence" Type="smallint" Nullable="false" />
     <Property Name="MagicDefence" Type="smallint" Nullable="false" />
-    <Property Name="Dodge" Type="smallint" Nullable="false" />
+    <Property Name="DistanceDefenceDodge" Type="smallint" Nullable="false" />
+    <Property Name="DefenceDodge" Type="smallint" Nullable="false" />
     <Property Name="ElementRate" Type="smallint" Nullable="false" />
     <Property Name="Upgrade" Type="smallint" Nullable="false" />
     <Property Name="Rare" Type="smallint" Nullable="false" />
@@ -709,7 +711,8 @@
           <Property Name="RangeDefence" Type="Int16" Nullable="false" />
           <Property Name="DistanceDefence" Type="Int16" Nullable="false" />
           <Property Name="MagicDefence" Type="Int16" Nullable="false" />
-          <Property Name="Dodge" Type="String" Nullable="false" />
+          <Property Name="DistanceDefenceDodge" Type="Int16" Nullable="false" />
+          <Property Name="DefenceDodge" Type="Int16" Nullable="false" />
           <Property Name="Hp" Type="Int16" Nullable="false" />
           <Property Name="Mp" Type="Int16" Nullable="false" />
           <Property Name="LevelJobMinimum" Type="Int16" Nullable="false" />
@@ -783,7 +786,8 @@
           <Property Name="RangeDefence" Type="Int16" Nullable="false" />
           <Property Name="DistanceDefence" Type="Int16" Nullable="false" />
           <Property Name="MagicDefence" Type="Int16" Nullable="false" />
-          <Property Name="Dodge" Type="Int16" Nullable="false" />
+          <Property Name="DistanceDefenceDodge" Type="Int16" Nullable="false" />
+          <Property Name="DefenceDodge" Type="Int16" Nullable="false" />
           <Property Name="ElementRate" Type="Int16" Nullable="false" />
           <Property Name="Upgrade" Type="Int16" Nullable="false" />
           <Property Name="Rare" Type="Int16" Nullable="false" />
@@ -1034,7 +1038,8 @@
           <ScalarProperty Name="RangeDefence" ColumnName="RangeDefence" />
           <ScalarProperty Name="DistanceDefence" ColumnName="DistanceDefence" />
           <ScalarProperty Name="MagicDefence" ColumnName="MagicDefence" />
-          <ScalarProperty Name="Dodge" ColumnName="Dodge" />
+          <ScalarProperty Name="DistanceDefenceDodge" ColumnName="DistanceDefenceDodge" />
+          <ScalarProperty Name="DefenceDodge" ColumnName="DefenceDodge" />
           <ScalarProperty Name="Hp" ColumnName="Hp" />
           <ScalarProperty Name="Mp" ColumnName="Mp" />
           <ScalarProperty Name="LevelJobMinimum" ColumnName="LevelJobMinimum" />
@@ -1094,7 +1099,8 @@
           <ScalarProperty Name="RangeDefence" ColumnName="RangeDefence" />
           <ScalarProperty Name="DistanceDefence" ColumnName="DistanceDefence" />
           <ScalarProperty Name="MagicDefence" ColumnName="MagicDefence" />
-          <ScalarProperty Name="Dodge" ColumnName="Dodge" />
+          <ScalarProperty Name="DistanceDefenceDodge" ColumnName="DistanceDefenceDodge" />
+          <ScalarProperty Name="DefenceDodge" ColumnName="DefenceDodge" />
           <ScalarProperty Name="ElementRate" ColumnName="ElementRate" />
           <ScalarProperty Name="Upgrade" ColumnName="Upgrade" />
           <ScalarProperty Name="Rare" ColumnName="Rare" />
