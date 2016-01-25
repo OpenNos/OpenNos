@@ -70,6 +70,15 @@ namespace OpenNos.Login.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Account Banned!.
+        /// </summary>
+        internal static string BANNED {
+            get {
+                return ResourceManager.GetString("BANNED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Connection closed by Client..
         /// </summary>
         internal static string CLIENT_CLOSE {
@@ -165,6 +174,15 @@ namespace OpenNos.Login.Resource {
         internal static string NEW_CONNECT {
             get {
                 return ResourceManager.GetString("NEW_CONNECT", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Account not validate!.
+        /// </summary>
+        internal static string NOTVALIDATE {
+            get {
+                return ResourceManager.GetString("NOTVALIDATE", resourceCulture);
             }
         }
         

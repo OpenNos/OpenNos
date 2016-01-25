@@ -87,12 +87,12 @@ namespace OpenNos.Handler
                             {
                                 case AuthorityType.Banned:
                                     {
-                                        _session.Client.SendPacket(String.Format("fail {O}", Language.Instance.GetMessageFromKey("BANNED").ToString()));
+                                        _session.Client.SendPacket(String.Format("fail {0}", Language.Instance.GetMessageFromKey("BANNED")));
                                     }
                                     break;
                                 case AuthorityType.Unknown:
                                     {
-                                        _session.Client.SendPacket(String.Format("fail {O}", Language.Instance.GetMessageFromKey("NOTVALIDATE").ToString()));
+                                        _session.Client.SendPacket(String.Format("fail {0}", Language.Instance.GetMessageFromKey("NOTVALIDATE")));
                                     }
                                     break;
                                 default:
