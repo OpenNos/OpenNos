@@ -1974,6 +1974,7 @@ namespace OpenNos.Handler
             Session.Client.SendPacket(Session.Character.GenerateFd());
             Session.Client.SendPacket(Session.Character.GenerateLev());
             Session.Client.SendPacket(Session.Character.GenerateStat());
+            Session.Client.SendPacket(Session.Character.GenerateCMode());
             //ski
             Session.Client.SendPacket(Session.Character.GenerateAt());
             Session.Client.SendPacket(Session.Character.GenerateCMap());
