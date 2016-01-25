@@ -649,7 +649,7 @@ namespace OpenNos.Handler
         public void GetStats(string packet)
         {
 
-            Session.Client.SendPacket(Session.Character.GenerateStatChar()); 
+            Session.Client.SendPacket(Session.Character.GenerateStatChar());
         }
         [Packet("put")]
         public void PutItem(string packet)
@@ -799,7 +799,7 @@ namespace OpenNos.Handler
                         DamageMinimum = 0,
                         DarkElement = 0,
                         DistanceDefence = 0,
-                        DistanceDefenceDodge= 0,
+                        DistanceDefenceDodge = 0,
                         DefenceDodge = 0,
                         ElementRate = 0,
                         FireElement = 0,
@@ -907,9 +907,11 @@ namespace OpenNos.Handler
                 else if (typePacket == 0)
                 {
                     MapShop myShop = new MapShop();
+
                     if (packetsplit.Length > 2)
                         for (short j = 3, i = 0; j <= packetsplit.Length - 5; j += 4, i++)
                         {
+
                             short.TryParse(packetsplit[j], out type[i]);
                             short.TryParse(packetsplit[j + 1], out slot[i]);
                             short.TryParse(packetsplit[j + 2], out qty[i]);
@@ -933,7 +935,7 @@ namespace OpenNos.Handler
                                     DarkElement = inv.InventoryItem.DarkElement,
                                     DistanceDefence = inv.InventoryItem.DistanceDefence,
                                     DistanceDefenceDodge = inv.InventoryItem.DistanceDefenceDodge,
-                                   DefenceDodge = inv.InventoryItem.DefenceDodge,
+                                    DefenceDodge = inv.InventoryItem.DefenceDodge,
                                     ElementRate = inv.InventoryItem.ElementRate,
                                     FireElement = inv.InventoryItem.FireElement,
                                     HitRate = inv.InventoryItem.HitRate,
@@ -957,27 +959,30 @@ namespace OpenNos.Handler
 
 
                         }
+                    if (myShop.Items.Count != 0)
+                    {
+                        for (int i = 83; i < packetsplit.Length; i++)
+                            shopname += String.Format("{0} ", packetsplit[i]);
+                        shopname.TrimEnd(' ');
+                        myShop.OwnerId = Session.Character.CharacterId;
+                        myShop.Name = shopname;
+                        Session.CurrentMap.ShopUserList.Add(Session.CurrentMap.ShopUserList.Count(), myShop);
 
-                    for (int i = 83; i < packetsplit.Length; i++)
-                        shopname += String.Format("{0} ", packetsplit[i]);
-                    shopname.TrimEnd(' ');
-                    myShop.OwnerId = Session.Character.CharacterId;
-                    myShop.Name = shopname;
-                    Session.CurrentMap.ShopUserList.Add(Session.CurrentMap.ShopUserList.Count(), myShop);
+                        ClientLinkManager.Instance.Broadcast(Session, Session.Character.GeneratePlayerFlag(Session.CurrentMap.ShopUserList.Count()), ReceiverType.AllOnMapExceptMe);
 
-                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GeneratePlayerFlag(Session.CurrentMap.ShopUserList.Count()), ReceiverType.AllOnMapExceptMe);
+                        ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateShop(shopname), ReceiverType.AllOnMap);
 
-                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateShop(shopname), ReceiverType.AllOnMap);
+                        Session.Client.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("SHOP_OPEN")));
+                        Session.Character.Rested = 1;
+                        Session.Character.LastSpeed = Session.Character.Speed;
+                        Session.Character.Speed = 0;
+                        Session.Client.SendPacket(Session.Character.GenerateCond());
 
-                    Session.Client.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("SHOP_OPEN")));
-                    Session.Character.Rested = 1;
-                    Session.Character.LastSpeed = Session.Character.Speed;
-                    Session.Character.Speed = 0;
-                    Session.Client.SendPacket(Session.Character.GenerateCond());
+                        ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateRest(), ReceiverType.AllOnMap);
 
-                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateRest(), ReceiverType.AllOnMap);
-
-
+                    }
+                    else
+                    Session.Client.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("SHOP_VOID")));
                 }
                 else if (typePacket == 1)
                 {
