@@ -663,7 +663,7 @@ namespace OpenNos.Handler
             Inventory invitem = Session.Character.InventoryList.LoadBySlotAndType(slot, type);
             if (invitem != null && ServerManager.GetItem(invitem.InventoryItem.ItemVNum).Droppable == 1)
             {
-                MapItem DroppedItem = Session.Character.EquipmentList.PutItem(Session, type, slot, amount, out inv);
+                MapItem DroppedItem = Session.Character.InventoryList.PutItem(Session, type, slot, amount, out inv);
                 if (inv.InventoryItem.Amount == 0)
                     DeleteItem(type, inv.Slot);
                 ClientLinkManager.Instance.Broadcast(Session, String.Format("drop {0} {1} {2} {3} {4} {5} {6}", DroppedItem.ItemVNum, DroppedItem.InventoryItemId, DroppedItem.PositionX, DroppedItem.PositionY, DroppedItem.Amount, 0, -1), ReceiverType.AllOnMap);
