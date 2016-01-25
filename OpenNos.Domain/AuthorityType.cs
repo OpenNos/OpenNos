@@ -21,10 +21,10 @@ namespace OpenNos.Domain
 {
     public enum AuthorityType : short
     {
-        Unknown = 0,
+        Banned = 0,
         User = 1,
         Admin = 2,
-        Banned = 3
+        Unknown = 3
     }
 
 }

@@ -959,44 +959,35 @@ namespace OpenNos.Handler
 
 
                         }
-
-                    for (int i = 83; i < packetsplit.Length; i++)
-                        shopname += String.Format("{0} ", packetsplit[i]);
-                    shopname.TrimEnd(' ');
-                    myShop.OwnerId = Session.Character.CharacterId;
-                    myShop.Name = shopname;
-                    Session.CurrentMap.ShopUserList.Add(Session.CurrentMap.ShopUserList.Count(), myShop);
-
-                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GeneratePlayerFlag(Session.CurrentMap.ShopUserList.Count()), ReceiverType.AllOnMapExceptMe);
-
-                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateShop(shopname), ReceiverType.AllOnMap);
-
-                    Session.Client.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("SHOP_OPEN")));
-                    Session.Character.Rested = 1;
-                    Session.Character.LastSpeed = Session.Character.Speed;
-                    Session.Character.Speed = 0;
-                    Session.Client.SendPacket(Session.Character.GenerateCond());
-
-                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateRest(), ReceiverType.AllOnMap);
-                    if (myShop.Items.Count == 0)
+                    if (myShop.Items.Count != 0)
                     {
-                        {
+                        for (int i = 83; i < packetsplit.Length; i++)
+                            shopname += String.Format("{0} ", packetsplit[i]);
+                        shopname.TrimEnd(' ');
+                        myShop.OwnerId = Session.Character.CharacterId;
+                        myShop.Name = shopname;
+                        Session.CurrentMap.ShopUserList.Add(Session.CurrentMap.ShopUserList.Count(), myShop);
 
-                            KeyValuePair<long, MapShop> shop = Session.CurrentMap.ShopUserList.FirstOrDefault(mapshop => mapshop.Value.OwnerId.Equals(Session.Character.CharacterId));
-                            Session.CurrentMap.ShopUserList.Remove(shop.Key);
+                        ClientLinkManager.Instance.Broadcast(Session, Session.Character.GeneratePlayerFlag(Session.CurrentMap.ShopUserList.Count()), ReceiverType.AllOnMapExceptMe);
 
-                            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateShopEnd(), ReceiverType.AllOnMap);
-                            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GeneratePlayerFlag(0), ReceiverType.AllOnMapExceptMe);
-                            Session.Character.Speed = Session.Character.LastSpeed;
-                            Session.Character.Rested = 0;
-                            Session.Client.SendPacket(Session.Character.GenerateCond());
-                            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateRest(), ReceiverType.AllOnMap);
+                        ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateShop(shopname), ReceiverType.AllOnMap);
+
+                        Session.Client.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("SHOP_OPEN")));
+                        Session.Character.Rested = 1;
+                        Session.Character.LastSpeed = Session.Character.Speed;
+                        Session.Character.Speed = 0;
+                        Session.Client.SendPacket(Session.Character.GenerateCond());
 
 
-                            Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("SHOP_VOID"), 10));
-                        }
+                        ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateRest(), ReceiverType.AllOnMap);
+
                     }
+                    else
+                    {
 
+                        Session.Client.SendPacket("shop_end 0");
+                        Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("SHOP_VOID"), 10));
+                    }
                 }
                 else if (typePacket == 1)
                 {

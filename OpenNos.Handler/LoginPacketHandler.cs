@@ -90,6 +90,11 @@ namespace OpenNos.Handler
                                         _session.Client.SendPacket(String.Format("fail {O}", Language.Instance.GetMessageFromKey("BANNED").ToString()));
                                     }
                                     break;
+                                case AuthorityType.Unknown:
+                                    {
+                                        _session.Client.SendPacket(String.Format("fail {O}", Language.Instance.GetMessageFromKey("NOTVALIDATE").ToString()));
+                                    }
+                                    break;
                                 default:
                                     {
 
