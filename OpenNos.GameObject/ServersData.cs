@@ -518,82 +518,26 @@ namespace OpenNos.GameObject
             }
 
         }
-
-        internal static int DistanceDefence(byte @class, byte level)
-        {
-            return (int)level;
-        }
-
-        internal static int DistanceDefenceRate(byte @class, byte level)
-        {
-            return (int)level;
-        }
-
-        internal static int DefenceRate(byte @class, byte level)
-        {
-            return (int)level;
-        }
-
-        internal static int Defence(byte @class, byte level)
-        {
-            return (int)level;
-        }
-
-        internal static int DarkResistance(byte @class, byte level)
-        {
-             return 0;
-        }
-
-        internal static int MinHit(byte @class, byte level)
-        {
-            return (int)level;
-        }
-
-        internal static int MaxHit(byte @class, byte level)
-        {
-            return (int)level;
-        }
-
-        internal static int HitRate(byte @class, byte level)
-        {
-            return (int)level;
-        }
-
         internal static int HitCriticalRate(byte @class, byte level)
         {
-            return (int)level;
+
+            return criticalHitRate[@class, level];
         }
 
         internal static int HitCritical(byte @class, byte level)
         {
-            return (int)level;
+            return criticalHit[@class, level];
         }
-
-        internal static int MinDistance(byte @class, byte level)
-        {
-            return (int)level;
-        }
-
-        internal static int MaxDistance(byte @class, byte level)
-        {
-            return (int)level;
-        }
-
-        internal static int DistanceRate(byte @class, byte level)
-        {
-            return (int)level;
-        }
-
         internal static int DistCriticalRate(byte @class, byte level)
         {
-            return (int)level;
+            return criticalDistRate[@class, level];
         }
 
         internal static int DistCritical(byte @class, byte level)
         {
-            return (int)level;
+            return criticalDist[@class, level];
         }
-        
+
         internal static int FireResistance(byte @class, byte level)
         {
             return 0;
@@ -608,5 +552,69 @@ namespace OpenNos.GameObject
         {
             return 0;
         }
+        internal static int DarkResistance(byte @class, byte level)
+        {
+            return 0;
+        }
+        internal static int MagicalDefence(byte @class, byte level)
+        {
+            return magicalDef[@class, level];
+        }
+
+        internal static int MinHit(byte @class, byte level)
+        {
+            return minHit[@class, level];
+        }
+
+        internal static int MaxHit(byte @class, byte level)
+        {
+            return maxHit[@class, level];
+        }
+        internal static int HitRate(byte @class, byte level)
+        {
+            return hitRate[@class, level];
+        }
+
+        internal static int DistanceDefence(byte @class, byte level)
+        {
+            return DistDef[@class,level];
+        }
+
+        internal static int DistanceDefenceRate(byte @class, byte level)
+        {
+            return DistDodge[@class, level];
+        }
+
+        internal static int DefenceRate(byte @class, byte level)
+        {
+            return hitDodge[@class, level];
+        }
+
+        internal static int Defence(byte @class, byte level)
+        {
+            return hitDef[@class, level];
+        }
+
+
+
+
+
+
+        internal static int MinDistance(byte @class, byte level)
+        {
+
+            return minDist[@class, level];
+        }
+
+        internal static int MaxDistance(byte @class, byte level)
+        {
+            return maxDist[@class, level];
+        }
+
+        internal static int DistanceRate(byte @class, byte level)
+        {
+            return distRate[@class, level];
+        }
+
     }
 }
