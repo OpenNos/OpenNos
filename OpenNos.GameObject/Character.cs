@@ -73,6 +73,82 @@ namespace OpenNos.GameObject
 
             }
         }
+
+        int MinHit {
+            get; set; }
+        int MaxHit
+        {
+            get; set;
+        }
+        int HitRate
+        {
+            get; set;
+        }
+        int HitCriticalRate
+        {
+            get; set;
+        }
+        int HitCritical
+        {
+            get; set;
+        }
+        int MinDistance
+        {
+            get; set;
+        }
+        int MaxDistance
+        {
+            get; set;
+        }
+        int DistanceRate
+        {
+            get; set;
+        }
+        int DistanceCriticalRate
+        {
+            get; set;
+        }
+        int DistanceCritical
+        {
+            get; set;
+        }
+
+        int Defence
+        {
+            get; set;
+        }
+        int DefenceRate
+        {
+            get; set;
+        }
+        int DistanceDefenceRate
+        {
+            get; set;
+        }
+        int DistanceDefence
+        {
+            get; set;
+        }
+        int MagicalDefence
+        {
+            get; set;
+        }
+        int FireResistance
+        {
+            get; set;
+        }
+        int WaterResistance
+        {
+            get; set;
+        }
+        int LightResistance
+        {
+            get; set;
+        }
+        int DarkResistance
+        {
+            get; set;
+        }
         public InventoryList EquipmentList
         {
             get { return _equipmentlist; }
@@ -669,27 +745,28 @@ namespace OpenNos.GameObject
             }
 
             int WeaponUpgrade = 0;
-            int MinHit = 0;
-            int MaxHit = 0;
-            int HitRate = 0;
-            int HitCCRate = 0;
-            int HitCC = 0;
             int SecondaryUpgrade = 0;
-            int MinDist = 0;
-            int MaxDist = 0;
-            int DistRate = 0;
-            int DistCCRate = 0;
-            int DistCC = 0;
             int ArmorUpgrade = 0;
-            int def = 0;
-            int defrate = 0;
-            int distdefrate = 0;
-            int distdef = 0;
-            int magic = 0;
-            int fire = 0;
-            int water = 0;
-            int light = 0;
-            int dark = 0;
+            MinHit = ServersData.MinHit(Class, Level);
+            MaxHit = ServersData.MaxHit(Class, Level);
+            HitRate = ServersData.HitRate(Class, Level);
+            HitCriticalRate = ServersData.HitCriticalRate(Class, Level);
+            HitCritical = ServersData.HitCritical(Class, Level);
+            MinDistance = ServersData.MinDistance(Class, Level);
+            MaxDistance = ServersData.MaxDistance(Class, Level);
+            DistanceRate = ServersData.DistanceRate(Class, Level);
+            DistanceCriticalRate = ServersData.DistCriticalRate(Class, Level);
+            DistanceCritical = ServersData.DistCritical(Class, Level);
+            FireResistance = ServersData.FireResistance(Class, Level);
+            LightResistance = ServersData.LightResistance(Class, Level);
+            WaterResistance = ServersData.WaterResistance(Class, Level);
+            DarkResistance = ServersData.DarkResistance(Class, Level);
+            Defence = ServersData.Defence(Class, Level);
+            DefenceRate = ServersData.DefenceRate(Class, Level);
+            DistanceDefence = ServersData.DistanceDefence(Class, Level);
+            DistanceDefenceRate = ServersData.DistanceDefenceRate(Class, Level);
+
+
             //TODO add base stats
             Inventory weapon = EquipmentList.LoadBySlotAndType((short)EquipmentType.MainWeapon, (short)InventoryType.Equipment);
             if (weapon != null)
@@ -699,8 +776,8 @@ namespace OpenNos.GameObject
                 MinHit += weapon.InventoryItem.DamageMinimum + iteminfo.DamageMinimum;
                 MaxHit += weapon.InventoryItem.DamageMaximum + iteminfo.DamageMaximum;
                 HitRate += weapon.InventoryItem.HitRate + iteminfo.HitRate;
-                HitCCRate += weapon.InventoryItem.CriticalLuckRate + iteminfo.CriticalLuckRate;
-                HitCC += weapon.InventoryItem.CriticalRate + iteminfo.CriticalRate;
+                HitCriticalRate += weapon.InventoryItem.CriticalLuckRate + iteminfo.CriticalLuckRate;
+                HitCritical += weapon.InventoryItem.CriticalRate + iteminfo.CriticalRate;
                 //maxhp-mp
             }
 
@@ -709,11 +786,11 @@ namespace OpenNos.GameObject
             {
                 Item iteminfo = ServerManager.GetItem(weapon2.InventoryItem.ItemVNum);
                 SecondaryUpgrade = weapon2.InventoryItem.Upgrade;
-                MinDist += weapon2.InventoryItem.DamageMinimum + iteminfo.DamageMinimum;
-                MaxDist += weapon2.InventoryItem.DamageMaximum + iteminfo.DamageMaximum;
-                DistRate += weapon2.InventoryItem.HitRate + iteminfo.HitRate;
-                DistCCRate += weapon2.InventoryItem.CriticalLuckRate + iteminfo.CriticalLuckRate;
-                DistCC += weapon2.InventoryItem.CriticalRate + iteminfo.CriticalRate;
+                MinDistance += weapon2.InventoryItem.DamageMinimum + iteminfo.DamageMinimum;
+                MaxDistance += weapon2.InventoryItem.DamageMaximum + iteminfo.DamageMaximum;
+                DistanceRate += weapon2.InventoryItem.HitRate + iteminfo.HitRate;
+                DistanceCriticalRate += weapon2.InventoryItem.CriticalLuckRate + iteminfo.CriticalLuckRate;
+                DistanceCritical += weapon2.InventoryItem.CriticalRate + iteminfo.CriticalRate;
                 //maxhp-mp
             }
 
@@ -735,17 +812,17 @@ namespace OpenNos.GameObject
             {
                 Item iteminfo = ServerManager.GetItem(item.InventoryItem.ItemVNum);
 
-                fire += item.InventoryItem.FireElement;
-                light += item.InventoryItem.LightElement;
-                water += item.InventoryItem.WaterElement;
-                dark += item.InventoryItem.DarkElement;
-                def += item.InventoryItem.RangeDefence + iteminfo.RangeDefence;
-                defrate += item.InventoryItem.DefenceDodge + iteminfo.DefenceDodge;
-                distdef += item.InventoryItem.DistanceDefence + iteminfo.DistanceDefence;
-                distdefrate += item.InventoryItem.DistanceDefenceDodge + iteminfo.DistanceDefenceDodge;
+                FireResistance += item.InventoryItem.FireElement;
+                LightResistance += item.InventoryItem.LightElement;
+                WaterResistance += item.InventoryItem.WaterElement;
+                DarkResistance += item.InventoryItem.DarkElement;
+                Defence += item.InventoryItem.RangeDefence + iteminfo.RangeDefence;
+                DefenceRate += item.InventoryItem.DefenceDodge + iteminfo.DefenceDodge;
+                DistanceDefence += item.InventoryItem.DistanceDefence + iteminfo.DistanceDefence;
+                DistanceDefenceRate += item.InventoryItem.DistanceDefenceDodge + iteminfo.DistanceDefenceDodge;
                 //maxhp-mp
             }
-            return String.Format("sc {0} {1} {2} {3} {4} {5} {6} {7} {8} {9} {10} {11} {12} {13} {14} {15} {16} {17} {18} {19} {20} {21} {22} {23}", type, WeaponUpgrade, MinHit, MaxHit, HitRate, HitCCRate, HitCC, type2, SecondaryUpgrade, MinDist, MaxDist, DistRate, DistCCRate, DistCC, ArmorUpgrade, def, defrate, distdef, distdefrate, magic, fire, water, light, dark);
+            return String.Format("sc {0} {1} {2} {3} {4} {5} {6} {7} {8} {9} {10} {11} {12} {13} {14} {15} {16} {17} {18} {19} {20} {21} {22} {23}", type, WeaponUpgrade, MinHit, MaxHit, HitRate, HitCriticalRate, HitCritical, type2, SecondaryUpgrade, MinDistance, MaxDistance, DistanceRate, DistanceCriticalRate, DistanceCritical, ArmorUpgrade, Defence, DefenceRate, DistanceDefence, DistanceDefenceRate, MagicalDefence, FireResistance, WaterResistance, LightResistance, DarkResistance);
         }
 
         public string GeneratePairy()
