@@ -1612,6 +1612,7 @@ namespace OpenNos.Handler
                     ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllOnMapExceptMe);
                     ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(6), ReceiverType.AllOnMap);
                     ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(198), ReceiverType.AllOnMap);
+                    this.GetStats(String.Empty);
                 }
             }
             else
@@ -2013,7 +2014,7 @@ namespace OpenNos.Handler
             foreach (String droppedPacket in Session.Character.GenerateDroppedItem())
                 Session.Client.SendPacket(droppedPacket);
 
-            //sc
+            this.GetStats(String.Empty);
             Session.Client.SendPacket(Session.Character.GenerateCond());
             ClientLinkManager.Instance.Broadcast(Session, Session.Character.GeneratePairy(), ReceiverType.AllOnMap);
             Session.Client.SendPacket(String.Format("rsfi {0} {1} {2} {3} {4} {5}", 1, 1, 4, 9, 4, 9));//stone act
