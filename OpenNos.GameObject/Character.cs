@@ -765,7 +765,7 @@ namespace OpenNos.GameObject
             DefenceRate = ServersData.DefenceRate(Class, Level);
             DistanceDefence = ServersData.DistanceDefence(Class, Level);
             DistanceDefenceRate = ServersData.DistanceDefenceRate(Class, Level);
-
+            MagicalDefence = ServersData.MagicalDefence(Class, Level);
 
             //TODO add base stats
             Inventory weapon = EquipmentList.LoadBySlotAndType((short)EquipmentType.MainWeapon, (short)InventoryType.Equipment);
