@@ -41,14 +41,14 @@ namespace OpenNos.GameObject
         #endregion
 
         #region Methods
-        public static void MemoryWatch()
+        public static void MemoryWatch(string type)
         {
             Assembly assembly = Assembly.GetEntryAssembly();
             FileVersionInfo fileVersionInfo = FileVersionInfo.GetVersionInfo(assembly.Location);
             while (true)
             {
 
-                Console.Title = String.Format("OpenNos World Server v{0} - Memory: {1}MB", fileVersionInfo.ProductVersion, GC.GetTotalMemory(true) / (1024 * 1024));
+                Console.Title = String.Format("{2} v{0} - Memory: {1}MB", fileVersionInfo.ProductVersion, GC.GetTotalMemory(true) / (1024 * 1024),type);
                 Thread.Sleep(1000);
             }
         }

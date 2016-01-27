@@ -45,7 +45,7 @@ namespace OpenNos.World
                 //initialilize maps
                 ServerManager.Initialize();
 
-            Thread memory = new Thread(() => ServerManager.MemoryWatch());
+            Thread memory = new Thread(() => ServerManager.MemoryWatch("OpenNos World Server"));
             memory.Start();
 
             //initialize ClientLinkManager
@@ -61,7 +61,7 @@ namespace OpenNos.World
             {
                 Logger.Log.Error(ex.Message);
             }
-
+           
             //start up network manager
             NetworkManager<WorldEncryption> networkManager = new NetworkManager<WorldEncryption>(ip, port, typeof(WorldPacketHandler));
 
