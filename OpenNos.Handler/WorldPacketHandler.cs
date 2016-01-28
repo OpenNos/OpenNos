@@ -1858,6 +1858,10 @@ namespace OpenNos.Handler
 
                         ChangeMap();
                     }
+                    else
+                    {
+                        Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("USER_NOT_CONNECTED"), 0));
+                    }
                     break;
                 case 5:
                     if (verify)
