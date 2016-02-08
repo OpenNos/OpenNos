@@ -555,14 +555,12 @@ namespace OpenNos.GameObject
         {
             Inventory specialist = EquipmentList.LoadBySlotAndType((short)EquipmentType.Sp, (short)InventoryType.Equipment);
 
-            return ($@"lev {Level} {LevelXp} {(!UseSp || specialist == null ? JobLevel : specialist.InventoryItem.SpLevel)} 
-{(!UseSp || specialist == null ? JobLevelXp : specialist.InventoryItem.SpXp)} {XPLoad()} {JobXPLoad()} {Reput} 2");
+            return ($"lev {Level} {LevelXp} {(!UseSp || specialist == null ? JobLevel : specialist.InventoryItem.SpLevel)} {(!UseSp || specialist == null ? JobLevelXp : specialist.InventoryItem.SpXp)} {XPLoad()} {JobXPLoad()} {Reput} 2");
         }
 
         public string GenerateCInfo()
         {
-            return ($@"c_info {Name} - -1 -1 - {CharacterId} {Authority} {Gender} {HairStyle} {HairColor} {Class} {GetReputIco()}
-{Compliment} {(UseSp || IsVehicled ? Morph : 0)} {Invisible} 0 {(UseSp ? MorphUpgrade : 0)} {ArenaWinner} ");
+            return ($"c_info {Name} - -1 -1 - {CharacterId} {Authority} {Gender} {HairStyle} {HairColor} {Class} {GetReputIco()} {Compliment} {(UseSp || IsVehicled ? Morph : 0)} {Invisible} 0 {(UseSp ? MorphUpgrade : 0)} {ArenaWinner} ");
         }
 
         public int GetDigniteIco()
@@ -610,8 +608,7 @@ namespace OpenNos.GameObject
 
         public string GenerateTit()
         {
-            return ($@"tit {Language.Instance.GetMessageFromKey(Class == (byte)ClassType.Adventurer ? ClassType.Adventurer.ToString().ToUpper() :
-                Class == (byte)ClassType.Swordman ? ClassType.Swordman.ToString().ToUpper() : Class == (byte)ClassType.Archer ? ClassType.Archer.ToString().ToUpper() : ClassType.Magician.ToString().ToUpper())} {Name}");
+            return ($"tit {Language.Instance.GetMessageFromKey(Class == (byte)ClassType.Adventurer ? ClassType.Adventurer.ToString().ToUpper() : Class == (byte)ClassType.Swordman ? ClassType.Swordman.ToString().ToUpper() : Class == (byte)ClassType.Archer ? ClassType.Archer.ToString().ToUpper() : ClassType.Magician.ToString().ToUpper())} {Name}");
         }
 
         public string GenerateStat()
@@ -630,9 +627,9 @@ namespace OpenNos.GameObject
             Inventory Weapon2 = EquipmentList.LoadBySlotAndType((short)EquipmentType.SecondaryWeapon, (short)InventoryType.Equipment);
             Inventory Weapon = EquipmentList.LoadBySlotAndType((short)EquipmentType.MainWeapon, (short)InventoryType.Equipment);
             return ($@"tc_info {Level} {Name} {(Fairy != null ? ServerManager.GetItem(Fairy.InventoryItem.ItemVNum).Element : 0)} {(Fairy != null ? Fairy.InventoryItem.ElementRate : 0)}
-{Class} {Gender} 0 {Language.Instance.GetMessageFromKey("NO_FAMILY")} {GetReputIco()} {GetDigniteIco()} {(Weapon != null ? 1 : 0)} {(Weapon != null ? Weapon.InventoryItem.Rare : 0)}
-{(Weapon != null ? Weapon.InventoryItem.Upgrade : 0)} {(Weapon2 != null ? 1 : 0)} {(Weapon2 != null ? Weapon2.InventoryItem.Rare : 0)} {(Weapon2 != null ? Weapon2.InventoryItem.Upgrade : 0)}
-{(Armor != null ? 1 : 0)} {(Armor != null ? Armor.InventoryItem.Rare : 0)} {(Armor != null ? Armor.InventoryItem.Upgrade : 0)} 0 0 {Reput} 0 0 0 {(UseSp ? Morph : 0)} 0 0 0 0 0 {Compliment} 0 0 0 0 {Language.Instance.GetMessageFromKey("NO_PREZ_MESSAGE")}");
+ {Class} {Gender} 0 {Language.Instance.GetMessageFromKey("NO_FAMILY")} {GetReputIco()} {GetDigniteIco()} {(Weapon != null ? 1 : 0)} {(Weapon != null ? Weapon.InventoryItem.Rare : 0)}
+ {(Weapon != null ? Weapon.InventoryItem.Upgrade : 0)} {(Weapon2 != null ? 1 : 0)} {(Weapon2 != null ? Weapon2.InventoryItem.Rare : 0)} {(Weapon2 != null ? Weapon2.InventoryItem.Upgrade : 0)}
+ {(Armor != null ? 1 : 0)} {(Armor != null ? Armor.InventoryItem.Rare : 0)} {(Armor != null ? Armor.InventoryItem.Upgrade : 0)} 0 0 {Reput} 0 0 0 {(UseSp ? Morph : 0)} 0 0 0 0 0 {Compliment} 0 0 0 0 {Language.Instance.GetMessageFromKey("NO_PREZ_MESSAGE")}");
         }
 
         public string GenerateCMap()
@@ -674,9 +671,13 @@ namespace OpenNos.GameObject
             Inventory fairy = EquipmentList.LoadBySlotAndType((short)EquipmentType.Fairy, (short)InventoryType.Equipment);
 
             return ($@"in 1 {Name} - {CharacterId} {MapX} {MapY} {Direction} {(Authority == 2 ? 2 : 0)} {Gender} {HairStyle} {Color} {Class} {generateEqListForPacket()}
-{(int)((Hp / HPLoad()) * 100)} {(int)((Mp / MPLoad()) * 100)} {_rested} -1 {Size} {(fairy != null ? ServerManager.GetItem(fairy.InventoryItem.ItemVNum).Element : 0)} 0
-{(fairy != null ? ServerManager.GetItem(fairy.InventoryItem.ItemVNum).Morph : 0)} 0 {(UseSp ? Morph : 0)} {generateEqRareUpgradeForPacket()} -1 - {((GetDigniteIco() == 1) ? GetReputIco() : -GetDigniteIco())}
-{_invisible} {(UseSp ? MorphUpgrade : 0)} 0 {(UseSp ? MorphUpgrade2 : 0)} 0 0 {ArenaWinner} {(fairy != null ? 2 : 0)} {Compliment}");
+ {(int)((Hp / HPLoad()) * 100)} {(int)((Mp / MPLoad()) * 100)} {_rested} -1 {(fairy != null ? 2 : 0)} {(fairy != null ? ServerManager.GetItem(fairy.InventoryItem.ItemVNum).Element : 0)} 0
+ {(fairy != null ? ServerManager.GetItem(fairy.InventoryItem.ItemVNum).Morph : 0)} 0 {(UseSp ? Morph : 0)} {generateEqRareUpgradeForPacket()} -1 - {((GetDigniteIco() == 1) ? GetReputIco() : -GetDigniteIco())}
+ {_invisible} {(UseSp ? MorphUpgrade : 0)} 0 {(UseSp ? MorphUpgrade2 : 0)} 0 0 {ArenaWinner} {Compliment} {Size}");
+            /*"in 1 {Name} - {CharacterId} {MapX} {MapY} {Direction} {(Authority == 2 ? 2 : 0)} {Gender} {HairStyle} {Color} {Class} {generateEqListForPacket()}
+ {(int)((Hp / HPLoad()) * 100)} {(int)((Mp / MPLoad()) * 100)} {_rested} -1 {Size} {(fairy != null ? ServerManager.GetItem(fairy.InventoryItem.ItemVNum).Element : 0)} 0
+ {(fairy != null ? ServerManager.GetItem(fairy.InventoryItem.ItemVNum).Morph : 0)} 0 {(UseSp ? Morph : 0)} {generateEqRareUpgradeForPacket()} -1 - {((GetDigniteIco() == 1) ? GetReputIco() : -GetDigniteIco())}
+ {_invisible} {(UseSp ? MorphUpgrade : 0)} 0 {(UseSp ? MorphUpgrade2 : 0)} 0 0 {ArenaWinner} {(fairy != null ? 2 : 0)} {Compliment}");*/
         }
 
         public string GenerateRest()
@@ -827,8 +828,8 @@ namespace OpenNos.GameObject
                 DistanceDefenceRate += item.InventoryItem.DistanceDefenceDodge + iteminfo.DistanceDefenceDodge;
                 //maxhp-mp
             }
-            return ($@"sc {type} {WeaponUpgrade} {MinHit} {MaxHit} {HitRate} {HitCriticalRate} {HitCritical} {type2} {SecondaryUpgrade} {MinDistance} {MaxDistance} {DistanceRate} {DistanceCriticalRate} {DistanceCritical}
-{ArmorUpgrade} {Defence} {DefenceRate} {DistanceDefence} {DistanceDefenceRate} {MagicalDefence} {FireResistance} {WaterResistance} {LightResistance} {DarkResistance}");
+            return ($@"sc {type} {WeaponUpgrade} {MinHit} {MaxHit} {HitRate} {HitCriticalRate} {HitCritical} {type2} {SecondaryUpgrade} {MinDistance} {MaxDistance} {DistanceRate} {DistanceCriticalRate} 
+{DistanceCritical} {ArmorUpgrade} {Defence} {DefenceRate} {DistanceDefence} {DistanceDefenceRate} {MagicalDefence} {FireResistance} {WaterResistance} {LightResistance} {DarkResistance}");
         }
 
         public string GeneratePairy()
@@ -870,8 +871,7 @@ namespace OpenNos.GameObject
                 else invarray[i] = "-1";
             }
 
-            return ($@"{invarray[(short)EquipmentType.Hat]}.{invarray[(short)EquipmentType.Armor]}.{invarray[(short)EquipmentType.MainWeapon]}.{invarray[(short)EquipmentType.SecondaryWeapon]}.
-{invarray[(short)EquipmentType.Mask]}.{invarray[(short)EquipmentType.Fairy]}.{invarray[(short)EquipmentType.CostumeSuite]}.{invarray[(short)EquipmentType.CostumeHat]}");
+            return ($"{invarray[(short)EquipmentType.Hat]}.{invarray[(short)EquipmentType.Armor]}.{invarray[(short)EquipmentType.MainWeapon]}.{invarray[(short)EquipmentType.SecondaryWeapon]}.{invarray[(short)EquipmentType.Mask]}.{invarray[(short)EquipmentType.Fairy]}.{invarray[(short)EquipmentType.CostumeSuite]}.{invarray[(short)EquipmentType.CostumeHat]}");
         }
 
         public string generateEqRareUpgradeForPacket()
