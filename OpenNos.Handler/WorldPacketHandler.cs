@@ -202,12 +202,12 @@ namespace OpenNos.Handler
                     }
 
                 }
-                Session.Client.SendPacket(($@"clist {character.Slot} {character.Name} {0} {character.Gender} {character.HairStyle} {character.HairColor} {5} {character.Class}
+                Session.Client.SendPacket(($@"clist {character.Slot} {character.Name} 0 {character.Gender} {character.HairStyle} {character.HairColor} 5 {character.Class}
 {character.Level} {(item[(short)EquipmentType.Hat] != null ? item[(short)EquipmentType.Hat].ItemVNum : 0)}.{(item[(short)EquipmentType.Armor] != null ? item[(short)EquipmentType.Armor].ItemVNum : 0)}.
 {(item[(short)EquipmentType.MainWeapon] != null ? item[(short)EquipmentType.MainWeapon].ItemVNum : 0)}.{(item[(short)EquipmentType.SecondaryWeapon] != null ? item[(short)EquipmentType.SecondaryWeapon].ItemVNum : 0)}.
 {(item[(short)EquipmentType.Mask] != null ? item[(short)EquipmentType.Mask].ItemVNum : 0)}.{(item[(short)EquipmentType.Fairy] != null ? item[(short)EquipmentType.Fairy].ItemVNum : 0)}.
 {(item[(short)EquipmentType.CostumeSuite] != null ? item[(short)EquipmentType.CostumeSuite].ItemVNum : 0)}.{(item[(short)EquipmentType.CostumeHat] != null ? item[(short)EquipmentType.CostumeHat].ItemVNum : 0)}.
-{1} {0} {0} {-1} {-1}.{(item[(short)EquipmentType.Hat] != null ? (ServerManager.GetItem(item[(short)EquipmentType.Hat].ItemVNum).Colored ? item[(short)EquipmentType.Hat].Color : character.HairColor) : character.HairColor)} {0}"));
+1 0 0 -1 -1.{(item[(short)EquipmentType.Hat] != null ? (ServerManager.GetItem(item[(short)EquipmentType.Hat].ItemVNum).Colored ? item[(short)EquipmentType.Hat].Color : character.HairColor) : character.HairColor)} 0"));
             }
             Session.Client.SendPacket("clist_end");
 
@@ -631,17 +631,17 @@ namespace OpenNos.Handler
                         }
                         break;
                     case 2:
-                        Session.Client.SendPacket(($"wopen {1} 0"));
+                        Session.Client.SendPacket(($"wopen 1 0"));
                         break;
                     case 10:
-                        Session.Client.SendPacket(($"wopen {3} 0"));
+                        Session.Client.SendPacket(($"wopen 3 0"));
                         break;
                     case 12:
                         Session.Client.SendPacket(($"wopen {type} 0"));
                         break;
                     case 14:
                         //m_list 2 1002 1003 1004 1005 1006 1007 1008 1009 1010 180 181 2127 2178 1242 1243 1244 2504 2505 - 100
-                        Session.Client.SendPacket(($"wopen {27} 0"));
+                        Session.Client.SendPacket(($"wopen 27 0"));
                         break;
 
                 }
@@ -669,7 +669,7 @@ namespace OpenNos.Handler
                 MapItem DroppedItem = Session.Character.InventoryList.PutItem(Session, type, slot, amount, out inv);
                 if (inv.InventoryItem.Amount == 0)
                     DeleteItem(type, inv.Slot);
-                ClientLinkManager.Instance.Broadcast(Session, ($"drop {DroppedItem.ItemVNum} {DroppedItem.InventoryItemId} {DroppedItem.PositionX} {DroppedItem.PositionY} {DroppedItem.Amount} {0} {-1}"), ReceiverType.AllOnMap);
+                ClientLinkManager.Instance.Broadcast(Session, ($"drop {DroppedItem.ItemVNum} {DroppedItem.InventoryItemId} {DroppedItem.PositionX} {DroppedItem.PositionY} {DroppedItem.Amount} 0 -1"), ReceiverType.AllOnMap);
             }
             else
             {
@@ -2025,7 +2025,7 @@ namespace OpenNos.Handler
             this.GetStats(String.Empty);
             Session.Client.SendPacket(Session.Character.GenerateCond());
             ClientLinkManager.Instance.Broadcast(Session, Session.Character.GeneratePairy(), ReceiverType.AllOnMap);
-            Session.Client.SendPacket(($"rsfi {1} {1} {4} {9} {4} {9}")); //stone act
+            Session.Client.SendPacket(($"rsfi 1 1 4 9 4 9")); //stone act
             ClientLinkManager.Instance.RequiereBroadcastFromAllMapUsers(Session, "GenerateIn"); //need to see if changeMap change the sp :D  ClientLinkManager.Instance.RequiereBroadcastFromAllMapUsers(Session, "GenerateCMode");
 
             ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllOnMapExceptMe);
@@ -2100,9 +2100,9 @@ namespace OpenNos.Handler
                 if (item != null)
                 {
                     if (ServerManager.GetItem(item.ItemVNum).Type == 0)
-                        packetToSend += ($" {0}.{i}.{ServerManager.GetItem(item.ItemVNum).VNum}.{item.Rare}.{item.Upgrade}.{item.Price}.");
+                        packetToSend += ($" 0.{i}.{ServerManager.GetItem(item.ItemVNum).VNum}.{item.Rare}.{item.Upgrade}.{item.Price}.");
                     else
-                        packetToSend += ($" {ServerManager.GetItem(item.ItemVNum).Type}.{i}.{ServerManager.GetItem(item.ItemVNum).VNum}.{item.Amount}.{item.Price}.{-1}.");
+                        packetToSend += ($" {ServerManager.GetItem(item.ItemVNum).Type}.{i}.{ServerManager.GetItem(item.ItemVNum).VNum}.{item.Amount}.{item.Price}.-1.");
                 }
                 else
                 {
@@ -2217,7 +2217,7 @@ namespace OpenNos.Handler
             /*if (false) //Need to delete it when gettoppoint will not return null
                 foreach (CharacterDTO character in DAOFactory.CharacterDAO.GetTopPoints())
                 {
-                    kdlinit += ($" {character.CharacterId}|{character.Level}|{0}|{character.Name}"); //need to find true var for 0
+                    kdlinit += ($" {character.CharacterId}|{character.Level}|0|{character.Name}"); //need to find true var for 0
                 }
                 */
             Session.Client.SendPacket(clinit);

@@ -101,11 +101,11 @@ namespace OpenNos.WCF
 
                 if (successful)
                 {
-                    Logger.Log.DebugFormat("[WCF] Account {0} has lost the permission to login with SessionId {1}.", accountName, sessionId);
+                    Logger.Log.DebugFormat($"[WCF] Account {accountName} has lost the permission to login with SessionId {sessionId}.");
                 }
                 else
                 {
-                    Logger.Log.DebugFormat("[WCF] Account {0} is not permitted to login with SessionId {1}.", accountName, sessionId);
+                    Logger.Log.DebugFormat($"[WCF] Account {accountName} is not permitted to login with SessionId {sessionId}.");
                 }
 
                 return successful;
@@ -135,7 +135,7 @@ namespace OpenNos.WCF
                     RegisteredAccountLogins.Add(accountName, sessionId);
                 }
 
-                Logger.Log.DebugFormat("[WCF] Account {0} is now permitted to login with SessionId {1}", accountName, sessionId);
+                Logger.Log.DebugFormat($"[WCF] Account {accountName} is now permitted to login with SessionId {sessionId}");
             }
             catch (Exception ex)
             {
@@ -155,14 +155,14 @@ namespace OpenNos.WCF
                 //character cant connect twice
                 if (ConnectedCharacters.ContainsKey(characterName))
                 {
-                    Logger.Log.DebugFormat("[WCF] Character {0} is already connected.", characterName);
+                    Logger.Log.DebugFormat($"[WCF] Character {characterName} is already connected.");
                     return false;
                 }
                 else
                 {
                     //TODO move in own method, cannot do this here because it needs to be called by a client who wants to know if the 
                     //character is allowed to connect without doing it actually
-                    Logger.Log.DebugFormat("[WCF] Character {0} has connected.", characterName);
+                    Logger.Log.DebugFormat($"[WCF] Character {characterName} has connected.");
                     ConnectedCharacters.Add(characterName, accountName);
 
                     //inform clients
@@ -192,7 +192,7 @@ namespace OpenNos.WCF
                 ICommunicationCallback callback = OperationContext.Current.GetCallbackChannel<ICommunicationCallback>();
                 callback.DisconnectCharacterCallback(characterName);
 
-                Logger.Log.DebugFormat("[WCF] Character {0} has been disconnected.", characterName);
+                Logger.Log.DebugFormat($"[WCF] Character {characterName} has been disconnected.");
             }
             catch (Exception ex)
             {
@@ -212,14 +212,14 @@ namespace OpenNos.WCF
                 //Account cant connect twice
                 if (ConnectedAccounts.ContainsKey(accountName))
                 {
-                    Logger.Log.DebugFormat("[WCF] Account {0} is already connected.", accountName);
+                    Logger.Log.DebugFormat($"[WCF] Account {accountName} is already connected.");
                     return false;
                 }
                 else
                 {
                     //TODO move in own method, cannot do this here because it needs to be called by a client who wants to know if the 
                     //Account is allowed to connect without doing it actually
-                    Logger.Log.DebugFormat("[WCF] Account {0} has connected.", accountName);
+                    Logger.Log.DebugFormat($"[WCF] Account {accountName} has connected.");
                     ConnectedAccounts.Add(accountName, sessionId);
 
                     //inform clients
@@ -249,7 +249,7 @@ namespace OpenNos.WCF
                 ICommunicationCallback callback = OperationContext.Current.GetCallbackChannel<ICommunicationCallback>();
                 callback.DisconnectAccountCallback(accountName);
 
-                Logger.Log.DebugFormat("[WCF] Account {0} has been disconnected.", accountName);
+                Logger.Log.DebugFormat($"[WCF] Account {accountName} has been disconnected.");
             }
             catch (Exception ex)
             {

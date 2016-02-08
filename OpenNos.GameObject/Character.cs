@@ -457,7 +457,7 @@ namespace OpenNos.GameObject
         {
             List<String> droplist = new List<String>();
             foreach (KeyValuePair<long, MapItem> item in ServerManager.GetMap(this.MapId).DroppedList)
-                droplist.Add(($"drop {item.Value.ItemVNum} {item.Key} {item.Value.PositionX} {item.Value.PositionY} {item.Value.Amount} {0} {-1}"));
+                droplist.Add(($"drop {item.Value.ItemVNum} {item.Key} {item.Value.PositionX} {item.Value.PositionY} {item.Value.Amount} 0 -1"));
             return droplist;
         }
         public List<string> GenerateNPCShopOnMap()
@@ -465,7 +465,7 @@ namespace OpenNos.GameObject
             List<String> droplist = new List<String>();
             foreach (Npc npc in ServerManager.GetMap(this.MapId).Npcs)
                 if (npc.Shop != null)
-                    droplist.Add(($"shop 2 {npc.NpcId} {1} {0} {npc.Shop.MenuType} {npc.Shop.Name}"));
+                    droplist.Add(($"shop 2 {npc.NpcId} 1 0 {npc.Shop.MenuType} {npc.Shop.Name}"));
             return droplist;
         }
         public List<string> GenerateShopOnMap()
@@ -480,7 +480,7 @@ namespace OpenNos.GameObject
         {
             List<String> gpList = new List<String>();
             foreach (Portal portal in ServerManager.GetMap(this.MapId).Portals)
-                gpList.Add(($"gp {portal.SourceX} {portal.SourceY} {portal.DestinationMapId} {portal.Type} {0}"));
+                gpList.Add(($"gp {portal.SourceX} {portal.SourceY} {portal.DestinationMapId} {portal.Type} 0"));
             return gpList;
         }
 
@@ -561,8 +561,8 @@ namespace OpenNos.GameObject
 
         public string GenerateCInfo()
         {
-            return ($@"c_info {Name} - {-1} {-1} - {CharacterId} {Authority} {Gender} {HairStyle} {HairColor} {Class} {GetReputIco()}
-{Compliment} {(UseSp || IsVehicled ? Morph : 0)} {Invisible} {0} {(UseSp ? MorphUpgrade : 0)} {ArenaWinner} ");
+            return ($@"c_info {Name} - -1 -1 - {CharacterId} {Authority} {Gender} {HairStyle} {HairColor} {Class} {GetReputIco()}
+{Compliment} {(UseSp || IsVehicled ? Morph : 0)} {Invisible} 0 {(UseSp ? MorphUpgrade : 0)} {ArenaWinner} ");
         }
 
         public int GetDigniteIco()
@@ -676,7 +676,7 @@ namespace OpenNos.GameObject
             return ($@"in 1 {Name} - {CharacterId} {MapX} {MapY} {Direction} {(Authority == 2 ? 2 : 0)} {Gender} {HairStyle} {Color} {Class} {generateEqListForPacket()}
 {(int)((Hp / HPLoad()) * 100)} {(int)((Mp / MPLoad()) * 100)} {_rested} -1 {Size} {(fairy != null ? ServerManager.GetItem(fairy.InventoryItem.ItemVNum).Element : 0)} 0
 {(fairy != null ? ServerManager.GetItem(fairy.InventoryItem.ItemVNum).Morph : 0)} 0 {(UseSp ? Morph : 0)} {generateEqRareUpgradeForPacket()} -1 - {((GetDigniteIco() == 1) ? GetReputIco() : -GetDigniteIco())}
-{_invisible} {(UseSp ? MorphUpgrade : 0)} 0 {(UseSp ? MorphUpgrade2 : 0)} {0} 0 {ArenaWinner} {(fairy != null ? 2 : 0)} {Compliment}");
+{_invisible} {(UseSp ? MorphUpgrade : 0)} 0 {(UseSp ? MorphUpgrade2 : 0)} 0 0 {ArenaWinner} {(fairy != null ? 2 : 0)} {Compliment}");
         }
 
         public string GenerateRest()
@@ -719,7 +719,7 @@ namespace OpenNos.GameObject
                         WeaponRare = inv.InventoryItem.Rare;
                         WeaponUpgrade = inv.InventoryItem.Upgrade;
                     }
-                    eqlist += ($" {i}.{iteminfo.VNum}.{inv.InventoryItem.Rare}.{(iteminfo.Colored ? inv.InventoryItem.Color : inv.InventoryItem.Upgrade)}.{0}");
+                    eqlist += ($" {i}.{iteminfo.VNum}.{inv.InventoryItem.Rare}.{(iteminfo.Colored ? inv.InventoryItem.Color : inv.InventoryItem.Upgrade)}.0");
                 }
             }
             return ($"equip {WeaponUpgrade}{WeaponRare} {ArmorUpgrade}{ArmorRare}{eqlist}");
