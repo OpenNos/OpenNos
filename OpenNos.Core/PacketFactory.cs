@@ -53,7 +53,7 @@ namespace OpenNos.Core
                         }
                         catch (Exception ex)
                         {
-                            Logger.Log.ErrorFormat("Unable to set Property {0} unsupported type {1}.", property.Name, property.PropertyType);
+                            Logger.Log.ErrorFormat($"Unable to set Property {property.Name} unsupported type {property.PropertyType}.");
                         }
 
                         packetIndex++;
@@ -62,7 +62,7 @@ namespace OpenNos.Core
             }
             else
             {
-                Logger.Log.ErrorFormat("Could not deserilize Packet {0}", packet);
+                Logger.Log.ErrorFormat($"Could not deserilize Packet {packet}");
             }
 
             return deserializedObject;
