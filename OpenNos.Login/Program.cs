@@ -38,10 +38,10 @@ namespace OpenNos.Login
                     Logger.InitializeLogger(LogManager.GetLogger(typeof(Program)));
                     Assembly assembly = Assembly.GetExecutingAssembly();
                     FileVersionInfo fileVersionInfo = FileVersionInfo.GetVersionInfo(assembly.Location);
-                    Console.Title = String.Format("OpenNos Login Server v{0}", fileVersionInfo.ProductVersion);
-                    Console.WriteLine(String.Format("===============================================================================\n"
-                                     + "                 LOGIN SERVER VERSION {0} by OpenNos Team\n" +
-                                     "===============================================================================\n", fileVersionInfo.ProductVersion));
+                    Console.Title = ($"OpenNos Login Server v{fileVersionInfo.ProductVersion}");
+                    Console.WriteLine(("===============================================================================\n"
+                                     + $"                 LOGIN SERVER VERSION {fileVersionInfo.ProductVersion} by OpenNos Team\n" +
+                                     "===============================================================================\n"));
 
                     //initialize DB
                     DataAccessHelper.Initialize();

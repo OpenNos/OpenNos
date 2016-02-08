@@ -74,8 +74,10 @@ namespace OpenNos.GameObject
             }
         }
 
-        int MinHit {
-            get; set; }
+        int MinHit
+        {
+            get; set;
+        }
         int MaxHit
         {
             get; set;
@@ -323,7 +325,7 @@ namespace OpenNos.GameObject
 
         public String GenerateGold()
         {
-            return String.Format("gold {0}", Gold);
+            return ($"gold {Gold}");
         }
 
         public void LoadInventory()
@@ -405,19 +407,19 @@ namespace OpenNos.GameObject
                 switch (inv.Type)
                 {
                     case (short)InventoryType.Costume:
-                        inv7 += String.Format(" {0}.{1}.{2}.{3}", inv.Slot, inv.InventoryItem.ItemVNum, inv.InventoryItem.Rare, inv.InventoryItem.Upgrade);
+                        inv7 += ($" {inv.Slot}.{inv.InventoryItem.ItemVNum}.{inv.InventoryItem.Rare}.{inv.InventoryItem.Upgrade}");
                         break;
                     case (short)InventoryType.Wear:
-                        inv0 += String.Format(" {0}.{1}.{2}.{3}", inv.Slot, inv.InventoryItem.ItemVNum, inv.InventoryItem.Rare, item.Colored ? inv.InventoryItem.Color : inv.InventoryItem.Upgrade);
+                        inv0 += ($" {inv.Slot}.{inv.InventoryItem.ItemVNum}.{inv.InventoryItem.Rare}.{(item.Colored ? inv.InventoryItem.Color : inv.InventoryItem.Upgrade)}");
                         break;
                     case (short)InventoryType.Main:
-                        inv1 += String.Format(" {0}.{1}.{2}.0", inv.Slot, inv.InventoryItem.ItemVNum, inv.InventoryItem.Amount);
+                        inv1 += ($" {inv.Slot}.{inv.InventoryItem.ItemVNum}.{inv.InventoryItem.Amount}.0");
                         break;
                     case (short)InventoryType.Etc:
-                        inv2 += String.Format(" {0}.{1}.{2}.0", inv.Slot, inv.InventoryItem.ItemVNum, inv.InventoryItem.Amount);
+                        inv2 += ($" {inv.Slot}.{inv.InventoryItem.ItemVNum}.{inv.InventoryItem.Amount}.0");
                         break;
                     case (short)InventoryType.Sp:
-                        inv6 += String.Format(" {0}.{1}.{2}.{3}", inv.Slot, inv.InventoryItem.ItemVNum, inv.InventoryItem.Rare, inv.InventoryItem.Upgrade);
+                        inv6 += ($" {inv.Slot}.{inv.InventoryItem.ItemVNum}.{inv.InventoryItem.Rare}.{inv.InventoryItem.Upgrade}");
                         break;
                     case (short)InventoryType.Equipment:
                         break;
@@ -449,13 +451,13 @@ namespace OpenNos.GameObject
 
         public string GenerateEff(int effectid)
         {
-            return String.Format("eff 1 {0} {1}", CharacterId, effectid);
+            return ($"eff 1 {CharacterId} {effectid}");
         }
         public List<string> GenerateDroppedItem()
         {
             List<String> droplist = new List<String>();
             foreach (KeyValuePair<long, MapItem> item in ServerManager.GetMap(this.MapId).DroppedList)
-                droplist.Add(String.Format("drop {0} {1} {2} {3} {4} {5} {6}", item.Value.ItemVNum, item.Key, item.Value.PositionX, item.Value.PositionY, item.Value.Amount, 0, -1));
+                droplist.Add(($"drop {item.Value.ItemVNum} {item.Key} {item.Value.PositionX} {item.Value.PositionY} {item.Value.Amount} {0} {-1}"));
             return droplist;
         }
         public List<string> GenerateNPCShopOnMap()
@@ -463,14 +465,14 @@ namespace OpenNos.GameObject
             List<String> droplist = new List<String>();
             foreach (Npc npc in ServerManager.GetMap(this.MapId).Npcs)
                 if (npc.Shop != null)
-                    droplist.Add(String.Format("shop 2 {0} {1} {2} {3} {4}", npc.NpcId, 1, 0, npc.Shop.MenuType, npc.Shop.Name));
+                    droplist.Add(($"shop 2 {npc.NpcId} {1} {0} {npc.Shop.MenuType} {npc.Shop.Name}"));
             return droplist;
         }
         public List<string> GenerateShopOnMap()
         {
             List<String> droplist = new List<String>();
             foreach (KeyValuePair<long, MapShop> shop in ServerManager.GetMap(this.MapId).ShopUserList)
-                droplist.Add(String.Format("shop 1 {0} 1 3 0 {1}", shop.Key + 1, shop.Value.Name));
+                droplist.Add(($"shop 1 {shop.Key + 1} 1 3 0 {shop.Value.Name}"));
             return droplist;
         }
 
@@ -478,7 +480,7 @@ namespace OpenNos.GameObject
         {
             List<String> gpList = new List<String>();
             foreach (Portal portal in ServerManager.GetMap(this.MapId).Portals)
-                gpList.Add(String.Format("gp {0} {1} {2} {3} {4}", portal.SourceX, portal.SourceY, portal.DestinationMapId, portal.Type, 0));
+                gpList.Add(($"gp {portal.SourceX} {portal.SourceY} {portal.DestinationMapId} {portal.Type} {0}"));
             return gpList;
         }
 
@@ -486,23 +488,23 @@ namespace OpenNos.GameObject
         {
             List<String> in2List = new List<String>();
             foreach (Npc npc in ServerManager.GetMap(this.MapId).Npcs)
-                in2List.Add(String.Format("in 2 {0} {1} {2} {3} {4} 100 100 9632 0 0 - 1 1 0 - 1 - 0 - 1 0 0 0 0 0 0 0 0", npc.Vnum, npc.NpcId, npc.MapX, npc.MapY, npc.Position));
+                in2List.Add(($"in 2 {npc.Vnum} {npc.NpcId} {npc.MapX} {npc.MapY} {npc.Position} 100 100 9632 0 0 - 1 1 0 - 1 - 0 - 1 0 0 0 0 0 0 0 0"));
             return in2List;
         }
 
         public string GenerateFd()
         {
-            return String.Format("fd {0} {1} {2} {3}", Reput, GetReputIco(), Dignite, Math.Abs(GetDigniteIco()));
+            return ($"fd {Reput} {GetReputIco()} {Dignite} {Math.Abs(GetDigniteIco())}");
         }
 
         public string GenerateMapOut()
         {
-            return String.Format("mapout");
+            return ($"mapout");
         }
 
         public string GenerateOut()
         {
-            return String.Format("out 1 {0}", CharacterId);
+            return ($"out 1 {CharacterId}");
         }
 
         public double HPLoad()
@@ -553,12 +555,14 @@ namespace OpenNos.GameObject
         {
             Inventory specialist = EquipmentList.LoadBySlotAndType((short)EquipmentType.Sp, (short)InventoryType.Equipment);
 
-            return String.Format("lev {0} {1} {2} {3} {4} {5} {6} 2", Level, LevelXp, !UseSp || specialist == null ? JobLevel : specialist.InventoryItem.SpLevel, !UseSp || specialist == null ? JobLevelXp : specialist.InventoryItem.SpXp, XPLoad(), JobXPLoad(), Reput);
+            return ($@"lev {Level} {LevelXp} {(!UseSp || specialist == null ? JobLevel : specialist.InventoryItem.SpLevel)} 
+{(!UseSp || specialist == null ? JobLevelXp : specialist.InventoryItem.SpXp)} {XPLoad()} {JobXPLoad()} {Reput} 2");
         }
 
         public string GenerateCInfo()
         {
-            return String.Format("c_info {0} - {1} {2} - {3} {4} {5} {6} {7} {8} {9} {10} {11} {12} {13} {14} {15} ", Name, -1, -1, CharacterId, Authority, Gender, HairStyle, HairColor, Class, GetReputIco(), Compliment, UseSp || IsVehicled ? Morph : 0, Invisible, 0, UseSp ? MorphUpgrade : 0, ArenaWinner);
+            return ($@"c_info {Name} - {-1} {-1} - {CharacterId} {Authority} {Gender} {HairStyle} {HairColor} {Class} {GetReputIco()}
+{Compliment} {(UseSp || IsVehicled ? Morph : 0)} {Invisible} {0} {(UseSp ? MorphUpgrade : 0)} {ArenaWinner} ");
         }
 
         public int GetDigniteIco()
@@ -606,17 +610,18 @@ namespace OpenNos.GameObject
 
         public string GenerateTit()
         {
-            return String.Format("tit {0} {1}", Language.Instance.GetMessageFromKey(Class == (byte)ClassType.Adventurer ? ClassType.Adventurer.ToString().ToUpper() : Class == (byte)ClassType.Swordman ? ClassType.Swordman.ToString().ToUpper() : Class == (byte)ClassType.Archer ? ClassType.Archer.ToString().ToUpper() : ClassType.Magician.ToString().ToUpper()), Name);
+            return ($@"tit {Language.Instance.GetMessageFromKey(Class == (byte)ClassType.Adventurer ? ClassType.Adventurer.ToString().ToUpper() :
+                Class == (byte)ClassType.Swordman ? ClassType.Swordman.ToString().ToUpper() : Class == (byte)ClassType.Archer ? ClassType.Archer.ToString().ToUpper() : ClassType.Magician.ToString().ToUpper())} {Name}");
         }
 
         public string GenerateStat()
         {
-            return String.Format("stat {0} {1} {2} {3} 0 1024", Hp, HPLoad(), Mp, MPLoad());
+            return ($"stat {Hp} {HPLoad()} {Mp} {MPLoad()} 0 1024");
         }
 
         public string GenerateAt()
         {
-            return String.Format("at {0} {1} {2} {3} 2 0 0 1", CharacterId, MapId, MapX, MapY);
+            return ($"at {CharacterId} {MapId} {MapX} {MapY} 2 0 0 1");
         }
         public string GenerateReqInfo()
         {
@@ -624,42 +629,40 @@ namespace OpenNos.GameObject
             Inventory Armor = EquipmentList.LoadBySlotAndType((short)EquipmentType.Armor, (short)InventoryType.Equipment);
             Inventory Weapon2 = EquipmentList.LoadBySlotAndType((short)EquipmentType.SecondaryWeapon, (short)InventoryType.Equipment);
             Inventory Weapon = EquipmentList.LoadBySlotAndType((short)EquipmentType.MainWeapon, (short)InventoryType.Equipment);
-            return String.Format("tc_info {0} {1} {2} {3} {4} {9} 0 {8} {5} {6} {10} {11} {12} {13} {14} {15} {16} {17} {18} 0 0 {20} 0 0 0 {19} 0 0 0 0 0 {21} 0 0 0 0 {7}", Level, Name, Fairy != null ? ServerManager.GetItem(Fairy.InventoryItem.ItemVNum).Element : 0, Fairy != null ? Fairy.InventoryItem.ElementRate : 0, Class, GetReputIco(), GetDigniteIco(),
-                Language.Instance.GetMessageFromKey("NO_PREZ_MESSAGE"), Language.Instance.GetMessageFromKey("NO_FAMILY"),
-                Gender, Weapon != null ? 1 : 0, Weapon != null ? Weapon.InventoryItem.Rare : 0, Weapon != null ? Weapon.InventoryItem.Upgrade : 0,
-                Weapon2 != null ? 1 : 0, Weapon2 != null ? Weapon2.InventoryItem.Rare : 0, Weapon2 != null ? Weapon2.InventoryItem.Upgrade : 0,
-                Armor != null ? 1 : 0, Armor != null ? Armor.InventoryItem.Rare : 0, Armor != null ? Armor.InventoryItem.Upgrade : 0, UseSp ? Morph : 0, Reput, Compliment);
+            return ($@"tc_info {Level} {Name} {(Fairy != null ? ServerManager.GetItem(Fairy.InventoryItem.ItemVNum).Element : 0)} {(Fairy != null ? Fairy.InventoryItem.ElementRate : 0)}
+{Class} {Gender} 0 {Language.Instance.GetMessageFromKey("NO_FAMILY")} {GetReputIco()} {GetDigniteIco()} {(Weapon != null ? 1 : 0)} {(Weapon != null ? Weapon.InventoryItem.Rare : 0)}
+{(Weapon != null ? Weapon.InventoryItem.Upgrade : 0)} {(Weapon2 != null ? 1 : 0)} {(Weapon2 != null ? Weapon2.InventoryItem.Rare : 0)} {(Weapon2 != null ? Weapon2.InventoryItem.Upgrade : 0)}
+{(Armor != null ? 1 : 0)} {(Armor != null ? Armor.InventoryItem.Rare : 0)} {(Armor != null ? Armor.InventoryItem.Upgrade : 0)} 0 0 {Reput} 0 0 0 {(UseSp ? Morph : 0)} 0 0 0 0 0 {Compliment} 0 0 0 0 {Language.Instance.GetMessageFromKey("NO_PREZ_MESSAGE")}");
         }
 
         public string GenerateCMap()
         {
-            return String.Format("c_map 0 {0} 1", MapId);
+            return ($"c_map 0 {MapId} 1");
         }
 
         public string GenerateCond()
         {
-            return String.Format("cond 1 {0} 0 0 {1}", CharacterId, Speed);
+            return ($"cond 1 {CharacterId} 0 0 {Speed}");
         }
 
         public string GenerateExts()
         {
-            return String.Format("exts 0 {0} {0} {0}", 48 + BackPack * 12);
-
+            return ($"exts 0 {48 + BackPack * 12} {48 + BackPack * 12} {48 + BackPack * 12}");
         }
 
         public string GenerateMv(int x, int y)
         {
-            return String.Format("mv 1 {0} {1} {2} {3}", CharacterId, x, y, Speed);
+            return ($"mv 1 {CharacterId} {x} {y} {Speed}");
         }
 
         public string GenerateCMode()
         {
-            return String.Format("c_mode 1 {0} {1} {2} {3} {4}", CharacterId, UseSp || IsVehicled ? Morph : 0, UseSp ? MorphUpgrade : 0, UseSp ? MorphUpgrade2 : 0, ArenaWinner);
+            return ($"c_mode 1 {CharacterId} {(UseSp || IsVehicled ? Morph : 0)} {(UseSp ? MorphUpgrade : 0)} {(UseSp ? MorphUpgrade2 : 0)} {ArenaWinner}");
         }
 
         public string GenerateSay(string message, int type)
         {
-            return String.Format("say 1 {0} {1} {2}", CharacterId, type, message);
+            return ($"say 1 {CharacterId} {type} {message}");
         }
 
         public string GenerateIn()
@@ -670,23 +673,25 @@ namespace OpenNos.GameObject
                 Color = head.InventoryItem.Color;
             Inventory fairy = EquipmentList.LoadBySlotAndType((short)EquipmentType.Fairy, (short)InventoryType.Equipment);
 
-
-            return String.Format("in 1 {0} - {1} {2} {3} {4} {5} {6} {7} {8} {9} {17} {10} {11} {12} -1 {25} {22} 0 {23} 0 {19} {18} -1 - {13} {16} {20} 0 {21} {14} 0 {15} {26} {24}", Name, CharacterId, MapX, MapY, Direction, (Authority == 2 ? 2 : 0), Gender, HairStyle, Color, Class, (int)((Hp / HPLoad()) * 100), (int)((Mp / MPLoad()) * 100), _rested, (GetDigniteIco() == 1) ? GetReputIco() : -GetDigniteIco(), 0, ArenaWinner, _invisible, generateEqListForPacket(), generateEqRareUpgradeForPacket(), (UseSp ? Morph : 0), (UseSp ? MorphUpgrade : 0), (UseSp ? MorphUpgrade2 : 0), fairy != null ? ServerManager.GetItem(fairy.InventoryItem.ItemVNum).Element : 0, fairy != null ? ServerManager.GetItem(fairy.InventoryItem.ItemVNum).Morph : 0, Size, fairy != null ? 2 : 0, Compliment);
+            return ($@"in 1 {Name} - {CharacterId} {MapX} {MapY} {Direction} {(Authority == 2 ? 2 : 0)} {Gender} {HairStyle} {Color} {Class} {generateEqListForPacket()}
+{(int)((Hp / HPLoad()) * 100)} {(int)((Mp / MPLoad()) * 100)} {_rested} -1 {Size} {(fairy != null ? ServerManager.GetItem(fairy.InventoryItem.ItemVNum).Element : 0)} 0
+{(fairy != null ? ServerManager.GetItem(fairy.InventoryItem.ItemVNum).Morph : 0)} 0 {(UseSp ? Morph : 0)} {generateEqRareUpgradeForPacket()} -1 - {((GetDigniteIco() == 1) ? GetReputIco() : -GetDigniteIco())}
+{_invisible} {(UseSp ? MorphUpgrade : 0)} 0 {(UseSp ? MorphUpgrade2 : 0)} {0} 0 {ArenaWinner} {(fairy != null ? 2 : 0)} {Compliment}");
         }
 
         public string GenerateRest()
         {
-            return String.Format("rest 1 {0} {1}", CharacterId, Rested);
+            return ($"rest 1 {CharacterId} {Rested}");
         }
 
         public string GenerateDir()
         {
-            return String.Format("dir 1 {0} {1}", CharacterId, Direction);
+            return ($"dir 1 {CharacterId} {Direction}");
         }
 
         public string GenerateMsg(string message, int v)
         {
-            return String.Format("msg {0} {1}", v, message);
+            return ($"msg {v} {message}");
         }
 
         public string GenerateEquipment()
@@ -714,10 +719,10 @@ namespace OpenNos.GameObject
                         WeaponRare = inv.InventoryItem.Rare;
                         WeaponUpgrade = inv.InventoryItem.Upgrade;
                     }
-                    eqlist += String.Format(" {0}.{1}.{2}.{3}.{4}", i, iteminfo.VNum, inv.InventoryItem.Rare, iteminfo.Colored ? inv.InventoryItem.Color : inv.InventoryItem.Upgrade, 0);
+                    eqlist += ($" {i}.{iteminfo.VNum}.{inv.InventoryItem.Rare}.{(iteminfo.Colored ? inv.InventoryItem.Color : inv.InventoryItem.Upgrade)}.{0}");
                 }
             }
-            return String.Format("equip {0}{1} {2}{3}{4}", WeaponUpgrade, WeaponRare, ArmorUpgrade, ArmorRare, eqlist);
+            return ($"equip {WeaponUpgrade}{WeaponRare} {ArmorUpgrade}{ArmorRare}{eqlist}");
         }
 
         public string GenerateStatChar()
@@ -767,7 +772,7 @@ namespace OpenNos.GameObject
             DistanceDefenceRate = ServersData.DistanceDefenceRate(Class, Level);
             MagicalDefence = ServersData.MagicalDefence(Class, Level);
 
-            //TODO add base stats
+            //TODO: add base stats
             Inventory weapon = EquipmentList.LoadBySlotAndType((short)EquipmentType.MainWeapon, (short)InventoryType.Equipment);
             if (weapon != null)
             {
@@ -822,7 +827,8 @@ namespace OpenNos.GameObject
                 DistanceDefenceRate += item.InventoryItem.DistanceDefenceDodge + iteminfo.DistanceDefenceDodge;
                 //maxhp-mp
             }
-            return String.Format("sc {0} {1} {2} {3} {4} {5} {6} {7} {8} {9} {10} {11} {12} {13} {14} {15} {16} {17} {18} {19} {20} {21} {22} {23}", type, WeaponUpgrade, MinHit, MaxHit, HitRate, HitCriticalRate, HitCritical, type2, SecondaryUpgrade, MinDistance, MaxDistance, DistanceRate, DistanceCriticalRate, DistanceCritical, ArmorUpgrade, Defence, DefenceRate, DistanceDefence, DistanceDefenceRate, MagicalDefence, FireResistance, WaterResistance, LightResistance, DarkResistance);
+            return ($@"sc {type} {WeaponUpgrade} {MinHit} {MaxHit} {HitRate} {HitCriticalRate} {HitCritical} {type2} {SecondaryUpgrade} {MinDistance} {MaxDistance} {DistanceRate} {DistanceCriticalRate} {DistanceCritical}
+{ArmorUpgrade} {Defence} {DefenceRate} {DistanceDefence} {DistanceDefenceRate} {MagicalDefence} {FireResistance} {WaterResistance} {LightResistance} {DarkResistance}");
         }
 
         public string GeneratePairy()
@@ -830,25 +836,25 @@ namespace OpenNos.GameObject
             Inventory fairy = EquipmentList.LoadBySlotAndType((short)EquipmentType.Fairy, (short)InventoryType.Equipment);
 
             if (fairy != null)
-                return String.Format("pairy 1 {0} 4 {1} {2} {3}", CharacterId, ServerManager.GetItem(fairy.InventoryItem.ItemVNum).Element, fairy.InventoryItem.ElementRate, ServerManager.GetItem(fairy.InventoryItem.ItemVNum).Morph);
+                return ($"pairy 1 {CharacterId} 4 {ServerManager.GetItem(fairy.InventoryItem.ItemVNum).Element} {fairy.InventoryItem.ElementRate} {ServerManager.GetItem(fairy.InventoryItem.ItemVNum).Morph}");
             else
-                return String.Format("pairy 1 {0} 0 0 0 40", CharacterId);
+                return ($"pairy 1 {CharacterId} 0 0 0 40");
 
         }
 
         public string GenerateSpk(object message, int v)
         {
-            return String.Format("spk 1 {0} {1} {2} {3}", CharacterId, v, Name, message);
+            return ($"spk 1 {CharacterId} {v} {Name} {message}");
         }
 
         public string GenerateInfo(string message)
         {
-            return String.Format("info {0}", message);
+            return ($"info {message}");
         }
 
         public string GenerateStatInfo()
         {
-            return String.Format("st 1 {0} {1} {2} {3} {4} {5}", CharacterId, Level, (int)((Hp / HPLoad()) * 100), (int)((Mp / MPLoad()) * 100), Hp, Mp);
+            return ($"st 1 {CharacterId} {Level} {(int)((Hp / HPLoad()) * 100)} {(int)((Mp / MPLoad()) * 100)} {Hp} {Mp}");
         }
         public string generateEqListForPacket()
         {
@@ -864,7 +870,8 @@ namespace OpenNos.GameObject
                 else invarray[i] = "-1";
             }
 
-            return String.Format("{0}.{1}.{2}.{3}.{4}.{5}.{6}.{7}", invarray[(short)EquipmentType.Hat], invarray[(short)EquipmentType.Armor], invarray[(short)EquipmentType.MainWeapon], invarray[(short)EquipmentType.SecondaryWeapon], invarray[(short)EquipmentType.Mask], invarray[(short)EquipmentType.Fairy], invarray[(short)EquipmentType.CostumeSuite], invarray[(short)EquipmentType.CostumeHat]);
+            return ($@"{invarray[(short)EquipmentType.Hat]}.{invarray[(short)EquipmentType.Armor]}.{invarray[(short)EquipmentType.MainWeapon]}.{invarray[(short)EquipmentType.SecondaryWeapon]}.
+{invarray[(short)EquipmentType.Mask]}.{invarray[(short)EquipmentType.Fairy]}.{invarray[(short)EquipmentType.CostumeSuite]}.{invarray[(short)EquipmentType.CostumeHat]}");
         }
 
         public string generateEqRareUpgradeForPacket()
@@ -892,7 +899,7 @@ namespace OpenNos.GameObject
                     }
                 }
             }
-            return String.Format("{0}{1} {2}{3}", WeaponUpgrade, WeaponRare, ArmorUpgrade, ArmorRare);
+            return ($"{WeaponUpgrade}{WeaponRare} {ArmorUpgrade}{ArmorRare}");
         }
 
         public string GenerateEq()
@@ -902,12 +909,12 @@ namespace OpenNos.GameObject
             if (head != null && ServerManager.GetItem(head.InventoryItem.ItemVNum).Colored)
                 color = head.InventoryItem.Color;
 
-            return String.Format("eq {0} {1} {2} {3} {4} {5} {6} {7}", CharacterId, (Authority == 2 ? 2 : 0), Gender, HairStyle, color, Class, generateEqListForPacket(), generateEqRareUpgradeForPacket());
+            return ($"eq {CharacterId} {(Authority == 2 ? 2 : 0)} {Gender} {HairStyle} {color} {Class} {generateEqListForPacket()} {generateEqRareUpgradeForPacket()}");
         }
 
         public string GenerateFaction()
         {
-            return String.Format("fs {0}", Faction);
+            return ($"fs {Faction}");
         }
 
         public string Dance()
@@ -922,15 +929,15 @@ namespace OpenNos.GameObject
             switch (type)
             {
                 case (short)InventoryType.Costume:
-                    return String.Format("ivn 7 {0}.{1}.{2}.{3}", slot, vnum, rare, upgrade);
+                    return ($"ivn 7 {slot}.{vnum}.{rare}.{upgrade}");
                 case (short)InventoryType.Wear:
-                    return String.Format("ivn 0 {0}.{1}.{2}.{3}", slot, vnum, rare, item != null ? (item.Colored ? color : upgrade) : upgrade);
+                    return ($"ivn 0 {slot}.{vnum}.{rare}.{(item != null ? (item.Colored ? color : upgrade) : upgrade)}");
                 case (short)InventoryType.Main:
-                    return String.Format("ivn 1 {0}.{1}.{2}", slot, vnum, amount);
+                    return ($"ivn 1 {slot}.{vnum}.{amount}");
                 case (short)InventoryType.Etc:
-                    return String.Format("ivn 2 {0}.{1}.{2}", slot, vnum, amount);
+                    return ($"ivn 2 {slot}.{vnum}.{amount}");
                 case (short)InventoryType.Sp:
-                    return String.Format("ivn 6 {0}.{1}.{2}.{3}", slot, vnum, rare, upgrade);
+                    return ($"ivn 6 {slot}.{vnum}.{rare}.{upgrade}");
             }
             return String.Empty;
         }
@@ -945,59 +952,57 @@ namespace OpenNos.GameObject
 
         public string GenerateShopMemo(int type, string message)
         {
-            return String.Format("s_memo {0} {1}", type, message);
+            return ($"s_memo {type} {message}");
         }
 
         public string GeneratePlayerFlag(long pflag)
         {
-            return String.Format("pflag 1 {0} {1}", CharacterId, pflag);
+            return ($"pflag 1 {CharacterId} {pflag}");
         }
         public List<string> GeneratePlayerShopOnMap()
         {
             List<String> droplist = new List<String>();
-            // foreach (KeyValuePair<long, MapShop> shop in ServerManager.GetMap(this.MapId).ShopUserList)
-            //   droplist.Add(String.Format("pflag 1 {0} {1}", shop.Value.OwnerId, shop.Key+1));
+            /*foreach (KeyValuePair<long, MapShop> shop in ServerManager.GetMap(this.MapId).ShopUserList)
+              droplist.Add(($"pflag 1 {shop.Value.OwnerId} {shop.Key+1}"));*/
             return droplist;
         }
         public string GenerateDialog(string dialog)
         {
-            return String.Format("dlg {0}", dialog);
+            return ($"dlg {dialog}");
         }
 
         public string GenerateShop(string shopname)
         {
-            return String.Format("shop 1 {0} 1 3 0 {1}", CharacterId, shopname);
+            return ($"shop 1 {CharacterId} 1 3 0 {shopname}");
         }
 
         public string GenerateGet(long id)
         {
-            return String.Format("get 1 {0} {1} 0", CharacterId, id);
+            return ($"get 1 {CharacterId} {id} 0");
         }
 
         public string GenerateShopEnd()
         {
-            return String.Format("shop 1 {0} 0 0", CharacterId);
-
-
+            return ($"shop 1 {CharacterId} 0 0");
         }
 
         public string GenerateModal(string message, int type)
         {
-            return String.Format("modal {1} {0}", message, type);
+            return ($"modal {message} {type}");
         }
 
         public string GenerateSpPoint()
         {
-            return String.Format("sp {0} 1000000 {1} 10000", SpAdditionPoint, SpPoint);
+            return ($"sp {SpAdditionPoint} 1000000 {SpPoint} 10000"); // sp {additional actual value} ~additional maximum value~ {normal actual value} ~normal maximum value~
         }
 
         public string GenerateScal()
         {
-            return String.Format("char_sc 1 {0} {1}", CharacterId, Size);
+            return ($"char_sc 1 {CharacterId} {Size}");
         }
         public string GenerateGender()
         {
-            return String.Format("p_sex {0}", Gender);
+            return ($"p_sex {Gender}");
         }
 
         public string GenerateEInfo(InventoryItem item)

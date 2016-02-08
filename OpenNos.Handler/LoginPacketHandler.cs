@@ -37,7 +37,7 @@ namespace OpenNos.Handler
 
         public string BuildServersPacket(int session)
         {
-            string channelPacket = String.Format("NsTeST {0} ", session);
+            string channelPacket = ($"NsTeST {session} ");
             List<ServerConfig.Server> myServs = (List<ServerConfig.Server>)ConfigurationManager.GetSection("Servers");
 
             checked
@@ -48,12 +48,7 @@ namespace OpenNos.Handler
                     w++;
                     for (int j = 1; j <= serv.channelAmount; j++)
                     {
-                        channelPacket += String.Format("{0}:{1}:1:{2}.{3}.{4} ",
-                            serv.WorldIp,
-                            (serv.WorldPort + j - 1),
-                            w,
-                            j,
-                            serv.name);
+                        channelPacket += ($"{serv.WorldIp}:{(serv.WorldPort + j - 1)}:1:{w}.{j}.{serv.name} ");
                     }
                 }
                 return channelPacket;
@@ -87,12 +82,12 @@ namespace OpenNos.Handler
                             {
                                 case AuthorityType.Banned:
                                     {
-                                        _session.Client.SendPacket(String.Format("fail {0}", Language.Instance.GetMessageFromKey("BANNED")));
+                                        _session.Client.SendPacket(($"fail {Language.Instance.GetMessageFromKey("BANNED")}"));
                                     }
                                     break;
                                 case AuthorityType.Unknown:
                                     {
-                                        _session.Client.SendPacket(String.Format("fail {0}", Language.Instance.GetMessageFromKey("NOTVALIDATE")));
+                                        _session.Client.SendPacket(($"fail {Language.Instance.GetMessageFromKey("NOTVALIDATE")}"));
                                     }
                                     break;
                                 default:
@@ -124,22 +119,22 @@ namespace OpenNos.Handler
                         }
                         else
                         {
-                            _session.Client.SendPacket(String.Format("fail {0}", Language.Instance.GetMessageFromKey("ALREADY_CONNECTED").ToString()));
+                            _session.Client.SendPacket(($"fail {Language.Instance.GetMessageFromKey("ALREADY_CONNECTED").ToString()}"));
                         }
                     }
                     else
                     {
-                        _session.Client.SendPacket(String.Format("fail {0}", Language.Instance.GetMessageFromKey("IDERROR").ToString()));
+                        _session.Client.SendPacket(($"fail {Language.Instance.GetMessageFromKey("IDERROR").ToString()}"));
                     }
                 }
                 else
                 {
-                    _session.Client.SendPacket(String.Format("fail {O}", Language.Instance.GetMessageFromKey("CLOSE").ToString()));
+                    _session.Client.SendPacket(($"fail {Language.Instance.GetMessageFromKey("CLOSE").ToString()}"));
                 }
             }
             else
             {
-                _session.Client.SendPacket(String.Format("fail {O}", Language.Instance.GetMessageFromKey("WAITING").ToString()));
+                _session.Client.SendPacket(($"fail {Language.Instance.GetMessageFromKey("WAITING").ToString()}"));
             }
         }
     }
