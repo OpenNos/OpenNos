@@ -618,7 +618,7 @@ namespace OpenNos.GameObject
 
         public string GenerateAt()
         {
-            return ($"at {CharacterId} {MapId} {MapX} {MapY} 2 0 0 1");
+            return ($"at {CharacterId} {MapId} {MapX} {MapY} 2 0 {ServerManager.GetMap(MapId).Music} 1");
         }
         public string GenerateReqInfo()
         {
