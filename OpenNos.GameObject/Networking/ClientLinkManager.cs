@@ -193,7 +193,7 @@ namespace OpenNos.GameObject
                     session.Client.SendPacket(session.Character.GenerateGold());
                     session.Client.SendPacket(session.Character.GenerateShopMemo(1, String.Format(Language.Instance.GetMessageFromKey("BUY_ITEM"), session.Character.Name, ServerManager.GetItem(itemshop.ItemVNum).Name, amount)));
                     Session.CurrentMap.ShopUserList[shop.Key].Sell += itemshop.Price * amount;
-                    session.Client.SendPacket(String.Format("sell_list {0} {1}.{2}.{3}", shop.Value.Sell, slot, amount, itemshop.Amount));
+                    session.Client.SendPacket(($"sell_list {shop.Value.Sell} {slot}.{amount}.{itemshop.Amount}"));
                     Inventory inv = session.Character.InventoryList.AmountMinusFromSlotAndType(amount, itemshop.InvSlot, itemshop.InvType);
                     if (inv != null)
                     {

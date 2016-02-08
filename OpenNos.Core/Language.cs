@@ -37,7 +37,7 @@ namespace OpenNos.Core
             if (resourceManager.GetString(message) != null && resourceManager.GetString(message) != "")
                 return resourceManager.GetString(message);
             else
-                return String.Format("#<{0}>", message);
+                return ($"#<{message}>");
         }
     }
 }

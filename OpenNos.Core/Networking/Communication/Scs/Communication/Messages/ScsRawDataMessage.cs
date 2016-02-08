@@ -52,8 +52,8 @@ namespace OpenNos.Core.Communication.Scs.Communication.Messages
         {
             var messageLength = MessageData == null ? 0 : MessageData.Length;
             return string.IsNullOrEmpty(RepliedMessageId)
-                       ? string.Format("ScsRawDataMessage [{0}]: {1} bytes", MessageId, messageLength)
-                       : string.Format("ScsRawDataMessage [{0}] Replied To [{1}]: {2} bytes", MessageId, RepliedMessageId, messageLength);
+                       ? ($"ScsRawDataMessage [{MessageId}]: {messageLength} bytes")
+                       : ($"ScsRawDataMessage [{MessageId}] Replied To [{RepliedMessageId}]: {messageLength} bytes");
         }
     }
 }

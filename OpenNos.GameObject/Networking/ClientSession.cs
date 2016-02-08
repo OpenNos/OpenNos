@@ -347,7 +347,7 @@ namespace OpenNos.GameObject
                     }
                 default:
                     {
-                        Logger.Log.ErrorFormat("Unknown Notification ReceiverType for client, {0}", Client.ClientId);
+                        Logger.Log.ErrorFormat($"Unknown Notification ReceiverType for client, {Client.ClientId}");
                         break;
                     }
             }
@@ -378,7 +378,7 @@ namespace OpenNos.GameObject
                 {
                     //we need to wait for more
                     _waitForPacketsAmount = methodInfo.Key.Amount;
-                    _waitForPacketList.Add(packet != String.Empty ? packet : String.Format("1 {0} ", packetHeader));
+                    _waitForPacketList.Add(packet != String.Empty ? packet : ($"1 {packetHeader} "));
                     return false;
                 }
 

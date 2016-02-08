@@ -48,7 +48,7 @@ namespace OpenNos.GameObject
             while (true)
             {
 
-                Console.Title = String.Format("{2} v{0} - Memory: {1}MB", fileVersionInfo.ProductVersion, GC.GetTotalMemory(true) / (1024 * 1024),type);
+                Console.Title = ($"{type} v{fileVersionInfo.ProductVersion} - Memory: {GC.GetTotalMemory(true) / (1024 * 1024)}MB");
                 Thread.Sleep(1000);
             }
         }
