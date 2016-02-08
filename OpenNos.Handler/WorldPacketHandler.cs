@@ -2214,12 +2214,12 @@ namespace OpenNos.Handler
             {
                 flinit += ($" {character.CharacterId}|{character.Level}|{character.Reput}|{character.Name}");
             }
-            if (false) //Need to delete it when gettoppoint will not return null
+            /*if (false) //Need to delete it when gettoppoint will not return null
                 foreach (CharacterDTO character in DAOFactory.CharacterDAO.GetTopPoints())
                 {
                     kdlinit += ($" {character.CharacterId}|{character.Level}|{0}|{character.Name}"); //need to find true var for 0
                 }
-
+                */
             Session.Client.SendPacket(clinit);
             Session.Client.SendPacket(flinit);
             Session.Client.SendPacket(kdlinit);
