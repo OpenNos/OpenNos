@@ -14,6 +14,5 @@ namespace OpenNos.Domain
         Sp = 6,
         Costume = 7,
         Equipment = 8
-
     }
 }
