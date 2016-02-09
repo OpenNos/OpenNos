@@ -11,7 +11,7 @@ namespace OpenNos.Domain
         Weapon = 0,
         Armor = 1,
         Mask = 2,
-        Amulet = 3,
+        Jewelery = 3,
         Specialist = 4,
         Pet = 5,
         Runes = 6,
@@ -28,10 +28,10 @@ namespace OpenNos.Domain
         Quest = 17,
         //smthng = 18
         //smthng = 19
-        Sold = 20,
+        Sell = 20,
         Food = 21,
         Snack = 22,
-        // smthng = 23
+        //smthng = 23
         Magical = 24,
         Part = 25,
         Teacher = 26,
