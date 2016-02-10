@@ -11,22 +11,20 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  */
+
+using AutoMapper;
 using OpenNos.DAL.EF.MySQL.DB;
 using OpenNos.DAL.Interface;
-using OpenNos.Domain;
-using System;
+using OpenNos.Data;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using OpenNos.Data;
-using AutoMapper;
-using OpenNos.Core;
 
 namespace OpenNos.DAL.EF.MySQL
 {
     public class NpcDAO : INpcDAO
     {
+        #region Methods
+
         public IEnumerable<NpcDTO> LoadFromMap(short MapId)
         {
             using (var context = DataAccessHelper.CreateContext())
@@ -37,5 +35,7 @@ namespace OpenNos.DAL.EF.MySQL
                 }
             }
         }
+
+        #endregion
     }
 }

@@ -11,13 +11,9 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  */
+
 using OpenNos.Data;
-using OpenNos.Domain;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OpenNos.DAL.Interface
 {
@@ -25,24 +21,23 @@ namespace OpenNos.DAL.Interface
     {
         #region Methods
 
-        AccountDTO LoadById(long accountId);
-
-        AccountDTO LoadBySessionId(int sessionId);
-
-        AccountDTO LoadByName(string Name);
-
-        void UpdateLastSessionAndIp(string name, int session, string ip);
-
-
-        void LogIn(string name);
-
-        void WriteConnectionLog(long accountId, string ipAddress, Nullable<long> characterId, string logType, string logData);
+        DeleteResult Delete(long accountId);
 
         SaveResult InsertOrUpdate(ref AccountDTO account);
 
-        DeleteResult Delete(long accountId);
+        AccountDTO LoadById(long accountId);
+
+        AccountDTO LoadByName(string Name);
+
+        AccountDTO LoadBySessionId(int sessionId);
+
+        void LogIn(string name);
 
         void ToggleBan(long id);
+
+        void UpdateLastSessionAndIp(string name, int session, string ip);
+
+        void WriteConnectionLog(long accountId, string ipAddress, Nullable<long> characterId, string logType, string logData);
 
         #endregion
     }

@@ -1,18 +1,17 @@
-﻿using OpenNos.Domain;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace OpenNos.Data
+﻿namespace OpenNos.Data
 {
     public class ShopDTO
     {
+        #region Properties
+
+        public short MenuType { get; set; }
+
+        public string Name { get; set; }
+
+        public short NpcId { get; set; }
 
         public int ShopId { get; set; }
-        public string Name { get; set; }
-        public short NpcId { get; set; }
-        public short MenuType { get; set; }
+
+        #endregion
     }
 }
