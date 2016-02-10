@@ -57,9 +57,52 @@ namespace OpenNos.DAL.EF.MySQL
         }
         private InventoryItemDTO Insert(InventoryItemDTO inventoryitem, OpenNosContainer context)
         {
-            InventoryItem entity = Mapper.Map<InventoryItem>(inventoryitem);
+
+            InventoryItem entity = new InventoryItem() { Ammo = inventoryitem.Ammo,
+                FireElement = inventoryitem.FireElement,
+                IsFixed = inventoryitem.IsFixed,
+                Color = inventoryitem.Color,
+                Concentrate = inventoryitem.Concentrate,
+                Amount = inventoryitem.Amount,
+                CriticalLuckRate = inventoryitem.CriticalLuckRate,
+                CriticalRate = inventoryitem.CriticalRate,
+                DamageMaximum = inventoryitem.DamageMaximum,
+                DamageMinimum = inventoryitem.DamageMinimum,
+                DarkElement = inventoryitem.DarkElement,
+                DefenceDodge = inventoryitem.DefenceDodge,
+                DistanceDefence = inventoryitem.DistanceDefence,
+                DistanceDefenceDodge = inventoryitem.DistanceDefenceDodge,
+                ElementRate = inventoryitem.ElementRate,
+                HitRate = inventoryitem.HitRate,
+                ItemVNum = inventoryitem.ItemVNum,
+                LightElement = inventoryitem.LightElement,
+                MagicDefence = inventoryitem.MagicDefence,
+                Rare = inventoryitem.Rare,
+                SlDefence = inventoryitem.SlDefence,
+                SlElement = inventoryitem.SlElement,
+                SlHit = inventoryitem.SlHit,
+                SlHP = inventoryitem.SlHP,
+                 SpLevel = inventoryitem.SpLevel,
+                 SpXp = inventoryitem.SpXp,
+                 Upgrade = inventoryitem.Upgrade,
+                 WaterElement = inventoryitem.WaterElement,
+
+
+                RangeDefence = inventoryitem.RangeDefence,
+
+            };
+          
             context.inventoryitem.Add(entity);
-            context.SaveChanges();
+            try {
+                context.SaveChanges();
+            }
+            catch(Exception e)
+            {
+              
+                Logger.Log.ErrorFormat(e.Message);
+
+            }
+
             return Mapper.Map<InventoryItemDTO>(entity);
         }
         private InventoryItemDTO Update(InventoryItem entity, InventoryItemDTO inventoryitem, OpenNosContainer context)
@@ -76,7 +119,7 @@ namespace OpenNos.DAL.EF.MySQL
 
             return Mapper.Map<InventoryItemDTO>(entity);
         }
-        public DeleteResult DeleteById(short ItemId)
+        public DeleteResult DeleteById(long ItemId)
         {
             using (var context = DataAccessHelper.CreateContext())
             {

@@ -257,7 +257,7 @@
     <Property Name="FireElement" Type="smallint" Nullable="false" />
     <Property Name="ItemVNum" Type="smallint" Nullable="false" />
     <Property Name="Ammo" Type="smallint" Nullable="false" />
-    <Property Name="IsFixed" Type="longtext" Nullable="false" />
+    <Property Name="IsFixed" Type="bool" Nullable="false" />
   </EntityType>
   <EntityType Name="inventory">
     <Key>
@@ -813,7 +813,7 @@
           <NavigationProperty Name="item" Relationship="opennosModel.InventoryItemItem" FromRole="InventoryItem" ToRole="Item" />
           <Property Name="ItemVNum" Type="Int16" Nullable="false" />
           <Property Name="Ammo" Type="Int16" Nullable="false" />
-          <Property Name="IsFixed" Type="String" Nullable="false" />
+          <Property Name="IsFixed" Type="Boolean" Nullable="false" />
           </EntityType>
         <EntityType Name="Inventory">
           <Key>

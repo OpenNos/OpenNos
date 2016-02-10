@@ -91,10 +91,11 @@ namespace OpenNos.GameObject
         }
 
         void Server_ClientDisconnected(object sender, ServerClientEventArgs e)
-        {
+        {      
             ClientSession session;
             _sessions.TryRemove(e.Client.ClientId, out session);
             ClientLinkManager.Instance.sessions.Remove(session);
+            session.Character.Save();
             if (session.Character != null)
             {
                 //only remove the character from map if the character has been set

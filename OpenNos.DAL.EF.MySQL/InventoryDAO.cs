@@ -34,9 +34,10 @@ namespace OpenNos.DAL.EF.MySQL
                 using (var context = DataAccessHelper.CreateContext())
                 {
 
-                    long inventoryId = inventory.InventoryId;
-
-                    Inventory entity = context.inventory.SingleOrDefault(c => c.InventoryId.Equals(inventoryId));
+                    long characterId = inventory.CharacterId;
+                    short slot = inventory.Slot;
+                    short type = inventory.Type;
+                    Inventory entity = context.inventory.SingleOrDefault(c => c.Type.Equals(type) && c.Slot.Equals(slot) && c.CharacterId.Equals(characterId));
 
                     if (entity == null) //new entity
                     {
@@ -45,6 +46,7 @@ namespace OpenNos.DAL.EF.MySQL
                     }
                     else //existing entity
                     {
+                        inventory.InventoryId = entity.InventoryId;
                         inventory = Update(entity, inventory, context);
                         return SaveResult.Updated;
                     }
@@ -100,7 +102,13 @@ namespace OpenNos.DAL.EF.MySQL
         }
         private InventoryDTO Insert(InventoryDTO inventory, OpenNosContainer context)
         {
-            Inventory entity = Mapper.Map<Inventory>(inventory);
+            Inventory entity = new Inventory()
+            {
+                CharacterId = inventory.CharacterId,
+                InventoryItemId = inventory.InventoryItemId,
+                Slot = inventory.Slot,
+                Type = inventory.Type,
+            };
             context.inventory.Add(entity);
             context.SaveChanges();
             return Mapper.Map<InventoryDTO>(entity);
