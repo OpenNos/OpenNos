@@ -36,7 +36,7 @@
 
         public long InventoryItemId { get; set; }
 
-        public string IsFixed { get; set; }
+        public bool IsFixed { get; set; }
 
         public short ItemVNum { get; set; }
 

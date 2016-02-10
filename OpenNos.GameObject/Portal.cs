@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace OpenNos.GameObject
 {
-    public class Portal : PortalDTO, IGameObject
+    public class Portal : PortalDTO
     {
         #region Instantiation
 
@@ -34,11 +34,6 @@ namespace OpenNos.GameObject
         #endregion
 
         #region Methods
-
-        public void Save()
-        {
-            throw new NotImplementedException();
-        }
 
         #endregion
     }

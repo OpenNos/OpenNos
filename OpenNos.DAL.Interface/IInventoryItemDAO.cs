@@ -6,7 +6,7 @@ namespace OpenNos.DAL.Interface
     public interface IInventoryItemDAO
     {
         InventoryItemDTO LoadById(long ItemId);
-        DeleteResult DeleteById(short ItemId);
+        DeleteResult DeleteById(long ItemId);
         SaveResult InsertOrUpdate(ref InventoryItemDTO item);
     }
 }
