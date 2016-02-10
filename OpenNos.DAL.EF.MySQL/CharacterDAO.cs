@@ -1,14 +1,12 @@
-﻿using OpenNos.DAL.Interface;
+﻿using AutoMapper;
+using OpenNos.Core;
+using OpenNos.DAL.EF.MySQL.DB;
+using OpenNos.DAL.Interface;
+using OpenNos.Data;
+using OpenNos.Domain;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using OpenNos.Data;
-using OpenNos.DAL.EF.MySQL.DB;
-using AutoMapper;
-using OpenNos.Core;
-using OpenNos.Domain;
 
 namespace OpenNos.DAL.EF.MySQL
 {
@@ -16,43 +14,66 @@ namespace OpenNos.DAL.EF.MySQL
     {
         #region Methods
 
-        #region Public
+        public DeleteResult Delete(long accountId, byte characterSlot)
+        {
+            try
+            {
+                using (var context = DataAccessHelper.CreateContext())
+                {
+                    //actually a character wont be deleted, it just will be disabled for future traces
+                    byte state = (byte)CharacterState.Active;
+                    Character character = context.character.SingleOrDefault(c => c.AccountId.Equals(accountId) && c.Slot.Equals(characterSlot)
+                                            && c.State.Equals(state));
 
-        public IEnumerable<CharacterDTO> LoadByAccount(long accountId)
+                    if (character != null)
+                    {
+                        byte obsoleteState = (byte)CharacterState.Inactive;
+                        character.State = obsoleteState;
+                        Update(character, Mapper.Map<CharacterDTO>(character), context);
+                    }
+
+                    return DeleteResult.Deleted;
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Log.ErrorFormat("DELETE_ERROR", characterSlot, e.Message);
+                return DeleteResult.Error;
+            }
+        }
+
+        public IEnumerable<CharacterDTO> GetTopComplimented()
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                byte state = (byte)CharacterState.Active;
-                foreach (Character character in context.character.Where(c => c.AccountId.Equals(accountId) && c.State.Equals(state)).OrderByDescending(c => c.Slot))
+                foreach (Character character in context.character.Where(c => c.account.Authority != (short)AuthorityType.Admin).OrderByDescending(c => c.Compliment).Take(30).ToList())
                 {
                     yield return Mapper.Map<CharacterDTO>(character);
                 }
             }
         }
 
-        public CharacterDTO LoadById(long characterId)
+        public IEnumerable<CharacterDTO> GetTopPoints()
         {
-            using (var context = DataAccessHelper.CreateContext())
-            {
-                return Mapper.Map<CharacterDTO>(context.character.SingleOrDefault(c => c.CharacterId.Equals(characterId)));
-            }
-        }
-        public CharacterDTO LoadByName(string name)
-        {
-            using (var context = DataAccessHelper.CreateContext())
-            {
-                byte state = (byte)CharacterState.Active;
-                return Mapper.Map<CharacterDTO>(context.character.SingleOrDefault(c => c.Name.Equals(name) && c.State.Equals(state)));
-            }
+            //POINTS NOT IMPLEMENTED RIGHT NOW, STUB
+            //using (var context = DataAccessHelper.CreateContext())
+            //{
+            //    foreach (Character character in context.character.Where(c=>c.account.Authority != (short)AuthorityType.Admin).OrderByDescending(c => c.Compliment).Take(30).ToList())
+            //    {
+            //        yield return Mapper.Map<CharacterDTO>(character);
+            //    }
+            //}
+            return null;
         }
 
-        public CharacterDTO LoadBySlot(long accountId, byte slot)
+        public IEnumerable<CharacterDTO> GetTopReputation()
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                byte state = (byte)CharacterState.Active;
-                return Mapper.Map<CharacterDTO>(context.character.SingleOrDefault(c => c.AccountId.Equals(accountId) && c.Slot.Equals(slot)
-                                                                                        && c.State.Equals(state)));
+                foreach (Character character in context.character.Where(c => c.account.Authority != (short)AuthorityType.Admin).OrderByDescending(c => c.Reput).Take(43).ToList())
+                {
+                    yield return Mapper.Map<CharacterDTO>(character);
+                }
             }
         }
 
@@ -81,34 +102,6 @@ namespace OpenNos.DAL.EF.MySQL
             {
                 Logger.Log.ErrorFormat("INSERT_ERROR", character, e.Message);
                 return SaveResult.Error;
-            }
-        }
-
-        public DeleteResult Delete(long accountId, byte characterSlot)
-        {
-            try
-            {
-                using (var context = DataAccessHelper.CreateContext())
-                {
-                    //actually a character wont be deleted, it just will be disabled for future traces
-                    byte state = (byte)CharacterState.Active;
-                    Character character = context.character.SingleOrDefault(c => c.AccountId.Equals(accountId) && c.Slot.Equals(characterSlot)
-                                            && c.State.Equals(state));
-
-                    if (character != null)
-                    {
-                        byte obsoleteState = (byte)CharacterState.Inactive;
-                        character.State = obsoleteState;
-                        Update(character, Mapper.Map<CharacterDTO>(character), context);
-                    }
-
-                    return DeleteResult.Deleted;
-                }
-            }
-            catch (Exception e)
-            {
-                Logger.Log.ErrorFormat("DELETE_ERROR", characterSlot, e.Message);
-                return DeleteResult.Error;
             }
         }
 
@@ -150,44 +143,44 @@ namespace OpenNos.DAL.EF.MySQL
             }
         }
 
-        public IEnumerable<CharacterDTO> GetTopComplimented()
+        public IEnumerable<CharacterDTO> LoadByAccount(long accountId)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                foreach (Character character in context.character.Where(c => c.account.Authority != (short)AuthorityType.Admin).OrderByDescending(c => c.Compliment).Take(30).ToList())
+                byte state = (byte)CharacterState.Active;
+                foreach (Character character in context.character.Where(c => c.AccountId.Equals(accountId) && c.State.Equals(state)).OrderByDescending(c => c.Slot))
                 {
                     yield return Mapper.Map<CharacterDTO>(character);
                 }
             }
         }
 
-        public IEnumerable<CharacterDTO> GetTopReputation()
+        public CharacterDTO LoadById(long characterId)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                foreach (Character character in context.character.Where(c=>c.account.Authority != (short)AuthorityType.Admin).OrderByDescending(c =>c.Reput).Take(43).ToList())
-                {
-                    yield return Mapper.Map<CharacterDTO>(character);
-                }
+                return Mapper.Map<CharacterDTO>(context.character.SingleOrDefault(c => c.CharacterId.Equals(characterId)));
             }
         }
 
-        public IEnumerable<CharacterDTO> GetTopPoints()
+        public CharacterDTO LoadByName(string name)
         {
-            //POINTS NOT IMPLEMENTED RIGHT NOW, STUB
-            //using (var context = DataAccessHelper.CreateContext())
-            //{
-            //    foreach (Character character in context.character.Where(c=>c.account.Authority != (short)AuthorityType.Admin).OrderByDescending(c => c.Compliment).Take(30).ToList())
-            //    {
-            //        yield return Mapper.Map<CharacterDTO>(character);
-            //    }
-            //}
-            return null;
+            using (var context = DataAccessHelper.CreateContext())
+            {
+                byte state = (byte)CharacterState.Active;
+                return Mapper.Map<CharacterDTO>(context.character.SingleOrDefault(c => c.Name.Equals(name) && c.State.Equals(state)));
+            }
         }
 
-        #endregion
-
-        #region Private
+        public CharacterDTO LoadBySlot(long accountId, byte slot)
+        {
+            using (var context = DataAccessHelper.CreateContext())
+            {
+                byte state = (byte)CharacterState.Active;
+                return Mapper.Map<CharacterDTO>(context.character.SingleOrDefault(c => c.AccountId.Equals(accountId) && c.Slot.Equals(slot)
+                                                                                        && c.State.Equals(state)));
+            }
+        }
 
         private CharacterDTO Insert(CharacterDTO character, OpenNosContainer context)
         {
@@ -196,6 +189,7 @@ namespace OpenNos.DAL.EF.MySQL
             context.SaveChanges();
             return Mapper.Map<CharacterDTO>(entity);
         }
+
         private CharacterDTO Update(Character entity, CharacterDTO character, OpenNosContainer context)
         {
             using (context)
@@ -210,8 +204,6 @@ namespace OpenNos.DAL.EF.MySQL
 
             return Mapper.Map<CharacterDTO>(entity);
         }
-
-        #endregion
 
         #endregion
     }

@@ -5,6 +5,10 @@ namespace OpenNos.DAL.Interface
 {
     public interface IPortalDAO
     {
+        #region Methods
+
         IEnumerable<PortalDTO> LoadFromMap(short MapId);
+
+        #endregion
     }
 }

@@ -11,37 +11,32 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  */
-using OpenNos.DAL.EF.MySQL.DB;
-using OpenNos.DAL.Interface;
-using OpenNos.Domain;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using OpenNos.Data;
+
 using AutoMapper;
-using OpenNos.Core;
+using OpenNos.DAL.Interface;
+using OpenNos.Data;
+using System;
+using System.Linq;
+
 namespace OpenNos.DAL.EF.MySQL
 {
     public class ConfigDAO : IConfigDAO
     {
-        public ConfigDTO GetOption(short CharacterId, short ConfigId)
+        #region Methods
+
+        public ConfigDTO GetOption(short CharacterId, short configId)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                return Mapper.Map<ConfigDTO>(context.config.SingleOrDefault(c => c.ConfigId.Equals(ConfigId)));
+                return Mapper.Map<ConfigDTO>(context.config.SingleOrDefault(c => c.ConfigId.Equals(configId)));
             }
         }
-        public IEnumerable<ConfigDTO> SetOption(short CharacterId, short ConfigId, short value)
+
+        public ConfigDTO SetOption(short CharacterId, short configId, short Value)
         {
-            using (var context = DataAccessHelper.CreateContext())
-            {
-                foreach (Config config in context.config)
-                {
-                    yield return Mapper.Map<ConfigDTO>(config);
-                }
-            }
+            throw new NotImplementedException();
         }
+
+        #endregion
     }
 }

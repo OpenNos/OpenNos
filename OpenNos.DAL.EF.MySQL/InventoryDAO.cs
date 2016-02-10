@@ -11,29 +11,44 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  */
+
+using AutoMapper;
+using OpenNos.Core;
 using OpenNos.DAL.EF.MySQL.DB;
 using OpenNos.DAL.Interface;
-using OpenNos.Domain;
+using OpenNos.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using OpenNos.Data;
-using AutoMapper;
-using OpenNos.Core;
 
 namespace OpenNos.DAL.EF.MySQL
 {
     public class InventoryDAO : IInventoryDAO
     {
+        #region Methods
+
+        public DeleteResult DeleteFromSlotAndType(long characterId, short slot, short type)
+        {
+            using (var context = DataAccessHelper.CreateContext())
+            {
+                Inventory inv = context.inventory.SingleOrDefault(i => i.Slot.Equals(slot) && i.Type.Equals(type) && i.CharacterId.Equals(characterId));
+
+                if (inv != null)
+                {
+                    context.inventory.Remove(inv);
+                    context.SaveChanges();
+                }
+
+                return DeleteResult.Deleted;
+            }
+        }
+
         public SaveResult InsertOrUpdate(ref InventoryDTO inventory)
         {
             try
             {
                 using (var context = DataAccessHelper.CreateContext())
                 {
-
                     long characterId = inventory.CharacterId;
                     short slot = inventory.Slot;
                     short type = inventory.Type;
@@ -58,28 +73,7 @@ namespace OpenNos.DAL.EF.MySQL
                 return SaveResult.Error;
             }
         }
-        public DeleteResult DeleteFromSlotAndType(long characterId, short slot, short type)
-        {
-            using (var context = DataAccessHelper.CreateContext())
-            {
-                Inventory inv = context.inventory.SingleOrDefault(i => i.Slot.Equals(slot) && i.Type.Equals(type) && i.CharacterId.Equals(characterId));
 
-                if (inv != null)
-                {
-                    context.inventory.Remove(inv);
-                    context.SaveChanges();
-                }
-
-                return DeleteResult.Deleted;
-            }
-        }
-        public InventoryDTO LoadBySlotAndType(long characterId, short slot, short type)
-        {
-            using (var context = DataAccessHelper.CreateContext())
-            {
-                return Mapper.Map<InventoryDTO>(context.inventory.SingleOrDefault(i => i.Slot.Equals(slot) && i.Type.Equals(type) && i.CharacterId.Equals(characterId)));
-            }
-        }
         public IEnumerable<InventoryDTO> LoadByCharacterId(long characterId)
         {
             using (var context = DataAccessHelper.CreateContext())
@@ -90,6 +84,23 @@ namespace OpenNos.DAL.EF.MySQL
                 }
             }
         }
+
+        public InventoryDTO LoadByInventoryItem(long inventoryItemId)
+        {
+            using (var context = DataAccessHelper.CreateContext())
+            {
+                return Mapper.Map<InventoryDTO>(context.inventory.SingleOrDefault(i => i.InventoryItemId.Equals(inventoryItemId)));
+            }
+        }
+
+        public InventoryDTO LoadBySlotAndType(long characterId, short slot, short type)
+        {
+            using (var context = DataAccessHelper.CreateContext())
+            {
+                return Mapper.Map<InventoryDTO>(context.inventory.SingleOrDefault(i => i.Slot.Equals(slot) && i.Type.Equals(type) && i.CharacterId.Equals(characterId)));
+            }
+        }
+
         public IEnumerable<InventoryDTO> LoadByType(long characterId, short type)
         {
             using (var context = DataAccessHelper.CreateContext())
@@ -100,6 +111,7 @@ namespace OpenNos.DAL.EF.MySQL
                 }
             }
         }
+
         private InventoryDTO Insert(InventoryDTO inventory, OpenNosContainer context)
         {
             Inventory entity = new Inventory()
@@ -129,14 +141,6 @@ namespace OpenNos.DAL.EF.MySQL
             return Mapper.Map<InventoryDTO>(entity);
         }
 
-        public InventoryDTO LoadByInventoryItem(long inventoryItemId)
-        {
-            using (var context = DataAccessHelper.CreateContext())
-            {
-                return Mapper.Map<InventoryDTO>(context.inventory.SingleOrDefault(i => i.InventoryItemId.Equals(inventoryItemId)));
-            }
-        }
-
-
+        #endregion
     }
 }

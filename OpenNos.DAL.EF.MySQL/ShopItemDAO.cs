@@ -11,22 +11,22 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  */
+
+using AutoMapper;
+using OpenNos.Core;
 using OpenNos.DAL.EF.MySQL.DB;
 using OpenNos.DAL.Interface;
-using OpenNos.Domain;
+using OpenNos.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using OpenNos.Data;
-using AutoMapper;
-using OpenNos.Core;
 
 namespace OpenNos.DAL.EF.MySQL
 {
     public class ShopItemDAO : IShopItemDAO
     {
+        #region Methods
+
         public DeleteResult DeleteById(int ItemId)
         {
             using (var context = DataAccessHelper.CreateContext())
@@ -49,7 +49,6 @@ namespace OpenNos.DAL.EF.MySQL
             {
                 using (var context = DataAccessHelper.CreateContext())
                 {
-
                     long ShopItemId = item.ShopItemId;
                     ShopItem entity = context.shopitem.SingleOrDefault(c => c.ShopItemId.Equals(ShopItemId));
 
@@ -71,28 +70,6 @@ namespace OpenNos.DAL.EF.MySQL
                 return SaveResult.Error;
             }
         }
-        private ShopItemDTO Insert(ShopItemDTO shopitem, OpenNosContainer context)
-        {
-            ShopItem entity = Mapper.Map<ShopItem>(shopitem);
-            context.shopitem.Add(entity);
-            context.SaveChanges();
-            return Mapper.Map<ShopItemDTO>(entity);
-        }
-        private ShopItemDTO Update(ShopItem entity, ShopItemDTO shopitem, OpenNosContainer context)
-        {
-            using (context)
-            {
-                var result = context.shopitem.SingleOrDefault(c => c.ShopItemId.Equals(shopitem.ShopItemId));
-                if (result != null)
-                {
-                    result = Mapper.Map<ShopItemDTO, ShopItem>(shopitem, entity);
-                    context.SaveChanges();
-                }
-            }
-
-            return Mapper.Map<ShopItemDTO>(entity);
-        }
-
 
         public ShopItemDTO LoadById(int ItemId)
         {
@@ -112,5 +89,30 @@ namespace OpenNos.DAL.EF.MySQL
                 }
             }
         }
+
+        private ShopItemDTO Insert(ShopItemDTO shopitem, OpenNosContainer context)
+        {
+            ShopItem entity = Mapper.Map<ShopItem>(shopitem);
+            context.shopitem.Add(entity);
+            context.SaveChanges();
+            return Mapper.Map<ShopItemDTO>(entity);
+        }
+
+        private ShopItemDTO Update(ShopItem entity, ShopItemDTO shopitem, OpenNosContainer context)
+        {
+            using (context)
+            {
+                var result = context.shopitem.SingleOrDefault(c => c.ShopItemId.Equals(shopitem.ShopItemId));
+                if (result != null)
+                {
+                    result = Mapper.Map<ShopItemDTO, ShopItem>(shopitem, entity);
+                    context.SaveChanges();
+                }
+            }
+
+            return Mapper.Map<ShopItemDTO>(entity);
+        }
+
+        #endregion
     }
 }
