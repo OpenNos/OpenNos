@@ -1791,7 +1791,18 @@ namespace OpenNos.Handler
                         Rested = 0,
                         BackPack = characterDTO.Backpack,
                         Speed = ServersData.SpeedData[characterDTO.Class],
-                        Compliment = characterDTO.Compliment
+                        Compliment = characterDTO.Compliment,
+                        Backpack = characterDTO.Backpack,
+                        BuffBlocked = characterDTO.BuffBlocked,
+                        EmoticonsBlocked = characterDTO.EmoticonsBlocked,
+                        WhisperBlocked = characterDTO.WhisperBlocked,
+                        ExchangeBlocked = characterDTO.ExchangeBlocked,
+                        FriendRequestBlocked = characterDTO.FriendRequestBlocked,
+                        GroupRequestBlocked = characterDTO.GroupRequestBlocked,
+                        HeroChatBlocked = characterDTO.HeroChatBlocked,
+                        HpBlocked = characterDTO.HpBlocked,
+                        MinilandInviteBlocked = characterDTO.MinilandInviteBlocked
+                        
                     };
 
                 Session.Character.Update();

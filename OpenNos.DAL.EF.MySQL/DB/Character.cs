@@ -51,6 +51,17 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public int SpAdditionPoint { get; set; }
         public byte State { get; set; }
         public short Compliment { get; set; }
+        public bool ExchangeBlocked { get; set; }
+        public bool FriendRequestBlocked { get; set; }
+        public bool WhisperBlocked { get; set; }
+        public bool GroupRequestBlocked { get; set; }
+        public bool MouseAimLock { get; set; }
+        public bool HeroChatBlocked { get; set; }
+        public bool EmoticonsBlocked { get; set; }
+        public bool QuickGetUp { get; set; }
+        public bool HpBlocked { get; set; }
+        public bool BuffBlocked { get; set; }
+        public bool MinilandInviteBlocked { get; set; }
     
         public virtual Account account { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
@@ -58,6 +69,5 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public virtual Map map { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Inventory> inventory { get; set; }
-        public virtual Config Config { get; set; }
     }
 }
