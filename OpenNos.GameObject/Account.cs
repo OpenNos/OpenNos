@@ -12,6 +12,7 @@
  * GNU General Public License for more details.
  */
 using AutoMapper;
+using OpenNos.DAL;
 using OpenNos.Data;
 using System;
 using System.Collections.Generic;
@@ -21,7 +22,7 @@ using System.Threading.Tasks;
 
 namespace OpenNos.GameObject
 {
-    public class Account : AccountDTO, IGameObject
+    public class Account : AccountDTO
     {
         #region Instantiation
 
@@ -36,10 +37,7 @@ namespace OpenNos.GameObject
 
         #region Methods
 
-        public void Save()
-        {
-            throw new NotImplementedException();
-        }
+   
 
         #endregion
     }

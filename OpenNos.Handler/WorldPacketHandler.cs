@@ -583,6 +583,8 @@ namespace OpenNos.Handler
                         FireElement = 0,
                         HitRate = 0,
                         LightElement = 0,
+                        IsFixed = false,
+                        Ammo = 0,
                         MagicDefence = 0,
                         RangeDefence = 0,
                         SpXp = 0,

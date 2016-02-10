@@ -46,7 +46,10 @@ namespace OpenNos.GameObject
 
         public void Save()
         {
-            throw new NotImplementedException();
+            InventoryDTO tempsave = this;
+            this.InventoryItem.Save();
+            tempsave.InventoryItemId = InventoryItem.InventoryItemId;
+            SaveResult insertResult = DAOFactory.InventoryDAO.InsertOrUpdate(ref tempsave);
         }
 
         #endregion

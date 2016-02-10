@@ -351,8 +351,7 @@ namespace OpenNos.GameObject
                         InventoryItem = new InventoryItem
                         {
                             Amount = inventoryItemDTO.Amount,
-                            ElementRate = inventoryItemDTO.ElementRate
-                            ,
+                            ElementRate = inventoryItemDTO.ElementRate,
                             HitRate = inventoryItemDTO.HitRate,
                             Color = inventoryItemDTO.Color,
                             Concentrate = inventoryItemDTO.Concentrate,
@@ -391,7 +390,39 @@ namespace OpenNos.GameObject
                         InventoryId = inventory.InventoryId,
                         Type = inventory.Type,
                         InventoryItemId = inventory.InventoryItemId,
+                         InventoryItem = new InventoryItem
+                        {
+                            Amount = inventoryItemDTO.Amount,
+                            ElementRate = inventoryItemDTO.ElementRate,
+                            HitRate = inventoryItemDTO.HitRate,
+                            Color = inventoryItemDTO.Color,
+                            Concentrate = inventoryItemDTO.Concentrate,
+                            CriticalLuckRate = inventoryItemDTO.CriticalLuckRate,
+                            CriticalRate = inventoryItemDTO.CriticalRate,
+                            DamageMaximum = inventoryItemDTO.DamageMaximum,
+                            DamageMinimum = inventoryItemDTO.DamageMinimum,
+                            DarkElement = inventoryItemDTO.DarkElement,
+                            DistanceDefence = inventoryItemDTO.DistanceDefence,
+                            DistanceDefenceDodge = inventoryItemDTO.DistanceDefenceDodge,
+                            DefenceDodge = inventoryItemDTO.DefenceDodge,
+                            FireElement = inventoryItemDTO.FireElement,
+                            InventoryItemId = inventoryItemDTO.InventoryItemId,
+                            ItemVNum = inventoryItemDTO.ItemVNum,
+                            LightElement = inventoryItemDTO.LightElement,
+                            MagicDefence = inventoryItemDTO.MagicDefence,
+                            RangeDefence = inventoryItemDTO.RangeDefence,
+                            Rare = inventoryItemDTO.Rare,
+                            SpXp = inventoryItemDTO.SpXp,
+                            SpLevel = inventoryItemDTO.SpLevel,
+                            SlDefence = inventoryItemDTO.SlDefence,
+                            SlElement = inventoryItemDTO.SlElement,
+                            SlHit = inventoryItemDTO.SlHit,
+                            SlHP = inventoryItemDTO.SlHP,
+                            Upgrade = inventoryItemDTO.Upgrade,
+                            WaterElement = inventoryItemDTO.WaterElement,
 
+
+                        }
                     });
             }
         }
@@ -627,7 +658,7 @@ namespace OpenNos.GameObject
             Inventory Weapon2 = EquipmentList.LoadBySlotAndType((short)EquipmentType.SecondaryWeapon, (short)InventoryType.Equipment);
             Inventory Weapon = EquipmentList.LoadBySlotAndType((short)EquipmentType.MainWeapon, (short)InventoryType.Equipment);
             return ($@"tc_info {Level} {Name} {(Fairy != null ? ServerManager.GetItem(Fairy.InventoryItem.ItemVNum).Element : 0)} {(Fairy != null ? Fairy.InventoryItem.ElementRate : 0)}
- {Class} {Gender} 0 {Language.Instance.GetMessageFromKey("NO_FAMILY")} {GetReputIco()} {GetDigniteIco()} {(Weapon != null ? 1 : 0)} {(Weapon != null ? Weapon.InventoryItem.Rare : 0)}
+ {Class} {Gender} 0 - {GetReputIco()} {GetDigniteIco()} {(Weapon != null ? 1 : 0)} {(Weapon != null ? Weapon.InventoryItem.Rare : 0)}
  {(Weapon != null ? Weapon.InventoryItem.Upgrade : 0)} {(Weapon2 != null ? 1 : 0)} {(Weapon2 != null ? Weapon2.InventoryItem.Rare : 0)} {(Weapon2 != null ? Weapon2.InventoryItem.Upgrade : 0)}
  {(Armor != null ? 1 : 0)} {(Armor != null ? Armor.InventoryItem.Rare : 0)} {(Armor != null ? Armor.InventoryItem.Upgrade : 0)} 0 0 {Reput} 0 0 0 {(UseSp ? Morph : 0)} 0 0 0 0 0 {Compliment} 0 0 0 0 {Language.Instance.GetMessageFromKey("NO_PREZ_MESSAGE")}");
         }
@@ -1008,7 +1039,36 @@ namespace OpenNos.GameObject
 
         public void Save()
         {
-            throw new NotImplementedException();
+            CharacterDTO tempsave = this;
+            SaveResult insertResult = DAOFactory.CharacterDAO.InsertOrUpdate(ref tempsave);
+            foreach (InventoryDTO inv in DAOFactory.InventoryDAO.LoadByCharacterId(CharacterId))
+            {
+                if (inv.Type == (short)InventoryType.Equipment)
+                {
+                    if (EquipmentList.LoadBySlotAndType(inv.Slot, inv.Type) == null)
+                    {
+                        DAOFactory.InventoryDAO.DeleteFromSlotAndType(CharacterId, inv.Slot, inv.Type);
+                        DAOFactory.InventoryItemDAO.DeleteById(inv.InventoryItemId);
+
+                    }
+                       
+                }
+                else
+                {
+                    if (InventoryList.LoadBySlotAndType(inv.Slot, inv.Type) == null)
+                    { 
+                        DAOFactory.InventoryDAO.DeleteFromSlotAndType(CharacterId, inv.Slot, inv.Type);
+                        DAOFactory.InventoryItemDAO.DeleteById(inv.InventoryItemId);
+                    }
+                }
+
+            }
+            foreach (Inventory inv in InventoryList.Inventory)
+                inv.Save();
+            foreach (Inventory inv in EquipmentList.Inventory)
+                inv.Save();
+          
+
         }
 
 

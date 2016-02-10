@@ -23,7 +23,7 @@ using AutoMapper;
 
 namespace OpenNos.GameObject
 {
-    public class Map : MapDTO, IGameObject
+    public class Map : MapDTO
     {
         #region Members
 
@@ -215,10 +215,7 @@ namespace OpenNos.GameObject
             QueuePacket((MapPacket)sender);
         }
 
-        public void Save()
-        {
-            throw new NotImplementedException();
-        }
+   
 
         #endregion
     }
