@@ -288,9 +288,6 @@
   <data name="NO_ENTRY" xml:space="preserve">
     <value>Nie znaleziono EntryPoint</value>
   </data>
-  <data name="NO_FAMILY" xml:space="preserve">
-    <value>Brak</value>
-  </data>
   <data name="NO_PREZ_MESSAGE" xml:space="preserve">
     <value>Brak opisu.</value>
   </data>
