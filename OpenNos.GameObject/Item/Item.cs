@@ -21,12 +21,15 @@ using System.Threading.Tasks;
 
 namespace OpenNos.GameObject
 {
-    public class Item : ItemDTO
+    public abstract class Item : ItemDTO
     {
         public Item()
         {
             Mapper.CreateMap<ItemDTO, Item>();
             Mapper.CreateMap<Item, ItemDTO>();
         }
+
+        public abstract void Use(ClientSession Session);
+       
     }
 }

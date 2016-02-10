@@ -4,15 +4,17 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{EADD17BE-20A4-4589-830E-E41BE9314928}</ProjectGuid>
-    <OutputType>Library</OutputType>
+    <ProjectGuid>{23CC0EBA-FDFE-4FA4-A6B7-5E4FE5AF1A35}</ProjectGuid>
+    <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>OpenNos.GameObject</RootNamespace>
-    <AssemblyName>OpenNos.GameObject</AssemblyName>
+    <RootNamespace>OpenNos.Parser</RootNamespace>
+    <AssemblyName>OpenNos.Parser</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -22,6 +24,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -30,17 +33,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AutoMapper, Version=4.1.1.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\AutoMapper.4.1.1\lib\net45\AutoMapper.dll</HintPath>
-    </Reference>
     <Reference Include="log4net, Version=1.2.15.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
       <HintPath>..\packages\log4net.2.0.5\lib\net45-full\log4net.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -49,40 +47,24 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="GeneralLog.cs" />
-    <Compile Include="Account.cs" />
-    <Compile Include="Character.cs" />
-    <Compile Include="Interface\IGameObject.cs" />
-    <Compile Include="ExchangeInfo.cs" />
-    <Compile Include="Item\UsableItem.cs" />
-    <Compile Include="Shop.cs" />
-    <Compile Include="Item\Item.cs" />
-    <Compile Include="InventoryList.cs" />
-    <Compile Include="PersonalShopItem.cs" />
-    <Compile Include="ShopItem.cs" />
-    <Compile Include="MapShop.cs" />
-    <Compile Include="MapItem.cs" />
-    <Compile Include="InventoryItem.cs" />
-    <Compile Include="Inventory.cs" />
-    <Compile Include="Networking\ClientLinkManager.cs" />
-    <Compile Include="Networking\ClientSession.cs" />
-    <Compile Include="Map.cs" />
-    <Compile Include="Networking\ServerManager.cs" />
-    <Compile Include="Networking\MapPacket.cs" />
-    <Compile Include="Networking\NetworkManager.cs" />
-    <Compile Include="Networking\ReceiverType.cs" />
-    <Compile Include="Npc.cs" />
-    <Compile Include="Portal.cs" />
+    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ServersData.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\OpenNos.Core\OpenNos.Core.csproj">
       <Project>{c93a0a40-0551-4732-b594-171b87679ac1}</Project>
       <Name>OpenNos.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\OpenNos.DAL.EF.MySQL\OpenNos.DAL.EF.MySQL.csproj">
+      <Project>{4aecc47d-098a-4493-8e1e-d10edbb7a189}</Project>
+      <Name>OpenNos.DAL.EF.MySQL</Name>
+    </ProjectReference>
     <ProjectReference Include="..\OpenNos.DAL.Interface\OpenNos.DAL.Interface.csproj">
-      <Project>{175C851B-8DC8-43A5-AF93-AF32D106CD77}</Project>
+      <Project>{175c851b-8dc8-43a5-af93-af32d106cd77}</Project>
       <Name>OpenNos.DAL.Interface</Name>
     </ProjectReference>
     <ProjectReference Include="..\OpenNos.DAL\OpenNos.DAL.csproj">
@@ -97,13 +79,14 @@
       <Project>{20addddd-dad9-44f3-9beb-026c73090660}</Project>
       <Name>OpenNos.Domain</Name>
     </ProjectReference>
-    <ProjectReference Include="..\OpenNos.ServiceRef.Internal\OpenNos.ServiceRef.Internal.csproj">
-      <Project>{c4d62dcf-483b-4b8a-9bb6-651d07ff467b}</Project>
-      <Name>OpenNos.ServiceRef.Internal</Name>
+    <ProjectReference Include="..\OpenNos.GameObject\OpenNos.GameObject.csproj">
+      <Project>{eadd17be-20a4-4589-830e-e41be9314928}</Project>
+      <Name>OpenNos.GameObject</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="app.config" />
+    <ProjectReference Include="..\OpenNos.Handler\OpenNos.Handler.csproj">
+      <Project>{a6748a8d-0d96-41b9-a110-dbf692afc56d}</Project>
+      <Name>OpenNos.Handler</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
