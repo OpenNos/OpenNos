@@ -1,27 +1,16 @@
 ﻿using OpenNos.Domain;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OpenNos.Data
 {
     public class CharacterDTO
     {
-        public long CharacterId { get; set; }
+        #region Properties
 
         public long AccountId { get; set; }
 
-        public short MapId { get; set; }
+        public int Backpack { get; set; }
 
-        public string Name { get; set; }
-
-        public byte Slot { get; set; }
-
-        public byte Gender { get; set; }
-
-        public int Faction { get; set; }
+        public long CharacterId { get; set; }
 
         public byte Class { get; set; }
 
@@ -37,19 +26,21 @@ namespace OpenNos.Data
             }
         }
 
-        public byte HairStyle { get; set; }
+        public short Compliment { get; set; }
+
+        public int Dignite { get; set; }
+
+        public int Faction { get; set; }
+
+        public byte Gender { get; set; }
+
+        public long Gold { get; set; }
 
         public byte HairColor { get; set; }
 
-        public short MapX { get; set; }
-
-        public short MapY { get; set; }
+        public byte HairStyle { get; set; }
 
         public int Hp { get; set; }
-
-        public int Mp { get; set; }
-
-        public long Gold { get; set; }
 
         public byte JobLevel { get; set; }
 
@@ -59,17 +50,25 @@ namespace OpenNos.Data
 
         public long LevelXp { get; set; }
 
+        public short MapId { get; set; }
+
+        public short MapX { get; set; }
+
+        public short MapY { get; set; }
+
+        public int Mp { get; set; }
+
+        public string Name { get; set; }
+
         public long Reput { get; set; }
 
-        public int Dignite { get; set; }
+        public byte Slot { get; set; }
 
-        public byte State { get; set; }
-
-        public int Backpack { get; set; }
+        public int SpAdditionPoint { get; set; }
 
         public int SpPoint { get; set; }
 
-        public int SpAdditionPoint { get; set; }
+        public byte State { get; set; }
 
         public CharacterState StateEnum
         {
@@ -83,6 +82,6 @@ namespace OpenNos.Data
             }
         }
 
-        public short Compliment { get; set; }
+        #endregion
     }
 }

@@ -12,12 +12,8 @@
  * GNU General Public License for more details.
  */
 using OpenNos.Data;
-using OpenNos.Domain;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OpenNos.DAL.Interface
 {
@@ -25,12 +21,11 @@ namespace OpenNos.DAL.Interface
     {
         #region Methods
 
-
-        void WriteConnectionLog(long accountId, string ipAddress, Nullable<long> characterId, string logType, string logData);
+        IEnumerable<GeneralLogDTO> LoadByLogType(string LogType, Nullable<long> CharacterId);
 
         void SetCharIdNull(Nullable<long> CharacterId);
 
-        IEnumerable<GeneralLogDTO> LoadByLogType(string LogType, Nullable<long> CharacterId);
+        void WriteConnectionLog(long accountId, string ipAddress, Nullable<long> characterId, string logType, string logData);
 
         #endregion
     }
