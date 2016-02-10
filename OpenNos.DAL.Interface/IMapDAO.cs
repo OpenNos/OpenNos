@@ -5,7 +5,12 @@ namespace OpenNos.DAL.Interface
 {
     public interface IMapDAO
     {
-        MapDTO LoadById(short mapId);
+        #region Methods
+
         IEnumerable<MapDTO> LoadAll();
+
+        MapDTO LoadById(short mapId);
+
+        #endregion
     }
 }

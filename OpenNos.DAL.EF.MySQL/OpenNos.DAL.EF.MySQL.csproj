@@ -79,10 +79,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ConfigDAO.cs" />
     <Compile Include="DB\Account.cs">
       <DependentUpon>OpenNos.tt</DependentUpon>
     </Compile>
     <Compile Include="DB\Character.cs">
+      <DependentUpon>OpenNos.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DB\Config.cs">
       <DependentUpon>OpenNos.tt</DependentUpon>
     </Compile>
     <Compile Include="DB\GeneralLog.cs">

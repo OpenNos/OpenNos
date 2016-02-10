@@ -503,6 +503,7 @@
           <Property Name="State" Type="Byte" Nullable="false" />
           <NavigationProperty Name="inventory" Relationship="opennosModel.CharacterInventory" FromRole="Character" ToRole="Inventory" />
           <Property Name="Compliment" Type="Int16" Nullable="false" />
+          <NavigationProperty Name="Config" Relationship="opennosModel.ConfigCharacter" FromRole="Character" ToRole="Config" />
         </EntityType>
         <EntityType Name="Portal">
           <Key>
@@ -582,6 +583,11 @@
           <AssociationSet Name="ShopShopItem" Association="opennosModel.ShopShopItem">
             <End Role="Shop" EntitySet="shop" />
             <End Role="ShopItem" EntitySet="shopitem" />
+          </AssociationSet>
+          <EntitySet Name="config" EntityType="opennosModel.Config" />
+          <AssociationSet Name="ConfigCharacter" Association="opennosModel.ConfigCharacter">
+            <End Role="Config" EntitySet="config" />
+            <End Role="Character" EntitySet="character" />
           </AssociationSet>
           </EntityContainer>
         <Association Name="AccountCharacter">
@@ -918,6 +924,28 @@
               <PropertyRef Name="ShopId" />
             </Dependent>
           </ReferentialConstraint>
+        </Association>
+        <EntityType Name="Config">
+          <Key>
+            <PropertyRef Name="ConfigId" />
+          </Key>
+          <Property Name="ConfigId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <NavigationProperty Name="Character" Relationship="opennosModel.ConfigCharacter" FromRole="Config" ToRole="Character" />
+          <Property Name="ExchangeBlocked" Type="Boolean" Nullable="false" />
+          <Property Name="FriendRequestBlocked" Type="Boolean" Nullable="false" />
+          <Property Name="WhisperBlocked" Type="Boolean" Nullable="false" />
+          <Property Name="GroupRequestBlocked" Type="Boolean" Nullable="false" />
+          <Property Name="MouseAimLock" Type="Boolean" Nullable="false" />
+          <Property Name="HeroChatBlocked" Type="Boolean" Nullable="false" />
+          <Property Name="QuickGetUp" Type="Boolean" Nullable="false" />
+          <Property Name="EmoticonsBlocked" Type="Boolean" Nullable="false" />
+          <Property Name="HpBlocked" Type="Boolean" Nullable="false" />
+          <Property Name="BuffBlocked" Type="Boolean" Nullable="false" />
+          <Property Name="MinilandInviteBlocked" Type="Boolean" Nullable="false" />
+        </EntityType>
+        <Association Name="ConfigCharacter">
+          <End Type="opennosModel.Config" Role="Config" Multiplicity="1" />
+          <End Type="opennosModel.Character" Role="Character" Multiplicity="1" />
         </Association>
         </Schema>
     </edmx:ConceptualModels>

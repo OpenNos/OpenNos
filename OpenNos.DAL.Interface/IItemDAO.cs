@@ -5,7 +5,12 @@ namespace OpenNos.DAL.Interface
 {
     public interface IItemDAO
     {
-        ItemDTO LoadById(short Vnum);
+        #region Methods
+
         IEnumerable<ItemDTO> LoadAll();
+
+        ItemDTO LoadById(short Vnum);
+
+        #endregion
     }
 }

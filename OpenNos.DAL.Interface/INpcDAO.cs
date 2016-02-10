@@ -5,6 +5,10 @@ namespace OpenNos.DAL.Interface
 {
     public interface INpcDAO
     {
+        #region Methods
+
         IEnumerable<NpcDTO> LoadFromMap(short MapId);
+
+        #endregion
     }
 }

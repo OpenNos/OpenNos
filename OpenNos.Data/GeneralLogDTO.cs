@@ -1,21 +1,27 @@
-﻿using OpenNos.Domain;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
 
 namespace OpenNos.Data
 {
     public class GeneralLogDTO
     {
-        public long LogId { get; set; }
+        #region Properties
+
         public long AccountId { get; set; }
-        public string IpAddress { get; set; }
-        public System.DateTime Timestamp { get; set; }
-        public Nullable<long> CharacterId { get; set; }
-        public string LogType { get; set; }
-        public string LogData { get; set; }
+
         public Nullable<long> CharacterCharacterId { get; set; }
+
+        public Nullable<long> CharacterId { get; set; }
+
+        public string IpAddress { get; set; }
+
+        public string LogData { get; set; }
+
+        public long LogId { get; set; }
+
+        public string LogType { get; set; }
+
+        public System.DateTime Timestamp { get; set; }
+
+        #endregion
     }
 }

@@ -11,21 +11,21 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  */
+
+using AutoMapper;
+using OpenNos.DAL.EF.MySQL.DB;
 using OpenNos.DAL.Interface;
+using OpenNos.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using OpenNos.Data;
-using OpenNos.DAL.EF.MySQL.DB;
-using AutoMapper;
-using OpenNos.Core;
 
 namespace OpenNos.DAL.EF.MySQL
 {
     public class GeneralLogDAO : IGeneralLogDAO
     {
+        #region Methods
+
         public IEnumerable<GeneralLogDTO> LoadByLogType(string LogType, Nullable<long> CharacterId)
         {
             using (var context = DataAccessHelper.CreateContext())
@@ -47,7 +47,6 @@ namespace OpenNos.DAL.EF.MySQL
                 }
                 context.SaveChanges();
             }
-
         }
 
         public void WriteConnectionLog(long accountId, string ipAddress, Nullable<long> characterId, string logType, string logData)
@@ -62,16 +61,12 @@ namespace OpenNos.DAL.EF.MySQL
                     LogType = logType,
                     LogData = logData,
                     CharacterId = characterId
-
-
                 };
 
                 context.connectionlog.Add(log);
                 context.SaveChanges();
             }
         }
-        #region Private
-
 
         #endregion
     }

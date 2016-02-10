@@ -13,27 +13,28 @@
  */
 
 using AutoMapper;
-using OpenNos.DAL.EF.MySQL.DB;
 using OpenNos.DAL.Interface;
 using OpenNos.Data;
-using System.Collections.Generic;
+using System;
 using System.Linq;
 
 namespace OpenNos.DAL.EF.MySQL
 {
-    public class PortalDAO : IPortalDAO
+    public class ConfigDAO : IConfigDAO
     {
         #region Methods
 
-        public IEnumerable<PortalDTO> LoadFromMap(short MapId)
+        public ConfigDTO GetOption(short CharacterId, short configId)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                foreach (Portal portalobject in context.portal.Where(c => c.SourceMapId.Equals(MapId)))
-                {
-                    yield return Mapper.Map<PortalDTO>(portalobject);
-                }
+                return Mapper.Map<ConfigDTO>(context.config.SingleOrDefault(c => c.ConfigId.Equals(configId)));
             }
+        }
+
+        public ConfigDTO SetOption(short CharacterId, short configId, short Value)
+        {
+            throw new NotImplementedException();
         }
 
         #endregion

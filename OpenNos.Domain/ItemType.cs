@@ -8,16 +8,14 @@ namespace OpenNos.Domain
 {
     public enum ItemType
     {
-        Weapon = 0,
-        Armor = 1,
+        Weapon = 0, // wear {
+        Armor = 1, 
         Fashion = 2,
         Jewelery = 3,
-        Specialist = 4,
+        Specialist = 4, // }
         Box = 5,
-        Runes = 6,
-        //smthng = 7
-        //smthng = 8
-        //smthng = 9
+        Shell = 6,
+        //smthng = 7,8,9,
         Main = 10,
         Upgrade = 11,
         Production = 12,
@@ -26,12 +24,11 @@ namespace OpenNos.Domain
         Potion = 15,
         Event = 16,
         Quest = 17,
-        //smthng = 18
-        //smthng = 19
+        //smthng = 18,19,
         Sell = 20,
         Food = 21,
         Snack = 22,
-        //smthng = 23
+        //smthng = 23,
         Magical = 24,
         Part = 25,
         Teacher = 26,
