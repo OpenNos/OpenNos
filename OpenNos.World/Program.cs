@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Threading;
 
 namespace OpenNos.World
@@ -35,11 +36,11 @@ namespace OpenNos.World
             Logger.InitializeLogger(LogManager.GetLogger(typeof(Program)));
             Assembly assembly = Assembly.GetExecutingAssembly();
             FileVersionInfo fileVersionInfo = FileVersionInfo.GetVersionInfo(assembly.Location);
-            Console.Title = ($"OpenNos World Server v{0}");
+            Console.Title = ($"OpenNos World Server v{fileVersionInfo.ProductVersion}");
             Console.WriteLine(("===============================================================================\n"
                              + $"                 WORLD SERVER VERSION {fileVersionInfo.ProductVersion} by OpenNos Team\n" +
                              "===============================================================================\n"));
-      
+
             //initialize DB
             if (DataAccessHelper.Initialize())
                 //initialilize maps
@@ -61,12 +62,29 @@ namespace OpenNos.World
             {
                 Logger.Log.Error(ex.Message);
             }
-           
-            //start up network manager
+            exitHandler += new EventHandler(ExitHandler);
+            SetConsoleCtrlHandler(exitHandler, true);
             NetworkManager<WorldEncryption> networkManager = new NetworkManager<WorldEncryption>(ip, port, typeof(WorldPacketHandler));
 
         }
+        private static bool ExitHandler(CtrlType sig)
+        {
+            ClientLinkManager.Instance.SaveAll();
+            return false; 
+        }
+        static ManualResetEvent run = new ManualResetEvent(true);
 
-     
+        [DllImport("Kernel32")]
+        private static extern bool SetConsoleCtrlHandler(EventHandler handler, bool add);
+        private delegate bool EventHandler(CtrlType sig);
+        static EventHandler exitHandler;
+        enum CtrlType
+        {
+            CTRL_C_EVENT = 0,
+            CTRL_BREAK_EVENT = 1,
+            CTRL_CLOSE_EVENT = 2,
+            CTRL_LOGOFF_EVENT = 5,
+            CTRL_SHUTDOWN_EVENT = 6
+        }
     }
 }
