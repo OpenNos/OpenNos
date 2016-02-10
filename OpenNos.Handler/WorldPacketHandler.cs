@@ -1271,6 +1271,8 @@ namespace OpenNos.Handler
                         Inventory inv = Session.Character.InventoryList.LoadBySlotAndType(slot, type);
                         InventoryItem item = inv.InventoryItem;
                         Item itemInfo = ServerManager.GetItem(item.ItemVNum);
+                        itemInfo.Use(Session);
+                        /*
                         if (itemInfo.isConsumable)
                             item.Amount--;
                         if (itemInfo.Morph != 0)
@@ -1287,7 +1289,7 @@ namespace OpenNos.Handler
                                 RemoveVehicle();
                             }
                         }
-
+                        */
                         break;
 
                 }

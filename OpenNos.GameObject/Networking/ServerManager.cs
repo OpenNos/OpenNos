@@ -57,7 +57,7 @@ namespace OpenNos.GameObject
         {
             foreach (ItemDTO item in DAOFactory.ItemDAO.LoadAll())
             {
-                _items.Add(new Item
+                _items.Add(new UsableItem
                 {
                     WaterResistance = item.WaterResistance,
                     PvpDefence = item.PvpDefence,
