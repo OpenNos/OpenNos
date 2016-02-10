@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace OpenNos.GameObject
@@ -26,13 +27,32 @@ namespace OpenNos.GameObject
     {
         private static ClientLinkManager _instance;
         public List<ClientSession> sessions { get; set; }
+        private Thread AutoSave;
         public bool shutdownActive
         {
             get; set;
         }
+        private void SaveAllProcess()
+        {
+            while(true)
+            {
+                SaveAll();
+                Thread.Sleep(60000);
+            }
+        }
+        public void SaveAll()
+        {
+            foreach (ClientSession session in sessions)
+            {
+                if(session.Character != null)
+                session.Character.Save();
+            }
+        }
         private ClientLinkManager()
         {
             sessions = new List<ClientSession>();
+          AutoSave = new Thread(new ThreadStart(SaveAllProcess));
+          AutoSave.Start();
         }
         public static ClientLinkManager Instance
         {
