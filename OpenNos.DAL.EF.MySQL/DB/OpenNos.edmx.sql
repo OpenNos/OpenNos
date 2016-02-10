@@ -44,7 +44,7 @@
 -- -----------------------------------------------------------
 -- Entity Designer DDL Script for MySQL Server 4.1 and higher
 -- -----------------------------------------------------------
--- Date Created: 01/25/2016 12:38:47
+-- Date Created: 02/10/2016 19:54:13
 
 -- Generated from EDMX file: C:\Users\ERWAN\Desktop\OpenNos GIT\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
 -- Target version: 3.0.0.0
@@ -325,7 +325,7 @@ CREATE TABLE `inventoryitem`(
 	`FireElement` smallint NOT NULL, 
 	`ItemVNum` smallint NOT NULL, 
 	`Ammo` smallint NOT NULL, 
-	`IsFixed` longtext NOT NULL);
+	`IsFixed` bool NOT NULL);
 
 ALTER TABLE `inventoryitem` ADD PRIMARY KEY (InventoryItemId);
 

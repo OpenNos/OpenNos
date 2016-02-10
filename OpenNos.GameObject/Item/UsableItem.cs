@@ -10,7 +10,6 @@ namespace OpenNos.GameObject
     {
         public override void Use(ClientSession Session)
         {
-            //DO USABLE STUFF
             throw new NotImplementedException();
         }
     }

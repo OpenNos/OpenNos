@@ -22,7 +22,7 @@ using System.Threading.Tasks;
 
 namespace OpenNos.GameObject
 {
-    public class Npc : NpcDTO, IGameObject
+    public class Npc : NpcDTO
     {
         #region Instantiation
         public Shop Shop { get; set; }
@@ -49,11 +49,6 @@ namespace OpenNos.GameObject
             dialog = ($"npc_req 2 {NpcId} {Dialog}");
 
             return dialog;
-        }
-
-        public void Save()
-        {
-            throw new NotImplementedException();
         }
 
         #endregion
