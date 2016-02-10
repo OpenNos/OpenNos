@@ -5,7 +5,7 @@
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
       <Diagram DiagramId="f76ed05649d94abe8fc46f3ecc52e312" Name="Diagram1" ZoomLevel="97">
-        <EntityTypeShape EntityType="opennosModel.Account" Width="1.5" PointX="0.5" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="opennosModel.Account" Width="1.5" PointX="0.5" PointY="0.75" IsExpanded="true" FillColor="0, 166, 0" />
         <EntityTypeShape EntityType="opennosModel.Character" Width="1.5" PointX="3.25" PointY="0.625" IsExpanded="true" />
         <EntityTypeShape EntityType="opennosModel.Portal" Width="1.5" PointX="6.25" PointY="0.5" IsExpanded="true" />
         <AssociationConnector Association="opennosModel.AccountCharacter" />
@@ -30,6 +30,17 @@
         <AssociationConnector Association="opennosModel.ShopNpc" />
         <AssociationConnector Association="opennosModel.ShopItemItem" />
         <AssociationConnector Association="opennosModel.ShopShopItem" />
+        <EntityTypeShape EntityType="opennosModel.Config" Width="2" PointX="3" PointY="9.625" IsExpanded="true" FillColor="204, 1, 0" />
+        <AssociationConnector Association="opennosModel.ConfigCharacter" ManuallyRouted="true" >
+          <ConnectorPoint PointX="4" PointY="9.625" />
+          <ConnectorPoint PointX="4" PointY="9.1613771907118622" />
+          <ConnectorPoint PointX="4.4548971666287729" PointY="9.1613771907118622" />
+          <ConnectorPoint PointX="4.4548971666287729" PointY="8.9401867140729845" />
+          <ConnectorPoint PointX="3.5373712508986781" PointY="8.9401867140729845" />
+          <ConnectorPoint PointX="3.5373712508986781" PointY="8.730736124386242" />
+          <ConnectorPoint PointX="4" PointY="8.730736124386242" />
+          <ConnectorPoint PointX="4" PointY="8.3743294270833335" />
+        </AssociationConnector>
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
