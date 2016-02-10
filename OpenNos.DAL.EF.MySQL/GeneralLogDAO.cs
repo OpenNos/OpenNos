@@ -70,9 +70,5 @@ namespace OpenNos.DAL.EF.MySQL
                 context.SaveChanges();
             }
         }
-        #region Private
-
-
-        #endregion
     }
 }
