@@ -657,7 +657,7 @@ namespace OpenNos.GameObject
             Inventory Armor = EquipmentList.LoadBySlotAndType((short)EquipmentType.Armor, (short)InventoryType.Equipment);
             Inventory Weapon2 = EquipmentList.LoadBySlotAndType((short)EquipmentType.SecondaryWeapon, (short)InventoryType.Equipment);
             Inventory Weapon = EquipmentList.LoadBySlotAndType((short)EquipmentType.MainWeapon, (short)InventoryType.Equipment);
-            return $@"tc_info {Level} {Name} {(Fairy != null ? ServerManager.GetItem(Fairy.InventoryItem.ItemVNum).Element : 0)} {(Fairy != null ? Fairy.InventoryItem.ElementRate : 0)} {Class} {Gender} -1 - {GetReputIco()} {GetDigniteIco()} {(Weapon != null ? 1 : 0)} {(Weapon != null ? Weapon.InventoryItem.Rare : 0)} {(Weapon != null ? Weapon.InventoryItem.Upgrade : 0)} {(Weapon2 != null ? 1 : 0)} {(Weapon2 != null ? Weapon2.InventoryItem.Rare : 0)} {(Weapon2 != null ? Weapon2.InventoryItem.Upgrade : 0)} {(Armor != null ? 1 : 0)} {(Armor != null ? Armor.InventoryItem.Rare : 0)} {(Armor != null ? Armor.InventoryItem.Upgrade : 0)} 0 0 {Reput} 0 0 0 {(UseSp ? Morph : 0)} 0 0 0 0 0 {Compliment} 0 0 0 0 {Language.Instance.GetMessageFromKey("NO_PREZ_MESSAGE")}";
+            return $"tc_info {Level} {Name} {(Fairy != null ? ServerManager.GetItem(Fairy.InventoryItem.ItemVNum).Element : 0)} {(Fairy != null ? Fairy.InventoryItem.ElementRate : 0)} {Class} {Gender} -1 - {GetReputIco()} {GetDigniteIco()} {(Weapon != null ? 1 : 0)} {(Weapon != null ? Weapon.InventoryItem.Rare : 0)} {(Weapon != null ? Weapon.InventoryItem.Upgrade : 0)} {(Weapon2 != null ? 1 : 0)} {(Weapon2 != null ? Weapon2.InventoryItem.Rare : 0)} {(Weapon2 != null ? Weapon2.InventoryItem.Upgrade : 0)} {(Armor != null ? 1 : 0)} {(Armor != null ? Armor.InventoryItem.Rare : 0)} {(Armor != null ? Armor.InventoryItem.Upgrade : 0)} 0 0 {Reput} 0 0 0 {(UseSp ? Morph : 0)} 0 0 0 0 0 {Compliment} 0 0 0 0 {Language.Instance.GetMessageFromKey("NO_PREZ_MESSAGE")}";
         }
 
         public string GenerateCMap()
@@ -698,7 +698,7 @@ namespace OpenNos.GameObject
                 Color = head.InventoryItem.Color;
             Inventory fairy = EquipmentList.LoadBySlotAndType((short)EquipmentType.Fairy, (short)InventoryType.Equipment);
 
-            return $@"in 1 {Name} - {CharacterId} {MapX} {MapY} {Direction} {(Authority == 2 ? 2 : 0)} {Gender} {HairStyle} {Color} {Class} {generateEqListForPacket()} {(int)((Hp / HPLoad()) * 100)} {(int)((Mp / MPLoad()) * 100)} {_rested} -1 {(fairy != null ? 2 : 0)} {(fairy != null ? ServerManager.GetItem(fairy.InventoryItem.ItemVNum).Element : 0)} 0 {(fairy != null ? ServerManager.GetItem(fairy.InventoryItem.ItemVNum).Morph : 0)} 0 {(UseSp ? Morph : 0)} {generateEqRareUpgradeForPacket()} -1 - {((GetDigniteIco() == 1) ? GetReputIco() : -GetDigniteIco())} {_invisible} {(UseSp ? MorphUpgrade : 0)} 0 {(UseSp ? MorphUpgrade2 : 0)} 0 0 {ArenaWinner} {Compliment} {Size}";
+            return $"in 1 {Name} - {CharacterId} {MapX} {MapY} {Direction} {(Authority == 2 ? 2 : 0)} {Gender} {HairStyle} {Color} {Class} {generateEqListForPacket()} {(int)((Hp / HPLoad()) * 100)} {(int)((Mp / MPLoad()) * 100)} {_rested} -1 {(fairy != null ? 2 : 0)} {(fairy != null ? ServerManager.GetItem(fairy.InventoryItem.ItemVNum).Element : 0)} 0 {(fairy != null ? ServerManager.GetItem(fairy.InventoryItem.ItemVNum).Morph : 0)} 0 {(UseSp ? Morph : 0)} {generateEqRareUpgradeForPacket()} -1 - {((GetDigniteIco() == 1) ? GetReputIco() : -GetDigniteIco())} {_invisible} {(UseSp ? MorphUpgrade : 0)} 0 {(UseSp ? MorphUpgrade2 : 0)} 0 0 {ArenaWinner} {Compliment} {Size}";
         }
 
         public string GenerateRest()
@@ -849,7 +849,7 @@ namespace OpenNos.GameObject
                 DistanceDefenceRate += item.InventoryItem.DistanceDefenceDodge + iteminfo.DistanceDefenceDodge;
                 //maxhp-mp
             }
-            return $@"sc {type} {WeaponUpgrade} {MinHit} {MaxHit} {HitRate} {HitCriticalRate} {HitCritical} {type2} {SecondaryUpgrade} {MinDistance} {MaxDistance} {DistanceRate} {DistanceCriticalRate} {DistanceCritical} {ArmorUpgrade} {Defence} {DefenceRate} {DistanceDefence} {DistanceDefenceRate} {MagicalDefence} {FireResistance} {WaterResistance} {LightResistance} {DarkResistance}";
+            return $"sc {type} {WeaponUpgrade} {MinHit} {MaxHit} {HitRate} {HitCriticalRate} {HitCritical} {type2} {SecondaryUpgrade} {MinDistance} {MaxDistance} {DistanceRate} {DistanceCriticalRate} {DistanceCritical} {ArmorUpgrade} {Defence} {DefenceRate} {DistanceDefence} {DistanceDefenceRate} {MagicalDefence} {FireResistance} {WaterResistance} {LightResistance} {DarkResistance}";
         }
 
         public string GeneratePairy()
