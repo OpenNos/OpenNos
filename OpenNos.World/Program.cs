@@ -36,10 +36,10 @@ namespace OpenNos.World
             Logger.InitializeLogger(LogManager.GetLogger(typeof(Program)));
             Assembly assembly = Assembly.GetExecutingAssembly();
             FileVersionInfo fileVersionInfo = FileVersionInfo.GetVersionInfo(assembly.Location);
-            Console.Title = ($"OpenNos World Server v{fileVersionInfo.ProductVersion}");
-            Console.WriteLine(("===============================================================================\n"
+            Console.Title = $"OpenNos World Server v{fileVersionInfo.ProductVersion}";
+            Console.WriteLine("===============================================================================\n"
                              + $"                 WORLD SERVER VERSION {fileVersionInfo.ProductVersion} by OpenNos Team\n" +
-                             "===============================================================================\n"));
+                             "===============================================================================\n");
 
             //initialize DB
             if (DataAccessHelper.Initialize())

@@ -378,7 +378,7 @@ namespace OpenNos.GameObject
                 {
                     //we need to wait for more
                     _waitForPacketsAmount = methodInfo.Key.Amount;
-                    _waitForPacketList.Add(packet != String.Empty ? packet : ($"1 {packetHeader} "));
+                    _waitForPacketList.Add(packet != String.Empty ? packet : $"1 {packetHeader} ");
                     return false;
                 }
 

@@ -51,8 +51,8 @@ namespace OpenNos.Core.Communication.Scs.Communication.Messages
         public override string ToString()
         {
             return string.IsNullOrEmpty(RepliedMessageId)
-                       ? ($"ScsTextMessage [{MessageId}]: {Text}")
-                       : ($"ScsTextMessage [{MessageId}] Replied To [{RepliedMessageId}]: {Text}");
+                       ? $"ScsTextMessage [{MessageId}]: {Text}"
+                       : $"ScsTextMessage [{MessageId}] Replied To [{RepliedMessageId}]: {Text}";
         }
     }
 }

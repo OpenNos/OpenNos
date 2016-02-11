@@ -30,7 +30,7 @@ namespace OpenNos.Core.Communication.ScsServices.Communication.Messages
         /// <returns>String representation of this object</returns>
         public override string ToString()
         {
-            return ($"ScsRemoteInvokeMessage: {ServiceClassName}.{MethodName}(...)");
+            return $"ScsRemoteInvokeMessage: {ServiceClassName}.{MethodName}(...)";
         }
     }
 }
