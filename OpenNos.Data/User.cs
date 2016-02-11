@@ -19,6 +19,8 @@ namespace OpenNos.Data
     {
         #region Properties
 
+        public string Unknown { get; set; }
+
         public string Name { get; set; }
 
         public string PasswordDecrypted
@@ -31,8 +33,7 @@ namespace OpenNos.Data
 
         public string PasswordEncrypted { get; set; }
 
-        public string Unknown { get; set; }
-
+      
         #endregion
     }
 }
