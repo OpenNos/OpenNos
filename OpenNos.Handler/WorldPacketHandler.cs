@@ -378,6 +378,7 @@ namespace OpenNos.Handler
 
         public void ClassChange(byte classe)
         {
+            Session.Character.JobLevel = 1;
             Session.Client.SendPacket("npinfo 0");
             Session.Client.SendPacket("p_clear");
 
@@ -407,6 +408,11 @@ namespace OpenNos.Handler
             this.GetStats(String.Empty);
 
             Session.Client.SendPacket(Session.Character.GenerateEff(4799 + faction));
+            Session.Client.SendPacket(Session.Character.GenerateLev());
+            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllOnMapExceptMe);
+            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(6), ReceiverType.AllOnMap);
+            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(198), ReceiverType.AllOnMap);
+
         }
 
         [Packet("$Command")]
@@ -1366,15 +1372,7 @@ namespace OpenNos.Handler
                                     if (Session.Character.EquipmentList.isEmpty())
                                     {
                                         ClassChange(Convert.ToByte(type));
-                                        byte joblevel;
-                                        if (Byte.TryParse(packetsplit[2], out joblevel) && joblevel <= 80 && joblevel > 0)
-                                        {
-                                            Session.Character.JobLevel = 1;
-                                            Session.Client.SendPacket(Session.Character.GenerateLev());
-                                            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllOnMapExceptMe);
-                                            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(6), ReceiverType.AllOnMap);
-                                            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(198), ReceiverType.AllOnMap);
-                                        }
+                   
                                     }
                                     else
                                     {
