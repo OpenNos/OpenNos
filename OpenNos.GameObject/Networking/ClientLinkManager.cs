@@ -28,13 +28,10 @@ namespace OpenNos.GameObject
         private static ClientLinkManager _instance;
         public List<ClientSession> sessions { get; set; }
         private Thread AutoSave;
-        public bool shutdownActive
-        {
-            get; set;
-        }
+        public bool shutdownActive { get; set; }
         private void SaveAllProcess()
         {
-            while(true)
+            while (true)
             {
                 SaveAll();
                 Thread.Sleep(60000);
@@ -44,15 +41,15 @@ namespace OpenNos.GameObject
         {
             foreach (ClientSession session in sessions)
             {
-                if(session.Character != null)
-                session.Character.Save();
+                if (session.Character != null)
+                    session.Character.Save();
             }
         }
         private ClientLinkManager()
         {
             sessions = new List<ClientSession>();
-          AutoSave = new Thread(new ThreadStart(SaveAllProcess));
-          AutoSave.Start();
+            AutoSave = new Thread(new ThreadStart(SaveAllProcess));
+            AutoSave.Start();
         }
         public static ClientLinkManager Instance
         {
