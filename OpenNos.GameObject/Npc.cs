@@ -46,7 +46,7 @@ namespace OpenNos.GameObject
         {
             string dialog = String.Empty;
 
-            dialog = ($"npc_req 2 {NpcId} {Dialog}");
+            dialog = $"npc_req 2 {NpcId} {Dialog}";
 
             return dialog;
         }
