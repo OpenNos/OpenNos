@@ -118,13 +118,13 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ACCOUNT_ARRIVED" xml:space="preserve">
-    <value>Account with SessionId {0} has arrived.</value>
+    <value>Compte avec SessionId {0} est arrivé.</value>
   </data>
   <data name="ADMINISTRATOR" xml:space="preserve">
     <value>Administrateur</value>
   </data>
   <data name="ADVENTURER" xml:space="preserve">
-    <value>Adventurer</value>
+    <value>Adventurier</value>
   </data>
   <data name="ALREADY_TAKEN" xml:space="preserve">
     <value>Ce nom est déjà utilisé.</value>
@@ -133,7 +133,7 @@
     <value>Archer</value>
   </data>
   <data name="BAD_FAIRY" xml:space="preserve">
-    <value>The fairy element is not the same like sp!</value>
+    <value>La carte spécialiste et ta fée ont des attributs différents.</value>
   </data>
   <data name="BAD_PASSWORD" xml:space="preserve">
     <value>Vérifiez vos identifiants.</value>
@@ -159,35 +159,38 @@
   <data name="BN6" xml:space="preserve">
     <value>Entrez^dans^la^légende,^découvrez^le^Panthéon</value>
   </data>
+  <data name="CANT_MOVE" xml:space="preserve">
+    <value>Tu pourras bientôt te déplacer</value>
+  </data>
   <data name="CLIENT_ARRIVED" xml:space="preserve">
     <value>Client arrived, SessionId: {0}</value>
   </data>
   <data name="CLIENT_CLOSE" xml:space="preserve">
-    <value>Connection closed by Client.</value>
+    <value>Connexion fermée par le client.</value>
   </data>
   <data name="CLIENT_CLOSED" xml:space="preserve">
-    <value>Connection closed by Client.</value>
+    <value>Connexion fermée par le client.</value>
   </data>
   <data name="COMPLIMENT_COOLDOWN" xml:space="preserve">
-    <value>You can only compliment one player per day.</value>
+    <value>Tu ne peux admirer un joueur qu'une seule fois par jour !</value>
   </data>
   <data name="COMPLIMENT_GIVEN" xml:space="preserve">
-    <value>You complimented {0}.</value>
+    <value>Tu as admiré {0}.</value>
   </data>
   <data name="COMPLIMENT_LOGIN_COOLDOWN" xml:space="preserve">
-    <value>You have to wait {0} minutes before you can compliment someone.</value>
+    <value>Tu dois attendre {0} minutes avant d'admirer quelqu'un d'autre.</value>
   </data>
   <data name="COMPLIMENT_NOT_MINLVL" xml:space="preserve">
-    <value>You can only compliment a player if you have reached Lv 30.</value>
+    <value>Vous devez être niveau 30 minimum pour pouvoir admirer quelqu'un.</value>
   </data>
   <data name="COMPLIMENT_RECEIVED" xml:space="preserve">
-    <value>You have been complimented by {0}.</value>
+    <value>Vous avez été admiré {0}.</value>
   </data>
   <data name="CORRUPT_KEEPALIVE" xml:space="preserve">
     <value>Corrupted Keepalive on client {0}.</value>
   </data>
   <data name="DATABASE_HAS_BEEN_INITIALISE" xml:space="preserve">
-    <value>Database has been initialized.</value>
+    <value>Base de données a été initialisée.</value>
   </data>
   <data name="DELETE_ACCOUNT_ERROR" xml:space="preserve">
     <value>Error deleting Account with Id {0} , {1}</value>
@@ -196,10 +199,10 @@
     <value>Error deleting Character with Slot {0} , {1}</value>
   </data>
   <data name="DISCONNECT" xml:space="preserve">
-    <value>A client is has been disconnected! ClientId =</value>
+    <value>Un client a été déconnecté ! ClientId =</value>
   </data>
   <data name="EQ_NOT_EMPTY" xml:space="preserve">
-    <value>Your equipment is not empty</value>
+    <value>Votre équipement n'est pas vide.</value>
   </data>
   <data name="FORCED_DISCONNECT" xml:space="preserve">
     <value>Forced Disconnecting of client {0}, too much connections.</value>
@@ -217,16 +220,16 @@
     <value>Error inserting or updating character {0} , {1}</value>
   </data>
   <data name="ITEM_NOT_DROPPABLE" xml:space="preserve">
-    <value>You cant drop that item!</value>
+    <value>Vous ne pouvez pas jeter cet objet.</value>
   </data>
   <data name="ITEM_NOT_SOLDABLE" xml:space="preserve">
-    <value>Item cannot be sold!</value>
+    <value>Ce objet ne peut pas être vendu.</value>
   </data>
   <data name="ITEM_NOT_TRADABLE" xml:space="preserve">
-    <value>Item cannot be traded!</value>
+    <value>Tu ne peux pas échanger cet objet.</value>
   </data>
   <data name="JOBLEVEL_CHANGED" xml:space="preserve">
-    <value>Job level has been increased</value>
+    <value>Ton niveau de métier a augmenté.</value>
   </data>
   <data name="JOB_CHANGED" xml:space="preserve">
     <value>Félicitations. Tu as changé de Métier !</value>
@@ -235,64 +238,64 @@
     <value>Ton niveau a augmenté.</value>
   </data>
   <data name="LOW_JOB_LVL" xml:space="preserve">
-    <value>Joblevel is too low</value>
+    <value>Votre niveau métier est trop bas</value>
   </data>
   <data name="LOW_LVL" xml:space="preserve">
-    <value>Your level is too low</value>
+    <value>Votre niveau est trop bas</value>
   </data>
   <data name="LOW_REP" xml:space="preserve">
-    <value>Reputation is too low</value>
+    <value>Votre réputation est trop basse</value>
   </data>
   <data name="MAGICIAN" xml:space="preserve">
-    <value>Magician</value>
+    <value>Magicien</value>
   </data>
   <data name="MAP_LOADED" xml:space="preserve">
-    <value>{0} Maps Loaded !</value>
+    <value>{0} Carte chargés !</value>
   </data>
   <data name="MESSAGE_RECEIVED" xml:space="preserve">
-    <value>Message received {0} on client {1}</value>
+    <value>Message reçu {0} on client {1}</value>
   </data>
   <data name="MSG_SENT" xml:space="preserve">
-    <value>Message sent {0} to client {1}</value>
+    <value>Message envoyé {0} au client {1}</value>
   </data>
   <data name="NEW_CONNECT" xml:space="preserve">
-    <value>A new client is connected. ClientId =</value>
+    <value>Un nouveau client est connecté. ClientId =</value>
   </data>
   <data name="NOT_ADVENTURER" xml:space="preserve">
-    <value>You can change class only once</value>
+    <value>Tu ne peux changer de classe qu'une seule fois.</value>
   </data>
   <data name="NOT_ENOUGH_MONEY" xml:space="preserve">
-    <value>Not enough money</value>
+    <value>Vous n'avez pas assez d'or.</value>
   </data>
   <data name="NO_ENTRY" xml:space="preserve">
-    <value>No EntryPoint found</value>
+    <value>Pas de point d'entrée trouvé</value>
   </data>
   <data name="NO_PREZ_MESSAGE" xml:space="preserve">
     <value>Aucun message de présentation.</value>
   </data>
   <data name="NO_SP" xml:space="preserve">
-    <value>You're not wearing specialist card</value>
+    <value>Aucune carte de spécialiste n'est équipée.</value>
   </data>
   <data name="PACKET_ARRIVED" xml:space="preserve">
-    <value>Packet arrived, packet: {0}</value>
+    <value>Packet arrivé, packet: {0}</value>
   </data>
   <data name="PACKET_FAILURE" xml:space="preserve">
     <value>Failed to send packet {0} to client {1}, {2}.</value>
   </data>
   <data name="RARIFY_FAILED" xml:space="preserve">
-    <value>Gambling failed! The item disappeared.</value>
+    <value>L'objet à disparu, car le pari à échoué !</value>
   </data>
   <data name="RARIFY_FAILED_ITEM_SAVED" xml:space="preserve">
-    <value>Gambling failed, but the Item was saved from destruction.</value>
+    <value>Le pari a échoué. Heureusement, le parchemin protecteur à protégé l'objet.</value>
   </data>
   <data name="RARIFY_SUCCESS" xml:space="preserve">
-    <value>Gambling succeeded! New Rare level: {0}</value>
+    <value>Pari réussi ! Niveau de rareté : {0}</value>
   </data>
   <data name="REP_CHANGED" xml:space="preserve">
-    <value>Reputation changed</value>
+    <value>Réputation changée.</value>
   </data>
   <data name="SHOP_OPEN" xml:space="preserve">
-    <value>Shop has ben opened</value>
+    <value>Magasin ouvert.</value>
   </data>
   <data name="SHUTDOWN_MIN" xml:space="preserve">
     <value>Le serveur sera fermé dans {0} minutes.</value>
@@ -301,30 +304,33 @@
     <value>Le serveur sera fermé dans {0} secondes.</value>
   </data>
   <data name="SP_BLOCKED" xml:space="preserve">
-    <value>You can't change sp now!</value>
+    <value>C'est impossible d'échanger les cartes de spécialiste pendent la transformation.</value>
   </data>
   <data name="SP_INLOADING" xml:space="preserve">
-    <value>SP card is loading {0} seconds</value>
+    <value>Durée de l'effet secondaire lié à la transformation : {0} secondes</value>
   </data>
   <data name="STARTED" xml:space="preserve">
-    <value>Server is started successfully.</value>
+    <value>Le serveur s'est lancé sans problèmes.</value>
   </data>
   <data name="STAY_TIME" xml:space="preserve">
-    <value>SP transformation needs cooldown, 30 seconds</value>
+    <value>Durée de l'effet secondaire lié à la transformation : 30 secondes</value>
   </data>
   <data name="SWORDMAN" xml:space="preserve">
-    <value>Swordman</value>
+    <value>Escrimeur</value>
   </data>
   <data name="TOO_BIG" xml:space="preserve">
     <value>Message is too big ({0} bytes). Max allowed length is {1} bytes.</value>
   </data>
   <data name="TRANSFORM_DISAPEAR" xml:space="preserve">
-    <value>Cooldown finished.</value>
+    <value>L'effet secondaire de la transformation s'est dissiper</value>
   </data>
   <data name="UPDATE_ACCOUNT_ERROR" xml:space="preserve">
     <value>Error inserting or updating Account {0} , {1}</value>
   </data>
   <data name="USER_NOT_HERO" xml:space="preserve">
-    <value>Only heroes may use hero messages.</value>
+    <value>Seuls les héros peuvent utiliser des messages de héros.</value>
+  </data>
+  <data name="YOU_GET_OBJECT" xml:space="preserve">
+    <value>Tu as reçu un objet</value>
   </data>
 </root>
