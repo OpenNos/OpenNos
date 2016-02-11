@@ -718,7 +718,7 @@ namespace OpenNos.Handler
 
                     ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateShopEnd(), ReceiverType.AllOnMap);
                     ClientLinkManager.Instance.Broadcast(Session, Session.Character.GeneratePlayerFlag(0), ReceiverType.AllOnMapExceptMe);
-                    Session.Character.Speed = Session.Character.LastSpeed!=0?Session.Character.LastSpeed : Session.Character.Speed;
+                    Session.Character.Speed = Session.Character.LastSpeed != 0 ? Session.Character.LastSpeed : Session.Character.Speed;
                     Session.Character.Rested = 0;
                     Session.Client.SendPacket(Session.Character.GenerateCond());
                     ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateRest(), ReceiverType.AllOnMap);
@@ -808,7 +808,7 @@ namespace OpenNos.Handler
                 Session.Character.ExchangeInfo = new ExchangeInfo();
                 Session.Character.ExchangeInfo.CharId = charId;
                 CharName = (string)ClientLinkManager.Instance.RequiereProperties(charId, "Name");
-                Session.Client.SendPacket(Session.Character.GenerateModal($"{Language.Instance.GetMessageFromKey("YOU_ASK_FOR_EXCHANGE")}{charId}", 0));
+                Session.Client.SendPacket(Session.Character.GenerateModal($"{Language.Instance.GetMessageFromKey("YOU_ASK_FOR_EXCHANGE")}{CharName}", 0));
                 ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateDialog($"#req_exc^2^{Session.Character.CharacterId} #req_exc^5^{Session.Character.CharacterId} {Language.Instance.GetMessageFromKey("ASK_ACCEPT")}"), ReceiverType.OnlySomeone, CharName);
                 Session.Character.ExchangeInfo.Confirm = false;
             }
@@ -1372,7 +1372,7 @@ namespace OpenNos.Handler
                                     if (Session.Character.EquipmentList.isEmpty())
                                     {
                                         ClassChange(Convert.ToByte(type));
-                   
+
                                     }
                                     else
                                     {
@@ -1795,7 +1795,7 @@ namespace OpenNos.Handler
                         HeroChatBlocked = characterDTO.HeroChatBlocked,
                         HpBlocked = characterDTO.HpBlocked,
                         MinilandInviteBlocked = characterDTO.MinilandInviteBlocked
-                        
+
                     };
 
                 Session.Character.Update();
@@ -2339,7 +2339,7 @@ namespace OpenNos.Handler
                 if (inventory != null)
                 {
                     iteminfo = ServerManager.GetItem(inventory.InventoryItem.ItemVNum);
-                    if ((iteminfo.ItemType == (byte)ItemType.Weapon || iteminfo.ItemType == (byte)ItemType.Armor || iteminfo.ItemType == (byte)ItemType.Fashion || iteminfo.ItemType == (byte)ItemType.Jewelery || iteminfo.ItemType == (byte)ItemType.Specialist ) && iteminfo.LevelMinimum <= Session.Character.Level && ((iteminfo.Classe >> Session.Character.Class) & 1) == 1)
+                    if ((iteminfo.ItemType == (byte)ItemType.Weapon || iteminfo.ItemType == (byte)ItemType.Armor || iteminfo.ItemType == (byte)ItemType.Fashion || iteminfo.ItemType == (byte)ItemType.Jewelery || iteminfo.ItemType == (byte)ItemType.Specialist) && iteminfo.LevelMinimum <= Session.Character.Level && ((iteminfo.Classe >> Session.Character.Class) & 1) == 1)
                     {
                         if (!(Session.Character.UseSp && iteminfo.EquipmentSlot == (short)EquipmentType.Fairy && iteminfo.Element != ServerManager.GetItem(Session.Character.InventoryList.LoadBySlotAndType((short)EquipmentType.Sp, (short)InventoryType.Equipment).InventoryItem.ItemVNum).Element))
                         {
