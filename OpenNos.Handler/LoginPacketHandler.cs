@@ -59,7 +59,7 @@ namespace OpenNos.Handler
         public void VerifyLogin(string packet)
         {
             User user = PacketFactory.Deserialize<User>(packet);
-            //fermé
+            //closed
             bool flag = true;
             if (flag)
             {
@@ -75,7 +75,7 @@ namespace OpenNos.Handler
 
                         if (!ServiceFactory.Instance.CommunicationService.AccountIsConnected(loadedAccount.Name))
                         {
-                            //0 banned 1 register 2 user 3 GM
+                            //0 banned 1 registered 2 user 3 GM
                             AuthorityType type = loadedAccount.AuthorityEnum;
 
                             switch (type)

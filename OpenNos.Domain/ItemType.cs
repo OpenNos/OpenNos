@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace OpenNos.Domain
 {
-    public enum ItemType
+    public enum ItemType : byte
     {
         Weapon = 0, // wear {
         Armor = 1, 

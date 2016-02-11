@@ -8,7 +8,6 @@ namespace OpenNos.Domain
 {
     public enum EquipmentType : short
     {
-
         MainWeapon = 0,
         Armor = 1,
         Hat = 2,
@@ -24,6 +23,5 @@ namespace OpenNos.Domain
         Sp = 12,
         CostumeSuite = 13,
         CostumeHat = 14
-
     }
 }
