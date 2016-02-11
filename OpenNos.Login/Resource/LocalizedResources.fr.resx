@@ -117,41 +117,50 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="ALREADY_CONNECTED" xml:space="preserve">
+    <value>Votre ID est déjà utilisé.</value>
+  </data>
+  <data name="BANNED" xml:space="preserve">
+    <value>Échec. Votre compte à été banni. Veuillez contactez l'équipe du jeu.</value>
+  </data>
   <data name="CLIENT_CLOSE" xml:space="preserve">
-    <value>Connection closed by Client.</value>
+    <value>Connexion fermée par le client</value>
   </data>
   <data name="CLIENT_CLOSED" xml:space="preserve">
-    <value>Connection closed.</value>
+    <value>La connexion est fermée.</value>
   </data>
   <data name="CONFIG_LOADED" xml:space="preserve">
-    <value>Config loaded !</value>
+    <value>Configuration chargée.</value>
   </data>
   <data name="CONNECTION" xml:space="preserve">
     <value>CONNECT {0} Connected -- session:{1}</value>
   </data>
   <data name="DATABASE_HAS_BEEN_INITIALISE" xml:space="preserve">
-    <value>Database has been initialized!</value>
+    <value>La base de données a été initialisée.</value>
   </data>
   <data name="DISCONNECT" xml:space="preserve">
-    <value>A client is has been disconnected! ClientId =</value>
+    <value>Un client s'est déconnecté ! ClientId =</value>
   </data>
   <data name="FORCED_DISCONNECT" xml:space="preserve">
     <value>Forced Disconnecting of client {0}, too much connections.</value>
   </data>
   <data name="IDERROR" xml:space="preserve">
-    <value>Wrong Id or Password!</value>
+    <value>Votre ID ou MDP est incorrect</value>
   </data>
   <data name="MESSAGE_RECEIVED" xml:space="preserve">
-    <value>Message received {0} on client {1}</value>
+    <value>Message reçu {0} on client {1}</value>
   </data>
   <data name="MSG_SENT" xml:space="preserve">
-    <value>Message sent to client </value>
+    <value>Message envoyé au client</value>
   </data>
   <data name="NEW_CONNECT" xml:space="preserve">
-    <value>A new client is connected. ClientId =</value>
+    <value>Un nouveau client est connecté. ClientId =</value>
+  </data>
+  <data name="NOTVALIDATE" xml:space="preserve">
+    <value>Votre compte n'est pas validé.</value>
   </data>
   <data name="STARTED" xml:space="preserve">
-    <value>Server is started successfully.</value>
+    <value>Le serveur à démarrer sans problèmes.</value>
   </data>
   <data name="TOO_BIG" xml:space="preserve">
     <value>Message is too big ({0} bytes). Max allowed length is {1} bytes.</value>
