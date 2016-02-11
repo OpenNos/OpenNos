@@ -718,7 +718,7 @@ namespace OpenNos.Handler
 
                     ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateShopEnd(), ReceiverType.AllOnMap);
                     ClientLinkManager.Instance.Broadcast(Session, Session.Character.GeneratePlayerFlag(0), ReceiverType.AllOnMapExceptMe);
-                    Session.Character.Speed = Session.Character.LastSpeed;
+                    Session.Character.Speed = Session.Character.LastSpeed!=0?Session.Character.LastSpeed : Session.Character.Speed;
                     Session.Character.Rested = 0;
                     Session.Client.SendPacket(Session.Character.GenerateCond());
                     ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateRest(), ReceiverType.AllOnMap);
