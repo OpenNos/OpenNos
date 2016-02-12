@@ -2130,10 +2130,38 @@ namespace OpenNos.Handler
                     break;
             }
         }
+        [Packet("sortopen")]
+        public void sortopen(string packet)
+        {
+            Boolean gravity = true;
+            short type;
+            while (gravity)
+            {
+                gravity = false;
+                for (short x = 0; x < 44; x++)
+                {
+                    for (short i = 0; i < 2; i++)
+                    {
+                        type = (i == 0) ? (short)InventoryType.Sp : (short)InventoryType.Costume;
+                        if (Session.Character.InventoryList.LoadBySlotAndType(x, type) == null)
+                        {
+                            if (Session.Character.InventoryList.LoadBySlotAndType((short)(x + 1), type )!= null)
+                            {
+                                Inventory invdest = new Inventory();
+                                Inventory inv = new Inventory();
+                                Session.Character.InventoryList.MoveItem(Session.Character,type, (short)(x + 1), 1, x, out inv, out invdest);
+                                Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(invdest.InventoryItem.ItemVNum, invdest.InventoryItem.Amount, type, invdest.Slot, invdest.InventoryItem.Rare, invdest.InventoryItem.Color, invdest.InventoryItem.Upgrade));
+                                DeleteItem(type, (short)(x + 1));
 
+                                gravity = true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
         [Packet("remove")]
-        public void un
-            (string packet)
+        public void remove(string packet)
         {
             string[] packetsplit = packet.Split(' ');
             if (packetsplit.Length > 3)
