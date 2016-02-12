@@ -314,7 +314,7 @@ namespace OpenNos.GameObject
             Item iteminfo = ServerManager.GetItem(inv.InventoryItem.ItemVNum);
             Inventory invdest = LoadBySlotAndType(destslot, desttype);
 
-            if (invdest == null && ((desttype == 6 && iteminfo.ItemType == 4) || (desttype == 7 && iteminfo.ItemType == 2) || slot == 0))
+            if (invdest == null && ((desttype == 6 && iteminfo.ItemType == 4) || (desttype == 7 && iteminfo.ItemType == 2) || desttype == 0))
             {
                 inv.Slot = destslot;
                 inv.Type = desttype;
