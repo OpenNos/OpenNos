@@ -14,5 +14,7 @@ http://dev.mysql.com/downloads/windows/installer/
 
 ##3 Create Database (opennos)
 
-##4 Run EDMX-Scripts against recently set up MySQL Database (OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx)
+##4 Install MYSQL for Visual Studio
+
+##5 Run EDMX-Scripts against recently set up MySQL Database (OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx)
 
