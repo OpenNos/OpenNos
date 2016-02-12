@@ -50,7 +50,7 @@ namespace OpenNos.World
             memory.Start();
 
             //initialize ClientLinkManager
-            //TODO?
+            //TODO
 
             string ip = System.Configuration.ConfigurationManager.AppSettings["WorldIp"];
             int port = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["WorldPort"]);
