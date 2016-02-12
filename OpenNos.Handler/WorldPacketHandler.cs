@@ -2383,6 +2383,8 @@ namespace OpenNos.Handler
 
                                         Session.Character.EquipmentList.InsertOrUpdate(ref inventory);
                                         DeleteItem(type, slot);
+                                        Session.Character.InventoryList.DeleteFromSlotAndType(inventory.Slot, inventory.Type);
+
 
                                         Session.Client.SendPacket(Session.Character.GenerateStatChar());
                                         Thread.Sleep(100);
