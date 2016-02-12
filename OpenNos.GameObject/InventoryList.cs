@@ -311,17 +311,19 @@ namespace OpenNos.GameObject
         public Inventory moveInventory(short type, short slot, short desttype, short destslot)
         {
             Inventory inv = LoadBySlotAndType(slot, type);
-            Item iteminfo = ServerManager.GetItem(inv.InventoryItem.ItemVNum);
-            Inventory invdest = LoadBySlotAndType(destslot, desttype);
-
-            if (invdest == null && ((desttype == 6 && iteminfo.ItemType == 4) || (desttype == 7 && iteminfo.ItemType == 2) || desttype == 0))
+            if (inv != null)
             {
-                inv.Slot = destslot;
-                inv.Type = desttype;
-                InsertOrUpdate(ref inv);
+                Item iteminfo = ServerManager.GetItem(inv.InventoryItem.ItemVNum);
+                Inventory invdest = LoadBySlotAndType(destslot, desttype);
 
+                if (invdest == null && ((desttype == 6 && iteminfo.ItemType == 4) || (desttype == 7 && iteminfo.ItemType == 2) || desttype == 0))
+                {
+                    inv.Slot = destslot;
+                    inv.Type = desttype;
+                    InsertOrUpdate(ref inv);
+
+                }
             }
-
             return inv;
         }
 
