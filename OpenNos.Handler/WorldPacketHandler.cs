@@ -2304,15 +2304,17 @@ namespace OpenNos.Handler
 
                 Random r = new Random();
                 int rnd = r.Next(100);
-                if (rnd <= upsuccess[item.InventoryItem.Upgrade + 1])
+                if (rnd <= upsuccess[item.InventoryItem.Upgrade])
                 {
                     Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADE_SUCCESS"), 12));
                     Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADE_SUCCESS"), 0));
+                    Session.Client.SendPacket(Session.Character.GenerateEff(3005));
                     Session.Character.InventoryList.LoadByInventoryItem(item.InventoryItemId).InventoryItem.Upgrade++;
                     Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(item.InventoryItem.ItemVNum, item.InventoryItem.Amount, item.Type, item.Slot, item.InventoryItem.Rare, item.InventoryItem.Color, item.InventoryItem.Upgrade));
                 }
-                else if (rnd <= upfix[item.InventoryItem.Upgrade + 1])
+                else if (rnd <= upfix[item.InventoryItem.Upgrade])
                 {
+                    Session.Client.SendPacket(Session.Character.GenerateEff(3004));
                     Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADE_FIXED"), 11));
                     Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADE_FIXED"), 0));
                 }
@@ -2326,6 +2328,7 @@ namespace OpenNos.Handler
                     }
                     else
                     {
+                        Session.Client.SendPacket(Session.Character.GenerateEff(3004));
                         Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADE_FAILED_ITEM_SAVED"), 11));
                         Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADE_FAILED_ITEM_SAVED"), 0));
                     }
@@ -2333,6 +2336,7 @@ namespace OpenNos.Handler
             }
             else
             {
+                Session.Client.SendPacket(Session.Character.GenerateEff(3004));
                 Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADE_FAILED_ITEM_SAVED"), 11));
                 Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADE_FAILED_ITEM_SAVED"), 0));
             }
