@@ -2276,7 +2276,7 @@ namespace OpenNos.Handler
 
         public void UpgradeItem(Inventory item, InventoryItem.UpgradeMode mode, InventoryItem.UpgradeProtection protection)
         {
-            if (item.InventoryItem.Upgrade >= 10)
+            if (item.InventoryItem.Upgrade < 10)
             {
                 short[] upsuccess = { 100, 100, 90, 80, 60, 40, 20, 10, 5, 1 };
                 short[] upfix = { 0, 0, 10, 15, 20, 20, 20, 20, 15, 10 };
