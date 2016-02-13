@@ -908,7 +908,10 @@ namespace OpenNos.Handler
                 InventoryItem item = inv.InventoryItem;
                 Session.Character.ExchangeInfo.ExchangeList.Add(item);
                 item.Amount = qty[i];
-                packetList += $"{i}.{type[i]}.{item.ItemVNum}.{qty[i]} ";
+                if (type[i] != 0)
+                    packetList += $"{i}.{type[i]}.{item.ItemVNum}.{qty[i]} ";
+                else
+                    packetList += $"{i}.{type[i]}.{item.ItemVNum}.{inv.InventoryItem.Rare}.{inv.InventoryItem.Upgrade} ";
             }
             Session.Character.ExchangeInfo.Gold = Gold;
             ClientLinkManager.Instance.Broadcast(Session, $"exc_list 1 {Session.Character.CharacterId} {Gold} {packetList}", ReceiverType.OnlySomeone, "", Session.Character.ExchangeInfo.CharId);
@@ -1318,7 +1321,7 @@ namespace OpenNos.Handler
 
                             ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateCMode(), ReceiverType.AllOnMap);
                             ClientLinkManager.Instance.Broadcast(Session, $"guri 6 1 {Session.Character.CharacterId} 0 0", ReceiverType.AllOnMap);
-                      
+
                         }
                     }
                     break;
