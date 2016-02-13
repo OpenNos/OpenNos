@@ -71,8 +71,8 @@ namespace OpenNos.Handler
             }
             if (mode == 5)
             {
-                Session.Client.SendPacket(Session.Character.GenerateModal("refused", 0));
-                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateModal("refused", 0), ReceiverType.OnlySomeone, "", charId);
+                Session.Client.SendPacket(Session.Character.GenerateModal($"refused {Language.Instance.GetMessageFromKey("REFUSED")}"));
+                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateModal($"refused {Language.Instance.GetMessageFromKey("REFUSED")}"), ReceiverType.OnlySomeone, "", charId);
             }
         }
 
@@ -808,14 +808,14 @@ namespace OpenNos.Handler
                 Session.Character.ExchangeInfo = new ExchangeInfo();
                 Session.Character.ExchangeInfo.CharId = charId;
                 CharName = (string)ClientLinkManager.Instance.RequiereProperties(charId, "Name");
-                Session.Client.SendPacket(Session.Character.GenerateModal($"{Language.Instance.GetMessageFromKey("YOU_ASK_FOR_EXCHANGE")} {CharName}", 0));
+                Session.Client.SendPacket(Session.Character.GenerateModal($"{Language.Instance.GetMessageFromKey("YOU_ASK_FOR_EXCHANGE")} {CharName}"));
                 ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateDialog($"#req_exc^2^{Session.Character.CharacterId} #req_exc^5^{Session.Character.CharacterId} {Language.Instance.GetMessageFromKey("ASK_ACCEPT")}"), ReceiverType.OnlySomeone, CharName);
                 Session.Character.ExchangeInfo.Confirm = false;
             }
             if (mode == 4)
             {
                 Session.Client.SendPacket("exc_close 0");
-                ClientLinkManager.Instance.Broadcast(Session, $"exc_close 0", ReceiverType.OnlySomeone, "", Session.Character.ExchangeInfo.CharId);
+                ClientLinkManager.Instance.Broadcast(Session, "exc_close 0", ReceiverType.OnlySomeone, "", Session.Character.ExchangeInfo.CharId);
             }
             if (mode == 3)
             {
@@ -828,7 +828,7 @@ namespace OpenNos.Handler
                     if (exchange.Confirm)
                     {
                         Session.Client.SendPacket("exc_close 1");
-                        ClientLinkManager.Instance.Broadcast(Session, $"exc_close 1", ReceiverType.OnlySomeone, "", Session.Character.ExchangeInfo.CharId);
+                        ClientLinkManager.Instance.Broadcast(Session, "exc_close 1", ReceiverType.OnlySomeone, "", Session.Character.ExchangeInfo.CharId);
                         bool continu = true;
 
                         if (!Session.Character.InventoryList.getFreePlaceAmount(Session.Character.ExchangeInfo.ExchangeList, Session.Character.BackPack))
@@ -854,7 +854,7 @@ namespace OpenNos.Handler
                             ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_PLACE"), 0), ReceiverType.OnlySomeone, "", Session.Character.ExchangeInfo.CharId);
 
                             Session.Client.SendPacket("exc_close 0");
-                            ClientLinkManager.Instance.Broadcast(Session, $"exc_close 0", ReceiverType.OnlySomeone, "", Session.Character.ExchangeInfo.CharId);
+                            ClientLinkManager.Instance.Broadcast(Session, "exc_close 0", ReceiverType.OnlySomeone, "", Session.Character.ExchangeInfo.CharId);
                         }
                         else
                         {
