@@ -110,7 +110,12 @@ namespace OpenNos.Handler
             {
                 ClientLinkManager.Instance.Kick(packetsplit[2]);
                 if (DAOFactory.CharacterDAO.LoadByName(packetsplit[2]) != null)
+                {
                     DAOFactory.AccountDAO.ToggleBan(DAOFactory.CharacterDAO.LoadByName(packetsplit[2]).AccountId);
+                    Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("USER_NOT_FOUND"), 10));
+                }
+                else
+                    Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
             }
             else
                 Session.Client.SendPacket(Session.Character.GenerateSay("$Ban CHARACTERNAME", 10));
