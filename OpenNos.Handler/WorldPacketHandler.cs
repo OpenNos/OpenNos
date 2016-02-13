@@ -1542,26 +1542,29 @@ namespace OpenNos.Handler
 
                 if (itemslot > -1 && mode > -1 && protection > -1)
                 {
-                    InventoryDTO inventoryDTO = DAOFactory.InventoryDAO.LoadBySlotAndType(Session.Character.CharacterId, itemslot, 0);
-                    InventoryItemDTO item = DAOFactory.InventoryItemDAO.LoadById(inventoryDTO.InventoryItemId);
-                    int result = RarifyItem(item, (InventoryItem.RarifyMode)mode, (InventoryItem.RarifyProtection)protection);
-                    if (result == -1)
+                    Inventory inventoryDTO = Session.Character.InventoryList.LoadBySlotAndType(itemslot, 0);
+                    if (inventoryDTO != null)
                     {
-                        Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("RARIFY_FAILED"), 11));
-                    }
-                    else if (result == 0)
-                    {
-                        Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("RARIFY_FAILED_ITEM_SAVED"), 11));
-                    }
-                    else
-                    {
-                        Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("RARIFY_SUCCESS"), result), 12));
+                        InventoryItem item = inventoryDTO.InventoryItem;
+                        int result = RarifyItem(item, (InventoryItem.RarifyMode)mode, (InventoryItem.RarifyProtection)protection);
+                        if (result == -1)
+                        {
+                            Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("RARIFY_FAILED"), 11));
+                        }
+                        else if (result == 0)
+                        {
+                            Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("RARIFY_FAILED_ITEM_SAVED"), 11));
+                        }
+                        else
+                        {
+                            Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("RARIFY_SUCCESS"), result), 12));
+                        }
                     }
                 }
             }
         }
 
-        public int RarifyItem(InventoryItemDTO item, InventoryItem.RarifyMode mode, InventoryItem.RarifyProtection protection)
+        public int RarifyItem(InventoryItem item, InventoryItem.RarifyMode mode, InventoryItem.RarifyProtection protection)
         {
             double rare1 = 50;
             double rare2 = 35;
@@ -2243,78 +2246,86 @@ namespace OpenNos.Handler
 
                 if (itemslot > -1 && mode > -1 && protection > -1)
                 {
-                    InventoryDTO inventoryDTO = DAOFactory.InventoryDAO.LoadBySlotAndType(Session.Character.CharacterId, itemslot, 0);
-                    InventoryItemDTO item = DAOFactory.InventoryItemDAO.LoadById(inventoryDTO.InventoryItemId);
-                    int result = UpgradeItem(item, (InventoryItem.UpgradeMode)mode, (InventoryItem.UpgradeProtection)protection);
-                    if (result == -1)
+                    Inventory inventoryDTO = Session.Character.InventoryList.LoadBySlotAndType(itemslot, 0);
+                    if (inventoryDTO != null)
                     {
-                        Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADE_FAILED"), 11));
-                    }
-                    else if (result == 0)
-                    {
-                        Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADE_FAILED_ITEM_SAVED"), 11));
-                    }
-                    else if (result == 1)
-                    {
-                        Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADE_FIXED"), 11));
-                    }
-                    else
-                    {
-                        Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADE_SUCCESS"), 12));
+                        InventoryItem item = inventoryDTO.InventoryItem;
+                        int result = UpgradeItem(item, (InventoryItem.UpgradeMode)mode, (InventoryItem.UpgradeProtection)protection);
+                        if (result == -1)
+                        {
+                            Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADE_FAILED"), 11));
+                        }
+                        else if (result == 0)
+                        {
+                            Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADE_FAILED_ITEM_SAVED"), 11));
+                        }
+                        else if (result == 1)
+                        {
+                            Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADE_FIXED"), 11));
+                        }
+                        else
+                        {
+                            Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADE_SUCCESS"), 12));
+                        }
                     }
                 }
             }
         }
 
-        public int UpgradeItem(InventoryItemDTO item, InventoryItem.UpgradeMode mode, InventoryItem.UpgradeProtection protection)
+        public int UpgradeItem(InventoryItem item, InventoryItem.UpgradeMode mode, InventoryItem.UpgradeProtection protection)
         {
-            short[] upsuccess = { 100, 100, 90, 80, 60, 40, 20, 10, 5, 1 };
-            short[] upfix = { 0, 0, 10, 15, 20, 20, 20, 20, 15, 10 };
-
-            //short itempricevnum1 = 0;
-            //short itempricevnum2 = 0;
-            short goldprice = 500;
-            double reducedpricefactor = 0.5;
-
-            switch (mode)
+            if (item.Upgrade >= 10)
             {
-                case InventoryItem.UpgradeMode.Free:
-                    break;
+                short[] upsuccess = { 100, 100, 90, 80, 60, 40, 20, 10, 5, 1 };
+                short[] upfix = { 0, 0, 10, 15, 20, 20, 20, 20, 15, 10 };
 
-                case InventoryItem.UpgradeMode.Reduced:
-                    //TODO: Reduced Item Amount
-                    Session.Character.Gold = Session.Character.Gold - (long)(goldprice * reducedpricefactor);
-                    break;
+                //short itempricevnum1 = 0;
+                //short itempricevnum2 = 0;
+                short goldprice = 500;
+                double reducedpricefactor = 0.5;
 
-                case InventoryItem.UpgradeMode.Normal:
-                    //TODO: Normal Item Amount
-                    Session.Character.Gold = Session.Character.Gold - goldprice;
-                    break;
-            }
-
-            Random r = new Random();
-            int rnd = r.Next(100);
-            if (rnd <= upsuccess[item.Upgrade + 1])
-            {
-                item.Upgrade++;
-                return 2;
-            }
-            else if (rnd <= upfix[item.Upgrade + 1])
-            {
-                return 1;
-            }
-            else
-            {
-                if (protection == InventoryItem.UpgradeProtection.None)
+                switch (mode)
                 {
-                    //TODO: Item Destroy
-                    return -1;
+                    case InventoryItem.UpgradeMode.Free:
+                        break;
+
+                    case InventoryItem.UpgradeMode.Reduced:
+                        //TODO: Reduced Item Amount
+                        Session.Character.Gold = Session.Character.Gold - (long)(goldprice * reducedpricefactor);
+                        break;
+
+                    case InventoryItem.UpgradeMode.Normal:
+                        //TODO: Normal Item Amount
+                        Session.Character.Gold = Session.Character.Gold - goldprice;
+                        break;
+                }
+
+                Random r = new Random();
+                int rnd = r.Next(100);
+                if (rnd <= upsuccess[item.Upgrade + 1])
+                {
+                    item.Upgrade++;
+                    return 2;
+                }
+                else if (rnd <= upfix[item.Upgrade + 1])
+                {
+                    return 1;
                 }
                 else
                 {
-                    return 0;
+                    if (protection == InventoryItem.UpgradeProtection.None)
+                    {
+                        //TODO: Item Destroy
+                        return -1;
+                    }
+                    else
+                    {
+                        return 0;
+                    }
                 }
             }
+            else
+                return 0;
         }
 
         [Packet("u_i")]
