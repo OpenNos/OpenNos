@@ -1006,9 +1006,9 @@ namespace OpenNos.GameObject
             return $"shop 1 {CharacterId} 0 0";
         }
 
-        public string GenerateModal(string message, int type)
+        public string GenerateModal(string message)
         {
-            return $"modal {message} {type}";
+            return $"modal {message}";
         }
 
         public string GenerateSpPoint()
