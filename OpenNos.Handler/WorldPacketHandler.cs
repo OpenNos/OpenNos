@@ -1300,12 +1300,26 @@ namespace OpenNos.Handler
                 case 6:
                     if (verify)
                     {
-                        Session.Character.UseSp = true;
-                        Session.Character.Morph = arg[0];
-                        Session.Character.MorphUpgrade = arg[1];
-                        Session.Character.MorphUpgrade2 = arg[2];
-                        Session.Character.ArenaWinner = arg[3];
-                        ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateCMode(), ReceiverType.AllOnMap);
+                        if (arg[0] != 0)
+                        {
+                            Session.Character.UseSp = true;
+                            Session.Character.Morph = arg[0];
+                            Session.Character.MorphUpgrade = arg[1];
+                            Session.Character.MorphUpgrade2 = arg[2];
+                            Session.Character.ArenaWinner = arg[3];
+                            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateCMode(), ReceiverType.AllOnMap);
+                        }
+                        else
+                        {
+                            Session.Character.UseSp = false;
+
+                            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateCond(), ReceiverType.AllOnMap);
+                            Session.Client.SendPacket(Session.Character.GenerateLev());
+
+                            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateCMode(), ReceiverType.AllOnMap);
+                            ClientLinkManager.Instance.Broadcast(Session, $"guri 6 1 {Session.Character.CharacterId} 0 0", ReceiverType.AllOnMap);
+                      
+                        }
                     }
                     break;
 
