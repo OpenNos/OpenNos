@@ -1215,7 +1215,12 @@ namespace OpenNos.Handler
                         change = true;
                     }
                     else
+                    {
+
+                        if (Session.Character.Mp != (int)Session.Character.MPLoad())
+                            change = true;
                         Session.Character.Mp = (int)Session.Character.MPLoad();
+                    }
                     x = 0;
                 }
                 if (change)
