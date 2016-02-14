@@ -145,25 +145,25 @@
     <value>Bad Password</value>
   </data>
   <data name="BN0" xml:space="preserve">
-    <value>read^the^rules</value>
+    <value>Read^our^Terms^and^Copyrights</value>
   </data>
   <data name="BN1" xml:space="preserve">
-    <value>don't^give^id</value>
+    <value>Don't^give^your^password</value>
   </data>
   <data name="BN2" xml:space="preserve">
-    <value>need^a^gm?^go^on^website.</value>
+    <value>Need^a^gm?^check^out^our^website:^</value>
   </data>
   <data name="BN3" xml:space="preserve">
-    <value />
+    <value>Greetings^from^OpenNos^Team!</value>
   </data>
   <data name="BN4" xml:space="preserve">
-    <value />
+    <value>Do^you^want^to^contribute?^https://github.com/OpenNos/OpenNos</value>
   </data>
   <data name="BN5" xml:space="preserve">
-    <value />
+    <value>Authors:^0Lucifer0^,^chucktheripper</value>
   </data>
   <data name="BN6" xml:space="preserve">
-    <value />
+    <value>Check^out:^https://github.com/OpenNos/OpenNos^for^latest^updates.</value>
   </data>
   <data name="BUFF_BLOCKED" xml:space="preserve">
     <value>Buff icons disabled</value>
