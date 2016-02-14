@@ -1495,7 +1495,9 @@ namespace OpenNos.Handler
             {
                 if (Int64.TryParse(packetsplit[2], out gold))
                 {
+                    if (gold <= 100000000 && gold >= 0)
                     Session.Character.Gold = gold;
+                    
                     Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("GOLD_SET"), 0));
                     ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateGold(), ReceiverType.AllOnMap);
                 }
