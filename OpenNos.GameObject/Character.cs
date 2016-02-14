@@ -644,7 +644,7 @@ namespace OpenNos.GameObject
 
         public string GenerateStat()
         {
-            double option = 
+            double option =
                 (WhisperBlocked ? Math.Pow(2, (int)ConfigType.WhisperBlocked - 1) : 0)
                 + (FamilyRequestBlocked ? Math.Pow(2, (int)ConfigType.FamilyRequestBlocked - 1) : 0)
                 + (!MouseAimLock ? Math.Pow(2, (int)ConfigType.MouseAimLock - 1) : 0)
@@ -652,12 +652,12 @@ namespace OpenNos.GameObject
                 + (ExchangeBlocked ? Math.Pow(2, (int)ConfigType.ExchangeBlocked - 1) : 0)
                 + (FriendRequestBlocked ? Math.Pow(2, (int)ConfigType.FriendRequestBlocked - 1) : 0)
                 + (EmoticonsBlocked ? Math.Pow(2, (int)ConfigType.EmoticonsBlocked - 1) : 0)
-                + (HpBlocked ? Math.Pow(2, (int)ConfigType.HpBlocked-1) : 0)
-                + (BuffBlocked ? Math.Pow(2, (int)ConfigType.BuffBlocked - 1) : 0)      
+                + (HpBlocked ? Math.Pow(2, (int)ConfigType.HpBlocked - 1) : 0)
+                + (BuffBlocked ? Math.Pow(2, (int)ConfigType.BuffBlocked - 1) : 0)
                 + (GroupRequestBlocked ? Math.Pow(2, (int)ConfigType.GroupRequestBlocked - 1) : 0)
                 + (HeroChatBlocked ? Math.Pow(2, (int)ConfigType.HeroChatBlocked - 1) : 0)
-                + (QuickGetUp ? Math.Pow(2, (int)ConfigType.QuickGetUp-1) : 0);
-               ;
+                + (QuickGetUp ? Math.Pow(2, (int)ConfigType.QuickGetUp - 1) : 0);
+            ;
             return $"stat {Hp} {HPLoad()} {Mp} {MPLoad()} 0 {option}";
         }
 
