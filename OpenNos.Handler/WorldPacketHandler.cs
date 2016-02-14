@@ -1202,10 +1202,10 @@ namespace OpenNos.Handler
                 }
                 else
                 {
-                    if(Session.Character.Hp != (int)Session.Character.HPLoad())
+                    if (Session.Character.Hp != (int)Session.Character.HPLoad())
                         change = true;
                     Session.Character.Hp = (int)Session.Character.HPLoad();
-                  
+
                 }
                 if (x == 1)
                 {
@@ -1504,11 +1504,13 @@ namespace OpenNos.Handler
             {
                 if (Int64.TryParse(packetsplit[2], out gold))
                 {
-                    if (gold <= 100000000 && gold >= 0)
-                    Session.Character.Gold = gold;
-                    
-                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("GOLD_SET"), 0));
-                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateGold(), ReceiverType.AllOnMap);
+                    if (gold <= 1000000000 && gold >= 0)
+                    {
+                        Session.Character.Gold = gold;
+
+                        Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("GOLD_SET"), 0));
+                        ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateGold(), ReceiverType.AllOnMap);
+                    }
                 }
             }
             else
