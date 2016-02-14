@@ -552,121 +552,121 @@ namespace OpenNos.Handler
                     case (int)ConfigType.BuffBlocked:
                         if (Session.Character.BuffBlocked = int.Parse(packetsplit[3]) == 1 ? true : false)
                         {
-                            //TODO message
+                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("BUFF_BLOCKED"), 0));
                         }
                         else
                         {
-                            //TODO message
+                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("BUFF_UNLOCKED"), 0));
                         }
                         break;
                     case (int)ConfigType.EmoticonsBlocked:
                         if (Session.Character.EmoticonsBlocked = int.Parse(packetsplit[3]) == 1 ? true : false)
                         {
-                            //TODO message
+                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("EMO_BLOCKED"), 0));
                         }
                         else
                         {
-                            //TODO message
+                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("EMO_UNLOCKED"), 0));
                         }
                         break;
                     case (int)ConfigType.ExchangeBlocked:
                         if (Session.Character.ExchangeBlocked = int.Parse(packetsplit[3]) == 0 ? true : false)
                         {
-                            //TODO message
+                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("EXCHANGE_BLOCKED"), 0));
                         }
                         else
                         {
-                            //TODO message
+                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("EXCHANGE_UNLOCKED"), 0));
                         }
                         break;
                     case (int)ConfigType.FriendRequestBlocked:
                         if (Session.Character.FriendRequestBlocked = int.Parse(packetsplit[3]) == 0 ? true : false)
                         {
-                            //TODO message
+                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("FRIEND_REQ_BLOCKED"), 0));
                         }
                         else
                         {
-                            //TODO message
+                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("FRIEND_REQ_UNLOCKED"), 0));
                         }
                         break;
                     case (int)ConfigType.GroupRequestBlocked:
                         if (Session.Character.GroupRequestBlocked = int.Parse(packetsplit[3]) == 0 ? true : false)
                         {
-                            //TODO message
+                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("GROUP_REQ_BLOCKED"), 0));
                         }
                         else
                         {
-                            //TODO message
+                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("GROUP_REQ_UNLOCKED"), 0));
                         }
                         break;
                     case (int)ConfigType.HeroChatBlocked:
                         if (Session.Character.HeroChatBlocked = int.Parse(packetsplit[3]) == 1 ? true : false)
                         {
-                            //TODO message
+                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("HERO_CHAT_BLOCKED"), 0));
                         }
                         else
                         {
-                            //TODO message
+                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("HERO_CHAT_UNLOCKED"), 0));
                         }
                         break;
                     case (int)ConfigType.HpBlocked:
                         if (Session.Character.HpBlocked = int.Parse(packetsplit[3]) == 1 ? true : false)
                         {
-                            //TODO message
+                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("HP_BLOCKED"), 0));
                         }
                         else
                         {
-                            //TODO message
+                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("HP_UNLOCKED"), 0));
                         }
                         break;
                     case (int)ConfigType.MinilandInviteBlocked:
                         if (Session.Character.MinilandInviteBlocked = int.Parse(packetsplit[3]) == 1 ? true : false)
                         {
-                            //TODO message
+                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("MINI_INV_BLOCKED"), 0));
                         }
                         else
                         {
-                            //TODO message
+                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("MINI_INV_UNLOCKED"), 0));
                         }
                         break;
                     case (int)ConfigType.MouseAimLock:
                         if (Session.Character.MouseAimLock = int.Parse(packetsplit[3]) == 1 ? true : false)
                         {
-                            //TODO message
+                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("MOUSE_LOCKED"), 0));
                         }
                         else
                         {
-                            //TODO message
+                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("MOUSE_UNLOCKED"), 0));
                         }
                         break;
                     case (int)ConfigType.QuickGetUp:
                         if (Session.Character.QuickGetUp = int.Parse(packetsplit[3]) == 1 ? true : false)
                         {
-                            //TODO message
+                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("QUICK_GET_UP_ENABLED"), 0));
                         }
                         else
                         {
-                            //TODO message
+                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("QUICK_GET_UP_DISABLED"), 0));
                         }
                         break;
                     case (int)ConfigType.WhisperBlocked:
                         if (Session.Character.WhisperBlocked = int.Parse(packetsplit[3]) == 0 ? true : false)
                         {
-                            //TODO message
+                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("WHISPER_BLOCKED"), 0));
                         }
                         else
                         {
-                            //TODO message
+                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("WHISPER_UNLOCKED"), 0));
                         }
                         break;
                     case (int)ConfigType.FamilyRequestBlocked:
                         if (Session.Character.FamilyRequestBlocked = int.Parse(packetsplit[3]) == 0 ? true : false)
                         {
-                            //TODO message
+                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("FAMILY_REQ_LOCKED"), 0));
                         }
                         else
                         {
-                            //TODO message
+                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("FAMILY_REQ_UNLOCKED"), 0));
                         }
                         break;
 
