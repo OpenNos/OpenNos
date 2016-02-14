@@ -424,13 +424,14 @@ namespace OpenNos.Handler
         public void Command(string packet)
         {
             Session.Client.SendPacket(Session.Character.GenerateSay("-----------Commands Info--------------", 10));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$Shout MESSAGE", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$Teleport Map X Y", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$Teleport CharacterName", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$Speed SPEED", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$Rarify SLOT MODE PROTECTION", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$Upgrade SLOT MODE PROTECTION", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$Morph MORPHID UPGRADE WINGS ARENA", 6));
-            Session.Client.SendPacket(Session.Character.GenerateSay("$Shout MESSAGE", 6));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$Gold AMOUNT", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$Lvl LEVEL", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$JLvl JOBLEVEL", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$SPLvl SPLEVEL", 6));
@@ -1342,6 +1343,24 @@ namespace OpenNos.Handler
             }
         }
 
+        [Packet("$Gold")]
+        public void Gold(string packet)
+        {
+            string[] packetsplit = packet.Split(' ');
+            long gold;
+            if (packetsplit.Length > 2)
+            {
+                if (Int64.TryParse(packetsplit[2], out gold))
+                {
+                    Session.Character.Gold = gold;
+                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("GOLD_SET"), 0));
+                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateGold(), ReceiverType.AllOnMap);
+                }
+            }
+            else
+                Session.Client.SendPacket(Session.Character.GenerateSay("$Gold AMOUNT", 10));
+        }
+
         [Packet("mve")]
         public void MoveInventory(string packet)
         {
@@ -1616,7 +1635,8 @@ namespace OpenNos.Handler
                 Session.Client.SendPacket(Session.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("RARIFY_SUCCESS"), 5), 0));
                 Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(item.InventoryItem.ItemVNum, item.InventoryItem.Amount, item.Type, item.Slot, item.InventoryItem.Rare, item.InventoryItem.Color, item.InventoryItem.Upgrade));
                 Session.Client.SendPacket(Session.Character.GenerateEff(3005));
-                Session.Character.InventoryList.LoadByInventoryItem(item.InventoryItemId).InventoryItem.Rare = 5;            }
+                Session.Character.InventoryList.LoadByInventoryItem(item.InventoryItemId).InventoryItem.Rare = 5;
+            }
             else if (rnd <= rare4 && !(protection == InventoryItem.RarifyProtection.Scroll && item.InventoryItem.Rare >= 4))
             {
                 Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("RARIFY_SUCCESS"), 4), 12));
@@ -1638,7 +1658,7 @@ namespace OpenNos.Handler
                 Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("RARIFY_SUCCESS"), 2), 12));
                 Session.Client.SendPacket(Session.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("RARIFY_SUCCESS"), 2), 0));
                 Session.Client.SendPacket(Session.Character.GenerateEff(3005));
-                Session.Character.InventoryList.LoadByInventoryItem(item.InventoryItemId).InventoryItem.Rare =2;
+                Session.Character.InventoryList.LoadByInventoryItem(item.InventoryItemId).InventoryItem.Rare = 2;
                 Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(item.InventoryItem.ItemVNum, item.InventoryItem.Amount, item.Type, item.Slot, item.InventoryItem.Rare, item.InventoryItem.Color, item.InventoryItem.Upgrade));
             }
             else if (rnd <= rare1 && !(protection == InventoryItem.RarifyProtection.Scroll && item.InventoryItem.Rare >= 1))
