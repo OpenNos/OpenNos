@@ -1,4 +1,4 @@
-﻿-- This File contains all of the additions to the OpenNos.edmx
+-- This File contains all of the additions to the OpenNos.edmx
 USE opennos;
 
 -- Unique constraints
