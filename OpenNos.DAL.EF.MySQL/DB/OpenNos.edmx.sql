@@ -44,7 +44,7 @@
 -- -----------------------------------------------------------
 -- Entity Designer DDL Script for MySQL Server 4.1 and higher
 -- -----------------------------------------------------------
--- Date Created: 02/11/2016 00:32:27
+-- Date Created: 02/14/2016 13:48:15
 
 -- Generated from EDMX file: C:\Users\ERWAN\Desktop\OpenNos GIT\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
 -- Target version: 3.0.0.0
@@ -176,7 +176,8 @@ CREATE TABLE `character`(
 	`QuickGetUp` bool NOT NULL, 
 	`HpBlocked` bool NOT NULL, 
 	`BuffBlocked` bool NOT NULL, 
-	`MinilandInviteBlocked` bool NOT NULL);
+	`MinilandInviteBlocked` bool NOT NULL, 
+	`FamilyRequestBlocked` bool NOT NULL);
 
 ALTER TABLE `character` ADD PRIMARY KEY (CharacterId);
 
