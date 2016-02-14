@@ -1201,8 +1201,12 @@ namespace OpenNos.Handler
                     Session.Character.Hp += Session.Character.HealthHPLoad();
                 }
                 else
+                {
+                    if(Session.Character.Hp != (int)Session.Character.HPLoad())
+                        change = true;
                     Session.Character.Hp = (int)Session.Character.HPLoad();
-
+                  
+                }
                 if (x == 1)
                 {
                     if (Session.Character.Mp + Session.Character.HealthMPLoad() < Session.Character.MPLoad())
@@ -1211,7 +1215,12 @@ namespace OpenNos.Handler
                         change = true;
                     }
                     else
+                    {
+
+                        if (Session.Character.Mp != (int)Session.Character.MPLoad())
+                            change = true;
                         Session.Character.Mp = (int)Session.Character.MPLoad();
+                    }
                     x = 0;
                 }
                 if (change)
