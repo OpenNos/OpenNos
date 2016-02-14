@@ -62,6 +62,7 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public bool HpBlocked { get; set; }
         public bool BuffBlocked { get; set; }
         public bool MinilandInviteBlocked { get; set; }
+        public bool FamilyRequestBlocked { get; set; }
     
         public virtual Account account { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

@@ -520,6 +520,18 @@ namespace OpenNos.Handler
                         Slot = Convert.ToByte(packetsplit[3]),
                         AccountId = accountId,
                         StateEnum = CharacterState.Active,
+                        WhisperBlocked = false,
+                        FamilyRequestBlocked = false,
+                        ExchangeBlocked = false,
+                        BuffBlocked = false,
+                        EmoticonsBlocked = false,
+                        FriendRequestBlocked = false,
+                        GroupRequestBlocked = false,
+                        MinilandInviteBlocked = false,
+                        HeroChatBlocked = false,
+                        QuickGetUp = false,
+                        MouseAimLock = false,
+                        HpBlocked = false,
                     };
 
                     SaveResult insertResult = DAOFactory.CharacterDAO.InsertOrUpdate(ref newCharacter);
@@ -528,7 +540,138 @@ namespace OpenNos.Handler
                 else Session.Client.SendPacketFormat($"info {Language.Instance.GetMessageFromKey("ALREADY_TAKEN")}");
             }
         }
+        [Packet("gop")]
+        public void option(string packet)
+        {
+            string[] packetsplit = packet.Split(' ');
+            if (packetsplit.Length == 4)
+            {
+                switch (int.Parse(packetsplit[2]))
+                {
+                    case (int)ConfigType.BuffBlocked:
+                        if (Session.Character.BuffBlocked = int.Parse(packetsplit[3]) == 1 ? true : false)
+                        {
+                            //TODO message
+                        }
+                        else
+                        {
+                            //TODO message
+                        }
+                        break;
+                    case (int)ConfigType.EmoticonsBlocked:
+                        if (Session.Character.EmoticonsBlocked = int.Parse(packetsplit[3]) == 1 ? true : false)
+                        {
+                            //TODO message
+                        }
+                        else
+                        {
+                            //TODO message
+                        }
+                        break;
+                    case (int)ConfigType.ExchangeBlocked:
+                        if (Session.Character.ExchangeBlocked = int.Parse(packetsplit[3]) == 0 ? true : false)
+                        {
+                            //TODO message
+                        }
+                        else
+                        {
+                            //TODO message
+                        }
+                        break;
+                    case (int)ConfigType.FriendRequestBlocked:
+                        if (Session.Character.FriendRequestBlocked = int.Parse(packetsplit[3]) == 0 ? true : false)
+                        {
+                            //TODO message
+                        }
+                        else
+                        {
+                            //TODO message
+                        }
+                        break;
+                    case (int)ConfigType.GroupRequestBlocked:
+                        if (Session.Character.GroupRequestBlocked = int.Parse(packetsplit[3]) == 0 ? true : false)
+                        {
+                            //TODO message
+                        }
+                        else
+                        {
+                            //TODO message
+                        }
+                        break;
+                    case (int)ConfigType.HeroChatBlocked:
+                        if (Session.Character.HeroChatBlocked = int.Parse(packetsplit[3]) == 1 ? true : false)
+                        {
+                            //TODO message
+                        }
+                        else
+                        {
+                            //TODO message
+                        }
+                        break;
+                    case (int)ConfigType.HpBlocked:
+                        if (Session.Character.HpBlocked = int.Parse(packetsplit[3]) == 1 ? true : false)
+                        {
+                            //TODO message
+                        }
+                        else
+                        {
+                            //TODO message
+                        }
+                        break;
+                    case (int)ConfigType.MinilandInviteBlocked:
+                        if (Session.Character.MinilandInviteBlocked = int.Parse(packetsplit[3]) == 1 ? true : false)
+                        {
+                            //TODO message
+                        }
+                        else
+                        {
+                            //TODO message
+                        }
+                        break;
+                    case (int)ConfigType.MouseAimLock:
+                        if (Session.Character.MouseAimLock = int.Parse(packetsplit[3]) == 1 ? true : false)
+                        {
+                            //TODO message
+                        }
+                        else
+                        {
+                            //TODO message
+                        }
+                        break;
+                    case (int)ConfigType.QuickGetUp:
+                        if (Session.Character.QuickGetUp = int.Parse(packetsplit[3]) == 1 ? true : false)
+                        {
+                            //TODO message
+                        }
+                        else
+                        {
+                            //TODO message
+                        }
+                        break;
+                    case (int)ConfigType.WhisperBlocked:
+                        if (Session.Character.WhisperBlocked = int.Parse(packetsplit[3]) == 0 ? true : false)
+                        {
+                            //TODO message
+                        }
+                        else
+                        {
+                            //TODO message
+                        }
+                        break;
+                    case (int)ConfigType.FamilyRequestBlocked:
+                        if (Session.Character.FamilyRequestBlocked = int.Parse(packetsplit[3]) == 0 ? true : false)
+                        {
+                            //TODO message
+                        }
+                        else
+                        {
+                            //TODO message
+                        }
+                        break;
 
+                }
+            }
+        }
         [Packet("$CreateItem")]
         public void CreateItem(string packet)
         {
@@ -1616,7 +1759,8 @@ namespace OpenNos.Handler
                 Session.Client.SendPacket(Session.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("RARIFY_SUCCESS"), 5), 0));
                 Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(item.InventoryItem.ItemVNum, item.InventoryItem.Amount, item.Type, item.Slot, item.InventoryItem.Rare, item.InventoryItem.Color, item.InventoryItem.Upgrade));
                 Session.Client.SendPacket(Session.Character.GenerateEff(3005));
-                Session.Character.InventoryList.LoadByInventoryItem(item.InventoryItemId).InventoryItem.Rare = 5;            }
+                Session.Character.InventoryList.LoadByInventoryItem(item.InventoryItemId).InventoryItem.Rare = 5;
+            }
             else if (rnd <= rare4 && !(protection == InventoryItem.RarifyProtection.Scroll && item.InventoryItem.Rare >= 4))
             {
                 Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("RARIFY_SUCCESS"), 4), 12));
@@ -1638,7 +1782,7 @@ namespace OpenNos.Handler
                 Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("RARIFY_SUCCESS"), 2), 12));
                 Session.Client.SendPacket(Session.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("RARIFY_SUCCESS"), 2), 0));
                 Session.Client.SendPacket(Session.Character.GenerateEff(3005));
-                Session.Character.InventoryList.LoadByInventoryItem(item.InventoryItemId).InventoryItem.Rare =2;
+                Session.Character.InventoryList.LoadByInventoryItem(item.InventoryItemId).InventoryItem.Rare = 2;
                 Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(item.InventoryItem.ItemVNum, item.InventoryItem.Amount, item.Type, item.Slot, item.InventoryItem.Rare, item.InventoryItem.Color, item.InventoryItem.Upgrade));
             }
             else if (rnd <= rare1 && !(protection == InventoryItem.RarifyProtection.Scroll && item.InventoryItem.Rare >= 1))
@@ -1838,12 +1982,15 @@ namespace OpenNos.Handler
                         BuffBlocked = characterDTO.BuffBlocked,
                         EmoticonsBlocked = characterDTO.EmoticonsBlocked,
                         WhisperBlocked = characterDTO.WhisperBlocked,
+                        FamilyRequestBlocked = characterDTO.FamilyRequestBlocked,
                         ExchangeBlocked = characterDTO.ExchangeBlocked,
                         FriendRequestBlocked = characterDTO.FriendRequestBlocked,
                         GroupRequestBlocked = characterDTO.GroupRequestBlocked,
                         HeroChatBlocked = characterDTO.HeroChatBlocked,
                         HpBlocked = characterDTO.HpBlocked,
-                        MinilandInviteBlocked = characterDTO.MinilandInviteBlocked
+                        MinilandInviteBlocked = characterDTO.MinilandInviteBlocked,
+                        QuickGetUp = characterDTO.QuickGetUp,
+                        MouseAimLock = characterDTO.MouseAimLock
 
                     };
 
@@ -2102,7 +2249,7 @@ namespace OpenNos.Handler
 
             Session.Client.SendPacket(Session.Character.GenerateTit());
             ChangeMap();
-            Session.Client.SendPacket("rank_cool 0 0 18000"); //TODO: add rank cool
+            Session.Client.SendPacket("rank_cool 0 0 18000");
 
             Session.Client.SendPacket("scr 0 0 0 0 0 0");
 
