@@ -1078,6 +1078,14 @@ namespace OpenNos.GameObject
 
         }
 
+        public string GenerateSlInfo(InventoryItem inventoryItem)
+        {
+            Item iteminfo = ServerManager.GetItem(inventoryItem.ItemVNum);
+            int freepoint = ServersData.SpPoint(inventoryItem.SpLevel, inventoryItem.Upgrade);
+            string skill = "-1"; //sk.sk.sk.sk.sk...
+            return $"slinfo 0 {inventoryItem.ItemVNum} {iteminfo.Morph} {inventoryItem.SpLevel} {iteminfo.LevelJobMinimum} {iteminfo.ReputationMinimum+1} 0 0 0 0 0 0 0 {iteminfo.FireResistance} {iteminfo.WaterResistance} {iteminfo.LightResistance} {iteminfo.DarkResistance} 0 {inventoryItem.SpXp} {ServersData.SpXPData[inventoryItem.SpLevel-1]} {skill} 14863575 {freepoint} {inventoryItem.SlHit} {inventoryItem.SlDefence} {inventoryItem.SlElement} {inventoryItem.SlHP} {inventoryItem.Upgrade} - 1 12 0 0 0 0 0 0 0 0 0 0 0 0 0 0";
+        }
+
 
         #endregion
     }

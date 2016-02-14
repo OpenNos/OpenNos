@@ -616,5 +616,58 @@ namespace OpenNos.GameObject
             return distRate[@class, level];
         }
 
+        internal static int SpPoint(short spLevel, short upgrade)
+        {
+            int point = (spLevel-20) * 3;
+            switch(upgrade)
+            {
+                case 1:
+                    point += 5;
+                    break;
+                case 2:
+                    point += 10;
+                    break;
+                case 3:
+                    point += 15;
+                    break;
+                case 4:
+                    point += 20;
+                    break;
+                case 5:
+                    point += 28;
+                    break;
+                case 6:
+                    point += 36;
+                    break;
+                case 7:
+                    point += 46;
+                    break;
+                case 8:
+                    point += 56;
+                    break;
+                case 9:
+                    point += 68;
+                    break;
+                case 10:
+                    point += 80;
+                    break;
+                case 11:
+                    point += 95;
+                    break;
+                case 12:
+                    point += 110;
+                    break;
+                case 13:
+                    point += 128;
+                    break;
+                case 14:
+                    point += 148;
+                    break;
+                case 15:
+                    point += 173;
+                    break;
+            }
+            return point;
+        }
     }
 }

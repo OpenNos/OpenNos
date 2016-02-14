@@ -930,14 +930,36 @@ namespace OpenNos.Handler
             string[] packetsplit = packet.Split(' ');
             if (packetsplit.Length > 3)
             {
-                short type = 0; short.TryParse(packetsplit[3], out type);
-                short slot = 0; short.TryParse(packetsplit[2], out slot);
+                short type = 0; short.TryParse(packetsplit[2], out type);
+                short slot = 0; short.TryParse(packetsplit[3], out slot);
+                Inventory inventory = null;
+                switch (type)
+                {
+                    case 0:
+                        inventory = Session.Character.EquipmentList.LoadBySlotAndType(slot, (short)InventoryType.Equipment);
 
-                Inventory inventory = Session.Character.InventoryList.LoadBySlotAndType(slot, type);
+                        break;
+                    case 1:
+                        inventory = Session.Character.InventoryList.LoadBySlotAndType(slot, (short)InventoryType.Wear);
+
+                        break;
+                    case 10:
+                        inventory = Session.Character.InventoryList.LoadBySlotAndType(slot, (short)InventoryType.Sp);
+                        break;
+                    case 11:
+                        inventory = Session.Character.InventoryList.LoadBySlotAndType(slot, (short)InventoryType.Costume);
+                        break;
+                }
+
 
                 if (inventory != null)
                 {
-                    Session.Client.SendPacket(Session.Character.GenerateEInfo(inventory.InventoryItem));
+                    if (ServerManager.GetItem(inventory.InventoryItem.ItemVNum).EquipmentSlot != (byte)EquipmentType.Sp)
+                        Session.Client.SendPacket(Session.Character.GenerateEInfo(inventory.InventoryItem));
+                    else
+                        Session.Client.SendPacket(Session.Character.GenerateSlInfo(inventory.InventoryItem));
+
+
                 }
             }
         }
@@ -1202,10 +1224,10 @@ namespace OpenNos.Handler
                 }
                 else
                 {
-                    if(Session.Character.Hp != (int)Session.Character.HPLoad())
+                    if (Session.Character.Hp != (int)Session.Character.HPLoad())
                         change = true;
                     Session.Character.Hp = (int)Session.Character.HPLoad();
-                  
+
                 }
                 if (x == 1)
                 {
@@ -2208,7 +2230,7 @@ namespace OpenNos.Handler
             string[] packetsplit = packet.Split(' ');
             byte splevel;
             Inventory sp = Session.Character.EquipmentList.LoadBySlotAndType((short)EquipmentType.Sp, (short)InventoryType.Equipment);
-            if (packetsplit.Length > 2)
+            if (packetsplit.Length > 2 && Session.Character.UseSp)
             {
                 if (Byte.TryParse(packetsplit[2], out splevel) && splevel <= 99 && splevel > 0)
                 {
