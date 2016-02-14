@@ -262,7 +262,7 @@
     <value>Automatyczne odrzucanie zaproszenia do grupy wlaczone</value>
   </data>
   <data name="GROUP_REQ_UNLOCKED" xml:space="preserve">
-    <value>Automatyczne odrzucanie zaproszenia do grupy wlaczone</value>
+    <value>Automatyczne odrzucanie zaproszenia do grupy wylaczone</value>
   </data>
   <data name="HANDLER_NOT_FOUND" xml:space="preserve">
     <value>Could not found Handler implementation for Packet with Header {0}</value>
