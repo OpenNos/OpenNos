@@ -135,6 +135,9 @@
   <data name="ASK_TO_DELETE" xml:space="preserve">
     <value>Czy chcesz usunac?</value>
   </data>
+  <data name="BAD_EQUIPMENT" xml:space="preserve">
+    <value>Nie mozesz zalozyc tego przedmiotu!</value>
+  </data>
   <data name="BAD_FAIRY" xml:space="preserve">
     <value>Atrybut wrózki rózni sie od atrybutu specjalisty</value>
   </data>
@@ -142,25 +145,31 @@
     <value>Zle haslo</value>
   </data>
   <data name="BN0" xml:space="preserve">
-    <value>przeczytaj^zasady</value>
+    <value>Przeczytaj^nasze^zasady^i^prawa^autorskie</value>
   </data>
   <data name="BN1" xml:space="preserve">
-    <value>nie^podawaj^nicku^ani^hasla</value>
+    <value>Nie^podawaj^nikomu^hasla,^admin^nigdy^nie^poprosi^cie^o^haslo</value>
   </data>
   <data name="BN2" xml:space="preserve">
-    <value>potrzebujesz^pomocy^gm'a^zajrzyj^na^nasza^strone</value>
+    <value>Potrzebujesz^pomocy^gm'a?^zajrzyj^na^nasza^strone</value>
   </data>
   <data name="BN3" xml:space="preserve">
-    <value>admin^nigdy^nie^poprosi^cie^o^haslo</value>
+    <value>Pozdrowienia^od^Teamu^OpenNos!</value>
   </data>
   <data name="BN4" xml:space="preserve">
-    <value>pozdrowienia^od^teamu!</value>
+    <value>Tlumaczyl^MasterDomino</value>
   </data>
   <data name="BN5" xml:space="preserve">
-    <value />
+    <value>Autorzy:^0Lucifer0^oraz^chucktheripper</value>
   </data>
   <data name="BN6" xml:space="preserve">
-    <value />
+    <value>Chcesz^wziac^udzial^naszym^projekcie?^https://github.com/OpenNos/OpenNos</value>
+  </data>
+  <data name="BUFF_BLOCKED" xml:space="preserve">
+    <value>Ikony buff'ow zablokowane</value>
+  </data>
+  <data name="BUFF_UNLOCKED" xml:space="preserve">
+    <value>Ikony buff'ow odblokowane</value>
   </data>
   <data name="BUY_ITEM" xml:space="preserve">
     <value>{0}: kup &lt;{1} {2}: sztuk &gt;</value>
@@ -181,19 +190,19 @@
     <value>Polaczenie zamkniete przez uzytkownika.</value>
   </data>
   <data name="COMPLIMENT_COOLDOWN" xml:space="preserve">
-    <value>You can only compliment one player per day.</value>
+    <value>Mozesz skomplementowac tylko jednego gracza na dzien.</value>
   </data>
   <data name="COMPLIMENT_GIVEN" xml:space="preserve">
-    <value>You complimented {0}.</value>
+    <value>Skomplementowales {0} graczy.</value>
   </data>
   <data name="COMPLIMENT_LOGIN_COOLDOWN" xml:space="preserve">
-    <value>You have to wait {0} minutes before you can compliment someone.</value>
+    <value>Musisz poczekac {0} minut, zanim znowu bedziesz mogl kogos skomplementowac.</value>
   </data>
   <data name="COMPLIMENT_NOT_MINLVL" xml:space="preserve">
-    <value>You can only compliment a player if you have reached Lv 30.</value>
+    <value>Mozesz komplementowac graczy tylko jesli osiagnoles Lvl 30.</value>
   </data>
   <data name="COMPLIMENT_RECEIVED" xml:space="preserve">
-    <value>You have been complimented by {0}.</value>
+    <value>Zostales skomplementowany przez {0} graczy.</value>
   </data>
   <data name="CORRUPT_KEEPALIVE" xml:space="preserve">
     <value>Uszkodzone Keepalive miedzy uzytkownikiem {0}.</value>
@@ -210,11 +219,35 @@
   <data name="DISCONNECT" xml:space="preserve">
     <value>Uzytkownik zostal rozlaczony! ClientId =</value>
   </data>
+  <data name="EMO_BLOCKED" xml:space="preserve">
+    <value>Emotikony zablokowane</value>
+  </data>
+  <data name="EMO_UNLOCKED" xml:space="preserve">
+    <value>Emotikony odblokowane</value>
+  </data>
   <data name="EQ_NOT_EMPTY" xml:space="preserve">
     <value>Twoj ekwipunek nie jest pusty</value>
   </data>
+  <data name="EXCHANGE_BLOCKED" xml:space="preserve">
+    <value>Wymiana zablokowana</value>
+  </data>
+  <data name="EXCHANGE_UNLOCKED" xml:space="preserve">
+    <value>Wymiana odblokowana</value>
+  </data>
+  <data name="FAMILY_REQ_LOCKED" xml:space="preserve">
+    <value>Automatyczne odrzucanie zaproszenia do rodziny wlaczone</value>
+  </data>
+  <data name="FAMILY_REQ_UNLOCKED" xml:space="preserve">
+    <value>Automatyczne odrzucanie zaproszenia do rodziny wylaczone</value>
+  </data>
   <data name="FORCED_DISCONNECT" xml:space="preserve">
     <value>Rozlaczanie uzytkownika {0}, zbyt duzo polaczen.</value>
+  </data>
+  <data name="FRIEND_REQ_BLOCKED" xml:space="preserve">
+    <value>Automatyczne odrzucanie zaproszenia do przyjaciol wlaczone</value>
+  </data>
+  <data name="FRIEND_REQ_UNLOCKED" xml:space="preserve">
+    <value>Automatyczne odrzucanie zaproszenia do przyjaciol wylaczone</value>
   </data>
   <data name="GET_PROTECTION_POWER_1" xml:space="preserve">
     <value>Jestes pod wplywem ochrony aniola stroza.</value>
@@ -222,8 +255,29 @@
   <data name="GET_PROTECTION_POWER_2" xml:space="preserve">
     <value>Jestes pod wplywem mocy demona.</value>
   </data>
+  <data name="GOLD_SET" xml:space="preserve">
+    <value>Zmieniono wartosc zlota</value>
+  </data>
+  <data name="GROUP_REQ_BLOCKED" xml:space="preserve">
+    <value>Automatyczne odrzucanie zaproszenia do grupy wlaczone</value>
+  </data>
+  <data name="GROUP_REQ_UNLOCKED" xml:space="preserve">
+    <value>Automatyczne odrzucanie zaproszenia do grupy wlaczone</value>
+  </data>
   <data name="HANDLER_NOT_FOUND" xml:space="preserve">
     <value>Could not found Handler implementation for Packet with Header {0}</value>
+  </data>
+  <data name="HERO_CHAT_BLOCKED" xml:space="preserve">
+    <value>Czat bohaterow zablokowany</value>
+  </data>
+  <data name="HERO_CHAT_UNLOCKED" xml:space="preserve">
+    <value>Czat bohaterow widoczny</value>
+  </data>
+  <data name="HP_BLOCKED" xml:space="preserve">
+    <value>Pasek zycia zablokowany</value>
+  </data>
+  <data name="HP_UNLOCKED" xml:space="preserve">
+    <value>Pasek zycia widoczny</value>
   </data>
   <data name="INSERT_ERROR" xml:space="preserve">
     <value>Blad zapisywania badz odswiezania postaci {0} , {1}</value>
@@ -270,6 +324,18 @@
   <data name="MESSAGE_RECEIVED" xml:space="preserve">
     <value>Uzytkownik {1} otrzymal wiadomosc {0}</value>
   </data>
+  <data name="MINI_INV_BLOCKED" xml:space="preserve">
+    <value>Automatyczne odrzucanie zaproszenia do minilanu wlaczone</value>
+  </data>
+  <data name="MINI_INV_UNLOCKED" xml:space="preserve">
+    <value>Automatyczne odrzucanie zaproszenia do minilanu wylaczone</value>
+  </data>
+  <data name="MOUSE_LOCKED" xml:space="preserve">
+    <value>Wskaznik myszy z wspomaganym celowaniem wlaczony</value>
+  </data>
+  <data name="MOUSE_UNLOCKED" xml:space="preserve">
+    <value>Wskaznik myszy z wspomaganym celowaniem wylaczony</value>
+  </data>
   <data name="MSG_SENT" xml:space="preserve">
     <value>Wiadomosc wyslana {0} do uzytkownika {1}</value>
   </data>
@@ -288,6 +354,9 @@
   <data name="NO_ENTRY" xml:space="preserve">
     <value>Nie znaleziono EntryPoint</value>
   </data>
+  <data name="NO_MAP" xml:space="preserve">
+    <value>Server potrzebuje przynajmniej mapy nosville, aby dzialac poprawnie!</value>
+  </data>
   <data name="NO_PREZ_MESSAGE" xml:space="preserve">
     <value>Brak opisu.</value>
   </data>
@@ -295,22 +364,34 @@
     <value>Nie zalozyles karty specjalisty</value>
   </data>
   <data name="PACKET_ARRIVED" xml:space="preserve">
-    <value>Wyslano packet, packet: {0}</value>
+    <value>Wyslano pakiet, packet: {0}</value>
   </data>
   <data name="PACKET_FAILURE" xml:space="preserve">
     <value>Nie udalo sie wyslac packet {0} do uzytkownika {1}, {2}.</value>
   </data>
+  <data name="QUICK_GET_UP_DISABLED" xml:space="preserve">
+    <value>Szybkie wstawanie wylaczone</value>
+  </data>
+  <data name="QUICK_GET_UP_ENABLED" xml:space="preserve">
+    <value>Szybkie wstawanie wlaczone</value>
+  </data>
   <data name="RARIFY_FAILED" xml:space="preserve">
-    <value>Gambling failed! The item disappeared.</value>
+    <value>Hazard sie nie powiodl! Przedmiot zostal zniszczony.</value>
   </data>
   <data name="RARIFY_FAILED_ITEM_SAVED" xml:space="preserve">
-    <value>Gambling failed, but the Item was saved from destruction.</value>
+    <value>Hazard sie nie powiodl, ale przedmiot zostal ochroniony przed zniszczeniem.</value>
   </data>
   <data name="RARIFY_SUCCESS" xml:space="preserve">
-    <value>Gambling succeeded! New Rare level: {0}</value>
+    <value>Hazard sie udal! Nowy poziom rzadkowsci: {0}</value>
+  </data>
+  <data name="REFUSED" xml:space="preserve">
+    <value>Wymiana odrzucona</value>
   </data>
   <data name="REP_CHANGED" xml:space="preserve">
     <value>Reputacja zmieniona</value>
+  </data>
+  <data name="SELL_ITEM_VALIDE" xml:space="preserve">
+    <value>{0}: sprzedano &lt;{1} : sztuk &gt;</value>
   </data>
   <data name="SHOP_OPEN" xml:space="preserve">
     <value>Sklep zostal otwarty</value>
@@ -348,11 +429,32 @@
   <data name="UPDATE_ACCOUNT_ERROR" xml:space="preserve">
     <value>Blad przy zapisywaniu badz odswiezaniu konta {0} , {1}</value>
   </data>
+  <data name="UPGRADE_FAILED" xml:space="preserve">
+    <value>Ulepszanie nie powiodlo sie!</value>
+  </data>
+  <data name="UPGRADE_FAILED_ITEM_SAVED" xml:space="preserve">
+    <value>Ulepszanie nie powiodlo sie, ale przedmiot zostal ocalony.</value>
+  </data>
+  <data name="UPGRADE_FIXED" xml:space="preserve">
+    <value>Ulepszanie zawieszone</value>
+  </data>
+  <data name="UPGRADE_SUCCESS" xml:space="preserve">
+    <value>Ulepszanie powiodlo sie!</value>
+  </data>
   <data name="USER_NOT_CONNECTED" xml:space="preserve">
     <value>Uzytkownik nie polaczony.</value>
   </data>
   <data name="USER_NOT_HERO" xml:space="preserve">
     <value>Only heroes may use hero messages.</value>
+  </data>
+  <data name="WHISPER_BLOCKED" xml:space="preserve">
+    <value>Szept zablokowany</value>
+  </data>
+  <data name="WHISPER_UNLOCKED" xml:space="preserve">
+    <value>Szept widoczny</value>
+  </data>
+  <data name="WRONG_VALUE" xml:space="preserve">
+    <value>Zla wartosc</value>
   </data>
   <data name="YOU_ASK_FOR_EXCHANGE" xml:space="preserve">
     <value>Prosisz sie o wymiane</value>
