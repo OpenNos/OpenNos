@@ -402,6 +402,9 @@
   <data name="SHUTDOWN_SEC" xml:space="preserve">
     <value>Server zostanie wylaczony za {0} Sekund.</value>
   </data>
+  <data name="SPLEVEL_CHANGED" xml:space="preserve">
+    <value>Poziom specjalisty zostal zmieniony</value>
+  </data>
   <data name="SP_BLOCKED" xml:space="preserve">
     <value>Nie mozesz teraz zmienic karty specjalnej.</value>
   </data>

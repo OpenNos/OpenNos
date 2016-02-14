@@ -402,6 +402,9 @@
   <data name="SHUTDOWN_SEC" xml:space="preserve">
     <value>Server will be shut in {0} Secondes.</value>
   </data>
+  <data name="SPLEVEL_CHANGED" xml:space="preserve">
+    <value>Specialisty level has been changed!</value>
+  </data>
   <data name="SP_BLOCKED" xml:space="preserve">
     <value>You can't change sp now!</value>
   </data>
