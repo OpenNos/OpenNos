@@ -46,9 +46,16 @@ namespace OpenNos.DAL.EF.MySQL
 
         public MapDTO Insert(MapDTO map)
         {
+
             using (var context = DataAccessHelper.CreateContext())
             {
-                Map entity = Mapper.Map<Map>(map);
+                var entity = new Map //Make sure you have a table called test in DB
+                {
+                   MapId = map.MapId,
+                   Data = map.Data,
+                   Music = map.Music,
+                   Name = map.Name
+                };
                 context.map.Add(entity);
                 context.SaveChanges();
                 return Mapper.Map<MapDTO>(entity);

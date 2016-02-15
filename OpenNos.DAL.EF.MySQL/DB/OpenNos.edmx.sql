@@ -44,7 +44,7 @@
 -- -----------------------------------------------------------
 -- Entity Designer DDL Script for MySQL Server 4.1 and higher
 -- -----------------------------------------------------------
--- Date Created: 02/14/2016 13:48:15
+-- Date Created: 02/15/2016 19:00:00
 
 -- Generated from EDMX file: C:\Users\ERWAN\Desktop\OpenNos GIT\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
 -- Target version: 3.0.0.0
@@ -217,7 +217,7 @@ ALTER TABLE `connectionlog` ADD PRIMARY KEY (LogId);
 
 
 CREATE TABLE `map`(
-	`MapId` smallint NOT NULL AUTO_INCREMENT UNIQUE, 
+	`MapId` smallint NOT NULL, 
 	`Name` longtext NOT NULL, 
 	`Data` longblob NOT NULL, 
 	`Music` int NOT NULL);
