@@ -50,6 +50,8 @@
   <ItemGroup>
     <Compile Include="Application.cs" />
     <Compile Include="Collections\ThreadSafeSortedList.cs" />
+    <Compile Include="Import\DatParser.cs" />
+    <Compile Include="Import\ImportAttribute.cs" />
     <Compile Include="LoginEncryption.cs" />
     <Compile Include="Networking\Communication\ScsServices\Client\IScsServiceClient.cs" />
     <Compile Include="Networking\Communication\ScsServices\Client\ScsServiceClient.cs" />

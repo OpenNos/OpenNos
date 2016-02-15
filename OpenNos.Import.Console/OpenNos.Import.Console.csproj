@@ -4,15 +4,17 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{F1071DED-3D92-4416-9B9C-8664441ADE64}</ProjectGuid>
-    <OutputType>Library</OutputType>
+    <ProjectGuid>{C2D0CDB2-FDF9-4D33-A9C4-424E765F41C6}</ProjectGuid>
+    <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>OpenNos.Data</RootNamespace>
-    <AssemblyName>OpenNos.Data</AssemblyName>
+    <RootNamespace>OpenNos.Import.Console</RootNamespace>
+    <AssemblyName>OpenNos.Import.Console</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -22,6 +24,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -40,30 +43,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="GeneralLogDTO.cs" />
-    <Compile Include="ShopItemDTO.cs" />
-    <Compile Include="ShopDTO.cs" />
-    <Compile Include="InventoryDTO.cs" />
-    <Compile Include="InventoryItemDTO.cs" />
-    <Compile Include="ItemDTO.cs" />
-    <Compile Include="MapDTO.cs" />
-    <Compile Include="NpcDTO.cs" />
-    <Compile Include="PortalDTO.cs" />
-    <Compile Include="AccountDTO.cs" />
-    <Compile Include="CharacterDTO.cs" />
-    <Compile Include="Enums\DeleteResult.cs" />
-    <Compile Include="Enums\SaveResult.cs" />
+    <Compile Include="ImportFactory.cs" />
+    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UserDTO.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\OpenNos.Core\OpenNos.Core.csproj">
       <Project>{c93a0a40-0551-4732-b594-171b87679ac1}</Project>
       <Name>OpenNos.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\OpenNos.Domain\OpenNos.Domain.csproj">
-      <Project>{20addddd-dad9-44f3-9beb-026c73090660}</Project>
-      <Name>OpenNos.Domain</Name>
+    <ProjectReference Include="..\OpenNos.Data\OpenNos.Data.csproj">
+      <Project>{f1071ded-3d92-4416-9b9c-8664441ade64}</Project>
+      <Name>OpenNos.Data</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

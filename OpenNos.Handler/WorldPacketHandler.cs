@@ -2305,7 +2305,7 @@ namespace OpenNos.Handler
                         Inventory inv = Session.Character.InventoryList.LoadBySlotAndType(slot, type);
                         InventoryItem item = inv.InventoryItem;
                         Item itemInfo = ServerManager.GetItem(item.ItemVNum);
-                        if (itemInfo.isConsumable)
+                        if (itemInfo.IsConsumable)
                             item.Amount--;
                         if (itemInfo.Morph != 0)
                         {
@@ -2370,7 +2370,7 @@ namespace OpenNos.Handler
                     double def = (((TimeSpan)(DateTime.Now - new DateTime(2010, 1, 1, 0, 0, 0))).TotalSeconds) - (Session.Character.LastSp);
                     if (!(iteminfo.EquipmentSlot == (short)EquipmentType.Sp && def < 30))
                     {
-                        if ((iteminfo.ItemType == (byte)ItemType.Weapon || iteminfo.ItemType == (byte)ItemType.Armor || iteminfo.ItemType == (byte)ItemType.Fashion || iteminfo.ItemType == (byte)ItemType.Jewelery || iteminfo.ItemType == (byte)ItemType.Specialist) && iteminfo.LevelMinimum <= Session.Character.Level && ((iteminfo.Classe >> Session.Character.Class) & 1) == 1)
+                        if ((iteminfo.ItemType == (byte)ItemType.Weapon || iteminfo.ItemType == (byte)ItemType.Armor || iteminfo.ItemType == (byte)ItemType.Fashion || iteminfo.ItemType == (byte)ItemType.Jewelery || iteminfo.ItemType == (byte)ItemType.Specialist) && iteminfo.LevelMinimum <= Session.Character.Level && ((iteminfo.Class >> Session.Character.Class) & 1) == 1)
                         {
                             if (!(Session.Character.UseSp && iteminfo.EquipmentSlot == (short)EquipmentType.Fairy && iteminfo.Element != ServerManager.GetItem(Session.Character.InventoryList.LoadBySlotAndType((short)EquipmentType.Sp, (short)InventoryType.Equipment).InventoryItem.ItemVNum).Element))
                             {
