@@ -2694,7 +2694,7 @@ namespace OpenNos.Handler
                                     }
                                     else
                                     {
-                                        Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("LOW_JOB_LVL"), 0));
+                                        Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("LOW_JOB_LVL"), 10));
                                     }
                                 }
                                 else
