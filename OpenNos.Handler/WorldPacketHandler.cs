@@ -2262,13 +2262,16 @@ namespace OpenNos.Handler
               Inventory inv=  Session.Character.EquipmentList.LoadBySlotAndType((short)EquipmentType.Sp, (short)InventoryType.Equipment);
                 if (Session.Character.UseSp && inv != null && int.Parse(packetsplit[5]) == inv.InventoryItemId)
                 {
-                //TODO ADD point verification
-                    Session.Character.EquipmentList.LoadBySlotAndType((short)EquipmentType.Sp, (short)InventoryType.Equipment).InventoryItem.SlHit += short.Parse(packetsplit[6]);
-                    Session.Character.EquipmentList.LoadBySlotAndType((short)EquipmentType.Sp, (short)InventoryType.Equipment).InventoryItem.SlDefence += short.Parse(packetsplit[7]);
-                    Session.Character.EquipmentList.LoadBySlotAndType((short)EquipmentType.Sp, (short)InventoryType.Equipment).InventoryItem.SlElement += short.Parse(packetsplit[8]);
-                    Session.Character.EquipmentList.LoadBySlotAndType((short)EquipmentType.Sp, (short)InventoryType.Equipment).InventoryItem.SlHP += short.Parse(packetsplit[9]);
-                    Session.Client.SendPacket(Session.Character.GenerateSlInfo(inv.InventoryItem,2));
+                    if ((ServersData.SpPoint(inv.InventoryItem.SpLevel, inv.InventoryItem.Upgrade) - inv.InventoryItem.SlHit - inv.InventoryItem.SlHP - inv.InventoryItem.SlElement - inv.InventoryItem.SlDefence - short.Parse(packetsplit[6]) - short.Parse(packetsplit[7]) - short.Parse(packetsplit[8]) - short.Parse(packetsplit[9])) >= 0)
+                    {
 
+                        Session.Character.EquipmentList.LoadBySlotAndType((short)EquipmentType.Sp, (short)InventoryType.Equipment).InventoryItem.SlHit += short.Parse(packetsplit[6]);
+                        Session.Character.EquipmentList.LoadBySlotAndType((short)EquipmentType.Sp, (short)InventoryType.Equipment).InventoryItem.SlDefence += short.Parse(packetsplit[7]);
+                        Session.Character.EquipmentList.LoadBySlotAndType((short)EquipmentType.Sp, (short)InventoryType.Equipment).InventoryItem.SlElement += short.Parse(packetsplit[8]);
+                        Session.Character.EquipmentList.LoadBySlotAndType((short)EquipmentType.Sp, (short)InventoryType.Equipment).InventoryItem.SlHP += short.Parse(packetsplit[9]);
+                        Session.Client.SendPacket(Session.Character.GenerateSlInfo(inv.InventoryItem, 2));
+                        Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("CHANGE_DONE"), 0));
+                    }
                 }
                 else
                     Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SPUSE_NEEDED"),0));
