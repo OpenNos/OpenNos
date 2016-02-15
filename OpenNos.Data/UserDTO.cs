@@ -15,7 +15,7 @@ using OpenNos.Core;
 
 namespace OpenNos.Data
 {
-    public class User
+    public class UserDTO
     {
         #region Properties
 
