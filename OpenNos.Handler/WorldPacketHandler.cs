@@ -957,7 +957,7 @@ namespace OpenNos.Handler
                     if (ServerManager.GetItem(inventory.InventoryItem.ItemVNum).EquipmentSlot != (byte)EquipmentType.Sp)
                         Session.Client.SendPacket(Session.Character.GenerateEInfo(inventory.InventoryItem));
                     else
-                        Session.Client.SendPacket(Session.Character.GenerateSlInfo(inventory.InventoryItem));
+                        Session.Client.SendPacket(Session.Character.GenerateSlInfo(inventory.InventoryItem,0));
 
 
                 }
@@ -2257,37 +2257,55 @@ namespace OpenNos.Handler
         public void SpTransform(string packet)
         {
             string[] packetsplit = packet.Split(' ');
-            Inventory sp = Session.Character.EquipmentList.LoadBySlotAndType((short)EquipmentType.Sp, (short)InventoryType.Equipment);
-            if (sp != null)
+            if (packetsplit.Length == 10 && packetsplit[2] == "10")
             {
-                if (!Session.Character.UseSp)
+              Inventory inv=  Session.Character.EquipmentList.LoadBySlotAndType((short)EquipmentType.Sp, (short)InventoryType.Equipment);
+                if (Session.Character.UseSp && inv != null && int.Parse(packetsplit[5]) == inv.InventoryItemId)
                 {
-                    double def = (((TimeSpan)(DateTime.Now - new DateTime(2010, 1, 1, 0, 0, 0))).TotalSeconds) - (Session.Character.LastSp);
-                    if (def >= 30)
+                //TODO ADD point verification
+                    Session.Character.EquipmentList.LoadBySlotAndType((short)EquipmentType.Sp, (short)InventoryType.Equipment).InventoryItem.SlHit += short.Parse(packetsplit[6]);
+                    Session.Character.EquipmentList.LoadBySlotAndType((short)EquipmentType.Sp, (short)InventoryType.Equipment).InventoryItem.SlDefence += short.Parse(packetsplit[7]);
+                    Session.Character.EquipmentList.LoadBySlotAndType((short)EquipmentType.Sp, (short)InventoryType.Equipment).InventoryItem.SlElement += short.Parse(packetsplit[8]);
+                    Session.Character.EquipmentList.LoadBySlotAndType((short)EquipmentType.Sp, (short)InventoryType.Equipment).InventoryItem.SlHP += short.Parse(packetsplit[9]);
+                    Session.Client.SendPacket(Session.Character.GenerateSlInfo(inv.InventoryItem,2));
+
+                }
+                else
+                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SPUSE_NEEDED"),0));
+            }
+            else
+            {
+                Inventory sp = Session.Character.EquipmentList.LoadBySlotAndType((short)EquipmentType.Sp, (short)InventoryType.Equipment);
+                if (sp != null)
+                {
+                    if (!Session.Character.UseSp)
                     {
-                        if (Session.Character.ThreadCharChange != null && Session.Character.ThreadCharChange.IsAlive)
-                            Session.Character.ThreadCharChange.Abort();
-                        Session.Character.ThreadCharChange = new Thread(() => ChangeSP());
-                        Session.Character.ThreadCharChange.Start();
+                        double def = (((TimeSpan)(DateTime.Now - new DateTime(2010, 1, 1, 0, 0, 0))).TotalSeconds) - (Session.Character.LastSp);
+                        if (def >= 30)
+                        {
+                            if (Session.Character.ThreadCharChange != null && Session.Character.ThreadCharChange.IsAlive)
+                                Session.Character.ThreadCharChange.Abort();
+                            Session.Character.ThreadCharChange = new Thread(() => ChangeSP());
+                            Session.Character.ThreadCharChange.Start();
+                        }
+                        else
+                        {
+                            Session.Client.SendPacket(Session.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("SP_INLOADING"), 30 - (int)def), 0));
+                        }
                     }
                     else
                     {
-                        Session.Client.SendPacket(Session.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("SP_INLOADING"), 30 - (int)def), 0));
+                        Session.Character.LastSp = (((TimeSpan)(DateTime.Now - new DateTime(2010, 1, 1, 0, 0, 0))).TotalSeconds);
+                        Thread removeSP = new Thread(() => RemoveSP(sp.InventoryItem.ItemVNum));
+                        removeSP.Start();
                     }
                 }
                 else
                 {
-                    Session.Character.LastSp = (((TimeSpan)(DateTime.Now - new DateTime(2010, 1, 1, 0, 0, 0))).TotalSeconds);
-                    Thread removeSP = new Thread(() => RemoveSP(sp.InventoryItem.ItemVNum));
-                    removeSP.Start();
+                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NO_SP"), 0));
                 }
             }
-            else
-            {
-                Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NO_SP"), 0));
-            }
         }
-
         [Packet("game_start")]
         public void StartGame(string packet)
         {

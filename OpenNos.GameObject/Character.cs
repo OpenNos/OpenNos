@@ -1078,12 +1078,17 @@ namespace OpenNos.GameObject
 
         }
 
-        public string GenerateSlInfo(InventoryItem inventoryItem)
+        public string GenerateSlInfo(InventoryItem inventoryItem,int type)
         {
             Item iteminfo = ServerManager.GetItem(inventoryItem.ItemVNum);
-            int freepoint = ServersData.SpPoint(inventoryItem.SpLevel, inventoryItem.Upgrade);
+            int freepoint = ServersData.SpPoint(inventoryItem.SpLevel, inventoryItem.Upgrade) - inventoryItem.SlHit - inventoryItem.SlHP - inventoryItem.SlElement - inventoryItem.SlDefence;
+          
+            int SlElement = ServersData.SlPoint(inventoryItem.SlElement,2);
+            int SlHP = ServersData.SlPoint(inventoryItem.SlHP,4); 
+            int SlDefence = ServersData.SlPoint(inventoryItem.SlDefence,1);
+            int SlHit = ServersData.SlPoint(inventoryItem.SlHit,0);
             string skill = "-1"; //sk.sk.sk.sk.sk...
-            return $"slinfo 0 {inventoryItem.ItemVNum} {iteminfo.Morph} {inventoryItem.SpLevel} {iteminfo.LevelJobMinimum} {iteminfo.ReputationMinimum+1} 0 0 0 0 0 0 0 {iteminfo.FireResistance} {iteminfo.WaterResistance} {iteminfo.LightResistance} {iteminfo.DarkResistance} 0 {inventoryItem.SpXp} {ServersData.SpXPData[inventoryItem.SpLevel-1]} {skill} 14863575 {freepoint} {inventoryItem.SlHit} {inventoryItem.SlDefence} {inventoryItem.SlElement} {inventoryItem.SlHP} {inventoryItem.Upgrade} - 1 12 0 0 0 0 0 0 0 0 0 0 0 0 0 0";
+            return $"slinfo {type} {inventoryItem.ItemVNum} {iteminfo.Morph} {inventoryItem.SpLevel} {iteminfo.LevelJobMinimum} {iteminfo.ReputationMinimum+1} 0 0 0 0 0 0 0 {iteminfo.FireResistance} {iteminfo.WaterResistance} {iteminfo.LightResistance} {iteminfo.DarkResistance} 0 {inventoryItem.SpXp} {ServersData.SpXPData[inventoryItem.SpLevel-1]} {skill} {inventoryItem.InventoryItemId} {freepoint} {SlHit} {SlDefence} {SlElement} {SlHP} {inventoryItem.Upgrade} - 1 12 0 0 0 0 0 0 0 0 0 0 0 0 0 0";
         }
 
 
