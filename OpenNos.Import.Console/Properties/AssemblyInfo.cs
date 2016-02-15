@@ -1,36 +1,16 @@
-﻿using System.Reflection;
+﻿using System.Diagnostics;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-
-// Allgemeine Informationen über eine Assembly werden über die folgenden 
-// Attribute gesteuert. Ändern Sie diese Attributwerte, um die Informationen zu ändern,
-// die einer Assembly zugeordnet sind.
-[assembly: AssemblyTitle("OpenNos.Import.Console")]
-[assembly: AssemblyDescription("")]
-[assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("OpenNos.Import.Console")]
-[assembly: AssemblyCopyright("Copyright ©  2016")]
-[assembly: AssemblyTrademark("")]
-[assembly: AssemblyCulture("")]
-
-// Durch Festlegen von ComVisible auf "false" werden die Typen in dieser Assembly unsichtbar 
-// für COM-Komponenten.  Wenn Sie auf einen Typ in dieser Assembly von 
-// COM aus zugreifen müssen, sollten Sie das ComVisible-Attribut für diesen Typ auf "True" festlegen.
-[assembly: ComVisible(false)]
-
-// Die folgende GUID bestimmt die ID der Typbibliothek, wenn dieses Projekt für COM verfügbar gemacht wird
-[assembly: Guid("c2d0cdb2-fdf9-4d33-a9c4-424e765f41c6")]
-
-// Versionsinformationen für eine Assembly bestehen aus den folgenden vier Werten:
-//
-//      Hauptversion
-//      Nebenversion 
-//      Buildnummer
-//      Revision
-//
-// Sie können alle Werte angeben oder die standardmäßigen Build- und Revisionsnummern 
-// übernehmen, indem Sie "*" eingeben:
-// [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("1.0.0.0")]
+[assembly: Debuggable(DebuggableAttribute.DebuggingModes.Default | DebuggableAttribute.DebuggingModes.DisableOptimizations | DebuggableAttribute.DebuggingModes.IgnoreSymbolStoreSequencePoints | DebuggableAttribute.DebuggingModes.EnableEditAndContinue)]
+[assembly: AssemblyCompany("")]
+[assembly: AssemblyDescription("")]
 [assembly: AssemblyFileVersion("1.0.0.0")]
+[assembly: AssemblyProduct("Import.Console")]
+[assembly: AssemblyTitle("Import.Console")]
+[assembly: AssemblyTrademark("")]
+[assembly: CompilationRelaxations(8)]
+[assembly: RuntimeCompatibility(WrapNonExceptionThrows = true)]
+[assembly: ComVisible(false)]
+[assembly: log4net.Config.XmlConfigurator(Watch = true)]
