@@ -10,9 +10,8 @@ namespace OpenNos.Core
     {
         #region Members
 
-        private Random _randomSessionId;
-        private IList<int> _sessionIds;
-
+        private int _sessionCounter;
+        
         #endregion
 
         #region Singleton
@@ -21,80 +20,17 @@ namespace OpenNos.Core
 
         private SessionFactory() { }
 
-        public static SessionFactory Instance
-        {
-            get
-            {
-                if (_instance == null)
-                    _instance = new SessionFactory();
-
-                return _instance;
-            }
-        }
+        public static SessionFactory Instance => _instance ?? (_instance = new SessionFactory());
 
         #endregion
 
-        #region Properties
-
-        private Random RandomSessionId
-        {
-            get
-            {
-                if (_randomSessionId == null)
-                {
-                    _randomSessionId = new Random();
-                }
-
-                return _randomSessionId;
-            }
-        }
-
-        private IList<int> SessionIds
-        {
-            get
-            {
-                if (_sessionIds == null)
-                {
-                    _sessionIds = new List<int>();
-                }
-
-                return _sessionIds;
-            }
-        }
-
-        #endregion
 
         #region Methods
 
         public int GenerateSessionId()
         {
-            bool sessionIdFound = false;
-
-            while (!sessionIdFound)
-            {
-                int newSessionId = RandomSessionId.Next(10000, UInt16.MaxValue);
-
-                if (!SessionIds.Contains(newSessionId))
-                {
-                    SessionIds.Add(newSessionId);
-                    return newSessionId;
-                }
-            }
-
-            if (SessionIds.Count.Equals(UInt16.MaxValue + 10000))
-            {
-                SessionIds.Clear();
-                Logger.Log.Info("Resetted SessionIds");
-                int newSessionId = RandomSessionId.Next(10000, UInt16.MaxValue);
-
-                if (!SessionIds.Contains(newSessionId))
-                {
-                    SessionIds.Add(newSessionId);
-                    return newSessionId;
-                }
-            }
-
-            return 0;
+            _sessionCounter += 2;
+            return _sessionCounter; 
         }
 
         #endregion
