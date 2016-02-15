@@ -33,6 +33,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="log4net, Version=1.2.15.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -54,6 +55,18 @@
     <ProjectReference Include="..\OpenNos.Core\OpenNos.Core.csproj">
       <Project>{c93a0a40-0551-4732-b594-171b87679ac1}</Project>
       <Name>OpenNos.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\OpenNos.DAL.EF.MySQL\OpenNos.DAL.EF.MySQL.csproj">
+      <Project>{4aecc47d-098a-4493-8e1e-d10edbb7a189}</Project>
+      <Name>OpenNos.DAL.EF.MySQL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\OpenNos.DAL.Interface\OpenNos.DAL.Interface.csproj">
+      <Project>{175c851b-8dc8-43a5-af93-af32d106cd77}</Project>
+      <Name>OpenNos.DAL.Interface</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\OpenNos.DAL\OpenNos.DAL.csproj">
+      <Project>{d8c8a266-3d46-42c5-a492-28c75db85ba8}</Project>
+      <Name>OpenNos.DAL</Name>
     </ProjectReference>
     <ProjectReference Include="..\OpenNos.Data\OpenNos.Data.csproj">
       <Project>{f1071ded-3d92-4416-9b9c-8664441ade64}</Project>
