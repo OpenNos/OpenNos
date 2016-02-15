@@ -1,4 +1,6 @@
-﻿namespace OpenNos.Data
+﻿using OpenNos.Core;
+
+namespace OpenNos.Data
 {
     public class ItemDTO
     {
@@ -6,18 +8,22 @@
 
         public byte Blocked { get; set; }
 
-        public byte Classe { get; set; }
+        public byte Class { get; set; }
 
         public bool Colored { get; set; }
 
         public short Concentrate { get; set; }
 
+        [Import("DATA", 7)]
         public short CriticalLuckRate { get; set; }
 
+        [Import("DATA", 6)]
         public short CriticalRate { get; set; }
 
+        [Import("DATA", 5)]
         public short DamageMaximum { get; set; }
 
+        [Import("DATA", 4)]
         public short DamageMinimum { get; set; }
 
         public short DarkElement { get; set; }
@@ -36,6 +42,7 @@
 
         public short ElementRate { get; set; }
 
+        [Import("INDEX", 5)]
         public byte EquipmentSlot { get; set; }
 
         public short FairyMaximumLevel { get; set; }
@@ -50,14 +57,15 @@
 
         public string HpRegeneration { get; set; }
 
-        public bool isConsumable { get; set; }
+        public bool IsConsumable { get; set; }
 
-        public byte isWareHouse { get; set; }
+        public byte IsWareHouse { get; set; }
 
         public byte ItemType { get; set; }
 
         public short LevelJobMinimum { get; set; }
 
+        [Import("DATA", 2)]
         public short LevelMinimum { get; set; }
 
         public short LightElement { get; set; }
@@ -86,6 +94,7 @@
 
         public string Name { get; set; }
 
+        [Import("VNUM", 3)]
         public long Price { get; set; }
 
         public short PvpDefence { get; set; }
@@ -106,6 +115,7 @@
 
         public byte Type { get; set; }
 
+        [Import("VNUM", 2)]
         public short VNum { get; set; }
 
         public short WaterElement { get; set; }
