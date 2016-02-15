@@ -158,7 +158,7 @@
     <Key>
       <PropertyRef Name="MapId" />
     </Key>
-    <Property Name="MapId" Type="smallint" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="MapId" Type="smallint" Nullable="false" />
     <Property Name="Name" Type="longtext" Nullable="false" />
     <Property Name="Data" Type="longblob" Nullable="false" />
     <Property Name="Music" Type="int" Nullable="false" />
@@ -650,7 +650,7 @@
           <Key>
             <PropertyRef Name="MapId" />
           </Key>
-          <Property Name="MapId" Type="Int16" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MapId" Type="Int16" Nullable="false" annotation:StoreGeneratedPattern="None" />
           <Property Name="Name" Type="String" Nullable="false" />
           <NavigationProperty Name="sourceportal" Relationship="opennosModel.portalMap" FromRole="Map" ToRole="portal" />
           <NavigationProperty Name="destinationportal" Relationship="opennosModel.portalMap1" FromRole="Map" ToRole="portal" />

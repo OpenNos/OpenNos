@@ -1,5 +1,6 @@
 ﻿using log4net;
 using OpenNos.Core;
+using OpenNos.DAL.EF.MySQL;
 using System.Diagnostics;
 using System.Reflection;
 
@@ -18,7 +19,7 @@ namespace OpenNos.Import.Console
                              + $"                 IMPORT CONSOLE VERSION {fileVersionInfo.ProductVersion} by OpenNos Team\n" +
                              "===============================================================================\n");
 
-            // DataAccessHelper.Initialize();
+            DataAccessHelper.Initialize();
 
             string folder = System.Console.ReadLine();     
             ImportFactory factory = new ImportFactory(folder);
