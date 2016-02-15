@@ -577,7 +577,7 @@ namespace OpenNos.GameObject
 
         internal static int DistanceDefence(byte @class, byte level)
         {
-            return DistDef[@class,level];
+            return DistDef[@class, level];
         }
 
         internal static int DistanceDefenceRate(byte @class, byte level)
@@ -615,6 +615,108 @@ namespace OpenNos.GameObject
         {
             return distRate[@class, level];
         }
-
+        internal static int SlPoint(short spPoint, short mode)
+        {
+            int point = 0;
+            switch (mode)
+            {
+                case 0:
+                    if (spPoint <= 10)
+                        point = spPoint;
+                    else if (spPoint <= 28)
+                        point = 10 + (spPoint - 10) / 2;
+                    else if (spPoint <= 88)
+                        point = 19 + (spPoint - 28) / 3;
+                    else if (spPoint <= 168)
+                        point = 39 + (spPoint - 88) / 4;
+                    else if (spPoint <= 268)
+                        point = 59 + (spPoint - 168) / 5;
+                    else if (spPoint <= 334)
+                        point = 79 + (spPoint - 268) / 6;
+                    else if (spPoint <= 383)
+                        point = 90 + (spPoint - 334) / 7;
+                    else if (spPoint <= 391)
+                        point = 97 + (spPoint - 383) / 8;
+                    else if (spPoint <= 400)
+                        point = 98 + (spPoint - 391) / 9;
+                    else if (spPoint <= 410)
+                        point = 99 + (spPoint - 400) / 9;
+                    break;
+                case 2:
+                    if (spPoint <= 20)
+                        point = spPoint;
+                    else if (spPoint <= 40)
+                        point = 20 + (spPoint - 20) / 2;
+                    else if (spPoint <= 70)
+                        point = 30 + (spPoint - 40) / 3;
+                    else if (spPoint <= 110)
+                        point = 40 + (spPoint - 70) / 4;
+                    else if (spPoint <= 210)
+                        point = 50 + (spPoint - 110) / 5;
+                    else if (spPoint <= 270)
+                        point = 70 + (spPoint - 210) / 6;
+                    else if (spPoint <= 410)
+                        point = 80 + (spPoint - 270) / 7;
+                    break;
+                case 1:
+                    break;
+                case 3:
+                    break;
+            }
+            return point;
+        }
+        internal static int SpPoint(short spLevel, short upgrade)
+        {
+            int point = (spLevel - 20) * 3;
+            switch (upgrade)
+            {
+                case 1:
+                    point += 5;
+                    break;
+                case 2:
+                    point += 10;
+                    break;
+                case 3:
+                    point += 15;
+                    break;
+                case 4:
+                    point += 20;
+                    break;
+                case 5:
+                    point += 28;
+                    break;
+                case 6:
+                    point += 36;
+                    break;
+                case 7:
+                    point += 46;
+                    break;
+                case 8:
+                    point += 56;
+                    break;
+                case 9:
+                    point += 68;
+                    break;
+                case 10:
+                    point += 80;
+                    break;
+                case 11:
+                    point += 95;
+                    break;
+                case 12:
+                    point += 110;
+                    break;
+                case 13:
+                    point += 128;
+                    break;
+                case 14:
+                    point += 148;
+                    break;
+                case 15:
+                    point += 173;
+                    break;
+            }
+            return point;
+        }
     }
 }

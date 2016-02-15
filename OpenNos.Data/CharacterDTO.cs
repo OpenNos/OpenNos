@@ -34,6 +34,9 @@ namespace OpenNos.Data
 
         public bool WhisperBlocked { get; set; }
 
+        public bool FamilyRequestBlocked { get; set; }
+
+
         public bool GroupRequestBlocked { get; set; }
 
         public bool MouseAimLock { get; set; }

@@ -145,25 +145,31 @@
     <value>Bad Password</value>
   </data>
   <data name="BN0" xml:space="preserve">
-    <value>read^the^rules</value>
+    <value>Read^our^Terms^and^Copyrights</value>
   </data>
   <data name="BN1" xml:space="preserve">
-    <value>don't^give^id</value>
+    <value>Don't^give^your^password</value>
   </data>
   <data name="BN2" xml:space="preserve">
-    <value>need^a^gm?^go^on^website.</value>
+    <value>Need^a^gm?^check^out^our^website:^</value>
   </data>
   <data name="BN3" xml:space="preserve">
-    <value />
+    <value>Greetings^from^OpenNos^Team!</value>
   </data>
   <data name="BN4" xml:space="preserve">
-    <value />
+    <value>Do^you^want^to^contribute?^https://github.com/OpenNos/OpenNos</value>
   </data>
   <data name="BN5" xml:space="preserve">
-    <value />
+    <value>Authors:^0Lucifer0^,^chucktheripper</value>
   </data>
   <data name="BN6" xml:space="preserve">
-    <value />
+    <value>Check^out:^https://github.com/OpenNos/OpenNos^for^latest^updates.</value>
+  </data>
+  <data name="BUFF_BLOCKED" xml:space="preserve">
+    <value>Buff icons disabled</value>
+  </data>
+  <data name="BUFF_UNLOCKED" xml:space="preserve">
+    <value>Buff icons enabled</value>
   </data>
   <data name="BUY_ITEM" xml:space="preserve">
     <value>{0}: buy &lt;{1} {2}: piece &gt;</value>
@@ -213,11 +219,35 @@
   <data name="DISCONNECT" xml:space="preserve">
     <value>A client is has been disconnected! ClientId =</value>
   </data>
+  <data name="EMO_BLOCKED" xml:space="preserve">
+    <value>Emoticons disabled</value>
+  </data>
+  <data name="EMO_UNLOCKED" xml:space="preserve">
+    <value>Emoticons enabled</value>
+  </data>
   <data name="EQ_NOT_EMPTY" xml:space="preserve">
     <value>Your equipment is not empty</value>
   </data>
+  <data name="EXCHANGE_BLOCKED" xml:space="preserve">
+    <value>Exchange blocked</value>
+  </data>
+  <data name="EXCHANGE_UNLOCKED" xml:space="preserve">
+    <value>Exchange allowed</value>
+  </data>
+  <data name="FAMILY_REQ_LOCKED" xml:space="preserve">
+    <value>Family request blocked</value>
+  </data>
+  <data name="FAMILY_REQ_UNLOCKED" xml:space="preserve">
+    <value>Family request allowed</value>
+  </data>
   <data name="FORCED_DISCONNECT" xml:space="preserve">
     <value>Forced Disconnecting of client {0}, too much connections.</value>
+  </data>
+  <data name="FRIEND_REQ_BLOCKED" xml:space="preserve">
+    <value>Friend request blocked</value>
+  </data>
+  <data name="FRIEND_REQ_UNLOCKED" xml:space="preserve">
+    <value>Friend request allowed</value>
   </data>
   <data name="GET_PROTECTION_POWER_1" xml:space="preserve">
     <value>You get the protection power of angel.</value>
@@ -225,8 +255,29 @@
   <data name="GET_PROTECTION_POWER_2" xml:space="preserve">
     <value>You get the protection power of daemon.</value>
   </data>
+  <data name="GOLD_SET" xml:space="preserve">
+    <value>Gold set</value>
+  </data>
+  <data name="GROUP_REQ_BLOCKED" xml:space="preserve">
+    <value>Group request blocked</value>
+  </data>
+  <data name="GROUP_REQ_UNLOCKED" xml:space="preserve">
+    <value>Group request allowed</value>
+  </data>
   <data name="HANDLER_NOT_FOUND" xml:space="preserve">
     <value>Could not found Handler implementation for Packet with Header {0}</value>
+  </data>
+  <data name="HERO_CHAT_BLOCKED" xml:space="preserve">
+    <value>Hero chat blocked</value>
+  </data>
+  <data name="HERO_CHAT_UNLOCKED" xml:space="preserve">
+    <value>Hero chat visible</value>
+  </data>
+  <data name="HP_BLOCKED" xml:space="preserve">
+    <value>Hp bar disabled</value>
+  </data>
+  <data name="HP_UNLOCKED" xml:space="preserve">
+    <value>Hp bar allowed</value>
   </data>
   <data name="INSERT_ERROR" xml:space="preserve">
     <value>Error inserting or updating character {0} , {1}</value>
@@ -273,6 +324,18 @@
   <data name="MESSAGE_RECEIVED" xml:space="preserve">
     <value>Message received {0} on client {1}</value>
   </data>
+  <data name="MINI_INV_BLOCKED" xml:space="preserve">
+    <value>Miniland invite blocked</value>
+  </data>
+  <data name="MINI_INV_UNLOCKED" xml:space="preserve">
+    <value>Miniland invite allowed</value>
+  </data>
+  <data name="MOUSE_LOCKED" xml:space="preserve">
+    <value>Mouse locked on enemy</value>
+  </data>
+  <data name="MOUSE_UNLOCKED" xml:space="preserve">
+    <value>Mouse moving free</value>
+  </data>
   <data name="MSG_SENT" xml:space="preserve">
     <value>Message sent {0} to client {1}</value>
   </data>
@@ -306,6 +369,12 @@
   <data name="PACKET_FAILURE" xml:space="preserve">
     <value>Failed to send packet {0} to client {1}, {2}.</value>
   </data>
+  <data name="QUICK_GET_UP_DISABLED" xml:space="preserve">
+    <value>Quick get up disabled</value>
+  </data>
+  <data name="QUICK_GET_UP_ENABLED" xml:space="preserve">
+    <value>Quick get up enabled</value>
+  </data>
   <data name="RARIFY_FAILED" xml:space="preserve">
     <value>Gambling failed! The item disappeared. </value>
   </data>
@@ -314,6 +383,9 @@
   </data>
   <data name="RARIFY_SUCCESS" xml:space="preserve">
     <value>Gambling succeeded! New Rare level: {0}</value>
+  </data>
+  <data name="REFUSED" xml:space="preserve">
+    <value>Exchange Refused</value>
   </data>
   <data name="REP_CHANGED" xml:space="preserve">
     <value>Reputation changed</value>
@@ -329,6 +401,9 @@
   </data>
   <data name="SHUTDOWN_SEC" xml:space="preserve">
     <value>Server will be shut in {0} Secondes.</value>
+  </data>
+  <data name="SPLEVEL_CHANGED" xml:space="preserve">
+    <value>Specialisty level has been changed!</value>
   </data>
   <data name="SP_BLOCKED" xml:space="preserve">
     <value>You can't change sp now!</value>
@@ -357,11 +432,32 @@
   <data name="UPDATE_ACCOUNT_ERROR" xml:space="preserve">
     <value>Error inserting or updating Account {0} , {1}</value>
   </data>
+  <data name="UPGRADE_FAILED" xml:space="preserve">
+    <value>Upgrade failed</value>
+  </data>
+  <data name="UPGRADE_FAILED_ITEM_SAVED" xml:space="preserve">
+    <value>Upgrade failed but item was saved.</value>
+  </data>
+  <data name="UPGRADE_FIXED" xml:space="preserve">
+    <value>Upgrade fixed</value>
+  </data>
+  <data name="UPGRADE_SUCCESS" xml:space="preserve">
+    <value>Upgrade Success</value>
+  </data>
   <data name="USER_NOT_CONNECTED" xml:space="preserve">
     <value>User is not connected.</value>
   </data>
   <data name="USER_NOT_HERO" xml:space="preserve">
     <value>Only heroes may use hero messages.</value>
+  </data>
+  <data name="WHISPER_BLOCKED" xml:space="preserve">
+    <value>Whisper blocked</value>
+  </data>
+  <data name="WHISPER_UNLOCKED" xml:space="preserve">
+    <value>Whisper allowed</value>
+  </data>
+  <data name="WRONG_VALUE" xml:space="preserve">
+    <value>Wrong value</value>
   </data>
   <data name="YOU_ASK_FOR_EXCHANGE" xml:space="preserve">
     <value>You ask for an echange with</value>

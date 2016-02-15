@@ -10,12 +10,13 @@ namespace OpenNos.Domain
     {
         ExchangeBlocked = 1,
         FriendRequestBlocked = 2,
+        FamilyRequestBlocked = 3,
         WhisperBlocked = 4,
         GroupRequestBlocked = 5,
         MouseAimLock = 9,
         HeroChatBlocked = 10,
-        EmoticonsBlocked = 11,
-        QuickGetUp = 12,
+        EmoticonsBlocked = 12,
+        QuickGetUp = 11,
         HpBlocked = 13,
         BuffBlocked = 14,
         MinilandInviteBlocked = 15
