@@ -7,7 +7,7 @@
     
     The primary goals of this format is to allow a simple XML format 
     that is mostly human readable. The generation and parsing of the 
-    various data types are done through the TypeConverter Classs 
+    various data types are done through the TypeConverter classes 
     associated with the data types.
     
     Example:
@@ -33,7 +33,7 @@
     Each data row contains a name, and value. The row also contains a 
     type or mimetype. Type corresponds to a .NET class that support 
     text/value conversion through the TypeConverter architecture. 
-    Classs that don't support this are serialized and stored with the 
+    Classes that don't support this are serialized and stored with the 
     mimetype set.
     
     The mimetype is used for serialized objects, and tells the 
@@ -179,6 +179,9 @@
   </data>
   <data name="CANT_MOVE" xml:space="preserve">
     <value>User can't move.</value>
+  </data>
+  <data name="CHANGE_DONE" xml:space="preserve">
+    <value>Points has been set</value>
   </data>
   <data name="CLIENT_ARRIVED" xml:space="preserve">
     <value>Client arrived, SessionId: {0}</value>
