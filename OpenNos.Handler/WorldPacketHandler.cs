@@ -258,12 +258,12 @@ namespace OpenNos.Handler
         public void ChangeClass(string packet)
         {
             string[] packetsplit = packet.Split(' ');
-            byte classe;
+            byte Class;
             if (packetsplit.Length > 2)
             {
-                if (Byte.TryParse(packetsplit[2], out classe) && classe < 4)
+                if (Byte.TryParse(packetsplit[2], out Class) && Class < 4)
                 {
-                    ClassChange(classe);
+                    ClassChange(Class);
                 }
             }
             else
@@ -381,13 +381,13 @@ namespace OpenNos.Handler
             ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(196), ReceiverType.AllOnMap);
         }
 
-        public void ClassChange(byte classe)
+        public void ClassChange(byte Class)
         {
             Session.Character.JobLevel = 1;
             Session.Client.SendPacket("npinfo 0");
             Session.Client.SendPacket("p_clear");
 
-            Session.Character.Class = classe;
+            Session.Character.Class = Class;
             Session.Character.Speed = ServersData.SpeedData[Session.Character.Class];
             Session.Character.Hp = (int)Session.Character.HPLoad();
             Session.Character.Mp = (int)Session.Character.MPLoad();

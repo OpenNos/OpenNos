@@ -174,7 +174,7 @@
     <Property Name="EquipmentSlot" Type="utinyint" Nullable="false" />
     <Property Name="Morph" Type="smallint" Nullable="false" />
     <Property Name="Type" Type="utinyint" Nullable="false" />
-    <Property Name="Classe" Type="utinyint" Nullable="false" />
+    <Property Name="Class" Type="utinyint" Nullable="false" />
     <Property Name="Blocked" Type="utinyint" Nullable="false" />
     <Property Name="Droppable" Type="utinyint" Nullable="false" />
     <Property Name="Transaction" Type="utinyint" Nullable="false" />
@@ -718,7 +718,7 @@
           <Property Name="EquipmentSlot" Type="Byte" Nullable="false" />
           <Property Name="Morph" Type="Int16" Nullable="false" />
           <Property Name="Type" Type="Byte" Nullable="false" />
-          <Property Name="Classe" Type="Byte" Nullable="false" />
+          <Property Name="Class" Type="Byte" Nullable="false" />
           <Property Name="Blocked" Type="Byte" Nullable="false" />
           <Property Name="Droppable" Type="Byte" Nullable="false" />
           <Property Name="Transaction" Type="Byte" Nullable="false" />
@@ -1057,7 +1057,7 @@
           <ScalarProperty Name="EquipmentSlot" ColumnName="EquipmentSlot" />
           <ScalarProperty Name="Morph" ColumnName="Morph" />
           <ScalarProperty Name="Type" ColumnName="Type" />
-          <ScalarProperty Name="Classe" ColumnName="Classe" />
+          <ScalarProperty Name="Class" ColumnName="Class" />
           <ScalarProperty Name="Blocked" ColumnName="Blocked" />
           <ScalarProperty Name="Droppable" ColumnName="Droppable" />
           <ScalarProperty Name="Transaction" ColumnName="Transaction" />

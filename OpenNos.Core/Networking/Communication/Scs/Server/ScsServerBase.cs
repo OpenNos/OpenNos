@@ -6,7 +6,7 @@ using OpenNos.Core.Communication.Scs.Communication.Protocols;
 namespace OpenNos.Core.Communication.Scs.Server
 {
     /// <summary>
-    /// This class provides base functionality for server classes.
+    /// This class provides base functionality for server Classs.
     /// </summary>
     public abstract class ScsServerBase : IScsServer
     {
@@ -93,7 +93,7 @@ namespace OpenNos.Core.Communication.Scs.Server
         #region Protected abstract methods
 
         /// <summary>
-        /// This method is implemented by derived classes to create appropriate connection listener to listen incoming connection requets.
+        /// This method is implemented by derived Classs to create appropriate connection listener to listen incoming connection requets.
         /// </summary>
         /// <returns></returns>
         protected abstract IConnectionListener CreateConnectionListener();

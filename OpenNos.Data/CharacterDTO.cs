@@ -14,7 +14,7 @@ namespace OpenNos.Data
 
         public byte Class { get; set; }
 
-        public ClassType ClassEnum
+        public ClassType Classnum
         {
             get
             {

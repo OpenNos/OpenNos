@@ -9,7 +9,7 @@ using System.Collections.Generic;
 namespace OpenNos.Core.Communication.Scs.Client
 {
     /// <summary>
-    /// This class provides base functionality for client classes.
+    /// This class provides base functionality for client Classs.
     /// </summary>
     public abstract class ScsClientBase : IScsClient
     {
@@ -199,7 +199,7 @@ namespace OpenNos.Core.Communication.Scs.Client
         #region Abstract methods
 
         /// <summary>
-        /// This method is implemented by derived classes to create appropriate communication channel.
+        /// This method is implemented by derived Classs to create appropriate communication channel.
         /// </summary>
         /// <returns>Ready communication channel to communicate</returns>
         protected abstract ICommunicationChannel CreateCommunicationChannel();

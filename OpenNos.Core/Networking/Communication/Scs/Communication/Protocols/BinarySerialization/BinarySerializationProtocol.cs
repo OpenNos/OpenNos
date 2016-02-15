@@ -122,7 +122,7 @@ namespace OpenNos.Core.Communication.Scs.Communication.Protocols.BinarySerializa
 
         /// <summary>
         /// This method is used to serialize a IScsMessage to a byte array.
-        /// This method can be overrided by derived classes to change serialization strategy.
+        /// This method can be overrided by derived Classs to change serialization strategy.
         /// It is a couple with DeserializeMessage method and must be overrided together.
         /// </summary>
         /// <param name="message">Message to be serialized</param>
@@ -141,7 +141,7 @@ namespace OpenNos.Core.Communication.Scs.Communication.Protocols.BinarySerializa
 
         /// <summary>
         /// This method is used to deserialize a IScsMessage from it's bytes.
-        /// This method can be overrided by derived classes to change deserialization strategy.
+        /// This method can be overrided by derived Classs to change deserialization strategy.
         /// It is a couple with SerializeMessage method and must be overrided together.
         /// </summary>
         /// <param name="bytes">
@@ -287,7 +287,7 @@ namespace OpenNos.Core.Communication.Scs.Communication.Protocols.BinarySerializa
 
         #endregion
 
-        #region Nested classes
+        #region Nested Classs
 
         /// <summary>
         /// This class is used in deserializing to allow deserializing objects that are defined

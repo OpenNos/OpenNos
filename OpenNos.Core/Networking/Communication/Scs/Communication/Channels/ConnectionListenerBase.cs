@@ -3,7 +3,7 @@
 namespace OpenNos.Core.Communication.Scs.Communication.Channels
 {
     /// <summary>
-    /// This class provides base functionality for communication listener classes.
+    /// This class provides base functionality for communication listener Classs.
     /// </summary>
     public abstract class ConnectionListenerBase : IConnectionListener
     {

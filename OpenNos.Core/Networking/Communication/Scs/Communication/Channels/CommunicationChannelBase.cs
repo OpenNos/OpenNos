@@ -6,7 +6,7 @@ using OpenNos.Core.Communication.Scs.Communication.Protocols;
 namespace OpenNos.Core.Communication.Scs.Communication.Channels
 {
     /// <summary>
-    /// This class provides base functionality for all communication channel classes.
+    /// This class provides base functionality for all communication channel Classs.
     /// </summary>
     public abstract class CommunicationChannelBase : ICommunicationChannel
     {
@@ -124,7 +124,7 @@ namespace OpenNos.Core.Communication.Scs.Communication.Channels
 
         /// <summary>
         /// Sends a message to the remote application.
-        /// This method is overrided by derived classes to really send to message.
+        /// This method is overrided by derived Classs to really send to message.
         /// </summary>
         /// <param name="message">Message to be sent</param>
         protected abstract void SendMessagepublic(IScsMessage message);
