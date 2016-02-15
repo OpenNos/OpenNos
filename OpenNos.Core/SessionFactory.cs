@@ -1,66 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace OpenNos.Core
+﻿namespace OpenNos.Core
 {
     public class SessionFactory
     {
         #region Members
 
-        private Random _randomSessionId;
-        private IList<int> _sessionIds;
+        private static SessionFactory _instance;
+        private int _sessionCounter;
 
         #endregion
 
-        #region Singleton
+        #region Instantiation
 
-        private static SessionFactory _instance;
-
-        private SessionFactory() { }
-
-        public static SessionFactory Instance
+        private SessionFactory()
         {
-            get
-            {
-                if (_instance == null)
-                    _instance = new SessionFactory();
-
-                return _instance;
-            }
         }
 
         #endregion
 
         #region Properties
 
-        private Random RandomSessionId
-        {
-            get
-            {
-                if (_randomSessionId == null)
-                {
-                    _randomSessionId = new Random();
-                }
-
-                return _randomSessionId;
-            }
-        }
-
-        private IList<int> SessionIds
-        {
-            get
-            {
-                if (_sessionIds == null)
-                {
-                    _sessionIds = new List<int>();
-                }
-
-                return _sessionIds;
-            }
-        }
+        public static SessionFactory Instance => _instance ?? (_instance = new SessionFactory());
 
         #endregion
 
@@ -68,33 +27,8 @@ namespace OpenNos.Core
 
         public int GenerateSessionId()
         {
-            bool sessionIdFound = false;
-
-            while (!sessionIdFound)
-            {
-                int newSessionId = RandomSessionId.Next(10000, UInt16.MaxValue);
-
-                if (!SessionIds.Contains(newSessionId))
-                {
-                    SessionIds.Add(newSessionId);
-                    return newSessionId;
-                }
-            }
-
-            if (SessionIds.Count.Equals(UInt16.MaxValue + 10000))
-            {
-                SessionIds.Clear();
-                Logger.Log.Info("Resetted SessionIds");
-                int newSessionId = RandomSessionId.Next(10000, UInt16.MaxValue);
-
-                if (!SessionIds.Contains(newSessionId))
-                {
-                    SessionIds.Add(newSessionId);
-                    return newSessionId;
-                }
-            }
-
-            return 0;
+            _sessionCounter += 2;
+            return _sessionCounter;
         }
 
         #endregion
