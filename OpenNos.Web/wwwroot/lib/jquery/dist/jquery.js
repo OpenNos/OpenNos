@@ -1757,7 +1757,7 @@ Expr = Sizzle.selectors = {
 
 		"PSEUDO": function( pseudo, argument ) {
 			// pseudo-class names are case-insensitive
-			// http://www.w3.org/TR/selectors/#pseudo-classes
+			// http://www.w3.org/TR/selectors/#pseudo-Classs
 			// Prioritize by case sensitivity in case custom pseudos are added with uppercase letters
 			// Remember that setFilters inherits from pseudos
 			var args,
@@ -7168,7 +7168,7 @@ var rclass = /[\t\r\n\f]/g;
 
 jQuery.fn.extend({
 	addClass: function( value ) {
-		var classes, elem, cur, clazz, j, finalValue,
+		var Classs, elem, cur, clazz, j, finalValue,
 			proceed = typeof value === "string" && value,
 			i = 0,
 			len = this.length;
@@ -7181,7 +7181,7 @@ jQuery.fn.extend({
 
 		if ( proceed ) {
 			// The disjunction here is for better compressibility (see removeClass)
-			classes = ( value || "" ).match( rnotwhite ) || [];
+			Classs = ( value || "" ).match( rnotwhite ) || [];
 
 			for ( ; i < len; i++ ) {
 				elem = this[ i ];
@@ -7192,7 +7192,7 @@ jQuery.fn.extend({
 
 				if ( cur ) {
 					j = 0;
-					while ( (clazz = classes[j++]) ) {
+					while ( (clazz = Classs[j++]) ) {
 						if ( cur.indexOf( " " + clazz + " " ) < 0 ) {
 							cur += clazz + " ";
 						}
@@ -7211,7 +7211,7 @@ jQuery.fn.extend({
 	},
 
 	removeClass: function( value ) {
-		var classes, elem, cur, clazz, j, finalValue,
+		var Classs, elem, cur, clazz, j, finalValue,
 			proceed = arguments.length === 0 || typeof value === "string" && value,
 			i = 0,
 			len = this.length;
@@ -7222,7 +7222,7 @@ jQuery.fn.extend({
 			});
 		}
 		if ( proceed ) {
-			classes = ( value || "" ).match( rnotwhite ) || [];
+			Classs = ( value || "" ).match( rnotwhite ) || [];
 
 			for ( ; i < len; i++ ) {
 				elem = this[ i ];
@@ -7234,7 +7234,7 @@ jQuery.fn.extend({
 
 				if ( cur ) {
 					j = 0;
-					while ( (clazz = classes[j++]) ) {
+					while ( (clazz = Classs[j++]) ) {
 						// Remove *all* instances
 						while ( cur.indexOf( " " + clazz + " " ) >= 0 ) {
 							cur = cur.replace( " " + clazz + " ", " " );

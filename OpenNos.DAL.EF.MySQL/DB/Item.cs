@@ -28,7 +28,7 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public byte EquipmentSlot { get; set; }
         public short Morph { get; set; }
         public byte Type { get; set; }
-        public byte Classe { get; set; }
+        public byte Class { get; set; }
         public byte Blocked { get; set; }
         public byte Droppable { get; set; }
         public byte Transaction { get; set; }
