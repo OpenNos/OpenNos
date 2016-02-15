@@ -7,7 +7,7 @@
     
     The primary goals of this format is to allow a simple XML format 
     that is mostly human readable. The generation and parsing of the 
-    various data types are done through the TypeConverter Classs 
+    various data types are done through the TypeConverter classes 
     associated with the data types.
     
     Example:
@@ -33,7 +33,7 @@
     Each data row contains a name, and value. The row also contains a 
     type or mimetype. Type corresponds to a .NET class that support 
     text/value conversion through the TypeConverter architecture. 
-    Classs that don't support this are serialized and stored with the 
+    Classes that don't support this are serialized and stored with the 
     mimetype set.
     
     The mimetype is used for serialized objects, and tells the 
@@ -139,7 +139,7 @@
     <value>Database has been initialized!</value>
   </data>
   <data name="DISCONNECT" xml:space="preserve">
-    <value>A client is has been disconnected! ClientId =</value>
+    <value>A client is has been disconnected! ClientId = </value>
   </data>
   <data name="FORCED_DISCONNECT" xml:space="preserve">
     <value>Forced Disconnecting of client {0}, too much connections.</value>
@@ -154,7 +154,7 @@
     <value>Message sent to client </value>
   </data>
   <data name="NEW_CONNECT" xml:space="preserve">
-    <value>A new client is connected. ClientId =</value>
+    <value>A new client is connected. ClientId = </value>
   </data>
   <data name="NOTVALIDATE" xml:space="preserve">
     <value>Account not validate!</value>
