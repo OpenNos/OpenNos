@@ -220,7 +220,7 @@
     <value>Blad usuwania postaci ze Slotem {0} , {1}</value>
   </data>
   <data name="DISCONNECT" xml:space="preserve">
-    <value>Uzytkownik zostal rozlaczony! ClientId =</value>
+    <value>Uzytkownik zostal rozlaczony! ClientId = </value>
   </data>
   <data name="EMO_BLOCKED" xml:space="preserve">
     <value>Emotikony zablokowane</value>
@@ -343,7 +343,7 @@
     <value>Wiadomosc wyslana {0} do uzytkownika {1}</value>
   </data>
   <data name="NEW_CONNECT" xml:space="preserve">
-    <value>Polaczono uzytkownika. ClientId =</value>
+    <value>Polaczono uzytkownika. ClientId = </value>
   </data>
   <data name="NOT_ADVENTURER" xml:space="preserve">
     <value>Mozesz zmienic klase tylko raz</value>
@@ -407,6 +407,9 @@
   </data>
   <data name="SPLEVEL_CHANGED" xml:space="preserve">
     <value>Poziom specjalisty zostal zmieniony</value>
+  </data>
+  <data name="SPUSE_NEEDED" xml:space="preserve">
+    <value>Musisz zmienic sie w specjaliste aby zatwierdzic zmiane punktow</value>
   </data>
   <data name="SP_BLOCKED" xml:space="preserve">
     <value>Nie mozesz teraz zmienic karty specjalnej.</value>
