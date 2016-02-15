@@ -2709,7 +2709,7 @@ namespace OpenNos.Handler
                         }
                         else
                         {
-                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("BAD_EQUIPMENT"), 0));
+                            Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("BAD_EQUIPMENT"), 10));
                         }
                     }
                     else
