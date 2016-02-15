@@ -1084,7 +1084,7 @@ namespace OpenNos.GameObject
             int freepoint = ServersData.SpPoint(inventoryItem.SpLevel, inventoryItem.Upgrade) - inventoryItem.SlHit - inventoryItem.SlHP - inventoryItem.SlElement - inventoryItem.SlDefence;
           
             int SlElement = ServersData.SlPoint(inventoryItem.SlElement,2);
-            int SlHP = ServersData.SlPoint(inventoryItem.SlHP,4); 
+            int SlHP = ServersData.SlPoint(inventoryItem.SlHP,3); 
             int SlDefence = ServersData.SlPoint(inventoryItem.SlDefence,1);
             int SlHit = ServersData.SlPoint(inventoryItem.SlHit,0);
             string skill = "-1"; //sk.sk.sk.sk.sk...

@@ -640,7 +640,7 @@ namespace OpenNos.GameObject
                     else if (spPoint <= 400)
                         point = 98 + (spPoint - 391) / 9;
                     else if (spPoint <= 410)
-                        point = 99 + (spPoint - 400) / 9;
+                        point = 99 + (spPoint - 400) / 10;
                     break;
                 case 2:
                     if (spPoint <= 20)
@@ -659,13 +659,48 @@ namespace OpenNos.GameObject
                         point = 80 + (spPoint - 270) / 7;
                     break;
                 case 1:
+                    if (spPoint <= 10)
+                        point = spPoint;
+                    else if (spPoint <= 48)
+                        point = 10 + (spPoint - 10) / 2;
+                    else if (spPoint <= 81)
+                        point = 29 + (spPoint - 48) / 3;
+                    else if (spPoint <= 161)
+                        point = 40 + (spPoint - 81) / 4;
+                    else if (spPoint <= 236)
+                        point = 60 + (spPoint - 161) / 5;
+                    else if (spPoint <= 290)
+                        point = 75 + (spPoint - 236) / 6;
+                    else if (spPoint <= 360)
+                        point = 84 + (spPoint - 290) / 7;
+                    else if (spPoint <= 400)
+                        point = 97 + (spPoint - 360) / 8;
+                    else if (spPoint <= 410)
+                        point = 99 + (spPoint - 400) / 10;
                     break;
                 case 3:
+                    if (spPoint <= 10)
+                        point = spPoint;
+                    else if (spPoint <= 50)
+                        point = 10 + (spPoint - 10) / 2;
+                    else if (spPoint <= 110)
+                        point = 30 + (spPoint - 50) / 3;
+                    else if (spPoint <= 150)
+                        point = 50 + (spPoint - 110) / 4;
+                    else if (spPoint <= 200)
+                        point = 60 + (spPoint - 150) / 5;
+                    else if (spPoint <= 260)
+                        point = 70 + (spPoint - 200) / 6;
+                    else if (spPoint <= 330)
+                        point = 80 + (spPoint - 260) / 7;
+                    else if (spPoint <= 410)
+                        point = 90 + (spPoint - 330) / 8;
                     break;
+                    
             }
             return point;
         }
-        internal static int SpPoint(short spLevel, short upgrade)
+        public static int SpPoint(short spLevel, short upgrade)
         {
             int point = (spLevel - 20) * 3;
             switch (upgrade)
