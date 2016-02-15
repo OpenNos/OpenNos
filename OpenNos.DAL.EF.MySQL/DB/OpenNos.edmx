@@ -127,6 +127,7 @@
     <Property Name="HpBlocked" Type="bool" Nullable="false" />
     <Property Name="BuffBlocked" Type="bool" Nullable="false" />
     <Property Name="MinilandInviteBlocked" Type="bool" Nullable="false" />
+    <Property Name="FamilyRequestBlocked" Type="bool" Nullable="false" />
   </EntityType>
   <EntityType Name="portal">
     <Key>
@@ -525,6 +526,7 @@
           <Property Name="HpBlocked" Type="Boolean" Nullable="false" />
           <Property Name="BuffBlocked" Type="Boolean" Nullable="false" />
           <Property Name="MinilandInviteBlocked" Type="Boolean" Nullable="false" />
+          <Property Name="FamilyRequestBlocked" Type="Boolean" Nullable="false" />
         </EntityType>
         <EntityType Name="Portal">
           <Key>
@@ -1004,6 +1006,7 @@
           <ScalarProperty Name="HpBlocked" ColumnName="HpBlocked" />
           <ScalarProperty Name="BuffBlocked" ColumnName="BuffBlocked" />
           <ScalarProperty Name="MinilandInviteBlocked" ColumnName="MinilandInviteBlocked" />
+          <ScalarProperty Name="FamilyRequestBlocked" ColumnName="FamilyRequestBlocked" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

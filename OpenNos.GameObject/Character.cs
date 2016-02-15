@@ -390,7 +390,7 @@ namespace OpenNos.GameObject
                         InventoryId = inventory.InventoryId,
                         Type = inventory.Type,
                         InventoryItemId = inventory.InventoryItemId,
-                         InventoryItem = new InventoryItem
+                        InventoryItem = new InventoryItem
                         {
                             Amount = inventoryItemDTO.Amount,
                             ElementRate = inventoryItemDTO.ElementRate,
@@ -644,7 +644,21 @@ namespace OpenNos.GameObject
 
         public string GenerateStat()
         {
-            return $"stat {Hp} {HPLoad()} {Mp} {MPLoad()} 0 1024";
+            double option =
+                (WhisperBlocked ? Math.Pow(2, (int)ConfigType.WhisperBlocked - 1) : 0)
+                + (FamilyRequestBlocked ? Math.Pow(2, (int)ConfigType.FamilyRequestBlocked - 1) : 0)
+                + (!MouseAimLock ? Math.Pow(2, (int)ConfigType.MouseAimLock - 1) : 0)
+                + (MinilandInviteBlocked ? Math.Pow(2, (int)ConfigType.MinilandInviteBlocked - 1) : 0)
+                + (ExchangeBlocked ? Math.Pow(2, (int)ConfigType.ExchangeBlocked - 1) : 0)
+                + (FriendRequestBlocked ? Math.Pow(2, (int)ConfigType.FriendRequestBlocked - 1) : 0)
+                + (EmoticonsBlocked ? Math.Pow(2, (int)ConfigType.EmoticonsBlocked - 1) : 0)
+                + (HpBlocked ? Math.Pow(2, (int)ConfigType.HpBlocked - 1) : 0)
+                + (BuffBlocked ? Math.Pow(2, (int)ConfigType.BuffBlocked - 1) : 0)
+                + (GroupRequestBlocked ? Math.Pow(2, (int)ConfigType.GroupRequestBlocked - 1) : 0)
+                + (HeroChatBlocked ? Math.Pow(2, (int)ConfigType.HeroChatBlocked - 1) : 0)
+                + (QuickGetUp ? Math.Pow(2, (int)ConfigType.QuickGetUp - 1) : 0);
+            ;
+            return $"stat {Hp} {HPLoad()} {Mp} {MPLoad()} 0 {option}";
         }
 
         public string GenerateAt()
@@ -1006,9 +1020,9 @@ namespace OpenNos.GameObject
             return $"shop 1 {CharacterId} 0 0";
         }
 
-        public string GenerateModal(string message, int type)
+        public string GenerateModal(string message)
         {
-            return $"modal {message} {type}";
+            return $"modal {message}";
         }
 
         public string GenerateSpPoint()
@@ -1044,12 +1058,12 @@ namespace OpenNos.GameObject
                         DAOFactory.InventoryItemDAO.DeleteById(inv.InventoryItemId);
 
                     }
-                       
+
                 }
                 else
                 {
                     if (InventoryList.LoadBySlotAndType(inv.Slot, inv.Type) == null)
-                    { 
+                    {
                         DAOFactory.InventoryDAO.DeleteFromSlotAndType(CharacterId, inv.Slot, inv.Type);
                         DAOFactory.InventoryItemDAO.DeleteById(inv.InventoryItemId);
                     }
@@ -1060,8 +1074,21 @@ namespace OpenNos.GameObject
                 inv.Save();
             foreach (Inventory inv in EquipmentList.Inventory)
                 inv.Save();
-          
 
+
+        }
+
+        public string GenerateSlInfo(InventoryItem inventoryItem,int type)
+        {
+            Item iteminfo = ServerManager.GetItem(inventoryItem.ItemVNum);
+            int freepoint = ServersData.SpPoint(inventoryItem.SpLevel, inventoryItem.Upgrade) - inventoryItem.SlHit - inventoryItem.SlHP - inventoryItem.SlElement - inventoryItem.SlDefence;
+          
+            int SlElement = ServersData.SlPoint(inventoryItem.SlElement,2);
+            int SlHP = ServersData.SlPoint(inventoryItem.SlHP,4); 
+            int SlDefence = ServersData.SlPoint(inventoryItem.SlDefence,1);
+            int SlHit = ServersData.SlPoint(inventoryItem.SlHit,0);
+            string skill = "-1"; //sk.sk.sk.sk.sk...
+            return $"slinfo {type} {inventoryItem.ItemVNum} {iteminfo.Morph} {inventoryItem.SpLevel} {iteminfo.LevelJobMinimum} {iteminfo.ReputationMinimum+1} 0 0 0 0 0 0 0 {iteminfo.FireResistance} {iteminfo.WaterResistance} {iteminfo.LightResistance} {iteminfo.DarkResistance} 0 {inventoryItem.SpXp} {ServersData.SpXPData[inventoryItem.SpLevel-1]} {skill} {inventoryItem.InventoryItemId} {freepoint} {SlHit} {SlDefence} {SlElement} {SlHP} {inventoryItem.Upgrade} - 1 12 0 0 0 0 0 0 0 0 0 0 0 0 0 0";
         }
 
 

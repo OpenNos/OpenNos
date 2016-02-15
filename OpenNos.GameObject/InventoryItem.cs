@@ -46,7 +46,8 @@ namespace OpenNos.GameObject
         {
             None,
             BlueAmulet,
-            RedAmulet
+            RedAmulet,
+            Scroll
         }
 
         public enum UpgradeMode
