@@ -75,8 +75,7 @@ namespace OpenNos.Handler
 
                         if (!ServiceFactory.Instance.CommunicationService.AccountIsConnected(loadedAccount.Name))
                         {
-                            //0 banned 1 registered 2 user 3 GM
-                            AuthorityType type = loadedAccount.AuthorityEnum;
+                            AuthorityType type = loadedAccount.AuthorityEnum; //0 banned 1 registered 2 user 3 GM
 
                             switch (type)
                             {
@@ -92,7 +91,6 @@ namespace OpenNos.Handler
                                     break;
                                 default:
                                     {
-
                                         int newSessionId = SessionFactory.Instance.GenerateSessionId();
 
                                         DAOFactory.AccountDAO.UpdateLastSessionAndIp(user.Name, (int)newSessionId, _session.Client.RemoteEndPoint.ToString());
@@ -107,15 +105,10 @@ namespace OpenNos.Handler
                                         {
                                             Logger.Log.Error(ex.Message);
                                         }
-
-
                                         _session.Client.SendPacket(BuildServersPacket((int)newSessionId));
-
                                     }
                                     break;
-
                             }
-
                         }
                         else
                         {
