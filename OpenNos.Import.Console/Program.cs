@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OpenNos.DAL.EF.MySQL;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,8 +14,11 @@ namespace OpenNos.Import.Console
 
             string folder = System.Console.ReadLine();
 
+            DataAccessHelper.Initialize();
+
             ImportFactory factory = new ImportFactory(folder);
-            factory.ImportItems();
+            //factory.ImportItems();
+            factory.ImportMaps();
         }
     }
 }

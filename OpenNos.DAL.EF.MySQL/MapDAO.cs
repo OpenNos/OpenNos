@@ -44,6 +44,16 @@ namespace OpenNos.DAL.EF.MySQL
             }
         }
 
+        public MapDTO Insert(MapDTO map)
+        {
+            using (var context = DataAccessHelper.CreateContext())
+            {
+                Map entity = Mapper.Map<Map>(map);
+                context.map.Add(entity);
+                context.SaveChanges();
+                return Mapper.Map<MapDTO>(entity);
+            }
+        }
         #endregion
     }
 }

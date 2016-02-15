@@ -11,6 +11,8 @@ namespace OpenNos.DAL.Interface
 
         MapDTO LoadById(short mapId);
 
+        MapDTO Insert(MapDTO map);
+
         #endregion
     }
 }
