@@ -2316,7 +2316,7 @@ namespace OpenNos.Handler
                 Session.Client.SendPacket("scene 40");
             if (System.Configuration.ConfigurationManager.AppSettings["WorldInformation"].ToLower() == "true")
             {
-                Session.Client.SendPacket(Session.Character.GenerateSay("-----------World Information-----------", 10));
+                Session.Client.SendPacket(Session.Character.GenerateSay("---------- World Information ----------", 10));
                 Assembly assembly = Assembly.GetEntryAssembly();
                 FileVersionInfo fileVersionInfo = FileVersionInfo.GetVersionInfo(assembly.Location);
                 Session.Client.SendPacket(Session.Character.GenerateSay($"OpenNos by OpenNos Team\nVersion: v{fileVersionInfo.ProductVersion}", 6));
