@@ -21,7 +21,15 @@ namespace OpenNos.Import.Console
 
             DataAccessHelper.Initialize();
 
-           Logger.Log.Warn($"{Language.Instance.GetMessageFromKey("NEED_TREE")}\nRoot\n-----_code_{System.Configuration.ConfigurationManager.AppSettings["language"]}_MapIDData.txt\n-----_code_{System.Configuration.ConfigurationManager.AppSettings["language"]}_monster.txt\n-----MapIDData.dat\n-----monster.dat\n-----packet.txt\n-----map\n----------0\n----------1\n----------...");
+            Logger.Log.Warn(Language.Instance.GetMessageFromKey("NEED_TREE"));
+            System.Console.BackgroundColor = System.ConsoleColor.Blue;
+            System.Console.WriteLine("Root");
+            System.Console.ResetColor();
+            System.Console.WriteLine($"-----_code_{System.Configuration.ConfigurationManager.AppSettings["language"]}_MapIDData.txt\n-----_code_{System.Configuration.ConfigurationManager.AppSettings["language"]}_monster.txt\n-----MapIDData.dat\n-----monster.dat\n-----packet.txt");
+            System.Console.BackgroundColor = System.ConsoleColor.Blue;
+            System.Console.WriteLine("-----map");
+            System.Console.ResetColor();
+            System.Console.WriteLine("----------0\n----------1\n----------...");
             Logger.Log.Warn(Language.Instance.GetMessageFromKey("ENTER_PATH"));
             string folder = System.Console.ReadLine();     
             ImportFactory factory = new ImportFactory(folder);
