@@ -9,6 +9,8 @@ namespace OpenNos.DAL.Interface
 
         IEnumerable<NpcDTO> LoadFromMap(short MapId);
 
+        NpcDTO Insert(NpcDTO npc);
+
         #endregion
     }
 }
