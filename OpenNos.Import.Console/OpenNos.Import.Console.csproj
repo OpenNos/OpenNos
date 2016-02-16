@@ -38,9 +38,6 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'PL|AnyCPU'">
     <OutputPath>bin\PL\</OutputPath>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'EN|AnyCPU'">
-    <OutputPath>bin\EN\</OutputPath>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <OutputPath>bin\Release\</OutputPath>
   </PropertyGroup>
