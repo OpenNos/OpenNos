@@ -254,6 +254,7 @@ namespace OpenNos.Import.Console
                         if (dialog.ContainsKey(int.Parse(linesave[3])))
                             dialogn = dialog[int.Parse(linesave[3])];
                         if (DAOFactory.NpcDAO.LoadFromMap(map).FirstOrDefault(s => s.MapId.Equals(map) && s.Vnum.Equals(short.Parse(linesave[2]))) == null)
+                        {
                             DAOFactory.NpcDAO.Insert(new NpcDTO
                             {
                                 Vnum = short.Parse(linesave[2]),
@@ -265,6 +266,8 @@ namespace OpenNos.Import.Console
                                 Position = short.Parse(linesave[6]),
                                 Dialog = (short)dialogn,
                             });
+                            i++;
+                        }
                     }
                 }
 
