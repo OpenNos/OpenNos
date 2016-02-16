@@ -117,9 +117,9 @@ namespace OpenNos.Login.Resource {
         /// <summary>
         ///   Looks up a localized string similar to Database has been initialized!.
         /// </summary>
-        internal static string DATABASE_HAS_BEEN_INITIALISE {
+        internal static string DATABASE_INITIALIZED {
             get {
-                return ResourceManager.GetString("DATABASE_HAS_BEEN_INITIALISE", resourceCulture);
+                return ResourceManager.GetString("DATABASE_INITIALIZED", resourceCulture);
             }
         }
         

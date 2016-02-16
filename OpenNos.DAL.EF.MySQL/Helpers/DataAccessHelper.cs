@@ -110,7 +110,7 @@ namespace OpenNos.DAL.EF.MySQL
                     context.item.Any();
                     context.shop.Any();
                     context.shopitem.Any();
-                    Logger.Log.Info(Language.Instance.GetMessageFromKey("DATABASE_HAS_BEEN_INITIALISE"));
+                    Logger.Log.Info(Language.Instance.GetMessageFromKey("DATABASE_INITIALIZED"));
                 }
                 catch (Exception ex)
                 {
