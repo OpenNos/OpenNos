@@ -117,4 +117,25 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="DATABASE_INITIALIZED" xml:space="preserve">
+    <value>Baza danych zostala zaladowana!</value>
+  </data>
+  <data name="ENTER_PATH" xml:space="preserve">
+    <value>Podaj sciezke pliku aby przeprowadzic rozbior danych</value>
+  </data>
+  <data name="MAPS_PARSED" xml:space="preserve">
+    <value>{0} map wprowadzonych</value>
+  </data>
+  <data name="NEED_TREE" xml:space="preserve">
+    <value>Potrzebujesz aby struktura katalogow wygladala w ten sposob :</value>
+  </data>
+  <data name="NPCS_PARSED" xml:space="preserve">
+    <value>{0} npc wprowadzonych</value>
+  </data>
+  <data name="PORTALS_PARSED" xml:space="preserve">
+    <value>{0} portali wprowadzonych</value>
+  </data>
+  <data name="SHOPS_PARSED" xml:space="preserve">
+    <value>{0} sklepow wprowadzonych</value>
+  </data>
 </root>

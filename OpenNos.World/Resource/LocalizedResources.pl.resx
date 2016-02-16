@@ -210,7 +210,7 @@
   <data name="CORRUPT_KEEPALIVE" xml:space="preserve">
     <value>Uszkodzone Keepalive miedzy uzytkownikiem {0}.</value>
   </data>
-  <data name="DATABASE_HAS_BEEN_INITIALISE" xml:space="preserve">
+  <data name="DATABASE_INITIALIZED" xml:space="preserve">
     <value>Baza danych zostala zainicjowana.</value>
   </data>
   <data name="DELETE_ACCOUNT_ERROR" xml:space="preserve">

@@ -210,7 +210,7 @@
   <data name="CORRUPT_KEEPALIVE" xml:space="preserve">
     <value>Corrupted Keepalive on client {0}.</value>
   </data>
-  <data name="DATABASE_HAS_BEEN_INITIALISE" xml:space="preserve">
+  <data name="DATABASE_INITIALIZED" xml:space="preserve">
     <value>Database has been initialized.</value>
   </data>
   <data name="DELETE_ACCOUNT_ERROR" xml:space="preserve">
