@@ -49,17 +49,16 @@ namespace OpenNos.DAL.EF.MySQL
 
             using (var context = DataAccessHelper.CreateContext())
             {
-                var entity = new Map //Make sure you have a table called test in DB
+                if (context.map.SingleOrDefault(c => c.MapId.Equals(map.MapId)) == null)
                 {
-                   MapId = map.MapId,
-                   Data = map.Data,
-                   Music = map.Music,
-                   Name = map.Name
-                };
-                context.map.Add(entity);
-                context.SaveChanges();
-                return Mapper.Map<MapDTO>(entity);
+                    Map entity = Mapper.Map<Map>(map);
+                    context.map.Add(entity);
+                    context.SaveChanges();
+                    return Mapper.Map<MapDTO>(entity);
+                }
+                else return new MapDTO();
             }
+           
         }
         #endregion
     }

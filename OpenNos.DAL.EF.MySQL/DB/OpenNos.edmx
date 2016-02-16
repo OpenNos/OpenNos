@@ -133,7 +133,7 @@
     <Key>
       <PropertyRef Name="PortalId" />
     </Key>
-    <Property Name="PortalId" Type="int" Nullable="false" />
+    <Property Name="PortalId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="SourceX" Type="smallint" Nullable="false" />
     <Property Name="SourceY" Type="smallint" Nullable="false" />
     <Property Name="DestinationX" Type="smallint" Nullable="false" />
@@ -532,7 +532,7 @@
           <Key>
             <PropertyRef Name="PortalId" />
           </Key>
-          <Property Name="PortalId" Type="Int32" Nullable="false" />
+          <Property Name="PortalId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="SourceX" Type="Int16" Nullable="false" />
           <Property Name="SourceY" Type="Int16" Nullable="false" />
           <Property Name="DestinationX" Type="Int16" Nullable="false" />
