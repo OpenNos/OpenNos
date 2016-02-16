@@ -71,16 +71,6 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'IT|AnyCPU'">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\IT\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <DebugType>full</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>true</Prefer32Bit>
-  </PropertyGroup>
   <ItemGroup>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -133,10 +123,6 @@
       <IsTransformFile>True</IsTransformFile>
     </None>
     <None Include="App.Debug.config">
-      <DependentUpon>App.config</DependentUpon>
-      <IsTransformFile>True</IsTransformFile>
-    </None>
-    <None Include="App.IT.config">
       <DependentUpon>App.config</DependentUpon>
       <IsTransformFile>True</IsTransformFile>
     </None>
@@ -196,7 +182,6 @@
   <ItemGroup>
     <EmbeddedResource Include="Resource\LocalizedResources.de.resx" />
     <EmbeddedResource Include="Resource\LocalizedResources.fr.resx" />
-    <EmbeddedResource Include="Resource\LocalizedResources.it.resx" />
     <EmbeddedResource Include="Resource\LocalizedResources.pl.resx" />
     <EmbeddedResource Include="Resource\LocalizedResources.resx" />
   </ItemGroup>
