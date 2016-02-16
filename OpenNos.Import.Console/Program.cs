@@ -3,7 +3,7 @@ using OpenNos.Core;
 using OpenNos.DAL.EF.MySQL;
 using System.Diagnostics;
 using System.Reflection;
-
+using System.Threading;
 
 namespace OpenNos.Import.Console
 {
@@ -20,11 +20,12 @@ namespace OpenNos.Import.Console
                              "===============================================================================\n");
 
             DataAccessHelper.Initialize();
-
             string folder = System.Console.ReadLine();     
             ImportFactory factory = new ImportFactory(folder);
             //factory.ImportItems();
             factory.ImportMaps();
+            factory.ImportPortals();
+            Thread.Sleep(5000);
         }
     }
 }

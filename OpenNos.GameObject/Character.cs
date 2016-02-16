@@ -510,8 +510,13 @@ namespace OpenNos.GameObject
         public List<String> GenerateGp()
         {
             List<String> gpList = new List<String>();
+            int i = 0;
             foreach (Portal portal in ServerManager.GetMap(this.MapId).Portals)
-                gpList.Add($"gp {portal.SourceX} {portal.SourceY} {portal.DestinationMapId} {portal.Type} 0");
+            {    
+                gpList.Add($"gp {portal.SourceX} {portal.SourceY} {portal.DestinationMapId} {portal.Type} {i} 0");
+                i++;
+            }
+             
             return gpList;
         }
 

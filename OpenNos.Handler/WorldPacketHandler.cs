@@ -2647,7 +2647,7 @@ namespace OpenNos.Handler
                     {
                         if ((iteminfo.ItemType == (byte)ItemType.Weapon || iteminfo.ItemType == (byte)ItemType.Armor || iteminfo.ItemType == (byte)ItemType.Fashion || iteminfo.ItemType == (byte)ItemType.Jewelery || iteminfo.ItemType == (byte)ItemType.Specialist) && iteminfo.LevelMinimum <= Session.Character.Level && ((iteminfo.Class >> Session.Character.Class) & 1) == 1)
                         {
-                            if (!(Session.Character.UseSp && iteminfo.EquipmentSlot == (short)EquipmentType.Fairy && iteminfo.Element != ServerManager.GetItem(Session.Character.InventoryList.LoadBySlotAndType((short)EquipmentType.Sp, (short)InventoryType.Equipment).InventoryItem.ItemVNum).Element))
+                            if (!(Session.Character.UseSp && iteminfo.EquipmentSlot == (short)EquipmentType.Fairy && iteminfo.Element != ServerManager.GetItem(Session.Character.EquipmentList.LoadBySlotAndType((short)EquipmentType.Sp, (short)InventoryType.Equipment).InventoryItem.ItemVNum).Element))
                             {
                                 if (!(Session.Character.UseSp && iteminfo.EquipmentSlot == (short)EquipmentType.Sp))
                                 {

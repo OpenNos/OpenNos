@@ -44,7 +44,7 @@
 -- -----------------------------------------------------------
 -- Entity Designer DDL Script for MySQL Server 4.1 and higher
 -- -----------------------------------------------------------
--- Date Created: 02/15/2016 19:00:00
+-- Date Created: 02/16/2016 01:11:11
 
 -- Generated from EDMX file: C:\Users\ERWAN\Desktop\OpenNos GIT\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
 -- Target version: 3.0.0.0
@@ -186,7 +186,7 @@ ALTER TABLE `character` ADD PRIMARY KEY (CharacterId);
 
 
 CREATE TABLE `portal`(
-	`PortalId` int NOT NULL, 
+	`PortalId` int NOT NULL AUTO_INCREMENT UNIQUE, 
 	`SourceX` smallint NOT NULL, 
 	`SourceY` smallint NOT NULL, 
 	`DestinationX` smallint NOT NULL, 
