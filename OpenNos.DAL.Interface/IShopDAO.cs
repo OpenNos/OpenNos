@@ -10,6 +10,8 @@ namespace OpenNos.DAL.Interface
 
         ShopDTO LoadByNpc(short NpcId);
 
+        ShopDTO Insert(ShopDTO shop);
+
         #endregion
     }
 }
