@@ -132,7 +132,7 @@
   <data name="CONNECTION" xml:space="preserve">
     <value>CONNECT {0} Connected -- session: {1}</value>
   </data>
-  <data name="DATABASE_HAS_BEEN_INITIALISE" xml:space="preserve">
+  <data name="DATABASE_INITIALIZED" xml:space="preserve">
     <value>Baza danych zostala zaladowana!</value>
   </data>
   <data name="DISCONNECT" xml:space="preserve">

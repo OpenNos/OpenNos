@@ -108,7 +108,7 @@ namespace OpenNos.DAL.EF.MySQL
                     context.inventory.Any();
                     context.inventoryitem.Any();
                     context.item.Any();
-                    Logger.Log.Info(Language.Instance.GetMessageFromKey("DATABASE_HAS_BEEN_INITIALISE"));
+                    Logger.Log.Info(Language.Instance.GetMessageFromKey("DATABASE_INITIALIZED"));
                 }
                 catch (Exception ex)
                 {
