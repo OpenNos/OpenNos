@@ -77,7 +77,7 @@ namespace OpenNos.Import.Console
             }
             foreach (PortalDTO portal in ListPacket)
             {
-                if(portal.DestinationX.Equals(-1) || portal.DestinationY.Equals(-1))
+                if (portal.DestinationX.Equals(-1) || portal.DestinationY.Equals(-1))
                 {
                     PortalDTO test = ListPacket.FirstOrDefault(s => s.SourceMapId == portal.DestinationMapId && s.DestinationMapId == portal.SourceMapId);
                     if (test != null)
@@ -87,7 +87,7 @@ namespace OpenNos.Import.Console
                     }
 
                 }
-                    PortalDTO por = new PortalDTO
+                PortalDTO por = new PortalDTO
                 {
                     SourceMapId = portal.SourceMapId,
                     SourceX = portal.SourceX,
@@ -106,6 +106,101 @@ namespace OpenNos.Import.Console
             }
             Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("PORTALS_PARSED"), i));
         }
+
+        public void ImportNpc()
+        {
+            string NpcIdFile = $"{_folder}\\monster.dat";
+            string filePacket = $"{_folder}\\packet.txt";
+            string NpcText = $"{_folder}\\_code_{System.Configuration.ConfigurationManager.AppSettings["language"]}_monster.txt";
+            StreamReader NpcId = new StreamReader(NpcIdFile, Encoding.GetEncoding(1252));
+            StreamReader NpcIdText = new StreamReader(NpcText, Encoding.GetEncoding(1252));
+            StreamReader Packet = new StreamReader(filePacket, Encoding.GetEncoding(1252));
+            Dictionary<int, string> dictionaryId = new Dictionary<int, string>();
+            Dictionary<int, string> name = new Dictionary<int, string>();
+            Dictionary<int, int> level = new Dictionary<int, int>();
+            Dictionary<string, string> dictionaryTextId = new Dictionary<string, string>();
+            string line;
+            string line2;
+            int mapid;
+            while ((line = NpcIdText.ReadLine()) != null)
+            {
+                string[] linesave = line.Split('\t');
+                if (linesave.Count() > 1)
+                {
+
+                    if (!dictionaryTextId.ContainsKey(linesave[0]))
+                        dictionaryTextId.Add(linesave[0], linesave[1]);
+
+                }
+            }
+            int vnum = -1;
+            int level2 = 0;
+            string name2 = "";
+            bool test = false;
+            while ((line2 = NpcId.ReadLine()) != null)
+            {
+              
+                string[] linesave = line2.Split('\t');
+
+                if (linesave.Count() > 2 && linesave[1] == "VNUM")
+                {
+                    vnum = int.Parse(linesave[2]);
+                    test = true;
+                }
+                if (linesave.Count() > 2 && linesave[1] == "LEVEL")
+                {
+                    level2 = int.Parse(linesave[2]);
+                    if (test == true)
+                    {
+                        level.Add(vnum, level2);
+                        name.Add(vnum, name2);
+                        test = false;
+                    }
+                }
+
+                if (linesave.Count() > 2 && linesave[1] == "NAME")
+                {
+                    name2 = linesave[2];
+                }
+               
+            }
+
+            int i = 0;
+            short map = 0;
+            short lastMap = 0;
+            while ((line = Packet.ReadLine()) != null)
+            {
+
+                string[] linesave = line.Split(' ');
+                if (linesave.Count() > 5 && linesave[0] == "at")
+                {
+                    lastMap = map;
+                    map = short.Parse(linesave[2]);
+                }
+                if (linesave.Count() > 7 && linesave[0] == "in" && linesave[1] == "2")
+                {
+                    if (long.Parse(linesave[3]) < 10000)
+                    {
+                        if (DAOFactory.NpcDAO.LoadFromMap(map).FirstOrDefault(s => s.MapId.Equals(map) && s.Vnum.Equals(short.Parse(linesave[2]))) == null)
+                            DAOFactory.NpcDAO.Insert(new NpcDTO
+                            {
+                                Vnum = short.Parse(linesave[2]),
+                                Level = (short)level[int.Parse(linesave[2])],
+                                MapId = map,
+                                MapX = short.Parse(linesave[4]),
+                                MapY = short.Parse(linesave[5]),
+                                Name = dictionaryTextId[name[int.Parse(linesave[2])]],
+                                Position = short.Parse(linesave[6]),
+                                Dialog = 0,//TODO parse dialog
+                            });
+                    }
+                }
+
+
+            }
+            Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("PNJ_PARSED"), i));
+        }
+
         public void ImportMaps()
         {
 
@@ -113,18 +208,21 @@ namespace OpenNos.Import.Console
             string mapIdText = $"{_folder}\\_code_{System.Configuration.ConfigurationManager.AppSettings["language"]}_MapIDData.txt";
             string file = $"{_folder}\\map";
             string filePacket = $"{_folder}\\packet.txt";
-            DirectoryInfo dir = new DirectoryInfo(file);
-            FileInfo[] fichiers = dir.GetFiles();
+
             StreamReader MapId = new StreamReader(mapIdFile, Encoding.GetEncoding(1252));
             StreamReader MapIdText = new StreamReader(mapIdText, Encoding.GetEncoding(1252));
             StreamReader Packet = new StreamReader(filePacket, Encoding.GetEncoding(1252));
+
             Dictionary<int, string> dictionaryId = new Dictionary<int, string>();
             Dictionary<string, string> dictionaryTextId = new Dictionary<string, string>();
             Dictionary<int, int> dictionaryMusic = new Dictionary<int, int>();
 
+            DirectoryInfo dir = new DirectoryInfo(file);
+            FileInfo[] fichiers = dir.GetFiles();
             string line;
             string line2;
             int mapid;
+            int i = 0;
             while ((line = MapId.ReadLine()) != null)
             {
                 string[] linesave = line.Split(' ');
@@ -137,6 +235,7 @@ namespace OpenNos.Import.Console
                     }
                 }
             }
+
             while ((line2 = MapIdText.ReadLine()) != null)
             {
                 string[] linesave = line2.Split('\t');
@@ -145,6 +244,7 @@ namespace OpenNos.Import.Console
                     dictionaryTextId.Add(linesave[0], linesave[1]);
                 }
             }
+
             while ((line2 = Packet.ReadLine()) != null)
             {
                 string[] linesave = line2.Split(' ');
@@ -154,7 +254,8 @@ namespace OpenNos.Import.Console
                         dictionaryMusic.Add(int.Parse(linesave[2]), int.Parse(linesave[7]));
                 }
             }
-            int i = 0;
+
+
             foreach (FileInfo fichier in fichiers)
             {
                 string name = "";
