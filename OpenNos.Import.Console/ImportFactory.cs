@@ -106,8 +106,66 @@ namespace OpenNos.Import.Console
             }
             Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("PORTALS_PARSED"), i));
         }
+        public void importShops()
+        {
+            string filePacket = $"{_folder}\\packet.txt";
+            StreamReader Packet = new StreamReader(filePacket, Encoding.GetEncoding(1252));
+            string line;
+            short lastMap = 0;
+            short map = 0;
+            int i = 0;
+            Dictionary<int, int> dictionaryId = new Dictionary<int, int>();
+            while ((line = Packet.ReadLine()) != null)
+            {
 
-        public void ImportNpc()
+                string[] linesave = line.Split(' ');
+                if (linesave.Count() > 5 && linesave[0] == "at")
+                {
+                    lastMap = map;
+                    map = short.Parse(linesave[2]);
+                }
+                if (linesave.Count() > 7 && linesave[0] == "in" && linesave[1] == "2")
+                {
+                    if (long.Parse(linesave[3]) < 10000)
+                    {
+                        NpcDTO npc = DAOFactory.NpcDAO.LoadFromMap(map).FirstOrDefault(s => s.MapId.Equals(map) && s.Vnum.Equals(short.Parse(linesave[2])));
+                        if (npc != null)
+                        {
+                            if (!dictionaryId.ContainsKey(short.Parse(linesave[3])))
+                                dictionaryId[short.Parse(linesave[3])] = npc.NpcId;
+                        }
+                    }
+                }
+                if (linesave.Count() > 6 && linesave[0] == "shop" && linesave[1] == "2")
+                {
+
+                    if (dictionaryId.ContainsKey(short.Parse(linesave[2])))
+                    {
+                        string named = "";
+                        for (int i = 6; i < linesave.Count(); i++)
+                        {
+                            named += $"{linesave[i]} ";
+                        }
+                        named.TrimEnd(' ');
+                        ShopDTO shop = new ShopDTO
+                        {
+                            Name = named,
+                            NpcId = (short)dictionaryId[short.Parse(linesave[2])],
+                            MenuType = short.Parse(linesave[5])
+
+                        };
+                        if (DAOFactory.ShopDAO.LoadByNpc(shop.NpcId) == null)
+                        {
+                            DAOFactory.ShopDAO.Insert(shop);
+                            i++;
+                        }
+                    }
+                }
+            }
+
+            Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("SHOP_PARSED"), i));
+        }
+        public void ImportNpcs()
         {
             string NpcIdFile = $"{_folder}\\monster.dat";
             string filePacket = $"{_folder}\\packet.txt";
@@ -174,8 +232,8 @@ namespace OpenNos.Import.Console
                 string[] linesave = line.Split(' ');
                 if (linesave.Count() > 3 && linesave[0] == "npc_req")
                 {
-                    if(!dialog.ContainsKey(int.Parse(linesave[2])))
-                    dialog.Add(int.Parse(linesave[2]), int.Parse(linesave[3]));
+                    if (!dialog.ContainsKey(int.Parse(linesave[2])))
+                        dialog.Add(int.Parse(linesave[2]), int.Parse(linesave[3]));
                 }
             }
 
@@ -195,7 +253,7 @@ namespace OpenNos.Import.Console
                     {
                         int dialogn = 0;
                         if (dialog.ContainsKey(int.Parse(linesave[3])))
-                            dialogn= dialog[int.Parse(linesave[3])];
+                            dialogn = dialog[int.Parse(linesave[3])];
                         if (DAOFactory.NpcDAO.LoadFromMap(map).FirstOrDefault(s => s.MapId.Equals(map) && s.Vnum.Equals(short.Parse(linesave[2]))) == null)
                             DAOFactory.NpcDAO.Insert(new NpcDTO
                             {
