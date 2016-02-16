@@ -142,9 +142,9 @@ namespace OpenNos.Import.Console
                     if (dictionaryId.ContainsKey(short.Parse(linesave[2])))
                     {
                         string named = "";
-                        for (int i = 6; i < linesave.Count(); i++)
+                        for (int j = 6; j < linesave.Count(); j++)
                         {
-                            named += $"{linesave[i]} ";
+                            named += $"{linesave[j]} ";
                         }
                         named.TrimEnd(' ');
                         ShopDTO shop = new ShopDTO
