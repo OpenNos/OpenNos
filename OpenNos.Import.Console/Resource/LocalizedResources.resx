@@ -135,7 +135,7 @@
   <data name="PORTALS_PARSED" xml:space="preserve">
     <value>{0} portals parsed</value>
   </data>
-  <data name="SHOP_PARSED" xml:space="preserve">
+  <data name="SHOPS_PARSED" xml:space="preserve">
     <value>{0} shops parsed</value>
   </data>
 </root>

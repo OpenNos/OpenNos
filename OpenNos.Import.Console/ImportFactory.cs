@@ -338,8 +338,11 @@ namespace OpenNos.Import.Console
                 if (dictionaryMusic.ContainsKey(int.Parse(fichier.Name)))
                     music = dictionaryMusic[int.Parse(fichier.Name)];
                 MapDTO map = new MapDTO { Name = name, Music = music, MapId = short.Parse(fichier.Name), Data = System.IO.File.ReadAllBytes(fichier.FullName) };
-                DAOFactory.MapDAO.Insert(map);
-                i++;
+                if (DAOFactory.MapDAO.LoadById(map.MapId) == null)
+                {
+                    DAOFactory.MapDAO.Insert(map);
+                    i++;
+                }
             }
 
             Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("MAPS_PARSED"), i));
