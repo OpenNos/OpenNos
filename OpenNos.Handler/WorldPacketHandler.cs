@@ -2235,7 +2235,7 @@ namespace OpenNos.Handler
             string[] packetsplit = packet.Split(' ');
             byte splevel;
             Inventory sp = Session.Character.EquipmentList.LoadBySlotAndType((short)EquipmentType.Sp, (short)InventoryType.Equipment);
-            if (packetsplit.Length > 2 && Session.Character.UseSp)
+            if (sp != null && packetsplit.Length > 2 && Session.Character.UseSp)
             {
                 if (Byte.TryParse(packetsplit[2], out splevel) && splevel <= 99 && splevel > 0)
                 {
