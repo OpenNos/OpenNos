@@ -163,7 +163,7 @@ namespace OpenNos.Import.Console
                 }
             }
 
-            Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("SHOP_PARSED"), i));
+            Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("SHOPS_PARSED"), i));
         }
         public void ImportNpcs()
         {
@@ -180,7 +180,6 @@ namespace OpenNos.Import.Console
             Dictionary<string, string> dictionaryTextId = new Dictionary<string, string>();
             string line;
             string line2;
-            int mapid;
             while ((line = NpcIdText.ReadLine()) != null)
             {
                 string[] linesave = line.Split('\t');
@@ -271,7 +270,7 @@ namespace OpenNos.Import.Console
 
 
             }
-            Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("PNJ_PARSED"), i));
+            Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("NPCS_PARSED"), i));
         }
 
         public void ImportMaps()
