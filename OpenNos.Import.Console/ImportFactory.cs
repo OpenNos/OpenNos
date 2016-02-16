@@ -118,6 +118,7 @@ namespace OpenNos.Import.Console
             Dictionary<int, string> dictionaryId = new Dictionary<int, string>();
             Dictionary<int, string> name = new Dictionary<int, string>();
             Dictionary<int, int> level = new Dictionary<int, int>();
+            Dictionary<int, int> dialog = new Dictionary<int, int>();
             Dictionary<string, string> dictionaryTextId = new Dictionary<string, string>();
             string line;
             string line2;
@@ -139,7 +140,7 @@ namespace OpenNos.Import.Console
             bool test = false;
             while ((line2 = NpcId.ReadLine()) != null)
             {
-              
+
                 string[] linesave = line2.Split('\t');
 
                 if (linesave.Count() > 2 && linesave[1] == "VNUM")
@@ -162,12 +163,23 @@ namespace OpenNos.Import.Console
                 {
                     name2 = linesave[2];
                 }
-               
+
             }
 
             int i = 0;
             short map = 0;
             short lastMap = 0;
+            while ((line = Packet.ReadLine()) != null)
+            {
+                string[] linesave = line.Split(' ');
+                if (linesave.Count() > 3 && linesave[0] == "npc_req")
+                {
+                    if(!dialog.ContainsKey(int.Parse(linesave[2])))
+                    dialog.Add(int.Parse(linesave[2]), int.Parse(linesave[3]));
+                }
+            }
+
+            Packet = new StreamReader(filePacket, Encoding.GetEncoding(1252));
             while ((line = Packet.ReadLine()) != null)
             {
 
@@ -181,6 +193,9 @@ namespace OpenNos.Import.Console
                 {
                     if (long.Parse(linesave[3]) < 10000)
                     {
+                        int dialogn = 0;
+                        if (dialog.ContainsKey(int.Parse(linesave[3])))
+                            dialogn= dialog[int.Parse(linesave[3])];
                         if (DAOFactory.NpcDAO.LoadFromMap(map).FirstOrDefault(s => s.MapId.Equals(map) && s.Vnum.Equals(short.Parse(linesave[2]))) == null)
                             DAOFactory.NpcDAO.Insert(new NpcDTO
                             {
@@ -191,7 +206,7 @@ namespace OpenNos.Import.Console
                                 MapY = short.Parse(linesave[5]),
                                 Name = dictionaryTextId[name[int.Parse(linesave[2])]],
                                 Position = short.Parse(linesave[6]),
-                                Dialog = 0,//TODO parse dialog
+                                Dialog = (short)dialogn,
                             });
                     }
                 }
