@@ -837,9 +837,13 @@ namespace OpenNos.Handler
                     {
                         for (int i = 83; i < packetsplit.Length; i++)
                             shopname += $"{packetsplit[i]} ";
+
+                        Session.Client.SendPacket(Session.Character.GenerateInfo(shopname));
                         shopname.TrimEnd(' ');
+                        
                         myShop.OwnerId = Session.Character.CharacterId;
                         myShop.Name = shopname;
+
                         Session.CurrentMap.ShopUserList.Add(Session.CurrentMap.ShopUserList.Count(), myShop);
 
                         ClientLinkManager.Instance.Broadcast(Session, Session.Character.GeneratePlayerFlag(Session.CurrentMap.ShopUserList.Count()), ReceiverType.AllOnMapExceptMe);
