@@ -79,7 +79,7 @@ namespace OpenNos.Import.Console
             {
                 if (portal.DestinationX.Equals(-1) || portal.DestinationY.Equals(-1))
                 {
-                    PortalDTO test = ListPacket.FirstOrDefault(s => s.SourceMapId == portal.DestinationMapId && s.DestinationMapId == portal.SourceMapId);
+                    PortalDTO test = ListPacket.FirstOrDefault(s => s.SourceMapId == portal.DestinationMapId && portal.SourceX == s.DestinationX && portal.SourceY == s.DestinationY && s.DestinationMapId == portal.SourceMapId);
                     if (test != null)
                     {
                         portal.DestinationX = test.SourceX;
@@ -97,7 +97,7 @@ namespace OpenNos.Import.Console
                     DestinationX = portal.DestinationX,
                     DestinationY = portal.DestinationY
                 };
-                if (DAOFactory.PortalDAO.LoadFromMap(portal.SourceMapId).Where(s => s.DestinationMapId.Equals(portal.DestinationMapId)).Count() == 0)
+                if (DAOFactory.PortalDAO.LoadFromMap(portal.SourceMapId).Where(s => s.DestinationMapId.Equals(portal.DestinationMapId) && s.DestinationX.Equals(portal.DestinationX) && s.DestinationY.Equals(portal.DestinationY)).Count() == 0)
                     if (DAOFactory.MapDAO.LoadById(por.SourceMapId) != null && DAOFactory.MapDAO.LoadById(por.DestinationMapId) != null && por.DestinationX != -1 && por.DestinationY != -1)
                     {
                         DAOFactory.PortalDAO.Insert(por);
@@ -254,6 +254,7 @@ namespace OpenNos.Import.Console
                         if (dialog.ContainsKey(int.Parse(linesave[3])))
                             dialogn = dialog[int.Parse(linesave[3])];
                         if (DAOFactory.NpcDAO.LoadFromMap(map).FirstOrDefault(s => s.MapId.Equals(map) && s.Vnum.Equals(short.Parse(linesave[2]))) == null)
+                        {
                             DAOFactory.NpcDAO.Insert(new NpcDTO
                             {
                                 Vnum = short.Parse(linesave[2]),
@@ -265,6 +266,8 @@ namespace OpenNos.Import.Console
                                 Position = short.Parse(linesave[6]),
                                 Dialog = (short)dialogn,
                             });
+                            i++;
+                        }
                     }
                 }
 
