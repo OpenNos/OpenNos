@@ -226,7 +226,7 @@ namespace OpenNos.Handler
                         MagicDefence = 0,
                         RangeDefence = 0,
                         SpXp = 0,
-                        SpLevel = 0,
+                        SpLevel = ServerManager.GetItem(item.ItemVNum).EquipmentSlot.Equals((byte)EquipmentType.Sp)? (byte)1 : (byte)0,
                         SlDefence = 0,
                         SlElement = 0,
                         SlHit = 0,
