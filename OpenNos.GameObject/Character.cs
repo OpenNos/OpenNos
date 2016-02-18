@@ -496,7 +496,7 @@ namespace OpenNos.GameObject
             List<String> droplist = new List<String>();
             foreach (Npc npc in ServerManager.GetMap(this.MapId).Npcs)
                 if (npc.Shop != null)
-                    droplist.Add($"shop 2 {npc.NpcId} 1 0 {npc.Shop.MenuType} {npc.Shop.Name}");
+                    droplist.Add($"shop 2 {npc.NpcId} {npc.Shop.ShopId} {npc.Shop.MenuType} {npc.Shop.ShopType} {npc.Shop.Name}");
             return droplist;
         }
         public List<string> GenerateShopOnMap()
@@ -513,7 +513,7 @@ namespace OpenNos.GameObject
             int i = 0;
             foreach (Portal portal in ServerManager.GetMap(this.MapId).Portals)
             {    
-                gpList.Add($"gp {portal.SourceX} {portal.SourceY} {portal.DestinationMapId} {portal.Type} {i} 0");
+                gpList.Add($"gp {portal.SourceX} {portal.SourceY} {portal.DestinationMapId} {portal.Type} {i} {portal.IsDisabled}");
                 i++;
             }
              
@@ -524,7 +524,7 @@ namespace OpenNos.GameObject
         {
             List<String> in2List = new List<String>();
             foreach (Npc npc in ServerManager.GetMap(this.MapId).Npcs)
-                in2List.Add($"in 2 {npc.Vnum} {npc.NpcId} {npc.MapX} {npc.MapY} {npc.Position} 100 100 9632 0 0 - 1 1 0 - 1 - 0 - 1 0 0 0 0 0 0 0 0");
+                in2List.Add($"in 2 {npc.Vnum} {npc.NpcId} {npc.MapX} {npc.MapY} {npc.Position} 100 100 {npc.Dialog} 0 0 - 1 1 0 - 1 - 0 - 1 0 0 0 0 0 0 0 0");
             return in2List;
         }
 
