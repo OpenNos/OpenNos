@@ -65,8 +65,9 @@ namespace OpenNos.GameObject
                     DestinationX = portal.DestinationX,
                     DestinationY = portal.DestinationY,
                     Type = portal.Type,
-                    PortalId = portal.PortalId
-
+                    PortalId = portal.PortalId,
+                    IsDisabled = portal.IsDisabled
+                    
                 });
             }
             IEnumerable<NpcDTO> npcsDTO = DAOFactory.NpcDAO.LoadFromMap(MapId);
