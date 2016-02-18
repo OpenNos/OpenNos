@@ -141,6 +141,7 @@
     <Property Name="Type" Type="smallint" Nullable="false" />
     <Property Name="DestinationMapId" Type="smallint" Nullable="false" />
     <Property Name="SourceMapId" Type="smallint" Nullable="false" />
+    <Property Name="IsDisabled" Type="smallint" Nullable="false" />
   </EntityType>
   <EntityType Name="connectionlog">
     <Key>
@@ -302,6 +303,7 @@
     <Property Name="Name" Type="longtext" Nullable="false" />
     <Property Name="NpcId" Type="smallint" Nullable="false" />
     <Property Name="MenuType" Type="smallint" Nullable="false" />
+    <Property Name="ShopType" Type="smallint" Nullable="false" />
   </EntityType>
   <Association Name="AccountCharacter">
     <End Role="Account" Type="opennosModel.Store.account" Multiplicity="1" />
@@ -542,7 +544,7 @@
           <Property Name="DestinationMapId" Type="Int16" Nullable="false" />
           <NavigationProperty Name="sourcemap" Relationship="opennosModel.portalMap1" FromRole="portal" ToRole="Map" />
           <Property Name="SourceMapId" Type="Int16" Nullable="false" />
-          <Property Name="isDisabled" Type="Int16" Nullable="false" />
+          <Property Name="IsDisabled" Type="Int16" Nullable="false" />
         </EntityType>
         <EntityContainer Name="OpenNosContainer" annotation:LazyLoadingEnabled="false">
           <EntitySet Name="account" EntityType="opennosModel.Account" />
@@ -1023,6 +1025,7 @@
           <ScalarProperty Name="Type" ColumnName="Type" />
           <ScalarProperty Name="DestinationMapId" ColumnName="DestinationMapId" />
           <ScalarProperty Name="SourceMapId" ColumnName="SourceMapId" />
+          <ScalarProperty Name="IsDisabled" ColumnName="IsDisabled" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -1192,6 +1195,7 @@
           <ScalarProperty Name="Name" ColumnName="Name" />
           <ScalarProperty Name="NpcId" ColumnName="NpcId" />
           <ScalarProperty Name="MenuType" ColumnName="MenuType" />
+          <ScalarProperty Name="ShopType" ColumnName="ShopType" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
