@@ -228,15 +228,7 @@ namespace OpenNos.Import.Console
             int i = 0;
             short map = 0;
             short lastMap = 0;
-          /*  while ((line = Packet.ReadLine()) != null)
-            {
-                string[] linesave = line.Split(' ');
-                if (linesave.Count() > 3 && linesave[0] == "npc_req")
-                {
-                    if (!dialog.ContainsKey(int.Parse(linesave[2])))
-                        dialog.Add(int.Parse(linesave[2]), int.Parse(linesave[3]));
-                }
-            }*/
+     
 
             Packet = new StreamReader(filePacket, Encoding.GetEncoding(1252));
             while ((line = Packet.ReadLine()) != null)
