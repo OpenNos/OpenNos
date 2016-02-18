@@ -45,15 +45,8 @@ namespace OpenNos.Import.Console
                 {
                     lastMap = map;
                     map = short.Parse(linesave[2]);
-                    if (lastMap != 0)
-                    {
-                        if (ListPacket.FirstOrDefault(s => s.SourceMapId == lastMap && s.DestinationMapId == map) != null)
-                        {
-                            ListPacket.FirstOrDefault(s => s.SourceMapId == lastMap && s.DestinationMapId == map).DestinationX = short.Parse(linesave[3]);
-                            ListPacket.FirstOrDefault(s => s.SourceMapId == lastMap && s.DestinationMapId == map).DestinationY = short.Parse(linesave[4]);
+                  
 
-                        }
-                    }
                 }
                 if (linesave.Count() > 4 && linesave[0] == "gp")
                 {
@@ -63,6 +56,11 @@ namespace OpenNos.Import.Console
                     short DestinationMapId = short.Parse(linesave[3]);
                     short DestinationX = -1;
                     short DestinationY = -1;
+                    if(ListPacket.Where(s =>s.SourceMapId == lastMap && s.DestinationMapId.Equals(map)).Count() != 0)
+                    {
+                        DestinationX = ListPacket.FirstOrDefault(s => s.SourceMapId == lastMap && s.DestinationMapId == map).SourceX;
+                        DestinationY = ListPacket.FirstOrDefault(s => s.SourceMapId == lastMap && s.DestinationMapId == map).SourceY;
+                    }
                     ListPacket.Add(new PortalDTO
                     {
                         SourceMapId = map,
@@ -76,18 +74,10 @@ namespace OpenNos.Import.Console
                     });
                 }
             }
+
+
             foreach (PortalDTO portal in ListPacket)
             {
-                if (portal.DestinationX.Equals(-1) || portal.DestinationY.Equals(-1))
-                {
-                    PortalDTO test = ListPacket.FirstOrDefault(s => s.SourceMapId == portal.DestinationMapId && portal.SourceX == s.DestinationX && portal.SourceY == s.DestinationY && s.DestinationMapId == portal.SourceMapId);
-                    if (test != null)
-                    {
-                        portal.DestinationX = test.SourceX;
-                        portal.DestinationY = test.SourceY;
-                    }
-
-                }
                 PortalDTO por = new PortalDTO
                 {
                     SourceMapId = portal.SourceMapId,
@@ -97,14 +87,15 @@ namespace OpenNos.Import.Console
                     Type = portal.Type,
                     DestinationX = portal.DestinationX,
                     DestinationY = portal.DestinationY,
-                    IsDisabled = 0,     
+                    IsDisabled = 0,
                 };
-                if (DAOFactory.PortalDAO.LoadFromMap(portal.SourceMapId).Where(s => s.DestinationMapId.Equals(portal.DestinationMapId) && s.DestinationX.Equals(portal.DestinationX) && s.DestinationY.Equals(portal.DestinationY)).Count() == 0)
-                    if (DAOFactory.MapDAO.LoadById(por.SourceMapId) != null && DAOFactory.MapDAO.LoadById(por.DestinationMapId) != null && por.DestinationX != -1 && por.DestinationY != -1)
-                    {
-                        DAOFactory.PortalDAO.Insert(por);
-                        i++;
-                    }
+                if (DAOFactory.MapDAO.LoadById(portal.SourceMapId) != null && DAOFactory.MapDAO.LoadById(portal.DestinationMapId) != null)
+                    if (por.DestinationY != -1 && por.DestinationX != -1)
+                        if (DAOFactory.PortalDAO.LoadFromMap(portal.SourceMapId).Where(s => s.DestinationMapId.Equals(portal.DestinationMapId)).Count() == 0)
+                        {
+                            DAOFactory.PortalDAO.Insert(por);
+                            i++;
+                        }
             }
             Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("PORTALS_PARSED"), i));
         }
@@ -228,7 +219,7 @@ namespace OpenNos.Import.Console
             int i = 0;
             short map = 0;
             short lastMap = 0;
-     
+
 
             Packet = new StreamReader(filePacket, Encoding.GetEncoding(1252));
             while ((line = Packet.ReadLine()) != null)
