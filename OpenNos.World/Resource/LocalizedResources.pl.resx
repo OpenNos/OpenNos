@@ -285,6 +285,9 @@
   <data name="INSERT_ERROR" xml:space="preserve">
     <value>Blad zapisywania badz odswiezania postaci {0} , {1}</value>
   </data>
+  <data name="INVALID_CHARNAME" xml:space="preserve">
+    <value>Zle znaki w nazwie postaci</value>
+  </data>
   <data name="IN_WAITING_FOR" xml:space="preserve">
     <value>Czekam na {0}</value>
   </data>

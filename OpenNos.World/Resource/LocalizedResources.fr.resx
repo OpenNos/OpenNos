@@ -220,7 +220,7 @@
     <value>Error inserting or updating character {0} , {1}</value>
   </data>
   <data name="INVALID_CHARNAME" xml:space="preserve">
-    <value />
+    <value>Invalid characters in nickname</value>
   </data>
   <data name="ITEM_NOT_DROPPABLE" xml:space="preserve">
     <value>Vous ne pouvez pas jeter cet objet.</value>
