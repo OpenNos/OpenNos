@@ -20,6 +20,7 @@
 
         public short Type { get; set; }
 
+        public short IsDisabled { get; set; }
         #endregion
     }
 }

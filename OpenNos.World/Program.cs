@@ -65,7 +65,7 @@ namespace OpenNos.World
             exitHandler += new EventHandler(ExitHandler);
             SetConsoleCtrlHandler(exitHandler, true);
             NetworkManager<WorldEncryption> networkManager = new NetworkManager<WorldEncryption>(ip, port, typeof(WorldPacketHandler));
-
+     
         }
         private static bool ExitHandler(CtrlType sig)
         {
