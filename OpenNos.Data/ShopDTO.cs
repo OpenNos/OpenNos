@@ -12,6 +12,7 @@
 
         public int ShopId { get; set; }
 
+        public short ShopType { get; set; }
         #endregion
     }
 }
