@@ -908,8 +908,8 @@
           <NavigationProperty Name="npc" Relationship="opennosModel.ShopNpc" FromRole="Shop" ToRole="Npc" />
           <Property Name="NpcId" Type="Int16" Nullable="false" />
           <Property Name="MenuType" Type="Int16" Nullable="false" />
-          <NavigationProperty Name="shopitem" Relationship="opennosModel.ShopShopItem" FromRole="Shop" ToRole="ShopItem" />
           <Property Name="ShopType" Type="Int16" Nullable="false" />
+          <NavigationProperty Name="shopitem" Relationship="opennosModel.ShopShopItem" FromRole="Shop" ToRole="ShopItem" />
         </EntityType>
         <Association Name="ShopNpc">
           <End Type="opennosModel.Shop" Role="Shop" Multiplicity="*" />

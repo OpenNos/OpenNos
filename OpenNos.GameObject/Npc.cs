@@ -35,7 +35,7 @@ namespace OpenNos.GameObject
             NpcId = npcId;
             ShopDTO shop = DAOFactory.ShopDAO.LoadByNpc(NpcId);
             if (shop != null)
-                Shop = new Shop(shop.ShopId) { Name = shop.Name, NpcId = NpcId, MenuType = shop.MenuType };
+                Shop = new Shop(shop.ShopId) { Name = shop.Name, NpcId = NpcId, MenuType = shop.MenuType,ShopType = shop.ShopType };
         }
 
         #endregion
