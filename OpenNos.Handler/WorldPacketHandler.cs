@@ -23,6 +23,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using System.Threading;
 
 namespace OpenNos.Handler
@@ -498,47 +499,60 @@ namespace OpenNos.Handler
             string[] packetsplit = packet.Split(' ');
             if (packetsplit[2].Length > 3 && packetsplit[2].Length < 15)
             {
-                if (DAOFactory.CharacterDAO.LoadByName(packetsplit[2]) == null)
+                bool isIllegalCharacter = false;
+                for (int i = 0; i < packetsplit[2].Length; i++)
                 {
-                    Random r = new Random();
-                    CharacterDTO newCharacter = new CharacterDTO()
+                    if(packetsplit[2][i] < 0x30 || packetsplit[2][i] > 0x7E)
                     {
-                        Class = (byte)ClassType.Adventurer,
-                        Gender = Convert.ToByte(packetsplit[4]),
-                        Gold = 10000,
-                        HairColor = Convert.ToByte(packetsplit[6]),
-                        HairStyle = Convert.ToByte(packetsplit[5]),
-                        Hp = 221,
-                        JobLevel = 1,
-                        JobLevelXp = 0,
-                        Level = 1,
-                        LevelXp = 0,
-                        MapId = 1,
-                        MapX = (short)(r.Next(77, 82)),
-                        MapY = (short)(r.Next(112, 120)),
-                        Mp = 221,
-                        Name = packetsplit[2],
-                        Slot = Convert.ToByte(packetsplit[3]),
-                        AccountId = accountId,
-                        StateEnum = CharacterState.Active,
-                        WhisperBlocked = false,
-                        FamilyRequestBlocked = false,
-                        ExchangeBlocked = false,
-                        BuffBlocked = false,
-                        EmoticonsBlocked = false,
-                        FriendRequestBlocked = false,
-                        GroupRequestBlocked = false,
-                        MinilandInviteBlocked = false,
-                        HeroChatBlocked = false,
-                        QuickGetUp = false,
-                        MouseAimLock = false,
-                        HpBlocked = false,
-                    };
-
-                    SaveResult insertResult = DAOFactory.CharacterDAO.InsertOrUpdate(ref newCharacter);
-                    LoadCharacters(packet);
+                        isIllegalCharacter = true;
+                    }
                 }
-                else Session.Client.SendPacketFormat($"info {Language.Instance.GetMessageFromKey("ALREADY_TAKEN")}");
+                
+                if (!isIllegalCharacter)
+                {
+                    if (DAOFactory.CharacterDAO.LoadByName(packetsplit[2]) == null)
+                    {
+                        Random r = new Random();
+                        CharacterDTO newCharacter = new CharacterDTO()
+                        {
+                            Class = (byte)ClassType.Adventurer,
+                            Gender = (Convert.ToByte(packetsplit[4]) >= 0 && Convert.ToByte(packetsplit[4]) <= 1 ? Convert.ToByte(packetsplit[4]): Convert.ToByte(0)),
+                            Gold = 10000,
+                            HairColor = (Convert.ToByte(packetsplit[6]) >= 0 && Convert.ToByte(packetsplit[6]) <=7 ? Convert.ToByte(packetsplit[6]) : Convert.ToByte(0)),
+                            HairStyle = (Convert.ToByte(packetsplit[5]) >= 0 && Convert.ToByte(packetsplit[5]) <= 1 ? Convert.ToByte(packetsplit[5]) : Convert.ToByte(0)),
+                            Hp = 221,
+                            JobLevel = 1,
+                            JobLevelXp = 0,
+                            Level = 1,
+                            LevelXp = 0,
+                            MapId = 1,
+                            MapX = (short)(r.Next(77, 82)),
+                            MapY = (short)(r.Next(112, 120)),
+                            Mp = 221,
+                            Name = packetsplit[2],
+                            Slot = Convert.ToByte(packetsplit[3]),
+                            AccountId = accountId,
+                            StateEnum = CharacterState.Active,
+                            WhisperBlocked = false,
+                            FamilyRequestBlocked = false,
+                            ExchangeBlocked = false,
+                            BuffBlocked = false,
+                            EmoticonsBlocked = false,
+                            FriendRequestBlocked = false,
+                            GroupRequestBlocked = false,
+                            MinilandInviteBlocked = false,
+                            HeroChatBlocked = false,
+                            QuickGetUp = false,
+                            MouseAimLock = false,
+                            HpBlocked = false,
+                        };
+
+                        SaveResult insertResult = DAOFactory.CharacterDAO.InsertOrUpdate(ref newCharacter);
+                        LoadCharacters(packet);
+                    }
+                    else Session.Client.SendPacketFormat($"info {Language.Instance.GetMessageFromKey("ALREADY_TAKEN")}");
+                }
+                else Session.Client.SendPacketFormat($"info {Language.Instance.GetMessageFromKey("INVALID_CHARNAME")}");
             }
         }
         [Packet("gop")]
@@ -886,6 +900,7 @@ namespace OpenNos.Handler
             AccountDTO account = DAOFactory.AccountDAO.LoadBySessionId(Session.SessionId);
             if (account.Password == OpenNos.Core.EncryptionBase.sha256(packetsplit[3]))
             {
+
                 DAOFactory.GeneralLogDAO.SetCharIdNull((long?)Convert.ToInt64(DAOFactory.CharacterDAO.LoadBySlot(account.AccountId, Convert.ToByte(packetsplit[2])).CharacterId));
                 DAOFactory.CharacterDAO.Delete(account.AccountId, Convert.ToByte(packetsplit[2]));
                 LoadCharacters(packet);

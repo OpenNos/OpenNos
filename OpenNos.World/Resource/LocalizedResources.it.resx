@@ -285,6 +285,9 @@
   <data name="INSERT_ERROR" xml:space="preserve">
     <value>Errore nell'inserimento o nell'aggiornamento del personaggio {0} , {1}</value>
   </data>
+  <data name="INVALID_CHARNAME" xml:space="preserve">
+    <value>Il nome contiene caratteri non ammessi.</value>
+  </data>
   <data name="IN_WAITING_FOR" xml:space="preserve">
     <value>In attesa di{0}</value>
   </data>
