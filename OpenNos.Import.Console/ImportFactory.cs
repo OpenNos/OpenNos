@@ -71,7 +71,8 @@ namespace OpenNos.Import.Console
                         DestinationMapId = DestinationMapId,
                         Type = Type,
                         DestinationX = DestinationX,
-                        DestinationY = DestinationY
+                        DestinationY = DestinationY,
+                        IsDisabled = 0,
                     });
                 }
             }
@@ -95,7 +96,8 @@ namespace OpenNos.Import.Console
                     DestinationMapId = portal.DestinationMapId,
                     Type = portal.Type,
                     DestinationX = portal.DestinationX,
-                    DestinationY = portal.DestinationY
+                    DestinationY = portal.DestinationY,
+                    IsDisabled = 0,     
                 };
                 if (DAOFactory.PortalDAO.LoadFromMap(portal.SourceMapId).Where(s => s.DestinationMapId.Equals(portal.DestinationMapId) && s.DestinationX.Equals(portal.DestinationX) && s.DestinationY.Equals(portal.DestinationY)).Count() == 0)
                     if (DAOFactory.MapDAO.LoadById(por.SourceMapId) != null && DAOFactory.MapDAO.LoadById(por.DestinationMapId) != null && por.DestinationX != -1 && por.DestinationY != -1)
@@ -151,8 +153,8 @@ namespace OpenNos.Import.Console
                         {
                             Name = named,
                             NpcId = (short)dictionaryId[short.Parse(linesave[2])],
-                            MenuType = short.Parse(linesave[5])
-
+                            MenuType = short.Parse(linesave[4]),
+                            ShopType = short.Parse(linesave[5]),
                         };
                         if (DAOFactory.ShopDAO.LoadByNpc(shop.NpcId) == null)
                         {
