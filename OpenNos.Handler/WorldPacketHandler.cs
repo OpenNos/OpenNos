@@ -898,7 +898,7 @@ namespace OpenNos.Handler
         {
             string[] packetsplit = packet.Split(' ');
             AccountDTO account = DAOFactory.AccountDAO.LoadBySessionId(Session.SessionId);
-            if (account.Password == OpenNos.Core.EncryptionBase.sha256(packetsplit[3]))
+            if (account!=null && account.Password == OpenNos.Core.EncryptionBase.sha256(packetsplit[3]))
             {
 
                 DAOFactory.GeneralLogDAO.SetCharIdNull((long?)Convert.ToInt64(DAOFactory.CharacterDAO.LoadBySlot(account.AccountId, Convert.ToByte(packetsplit[2])).CharacterId));
