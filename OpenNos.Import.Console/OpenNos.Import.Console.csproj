@@ -89,6 +89,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>LocalizedResources.fr.resx</DependentUpon>
     </Compile>
+    <Compile Include="Resource\LocalizedResources.it.Designer.cs">
+      <DependentUpon>LocalizedResources.it.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Include="Resource\LocalizedResources.pl.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -148,6 +153,11 @@
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Resource\LocalizedResources.it.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>LocalizedResources.it.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="Resource\LocalizedResources.pl.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>LocalizedResources.pl.Designer.cs</LastGenOutput>
