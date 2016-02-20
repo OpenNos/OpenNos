@@ -2643,7 +2643,7 @@ namespace OpenNos.Handler
             if (Session.Character.Speed.Equals(Convert.ToInt16(packetsplit[5])))
             {
                 ClientLinkManager.Instance.Broadcast(Session,
-                  Session.Character.GenerateMv(Session.Character.MapX, Session.Character.MapY, Session.Character.Speed),
+                  Session.Character.GenerateMv(),
                     ReceiverType.AllOnMapExceptMe);
                 Session.Client.SendPacket(Session.Character.GenerateCond());
             }
