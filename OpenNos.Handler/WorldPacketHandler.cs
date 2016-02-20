@@ -226,7 +226,7 @@ namespace OpenNos.Handler
                         MagicDefence = 0,
                         RangeDefence = 0,
                         SpXp = 0,
-                        SpLevel = 0,
+                        SpLevel = ServerManager.GetItem(item.ItemVNum).EquipmentSlot.Equals((byte)EquipmentType.Sp)? (byte)1 : (byte)0,
                         SlDefence = 0,
                         SlElement = 0,
                         SlHit = 0,
@@ -518,8 +518,8 @@ namespace OpenNos.Handler
                             Class = (byte)ClassType.Adventurer,
                             Gender = (Convert.ToByte(packetsplit[4]) >= 0 && Convert.ToByte(packetsplit[4]) <= 1 ? Convert.ToByte(packetsplit[4]): Convert.ToByte(0)),
                             Gold = 10000,
-                            HairColor = (Convert.ToByte(packetsplit[6]) >= 0 && Convert.ToByte(packetsplit[6]) <=7 ? Convert.ToByte(packetsplit[6]) : Convert.ToByte(0)),
-                            HairStyle = (Convert.ToByte(packetsplit[5]) >= 0 && Convert.ToByte(packetsplit[5]) <= 1 ? Convert.ToByte(packetsplit[5]) : Convert.ToByte(0)),
+                            HairColor = System.Enum.IsDefined(typeof(HairColorType), Convert.ToByte(packetsplit[6]))? Convert.ToByte(packetsplit[6]) : Convert.ToByte(0),
+                            HairStyle = System.Enum.IsDefined(typeof(HairStyleType), Convert.ToByte(packetsplit[5])) ? Convert.ToByte(packetsplit[5]) : Convert.ToByte(0),
                             Hp = 221,
                             JobLevel = 1,
                             JobLevelXp = 0,
@@ -898,7 +898,7 @@ namespace OpenNos.Handler
         {
             string[] packetsplit = packet.Split(' ');
             AccountDTO account = DAOFactory.AccountDAO.LoadBySessionId(Session.SessionId);
-            if (account.Password == OpenNos.Core.EncryptionBase.sha256(packetsplit[3]))
+            if (account!=null && account.Password == OpenNos.Core.EncryptionBase.sha256(packetsplit[3]))
             {
 
                 DAOFactory.GeneralLogDAO.SetCharIdNull((long?)Convert.ToInt64(DAOFactory.CharacterDAO.LoadBySlot(account.AccountId, Convert.ToByte(packetsplit[2])).CharacterId));
@@ -1215,11 +1215,11 @@ namespace OpenNos.Handler
         public void Guri(string packet)
         {
             string[] packetsplit = packet.Split(' ');
-            if (packetsplit[2] == "10" && Convert.ToInt32(packetsplit[5]) >= 973 && Convert.ToInt32(packetsplit[5]) <= 999)
+            if (packetsplit[2] == "10" && Convert.ToInt32(packetsplit[5]) >= 973 && Convert.ToInt32(packetsplit[5]) <= 999 && !Session.Character.EmoticonsBlocked)
             {
                 Session.Client.SendPacket(Session.Character.GenerateEff(Convert.ToInt32(packetsplit[5]) + 4099));
                 ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(Convert.ToInt32(packetsplit[5]) + 4099),
-                    ReceiverType.AllOnMap);
+                    ReceiverType.AllOnMapNoEmoBlocked);
             }
         }
 
