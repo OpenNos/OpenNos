@@ -1683,27 +1683,26 @@ namespace OpenNos.Handler
         [Packet("preq")]
         public void Preq(string packet)
         {
-            bool teleported = false;
-            double def = (((TimeSpan)(DateTime.Now - new DateTime(2010, 1, 1, 0, 0, 0))).TotalSeconds) - (Session.Character.LastPortal);
-            if (def >= 4)
-            {
-                foreach (Portal portal in ServerManager.GetMap(Session.Character.MapId).Portals)
-                {
-                    if (!teleported && Session.Character.MapY >= portal.SourceY - 1 && Session.Character.MapY <= portal.SourceY + 1 && Session.Character.MapX >= portal.SourceX - 1 && Session.Character.MapX <= portal.SourceX + 1)
-                    {
-                        Session.Character.MapId = portal.DestinationMapId;
-                        Session.Character.MapX = portal.DestinationX;
-                        Session.Character.MapY = portal.DestinationY;
-
-                        Session.Character.LastPortal = (((TimeSpan)(DateTime.Now - new DateTime(2010, 1, 1, 0, 0, 0))).TotalSeconds);
-                        ChangeMap();
-                        teleported = true;
-                    }
-                }
-            }
-            else
+            double currentRunningSeconds = (DateTime.Now - Process.GetCurrentProcess().StartTime).TotalSeconds;
+            double timeSpanSinceLastPortal = currentRunningSeconds - Session.Character.LastPortal;
+            if (!(timeSpanSinceLastPortal >= 4))
             {
                 Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("CANT_MOVE"), 10));
+                return;
+            }
+            foreach (Portal portal in ServerManager.GetMap(Session.Character.MapId).Portals)
+            {
+                if (Session.Character.MapY >= portal.SourceY - 1 && Session.Character.MapY <= portal.SourceY + 1
+                    && Session.Character.MapX >= portal.SourceX - 1 && Session.Character.MapX <= portal.SourceX + 1)
+                {
+                    Session.Character.MapId = portal.DestinationMapId;
+                    Session.Character.MapX = portal.DestinationX;
+                    Session.Character.MapY = portal.DestinationY;
+
+                    Session.Character.LastPortal = currentRunningSeconds;
+                    ChangeMap();
+                    break;
+                }
             }
         }
 
