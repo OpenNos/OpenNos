@@ -694,7 +694,7 @@ namespace OpenNos.GameObject
             return $"exts 0 {48 + BackPack * 12} {48 + BackPack * 12} {48 + BackPack * 12}";
         }
 
-        public string GenerateMv(int x, int y)
+        public string GenerateMv(int x, int y, int Speed)
         {
             return $"mv 1 {CharacterId} {x} {y} {Speed}";
         }
