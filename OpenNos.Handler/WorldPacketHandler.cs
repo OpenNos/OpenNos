@@ -325,48 +325,58 @@ namespace OpenNos.Handler
             Session.Client.SendPacket("delay 5000 3 #sl^1");
             ClientLinkManager.Instance.Broadcast(Session, $"guri 2 1 {Session.Character.CharacterId}", ReceiverType.AllOnMap);
             Thread.Sleep(5000);
+
             Inventory sp = Session.Character.EquipmentList.LoadBySlotAndType((short)EquipmentType.Sp, (short)InventoryType.Equipment);
             Inventory fairy = Session.Character.EquipmentList.LoadBySlotAndType((short)EquipmentType.Fairy, (short)InventoryType.Equipment);
 
-            if (Session.Character.Reput >= ServerManager.GetItem(sp.InventoryItem.ItemVNum).ReputationMinimum)
+            if (Session.Character.Reput < ServerManager.GetItem(sp.InventoryItem.ItemVNum).ReputationMinimum)
             {
-                if (!(fairy != null && ServerManager.GetItem(fairy.InventoryItem.ItemVNum).Element != ServerManager.GetItem(sp.InventoryItem.ItemVNum).Element))
-                {
-                    Session.Character.UseSp = true;
-                    Session.Character.Morph = ServerManager.GetItem(sp.InventoryItem.ItemVNum).Morph;
-                    Session.Character.MorphUpgrade = sp.InventoryItem.Upgrade;
-                    Session.Character.MorphUpgrade2 = sp.InventoryItem.Color;
-                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateCMode(), ReceiverType.AllOnMap);
-
-                    /*s = "ski 833 833 833 834 835 836 837 838 839 840 841 21 25 28 37 41 44 49 53 56 340 341 345 352";
-                    MainFile.maps.SendMap(chara, s, true);
-                    /*
-                     qslot 0 1.1.2 1.1.1 1.1.3 0.7.-1 1.1.0 0.7.-1 0.7.-1 0.1.10 1.3.2 1.3.1
-
-                     qslot 1 1.1.2 1.1.3 1.1.4 1.1.5 1.1.6 7.7.-1 7.7.-1 7.7.-1 7.7.-1 7.7.-1
-
-                     qslot 2 7.7.-1 7.7.-1 7.7.-1 7.7.-1 7.7.-1 7.7.-1 7.7.-1 7.7.-1 7.7.-1 7.7.-1
-                     */
-
-                    //  lev 40 2288403 14 72745 3221180 145000 20086 5
-
-                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(196), ReceiverType.AllOnMap);
-
-                    ClientLinkManager.Instance.Broadcast(Session, $"guri 6 1 {Session.Character.CharacterId} 0 0", ReceiverType.AllOnMap);
-                    Session.Client.SendPacket(Session.Character.GenerateSpPoint());
-                    Session.Character.Speed += ServerManager.GetItem(sp.InventoryItem.ItemVNum).Speed;
-                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateCond(), ReceiverType.AllOnMap);
-                    Session.Client.SendPacket(Session.Character.GenerateLev());
-                }
-                else
-                {
-                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("BAD_FAIRY"), 0));
-                }
+                // Reputation too low for this SP
+                Session.Client.SendPacket(
+                    Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("LOW_REP"), 0));
+                return;
             }
-            else
+
+            if (fairy != null &&
+                ServerManager.GetItem(fairy.InventoryItem.ItemVNum).Element !=
+                ServerManager.GetItem(sp.InventoryItem.ItemVNum).Element)
             {
-                Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("LOW_REP"), 0));
+                // No or invalid fairy equipped
+                Session.Client.SendPacket(
+                    Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("BAD_FAIRY"), 0));
+                return;
             }
+
+            // There you go, SP!
+
+            Session.Character.UseSp = true;
+            Session.Character.Morph = ServerManager.GetItem(sp.InventoryItem.ItemVNum).Morph;
+            Session.Character.MorphUpgrade = sp.InventoryItem.Upgrade;
+            Session.Character.MorphUpgrade2 = sp.InventoryItem.Color;
+            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateCMode(), ReceiverType.AllOnMap);
+
+            // TODO Skills: Send SP Skills here
+            /*s = "ski 833 833 833 834 835 836 837 838 839 840 841 21 25 28 37 41 44 49 53 56 340 341 345 352";
+            MainFile.maps.SendMap(chara, s, true);
+            /*
+                qslot 0 1.1.2 1.1.1 1.1.3 0.7.-1 1.1.0 0.7.-1 0.7.-1 0.1.10 1.3.2 1.3.1
+
+                qslot 1 1.1.2 1.1.3 1.1.4 1.1.5 1.1.6 7.7.-1 7.7.-1 7.7.-1 7.7.-1 7.7.-1
+
+                qslot 2 7.7.-1 7.7.-1 7.7.-1 7.7.-1 7.7.-1 7.7.-1 7.7.-1 7.7.-1 7.7.-1 7.7.-1
+                */
+
+            //  lev 40 2288403 14 72745 3221180 145000 20086 5
+
+            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(196),
+                ReceiverType.AllOnMap);
+            ClientLinkManager.Instance.Broadcast(Session, $"guri 6 1 {Session.Character.CharacterId} 0 0",
+                ReceiverType.AllOnMap);
+            Session.Client.SendPacket(Session.Character.GenerateSpPoint());
+            Session.Character.Speed += ServerManager.GetItem(sp.InventoryItem.ItemVNum).Speed;
+            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateCond(),
+                ReceiverType.AllOnMap);
+            Session.Client.SendPacket(Session.Character.GenerateLev());
         }
 
         public void ChangeVehicle(Item item)
@@ -1993,13 +2003,12 @@ namespace OpenNos.Handler
         public void Say(string packet)
         {
             string[] packetsplit = packet.Split(' ');
-            string message = String.Empty;
+            string message = "";
             for (int i = 2; i < packetsplit.Length; i++)
                 message += packetsplit[i] + " ";
-            message.Trim();
 
             ClientLinkManager.Instance.Broadcast(Session,
-                Session.Character.GenerateSay(message, 0),
+                Session.Character.GenerateSay(message.Trim(), 0),
                 ReceiverType.AllOnMapExceptMe);
         }
 
@@ -2213,12 +2222,14 @@ namespace OpenNos.Handler
         public void sl(string packet)
         {
             //i don't know why there is this packet
+            // can this be removed? #gx
         }
 
         [Packet("snap")]
         public void Snap(string packet)
         {
             //i don't need this for the moment
+            // this may be stored in db, so the server admin knows when users perform screenshots, but very very very optional #gx
         }
 
         [Packet("$Speed")]
@@ -2275,55 +2286,87 @@ namespace OpenNos.Handler
         public void SpTransform(string packet)
         {
             string[] packetsplit = packet.Split(' ');
+
+            Inventory spInventory = Session.Character.EquipmentList.LoadBySlotAndType((short) EquipmentType.Sp, (short) InventoryType.Equipment);
+
             if (packetsplit.Length == 10 && packetsplit[2] == "10")
             {
-              Inventory inv=  Session.Character.EquipmentList.LoadBySlotAndType((short)EquipmentType.Sp, (short)InventoryType.Equipment);
-                if (Session.Character.UseSp && inv != null && int.Parse(packetsplit[5]) == inv.InventoryItemId)
-                {
-                    if ((ServersData.SpPoint(inv.InventoryItem.SpLevel, inv.InventoryItem.Upgrade) - inv.InventoryItem.SlHit - inv.InventoryItem.SlHP - inv.InventoryItem.SlElement - inv.InventoryItem.SlDefence - short.Parse(packetsplit[6]) - short.Parse(packetsplit[7]) - short.Parse(packetsplit[8]) - short.Parse(packetsplit[9])) >= 0)
-                    {
+                // There you go, SP!
 
-                        Session.Character.EquipmentList.LoadBySlotAndType((short)EquipmentType.Sp, (short)InventoryType.Equipment).InventoryItem.SlHit += short.Parse(packetsplit[6]);
-                        Session.Character.EquipmentList.LoadBySlotAndType((short)EquipmentType.Sp, (short)InventoryType.Equipment).InventoryItem.SlDefence += short.Parse(packetsplit[7]);
-                        Session.Character.EquipmentList.LoadBySlotAndType((short)EquipmentType.Sp, (short)InventoryType.Equipment).InventoryItem.SlElement += short.Parse(packetsplit[8]);
-                        Session.Character.EquipmentList.LoadBySlotAndType((short)EquipmentType.Sp, (short)InventoryType.Equipment).InventoryItem.SlHP += short.Parse(packetsplit[9]);
-                        Session.Client.SendPacket(Session.Character.GenerateSlInfo(inv.InventoryItem, 2));
-                        Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("CHANGE_DONE"), 0));
-                    }
+                if (!Session.Character.UseSp || spInventory == null ||
+                    int.Parse(packetsplit[5]) != spInventory.InventoryItemId)
+                {
+                    Session.Client.SendPacket(
+                        Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SPUSE_NEEDED"), 0));
+                    return;
                 }
-                else
-                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SPUSE_NEEDED"),0));
+
+                if (ServersData.SpPoint(spInventory.InventoryItem.SpLevel, spInventory.InventoryItem.Upgrade)
+                    - spInventory.InventoryItem.SlHit - spInventory.InventoryItem.SlHP
+                    - spInventory.InventoryItem.SlElement - spInventory.InventoryItem.SlDefence
+                    - short.Parse(packetsplit[6]) - short.Parse(packetsplit[7])
+                    - short.Parse(packetsplit[8]) - short.Parse(packetsplit[9]) < 0)
+                    return;
+
+                // TODO Check if this reference works
+                spInventory.InventoryItem.SlHit += short.Parse(packetsplit[6]);
+                spInventory.InventoryItem.SlDefence += short.Parse(packetsplit[7]);
+                spInventory.InventoryItem.SlElement += short.Parse(packetsplit[8]);
+                spInventory.InventoryItem.SlHP += short.Parse(packetsplit[9]);
+
+                /* Otherwise, return to this:
+                Session.Character.EquipmentList.LoadBySlotAndType((short) EquipmentType.Sp,
+                    (short) InventoryType.Equipment).InventoryItem.SlHit += short.Parse(packetsplit[6]);
+                Session.Character.EquipmentList.LoadBySlotAndType((short) EquipmentType.Sp,
+                    (short) InventoryType.Equipment).InventoryItem.SlDefence += short.Parse(packetsplit[7]);
+                Session.Character.EquipmentList.LoadBySlotAndType((short) EquipmentType.Sp,
+                    (short) InventoryType.Equipment).InventoryItem.SlElement += short.Parse(packetsplit[8]);
+                Session.Character.EquipmentList.LoadBySlotAndType((short) EquipmentType.Sp,
+                    (short) InventoryType.Equipment).InventoryItem.SlHP += short.Parse(packetsplit[9]);
+                */
+
+                Session.Client.SendPacket(Session.Character.GenerateSlInfo(spInventory.InventoryItem, 2));
+                Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("CHANGE_DONE"), 0));
             }
             else
             {
-                Inventory sp = Session.Character.EquipmentList.LoadBySlotAndType((short)EquipmentType.Sp, (short)InventoryType.Equipment);
-                if (sp != null)
+                // Character wants to changes Sp...
+
+                if (spInventory == null)
                 {
-                    if (!Session.Character.UseSp)
-                    {
-                        double def = (((TimeSpan)(DateTime.Now - new DateTime(2010, 1, 1, 0, 0, 0))).TotalSeconds) - (Session.Character.LastSp);
-                        if (def >= 30)
-                        {
-                            if (Session.Character.ThreadCharChange != null && Session.Character.ThreadCharChange.IsAlive)
-                                Session.Character.ThreadCharChange.Abort();
-                            Session.Character.ThreadCharChange = new Thread(() => ChangeSP());
-                            Session.Character.ThreadCharChange.Start();
-                        }
-                        else
-                        {
-                            Session.Client.SendPacket(Session.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("SP_INLOADING"), 30 - (int)def), 0));
-                        }
-                    }
-                    else
-                    {
-                        Session.Character.LastSp = (((TimeSpan)(DateTime.Now - new DateTime(2010, 1, 1, 0, 0, 0))).TotalSeconds);
-                        Thread removeSP = new Thread(() => RemoveSP(sp.InventoryItem.ItemVNum));
-                        removeSP.Start();
-                    }
+                    Session.Client.SendPacket(Session.Character.GenerateMsg(
+                        Language.Instance.GetMessageFromKey("NO_SP"), 0));
+                    return;
+                }
+
+                double currentRunningSeconds = (DateTime.Now - Process.GetCurrentProcess().StartTime).TotalSeconds;
+
+                if (Session.Character.UseSp)
+                {
+                    // Remove currently wearing SP
+                    Session.Character.LastSp = currentRunningSeconds;
+                    new Thread(() => RemoveSP(spInventory.InventoryItem.ItemVNum)).Start();
                 }
                 else
                 {
-                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NO_SP"), 0));
+                    double timeSpanSinceLastSpUsage = currentRunningSeconds - Session.Character.LastSp;
+                    if (timeSpanSinceLastSpUsage >= 30)
+                    {
+                        // Go
+                        if (Session.Character.ThreadCharChange?.IsAlive == true)
+                            Session.Character.ThreadCharChange.Abort();
+                        Session.Character.ThreadCharChange = new Thread(ChangeSP);
+                        Session.Character.ThreadCharChange.Start();
+                    }
+                    else
+                    {
+                        // No. Wait 30sec (show remaining time)
+                        Session.Client.SendPacket(
+                            Session.Character.GenerateMsg(
+                                string.Format(Language.Instance.GetMessageFromKey("SP_INLOADING"),
+                                    30 - (int) Math.Round(timeSpanSinceLastSpUsage, 0)),
+                                0));
+                    }
                 }
             }
         }
