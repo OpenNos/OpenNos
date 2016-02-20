@@ -2239,6 +2239,7 @@ namespace OpenNos.Handler
                     if (verify)
                     {
                         Session.Character.Speed = arg;
+                        Session.Client.SendPacket(Session.Character.GenerateCond());
                     }
                     break;
 
@@ -2639,11 +2640,17 @@ namespace OpenNos.Handler
 
             Session.Character.MapX = Convert.ToInt16(packetsplit[2]);
             Session.Character.MapY = Convert.ToInt16(packetsplit[3]);
-
-            ClientLinkManager.Instance.Broadcast(Session,
-              Session.Character.GenerateMv(Session.Character.MapX, Session.Character.MapY),
-                ReceiverType.AllOnMapExceptMe);
-            Session.Client.SendPacket(Session.Character.GenerateCond());
+            if (Session.Character.Speed.Equals(Convert.ToInt16(packetsplit[5])))
+            {
+                ClientLinkManager.Instance.Broadcast(Session,
+                  Session.Character.GenerateMv(Session.Character.MapX, Session.Character.MapY, Session.Character.Speed),
+                    ReceiverType.AllOnMapExceptMe);
+                Session.Client.SendPacket(Session.Character.GenerateCond());
+            }
+            else
+            {
+                Session.Client.Disconnect();
+            }
         }
 
         [Packet("wear")]

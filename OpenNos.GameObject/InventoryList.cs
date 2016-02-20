@@ -11,6 +11,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  */
+
 using AutoMapper;
 using OpenNos.Core;
 using OpenNos.Data;
@@ -81,7 +82,7 @@ namespace OpenNos.GameObject
         public short getFirstPlace(byte type, int backPack, InventoryItem item)
         {
             Inventory result;
-            for (short i = 0; i < 48 + backPack * 12; i++)
+            for (short i = 0; i < 48 + (backPack * 12); i++)
             {
                 result = Inventory.SingleOrDefault(c => c.Type.Equals(type) && c.Slot.Equals(i));
                 if (result == null)
@@ -95,8 +96,8 @@ namespace OpenNos.GameObject
             short[] place = new short[10];
             for (short k = 0; k < place.Count(); k++)
             {
-                place[k] = (short)(48 + backPack * 12);
-                for (short i = 0; i < 48 + backPack * 12; i++)
+                place[k] = (short)(48 + (backPack * 12));
+                for (short i = 0; i < 48 + (backPack * 12); i++)
                 {
                     Inventory result = LoadBySlotAndType(i, k);
                     if (result != null && result.Type == 0)
