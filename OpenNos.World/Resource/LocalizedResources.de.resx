@@ -189,6 +189,9 @@
   <data name="INSERT_ERROR" xml:space="preserve">
     <value>Fehler beim Einfügen/Aktualisieren des Charakters {0} , {1}</value>
   </data>
+  <data name="INVALID_CHARNAME" xml:space="preserve">
+    <value>Invalid characters in nickname</value>
+  </data>
   <data name="ITEM_NOT_DROPPABLE" xml:space="preserve">
     <value>You cant drop that item!</value>
   </data>

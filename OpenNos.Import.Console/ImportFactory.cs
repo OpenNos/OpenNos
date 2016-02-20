@@ -45,7 +45,7 @@ namespace OpenNos.Import.Console
                 {
                     lastMap = map;
                     map = short.Parse(linesave[2]);
-                  
+
 
                 }
                 if (linesave.Count() > 4 && linesave[0] == "gp")
@@ -74,15 +74,20 @@ namespace OpenNos.Import.Console
 
             foreach (PortalDTO portal in ListPacket)
             {
-                if(portal.DestinationX ==-1 || portal.DestinationY == -1)
-                foreach (PortalDTO p in ListPacket.Where(s => s.SourceMapId == portal.DestinationMapId && s.DestinationMapId == portal.SourceMapId))
-                {
-                        ListPacket.FirstOrDefault(s => s.SourceMapId == portal.DestinationMapId && s.DestinationMapId == portal.SourceMapId).DestinationX = portal.SourceX;
-                        ListPacket.FirstOrDefault(s => s.SourceMapId == portal.DestinationMapId && s.DestinationMapId == portal.SourceMapId).DestinationY = portal.SourceY;
-
-                        portal.DestinationX = ListPacket.FirstOrDefault(s => portal.SourceMapId == s.DestinationMapId && portal.DestinationMapId == s.SourceMapId).SourceX;
-                        portal.DestinationY = ListPacket.FirstOrDefault(s => portal.SourceMapId == s.DestinationMapId && portal.DestinationMapId == s.SourceMapId).SourceY;
-                }
+                if (portal.DestinationX == -1 || portal.DestinationY == -1)
+                    foreach (PortalDTO p in ListPacket.Where(s => s.SourceMapId == portal.DestinationMapId && s.DestinationMapId == portal.SourceMapId))
+                    {
+                        if (ListPacket.FirstOrDefault(s => s.SourceMapId == portal.DestinationMapId && s.DestinationMapId == portal.SourceMapId && s.DestinationX == -1 && s.DestinationY == -1)!=null)
+                        {
+                            ListPacket.FirstOrDefault(s => s.SourceMapId == portal.DestinationMapId && s.DestinationMapId == portal.SourceMapId && s.DestinationX == -1).DestinationX = portal.SourceX;
+                            ListPacket.FirstOrDefault(s => s.SourceMapId == portal.DestinationMapId && s.DestinationMapId == portal.SourceMapId && s.DestinationY == -1).DestinationY = portal.SourceY;
+                        }
+                        if ( ListPacket.FirstOrDefault(s => portal.SourceMapId == s.DestinationMapId && portal.DestinationMapId == s.SourceMapId && portal.DestinationX == -1 && portal.DestinationY == -1) !=null)
+                        {
+                            portal.DestinationX = ListPacket.FirstOrDefault(s => portal.SourceMapId == s.DestinationMapId && portal.DestinationMapId == s.SourceMapId && portal.DestinationX == -1).SourceX;
+                            portal.DestinationY = ListPacket.FirstOrDefault(s => portal.SourceMapId == s.DestinationMapId && portal.DestinationMapId == s.SourceMapId && portal.DestinationY == -1).SourceY;
+                        }
+                    }
 
                 PortalDTO por = new PortalDTO
                 {

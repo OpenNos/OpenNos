@@ -105,8 +105,16 @@ namespace OpenNos.GameObject
                         return true;
                     }
 
-
                     return false;
+
+                case ReceiverType.AllOnMapNoEmoBlocked:
+                    foreach (ClientSession session in sessions.Where(s => s.Character != null && s.Character.MapId.Equals(client.Character.MapId) && !s.Character.EmoticonsBlocked))
+                    {
+                        session.Client.SendPacket(message);
+                    }
+                    break;
+
+
 
             }
             return true;
