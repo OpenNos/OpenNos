@@ -33,7 +33,6 @@ namespace OpenNos.GameObject
         private Guid _uniqueIdentifier;
         private List<Portal> _portals;
         private List<Npc> _npcs;
-        private ThreadedBase<MapPacket> threadedBase;
 
         #endregion
 
@@ -44,7 +43,6 @@ namespace OpenNos.GameObject
             Mapper.CreateMap<MapDTO, Map>();
             Mapper.CreateMap<Map, MapDTO>();
 
-            threadedBase = new ThreadedBase<MapPacket>(500, HandlePacket);
             MapId = mapId;
             _uniqueIdentifier = uniqueIdentifier;
             Data = data;
@@ -155,67 +153,6 @@ namespace OpenNos.GameObject
                 }
             }
         }
-        public void OnBroadCast(MapPacket mapPacket)
-        {
-            var handler = NotifyClients;
-            if (handler != null)
-            {
-                handler(mapPacket, new EventArgs());
-            }
-        }
-
-        /// <summary>
-        /// Sequentialitemsprocessor triggers this tasked based
-        /// </summary>
-        /// <param name="parameter"></param>
-        public void HandlePacket(MapPacket parameter)
-        {
-            //handle iterative operations
-
-            //notify clients about changes
-            OnBroadCast(parameter);
-        }
-
-        /// <summary>
-        /// Enqueue a packet for the Map.
-        /// </summary>
-        /// <param name="mapPacket"></param>
-        private void QueuePacket(MapPacket mapPacket)
-        {
-            threadedBase.Queue.EnqueueMessage(mapPacket);
-        }
-
-        /// <summary>
-        /// Inform client(s) about the Packet.
-        /// </summary>
-        /// <param name="session">Session of the sender.</param>
-        /// <param name="packet">The packet content to send.</param>
-        /// <param name="receiver">The receiver(s) of the Packet.</param>
-        public void BroadCast(ClientSession session, string packet, ReceiverType receiver)
-        {
-            QueuePacket(new MapPacket(session, packet, receiver));
-        }
-
-        /// <summary>
-        /// Send packet to all clients
-        /// </summary>
-        /// <param name="mapPacket">The MapPacket to send.</param>
-        public void BroadCast(MapPacket mapPacket)
-        {
-            QueuePacket(mapPacket);
-        }
-
-        /// <summary>
-        /// Get notificated from outside the Session.
-        /// </summary>
-        /// <param name="sender">Sender of the packet.</param>
-        /// <param name="e">Eventargs e.</param>
-        public void GetNotification(object sender, EventArgs e)
-        {
-            //pass thru to clients
-            QueuePacket((MapPacket)sender);
-        }
-
    
 
         #endregion

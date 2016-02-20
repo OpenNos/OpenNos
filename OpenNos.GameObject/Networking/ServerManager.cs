@@ -125,7 +125,6 @@ namespace OpenNos.GameObject
                     Map newMap = new Map(Convert.ToInt16(map.MapId), guid, map.Data);
                     newMap.Music = map.Music;
                     //register for broadcast
-                    NotifyChildren += newMap.GetNotification;
                     _maps.TryAdd(guid, newMap);
                     i++;
                 }
