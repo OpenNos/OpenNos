@@ -2072,7 +2072,6 @@ namespace OpenNos.Handler
                 Session.Character.LoadInventory();
                 DAOFactory.AccountDAO.WriteConnectionLog(Session.Character.AccountId, Session.Client.RemoteEndPoint.ToString(), Session.Character.CharacterId, "Connexion", "World");
                 Session.CurrentMap = ServerManager.GetMap(Session.Character.MapId);
-                Session.RegisterForMapNotification();
                 Session.Client.SendPacket("OK");
                 Session.HealthThread = new Thread(new ThreadStart(healthThread));
 

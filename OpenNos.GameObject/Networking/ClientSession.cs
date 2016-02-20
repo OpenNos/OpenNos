@@ -295,63 +295,7 @@ namespace OpenNos.GameObject
                 ServiceFactory.Instance.CommunicationService.DisconnectAccount(Account.Name);
             }        
         }
-
-        /// <summary>
-        /// Register for Map notifications.
-        /// </summary>
-        public void RegisterForMapNotification()
-        {
-            CurrentMap.NotifyClients += GetNotification;
-        }
-
-        /// <summary>
-        /// Unregister for Map notifications.
-        /// </summary>
-        public void UnregisterForMapNotification()
-        {
-            if (CurrentMap != null)
-                CurrentMap.NotifyClients -= GetNotification;
-        }
-
-        /// <summary>
-        /// Get notificated from outside the Session.
-        /// </summary>
-        /// <param name="sender">Sender of the packet.</param>
-        /// <param name="e">Eventargs e.</param>
-        private void GetNotification(object sender, EventArgs e)
-        {
-            MapPacket mapPacket = (MapPacket)sender;
-
-            switch (mapPacket.Receiver)
-            {
-                case ReceiverType.All:
-                    {
-                        _client.SendPacket(mapPacket.Content);
-                        break;
-                    }
-                case ReceiverType.AllExceptMe:
-                    {
-                        if (mapPacket.Session.Client.ClientId != this.Client.ClientId)
-                        {
-                            _client.SendPacket(mapPacket.Content);
-                        }
-                        break;
-                    }
-                case ReceiverType.OnlyMe:
-                    {
-                        if (mapPacket.Session.Client.ClientId == this.Client.ClientId)
-                        {
-                            _client.SendPacket(mapPacket.Content);
-                        }
-                        break;
-                    }
-                default:
-                    {
-                        Logger.Log.ErrorFormat($"Unknown Notification ReceiverType for client, {Client.ClientId}");
-                        break;
-                    }
-            }
-        }
+        
 
         public void Initialize(EncryptionBase encryptor, Type packetHandler)
         {
