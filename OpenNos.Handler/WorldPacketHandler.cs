@@ -273,6 +273,7 @@ namespace OpenNos.Handler
 
         public void ChangeMap()
         {
+            MapOut();
             Session.CurrentMap = ServerManager.GetMap(Session.Character.MapId);
             Session.Client.SendPacket(Session.Character.GenerateCInfo());
             Session.Client.SendPacket(Session.Character.GenerateCMode());
@@ -1489,7 +1490,7 @@ namespace OpenNos.Handler
         public void MapOut()
         {
             Session.Client.SendPacket(Session.Character.GenerateMapOut());
-            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateOut(), ReceiverType.AllExceptMe);
+            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateOut(), ReceiverType.AllOnMapExceptMe);
         }
 
         [Packet("$Morph")]
@@ -1695,7 +1696,6 @@ namespace OpenNos.Handler
                         Session.Character.MapY = portal.DestinationY;
 
                         Session.Character.LastPortal = (((TimeSpan)(DateTime.Now - new DateTime(2010, 1, 1, 0, 0, 0))).TotalSeconds);
-                        MapOut();
                         ChangeMap();
                         teleported = true;
                     }
@@ -2396,8 +2396,7 @@ namespace OpenNos.Handler
                         Session.Character.MapId = (short)mapId;
                         Session.Character.MapX = (short)((short)(mapx) + (short)1);
                         Session.Character.MapY = (short)((short)(mapy) + (short)1);
-                        MapOut();
-
+             
                         ChangeMap();
                     }
                     else
@@ -2412,7 +2411,6 @@ namespace OpenNos.Handler
                         Session.Character.MapId = arg[0];
                         Session.Character.MapX = arg[1];
                         Session.Character.MapY = arg[2];
-                        MapOut();
                         ChangeMap();
                     }
                     break;

@@ -99,7 +99,7 @@ namespace OpenNos.GameObject
             if (session.Character != null)
             {
                 //only remove the character from map if the character has been set
-                session.CurrentMap.BroadCast(session, session.Character.GenerateOut(), ReceiverType.AllExceptMe);
+                ClientLinkManager.Instance.Broadcast(session, session.Character.GenerateOut(), ReceiverType.AllOnMapExceptMe);
             }
             session.UnregisterForMapNotification();
             if (session.HealthThread != null && session.HealthThread.IsAlive)
