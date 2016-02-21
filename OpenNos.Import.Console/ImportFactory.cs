@@ -35,6 +35,7 @@ namespace OpenNos.Import.Console
             string line;
             int i = 0;
             List<PortalDTO> ListPacket = new List<PortalDTO>();
+            List<PortalDTO> ListPortal = new List<PortalDTO>();
             short map = 0;
             short lastMap = 0;
             while ((line = Packet.ReadLine()) != null)
@@ -55,7 +56,7 @@ namespace OpenNos.Import.Console
                     short SourceY = short.Parse(linesave[2]);
                     short DestinationMapId = short.Parse(linesave[3]);
 
-
+                    if(ListPacket.FirstOrDefault(s=>s.SourceMapId == map && s.SourceX == SourceX && s.SourceY == SourceY && s.DestinationMapId == DestinationMapId) ==null)
                     ListPacket.Add(new PortalDTO
                     {
                         SourceMapId = map,
@@ -68,39 +69,33 @@ namespace OpenNos.Import.Console
                         IsDisabled = 0,
                     });
                 }
+
             }
+            ListPacket = ListPacket.OrderBy(s => s.SourceMapId).ThenBy(s => s.DestinationMapId).ThenBy(s => s.SourceY).ThenBy(s => s.SourceX).ToList();
             foreach (PortalDTO portal in ListPacket)
             {
-
-                PortalDTO p = ListPacket.FirstOrDefault(s => s.SourceMapId == portal.DestinationMapId && s.DestinationMapId == portal.SourceMapId && s.DestinationX == -1 && s.DestinationY == -1);
+                PortalDTO p = ListPacket.Except(ListPortal).FirstOrDefault(s => s.SourceMapId.Equals(portal.DestinationMapId) && s.DestinationMapId.Equals(portal.SourceMapId));
                 if (p != null)
                 {
                     portal.DestinationX = p.SourceX;
                     portal.DestinationY = p.SourceY;
                     p.DestinationY = portal.SourceY;
                     p.DestinationX = portal.SourceX;
+                    ListPortal.Add(p);
+                    ListPortal.Add(portal);
                 }
-
-
-                PortalDTO por = new PortalDTO
-                {
-                    SourceMapId = portal.SourceMapId,
-                    SourceX = portal.SourceX,
-                    SourceY = portal.SourceY,
-                    DestinationMapId = portal.DestinationMapId,
-                    Type = portal.Type,
-                    DestinationX = portal.DestinationX,
-                    DestinationY = portal.DestinationY,
-                    IsDisabled = 0,
-                };
-                if (DAOFactory.MapDAO.LoadById(portal.SourceMapId) != null && DAOFactory.MapDAO.LoadById(portal.DestinationMapId) != null)
-                    if (por.DestinationY != -1 && por.DestinationX != -1)
-                        if (DAOFactory.PortalDAO.LoadFromMap(por.SourceMapId).Where(s => s.DestinationMapId.Equals(por.DestinationMapId) && s.SourceX == por.SourceX && s.SourceY == por.SourceY).Count() == 0)
-                        {
-                            DAOFactory.PortalDAO.Insert(por);
-                            i++;
-                        }
             }
+
+
+            foreach (PortalDTO portal in ListPortal)
+            {
+                if (DAOFactory.PortalDAO.LoadFromMap(portal.SourceMapId).Where(s => s.DestinationMapId.Equals(portal.DestinationMapId) && s.SourceX.Equals(portal.SourceX) && s.SourceY.Equals(portal.SourceY)).Count() == 0)
+                {
+                    DAOFactory.PortalDAO.Insert(portal);
+                    i++;
+                }
+            }
+
             Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("PORTALS_PARSED"), i));
         }
         public void importShops()
