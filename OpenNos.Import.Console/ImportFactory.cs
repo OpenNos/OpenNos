@@ -54,8 +54,7 @@ namespace OpenNos.Import.Console
                     short Type = short.Parse(linesave[4]);
                     short SourceY = short.Parse(linesave[2]);
                     short DestinationMapId = short.Parse(linesave[3]);
-                    short DestinationX = -1;
-                    short DestinationY = -1;
+
 
                     ListPacket.Add(new PortalDTO
                     {
@@ -64,30 +63,24 @@ namespace OpenNos.Import.Console
                         SourceY = SourceY,
                         DestinationMapId = DestinationMapId,
                         Type = Type,
-                        DestinationX = DestinationX,
-                        DestinationY = DestinationY,
+                        DestinationX = -1,
+                        DestinationY = -1,
                         IsDisabled = 0,
                     });
                 }
             }
-
-
             foreach (PortalDTO portal in ListPacket)
             {
-                if (portal.DestinationX == -1 || portal.DestinationY == -1)
-                    foreach (PortalDTO p in ListPacket.Where(s => s.SourceMapId == portal.DestinationMapId && s.DestinationMapId == portal.SourceMapId))
-                    {
-                        if (ListPacket.FirstOrDefault(s => s.SourceMapId == portal.DestinationMapId && s.DestinationMapId == portal.SourceMapId && s.DestinationX == -1 && s.DestinationY == -1)!=null)
-                        {
-                            ListPacket.FirstOrDefault(s => s.SourceMapId == portal.DestinationMapId && s.DestinationMapId == portal.SourceMapId && s.DestinationX == -1).DestinationX = portal.SourceX;
-                            ListPacket.FirstOrDefault(s => s.SourceMapId == portal.DestinationMapId && s.DestinationMapId == portal.SourceMapId && s.DestinationY == -1).DestinationY = portal.SourceY;
-                        }
-                        if ( ListPacket.FirstOrDefault(s => portal.SourceMapId == s.DestinationMapId && portal.DestinationMapId == s.SourceMapId && portal.DestinationX == -1 && portal.DestinationY == -1) !=null)
-                        {
-                            portal.DestinationX = ListPacket.FirstOrDefault(s => portal.SourceMapId == s.DestinationMapId && portal.DestinationMapId == s.SourceMapId && portal.DestinationX == -1).SourceX;
-                            portal.DestinationY = ListPacket.FirstOrDefault(s => portal.SourceMapId == s.DestinationMapId && portal.DestinationMapId == s.SourceMapId && portal.DestinationY == -1).SourceY;
-                        }
-                    }
+
+                PortalDTO p = ListPacket.FirstOrDefault(s => s.SourceMapId == portal.DestinationMapId && s.DestinationMapId == portal.SourceMapId && s.DestinationX == -1 && s.DestinationY == -1);
+                if (p != null)
+                {
+                    portal.DestinationX = p.SourceX;
+                    portal.DestinationY = p.SourceY;
+                    p.DestinationY = portal.SourceY;
+                    p.DestinationX = portal.SourceX;
+                }
+
 
                 PortalDTO por = new PortalDTO
                 {
@@ -102,7 +95,7 @@ namespace OpenNos.Import.Console
                 };
                 if (DAOFactory.MapDAO.LoadById(portal.SourceMapId) != null && DAOFactory.MapDAO.LoadById(portal.DestinationMapId) != null)
                     if (por.DestinationY != -1 && por.DestinationX != -1)
-                        if (DAOFactory.PortalDAO.LoadFromMap(portal.SourceMapId).Where(s => s.DestinationMapId.Equals(portal.DestinationMapId)).Count() == 0)
+                        if (DAOFactory.PortalDAO.LoadFromMap(por.SourceMapId).Where(s => s.DestinationMapId.Equals(por.DestinationMapId) && s.SourceX == por.SourceX && s.SourceY == por.SourceY).Count() == 0)
                         {
                             DAOFactory.PortalDAO.Insert(por);
                             i++;
