@@ -1189,8 +1189,7 @@ $.extend( $.validator, {
 		// http://jqueryvalidation.org/url-method/
 		url: function( value, element ) {
 
-			// Copyright (c) 
--2013 Diego Perini, MIT licensed
+			// Copyright (c) 2010-2013 Diego Perini, MIT licensed
 			// https://gist.github.com/dperini/729294
 			// see also https://mathiasbynens.be/demo/url-regex
 			// modified to allow protocol-relative URLs
