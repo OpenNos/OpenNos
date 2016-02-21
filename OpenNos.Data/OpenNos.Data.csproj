@@ -41,6 +41,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GeneralLogDTO.cs" />
+    <Compile Include="RespawnDTO.cs" />
     <Compile Include="ShopItemDTO.cs" />
     <Compile Include="ShopDTO.cs" />
     <Compile Include="InventoryDTO.cs" />
