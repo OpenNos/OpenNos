@@ -44,7 +44,7 @@
 -- -----------------------------------------------------------
 -- Entity Designer DDL Script for MySQL Server 4.1 and higher
 -- -----------------------------------------------------------
--- Date Created: 02/18/2016 13:18:11
+-- Date Created: 02/21/2016 17:47:12
 
 -- Generated from EDMX file: C:\Users\Dominik\Source\Repos\OpenNos\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
 -- Target version: 3.0.0.0
@@ -388,6 +388,21 @@ ALTER TABLE `shop` ADD PRIMARY KEY (ShopId);
 
 
 
+CREATE TABLE `respawn`(
+	`RespawnId` bigint NOT NULL AUTO_INCREMENT UNIQUE, 
+	`X` smallint NOT NULL, 
+	`Y` smallint NOT NULL, 
+	`MapId` smallint NOT NULL, 
+	`TeleportType` smallint NOT NULL, 
+	`CharacterId` bigint NOT NULL, 
+	`character_CharacterId` bigint NOT NULL);
+
+ALTER TABLE `respawn` ADD PRIMARY KEY (RespawnId);
+
+
+
+
+
 
 
 -- --------------------------------------------------
@@ -626,6 +641,24 @@ ADD CONSTRAINT `FK_ShopShopItem`
 CREATE INDEX `IX_FK_ShopShopItem`
     ON `shopitem`
     (`ShopId`);
+
+
+
+-- Creating foreign key on `character_CharacterId` in table 'respawn'
+
+ALTER TABLE `respawn`
+ADD CONSTRAINT `FK_CharacterRespawn`
+    FOREIGN KEY (`character_CharacterId`)
+    REFERENCES `character`
+        (`CharacterId`)
+    ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+
+-- Creating non-clustered index for FOREIGN KEY 'FK_CharacterRespawn'
+
+CREATE INDEX `IX_FK_CharacterRespawn`
+    ON `respawn`
+    (`character_CharacterId`);
 
 
 
