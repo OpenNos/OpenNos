@@ -348,6 +348,9 @@
   <data name="USER_NOT_HERO" xml:space="preserve">
     <value>Seuls les héros peuvent utiliser des messages de héros.</value>
   </data>
+  <data name="WHISPERED_BLOCKED" xml:space="preserve">
+    <value>WHISPERED_BLOCKED</value>
+  </data>
   <data name="YOU_GET_OBJECT" xml:space="preserve">
     <value>Tu as reçu un objet</value>
   </data>

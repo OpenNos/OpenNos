@@ -459,6 +459,9 @@
   <data name="USER_NOT_HERO" xml:space="preserve">
     <value>Only heroes may use hero messages.</value>
   </data>
+  <data name="WHISPERED_BLOCKED" xml:space="preserve">
+    <value>The other character don't want to be contacted via PM</value>
+  </data>
   <data name="WHISPER_BLOCKED" xml:space="preserve">
     <value>Whisper blocked</value>
   </data>

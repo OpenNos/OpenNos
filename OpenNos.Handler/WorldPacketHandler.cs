@@ -2803,9 +2803,19 @@ namespace OpenNos.Handler
             message.Trim();
 
             ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateSpk(message, 5), ReceiverType.OnlyMe);
-            if (!ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateSpk(message, 5), ReceiverType.OnlySomeone, packetsplit[1].Substring(1)))
-                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("USER_NOT_CONNECTED")), ReceiverType.OnlyMe);
-        }
+
+            object Blocked = ClientLinkManager.Instance.RequiereProperties(packetsplit[1].Substring(1), "WhisperBlocked");
+            if (!Blocked.Equals(""))
+            {
+                if (!Convert.ToBoolean(Blocked)) ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateSpk(message, 5), ReceiverType.OnlySomeone, packetsplit[1].Substring(1));
+                else ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("WHISPERED_BLOCKED"), 11), ReceiverType.OnlyMe);
+            }
+            else   ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("USER_NOT_CONNECTED")), ReceiverType.OnlyMe);
+            
+    }
+
+       
+
         #endregion
     }
 }

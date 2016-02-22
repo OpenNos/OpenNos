@@ -37,5 +37,6 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public virtual DbSet<Inventory> inventory { get; set; }
         public virtual DbSet<ShopItem> shopitem { get; set; }
         public virtual DbSet<Shop> shop { get; set; }
+        public virtual DbSet<Respawn> respawn { get; set; }
     }
 }

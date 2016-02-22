@@ -79,6 +79,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="RespawnDAO.cs" />
     <Compile Include="DB\Account.cs">
       <DependentUpon>OpenNos.tt</DependentUpon>
     </Compile>
@@ -104,6 +105,9 @@
       <DependentUpon>OpenNos.tt</DependentUpon>
     </Compile>
     <Compile Include="DB\Portal.cs">
+      <DependentUpon>OpenNos.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DB\Respawn.cs">
       <DependentUpon>OpenNos.tt</DependentUpon>
     </Compile>
     <Compile Include="DB\Shop.cs">
