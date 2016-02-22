@@ -188,7 +188,7 @@ namespace OpenNos.GameObject
                 return session.Character.GetType().GetProperties().Single(pi => pi.Name == properties).GetValue(session.Character, null);
             }
 
-            return "";
+            return null;
         }
         public object RequiereProperties(long charId, string properties)
         {
@@ -199,7 +199,7 @@ namespace OpenNos.GameObject
                 return session.Character.GetType().GetProperties().Single(pi => pi.Name == properties).GetValue(session.Character, null);
             }
 
-            return "";
+            return null;
         }
         public void BuyValidate(ClientSession Session, KeyValuePair<long, MapShop> shop, short slot, short amount)
         {
