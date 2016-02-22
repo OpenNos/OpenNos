@@ -1298,7 +1298,7 @@ namespace OpenNos.Handler
                     message += packetsplit[i] + " ";
                 message.Trim();
 
-                ClientLinkManager.Instance.Broadcast(Session, $"msg 5 [{Session.Character.Name}]:{message}", ReceiverType.All);
+                ClientLinkManager.Instance.Broadcast(Session, $"msg 5 [{Session.Character.Name}]:{message}", ReceiverType.AllNoHeroBlocked);
             }
             else
             {

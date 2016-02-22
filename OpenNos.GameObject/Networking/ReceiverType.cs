@@ -28,6 +28,7 @@ namespace OpenNos.GameObject
         AllOnMapExceptMe = 4,
         AllOnMap = 5,
         OnlySomeone = 6,
-        AllOnMapNoEmoBlocked = 7
+        AllOnMapNoEmoBlocked = 7,
+        AllNoHeroBlocked = 8
     }
 }

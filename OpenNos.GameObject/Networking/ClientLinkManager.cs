@@ -113,8 +113,12 @@ namespace OpenNos.GameObject
                         session.Client.SendPacket(message);
                     }
                     break;
-
-
+                case ReceiverType.AllNoHeroBlocked:
+                    foreach (ClientSession session in sessions.Where(s => s.Character != null && !s.Character.HeroChatBlocked))
+                    {
+                        session.Client.SendPacket(message);
+                    }
+                    break;
 
             }
             return true;
