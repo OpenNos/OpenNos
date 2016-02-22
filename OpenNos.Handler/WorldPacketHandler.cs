@@ -2805,7 +2805,7 @@ namespace OpenNos.Handler
             ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateSpk(message, 5), ReceiverType.OnlyMe);
 
             object Blocked = ClientLinkManager.Instance.RequiereProperties(packetsplit[1].Substring(1), "WhisperBlocked");
-            if (!Blocked.Equals(""))
+            if (!Blocked.Equals(null))
             {
                 if (!Convert.ToBoolean(Blocked)) ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateSpk(message, 5), ReceiverType.OnlySomeone, packetsplit[1].Substring(1));
                 else ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("WHISPERED_BLOCKED"), 11), ReceiverType.OnlyMe);
