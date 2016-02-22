@@ -1,6 +1,6 @@
-﻿using System;
-using OpenNos.Core.Communication.Scs.Communication.Messages;
+﻿using OpenNos.Core.Communication.Scs.Communication.Messages;
 using OpenNos.Core.Communication.Scs.Communication.Protocols;
+using System;
 
 namespace OpenNos.Core.Communication.Scs.Communication.Messengers
 {
@@ -9,6 +9,8 @@ namespace OpenNos.Core.Communication.Scs.Communication.Messengers
     /// </summary>
     public interface IMessenger
     {
+        #region Events
+
         /// <summary>
         /// This event is raised when a new message is received.
         /// </summary>
@@ -20,10 +22,9 @@ namespace OpenNos.Core.Communication.Scs.Communication.Messengers
         /// </summary>
         event EventHandler<MessageEventArgs> MessageSent;
 
-        /// <summary>
-        /// Gets/sets wire protocol that is used while reading and writing messages.
-        /// </summary>
-        IScsWireProtocol WireProtocol { get; set; }
+        #endregion
+
+        #region Properties
 
         /// <summary>
         /// Gets the time of the last succesfully received message.
@@ -36,9 +37,20 @@ namespace OpenNos.Core.Communication.Scs.Communication.Messengers
         DateTime LastSentMessageTime { get; }
 
         /// <summary>
+        /// Gets/sets wire protocol that is used while reading and writing messages.
+        /// </summary>
+        IScsWireProtocol WireProtocol { get; set; }
+
+        #endregion
+
+        #region Methods
+
+        /// <summary>
         /// Sends a message to the remote application.
         /// </summary>
         /// <param name="message">Message to be sent</param>
         void SendMessage(IScsMessage message);
+
+        #endregion
     }
 }

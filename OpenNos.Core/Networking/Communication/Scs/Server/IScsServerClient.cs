@@ -1,8 +1,7 @@
-﻿using System;
-using OpenNos.Core.Communication.Scs.Communication;
+﻿using OpenNos.Core.Communication.Scs.Communication;
 using OpenNos.Core.Communication.Scs.Communication.EndPoints;
 using OpenNos.Core.Communication.Scs.Communication.Messengers;
-using System.Collections.Generic;
+using System;
 
 namespace OpenNos.Core.Communication.Scs.Server
 {
@@ -11,29 +10,41 @@ namespace OpenNos.Core.Communication.Scs.Server
     /// </summary>
     public interface IScsServerClient : IMessenger
     {
+        #region Events
+
         /// <summary>
         /// This event is raised when client disconnected from server.
         /// </summary>
         event EventHandler Disconnected;
-        
+
+        #endregion
+
+        #region Properties
+
         /// <summary>
         /// Unique identifier for this client in server.
         /// </summary>
         long ClientId { get; }
-
-        ///<summary>
-        /// Gets endpoint of remote application.
-        ///</summary>
-        ScsEndPoint RemoteEndPoint { get; }
 
         /// <summary>
         /// Gets the current communication state.
         /// </summary>
         CommunicationStates CommunicationState { get; }
 
+        ///<summary>
+        /// Gets endpoint of remote application.
+        ///</summary>
+        ScsEndPoint RemoteEndPoint { get; }
+
+        #endregion
+
+        #region Methods
+
         /// <summary>
         /// Disconnects from server.
         /// </summary>
         void Disconnect();
+
+        #endregion
     }
 }

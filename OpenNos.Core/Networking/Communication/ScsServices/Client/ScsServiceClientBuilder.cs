@@ -7,6 +7,8 @@ namespace OpenNos.Core.Communication.ScsServices.Client
     /// </summary>
     public class ScsServiceClientBuilder
     {
+        #region Methods
+
         /// <summary>
         /// Creates a client to connect to a SCS service.
         /// </summary>
@@ -32,5 +34,7 @@ namespace OpenNos.Core.Communication.ScsServices.Client
         {
             return CreateClient<T>(ScsEndPoint.CreateEndPoint(endpointAddress), clientObject);
         }
+
+        #endregion
     }
 }

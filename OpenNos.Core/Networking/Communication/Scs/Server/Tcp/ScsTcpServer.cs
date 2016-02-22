@@ -9,10 +9,16 @@ namespace OpenNos.Core.Communication.Scs.Server.Tcp
     /// </summary>
     public class ScsTcpServer : ScsServerBase
     {
+        #region Members
+
         /// <summary>
         /// The endpoint address of the server to listen incoming connections.
         /// </summary>
         private readonly ScsTcpEndPoint _endPoint;
+
+        #endregion
+
+        #region Instantiation
 
         /// <summary>
         /// Creates a new ScsTcpServer object.
@@ -23,6 +29,10 @@ namespace OpenNos.Core.Communication.Scs.Server.Tcp
             _endPoint = endPoint;
         }
 
+        #endregion
+
+        #region Methods
+
         /// <summary>
         /// Creates a TCP connection listener.
         /// </summary>
@@ -31,5 +41,7 @@ namespace OpenNos.Core.Communication.Scs.Server.Tcp
         {
             return new TcpConnectionListener(_endPoint);
         }
+
+        #endregion
     }
 }

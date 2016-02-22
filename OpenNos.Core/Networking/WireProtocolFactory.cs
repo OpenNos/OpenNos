@@ -11,6 +11,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  */
+
 using OpenNos.Core.Communication.Scs.Communication.Protocols;
 
 namespace OpenNos.Core
@@ -18,11 +19,21 @@ namespace OpenNos.Core
     public class WireProtocolFactory<EncryptorT> : IScsWireProtocolFactory
         where EncryptorT : EncryptionBase
     {
-        public WireProtocolFactory() { }
+        #region Instantiation
+
+        public WireProtocolFactory()
+        {
+        }
+
+        #endregion
+
+        #region Methods
 
         public IScsWireProtocol CreateWireProtocol()
         {
             return new WireProtocol();
         }
+
+        #endregion
     }
 }

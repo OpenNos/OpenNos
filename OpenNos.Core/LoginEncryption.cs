@@ -11,20 +11,48 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  */
+
 using System;
-using System.Collections;
 using System.Text;
-using System.Security.Cryptography;
-using System.Linq;
 
 namespace OpenNos.Core
 {
     public class LoginEncryption : EncryptionBase
-    { 
-        public LoginEncryption() : base(false) { }
+    {
+        #region Instantiation
+
+        public LoginEncryption() : base(false)
+        {
+        }
+
+        #endregion
+
+        #region Methods
+
+        public static string GetPassword(string passcrypt)
+        {
+            bool equal = passcrypt.Length % 2 == 0 ? true : false;
+            string str = equal == true ? passcrypt.Remove(0, 3) : passcrypt.Remove(0, 4);
+            string decpass = string.Empty;
+            for (int i = 0; i < str.Length; i += 2) decpass += str[i];
+
+            if (decpass.Length % 2 != 0)
+            {
+                str = decpass = string.Empty;
+                str = passcrypt.Remove(0, 2);
+                for (int i = 0; i < str.Length; i += 2) decpass += str[i];
+            }
+
+            StringBuilder temp = new StringBuilder();
+            for (int i = 0; i < decpass.Length; i += 2) temp.Append(Convert.ToChar(Convert.ToUInt32(decpass.Substring(i, 2), 16)));
+            decpass = temp.ToString();
+
+            return decpass;
+        }
+
         public override string Decrypt(byte[] packet, int customParameter = 0)
         {
-             try
+            try
             {
                 string decryptedPacket = String.Empty;
 
@@ -48,46 +76,26 @@ namespace OpenNos.Core
             }
         }
 
-        public override byte[] Encrypt(string packet)
-        {
-                byte[] encryptedPacket = new byte[
-                    packet.Length + 1];
-
-                for (int i = 0; i < packet.Length; i++)
-                {
-                    encryptedPacket[i] = Convert.ToByte(packet[i] + 15);
-                }
-
-                encryptedPacket[encryptedPacket.Length - 1] = 25; //endpacket -> shows the server that the packet ends
-
-                return encryptedPacket;
-            
-        }
-
-        public static string GetPassword(string passcrypt)
-        {
-            bool equal = passcrypt.Length % 2 == 0 ? true : false;
-            string str = equal == true ? passcrypt.Remove(0, 3) : passcrypt.Remove(0, 4);
-           string decpass = string.Empty;
-            for (int i = 0; i<str.Length; i += 2) decpass += str[i];
-
-            if (decpass.Length % 2 != 0)
-            {
-                str = decpass = string.Empty;
-                str = passcrypt.Remove(0, 2);
-                for (int i = 0; i<str.Length; i += 2) decpass += str[i];
-            }
-
-            StringBuilder temp = new StringBuilder();
-            for (int i = 0; i<decpass.Length; i += 2) temp.Append(Convert.ToChar(Convert.ToUInt32(decpass.Substring(i, 2), 16)));
-            decpass = temp.ToString();
-
-            return decpass;
-        }
-
         public override string DecryptCustomParameter(byte[] data)
         {
             throw new NotImplementedException();
         }
+
+        public override byte[] Encrypt(string packet)
+        {
+            byte[] encryptedPacket = new byte[
+                packet.Length + 1];
+
+            for (int i = 0; i < packet.Length; i++)
+            {
+                encryptedPacket[i] = Convert.ToByte(packet[i] + 15);
+            }
+
+            encryptedPacket[encryptedPacket.Length - 1] = 25; //endpacket -> shows the server that the packet ends
+
+            return encryptedPacket;
+        }
+
+        #endregion
     }
 }

@@ -8,6 +8,8 @@ namespace OpenNos.Core.Communication.ScsServices.Client
     /// <typeparam name="T">Type of service interface</typeparam>
     public interface IScsServiceClient<out T> : IConnectableClient where T : class
     {
+        #region Properties
+
         /// <summary>
         /// Reference to the service proxy to invoke remote service methods.
         /// </summary>
@@ -20,5 +22,7 @@ namespace OpenNos.Core.Communication.ScsServices.Client
         /// Default value: 60000 (1 minute).
         /// </summary>
         int Timeout { get; set; }
+
+        #endregion
     }
 }

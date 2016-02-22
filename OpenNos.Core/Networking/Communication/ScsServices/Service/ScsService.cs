@@ -8,17 +8,23 @@ namespace OpenNos.Core.Communication.ScsServices.Service
     /// </summary>
     public abstract class ScsService
     {
+        #region Members
+
         /// <summary>
         /// The current client for a thread that called service method.
         /// </summary>
         [ThreadStatic]
         private static IScsServiceClient _currentClient;
 
+        #endregion
+
+        #region Properties
+
         /// <summary>
-        /// Gets the current client which called this service method. 
+        /// Gets the current client which called this service method.
         /// </summary>
         /// <remarks>
-        /// This property is thread-safe, if returns correct client when 
+        /// This property is thread-safe, if returns correct client when
         /// called in a service method if the method is called by SCS system,
         /// else throws exception.
         /// </remarks>
@@ -38,5 +44,7 @@ namespace OpenNos.Core.Communication.ScsServices.Service
                 _currentClient = value;
             }
         }
+
+        #endregion
     }
 }

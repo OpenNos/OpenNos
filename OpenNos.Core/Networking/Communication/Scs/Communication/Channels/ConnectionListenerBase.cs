@@ -7,16 +7,22 @@ namespace OpenNos.Core.Communication.Scs.Communication.Channels
     /// </summary>
     public abstract class ConnectionListenerBase : IConnectionListener
     {
+        #region Events
+
         /// <summary>
         /// This event is raised when a new communication channel is connected.
         /// </summary>
         public event EventHandler<CommunicationChannelEventArgs> CommunicationChannelConnected;
 
+        #endregion
+
+        #region Methods
+
         /// <summary>
         /// Starts listening incoming connections.
         /// </summary>
         public abstract void Start();
-        
+
         /// <summary>
         /// Stops listening incoming connections.
         /// </summary>
@@ -34,5 +40,7 @@ namespace OpenNos.Core.Communication.Scs.Communication.Channels
                 handler(this, new CommunicationChannelEventArgs(client));
             }
         }
+
+        #endregion
     }
 }

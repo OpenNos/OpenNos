@@ -25,6 +25,21 @@ namespace OpenNos.DAL.EF.MySQL
     {
         #region Methods
 
+        public MapDTO Insert(MapDTO map)
+        {
+            using (var context = DataAccessHelper.CreateContext())
+            {
+                if (context.map.SingleOrDefault(c => c.MapId.Equals(map.MapId)) == null)
+                {
+                    Map entity = Mapper.Map<Map>(map);
+                    context.map.Add(entity);
+                    context.SaveChanges();
+                    return Mapper.Map<MapDTO>(entity);
+                }
+                else return new MapDTO();
+            }
+        }
+
         public IEnumerable<MapDTO> LoadAll()
         {
             using (var context = DataAccessHelper.CreateContext())
@@ -44,22 +59,6 @@ namespace OpenNos.DAL.EF.MySQL
             }
         }
 
-        public MapDTO Insert(MapDTO map)
-        {
-
-            using (var context = DataAccessHelper.CreateContext())
-            {
-                if (context.map.SingleOrDefault(c => c.MapId.Equals(map.MapId)) == null)
-                {
-                    Map entity = Mapper.Map<Map>(map);
-                    context.map.Add(entity);
-                    context.SaveChanges();
-                    return Mapper.Map<MapDTO>(entity);
-                }
-                else return new MapDTO();
-            }
-           
-        }
         #endregion
     }
 }

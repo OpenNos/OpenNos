@@ -9,6 +9,8 @@ namespace OpenNos.Core.Communication.Scs.Client.Tcp
     /// </summary>
     public static class TcpHelper
     {
+        #region Methods
+
         /// <summary>
         /// This code is used to connect to a TCP socket with timeout option.
         /// </summary>
@@ -45,5 +47,7 @@ namespace OpenNos.Core.Communication.Scs.Client.Tcp
                 return socket;
             }
         }
+
+        #endregion
     }
 }

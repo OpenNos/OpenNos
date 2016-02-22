@@ -7,10 +7,7 @@ namespace OpenNos.Core.Communication.Scs.Communication.Messages
     /// </summary>
     public class MessageEventArgs : EventArgs
     {
-        /// <summary>
-        /// Message object that is associated with this event.
-        /// </summary>
-        public IScsMessage Message { get; private set; }
+        #region Instantiation
 
         /// <summary>
         /// Creates a new MessageEventArgs object.
@@ -20,5 +17,16 @@ namespace OpenNos.Core.Communication.Scs.Communication.Messages
         {
             Message = message;
         }
+
+        #endregion
+
+        #region Properties
+
+        /// <summary>
+        /// Message object that is associated with this event.
+        /// </summary>
+        public IScsMessage Message { get; private set; }
+
+        #endregion
     }
 }

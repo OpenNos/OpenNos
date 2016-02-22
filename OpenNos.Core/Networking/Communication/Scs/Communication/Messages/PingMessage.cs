@@ -9,12 +9,13 @@ namespace OpenNos.Core.Communication.Scs.Communication.Messages
     [Serializable]
     public sealed class ScsPingMessage : ScsMessage
     {
+        #region Instantiation
+
         ///<summary>
         /// Creates a new PingMessage object.
         ///</summary>
         public ScsPingMessage()
         {
-
         }
 
         /// <summary>
@@ -30,6 +31,10 @@ namespace OpenNos.Core.Communication.Scs.Communication.Messages
             RepliedMessageId = repliedMessageId;
         }
 
+        #endregion
+
+        #region Methods
+
         /// <summary>
         /// Creates a string to represents this object.
         /// </summary>
@@ -40,5 +45,7 @@ namespace OpenNos.Core.Communication.Scs.Communication.Messages
                        ? $"ScsPingMessage [{MessageId}]"
                        : $"ScsPingMessage [{MessageId}] Replied To [{RepliedMessageId}]";
         }
+
+        #endregion
     }
 }

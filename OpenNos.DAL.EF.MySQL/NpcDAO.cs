@@ -18,25 +18,23 @@ using OpenNos.DAL.Interface;
 using OpenNos.Data;
 using System.Collections.Generic;
 using System.Linq;
-using System;
 
 namespace OpenNos.DAL.EF.MySQL
 {
     public class NpcDAO : INpcDAO
     {
+        #region Methods
+
         public NpcDTO Insert(NpcDTO npc)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-               
-                    Npc entity = Mapper.Map<Npc>(npc);
-                    context.npc.Add(entity);
-                    context.SaveChanges();
-                    return Mapper.Map<NpcDTO>(entity);
-                
+                Npc entity = Mapper.Map<Npc>(npc);
+                context.npc.Add(entity);
+                context.SaveChanges();
+                return Mapper.Map<NpcDTO>(entity);
             }
         }
-        #region Methods
 
         public IEnumerable<NpcDTO> LoadFromMap(short MapId)
         {

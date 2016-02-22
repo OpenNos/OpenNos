@@ -1,7 +1,7 @@
-﻿using System;
+﻿using OpenNos.Core.Communication.Scs.Communication.Messages;
+using System;
 using System.Collections.Generic;
 using System.Threading;
-using OpenNos.Core.Communication.Scs.Communication.Messages;
 
 namespace OpenNos.Core.Communication.Scs.Communication.Messengers
 {
@@ -10,24 +10,17 @@ namespace OpenNos.Core.Communication.Scs.Communication.Messengers
     /// to synchronize message receiving operation.
     /// It extends RequestReplyMessenger.
     /// It is suitable to use in applications those want to receive
-    /// messages by synchronized method calls instead of asynchronous 
+    /// messages by synchronized method calls instead of asynchronous
     /// MessageReceived event.
     /// </summary>
     public class SynchronizedMessenger<T> : RequestReplyMessenger<T> where T : IMessenger
     {
-        #region Public properties
+        #region Members
 
-        ///<summary>
-        /// Gets/sets capacity of the incoming message queue.
-        /// No message is received from remote application if
-        /// number of messages in public queue exceeds this value.
-        /// Default value: int.MaxValue (2147483647).
-        ///</summary>
-        public int IncomingMessageQueueCapacity { get; set; }
-
-        #endregion
-
-        #region Private fields
+        /// <summary>
+        /// This object is used to synchronize/wait threads.
+        /// </summary>
+        private readonly ManualResetEventSlim _receiveWaiter;
 
         /// <summary>
         /// A queue that is used to store receiving messages until Receive(...)
@@ -36,18 +29,13 @@ namespace OpenNos.Core.Communication.Scs.Communication.Messengers
         private readonly Queue<IScsMessage> _receivingMessageQueue;
 
         /// <summary>
-        /// This object is used to synchronize/wait threads.
-        /// </summary>
-        private readonly ManualResetEventSlim _receiveWaiter;
-
-        /// <summary>
         /// This boolean value indicates the running state of this class.
         /// </summary>
         private volatile bool _running;
 
         #endregion
 
-        #region Constructors
+        #region Instantiation
 
         ///<summary>
         /// Creates a new SynchronizedMessenger object.
@@ -56,7 +44,6 @@ namespace OpenNos.Core.Communication.Scs.Communication.Messengers
         public SynchronizedMessenger(T messenger)
             : this(messenger, int.MaxValue)
         {
-
         }
 
         ///<summary>
@@ -74,34 +61,19 @@ namespace OpenNos.Core.Communication.Scs.Communication.Messengers
 
         #endregion
 
-        #region Public methods
+        #region Properties
 
-        /// <summary>
-        /// Starts the messenger.
-        /// </summary>
-        public override void Start()
-        {
-            lock (_receivingMessageQueue)
-            {
-                _running = true;
-            }
+        ///<summary>
+        /// Gets/sets capacity of the incoming message queue.
+        /// No message is received from remote application if
+        /// number of messages in public queue exceeds this value.
+        /// Default value: int.MaxValue (2147483647).
+        ///</summary>
+        public int IncomingMessageQueueCapacity { get; set; }
 
-            base.Start();
-        }
+        #endregion
 
-        /// <summary>
-        /// Stops the messenger.
-        /// </summary>
-        public override void Stop()
-        {
-            base.Stop();
-
-            lock (_receivingMessageQueue)
-            {
-                _running = false;
-                _receiveWaiter.Set();
-            }
-        }
+        #region Methods
 
         /// <summary>
         /// This method is used to receive a message from remote application.
@@ -190,9 +162,32 @@ namespace OpenNos.Core.Communication.Scs.Communication.Messengers
             return (TMessage)receivedMessage;
         }
 
-        #endregion
+        /// <summary>
+        /// Starts the messenger.
+        /// </summary>
+        public override void Start()
+        {
+            lock (_receivingMessageQueue)
+            {
+                _running = true;
+            }
 
-        #region Protected methods
+            base.Start();
+        }
+
+        /// <summary>
+        /// Stops the messenger.
+        /// </summary>
+        public override void Stop()
+        {
+            base.Stop();
+
+            lock (_receivingMessageQueue)
+            {
+                _running = false;
+                _receiveWaiter.Set();
+            }
+        }
 
         /// <summary>
         /// Overrides

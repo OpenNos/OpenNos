@@ -304,13 +304,13 @@
     <value>Item cannot be traded!</value>
   </data>
   <data name="JOBLEVEL_CHANGED" xml:space="preserve">
-    <value>Job level has been increased!</value>
+    <value>Job level has been changed!</value>
   </data>
   <data name="JOB_CHANGED" xml:space="preserve">
     <value>Job has been changed.</value>
   </data>
   <data name="LEVEL_CHANGED" xml:space="preserve">
-    <value>Level has been increased!</value>
+    <value>Level has been changed!</value>
   </data>
   <data name="LOW_JOB_LVL" xml:space="preserve">
     <value>Joblevel is too low</value>

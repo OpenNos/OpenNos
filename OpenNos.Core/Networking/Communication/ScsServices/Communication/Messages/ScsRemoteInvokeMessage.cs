@@ -1,5 +1,5 @@
-﻿using System;
-using OpenNos.Core.Communication.Scs.Communication.Messages;
+﻿using OpenNos.Core.Communication.Scs.Communication.Messages;
+using System;
 
 namespace OpenNos.Core.Communication.ScsServices.Communication.Messages
 {
@@ -9,10 +9,7 @@ namespace OpenNos.Core.Communication.ScsServices.Communication.Messages
     [Serializable]
     public class ScsRemoteInvokeMessage : ScsMessage
     {
-        /// <summary>
-        /// Name of the remove service class.
-        /// </summary>
-        public string ServiceClassName { get; set; }
+        #region Properties
 
         /// <summary>
         /// Method of remote application to invoke.
@@ -25,6 +22,15 @@ namespace OpenNos.Core.Communication.ScsServices.Communication.Messages
         public object[] Parameters { get; set; }
 
         /// <summary>
+        /// Name of the remove service class.
+        /// </summary>
+        public string ServiceClassName { get; set; }
+
+        #endregion
+
+        #region Methods
+
+        /// <summary>
         /// Represents this object as string.
         /// </summary>
         /// <returns>String representation of this object</returns>
@@ -32,5 +38,7 @@ namespace OpenNos.Core.Communication.ScsServices.Communication.Messages
         {
             return $"ScsRemoteInvokeMessage: {ServiceClassName}.{MethodName}(...)";
         }
+
+        #endregion
     }
 }

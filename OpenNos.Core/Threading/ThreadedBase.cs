@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -10,9 +6,16 @@ namespace OpenNos.Core
 {
     public class ThreadedBase<TValue>
     {
-        private SequentialItemProcessor<TValue> _queue;
+        #region Members
+
         private Action<TValue> _action;
+        private SequentialItemProcessor<TValue> _queue;
+
+        #endregion
+
         //private Task _task;
+
+        #region Instantiation
 
         public ThreadedBase(long milliseconds, Action<TValue> triggeredMethod)
         {
@@ -24,6 +27,10 @@ namespace OpenNos.Core
             //        () => triggeredMethod((TValue)Activator.CreateInstance(typeof(TValue))), cancellationTokenSource.Token);
             Queue.Start();
         }
+
+        #endregion
+
+        #region Properties
 
         public SequentialItemProcessor<TValue> Queue
         {
@@ -41,10 +48,28 @@ namespace OpenNos.Core
                 _queue = value;
             }
         }
+
+        #endregion
+    }
+
+    internal static class CancellationTokenExtensions
+    {
+        #region Methods
+
+        public static bool WaitCancellationRequested(
+            this CancellationToken token,
+            TimeSpan timeout)
+        {
+            return token.WaitHandle.WaitOne(timeout);
+        }
+
+        #endregion
     }
 
     internal static class Repeat
     {
+        #region Methods
+
         public static Task Interval(
             TimeSpan pollInterval,
             Action action,
@@ -64,15 +89,7 @@ namespace OpenNos.Core
                     }
                 }, token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
         }
-    }
 
-    static class CancellationTokenExtensions
-    {
-        public static bool WaitCancellationRequested(
-            this CancellationToken token,
-            TimeSpan timeout)
-        {
-            return token.WaitHandle.WaitOne(timeout);
-        }
+        #endregion
     }
 }

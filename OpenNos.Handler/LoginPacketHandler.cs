@@ -11,29 +11,37 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  */
+
 using OpenNos.Core;
 using OpenNos.DAL;
 using OpenNos.Data;
 using OpenNos.Domain;
-using System;
-using System.Net.Sockets;
-using System.Collections.Generic;
-using System.Configuration;
-using OpenNos.Core.Communication.Scs.Communication.Messages;
-using OpenNos.Core.Communication.Scs.Server;
 using OpenNos.GameObject;
 using OpenNos.ServiceRef.Internal;
+using System;
+using System.Collections.Generic;
+using System.Configuration;
 
 namespace OpenNos.Handler
 {
     public class LoginPacketHandler
     {
+        #region Members
+
         private readonly ClientSession _session;
+
+        #endregion
+
+        #region Instantiation
 
         public LoginPacketHandler(ClientSession session)
         {
             _session = session;
         }
+
+        #endregion
+
+        #region Methods
 
         public string BuildServersPacket(int session)
         {
@@ -84,11 +92,13 @@ namespace OpenNos.Handler
                                         _session.Client.SendPacket($"fail {Language.Instance.GetMessageFromKey("BANNED")}");
                                     }
                                     break;
+
                                 case AuthorityType.Unknown:
                                     {
                                         _session.Client.SendPacket($"fail {Language.Instance.GetMessageFromKey("NOTVALIDATE")}");
                                     }
                                     break;
+
                                 default:
                                     {
                                         int newSessionId = SessionFactory.Instance.GenerateSessionId();
@@ -96,7 +106,7 @@ namespace OpenNos.Handler
                                         DAOFactory.AccountDAO.UpdateLastSessionAndIp(user.Name, (int)newSessionId, _session.Client.RemoteEndPoint.ToString());
                                         Logger.Log.DebugFormat(Language.Instance.GetMessageFromKey("CONNECTION"), user.Name, newSessionId);
 
-                                        //inform communication service about new player from login server 
+                                        //inform communication service about new player from login server
                                         try
                                         {
                                             ServiceFactory.Instance.CommunicationService.RegisterAccountLogin(user.Name, newSessionId);
@@ -130,5 +140,7 @@ namespace OpenNos.Handler
                 _session.Client.SendPacket($"fail {Language.Instance.GetMessageFromKey("WAITING").ToString()}");
             }
         }
+
+        #endregion
     }
 }

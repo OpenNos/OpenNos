@@ -1,7 +1,7 @@
-﻿using System;
-using OpenNos.Core.Communication.Scs.Client;
+﻿using OpenNos.Core.Communication.Scs.Client;
 using OpenNos.Core.Communication.Scs.Communication.EndPoints.Tcp;
 using OpenNos.Core.Communication.Scs.Server;
+using System;
 
 namespace OpenNos.Core.Communication.Scs.Communication.EndPoints
 {
@@ -10,6 +10,8 @@ namespace OpenNos.Core.Communication.Scs.Communication.EndPoints
     ///</summary>
     public abstract class ScsEndPoint
     {
+        #region Methods
+
         /// <summary>
         /// Create a Scs End Point from a string.
         /// Address must be formatted as: protocol://address
@@ -47,10 +49,17 @@ namespace OpenNos.Core.Communication.Scs.Communication.EndPoints
             {
                 case "tcp":
                     return new ScsTcpEndPoint(address);
+
                 default:
                     throw new ApplicationException("Unsupported protocol " + protocol + " in end point " + endPointAddress);
             }
         }
+
+        /// <summary>
+        /// Creates a Scs Server that uses this end point to connect to server.
+        /// </summary>
+        /// <returns>Scs Client</returns>
+        public abstract IScsClient CreateClient();
 
         /// <summary>
         /// Creates a Scs Server that uses this end point to listen incoming connections.
@@ -58,10 +67,6 @@ namespace OpenNos.Core.Communication.Scs.Communication.EndPoints
         /// <returns>Scs Server</returns>
         public abstract IScsServer CreateServer();
 
-        /// <summary>
-        /// Creates a Scs Server that uses this end point to connect to server.
-        /// </summary>
-        /// <returns>Scs Client</returns>
-        public abstract IScsClient CreateClient();
+        #endregion
     }
 }

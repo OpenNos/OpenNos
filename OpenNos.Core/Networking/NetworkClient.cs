@@ -1,14 +1,8 @@
-﻿using OpenNos.Core.Communication.Scs.Server;
+﻿using OpenNos.Core.Communication.Scs.Communication.Channels;
+using OpenNos.Core.Communication.Scs.Communication.Messages;
+using OpenNos.Core.Communication.Scs.Server;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using OpenNos.Core.Communication.Scs.Communication.Channels;
-using OpenNos.Core.Communication.Scs.Communication.Messages;
-using System.Reflection;
-using System.Threading;
-using OpenNos.Core;
 
 namespace OpenNos.Core
 {
@@ -22,7 +16,9 @@ namespace OpenNos.Core
 
         #region Instantiation
 
-        public NetworkClient(ICommunicationChannel communicationChannel) : base(communicationChannel) { }
+        public NetworkClient(ICommunicationChannel communicationChannel) : base(communicationChannel)
+        {
+        }
 
         public void Initialize(EncryptionBase encryptor)
         {
@@ -52,6 +48,7 @@ namespace OpenNos.Core
                 return false;
             }
         }
+
         public bool SendPackets(IEnumerable<String> packets)
         {
             bool result = true;

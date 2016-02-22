@@ -11,15 +11,14 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  */
+
 using log4net;
 using OpenNos.Core;
-using OpenNos.DAL;
 using OpenNos.DAL.EF.MySQL;
 using OpenNos.GameObject;
 using OpenNos.Handler;
 using OpenNos.ServiceRef.Internal;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
 using System.Threading;
@@ -28,6 +27,8 @@ namespace OpenNos.Login
 {
     public class Program
     {
+        #region Methods
+
         public static void Main()
         {
             checked
@@ -70,5 +71,7 @@ namespace OpenNos.Login
                 }
             }
         }
+
+        #endregion
     }
 }

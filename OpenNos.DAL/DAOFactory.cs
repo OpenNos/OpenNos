@@ -11,12 +11,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  */
+
 using OpenNos.DAL.Interface;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using MySQL = OpenNos.DAL.EF.MySQL;
 
 namespace OpenNos.DAL
@@ -27,27 +23,70 @@ namespace OpenNos.DAL
 
         private static IAccountDAO _accountDAO;
         private static ICharacterDAO _characterDAO;
-        private static IPortalDAO _portalDAO;
-        private static IMapDAO _mapDAO;
-        private static INpcDAO _npcDAO;
         private static IGeneralLogDAO _generallogDAO;
+        private static IInventoryDAO _inventoryDAO;
         private static IInventoryItemDAO _inventoryitemDAO;
         private static IItemDAO _itemDAO;
-        private static IInventoryDAO _inventoryDAO;
+        private static IMapDAO _mapDAO;
+        private static INpcDAO _npcDAO;
+        private static IPortalDAO _portalDAO;
+        private static IRespawnDAO _respawnDAO;
         private static IShopDAO _shopDAO;
         private static IShopItemDAO _shopitemDAO;
+
         #endregion
 
-        #region Properties
+        #region Instantiation
 
         public DAOFactory()
         {
-
             if (_accountDAO == null)
             {
                 _accountDAO = new MySQL.AccountDAO();
             }
+        }
 
+        #endregion
+
+        #region Properties
+
+        public static IAccountDAO AccountDAO
+        {
+            get
+            {
+                if (_accountDAO == null)
+                {
+                    _accountDAO = new MySQL.AccountDAO();
+                }
+
+                return _accountDAO;
+            }
+        }
+
+        public static ICharacterDAO CharacterDAO
+        {
+            get
+            {
+                if (_characterDAO == null)
+                {
+                    _characterDAO = new MySQL.CharacterDAO();
+                }
+
+                return _characterDAO;
+            }
+        }
+
+        public static IGeneralLogDAO GeneralLogDAO
+        {
+            get
+            {
+                if (_generallogDAO == null)
+                {
+                    _generallogDAO = new MySQL.GeneralLogDAO();
+                }
+
+                return _generallogDAO;
+            }
         }
 
         public static IInventoryDAO InventoryDAO
@@ -63,6 +102,19 @@ namespace OpenNos.DAL
             }
         }
 
+        public static IInventoryItemDAO InventoryItemDAO
+        {
+            get
+            {
+                if (_inventoryitemDAO == null)
+                {
+                    _inventoryitemDAO = new MySQL.InventoryItemDAO();
+                }
+
+                return _inventoryitemDAO;
+            }
+        }
+
         public static IItemDAO ItemDAO
         {
             get
@@ -73,6 +125,58 @@ namespace OpenNos.DAL
                 }
 
                 return _itemDAO;
+            }
+        }
+
+        public static IMapDAO MapDAO
+        {
+            get
+            {
+                if (_mapDAO == null)
+                {
+                    _mapDAO = new MySQL.MapDAO();
+                }
+
+                return _mapDAO;
+            }
+        }
+
+        public static INpcDAO NpcDAO
+        {
+            get
+            {
+                if (_npcDAO == null)
+                {
+                    _npcDAO = new MySQL.NpcDAO();
+                }
+
+                return _npcDAO;
+            }
+        }
+
+        public static IPortalDAO PortalDAO
+        {
+            get
+            {
+                if (_portalDAO == null)
+                {
+                    _portalDAO = new MySQL.PortalDAO();
+                }
+
+                return _portalDAO;
+            }
+        }
+
+        public static IRespawnDAO RespawnDAO
+        {
+            get
+            {
+                if (_respawnDAO == null)
+                {
+                    _respawnDAO = new MySQL.RespawnDAO();
+                }
+
+                return _respawnDAO;
             }
         }
 
@@ -99,92 +203,6 @@ namespace OpenNos.DAL
                 }
 
                 return _shopitemDAO;
-            }
-        }
-
-        public static IInventoryItemDAO InventoryItemDAO
-        {
-            get
-            {
-                if (_inventoryitemDAO == null)
-                {
-                    _inventoryitemDAO = new MySQL.InventoryItemDAO();
-                }
-
-                return _inventoryitemDAO;
-            }
-        }
-        public static IAccountDAO AccountDAO
-        {
-            get
-            {
-                if (_accountDAO == null)
-                {
-                    _accountDAO = new MySQL.AccountDAO();
-                }
-
-                return _accountDAO;
-            }
-        }
-
-        public static IGeneralLogDAO GeneralLogDAO
-        {
-            get
-            {
-                if (_generallogDAO == null)
-                {
-                    _generallogDAO = new MySQL.GeneralLogDAO();
-                }
-
-                return _generallogDAO;
-            }
-        }
-        public static ICharacterDAO CharacterDAO
-        {
-            get
-            {
-                if (_characterDAO == null)
-                {
-                    _characterDAO = new MySQL.CharacterDAO();
-                }
-
-                return _characterDAO;
-            }
-        }
-        public static IPortalDAO PortalDAO
-        {
-            get
-            {
-                if (_portalDAO == null)
-                {
-                    _portalDAO = new MySQL.PortalDAO();
-                }
-
-                return _portalDAO;
-            }
-        }
-        public static INpcDAO NpcDAO
-        {
-            get
-            {
-                if (_npcDAO == null)
-                {
-                    _npcDAO = new MySQL.NpcDAO();
-                }
-
-                return _npcDAO;
-            }
-        }
-        public static IMapDAO MapDAO
-        {
-            get
-            {
-                if (_mapDAO == null)
-                {
-                    _mapDAO = new MySQL.MapDAO();
-                }
-
-                return _mapDAO;
             }
         }
 

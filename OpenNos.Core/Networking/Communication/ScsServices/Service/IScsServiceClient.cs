@@ -1,6 +1,6 @@
-﻿using System;
-using OpenNos.Core.Communication.Scs.Communication;
+﻿using OpenNos.Core.Communication.Scs.Communication;
 using OpenNos.Core.Communication.Scs.Communication.EndPoints;
+using System;
 
 namespace OpenNos.Core.Communication.ScsServices.Service
 {
@@ -9,25 +9,35 @@ namespace OpenNos.Core.Communication.ScsServices.Service
     /// </summary>
     public interface IScsServiceClient
     {
+        #region Events
+
         /// <summary>
         /// This event is raised when client is disconnected from service.
         /// </summary>
         event EventHandler Disconnected;
+
+        #endregion
+
+        #region Properties
 
         /// <summary>
         /// Unique identifier for this client.
         /// </summary>
         long ClientId { get; }
 
+        /// <summary>
+        /// Gets the communication state of the Client.
+        /// </summary>
+        CommunicationStates CommunicationState { get; }
+
         ///<summary>
         /// Gets endpoint of remote application.
         ///</summary>
         ScsEndPoint RemoteEndPoint { get; }
 
-        /// <summary>
-        /// Gets the communication state of the Client.
-        /// </summary>
-        CommunicationStates CommunicationState { get; }
+        #endregion
+
+        #region Methods
 
         /// <summary>
         /// Closes client connection.
@@ -40,5 +50,7 @@ namespace OpenNos.Core.Communication.ScsServices.Service
         /// <typeparam name="T">Type of client interface</typeparam>
         /// <returns>Client interface</returns>
         T GetClientProxy<T>() where T : class;
+
+        #endregion
     }
 }

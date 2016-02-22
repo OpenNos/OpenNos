@@ -9,12 +9,13 @@ namespace OpenNos.Core.Communication.Scs.Communication
     [Serializable]
     public class CommunicationException : Exception
     {
+        #region Instantiation
+
         /// <summary>
         /// Contstructor.
         /// </summary>
         public CommunicationException()
         {
-
         }
 
         /// <summary>
@@ -23,7 +24,6 @@ namespace OpenNos.Core.Communication.Scs.Communication
         public CommunicationException(SerializationInfo serializationInfo, StreamingContext context)
             : base(serializationInfo, context)
         {
-            
         }
 
         /// <summary>
@@ -33,7 +33,6 @@ namespace OpenNos.Core.Communication.Scs.Communication
         public CommunicationException(string message)
             : base(message)
         {
-
         }
 
         /// <summary>
@@ -44,7 +43,8 @@ namespace OpenNos.Core.Communication.Scs.Communication
         public CommunicationException(string message, Exception innerException)
             : base(message, innerException)
         {
-
         }
+
+        #endregion
     }
 }

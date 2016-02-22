@@ -13,16 +13,17 @@
  */
 
 using AutoMapper;
+using OpenNos.DAL.EF.MySQL.DB;
 using OpenNos.DAL.Interface;
 using OpenNos.Data;
 using System.Linq;
-using System;
-using OpenNos.DAL.EF.MySQL.DB;
 
 namespace OpenNos.DAL.EF.MySQL
 {
     public class ShopDAO : IShopDAO
     {
+        #region Methods
+
         public ShopDTO Insert(ShopDTO shop)
         {
             using (var context = DataAccessHelper.CreateContext())
@@ -37,7 +38,6 @@ namespace OpenNos.DAL.EF.MySQL
                 else return new ShopDTO();
             }
         }
-        #region Methods
 
         public ShopDTO LoadById(int ShopId)
         {

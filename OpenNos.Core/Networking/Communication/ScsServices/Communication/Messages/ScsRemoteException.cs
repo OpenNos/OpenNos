@@ -10,12 +10,13 @@ namespace OpenNos.Core.Communication.ScsServices.Communication.Messages
     [Serializable]
     public class ScsRemoteException : Exception
     {
+        #region Instantiation
+
         /// <summary>
         /// Contstructor.
         /// </summary>
         public ScsRemoteException()
         {
-
         }
 
         /// <summary>
@@ -24,7 +25,6 @@ namespace OpenNos.Core.Communication.ScsServices.Communication.Messages
         public ScsRemoteException(SerializationInfo serializationInfo, StreamingContext context)
             : base(serializationInfo, context)
         {
-            
         }
 
         /// <summary>
@@ -34,7 +34,6 @@ namespace OpenNos.Core.Communication.ScsServices.Communication.Messages
         public ScsRemoteException(string message)
             : base(message)
         {
-
         }
 
         /// <summary>
@@ -45,7 +44,8 @@ namespace OpenNos.Core.Communication.ScsServices.Communication.Messages
         public ScsRemoteException(string message, Exception innerException)
             : base(message, innerException)
         {
-
         }
+
+        #endregion
     }
 }

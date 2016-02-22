@@ -11,27 +11,18 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  */
+
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace OpenNos.Core
 {
     public abstract class EncryptionBase
     {
         #region Instantiation
-        public static string sha256(string inputString)
-        {
-            using (SHA256 hash = SHA256Managed.Create())
-            {
-                return String.Join("", hash
-                  .ComputeHash(Encoding.UTF8.GetBytes(inputString))
-                  .Select(item => item.ToString("x2")));
-            }
-        }
+
         public EncryptionBase(bool hasCustomParameter)
         {
             HasCustomParameter = hasCustomParameter;
@@ -47,9 +38,19 @@ namespace OpenNos.Core
 
         #region Methods
 
-        public abstract string DecryptCustomParameter(byte[] data);
+        public static string sha256(string inputString)
+        {
+            using (SHA256 hash = SHA256Managed.Create())
+            {
+                return String.Join("", hash
+                  .ComputeHash(Encoding.UTF8.GetBytes(inputString))
+                  .Select(item => item.ToString("x2")));
+            }
+        }
 
         public abstract string Decrypt(byte[] data, int customParameter = 0);
+
+        public abstract string DecryptCustomParameter(byte[] data);
 
         public abstract byte[] Encrypt(string data);
 

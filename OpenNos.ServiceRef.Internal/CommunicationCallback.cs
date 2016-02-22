@@ -1,25 +1,49 @@
-﻿using OpenNos.ServiceRef.Internal.CommunicationServiceReference;
+﻿/*
+ * This file is part of the OpenNos Emulator Project. See AUTHORS file for Copyright information
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
+using OpenNos.ServiceRef.Internal.CommunicationServiceReference;
 using System;
 
 namespace OpenNos.ServiceRef.Internal
 {
     public class CommunicationCallback : ICommunicationServiceCallback, IDisposable
     {
-        #region EventHandlers
+        #region Members
 
-        public EventHandler CharacterConnectedEvent;
-        public EventHandler CharacterDisconnectedEvent;
         public EventHandler AccountConnectedEvent;
         public EventHandler AccountDisconnectedEvent;
+        public EventHandler CharacterConnectedEvent;
+        public EventHandler CharacterDisconnectedEvent;
 
         #endregion
 
         #region Methods
 
+        public void ConnectAccountCallback(string accountName, int sessionId)
+        {
+            OnAccountConnected(accountName);
+        }
+
         public void ConnectCharacterCallback(string characterName)
         {
             //inform clients about a new connected character
             OnCharacterConnected(characterName);
+        }
+
+        public void DisconnectAccountCallback(string accountName)
+        {
+            OnAccountDisconnected(accountName);
         }
 
         public void DisconnectCharacterCallback(string characterName)
@@ -28,28 +52,16 @@ namespace OpenNos.ServiceRef.Internal
             OnCharacterDisconnected(characterName);
         }
 
-        public void ConnectAccountCallback(string accountName, int sessionId)
-        {
-            OnAccountConnected(accountName);
-        }
-
-        public void DisconnectAccountCallback(string accountName)
-        {
-            OnAccountDisconnected(accountName);
-        }
-
         public void Dispose()
         {
             //dispose communication callback service
         }
 
-        #region Private
-
-        private void OnCharacterConnected(string characterName)
+        public void OnAccountDisconnected(string accountName)
         {
-            if (CharacterConnectedEvent != null && !String.IsNullOrEmpty(characterName))
+            if (AccountDisconnectedEvent != null && !String.IsNullOrEmpty(accountName))
             {
-                CharacterConnectedEvent(characterName, new EventArgs());
+                AccountDisconnectedEvent(accountName, new EventArgs());
             }
         }
 
@@ -69,15 +81,13 @@ namespace OpenNos.ServiceRef.Internal
             }
         }
 
-        public void OnAccountDisconnected(string accountName)
+        private void OnCharacterConnected(string characterName)
         {
-            if (AccountDisconnectedEvent != null && !String.IsNullOrEmpty(accountName))
+            if (CharacterConnectedEvent != null && !String.IsNullOrEmpty(characterName))
             {
-                AccountDisconnectedEvent(accountName, new EventArgs());
+                CharacterConnectedEvent(characterName, new EventArgs());
             }
         }
-
-        #endregion
 
         #endregion
     }

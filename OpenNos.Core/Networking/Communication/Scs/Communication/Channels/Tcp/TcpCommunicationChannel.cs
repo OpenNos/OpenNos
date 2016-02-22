@@ -1,9 +1,9 @@
-﻿using System;
-using System.Net;
-using System.Net.Sockets;
-using OpenNos.Core.Communication.Scs.Communication.EndPoints;
+﻿using OpenNos.Core.Communication.Scs.Communication.EndPoints;
 using OpenNos.Core.Communication.Scs.Communication.EndPoints.Tcp;
 using OpenNos.Core.Communication.Scs.Communication.Messages;
+using System;
+using System.Net;
+using System.Net.Sockets;
 
 namespace OpenNos.Core.Communication.Scs.Communication.Channels.Tcp
 {
@@ -12,52 +12,39 @@ namespace OpenNos.Core.Communication.Scs.Communication.Channels.Tcp
     /// </summary>
     public class TcpCommunicationChannel : CommunicationChannelBase
     {
-        #region Public properties
-
-        ///<summary>
-        /// Gets the endpoint of remote application.
-        ///</summary>
-        public override ScsEndPoint RemoteEndPoint
-        {
-            get
-            {
-                return _remoteEndPoint;
-            }
-        }
-        private readonly ScsTcpEndPoint _remoteEndPoint;
-
-        #endregion
-
-        #region Private fields
+        #region Members
 
         /// <summary>
         /// Size of the buffer that is used to receive bytes from TCP socket.
         /// </summary>
-        private const int ReceiveBufferSize = 4 * 1024; //4KB
+        private const int ReceiveBufferSize = 4 * 1024;
 
         /// <summary>
-        /// This buffer is used to receive bytes 
+        /// This buffer is used to receive bytes
         /// </summary>
         private readonly byte[] _buffer;
 
+        //4KB
         /// <summary>
         /// Socket object to send/reveice messages.
         /// </summary>
         private readonly Socket _clientSocket;
 
-        /// <summary>
-        /// A flag to control thread's running
-        /// </summary>
-        private volatile bool _running;
+        private readonly ScsTcpEndPoint _remoteEndPoint;
 
         /// <summary>
         /// This object is just used for thread synchronizing (locking).
         /// </summary>
         private readonly object _syncLock;
 
+        /// <summary>
+        /// A flag to control thread's running
+        /// </summary>
+        private volatile bool _running;
+
         #endregion
 
-        #region Constructor
+        #region Instantiation
 
         /// <summary>
         /// Creates a new TcpCommunicationChannel object.
@@ -78,7 +65,22 @@ namespace OpenNos.Core.Communication.Scs.Communication.Channels.Tcp
 
         #endregion
 
-        #region Public methods
+        #region Properties
+
+        ///<summary>
+        /// Gets the endpoint of remote application.
+        ///</summary>
+        public override ScsEndPoint RemoteEndPoint
+        {
+            get
+            {
+                return _remoteEndPoint;
+            }
+        }
+
+        #endregion
+
+        #region Methods
 
         /// <summary>
         /// Disconnects from remote application and closes channel.
@@ -102,24 +104,10 @@ namespace OpenNos.Core.Communication.Scs.Communication.Channels.Tcp
             }
             catch
             {
-
             }
 
             CommunicationState = CommunicationStates.Disconnected;
             OnDisconnected();
-        }
-
-        #endregion
-
-        #region Protected methods
-
-        /// <summary>
-        /// Starts the thread to receive messages from socket.
-        /// </summary>
-        protected override void Startpublic()
-        {
-            _running = true;
-            _clientSocket.BeginReceive(_buffer, 0, _buffer.Length, 0, new AsyncCallback(ReceiveCallback), null);
         }
 
         /// <summary>
@@ -151,9 +139,14 @@ namespace OpenNos.Core.Communication.Scs.Communication.Channels.Tcp
             }
         }
 
-        #endregion
-
-        #region Private methods
+        /// <summary>
+        /// Starts the thread to receive messages from socket.
+        /// </summary>
+        protected override void Startpublic()
+        {
+            _running = true;
+            _clientSocket.BeginReceive(_buffer, 0, _buffer.Length, 0, new AsyncCallback(ReceiveCallback), null);
+        }
 
         /// <summary>
         /// This method is used as callback method in _clientSocket's BeginReceive method.
@@ -162,7 +155,7 @@ namespace OpenNos.Core.Communication.Scs.Communication.Channels.Tcp
         /// <param name="ar">Asyncronous call result</param>
         private void ReceiveCallback(IAsyncResult ar)
         {
-            if(!_running)
+            if (!_running)
             {
                 return;
             }
@@ -202,7 +195,7 @@ namespace OpenNos.Core.Communication.Scs.Communication.Channels.Tcp
                 Disconnect();
             }
         }
-        
+
         #endregion
     }
 }

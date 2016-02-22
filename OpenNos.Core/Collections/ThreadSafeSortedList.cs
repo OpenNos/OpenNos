@@ -11,6 +11,58 @@ namespace OpenNos.Core.Collections
     /// <typeparam name="TV">Value type</typeparam>
     public class ThreadSafeSortedList<TK, TV>
     {
+        #region Members
+
+        /// <summary>
+        /// public collection to store items.
+        /// </summary>
+        protected readonly SortedList<TK, TV> _items;
+
+        /// <summary>
+        /// Used to synchronize access to _items list.
+        /// </summary>
+        protected readonly ReaderWriterLockSlim _lock;
+
+        #endregion
+
+        #region Instantiation
+
+        /// <summary>
+        /// Creates a new ThreadSafeSortedList object.
+        /// </summary>
+        public ThreadSafeSortedList()
+        {
+            _items = new SortedList<TK, TV>();
+            _lock = new ReaderWriterLockSlim(LockRecursionPolicy.NoRecursion);
+        }
+
+        #endregion
+
+        #region Properties
+
+        /// <summary>
+        /// Gets count of items in the collection.
+        /// </summary>
+        public int Count
+        {
+            get
+            {
+                _lock.EnterReadLock();
+                try
+                {
+                    return _items.Count;
+                }
+                finally
+                {
+                    _lock.ExitReadLock();
+                }
+            }
+        }
+
+        #endregion
+
+        #region Indexers
+
         /// <summary>
         /// Gets/adds/replaces an item by key.
         /// </summary>
@@ -45,42 +97,24 @@ namespace OpenNos.Core.Collections
             }
         }
 
+        #endregion
+
+        #region Methods
+
         /// <summary>
-        /// Gets count of items in the collection.
+        /// Removes all items from list.
         /// </summary>
-        public int Count
+        public void ClearAll()
         {
-            get
+            _lock.EnterWriteLock();
+            try
             {
-                _lock.EnterReadLock();
-                try
-                {
-                    return _items.Count;
-                }
-                finally
-                {
-                    _lock.ExitReadLock();
-                }
+                _items.Clear();
             }
-        }
-
-        /// <summary>
-        /// public collection to store items.
-        /// </summary>
-        protected readonly SortedList<TK, TV> _items;
-
-        /// <summary>
-        /// Used to synchronize access to _items list.
-        /// </summary>
-        protected readonly ReaderWriterLockSlim _lock;
-
-        /// <summary>
-        /// Creates a new ThreadSafeSortedList object.
-        /// </summary>
-        public ThreadSafeSortedList()
-        {
-            _items = new SortedList<TK, TV>();
-            _lock = new ReaderWriterLockSlim(LockRecursionPolicy.NoRecursion);
+            finally
+            {
+                _lock.ExitWriteLock();
+            }
         }
 
         /// <summary>
@@ -120,6 +154,42 @@ namespace OpenNos.Core.Collections
         }
 
         /// <summary>
+        /// Gets all items in collection.
+        /// </summary>
+        /// <returns>Item list</returns>
+        public List<TV> GetAllItems()
+        {
+            _lock.EnterReadLock();
+            try
+            {
+                return new List<TV>(_items.Values);
+            }
+            finally
+            {
+                _lock.ExitReadLock();
+            }
+        }
+
+        /// <summary>
+        /// Gets then removes all items in collection.
+        /// </summary>
+        /// <returns>Item list</returns>
+        public List<TV> GetAndClearAllItems()
+        {
+            _lock.EnterWriteLock();
+            try
+            {
+                var list = new List<TV>(_items.Values);
+                _items.Clear();
+                return list;
+            }
+            finally
+            {
+                _lock.ExitWriteLock();
+            }
+        }
+
+        /// <summary>
         /// Removes an item from collection.
         /// </summary>
         /// <param name="key">Key of item to remove</param>
@@ -142,56 +212,6 @@ namespace OpenNos.Core.Collections
             }
         }
 
-        /// <summary>
-        /// Gets all items in collection.
-        /// </summary>
-        /// <returns>Item list</returns>
-        public List<TV> GetAllItems()
-        {
-            _lock.EnterReadLock();
-            try
-            {
-                return new List<TV>(_items.Values);
-            }
-            finally
-            {
-                _lock.ExitReadLock();
-            }
-        }
-
-        /// <summary>
-        /// Removes all items from list.
-        /// </summary>
-        public void ClearAll()
-        {
-            _lock.EnterWriteLock();
-            try
-            {
-                _items.Clear();
-            }
-            finally
-            {
-                _lock.ExitWriteLock();
-            }
-        }
-
-        /// <summary>
-        /// Gets then removes all items in collection.
-        /// </summary>
-        /// <returns>Item list</returns>
-        public List<TV> GetAndClearAllItems()
-        {
-            _lock.EnterWriteLock();
-            try
-            {
-                var list = new List<TV>(_items.Values);
-                _items.Clear();
-                return list;
-            }
-            finally
-            {
-                _lock.ExitWriteLock();
-            }
-        }
+        #endregion
     }
 }

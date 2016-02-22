@@ -1,18 +1,27 @@
-﻿using System;
+﻿/*
+ * This file is part of the OpenNos Emulator Project. See AUTHORS file for Copyright information
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Configuration;
-using System.ComponentModel;
-using System.Globalization;
 using System.Xml;
 
 namespace OpenNos.Handler
 {
-
     public class ServerConfig : IConfigurationSectionHandler
     {
+        #region Methods
 
         public object Create(object parent, object configContext, System.Xml.XmlNode section)
         {
@@ -24,14 +33,6 @@ namespace OpenNos.Handler
             return liste;
         }
 
-        public class Server
-        {
-            public string name { get; set; }
-            public string WorldIp { get; set; }
-            public int channelAmount { get; set; }
-            public int WorldPort { get; set; }
-
-        }
         public Server GetServer(XmlNode str)
         {
             Server result = new Server();
@@ -42,6 +43,26 @@ namespace OpenNos.Handler
             result.WorldPort = Convert.ToInt32(str.Attributes["WorldPort"].Value);
             return result;
         }
-    }
 
+        #endregion
+
+        #region Classes
+
+        public class Server
+        {
+            #region Properties
+
+            public int channelAmount { get; set; }
+
+            public string name { get; set; }
+
+            public string WorldIp { get; set; }
+
+            public int WorldPort { get; set; }
+
+            #endregion
+        }
+
+        #endregion
+    }
 }

@@ -8,6 +8,8 @@ namespace OpenNos.Core.Communication.ScsServices.Service
     /// </summary>
     public static class ScsServiceBuilder
     {
+        #region Methods
+
         /// <summary>
         /// Creates a new SCS Service application using an EndPoint.
         /// </summary>
@@ -17,5 +19,7 @@ namespace OpenNos.Core.Communication.ScsServices.Service
         {
             return new ScsServiceApplication(ScsServerFactory.CreateServer(endPoint));
         }
+
+        #endregion
     }
 }

@@ -1,6 +1,6 @@
-﻿using System.Net.Sockets;
+﻿using OpenNos.Core.Communication.Scs.Communication.EndPoints.Tcp;
+using System.Net.Sockets;
 using System.Threading;
-using OpenNos.Core.Communication.Scs.Communication.EndPoints.Tcp;
 
 namespace OpenNos.Core.Communication.Scs.Communication.Channels.Tcp
 {
@@ -10,6 +10,8 @@ namespace OpenNos.Core.Communication.Scs.Communication.Channels.Tcp
     /// </summary>
     public class TcpConnectionListener : ConnectionListenerBase
     {
+        #region Members
+
         /// <summary>
         /// The endpoint address of the server to listen incoming connections.
         /// </summary>
@@ -21,14 +23,18 @@ namespace OpenNos.Core.Communication.Scs.Communication.Channels.Tcp
         private TcpListener _listenerSocket;
 
         /// <summary>
+        /// A flag to control thread's running
+        /// </summary>
+        private volatile bool _running;
+
+        /// <summary>
         /// The thread to listen socket
         /// </summary>
         private Thread _thread;
 
-        /// <summary>
-        /// A flag to control thread's running
-        /// </summary>
-        private volatile bool _running;
+        #endregion
+
+        #region Instantiation
 
         /// <summary>
         /// Creates a new TcpConnectionListener for given endpoint.
@@ -38,6 +44,10 @@ namespace OpenNos.Core.Communication.Scs.Communication.Channels.Tcp
         {
             _endPoint = endPoint;
         }
+
+        #endregion
+
+        #region Methods
 
         /// <summary>
         /// Starts listening incoming connections.
@@ -57,30 +67,6 @@ namespace OpenNos.Core.Communication.Scs.Communication.Channels.Tcp
         {
             _running = false;
             StopSocket();
-        }
-
-        /// <summary>
-        /// Starts listening socket.
-        /// </summary>
-        private void StartSocket()
-        {
-            _listenerSocket = new TcpListener(System.Net.IPAddress.Any, _endPoint.TcpPort);
-            _listenerSocket.Start();
-        }
-
-        /// <summary>
-        /// Stops listening socket.
-        /// </summary>
-        private void StopSocket()
-        {
-            try
-            {
-                _listenerSocket.Stop();
-            }
-            catch
-            {
-
-            }
         }
 
         /// <summary>
@@ -114,10 +100,34 @@ namespace OpenNos.Core.Communication.Scs.Communication.Channels.Tcp
                     }
                     catch
                     {
-
                     }
                 }
             }
         }
+
+        /// <summary>
+        /// Starts listening socket.
+        /// </summary>
+        private void StartSocket()
+        {
+            _listenerSocket = new TcpListener(System.Net.IPAddress.Any, _endPoint.TcpPort);
+            _listenerSocket.Start();
+        }
+
+        /// <summary>
+        /// Stops listening socket.
+        /// </summary>
+        private void StopSocket()
+        {
+            try
+            {
+                _listenerSocket.Stop();
+            }
+            catch
+            {
+            }
+        }
+
+        #endregion
     }
 }

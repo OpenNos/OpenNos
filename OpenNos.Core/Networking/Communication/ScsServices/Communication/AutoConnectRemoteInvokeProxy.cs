@@ -1,7 +1,7 @@
-﻿using System.Runtime.Remoting.Messaging;
-using OpenNos.Core.Communication.Scs.Client;
+﻿using OpenNos.Core.Communication.Scs.Client;
 using OpenNos.Core.Communication.Scs.Communication;
 using OpenNos.Core.Communication.Scs.Communication.Messengers;
+using System.Runtime.Remoting.Messaging;
 
 namespace OpenNos.Core.Communication.ScsServices.Communication
 {
@@ -13,10 +13,16 @@ namespace OpenNos.Core.Communication.ScsServices.Communication
     /// <typeparam name="TMessenger">Type of the messenger object that is used to send/receive messages</typeparam>
     public class AutoConnectRemoteInvokeProxy<TProxy, TMessenger> : RemoteInvokeProxy<TProxy, TMessenger> where TMessenger : IMessenger
     {
+        #region Members
+
         /// <summary>
         /// Reference to the client object that is used to connect/disconnect.
         /// </summary>
         private readonly IConnectableClient _client;
+
+        #endregion
+
+        #region Instantiation
 
         /// <summary>
         /// Creates a new AutoConnectRemoteInvokeProxy object.
@@ -28,6 +34,10 @@ namespace OpenNos.Core.Communication.ScsServices.Communication
         {
             _client = client;
         }
+
+        #endregion
+
+        #region Methods
 
         /// <summary>
         /// Overrides message calls and translates them to messages to remote application.
@@ -53,5 +63,7 @@ namespace OpenNos.Core.Communication.ScsServices.Communication
                 _client.Disconnect();
             }
         }
+
+        #endregion
     }
 }

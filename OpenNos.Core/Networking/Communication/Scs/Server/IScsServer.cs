@@ -1,6 +1,6 @@
-﻿using System;
-using OpenNos.Core.Collections;
+﻿using OpenNos.Core.Collections;
 using OpenNos.Core.Communication.Scs.Communication.Protocols;
+using System;
 
 namespace OpenNos.Core.Communication.Scs.Server
 {
@@ -9,6 +9,8 @@ namespace OpenNos.Core.Communication.Scs.Server
     /// </summary>
     public interface IScsServer
     {
+        #region Events
+
         /// <summary>
         /// This event is raised when a new client connected to the server.
         /// </summary>
@@ -19,16 +21,24 @@ namespace OpenNos.Core.Communication.Scs.Server
         /// </summary>
         event EventHandler<ServerClientEventArgs> ClientDisconnected;
 
-        /// <summary>
-        /// Gets/sets wire protocol factory to create IWireProtocol objects.
-        /// </summary>
-        IScsWireProtocolFactory WireProtocolFactory { get; set; }
+        #endregion
+
+        #region Properties
 
         /// <summary>
         /// A collection of clients that are connected to the server.
         /// </summary>
         ThreadSafeSortedList<long, IScsServerClient> Clients { get; }
-        
+
+        /// <summary>
+        /// Gets/sets wire protocol factory to create IWireProtocol objects.
+        /// </summary>
+        IScsWireProtocolFactory WireProtocolFactory { get; set; }
+
+        #endregion
+
+        #region Methods
+
         /// <summary>
         /// Starts the server.
         /// </summary>
@@ -38,5 +48,7 @@ namespace OpenNos.Core.Communication.Scs.Server
         /// Stops the server.
         /// </summary>
         void Stop();
+
+        #endregion
     }
 }

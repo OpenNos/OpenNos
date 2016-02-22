@@ -9,20 +9,7 @@ namespace OpenNos.Core.Communication.Scs.Communication.Messages
     [Serializable]
     public class ScsMessage : IScsMessage
     {
-        /// <summary>
-        /// Unique identified for this message.
-        /// Default value: New GUID.
-        /// Do not change if you do not want to do low level changes
-        /// such as custom wire protocols.
-        /// </summary>
-        public string MessageId { get; set; }
-
-        /// <summary>
-        /// This property is used to indicate that this is
-        /// a Reply message to a message.
-        /// It may be null if this is not a reply message.
-        /// </summary>
-        public string RepliedMessageId { get; set; }
+        #region Instantiation
 
         /// <summary>
         /// Creates a new ScsMessage.
@@ -45,6 +32,29 @@ namespace OpenNos.Core.Communication.Scs.Communication.Messages
             RepliedMessageId = repliedMessageId;
         }
 
+        #endregion
+
+        #region Properties
+
+        /// <summary>
+        /// Unique identified for this message.
+        /// Default value: New GUID.
+        /// Do not change if you do not want to do low level changes
+        /// such as custom wire protocols.
+        /// </summary>
+        public string MessageId { get; set; }
+
+        /// <summary>
+        /// This property is used to indicate that this is
+        /// a Reply message to a message.
+        /// It may be null if this is not a reply message.
+        /// </summary>
+        public string RepliedMessageId { get; set; }
+
+        #endregion
+
+        #region Methods
+
         /// <summary>
         /// Creates a string to represents this object.
         /// </summary>
@@ -55,5 +65,7 @@ namespace OpenNos.Core.Communication.Scs.Communication.Messages
                        ? $"ScsMessage [{MessageId}]"
                        : $"ScsMessage [{MessageId}] Replied To [{RepliedMessageId}]";
         }
+
+        #endregion
     }
 }

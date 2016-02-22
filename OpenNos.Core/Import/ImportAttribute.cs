@@ -20,6 +20,10 @@ namespace OpenNos.Core
 
         public string Line { get; set; }
 
+        #endregion
+
+        #region Methods
+
         public override string ToString()
         {
             return $"Line: {Line}, Index: {Index}";

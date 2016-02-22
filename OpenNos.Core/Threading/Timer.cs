@@ -8,31 +8,7 @@ namespace OpenNos.Core
     /// </summary>
     public class Timer
     {
-        #region Public events
-
-        /// <summary>
-        /// This event is raised periodically according to Period of Timer.
-        /// </summary>
-        public event EventHandler Elapsed;
-
-        #endregion
-
-        #region Public fields
-
-        /// <summary>
-        /// Task period of timer (as milliseconds).
-        /// </summary>
-        public int Period { get; set; }
-
-        /// <summary>
-        /// Indicates whether timer raises Elapsed event on Start method of Timer for once.
-        /// Default: False.
-        /// </summary>
-        public bool RunOnStart { get; set; }
-
-        #endregion
-
-        #region Private fields
+        #region Members
 
         /// <summary>
         /// This timer is used to perfom the task at spesified intervals.
@@ -40,19 +16,19 @@ namespace OpenNos.Core
         private readonly System.Threading.Timer _taskTimer;
 
         /// <summary>
-        /// Indicates that whether timer is running or stopped.
-        /// </summary>
-        private volatile bool _running;
-
-        /// <summary>
         /// Indicates that whether performing the task or _taskTimer is in sleep mode.
         /// This field is used to wait executing tasks when stopping Timer.
         /// </summary>
         private volatile bool _performingTasks;
 
+        /// <summary>
+        /// Indicates that whether timer is running or stopped.
+        /// </summary>
+        private volatile bool _running;
+
         #endregion
 
-        #region Constructors
+        #region Instantiation
 
         /// <summary>
         /// Creates a new Timer.
@@ -61,7 +37,6 @@ namespace OpenNos.Core
         public Timer(int period)
             : this(period, false)
         {
-
         }
 
         /// <summary>
@@ -78,7 +53,31 @@ namespace OpenNos.Core
 
         #endregion
 
-        #region Public methods
+        #region Events
+
+        /// <summary>
+        /// This event is raised periodically according to Period of Timer.
+        /// </summary>
+        public event EventHandler Elapsed;
+
+        #endregion
+
+        #region Properties
+
+        /// <summary>
+        /// Task period of timer (as milliseconds).
+        /// </summary>
+        public int Period { get; set; }
+
+        /// <summary>
+        /// Indicates whether timer raises Elapsed event on Start method of Timer for once.
+        /// Default: False.
+        /// </summary>
+        public bool RunOnStart { get; set; }
+
+        #endregion
+
+        #region Methods
 
         /// <summary>
         /// Starts the timer.
@@ -115,10 +114,6 @@ namespace OpenNos.Core
             }
         }
 
-        #endregion
-
-        #region Private methods
-
         /// <summary>
         /// This method is called by _taskTimer.
         /// </summary>
@@ -145,7 +140,6 @@ namespace OpenNos.Core
             }
             catch
             {
-
             }
             finally
             {

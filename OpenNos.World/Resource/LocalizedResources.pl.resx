@@ -304,13 +304,13 @@
     <value>Nie mozesz sie wymieniac tym przedmiotem!</value>
   </data>
   <data name="JOBLEVEL_CHANGED" xml:space="preserve">
-    <value>Poziom profesji podniesiony!</value>
+    <value>Poziom profesji zostal zmieniony!</value>
   </data>
   <data name="JOB_CHANGED" xml:space="preserve">
     <value>Zawod zostal zmieniony.</value>
   </data>
   <data name="LEVEL_CHANGED" xml:space="preserve">
-    <value>Poziom podniesiony!</value>
+    <value>Poziom zostal zmieniony!</value>
   </data>
   <data name="LOW_JOB_LVL" xml:space="preserve">
     <value>Za niski poziom profesji</value>
@@ -409,7 +409,7 @@
     <value>Server zostanie wylaczony za {0} Sekund.</value>
   </data>
   <data name="SPLEVEL_CHANGED" xml:space="preserve">
-    <value>Poziom specjalisty zostal zmieniony</value>
+    <value>Poziom specjalisty zostal zmieniony!</value>
   </data>
   <data name="SPUSE_NEEDED" xml:space="preserve">
     <value>Musisz zmienic sie w specjaliste aby zatwierdzic zmiane punktow</value>

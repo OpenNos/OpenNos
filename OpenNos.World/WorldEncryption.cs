@@ -11,19 +11,91 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  */
+
 using OpenNos.Core;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace OpenNos.World
 {
     public class WorldEncryption : EncryptionBase
     {
-        public WorldEncryption() : base(true) { }
+        #region Instantiation
+
+        public WorldEncryption() : base(true)
+        {
+        }
+
+        #endregion
+
+        #region Methods
+
+        public static string Decrypt2(char[] str)
+        {
+            string decrypted_string = "";
+            char[] table = { ' ', '-', '.', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'n' };
+            int count = 0;
+
+            for (count = 0; count < str.Length - 1;)
+            {
+                if (str[count] <= 0x7A)
+                {
+                    int len = str[count];
+
+                    for (int i = 0; i < (int)len; i++)
+                    {
+                        count++;
+
+                        decrypted_string += Convert.ToChar((count < str.Length ? str[count] : 0) ^ 0xFF);
+                    }
+                    count++;
+                }
+                else
+                {
+                    int len = str[count];
+                    len &= 0x7F;
+
+                    for (int i = 0; i < (int)len;)
+                    {
+                        count++;
+                        int highbyte = 0xF;
+                        int lowbyte = 0xF;
+                        if (count > 0 && count <= str.Length - 1)
+                        {
+                            highbyte = str[count];
+                            lowbyte = str[count];
+                        }
+                        highbyte &= 0xF0;
+                        highbyte >>= 0x4;
+
+                        lowbyte &= 0x0F;
+
+                        if (highbyte != 0x0 && highbyte != 0xF)
+                        {
+                            decrypted_string += table[highbyte - 1];
+                            i++;
+                        }
+
+                        if (lowbyte != 0x0 && lowbyte != 0xF)
+                        {
+                            decrypted_string += table[lowbyte - 1];
+                            i++;
+                        }
+                    }
+                    count++;
+                }
+            }
+
+            return decrypted_string;
+        }
+
+        public static string getextendedascii(int x)
+        {
+            var e = Encoding.GetEncoding("Windows-1252");
+            var s = e.GetString(new byte[] { Convert.ToByte(x) });
+
+            return s;
+        }
 
         public override string Decrypt(byte[] str, int session_id)
         {
@@ -81,123 +153,14 @@ namespace OpenNos.World
             string save = "";
             for (int i = 0; i < bytes.Length; i++)
             {
-
                 save += Decrypt2(bytes[i].ToCharArray());
                 save += Convert.ToChar(0xFF);
-
             }
             return save;
-
-        }
-
-
-        public static string Decrypt2(char[] str)
-        {
-
-            string decrypted_string = "";
-            char[] table = { ' ', '-', '.', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'n' };
-            int count = 0;
-
-
-            for (count = 0; count < str.Length - 1;)
-            {
-                if (str[count] <= 0x7A)
-                {
-                    int len = str[count];
-
-                    for (int i = 0; i < (int)len; i++)
-                    {
-                        count++;
-
-                        decrypted_string += Convert.ToChar((count < str.Length ? str[count] : 0) ^ 0xFF);
-                    }
-                    count++;
-                }
-                else
-                {
-                    int len = str[count];
-                    len &= 0x7F;
-
-                    for (int i = 0; i < (int)len;)
-                    {
-                        count++;
-                        int highbyte = 0xF;
-                        int lowbyte = 0xF;
-                        if (count > 0 && count <= str.Length - 1)
-                        {
-                            highbyte = str[count];
-                            lowbyte = str[count];
-                        }
-                        highbyte &= 0xF0;
-                        highbyte >>= 0x4;
-
-
-                        lowbyte &= 0x0F;
-
-                        if (highbyte != 0x0 && highbyte != 0xF)
-                        {
-
-                            decrypted_string += table[highbyte - 1];
-                            i++;
-                        }
-
-                        if (lowbyte != 0x0 && lowbyte != 0xF)
-                        {
-                            decrypted_string += table[lowbyte - 1];
-                            i++;
-                        }
-                    }
-                    count++;
-                }
-            }
-
-            return decrypted_string;
-
-
-        }
-        public override byte[] Encrypt(string str)
-        {
-
-            string encrypted_string = "";
-            int length = str.Length;
-            int secondlength = (length / 122);
-            int compteur = 0;
-
-            for (int i = 0; i < length; i++)
-            {
-                if (i == (122 * compteur))
-                {
-                    if (secondlength == 0)
-                    {
-                        encrypted_string += getextendedascii((char)Math.Abs((((length / 122) * 122) - length)));
-                    }
-                    else
-                    {
-                        encrypted_string += getextendedascii((char)0x7A);
-                        secondlength--;
-                        compteur++;
-                    }
-                }
-
-                encrypted_string += getextendedascii((byte)(str[i] ^ (byte)0xFF));
-            }
-
-            encrypted_string += getextendedascii((char)0xFF);
-            byte[] ret = Encoding.GetEncoding(1252).GetBytes(encrypted_string);
-            return ret;
-        }
-
-        public static string getextendedascii(int x)
-        {
-            var e = Encoding.GetEncoding("Windows-1252");
-            var s = e.GetString(new byte[] { Convert.ToByte(x) });
-
-            return s;
         }
 
         public override string DecryptCustomParameter(byte[] str)
         {
-
             string encrypted_string = "";
             for (int i = 1; i < str.Length; i++)
             {
@@ -260,8 +223,39 @@ namespace OpenNos.World
             }
 
             return encrypted_string;
-
         }
-    }
 
+        public override byte[] Encrypt(string str)
+        {
+            string encrypted_string = "";
+            int length = str.Length;
+            int secondlength = (length / 122);
+            int compteur = 0;
+
+            for (int i = 0; i < length; i++)
+            {
+                if (i == (122 * compteur))
+                {
+                    if (secondlength == 0)
+                    {
+                        encrypted_string += getextendedascii((char)Math.Abs((((length / 122) * 122) - length)));
+                    }
+                    else
+                    {
+                        encrypted_string += getextendedascii((char)0x7A);
+                        secondlength--;
+                        compteur++;
+                    }
+                }
+
+                encrypted_string += getextendedascii((byte)(str[i] ^ (byte)0xFF));
+            }
+
+            encrypted_string += getextendedascii((char)0xFF);
+            byte[] ret = Encoding.GetEncoding(1252).GetBytes(encrypted_string);
+            return ret;
+        }
+
+        #endregion
+    }
 }

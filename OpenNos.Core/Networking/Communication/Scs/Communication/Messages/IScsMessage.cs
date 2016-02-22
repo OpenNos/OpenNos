@@ -5,14 +5,18 @@
     /// </summary>
     public interface IScsMessage
     {
+        #region Properties
+
         /// <summary>
-        /// Unique identified for this message. 
+        /// Unique identified for this message.
         /// </summary>
         string MessageId { get; }
 
         /// <summary>
-        /// Unique identified for this message. 
+        /// Unique identified for this message.
         /// </summary>
         string RepliedMessageId { get; set; }
+
+        #endregion
     }
 }

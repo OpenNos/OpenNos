@@ -10,7 +10,7 @@ namespace OpenNos.Core
     /// <typeparam name="TItem">Type of item to process</typeparam>
     public class SequentialItemProcessor<TItem>
     {
-        #region Private fields
+        #region Members
 
         /// <summary>
         /// The method delegate that is called to actually process items.
@@ -21,6 +21,11 @@ namespace OpenNos.Core
         /// Item queue. Used to process items sequentially.
         /// </summary>
         private readonly Queue<TItem> _queue;
+
+        /// <summary>
+        /// An object to synchronize threads.
+        /// </summary>
+        private readonly object _syncObj = new object();
 
         /// <summary>
         /// A reference to the current Task that is processing an item in
@@ -38,14 +43,9 @@ namespace OpenNos.Core
         /// </summary>
         private bool _isRunning;
 
-        /// <summary>
-        /// An object to synchronize threads.
-        /// </summary>
-        private readonly object _syncObj = new object();
-
         #endregion
 
-        #region Constructor
+        #region Instantiation
 
         /// <summary>
         /// Creates a new SequentialItemProcessor object.
@@ -59,7 +59,7 @@ namespace OpenNos.Core
 
         #endregion
 
-        #region Public methods
+        #region Methods
 
         /// <summary>
         /// Adds an item to queue to process the item.
@@ -118,13 +118,8 @@ namespace OpenNos.Core
             }
             catch
             {
-
             }
         }
-
-        #endregion
-
-        #region Private methods
 
         /// <summary>
         /// This method runs on a new seperated Task (thread) to process

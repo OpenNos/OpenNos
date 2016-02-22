@@ -44,7 +44,7 @@
 -- -----------------------------------------------------------
 -- Entity Designer DDL Script for MySQL Server 4.1 and higher
 -- -----------------------------------------------------------
--- Date Created: 02/21/2016 17:47:12
+-- Date Created: 02/22/2016 16:58:18
 
 -- Generated from EDMX file: C:\Users\Dominik\Source\Repos\OpenNos\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
 -- Target version: 3.0.0.0
@@ -85,6 +85,8 @@
 
 --    ALTER TABLE `shopitem` DROP CONSTRAINT `FK_ShopShopItem`;
 
+--    ALTER TABLE `respawn` DROP CONSTRAINT `FK_CharacterRespawn`;
+
 
 -- --------------------------------------------------
 -- Dropping existing tables
@@ -112,6 +114,8 @@ SET foreign_key_checks = 0;
     DROP TABLE IF EXISTS `shopitem`;
 
     DROP TABLE IF EXISTS `shop`;
+
+    DROP TABLE IF EXISTS `respawn`;
 
 SET foreign_key_checks = 1;
 

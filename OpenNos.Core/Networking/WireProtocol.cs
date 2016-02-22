@@ -11,21 +11,19 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  */
-using System.Text;
+
 using OpenNos.Core.Communication.Scs.Communication.Messages;
-using OpenNos.Core.Communication.Scs.Communication.Protocols.BinarySerialization;
-using System;
-using System.Linq;
 using OpenNos.Core.Communication.Scs.Communication.Protocols;
+using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Runtime.Serialization.Formatters.Binary;
+using System.Text;
 
 namespace OpenNos.Core
 {
     public class WireProtocol : IScsWireProtocol
     {
-        #region Private fields
+        #region Members
 
         /// <summary>
         /// Maximum length of a message.
@@ -41,21 +39,17 @@ namespace OpenNos.Core
 
         #endregion
 
+        #region Instantiation
+
         public WireProtocol()
         {
             _receiveMemoryStream = new MemoryStream();
             _connectionHistory = new Dictionary<String, DateTime>();
         }
 
-        public byte[] GetBytes(IScsMessage message)
-        {
-            //Serialize the message to a byte array
-            byte[] bytes = message is ScsTextMessage ? 
-                Encoding.Default.GetBytes(((ScsTextMessage)message).Text) :
-                ((ScsRawDataMessage)message).MessageData;
+        #endregion
 
-            return bytes;
-        }
+        #region Methods
 
         public IEnumerable<IScsMessage> CreateMessages(byte[] receivedBytes)
         {
@@ -70,9 +64,46 @@ namespace OpenNos.Core
             return messages;
         }
 
+        public byte[] GetBytes(IScsMessage message)
+        {
+            //Serialize the message to a byte array
+            byte[] bytes = message is ScsTextMessage ?
+                Encoding.Default.GetBytes(((ScsTextMessage)message).Text) :
+                ((ScsRawDataMessage)message).MessageData;
+
+            return bytes;
+        }
+
+        public void Reset()
+        {
+            if (_receiveMemoryStream.Length > 0)
+            {
+                _receiveMemoryStream = new MemoryStream();
+            }
+        }
 
         /// <summary>
-        /// This method tries to read a single message and add to the messages collection. 
+        /// Reads a byte array with specified length.
+        /// </summary>
+        /// <param name="stream">Stream to read from</param>
+        /// <param name="length">Length of the byte array to read</param>
+        /// <returns>Read byte array</returns>
+        /// <exception cref="EndOfStreamException">Throws EndOfStreamException if can not read from stream.</exception>
+        private static byte[] ReadByteArray(Stream stream, short length)
+        {
+            var buffer = new byte[length];
+
+            var read = stream.Read(buffer, 0, length);
+            if (read <= 0)
+            {
+                throw new EndOfStreamException("Can not read from stream! Input stream is closed.");
+            }
+
+            return buffer;
+        }
+
+        /// <summary>
+        /// This method tries to read a single message and add to the messages collection.
         /// </summary>
         /// <param name="messages">Messages collection to collect messages</param>
         /// <returns>
@@ -103,7 +134,7 @@ namespace OpenNos.Core
             var serializedMessageBytes = ReadByteArray(_receiveMemoryStream, frameLength);
             messages.Add(new ScsRawDataMessage(serializedMessageBytes));
 
-           //Read remaining bytes to an array
+            //Read remaining bytes to an array
             if (_receiveMemoryStream.Length > frameLength)
             {
                 var remainingBytes = ReadByteArray(_receiveMemoryStream, (short)(_receiveMemoryStream.Length - frameLength));
@@ -122,33 +153,6 @@ namespace OpenNos.Core
             return (_receiveMemoryStream.Length > 0);
         }
 
-        /// <summary>
-        /// Reads a byte array with specified length.
-        /// </summary>
-        /// <param name="stream">Stream to read from</param>
-        /// <param name="length">Length of the byte array to read</param>
-        /// <returns>Read byte array</returns>
-        /// <exception cref="EndOfStreamException">Throws EndOfStreamException if can not read from stream.</exception>
-        private static byte[] ReadByteArray(Stream stream, short length)
-        {
-            var buffer = new byte[length];
-
-            var read = stream.Read(buffer, 0, length);
-            if (read <= 0)
-            {
-                throw new EndOfStreamException("Can not read from stream! Input stream is closed.");
-            }
-
-            return buffer;
-        }
-
-        public void Reset()
-        {
-            if (_receiveMemoryStream.Length > 0)
-            {
-                _receiveMemoryStream = new MemoryStream();
-            }
-        }
-
+        #endregion
     }
 }

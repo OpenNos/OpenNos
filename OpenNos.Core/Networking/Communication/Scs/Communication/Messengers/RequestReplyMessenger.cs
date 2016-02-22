@@ -1,9 +1,8 @@
-﻿using System;
+﻿using OpenNos.Core.Communication.Scs.Communication.Messages;
+using OpenNos.Core.Communication.Scs.Communication.Protocols;
+using System;
 using System.Collections.Generic;
 using System.Threading;
-using OpenNos.Core.Communication.Scs.Communication.Messages;
-using OpenNos.Core.Communication.Scs.Communication.Protocols;
-using OpenNos.Core;
 
 namespace OpenNos.Core.Communication.Scs.Communication.Messengers
 {
@@ -15,7 +14,52 @@ namespace OpenNos.Core.Communication.Scs.Communication.Messengers
     /// <typeparam name="T">Type of IMessenger object to use as underlying communication</typeparam>
     public class RequestReplyMessenger<T> : IMessenger, IDisposable where T : IMessenger
     {
-        #region Public events
+        #region Members
+
+        /// <summary>
+        /// Default Timeout value.
+        /// </summary>
+        private const int DefaultTimeout = 60000;
+
+        /// <summary>
+        /// This object is used to process incoming messages sequentially.
+        /// </summary>
+        private readonly SequentialItemProcessor<IScsMessage> _incomingMessageProcessor;
+
+        /// <summary>
+        /// This object is used for thread synchronization.
+        /// </summary>
+        private readonly object _syncObj = new object();
+
+        /// <summary>
+        /// This messages are waiting for a response those are used when
+        /// SendMessageAndWaitForResponse is called.
+        /// Key: MessageID of waiting request message.
+        /// Value: A WaitingMessage instance.
+        /// </summary>
+        private readonly SortedList<string, WaitingMessage> _waitingMessages;
+
+        #endregion
+
+        #region Instantiation
+
+        /// <summary>
+        /// Creates a new RequestReplyMessenger.
+        /// </summary>
+        /// <param name="messenger">IMessenger object to use as underlying communication</param>
+        public RequestReplyMessenger(T messenger)
+        {
+            Messenger = messenger;
+            messenger.MessageReceived += Messenger_MessageReceived;
+            messenger.MessageSent += Messenger_MessageSent;
+            _incomingMessageProcessor = new SequentialItemProcessor<IScsMessage>(OnMessageReceived);
+            _waitingMessages = new SortedList<string, WaitingMessage>();
+            Timeout = DefaultTimeout;
+        }
+
+        #endregion
+
+        #region Events
 
         /// <summary>
         /// This event is raised when a new message is received from underlying messenger.
@@ -30,16 +74,30 @@ namespace OpenNos.Core.Communication.Scs.Communication.Messengers
 
         #endregion
 
-        #region Public properties
+        #region Enums
 
         /// <summary>
-        /// Gets/sets wire protocol that is used while reading and writing messages.
+        /// This enum is used to store the state of a waiting message.
         /// </summary>
-        public IScsWireProtocol WireProtocol
+        private enum WaitingMessageStates
         {
-            get { return Messenger.WireProtocol; }
-            set { Messenger.WireProtocol = value; }
+            /// <summary>
+            /// Still waiting for response.
+            /// </summary>
+            WaitingForResponse,
+
+            /// <summary>
+            /// Message sending is cancelled.
+            /// </summary>
+            Cancelled,
+
+            /// <summary>
+            /// Response is properly received.
+            /// </summary>
+            ResponseReceived
         }
+
+        #endregion
 
         /// <summary>
         /// Gets the time of the last succesfully received message.
@@ -69,91 +127,19 @@ namespace OpenNos.Core.Communication.Scs.Communication.Messengers
         public T Messenger { get; private set; }
 
         /// <summary>
-        /// Timeout value as milliseconds to wait for a receiving message on 
+        /// Timeout value as milliseconds to wait for a receiving message on
         /// SendMessageAndWaitForResponse and SendAndReceiveMessage methods.
         /// Default value: 60000 (1 minute).
         /// </summary>
         public int Timeout { get; set; }
 
-        #endregion
-
-        #region Private fields
-
         /// <summary>
-        /// Default Timeout value.
+        /// Gets/sets wire protocol that is used while reading and writing messages.
         /// </summary>
-        private const int DefaultTimeout = 60000;
-
-        /// <summary>
-        /// This messages are waiting for a response those are used when 
-        /// SendMessageAndWaitForResponse is called.
-        /// Key: MessageID of waiting request message.
-        /// Value: A WaitingMessage instance.
-        /// </summary>
-        private readonly SortedList<string, WaitingMessage> _waitingMessages;
-
-        /// <summary>
-        /// This object is used to process incoming messages sequentially.
-        /// </summary>
-        private readonly SequentialItemProcessor<IScsMessage> _incomingMessageProcessor;
-
-        /// <summary>
-        /// This object is used for thread synchronization.
-        /// </summary>
-        private readonly object _syncObj = new object();
-
-        #endregion
-
-        #region Constructor
-
-        /// <summary>
-        /// Creates a new RequestReplyMessenger.
-        /// </summary>
-        /// <param name="messenger">IMessenger object to use as underlying communication</param>
-        public RequestReplyMessenger(T messenger)
+        public IScsWireProtocol WireProtocol
         {
-            Messenger = messenger;
-            messenger.MessageReceived += Messenger_MessageReceived;
-            messenger.MessageSent += Messenger_MessageSent;
-            _incomingMessageProcessor = new SequentialItemProcessor<IScsMessage>(OnMessageReceived);
-            _waitingMessages = new SortedList<string, WaitingMessage>();
-            Timeout = DefaultTimeout;
-        }
-
-        #endregion
-
-        #region Public methods
-
-        /// <summary>
-        /// Starts the messenger.
-        /// </summary>
-        public virtual void Start()
-        {
-            _incomingMessageProcessor.Start();
-        }
-
-        /// <summary>
-        /// Stops the messenger.
-        /// Cancels all waiting threads in SendMessageAndWaitForResponse method and stops message queue.
-        /// SendMessageAndWaitForResponse method throws exception if there is a thread that is waiting for response message.
-        /// Also stops incoming message processing and deletes all messages in incoming message queue.
-        /// </summary>
-        public virtual void Stop()
-        {
-            _incomingMessageProcessor.Stop();
-
-            //Pulse waiting threads for incoming messages, since underlying messenger is disconnected
-            //and can not receive messages anymore.
-            lock (_syncObj)
-            {
-                foreach (var waitingMessage in _waitingMessages.Values)
-                {
-                    waitingMessage.State = WaitingMessageStates.Cancelled;
-                    waitingMessage.WaitEvent.Set();
-                }
-
-                _waitingMessages.Clear();
-            }
+            get { return Messenger.WireProtocol; }
+            set { Messenger.WireProtocol = value; }
         }
 
         /// <summary>
@@ -181,7 +167,7 @@ namespace OpenNos.Core.Communication.Scs.Communication.Messengers
         /// any other message (that is not reply for sent message) is received
         /// from remote application, it is not considered as a reply and is not
         /// returned as return value of this method.
-        /// 
+        ///
         /// MessageReceived event is not raised for response messages.
         /// </remarks>
         /// <param name="message">message to send</param>
@@ -199,7 +185,7 @@ namespace OpenNos.Core.Communication.Scs.Communication.Messengers
         /// any other message (that is not reply for sent message) is received
         /// from remote application, it is not considered as a reply and is not
         /// returned as return value of this method.
-        /// 
+        ///
         /// MessageReceived event is not raised for response messages.
         /// </remarks>
         /// <param name="message">message to send</param>
@@ -249,9 +235,63 @@ namespace OpenNos.Core.Communication.Scs.Communication.Messengers
             }
         }
 
-        #endregion
+        /// <summary>
+        /// Starts the messenger.
+        /// </summary>
+        public virtual void Start()
+        {
+            _incomingMessageProcessor.Start();
+        }
 
-        #region Private methods
+        /// <summary>
+        /// Stops the messenger.
+        /// Cancels all waiting threads in SendMessageAndWaitForResponse method and stops message queue.
+        /// SendMessageAndWaitForResponse method throws exception if there is a thread that is waiting for response message.
+        /// Also stops incoming message processing and deletes all messages in incoming message queue.
+        /// </summary>
+        public virtual void Stop()
+        {
+            _incomingMessageProcessor.Stop();
+
+            //Pulse waiting threads for incoming messages, since underlying messenger is disconnected
+            //and can not receive messages anymore.
+            lock (_syncObj)
+            {
+                foreach (var waitingMessage in _waitingMessages.Values)
+                {
+                    waitingMessage.State = WaitingMessageStates.Cancelled;
+                    waitingMessage.WaitEvent.Set();
+                }
+
+                _waitingMessages.Clear();
+            }
+        }
+
+        /// <summary>
+        /// Raises MessageReceived event.
+        /// </summary>
+        /// <param name="message">Received message</param>
+        protected virtual void OnMessageReceived(IScsMessage message)
+        {
+            var handler = MessageReceived;
+            if (handler != null)
+            {
+                handler(this, new MessageEventArgs(message));
+            }
+        }
+
+        /// <summary>
+        /// Raises MessageSent event.
+        /// </summary>
+        /// <param name="message">Received message</param>
+        protected virtual void OnMessageSent(IScsMessage message)
+        {
+            var handler = MessageSent;
+            if (handler != null)
+            {
+                handler(this, new MessageEventArgs(message));
+            }
+        }
 
         /// <summary>
         /// Handles MessageReceived event of Messenger object.
@@ -295,40 +335,6 @@ namespace OpenNos.Core.Communication.Scs.Communication.Messengers
             OnMessageSent(e.Message);
         }
 
-        #endregion
-
-        #region Event raising methods
-
-        /// <summary>
-        /// Raises MessageReceived event.
-        /// </summary>
-        /// <param name="message">Received message</param>
-        protected virtual void OnMessageReceived(IScsMessage message)
-        {
-            var handler = MessageReceived;
-            if (handler != null)
-            {
-                handler(this, new MessageEventArgs(message));
-            }
-        }
-
-        /// <summary>
-        /// Raises MessageSent event.
-        /// </summary>
-        /// <param name="message">Received message</param>
-        protected virtual void OnMessageSent(IScsMessage message)
-        {
-            var handler = MessageSent;
-            if (handler != null)
-            {
-                handler(this, new MessageEventArgs(message));
-            }
-        }
-
-        #endregion
-
-        #region WaitingMessage class
-
         /// <summary>
         /// This class is used to store messaging context for a request message
         /// until response is received.
@@ -336,7 +342,7 @@ namespace OpenNos.Core.Communication.Scs.Communication.Messengers
         private sealed class WaitingMessage
         {
             /// <summary>
-            /// Response message for request message 
+            /// Response message for request message
             /// (null if response is not received yet).
             /// </summary>
             public IScsMessage ResponseMessage { get; set; }
@@ -360,28 +366,5 @@ namespace OpenNos.Core.Communication.Scs.Communication.Messengers
                 State = WaitingMessageStates.WaitingForResponse;
             }
         }
-
-        /// <summary>
-        /// This enum is used to store the state of a waiting message.
-        /// </summary>
-        private enum WaitingMessageStates
-        {
-            /// <summary>
-            /// Still waiting for response.
-            /// </summary>
-            WaitingForResponse,
-
-            /// <summary>
-            /// Message sending is cancelled.
-            /// </summary>
-            Cancelled,
-
-            /// <summary>
-            /// Response is properly received.
-            /// </summary>
-            ResponseReceived
-        }
-
-        #endregion
     }
 }

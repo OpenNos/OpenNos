@@ -1,6 +1,4 @@
-﻿using OpenNos.Core.Communication.Scs.Communication;
-using OpenNos.Core.Communication.Scs.Communication.Messengers;
-using System.Collections.Generic;
+﻿using OpenNos.Core.Communication.Scs.Communication.Messengers;
 
 namespace OpenNos.Core.Communication.Scs.Client
 {

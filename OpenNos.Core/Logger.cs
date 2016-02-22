@@ -11,12 +11,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  */
+
 using log4net;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OpenNos.Core
 {
@@ -52,6 +48,5 @@ namespace OpenNos.Core
         }
 
         #endregion
-
     }
 }

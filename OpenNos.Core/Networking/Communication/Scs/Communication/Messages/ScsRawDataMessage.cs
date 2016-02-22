@@ -8,17 +8,13 @@ namespace OpenNos.Core.Communication.Scs.Communication.Messages
     [Serializable]
     public class ScsRawDataMessage : ScsMessage
     {
-        /// <summary>
-        /// Message data that is being transmitted.
-        /// </summary>
-        public byte[] MessageData { get; set; }
+        #region Instantiation
 
         /// <summary>
         /// Default empty constructor.
         /// </summary>
         public ScsRawDataMessage()
         {
-            
         }
 
         /// <summary>
@@ -30,7 +26,7 @@ namespace OpenNos.Core.Communication.Scs.Communication.Messages
             MessageData = messageData;
         }
 
-                /// <summary>
+        /// <summary>
         /// Creates a new reply ScsRawDataMessage object with MessageData property.
         /// </summary>
         /// <param name="messageData">Message data that is being transmitted</param>
@@ -44,6 +40,19 @@ namespace OpenNos.Core.Communication.Scs.Communication.Messages
             RepliedMessageId = repliedMessageId;
         }
 
+        #endregion
+
+        #region Properties
+
+        /// <summary>
+        /// Message data that is being transmitted.
+        /// </summary>
+        public byte[] MessageData { get; set; }
+
+        #endregion
+
+        #region Methods
+
         /// <summary>
         /// Creates a string to represents this object.
         /// </summary>
@@ -55,5 +64,7 @@ namespace OpenNos.Core.Communication.Scs.Communication.Messages
                        ? $"ScsRawDataMessage [{MessageId}]: {messageLength} bytes"
                        : $"ScsRawDataMessage [{MessageId}] Replied To [{RepliedMessageId}]: {messageLength} bytes";
         }
+
+        #endregion
     }
 }

@@ -1,5 +1,5 @@
-﻿using System;
-using OpenNos.Core.Communication.Scs.Communication.Messages;
+﻿using OpenNos.Core.Communication.Scs.Communication.Messages;
+using System;
 
 namespace OpenNos.Core.Communication.ScsServices.Communication.Messages
 {
@@ -10,16 +10,22 @@ namespace OpenNos.Core.Communication.ScsServices.Communication.Messages
     [Serializable]
     public class ScsRemoteInvokeReturnMessage : ScsMessage
     {
-        /// <summary>
-        /// Return value of remote method invocation.
-        /// </summary>
-        public object ReturnValue { get; set; }
+        #region Properties
 
         /// <summary>
         /// If any exception occured during method invocation, this field contains Exception object.
         /// If no exception occured, this field is null.
         /// </summary>
         public ScsRemoteException RemoteException { get; set; }
+
+        /// <summary>
+        /// Return value of remote method invocation.
+        /// </summary>
+        public object ReturnValue { get; set; }
+
+        #endregion
+
+        #region Methods
 
         /// <summary>
         /// Represents this object as string.
@@ -29,5 +35,7 @@ namespace OpenNos.Core.Communication.ScsServices.Communication.Messages
         {
             return $"ScsRemoteInvokeReturnMessage: Returns {ReturnValue}, Exception = {RemoteException}";
         }
+
+        #endregion
     }
 }

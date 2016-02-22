@@ -1,5 +1,5 @@
-﻿using System;
-using OpenNos.Core.Communication.Scs.Communication;
+﻿using OpenNos.Core.Communication.Scs.Communication;
+using System;
 
 namespace OpenNos.Core.Communication.Scs.Client
 {
@@ -8,6 +8,8 @@ namespace OpenNos.Core.Communication.Scs.Client
     /// </summary>
     public interface IConnectableClient : IDisposable
     {
+        #region Events
+
         /// <summary>
         /// This event is raised when client connected to server.
         /// </summary>
@@ -18,16 +20,24 @@ namespace OpenNos.Core.Communication.Scs.Client
         /// </summary>
         event EventHandler Disconnected;
 
+        #endregion
+
+        #region Properties
+
+        /// <summary>
+        /// Gets the current communication state.
+        /// </summary>
+        CommunicationStates CommunicationState { get; }
+
         /// <summary>
         /// Timeout for connecting to a server (as milliseconds).
         /// Default value: 15 seconds (15000 ms).
         /// </summary>
         int ConnectTimeout { get; set; }
 
-        /// <summary>
-        /// Gets the current communication state.
-        /// </summary>
-        CommunicationStates CommunicationState { get; }
+        #endregion
+
+        #region Methods
 
         /// <summary>
         /// Connects to server.
@@ -39,5 +49,7 @@ namespace OpenNos.Core.Communication.Scs.Client
         /// Does nothing if already disconnected.
         /// </summary>
         void Disconnect();
+
+        #endregion
     }
 }

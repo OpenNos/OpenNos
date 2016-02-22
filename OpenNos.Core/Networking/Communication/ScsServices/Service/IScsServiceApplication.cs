@@ -7,6 +7,8 @@ namespace OpenNos.Core.Communication.ScsServices.Service
     /// </summary>
     public interface IScsServiceApplication
     {
+        #region Events
+
         /// <summary>
         /// This event is raised when a new client connected to the service.
         /// </summary>
@@ -17,15 +19,9 @@ namespace OpenNos.Core.Communication.ScsServices.Service
         /// </summary>
         event EventHandler<ServiceClientEventArgs> ClientDisconnected;
 
-        /// <summary>
-        /// Starts service application.
-        /// </summary>
-        void Start();
+        #endregion
 
-        /// <summary>
-        /// Stops service application.
-        /// </summary>
-        void Stop();
+        #region Methods
 
         /// <summary>
         /// Adds a service object to this service application.
@@ -45,5 +41,17 @@ namespace OpenNos.Core.Communication.ScsServices.Service
         /// <typeparam name="TServiceInterface">Service interface type</typeparam>
         /// <returns>True: removed. False: no service object with this interface</returns>
         bool RemoveService<TServiceInterface>() where TServiceInterface : class;
+
+        /// <summary>
+        /// Starts service application.
+        /// </summary>
+        void Start();
+
+        /// <summary>
+        /// Stops service application.
+        /// </summary>
+        void Stop();
+
+        #endregion
     }
 }

@@ -1,8 +1,7 @@
-﻿using System.Runtime.Remoting.Messaging;
-using System.Runtime.Remoting.Proxies;
-using OpenNos.Core.Communication.Scs.Communication;
-using OpenNos.Core.Communication.Scs.Communication.Messengers;
+﻿using OpenNos.Core.Communication.Scs.Communication.Messengers;
 using OpenNos.Core.Communication.ScsServices.Communication.Messages;
+using System.Runtime.Remoting.Messaging;
+using System.Runtime.Remoting.Proxies;
 
 namespace OpenNos.Core.Communication.ScsServices.Communication
 {
@@ -14,10 +13,16 @@ namespace OpenNos.Core.Communication.ScsServices.Communication
     /// <typeparam name="TMessenger">Type of the messenger object that is used to send/receive messages</typeparam>
     public class RemoteInvokeProxy<TProxy, TMessenger> : RealProxy where TMessenger : IMessenger
     {
+        #region Members
+
         /// <summary>
         /// Messenger object that is used to send/receive messages.
         /// </summary>
         private readonly RequestReplyMessenger<TMessenger> _clientMessenger;
+
+        #endregion
+
+        #region Instantiation
 
         /// <summary>
         /// Creates a new RemoteInvokeProxy object.
@@ -28,6 +33,10 @@ namespace OpenNos.Core.Communication.ScsServices.Communication
         {
             _clientMessenger = clientMessenger;
         }
+
+        #endregion
+
+        #region Methods
 
         /// <summary>
         /// Overrides message calls and translates them to messages to remote application.
@@ -44,7 +53,7 @@ namespace OpenNos.Core.Communication.ScsServices.Communication
 
             var requestMessage = new ScsRemoteInvokeMessage
             {
-                ServiceClassName = typeof (TProxy).Name,
+                ServiceClassName = typeof(TProxy).Name,
                 MethodName = message.MethodName,
                 Parameters = message.InArgs
             };
@@ -59,5 +68,7 @@ namespace OpenNos.Core.Communication.ScsServices.Communication
                        ? new ReturnMessage(responseMessage.RemoteException, message)
                        : new ReturnMessage(responseMessage.ReturnValue, null, 0, message.LogicalCallContext, message);
         }
+
+        #endregion
     }
 }

@@ -10,6 +10,7 @@ namespace OpenNos.Core
 {
     public static class DatParser
     {
+
         #region Members
 
         private const string datEntryOffset = "END";
@@ -80,5 +81,6 @@ namespace OpenNos.Core
         }
 
         #endregion
+
     }
 }

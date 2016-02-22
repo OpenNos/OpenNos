@@ -1,6 +1,5 @@
-﻿using System;
-using OpenNos.Core.Communication.Scs.Communication;
-using OpenNos.Core;
+﻿using OpenNos.Core.Communication.Scs.Communication;
+using System;
 
 namespace OpenNos.Core.Communication.Scs.Client
 {
@@ -10,15 +9,7 @@ namespace OpenNos.Core.Communication.Scs.Client
     /// </summary>
     public class ClientReConnecter : IDisposable
     {
-        /// <summary>
-        /// Reconnect check period.
-        /// Default: 20 seconds.
-        /// </summary>
-        public int ReConnectCheckPeriod
-        {
-            get { return _reconnectTimer.Period; }
-            set { _reconnectTimer.Period = value; }
-        }
+        #region Members
 
         /// <summary>
         /// Reference to client object.
@@ -34,6 +25,10 @@ namespace OpenNos.Core.Communication.Scs.Client
         /// Indicates the dispose state of this object.
         /// </summary>
         private volatile bool _disposed;
+
+        #endregion
+
+        #region Instantiation
 
         /// <summary>
         /// Creates a new ClientReConnecter object.
@@ -55,6 +50,24 @@ namespace OpenNos.Core.Communication.Scs.Client
             _reconnectTimer.Elapsed += ReconnectTimer_Elapsed;
             _reconnectTimer.Start();
         }
+
+        #endregion
+
+        #region Properties
+
+        /// <summary>
+        /// Reconnect check period.
+        /// Default: 20 seconds.
+        /// </summary>
+        public int ReConnectCheckPeriod
+        {
+            get { return _reconnectTimer.Period; }
+            set { _reconnectTimer.Period = value; }
+        }
+
+        #endregion
+
+        #region Methods
 
         /// <summary>
         /// Disposes this object.
@@ -105,5 +118,7 @@ namespace OpenNos.Core.Communication.Scs.Client
                 //No need to catch since it will try to re-connect again
             }
         }
+
+        #endregion
     }
 }

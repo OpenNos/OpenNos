@@ -1,7 +1,7 @@
-﻿using System;
-using OpenNos.Core.Communication.Scs.Communication.EndPoints;
+﻿using OpenNos.Core.Communication.Scs.Communication.EndPoints;
 using OpenNos.Core.Communication.Scs.Communication.Messages;
 using OpenNos.Core.Communication.Scs.Communication.Protocols;
+using System;
 
 namespace OpenNos.Core.Communication.Scs.Communication.Channels
 {
@@ -10,7 +10,26 @@ namespace OpenNos.Core.Communication.Scs.Communication.Channels
     /// </summary>
     public abstract class CommunicationChannelBase : ICommunicationChannel
     {
-        #region Public events
+        #region Instantiation
+
+        /// <summary>
+        /// Constructor.
+        /// </summary>
+        protected CommunicationChannelBase()
+        {
+            CommunicationState = CommunicationStates.Disconnected;
+            LastReceivedMessageTime = DateTime.MinValue;
+            LastSentMessageTime = DateTime.MinValue;
+        }
+
+        #endregion
+
+        #region Events
+
+        /// <summary>
+        /// This event is raised when communication channel closed.
+        /// </summary>
+        public event EventHandler Disconnected;
 
         /// <summary>
         /// This event is raised when a new message is received.
@@ -23,23 +42,9 @@ namespace OpenNos.Core.Communication.Scs.Communication.Channels
         /// </summary>
         public event EventHandler<MessageEventArgs> MessageSent;
 
-        /// <summary>
-        /// This event is raised when communication channel closed.
-        /// </summary>
-        public event EventHandler Disconnected;
-
         #endregion
 
-        #region Public abstract properties
-
-        ///<summary>
-        /// Gets endpoint of remote application.
-        ///</summary>
-        public abstract ScsEndPoint RemoteEndPoint { get; }
-
-        #endregion
-
-        #region Public properties
+        #region Properties
 
         /// <summary>
         /// Gets the current communication state.
@@ -56,6 +61,11 @@ namespace OpenNos.Core.Communication.Scs.Communication.Channels
         /// </summary>
         public DateTime LastSentMessageTime { get; protected set; }
 
+        ///<summary>
+        /// Gets endpoint of remote application.
+        ///</summary>
+        public abstract ScsEndPoint RemoteEndPoint { get; }
+
         /// <summary>
         /// Gets/sets wire protocol that the channel uses.
         /// This property must set before first communication.
@@ -64,39 +74,12 @@ namespace OpenNos.Core.Communication.Scs.Communication.Channels
 
         #endregion
 
-        #region Constructor
-
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        protected CommunicationChannelBase()
-        {
-            CommunicationState = CommunicationStates.Disconnected;
-            LastReceivedMessageTime = DateTime.MinValue;
-            LastSentMessageTime = DateTime.MinValue;
-        }
-
-        #endregion
-
-        #region Public abstract methods
+        #region Methods
 
         /// <summary>
         /// Disconnects from remote application and closes this channel.
         /// </summary>
         public abstract void Disconnect();
-
-        #endregion
-
-        #region Public methods
-
-        /// <summary>
-        /// Starts the communication with remote application.
-        /// </summary>
-        public void Start()
-        {
-            Startpublic();
-            CommunicationState = CommunicationStates.Connected;
-        }
 
         /// <summary>
         /// Sends a message to the remote application.
@@ -113,25 +96,14 @@ namespace OpenNos.Core.Communication.Scs.Communication.Channels
             SendMessagepublic(message);
         }
 
-        #endregion
-
-        #region Protected abstract methods
-
         /// <summary>
-        /// Starts the communication with remote application really.
+        /// Starts the communication with remote application.
         /// </summary>
-        protected abstract void Startpublic();
-
-        /// <summary>
-        /// Sends a message to the remote application.
-        /// This method is overrided by derived Classs to really send to message.
-        /// </summary>
-        /// <param name="message">Message to be sent</param>
-        protected abstract void SendMessagepublic(IScsMessage message);
-
-        #endregion
-
-        #region Event raising methods
+        public void Start()
+        {
+            Startpublic();
+            CommunicationState = CommunicationStates.Connected;
+        }
 
         /// <summary>
         /// Raises Disconnected event.
@@ -170,6 +142,18 @@ namespace OpenNos.Core.Communication.Scs.Communication.Channels
                 handler(this, new MessageEventArgs(message));
             }
         }
+
+        /// <summary>
+        /// Sends a message to the remote application.
+        /// This method is overrided by derived Classs to really send to message.
+        /// </summary>
+        /// <param name="message">Message to be sent</param>
+        protected abstract void SendMessagepublic(IScsMessage message);
+
+        /// <summary>
+        /// Starts the communication with remote application really.
+        /// </summary>
+        protected abstract void Startpublic();
 
         #endregion
     }

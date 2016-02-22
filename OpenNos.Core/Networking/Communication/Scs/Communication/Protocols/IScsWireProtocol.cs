@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using OpenNos.Core.Communication.Scs.Communication.Messages;
+﻿using OpenNos.Core.Communication.Scs.Communication.Messages;
+using System.Collections.Generic;
 
 namespace OpenNos.Core.Communication.Scs.Communication.Protocols
 {
@@ -8,12 +8,7 @@ namespace OpenNos.Core.Communication.Scs.Communication.Protocols
     /// </summary>
     public interface IScsWireProtocol
     {
-        /// <summary>
-        /// Serializes a message to a byte array to send to remote application.
-        /// This method is synchronized. So, only one thread can call it concurrently.
-        /// </summary>
-        /// <param name="message">Message to be serialized</param>
-        byte[] GetBytes(IScsMessage message);
+        #region Methods
 
         /// <summary>
         /// Builds messages from a byte array that is received from remote application.
@@ -31,9 +26,18 @@ namespace OpenNos.Core.Communication.Scs.Communication.Protocols
         IEnumerable<IScsMessage> CreateMessages(byte[] receivedBytes);
 
         /// <summary>
+        /// Serializes a message to a byte array to send to remote application.
+        /// This method is synchronized. So, only one thread can call it concurrently.
+        /// </summary>
+        /// <param name="message">Message to be serialized</param>
+        byte[] GetBytes(IScsMessage message);
+
+        /// <summary>
         /// This method is called when connection with remote application is reset (connection is renewing or first connecting).
         /// So, wire protocol must reset itself.
         /// </summary>
         void Reset();
+
+        #endregion
     }
 }

@@ -11,28 +11,19 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  */
+
 using AutoMapper;
 using OpenNos.Core;
 using OpenNos.DAL.EF.MySQL.DB;
 using OpenNos.Data;
 using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
 using System.Data.Common;
-using System.Data.Entity.Core.EntityClient;
-using System.Data.Entity.Infrastructure;
-using System.Data.SqlClient;
 using System.Linq;
-using System.Linq.Expressions;
-using System.Reflection;
-using System.Text;
 
 namespace OpenNos.DAL.EF.MySQL
 {
     public static class DataAccessHelper
     {
-
         #region Members
 
         private static OpenNosContainer _context;
@@ -67,14 +58,13 @@ namespace OpenNos.DAL.EF.MySQL
             Mapper.CreateMap<InventoryItemDTO, InventoryItem>();
             Mapper.CreateMap<GeneralLog, GeneralLogDTO>();
             Mapper.CreateMap<GeneralLogDTO, GeneralLog>();
-
         }
 
         #endregion
 
-        #region Properties
-
         #region Public
+
+        #region Properties
 
         public static OpenNosContainer Context
         {
@@ -85,6 +75,48 @@ namespace OpenNos.DAL.EF.MySQL
                     _context = CreateContext();
                 }
                 return _context;
+            }
+        }
+
+        #endregion
+
+        #region Methods
+
+        /// <summary>
+        /// Begins and returns a new transaction. Be sure to commit/rollback/dispose this transaction
+        /// or use it in an using-clause.
+        /// </summary>
+        /// <returns>A new transaction.</returns>
+        public static DbTransaction BeginTransaction()
+        {
+            // an open connection is needed for a transaction
+            if (DataAccessHelper.Context.Database.Connection.State == System.Data.ConnectionState.Broken ||
+                DataAccessHelper.Context.Database.Connection.State == System.Data.ConnectionState.Closed)
+            {
+                DataAccessHelper.Context.Database.Connection.Open();
+            }
+
+            // begin and return new transaction
+            return DataAccessHelper.Context.Database.Connection.BeginTransaction();
+        }
+
+        /// <summary>
+        /// Creates new instance of database context.
+        /// </summary>
+        public static OpenNosContainer CreateContext()
+        {
+            return new OpenNosContainer();
+        }
+
+        /// <summary>
+        /// Disposes the current instance of database context.
+        /// </summary>
+        public static void DisposeContext()
+        {
+            if (_context != null)
+            {
+                _context.Dispose();
+                _context = null;
             }
         }
 
@@ -108,6 +140,7 @@ namespace OpenNos.DAL.EF.MySQL
                     context.inventory.Any();
                     context.inventoryitem.Any();
                     context.item.Any();
+                    context.respawn.Any();
                     context.shop.Any();
                     context.shopitem.Any();
                     Logger.Log.Info(Language.Instance.GetMessageFromKey("DATABASE_INITIALIZED"));
@@ -125,50 +158,5 @@ namespace OpenNos.DAL.EF.MySQL
 
         #endregion
 
-        #region Methods
-
-        #region Public
-
-        /// <summary>
-        /// Creates new instance of database context.
-        /// </summary>
-        public static OpenNosContainer CreateContext()
-        {
-            return new OpenNosContainer();
-        }
-
-        /// <summary>
-        /// Disposes the current instance of database context.
-        /// </summary>
-        public static void DisposeContext()
-        {
-            if (_context != null)
-            {
-                _context.Dispose();
-                _context = null;
-            }
-        }
-
-        /// <summary>
-        /// Begins and returns a new transaction. Be sure to commit/rollback/dispose this transaction
-        /// or use it in an using-clause.
-        /// </summary>
-        /// <returns>A new transaction.</returns>
-        public static DbTransaction BeginTransaction()
-        {
-            // an open connection is needed for a transaction
-            if (DataAccessHelper.Context.Database.Connection.State == System.Data.ConnectionState.Broken ||
-                DataAccessHelper.Context.Database.Connection.State == System.Data.ConnectionState.Closed)
-            {
-                DataAccessHelper.Context.Database.Connection.Open();
-            }
-
-            // begin and return new transaction
-            return DataAccessHelper.Context.Database.Connection.BeginTransaction();
-        }
-
-        #endregion
-
-        #endregion
     }
 }

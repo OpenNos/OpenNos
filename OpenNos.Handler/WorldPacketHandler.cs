@@ -23,8 +23,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.Remoting.Messaging;
-using System.Text.RegularExpressions;
 using System.Threading;
 
 namespace OpenNos.Handler
@@ -145,14 +143,14 @@ namespace OpenNos.Handler
                 if (amount > item.Amount)
                     amount = item.Amount;
 
-                if (item.Price*amount >= Session.Character.Gold)
+                if (item.Price * amount >= Session.Character.Gold)
                 {
                     Session.Client.SendPacket(Session.Character.GenerateShopMemo(3,
                         Language.Instance.GetMessageFromKey("NOT_ENOUGH_MONEY")));
                     return;
                 }
 
-                Session.Character.Gold -= item.Price*amount;
+                Session.Character.Gold -= item.Price * amount;
                 Session.Client.SendPacket(Session.Character.GenerateGold());
                 InventoryItem newItem = new InventoryItem
                 {
@@ -239,9 +237,9 @@ namespace OpenNos.Handler
                     MagicDefence = 0,
                     RangeDefence = 0,
                     SpXp = 0,
-                    SpLevel = ServerManager.GetItem(item.ItemVNum).EquipmentSlot.Equals((byte) EquipmentType.Sp)
-                        ? (byte) 1
-                        : (byte) 0,
+                    SpLevel = ServerManager.GetItem(item.ItemVNum).EquipmentSlot.Equals((byte)EquipmentType.Sp)
+                        ? (byte)1
+                        : (byte)0,
                     SlDefence = 0,
                     SlElement = 0,
                     SlHit = 0,
@@ -430,7 +428,6 @@ namespace OpenNos.Handler
             ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllOnMapExceptMe);
             ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(6), ReceiverType.AllOnMap);
             ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(198), ReceiverType.AllOnMap);
-
         }
 
         [Packet("$Command")]
@@ -567,138 +564,7 @@ namespace OpenNos.Handler
                 else Session.Client.SendPacketFormat($"info {Language.Instance.GetMessageFromKey("INVALID_CHARNAME")}");
             }
         }
-        [Packet("gop")]
-        public void option(string packet)
-        {
-            string[] packetsplit = packet.Split(' ');
-            if (packetsplit.Length == 4)
-            {
-                switch (int.Parse(packetsplit[2]))
-                {
-                    case (int)ConfigType.BuffBlocked:
-                        if (Session.Character.BuffBlocked = int.Parse(packetsplit[3]) == 1 ? true : false)
-                        {
-                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("BUFF_BLOCKED"), 0));
-                        }
-                        else
-                        {
-                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("BUFF_UNLOCKED"), 0));
-                        }
-                        break;
-                    case (int)ConfigType.EmoticonsBlocked:
-                        if (Session.Character.EmoticonsBlocked = int.Parse(packetsplit[3]) == 1 ? true : false)
-                        {
-                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("EMO_BLOCKED"), 0));
-                        }
-                        else
-                        {
-                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("EMO_UNLOCKED"), 0));
-                        }
-                        break;
-                    case (int)ConfigType.ExchangeBlocked:
-                        if (Session.Character.ExchangeBlocked = int.Parse(packetsplit[3]) == 0 ? true : false)
-                        {
-                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("EXCHANGE_BLOCKED"), 0));
-                        }
-                        else
-                        {
-                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("EXCHANGE_UNLOCKED"), 0));
-                        }
-                        break;
-                    case (int)ConfigType.FriendRequestBlocked:
-                        if (Session.Character.FriendRequestBlocked = int.Parse(packetsplit[3]) == 0 ? true : false)
-                        {
-                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("FRIEND_REQ_BLOCKED"), 0));
-                        }
-                        else
-                        {
-                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("FRIEND_REQ_UNLOCKED"), 0));
-                        }
-                        break;
-                    case (int)ConfigType.GroupRequestBlocked:
-                        if (Session.Character.GroupRequestBlocked = int.Parse(packetsplit[3]) == 0 ? true : false)
-                        {
-                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("GROUP_REQ_BLOCKED"), 0));
-                        }
-                        else
-                        {
-                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("GROUP_REQ_UNLOCKED"), 0));
-                        }
-                        break;
-                    case (int)ConfigType.HeroChatBlocked:
-                        if (Session.Character.HeroChatBlocked = int.Parse(packetsplit[3]) == 1 ? true : false)
-                        {
-                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("HERO_CHAT_BLOCKED"), 0));
-                        }
-                        else
-                        {
-                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("HERO_CHAT_UNLOCKED"), 0));
-                        }
-                        break;
-                    case (int)ConfigType.HpBlocked:
-                        if (Session.Character.HpBlocked = int.Parse(packetsplit[3]) == 1 ? true : false)
-                        {
-                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("HP_BLOCKED"), 0));
-                        }
-                        else
-                        {
-                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("HP_UNLOCKED"), 0));
-                        }
-                        break;
-                    case (int)ConfigType.MinilandInviteBlocked:
-                        if (Session.Character.MinilandInviteBlocked = int.Parse(packetsplit[3]) == 1 ? true : false)
-                        {
-                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("MINI_INV_BLOCKED"), 0));
-                        }
-                        else
-                        {
-                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("MINI_INV_UNLOCKED"), 0));
-                        }
-                        break;
-                    case (int)ConfigType.MouseAimLock:
-                        if (Session.Character.MouseAimLock = int.Parse(packetsplit[3]) == 1 ? true : false)
-                        {
-                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("MOUSE_LOCKED"), 0));
-                        }
-                        else
-                        {
-                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("MOUSE_UNLOCKED"), 0));
-                        }
-                        break;
-                    case (int)ConfigType.QuickGetUp:
-                        if (Session.Character.QuickGetUp = int.Parse(packetsplit[3]) == 1 ? true : false)
-                        {
-                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("QUICK_GET_UP_ENABLED"), 0));
-                        }
-                        else
-                        {
-                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("QUICK_GET_UP_DISABLED"), 0));
-                        }
-                        break;
-                    case (int)ConfigType.WhisperBlocked:
-                        if (Session.Character.WhisperBlocked = int.Parse(packetsplit[3]) == 0 ? true : false)
-                        {
-                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("WHISPER_BLOCKED"), 0));
-                        }
-                        else
-                        {
-                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("WHISPER_UNLOCKED"), 0));
-                        }
-                        break;
-                    case (int)ConfigType.FamilyRequestBlocked:
-                        if (Session.Character.FamilyRequestBlocked = int.Parse(packetsplit[3]) == 0 ? true : false)
-                        {
-                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("FAMILY_REQ_LOCKED"), 0));
-                        }
-                        else
-                        {
-                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("FAMILY_REQ_UNLOCKED"), 0));
-                        }
-                        break;
 
-                }
-            }
-        }
         [Packet("$CreateItem")]
         public void CreateItem(string packet)
         {
@@ -912,7 +778,6 @@ namespace OpenNos.Handler
             AccountDTO account = DAOFactory.AccountDAO.LoadBySessionId(Session.SessionId);
             if (account != null && account.Password == OpenNos.Core.EncryptionBase.sha256(packetsplit[3]))
             {
-
                 DAOFactory.GeneralLogDAO.SetCharIdNull((long?)Convert.ToInt64(DAOFactory.CharacterDAO.LoadBySlot(account.AccountId, Convert.ToByte(packetsplit[2])).CharacterId));
                 DAOFactory.CharacterDAO.Delete(account.AccountId, Convert.ToByte(packetsplit[2]));
                 LoadCharacters(packet);
@@ -969,22 +834,24 @@ namespace OpenNos.Handler
                 case 0:
                     inventory = Session.Character.EquipmentList.LoadBySlotAndType(slot, (short)InventoryType.Equipment);
                     break;
+
                 case 1:
                     inventory = Session.Character.InventoryList.LoadBySlotAndType(slot, (short)InventoryType.Wear);
                     break;
+
                 case 10:
                     inventory = Session.Character.InventoryList.LoadBySlotAndType(slot, (short)InventoryType.Sp);
                     break;
+
                 case 11:
                     inventory = Session.Character.InventoryList.LoadBySlotAndType(slot, (short)InventoryType.Costume);
                     break;
             }
 
-
             if (inventory != null)
             {
                 Session.Client.SendPacket(
-                    ServerManager.GetItem(inventory.InventoryItem.ItemVNum).EquipmentSlot != (byte) EquipmentType.Sp
+                    ServerManager.GetItem(inventory.InventoryItem.ItemVNum).EquipmentSlot != (byte)EquipmentType.Sp
                         ? Session.Character.GenerateEInfo(inventory.InventoryItem)
                         : Session.Character.GenerateSlInfo(inventory.InventoryItem, 0));
             }
@@ -1004,7 +871,7 @@ namespace OpenNos.Handler
             {
                 if (!long.TryParse(packetsplit[3], out charId)) return;
 
-                Session.Character.ExchangeInfo = new ExchangeInfo {CharId = charId, Confirm = false};
+                Session.Character.ExchangeInfo = new ExchangeInfo { CharId = charId, Confirm = false };
 
                 charName = (string)ClientLinkManager.Instance.RequiereProperties(charId, "Name");
                 Session.Client.SendPacket(Session.Character.GenerateModal($"{Language.Instance.GetMessageFromKey("YOU_ASK_FOR_EXCHANGE")} {charName}"));
@@ -1080,7 +947,6 @@ namespace OpenNos.Handler
                             ClientLinkManager.Instance.ExchangeValidate(Session, Session.Character.ExchangeInfo.CharId);
 
                             // TODO Maybe log exchanges to a (new) table, so that the server admins could trace cheaters
-
                         }
                     }
                     else
@@ -1096,7 +962,6 @@ namespace OpenNos.Handler
                 Session.Client.SendPacket("exc_close 0");
                 ClientLinkManager.Instance.Broadcast(Session, "exc_close 0", ReceiverType.OnlySomeone, "", Session.Character.ExchangeInfo.CharId);
             }
-
         }
 
         [Packet("exc_list")]
@@ -1225,6 +1090,30 @@ namespace OpenNos.Handler
             Session.Client.SendPacket(Session.Character.GenerateStatChar());
         }
 
+        [Packet("$Gold")]
+        public void Gold(string packet)
+        {
+            string[] packetsplit = packet.Split(' ');
+            long gold;
+            if (packetsplit.Length > 2)
+            {
+                if (Int64.TryParse(packetsplit[2], out gold))
+                {
+                    if (gold <= 1000000000 && gold >= 0)
+                    {
+                        Session.Character.Gold = gold;
+                        Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("GOLD_SET"), 0));
+                        ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateGold(), ReceiverType.AllOnMap);
+                        ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(53), ReceiverType.AllOnMap);
+                    }
+                    else
+                        Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("WRONG_VALUE"), 0));
+                }
+            }
+            else
+                Session.Client.SendPacket(Session.Character.GenerateSay("$Gold AMOUNT", 10));
+        }
+
         [Packet("guri")]
         public void Guri(string packet)
         {
@@ -1260,7 +1149,6 @@ namespace OpenNos.Handler
                     if (Session.Character.Hp != (int)Session.Character.HPLoad())
                         change = true;
                     Session.Character.Hp = (int)Session.Character.HPLoad();
-
                 }
                 if (x == 1)
                 {
@@ -1271,7 +1159,6 @@ namespace OpenNos.Handler
                     }
                     else
                     {
-
                         if (Session.Character.Mp != (int)Session.Character.MPLoad())
                             change = true;
                         Session.Character.Mp = (int)Session.Character.MPLoad();
@@ -1539,7 +1426,6 @@ namespace OpenNos.Handler
 
                             ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateCMode(), ReceiverType.AllOnMap);
                             ClientLinkManager.Instance.Broadcast(Session, $"guri 6 1 {Session.Character.CharacterId} 0 0", ReceiverType.AllOnMap);
-
                         }
                     }
                     break;
@@ -1548,30 +1434,6 @@ namespace OpenNos.Handler
                     Session.Client.SendPacket(Session.Character.GenerateSay("$Morph MORPHID UPGRADE WINGS ARENA", 10));
                     break;
             }
-        }
-
-        [Packet("$Gold")]
-        public void Gold(string packet)
-        {
-            string[] packetsplit = packet.Split(' ');
-            long gold;
-            if (packetsplit.Length > 2)
-            {
-                if (Int64.TryParse(packetsplit[2], out gold))
-                {
-                    if (gold <= 1000000000 && gold >= 0)
-                    {
-                        Session.Character.Gold = gold;
-                        Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("GOLD_SET"), 0));
-                        ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateGold(), ReceiverType.AllOnMap);
-                        ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(53), ReceiverType.AllOnMap);
-                    }
-                    else
-                        Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("WRONG_VALUE"), 0));
-                }
-            }
-            else
-                Session.Client.SendPacket(Session.Character.GenerateSay("$Gold AMOUNT", 10));
         }
 
         [Packet("mve")]
@@ -1624,7 +1486,7 @@ namespace OpenNos.Handler
             switch (runner)
             {
                 case 1:
-                    if (Session.Character.Class != (short) ClassType.Adventurer)
+                    if (Session.Character.Class != (short)ClassType.Adventurer)
                     {
                         Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ADVENTURER"), 0));
                         return;
@@ -1661,6 +1523,149 @@ namespace OpenNos.Handler
                     //m_list 2 1002 1003 1004 1005 1006 1007 1008 1009 1010 180 181 2127 2178 1242 1243 1244 2504 2505 - 100
                     Session.Client.SendPacket($"wopen 27 0");
                     break;
+            }
+        }
+
+        [Packet("gop")]
+        public void option(string packet)
+        {
+            string[] packetsplit = packet.Split(' ');
+            if (packetsplit.Length == 4)
+            {
+                switch (int.Parse(packetsplit[2]))
+                {
+                    case (int)ConfigType.BuffBlocked:
+                        if (Session.Character.BuffBlocked = int.Parse(packetsplit[3]) == 1 ? true : false)
+                        {
+                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("BUFF_BLOCKED"), 0));
+                        }
+                        else
+                        {
+                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("BUFF_UNLOCKED"), 0));
+                        }
+                        break;
+
+                    case (int)ConfigType.EmoticonsBlocked:
+                        if (Session.Character.EmoticonsBlocked = int.Parse(packetsplit[3]) == 1 ? true : false)
+                        {
+                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("EMO_BLOCKED"), 0));
+                        }
+                        else
+                        {
+                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("EMO_UNLOCKED"), 0));
+                        }
+                        break;
+
+                    case (int)ConfigType.ExchangeBlocked:
+                        if (Session.Character.ExchangeBlocked = int.Parse(packetsplit[3]) == 0 ? true : false)
+                        {
+                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("EXCHANGE_BLOCKED"), 0));
+                        }
+                        else
+                        {
+                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("EXCHANGE_UNLOCKED"), 0));
+                        }
+                        break;
+
+                    case (int)ConfigType.FriendRequestBlocked:
+                        if (Session.Character.FriendRequestBlocked = int.Parse(packetsplit[3]) == 0 ? true : false)
+                        {
+                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("FRIEND_REQ_BLOCKED"), 0));
+                        }
+                        else
+                        {
+                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("FRIEND_REQ_UNLOCKED"), 0));
+                        }
+                        break;
+
+                    case (int)ConfigType.GroupRequestBlocked:
+                        if (Session.Character.GroupRequestBlocked = int.Parse(packetsplit[3]) == 0 ? true : false)
+                        {
+                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("GROUP_REQ_BLOCKED"), 0));
+                        }
+                        else
+                        {
+                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("GROUP_REQ_UNLOCKED"), 0));
+                        }
+                        break;
+
+                    case (int)ConfigType.HeroChatBlocked:
+                        if (Session.Character.HeroChatBlocked = int.Parse(packetsplit[3]) == 1 ? true : false)
+                        {
+                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("HERO_CHAT_BLOCKED"), 0));
+                        }
+                        else
+                        {
+                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("HERO_CHAT_UNLOCKED"), 0));
+                        }
+                        break;
+
+                    case (int)ConfigType.HpBlocked:
+                        if (Session.Character.HpBlocked = int.Parse(packetsplit[3]) == 1 ? true : false)
+                        {
+                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("HP_BLOCKED"), 0));
+                        }
+                        else
+                        {
+                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("HP_UNLOCKED"), 0));
+                        }
+                        break;
+
+                    case (int)ConfigType.MinilandInviteBlocked:
+                        if (Session.Character.MinilandInviteBlocked = int.Parse(packetsplit[3]) == 1 ? true : false)
+                        {
+                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("MINI_INV_BLOCKED"), 0));
+                        }
+                        else
+                        {
+                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("MINI_INV_UNLOCKED"), 0));
+                        }
+                        break;
+
+                    case (int)ConfigType.MouseAimLock:
+                        if (Session.Character.MouseAimLock = int.Parse(packetsplit[3]) == 1 ? true : false)
+                        {
+                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("MOUSE_LOCKED"), 0));
+                        }
+                        else
+                        {
+                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("MOUSE_UNLOCKED"), 0));
+                        }
+                        break;
+
+                    case (int)ConfigType.QuickGetUp:
+                        if (Session.Character.QuickGetUp = int.Parse(packetsplit[3]) == 1 ? true : false)
+                        {
+                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("QUICK_GET_UP_ENABLED"), 0));
+                        }
+                        else
+                        {
+                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("QUICK_GET_UP_DISABLED"), 0));
+                        }
+                        break;
+
+                    case (int)ConfigType.WhisperBlocked:
+                        if (Session.Character.WhisperBlocked = int.Parse(packetsplit[3]) == 0 ? true : false)
+                        {
+                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("WHISPER_BLOCKED"), 0));
+                        }
+                        else
+                        {
+                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("WHISPER_UNLOCKED"), 0));
+                        }
+                        break;
+
+                    case (int)ConfigType.FamilyRequestBlocked:
+                        if (Session.Character.FamilyRequestBlocked = int.Parse(packetsplit[3]) == 0 ? true : false)
+                        {
+                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("FAMILY_REQ_LOCKED"), 0));
+                        }
+                        else
+                        {
+                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("FAMILY_REQ_UNLOCKED"), 0));
+                        }
+                        break;
+                }
             }
         }
 
@@ -1888,8 +1893,46 @@ namespace OpenNos.Handler
                     Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("RARIFY_FAILED_ITEM_SAVED"), 0));
                     Session.Client.SendPacket(Session.Character.GenerateEff(3004));
                     Session.Character.InventoryList.LoadByInventoryItem(item.InventoryItemId).InventoryItem.IsFixed = true;
-
                 }
+            }
+        }
+
+        [Packet("remove")]
+        public void remove(string packet)
+        {
+            // unwear equipment
+            string[] packetsplit = packet.Split(' ');
+            if (packetsplit.Length > 3)
+            {
+                short slot;
+                if (!short.TryParse(packetsplit[2], out slot)) return; // invalid number
+
+                Inventory inventory = Session.Character.EquipmentList.LoadBySlotAndType(slot, (short)InventoryType.Equipment);
+                if (inventory == null) return; // this eqslot is not equipped
+
+                if (slot == (short)EquipmentType.Sp && Session.Character.UseSp)
+                {
+                    Session.Character.LastSp = (DateTime.Now - Process.GetCurrentProcess().StartTime).TotalSeconds;
+                    new Thread(() => RemoveSP(inventory.InventoryItem.ItemVNum)).Start();
+                }
+
+                // Put item back to inventory
+                Inventory inv = Session.Character.InventoryList.CreateItem(inventory.InventoryItem, Session.Character);
+                if (inv == null) return;
+
+                if (inv.Slot != -1)
+                    Session.Client.SendPacket(
+                        Session.Character.GenerateInventoryAdd(inventory.InventoryItem.ItemVNum,
+                            inv.InventoryItem.Amount, inv.Type, inv.Slot, inventory.InventoryItem.Rare,
+                            inventory.InventoryItem.Color, inventory.InventoryItem.Upgrade));
+
+                Session.Character.EquipmentList.DeleteFromSlotAndType(slot, (short)InventoryType.Equipment);
+
+                Session.Client.SendPacket(Session.Character.GenerateStatChar());
+                Thread.Sleep(100);
+                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEq(), ReceiverType.AllOnMap);
+                Session.Client.SendPacket(Session.Character.GenerateEquipment());
+                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GeneratePairy(), ReceiverType.AllOnMap);
             }
         }
 
@@ -1912,7 +1955,7 @@ namespace OpenNos.Handler
 
             Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("STAY_TIME")), 11));
             Session.Client.SendPacket("sd 30");
-            
+
             ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateCMode(), ReceiverType.AllOnMap);
             ClientLinkManager.Instance.Broadcast(Session, $"guri 6 1 {Session.Character.CharacterId} 0 0", ReceiverType.AllOnMap);
 
@@ -2067,7 +2110,6 @@ namespace OpenNos.Handler
                         MinilandInviteBlocked = characterDTO.MinilandInviteBlocked,
                         QuickGetUp = characterDTO.QuickGetUp,
                         MouseAimLock = characterDTO.MouseAimLock
-
                     };
 
                 Session.Character.Update();
@@ -2110,7 +2152,7 @@ namespace OpenNos.Handler
                 }
 
                 Item item = ServerManager.GetItem(inv.InventoryItem.ItemVNum);
-                Session.Character.Gold += item.Price*amount;
+                Session.Character.Gold += item.Price * amount;
                 DeleteItem(type, slot);
                 Session.Client.SendPacket(Session.Character.GenerateGold());
                 Session.Client.SendPacket(Session.Character.GenerateShopMemo(1, string.Format(Language.Instance.GetMessageFromKey("SELL_ITEM_VALIDE"), item.Name, amount)));
@@ -2227,6 +2269,37 @@ namespace OpenNos.Handler
         {
             //i don't need this for the moment
             // this may be stored in db, so the server admin knows when users perform screenshots, but very very very optional #gx
+        }
+
+        [Packet("sortopen")]
+        public void sortopen(string packet)
+        {
+            Boolean gravity = true;
+            short type;
+            while (gravity)
+            {
+                gravity = false;
+                for (short x = 0; x < 44; x++)
+                {
+                    for (short i = 0; i < 2; i++)
+                    {
+                        type = (i == 0) ? (short)InventoryType.Sp : (short)InventoryType.Costume;
+                        if (Session.Character.InventoryList.LoadBySlotAndType(x, type) == null)
+                        {
+                            if (Session.Character.InventoryList.LoadBySlotAndType((short)(x + 1), type) != null)
+                            {
+                                Inventory invdest = new Inventory();
+                                Inventory inv = new Inventory();
+                                Session.Character.InventoryList.MoveItem(Session.Character, type, (short)(x + 1), 1, x, out inv, out invdest);
+                                Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(invdest.InventoryItem.ItemVNum, invdest.InventoryItem.Amount, type, invdest.Slot, invdest.InventoryItem.Rare, invdest.InventoryItem.Color, invdest.InventoryItem.Upgrade));
+                                DeleteItem(type, (short)(x + 1));
+
+                                gravity = true;
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         [Packet("$Speed")]
@@ -2360,6 +2433,7 @@ namespace OpenNos.Handler
                 }
             }
         }
+
         [Packet("game_start")]
         public void StartGame(string packet)
         {
@@ -2448,74 +2522,6 @@ namespace OpenNos.Handler
                 default:
                     Session.Client.SendPacket(Session.Character.GenerateSay("$Teleport MAP X Y", 10));
                     break;
-            }
-        }
-        [Packet("sortopen")]
-        public void sortopen(string packet)
-        {
-            Boolean gravity = true;
-            short type;
-            while (gravity)
-            {
-                gravity = false;
-                for (short x = 0; x < 44; x++)
-                {
-                    for (short i = 0; i < 2; i++)
-                    {
-                        type = (i == 0) ? (short)InventoryType.Sp : (short)InventoryType.Costume;
-                        if (Session.Character.InventoryList.LoadBySlotAndType(x, type) == null)
-                        {
-                            if (Session.Character.InventoryList.LoadBySlotAndType((short)(x + 1), type) != null)
-                            {
-                                Inventory invdest = new Inventory();
-                                Inventory inv = new Inventory();
-                                Session.Character.InventoryList.MoveItem(Session.Character, type, (short)(x + 1), 1, x, out inv, out invdest);
-                                Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(invdest.InventoryItem.ItemVNum, invdest.InventoryItem.Amount, type, invdest.Slot, invdest.InventoryItem.Rare, invdest.InventoryItem.Color, invdest.InventoryItem.Upgrade));
-                                DeleteItem(type, (short)(x + 1));
-
-                                gravity = true;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        [Packet("remove")]
-        public void remove(string packet)
-        {
-            // unwear equipment
-            string[] packetsplit = packet.Split(' ');
-            if (packetsplit.Length > 3)
-            {
-                short slot;
-                if (!short.TryParse(packetsplit[2], out slot)) return; // invalid number
-
-                Inventory inventory = Session.Character.EquipmentList.LoadBySlotAndType(slot, (short)InventoryType.Equipment);
-                if (inventory == null) return; // this eqslot is not equipped 
-
-                if (slot == (short)EquipmentType.Sp && Session.Character.UseSp)
-                {
-                    Session.Character.LastSp = (DateTime.Now - Process.GetCurrentProcess().StartTime).TotalSeconds;
-                    new Thread(() => RemoveSP(inventory.InventoryItem.ItemVNum)).Start();
-                }
-
-                // Put item back to inventory
-                Inventory inv = Session.Character.InventoryList.CreateItem(inventory.InventoryItem, Session.Character);
-                if (inv == null) return;
-
-                if (inv.Slot != -1)
-                    Session.Client.SendPacket(
-                        Session.Character.GenerateInventoryAdd(inventory.InventoryItem.ItemVNum,
-                            inv.InventoryItem.Amount, inv.Type, inv.Slot, inventory.InventoryItem.Rare,
-                            inventory.InventoryItem.Color, inventory.InventoryItem.Upgrade));
-
-                Session.Character.EquipmentList.DeleteFromSlotAndType(slot, (short)InventoryType.Equipment);
-
-                Session.Client.SendPacket(Session.Character.GenerateStatChar());
-                Thread.Sleep(100);
-                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEq(), ReceiverType.AllOnMap);
-                Session.Client.SendPacket(Session.Character.GenerateEquipment());
-                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GeneratePairy(), ReceiverType.AllOnMap);
             }
         }
 
@@ -2758,7 +2764,6 @@ namespace OpenNos.Handler
                     DeleteItem(type, slot);
                     Session.Character.InventoryList.DeleteFromSlotAndType(inventory.Slot, inventory.Type);
 
-
                     Session.Client.SendPacket(Session.Character.GenerateStatChar());
                     Thread.Sleep(100);
                     ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEq(), ReceiverType.AllOnMap);
@@ -2810,11 +2815,8 @@ namespace OpenNos.Handler
                 if (!Convert.ToBoolean(Blocked)) ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateSpk(message, 5), ReceiverType.OnlySomeone, packetsplit[1].Substring(1));
                 else ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("WHISPERED_BLOCKED"), 11), ReceiverType.OnlyMe);
             }
-            else   ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("USER_NOT_CONNECTED")), ReceiverType.OnlyMe);
-            
-    }
-
-       
+            else ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("USER_NOT_CONNECTED")), ReceiverType.OnlyMe);
+        }
 
         #endregion
     }

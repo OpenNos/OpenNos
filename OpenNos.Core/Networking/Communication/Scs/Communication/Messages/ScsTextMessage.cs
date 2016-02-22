@@ -8,17 +8,13 @@ namespace OpenNos.Core.Communication.Scs.Communication.Messages
     [Serializable]
     public class ScsTextMessage : ScsMessage
     {
-        /// <summary>
-        /// Message text that is being transmitted.
-        /// </summary>
-        public string Text { get; set; }
+        #region Instantiation
 
         /// <summary>
         /// Creates a new ScsTextMessage object.
         /// </summary>
         public ScsTextMessage()
         {
-            
         }
 
         /// <summary>
@@ -43,7 +39,20 @@ namespace OpenNos.Core.Communication.Scs.Communication.Messages
         {
             RepliedMessageId = repliedMessageId;
         }
-        
+
+        #endregion
+
+        #region Properties
+
+        /// <summary>
+        /// Message text that is being transmitted.
+        /// </summary>
+        public string Text { get; set; }
+
+        #endregion
+
+        #region Methods
+
         /// <summary>
         /// Creates a string to represents this object.
         /// </summary>
@@ -54,5 +63,7 @@ namespace OpenNos.Core.Communication.Scs.Communication.Messages
                        ? $"ScsTextMessage [{MessageId}]: {Text}"
                        : $"ScsTextMessage [{MessageId}] Replied To [{RepliedMessageId}]: {Text}";
         }
+
+        #endregion
     }
 }

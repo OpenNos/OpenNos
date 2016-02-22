@@ -1,7 +1,7 @@
-﻿using System;
-using OpenNos.Core.Collections;
+﻿using OpenNos.Core.Collections;
 using OpenNos.Core.Communication.Scs.Communication.Channels;
 using OpenNos.Core.Communication.Scs.Communication.Protocols;
+using System;
 
 namespace OpenNos.Core.Communication.Scs.Server
 {
@@ -10,7 +10,29 @@ namespace OpenNos.Core.Communication.Scs.Server
     /// </summary>
     public abstract class ScsServerBase : IScsServer
     {
-        #region Public events
+        #region Members
+
+        /// <summary>
+        /// This object is used to listen incoming connections.
+        /// </summary>
+        private IConnectionListener _connectionListener;
+
+        #endregion
+
+        #region Instantiation
+
+        /// <summary>
+        /// Constructor.
+        /// </summary>
+        protected ScsServerBase()
+        {
+            Clients = new ThreadSafeSortedList<long, IScsServerClient>();
+            WireProtocolFactory = WireProtocolManager.GetDefaultWireProtocolFactory();
+        }
+
+        #endregion
+
+        #region Events
 
         /// <summary>
         /// This event is raised when a new client is connected.
@@ -24,43 +46,21 @@ namespace OpenNos.Core.Communication.Scs.Server
 
         #endregion
 
-        #region Public properties
-
-        /// <summary>
-        /// Gets/sets wire protocol that is used while reading and writing messages.
-        /// </summary>
-        public IScsWireProtocolFactory WireProtocolFactory { get; set; }
+        #region Properties
 
         /// <summary>
         /// A collection of clients that are connected to the server.
         /// </summary>
         public ThreadSafeSortedList<long, IScsServerClient> Clients { get; private set; }
 
-        #endregion
-
-        #region Private properties
-
         /// <summary>
-        /// This object is used to listen incoming connections.
+        /// Gets/sets wire protocol that is used while reading and writing messages.
         /// </summary>
-        private IConnectionListener _connectionListener;
+        public IScsWireProtocolFactory WireProtocolFactory { get; set; }
 
         #endregion
 
-        #region Constructor
-
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        protected ScsServerBase()
-        {
-            Clients = new ThreadSafeSortedList<long, IScsServerClient>();
-            WireProtocolFactory = WireProtocolManager.GetDefaultWireProtocolFactory();
-        }
-
-        #endregion
-
-        #region Public methods
+        #region Methods
 
         /// <summary>
         /// Starts the server.
@@ -88,54 +88,11 @@ namespace OpenNos.Core.Communication.Scs.Server
             }
         }
 
-        #endregion
-
-        #region Protected abstract methods
-
         /// <summary>
         /// This method is implemented by derived Classs to create appropriate connection listener to listen incoming connection requets.
         /// </summary>
         /// <returns></returns>
         protected abstract IConnectionListener CreateConnectionListener();
-
-        #endregion
-
-        #region Private methods
-
-        /// <summary>
-        /// Handles CommunicationChannelConnected event of _connectionListener object.
-        /// </summary>
-        /// <param name="sender">Source of event</param>
-        /// <param name="e">Event arguments</param>
-        private void ConnectionListener_CommunicationChannelConnected(object sender, CommunicationChannelEventArgs e)
-        {
-            var client = new NetworkClient(e.Channel)
-            {
-                ClientId = ScsServerManager.GetClientId(),
-                WireProtocol = WireProtocolFactory.CreateWireProtocol()
-            };
-
-            client.Disconnected += Client_Disconnected;
-            Clients[client.ClientId] = client;
-            OnClientConnected(client);
-            e.Channel.Start();
-        }
-
-        /// <summary>
-        /// Handles Disconnected events of all connected clients.
-        /// </summary>
-        /// <param name="sender">Source of event</param>
-        /// <param name="e">Event arguments</param>
-        private void Client_Disconnected(object sender, EventArgs e)
-        {
-            var client = (IScsServerClient) sender;
-            Clients.Remove(client.ClientId);
-            OnClientDisconnected(client);
-        }
-
-        #endregion
-
-        #region Event raising methods
 
         /// <summary>
         /// Raises ClientConnected event.
@@ -161,6 +118,37 @@ namespace OpenNos.Core.Communication.Scs.Server
             {
                 handler(this, new ServerClientEventArgs(client));
             }
+        }
+
+        /// <summary>
+        /// Handles Disconnected events of all connected clients.
+        /// </summary>
+        /// <param name="sender">Source of event</param>
+        /// <param name="e">Event arguments</param>
+        private void Client_Disconnected(object sender, EventArgs e)
+        {
+            var client = (IScsServerClient)sender;
+            Clients.Remove(client.ClientId);
+            OnClientDisconnected(client);
+        }
+
+        /// <summary>
+        /// Handles CommunicationChannelConnected event of _connectionListener object.
+        /// </summary>
+        /// <param name="sender">Source of event</param>
+        /// <param name="e">Event arguments</param>
+        private void ConnectionListener_CommunicationChannelConnected(object sender, CommunicationChannelEventArgs e)
+        {
+            var client = new NetworkClient(e.Channel)
+            {
+                ClientId = ScsServerManager.GetClientId(),
+                WireProtocol = WireProtocolFactory.CreateWireProtocol()
+            };
+
+            client.Disconnected += Client_Disconnected;
+            Clients[client.ClientId] = client;
+            OnClientConnected(client);
+            e.Channel.Start();
         }
 
         #endregion

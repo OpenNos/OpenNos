@@ -7,6 +7,8 @@ namespace OpenNos.Core.Communication.Scs.Server
     /// </summary>
     public static class ScsServerFactory
     {
+        #region Methods
+
         /// <summary>
         /// Creates a new SCS Server using an EndPoint.
         /// </summary>
@@ -16,5 +18,7 @@ namespace OpenNos.Core.Communication.Scs.Server
         {
             return endPoint.CreateServer();
         }
+
+        #endregion
     }
 }

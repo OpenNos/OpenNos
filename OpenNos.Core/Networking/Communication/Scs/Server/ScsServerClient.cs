@@ -1,10 +1,9 @@
-﻿using System;
-using OpenNos.Core.Communication.Scs.Communication;
+﻿using OpenNos.Core.Communication.Scs.Communication;
+using OpenNos.Core.Communication.Scs.Communication.Channels;
 using OpenNos.Core.Communication.Scs.Communication.EndPoints;
 using OpenNos.Core.Communication.Scs.Communication.Messages;
-using OpenNos.Core.Communication.Scs.Communication.Channels;
 using OpenNos.Core.Communication.Scs.Communication.Protocols;
-using System.Collections.Generic;
+using System;
 
 namespace OpenNos.Core.Communication.Scs.Server
 {
@@ -13,7 +12,37 @@ namespace OpenNos.Core.Communication.Scs.Server
     /// </summary>
     public class ScsServerClient : IScsServerClient
     {
-        #region Public events
+        #region Members
+
+        /// <summary>
+        /// The communication channel that is used by client to send and receive messages.
+        /// </summary>
+        private readonly ICommunicationChannel _communicationChannel;
+
+        #endregion
+
+        #region Instantiation
+
+        /// <summary>
+        /// Creates a new ScsClient object.
+        /// </summary>
+        /// <param name="communicationChannel">The communication channel that is used by client to send and receive messages</param>
+        public ScsServerClient(ICommunicationChannel communicationChannel)
+        {
+            _communicationChannel = communicationChannel;
+            _communicationChannel.MessageReceived += CommunicationChannel_MessageReceived;
+            _communicationChannel.MessageSent += CommunicationChannel_MessageSent;
+            _communicationChannel.Disconnected += CommunicationChannel_Disconnected;
+        }
+
+        #endregion
+
+        #region Events
+
+        /// <summary>
+        /// This event is raised when client is disconnected from server.
+        /// </summary>
+        public event EventHandler Disconnected;
 
         /// <summary>
         /// This event is raised when a new message is received.
@@ -26,14 +55,9 @@ namespace OpenNos.Core.Communication.Scs.Server
         /// </summary>
         public event EventHandler<MessageEventArgs> MessageSent;
 
-        /// <summary>
-        /// This event is raised when client is disconnected from server.
-        /// </summary>
-        public event EventHandler Disconnected;
-
         #endregion
 
-        #region Public properties
+        #region Properties
 
         /// <summary>
         /// Unique identifier for this client in server.
@@ -49,23 +73,6 @@ namespace OpenNos.Core.Communication.Scs.Server
             {
                 return _communicationChannel.CommunicationState;
             }
-        }
-        
-        /// <summary>
-        /// Gets/sets wire protocol that is used while reading and writing messages.
-        /// </summary>
-        public IScsWireProtocol WireProtocol
-        {
-            get { return _communicationChannel.WireProtocol; }
-            set { _communicationChannel.WireProtocol = value; }
-        }
-
-        ///<summary>
-        /// Gets endpoint of remote application.
-        ///</summary>
-        public ScsEndPoint RemoteEndPoint
-        {
-            get { return _communicationChannel.RemoteEndPoint; }
         }
 
         /// <summary>
@@ -90,34 +97,26 @@ namespace OpenNos.Core.Communication.Scs.Server
             }
         }
 
-        #endregion
-
-        #region Private fields
-
-        /// <summary>
-        /// The communication channel that is used by client to send and receive messages.
-        /// </summary>
-        private readonly ICommunicationChannel _communicationChannel;
-
-        #endregion
-
-        #region Constructor
-
-        /// <summary>
-        /// Creates a new ScsClient object.
-        /// </summary>
-        /// <param name="communicationChannel">The communication channel that is used by client to send and receive messages</param>
-        public ScsServerClient(ICommunicationChannel communicationChannel)
+        ///<summary>
+        /// Gets endpoint of remote application.
+        ///</summary>
+        public ScsEndPoint RemoteEndPoint
         {
-            _communicationChannel = communicationChannel;
-            _communicationChannel.MessageReceived += CommunicationChannel_MessageReceived;
-            _communicationChannel.MessageSent += CommunicationChannel_MessageSent;
-            _communicationChannel.Disconnected += CommunicationChannel_Disconnected;
+            get { return _communicationChannel.RemoteEndPoint; }
+        }
+
+        /// <summary>
+        /// Gets/sets wire protocol that is used while reading and writing messages.
+        /// </summary>
+        public IScsWireProtocol WireProtocol
+        {
+            get { return _communicationChannel.WireProtocol; }
+            set { _communicationChannel.WireProtocol = value; }
         }
 
         #endregion
 
-        #region Public methods
+        #region Methods
 
         /// <summary>
         /// Disconnects from client and closes underlying communication channel.
@@ -136,10 +135,19 @@ namespace OpenNos.Core.Communication.Scs.Server
             _communicationChannel.SendMessage(message);
         }
 
-        #endregion
+        /// <summary>
+        /// Raises MessageSent event.
+        /// </summary>
+        /// <param name="message">Received message</param>
+        protected virtual void OnMessageSent(IScsMessage message)
+        {
+            var handler = MessageSent;
+            if (handler != null)
+            {
+                handler(this, new MessageEventArgs(message));
+            }
+        }
 
-        #region Private methods
-        
         /// <summary>
         /// Handles Disconnected event of _communicationChannel object.
         /// </summary>
@@ -177,10 +185,6 @@ namespace OpenNos.Core.Communication.Scs.Server
             OnMessageSent(e.Message);
         }
 
-        #endregion
-
-        #region Event raising methods
-
         /// <summary>
         /// Raises Disconnected event.
         /// </summary>
@@ -200,19 +204,6 @@ namespace OpenNos.Core.Communication.Scs.Server
         private void OnMessageReceived(IScsMessage message)
         {
             var handler = MessageReceived;
-            if (handler != null)
-            {
-                handler(this, new MessageEventArgs(message));
-            }
-        }
-
-        /// <summary>
-        /// Raises MessageSent event.
-        /// </summary>
-        /// <param name="message">Received message</param>
-        protected virtual void OnMessageSent(IScsMessage message)
-        {
-            var handler = MessageSent;
             if (handler != null)
             {
                 handler(this, new MessageEventArgs(message));

@@ -11,19 +11,20 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  */
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OpenNos.Core
 {
     [System.AttributeUsage(System.AttributeTargets.Method)]
     public class Packet : System.Attribute
     {
-        private string _header;
+        #region Members
+
         private int _amount;
+        private string _header;
+
+        #endregion
+
+        #region Instantiation
 
         public Packet(string header, int amount = 1)
         {
@@ -31,21 +32,23 @@ namespace OpenNos.Core
             this._amount = amount;
         }
 
-        #region Properties
+        #endregion
 
-        public string Header
-        {
-            get
-            {
-                return _header;
-            }
-        }
+        #region Properties
 
         public int Amount
         {
             get
             {
                 return _amount;
+            }
+        }
+
+        public string Header
+        {
+            get
+            {
+                return _header;
             }
         }
 

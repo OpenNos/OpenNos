@@ -1,10 +1,8 @@
-﻿using System;
-using OpenNos.Core.Communication.Scs.Communication;
-using OpenNos.Core.Communication.Scs.Communication.Messages;
+﻿using OpenNos.Core.Communication.Scs.Communication;
 using OpenNos.Core.Communication.Scs.Communication.Channels;
+using OpenNos.Core.Communication.Scs.Communication.Messages;
 using OpenNos.Core.Communication.Scs.Communication.Protocols;
-using OpenNos.Core;
-using System.Collections.Generic;
+using System;
 
 namespace OpenNos.Core.Communication.Scs.Client
 {
@@ -13,7 +11,54 @@ namespace OpenNos.Core.Communication.Scs.Client
     /// </summary>
     public abstract class ScsClientBase : IScsClient
     {
-        #region Public events
+        #region Members
+
+        /// <summary>
+        /// Default timeout value for connecting a server.
+        /// </summary>
+        private const int DefaultConnectionAttemptTimeout = 15000;
+
+        /// <summary>
+        /// This timer is used to send PingMessage messages to server periodically.
+        /// </summary>
+        private readonly Timer _pingTimer;
+
+        /// <summary>
+        /// The communication channel that is used by client to send and receive messages.
+        /// </summary>
+        private ICommunicationChannel _communicationChannel;
+
+        private IScsWireProtocol _wireProtocol;
+
+        #endregion
+
+        #region Instantiation
+
+        //15 seconds.
+        /// <summary>
+        /// Constructor.
+        /// </summary>
+        protected ScsClientBase()
+        {
+            _pingTimer = new Timer(30000);
+            _pingTimer.Elapsed += PingTimer_Elapsed;
+            ConnectTimeout = DefaultConnectionAttemptTimeout;
+            WireProtocol = WireProtocolManager.GetDefaultWireProtocol();
+        }
+
+        #endregion
+
+        #region Events
+
+        /// <summary>
+        /// This event is raised when communication channel closed.
+        /// </summary>
+        public event EventHandler Connected;
+
+        /// <summary>
+        /// This event is raised when client disconnected from server.
+        /// </summary>
+        public event EventHandler Disconnected;
 
         /// <summary>
         /// This event is raised when a new message is received.
@@ -26,43 +71,9 @@ namespace OpenNos.Core.Communication.Scs.Client
         /// </summary>
         public event EventHandler<MessageEventArgs> MessageSent;
 
-        /// <summary>
-        /// This event is raised when communication channel closed.
-        /// </summary>
-        public event EventHandler Connected;
-
-        /// <summary>
-        /// This event is raised when client disconnected from server.
-        /// </summary>
-        public event EventHandler Disconnected;
-
         #endregion
 
-        #region Public properties
-
-        /// <summary>
-        /// Timeout for connecting to a server (as milliseconds).
-        /// Default value: 15 seconds (15000 ms).
-        /// </summary>
-        public int ConnectTimeout { get; set; }
-
-        /// <summary>
-        /// Gets/sets wire protocol that is used while reading and writing messages.
-        /// </summary>
-        public IScsWireProtocol WireProtocol
-        {
-            get { return _wireProtocol; }
-            set
-            {
-                if (CommunicationState == CommunicationStates.Connected)
-                {
-                    throw new ApplicationException("Wire protocol can not be changed while connected to server.");
-                }
-
-                _wireProtocol = value;
-            }
-        }
-        private IScsWireProtocol _wireProtocol;
+        #region Properties
 
         /// <summary>
         /// Gets the communication state of the Client.
@@ -76,6 +87,12 @@ namespace OpenNos.Core.Communication.Scs.Client
                            : CommunicationStates.Disconnected;
             }
         }
+
+        /// <summary>
+        /// Timeout for connecting to a server (as milliseconds).
+        /// Default value: 15 seconds (15000 ms).
+        /// </summary>
+        public int ConnectTimeout { get; set; }
 
         /// <summary>
         /// Gets the time of the last succesfully received message.
@@ -103,43 +120,26 @@ namespace OpenNos.Core.Communication.Scs.Client
             }
         }
 
-        #endregion
-
-        #region Private fields
-
         /// <summary>
-        /// Default timeout value for connecting a server.
+        /// Gets/sets wire protocol that is used while reading and writing messages.
         /// </summary>
-        private const int DefaultConnectionAttemptTimeout = 15000; //15 seconds.
-
-        /// <summary>
-        /// The communication channel that is used by client to send and receive messages.
-        /// </summary>
-        private ICommunicationChannel _communicationChannel;
-
-        /// <summary>
-        /// This timer is used to send PingMessage messages to server periodically.
-        /// </summary>
-        private readonly Timer _pingTimer;
-
-        #endregion
-        
-        #region Constructor
-
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        protected ScsClientBase()
+        public IScsWireProtocol WireProtocol
         {
-            _pingTimer = new Timer(30000);
-            _pingTimer.Elapsed += PingTimer_Elapsed;
-            ConnectTimeout = DefaultConnectionAttemptTimeout;
-            WireProtocol = WireProtocolManager.GetDefaultWireProtocol();
+            get { return _wireProtocol; }
+            set
+            {
+                if (CommunicationState == CommunicationStates.Connected)
+                {
+                    throw new ApplicationException("Wire protocol can not be changed while connected to server.");
+                }
+
+                _wireProtocol = value;
+            }
         }
 
         #endregion
 
-        #region Public methods
+        #region Methods
 
         /// <summary>
         /// Connects to server.
@@ -194,87 +194,11 @@ namespace OpenNos.Core.Communication.Scs.Client
             _communicationChannel.SendMessage(message);
         }
 
-        #endregion
-
-        #region Abstract methods
-
         /// <summary>
         /// This method is implemented by derived Classs to create appropriate communication channel.
         /// </summary>
         /// <returns>Ready communication channel to communicate</returns>
         protected abstract ICommunicationChannel CreateCommunicationChannel();
-
-        #endregion
-
-        #region Private methods
-
-        /// <summary>
-        /// Handles MessageReceived event of _communicationChannel object.
-        /// </summary>
-        /// <param name="sender">Source of event</param>
-        /// <param name="e">Event arguments</param>
-        private void CommunicationChannel_MessageReceived(object sender, MessageEventArgs e)
-        {
-            if (e.Message is ScsPingMessage)
-            {
-                return;
-            }
-
-            OnMessageReceived(e.Message);
-        }
-
-        /// <summary>
-        /// Handles MessageSent event of _communicationChannel object.
-        /// </summary>
-        /// <param name="sender">Source of event</param>
-        /// <param name="e">Event arguments</param>
-        private void CommunicationChannel_MessageSent(object sender, MessageEventArgs e)
-        {
-            OnMessageSent(e.Message);
-        }
-
-        /// <summary>
-        /// Handles Disconnected event of _communicationChannel object.
-        /// </summary>
-        /// <param name="sender">Source of event</param>
-        /// <param name="e">Event arguments</param>
-        private void CommunicationChannel_Disconnected(object sender, EventArgs e)
-        {
-            _pingTimer.Stop();
-            OnDisconnected();
-        }
-
-        /// <summary>
-        /// Handles Elapsed event of _pingTimer to send PingMessage messages to server.
-        /// </summary>
-        /// <param name="sender">Source of event</param>
-        /// <param name="e">Event arguments</param>
-        private void PingTimer_Elapsed(object sender, EventArgs e)
-        {
-            if (CommunicationState != CommunicationStates.Connected)
-            {
-                return;
-            }
-
-            try
-            {
-                var lastMinute = DateTime.Now.AddMinutes(-1);
-                if (_communicationChannel.LastReceivedMessageTime > lastMinute || _communicationChannel.LastSentMessageTime > lastMinute)
-                {
-                    return;
-                }
-
-                _communicationChannel.SendMessage(new ScsPingMessage());
-            }
-            catch
-            {
-
-            }
-        }
-
-        #endregion
-
-        #region Event raising methods
 
         /// <summary>
         /// Raises Connected event.
@@ -323,6 +247,69 @@ namespace OpenNos.Core.Communication.Scs.Client
             if (handler != null)
             {
                 handler(this, new MessageEventArgs(message));
+            }
+        }
+
+        /// <summary>
+        /// Handles Disconnected event of _communicationChannel object.
+        /// </summary>
+        /// <param name="sender">Source of event</param>
+        /// <param name="e">Event arguments</param>
+        private void CommunicationChannel_Disconnected(object sender, EventArgs e)
+        {
+            _pingTimer.Stop();
+            OnDisconnected();
+        }
+
+        /// <summary>
+        /// Handles MessageReceived event of _communicationChannel object.
+        /// </summary>
+        /// <param name="sender">Source of event</param>
+        /// <param name="e">Event arguments</param>
+        private void CommunicationChannel_MessageReceived(object sender, MessageEventArgs e)
+        {
+            if (e.Message is ScsPingMessage)
+            {
+                return;
+            }
+
+            OnMessageReceived(e.Message);
+        }
+
+        /// <summary>
+        /// Handles MessageSent event of _communicationChannel object.
+        /// </summary>
+        /// <param name="sender">Source of event</param>
+        /// <param name="e">Event arguments</param>
+        private void CommunicationChannel_MessageSent(object sender, MessageEventArgs e)
+        {
+            OnMessageSent(e.Message);
+        }
+
+        /// <summary>
+        /// Handles Elapsed event of _pingTimer to send PingMessage messages to server.
+        /// </summary>
+        /// <param name="sender">Source of event</param>
+        /// <param name="e">Event arguments</param>
+        private void PingTimer_Elapsed(object sender, EventArgs e)
+        {
+            if (CommunicationState != CommunicationStates.Connected)
+            {
+                return;
+            }
+
+            try
+            {
+                var lastMinute = DateTime.Now.AddMinutes(-1);
+                if (_communicationChannel.LastReceivedMessageTime > lastMinute || _communicationChannel.LastSentMessageTime > lastMinute)
+                {
+                    return;
+                }
+
+                _communicationChannel.SendMessage(new ScsPingMessage());
+            }
+            catch
+            {
             }
         }
 
