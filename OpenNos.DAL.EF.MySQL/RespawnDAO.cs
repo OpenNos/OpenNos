@@ -30,8 +30,8 @@ namespace OpenNos.DAL.EF.MySQL
             using (var context = DataAccessHelper.CreateContext())
             {
                 long characterId = respawn.CharacterId;
-                short teleportType = respawn.TeleportType;
-                Respawn entity = context.respawn.SingleOrDefault(c => c.TeleportType.Equals(teleportType) && c.CharacterId.Equals(characterId));
+                short respawnType = respawn.RespawnType;
+                Respawn entity = context.respawn.SingleOrDefault(c => c.RespawnType.Equals(respawnType) && c.CharacterId.Equals(characterId));
 
                 if (entity == null) //new entity
                 {

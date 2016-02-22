@@ -991,7 +991,7 @@
           <Property Name="X" Type="Int16" Nullable="false" />
           <Property Name="Y" Type="Int16" Nullable="false" />
           <Property Name="MapId" Type="Int16" Nullable="false" />
-          <Property Name="TeleportType" Type="Int16" Nullable="false" />
+          <Property Name="RespawnType" Type="Int16" Nullable="false" />
           <Property Name="CharacterId" Type="Int64" Nullable="false" />
         </EntityType>
         <Association Name="CharacterRespawn">
@@ -1257,7 +1257,7 @@
           <ScalarProperty Name="X" ColumnName="X" />
           <ScalarProperty Name="Y" ColumnName="Y" />
           <ScalarProperty Name="MapId" ColumnName="MapId" />
-          <ScalarProperty Name="TeleportType" ColumnName="TeleportType" />
+          <ScalarProperty Name="RespawnType" ColumnName="TeleportType" />
           <ScalarProperty Name="CharacterId" ColumnName="CharacterId" />
         </MappingFragment>
       </EntityTypeMapping>
