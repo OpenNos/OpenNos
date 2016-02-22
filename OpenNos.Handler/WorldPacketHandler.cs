@@ -679,12 +679,10 @@ namespace OpenNos.Handler
                         if (Session.Character.WhisperBlocked = int.Parse(packetsplit[3]) == 0 ? true : false)
                         {
                             Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("WHISPER_BLOCKED"), 0));
-                            Logger.Log.Debug("Session.Character.WhisperBlocked: " + Session.Character.WhisperBlocked);
                         }
                         else
                         {
                             Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("WHISPER_UNLOCKED"), 0));
-                            Logger.Log.Debug("Session.Character.WhisperBlocked: " + Session.Character.WhisperBlocked);
                         }
                         break;
                     case (int)ConfigType.FamilyRequestBlocked:
