@@ -300,4 +300,7 @@
   <data name="USER_NOT_HERO" xml:space="preserve">
     <value>Nur Helden dürfen die Heldennachrichten benutzen.</value>
   </data>
+  <data name="WHISPERED_BLOCKED" xml:space="preserve">
+    <value>WHISPERED_BLOCKED</value>
+  </data>
 </root>

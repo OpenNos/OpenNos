@@ -26,6 +26,7 @@ namespace OpenNos.Import.Console
             IEnumerable<ItemDTO> items = DatParser.Parse<ItemDTO>(file);
 
             int i = 0;
+
         }
 
         public void ImportPortals()
