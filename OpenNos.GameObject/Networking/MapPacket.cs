@@ -11,11 +11,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  */
+
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OpenNos.GameObject
 {
@@ -23,9 +20,9 @@ namespace OpenNos.GameObject
     {
         #region Members
 
+        private ReceiverType all;
         private string characterName;
         private string packet;
-        private ReceiverType all;
 
         #endregion
 
@@ -49,11 +46,11 @@ namespace OpenNos.GameObject
 
         #region Properties
 
-        public ClientSession Session { get; set; }
-
         public String Content { get; set; }
 
         public ReceiverType Receiver { get; set; }
+
+        public ClientSession Session { get; set; }
 
         #endregion
     }

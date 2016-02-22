@@ -11,24 +11,14 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  */
-using AutoMapper;
-using OpenNos.Data;
-using System;
+
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OpenNos.GameObject
 {
     public class MapShop
     {
-
         #region Instantiation
-        public long OwnerId { get; set; }
-        public string Name { get; set; }
-        public List<PersonalShopItem> Items { get; set; }
-        public long Sell { get; internal set; }
 
         public MapShop()
         {
@@ -38,8 +28,15 @@ namespace OpenNos.GameObject
 
         #endregion
 
-        #region Methods
+        #region Properties
 
+        public List<PersonalShopItem> Items { get; set; }
+
+        public string Name { get; set; }
+
+        public long OwnerId { get; set; }
+
+        public long Sell { get; internal set; }
 
         #endregion
     }

@@ -11,21 +11,21 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  */
-using AutoMapper;
-using OpenNos.Data;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OpenNos.GameObject
 {
     public class PersonalShopItem : InventoryItem
     {
-        public long Price { get; set; }
+        #region Properties
+
         public short InvSlot { get; set; }
+
         public short InvType { get; set; }
+
+        public long Price { get; set; }
+
         public short Slot { get; set; }
+
+        #endregion
     }
 }

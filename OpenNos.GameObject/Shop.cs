@@ -11,15 +11,12 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  */
+
 using AutoMapper;
 using OpenNos.DAL;
 using OpenNos.Data;
-using OpenNos.GameObject;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OpenNos.GameObject
 {
@@ -32,7 +29,6 @@ namespace OpenNos.GameObject
 
         #region Instantiation
 
-
         public Shop(int shopId)
         {
             Mapper.CreateMap<ShopDTO, Shop>();
@@ -44,7 +40,6 @@ namespace OpenNos.GameObject
                 ShopItems.Add(new ShopItem() { ItemVNum = item.ItemVNum, Rare = item.Rare, ShopItemId = item.ShopItemId, Slot = item.Slot, Upgrade = item.Upgrade, Color = item.Color });
             }
         }
-
 
         #endregion
 

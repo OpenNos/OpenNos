@@ -11,15 +11,13 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  */
-using OpenNos.Core;
-using OpenNos.Data;
+
+using AutoMapper;
 using OpenNos.DAL;
+using OpenNos.Data;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.ComponentModel;
-using AutoMapper;
 
 namespace OpenNos.GameObject
 {
@@ -28,18 +26,18 @@ namespace OpenNos.GameObject
         #region Members
 
         private char[,] _grid;
+        private List<Npc> _npcs;
+        private List<Portal> _portals;
+        private Guid _uniqueIdentifier;
         private int _xLength;
         private int _yLength;
-        private Guid _uniqueIdentifier;
-        private List<Portal> _portals;
-        private List<Npc> _npcs;
 
         #endregion
 
         #region Instantiation
+
         public Map(short mapId, Guid uniqueIdentifier, byte[] data)
         {
-
             Mapper.CreateMap<MapDTO, Map>();
             Mapper.CreateMap<Map, MapDTO>();
 
@@ -65,7 +63,6 @@ namespace OpenNos.GameObject
                     Type = portal.Type,
                     PortalId = portal.PortalId,
                     IsDisabled = portal.IsDisabled
-                    
                 });
             }
             IEnumerable<NpcDTO> npcsDTO = DAOFactory.NpcDAO.LoadFromMap(MapId);
@@ -90,7 +87,19 @@ namespace OpenNos.GameObject
 
         #region Properties
 
+        public IDictionary<long, MapItem> DroppedList { get; set; }
+
+        public int IsDancing { get; set; }
+
         public EventHandler NotifyClients { get; set; }
+
+        public List<Npc> Npcs
+        {
+            get
+            {
+                return _npcs;
+            }
+        }
 
         public List<Portal> Portals
         {
@@ -100,18 +109,7 @@ namespace OpenNos.GameObject
             }
         }
 
-        public List<Npc> Npcs
-        {
-            get
-            {
-                return _npcs;
-            }
-        }
         public Dictionary<long, MapShop> ShopUserList { get; set; }
-
-        public IDictionary<long, MapItem> DroppedList { get; set; }
-
-        public int IsDancing { get; set; }
 
         #endregion
 
@@ -135,7 +133,6 @@ namespace OpenNos.GameObject
             int numBytesToRead = 1;
             int numBytesRead = 0;
 
-
             stream.Read(bytes, numBytesRead, numBytesToRead);
             _xLength = bytes[0];
             stream.Read(bytes, numBytesRead, numBytesToRead);
@@ -145,7 +142,6 @@ namespace OpenNos.GameObject
             _grid = new char[_yLength, _xLength];
             for (int i = 0; i < _yLength; ++i)
             {
-
                 for (int t = 0; t < _xLength; ++t)
                 {
                     stream.Read(bytes, numBytesRead, numBytesToRead);
@@ -153,7 +149,6 @@ namespace OpenNos.GameObject
                 }
             }
         }
-   
 
         #endregion
     }

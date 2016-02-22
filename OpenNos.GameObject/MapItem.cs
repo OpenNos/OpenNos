@@ -11,22 +11,12 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  */
-using AutoMapper;
-using OpenNos.Data;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OpenNos.GameObject
 {
     public class MapItem : InventoryItem
     {
-
         #region Instantiation
-        public short PositionX { get; set; }
-        public short PositionY { get; set; }
 
         public MapItem(short x, short y)
         {
@@ -36,8 +26,11 @@ namespace OpenNos.GameObject
 
         #endregion
 
-        #region Methods
+        #region Properties
 
+        public short PositionX { get; set; }
+
+        public short PositionY { get; set; }
 
         #endregion
     }

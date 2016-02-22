@@ -9,7 +9,9 @@ namespace OpenNos.Import.Console
 {
     public class Program
     {
-        static void Main(string[] args)
+        #region Methods
+
+        private static void Main(string[] args)
         {
             Logger.InitializeLogger(LogManager.GetLogger(typeof(Program)));
             Assembly assembly = Assembly.GetExecutingAssembly();
@@ -31,9 +33,9 @@ namespace OpenNos.Import.Console
             System.Console.ResetColor();
             System.Console.WriteLine("----------0\n----------1\n----------...");
             Logger.Log.Warn(Language.Instance.GetMessageFromKey("ENTER_PATH"));
-            string folder = System.Console.ReadLine();     
+            string folder = System.Console.ReadLine();
             ImportFactory factory = new ImportFactory(folder);
-           
+
             //factory.ImportItems();
             factory.ImportMaps();
             factory.ImportPortals();
@@ -41,5 +43,7 @@ namespace OpenNos.Import.Console
             factory.importShops();
             Thread.Sleep(5000);
         }
+
+        #endregion
     }
 }

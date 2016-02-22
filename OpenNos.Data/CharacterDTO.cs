@@ -1,4 +1,18 @@
-﻿using OpenNos.Domain;
+﻿/*
+ * This file is part of the OpenNos Emulator Project. See AUTHORS file for Copyright information
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
+using OpenNos.Domain;
 
 namespace OpenNos.Data
 {
@@ -9,6 +23,8 @@ namespace OpenNos.Data
         public long AccountId { get; set; }
 
         public int Backpack { get; set; }
+
+        public bool BuffBlocked { get; set; }
 
         public long CharacterId { get; set; }
 
@@ -28,44 +44,33 @@ namespace OpenNos.Data
 
         public short Compliment { get; set; }
 
-        public bool ExchangeBlocked { get; set; }
-
-        public bool FriendRequestBlocked { get; set; }
-
-        public bool WhisperBlocked { get; set; }
-
-        public bool FamilyRequestBlocked { get; set; }
-
-
-        public bool GroupRequestBlocked { get; set; }
-
-        public bool MouseAimLock { get; set; }
-
-        public bool HeroChatBlocked { get; set; }
+        public int Dignite { get; set; }
 
         public bool EmoticonsBlocked { get; set; }
 
-        public bool QuickGetUp { get; set; }
-
-        public bool HpBlocked { get; set; }
-
-        public bool BuffBlocked { get; set; }
-
-        public bool MinilandInviteBlocked { get; set; }
-
-        public int Dignite { get; set; }
+        public bool ExchangeBlocked { get; set; }
 
         public int Faction { get; set; }
+
+        public bool FamilyRequestBlocked { get; set; }
+
+        public bool FriendRequestBlocked { get; set; }
 
         public byte Gender { get; set; }
 
         public long Gold { get; set; }
 
+        public bool GroupRequestBlocked { get; set; }
+
         public byte HairColor { get; set; }
 
         public byte HairStyle { get; set; }
 
+        public bool HeroChatBlocked { get; set; }
+
         public int Hp { get; set; }
+
+        public bool HpBlocked { get; set; }
 
         public byte JobLevel { get; set; }
 
@@ -81,9 +86,15 @@ namespace OpenNos.Data
 
         public short MapY { get; set; }
 
+        public bool MinilandInviteBlocked { get; set; }
+
+        public bool MouseAimLock { get; set; }
+
         public int Mp { get; set; }
 
         public string Name { get; set; }
+
+        public bool QuickGetUp { get; set; }
 
         public long Reput { get; set; }
 
@@ -106,6 +117,8 @@ namespace OpenNos.Data
                 State = (byte)value;
             }
         }
+
+        public bool WhisperBlocked { get; set; }
 
         #endregion
     }

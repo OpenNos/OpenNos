@@ -11,35 +11,27 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  */
+
+using OpenNos.Core;
 using OpenNos.Core.Communication.Scs.Communication.EndPoints.Tcp;
-using OpenNos.Core.Communication.Scs.Communication.Messages;
 using OpenNos.Core.Communication.Scs.Server;
 using System;
-using System.Reflection;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Threading;
-using System.Collections.Concurrent;
-using OpenNos.Core;
-using System.IO;
-using OpenNos.Data;
-using OpenNos.DAL;
 
 namespace OpenNos.GameObject
 {
     public class NetworkManager<EncryptorT>
         where EncryptorT : EncryptionBase
     {
-
         #region Members
 
-        private Type _packetHandler;
-        private EncryptorT _encryptor;
         private IDictionary<String, DateTime> _connectionLog;
-        private ConcurrentDictionary<long, ClientSession> _sessions = new ConcurrentDictionary<long, ClientSession>();
+        private EncryptorT _encryptor;
         private ConcurrentDictionary<Guid, Map> _maps = new ConcurrentDictionary<Guid, Map>();
+        private Type _packetHandler;
+        private ConcurrentDictionary<long, ClientSession> _sessions = new ConcurrentDictionary<long, ClientSession>();
 
         #endregion
 
@@ -63,56 +55,31 @@ namespace OpenNos.GameObject
 
         #endregion
 
-        #region Event Handlers
+        #region Properties
 
-        void Server_ClientConnected(object sender, ServerClientEventArgs e)
+        public IDictionary<String, DateTime> ConnectionLog
         {
-            Logger.Log.Info(Language.Instance.GetMessageFromKey("NEW_CONNECT") + e.Client.ClientId);
-            NetworkClient customClient = e.Client as NetworkClient;
-
-            if (!CheckConnectionLog(customClient))
+            get
             {
-                Logger.Log.WarnFormat(Language.Instance.GetMessageFromKey("FORCED_DISCONNECT"), customClient.ClientId);
-                customClient.Disconnect();
-                return;
+                if (_connectionLog == null)
+                {
+                    _connectionLog = new Dictionary<String, DateTime>();
+                }
+
+                return _connectionLog;
             }
-
-            ClientSession session = new ClientSession(customClient);
-            session.Initialize(_encryptor, _packetHandler);
-            ClientLinkManager.Instance.sessions.Add(session);
-            if (!_sessions.TryAdd(customClient.ClientId, session))
+            set
             {
-                ClientLinkManager.Instance.sessions.Remove(session);
-                Logger.Log.WarnFormat(Language.Instance.GetMessageFromKey("FORCED_DISCONNECT"), customClient.ClientId);
-                customClient.Disconnect();
-                _sessions.TryRemove(customClient.ClientId, out session);
-                return;
-            };
-        }
-
-        void Server_ClientDisconnected(object sender, ServerClientEventArgs e)
-        {      
-            ClientSession session;
-            _sessions.TryRemove(e.Client.ClientId, out session);
-            ClientLinkManager.Instance.sessions.Remove(session);
-            session.Character.Save();
-            if (session.Character != null)
-            {
-                //only remove the character from map if the character has been set
-                ClientLinkManager.Instance.Broadcast(session, session.Character.GenerateOut(), ReceiverType.AllOnMapExceptMe);
+                if (_connectionLog != value)
+                {
+                    _connectionLog = value;
+                }
             }
-            if (session.HealthThread != null && session.HealthThread.IsAlive)
-                session.HealthThread.Abort();
-            session.Destroy();
-            e.Client.Disconnect();
-            Logger.Log.Info(Language.Instance.GetMessageFromKey("DISCONNECT") + e.Client.ClientId);
-            session = null;
         }
 
         #endregion
 
         #region Methods
-
 
         private bool CheckConnectionLog(NetworkClient client)
         {
@@ -138,28 +105,48 @@ namespace OpenNos.GameObject
             }
         }
 
-        #endregion
-
-        #region Properties
-
-        public IDictionary<String, DateTime> ConnectionLog
+        private void Server_ClientConnected(object sender, ServerClientEventArgs e)
         {
-            get
-            {
-                if (_connectionLog == null)
-                {
-                    _connectionLog = new Dictionary<String, DateTime>();
-                }
+            Logger.Log.Info(Language.Instance.GetMessageFromKey("NEW_CONNECT") + e.Client.ClientId);
+            NetworkClient customClient = e.Client as NetworkClient;
 
-                return _connectionLog;
-            }
-            set
+            if (!CheckConnectionLog(customClient))
             {
-                if (_connectionLog != value)
-                {
-                    _connectionLog = value;
-                }
+                Logger.Log.WarnFormat(Language.Instance.GetMessageFromKey("FORCED_DISCONNECT"), customClient.ClientId);
+                customClient.Disconnect();
+                return;
             }
+
+            ClientSession session = new ClientSession(customClient);
+            session.Initialize(_encryptor, _packetHandler);
+            ClientLinkManager.Instance.sessions.Add(session);
+            if (!_sessions.TryAdd(customClient.ClientId, session))
+            {
+                ClientLinkManager.Instance.sessions.Remove(session);
+                Logger.Log.WarnFormat(Language.Instance.GetMessageFromKey("FORCED_DISCONNECT"), customClient.ClientId);
+                customClient.Disconnect();
+                _sessions.TryRemove(customClient.ClientId, out session);
+                return;
+            };
+        }
+
+        private void Server_ClientDisconnected(object sender, ServerClientEventArgs e)
+        {
+            ClientSession session;
+            _sessions.TryRemove(e.Client.ClientId, out session);
+            ClientLinkManager.Instance.sessions.Remove(session);
+            session.Character.Save();
+            if (session.Character != null)
+            {
+                //only remove the character from map if the character has been set
+                ClientLinkManager.Instance.Broadcast(session, session.Character.GenerateOut(), ReceiverType.AllOnMapExceptMe);
+            }
+            if (session.HealthThread != null && session.HealthThread.IsAlive)
+                session.HealthThread.Abort();
+            session.Destroy();
+            e.Client.Disconnect();
+            Logger.Log.Info(Language.Instance.GetMessageFromKey("DISCONNECT") + e.Client.ClientId);
+            session = null;
         }
 
         #endregion

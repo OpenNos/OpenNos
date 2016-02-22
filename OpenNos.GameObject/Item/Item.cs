@@ -11,25 +11,28 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  */
+
 using AutoMapper;
 using OpenNos.Data;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OpenNos.GameObject
 {
     public abstract class Item : ItemDTO
     {
+        #region Instantiation
+
         public Item()
         {
             Mapper.CreateMap<ItemDTO, Item>();
             Mapper.CreateMap<Item, ItemDTO>();
         }
 
+        #endregion
+
+        #region Methods
+
         public abstract void Use(ClientSession Session);
-       
+
+        #endregion
     }
 }

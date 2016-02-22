@@ -11,6 +11,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  */
+
 using OpenNos.Domain;
 using System;
 
@@ -18,6 +19,67 @@ namespace OpenNos.GameObject
 {
     public class ServersData
     {
+        #region Members
+
+        private static int[,] criticalDist = null;
+
+        private static int[,] criticalDistRate = null;
+
+        private static int[,] criticalHit = null;
+
+        private static int[,] criticalHitRate = null;
+
+        private static int[,] DistDef = null;
+
+        private static int[,] DistDodge = null;
+
+        private static int[,] distRate = null;
+
+        private static double[] firstjobxpData = null;
+
+        private static int[,] hitDef = null;
+
+        private static int[,] hitDodge = null;
+
+        private static int[,] hitRate = null;
+
+        private static int[,] HP = null;
+
+        private static int[] hpHealth = null;
+
+        private static int[] hpHealthStand = null;
+
+        private static int[,] magicalDef = null;
+
+        private static int[,] maxDist = null;
+
+        private static int[,] maxHit = null;
+
+        private static int[,] minDist = null;
+
+        //difference between class
+        private static int[,] minHit = null;
+
+        private static int[,] MP = null;
+
+        private static int[] mpHealth = null;
+
+        private static int[] mpHealthStand = null;
+
+        private static double[] secondjobxpData = null;
+
+        //STAT DATA
+        private static int[] speedData = null;
+
+        private static double[] spxpData = null;
+
+        //same for all class
+        private static double[] xpData = null;
+
+        #endregion
+
+        #region Instantiation
+
         private ServersData()
         {
             LoadSpeedData();
@@ -33,123 +95,10 @@ namespace OpenNos.GameObject
             LoadMpHealthStand();
         }
 
-        //same for all class
-        private static double[] xpData = null;
-        private static double[] firstjobxpData = null;
-        private static double[] secondjobxpData = null;
-        private static double[] spxpData = null;
-        //difference between class
-        private static int[,] minHit = null;
-        private static int[,] maxHit = null;
-        private static int[,] hitRate = null;
-        private static int[,] criticalHitRate = null;
-        private static int[,] criticalHit = null;
-        private static int[,] minDist = null;
-        private static int[,] maxDist = null;
-        private static int[,] distRate = null;
-        private static int[,] criticalDistRate = null;
-        private static int[,] criticalDist = null;
-        private static int[,] hitDef = null;
-        private static int[,] hitDodge = null;
-        private static int[,] DistDef = null;
-        private static int[,] DistDodge = null;
-        private static int[,] magicalDef = null;
-        private static int[] hpHealth = null;
-        private static int[] mpHealth = null;
-        private static int[] hpHealthStand = null;
-        private static int[] mpHealthStand = null;
-        //STAT DATA
-        private static int[] speedData = null;
-        private static int[,] HP = null;
-        private static int[,] MP = null;
-        public static int[,] MPData
-        {
-            get
-            {
-                if (MP == null)
-                {
-                    new ServersData();
-                }
-                return MP;
-            }
-        }
-        public static int[] HpHealth
-        {
-            get
-            {
-                if (hpHealth == null)
-                {
-                    new ServersData();
-                }
-                return hpHealth;
-            }
-        }
-        public static int[] HpHealthStand
-        {
-            get
-            {
-                if (hpHealthStand == null)
-                {
-                    new ServersData();
-                }
-                return hpHealthStand;
-            }
-        }
-        public static int[] MpHealth
-        {
-            get
-            {
-                if (mpHealth == null)
-                {
-                    new ServersData();
-                }
-                return mpHealth;
-            }
-        }
-        public static int[] MpHealthStand
-        {
-            get
-            {
-                if (mpHealthStand == null)
-                {
-                    new ServersData();
-                }
-                return mpHealthStand;
-            }
-        }
-        public static int[,] HPData
-        {
-            get
-            {
-                if (HP == null)
-                {
-                    new ServersData();
-                }
-                return HP;
-            }
-        }
-        public static int[] SpeedData
-        {
-            get
-            {
-                if (speedData == null)
-                {
-                    new ServersData();
-                }
-                return speedData;
-            }
-        }
-        public static double[] XPData
-        {
-            get
-            {
-                if (xpData == null)
-                {
-                    new ServersData();
-                }
-                return xpData;
-            }
-        }
+        #endregion
+
+        #region Properties
+
         public static double[] FirstJobXPData
         {
             get
@@ -161,6 +110,79 @@ namespace OpenNos.GameObject
                 return firstjobxpData;
             }
         }
+
+        public static int[,] HPData
+        {
+            get
+            {
+                if (HP == null)
+                {
+                    new ServersData();
+                }
+                return HP;
+            }
+        }
+
+        public static int[] HpHealth
+        {
+            get
+            {
+                if (hpHealth == null)
+                {
+                    new ServersData();
+                }
+                return hpHealth;
+            }
+        }
+
+        public static int[] HpHealthStand
+        {
+            get
+            {
+                if (hpHealthStand == null)
+                {
+                    new ServersData();
+                }
+                return hpHealthStand;
+            }
+        }
+
+        public static int[,] MPData
+        {
+            get
+            {
+                if (MP == null)
+                {
+                    new ServersData();
+                }
+                return MP;
+            }
+        }
+
+        public static int[] MpHealth
+        {
+            get
+            {
+                if (mpHealth == null)
+                {
+                    new ServersData();
+                }
+                return mpHealth;
+            }
+        }
+
+        public static int[] MpHealthStand
+        {
+            get
+            {
+                if (mpHealthStand == null)
+                {
+                    new ServersData();
+                }
+                return mpHealthStand;
+            }
+        }
+
         public static double[] SecondJobXPData
         {
             get
@@ -172,6 +194,19 @@ namespace OpenNos.GameObject
                 return secondjobxpData;
             }
         }
+
+        public static int[] SpeedData
+        {
+            get
+            {
+                if (speedData == null)
+                {
+                    new ServersData();
+                }
+                return speedData;
+            }
+        }
+
         public static double[] SpXPData
         {
             get
@@ -183,6 +218,274 @@ namespace OpenNos.GameObject
                 return spxpData;
             }
         }
+
+        public static double[] XPData
+        {
+            get
+            {
+                if (xpData == null)
+                {
+                    new ServersData();
+                }
+                return xpData;
+            }
+        }
+
+        #endregion
+
+        #region Methods
+
+        public static int SpPoint(short spLevel, short upgrade)
+        {
+            int point = (spLevel - 20) * 3;
+            switch (upgrade)
+            {
+                case 1:
+                    point += 5;
+                    break;
+
+                case 2:
+                    point += 10;
+                    break;
+
+                case 3:
+                    point += 15;
+                    break;
+
+                case 4:
+                    point += 20;
+                    break;
+
+                case 5:
+                    point += 28;
+                    break;
+
+                case 6:
+                    point += 36;
+                    break;
+
+                case 7:
+                    point += 46;
+                    break;
+
+                case 8:
+                    point += 56;
+                    break;
+
+                case 9:
+                    point += 68;
+                    break;
+
+                case 10:
+                    point += 80;
+                    break;
+
+                case 11:
+                    point += 95;
+                    break;
+
+                case 12:
+                    point += 110;
+                    break;
+
+                case 13:
+                    point += 128;
+                    break;
+
+                case 14:
+                    point += 148;
+                    break;
+
+                case 15:
+                    point += 173;
+                    break;
+            }
+            return point;
+        }
+
+        internal static int DarkResistance(byte @class, byte level)
+        {
+            return 0;
+        }
+
+        internal static int Defence(byte @class, byte level)
+        {
+            return hitDef[@class, level];
+        }
+
+        internal static int DefenceRate(byte @class, byte level)
+        {
+            return hitDodge[@class, level];
+        }
+
+        internal static int DistanceDefence(byte @class, byte level)
+        {
+            return DistDef[@class, level];
+        }
+
+        internal static int DistanceDefenceRate(byte @class, byte level)
+        {
+            return DistDodge[@class, level];
+        }
+
+        internal static int DistanceRate(byte @class, byte level)
+        {
+            return distRate[@class, level];
+        }
+
+        internal static int DistCritical(byte @class, byte level)
+        {
+            return criticalDist[@class, level];
+        }
+
+        internal static int DistCriticalRate(byte @class, byte level)
+        {
+            return criticalDistRate[@class, level];
+        }
+
+        internal static int FireResistance(byte @class, byte level)
+        {
+            return 0;
+        }
+
+        internal static int HitCritical(byte @class, byte level)
+        {
+            return criticalHit[@class, level];
+        }
+
+        internal static int HitCriticalRate(byte @class, byte level)
+        {
+            return criticalHitRate[@class, level];
+        }
+
+        internal static int HitRate(byte @class, byte level)
+        {
+            return hitRate[@class, level];
+        }
+
+        internal static int LightResistance(byte @class, byte level)
+        {
+            return 0;
+        }
+
+        internal static int MagicalDefence(byte @class, byte level)
+        {
+            return magicalDef[@class, level];
+        }
+
+        internal static int MaxDistance(byte @class, byte level)
+        {
+            return maxDist[@class, level];
+        }
+
+        internal static int MaxHit(byte @class, byte level)
+        {
+            return maxHit[@class, level];
+        }
+
+        internal static int MinDistance(byte @class, byte level)
+        {
+            return minDist[@class, level];
+        }
+
+        internal static int MinHit(byte @class, byte level)
+        {
+            return minHit[@class, level];
+        }
+
+        internal static int SlPoint(short spPoint, short mode)
+        {
+            int point = 0;
+            switch (mode)
+            {
+                case 0:
+                    if (spPoint <= 10)
+                        point = spPoint;
+                    else if (spPoint <= 28)
+                        point = 10 + (spPoint - 10) / 2;
+                    else if (spPoint <= 88)
+                        point = 19 + (spPoint - 28) / 3;
+                    else if (spPoint <= 168)
+                        point = 39 + (spPoint - 88) / 4;
+                    else if (spPoint <= 268)
+                        point = 59 + (spPoint - 168) / 5;
+                    else if (spPoint <= 334)
+                        point = 79 + (spPoint - 268) / 6;
+                    else if (spPoint <= 383)
+                        point = 90 + (spPoint - 334) / 7;
+                    else if (spPoint <= 391)
+                        point = 97 + (spPoint - 383) / 8;
+                    else if (spPoint <= 400)
+                        point = 98 + (spPoint - 391) / 9;
+                    else if (spPoint <= 410)
+                        point = 99 + (spPoint - 400) / 10;
+                    break;
+
+                case 2:
+                    if (spPoint <= 20)
+                        point = spPoint;
+                    else if (spPoint <= 40)
+                        point = 20 + (spPoint - 20) / 2;
+                    else if (spPoint <= 70)
+                        point = 30 + (spPoint - 40) / 3;
+                    else if (spPoint <= 110)
+                        point = 40 + (spPoint - 70) / 4;
+                    else if (spPoint <= 210)
+                        point = 50 + (spPoint - 110) / 5;
+                    else if (spPoint <= 270)
+                        point = 70 + (spPoint - 210) / 6;
+                    else if (spPoint <= 410)
+                        point = 80 + (spPoint - 270) / 7;
+                    break;
+
+                case 1:
+                    if (spPoint <= 10)
+                        point = spPoint;
+                    else if (spPoint <= 48)
+                        point = 10 + (spPoint - 10) / 2;
+                    else if (spPoint <= 81)
+                        point = 29 + (spPoint - 48) / 3;
+                    else if (spPoint <= 161)
+                        point = 40 + (spPoint - 81) / 4;
+                    else if (spPoint <= 236)
+                        point = 60 + (spPoint - 161) / 5;
+                    else if (spPoint <= 290)
+                        point = 75 + (spPoint - 236) / 6;
+                    else if (spPoint <= 360)
+                        point = 84 + (spPoint - 290) / 7;
+                    else if (spPoint <= 400)
+                        point = 97 + (spPoint - 360) / 8;
+                    else if (spPoint <= 410)
+                        point = 99 + (spPoint - 400) / 10;
+                    break;
+
+                case 3:
+                    if (spPoint <= 10)
+                        point = spPoint;
+                    else if (spPoint <= 50)
+                        point = 10 + (spPoint - 10) / 2;
+                    else if (spPoint <= 110)
+                        point = 30 + (spPoint - 50) / 3;
+                    else if (spPoint <= 150)
+                        point = 50 + (spPoint - 110) / 4;
+                    else if (spPoint <= 200)
+                        point = 60 + (spPoint - 150) / 5;
+                    else if (spPoint <= 260)
+                        point = 70 + (spPoint - 200) / 6;
+                    else if (spPoint <= 330)
+                        point = 80 + (spPoint - 260) / 7;
+                    else if (spPoint <= 410)
+                        point = 90 + (spPoint - 330) / 8;
+                    break;
+            }
+            return point;
+        }
+
+        internal static int WaterResistance(byte @class, byte level)
+        {
+            return 0;
+        }
+
         private void LoadHpData()
         {
             HP = new int[4, 100];
@@ -190,7 +493,6 @@ namespace OpenNos.GameObject
             for (int i = 1; i < HP.GetLength(1); i++)
             {
                 HP[(int)ClassType.Adventurer, i] = (int)(1 / 2.0 * i * i + 31 / 2.0 * i + 205);
-
             }
 
             //Swordman HP
@@ -214,7 +516,6 @@ namespace OpenNos.GameObject
                     ++j;
                 }
                 HP[(int)ClassType.Swordman, i] = hp;
-
             }
 
             //Magician HP
@@ -243,6 +544,7 @@ namespace OpenNos.GameObject
                 HP[(int)ClassType.Archer, i] = hp;
             }
         }
+
         private void LoadHpHealth()
         {
             hpHealth = new int[4];
@@ -251,14 +553,7 @@ namespace OpenNos.GameObject
             hpHealth[(int)ClassType.Swordman] = 90;
             hpHealth[(int)ClassType.Magician] = 30;
         }
-        private void LoadMpHealth()
-        {
-            mpHealth = new int[4];
-            mpHealth[(int)ClassType.Archer] = 50;
-            mpHealth[(int)ClassType.Adventurer] = 10;
-            mpHealth[(int)ClassType.Swordman] = 30;
-            mpHealth[(int)ClassType.Magician] = 80;
-        }
+
         private void LoadHpHealthStand()
         {
             hpHealthStand = new int[4];
@@ -267,22 +562,7 @@ namespace OpenNos.GameObject
             hpHealthStand[(int)ClassType.Swordman] = 26;
             hpHealthStand[(int)ClassType.Magician] = 20;
         }
-        private void LoadMpHealthStand()
-        {
-            mpHealthStand = new int[4];
-            mpHealthStand[(int)ClassType.Archer] = 28;
-            mpHealthStand[(int)ClassType.Adventurer] = 5;
-            mpHealthStand[(int)ClassType.Swordman] = 16;
-            mpHealthStand[(int)ClassType.Magician] = 40;
-        }
-        private void LoadSpeedData()
-        {
-            speedData = new int[4];
-            speedData[(int)ClassType.Archer] = 12;
-            speedData[(int)ClassType.Adventurer] = 11;
-            speedData[(int)ClassType.Swordman] = 11;
-            speedData[(int)ClassType.Magician] = 10;
-        }
+
         private void LoadJobXpData()
         {
             //Load JobData
@@ -303,9 +583,89 @@ namespace OpenNos.GameObject
                 if (i > 40)
                     var2 = 15000;
                 secondjobxpData[i] = secondjobxpData[i - 1] + var2;
-
             }
         }
+
+        private void LoadMpData()
+        {
+            //ADVENTURER MP
+            MP = new int[4, 101];
+
+            int U0 = 9;
+            int U1 = 10;
+            MP[(int)ClassType.Adventurer, 0] = 60;
+            MP[(int)ClassType.Adventurer, 1] = 69;
+            MP[(int)ClassType.Adventurer, 2] = 78;
+            MP[(int)ClassType.Adventurer, 3] = 87;
+            MP[(int)ClassType.Adventurer, 4] = 97;
+
+            for (int i = 5; i < MP.GetLength(1); i += 4)
+            {
+                MP[(int)ClassType.Adventurer, i] = MP[(int)ClassType.Adventurer, i - 1] + (U0 + i / 2);
+                MP[(int)ClassType.Adventurer, i + 1] = MP[(int)ClassType.Adventurer, i] + (U0 + i / 2);
+                MP[(int)ClassType.Adventurer, i + 2] = MP[(int)ClassType.Adventurer, i + 1] + (U0 + i / 2);
+                MP[(int)ClassType.Adventurer, i + 3] = MP[(int)ClassType.Adventurer, i + 2] + (U1 + i / 2);
+            }
+
+            //SWORDMAN MP
+            for (int i = 0; i < MP.GetLength(1) - 1; i++)
+            {
+                MP[(int)ClassType.Swordman, i + 1] = MP[(int)ClassType.Adventurer, i];
+                MP[(int)ClassType.Adventurer, i] = MP[(int)ClassType.Swordman, i + 1];
+            }
+
+            //ARCHER MP
+            for (int i = 0; i < 15; i++)
+            {
+                MP[(int)ClassType.Archer, i] = MP[(int)ClassType.Adventurer, i];
+            }
+            MP[(int)ClassType.Archer, 15] = 240;
+            MP[(int)ClassType.Archer, 16] = 256;
+            MP[(int)ClassType.Archer, 17] = 273;
+            MP[(int)ClassType.Archer, 18] = 290;
+            MP[(int)ClassType.Archer, 19] = 307;
+            U0 = 18;
+            for (int i = 20; i < MP.GetLength(1) - 1; i += 4)
+            {
+                MP[(int)ClassType.Archer, i] = MP[(int)ClassType.Archer, i - 1] + U0 + ((i - 19) / 2);
+                MP[(int)ClassType.Archer, i + 1] = MP[(int)ClassType.Archer, i] + U0 + 1 + ((i - 19) / 2);
+                MP[(int)ClassType.Archer, i + 2] = MP[(int)ClassType.Archer, i + 1] + U0 + 1 + ((i - 19) / 2);
+                MP[(int)ClassType.Archer, i + 3] = MP[(int)ClassType.Archer, i + 2] + U0 + 1 + ((i - 19) / 2);
+            }
+            //MAGICIAN MP
+            for (int i = 0; i < MP.GetLength(1) - 1; i++)
+            {
+                MP[(int)ClassType.Magician, i] = 3 * MP[(int)ClassType.Adventurer, i];
+            }
+        }
+
+        private void LoadMpHealth()
+        {
+            mpHealth = new int[4];
+            mpHealth[(int)ClassType.Archer] = 50;
+            mpHealth[(int)ClassType.Adventurer] = 10;
+            mpHealth[(int)ClassType.Swordman] = 30;
+            mpHealth[(int)ClassType.Magician] = 80;
+        }
+
+        private void LoadMpHealthStand()
+        {
+            mpHealthStand = new int[4];
+            mpHealthStand[(int)ClassType.Archer] = 28;
+            mpHealthStand[(int)ClassType.Adventurer] = 5;
+            mpHealthStand[(int)ClassType.Swordman] = 16;
+            mpHealthStand[(int)ClassType.Magician] = 40;
+        }
+
+        private void LoadSpeedData()
+        {
+            speedData = new int[4];
+            speedData[(int)ClassType.Archer] = 12;
+            speedData[(int)ClassType.Adventurer] = 11;
+            speedData[(int)ClassType.Swordman] = 11;
+            speedData[(int)ClassType.Magician] = 10;
+        }
+
         private void LoadSpXpData()
         {
             //Load SpData
@@ -319,44 +679,6 @@ namespace OpenNos.GameObject
             for (int i = 20; i < spxpData.Length; i++)
             {
                 spxpData[i] = spxpData[i - 1] + 6 * (3 * i * (i + 1) + 1);
-            }
-        }
-        private void LoadXpData()
-        {
-            //Load XpData
-            xpData = new double[100];
-            double[] v = new double[100];
-            double var = 1;
-            v[0] = 540;
-            v[1] = 960;
-            xpData[0] = 300;
-            for (int i = 2; i < v.Length; i++)
-            {
-                v[i] = v[i - 1] + 420 + 120 * (i - 1);
-            }
-            for (int i = 1; i < xpData.Length; i++)
-            {
-                if (i < 79)
-
-                {
-
-                    if (i == 14) var = 6 / 3;
-                    else if (i == 39) var = (double)(19 / (double)3);
-                    else if (i == 59) var = (double)(70 / (double)3);
-                    xpData[i] = Convert.ToInt64(xpData[i - 1] + var * v[i - 1]);
-                }
-                if (i >= 79)
-                {
-                    if (i == 79)
-                        var = 5000;
-                    if (i == 82)
-                        var = 9000;
-                    if (i == 84)
-                        var = 13000;
-                    xpData[i] = Convert.ToInt64(xpData[i - 1] + var * (i + 2) * (i + 2));
-                }
-
-                //Console.WriteLine("lvl " + (i) + ":" + u[i - 1]);
             }
         }
 
@@ -378,7 +700,6 @@ namespace OpenNos.GameObject
             DistDef = new int[4, 100];
             DistDodge = new int[4, 100];
             magicalDef = new int[4, 100];
-
 
             for (int i = 0; i < 100; i++)
             {
@@ -413,10 +734,9 @@ namespace OpenNos.GameObject
                 hitRate[(int)ClassType.Swordman, i] = i + 27;//approx
                 hitDef[(int)ClassType.Swordman, i] = i + 2;//approx
 
-                minHit[(int)ClassType.Swordman, i] = 2 * i + 5;//approx 	Numbers n such that 10n+9 is prime. 
-                maxHit[(int)ClassType.Swordman, i] = 2 * i + 5;//approx  	Numbers n such that 10n+9 is prime. 
+                minHit[(int)ClassType.Swordman, i] = 2 * i + 5;//approx 	Numbers n such that 10n+9 is prime.
+                maxHit[(int)ClassType.Swordman, i] = 2 * i + 5;//approx  	Numbers n such that 10n+9 is prime.
                 DistDef[(int)ClassType.Swordman, i] = i;//approx
-
 
                 //MAGICIAN
                 hitRate[(int)ClassType.Magician, i] = 0;//sure
@@ -434,7 +754,7 @@ namespace OpenNos.GameObject
                 DistDodge[(int)ClassType.Magician, i] = 14 + i;//approx
 
                 minHit[(int)ClassType.Magician, i] = 2 * i + 9;//approx Numbers n such that n^2 is of form x^ 2 + 40y ^ 2 with positive x,y.
-                maxHit[(int)ClassType.Magician, i] = 2 * i + 9;//approx Numbers n such that n^2 is of form x^2+40y^2 with positive x,y. 
+                maxHit[(int)ClassType.Magician, i] = 2 * i + 9;//approx Numbers n such that n^2 is of form x^2+40y^2 with positive x,y.
                 DistDef[(int)ClassType.Magician, i] = 20 + i;//approx
 
                 //ARCHER
@@ -459,299 +779,45 @@ namespace OpenNos.GameObject
                 DistDef[(int)ClassType.Archer, i] = i;//approximate;
             }
         }
-        private void LoadMpData()
+
+        private void LoadXpData()
         {
-            //ADVENTURER MP
-            MP = new int[4, 101];
-
-            int U0 = 9;
-            int U1 = 10;
-            MP[(int)ClassType.Adventurer, 0] = 60;
-            MP[(int)ClassType.Adventurer, 1] = 69;
-            MP[(int)ClassType.Adventurer, 2] = 78;
-            MP[(int)ClassType.Adventurer, 3] = 87;
-            MP[(int)ClassType.Adventurer, 4] = 97;
-
-            for (int i = 5; i < MP.GetLength(1); i += 4)
+            //Load XpData
+            xpData = new double[100];
+            double[] v = new double[100];
+            double var = 1;
+            v[0] = 540;
+            v[1] = 960;
+            xpData[0] = 300;
+            for (int i = 2; i < v.Length; i++)
             {
-                MP[(int)ClassType.Adventurer, i] = MP[(int)ClassType.Adventurer, i - 1] + (U0 + i / 2);
-                MP[(int)ClassType.Adventurer, i + 1] = MP[(int)ClassType.Adventurer, i] + (U0 + i / 2);
-                MP[(int)ClassType.Adventurer, i + 2] = MP[(int)ClassType.Adventurer, i + 1] + (U0 + i / 2);
-                MP[(int)ClassType.Adventurer, i + 3] = MP[(int)ClassType.Adventurer, i + 2] + (U1 + i / 2);
-
+                v[i] = v[i - 1] + 420 + 120 * (i - 1);
             }
-
-            //SWORDMAN MP
-            for (int i = 0; i < MP.GetLength(1) - 1; i++)
+            for (int i = 1; i < xpData.Length; i++)
             {
+                if (i < 79)
 
-                MP[(int)ClassType.Swordman, i + 1] = MP[(int)ClassType.Adventurer, i];
-                MP[(int)ClassType.Adventurer, i] = MP[(int)ClassType.Swordman, i + 1];
+                {
+                    if (i == 14) var = 6 / 3;
+                    else if (i == 39) var = (double)(19 / (double)3);
+                    else if (i == 59) var = (double)(70 / (double)3);
+                    xpData[i] = Convert.ToInt64(xpData[i - 1] + var * v[i - 1]);
+                }
+                if (i >= 79)
+                {
+                    if (i == 79)
+                        var = 5000;
+                    if (i == 82)
+                        var = 9000;
+                    if (i == 84)
+                        var = 13000;
+                    xpData[i] = Convert.ToInt64(xpData[i - 1] + var * (i + 2) * (i + 2));
+                }
 
+                //Console.WriteLine("lvl " + (i) + ":" + u[i - 1]);
             }
-
-            //ARCHER MP
-            for (int i = 0; i < 15; i++)
-            {
-                MP[(int)ClassType.Archer, i] = MP[(int)ClassType.Adventurer, i];
-            }
-            MP[(int)ClassType.Archer, 15] = 240;
-            MP[(int)ClassType.Archer, 16] = 256;
-            MP[(int)ClassType.Archer, 17] = 273;
-            MP[(int)ClassType.Archer, 18] = 290;
-            MP[(int)ClassType.Archer, 19] = 307;
-            U0 = 18;
-            for (int i = 20; i < MP.GetLength(1) - 1; i += 4)
-            {
-                MP[(int)ClassType.Archer, i] = MP[(int)ClassType.Archer, i - 1] + U0 + ((i - 19) / 2);
-                MP[(int)ClassType.Archer, i + 1] = MP[(int)ClassType.Archer, i] + U0 + 1 + ((i - 19) / 2);
-                MP[(int)ClassType.Archer, i + 2] = MP[(int)ClassType.Archer, i + 1] + U0 + 1 + ((i - 19) / 2);
-                MP[(int)ClassType.Archer, i + 3] = MP[(int)ClassType.Archer, i + 2] + U0 + 1 + ((i - 19) / 2);
-
-            }
-            //MAGICIAN MP
-            for (int i = 0; i < MP.GetLength(1) - 1; i++)
-            {
-
-                MP[(int)ClassType.Magician, i] = 3 * MP[(int)ClassType.Adventurer, i];
-
-            }
-
-        }
-        internal static int HitCriticalRate(byte @class, byte level)
-        {
-
-            return criticalHitRate[@class, level];
         }
 
-        internal static int HitCritical(byte @class, byte level)
-        {
-            return criticalHit[@class, level];
-        }
-        internal static int DistCriticalRate(byte @class, byte level)
-        {
-            return criticalDistRate[@class, level];
-        }
-
-        internal static int DistCritical(byte @class, byte level)
-        {
-            return criticalDist[@class, level];
-        }
-
-        internal static int FireResistance(byte @class, byte level)
-        {
-            return 0;
-        }
-
-        internal static int LightResistance(byte @class, byte level)
-        {
-            return 0;
-        }
-
-        internal static int WaterResistance(byte @class, byte level)
-        {
-            return 0;
-        }
-        internal static int DarkResistance(byte @class, byte level)
-        {
-            return 0;
-        }
-        internal static int MagicalDefence(byte @class, byte level)
-        {
-            return magicalDef[@class, level];
-        }
-
-        internal static int MinHit(byte @class, byte level)
-        {
-            return minHit[@class, level];
-        }
-
-        internal static int MaxHit(byte @class, byte level)
-        {
-            return maxHit[@class, level];
-        }
-        internal static int HitRate(byte @class, byte level)
-        {
-            return hitRate[@class, level];
-        }
-
-        internal static int DistanceDefence(byte @class, byte level)
-        {
-            return DistDef[@class, level];
-        }
-
-        internal static int DistanceDefenceRate(byte @class, byte level)
-        {
-            return DistDodge[@class, level];
-        }
-
-        internal static int DefenceRate(byte @class, byte level)
-        {
-            return hitDodge[@class, level];
-        }
-
-        internal static int Defence(byte @class, byte level)
-        {
-            return hitDef[@class, level];
-        }
-
-
-
-
-
-
-        internal static int MinDistance(byte @class, byte level)
-        {
-
-            return minDist[@class, level];
-        }
-
-        internal static int MaxDistance(byte @class, byte level)
-        {
-            return maxDist[@class, level];
-        }
-
-        internal static int DistanceRate(byte @class, byte level)
-        {
-            return distRate[@class, level];
-        }
-        internal static int SlPoint(short spPoint, short mode)
-        {
-            int point = 0;
-            switch (mode)
-            {
-                case 0:
-                    if (spPoint <= 10)
-                        point = spPoint;
-                    else if (spPoint <= 28)
-                        point = 10 + (spPoint - 10) / 2;
-                    else if (spPoint <= 88)
-                        point = 19 + (spPoint - 28) / 3;
-                    else if (spPoint <= 168)
-                        point = 39 + (spPoint - 88) / 4;
-                    else if (spPoint <= 268)
-                        point = 59 + (spPoint - 168) / 5;
-                    else if (spPoint <= 334)
-                        point = 79 + (spPoint - 268) / 6;
-                    else if (spPoint <= 383)
-                        point = 90 + (spPoint - 334) / 7;
-                    else if (spPoint <= 391)
-                        point = 97 + (spPoint - 383) / 8;
-                    else if (spPoint <= 400)
-                        point = 98 + (spPoint - 391) / 9;
-                    else if (spPoint <= 410)
-                        point = 99 + (spPoint - 400) / 10;
-                    break;
-                case 2:
-                    if (spPoint <= 20)
-                        point = spPoint;
-                    else if (spPoint <= 40)
-                        point = 20 + (spPoint - 20) / 2;
-                    else if (spPoint <= 70)
-                        point = 30 + (spPoint - 40) / 3;
-                    else if (spPoint <= 110)
-                        point = 40 + (spPoint - 70) / 4;
-                    else if (spPoint <= 210)
-                        point = 50 + (spPoint - 110) / 5;
-                    else if (spPoint <= 270)
-                        point = 70 + (spPoint - 210) / 6;
-                    else if (spPoint <= 410)
-                        point = 80 + (spPoint - 270) / 7;
-                    break;
-                case 1:
-                    if (spPoint <= 10)
-                        point = spPoint;
-                    else if (spPoint <= 48)
-                        point = 10 + (spPoint - 10) / 2;
-                    else if (spPoint <= 81)
-                        point = 29 + (spPoint - 48) / 3;
-                    else if (spPoint <= 161)
-                        point = 40 + (spPoint - 81) / 4;
-                    else if (spPoint <= 236)
-                        point = 60 + (spPoint - 161) / 5;
-                    else if (spPoint <= 290)
-                        point = 75 + (spPoint - 236) / 6;
-                    else if (spPoint <= 360)
-                        point = 84 + (spPoint - 290) / 7;
-                    else if (spPoint <= 400)
-                        point = 97 + (spPoint - 360) / 8;
-                    else if (spPoint <= 410)
-                        point = 99 + (spPoint - 400) / 10;
-                    break;
-                case 3:
-                    if (spPoint <= 10)
-                        point = spPoint;
-                    else if (spPoint <= 50)
-                        point = 10 + (spPoint - 10) / 2;
-                    else if (spPoint <= 110)
-                        point = 30 + (spPoint - 50) / 3;
-                    else if (spPoint <= 150)
-                        point = 50 + (spPoint - 110) / 4;
-                    else if (spPoint <= 200)
-                        point = 60 + (spPoint - 150) / 5;
-                    else if (spPoint <= 260)
-                        point = 70 + (spPoint - 200) / 6;
-                    else if (spPoint <= 330)
-                        point = 80 + (spPoint - 260) / 7;
-                    else if (spPoint <= 410)
-                        point = 90 + (spPoint - 330) / 8;
-                    break;
-                    
-            }
-            return point;
-        }
-        public static int SpPoint(short spLevel, short upgrade)
-        {
-            int point = (spLevel - 20) * 3;
-            switch (upgrade)
-            {
-                case 1:
-                    point += 5;
-                    break;
-                case 2:
-                    point += 10;
-                    break;
-                case 3:
-                    point += 15;
-                    break;
-                case 4:
-                    point += 20;
-                    break;
-                case 5:
-                    point += 28;
-                    break;
-                case 6:
-                    point += 36;
-                    break;
-                case 7:
-                    point += 46;
-                    break;
-                case 8:
-                    point += 56;
-                    break;
-                case 9:
-                    point += 68;
-                    break;
-                case 10:
-                    point += 80;
-                    break;
-                case 11:
-                    point += 95;
-                    break;
-                case 12:
-                    point += 110;
-                    break;
-                case 13:
-                    point += 128;
-                    break;
-                case 14:
-                    point += 148;
-                    break;
-                case 15:
-                    point += 173;
-                    break;
-            }
-            return point;
-        }
+        #endregion
     }
 }

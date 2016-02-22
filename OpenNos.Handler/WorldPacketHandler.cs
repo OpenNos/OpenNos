@@ -151,7 +151,7 @@ namespace OpenNos.Handler
                         Language.Instance.GetMessageFromKey("NOT_ENOUGH_MONEY")));
                     return;
                 }
-                // i like cookies
+
                 Session.Character.Gold -= item.Price*amount;
                 Session.Client.SendPacket(Session.Character.GenerateGold());
                 InventoryItem newItem = new InventoryItem

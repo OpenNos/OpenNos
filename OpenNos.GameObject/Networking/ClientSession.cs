@@ -11,19 +11,16 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  */
+
 using OpenNos.Core;
 using OpenNos.Core.Communication.Scs.Communication.Messages;
-using OpenNos.GameObject;
+using OpenNos.Domain;
+using OpenNos.ServiceRef.Internal;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using OpenNos.Data;
 using System.Threading;
-using OpenNos.Domain;
-using OpenNos.ServiceRef.Internal;
 
 namespace OpenNos.GameObject
 {
@@ -31,16 +28,18 @@ namespace OpenNos.GameObject
     {
         #region Members
 
-        private NetworkClient _client;
+        private static EncryptionBase _encryptor;
         private Account _account;
         private Character _character;
+        private NetworkClient _client;
         private IDictionary<Packet, Tuple<MethodInfo, object>> _handlerMethods;
-        private static EncryptionBase _encryptor;
         private SequentialItemProcessor<byte[]> _queue;
-        private Thread healthThread;
+        private IList<String> _waitForPacketList = new List<String>();
+
         //Packetwait Packets
         private int? _waitForPacketsAmount;
-        private IList<String> _waitForPacketList = new List<String>();
+
+        private Thread healthThread;
 
         #endregion
 
@@ -65,8 +64,41 @@ namespace OpenNos.GameObject
 
         #region Properties
 
-        public int SessionId { get; set; }
-        public int LastKeepAliveIdentity { get; set; }
+        public Account Account
+        {
+            get
+            {
+                return _account;
+            }
+            set
+            {
+                _account = value;
+            }
+        }
+
+        public Character Character
+        {
+            get
+            {
+                return _character;
+            }
+            set
+            {
+                _character = value;
+            }
+        }
+
+        public NetworkClient Client
+        {
+            get
+            {
+                return _client;
+            }
+            set
+            {
+                _client = value;
+            }
+        }
 
         public Map CurrentMap { get; set; }
 
@@ -88,18 +120,6 @@ namespace OpenNos.GameObject
             }
         }
 
-        public Account Account
-        {
-            get
-            {
-                return _account;
-            }
-            set
-            {
-                _account = value;
-            }
-        }
-
         public Thread HealthThread
         {
             get
@@ -111,47 +131,64 @@ namespace OpenNos.GameObject
                 healthThread = value;
             }
         }
-        public Character Character
-        {
-            get
-            {
-                return _character;
-            }
-            set
-            {
-                _character = value;
-            }
-        }
-        public NetworkClient Client
-        {
-            get
-            {
-                return _client;
-            }
-            set
-            {
-                _client = value;
-            }
-        }
+
+        public int LastKeepAliveIdentity { get; set; }
+
+        public int SessionId { get; set; }
 
         #endregion
 
         #region Methods
 
         /// <summary>
-        /// This will be triggered when the underlying NetworkCleint receives a packet.
+        /// Destroy ClientSession
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void NetworkClient_MessageReceived(object sender, MessageEventArgs e)
+        public void Destroy()
         {
-            var message = e.Message as ScsRawDataMessage;
-            if (message == null)
+            //do everything necessary before removing client, DB save, Whatever
+
+            if (Character != null)
             {
-                return;
+                //disconnect client
+                ServiceFactory.Instance.CommunicationService.DisconnectCharacter(Character.Name);
             }
 
-            _queue.EnqueueMessage(message.MessageData);
+            if (Account != null)
+            {
+                ServiceFactory.Instance.CommunicationService.DisconnectAccount(Account.Name);
+            }
+        }
+
+        public void Initialize(EncryptionBase encryptor, Type packetHandler)
+        {
+            _encryptor = encryptor;
+            _client.Initialize(encryptor);
+
+            //dynamically create packethandler references
+            GenerateHandlerReferences(packetHandler);
+        }
+
+        public void InitializeAccount(Account account)
+        {
+            Account = account;
+            ServiceFactory.Instance.CommunicationService.ConnectAccount(account.Name, SessionId);
+        }
+
+        private bool GenerateHandlerReferences(Type handlerType)
+        {
+            object handler = Activator.CreateInstance(handlerType, new object[] { this });
+
+            foreach (MethodInfo methodInfo in handlerType.GetMethods().Where(x => x.GetCustomAttributes(false).OfType<Packet>().Any()))
+            {
+                Packet packetAttribute = methodInfo.GetCustomAttributes(false).OfType<Packet>().SingleOrDefault();
+
+                if (packetAttribute != null)
+                {
+                    HandlerMethods.Add(packetAttribute, new Tuple<MethodInfo, object>(methodInfo, handler));
+                }
+            }
+
+            return false;
         }
 
         /// <summary>
@@ -182,8 +219,6 @@ namespace OpenNos.GameObject
             }
 
             string packetConcatenated = _encryptor.Decrypt(packetData, (int)this.SessionId);
-
-
 
             foreach (string packet in packetConcatenated.Split(new char[] { (char)0xFF }, StringSplitOptions.RemoveEmptyEntries))
             {
@@ -272,44 +307,23 @@ namespace OpenNos.GameObject
                         Logger.Log.WarnFormat(Language.Instance.GetMessageFromKey("HANDLER_NOT_FOUND"), packetHeader);
                     }
                 }
-
-
             }
         }
 
         /// <summary>
-        /// Destroy ClientSession
+        /// This will be triggered when the underlying NetworkCleint receives a packet.
         /// </summary>
-        public void Destroy()
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void NetworkClient_MessageReceived(object sender, MessageEventArgs e)
         {
-            //do everything necessary before removing client, DB save, Whatever
-
-            if (Character != null)
+            var message = e.Message as ScsRawDataMessage;
+            if (message == null)
             {
-                //disconnect client
-                ServiceFactory.Instance.CommunicationService.DisconnectCharacter(Character.Name);
+                return;
             }
 
-            if(Account != null)
-            {
-                ServiceFactory.Instance.CommunicationService.DisconnectAccount(Account.Name);
-            }        
-        }
-        
-
-        public void Initialize(EncryptionBase encryptor, Type packetHandler)
-        {
-            _encryptor = encryptor;
-            _client.Initialize(encryptor);
-
-            //dynamically create packethandler references
-            GenerateHandlerReferences(packetHandler);
-        }
-
-        public void InitializeAccount(Account account)
-        {
-            Account = account;
-            ServiceFactory.Instance.CommunicationService.ConnectAccount(account.Name, SessionId);
+            _queue.EnqueueMessage(message.MessageData);
         }
 
         private bool TriggerHandler(string packetHeader, string packet, bool force)
@@ -333,24 +347,6 @@ namespace OpenNos.GameObject
 
             return false;
         }
-
-        private bool GenerateHandlerReferences(Type handlerType)
-        {
-            object handler = Activator.CreateInstance(handlerType, new object[] { this });
-
-            foreach (MethodInfo methodInfo in handlerType.GetMethods().Where(x => x.GetCustomAttributes(false).OfType<Packet>().Any()))
-            {
-                Packet packetAttribute = methodInfo.GetCustomAttributes(false).OfType<Packet>().SingleOrDefault();
-
-                if (packetAttribute != null)
-                {
-                    HandlerMethods.Add(packetAttribute, new Tuple<MethodInfo, object>(methodInfo, handler));
-                }
-            }
-
-            return false;
-        }
-
 
         #endregion
     }

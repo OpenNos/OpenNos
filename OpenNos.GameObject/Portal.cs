@@ -11,13 +11,9 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  */
+
 using AutoMapper;
 using OpenNos.Data;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OpenNos.GameObject
 {
@@ -30,10 +26,6 @@ namespace OpenNos.GameObject
             Mapper.CreateMap<PortalDTO, Portal>();
             Mapper.CreateMap<Portal, PortalDTO>();
         }
-
-        #endregion
-
-        #region Methods
 
         #endregion
     }

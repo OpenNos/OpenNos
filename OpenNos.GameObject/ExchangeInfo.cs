@@ -11,26 +11,14 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  */
-using AutoMapper;
-using OpenNos.Core;
-using OpenNos.Data;
-using System;
+
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OpenNos.GameObject
 {
     public class ExchangeInfo
     {
-
         #region Instantiation
-        public List<InventoryItem> ExchangeList { get; set; }
-        public bool Confirm { get; set; }
-        public bool Validate { get; set; }
-        public long Gold { get; set; }
-        public long CharId { get; set; }
 
         public ExchangeInfo()
         {
@@ -43,8 +31,17 @@ namespace OpenNos.GameObject
 
         #endregion
 
-        #region Methods
+        #region Properties
 
+        public long CharId { get; set; }
+
+        public bool Confirm { get; set; }
+
+        public List<InventoryItem> ExchangeList { get; set; }
+
+        public long Gold { get; set; }
+
+        public bool Validate { get; set; }
 
         #endregion
     }

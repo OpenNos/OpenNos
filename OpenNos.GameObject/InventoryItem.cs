@@ -11,20 +11,15 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  */
+
 using AutoMapper;
 using OpenNos.DAL;
 using OpenNos.Data;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OpenNos.GameObject
 {
     public class InventoryItem : InventoryItemDTO, IGameObject
     {
-
         #region Instantiation
 
         public InventoryItem()
@@ -35,13 +30,15 @@ namespace OpenNos.GameObject
 
         #endregion
 
+        #region Enums
+
         public enum RarifyMode
         {
             Normal,
             Reduced,
             Free
         }
-        
+
         public enum RarifyProtection
         {
             None,
@@ -62,6 +59,8 @@ namespace OpenNos.GameObject
             None,
             Protected
         }
+
+        #endregion
 
         #region Methods
 

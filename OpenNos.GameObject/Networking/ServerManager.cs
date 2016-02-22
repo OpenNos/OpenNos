@@ -11,7 +11,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  */
-using AutoMapper;
+
 using OpenNos.Core;
 using OpenNos.DAL;
 using OpenNos.Data;
@@ -19,12 +19,9 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace OpenNos.GameObject
 {
@@ -32,25 +29,32 @@ namespace OpenNos.GameObject
     {
         #region Members
 
-        private static ConcurrentDictionary<Guid, Map> _maps = new ConcurrentDictionary<Guid, Map>();
         private static List<Item> _items = new List<Item>();
+        private static ConcurrentDictionary<Guid, Map> _maps = new ConcurrentDictionary<Guid, Map>();
+
         #endregion
 
-        #region Event Handlers
+        #region Properties
+
+        public static EventHandler NotifyChildren { get; set; }
 
         #endregion
 
         #region Methods
-        public static void MemoryWatch(string type)
-        {
-            Assembly assembly = Assembly.GetEntryAssembly();
-            FileVersionInfo fileVersionInfo = FileVersionInfo.GetVersionInfo(assembly.Location);
-            while (true)
-            {
 
-                Console.Title = $"{type} v{fileVersionInfo.ProductVersion} - Memory: {GC.GetTotalMemory(true) / (1024 * 1024)}MB";
-                Thread.Sleep(1000);
-            }
+        public static ConcurrentDictionary<Guid, Map> GetAllMap()
+        {
+            return _maps;
+        }
+
+        public static Item GetItem(short vnum)
+        {
+            return _items.SingleOrDefault(m => m.VNum.Equals(vnum));
+        }
+
+        public static Map GetMap(short id)
+        {
+            return _maps.SingleOrDefault(m => m.Value.MapId.Equals(id)).Value;
         }
 
         public static void Initialize()
@@ -128,8 +132,8 @@ namespace OpenNos.GameObject
                     _maps.TryAdd(guid, newMap);
                     i++;
                 }
-                if(i!=0)
-                Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("MAP_LOADED"), i));
+                if (i != 0)
+                    Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("MAP_LOADED"), i));
                 else
                     Logger.Log.Error(Language.Instance.GetMessageFromKey("NO_MAP"));
             }
@@ -137,19 +141,17 @@ namespace OpenNos.GameObject
             {
                 Logger.Log.Error(ex.Message);
             }
+        }
 
-        }
-        public static Item GetItem(short vnum)
+        public static void MemoryWatch(string type)
         {
-            return _items.SingleOrDefault(m => m.VNum.Equals(vnum));
-        }
-        public static Map GetMap(short id)
-        {
-            return _maps.SingleOrDefault(m => m.Value.MapId.Equals(id)).Value;
-        }
-        public static ConcurrentDictionary<Guid, Map> GetAllMap()
-        {
-            return _maps;
+            Assembly assembly = Assembly.GetEntryAssembly();
+            FileVersionInfo fileVersionInfo = FileVersionInfo.GetVersionInfo(assembly.Location);
+            while (true)
+            {
+                Console.Title = $"{type} v{fileVersionInfo.ProductVersion} - Memory: {GC.GetTotalMemory(true) / (1024 * 1024)}MB";
+                Thread.Sleep(1000);
+            }
         }
 
         public static void OnBroadCast(MapPacket mapPacket)
@@ -162,7 +164,5 @@ namespace OpenNos.GameObject
         }
 
         #endregion
-
-        public static EventHandler NotifyChildren { get; set; }
     }
 }
