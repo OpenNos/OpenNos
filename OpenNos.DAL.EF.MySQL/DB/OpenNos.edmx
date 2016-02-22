@@ -71,8 +71,8 @@
       <End Role="ShopItem" EntitySet="shopitem" />
     </AssociationSet>
     <AssociationSet Name="CharacterRespawn" Association="opennosModel.Store.CharacterRespawn">
-      <End Role="Character" EntitySet="character" />
       <End Role="Respawn" EntitySet="respawn" />
+      <End Role="Character" EntitySet="character" />
     </AssociationSet>
   </EntityContainer>
   <EntityType Name="account">
@@ -478,8 +478,8 @@
     </ReferentialConstraint>
   </Association>
   <Association Name="CharacterRespawn">
-    <End Role="Character" Type="opennosModel.Store.character" Multiplicity="1" />
     <End Role="Respawn" Type="opennosModel.Store.respawn" Multiplicity="*" />
+    <End Role="Character" Type="opennosModel.Store.character" Multiplicity="1" />
     <ReferentialConstraint>
       <Principal Role="Character">
         <PropertyRef Name="CharacterId" />
@@ -641,8 +641,8 @@
           </AssociationSet>
           <EntitySet Name="respawn" EntityType="opennosModel.Respawn" />
           <AssociationSet Name="CharacterRespawn" Association="opennosModel.CharacterRespawn">
-            <End Role="Character" EntitySet="character" />
             <End Role="Respawn" EntitySet="respawn" />
+            <End Role="Character" EntitySet="character" />
           </AssociationSet>
           </EntityContainer>
         <Association Name="AccountCharacter">
@@ -986,16 +986,16 @@
             <PropertyRef Name="RespawnId" />
           </Key>
           <Property Name="RespawnId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <NavigationProperty Name="character" Relationship="opennosModel.CharacterRespawn" FromRole="Respawn" ToRole="Character" />
           <Property Name="X" Type="Int16" Nullable="false" />
           <Property Name="Y" Type="Int16" Nullable="false" />
           <Property Name="MapId" Type="Int16" Nullable="false" />
           <Property Name="RespawnType" Type="Int16" Nullable="false" />
           <Property Name="CharacterId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="None" />
+          <NavigationProperty Name="character" Relationship="opennosModel.CharacterRespawn" FromRole="Respawn" ToRole="Character" />
         </EntityType>
         <Association Name="CharacterRespawn">
-          <End Type="opennosModel.Character" Role="Character" Multiplicity="1" />
           <End Type="opennosModel.Respawn" Role="Respawn" Multiplicity="*" />
+          <End Type="opennosModel.Character" Role="Character" Multiplicity="1" />
           <ReferentialConstraint>
             <Principal Role="Character">
               <PropertyRef Name="CharacterId" />
