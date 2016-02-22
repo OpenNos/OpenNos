@@ -318,9 +318,8 @@
     <Property Name="X" Type="smallint" Nullable="false" />
     <Property Name="Y" Type="smallint" Nullable="false" />
     <Property Name="MapId" Type="smallint" Nullable="false" />
-    <Property Name="TeleportType" Type="smallint" Nullable="false" />
+    <Property Name="RespawnType" Type="smallint" Nullable="false" />
     <Property Name="CharacterId" Type="bigint" Nullable="false" />
-    <Property Name="character_CharacterId" Type="bigint" Nullable="false" />
   </EntityType>
   <Association Name="AccountCharacter">
     <End Role="Account" Type="opennosModel.Store.account" Multiplicity="1" />
@@ -486,7 +485,7 @@
         <PropertyRef Name="CharacterId" />
       </Principal>
       <Dependent Role="Respawn">
-        <PropertyRef Name="character_CharacterId" />
+        <PropertyRef Name="CharacterId" />
       </Dependent>
     </ReferentialConstraint>
   </Association>
@@ -992,11 +991,19 @@
           <Property Name="Y" Type="Int16" Nullable="false" />
           <Property Name="MapId" Type="Int16" Nullable="false" />
           <Property Name="RespawnType" Type="Int16" Nullable="false" />
-          <Property Name="CharacterId" Type="Int64" Nullable="false" />
+          <Property Name="CharacterId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="None" />
         </EntityType>
         <Association Name="CharacterRespawn">
           <End Type="opennosModel.Character" Role="Character" Multiplicity="1" />
           <End Type="opennosModel.Respawn" Role="Respawn" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Character">
+              <PropertyRef Name="CharacterId" />
+            </Principal>
+            <Dependent Role="Respawn">
+              <PropertyRef Name="CharacterId" />
+            </Dependent>
+          </ReferentialConstraint>
         </Association>
         </Schema>
     </edmx:ConceptualModels>
@@ -1257,19 +1264,11 @@
           <ScalarProperty Name="X" ColumnName="X" />
           <ScalarProperty Name="Y" ColumnName="Y" />
           <ScalarProperty Name="MapId" ColumnName="MapId" />
-          <ScalarProperty Name="RespawnType" ColumnName="TeleportType" />
+          <ScalarProperty Name="RespawnType" ColumnName="RespawnType" />
           <ScalarProperty Name="CharacterId" ColumnName="CharacterId" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
-    <AssociationSetMapping Name="CharacterRespawn" TypeName="opennosModel.CharacterRespawn" StoreEntitySet="respawn">
-      <EndProperty Name="Character">
-        <ScalarProperty Name="CharacterId" ColumnName="character_CharacterId" />
-      </EndProperty>
-      <EndProperty Name="Respawn">
-        <ScalarProperty Name="RespawnId" ColumnName="RespawnId" />
-      </EndProperty>
-    </AssociationSetMapping>
   </EntityContainerMapping>
 </Mapping></edmx:Mappings>
   </edmx:Runtime>
