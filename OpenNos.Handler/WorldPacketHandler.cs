@@ -303,7 +303,7 @@ namespace OpenNos.Handler
             this.GetStats(String.Empty);
             Session.Client.SendPacket(Session.Character.GenerateCond());
             ClientLinkManager.Instance.Broadcast(Session, Session.Character.GeneratePairy(), ReceiverType.AllOnMap);
-            Session.Client.SendPacket($"rsfi 1 1 4 9 4 9"); //stone act
+            Session.Client.SendPacket($"rsfi 1 1 0 9 0 9"); //stone act
             ClientLinkManager.Instance.RequiereBroadcastFromAllMapUsers(Session, "GenerateIn"); //need to see if changeMap change the sp :D  ClientLinkManager.Instance.RequiereBroadcastFromAllMapUsers(Session, "GenerateCMode");
 
             ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllOnMapExceptMe);
@@ -477,10 +477,13 @@ namespace OpenNos.Handler
                     {
                         if (Session.Account.LastCompliment.Date.AddDays(1) <= DateTime.Now.Date)
                         {
-                            CharacterDTO complimentCharacter = DAOFactory.CharacterDAO.LoadById(complimentCharacterId);
-                            complimentCharacter.Compliment++;
-                            DAOFactory.CharacterDAO.InsertOrUpdate(ref complimentCharacter);
-                            Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("COMPLIMENT_GIVEN"), complimentCharacter.Name), 12));
+                            short compliment = (short)ClientLinkManager.Instance.RequiereProperties(complimentCharacterId,"Compliment");
+                            compliment++;
+                            ClientLinkManager.Instance.SetProperties(complimentCharacterId, "Compliment", compliment);
+                            Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("COMPLIMENT_GIVEN"), ClientLinkManager.Instance.RequiereProperties(complimentCharacterId, "Name")), 12));
+                            AccountDTO account = Session.Account;
+                            account.LastCompliment = DateTime.Now;
+                            DAOFactory.AccountDAO.InsertOrUpdate(ref account);
                             ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("COMPLIMENT_RECEIVED"), Session.Character.Name), 12), ReceiverType.OnlySomeone, packetsplit[1].Substring(1));
                         }
                         else

@@ -284,6 +284,17 @@ namespace OpenNos.GameObject
             }
         }
 
+        public void SetProperties(long charId, string properties, object value)
+        {
+            ClientSession session = sessions.FirstOrDefault(s => s.Character != null && s.Character.CharacterId.Equals(charId));
+
+            if (session != null)
+            {
+                var property = session.Character.GetType().GetProperties().Single(pi => pi.Name == properties);
+                property.SetValue(session.Character, value, null);
+            }
+        }
+
         #endregion
     }
 }
