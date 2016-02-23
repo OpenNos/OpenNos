@@ -133,7 +133,7 @@
     <value>Lucznik</value>
   </data>
   <data name="ASK_ACCEPT" xml:space="preserve">
-    <value>ASK_ACCEPT</value>
+    <value>Ktos chcial sie z toba wymienic</value>
   </data>
   <data name="ASK_TO_DELETE" xml:space="preserve">
     <value>Czy chcesz usunac?</value>
@@ -439,7 +439,7 @@
     <value>Wiadomosc jest za duza ({0} bytes). maksymalna dlugosc {1} bytes.</value>
   </data>
   <data name="TRADE_BLOCKED" xml:space="preserve">
-    <value>TRADE_BLOCKED</value>
+    <value>Uzytkownik zablokowal opcje wymiany</value>
   </data>
   <data name="TRANSFORM_DISAPEAR" xml:space="preserve">
     <value>Odswiezenie zakonczone.</value>
@@ -463,10 +463,10 @@
     <value>Uzytkownik nie polaczony.</value>
   </data>
   <data name="USER_NOT_HERO" xml:space="preserve">
-    <value>Only heroes may use hero messages.</value>
+    <value>Tylko bohaterowie moga uzywac czatu bohaterow.</value>
   </data>
   <data name="WHISPERED_BLOCKED" xml:space="preserve">
-    <value>Inna postac nie chce abys napisal jej prywatna wiadomosc</value>
+    <value>Uzytkownik zablokowal prywatne wiadomosci</value>
   </data>
   <data name="WHISPER_BLOCKED" xml:space="preserve">
     <value>Szept zablokowany</value>

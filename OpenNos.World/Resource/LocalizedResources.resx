@@ -133,7 +133,7 @@
     <value>Archer</value>
   </data>
   <data name="ASK_ACCEPT" xml:space="preserve">
-    <value>ASK_ACCEPT</value>
+    <value>Someone wants to exchange with you</value>
   </data>
   <data name="ASK_TO_DELETE" xml:space="preserve">
     <value>Do you want to delete?</value>
@@ -439,7 +439,7 @@
     <value>Message is too big ({0} bytes). Max allowed length is {1} bytes.</value>
   </data>
   <data name="TRADE_BLOCKED" xml:space="preserve">
-    <value>TRADE_BLOCKED</value>
+    <value>User has blocked exchanges</value>
   </data>
   <data name="TRANSFORM_DISAPEAR" xml:space="preserve">
     <value>Cooldown finished.</value>
@@ -466,7 +466,7 @@
     <value>Only heroes may use hero messages.</value>
   </data>
   <data name="WHISPERED_BLOCKED" xml:space="preserve">
-    <value>The other character don't want to be contacted via PM</value>
+    <value>User has blocked private messages</value>
   </data>
   <data name="WHISPER_BLOCKED" xml:space="preserve">
     <value>Whisper blocked</value>
