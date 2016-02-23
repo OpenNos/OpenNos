@@ -304,8 +304,7 @@ namespace OpenNos.Handler
             Session.Client.SendPacket(Session.Character.GenerateCond());
             ClientLinkManager.Instance.Broadcast(Session, Session.Character.GeneratePairy(), ReceiverType.AllOnMap);
             Session.Client.SendPacket($"rsfi 1 1 0 9 0 9"); //stone act
-            ClientLinkManager.Instance.RequiereBroadcastFromAllMapUsers(Session, "GenerateIn"); //need to see if changeMap change the sp :D  ClientLinkManager.Instance.RequiereBroadcastFromAllMapUsers(Session, "GenerateCMode");
-
+            ClientLinkManager.Instance.RequiereBroadcastFromAllMapUsers(Session, "GenerateIn"); 
             ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllOnMapExceptMe);
             if (Session.CurrentMap.IsDancing == 2 && Session.Character.IsDancing == 0)
                 ClientLinkManager.Instance.RequiereBroadcastFromMap(Session.Character.MapId, "dance 2");
