@@ -129,6 +129,9 @@
   <data name="ARCHER" xml:space="preserve">
     <value>Bogenschütze</value>
   </data>
+  <data name="ASK_ACCEPT" xml:space="preserve">
+    <value>ASK_ACCEPT</value>
+  </data>
   <data name="BAD_FAIRY" xml:space="preserve">
     <value>The fairy element is not the same like sp!</value>
   </data>
@@ -279,6 +282,9 @@
   <data name="TOO_BIG" xml:space="preserve">
     <value>Nachricht ist zu groß ({0} bytes). Die maximale Länge beträgt{1} bytes.</value>
   </data>
+  <data name="TRADE_BLOCKED" xml:space="preserve">
+    <value>TRADE_BLOCKED</value>
+  </data>
   <data name="TRANSFORM_DISAPEAR" xml:space="preserve">
     <value>Cooldown finished.</value>
   </data>
@@ -301,6 +307,6 @@
     <value>Nur Helden dürfen die Heldennachrichten benutzen.</value>
   </data>
   <data name="WHISPERED_BLOCKED" xml:space="preserve">
-    <value>WHISPERED_BLOCKED</value>
+    <value>Der Kontakt will nicht angeflüstert werden.</value>
   </data>
 </root>

@@ -132,6 +132,9 @@
   <data name="ARCHER" xml:space="preserve">
     <value>Arciere</value>
   </data>
+  <data name="ASK_ACCEPT" xml:space="preserve">
+    <value>Qualcuno vuole scambiare con te</value>
+  </data>
   <data name="ASK_TO_DELETE" xml:space="preserve">
     <value>L'item verrà distrutto.</value>
   </data>
@@ -431,6 +434,9 @@
   </data>
   <data name="TOO_BIG" xml:space="preserve">
     <value>Il messaggio è troppo lungo ({0} bytes). La lunghezza massima consentità è di {1} bytes.</value>
+  </data>
+  <data name="TRADE_BLOCKED" xml:space="preserve">
+    <value>L'altra persona a il commercio bloccato</value>
   </data>
   <data name="TRANSFORM_DISAPEAR" xml:space="preserve">
     <value>L'effetto collaterale della trasformazione è terminato.</value>

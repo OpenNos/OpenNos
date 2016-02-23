@@ -132,6 +132,9 @@
   <data name="ARCHER" xml:space="preserve">
     <value>Archer</value>
   </data>
+  <data name="ASK_ACCEPT" xml:space="preserve">
+    <value>ASK_ACCEPT</value>
+  </data>
   <data name="BAD_FAIRY" xml:space="preserve">
     <value>La carte spécialiste et ta fée ont des attributs différents.</value>
   </data>
@@ -326,6 +329,9 @@
   </data>
   <data name="TOO_BIG" xml:space="preserve">
     <value>Message is too big ({0} bytes). Max allowed length is {1} bytes.</value>
+  </data>
+  <data name="TRADE_BLOCKED" xml:space="preserve">
+    <value>TRADE_BLOCKED</value>
   </data>
   <data name="TRANSFORM_DISAPEAR" xml:space="preserve">
     <value>L'effet secondaire de la transformation s'est dissiper</value>

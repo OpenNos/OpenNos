@@ -866,16 +866,28 @@ namespace OpenNos.Handler
 
             long charId = -1;
             string charName;
+            object Blocked;
+
 
             if (mode == 1)
             {
                 if (!long.TryParse(packetsplit[3], out charId)) return;
+                Blocked = ClientLinkManager.Instance.RequiereProperties(charId, "ExchangeBlocked");
 
-                Session.Character.ExchangeInfo = new ExchangeInfo { CharId = charId, Confirm = false };
+                if ((bool)Blocked)
+                {
+                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("TRADE_BLOCKED"), 11), ReceiverType.OnlyMe);
+                }
+                else
+                {
 
-                charName = (string)ClientLinkManager.Instance.RequiereProperties(charId, "Name");
-                Session.Client.SendPacket(Session.Character.GenerateModal($"{Language.Instance.GetMessageFromKey("YOU_ASK_FOR_EXCHANGE")} {charName}"));
-                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateDialog($"#req_exc^2^{Session.Character.CharacterId} #req_exc^5^{Session.Character.CharacterId} {Language.Instance.GetMessageFromKey("ASK_ACCEPT")}"), ReceiverType.OnlySomeone, charName);
+                    Session.Character.ExchangeInfo = new ExchangeInfo { CharId = charId, Confirm = false };
+
+                    charName = (string)ClientLinkManager.Instance.RequiereProperties(charId, "Name");
+                    Session.Client.SendPacket(Session.Character.GenerateModal($"{Language.Instance.GetMessageFromKey("YOU_ASK_FOR_EXCHANGE")} {charName}"));
+                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateDialog($"#req_exc^2^{Session.Character.CharacterId} #req_exc^5^{Session.Character.CharacterId} {Language.Instance.GetMessageFromKey("ASK_ACCEPT")}"), ReceiverType.OnlySomeone, charName);
+
+                }
             }
             else if (mode == 3)
             {

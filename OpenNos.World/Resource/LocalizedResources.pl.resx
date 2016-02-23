@@ -132,6 +132,9 @@
   <data name="ARCHER" xml:space="preserve">
     <value>Lucznik</value>
   </data>
+  <data name="ASK_ACCEPT" xml:space="preserve">
+    <value>ASK_ACCEPT</value>
+  </data>
   <data name="ASK_TO_DELETE" xml:space="preserve">
     <value>Czy chcesz usunac?</value>
   </data>
@@ -435,6 +438,9 @@
   <data name="TOO_BIG" xml:space="preserve">
     <value>Wiadomosc jest za duza ({0} bytes). maksymalna dlugosc {1} bytes.</value>
   </data>
+  <data name="TRADE_BLOCKED" xml:space="preserve">
+    <value>TRADE_BLOCKED</value>
+  </data>
   <data name="TRANSFORM_DISAPEAR" xml:space="preserve">
     <value>Odswiezenie zakonczone.</value>
   </data>
@@ -460,7 +466,7 @@
     <value>Only heroes may use hero messages.</value>
   </data>
   <data name="WHISPERED_BLOCKED" xml:space="preserve">
-    <value>WHISPERED_BLOCKED</value>
+    <value>Inna postac nie chce abys napisal jej prywatna wiadomosc</value>
   </data>
   <data name="WHISPER_BLOCKED" xml:space="preserve">
     <value>Szept zablokowany</value>
