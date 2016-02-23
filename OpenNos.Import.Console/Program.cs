@@ -54,7 +54,7 @@ namespace OpenNos.Import.Console
             factory.ImportMaps();
             factory.ImportPortals();
             factory.ImportNpcs();
-            factory.importShops();
+            factory.ImportShops();
             Thread.Sleep(5000);
         }
 

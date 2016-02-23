@@ -27,7 +27,7 @@ namespace OpenNos.Import.Console
     {
         #region Members
 
-        private string _folder;
+        private readonly string _folder;
 
         #endregion
 
@@ -47,299 +47,342 @@ namespace OpenNos.Import.Console
             string file = $"{_folder}\\Item.dat";
             IEnumerable<ItemDTO> items = DatParser.Parse<ItemDTO>(file);
 
+            // TODO is this Parse() fully working? where to put 'items' then?
+
             //int i = 0;
         }
 
         public void ImportMaps()
         {
-            string mapIdFile = $"{_folder}\\MapIDData.dat";
-            string mapIdText = $"{_folder}\\_code_{System.Configuration.ConfigurationManager.AppSettings["language"]}_MapIDData.txt";
-            string file = $"{_folder}\\map";
+            string fileMapIdDat = $"{_folder}\\MapIDData.dat";
+            string fileMapIdLang = $"{_folder}\\_code_{System.Configuration.ConfigurationManager.AppSettings["language"]}_MapIDData.txt";
             string filePacket = $"{_folder}\\packet.txt";
-
-            StreamReader MapId = new StreamReader(mapIdFile, Encoding.GetEncoding(1252));
-            StreamReader MapIdText = new StreamReader(mapIdText, Encoding.GetEncoding(1252));
-            StreamReader Packet = new StreamReader(filePacket, Encoding.GetEncoding(1252));
+            string folderMap = $"{_folder}\\map";
 
             Dictionary<int, string> dictionaryId = new Dictionary<int, string>();
-            Dictionary<string, string> dictionaryTextId = new Dictionary<string, string>();
+            Dictionary<string, string> dictionaryIdLang = new Dictionary<string, string>();
             Dictionary<int, int> dictionaryMusic = new Dictionary<int, int>();
 
-            DirectoryInfo dir = new DirectoryInfo(file);
-            FileInfo[] fichiers = dir.GetFiles();
             string line;
-            string line2;
-            int mapid;
             int i = 0;
-            while ((line = MapId.ReadLine()) != null)
+            using (StreamReader mapIdStream = new StreamReader(fileMapIdDat, Encoding.GetEncoding(1252)))
             {
-                string[] linesave = line.Split(' ');
-                if (linesave.Count() > 1)
+                while ((line = mapIdStream.ReadLine()) != null)
                 {
-                    if (int.TryParse(linesave[0], out mapid))
+                    string[] linesave = line.Split(' ');
+                    if (linesave.Length > 1)
                     {
-                        if (!dictionaryId.ContainsKey(int.Parse(linesave[0])))
-                            dictionaryId.Add(int.Parse(linesave[0]), linesave[4]);
+                        int mapid;
+                        if (!int.TryParse(linesave[0], out mapid)) continue;
+
+                        if (!dictionaryId.ContainsKey(mapid))
+                            dictionaryId.Add(mapid, linesave[4]);
                     }
                 }
+                mapIdStream.Close();
             }
 
-            while ((line2 = MapIdText.ReadLine()) != null)
+            using (StreamReader mapIdLangStream = new StreamReader(fileMapIdLang, Encoding.GetEncoding(1252)))
             {
-                string[] linesave = line2.Split('\t');
-                if (linesave.Count() > 1)
+                while ((line = mapIdLangStream.ReadLine()) != null)
                 {
-                    dictionaryTextId.Add(linesave[0], linesave[1]);
+                    string[] linesave = line.Split('\t');
+                    if (linesave.Length > 1)
+                    {
+                        dictionaryIdLang.Add(linesave[0], linesave[1]);
+                    }
                 }
+                mapIdLangStream.Close();
             }
 
-            while ((line2 = Packet.ReadLine()) != null)
+            using (StreamReader packetTxtStream = new StreamReader(filePacket, Encoding.GetEncoding(1252)))
             {
-                string[] linesave = line2.Split(' ');
-                if (linesave.Count() > 7 && linesave[0] == "at")
+                while ((line = packetTxtStream.ReadLine()) != null)
                 {
-                    if (!dictionaryMusic.ContainsKey(int.Parse(linesave[2])))
-                        dictionaryMusic.Add(int.Parse(linesave[2]), int.Parse(linesave[7]));
+                    string[] linesave = line.Split(' ');
+                    if (linesave.Length > 7 && linesave[0] == "at")
+                    {
+                        if (!dictionaryMusic.ContainsKey(int.Parse(linesave[2])))
+                            dictionaryMusic.Add(int.Parse(linesave[2]), int.Parse(linesave[7]));
+                    }
                 }
+                packetTxtStream.Close();
             }
 
-            foreach (FileInfo fichier in fichiers)
+            foreach (FileInfo file in new DirectoryInfo(folderMap).GetFiles())
             {
                 string name = "";
                 int music = 0;
-                if (dictionaryId.ContainsKey(int.Parse(fichier.Name)))
-                    if (dictionaryTextId.ContainsKey(dictionaryId[int.Parse(fichier.Name)]))
-                        name = dictionaryTextId[dictionaryId[int.Parse(fichier.Name)]];
-                if (dictionaryMusic.ContainsKey(int.Parse(fichier.Name)))
-                    music = dictionaryMusic[int.Parse(fichier.Name)];
-                MapDTO map = new MapDTO { Name = name, Music = music, MapId = short.Parse(fichier.Name), Data = System.IO.File.ReadAllBytes(fichier.FullName) };
-                if (DAOFactory.MapDAO.LoadById(map.MapId) == null)
+                if (dictionaryId.ContainsKey(int.Parse(file.Name)) && dictionaryIdLang.ContainsKey(dictionaryId[int.Parse(file.Name)]))
+                    name = dictionaryIdLang[dictionaryId[int.Parse(file.Name)]];
+
+                if (dictionaryMusic.ContainsKey(int.Parse(file.Name)))
+                    music = dictionaryMusic[int.Parse(file.Name)];
+
+                MapDTO map = new MapDTO
                 {
-                    DAOFactory.MapDAO.Insert(map);
-                    i++;
-                }
+                    Name = name,
+                    Music = music,
+                    MapId = short.Parse(file.Name),
+                    Data = File.ReadAllBytes(file.FullName)
+                };
+                if (DAOFactory.MapDAO.LoadById(map.MapId) != null) continue; // Map already exists in list
+
+                DAOFactory.MapDAO.Insert(map);
+                i++;
             }
 
-            Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("MAPS_PARSED"), i));
+            Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("MAPS_PARSED"), i));
         }
 
         public void ImportNpcs()
         {
-            string NpcIdFile = $"{_folder}\\monster.dat";
-            string filePacket = $"{_folder}\\packet.txt";
-            string NpcText = $"{_folder}\\_code_{System.Configuration.ConfigurationManager.AppSettings["language"]}_monster.txt";
-            StreamReader NpcId = new StreamReader(NpcIdFile, Encoding.GetEncoding(1252));
-            StreamReader NpcIdText = new StreamReader(NpcText, Encoding.GetEncoding(1252));
-            StreamReader Packet = new StreamReader(filePacket, Encoding.GetEncoding(1252));
-            Dictionary<int, string> dictionaryId = new Dictionary<int, string>();
-            Dictionary<int, string> name = new Dictionary<int, string>();
-            Dictionary<int, int> level = new Dictionary<int, int>();
-            Dictionary<int, int> dialog = new Dictionary<int, int>();
-            Dictionary<string, string> dictionaryTextId = new Dictionary<string, string>();
-            string line;
-            string line2;
-            while ((line = NpcIdText.ReadLine()) != null)
-            {
-                string[] linesave = line.Split('\t');
-                if (linesave.Count() > 1)
-                {
-                    if (!dictionaryTextId.ContainsKey(linesave[0]))
-                        dictionaryTextId.Add(linesave[0], linesave[1]);
-                }
-            }
-            int vnum = -1;
-            int level2 = 0;
-            string name2 = "";
-            bool test = false;
-            while ((line2 = NpcId.ReadLine()) != null)
-            {
-                string[] linesave = line2.Split('\t');
+            string fileNpcId = $"{_folder}\\monster.dat";
+            string fileNpcLang = $"{_folder}\\_code_{System.Configuration.ConfigurationManager.AppSettings["language"]}_monster.txt";
+            string filePacketTxt = $"{_folder}\\packet.txt";
 
-                if (linesave.Count() > 2 && linesave[1] == "VNUM")
+            // store like this: (vnum, (name, level))
+            Dictionary<int, KeyValuePair<string, short>> dictionaryNpcs = new Dictionary<int, KeyValuePair<string, short>>(); 
+            Dictionary<string, string> dictionaryIdLang = new Dictionary<string, string>();
+            Dictionary<int, int> dialog = new Dictionary<int, int>(); // unused (unfilled) variable
+
+            string line;
+
+            int vnum = -1;
+            string name2 = "";
+            bool itemAreaBegin = false;
+            using (StreamReader npcIdStream = new StreamReader(fileNpcId, Encoding.GetEncoding(1252)))
+            {
+                while ((line = npcIdStream.ReadLine()) != null)
                 {
-                    vnum = int.Parse(linesave[2]);
-                    test = true;
-                }
-                if (linesave.Count() > 2 && linesave[1] == "LEVEL")
-                {
-                    level2 = int.Parse(linesave[2]);
-                    if (test == true)
+                    string[] linesave = line.Split('\t');
+
+                    if (linesave.Length > 2 && linesave[1] == "VNUM")
                     {
-                        level.Add(vnum, level2);
-                        name.Add(vnum, name2);
-                        test = false;
+                        vnum = int.Parse(linesave[2]);
+                        itemAreaBegin = true;
+                    }
+                    else if (linesave.Length > 2 && linesave[1] == "LEVEL")
+                    {
+                        if (!itemAreaBegin) continue;
+
+                        dictionaryNpcs.Add(vnum, new KeyValuePair<string, short>(name2, short.Parse(linesave[2])));
+                        // maybe set 'name2' and 'vnum' to default() for security?
+                        itemAreaBegin = false;
+                    }
+                    else if (linesave.Length > 2 && linesave[1] == "NAME")
+                    {
+                        name2 = linesave[2];
                     }
                 }
-
-                if (linesave.Count() > 2 && linesave[1] == "NAME")
-                {
-                    name2 = linesave[2];
-                }
+                npcIdStream.Close();
             }
 
-            int i = 0;
-            short map = 0;
-            short lastMap = 0;
-
-            Packet = new StreamReader(filePacket, Encoding.GetEncoding(1252));
-            while ((line = Packet.ReadLine()) != null)
+            using (StreamReader npcIdLangStream = new StreamReader(fileNpcLang, Encoding.GetEncoding(1252)))
             {
-                string[] linesave = line.Split(' ');
-                if (linesave.Count() > 5 && linesave[0] == "at")
+                while ((line = npcIdLangStream.ReadLine()) != null)
                 {
-                    lastMap = map;
-                    map = short.Parse(linesave[2]);
+                    string[] linesave = line.Split('\t');
+                    if (linesave.Length > 1 && !dictionaryIdLang.ContainsKey(linesave[0]))
+                        dictionaryIdLang.Add(linesave[0], linesave[1]);
                 }
-                if (linesave.Count() > 7 && linesave[0] == "in" && linesave[1] == "2")
+                npcIdLangStream.Close();
+            }
+
+
+            int npcCounter = 0;
+            short map = 0;
+            short lastMap = 0; // unused variable
+
+            using (StreamReader packetTxtStream = new StreamReader(filePacketTxt, Encoding.GetEncoding(1252)))
+            {
+                while ((line = packetTxtStream.ReadLine()) != null)
                 {
-                    if (long.Parse(linesave[3]) < 10000)
+                    string[] linesave = line.Split(' ');
+                    if (linesave.Length > 5 && linesave[0] == "at")
                     {
-                        int dialogn = 0;
-                        if (dialog.ContainsKey(int.Parse(linesave[3])))
-                            dialogn = dialog[int.Parse(linesave[3])];
-                        if (DAOFactory.NpcDAO.LoadFromMap(map).FirstOrDefault(s => s.MapId.Equals(map) && s.Vnum.Equals(short.Parse(linesave[2]))) == null)
+                        lastMap = map;
+                        map = short.Parse(linesave[2]);
+                    }
+                    else if (linesave.Length > 7 && linesave[0] == "in" && linesave[1] == "2")
+                    {
+                        try
                         {
+                            if (long.Parse(linesave[3]) >= 10000)
+                                continue; // dialog too high. but why?
+
+                            int dialogNum = 0; // unused variable
+                            if (dialog.ContainsKey(int.Parse(linesave[3])))
+                                dialogNum = dialog[int.Parse(linesave[3])];
+
+                            if (
+                                DAOFactory.NpcDAO.LoadFromMap(map)
+                                    .FirstOrDefault(
+                                        s => s.MapId.Equals(map) && s.Vnum.Equals(short.Parse(linesave[2]))) != null)
+                                continue; // Npc already existing
+
+                            KeyValuePair<string, short> nameAndLevel = dictionaryNpcs[int.Parse(linesave[2])];
                             DAOFactory.NpcDAO.Insert(new NpcDTO
                             {
                                 Vnum = short.Parse(linesave[2]),
-                                Level = (short)level[int.Parse(linesave[2])],
+                                Level = nameAndLevel.Value,
                                 MapId = map,
                                 MapX = short.Parse(linesave[4]),
                                 MapY = short.Parse(linesave[5]),
-                                Name = dictionaryTextId[name[int.Parse(linesave[2])]],
+                                Name = dictionaryIdLang[nameAndLevel.Key],
                                 Position = short.Parse(linesave[6]),
-                                Dialog = short.Parse(linesave[9]),
+                                Dialog = short.Parse(linesave[9])
                             });
-                            i++;
+                            npcCounter++;
+                        }
+                        catch (Exception)
+                        {
+                            // continue with next line in packet file
                         }
                     }
                 }
+                packetTxtStream.Close();
             }
-            Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("NPCS_PARSED"), i));
+
+            Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("NPCS_PARSED"), npcCounter));
         }
 
         public void ImportPortals()
         {
-            string filePacket = $"{_folder}\\packet.txt";
-            StreamReader Packet = new StreamReader(filePacket, Encoding.GetEncoding(1252));
-            string line;
-            int i = 0;
-            List<PortalDTO> ListPacket = new List<PortalDTO>();
-            List<PortalDTO> ListPortal = new List<PortalDTO>();
-            short map = 0;
-            short lastMap = 0;
-            while ((line = Packet.ReadLine()) != null)
-            {
-                string[] linesave = line.Split(' ');
-                if (linesave.Count() > 5 && linesave[0] == "at")
-                {
-                    lastMap = map;
-                    map = short.Parse(linesave[2]);
-                }
-                if (linesave.Count() > 4 && linesave[0] == "gp")
-                {
-                    short SourceX = short.Parse(linesave[1]);
-                    short Type = short.Parse(linesave[4]);
-                    short SourceY = short.Parse(linesave[2]);
-                    short DestinationMapId = short.Parse(linesave[3]);
+            string filePacketTxt = $"{_folder}\\packet.txt";
 
-                    if (ListPacket.FirstOrDefault(s => s.SourceMapId == map && s.SourceX == SourceX && s.SourceY == SourceY && s.DestinationMapId == DestinationMapId) == null)
-                        ListPacket.Add(new PortalDTO
+            List<PortalDTO> listPacket = new List<PortalDTO>();
+            List<PortalDTO> listPortal = new List<PortalDTO>();
+
+            int portalCounter = 0;
+            short map = 0;
+            short lastMap = 0; // unused variable
+
+            using (StreamReader packetTxtStream = new StreamReader(filePacketTxt, Encoding.GetEncoding(1252)))
+            {
+                string line;
+                while ((line = packetTxtStream.ReadLine()) != null)
+                {
+                    string[] linesave = line.Split(' ');
+                    if (linesave.Length > 5 && linesave[0] == "at")
+                    {
+                        lastMap = map;
+                        map = short.Parse(linesave[2]);
+                    }
+                    else if (linesave.Length > 4 && linesave[0] == "gp")
+                    {
+                        short sourceX = short.Parse(linesave[1]);
+                        short type = short.Parse(linesave[4]);
+                        short sourceY = short.Parse(linesave[2]);
+                        short destinationMapId = short.Parse(linesave[3]);
+
+                        if (listPacket.FirstOrDefault(s => s.SourceMapId == map && s.SourceX == sourceX && s.SourceY == sourceY && s.DestinationMapId == destinationMapId) != null)
+                            continue; // Portal already in list
+
+                        listPacket.Add(new PortalDTO
                         {
                             SourceMapId = map,
-                            SourceX = SourceX,
-                            SourceY = SourceY,
-                            DestinationMapId = DestinationMapId,
-                            Type = Type,
+                            SourceX = sourceX,
+                            SourceY = sourceY,
+                            DestinationMapId = destinationMapId,
+                            Type = type,
                             DestinationX = -1,
                             DestinationY = -1,
-                            IsDisabled = 0,
+                            IsDisabled = 0
                         });
-                }
-            }
-            ListPacket = ListPacket.OrderBy(s => s.SourceMapId).ThenBy(s => s.DestinationMapId).ThenBy(s => s.SourceY).ThenBy(s => s.SourceX).ToList();
-            foreach (PortalDTO portal in ListPacket)
-            {
-                PortalDTO p = ListPacket.Except(ListPortal).FirstOrDefault(s => s.SourceMapId.Equals(portal.DestinationMapId) && s.DestinationMapId.Equals(portal.SourceMapId));
-                if (p != null)
-                {
-                    portal.DestinationX = p.SourceX;
-                    portal.DestinationY = p.SourceY;
-                    p.DestinationY = portal.SourceY;
-                    p.DestinationX = portal.SourceX;
-                    ListPortal.Add(p);
-                    ListPortal.Add(portal);
-                }
-            }
-
-            foreach (PortalDTO portal in ListPortal)
-            {
-                if (DAOFactory.PortalDAO.LoadFromMap(portal.SourceMapId).Where(s => s.DestinationMapId.Equals(portal.DestinationMapId) && s.SourceX.Equals(portal.SourceX) && s.SourceY.Equals(portal.SourceY)).Count() == 0)
-                {
-                    DAOFactory.PortalDAO.Insert(portal);
-                    i++;
-                }
-            }
-
-            Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("PORTALS_PARSED"), i));
-        }
-
-        public void importShops()
-        {
-            string filePacket = $"{_folder}\\packet.txt";
-            StreamReader Packet = new StreamReader(filePacket, Encoding.GetEncoding(1252));
-            string line;
-            short lastMap = 0;
-            short map = 0;
-            int i = 0;
-            Dictionary<int, int> dictionaryId = new Dictionary<int, int>();
-            while ((line = Packet.ReadLine()) != null)
-            {
-                string[] linesave = line.Split(' ');
-                if (linesave.Count() > 5 && linesave[0] == "at")
-                {
-                    lastMap = map;
-                    map = short.Parse(linesave[2]);
-                }
-                if (linesave.Count() > 7 && linesave[0] == "in" && linesave[1] == "2")
-                {
-                    if (long.Parse(linesave[3]) < 10000)
-                    {
-                        NpcDTO npc = DAOFactory.NpcDAO.LoadFromMap(map).FirstOrDefault(s => s.MapId.Equals(map) && s.Vnum.Equals(short.Parse(linesave[2])));
-                        if (npc != null)
-                        {
-                            if (!dictionaryId.ContainsKey(short.Parse(linesave[3])))
-                                dictionaryId[short.Parse(linesave[3])] = npc.NpcId;
-                        }
                     }
                 }
-                if (linesave.Count() > 6 && linesave[0] == "shop" && linesave[1] == "2")
+                packetTxtStream.Close();
+            }
+
+            listPacket = listPacket.OrderBy(s => s.SourceMapId).ThenBy(s => s.DestinationMapId).ThenBy(s => s.SourceY).ThenBy(s => s.SourceX).ToList();
+            foreach (PortalDTO portal in listPacket)
+            {
+                // TODO Multiple portals (like Port Alveus <-> Nosville) wont be read properly?!
+
+                PortalDTO p = listPacket.Except(listPortal).FirstOrDefault(s => s.SourceMapId.Equals(portal.DestinationMapId) && s.DestinationMapId.Equals(portal.SourceMapId));
+                if (p == null) continue;
+
+                portal.DestinationX = p.SourceX;
+                portal.DestinationY = p.SourceY;
+                p.DestinationY = portal.SourceY;
+                p.DestinationX = portal.SourceX;
+                listPortal.Add(p);
+                listPortal.Add(portal);
+            }
+
+            // foreach portal in the new list of Portals
+            // where none (=> !Any()) are found in the existing
+            foreach (PortalDTO portal in listPortal.Where(portal => !DAOFactory.PortalDAO.LoadFromMap(portal.SourceMapId).Any(s => s.DestinationMapId.Equals(portal.DestinationMapId) && s.SourceX.Equals(portal.SourceX) && s.SourceY.Equals(portal.SourceY))))
+            {
+                // so this dude doesnt exist yet in DAOFactory -> insert it
+                DAOFactory.PortalDAO.Insert(portal);
+                portalCounter++;
+            }
+
+            Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("PORTALS_PARSED"), portalCounter));
+        }
+
+        public void ImportShops()
+        {
+            string filePacketTxt = $"{_folder}\\packet.txt";
+
+            Dictionary<int, int> dictionaryId = new Dictionary<int, int>();
+
+            short lastMap = 0; // unused variable
+            short currentMap = 0;
+            int shopCounter = 0;
+
+            using (StreamReader packetTxtStream = new StreamReader(filePacketTxt, Encoding.GetEncoding(1252)))
+            {
+                string line;
+                while ((line = packetTxtStream.ReadLine()) != null)
                 {
-                    if (dictionaryId.ContainsKey(short.Parse(linesave[2])))
+                    string[] linesave = line.Split(' ');
+                    if (linesave.Length > 5 && linesave[0] == "at")
                     {
+                        lastMap = currentMap;
+                        currentMap = short.Parse(linesave[2]);
+                    }
+                    else if (linesave.Length > 7 && linesave[0] == "in" && linesave[1] == "2")
+                    {
+                        if (long.Parse(linesave[3]) >= 10000) continue;
+
+                        NpcDTO npc = DAOFactory.NpcDAO.LoadFromMap(currentMap).FirstOrDefault(s => s.MapId.Equals(currentMap) && s.Vnum.Equals(short.Parse(linesave[2])));
+                        if (npc == null) continue;
+
+                        if (!dictionaryId.ContainsKey(short.Parse(linesave[3])))
+                            dictionaryId.Add(short.Parse(linesave[3]), npc.NpcId);
+                    }
+                    else if (linesave.Length > 6 && linesave[0] == "shop" && linesave[1] == "2")
+                    {
+                        if (!dictionaryId.ContainsKey(short.Parse(linesave[2]))) continue;
+
                         string named = "";
-                        for (int j = 6; j < linesave.Count(); j++)
+                        for (int j = 6; j < linesave.Length; j++)
                         {
                             named += $"{linesave[j]} ";
                         }
-                        named.TrimEnd(' ');
+                        named = named.Trim();
+
                         ShopDTO shop = new ShopDTO
                         {
                             Name = named,
                             NpcId = (short)dictionaryId[short.Parse(linesave[2])],
                             MenuType = short.Parse(linesave[4]),
-                            ShopType = short.Parse(linesave[5]),
+                            ShopType = short.Parse(linesave[5])
                         };
                         if (DAOFactory.ShopDAO.LoadByNpc(shop.NpcId) == null)
                         {
                             DAOFactory.ShopDAO.Insert(shop);
-                            i++;
+                            shopCounter++;
                         }
                     }
                 }
+                packetTxtStream.Close();
             }
 
-            Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("SHOPS_PARSED"), i));
+            Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("SHOPS_PARSED"), shopCounter));
         }
 
         #endregion
