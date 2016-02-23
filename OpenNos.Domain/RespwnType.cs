@@ -12,24 +12,13 @@
  * GNU General Public License for more details.
  */
 
-namespace OpenNos.Data
+namespace OpenNos.Domain
 {
-    public class RespawnDTO
+    public enum RespawnType : short
     {
-        #region Properties
-
-        public long CharacterId { get; set; }
-
-        public short MapId { get; set; }
-
-        public long RespawnId { get; set; }
-
-        public short RespawnType { get; set; }
-
-        public short X { get; set; }
-
-        public short Y { get; set; }
-
-        #endregion
+        DefaultAct1 = 0,
+        ReturnAct1 = 1,
+        DefaultAct5 = 2,
+        ReturnAct5 = 3
     }
 }

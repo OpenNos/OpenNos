@@ -30,7 +30,7 @@
         <AssociationConnector Association="opennosModel.ShopNpc" />
         <AssociationConnector Association="opennosModel.ShopItemItem" />
         <AssociationConnector Association="opennosModel.ShopShopItem" />
-        <EntityTypeShape EntityType="opennosModel.Respawn" Width="1.5" PointX="6.25" PointY="10" FillColor="0, 122, 204" />
+        <EntityTypeShape EntityType="opennosModel.Respawn" Width="1.5" PointX="6.25" PointY="10" FillColor="0, 122, 204" IsExpanded="true" />
         <AssociationConnector Association="opennosModel.CharacterRespawn" />
         </Diagram>
     </edmx:Diagrams>

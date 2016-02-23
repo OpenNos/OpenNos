@@ -50,6 +50,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CharacterState.cs" />
+    <Compile Include="RespwnType.cs" />
     <Compile Include="ConfigType.cs" />
     <Compile Include="ItemType.cs" />
     <Compile Include="ClassType.cs" />

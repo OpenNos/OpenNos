@@ -18,7 +18,7 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public short X { get; set; }
         public short Y { get; set; }
         public short MapId { get; set; }
-        public short TeleportType { get; set; }
+        public short RespawnType { get; set; }
         public long CharacterId { get; set; }
     
         public virtual Character character { get; set; }
