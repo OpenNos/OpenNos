@@ -473,7 +473,7 @@ namespace OpenNos.Handler
             {
                 if (Session.Character.Level >= 30)
                 {
-                    if (Session.Account.LastLogin.AddMinutes(60) <= DateTime.Now)
+                    if (Session.Character.LastLogin.AddMinutes(60) <= DateTime.Now)
                     {
                         if (Session.Account.LastCompliment.Date.AddDays(1) <= DateTime.Now.Date)
                         {
@@ -490,7 +490,7 @@ namespace OpenNos.Handler
                     }
                     else
                     {
-                        Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("COMPLIMENT_LOGIN_COOLDOWN"), (Session.Account.LastLogin - DateTime.Now).Minutes), 11));
+                        Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("COMPLIMENT_LOGIN_COOLDOWN"), (Session.Character.LastLogin.AddMinutes(60) - DateTime.Now).Minutes), 11));
                     }
                 }
                 else
@@ -2121,7 +2121,8 @@ namespace OpenNos.Handler
                         HpBlocked = characterDTO.HpBlocked,
                         MinilandInviteBlocked = characterDTO.MinilandInviteBlocked,
                         QuickGetUp = characterDTO.QuickGetUp,
-                        MouseAimLock = characterDTO.MouseAimLock
+                        MouseAimLock = characterDTO.MouseAimLock,
+                        LastLogin = DateTime.Now
                     };
 
                 Session.Character.Update();

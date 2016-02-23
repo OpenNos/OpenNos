@@ -84,7 +84,6 @@
     <Property Name="Password" Type="varchar" Nullable="false" MaxLength="255" />
     <Property Name="Authority" Type="smallint" Nullable="false" />
     <Property Name="LastSession" Type="int" Nullable="false" />
-    <Property Name="LastLogin" Type="datetime" Nullable="false" DefaultValue="1970-01-01 00:00:00.000Z" />
     <Property Name="LastCompliment" Type="datetime" Nullable="false" DefaultValue="1970-01-01 00:00:00.000Z" />
   </EntityType>
   <EntityType Name="character">
@@ -504,8 +503,7 @@
           <Property Name="LastSession" Type="Int32" Nullable="false" />
           <NavigationProperty Name="character" Relationship="opennosModel.AccountCharacter" FromRole="Account" ToRole="Character" />
           <NavigationProperty Name="log" Relationship="opennosModel.accountlog" FromRole="account" ToRole="log" />
-          <Property Name="LastLogin" Type="DateTime" Nullable="false" DefaultValue="1970-01-01 00:00:00.000Z" />
-          <Property Name="LastCompliment" Type="DateTime" Nullable="false" DefaultValue="1970-01-01 00:00:00.000Z" ConcurrencyMode="None" />
+          <Property Name="LastCompliment" Nullable="false" DefaultValue="1970-01-01 00:00:00.000Z" ConcurrencyMode="None" Type="DateTime" />
         </EntityType>
         <EntityType Name="Character">
           <Key>
@@ -1019,7 +1017,6 @@
           <ScalarProperty Name="Password" ColumnName="Password" />
           <ScalarProperty Name="Authority" ColumnName="Authority" />
           <ScalarProperty Name="LastSession" ColumnName="LastSession" />
-          <ScalarProperty Name="LastLogin" ColumnName="LastLogin" />
           <ScalarProperty Name="LastCompliment" ColumnName="LastCompliment" />
         </MappingFragment>
       </EntityTypeMapping>

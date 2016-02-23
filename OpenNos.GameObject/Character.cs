@@ -44,7 +44,6 @@ namespace OpenNos.GameObject
         private int _rested;
         private int _size = 10;
         private int _speed;
-
         #endregion
 
         #region Instantiation
@@ -58,6 +57,7 @@ namespace OpenNos.GameObject
         #endregion
 
         #region Properties
+        public DateTime LastLogin { get; set; }
 
         public int ArenaWinner
         {

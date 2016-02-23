@@ -17,7 +17,6 @@ namespace OpenNos.DAL.EF.MySQL.DB
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Account()
         {
-            this.LastLogin = new DateTime(621355968000000000, DateTimeKind.Unspecified);
             this.LastCompliment = new DateTime(621355968000000000, DateTimeKind.Unspecified);
             this.character = new HashSet<Character>();
             this.log = new HashSet<GeneralLog>();
@@ -28,7 +27,6 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public string Password { get; set; }
         public short Authority { get; set; }
         public int LastSession { get; set; }
-        public System.DateTime LastLogin { get; set; }
         public System.DateTime LastCompliment { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
