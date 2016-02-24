@@ -26,7 +26,7 @@ namespace OpenNos.DAL.Interface
 
         void SetCharIdNull(Nullable<long> CharacterId);
 
-        void WriteConnectionLog(long accountId, string ipAddress, Nullable<long> characterId, string logType, string logData);
+        void WriteGeneralLog(long accountId, string ipAddress, Nullable<long> characterId, string logType, string logData);
 
         #endregion
     }

@@ -44,9 +44,9 @@
 -- -----------------------------------------------------------
 -- Entity Designer DDL Script for MySQL Server 4.1 and higher
 -- -----------------------------------------------------------
--- Date Created: 02/24/2016 01:22:20
+-- Date Created: 02/24/2016 13:41:13
 
--- Generated from EDMX file: C:\Users\ERWAN\Desktop\OpenNos Git\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
+-- Generated from EDMX file: C:\Users\ERWAN\Desktop\OpenNos GIT\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
 -- Target version: 3.0.0.0
 
 -- --------------------------------------------------
@@ -204,7 +204,7 @@ ALTER TABLE `portal` ADD PRIMARY KEY (PortalId);
 
 
 
-CREATE TABLE `connectionlog`(
+CREATE TABLE `generallog`(
 	`LogId` bigint NOT NULL AUTO_INCREMENT UNIQUE, 
 	`AccountId` bigint NOT NULL, 
 	`IpAddress` longtext NOT NULL, 
@@ -213,7 +213,7 @@ CREATE TABLE `connectionlog`(
 	`LogData` longtext NOT NULL, 
 	`CharacterId` bigint);
 
-ALTER TABLE `connectionlog` ADD PRIMARY KEY (LogId);
+ALTER TABLE `generallog` ADD PRIMARY KEY (LogId);
 
 
 
@@ -429,9 +429,9 @@ CREATE INDEX `IX_FK_AccountCharacter`
 
 
 
--- Creating foreign key on `AccountId` in table 'connectionlog'
+-- Creating foreign key on `AccountId` in table 'generallog'
 
-ALTER TABLE `connectionlog`
+ALTER TABLE `generallog`
 ADD CONSTRAINT `FK_accountlog`
     FOREIGN KEY (`AccountId`)
     REFERENCES `account`
@@ -442,7 +442,7 @@ ADD CONSTRAINT `FK_accountlog`
 -- Creating non-clustered index for FOREIGN KEY 'FK_accountlog'
 
 CREATE INDEX `IX_FK_accountlog`
-    ON `connectionlog`
+    ON `generallog`
     (`AccountId`);
 
 
@@ -483,9 +483,9 @@ CREATE INDEX `IX_FK_portalMap1`
 
 
 
--- Creating foreign key on `CharacterId` in table 'connectionlog'
+-- Creating foreign key on `CharacterId` in table 'generallog'
 
-ALTER TABLE `connectionlog`
+ALTER TABLE `generallog`
 ADD CONSTRAINT `FK_GeneralLogCharacter`
     FOREIGN KEY (`CharacterId`)
     REFERENCES `character`
@@ -496,7 +496,7 @@ ADD CONSTRAINT `FK_GeneralLogCharacter`
 -- Creating non-clustered index for FOREIGN KEY 'FK_GeneralLogCharacter'
 
 CREATE INDEX `IX_FK_GeneralLogCharacter`
-    ON `connectionlog`
+    ON `generallog`
     (`CharacterId`);
 
 

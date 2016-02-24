@@ -30,7 +30,7 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                foreach (GeneralLog log in context.connectionlog.Where(c => c.LogType.Equals(LogType) && c.CharacterId == CharacterId))
+                foreach (GeneralLog log in context.generallog.Where(c => c.LogType.Equals(LogType) && c.CharacterId == CharacterId))
                 {
                     yield return Mapper.Map<GeneralLogDTO>(log);
                 }
@@ -41,7 +41,7 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                foreach (GeneralLog log in context.connectionlog.Where(c => c.CharacterId == CharacterId))
+                foreach (GeneralLog log in context.generallog.Where(c => c.CharacterId == CharacterId))
                 {
                     log.CharacterId = null;
                 }
@@ -49,7 +49,7 @@ namespace OpenNos.DAL.EF.MySQL
             }
         }
 
-        public void WriteConnectionLog(long accountId, string ipAddress, Nullable<long> characterId, string logType, string logData)
+        public void WriteGeneralLog(long accountId, string ipAddress, Nullable<long> characterId, string logType, string logData)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
@@ -63,7 +63,7 @@ namespace OpenNos.DAL.EF.MySQL
                     CharacterId = characterId
                 };
 
-                context.connectionlog.Add(log);
+                context.generallog.Add(log);
                 context.SaveChanges();
             }
         }

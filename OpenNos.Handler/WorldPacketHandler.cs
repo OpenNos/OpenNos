@@ -2129,7 +2129,7 @@ namespace OpenNos.Handler
 
                 Session.Character.Update();
                 Session.Character.LoadInventory();
-                DAOFactory.AccountDAO.WriteConnectionLog(Session.Character.AccountId, Session.Client.RemoteEndPoint.ToString(), Session.Character.CharacterId, "Connexion", "World");
+                DAOFactory.AccountDAO.WriteGeneralLog(Session.Character.AccountId, Session.Client.RemoteEndPoint.ToString(), Session.Character.CharacterId, "Connection", "World");
                 Session.CurrentMap = ServerManager.GetMap(Session.Character.MapId);
                 Session.Client.SendPacket("OK");
                 Session.HealthThread = new Thread(new ThreadStart(healthThread));

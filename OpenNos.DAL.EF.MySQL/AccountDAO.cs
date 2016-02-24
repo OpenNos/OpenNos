@@ -152,7 +152,7 @@ namespace OpenNos.DAL.EF.MySQL
             }
         }
 
-        public void WriteConnectionLog(long accountId, string ipAddress, Nullable<long> characterId, string logType, string logData)
+        public void WriteGeneralLog(long accountId, string ipAddress, Nullable<long> characterId, string logType, string logData)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
@@ -166,7 +166,7 @@ namespace OpenNos.DAL.EF.MySQL
                     CharacterId = characterId
                 };
 
-                context.connectionlog.Add(log);
+                context.generallog.Add(log);
                 context.SaveChanges();
             }
         }

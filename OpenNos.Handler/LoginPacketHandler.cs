@@ -79,7 +79,7 @@ namespace OpenNos.Handler
 
                     if (loadedAccount != null && loadedAccount.Password.Equals(user.PasswordDecrypted))
                     {
-                        DAOFactory.AccountDAO.WriteConnectionLog(loadedAccount.AccountId, _session.Client.RemoteEndPoint.ToString(), null, "Connection", "LoginServer");
+                        DAOFactory.AccountDAO.WriteGeneralLog(loadedAccount.AccountId, _session.Client.RemoteEndPoint.ToString(), null, "Connection", "LoginServer");
 
                         if (!ServiceFactory.Instance.CommunicationService.AccountIsConnected(loadedAccount.Name))
                         {

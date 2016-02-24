@@ -37,7 +37,7 @@ namespace OpenNos.DAL.Interface
 
         void UpdateLastSessionAndIp(string name, int session, string ip);
 
-        void WriteConnectionLog(long accountId, string ipAddress, Nullable<long> characterId, string logType, string logData);
+        void WriteGeneralLog(long accountId, string ipAddress, Nullable<long> characterId, string logType, string logData);
 
         #endregion
     }

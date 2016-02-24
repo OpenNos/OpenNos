@@ -27,7 +27,7 @@ namespace OpenNos.GameObject
     {
         #region Members
 
-        private IDictionary<String, DateTime> _connectionLog;
+        private IDictionary<String, DateTime> _generalLog;
         private EncryptorT _encryptor;
         private ConcurrentDictionary<Guid, Map> _maps = new ConcurrentDictionary<Guid, Map>();
         private Type _packetHandler;
@@ -57,22 +57,22 @@ namespace OpenNos.GameObject
 
         #region Properties
 
-        public IDictionary<String, DateTime> ConnectionLog
+        public IDictionary<String, DateTime> GeneralLog
         {
             get
             {
-                if (_connectionLog == null)
+                if (_generalLog == null)
                 {
-                    _connectionLog = new Dictionary<String, DateTime>();
+                    _generalLog = new Dictionary<String, DateTime>();
                 }
 
-                return _connectionLog;
+                return _generalLog;
             }
             set
             {
-                if (_connectionLog != value)
+                if (_generalLog != value)
                 {
-                    _connectionLog = value;
+                    _generalLog = value;
                 }
             }
         }
@@ -81,26 +81,26 @@ namespace OpenNos.GameObject
 
         #region Methods
 
-        private bool CheckConnectionLog(NetworkClient client)
+        private bool CheckGeneralLog(NetworkClient client)
         {
-            if (ConnectionLog.Any())
+            if (GeneralLog.Any())
             {
-                IEnumerable<KeyValuePair<string, DateTime>> logsToDelete = ConnectionLog
+                IEnumerable<KeyValuePair<string, DateTime>> logsToDelete = GeneralLog
                     .Where(cl => cl.Key.Equals(client.RemoteEndPoint.ToString()) && (DateTime.Now - cl.Value).Seconds > 5);
 
                 foreach (KeyValuePair<string, DateTime> connectionLogEntry in logsToDelete)
                 {
-                    ConnectionLog.Remove(connectionLogEntry);
+                    GeneralLog.Remove(connectionLogEntry);
                 }
             }
 
-            if (ConnectionLog.ContainsKey(client.RemoteEndPoint.ToString()))
+            if (GeneralLog.ContainsKey(client.RemoteEndPoint.ToString()))
             {
                 return false;
             }
             else
             {
-                ConnectionLog.Add(client.RemoteEndPoint.ToString(), DateTime.Now);
+                GeneralLog.Add(client.RemoteEndPoint.ToString(), DateTime.Now);
                 return true;
             }
         }
@@ -110,7 +110,7 @@ namespace OpenNos.GameObject
             Logger.Log.Info(Language.Instance.GetMessageFromKey("NEW_CONNECT") + e.Client.ClientId);
             NetworkClient customClient = e.Client as NetworkClient;
 
-            if (!CheckConnectionLog(customClient))
+            if (!CheckGeneralLog(customClient))
             {
                 Logger.Log.WarnFormat(Language.Instance.GetMessageFromKey("FORCED_DISCONNECT"), customClient.ClientId);
                 customClient.Disconnect();

@@ -9,7 +9,7 @@
     <EntitySet Name="account" EntityType="opennosModel.Store.account" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="character" EntityType="opennosModel.Store.character" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="portal" EntityType="opennosModel.Store.portal" store:Type="Tables" Schema="dbo" />
-    <EntitySet Name="connectionlog" EntityType="opennosModel.Store.connectionlog" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="generallog" EntityType="opennosModel.Store.generallog" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="map" EntityType="opennosModel.Store.map" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="item" EntityType="opennosModel.Store.item" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="npc" EntityType="opennosModel.Store.npc" store:Type="Tables" Schema="dbo" />
@@ -24,7 +24,7 @@
     </AssociationSet>
     <AssociationSet Name="accountlog" Association="opennosModel.Store.accountlog">
       <End Role="account" EntitySet="account" />
-      <End Role="log" EntitySet="connectionlog" />
+      <End Role="log" EntitySet="generallog" />
     </AssociationSet>
     <AssociationSet Name="portalMap" Association="opennosModel.Store.portalMap">
       <End Role="portal" EntitySet="portal" />
@@ -35,7 +35,7 @@
       <End Role="Map" EntitySet="map" />
     </AssociationSet>
     <AssociationSet Name="GeneralLogCharacter" Association="opennosModel.Store.GeneralLogCharacter">
-      <End Role="GeneralLog" EntitySet="connectionlog" />
+      <End Role="GeneralLog" EntitySet="generallog" />
       <End Role="Character" EntitySet="character" />
     </AssociationSet>
     <AssociationSet Name="CharacterMap" Association="opennosModel.Store.CharacterMap">
@@ -146,7 +146,7 @@
     <Property Name="SourceMapId" Type="smallint" Nullable="false" />
     <Property Name="IsDisabled" Type="smallint" Nullable="false" />
   </EntityType>
-  <EntityType Name="connectionlog">
+  <EntityType Name="generallog">
     <Key>
       <PropertyRef Name="LogId" />
     </Key>
@@ -333,7 +333,7 @@
   </Association>
   <Association Name="accountlog">
     <End Role="account" Type="opennosModel.Store.account" Multiplicity="1" />
-    <End Role="log" Type="opennosModel.Store.connectionlog" Multiplicity="*" />
+    <End Role="log" Type="opennosModel.Store.generallog" Multiplicity="*" />
     <ReferentialConstraint>
       <Principal Role="account">
         <PropertyRef Name="AccountId" />
@@ -368,7 +368,7 @@
     </ReferentialConstraint>
   </Association>
   <Association Name="GeneralLogCharacter">
-    <End Role="GeneralLog" Type="opennosModel.Store.connectionlog" Multiplicity="*" />
+    <End Role="GeneralLog" Type="opennosModel.Store.generallog" Multiplicity="*" />
     <End Role="Character" Type="opennosModel.Store.character" Multiplicity="0..1" />
     <ReferentialConstraint>
       <Principal Role="Character">
@@ -579,10 +579,10 @@
             <End Role="Account" EntitySet="account" />
             <End Role="Character" EntitySet="character" />
           </AssociationSet>
-          <EntitySet Name="connectionlog" EntityType="opennosModel.GeneralLog" />
+          <EntitySet Name="generallog" EntityType="opennosModel.GeneralLog" />
           <AssociationSet Name="accountlog" Association="opennosModel.accountlog">
             <End EntitySet="account" Role="account" />
-            <End EntitySet="connectionlog" Role="log" />
+            <End EntitySet="generallog" Role="log" />
           </AssociationSet>
           <EntitySet Name="map" EntityType="opennosModel.Map" />
           <AssociationSet Name="portalMap" Association="opennosModel.portalMap">
@@ -594,7 +594,7 @@
             <End Role="Map" EntitySet="map" />
           </AssociationSet>
           <AssociationSet Name="GeneralLogCharacter" Association="opennosModel.GeneralLogCharacter">
-            <End Role="GeneralLog" EntitySet="connectionlog" />
+            <End Role="GeneralLog" EntitySet="generallog" />
             <End Role="Character" EntitySet="character" />
           </AssociationSet>
           <AssociationSet Name="CharacterMap" Association="opennosModel.CharacterMap">
@@ -1081,9 +1081,9 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
-    <EntitySetMapping Name="connectionlog">
+    <EntitySetMapping Name="generallog">
       <EntityTypeMapping TypeName="IsTypeOf(opennosModel.GeneralLog)">
-        <MappingFragment StoreEntitySet="connectionlog">
+        <MappingFragment StoreEntitySet="generallog">
           <ScalarProperty Name="LogId" ColumnName="LogId" />
           <ScalarProperty Name="AccountId" ColumnName="AccountId" />
           <ScalarProperty Name="IpAddress" ColumnName="IpAddress" />

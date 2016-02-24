@@ -134,7 +134,7 @@ namespace OpenNos.DAL.EF.MySQL
                     context.account.Any();
                     context.map.Any();
                     context.portal.Any();
-                    context.connectionlog.Any();
+                    context.generallog.Any();
                     context.character.Any();
                     context.npc.Any();
                     context.inventory.Any();
