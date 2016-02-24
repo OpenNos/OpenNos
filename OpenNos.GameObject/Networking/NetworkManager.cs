@@ -119,10 +119,10 @@ namespace OpenNos.GameObject
 
             ClientSession session = new ClientSession(customClient);
             session.Initialize(_encryptor, _packetHandler);
-            ClientLinkManager.Instance.sessions.Add(session);
+            ClientLinkManager.Instance.Sessions.Add(session);
             if (!_sessions.TryAdd(customClient.ClientId, session))
             {
-                ClientLinkManager.Instance.sessions.Remove(session);
+                ClientLinkManager.Instance.Sessions.Remove(session);
                 Logger.Log.WarnFormat(Language.Instance.GetMessageFromKey("FORCED_DISCONNECT"), customClient.ClientId);
                 customClient.Disconnect();
                 _sessions.TryRemove(customClient.ClientId, out session);
@@ -134,7 +134,7 @@ namespace OpenNos.GameObject
         {
             ClientSession session;
             _sessions.TryRemove(e.Client.ClientId, out session);
-            ClientLinkManager.Instance.sessions.Remove(session);
+            ClientLinkManager.Instance.Sessions.Remove(session);
             session.Character.Save();
             if (session.Character != null)
             {

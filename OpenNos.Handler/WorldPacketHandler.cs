@@ -2246,11 +2246,11 @@ namespace OpenNos.Handler
         [Packet("$Shutdown")]
         public void Shutdown(string packet)
         {
-            if (ClientLinkManager.Instance.shutdownActive == false)
+            if (ClientLinkManager.Instance.ShutdownActive == false)
             {
-                Thread ThreadShutdown = new Thread(new ThreadStart(ShutdownThread));
-                ThreadShutdown.Start();
-                ClientLinkManager.Instance.shutdownActive = true;
+                Thread threadShutdown = new Thread(ShutdownThread);
+                threadShutdown.Start();
+                ClientLinkManager.Instance.ShutdownActive = true;
             }
         }
 
