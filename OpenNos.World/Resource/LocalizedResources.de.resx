@@ -130,7 +130,7 @@
     <value>Bogenschütze</value>
   </data>
   <data name="ASK_ACCEPT" xml:space="preserve">
-    <value>Someone wants to exchange with you</value>
+    <value>{0} wants to exchange with you</value>
   </data>
   <data name="BAD_FAIRY" xml:space="preserve">
     <value>The fairy element is not the same like sp!</value>

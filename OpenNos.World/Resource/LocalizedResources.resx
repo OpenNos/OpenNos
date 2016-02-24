@@ -133,7 +133,7 @@
     <value>Archer</value>
   </data>
   <data name="ASK_ACCEPT" xml:space="preserve">
-    <value>Someone wants to exchange with you</value>
+    <value>{0} wants to exchange with you</value>
   </data>
   <data name="ASK_TO_DELETE" xml:space="preserve">
     <value>Do you want to delete?</value>

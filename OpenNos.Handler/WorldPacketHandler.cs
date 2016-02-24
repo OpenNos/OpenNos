@@ -476,10 +476,10 @@ namespace OpenNos.Handler
                     {
                         if (Session.Account.LastCompliment.Date.AddDays(1) <= DateTime.Now.Date)
                         {
-                            short compliment = (short)ClientLinkManager.Instance.RequiereProperties(complimentCharacterId,"Compliment");
+                            short compliment = ClientLinkManager.Instance.RequiereProperties<short>(complimentCharacterId,"Compliment");
                             compliment++;
                             ClientLinkManager.Instance.SetProperties(complimentCharacterId, "Compliment", compliment);
-                            Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("COMPLIMENT_GIVEN"), ClientLinkManager.Instance.RequiereProperties(complimentCharacterId, "Name")), 12));
+                            Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("COMPLIMENT_GIVEN"), ClientLinkManager.Instance.RequiereProperties<string>(complimentCharacterId, "Name")), 12));
                             AccountDTO account = Session.Account;
                             account.LastCompliment = DateTime.Now;
                             DAOFactory.AccountDAO.InsertOrUpdate(ref account);
@@ -868,15 +868,15 @@ namespace OpenNos.Handler
 
             long charId = -1;
             string charName;
-            object Blocked;
+            bool Blocked;
 
 
             if (mode == 1)
             {
                 if (!long.TryParse(packetsplit[3], out charId)) return;
-                Blocked = ClientLinkManager.Instance.RequiereProperties(charId, "ExchangeBlocked");
+                Blocked = ClientLinkManager.Instance.RequiereProperties<bool>(charId, "ExchangeBlocked");
 
-                if ((bool)Blocked)
+                if (Blocked)
                 {
                     ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("TRADE_BLOCKED"), 11), ReceiverType.OnlyMe);
                 }
@@ -885,17 +885,17 @@ namespace OpenNos.Handler
 
                     Session.Character.ExchangeInfo = new ExchangeInfo { CharId = charId, Confirm = false };
 
-                    charName = (string)ClientLinkManager.Instance.RequiereProperties(charId, "Name");
+                    charName = (string)ClientLinkManager.Instance.RequiereProperties<string>(charId, "Name");
                     Session.Client.SendPacket(Session.Character.GenerateModal($"{Language.Instance.GetMessageFromKey("YOU_ASK_FOR_EXCHANGE")} {charName}"));
-                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateDialog($"#req_exc^2^{Session.Character.CharacterId} #req_exc^5^{Session.Character.CharacterId} {Language.Instance.GetMessageFromKey("ASK_ACCEPT")}"), ReceiverType.OnlySomeone, charName);
+                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateDialog($"#req_exc^2^{Session.Character.CharacterId} #req_exc^5^{Session.Character.CharacterId} {String.Format(Language.Instance.GetMessageFromKey("ASK_ACCEPT"), Session.Character.Name)}"), ReceiverType.OnlySomeone, charName);
 
                 }
             }
             else if (mode == 3)
             {
-                ExchangeInfo exchange = (ExchangeInfo)ClientLinkManager.Instance.RequiereProperties(Session.Character.ExchangeInfo.CharId, "ExchangeInfo");
-                int backpack = (int)ClientLinkManager.Instance.RequiereProperties(Session.Character.ExchangeInfo.CharId, "BackPack");
-                InventoryList inventory = (InventoryList)ClientLinkManager.Instance.RequiereProperties(Session.Character.ExchangeInfo.CharId, "InventoryList");
+                ExchangeInfo exchange = ClientLinkManager.Instance.RequiereProperties<ExchangeInfo>(Session.Character.ExchangeInfo.CharId, "ExchangeInfo");
+                int backpack = ClientLinkManager.Instance.RequiereProperties<int>(Session.Character.ExchangeInfo.CharId, "BackPack");
+                InventoryList inventory = ClientLinkManager.Instance.RequiereProperties<InventoryList>(Session.Character.ExchangeInfo.CharId, "InventoryList");
                 if (Session.Character.ExchangeInfo.Validate && exchange.Validate)
                 {
                     Session.Character.ExchangeInfo.Confirm = true;
@@ -965,7 +965,7 @@ namespace OpenNos.Handler
                     }
                     else
                     {
-                        charName = (string)ClientLinkManager.Instance.RequiereProperties(charId, "Name");
+                        charName = ClientLinkManager.Instance.RequiereProperties<string>(charId, "Name");
 
                         Session.Client.SendPacket(Session.Character.GenerateInfo(String.Format(Language.Instance.GetMessageFromKey("IN_WAITING_FOR"), charName)));
                     }
@@ -2507,9 +2507,9 @@ namespace OpenNos.Handler
             {
                 case 3:
                     string name = packetsplit[2];
-                    object mapy = ClientLinkManager.Instance.RequiereProperties(name, "MapY");
-                    object mapx = ClientLinkManager.Instance.RequiereProperties(name, "MapX");
-                    object mapId = ClientLinkManager.Instance.RequiereProperties(name, "MapId");
+                    short mapy = ClientLinkManager.Instance.RequiereProperties<short>(name, "MapY");
+                    short mapx = ClientLinkManager.Instance.RequiereProperties<short>(name, "MapX");
+                    short mapId = ClientLinkManager.Instance.RequiereProperties<short>(name, "MapId");
                     if ($"{mapy}" != "" && $"{mapx}" != "" && $"{mapId}" != "")
                     {
                         Session.Character.MapId = (short)mapId;
@@ -2824,7 +2824,7 @@ namespace OpenNos.Handler
 
             ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateSpk(message, 5), ReceiverType.OnlyMe);
 
-            object Blocked = ClientLinkManager.Instance.RequiereProperties(packetsplit[1].Substring(1), "WhisperBlocked");
+            bool Blocked = ClientLinkManager.Instance.RequiereProperties<bool>(packetsplit[1].Substring(1), "WhisperBlocked");
             if (!Blocked.Equals(null))
             {
                 if (!Convert.ToBoolean(Blocked)) ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateSpk(message, 5), ReceiverType.OnlySomeone, packetsplit[1].Substring(1));
