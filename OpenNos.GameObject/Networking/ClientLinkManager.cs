@@ -205,13 +205,13 @@ namespace OpenNos.GameObject
             client.Client.SendPacket(result);
         }
 
-        public T requiereProperty<T>(string charName, string property)
+        public T GetProperty<T>(string charName, string property)
         {
             ClientSession session = Sessions.FirstOrDefault(s => s.Character != null && s.Character.Name.Equals(charName));
             return (T)session?.Character.GetType().GetProperties().Single(pi => pi.Name == property).GetValue(session.Character, null);
         }
 
-        public T requiereProperty<T>(long charId, string property)
+        public T GetProperty<T>(long charId, string property)
         {
             ClientSession session = Sessions.FirstOrDefault(s => s.Character != null && s.Character.CharacterId.Equals(charId));
             return (T)session?.Character.GetType().GetProperties().Single(pi => pi.Name == property).GetValue(session.Character, null);
