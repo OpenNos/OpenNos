@@ -46,7 +46,6 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public int JobLevelXp { get; set; }
         public int Dead { get; set; }
         public int Kill { get; set; }
-        public int Contribution { get; set; }
         public int Faction { get; set; }
         public int SpPoint { get; set; }
         public int SpAdditionPoint { get; set; }

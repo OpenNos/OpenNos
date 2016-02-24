@@ -114,7 +114,6 @@
     <Property Name="JobLevelXp" Type="int" Nullable="false" />
     <Property Name="Dead" Type="int" Nullable="false" />
     <Property Name="Kill" Type="int" Nullable="false" />
-    <Property Name="Contribution" Type="int" Nullable="false" />
     <Property Name="Faction" Type="int" Nullable="false" />
     <Property Name="SpPoint" Type="int" Nullable="false" />
     <Property Name="SpAdditionPoint" Type="int" Nullable="false" />
@@ -533,7 +532,6 @@
           <Property Name="JobLevelXp" Type="Int32" Nullable="false" />
           <Property Name="Dead" Type="Int32" Nullable="false" />
           <Property Name="Kill" Type="Int32" Nullable="false" />
-          <Property Name="Contribution" Type="Int32" Nullable="false" />
           <Property Name="Faction" Type="Int32" Nullable="false" />
           <NavigationProperty Name="account" Relationship="opennosModel.AccountCharacter" FromRole="Character" ToRole="Account" />
           <NavigationProperty Name="generallog" Relationship="opennosModel.GeneralLogCharacter" FromRole="Character" ToRole="GeneralLog" />
@@ -1048,7 +1046,6 @@
           <ScalarProperty Name="JobLevelXp" ColumnName="JobLevelXp" />
           <ScalarProperty Name="Dead" ColumnName="Dead" />
           <ScalarProperty Name="Kill" ColumnName="Kill" />
-          <ScalarProperty Name="Contribution" ColumnName="Contribution" />
           <ScalarProperty Name="Faction" ColumnName="Faction" />
           <ScalarProperty Name="SpPoint" ColumnName="SpPoint" />
           <ScalarProperty Name="SpAdditionPoint" ColumnName="SpAdditionPoint" />
