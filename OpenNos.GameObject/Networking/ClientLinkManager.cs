@@ -205,25 +205,25 @@ namespace OpenNos.GameObject
             client.Client.SendPacket(result);
         }
 
-        public T RequiereProperties<T>(string charName, string properties)
+        public T RequiereProperties<T>(string charName, string property)
         {
             ClientSession session = Sessions.FirstOrDefault(s => s.Character != null && s.Character.Name.Equals(charName));
-            return (T)session?.Character.GetType().GetProperties().Single(pi => pi.Name == properties).GetValue(session.Character, null);
+            return (T)session?.Character.GetType().GetProperties().Single(pi => pi.Name == property).GetValue(session.Character, null);
         }
 
-        public T RequiereProperties<T>(long charId, string properties)
+        public T RequiereProperties<T>(long charId, string property)
         {
             ClientSession session = Sessions.FirstOrDefault(s => s.Character != null && s.Character.CharacterId.Equals(charId));
-            return (T)session?.Character.GetType().GetProperties().Single(pi => pi.Name == properties).GetValue(session.Character, null);
+            return (T)session?.Character.GetType().GetProperties().Single(pi => pi.Name == property).GetValue(session.Character, null);
         }
 
-        public void SetProperties(long charId, string properties, object value)
+        public void SetProperties(long charId, string property, object value)
         {
             ClientSession session = Sessions.FirstOrDefault(s => s.Character != null && s.Character.CharacterId.Equals(charId));
             if (session == null) return;
 
-            PropertyInfo property = session.Character.GetType().GetProperties().Single(pi => pi.Name == properties);
-            property.SetValue(session.Character, value, null);
+            PropertyInfo propertyinfo = session.Character.GetType().GetProperties().Single(pi => pi.Name == property);
+            propertyinfo.SetValue(session.Character, value, null);
 
         }
 
