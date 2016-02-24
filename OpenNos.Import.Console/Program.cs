@@ -51,6 +51,7 @@ namespace OpenNos.Import.Console
             ImportFactory factory = new ImportFactory(folder);
 
             //factory.ImportItems();
+            factory.importPackets();
             factory.ImportMaps();
             factory.ImportPortals();
             factory.ImportNpcs();
