@@ -217,15 +217,14 @@ namespace OpenNos.GameObject
             return session?.Character.GetType().GetProperties().Single(pi => pi.Name == properties).GetValue(session.Character, null);
         }
 
-        public object SetProperties(long charId, string properties, object value)
+        public void SetProperties(long charId, string properties, object value)
         {
             ClientSession session = Sessions.FirstOrDefault(s => s.Character != null && s.Character.CharacterId.Equals(charId));
-            if (session == null) return null;
+            if (session == null) return;
 
             PropertyInfo property = session.Character.GetType().GetProperties().Single(pi => pi.Name == properties);
             property.SetValue(session.Character, value, null);
 
-            return null; // returns always null ?
         }
 
         public void SaveAll()

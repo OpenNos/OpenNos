@@ -198,13 +198,11 @@ namespace OpenNos.Import.Console
 
             int npcCounter = 0;
             short map = 0;
-            short lastMap = 0; // unused variable
 
             foreach (string[] linesave in packetList.Where(o => o[0].Equals("in") || o[0].Equals("at")))
             {
                 if (linesave.Length > 5 && linesave[0] == "at")
                 {
-                    lastMap = map;
                     map = short.Parse(linesave[2]);
                 }
                 else if (linesave.Length > 7 && linesave[0] == "in" && linesave[1] == "2")
@@ -254,42 +252,35 @@ namespace OpenNos.Import.Console
 
             List<PortalDTO> listPacket = new List<PortalDTO>();
             List<PortalDTO> listPortal = new List<PortalDTO>();
-
             short map = 0;
-            short lastMap = 0; // unused variable
             int portalCounter = 0;
 
             foreach (string[] linesave in packetList.Where(o => o[0].Equals("at") || o[0].Equals("gp")))
             {
                 if (linesave.Length > 5 && linesave[0] == "at")
                 {
-                    lastMap = map;
                     map = short.Parse(linesave[2]);
                 }
                 else if (linesave.Length > 4 && linesave[0] == "gp")
                 {
-                    short sourceX = short.Parse(linesave[1]);
-                    short type = short.Parse(linesave[4]);
-                    short sourceY = short.Parse(linesave[2]);
-                    short destinationMapId = short.Parse(linesave[3]);
-
-                    if (listPacket.FirstOrDefault(s => s.SourceMapId == map && s.SourceX == sourceX && s.SourceY == sourceY && s.DestinationMapId == destinationMapId) != null)
-                        continue; // Portal already in list
-
-                    listPacket.Add(new PortalDTO
+                    PortalDTO portal = new PortalDTO
                     {
                         SourceMapId = map,
-                        SourceX = sourceX,
-                        SourceY = sourceY,
-                        DestinationMapId = destinationMapId,
-                        Type = type,
+                        SourceX = short.Parse(linesave[1]),
+                        SourceY = short.Parse(linesave[2]),
+                        DestinationMapId = short.Parse(linesave[3]),
+                        Type = short.Parse(linesave[4]),
                         DestinationX = -1,
                         DestinationY = -1,
                         IsDisabled = 0
-                    });
+                    };
+
+                    if (listPacket.FirstOrDefault(s => s.SourceMapId == map && s.SourceX == portal.SourceX && s.SourceY == portal.SourceY && s.DestinationMapId == portal.DestinationMapId) != null)
+                        continue; // Portal already in list
+
+                    listPacket.Add(portal);
                 }
             }
-
 
             listPacket = listPacket.OrderBy(s => s.SourceMapId).ThenBy(s => s.DestinationMapId).ThenBy(s => s.SourceY).ThenBy(s => s.SourceX).ToList();
             foreach (PortalDTO portal in listPacket)
