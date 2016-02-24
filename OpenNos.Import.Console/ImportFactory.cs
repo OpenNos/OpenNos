@@ -67,7 +67,6 @@ namespace OpenNos.Import.Console
         {
             string fileMapIdDat = $"{_folder}\\MapIDData.dat";
             string fileMapIdLang = $"{_folder}\\_code_{System.Configuration.ConfigurationManager.AppSettings["language"]}_MapIDData.txt";
-            string filePacket = $"{_folder}\\packet.txt";
             string folderMap = $"{_folder}\\map";
 
             Dictionary<int, string> dictionaryId = new Dictionary<int, string>();
@@ -106,17 +105,16 @@ namespace OpenNos.Import.Console
                 mapIdLangStream.Close();
             }
 
-            using (StreamReader packetTxtStream = new StreamReader(filePacket, Encoding.GetEncoding(1252)))
+
+            foreach (string[] linesave in packetList.Where(o => o[0].Equals("at")))
             {
-                foreach (string[] linesave in packetList.Where(o => o[0].Equals("at")))
+                if (linesave.Length > 7 && linesave[0] == "at")
                 {
-                    if (linesave.Length > 7 && linesave[0] == "at")
-                    {
-                        if (!dictionaryMusic.ContainsKey(int.Parse(linesave[2])))
-                            dictionaryMusic.Add(int.Parse(linesave[2]), int.Parse(linesave[7]));
-                    }
+                    if (!dictionaryMusic.ContainsKey(int.Parse(linesave[2])))
+                        dictionaryMusic.Add(int.Parse(linesave[2]), int.Parse(linesave[7]));
                 }
             }
+
 
             foreach (FileInfo file in new DirectoryInfo(folderMap).GetFiles())
             {
