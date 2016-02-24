@@ -205,19 +205,19 @@ namespace OpenNos.GameObject
             client.Client.SendPacket(result);
         }
 
-        public T RequiereProperties<T>(string charName, string property)
+        public T requiereProperty<T>(string charName, string property)
         {
             ClientSession session = Sessions.FirstOrDefault(s => s.Character != null && s.Character.Name.Equals(charName));
             return (T)session?.Character.GetType().GetProperties().Single(pi => pi.Name == property).GetValue(session.Character, null);
         }
 
-        public T RequiereProperties<T>(long charId, string property)
+        public T requiereProperty<T>(long charId, string property)
         {
             ClientSession session = Sessions.FirstOrDefault(s => s.Character != null && s.Character.CharacterId.Equals(charId));
             return (T)session?.Character.GetType().GetProperties().Single(pi => pi.Name == property).GetValue(session.Character, null);
         }
 
-        public void SetProperties(long charId, string property, object value)
+        public void SetProperty(long charId, string property, object value)
         {
             ClientSession session = Sessions.FirstOrDefault(s => s.Character != null && s.Character.CharacterId.Equals(charId));
             if (session == null) return;
