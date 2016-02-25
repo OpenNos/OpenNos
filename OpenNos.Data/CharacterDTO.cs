@@ -28,6 +28,8 @@ namespace OpenNos.Data
 
         public int Act4Points { get; set; }
 
+        public int ArenaWinner { get; set; }
+
         public int Backpack { get; set; }
 
         public bool BuffBlocked { get; set; }
@@ -70,11 +72,11 @@ namespace OpenNos.Data
 
         public byte JobLevel { get; set; }
 
-        public long JobLevelXp { get; set; }
+        public int JobLevelXp { get; set; }
 
         public byte Level { get; set; }
 
-        public long LevelXp { get; set; }
+        public int LevelXp { get; set; }
 
         public short MapId { get; set; }
 
@@ -108,7 +110,7 @@ namespace OpenNos.Data
 
         public CharacterState StateEnum { get { return (CharacterState)State; } set { State = (byte)value; } }
 
-        public int TalenLose { get; set; }
+        public int TalentLose { get; set; }
 
         public int TalentSurrender { get; set; }
 
