@@ -44,8 +44,8 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public int LevelXp { get; set; }
         public byte JobLevel { get; set; }
         public int JobLevelXp { get; set; }
-        public int Dead { get; set; }
-        public int Kill { get; set; }
+        public int Act4Dead { get; set; }
+        public int Act4Kill { get; set; }
         public int Faction { get; set; }
         public int SpPoint { get; set; }
         public int SpAdditionPoint { get; set; }
@@ -63,11 +63,10 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public bool BuffBlocked { get; set; }
         public bool MinilandInviteBlocked { get; set; }
         public bool FamilyRequestBlocked { get; set; }
-        public int Points { get; set; }
+        public int Act4Points { get; set; }
         public int TalentWin { get; set; }
         public int TalentLose { get; set; }
         public int TalentSurrender { get; set; }
-        public int TalentArena { get; set; }
         public int MasterPoints { get; set; }
         public int MasterTicket { get; set; }
     

@@ -44,9 +44,9 @@
 -- -----------------------------------------------------------
 -- Entity Designer DDL Script for MySQL Server 4.1 and higher
 -- -----------------------------------------------------------
--- Date Created: 02/24/2016 13:41:13
+-- Date Created: 02/25/2016 17:34:39
 
--- Generated from EDMX file: C:\Users\ERWAN\Desktop\OpenNos GIT\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
+-- Generated from EDMX file: C:\Users\Dominik\Source\Repos\OpenNos\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
 -- Target version: 3.0.0.0
 
 -- --------------------------------------------------
@@ -61,13 +61,13 @@
 
 --    ALTER TABLE `character` DROP CONSTRAINT `FK_AccountCharacter`;
 
---    ALTER TABLE `connectionlog` DROP CONSTRAINT `FK_accountlog`;
+--    ALTER TABLE `generallog` DROP CONSTRAINT `FK_accountlog`;
 
 --    ALTER TABLE `portal` DROP CONSTRAINT `FK_portalMap`;
 
 --    ALTER TABLE `portal` DROP CONSTRAINT `FK_portalMap1`;
 
---    ALTER TABLE `connectionlog` DROP CONSTRAINT `FK_GeneralLogCharacter`;
+--    ALTER TABLE `generallog` DROP CONSTRAINT `FK_GeneralLogCharacter`;
 
 --    ALTER TABLE `character` DROP CONSTRAINT `FK_CharacterMap`;
 
@@ -99,7 +99,7 @@ SET foreign_key_checks = 0;
 
     DROP TABLE IF EXISTS `portal`;
 
-    DROP TABLE IF EXISTS `connectionlog`;
+    DROP TABLE IF EXISTS `generallog`;
 
     DROP TABLE IF EXISTS `map`;
 
@@ -179,7 +179,14 @@ CREATE TABLE `character`(
 	`HpBlocked` bool NOT NULL, 
 	`BuffBlocked` bool NOT NULL, 
 	`MinilandInviteBlocked` bool NOT NULL, 
-	`FamilyRequestBlocked` bool NOT NULL);
+	`FamilyRequestBlocked` bool NOT NULL, 
+	`Points` int NOT NULL, 
+	`TalentWin` int NOT NULL, 
+	`TalentLose` int NOT NULL, 
+	`TalentSurrender` int NOT NULL, 
+	`TalentArena` int NOT NULL, 
+	`MasterPoints` int NOT NULL, 
+	`MasterTicket` int NOT NULL);
 
 ALTER TABLE `character` ADD PRIMARY KEY (CharacterId);
 

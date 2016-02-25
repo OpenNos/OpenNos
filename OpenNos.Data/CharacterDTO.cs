@@ -22,6 +22,12 @@ namespace OpenNos.Data
 
         public long AccountId { get; set; }
 
+        public int Act4Dead { get; set; }
+
+        public int Act4Kill { get; set; }
+
+        public int Act4Points { get; set; }
+
         public int Backpack { get; set; }
 
         public bool BuffBlocked { get; set; }
@@ -88,8 +94,6 @@ namespace OpenNos.Data
 
         public string Name { get; set; }
 
-        public int Points { get; set; }
-
         public bool QuickGetUp { get; set; }
 
         public long Reput { get; set; }
@@ -103,8 +107,6 @@ namespace OpenNos.Data
         public byte State { get; set; }
 
         public CharacterState StateEnum { get { return (CharacterState)State; } set { State = (byte)value; } }
-
-        public int TalenArena { get; set; }
 
         public int TalenLose { get; set; }
 

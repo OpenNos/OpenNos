@@ -69,15 +69,13 @@ namespace OpenNos.DAL.EF.MySQL
 
         public IEnumerable<CharacterDTO> GetTopPoints()
         {
-            //POINTS NOT IMPLEMENTED RIGHT NOW, STUB
-            //using (var context = DataAccessHelper.CreateContext())
-            //{
-            //    foreach (Character character in context.character.Where(c=>c.account.Authority != (short)AuthorityType.Admin).OrderByDescending(c => c.Compliment).Take(30).ToList())
-            //    {
-            //        yield return Mapper.Map<CharacterDTO>(character);
-            //    }
-            //}
-            return null;
+            using (var context = DataAccessHelper.CreateContext())
+            {
+                foreach (Character character in context.character.Where(c => c.account.Authority != (short)AuthorityType.Admin).OrderByDescending(c => c.Compliment).Take(30).ToList())
+                {
+                    yield return Mapper.Map<CharacterDTO>(character);
+                }
+            }
         }
 
         public IEnumerable<CharacterDTO> GetTopReputation()

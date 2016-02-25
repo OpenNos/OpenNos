@@ -131,6 +131,13 @@
     <Property Name="BuffBlocked" Type="bool" Nullable="false" />
     <Property Name="MinilandInviteBlocked" Type="bool" Nullable="false" />
     <Property Name="FamilyRequestBlocked" Type="bool" Nullable="false" />
+    <Property Name="Points" Type="int" Nullable="false" />
+    <Property Name="TalentWin" Type="int" Nullable="false" />
+    <Property Name="TalentLose" Type="int" Nullable="false" />
+    <Property Name="TalentSurrender" Type="int" Nullable="false" />
+    <Property Name="TalentArena" Type="int" Nullable="false" />
+    <Property Name="MasterPoints" Type="int" Nullable="false" />
+    <Property Name="MasterTicket" Type="int" Nullable="false" />
   </EntityType>
   <EntityType Name="portal">
     <Key>
@@ -530,8 +537,8 @@
           <Property Name="LevelXp" Type="Int32" Nullable="false" />
           <Property Name="JobLevel" Type="Byte" Nullable="false" />
           <Property Name="JobLevelXp" Type="Int32" Nullable="false" />
-          <Property Name="Dead" Type="Int32" Nullable="false" />
-          <Property Name="Kill" Type="Int32" Nullable="false" />
+          <Property Name="Act4Dead" Type="Int32" Nullable="false" />
+          <Property Name="Act4Kill" Type="Int32" Nullable="false" />
           <Property Name="Faction" Type="Int32" Nullable="false" />
           <NavigationProperty Name="account" Relationship="opennosModel.AccountCharacter" FromRole="Character" ToRole="Account" />
           <NavigationProperty Name="generallog" Relationship="opennosModel.GeneralLogCharacter" FromRole="Character" ToRole="GeneralLog" />
@@ -554,11 +561,10 @@
           <Property Name="MinilandInviteBlocked" Type="Boolean" Nullable="false" />
           <Property Name="FamilyRequestBlocked" Type="Boolean" Nullable="false" />
           <NavigationProperty Name="respawn" Relationship="opennosModel.CharacterRespawn" FromRole="Character" ToRole="Respawn" />
-          <Property Name="Points" Type="Int32" Nullable="false" />
+          <Property Name="Act4Points" Type="Int32" Nullable="false" />
           <Property Name="TalentWin" Type="Int32" Nullable="false" />
           <Property Name="TalentLose" Type="Int32" Nullable="false" />
           <Property Name="TalentSurrender" Type="Int32" Nullable="false" />
-          <Property Name="TalentArena" Type="Int32" Nullable="false" />
           <Property Name="MasterPoints" Type="Int32" Nullable="false" />
           <Property Name="MasterTicket" Type="Int32" Nullable="false" />
         </EntityType>
@@ -1051,8 +1057,8 @@
           <ScalarProperty Name="LevelXp" ColumnName="LevelXp" />
           <ScalarProperty Name="JobLevel" ColumnName="JobLevel" />
           <ScalarProperty Name="JobLevelXp" ColumnName="JobLevelXp" />
-          <ScalarProperty Name="Dead" ColumnName="Dead" />
-          <ScalarProperty Name="Kill" ColumnName="Kill" />
+          <ScalarProperty Name="Act4Dead" ColumnName="Dead" />
+          <ScalarProperty Name="Act4Kill" ColumnName="Kill" />
           <ScalarProperty Name="Faction" ColumnName="Faction" />
           <ScalarProperty Name="SpPoint" ColumnName="SpPoint" />
           <ScalarProperty Name="SpAdditionPoint" ColumnName="SpAdditionPoint" />
@@ -1070,6 +1076,12 @@
           <ScalarProperty Name="BuffBlocked" ColumnName="BuffBlocked" />
           <ScalarProperty Name="MinilandInviteBlocked" ColumnName="MinilandInviteBlocked" />
           <ScalarProperty Name="FamilyRequestBlocked" ColumnName="FamilyRequestBlocked" />
+          <ScalarProperty Name="Act4Points" ColumnName="Points" />
+          <ScalarProperty Name="TalentWin" ColumnName="TalentWin" />
+          <ScalarProperty Name="TalentLose" ColumnName="TalentLose" />
+          <ScalarProperty Name="TalentSurrender" ColumnName="TalentSurrender" />
+          <ScalarProperty Name="MasterPoints" ColumnName="MasterPoints" />
+          <ScalarProperty Name="MasterTicket" ColumnName="MasterTicket" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
