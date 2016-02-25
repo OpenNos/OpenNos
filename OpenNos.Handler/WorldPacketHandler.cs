@@ -1034,7 +1034,7 @@ namespace OpenNos.Handler
             }
             foreach (CharacterDTO character in DAOFactory.CharacterDAO.GetTopPoints())
             {
-                kdlinit += $" {character.CharacterId}|{character.Level}|{character.Points}|{character.Name}";
+                kdlinit += $" {character.CharacterId}|{character.Level}|{character.Act4Points}|{character.Name}";
             }
 
             Session.Client.SendPacket(clinit);

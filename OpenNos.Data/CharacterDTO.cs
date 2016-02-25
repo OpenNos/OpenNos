@@ -28,8 +28,6 @@ namespace OpenNos.Data
 
         public int Act4Points { get; set; }
 
-        public int ArenaWinner { get; set; }
-
         public int Backpack { get; set; }
 
         public bool BuffBlocked { get; set; }

@@ -44,7 +44,7 @@
 -- -----------------------------------------------------------
 -- Entity Designer DDL Script for MySQL Server 4.1 and higher
 -- -----------------------------------------------------------
--- Date Created: 02/25/2016 17:34:39
+-- Date Created: 02/25/2016 17:55:24
 
 -- Generated from EDMX file: C:\Users\Dominik\Source\Repos\OpenNos\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
 -- Target version: 3.0.0.0
@@ -161,8 +161,8 @@ CREATE TABLE `character`(
 	`LevelXp` int NOT NULL, 
 	`JobLevel` TINYINT UNSIGNED NOT NULL, 
 	`JobLevelXp` int NOT NULL, 
-	`Dead` int NOT NULL, 
-	`Kill` int NOT NULL, 
+	`Act4Dead` int NOT NULL, 
+	`Act4Kill` int NOT NULL, 
 	`Faction` int NOT NULL, 
 	`SpPoint` int NOT NULL, 
 	`SpAdditionPoint` int NOT NULL, 
@@ -180,11 +180,10 @@ CREATE TABLE `character`(
 	`BuffBlocked` bool NOT NULL, 
 	`MinilandInviteBlocked` bool NOT NULL, 
 	`FamilyRequestBlocked` bool NOT NULL, 
-	`Points` int NOT NULL, 
+	`Act4Points` int NOT NULL, 
 	`TalentWin` int NOT NULL, 
 	`TalentLose` int NOT NULL, 
 	`TalentSurrender` int NOT NULL, 
-	`TalentArena` int NOT NULL, 
 	`MasterPoints` int NOT NULL, 
 	`MasterTicket` int NOT NULL);
 

@@ -112,8 +112,8 @@
     <Property Name="LevelXp" Type="int" Nullable="false" />
     <Property Name="JobLevel" Type="utinyint" Nullable="false" />
     <Property Name="JobLevelXp" Type="int" Nullable="false" />
-    <Property Name="Dead" Type="int" Nullable="false" />
-    <Property Name="Kill" Type="int" Nullable="false" />
+    <Property Name="Act4Dead" Type="int" Nullable="false" />
+    <Property Name="Act4Kill" Type="int" Nullable="false" />
     <Property Name="Faction" Type="int" Nullable="false" />
     <Property Name="SpPoint" Type="int" Nullable="false" />
     <Property Name="SpAdditionPoint" Type="int" Nullable="false" />
@@ -131,11 +131,10 @@
     <Property Name="BuffBlocked" Type="bool" Nullable="false" />
     <Property Name="MinilandInviteBlocked" Type="bool" Nullable="false" />
     <Property Name="FamilyRequestBlocked" Type="bool" Nullable="false" />
-    <Property Name="Points" Type="int" Nullable="false" />
+    <Property Name="Act4Points" Type="int" Nullable="false" />
     <Property Name="TalentWin" Type="int" Nullable="false" />
     <Property Name="TalentLose" Type="int" Nullable="false" />
     <Property Name="TalentSurrender" Type="int" Nullable="false" />
-    <Property Name="TalentArena" Type="int" Nullable="false" />
     <Property Name="MasterPoints" Type="int" Nullable="false" />
     <Property Name="MasterTicket" Type="int" Nullable="false" />
   </EntityType>
@@ -1057,8 +1056,8 @@
           <ScalarProperty Name="LevelXp" ColumnName="LevelXp" />
           <ScalarProperty Name="JobLevel" ColumnName="JobLevel" />
           <ScalarProperty Name="JobLevelXp" ColumnName="JobLevelXp" />
-          <ScalarProperty Name="Act4Dead" ColumnName="Dead" />
-          <ScalarProperty Name="Act4Kill" ColumnName="Kill" />
+          <ScalarProperty Name="Act4Dead" ColumnName="Act4Dead" />
+          <ScalarProperty Name="Act4Kill" ColumnName="Act4Kill" />
           <ScalarProperty Name="Faction" ColumnName="Faction" />
           <ScalarProperty Name="SpPoint" ColumnName="SpPoint" />
           <ScalarProperty Name="SpAdditionPoint" ColumnName="SpAdditionPoint" />
@@ -1076,7 +1075,7 @@
           <ScalarProperty Name="BuffBlocked" ColumnName="BuffBlocked" />
           <ScalarProperty Name="MinilandInviteBlocked" ColumnName="MinilandInviteBlocked" />
           <ScalarProperty Name="FamilyRequestBlocked" ColumnName="FamilyRequestBlocked" />
-          <ScalarProperty Name="Act4Points" ColumnName="Points" />
+          <ScalarProperty Name="Act4Points" ColumnName="Act4Points" />
           <ScalarProperty Name="TalentWin" ColumnName="TalentWin" />
           <ScalarProperty Name="TalentLose" ColumnName="TalentLose" />
           <ScalarProperty Name="TalentSurrender" ColumnName="TalentSurrender" />
