@@ -30,17 +30,7 @@ namespace OpenNos.Data
 
         public byte Class { get; set; }
 
-        public ClassType Classnum
-        {
-            get
-            {
-                return (ClassType)Class;
-            }
-            set
-            {
-                Class = (byte)value;
-            }
-        }
+        public ClassType Classnum { get { return (ClassType)Class; } set { Class = (byte)value; } }
 
         public short Compliment { get; set; }
 
@@ -86,6 +76,10 @@ namespace OpenNos.Data
 
         public short MapY { get; set; }
 
+        public int MasterPoints { get; set; }
+
+        public int MasterTicket { get; set; }
+
         public bool MinilandInviteBlocked { get; set; }
 
         public bool MouseAimLock { get; set; }
@@ -93,6 +87,8 @@ namespace OpenNos.Data
         public int Mp { get; set; }
 
         public string Name { get; set; }
+
+        public int Points { get; set; }
 
         public bool QuickGetUp { get; set; }
 
@@ -106,17 +102,15 @@ namespace OpenNos.Data
 
         public byte State { get; set; }
 
-        public CharacterState StateEnum
-        {
-            get
-            {
-                return (CharacterState)State;
-            }
-            set
-            {
-                State = (byte)value;
-            }
-        }
+        public CharacterState StateEnum { get { return (CharacterState)State; } set { State = (byte)value; } }
+
+        public int TalenArena { get; set; }
+
+        public int TalenLose { get; set; }
+
+        public int TalentSurrender { get; set; }
+
+        public int TalentWin { get; set; }
 
         public bool WhisperBlocked { get; set; }
 

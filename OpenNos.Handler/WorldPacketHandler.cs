@@ -37,19 +37,13 @@ namespace OpenNos.Handler
 
         #region Instantiation
 
-        public WorldPacketHandler(ClientSession session)
-        {
-            _session = session;
-        }
+        public WorldPacketHandler(ClientSession session) { _session = session; }
 
         #endregion
 
         #region Properties
 
-        public ClientSession Session
-        {
-            get { return _session; }
-        }
+        public ClientSession Session { get { return _session; } }
 
         #endregion
 
@@ -304,7 +298,7 @@ namespace OpenNos.Handler
             Session.Client.SendPacket(Session.Character.GenerateCond());
             ClientLinkManager.Instance.Broadcast(Session, Session.Character.GeneratePairy(), ReceiverType.AllOnMap);
             Session.Client.SendPacket($"rsfi 1 1 0 9 0 9"); //stone act
-            ClientLinkManager.Instance.RequiereBroadcastFromAllMapUsers(Session, "GenerateIn"); 
+            ClientLinkManager.Instance.RequiereBroadcastFromAllMapUsers(Session, "GenerateIn");
             ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllOnMapExceptMe);
             if (Session.CurrentMap.IsDancing == 2 && Session.Character.IsDancing == 0)
                 ClientLinkManager.Instance.RequiereBroadcastFromMap(Session.Character.MapId, "dance 2");
@@ -476,7 +470,7 @@ namespace OpenNos.Handler
                     {
                         if (Session.Account.LastCompliment.Date.AddDays(1) <= DateTime.Now.Date)
                         {
-                            short compliment = ClientLinkManager.Instance.GetProperty<short>(complimentCharacterId,"Compliment");
+                            short compliment = ClientLinkManager.Instance.GetProperty<short>(complimentCharacterId, "Compliment");
                             compliment++;
                             ClientLinkManager.Instance.SetProperty(complimentCharacterId, "Compliment", compliment);
                             Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("COMPLIMENT_GIVEN"), ClientLinkManager.Instance.GetProperty<string>(complimentCharacterId, "Name")), 12));
@@ -1038,12 +1032,11 @@ namespace OpenNos.Handler
             {
                 flinit += $" {character.CharacterId}|{character.Level}|{character.Reput}|{character.Name}";
             }
-            /*if (false) //Need to delete it when gettoppoint will not return null
-                foreach (CharacterDTO character in DAOFactory.CharacterDAO.GetTopPoints())
-                {
-                    kdlinit += $" {character.CharacterId}|{character.Level}|0|{character.Name}"; //need to find true var for 0
-                }
-                */
+            foreach (CharacterDTO character in DAOFactory.CharacterDAO.GetTopPoints())
+            {
+                kdlinit += $" {character.CharacterId}|{character.Level}|{character.Points}|{character.Name}";
+            }
+
             Session.Client.SendPacket(clinit);
             Session.Client.SendPacket(flinit);
             Session.Client.SendPacket(kdlinit);

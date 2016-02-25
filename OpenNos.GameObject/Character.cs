@@ -48,282 +48,95 @@ namespace OpenNos.GameObject
 
         #region Instantiation
 
-        public Character()
-        {
-            Mapper.CreateMap<CharacterDTO, Character>();
-            Mapper.CreateMap<Character, CharacterDTO>();
-        }
+        public Character() { Mapper.CreateMap<CharacterDTO, Character>(); Mapper.CreateMap<Character, CharacterDTO>(); }
 
         #endregion
 
         #region Properties
         public DateTime LastLogin { get; set; }
 
-        public int ArenaWinner
-        {
-            get { return _arenaWinner; }
-            set
-            {
-                _arenaWinner = value;
-            }
-        }
+        public int ArenaWinner { get { return _arenaWinner; } set { _arenaWinner = value; } }
 
-        public int Authority
-        {
-            get { return _authority; }
-            set
-            {
-                _authority = value;
-            }
-        }
+        public int Authority { get { return _authority; } set { _authority = value; } }
 
-        public int BackPack
-        {
-            get { return _backpack; }
-            set
-            {
-                _backpack = value;
-            }
-        }
+        public int BackPack { get { return _backpack; } set { _backpack = value; } }
 
-        public int Direction
-        {
-            get { return _direction; }
-            set
-            {
-                _direction = value;
-            }
-        }
+        public int Direction { get { return _direction; } set { _direction = value; } }
 
-        public InventoryList EquipmentList
-        {
-            get { return _equipmentlist; }
-            set
-            {
-                _equipmentlist = value;
-            }
-        }
+        public InventoryList EquipmentList { get { return _equipmentlist; } set { _equipmentlist = value; } }
 
         public ExchangeInfo ExchangeInfo { get; set; }
 
-        public InventoryList InventoryList
-        {
-            get { return _inventorylist; }
-            set
-            {
-                _inventorylist = value;
-            }
-        }
+        public InventoryList InventoryList { get { return _inventorylist; } set { _inventorylist = value; } }
 
-        public int Invisible
-        {
-            get { return _invisible; }
-            set
-            {
-                _invisible = value;
-            }
-        }
+        public int Invisible { get { return _invisible; } set { _invisible = value; } }
 
-        public int IsDancing
-        {
-            get { return _isDancing; }
-            set
-            {
-                _isDancing = value;
-            }
-        }
+        public int IsDancing { get { return _isDancing; } set { _isDancing = value; } }
 
         public bool IsVehicled { get; set; }
 
-        public double LastPortal
-        {
-            get { return _lastPortal; }
-            set
-            {
-                _lastPortal = value;
-            }
-        }
+        public double LastPortal { get { return _lastPortal; } set { _lastPortal = value; } }
 
-        public int LastPulse
-        {
-            get { return _lastPulse; }
-            set
-            {
-                _lastPulse = value;
-            }
-        }
+        public int LastPulse { get { return _lastPulse; } set { _lastPulse = value; } }
 
-        public double LastSp
-        {
-            get;
-            set;
-        }
+        public double LastSp { get; set; }
 
-        public int LastSpeed
-        {
-            get;
-            set;
-        }
+        public int LastSpeed { get; set; }
 
-        public int Morph
-        {
-            get { return _morph; }
-            set
-            {
-                _morph = value;
-            }
-        }
+        public int Morph { get { return _morph; } set { _morph = value; } }
 
-        public int MorphUpgrade
-        {
-            get { return _morphUpgrade; }
-            set
-            {
-                _morphUpgrade = value;
-            }
-        }
+        public int MorphUpgrade { get { return _morphUpgrade; } set { _morphUpgrade = value; } }
 
-        public int MorphUpgrade2
-        {
-            get { return _morphUpgrade2; }
-            set
-            {
-                _morphUpgrade2 = value;
-            }
-        }
+        public int MorphUpgrade2 { get { return _morphUpgrade2; } set { _morphUpgrade2 = value; } }
 
-        public int Rested
-        {
-            get { return _rested; }
-            set
-            {
-                _rested = value;
-            }
-        }
+        public int Rested { get { return _rested; } set { _rested = value; } }
 
-        public int Size
-        {
-            get { return _size; }
-            set
-            {
-                _size = value;
-            }
-        }
+        public int Size { get { return _size; } set { _size = value; } }
 
-        public int Speed
-        {
-            get { return _speed; }
-            set
-            {
-                _speed = value;
-            }
-        }
+        public int Speed { get { return _speed; } set { _speed = value; } }
 
-        public Thread ThreadCharChange
-        {
-            get; set;
-        }
+        public Thread ThreadCharChange { get; set; }
 
-        public bool UseSp
-        {
-            get;
-            set;
-        }
+        public bool UseSp { get; set; }
 
-        private int DarkResistance
-        {
-            get; set;
-        }
+        private int DarkResistance { get; set; }
 
-        private int Defence
-        {
-            get; set;
-        }
+        private int Defence { get; set; }
 
-        private int DefenceRate
-        {
-            get; set;
-        }
+        private int DefenceRate { get; set; }
 
-        private int DistanceCritical
-        {
-            get; set;
-        }
+        private int DistanceCritical { get; set; }
 
-        private int DistanceCriticalRate
-        {
-            get; set;
-        }
+        private int DistanceCriticalRate { get; set; }
 
-        private int DistanceDefence
-        {
-            get; set;
-        }
+        private int DistanceDefence { get; set; }
 
-        private int DistanceDefenceRate
-        {
-            get; set;
-        }
+        private int DistanceDefenceRate { get; set; }
 
-        private int DistanceRate
-        {
-            get; set;
-        }
+        private int DistanceRate { get; set; }
 
-        private int FireResistance
-        {
-            get; set;
-        }
+        private int FireResistance { get; set; }
 
-        private int HitCritical
-        {
-            get; set;
-        }
+        private int HitCritical { get; set; }
 
-        private int HitCriticalRate
-        {
-            get; set;
-        }
+        private int HitCriticalRate { get; set; }
 
-        private int HitRate
-        {
-            get; set;
-        }
+        private int HitRate { get; set; }
 
-        private int LightResistance
-        {
-            get; set;
-        }
+        private int LightResistance { get; set; }
 
-        private int MagicalDefence
-        {
-            get; set;
-        }
+        private int MagicalDefence { get; set; }
 
-        private int MaxDistance
-        {
-            get; set;
-        }
+        private int MaxDistance { get; set; }
 
-        private int MaxHit
-        {
-            get; set;
-        }
+        private int MaxHit { get; set; }
 
-        private int MinDistance
-        {
-            get; set;
-        }
+        private int MinDistance { get; set; }
 
-        private int MinHit
-        {
-            get; set;
-        }
+        private int MinHit { get; set; }
 
-        private int WaterResistance
-        {
-            get; set;
-        }
+        private int WaterResistance { get; set; }
+
 
         #endregion
 

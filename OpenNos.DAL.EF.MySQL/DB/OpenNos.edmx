@@ -554,6 +554,13 @@
           <Property Name="MinilandInviteBlocked" Type="Boolean" Nullable="false" />
           <Property Name="FamilyRequestBlocked" Type="Boolean" Nullable="false" />
           <NavigationProperty Name="respawn" Relationship="opennosModel.CharacterRespawn" FromRole="Character" ToRole="Respawn" />
+          <Property Name="Points" Type="Int32" Nullable="false" />
+          <Property Name="TalentWin" Type="Int32" Nullable="false" />
+          <Property Name="TalentLose" Type="Int32" Nullable="false" />
+          <Property Name="TalentSurrender" Type="Int32" Nullable="false" />
+          <Property Name="TalentArena" Type="Int32" Nullable="false" />
+          <Property Name="MasterPoints" Type="Int32" Nullable="false" />
+          <Property Name="MasterTicket" Type="Int32" Nullable="false" />
         </EntityType>
         <EntityType Name="Portal">
           <Key>
