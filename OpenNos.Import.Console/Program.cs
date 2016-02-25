@@ -50,12 +50,13 @@ namespace OpenNos.Import.Console
             string folder = System.Console.ReadLine();
             ImportFactory factory = new ImportFactory(folder);
 
+            factory.ParsePortals();
             //factory.ImportItems();
-            factory.importPackets();
-            factory.ImportMaps();
-            factory.ImportPortals();
-            factory.ImportNpcs();
-            factory.ImportShops();
+            //factory.importPackets();
+            //factory.ImportMaps();
+            //factory.ImportPortals();
+            //factory.ImportNpcs();
+            //factory.ImportShops();
             Thread.Sleep(5000);
         }
 

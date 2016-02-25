@@ -28,7 +28,9 @@ namespace OpenNos.Import.Console
         #region Members
 
         private readonly string _folder;
+        private PacketParser _parser;
         private List<string[]> packetList = new List<string[]>();
+
         #endregion
 
         #region Instantiation
@@ -36,24 +38,12 @@ namespace OpenNos.Import.Console
         public ImportFactory(string folder)
         {
             _folder = folder;
+            _parser = new PacketParser();
         }
 
         #endregion
 
         #region Methods
-        public void importPackets()
-        {
-            string filePacket = $"{_folder}\\packet.txt";
-            using (StreamReader packetTxtStream = new StreamReader(filePacket, Encoding.GetEncoding(1252)))
-            {
-                string line;
-                while ((line = packetTxtStream.ReadLine()) != null)
-                {
-                    string[] linesave = line.Split(' ');
-                    packetList.Add(linesave);
-                }
-            }
-        }
 
         public void ImportItems()
         {
@@ -105,7 +95,6 @@ namespace OpenNos.Import.Console
                 mapIdLangStream.Close();
             }
 
-
             foreach (string[] linesave in packetList.Where(o => o[0].Equals("at")))
             {
                 if (linesave.Length > 7 && linesave[0] == "at")
@@ -114,7 +103,6 @@ namespace OpenNos.Import.Console
                         dictionaryMusic.Add(int.Parse(linesave[2]), int.Parse(linesave[7]));
                 }
             }
-
 
             foreach (FileInfo file in new DirectoryInfo(folderMap).GetFiles())
             {
@@ -195,7 +183,6 @@ namespace OpenNos.Import.Console
                 npcIdLangStream.Close();
             }
 
-
             int npcCounter = 0;
             short map = 0;
 
@@ -241,15 +228,27 @@ namespace OpenNos.Import.Console
                         // continue with next line in packet file
                     }
                 }
-
             }
 
             Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("NPCS_PARSED"), npcCounter));
         }
 
+        public void importPackets()
+        {
+            string filePacket = $"{_folder}\\packet.txt";
+            using (StreamReader packetTxtStream = new StreamReader(filePacket, Encoding.GetEncoding(1252)))
+            {
+                string line;
+                while ((line = packetTxtStream.ReadLine()) != null)
+                {
+                    string[] linesave = line.Split(' ');
+                    packetList.Add(linesave);
+                }
+            }
+        }
+
         public void ImportPortals()
         {
-
             List<PortalDTO> listPacket = new List<PortalDTO>();
             List<PortalDTO> listPortal = new List<PortalDTO>();
             short map = 0;
@@ -310,13 +309,11 @@ namespace OpenNos.Import.Console
 
         public void ImportShops()
         {
-
             Dictionary<int, int> dictionaryId = new Dictionary<int, int>();
 
             short lastMap = 0; // unused variable
             short currentMap = 0;
             int shopCounter = 0;
-
 
             foreach (string[] linesave in packetList.Where(o => o[0].Equals("at") || o[0].Equals("in") || o[0].Equals("shop")))
             {
@@ -359,10 +356,28 @@ namespace OpenNos.Import.Console
                         shopCounter++;
                     }
                 }
-
             }
 
             Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("SHOPS_PARSED"), shopCounter));
+        }
+
+        public void ParsePortals()
+        {
+            //testing values
+            //at 121125 178 145 206 2 0 34 1
+            //gp 115 32 179 - 1 0 0
+            //gp 145 206 177 - 1 1 0
+            PortalDTO dto = new PortalDTO();//<- used for using referenced property names
+
+            _parser.Condition<PortalDTO>(0, "at")
+                    .Map(nameof(dto.SourceMapId), 2)
+                    .Condition<PortalDTO>(0, "gp")
+                    .Map(nameof(dto.SourceX), 1)
+                    .Map(nameof(dto.SourceY), 2)
+                    .Map(nameof(dto.DestinationMapId), 3)
+                    .Map(nameof(dto.Type), 4);
+
+            IEnumerable<PortalDTO> portals = _parser.Deserialize<PortalDTO>(Path.Combine(_folder, "Portals.txt"));
         }
 
         #endregion
