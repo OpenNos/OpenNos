@@ -298,9 +298,6 @@ namespace OpenNos.Handler
             Session.Client.SendPacket(Session.Character.GenerateCond());
             ClientLinkManager.Instance.Broadcast(Session, Session.Character.GeneratePairy(), ReceiverType.AllOnMap);
             Session.Client.SendPacket($"rsfi 1 1 0 9 0 9"); //stone act
-            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEq(), ReceiverType.AllOnMap);
-            Session.Client.SendPacket(Session.Character.GenerateEquipment());
-            GenerateRankings();
             ClientLinkManager.Instance.RequiereBroadcastFromAllMapUsers(Session, "GenerateIn");
             ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllOnMapExceptMe);
             if (Session.CurrentMap.IsDancing == 2 && Session.Character.IsDancing == 0)
@@ -316,7 +313,9 @@ namespace OpenNos.Handler
             foreach (String ShopPacketChar in Session.Character.GeneratePlayerShopOnMap())
                 Session.Client.SendPacket(ShopPacketChar);
 
-         
+            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEq(), ReceiverType.AllOnMap);
+            Session.Client.SendPacket(Session.Character.GenerateEquipment());
+            GenerateRankings();
         }
 
         public void ChangeSP()
@@ -394,6 +393,7 @@ namespace OpenNos.Handler
 
             Session.Character.Class = Class;
             Session.Character.Speed = ServersData.SpeedData[Session.Character.Class];
+            Session.Client.SendPacket(Session.Character.GenerateCond());
             Session.Character.Hp = (int)Session.Character.HPLoad();
             Session.Character.Mp = (int)Session.Character.MPLoad();
             Session.Client.SendPacket(Session.Character.GenerateTit());
