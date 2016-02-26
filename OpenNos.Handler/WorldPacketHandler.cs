@@ -37,7 +37,10 @@ namespace OpenNos.Handler
 
         #region Instantiation
 
-        public WorldPacketHandler(ClientSession session) { _session = session; }
+        public WorldPacketHandler(ClientSession session)
+        {
+            _session = session;
+        }
 
         #endregion
 
@@ -866,7 +869,6 @@ namespace OpenNos.Handler
             string charName;
             bool Blocked;
 
-
             if (mode == 1)
             {
                 if (!long.TryParse(packetsplit[3], out charId)) return;
@@ -878,13 +880,11 @@ namespace OpenNos.Handler
                 }
                 else
                 {
-
                     Session.Character.ExchangeInfo = new ExchangeInfo { CharId = charId, Confirm = false };
 
                     charName = (string)ClientLinkManager.Instance.GetProperty<string>(charId, "Name");
                     Session.Client.SendPacket(Session.Character.GenerateModal($"{Language.Instance.GetMessageFromKey("YOU_ASK_FOR_EXCHANGE")} {charName}"));
                     ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateDialog($"#req_exc^2^{Session.Character.CharacterId} #req_exc^5^{Session.Character.CharacterId} {String.Format(Language.Instance.GetMessageFromKey("ASK_ACCEPT"), Session.Character.Name)}"), ReceiverType.OnlySomeone, charName);
-
                 }
             }
             else if (mode == 3)

@@ -405,6 +405,9 @@
   <data name="SHOP_OPEN" xml:space="preserve">
     <value>Sklep zostal otwarty</value>
   </data>
+  <data name="SHOP_VOID" xml:space="preserve">
+    <value>Sklep nie moze byc pusty!</value>
+  </data>
   <data name="SHUTDOWN_MIN" xml:space="preserve">
     <value>Server zostanie wylaczony za {0} Minut.</value>
   </data>

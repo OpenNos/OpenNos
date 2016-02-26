@@ -435,8 +435,8 @@ namespace OpenNos.GameObject
         public List<string> GeneratePlayerShopOnMap()
         {
             List<String> droplist = new List<String>();
-            /*foreach (KeyValuePair<long, MapShop> shop in ServerManager.GetMap(this.MapId).ShopUserList)
-              droplist.Add($"pflag 1 {shop.Value.OwnerId} {shop.Key+1}");*/
+            foreach (KeyValuePair<long, MapShop> shop in ServerManager.GetMap(this.MapId).ShopUserList)
+                droplist.Add($"pflag 1 {shop.Value.OwnerId} {shop.Key + 1}");
             return droplist;
         }
 
