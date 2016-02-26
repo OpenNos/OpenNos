@@ -233,7 +233,7 @@ namespace OpenNos.Import.Console
             Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("NPCS_PARSED"), npcCounter));
         }
 
-        public void importPackets()
+        public void ImportPackets()
         {
             string filePacket = $"{_folder}\\packet.txt";
             using (StreamReader packetTxtStream = new StreamReader(filePacket, Encoding.GetEncoding(1252)))
