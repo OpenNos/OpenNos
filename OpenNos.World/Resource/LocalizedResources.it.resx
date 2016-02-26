@@ -406,7 +406,7 @@
     <value>Il negozio è stato aperto</value>
   </data>
   <data name="SHOP_VOID" xml:space="preserve">
-    <value>You can't open empty shop</value>
+    <value>Negozio non può essere vuoto</value>
   </data>
   <data name="SHUTDOWN_MIN" xml:space="preserve">
     <value>Il server si spegnerà in {0} Minuti.</value>
@@ -418,10 +418,10 @@
     <value>Il livello della carta dello specialista è cambiato!</value>
   </data>
   <data name="SP_BLOCKED" xml:space="preserve">
-    <value> Non puoi cambiare una Carta Speciale durante la trasformazione.</value>
+    <value>Non puoi cambiare una Carta Speciale durante la trasformazione.</value>
   </data>
   <data name="SP_INLOADING" xml:space="preserve">
-    <value> Non lo so, ma aspetta {0} secondi!</value>
+    <value>Non lo so, ma aspetta {0} secondi!</value>
   </data>
   <data name="STARTED" xml:space="preserve">
     <value>Il server si è avviato con successo!.</value>
