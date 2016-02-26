@@ -307,7 +307,7 @@
     <value>Magasin ouvert.</value>
   </data>
   <data name="SHOP_VOID" xml:space="preserve">
-    <value>You can't open empty shop</value>
+    <value>le magasin ne peut être vide</value>
   </data>
   <data name="SHUTDOWN_MIN" xml:space="preserve">
     <value>Le serveur sera fermé dans {0} minutes.</value>
