@@ -264,6 +264,9 @@
   <data name="SHOP_OPEN" xml:space="preserve">
     <value>Shop has ben opened</value>
   </data>
+  <data name="SHOP_VOID" xml:space="preserve">
+    <value>You can't open empty shop</value>
+  </data>
   <data name="SP_BLOCKED" xml:space="preserve">
     <value>You can't change sp now!</value>
   </data>
