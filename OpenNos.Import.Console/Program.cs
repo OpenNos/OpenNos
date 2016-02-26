@@ -52,11 +52,11 @@ namespace OpenNos.Import.Console
 
             factory.ParsePortals();
             //factory.ImportItems();
-            //factory.importPackets();
-            //factory.ImportMaps();
-            //factory.ImportPortals();
-            //factory.ImportNpcs();
-            //factory.ImportShops();
+            factory.ImportPackets();
+            factory.ImportMaps();
+            factory.ImportPortals();
+            factory.ImportNpcs();
+            factory.ImportShops();
             Thread.Sleep(5000);
         }
 
