@@ -379,6 +379,7 @@ namespace OpenNos.Handler
             Thread.Sleep(2500);
             Session.Character.IsVehicled = true;
             Session.Character.Speed = item.Speed;
+            Session.Client.SendPacket(Session.Character.GenerateCond());
             Session.Character.Morph = item.Morph + Session.Character.Gender;
             ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateCMode(), ReceiverType.AllOnMap);
             ClientLinkManager.Instance.Broadcast(Session, $"guri 6 1 {Session.Character.CharacterId} 0 0", ReceiverType.AllOnMap);
@@ -1980,6 +1981,7 @@ namespace OpenNos.Handler
         {
             Session.Character.IsVehicled = false;
             Session.Character.Speed = ServersData.SpeedData[Session.Character.Class];
+            Session.Client.SendPacket(Session.Character.GenerateCond());
             if (Session.Character.UseSp)
             {
                 Session.Character.Morph = ServerManager.GetItem(Session.Character.EquipmentList.LoadBySlotAndType((short)EquipmentType.Sp, (short)InventoryType.Equipment).InventoryItem.ItemVNum).Morph;
