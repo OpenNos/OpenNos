@@ -151,10 +151,10 @@
     <value>Leggi^i^nostri^Termini^e^Condizioni^d'utilizzo</value>
   </data>
   <data name="BN1" xml:space="preserve">
-    <value>Don't^give^your^password</value>
+    <value>Non^dare^la^tua^password^a^NESSUNO!</value>
   </data>
   <data name="BN2" xml:space="preserve">
-    <value>Need^a^gm?^check^out^our^website:^</value>
+    <value>Hai^bisogno^di^un^GM?^Contattaci^sul^sito!</value>
   </data>
   <data name="BN3" xml:space="preserve">
     <value>Greetings^from^OpenNos^Team!</value>
@@ -205,7 +205,7 @@
     <value>Devi aspettare ancora {0} minuti prima di poter lodare qualcuno.</value>
   </data>
   <data name="COMPLIMENT_NOT_MINLVL" xml:space="preserve">
-    <value>Solo i personaggi di livello superiore a 30 possono lodare altri giocatori.</value>
+    <value>Solo i personaggi di livello combatitmento superiore a 30 possono lodare altri giocatori.</value>
   </data>
   <data name="COMPLIMENT_RECEIVED" xml:space="preserve">
     <value>Sei stato lodato da {0}.</value>
@@ -271,7 +271,7 @@
     <value> Le richieste di gruppo sono state abilitate.</value>
   </data>
   <data name="HANDLER_NOT_FOUND" xml:space="preserve">
-    <value>Non si può gestire il pacchetto con Intestazione {0}</value>
+    <value>Non si può gestire il pacchetto con Intestazione: {0}</value>
   </data>
   <data name="HERO_CHAT_BLOCKED" xml:space="preserve">
     <value>La chat degli eroi è stata bloccata</value>
@@ -313,7 +313,7 @@
     <value>Il livello di lavoro è stato cambiato.</value>
   </data>
   <data name="LEVEL_CHANGED" xml:space="preserve">
-    <value>Il tuo livello è stato incrementato.</value>
+    <value>Il tuo livello di combattimento è stato incrementato.</value>
   </data>
   <data name="LOW_JOB_LVL" xml:space="preserve">
     <value>Il livello di lavoro è troppo basso.</value>
@@ -322,7 +322,7 @@
     <value>Il tuo livello è troppo basso.</value>
   </data>
   <data name="LOW_REP" xml:space="preserve">
-    <value>La reputazione è troppo bassa.</value>
+    <value>La tua reputazione è troppo bassa.</value>
   </data>
   <data name="MAGICIAN" xml:space="preserve">
     <value>Mago</value>
@@ -361,7 +361,7 @@
     <value>Non hai abbastanza spazio.</value>
   </data>
   <data name="NO_ENTRY" xml:space="preserve">
-    <value>No EntryPoint found - dunno</value>
+    <value>No EntryPoint found</value>
   </data>
   <data name="NO_MAP" xml:space="preserve">
     <value>Il server ha bisogno al meno della mappa di NosVille per poter funzionare!</value>
@@ -406,7 +406,7 @@
     <value>Il negozio è stato aperto</value>
   </data>
   <data name="SHOP_VOID" xml:space="preserve">
-    <value>Negozio non può essere vuoto</value>
+    <value>Il negozio non può essere vuoto</value>
   </data>
   <data name="SHUTDOWN_MIN" xml:space="preserve">
     <value>Il server si spegnerà in {0} Minuti.</value>
@@ -421,13 +421,13 @@
     <value>Non puoi cambiare una Carta Speciale durante la trasformazione.</value>
   </data>
   <data name="SP_INLOADING" xml:space="preserve">
-    <value>Non lo so, ma aspetta {0} secondi!</value>
+    <value>Aspetta {0} secondi!</value>
   </data>
   <data name="STARTED" xml:space="preserve">
-    <value>Il server si è avviato con successo!.</value>
+    <value>Il server si è avviato con successo!</value>
   </data>
   <data name="STAY_TIME" xml:space="preserve">
-    <value>La trasformazione non si può realizzare a causa dell'effetto collaterale della trasformazione, aspetta: 30 secondi</value>
+    <value>La trasformazione non essere realizzata a causa dell'effetto collaterale della trasformazione, aspetta: 30 secondi</value>
   </data>
   <data name="SURE_TO_DELETE" xml:space="preserve">
     <value>L'item verrà distrutto.</value>
