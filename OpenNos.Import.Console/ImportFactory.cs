@@ -205,9 +205,18 @@ namespace OpenNos.Import.Console
                     {
                         //template
 
+                        //paint
+                        /*item.() = Convert.To()(linesave[2]);
+                        item.Colored = Convert.ToBoolean(linesabe[4]);*/
+
+                        //consumable
+                        /*item.HpRegeneration = Convert.ToInt16(linesave[2]);
+                        item.MpRegeneration = Convert.ToInt16(linesave[4]);*/
+
                         //weapon
                         /*item.LevelMinimum = Convert.ToInt16(linesave[2]);
                         item.DamageMinimum = Convert.ToInt16(linesave[3]);
+                        item.DamageMaximum = Convert.ToInt16(linesave[4]);
                         item.HitRate = Convert.ToInt16(linesave[5]);
                         item.CriticalLuckRate = Convert.ToInt16(linesave[6]);
                         item.CriticalRate = Convert.ToInt16(linesave[7]);*/
