@@ -64,7 +64,7 @@ namespace OpenNos.Data
 
         public short Hp { get; set; }
 
-        public string HpRegeneration { get; set; }
+        public short HpRegeneration { get; set; }
 
         public bool IsConsumable { get; set; }
 
@@ -98,7 +98,7 @@ namespace OpenNos.Data
 
         public short Mp { get; set; }
 
-        public string MpRegeneration { get; set; }
+        public short MpRegeneration { get; set; }
 
         public string Name { get; set; }
 
