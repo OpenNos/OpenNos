@@ -41,7 +41,7 @@ namespace OpenNos.Import.Console
             System.Console.BackgroundColor = System.ConsoleColor.Blue;
             System.Console.WriteLine("Root");
             System.Console.ResetColor();
-            System.Console.WriteLine($"-----_code_{System.Configuration.ConfigurationManager.AppSettings["language"]}_MapIDData.txt\n-----_code_{System.Configuration.ConfigurationManager.AppSettings["language"]}_monster.txt\n-----MapIDData.dat\n-----monster.dat\n-----packet.txt");
+            System.Console.WriteLine($"-----_code_{System.Configuration.ConfigurationManager.AppSettings["language"]}_Item.txt\n_code_{System.Configuration.ConfigurationManager.AppSettings["language"]}_MapIDData.txt\n-----_code_{System.Configuration.ConfigurationManager.AppSettings["language"]}_monster.txt\n-----Item.dat\n-----MapIDData.dat\n-----monster.dat\n-----packet.txt");
             System.Console.BackgroundColor = System.ConsoleColor.Blue;
             System.Console.WriteLine("-----map");
             System.Console.ResetColor();
