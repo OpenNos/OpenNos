@@ -123,6 +123,9 @@
   <data name="ENTER_PATH" xml:space="preserve">
     <value>Immetti la directory dei file da sincronizzare</value>
   </data>
+  <data name="ITEMS_PARSED" xml:space="preserve">
+    <value />
+  </data>
   <data name="MAPS_PARSED" xml:space="preserve">
     <value>{0} Mappe sincronizzate</value>
   </data>

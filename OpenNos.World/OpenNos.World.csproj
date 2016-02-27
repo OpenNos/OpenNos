@@ -199,7 +199,9 @@
     <EmbeddedResource Include="Resource\LocalizedResources.fr.resx" />
     <EmbeddedResource Include="Resource\LocalizedResources.it.resx" />
     <EmbeddedResource Include="Resource\LocalizedResources.pl.resx" />
-    <EmbeddedResource Include="Resource\LocalizedResources.resx" />
+    <EmbeddedResource Include="Resource\LocalizedResources.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SlowCheetahTargets)" Condition="Exists('$(SlowCheetahTargets)')" Label="SlowCheetah" />

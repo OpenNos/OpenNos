@@ -2047,7 +2047,7 @@ namespace OpenNos.Handler
                 string[] packetsplit = packet.Split(' ');
                 CharacterDTO characterDTO = DAOFactory.CharacterDAO.LoadBySlot(Session.Account.AccountId, Convert.ToByte(packetsplit[2]));
                 if (characterDTO != null)
-                    Session.Character = new GameObject.Character()
+                    Session.Character = new Character
                     {
                         AccountId = characterDTO.AccountId,
                         CharacterId = characterDTO.CharacterId,

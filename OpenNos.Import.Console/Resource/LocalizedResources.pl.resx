@@ -123,6 +123,9 @@
   <data name="ENTER_PATH" xml:space="preserve">
     <value>Podaj sciezke pliku aby przeprowadzic rozbior danych</value>
   </data>
+  <data name="ITEMS_PARSED" xml:space="preserve">
+    <value>{0} przedmiotow wprowadzonych</value>
+  </data>
   <data name="MAPS_PARSED" xml:space="preserve">
     <value>{0} map wprowadzonych</value>
   </data>
