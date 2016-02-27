@@ -204,6 +204,13 @@ namespace OpenNos.Import.Console
                     else if (linesave.Length > 1 && linesave[1] == "DATA")
                     {
                         //template
+
+                        //weapon
+                        /*item.LevelMinimum = Convert.ToInt16(linesave[2]);
+                        item.DamageMinimum = Convert.ToInt16(linesave[3]);
+                        item.HitRate = Convert.ToInt16(linesave[5]);
+                        item.CriticalLuckRate = Convert.ToInt16(linesave[6]);
+                        item.CriticalRate = Convert.ToInt16(linesave[7]);*/
                     }
                     else if (linesave.Length > 1 && linesave[1] == "BUFF")
                     {
