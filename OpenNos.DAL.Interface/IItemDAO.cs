@@ -25,6 +25,8 @@ namespace OpenNos.DAL.Interface
 
         ItemDTO LoadById(short Vnum);
 
+        ItemDTO Insert(ItemDTO item);
+
         #endregion
     }
 }

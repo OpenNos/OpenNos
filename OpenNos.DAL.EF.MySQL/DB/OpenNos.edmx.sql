@@ -44,9 +44,9 @@
 -- -----------------------------------------------------------
 -- Entity Designer DDL Script for MySQL Server 4.1 and higher
 -- -----------------------------------------------------------
--- Date Created: 02/25/2016 20:43:24
+-- Date Created: 02/27/2016 19:20:59
 
--- Generated from EDMX file: C:\Users\Dominik\Source\Repos\OpenNos\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
+-- Generated from EDMX file: C:\Users\ERWAN\Desktop\OpenNos GIT\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
 -- Target version: 3.0.0.0
 
 -- --------------------------------------------------
@@ -238,7 +238,7 @@ ALTER TABLE `map` ADD PRIMARY KEY (MapId);
 
 
 CREATE TABLE `item`(
-	`VNum` smallint NOT NULL AUTO_INCREMENT UNIQUE, 
+	`VNum` smallint NOT NULL, 
 	`Price` bigint NOT NULL, 
 	`Name` longtext NOT NULL, 
 	`ItemType` TINYINT UNSIGNED NOT NULL, 
@@ -283,8 +283,8 @@ CREATE TABLE `item`(
 	`ElementRate` smallint NOT NULL, 
 	`PvpDefence` smallint NOT NULL, 
 	`ReduceOposantResistance` smallint NOT NULL, 
-	`HpRegeneration` longtext NOT NULL, 
-	`MpRegeneration` longtext NOT NULL, 
+	`HpRegeneration` smallint NOT NULL, 
+	`MpRegeneration` smallint NOT NULL, 
 	`MoreHp` smallint NOT NULL, 
 	`MoreMp` smallint NOT NULL, 
 	`Colored` bool NOT NULL, 

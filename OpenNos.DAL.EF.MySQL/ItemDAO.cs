@@ -18,11 +18,22 @@ using OpenNos.DAL.Interface;
 using OpenNos.Data;
 using System.Collections.Generic;
 using System.Linq;
+using System;
 
 namespace OpenNos.DAL.EF.MySQL
 {
     public class ItemDAO : IItemDAO
     {
+        public ItemDTO Insert(ItemDTO item)
+        {
+            using (var context = DataAccessHelper.CreateContext())
+            {
+                Item entity = Mapper.Map<Item>(item);
+                context.item.Add(entity);
+                context.SaveChanges();
+                return Mapper.Map<ItemDTO>(entity);
+            }
+        }
         #region Methods
 
         public IEnumerable<ItemDTO> LoadAll()

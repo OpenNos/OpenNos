@@ -177,7 +177,7 @@
     <Key>
       <PropertyRef Name="VNum" />
     </Key>
-    <Property Name="VNum" Type="smallint" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="VNum" Type="smallint" Nullable="false" />
     <Property Name="Price" Type="bigint" Nullable="false" />
     <Property Name="Name" Type="longtext" Nullable="false" />
     <Property Name="ItemType" Type="utinyint" Nullable="false" />
@@ -222,8 +222,8 @@
     <Property Name="ElementRate" Type="smallint" Nullable="false" />
     <Property Name="PvpDefence" Type="smallint" Nullable="false" />
     <Property Name="ReduceOposantResistance" Type="smallint" Nullable="false" />
-    <Property Name="HpRegeneration" Type="longtext" Nullable="false" />
-    <Property Name="MpRegeneration" Type="longtext" Nullable="false" />
+    <Property Name="HpRegeneration" Type="smallint" Nullable="false" />
+    <Property Name="MpRegeneration" Type="smallint" Nullable="false" />
     <Property Name="MoreHp" Type="smallint" Nullable="false" />
     <Property Name="MoreMp" Type="smallint" Nullable="false" />
     <Property Name="Colored" Type="bool" Nullable="false" />
@@ -756,7 +756,7 @@
           <Key>
             <PropertyRef Name="VNum" />
           </Key>
-          <Property Name="VNum" Type="Int16" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="VNum" Type="Int16" Nullable="false" annotation:StoreGeneratedPattern="None" />
           <Property Name="Price" Type="Int64" Nullable="false" />
           <Property Name="Name" Type="String" Nullable="false" />
           <Property Name="ItemType" Type="Byte" Nullable="false" />
@@ -801,8 +801,8 @@
           <Property Name="ElementRate" Type="Int16" Nullable="false" />
           <Property Name="PvpDefence" Type="Int16" Nullable="false" />
           <Property Name="ReduceOposantResistance" Type="Int16" Nullable="false" />
-          <Property Name="HpRegeneration" Type="String" Nullable="false" />
-          <Property Name="MpRegeneration" Type="String" Nullable="false" />
+          <Property Name="HpRegeneration" Type="Int16" Nullable="false" />
+          <Property Name="MpRegeneration" Type="Int16" Nullable="false" />
           <Property Name="MoreHp" Type="Int16" Nullable="false" />
           <Property Name="MoreMp" Type="Int16" Nullable="false" />
           <Property Name="Colored" Type="Boolean" Nullable="false" />

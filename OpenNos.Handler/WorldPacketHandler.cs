@@ -1748,7 +1748,7 @@ namespace OpenNos.Handler
             short amount; short.TryParse(packetsplit[4], out amount);
             Inventory inv;
             Inventory invitem = Session.Character.InventoryList.LoadBySlotAndType(slot, type);
-            if (invitem != null && ServerManager.GetItem(invitem.InventoryItem.ItemVNum).Droppable == 1)
+            if (invitem != null && ServerManager.GetItem(invitem.InventoryItem.ItemVNum).Droppable == 1 && ServerManager.GetItem(invitem.InventoryItem.ItemVNum).Transaction == 1)
             {
                 MapItem DroppedItem = Session.Character.InventoryList.PutItem(Session, type, slot, amount, out inv);
                 if (inv.InventoryItem.Amount == 0)

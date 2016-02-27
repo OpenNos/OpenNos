@@ -120,6 +120,103 @@ namespace OpenNos.Import.Console
             Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("MAPS_PARSED"), i));
         }
 
+        internal void ImportItems()
+        {
+            string fileId = $"{_folder}\\Item.dat";
+            string fileLang = $"{_folder}\\_code_{System.Configuration.ConfigurationManager.AppSettings["language"]}_Item.txt";
+            Dictionary<string, string> dictionaryName = new Dictionary<string, string>();
+            string line = string.Empty;
+            using (StreamReader mapIdLangStream = new StreamReader(fileLang, Encoding.GetEncoding(1252)))
+            {
+                while ((line = mapIdLangStream.ReadLine()) != null)
+                {
+                    string[] linesave = line.Split('\t');
+                    if (linesave.Length > 1)
+                    {
+                        dictionaryName.Add(linesave[0], linesave[1]);
+                    }
+                }
+                mapIdLangStream.Close();
+            }
+
+            using (StreamReader npcIdStream = new StreamReader(fileId, Encoding.GetEncoding(1252)))
+            {
+                ItemDTO item = new ItemDTO();
+                bool itemAreaBegin = false;
+                string name = "";
+                int i = 0;
+                while ((line = npcIdStream.ReadLine()) != null)
+                {
+                    string[] linesave = line.Split('\t');
+
+                    if (linesave.Length > 3 && linesave[1] == "VNUM")
+                    {
+                        itemAreaBegin = true;
+                        item.VNum = short.Parse(linesave[2]);
+                        item.Price = long.Parse(linesave[3]);
+                    }
+                    else if (linesave.Length > 1 && linesave[1] == "END")
+                    {
+                        if (!itemAreaBegin) continue;
+
+                        if(DAOFactory.ItemDAO.LoadById(item.VNum) == null)
+                        {
+                            DAOFactory.ItemDAO.Insert(item);
+                            i++;
+                        }
+                          
+                        itemAreaBegin = false;
+                    }
+                    else if (linesave.Length > 2 && linesave[1] == "NAME")
+                    {
+                        if (dictionaryName.TryGetValue(linesave[2].ToString(), out name))
+                        {
+                            item.Name = name;
+                        }
+                    }
+                    else if (linesave.Length > 7 && linesave[1] == "INDEX")
+                    {
+                        item.Type = Convert.ToByte(linesave[2]) != 4 ? Convert.ToByte(linesave[2]) : (byte)0;
+                        item.ItemType = linesave[3]!="-1"? Convert.ToByte(linesave[3]) : (byte)0;
+                        //linesave[4] idk
+                        item.EquipmentSlot = Convert.ToByte(linesave[5]!="-1"? linesave[5]:"0");
+                        //linesave[6] design id?
+                        item.Morph = Convert.ToInt16(linesave[7]);
+                    }
+                    else if (linesave.Length > 3 && linesave[1] == "TYPE")
+                    {
+                        //linesave[2] 0-range 2-range 3-magic but useless
+                        item.Class = Convert.ToByte(linesave[3]);
+                    }
+                    else if (linesave.Length > 3 && linesave[1] == "FLAG")
+                    {
+                        //linesave[2] never used
+                        //linesave[3] never used
+                        item.Blocked = Convert.ToByte(linesave[5]);
+                        item.Droppable = Convert.ToByte(linesave[6]) == (byte)0 ? (byte)1 : (byte)0;
+                        item.Transaction = Convert.ToByte(linesave[7]) == (byte)0 ? (byte)1 : (byte)0;
+                        item.Soldable = Convert.ToByte(linesave[8]) == (byte)0 ? (byte)1 : (byte)0;
+                        item.MinilandObject = Convert.ToByte(linesave[9]);
+                        item.IsWareHouse = Convert.ToByte(linesave[10]);
+                        //linesave[x] //idk others flags
+
+                    }
+                    else if (linesave.Length > 1 && linesave[1] == "DATA")
+                    {
+                        //template
+                    }
+                    else if (linesave.Length > 1 && linesave[1] == "BUFF")
+                    {
+                        //need to see how to use them :D (we know how to get the buff from bcard ect)
+                    }
+                }
+                Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("ITEMS_PARSED"), i));
+                npcIdStream.Close();
+            }
+
+
+        }
+
         public void ImportNpcs()
         {
             string fileNpcId = $"{_folder}\\monster.dat";
@@ -128,7 +225,6 @@ namespace OpenNos.Import.Console
             // store like this: (vnum, (name, level))
             Dictionary<int, KeyValuePair<string, short>> dictionaryNpcs = new Dictionary<int, KeyValuePair<string, short>>();
             Dictionary<string, string> dictionaryIdLang = new Dictionary<string, string>();
-            Dictionary<int, int> dialog = new Dictionary<int, int>(); // unused (unfilled) variable
 
             string line;
 
@@ -188,10 +284,6 @@ namespace OpenNos.Import.Console
                     {
                         if (long.Parse(linesave[3]) >= 10000)
                             continue; // dialog too high. but why? in order to avoid partners
-
-                        int dialogNum = 0; // unused variable
-                        if (dialog.ContainsKey(int.Parse(linesave[3])))
-                            dialogNum = dialog[int.Parse(linesave[3])];
 
                         if (
                             DAOFactory.NpcDAO.LoadFromMap(map)

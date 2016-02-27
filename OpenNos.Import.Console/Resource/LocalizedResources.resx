@@ -123,6 +123,9 @@
   <data name="ENTER_PATH" xml:space="preserve">
     <value>Please enter the directory of files to parse</value>
   </data>
+  <data name="ITEMS_PARSED" xml:space="preserve">
+    <value>{0} items parsed</value>
+  </data>
   <data name="MAPS_PARSED" xml:space="preserve">
     <value>{0} maps parsed</value>
   </data>
