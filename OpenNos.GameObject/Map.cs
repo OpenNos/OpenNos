@@ -45,7 +45,7 @@ namespace OpenNos.GameObject
             _uniqueIdentifier = uniqueIdentifier;
             Data = data;
             LoadZone();
-            IEnumerable<PortalDTO> portalsDTO = DAOFactory.PortalDAO.LoadFromMap(MapId);
+            IEnumerable<PortalDTO> portalsDTO = DAOFactory.PortalDAO.LoadByMap(MapId);
             _portals = new List<Portal>();
             DroppedList = new Dictionary<long, MapItem>();
 

@@ -23,7 +23,7 @@ namespace OpenNos.DAL.Interface
 
         PortalDTO Insert(PortalDTO portal);
 
-        IEnumerable<PortalDTO> LoadFromMap(short MapId);
+        IEnumerable<PortalDTO> LoadByMap(short MapId);
 
         #endregion
     }

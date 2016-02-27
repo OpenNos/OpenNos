@@ -28,7 +28,6 @@ namespace OpenNos.Import.Console
         #region Members
 
         private readonly string _folder;
-        private PacketParser _parser;
         private List<string[]> packetList = new List<string[]>();
 
         #endregion
@@ -38,20 +37,11 @@ namespace OpenNos.Import.Console
         public ImportFactory(string folder)
         {
             _folder = folder;
-            _parser = new PacketParser();
         }
 
         #endregion
 
         #region Methods
-
-        public void ImportItems()
-        {
-            string file = $"{_folder}\\Item.dat";
-            IEnumerable<ItemDTO> items = DatParser.Parse<ItemDTO>(file);
-
-            //int i = 0;
-        }
 
         public void ImportMaps()
         {
@@ -297,7 +287,7 @@ namespace OpenNos.Import.Console
 
             // foreach portal in the new list of Portals
             // where none (=> !Any()) are found in the existing
-            foreach (PortalDTO portal in listPortal.Where(portal => !DAOFactory.PortalDAO.LoadFromMap(portal.SourceMapId).Any(s => s.DestinationMapId.Equals(portal.DestinationMapId) && s.SourceX.Equals(portal.SourceX) && s.SourceY.Equals(portal.SourceY))))
+            foreach (PortalDTO portal in listPortal.Where(portal => !DAOFactory.PortalDAO.LoadByMap(portal.SourceMapId).Any(s => s.DestinationMapId.Equals(portal.DestinationMapId) && s.SourceX.Equals(portal.SourceX) && s.SourceY.Equals(portal.SourceY))))
             {
                 // so this dude doesnt exist yet in DAOFactory -> insert it
                 DAOFactory.PortalDAO.Insert(portal);
@@ -359,25 +349,6 @@ namespace OpenNos.Import.Console
             }
 
             Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("SHOPS_PARSED"), shopCounter));
-        }
-
-        public void ParsePortals()
-        {
-            //testing values
-            //at 121125 178 145 206 2 0 34 1
-            //gp 115 32 179 - 1 0 0
-            //gp 145 206 177 - 1 1 0
-            PortalDTO dto = new PortalDTO();//<- used for using referenced property names
-
-            _parser.Condition<PortalDTO>(0, "at")
-                    .Map(nameof(dto.SourceMapId), 2)
-                    .Condition<PortalDTO>(0, "gp")
-                    .Map(nameof(dto.SourceX), 1)
-                    .Map(nameof(dto.SourceY), 2)
-                    .Map(nameof(dto.DestinationMapId), 3)
-                    .Map(nameof(dto.Type), 4);
-
-            IEnumerable<PortalDTO> portals = _parser.Deserialize<PortalDTO>(Path.Combine(_folder, "Portals.txt"));
         }
 
         #endregion

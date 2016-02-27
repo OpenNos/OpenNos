@@ -28,16 +28,12 @@ namespace OpenNos.Data
 
         public short Concentrate { get; set; }
 
-        [Import("DATA", 7)]
         public short CriticalLuckRate { get; set; }
 
-        [Import("DATA", 6)]
         public short CriticalRate { get; set; }
 
-        [Import("DATA", 5)]
         public short DamageMaximum { get; set; }
 
-        [Import("DATA", 4)]
         public short DamageMinimum { get; set; }
 
         public short DarkElement { get; set; }
@@ -56,7 +52,6 @@ namespace OpenNos.Data
 
         public short ElementRate { get; set; }
 
-        [Import("INDEX", 5)]
         public byte EquipmentSlot { get; set; }
 
         public short FairyMaximumLevel { get; set; }
@@ -79,7 +74,6 @@ namespace OpenNos.Data
 
         public short LevelJobMinimum { get; set; }
 
-        [Import("DATA", 2)]
         public short LevelMinimum { get; set; }
 
         public short LightElement { get; set; }
@@ -108,7 +102,6 @@ namespace OpenNos.Data
 
         public string Name { get; set; }
 
-        [Import("VNUM", 3)]
         public long Price { get; set; }
 
         public short PvpDefence { get; set; }
@@ -129,7 +122,6 @@ namespace OpenNos.Data
 
         public byte Type { get; set; }
 
-        [Import("VNUM", 2)]
         public short VNum { get; set; }
 
         public short WaterElement { get; set; }

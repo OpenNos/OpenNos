@@ -50,8 +50,6 @@ namespace OpenNos.Import.Console
             string folder = System.Console.ReadLine();
             ImportFactory factory = new ImportFactory(folder);
 
-            factory.ParsePortals();
-            //factory.ImportItems();
             factory.ImportPackets();
             factory.ImportMaps();
             factory.ImportPortals();

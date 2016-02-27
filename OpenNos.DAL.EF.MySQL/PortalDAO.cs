@@ -36,7 +36,7 @@ namespace OpenNos.DAL.EF.MySQL
             }
         }
 
-        public IEnumerable<PortalDTO> LoadFromMap(short MapId)
+        public IEnumerable<PortalDTO> LoadByMap(short MapId)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
