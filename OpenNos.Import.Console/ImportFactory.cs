@@ -199,6 +199,7 @@ namespace OpenNos.Import.Console
                         item.Soldable = Convert.ToByte(linesave[8]) == (byte)0 ? (byte)1 : (byte)0;
                         item.MinilandObject = Convert.ToByte(linesave[9]);
                         item.isWareHouse = Convert.ToByte(linesave[10]);
+                        item.Colored = linesave[16]=="1"? true :false;
                         //linesave[x] //idk others flags
 
                     }
