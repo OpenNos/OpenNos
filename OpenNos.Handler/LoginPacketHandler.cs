@@ -66,7 +66,8 @@ namespace OpenNos.Handler
         [Packet("NoS0575")]
         public void VerifyLogin(string packet)
         {
-            UserDTO user = PacketFactory.Deserialize<UserDTO>(packet);
+            string[] userPacket = packet.Split(' ');
+            UserDTO user = new UserDTO() { Name = userPacket[2], PasswordEncrypted = userPacket[3] };
             //closed
             bool flag = true;
             if (flag)

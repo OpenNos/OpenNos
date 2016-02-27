@@ -120,7 +120,6 @@
     <Compile Include="Networking\Communication\Scs\Server\Tcp\ScsTcpServer.cs" />
     <Compile Include="Networking\NetworkClient.cs" />
     <Compile Include="Language.cs" />
-    <Compile Include="PacketFactory.cs" />
     <Compile Include="EncryptionBase.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="PacketAttribute.cs" />
