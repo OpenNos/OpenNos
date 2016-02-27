@@ -14,3 +14,5 @@ using System.Runtime.InteropServices;
 [assembly: RuntimeCompatibility(WrapNonExceptionThrows = true)]
 [assembly: ComVisible(false)]
 [assembly: log4net.Config.XmlConfigurator(Watch = true)]
+[assembly: AssemblyCopyright("OpenNos Team 2016")]
+
