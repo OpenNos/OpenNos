@@ -603,6 +603,11 @@ namespace OpenNos.Handler
                             {
                                 Int16.TryParse(packetsplit[3], out rare);
                                 Int16.TryParse(packetsplit[4], out upgrade);
+                                if (upgrade == 0)
+                                    if (iteminfo.BasisUpgrade != 0)
+                                    {
+                                        upgrade = iteminfo.BasisUpgrade;
+                                    }
                             }
                         }
                     }
@@ -1543,7 +1548,7 @@ namespace OpenNos.Handler
             {
                 switch (int.Parse(packetsplit[2]))
                 {
-                    case (int) ConfigType.BuffBlocked:
+                    case (int)ConfigType.BuffBlocked:
                         Session.Character.BuffBlocked = int.Parse(packetsplit[3]) == 1;
                         Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey(
                             Session.Character.BuffBlocked
@@ -1552,7 +1557,7 @@ namespace OpenNos.Handler
                             ), 0));
                         break;
 
-                    case (int) ConfigType.EmoticonsBlocked:
+                    case (int)ConfigType.EmoticonsBlocked:
                         Session.Character.EmoticonsBlocked = int.Parse(packetsplit[3]) == 1;
                         Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey(
                             Session.Character.EmoticonsBlocked
@@ -1561,7 +1566,7 @@ namespace OpenNos.Handler
                             ), 0));
                         break;
 
-                    case (int) ConfigType.ExchangeBlocked:
+                    case (int)ConfigType.ExchangeBlocked:
                         Session.Character.ExchangeBlocked = int.Parse(packetsplit[3]) == 0;
                         Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey(
                             Session.Character.ExchangeBlocked
@@ -1570,7 +1575,7 @@ namespace OpenNos.Handler
                             ), 0));
                         break;
 
-                    case (int) ConfigType.FriendRequestBlocked:
+                    case (int)ConfigType.FriendRequestBlocked:
                         Session.Character.FriendRequestBlocked = int.Parse(packetsplit[3]) == 0;
                         Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey(
                             Session.Character.FriendRequestBlocked
@@ -1579,7 +1584,7 @@ namespace OpenNos.Handler
                             ), 0));
                         break;
 
-                    case (int) ConfigType.GroupRequestBlocked:
+                    case (int)ConfigType.GroupRequestBlocked:
                         Session.Character.GroupRequestBlocked = int.Parse(packetsplit[3]) == 0;
                         Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey(
                             Session.Character.GroupRequestBlocked
@@ -1588,7 +1593,7 @@ namespace OpenNos.Handler
                             ), 0));
                         break;
 
-                    case (int) ConfigType.HeroChatBlocked:
+                    case (int)ConfigType.HeroChatBlocked:
                         Session.Character.HeroChatBlocked = int.Parse(packetsplit[3]) == 1;
                         Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey(
                             Session.Character.HeroChatBlocked
@@ -1597,7 +1602,7 @@ namespace OpenNos.Handler
                             ), 0));
                         break;
 
-                    case (int) ConfigType.HpBlocked:
+                    case (int)ConfigType.HpBlocked:
                         Session.Character.HpBlocked = int.Parse(packetsplit[3]) == 1;
                         Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey(
                             Session.Character.HpBlocked
@@ -1606,7 +1611,7 @@ namespace OpenNos.Handler
                             ), 0));
                         break;
 
-                    case (int) ConfigType.MinilandInviteBlocked:
+                    case (int)ConfigType.MinilandInviteBlocked:
                         Session.Character.MinilandInviteBlocked = int.Parse(packetsplit[3]) == 1;
                         Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey(
                             Session.Character.MinilandInviteBlocked
@@ -1615,7 +1620,7 @@ namespace OpenNos.Handler
                             ), 0));
                         break;
 
-                    case (int) ConfigType.MouseAimLock:
+                    case (int)ConfigType.MouseAimLock:
                         Session.Character.MouseAimLock = int.Parse(packetsplit[3]) == 1;
                         Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey(
                             Session.Character.MouseAimLock
@@ -1624,7 +1629,7 @@ namespace OpenNos.Handler
                             ), 0));
                         break;
 
-                    case (int) ConfigType.QuickGetUp:
+                    case (int)ConfigType.QuickGetUp:
                         Session.Character.QuickGetUp = int.Parse(packetsplit[3]) == 1;
                         Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey(
                             Session.Character.QuickGetUp
@@ -1633,7 +1638,7 @@ namespace OpenNos.Handler
                             ), 0));
                         break;
 
-                    case (int) ConfigType.WhisperBlocked:
+                    case (int)ConfigType.WhisperBlocked:
                         Session.Character.WhisperBlocked = int.Parse(packetsplit[3]) == 0;
                         Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey(
                             Session.Character.WhisperBlocked
@@ -1642,7 +1647,7 @@ namespace OpenNos.Handler
                             ), 0));
                         break;
 
-                    case (int) ConfigType.FamilyRequestBlocked:
+                    case (int)ConfigType.FamilyRequestBlocked:
                         Session.Character.FamilyRequestBlocked = int.Parse(packetsplit[3]) == 0;
                         Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey(
                             Session.Character.FamilyRequestBlocked
@@ -2623,7 +2628,7 @@ namespace OpenNos.Handler
                         Inventory inv = Session.Character.InventoryList.LoadBySlotAndType(slot, type);
                         InventoryItem item = inv.InventoryItem;
                         Item itemInfo = ServerManager.GetItem(item.ItemVNum);
-                        if (itemInfo.IsConsumable)
+                        if (itemInfo.isConsumable)
                             item.Amount--;
                         if (itemInfo.Morph != 0)
                         {

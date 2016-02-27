@@ -15,6 +15,7 @@
 using OpenNos.Core;
 using OpenNos.DAL;
 using OpenNos.Data;
+using OpenNos.Domain;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -177,7 +178,7 @@ namespace OpenNos.Import.Console
                     else if (linesave.Length > 7 && linesave[1] == "INDEX")
                     {
                         item.Type = Convert.ToByte(linesave[2]) != 4 ? Convert.ToByte(linesave[2]) : (byte)0;
-                        item.ItemType = linesave[3]!="-1"? Convert.ToByte(linesave[3]) : (byte)0;
+                        item.ItemType = linesave[3]!="-1"? Convert.ToByte($"{item.Type}{linesave[3]}") : (byte)0;
                         //linesave[4] idk
                         item.EquipmentSlot = Convert.ToByte(linesave[5]!="-1"? linesave[5]:"0");
                         //linesave[6] design id?
@@ -197,20 +198,35 @@ namespace OpenNos.Import.Console
                         item.Transaction = Convert.ToByte(linesave[7]) == (byte)0 ? (byte)1 : (byte)0;
                         item.Soldable = Convert.ToByte(linesave[8]) == (byte)0 ? (byte)1 : (byte)0;
                         item.MinilandObject = Convert.ToByte(linesave[9]);
-                        item.IsWareHouse = Convert.ToByte(linesave[10]);
+                        item.isWareHouse = Convert.ToByte(linesave[10]);
                         //linesave[x] //idk others flags
 
                     }
                     else if (linesave.Length > 1 && linesave[1] == "DATA")
                     {
-                        //template
-
-                        //weapon
-                        /*item.LevelMinimum = Convert.ToInt16(linesave[2]);
-                        item.DamageMinimum = Convert.ToInt16(linesave[3]);
-                        item.HitRate = Convert.ToInt16(linesave[5]);
-                        item.CriticalLuckRate = Convert.ToInt16(linesave[6]);
-                        item.CriticalRate = Convert.ToInt16(linesave[7]);*/
+                  
+                        switch(item.ItemType)
+                        {
+                            case (byte)ItemType.Weapon:
+                                item.LevelMinimum = Convert.ToInt16(linesave[2]);
+                                item.DamageMinimum = Convert.ToInt16(linesave[3]);
+                                item.DamageMaximum = Convert.ToInt16(linesave[4]);
+                                item.HitRate = Convert.ToInt16(linesave[5]);
+                                item.CriticalLuckRate = Convert.ToInt16(linesave[6]);
+                                item.CriticalRate = Convert.ToInt16(linesave[7]);
+                                item.BasisUpgrade = Convert.ToInt16(linesave[10]);
+                                break;
+                            case (byte)ItemType.Armor:
+                                item.LevelMinimum = Convert.ToInt16(linesave[2]);
+                                item.RangeDefence = Convert.ToInt16(linesave[3]);
+                                item.DistanceDefence = Convert.ToInt16(linesave[4]);
+                                item.MagicDefence = Convert.ToInt16(linesave[5]);
+                                item.DefenceDodge = Convert.ToInt16(linesave[6]);
+                                item.BasisUpgrade = Convert.ToInt16(linesave[10]);
+                                break;
+                            //TODO Others
+                        }
+                   
                     }
                     else if (linesave.Length > 1 && linesave[1] == "BUFF")
                     {

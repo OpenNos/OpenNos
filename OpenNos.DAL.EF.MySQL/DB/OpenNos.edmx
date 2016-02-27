@@ -231,6 +231,7 @@
     <Property Name="ReputationMinimum" Type="bigint" Nullable="false" />
     <Property Name="FairyMaximumLevel" Type="smallint" Nullable="false" />
     <Property Name="MaximumAmmo" Type="smallint" Nullable="false" />
+    <Property Name="BasisUpgrade" Type="smallint" Nullable="false" />
   </EntityType>
   <EntityType Name="npc">
     <Key>
@@ -812,6 +813,7 @@
           <Property Name="ReputationMinimum" Type="Int64" Nullable="false" />
           <Property Name="FairyMaximumLevel" Type="Int16" Nullable="false" />
           <Property Name="MaximumAmmo" Type="Int16" Nullable="false" />
+          <Property Name="BasisUpgrade" Type="Int16" Nullable="false" />
           </EntityType>
         <EntityType Name="Npc">
           <Key>
@@ -1179,6 +1181,7 @@
           <ScalarProperty Name="ReputationMinimum" ColumnName="ReputationMinimum" />
           <ScalarProperty Name="FairyMaximumLevel" ColumnName="FairyMaximumLevel" />
           <ScalarProperty Name="MaximumAmmo" ColumnName="MaximumAmmo" />
+          <ScalarProperty Name="BasisUpgrade" ColumnName="BasisUpgrade" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
