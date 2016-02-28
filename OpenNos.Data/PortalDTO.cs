@@ -24,7 +24,7 @@ namespace OpenNos.Data
 
         public short DestinationY { get; set; }
 
-        public short IsDisabled { get; set; }
+        public bool IsDisabled { get; set; }
 
         public int PortalId { get; set; }
 

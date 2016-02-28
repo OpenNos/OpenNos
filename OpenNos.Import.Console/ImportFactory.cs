@@ -485,7 +485,7 @@ namespace OpenNos.Import.Console
                         Type = short.Parse(linesave[4]),
                         DestinationX = -1,
                         DestinationY = -1,
-                        IsDisabled = 0
+                        IsDisabled = false
                     };
 
                     if (listPacket.FirstOrDefault(s => s.SourceMapId == map && s.SourceX == portal.SourceX && s.SourceY == portal.SourceY && s.DestinationMapId == portal.DestinationMapId) != null)
