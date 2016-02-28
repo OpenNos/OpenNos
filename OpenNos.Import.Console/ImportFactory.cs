@@ -248,8 +248,16 @@ namespace OpenNos.Import.Console
                                 break;
                             case (byte)ItemType.Jewelery:
                                 item.LevelMinimum = Convert.ToInt16(linesave[2]);
-                                item.MaxCellonLvl = Convert.ToByte(linesave[3]);
-                                item.MaxCellon = Convert.ToByte(linesave[4]);
+                                if (item.EquipmentSlot.Equals(EquipmentType.Amulet))
+                                {
+                                    item.Effect = Convert.ToByte(linesave[3]);
+                                    item.Value = Convert.ToByte(linesave[4]);
+                                }
+                                else
+                                {
+                                    item.MaxCellonLvl = Convert.ToByte(linesave[3]);
+                                    item.MaxCellon = Convert.ToByte(linesave[4]);
+                                }
                                 break;
                             case (byte)ItemType.Magical1:
                                 item.Effect = Convert.ToInt16(linesave[2]);
