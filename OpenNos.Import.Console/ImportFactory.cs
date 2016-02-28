@@ -187,25 +187,24 @@ namespace OpenNos.Import.Console
                     else if (linesave.Length > 3 && linesave[1] == "TYPE")
                     {
                         //linesave[2] 0-range 2-range 3-magic but useless
-                        if(item.VNum == 904)
                         item.Class = Convert.ToByte(linesave[3]);
                     }
                     else if (linesave.Length > 3 && linesave[1] == "FLAG")
                     {
                         //linesave[2] never used
                         //linesave[3] never used
-                        item.Blocked = Convert.ToByte(linesave[5]);
-                        item.Droppable = Convert.ToByte(linesave[6]) == (byte)0 ? (byte)1 : (byte)0;
-                        item.Transaction = Convert.ToByte(linesave[7]) == (byte)0 ? (byte)1 : (byte)0;
-                        item.Soldable = Convert.ToByte(linesave[8]) == (byte)0 ? (byte)1 : (byte)0;
-                        item.MinilandObject = Convert.ToByte(linesave[9]);
-                        item.isWareHouse = Convert.ToByte(linesave[10]);
-                        //item.isVehicle = Convert.ToByte(linesave[11]);
+                        item.isBlocked = linesave[5] == "1" ? true : false;
+                        item.isDroppable = linesave[6] == "0" ? true : false;
+                        item.isTradable = linesave[7] == "0" ? true : false;
+                        item.isSoldable = linesave[8] == "0" ? true : false;
+                        item.isMinilandObject = linesave[9] == "1" ? true : false;
+                        item.isWarehouse = linesave[10] == "1" ? true : false;
+                        //item.isVehicle = linesave[11] == "1" ? true : false;
                         //box wth vehicle //linesave[12]
                         //linesave[13] idk
                         //linesave[14] idk
                         //linesave[15] idk
-                        item.Colored = linesave[16] == "1" ? true : false;
+                        item.isColored = linesave[16] == "1" ? true : false;
                         //linesave[17] idk
                         //linesave[18] idk
                         //linesave[19] idk
@@ -249,8 +248,8 @@ namespace OpenNos.Import.Console
                                 break;
                             case (byte)ItemType.Jewelery:
                                 item.LevelMinimum = Convert.ToInt16(linesave[2]);
-                                item.MaxCellonLvl = Convert.ToInt16(linesave[3]);
-                                item.MaxCellon = Convert.ToInt16(linesave[4]);
+                                item.MaxCellonLvl = Convert.ToByte(linesave[3]);
+                                item.MaxCellon = Convert.ToByte(linesave[4]);
                                 break;
                             case (byte)ItemType.Magical1:
                                 item.Effect = Convert.ToInt16(linesave[2]);
@@ -261,24 +260,34 @@ namespace OpenNos.Import.Console
                                 break;
                             case (byte)ItemType.Specialist:
                                 //item.isSpecialist = Convert.ToByte(linesave[2]);
-                                item.Element = Convert.ToInt16(linesave[3]);
+                                item.Element = Convert.ToByte(linesave[3]);
                                 item.ElementRate = Convert.ToInt16(linesave[4]);
-                                item.Speed = Convert.ToInt16(linesave[5]);
+                                item.Speed = Convert.ToByte(linesave[5]);
+                                item.Class = Convert.ToByte(linesave[13]);
                                 //item.Morph = Convert.ToInt16(linesave[14]) + 1; // idk whats that, its useless
-                                item.FireElement = Convert.ToInt16(linesave[15]);
-                                item.WaterElement = Convert.ToInt16(linesave[16]);
-                                item.LightElement = Convert.ToInt16(linesave[17]);
-                                item.DarkElement = Convert.ToInt16(linesave[18]);
+                                item.FireElement = Convert.ToByte(linesave[15]);
+                                item.WaterElement = Convert.ToByte(linesave[16]);
+                                item.LightElement = Convert.ToByte(linesave[17]);
+                                item.DarkElement = Convert.ToByte(linesave[18]);
                                 //item.PartnerClass = Convert.ToInt16(linesave[19]);
                                 item.LevelJobMinimum = Convert.ToInt16(linesave[20]);
                                 item.ReputationMinimum = Convert.ToByte(linesave[21]);
                                 break;
                             case (byte)ItemType.Shell:
-                                //item.ShellMinimumLevel = Convert.ToInt16(linesave[3]);
-                                //item.ShellMaximumLevel = Convert.ToInt16(linesave[4]);
-                                //item.ShellType = Convert.ToByte(linesave[5]);
+                                //item.ShellMinimumLevel = Convert.ToInt16(linesave[3]);//wtf\/\/ this two things are wrong in many ways
+                                //item.ShellMaximumLevel = Convert.ToInt16(linesave[4]);//wtf/\/\ this two things are wrong in many ways
+                                //item.ShellType = Convert.ToByte(linesave[5]); //3 shells of each type
                                 break;
                             case (byte)ItemType.Main:
+                                item.Effect = Convert.ToInt16(linesave[2]);
+                                //item.UsableType = Convert.ToByte(linesave[3]);
+                                break;
+                            case (byte)ItemType.Upgrade:
+                                item.Effect = Convert.ToInt16(linesave[2]);
+                                item.CellonLvl = Convert.ToByte(linesave[3]);
+                                break;
+                            case (byte)ItemType.Production:
+                                //W.I.P
                                 break;
                             case (byte)ItemType.Ammo:
                                 //nothing to parse
@@ -288,12 +297,6 @@ namespace OpenNos.Import.Console
                                 break;
                                 //TODO Others
                                 /*
-                                
-                                
-                                case (byte)ItemType.Upgrade:
-                                    break;
-                                case (byte)ItemType.Production:
-                                    break;
                                 case (byte)ItemType.Map:
                                     break;
                                 case (byte)ItemType.Potion:

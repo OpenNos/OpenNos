@@ -44,9 +44,9 @@
 -- -----------------------------------------------------------
 -- Entity Designer DDL Script for MySQL Server 4.1 and higher
 -- -----------------------------------------------------------
--- Date Created: 02/28/2016 17:00:52
+-- Date Created: 02/28/2016 17:36:23
 
--- Generated from EDMX file: C:\Users\ERWAN\Desktop\OpenNos GIT\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
+-- Generated from EDMX file: C:\Users\Dominik\Source\Repos\OpenNos\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
 -- Target version: 3.0.0.0
 
 -- --------------------------------------------------
@@ -246,12 +246,12 @@ CREATE TABLE `item`(
 	`Morph` smallint NOT NULL, 
 	`Type` TINYINT UNSIGNED NOT NULL, 
 	`Class` TINYINT UNSIGNED NOT NULL, 
-	`Blocked` TINYINT UNSIGNED NOT NULL, 
-	`Droppable` TINYINT UNSIGNED NOT NULL, 
-	`Transaction` TINYINT UNSIGNED NOT NULL, 
-	`Soldable` TINYINT UNSIGNED NOT NULL, 
-	`MinilandObject` TINYINT UNSIGNED NOT NULL, 
-	`isWareHouse` TINYINT UNSIGNED NOT NULL, 
+	`isBlocked` bool NOT NULL, 
+	`isDroppable` bool NOT NULL, 
+	`isTradable` bool NOT NULL, 
+	`isSoldable` bool NOT NULL, 
+	`isMinilandObject` bool NOT NULL, 
+	`isWarehouse` bool NOT NULL, 
 	`LevelMinimum` smallint NOT NULL, 
 	`DamageMinimum` smallint NOT NULL, 
 	`DamageMaximum` smallint NOT NULL, 
@@ -267,19 +267,19 @@ CREATE TABLE `item`(
 	`Hp` smallint NOT NULL, 
 	`Mp` smallint NOT NULL, 
 	`LevelJobMinimum` smallint NOT NULL, 
-	`MaxCellon` smallint NOT NULL, 
-	`MaxCellonLvl` smallint NOT NULL, 
+	`MaxCellon` TINYINT UNSIGNED NOT NULL, 
+	`MaxCellonLvl` TINYINT UNSIGNED NOT NULL, 
 	`FireResistance` smallint NOT NULL, 
 	`WaterResistance` smallint NOT NULL, 
 	`LightResistance` smallint NOT NULL, 
 	`DarkResistance` smallint NOT NULL, 
-	`DarkElement` smallint NOT NULL, 
-	`LightElement` smallint NOT NULL, 
-	`FireElement` smallint NOT NULL, 
-	`WaterElement` smallint NOT NULL, 
+	`DarkElement` TINYINT UNSIGNED NOT NULL, 
+	`LightElement` TINYINT UNSIGNED NOT NULL, 
+	`FireElement` TINYINT UNSIGNED NOT NULL, 
+	`WaterElement` TINYINT UNSIGNED NOT NULL, 
 	`PvpStrength` smallint NOT NULL, 
-	`Speed` smallint NOT NULL, 
-	`Element` smallint NOT NULL, 
+	`Speed` TINYINT UNSIGNED NOT NULL, 
+	`Element` TINYINT UNSIGNED NOT NULL, 
 	`ElementRate` smallint NOT NULL, 
 	`PvpDefence` smallint NOT NULL, 
 	`ReduceOposantResistance` smallint NOT NULL, 
@@ -287,17 +287,18 @@ CREATE TABLE `item`(
 	`MpRegeneration` smallint NOT NULL, 
 	`MoreHp` smallint NOT NULL, 
 	`MoreMp` smallint NOT NULL, 
-	`Colored` bool NOT NULL, 
+	`isColored` bool NOT NULL, 
 	`isConsumable` bool NOT NULL, 
 	`ReputationMinimum` TINYINT UNSIGNED NOT NULL, 
-	`FairyMaximumLevel` smallint NOT NULL, 
-	`MaximumAmmo` smallint NOT NULL, 
+	`FairyMaximumLevel` TINYINT UNSIGNED NOT NULL, 
+	`MaximumAmmo` TINYINT UNSIGNED NOT NULL, 
 	`BasicUpgrade` smallint NOT NULL, 
 	`Color` smallint NOT NULL, 
 	`ItemValidTime` bigint NOT NULL, 
 	`isPearl` bool NOT NULL, 
 	`Effect` smallint NOT NULL, 
-	`Value` smallint NOT NULL);
+	`Value` smallint NOT NULL, 
+	`CellonLvl` TINYINT UNSIGNED NOT NULL);
 
 ALTER TABLE `item` ADD PRIMARY KEY (VNum);
 
