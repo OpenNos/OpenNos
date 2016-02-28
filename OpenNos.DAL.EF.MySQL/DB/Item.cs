@@ -29,12 +29,12 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public short Morph { get; set; }
         public byte Type { get; set; }
         public byte Class { get; set; }
-        public byte Blocked { get; set; }
-        public byte Droppable { get; set; }
-        public byte Transaction { get; set; }
-        public byte Soldable { get; set; }
-        public byte MinilandObject { get; set; }
-        public byte isWareHouse { get; set; }
+        public bool isBlocked { get; set; }
+        public bool isDroppable { get; set; }
+        public bool isTradable { get; set; }
+        public bool isSoldable { get; set; }
+        public bool isMinilandObject { get; set; }
+        public bool isWarehouse { get; set; }
         public short LevelMinimum { get; set; }
         public short DamageMinimum { get; set; }
         public short DamageMaximum { get; set; }
@@ -50,19 +50,19 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public short Hp { get; set; }
         public short Mp { get; set; }
         public short LevelJobMinimum { get; set; }
-        public short MaxCellon { get; set; }
-        public short MaxCellonLvl { get; set; }
+        public byte MaxCellon { get; set; }
+        public byte MaxCellonLvl { get; set; }
         public short FireResistance { get; set; }
         public short WaterResistance { get; set; }
         public short LightResistance { get; set; }
         public short DarkResistance { get; set; }
-        public short DarkElement { get; set; }
-        public short LightElement { get; set; }
-        public short FireElement { get; set; }
-        public short WaterElement { get; set; }
+        public byte DarkElement { get; set; }
+        public byte LightElement { get; set; }
+        public byte FireElement { get; set; }
+        public byte WaterElement { get; set; }
         public short PvpStrength { get; set; }
-        public short Speed { get; set; }
-        public short Element { get; set; }
+        public byte Speed { get; set; }
+        public byte Element { get; set; }
         public short ElementRate { get; set; }
         public short PvpDefence { get; set; }
         public short ReduceOposantResistance { get; set; }
@@ -70,17 +70,18 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public short MpRegeneration { get; set; }
         public short MoreHp { get; set; }
         public short MoreMp { get; set; }
-        public bool Colored { get; set; }
+        public bool isColored { get; set; }
         public bool isConsumable { get; set; }
         public byte ReputationMinimum { get; set; }
-        public short FairyMaximumLevel { get; set; }
-        public short MaximumAmmo { get; set; }
+        public byte FairyMaximumLevel { get; set; }
+        public byte MaximumAmmo { get; set; }
         public short BasicUpgrade { get; set; }
         public short Color { get; set; }
         public long ItemValidTime { get; set; }
         public bool isPearl { get; set; }
         public short Effect { get; set; }
         public short Value { get; set; }
+        public byte CellonLvl { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<InventoryItem> inventoryitem { get; set; }

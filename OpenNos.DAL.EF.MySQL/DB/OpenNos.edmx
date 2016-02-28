@@ -185,12 +185,12 @@
     <Property Name="Morph" Type="smallint" Nullable="false" />
     <Property Name="Type" Type="utinyint" Nullable="false" />
     <Property Name="Class" Type="utinyint" Nullable="false" />
-    <Property Name="Blocked" Type="utinyint" Nullable="false" />
-    <Property Name="Droppable" Type="utinyint" Nullable="false" />
-    <Property Name="Transaction" Type="utinyint" Nullable="false" />
-    <Property Name="Soldable" Type="utinyint" Nullable="false" />
-    <Property Name="MinilandObject" Type="utinyint" Nullable="false" />
-    <Property Name="isWareHouse" Type="utinyint" Nullable="false" />
+    <Property Name="isBlocked" Type="bool" Nullable="false" />
+    <Property Name="isDroppable" Type="bool" Nullable="false" />
+    <Property Name="isTradable" Type="bool" Nullable="false" />
+    <Property Name="isSoldable" Type="bool" Nullable="false" />
+    <Property Name="isMinilandObject" Type="bool" Nullable="false" />
+    <Property Name="isWarehouse" Type="bool" Nullable="false" />
     <Property Name="LevelMinimum" Type="smallint" Nullable="false" />
     <Property Name="DamageMinimum" Type="smallint" Nullable="false" />
     <Property Name="DamageMaximum" Type="smallint" Nullable="false" />
@@ -206,19 +206,19 @@
     <Property Name="Hp" Type="smallint" Nullable="false" />
     <Property Name="Mp" Type="smallint" Nullable="false" />
     <Property Name="LevelJobMinimum" Type="smallint" Nullable="false" />
-    <Property Name="MaxCellon" Type="smallint" Nullable="false" />
-    <Property Name="MaxCellonLvl" Type="smallint" Nullable="false" />
+    <Property Name="MaxCellon" Type="utinyint" Nullable="false" />
+    <Property Name="MaxCellonLvl" Type="utinyint" Nullable="false" />
     <Property Name="FireResistance" Type="smallint" Nullable="false" />
     <Property Name="WaterResistance" Type="smallint" Nullable="false" />
     <Property Name="LightResistance" Type="smallint" Nullable="false" />
     <Property Name="DarkResistance" Type="smallint" Nullable="false" />
-    <Property Name="DarkElement" Type="smallint" Nullable="false" />
-    <Property Name="LightElement" Type="smallint" Nullable="false" />
-    <Property Name="FireElement" Type="smallint" Nullable="false" />
-    <Property Name="WaterElement" Type="smallint" Nullable="false" />
+    <Property Name="DarkElement" Type="utinyint" Nullable="false" />
+    <Property Name="LightElement" Type="utinyint" Nullable="false" />
+    <Property Name="FireElement" Type="utinyint" Nullable="false" />
+    <Property Name="WaterElement" Type="utinyint" Nullable="false" />
     <Property Name="PvpStrength" Type="smallint" Nullable="false" />
-    <Property Name="Speed" Type="smallint" Nullable="false" />
-    <Property Name="Element" Type="smallint" Nullable="false" />
+    <Property Name="Speed" Type="utinyint" Nullable="false" />
+    <Property Name="Element" Type="utinyint" Nullable="false" />
     <Property Name="ElementRate" Type="smallint" Nullable="false" />
     <Property Name="PvpDefence" Type="smallint" Nullable="false" />
     <Property Name="ReduceOposantResistance" Type="smallint" Nullable="false" />
@@ -226,15 +226,18 @@
     <Property Name="MpRegeneration" Type="smallint" Nullable="false" />
     <Property Name="MoreHp" Type="smallint" Nullable="false" />
     <Property Name="MoreMp" Type="smallint" Nullable="false" />
-    <Property Name="Colored" Type="bool" Nullable="false" />
+    <Property Name="isColored" Type="bool" Nullable="false" />
     <Property Name="isConsumable" Type="bool" Nullable="false" />
-    <Property Name="ReputationMinimum" Type="bigint" Nullable="false" />
-    <Property Name="FairyMaximumLevel" Type="smallint" Nullable="false" />
-    <Property Name="MaximumAmmo" Type="smallint" Nullable="false" />
+    <Property Name="ReputationMinimum" Type="utinyint" Nullable="false" />
+    <Property Name="FairyMaximumLevel" Type="utinyint" Nullable="false" />
+    <Property Name="MaximumAmmo" Type="utinyint" Nullable="false" />
     <Property Name="BasicUpgrade" Type="smallint" Nullable="false" />
     <Property Name="Color" Type="smallint" Nullable="false" />
     <Property Name="ItemValidTime" Type="bigint" Nullable="false" />
     <Property Name="isPearl" Type="bool" Nullable="false" />
+    <Property Name="Effect" Type="smallint" Nullable="false" />
+    <Property Name="Value" Type="smallint" Nullable="false" />
+    <Property Name="CellonLvl" Type="utinyint" Nullable="false" />
   </EntityType>
   <EntityType Name="npc">
     <Key>
@@ -768,12 +771,12 @@
           <Property Name="Morph" Type="Int16" Nullable="false" />
           <Property Name="Type" Type="Byte" Nullable="false" />
           <Property Name="Class" Type="Byte" Nullable="false" />
-          <Property Name="Blocked" Type="Byte" Nullable="false" />
-          <Property Name="Droppable" Type="Byte" Nullable="false" />
-          <Property Name="Transaction" Type="Byte" Nullable="false" />
-          <Property Name="Soldable" Type="Byte" Nullable="false" />
-          <Property Name="MinilandObject" Type="Byte" Nullable="false" />
-          <Property Name="isWareHouse" Type="Byte" Nullable="false" />
+          <Property Name="isBlocked" Type="Boolean" Nullable="false" />
+          <Property Name="isDroppable" Type="Boolean" Nullable="false" />
+          <Property Name="isTradable" Type="Boolean" Nullable="false" />
+          <Property Name="isSoldable" Type="Boolean" Nullable="false" />
+          <Property Name="isMinilandObject" Type="Boolean" Nullable="false" />
+          <Property Name="isWarehouse" Type="Boolean" Nullable="false" />
           <Property Name="LevelMinimum" Type="Int16" Nullable="false" />
           <Property Name="DamageMinimum" Type="Int16" Nullable="false" />
           <Property Name="DamageMaximum" Type="Int16" Nullable="false" />
@@ -789,19 +792,19 @@
           <Property Name="Hp" Type="Int16" Nullable="false" />
           <Property Name="Mp" Type="Int16" Nullable="false" />
           <Property Name="LevelJobMinimum" Type="Int16" Nullable="false" />
-          <Property Name="MaxCellon" Type="Int16" Nullable="false" />
-          <Property Name="MaxCellonLvl" Type="Int16" Nullable="false" />
+          <Property Name="MaxCellon" Type="Byte" Nullable="false" />
+          <Property Name="MaxCellonLvl" Type="Byte" Nullable="false" />
           <Property Name="FireResistance" Type="Int16" Nullable="false" />
           <Property Name="WaterResistance" Type="Int16" Nullable="false" />
           <Property Name="LightResistance" Type="Int16" Nullable="false" />
           <Property Name="DarkResistance" Type="Int16" Nullable="false" />
-          <Property Name="DarkElement" Type="Int16" Nullable="false" />
-          <Property Name="LightElement" Type="Int16" Nullable="false" />
-          <Property Name="FireElement" Type="Int16" Nullable="false" />
-          <Property Name="WaterElement" Type="Int16" Nullable="false" />
+          <Property Name="DarkElement" Type="Byte" Nullable="false" />
+          <Property Name="LightElement" Type="Byte" Nullable="false" />
+          <Property Name="FireElement" Type="Byte" Nullable="false" />
+          <Property Name="WaterElement" Type="Byte" Nullable="false" />
           <Property Name="PvpStrength" Type="Int16" Nullable="false" />
-          <Property Name="Speed" Type="Int16" Nullable="false" />
-          <Property Name="Element" Type="Int16" Nullable="false" />
+          <Property Name="Speed" Type="Byte" Nullable="false" />
+          <Property Name="Element" Type="Byte" Nullable="false" />
           <Property Name="ElementRate" Type="Int16" Nullable="false" />
           <Property Name="PvpDefence" Type="Int16" Nullable="false" />
           <Property Name="ReduceOposantResistance" Type="Int16" Nullable="false" />
@@ -809,19 +812,20 @@
           <Property Name="MpRegeneration" Type="Int16" Nullable="false" />
           <Property Name="MoreHp" Type="Int16" Nullable="false" />
           <Property Name="MoreMp" Type="Int16" Nullable="false" />
-          <Property Name="Colored" Type="Boolean" Nullable="false" />
+          <Property Name="isColored" Type="Boolean" Nullable="false" />
           <Property Name="isConsumable" Type="Boolean" Nullable="false" />
           <NavigationProperty Name="inventoryitem" Relationship="opennosModel.InventoryItemItem" FromRole="Item" ToRole="InventoryItem" />
           <NavigationProperty Name="shopitem" Relationship="opennosModel.ShopItemItem" FromRole="Item" ToRole="ShopItem" />
           <Property Name="ReputationMinimum" Type="Byte" Nullable="false" />
-          <Property Name="FairyMaximumLevel" Type="Int16" Nullable="false" />
-          <Property Name="MaximumAmmo" Type="Int16" Nullable="false" />
+          <Property Name="FairyMaximumLevel" Type="Byte" Nullable="false" />
+          <Property Name="MaximumAmmo" Type="Byte" Nullable="false" />
           <Property Name="BasicUpgrade" Type="Int16" Nullable="false" />
           <Property Name="Color" Type="Int16" Nullable="false" />
           <Property Name="ItemValidTime" Type="Int64" Nullable="false" />
           <Property Name="isPearl" Type="Boolean" Nullable="false" />
           <Property Name="Effect" Type="Int16" Nullable="false" />
           <Property Name="Value" Type="Int16" Nullable="false" />
+          <Property Name="CellonLvl" Type="Byte" Nullable="false" />
           </EntityType>
         <EntityType Name="Npc">
           <Key>
@@ -1143,12 +1147,12 @@
           <ScalarProperty Name="Morph" ColumnName="Morph" />
           <ScalarProperty Name="Type" ColumnName="Type" />
           <ScalarProperty Name="Class" ColumnName="Class" />
-          <ScalarProperty Name="Blocked" ColumnName="Blocked" />
-          <ScalarProperty Name="Droppable" ColumnName="Droppable" />
-          <ScalarProperty Name="Transaction" ColumnName="Transaction" />
-          <ScalarProperty Name="Soldable" ColumnName="Soldable" />
-          <ScalarProperty Name="MinilandObject" ColumnName="MinilandObject" />
-          <ScalarProperty Name="isWareHouse" ColumnName="isWareHouse" />
+          <ScalarProperty Name="isBlocked" ColumnName="isBlocked" />
+          <ScalarProperty Name="isDroppable" ColumnName="isDroppable" />
+          <ScalarProperty Name="isTradable" ColumnName="isTradable" />
+          <ScalarProperty Name="isSoldable" ColumnName="isSoldable" />
+          <ScalarProperty Name="isMinilandObject" ColumnName="isMinilandObject" />
+          <ScalarProperty Name="isWarehouse" ColumnName="isWarehouse" />
           <ScalarProperty Name="LevelMinimum" ColumnName="LevelMinimum" />
           <ScalarProperty Name="DamageMinimum" ColumnName="DamageMinimum" />
           <ScalarProperty Name="DamageMaximum" ColumnName="DamageMaximum" />
@@ -1184,7 +1188,7 @@
           <ScalarProperty Name="MpRegeneration" ColumnName="MpRegeneration" />
           <ScalarProperty Name="MoreHp" ColumnName="MoreHp" />
           <ScalarProperty Name="MoreMp" ColumnName="MoreMp" />
-          <ScalarProperty Name="Colored" ColumnName="Colored" />
+          <ScalarProperty Name="isColored" ColumnName="isColored" />
           <ScalarProperty Name="isConsumable" ColumnName="isConsumable" />
           <ScalarProperty Name="ReputationMinimum" ColumnName="ReputationMinimum" />
           <ScalarProperty Name="FairyMaximumLevel" ColumnName="FairyMaximumLevel" />
@@ -1193,6 +1197,9 @@
           <ScalarProperty Name="Color" ColumnName="Color" />
           <ScalarProperty Name="ItemValidTime" ColumnName="ItemValidTime" />
           <ScalarProperty Name="isPearl" ColumnName="isPearl" />
+          <ScalarProperty Name="Effect" ColumnName="Effect" />
+          <ScalarProperty Name="Value" ColumnName="Value" />
+          <ScalarProperty Name="CellonLvl" ColumnName="CellonLvl" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
