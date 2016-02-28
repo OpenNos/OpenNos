@@ -289,7 +289,13 @@ namespace OpenNos.Import.Console
                                 //item.PartnerClass = Convert.ToInt16(linesave[19]);
                                 item.LevelJobMinimum = Convert.ToInt16(linesave[20]);
                                 item.ReputationMinimum = Convert.ToByte(linesave[21]);
-                                item.Element = (byte)new[] { item.FireResistance, item.WaterResistance, item.LightResistance, item.DarkResistance }.Max();
+
+                                Dictionary<int, int>  Elementdic = new Dictionary<int, int>();
+                                Elementdic.Add(1, item.FireResistance);
+                                Elementdic.Add(2, item.WaterResistance);
+                                Elementdic.Add(3, item.LightResistance);
+                                Elementdic.Add(4, item.DarkResistance);
+                                item.Element = (byte)Elementdic.OrderBy(s=>s.Value).First().Key;
                                 break;
                             case (byte)ItemType.Shell:
                                 //item.ShellMinimumLevel = Convert.ToInt16(linesave[3]);//wtf\/\/ this two things are wrong in many ways
