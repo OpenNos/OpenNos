@@ -271,7 +271,7 @@ namespace OpenNos.Import.Console
                                 item.Element = Convert.ToByte(linesave[3]);
                                 item.ElementRate = Convert.ToInt16(linesave[4]);
                                 item.Speed = Convert.ToByte(linesave[5]);
-                                //item.Class = Convert.ToByte(linesave[13]);
+                                item.SpType = Convert.ToByte(linesave[13]);
                                 //item.Morph = Convert.ToInt16(linesave[14]) + 1; // idk whats that, its useless
                                 item.FireElement = Convert.ToByte(linesave[15]);
                                 item.WaterElement = Convert.ToByte(linesave[16]);
@@ -295,7 +295,38 @@ namespace OpenNos.Import.Console
                                 item.CellonLvl = Convert.ToByte(linesave[3]);
                                 break;
                             case (byte)ItemType.Production:
-                                //W.I.P
+                                item.Effect = Convert.ToInt16(linesave[2]);
+                                item.EffectValue = Convert.ToInt32(linesave[4]);
+                                break;
+                            case (byte)ItemType.Map:
+                                item.Effect = Convert.ToInt16(linesave[2]);
+                                item.EffectValue = Convert.ToInt32(linesave[4]);
+                                break;
+                            case (byte)ItemType.Potion:
+                                item.Hp = Convert.ToInt16(linesave[2]);
+                                item.Mp = Convert.ToInt16(linesave[4]);
+                                break;
+                            case (byte)ItemType.Snack:
+                                item.Hp = Convert.ToInt16(linesave[2]);
+                                item.Mp = Convert.ToInt16(linesave[4]);
+                                break;
+                            case (byte)ItemType.Teacher:
+                                item.Effect = Convert.ToInt16(linesave[2]);
+                                //item.PetLoyality = Convert.ToInt16(linesave[4]);
+                                //item.PetFood = Convert.ToInt16(linesave[7]);
+                                break;
+                            case (byte)ItemType.Special:
+                                //item.NpcInteraction = Convert.ToInt16(linesave[5]);
+                                //item.QuestItem = linesave[7] == "1" ? true : false;
+                                break;
+                            case (byte)ItemType.Part:
+                                //nothing to parse
+                                break;
+                            case (byte)ItemType.Sell:
+                                //nothing to parse
+                                break;
+                            case (byte)ItemType.Quest:
+                                //nothing to parse
                                 break;
                             case (byte)ItemType.Ammo:
                                 //nothing to parse
@@ -303,25 +334,6 @@ namespace OpenNos.Import.Console
                             case (byte)ItemType.Event:
                                 //nothing to parse
                                 break;
-                                //TODO Others
-                                /*
-                                case (byte)ItemType.Map:
-                                    break;
-                                case (byte)ItemType.Potion:
-                                    break;
-                                case (byte)ItemType.Quest:
-                                    break;
-                                case (byte)ItemType.Sell:
-                                    break;
-                                case (byte)ItemType.Snack:
-                                    break;
-                                case (byte)ItemType.Part:
-                                    break;
-                                case (byte)ItemType.Teacher:
-                                    break;
-                                case (byte)ItemType.Special:
-                                    break;
-                                    */
                         }
 
                     }

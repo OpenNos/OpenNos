@@ -826,6 +826,7 @@
           <Property Name="Effect" Type="Int16" Nullable="false" />
           <Property Name="EffectValue" Type="Int32" Nullable="false" />
           <Property Name="CellonLvl" Type="Byte" Nullable="false" />
+          <Property Name="SpType" Type="Byte" Nullable="false" />
           </EntityType>
         <EntityType Name="Npc">
           <Key>

@@ -82,6 +82,7 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public short Effect { get; set; }
         public int EffectValue { get; set; }
         public byte CellonLvl { get; set; }
+        public byte SpType { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<InventoryItem> inventoryitem { get; set; }
