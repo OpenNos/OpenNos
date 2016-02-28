@@ -228,13 +228,15 @@
     <Property Name="MoreMp" Type="smallint" Nullable="false" />
     <Property Name="Colored" Type="bool" Nullable="false" />
     <Property Name="isConsumable" Type="bool" Nullable="false" />
-    <Property Name="ReputationMinimum" Type="bigint" Nullable="false" />
+    <Property Name="ReputationMinimum" Type="utinyint" Nullable="false" />
     <Property Name="FairyMaximumLevel" Type="smallint" Nullable="false" />
     <Property Name="MaximumAmmo" Type="smallint" Nullable="false" />
     <Property Name="BasicUpgrade" Type="smallint" Nullable="false" />
     <Property Name="Color" Type="smallint" Nullable="false" />
     <Property Name="ItemValidTime" Type="bigint" Nullable="false" />
     <Property Name="isPearl" Type="bool" Nullable="false" />
+    <Property Name="Effect" Type="smallint" Nullable="false" />
+    <Property Name="Value" Type="smallint" Nullable="false" />
   </EntityType>
   <EntityType Name="npc">
     <Key>
@@ -1193,6 +1195,8 @@
           <ScalarProperty Name="Color" ColumnName="Color" />
           <ScalarProperty Name="ItemValidTime" ColumnName="ItemValidTime" />
           <ScalarProperty Name="isPearl" ColumnName="isPearl" />
+          <ScalarProperty Name="Effect" ColumnName="Effect" />
+          <ScalarProperty Name="Value" ColumnName="Value" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

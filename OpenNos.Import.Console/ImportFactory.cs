@@ -187,6 +187,7 @@ namespace OpenNos.Import.Console
                     else if (linesave.Length > 3 && linesave[1] == "TYPE")
                     {
                         //linesave[2] 0-range 2-range 3-magic but useless
+                        if(item.VNum == 904)
                         item.Class = Convert.ToByte(linesave[3]);
                     }
                     else if (linesave.Length > 3 && linesave[1] == "FLAG")
@@ -263,7 +264,6 @@ namespace OpenNos.Import.Console
                                 item.Element = Convert.ToInt16(linesave[3]);
                                 item.ElementRate = Convert.ToInt16(linesave[4]);
                                 item.Speed = Convert.ToInt16(linesave[5]);
-                                item.Class = Convert.ToByte(linesave[13]);
                                 //item.Morph = Convert.ToInt16(linesave[14]) + 1; // idk whats that, its useless
                                 item.FireElement = Convert.ToInt16(linesave[15]);
                                 item.WaterElement = Convert.ToInt16(linesave[16]);
