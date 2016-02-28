@@ -165,7 +165,7 @@ namespace OpenNos.Import.Console
                             DAOFactory.ItemDAO.Insert(item);
                             i++;
                         }
-
+                        item = new ItemDTO();
                         itemAreaBegin = false;
                     }
                     else if (linesave.Length > 2 && linesave[1] == "NAME")
@@ -174,6 +174,8 @@ namespace OpenNos.Import.Console
                         {
                             item.Name = name;
                         }
+                        else
+                            item.Name = string.Empty;
                     }
                     else if (linesave.Length > 7 && linesave[1] == "INDEX")
                     {
@@ -247,14 +249,19 @@ namespace OpenNos.Import.Console
                                 item.Mp = Convert.ToInt16(linesave[4]);
                                 break;
                             case (byte)ItemType.Jewelery:
-                                item.LevelMinimum = Convert.ToInt16(linesave[2]);
                                 if (item.EquipmentSlot.Equals((byte)EquipmentType.Amulet))
                                 {
-                                    item.Effect = Convert.ToInt16(linesave[3]);
-                                    item.EffectValue = Convert.ToInt32(linesave[4]);
+                                    item.Effect = Convert.ToInt16(linesave[2]);
+                                    item.EffectValue = Convert.ToInt32(linesave[3]);
+                                }
+                                else if (item.EquipmentSlot.Equals((byte)EquipmentType.Fairy))
+                                {
+                                    item.Element = Convert.ToByte(linesave[2]);
+                                    item.ElementRate = Convert.ToInt16(linesave[3]);
                                 }
                                 else
                                 {
+                                    item.LevelMinimum = Convert.ToInt16(linesave[2]);
                                     item.MaxCellonLvl = Convert.ToByte(linesave[3]);
                                     item.MaxCellon = Convert.ToByte(linesave[4]);
                                 }
