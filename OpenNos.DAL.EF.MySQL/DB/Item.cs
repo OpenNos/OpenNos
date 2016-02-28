@@ -75,7 +75,7 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public long ReputationMinimum { get; set; }
         public short FairyMaximumLevel { get; set; }
         public short MaximumAmmo { get; set; }
-        public short BasisUpgrade { get; set; }
+        public short BasicUpgrade { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<InventoryItem> inventoryitem { get; set; }

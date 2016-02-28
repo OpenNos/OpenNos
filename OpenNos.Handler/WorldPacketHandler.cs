@@ -604,9 +604,9 @@ namespace OpenNos.Handler
                                 Int16.TryParse(packetsplit[3], out rare);
                                 Int16.TryParse(packetsplit[4], out upgrade);
                                 if (upgrade == 0)
-                                    if (iteminfo.BasisUpgrade != 0)
+                                    if (iteminfo.BasicUpgrade != 0)
                                     {
-                                        upgrade = iteminfo.BasisUpgrade;
+                                        upgrade = iteminfo.BasicUpgrade;
                                     }
                             }
                         }

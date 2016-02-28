@@ -74,7 +74,7 @@ namespace OpenNos.Data
         public long ReputationMinimum { get; set; }
         public short FairyMaximumLevel { get; set; }
         public short MaximumAmmo { get; set; }
-        public short BasisUpgrade { get; set; }
+        public short BasicUpgrade { get; set; }
 
         #endregion
     }

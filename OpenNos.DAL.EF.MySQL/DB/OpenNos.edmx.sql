@@ -44,9 +44,9 @@
 -- -----------------------------------------------------------
 -- Entity Designer DDL Script for MySQL Server 4.1 and higher
 -- -----------------------------------------------------------
--- Date Created: 02/27/2016 23:31:52
+-- Date Created: 02/28/2016 08:19:58
 
--- Generated from EDMX file: C:\Users\ERWAN\Desktop\OpenNos Git\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
+-- Generated from EDMX file: C:\Users\Dominik\Source\Repos\OpenNos\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
 -- Target version: 3.0.0.0
 
 -- --------------------------------------------------
@@ -292,7 +292,7 @@ CREATE TABLE `item`(
 	`ReputationMinimum` bigint NOT NULL, 
 	`FairyMaximumLevel` smallint NOT NULL, 
 	`MaximumAmmo` smallint NOT NULL, 
-	`BasisUpgrade` smallint NOT NULL);
+	`BasicUpgrade` smallint NOT NULL);
 
 ALTER TABLE `item` ADD PRIMARY KEY (VNum);
 
