@@ -814,6 +814,11 @@
           <Property Name="FairyMaximumLevel" Type="Int16" Nullable="false" />
           <Property Name="MaximumAmmo" Type="Int16" Nullable="false" />
           <Property Name="BasicUpgrade" Type="Int16" Nullable="false" />
+          <Property Name="FashionType" Type="Int16" Nullable="false" />
+          <Property Name="ItemValidTime" Type="Int16" Nullable="false" />
+          <Property Name="BoxType" Type="Byte" Nullable="false" />
+          <Property Name="PetVnum" Type="Int16" Nullable="false" />
+          <Property Name="PetLevel" Type="Int16" Nullable="false" />
           </EntityType>
         <EntityType Name="Npc">
           <Key>

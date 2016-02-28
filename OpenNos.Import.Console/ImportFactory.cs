@@ -160,12 +160,12 @@ namespace OpenNos.Import.Console
                     {
                         if (!itemAreaBegin) continue;
 
-                        if(DAOFactory.ItemDAO.LoadById(item.VNum) == null)
+                        if (DAOFactory.ItemDAO.LoadById(item.VNum) == null)
                         {
                             DAOFactory.ItemDAO.Insert(item);
                             i++;
                         }
-                          
+
                         itemAreaBegin = false;
                     }
                     else if (linesave.Length > 2 && linesave[1] == "NAME")
@@ -178,9 +178,9 @@ namespace OpenNos.Import.Console
                     else if (linesave.Length > 7 && linesave[1] == "INDEX")
                     {
                         item.Type = Convert.ToByte(linesave[2]) != 4 ? Convert.ToByte(linesave[2]) : (byte)0;
-                        item.ItemType = linesave[3]!="-1"? Convert.ToByte($"{item.Type}{linesave[3]}") : (byte)0;
-                        //linesave[4] idk
-                        item.EquipmentSlot = Convert.ToByte(linesave[5]!="-1"? linesave[5]:"0");
+                        item.ItemType = linesave[3] != "-1" ? Convert.ToByte($"{item.Type}{linesave[3]}") : (byte)0;
+                        //item.FashionType = Convert.ToInt16(linesave[4]);
+                        item.EquipmentSlot = Convert.ToByte(linesave[5] != "-1" ? linesave[5] : "0");
                         //linesave[6] design id?
                         item.Morph = Convert.ToInt16(linesave[7]);
                     }
@@ -204,7 +204,7 @@ namespace OpenNos.Import.Console
                         //linesave[13] idk
                         //linesave[14] idk
                         //linesave[15] idk
-                        item.Colored = linesave[16]=="1"? true :false;
+                        item.Colored = linesave[16] == "1" ? true : false;
                         //linesave[17] idk
                         //linesave[18] idk
                         //linesave[19] idk
@@ -214,8 +214,8 @@ namespace OpenNos.Import.Console
                     }
                     else if (linesave.Length > 1 && linesave[1] == "DATA")
                     {
-                  
-                        switch(item.ItemType)
+
+                        switch (item.ItemType)
                         {
                             case (byte)ItemType.Weapon:
                                 item.LevelMinimum = Convert.ToInt16(linesave[2]);
@@ -234,9 +234,57 @@ namespace OpenNos.Import.Console
                                 item.DefenceDodge = Convert.ToInt16(linesave[6]);
                                 item.BasicUpgrade = Convert.ToInt16(linesave[10]);
                                 break;
+                            case (byte)ItemType.Box:
+                                item.BoxType = Convert.ToByte(linesave[2]);
+                                item.PetVnum = Convert.ToInt16(linesave[3]);
+                                item.PetLevel = Convert.ToInt16(linesave[4]);
+                                break;
+                            case (byte)ItemType.Fashion:
+                                item.FashionType = Convert.ToInt16(linesave[2]);
+                                item.ItemValidTime = Convert.ToInt16(linesave[13]);
+                                break;
                             //TODO Others
+                            /*case (byte)ItemType.Food:
+                                break;
+                            case (byte)ItemType.Jewelery:
+                                break;
+                            case (byte)ItemType.Magical1:
+                                break;
+                            case (byte)ItemType.Magical2:
+                                break;
+                            case (byte)ItemType.Ammo:
+                                break;
+                            case (byte)ItemType.Event:
+                                break;
+                            case (byte)ItemType.Specialist:
+                                break;
+                            case (byte)ItemType.Shell:
+                                break;
+                            case (byte)ItemType.Main:
+                                break;
+                            case (byte)ItemType.Upgrade:
+                                break;
+                            case (byte)ItemType.Production:
+                                break;
+                            case (byte)ItemType.Map:
+                                break;
+                            case (byte)ItemType.Potion:
+                                break;
+                            case (byte)ItemType.Quest:
+                                break;
+                            case (byte)ItemType.Sell:
+                                break;
+                            case (byte)ItemType.Snack:
+                                break;
+                            case (byte)ItemType.Part:
+                                break;
+                            case (byte)ItemType.Teacher:
+                                break;
+                            case (byte)ItemType.Special:
+                                break;
+                                */
                         }
-                   
+
                     }
                     else if (linesave.Length > 1 && linesave[1] == "BUFF")
                     {
