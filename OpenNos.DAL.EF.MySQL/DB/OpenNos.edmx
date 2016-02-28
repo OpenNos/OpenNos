@@ -813,13 +813,15 @@
           <Property Name="isConsumable" Type="Boolean" Nullable="false" />
           <NavigationProperty Name="inventoryitem" Relationship="opennosModel.InventoryItemItem" FromRole="Item" ToRole="InventoryItem" />
           <NavigationProperty Name="shopitem" Relationship="opennosModel.ShopItemItem" FromRole="Item" ToRole="ShopItem" />
-          <Property Name="ReputationMinimum" Type="Int64" Nullable="false" />
+          <Property Name="ReputationMinimum" Type="Byte" Nullable="false" />
           <Property Name="FairyMaximumLevel" Type="Int16" Nullable="false" />
           <Property Name="MaximumAmmo" Type="Int16" Nullable="false" />
           <Property Name="BasicUpgrade" Type="Int16" Nullable="false" />
           <Property Name="Color" Type="Int16" Nullable="false" />
           <Property Name="ItemValidTime" Type="Int64" Nullable="false" />
           <Property Name="isPearl" Type="Boolean" Nullable="false" />
+          <Property Name="Effect" Type="Int16" Nullable="false" />
+          <Property Name="Value" Type="Int16" Nullable="false" />
           </EntityType>
         <EntityType Name="Npc">
           <Key>

@@ -71,7 +71,7 @@ namespace OpenNos.Data
         public short MoreMp { get; set; }
         public bool Colored { get; set; }
         public bool isConsumable { get; set; }
-        public long ReputationMinimum { get; set; }
+        public byte ReputationMinimum { get; set; }
         public short FairyMaximumLevel { get; set; }
         public short MaximumAmmo { get; set; }
         public short BasicUpgrade { get; set; }
@@ -79,6 +79,8 @@ namespace OpenNos.Data
         public long ItemValidTime { get; set; }
         public bool isPearl { get; set; }
         public short Color { get; set; }
+        public short Effect { get; set; }
+        public short Value { get; set; }
         #endregion
     }
 }

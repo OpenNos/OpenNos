@@ -72,13 +72,15 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public short MoreMp { get; set; }
         public bool Colored { get; set; }
         public bool isConsumable { get; set; }
-        public long ReputationMinimum { get; set; }
+        public byte ReputationMinimum { get; set; }
         public short FairyMaximumLevel { get; set; }
         public short MaximumAmmo { get; set; }
         public short BasicUpgrade { get; set; }
         public short Color { get; set; }
         public long ItemValidTime { get; set; }
         public bool isPearl { get; set; }
+        public short Effect { get; set; }
+        public short Value { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<InventoryItem> inventoryitem { get; set; }
