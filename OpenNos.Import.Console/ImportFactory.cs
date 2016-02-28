@@ -165,7 +165,7 @@ namespace OpenNos.Import.Console
                             DAOFactory.ItemDAO.Insert(item);
                             i++;
                         }
-
+                        item = new ItemDTO();
                         itemAreaBegin = false;
                     }
                     else if (linesave.Length > 2 && linesave[1] == "NAME")
