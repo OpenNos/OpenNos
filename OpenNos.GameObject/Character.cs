@@ -484,7 +484,7 @@ namespace OpenNos.GameObject
             int slDefence = ServersData.SlPoint(inventoryItem.SlDefence, 1);
             int slHit = ServersData.SlPoint(inventoryItem.SlHit, 0);
             string skill = "-1"; //sk.sk.sk.sk.sk...
-            return $"slinfo {type} {inventoryItem.ItemVNum} {iteminfo.Morph} {inventoryItem.SpLevel} {iteminfo.LevelJobMinimum} {iteminfo.ReputationMinimum + 1} 0 0 0 0 0 0 0 {iteminfo.FireResistance} {iteminfo.WaterResistance} {iteminfo.LightResistance} {iteminfo.DarkResistance} 0 {inventoryItem.SpXp} {ServersData.SpXPData[inventoryItem.SpLevel - 1]} {skill} {inventoryItem.InventoryItemId} {freepoint} {slHit} {slDefence} {slElement} {slHp} {inventoryItem.Upgrade} - 1 12 0 0 0 0 0 0 0 0 0 0 0 0 0 0";
+            return $"slinfo {type} {inventoryItem.ItemVNum} {iteminfo.Morph} {inventoryItem.SpLevel} {iteminfo.LevelJobMinimum} {iteminfo.ReputationMinimum + 1} 0 0 0 0 0 0 0 0 {iteminfo.FireResistance} {iteminfo.WaterResistance} {iteminfo.LightResistance} {iteminfo.DarkResistance} {inventoryItem.SpXp} {ServersData.SpXPData[inventoryItem.SpLevel - 1]} {skill} {inventoryItem.InventoryItemId} {freepoint} {slHit} {slDefence} {slElement} {slHp} {inventoryItem.Upgrade} - 1 12 0 0 0 0 0 0 0 0 0 0 0 0 0 0";
         }
 
         public string GenerateSpk(object message, int v)

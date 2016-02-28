@@ -2769,7 +2769,7 @@ namespace OpenNos.Handler
                     equip.Slot = slot;
                     equip.Type = type;
 
-                    DeleteItem(type, slot);
+                    DeleteItem(inventory.Type, inventory.Slot);
                     Session.Character.EquipmentList.DeleteFromSlotAndType(slot, type);
 
                     Session.Character.InventoryList.InsertOrUpdate(ref equip);
