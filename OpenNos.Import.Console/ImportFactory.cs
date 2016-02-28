@@ -189,7 +189,10 @@ namespace OpenNos.Import.Console
                     else if (linesave.Length > 3 && linesave[1] == "TYPE")
                     {
                         //linesave[2] 0-range 2-range 3-magic but useless
-                        item.Class = Convert.ToByte(linesave[3]);
+                        if (item.EquipmentSlot == (byte)EquipmentType.Fairy)
+                            item.Class = 15;
+                        else
+                            item.Class = Convert.ToByte(linesave[3]);
                     }
                     else if (linesave.Length > 3 && linesave[1] == "FLAG")
                     {
