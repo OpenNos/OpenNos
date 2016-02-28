@@ -79,7 +79,7 @@ namespace OpenNos.Data
         public long ItemValidTime { get; set; }
         public bool isPearl { get; set; }
         public short Effect { get; set; }
-        public short Value { get; set; }
+        public int EffectValue { get; set; }
         public byte CellonLvl { get; set; }
 
         #endregion

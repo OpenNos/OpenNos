@@ -44,9 +44,9 @@
 -- -----------------------------------------------------------
 -- Entity Designer DDL Script for MySQL Server 4.1 and higher
 -- -----------------------------------------------------------
--- Date Created: 02/28/2016 18:18:37
+-- Date Created: 02/28/2016 19:15:29
 
--- Generated from EDMX file: C:\Users\ERWAN\Desktop\OpenNos GIT\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
+-- Generated from EDMX file: C:\Users\Dominik\Source\Repos\OpenNos\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
 -- Target version: 3.0.0.0
 
 -- --------------------------------------------------
@@ -297,7 +297,7 @@ CREATE TABLE `item`(
 	`ItemValidTime` bigint NOT NULL, 
 	`isPearl` bool NOT NULL, 
 	`Effect` smallint NOT NULL, 
-	`Value` smallint NOT NULL, 
+	`EffectValue` int NOT NULL, 
 	`CellonLvl` TINYINT UNSIGNED NOT NULL);
 
 ALTER TABLE `item` ADD PRIMARY KEY (VNum);

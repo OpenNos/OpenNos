@@ -80,7 +80,7 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public long ItemValidTime { get; set; }
         public bool isPearl { get; set; }
         public short Effect { get; set; }
-        public short Value { get; set; }
+        public int EffectValue { get; set; }
         public byte CellonLvl { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

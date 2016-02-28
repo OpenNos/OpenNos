@@ -236,7 +236,7 @@
     <Property Name="ItemValidTime" Type="bigint" Nullable="false" />
     <Property Name="isPearl" Type="bool" Nullable="false" />
     <Property Name="Effect" Type="smallint" Nullable="false" />
-    <Property Name="Value" Type="smallint" Nullable="false" />
+    <Property Name="EffectValue" Type="int" Nullable="false" />
     <Property Name="CellonLvl" Type="utinyint" Nullable="false" />
   </EntityType>
   <EntityType Name="npc">
@@ -824,7 +824,7 @@
           <Property Name="ItemValidTime" Type="Int64" Nullable="false" />
           <Property Name="isPearl" Type="Boolean" Nullable="false" />
           <Property Name="Effect" Type="Int16" Nullable="false" />
-          <Property Name="Value" Type="Int16" Nullable="false" />
+          <Property Name="EffectValue" Type="Int32" Nullable="false" />
           <Property Name="CellonLvl" Type="Byte" Nullable="false" />
           </EntityType>
         <EntityType Name="Npc">
@@ -1198,7 +1198,7 @@
           <ScalarProperty Name="ItemValidTime" ColumnName="ItemValidTime" />
           <ScalarProperty Name="isPearl" ColumnName="isPearl" />
           <ScalarProperty Name="Effect" ColumnName="Effect" />
-          <ScalarProperty Name="Value" ColumnName="Value" />
+          <ScalarProperty Name="EffectValue" ColumnName="EffectValue" />
           <ScalarProperty Name="CellonLvl" ColumnName="CellonLvl" />
         </MappingFragment>
       </EntityTypeMapping>
