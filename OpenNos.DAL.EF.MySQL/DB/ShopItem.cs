@@ -18,8 +18,8 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public short Type { get; set; }
         public short Slot { get; set; }
         public short ItemVNum { get; set; }
-        public short Upgrade { get; set; }
-        public short Rare { get; set; }
+        public byte Upgrade { get; set; }
+        public byte Rare { get; set; }
         public short Color { get; set; }
         public int ShopId { get; set; }
     

@@ -44,9 +44,9 @@
 -- -----------------------------------------------------------
 -- Entity Designer DDL Script for MySQL Server 4.1 and higher
 -- -----------------------------------------------------------
--- Date Created: 02/28/2016 18:37:07
+-- Date Created: 02/28/2016 21:01:32
 
--- Generated from EDMX file: C:\Users\ERWAN\Desktop\OpenNos GIT\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
+-- Generated from EDMX file: C:\Users\Dominik\Source\Repos\OpenNos\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
 -- Target version: 3.0.0.0
 
 -- --------------------------------------------------
@@ -202,7 +202,7 @@ CREATE TABLE `portal`(
 	`Type` smallint NOT NULL, 
 	`DestinationMapId` smallint NOT NULL, 
 	`SourceMapId` smallint NOT NULL, 
-	`IsDisabled` smallint NOT NULL);
+	`IsDisabled` bool NOT NULL);
 
 ALTER TABLE `portal` ADD PRIMARY KEY (PortalId);
 
@@ -246,12 +246,12 @@ CREATE TABLE `item`(
 	`Morph` smallint NOT NULL, 
 	`Type` TINYINT UNSIGNED NOT NULL, 
 	`Class` TINYINT UNSIGNED NOT NULL, 
-	`isBlocked` bool NOT NULL, 
-	`isDroppable` bool NOT NULL, 
-	`isTradable` bool NOT NULL, 
-	`isSoldable` bool NOT NULL, 
-	`isMinilandObject` bool NOT NULL, 
-	`isWarehouse` bool NOT NULL, 
+	`IsBlocked` bool NOT NULL, 
+	`IsDroppable` bool NOT NULL, 
+	`IsTradable` bool NOT NULL, 
+	`IsSoldable` bool NOT NULL, 
+	`IsMinilandObject` bool NOT NULL, 
+	`IsWarehouse` bool NOT NULL, 
 	`LevelMinimum` smallint NOT NULL, 
 	`DamageMinimum` smallint NOT NULL, 
 	`DamageMaximum` smallint NOT NULL, 
@@ -287,18 +287,19 @@ CREATE TABLE `item`(
 	`MpRegeneration` smallint NOT NULL, 
 	`MoreHp` smallint NOT NULL, 
 	`MoreMp` smallint NOT NULL, 
-	`isColored` bool NOT NULL, 
-	`isConsumable` bool NOT NULL, 
+	`IsColored` bool NOT NULL, 
+	`IsConsumable` bool NOT NULL, 
 	`ReputationMinimum` TINYINT UNSIGNED NOT NULL, 
 	`FairyMaximumLevel` TINYINT UNSIGNED NOT NULL, 
 	`MaximumAmmo` TINYINT UNSIGNED NOT NULL, 
 	`BasicUpgrade` smallint NOT NULL, 
 	`Color` smallint NOT NULL, 
 	`ItemValidTime` bigint NOT NULL, 
-	`isPearl` bool NOT NULL, 
+	`IsPearl` bool NOT NULL, 
 	`Effect` smallint NOT NULL, 
-	`Value` smallint NOT NULL, 
-	`CellonLvl` TINYINT UNSIGNED NOT NULL);
+	`EffectValue` int NOT NULL, 
+	`CellonLvl` TINYINT UNSIGNED NOT NULL, 
+	`SpType` TINYINT UNSIGNED NOT NULL);
 
 ALTER TABLE `item` ADD PRIMARY KEY (VNum);
 
@@ -314,8 +315,8 @@ CREATE TABLE `npc`(
 	`MapId` smallint NOT NULL, 
 	`MapX` smallint NOT NULL, 
 	`MapY` smallint NOT NULL, 
-	`Position` smallint NOT NULL, 
-	`Level` smallint NOT NULL);
+	`Position` TINYINT UNSIGNED NOT NULL, 
+	`Level` TINYINT UNSIGNED NOT NULL);
 
 ALTER TABLE `npc` ADD PRIMARY KEY (NpcId);
 
@@ -379,8 +380,8 @@ CREATE TABLE `shopitem`(
 	`Type` smallint NOT NULL, 
 	`Slot` smallint NOT NULL, 
 	`ItemVNum` smallint NOT NULL, 
-	`Upgrade` smallint NOT NULL, 
-	`Rare` smallint NOT NULL, 
+	`Upgrade` TINYINT UNSIGNED NOT NULL, 
+	`Rare` TINYINT UNSIGNED NOT NULL, 
 	`Color` smallint NOT NULL, 
 	`ShopId` int NOT NULL);
 

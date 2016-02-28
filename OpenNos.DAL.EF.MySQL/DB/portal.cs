@@ -22,7 +22,7 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public short Type { get; set; }
         public short DestinationMapId { get; set; }
         public short SourceMapId { get; set; }
-        public short IsDisabled { get; set; }
+        public bool IsDisabled { get; set; }
     
         public virtual Map destinationmap { get; set; }
         public virtual Map sourcemap { get; set; }

@@ -585,7 +585,7 @@ namespace OpenNos.Handler
                 iteminfo = ServerManager.GetItem(vnum);
                 if (iteminfo != null)
                 {
-                    if (iteminfo.isColored)
+                    if (iteminfo.IsColored)
                     {
                         Int16.TryParse(packetsplit[3], out color);
                     }
@@ -915,7 +915,7 @@ namespace OpenNos.Handler
                         foreach (InventoryItem item in Session.Character.ExchangeInfo.ExchangeList)
                         {
                             Inventory inv = Session.Character.InventoryList.getInventoryByInventoryItemId(item.InventoryItemId);
-                            if (inv != null && ServerManager.GetItem(inv.InventoryItem.ItemVNum).isTradable != true)
+                            if (inv != null && ServerManager.GetItem(inv.InventoryItem.ItemVNum).IsTradable != true)
                             {
                                 Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("ITEM_NOT_TRADABLE"), 0));
                                 notsold = true;
@@ -1329,7 +1329,7 @@ namespace OpenNos.Handler
                         item[i] = DAOFactory.InventoryItemDAO.LoadById(inv.InventoryItemId);
                     }
                 }
-                Session.Client.SendPacket($"clist {character.Slot} {character.Name} 0 {character.Gender} {character.HairStyle} {character.HairColor} 0 {character.Class} {character.Level} {(item[(short)EquipmentType.Hat] != null ? item[(short)EquipmentType.Hat].ItemVNum : 0)}.{(item[(short)EquipmentType.Armor] != null ? item[(short)EquipmentType.Armor].ItemVNum : 0)}.{(item[(short)EquipmentType.MainWeapon] != null ? item[(short)EquipmentType.MainWeapon].ItemVNum : 0)}.{(item[(short)EquipmentType.SecondaryWeapon] != null ? item[(short)EquipmentType.SecondaryWeapon].ItemVNum : 0)}.{(item[(short)EquipmentType.Mask] != null ? item[(short)EquipmentType.Mask].ItemVNum : 0)}.{(item[(short)EquipmentType.Fairy] != null ? item[(short)EquipmentType.Fairy].ItemVNum : 0)}.{(item[(short)EquipmentType.CostumeSuite] != null ? item[(short)EquipmentType.CostumeSuite].ItemVNum : 0)}.{(item[(short)EquipmentType.CostumeHat] != null ? item[(short)EquipmentType.CostumeHat].ItemVNum : 0)} 1 0 0 -1.-1 {(item[(short)EquipmentType.Hat] != null ? (ServerManager.GetItem(item[(short)EquipmentType.Hat].ItemVNum).isColored ? item[(short)EquipmentType.Hat].Color : character.HairColor) : character.HairColor)} 0");
+                Session.Client.SendPacket($"clist {character.Slot} {character.Name} 0 {character.Gender} {character.HairStyle} {character.HairColor} 0 {character.Class} {character.Level} {(item[(short)EquipmentType.Hat] != null ? item[(short)EquipmentType.Hat].ItemVNum : 0)}.{(item[(short)EquipmentType.Armor] != null ? item[(short)EquipmentType.Armor].ItemVNum : 0)}.{(item[(short)EquipmentType.MainWeapon] != null ? item[(short)EquipmentType.MainWeapon].ItemVNum : 0)}.{(item[(short)EquipmentType.SecondaryWeapon] != null ? item[(short)EquipmentType.SecondaryWeapon].ItemVNum : 0)}.{(item[(short)EquipmentType.Mask] != null ? item[(short)EquipmentType.Mask].ItemVNum : 0)}.{(item[(short)EquipmentType.Fairy] != null ? item[(short)EquipmentType.Fairy].ItemVNum : 0)}.{(item[(short)EquipmentType.CostumeSuite] != null ? item[(short)EquipmentType.CostumeSuite].ItemVNum : 0)}.{(item[(short)EquipmentType.CostumeHat] != null ? item[(short)EquipmentType.CostumeHat].ItemVNum : 0)} 1 0 0 -1.-1 {(item[(short)EquipmentType.Hat] != null ? (ServerManager.GetItem(item[(short)EquipmentType.Hat].ItemVNum).IsColored ? item[(short)EquipmentType.Hat].Color : character.HairColor) : character.HairColor)} 0");
             }
             Session.Client.SendPacket("clist_end");
         }
@@ -1728,7 +1728,7 @@ namespace OpenNos.Handler
             short amount; short.TryParse(packetsplit[4], out amount);
             Inventory inv;
             Inventory invitem = Session.Character.InventoryList.LoadBySlotAndType(slot, type);
-            if (invitem != null && ServerManager.GetItem(invitem.InventoryItem.ItemVNum).isDroppable == true && ServerManager.GetItem(invitem.InventoryItem.ItemVNum).isTradable == true)
+            if (invitem != null && ServerManager.GetItem(invitem.InventoryItem.ItemVNum).IsDroppable == true && ServerManager.GetItem(invitem.InventoryItem.ItemVNum).IsTradable == true)
             {
                 MapItem DroppedItem = Session.Character.InventoryList.PutItem(Session, type, slot, amount, out inv);
                 if (inv.InventoryItem.Amount == 0)
@@ -2134,7 +2134,7 @@ namespace OpenNos.Handler
                 Inventory inv = Session.Character.InventoryList.LoadBySlotAndType(slot, type);
                 if (inv == null || amount > inv.InventoryItem.Amount) return;
 
-                if (ServerManager.GetItem(inv.InventoryItem.ItemVNum).isSoldable != true)
+                if (ServerManager.GetItem(inv.InventoryItem.ItemVNum).IsSoldable != true)
                 {
                     Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("ITEM_NOT_SOLDABLE"), 0));
                     // TODO Need to see if on global it's a MSG packet^^
@@ -2168,7 +2168,7 @@ namespace OpenNos.Handler
                 if (iteminfo.Type != 0)
                     shoplist += $" {iteminfo.Type}.{item.Slot}.{item.ItemVNum}.{-1}.{ServerManager.GetItem(item.ItemVNum).Price}";
                 else
-                    shoplist += $" {iteminfo.Type}.{item.Slot}.{item.ItemVNum}.{item.Rare}.{(iteminfo.isColored ? item.Color : item.Upgrade)}.{ServerManager.GetItem(item.ItemVNum).Price}";
+                    shoplist += $" {iteminfo.Type}.{item.Slot}.{item.ItemVNum}.{item.Rare}.{(iteminfo.IsColored ? item.Color : item.Upgrade)}.{ServerManager.GetItem(item.ItemVNum).Price}";
             }
 
             Session.Client.SendPacket($"n_inv 2 {npc.NpcId} 0 0{shoplist}");
@@ -2628,7 +2628,7 @@ namespace OpenNos.Handler
                         Inventory inv = Session.Character.InventoryList.LoadBySlotAndType(slot, type);
                         InventoryItem item = inv.InventoryItem;
                         Item itemInfo = ServerManager.GetItem(item.ItemVNum);
-                        if (itemInfo.isConsumable)
+                        if (itemInfo.IsConsumable)
                             item.Amount--;
                         if (itemInfo.Morph != 0)
                         {

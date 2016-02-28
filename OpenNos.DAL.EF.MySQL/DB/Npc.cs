@@ -27,8 +27,8 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public short MapId { get; set; }
         public short MapX { get; set; }
         public short MapY { get; set; }
-        public short Position { get; set; }
-        public short Level { get; set; }
+        public byte Position { get; set; }
+        public byte Level { get; set; }
     
         public virtual Map map { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

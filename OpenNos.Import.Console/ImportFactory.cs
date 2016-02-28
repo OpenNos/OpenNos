@@ -174,6 +174,8 @@ namespace OpenNos.Import.Console
                         {
                             item.Name = name;
                         }
+                        else
+                            item.Name = string.Empty;
                     }
                     else if (linesave.Length > 7 && linesave[1] == "INDEX")
                     {
@@ -187,24 +189,27 @@ namespace OpenNos.Import.Console
                     else if (linesave.Length > 3 && linesave[1] == "TYPE")
                     {
                         //linesave[2] 0-range 2-range 3-magic but useless
-                        item.Class = Convert.ToByte(linesave[3]);
+                        if (item.EquipmentSlot == (byte)EquipmentType.Fairy)
+                            item.Class = 15;
+                        else
+                            item.Class = Convert.ToByte(linesave[3]);
                     }
                     else if (linesave.Length > 3 && linesave[1] == "FLAG")
                     {
                         //linesave[2] never used
                         //linesave[3] never used
-                        item.isBlocked = linesave[5] == "1" ? true : false;
-                        item.isDroppable = linesave[6] == "0" ? true : false;
-                        item.isTradable = linesave[7] == "0" ? true : false;
-                        item.isSoldable = linesave[8] == "0" ? true : false;
-                        item.isMinilandObject = linesave[9] == "1" ? true : false;
-                        item.isWarehouse = linesave[10] == "1" ? true : false;
+                        item.IsBlocked = linesave[5] == "1" ? true : false;
+                        item.IsDroppable = linesave[6] == "0" ? true : false;
+                        item.IsTradable = linesave[7] == "0" ? true : false;
+                        item.IsSoldable = linesave[8] == "0" ? true : false;
+                        item.IsMinilandObject = linesave[9] == "1" ? true : false;
+                        item.IsWarehouse = linesave[10] == "1" ? true : false;
                         //item.isVehicle = linesave[11] == "1" ? true : false;
                         //box wth vehicle //linesave[12]
                         //linesave[13] idk
                         //linesave[14] idk
                         //linesave[15] idk
-                        item.isColored = linesave[16] == "1" ? true : false;
+                        item.IsColored = linesave[16] == "1" ? true : false;
                         //linesave[17] idk
                         //linesave[18] idk
                         //linesave[19] idk
@@ -235,7 +240,7 @@ namespace OpenNos.Import.Console
                                 item.BasicUpgrade = Convert.ToInt16(linesave[10]);
                                 break;
                             case (byte)ItemType.Box:
-                                item.isPearl = linesave[2] == "1" ? true : false;
+                                item.IsPearl = linesave[2] == "1" ? true : false;
                                 //item.PetVnum = Convert.ToInt16(linesave[3]);
                                 //item.PetLevel = Convert.ToInt16(linesave[4]);
                                 break;
@@ -247,24 +252,36 @@ namespace OpenNos.Import.Console
                                 item.Mp = Convert.ToInt16(linesave[4]);
                                 break;
                             case (byte)ItemType.Jewelery:
-                                /*need to add amulet if
-                                item.LevelMinimum = Convert.ToInt16(linesave[2]);
-                                item.MaxCellonLvl = Convert.ToByte(linesave[3]);
-                                item.MaxCellon = Convert.ToByte(linesave[4]);*/ 
+                                if (item.EquipmentSlot.Equals((byte)EquipmentType.Amulet))
+                                {
+                                    item.Effect = Convert.ToInt16(linesave[2]);
+                                    item.EffectValue = Convert.ToInt32(linesave[3]);
+                                }
+                                else if (item.EquipmentSlot.Equals((byte)EquipmentType.Fairy))
+                                {
+                                    item.Element = Convert.ToByte(linesave[2]);
+                                    item.ElementRate = Convert.ToInt16(linesave[3]);
+                                }
+                                else
+                                {
+                                    item.LevelMinimum = Convert.ToInt16(linesave[2]);
+                                    item.MaxCellonLvl = Convert.ToByte(linesave[3]);
+                                    item.MaxCellon = Convert.ToByte(linesave[4]);
+                                }
                                 break;
                             case (byte)ItemType.Magical1:
                                 item.Effect = Convert.ToInt16(linesave[2]);
                                 break;
                             case (byte)ItemType.Magical2:
                                 item.Effect = Convert.ToInt16(linesave[2]);
-                                item.Value = Convert.ToInt16(linesave[4]);
+                                item.EffectValue = Convert.ToInt32(linesave[4]);
                                 break;
                             case (byte)ItemType.Specialist:
                                 //item.isSpecialist = Convert.ToByte(linesave[2]);
                                 item.Element = Convert.ToByte(linesave[3]);
                                 item.ElementRate = Convert.ToInt16(linesave[4]);
                                 item.Speed = Convert.ToByte(linesave[5]);
-                                //item.Class = Convert.ToByte(linesave[13]);
+                                item.SpType = Convert.ToByte(linesave[13]);
                                 //item.Morph = Convert.ToInt16(linesave[14]) + 1; // idk whats that, its useless
                                 item.FireElement = Convert.ToByte(linesave[15]);
                                 item.WaterElement = Convert.ToByte(linesave[16]);
@@ -288,7 +305,38 @@ namespace OpenNos.Import.Console
                                 item.CellonLvl = Convert.ToByte(linesave[3]);
                                 break;
                             case (byte)ItemType.Production:
-                                //W.I.P
+                                item.Effect = Convert.ToInt16(linesave[2]);
+                                item.EffectValue = Convert.ToInt32(linesave[4]);
+                                break;
+                            case (byte)ItemType.Map:
+                                item.Effect = Convert.ToInt16(linesave[2]);
+                                item.EffectValue = Convert.ToInt32(linesave[4]);
+                                break;
+                            case (byte)ItemType.Potion:
+                                item.Hp = Convert.ToInt16(linesave[2]);
+                                item.Mp = Convert.ToInt16(linesave[4]);
+                                break;
+                            case (byte)ItemType.Snack:
+                                item.Hp = Convert.ToInt16(linesave[2]);
+                                item.Mp = Convert.ToInt16(linesave[4]);
+                                break;
+                            case (byte)ItemType.Teacher:
+                                item.Effect = Convert.ToInt16(linesave[2]);
+                                //item.PetLoyality = Convert.ToInt16(linesave[4]);
+                                //item.PetFood = Convert.ToInt16(linesave[7]);
+                                break;
+                            case (byte)ItemType.Special:
+                                //item.NpcInteraction = Convert.ToInt16(linesave[5]);
+                                //item.QuestItem = linesave[7] == "1" ? true : false;
+                                break;
+                            case (byte)ItemType.Part:
+                                //nothing to parse
+                                break;
+                            case (byte)ItemType.Sell:
+                                //nothing to parse
+                                break;
+                            case (byte)ItemType.Quest:
+                                //nothing to parse
                                 break;
                             case (byte)ItemType.Ammo:
                                 //nothing to parse
@@ -296,25 +344,6 @@ namespace OpenNos.Import.Console
                             case (byte)ItemType.Event:
                                 //nothing to parse
                                 break;
-                                //TODO Others
-                                /*
-                                case (byte)ItemType.Map:
-                                    break;
-                                case (byte)ItemType.Potion:
-                                    break;
-                                case (byte)ItemType.Quest:
-                                    break;
-                                case (byte)ItemType.Sell:
-                                    break;
-                                case (byte)ItemType.Snack:
-                                    break;
-                                case (byte)ItemType.Part:
-                                    break;
-                                case (byte)ItemType.Teacher:
-                                    break;
-                                case (byte)ItemType.Special:
-                                    break;
-                                    */
                         }
 
                     }
@@ -466,7 +495,7 @@ namespace OpenNos.Import.Console
                         Type = short.Parse(linesave[4]),
                         DestinationX = -1,
                         DestinationY = -1,
-                        IsDisabled = 0
+                        IsDisabled = false
                     };
 
                     if (listPacket.FirstOrDefault(s => s.SourceMapId == map && s.SourceX == portal.SourceX && s.SourceY == portal.SourceY && s.DestinationMapId == portal.DestinationMapId) != null)
