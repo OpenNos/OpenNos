@@ -330,7 +330,7 @@ namespace OpenNos.Handler
             Inventory sp = Session.Character.EquipmentList.LoadBySlotAndType((short)EquipmentType.Sp, (short)InventoryType.Equipment);
             Inventory fairy = Session.Character.EquipmentList.LoadBySlotAndType((short)EquipmentType.Fairy, (short)InventoryType.Equipment);
 
-            if (Session.Character.Reput < ServerManager.GetItem(sp.InventoryItem.ItemVNum).ReputationMinimum)
+            if (Session.Character.GetReputIco() < ServerManager.GetItem(sp.InventoryItem.ItemVNum).ReputationMinimum)
             {
                 // Reputation too low for this SP
                 Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("LOW_REP"), 0));

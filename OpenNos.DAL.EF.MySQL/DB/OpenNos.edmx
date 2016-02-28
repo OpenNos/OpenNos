@@ -234,7 +234,7 @@
     <Property Name="BasicUpgrade" Type="smallint" Nullable="false" />
     <Property Name="Color" Type="smallint" Nullable="false" />
     <Property Name="ItemValidTime" Type="bigint" Nullable="false" />
-    <Property Name="isPearl" Type="utinyint" Nullable="false" />
+    <Property Name="isPearl" Type="bool" Nullable="false" />
   </EntityType>
   <EntityType Name="npc">
     <Key>
