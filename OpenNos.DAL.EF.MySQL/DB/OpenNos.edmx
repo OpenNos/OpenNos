@@ -150,7 +150,7 @@
     <Property Name="Type" Type="smallint" Nullable="false" />
     <Property Name="DestinationMapId" Type="smallint" Nullable="false" />
     <Property Name="SourceMapId" Type="smallint" Nullable="false" />
-    <Property Name="IsDisabled" Type="smallint" Nullable="false" />
+    <Property Name="IsDisabled" Type="bool" Nullable="false" />
   </EntityType>
   <EntityType Name="generallog">
     <Key>
@@ -185,12 +185,12 @@
     <Property Name="Morph" Type="smallint" Nullable="false" />
     <Property Name="Type" Type="utinyint" Nullable="false" />
     <Property Name="Class" Type="utinyint" Nullable="false" />
-    <Property Name="isBlocked" Type="bool" Nullable="false" />
-    <Property Name="isDroppable" Type="bool" Nullable="false" />
-    <Property Name="isTradable" Type="bool" Nullable="false" />
-    <Property Name="isSoldable" Type="bool" Nullable="false" />
-    <Property Name="isMinilandObject" Type="bool" Nullable="false" />
-    <Property Name="isWarehouse" Type="bool" Nullable="false" />
+    <Property Name="IsBlocked" Type="bool" Nullable="false" />
+    <Property Name="IsDroppable" Type="bool" Nullable="false" />
+    <Property Name="IsTradable" Type="bool" Nullable="false" />
+    <Property Name="IsSoldable" Type="bool" Nullable="false" />
+    <Property Name="IsMinilandObject" Type="bool" Nullable="false" />
+    <Property Name="IsWarehouse" Type="bool" Nullable="false" />
     <Property Name="LevelMinimum" Type="smallint" Nullable="false" />
     <Property Name="DamageMinimum" Type="smallint" Nullable="false" />
     <Property Name="DamageMaximum" Type="smallint" Nullable="false" />
@@ -226,18 +226,19 @@
     <Property Name="MpRegeneration" Type="smallint" Nullable="false" />
     <Property Name="MoreHp" Type="smallint" Nullable="false" />
     <Property Name="MoreMp" Type="smallint" Nullable="false" />
-    <Property Name="isColored" Type="bool" Nullable="false" />
-    <Property Name="isConsumable" Type="bool" Nullable="false" />
+    <Property Name="IsColored" Type="bool" Nullable="false" />
+    <Property Name="IsConsumable" Type="bool" Nullable="false" />
     <Property Name="ReputationMinimum" Type="utinyint" Nullable="false" />
     <Property Name="FairyMaximumLevel" Type="utinyint" Nullable="false" />
     <Property Name="MaximumAmmo" Type="utinyint" Nullable="false" />
     <Property Name="BasicUpgrade" Type="smallint" Nullable="false" />
     <Property Name="Color" Type="smallint" Nullable="false" />
     <Property Name="ItemValidTime" Type="bigint" Nullable="false" />
-    <Property Name="isPearl" Type="bool" Nullable="false" />
+    <Property Name="IsPearl" Type="bool" Nullable="false" />
     <Property Name="Effect" Type="smallint" Nullable="false" />
     <Property Name="EffectValue" Type="int" Nullable="false" />
     <Property Name="CellonLvl" Type="utinyint" Nullable="false" />
+    <Property Name="SpType" Type="utinyint" Nullable="false" />
   </EntityType>
   <EntityType Name="npc">
     <Key>
@@ -250,8 +251,8 @@
     <Property Name="MapId" Type="smallint" Nullable="false" />
     <Property Name="MapX" Type="smallint" Nullable="false" />
     <Property Name="MapY" Type="smallint" Nullable="false" />
-    <Property Name="Position" Type="smallint" Nullable="false" />
-    <Property Name="Level" Type="smallint" Nullable="false" />
+    <Property Name="Position" Type="utinyint" Nullable="false" />
+    <Property Name="Level" Type="utinyint" Nullable="false" />
   </EntityType>
   <EntityType Name="inventoryitem">
     <Key>
@@ -306,8 +307,8 @@
     <Property Name="Type" Type="smallint" Nullable="false" />
     <Property Name="Slot" Type="smallint" Nullable="false" />
     <Property Name="ItemVNum" Type="smallint" Nullable="false" />
-    <Property Name="Upgrade" Type="smallint" Nullable="false" />
-    <Property Name="Rare" Type="smallint" Nullable="false" />
+    <Property Name="Upgrade" Type="utinyint" Nullable="false" />
+    <Property Name="Rare" Type="utinyint" Nullable="false" />
     <Property Name="Color" Type="smallint" Nullable="false" />
     <Property Name="ShopId" Type="int" Nullable="false" />
   </EntityType>
@@ -588,7 +589,7 @@
           <Property Name="DestinationMapId" Type="Int16" Nullable="false" />
           <NavigationProperty Name="sourcemap" Relationship="opennosModel.portalMap1" FromRole="portal" ToRole="Map" />
           <Property Name="SourceMapId" Type="Int16" Nullable="false" />
-          <Property Name="IsDisabled" Type="Int16" Nullable="false" />
+          <Property Name="IsDisabled" Type="Boolean" Nullable="false" />
         </EntityType>
         <EntityContainer Name="OpenNosContainer" annotation:LazyLoadingEnabled="false">
           <EntitySet Name="account" EntityType="opennosModel.Account" />
@@ -771,12 +772,12 @@
           <Property Name="Morph" Type="Int16" Nullable="false" />
           <Property Name="Type" Type="Byte" Nullable="false" />
           <Property Name="Class" Type="Byte" Nullable="false" />
-          <Property Name="isBlocked" Type="Boolean" Nullable="false" />
-          <Property Name="isDroppable" Type="Boolean" Nullable="false" />
-          <Property Name="isTradable" Type="Boolean" Nullable="false" />
-          <Property Name="isSoldable" Type="Boolean" Nullable="false" />
-          <Property Name="isMinilandObject" Type="Boolean" Nullable="false" />
-          <Property Name="isWarehouse" Type="Boolean" Nullable="false" />
+          <Property Name="IsBlocked" Type="Boolean" Nullable="false" />
+          <Property Name="IsDroppable" Type="Boolean" Nullable="false" />
+          <Property Name="IsTradable" Type="Boolean" Nullable="false" />
+          <Property Name="IsSoldable" Type="Boolean" Nullable="false" />
+          <Property Name="IsMinilandObject" Type="Boolean" Nullable="false" />
+          <Property Name="IsWarehouse" Type="Boolean" Nullable="false" />
           <Property Name="LevelMinimum" Type="Int16" Nullable="false" />
           <Property Name="DamageMinimum" Type="Int16" Nullable="false" />
           <Property Name="DamageMaximum" Type="Int16" Nullable="false" />
@@ -812,8 +813,8 @@
           <Property Name="MpRegeneration" Type="Int16" Nullable="false" />
           <Property Name="MoreHp" Type="Int16" Nullable="false" />
           <Property Name="MoreMp" Type="Int16" Nullable="false" />
-          <Property Name="isColored" Type="Boolean" Nullable="false" />
-          <Property Name="isConsumable" Type="Boolean" Nullable="false" />
+          <Property Name="IsColored" Type="Boolean" Nullable="false" />
+          <Property Name="IsConsumable" Type="Boolean" Nullable="false" />
           <NavigationProperty Name="inventoryitem" Relationship="opennosModel.InventoryItemItem" FromRole="Item" ToRole="InventoryItem" />
           <NavigationProperty Name="shopitem" Relationship="opennosModel.ShopItemItem" FromRole="Item" ToRole="ShopItem" />
           <Property Name="ReputationMinimum" Type="Byte" Nullable="false" />
@@ -822,7 +823,7 @@
           <Property Name="BasicUpgrade" Type="Int16" Nullable="false" />
           <Property Name="Color" Type="Int16" Nullable="false" />
           <Property Name="ItemValidTime" Type="Int64" Nullable="false" />
-          <Property Name="isPearl" Type="Boolean" Nullable="false" />
+          <Property Name="IsPearl" Type="Boolean" Nullable="false" />
           <Property Name="Effect" Type="Int16" Nullable="false" />
           <Property Name="EffectValue" Type="Int32" Nullable="false" />
           <Property Name="CellonLvl" Type="Byte" Nullable="false" />
@@ -839,9 +840,9 @@
           <Property Name="MapId" Type="Int16" Nullable="false" />
           <Property Name="MapX" Type="Int16" Nullable="false" />
           <Property Name="MapY" Type="Int16" Nullable="false" />
-          <Property Name="Position" Type="Int16" Nullable="false" />
+          <Property Name="Position" Type="Byte" Nullable="false" />
           <NavigationProperty Name="map" Relationship="opennosModel.NpcMap" FromRole="Npc" ToRole="Map" />
-          <Property Name="Level" Type="Int16" Nullable="false" />
+          <Property Name="Level" Type="Byte" Nullable="false" />
           <NavigationProperty Name="shop" Relationship="opennosModel.ShopNpc" FromRole="Npc" ToRole="Shop" />
         </EntityType>
         <Association Name="NpcMap">
@@ -950,8 +951,8 @@
           <Property Name="Slot" Type="Int16" Nullable="false" />
           <NavigationProperty Name="item" Relationship="opennosModel.ShopItemItem" FromRole="ShopItem" ToRole="Item" />
           <Property Name="ItemVNum" Type="Int16" Nullable="false" />
-          <Property Name="Upgrade" Type="Int16" Nullable="false" />
-          <Property Name="Rare" Type="Int16" Nullable="false" />
+          <Property Name="Upgrade" Type="Byte" Nullable="false" />
+          <Property Name="Rare" Type="Byte" Nullable="false" />
           <NavigationProperty Name="shop" Relationship="opennosModel.ShopShopItem" FromRole="ShopItem" ToRole="Shop" />
           <Property Name="Color" Type="Int16" Nullable="false" />
           <Property Name="ShopId" Type="Int32" Nullable="false" />
@@ -1148,12 +1149,12 @@
           <ScalarProperty Name="Morph" ColumnName="Morph" />
           <ScalarProperty Name="Type" ColumnName="Type" />
           <ScalarProperty Name="Class" ColumnName="Class" />
-          <ScalarProperty Name="isBlocked" ColumnName="isBlocked" />
-          <ScalarProperty Name="isDroppable" ColumnName="isDroppable" />
-          <ScalarProperty Name="isTradable" ColumnName="isTradable" />
-          <ScalarProperty Name="isSoldable" ColumnName="isSoldable" />
-          <ScalarProperty Name="isMinilandObject" ColumnName="isMinilandObject" />
-          <ScalarProperty Name="isWarehouse" ColumnName="isWarehouse" />
+          <ScalarProperty Name="IsBlocked" ColumnName="IsBlocked" />
+          <ScalarProperty Name="IsDroppable" ColumnName="IsDroppable" />
+          <ScalarProperty Name="IsTradable" ColumnName="IsTradable" />
+          <ScalarProperty Name="IsSoldable" ColumnName="IsSoldable" />
+          <ScalarProperty Name="IsMinilandObject" ColumnName="IsMinilandObject" />
+          <ScalarProperty Name="IsWarehouse" ColumnName="IsWarehouse" />
           <ScalarProperty Name="LevelMinimum" ColumnName="LevelMinimum" />
           <ScalarProperty Name="DamageMinimum" ColumnName="DamageMinimum" />
           <ScalarProperty Name="DamageMaximum" ColumnName="DamageMaximum" />
@@ -1189,18 +1190,19 @@
           <ScalarProperty Name="MpRegeneration" ColumnName="MpRegeneration" />
           <ScalarProperty Name="MoreHp" ColumnName="MoreHp" />
           <ScalarProperty Name="MoreMp" ColumnName="MoreMp" />
-          <ScalarProperty Name="isColored" ColumnName="isColored" />
-          <ScalarProperty Name="isConsumable" ColumnName="isConsumable" />
+          <ScalarProperty Name="IsColored" ColumnName="IsColored" />
+          <ScalarProperty Name="IsConsumable" ColumnName="IsConsumable" />
           <ScalarProperty Name="ReputationMinimum" ColumnName="ReputationMinimum" />
           <ScalarProperty Name="FairyMaximumLevel" ColumnName="FairyMaximumLevel" />
           <ScalarProperty Name="MaximumAmmo" ColumnName="MaximumAmmo" />
           <ScalarProperty Name="BasicUpgrade" ColumnName="BasicUpgrade" />
           <ScalarProperty Name="Color" ColumnName="Color" />
           <ScalarProperty Name="ItemValidTime" ColumnName="ItemValidTime" />
-          <ScalarProperty Name="isPearl" ColumnName="isPearl" />
+          <ScalarProperty Name="IsPearl" ColumnName="IsPearl" />
           <ScalarProperty Name="Effect" ColumnName="Effect" />
           <ScalarProperty Name="EffectValue" ColumnName="EffectValue" />
           <ScalarProperty Name="CellonLvl" ColumnName="CellonLvl" />
+          <ScalarProperty Name="SpType" ColumnName="SpType" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

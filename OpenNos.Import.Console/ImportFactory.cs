@@ -193,18 +193,18 @@ namespace OpenNos.Import.Console
                     {
                         //linesave[2] never used
                         //linesave[3] never used
-                        item.isBlocked = linesave[5] == "1" ? true : false;
-                        item.isDroppable = linesave[6] == "0" ? true : false;
-                        item.isTradable = linesave[7] == "0" ? true : false;
-                        item.isSoldable = linesave[8] == "0" ? true : false;
-                        item.isMinilandObject = linesave[9] == "1" ? true : false;
-                        item.isWarehouse = linesave[10] == "1" ? true : false;
+                        item.IsBlocked = linesave[5] == "1" ? true : false;
+                        item.IsDroppable = linesave[6] == "0" ? true : false;
+                        item.IsTradable = linesave[7] == "0" ? true : false;
+                        item.IsSoldable = linesave[8] == "0" ? true : false;
+                        item.IsMinilandObject = linesave[9] == "1" ? true : false;
+                        item.IsWarehouse = linesave[10] == "1" ? true : false;
                         //item.isVehicle = linesave[11] == "1" ? true : false;
                         //box wth vehicle //linesave[12]
                         //linesave[13] idk
                         //linesave[14] idk
                         //linesave[15] idk
-                        item.isColored = linesave[16] == "1" ? true : false;
+                        item.IsColored = linesave[16] == "1" ? true : false;
                         //linesave[17] idk
                         //linesave[18] idk
                         //linesave[19] idk
@@ -235,7 +235,7 @@ namespace OpenNos.Import.Console
                                 item.BasicUpgrade = Convert.ToInt16(linesave[10]);
                                 break;
                             case (byte)ItemType.Box:
-                                item.isPearl = linesave[2] == "1" ? true : false;
+                                item.IsPearl = linesave[2] == "1" ? true : false;
                                 //item.PetVnum = Convert.ToInt16(linesave[3]);
                                 //item.PetLevel = Convert.ToInt16(linesave[4]);
                                 break;

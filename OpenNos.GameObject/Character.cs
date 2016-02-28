@@ -206,7 +206,7 @@ namespace OpenNos.GameObject
         {
             int color = HairColor;
             Inventory head = EquipmentList.LoadBySlotAndType((short)EquipmentType.Hat, (short)InventoryType.Equipment);
-            if (head != null && ServerManager.GetItem(head.InventoryItem.ItemVNum).isColored)
+            if (head != null && ServerManager.GetItem(head.InventoryItem.ItemVNum).IsColored)
                 color = head.InventoryItem.Color;
 
             return $"eq {CharacterId} {(Authority == 2 ? 2 : 0)} {Gender} {HairStyle} {color} {Class} {generateEqListForPacket()} {generateEqRareUpgradeForPacket()}";
@@ -281,7 +281,7 @@ namespace OpenNos.GameObject
                         weaponRare = inv.InventoryItem.Rare;
                         weaponUpgrade = inv.InventoryItem.Upgrade;
                     }
-                    eqlist += $" {i}.{iteminfo.VNum}.{inv.InventoryItem.Rare}.{(iteminfo.isColored ? inv.InventoryItem.Color : inv.InventoryItem.Upgrade)}.0";
+                    eqlist += $" {i}.{iteminfo.VNum}.{inv.InventoryItem.Rare}.{(iteminfo.IsColored ? inv.InventoryItem.Color : inv.InventoryItem.Upgrade)}.0";
                 }
             }
             return $"equip {weaponUpgrade}{weaponRare} {armorUpgrade}{armorRare}{eqlist}";
@@ -334,7 +334,7 @@ namespace OpenNos.GameObject
         {
             int color = HairColor;
             Inventory head = EquipmentList.LoadBySlotAndType((short)EquipmentType.Hat, (short)InventoryType.Equipment);
-            if (head != null && ServerManager.GetItem(head.InventoryItem.ItemVNum).isColored)
+            if (head != null && ServerManager.GetItem(head.InventoryItem.ItemVNum).IsColored)
                 color = head.InventoryItem.Color;
             Inventory fairy = EquipmentList.LoadBySlotAndType((short)EquipmentType.Fairy, (short)InventoryType.Equipment);
 
@@ -360,7 +360,7 @@ namespace OpenNos.GameObject
                     return $"ivn 7 {slot}.{vnum}.{rare}.{upgrade}";
 
                 case (short)InventoryType.Wear:
-                    return $"ivn 0 {slot}.{vnum}.{rare}.{(item != null ? (item.isColored ? color : upgrade) : upgrade)}";
+                    return $"ivn 0 {slot}.{vnum}.{rare}.{(item != null ? (item.IsColored ? color : upgrade) : upgrade)}";
 
                 case (short)InventoryType.Main:
                     return $"ivn 1 {slot}.{vnum}.{amount}";
@@ -512,7 +512,7 @@ namespace OpenNos.GameObject
                         break;
 
                     case (short)InventoryType.Wear:
-                        inv0 += $" {inv.Slot}.{inv.InventoryItem.ItemVNum}.{inv.InventoryItem.Rare}.{(item.isColored ? inv.InventoryItem.Color : inv.InventoryItem.Upgrade)}";
+                        inv0 += $" {inv.Slot}.{inv.InventoryItem.ItemVNum}.{inv.InventoryItem.Rare}.{(item.IsColored ? inv.InventoryItem.Color : inv.InventoryItem.Upgrade)}";
                         break;
 
                     case (short)InventoryType.Main:
