@@ -278,18 +278,18 @@ namespace OpenNos.Import.Console
                                 break;
                             case (byte)ItemType.Specialist:
                                 //item.isSpecialist = Convert.ToByte(linesave[2]);
-                                item.Element = Convert.ToByte(linesave[3]);
-                                item.ElementRate = Convert.ToInt16(linesave[4]);
+                         
                                 item.Speed = Convert.ToByte(linesave[5]);
                                 item.SpType = Convert.ToByte(linesave[13]);
                                 //item.Morph = Convert.ToInt16(linesave[14]) + 1; // idk whats that, its useless
-                                item.FireElement = Convert.ToByte(linesave[15]);
-                                item.WaterElement = Convert.ToByte(linesave[16]);
-                                item.LightElement = Convert.ToByte(linesave[17]);
-                                item.DarkElement = Convert.ToByte(linesave[18]);
+                                item.FireResistance = Convert.ToByte(linesave[15]);
+                                item.WaterResistance = Convert.ToByte(linesave[16]);
+                                item.LightResistance = Convert.ToByte(linesave[17]);
+                                item.DarkResistance = Convert.ToByte(linesave[18]);
                                 //item.PartnerClass = Convert.ToInt16(linesave[19]);
                                 item.LevelJobMinimum = Convert.ToInt16(linesave[20]);
                                 item.ReputationMinimum = Convert.ToByte(linesave[21]);
+                                item.Element = (byte)new[] { item.FireResistance, item.WaterResistance, item.LightResistance, item.DarkResistance }.Max();
                                 break;
                             case (byte)ItemType.Shell:
                                 //item.ShellMinimumLevel = Convert.ToInt16(linesave[3]);//wtf\/\/ this two things are wrong in many ways
