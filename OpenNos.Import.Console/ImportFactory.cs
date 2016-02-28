@@ -247,9 +247,10 @@ namespace OpenNos.Import.Console
                                 item.Mp = Convert.ToInt16(linesave[4]);
                                 break;
                             case (byte)ItemType.Jewelery:
+                                /*need to add amulet if
                                 item.LevelMinimum = Convert.ToInt16(linesave[2]);
                                 item.MaxCellonLvl = Convert.ToByte(linesave[3]);
-                                item.MaxCellon = Convert.ToByte(linesave[4]);
+                                item.MaxCellon = Convert.ToByte(linesave[4]);*/ 
                                 break;
                             case (byte)ItemType.Magical1:
                                 item.Effect = Convert.ToInt16(linesave[2]);
@@ -263,7 +264,7 @@ namespace OpenNos.Import.Console
                                 item.Element = Convert.ToByte(linesave[3]);
                                 item.ElementRate = Convert.ToInt16(linesave[4]);
                                 item.Speed = Convert.ToByte(linesave[5]);
-                                item.Class = Convert.ToByte(linesave[13]);
+                                //item.Class = Convert.ToByte(linesave[13]);
                                 //item.Morph = Convert.ToInt16(linesave[14]) + 1; // idk whats that, its useless
                                 item.FireElement = Convert.ToByte(linesave[15]);
                                 item.WaterElement = Convert.ToByte(linesave[16]);
