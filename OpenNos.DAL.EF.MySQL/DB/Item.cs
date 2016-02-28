@@ -76,11 +76,9 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public short FairyMaximumLevel { get; set; }
         public short MaximumAmmo { get; set; }
         public short BasicUpgrade { get; set; }
-        public short FashionType { get; set; }
-        public short ItemValidTime { get; set; }
-        public byte BoxType { get; set; }
-        public short PetVnum { get; set; }
-        public short PetLevel { get; set; }
+        public short Color { get; set; }
+        public long ItemValidTime { get; set; }
+        public bool isPearl { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<InventoryItem> inventoryitem { get; set; }

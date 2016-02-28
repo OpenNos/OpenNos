@@ -232,6 +232,9 @@
     <Property Name="FairyMaximumLevel" Type="smallint" Nullable="false" />
     <Property Name="MaximumAmmo" Type="smallint" Nullable="false" />
     <Property Name="BasicUpgrade" Type="smallint" Nullable="false" />
+    <Property Name="Color" Type="smallint" Nullable="false" />
+    <Property Name="ItemValidTime" Type="bigint" Nullable="false" />
+    <Property Name="isPearl" Type="utinyint" Nullable="false" />
   </EntityType>
   <EntityType Name="npc">
     <Key>
@@ -814,11 +817,9 @@
           <Property Name="FairyMaximumLevel" Type="Int16" Nullable="false" />
           <Property Name="MaximumAmmo" Type="Int16" Nullable="false" />
           <Property Name="BasicUpgrade" Type="Int16" Nullable="false" />
-          <Property Name="FashionType" Type="Int16" Nullable="false" />
-          <Property Name="ItemValidTime" Type="Int16" Nullable="false" />
-          <Property Name="BoxType" Type="Byte" Nullable="false" />
-          <Property Name="PetVnum" Type="Int16" Nullable="false" />
-          <Property Name="PetLevel" Type="Int16" Nullable="false" />
+          <Property Name="Color" Type="Int16" Nullable="false" />
+          <Property Name="ItemValidTime" Type="Int64" Nullable="false" />
+          <Property Name="isPearl" Type="Boolean" Nullable="false" />
           </EntityType>
         <EntityType Name="Npc">
           <Key>
@@ -1187,6 +1188,9 @@
           <ScalarProperty Name="FairyMaximumLevel" ColumnName="FairyMaximumLevel" />
           <ScalarProperty Name="MaximumAmmo" ColumnName="MaximumAmmo" />
           <ScalarProperty Name="BasicUpgrade" ColumnName="BasicUpgrade" />
+          <ScalarProperty Name="Color" ColumnName="Color" />
+          <ScalarProperty Name="ItemValidTime" ColumnName="ItemValidTime" />
+          <ScalarProperty Name="isPearl" ColumnName="isPearl" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

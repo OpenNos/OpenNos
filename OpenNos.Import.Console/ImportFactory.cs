@@ -235,54 +235,53 @@ namespace OpenNos.Import.Console
                                 item.BasicUpgrade = Convert.ToInt16(linesave[10]);
                                 break;
                             case (byte)ItemType.Box:
-                                item.BoxType = Convert.ToByte(linesave[2]);
-                                item.PetVnum = Convert.ToInt16(linesave[3]);
-                                item.PetLevel = Convert.ToInt16(linesave[4]);
+                                item.isPearl = linesave[2] == "1" ? true : false;
+                                //   item.PetVnum = Convert.ToInt16(linesave[3]);
+                                //  item.PetLevel = Convert.ToInt16(linesave[4]);
                                 break;
                             case (byte)ItemType.Fashion:
-                                item.FashionType = Convert.ToInt16(linesave[2]);
-                                item.ItemValidTime = Convert.ToInt16(linesave[13]);
+                                item.ItemValidTime = Convert.ToInt32(linesave[13]) * 3600;
                                 break;
-                            //TODO Others
-                            /*case (byte)ItemType.Food:
-                                break;
-                            case (byte)ItemType.Jewelery:
-                                break;
-                            case (byte)ItemType.Magical1:
-                                break;
-                            case (byte)ItemType.Magical2:
-                                break;
-                            case (byte)ItemType.Ammo:
-                                break;
-                            case (byte)ItemType.Event:
-                                break;
-                            case (byte)ItemType.Specialist:
-                                break;
-                            case (byte)ItemType.Shell:
-                                break;
-                            case (byte)ItemType.Main:
-                                break;
-                            case (byte)ItemType.Upgrade:
-                                break;
-                            case (byte)ItemType.Production:
-                                break;
-                            case (byte)ItemType.Map:
-                                break;
-                            case (byte)ItemType.Potion:
-                                break;
-                            case (byte)ItemType.Quest:
-                                break;
-                            case (byte)ItemType.Sell:
-                                break;
-                            case (byte)ItemType.Snack:
-                                break;
-                            case (byte)ItemType.Part:
-                                break;
-                            case (byte)ItemType.Teacher:
-                                break;
-                            case (byte)ItemType.Special:
-                                break;
-                                */
+                                //TODO Others
+                                /*case (byte)ItemType.Food:
+                                    break;
+                                case (byte)ItemType.Jewelery:
+                                    break;
+                                case (byte)ItemType.Magical1:
+                                    break;
+                                case (byte)ItemType.Magical2:
+                                    break;
+                                case (byte)ItemType.Ammo:
+                                    break;
+                                case (byte)ItemType.Event:
+                                    break;
+                                case (byte)ItemType.Specialist:
+                                    break;
+                                case (byte)ItemType.Shell:
+                                    break;
+                                case (byte)ItemType.Main:
+                                    break;
+                                case (byte)ItemType.Upgrade:
+                                    break;
+                                case (byte)ItemType.Production:
+                                    break;
+                                case (byte)ItemType.Map:
+                                    break;
+                                case (byte)ItemType.Potion:
+                                    break;
+                                case (byte)ItemType.Quest:
+                                    break;
+                                case (byte)ItemType.Sell:
+                                    break;
+                                case (byte)ItemType.Snack:
+                                    break;
+                                case (byte)ItemType.Part:
+                                    break;
+                                case (byte)ItemType.Teacher:
+                                    break;
+                                case (byte)ItemType.Special:
+                                    break;
+                                    */
                         }
 
                     }
