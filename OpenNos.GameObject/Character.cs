@@ -740,7 +740,7 @@ namespace OpenNos.GameObject
                 InventoryItemDTO inventoryItemDTO = DAOFactory.InventoryItemDAO.LoadById(inventory.InventoryItemId);
                 Item item = ServerManager.GetItem(inventoryItemDTO.ItemVNum); // unused variable
 
-                if (inventory.Type != (short)InventoryType.Equipment)
+                if (inventory.Type != (byte)InventoryType.Equipment)
                     InventoryList.Inventory.Add(new Inventory
                     {
                         CharacterId = inventory.CharacterId,

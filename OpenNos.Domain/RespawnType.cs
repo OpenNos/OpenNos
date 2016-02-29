@@ -14,7 +14,7 @@
 
 namespace OpenNos.Domain
 {
-    public enum RespawnType : short
+    public enum RespawnType : byte
     {
         DefaultAct1 = 0,
         ReturnAct1 = 1,

@@ -14,7 +14,7 @@
 
 namespace OpenNos.Domain
 {
-    public enum AuthorityType : short
+    public enum AuthorityType : byte
     {
         Banned = 0,
         User = 1,
