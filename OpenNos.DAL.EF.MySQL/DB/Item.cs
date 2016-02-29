@@ -75,7 +75,7 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public byte ReputationMinimum { get; set; }
         public byte FairyMaximumLevel { get; set; }
         public byte MaximumAmmo { get; set; }
-        public short BasicUpgrade { get; set; }
+        public byte BasicUpgrade { get; set; }
         public short Color { get; set; }
         public long ItemValidTime { get; set; }
         public bool IsPearl { get; set; }

@@ -82,7 +82,7 @@ namespace OpenNos.Handler
         public void answerToDelete(string packet)
         {
             string[] packetsplit = packet.Split(' ', '^');
-            short type; short.TryParse(packetsplit[2], out type);
+            byte type; byte.TryParse(packetsplit[2], out type);
             short slot; short.TryParse(packetsplit[3], out slot);
 
             if (Convert.ToInt32(packetsplit[4]) == 1)
@@ -99,7 +99,7 @@ namespace OpenNos.Handler
         public void askToDelete(string packet)
         {
             string[] packetsplit = packet.Split(' ');
-            short type; short.TryParse(packetsplit[2], out type);
+            byte type; byte.TryParse(packetsplit[2], out type);
             short slot; short.TryParse(packetsplit[3], out slot);
             Session.Client.SendPacket(Session.Character.GenerateDialog($"#b_i^{type}^{slot}^1 #b_i^0^0^5 {Language.Instance.GetMessageFromKey("ASK_TO_DELETE")}"));
         }
@@ -128,9 +128,9 @@ namespace OpenNos.Handler
         {
             string[] packetsplit = packet.Split(' ');
             long owner; long.TryParse(packetsplit[3], out owner);
-            short type; short.TryParse(packetsplit[2], out type);
+            byte type; byte.TryParse(packetsplit[2], out type);
             short slot; short.TryParse(packetsplit[4], out slot);
-            short amount; short.TryParse(packetsplit[5], out amount);
+            byte amount; byte.TryParse(packetsplit[5], out amount);
             if (type == 1) // User shop
             {
                 KeyValuePair<long, MapShop> shop = Session.CurrentMap.ShopUserList.FirstOrDefault(mapshop => mapshop.Value.OwnerId.Equals(owner));
@@ -215,8 +215,8 @@ namespace OpenNos.Handler
                     InventoryItemId = Session.Character.InventoryList.generateInventoryItemId(),
                     Amount = amount,
                     ItemVNum = item.ItemVNum,
-                    Rare = item.Rare,
-                    Upgrade = item.Upgrade,
+                    Rare = (byte)item.Rare,
+                    Upgrade = (byte)item.Upgrade,
                     Color = item.Color,
                     Concentrate = 0,
                     CriticalLuckRate = 0,
@@ -234,9 +234,7 @@ namespace OpenNos.Handler
                     MagicDefence = 0,
                     RangeDefence = 0,
                     SpXp = 0,
-                    SpLevel = ServerManager.GetItem(item.ItemVNum).EquipmentSlot.Equals((byte)EquipmentType.Sp)
-                        ? (byte)1
-                        : (byte)0,
+                    SpLevel = ServerManager.GetItem(item.ItemVNum).EquipmentSlot.Equals((byte)EquipmentType.Sp) ? (byte)1 : (byte)0,
                     SlDefence = 0,
                     SlElement = 0,
                     SlHit = 0,
@@ -327,8 +325,8 @@ namespace OpenNos.Handler
             ClientLinkManager.Instance.Broadcast(Session, $"guri 2 1 {Session.Character.CharacterId}", ReceiverType.AllOnMap);
             Thread.Sleep(5000);
 
-            Inventory sp = Session.Character.EquipmentList.LoadBySlotAndType((short)EquipmentType.Sp, (short)InventoryType.Equipment);
-            Inventory fairy = Session.Character.EquipmentList.LoadBySlotAndType((short)EquipmentType.Fairy, (short)InventoryType.Equipment);
+            Inventory sp = Session.Character.EquipmentList.LoadBySlotAndType((byte)EquipmentType.Sp, (byte)InventoryType.Equipment);
+            Inventory fairy = Session.Character.EquipmentList.LoadBySlotAndType((byte)EquipmentType.Fairy, (byte)InventoryType.Equipment);
 
             if (Session.Character.GetReputIco() < ServerManager.GetItem(sp.InventoryItem.ItemVNum).ReputationMinimum)
             {
@@ -570,8 +568,9 @@ namespace OpenNos.Handler
         public void CreateItem(string packet)
         {
             string[] packetsplit = packet.Split(' ');
-            short amount = 1;
-            short vnum, rare = 0, upgrade = 0, color = 0, level = 0;
+            byte amount = 1;
+            short vnum, color = 0;
+            byte rare = 0, upgrade = 0,  level = 0;
             ItemDTO iteminfo = null;
             if (packetsplit.Length != 5 && packetsplit.Length != 4)
             {
@@ -593,16 +592,16 @@ namespace OpenNos.Handler
                     {
                         if (packetsplit.Length == 5)
                         {
-                            if (iteminfo.EquipmentSlot == Convert.ToByte((short)EquipmentType.Sp))
+                            if (iteminfo.EquipmentSlot == Convert.ToByte((byte)EquipmentType.Sp))
                             {
-                                Int16.TryParse(packetsplit[3], out upgrade);
+                                Byte.TryParse(packetsplit[3], out upgrade);
                                 Int16.TryParse(packetsplit[4], out color);
                                 level = 1;
                             }
                             else
                             {
-                                Int16.TryParse(packetsplit[3], out rare);
-                                Int16.TryParse(packetsplit[4], out upgrade);
+                                Byte.TryParse(packetsplit[3], out rare);
+                                Byte.TryParse(packetsplit[4], out upgrade);
                                 if (upgrade == 0)
                                     if (iteminfo.BasicUpgrade != 0)
                                     {
@@ -613,15 +612,15 @@ namespace OpenNos.Handler
                     }
                     else
                     {
-                        Int16.TryParse(packetsplit[3], out amount);
+                        Byte.TryParse(packetsplit[3], out amount);
                     }
                     InventoryItem newItem = new InventoryItem()
                     {
                         InventoryItemId = Session.Character.InventoryList.generateInventoryItemId(),
                         Amount = amount,
                         ItemVNum = vnum,
-                        Rare = rare,
-                        Upgrade = upgrade,
+                        Rare = (byte)rare,
+                        Upgrade = (byte)upgrade,
                         Color = color,
                         Concentrate = 0,
                         CriticalLuckRate = 0,
@@ -641,7 +640,7 @@ namespace OpenNos.Handler
                         MagicDefence = 0,
                         RangeDefence = 0,
                         SpXp = 0,
-                        SpLevel = level,
+                        SpLevel = (byte)level,
                         SlDefence = 0,
                         SlElement = 0,
                         SlHit = 0,
@@ -666,10 +665,10 @@ namespace OpenNos.Handler
         public void createShop(string packet)
         {
             string[] packetsplit = packet.Split(' ');
-            short[] type = new short[20];
+            byte[] type = new byte[20];
             long[] gold = new long[20];
             short[] slot = new short[20];
-            short[] qty = new short[20];
+            byte[] qty = new byte[20];
 
             string shopname = "";
             if (packetsplit.Length > 2)
@@ -686,9 +685,9 @@ namespace OpenNos.Handler
                     if (packetsplit.Length > 2)
                         for (short j = 3, i = 0; j <= packetsplit.Length - 5; j += 4, i++)
                         {
-                            short.TryParse(packetsplit[j], out type[i]);
+                            byte.TryParse(packetsplit[j], out type[i]);
                             short.TryParse(packetsplit[j + 1], out slot[i]);
-                            short.TryParse(packetsplit[j + 2], out qty[i]);
+                            byte.TryParse(packetsplit[j + 2], out qty[i]);
                             long.TryParse(packetsplit[j + 3], out gold[i]);
                             if (qty[i] != 0)
                             {
@@ -794,7 +793,7 @@ namespace OpenNos.Handler
             }
         }
 
-        public void DeleteItem(short type, short slot)
+        public void DeleteItem(byte type, short slot)
         {
             Session.Character.InventoryList.DeleteFromSlotAndType(slot, type);
             Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, type, slot, 0, 0, 0));
@@ -832,25 +831,25 @@ namespace OpenNos.Handler
             string[] packetsplit = packet.Split(' ');
             if (packetsplit.Length <= 3) return;
 
-            short type; short.TryParse(packetsplit[2], out type);
+            byte type; byte.TryParse(packetsplit[2], out type);
             short slot; short.TryParse(packetsplit[3], out slot);
             Inventory inventory = null;
             switch (type)
             {
                 case 0:
-                    inventory = Session.Character.EquipmentList.LoadBySlotAndType(slot, (short)InventoryType.Equipment);
+                    inventory = Session.Character.EquipmentList.LoadBySlotAndType(slot, (byte)InventoryType.Equipment);
                     break;
 
                 case 1:
-                    inventory = Session.Character.InventoryList.LoadBySlotAndType(slot, (short)InventoryType.Wear);
+                    inventory = Session.Character.InventoryList.LoadBySlotAndType(slot, (byte)InventoryType.Wear);
                     break;
 
                 case 10:
-                    inventory = Session.Character.InventoryList.LoadBySlotAndType(slot, (short)InventoryType.Sp);
+                    inventory = Session.Character.InventoryList.LoadBySlotAndType(slot, (byte)InventoryType.Sp);
                     break;
 
                 case 11:
-                    inventory = Session.Character.InventoryList.LoadBySlotAndType(slot, (short)InventoryType.Costume);
+                    inventory = Session.Character.InventoryList.LoadBySlotAndType(slot, (byte)InventoryType.Costume);
                     break;
             }
 
@@ -984,15 +983,15 @@ namespace OpenNos.Handler
         {
             string[] packetsplit = packet.Split(' ');
             long Gold = 0; long.TryParse(packetsplit[2], out Gold);
-            short[] type = new short[10];
+            byte[] type = new byte[10];
             short[] slot = new short[10];
-            short[] qty = new short[10];
+            byte[] qty = new byte[10];
             string packetList = "";
             for (int j = 6, i = 0; j <= packetsplit.Length; j += 3, i++)
             {
-                short.TryParse(packetsplit[j - 3], out type[i]);
+                byte.TryParse(packetsplit[j - 3], out type[i]);
                 short.TryParse(packetsplit[j - 2], out slot[i]);
-                short.TryParse(packetsplit[j - 1], out qty[i]);
+                byte.TryParse(packetsplit[j - 1], out qty[i]);
                 Inventory inv = Session.Character.InventoryList.LoadBySlotAndType(slot[i], type[i]);
                 InventoryItem item = inv.InventoryItem;
                 Session.Character.ExchangeInfo.ExchangeList.Add(item);
@@ -1323,13 +1322,13 @@ namespace OpenNos.Handler
                 InventoryItemDTO[] item = new InventoryItemDTO[15];
                 for (short i = 0; i < 15; i++)
                 {
-                    InventoryDTO inv = DAOFactory.InventoryDAO.LoadBySlotAndType(character.CharacterId, i, (short)InventoryType.Equipment);
+                    InventoryDTO inv = DAOFactory.InventoryDAO.LoadBySlotAndType(character.CharacterId, i, (byte)InventoryType.Equipment);
                     if (inv != null)
                     {
                         item[i] = DAOFactory.InventoryItemDAO.LoadById(inv.InventoryItemId);
                     }
                 }
-                Session.Client.SendPacket($"clist {character.Slot} {character.Name} 0 {character.Gender} {character.HairStyle} {character.HairColor} 0 {character.Class} {character.Level} {(item[(short)EquipmentType.Hat] != null ? item[(short)EquipmentType.Hat].ItemVNum : 0)}.{(item[(short)EquipmentType.Armor] != null ? item[(short)EquipmentType.Armor].ItemVNum : 0)}.{(item[(short)EquipmentType.MainWeapon] != null ? item[(short)EquipmentType.MainWeapon].ItemVNum : 0)}.{(item[(short)EquipmentType.SecondaryWeapon] != null ? item[(short)EquipmentType.SecondaryWeapon].ItemVNum : 0)}.{(item[(short)EquipmentType.Mask] != null ? item[(short)EquipmentType.Mask].ItemVNum : 0)}.{(item[(short)EquipmentType.Fairy] != null ? item[(short)EquipmentType.Fairy].ItemVNum : 0)}.{(item[(short)EquipmentType.CostumeSuite] != null ? item[(short)EquipmentType.CostumeSuite].ItemVNum : 0)}.{(item[(short)EquipmentType.CostumeHat] != null ? item[(short)EquipmentType.CostumeHat].ItemVNum : 0)} 1 0 0 -1.-1 {(item[(short)EquipmentType.Hat] != null ? (ServerManager.GetItem(item[(short)EquipmentType.Hat].ItemVNum).IsColored ? item[(short)EquipmentType.Hat].Color : character.HairColor) : character.HairColor)} 0");
+                Session.Client.SendPacket($"clist {character.Slot} {character.Name} 0 {character.Gender} {character.HairStyle} {character.HairColor} 0 {character.Class} {character.Level} {(item[(byte)EquipmentType.Hat] != null ? item[(byte)EquipmentType.Hat].ItemVNum : 0)}.{(item[(byte)EquipmentType.Armor] != null ? item[(byte)EquipmentType.Armor].ItemVNum : 0)}.{(item[(byte)EquipmentType.MainWeapon] != null ? item[(byte)EquipmentType.MainWeapon].ItemVNum : 0)}.{(item[(byte)EquipmentType.SecondaryWeapon] != null ? item[(byte)EquipmentType.SecondaryWeapon].ItemVNum : 0)}.{(item[(byte)EquipmentType.Mask] != null ? item[(byte)EquipmentType.Mask].ItemVNum : 0)}.{(item[(byte)EquipmentType.Fairy] != null ? item[(byte)EquipmentType.Fairy].ItemVNum : 0)}.{(item[(byte)EquipmentType.CostumeSuite] != null ? item[(byte)EquipmentType.CostumeSuite].ItemVNum : 0)}.{(item[(byte)EquipmentType.CostumeHat] != null ? item[(byte)EquipmentType.CostumeHat].ItemVNum : 0)} 1 0 0 -1.-1 {(item[(byte)EquipmentType.Hat] != null ? (ServerManager.GetItem(item[(byte)EquipmentType.Hat].ItemVNum).IsColored ? item[(byte)EquipmentType.Hat].Color : character.HairColor) : character.HairColor)} 0");
             }
             Session.Client.SendPacket("clist_end");
         }
@@ -1454,9 +1453,9 @@ namespace OpenNos.Handler
         public void MoveInventory(string packet)
         {
             string[] packetsplit = packet.Split(' ');
-            short type; short.TryParse(packetsplit[2], out type);
-            short slot; short.TryParse(packetsplit[3], out slot);
-            short desttype; short.TryParse(packetsplit[4], out desttype);
+            byte type; byte.TryParse(packetsplit[2], out type);
+            byte slot; byte.TryParse(packetsplit[3], out slot);
+            byte desttype; byte.TryParse(packetsplit[4], out desttype);
             short destslot; short.TryParse(packetsplit[5], out destslot);
             Inventory inv = Session.Character.InventoryList.moveInventory(type, slot, desttype, destslot);
             if (inv != null)
@@ -1470,9 +1469,9 @@ namespace OpenNos.Handler
         public void MoveItem(string packet)
         {
             string[] packetsplit = packet.Split(' ');
-            short type; short.TryParse(packetsplit[2], out type);
+            byte type; byte.TryParse(packetsplit[2], out type);
             short slot; short.TryParse(packetsplit[3], out slot);
-            short amount; short.TryParse(packetsplit[4], out amount);
+            byte amount; byte.TryParse(packetsplit[4], out amount);
             short destslot; short.TryParse(packetsplit[5], out destslot);
             Inventory LastInventory;
             Inventory NewInventory;
@@ -1492,7 +1491,7 @@ namespace OpenNos.Handler
             string[] packetsplit = packet.Split(' ');
             if (packetsplit.Length <= 5) return;
 
-            short type; short.TryParse(packetsplit[3], out type);
+            byte type; byte.TryParse(packetsplit[3], out type);
             short runner; short.TryParse(packetsplit[2], out runner);
             short data3; short.TryParse(packetsplit[4], out data3);
             short npcid; short.TryParse(packetsplit[5], out npcid);
@@ -1500,7 +1499,7 @@ namespace OpenNos.Handler
             switch (runner)
             {
                 case 1:
-                    if (Session.Character.Class != (short)ClassType.Adventurer)
+                    if (Session.Character.Class != (byte)ClassType.Adventurer)
                     {
                         Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ADVENTURER"), 0));
                         return;
@@ -1723,9 +1722,9 @@ namespace OpenNos.Handler
         public void PutItem(string packet)
         {
             string[] packetsplit = packet.Split(' ');
-            short type; short.TryParse(packetsplit[2], out type);
+            byte type; byte.TryParse(packetsplit[2], out type);
             short slot; short.TryParse(packetsplit[3], out slot);
-            short amount; short.TryParse(packetsplit[4], out amount);
+            byte amount; byte.TryParse(packetsplit[4], out amount);
             Inventory inv;
             Inventory invitem = Session.Character.InventoryList.LoadBySlotAndType(slot, type);
             if (invitem != null && ServerManager.GetItem(invitem.InventoryItem.ItemVNum).IsDroppable == true && ServerManager.GetItem(invitem.InventoryItem.ItemVNum).IsTradable == true)
@@ -1899,10 +1898,10 @@ namespace OpenNos.Handler
                 short slot;
                 if (!short.TryParse(packetsplit[2], out slot)) return; // Invalid Number
 
-                Inventory inventory = Session.Character.EquipmentList.LoadBySlotAndType(slot, (short)InventoryType.Equipment);
+                Inventory inventory = Session.Character.EquipmentList.LoadBySlotAndType(slot, (byte)InventoryType.Equipment);
                 if (inventory == null) return; // This eqslot is not equipped
 
-                if (slot == (short)EquipmentType.Sp && Session.Character.UseSp)
+                if (slot == (byte)EquipmentType.Sp && Session.Character.UseSp)
                 {
                     Session.Character.LastSp = (DateTime.Now - Process.GetCurrentProcess().StartTime).TotalSeconds;
                     new Thread(() => RemoveSP(inventory.InventoryItem.ItemVNum)).Start();
@@ -1918,7 +1917,7 @@ namespace OpenNos.Handler
                             inv.InventoryItem.Amount, inv.Type, inv.Slot, inventory.InventoryItem.Rare,
                             inventory.InventoryItem.Color, inventory.InventoryItem.Upgrade));
 
-                Session.Character.EquipmentList.DeleteFromSlotAndType(slot, (short)InventoryType.Equipment);
+                Session.Character.EquipmentList.DeleteFromSlotAndType(slot, (byte)InventoryType.Equipment);
 
                 Session.Client.SendPacket(Session.Character.GenerateStatChar());
                 Thread.Sleep(100);
@@ -1930,7 +1929,7 @@ namespace OpenNos.Handler
 
         public void RemoveSP(short vnum)
         {
-            Inventory sp = Session.Character.EquipmentList.LoadBySlotAndType((short)EquipmentType.Sp, (short)InventoryType.Equipment);
+            Inventory sp = Session.Character.EquipmentList.LoadBySlotAndType((byte)EquipmentType.Sp, (byte)InventoryType.Equipment);
             Session.Character.Speed -= ServerManager.GetItem(vnum).Speed;
             Session.Character.UseSp = false;
 
@@ -1967,7 +1966,7 @@ namespace OpenNos.Handler
             Session.Client.SendPacket(Session.Character.GenerateCond());
             if (Session.Character.UseSp)
             {
-                Session.Character.Morph = ServerManager.GetItem(Session.Character.EquipmentList.LoadBySlotAndType((short)EquipmentType.Sp, (short)InventoryType.Equipment).InventoryItem.ItemVNum).Morph;
+                Session.Character.Morph = ServerManager.GetItem(Session.Character.EquipmentList.LoadBySlotAndType((byte)EquipmentType.Sp, (byte)InventoryType.Equipment).InventoryItem.ItemVNum).Morph;
             }
             ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateCMode(), ReceiverType.AllOnMap);
             ClientLinkManager.Instance.Broadcast(Session, $"guri 6 1 {Session.Character.CharacterId} 0 0", ReceiverType.AllOnMap);
@@ -2131,8 +2130,9 @@ namespace OpenNos.Handler
             string[] packetsplit = packet.Split(' ');
             if (packetsplit.Length > 6)
             {
-                short type, slot, amount;
-                if (!short.TryParse(packetsplit[4], out type) || !short.TryParse(packetsplit[5], out slot) || !short.TryParse(packetsplit[6], out amount)) return;
+                byte type, amount;
+                short slot;
+                if (!byte.TryParse(packetsplit[4], out type) || !short.TryParse(packetsplit[5], out slot) || !byte.TryParse(packetsplit[6], out amount)) return;
 
                 Inventory inv = Session.Character.InventoryList.LoadBySlotAndType(slot, type);
                 if (inv == null || amount > inv.InventoryItem.Amount) return;
@@ -2248,7 +2248,7 @@ namespace OpenNos.Handler
             ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateMsg(message, 2), ReceiverType.All);
             Thread.Sleep(30000);
             ClientLinkManager.Instance.SaveAll();
-           Environment.Exit(0);
+            Environment.Exit(0);
         }
 
         [Packet("#sl")]
@@ -2267,7 +2267,7 @@ namespace OpenNos.Handler
         public void sortopen(string packet)
         {
             Boolean gravity = true;
-            short type;
+            byte type;
             while (gravity)
             {
                 gravity = false;
@@ -2275,16 +2275,16 @@ namespace OpenNos.Handler
                 {
                     for (short i = 0; i < 2; i++)
                     {
-                        type = (i == 0) ? (short)InventoryType.Sp : (short)InventoryType.Costume;
+                        type = (i == 0) ? (byte)InventoryType.Sp : (byte)InventoryType.Costume;
                         if (Session.Character.InventoryList.LoadBySlotAndType(x, type) == null)
                         {
-                            if (Session.Character.InventoryList.LoadBySlotAndType((short)(x + 1), type) != null)
+                            if (Session.Character.InventoryList.LoadBySlotAndType((byte)(x + 1), type) != null)
                             {
                                 Inventory invdest = new Inventory();
                                 Inventory inv = new Inventory();
-                                Session.Character.InventoryList.MoveItem(Session.Character, type, (short)(x + 1), 1, x, out inv, out invdest);
+                                Session.Character.InventoryList.MoveItem(Session.Character, type, (byte)(x + 1), 1, x, out inv, out invdest);
                                 Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(invdest.InventoryItem.ItemVNum, invdest.InventoryItem.Amount, type, invdest.Slot, invdest.InventoryItem.Rare, invdest.InventoryItem.Color, invdest.InventoryItem.Upgrade));
-                                DeleteItem(type, (short)(x + 1));
+                                DeleteItem(type, (byte)(x + 1));
 
                                 gravity = true;
                             }
@@ -2325,7 +2325,7 @@ namespace OpenNos.Handler
         {
             string[] packetsplit = packet.Split(' ');
             byte splevel;
-            Inventory sp = Session.Character.EquipmentList.LoadBySlotAndType((short)EquipmentType.Sp, (short)InventoryType.Equipment);
+            Inventory sp = Session.Character.EquipmentList.LoadBySlotAndType((byte)EquipmentType.Sp, (byte)InventoryType.Equipment);
             if (sp != null && packetsplit.Length > 2 && Session.Character.UseSp)
             {
                 if (Byte.TryParse(packetsplit[2], out splevel) && splevel <= 99 && splevel > 0)
@@ -2349,7 +2349,7 @@ namespace OpenNos.Handler
         {
             string[] packetsplit = packet.Split(' ');
 
-            Inventory spInventory = Session.Character.EquipmentList.LoadBySlotAndType((short)EquipmentType.Sp, (short)InventoryType.Equipment);
+            Inventory spInventory = Session.Character.EquipmentList.LoadBySlotAndType((byte)EquipmentType.Sp, (byte)InventoryType.Equipment);
 
             if (packetsplit.Length == 10 && packetsplit[2] == "10")
             {
@@ -2621,7 +2621,7 @@ namespace OpenNos.Handler
             if (packetsplit.Length > 8)
             {
                 short uitype; short.TryParse(packetsplit[2], out uitype);
-                short type; short.TryParse(packetsplit[4], out type);
+                byte type; byte.TryParse(packetsplit[4], out type);
                 short slot; short.TryParse(packetsplit[5], out slot);
                 switch (uitype)
                 {
@@ -2686,8 +2686,9 @@ namespace OpenNos.Handler
             string[] packetsplit = packet.Split(' ');
             if (packetsplit.Length > 3)
             {
-                short type, slot;
-                if (!short.TryParse(packetsplit[3], out type) || !short.TryParse(packetsplit[2], out slot)) return;
+                byte type;
+                short slot;
+                if (!byte.TryParse(packetsplit[3], out type) || !short.TryParse(packetsplit[2], out slot)) return;
 
                 Inventory inventory = Session.Character.InventoryList.LoadBySlotAndType(slot, type);
                 if (inventory == null) return;
@@ -2697,7 +2698,7 @@ namespace OpenNos.Handler
 
                 double timeSpanSinceLastSpUsage = (DateTime.Now - Process.GetCurrentProcess().StartTime).TotalSeconds -
                                                   Session.Character.LastSp;
-                if (iteminfo.EquipmentSlot == (short)EquipmentType.Sp && timeSpanSinceLastSpUsage < 30)
+                if (iteminfo.EquipmentSlot == (byte)EquipmentType.Sp && timeSpanSinceLastSpUsage < 30)
                 {
                     Session.Client.SendPacket(
                         Session.Character.GenerateMsg(
@@ -2712,7 +2713,7 @@ namespace OpenNos.Handler
                      && iteminfo.ItemType != (byte)ItemType.Fashion
                      && iteminfo.ItemType != (byte)ItemType.Jewelery
                      && iteminfo.ItemType != (byte)ItemType.Specialist)
-                    || iteminfo.LevelMinimum > Session.Character.Level || (iteminfo.Sex != 0 && iteminfo.Sex != Session.Character.Gender+1)
+                    || iteminfo.LevelMinimum > Session.Character.Level || (iteminfo.Sex != 0 && iteminfo.Sex != Session.Character.Gender + 1)
                     || ((iteminfo.Class >> Session.Character.Class) & 1) != 1)
                 {
                     Session.Client.SendPacket(
@@ -2721,22 +2722,22 @@ namespace OpenNos.Handler
                 }
 
                 if (Session.Character.UseSp
-                    && iteminfo.EquipmentSlot == (short)EquipmentType.Fairy
+                    && iteminfo.EquipmentSlot == (byte)EquipmentType.Fairy
                     && iteminfo.Element != ServerManager.GetItem(
                         Session.Character.EquipmentList.LoadBySlotAndType(
-                            (short)EquipmentType.Sp,
-                            (short)InventoryType.Equipment).InventoryItem.ItemVNum).Element &&
+                            (byte)EquipmentType.Sp,
+                            (byte)InventoryType.Equipment).InventoryItem.ItemVNum).Element &&
                             iteminfo.Element != ServerManager.GetItem(
                         Session.Character.EquipmentList.LoadBySlotAndType(
-                            (short)EquipmentType.Sp,
-                            (short)InventoryType.Equipment).InventoryItem.ItemVNum).SecondaryElement)
+                            (byte)EquipmentType.Sp,
+                            (byte)InventoryType.Equipment).InventoryItem.ItemVNum).SecondaryElement)
                 {
                     Session.Client.SendPacket(
                         Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("BAD_FAIRY"), 0));
                     return;
                 }
 
-                if (Session.Character.UseSp && iteminfo.EquipmentSlot == (short)EquipmentType.Sp)
+                if (Session.Character.UseSp && iteminfo.EquipmentSlot == (byte)EquipmentType.Sp)
                 {
                     Session.Client.SendPacket(
                         Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("SP_BLOCKED"), 10));
@@ -2750,10 +2751,10 @@ namespace OpenNos.Handler
                     return;
                 }
 
-                Inventory equip = Session.Character.EquipmentList.LoadBySlotAndType(iteminfo.EquipmentSlot, (short)InventoryType.Equipment);
+                Inventory equip = Session.Character.EquipmentList.LoadBySlotAndType(iteminfo.EquipmentSlot, (byte)InventoryType.Equipment);
                 if (equip == null)
                 {
-                    inventory.Type = (short)InventoryType.Equipment;
+                    inventory.Type = (byte)InventoryType.Equipment;
                     inventory.Slot = iteminfo.EquipmentSlot;
 
                     Session.Character.EquipmentList.InsertOrUpdate(ref inventory);
@@ -2768,7 +2769,7 @@ namespace OpenNos.Handler
                 }
                 else
                 {
-                    inventory.Type = (short)InventoryType.Equipment;
+                    inventory.Type = (byte)InventoryType.Equipment;
                     inventory.Slot = iteminfo.EquipmentSlot;
 
                     equip.Slot = slot;

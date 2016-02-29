@@ -234,7 +234,7 @@ namespace OpenNos.Import.Console
                                 item.HitRate = Convert.ToInt16(linesave[5]);
                                 item.CriticalLuckRate = Convert.ToInt16(linesave[6]);
                                 item.CriticalRate = Convert.ToInt16(linesave[7]);
-                                item.BasicUpgrade = Convert.ToInt16(linesave[10]);
+                                item.BasicUpgrade = Convert.ToByte(linesave[10]);
                                 break;
                             case (byte)ItemType.Armor:
                                 item.LevelMinimum = Convert.ToInt16(linesave[2]);
@@ -242,7 +242,7 @@ namespace OpenNos.Import.Console
                                 item.DistanceDefence = Convert.ToInt16(linesave[4]);
                                 item.MagicDefence = Convert.ToInt16(linesave[5]);
                                 item.DefenceDodge = Convert.ToInt16(linesave[6]);
-                                item.BasicUpgrade = Convert.ToInt16(linesave[10]);
+                                item.BasicUpgrade = Convert.ToByte(linesave[10]);
                                 break;
                             case (byte)ItemType.Box:
                                 item.IsPearl = linesave[2] == "1" ? true : false;
@@ -250,6 +250,7 @@ namespace OpenNos.Import.Console
                                 //item.PetLevel = Convert.ToInt16(linesave[4]);
                                 break;
                             case (byte)ItemType.Fashion:
+                                item.LevelMinimum = Convert.ToInt16(linesave[2]);
                                 item.ItemValidTime = Convert.ToInt32(linesave[13]) * 3600;
                                 break;
                             case (byte)ItemType.Food:
@@ -616,14 +617,14 @@ namespace OpenNos.Import.Console
                 {
                     shopItem.ShopId = short.Parse(linesave[3]);
                     shopItem.Color = short.Parse(linesave[4]);
-                    shopItem.Type = short.Parse(linesave[6]);
+                    shopItem.Type = byte.Parse(linesave[6]);
                     shopItem.Slot = short.Parse(linesave[7]);
                     shopItem.ItemVNum = short.Parse(linesave[8]);
-                    shopItem.Upgrade = short.Parse(linesave[9]);
+                    shopItem.Upgrade = byte.Parse(linesave[9]);
 
                     if (linesave.Length > 10)
                     {
-                        shopItem.Rare = short.Parse(linesave[10]);
+                        shopItem.Rare = byte.Parse(linesave[10]);
                         shopItem.Gold = long.Parse(linesave[11]);
                     }
                     else

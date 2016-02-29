@@ -137,7 +137,7 @@ namespace OpenNos.DAL.EF.MySQL
             using (var context = DataAccessHelper.CreateContext())
             {
                 Account account = context.account.SingleOrDefault(a => a.AccountId.Equals(id));
-                account.Authority = account.Authority >= 1 ? (short)0 : (short)1;
+                account.Authority = account.Authority >= 1 ? (byte)0 : (byte)1;
                 context.SaveChanges();
             }
         }

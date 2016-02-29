@@ -27,7 +27,7 @@ namespace OpenNos.DAL.EF.MySQL
     {
         #region Methods
 
-        public DeleteResult DeleteFromSlotAndType(long characterId, short slot, short type)
+        public DeleteResult DeleteFromSlotAndType(long characterId, short slot, byte type)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
@@ -51,7 +51,7 @@ namespace OpenNos.DAL.EF.MySQL
                 {
                     long characterId = inventory.CharacterId;
                     short slot = inventory.Slot;
-                    short type = inventory.Type;
+                    byte type = inventory.Type;
                     Inventory entity = context.inventory.SingleOrDefault(c => c.Type.Equals(type) && c.Slot.Equals(slot) && c.CharacterId.Equals(characterId));
 
                     if (entity == null) //new entity
@@ -93,7 +93,7 @@ namespace OpenNos.DAL.EF.MySQL
             }
         }
 
-        public InventoryDTO LoadBySlotAndType(long characterId, short slot, short type)
+        public InventoryDTO LoadBySlotAndType(long characterId, short slot, byte type)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
@@ -101,7 +101,7 @@ namespace OpenNos.DAL.EF.MySQL
             }
         }
 
-        public IEnumerable<InventoryDTO> LoadByType(long characterId, short type)
+        public IEnumerable<InventoryDTO> LoadByType(long characterId, byte type)
         {
             using (var context = DataAccessHelper.CreateContext())
             {

@@ -23,7 +23,7 @@ namespace OpenNos.Data
         public short DamageMaximum { get; set; }
         public short Concentrate { get; set; }
         public short HitRate { get; set; }
-        public short CriticalLuckRate { get; set; }
+        public byte CriticalLuckRate { get; set; }
         public short CriticalRate { get; set; }
         public short RangeDefence { get; set; }
         public short DistanceDefence { get; set; }
@@ -31,22 +31,22 @@ namespace OpenNos.Data
         public short DistanceDefenceDodge { get; set; }
         public short DefenceDodge { get; set; }
         public short ElementRate { get; set; }
-        public short Upgrade { get; set; }
-        public short Rare { get; set; }
+        public byte Upgrade { get; set; }
+        public byte Rare { get; set; }
         public short Color { get; set; }
-        public short Amount { get; set; }
-        public short SpLevel { get; set; }
+        public byte Amount { get; set; }
+        public byte SpLevel { get; set; }
         public short SpXp { get; set; }
         public short SlElement { get; set; }
         public short SlHit { get; set; }
         public short SlDefence { get; set; }
         public short SlHP { get; set; }
-        public short DarkElement { get; set; }
-        public short LightElement { get; set; }
-        public short WaterElement { get; set; }
-        public short FireElement { get; set; }
+        public byte DarkElement { get; set; }
+        public byte LightElement { get; set; }
+        public byte WaterElement { get; set; }
+        public byte FireElement { get; set; }
         public short ItemVNum { get; set; }
-        public short Ammo { get; set; }
+        public byte Ammo { get; set; }
         public bool IsFixed { get; set; }
 
         #endregion

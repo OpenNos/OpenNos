@@ -22,7 +22,7 @@ namespace OpenNos.Data
 
         public short ItemVNum { get; set; }
 
-        public short Rare { get; set; }
+        public byte Rare { get; set; }
 
         public int ShopId { get; set; }
 
@@ -30,9 +30,9 @@ namespace OpenNos.Data
 
         public short Slot { get; set; }
 
-        public short Type { get; set; }
+        public byte Type { get; set; }
 
-        public short Upgrade { get; set; }
+        public byte Upgrade { get; set; }
 
         public long Gold { get; set; }
 
