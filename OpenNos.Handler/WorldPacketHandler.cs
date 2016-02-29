@@ -571,7 +571,7 @@ namespace OpenNos.Handler
             string[] packetsplit = packet.Split(' ');
             byte amount = 1;
             short vnum, color = 0;
-            byte rare = 0, upgrade = 0,  level = 0;
+            byte rare = 0, upgrade = 0, level = 0;
             ItemDTO iteminfo = null;
             if (packetsplit.Length != 5 && packetsplit.Length != 4 && packetsplit.Length != 3)
             {
@@ -613,8 +613,8 @@ namespace OpenNos.Handler
                     }
                     else
                     {
-                        if(packetsplit.Length >3)
-                        Byte.TryParse(packetsplit[3], out amount);
+                        if (packetsplit.Length > 3)
+                            Byte.TryParse(packetsplit[3], out amount);
                     }
                     if (iteminfo.EquipmentSlot == Convert.ToByte((byte)EquipmentType.Sp))
                         level = 1;
@@ -1996,7 +1996,16 @@ namespace OpenNos.Handler
         public void ReqInfo(string packet)
         {
             string[] packetsplit = packet.Split(' ');
-            ClientLinkManager.Instance.RequiereBroadcastFromUser(Session, Convert.ToInt64(packetsplit[3]), "GenerateReqInfo");
+            if (packetsplit[2] == "5")
+            {
+                Npc npc = Session.CurrentMap.Npcs.First(s => s.NpcId == short.Parse(packetsplit[3]));
+                if (npc != null)
+                {
+                    Session.Client.SendPacket(npc.GenerateEInfo());
+                }
+            }
+            else
+                ClientLinkManager.Instance.RequiereBroadcastFromUser(Session, Convert.ToInt64(packetsplit[3]), "GenerateReqInfo");
         }
 
         [Packet("$Resize")]

@@ -52,6 +52,11 @@ namespace OpenNos.GameObject
             return dialog;
         }
 
+        public string GenerateEInfo()
+        {
+            return $"e_info 10 {Vnum} {Level} 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -1 {Name.Replace(' ','^')}";
+        }
+
         #endregion
     }
 }
