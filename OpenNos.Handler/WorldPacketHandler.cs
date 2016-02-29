@@ -596,7 +596,6 @@ namespace OpenNos.Handler
                             {
                                 Byte.TryParse(packetsplit[3], out upgrade);
                                 Int16.TryParse(packetsplit[4], out color);
-                                level = 1;
                             }
                             else
                             {
@@ -612,8 +611,12 @@ namespace OpenNos.Handler
                     }
                     else
                     {
+
+
                         Byte.TryParse(packetsplit[3], out amount);
                     }
+                    if (iteminfo.EquipmentSlot == Convert.ToByte((byte)EquipmentType.Sp))
+                        level = 1;
                     InventoryItem newItem = new InventoryItem()
                     {
                         InventoryItemId = Session.Character.InventoryList.generateInventoryItemId(),
