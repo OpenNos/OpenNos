@@ -124,7 +124,7 @@
     <value>Immetti la directory dei file da sincronizzare</value>
   </data>
   <data name="ITEMS_PARSED" xml:space="preserve">
-    <value />
+    <value>{0} Items parsed</value>
   </data>
   <data name="MAPS_PARSED" xml:space="preserve">
     <value>{0} Mappe sincronizzate</value>
@@ -134,6 +134,27 @@
   </data>
   <data name="NPCS_PARSED" xml:space="preserve">
     <value>{0} NPCs sincronizzati</value>
+  </data>
+  <data name="PARSE_ALL" xml:space="preserve">
+    <value>Do you want to parse ALL?</value>
+  </data>
+  <data name="PARSE_ITEMS" xml:space="preserve">
+    <value>Do you want to parse Items?</value>
+  </data>
+  <data name="PARSE_MAPS" xml:space="preserve">
+    <value>Do you want to parse Maps?</value>
+  </data>
+  <data name="PARSE_NPCS" xml:space="preserve">
+    <value>Do you want to parse Npcs?</value>
+  </data>
+  <data name="PARSE_PORTALS" xml:space="preserve">
+    <value>Do you want to parse Portals?</value>
+  </data>
+  <data name="PARSE_SHOPITEMS" xml:space="preserve">
+    <value>Do you want to parse Shopitems?</value>
+  </data>
+  <data name="PARSE_SHOPS" xml:space="preserve">
+    <value>Do you want to parse Shops?</value>
   </data>
   <data name="PORTALS_PARSED" xml:space="preserve">
     <value>{0} Portali sincronizzati</value>

@@ -59,11 +59,55 @@ namespace OpenNos.Import.Console
             ImportFactory factory = new ImportFactory(folder);
 
             factory.ImportPackets();
-            factory.ImportMaps();
-            factory.ImportPortals();
-            factory.ImportNpcs();
-            factory.ImportShops();
-            factory.ImportItems();
+
+            //Confirmation
+
+            System.Console.WriteLine($"{Language.Instance.GetMessageFromKey("PARSE_ALL")} [Y/n]");
+            System.ConsoleKeyInfo key = System.Console.ReadKey();
+            if (key.KeyChar != 'n')
+            {
+                factory.ImportMaps();
+                factory.ImportPortals();
+                factory.ImportNpcs();
+                factory.ImportShops();
+                factory.ImportItems();
+                //factory.ImportShopItems();
+            }
+            else
+            {
+                System.Console.WriteLine($"{Language.Instance.GetMessageFromKey("PARSE_MAPS")} [Y/n]");
+                if (key.KeyChar != 'n')
+                {
+                    factory.ImportMaps();
+                }
+                System.Console.WriteLine($"{Language.Instance.GetMessageFromKey("PARSE_PORTALS")} [Y/n]");
+                if (key.KeyChar != 'n')
+                {
+                    factory.ImportPortals();
+                }
+                System.Console.WriteLine($"{Language.Instance.GetMessageFromKey("PARSE_NPCS")} [Y/n]");
+                if (key.KeyChar != 'n')
+                {
+                    factory.ImportNpcs();
+                }
+                System.Console.WriteLine($"{Language.Instance.GetMessageFromKey("PARSE_SHOPS")} [Y/n]");
+                if (key.KeyChar != 'n')
+                {
+                    factory.ImportShops();
+                }
+                System.Console.WriteLine($"{Language.Instance.GetMessageFromKey("PARSE_ITEMS")} [Y/n]");
+                if (key.KeyChar != 'n')
+                {
+                    factory.ImportItems();
+                }
+                /*
+                System.Console.WriteLine($"{Language.Instance.GetMessageFromKey("PARSE_SHOPITEMS")} [Y/n]");
+                if (key.KeyChar != 'n')
+                {
+                    factory.ImportShopItems();
+                }
+                */
+            }
             Thread.Sleep(5000);
         }
 

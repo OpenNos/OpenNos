@@ -115,6 +115,69 @@ namespace OpenNos.Import.Console.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Do you want to parse ALL?.
+        /// </summary>
+        internal static string PARSE_ALL {
+            get {
+                return ResourceManager.GetString("PARSE_ALL", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Do you want to parse Items?.
+        /// </summary>
+        internal static string PARSE_ITEMS {
+            get {
+                return ResourceManager.GetString("PARSE_ITEMS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Do you want to parse Maps?.
+        /// </summary>
+        internal static string PARSE_MAPS {
+            get {
+                return ResourceManager.GetString("PARSE_MAPS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Do you want to parse Npcs?.
+        /// </summary>
+        internal static string PARSE_NPCS {
+            get {
+                return ResourceManager.GetString("PARSE_NPCS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Do you want to parse Portals?.
+        /// </summary>
+        internal static string PARSE_PORTALS {
+            get {
+                return ResourceManager.GetString("PARSE_PORTALS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Do you want to parse Shopitems?.
+        /// </summary>
+        internal static string PARSE_SHOPITEMS {
+            get {
+                return ResourceManager.GetString("PARSE_SHOPITEMS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Do you want to parse Shops?.
+        /// </summary>
+        internal static string PARSE_SHOPS {
+            get {
+                return ResourceManager.GetString("PARSE_SHOPS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0} portals parsed.
         /// </summary>
         internal static string PORTALS_PARSED {
