@@ -595,9 +595,15 @@ namespace OpenNos.Handler
                         {
                             if (iteminfo.EquipmentSlot == Convert.ToByte((short)EquipmentType.Sp))
                             {
-                                Int16.TryParse(packetsplit[3], out upgrade);
-                                Int16.TryParse(packetsplit[4], out color);
-                                level = 1;
+                                if (packetsplit.Count() > 4)
+                                {
+                                    Int16.TryParse(packetsplit[3], out upgrade);
+                                    Int16.TryParse(packetsplit[4], out color);
+                                    level = 1;
+                                   
+                                }
+                                else
+                                    return;
                             }
                             else
                             {
@@ -2248,7 +2254,7 @@ namespace OpenNos.Handler
             ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateMsg(message, 2), ReceiverType.All);
             Thread.Sleep(30000);
             ClientLinkManager.Instance.SaveAll();
-           Environment.Exit(0);
+            Environment.Exit(0);
         }
 
         [Packet("#sl")]
@@ -2714,7 +2720,7 @@ namespace OpenNos.Handler
                      && iteminfo.ItemType != (byte)ItemType.Fashion
                      && iteminfo.ItemType != (byte)ItemType.Jewelery
                      && iteminfo.ItemType != (byte)ItemType.Specialist)
-                    || iteminfo.LevelMinimum > Session.Character.Level || (iteminfo.Sex != 0 && iteminfo.Sex != Session.Character.Gender+1)
+                    || iteminfo.LevelMinimum > Session.Character.Level || (iteminfo.Sex != 0 && iteminfo.Sex != Session.Character.Gender + 1)
                     || ((iteminfo.Class >> Session.Character.Class) & 1) != 1)
                 {
                     Session.Client.SendPacket(
