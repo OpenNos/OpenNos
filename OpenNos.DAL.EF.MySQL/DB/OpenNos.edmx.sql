@@ -44,7 +44,7 @@
 -- -----------------------------------------------------------
 -- Entity Designer DDL Script for MySQL Server 4.1 and higher
 -- -----------------------------------------------------------
--- Date Created: 02/29/2016 18:57:02
+-- Date Created: 02/29/2016 19:10:52
 
 -- Generated from EDMX file: C:\Users\Dominik\Source\Repos\OpenNos\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
 -- Target version: 3.0.0.0
@@ -252,7 +252,7 @@ CREATE TABLE `item`(
 	`IsSoldable` bool NOT NULL, 
 	`IsMinilandObject` bool NOT NULL, 
 	`IsWarehouse` bool NOT NULL, 
-	`LevelMinimum` smallint NOT NULL, 
+	`LevelMinimum` TINYINT UNSIGNED NOT NULL, 
 	`DamageMinimum` smallint NOT NULL, 
 	`DamageMaximum` smallint NOT NULL, 
 	`Concentrate` smallint NOT NULL, 
@@ -266,7 +266,7 @@ CREATE TABLE `item`(
 	`DefenceDodge` smallint NOT NULL, 
 	`Hp` smallint NOT NULL, 
 	`Mp` smallint NOT NULL, 
-	`LevelJobMinimum` smallint NOT NULL, 
+	`LevelJobMinimum` TINYINT UNSIGNED NOT NULL, 
 	`MaxCellon` TINYINT UNSIGNED NOT NULL, 
 	`MaxCellonLvl` TINYINT UNSIGNED NOT NULL, 
 	`FireResistance` smallint NOT NULL, 
