@@ -2714,7 +2714,7 @@ namespace OpenNos.Handler
                      && iteminfo.ItemType != (byte)ItemType.Fashion
                      && iteminfo.ItemType != (byte)ItemType.Jewelery
                      && iteminfo.ItemType != (byte)ItemType.Specialist)
-                    || iteminfo.LevelMinimum > Session.Character.Level || (iteminfo.Sex!=0 && iteminfo.Sex != Session.Character.Gender)
+                    || iteminfo.LevelMinimum > Session.Character.Level || (iteminfo.Sex != 0 && iteminfo.Sex != Session.Character.Gender)
                     || ((iteminfo.Class >> Session.Character.Class) & 1) != 1)
                 {
                     Session.Client.SendPacket(
@@ -2727,7 +2727,11 @@ namespace OpenNos.Handler
                     && iteminfo.Element != ServerManager.GetItem(
                         Session.Character.EquipmentList.LoadBySlotAndType(
                             (short)EquipmentType.Sp,
-                            (short)InventoryType.Equipment).InventoryItem.ItemVNum).Element)
+                            (short)InventoryType.Equipment).InventoryItem.ItemVNum).Element &&
+                            iteminfo.Element != ServerManager.GetItem(
+                        Session.Character.EquipmentList.LoadBySlotAndType(
+                            (short)EquipmentType.Sp,
+                            (short)InventoryType.Equipment).InventoryItem.ItemVNum).SecondaryElement)
                 {
                     Session.Client.SendPacket(
                         Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("BAD_FAIRY"), 0));
