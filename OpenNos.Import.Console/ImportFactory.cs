@@ -612,7 +612,7 @@ namespace OpenNos.Import.Console
 
             foreach (string[] linesave in packetList.Where(o => o[0].Equals("n_inv")))
             {
-                if (linesave.Length > 10 && linesave[0] == "n_inv" && linesave[1] == "2")
+                if (linesave.Length > 9 && linesave[0] == "n_inv" && linesave[1] == "2")
                 {
                     shopItem.ShopId = short.Parse(linesave[3]);
                     shopItem.Color = short.Parse(linesave[4]);
