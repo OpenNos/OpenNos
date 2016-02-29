@@ -278,7 +278,7 @@ namespace OpenNos.Import.Console
                                 break;
                             case (byte)ItemType.Specialist:
                                 //item.isSpecialist = Convert.ToByte(linesave[2]);
-                         
+
                                 item.Speed = Convert.ToByte(linesave[5]);
                                 item.SpType = Convert.ToByte(linesave[13]);
                                 //item.Morph = Convert.ToInt16(linesave[14]) + 1; // idk whats that, its useless
@@ -289,16 +289,21 @@ namespace OpenNos.Import.Console
                                 //item.PartnerClass = Convert.ToInt16(linesave[19]);
                                 item.LevelJobMinimum = Convert.ToInt16(linesave[20]);
                                 item.ReputationMinimum = Convert.ToByte(linesave[21]);
-                                if(item.VNum == 4502)
+                                if (item.VNum == 4502)
                                 {
                                     item.ReputationMinimum = Convert.ToByte(linesave[21]);
                                 }
-                                Dictionary<int, int>  Elementdic = new Dictionary<int, int>();
-                                Elementdic.Add(1, item.FireResistance);
-                                Elementdic.Add(2, item.WaterResistance);
-                                Elementdic.Add(3, item.LightResistance);
-                                Elementdic.Add(4, item.DarkResistance);
-                                item.Element = (byte)Elementdic.OrderByDescending(s=>s.Value).First().Key;
+                                Dictionary<int, int> Elementdic = new Dictionary<int, int>();
+                                Elementdic.Add(0, 0);
+                                if (item.FireResistance != 0)
+                                    Elementdic.Add(1, item.FireResistance);
+                                if (item.WaterResistance != 0)
+                                    Elementdic.Add(2, item.WaterResistance);
+                                if (item.LightResistance != 0)
+                                    Elementdic.Add(3, item.LightResistance);
+                                if (item.DarkResistance != 0)
+                                    Elementdic.Add(4, item.DarkResistance);
+                                item.Element = (byte)Elementdic.OrderByDescending(s => s.Value).First().Key;
                                 break;
                             case (byte)ItemType.Shell:
                                 //item.ShellMinimumLevel = Convert.ToInt16(linesave[3]);//wtf\/\/ this two things are wrong in many ways
