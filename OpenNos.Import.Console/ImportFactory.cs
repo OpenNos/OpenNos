@@ -203,8 +203,9 @@ namespace OpenNos.Import.Console
                         item.IsMinilandObject = linesave[9] == "1" ? true : false;
                         item.IsWarehouse = linesave[10] == "1" ? true : false;
                         item.IsColored = linesave[16] == "1" ? true : false;
-                        item.Sex = linesave[18] == "1" ? (byte)1 : (byte)0;
-                        item.Sex = linesave[17] == "1" ? (byte)2 : item.Sex;
+                        item.Sex = linesave[17] == "1" ? (byte)2 : (byte)0;
+                        item.Sex = linesave[18] == "1" ? (byte)1 : item.Sex;
+                        
                         /*
                         ??item.IsVehicle = linesave[11] == "1" ? true : false;??
                         ??item.BoxedVehicle = linesave[12] == "1" ? true : false;??
