@@ -44,7 +44,7 @@
 -- -----------------------------------------------------------
 -- Entity Designer DDL Script for MySQL Server 4.1 and higher
 -- -----------------------------------------------------------
--- Date Created: 02/29/2016 19:10:52
+-- Date Created: 02/29/2016 21:59:50
 
 -- Generated from EDMX file: C:\Users\Dominik\Source\Repos\OpenNos\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
 -- Target version: 3.0.0.0
@@ -318,7 +318,27 @@ CREATE TABLE `npc`(
 	`MapX` smallint NOT NULL, 
 	`MapY` smallint NOT NULL, 
 	`Position` TINYINT UNSIGNED NOT NULL, 
-	`Level` TINYINT UNSIGNED NOT NULL);
+	`Level` TINYINT UNSIGNED NOT NULL, 
+	`Element` longtext NOT NULL, 
+	`AttackClass` TINYINT UNSIGNED NOT NULL, 
+	`ElementRate` TINYINT UNSIGNED NOT NULL, 
+	`AttackUpgrade` TINYINT UNSIGNED NOT NULL, 
+	`DamageMinimum` smallint NOT NULL, 
+	`DamageMaximum` smallint NOT NULL, 
+	`Concentrate` smallint NOT NULL, 
+	`CriticalLuckRate` smallint NOT NULL, 
+	`CriticalRate` smallint NOT NULL, 
+	`DefenceUpgrade` TINYINT UNSIGNED NOT NULL, 
+	`DefenceDodge` smallint NOT NULL, 
+	`DistanceDefence` smallint NOT NULL, 
+	`DistanceDefenceDodge` smallint NOT NULL, 
+	`MagicDefence` smallint NOT NULL, 
+	`CloseDefence` smallint NOT NULL, 
+	`FireElement` smallint NOT NULL, 
+	`WaterElement` smallint NOT NULL, 
+	`LightElement` smallint NOT NULL, 
+	`DarkElement` smallint NOT NULL, 
+	`PassiveId` smallint NOT NULL);
 
 ALTER TABLE `npc` ADD PRIMARY KEY (NpcId);
 
@@ -334,7 +354,7 @@ CREATE TABLE `inventoryitem`(
 	`HitRate` smallint NOT NULL, 
 	`CriticalLuckRate` TINYINT UNSIGNED NOT NULL, 
 	`CriticalRate` smallint NOT NULL, 
-	`RangeDefence` smallint NOT NULL, 
+	`CloseDefence` smallint NOT NULL, 
 	`DistanceDefence` smallint NOT NULL, 
 	`MagicDefence` smallint NOT NULL, 
 	`DistanceDefenceDodge` smallint NOT NULL, 

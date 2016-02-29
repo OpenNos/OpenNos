@@ -29,6 +29,26 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public short MapY { get; set; }
         public byte Position { get; set; }
         public byte Level { get; set; }
+        public string Element { get; set; }
+        public byte AttackClass { get; set; }
+        public byte ElementRate { get; set; }
+        public byte AttackUpgrade { get; set; }
+        public short DamageMinimum { get; set; }
+        public short DamageMaximum { get; set; }
+        public short Concentrate { get; set; }
+        public short CriticalLuckRate { get; set; }
+        public short CriticalRate { get; set; }
+        public byte DefenceUpgrade { get; set; }
+        public short DefenceDodge { get; set; }
+        public short DistanceDefence { get; set; }
+        public short DistanceDefenceDodge { get; set; }
+        public short MagicDefence { get; set; }
+        public short CloseDefence { get; set; }
+        public short FireElement { get; set; }
+        public short WaterElement { get; set; }
+        public short LightElement { get; set; }
+        public short DarkElement { get; set; }
+        public short PassiveId { get; set; }
     
         public virtual Map map { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
