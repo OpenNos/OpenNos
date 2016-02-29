@@ -2256,7 +2256,6 @@ namespace OpenNos.Handler
         {
             //i don't know why there is this packet
             // can this be removed? #gx
-            //no if you remove this function it will throw an warning
         }
 
         [Packet("snap")]

@@ -339,9 +339,14 @@ namespace OpenNos.GameObject
                     _waitForPacketList.Add(packet != String.Empty ? packet : $"1 {packetHeader} ");
                     return false;
                 }
-
-                methodInfo.Value.Item1.Invoke(methodInfo.Value.Item2, new object[] { packet });
-
+                try
+                {
+                    methodInfo.Value.Item1.Invoke(methodInfo.Value.Item2, new object[] { packet });
+                }
+                catch (Exception ex)
+                {
+                    Logger.Log.Error(ex.Message);
+                }
                 return true;
             }
 
