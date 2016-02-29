@@ -238,6 +238,8 @@ namespace OpenNos.GameObject
         public static int SpPoint(short spLevel, short upgrade)
         {
             int point = (spLevel - 20) * 3;
+            if (spLevel <= 20)
+                point = 0;
             switch (upgrade)
             {
                 case 1:
@@ -300,8 +302,7 @@ namespace OpenNos.GameObject
                     point += 173;
                     break;
             }
-            if (spLevel <= 20)
-                point = 0;
+          
             return point;
         }
 
