@@ -131,7 +131,7 @@ namespace OpenNos.Handler
             short type; short.TryParse(packetsplit[2], out type);
             short slot; short.TryParse(packetsplit[4], out slot);
             short amount; short.TryParse(packetsplit[5], out amount);
-            if (type == 1) //user shop
+            if (type == 1) // User shop
             {
                 KeyValuePair<long, MapShop> shop = Session.CurrentMap.ShopUserList.FirstOrDefault(mapshop => mapshop.Value.OwnerId.Equals(owner));
                 PersonalShopItem item = shop.Value.Items.FirstOrDefault(i => i.Slot.Equals(slot));
@@ -254,7 +254,7 @@ namespace OpenNos.Handler
         [Packet("c_close")]
         public void CClose(string packet)
         {
-            //i don't know why there is this packet
+            // idk
         }
 
         [Packet("$ChangeClass")]
@@ -283,7 +283,7 @@ namespace OpenNos.Handler
             Session.Client.SendPacket(Session.Character.GenerateFd());
             Session.Client.SendPacket(Session.Character.GenerateLev());
             Session.Client.SendPacket(Session.Character.GenerateStat());
-            //ski
+            // ski
             Session.Client.SendPacket(Session.Character.GenerateAt());
             Session.Client.SendPacket(Session.Character.GenerateCMap());
             if (Session.Character.Size != 10)
@@ -352,7 +352,7 @@ namespace OpenNos.Handler
             Session.Character.MorphUpgrade2 = sp.InventoryItem.Color;
             ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateCMode(), ReceiverType.AllOnMap);
 
-            // TODO Skills: Send SP Skills here
+            // TODO: Send SP Skills here
 
             /*s = "ski 833 833 833 834 835 836 837 838 839 840 841 21 25 28 37 41 44 49 53 56 340 341 345 352";
             MainFile.maps.SendMap(chara, s, true);
@@ -364,7 +364,7 @@ namespace OpenNos.Handler
                 qslot 2 7.7.-1 7.7.-1 7.7.-1 7.7.-1 7.7.-1 7.7.-1 7.7.-1 7.7.-1 7.7.-1 7.7.-1
                 */
 
-            //  lev 40 2288403 14 72745 3221180 145000 20086 5
+            // lev 40 2288403 14 72745 3221180 145000 20086 5
 
             ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(196), ReceiverType.AllOnMap);
             ClientLinkManager.Instance.Broadcast(Session, $"guri 6 1 {Session.Character.CharacterId} 0 0", ReceiverType.AllOnMap);
@@ -402,7 +402,7 @@ namespace OpenNos.Handler
             Session.Character.Mp = (int)Session.Character.MPLoad();
             Session.Client.SendPacket(Session.Character.GenerateTit());
 
-            // eq 37 0 1 0 9 3 -1.120.46.86.-1.-1.-1.-1 0 0
+            //eq 37 0 1 0 9 3 -1.120.46.86.-1.-1.-1.-1 0 0
             ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEq(), ReceiverType.AllOnMap);
 
             //equip 0 0 0.46.0.0.0 1.120.0.0.0 5.86.0.0.0
@@ -504,7 +504,7 @@ namespace OpenNos.Handler
         [Packet("Char_NEW")]
         public void CreateCharacter(string packet)
         {
-            //todo, hold Account Information in Authorized object
+            // TODO: Hold Account Information in Authorized object
             long accountId = Session.Account.AccountId;
             string[] packetsplit = packet.Split(' ');
             if (packetsplit[2].Length > 3 && packetsplit[2].Length < 15)
@@ -961,7 +961,7 @@ namespace OpenNos.Handler
                             Session.Client.SendPacket(Session.Character.GenerateGold());
                             ClientLinkManager.Instance.ExchangeValidate(Session, Session.Character.ExchangeInfo.CharId);
 
-                            // TODO Maybe log exchanges to a (new) table, so that the server admins could trace cheaters
+                            // TODO: Maybe log exchanges to a (new) table, so that the server admins could trace cheaters
                         }
                     }
                     else
@@ -1010,7 +1010,7 @@ namespace OpenNos.Handler
         [Packet("f_stash_end")]
         public void FStashEnd(string packet)
         {
-            //i don't know why there is this packet
+            // idk
         }
 
         [Packet("$ChangeSex")]
@@ -1249,7 +1249,7 @@ namespace OpenNos.Handler
         [Packet("lbs")]
         public void Lbs(string packet)
         {
-            //i don't know why there is this packet
+            // idk
         }
 
         /// <summary>
@@ -1262,7 +1262,7 @@ namespace OpenNos.Handler
         {
             string[] loginPacketParts = packet.Split(' ');
 
-            //load account by given SessionId
+            // Load account by given SessionId
             if (Session.Account == null)
             {
                 bool hasRegisteredAccountLogin = true;
@@ -1319,7 +1319,7 @@ namespace OpenNos.Handler
             Session.Client.SendPacket("clist_start 0");
             foreach (CharacterDTO character in characters)
             {
-                //move to character
+                // Move to character
                 InventoryItemDTO[] item = new InventoryItemDTO[15];
                 for (short i = 0; i < 15; i++)
                 {
@@ -1370,7 +1370,7 @@ namespace OpenNos.Handler
                     Session.Character.Hp = (int)Session.Character.HPLoad();
                     Session.Character.Mp = (int)Session.Character.MPLoad();
                     Session.Client.SendPacket(Session.Character.GenerateStat());
-                    //sc 0 0 31 39 31 4 70 1 0 33 35 43 2 70 0 17 35 19 35 17 0 0 0 0
+                    // sc 0 0 31 39 31 4 70 1 0 33 35 43 2 70 0 17 35 19 35 17 0 0 0 0
                     Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("LEVEL_CHANGED"), 0));
                     Session.Client.SendPacket(Session.Character.GenerateLev());
                     ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllOnMapExceptMe);
@@ -1534,7 +1534,7 @@ namespace OpenNos.Handler
                     break;
 
                 case 14:
-                    //m_list 2 1002 1003 1004 1005 1006 1007 1008 1009 1010 180 181 2127 2178 1242 1243 1244 2504 2505 - 100
+                    // m_list 2 1002 1003 1004 1005 1006 1007 1008 1009 1010 180 181 2127 2178 1242 1243 1244 2504 2505 - 100
                     Session.Client.SendPacket($"wopen 27 0");
                     break;
             }
@@ -1803,12 +1803,12 @@ namespace OpenNos.Handler
                     break;
 
                 case InventoryItem.RarifyMode.Reduced:
-                    //TODO: Reduced Item Amount
+                    // TODO: Reduced Item Amount
                     Session.Character.Gold = Session.Character.Gold - (long)(goldprice * reducedpricefactor);
                     break;
 
                 case InventoryItem.RarifyMode.Normal:
-                    //TODO: Normal Item Amount
+                    // TODO: Normal Item Amount
                     Session.Character.Gold = Session.Character.Gold - goldprice;
                     break;
             }
@@ -1892,15 +1892,15 @@ namespace OpenNos.Handler
         [Packet("remove")]
         public void remove(string packet)
         {
-            // unwear equipment
+            // Undress Equipment 
             string[] packetsplit = packet.Split(' ');
             if (packetsplit.Length > 3)
             {
                 short slot;
-                if (!short.TryParse(packetsplit[2], out slot)) return; // invalid number
+                if (!short.TryParse(packetsplit[2], out slot)) return; // Invalid Number
 
                 Inventory inventory = Session.Character.EquipmentList.LoadBySlotAndType(slot, (short)InventoryType.Equipment);
-                if (inventory == null) return; // this eqslot is not equipped
+                if (inventory == null) return; // This eqslot is not equipped
 
                 if (slot == (short)EquipmentType.Sp && Session.Character.UseSp)
                 {
@@ -1954,7 +1954,7 @@ namespace OpenNos.Handler
             /* s="ms_c";
             chara.Send(s); */
 
-            //  lev 40 2288403 23 47450 3221180 113500 20086 5
+            // lev 40 2288403 23 47450 3221180 113500 20086 5
             Thread.Sleep(30000);
             Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("TRANSFORM_DISAPEAR")), 11));
             Session.Client.SendPacket("sd 0");
@@ -2116,7 +2116,7 @@ namespace OpenNos.Handler
                 if (Session.HealthThread != null && !Session.HealthThread.IsAlive)
                     Session.HealthThread.Start();
 
-                //inform everyone about connected character
+                // Inform everyone about connected character
                 ServiceFactory.Instance.CommunicationService.ConnectCharacter(Session.Character.Name, Session.Account.Name);
             }
             catch (Exception ex)
@@ -2140,7 +2140,7 @@ namespace OpenNos.Handler
                 if (ServerManager.GetItem(inv.InventoryItem.ItemVNum).IsSoldable != true)
                 {
                     Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("ITEM_NOT_SOLDABLE"), 0));
-                    // TODO Need to see if on global it's a MSG packet^^
+                    // TODO: Need to see if on global it's a MSG packet^^
                     // maybe its a shopMemo?
                     return;
                 }
@@ -2156,7 +2156,7 @@ namespace OpenNos.Handler
         [Packet("shopping")]
         public void Shopping(string packet)
         {
-            //n_inv 2 1834 0 100 0.13.13.0.0.330 0.14.15.0.0.2299 0.18.120.0.0.3795 0.19.107.0.0.3795 0.20.94.0.0.3795 0.37.95.0.0.5643 0.38.97.0.0.11340 0.39.99.0.0.18564 0.48.108.0.0.5643 0.49.110.0.0.11340 0.50.112.0.0.18564 0.59.121.0.0.5643 0.60.123.0.0.11340 0.61.125.0.0.18564
+            // n_inv 2 1834 0 100 0.13.13.0.0.330 0.14.15.0.0.2299 0.18.120.0.0.3795 0.19.107.0.0.3795 0.20.94.0.0.3795 0.37.95.0.0.5643 0.38.97.0.0.11340 0.39.99.0.0.18564 0.48.108.0.0.5643 0.49.110.0.0.11340 0.50.112.0.0.18564 0.59.121.0.0.5643 0.60.123.0.0.11340 0.61.125.0.0.18564
             string[] packetsplit = packet.Split(' ');
             short NpcId, type;
             if (!short.TryParse(packetsplit[5], out NpcId) || !short.TryParse(packetsplit[2], out type)) return;
@@ -2194,7 +2194,7 @@ namespace OpenNos.Handler
         [Packet("npc_req")]
         public void ShowShop(string packet)
         {
-            //n_inv 1 2 0 0 0.0.302.7.0.990000. 0.1.264.5.6.2500000. 0.2.69.7.0.650000. 0.3.4106.0.0.4200000. -1 0.5.4240.0.0.11200000. 0.6.4240.0.5.24000000. 0.7.4801.0.0.6200000. 0.8.4240.0.10.32000000. 0.9.712.0.3.250000. 0.10.997.0.4.250000. 1.11.1895.4.16000.-1.-1 1.12.1897.6.18000.-1.-1 -1 1.14.1902.3.35000.-1.-1 1.15.1237.2.12000.-1.-1 -1 -1 1.18.1249.3.92000.-1.-1 0.19.4240.0.1.10500000. -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+            // n_inv 1 2 0 0 0.0.302.7.0.990000. 0.1.264.5.6.2500000. 0.2.69.7.0.650000. 0.3.4106.0.0.4200000. -1 0.5.4240.0.0.11200000. 0.6.4240.0.5.24000000. 0.7.4801.0.0.6200000. 0.8.4240.0.10.32000000. 0.9.712.0.3.250000. 0.10.997.0.4.250000. 1.11.1895.4.16000.-1.-1 1.12.1897.6.18000.-1.-1 -1 1.14.1902.3.35000.-1.-1 1.15.1237.2.12000.-1.-1 -1 -1 1.18.1249.3.92000.-1.-1 0.19.4240.0.1.10500000. -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
             string[] packetsplit = packet.Split(' ');
             if (packetsplit.Length > 2)
             {
@@ -2203,7 +2203,7 @@ namespace OpenNos.Handler
 
                 if (mode == 1)
                 {
-                    // user shop
+                    // User Shop
                     if (packetsplit.Length <= 3) return;
 
                     long owner;
@@ -2214,7 +2214,7 @@ namespace OpenNos.Handler
                 }
                 else
                 {
-                    // npc shop
+                    // Npc Shop
                     Npc npc = ServerManager.GetMap(Session.Character.MapId).Npcs.FirstOrDefault(n => n.NpcId.Equals(Convert.ToInt16(packetsplit[3])));
                     if (!string.IsNullOrEmpty(npc?.GetNpcDialog()))
                         Session.Client.SendPacket(npc.GetNpcDialog());
@@ -2254,15 +2254,13 @@ namespace OpenNos.Handler
         [Packet("#sl")]
         public void sl(string packet)
         {
-            //i don't know why there is this packet
-            // can this be removed? #gx
+            // idk
         }
 
         [Packet("snap")]
         public void Snap(string packet)
         {
-            //i don't need this for the moment
-            // this may be stored in db, so the server admin knows when users perform screenshots, but very very very optional #gx
+            // Not needed for now. (pictures)
         }
 
         [Packet("sortopen")]
@@ -2370,7 +2368,7 @@ namespace OpenNos.Handler
                     - short.Parse(packetsplit[8]) - short.Parse(packetsplit[9]) < 0)
                     return;
 
-                // TODO Check if this reference works
+                // TODO: Check if this reference works
                 spInventory.InventoryItem.SlHit += short.Parse(packetsplit[6]);
                 spInventory.InventoryItem.SlDefence += short.Parse(packetsplit[7]);
                 spInventory.InventoryItem.SlElement += short.Parse(packetsplit[8]);
@@ -2461,11 +2459,11 @@ namespace OpenNos.Handler
             ClientLinkManager.Instance.Broadcast(Session, Session.Character.GeneratePairy(), ReceiverType.AllOnMap);
             ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateSpPoint(), ReceiverType.AllOnMap);
             GetStartupInventory();
-            //gidx
+            // gidx
             Session.Client.SendPacket($"mlinfo 3800 2000 100 0 0 10 0 {Language.Instance.GetMessageFromKey("WELCOME_MUSIC_INFO")}");
-            //cond
+            // cond
             Session.Client.SendPacket("p_clear");
-            //sc_p pet
+            // sc_p pet
             Session.Client.SendPacket("pinit 0");
             Session.Client.SendPacket("zzim");
             Session.Client.SendPacket($"twk 1 {Session.Character.CharacterId} {Session.Account.Name} {Session.Character.Name} shtmxpdlfeoqkr");
@@ -2565,12 +2563,12 @@ namespace OpenNos.Handler
                         break;
 
                     case InventoryItem.UpgradeMode.Reduced:
-                        //TODO: Reduced Item Amount
+                        // TODO: Reduced Item Amount
                         Session.Character.Gold = Session.Character.Gold - (long)(goldprice * reducedpricefactor);
                         break;
 
                     case InventoryItem.UpgradeMode.Normal:
-                        //TODO: Normal Item Amount
+                        // TODO: Normal Item Amount
                         Session.Character.Gold = Session.Character.Gold - goldprice;
                         break;
                 }
@@ -2695,7 +2693,7 @@ namespace OpenNos.Handler
                 if (inventory == null) return;
 
                 Item iteminfo = ServerManager.GetItem(inventory.InventoryItem.ItemVNum);
-                if (iteminfo == null) return; // this may mean that the DB is incomplete
+                if (iteminfo == null) return; // This may mean that the DB is incomplete
 
                 double timeSpanSinceLastSpUsage = (DateTime.Now - Process.GetCurrentProcess().StartTime).TotalSeconds -
                                                   Session.Character.LastSp;
