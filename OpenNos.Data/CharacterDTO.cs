@@ -40,7 +40,7 @@ namespace OpenNos.Data
 
         public short Compliment { get; set; }
 
-        public int Dignite { get; set; }
+        public byte Dignite { get; set; }
 
         public bool EmoticonsBlocked { get; set; }
 

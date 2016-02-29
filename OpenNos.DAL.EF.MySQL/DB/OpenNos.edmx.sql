@@ -44,9 +44,9 @@
 -- -----------------------------------------------------------
 -- Entity Designer DDL Script for MySQL Server 4.1 and higher
 -- -----------------------------------------------------------
--- Date Created: 02/29/2016 13:44:20
+-- Date Created: 02/29/2016 19:10:52
 
--- Generated from EDMX file: C:\Users\ERWAN\Desktop\OpenNos GIT\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
+-- Generated from EDMX file: C:\Users\Dominik\Source\Repos\OpenNos\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
 -- Target version: 3.0.0.0
 
 -- --------------------------------------------------
@@ -128,7 +128,7 @@ CREATE TABLE `account`(
 	`AccountId` bigint NOT NULL, 
 	`Name` varchar (255) NOT NULL, 
 	`Password` varchar (255) NOT NULL, 
-	`Authority` smallint NOT NULL, 
+	`Authority` TINYINT UNSIGNED NOT NULL, 
 	`LastSession` int NOT NULL, 
 	`LastCompliment` datetime NOT NULL);
 
@@ -154,7 +154,7 @@ CREATE TABLE `character`(
 	`Mp` int NOT NULL, 
 	`ArenaWinner` int NOT NULL, 
 	`Reput` bigint NOT NULL, 
-	`Dignite` int NOT NULL, 
+	`Dignite` TINYINT UNSIGNED NOT NULL, 
 	`Gold` bigint NOT NULL, 
 	`Backpack` int NOT NULL, 
 	`Level` TINYINT UNSIGNED NOT NULL, 
@@ -252,7 +252,7 @@ CREATE TABLE `item`(
 	`IsSoldable` bool NOT NULL, 
 	`IsMinilandObject` bool NOT NULL, 
 	`IsWarehouse` bool NOT NULL, 
-	`LevelMinimum` smallint NOT NULL, 
+	`LevelMinimum` TINYINT UNSIGNED NOT NULL, 
 	`DamageMinimum` smallint NOT NULL, 
 	`DamageMaximum` smallint NOT NULL, 
 	`Concentrate` smallint NOT NULL, 
@@ -266,7 +266,7 @@ CREATE TABLE `item`(
 	`DefenceDodge` smallint NOT NULL, 
 	`Hp` smallint NOT NULL, 
 	`Mp` smallint NOT NULL, 
-	`LevelJobMinimum` smallint NOT NULL, 
+	`LevelJobMinimum` TINYINT UNSIGNED NOT NULL, 
 	`MaxCellon` TINYINT UNSIGNED NOT NULL, 
 	`MaxCellonLvl` TINYINT UNSIGNED NOT NULL, 
 	`FireResistance` smallint NOT NULL, 
@@ -292,7 +292,7 @@ CREATE TABLE `item`(
 	`ReputationMinimum` TINYINT UNSIGNED NOT NULL, 
 	`FairyMaximumLevel` TINYINT UNSIGNED NOT NULL, 
 	`MaximumAmmo` TINYINT UNSIGNED NOT NULL, 
-	`BasicUpgrade` smallint NOT NULL, 
+	`BasicUpgrade` TINYINT UNSIGNED NOT NULL, 
 	`Color` smallint NOT NULL, 
 	`ItemValidTime` bigint NOT NULL, 
 	`IsPearl` bool NOT NULL, 
@@ -332,7 +332,7 @@ CREATE TABLE `inventoryitem`(
 	`DamageMaximum` smallint NOT NULL, 
 	`Concentrate` smallint NOT NULL, 
 	`HitRate` smallint NOT NULL, 
-	`CriticalLuckRate` smallint NOT NULL, 
+	`CriticalLuckRate` TINYINT UNSIGNED NOT NULL, 
 	`CriticalRate` smallint NOT NULL, 
 	`RangeDefence` smallint NOT NULL, 
 	`DistanceDefence` smallint NOT NULL, 
@@ -340,22 +340,22 @@ CREATE TABLE `inventoryitem`(
 	`DistanceDefenceDodge` smallint NOT NULL, 
 	`DefenceDodge` smallint NOT NULL, 
 	`ElementRate` smallint NOT NULL, 
-	`Upgrade` smallint NOT NULL, 
-	`Rare` smallint NOT NULL, 
+	`Upgrade` TINYINT UNSIGNED NOT NULL, 
+	`Rare` TINYINT UNSIGNED NOT NULL, 
 	`Color` smallint NOT NULL, 
-	`Amount` smallint NOT NULL, 
-	`SpLevel` smallint NOT NULL, 
+	`Amount` TINYINT UNSIGNED NOT NULL, 
+	`SpLevel` TINYINT UNSIGNED NOT NULL, 
 	`SpXp` smallint NOT NULL, 
 	`SlElement` smallint NOT NULL, 
 	`SlHit` smallint NOT NULL, 
 	`SlDefence` smallint NOT NULL, 
 	`SlHP` smallint NOT NULL, 
-	`DarkElement` smallint NOT NULL, 
-	`LightElement` smallint NOT NULL, 
-	`WaterElement` smallint NOT NULL, 
-	`FireElement` smallint NOT NULL, 
+	`DarkElement` TINYINT UNSIGNED NOT NULL, 
+	`LightElement` TINYINT UNSIGNED NOT NULL, 
+	`WaterElement` TINYINT UNSIGNED NOT NULL, 
+	`FireElement` TINYINT UNSIGNED NOT NULL, 
 	`ItemVNum` smallint NOT NULL, 
-	`Ammo` smallint NOT NULL, 
+	`Ammo` TINYINT UNSIGNED NOT NULL, 
 	`IsFixed` bool NOT NULL);
 
 ALTER TABLE `inventoryitem` ADD PRIMARY KEY (InventoryItemId);
@@ -367,7 +367,7 @@ ALTER TABLE `inventoryitem` ADD PRIMARY KEY (InventoryItemId);
 CREATE TABLE `inventory`(
 	`InventoryId` bigint NOT NULL AUTO_INCREMENT UNIQUE, 
 	`CharacterId` bigint NOT NULL, 
-	`Type` smallint NOT NULL, 
+	`Type` TINYINT UNSIGNED NOT NULL, 
 	`Slot` smallint NOT NULL, 
 	`InventoryItemId` bigint NOT NULL);
 
@@ -379,13 +379,14 @@ ALTER TABLE `inventory` ADD PRIMARY KEY (InventoryId);
 
 CREATE TABLE `shopitem`(
 	`ShopItemId` int NOT NULL AUTO_INCREMENT UNIQUE, 
-	`Type` smallint NOT NULL, 
+	`Type` TINYINT UNSIGNED NOT NULL, 
 	`Slot` smallint NOT NULL, 
 	`ItemVNum` smallint NOT NULL, 
 	`Upgrade` TINYINT UNSIGNED NOT NULL, 
 	`Rare` TINYINT UNSIGNED NOT NULL, 
 	`Color` smallint NOT NULL, 
-	`ShopId` int NOT NULL);
+	`ShopId` int NOT NULL, 
+	`Gold` bigint NOT NULL);
 
 ALTER TABLE `shopitem` ADD PRIMARY KEY (ShopItemId);
 

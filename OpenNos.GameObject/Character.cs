@@ -164,7 +164,7 @@ namespace OpenNos.GameObject
         public string GenerateEq()
         {
             int color = HairColor;
-            Inventory head = EquipmentList.LoadBySlotAndType((short)EquipmentType.Hat, (short)InventoryType.Equipment);
+            Inventory head = EquipmentList.LoadBySlotAndType((byte)EquipmentType.Hat, (byte)InventoryType.Equipment);
             if (head != null && ServerManager.GetItem(head.InventoryItem.ItemVNum).IsColored)
                 color = head.InventoryItem.Color;
 
@@ -176,7 +176,7 @@ namespace OpenNos.GameObject
             string[] invarray = new string[15];
             for (short i = 0; i < 15; i++)
             {
-                Inventory inv = EquipmentList.LoadBySlotAndType(i, (short)InventoryType.Equipment);
+                Inventory inv = EquipmentList.LoadBySlotAndType(i, (byte)InventoryType.Equipment);
                 if (inv != null)
                 {
                     invarray[i] = inv.InventoryItem.ItemVNum.ToString();
@@ -184,28 +184,28 @@ namespace OpenNos.GameObject
                 else invarray[i] = "-1";
             }
 
-            return $"{invarray[(short)EquipmentType.Hat]}.{invarray[(short)EquipmentType.Armor]}.{invarray[(short)EquipmentType.MainWeapon]}.{invarray[(short)EquipmentType.SecondaryWeapon]}.{invarray[(short)EquipmentType.Mask]}.{invarray[(short)EquipmentType.Fairy]}.{invarray[(short)EquipmentType.CostumeSuite]}.{invarray[(short)EquipmentType.CostumeHat]}";
+            return $"{invarray[(byte)EquipmentType.Hat]}.{invarray[(byte)EquipmentType.Armor]}.{invarray[(byte)EquipmentType.MainWeapon]}.{invarray[(byte)EquipmentType.SecondaryWeapon]}.{invarray[(byte)EquipmentType.Mask]}.{invarray[(byte)EquipmentType.Fairy]}.{invarray[(byte)EquipmentType.CostumeSuite]}.{invarray[(byte)EquipmentType.CostumeHat]}";
         }
 
         public string generateEqRareUpgradeForPacket()
         {
-            short weaponRare = 0;
-            short weaponUpgrade = 0;
-            short armorRare = 0;
-            short armorUpgrade = 0;
+            byte weaponRare = 0;
+            byte weaponUpgrade = 0;
+            byte armorRare = 0;
+            byte armorUpgrade = 0;
             for (short i = 0; i < 15; i++)
             {
-                Inventory inv = EquipmentList.LoadBySlotAndType(i, (short)InventoryType.Equipment);
+                Inventory inv = EquipmentList.LoadBySlotAndType(i, (byte)InventoryType.Equipment);
                 if (inv != null)
                 {
                     Item iteminfo = ServerManager.GetItem(inv.InventoryItem.ItemVNum);
 
-                    if (iteminfo.EquipmentSlot == (short)EquipmentType.Armor)
+                    if (iteminfo.EquipmentSlot == (byte)EquipmentType.Armor)
                     {
                         armorRare = inv.InventoryItem.Rare;
                         armorUpgrade = inv.InventoryItem.Upgrade;
                     }
-                    else if (iteminfo.EquipmentSlot == (short)EquipmentType.MainWeapon)
+                    else if (iteminfo.EquipmentSlot == (byte)EquipmentType.MainWeapon)
                     {
                         weaponRare = inv.InventoryItem.Rare;
                         weaponUpgrade = inv.InventoryItem.Upgrade;
@@ -219,23 +219,23 @@ namespace OpenNos.GameObject
         {
             //equip 86 0 0.4903.6.8.0 2.340.0.0.0 3.4931.0.5.0 4.4845.3.5.0 5.4912.7.9.0 6.4848.1.0.0 7.4849.3.0.0 8.4850.2.0.0 9.227.0.0.0 10.281.0.0.0 11.347.0.0.0 13.4150.0.0.0 14.4076.0.0.0
             string eqlist = string.Empty;
-            short weaponRare = 0;
-            short weaponUpgrade = 0;
-            short armorRare = 0;
-            short armorUpgrade = 0;
+            byte weaponRare = 0;
+            byte weaponUpgrade = 0;
+            byte armorRare = 0;
+            byte armorUpgrade = 0;
 
             for (short i = 0; i < 15; i++)
             {
-                Inventory inv = EquipmentList.LoadBySlotAndType(i, (short)InventoryType.Equipment);
+                Inventory inv = EquipmentList.LoadBySlotAndType(i, (byte)InventoryType.Equipment);
                 if (inv != null)
                 {
                     Item iteminfo = ServerManager.GetItem(inv.InventoryItem.ItemVNum);
-                    if (iteminfo.EquipmentSlot == (short)EquipmentType.Armor)
+                    if (iteminfo.EquipmentSlot == (byte)EquipmentType.Armor)
                     {
                         armorRare = inv.InventoryItem.Rare;
                         armorUpgrade = inv.InventoryItem.Upgrade;
                     }
-                    else if (iteminfo.EquipmentSlot == (short)EquipmentType.MainWeapon)
+                    else if (iteminfo.EquipmentSlot == (byte)EquipmentType.MainWeapon)
                     {
                         weaponRare = inv.InventoryItem.Rare;
                         weaponUpgrade = inv.InventoryItem.Upgrade;
@@ -292,10 +292,10 @@ namespace OpenNos.GameObject
         public string GenerateIn()
         {
             int color = HairColor;
-            Inventory head = EquipmentList.LoadBySlotAndType((short)EquipmentType.Hat, (short)InventoryType.Equipment);
+            Inventory head = EquipmentList.LoadBySlotAndType((byte)EquipmentType.Hat, (byte)InventoryType.Equipment);
             if (head != null && ServerManager.GetItem(head.InventoryItem.ItemVNum).IsColored)
                 color = head.InventoryItem.Color;
-            Inventory fairy = EquipmentList.LoadBySlotAndType((short)EquipmentType.Fairy, (short)InventoryType.Equipment);
+            Inventory fairy = EquipmentList.LoadBySlotAndType((byte)EquipmentType.Fairy, (byte)InventoryType.Equipment);
 
             return $"in 1 {Name} - {CharacterId} {MapX} {MapY} {Direction} {(Authority == 2 ? 2 : 0)} {Gender} {HairStyle} {color} {Class} {generateEqListForPacket()} {(int)(Hp / HPLoad() * 100)} {(int)(Mp / MPLoad() * 100)} {_rested} -1 {(fairy != null ? 2 : 0)} {(fairy != null ? ServerManager.GetItem(fairy.InventoryItem.ItemVNum).Element : 0)} 0 {(fairy != null ? ServerManager.GetItem(fairy.InventoryItem.ItemVNum).Morph : 0)} 0 {(UseSp ? Morph : 0)} {generateEqRareUpgradeForPacket()} -1 - {((GetDigniteIco() == 1) ? GetReputIco() : -GetDigniteIco())} {_invisible} {(UseSp ? MorphUpgrade : 0)} 0 {(UseSp ? MorphUpgrade2 : 0)} {Level} 0 {ArenaWinner} {Compliment} {Size}";
         }
@@ -310,24 +310,24 @@ namespace OpenNos.GameObject
             return $"info {message}";
         }
 
-        public string GenerateInventoryAdd(short vnum, short amount, short type, short slot, short rare, short color, short upgrade)
+        public string GenerateInventoryAdd(short vnum, byte amount, byte type, short slot, byte rare, short color, byte upgrade)
         {
             Item item = ServerManager.GetItem(vnum);
             switch (type)
             {
-                case (short)InventoryType.Costume:
+                case (byte)InventoryType.Costume:
                     return $"ivn 7 {slot}.{vnum}.{rare}.{upgrade}";
 
-                case (short)InventoryType.Wear:
+                case (byte)InventoryType.Wear:
                     return $"ivn 0 {slot}.{vnum}.{rare}.{(item != null ? (item.IsColored ? color : upgrade) : upgrade)}";
 
-                case (short)InventoryType.Main:
+                case (byte)InventoryType.Main:
                     return $"ivn 1 {slot}.{vnum}.{amount}";
 
-                case (short)InventoryType.Etc:
+                case (byte)InventoryType.Etc:
                     return $"ivn 2 {slot}.{vnum}.{amount}";
 
-                case (short)InventoryType.Sp:
+                case (byte)InventoryType.Sp:
                     return $"ivn 6 {slot}.{vnum}.{rare}.{upgrade}";
             }
             return string.Empty;
@@ -335,7 +335,7 @@ namespace OpenNos.GameObject
 
         public string GenerateLev()
         {
-            Inventory specialist = EquipmentList.LoadBySlotAndType((short)EquipmentType.Sp, (short)InventoryType.Equipment);
+            Inventory specialist = EquipmentList.LoadBySlotAndType((byte)EquipmentType.Sp, (byte)InventoryType.Equipment);
 
             return $"lev {Level} {LevelXp} {(!UseSp || specialist == null ? JobLevel : specialist.InventoryItem.SpLevel)} {(!UseSp || specialist == null ? JobLevelXp : specialist.InventoryItem.SpXp)} {XPLoad()} {JobXPLoad()} {Reput} 2";
         }
@@ -372,7 +372,7 @@ namespace OpenNos.GameObject
 
         public string GeneratePairy()
         {
-            Inventory fairy = EquipmentList.LoadBySlotAndType((short)EquipmentType.Fairy, (short)InventoryType.Equipment);
+            Inventory fairy = EquipmentList.LoadBySlotAndType((byte)EquipmentType.Fairy, (byte)InventoryType.Equipment);
 
             return fairy != null
                 ? $"pairy 1 {CharacterId} 4 {ServerManager.GetItem(fairy.InventoryItem.ItemVNum).Element} {fairy.InventoryItem.ElementRate} {ServerManager.GetItem(fairy.InventoryItem.ItemVNum).Morph}"
@@ -391,10 +391,10 @@ namespace OpenNos.GameObject
 
         public string GenerateReqInfo()
         {
-            Inventory fairy = EquipmentList.LoadBySlotAndType((short)EquipmentType.Fairy, (short)InventoryType.Equipment);
-            Inventory armor = EquipmentList.LoadBySlotAndType((short)EquipmentType.Armor, (short)InventoryType.Equipment);
-            Inventory weapon2 = EquipmentList.LoadBySlotAndType((short)EquipmentType.SecondaryWeapon, (short)InventoryType.Equipment);
-            Inventory weapon = EquipmentList.LoadBySlotAndType((short)EquipmentType.MainWeapon, (short)InventoryType.Equipment);
+            Inventory fairy = EquipmentList.LoadBySlotAndType((byte)EquipmentType.Fairy, (byte)InventoryType.Equipment);
+            Inventory armor = EquipmentList.LoadBySlotAndType((byte)EquipmentType.Armor, (byte)InventoryType.Equipment);
+            Inventory weapon2 = EquipmentList.LoadBySlotAndType((byte)EquipmentType.SecondaryWeapon, (byte)InventoryType.Equipment);
+            Inventory weapon = EquipmentList.LoadBySlotAndType((byte)EquipmentType.MainWeapon, (byte)InventoryType.Equipment);
             return $"tc_info {Level} {Name} {(fairy != null ? ServerManager.GetItem(fairy.InventoryItem.ItemVNum).Element : 0)} {fairy?.InventoryItem.ElementRate ?? 0} {Class} {Gender} -1 - {GetReputIco()} {GetDigniteIco()} {(weapon != null ? 1 : 0)} {weapon?.InventoryItem.Rare ?? 0} {weapon?.InventoryItem.Upgrade ?? 0} {(weapon2 != null ? 1 : 0)} {weapon2?.InventoryItem.Rare ?? 0} {weapon2?.InventoryItem.Upgrade ?? 0} {(armor != null ? 1 : 0)} {armor?.InventoryItem.Rare ?? 0} {armor?.InventoryItem.Upgrade ?? 0} 0 0 {Reput} 0 0 0 {(UseSp ? Morph : 0)} 0 0 0 0 0 {Compliment} 0 0 0 0 {Language.Instance.GetMessageFromKey("NO_PREZ_MESSAGE")}";
         }
 
@@ -466,27 +466,27 @@ namespace OpenNos.GameObject
                 Item item = ServerManager.GetItem(inv.InventoryItem.ItemVNum);
                 switch (inv.Type)
                 {
-                    case (short)InventoryType.Costume:
+                    case (byte)InventoryType.Costume:
                         inv7 += $" {inv.Slot}.{inv.InventoryItem.ItemVNum}.{inv.InventoryItem.Rare}.{inv.InventoryItem.Upgrade}";
                         break;
 
-                    case (short)InventoryType.Wear:
+                    case (byte)InventoryType.Wear:
                         inv0 += $" {inv.Slot}.{inv.InventoryItem.ItemVNum}.{inv.InventoryItem.Rare}.{(item.IsColored ? inv.InventoryItem.Color : inv.InventoryItem.Upgrade)}";
                         break;
 
-                    case (short)InventoryType.Main:
+                    case (byte)InventoryType.Main:
                         inv1 += $" {inv.Slot}.{inv.InventoryItem.ItemVNum}.{inv.InventoryItem.Amount}.0";
                         break;
 
-                    case (short)InventoryType.Etc:
+                    case (byte)InventoryType.Etc:
                         inv2 += $" {inv.Slot}.{inv.InventoryItem.ItemVNum}.{inv.InventoryItem.Amount}.0";
                         break;
 
-                    case (short)InventoryType.Sp:
+                    case (byte)InventoryType.Sp:
                         inv6 += $" {inv.Slot}.{inv.InventoryItem.ItemVNum}.{inv.InventoryItem.Rare}.{inv.InventoryItem.Upgrade}";
                         break;
 
-                    case (short)InventoryType.Equipment:
+                    case (byte)InventoryType.Equipment:
                         break;
                 }
             }
@@ -568,7 +568,7 @@ namespace OpenNos.GameObject
             MagicalDefence = ServersData.MagicalDefence(Class, Level);
 
             //TODO: add base stats
-            Inventory weapon = EquipmentList.LoadBySlotAndType((short)EquipmentType.MainWeapon, (short)InventoryType.Equipment);
+            Inventory weapon = EquipmentList.LoadBySlotAndType((byte)EquipmentType.MainWeapon, (byte)InventoryType.Equipment);
             if (weapon != null)
             {
                 Item iteminfo = ServerManager.GetItem(weapon.InventoryItem.ItemVNum);
@@ -581,7 +581,7 @@ namespace OpenNos.GameObject
                 //maxhp-mp
             }
 
-            Inventory weapon2 = EquipmentList.LoadBySlotAndType((short)EquipmentType.SecondaryWeapon, (short)InventoryType.Equipment);
+            Inventory weapon2 = EquipmentList.LoadBySlotAndType((byte)EquipmentType.SecondaryWeapon, (byte)InventoryType.Equipment);
             if (weapon2 != null)
             {
                 Item iteminfo = ServerManager.GetItem(weapon2.InventoryItem.ItemVNum);
@@ -594,7 +594,7 @@ namespace OpenNos.GameObject
                 //maxhp-mp
             }
 
-            Inventory armor = EquipmentList.LoadBySlotAndType((short)EquipmentType.Armor, (short)InventoryType.Equipment);
+            Inventory armor = EquipmentList.LoadBySlotAndType((byte)EquipmentType.Armor, (byte)InventoryType.Equipment);
             if (armor != null)
             {
                 Item iteminfo = ServerManager.GetItem(armor.InventoryItem.ItemVNum); // unused variable
@@ -605,7 +605,7 @@ namespace OpenNos.GameObject
             for (short i = 1; i < 14; i++)
             {
                 if (i != 5)
-                    item = EquipmentList.LoadBySlotAndType(i, (short)InventoryType.Equipment);
+                    item = EquipmentList.LoadBySlotAndType(i, (byte)InventoryType.Equipment);
             }
             if (item != null)
             {
@@ -724,7 +724,7 @@ namespace OpenNos.GameObject
             return ServersData.SecondJobXPData[JobLevel - 1];
         }
 
-        public IEnumerable<InventoryItem> LoadBySlotAllowed(short itemVNum, short amount)
+        public IEnumerable<InventoryItem> LoadBySlotAllowed(short itemVNum, byte amount)
         {
             return InventoryList.Inventory.Where(i => i.InventoryItem.ItemVNum.Equals(itemVNum) && i.InventoryItem.Amount + amount < 100).Select(inventoryitemobject => inventoryitemobject.InventoryItem);
         }
@@ -834,7 +834,7 @@ namespace OpenNos.GameObject
             SaveResult insertResult = DAOFactory.CharacterDAO.InsertOrUpdate(ref tempsave); // unused variable
             foreach (InventoryDTO inv in DAOFactory.InventoryDAO.LoadByCharacterId(CharacterId))
             {
-                if (inv.Type == (short)InventoryType.Equipment)
+                if (inv.Type == (byte)InventoryType.Equipment)
                 {
                     if (EquipmentList.LoadBySlotAndType(inv.Slot, inv.Type) == null)
                     {

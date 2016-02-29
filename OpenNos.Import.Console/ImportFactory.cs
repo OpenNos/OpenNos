@@ -205,7 +205,7 @@ namespace OpenNos.Import.Console
                         item.IsColored = linesave[16] == "1" ? true : false;
                         item.Sex = linesave[17] == "1" ? (byte)2 : (byte)0;
                         item.Sex = linesave[18] == "1" ? (byte)1 : item.Sex;
-                        
+
                         /*
                         ??item.IsVehicle = linesave[11] == "1" ? true : false;??
                         ??item.BoxedVehicle = linesave[12] == "1" ? true : false;??
@@ -228,21 +228,21 @@ namespace OpenNos.Import.Console
                         switch (item.ItemType)
                         {
                             case (byte)ItemType.Weapon:
-                                item.LevelMinimum = Convert.ToInt16(linesave[2]);
+                                item.LevelMinimum = Convert.ToByte(linesave[2]);
                                 item.DamageMinimum = Convert.ToInt16(linesave[3]);
                                 item.DamageMaximum = Convert.ToInt16(linesave[4]);
                                 item.HitRate = Convert.ToInt16(linesave[5]);
                                 item.CriticalLuckRate = Convert.ToInt16(linesave[6]);
                                 item.CriticalRate = Convert.ToInt16(linesave[7]);
-                                item.BasicUpgrade = Convert.ToInt16(linesave[10]);
+                                item.BasicUpgrade = Convert.ToByte(linesave[10]);
                                 break;
                             case (byte)ItemType.Armor:
-                                item.LevelMinimum = Convert.ToInt16(linesave[2]);
+                                item.LevelMinimum = Convert.ToByte(linesave[2]);
                                 item.RangeDefence = Convert.ToInt16(linesave[3]);
                                 item.DistanceDefence = Convert.ToInt16(linesave[4]);
                                 item.MagicDefence = Convert.ToInt16(linesave[5]);
                                 item.DefenceDodge = Convert.ToInt16(linesave[6]);
-                                item.BasicUpgrade = Convert.ToInt16(linesave[10]);
+                                item.BasicUpgrade = Convert.ToByte(linesave[10]);
                                 break;
                             case (byte)ItemType.Box:
                                 item.IsPearl = linesave[2] == "1" ? true : false;
@@ -250,6 +250,7 @@ namespace OpenNos.Import.Console
                                 //item.PetLevel = Convert.ToInt16(linesave[4]);
                                 break;
                             case (byte)ItemType.Fashion:
+                                item.LevelMinimum = Convert.ToByte(linesave[2]);
                                 item.ItemValidTime = Convert.ToInt32(linesave[13]) * 3600;
                                 break;
                             case (byte)ItemType.Food:
@@ -269,7 +270,7 @@ namespace OpenNos.Import.Console
                                 }
                                 else
                                 {
-                                    item.LevelMinimum = Convert.ToInt16(linesave[2]);
+                                    item.LevelMinimum = Convert.ToByte(linesave[2]);
                                     item.MaxCellonLvl = Convert.ToByte(linesave[3]);
                                     item.MaxCellon = Convert.ToByte(linesave[4]);
                                 }
@@ -292,7 +293,7 @@ namespace OpenNos.Import.Console
                                 item.LightResistance = Convert.ToByte(linesave[17]);
                                 item.DarkResistance = Convert.ToByte(linesave[18]);
                                 //item.PartnerClass = Convert.ToInt16(linesave[19]);
-                                item.LevelJobMinimum = Convert.ToInt16(linesave[20]);
+                                item.LevelJobMinimum = Convert.ToByte(linesave[20]);
                                 item.ReputationMinimum = Convert.ToByte(linesave[21]);
                                 Dictionary<int, int> Elementdic = new Dictionary<int, int>();
                                 Elementdic.Add(0, 0);
@@ -305,7 +306,7 @@ namespace OpenNos.Import.Console
                                 if (item.DarkResistance != 0)
                                     Elementdic.Add(4, item.DarkResistance);
                                 item.Element = (byte)Elementdic.OrderByDescending(s => s.Value).First().Key;
-                                if(Elementdic.Count > 1 && Elementdic.OrderByDescending(s => s.Value).First().Value == Elementdic.OrderByDescending(s => s.Value).ElementAt(1).Value)
+                                if (Elementdic.Count > 1 && Elementdic.OrderByDescending(s => s.Value).First().Value == Elementdic.OrderByDescending(s => s.Value).ElementAt(1).Value)
                                 {
                                     item.SecondaryElement = (byte)Elementdic.OrderByDescending(s => s.Value).ElementAt(1).Key;
                                 }
@@ -383,7 +384,7 @@ namespace OpenNos.Import.Console
             string fileNpcId = $"{_folder}\\monster.dat";
             string fileNpcLang = $"{_folder}\\_code_{System.Configuration.ConfigurationManager.AppSettings["language"]}_monster.txt";
 
-            // store like this: (vnum, (name, level))
+            // Store like this: (vnum, (name, level))
             Dictionary<int, KeyValuePair<string, short>> dictionaryNpcs = new Dictionary<int, KeyValuePair<string, short>>();
             Dictionary<string, string> dictionaryIdLang = new Dictionary<string, string>();
 
@@ -444,7 +445,7 @@ namespace OpenNos.Import.Console
                     try
                     {
                         if (long.Parse(linesave[3]) >= 10000)
-                            continue; // dialog too high. but why? in order to avoid partners
+                            continue; // Dialog too high. but why? in order to avoid partners
 
                         if (
                             DAOFactory.NpcDAO.LoadFromMap(map)
@@ -468,7 +469,7 @@ namespace OpenNos.Import.Console
                     }
                     catch (Exception)
                     {
-                        // continue with next line in packet file
+                        // Continue with next line in packet file
                     }
                 }
             }
@@ -602,6 +603,45 @@ namespace OpenNos.Import.Console
             }
 
             Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("SHOPS_PARSED"), shopCounter));
+        }
+
+        public void ImportShopItems()
+        {
+            ShopItemDTO shopItem = new ShopItemDTO();
+
+            int shopItemCounter = 0;
+
+            foreach (string[] linesave in packetList.Where(o => o[0].Equals("n_inv")))
+            {
+                if (linesave.Length > 9 && linesave[0] == "n_inv" && linesave[1] == "2")
+                {
+                    shopItem.ShopId = short.Parse(linesave[3]);
+                    shopItem.Color = short.Parse(linesave[4]);
+                    shopItem.Type = byte.Parse(linesave[6]);
+                    shopItem.Slot = short.Parse(linesave[7]);
+                    shopItem.ItemVNum = short.Parse(linesave[8]);
+                    shopItem.Upgrade = byte.Parse(linesave[9]);
+
+                    if (linesave.Length > 10)
+                    {
+                        shopItem.Rare = byte.Parse(linesave[10]);
+                        shopItem.Gold = long.Parse(linesave[11]);
+                    }
+                    else
+                    {
+                        shopItem.Gold = long.Parse(linesave[10]);
+                    }
+
+                }
+                if (DAOFactory.ShopItemDAO.LoadByShopId(shopItem.ShopId) == null)
+                {
+                    DAOFactory.ShopItemDAO.InsertOrUpdate(ref shopItem);
+                    shopItemCounter++;
+
+                }
+            }
+
+            Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("SHOPITEMS_PARSED"), shopItemCounter));
         }
 
         #endregion

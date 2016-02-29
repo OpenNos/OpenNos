@@ -20,7 +20,7 @@ namespace OpenNos.GameObject
 
         public short InvSlot { get; set; }
 
-        public short InvType { get; set; }
+        public byte InvType { get; set; }
 
         public long Price { get; set; }
 

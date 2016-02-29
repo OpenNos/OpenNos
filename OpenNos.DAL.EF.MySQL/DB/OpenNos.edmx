@@ -82,7 +82,7 @@
     <Property Name="AccountId" Type="bigint" Nullable="false" />
     <Property Name="Name" Type="varchar" Nullable="false" MaxLength="255" />
     <Property Name="Password" Type="varchar" Nullable="false" MaxLength="255" />
-    <Property Name="Authority" Type="smallint" Nullable="false" />
+    <Property Name="Authority" Type="utinyint" Nullable="false" />
     <Property Name="LastSession" Type="int" Nullable="false" />
     <Property Name="LastCompliment" Type="datetime" Nullable="false" DefaultValue="1970-01-01 00:00:00.000Z" />
   </EntityType>
@@ -105,7 +105,7 @@
     <Property Name="Mp" Type="int" Nullable="false" />
     <Property Name="ArenaWinner" Type="int" Nullable="false" />
     <Property Name="Reput" Type="bigint" Nullable="false" />
-    <Property Name="Dignite" Type="int" Nullable="false" />
+    <Property Name="Dignite" Type="utinyint" Nullable="false" />
     <Property Name="Gold" Type="bigint" Nullable="false" />
     <Property Name="Backpack" Type="int" Nullable="false" />
     <Property Name="Level" Type="utinyint" Nullable="false" />
@@ -191,7 +191,7 @@
     <Property Name="IsSoldable" Type="bool" Nullable="false" />
     <Property Name="IsMinilandObject" Type="bool" Nullable="false" />
     <Property Name="IsWarehouse" Type="bool" Nullable="false" />
-    <Property Name="LevelMinimum" Type="smallint" Nullable="false" />
+    <Property Name="LevelMinimum" Type="utinyint" Nullable="false" />
     <Property Name="DamageMinimum" Type="smallint" Nullable="false" />
     <Property Name="DamageMaximum" Type="smallint" Nullable="false" />
     <Property Name="Concentrate" Type="smallint" Nullable="false" />
@@ -205,7 +205,7 @@
     <Property Name="DefenceDodge" Type="smallint" Nullable="false" />
     <Property Name="Hp" Type="smallint" Nullable="false" />
     <Property Name="Mp" Type="smallint" Nullable="false" />
-    <Property Name="LevelJobMinimum" Type="smallint" Nullable="false" />
+    <Property Name="LevelJobMinimum" Type="utinyint" Nullable="false" />
     <Property Name="MaxCellon" Type="utinyint" Nullable="false" />
     <Property Name="MaxCellonLvl" Type="utinyint" Nullable="false" />
     <Property Name="FireResistance" Type="smallint" Nullable="false" />
@@ -231,7 +231,7 @@
     <Property Name="ReputationMinimum" Type="utinyint" Nullable="false" />
     <Property Name="FairyMaximumLevel" Type="utinyint" Nullable="false" />
     <Property Name="MaximumAmmo" Type="utinyint" Nullable="false" />
-    <Property Name="BasicUpgrade" Type="smallint" Nullable="false" />
+    <Property Name="BasicUpgrade" Type="utinyint" Nullable="false" />
     <Property Name="Color" Type="smallint" Nullable="false" />
     <Property Name="ItemValidTime" Type="bigint" Nullable="false" />
     <Property Name="IsPearl" Type="bool" Nullable="false" />
@@ -265,7 +265,7 @@
     <Property Name="DamageMaximum" Type="smallint" Nullable="false" />
     <Property Name="Concentrate" Type="smallint" Nullable="false" />
     <Property Name="HitRate" Type="smallint" Nullable="false" />
-    <Property Name="CriticalLuckRate" Type="smallint" Nullable="false" />
+    <Property Name="CriticalLuckRate" Type="utinyint" Nullable="false" />
     <Property Name="CriticalRate" Type="smallint" Nullable="false" />
     <Property Name="RangeDefence" Type="smallint" Nullable="false" />
     <Property Name="DistanceDefence" Type="smallint" Nullable="false" />
@@ -273,22 +273,22 @@
     <Property Name="DistanceDefenceDodge" Type="smallint" Nullable="false" />
     <Property Name="DefenceDodge" Type="smallint" Nullable="false" />
     <Property Name="ElementRate" Type="smallint" Nullable="false" />
-    <Property Name="Upgrade" Type="smallint" Nullable="false" />
-    <Property Name="Rare" Type="smallint" Nullable="false" />
+    <Property Name="Upgrade" Type="utinyint" Nullable="false" />
+    <Property Name="Rare" Type="utinyint" Nullable="false" />
     <Property Name="Color" Type="smallint" Nullable="false" />
-    <Property Name="Amount" Type="smallint" Nullable="false" />
-    <Property Name="SpLevel" Type="smallint" Nullable="false" />
+    <Property Name="Amount" Type="utinyint" Nullable="false" />
+    <Property Name="SpLevel" Type="utinyint" Nullable="false" />
     <Property Name="SpXp" Type="smallint" Nullable="false" />
     <Property Name="SlElement" Type="smallint" Nullable="false" />
     <Property Name="SlHit" Type="smallint" Nullable="false" />
     <Property Name="SlDefence" Type="smallint" Nullable="false" />
     <Property Name="SlHP" Type="smallint" Nullable="false" />
-    <Property Name="DarkElement" Type="smallint" Nullable="false" />
-    <Property Name="LightElement" Type="smallint" Nullable="false" />
-    <Property Name="WaterElement" Type="smallint" Nullable="false" />
-    <Property Name="FireElement" Type="smallint" Nullable="false" />
+    <Property Name="DarkElement" Type="utinyint" Nullable="false" />
+    <Property Name="LightElement" Type="utinyint" Nullable="false" />
+    <Property Name="WaterElement" Type="utinyint" Nullable="false" />
+    <Property Name="FireElement" Type="utinyint" Nullable="false" />
     <Property Name="ItemVNum" Type="smallint" Nullable="false" />
-    <Property Name="Ammo" Type="smallint" Nullable="false" />
+    <Property Name="Ammo" Type="utinyint" Nullable="false" />
     <Property Name="IsFixed" Type="bool" Nullable="false" />
   </EntityType>
   <EntityType Name="inventory">
@@ -297,7 +297,7 @@
     </Key>
     <Property Name="InventoryId" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="CharacterId" Type="bigint" Nullable="false" />
-    <Property Name="Type" Type="smallint" Nullable="false" />
+    <Property Name="Type" Type="utinyint" Nullable="false" />
     <Property Name="Slot" Type="smallint" Nullable="false" />
     <Property Name="InventoryItemId" Type="bigint" Nullable="false" />
   </EntityType>
@@ -306,13 +306,14 @@
       <PropertyRef Name="ShopItemId" />
     </Key>
     <Property Name="ShopItemId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-    <Property Name="Type" Type="smallint" Nullable="false" />
+    <Property Name="Type" Type="utinyint" Nullable="false" />
     <Property Name="Slot" Type="smallint" Nullable="false" />
     <Property Name="ItemVNum" Type="smallint" Nullable="false" />
     <Property Name="Upgrade" Type="utinyint" Nullable="false" />
     <Property Name="Rare" Type="utinyint" Nullable="false" />
     <Property Name="Color" Type="smallint" Nullable="false" />
     <Property Name="ShopId" Type="int" Nullable="false" />
+    <Property Name="Gold" Type="bigint" Nullable="false" />
   </EntityType>
   <EntityType Name="shop">
     <Key>
@@ -514,7 +515,7 @@
           <Property Name="AccountId" Type="Int64" Nullable="false" />
           <Property Name="Name" Type="String" Nullable="false" MaxLength="255" />
           <Property Name="Password" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="Authority" Type="Int16" Nullable="false" />
+          <Property Name="Authority" Type="Byte" Nullable="false" />
           <Property Name="LastSession" Type="Int32" Nullable="false" />
           <NavigationProperty Name="character" Relationship="opennosModel.AccountCharacter" FromRole="Account" ToRole="Character" />
           <NavigationProperty Name="log" Relationship="opennosModel.accountlog" FromRole="account" ToRole="log" />
@@ -539,7 +540,7 @@
           <Property Name="Mp" Type="Int32" Nullable="false" />
           <Property Name="ArenaWinner" Type="Int32" Nullable="false" />
           <Property Name="Reput" Type="Int64" Nullable="false" />
-          <Property Name="Dignite" Type="Int32" Nullable="false" />
+          <Property Name="Dignite" Type="Byte" Nullable="false" />
           <Property Name="Gold" Type="Int64" Nullable="false" />
           <Property Name="Backpack" Type="Int32" Nullable="false" />
           <Property Name="Level" Type="Byte" Nullable="false" />
@@ -780,7 +781,7 @@
           <Property Name="IsSoldable" Type="Boolean" Nullable="false" />
           <Property Name="IsMinilandObject" Type="Boolean" Nullable="false" />
           <Property Name="IsWarehouse" Type="Boolean" Nullable="false" />
-          <Property Name="LevelMinimum" Type="Int16" Nullable="false" />
+          <Property Name="LevelMinimum" Type="Byte" Nullable="false" />
           <Property Name="DamageMinimum" Type="Int16" Nullable="false" />
           <Property Name="DamageMaximum" Type="Int16" Nullable="false" />
           <Property Name="Concentrate" Type="Int16" Nullable="false" />
@@ -794,7 +795,7 @@
           <Property Name="DefenceDodge" Type="Int16" Nullable="false" />
           <Property Name="Hp" Type="Int16" Nullable="false" />
           <Property Name="Mp" Type="Int16" Nullable="false" />
-          <Property Name="LevelJobMinimum" Type="Int16" Nullable="false" />
+          <Property Name="LevelJobMinimum" Type="Byte" Nullable="false" />
           <Property Name="MaxCellon" Type="Byte" Nullable="false" />
           <Property Name="MaxCellonLvl" Type="Byte" Nullable="false" />
           <Property Name="FireResistance" Type="Int16" Nullable="false" />
@@ -822,7 +823,7 @@
           <Property Name="ReputationMinimum" Type="Byte" Nullable="false" />
           <Property Name="FairyMaximumLevel" Type="Byte" Nullable="false" />
           <Property Name="MaximumAmmo" Type="Byte" Nullable="false" />
-          <Property Name="BasicUpgrade" Type="Int16" Nullable="false" />
+          <Property Name="BasicUpgrade" Type="Byte" Nullable="false" />
           <Property Name="Color" Type="Int16" Nullable="false" />
           <Property Name="ItemValidTime" Type="Int64" Nullable="false" />
           <Property Name="IsPearl" Type="Boolean" Nullable="false" />
@@ -870,7 +871,7 @@
           <Property Name="DamageMaximum" Type="Int16" Nullable="false" />
           <Property Name="Concentrate" Type="Int16" Nullable="false" />
           <Property Name="HitRate" Type="Int16" Nullable="false" />
-          <Property Name="CriticalLuckRate" Type="Int16" Nullable="false" />
+          <Property Name="CriticalLuckRate" Type="Byte" Nullable="false" />
           <Property Name="CriticalRate" Type="Int16" Nullable="false" />
           <Property Name="RangeDefence" Type="Int16" Nullable="false" />
           <Property Name="DistanceDefence" Type="Int16" Nullable="false" />
@@ -878,24 +879,24 @@
           <Property Name="DistanceDefenceDodge" Type="Int16" Nullable="false" />
           <Property Name="DefenceDodge" Type="Int16" Nullable="false" />
           <Property Name="ElementRate" Type="Int16" Nullable="false" />
-          <Property Name="Upgrade" Type="Int16" Nullable="false" />
-          <Property Name="Rare" Type="Int16" Nullable="false" />
+          <Property Name="Upgrade" Type="Byte" Nullable="false" />
+          <Property Name="Rare" Type="Byte" Nullable="false" />
           <Property Name="Color" Type="Int16" Nullable="false" />
-          <Property Name="Amount" Type="Int16" Nullable="false" />
-          <Property Name="SpLevel" Type="Int16" Nullable="false" />
+          <Property Name="Amount" Type="Byte" Nullable="false" />
+          <Property Name="SpLevel" Type="Byte" Nullable="false" />
           <Property Name="SpXp" Type="Int16" Nullable="false" />
           <Property Name="SlElement" Type="Int16" Nullable="false" />
           <Property Name="SlHit" Type="Int16" Nullable="false" />
           <Property Name="SlDefence" Type="Int16" Nullable="false" />
           <Property Name="SlHP" Type="Int16" Nullable="false" />
-          <Property Name="DarkElement" Type="Int16" Nullable="false" />
-          <Property Name="LightElement" Type="Int16" Nullable="false" />
-          <Property Name="WaterElement" Type="Int16" Nullable="false" />
-          <Property Name="FireElement" Type="Int16" Nullable="false" />
+          <Property Name="DarkElement" Type="Byte" Nullable="false" />
+          <Property Name="LightElement" Type="Byte" Nullable="false" />
+          <Property Name="WaterElement" Type="Byte" Nullable="false" />
+          <Property Name="FireElement" Type="Byte" Nullable="false" />
           <NavigationProperty Name="inventory" Relationship="opennosModel.InventoryItemInventory" FromRole="InventoryItem" ToRole="Inventory" />
           <NavigationProperty Name="item" Relationship="opennosModel.InventoryItemItem" FromRole="InventoryItem" ToRole="Item" />
           <Property Name="ItemVNum" Type="Int16" Nullable="false" />
-          <Property Name="Ammo" Type="Int16" Nullable="false" />
+          <Property Name="Ammo" Type="Byte" Nullable="false" />
           <Property Name="IsFixed" Type="Boolean" Nullable="false" />
           </EntityType>
         <EntityType Name="Inventory">
@@ -904,7 +905,7 @@
           </Key>
           <Property Name="InventoryId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="CharacterId" Type="Int64" Nullable="false" />
-          <Property Name="Type" Type="Int16" Nullable="false" />
+          <Property Name="Type" Type="Byte" Nullable="false" />
           <Property Name="Slot" Type="Int16" Nullable="false" />
           <NavigationProperty Name="character" Relationship="opennosModel.CharacterInventory" FromRole="Inventory" ToRole="Character" />
           <NavigationProperty Name="inventoryitem" Relationship="opennosModel.InventoryItemInventory" FromRole="Inventory" ToRole="InventoryItem" />
@@ -951,7 +952,7 @@
             <PropertyRef Name="ShopItemId" />
           </Key>
           <Property Name="ShopItemId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Type" Type="Int16" Nullable="false" />
+          <Property Name="Type" Type="Byte" Nullable="false" />
           <Property Name="Slot" Type="Int16" Nullable="false" />
           <NavigationProperty Name="item" Relationship="opennosModel.ShopItemItem" FromRole="ShopItem" ToRole="Item" />
           <Property Name="ItemVNum" Type="Int16" Nullable="false" />
@@ -960,6 +961,7 @@
           <NavigationProperty Name="shop" Relationship="opennosModel.ShopShopItem" FromRole="ShopItem" ToRole="Shop" />
           <Property Name="Color" Type="Int16" Nullable="false" />
           <Property Name="ShopId" Type="Int32" Nullable="false" />
+          <Property Name="Gold" Type="Int64" Nullable="false" />
         </EntityType>
         <EntityType Name="Shop">
           <Key>
@@ -1285,6 +1287,7 @@
           <ScalarProperty Name="Rare" ColumnName="Rare" />
           <ScalarProperty Name="Color" ColumnName="Color" />
           <ScalarProperty Name="ShopId" ColumnName="ShopId" />
+          <ScalarProperty Name="Gold" ColumnName="Gold" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

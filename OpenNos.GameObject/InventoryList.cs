@@ -52,11 +52,11 @@ namespace OpenNos.GameObject
             if (inv != null)
             {
                 Slot = inv.Slot;
-                newItem.Amount = (short)(newItem.Amount + inv.InventoryItem.Amount);
+                newItem.Amount = (byte)(newItem.Amount + inv.InventoryItem.Amount);
                 modified = true;
             }
             else
-                Slot = getFirstPlace(ServerManager.GetItem(newItem.ItemVNum).Type, character.BackPack, newItem);
+                Slot = (sbyte)getFirstPlace(ServerManager.GetItem(newItem.ItemVNum).Type, character.BackPack, newItem);
             if (Slot != -1)
             {
                 if (modified == false)
@@ -94,7 +94,7 @@ namespace OpenNos.GameObject
             }
         }
 
-        public void DeleteFromSlotAndType(short slot, short type)
+        public void DeleteFromSlotAndType(short slot, byte type)
         {
             Inventory inv = Inventory.SingleOrDefault(i => i.Slot.Equals(slot) && i.Type.Equals(type));
 
@@ -165,7 +165,7 @@ namespace OpenNos.GameObject
         public bool getFreePlaceAmount(List<InventoryItem> item, int backPack)
         {
             short[] place = new short[10];
-            for (short k = 0; k < place.Count(); k++)
+            for (byte k = 0; k < place.Count(); k++)
             {
                 place[k] = (short)(48 + (backPack * 12));
                 for (short i = 0; i < 48 + (backPack * 12); i++)
@@ -227,12 +227,12 @@ namespace OpenNos.GameObject
             return Inventory.SingleOrDefault(i => i.InventoryItemId.Equals(InventoryItemId));
         }
 
-        public Inventory LoadBySlotAndType(short slot, short type)
+        public Inventory LoadBySlotAndType(short slot, byte type)
         {
             return Inventory.SingleOrDefault(i => i.Slot.Equals(slot) && i.Type.Equals(type));
         }
 
-        public Inventory moveInventory(short type, short slot, short desttype, short destslot)
+        public Inventory moveInventory(byte type, byte slot, byte desttype, short destslot)
         {
             Inventory inv = LoadBySlotAndType(slot, type);
             if (inv != null)
@@ -250,7 +250,7 @@ namespace OpenNos.GameObject
             return inv;
         }
 
-        public void MoveItem(Character character, short type, short slot, short amount, short destslot, out Inventory inv, out Inventory invdest)
+        public void MoveItem(Character character, byte type, short slot, byte amount, short destslot, out Inventory inv, out Inventory invdest)
         {
             inv = LoadBySlotAndType(slot, type);
             invdest = LoadBySlotAndType(destslot, type);
@@ -265,7 +265,7 @@ namespace OpenNos.GameObject
                     }
                     else
                     {
-                        inv.InventoryItem.Amount = (short)(inv.InventoryItem.Amount - amount);
+                        inv.InventoryItem.Amount = (byte)(inv.InventoryItem.Amount - amount);
 
                         InventoryItem itemDest = new InventoryItem
                         {
@@ -320,7 +320,7 @@ namespace OpenNos.GameObject
                         {
                             short saveItemCount = invdest.InventoryItem.Amount;
                             invdest.InventoryItem.Amount = 99;
-                            inv.InventoryItem.Amount = (short)(saveItemCount + inv.InventoryItem.Amount - 99);
+                            inv.InventoryItem.Amount = (byte)(saveItemCount + inv.InventoryItem.Amount - 99);
 
                             InsertOrUpdate(ref inv);
                             InsertOrUpdate(ref invdest);
@@ -328,8 +328,8 @@ namespace OpenNos.GameObject
                         else
                         {
                             short saveItemCount = invdest.InventoryItem.Amount;
-                            invdest.InventoryItem.Amount = (short)(saveItemCount + amount);
-                            inv.InventoryItem.Amount = (short)(inv.InventoryItem.Amount - amount);
+                            invdest.InventoryItem.Amount = (byte)(saveItemCount + amount);
+                            inv.InventoryItem.Amount = (byte)(inv.InventoryItem.Amount - amount);
                             InsertOrUpdate(ref inv);
                             InsertOrUpdate(ref invdest);
                         }
@@ -349,7 +349,7 @@ namespace OpenNos.GameObject
             invdest = LoadBySlotAndType(destslot, type);
         }
 
-        public MapItem PutItem(ClientSession Session, short type, short slot, short amount, out Inventory inv)
+        public MapItem PutItem(ClientSession Session, byte type, short slot, byte amount, out Inventory inv)
         {
             Random rnd = new Random();
             int random = 0;
@@ -389,13 +389,13 @@ namespace OpenNos.GameObject
                 { }
                 DroppedItem.InventoryItemId = random;
                 Session.CurrentMap.DroppedList.Add(random, DroppedItem);
-                inv.InventoryItem.Amount = (short)(inv.InventoryItem.Amount - amount);
+                inv.InventoryItem.Amount = (byte)(inv.InventoryItem.Amount - amount);
                 Session.Character.InventoryList.InsertOrUpdate(ref inv);
             }
             return DroppedItem;
         }
 
-        internal Inventory AmountMinusFromSlotAndType(short amount, short invSlot, short invType)
+        internal Inventory AmountMinusFromSlotAndType(byte amount, short invSlot, short invType)
         {
             Inventory inv = Inventory.SingleOrDefault(i => i.Slot.Equals(invSlot) && i.Type.Equals(invType));
 

@@ -16,7 +16,7 @@ namespace OpenNos.DAL.EF.MySQL.DB
     {
         public long InventoryId { get; set; }
         public long CharacterId { get; set; }
-        public short Type { get; set; }
+        public byte Type { get; set; }
         public short Slot { get; set; }
         public long InventoryItemId { get; set; }
     

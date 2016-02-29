@@ -26,7 +26,7 @@ namespace OpenNos.Data
 
         public short Slot { get; set; }
 
-        public short Type { get; set; }
+        public byte Type { get; set; }
 
         #endregion
     }

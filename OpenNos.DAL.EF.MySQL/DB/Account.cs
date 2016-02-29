@@ -25,7 +25,7 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public long AccountId { get; set; }
         public string Name { get; set; }
         public string Password { get; set; }
-        public short Authority { get; set; }
+        public byte Authority { get; set; }
         public int LastSession { get; set; }
         public System.DateTime LastCompliment { get; set; }
     

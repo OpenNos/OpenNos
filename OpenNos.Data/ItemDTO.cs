@@ -34,7 +34,7 @@ namespace OpenNos.Data
         public bool IsSoldable { get; set; }
         public bool IsMinilandObject { get; set; }
         public bool IsWarehouse { get; set; }
-        public short LevelMinimum { get; set; }
+        public byte LevelMinimum { get; set; }
         public short DamageMinimum { get; set; }
         public short DamageMaximum { get; set; }
         public short Concentrate { get; set; }
@@ -48,7 +48,7 @@ namespace OpenNos.Data
         public short DefenceDodge { get; set; }
         public short Hp { get; set; }
         public short Mp { get; set; }
-        public short LevelJobMinimum { get; set; }
+        public byte LevelJobMinimum { get; set; }
         public byte MaxCellon { get; set; }
         public byte MaxCellonLvl { get; set; }
         public short FireResistance { get; set; }
@@ -74,7 +74,7 @@ namespace OpenNos.Data
         public byte ReputationMinimum { get; set; }
         public byte FairyMaximumLevel { get; set; }
         public byte MaximumAmmo { get; set; }
-        public short BasicUpgrade { get; set; }
+        public byte BasicUpgrade { get; set; }
         public short Color { get; set; }
         public long ItemValidTime { get; set; }
         public bool IsPearl { get; set; }

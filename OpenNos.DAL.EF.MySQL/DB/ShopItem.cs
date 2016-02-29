@@ -15,13 +15,14 @@ namespace OpenNos.DAL.EF.MySQL.DB
     public partial class ShopItem
     {
         public int ShopItemId { get; set; }
-        public short Type { get; set; }
+        public byte Type { get; set; }
         public short Slot { get; set; }
         public short ItemVNum { get; set; }
         public byte Upgrade { get; set; }
         public byte Rare { get; set; }
         public short Color { get; set; }
         public int ShopId { get; set; }
+        public long Gold { get; set; }
     
         public virtual Item item { get; set; }
         public virtual Shop shop { get; set; }

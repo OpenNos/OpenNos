@@ -105,7 +105,7 @@ namespace OpenNos.GameObject
             return true;
         }
 
-        public void BuyValidate(ClientSession clientSession, KeyValuePair<long, MapShop> shop, short slot, short amount)
+        public void BuyValidate(ClientSession clientSession, KeyValuePair<long, MapShop> shop, short slot, byte amount)
         {
             PersonalShopItem itemshop = clientSession.CurrentMap.ShopUserList[shop.Key].Items.FirstOrDefault(i => i.Slot.Equals(slot));
             if (itemshop == null)

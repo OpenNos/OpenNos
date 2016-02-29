@@ -37,7 +37,7 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public int Mp { get; set; }
         public int ArenaWinner { get; set; }
         public long Reput { get; set; }
-        public int Dignite { get; set; }
+        public byte Dignite { get; set; }
         public long Gold { get; set; }
         public int Backpack { get; set; }
         public byte Level { get; set; }
