@@ -228,7 +228,7 @@ namespace OpenNos.Import.Console
                         switch (item.ItemType)
                         {
                             case (byte)ItemType.Weapon:
-                                item.LevelMinimum = Convert.ToInt16(linesave[2]);
+                                item.LevelMinimum = Convert.ToByte(linesave[2]);
                                 item.DamageMinimum = Convert.ToInt16(linesave[3]);
                                 item.DamageMaximum = Convert.ToInt16(linesave[4]);
                                 item.HitRate = Convert.ToInt16(linesave[5]);
@@ -237,7 +237,7 @@ namespace OpenNos.Import.Console
                                 item.BasicUpgrade = Convert.ToByte(linesave[10]);
                                 break;
                             case (byte)ItemType.Armor:
-                                item.LevelMinimum = Convert.ToInt16(linesave[2]);
+                                item.LevelMinimum = Convert.ToByte(linesave[2]);
                                 item.RangeDefence = Convert.ToInt16(linesave[3]);
                                 item.DistanceDefence = Convert.ToInt16(linesave[4]);
                                 item.MagicDefence = Convert.ToInt16(linesave[5]);
@@ -250,7 +250,7 @@ namespace OpenNos.Import.Console
                                 //item.PetLevel = Convert.ToInt16(linesave[4]);
                                 break;
                             case (byte)ItemType.Fashion:
-                                item.LevelMinimum = Convert.ToInt16(linesave[2]);
+                                item.LevelMinimum = Convert.ToByte(linesave[2]);
                                 item.ItemValidTime = Convert.ToInt32(linesave[13]) * 3600;
                                 break;
                             case (byte)ItemType.Food:
@@ -270,7 +270,7 @@ namespace OpenNos.Import.Console
                                 }
                                 else
                                 {
-                                    item.LevelMinimum = Convert.ToInt16(linesave[2]);
+                                    item.LevelMinimum = Convert.ToByte(linesave[2]);
                                     item.MaxCellonLvl = Convert.ToByte(linesave[3]);
                                     item.MaxCellon = Convert.ToByte(linesave[4]);
                                 }
@@ -293,7 +293,7 @@ namespace OpenNos.Import.Console
                                 item.LightResistance = Convert.ToByte(linesave[17]);
                                 item.DarkResistance = Convert.ToByte(linesave[18]);
                                 //item.PartnerClass = Convert.ToInt16(linesave[19]);
-                                item.LevelJobMinimum = Convert.ToInt16(linesave[20]);
+                                item.LevelJobMinimum = Convert.ToByte(linesave[20]);
                                 item.ReputationMinimum = Convert.ToByte(linesave[21]);
                                 Dictionary<int, int> Elementdic = new Dictionary<int, int>();
                                 Elementdic.Add(0, 0);

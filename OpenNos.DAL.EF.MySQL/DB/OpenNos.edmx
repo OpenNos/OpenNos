@@ -781,7 +781,7 @@
           <Property Name="IsSoldable" Type="Boolean" Nullable="false" />
           <Property Name="IsMinilandObject" Type="Boolean" Nullable="false" />
           <Property Name="IsWarehouse" Type="Boolean" Nullable="false" />
-          <Property Name="LevelMinimum" Type="Int16" Nullable="false" />
+          <Property Name="LevelMinimum" Type="Byte" Nullable="false" />
           <Property Name="DamageMinimum" Type="Int16" Nullable="false" />
           <Property Name="DamageMaximum" Type="Int16" Nullable="false" />
           <Property Name="Concentrate" Type="Int16" Nullable="false" />
@@ -795,7 +795,7 @@
           <Property Name="DefenceDodge" Type="Int16" Nullable="false" />
           <Property Name="Hp" Type="Int16" Nullable="false" />
           <Property Name="Mp" Type="Int16" Nullable="false" />
-          <Property Name="LevelJobMinimum" Type="Int16" Nullable="false" />
+          <Property Name="LevelJobMinimum" Type="Byte" Nullable="false" />
           <Property Name="MaxCellon" Type="Byte" Nullable="false" />
           <Property Name="MaxCellonLvl" Type="Byte" Nullable="false" />
           <Property Name="FireResistance" Type="Int16" Nullable="false" />
