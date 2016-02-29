@@ -304,7 +304,7 @@ namespace OpenNos.Import.Console
                                 if (item.DarkResistance != 0)
                                     Elementdic.Add(4, item.DarkResistance);
                                 item.Element = (byte)Elementdic.OrderByDescending(s => s.Value).First().Key;
-                                if(Elementdic.OrderByDescending(s => s.Value).First().Value == Elementdic.OrderByDescending(s => s.Value).ElementAt(1).Value)
+                                if(Elementdic.Count > 1 && Elementdic.OrderByDescending(s => s.Value).First().Value == Elementdic.OrderByDescending(s => s.Value).ElementAt(1).Value)
                                 {
                                     item.SecondaryElement = (byte)Elementdic.OrderByDescending(s => s.Value).ElementAt(1).Key;
                                 }
