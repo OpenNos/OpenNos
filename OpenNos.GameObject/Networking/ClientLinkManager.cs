@@ -17,6 +17,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
+using System;
 
 namespace OpenNos.GameObject
 {
@@ -26,6 +27,9 @@ namespace OpenNos.GameObject
 
         private static ClientLinkManager _instance;
         private readonly Thread _autoSave; // if this thread is never aborted by code, it can be declared only in constructor!
+        public Thread threadShutdown {
+            get; set;
+        }
 
         #endregion
 

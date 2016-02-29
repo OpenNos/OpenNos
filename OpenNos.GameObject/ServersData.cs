@@ -300,6 +300,8 @@ namespace OpenNos.GameObject
                     point += 173;
                     break;
             }
+            if (spLevel <= 20)
+                point = 0;
             return point;
         }
 

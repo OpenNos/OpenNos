@@ -2227,8 +2227,8 @@ namespace OpenNos.Handler
         {
             if (ClientLinkManager.Instance.ShutdownActive == false)
             {
-                Thread threadShutdown = new Thread(ShutdownThread);
-                threadShutdown.Start();
+                ClientLinkManager.Instance.threadShutdown = new Thread(ShutdownThread);
+                ClientLinkManager.Instance.threadShutdown.Start();
                 ClientLinkManager.Instance.ShutdownActive = true;
             }
         }
@@ -2247,8 +2247,8 @@ namespace OpenNos.Handler
             ClientLinkManager.Instance.Broadcast(Session, $"say 1 0 10 ({Language.Instance.GetMessageFromKey("ADMINISTRATOR")}){message}", ReceiverType.All);
             ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateMsg(message, 2), ReceiverType.All);
             Thread.Sleep(30000);
-            //save
-            Environment.Exit(0);
+            ClientLinkManager.Instance.SaveAll();
+           Environment.Exit(0);
         }
 
         [Packet("#sl")]
