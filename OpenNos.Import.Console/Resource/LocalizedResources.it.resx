@@ -120,6 +120,9 @@
   <data name="DATABASE_INITIALIZED" xml:space="preserve">
     <value>Database e' stato inizializzato</value>
   </data>
+  <data name="DONE" xml:space="preserve">
+    <value>Parsing done!</value>
+  </data>
   <data name="ENTER_PATH" xml:space="preserve">
     <value>Immetti la directory dei file da sincronizzare</value>
   </data>

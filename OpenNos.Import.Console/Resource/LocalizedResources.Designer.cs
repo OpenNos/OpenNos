@@ -70,6 +70,15 @@ namespace OpenNos.Import.Console.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Parsing done!.
+        /// </summary>
+        internal static string DONE {
+            get {
+                return ResourceManager.GetString("DONE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Please enter the directory of files to parse.
         /// </summary>
         internal static string ENTER_PATH {

@@ -120,6 +120,9 @@
   <data name="DATABASE_INITIALIZED" xml:space="preserve">
     <value>Database has been initialized.</value>
   </data>
+  <data name="DONE" xml:space="preserve">
+    <value>Parsing done!</value>
+  </data>
   <data name="ENTER_PATH" xml:space="preserve">
     <value>Please enter the directory of files to parse</value>
   </data>

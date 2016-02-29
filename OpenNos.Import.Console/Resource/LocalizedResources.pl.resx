@@ -120,6 +120,9 @@
   <data name="DATABASE_INITIALIZED" xml:space="preserve">
     <value>Baza danych zostala zaladowana!</value>
   </data>
+  <data name="DONE" xml:space="preserve">
+    <value>Wprowadzanie ukonczone!</value>
+  </data>
   <data name="ENTER_PATH" xml:space="preserve">
     <value>Podaj sciezke pliku aby przeprowadzic rozbior danych</value>
   </data>
