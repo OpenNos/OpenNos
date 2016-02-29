@@ -482,6 +482,9 @@ namespace OpenNos.Import.Console
                             npctest.MapY = short.Parse(linesave[5]);
                             npctest.MapId = map;
                             npctest.NpcId = short.Parse(linesave[3]);
+
+                            npctest.Position = short.Parse(linesave[6]);
+                            npctest.Dialog = short.Parse(linesave[9]);
                             if (long.Parse(linesave[3]) >= 10000) continue; // Dialog too high. but why? in order to avoid partners
                             if (DAOFactory.NpcDAO.LoadFromMap(map).FirstOrDefault(s => s.MapId.Equals(map) && s.NpcId.Equals(npctest.NpcId)) != null) continue; // Npc already existing
                             DAOFactory.NpcDAO.Insert(npctest);
