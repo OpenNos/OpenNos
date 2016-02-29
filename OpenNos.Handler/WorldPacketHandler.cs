@@ -1998,7 +1998,7 @@ namespace OpenNos.Handler
             string[] packetsplit = packet.Split(' ');
             if (packetsplit[2] == "5")
             {
-                Npc npc = Session.CurrentMap.Npcs.First(s => s.NpcId == short.Parse(packetsplit[3]));
+                Npc npc = Session.CurrentMap.Npcs.First(s => s.Vnum == short.Parse(packetsplit[3]));
                 if (npc != null)
                 {
                     Session.Client.SendPacket(npc.GenerateEInfo());
