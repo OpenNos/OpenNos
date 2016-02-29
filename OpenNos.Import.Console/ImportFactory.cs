@@ -205,7 +205,7 @@ namespace OpenNos.Import.Console
                         item.IsColored = linesave[16] == "1" ? true : false;
                         item.Sex = linesave[17] == "1" ? (byte)2 : (byte)0;
                         item.Sex = linesave[18] == "1" ? (byte)1 : item.Sex;
-                        
+
                         /*
                         ??item.IsVehicle = linesave[11] == "1" ? true : false;??
                         ??item.BoxedVehicle = linesave[12] == "1" ? true : false;??
@@ -305,7 +305,7 @@ namespace OpenNos.Import.Console
                                 if (item.DarkResistance != 0)
                                     Elementdic.Add(4, item.DarkResistance);
                                 item.Element = (byte)Elementdic.OrderByDescending(s => s.Value).First().Key;
-                                if(Elementdic.Count > 1 && Elementdic.OrderByDescending(s => s.Value).First().Value == Elementdic.OrderByDescending(s => s.Value).ElementAt(1).Value)
+                                if (Elementdic.Count > 1 && Elementdic.OrderByDescending(s => s.Value).First().Value == Elementdic.OrderByDescending(s => s.Value).ElementAt(1).Value)
                                 {
                                     item.SecondaryElement = (byte)Elementdic.OrderByDescending(s => s.Value).ElementAt(1).Key;
                                 }
@@ -383,7 +383,7 @@ namespace OpenNos.Import.Console
             string fileNpcId = $"{_folder}\\monster.dat";
             string fileNpcLang = $"{_folder}\\_code_{System.Configuration.ConfigurationManager.AppSettings["language"]}_monster.txt";
 
-            // store like this: (vnum, (name, level))
+            // Store like this: (vnum, (name, level))
             Dictionary<int, KeyValuePair<string, short>> dictionaryNpcs = new Dictionary<int, KeyValuePair<string, short>>();
             Dictionary<string, string> dictionaryIdLang = new Dictionary<string, string>();
 
@@ -444,7 +444,7 @@ namespace OpenNos.Import.Console
                     try
                     {
                         if (long.Parse(linesave[3]) >= 10000)
-                            continue; // dialog too high. but why? in order to avoid partners
+                            continue; // Dialog too high. but why? in order to avoid partners
 
                         if (
                             DAOFactory.NpcDAO.LoadFromMap(map)
@@ -468,7 +468,7 @@ namespace OpenNos.Import.Console
                     }
                     catch (Exception)
                     {
-                        // continue with next line in packet file
+                        // Continue with next line in packet file
                     }
                 }
             }
@@ -602,6 +602,32 @@ namespace OpenNos.Import.Console
             }
 
             Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("SHOPS_PARSED"), shopCounter));
+        }
+
+        public void ImportShopItems()
+        {
+            ShopItemDTO shopItem = new ShopItemDTO();
+
+            int shopItemCounter = 0;
+
+            foreach (string[] linesave in packetList.Where(o => o[0].Equals("n_inv")))
+            {
+                if (linesave.Length > 10 && linesave[0] == "n_inv" && linesave[1] == "2")
+                {
+                    shopItem = new ShopItemDTO
+                    {
+                        ShopId = short.Parse(linesave[3]),
+                        Type = short.Parse(linesave[6]),
+                    };
+                    if (DAOFactory.ShopItemDAO.LoadByShopId(shopItem.ShopId) == null)
+                    {
+                        DAOFactory.ShopItemDAO.InsertOrUpdate(ref shopItem);
+                        shopItemCounter++;
+                    }
+                }
+            }
+
+            Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("SHOPITEMS_PARSED"), shopItemCounter));
         }
 
         #endregion
