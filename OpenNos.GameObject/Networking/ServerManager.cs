@@ -114,7 +114,19 @@ namespace OpenNos.GameObject
                     Speed = item.Speed,
                     Type = item.Type,
                     VNum = item.VNum,
-                    WaterElement = item.WaterElement
+                    WaterElement = item.WaterElement,
+                    SpType = item.SpType,
+                    Color = item.Color,
+                    CellonLvl = item.CellonLvl,
+                    BasicUpgrade = item.BasicUpgrade,
+                    Effect = item.Effect,
+                    EffectValue = item.EffectValue,
+                    FairyMaximumLevel = item.FairyMaximumLevel,
+                    IsPearl = item.IsPearl,
+                    Sex = item.Sex,
+                    SecondaryElement = item.SecondaryElement,
+                    MaximumAmmo = item.MaximumAmmo,
+                    ItemValidTime = item.ItemValidTime
                 });
             }
 
