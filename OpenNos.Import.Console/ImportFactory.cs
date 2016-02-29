@@ -614,16 +614,29 @@ namespace OpenNos.Import.Console
             {
                 if (linesave.Length > 10 && linesave[0] == "n_inv" && linesave[1] == "2")
                 {
-                    shopItem = new ShopItemDTO
+                    shopItem.ShopId = short.Parse(linesave[3]);
+                    shopItem.Color = short.Parse(linesave[4]);
+                    shopItem.Type = short.Parse(linesave[6]);
+                    shopItem.Slot = short.Parse(linesave[7]);
+                    shopItem.ItemVNum = short.Parse(linesave[8]);
+                    shopItem.Upgrade = short.Parse(linesave[9]);
+
+                    if (linesave.Length > 10)
                     {
-                        ShopId = short.Parse(linesave[3]),
-                        Type = short.Parse(linesave[6]),
-                    };
-                    if (DAOFactory.ShopItemDAO.LoadByShopId(shopItem.ShopId) == null)
-                    {
-                        DAOFactory.ShopItemDAO.InsertOrUpdate(ref shopItem);
-                        shopItemCounter++;
+                        shopItem.Rare = short.Parse(linesave[10]);
+                        shopItem.Gold = long.Parse(linesave[11]);
                     }
+                    else
+                    {
+                        shopItem.Gold = long.Parse(linesave[10]);
+                    }
+
+                }
+                if (DAOFactory.ShopItemDAO.LoadByShopId(shopItem.ShopId) == null)
+                {
+                    DAOFactory.ShopItemDAO.InsertOrUpdate(ref shopItem);
+                    shopItemCounter++;
+
                 }
             }
 

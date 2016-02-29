@@ -34,6 +34,8 @@ namespace OpenNos.Data
 
         public short Upgrade { get; set; }
 
+        public long Gold { get; set; }
+
         #endregion
     }
 }

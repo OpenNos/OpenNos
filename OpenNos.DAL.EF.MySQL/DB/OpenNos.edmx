@@ -960,6 +960,7 @@
           <NavigationProperty Name="shop" Relationship="opennosModel.ShopShopItem" FromRole="ShopItem" ToRole="Shop" />
           <Property Name="Color" Type="Int16" Nullable="false" />
           <Property Name="ShopId" Type="Int32" Nullable="false" />
+          <Property Name="Gold" Type="Int64" Nullable="false" />
         </EntityType>
         <EntityType Name="Shop">
           <Key>
