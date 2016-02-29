@@ -246,7 +246,7 @@
     <Key>
       <PropertyRef Name="NpcId" />
     </Key>
-    <Property Name="NpcId" Type="smallint" StoreGeneratedPattern="None" Nullable="false" />
+    <Property Name="NpcId" Type="smallint" Nullable="false" />
     <Property Name="Name" Type="longtext" Nullable="false" />
     <Property Name="Vnum" Type="smallint" Nullable="false" />
     <Property Name="Dialog" Type="smallint" Nullable="false" />

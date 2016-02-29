@@ -44,7 +44,7 @@
 -- -----------------------------------------------------------
 -- Entity Designer DDL Script for MySQL Server 4.1 and higher
 -- -----------------------------------------------------------
--- Date Created: 02/29/2016 23:21:04
+-- Date Created: 03/01/2016 00:34:32
 
 -- Generated from EDMX file: C:\Users\ERWAN\Desktop\OpenNos GIT\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
 -- Target version: 3.0.0.0
@@ -310,7 +310,7 @@ ALTER TABLE `item` ADD PRIMARY KEY (VNum);
 
 
 CREATE TABLE `npc`(
-	`NpcId` smallint NOT NULL AUTO_INCREMENT UNIQUE, 
+	`NpcId` smallint NOT NULL, 
 	`Name` longtext NOT NULL, 
 	`Vnum` smallint NOT NULL, 
 	`Dialog` smallint NOT NULL, 
