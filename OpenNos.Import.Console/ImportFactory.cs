@@ -203,8 +203,8 @@ namespace OpenNos.Import.Console
                         item.IsMinilandObject = linesave[9] == "1" ? true : false;
                         item.IsWarehouse = linesave[10] == "1" ? true : false;
                         item.IsColored = linesave[16] == "1" ? true : false;
-                        item.Sex = linesave[18] == "1" ? (byte)1 : (byte)0;
-                        item.Sex = linesave[17] == "1" ? (byte)2 : item.Sex;
+                        item.Sex = linesave[17] == "1" ? (byte)2 : (byte)0;
+                        item.Sex = linesave[18] == "1" ? (byte)1 : item.Sex;
                         /*
                         ??item.IsVehicle = linesave[11] == "1" ? true : false;??
                         ??item.BoxedVehicle = linesave[12] == "1" ? true : false;??
@@ -293,6 +293,10 @@ namespace OpenNos.Import.Console
                                 //item.PartnerClass = Convert.ToInt16(linesave[19]);
                                 item.LevelJobMinimum = Convert.ToInt16(linesave[20]);
                                 item.ReputationMinimum = Convert.ToByte(linesave[21]);
+                                if (item.VNum == 4502)
+                                {
+                                    item.ReputationMinimum = Convert.ToByte(linesave[21]);
+                                }
                                 Dictionary<int, int> Elementdic = new Dictionary<int, int>();
                                 Elementdic.Add(0, 0);
                                 if (item.FireResistance != 0)
@@ -304,10 +308,6 @@ namespace OpenNos.Import.Console
                                 if (item.DarkResistance != 0)
                                     Elementdic.Add(4, item.DarkResistance);
                                 item.Element = (byte)Elementdic.OrderByDescending(s => s.Value).First().Key;
-                                if(Elementdic.OrderByDescending(s => s.Value).First().Value == Elementdic.OrderByDescending(s => s.Value).ElementAt(1).Value)
-                                {
-                                    item.SecondaryElement = (byte)Elementdic.OrderByDescending(s => s.Value).ElementAt(1).Key;
-                                }
                                 break;
                             case (byte)ItemType.Shell:
                                 //item.ShellMinimumLevel = Convert.ToInt16(linesave[3]);//wtf\/\/ this two things are wrong in many ways
