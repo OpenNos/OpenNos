@@ -452,6 +452,7 @@ namespace OpenNos.Handler
             Session.Client.SendPacket(Session.Character.GenerateSay("$Ban CHARACTERNAME", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$Invisible", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$Position", 6));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID RARE UPGRADE", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID COLOR", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID AMOUNT", 6));
@@ -572,8 +573,9 @@ namespace OpenNos.Handler
             short vnum, color = 0;
             byte rare = 0, upgrade = 0,  level = 0;
             ItemDTO iteminfo = null;
-            if (packetsplit.Length != 5 && packetsplit.Length != 4)
+            if (packetsplit.Length != 5 && packetsplit.Length != 4 && packetsplit.Length != 3)
             {
+                Session.Client.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID", 10));
                 Session.Client.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID RARE UPGRADE", 10));
                 Session.Client.SendPacket(Session.Character.GenerateSay("$CreateItem SPID UPGRADE WINGS", 10));
                 Session.Client.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID COLOR", 10));
@@ -611,8 +613,7 @@ namespace OpenNos.Handler
                     }
                     else
                     {
-
-
+                        if(packetsplit.Length >3)
                         Byte.TryParse(packetsplit[3], out amount);
                     }
                     if (iteminfo.EquipmentSlot == Convert.ToByte((byte)EquipmentType.Sp))
