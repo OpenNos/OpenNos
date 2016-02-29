@@ -2714,7 +2714,7 @@ namespace OpenNos.Handler
                      && iteminfo.ItemType != (byte)ItemType.Fashion
                      && iteminfo.ItemType != (byte)ItemType.Jewelery
                      && iteminfo.ItemType != (byte)ItemType.Specialist)
-                    || iteminfo.LevelMinimum > Session.Character.Level || (iteminfo.Sex != 0 && iteminfo.Sex != Session.Character.Gender)
+                    || iteminfo.LevelMinimum > Session.Character.Level || (iteminfo.Sex != 0 && iteminfo.Sex != Session.Character.Gender+1)
                     || ((iteminfo.Class >> Session.Character.Class) & 1) != 1)
                 {
                     Session.Client.SendPacket(
