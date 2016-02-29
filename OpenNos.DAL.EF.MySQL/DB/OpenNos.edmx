@@ -246,7 +246,7 @@
     <Key>
       <PropertyRef Name="NpcId" />
     </Key>
-    <Property Name="NpcId" Type="smallint" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="NpcId" Type="smallint" StoreGeneratedPattern="None" Nullable="false" />
     <Property Name="Name" Type="longtext" Nullable="false" />
     <Property Name="Vnum" Type="smallint" Nullable="false" />
     <Property Name="Dialog" Type="smallint" Nullable="false" />
@@ -857,7 +857,7 @@
           <Key>
             <PropertyRef Name="NpcId" />
           </Key>
-          <Property Name="NpcId" Type="Int16" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="NpcId" Type="Int16" Nullable="false" annotation:StoreGeneratedPattern="None" />
           <Property Name="Name" Type="String" Nullable="false" />
           <Property Name="Vnum" Type="Int16" Nullable="false" />
           <Property Name="Dialog" Type="Int16" Nullable="false" />

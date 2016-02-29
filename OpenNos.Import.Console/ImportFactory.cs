@@ -390,30 +390,45 @@ namespace OpenNos.Import.Console
             NpcDTO npc = new NpcDTO();
             string line;
             int vnum = -1;
-            string name2 = "";
             bool itemAreaBegin = false;
+            List<NpcDTO> npclist = new List<NpcDTO>();
+            using (StreamReader npcIdLangStream = new StreamReader(fileNpcLang, Encoding.GetEncoding(1252)))
+            {
+                while ((line = npcIdLangStream.ReadLine()) != null)
+                {
+                    string[] linesave = line.Split('\t');
+                    if (linesave.Length > 1 && !dictionaryIdLang.ContainsKey(linesave[0]))
+                        dictionaryIdLang.Add(linesave[0], linesave[1]);
+                }
+                npcIdLangStream.Close();
+            }
+
+
             using (StreamReader npcIdStream = new StreamReader(fileNpcId, Encoding.GetEncoding(1252)))
             {
                 while ((line = npcIdStream.ReadLine()) != null)
                 {
+
                     string[] linesave = line.Split('\t');
 
                     if (linesave.Length > 2 && linesave[1] == "VNUM")
                     {
-                        vnum = int.Parse(linesave[2]);
+                        npc = new NpcDTO();
+                        npc.Vnum = short.Parse(linesave[2]);
                         itemAreaBegin = true;
                     }
                     else if (linesave.Length > 2 && linesave[1] == "LEVEL")
                     {
                         if (!itemAreaBegin) continue;
+                        npc.Level = byte.Parse(linesave[2]);
 
-                        dictionaryNpcs.Add(vnum, new KeyValuePair<string, short>(name2, short.Parse(linesave[2])));
-                        // maybe set 'name2' and 'vnum' to default() for security?
-                        itemAreaBegin = false;
                     }
                     else if (linesave.Length > 2 && linesave[1] == "NAME")
                     {
-                        name2 = linesave[2];
+                        if (dictionaryIdLang.ContainsKey(linesave[2]))
+                            npc.Name = dictionaryIdLang[linesave[2]];
+                        else
+                            npc.Name = "";
                     }
 
                     else if (linesave.Length > 7 && linesave[1] == "ATTRIB")
@@ -436,21 +451,16 @@ namespace OpenNos.Import.Console
                     else if (linesave.Length > 3 && linesave[1] == "AINFO")
                     {
                         npc.DefenceUpgrade = Convert.ToByte(linesave[2]);
+
+                        npclist.Add(npc);
+                        itemAreaBegin = false;
                     }
+
                 }
                 npcIdStream.Close();
             }
 
-            using (StreamReader npcIdLangStream = new StreamReader(fileNpcLang, Encoding.GetEncoding(1252)))
-            {
-                while ((line = npcIdLangStream.ReadLine()) != null)
-                {
-                    string[] linesave = line.Split('\t');
-                    if (linesave.Length > 1 && !dictionaryIdLang.ContainsKey(linesave[0]))
-                        dictionaryIdLang.Add(linesave[0], linesave[1]);
-                }
-                npcIdLangStream.Close();
-            }
+
 
             int npcCounter = 0;
             short map = 0;
@@ -465,32 +475,18 @@ namespace OpenNos.Import.Console
                 {
                     try
                     {
-                        if (long.Parse(linesave[3]) >= 10000) continue; // Dialog too high. but why? in order to avoid partners
-
-                        if (DAOFactory.NpcDAO.LoadFromMap(map).FirstOrDefault(s => s.MapId.Equals(map) && s.Vnum.Equals(short.Parse(linesave[2]))) != null) continue; // Npc already existing
-
-                        KeyValuePair<string, short> nameAndLevel = dictionaryNpcs[int.Parse(linesave[2])];
-                        DAOFactory.NpcDAO.Insert(new NpcDTO
+                        NpcDTO npctest = npclist.First(s => s.Vnum == short.Parse(linesave[2]));
+                        if (npctest != null)
                         {
-                            Vnum = short.Parse(linesave[2]),
-                            Level = (byte)nameAndLevel.Value,
-                            MapId = map,
-                            MapX = short.Parse(linesave[4]),
-                            MapY = short.Parse(linesave[5]),
-                            Name = dictionaryIdLang[nameAndLevel.Key],
-                            Position = short.Parse(linesave[6]),
-                            Dialog = short.Parse(linesave[9]),
-                            Element = npc.Element,
-                            ElementRate = npc.ElementRate,
-                            FireElement = npc.FireElement,
-                            WaterElement = npc.WaterElement,
-                            LightElement = npc.LightElement,
-                            DarkElement = npc.DarkElement,
-                            AttackClass = npc.AttackClass,
-                            DefenceUpgrade = npc.DefenceUpgrade,
-                            AttackUpgrade = npc.AttackUpgrade,
-                        });
-                        npcCounter++;
+                            npctest.MapX = short.Parse(linesave[4]);
+                            npctest.MapY = short.Parse(linesave[5]);
+                            npctest.MapId = map;
+                            npc.NpcId = short.Parse(linesave[3]);
+                            if (long.Parse(linesave[3]) >= 10000) continue; // Dialog too high. but why? in order to avoid partners
+                            if (DAOFactory.NpcDAO.LoadFromMap(map).FirstOrDefault(s => s.MapId.Equals(map) && s.NpcId.Equals(npc.NpcId)) != null) continue; // Npc already existing
+                            DAOFactory.NpcDAO.Insert(npctest);
+                            npcCounter++;
+                        }
                     }
                     catch (Exception)
                     {
