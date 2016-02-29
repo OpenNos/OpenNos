@@ -44,7 +44,7 @@
 -- -----------------------------------------------------------
 -- Entity Designer DDL Script for MySQL Server 4.1 and higher
 -- -----------------------------------------------------------
--- Date Created: 02/29/2016 21:59:50
+-- Date Created: 02/29/2016 22:49:51
 
 -- Generated from EDMX file: C:\Users\Dominik\Source\Repos\OpenNos\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
 -- Target version: 3.0.0.0
@@ -259,7 +259,7 @@ CREATE TABLE `item`(
 	`HitRate` smallint NOT NULL, 
 	`CriticalLuckRate` smallint NOT NULL, 
 	`CriticalRate` smallint NOT NULL, 
-	`RangeDefence` smallint NOT NULL, 
+	`CloseDefence` smallint NOT NULL, 
 	`DistanceDefence` smallint NOT NULL, 
 	`MagicDefence` smallint NOT NULL, 
 	`DistanceDefenceDodge` smallint NOT NULL, 
@@ -317,11 +317,11 @@ CREATE TABLE `npc`(
 	`MapId` smallint NOT NULL, 
 	`MapX` smallint NOT NULL, 
 	`MapY` smallint NOT NULL, 
-	`Position` TINYINT UNSIGNED NOT NULL, 
+	`Position` smallint NOT NULL, 
 	`Level` TINYINT UNSIGNED NOT NULL, 
-	`Element` longtext NOT NULL, 
+	`Element` TINYINT UNSIGNED NOT NULL, 
 	`AttackClass` TINYINT UNSIGNED NOT NULL, 
-	`ElementRate` TINYINT UNSIGNED NOT NULL, 
+	`ElementRate` smallint NOT NULL, 
 	`AttackUpgrade` TINYINT UNSIGNED NOT NULL, 
 	`DamageMinimum` smallint NOT NULL, 
 	`DamageMaximum` smallint NOT NULL, 
@@ -337,8 +337,7 @@ CREATE TABLE `npc`(
 	`FireElement` smallint NOT NULL, 
 	`WaterElement` smallint NOT NULL, 
 	`LightElement` smallint NOT NULL, 
-	`DarkElement` smallint NOT NULL, 
-	`PassiveId` smallint NOT NULL);
+	`DarkElement` smallint NOT NULL);
 
 ALTER TABLE `npc` ADD PRIMARY KEY (NpcId);
 

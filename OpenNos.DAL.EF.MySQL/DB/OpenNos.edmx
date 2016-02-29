@@ -198,7 +198,7 @@
     <Property Name="HitRate" Type="smallint" Nullable="false" />
     <Property Name="CriticalLuckRate" Type="smallint" Nullable="false" />
     <Property Name="CriticalRate" Type="smallint" Nullable="false" />
-    <Property Name="RangeDefence" Type="smallint" Nullable="false" />
+    <Property Name="CloseDefence" Type="smallint" Nullable="false" />
     <Property Name="DistanceDefence" Type="smallint" Nullable="false" />
     <Property Name="MagicDefence" Type="smallint" Nullable="false" />
     <Property Name="DistanceDefenceDodge" Type="smallint" Nullable="false" />
@@ -253,11 +253,11 @@
     <Property Name="MapId" Type="smallint" Nullable="false" />
     <Property Name="MapX" Type="smallint" Nullable="false" />
     <Property Name="MapY" Type="smallint" Nullable="false" />
-    <Property Name="Position" Type="utinyint" Nullable="false" />
+    <Property Name="Position" Type="smallint" Nullable="false" />
     <Property Name="Level" Type="utinyint" Nullable="false" />
-    <Property Name="Element" Type="longtext" Nullable="false" />
+    <Property Name="Element" Type="utinyint" Nullable="false" />
     <Property Name="AttackClass" Type="utinyint" Nullable="false" />
-    <Property Name="ElementRate" Type="utinyint" Nullable="false" />
+    <Property Name="ElementRate" Type="smallint" Nullable="false" />
     <Property Name="AttackUpgrade" Type="utinyint" Nullable="false" />
     <Property Name="DamageMinimum" Type="smallint" Nullable="false" />
     <Property Name="DamageMaximum" Type="smallint" Nullable="false" />
@@ -274,7 +274,6 @@
     <Property Name="WaterElement" Type="smallint" Nullable="false" />
     <Property Name="LightElement" Type="smallint" Nullable="false" />
     <Property Name="DarkElement" Type="smallint" Nullable="false" />
-    <Property Name="PassiveId" Type="smallint" Nullable="false" />
   </EntityType>
   <EntityType Name="inventoryitem">
     <Key>
@@ -808,7 +807,7 @@
           <Property Name="HitRate" Type="Int16" Nullable="false" />
           <Property Name="CriticalLuckRate" Type="Int16" Nullable="false" />
           <Property Name="CriticalRate" Type="Int16" Nullable="false" />
-          <Property Name="RangeDefence" Type="Int16" Nullable="false" />
+          <Property Name="CloseDefence" Type="Int16" Nullable="false" />
           <Property Name="DistanceDefence" Type="Int16" Nullable="false" />
           <Property Name="MagicDefence" Type="Int16" Nullable="false" />
           <Property Name="DistanceDefenceDodge" Type="Int16" Nullable="false" />
@@ -865,13 +864,13 @@
           <Property Name="MapId" Type="Int16" Nullable="false" />
           <Property Name="MapX" Type="Int16" Nullable="false" />
           <Property Name="MapY" Type="Int16" Nullable="false" />
-          <Property Name="Position" Type="Byte" Nullable="false" />
+          <Property Name="Position" Type="Int16" Nullable="false" />
           <NavigationProperty Name="map" Relationship="opennosModel.NpcMap" FromRole="Npc" ToRole="Map" />
           <Property Name="Level" Type="Byte" Nullable="false" />
           <NavigationProperty Name="shop" Relationship="opennosModel.ShopNpc" FromRole="Npc" ToRole="Shop" />
-          <Property Name="Element" Type="String" Nullable="false" />
+          <Property Name="Element" Type="Byte" Nullable="false" />
           <Property Name="AttackClass" Type="Byte" Nullable="false" />
-          <Property Name="ElementRate" Type="Byte" Nullable="false" />
+          <Property Name="ElementRate" Type="Int16" Nullable="false" />
           <Property Name="AttackUpgrade" Type="Byte" Nullable="false" />
           <Property Name="DamageMinimum" Type="Int16" Nullable="false" />
           <Property Name="DamageMaximum" Type="Int16" Nullable="false" />
@@ -888,7 +887,6 @@
           <Property Name="WaterElement" Type="Int16" Nullable="false" />
           <Property Name="LightElement" Type="Int16" Nullable="false" />
           <Property Name="DarkElement" Type="Int16" Nullable="false" />
-          <Property Name="PassiveId" Type="Int16" Nullable="false" />
         </EntityType>
         <Association Name="NpcMap">
           <End Type="opennosModel.Npc" Role="Npc" Multiplicity="*" />
@@ -1208,7 +1206,7 @@
           <ScalarProperty Name="HitRate" ColumnName="HitRate" />
           <ScalarProperty Name="CriticalLuckRate" ColumnName="CriticalLuckRate" />
           <ScalarProperty Name="CriticalRate" ColumnName="CriticalRate" />
-          <ScalarProperty Name="RangeDefence" ColumnName="RangeDefence" />
+          <ScalarProperty Name="CloseDefence" ColumnName="CloseDefence" />
           <ScalarProperty Name="DistanceDefence" ColumnName="DistanceDefence" />
           <ScalarProperty Name="MagicDefence" ColumnName="MagicDefence" />
           <ScalarProperty Name="DistanceDefenceDodge" ColumnName="DistanceDefenceDodge" />
@@ -1285,7 +1283,6 @@
           <ScalarProperty Name="WaterElement" ColumnName="WaterElement" />
           <ScalarProperty Name="LightElement" ColumnName="LightElement" />
           <ScalarProperty Name="DarkElement" ColumnName="DarkElement" />
-          <ScalarProperty Name="PassiveId" ColumnName="PassiveId" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

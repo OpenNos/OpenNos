@@ -111,7 +111,7 @@ namespace OpenNos.DAL.EF.MySQL
                 Upgrade = inventoryitem.Upgrade,
                 WaterElement = inventoryitem.WaterElement,
 
-                RangeDefence = inventoryitem.RangeDefence,
+                CloseDefence = inventoryitem.CloseDefence,
             };
 
             context.inventoryitem.Add(entity);

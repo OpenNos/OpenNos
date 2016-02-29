@@ -108,7 +108,7 @@ namespace OpenNos.GameObject
                     Mp = item.Mp,
                     MpRegeneration = item.MpRegeneration,
                     PvpStrength = item.PvpStrength,
-                    RangeDefence = item.RangeDefence,
+                    CloseDefence = item.CloseDefence,
                     IsSoldable = item.IsSoldable,
                     IsTradable = item.IsTradable,
                     Speed = item.Speed,

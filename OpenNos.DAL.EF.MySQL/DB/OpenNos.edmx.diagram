@@ -19,7 +19,7 @@
         <EntityTypeShape EntityType="opennosModel.Item" Width="2" PointX="12.375" PointY="0.625" />
         <EntityTypeShape EntityType="opennosModel.Npc" Width="1.875" PointX="7.125" PointY="0.625" />
         <AssociationConnector Association="opennosModel.NpcMap" />
-        <EntityTypeShape EntityType="opennosModel.InventoryItem" Width="1.875" PointX="7.125" PointY="7.875" />
+        <EntityTypeShape EntityType="opennosModel.InventoryItem" Width="1.875" PointX="7.125" PointY="8.125" />
         <EntityTypeShape EntityType="opennosModel.Inventory" Width="1.5" PointX="4.875" PointY="7.25" />
         <AssociationConnector Association="opennosModel.CharacterInventory" />
         <AssociationConnector Association="opennosModel.InventoryItemItem" />

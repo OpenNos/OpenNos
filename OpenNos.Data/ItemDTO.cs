@@ -41,7 +41,7 @@ namespace OpenNos.Data
         public short HitRate { get; set; }
         public short CriticalLuckRate { get; set; }
         public short CriticalRate { get; set; }
-        public short RangeDefence { get; set; }
+        public short CloseDefence { get; set; }
         public short DistanceDefence { get; set; }
         public short MagicDefence { get; set; }
         public short DistanceDefenceDodge { get; set; }

@@ -615,7 +615,7 @@ namespace OpenNos.GameObject
                 LightResistance += item.InventoryItem.LightElement;
                 WaterResistance += item.InventoryItem.WaterElement;
                 DarkResistance += item.InventoryItem.DarkElement;
-                Defence += item.InventoryItem.RangeDefence + iteminfo.RangeDefence;
+                Defence += item.InventoryItem.CloseDefence + iteminfo.CloseDefence;
                 DefenceRate += item.InventoryItem.DefenceDodge + iteminfo.DefenceDodge;
                 DistanceDefence += item.InventoryItem.DistanceDefence + iteminfo.DistanceDefence;
                 DistanceDefenceRate += item.InventoryItem.DistanceDefenceDodge + iteminfo.DistanceDefenceDodge;
@@ -768,7 +768,7 @@ namespace OpenNos.GameObject
                             ItemVNum = inventoryItemDTO.ItemVNum,
                             LightElement = inventoryItemDTO.LightElement,
                             MagicDefence = inventoryItemDTO.MagicDefence,
-                            RangeDefence = inventoryItemDTO.RangeDefence,
+                            CloseDefence = inventoryItemDTO.CloseDefence,
                             Rare = inventoryItemDTO.Rare,
                             SpXp = inventoryItemDTO.SpXp,
                             SpLevel = inventoryItemDTO.SpLevel,
@@ -808,7 +808,7 @@ namespace OpenNos.GameObject
                             ItemVNum = inventoryItemDTO.ItemVNum,
                             LightElement = inventoryItemDTO.LightElement,
                             MagicDefence = inventoryItemDTO.MagicDefence,
-                            RangeDefence = inventoryItemDTO.RangeDefence,
+                            CloseDefence = inventoryItemDTO.CloseDefence,
                             Rare = inventoryItemDTO.Rare,
                             SpXp = inventoryItemDTO.SpXp,
                             SpLevel = inventoryItemDTO.SpLevel,

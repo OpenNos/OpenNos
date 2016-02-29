@@ -238,7 +238,7 @@ namespace OpenNos.Import.Console
                                 break;
                             case (byte)ItemType.Armor:
                                 item.LevelMinimum = Convert.ToByte(linesave[2]);
-                                item.RangeDefence = Convert.ToInt16(linesave[3]);
+                                item.CloseDefence = Convert.ToInt16(linesave[3]);
                                 item.DistanceDefence = Convert.ToInt16(linesave[4]);
                                 item.MagicDefence = Convert.ToInt16(linesave[5]);
                                 item.DefenceDodge = Convert.ToInt16(linesave[6]);
@@ -387,9 +387,8 @@ namespace OpenNos.Import.Console
             // Store like this: (vnum, (name, level))
             Dictionary<int, KeyValuePair<string, short>> dictionaryNpcs = new Dictionary<int, KeyValuePair<string, short>>();
             Dictionary<string, string> dictionaryIdLang = new Dictionary<string, string>();
-
+            NpcDTO npc = new NpcDTO();
             string line;
-
             int vnum = -1;
             string name2 = "";
             bool itemAreaBegin = false;
@@ -415,6 +414,28 @@ namespace OpenNos.Import.Console
                     else if (linesave.Length > 2 && linesave[1] == "NAME")
                     {
                         name2 = linesave[2];
+                    }
+
+                    else if (linesave.Length > 7 && linesave[1] == "ATTRIB")
+                    {
+                        npc.Element = Convert.ToByte(linesave[2]);
+                        npc.ElementRate = Convert.ToInt16(linesave[3]);
+                        npc.FireElement = Convert.ToInt16(linesave[4]);
+                        npc.WaterElement = Convert.ToInt16(linesave[5]);
+                        npc.LightElement = Convert.ToInt16(linesave[6]);
+                        npc.DarkElement = Convert.ToInt16(linesave[7]);
+                    }
+                    else if (linesave.Length > 8 && linesave[1] == "ZSKILL")
+                    {
+                        npc.AttackClass = Convert.ToByte(linesave[2]);
+                    }
+                    else if (linesave.Length > 4 && linesave[1] == "WINFO")
+                    {
+                        npc.AttackUpgrade = Convert.ToByte(linesave[2]);
+                    }
+                    else if (linesave.Length > 3 && linesave[1] == "AINFO")
+                    {
+                        npc.DefenceUpgrade = Convert.ToByte(linesave[2]);
                     }
                 }
                 npcIdStream.Close();
@@ -444,26 +465,30 @@ namespace OpenNos.Import.Console
                 {
                     try
                     {
-                        if (long.Parse(linesave[3]) >= 10000)
-                            continue; // Dialog too high. but why? in order to avoid partners
+                        if (long.Parse(linesave[3]) >= 10000) continue; // Dialog too high. but why? in order to avoid partners
 
-                        if (
-                            DAOFactory.NpcDAO.LoadFromMap(map)
-                                .FirstOrDefault(
-                                    s => s.MapId.Equals(map) && s.Vnum.Equals(short.Parse(linesave[2]))) != null)
-                            continue; // Npc already existing
+                        if (DAOFactory.NpcDAO.LoadFromMap(map).FirstOrDefault(s => s.MapId.Equals(map) && s.Vnum.Equals(short.Parse(linesave[2]))) != null) continue; // Npc already existing
 
                         KeyValuePair<string, short> nameAndLevel = dictionaryNpcs[int.Parse(linesave[2])];
                         DAOFactory.NpcDAO.Insert(new NpcDTO
                         {
                             Vnum = short.Parse(linesave[2]),
-                            Level = nameAndLevel.Value,
+                            Level = (byte)nameAndLevel.Value,
                             MapId = map,
                             MapX = short.Parse(linesave[4]),
                             MapY = short.Parse(linesave[5]),
                             Name = dictionaryIdLang[nameAndLevel.Key],
                             Position = short.Parse(linesave[6]),
-                            Dialog = short.Parse(linesave[9])
+                            Dialog = short.Parse(linesave[9]),
+                            Element = npc.Element,
+                            ElementRate = npc.ElementRate,
+                            FireElement = npc.FireElement,
+                            WaterElement = npc.WaterElement,
+                            LightElement = npc.LightElement,
+                            DarkElement = npc.DarkElement,
+                            AttackClass = npc.AttackClass,
+                            DefenceUpgrade = npc.DefenceUpgrade,
+                            AttackUpgrade = npc.AttackUpgrade,
                         });
                         npcCounter++;
                     }
