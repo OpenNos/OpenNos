@@ -302,7 +302,7 @@ namespace OpenNos.GameObject
 
         public List<string> Generatein2()
         {
-            return ServerManager.GetMap(MapId).Npcs.Select(npc => $"in 2 {npc.Vnum} {npc.NpcId} {npc.MapX} {npc.MapY} {npc.Position} 100 100 {npc.Dialog} 0 0 - 1 1 0 - 1 - 0 - 1 0 0 0 0 0 0 0 0").ToList();
+            return ServerManager.GetMap(MapId).Npcs.Select(npc => $"in 2 {npc.Vnum} {npc.NpcId} {npc.MapX} {npc.MapY} {npc.Position} 100 100 {npc.Dialog} 0 0 - 1 0 0 - 1 - 0 - 1 0 0 0 0 0 0 0 0").ToList();
         }
 
         public string GenerateInfo(string message)
