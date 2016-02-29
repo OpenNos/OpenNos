@@ -82,6 +82,8 @@ namespace OpenNos.Data
         public int EffectValue { get; set; }
         public byte CellonLvl { get; set; }
         public byte SpType { get; set; }
+        public byte Sex { get; set; }
+        public byte SecondaryElement { get; set; }
 
         #endregion
     }

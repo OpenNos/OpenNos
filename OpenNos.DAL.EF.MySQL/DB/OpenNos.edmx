@@ -239,6 +239,8 @@
     <Property Name="EffectValue" Type="int" Nullable="false" />
     <Property Name="CellonLvl" Type="utinyint" Nullable="false" />
     <Property Name="SpType" Type="utinyint" Nullable="false" />
+    <Property Name="Sex" Type="utinyint" Nullable="false" />
+    <Property Name="SecondaryElement" Type="utinyint" Nullable="false" />
   </EntityType>
   <EntityType Name="npc">
     <Key>
@@ -828,6 +830,8 @@
           <Property Name="EffectValue" Type="Int32" Nullable="false" />
           <Property Name="CellonLvl" Type="Byte" Nullable="false" />
           <Property Name="SpType" Type="Byte" Nullable="false" />
+          <Property Name="Sex" Type="Byte" Nullable="false" />
+          <Property Name="SecondaryElement" Type="Byte" Nullable="false" />
           </EntityType>
         <EntityType Name="Npc">
           <Key>
@@ -1203,6 +1207,8 @@
           <ScalarProperty Name="EffectValue" ColumnName="EffectValue" />
           <ScalarProperty Name="CellonLvl" ColumnName="CellonLvl" />
           <ScalarProperty Name="SpType" ColumnName="SpType" />
+          <ScalarProperty Name="Sex" ColumnName="Sex" />
+          <ScalarProperty Name="SecondaryElement" ColumnName="SecondaryElement" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

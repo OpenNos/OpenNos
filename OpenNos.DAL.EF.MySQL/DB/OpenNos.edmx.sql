@@ -44,7 +44,7 @@
 -- -----------------------------------------------------------
 -- Entity Designer DDL Script for MySQL Server 4.1 and higher
 -- -----------------------------------------------------------
--- Date Created: 02/28/2016 21:01:32
+-- Date Created: 02/29/2016 13:15:22
 
 -- Generated from EDMX file: C:\Users\Dominik\Source\Repos\OpenNos\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
 -- Target version: 3.0.0.0
@@ -299,7 +299,9 @@ CREATE TABLE `item`(
 	`Effect` smallint NOT NULL, 
 	`EffectValue` int NOT NULL, 
 	`CellonLvl` TINYINT UNSIGNED NOT NULL, 
-	`SpType` TINYINT UNSIGNED NOT NULL);
+	`SpType` TINYINT UNSIGNED NOT NULL, 
+	`Sex` TINYINT UNSIGNED NOT NULL, 
+	`SecondaryElement` TINYINT UNSIGNED NOT NULL);
 
 ALTER TABLE `item` ADD PRIMARY KEY (VNum);
 
