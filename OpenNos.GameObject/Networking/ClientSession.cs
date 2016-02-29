@@ -268,13 +268,13 @@ namespace OpenNos.GameObject
                     else
                     {
                         string packetHeader = packet.Split(' ', '^')[1];
-                        //0 is a keep alive packet with no content to handle
+                        // 0 is a keep alive packet with no content to handle
                         int permit = 1;
                         if (packetHeader.Length > 0)
                         {
                             if (packetHeader[0] == '$')
                             {
-                                if (Account.Authority != (int)AuthorityType.Admin)
+                                if (Account.Authority != (byte)AuthorityType.Admin)
                                     permit = 0;
                             }
 

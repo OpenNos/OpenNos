@@ -176,7 +176,7 @@ namespace OpenNos.GameObject
                     else if (result != null)
                     {
                         bool test = false;
-                        //si un item colle
+                        // If an item stuck
                         foreach (InventoryItem itemins in item)
                         {
                             if (ServerManager.GetItem(itemins.ItemVNum).Type != 0 && itemins.Amount + result.InventoryItem.Amount <= 99)
