@@ -435,10 +435,10 @@ namespace OpenNos.Import.Console
                     {
                         npc.Element = Convert.ToByte(linesave[2]);
                         npc.ElementRate = Convert.ToInt16(linesave[3]);
-                        npc.FireElement = Convert.ToInt16(linesave[4]);
-                        npc.WaterElement = Convert.ToInt16(linesave[5]);
-                        npc.LightElement = Convert.ToInt16(linesave[6]);
-                        npc.DarkElement = Convert.ToInt16(linesave[7]);
+                        npc.FireResistance = Convert.ToInt16(linesave[4]);
+                        npc.WaterResistance = Convert.ToInt16(linesave[5]);
+                        npc.LightResistance = Convert.ToInt16(linesave[6]);
+                        npc.DarkResistance = Convert.ToInt16(linesave[7]);
                     }
                     else if (linesave.Length > 8 && linesave[1] == "ZSKILL")
                     {

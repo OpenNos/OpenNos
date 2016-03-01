@@ -42,10 +42,10 @@ namespace OpenNos.Data
         public short DistanceDefenceDodge { get; set; }
         public short MagicDefence { get; set; }
         public short CloseDefence { get; set; }
-        public short FireElement { get; set; }
-        public short WaterElement { get; set; }
-        public short LightElement { get; set; }
-        public short DarkElement { get; set; }
+        public short FireResistance { get; set; }
+        public short WaterResistance { get; set; }
+        public short LightResistance { get; set; }
+        public short DarkResistance { get; set; }
         public short Hp { get; set; }
         public short Mp { get; set; }
         #endregion

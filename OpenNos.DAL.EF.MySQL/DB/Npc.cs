@@ -44,10 +44,10 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public short DistanceDefenceDodge { get; set; }
         public short MagicDefence { get; set; }
         public short CloseDefence { get; set; }
-        public short FireElement { get; set; }
-        public short WaterElement { get; set; }
-        public short LightElement { get; set; }
-        public short DarkElement { get; set; }
+        public short FireResistance { get; set; }
+        public short WaterResistance { get; set; }
+        public short LightResistance { get; set; }
+        public short DarkResistance { get; set; }
     
         public virtual Map map { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

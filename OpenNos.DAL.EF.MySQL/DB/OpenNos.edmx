@@ -885,10 +885,10 @@
           <Property Name="DistanceDefenceDodge" Type="Int16" Nullable="false" />
           <Property Name="MagicDefence" Type="Int16" Nullable="false" />
           <Property Name="CloseDefence" Type="Int16" Nullable="false" />
-          <Property Name="FireElement" Type="Int16" Nullable="false" />
-          <Property Name="WaterElement" Type="Int16" Nullable="false" />
-          <Property Name="LightElement" Type="Int16" Nullable="false" />
-          <Property Name="DarkElement" Type="Int16" Nullable="false" />
+          <Property Name="FireResistance" Type="Int16" Nullable="false" />
+          <Property Name="WaterResistance" Type="Int16" Nullable="false" />
+          <Property Name="LightResistance" Type="Int16" Nullable="false" />
+          <Property Name="DarkResistance" Type="Int16" Nullable="false" />
         </EntityType>
         <Association Name="NpcMap">
           <End Type="opennosModel.Npc" Role="Npc" Multiplicity="*" />
@@ -1283,10 +1283,10 @@
           <ScalarProperty Name="DistanceDefenceDodge" ColumnName="DistanceDefenceDodge" />
           <ScalarProperty Name="MagicDefence" ColumnName="MagicDefence" />
           <ScalarProperty Name="CloseDefence" ColumnName="CloseDefence" />
-          <ScalarProperty Name="FireElement" ColumnName="FireElement" />
-          <ScalarProperty Name="WaterElement" ColumnName="WaterElement" />
-          <ScalarProperty Name="LightElement" ColumnName="LightElement" />
-          <ScalarProperty Name="DarkElement" ColumnName="DarkElement" />
+          <ScalarProperty Name="FireResistance" ColumnName="FireElement" />
+          <ScalarProperty Name="WaterResistance" ColumnName="WaterElement" />
+          <ScalarProperty Name="LightResistance" ColumnName="LightElement" />
+          <ScalarProperty Name="DarkResistance" ColumnName="DarkElement" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

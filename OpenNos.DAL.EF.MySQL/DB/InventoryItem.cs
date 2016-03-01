@@ -41,6 +41,8 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public short SpXp { get; set; }
         public short SlElement { get; set; }
         public short SlHit { get; set; }
+        public short HP { get; set; }
+        public short MP { get; set; }
         public short SlDefence { get; set; }
         public short SlHP { get; set; }
         public byte DarkElement { get; set; }
