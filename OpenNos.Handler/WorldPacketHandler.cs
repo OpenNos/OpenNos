@@ -2176,8 +2176,9 @@ namespace OpenNos.Handler
         {
             // n_inv 2 1834 0 100 0.13.13.0.0.330 0.14.15.0.0.2299 0.18.120.0.0.3795 0.19.107.0.0.3795 0.20.94.0.0.3795 0.37.95.0.0.5643 0.38.97.0.0.11340 0.39.99.0.0.18564 0.48.108.0.0.5643 0.49.110.0.0.11340 0.50.112.0.0.18564 0.59.121.0.0.5643 0.60.123.0.0.11340 0.61.125.0.0.18564
             string[] packetsplit = packet.Split(' ');
-            short NpcId, type;
-            if (!short.TryParse(packetsplit[5], out NpcId) || !short.TryParse(packetsplit[2], out type)) return;
+            byte type;
+            short NpcId;
+            if (!short.TryParse(packetsplit[5], out NpcId) || !byte.TryParse(packetsplit[2], out type)) return;
 
             Npc npc = Session.CurrentMap.Npcs.FirstOrDefault(n => n.NpcId.Equals(NpcId));
             if (npc?.Shop == null) return;

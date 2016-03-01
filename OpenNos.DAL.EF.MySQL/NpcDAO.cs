@@ -47,6 +47,13 @@ namespace OpenNos.DAL.EF.MySQL
             }
         }
 
+        public NpcDTO LoadById(short MapId)
+        {
+            using (var context = DataAccessHelper.CreateContext())
+            {
+                return Mapper.Map<NpcDTO>(context.npc.SingleOrDefault(i => i.NpcId.Equals(MapId)));
+            }
+        }
         #endregion
     }
 }

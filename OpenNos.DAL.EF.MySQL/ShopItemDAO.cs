@@ -42,34 +42,7 @@ namespace OpenNos.DAL.EF.MySQL
                 return DeleteResult.Deleted;
             }
         }
-
-        public SaveResult InsertOrUpdate(ref ShopItemDTO item)
-        {
-            try
-            {
-                using (var context = DataAccessHelper.CreateContext())
-                {
-                    long ShopItemId = item.ShopItemId;
-                    ShopItem entity = context.shopitem.SingleOrDefault(c => c.ShopItemId.Equals(ShopItemId));
-
-                    if (entity == null) //new entity
-                    {
-                        item = Insert(item, context);
-                        return SaveResult.Inserted;
-                    }
-                    else //existing entity
-                    {
-                        item = Update(entity, item, context);
-                        return SaveResult.Updated;
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                Logger.Log.ErrorFormat(Language.Instance.GetMessageFromKey("UPDATE_ACCOUNT_ERROR"), item.ShopItemId, e.Message);
-                return SaveResult.Error;
-            }
-        }
+       
 
         public ShopItemDTO LoadById(int ItemId)
         {
@@ -89,13 +62,15 @@ namespace OpenNos.DAL.EF.MySQL
                 }
             }
         }
-
-        private ShopItemDTO Insert(ShopItemDTO shopitem, OpenNosContainer context)
+        public ShopItemDTO Insert(ShopItemDTO item)
         {
-            ShopItem entity = Mapper.Map<ShopItem>(shopitem);
-            context.shopitem.Add(entity);
-            context.SaveChanges();
-            return Mapper.Map<ShopItemDTO>(entity);
+            using (var context = DataAccessHelper.CreateContext())
+            {
+                ShopItem entity = Mapper.Map<ShopItem>(item);
+                context.shopitem.Add(entity);
+                context.SaveChanges();
+                return Mapper.Map<ShopItemDTO>(entity);
+            }
         }
 
         private ShopItemDTO Update(ShopItem entity, ShopItemDTO shopitem, OpenNosContainer context)

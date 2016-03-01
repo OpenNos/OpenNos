@@ -71,7 +71,7 @@ namespace OpenNos.Import.Console
                 factory.ImportNpcs();
                 factory.ImportShops();
                 factory.ImportItems();
-                //factory.ImportShopItems();
+                factory.ImportShopItems();
             }
             else
             {
@@ -104,15 +104,14 @@ namespace OpenNos.Import.Console
                 if (key5.KeyChar != 'n')
                 {
                     factory.ImportItems();
-                }
-                /*
+                }              
                 System.Console.WriteLine($"{Language.Instance.GetMessageFromKey("PARSE_SHOPITEMS")} [Y/n]");
                 System.ConsoleKeyInfo key6 = System.Console.ReadKey(true);
                 if (key6.KeyChar != 'n')
                 {
                     factory.ImportShopItems();
                 }
-                */
+                
             }
             System.Console.WriteLine($"{Language.Instance.GetMessageFromKey("DONE")}");
             Thread.Sleep(5000);

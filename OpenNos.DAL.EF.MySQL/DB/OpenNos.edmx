@@ -4,362 +4,362 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="opennosModel.Store" Alias="Self" Provider="MySql.Data.MySqlClient" ProviderManifestToken="5.6" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl" Alias="Self" Namespace="opennosModel.Store" Provider="MySql.Data.MySqlClient" ProviderManifestToken="5.6">
   <EntityContainer Name="opennosModelStoreContainer">
-    <EntitySet Name="account" EntityType="opennosModel.Store.account" store:Type="Tables" Schema="dbo" />
-    <EntitySet Name="character" EntityType="opennosModel.Store.character" store:Type="Tables" Schema="dbo" />
-    <EntitySet Name="portal" EntityType="opennosModel.Store.portal" store:Type="Tables" Schema="dbo" />
-    <EntitySet Name="generallog" EntityType="opennosModel.Store.generallog" store:Type="Tables" Schema="dbo" />
-    <EntitySet Name="map" EntityType="opennosModel.Store.map" store:Type="Tables" Schema="dbo" />
-    <EntitySet Name="item" EntityType="opennosModel.Store.item" store:Type="Tables" Schema="dbo" />
-    <EntitySet Name="npc" EntityType="opennosModel.Store.npc" store:Type="Tables" Schema="dbo" />
-    <EntitySet Name="inventoryitem" EntityType="opennosModel.Store.inventoryitem" store:Type="Tables" Schema="dbo" />
-    <EntitySet Name="inventory" EntityType="opennosModel.Store.inventory" store:Type="Tables" Schema="dbo" />
-    <EntitySet Name="shopitem" EntityType="opennosModel.Store.shopitem" store:Type="Tables" Schema="dbo" />
-    <EntitySet Name="shop" EntityType="opennosModel.Store.shop" store:Type="Tables" Schema="dbo" />
-    <EntitySet Name="respawn" EntityType="opennosModel.Store.respawn" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="account" EntityType="opennosModel.Store.account" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="character" EntityType="opennosModel.Store.character" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="portal" EntityType="opennosModel.Store.portal" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="generallog" EntityType="opennosModel.Store.generallog" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="map" EntityType="opennosModel.Store.map" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="item" EntityType="opennosModel.Store.item" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="npc" EntityType="opennosModel.Store.npc" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="inventoryitem" EntityType="opennosModel.Store.inventoryitem" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="inventory" EntityType="opennosModel.Store.inventory" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="shopitem" EntityType="opennosModel.Store.shopitem" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="shop" EntityType="opennosModel.Store.shop" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="respawn" EntityType="opennosModel.Store.respawn" Schema="dbo" store:Type="Tables" />
     <AssociationSet Name="AccountCharacter" Association="opennosModel.Store.AccountCharacter">
-      <End Role="Account" EntitySet="account" />
-      <End Role="Character" EntitySet="character" />
+      <End EntitySet="account" Role="Account" />
+      <End EntitySet="character" Role="Character" />
     </AssociationSet>
     <AssociationSet Name="accountlog" Association="opennosModel.Store.accountlog">
-      <End Role="account" EntitySet="account" />
-      <End Role="log" EntitySet="generallog" />
+      <End EntitySet="account" Role="account" />
+      <End EntitySet="generallog" Role="log" />
     </AssociationSet>
     <AssociationSet Name="portalMap" Association="opennosModel.Store.portalMap">
-      <End Role="portal" EntitySet="portal" />
-      <End Role="Map" EntitySet="map" />
+      <End EntitySet="portal" Role="portal" />
+      <End EntitySet="map" Role="Map" />
     </AssociationSet>
     <AssociationSet Name="portalMap1" Association="opennosModel.Store.portalMap1">
-      <End Role="portal" EntitySet="portal" />
-      <End Role="Map" EntitySet="map" />
+      <End EntitySet="portal" Role="portal" />
+      <End EntitySet="map" Role="Map" />
     </AssociationSet>
     <AssociationSet Name="GeneralLogCharacter" Association="opennosModel.Store.GeneralLogCharacter">
-      <End Role="GeneralLog" EntitySet="generallog" />
-      <End Role="Character" EntitySet="character" />
+      <End EntitySet="generallog" Role="GeneralLog" />
+      <End EntitySet="character" Role="Character" />
     </AssociationSet>
     <AssociationSet Name="CharacterMap" Association="opennosModel.Store.CharacterMap">
-      <End Role="Character" EntitySet="character" />
-      <End Role="Map" EntitySet="map" />
+      <End EntitySet="character" Role="Character" />
+      <End EntitySet="map" Role="Map" />
     </AssociationSet>
     <AssociationSet Name="NpcMap" Association="opennosModel.Store.NpcMap">
-      <End Role="Npc" EntitySet="npc" />
-      <End Role="Map" EntitySet="map" />
+      <End EntitySet="npc" Role="Npc" />
+      <End EntitySet="map" Role="Map" />
     </AssociationSet>
     <AssociationSet Name="CharacterInventory" Association="opennosModel.Store.CharacterInventory">
-      <End Role="Character" EntitySet="character" />
-      <End Role="Inventory" EntitySet="inventory" />
+      <End EntitySet="character" Role="Character" />
+      <End EntitySet="inventory" Role="Inventory" />
     </AssociationSet>
     <AssociationSet Name="InventoryItemInventory" Association="opennosModel.Store.InventoryItemInventory">
-      <End Role="Inventory" EntitySet="inventory" />
-      <End Role="InventoryItem" EntitySet="inventoryitem" />
+      <End EntitySet="inventory" Role="Inventory" />
+      <End EntitySet="inventoryitem" Role="InventoryItem" />
     </AssociationSet>
     <AssociationSet Name="InventoryItemItem" Association="opennosModel.Store.InventoryItemItem">
-      <End Role="InventoryItem" EntitySet="inventoryitem" />
-      <End Role="Item" EntitySet="item" />
+      <End EntitySet="inventoryitem" Role="InventoryItem" />
+      <End EntitySet="item" Role="Item" />
     </AssociationSet>
     <AssociationSet Name="ShopNpc" Association="opennosModel.Store.ShopNpc">
-      <End Role="Shop" EntitySet="shop" />
-      <End Role="Npc" EntitySet="npc" />
+      <End EntitySet="shop" Role="Shop" />
+      <End EntitySet="npc" Role="Npc" />
     </AssociationSet>
     <AssociationSet Name="ShopItemItem" Association="opennosModel.Store.ShopItemItem">
-      <End Role="ShopItem" EntitySet="shopitem" />
-      <End Role="Item" EntitySet="item" />
+      <End EntitySet="shopitem" Role="ShopItem" />
+      <End EntitySet="item" Role="Item" />
     </AssociationSet>
     <AssociationSet Name="ShopShopItem" Association="opennosModel.Store.ShopShopItem">
-      <End Role="Shop" EntitySet="shop" />
-      <End Role="ShopItem" EntitySet="shopitem" />
+      <End EntitySet="shop" Role="Shop" />
+      <End EntitySet="shopitem" Role="ShopItem" />
     </AssociationSet>
     <AssociationSet Name="CharacterRespawn" Association="opennosModel.Store.CharacterRespawn">
-      <End Role="Respawn" EntitySet="respawn" />
-      <End Role="Character" EntitySet="character" />
+      <End EntitySet="respawn" Role="Respawn" />
+      <End EntitySet="character" Role="Character" />
     </AssociationSet>
   </EntityContainer>
   <EntityType Name="account">
     <Key>
       <PropertyRef Name="AccountId" />
     </Key>
-    <Property Name="AccountId" Type="bigint" Nullable="false" />
-    <Property Name="Name" Type="varchar" Nullable="false" MaxLength="255" />
-    <Property Name="Password" Type="varchar" Nullable="false" MaxLength="255" />
-    <Property Name="Authority" Type="utinyint" Nullable="false" />
-    <Property Name="LastSession" Type="int" Nullable="false" />
-    <Property Name="LastCompliment" Type="datetime" Nullable="false" DefaultValue="1970-01-01 00:00:00.000Z" />
+    <Property Name="AccountId" Nullable="false" Type="bigint" />
+    <Property Name="Name" Nullable="false" MaxLength="255" Type="varchar" />
+    <Property Name="Password" Nullable="false" MaxLength="255" Type="varchar" />
+    <Property Name="Authority" Nullable="false" Type="utinyint" />
+    <Property Name="LastSession" Nullable="false" Type="int" />
+    <Property Name="LastCompliment" Nullable="false" DefaultValue="1970-01-01 00:00:00.000Z" Type="datetime" />
   </EntityType>
   <EntityType Name="character">
     <Key>
       <PropertyRef Name="CharacterId" />
     </Key>
-    <Property Name="CharacterId" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
-    <Property Name="AccountId" Type="bigint" Nullable="false" />
-    <Property Name="MapId" Type="smallint" Nullable="false" />
-    <Property Name="Name" Type="varchar" Nullable="false" MaxLength="255" />
-    <Property Name="Slot" Type="utinyint" Nullable="false" />
-    <Property Name="Gender" Type="utinyint" Nullable="false" />
-    <Property Name="Class" Type="utinyint" Nullable="false" />
-    <Property Name="HairStyle" Type="utinyint" Nullable="false" />
-    <Property Name="HairColor" Type="utinyint" Nullable="false" />
-    <Property Name="MapX" Type="smallint" Nullable="false" />
-    <Property Name="MapY" Type="smallint" Nullable="false" />
-    <Property Name="Hp" Type="int" Nullable="false" />
-    <Property Name="Mp" Type="int" Nullable="false" />
-    <Property Name="ArenaWinner" Type="int" Nullable="false" />
-    <Property Name="Reput" Type="bigint" Nullable="false" />
-    <Property Name="Dignite" Type="utinyint" Nullable="false" />
-    <Property Name="Gold" Type="bigint" Nullable="false" />
-    <Property Name="Backpack" Type="int" Nullable="false" />
-    <Property Name="Level" Type="utinyint" Nullable="false" />
-    <Property Name="LevelXp" Type="int" Nullable="false" />
-    <Property Name="JobLevel" Type="utinyint" Nullable="false" />
-    <Property Name="JobLevelXp" Type="int" Nullable="false" />
-    <Property Name="Act4Dead" Type="int" Nullable="false" />
-    <Property Name="Act4Kill" Type="int" Nullable="false" />
-    <Property Name="Faction" Type="int" Nullable="false" />
-    <Property Name="SpPoint" Type="int" Nullable="false" />
-    <Property Name="SpAdditionPoint" Type="int" Nullable="false" />
-    <Property Name="State" Type="utinyint" Nullable="false" />
-    <Property Name="Compliment" Type="smallint" Nullable="false" />
-    <Property Name="ExchangeBlocked" Type="bool" Nullable="false" />
-    <Property Name="FriendRequestBlocked" Type="bool" Nullable="false" />
-    <Property Name="WhisperBlocked" Type="bool" Nullable="false" />
-    <Property Name="GroupRequestBlocked" Type="bool" Nullable="false" />
-    <Property Name="MouseAimLock" Type="bool" Nullable="false" />
-    <Property Name="HeroChatBlocked" Type="bool" Nullable="false" />
-    <Property Name="EmoticonsBlocked" Type="bool" Nullable="false" />
-    <Property Name="QuickGetUp" Type="bool" Nullable="false" />
-    <Property Name="HpBlocked" Type="bool" Nullable="false" />
-    <Property Name="BuffBlocked" Type="bool" Nullable="false" />
-    <Property Name="MinilandInviteBlocked" Type="bool" Nullable="false" />
-    <Property Name="FamilyRequestBlocked" Type="bool" Nullable="false" />
-    <Property Name="Act4Points" Type="int" Nullable="false" />
-    <Property Name="TalentWin" Type="int" Nullable="false" />
-    <Property Name="TalentLose" Type="int" Nullable="false" />
-    <Property Name="TalentSurrender" Type="int" Nullable="false" />
-    <Property Name="MasterPoints" Type="int" Nullable="false" />
-    <Property Name="MasterTicket" Type="int" Nullable="false" />
+    <Property Name="CharacterId" Nullable="false" StoreGeneratedPattern="Identity" Type="bigint" />
+    <Property Name="AccountId" Nullable="false" Type="bigint" />
+    <Property Name="MapId" Nullable="false" Type="smallint" />
+    <Property Name="Name" Nullable="false" MaxLength="255" Type="varchar" />
+    <Property Name="Slot" Nullable="false" Type="utinyint" />
+    <Property Name="Gender" Nullable="false" Type="utinyint" />
+    <Property Name="Class" Nullable="false" Type="utinyint" />
+    <Property Name="HairStyle" Nullable="false" Type="utinyint" />
+    <Property Name="HairColor" Nullable="false" Type="utinyint" />
+    <Property Name="MapX" Nullable="false" Type="smallint" />
+    <Property Name="MapY" Nullable="false" Type="smallint" />
+    <Property Name="Hp" Nullable="false" Type="int" />
+    <Property Name="Mp" Nullable="false" Type="int" />
+    <Property Name="ArenaWinner" Nullable="false" Type="int" />
+    <Property Name="Reput" Nullable="false" Type="bigint" />
+    <Property Name="Dignite" Nullable="false" Type="utinyint" />
+    <Property Name="Gold" Nullable="false" Type="bigint" />
+    <Property Name="Backpack" Nullable="false" Type="int" />
+    <Property Name="Level" Nullable="false" Type="utinyint" />
+    <Property Name="LevelXp" Nullable="false" Type="int" />
+    <Property Name="JobLevel" Nullable="false" Type="utinyint" />
+    <Property Name="JobLevelXp" Nullable="false" Type="int" />
+    <Property Name="Act4Dead" Nullable="false" Type="int" />
+    <Property Name="Act4Kill" Nullable="false" Type="int" />
+    <Property Name="Faction" Nullable="false" Type="int" />
+    <Property Name="SpPoint" Nullable="false" Type="int" />
+    <Property Name="SpAdditionPoint" Nullable="false" Type="int" />
+    <Property Name="State" Nullable="false" Type="utinyint" />
+    <Property Name="Compliment" Nullable="false" Type="smallint" />
+    <Property Name="ExchangeBlocked" Nullable="false" Type="bool" />
+    <Property Name="FriendRequestBlocked" Nullable="false" Type="bool" />
+    <Property Name="WhisperBlocked" Nullable="false" Type="bool" />
+    <Property Name="GroupRequestBlocked" Nullable="false" Type="bool" />
+    <Property Name="MouseAimLock" Nullable="false" Type="bool" />
+    <Property Name="HeroChatBlocked" Nullable="false" Type="bool" />
+    <Property Name="EmoticonsBlocked" Nullable="false" Type="bool" />
+    <Property Name="QuickGetUp" Nullable="false" Type="bool" />
+    <Property Name="HpBlocked" Nullable="false" Type="bool" />
+    <Property Name="BuffBlocked" Nullable="false" Type="bool" />
+    <Property Name="MinilandInviteBlocked" Nullable="false" Type="bool" />
+    <Property Name="FamilyRequestBlocked" Nullable="false" Type="bool" />
+    <Property Name="Act4Points" Nullable="false" Type="int" />
+    <Property Name="TalentWin" Nullable="false" Type="int" />
+    <Property Name="TalentLose" Nullable="false" Type="int" />
+    <Property Name="TalentSurrender" Nullable="false" Type="int" />
+    <Property Name="MasterPoints" Nullable="false" Type="int" />
+    <Property Name="MasterTicket" Nullable="false" Type="int" />
   </EntityType>
   <EntityType Name="portal">
     <Key>
       <PropertyRef Name="PortalId" />
     </Key>
-    <Property Name="PortalId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-    <Property Name="SourceX" Type="smallint" Nullable="false" />
-    <Property Name="SourceY" Type="smallint" Nullable="false" />
-    <Property Name="DestinationX" Type="smallint" Nullable="false" />
-    <Property Name="DestinationY" Type="smallint" Nullable="false" />
-    <Property Name="Type" Type="smallint" Nullable="false" />
-    <Property Name="DestinationMapId" Type="smallint" Nullable="false" />
-    <Property Name="SourceMapId" Type="smallint" Nullable="false" />
-    <Property Name="IsDisabled" Type="bool" Nullable="false" />
+    <Property Name="PortalId" Nullable="false" StoreGeneratedPattern="Identity" Type="int" />
+    <Property Name="SourceX" Nullable="false" Type="smallint" />
+    <Property Name="SourceY" Nullable="false" Type="smallint" />
+    <Property Name="DestinationX" Nullable="false" Type="smallint" />
+    <Property Name="DestinationY" Nullable="false" Type="smallint" />
+    <Property Name="Type" Nullable="false" Type="smallint" />
+    <Property Name="DestinationMapId" Nullable="false" Type="smallint" />
+    <Property Name="SourceMapId" Nullable="false" Type="smallint" />
+    <Property Name="IsDisabled" Nullable="false" Type="bool" />
   </EntityType>
   <EntityType Name="generallog">
     <Key>
       <PropertyRef Name="LogId" />
     </Key>
-    <Property Name="LogId" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
-    <Property Name="AccountId" Type="bigint" Nullable="false" />
-    <Property Name="IpAddress" Type="longtext" Nullable="false" />
-    <Property Name="Timestamp" Type="datetime" Nullable="false" />
-    <Property Name="LogType" Type="longtext" Nullable="false" />
-    <Property Name="LogData" Type="longtext" Nullable="false" />
-    <Property Name="CharacterId" Type="bigint" Nullable="true" />
+    <Property Name="LogId" Nullable="false" StoreGeneratedPattern="Identity" Type="bigint" />
+    <Property Name="AccountId" Nullable="false" Type="bigint" />
+    <Property Name="IpAddress" Nullable="false" Type="longtext" />
+    <Property Name="Timestamp" Nullable="false" Type="datetime" />
+    <Property Name="LogType" Nullable="false" Type="longtext" />
+    <Property Name="LogData" Nullable="false" Type="longtext" />
+    <Property Name="CharacterId" Nullable="true" Type="bigint" />
   </EntityType>
   <EntityType Name="map">
     <Key>
       <PropertyRef Name="MapId" />
     </Key>
-    <Property Name="MapId" Type="smallint" Nullable="false" />
-    <Property Name="Name" Type="longtext" Nullable="false" />
-    <Property Name="Data" Type="longblob" Nullable="false" />
-    <Property Name="Music" Type="int" Nullable="false" />
+    <Property Name="MapId" Nullable="false" Type="smallint" />
+    <Property Name="Name" Nullable="false" Type="longtext" />
+    <Property Name="Data" Nullable="false" Type="longblob" />
+    <Property Name="Music" Nullable="false" Type="int" />
   </EntityType>
   <EntityType Name="item">
     <Key>
       <PropertyRef Name="VNum" />
     </Key>
-    <Property Name="VNum" Type="smallint" Nullable="false" />
-    <Property Name="Price" Type="bigint" Nullable="false" />
-    <Property Name="Name" Type="longtext" Nullable="false" />
-    <Property Name="ItemType" Type="utinyint" Nullable="false" />
-    <Property Name="EquipmentSlot" Type="utinyint" Nullable="false" />
-    <Property Name="Morph" Type="smallint" Nullable="false" />
-    <Property Name="Type" Type="utinyint" Nullable="false" />
-    <Property Name="Class" Type="utinyint" Nullable="false" />
-    <Property Name="IsBlocked" Type="bool" Nullable="false" />
-    <Property Name="IsDroppable" Type="bool" Nullable="false" />
-    <Property Name="IsTradable" Type="bool" Nullable="false" />
-    <Property Name="IsSoldable" Type="bool" Nullable="false" />
-    <Property Name="IsMinilandObject" Type="bool" Nullable="false" />
-    <Property Name="IsWarehouse" Type="bool" Nullable="false" />
-    <Property Name="LevelMinimum" Type="utinyint" Nullable="false" />
-    <Property Name="DamageMinimum" Type="smallint" Nullable="false" />
-    <Property Name="DamageMaximum" Type="smallint" Nullable="false" />
-    <Property Name="Concentrate" Type="smallint" Nullable="false" />
-    <Property Name="HitRate" Type="smallint" Nullable="false" />
-    <Property Name="CriticalLuckRate" Type="smallint" Nullable="false" />
-    <Property Name="CriticalRate" Type="smallint" Nullable="false" />
-    <Property Name="CloseDefence" Type="smallint" Nullable="false" />
-    <Property Name="DistanceDefence" Type="smallint" Nullable="false" />
-    <Property Name="MagicDefence" Type="smallint" Nullable="false" />
-    <Property Name="DistanceDefenceDodge" Type="smallint" Nullable="false" />
-    <Property Name="DefenceDodge" Type="smallint" Nullable="false" />
-    <Property Name="Hp" Type="smallint" Nullable="false" />
-    <Property Name="Mp" Type="smallint" Nullable="false" />
-    <Property Name="LevelJobMinimum" Type="utinyint" Nullable="false" />
-    <Property Name="MaxCellon" Type="utinyint" Nullable="false" />
-    <Property Name="MaxCellonLvl" Type="utinyint" Nullable="false" />
-    <Property Name="FireResistance" Type="smallint" Nullable="false" />
-    <Property Name="WaterResistance" Type="smallint" Nullable="false" />
-    <Property Name="LightResistance" Type="smallint" Nullable="false" />
-    <Property Name="DarkResistance" Type="smallint" Nullable="false" />
-    <Property Name="DarkElement" Type="utinyint" Nullable="false" />
-    <Property Name="LightElement" Type="utinyint" Nullable="false" />
-    <Property Name="FireElement" Type="utinyint" Nullable="false" />
-    <Property Name="WaterElement" Type="utinyint" Nullable="false" />
-    <Property Name="PvpStrength" Type="smallint" Nullable="false" />
-    <Property Name="Speed" Type="utinyint" Nullable="false" />
-    <Property Name="Element" Type="utinyint" Nullable="false" />
-    <Property Name="ElementRate" Type="smallint" Nullable="false" />
-    <Property Name="PvpDefence" Type="smallint" Nullable="false" />
-    <Property Name="ReduceOposantResistance" Type="smallint" Nullable="false" />
-    <Property Name="HpRegeneration" Type="smallint" Nullable="false" />
-    <Property Name="MpRegeneration" Type="smallint" Nullable="false" />
-    <Property Name="MoreHp" Type="smallint" Nullable="false" />
-    <Property Name="MoreMp" Type="smallint" Nullable="false" />
-    <Property Name="IsColored" Type="bool" Nullable="false" />
-    <Property Name="IsConsumable" Type="bool" Nullable="false" />
-    <Property Name="ReputationMinimum" Type="utinyint" Nullable="false" />
-    <Property Name="FairyMaximumLevel" Type="utinyint" Nullable="false" />
-    <Property Name="MaximumAmmo" Type="utinyint" Nullable="false" />
-    <Property Name="BasicUpgrade" Type="utinyint" Nullable="false" />
-    <Property Name="Color" Type="smallint" Nullable="false" />
-    <Property Name="ItemValidTime" Type="bigint" Nullable="false" />
-    <Property Name="IsPearl" Type="bool" Nullable="false" />
-    <Property Name="Effect" Type="smallint" Nullable="false" />
-    <Property Name="EffectValue" Type="int" Nullable="false" />
-    <Property Name="CellonLvl" Type="utinyint" Nullable="false" />
-    <Property Name="SpType" Type="utinyint" Nullable="false" />
-    <Property Name="Sex" Type="utinyint" Nullable="false" />
-    <Property Name="SecondaryElement" Type="utinyint" Nullable="false" />
+    <Property Name="VNum" Nullable="false" Type="smallint" />
+    <Property Name="Price" Nullable="false" Type="bigint" />
+    <Property Name="Name" Nullable="false" Type="longtext" />
+    <Property Name="ItemType" Nullable="false" Type="utinyint" />
+    <Property Name="EquipmentSlot" Nullable="false" Type="utinyint" />
+    <Property Name="Morph" Nullable="false" Type="smallint" />
+    <Property Name="Type" Nullable="false" Type="utinyint" />
+    <Property Name="Class" Nullable="false" Type="utinyint" />
+    <Property Name="IsBlocked" Nullable="false" Type="bool" />
+    <Property Name="IsDroppable" Nullable="false" Type="bool" />
+    <Property Name="IsTradable" Nullable="false" Type="bool" />
+    <Property Name="IsSoldable" Nullable="false" Type="bool" />
+    <Property Name="IsMinilandObject" Nullable="false" Type="bool" />
+    <Property Name="IsWarehouse" Nullable="false" Type="bool" />
+    <Property Name="LevelMinimum" Nullable="false" Type="utinyint" />
+    <Property Name="DamageMinimum" Nullable="false" Type="smallint" />
+    <Property Name="DamageMaximum" Nullable="false" Type="smallint" />
+    <Property Name="Concentrate" Nullable="false" Type="smallint" />
+    <Property Name="HitRate" Nullable="false" Type="smallint" />
+    <Property Name="CriticalLuckRate" Nullable="false" Type="smallint" />
+    <Property Name="CriticalRate" Nullable="false" Type="smallint" />
+    <Property Name="CloseDefence" Nullable="false" Type="smallint" />
+    <Property Name="DistanceDefence" Nullable="false" Type="smallint" />
+    <Property Name="MagicDefence" Nullable="false" Type="smallint" />
+    <Property Name="DistanceDefenceDodge" Nullable="false" Type="smallint" />
+    <Property Name="DefenceDodge" Nullable="false" Type="smallint" />
+    <Property Name="Hp" Nullable="false" Type="smallint" />
+    <Property Name="Mp" Nullable="false" Type="smallint" />
+    <Property Name="LevelJobMinimum" Nullable="false" Type="utinyint" />
+    <Property Name="MaxCellon" Nullable="false" Type="utinyint" />
+    <Property Name="MaxCellonLvl" Nullable="false" Type="utinyint" />
+    <Property Name="FireResistance" Nullable="false" Type="smallint" />
+    <Property Name="WaterResistance" Nullable="false" Type="smallint" />
+    <Property Name="LightResistance" Nullable="false" Type="smallint" />
+    <Property Name="DarkResistance" Nullable="false" Type="smallint" />
+    <Property Name="DarkElement" Nullable="false" Type="utinyint" />
+    <Property Name="LightElement" Nullable="false" Type="utinyint" />
+    <Property Name="FireElement" Nullable="false" Type="utinyint" />
+    <Property Name="WaterElement" Nullable="false" Type="utinyint" />
+    <Property Name="PvpStrength" Nullable="false" Type="smallint" />
+    <Property Name="Speed" Nullable="false" Type="utinyint" />
+    <Property Name="Element" Nullable="false" Type="utinyint" />
+    <Property Name="ElementRate" Nullable="false" Type="smallint" />
+    <Property Name="PvpDefence" Nullable="false" Type="smallint" />
+    <Property Name="ReduceOposantResistance" Nullable="false" Type="smallint" />
+    <Property Name="HpRegeneration" Nullable="false" Type="smallint" />
+    <Property Name="MpRegeneration" Nullable="false" Type="smallint" />
+    <Property Name="MoreHp" Nullable="false" Type="smallint" />
+    <Property Name="MoreMp" Nullable="false" Type="smallint" />
+    <Property Name="IsColored" Nullable="false" Type="bool" />
+    <Property Name="IsConsumable" Nullable="false" Type="bool" />
+    <Property Name="ReputationMinimum" Nullable="false" Type="utinyint" />
+    <Property Name="FairyMaximumLevel" Nullable="false" Type="utinyint" />
+    <Property Name="MaximumAmmo" Nullable="false" Type="utinyint" />
+    <Property Name="BasicUpgrade" Nullable="false" Type="utinyint" />
+    <Property Name="Color" Nullable="false" Type="smallint" />
+    <Property Name="ItemValidTime" Nullable="false" Type="bigint" />
+    <Property Name="IsPearl" Nullable="false" Type="bool" />
+    <Property Name="Effect" Nullable="false" Type="smallint" />
+    <Property Name="EffectValue" Nullable="false" Type="int" />
+    <Property Name="CellonLvl" Nullable="false" Type="utinyint" />
+    <Property Name="SpType" Nullable="false" Type="utinyint" />
+    <Property Name="Sex" Nullable="false" Type="utinyint" />
+    <Property Name="SecondaryElement" Nullable="false" Type="utinyint" />
   </EntityType>
   <EntityType Name="npc">
     <Key>
       <PropertyRef Name="NpcId" />
     </Key>
-    <Property Name="NpcId" Type="smallint" Nullable="false" />
-    <Property Name="Name" Type="longtext" Nullable="false" />
-    <Property Name="Vnum" Type="smallint" Nullable="false" />
-    <Property Name="Dialog" Type="smallint" Nullable="false" />
-    <Property Name="MapId" Type="smallint" Nullable="false" />
-    <Property Name="MapX" Type="smallint" Nullable="false" />
-    <Property Name="MapY" Type="smallint" Nullable="false" />
-    <Property Name="Position" Type="smallint" Nullable="false" />
-    <Property Name="Level" Type="utinyint" Nullable="false" />
-    <Property Name="Element" Type="utinyint" Nullable="false" />
-    <Property Name="AttackClass" Type="utinyint" Nullable="false" />
-    <Property Name="ElementRate" Type="smallint" Nullable="false" />
-    <Property Name="AttackUpgrade" Type="utinyint" Nullable="false" />
-    <Property Name="DamageMinimum" Type="smallint" Nullable="false" />
-    <Property Name="DamageMaximum" Type="smallint" Nullable="false" />
-    <Property Name="Concentrate" Type="smallint" Nullable="false" />
-    <Property Name="CriticalLuckRate" Type="smallint" Nullable="false" />
-    <Property Name="CriticalRate" Type="smallint" Nullable="false" />
-    <Property Name="DefenceUpgrade" Type="utinyint" Nullable="false" />
-    <Property Name="DefenceDodge" Type="smallint" Nullable="false" />
-    <Property Name="DistanceDefence" Type="smallint" Nullable="false" />
-    <Property Name="DistanceDefenceDodge" Type="smallint" Nullable="false" />
-    <Property Name="MagicDefence" Type="smallint" Nullable="false" />
-    <Property Name="CloseDefence" Type="smallint" Nullable="false" />
-    <Property Name="FireElement" Type="smallint" Nullable="false" />
-    <Property Name="WaterElement" Type="smallint" Nullable="false" />
-    <Property Name="LightElement" Type="smallint" Nullable="false" />
-    <Property Name="DarkElement" Type="smallint" Nullable="false" />
+    <Property Name="NpcId" Nullable="false" Type="smallint" />
+    <Property Name="Name" Nullable="false" Type="longtext" />
+    <Property Name="Vnum" Nullable="false" Type="smallint" />
+    <Property Name="Dialog" Nullable="false" Type="smallint" />
+    <Property Name="MapId" Nullable="false" Type="smallint" />
+    <Property Name="MapX" Nullable="false" Type="smallint" />
+    <Property Name="MapY" Nullable="false" Type="smallint" />
+    <Property Name="Position" Nullable="false" Type="smallint" />
+    <Property Name="Level" Nullable="false" Type="utinyint" />
+    <Property Name="Element" Nullable="false" Type="utinyint" />
+    <Property Name="AttackClass" Nullable="false" Type="utinyint" />
+    <Property Name="ElementRate" Nullable="false" Type="smallint" />
+    <Property Name="AttackUpgrade" Nullable="false" Type="utinyint" />
+    <Property Name="DamageMinimum" Nullable="false" Type="smallint" />
+    <Property Name="DamageMaximum" Nullable="false" Type="smallint" />
+    <Property Name="Concentrate" Nullable="false" Type="smallint" />
+    <Property Name="CriticalLuckRate" Nullable="false" Type="smallint" />
+    <Property Name="CriticalRate" Nullable="false" Type="smallint" />
+    <Property Name="DefenceUpgrade" Nullable="false" Type="utinyint" />
+    <Property Name="DefenceDodge" Nullable="false" Type="smallint" />
+    <Property Name="DistanceDefence" Nullable="false" Type="smallint" />
+    <Property Name="DistanceDefenceDodge" Nullable="false" Type="smallint" />
+    <Property Name="MagicDefence" Nullable="false" Type="smallint" />
+    <Property Name="CloseDefence" Nullable="false" Type="smallint" />
+    <Property Name="FireElement" Nullable="false" Type="smallint" />
+    <Property Name="WaterElement" Nullable="false" Type="smallint" />
+    <Property Name="LightElement" Nullable="false" Type="smallint" />
+    <Property Name="DarkElement" Nullable="false" Type="smallint" />
   </EntityType>
   <EntityType Name="inventoryitem">
     <Key>
       <PropertyRef Name="InventoryItemId" />
     </Key>
-    <Property Name="InventoryItemId" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
-    <Property Name="DamageMinimum" Type="smallint" Nullable="false" />
-    <Property Name="DamageMaximum" Type="smallint" Nullable="false" />
-    <Property Name="Concentrate" Type="smallint" Nullable="false" />
-    <Property Name="HitRate" Type="smallint" Nullable="false" />
-    <Property Name="CriticalLuckRate" Type="utinyint" Nullable="false" />
-    <Property Name="CriticalRate" Type="smallint" Nullable="false" />
-    <Property Name="CloseDefence" Type="smallint" Nullable="false" />
-    <Property Name="DistanceDefence" Type="smallint" Nullable="false" />
-    <Property Name="MagicDefence" Type="smallint" Nullable="false" />
-    <Property Name="DistanceDefenceDodge" Type="smallint" Nullable="false" />
-    <Property Name="DefenceDodge" Type="smallint" Nullable="false" />
-    <Property Name="ElementRate" Type="smallint" Nullable="false" />
-    <Property Name="Upgrade" Type="utinyint" Nullable="false" />
-    <Property Name="Rare" Type="utinyint" Nullable="false" />
-    <Property Name="Color" Type="smallint" Nullable="false" />
-    <Property Name="Amount" Type="utinyint" Nullable="false" />
-    <Property Name="SpLevel" Type="utinyint" Nullable="false" />
-    <Property Name="SpXp" Type="smallint" Nullable="false" />
-    <Property Name="SlElement" Type="smallint" Nullable="false" />
-    <Property Name="SlHit" Type="smallint" Nullable="false" />
-    <Property Name="HP" Type="smallint" Nullable="false" />
-    <Property Name="MP" Type="smallint" Nullable="false" />
-    <Property Name="SlDefence" Type="smallint" Nullable="false" />
-    <Property Name="SlHP" Type="smallint" Nullable="false" />
-    <Property Name="DarkElement" Type="utinyint" Nullable="false" />
-    <Property Name="LightElement" Type="utinyint" Nullable="false" />
-    <Property Name="WaterElement" Type="utinyint" Nullable="false" />
-    <Property Name="FireElement" Type="utinyint" Nullable="false" />
-    <Property Name="ItemVNum" Type="smallint" Nullable="false" />
-    <Property Name="Ammo" Type="utinyint" Nullable="false" />
-    <Property Name="IsFixed" Type="bool" Nullable="false" />
+    <Property Name="InventoryItemId" Nullable="false" StoreGeneratedPattern="Identity" Type="bigint" />
+    <Property Name="DamageMinimum" Nullable="false" Type="smallint" />
+    <Property Name="DamageMaximum" Nullable="false" Type="smallint" />
+    <Property Name="Concentrate" Nullable="false" Type="smallint" />
+    <Property Name="HitRate" Nullable="false" Type="smallint" />
+    <Property Name="CriticalLuckRate" Nullable="false" Type="utinyint" />
+    <Property Name="CriticalRate" Nullable="false" Type="smallint" />
+    <Property Name="CloseDefence" Nullable="false" Type="smallint" />
+    <Property Name="DistanceDefence" Nullable="false" Type="smallint" />
+    <Property Name="MagicDefence" Nullable="false" Type="smallint" />
+    <Property Name="DistanceDefenceDodge" Nullable="false" Type="smallint" />
+    <Property Name="DefenceDodge" Nullable="false" Type="smallint" />
+    <Property Name="ElementRate" Nullable="false" Type="smallint" />
+    <Property Name="Upgrade" Nullable="false" Type="utinyint" />
+    <Property Name="Rare" Nullable="false" Type="utinyint" />
+    <Property Name="Color" Nullable="false" Type="smallint" />
+    <Property Name="Amount" Nullable="false" Type="utinyint" />
+    <Property Name="SpLevel" Nullable="false" Type="utinyint" />
+    <Property Name="SpXp" Nullable="false" Type="smallint" />
+    <Property Name="SlElement" Nullable="false" Type="smallint" />
+    <Property Name="SlHit" Nullable="false" Type="smallint" />
+    <Property Name="HP" Nullable="false" Type="smallint" />
+    <Property Name="MP" Nullable="false" Type="smallint" />
+    <Property Name="SlDefence" Nullable="false" Type="smallint" />
+    <Property Name="SlHP" Nullable="false" Type="smallint" />
+    <Property Name="DarkElement" Nullable="false" Type="utinyint" />
+    <Property Name="LightElement" Nullable="false" Type="utinyint" />
+    <Property Name="WaterElement" Nullable="false" Type="utinyint" />
+    <Property Name="FireElement" Nullable="false" Type="utinyint" />
+    <Property Name="ItemVNum" Nullable="false" Type="smallint" />
+    <Property Name="Ammo" Nullable="false" Type="utinyint" />
+    <Property Name="IsFixed" Nullable="false" Type="bool" />
   </EntityType>
   <EntityType Name="inventory">
     <Key>
       <PropertyRef Name="InventoryId" />
     </Key>
-    <Property Name="InventoryId" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
-    <Property Name="CharacterId" Type="bigint" Nullable="false" />
-    <Property Name="Type" Type="utinyint" Nullable="false" />
-    <Property Name="Slot" Type="smallint" Nullable="false" />
-    <Property Name="InventoryItemId" Type="bigint" Nullable="false" />
+    <Property Name="InventoryId" Nullable="false" StoreGeneratedPattern="Identity" Type="bigint" />
+    <Property Name="CharacterId" Nullable="false" Type="bigint" />
+    <Property Name="Type" Nullable="false" Type="utinyint" />
+    <Property Name="Slot" Nullable="false" Type="smallint" />
+    <Property Name="InventoryItemId" Nullable="false" Type="bigint" />
   </EntityType>
   <EntityType Name="shopitem">
     <Key>
       <PropertyRef Name="ShopItemId" />
     </Key>
-    <Property Name="ShopItemId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-    <Property Name="Type" Type="utinyint" Nullable="false" />
-    <Property Name="Slot" Type="smallint" Nullable="false" />
-    <Property Name="ItemVNum" Type="smallint" Nullable="false" />
-    <Property Name="Upgrade" Type="utinyint" Nullable="false" />
-    <Property Name="Rare" Type="utinyint" Nullable="false" />
-    <Property Name="Color" Type="smallint" Nullable="false" />
-    <Property Name="ShopId" Type="int" Nullable="false" />
-    <Property Name="Gold" Type="bigint" Nullable="false" />
+    <Property Name="ShopItemId" Nullable="false" StoreGeneratedPattern="Identity" Type="int" />
+    <Property Name="Type" Nullable="false" Type="utinyint" />
+    <Property Name="Slot" Nullable="false" Type="smallint" />
+    <Property Name="ItemVNum" Nullable="false" Type="smallint" />
+    <Property Name="Upgrade" Nullable="false" Type="utinyint" />
+    <Property Name="Rare" Nullable="false" Type="utinyint" />
+    <Property Name="Color" Nullable="false" Type="smallint" />
+    <Property Name="ShopId" Nullable="false" Type="int" />
+    <Property Name="Gold" Nullable="false" Type="bigint" />
   </EntityType>
   <EntityType Name="shop">
     <Key>
       <PropertyRef Name="ShopId" />
     </Key>
-    <Property Name="ShopId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-    <Property Name="Name" Type="longtext" Nullable="false" />
-    <Property Name="NpcId" Type="smallint" Nullable="false" />
-    <Property Name="MenuType" Type="smallint" Nullable="false" />
-    <Property Name="ShopType" Type="smallint" Nullable="false" />
+    <Property Name="ShopId" Nullable="false" StoreGeneratedPattern="Identity" Type="int" />
+    <Property Name="Name" Nullable="false" Type="longtext" />
+    <Property Name="NpcId" Nullable="false" Type="smallint" />
+    <Property Name="MenuType" Nullable="false" Type="smallint" />
+    <Property Name="ShopType" Nullable="false" Type="smallint" />
   </EntityType>
   <EntityType Name="respawn">
     <Key>
       <PropertyRef Name="RespawnId" />
     </Key>
-    <Property Name="RespawnId" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
-    <Property Name="X" Type="smallint" Nullable="false" />
-    <Property Name="Y" Type="smallint" Nullable="false" />
-    <Property Name="MapId" Type="smallint" Nullable="false" />
-    <Property Name="RespawnType" Type="smallint" Nullable="false" />
-    <Property Name="CharacterId" Type="bigint" Nullable="false" />
+    <Property Name="RespawnId" Nullable="false" StoreGeneratedPattern="Identity" Type="bigint" />
+    <Property Name="X" Nullable="false" Type="smallint" />
+    <Property Name="Y" Nullable="false" Type="smallint" />
+    <Property Name="MapId" Nullable="false" Type="smallint" />
+    <Property Name="RespawnType" Nullable="false" Type="smallint" />
+    <Property Name="CharacterId" Nullable="false" Type="bigint" />
   </EntityType>
   <Association Name="AccountCharacter">
-    <End Role="Account" Type="opennosModel.Store.account" Multiplicity="1" />
-    <End Role="Character" Type="opennosModel.Store.character" Multiplicity="*" />
+    <End Type="opennosModel.Store.account" Multiplicity="1" Role="Account" />
+    <End Type="opennosModel.Store.character" Multiplicity="*" Role="Character" />
     <ReferentialConstraint>
       <Principal Role="Account">
         <PropertyRef Name="AccountId" />
@@ -370,8 +370,8 @@
     </ReferentialConstraint>
   </Association>
   <Association Name="accountlog">
-    <End Role="account" Type="opennosModel.Store.account" Multiplicity="1" />
-    <End Role="log" Type="opennosModel.Store.generallog" Multiplicity="*" />
+    <End Type="opennosModel.Store.account" Multiplicity="1" Role="account" />
+    <End Type="opennosModel.Store.generallog" Multiplicity="*" Role="log" />
     <ReferentialConstraint>
       <Principal Role="account">
         <PropertyRef Name="AccountId" />
@@ -382,8 +382,8 @@
     </ReferentialConstraint>
   </Association>
   <Association Name="portalMap">
-    <End Role="portal" Type="opennosModel.Store.portal" Multiplicity="*" />
-    <End Role="Map" Type="opennosModel.Store.map" Multiplicity="1" />
+    <End Type="opennosModel.Store.portal" Multiplicity="*" Role="portal" />
+    <End Type="opennosModel.Store.map" Multiplicity="1" Role="Map" />
     <ReferentialConstraint>
       <Principal Role="Map">
         <PropertyRef Name="MapId" />
@@ -394,8 +394,8 @@
     </ReferentialConstraint>
   </Association>
   <Association Name="portalMap1">
-    <End Role="portal" Type="opennosModel.Store.portal" Multiplicity="*" />
-    <End Role="Map" Type="opennosModel.Store.map" Multiplicity="1" />
+    <End Type="opennosModel.Store.portal" Multiplicity="*" Role="portal" />
+    <End Type="opennosModel.Store.map" Multiplicity="1" Role="Map" />
     <ReferentialConstraint>
       <Principal Role="Map">
         <PropertyRef Name="MapId" />
@@ -406,8 +406,8 @@
     </ReferentialConstraint>
   </Association>
   <Association Name="GeneralLogCharacter">
-    <End Role="GeneralLog" Type="opennosModel.Store.generallog" Multiplicity="*" />
-    <End Role="Character" Type="opennosModel.Store.character" Multiplicity="0..1" />
+    <End Type="opennosModel.Store.generallog" Multiplicity="*" Role="GeneralLog" />
+    <End Type="opennosModel.Store.character" Multiplicity="0..1" Role="Character" />
     <ReferentialConstraint>
       <Principal Role="Character">
         <PropertyRef Name="CharacterId" />
@@ -418,8 +418,8 @@
     </ReferentialConstraint>
   </Association>
   <Association Name="CharacterMap">
-    <End Role="Character" Type="opennosModel.Store.character" Multiplicity="*" />
-    <End Role="Map" Type="opennosModel.Store.map" Multiplicity="1" />
+    <End Type="opennosModel.Store.character" Multiplicity="*" Role="Character" />
+    <End Type="opennosModel.Store.map" Multiplicity="1" Role="Map" />
     <ReferentialConstraint>
       <Principal Role="Map">
         <PropertyRef Name="MapId" />
@@ -430,8 +430,8 @@
     </ReferentialConstraint>
   </Association>
   <Association Name="NpcMap">
-    <End Role="Npc" Type="opennosModel.Store.npc" Multiplicity="*" />
-    <End Role="Map" Type="opennosModel.Store.map" Multiplicity="1" />
+    <End Type="opennosModel.Store.npc" Multiplicity="*" Role="Npc" />
+    <End Type="opennosModel.Store.map" Multiplicity="1" Role="Map" />
     <ReferentialConstraint>
       <Principal Role="Map">
         <PropertyRef Name="MapId" />
@@ -442,8 +442,8 @@
     </ReferentialConstraint>
   </Association>
   <Association Name="CharacterInventory">
-    <End Role="Character" Type="opennosModel.Store.character" Multiplicity="1" />
-    <End Role="Inventory" Type="opennosModel.Store.inventory" Multiplicity="*" />
+    <End Type="opennosModel.Store.character" Multiplicity="1" Role="Character" />
+    <End Type="opennosModel.Store.inventory" Multiplicity="*" Role="Inventory" />
     <ReferentialConstraint>
       <Principal Role="Character">
         <PropertyRef Name="CharacterId" />
@@ -454,8 +454,8 @@
     </ReferentialConstraint>
   </Association>
   <Association Name="InventoryItemInventory">
-    <End Role="Inventory" Type="opennosModel.Store.inventory" Multiplicity="*" />
-    <End Role="InventoryItem" Type="opennosModel.Store.inventoryitem" Multiplicity="1" />
+    <End Type="opennosModel.Store.inventory" Multiplicity="*" Role="Inventory" />
+    <End Type="opennosModel.Store.inventoryitem" Multiplicity="1" Role="InventoryItem" />
     <ReferentialConstraint>
       <Principal Role="InventoryItem">
         <PropertyRef Name="InventoryItemId" />
@@ -466,8 +466,8 @@
     </ReferentialConstraint>
   </Association>
   <Association Name="InventoryItemItem">
-    <End Role="InventoryItem" Type="opennosModel.Store.inventoryitem" Multiplicity="*" />
-    <End Role="Item" Type="opennosModel.Store.item" Multiplicity="1" />
+    <End Type="opennosModel.Store.inventoryitem" Multiplicity="*" Role="InventoryItem" />
+    <End Type="opennosModel.Store.item" Multiplicity="1" Role="Item" />
     <ReferentialConstraint>
       <Principal Role="Item">
         <PropertyRef Name="VNum" />
@@ -478,8 +478,8 @@
     </ReferentialConstraint>
   </Association>
   <Association Name="ShopNpc">
-    <End Role="Shop" Type="opennosModel.Store.shop" Multiplicity="*" />
-    <End Role="Npc" Type="opennosModel.Store.npc" Multiplicity="1" />
+    <End Type="opennosModel.Store.shop" Multiplicity="*" Role="Shop" />
+    <End Type="opennosModel.Store.npc" Multiplicity="1" Role="Npc" />
     <ReferentialConstraint>
       <Principal Role="Npc">
         <PropertyRef Name="NpcId" />
@@ -490,8 +490,8 @@
     </ReferentialConstraint>
   </Association>
   <Association Name="ShopItemItem">
-    <End Role="ShopItem" Type="opennosModel.Store.shopitem" Multiplicity="*" />
-    <End Role="Item" Type="opennosModel.Store.item" Multiplicity="1" />
+    <End Type="opennosModel.Store.shopitem" Multiplicity="*" Role="ShopItem" />
+    <End Type="opennosModel.Store.item" Multiplicity="1" Role="Item" />
     <ReferentialConstraint>
       <Principal Role="Item">
         <PropertyRef Name="VNum" />
@@ -502,8 +502,8 @@
     </ReferentialConstraint>
   </Association>
   <Association Name="ShopShopItem">
-    <End Role="Shop" Type="opennosModel.Store.shop" Multiplicity="1" />
-    <End Role="ShopItem" Type="opennosModel.Store.shopitem" Multiplicity="*" />
+    <End Type="opennosModel.Store.shop" Multiplicity="1" Role="Shop" />
+    <End Type="opennosModel.Store.shopitem" Multiplicity="*" Role="ShopItem" />
     <ReferentialConstraint>
       <Principal Role="Shop">
         <PropertyRef Name="ShopId" />
@@ -514,8 +514,8 @@
     </ReferentialConstraint>
   </Association>
   <Association Name="CharacterRespawn">
-    <End Role="Respawn" Type="opennosModel.Store.respawn" Multiplicity="*" />
-    <End Role="Character" Type="opennosModel.Store.character" Multiplicity="1" />
+    <End Type="opennosModel.Store.respawn" Multiplicity="*" Role="Respawn" />
+    <End Type="opennosModel.Store.character" Multiplicity="1" Role="Character" />
     <ReferentialConstraint>
       <Principal Role="Character">
         <PropertyRef Name="CharacterId" />
@@ -995,7 +995,7 @@
           </Key>
           <Property Name="ShopItemId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Type" Type="Byte" Nullable="false" />
-          <Property Name="Slot" Type="Int16" Nullable="false" />
+          <Property Name="Slot" Nullable="false" Type="Int16" />
           <NavigationProperty Name="item" Relationship="opennosModel.ShopItemItem" FromRole="ShopItem" ToRole="Item" />
           <Property Name="ItemVNum" Type="Int16" Nullable="false" />
           <Property Name="Upgrade" Type="Byte" Nullable="false" />
@@ -1082,7 +1082,7 @@
     <!-- C-S mapping content -->
     <edmx:Mappings>
     <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
-  <EntityContainerMapping StorageEntityContainer="opennosModelStoreContainer" CdmEntityContainer="OpenNosContainer">
+  <EntityContainerMapping CdmEntityContainer="OpenNosContainer" StorageEntityContainer="opennosModelStoreContainer">
     <EntitySetMapping Name="account">
       <EntityTypeMapping TypeName="IsTypeOf(opennosModel.Account)">
         <MappingFragment StoreEntitySet="account">

@@ -310,6 +310,10 @@ namespace OpenNos.Import.Console
                                 {
                                     item.SecondaryElement = (byte)Elementdic.OrderByDescending(s => s.Value).ElementAt(1).Key;
                                 }
+                                if (item.VNum == 903) //need to hardcode...
+                                    item.Element = 2;
+                                else if (item.VNum == 901)//need to hardcode...
+                                    item.Element = 1;
                                 break;
                             case (byte)ItemType.Shell:
                                 //item.ShellMinimumLevel = Convert.ToInt16(linesave[3]);//wtf\/\/ this two things are wrong in many ways
@@ -501,6 +505,63 @@ namespace OpenNos.Import.Console
             Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("NPCS_PARSED"), npcCounter));
         }
 
+        public void ImportShopItems()
+        {
+            List<PortalDTO> listPacket = new List<PortalDTO>();
+            int portalCounter = 0;
+            byte type = 0;
+            foreach (string[] linesave in packetList.Where(o => o[0].Equals("n_inv") || o[0].Equals("shopping")))
+            {
+                if (linesave[0].Equals("n_inv"))
+                {
+                    if (DAOFactory.ShopDAO.LoadByNpc(short.Parse(linesave[2])) != null)
+                    {
+                        for (int i = 5; i < linesave.Count(); i++)
+                        {
+                            string[] item = linesave[i].Split('.');
+                            ShopItemDTO sitem = new ShopItemDTO();
+                            if (item.Count() == 5)
+                            {
+                                sitem.ShopId = DAOFactory.ShopDAO.LoadByNpc(short.Parse(linesave[2])).ShopId;
+                                sitem.Type = type;
+                                sitem.Slot = short.Parse(item[1]);
+                                sitem.ItemVNum = short.Parse(item[2]);
+                                sitem.Gold = long.Parse(item[4]);
+                            }
+                            else
+                             if (item.Count() == 6)
+                            {
+                                sitem.ShopId = DAOFactory.ShopDAO.LoadByNpc(short.Parse(linesave[2])).ShopId;
+                                sitem.Type = type;
+                                sitem.Slot = short.Parse(item[1]);
+                                sitem.ItemVNum = short.Parse(item[2]);
+                                sitem.Rare = byte.Parse(item[3]);
+                                sitem.Upgrade = byte.Parse(item[4]);
+                                sitem.Gold = long.Parse(item[5]);
+
+                            }
+                            if (DAOFactory.ShopItemDAO.LoadByShopId(sitem.ShopId).FirstOrDefault(s => s.ItemVNum.Equals(sitem.ItemVNum)) == null)
+                            {
+                                DAOFactory.ShopItemDAO.Insert(sitem);
+                                portalCounter++;
+                            }
+
+                        }
+
+                    }
+                    else
+                    {
+                        if (linesave.Count() > 3)
+                            type = byte.Parse(linesave[3]);
+                    }
+                }
+            }
+
+
+            Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("SHOPITEMS_PARSED"), portalCounter));
+
+        }
+
         public void ImportPackets()
         {
             string filePacket = $"{_folder}\\packet.txt";
@@ -627,45 +688,6 @@ namespace OpenNos.Import.Console
             }
 
             Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("SHOPS_PARSED"), shopCounter));
-        }
-
-        public void ImportShopItems()
-        {
-            ShopItemDTO shopItem = new ShopItemDTO();
-
-            int shopItemCounter = 0;
-
-            foreach (string[] linesave in packetList.Where(o => o[0].Equals("n_inv")))
-            {
-                if (linesave.Length > 9 && linesave[0] == "n_inv" && linesave[1] == "2")
-                {
-                    shopItem.ShopId = short.Parse(linesave[3]);
-                    shopItem.Color = short.Parse(linesave[4]);
-                    shopItem.Type = byte.Parse(linesave[6]);
-                    shopItem.Slot = short.Parse(linesave[7]);
-                    shopItem.ItemVNum = short.Parse(linesave[8]);
-                    shopItem.Upgrade = byte.Parse(linesave[9]);
-
-                    if (linesave.Length > 10)
-                    {
-                        shopItem.Rare = byte.Parse(linesave[10]);
-                        shopItem.Gold = long.Parse(linesave[11]);
-                    }
-                    else
-                    {
-                        shopItem.Gold = long.Parse(linesave[10]);
-                    }
-
-                }
-                if (DAOFactory.ShopItemDAO.LoadByShopId(shopItem.ShopId) == null)
-                {
-                    DAOFactory.ShopItemDAO.InsertOrUpdate(ref shopItem);
-                    shopItemCounter++;
-
-                }
-            }
-
-            Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("SHOPITEMS_PARSED"), shopItemCounter));
         }
 
         #endregion

@@ -162,6 +162,9 @@
   <data name="PORTALS_PARSED" xml:space="preserve">
     <value>{0} portals parsed</value>
   </data>
+  <data name="SHOPITEMS_PARSED" xml:space="preserve">
+    <value>{0} shopitems parsed</value>
+  </data>
   <data name="SHOPS_PARSED" xml:space="preserve">
     <value>{0} shops parsed</value>
   </data>

@@ -23,11 +23,11 @@ namespace OpenNos.DAL.Interface
 
         DeleteResult DeleteById(int ItemId);
 
-        SaveResult InsertOrUpdate(ref ShopItemDTO item);
-
         ShopItemDTO LoadById(int ItemId);
 
         IEnumerable<ShopItemDTO> LoadByShopId(int ShopId);
+
+        ShopItemDTO Insert(ShopItemDTO item);
 
         #endregion
     }
