@@ -520,9 +520,10 @@ namespace OpenNos.Import.Console
                         for (int i = 5; i < linesave.Count(); i++)
                         {
                             string[] item = linesave[i].Split('.');
-                            ShopItemDTO sitem = new ShopItemDTO();
+                            ShopItemDTO sitem = null;
                             if (item.Count() == 5)
                             {
+                                sitem = new ShopItemDTO();
                                 sitem.ShopId = DAOFactory.ShopDAO.LoadByNpc(short.Parse(linesave[2])).ShopId;
                                 sitem.Type = type;
                                 sitem.Slot = short.Parse(item[1]);
@@ -532,6 +533,7 @@ namespace OpenNos.Import.Console
                             else
                              if (item.Count() == 6)
                             {
+                                sitem = new ShopItemDTO();
                                 sitem.ShopId = DAOFactory.ShopDAO.LoadByNpc(short.Parse(linesave[2])).ShopId;
                                 sitem.Type = type;
                                 sitem.Slot = short.Parse(item[1]);
@@ -541,7 +543,7 @@ namespace OpenNos.Import.Console
                                 sitem.Gold = long.Parse(item[5]);
 
                             }
-                            if (DAOFactory.ShopItemDAO.LoadByShopId(sitem.ShopId).FirstOrDefault(s => s.ItemVNum.Equals(sitem.ItemVNum)) == null)
+                            if (sitem !=null && DAOFactory.ShopItemDAO.LoadByShopId(sitem.ShopId).FirstOrDefault(s => s.ItemVNum.Equals(sitem.ItemVNum)) == null)
                             {
                                 DAOFactory.ShopItemDAO.Insert(sitem);
                                 portalCounter++;
