@@ -1960,11 +1960,12 @@ namespace OpenNos.Handler
             chara.Send(s); */
 
             // lev 40 2288403 23 47450 3221180 113500 20086 5
+
+            Session.Client.SendPacket(Session.Character.GenerateStat());
+            Session.Client.SendPacket(Session.Character.GenerateStatChar());
             Thread.Sleep(30000);
             Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("TRANSFORM_DISAPEAR")), 11));
             Session.Client.SendPacket("sd 0");
-            Session.Client.SendPacket(Session.Character.GenerateStat());
-            Session.Client.SendPacket(Session.Character.GenerateStatChar());
         }
 
         public void RemoveVehicle()
@@ -2390,7 +2391,317 @@ namespace OpenNos.Handler
                 spInventory.InventoryItem.SlElement += short.Parse(packetsplit[8]);
                 spInventory.InventoryItem.SlHP += short.Parse(packetsplit[9]);
 
+                int slElement = ServersData.SlPoint(spInventory.InventoryItem.SlElement, 2);
+                int slHp = ServersData.SlPoint(spInventory.InventoryItem.SlHP, 3);
+                int slDefence = ServersData.SlPoint(spInventory.InventoryItem.SlDefence, 1);
+                int slHit = ServersData.SlPoint(spInventory.InventoryItem.SlHit, 0);
 
+                //so add upgrade to sp
+                //slhit
+                spInventory.InventoryItem.DamageMinimum = 0;
+                spInventory.InventoryItem.DamageMaximum = 0;
+                spInventory.InventoryItem.HitRate = 0;
+                spInventory.InventoryItem.CriticalLuckRate = 0;
+                spInventory.InventoryItem.CriticalRate = 0;
+                spInventory.InventoryItem.DefenceDodge = 0;
+                spInventory.InventoryItem.DistanceDefenceDodge = 0;
+                spInventory.InventoryItem.ElementRate = 0;
+                spInventory.InventoryItem.DarkResistance = 0;
+                spInventory.InventoryItem.LightResistance = 0;
+                spInventory.InventoryItem.FireResistance = 0;
+                spInventory.InventoryItem.WaterResistance = 0;
+                spInventory.InventoryItem.CriticalDodge =0;
+                spInventory.InventoryItem.MagicDefence = 0;
+                spInventory.InventoryItem.HP = 0;
+                spInventory.InventoryItem.MP = 0;
+
+                if (slHit >= 1)
+                {
+                    spInventory.InventoryItem.DamageMinimum += 5;
+                    spInventory.InventoryItem.DamageMaximum += 5;
+                }
+                if (slHit >= 10)
+                {
+                    spInventory.InventoryItem.HitRate += 10;
+                }
+                if (slHit >= 20)
+                {
+                    spInventory.InventoryItem.CriticalLuckRate += 2;
+                }
+                if (slHit >= 30)
+                {
+                    spInventory.InventoryItem.DamageMinimum += 5;
+                    spInventory.InventoryItem.DamageMaximum += 5;
+                    spInventory.InventoryItem.HitRate += 10;
+                }
+                if (slHit >= 40)
+                {
+                    spInventory.InventoryItem.CriticalRate += 10;
+                }
+                if (slHit >= 50)
+                {
+                      spInventory.InventoryItem.HP += 200;
+                     spInventory.InventoryItem.MP += 200;
+                }
+                if (slHit >= 60)
+                {
+                    spInventory.InventoryItem.HitRate += 15;
+                }
+                if (slHit >= 70)
+                {
+                    spInventory.InventoryItem.HitRate += 15;
+                    spInventory.InventoryItem.DamageMinimum += 5;
+                    spInventory.InventoryItem.DamageMaximum += 5;
+                }
+                if (slHit >= 80)
+                {
+                    spInventory.InventoryItem.CriticalLuckRate += 2;
+                }
+                if (slHit >= 90)
+                {
+                    spInventory.InventoryItem.CriticalRate += 20;
+                }
+                //sldef
+                if (slDefence >= 20)
+                {
+                    spInventory.InventoryItem.DefenceDodge += 2;
+                    spInventory.InventoryItem.DistanceDefenceDodge += 2;
+
+                }
+                if (slDefence >= 30)
+                {
+                    spInventory.InventoryItem.HP += 100;
+                }
+                if (slDefence >= 40)
+                {
+                    spInventory.InventoryItem.DefenceDodge += 2;
+                    spInventory.InventoryItem.DistanceDefenceDodge += 2;
+                }
+                if (slDefence >= 60)
+                {
+                     spInventory.InventoryItem.HP += 200;
+                }
+                if (slDefence >= 70)
+                {
+                    spInventory.InventoryItem.DefenceDodge += 3;
+                    spInventory.InventoryItem.DistanceDefenceDodge += 3;
+                }
+                if (slDefence >= 75)
+                {
+                    spInventory.InventoryItem.FireResistance += 2;
+                    spInventory.InventoryItem.WaterResistance += 2;
+                    spInventory.InventoryItem.LightResistance += 2;
+                    spInventory.InventoryItem.DarkResistance += 2;
+                }
+                if (slDefence >= 80)
+                {
+
+                    spInventory.InventoryItem.DefenceDodge += 3;
+                    spInventory.InventoryItem.DistanceDefenceDodge += 3;
+                }
+                if (slDefence >= 90)
+                {
+                    spInventory.InventoryItem.FireResistance += 3;
+                    spInventory.InventoryItem.WaterResistance += 3;
+                    spInventory.InventoryItem.LightResistance += 3;
+                    spInventory.InventoryItem.DarkResistance += 3;
+                }
+                if (slDefence >= 95)
+                {
+                      spInventory.InventoryItem.HP += 300;
+                }
+                //slele
+                if (slElement >= 1)
+                {
+                    spInventory.InventoryItem.ElementRate += 2;
+                }
+                if (slElement >= 10)
+                {
+                      spInventory.InventoryItem.MP += 100;
+                }
+                if (slElement >= 20)
+                {
+                    spInventory.InventoryItem.MagicDefence += 5;
+                }
+                if (slElement >= 30)
+                {
+                    spInventory.InventoryItem.FireResistance += 2;
+                    spInventory.InventoryItem.WaterResistance += 2;
+                    spInventory.InventoryItem.LightResistance += 2;
+                    spInventory.InventoryItem.DarkResistance += 2;
+                    spInventory.InventoryItem.ElementRate += 2;
+                }
+                if (slElement >= 40)
+                {
+                     spInventory.InventoryItem.MP += 100;
+                }
+                if (slElement >= 50)
+                {
+                    spInventory.InventoryItem.MagicDefence += 5;
+                }
+                if (slElement >= 60)
+                {
+                    spInventory.InventoryItem.FireResistance += 3;
+                    spInventory.InventoryItem.WaterResistance += 3;
+                    spInventory.InventoryItem.LightResistance += 3;
+                    spInventory.InventoryItem.DarkResistance += 3;
+                    spInventory.InventoryItem.ElementRate += 2;
+                }
+                if (slElement >= 70)
+                {
+                     spInventory.InventoryItem.MP += 100;
+                }
+                if (slElement >= 80)
+                {
+                    spInventory.InventoryItem.MagicDefence += 5;
+                }
+                if (slElement >= 90)
+                {
+                    spInventory.InventoryItem.FireResistance += 4;
+                    spInventory.InventoryItem.WaterResistance += 4;
+                    spInventory.InventoryItem.LightResistance += 4;
+                    spInventory.InventoryItem.DarkResistance += 4;
+                }
+                if (slElement == 100)
+                {
+                    spInventory.InventoryItem.FireResistance += 6;
+                    spInventory.InventoryItem.WaterResistance += 6;
+                    spInventory.InventoryItem.LightResistance += 6;
+                    spInventory.InventoryItem.DarkResistance += 6;
+                }
+                //slhp
+                if (slElement >= 5)
+                {
+                    spInventory.InventoryItem.DamageMinimum += 5;
+                    spInventory.InventoryItem.DamageMaximum += 5;
+                }
+                if (slElement >= 10)
+                {
+                    spInventory.InventoryItem.DamageMinimum += 5;
+                    spInventory.InventoryItem.DamageMaximum += 5;
+                }
+                if (slElement >= 15)
+                {
+                    spInventory.InventoryItem.DamageMinimum += 5;
+                    spInventory.InventoryItem.DamageMaximum += 5;
+                }
+                if (slElement >= 20)
+                {
+                    spInventory.InventoryItem.DamageMinimum += 5;
+                    spInventory.InventoryItem.DamageMaximum += 5;
+                    spInventory.InventoryItem.CloseDefence += 10;
+                    spInventory.InventoryItem.DistanceDefence += 10;
+                    spInventory.InventoryItem.MagicDefence += 10;
+                }
+                if (slElement >= 25)
+                {
+                    spInventory.InventoryItem.DamageMinimum += 5;
+                    spInventory.InventoryItem.DamageMaximum += 5;
+                }
+                if (slElement >= 30)
+                {
+                    spInventory.InventoryItem.DamageMinimum += 5;
+                    spInventory.InventoryItem.DamageMaximum += 5;
+                }
+                if (slElement >= 35)
+                {
+                    spInventory.InventoryItem.DamageMinimum += 5;
+                    spInventory.InventoryItem.DamageMaximum += 5;
+                }
+                if (slElement >= 40)
+                {
+                    spInventory.InventoryItem.DamageMinimum += 5;
+                    spInventory.InventoryItem.DamageMaximum += 5;
+                    spInventory.InventoryItem.CloseDefence += 15;
+                    spInventory.InventoryItem.DistanceDefence += 15;
+                    spInventory.InventoryItem.MagicDefence += 15;
+                }
+                if (slElement >= 45)
+                {
+                    spInventory.InventoryItem.DamageMinimum += 10;
+                    spInventory.InventoryItem.DamageMaximum += 10;
+                }
+                if (slElement >= 50)
+                {
+                    spInventory.InventoryItem.DamageMinimum += 10;
+                    spInventory.InventoryItem.DamageMaximum += 10;
+                    spInventory.InventoryItem.FireResistance += 2;
+                    spInventory.InventoryItem.WaterResistance += 2;
+                    spInventory.InventoryItem.LightResistance += 2;
+                    spInventory.InventoryItem.DarkResistance += 2;
+                }
+                if (slElement >= 60)
+                {
+                    spInventory.InventoryItem.DamageMinimum += 10;
+                    spInventory.InventoryItem.DamageMaximum += 10;
+                }
+                if (slElement >= 65)
+                {
+                    spInventory.InventoryItem.DamageMinimum += 10;
+                    spInventory.InventoryItem.DamageMaximum += 10;
+                }
+                if (slElement >= 70)
+                {
+                    spInventory.InventoryItem.DamageMinimum += 10;
+                    spInventory.InventoryItem.DamageMaximum += 10;
+                    spInventory.InventoryItem.CloseDefence += 45;
+                    spInventory.InventoryItem.DistanceDefence += 45;
+                    spInventory.InventoryItem.MagicDefence += 45;
+                }
+                if (slElement >= 75)
+                {
+                    spInventory.InventoryItem.DamageMinimum += 15;
+                    spInventory.InventoryItem.DamageMaximum += 15;
+                }
+                if (slElement >= 80)
+                {
+                    spInventory.InventoryItem.DamageMinimum += 15;
+                    spInventory.InventoryItem.DamageMaximum += 15;
+                }
+                if (slElement >= 85)
+                {
+                    spInventory.InventoryItem.DamageMinimum += 15;
+                    spInventory.InventoryItem.DamageMaximum += 15;
+                    spInventory.InventoryItem.CriticalDodge += 1;
+                }
+                if (slElement >= 86)
+                {
+                    spInventory.InventoryItem.CriticalDodge += 1;
+                }
+                if (slElement >= 87)
+                {
+                    spInventory.InventoryItem.CriticalDodge += 1;
+                }
+                if (slElement >= 88)
+                {
+                    spInventory.InventoryItem.CriticalDodge += 1;
+                }
+                if (slElement >= 90)
+                {
+                    spInventory.InventoryItem.DamageMinimum += 15;
+                    spInventory.InventoryItem.DamageMaximum += 15;
+                    spInventory.InventoryItem.DefenceDodge += (short)((slElement - 90) * 2);
+                    spInventory.InventoryItem.DistanceDefenceDodge += (short)((slElement - 90) * 2);
+                }
+                if (slElement >= 95)
+                {
+                    spInventory.InventoryItem.DamageMinimum += 15;
+                    spInventory.InventoryItem.DamageMaximum += 15;
+                }
+                if (slElement >= 100)
+                {
+                    spInventory.InventoryItem.DamageMinimum += 20;
+                    spInventory.InventoryItem.DamageMaximum += 20;
+                    spInventory.InventoryItem.FireResistance += 3;
+                    spInventory.InventoryItem.WaterResistance += 3;
+                    spInventory.InventoryItem.LightResistance += 3;
+                    spInventory.InventoryItem.DarkResistance += 3;
+                    spInventory.InventoryItem.CloseDefence += 30;
+                    spInventory.InventoryItem.DistanceDefence += 30;
+                    spInventory.InventoryItem.MagicDefence += 30;
+                    spInventory.InventoryItem.CriticalDodge += 3;
+                }
+                //end add upgrade
                 Session.Client.SendPacket(Session.Character.GenerateStatChar());
                 Session.Client.SendPacket(Session.Character.GenerateStat());
                 Session.Client.SendPacket(Session.Character.GenerateSlInfo(spInventory.InventoryItem, 2));

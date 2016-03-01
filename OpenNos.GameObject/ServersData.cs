@@ -400,7 +400,7 @@ namespace OpenNos.GameObject
             return minHit[@class, level];
         }
 
-        internal static int SlPoint(short spPoint, short mode)
+        public static int SlPoint(short spPoint, short mode)
         {
             int point = 0;
             switch (mode)

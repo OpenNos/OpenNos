@@ -300,6 +300,8 @@
     <Property Name="SpXp" Type="smallint" Nullable="false" />
     <Property Name="SlElement" Type="smallint" Nullable="false" />
     <Property Name="SlHit" Type="smallint" Nullable="false" />
+    <Property Name="HP" Type="smallint" Nullable="false" />
+    <Property Name="MP" Type="smallint" Nullable="false" />
     <Property Name="SlDefence" Type="smallint" Nullable="false" />
     <Property Name="SlHP" Type="smallint" Nullable="false" />
     <Property Name="DarkElement" Type="utinyint" Nullable="false" />
@@ -925,6 +927,8 @@
           <Property Name="SpXp" Type="Int16" Nullable="false" />
           <Property Name="SlElement" Type="Int16" Nullable="false" />
           <Property Name="SlHit" Type="Int16" Nullable="false" />
+          <Property Name="HP" Type="Int16" Nullable="false" />
+          <Property Name="MP" Type="Int16" Nullable="false" />
           <Property Name="SlDefence" Type="Int16" Nullable="false" />
           <Property Name="SlHP" Type="Int16" Nullable="false" />
           <Property Name="DarkElement" Type="Byte" Nullable="false" />
@@ -1310,6 +1314,8 @@
           <ScalarProperty Name="SpXp" ColumnName="SpXp" />
           <ScalarProperty Name="SlElement" ColumnName="SlElement" />
           <ScalarProperty Name="SlHit" ColumnName="SlHit" />
+          <ScalarProperty Name="HP" ColumnName="HP" />
+          <ScalarProperty Name="MP" ColumnName="MP" />
           <ScalarProperty Name="SlDefence" ColumnName="SlDefence" />
           <ScalarProperty Name="SlHP" ColumnName="SlHP" />
           <ScalarProperty Name="DarkElement" ColumnName="DarkElement" />

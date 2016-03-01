@@ -802,6 +802,7 @@ namespace OpenNos.GameObject
         public double HPLoad()
         {
             double multiplicator = 1.0;
+            int hp = 0;
             if (UseSp)
             {
                 Inventory inventory = EquipmentList.LoadBySlotAndType((byte)EquipmentType.Sp, (byte)InventoryType.Equipment);
@@ -813,10 +814,11 @@ namespace OpenNos.GameObject
                     else
                         multiplicator += 0.5 + (point - 50) * 2 / 100;
 
+                    hp = inventory.InventoryItem.HP;
                 }
 
             }
-            return (int)(ServersData.HPData[Class, Level] * multiplicator);
+            return (int)((ServersData.HPData[Class, Level] + hp) * multiplicator);
         }
 
         public double JobXPLoad()
@@ -928,6 +930,7 @@ namespace OpenNos.GameObject
 
         public double MPLoad()
         {
+            int mp = 0;
             double multiplicator = 1.0;
             if (UseSp)
             {
@@ -940,10 +943,11 @@ namespace OpenNos.GameObject
                     else
                         multiplicator += 0.5 + (point - 50) * 2 / 100;
 
+                    mp = inventory.InventoryItem.MP;
                 }
 
             }
-            return (int)(ServersData.MPData[Class, Level] * multiplicator);
+            return (int)((ServersData.MPData[Class, Level] + mp) * multiplicator);
         }
 
         public void Save()
