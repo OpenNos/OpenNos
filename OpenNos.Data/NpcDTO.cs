@@ -48,6 +48,7 @@ namespace OpenNos.Data
         public short DarkResistance { get; set; }
         public short Hp { get; set; }
         public short Mp { get; set; }
+        public bool IsSitting { get; set; }
         #endregion
     }
 }

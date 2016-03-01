@@ -385,11 +385,10 @@ namespace OpenNos.Import.Console
             string fileNpcLang = $"{_folder}\\_code_{System.Configuration.ConfigurationManager.AppSettings["language"]}_monster.txt";
 
             // Store like this: (vnum, (name, level))
-            Dictionary<int, KeyValuePair<string, short>> dictionaryNpcs = new Dictionary<int, KeyValuePair<string, short>>();
+
             Dictionary<string, string> dictionaryIdLang = new Dictionary<string, string>();
             NpcDTO npc = new NpcDTO();
             string line;
-            int vnum = -1;
             bool itemAreaBegin = false;
             List<NpcDTO> npclist = new List<NpcDTO>();
             using (StreamReader npcIdLangStream = new StreamReader(fileNpcLang, Encoding.GetEncoding(1252)))
@@ -485,6 +484,8 @@ namespace OpenNos.Import.Console
 
                             npctest.Position = short.Parse(linesave[6]);
                             npctest.Dialog = short.Parse(linesave[9]);
+                            npctest.IsSitting = linesave[13] == "1" ? true : false;
+
                             if (long.Parse(linesave[3]) >= 10000) continue; // Dialog too high. but why? in order to avoid partners
                             if (DAOFactory.NpcDAO.LoadFromMap(map).FirstOrDefault(s => s.MapId.Equals(map) && s.NpcId.Equals(npctest.NpcId)) != null) continue; // Npc already existing
                             DAOFactory.NpcDAO.Insert(npctest);

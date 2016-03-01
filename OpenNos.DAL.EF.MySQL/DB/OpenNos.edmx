@@ -270,10 +270,11 @@
     <Property Name="DistanceDefenceDodge" Type="smallint" Nullable="false" />
     <Property Name="MagicDefence" Type="smallint" Nullable="false" />
     <Property Name="CloseDefence" Type="smallint" Nullable="false" />
-    <Property Name="FireElement" Type="smallint" Nullable="false" />
-    <Property Name="WaterElement" Type="smallint" Nullable="false" />
-    <Property Name="LightElement" Type="smallint" Nullable="false" />
-    <Property Name="DarkElement" Type="smallint" Nullable="false" />
+    <Property Name="FireResistance" Type="smallint" Nullable="false" />
+    <Property Name="WaterResistance" Type="smallint" Nullable="false" />
+    <Property Name="LightResistance" Type="smallint" Nullable="false" />
+    <Property Name="DarkResistance" Type="smallint" Nullable="false" />
+    <Property Name="IsSitting" Type="bool" Nullable="false" />
   </EntityType>
   <EntityType Name="inventoryitem">
     <Key>
@@ -889,6 +890,7 @@
           <Property Name="WaterResistance" Type="Int16" Nullable="false" />
           <Property Name="LightResistance" Type="Int16" Nullable="false" />
           <Property Name="DarkResistance" Type="Int16" Nullable="false" />
+          <Property Name="IsSitting" Type="Boolean" Nullable="false" />
         </EntityType>
         <Association Name="NpcMap">
           <End Type="opennosModel.Npc" Role="Npc" Multiplicity="*" />
@@ -1283,10 +1285,11 @@
           <ScalarProperty Name="DistanceDefenceDodge" ColumnName="DistanceDefenceDodge" />
           <ScalarProperty Name="MagicDefence" ColumnName="MagicDefence" />
           <ScalarProperty Name="CloseDefence" ColumnName="CloseDefence" />
-          <ScalarProperty Name="FireResistance" ColumnName="FireElement" />
-          <ScalarProperty Name="WaterResistance" ColumnName="WaterElement" />
-          <ScalarProperty Name="LightResistance" ColumnName="LightElement" />
-          <ScalarProperty Name="DarkResistance" ColumnName="DarkElement" />
+          <ScalarProperty Name="FireResistance" ColumnName="FireResistance" />
+          <ScalarProperty Name="WaterResistance" ColumnName="WaterResistance" />
+          <ScalarProperty Name="LightResistance" ColumnName="LightResistance" />
+          <ScalarProperty Name="DarkResistance" ColumnName="DarkResistance" />
+          <ScalarProperty Name="IsSitting" ColumnName="IsSitting" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
