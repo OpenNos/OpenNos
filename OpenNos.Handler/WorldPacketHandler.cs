@@ -371,6 +371,7 @@ namespace OpenNos.Handler
             ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateCond(), ReceiverType.AllOnMap);
             Session.Client.SendPacket(Session.Character.GenerateLev());
             Session.Client.SendPacket(Session.Character.GenerateStat());
+            Session.Client.SendPacket(Session.Character.GenerateStatChar());
         }
 
         public void ChangeVehicle(Item item)
@@ -1963,6 +1964,7 @@ namespace OpenNos.Handler
             Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("TRANSFORM_DISAPEAR")), 11));
             Session.Client.SendPacket("sd 0");
             Session.Client.SendPacket(Session.Character.GenerateStat());
+            Session.Client.SendPacket(Session.Character.GenerateStatChar());
         }
 
         public void RemoveVehicle()
@@ -2388,7 +2390,8 @@ namespace OpenNos.Handler
                 spInventory.InventoryItem.SlElement += short.Parse(packetsplit[8]);
                 spInventory.InventoryItem.SlHP += short.Parse(packetsplit[9]);
 
-               
+
+                Session.Client.SendPacket(Session.Character.GenerateStatChar());
                 Session.Client.SendPacket(Session.Character.GenerateStat());
                 Session.Client.SendPacket(Session.Character.GenerateSlInfo(spInventory.InventoryItem, 2));
                 Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("CHANGE_DONE"), 0));
