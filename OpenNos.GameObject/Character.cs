@@ -84,6 +84,7 @@ namespace OpenNos.GameObject
         private int DarkResistance { get; set; }
         private int Defence { get; set; }
         private int DefenceRate { get; set; }
+        private int Element { get; set; }
         private int DistanceCritical { get; set; }
         private int DistanceCriticalRate { get; set; }
         private int DistanceDefence { get; set; }
@@ -563,10 +564,91 @@ namespace OpenNos.GameObject
             DarkResistance = ServersData.DarkResistance(Class, Level);
             Defence = ServersData.Defence(Class, Level);
             DefenceRate = ServersData.DefenceRate(Class, Level);
+            Element = ServersData.Element(Class, Level);
             DistanceDefence = ServersData.DistanceDefence(Class, Level);
             DistanceDefenceRate = ServersData.DistanceDefenceRate(Class, Level);
             MagicalDefence = ServersData.MagicalDefence(Class, Level);
+            if (UseSp)
+            {
+                Inventory inventory = EquipmentList.LoadBySlotAndType((byte)EquipmentType.Sp, (byte)InventoryType.Equipment);
+                if (inventory != null)
+                {
+                    int point = ServersData.SlPoint(inventory.InventoryItem.SlHit, 0);
+                    int p = 0;
+                    if (point <= 10)
+                        p = point * 5;
+                    else if (point <= 20)
+                        p = 50 + (point - 10) * 6;
+                    else if (point <= 30)
+                        p = 110 + (point - 20) * 7;
+                    else if (point <= 40)
+                        p = 180 + (point - 30) * 8;
+                    else if (point <= 50)
+                        p = 260 + (point - 40) * 9;
+                    else if (point <= 60)
+                        p = 350 + (point - 50) * 10;
+                    else if (point <= 70)
+                        p = 450 + (point - 60) * 11;
+                    else if (point <= 80)
+                        p = 560 + (point - 70) * 13;
+                    else if (point <= 90)
+                        p = 690 + (point - 80) * 14;
+                    else if (point <= 94)
+                        p = 830 + (point - 90) * 15;
+                    else if (point <= 95)
+                        p = 890 + 16;
+                    else if (point <= 97)
+                        p = 906 + (point - 95) * 17;
+                    else if (point <= 100)
+                        p = 940 + (point - 97) * 20;
+                    MaxHit += p;
+                    MinHit += p;
 
+                    p = 0;
+                    if (point <= 10)
+                        p = point;
+                    else if (point <= 20)
+                        p = 10 + (point - 10) * 2;
+                    else if (point <= 30)
+                        p = 30 + (point - 10) * 3;
+                    else if (point <= 40)
+                        p = 60 + (point - 10) * 4;
+                    else if (point <= 50)
+                        p = 100 + (point - 10) * 5;
+                    else if (point <= 60)
+                        p = 150 + (point - 10) * 6;
+                    else if (point <= 70)
+                        p = 210 + (point - 10) * 7;
+                    else if (point <= 80)
+                        p = 280 + (point - 10) * 8;
+                    else if (point <= 90)
+                        p = 360 + (point - 10) * 9;
+                    else if (point <= 100)
+                        p = 450 + (point - 10) * 10;
+                    MinDistance += p;
+                    MaxDistance += p;
+
+                    point = ServersData.SlPoint(inventory.InventoryItem.SlDefence, 1);
+                    p = 0;
+                    if (point <= 50)
+                        p = point;
+                    else
+                        p = 50 + (point - 50) * 2;
+                    Defence += p;
+                    MagicalDefence += p;
+                    DistanceDefence += p;
+
+                    point = ServersData.SlPoint(inventory.InventoryItem.SlElement, 2);
+                    p = 0;
+                    if (point <= 50)
+                        p = point;
+                    else
+                        p = 50 + (point - 50) * 2;
+                    Element += p;
+
+                }
+
+            }
             //TODO: add base stats
             Inventory weapon = EquipmentList.LoadBySlotAndType((byte)EquipmentType.MainWeapon, (byte)InventoryType.Equipment);
             if (weapon != null)
@@ -599,11 +681,11 @@ namespace OpenNos.GameObject
             {
                 Item iteminfo = ServerManager.GetItem(armor.InventoryItem.ItemVNum); // unused variable
                 armorUpgrade = armor.InventoryItem.Upgrade;
-                Defence = armor.InventoryItem.CloseDefence;
-                DistanceDefence = armor.InventoryItem.DistanceDefence;
-                MagicalDefence = armor.InventoryItem.MagicDefence;
-                DefenceRate = armor.InventoryItem.DefenceDodge;
-                DistanceDefenceRate = armor.InventoryItem.DistanceDefenceDodge;
+                Defence += armor.InventoryItem.CloseDefence + iteminfo.CloseDefence;
+                DistanceDefence += armor.InventoryItem.DistanceDefence + iteminfo.DistanceDefence;
+                MagicalDefence += armor.InventoryItem.MagicDefence + iteminfo.MagicDefence;
+                DefenceRate += armor.InventoryItem.DefenceDodge + iteminfo.DefenceDodge;
+                DistanceDefenceRate += armor.InventoryItem.DistanceDefenceDodge + iteminfo.DistanceDefenceDodge;
             }
 
             Inventory item = null;
@@ -719,11 +801,27 @@ namespace OpenNos.GameObject
 
         public double HPLoad()
         {
-            return ServersData.HPData[Class, Level];
+            double multiplicator = 1.0;
+            if (UseSp)
+            {
+                Inventory inventory = EquipmentList.LoadBySlotAndType((byte)EquipmentType.Sp, (byte)InventoryType.Equipment);
+                if (inventory != null)
+                {
+                    int point = ServersData.SlPoint(inventory.InventoryItem.SlHP, 3);
+                    if (point <= 50)
+                        multiplicator += point / 100.0;
+                    else
+                        multiplicator += 0.5 + (point - 50) * 2 / 100;
+
+                }
+
+            }
+            return (int)(ServersData.HPData[Class, Level] * multiplicator);
         }
 
         public double JobXPLoad()
         {
+
             if (Class == (byte)ClassType.Adventurer)
                 return ServersData.FirstJobXPData[JobLevel - 1];
             return ServersData.SecondJobXPData[JobLevel - 1];
@@ -830,7 +928,22 @@ namespace OpenNos.GameObject
 
         public double MPLoad()
         {
-            return ServersData.MPData[Class, Level];
+            double multiplicator = 1.0;
+            if (UseSp)
+            {
+                Inventory inventory = EquipmentList.LoadBySlotAndType((byte)EquipmentType.Sp, (byte)InventoryType.Equipment);
+                if (inventory != null)
+                {
+                    int point = ServersData.SlPoint(inventory.InventoryItem.SlHP, 3);
+                    if (point <= 50)
+                        multiplicator += point / 100.0;
+                    else
+                        multiplicator += 0.5 + (point - 50) * 2 / 100;
+
+                }
+
+            }
+            return (int)(ServersData.MPData[Class, Level] * multiplicator);
         }
 
         public void Save()

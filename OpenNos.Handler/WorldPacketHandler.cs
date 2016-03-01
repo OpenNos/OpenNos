@@ -370,6 +370,7 @@ namespace OpenNos.Handler
             Session.Character.Speed += ServerManager.GetItem(sp.InventoryItem.ItemVNum).Speed;
             ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateCond(), ReceiverType.AllOnMap);
             Session.Client.SendPacket(Session.Character.GenerateLev());
+            Session.Client.SendPacket(Session.Character.GenerateStat());
         }
 
         public void ChangeVehicle(Item item)
@@ -1688,7 +1689,7 @@ namespace OpenNos.Handler
         [Packet("preq")]
         public void Preq(string packet)
         {
-            double currentRunningSeconds = (DateTime.Now - Process.GetCurrentProcess().StartTime).TotalSeconds;
+            double currentRunningSeconds = (DateTime.Now - Process.GetCurrentProcess().StartTime.AddSeconds(-50)).TotalSeconds;
             double timeSpanSinceLastPortal = currentRunningSeconds - Session.Character.LastPortal;
             if (!(timeSpanSinceLastPortal >= 4))
             {
@@ -1907,7 +1908,7 @@ namespace OpenNos.Handler
 
                 if (slot == (byte)EquipmentType.Sp && Session.Character.UseSp)
                 {
-                    Session.Character.LastSp = (DateTime.Now - Process.GetCurrentProcess().StartTime).TotalSeconds;
+                    Session.Character.LastSp = (DateTime.Now - Process.GetCurrentProcess().StartTime.AddSeconds(-50)).TotalSeconds;
                     new Thread(() => RemoveSP(inventory.InventoryItem.ItemVNum)).Start();
                 }
 
@@ -1961,6 +1962,7 @@ namespace OpenNos.Handler
             Thread.Sleep(30000);
             Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("TRANSFORM_DISAPEAR")), 11));
             Session.Client.SendPacket("sd 0");
+            Session.Client.SendPacket(Session.Character.GenerateStat());
         }
 
         public void RemoveVehicle()
@@ -2381,23 +2383,13 @@ namespace OpenNos.Handler
                     - short.Parse(packetsplit[8]) - short.Parse(packetsplit[9]) < 0)
                     return;
 
-                // TODO: Check if this reference works
                 spInventory.InventoryItem.SlHit += short.Parse(packetsplit[6]);
                 spInventory.InventoryItem.SlDefence += short.Parse(packetsplit[7]);
                 spInventory.InventoryItem.SlElement += short.Parse(packetsplit[8]);
                 spInventory.InventoryItem.SlHP += short.Parse(packetsplit[9]);
 
-                /* Otherwise, return to this:
-                Session.Character.EquipmentList.LoadBySlotAndType((short) EquipmentType.Sp,
-                    (short) InventoryType.Equipment).InventoryItem.SlHit += short.Parse(packetsplit[6]);
-                Session.Character.EquipmentList.LoadBySlotAndType((short) EquipmentType.Sp,
-                    (short) InventoryType.Equipment).InventoryItem.SlDefence += short.Parse(packetsplit[7]);
-                Session.Character.EquipmentList.LoadBySlotAndType((short) EquipmentType.Sp,
-                    (short) InventoryType.Equipment).InventoryItem.SlElement += short.Parse(packetsplit[8]);
-                Session.Character.EquipmentList.LoadBySlotAndType((short) EquipmentType.Sp,
-                    (short) InventoryType.Equipment).InventoryItem.SlHP += short.Parse(packetsplit[9]);
-                */
-
+               
+                Session.Client.SendPacket(Session.Character.GenerateStat());
                 Session.Client.SendPacket(Session.Character.GenerateSlInfo(spInventory.InventoryItem, 2));
                 Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("CHANGE_DONE"), 0));
             }
@@ -2411,7 +2403,7 @@ namespace OpenNos.Handler
                     return;
                 }
 
-                double currentRunningSeconds = (DateTime.Now - Process.GetCurrentProcess().StartTime).TotalSeconds;
+                double currentRunningSeconds = (DateTime.Now - Process.GetCurrentProcess().StartTime.AddSeconds(-50)).TotalSeconds;
 
                 if (Session.Character.UseSp)
                 {
@@ -2709,7 +2701,7 @@ namespace OpenNos.Handler
                 Item iteminfo = ServerManager.GetItem(inventory.InventoryItem.ItemVNum);
                 if (iteminfo == null) return; // This may mean that the DB is incomplete
 
-                double timeSpanSinceLastSpUsage = (DateTime.Now - Process.GetCurrentProcess().StartTime).TotalSeconds -
+                double timeSpanSinceLastSpUsage = (DateTime.Now - Process.GetCurrentProcess().StartTime.AddSeconds(-50)).TotalSeconds -
                                                   Session.Character.LastSp;
                 if (iteminfo.EquipmentSlot == (byte)EquipmentType.Sp && timeSpanSinceLastSpUsage < 30)
                 {

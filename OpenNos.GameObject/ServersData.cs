@@ -310,6 +310,10 @@ namespace OpenNos.GameObject
         {
             return 0;
         }
+        internal static int Element(byte @class, byte level)
+        {
+            return 0;
+        }
 
         internal static int Defence(byte @class, byte level)
         {
