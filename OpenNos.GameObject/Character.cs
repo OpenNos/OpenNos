@@ -599,6 +599,11 @@ namespace OpenNos.GameObject
             {
                 Item iteminfo = ServerManager.GetItem(armor.InventoryItem.ItemVNum); // unused variable
                 armorUpgrade = armor.InventoryItem.Upgrade;
+                Defence = armor.InventoryItem.CloseDefence;
+                DistanceDefence = armor.InventoryItem.DistanceDefence;
+                MagicalDefence = armor.InventoryItem.MagicDefence;
+                DefenceRate = armor.InventoryItem.DefenceDodge;
+                DistanceDefenceRate = armor.InventoryItem.DistanceDefenceDodge;
             }
 
             Inventory item = null;
