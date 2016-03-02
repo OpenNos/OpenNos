@@ -491,7 +491,7 @@ namespace OpenNos.Import.Console
                             npctest.IsSitting = linesave[13] == "1" ? true : false;
 
                             if (long.Parse(linesave[3]) >= 10000) continue; // Dialog too high. but why? in order to avoid partners
-                            if (DAOFactory.NpcDAO.LoadFromMap(map).FirstOrDefault(s => s.MapId.Equals(map) && s.NpcId.Equals(npctest.NpcId)) != null) continue; // Npc already existing
+                            if (DAOFactory.NpcDAO.LoadById(npctest.NpcId) != null) continue; // Npc already existing
                             DAOFactory.NpcDAO.Insert(npctest);
                             npcCounter++;
                         }
