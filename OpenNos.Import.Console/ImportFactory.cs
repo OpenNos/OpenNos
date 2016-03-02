@@ -552,11 +552,12 @@ namespace OpenNos.Import.Console
                         }
 
                     }
-                    else
-                    {
-                        if (linesave.Count() > 3)
-                            type = byte.Parse(linesave[3]);
-                    }
+                   
+                }
+                else
+                {
+                    if (linesave.Count() > 3)
+                        type = byte.Parse(linesave[1]);
                 }
             }
 

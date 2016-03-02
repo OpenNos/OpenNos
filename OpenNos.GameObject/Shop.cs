@@ -37,7 +37,7 @@ namespace OpenNos.GameObject
             ShopId = shopId;
             foreach (ShopItemDTO item in DAOFactory.ShopItemDAO.LoadByShopId(ShopId))
             {
-                ShopItems.Add(new ShopItem() { ItemVNum = item.ItemVNum, Rare = item.Rare, ShopItemId = item.ShopItemId, Slot = item.Slot, Upgrade = item.Upgrade, Color = item.Color });
+                ShopItems.Add(new ShopItem() { ItemVNum = item.ItemVNum, Rare = item.Rare, ShopItemId = item.ShopItemId, Slot = item.Slot, Upgrade = item.Upgrade, Color = item.Color,Type =item.Type,Gold = item.Gold,ShopId=item.ShopId });
             }
         }
 
