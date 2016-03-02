@@ -812,7 +812,7 @@ namespace OpenNos.GameObject
                     if (point <= 50)
                         multiplicator += point / 100.0;
                     else
-                        multiplicator += 0.5 + (point - 50) * 2 / 100;
+                        multiplicator += 0.5 + (point - 50)/50.0;
 
                     hp = inventory.InventoryItem.HP;
                 }
@@ -941,7 +941,7 @@ namespace OpenNos.GameObject
                     if (point <= 50)
                         multiplicator += point / 100.0;
                     else
-                        multiplicator += 0.5 + (point - 50) * 2 / 100;
+                        multiplicator += 0.5+(point - 50) / 50.0; ;
 
                     mp = inventory.InventoryItem.MP;
                 }
