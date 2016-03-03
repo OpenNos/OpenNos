@@ -977,7 +977,7 @@ namespace OpenNos.GameObject
             for(int i=0;i< InventoryList.Inventory.Count();i++)
                 InventoryList.Inventory[i].Save();
             for (int i = 0; i < EquipmentList.Inventory.Count(); i++)
-                EquipmentList.Inventory[0].Save();
+                EquipmentList.Inventory[i].Save();
         }
 
         public double SPXPLoad()
