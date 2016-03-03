@@ -590,6 +590,7 @@ namespace OpenNos.Handler
                 {
                     if (iteminfo.IsColored)
                     {
+                        if(packetsplit.Count()>3)
                         Int16.TryParse(packetsplit[3], out color);
                     }
                     else if (iteminfo.Type == 0)

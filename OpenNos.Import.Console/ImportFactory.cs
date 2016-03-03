@@ -246,9 +246,8 @@ namespace OpenNos.Import.Console
                                 item.BasicUpgrade = Convert.ToByte(linesave[10]);
                                 break;
                             case (byte)ItemType.Box:
-                                item.IsPearl = linesave[2] == "1" ? true : false;
-                                //item.PetVnum = Convert.ToInt16(linesave[3]);
-                                //item.PetLevel = Convert.ToInt16(linesave[4]);
+                                item.Effect = Convert.ToInt16(linesave[2]);
+                                item.EffectValue = Convert.ToInt32(linesave[3]);
                                 break;
                             case (byte)ItemType.Fashion:
                                 item.LevelMinimum = Convert.ToByte(linesave[2]);
@@ -278,6 +277,7 @@ namespace OpenNos.Import.Console
                                 break;
                             case (byte)ItemType.Magical1:
                                 item.Effect = Convert.ToInt16(linesave[2]);
+                                item.EffectValue = Convert.ToInt32(linesave[4]);
                                 break;
                             case (byte)ItemType.Magical2:
                                 item.Effect = Convert.ToInt16(linesave[2]);
@@ -323,11 +323,11 @@ namespace OpenNos.Import.Console
                                 break;
                             case (byte)ItemType.Main:
                                 item.Effect = Convert.ToInt16(linesave[2]);
-                                //item.UsableType = Convert.ToByte(linesave[3]);
+                                item.EffectValue = Convert.ToInt32(linesave[4]);
                                 break;
                             case (byte)ItemType.Upgrade:
                                 item.Effect = Convert.ToInt16(linesave[2]);
-                                item.CellonLvl = Convert.ToByte(linesave[3]);
+                                item.EffectValue = Convert.ToInt32(linesave[4]);
                                 break;
                             case (byte)ItemType.Production:
                                 item.Effect = Convert.ToInt16(linesave[2]);
@@ -347,6 +347,7 @@ namespace OpenNos.Import.Console
                                 break;
                             case (byte)ItemType.Teacher:
                                 item.Effect = Convert.ToInt16(linesave[2]);
+                                item.EffectValue = Convert.ToInt32(linesave[4]);
                                 //item.PetLoyality = Convert.ToInt16(linesave[4]);
                                 //item.PetFood = Convert.ToInt16(linesave[7]);
                                 break;
