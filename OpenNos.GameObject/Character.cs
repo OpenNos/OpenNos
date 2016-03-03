@@ -184,7 +184,7 @@ namespace OpenNos.GameObject
                             switch (classe)
                             {
                                 case (byte)ClassType.Archer:
-                                    return $"e_info 0 {item.ItemVNum} {item.Rare} {item.Upgrade} {(item.IsFixed ? 1 : 0)} {iteminfo.LevelMinimum} {iteminfo.DamageMinimum + item.DamageMinimum} {iteminfo.DamageMaximum + item.DamageMaximum} {iteminfo.HitRate + item.HitRate} {iteminfo.CriticalLuckRate + item.CriticalLuckRate} {iteminfo.CriticalRate + item.CriticalRate} {item.Ammo} {iteminfo.MaximumAmmo} {iteminfo.Price} -1 0 0 0";
+                                    return $"e_info 1 {item.ItemVNum} {item.Rare} {item.Upgrade} {(item.IsFixed ? 1 : 0)} {iteminfo.LevelMinimum} {iteminfo.DamageMinimum + item.DamageMinimum} {iteminfo.DamageMaximum + item.DamageMaximum} {iteminfo.HitRate + item.HitRate} {iteminfo.CriticalLuckRate + item.CriticalLuckRate} {iteminfo.CriticalRate + item.CriticalRate} {item.Ammo} {iteminfo.MaximumAmmo} {iteminfo.Price} -1 0 0 0";
                                 default:
                                     return $"e_info 0 {item.ItemVNum} {item.Rare} {item.Upgrade} {(item.IsFixed ? 1 : 0)} {iteminfo.LevelMinimum} {iteminfo.DamageMinimum + item.DamageMinimum} {iteminfo.DamageMaximum + item.DamageMaximum} {iteminfo.HitRate + item.HitRate} {iteminfo.CriticalLuckRate + item.CriticalLuckRate} {iteminfo.CriticalRate + item.CriticalRate} {item.Ammo} {iteminfo.MaximumAmmo} {iteminfo.Price} -1 0 0 0";
                             }
@@ -195,12 +195,11 @@ namespace OpenNos.GameObject
                 case (byte)ItemType.Fashion:
                     switch (equipmentslot)
                     {
-                        case (byte)EquipmentType.CostumeSuit:
-                            return $"e_info 2 {item.ItemVNum} {iteminfo.LevelMinimum} {iteminfo.CloseDefence + item.CloseDefence} {iteminfo.DistanceDefence + item.DistanceDefence} {iteminfo.MagicDefence + item.MagicDefence} {iteminfo.DefenceDodge + item.DefenceDodge} {iteminfo.FireResistance + item.FireResistance} {iteminfo.WaterResistance + item.WaterResistance} {iteminfo.LightResistance + item.LightResistance} {iteminfo.DarkResistance + item.DarkResistance} {iteminfo.Price} 0 1 {(iteminfo.ItemValidTime == 0 ? -1 : iteminfo.ItemValidTime/(86400))}"; // 1 means effect for equipment
                         case (byte)EquipmentType.CostumeHat:
-                            return $"e_info 2 {item.ItemVNum} {iteminfo.LevelMinimum} {iteminfo.CloseDefence + item.CloseDefence} {iteminfo.DistanceDefence + item.DistanceDefence} {iteminfo.MagicDefence + item.MagicDefence} {iteminfo.DefenceDodge + item.DefenceDodge} {iteminfo.FireResistance + item.FireResistance} {iteminfo.WaterResistance + item.WaterResistance} {iteminfo.LightResistance + item.LightResistance} {iteminfo.DarkResistance + item.DarkResistance} {iteminfo.Price} 0 1 {(iteminfo.ItemValidTime == 0 ? -1 : iteminfo.ItemValidTime / (86400))}";
+                        case (byte)EquipmentType.CostumeSuit:
+                            return $"e_info 3 {item.ItemVNum} {iteminfo.LevelMinimum} {iteminfo.CloseDefence + item.CloseDefence} {iteminfo.DistanceDefence + item.DistanceDefence} {iteminfo.MagicDefence + item.MagicDefence} {iteminfo.DefenceDodge + item.DefenceDodge} {iteminfo.FireResistance + item.FireResistance} {iteminfo.WaterResistance + item.WaterResistance} {iteminfo.LightResistance + item.LightResistance} {iteminfo.DarkResistance + item.DarkResistance} {iteminfo.Price} 0 1 {(iteminfo.ItemValidTime == 0 ? -1 : iteminfo.ItemValidTime / (86400))}"; // 1 means effect for equipment
                         default:
-                            return $"e_info 3 {item.ItemVNum} {iteminfo.LevelMinimum} {iteminfo.CloseDefence + item.CloseDefence} {iteminfo.DistanceDefence + item.DistanceDefence} {iteminfo.MagicDefence + item.MagicDefence} {iteminfo.DefenceDodge + item.DefenceDodge} {iteminfo.FireResistance + item.FireResistance} {iteminfo.WaterResistance + item.WaterResistance} {iteminfo.LightResistance + item.LightResistance} {iteminfo.DarkResistance + item.DarkResistance} {iteminfo.Price} 0 0 {(iteminfo.ItemValidTime==0?-1:iteminfo.ItemValidTime)}"; // after value theres TimesConnected
+                            return $"e_info 3 {item.ItemVNum} {iteminfo.LevelMinimum} {iteminfo.CloseDefence + item.CloseDefence} {iteminfo.DistanceDefence + item.DistanceDefence} {iteminfo.MagicDefence + item.MagicDefence} {iteminfo.DefenceDodge + item.DefenceDodge} {iteminfo.FireResistance + item.FireResistance} {iteminfo.WaterResistance + item.WaterResistance} {iteminfo.LightResistance + item.LightResistance} {iteminfo.DarkResistance + item.DarkResistance} {iteminfo.Price} 0 0 {(iteminfo.ItemValidTime == 0 ? -1 : iteminfo.ItemValidTime)}"; // after value theres TimesConnected
                     }
                 case (byte)ItemType.Jewelery:
                     switch (equipmentslot)
@@ -441,14 +440,15 @@ namespace OpenNos.GameObject
             Item iteminfo = null;
             ElementRate = 0;
             Element = 0;
-            if (fairy != null) { 
-             iteminfo = ServerManager.GetItem(fairy.InventoryItem.ItemVNum);
+            if (fairy != null)
+            {
+                iteminfo = ServerManager.GetItem(fairy.InventoryItem.ItemVNum);
                 ElementRate += fairy.InventoryItem.ElementRate + iteminfo.ElementRate;
                 Element = iteminfo.Element;
             }
 
             return fairy != null
-                ? $"pairy 1 {CharacterId} 4 {iteminfo.Element} {fairy.InventoryItem.ElementRate+ iteminfo.ElementRate} {iteminfo.Morph}"
+                ? $"pairy 1 {CharacterId} 4 {iteminfo.Element} {fairy.InventoryItem.ElementRate + iteminfo.ElementRate} {iteminfo.Morph}"
                 : $"pairy 1 {CharacterId} 0 0 0 40";
         }
 
@@ -759,7 +759,7 @@ namespace OpenNos.GameObject
                 DefenceRate += armor.InventoryItem.DefenceDodge + iteminfo.DefenceDodge;
                 DistanceDefenceRate += armor.InventoryItem.DistanceDefenceDodge + iteminfo.DistanceDefenceDodge;
             }
-                Inventory item = null;
+            Inventory item = null;
             for (short i = 1; i < 14; i++)
             {
                 if (i != 5)
