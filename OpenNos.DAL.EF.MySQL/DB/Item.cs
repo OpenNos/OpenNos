@@ -78,7 +78,6 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public byte BasicUpgrade { get; set; }
         public short Color { get; set; }
         public long ItemValidTime { get; set; }
-        public bool IsPearl { get; set; }
         public short Effect { get; set; }
         public int EffectValue { get; set; }
         public byte CellonLvl { get; set; }
