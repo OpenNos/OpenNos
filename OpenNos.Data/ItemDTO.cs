@@ -24,6 +24,7 @@ namespace OpenNos.Data
         public long Price { get; set; }
         public string Name { get; set; }
         public byte ItemType { get; set; }
+        public byte ItemSubType { get; set; }
         public byte EquipmentSlot { get; set; }
         public short Morph { get; set; }
         public byte Type { get; set; }

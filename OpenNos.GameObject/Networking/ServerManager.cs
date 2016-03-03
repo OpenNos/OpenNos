@@ -126,7 +126,8 @@ namespace OpenNos.GameObject
                     Sex = item.Sex,
                     SecondaryElement = item.SecondaryElement,
                     MaximumAmmo = item.MaximumAmmo,
-                    ItemValidTime = item.ItemValidTime
+                    ItemValidTime = item.ItemValidTime,
+                    ItemSubType = item.ItemSubType
                 });
             }
 

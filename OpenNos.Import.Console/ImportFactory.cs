@@ -181,7 +181,7 @@ namespace OpenNos.Import.Console
                     {
                         item.Type = Convert.ToByte(linesave[2]) != 4 ? Convert.ToByte(linesave[2]) : (byte)0;
                         item.ItemType = linesave[3] != "-1" ? Convert.ToByte($"{item.Type}{linesave[3]}") : (byte)0;
-                        //item.FashionType = Convert.ToInt16(linesave[4]);
+                        item.ItemSubType = Convert.ToByte(linesave[4]);
                         item.EquipmentSlot = Convert.ToByte(linesave[5] != "-1" ? linesave[5] : "0");
                         //linesave[6] design id?
                         item.Morph = Convert.ToInt16(linesave[7]);
@@ -203,8 +203,7 @@ namespace OpenNos.Import.Console
                         item.IsMinilandObject = linesave[9] == "1" ? true : false;
                         item.IsWarehouse = linesave[10] == "1" ? true : false;
                         item.IsColored = linesave[16] == "1" ? true : false;
-                        item.Sex = linesave[17] == "1" ? (byte)2 : (byte)0;
-                        item.Sex = linesave[18] == "1" ? (byte)1 : item.Sex;
+                        item.Sex = linesave[18] == "1" ? (byte)1 : linesave[17] == "1" ? (byte)2 : (byte)0;
 
                         /*
                         ??item.IsVehicle = linesave[11] == "1" ? true : false;??

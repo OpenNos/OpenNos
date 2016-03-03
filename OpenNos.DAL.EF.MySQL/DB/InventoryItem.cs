@@ -52,6 +52,13 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public short ItemVNum { get; set; }
         public byte Ammo { get; set; }
         public bool IsFixed { get; set; }
+        public long ItemValidTime { get; set; }
+        public byte Cellon { get; set; }
+        public short FireResistance { get; set; }
+        public short WaterResistance { get; set; }
+        public short LightResistance { get; set; }
+        public short DarkResistance { get; set; }
+        public short CriticalDodge { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Inventory> inventory { get; set; }

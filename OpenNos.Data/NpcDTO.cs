@@ -49,6 +49,7 @@ namespace OpenNos.Data
         public short Hp { get; set; }
         public short Mp { get; set; }
         public bool IsSitting { get; set; }
+
         #endregion
     }
 }

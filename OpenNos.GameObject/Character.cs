@@ -159,7 +159,70 @@ namespace OpenNos.GameObject
 
         public string GenerateEInfo(InventoryItem item)
         {
-            throw new NotImplementedException();
+            Item iteminfo = ServerManager.GetItem(item.ItemVNum);
+            byte equipmentslot = iteminfo.EquipmentSlot;
+            byte itemType = iteminfo.ItemType;
+            byte classe = iteminfo.Class;
+            byte subtype = iteminfo.ItemSubType;
+            switch (itemType)
+            {
+                case (byte)ItemType.Weapon:
+                    switch (equipmentslot)
+                    {
+                        case (byte)EquipmentType.MainWeapon:
+                            switch (classe)
+                            {
+                                case (byte)ClassType.Archer:
+                                    return $"e_info 1 {item.ItemVNum} {item.Rare} {item.Upgrade} {(item.IsFixed ? 1 : 0)} {iteminfo.LevelMinimum} {iteminfo.DamageMinimum + item.DamageMinimum} {iteminfo.DamageMaximum + item.DamageMaximum} {iteminfo.HitRate + item.HitRate} {iteminfo.CriticalLuckRate + item.CriticalLuckRate} {iteminfo.CriticalRate + item.CriticalRate} {item.Ammo} {iteminfo.MaximumAmmo} {iteminfo.Price} -1 0 0 0"; // -1 = {item.ShellEffectValue} {item.FirstShell}...
+                                case (byte)ClassType.Magician:
+                                    return $"e_info 5 {item.ItemVNum} {item.Rare} {item.Upgrade} {(item.IsFixed ? 1 : 0)} {iteminfo.LevelMinimum} {iteminfo.DamageMinimum + item.DamageMinimum} {iteminfo.DamageMaximum + item.DamageMaximum} {iteminfo.HitRate + item.HitRate} {iteminfo.CriticalLuckRate + item.CriticalLuckRate} {iteminfo.CriticalRate + item.CriticalRate} {item.Ammo} {iteminfo.MaximumAmmo} {iteminfo.Price} -1 0 0 0";
+                                default:
+                                    return $"e_info 0 {item.ItemVNum} {item.Rare} {item.Upgrade} {(item.IsFixed ? 1 : 0)} {iteminfo.LevelMinimum} {iteminfo.DamageMinimum + item.DamageMinimum} {iteminfo.DamageMaximum + item.DamageMaximum} {iteminfo.HitRate + item.HitRate} {iteminfo.CriticalLuckRate + item.CriticalLuckRate} {iteminfo.CriticalRate + item.CriticalRate} {item.Ammo} {iteminfo.MaximumAmmo} {iteminfo.Price} -1 0 0 0";
+                            }
+                        case (byte)EquipmentType.SecondaryWeapon:
+                            switch (classe)
+                            {
+                                case (byte)ClassType.Archer:
+                                    return $"e_info 0 {item.ItemVNum} {item.Rare} {item.Upgrade} {(item.IsFixed ? 1 : 0)} {iteminfo.LevelMinimum} {iteminfo.DamageMinimum + item.DamageMinimum} {iteminfo.DamageMaximum + item.DamageMaximum} {iteminfo.HitRate + item.HitRate} {iteminfo.CriticalLuckRate + item.CriticalLuckRate} {iteminfo.CriticalRate + item.CriticalRate} {item.Ammo} {iteminfo.MaximumAmmo} {iteminfo.Price} -1 0 0 0";
+                                default:
+                                    return $"e_info 0 {item.ItemVNum} {item.Rare} {item.Upgrade} {(item.IsFixed ? 1 : 0)} {iteminfo.LevelMinimum} {iteminfo.DamageMinimum + item.DamageMinimum} {iteminfo.DamageMaximum + item.DamageMaximum} {iteminfo.HitRate + item.HitRate} {iteminfo.CriticalLuckRate + item.CriticalLuckRate} {iteminfo.CriticalRate + item.CriticalRate} {item.Ammo} {iteminfo.MaximumAmmo} {iteminfo.Price} -1 0 0 0";
+                            }
+                    }
+                    break;
+                case (byte)ItemType.Armor:
+                    return $"e_info 2 {item.ItemVNum} {item.Rare} {item.Upgrade} {(item.IsFixed ? 1 : 0)} {iteminfo.LevelMinimum} {iteminfo.CloseDefence + item.CloseDefence} {iteminfo.DistanceDefence + item.DistanceDefence} {iteminfo.MagicDefence + item.MagicDefence} {iteminfo.DefenceDodge + item.DefenceDodge} {iteminfo.DistanceDefenceDodge + item.DistanceDefenceDodge} {iteminfo.Price} -1 0 0 0";
+                case (byte)ItemType.Fashion:
+                    switch (equipmentslot)
+                    {
+                        case (byte)EquipmentType.CostumeSuit:
+                            return $"e_info 2 {item.ItemVNum} {iteminfo.LevelMinimum} {iteminfo.CloseDefence + item.CloseDefence} {iteminfo.DistanceDefence + item.DistanceDefence} {iteminfo.MagicDefence + item.MagicDefence} {iteminfo.DefenceDodge + item.DefenceDodge} {iteminfo.FireResistance + item.FireResistance} {iteminfo.WaterResistance + item.WaterResistance} {iteminfo.LightResistance + item.LightResistance} {iteminfo.DarkResistance + item.DarkResistance} {iteminfo.Price} 0 1 {iteminfo.ItemValidTime}"; // 1 means effect for equipment
+                        case (byte)EquipmentType.CostumeHat:
+                            return $"e_info 2 {item.ItemVNum} {iteminfo.LevelMinimum} {iteminfo.CloseDefence + item.CloseDefence} {iteminfo.DistanceDefence + item.DistanceDefence} {iteminfo.MagicDefence + item.MagicDefence} {iteminfo.DefenceDodge + item.DefenceDodge} {iteminfo.FireResistance + item.FireResistance} {iteminfo.WaterResistance + item.WaterResistance} {iteminfo.LightResistance + item.LightResistance} {iteminfo.DarkResistance + item.DarkResistance} {iteminfo.Price} 0 1 {iteminfo.ItemValidTime}";
+                        default:
+                            return $"e_info 3 {item.ItemVNum} {iteminfo.LevelMinimum} {iteminfo.CloseDefence + item.CloseDefence} {iteminfo.DistanceDefence + item.DistanceDefence} {iteminfo.MagicDefence + item.MagicDefence} {iteminfo.DefenceDodge + item.DefenceDodge} {iteminfo.FireResistance + item.FireResistance} {iteminfo.WaterResistance + item.WaterResistance} {iteminfo.LightResistance + item.LightResistance} {iteminfo.DarkResistance + item.DarkResistance} {iteminfo.Price} 0 0 {iteminfo.ItemValidTime}"; // after value theres TimesConnected
+                    }
+                case (byte)ItemType.Jewelery:
+                    switch (equipmentslot)
+                    {
+                        case (byte)EquipmentType.Amulet:
+                            return $"e_info 4 {item.ItemVNum} {iteminfo.LevelMinimum} {iteminfo.ItemValidTime} 0 0 {iteminfo.Price}";
+                        case (byte)EquipmentType.Fairy:
+                            return $"e_info 4 {item.ItemVNum} {iteminfo.Element} {item.ElementRate + iteminfo.ElementRate} 0 0 0 0 0"; // last IsNosmall
+                        default:
+                            return $"e_info 4 {item.ItemVNum} {iteminfo.LevelMinimum} {iteminfo.MaxCellonLvl} {iteminfo.MaxCellon} {item.Cellon} {iteminfo.Price}";
+                    }
+                case (byte)ItemType.Box:
+                    switch (subtype) //0 = NOSMATE pearl 1= npc pearl 2 = sp box 3 = raid box 4= VEHICLE pearl 5=fairy pearl
+                    {
+                        case 2:
+                            return $"e_info 7 {item.ItemVNum} 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0";
+                        default:
+                            return $"e_info 8 {item.ItemVNum} 0 0";
+                    }
+                case (byte)ItemType.Shell:
+                    return $"e_info 4 {item.ItemVNum} {iteminfo.LevelMinimum} {item.Rare} {iteminfo.Price} 0"; //0 = Number of effects
+            }
+            return string.Empty;
         }
 
         public string GenerateEq()
@@ -185,7 +248,7 @@ namespace OpenNos.GameObject
                 else invarray[i] = "-1";
             }
 
-            return $"{invarray[(byte)EquipmentType.Hat]}.{invarray[(byte)EquipmentType.Armor]}.{invarray[(byte)EquipmentType.MainWeapon]}.{invarray[(byte)EquipmentType.SecondaryWeapon]}.{invarray[(byte)EquipmentType.Mask]}.{invarray[(byte)EquipmentType.Fairy]}.{invarray[(byte)EquipmentType.CostumeSuite]}.{invarray[(byte)EquipmentType.CostumeHat]}";
+            return $"{invarray[(byte)EquipmentType.Hat]}.{invarray[(byte)EquipmentType.Armor]}.{invarray[(byte)EquipmentType.MainWeapon]}.{invarray[(byte)EquipmentType.SecondaryWeapon]}.{invarray[(byte)EquipmentType.Mask]}.{invarray[(byte)EquipmentType.Fairy]}.{invarray[(byte)EquipmentType.CostumeSuit]}.{invarray[(byte)EquipmentType.CostumeHat]}";
         }
 
         public string generateEqRareUpgradeForPacket()
@@ -812,7 +875,7 @@ namespace OpenNos.GameObject
                     if (point <= 50)
                         multiplicator += point / 100.0;
                     else
-                        multiplicator += 0.5 + (point - 50.00) / 50.00 ;
+                        multiplicator += 0.5 + (point - 50.00) / 50.00;
 
                     hp = inventory.InventoryItem.HP;
                 }
@@ -941,7 +1004,7 @@ namespace OpenNos.GameObject
                     if (point <= 50)
                         multiplicator += point / 100.0;
                     else
-                        multiplicator += 0.5+(point - 50.00) / 50.00; ;
+                        multiplicator += 0.5 + (point - 50.00) / 50.00; ;
 
                     mp = inventory.InventoryItem.MP;
                 }
@@ -974,7 +1037,7 @@ namespace OpenNos.GameObject
                 }
             }
 
-            for(int i=0;i< InventoryList.Inventory.Count();i++)
+            for (int i = 0; i < InventoryList.Inventory.Count(); i++)
                 InventoryList.Inventory[i].Save();
             for (int i = 0; i < EquipmentList.Inventory.Count(); i++)
                 EquipmentList.Inventory[i].Save();

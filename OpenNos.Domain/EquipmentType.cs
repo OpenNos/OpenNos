@@ -29,7 +29,7 @@ namespace OpenNos.Domain
         Fairy = 10,
         Amulet = 11,
         Sp = 12,
-        CostumeSuite = 13,
+        CostumeSuit = 13,
         CostumeHat = 14
     }
 }

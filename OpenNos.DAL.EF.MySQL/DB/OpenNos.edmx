@@ -181,6 +181,7 @@
     <Property Name="Price" Type="bigint" Nullable="false" />
     <Property Name="Name" Type="longtext" Nullable="false" />
     <Property Name="ItemType" Type="utinyint" Nullable="false" />
+    <Property Name="ItemSubType" Type="utinyint" Nullable="false" />
     <Property Name="EquipmentSlot" Type="utinyint" Nullable="false" />
     <Property Name="Morph" Type="smallint" Nullable="false" />
     <Property Name="Type" Type="utinyint" Nullable="false" />
@@ -311,6 +312,18 @@
     <Property Name="ItemVNum" Type="smallint" Nullable="false" />
     <Property Name="Ammo" Type="utinyint" Nullable="false" />
     <Property Name="IsFixed" Type="bool" Nullable="false" />
+    <Property Name="LevelMinimum" Type="utinyint" Nullable="false" />
+    <Property Name="Value" Type="bigint" Nullable="false" />
+    <Property Name="ItemValidTime" Type="bigint" Nullable="false" />
+    <Property Name="Element" Type="utinyint" Nullable="false" />
+    <Property Name="MaxCellonLvl" Type="utinyint" Nullable="false" />
+    <Property Name="MaxCellon" Type="utinyint" Nullable="false" />
+    <Property Name="Cellon" Type="utinyint" Nullable="false" />
+    <Property Name="FireResistance" Type="smallint" Nullable="false" />
+    <Property Name="WaterResistance" Type="smallint" Nullable="false" />
+    <Property Name="LightResistance" Type="smallint" Nullable="false" />
+    <Property Name="DarkResistance" Type="smallint" Nullable="false" />
+    <Property Name="CriticalDodge" Type="smallint" Nullable="false" />
   </EntityType>
   <EntityType Name="inventory">
     <Key>
@@ -792,6 +805,7 @@
           <Property Name="Price" Type="Int64" Nullable="false" />
           <Property Name="Name" Type="String" Nullable="false" />
           <Property Name="ItemType" Type="Byte" Nullable="false" />
+          <Property Name="ItemSubType" Type="Byte" Nullable="false" />
           <Property Name="EquipmentSlot" Type="Byte" Nullable="false" />
           <Property Name="Morph" Type="Int16" Nullable="false" />
           <Property Name="Type" Type="Byte" Nullable="false" />
@@ -940,6 +954,13 @@
           <Property Name="ItemVNum" Type="Int16" Nullable="false" />
           <Property Name="Ammo" Type="Byte" Nullable="false" />
           <Property Name="IsFixed" Type="Boolean" Nullable="false" />
+          <Property Name="ItemValidTime" Type="Int64" Nullable="false" />
+          <Property Name="Cellon" Type="Byte" Nullable="false" />
+          <Property Name="FireResistance" Type="Int16" Nullable="false" />
+          <Property Name="WaterResistance" Type="Int16" Nullable="false" />
+          <Property Name="LightResistance" Type="Int16" Nullable="false" />
+          <Property Name="DarkResistance" Type="Int16" Nullable="false" />
+          <Property Name="CriticalDodge" Type="Int16" Nullable="false" />
           </EntityType>
         <EntityType Name="Inventory">
           <Key>
@@ -1193,6 +1214,7 @@
           <ScalarProperty Name="Price" ColumnName="Price" />
           <ScalarProperty Name="Name" ColumnName="Name" />
           <ScalarProperty Name="ItemType" ColumnName="ItemType" />
+          <ScalarProperty Name="ItemSubType" ColumnName="ItemSubType" />
           <ScalarProperty Name="EquipmentSlot" ColumnName="EquipmentSlot" />
           <ScalarProperty Name="Morph" ColumnName="Morph" />
           <ScalarProperty Name="Type" ColumnName="Type" />
@@ -1325,6 +1347,13 @@
           <ScalarProperty Name="ItemVNum" ColumnName="ItemVNum" />
           <ScalarProperty Name="Ammo" ColumnName="Ammo" />
           <ScalarProperty Name="IsFixed" ColumnName="IsFixed" />
+          <ScalarProperty Name="ItemValidTime" ColumnName="ItemValidTime" />
+          <ScalarProperty Name="Cellon" ColumnName="Cellon" />
+          <ScalarProperty Name="FireResistance" ColumnName="FireResistance" />
+          <ScalarProperty Name="WaterResistance" ColumnName="WaterResistance" />
+          <ScalarProperty Name="LightResistance" ColumnName="LightResistance" />
+          <ScalarProperty Name="DarkResistance" ColumnName="DarkResistance" />
+          <ScalarProperty Name="CriticalDodge" ColumnName="CriticalDodge" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
