@@ -44,9 +44,9 @@
 -- -----------------------------------------------------------
 -- Entity Designer DDL Script for MySQL Server 4.1 and higher
 -- -----------------------------------------------------------
--- Date Created: 03/02/2016 10:17:20
+-- Date Created: 03/03/2016 17:41:55
 
--- Generated from EDMX file: C:\Users\Dominik\Source\Repos\OpenNos\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
+-- Generated from EDMX file: C:\Users\ERWAN\Desktop\OpenNos Git\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
 -- Target version: 3.0.0.0
 
 -- --------------------------------------------------
@@ -295,7 +295,6 @@ CREATE TABLE `item`(
 	`BasicUpgrade` TINYINT UNSIGNED NOT NULL, 
 	`Color` smallint NOT NULL, 
 	`ItemValidTime` bigint NOT NULL, 
-	`IsPearl` bool NOT NULL, 
 	`Effect` smallint NOT NULL, 
 	`EffectValue` int NOT NULL, 
 	`CellonLvl` TINYINT UNSIGNED NOT NULL, 

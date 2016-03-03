@@ -234,7 +234,6 @@
     <Property Name="BasicUpgrade" Type="utinyint" Nullable="false" />
     <Property Name="Color" Type="smallint" Nullable="false" />
     <Property Name="ItemValidTime" Type="bigint" Nullable="false" />
-    <Property Name="IsPearl" Type="bool" Nullable="false" />
     <Property Name="Effect" Type="smallint" Nullable="false" />
     <Property Name="EffectValue" Type="int" Nullable="false" />
     <Property Name="CellonLvl" Type="utinyint" Nullable="false" />
@@ -848,7 +847,6 @@
           <Property Name="BasicUpgrade" Type="Byte" Nullable="false" />
           <Property Name="Color" Type="Int16" Nullable="false" />
           <Property Name="ItemValidTime" Type="Int64" Nullable="false" />
-          <Property Name="IsPearl" Type="Boolean" Nullable="false" />
           <Property Name="Effect" Type="Int16" Nullable="false" />
           <Property Name="EffectValue" Type="Int32" Nullable="false" />
           <Property Name="CellonLvl" Type="Byte" Nullable="false" />
@@ -1248,7 +1246,6 @@
           <ScalarProperty Name="BasicUpgrade" ColumnName="BasicUpgrade" />
           <ScalarProperty Name="Color" ColumnName="Color" />
           <ScalarProperty Name="ItemValidTime" ColumnName="ItemValidTime" />
-          <ScalarProperty Name="IsPearl" ColumnName="IsPearl" />
           <ScalarProperty Name="Effect" ColumnName="Effect" />
           <ScalarProperty Name="EffectValue" ColumnName="EffectValue" />
           <ScalarProperty Name="CellonLvl" ColumnName="CellonLvl" />
