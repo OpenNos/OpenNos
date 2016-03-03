@@ -34,6 +34,11 @@ namespace OpenNos.DAL.EF.MySQL
 
                 if (item != null)
                 {
+                    Inventory inv = context.inventory.FirstOrDefault(s => s.inventoryitem.InventoryItemId == item.InventoryItemId);
+                    if (inv != null)
+                    {
+                        context.inventory.Remove(inv);
+                    }
                     context.inventoryitem.Remove(item);
                     context.SaveChanges();
                 }
@@ -65,7 +70,7 @@ namespace OpenNos.DAL.EF.MySQL
             }
             catch (Exception e)
             {
-                Logger.Log.ErrorFormat(Language.Instance.GetMessageFromKey("UPDATE_ACCOUNT_ERROR"), item.InventoryItemId, e.Message);
+                Logger.Log.ErrorFormat(Language.Instance.GetMessageFromKey("UPDATE_INVENTORY_ERROR"), item.InventoryItemId, e.Message);
                 return SaveResult.Error;
             }
         }

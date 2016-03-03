@@ -53,7 +53,7 @@ namespace OpenNos.DAL.EF.MySQL
                     short slot = inventory.Slot;
                     byte type = inventory.Type;
                     Inventory entity = context.inventory.SingleOrDefault(c => c.Type.Equals(type) && c.Slot.Equals(slot) && c.CharacterId.Equals(characterId));
-
+                   
                     if (entity == null) //new entity
                     {
                         inventory = Insert(inventory, context);
@@ -62,14 +62,14 @@ namespace OpenNos.DAL.EF.MySQL
                     else //existing entity
                     {
                         inventory.InventoryId = entity.InventoryId;
-                        inventory = Update(entity, inventory, context);
+                       inventory = Update(entity, inventory, context);
                         return SaveResult.Updated;
                     }
                 }
             }
             catch (Exception e)
             {
-                Logger.Log.ErrorFormat(Language.Instance.GetMessageFromKey("UPDATE_ACCOUNT_ERROR"), inventory.InventoryId, e.Message);
+                Logger.Log.ErrorFormat(Language.Instance.GetMessageFromKey("UPDATE_ERROR"), inventory.InventoryId, e.Message);
                 return SaveResult.Error;
             }
         }

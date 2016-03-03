@@ -973,10 +973,11 @@ namespace OpenNos.GameObject
                     }
                 }
             }
-            foreach (Inventory inv in InventoryList.Inventory)
-                inv.Save();
-            foreach (Inventory inv in EquipmentList.Inventory)
-                inv.Save();
+
+            for(int i=0;i< InventoryList.Inventory.Count();i++)
+                InventoryList.Inventory[i].Save();
+            for (int i = 0; i < EquipmentList.Inventory.Count(); i++)
+                EquipmentList.Inventory[0].Save();
         }
 
         public double SPXPLoad()

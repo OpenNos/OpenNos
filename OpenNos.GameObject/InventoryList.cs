@@ -203,9 +203,10 @@ namespace OpenNos.GameObject
 
         public void InsertOrUpdate(ref Inventory newInventory)
         {
-            long inventoryId = newInventory.InventoryId;
+            short SLOT = newInventory.Slot;
+            byte TYPE = newInventory.Type;
 
-            Inventory entity = Inventory.SingleOrDefault(c => c.InventoryId.Equals(inventoryId));
+            Inventory entity = Inventory.FirstOrDefault(c => c.Slot.Equals(SLOT) && c.Type.Equals(TYPE));
 
             if (entity == null) //new entity
             {
@@ -229,7 +230,7 @@ namespace OpenNos.GameObject
 
         public Inventory LoadBySlotAndType(short slot, byte type)
         {
-            return Inventory.SingleOrDefault(i => i.Slot.Equals(slot) && i.Type.Equals(type));
+            return Inventory.FirstOrDefault(i => i.Slot.Equals(slot) && i.Type.Equals(type));
         }
 
         public Inventory moveInventory(byte type, byte slot, byte desttype, short destslot)
@@ -254,7 +255,7 @@ namespace OpenNos.GameObject
         {
             inv = LoadBySlotAndType(slot, type);
             invdest = LoadBySlotAndType(destslot, type);
-            if (amount <= inv.InventoryItem.Amount)
+            if (inv!=null && amount <= inv.InventoryItem.Amount)
             {
                 if (invdest == null)
                 {
@@ -336,12 +337,10 @@ namespace OpenNos.GameObject
                     }
                     else
                     {
-                        invdest.Slot = inv.Slot;
-                        inv.Slot = 99;
-                        InsertOrUpdate(ref inv);
-                        InsertOrUpdate(ref invdest);
+                        invdest.Slot = slot;
                         inv.Slot = destslot;
                         InsertOrUpdate(ref inv);
+                        InsertOrUpdate(ref invdest);
                     }
                 }
             }
@@ -420,7 +419,7 @@ namespace OpenNos.GameObject
 
         private Inventory Update(Inventory entity, Inventory inventory)
         {
-            var result = Inventory.SingleOrDefault(c => c.InventoryId == inventory.InventoryId);
+            var result = Inventory.FirstOrDefault(c => c.InventoryId == inventory.InventoryId);
             if (result != null)
             {
                 Inventory.Remove(result);
