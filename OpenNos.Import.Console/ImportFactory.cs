@@ -242,6 +242,7 @@ namespace OpenNos.Import.Console
                                 item.DistanceDefence = Convert.ToInt16(linesave[4]);
                                 item.MagicDefence = Convert.ToInt16(linesave[5]);
                                 item.DefenceDodge = Convert.ToInt16(linesave[6]);
+                                item.DistanceDefenceDodge = Convert.ToInt16(linesave[7]);
                                 item.BasicUpgrade = Convert.ToByte(linesave[10]);
                                 break;
                             case (byte)ItemType.Box:
