@@ -312,12 +312,7 @@
     <Property Name="ItemVNum" Type="smallint" Nullable="false" />
     <Property Name="Ammo" Type="utinyint" Nullable="false" />
     <Property Name="IsFixed" Type="bool" Nullable="false" />
-    <Property Name="LevelMinimum" Type="utinyint" Nullable="false" />
-    <Property Name="Value" Type="bigint" Nullable="false" />
     <Property Name="ItemValidTime" Type="bigint" Nullable="false" />
-    <Property Name="Element" Type="utinyint" Nullable="false" />
-    <Property Name="MaxCellonLvl" Type="utinyint" Nullable="false" />
-    <Property Name="MaxCellon" Type="utinyint" Nullable="false" />
     <Property Name="Cellon" Type="utinyint" Nullable="false" />
     <Property Name="FireResistance" Type="smallint" Nullable="false" />
     <Property Name="WaterResistance" Type="smallint" Nullable="false" />

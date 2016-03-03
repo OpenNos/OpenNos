@@ -44,7 +44,7 @@
 -- -----------------------------------------------------------
 -- Entity Designer DDL Script for MySQL Server 4.1 and higher
 -- -----------------------------------------------------------
--- Date Created: 03/03/2016 23:02:21
+-- Date Created: 03/04/2016 00:03:01
 
 -- Generated from EDMX file: C:\Users\Dominik\Source\Repos\OpenNos\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
 -- Target version: 3.0.0.0
@@ -379,12 +379,7 @@ CREATE TABLE `inventoryitem`(
 	`ItemVNum` smallint NOT NULL, 
 	`Ammo` TINYINT UNSIGNED NOT NULL, 
 	`IsFixed` bool NOT NULL, 
-	`LevelMinimum` TINYINT UNSIGNED NOT NULL, 
-	`Value` bigint NOT NULL, 
 	`ItemValidTime` bigint NOT NULL, 
-	`Element` TINYINT UNSIGNED NOT NULL, 
-	`MaxCellonLvl` TINYINT UNSIGNED NOT NULL, 
-	`MaxCellon` TINYINT UNSIGNED NOT NULL, 
 	`Cellon` TINYINT UNSIGNED NOT NULL, 
 	`FireResistance` smallint NOT NULL, 
 	`WaterResistance` smallint NOT NULL, 
