@@ -242,7 +242,7 @@ namespace OpenNos.GameObject
             while (true)
             {
                 SaveAll();
-                Thread.Sleep(1000);
+                Thread.Sleep(60000*4);
             }
         }
 
