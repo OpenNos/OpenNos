@@ -531,8 +531,7 @@ namespace OpenNos.Import.Console
                                 sitem.ItemVNum = short.Parse(item[2]);
                                 sitem.Gold = long.Parse(item[4]);
                             }
-                            else
-                             if (item.Count() == 6)
+                            else if (item.Count() == 6)
                             {
                                 sitem = new ShopItemDTO();
                                 sitem.ShopId = DAOFactory.ShopDAO.LoadByNpc(short.Parse(linesave[2])).ShopId;
@@ -544,7 +543,7 @@ namespace OpenNos.Import.Console
                                 sitem.Gold = long.Parse(item[5]);
 
                             }
-                            if (sitem !=null && DAOFactory.ShopItemDAO.LoadByShopId(sitem.ShopId).FirstOrDefault(s => s.ItemVNum.Equals(sitem.ItemVNum)) == null)
+                            if (sitem != null && DAOFactory.ShopItemDAO.LoadByShopId(sitem.ShopId).FirstOrDefault(s => s.ItemVNum.Equals(sitem.ItemVNum)) == null)
                             {
                                 DAOFactory.ShopItemDAO.Insert(sitem);
                                 portalCounter++;
@@ -553,7 +552,7 @@ namespace OpenNos.Import.Console
                         }
 
                     }
-                   
+
                 }
                 else
                 {
