@@ -83,6 +83,7 @@ namespace OpenNos.GameObject
         public bool UseSp { get; set; }
         private int DarkResistance { get; set; }
         private int Defence { get; set; }
+        private int ElementRate { get; set; }
         private int DefenceRate { get; set; }
         private int Element { get; set; }
         private int DistanceCritical { get; set; }
@@ -437,9 +438,17 @@ namespace OpenNos.GameObject
         public string GeneratePairy()
         {
             Inventory fairy = EquipmentList.LoadBySlotAndType((byte)EquipmentType.Fairy, (byte)InventoryType.Equipment);
+            Item iteminfo = null;
+            ElementRate = 0;
+            Element = 0;
+            if (fairy != null) { 
+             iteminfo = ServerManager.GetItem(fairy.InventoryItem.ItemVNum);
+                ElementRate += fairy.InventoryItem.ElementRate + iteminfo.ElementRate;
+                Element = iteminfo.Element;
+            }
 
             return fairy != null
-                ? $"pairy 1 {CharacterId} 4 {ServerManager.GetItem(fairy.InventoryItem.ItemVNum).Element} {fairy.InventoryItem.ElementRate} {ServerManager.GetItem(fairy.InventoryItem.ItemVNum).Morph}"
+                ? $"pairy 1 {CharacterId} 4 {iteminfo.Element} {fairy.InventoryItem.ElementRate+ iteminfo.ElementRate} {iteminfo.Morph}"
                 : $"pairy 1 {CharacterId} 0 0 0 40";
         }
 
@@ -750,8 +759,7 @@ namespace OpenNos.GameObject
                 DefenceRate += armor.InventoryItem.DefenceDodge + iteminfo.DefenceDodge;
                 DistanceDefenceRate += armor.InventoryItem.DistanceDefenceDodge + iteminfo.DistanceDefenceDodge;
             }
-
-            Inventory item = null;
+                Inventory item = null;
             for (short i = 1; i < 14; i++)
             {
                 if (i != 5)
