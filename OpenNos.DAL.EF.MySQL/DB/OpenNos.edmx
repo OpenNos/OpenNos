@@ -299,12 +299,12 @@
     <Property Name="Amount" Type="utinyint" Nullable="false" />
     <Property Name="SpLevel" Type="utinyint" Nullable="false" />
     <Property Name="SpXp" Type="smallint" Nullable="false" />
-    <Property Name="SlElement" Type="utinyint" Nullable="false" />
-    <Property Name="SlDamage" Type="utinyint" Nullable="false" />
+    <Property Name="SlElement" Type="smallint" Nullable="false" />
+    <Property Name="SlDamage" Type="smallint" Nullable="false" />
     <Property Name="HP" Type="smallint" Nullable="false" />
     <Property Name="MP" Type="smallint" Nullable="false" />
-    <Property Name="SlDefence" Type="utinyint" Nullable="false" />
-    <Property Name="SlHP" Type="utinyint" Nullable="false" />
+    <Property Name="SlDefence" Type="smallint" Nullable="false" />
+    <Property Name="SlHP" Type="smallint" Nullable="false" />
     <Property Name="DarkElement" Type="utinyint" Nullable="false" />
     <Property Name="LightElement" Type="utinyint" Nullable="false" />
     <Property Name="WaterElement" Type="utinyint" Nullable="false" />
@@ -944,12 +944,12 @@
           <Property Name="Amount" Type="Byte" Nullable="false" />
           <Property Name="SpLevel" Type="Byte" Nullable="false" />
           <Property Name="SpXp" Type="Int16" Nullable="false" />
-          <Property Name="SlElement" Type="Byte" Nullable="false" />
-          <Property Name="SlDamage" Type="Byte" Nullable="false" />
+          <Property Name="SlElement" Type="Int16" Nullable="false" />
+          <Property Name="SlDamage" Type="Int16" Nullable="false" />
           <Property Name="HP" Type="Int16" Nullable="false" />
           <Property Name="MP" Type="Int16" Nullable="false" />
-          <Property Name="SlDefence" Type="Byte" Nullable="false" />
-          <Property Name="SlHP" Type="Byte" Nullable="false" />
+          <Property Name="SlDefence" Type="Int16" Nullable="false" />
+          <Property Name="SlHP" Type="Int16" Nullable="false" />
           <Property Name="DarkElement" Type="Byte" Nullable="false" />
           <Property Name="LightElement" Type="Byte" Nullable="false" />
           <Property Name="WaterElement" Type="Byte" Nullable="false" />

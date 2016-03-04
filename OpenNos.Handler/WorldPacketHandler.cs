@@ -2384,14 +2384,14 @@ namespace OpenNos.Handler
                 if (ServersData.SpPoint(spInventory.InventoryItem.SpLevel, spInventory.InventoryItem.Upgrade)
                     - spInventory.InventoryItem.SlDamage - spInventory.InventoryItem.SlHP
                     - spInventory.InventoryItem.SlElement - spInventory.InventoryItem.SlDefence
-                    - byte.Parse(packetsplit[6]) - byte.Parse(packetsplit[7])
-                    - byte.Parse(packetsplit[8]) - byte.Parse(packetsplit[9]) < 0)
+                    - short.Parse(packetsplit[6]) - short.Parse(packetsplit[7])
+                    - short.Parse(packetsplit[8]) - short.Parse(packetsplit[9]) < 0)
                     return;
 
-                spInventory.InventoryItem.SlDamage += byte.Parse(packetsplit[6]);
-                spInventory.InventoryItem.SlDefence += byte.Parse(packetsplit[7]);
-                spInventory.InventoryItem.SlElement += byte.Parse(packetsplit[8]);
-                spInventory.InventoryItem.SlHP += byte.Parse(packetsplit[9]);
+                spInventory.InventoryItem.SlDamage += short.Parse(packetsplit[6]);
+                spInventory.InventoryItem.SlDefence += short.Parse(packetsplit[7]);
+                spInventory.InventoryItem.SlElement += short.Parse(packetsplit[8]);
+                spInventory.InventoryItem.SlHP += short.Parse(packetsplit[9]);
 
                 int slElement = ServersData.SlPoint(spInventory.InventoryItem.SlElement, 2);
                 int slHp = ServersData.SlPoint(spInventory.InventoryItem.SlHP, 3);

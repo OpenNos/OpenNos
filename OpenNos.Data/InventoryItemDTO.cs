@@ -37,12 +37,12 @@ namespace OpenNos.Data
         public byte Amount { get; set; }
         public byte SpLevel { get; set; }
         public short SpXp { get; set; }
-        public byte SlElement { get; set; }
-        public byte SlDamage { get; set; }
+        public short SlElement { get; set; }
+        public short SlDamage { get; set; }
         public short HP { get; set; }
         public short MP { get; set; }
-        public byte SlDefence { get; set; }
-        public byte SlHP { get; set; }
+        public short SlDefence { get; set; }
+        public short SlHP { get; set; }
         public byte DarkElement { get; set; }
         public byte LightElement { get; set; }
         public byte WaterElement { get; set; }
