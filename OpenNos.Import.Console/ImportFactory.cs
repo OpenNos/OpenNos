@@ -250,6 +250,10 @@ namespace OpenNos.Import.Console
                                 break;
                             case (byte)ItemType.Fashion:
                                 item.LevelMinimum = Convert.ToByte(linesave[2]);
+                                item.CloseDefence = Convert.ToInt16(linesave[3]);
+                                item.DistanceDefence = Convert.ToInt16(linesave[4]);
+                                item.MagicDefence = Convert.ToInt16(linesave[5]);
+                                item.DefenceDodge = Convert.ToInt16(linesave[6]);
                                 item.ItemValidTime = Convert.ToInt32(linesave[13]) * 3600;
                                 break;
                             case (byte)ItemType.Food:
