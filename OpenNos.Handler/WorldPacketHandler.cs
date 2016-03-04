@@ -1191,9 +1191,7 @@ namespace OpenNos.Handler
                 }
                 if (change)
                 {
-                    ClientLinkManager.Instance.Broadcast(Session,
-         Session.Character.GenerateStat(),
-           ReceiverType.AllOnMap);
+                    Session.Client.SendPacket(Session.Character.GenerateStat());
                 }
             }
         }
