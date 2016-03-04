@@ -590,12 +590,16 @@ namespace OpenNos.Handler
                 {
                     if (iteminfo.IsColored)
                     {
-                        if(packetsplit.Count()>3)
-                        Int16.TryParse(packetsplit[3], out color);
+                        if (packetsplit.Count() > 3)
+                            Int16.TryParse(packetsplit[3], out color);
                     }
                     else if (iteminfo.Type == 0)
                     {
-                        if (packetsplit.Length == 5)
+                        if (packetsplit.Length == 4)
+                        {
+                            Byte.TryParse(packetsplit[3], out upgrade);
+                        }
+                        else if (packetsplit.Length == 5)
                         {
                             if (iteminfo.EquipmentSlot == Convert.ToByte((byte)EquipmentType.Sp))
                             {
@@ -2412,7 +2416,7 @@ namespace OpenNos.Handler
                 spInventory.InventoryItem.LightResistance = 0;
                 spInventory.InventoryItem.FireResistance = 0;
                 spInventory.InventoryItem.WaterResistance = 0;
-                spInventory.InventoryItem.CriticalDodge =0;
+                spInventory.InventoryItem.CriticalDodge = 0;
                 spInventory.InventoryItem.MagicDefence = 0;
                 spInventory.InventoryItem.HP = 0;
                 spInventory.InventoryItem.MP = 0;
@@ -2442,8 +2446,8 @@ namespace OpenNos.Handler
                 }
                 if (slHit >= 50)
                 {
-                      spInventory.InventoryItem.HP += 200;
-                     spInventory.InventoryItem.MP += 200;
+                    spInventory.InventoryItem.HP += 200;
+                    spInventory.InventoryItem.MP += 200;
                 }
                 if (slHit >= 60)
                 {
@@ -2481,7 +2485,7 @@ namespace OpenNos.Handler
                 }
                 if (slDefence >= 60)
                 {
-                     spInventory.InventoryItem.HP += 200;
+                    spInventory.InventoryItem.HP += 200;
                 }
                 if (slDefence >= 70)
                 {
@@ -2510,7 +2514,7 @@ namespace OpenNos.Handler
                 }
                 if (slDefence >= 95)
                 {
-                      spInventory.InventoryItem.HP += 300;
+                    spInventory.InventoryItem.HP += 300;
                 }
                 //slele
                 if (slElement >= 1)
@@ -2519,7 +2523,7 @@ namespace OpenNos.Handler
                 }
                 if (slElement >= 10)
                 {
-                      spInventory.InventoryItem.MP += 100;
+                    spInventory.InventoryItem.MP += 100;
                 }
                 if (slElement >= 20)
                 {
@@ -2535,7 +2539,7 @@ namespace OpenNos.Handler
                 }
                 if (slElement >= 40)
                 {
-                     spInventory.InventoryItem.MP += 100;
+                    spInventory.InventoryItem.MP += 100;
                 }
                 if (slElement >= 50)
                 {
@@ -2551,7 +2555,7 @@ namespace OpenNos.Handler
                 }
                 if (slElement >= 70)
                 {
-                     spInventory.InventoryItem.MP += 100;
+                    spInventory.InventoryItem.MP += 100;
                 }
                 if (slElement >= 80)
                 {
