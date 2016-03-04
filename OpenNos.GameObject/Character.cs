@@ -216,7 +216,7 @@ namespace OpenNos.GameObject
                     switch (subtype) //0 = NOSMATE pearl 1= npc pearl 2 = sp box 3 = raid box 4= VEHICLE pearl 5=fairy pearl
                     {
                         case 2:
-                            return $"e_info 7 {item.ItemVNum} {(item.IsEmpty ? 1 : 0)} {item.Design} {item.SpLevel} {item.SpXp} {ServersData.SpXPData[JobLevel - 1]} {item.Upgrade} {item.SlDamage} {item.SlDefence} {item.SlElement} {item.SlHP} 10 {item.FireResistance} {item.WaterResistance} {item.LightResistance} {item.DarkResistance} 0 0 0 0 0 0 0 0 0"; // add sp point management
+                            return $"e_info 7 {item.ItemVNum} {(item.IsEmpty ? 1 : 0)} {item.Design} {item.SpLevel} {item.SpXp} {ServersData.SpXPData[JobLevel - 1]} {item.Upgrade} {item.SlDamage} {item.SlDefence} {item.SlElement} {item.SlHP} 10 {item.FireResistance} {item.WaterResistance} {item.LightResistance} {item.DarkResistance} {item.SpStoneUpgrade} {item.SpDamage} {item.SpDefence} {item.SpElement} {item.SpHP} {item.SpFire} {item.SpWater} {item.SpLight} {item.SpDark}";
                         default:
                             return $"e_info 8 {item.ItemVNum} {item.Design} {item.Rare}";
                     }

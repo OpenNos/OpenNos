@@ -66,6 +66,7 @@ namespace OpenNos.Data
         public byte SpLight { get; set; }
         public byte SpFire { get; set; }
         public byte SpWater { get; set; }
+        public byte SpStoneUpgrade { get; set; }
 
         #endregion
     }

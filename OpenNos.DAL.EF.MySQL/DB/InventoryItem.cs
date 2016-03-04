@@ -68,6 +68,7 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public byte SpLight { get; set; }
         public byte SpFire { get; set; }
         public byte SpWater { get; set; }
+        public byte SpStoneUpgrade { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Inventory> inventory { get; set; }

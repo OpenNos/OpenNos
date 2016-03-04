@@ -974,6 +974,7 @@
           <Property Name="SpLight" Type="Byte" Nullable="false" />
           <Property Name="SpFire" Type="Byte" Nullable="false" />
           <Property Name="SpWater" Type="Byte" Nullable="false" />
+          <Property Name="SpStoneUpgrade" Type="Byte" Nullable="false" />
           </EntityType>
         <EntityType Name="Inventory">
           <Key>
