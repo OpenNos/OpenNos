@@ -759,7 +759,7 @@ namespace OpenNos.Handler
                         ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateShop(shopname), ReceiverType.AllOnMap);
 
                         Session.Client.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("SHOP_OPEN")));
-                        Session.Character.Rested = 1;
+                        Session.Character.IsSitting = true;
                         Session.Character.LastSpeed = Session.Character.Speed;
                         Session.Character.Speed = 0;
                         Session.Client.SendPacket(Session.Character.GenerateCond());
@@ -780,7 +780,7 @@ namespace OpenNos.Handler
                     ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateShopEnd(), ReceiverType.AllOnMap);
                     ClientLinkManager.Instance.Broadcast(Session, Session.Character.GeneratePlayerFlag(0), ReceiverType.AllOnMapExceptMe);
                     Session.Character.Speed = Session.Character.LastSpeed != 0 ? Session.Character.LastSpeed : Session.Character.Speed;
-                    Session.Character.Rested = 0;
+                    Session.Character.IsSitting = false;
                     Session.Client.SendPacket(Session.Character.GenerateCond());
                     ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateRest(), ReceiverType.AllOnMap);
                 }
@@ -1156,7 +1156,7 @@ namespace OpenNos.Handler
             while (true)
             {
                 bool change = false;
-                if (Session.Character.Rested == 1)
+                if (Session.Character.IsSitting)
                     Thread.Sleep(1500);
                 else
                     Thread.Sleep(2000);
@@ -2040,9 +2040,9 @@ namespace OpenNos.Handler
         [Packet("rest")]
         public void Rest(string packet)
         {
-            Session.Character.Rested = Session.Character.Rested == 1 ? 0 : 1;
+            Session.Character.IsSitting = !Session.Character.IsSitting;
             if (Session.Character.IsVehicled)
-                Session.Character.Rested = 0;
+                Session.Character.IsSitting = false;
             if (Session.Character.ThreadCharChange != null && Session.Character.ThreadCharChange.IsAlive)
                 Session.Character.ThreadCharChange.Abort();
 
@@ -2106,7 +2106,7 @@ namespace OpenNos.Handler
                         MorphUpgrade = 0,
                         MorphUpgrade2 = 0,
                         Direction = 0,
-                        Rested = 0,
+                        IsSitting = false,
                         BackPack = characterDTO.Backpack,
                         Speed = ServersData.SpeedData[characterDTO.Class],
                         Compliment = characterDTO.Compliment,
@@ -2711,7 +2711,7 @@ namespace OpenNos.Handler
                 Session.Client.SendPacket(Session.Character.GenerateSlInfo(spInventory.InventoryItem, 2));
                 Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("CHANGE_DONE"), 0));
             }
-            else
+            else if(!Session.Character.IsSitting)
             {
                 // Character wants to change Sp...
 

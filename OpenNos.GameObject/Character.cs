@@ -41,7 +41,7 @@ namespace OpenNos.GameObject
         private int _morph;
         private int _morphUpgrade;
         private int _morphUpgrade2;
-        private int _rested;
+        private bool _issitting;
         private int _size = 10;
         private int _speed;
         #endregion
@@ -76,7 +76,7 @@ namespace OpenNos.GameObject
         public int Morph { get { return _morph; } set { _morph = value; } }
         public int MorphUpgrade { get { return _morphUpgrade; } set { _morphUpgrade = value; } }
         public int MorphUpgrade2 { get { return _morphUpgrade2; } set { _morphUpgrade2 = value; } }
-        public int Rested { get { return _rested; } set { _rested = value; } }
+        public bool IsSitting { get { return _issitting; } set { _issitting = value; } }
         public int Size { get { return _size; } set { _size = value; } }
         public int Speed { get { return _speed; } set { _speed = value; } }
         public Thread ThreadCharChange { get; set; }
@@ -362,7 +362,7 @@ namespace OpenNos.GameObject
                 color = head.InventoryItem.Design;
             Inventory fairy = EquipmentList.LoadBySlotAndType((byte)EquipmentType.Fairy, (byte)InventoryType.Equipment);
 
-            return $"in 1 {Name} - {CharacterId} {MapX} {MapY} {Direction} {(Authority == 2 ? 2 : 0)} {Gender} {HairStyle} {color} {Class} {generateEqListForPacket()} {(int)(Hp / HPLoad() * 100)} {(int)(Mp / MPLoad() * 100)} {_rested} -1 {(fairy != null ? 2 : 0)} {(fairy != null ? ServerManager.GetItem(fairy.InventoryItem.ItemVNum).Element : 0)} 0 {(fairy != null ? ServerManager.GetItem(fairy.InventoryItem.ItemVNum).Morph : 0)} 0 {(UseSp ? Morph : 0)} {generateEqRareUpgradeForPacket()} -1 - {((GetDigniteIco() == 1) ? GetReputIco() : -GetDigniteIco())} {_invisible} {(UseSp ? MorphUpgrade : 0)} 0 {(UseSp ? MorphUpgrade2 : 0)} {Level} 0 {ArenaWinner} {Compliment} {Size}";
+            return $"in 1 {Name} - {CharacterId} {MapX} {MapY} {Direction} {(Authority == 2 ? 2 : 0)} {Gender} {HairStyle} {color} {Class} {generateEqListForPacket()} {(int)(Hp / HPLoad() * 100)} {(int)(Mp / MPLoad() * 100)} {(IsSitting?1:0)} -1 {(fairy != null ? 2 : 0)} {(fairy != null ? ServerManager.GetItem(fairy.InventoryItem.ItemVNum).Element : 0)} 0 {(fairy != null ? ServerManager.GetItem(fairy.InventoryItem.ItemVNum).Morph : 0)} 0 {(UseSp ? Morph : 0)} {generateEqRareUpgradeForPacket()} -1 - {((GetDigniteIco() == 1) ? GetReputIco() : -GetDigniteIco())} {_invisible} {(UseSp ? MorphUpgrade : 0)} 0 {(UseSp ? MorphUpgrade2 : 0)} {Level} 0 {ArenaWinner} {Compliment} {Size}";
         }
 
         public List<string> Generatein2()
@@ -474,7 +474,7 @@ namespace OpenNos.GameObject
 
         public string GenerateRest()
         {
-            return $"rest 1 {CharacterId} {Rested}";
+            return $"rest 1 {CharacterId} {(IsSitting ? 1 : 0)}";
         }
 
         public string GenerateSay(string message, int type)
@@ -861,14 +861,14 @@ namespace OpenNos.GameObject
 
         public int HealthHPLoad()
         {
-            if (_rested == 1)
+            if (IsSitting)
                 return ServersData.HpHealth[Class];
             return ServersData.HpHealthStand[Class];
         }
 
         public int HealthMPLoad()
         {
-            if (_rested == 1)
+            if (IsSitting)
                 return ServersData.MpHealth[Class];
             return ServersData.MpHealthStand[Class];
         }
