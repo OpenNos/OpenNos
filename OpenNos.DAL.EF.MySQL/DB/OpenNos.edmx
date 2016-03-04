@@ -295,7 +295,7 @@
     <Property Name="ElementRate" Type="smallint" Nullable="false" />
     <Property Name="Upgrade" Type="utinyint" Nullable="false" />
     <Property Name="Rare" Type="utinyint" Nullable="false" />
-    <Property Name="Color" Type="smallint" Nullable="false" />
+    <Property Name="Design" Type="smallint" Nullable="false" />
     <Property Name="Amount" Type="utinyint" Nullable="false" />
     <Property Name="SpLevel" Type="utinyint" Nullable="false" />
     <Property Name="SpXp" Type="smallint" Nullable="false" />
@@ -319,6 +319,7 @@
     <Property Name="LightResistance" Type="smallint" Nullable="false" />
     <Property Name="DarkResistance" Type="smallint" Nullable="false" />
     <Property Name="CriticalDodge" Type="smallint" Nullable="false" />
+    <Property Name="IsEmpty" Type="bool" Nullable="false" />
   </EntityType>
   <EntityType Name="inventory">
     <Key>
@@ -930,7 +931,7 @@
           <Property Name="ElementRate" Type="Int16" Nullable="false" />
           <Property Name="Upgrade" Type="Byte" Nullable="false" />
           <Property Name="Rare" Type="Byte" Nullable="false" />
-          <Property Name="Color" Type="Int16" Nullable="false" />
+          <Property Name="Design" Type="Int16" Nullable="false" />
           <Property Name="Amount" Type="Byte" Nullable="false" />
           <Property Name="SpLevel" Type="Byte" Nullable="false" />
           <Property Name="SpXp" Type="Int16" Nullable="false" />
@@ -956,6 +957,7 @@
           <Property Name="LightResistance" Type="Int16" Nullable="false" />
           <Property Name="DarkResistance" Type="Int16" Nullable="false" />
           <Property Name="CriticalDodge" Type="Int16" Nullable="false" />
+          <Property Name="IsEmpty" Type="Boolean" Nullable="false" />
           </EntityType>
         <EntityType Name="Inventory">
           <Key>
@@ -1325,7 +1327,7 @@
           <ScalarProperty Name="ElementRate" ColumnName="ElementRate" />
           <ScalarProperty Name="Upgrade" ColumnName="Upgrade" />
           <ScalarProperty Name="Rare" ColumnName="Rare" />
-          <ScalarProperty Name="Color" ColumnName="Color" />
+          <ScalarProperty Name="Design" ColumnName="Design" />
           <ScalarProperty Name="Amount" ColumnName="Amount" />
           <ScalarProperty Name="SpLevel" ColumnName="SpLevel" />
           <ScalarProperty Name="SpXp" ColumnName="SpXp" />
@@ -1349,6 +1351,7 @@
           <ScalarProperty Name="LightResistance" ColumnName="LightResistance" />
           <ScalarProperty Name="DarkResistance" ColumnName="DarkResistance" />
           <ScalarProperty Name="CriticalDodge" ColumnName="CriticalDodge" />
+          <ScalarProperty Name="IsEmpty" ColumnName="IsEmpty" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

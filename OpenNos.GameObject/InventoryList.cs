@@ -271,7 +271,7 @@ namespace OpenNos.GameObject
                         InventoryItem itemDest = new InventoryItem
                         {
                             Amount = amount,
-                            Color = inv.InventoryItem.Color,
+                            Design = inv.InventoryItem.Design,
                             Concentrate = inv.InventoryItem.Concentrate,
                             CriticalLuckRate = inv.InventoryItem.CriticalLuckRate,
                             CriticalRate = inv.InventoryItem.CriticalRate,
@@ -359,7 +359,7 @@ namespace OpenNos.GameObject
                 DroppedItem = new MapItem((short)(rnd.Next(Session.Character.MapX - 2, Session.Character.MapX + 3)), (short)(rnd.Next(Session.Character.MapY - 2, Session.Character.MapY + 3)))
                 {
                     Amount = amount,
-                    Color = inv.InventoryItem.Color,
+                    Design = inv.InventoryItem.Design,
                     Concentrate = inv.InventoryItem.Concentrate,
                     CriticalLuckRate = inv.InventoryItem.CriticalLuckRate,
                     CriticalRate = inv.InventoryItem.CriticalRate,

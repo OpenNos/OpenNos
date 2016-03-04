@@ -35,7 +35,7 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public short ElementRate { get; set; }
         public byte Upgrade { get; set; }
         public byte Rare { get; set; }
-        public short Color { get; set; }
+        public short Design { get; set; }
         public byte Amount { get; set; }
         public byte SpLevel { get; set; }
         public short SpXp { get; set; }
@@ -59,6 +59,7 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public short LightResistance { get; set; }
         public short DarkResistance { get; set; }
         public short CriticalDodge { get; set; }
+        public bool IsEmpty { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Inventory> inventory { get; set; }

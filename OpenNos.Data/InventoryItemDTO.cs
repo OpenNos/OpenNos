@@ -33,7 +33,7 @@ namespace OpenNos.Data
         public short ElementRate { get; set; }
         public byte Upgrade { get; set; }
         public byte Rare { get; set; }
-        public short Color { get; set; }
+        public short Design { get; set; }
         public byte Amount { get; set; }
         public byte SpLevel { get; set; }
         public short SpXp { get; set; }
@@ -57,6 +57,7 @@ namespace OpenNos.Data
         public short LightResistance { get; set; }
         public short DarkResistance { get; set; }
         public short CriticalDodge { get; set; }
+        public bool IsEmpty { get; set; }
 
         #endregion
     }

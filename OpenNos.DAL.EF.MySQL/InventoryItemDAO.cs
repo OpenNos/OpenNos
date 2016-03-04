@@ -90,7 +90,7 @@ namespace OpenNos.DAL.EF.MySQL
                 Ammo = inventoryitem.Ammo,
                 FireElement = inventoryitem.FireElement,
                 IsFixed = inventoryitem.IsFixed,
-                Color = inventoryitem.Color,
+                Design = inventoryitem.Design,
                 Concentrate = inventoryitem.Concentrate,
                 Amount = inventoryitem.Amount,
                 CriticalLuckRate = inventoryitem.CriticalLuckRate,

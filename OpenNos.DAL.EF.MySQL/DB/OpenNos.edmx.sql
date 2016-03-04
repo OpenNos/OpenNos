@@ -44,9 +44,9 @@
 -- -----------------------------------------------------------
 -- Entity Designer DDL Script for MySQL Server 4.1 and higher
 -- -----------------------------------------------------------
--- Date Created: 03/04/2016 00:06:27
+-- Date Created: 03/04/2016 13:58:15
 
--- Generated from EDMX file: C:\Users\ERWAN\Desktop\OpenNos Git\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
+-- Generated from EDMX file: C:\Users\Dominik\Source\Repos\OpenNos\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
 -- Target version: 3.0.0.0
 
 -- --------------------------------------------------
@@ -362,7 +362,7 @@ CREATE TABLE `inventoryitem`(
 	`ElementRate` smallint NOT NULL, 
 	`Upgrade` TINYINT UNSIGNED NOT NULL, 
 	`Rare` TINYINT UNSIGNED NOT NULL, 
-	`Color` smallint NOT NULL, 
+	`Design` smallint NOT NULL, 
 	`Amount` TINYINT UNSIGNED NOT NULL, 
 	`SpLevel` TINYINT UNSIGNED NOT NULL, 
 	`SpXp` smallint NOT NULL, 
@@ -385,7 +385,8 @@ CREATE TABLE `inventoryitem`(
 	`WaterResistance` smallint NOT NULL, 
 	`LightResistance` smallint NOT NULL, 
 	`DarkResistance` smallint NOT NULL, 
-	`CriticalDodge` smallint NOT NULL);
+	`CriticalDodge` smallint NOT NULL, 
+	`IsEmpty` bool NOT NULL);
 
 ALTER TABLE `inventoryitem` ADD PRIMARY KEY (InventoryItemId);
 
