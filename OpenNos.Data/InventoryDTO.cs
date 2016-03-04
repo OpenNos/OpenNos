@@ -22,9 +22,9 @@ namespace OpenNos.Data
 
         public long InventoryId { get; set; }
 
-        public long InventoryItemId { get; set; }
-
         public short Slot { get; set; }
+
+        public InventoryItemDTO inventoryItem { get; set; }
 
         public byte Type { get; set; }
 

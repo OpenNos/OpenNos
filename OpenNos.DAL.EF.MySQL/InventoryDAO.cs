@@ -69,7 +69,7 @@ namespace OpenNos.DAL.EF.MySQL
             }
             catch (Exception e)
             {
-                Logger.Log.ErrorFormat(Language.Instance.GetMessageFromKey("UPDATE_ERROR"), inventory.InventoryId, e.Message);
+                Logger.Log.ErrorFormat(Language.Instance.GetMessageFromKey("UPDATE_ERROR"), e.Message);
                 return SaveResult.Error;
             }
         }
@@ -85,13 +85,6 @@ namespace OpenNos.DAL.EF.MySQL
             }
         }
 
-        public InventoryDTO LoadByInventoryItem(long inventoryItemId)
-        {
-            using (var context = DataAccessHelper.CreateContext())
-            {
-                return Mapper.Map<InventoryDTO>(context.inventory.SingleOrDefault(i => i.InventoryItemId.Equals(inventoryItemId)));
-            }
-        }
 
         public InventoryDTO LoadBySlotAndType(long characterId, short slot, byte type)
         {
@@ -114,13 +107,8 @@ namespace OpenNos.DAL.EF.MySQL
 
         private InventoryDTO Insert(InventoryDTO inventory, OpenNosContainer context)
         {
-            Inventory entity = new Inventory()
-            {
-                CharacterId = inventory.CharacterId,
-                InventoryItemId = inventory.InventoryItemId,
-                Slot = inventory.Slot,
-                Type = inventory.Type,
-            };
+
+            Inventory entity = Mapper.Map<Inventory>(inventory);
             context.inventory.Add(entity);
             context.SaveChanges();
             return Mapper.Map<InventoryDTO>(entity);

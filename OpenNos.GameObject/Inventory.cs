@@ -44,9 +44,9 @@ namespace OpenNos.GameObject
         public void Save()
         {
             InventoryDTO tempsave = this;
-            this.InventoryItem.Save();
-            tempsave.InventoryItemId = InventoryItem.InventoryItemId;
+            tempsave.inventoryItem = this.InventoryItem;
             SaveResult insertResult = DAOFactory.InventoryDAO.InsertOrUpdate(ref tempsave);
+            this.InventoryItem.Save();
         }
 
         #endregion

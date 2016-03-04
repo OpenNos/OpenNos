@@ -14,12 +14,6 @@ namespace OpenNos.DAL.EF.MySQL.DB
     
     public partial class InventoryItem
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public InventoryItem()
-        {
-            this.inventory = new HashSet<Inventory>();
-        }
-    
         public long InventoryItemId { get; set; }
         public short DamageMinimum { get; set; }
         public short DamageMaximum { get; set; }
@@ -37,14 +31,8 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public byte Rare { get; set; }
         public short Design { get; set; }
         public byte Amount { get; set; }
-        public byte SpLevel { get; set; }
-        public short SpXp { get; set; }
-        public short SlElement { get; set; }
-        public short SlDamage { get; set; }
         public short HP { get; set; }
         public short MP { get; set; }
-        public short SlDefence { get; set; }
-        public short SlHP { get; set; }
         public byte DarkElement { get; set; }
         public byte LightElement { get; set; }
         public byte WaterElement { get; set; }
@@ -60,6 +48,12 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public byte DarkResistance { get; set; }
         public short CriticalDodge { get; set; }
         public bool IsEmpty { get; set; }
+        public byte SpLevel { get; set; }
+        public short SlDamage { get; set; }
+        public short SpXp { get; set; }
+        public short SlHP { get; set; }
+        public short SlElement { get; set; }
+        public short SlDefence { get; set; }
         public byte SpDamage { get; set; }
         public byte SpElement { get; set; }
         public byte SpDefence { get; set; }
@@ -70,8 +64,7 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public byte SpWater { get; set; }
         public byte SpStoneUpgrade { get; set; }
     
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Inventory> inventory { get; set; }
         public virtual Item item { get; set; }
+        public virtual Inventory inventory { get; set; }
     }
 }

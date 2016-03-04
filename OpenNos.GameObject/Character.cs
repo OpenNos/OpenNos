@@ -916,9 +916,60 @@ namespace OpenNos.GameObject
             EquipmentList = new InventoryList();
             foreach (InventoryDTO inventory in inventorysDTO)
             {
-                InventoryItemDTO inventoryItemDTO = DAOFactory.InventoryItemDAO.LoadById(inventory.InventoryItemId);
-                Item item = ServerManager.GetItem(inventoryItemDTO.ItemVNum); // unused variable
-
+                inventory.inventoryItem = DAOFactory.InventoryItemDAO.LoadByInventoryId(inventory.InventoryId);
+                Item item = ServerManager.GetItem(inventory.inventoryItem.ItemVNum); // unused variable
+                InventoryItem invitem = new InventoryItem
+                {
+                    Amount = inventory.inventoryItem.Amount,
+                    ElementRate = inventory.inventoryItem.ElementRate,
+                    HitRate = inventory.inventoryItem.HitRate,
+                    Design = inventory.inventoryItem.Design,
+                    Concentrate = inventory.inventoryItem.Concentrate,
+                    CriticalLuckRate = inventory.inventoryItem.CriticalLuckRate,
+                    CriticalRate = inventory.inventoryItem.CriticalRate,
+                    DamageMaximum = inventory.inventoryItem.DamageMaximum,
+                    DamageMinimum = inventory.inventoryItem.DamageMinimum,
+                    DarkElement = inventory.inventoryItem.DarkElement,
+                    DistanceDefence = inventory.inventoryItem.DistanceDefence,
+                    DistanceDefenceDodge = inventory.inventoryItem.DistanceDefenceDodge,
+                    DefenceDodge = inventory.inventoryItem.DefenceDodge,
+                    FireElement = inventory.inventoryItem.FireElement,
+                    InventoryItemId = inventory.inventoryItem.InventoryItemId,
+                    ItemVNum = inventory.inventoryItem.ItemVNum,
+                    LightElement = inventory.inventoryItem.LightElement,
+                    MagicDefence = inventory.inventoryItem.MagicDefence,
+                    CloseDefence = inventory.inventoryItem.CloseDefence,
+                    Rare = inventory.inventoryItem.Rare,
+                    SpXp = inventory.inventoryItem.SpXp,
+                    SpLevel = inventory.inventoryItem.SpLevel,
+                    SlDefence = inventory.inventoryItem.SlDefence,
+                    SlElement = inventory.inventoryItem.SlElement,
+                    SlDamage = inventory.inventoryItem.SlDamage,
+                    SlHP = inventory.inventoryItem.SlHP,
+                    Upgrade = inventory.inventoryItem.Upgrade,
+                    WaterElement = inventory.inventoryItem.WaterElement,
+                    Ammo = inventory.inventoryItem.Ammo,
+                    Cellon = inventory.inventoryItem.Cellon,
+                    CriticalDodge = inventory.inventoryItem.CriticalDodge,
+                    DarkResistance = inventory.inventoryItem.DarkResistance,
+                    FireResistance = inventory.inventoryItem.FireResistance,
+                    HP = inventory.inventoryItem.HP,
+                    IsEmpty = inventory.inventoryItem.IsEmpty,
+                    IsFixed = inventory.inventoryItem.IsFixed,
+                    ItemValidTime = inventory.inventoryItem.ItemValidTime,
+                    LightResistance = inventory.inventoryItem.LightResistance,
+                    MP = inventory.inventoryItem.MP,
+                    SpDamage = inventory.inventoryItem.SpDamage,
+                    SpDark = inventory.inventoryItem.SpDark,
+                    SpDefence = inventory.inventoryItem.SpDefence,
+                    SpElement = inventory.inventoryItem.SpElement,
+                    SpFire = inventory.inventoryItem.SpFire,
+                    SpHP = inventory.inventoryItem.SpHP,
+                    SpLight = inventory.inventoryItem.SpLight,
+                    SpStoneUpgrade = inventory.inventoryItem.SpStoneUpgrade,
+                    SpWater = inventory.inventoryItem.SpWater,
+                    WaterResistance = inventory.inventoryItem.WaterResistance
+                };
                 if (inventory.Type != (byte)InventoryType.Equipment)
                     InventoryList.Inventory.Add(new Inventory
                     {
@@ -926,38 +977,7 @@ namespace OpenNos.GameObject
                         Slot = inventory.Slot,
                         InventoryId = inventory.InventoryId,
                         Type = inventory.Type,
-                        InventoryItemId = inventory.InventoryItemId,
-                        InventoryItem = new InventoryItem
-                        {
-                            Amount = inventoryItemDTO.Amount,
-                            ElementRate = inventoryItemDTO.ElementRate,
-                            HitRate = inventoryItemDTO.HitRate,
-                            Design = inventoryItemDTO.Design,
-                            Concentrate = inventoryItemDTO.Concentrate,
-                            CriticalLuckRate = inventoryItemDTO.CriticalLuckRate,
-                            CriticalRate = inventoryItemDTO.CriticalRate,
-                            DamageMaximum = inventoryItemDTO.DamageMaximum,
-                            DamageMinimum = inventoryItemDTO.DamageMinimum,
-                            DarkElement = inventoryItemDTO.DarkElement,
-                            DistanceDefence = inventoryItemDTO.DistanceDefence,
-                            DistanceDefenceDodge = inventoryItemDTO.DistanceDefenceDodge,
-                            DefenceDodge = inventoryItemDTO.DefenceDodge,
-                            FireElement = inventoryItemDTO.FireElement,
-                            InventoryItemId = inventoryItemDTO.InventoryItemId,
-                            ItemVNum = inventoryItemDTO.ItemVNum,
-                            LightElement = inventoryItemDTO.LightElement,
-                            MagicDefence = inventoryItemDTO.MagicDefence,
-                            CloseDefence = inventoryItemDTO.CloseDefence,
-                            Rare = inventoryItemDTO.Rare,
-                            SpXp = inventoryItemDTO.SpXp,
-                            SpLevel = inventoryItemDTO.SpLevel,
-                            SlDefence = inventoryItemDTO.SlDefence,
-                            SlElement = inventoryItemDTO.SlElement,
-                            SlDamage = inventoryItemDTO.SlDamage,
-                            SlHP = inventoryItemDTO.SlHP,
-                            Upgrade = inventoryItemDTO.Upgrade,
-                            WaterElement = inventoryItemDTO.WaterElement
-                        }
+                        InventoryItem = invitem
                     });
                 else
                     EquipmentList.Inventory.Add(new Inventory
@@ -966,38 +986,7 @@ namespace OpenNos.GameObject
                         Slot = inventory.Slot,
                         InventoryId = inventory.InventoryId,
                         Type = inventory.Type,
-                        InventoryItemId = inventory.InventoryItemId,
-                        InventoryItem = new InventoryItem
-                        {
-                            Amount = inventoryItemDTO.Amount,
-                            ElementRate = inventoryItemDTO.ElementRate,
-                            HitRate = inventoryItemDTO.HitRate,
-                            Design = inventoryItemDTO.Design,
-                            Concentrate = inventoryItemDTO.Concentrate,
-                            CriticalLuckRate = inventoryItemDTO.CriticalLuckRate,
-                            CriticalRate = inventoryItemDTO.CriticalRate,
-                            DamageMaximum = inventoryItemDTO.DamageMaximum,
-                            DamageMinimum = inventoryItemDTO.DamageMinimum,
-                            DarkElement = inventoryItemDTO.DarkElement,
-                            DistanceDefence = inventoryItemDTO.DistanceDefence,
-                            DistanceDefenceDodge = inventoryItemDTO.DistanceDefenceDodge,
-                            DefenceDodge = inventoryItemDTO.DefenceDodge,
-                            FireElement = inventoryItemDTO.FireElement,
-                            InventoryItemId = inventoryItemDTO.InventoryItemId,
-                            ItemVNum = inventoryItemDTO.ItemVNum,
-                            LightElement = inventoryItemDTO.LightElement,
-                            MagicDefence = inventoryItemDTO.MagicDefence,
-                            CloseDefence = inventoryItemDTO.CloseDefence,
-                            Rare = inventoryItemDTO.Rare,
-                            SpXp = inventoryItemDTO.SpXp,
-                            SpLevel = inventoryItemDTO.SpLevel,
-                            SlDefence = inventoryItemDTO.SlDefence,
-                            SlElement = inventoryItemDTO.SlElement,
-                            SlDamage = inventoryItemDTO.SlDamage,
-                            SlHP = inventoryItemDTO.SlHP,
-                            Upgrade = inventoryItemDTO.Upgrade,
-                            WaterElement = inventoryItemDTO.WaterElement
-                        }
+                        InventoryItem = invitem
                     });
             }
         }
@@ -1035,7 +1024,6 @@ namespace OpenNos.GameObject
                     if (EquipmentList.LoadBySlotAndType(inv.Slot, inv.Type) == null)
                     {
                         DAOFactory.InventoryDAO.DeleteFromSlotAndType(CharacterId, inv.Slot, inv.Type);
-                        DAOFactory.InventoryItemDAO.DeleteById(inv.InventoryItemId);
                     }
                 }
                 else
@@ -1043,7 +1031,6 @@ namespace OpenNos.GameObject
                     if (InventoryList.LoadBySlotAndType(inv.Slot, inv.Type) == null)
                     {
                         DAOFactory.InventoryDAO.DeleteFromSlotAndType(CharacterId, inv.Slot, inv.Type);
-                        DAOFactory.InventoryItemDAO.DeleteById(inv.InventoryItemId);
                     }
                 }
             }

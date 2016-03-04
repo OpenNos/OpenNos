@@ -50,10 +50,6 @@
       <End Role="Character" EntitySet="character" />
       <End Role="Inventory" EntitySet="inventory" />
     </AssociationSet>
-    <AssociationSet Name="InventoryItemInventory" Association="opennosModel.Store.InventoryItemInventory">
-      <End Role="Inventory" EntitySet="inventory" />
-      <End Role="InventoryItem" EntitySet="inventoryitem" />
-    </AssociationSet>
     <AssociationSet Name="InventoryItemItem" Association="opennosModel.Store.InventoryItemItem">
       <End Role="InventoryItem" EntitySet="inventoryitem" />
       <End Role="Item" EntitySet="item" />
@@ -73,6 +69,10 @@
     <AssociationSet Name="CharacterRespawn" Association="opennosModel.Store.CharacterRespawn">
       <End Role="Respawn" EntitySet="respawn" />
       <End Role="Character" EntitySet="character" />
+    </AssociationSet>
+    <AssociationSet Name="InventoryInventoryItem" Association="opennosModel.Store.InventoryInventoryItem">
+      <End Role="Inventory" EntitySet="inventory" />
+      <End Role="InventoryItem" EntitySet="inventoryitem" />
     </AssociationSet>
   </EntityContainer>
   <EntityType Name="account">
@@ -297,14 +297,8 @@
     <Property Name="Rare" Type="utinyint" Nullable="false" />
     <Property Name="Design" Type="smallint" Nullable="false" />
     <Property Name="Amount" Type="utinyint" Nullable="false" />
-    <Property Name="SpLevel" Type="utinyint" Nullable="false" />
-    <Property Name="SpXp" Type="smallint" Nullable="false" />
-    <Property Name="SlElement" Type="smallint" Nullable="false" />
-    <Property Name="SlDamage" Type="smallint" Nullable="false" />
     <Property Name="HP" Type="smallint" Nullable="false" />
     <Property Name="MP" Type="smallint" Nullable="false" />
-    <Property Name="SlDefence" Type="smallint" Nullable="false" />
-    <Property Name="SlHP" Type="smallint" Nullable="false" />
     <Property Name="DarkElement" Type="utinyint" Nullable="false" />
     <Property Name="LightElement" Type="utinyint" Nullable="false" />
     <Property Name="WaterElement" Type="utinyint" Nullable="false" />
@@ -320,6 +314,12 @@
     <Property Name="DarkResistance" Type="utinyint" Nullable="false" />
     <Property Name="CriticalDodge" Type="smallint" Nullable="false" />
     <Property Name="IsEmpty" Type="bool" Nullable="false" />
+    <Property Name="SpLevel" Type="utinyint" Nullable="false" />
+    <Property Name="SlDamage" Type="smallint" Nullable="false" />
+    <Property Name="SpXp" Type="smallint" Nullable="false" />
+    <Property Name="SlHP" Type="smallint" Nullable="false" />
+    <Property Name="SlElement" Type="smallint" Nullable="false" />
+    <Property Name="SlDefence" Type="smallint" Nullable="false" />
     <Property Name="SpDamage" Type="utinyint" Nullable="false" />
     <Property Name="SpElement" Type="utinyint" Nullable="false" />
     <Property Name="SpDefence" Type="utinyint" Nullable="false" />
@@ -338,7 +338,7 @@
     <Property Name="CharacterId" Type="bigint" Nullable="false" />
     <Property Name="Type" Type="utinyint" Nullable="false" />
     <Property Name="Slot" Type="smallint" Nullable="false" />
-    <Property Name="InventoryItemId" Type="bigint" Nullable="false" />
+    <Property Name="inventoryItem_InventoryItemId" Type="bigint" Nullable="false" />
   </EntityType>
   <EntityType Name="shopitem">
     <Key>
@@ -471,18 +471,6 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="InventoryItemInventory">
-    <End Role="Inventory" Type="opennosModel.Store.inventory" Multiplicity="*" />
-    <End Role="InventoryItem" Type="opennosModel.Store.inventoryitem" Multiplicity="1" />
-    <ReferentialConstraint>
-      <Principal Role="InventoryItem">
-        <PropertyRef Name="InventoryItemId" />
-      </Principal>
-      <Dependent Role="Inventory">
-        <PropertyRef Name="InventoryItemId" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
   <Association Name="InventoryItemItem">
     <End Role="InventoryItem" Type="opennosModel.Store.inventoryitem" Multiplicity="*" />
     <End Role="Item" Type="opennosModel.Store.item" Multiplicity="1" />
@@ -540,6 +528,18 @@
       </Principal>
       <Dependent Role="Respawn">
         <PropertyRef Name="CharacterId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="InventoryInventoryItem">
+    <End Role="Inventory" Type="opennosModel.Store.inventory" Multiplicity="*" />
+    <End Role="InventoryItem" Type="opennosModel.Store.inventoryitem" Multiplicity="1" />
+    <ReferentialConstraint>
+      <Principal Role="InventoryItem">
+        <PropertyRef Name="InventoryItemId" />
+      </Principal>
+      <Dependent Role="Inventory">
+        <PropertyRef Name="inventoryItem_InventoryItemId" />
       </Dependent>
     </ReferentialConstraint>
   </Association>
@@ -675,10 +675,6 @@
             <End Role="Character" EntitySet="character" />
             <End Role="Inventory" EntitySet="inventory" />
           </AssociationSet>
-          <AssociationSet Name="InventoryItemInventory" Association="opennosModel.InventoryItemInventory">
-            <End Role="Inventory" EntitySet="inventory" />
-            <End Role="InventoryItem" EntitySet="inventoryitem" />
-          </AssociationSet>
           <AssociationSet Name="InventoryItemItem" Association="opennosModel.InventoryItemItem">
             <End Role="InventoryItem" EntitySet="inventoryitem" />
             <End Role="Item" EntitySet="item" />
@@ -701,6 +697,10 @@
           <AssociationSet Name="CharacterRespawn" Association="opennosModel.CharacterRespawn">
             <End Role="Respawn" EntitySet="respawn" />
             <End Role="Character" EntitySet="character" />
+          </AssociationSet>
+          <AssociationSet Name="InventoryInventoryItem" Association="opennosModel.InventoryInventoryItem">
+            <End Role="Inventory" EntitySet="inventory" />
+            <End Role="InventoryItem" EntitySet="inventoryitem" />
           </AssociationSet>
           </EntityContainer>
         <Association Name="AccountCharacter">
@@ -942,19 +942,12 @@
           <Property Name="Rare" Type="Byte" Nullable="false" />
           <Property Name="Design" Type="Int16" Nullable="false" />
           <Property Name="Amount" Type="Byte" Nullable="false" />
-          <Property Name="SpLevel" Type="Byte" Nullable="false" />
-          <Property Name="SpXp" Type="Int16" Nullable="false" />
-          <Property Name="SlElement" Type="Int16" Nullable="false" />
-          <Property Name="SlDamage" Type="Int16" Nullable="false" />
           <Property Name="HP" Type="Int16" Nullable="false" />
           <Property Name="MP" Type="Int16" Nullable="false" />
-          <Property Name="SlDefence" Type="Int16" Nullable="false" />
-          <Property Name="SlHP" Type="Int16" Nullable="false" />
           <Property Name="DarkElement" Type="Byte" Nullable="false" />
           <Property Name="LightElement" Type="Byte" Nullable="false" />
           <Property Name="WaterElement" Type="Byte" Nullable="false" />
           <Property Name="FireElement" Type="Byte" Nullable="false" />
-          <NavigationProperty Name="inventory" Relationship="opennosModel.InventoryItemInventory" FromRole="InventoryItem" ToRole="Inventory" />
           <NavigationProperty Name="item" Relationship="opennosModel.InventoryItemItem" FromRole="InventoryItem" ToRole="Item" />
           <Property Name="ItemVNum" Type="Int16" Nullable="false" />
           <Property Name="Ammo" Type="Byte" Nullable="false" />
@@ -967,6 +960,12 @@
           <Property Name="DarkResistance" Type="Byte" Nullable="false" />
           <Property Name="CriticalDodge" Type="Int16" Nullable="false" />
           <Property Name="IsEmpty" Type="Boolean" Nullable="false" />
+          <Property Name="SpLevel" Type="Byte" Nullable="false" />
+          <Property Name="SlDamage" Type="Int16" Nullable="false" />
+          <Property Name="SpXp" Type="Int16" Nullable="false" />
+          <Property Name="SlHP" Type="Int16" Nullable="false" />
+          <Property Name="SlElement" Type="Int16" Nullable="false" />
+          <Property Name="SlDefence" Type="Int16" Nullable="false" />
           <Property Name="SpDamage" Type="Byte" Nullable="false" />
           <Property Name="SpElement" Type="Byte" Nullable="false" />
           <Property Name="SpDefence" Type="Byte" Nullable="false" />
@@ -976,6 +975,7 @@
           <Property Name="SpFire" Type="Byte" Nullable="false" />
           <Property Name="SpWater" Type="Byte" Nullable="false" />
           <Property Name="SpStoneUpgrade" Type="Byte" Nullable="false" />
+          <NavigationProperty Name="inventory" Relationship="opennosModel.InventoryInventoryItem" FromRole="InventoryItem" ToRole="Inventory" />
           </EntityType>
         <EntityType Name="Inventory">
           <Key>
@@ -986,8 +986,7 @@
           <Property Name="Type" Type="Byte" Nullable="false" />
           <Property Name="Slot" Type="Int16" Nullable="false" />
           <NavigationProperty Name="character" Relationship="opennosModel.CharacterInventory" FromRole="Inventory" ToRole="Character" />
-          <NavigationProperty Name="inventoryitem" Relationship="opennosModel.InventoryItemInventory" FromRole="Inventory" ToRole="InventoryItem" />
-          <Property Name="InventoryItemId" Type="Int64" Nullable="false" />
+          <NavigationProperty Name="inventoryitem" Relationship="opennosModel.InventoryInventoryItem" FromRole="Inventory" ToRole="InventoryItem" />
         </EntityType>
         <Association Name="CharacterInventory">
           <End Type="opennosModel.Character" Role="Character" Multiplicity="1" />
@@ -998,18 +997,6 @@
             </Principal>
             <Dependent Role="Inventory">
               <PropertyRef Name="CharacterId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="InventoryItemInventory">
-          <End Type="opennosModel.Inventory" Role="Inventory" Multiplicity="*" />
-          <End Type="opennosModel.InventoryItem" Role="InventoryItem" Multiplicity="1" />
-          <ReferentialConstraint>
-            <Principal Role="InventoryItem">
-              <PropertyRef Name="InventoryItemId" />
-            </Principal>
-            <Dependent Role="Inventory">
-              <PropertyRef Name="InventoryItemId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1112,6 +1099,10 @@
               <PropertyRef Name="CharacterId" />
             </Dependent>
           </ReferentialConstraint>
+        </Association>
+        <Association Name="InventoryInventoryItem">
+          <End Type="opennosModel.Inventory" Role="Inventory" Multiplicity="1" />
+          <End Type="opennosModel.InventoryItem" Role="InventoryItem" Multiplicity="1" />
         </Association>
         </Schema>
     </edmx:ConceptualModels>
@@ -1347,14 +1338,8 @@
           <ScalarProperty Name="Rare" ColumnName="Rare" />
           <ScalarProperty Name="Design" ColumnName="Design" />
           <ScalarProperty Name="Amount" ColumnName="Amount" />
-          <ScalarProperty Name="SpLevel" ColumnName="SpLevel" />
-          <ScalarProperty Name="SpXp" ColumnName="SpXp" />
-          <ScalarProperty Name="SlElement" ColumnName="SlElement" />
-          <ScalarProperty Name="SlDamage" ColumnName="SlDamage" />
           <ScalarProperty Name="HP" ColumnName="HP" />
           <ScalarProperty Name="MP" ColumnName="MP" />
-          <ScalarProperty Name="SlDefence" ColumnName="SlDefence" />
-          <ScalarProperty Name="SlHP" ColumnName="SlHP" />
           <ScalarProperty Name="DarkElement" ColumnName="DarkElement" />
           <ScalarProperty Name="LightElement" ColumnName="LightElement" />
           <ScalarProperty Name="WaterElement" ColumnName="WaterElement" />
@@ -1370,6 +1355,12 @@
           <ScalarProperty Name="DarkResistance" ColumnName="DarkResistance" />
           <ScalarProperty Name="CriticalDodge" ColumnName="CriticalDodge" />
           <ScalarProperty Name="IsEmpty" ColumnName="IsEmpty" />
+          <ScalarProperty Name="SpLevel" ColumnName="SpLevel" />
+          <ScalarProperty Name="SlDamage" ColumnName="SlDamage" />
+          <ScalarProperty Name="SpXp" ColumnName="SpXp" />
+          <ScalarProperty Name="SlHP" ColumnName="SlHP" />
+          <ScalarProperty Name="SlElement" ColumnName="SlElement" />
+          <ScalarProperty Name="SlDefence" ColumnName="SlDefence" />
           <ScalarProperty Name="SpDamage" ColumnName="SpDamage" />
           <ScalarProperty Name="SpElement" ColumnName="SpElement" />
           <ScalarProperty Name="SpDefence" ColumnName="SpDefence" />
@@ -1389,7 +1380,6 @@
           <ScalarProperty Name="CharacterId" ColumnName="CharacterId" />
           <ScalarProperty Name="Type" ColumnName="Type" />
           <ScalarProperty Name="Slot" ColumnName="Slot" />
-          <ScalarProperty Name="InventoryItemId" ColumnName="InventoryItemId" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -1431,6 +1421,14 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
+    <AssociationSetMapping Name="InventoryInventoryItem" TypeName="opennosModel.InventoryInventoryItem" StoreEntitySet="inventory">
+      <EndProperty Name="InventoryItem">
+        <ScalarProperty Name="InventoryItemId" ColumnName="inventoryItem_InventoryItemId" />
+      </EndProperty>
+      <EndProperty Name="Inventory">
+        <ScalarProperty Name="InventoryId" ColumnName="InventoryId" />
+      </EndProperty>
+    </AssociationSetMapping>
   </EntityContainerMapping>
 </Mapping></edmx:Mappings>
   </edmx:Runtime>

@@ -27,8 +27,6 @@ namespace OpenNos.DAL.Interface
 
         IEnumerable<InventoryDTO> LoadByCharacterId(long characterId);
 
-        InventoryDTO LoadByInventoryItem(long InventoryItemId);
-
         InventoryDTO LoadBySlotAndType(long characterId, short slot, byte type);
 
         IEnumerable<InventoryDTO> LoadByType(long characterId, byte type);

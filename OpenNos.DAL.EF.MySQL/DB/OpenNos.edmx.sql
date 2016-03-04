@@ -44,9 +44,9 @@
 -- -----------------------------------------------------------
 -- Entity Designer DDL Script for MySQL Server 4.1 and higher
 -- -----------------------------------------------------------
--- Date Created: 03/04/2016 15:35:56
+-- Date Created: 03/04/2016 19:34:33
 
--- Generated from EDMX file: C:\Users\Dominik\Source\Repos\OpenNos\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
+-- Generated from EDMX file: C:\Users\ERWAN\Desktop\OpenNos Git\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
 -- Target version: 3.0.0.0
 
 -- --------------------------------------------------
@@ -364,14 +364,8 @@ CREATE TABLE `inventoryitem`(
 	`Rare` TINYINT UNSIGNED NOT NULL, 
 	`Design` smallint NOT NULL, 
 	`Amount` TINYINT UNSIGNED NOT NULL, 
-	`SpLevel` TINYINT UNSIGNED NOT NULL, 
-	`SpXp` smallint NOT NULL, 
-	`SlElement` smallint NOT NULL, 
-	`SlDamage` smallint NOT NULL, 
 	`HP` smallint NOT NULL, 
 	`MP` smallint NOT NULL, 
-	`SlDefence` smallint NOT NULL, 
-	`SlHP` smallint NOT NULL, 
 	`DarkElement` TINYINT UNSIGNED NOT NULL, 
 	`LightElement` TINYINT UNSIGNED NOT NULL, 
 	`WaterElement` TINYINT UNSIGNED NOT NULL, 
@@ -387,6 +381,12 @@ CREATE TABLE `inventoryitem`(
 	`DarkResistance` TINYINT UNSIGNED NOT NULL, 
 	`CriticalDodge` smallint NOT NULL, 
 	`IsEmpty` bool NOT NULL, 
+	`SpLevel` TINYINT UNSIGNED NOT NULL, 
+	`SlDamage` smallint NOT NULL, 
+	`SpXp` smallint NOT NULL, 
+	`SlHP` smallint NOT NULL, 
+	`SlElement` smallint NOT NULL, 
+	`SlDefence` smallint NOT NULL, 
 	`SpDamage` TINYINT UNSIGNED NOT NULL, 
 	`SpElement` TINYINT UNSIGNED NOT NULL, 
 	`SpDefence` TINYINT UNSIGNED NOT NULL, 
@@ -408,7 +408,7 @@ CREATE TABLE `inventory`(
 	`CharacterId` bigint NOT NULL, 
 	`Type` TINYINT UNSIGNED NOT NULL, 
 	`Slot` smallint NOT NULL, 
-	`InventoryItemId` bigint NOT NULL);
+	`inventoryItem_InventoryItemId` bigint NOT NULL);
 
 ALTER TABLE `inventory` ADD PRIMARY KEY (InventoryId);
 
@@ -611,24 +611,6 @@ CREATE INDEX `IX_FK_CharacterInventory`
 
 
 
--- Creating foreign key on `InventoryItemId` in table 'inventory'
-
-ALTER TABLE `inventory`
-ADD CONSTRAINT `FK_InventoryItemInventory`
-    FOREIGN KEY (`InventoryItemId`)
-    REFERENCES `inventoryitem`
-        (`InventoryItemId`)
-    ON DELETE NO ACTION ON UPDATE NO ACTION;
-
-
--- Creating non-clustered index for FOREIGN KEY 'FK_InventoryItemInventory'
-
-CREATE INDEX `IX_FK_InventoryItemInventory`
-    ON `inventory`
-    (`InventoryItemId`);
-
-
-
 -- Creating foreign key on `ItemVNum` in table 'inventoryitem'
 
 ALTER TABLE `inventoryitem`
@@ -716,6 +698,24 @@ ADD CONSTRAINT `FK_CharacterRespawn`
 CREATE INDEX `IX_FK_CharacterRespawn`
     ON `respawn`
     (`CharacterId`);
+
+
+
+-- Creating foreign key on `inventoryItem_InventoryItemId` in table 'inventory'
+
+ALTER TABLE `inventory`
+ADD CONSTRAINT `FK_InventoryInventoryItem`
+    FOREIGN KEY (`inventoryItem_InventoryItemId`)
+    REFERENCES `inventoryitem`
+        (`InventoryItemId`)
+    ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+
+-- Creating non-clustered index for FOREIGN KEY 'FK_InventoryInventoryItem'
+
+CREATE INDEX `IX_FK_InventoryInventoryItem`
+    ON `inventory`
+    (`inventoryItem_InventoryItemId`);
 
 
 
