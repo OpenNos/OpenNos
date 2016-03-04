@@ -216,7 +216,7 @@ namespace OpenNos.GameObject
                     switch (subtype) //0 = NOSMATE pearl 1= npc pearl 2 = sp box 3 = raid box 4= VEHICLE pearl 5=fairy pearl
                     {
                         case 2:
-                            return $"e_info 7 {item.ItemVNum} {(item.IsEmpty ? 1 : 0)} {item.Design} {item.SpLevel} {item.SpXp} {ServersData.SpXPData[JobLevel - 1]} {item.Upgrade} {item.SlHit} {item.SlDefence} {item.SlElement} {item.SlHP} 10 {item.FireResistance} {item.WaterResistance} {item.LightResistance} {item.DarkResistance} 0 0 0 0 0 0 0 0 0"; // add sp point management
+                            return $"e_info 7 {item.ItemVNum} {(item.IsEmpty ? 1 : 0)} {item.Design} {item.SpLevel} {item.SpXp} {ServersData.SpXPData[JobLevel - 1]} {item.Upgrade} {item.SlDamage} {item.SlDefence} {item.SlElement} {item.SlHP} 10 {item.FireResistance} {item.WaterResistance} {item.LightResistance} {item.DarkResistance} 0 0 0 0 0 0 0 0 0"; // add sp point management
                         default:
                             return $"e_info 8 {item.ItemVNum} {item.Design} {item.Rare}";
                     }
@@ -510,14 +510,16 @@ namespace OpenNos.GameObject
         public string GenerateSlInfo(InventoryItem inventoryItem, int type)
         {
             Item iteminfo = ServerManager.GetItem(inventoryItem.ItemVNum);
-            int freepoint = ServersData.SpPoint(inventoryItem.SpLevel, inventoryItem.Upgrade) - inventoryItem.SlHit - inventoryItem.SlHP - inventoryItem.SlElement - inventoryItem.SlDefence;
+            int freepoint = ServersData.SpPoint(inventoryItem.SpLevel, inventoryItem.Upgrade) - inventoryItem.SlDamage - inventoryItem.SlHP - inventoryItem.SlElement - inventoryItem.SlDefence;
 
             int slElement = ServersData.SlPoint(inventoryItem.SlElement, 2);
             int slHp = ServersData.SlPoint(inventoryItem.SlHP, 3);
             int slDefence = ServersData.SlPoint(inventoryItem.SlDefence, 1);
-            int slHit = ServersData.SlPoint(inventoryItem.SlHit, 0);
+            int slHit = ServersData.SlPoint(inventoryItem.SlDamage, 0);
+
             string skill = "-1"; //sk.sk.sk.sk.sk...
-            return $"slinfo {type} {inventoryItem.ItemVNum} {iteminfo.Morph} {inventoryItem.SpLevel} {iteminfo.LevelJobMinimum} {iteminfo.ReputationMinimum + 1} 0 0 0 0 0 0 0 0 {iteminfo.FireResistance} {iteminfo.WaterResistance} {iteminfo.LightResistance} {iteminfo.DarkResistance} {inventoryItem.SpXp} {ServersData.SpXPData[inventoryItem.SpLevel - 1]} {skill} {inventoryItem.InventoryItemId} {freepoint} {slHit} {slDefence} {slElement} {slHp} {inventoryItem.Upgrade} - 1 12 0 0 0 0 0 0 0 0 0 0 0 0 0 0";
+
+            return $"slinfo {type} {inventoryItem.ItemVNum} {iteminfo.Morph} {inventoryItem.SpLevel} {iteminfo.LevelJobMinimum} {iteminfo.ReputationMinimum + 1} 0 0 0 0 0 0 0 0 {iteminfo.FireResistance} {iteminfo.WaterResistance} {iteminfo.LightResistance} {iteminfo.DarkResistance} {inventoryItem.SpXp} {ServersData.SpXPData[inventoryItem.SpLevel - 1]} {skill} {inventoryItem.InventoryItemId} {freepoint} {slHit} {slDefence} {slElement} {slHp} {inventoryItem.Upgrade} - 1 12 0 0 0 0 0 {inventoryItem.SpDamage} {inventoryItem.SpDefence} {inventoryItem.SpElement} {inventoryItem.SpHP} {inventoryItem.SpFire} {inventoryItem.SpWater} {inventoryItem.SpLight} {inventoryItem.SpDark} 0";
         }
 
         public string GenerateSpk(object message, int v)
@@ -646,7 +648,7 @@ namespace OpenNos.GameObject
                 Inventory inventory = EquipmentList.LoadBySlotAndType((byte)EquipmentType.Sp, (byte)InventoryType.Equipment);
                 if (inventory != null)
                 {
-                    int point = ServersData.SlPoint(inventory.InventoryItem.SlHit, 0);
+                    int point = ServersData.SlPoint(inventory.InventoryItem.SlDamage, 0);
                     int p = 0;
                     if (point <= 10)
                         p = point * 5;
@@ -951,7 +953,7 @@ namespace OpenNos.GameObject
                             SpLevel = inventoryItemDTO.SpLevel,
                             SlDefence = inventoryItemDTO.SlDefence,
                             SlElement = inventoryItemDTO.SlElement,
-                            SlHit = inventoryItemDTO.SlHit,
+                            SlDamage = inventoryItemDTO.SlDamage,
                             SlHP = inventoryItemDTO.SlHP,
                             Upgrade = inventoryItemDTO.Upgrade,
                             WaterElement = inventoryItemDTO.WaterElement
@@ -991,7 +993,7 @@ namespace OpenNos.GameObject
                             SpLevel = inventoryItemDTO.SpLevel,
                             SlDefence = inventoryItemDTO.SlDefence,
                             SlElement = inventoryItemDTO.SlElement,
-                            SlHit = inventoryItemDTO.SlHit,
+                            SlDamage = inventoryItemDTO.SlDamage,
                             SlHP = inventoryItemDTO.SlHP,
                             Upgrade = inventoryItemDTO.Upgrade,
                             WaterElement = inventoryItemDTO.WaterElement

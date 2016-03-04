@@ -44,7 +44,7 @@
 -- -----------------------------------------------------------
 -- Entity Designer DDL Script for MySQL Server 4.1 and higher
 -- -----------------------------------------------------------
--- Date Created: 03/04/2016 13:58:15
+-- Date Created: 03/04/2016 14:32:09
 
 -- Generated from EDMX file: C:\Users\Dominik\Source\Repos\OpenNos\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
 -- Target version: 3.0.0.0
@@ -366,12 +366,12 @@ CREATE TABLE `inventoryitem`(
 	`Amount` TINYINT UNSIGNED NOT NULL, 
 	`SpLevel` TINYINT UNSIGNED NOT NULL, 
 	`SpXp` smallint NOT NULL, 
-	`SlElement` smallint NOT NULL, 
-	`SlHit` smallint NOT NULL, 
+	`SlElement` TINYINT UNSIGNED NOT NULL, 
+	`SlDamage` TINYINT UNSIGNED NOT NULL, 
 	`HP` smallint NOT NULL, 
 	`MP` smallint NOT NULL, 
-	`SlDefence` smallint NOT NULL, 
-	`SlHP` smallint NOT NULL, 
+	`SlDefence` TINYINT UNSIGNED NOT NULL, 
+	`SlHP` TINYINT UNSIGNED NOT NULL, 
 	`DarkElement` TINYINT UNSIGNED NOT NULL, 
 	`LightElement` TINYINT UNSIGNED NOT NULL, 
 	`WaterElement` TINYINT UNSIGNED NOT NULL, 
@@ -381,12 +381,20 @@ CREATE TABLE `inventoryitem`(
 	`IsFixed` bool NOT NULL, 
 	`ItemValidTime` bigint NOT NULL, 
 	`Cellon` TINYINT UNSIGNED NOT NULL, 
-	`FireResistance` smallint NOT NULL, 
-	`WaterResistance` smallint NOT NULL, 
-	`LightResistance` smallint NOT NULL, 
-	`DarkResistance` smallint NOT NULL, 
+	`FireResistance` TINYINT UNSIGNED NOT NULL, 
+	`WaterResistance` TINYINT UNSIGNED NOT NULL, 
+	`LightResistance` TINYINT UNSIGNED NOT NULL, 
+	`DarkResistance` TINYINT UNSIGNED NOT NULL, 
 	`CriticalDodge` smallint NOT NULL, 
-	`IsEmpty` bool NOT NULL);
+	`IsEmpty` bool NOT NULL, 
+	`SpDamage` TINYINT UNSIGNED NOT NULL, 
+	`SpElement` TINYINT UNSIGNED NOT NULL, 
+	`SpDefence` TINYINT UNSIGNED NOT NULL, 
+	`SpHP` TINYINT UNSIGNED NOT NULL, 
+	`SpDark` TINYINT UNSIGNED NOT NULL, 
+	`SpLight` TINYINT UNSIGNED NOT NULL, 
+	`SpFire` TINYINT UNSIGNED NOT NULL, 
+	`SpWater` TINYINT UNSIGNED NOT NULL);
 
 ALTER TABLE `inventoryitem` ADD PRIMARY KEY (InventoryItemId);
 

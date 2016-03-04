@@ -37,12 +37,12 @@ namespace OpenNos.Data
         public byte Amount { get; set; }
         public byte SpLevel { get; set; }
         public short SpXp { get; set; }
-        public short SlElement { get; set; }
-        public short SlHit { get; set; }
+        public byte SlElement { get; set; }
+        public byte SlDamage { get; set; }
         public short HP { get; set; }
         public short MP { get; set; }
-        public short SlDefence { get; set; }
-        public short SlHP { get; set; }
+        public byte SlDefence { get; set; }
+        public byte SlHP { get; set; }
         public byte DarkElement { get; set; }
         public byte LightElement { get; set; }
         public byte WaterElement { get; set; }
@@ -52,12 +52,20 @@ namespace OpenNos.Data
         public bool IsFixed { get; set; }
         public long ItemValidTime { get; set; }
         public byte Cellon { get; set; }
-        public short FireResistance { get; set; }
-        public short WaterResistance { get; set; }
-        public short LightResistance { get; set; }
-        public short DarkResistance { get; set; }
+        public byte FireResistance { get; set; }
+        public byte WaterResistance { get; set; }
+        public byte LightResistance { get; set; }
+        public byte DarkResistance { get; set; }
         public short CriticalDodge { get; set; }
         public bool IsEmpty { get; set; }
+        public byte SpDamage { get; set; }
+        public byte SpElement { get; set; }
+        public byte SpDefence { get; set; }
+        public byte SpHP { get; set; }
+        public byte SpDark { get; set; }
+        public byte SpLight { get; set; }
+        public byte SpFire { get; set; }
+        public byte SpWater { get; set; }
 
         #endregion
     }

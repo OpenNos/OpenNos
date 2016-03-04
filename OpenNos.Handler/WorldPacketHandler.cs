@@ -176,7 +176,7 @@ namespace OpenNos.Handler
                     SpXp = item.SpXp,
                     SpLevel = item.SpLevel,
                     SlElement = item.SlElement,
-                    SlHit = item.SlHit,
+                    SlDamage = item.SlDamage,
                     SlHP = item.SlHP,
                     WaterElement = item.WaterElement,
                 };
@@ -237,7 +237,7 @@ namespace OpenNos.Handler
                     SpLevel = ServerManager.GetItem(item.ItemVNum).EquipmentSlot.Equals((byte)EquipmentType.Sp) ? (byte)1 : (byte)0,
                     SlDefence = 0,
                     SlElement = 0,
-                    SlHit = 0,
+                    SlDamage = 0,
                     SlHP = 0,
                     WaterElement = 0,
                 };
@@ -650,7 +650,7 @@ namespace OpenNos.Handler
                         SpLevel = (byte)level,
                         SlDefence = 0,
                         SlElement = 0,
-                        SlHit = 0,
+                        SlDamage = 0,
                         SlHP = 0,
                         WaterElement = 0,
                     };
@@ -729,7 +729,7 @@ namespace OpenNos.Handler
                                     SpLevel = inv.InventoryItem.SpLevel,
                                     SlDefence = inv.InventoryItem.SlDefence,
                                     SlElement = inv.InventoryItem.SlElement,
-                                    SlHit = inv.InventoryItem.SlHit,
+                                    SlDamage = inv.InventoryItem.SlDamage,
                                     SlHP = inv.InventoryItem.SlHP,
                                     Upgrade = inv.InventoryItem.Upgrade,
                                     WaterElement = inv.InventoryItem.WaterElement
@@ -2382,21 +2382,21 @@ namespace OpenNos.Handler
                 }
 
                 if (ServersData.SpPoint(spInventory.InventoryItem.SpLevel, spInventory.InventoryItem.Upgrade)
-                    - spInventory.InventoryItem.SlHit - spInventory.InventoryItem.SlHP
+                    - spInventory.InventoryItem.SlDamage - spInventory.InventoryItem.SlHP
                     - spInventory.InventoryItem.SlElement - spInventory.InventoryItem.SlDefence
-                    - short.Parse(packetsplit[6]) - short.Parse(packetsplit[7])
-                    - short.Parse(packetsplit[8]) - short.Parse(packetsplit[9]) < 0)
+                    - byte.Parse(packetsplit[6]) - byte.Parse(packetsplit[7])
+                    - byte.Parse(packetsplit[8]) - byte.Parse(packetsplit[9]) < 0)
                     return;
 
-                spInventory.InventoryItem.SlHit += short.Parse(packetsplit[6]);
-                spInventory.InventoryItem.SlDefence += short.Parse(packetsplit[7]);
-                spInventory.InventoryItem.SlElement += short.Parse(packetsplit[8]);
-                spInventory.InventoryItem.SlHP += short.Parse(packetsplit[9]);
+                spInventory.InventoryItem.SlDamage += byte.Parse(packetsplit[6]);
+                spInventory.InventoryItem.SlDefence += byte.Parse(packetsplit[7]);
+                spInventory.InventoryItem.SlElement += byte.Parse(packetsplit[8]);
+                spInventory.InventoryItem.SlHP += byte.Parse(packetsplit[9]);
 
                 int slElement = ServersData.SlPoint(spInventory.InventoryItem.SlElement, 2);
                 int slHp = ServersData.SlPoint(spInventory.InventoryItem.SlHP, 3);
                 int slDefence = ServersData.SlPoint(spInventory.InventoryItem.SlDefence, 1);
-                int slHit = ServersData.SlPoint(spInventory.InventoryItem.SlHit, 0);
+                int slHit = ServersData.SlPoint(spInventory.InventoryItem.SlDamage, 0);
 
                 //so add upgrade to sp
                 //slhit

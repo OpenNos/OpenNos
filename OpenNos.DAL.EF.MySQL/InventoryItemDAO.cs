@@ -109,7 +109,7 @@ namespace OpenNos.DAL.EF.MySQL
                 Rare = inventoryitem.Rare,
                 SlDefence = inventoryitem.SlDefence,
                 SlElement = inventoryitem.SlElement,
-                SlHit = inventoryitem.SlHit,
+                SlDamage = inventoryitem.SlDamage,
                 SlHP = inventoryitem.SlHP,
                 SpLevel = inventoryitem.SpLevel,
                 SpXp = inventoryitem.SpXp,
