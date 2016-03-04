@@ -28,6 +28,59 @@ namespace OpenNos.GameObject
             Mapper.CreateMap<InventoryItem, InventoryItemDTO>();
         }
 
+        public InventoryItem(InventoryItemDTO inventoryItem)
+        {
+
+            Amount = inventoryItem.Amount;
+                    ElementRate = inventoryItem.ElementRate;
+                    HitRate = inventoryItem.HitRate;
+                    Design = inventoryItem.Design;
+                    Concentrate = inventoryItem.Concentrate;
+                    CriticalLuckRate = inventoryItem.CriticalLuckRate;
+                    CriticalRate = inventoryItem.CriticalRate;
+                    DamageMaximum = inventoryItem.DamageMaximum;
+                    DamageMinimum = inventoryItem.DamageMinimum;
+                    DarkElement = inventoryItem.DarkElement;
+                    DistanceDefence = inventoryItem.DistanceDefence;
+                    DistanceDefenceDodge = inventoryItem.DistanceDefenceDodge;
+                    DefenceDodge = inventoryItem.DefenceDodge;
+                    FireElement = inventoryItem.FireElement;
+                    ItemVNum = inventoryItem.ItemVNum;
+                    LightElement = inventoryItem.LightElement;
+                    MagicDefence = inventoryItem.MagicDefence;
+                    CloseDefence = inventoryItem.CloseDefence;
+                    Rare = inventoryItem.Rare;
+                    SpXp = inventoryItem.SpXp;
+                    SpLevel = inventoryItem.SpLevel;
+                    SlDefence = inventoryItem.SlDefence;
+                    SlElement = inventoryItem.SlElement;
+                    SlDamage = inventoryItem.SlDamage;
+                    SlHP = inventoryItem.SlHP;
+                    Upgrade = inventoryItem.Upgrade;
+                    WaterElement = inventoryItem.WaterElement;
+                    Ammo = inventoryItem.Ammo;
+                    Cellon = inventoryItem.Cellon;
+                    CriticalDodge = inventoryItem.CriticalDodge;
+                    DarkResistance = inventoryItem.DarkResistance;
+                    FireResistance = inventoryItem.FireResistance;
+                    HP = inventoryItem.HP;
+                    IsEmpty = inventoryItem.IsEmpty;
+                    IsFixed = inventoryItem.IsFixed;
+                    ItemValidTime = inventoryItem.ItemValidTime;
+                    LightResistance = inventoryItem.LightResistance;
+                    MP = inventoryItem.MP;
+                    SpDamage = inventoryItem.SpDamage;
+                    SpDark = inventoryItem.SpDark;
+                    SpDefence = inventoryItem.SpDefence;
+                    SpElement = inventoryItem.SpElement;
+                    SpFire = inventoryItem.SpFire;
+                    SpHP = inventoryItem.SpHP;
+                    SpLight = inventoryItem.SpLight;
+                    SpStoneUpgrade = inventoryItem.SpStoneUpgrade;
+                    SpWater = inventoryItem.SpWater;
+            WaterResistance = inventoryItem.WaterResistance;
+        }
+
         #endregion
 
         #region Enums
@@ -66,9 +119,6 @@ namespace OpenNos.GameObject
 
         public void Save()
         {
-  //          InventoryItemDTO tempsave = this;
-//            DAOFactory.InventoryItemDAO.InsertOrUpdate(ref tempsave);
-    //        this.InventoryItemId = tempsave.InventoryItemId;
         }
 
         #endregion

@@ -32,11 +32,6 @@ namespace OpenNos.GameObject
 
         #region Properties
 
-        public InventoryItem InventoryItem
-        {
-            get; set;
-        }
-
         #endregion
 
         #region Methods
@@ -44,9 +39,7 @@ namespace OpenNos.GameObject
         public void Save()
         {
             InventoryDTO tempsave = this;
-            tempsave.inventoryItem = this.InventoryItem;
             SaveResult insertResult = DAOFactory.InventoryDAO.InsertOrUpdate(ref tempsave);
-            this.InventoryItem.Save();
         }
 
         #endregion

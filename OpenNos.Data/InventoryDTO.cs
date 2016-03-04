@@ -24,7 +24,7 @@ namespace OpenNos.Data
 
         public short Slot { get; set; }
 
-        public InventoryItemDTO inventoryItem { get; set; }
+        public InventoryItemDTO InventoryItem { get; set; }
 
         public byte Type { get; set; }
 

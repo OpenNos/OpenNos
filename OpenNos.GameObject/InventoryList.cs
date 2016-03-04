@@ -84,7 +84,7 @@ namespace OpenNos.GameObject
 
         public void DeleteByInventoryItemId(long inventoryItemId)
         {
-            Inventory inv = Inventory.SingleOrDefault(i => i.inventoryItem.InventoryItemId.Equals(inventoryItemId));
+            Inventory inv = Inventory.SingleOrDefault(i => i.InventoryItem.InventoryItemId.Equals(inventoryItemId));
 
             if (inv != null)
             {
@@ -131,7 +131,7 @@ namespace OpenNos.GameObject
                 inventoryitemId = (int)((r.NextDouble() * 2.0 - 1.0) * int.MaxValue);
                 foreach (Inventory inv in Inventory)
                 {
-                    if (inv.inventoryItem.InventoryItemId == inventoryitemId)
+                    if (inv.InventoryItem.InventoryItemId == inventoryitemId)
                     { boolean = true; break; }
                 }
             }
@@ -157,7 +157,7 @@ namespace OpenNos.GameObject
             {
                 inventoryitemids.Add(itemfree.InventoryItemId);
             }
-            return Inventory.Where(i => inventoryitemids.Contains(i.inventoryItem.InventoryItemId)).OrderBy(i => i.Slot).FirstOrDefault();
+            return Inventory.Where(i => inventoryitemids.Contains(i.InventoryItem.InventoryItemId)).OrderBy(i => i.Slot).FirstOrDefault();
         }
 
         public bool getFreePlaceAmount(List<InventoryItem> item, int backPack)
@@ -196,7 +196,7 @@ namespace OpenNos.GameObject
 
         public Inventory getInventoryByInventoryItemId(long inventoryItemId)
         {
-            return Inventory.SingleOrDefault(i => i.inventoryItem.InventoryItemId.Equals(inventoryItemId));
+            return Inventory.SingleOrDefault(i => i.InventoryItem.InventoryItemId.Equals(inventoryItemId));
         }
 
         public void InsertOrUpdate(ref Inventory newInventory)
@@ -223,7 +223,7 @@ namespace OpenNos.GameObject
 
         public Inventory LoadByInventoryItem(long InventoryItemId)
         {
-            return Inventory.SingleOrDefault(i => i.inventoryItem.InventoryItemId.Equals(InventoryItemId));
+            return Inventory.SingleOrDefault(i => i.InventoryItem.InventoryItemId.Equals(InventoryItemId));
         }
 
         public Inventory LoadBySlotAndType(short slot, byte type)

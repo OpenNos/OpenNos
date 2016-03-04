@@ -905,7 +905,7 @@ namespace OpenNos.GameObject
 
         public IEnumerable<InventoryItem> LoadBySlotAllowed(short itemVNum, byte amount)
         {
-            return InventoryList.Inventory.Where(i => i.InventoryItem.ItemVNum.Equals(itemVNum) && i.InventoryItem.Amount + amount < 100).Select(inventoryitemobject => inventoryitemobject.InventoryItem);
+            return InventoryList.Inventory.Where(i => i.InventoryItem.ItemVNum.Equals(itemVNum) && i.InventoryItem.Amount + amount < 100).Select(inventoryitemobject => new InventoryItem(inventoryitemobject.InventoryItem));
         }
 
         public void LoadInventory()
@@ -916,59 +916,59 @@ namespace OpenNos.GameObject
             EquipmentList = new InventoryList();
             foreach (InventoryDTO inventory in inventorysDTO)
             {
-                inventory.inventoryItem = DAOFactory.InventoryItemDAO.LoadByInventoryId(inventory.InventoryId);
-                Item item = ServerManager.GetItem(inventory.inventoryItem.ItemVNum); // unused variable
+                inventory.InventoryItem = DAOFactory.InventoryItemDAO.LoadByInventoryId(inventory.InventoryId);
+                Item item = ServerManager.GetItem(inventory.InventoryItem.ItemVNum); // unused variable
                 InventoryItem invitem = new InventoryItem
                 {
-                    Amount = inventory.inventoryItem.Amount,
-                    ElementRate = inventory.inventoryItem.ElementRate,
-                    HitRate = inventory.inventoryItem.HitRate,
-                    Design = inventory.inventoryItem.Design,
-                    Concentrate = inventory.inventoryItem.Concentrate,
-                    CriticalLuckRate = inventory.inventoryItem.CriticalLuckRate,
-                    CriticalRate = inventory.inventoryItem.CriticalRate,
-                    DamageMaximum = inventory.inventoryItem.DamageMaximum,
-                    DamageMinimum = inventory.inventoryItem.DamageMinimum,
-                    DarkElement = inventory.inventoryItem.DarkElement,
-                    DistanceDefence = inventory.inventoryItem.DistanceDefence,
-                    DistanceDefenceDodge = inventory.inventoryItem.DistanceDefenceDodge,
-                    DefenceDodge = inventory.inventoryItem.DefenceDodge,
-                    FireElement = inventory.inventoryItem.FireElement,
-                    InventoryItemId = inventory.inventoryItem.InventoryItemId,
-                    ItemVNum = inventory.inventoryItem.ItemVNum,
-                    LightElement = inventory.inventoryItem.LightElement,
-                    MagicDefence = inventory.inventoryItem.MagicDefence,
-                    CloseDefence = inventory.inventoryItem.CloseDefence,
-                    Rare = inventory.inventoryItem.Rare,
-                    SpXp = inventory.inventoryItem.SpXp,
-                    SpLevel = inventory.inventoryItem.SpLevel,
-                    SlDefence = inventory.inventoryItem.SlDefence,
-                    SlElement = inventory.inventoryItem.SlElement,
-                    SlDamage = inventory.inventoryItem.SlDamage,
-                    SlHP = inventory.inventoryItem.SlHP,
-                    Upgrade = inventory.inventoryItem.Upgrade,
-                    WaterElement = inventory.inventoryItem.WaterElement,
-                    Ammo = inventory.inventoryItem.Ammo,
-                    Cellon = inventory.inventoryItem.Cellon,
-                    CriticalDodge = inventory.inventoryItem.CriticalDodge,
-                    DarkResistance = inventory.inventoryItem.DarkResistance,
-                    FireResistance = inventory.inventoryItem.FireResistance,
-                    HP = inventory.inventoryItem.HP,
-                    IsEmpty = inventory.inventoryItem.IsEmpty,
-                    IsFixed = inventory.inventoryItem.IsFixed,
-                    ItemValidTime = inventory.inventoryItem.ItemValidTime,
-                    LightResistance = inventory.inventoryItem.LightResistance,
-                    MP = inventory.inventoryItem.MP,
-                    SpDamage = inventory.inventoryItem.SpDamage,
-                    SpDark = inventory.inventoryItem.SpDark,
-                    SpDefence = inventory.inventoryItem.SpDefence,
-                    SpElement = inventory.inventoryItem.SpElement,
-                    SpFire = inventory.inventoryItem.SpFire,
-                    SpHP = inventory.inventoryItem.SpHP,
-                    SpLight = inventory.inventoryItem.SpLight,
-                    SpStoneUpgrade = inventory.inventoryItem.SpStoneUpgrade,
-                    SpWater = inventory.inventoryItem.SpWater,
-                    WaterResistance = inventory.inventoryItem.WaterResistance
+                    Amount = inventory.InventoryItem.Amount,
+                    ElementRate = inventory.InventoryItem.ElementRate,
+                    HitRate = inventory.InventoryItem.HitRate,
+                    Design = inventory.InventoryItem.Design,
+                    Concentrate = inventory.InventoryItem.Concentrate,
+                    CriticalLuckRate = inventory.InventoryItem.CriticalLuckRate,
+                    CriticalRate = inventory.InventoryItem.CriticalRate,
+                    DamageMaximum = inventory.InventoryItem.DamageMaximum,
+                    DamageMinimum = inventory.InventoryItem.DamageMinimum,
+                    DarkElement = inventory.InventoryItem.DarkElement,
+                    DistanceDefence = inventory.InventoryItem.DistanceDefence,
+                    DistanceDefenceDodge = inventory.InventoryItem.DistanceDefenceDodge,
+                    DefenceDodge = inventory.InventoryItem.DefenceDodge,
+                    FireElement = inventory.InventoryItem.FireElement,
+                    InventoryItemId = inventory.InventoryItem.InventoryItemId,
+                    ItemVNum = inventory.InventoryItem.ItemVNum,
+                    LightElement = inventory.InventoryItem.LightElement,
+                    MagicDefence = inventory.InventoryItem.MagicDefence,
+                    CloseDefence = inventory.InventoryItem.CloseDefence,
+                    Rare = inventory.InventoryItem.Rare,
+                    SpXp = inventory.InventoryItem.SpXp,
+                    SpLevel = inventory.InventoryItem.SpLevel,
+                    SlDefence = inventory.InventoryItem.SlDefence,
+                    SlElement = inventory.InventoryItem.SlElement,
+                    SlDamage = inventory.InventoryItem.SlDamage,
+                    SlHP = inventory.InventoryItem.SlHP,
+                    Upgrade = inventory.InventoryItem.Upgrade,
+                    WaterElement = inventory.InventoryItem.WaterElement,
+                    Ammo = inventory.InventoryItem.Ammo,
+                    Cellon = inventory.InventoryItem.Cellon,
+                    CriticalDodge = inventory.InventoryItem.CriticalDodge,
+                    DarkResistance = inventory.InventoryItem.DarkResistance,
+                    FireResistance = inventory.InventoryItem.FireResistance,
+                    HP = inventory.InventoryItem.HP,
+                    IsEmpty = inventory.InventoryItem.IsEmpty,
+                    IsFixed = inventory.InventoryItem.IsFixed,
+                    ItemValidTime = inventory.InventoryItem.ItemValidTime,
+                    LightResistance = inventory.InventoryItem.LightResistance,
+                    MP = inventory.InventoryItem.MP,
+                    SpDamage = inventory.InventoryItem.SpDamage,
+                    SpDark = inventory.InventoryItem.SpDark,
+                    SpDefence = inventory.InventoryItem.SpDefence,
+                    SpElement = inventory.InventoryItem.SpElement,
+                    SpFire = inventory.InventoryItem.SpFire,
+                    SpHP = inventory.InventoryItem.SpHP,
+                    SpLight = inventory.InventoryItem.SpLight,
+                    SpStoneUpgrade = inventory.InventoryItem.SpStoneUpgrade,
+                    SpWater = inventory.InventoryItem.SpWater,
+                    WaterResistance = inventory.InventoryItem.WaterResistance
                 };
                 if (inventory.Type != (byte)InventoryType.Equipment)
                     InventoryList.Inventory.Add(new Inventory

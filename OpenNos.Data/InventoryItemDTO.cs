@@ -12,6 +12,7 @@
  * GNU General Public License for more details.
  */
 
+using System;
 namespace OpenNos.Data
 {
     public class InventoryItemDTO
