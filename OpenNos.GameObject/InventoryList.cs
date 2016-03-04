@@ -271,7 +271,7 @@ namespace OpenNos.GameObject
                         InventoryItem itemDest = new InventoryItem
                         {
                             Amount = amount,
-                            Color = inv.InventoryItem.Color,
+                            Design = inv.InventoryItem.Design,
                             Concentrate = inv.InventoryItem.Concentrate,
                             CriticalLuckRate = inv.InventoryItem.CriticalLuckRate,
                             CriticalRate = inv.InventoryItem.CriticalRate,
@@ -291,7 +291,7 @@ namespace OpenNos.GameObject
                             Rare = inv.InventoryItem.Rare,
                             SlDefence = inv.InventoryItem.SlDefence,
                             SlElement = inv.InventoryItem.SlElement,
-                            SlHit = inv.InventoryItem.SlHit,
+                            SlDamage = inv.InventoryItem.SlDamage,
                             SlHP = inv.InventoryItem.SlHP,
                             Upgrade = inv.InventoryItem.Upgrade,
                             WaterElement = inv.InventoryItem.WaterElement,
@@ -359,7 +359,7 @@ namespace OpenNos.GameObject
                 DroppedItem = new MapItem((short)(rnd.Next(Session.Character.MapX - 2, Session.Character.MapX + 3)), (short)(rnd.Next(Session.Character.MapY - 2, Session.Character.MapY + 3)))
                 {
                     Amount = amount,
-                    Color = inv.InventoryItem.Color,
+                    Design = inv.InventoryItem.Design,
                     Concentrate = inv.InventoryItem.Concentrate,
                     CriticalLuckRate = inv.InventoryItem.CriticalLuckRate,
                     CriticalRate = inv.InventoryItem.CriticalRate,
@@ -373,7 +373,7 @@ namespace OpenNos.GameObject
                     FireElement = inv.InventoryItem.FireElement,
                     HitRate = inv.InventoryItem.HitRate,
                     WaterElement = inv.InventoryItem.WaterElement,
-                    SlHit = inv.InventoryItem.SlHit,
+                    SlDamage = inv.InventoryItem.SlDamage,
                     ItemVNum = inv.InventoryItem.ItemVNum,
                     LightElement = inv.InventoryItem.LightElement,
                     MagicDefence = inv.InventoryItem.MagicDefence,

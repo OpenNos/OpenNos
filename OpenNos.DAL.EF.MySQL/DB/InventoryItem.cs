@@ -35,12 +35,12 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public short ElementRate { get; set; }
         public byte Upgrade { get; set; }
         public byte Rare { get; set; }
-        public short Color { get; set; }
+        public short Design { get; set; }
         public byte Amount { get; set; }
         public byte SpLevel { get; set; }
         public short SpXp { get; set; }
         public short SlElement { get; set; }
-        public short SlHit { get; set; }
+        public short SlDamage { get; set; }
         public short HP { get; set; }
         public short MP { get; set; }
         public short SlDefence { get; set; }
@@ -54,11 +54,21 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public bool IsFixed { get; set; }
         public long ItemValidTime { get; set; }
         public byte Cellon { get; set; }
-        public short FireResistance { get; set; }
-        public short WaterResistance { get; set; }
-        public short LightResistance { get; set; }
-        public short DarkResistance { get; set; }
+        public byte FireResistance { get; set; }
+        public byte WaterResistance { get; set; }
+        public byte LightResistance { get; set; }
+        public byte DarkResistance { get; set; }
         public short CriticalDodge { get; set; }
+        public bool IsEmpty { get; set; }
+        public byte SpDamage { get; set; }
+        public byte SpElement { get; set; }
+        public byte SpDefence { get; set; }
+        public byte SpHP { get; set; }
+        public byte SpDark { get; set; }
+        public byte SpLight { get; set; }
+        public byte SpFire { get; set; }
+        public byte SpWater { get; set; }
+        public byte SpStoneUpgrade { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Inventory> inventory { get; set; }

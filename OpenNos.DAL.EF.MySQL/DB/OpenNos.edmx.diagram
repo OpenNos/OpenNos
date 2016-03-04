@@ -16,7 +16,7 @@
         <AssociationConnector Association="opennosModel.portalMap1" />
         <AssociationConnector Association="opennosModel.GeneralLogCharacter" />
         <AssociationConnector Association="opennosModel.CharacterMap" />
-        <EntityTypeShape EntityType="opennosModel.Item" Width="2" PointX="12.375" PointY="0.625" />
+        <EntityTypeShape EntityType="opennosModel.Item" Width="2" PointX="12.125" PointY="0.625" />
         <EntityTypeShape EntityType="opennosModel.Npc" Width="1.875" PointX="7.125" PointY="0.625" />
         <AssociationConnector Association="opennosModel.NpcMap" />
         <EntityTypeShape EntityType="opennosModel.InventoryItem" Width="1.875" PointX="7.125" PointY="8.125" />
@@ -25,8 +25,8 @@
         <AssociationConnector Association="opennosModel.InventoryItemItem" />
         <AssociationConnector Association="opennosModel.InventoryItemInstance" />
         <AssociationConnector Association="opennosModel.InventoryItemInventory" />
-        <EntityTypeShape EntityType="opennosModel.ShopItem" Width="1.5" PointX="10" PointY="3.5" />
-        <EntityTypeShape EntityType="opennosModel.Shop" Width="1.875" PointX="9.75" PointY="0.625" />
+        <EntityTypeShape EntityType="opennosModel.ShopItem" Width="1.5" PointX="9.875" PointY="3.5" />
+        <EntityTypeShape EntityType="opennosModel.Shop" Width="1.875" PointX="9.625" PointY="0.625" />
         <AssociationConnector Association="opennosModel.ShopNpc" />
         <AssociationConnector Association="opennosModel.ShopItemItem" />
         <AssociationConnector Association="opennosModel.ShopShopItem" />

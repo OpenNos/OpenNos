@@ -216,11 +216,9 @@ namespace OpenNos.GameObject
                     switch (subtype) //0 = NOSMATE pearl 1= npc pearl 2 = sp box 3 = raid box 4= VEHICLE pearl 5=fairy pearl
                     {
                         case 2:
-                            return $"e_info 7 {item.ItemVNum} 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0";
-                        //e_info 7 4240 1 4488 84 185861 3726224 11 72 0 30 10 4 0 3 4 18 2 0 0 0 0 0 0 0 0
+                            return $"e_info 7 {item.ItemVNum} {(item.IsEmpty ? 1 : 0)} {item.Design} {item.SpLevel} {item.SpXp} {ServersData.SpXPData[JobLevel - 1]} {item.Upgrade} {item.SlDamage} {item.SlDefence} {item.SlElement} {item.SlHP} 10 {item.FireResistance} {item.WaterResistance} {item.LightResistance} {item.DarkResistance} {item.SpStoneUpgrade} {item.SpDamage} {item.SpDefence} {item.SpElement} {item.SpHP} {item.SpFire} {item.SpWater} {item.SpLight} {item.SpDark}";
                         default:
-                            return $"e_info 8 {item.ItemVNum} 0 0";
-                            //e_info 8 302 16 2
+                            return $"e_info 8 {item.ItemVNum} {item.Design} {item.Rare}";
                     }
                 case (byte)ItemType.Shell:
                     return $"e_info 4 {item.ItemVNum} {iteminfo.LevelMinimum} {item.Rare} {iteminfo.Price} 0"; //0 = Number of effects
@@ -233,7 +231,7 @@ namespace OpenNos.GameObject
             int color = HairColor;
             Inventory head = EquipmentList.LoadBySlotAndType((byte)EquipmentType.Hat, (byte)InventoryType.Equipment);
             if (head != null && ServerManager.GetItem(head.InventoryItem.ItemVNum).IsColored)
-                color = head.InventoryItem.Color;
+                color = head.InventoryItem.Design;
 
             return $"eq {CharacterId} {(Authority == 2 ? 2 : 0)} {Gender} {HairStyle} {color} {Class} {generateEqListForPacket()} {generateEqRareUpgradeForPacket()}";
         }
@@ -307,7 +305,7 @@ namespace OpenNos.GameObject
                         weaponRare = inv.InventoryItem.Rare;
                         weaponUpgrade = inv.InventoryItem.Upgrade;
                     }
-                    eqlist += $" {i}.{iteminfo.VNum}.{inv.InventoryItem.Rare}.{(iteminfo.IsColored ? inv.InventoryItem.Color : inv.InventoryItem.Upgrade)}.0";
+                    eqlist += $" {i}.{iteminfo.VNum}.{inv.InventoryItem.Rare}.{(iteminfo.IsColored ? inv.InventoryItem.Design : inv.InventoryItem.Upgrade)}.0";
                 }
             }
             return $"equip {weaponUpgrade}{weaponRare} {armorUpgrade}{armorRare}{eqlist}";
@@ -361,7 +359,7 @@ namespace OpenNos.GameObject
             int color = HairColor;
             Inventory head = EquipmentList.LoadBySlotAndType((byte)EquipmentType.Hat, (byte)InventoryType.Equipment);
             if (head != null && ServerManager.GetItem(head.InventoryItem.ItemVNum).IsColored)
-                color = head.InventoryItem.Color;
+                color = head.InventoryItem.Design;
             Inventory fairy = EquipmentList.LoadBySlotAndType((byte)EquipmentType.Fairy, (byte)InventoryType.Equipment);
 
             return $"in 1 {Name} - {CharacterId} {MapX} {MapY} {Direction} {(Authority == 2 ? 2 : 0)} {Gender} {HairStyle} {color} {Class} {generateEqListForPacket()} {(int)(Hp / HPLoad() * 100)} {(int)(Mp / MPLoad() * 100)} {_rested} -1 {(fairy != null ? 2 : 0)} {(fairy != null ? ServerManager.GetItem(fairy.InventoryItem.ItemVNum).Element : 0)} 0 {(fairy != null ? ServerManager.GetItem(fairy.InventoryItem.ItemVNum).Morph : 0)} 0 {(UseSp ? Morph : 0)} {generateEqRareUpgradeForPacket()} -1 - {((GetDigniteIco() == 1) ? GetReputIco() : -GetDigniteIco())} {_invisible} {(UseSp ? MorphUpgrade : 0)} 0 {(UseSp ? MorphUpgrade2 : 0)} {Level} 0 {ArenaWinner} {Compliment} {Size}";
@@ -471,7 +469,7 @@ namespace OpenNos.GameObject
             Inventory armor = EquipmentList.LoadBySlotAndType((byte)EquipmentType.Armor, (byte)InventoryType.Equipment);
             Inventory weapon2 = EquipmentList.LoadBySlotAndType((byte)EquipmentType.SecondaryWeapon, (byte)InventoryType.Equipment);
             Inventory weapon = EquipmentList.LoadBySlotAndType((byte)EquipmentType.MainWeapon, (byte)InventoryType.Equipment);
-            return $"tc_info {Level} {Name} {(fairy != null ? ServerManager.GetItem(fairy.InventoryItem.ItemVNum).Element : 0)} {(Element !=0 ? ElementRate: 0)} {Class} {Gender} -1 - {GetReputIco()} {GetDigniteIco()} {(weapon != null ? 1 : 0)} {weapon?.InventoryItem.Rare ?? 0} {weapon?.InventoryItem.Upgrade ?? 0} {(weapon2 != null ? 1 : 0)} {weapon2?.InventoryItem.Rare ?? 0} {weapon2?.InventoryItem.Upgrade ?? 0} {(armor != null ? 1 : 0)} {armor?.InventoryItem.Rare ?? 0} {armor?.InventoryItem.Upgrade ?? 0} 0 0 {Reput} 0 0 0 {(UseSp ? Morph : 0)} 0 0 0 0 0 {Compliment} 0 0 0 0 {Language.Instance.GetMessageFromKey("NO_PREZ_MESSAGE")}";
+            return $"tc_info {Level} {Name} {(fairy != null ? ServerManager.GetItem(fairy.InventoryItem.ItemVNum).Element : 0)} {(Element != 0 ? ElementRate : 0)} {Class} {Gender} -1 - {GetReputIco()} {GetDigniteIco()} {(weapon != null ? 1 : 0)} {weapon?.InventoryItem.Rare ?? 0} {weapon?.InventoryItem.Upgrade ?? 0} {(weapon2 != null ? 1 : 0)} {weapon2?.InventoryItem.Rare ?? 0} {weapon2?.InventoryItem.Upgrade ?? 0} {(armor != null ? 1 : 0)} {armor?.InventoryItem.Rare ?? 0} {armor?.InventoryItem.Upgrade ?? 0} 0 0 {Reput} 0 0 0 {(UseSp ? Morph : 0)} 0 0 0 0 0 {Compliment} 0 0 0 0 {Language.Instance.GetMessageFromKey("NO_PREZ_MESSAGE")}";
         }
 
         public string GenerateRest()
@@ -512,14 +510,16 @@ namespace OpenNos.GameObject
         public string GenerateSlInfo(InventoryItem inventoryItem, int type)
         {
             Item iteminfo = ServerManager.GetItem(inventoryItem.ItemVNum);
-            int freepoint = ServersData.SpPoint(inventoryItem.SpLevel, inventoryItem.Upgrade) - inventoryItem.SlHit - inventoryItem.SlHP - inventoryItem.SlElement - inventoryItem.SlDefence;
+            int freepoint = ServersData.SpPoint(inventoryItem.SpLevel, inventoryItem.Upgrade) - inventoryItem.SlDamage - inventoryItem.SlHP - inventoryItem.SlElement - inventoryItem.SlDefence;
 
             int slElement = ServersData.SlPoint(inventoryItem.SlElement, 2);
             int slHp = ServersData.SlPoint(inventoryItem.SlHP, 3);
             int slDefence = ServersData.SlPoint(inventoryItem.SlDefence, 1);
-            int slHit = ServersData.SlPoint(inventoryItem.SlHit, 0);
+            int slHit = ServersData.SlPoint(inventoryItem.SlDamage, 0);
+
             string skill = "-1"; //sk.sk.sk.sk.sk...
-            return $"slinfo {type} {inventoryItem.ItemVNum} {iteminfo.Morph} {inventoryItem.SpLevel} {iteminfo.LevelJobMinimum} {iteminfo.ReputationMinimum + 1} 0 0 0 0 0 0 0 0 {iteminfo.FireResistance} {iteminfo.WaterResistance} {iteminfo.LightResistance} {iteminfo.DarkResistance} {inventoryItem.SpXp} {ServersData.SpXPData[inventoryItem.SpLevel - 1]} {skill} {inventoryItem.InventoryItemId} {freepoint} {slHit} {slDefence} {slElement} {slHp} {inventoryItem.Upgrade} - 1 12 0 0 0 0 0 0 0 0 0 0 0 0 0 0";
+
+            return $"slinfo {type} {inventoryItem.ItemVNum} {iteminfo.Morph} {inventoryItem.SpLevel} {iteminfo.LevelJobMinimum} {iteminfo.ReputationMinimum + 1} 0 0 0 0 0 0 0 0 {iteminfo.FireResistance} {iteminfo.WaterResistance} {iteminfo.LightResistance} {iteminfo.DarkResistance} {inventoryItem.SpXp} {ServersData.SpXPData[inventoryItem.SpLevel - 1]} {skill} {inventoryItem.InventoryItemId} {freepoint} {slHit} {slDefence} {slElement} {slHp} {inventoryItem.Upgrade} - 1 12 0 0 0 0 0 {inventoryItem.SpDamage} {inventoryItem.SpDefence} {inventoryItem.SpElement} {inventoryItem.SpHP} {inventoryItem.SpFire} {inventoryItem.SpWater} {inventoryItem.SpLight} {inventoryItem.SpDark} 0";
         }
 
         public string GenerateSpk(object message, int v)
@@ -547,7 +547,7 @@ namespace OpenNos.GameObject
                         break;
 
                     case (byte)InventoryType.Wear:
-                        inv0 += $" {inv.Slot}.{inv.InventoryItem.ItemVNum}.{inv.InventoryItem.Rare}.{(item.IsColored ? inv.InventoryItem.Color : inv.InventoryItem.Upgrade)}";
+                        inv0 += $" {inv.Slot}.{inv.InventoryItem.ItemVNum}.{inv.InventoryItem.Rare}.{(item.IsColored ? inv.InventoryItem.Design : inv.InventoryItem.Upgrade)}";
                         break;
 
                     case (byte)InventoryType.Main:
@@ -648,7 +648,7 @@ namespace OpenNos.GameObject
                 Inventory inventory = EquipmentList.LoadBySlotAndType((byte)EquipmentType.Sp, (byte)InventoryType.Equipment);
                 if (inventory != null)
                 {
-                    int point = ServersData.SlPoint(inventory.InventoryItem.SlHit, 0);
+                    int point = ServersData.SlPoint(inventory.InventoryItem.SlDamage, 0);
                     int p = 0;
                     if (point <= 10)
                         p = point * 5;
@@ -932,7 +932,7 @@ namespace OpenNos.GameObject
                             Amount = inventoryItemDTO.Amount,
                             ElementRate = inventoryItemDTO.ElementRate,
                             HitRate = inventoryItemDTO.HitRate,
-                            Color = inventoryItemDTO.Color,
+                            Design = inventoryItemDTO.Design,
                             Concentrate = inventoryItemDTO.Concentrate,
                             CriticalLuckRate = inventoryItemDTO.CriticalLuckRate,
                             CriticalRate = inventoryItemDTO.CriticalRate,
@@ -953,7 +953,7 @@ namespace OpenNos.GameObject
                             SpLevel = inventoryItemDTO.SpLevel,
                             SlDefence = inventoryItemDTO.SlDefence,
                             SlElement = inventoryItemDTO.SlElement,
-                            SlHit = inventoryItemDTO.SlHit,
+                            SlDamage = inventoryItemDTO.SlDamage,
                             SlHP = inventoryItemDTO.SlHP,
                             Upgrade = inventoryItemDTO.Upgrade,
                             WaterElement = inventoryItemDTO.WaterElement
@@ -972,7 +972,7 @@ namespace OpenNos.GameObject
                             Amount = inventoryItemDTO.Amount,
                             ElementRate = inventoryItemDTO.ElementRate,
                             HitRate = inventoryItemDTO.HitRate,
-                            Color = inventoryItemDTO.Color,
+                            Design = inventoryItemDTO.Design,
                             Concentrate = inventoryItemDTO.Concentrate,
                             CriticalLuckRate = inventoryItemDTO.CriticalLuckRate,
                             CriticalRate = inventoryItemDTO.CriticalRate,
@@ -993,7 +993,7 @@ namespace OpenNos.GameObject
                             SpLevel = inventoryItemDTO.SpLevel,
                             SlDefence = inventoryItemDTO.SlDefence,
                             SlElement = inventoryItemDTO.SlElement,
-                            SlHit = inventoryItemDTO.SlHit,
+                            SlDamage = inventoryItemDTO.SlDamage,
                             SlHP = inventoryItemDTO.SlHP,
                             Upgrade = inventoryItemDTO.Upgrade,
                             WaterElement = inventoryItemDTO.WaterElement
