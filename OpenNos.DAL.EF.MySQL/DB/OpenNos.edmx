@@ -328,6 +328,7 @@
     <Property Name="SpLight" Type="utinyint" Nullable="false" />
     <Property Name="SpFire" Type="utinyint" Nullable="false" />
     <Property Name="SpWater" Type="utinyint" Nullable="false" />
+    <Property Name="SpStoneUpgrade" Type="utinyint" Nullable="false" />
   </EntityType>
   <EntityType Name="inventory">
     <Key>
@@ -1377,6 +1378,7 @@
           <ScalarProperty Name="SpLight" ColumnName="SpLight" />
           <ScalarProperty Name="SpFire" ColumnName="SpFire" />
           <ScalarProperty Name="SpWater" ColumnName="SpWater" />
+          <ScalarProperty Name="SpStoneUpgrade" ColumnName="SpStoneUpgrade" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

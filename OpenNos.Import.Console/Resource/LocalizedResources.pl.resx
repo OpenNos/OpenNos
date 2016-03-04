@@ -139,10 +139,10 @@
     <value>{0} npc wprowadzonych</value>
   </data>
   <data name="PARSE_ALL" xml:space="preserve">
-    <value>Czy chcesz wpropadzic WSZYSTKIE?</value>
+    <value>Czy chcesz wprowadzic WSZYSTKIE?</value>
   </data>
   <data name="PARSE_ITEMS" xml:space="preserve">
-    <value>Czy chcesz wpropadzic Przedmioty?</value>
+    <value>Czy chcesz wprowadzic Przedmioty?</value>
   </data>
   <data name="PARSE_MAPS" xml:space="preserve">
     <value>Czy chcesz wprowadzic Mapy?</value>
