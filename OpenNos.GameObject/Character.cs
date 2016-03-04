@@ -200,13 +200,13 @@ namespace OpenNos.GameObject
                         case (byte)EquipmentType.CostumeSuit:
                             return $"e_info 2 {item.ItemVNum} {item.Rare} {item.Upgrade} {(item.IsFixed ? 1 : 0)} {iteminfo.LevelMinimum} {iteminfo.CloseDefence + item.CloseDefence} {iteminfo.DistanceDefence + item.DistanceDefence} {iteminfo.MagicDefence + item.MagicDefence} {iteminfo.DefenceDodge + item.DefenceDodge} {iteminfo.Price} -1 1 {(iteminfo.ItemValidTime == 0 ? -1 : iteminfo.ItemValidTime / (3600))}"; // 1 = IsCosmetic -1 = no shells
                         default:
-                            return $"e_info 3 {item.ItemVNum} {iteminfo.LevelMinimum} {iteminfo.CloseDefence + item.CloseDefence} {iteminfo.DistanceDefence + item.DistanceDefence} {iteminfo.MagicDefence + item.MagicDefence} {iteminfo.DefenceDodge + item.DefenceDodge} {iteminfo.FireResistance + item.FireResistance} {iteminfo.WaterResistance + item.WaterResistance} {iteminfo.LightResistance + item.LightResistance} {iteminfo.DarkResistance + item.DarkResistance} {iteminfo.Price} 0 0 -1"; // after iteminfo.Price theres TimesConnected {(iteminfo.ItemValidTime == 0 ? -1 : iteminfo.ItemValidTime / (3600))}
+                            return $"e_info 3 {item.ItemVNum} {iteminfo.LevelMinimum} {iteminfo.CloseDefence + item.CloseDefence} {iteminfo.DistanceDefence + item.DistanceDefence} {iteminfo.MagicDefence + item.MagicDefence} {iteminfo.DefenceDodge + item.DefenceDodge} {iteminfo.FireResistance + item.FireResistance} {iteminfo.WaterResistance + item.WaterResistance} {iteminfo.LightResistance + item.LightResistance} {iteminfo.DarkResistance + item.DarkResistance} {iteminfo.Price} 0 0  {(iteminfo.ItemValidTime == 0 ? -1 : iteminfo.ItemValidTime / (3600))}"; // after iteminfo.Price theres TimesConnected {(iteminfo.ItemValidTime == 0 ? -1 : iteminfo.ItemValidTime / (3600))}
                     }
                 case (byte)ItemType.Jewelery:
                     switch (equipmentslot)
                     {
                         case (byte)EquipmentType.Amulet:
-                            return $"e_info 4 {item.ItemVNum} {iteminfo.LevelMinimum} {iteminfo.ItemValidTime} 0 0 {iteminfo.Price}";
+                            return $"e_info 4 {item.ItemVNum} {iteminfo.LevelMinimum}  {(iteminfo.ItemValidTime == 0 ? -1 : iteminfo.ItemValidTime)} 0 0 {iteminfo.Price}";
                         case (byte)EquipmentType.Fairy:
                             return $"e_info 4 {item.ItemVNum} {iteminfo.Element} {item.ElementRate + iteminfo.ElementRate} 0 0 0 0 0"; // last IsNosmall
                         default:
@@ -471,7 +471,7 @@ namespace OpenNos.GameObject
             Inventory armor = EquipmentList.LoadBySlotAndType((byte)EquipmentType.Armor, (byte)InventoryType.Equipment);
             Inventory weapon2 = EquipmentList.LoadBySlotAndType((byte)EquipmentType.SecondaryWeapon, (byte)InventoryType.Equipment);
             Inventory weapon = EquipmentList.LoadBySlotAndType((byte)EquipmentType.MainWeapon, (byte)InventoryType.Equipment);
-            return $"tc_info {Level} {Name} {(fairy != null ? ServerManager.GetItem(fairy.InventoryItem.ItemVNum).Element : 0)} {fairy?.InventoryItem.ElementRate ?? 0} {Class} {Gender} -1 - {GetReputIco()} {GetDigniteIco()} {(weapon != null ? 1 : 0)} {weapon?.InventoryItem.Rare ?? 0} {weapon?.InventoryItem.Upgrade ?? 0} {(weapon2 != null ? 1 : 0)} {weapon2?.InventoryItem.Rare ?? 0} {weapon2?.InventoryItem.Upgrade ?? 0} {(armor != null ? 1 : 0)} {armor?.InventoryItem.Rare ?? 0} {armor?.InventoryItem.Upgrade ?? 0} 0 0 {Reput} 0 0 0 {(UseSp ? Morph : 0)} 0 0 0 0 0 {Compliment} 0 0 0 0 {Language.Instance.GetMessageFromKey("NO_PREZ_MESSAGE")}";
+            return $"tc_info {Level} {Name} {(fairy != null ? ServerManager.GetItem(fairy.InventoryItem.ItemVNum).Element : 0)} {(Element !=0 ? ElementRate: 0)} {Class} {Gender} -1 - {GetReputIco()} {GetDigniteIco()} {(weapon != null ? 1 : 0)} {weapon?.InventoryItem.Rare ?? 0} {weapon?.InventoryItem.Upgrade ?? 0} {(weapon2 != null ? 1 : 0)} {weapon2?.InventoryItem.Rare ?? 0} {weapon2?.InventoryItem.Upgrade ?? 0} {(armor != null ? 1 : 0)} {armor?.InventoryItem.Rare ?? 0} {armor?.InventoryItem.Upgrade ?? 0} 0 0 {Reput} 0 0 0 {(UseSp ? Morph : 0)} 0 0 0 0 0 {Compliment} 0 0 0 0 {Language.Instance.GetMessageFromKey("NO_PREZ_MESSAGE")}";
         }
 
         public string GenerateRest()
