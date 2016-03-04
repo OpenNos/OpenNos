@@ -126,11 +126,11 @@ namespace OpenNos.GameObject
         {
             Random r = new Random();
             bool boolean = true;
-            long inventoryitemId = -1;
+            int inventoryitemId = -1;
             while (boolean)
             {
                 boolean = false;
-                inventoryitemId = (long)((r.NextDouble() * 2.0 - 1.0) * long.MaxValue);
+                inventoryitemId = (int)((r.NextDouble() * 2.0 - 1.0) * int.MaxValue);
                 foreach (Inventory inv in Inventory)
                 {
                     if (inv.InventoryItemId == inventoryitemId)
