@@ -32,10 +32,11 @@ namespace OpenNos.DAL.EF.MySQL
             using (var context = DataAccessHelper.CreateContext())
             {
                 Inventory inv = context.inventory.SingleOrDefault(i => i.Slot.Equals(slot) && i.Type.Equals(type) && i.CharacterId.Equals(characterId));
-
+                InventoryItem invitem = context.inventoryitem.SingleOrDefault(i => i.inventory.InventoryId == inv.InventoryId);
                 if (inv != null)
                 {
                     context.inventory.Remove(inv);
+                    context.inventoryitem.Remove(invitem);
                     context.SaveChanges();
                 }
 
@@ -53,7 +54,6 @@ namespace OpenNos.DAL.EF.MySQL
                     short slot = inventory.Slot;
                     byte type = inventory.Type;
                     Inventory entity = context.inventory.SingleOrDefault(c => c.Type.Equals(type) && c.Slot.Equals(slot) && c.CharacterId.Equals(characterId));
-                   
                     if (entity == null) //new entity
                     {
                         inventory = Insert(inventory, context);
@@ -61,8 +61,8 @@ namespace OpenNos.DAL.EF.MySQL
                     }
                     else //existing entity
                     {
-                        inventory.InventoryId = entity.InventoryId;
-                       inventory = Update(entity, inventory, context);
+                        entity.inventoryitem = context.inventoryitem.SingleOrDefault(c => c.inventory.InventoryId == entity.InventoryId);
+                        inventory = Update(entity, inventory, context);
                         return SaveResult.Updated;
                     }
                 }
