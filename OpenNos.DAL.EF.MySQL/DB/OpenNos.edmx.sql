@@ -44,9 +44,9 @@
 -- -----------------------------------------------------------
 -- Entity Designer DDL Script for MySQL Server 4.1 and higher
 -- -----------------------------------------------------------
--- Date Created: 03/04/2016 19:34:33
+-- Date Created: 03/05/2016 08:35:29
 
--- Generated from EDMX file: C:\Users\ERWAN\Desktop\OpenNos Git\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
+-- Generated from EDMX file: C:\Users\Dominik\Source\Repos\OpenNos\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
 -- Target version: 3.0.0.0
 
 -- --------------------------------------------------
@@ -75,8 +75,6 @@
 
 --    ALTER TABLE `inventory` DROP CONSTRAINT `FK_CharacterInventory`;
 
---    ALTER TABLE `inventory` DROP CONSTRAINT `FK_InventoryItemInventory`;
-
 --    ALTER TABLE `inventoryitem` DROP CONSTRAINT `FK_InventoryItemItem`;
 
 --    ALTER TABLE `shop` DROP CONSTRAINT `FK_ShopNpc`;
@@ -86,6 +84,8 @@
 --    ALTER TABLE `shopitem` DROP CONSTRAINT `FK_ShopShopItem`;
 
 --    ALTER TABLE `respawn` DROP CONSTRAINT `FK_CharacterRespawn`;
+
+--    ALTER TABLE `inventory` DROP CONSTRAINT `FK_InventoryInventoryItem`;
 
 
 -- --------------------------------------------------
@@ -408,7 +408,7 @@ CREATE TABLE `inventory`(
 	`CharacterId` bigint NOT NULL, 
 	`Type` TINYINT UNSIGNED NOT NULL, 
 	`Slot` smallint NOT NULL, 
-	`inventoryItem_InventoryItemId` bigint NOT NULL);
+	`inventoryitem_InventoryItemId` bigint NOT NULL);
 
 ALTER TABLE `inventory` ADD PRIMARY KEY (InventoryId);
 
@@ -701,11 +701,11 @@ CREATE INDEX `IX_FK_CharacterRespawn`
 
 
 
--- Creating foreign key on `inventoryItem_InventoryItemId` in table 'inventory'
+-- Creating foreign key on `inventoryitem_InventoryItemId` in table 'inventory'
 
 ALTER TABLE `inventory`
 ADD CONSTRAINT `FK_InventoryInventoryItem`
-    FOREIGN KEY (`inventoryItem_InventoryItemId`)
+    FOREIGN KEY (`inventoryitem_InventoryItemId`)
     REFERENCES `inventoryitem`
         (`InventoryItemId`)
     ON DELETE NO ACTION ON UPDATE NO ACTION;
@@ -715,7 +715,7 @@ ADD CONSTRAINT `FK_InventoryInventoryItem`
 
 CREATE INDEX `IX_FK_InventoryInventoryItem`
     ON `inventory`
-    (`inventoryItem_InventoryItemId`);
+    (`inventoryitem_InventoryItemId`);
 
 
 

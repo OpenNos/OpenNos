@@ -338,7 +338,7 @@
     <Property Name="CharacterId" Type="bigint" Nullable="false" />
     <Property Name="Type" Type="utinyint" Nullable="false" />
     <Property Name="Slot" Type="smallint" Nullable="false" />
-    <Property Name="inventoryItem_InventoryItemId" Type="bigint" Nullable="false" />
+    <Property Name="inventoryitem_InventoryItemId" Type="bigint" Nullable="false" />
   </EntityType>
   <EntityType Name="shopitem">
     <Key>
@@ -539,7 +539,7 @@
         <PropertyRef Name="InventoryItemId" />
       </Principal>
       <Dependent Role="Inventory">
-        <PropertyRef Name="inventoryItem_InventoryItemId" />
+        <PropertyRef Name="inventoryitem_InventoryItemId" />
       </Dependent>
     </ReferentialConstraint>
   </Association>
@@ -1423,7 +1423,7 @@
     </EntitySetMapping>
     <AssociationSetMapping Name="InventoryInventoryItem" TypeName="opennosModel.InventoryInventoryItem" StoreEntitySet="inventory">
       <EndProperty Name="InventoryItem">
-        <ScalarProperty Name="InventoryItemId" ColumnName="inventoryItem_InventoryItemId" />
+        <ScalarProperty Name="InventoryItemId" ColumnName="inventoryitem_InventoryItemId" />
       </EndProperty>
       <EndProperty Name="Inventory">
         <ScalarProperty Name="InventoryId" ColumnName="InventoryId" />
