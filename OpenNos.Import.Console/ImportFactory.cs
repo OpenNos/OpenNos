@@ -30,7 +30,7 @@ namespace OpenNos.Import.Console
 
         private readonly string _folder;
         private List<string[]> packetList = new List<string[]>();
-
+        private IEnumerable<MapDTO> Maps = null;
         #endregion
 
         #region Instantiation
@@ -43,7 +43,10 @@ namespace OpenNos.Import.Console
         #endregion
 
         #region Methods
-
+        public void loadMaps()
+        {
+            Maps = DAOFactory.MapDAO.LoadAll();
+        }
         public void ImportMaps()
         {
             string fileMapIdDat = $"{_folder}\\MapIDData.dat";
@@ -496,7 +499,7 @@ namespace OpenNos.Import.Console
                             npctest.IsSitting = linesave[13] == "1" ? true : false;
 
                             if (long.Parse(linesave[3]) >= 10000) continue; // Dialog too high. but why? in order to avoid partners
-                            if (DAOFactory.NpcDAO.LoadById(npctest.NpcId) != null) continue; // Npc already existing
+                            if (DAOFactory.NpcDAO.LoadById(npctest.NpcId) != null || Maps.FirstOrDefault(s=>s.MapId == npctest.MapId) == null) continue; // Npc already existing
                             DAOFactory.NpcDAO.Insert(npctest);
                             npcCounter++;
                         }
@@ -611,7 +614,7 @@ namespace OpenNos.Import.Console
                         IsDisabled = false
                     };
 
-                    if (listPacket.FirstOrDefault(s => s.SourceMapId == map && s.SourceX == portal.SourceX && s.SourceY == portal.SourceY && s.DestinationMapId == portal.DestinationMapId) != null)
+                    if (listPacket.FirstOrDefault(s => s.SourceMapId == map && s.SourceX == portal.SourceX && s.SourceY == portal.SourceY && s.DestinationMapId == portal.DestinationMapId) != null || Maps.FirstOrDefault(s => s.MapId == portal.SourceMapId) == null || Maps.FirstOrDefault(s => s.MapId == portal.DestinationMapId) == null)
                         continue; // Portal already in list
 
                     listPacket.Add(portal);

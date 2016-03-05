@@ -821,6 +821,8 @@
           <Property Name="IsSoldable" Type="Boolean" Nullable="false" />
           <Property Name="IsMinilandObject" Type="Boolean" Nullable="false" />
           <Property Name="IsWarehouse" Type="Boolean" Nullable="false" />
+          <Property Name="IsColored" Type="Boolean" Nullable="false" />
+          <Property Name="IsConsumable" Type="Boolean" Nullable="false" />
           <Property Name="LevelMinimum" Type="Byte" Nullable="false" />
           <Property Name="DamageMinimum" Type="Int16" Nullable="false" />
           <Property Name="DamageMaximum" Type="Int16" Nullable="false" />
@@ -856,8 +858,6 @@
           <Property Name="MpRegeneration" Type="Int16" Nullable="false" />
           <Property Name="MoreHp" Type="Int16" Nullable="false" />
           <Property Name="MoreMp" Type="Int16" Nullable="false" />
-          <Property Name="IsColored" Type="Boolean" Nullable="false" />
-          <Property Name="IsConsumable" Type="Boolean" Nullable="false" />
           <NavigationProperty Name="inventoryitem" Relationship="opennosModel.InventoryItemItem" FromRole="Item" ToRole="InventoryItem" />
           <NavigationProperty Name="shopitem" Relationship="opennosModel.ShopItemItem" FromRole="Item" ToRole="ShopItem" />
           <Property Name="ReputationMinimum" Type="Byte" Nullable="false" />
@@ -926,6 +926,11 @@
             <PropertyRef Name="InventoryItemId" />
           </Key>
           <Property Name="InventoryItemId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ItemVNum" Type="Int16" Nullable="false" />
+          <Property Name="Amount" Type="Byte" Nullable="false" />
+          <Property Name="Rare" Type="Byte" Nullable="false" />
+          <Property Name="Upgrade" Type="Byte" Nullable="false" />
+          <Property Name="Design" Type="Int16" Nullable="false" />
           <Property Name="DamageMinimum" Type="Int16" Nullable="false" />
           <Property Name="DamageMaximum" Type="Int16" Nullable="false" />
           <Property Name="Concentrate" Type="Int16" Nullable="false" />
@@ -938,10 +943,6 @@
           <Property Name="DistanceDefenceDodge" Type="Int16" Nullable="false" />
           <Property Name="DefenceDodge" Type="Int16" Nullable="false" />
           <Property Name="ElementRate" Type="Int16" Nullable="false" />
-          <Property Name="Upgrade" Type="Byte" Nullable="false" />
-          <Property Name="Rare" Type="Byte" Nullable="false" />
-          <Property Name="Design" Type="Int16" Nullable="false" />
-          <Property Name="Amount" Type="Byte" Nullable="false" />
           <Property Name="HP" Type="Int16" Nullable="false" />
           <Property Name="MP" Type="Int16" Nullable="false" />
           <Property Name="DarkElement" Type="Byte" Nullable="false" />
@@ -949,7 +950,6 @@
           <Property Name="WaterElement" Type="Byte" Nullable="false" />
           <Property Name="FireElement" Type="Byte" Nullable="false" />
           <NavigationProperty Name="item" Relationship="opennosModel.InventoryItemItem" FromRole="InventoryItem" ToRole="Item" />
-          <Property Name="ItemVNum" Type="Int16" Nullable="false" />
           <Property Name="Ammo" Type="Byte" Nullable="false" />
           <Property Name="IsFixed" Type="Boolean" Nullable="false" />
           <Property Name="ItemValidTime" Type="Int64" Nullable="false" />

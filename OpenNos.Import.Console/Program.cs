@@ -67,6 +67,7 @@ namespace OpenNos.Import.Console
             if (key.KeyChar != 'n')
             {
                 factory.ImportMaps();
+                factory.loadMaps();
                 factory.ImportPortals();
                 factory.ImportNpcs();
                 factory.ImportShops();
@@ -81,6 +82,7 @@ namespace OpenNos.Import.Console
                 {
                     factory.ImportMaps();
                 }
+                factory.loadMaps();
                 System.Console.WriteLine($"{Language.Instance.GetMessageFromKey("PARSE_PORTALS")} [Y/n]");
                 System.ConsoleKeyInfo key2 = System.Console.ReadKey(true);
                 if (key2.KeyChar != 'n')
