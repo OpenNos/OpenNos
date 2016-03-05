@@ -36,6 +36,8 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public bool IsSoldable { get; set; }
         public bool IsMinilandObject { get; set; }
         public bool IsWarehouse { get; set; }
+        public bool IsColored { get; set; }
+        public bool IsConsumable { get; set; }
         public byte LevelMinimum { get; set; }
         public short DamageMinimum { get; set; }
         public short DamageMaximum { get; set; }
@@ -71,8 +73,6 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public short MpRegeneration { get; set; }
         public short MoreHp { get; set; }
         public short MoreMp { get; set; }
-        public bool IsColored { get; set; }
-        public bool IsConsumable { get; set; }
         public byte ReputationMinimum { get; set; }
         public byte FairyMaximumLevel { get; set; }
         public byte MaximumAmmo { get; set; }

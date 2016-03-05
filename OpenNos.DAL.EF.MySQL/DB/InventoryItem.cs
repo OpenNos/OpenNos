@@ -15,6 +15,11 @@ namespace OpenNos.DAL.EF.MySQL.DB
     public partial class InventoryItem
     {
         public long InventoryItemId { get; set; }
+        public short ItemVNum { get; set; }
+        public byte Amount { get; set; }
+        public byte Rare { get; set; }
+        public byte Upgrade { get; set; }
+        public short Design { get; set; }
         public short DamageMinimum { get; set; }
         public short DamageMaximum { get; set; }
         public short Concentrate { get; set; }
@@ -27,17 +32,12 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public short DistanceDefenceDodge { get; set; }
         public short DefenceDodge { get; set; }
         public short ElementRate { get; set; }
-        public byte Upgrade { get; set; }
-        public byte Rare { get; set; }
-        public short Design { get; set; }
-        public byte Amount { get; set; }
         public short HP { get; set; }
         public short MP { get; set; }
         public byte DarkElement { get; set; }
         public byte LightElement { get; set; }
         public byte WaterElement { get; set; }
         public byte FireElement { get; set; }
-        public short ItemVNum { get; set; }
         public byte Ammo { get; set; }
         public bool IsFixed { get; set; }
         public long ItemValidTime { get; set; }
