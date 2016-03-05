@@ -165,7 +165,7 @@
   <data name="COMPLIMENT_RECEIVED" xml:space="preserve">
     <value>Du wurdest von {0} angehimmelt.</value>
   </data>
-  <data name="CORRUPT_KEEPALIVE" xml:space="preserve">
+  <data name="CORRUPTED_KEEPALIVE" xml:space="preserve">
     <value>Fehlerhaftes KeepAlive von Client {0}.</value>
   </data>
   <data name="DATABASE_INITIALIZED" xml:space="preserve">

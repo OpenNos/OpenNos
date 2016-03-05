@@ -118,45 +118,54 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ALREADY_CONNECTED" xml:space="preserve">
-    <value>Konto jest aktualnie zajete</value>
+    <value>Konto jest aktualnie zajete.</value>
+  </data>
+  <data name="BANNED" xml:space="preserve">
+    <value>Konto zablokowane!</value>
   </data>
   <data name="CLIENT_CLOSE" xml:space="preserve">
-    <value>Polaczenie zakonczone przez uzytkownika</value>
+    <value>Połaczenie zakończone przez użytkownika</value>
   </data>
   <data name="CLIENT_CLOSED" xml:space="preserve">
-    <value>Użytkownik rozlaczony</value>
+    <value>Użytkownik rozłaczony</value>
   </data>
   <data name="CONFIG_LOADED" xml:space="preserve">
-    <value>Konfiguracja zaladowana!</value>
+    <value>Konfiguracja załadowana!</value>
   </data>
   <data name="CONNECTION" xml:space="preserve">
     <value>CONNECT {0} Connected -- session: {1}</value>
   </data>
   <data name="DATABASE_INITIALIZED" xml:space="preserve">
-    <value>Baza danych zostala zaladowana!</value>
+    <value>Baza danych zostala załadowana!</value>
   </data>
   <data name="DISCONNECT" xml:space="preserve">
-    <value>Rozlaczono użytkownika! ClientId = </value>
+    <value>Rozłaczono użytkownika! ClientId = </value>
   </data>
   <data name="FORCED_DISCONNECT" xml:space="preserve">
-    <value>Rozlaczanie użytkownika {0}, zbyt duzo polaczen.</value>
+    <value>Rozłaczanie użytkownika {0}, zbyt dużo połączeń.</value>
   </data>
   <data name="IDERROR" xml:space="preserve">
-    <value>Zla nazwa uzytkownika badz haslo</value>
+    <value>Zla nazwa uzytkownika, badz haslo.</value>
   </data>
   <data name="MESSAGE_RECEIVED" xml:space="preserve">
-    <value>Uzytkownik {1} otrzymal wiadomosc {0}</value>
+    <value>Użytkownik {1} otrzymał Packet {0}</value>
   </data>
   <data name="MSG_SENT" xml:space="preserve">
-    <value>Wiadomosc wyslana.</value>
+    <value>Packet wysłany.</value>
   </data>
   <data name="NEW_CONNECT" xml:space="preserve">
-    <value>Polaczono nowego użytkownika. ClientId = </value>
+    <value>Połaczono nowego użytkownika. ClientId = </value>
+  </data>
+  <data name="NOTVALIDATE" xml:space="preserve">
+    <value>Konto nie zostalo zweryfikowane</value>
+  </data>
+  <data name="PACKET_FAILURE" xml:space="preserve">
+    <value>Nie udalo sie wysłac packet {0} do użytkownika {1}, {2}.</value>
   </data>
   <data name="STARTED" xml:space="preserve">
-    <value>Server zostal uruchomiony!</value>
+    <value>Server został uruchomiony!</value>
   </data>
   <data name="TOO_BIG" xml:space="preserve">
-    <value>Wiadomosc jest za duza ({0} bytes). maksymalna dlugosc {1} bytes.</value>
+    <value>Wiadomość jest za duża ({0} bytes). maksymalna dlugość {1} bytes.</value>
   </data>
 </root>

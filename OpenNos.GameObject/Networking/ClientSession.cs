@@ -234,7 +234,7 @@ namespace OpenNos.GameObject
                     Int32 nextKeepaliveIdentity;
                     if (!Int32.TryParse(nextKeepAliveRaw, out nextKeepaliveIdentity) && nextKeepaliveIdentity != (this.LastKeepAliveIdentity + 1))
                     {
-                        Logger.Log.ErrorFormat(Language.Instance.GetMessageFromKey("CORRUPT_KEEPALIVE"), _client.ClientId);
+                        Logger.Log.ErrorFormat(Language.Instance.GetMessageFromKey("CORRUPTED_KEEPALIVE"), _client.ClientId);
                         _client.Disconnect();
                         return;
                     }

@@ -187,6 +187,15 @@ namespace OpenNos.Login.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Failed to send packet {0} to client {1}, {2}..
+        /// </summary>
+        internal static string PACKET_FAILURE {
+            get {
+                return ResourceManager.GetString("PACKET_FAILURE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Server is started successfully..
         /// </summary>
         internal static string STARTED {
