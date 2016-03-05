@@ -744,8 +744,7 @@ namespace OpenNos.Handler
                     {
                         for (int i = 83; i < packetsplit.Length; i++)
                             shopname += $"{packetsplit[i]} ";
-
-                        Session.Client.SendPacket(Session.Character.GenerateInfo(shopname));
+                        
                         shopname.TrimEnd(' ');
 
                         myShop.OwnerId = Session.Character.CharacterId;
