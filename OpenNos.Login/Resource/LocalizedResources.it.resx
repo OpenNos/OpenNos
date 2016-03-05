@@ -135,7 +135,7 @@
   <data name="CONNECTION" xml:space="preserve">
     <value>CONNESSIONE {0} Connesso -- sessione:{1}</value>
   </data>
-  <data name="DATABASE_HAS_BEEN_INITIALISE" xml:space="preserve">
+  <data name="DATABASE_INITIALIZED" xml:space="preserve">
     <value>Il database è stato avviato.</value>
   </data>
   <data name="DISCONNECT" xml:space="preserve">
@@ -158,6 +158,9 @@
   </data>
   <data name="NOTVALIDATE" xml:space="preserve">
     <value>L'account non è attivo!</value>
+  </data>
+  <data name="PACKET_FAILURE" xml:space="preserve">
+    <value>Failed to send packet {0} to client {1}, {2}.</value>
   </data>
   <data name="STARTED" xml:space="preserve">
     <value>Server avviato con successo.</value>

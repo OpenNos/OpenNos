@@ -189,7 +189,7 @@
   <data name="COMPLIMENT_RECEIVED" xml:space="preserve">
     <value>Vous avez été admiré {0}.</value>
   </data>
-  <data name="CORRUPT_KEEPALIVE" xml:space="preserve">
+  <data name="CORRUPTED_KEEPALIVE" xml:space="preserve">
     <value>Corrupted Keepalive on client {0}.</value>
   </data>
   <data name="DATABASE_INITIALIZED" xml:space="preserve">

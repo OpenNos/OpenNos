@@ -159,6 +159,9 @@
   <data name="NOTVALIDATE" xml:space="preserve">
     <value>Votre compte n'est pas validé.</value>
   </data>
+  <data name="PACKET_FAILURE" xml:space="preserve">
+    <value>Failed to send packet {0} to client {1}, {2}.</value>
+  </data>
   <data name="STARTED" xml:space="preserve">
     <value>Le serveur à démarrer sans problèmes.</value>
   </data>

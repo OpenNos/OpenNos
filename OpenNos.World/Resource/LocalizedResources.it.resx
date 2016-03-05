@@ -210,8 +210,8 @@
   <data name="COMPLIMENT_RECEIVED" xml:space="preserve">
     <value>Sei stato lodato da {0}.</value>
   </data>
-  <data name="CORRUPT_KEEPALIVE" xml:space="preserve">
-    <value>Corrupted Keepalive on client {0} - dunno.</value>
+  <data name="CORRUPTED_KEEPALIVE" xml:space="preserve">
+    <value>Corrupted Keepalive on client {0}</value>
   </data>
   <data name="DATABASE_HAS_BEEN_INITIALISE" xml:space="preserve">
     <value>Il database è stato avviato.</value>
