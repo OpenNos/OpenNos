@@ -590,8 +590,8 @@ namespace OpenNos.Handler
                 {
                     if (iteminfo.IsColored)
                     {
-                        if(packetsplit.Count()>3)
-                        Int16.TryParse(packetsplit[3], out design);
+                        if (packetsplit.Count() > 3)
+                            Int16.TryParse(packetsplit[3], out design);
                     }
                     else if (iteminfo.Type == 0)
                     {
@@ -1333,6 +1333,7 @@ namespace OpenNos.Handler
                     InventoryDTO inv = DAOFactory.InventoryDAO.LoadBySlotAndType(character.CharacterId, i, (byte)InventoryType.Equipment);
                     if (inv != null)
                     {
+                        inv.InventoryItem = DAOFactory.InventoryItemDAO.LoadByInventoryId(inv.InventoryId);
                         item[i] = inv.InventoryItem;
                     }
                 }
@@ -2443,8 +2444,8 @@ namespace OpenNos.Handler
                 }
                 if (slHit >= 50)
                 {
-                      spInventory.InventoryItem.HP += 200;
-                     spInventory.InventoryItem.MP += 200;
+                    spInventory.InventoryItem.HP += 200;
+                    spInventory.InventoryItem.MP += 200;
                 }
                 if (slHit >= 60)
                 {
@@ -2482,7 +2483,7 @@ namespace OpenNos.Handler
                 }
                 if (slDefence >= 60)
                 {
-                     spInventory.InventoryItem.HP += 200;
+                    spInventory.InventoryItem.HP += 200;
                 }
                 if (slDefence >= 70)
                 {
@@ -2511,7 +2512,7 @@ namespace OpenNos.Handler
                 }
                 if (slDefence >= 95)
                 {
-                      spInventory.InventoryItem.HP += 300;
+                    spInventory.InventoryItem.HP += 300;
                 }
                 //slele
                 if (slElement >= 1)
@@ -2520,7 +2521,7 @@ namespace OpenNos.Handler
                 }
                 if (slElement >= 10)
                 {
-                      spInventory.InventoryItem.MP += 100;
+                    spInventory.InventoryItem.MP += 100;
                 }
                 if (slElement >= 20)
                 {
@@ -2536,7 +2537,7 @@ namespace OpenNos.Handler
                 }
                 if (slElement >= 40)
                 {
-                     spInventory.InventoryItem.MP += 100;
+                    spInventory.InventoryItem.MP += 100;
                 }
                 if (slElement >= 50)
                 {
@@ -2552,7 +2553,7 @@ namespace OpenNos.Handler
                 }
                 if (slElement >= 70)
                 {
-                     spInventory.InventoryItem.MP += 100;
+                    spInventory.InventoryItem.MP += 100;
                 }
                 if (slElement >= 80)
                 {
@@ -2710,7 +2711,7 @@ namespace OpenNos.Handler
                 Session.Client.SendPacket(Session.Character.GenerateSlInfo(new InventoryItem(spInventory.InventoryItem), 2));
                 Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("CHANGE_DONE"), 0));
             }
-            else if(!Session.Character.IsSitting)
+            else if (!Session.Character.IsSitting)
             {
                 // Character wants to change Sp...
 
@@ -3036,7 +3037,7 @@ namespace OpenNos.Handler
                      && iteminfo.ItemType != (byte)ItemType.Jewelery
                      && iteminfo.ItemType != (byte)ItemType.Specialist)
                     || iteminfo.LevelMinimum > Session.Character.Level || (iteminfo.Sex != 0 && iteminfo.Sex != Session.Character.Gender + 1)
-                    || (iteminfo.ItemType != (byte)ItemType.Jewelery && ((iteminfo.Class >> Session.Character.Class) & 1) != 1))
+                    || ((iteminfo.ItemType != (byte)ItemType.Jewelery && iteminfo.EquipmentSlot != (byte)EquipmentType.Boots && iteminfo.EquipmentSlot != (byte)EquipmentType.Gloves) && ((iteminfo.Class >> Session.Character.Class) & 1) != 1))
                 {
                     Session.Client.SendPacket(
                         Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("BAD_EQUIPMENT"), 10));
