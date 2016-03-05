@@ -50,10 +50,8 @@ namespace OpenNos.DAL.EF.MySQL
             {
                 using (var context = DataAccessHelper.CreateContext())
                 {
-                    long characterId = inventory.CharacterId;
-                    short slot = inventory.Slot;
-                    byte type = inventory.Type;
-                    Inventory entity = context.inventory.SingleOrDefault(c => c.Type.Equals(type) && c.Slot.Equals(slot) && c.CharacterId.Equals(characterId));
+                    long InventoryId = inventory.InventoryId;
+                    Inventory entity = context.inventory.SingleOrDefault(c => c.InventoryId == InventoryId);
                     if (entity == null) //new entity
                     {
                         inventory = Insert(inventory, context);
