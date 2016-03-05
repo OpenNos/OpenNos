@@ -1240,7 +1240,7 @@ namespace OpenNos.Handler
                 }
             }
             else
-                Session.Client.SendPacket(Session.Character.GenerateSay("$JLvl JLVL", 10));
+                Session.Client.SendPacket(Session.Character.GenerateSay("$JLvl JOBLEVEL", 10));
         }
 
         [Packet("$Kick")]
@@ -2362,7 +2362,7 @@ namespace OpenNos.Handler
             }
             else
 
-                Session.Client.SendPacket(Session.Character.GenerateSay("$SPLvl SPLVL", 10));
+                Session.Client.SendPacket(Session.Character.GenerateSay("$SPLvl SPLEVEL", 10));
         }
 
         [Packet("sl")]
