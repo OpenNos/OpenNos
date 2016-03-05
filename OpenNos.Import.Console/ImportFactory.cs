@@ -646,32 +646,14 @@ namespace OpenNos.Import.Console
 
         public void ImportShops()
         {
-            Dictionary<int, int> dictionaryId = new Dictionary<int, int>();
+           int shopCounter = 0;
 
-            short lastMap = 0; // unused variable
-            short currentMap = 0;
-            int shopCounter = 0;
-
-            foreach (string[] linesave in packetList.Where(o => o[0].Equals("at") || o[0].Equals("in") || o[0].Equals("shop")))
+            foreach (string[] linesave in packetList.Where(o => o[0].Equals("shop")))
             {
-                if (linesave.Length > 5 && linesave[0] == "at")
+                if (linesave.Length > 6 && linesave[0] == "shop" && linesave[1] == "2")
                 {
-                    lastMap = currentMap;
-                    currentMap = short.Parse(linesave[2]);
-                }
-                else if (linesave.Length > 7 && linesave[0] == "in" && linesave[1] == "2")
-                {
-                    if (long.Parse(linesave[3]) >= 10000) continue;
-
-                    NpcDTO npc = DAOFactory.NpcDAO.LoadFromMap(currentMap).FirstOrDefault(s => s.MapId.Equals(currentMap) && s.Vnum.Equals(short.Parse(linesave[2])));
-                    if (npc == null) continue;
-
-                    if (!dictionaryId.ContainsKey(short.Parse(linesave[3])))
-                        dictionaryId.Add(short.Parse(linesave[3]), npc.NpcId);
-                }
-                else if (linesave.Length > 6 && linesave[0] == "shop" && linesave[1] == "2")
-                {
-                    if (!dictionaryId.ContainsKey(short.Parse(linesave[2]))) continue;
+                    NpcDTO npc = DAOFactory.NpcDAO.LoadById(short.Parse(linesave[2])) ;
+                    if (npc ==null) continue;
 
                     string named = "";
                     for (int j = 6; j < linesave.Length; j++)
@@ -683,7 +665,7 @@ namespace OpenNos.Import.Console
                     ShopDTO shop = new ShopDTO
                     {
                         Name = named,
-                        NpcId = (short)dictionaryId[short.Parse(linesave[2])],
+                        NpcId = npc.NpcId,
                         MenuType = short.Parse(linesave[4]),
                         ShopType = short.Parse(linesave[5])
                     };
