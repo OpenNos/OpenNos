@@ -135,7 +135,7 @@ namespace OpenNos.Import.Console
                 while ((line = mapIdLangStream.ReadLine()) != null)
                 {
                     string[] linesave = line.Split('\t');
-                    if (linesave.Length > 1)
+                    if (linesave.Length > 1 && !dictionaryName.ContainsKey(linesave[0]))
                     {
                         dictionaryName.Add(linesave[0], linesave[1]);
                     }
