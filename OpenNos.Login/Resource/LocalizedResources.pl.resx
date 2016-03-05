@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ALREADY_CONNECTED" xml:space="preserve">
-    <value>Konto jest aktualnie zajęte.</value>
+    <value>Konto jest aktualnie zajete.</value>
   </data>
   <data name="BANNED" xml:space="preserve">
     <value>Konto zablokowane!</value>
