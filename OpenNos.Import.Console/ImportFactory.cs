@@ -357,17 +357,14 @@ namespace OpenNos.Import.Console
                                 //item.PetLoyality = Convert.ToInt16(linesave[4]);
                                 //item.PetFood = Convert.ToInt16(linesave[7]);
                                 break;
-                            case (byte)ItemType.Quest2:
-                                //item.NpcInteraction = Convert.ToInt16(linesave[5]);
-                                //item.QuestItem = linesave[7] == "1" ? true : false;
-                                break;
+                        
                             case (byte)ItemType.Part:
                                 //nothing to parse
                                 break;
                             case (byte)ItemType.Sell:
                                 //nothing to parse
                                 break;
-                            case (byte)ItemType.Quest1:
+                            case (byte)ItemType.Quest:
                                 //nothing to parse
                                 break;
                             case (byte)ItemType.Ammo:

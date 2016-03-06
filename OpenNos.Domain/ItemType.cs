@@ -32,7 +32,6 @@ namespace OpenNos.Domain
         Special = 14,
         Potion = 15,
         Event = 16,
-        Quest1 = 17,
         //sth = 18,19,
         Sell = 20,
         Food = 21,
@@ -42,6 +41,6 @@ namespace OpenNos.Domain
         Part = 25,
         Teacher = 26,
         Ammo = 27,
-        Quest2 = 28
+        Quest = 28
     }
 }
