@@ -18,15 +18,11 @@ namespace OpenNos.Data
     {
         #region Properties
 
-        public long CharacterId { get; set; }
-
         public long InventoryId { get; set; }
-
-        public short Slot { get; set; }
-
-        public InventoryItemDTO InventoryItem { get; set; }
-
+        public long CharacterId { get; set; }
         public byte Type { get; set; }
+        public short Slot { get; set; }
+        public InventoryItemDTO InventoryItem { get; set; }
 
         #endregion
     }

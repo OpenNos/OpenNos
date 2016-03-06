@@ -16,7 +16,6 @@ namespace OpenNos.Domain
 {
     public enum ItemType : byte
     {
-        // wear
         Weapon = 0,
         Armor = 1,
         Fashion = 2,
@@ -24,7 +23,7 @@ namespace OpenNos.Domain
         Specialist = 4,
         Box = 5,
         Shell = 6,
-        //sth = 7,8,9,
+        // 7, 8, 9,
         Main = 10,
         Upgrade = 11,
         Production = 12,
@@ -33,11 +32,11 @@ namespace OpenNos.Domain
         Potion = 15,
         Event = 16,
         Quest = 17,
-        //sth = 18,19,
+        // 18, 19,
         Sell = 20,
         Food = 21,
         Snack = 22,
-        //sth = 23,
+        // 23,
         Magical2 = 24,
         Part = 25,
         Teacher = 26,
