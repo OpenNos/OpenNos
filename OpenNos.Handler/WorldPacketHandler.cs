@@ -2187,6 +2187,12 @@ namespace OpenNos.Handler
                 }
 
                 Item item = ServerManager.GetItem(inv.InventoryItem.ItemVNum);
+                if (Session.Character.Gold + item.Price * amount > 1000000)
+                {
+                    string message = Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("MAX_GOLD"), 0);
+                    Session.Client.SendPacket(message);
+                    return;
+                }
                 Session.Character.Gold += item.Price * amount;
                 DeleteItem(type, slot);
                 Session.Client.SendPacket(Session.Character.GenerateGold());
