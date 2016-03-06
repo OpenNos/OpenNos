@@ -903,6 +903,7 @@ namespace OpenNos.Handler
             else if (mode == 3)
             {
                 ExchangeInfo exchange = ClientLinkManager.Instance.GetProperty<ExchangeInfo>(Session.Character.ExchangeInfo.CharId, "ExchangeInfo");
+                long gold = ClientLinkManager.Instance.GetProperty<long>(Session.Character.ExchangeInfo.CharId, "Gold");
                 int backpack = ClientLinkManager.Instance.GetProperty<int>(Session.Character.ExchangeInfo.CharId, "BackPack");
                 InventoryList inventory = ClientLinkManager.Instance.GetProperty<InventoryList>(Session.Character.ExchangeInfo.CharId, "InventoryList");
                 if (Session.Character.ExchangeInfo.Validate && exchange.Validate)
@@ -913,6 +914,7 @@ namespace OpenNos.Handler
                         Session.Client.SendPacket("exc_close 1");
                         ClientLinkManager.Instance.Broadcast(Session, "exc_close 1", ReceiverType.OnlySomeone, "", Session.Character.ExchangeInfo.CharId);
                         bool continu = true;
+                        bool goldmax = false;
                         bool notsold = false;
                         if (!Session.Character.InventoryList.getFreePlaceAmount(Session.Character.ExchangeInfo.ExchangeList, Session.Character.BackPack))
                             continu = false;
@@ -920,14 +922,29 @@ namespace OpenNos.Handler
                         if (!inventory.getFreePlaceAmount(exchange.ExchangeList, backpack))
                             continu = false;
 
+                        if (exchange.Gold + gold > 1000000)
+                            goldmax = true;
+
+
+                        if (Session.Character.ExchangeInfo.Gold + Session.Character.Gold > 1000000)
+                            goldmax = true;
+
                         if (continu == false)
                         {
-                            if (!notsold)
-                            {
-                                string message = Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_PLACE"), 0);
-                                Session.Client.SendPacket(message);
-                                ClientLinkManager.Instance.Broadcast(Session, message, ReceiverType.OnlySomeone, "", Session.Character.ExchangeInfo.CharId);
-                            }
+                            string message = Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_PLACE"), 0);
+                            Session.Client.SendPacket(message);
+                            ClientLinkManager.Instance.Broadcast(Session, message, ReceiverType.OnlySomeone, "", Session.Character.ExchangeInfo.CharId);
+
+
+                            Session.Client.SendPacket("exc_close 0");
+                            ClientLinkManager.Instance.Broadcast(Session, "exc_close 0", ReceiverType.OnlySomeone, "", Session.Character.ExchangeInfo.CharId);
+                        }
+                        else if (goldmax == true)
+                        {
+                            string message = Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("MAX_GOLD"), 0);
+                            Session.Client.SendPacket(message);
+                            ClientLinkManager.Instance.Broadcast(Session, message, ReceiverType.OnlySomeone, "", Session.Character.ExchangeInfo.CharId);
+
 
                             Session.Client.SendPacket("exc_close 0");
                             ClientLinkManager.Instance.Broadcast(Session, "exc_close 0", ReceiverType.OnlySomeone, "", Session.Character.ExchangeInfo.CharId);
