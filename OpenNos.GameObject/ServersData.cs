@@ -302,7 +302,7 @@ namespace OpenNos.GameObject
                     point += 173;
                     break;
             }
-          
+
             return point;
         }
 
@@ -604,10 +604,10 @@ namespace OpenNos.GameObject
             for (int i = 1; i < MP.GetLength(1); i += 4)
             {
                 MP[(int)ClassType.Adventurer, i] = MP[(int)ClassType.Adventurer, i - 1] + baseAdventurer;
-                MP[(int)ClassType.Adventurer, i+1] = MP[(int)ClassType.Adventurer, i ] + baseAdventurer;
-                MP[(int)ClassType.Adventurer, i+2] = MP[(int)ClassType.Adventurer, i +1] + baseAdventurer;
+                MP[(int)ClassType.Adventurer, i + 1] = MP[(int)ClassType.Adventurer, i] + baseAdventurer;
+                MP[(int)ClassType.Adventurer, i + 2] = MP[(int)ClassType.Adventurer, i + 1] + baseAdventurer;
                 baseAdventurer++;
-                MP[(int)ClassType.Adventurer, i+3] = MP[(int)ClassType.Adventurer, i +2] + baseAdventurer;
+                MP[(int)ClassType.Adventurer, i + 3] = MP[(int)ClassType.Adventurer, i + 2] + baseAdventurer;
                 baseAdventurer++;
             }
 
@@ -620,7 +620,7 @@ namespace OpenNos.GameObject
             //ARCHER MP
             for (int i = 0; i < MP.GetLength(1) - 1; i++)
             {
-                MP[(int)ClassType.Archer, i] = MP[(int)ClassType.Adventurer, i+1];
+                MP[(int)ClassType.Archer, i] = MP[(int)ClassType.Adventurer, i + 1];
 
             }
 

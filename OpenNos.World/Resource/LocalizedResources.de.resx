@@ -294,6 +294,9 @@
   <data name="UPDATE_ACCOUNT_ERROR" xml:space="preserve">
     <value>Fehler beim Einfügen/Aktualisieren des Accounts {0} , {1}</value>
   </data>
+  <data name="UPDATE_ERROR" xml:space="preserve">
+    <value>{0}</value>
+  </data>
   <data name="UPGRADE_FAILED" xml:space="preserve">
     <value>Die Verbesserung ist fehlgeschlagen. Das Item ist verschwunden.</value>
   </data>

@@ -35,6 +35,8 @@ namespace OpenNos.Data
         public bool IsSoldable { get; set; }
         public bool IsMinilandObject { get; set; }
         public bool IsWarehouse { get; set; }
+        public bool IsColored { get; set; }
+        public bool IsConsumable { get; set; }
         public byte LevelMinimum { get; set; }
         public short DamageMinimum { get; set; }
         public short DamageMaximum { get; set; }
@@ -70,15 +72,12 @@ namespace OpenNos.Data
         public short MpRegeneration { get; set; }
         public short MoreHp { get; set; }
         public short MoreMp { get; set; }
-        public bool IsColored { get; set; }
-        public bool IsConsumable { get; set; }
         public byte ReputationMinimum { get; set; }
         public byte FairyMaximumLevel { get; set; }
         public byte MaximumAmmo { get; set; }
         public byte BasicUpgrade { get; set; }
         public short Color { get; set; }
         public long ItemValidTime { get; set; }
-        public bool IsPearl { get; set; }
         public short Effect { get; set; }
         public int EffectValue { get; set; }
         public byte CellonLvl { get; set; }

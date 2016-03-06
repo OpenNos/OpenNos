@@ -298,7 +298,7 @@ namespace OpenNos.Handler
             this.GetStats(String.Empty);
             Session.Client.SendPacket(Session.Character.GenerateCond());
             ClientLinkManager.Instance.Broadcast(Session, Session.Character.GeneratePairy(), ReceiverType.AllOnMap);
-            Session.Client.SendPacket($"rsfi 1 1 0 9 0 9"); //stone act
+            Session.Client.SendPacket($"rsfi 1 1 0 9 0 9"); // Act completion
             ClientLinkManager.Instance.RequiereBroadcastFromAllMapUsers(Session, "GenerateIn");
             ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllOnMapExceptMe);
             if (Session.CurrentMap.IsDancing == 2 && Session.Character.IsDancing == 0)
@@ -330,19 +330,15 @@ namespace OpenNos.Handler
 
             if (Session.Character.GetReputIco() < ServerManager.GetItem(sp.InventoryItem.ItemVNum).ReputationMinimum)
             {
-                // Reputation too low for this SP
                 Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("LOW_REP"), 0));
                 return;
             }
 
             if (fairy != null && ServerManager.GetItem(fairy.InventoryItem.ItemVNum).Element != ServerManager.GetItem(sp.InventoryItem.ItemVNum).Element && ServerManager.GetItem(fairy.InventoryItem.ItemVNum).Element != ServerManager.GetItem(sp.InventoryItem.ItemVNum).SecondaryElement)
             {
-                // No or invalid fairy equipped
                 Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("BAD_FAIRY"), 0));
                 return;
             }
-
-            // There you go, SP!
 
             Session.Character.UseSp = true;
             Session.Character.Morph = ServerManager.GetItem(sp.InventoryItem.ItemVNum).Morph;
@@ -434,7 +430,7 @@ namespace OpenNos.Handler
             Session.Client.SendPacket(Session.Character.GenerateSay("-----------Commands Info--------------", 10));
             Session.Client.SendPacket(Session.Character.GenerateSay("$Shout MESSAGE", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$Teleport Map X Y", 6));
-            Session.Client.SendPacket(Session.Character.GenerateSay("$Teleport CharacterName", 6));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$Teleport CHARACTERNAME", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$Speed SPEED", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$Rarify SLOT MODE PROTECTION", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$Upgrade SLOT MODE PROTECTION", 6));
@@ -446,7 +442,7 @@ namespace OpenNos.Handler
             Session.Client.SendPacket(Session.Character.GenerateSay("$ChangeSex", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$ChangeClass CLASS", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$ChangeRep REPUTATION", 6));
-            Session.Client.SendPacket(Session.Character.GenerateSay("$Kick USERNAME", 6));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$Kick CHARACTERNAME", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$MapDance", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$Effect EFFECTID", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$Resize SIZE", 6));
@@ -1147,7 +1143,6 @@ namespace OpenNos.Handler
                         Session.Character.Gold = gold;
                         Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("GOLD_SET"), 0));
                         Session.Client.SendPacket(Session.Character.GenerateGold());
-                        ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(53), ReceiverType.AllOnMap);
                     }
                     else
                         Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("WRONG_VALUE"), 0));
@@ -1252,11 +1247,9 @@ namespace OpenNos.Handler
                 {
                     Session.Character.JobLevel = joblevel;
                     Session.Client.SendPacket(Session.Character.GenerateLev());
-
                     Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("JOBLEVEL_CHANGED"), 0));
                     ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllOnMapExceptMe);
-                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(6), ReceiverType.AllOnMap);
-                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(198), ReceiverType.AllOnMap);
+                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(8), ReceiverType.AllOnMap);
                 }
             }
             else
@@ -1270,7 +1263,7 @@ namespace OpenNos.Handler
             if (packetsplit.Length > 2)
                 ClientLinkManager.Instance.Kick(packetsplit[2]);
             else
-                Session.Client.SendPacket(Session.Character.GenerateSay("$Kick USERNAME", 10));
+                Session.Client.SendPacket(Session.Character.GenerateSay("$Kick CHARACTERNAME", 10));
         }
 
         [Packet("lbs")]
@@ -1334,7 +1327,7 @@ namespace OpenNos.Handler
                 }
                 else
                 {
-                    Logger.Log.ErrorFormat($"Client {Session.Client.ClientId} forced Disconnection, login has not been registered or Account has already logged in.");
+                    Logger.Log.ErrorFormat($"Client {Session.Client.ClientId} forced Disconnection, login has not been registered or Account is already logged in.");
                     Session.Client.Disconnect();
                     Session.Destroy();
                     return;
@@ -2333,7 +2326,6 @@ namespace OpenNos.Handler
                                 Session.Character.InventoryList.MoveItem(Session.Character, type, (byte)(x + 1), 1, x, out inv, out invdest);
                                 Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(invdest.InventoryItem.ItemVNum, invdest.InventoryItem.Amount, type, invdest.Slot, invdest.InventoryItem.Rare, invdest.InventoryItem.Design, invdest.InventoryItem.Upgrade));
                                 DeleteItem(type, (byte)(x + 1));
-
                                 gravity = true;
                             }
                         }
@@ -2380,11 +2372,9 @@ namespace OpenNos.Handler
                 {
                     sp.InventoryItem.SpLevel = splevel;
                     Session.Client.SendPacket(Session.Character.GenerateLev());
-
                     Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SPLEVEL_CHANGED"), 0));
                     ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllOnMapExceptMe);
-                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(6), ReceiverType.AllOnMap);
-                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(198), ReceiverType.AllOnMap);
+                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(8), ReceiverType.AllOnMap);
                 }
             }
             else
@@ -2862,6 +2852,7 @@ namespace OpenNos.Handler
 
                 default:
                     Session.Client.SendPacket(Session.Character.GenerateSay("$Teleport MAP X Y", 10));
+                    Session.Client.SendPacket(Session.Character.GenerateSay("$Teleport CHARACTERNAME", 10));
                     break;
             }
         }
@@ -3043,7 +3034,7 @@ namespace OpenNos.Handler
                 if (inventory == null) return;
 
                 Item iteminfo = ServerManager.GetItem(inventory.InventoryItem.ItemVNum);
-                if (iteminfo == null) return; // This may mean that the DB is incomplete
+                if (iteminfo == null) return; // This might mean that the DB is incomplete
 
                 double timeSpanSinceLastSpUsage = (DateTime.Now - Process.GetCurrentProcess().StartTime.AddSeconds(-50)).TotalSeconds -
                                                   Session.Character.LastSp;

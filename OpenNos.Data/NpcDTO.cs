@@ -46,8 +46,6 @@ namespace OpenNos.Data
         public short WaterResistance { get; set; }
         public short LightResistance { get; set; }
         public short DarkResistance { get; set; }
-        public short Hp { get; set; }
-        public short Mp { get; set; }
         public bool IsSitting { get; set; }
 
         #endregion

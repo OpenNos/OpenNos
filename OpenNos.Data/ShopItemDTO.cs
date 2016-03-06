@@ -18,22 +18,14 @@ namespace OpenNos.Data
     {
         #region Properties
 
-        public short Color { get; set; }
-
-        public short ItemVNum { get; set; }
-
-        public byte Rare { get; set; }
-
-        public int ShopId { get; set; }
-
         public int ShopItemId { get; set; }
-
-        public short Slot { get; set; }
-
         public byte Type { get; set; }
-
+        public short Slot { get; set; }
+        public short ItemVNum { get; set; }
         public byte Upgrade { get; set; }
-
+        public byte Rare { get; set; }
+        public short Color { get; set; }
+        public int ShopId { get; set; }
         public long Gold { get; set; }
 
         #endregion
