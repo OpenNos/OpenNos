@@ -143,7 +143,7 @@ namespace OpenNos.GameObject
             Inventory result;
             for (short i = 0; i < 48 + (backPack * 12); i++)
             {
-                result = Inventory.SingleOrDefault(c => c.Type.Equals(type) && c.Slot.Equals(i));
+                result = Inventory.FirstOrDefault(c => c.Type.Equals(type) && c.Slot.Equals(i));
                 if (result == null)
                     return i;
             }

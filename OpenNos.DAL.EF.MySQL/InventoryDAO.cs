@@ -51,9 +51,20 @@ namespace OpenNos.DAL.EF.MySQL
                 using (var context = DataAccessHelper.CreateContext())
                 {
                     long InventoryId = inventory.InventoryId;
+                    byte Type = inventory.Type;
+                    short Slot = inventory.Slot;
+                    long CharacterId = inventory.CharacterId;
                     Inventory entity = context.inventory.SingleOrDefault(c => c.InventoryId == InventoryId);
                     if (entity == null) //new entity
                     {
+                        Inventory delete = context.inventory.FirstOrDefault(s =>s.CharacterId ==CharacterId && s.Slot == Slot && s.Type == Type);
+                        if (delete != null)
+                        {
+                            InventoryItem deleteItem = context.inventoryitem.FirstOrDefault(s=>s.inventory.InventoryId == delete.InventoryId);
+                           context.inventoryitem.Remove(deleteItem);
+                            context.inventory.Remove(delete);
+                         
+                        }
                         inventory = Insert(inventory, context);
                         return SaveResult.Inserted;
                     }
@@ -88,7 +99,7 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                return Mapper.Map<InventoryDTO>(context.inventory.SingleOrDefault(i => i.Slot.Equals(slot) && i.Type.Equals(type) && i.CharacterId.Equals(characterId)));
+                return Mapper.Map<InventoryDTO>(context.inventory.FirstOrDefault(i => i.Slot.Equals(slot) && i.Type.Equals(type) && i.CharacterId.Equals(characterId)));
             }
         }
 
