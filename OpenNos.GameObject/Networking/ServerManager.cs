@@ -122,7 +122,6 @@ namespace OpenNos.GameObject
                     Effect = item.Effect,
                     EffectValue = item.EffectValue,
                     FairyMaximumLevel = item.FairyMaximumLevel,
-                    IsPearl = item.IsPearl,
                     Sex = item.Sex,
                     SecondaryElement = item.SecondaryElement,
                     MaximumAmmo = item.MaximumAmmo,
