@@ -24,7 +24,6 @@ namespace OpenNos.Domain
         Specialist = 4,
         Box = 5,
         Shell = 6,
-        //sth = 7,8,9,
         Main = 10,
         Upgrade = 11,
         Production = 12,
@@ -32,15 +31,14 @@ namespace OpenNos.Domain
         Special = 14,
         Potion = 15,
         Event = 16,
-        //sth = 18,19,
+        Quest1 = 18,
         Sell = 20,
         Food = 21,
         Snack = 22,
-        //sth = 23,
         Magical = 24,
         Part = 25,
         Teacher = 26,
         Ammo = 27,
-        Quest = 28
+        Quest2 = 28
     }
 }

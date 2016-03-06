@@ -364,7 +364,10 @@ namespace OpenNos.Import.Console
                             case (byte)ItemType.Sell:
                                 //nothing to parse
                                 break;
-                            case (byte)ItemType.Quest:
+                            case (byte)ItemType.Quest2:
+                                //nothing to parse
+                                break;
+                            case (byte)ItemType.Quest1:
                                 //nothing to parse
                                 break;
                             case (byte)ItemType.Ammo:
