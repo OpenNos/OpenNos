@@ -207,6 +207,8 @@ namespace OpenNos.GameObject
                 this.LastKeepAliveIdentity = Convert.ToInt32(sessionParts[0]);
 
                 //set the SessionId if Session Packet arrives
+                if (sessionParts.Count() < 2)
+                    return;
                 this.SessionId = Convert.ToInt32(sessionParts[1].Split('\\').FirstOrDefault());
                 Logger.Log.DebugFormat(Language.Instance.GetMessageFromKey("CLIENT_ARRIVED"), this.SessionId);
 
