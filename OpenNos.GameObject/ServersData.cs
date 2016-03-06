@@ -599,33 +599,39 @@ namespace OpenNos.GameObject
             MP = new int[4, 101];
 
             MP[(int)ClassType.Adventurer, 0] = 60;
+            int baseAdventurer = 9;
 
-            for (int i = 5; i < MP.GetLength(1); i += 4)
+            for (int i = 1; i < MP.GetLength(1); i += 4)
             {
-                MP[(int)ClassType.Adventurer, i] = MP[(int)ClassType.Adventurer, i - 1] + (U0 + i / 2);
-                MP[(int)ClassType.Adventurer, i + 1] = MP[(int)ClassType.Adventurer, i] + (U0 + i / 2);
-                MP[(int)ClassType.Adventurer, i + 2] = MP[(int)ClassType.Adventurer, i + 1] + (U0 + i / 2);
-                MP[(int)ClassType.Adventurer, i + 3] = MP[(int)ClassType.Adventurer, i + 2] + (U1 + i / 2);
+                MP[(int)ClassType.Adventurer, i] = MP[(int)ClassType.Adventurer, i - 1] + baseAdventurer;
+                MP[(int)ClassType.Adventurer, i+1] = MP[(int)ClassType.Adventurer, i ] + baseAdventurer;
+                MP[(int)ClassType.Adventurer, i+2] = MP[(int)ClassType.Adventurer, i +1] + baseAdventurer;
+                baseAdventurer++;
+                MP[(int)ClassType.Adventurer, i+3] = MP[(int)ClassType.Adventurer, i +2] + baseAdventurer;
+                baseAdventurer++;
             }
 
             //SWORDMAN MP
-            for (int i = 0; i < MP.GetLength(1) - 1; i++)
+            for (int i = 1; i < MP.GetLength(1) - 1; i++)
             {
-                MP[(int)ClassType.Swordman, i + 1] = MP[(int)ClassType.Adventurer, i];
-                MP[(int)ClassType.Adventurer, i] = MP[(int)ClassType.Swordman, i + 1];
+                MP[(int)ClassType.Swordman, i] = MP[(int)ClassType.Adventurer, i];
             }
 
             //ARCHER MP
-            for (int i = 0; i < 15; i++)
+            for (int i = 0; i < MP.GetLength(1) - 1; i++)
             {
-                MP[(int)ClassType.Archer, i] = MP[(int)ClassType.Adventurer, i];
+                MP[(int)ClassType.Archer, i] = MP[(int)ClassType.Adventurer, i+1];
+
+                Console.WriteLine($"{i + 1}:{MP[(int)ClassType.Archer, i]}");
+
             }
+
             MP[(int)ClassType.Archer, 15] = 240;
             MP[(int)ClassType.Archer, 16] = 256;
             MP[(int)ClassType.Archer, 17] = 273;
             MP[(int)ClassType.Archer, 18] = 290;
             MP[(int)ClassType.Archer, 19] = 307;
-            U0 = 18;
+           int U0 = 18;
             for (int i = 20; i < MP.GetLength(1) - 1; i += 4)
             {
                 MP[(int)ClassType.Archer, i] = MP[(int)ClassType.Archer, i - 1] + U0 + ((i - 19) / 2);
