@@ -624,19 +624,6 @@ namespace OpenNos.GameObject
 
             }
 
-            MP[(int)ClassType.Archer, 15] = 240;
-            MP[(int)ClassType.Archer, 16] = 256;
-            MP[(int)ClassType.Archer, 17] = 273;
-            MP[(int)ClassType.Archer, 18] = 290;
-            MP[(int)ClassType.Archer, 19] = 307;
-           int U0 = 18;
-            for (int i = 20; i < MP.GetLength(1) - 1; i += 4)
-            {
-                MP[(int)ClassType.Archer, i] = MP[(int)ClassType.Archer, i - 1] + U0 + ((i - 19) / 2);
-                MP[(int)ClassType.Archer, i + 1] = MP[(int)ClassType.Archer, i] + U0 + 1 + ((i - 19) / 2);
-                MP[(int)ClassType.Archer, i + 2] = MP[(int)ClassType.Archer, i + 1] + U0 + 1 + ((i - 19) / 2);
-                MP[(int)ClassType.Archer, i + 3] = MP[(int)ClassType.Archer, i + 2] + U0 + 1 + ((i - 19) / 2);
-            }
             //MAGICIAN MP
             for (int i = 0; i < MP.GetLength(1) - 1; i++)
             {

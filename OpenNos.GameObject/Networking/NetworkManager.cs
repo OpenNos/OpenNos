@@ -135,9 +135,10 @@ namespace OpenNos.GameObject
             ClientSession session;
             _sessions.TryRemove(e.Client.ClientId, out session);
             ClientLinkManager.Instance.Sessions.Remove(session);
-            session.Character.Save();
-            if (session.Character != null)
+             if (session.Character != null)
             {
+                session.Character.Save();
+
                 //only remove the character from map if the character has been set
                 ClientLinkManager.Instance.Broadcast(session, session.Character.GenerateOut(), ReceiverType.AllOnMapExceptMe);
             }
