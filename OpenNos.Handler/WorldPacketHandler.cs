@@ -744,7 +744,7 @@ namespace OpenNos.Handler
                     {
                         for (int i = 83; i < packetsplit.Length; i++)
                             shopname += $"{packetsplit[i]} ";
-                        
+
                         shopname.TrimEnd(' ');
 
                         myShop.OwnerId = Session.Character.CharacterId;
@@ -920,18 +920,6 @@ namespace OpenNos.Handler
                         if (!inventory.getFreePlaceAmount(exchange.ExchangeList, backpack))
                             continu = false;
 
-                        foreach (InventoryItem item in Session.Character.ExchangeInfo.ExchangeList)
-                        {
-                            Inventory inv = Session.Character.InventoryList.getInventoryByInventoryItemId(item.InventoryItemId);
-                            if (inv != null && ServerManager.GetItem(inv.InventoryItem.ItemVNum).IsTradable != true)
-                            {
-                                Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("ITEM_NOT_TRADABLE"), 0));
-                                notsold = true;
-                            }
-                            continu = false;
-                            break;
-                        }
-
                         if (continu == false)
                         {
                             if (!notsold)
@@ -948,28 +936,44 @@ namespace OpenNos.Handler
                         {
                             foreach (InventoryItem item in Session.Character.ExchangeInfo.ExchangeList)
                             {
-                                // Delete items from their owners
                                 Inventory inv = Session.Character.InventoryList.getInventoryByInventoryItemId(item.InventoryItemId);
-                                Session.Character.InventoryList.DeleteByInventoryItemId(item.InventoryItemId);
-                                Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, inv.Type, inv.Slot, 0, 0, 0));
-                            }
+                                if (inv != null && ServerManager.GetItem(inv.InventoryItem.ItemVNum).IsTradable != true)
+                                {
+                                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("ITEM_NOT_TRADABLE"), 0));
+                                    Session.Client.SendPacket("exc_close 0");
+                                    ClientLinkManager.Instance.Broadcast(Session, "exc_close 0", ReceiverType.OnlySomeone, "", Session.Character.ExchangeInfo.CharId);
+                                    notsold = true;
+                                    break;
+                                }
 
-                            foreach (InventoryItem item in exchange.ExchangeList)
+                            }
+                            if (!notsold)
                             {
-                                // Add items to their new owners
-                                Inventory inv = Session.Character.InventoryList.CreateItem(item, Session.Character);
-                                if (inv != null && inv.Slot != -1)
-                                    Session.Client.SendPacket(
-                                        Session.Character.GenerateInventoryAdd(inv.InventoryItem.ItemVNum,
-                                            inv.InventoryItem.Amount, inv.Type, inv.Slot, inv.InventoryItem.Rare,
-                                            inv.InventoryItem.Design, inv.InventoryItem.Upgrade));
+                                foreach (InventoryItem item in Session.Character.ExchangeInfo.ExchangeList)
+                                {
+                                    // Delete items from their owners
+                                    Inventory inv = Session.Character.InventoryList.getInventoryByInventoryItemId(item.InventoryItemId);
+                                    Session.Character.InventoryList.DeleteByInventoryItemId(item.InventoryItemId);
+                                    Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, inv.Type, inv.Slot, 0, 0, 0));
+                                }
+
+                                foreach (InventoryItem item in exchange.ExchangeList)
+                                {
+                                    // Add items to their new owners
+                                    Inventory inv = Session.Character.InventoryList.CreateItem(item, Session.Character);
+                                    if (inv != null && inv.Slot != -1)
+                                        Session.Client.SendPacket(
+                                            Session.Character.GenerateInventoryAdd(inv.InventoryItem.ItemVNum,
+                                                inv.InventoryItem.Amount, inv.Type, inv.Slot, inv.InventoryItem.Rare,
+                                                inv.InventoryItem.Design, inv.InventoryItem.Upgrade));
+                                }
+
+                                Session.Character.Gold = Session.Character.Gold - Session.Character.ExchangeInfo.Gold + exchange.Gold;
+                                Session.Client.SendPacket(Session.Character.GenerateGold());
+                                ClientLinkManager.Instance.ExchangeValidate(Session, Session.Character.ExchangeInfo.CharId);
+
+                                // TODO: Maybe log exchanges to a (new) table, so that the server admins could trace cheaters
                             }
-
-                            Session.Character.Gold = Session.Character.Gold - Session.Character.ExchangeInfo.Gold + exchange.Gold;
-                            Session.Client.SendPacket(Session.Character.GenerateGold());
-                            ClientLinkManager.Instance.ExchangeValidate(Session, Session.Character.ExchangeInfo.CharId);
-
-                            // TODO: Maybe log exchanges to a (new) table, so that the server admins could trace cheaters
                         }
                     }
                     else
@@ -1125,7 +1129,7 @@ namespace OpenNos.Handler
                     {
                         Session.Character.Gold = gold;
                         Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("GOLD_SET"), 0));
-                       Session.Client.SendPacket(Session.Character.GenerateGold());
+                        Session.Client.SendPacket(Session.Character.GenerateGold());
                         ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(53), ReceiverType.AllOnMap);
                     }
                     else
