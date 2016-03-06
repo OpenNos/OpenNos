@@ -398,12 +398,13 @@ namespace OpenNos.GameObject
             if (inv != null)
             {
                 inv.InventoryItem.Amount -= amount;
+                if (inv.InventoryItem.Amount <= 0)
+                {
+                    Inventory.Remove(inv);
+                    return null;
+                }
             }
-            if (inv.InventoryItem.Amount <= 0)
-            {
-                Inventory.Remove(inv);
-                return null;
-            }
+           
             return inv;
         }
 

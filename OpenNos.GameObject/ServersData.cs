@@ -622,8 +622,6 @@ namespace OpenNos.GameObject
             {
                 MP[(int)ClassType.Archer, i] = MP[(int)ClassType.Adventurer, i+1];
 
-                Console.WriteLine($"{i + 1}:{MP[(int)ClassType.Archer, i]}");
-
             }
 
             MP[(int)ClassType.Archer, 15] = 240;
