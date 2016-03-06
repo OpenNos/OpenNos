@@ -59,7 +59,6 @@ namespace OpenNos.GameObject
         #region Properties
 
         public DateTime LastLogin { get; set; }
-        public int ArenaWinner { get { return _arenaWinner; } set { _arenaWinner = value; } }
         public int Authority { get { return _authority; } set { _authority = value; } }
         public int BackPack { get { return _backpack; } set { _backpack = value; } }
         public int Direction { get { return _direction; } set { _direction = value; } }
