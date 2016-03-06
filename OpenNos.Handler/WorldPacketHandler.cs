@@ -1147,7 +1147,6 @@ namespace OpenNos.Handler
                         Session.Character.Gold = gold;
                         Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("GOLD_SET"), 0));
                         Session.Client.SendPacket(Session.Character.GenerateGold());
-                        ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(53), ReceiverType.AllOnMap);
                     }
                     else
                         Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("WRONG_VALUE"), 0));
@@ -1255,8 +1254,7 @@ namespace OpenNos.Handler
 
                     Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("JOBLEVEL_CHANGED"), 0));
                     ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllOnMapExceptMe);
-                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(6), ReceiverType.AllOnMap);
-                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(198), ReceiverType.AllOnMap);
+                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(8), ReceiverType.AllOnMap);
                 }
             }
             else
@@ -1334,7 +1332,7 @@ namespace OpenNos.Handler
                 }
                 else
                 {
-                    Logger.Log.ErrorFormat($"Client {Session.Client.ClientId} forced Disconnection, login has not been registered or Account has already logged in.");
+                    Logger.Log.ErrorFormat($"Client {Session.Client.ClientId} forced Disconnection, login has not been registered or Account is already logged in.");
                     Session.Client.Disconnect();
                     Session.Destroy();
                     return;

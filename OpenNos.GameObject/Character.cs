@@ -197,7 +197,7 @@ namespace OpenNos.GameObject
                     {
                         case (byte)EquipmentType.CostumeHat:
                             return $"e_info 3 {item.ItemVNum} {iteminfo.LevelMinimum} {iteminfo.CloseDefence + item.CloseDefence} {iteminfo.DistanceDefence + item.DistanceDefence} {iteminfo.MagicDefence + item.MagicDefence} {iteminfo.DefenceDodge + item.DefenceDodge} {iteminfo.FireResistance + item.FireResistance} {iteminfo.WaterResistance + item.WaterResistance} {iteminfo.LightResistance + item.LightResistance} {iteminfo.DarkResistance + item.DarkResistance} {iteminfo.Price} 0 1 {(iteminfo.ItemValidTime == 0 ? -1 : iteminfo.ItemValidTime / (3600))}";
-                         case (byte)EquipmentType.CostumeSuit:
+                        case (byte)EquipmentType.CostumeSuit:
                             return $"e_info 2 {item.ItemVNum} {item.Rare} {item.Upgrade} {(item.IsFixed ? 1 : 0)} {iteminfo.LevelMinimum} {iteminfo.CloseDefence + item.CloseDefence} {iteminfo.DistanceDefence + item.DistanceDefence} {iteminfo.MagicDefence + item.MagicDefence} {iteminfo.DefenceDodge + item.DefenceDodge} {iteminfo.Price} -1 1 {(iteminfo.ItemValidTime == 0 ? -1 : iteminfo.ItemValidTime / (3600))}"; // 1 = IsCosmetic -1 = no shells
                         default:
                             return $"e_info 3 {item.ItemVNum} {iteminfo.LevelMinimum} {iteminfo.CloseDefence + item.CloseDefence} {iteminfo.DistanceDefence + item.DistanceDefence} {iteminfo.MagicDefence + item.MagicDefence} {iteminfo.DefenceDodge + item.DefenceDodge} {iteminfo.FireResistance + item.FireResistance} {iteminfo.WaterResistance + item.WaterResistance} {iteminfo.LightResistance + item.LightResistance} {iteminfo.DarkResistance + item.DarkResistance} {iteminfo.Price} 0 0 -1"; // after iteminfo.Price theres TimesConnected {(iteminfo.ItemValidTime == 0 ? -1 : iteminfo.ItemValidTime / (3600))}
@@ -362,7 +362,7 @@ namespace OpenNos.GameObject
                 color = head.InventoryItem.Design;
             Inventory fairy = EquipmentList.LoadBySlotAndType((byte)EquipmentType.Fairy, (byte)InventoryType.Equipment);
 
-            return $"in 1 {Name} - {CharacterId} {MapX} {MapY} {Direction} {(Authority == 2 ? 2 : 0)} {Gender} {HairStyle} {color} {Class} {generateEqListForPacket()} {(int)(Hp / HPLoad() * 100)} {(int)(Mp / MPLoad() * 100)} {(IsSitting?1:0)} -1 {(fairy != null ? 2 : 0)} {(fairy != null ? ServerManager.GetItem(fairy.InventoryItem.ItemVNum).Element : 0)} 0 {(fairy != null ? ServerManager.GetItem(fairy.InventoryItem.ItemVNum).Morph : 0)} 0 {(UseSp ? Morph : 0)} {generateEqRareUpgradeForPacket()} -1 - {((GetDigniteIco() == 1) ? GetReputIco() : -GetDigniteIco())} {_invisible} {(UseSp ? MorphUpgrade : 0)} 0 {(UseSp ? MorphUpgrade2 : 0)} {Level} 0 {ArenaWinner} {Compliment} {Size}";
+            return $"in 1 {Name} - {CharacterId} {MapX} {MapY} {Direction} {(Authority == 2 ? 2 : 0)} {Gender} {HairStyle} {color} {Class} {generateEqListForPacket()} {(int)(Hp / HPLoad() * 100)} {(int)(Mp / MPLoad() * 100)} {(IsSitting ? 1 : 0)} -1 {(fairy != null ? 2 : 0)} {(fairy != null ? ServerManager.GetItem(fairy.InventoryItem.ItemVNum).Element : 0)} 0 {(fairy != null ? ServerManager.GetItem(fairy.InventoryItem.ItemVNum).Morph : 0)} 0 {(UseSp ? Morph : 0)} {generateEqRareUpgradeForPacket()} -1 - {((GetDigniteIco() == 1) ? GetReputIco() : -GetDigniteIco())} {_invisible} {(UseSp ? MorphUpgrade : 0)} 0 {(UseSp ? MorphUpgrade2 : 0)} {Level} 0 {ArenaWinner} {Compliment} {Size}";
         }
 
         public List<string> Generatein2()
@@ -402,7 +402,7 @@ namespace OpenNos.GameObject
         {
             Inventory specialist = EquipmentList.LoadBySlotAndType((byte)EquipmentType.Sp, (byte)InventoryType.Equipment);
 
-            return $"lev {Level} {LevelXp} {(!UseSp || specialist == null ? JobLevel : specialist.InventoryItem.SpLevel)} {(!UseSp || specialist == null ? JobLevelXp : specialist.InventoryItem.SpXp)} {(!UseSp || specialist == null?XPLoad():SPXPLoad())} {JobXPLoad()} {Reput} 2";
+            return $"lev {Level} {LevelXp} {(!UseSp || specialist == null ? JobLevel : specialist.InventoryItem.SpLevel)} {(!UseSp || specialist == null ? JobLevelXp : specialist.InventoryItem.SpXp)} {(!UseSp || specialist == null ? XPLoad() : SPXPLoad())} {JobXPLoad()} {Reput} 2";
         }
 
         public string GenerateMapOut()
