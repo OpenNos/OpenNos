@@ -281,11 +281,11 @@ namespace OpenNos.Import.Console
                                     item.MaxCellon = Convert.ToByte(linesave[4]);
                                 }
                                 break;
-                            case (byte)ItemType.Magical1:
+                            case (byte)ItemType.Special:
                                 item.Effect = Convert.ToInt16(linesave[2]);
                                 item.EffectValue = Convert.ToInt32(linesave[4]);
                                 break;
-                            case (byte)ItemType.Magical2:
+                            case (byte)ItemType.Magical:
                                 item.Effect = Convert.ToInt16(linesave[2]);
                                 item.EffectValue = Convert.ToInt32(linesave[4]);
                                 break;
@@ -357,7 +357,7 @@ namespace OpenNos.Import.Console
                                 //item.PetLoyality = Convert.ToInt16(linesave[4]);
                                 //item.PetFood = Convert.ToInt16(linesave[7]);
                                 break;
-                            case (byte)ItemType.Special:
+                            case (byte)ItemType.Quest2:
                                 //item.NpcInteraction = Convert.ToInt16(linesave[5]);
                                 //item.QuestItem = linesave[7] == "1" ? true : false;
                                 break;
@@ -367,7 +367,7 @@ namespace OpenNos.Import.Console
                             case (byte)ItemType.Sell:
                                 //nothing to parse
                                 break;
-                            case (byte)ItemType.Quest:
+                            case (byte)ItemType.Quest1:
                                 //nothing to parse
                                 break;
                             case (byte)ItemType.Ammo:

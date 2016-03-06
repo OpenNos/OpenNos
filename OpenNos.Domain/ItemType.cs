@@ -29,19 +29,19 @@ namespace OpenNos.Domain
         Upgrade = 11,
         Production = 12,
         Map = 13,
-        Magical1 = 14,
+        Special = 14,
         Potion = 15,
         Event = 16,
-        Quest = 17,
+        Quest1 = 17,
         //sth = 18,19,
         Sell = 20,
         Food = 21,
         Snack = 22,
         //sth = 23,
-        Magical2 = 24,
+        Magical = 24,
         Part = 25,
         Teacher = 26,
         Ammo = 27,
-        Special = 28
+        Quest2 = 28
     }
 }
