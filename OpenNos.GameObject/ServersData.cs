@@ -598,13 +598,7 @@ namespace OpenNos.GameObject
             //ADVENTURER MP
             MP = new int[4, 101];
 
-            int U0 = 9;
-            int U1 = 10;
             MP[(int)ClassType.Adventurer, 0] = 60;
-            MP[(int)ClassType.Adventurer, 1] = 69;
-            MP[(int)ClassType.Adventurer, 2] = 78;
-            MP[(int)ClassType.Adventurer, 3] = 87;
-            MP[(int)ClassType.Adventurer, 4] = 97;
 
             for (int i = 5; i < MP.GetLength(1); i += 4)
             {

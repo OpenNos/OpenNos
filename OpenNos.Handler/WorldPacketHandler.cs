@@ -1125,7 +1125,7 @@ namespace OpenNos.Handler
                     {
                         Session.Character.Gold = gold;
                         Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("GOLD_SET"), 0));
-                        ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateGold(), ReceiverType.AllOnMap);
+                       Session.Client.SendPacket(Session.Character.GenerateGold());
                         ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(53), ReceiverType.AllOnMap);
                     }
                     else
