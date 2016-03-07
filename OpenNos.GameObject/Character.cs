@@ -27,8 +27,7 @@ namespace OpenNos.GameObject
     public class Character : CharacterDTO, IGameObject
     {
         #region Members
-
-        private int _arenaWinner;
+        
         private int _authority;
         private int _backpack;
         private int _direction;

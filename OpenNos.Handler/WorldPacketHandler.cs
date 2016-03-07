@@ -271,53 +271,7 @@ namespace OpenNos.Handler
                 Session.Client.SendPacket(Session.Character.GenerateSay("$ChangeClass CLASS", 10));
         }
 
-        public void ChangeMap()
-        {
-            Session.CurrentMap = ServerManager.GetMap(Session.Character.MapId);
-            Session.Client.SendPacket(Session.Character.GenerateCInfo());
-            Session.Client.SendPacket(Session.Character.GenerateCMode());
-            Session.Client.SendPacket(Session.Character.GenerateFaction());
-            Session.Client.SendPacket(Session.Character.GenerateFd());
-            Session.Client.SendPacket(Session.Character.GenerateLev());
-            Session.Client.SendPacket(Session.Character.GenerateStat());
-            // ski
-            Session.Client.SendPacket(Session.Character.GenerateAt());
-            Session.Client.SendPacket(Session.Character.GenerateCMap());
-            if (Session.Character.Size != 10)
-                Session.Client.SendPacket(Session.Character.GenerateScal());
-            foreach (String portalPacket in Session.Character.GenerateGp())
-                Session.Client.SendPacket(portalPacket);
-            foreach (String npcPacket in Session.Character.Generatein2())
-                Session.Client.SendPacket(npcPacket);
-            foreach (String ShopPacket in Session.Character.GenerateNPCShopOnMap())
-                Session.Client.SendPacket(ShopPacket);
-            foreach (String droppedPacket in Session.Character.GenerateDroppedItem())
-                Session.Client.SendPacket(droppedPacket);
-
-            this.GetStats(String.Empty);
-            Session.Client.SendPacket(Session.Character.GenerateCond());
-            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GeneratePairy(), ReceiverType.AllOnMap);
-            Session.Client.SendPacket($"rsfi 1 1 0 9 0 9"); // Act completion
-            ClientLinkManager.Instance.RequiereBroadcastFromAllMapUsers(Session, "GenerateIn");
-            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllOnMapExceptMe);
-            if (Session.CurrentMap.IsDancing == 2 && Session.Character.IsDancing == 0)
-                ClientLinkManager.Instance.RequiereBroadcastFromMap(Session.Character.MapId, "dance 2");
-            else if (Session.CurrentMap.IsDancing == 0 && Session.Character.IsDancing == 1)
-            {
-                Session.Character.IsDancing = 0;
-                ClientLinkManager.Instance.RequiereBroadcastFromMap(Session.Character.MapId, "dance");
-            }
-            foreach (String ShopPacket in Session.Character.GenerateShopOnMap())
-                Session.Client.SendPacket(ShopPacket);
-
-            foreach (String ShopPacketChar in Session.Character.GeneratePlayerShopOnMap())
-                Session.Client.SendPacket(ShopPacketChar);
-
-            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEq(), ReceiverType.AllOnMap);
-            Session.Client.SendPacket(Session.Character.GenerateEquipment());
-            GenerateRankings();
-        }
-
+     
         public void ChangeSP()
         {
             Session.Client.SendPacket("delay 5000 3 #sl^1");
@@ -1052,30 +1006,6 @@ namespace OpenNos.Handler
             ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(198), ReceiverType.AllOnMap);
         }
 
-        public void GenerateRankings()
-        {
-            string clinit = "clinit";
-            string flinit = "flinit";
-            string kdlinit = "kdlinit";
-
-            foreach (CharacterDTO character in DAOFactory.CharacterDAO.GetTopComplimented())
-            {
-                clinit += $" {character.CharacterId}|{character.Level}|{character.Compliment}|{character.Name}";
-            }
-            foreach (CharacterDTO character in DAOFactory.CharacterDAO.GetTopReputation())
-            {
-                flinit += $" {character.CharacterId}|{character.Level}|{character.Reput}|{character.Name}";
-            }
-            foreach (CharacterDTO character in DAOFactory.CharacterDAO.GetTopPoints())
-            {
-                kdlinit += $" {character.CharacterId}|{character.Level}|{character.Act4Points}|{character.Name}";
-            }
-
-            Session.Client.SendPacket(clinit);
-            Session.Client.SendPacket(flinit);
-            Session.Client.SendPacket(kdlinit);
-        }
-
         [Packet("get")]
         public void GetItem(string packet)
         {
@@ -1236,8 +1166,8 @@ namespace OpenNos.Handler
         {
 
             Session.Character.Invisible = Session.Character.Invisible == 0 ? 1 : 0;
-            MapOut();
-            ChangeMap();
+            ClientLinkManager.Instance.MapOut(Session.Character.CharacterId);
+            ClientLinkManager.Instance.ChangeMap(Session.Character.CharacterId);
         }
 
         [Packet("$JLvl")]
@@ -1426,11 +1356,7 @@ namespace OpenNos.Handler
             }
         }
 
-        public void MapOut()
-        {
-            Session.Client.SendPacket(Session.Character.GenerateMapOut());
-            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateOut(), ReceiverType.AllOnMapExceptMe);
-        }
+   
 
         [Packet("$Morph")]
         public void Morph(string packet)
@@ -1722,13 +1648,13 @@ namespace OpenNos.Handler
                 if (Session.Character.MapY >= portal.SourceY - 1 && Session.Character.MapY <= portal.SourceY + 1
                     && Session.Character.MapX >= portal.SourceX - 1 && Session.Character.MapX <= portal.SourceX + 1)
                 {
-                    MapOut();
+                    ClientLinkManager.Instance.MapOut(Session.Character.CharacterId);
                     Session.Character.MapId = portal.DestinationMapId;
                     Session.Character.MapX = portal.DestinationX;
                     Session.Character.MapY = portal.DestinationY;
 
                     Session.Character.LastPortal = currentRunningSeconds;
-                    ChangeMap();
+                    ClientLinkManager.Instance.ChangeMap(Session.Character.CharacterId);
                     break;
                 }
             }
@@ -2778,7 +2704,8 @@ namespace OpenNos.Handler
             }
 
             Session.Client.SendPacket(Session.Character.GenerateTit());
-            ChangeMap();
+
+            ClientLinkManager.Instance.ChangeMap(Session.Character.CharacterId);
             Session.Client.SendPacket("rank_cool 0 0 18000");
 
             Session.Client.SendPacket("scr 0 0 0 0 0 0");
@@ -2827,12 +2754,13 @@ namespace OpenNos.Handler
                     short mapId = ClientLinkManager.Instance.GetProperty<short>(name, "MapId");
                     if ($"{mapy}" != "" && $"{mapx}" != "" && $"{mapId}" != "")
                     {
-                        MapOut();
+                        ClientLinkManager.Instance.MapOut(Session.Character.CharacterId);
                         Session.Character.MapId = (short)mapId;
                         Session.Character.MapX = (short)((short)(mapx) + (short)1);
                         Session.Character.MapY = (short)((short)(mapy) + (short)1);
 
-                        ChangeMap();
+
+                        ClientLinkManager.Instance.ChangeMap(Session.Character.CharacterId);
                     }
                     else
                     {
@@ -2843,11 +2771,12 @@ namespace OpenNos.Handler
                 case 5:
                     if (verify)
                     {
-                        MapOut();
+                        ClientLinkManager.Instance.MapOut(Session.Character.CharacterId);
                         Session.Character.MapId = arg[0];
                         Session.Character.MapX = arg[1];
                         Session.Character.MapY = arg[2];
-                        ChangeMap();
+
+                        ClientLinkManager.Instance.ChangeMap(Session.Character.CharacterId);
                     }
                     break;
 
@@ -2858,43 +2787,36 @@ namespace OpenNos.Handler
             }
         }
 
-        [Packet("$TpMe")]
-        public void TpMe(string packet)
+        [Packet("$TeleportToMe")]
+        public void TeleportToMe(string packet)
         {
             string[] packetsplit = packet.Split(' ');
-            short[] arg = new short[3];
-            bool verify = false;
 
-            if (packetsplit.Length > 4)
+            if (packetsplit.Length > 3)
             {
-                verify = (short.TryParse(packetsplit[2], out arg[0]) && short.TryParse(packetsplit[3], out arg[1]) && short.TryParse(packetsplit[4], out arg[2]) && DAOFactory.MapDAO.LoadById(arg[0]) != null);
-            }
-            switch (packetsplit.Length)
-            {
-                case 3:
-                    string name = packetsplit[2];
-                    short mapy = Session.Character.MapY;
-                    short mapx = Session.Character.MapX;
-                    short mapId = Session.Character.MapId;
-                    short infy = ClientLinkManager.Instance.GetProperty<short>(name, "MapY");
-                    short infx = ClientLinkManager.Instance.GetProperty<short>(name, "MapX");
-                    short infId = ClientLinkManager.Instance.GetProperty<short>(name, "MapId");
-                    if ($"{infy}" != "" && $"{infx}" != "" && $"{infId}" != "")
-                    {
-                        ClientLinkManager.Instance.SetProperty(name, "MapY", mapy);
-                        ClientLinkManager.Instance.SetProperty(name, "MapX", mapx);
-                        ClientLinkManager.Instance.SetProperty(name, "MapId", mapId);
-                        ChangeMap();
-                    }
-                    else
-                    {
-                        Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("USER_NOT_CONNECTED"), 0));
-                    }
-                    break;
-                default:
-                    Session.Client.SendPacket(Session.Character.GenerateSay("$TpMe CHARACTERNAME", 10));
-                    break;
-            }
+
+                string name = packetsplit[2];
+ 
+                long? id  = ClientLinkManager.Instance.GetProperty<long?>(name, "CharacterId");
+               
+                if (id !=null)
+                {
+                    ClientLinkManager.Instance.MapOut(Session.Character.CharacterId);
+                    ClientLinkManager.Instance.SetProperty(name, "MapY", Session.Character.MapY);
+                    ClientLinkManager.Instance.SetProperty(name, "MapX", Session.Character.MapX);
+                    ClientLinkManager.Instance.SetProperty(name, "MapId", Session.Character.MapId);
+
+                    ClientLinkManager.Instance.ChangeMap(Session.Character.CharacterId);
+
+                }
+                else
+                {
+                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("USER_NOT_CONNECTED"), 0));
+                }
+
+            }else
+                    Session.Client.SendPacket(Session.Character.GenerateSay("$TeleportToMe CHARACTERNAME", 10));
+            
         }
 
         [Packet("$Upgrade")]
