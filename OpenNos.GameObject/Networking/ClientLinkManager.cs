@@ -60,7 +60,7 @@ namespace OpenNos.GameObject
 
         public void MapOut(long id)
         {
-            foreach (ClientSession Session in Sessions.Where(s=> s.Character.CharacterId == id))
+            foreach (ClientSession Session in Sessions.Where(s=> s.Character != null && s.Character.CharacterId == id))
             {
                 Session.Client.SendPacket(Session.Character.GenerateMapOut());
                 ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateOut(), ReceiverType.AllOnMapExceptMe);
