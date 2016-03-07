@@ -452,6 +452,7 @@ namespace OpenNos.Handler
             Session.Client.SendPacket(Session.Character.GenerateSay("$Position", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID RARE UPGRADE", 6));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID RARE", 10));
             Session.Client.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID COLOR", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID AMOUNT", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$CreateItem SPID UPGRADE WINGS", 6));
@@ -575,6 +576,7 @@ namespace OpenNos.Handler
             {
                 Session.Client.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID", 10));
                 Session.Client.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID RARE UPGRADE", 10));
+                Session.Client.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID RARE", 10));
                 Session.Client.SendPacket(Session.Character.GenerateSay("$CreateItem SPID UPGRADE WINGS", 10));
                 Session.Client.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID COLOR", 10));
                 Session.Client.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID AMOUNT", 10));
@@ -593,7 +595,7 @@ namespace OpenNos.Handler
                     {
                         if (packetsplit.Length == 4)
                         {
-                            Byte.TryParse(packetsplit[3], out upgrade);
+                            Byte.TryParse(packetsplit[3], out rare);
                         }
                         else if (packetsplit.Length == 5)
                         {
