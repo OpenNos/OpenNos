@@ -273,7 +273,6 @@ namespace OpenNos.Handler
 
         public void ChangeMap()
         {
-            MapOut();
             Session.CurrentMap = ServerManager.GetMap(Session.Character.MapId);
             Session.Client.SendPacket(Session.Character.GenerateCInfo());
             Session.Client.SendPacket(Session.Character.GenerateCMode());
@@ -1234,7 +1233,9 @@ namespace OpenNos.Handler
         [Packet("$Invisible")]
         public void Invisible(string packet)
         {
+
             Session.Character.Invisible = Session.Character.Invisible == 0 ? 1 : 0;
+            MapOut();
             ChangeMap();
         }
 
@@ -1720,6 +1721,7 @@ namespace OpenNos.Handler
                 if (Session.Character.MapY >= portal.SourceY - 1 && Session.Character.MapY <= portal.SourceY + 1
                     && Session.Character.MapX >= portal.SourceX - 1 && Session.Character.MapX <= portal.SourceX + 1)
                 {
+                    MapOut();
                     Session.Character.MapId = portal.DestinationMapId;
                     Session.Character.MapX = portal.DestinationX;
                     Session.Character.MapY = portal.DestinationY;
@@ -2830,6 +2832,7 @@ namespace OpenNos.Handler
                     short mapId = ClientLinkManager.Instance.GetProperty<short>(name, "MapId");
                     if ($"{mapy}" != "" && $"{mapx}" != "" && $"{mapId}" != "")
                     {
+                        MapOut();
                         Session.Character.MapId = (short)mapId;
                         Session.Character.MapX = (short)((short)(mapx) + (short)1);
                         Session.Character.MapY = (short)((short)(mapy) + (short)1);
@@ -2845,6 +2848,7 @@ namespace OpenNos.Handler
                 case 5:
                     if (verify)
                     {
+                        MapOut();
                         Session.Character.MapId = arg[0];
                         Session.Character.MapX = arg[1];
                         Session.Character.MapY = arg[2];
