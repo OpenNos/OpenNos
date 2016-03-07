@@ -384,7 +384,7 @@ namespace OpenNos.Handler
             Session.Client.SendPacket(Session.Character.GenerateSay("$Shout MESSAGE", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$Teleport Map X Y", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$Teleport CHARACTERNAME", 6));
-            Session.Client.SendPacket(Session.Character.GenerateSay("$TpMe CHARACTERNAME", 6));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$TeleportToMe CHARACTERNAME", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$Speed SPEED", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$Rarify SLOT MODE PROTECTION", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$Upgrade SLOT MODE PROTECTION", 6));
