@@ -431,6 +431,7 @@ namespace OpenNos.Handler
             Session.Client.SendPacket(Session.Character.GenerateSay("$Shout MESSAGE", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$Teleport Map X Y", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$Teleport CHARACTERNAME", 6));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$TpMe CHARACTERNAME", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$Speed SPEED", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$Rarify SLOT MODE PROTECTION", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$Upgrade SLOT MODE PROTECTION", 6));
@@ -452,7 +453,7 @@ namespace OpenNos.Handler
             Session.Client.SendPacket(Session.Character.GenerateSay("$Position", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID RARE UPGRADE", 6));
-            Session.Client.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID RARE", 10));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID RARE", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID COLOR", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID AMOUNT", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$CreateItem SPID UPGRADE WINGS", 6));
@@ -2723,7 +2724,6 @@ namespace OpenNos.Handler
                     spInventory.InventoryItem.MagicDefence += 30;
                     spInventory.InventoryItem.CriticalDodge += 3;
                 }
-                //end add upgrade
                 Session.Client.SendPacket(Session.Character.GenerateStatChar());
                 Session.Client.SendPacket(Session.Character.GenerateStat());
                 Session.Client.SendPacket(Session.Character.GenerateSlInfo(new InventoryItem(spInventory.InventoryItem), 2));
@@ -2731,8 +2731,6 @@ namespace OpenNos.Handler
             }
             else if (!Session.Character.IsSitting)
             {
-                // Character wants to change Sp...
-
                 if (spInventory == null)
                 {
                     Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NO_SP"), 0));
@@ -2743,7 +2741,6 @@ namespace OpenNos.Handler
 
                 if (Session.Character.UseSp)
                 {
-                    // Remove currently wearing SP
                     Session.Character.LastSp = currentRunningSeconds;
                     new Thread(() => RemoveSP(spInventory.InventoryItem.ItemVNum)).Start();
                 }
@@ -2752,7 +2749,6 @@ namespace OpenNos.Handler
                     double timeSpanSinceLastSpUsage = currentRunningSeconds - Session.Character.LastSp;
                     if (timeSpanSinceLastSpUsage >= 30)
                     {
-                        // Go
                         if (Session.Character.ThreadCharChange?.IsAlive == true)
                             Session.Character.ThreadCharChange.Abort();
                         Session.Character.ThreadCharChange = new Thread(ChangeSP);
@@ -2760,7 +2756,6 @@ namespace OpenNos.Handler
                     }
                     else
                     {
-                        // No. Wait 30sec (show remaining time)
                         Session.Client.SendPacket(Session.Character.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("SP_INLOADING"), 30 - (int)Math.Round(timeSpanSinceLastSpUsage, 0)), 0));
                     }
                 }
@@ -2855,6 +2850,45 @@ namespace OpenNos.Handler
                 default:
                     Session.Client.SendPacket(Session.Character.GenerateSay("$Teleport MAP X Y", 10));
                     Session.Client.SendPacket(Session.Character.GenerateSay("$Teleport CHARACTERNAME", 10));
+                    break;
+            }
+        }
+
+        [Packet("$TpMe")]
+        public void TpMe(string packet)
+        {
+            string[] packetsplit = packet.Split(' ');
+            short[] arg = new short[3];
+            bool verify = false;
+
+            if (packetsplit.Length > 4)
+            {
+                verify = (short.TryParse(packetsplit[2], out arg[0]) && short.TryParse(packetsplit[3], out arg[1]) && short.TryParse(packetsplit[4], out arg[2]) && DAOFactory.MapDAO.LoadById(arg[0]) != null);
+            }
+            switch (packetsplit.Length)
+            {
+                case 3:
+                    string name = packetsplit[2];
+                    short mapy = Session.Character.MapY;
+                    short mapx = Session.Character.MapX;
+                    short mapId = Session.Character.MapId;
+                    short infy = ClientLinkManager.Instance.GetProperty<short>(name, "MapY");
+                    short infx = ClientLinkManager.Instance.GetProperty<short>(name, "MapX");
+                    short infId = ClientLinkManager.Instance.GetProperty<short>(name, "MapId");
+                    if ($"{infy}" != "" && $"{infx}" != "" && $"{infId}" != "")
+                    {
+                        ClientLinkManager.Instance.SetProperty(name, "MapY", mapy);
+                        ClientLinkManager.Instance.SetProperty(name, "MapX", mapx);
+                        ClientLinkManager.Instance.SetProperty(name, "MapId", mapId);
+                        ChangeMap();
+                    }
+                    else
+                    {
+                        Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("USER_NOT_CONNECTED"), 0));
+                    }
+                    break;
+                default:
+                    Session.Client.SendPacket(Session.Character.GenerateSay("$TpMe CHARACTERNAME", 10));
                     break;
             }
         }
