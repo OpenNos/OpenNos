@@ -115,6 +115,15 @@ namespace OpenNos.Import.Console.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to This item id is not valid!.
+        /// </summary>
+        internal static string NO_ITEM {
+            get {
+                return ResourceManager.GetString("NO_ITEM", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0} npcs parsed.
         /// </summary>
         internal static string NPCS_PARSED {
