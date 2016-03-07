@@ -876,11 +876,11 @@ namespace OpenNos.Handler
                         if (!inventory.getFreePlaceAmount(exchange.ExchangeList, backpack))
                             continu = false;
 
-                        if (exchange.Gold + gold > 1000000)
+                        if (exchange.Gold + gold > 1000000000)
                             goldmax = true;
 
 
-                        if (Session.Character.ExchangeInfo.Gold + Session.Character.Gold > 1000000)
+                        if (Session.Character.ExchangeInfo.Gold + Session.Character.Gold > 1000000000)
                             goldmax = true;
 
                         if (continu == false)
