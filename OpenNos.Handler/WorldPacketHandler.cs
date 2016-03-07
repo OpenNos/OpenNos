@@ -622,7 +622,8 @@ namespace OpenNos.Handler
                     }
                     else
                     {
-                        Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_PLACE"), 0);
+                        Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_PLACE"), 0));
+
                     }
                 }
                 else
@@ -1027,18 +1028,18 @@ namespace OpenNos.Handler
                 short Amount = mapitem.Amount;
                 if (mapitem.PositionX < Session.Character.MapX + 3 && mapitem.PositionX > Session.Character.MapX - 3 && mapitem.PositionY < Session.Character.MapY + 3 && mapitem.PositionY > Session.Character.MapY - 3)
                 {
-                    Session.CurrentMap.DroppedList.Remove(DropId);
-                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateGet(DropId), ReceiverType.AllOnMap);
                     Inventory newInv = Session.Character.InventoryList.CreateItem(mapitem, Session.Character);
                     if (newInv != null)
                     {
+                        Session.CurrentMap.DroppedList.Remove(DropId);
+                        ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateGet(DropId), ReceiverType.AllOnMap);
                         Item iteminfo = ServerManager.GetItem(newInv.InventoryItem.ItemVNum);
                         Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(newInv.InventoryItem.ItemVNum, newInv.InventoryItem.Amount, newInv.Type, newInv.Slot, newInv.InventoryItem.Rare, newInv.InventoryItem.Design, newInv.InventoryItem.Upgrade));
                         Session.Client.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("YOU_GET_OBJECT")}: {iteminfo.Name} x {Amount}", 12));
                     }
                     else
                     {
-                        Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_PLACE"), 0);
+                        Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_PLACE"), 0));
                     }
                 }
             }
