@@ -2792,7 +2792,7 @@ namespace OpenNos.Handler
         {
             string[] packetsplit = packet.Split(' ');
 
-            if (packetsplit.Length > 3)
+            if (packetsplit.Length == 3)
             {
 
                 string name = packetsplit[2];
@@ -2801,12 +2801,12 @@ namespace OpenNos.Handler
                
                 if (id !=null)
                 {
-                    ClientLinkManager.Instance.MapOut(Session.Character.CharacterId);
+                    ClientLinkManager.Instance.MapOut((long)id);
                     ClientLinkManager.Instance.SetProperty(name, "MapY", Session.Character.MapY);
                     ClientLinkManager.Instance.SetProperty(name, "MapX", Session.Character.MapX);
                     ClientLinkManager.Instance.SetProperty(name, "MapId", Session.Character.MapId);
 
-                    ClientLinkManager.Instance.ChangeMap(Session.Character.CharacterId);
+                    ClientLinkManager.Instance.ChangeMap((long)id);
 
                 }
                 else
