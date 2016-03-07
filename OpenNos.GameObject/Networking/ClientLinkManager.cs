@@ -230,6 +230,15 @@ namespace OpenNos.GameObject
             propertyinfo.SetValue(session.Character, value, null);
 
         }
+        public void SetProperty(string charName, string property, object value)
+        {
+            ClientSession session = Sessions.FirstOrDefault(s => s.Character != null && s.Character.Name.Equals(charName));
+            if (session == null) return;
+
+            PropertyInfo propertyinfo = session.Character.GetType().GetProperties().Single(pi => pi.Name == property);
+            propertyinfo.SetValue(session.Character, value, null);
+
+        }
 
         public void SaveAll()
         {
