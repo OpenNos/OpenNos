@@ -620,6 +620,10 @@ namespace OpenNos.Handler
                             Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(vnum, inv.InventoryItem.Amount, iteminfo.Type, Slot, rare, design, upgrade));
                         }
                     }
+                    else
+                    {
+                        Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_PLACE"), 0);
+                    }
                 }
                 else
                 {
@@ -1035,7 +1039,7 @@ namespace OpenNos.Handler
                     else
                     {
                         Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_PLACE"), 0);
-                    } 
+                    }
                 }
             }
         }
