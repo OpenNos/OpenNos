@@ -70,7 +70,7 @@ namespace OpenNos.GameObject
 
         public void ChangeMap(long id)
         {
-            foreach (ClientSession Session in Sessions.Where(s => s.Character.CharacterId == id))
+            foreach (ClientSession Session in Sessions.Where(s => s.Character !=null && s.Character.CharacterId == id))
             {
                 Session.CurrentMap = ServerManager.GetMap(Session.Character.MapId);
                 Session.Client.SendPacket(Session.Character.GenerateCInfo());
