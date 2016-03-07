@@ -1935,8 +1935,12 @@ namespace OpenNos.Handler
         {
             string[] packetsplit = packet.Split(' ');
             long reput;
-            if (packetsplit.Length > 3)
+            if (packetsplit.Length != 3)
+            {
                 Session.Client.SendPacket(Session.Character.GenerateSay("$ChangeRep REPUTATION", 10));
+                return;
+            }
+               
             if (Int64.TryParse(packetsplit[2], out reput) && reput > 0)
             {
                 Session.Character.Reput = reput;
