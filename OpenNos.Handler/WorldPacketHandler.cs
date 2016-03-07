@@ -271,7 +271,7 @@ namespace OpenNos.Handler
                 Session.Client.SendPacket(Session.Character.GenerateSay("$ChangeClass CLASS", 10));
         }
 
-     
+
         public void ChangeSP()
         {
             Session.Client.SendPacket("delay 5000 3 #sl^1");
@@ -876,11 +876,11 @@ namespace OpenNos.Handler
                         if (!inventory.getFreePlaceAmount(exchange.ExchangeList, backpack))
                             continu = false;
 
-                        if (exchange.Gold + gold > 1000000)
+                        if (exchange.Gold + gold > 1000000000)
                             goldmax = true;
 
 
-                        if (Session.Character.ExchangeInfo.Gold + Session.Character.Gold > 1000000)
+                        if (Session.Character.ExchangeInfo.Gold + Session.Character.Gold > 1000000000)
                             goldmax = true;
 
                         if (continu == false)
@@ -1358,7 +1358,7 @@ namespace OpenNos.Handler
             }
         }
 
-   
+
 
         [Packet("$Morph")]
         public void Morph(string packet)
@@ -1940,7 +1940,7 @@ namespace OpenNos.Handler
                 Session.Client.SendPacket(Session.Character.GenerateSay("$ChangeRep REPUTATION", 10));
                 return;
             }
-               
+
             if (Int64.TryParse(packetsplit[2], out reput) && reput > 0)
             {
                 Session.Character.Reput = reput;
@@ -2117,7 +2117,7 @@ namespace OpenNos.Handler
                 }
 
                 Item item = ServerManager.GetItem(inv.InventoryItem.ItemVNum);
-                if (Session.Character.Gold + item.Price * amount > 1000000)
+                if (Session.Character.Gold + item.Price * amount > 1000000000)
                 {
                     string message = Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("MAX_GOLD"), 0);
                     Session.Client.SendPacket(message);
@@ -2802,16 +2802,15 @@ namespace OpenNos.Handler
             {
 
                 string name = packetsplit[2];
- 
-                long? id  = ClientLinkManager.Instance.GetProperty<long?>(name, "CharacterId");
-               
-                if (id !=null)
+
+                long? id = ClientLinkManager.Instance.GetProperty<long?>(name, "CharacterId");
+
+                if (id != null)
                 {
                     ClientLinkManager.Instance.MapOut((long)id);
-                    ClientLinkManager.Instance.SetProperty(name, "MapY", Session.Character.MapY);
-                    ClientLinkManager.Instance.SetProperty(name, "MapX", Session.Character.MapX);
+                    ClientLinkManager.Instance.SetProperty(name, "MapY", (short)((Session.Character.MapY) + (short)1));
+                    ClientLinkManager.Instance.SetProperty(name, "MapX", (short)((Session.Character.MapX) + (short)1));
                     ClientLinkManager.Instance.SetProperty(name, "MapId", Session.Character.MapId);
-
                     ClientLinkManager.Instance.ChangeMap((long)id);
 
                 }
@@ -2820,9 +2819,10 @@ namespace OpenNos.Handler
                     Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("USER_NOT_CONNECTED"), 0));
                 }
 
-            }else
-                    Session.Client.SendPacket(Session.Character.GenerateSay("$TeleportToMe CHARACTERNAME", 10));
-            
+            }
+            else
+                Session.Client.SendPacket(Session.Character.GenerateSay("$TeleportToMe CHARACTERNAME", 10));
+
         }
 
         [Packet("$Upgrade")]

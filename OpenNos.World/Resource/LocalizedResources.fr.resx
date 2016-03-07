@@ -258,6 +258,9 @@
   <data name="MAP_LOADED" xml:space="preserve">
     <value>{0} Carte chargés !</value>
   </data>
+  <data name="MAX_GOLD" xml:space="preserve">
+    <value>Maximum of gold reached!</value>
+  </data>
   <data name="MESSAGE_RECEIVED" xml:space="preserve">
     <value>Message reçu {0} on client {1}</value>
   </data>

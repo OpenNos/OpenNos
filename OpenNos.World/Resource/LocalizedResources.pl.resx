@@ -330,6 +330,9 @@
   <data name="MAP_LOADED" xml:space="preserve">
     <value>{0} Załadowanych map!</value>
   </data>
+  <data name="MAX_GOLD" xml:space="preserve">
+    <value>Maksymalna ilosc zlota osiagnieta!</value>
+  </data>
   <data name="MESSAGE_RECEIVED" xml:space="preserve">
     <value>Użytkownik {1} otrzymał: Packet {0}</value>
   </data>
