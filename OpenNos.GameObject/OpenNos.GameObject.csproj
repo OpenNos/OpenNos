@@ -63,9 +63,9 @@
     <Compile Include="Character.cs" />
     <Compile Include="Interface\IGameObject.cs" />
     <Compile Include="ExchangeInfo.cs" />
-    <Compile Include="Item\ItemHandler\FoodItemHandler.cs" />
+    <Compile Include="Item\ItemHandler\FoodItemHandler2.cs" />
     <Compile Include="Item\ItemHandler\NoFunctionItemHandler.cs" />
-    <Compile Include="Item\ItemHandler\PotionItemHandler.cs" />
+    <Compile Include="Item\ItemHandler\PotionItemHandler2.cs" />
     <Compile Include="Item\ItemHandler\SpecialItemHandler.cs" />
     <Compile Include="Item\ItemHandler\UpgradeItemHandler.cs" />
     <Compile Include="Item\ItemHandler\WearableItemHandler.cs" />
