@@ -23,23 +23,13 @@ namespace OpenNos.GameObject
         public override void Use(ClientSession Session)
         {
             MagicalItemHandler instance = new MagicalItemHandler();
-<<<<<<< HEAD
-            instance.UseItemHandler(Session, this, Effect, EffectValue);
-=======
             instance.UseItemHandler(Session, Effect, EffectValue);
->>>>>>> fceff5cac1472390cb1e55e204bf4489449ceb90
         }
         #region Instantiation
 
         #endregion
 
         #region Methods
-
-<<<<<<< HEAD
-       
-=======
-
->>>>>>> fceff5cac1472390cb1e55e204bf4489449ceb90
         #endregion
     }
 }
