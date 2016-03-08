@@ -65,7 +65,8 @@ namespace OpenNos.GameObject
             {
                 session.Character.Mp += session.Character.SnackHp;
                 session.Character.Hp += session.Character.SnackMp;
-                ClientLinkManager.Instance.Broadcast(session, session.Character.GenerateRc(session.Character.SnackHp), ReceiverType.AllOnMap);
+                if (session.Character.Hp < session.Character.HPLoad() || session.Character.Mp < session.Character.MPLoad())
+                    ClientLinkManager.Instance.Broadcast(session, session.Character.GenerateRc(session.Character.SnackHp), ReceiverType.AllOnMap);
                 session.Client.SendPacket(session.Character.GenerateStat());
                 Thread.Sleep(1800);
             }

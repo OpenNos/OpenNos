@@ -26,7 +26,8 @@ namespace OpenNos.GameObject
                 default:
                     session.Character.Mp += item.Mp;
                     session.Character.Hp += item.Hp;
-                    ClientLinkManager.Instance.Broadcast(session, session.Character.GenerateRc(item.Hp), ReceiverType.AllOnMap);
+                    if (session.Character.Hp < session.Character.HPLoad() || session.Character.Mp < session.Character.MPLoad())
+                        ClientLinkManager.Instance.Broadcast(session, session.Character.GenerateRc(item.Hp), ReceiverType.AllOnMap);
                     session.Client.SendPacket(session.Character.GenerateStat());
                     break;
             }
