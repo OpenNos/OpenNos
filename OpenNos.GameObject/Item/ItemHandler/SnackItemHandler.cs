@@ -33,6 +33,7 @@ namespace OpenNos.GameObject
         }
         public void regen(ClientSession session, Item item)
         {
+            session.Client.SendPacket(session.Character.GenerateEff(6000));
             for (int i = 0; i < 5; i++)
             {
                 session.Character.Mp += item.Mp / 5;

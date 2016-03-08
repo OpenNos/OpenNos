@@ -36,6 +36,7 @@ namespace OpenNos.GameObject
         {
             session.Character.IsSitting = true;
             ClientLinkManager.Instance.Broadcast(session, session.Character.GenerateRest(), ReceiverType.AllOnMap);
+            session.Client.SendPacket(session.Character.GenerateEff(6000));
             for (int i = 0; i < 5 && session.Character.IsSitting; i++)
             {
                 session.Character.Mp += item.Mp / 5;
