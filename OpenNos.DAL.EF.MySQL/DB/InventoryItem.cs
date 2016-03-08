@@ -11,7 +11,7 @@ namespace OpenNos.DAL.EF.MySQL.DB
 {
     using System;
     using System.Collections.Generic;
-
+    
     public partial class InventoryItem
     {
         public long InventoryItemId { get; set; }
@@ -63,7 +63,7 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public byte SpFire { get; set; }
         public byte SpWater { get; set; }
         public byte SpStoneUpgrade { get; set; }
-
+    
         public virtual Item item { get; set; }
         public virtual Inventory inventory { get; set; }
     }
