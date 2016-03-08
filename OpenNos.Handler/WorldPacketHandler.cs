@@ -2956,20 +2956,22 @@ namespace OpenNos.Handler
 
                     case (byte)ItemType.Snack:
                     case (byte)ItemType.Food:
-                        if (Session.Character.SnackAmount < 5)
+                        if (Session.Character.SnackAmount >= 5)
+                            return;
+                        LastInventory = Session.Character.InventoryList.LoadBySlotAndType(slot, type).InventoryItem;
+                        LastInventory.Amount--;
+                        if (LastInventory != null)
+                            Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(LastInventory.ItemVNum, LastInventory.Amount, type, slot, LastInventory.Rare, LastInventory.Design, LastInventory.Upgrade));
+                        else
                         {
-                            LastInventory = Session.Character.InventoryList.LoadBySlotAndType(slot, type).InventoryItem;
-                            LastInventory.Amount--;
-                            if (LastInventory != null)
-                                Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(LastInventory.ItemVNum, LastInventory.Amount, type, slot, LastInventory.Rare, LastInventory.Design, LastInventory.Upgrade));
-                            else
-                            {
-                                DeleteItem(type, slot);
-                            }
+                            DeleteItem(type, slot);
                         }
+
                         break;
 
                     case (byte)ItemType.Potion:
+                        if (Session.Character.Hp == Session.Character.HPLoad() && Session.Character.Mp == Session.Character.MPLoad())
+                            return;
                         LastInventory = Session.Character.InventoryList.LoadBySlotAndType(slot, type).InventoryItem;
                         LastInventory.Amount--;
                         if (LastInventory != null)
