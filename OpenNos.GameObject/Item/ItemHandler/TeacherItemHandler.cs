@@ -12,19 +12,22 @@
  * GNU General Public License for more details.
  */
 
+
 using System;
 
 namespace OpenNos.GameObject
 {
-    public class UsableItem : Item
+    public class TeacherItemHandler
     {
-        #region Methods
-
-        public override void Use(ClientSession Session)
+        internal void UseItemHandler(ClientSession session, short effect, int effectValue)
         {
-            throw new NotImplementedException();
-        }
+            switch (effect)
+            {
+                default:
+                    //no handler founded
+                    break;
+            }
 
-        #endregion
+        }
     }
 }

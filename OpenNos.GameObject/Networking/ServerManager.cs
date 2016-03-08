@@ -12,6 +12,7 @@
  * GNU General Public License for more details.
  */
 
+using AutoMapper;
 using OpenNos.Core;
 using OpenNos.DAL;
 using OpenNos.Data;
@@ -59,79 +60,91 @@ namespace OpenNos.GameObject
 
         public static void Initialize()
         {
-            foreach (ItemDTO item in DAOFactory.ItemDAO.LoadAll())
+            foreach (ItemDTO itemDTO in DAOFactory.ItemDAO.LoadAll())
             {
-                _items.Add(new UsableItem
+                Item ItemGO = null;
+
+                switch (itemDTO.ItemType)
                 {
-                    WaterResistance = item.WaterResistance,
-                    PvpDefence = item.PvpDefence,
-                    Price = item.Price,
-                    Name = item.Name,
-                    Class = item.Class,
-                    IsBlocked = item.IsBlocked,
-                    IsColored = item.IsColored,
-                    CriticalLuckRate = item.CriticalLuckRate,
-                    Concentrate = item.Concentrate,
-                    CriticalRate = item.CriticalRate,
-                    DamageMaximum = item.DamageMaximum,
-                    DamageMinimum = item.DamageMinimum,
-                    DarkElement = item.DarkElement,
-                    DarkResistance = item.DarkResistance,
-                    ReduceOposantResistance = item.ReduceOposantResistance,
-                    DistanceDefence = item.DistanceDefence,
-                    DistanceDefenceDodge = item.DistanceDefenceDodge,
-                    DefenceDodge = item.DefenceDodge,
-                    IsDroppable = item.IsDroppable,
-                    Element = item.Element,
-                    ElementRate = item.ElementRate,
-                    FireElement = item.FireElement,
-                    EquipmentSlot = item.EquipmentSlot,
-                    FireResistance = item.FireResistance,
-                    HitRate = item.HitRate,
-                    Hp = item.Hp,
-                    HpRegeneration = item.HpRegeneration,
-                    IsConsumable = item.IsConsumable,
-                    IsWarehouse = item.IsWarehouse,
-                    ItemType = item.ItemType,
-                    LevelJobMinimum = item.LevelJobMinimum,
-                    ReputationMinimum = item.ReputationMinimum,
-                    LevelMinimum = item.LevelMinimum,
-                    LightElement = item.LightElement,
-                    LightResistance = item.LightResistance,
-                    MagicDefence = item.MagicDefence,
-                    MaxCellon = item.MaxCellon,
-                    MaxCellonLvl = item.MaxCellonLvl,
-                    IsMinilandObject = item.IsMinilandObject,
-                    MoreHp = item.MoreHp,
-                    MoreMp = item.MoreMp,
-                    Morph = item.Morph,
-                    Mp = item.Mp,
-                    MpRegeneration = item.MpRegeneration,
-                    PvpStrength = item.PvpStrength,
-                    CloseDefence = item.CloseDefence,
-                    IsSoldable = item.IsSoldable,
-                    IsTradable = item.IsTradable,
-                    Speed = item.Speed,
-                    Type = item.Type,
-                    VNum = item.VNum,
-                    WaterElement = item.WaterElement,
-                    SpType = item.SpType,
-                    Color = item.Color,
-                    CellonLvl = item.CellonLvl,
-                    BasicUpgrade = item.BasicUpgrade,
-                    Effect = item.Effect,
-                    EffectValue = item.EffectValue,
-                    FairyMaximumLevel = item.FairyMaximumLevel,
-                    Sex = item.Sex,
-                    SecondaryElement = item.SecondaryElement,
-                    MaximumAmmo = item.MaximumAmmo,
-                    ItemValidTime = item.ItemValidTime,
-                    ItemSubType = item.ItemSubType
-                });
+                    case (byte)Domain.ItemType.Ammo:
+                        ItemGO = Mapper.DynamicMap<NoFunctionItem>(itemDTO);
+                        break;
+                    case (byte)Domain.ItemType.Armor:
+                        ItemGO = Mapper.DynamicMap<WearableItem>(itemDTO);
+                        break;
+                    case (byte)Domain.ItemType.Box:
+                        ItemGO = Mapper.DynamicMap<BoxItem>(itemDTO);
+                        break;
+                    case (byte)Domain.ItemType.Event:
+                        ItemGO = Mapper.DynamicMap<MagicalItem>(itemDTO);
+                        break;
+                    case (byte)Domain.ItemType.Fashion:
+                        ItemGO = Mapper.DynamicMap<WearableItem>(itemDTO);
+                        break;
+                    case (byte)Domain.ItemType.Food:
+                        ItemGO = Mapper.DynamicMap<FoodItem>(itemDTO);
+                        break;
+                    case (byte)Domain.ItemType.Jewelery:
+                        ItemGO = Mapper.DynamicMap<WearableItem>(itemDTO);
+                        break;
+                    case (byte)Domain.ItemType.Magical:
+                        ItemGO = Mapper.DynamicMap<MagicalItem>(itemDTO);
+                        break;
+                    case (byte)Domain.ItemType.Main:
+                        ItemGO = Mapper.DynamicMap<NoFunctionItem>(itemDTO);
+                        break;
+                    case (byte)Domain.ItemType.Map:
+                        ItemGO = Mapper.DynamicMap<NoFunctionItem>(itemDTO);
+                        break;
+                    case (byte)Domain.ItemType.Part:
+                        ItemGO = Mapper.DynamicMap<NoFunctionItem>(itemDTO);
+                        break;
+                    case (byte)Domain.ItemType.Potion:
+                        ItemGO = Mapper.DynamicMap<PotionItem>(itemDTO);
+                        break;
+                    case (byte)Domain.ItemType.Production:
+                        ItemGO = Mapper.DynamicMap<ProduceItem>(itemDTO);
+                        break;
+                    case (byte)Domain.ItemType.Quest1:
+                        ItemGO = Mapper.DynamicMap<NoFunctionItem>(itemDTO);
+                        break;
+                    case (byte)Domain.ItemType.Quest2:
+                        ItemGO = Mapper.DynamicMap<NoFunctionItem>(itemDTO);
+                        break;
+                    case (byte)Domain.ItemType.Sell:
+                        ItemGO = Mapper.DynamicMap<NoFunctionItem>(itemDTO);
+                        break;
+                    case (byte)Domain.ItemType.Shell:
+                        ItemGO = Mapper.DynamicMap<MagicalItem>(itemDTO);
+                        break;
+                    case (byte)Domain.ItemType.Snack:
+                        ItemGO = Mapper.DynamicMap<SnackItem>(itemDTO);
+                        break;
+                    case (byte)Domain.ItemType.Special:
+                        ItemGO = Mapper.DynamicMap<SpecialItem>(itemDTO);
+                        break;
+                    case (byte)Domain.ItemType.Specialist:
+                        ItemGO = Mapper.DynamicMap<WearableItem>(itemDTO);
+                        break;
+                    case (byte)Domain.ItemType.Teacher:
+                        ItemGO = Mapper.DynamicMap<TeacherItem>(itemDTO);
+                        break;
+                    case (byte)Domain.ItemType.Upgrade:
+                        ItemGO = Mapper.DynamicMap<UpgradeItem>(itemDTO);
+                        break;
+                    case (byte)Domain.ItemType.Weapon:
+                        ItemGO = Mapper.DynamicMap<WearableItem>(itemDTO);
+                        break;
+                    default:
+                        ItemGO = Mapper.DynamicMap<NoFunctionItem>(itemDTO);
+                        break;
+
+                }
+                _items.Add(ItemGO);
             }
 
             Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("ITEM_LOADED"), _items.Count()));
-
+            
             try
             {
                 int i = 0;

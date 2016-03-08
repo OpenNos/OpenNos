@@ -12,25 +12,26 @@
  * GNU General Public License for more details.
  */
 
+using System;
 using AutoMapper;
 using OpenNos.Data;
 
 namespace OpenNos.GameObject
 {
-    public abstract class Item : ItemDTO
+    public class UpgradeItem : Item
     {
-        #region Instantiation
-
-        public Item()
+        public override void Use(ClientSession Session)
         {
+            UpgradeItemHandler instance = new UpgradeItemHandler();
+            instance.UseItemHandler(Session, Effect, EffectValue);
         }
+        #region Instantiation
 
         #endregion
 
         #region Methods
 
-        public abstract void Use(ClientSession Session);
-
+       
         #endregion
     }
 }

@@ -12,25 +12,22 @@
  * GNU General Public License for more details.
  */
 
-using AutoMapper;
-using OpenNos.Data;
+
+using System;
 
 namespace OpenNos.GameObject
 {
-    public abstract class Item : ItemDTO
+    public class NoFunctionItemHandler
     {
-        #region Instantiation
-
-        public Item()
+        internal void UseItemHandler(ClientSession session, short effect, int effectValue)
         {
+            switch (effect)
+            {
+                default:
+                    //no handler founded
+                    break;
+            }
+
         }
-
-        #endregion
-
-        #region Methods
-
-        public abstract void Use(ClientSession Session);
-
-        #endregion
     }
 }

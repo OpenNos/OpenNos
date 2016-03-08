@@ -12,25 +12,26 @@
  * GNU General Public License for more details.
  */
 
+using System;
 using AutoMapper;
 using OpenNos.Data;
 
 namespace OpenNos.GameObject
 {
-    public abstract class Item : ItemDTO
+    public class ProduceItem : Item
     {
-        #region Instantiation
-
-        public Item()
+        public override void Use(ClientSession Session)
         {
+            ProduceItemHandler instance = new ProduceItemHandler();
+            instance.UseItemHandler(Session, Effect, EffectValue);
         }
+        #region Instantiation
 
         #endregion
 
         #region Methods
 
-        public abstract void Use(ClientSession Session);
-
+       
         #endregion
     }
 }

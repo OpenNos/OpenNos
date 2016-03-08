@@ -915,7 +915,6 @@ namespace OpenNos.GameObject
             foreach (InventoryDTO inventory in inventorysDTO)
             {
                 inventory.InventoryItem = DAOFactory.InventoryItemDAO.LoadByInventoryId(inventory.InventoryId);
-                Item item = ServerManager.GetItem(inventory.InventoryItem.ItemVNum); // unused variable
                 InventoryItem invitem = new InventoryItem
                 {
                     Amount = inventory.InventoryItem.Amount,

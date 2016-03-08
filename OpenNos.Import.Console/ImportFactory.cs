@@ -374,7 +374,8 @@ namespace OpenNos.Import.Console
                                 //nothing to parse
                                 break;
                             case (byte)ItemType.Event:
-                                //nothing to parse
+                                item.Effect = Convert.ToInt16(linesave[2]);
+                                item.EffectValue = Convert.ToInt32(linesave[4]);
                                 break;
                         }
 
