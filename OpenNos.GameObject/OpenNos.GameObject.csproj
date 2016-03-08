@@ -64,10 +64,7 @@
     <Compile Include="Interface\IGameObject.cs" />
     <Compile Include="ExchangeInfo.cs" />
     <Compile Include="Item\FoodItem.cs" />
-<<<<<<< HEAD
-=======
     <Compile Include="Item\ItemHandler\FoodItemHandler.cs" />
->>>>>>> fceff5cac1472390cb1e55e204bf4489449ceb90
     <Compile Include="Item\ItemHandler\NoFunctionItemHandler.cs" />
     <Compile Include="Item\ItemHandler\SpecialItemHandler.cs" />
     <Compile Include="Item\ItemHandler\UpgradeItemHandler.cs" />
