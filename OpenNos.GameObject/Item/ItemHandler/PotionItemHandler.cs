@@ -12,26 +12,22 @@
  * GNU General Public License for more details.
  */
 
+
 using System;
-using AutoMapper;
-using OpenNos.Data;
 
 namespace OpenNos.GameObject
 {
-    public class SpecialItem: Item
+    public class PotionItemHandler
     {
-        public override void Use(ClientSession Session)
+        internal void UseItemHandler(Item item, ClientSession session, short effect, int effectValue)
         {
-            SpecialItemHandler instance = new SpecialItemHandler();
-            instance.UseItemHandler(this, Session, Effect, EffectValue);
+            switch (effect)
+            {
+                default:
+                    //no handler founded
+                    break;
+            }
+
         }
-        #region Instantiation
-
-        #endregion
-
-        #region Methods
-
-       
-        #endregion
     }
 }
