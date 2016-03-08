@@ -14,6 +14,7 @@
 
 
 using OpenNos.Core;
+using OpenNos.Core.Communication.Scs.Communication;
 using System;
 using System.Threading;
 
@@ -82,8 +83,8 @@ namespace OpenNos.GameObject
                 session.Character.Hp += session.Character.SnackMp;
                 if (session.Character.Hp < session.Character.HPLoad() || session.Character.Mp < session.Character.MPLoad())
                     ClientLinkManager.Instance.Broadcast(session, session.Character.GenerateRc(session.Character.SnackHp), ReceiverType.AllOnMap);
-                if (session.Character != null)
-                    session.Client.SendPacket(session.Character.GenerateStat());
+                if (session.Client.CommunicationState == CommunicationStates.Connected)
+                    ClientLinkManager.Instance.Broadcast(session, session.Character.GenerateStat(), ReceiverType.OnlyMe);
                 Thread.Sleep(1800);
             }
         }
