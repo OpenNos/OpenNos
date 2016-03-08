@@ -23,7 +23,7 @@ namespace OpenNos.GameObject
         public override void Use(ClientSession Session)
         {
             ProduceItemHandler instance = new ProduceItemHandler();
-            instance.UseItemHandler(Session, this, Effect, EffectValue);
+            instance.UseItemHandler(Session, Effect, EffectValue);
         }
         #region Instantiation
 

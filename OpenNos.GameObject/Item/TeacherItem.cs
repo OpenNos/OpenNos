@@ -23,7 +23,7 @@ namespace OpenNos.GameObject
         public override void Use(ClientSession Session)
         {
             TeacherItemHandler instance = new TeacherItemHandler();
-            instance.UseItemHandler(Session, this, Effect, EffectValue);
+            instance.UseItemHandler(Session, Effect, EffectValue);
         }
         #region Instantiation
 

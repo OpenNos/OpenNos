@@ -19,7 +19,7 @@ namespace OpenNos.GameObject
 {
     public class TeacherItemHandler
     {
-        internal void UseItemHandler(ClientSession session, Item item, short effect, int effectValue)
+        internal void UseItemHandler(ClientSession session, short effect, int effectValue)
         {
             switch (effect)
             {
