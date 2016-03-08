@@ -2939,6 +2939,17 @@ namespace OpenNos.Handler
         public void UseItem(string packet)
         {
             string[] packetsplit = packet.Split(' ');
+            byte type; byte.TryParse(packetsplit[4], out type);
+            short slot; short.TryParse(packetsplit[5], out slot);
+            Inventory inv = Session.Character.InventoryList.LoadBySlotAndType(slot, type);
+            if(inv !=null)
+            {
+                ServerManager.GetItem(inv.InventoryItem.ItemVNum).Use(Session);
+            }
+        }
+      /*  public void UseItem(string packet)
+        {
+            string[] packetsplit = packet.Split(' ');
             if (packetsplit.Length > 8)
             {
                 short uitype; short.TryParse(packetsplit[2], out uitype);
@@ -2970,7 +2981,7 @@ namespace OpenNos.Handler
                         break;
                 }
             }
-        }
+        }*/
 
         [Packet("u_s")]
         public void UseSkill(string packet)
