@@ -79,8 +79,9 @@ namespace OpenNos.GameObject
                 session.Character.Hp += session.Character.SnackMp;
                 if (session.Character.Hp < session.Character.HPLoad() || session.Character.Mp < session.Character.MPLoad())
                     ClientLinkManager.Instance.Broadcast(session, session.Character.GenerateRc(session.Character.SnackHp), ReceiverType.AllOnMap);
-                if (session.Client.CommunicationState ==CommunicationStates.Connected)
-                    ClientLinkManager.Instance.Broadcast(session,session.Character.GenerateStat(),ReceiverType.OnlyMe);
+                if (session.Client.CommunicationState == CommunicationStates.Connected)
+                    ClientLinkManager.Instance.Broadcast(session, session.Character.GenerateStat(), ReceiverType.OnlyMe);
+                else return;
                 Thread.Sleep(1800);
             }
         }
