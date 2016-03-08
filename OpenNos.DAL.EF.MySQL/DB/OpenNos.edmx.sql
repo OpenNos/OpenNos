@@ -44,7 +44,7 @@
 -- -----------------------------------------------------------
 -- Entity Designer DDL Script for MySQL Server 4.1 and higher
 -- -----------------------------------------------------------
--- Date Created: 03/05/2016 16:42:09
+-- Date Created: 03/08/2016 16:18:34
 
 -- Generated from EDMX file: C:\Users\Dominik\Source\Repos\OpenNos\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
 -- Target version: 3.0.0.0
@@ -125,7 +125,7 @@ SET foreign_key_checks = 1;
 
 
 CREATE TABLE `account`(
-	`AccountId` bigint NOT NULL, 
+	`AccountId` bigint NOT NULL AUTO_INCREMENT UNIQUE, 
 	`Name` varchar (255) NOT NULL, 
 	`Password` varchar (255) NOT NULL, 
 	`Authority` TINYINT UNSIGNED NOT NULL, 
@@ -253,6 +253,8 @@ CREATE TABLE `item`(
 	`IsSoldable` bool NOT NULL, 
 	`IsMinilandObject` bool NOT NULL, 
 	`IsWarehouse` bool NOT NULL, 
+	`IsColored` bool NOT NULL, 
+	`IsConsumable` bool NOT NULL, 
 	`LevelMinimum` TINYINT UNSIGNED NOT NULL, 
 	`DamageMinimum` smallint NOT NULL, 
 	`DamageMaximum` smallint NOT NULL, 
@@ -288,8 +290,6 @@ CREATE TABLE `item`(
 	`MpRegeneration` smallint NOT NULL, 
 	`MoreHp` smallint NOT NULL, 
 	`MoreMp` smallint NOT NULL, 
-	`IsColored` bool NOT NULL, 
-	`IsConsumable` bool NOT NULL, 
 	`ReputationMinimum` TINYINT UNSIGNED NOT NULL, 
 	`FairyMaximumLevel` TINYINT UNSIGNED NOT NULL, 
 	`MaximumAmmo` TINYINT UNSIGNED NOT NULL, 
@@ -348,6 +348,11 @@ ALTER TABLE `npc` ADD PRIMARY KEY (NpcId);
 
 CREATE TABLE `inventoryitem`(
 	`InventoryItemId` bigint NOT NULL AUTO_INCREMENT UNIQUE, 
+	`ItemVNum` smallint NOT NULL, 
+	`Amount` TINYINT UNSIGNED NOT NULL, 
+	`Rare` TINYINT UNSIGNED NOT NULL, 
+	`Upgrade` TINYINT UNSIGNED NOT NULL, 
+	`Design` smallint NOT NULL, 
 	`DamageMinimum` smallint NOT NULL, 
 	`DamageMaximum` smallint NOT NULL, 
 	`Concentrate` smallint NOT NULL, 
@@ -360,17 +365,12 @@ CREATE TABLE `inventoryitem`(
 	`DistanceDefenceDodge` smallint NOT NULL, 
 	`DefenceDodge` smallint NOT NULL, 
 	`ElementRate` smallint NOT NULL, 
-	`Upgrade` TINYINT UNSIGNED NOT NULL, 
-	`Rare` TINYINT UNSIGNED NOT NULL, 
-	`Design` smallint NOT NULL, 
-	`Amount` TINYINT UNSIGNED NOT NULL, 
 	`HP` smallint NOT NULL, 
 	`MP` smallint NOT NULL, 
 	`DarkElement` TINYINT UNSIGNED NOT NULL, 
 	`LightElement` TINYINT UNSIGNED NOT NULL, 
 	`WaterElement` TINYINT UNSIGNED NOT NULL, 
 	`FireElement` TINYINT UNSIGNED NOT NULL, 
-	`ItemVNum` smallint NOT NULL, 
 	`Ammo` TINYINT UNSIGNED NOT NULL, 
 	`IsFixed` bool NOT NULL, 
 	`ItemValidTime` bigint NOT NULL, 
