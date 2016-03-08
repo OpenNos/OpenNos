@@ -26,7 +26,8 @@ namespace OpenNos.GameObject
             switch (effect)
             {
                 default:
-                    if (session.Character.SnackAmount < 5)
+                    int amount = session.Character.SnackAmount;
+                    if (amount < 5)
                     {
                         Thread workerThread = new Thread(() => regen(session, item));
                         workerThread.Start();
@@ -35,7 +36,7 @@ namespace OpenNos.GameObject
                     {
                         session.Client.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NOT_HANGRY"), 1));
                     }
-                    if (session.Character.SnackAmount == 1)
+                    if (amount == 0)
                     {
                         Thread workerThread2 = new Thread(() => sync(session, item));
                         workerThread2.Start();
