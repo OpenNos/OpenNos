@@ -100,6 +100,10 @@ namespace OpenNos.GameObject
         private int MinDistance { get; set; }
         private int MinHit { get; set; }
         private int WaterResistance { get; set; }
+        public int SnackAmount { get;  set; }
+        public int MaxSnack { get;  set; }
+        public int SnackHp { get;  set; }
+        public int SnackMp { get;  set; }
 
         #endregion
 

@@ -13,6 +13,7 @@
  */
 
 
+using OpenNos.Core;
 using System;
 using System.Threading;
 
@@ -25,25 +26,49 @@ namespace OpenNos.GameObject
             switch (effect)
             {
                 default:
-                    Thread workerThread = new Thread(() => regen(session, item));
-                    workerThread.Start();
-                    break;
+                    if (session.Character.SnackAmount < 5)
+                    {
+                        Thread workerThread = new Thread(() => regen(session, item));
+                        workerThread.Start();
+                    }
+                    else
+                    {
+                        session.Client.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NOT_HANGRY"), 1));
+                    }
+                    if (session.Character.SnackAmount == 1)
+                    {
+                        Thread workerThread2 = new Thread(() => sync(session, item));
+                        workerThread2.Start();
+                    }
+                        break;
             }
 
         }
         public void regen(ClientSession session, Item item)
         {
             session.Client.SendPacket(session.Character.GenerateEff(6000));
+            session.Character.SnackAmount++;
+            session.Character.MaxSnack=0;
+            session.Character.SnackHp += item.Hp / 5;
+            session.Character.SnackMp += item.Mp / 5;
             for (int i = 0; i < 5; i++)
             {
-                session.Character.Mp += item.Mp / 5;
-                session.Character.Hp += item.Hp / 5;
-                ClientLinkManager.Instance.Broadcast(session, session.Character.GenerateRc(item.Hp / 5), ReceiverType.AllOnMap);
+                Thread.Sleep(1800);
+            }
+            session.Character.SnackHp -= item.Hp / 5;
+            session.Character.SnackMp -= item.Mp / 5;
+            session.Character.SnackAmount--;
+        }
+        public void sync(ClientSession session, Item item)
+        {
+            for (session.Character.MaxSnack = 0; session.Character.MaxSnack < 5; session.Character.MaxSnack++)
+            {
+                session.Character.Mp += session.Character.SnackHp;
+                session.Character.Hp += session.Character.SnackMp;
+                ClientLinkManager.Instance.Broadcast(session, session.Character.GenerateRc(session.Character.SnackHp), ReceiverType.AllOnMap);
                 session.Client.SendPacket(session.Character.GenerateStat());
                 Thread.Sleep(1800);
             }
-
-
         }
     }
 }

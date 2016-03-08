@@ -13,6 +13,7 @@
  */
 
 
+using OpenNos.Core;
 using System;
 
 namespace OpenNos.GameObject
@@ -24,7 +25,7 @@ namespace OpenNos.GameObject
             switch (effect)
             {
                 default:
-                    //no handler founded
+                     Logger.Log.Warn(Language.Instance.GetMessageFromKey(String.Format("NO_HANDLER_ITEM", this.GetType().ToString())));
                     break;
             }
 

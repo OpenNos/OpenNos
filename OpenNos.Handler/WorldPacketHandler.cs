@@ -2086,7 +2086,12 @@ namespace OpenNos.Handler
                         MinilandInviteBlocked = characterDTO.MinilandInviteBlocked,
                         QuickGetUp = characterDTO.QuickGetUp,
                         MouseAimLock = characterDTO.MouseAimLock,
-                        LastLogin = DateTime.Now
+                        LastLogin = DateTime.Now,
+                        SnackHp = 0,
+                        SnackMp = 0,
+                        SnackAmount = 0,
+                        MaxSnack = 0,
+
                     };
 
                 Session.Character.Update();
@@ -2945,12 +2950,27 @@ namespace OpenNos.Handler
             if (inv != null)
             {
                 Item iteminfo = ServerManager.GetItem(inv.InventoryItem.ItemVNum);
+                InventoryItemDTO LastInventory = null;
                 switch (iteminfo.ItemType)
                 {
+
                     case (byte)ItemType.Snack:
-                    case (byte)ItemType.Potion:
                     case (byte)ItemType.Food:
-                        InventoryItemDTO LastInventory = Session.Character.InventoryList.LoadBySlotAndType(slot, type).InventoryItem;
+                        if (Session.Character.SnackAmount < 5)
+                        {
+                            LastInventory = Session.Character.InventoryList.LoadBySlotAndType(slot, type).InventoryItem;
+                            LastInventory.Amount--;
+                            if (LastInventory != null)
+                                Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(LastInventory.ItemVNum, LastInventory.Amount, type, slot, LastInventory.Rare, LastInventory.Design, LastInventory.Upgrade));
+                            else
+                            {
+                                DeleteItem(type, slot);
+                            }
+                        }
+                        break;
+
+                    case (byte)ItemType.Potion:
+                        LastInventory = Session.Character.InventoryList.LoadBySlotAndType(slot, type).InventoryItem;
                         LastInventory.Amount--;
                         if (LastInventory != null)
                             Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(LastInventory.ItemVNum, LastInventory.Amount, type, slot, LastInventory.Rare, LastInventory.Design, LastInventory.Upgrade));
@@ -2959,7 +2979,6 @@ namespace OpenNos.Handler
                             DeleteItem(type, slot);
                         }
                         break;
-
                 }
                 iteminfo.Use(Session);
             }
