@@ -79,7 +79,7 @@
     <Key>
       <PropertyRef Name="AccountId" />
     </Key>
-    <Property Name="AccountId" Type="bigint" Nullable="false" />
+    <Property Name="AccountId" Type="bigint" Nullable="false" StoreGeneratedPattern="Identity" />
     <Property Name="Name" Type="varchar" Nullable="false" MaxLength="255" />
     <Property Name="Password" Type="varchar" Nullable="false" MaxLength="255" />
     <Property Name="Authority" Type="utinyint" Nullable="false" />
@@ -551,7 +551,7 @@
           <Key>
             <PropertyRef Name="AccountId" />
           </Key>
-          <Property Name="AccountId" Type="Int64" Nullable="false" />
+          <Property Name="AccountId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Name" Type="String" Nullable="false" MaxLength="255" />
           <Property Name="Password" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="Authority" Type="Byte" Nullable="false" />

@@ -115,6 +115,15 @@ namespace OpenNos.Import.Console.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No handler founded for this item in {0}.
+        /// </summary>
+        internal static string NO_HANDLER_ITEM {
+            get {
+                return ResourceManager.GetString("NO_HANDLER_ITEM", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to This item id is not valid!.
         /// </summary>
         internal static string NO_ITEM {
