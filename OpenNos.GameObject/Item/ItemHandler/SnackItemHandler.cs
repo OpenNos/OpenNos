@@ -14,20 +14,32 @@
 
 using OpenNos.Core;
 using System;
+using System.Threading;
 
 namespace OpenNos.GameObject
 {
     public class SnackItemHandler
     {
-        internal void UseItemHandler(ClientSession session, short effect, int effectValue)
+        internal void UseItemHandler(ClientSession session, Item item, short effect, int effectValue)
         {
             switch (effect)
             {
                 default:
-                    Logger.Log.Warn(Language.Instance.GetMessageFromKey(String.Format("NO_HANDLER_ITEM", this.GetType().ToString())));
+                    Thread workerThread = new Thread(() => regen(session, item));
                     break;
             }
 
+        }
+        public void regen(ClientSession session, Item item)
+        {
+            for (int i = 0; i < 5; i++)
+            {
+                session.Character.Mp += item.Mp / 5;
+                session.Character.Hp += item.Hp / 5;
+                ClientLinkManager.Instance.Broadcast(session, session.Character.GenerateRc(item.Hp / 5), ReceiverType.AllOnMap);
+                session.Client.SendPacket(session.Character.GenerateStat());
+                Thread.Sleep(1800);
+            }
         }
     }
 }

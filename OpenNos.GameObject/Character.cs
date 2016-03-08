@@ -41,6 +41,9 @@ namespace OpenNos.GameObject
         private int _morphUpgrade;
         private int _morphUpgrade2;
         private bool _issitting;
+
+ 
+
         private int _size = 10;
         private int _speed;
         #endregion
@@ -459,6 +462,11 @@ namespace OpenNos.GameObject
         public List<string> GeneratePlayerShopOnMap()
         {
             return ServerManager.GetMap(MapId).ShopUserList.Select(shop => $"pflag 1 {shop.Value.OwnerId} {shop.Key + 1}").ToList();
+        }
+
+        public string GenerateRc(int v)
+        {
+            return $"rc 1 {CharacterId} {v} 0";
         }
 
         public string GenerateReqInfo()

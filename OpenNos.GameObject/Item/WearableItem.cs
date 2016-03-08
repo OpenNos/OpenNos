@@ -23,7 +23,7 @@ namespace OpenNos.GameObject
         public override void Use(ClientSession Session)
         {
             WearableItemHandler instance = new WearableItemHandler();
-            instance.UseItemHandler(Session, Effect, EffectValue);
+            instance.UseItemHandler(Session, this, Effect, EffectValue);
         }
         #region Instantiation
 
