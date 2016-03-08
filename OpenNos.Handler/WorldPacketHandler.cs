@@ -2760,7 +2760,7 @@ namespace OpenNos.Handler
             short[] arg = new short[3];
             bool verify = false;
 
-            if (packetsplit.Length > 4)
+            if (packetsplit.Length > 3)
             {
                 verify = (short.TryParse(packetsplit[2], out arg[0]) && short.TryParse(packetsplit[3], out arg[1]) && short.TryParse(packetsplit[4], out arg[2]) && DAOFactory.MapDAO.LoadById(arg[0]) != null);
             }
@@ -2768,10 +2768,10 @@ namespace OpenNos.Handler
             {
                 case 3:
                     string name = packetsplit[2];
-                    short mapy = ClientLinkManager.Instance.GetProperty<short>(name, "MapY");
-                    short mapx = ClientLinkManager.Instance.GetProperty<short>(name, "MapX");
-                    short mapId = ClientLinkManager.Instance.GetProperty<short>(name, "MapId");
-                    if ($"{mapy}" != "" && $"{mapx}" != "" && $"{mapId}" != "")
+                    short? mapy = ClientLinkManager.Instance.GetProperty<short?>(name, "MapY");
+                    short? mapx = ClientLinkManager.Instance.GetProperty<short?>(name, "MapX");
+                    short? mapId = ClientLinkManager.Instance.GetProperty<short?>(name, "MapId");
+                    if (mapy != null && mapx != null && mapId != null)
                     {
                         ClientLinkManager.Instance.MapOut(Session.Character.CharacterId);
                         Session.Character.MapId = (short)mapId;
