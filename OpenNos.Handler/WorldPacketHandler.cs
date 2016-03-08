@@ -797,7 +797,6 @@ namespace OpenNos.Handler
                 Session.Client.SendPacket(Session.Character.GenerateSay("$Effect EFFECT", 10));
         }
 
-       
         [Packet("eqinfo")]
         public void EqInfo(string packet)
         {
@@ -2937,25 +2936,6 @@ namespace OpenNos.Handler
         }
 
         [Packet("u_i")]
-        public void useItem(string packet)
-        {
-            string[] packetsplit = packet.Split(' ');
-            if (packetsplit.Length <= 5) return;
-            byte type; byte.TryParse(packetsplit[4], out type);
-            short slot; short.TryParse(packetsplit[5], out slot);
-            Inventory inventory = null;
-            switch (type)
-            {
-                default:
-                    inventory = Session.Character.InventoryList.LoadBySlotAndType(slot, type);
-                    break;
-            }
-            if (inventory != null)
-            {
-                ServerManager.GetItem(inventory.InventoryItem.ItemVNum).Use(Session);
-            }
-        }/*
-        [Packet("u_i")]
         public void UseItem(string packet)
         {
             string[] packetsplit = packet.Split(' ');
@@ -2990,7 +2970,7 @@ namespace OpenNos.Handler
                         break;
                 }
             }
-        }*/
+        }
 
         [Packet("u_s")]
         public void UseSkill(string packet)

@@ -12,7 +12,7 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Core;
+
 using System;
 
 namespace OpenNos.GameObject
@@ -24,7 +24,7 @@ namespace OpenNos.GameObject
             switch (effect)
             { 
                 default:
-                    Logger.Log.Warn(Language.Instance.GetMessageFromKey(String.Format("NO_HANDLER_ITEM", this.GetType().ToString())));
+                    //no handler founded
                     break;
             }
 

@@ -135,9 +135,6 @@
   <data name="NEED_TREE" xml:space="preserve">
     <value>You need a directory tree like this :</value>
   </data>
-  <data name="NO_HANDLER_ITEM" xml:space="preserve">
-    <value>No handler founded for this item in {0}</value>
-  </data>
   <data name="NO_ITEM" xml:space="preserve">
     <value>This item id is not valid!</value>
   </data>
