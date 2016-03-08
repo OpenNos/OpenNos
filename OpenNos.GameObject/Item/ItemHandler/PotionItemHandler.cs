@@ -19,16 +19,29 @@ namespace OpenNos.GameObject
 {
     public class PotionItemHandler
     {
-        internal void UseItemHandler(Item item, ClientSession session, short effect, int effectValue)
+        internal void UseItemHandler(ref Inventory inv, ClientSession Session, short effect, int effectValue)
         {
+            Item item = ServerManager.GetItem(inv.InventoryItem.ItemVNum);
+
             switch (effect)
             {
                 default:
-                    session.Character.Mp += item.Mp;
-                    session.Character.Hp += item.Hp;
-                    if (session.Character.Hp < session.Character.HPLoad() || session.Character.Mp < session.Character.MPLoad())
-                        ClientLinkManager.Instance.Broadcast(session, session.Character.GenerateRc(item.Hp), ReceiverType.AllOnMap);
-                    session.Client.SendPacket(session.Character.GenerateStat());
+                    if (Session.Character.Hp == Session.Character.HPLoad() && Session.Character.Mp == Session.Character.MPLoad())
+                        return;
+                    inv.InventoryItem.Amount--;
+                    if (inv.InventoryItem != null)
+                        Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(inv.InventoryItem.ItemVNum, inv.InventoryItem.Amount, inv.Type, inv.Slot, inv.InventoryItem.Rare, inv.InventoryItem.Design, inv.InventoryItem.Upgrade));
+                    else
+                    {
+                        Session.Character.InventoryList.DeleteFromSlotAndType(inv.
+                            Slot, inv.Type);
+                        Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, inv.Type, inv.Slot, 0, 0, 0));
+                    }
+                    Session.Character.Mp += item.Mp;
+                    Session.Character.Hp += item.Hp;
+                    if (Session.Character.Hp < Session.Character.HPLoad() || Session.Character.Mp < Session.Character.MPLoad())
+                        ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateRc(item.Hp), ReceiverType.AllOnMap);
+                    Session.Client.SendPacket(Session.Character.GenerateStat());
                     break;
             }
 

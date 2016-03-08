@@ -20,10 +20,10 @@ namespace OpenNos.GameObject
 {
     public class SpecialItem: Item
     {
-        public override void Use(ClientSession Session)
+        public override void Use(ClientSession Session, ref Inventory Inv)
         {
             SpecialItemHandler instance = new SpecialItemHandler();
-            instance.UseItemHandler(this, Session, Effect, EffectValue);
+            instance.UseItemHandler(ref Inv, Session, Effect, EffectValue);
         }
         #region Instantiation
 

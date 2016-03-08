@@ -21,8 +21,10 @@ namespace OpenNos.GameObject
 {
     public class SnackItemHandler
     {
-        internal void UseItemHandler(Item item, ClientSession session, short effect, int effectValue)
+        internal void UseItemHandler(ref Inventory inv, ClientSession session, short effect, int effectValue)
         {
+            Item item = ServerManager.GetItem(inv.InventoryItem.ItemVNum);
+
             switch (effect)
             {
                 default:
@@ -31,6 +33,14 @@ namespace OpenNos.GameObject
                     {
                         Thread workerThread = new Thread(() => regen(session, item));
                         workerThread.Start();
+                        inv.InventoryItem.Amount--;
+                        if (inv.InventoryItem != null)
+                            session.Client.SendPacket(session.Character.GenerateInventoryAdd(inv.InventoryItem.ItemVNum, inv.InventoryItem.Amount, inv.Type, inv.Slot, inv.InventoryItem.Rare, inv.InventoryItem.Design, inv.InventoryItem.Upgrade));
+                        else
+                        {
+                            session.Character.InventoryList.DeleteFromSlotAndType(inv.Slot, inv.Type);
+                            session.Client.SendPacket(session.Character.GenerateInventoryAdd(-1, 0, inv.Type, inv.Slot, 0, 0, 0));
+                        }
                     }
                     else
                     {

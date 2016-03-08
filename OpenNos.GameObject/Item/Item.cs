@@ -29,7 +29,7 @@ namespace OpenNos.GameObject
 
         #region Methods
 
-        public abstract void Use(ClientSession Session);
+        public abstract void Use(ClientSession Session, ref Inventory Inv);
 
         #endregion
     }

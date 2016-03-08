@@ -20,10 +20,10 @@ namespace OpenNos.GameObject
 {
     public class ProduceItem : Item
     {
-        public override void Use(ClientSession Session)
+        public override void Use(ClientSession Session, ref Inventory Inv)
         {
             ProduceItemHandler instance = new ProduceItemHandler();
-            instance.UseItemHandler(this, Session, Effect, EffectValue);
+            instance.UseItemHandler(ref Inv, Session, Effect, EffectValue);
         }
         #region Instantiation
 

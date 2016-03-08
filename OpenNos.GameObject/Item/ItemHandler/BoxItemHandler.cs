@@ -20,7 +20,7 @@ namespace OpenNos.GameObject
 {
     public class BoxItemHandler
     {
-        internal void UseItemHandler(Item item, ClientSession session, short effect, int effectValue)
+        internal void UseItemHandler(ref Inventory inv, ClientSession session, short effect, int effectValue)
         {
             switch (effect)
             {

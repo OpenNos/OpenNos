@@ -20,13 +20,13 @@ namespace OpenNos.GameObject
 {
     public class PotionItem: Item
     {
-        public override void Use(ClientSession Session)
+        public override void Use(ClientSession Session, ref Inventory Inv)
         {
             PotionItemHandler instance = new PotionItemHandler();
-            instance.UseItemHandler(this, Session, Effect, EffectValue);
+            instance.UseItemHandler(ref Inv, Session, Effect, EffectValue);
         }
         #region Instantiation
-
+        
         #endregion
 
         #region Methods

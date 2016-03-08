@@ -20,10 +20,10 @@ namespace OpenNos.GameObject
 {
     public class NoFunctionItem : Item
     {
-        public override void Use(ClientSession Session)
+        public override void Use(ClientSession Session, ref Inventory Inv)
         {
             NoFunctionItemHandler instance = new NoFunctionItemHandler();
-            instance.UseItemHandler(this, Session, Effect, EffectValue);
+            instance.UseItemHandler(ref Inv, Session, Effect, EffectValue);
         }
         #region Instantiation
 

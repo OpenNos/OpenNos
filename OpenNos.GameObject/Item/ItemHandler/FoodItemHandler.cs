@@ -21,18 +21,28 @@ namespace OpenNos.GameObject
 {
     public class FoodItemHandler
     {
-        internal void UseItemHandler(Item item, ClientSession session, short effect, int effectValue)
+        internal void UseItemHandler(ref Inventory inv, ClientSession session, short effect, int effectValue)
         {
-
+            Item item = ServerManager.GetItem(inv.InventoryItem.ItemVNum);
             switch (effect)
             {
-                default:
-                    int amount = session.Character.SnackAmount;
 
+                default:
+                
+                    
+                    int amount = session.Character.SnackAmount;
                     if (amount < 5)
                     {
                         Thread workerThread = new Thread(() => regen(session, item));
                         workerThread.Start();
+                        inv.InventoryItem.Amount--;
+                        if (inv.InventoryItem != null)
+                            session.Client.SendPacket(session.Character.GenerateInventoryAdd(inv.InventoryItem.ItemVNum, inv.InventoryItem.Amount, inv.Type, inv.Slot, inv.InventoryItem.Rare, inv.InventoryItem.Design, inv.InventoryItem.Upgrade));
+                        else
+                        {
+                            session.Character.InventoryList.DeleteFromSlotAndType(inv.Slot, inv.Type);
+                            session.Client.SendPacket(session.Character.GenerateInventoryAdd(-1, 0, inv.Type, inv.Slot, 0, 0, 0));
+                        }
                     }
                     else
                     {
@@ -71,7 +81,7 @@ namespace OpenNos.GameObject
                 session.Character.Mp += session.Character.SnackHp;
                 session.Character.Hp += session.Character.SnackMp;
                 if (session.Character.Hp < session.Character.HPLoad() || session.Character.Mp < session.Character.MPLoad())
-                ClientLinkManager.Instance.Broadcast(session, session.Character.GenerateRc(session.Character.SnackHp), ReceiverType.AllOnMap);
+                    ClientLinkManager.Instance.Broadcast(session, session.Character.GenerateRc(session.Character.SnackHp), ReceiverType.AllOnMap);
                 session.Client.SendPacket(session.Character.GenerateStat());
                 Thread.Sleep(1800);
             }
