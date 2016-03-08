@@ -79,7 +79,7 @@
     <Key>
       <PropertyRef Name="AccountId" />
     </Key>
-    <Property Name="AccountId" Type="bigint" Nullable="false" StoreGeneratedPattern="Identity" />
+    <Property Name="AccountId" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="Name" Type="varchar" Nullable="false" MaxLength="255" />
     <Property Name="Password" Type="varchar" Nullable="false" MaxLength="255" />
     <Property Name="Authority" Type="utinyint" Nullable="false" />
@@ -192,6 +192,8 @@
     <Property Name="IsSoldable" Type="bool" Nullable="false" />
     <Property Name="IsMinilandObject" Type="bool" Nullable="false" />
     <Property Name="IsWarehouse" Type="bool" Nullable="false" />
+    <Property Name="IsColored" Type="bool" Nullable="false" />
+    <Property Name="IsConsumable" Type="bool" Nullable="false" />
     <Property Name="LevelMinimum" Type="utinyint" Nullable="false" />
     <Property Name="DamageMinimum" Type="smallint" Nullable="false" />
     <Property Name="DamageMaximum" Type="smallint" Nullable="false" />
@@ -227,8 +229,6 @@
     <Property Name="MpRegeneration" Type="smallint" Nullable="false" />
     <Property Name="MoreHp" Type="smallint" Nullable="false" />
     <Property Name="MoreMp" Type="smallint" Nullable="false" />
-    <Property Name="IsColored" Type="bool" Nullable="false" />
-    <Property Name="IsConsumable" Type="bool" Nullable="false" />
     <Property Name="ReputationMinimum" Type="utinyint" Nullable="false" />
     <Property Name="FairyMaximumLevel" Type="utinyint" Nullable="false" />
     <Property Name="MaximumAmmo" Type="utinyint" Nullable="false" />
@@ -281,6 +281,11 @@
       <PropertyRef Name="InventoryItemId" />
     </Key>
     <Property Name="InventoryItemId" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="ItemVNum" Type="smallint" Nullable="false" />
+    <Property Name="Amount" Type="utinyint" Nullable="false" />
+    <Property Name="Rare" Type="utinyint" Nullable="false" />
+    <Property Name="Upgrade" Type="utinyint" Nullable="false" />
+    <Property Name="Design" Type="smallint" Nullable="false" />
     <Property Name="DamageMinimum" Type="smallint" Nullable="false" />
     <Property Name="DamageMaximum" Type="smallint" Nullable="false" />
     <Property Name="Concentrate" Type="smallint" Nullable="false" />
@@ -293,17 +298,12 @@
     <Property Name="DistanceDefenceDodge" Type="smallint" Nullable="false" />
     <Property Name="DefenceDodge" Type="smallint" Nullable="false" />
     <Property Name="ElementRate" Type="smallint" Nullable="false" />
-    <Property Name="Upgrade" Type="utinyint" Nullable="false" />
-    <Property Name="Rare" Type="utinyint" Nullable="false" />
-    <Property Name="Design" Type="smallint" Nullable="false" />
-    <Property Name="Amount" Type="utinyint" Nullable="false" />
     <Property Name="HP" Type="smallint" Nullable="false" />
     <Property Name="MP" Type="smallint" Nullable="false" />
     <Property Name="DarkElement" Type="utinyint" Nullable="false" />
     <Property Name="LightElement" Type="utinyint" Nullable="false" />
     <Property Name="WaterElement" Type="utinyint" Nullable="false" />
     <Property Name="FireElement" Type="utinyint" Nullable="false" />
-    <Property Name="ItemVNum" Type="smallint" Nullable="false" />
     <Property Name="Ammo" Type="utinyint" Nullable="false" />
     <Property Name="IsFixed" Type="bool" Nullable="false" />
     <Property Name="ItemValidTime" Type="bigint" Nullable="false" />
@@ -1231,6 +1231,8 @@
           <ScalarProperty Name="IsSoldable" ColumnName="IsSoldable" />
           <ScalarProperty Name="IsMinilandObject" ColumnName="IsMinilandObject" />
           <ScalarProperty Name="IsWarehouse" ColumnName="IsWarehouse" />
+          <ScalarProperty Name="IsColored" ColumnName="IsColored" />
+          <ScalarProperty Name="IsConsumable" ColumnName="IsConsumable" />
           <ScalarProperty Name="LevelMinimum" ColumnName="LevelMinimum" />
           <ScalarProperty Name="DamageMinimum" ColumnName="DamageMinimum" />
           <ScalarProperty Name="DamageMaximum" ColumnName="DamageMaximum" />
@@ -1266,8 +1268,6 @@
           <ScalarProperty Name="MpRegeneration" ColumnName="MpRegeneration" />
           <ScalarProperty Name="MoreHp" ColumnName="MoreHp" />
           <ScalarProperty Name="MoreMp" ColumnName="MoreMp" />
-          <ScalarProperty Name="IsColored" ColumnName="IsColored" />
-          <ScalarProperty Name="IsConsumable" ColumnName="IsConsumable" />
           <ScalarProperty Name="ReputationMinimum" ColumnName="ReputationMinimum" />
           <ScalarProperty Name="FairyMaximumLevel" ColumnName="FairyMaximumLevel" />
           <ScalarProperty Name="MaximumAmmo" ColumnName="MaximumAmmo" />
@@ -1322,6 +1322,11 @@
       <EntityTypeMapping TypeName="IsTypeOf(opennosModel.InventoryItem)">
         <MappingFragment StoreEntitySet="inventoryitem">
           <ScalarProperty Name="InventoryItemId" ColumnName="InventoryItemId" />
+          <ScalarProperty Name="ItemVNum" ColumnName="ItemVNum" />
+          <ScalarProperty Name="Amount" ColumnName="Amount" />
+          <ScalarProperty Name="Rare" ColumnName="Rare" />
+          <ScalarProperty Name="Upgrade" ColumnName="Upgrade" />
+          <ScalarProperty Name="Design" ColumnName="Design" />
           <ScalarProperty Name="DamageMinimum" ColumnName="DamageMinimum" />
           <ScalarProperty Name="DamageMaximum" ColumnName="DamageMaximum" />
           <ScalarProperty Name="Concentrate" ColumnName="Concentrate" />
@@ -1334,17 +1339,12 @@
           <ScalarProperty Name="DistanceDefenceDodge" ColumnName="DistanceDefenceDodge" />
           <ScalarProperty Name="DefenceDodge" ColumnName="DefenceDodge" />
           <ScalarProperty Name="ElementRate" ColumnName="ElementRate" />
-          <ScalarProperty Name="Upgrade" ColumnName="Upgrade" />
-          <ScalarProperty Name="Rare" ColumnName="Rare" />
-          <ScalarProperty Name="Design" ColumnName="Design" />
-          <ScalarProperty Name="Amount" ColumnName="Amount" />
           <ScalarProperty Name="HP" ColumnName="HP" />
           <ScalarProperty Name="MP" ColumnName="MP" />
           <ScalarProperty Name="DarkElement" ColumnName="DarkElement" />
           <ScalarProperty Name="LightElement" ColumnName="LightElement" />
           <ScalarProperty Name="WaterElement" ColumnName="WaterElement" />
           <ScalarProperty Name="FireElement" ColumnName="FireElement" />
-          <ScalarProperty Name="ItemVNum" ColumnName="ItemVNum" />
           <ScalarProperty Name="Ammo" ColumnName="Ammo" />
           <ScalarProperty Name="IsFixed" ColumnName="IsFixed" />
           <ScalarProperty Name="ItemValidTime" ColumnName="ItemValidTime" />
