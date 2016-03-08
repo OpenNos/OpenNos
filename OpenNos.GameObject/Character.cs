@@ -27,7 +27,7 @@ namespace OpenNos.GameObject
     public class Character : CharacterDTO, IGameObject
     {
         #region Members
-        
+
         private int _authority;
         private int _backpack;
         private int _direction;
@@ -307,6 +307,10 @@ namespace OpenNos.GameObject
                 }
             }
             return $"equip {weaponUpgrade}{weaponRare} {armorUpgrade}{armorRare}{eqlist}";
+        }
+        public string GenerateRc(int v)
+        {
+            return $"rc 1 {CharacterId} {v} 0";
         }
 
         public string GenerateExts()

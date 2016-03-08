@@ -14,6 +14,7 @@
 
 
 using System;
+using System.Threading;
 
 namespace OpenNos.GameObject
 {
@@ -21,13 +22,31 @@ namespace OpenNos.GameObject
     {
         internal void UseItemHandler(Item item, ClientSession session, short effect, int effectValue)
         {
+
             switch (effect)
             {
                 default:
-                    //no handler founded
+                    Thread workerThread = new Thread(() => regen(session, item));
                     break;
             }
 
         }
+        public void regen(ClientSession session, Item item)
+        {
+            ClientLinkManager.Instance.Broadcast(session, session.Character.GenerateRest(), ReceiverType.AllOnMap);
+            session.Character.IsSitting = true;
+            for (int i = 0; i < 5 && session.Character.IsSitting; i++)
+            {
+                session.Character.Mp += item.Mp / 5;
+                session.Character.Hp += item.Hp / 5;
+                session.Client.SendPacket(session.Character.GenerateRc(item.Hp / 5));
+                ClientLinkManager.Instance.Broadcast(session, session.Character.GenerateRc(item.Hp / 5), ReceiverType.AllOnMap);
+                session.Client.SendPacket(session.Character.GenerateStat());
+                Thread.Sleep(1800);
+            }
+        }
+
+
+
     }
 }

@@ -24,7 +24,10 @@ namespace OpenNos.GameObject
             switch (effect)
             {
                 default:
-                    //no handler founded
+                    session.Character.Mp += item.Mp;
+                    session.Character.Hp += item.Hp;
+                    ClientLinkManager.Instance.Broadcast(session, session.Character.GenerateRc(item.Hp), ReceiverType.AllOnMap);
+                    session.Client.SendPacket(session.Character.GenerateStat());
                     break;
             }
 
