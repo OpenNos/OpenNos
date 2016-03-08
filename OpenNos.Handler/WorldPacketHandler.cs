@@ -2942,46 +2942,63 @@ namespace OpenNos.Handler
             byte type; byte.TryParse(packetsplit[4], out type);
             short slot; short.TryParse(packetsplit[5], out slot);
             Inventory inv = Session.Character.InventoryList.LoadBySlotAndType(slot, type);
-            if(inv !=null)
+            if (inv != null)
             {
-                ServerManager.GetItem(inv.InventoryItem.ItemVNum).Use(Session);
+                Item iteminfo = ServerManager.GetItem(inv.InventoryItem.ItemVNum);
+                switch (iteminfo.ItemType)
+                {
+                    case (byte)ItemType.Snack:
+                    case (byte)ItemType.Potion:
+                    case (byte)ItemType.Food:
+                        InventoryItemDTO LastInventory = Session.Character.InventoryList.LoadBySlotAndType(slot, type).InventoryItem;
+                        LastInventory.Amount--;
+                        if (LastInventory != null)
+                            Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(LastInventory.ItemVNum, LastInventory.Amount, type, slot, LastInventory.Rare, LastInventory.Design, LastInventory.Upgrade));
+                        else
+                        {
+                            DeleteItem(type, slot);
+                        }
+                        break;
+
+                }
+                iteminfo.Use(Session);
             }
         }
-      /*  public void UseItem(string packet)
-        {
-            string[] packetsplit = packet.Split(' ');
-            if (packetsplit.Length > 8)
-            {
-                short uitype; short.TryParse(packetsplit[2], out uitype);
-                byte type; byte.TryParse(packetsplit[4], out type);
-                short slot; short.TryParse(packetsplit[5], out slot);
-                switch (uitype)
-                {
-                    case 1:
-                        Inventory inv = Session.Character.InventoryList.LoadBySlotAndType(slot, type);
-                        InventoryItem item = new InventoryItem(inv.InventoryItem);
-                        Item itemInfo = ServerManager.GetItem(item.ItemVNum);
-                        if (itemInfo.IsConsumable)
-                            item.Amount--;
-                        if (itemInfo.Morph != 0)
-                        {
-                            if (!Session.Character.IsVehicled)
-                            {
-                                if (Session.Character.ThreadCharChange != null && Session.Character.ThreadCharChange.IsAlive)
-                                    Session.Character.ThreadCharChange.Abort();
-                                Session.Character.ThreadCharChange = new Thread(() => ChangeVehicle(itemInfo));
-                                Session.Character.ThreadCharChange.Start();
-                            }
-                            else
-                            {
-                                RemoveVehicle();
-                            }
-                        }
+        /*  public void UseItem(string packet)
+          {
+              string[] packetsplit = packet.Split(' ');
+              if (packetsplit.Length > 8)
+              {
+                  short uitype; short.TryParse(packetsplit[2], out uitype);
+                  byte type; byte.TryParse(packetsplit[4], out type);
+                  short slot; short.TryParse(packetsplit[5], out slot);
+                  switch (uitype)
+                  {
+                      case 1:
+                          Inventory inv = Session.Character.InventoryList.LoadBySlotAndType(slot, type);
+                          InventoryItem item = new InventoryItem(inv.InventoryItem);
+                          Item itemInfo = ServerManager.GetItem(item.ItemVNum);
+                          if (itemInfo.IsConsumable)
+                              item.Amount--;
+                          if (itemInfo.Morph != 0)
+                          {
+                              if (!Session.Character.IsVehicled)
+                              {
+                                  if (Session.Character.ThreadCharChange != null && Session.Character.ThreadCharChange.IsAlive)
+                                      Session.Character.ThreadCharChange.Abort();
+                                  Session.Character.ThreadCharChange = new Thread(() => ChangeVehicle(itemInfo));
+                                  Session.Character.ThreadCharChange.Start();
+                              }
+                              else
+                              {
+                                  RemoveVehicle();
+                              }
+                          }
 
-                        break;
-                }
-            }
-        }*/
+                          break;
+                  }
+              }
+          }*/
 
         [Packet("u_s")]
         public void UseSkill(string packet)

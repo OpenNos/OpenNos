@@ -26,6 +26,7 @@ namespace OpenNos.GameObject
             {
                 default:
                     Thread workerThread = new Thread(() => regen(session, item));
+                    workerThread.Start();
                     break;
             }
 

@@ -27,14 +27,15 @@ namespace OpenNos.GameObject
             {
                 default:
                     Thread workerThread = new Thread(() => regen(session, item));
+                    workerThread.Start();
                     break;
             }
 
         }
         public void regen(ClientSession session, Item item)
         {
-            ClientLinkManager.Instance.Broadcast(session, session.Character.GenerateRest(), ReceiverType.AllOnMap);
             session.Character.IsSitting = true;
+            ClientLinkManager.Instance.Broadcast(session, session.Character.GenerateRest(), ReceiverType.AllOnMap);
             for (int i = 0; i < 5 && session.Character.IsSitting; i++)
             {
                 session.Character.Mp += item.Mp / 5;
