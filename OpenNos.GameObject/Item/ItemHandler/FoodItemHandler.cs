@@ -36,7 +36,7 @@ namespace OpenNos.GameObject
                         Thread workerThread = new Thread(() => regen(session, item));
                         workerThread.Start();
                         inv.InventoryItem.Amount--;
-                        if (inv.InventoryItem != null)
+                        if (inv.InventoryItem.Amount > 0)
                             session.Client.SendPacket(session.Character.GenerateInventoryAdd(inv.InventoryItem.ItemVNum, inv.InventoryItem.Amount, inv.Type, inv.Slot, inv.InventoryItem.Rare, inv.InventoryItem.Design, inv.InventoryItem.Upgrade));
                         else
                         {
@@ -82,7 +82,8 @@ namespace OpenNos.GameObject
                 session.Character.Hp += session.Character.SnackMp;
                 if (session.Character.Hp < session.Character.HPLoad() || session.Character.Mp < session.Character.MPLoad())
                     ClientLinkManager.Instance.Broadcast(session, session.Character.GenerateRc(session.Character.SnackHp), ReceiverType.AllOnMap);
-                session.Client.SendPacket(session.Character.GenerateStat());
+                if (session.Character != null)
+                    session.Client.SendPacket(session.Character.GenerateStat());
                 Thread.Sleep(1800);
             }
         }
