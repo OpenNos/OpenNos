@@ -363,6 +363,12 @@
   <data name="NOT_ENOUGH_PLACE" xml:space="preserve">
     <value>Niewystarczajaca ilosc miejsc.</value>
   </data>
+  <data name="NOT_HUNGRY" xml:space="preserve">
+    <value>Nie jestem glodny</value>
+  </data>
+  <data name="NOT_HUNGRY1" xml:space="preserve">
+    <value>Nie jestem glodna</value>
+  </data>
   <data name="NO_ENTRY" xml:space="preserve">
     <value>No EntryPoint found</value>
   </data>

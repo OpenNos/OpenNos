@@ -45,7 +45,10 @@ namespace OpenNos.GameObject
                     }
                     else
                     {
-                        session.Client.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NOT_HANGRY"), 1));
+                        if (session.Character.Gender == 1)
+                            session.Client.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NOT_HUNGRY1"), 1));
+                        else
+                            session.Client.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NOT_HUNGRY"), 1));
                     }
                     if (amount == 0)
                     {
