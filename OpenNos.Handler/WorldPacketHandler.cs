@@ -2765,7 +2765,7 @@ namespace OpenNos.Handler
             short[] arg = new short[3];
             bool verify = false;
 
-            if (packetsplit.Length > 3)
+            if (packetsplit.Length > 4)
             {
                 verify = (short.TryParse(packetsplit[2], out arg[0]) && short.TryParse(packetsplit[3], out arg[1]) && short.TryParse(packetsplit[4], out arg[2]) && DAOFactory.MapDAO.LoadById(arg[0]) != null);
             }
