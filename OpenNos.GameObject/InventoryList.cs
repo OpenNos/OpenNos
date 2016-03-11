@@ -391,7 +391,7 @@ namespace OpenNos.GameObject
             return DroppedItem;
         }
 
-        internal Inventory AmountMinusFromSlotAndType(byte amount, short invSlot, short invType)
+        internal Inventory AmountMinusFromSlotAndType(byte amount, short invSlot, byte invType)
         {
             Inventory inv = Inventory.SingleOrDefault(i => i.Slot.Equals(invSlot) && i.Type.Equals(invType));
 
