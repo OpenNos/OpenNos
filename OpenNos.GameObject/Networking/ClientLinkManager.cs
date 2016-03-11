@@ -209,10 +209,11 @@ namespace OpenNos.GameObject
 
             Inventory inv = shopOwnerSession.Character.InventoryList.AmountMinusFromSlotAndType(amount, itemshop.InvSlot, itemshop.InvType);
 
-            if (inv.InventoryItem.Amount <= 0)
-                shopOwnerSession.Character.InventoryList.DeleteFromSlotAndType(inv.Slot,inv.Type);
             if (inv != null)
             {
+                if (inv.InventoryItem.Amount <= 0)
+                    shopOwnerSession.Character.InventoryList.DeleteFromSlotAndType(inv.Slot, inv.Type);
+
                 // Send reduced-amount to owners inventory
                 shopOwnerSession.Client.SendPacket(shopOwnerSession.Character.GenerateInventoryAdd(inv.InventoryItem.ItemVNum, inv.InventoryItem.Amount, inv.Type,
                     inv.Slot, inv.InventoryItem.Rare, inv.InventoryItem.Design, inv.InventoryItem.Upgrade));
