@@ -157,7 +157,7 @@ namespace OpenNos.Import.Console
                     {
                         itemAreaBegin = true;
                         item.VNum = short.Parse(linesave[2]);
-                        item.Price = long.Parse(linesave[3])/20;
+                        item.Price = long.Parse(linesave[3]);
                     }
                     else if (linesave.Length > 1 && linesave[1] == "END")
                     {

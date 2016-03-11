@@ -2142,7 +2142,7 @@ namespace OpenNos.Handler
                     Session.Client.SendPacket(message);
                     return;
                 }
-                Session.Character.Gold += item.Price * amount;
+                Session.Character.Gold += (item.Price/20) * amount;
                 DeleteItem(type, slot);
                 Session.Client.SendPacket(Session.Character.GenerateGold());
                 Session.Client.SendPacket(Session.Character.GenerateShopMemo(1, string.Format(Language.Instance.GetMessageFromKey("SELL_ITEM_VALIDE"), item.Name, amount)));
