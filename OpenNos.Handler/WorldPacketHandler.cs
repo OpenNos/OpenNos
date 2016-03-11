@@ -390,6 +390,7 @@ namespace OpenNos.Handler
             Session.Client.SendPacket(Session.Character.GenerateSay("$Upgrade SLOT MODE PROTECTION", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$Morph MORPHID UPGRADE WINGS ARENA", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$Gold AMOUNT", 6));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$Stat", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$Lvl LEVEL", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$JLvl JOBLEVEL", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$SPLvl SPLEVEL", 6));

@@ -324,11 +324,7 @@ namespace OpenNos.GameObject
 
         public int GetNumberOfAllASession()
         {
-            int c = 0;
-            foreach (ClientSession session in Sessions)
-                c++;
-
-            return c;
+            return Sessions.Count();
         }
 
         public void SaveAll()
