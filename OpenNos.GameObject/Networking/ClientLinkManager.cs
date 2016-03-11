@@ -208,6 +208,9 @@ namespace OpenNos.GameObject
             shopOwnerSession.Client.SendPacket($"sell_list {shop.Value.Sell} {slot}.{amount}.{itemshop.Amount}");
 
             Inventory inv = shopOwnerSession.Character.InventoryList.AmountMinusFromSlotAndType(amount, itemshop.InvSlot, itemshop.InvType);
+
+            if (inv.InventoryItem.Amount <= 0)
+                shopOwnerSession.Character.InventoryList.DeleteFromSlotAndType(inv.Slot,inv.Type);
             if (inv != null)
             {
                 // Send reduced-amount to owners inventory
