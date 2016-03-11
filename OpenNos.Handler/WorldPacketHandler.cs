@@ -3060,6 +3060,13 @@ namespace OpenNos.Handler
             else ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("USER_NOT_CONNECTED")), ReceiverType.OnlyMe);
         }
 
+
+        [Packet("$Stat")]
+        public void Stat(string packet)
+        {
+            Session.Client.SendPacket(Session.Character.GenerateSay($"Total Session: { ClientLinkManager.Instance.GetNumberOfAllASession()} ", 12));
+        }
+
         #endregion
     }
 }
