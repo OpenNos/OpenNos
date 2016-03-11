@@ -22,7 +22,6 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public byte Rare { get; set; }
         public short Color { get; set; }
         public int ShopId { get; set; }
-        public long Gold { get; set; }
     
         public virtual Item item { get; set; }
         public virtual Shop shop { get; set; }

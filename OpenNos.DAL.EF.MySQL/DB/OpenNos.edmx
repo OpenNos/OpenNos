@@ -352,7 +352,6 @@
     <Property Name="Rare" Type="utinyint" Nullable="false" />
     <Property Name="Color" Type="smallint" Nullable="false" />
     <Property Name="ShopId" Type="int" Nullable="false" />
-    <Property Name="Gold" Type="bigint" Nullable="false" />
   </EntityType>
   <EntityType Name="shop">
     <Key>
@@ -1026,7 +1025,6 @@
           <NavigationProperty Name="shop" Relationship="opennosModel.ShopShopItem" FromRole="ShopItem" ToRole="Shop" />
           <Property Name="Color" Type="Int16" Nullable="false" />
           <Property Name="ShopId" Type="Int32" Nullable="false" />
-          <Property Name="Gold" Type="Int64" Nullable="false" />
         </EntityType>
         <EntityType Name="Shop">
           <Key>
@@ -1394,7 +1392,6 @@
           <ScalarProperty Name="Rare" ColumnName="Rare" />
           <ScalarProperty Name="Color" ColumnName="Color" />
           <ScalarProperty Name="ShopId" ColumnName="ShopId" />
-          <ScalarProperty Name="Gold" ColumnName="Gold" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

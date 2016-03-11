@@ -537,7 +537,7 @@ namespace OpenNos.Import.Console
                                 sitem.Type = type;
                                 sitem.Slot = short.Parse(item[1]);
                                 sitem.ItemVNum = short.Parse(item[2]);
-                                sitem.Gold = long.Parse(item[4]);
+                               
                             }
                             else if (item.Count() == 6)
                             {
@@ -548,7 +548,6 @@ namespace OpenNos.Import.Console
                                 sitem.ItemVNum = short.Parse(item[2]);
                                 sitem.Rare = byte.Parse(item[3]);
                                 sitem.Upgrade = byte.Parse(item[4]);
-                                sitem.Gold = long.Parse(item[5]);
 
                             }
                             if (sitem != null && DAOFactory.ShopItemDAO.LoadByShopId(sitem.ShopId).FirstOrDefault(s => s.ItemVNum.Equals(sitem.ItemVNum)) == null)

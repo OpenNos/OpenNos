@@ -44,7 +44,7 @@
 -- -----------------------------------------------------------
 -- Entity Designer DDL Script for MySQL Server 4.1 and higher
 -- -----------------------------------------------------------
--- Date Created: 03/09/2016 18:26:18
+-- Date Created: 03/11/2016 23:16:44
 
 -- Generated from EDMX file: C:\Users\ERWAN\Desktop\OpenNos Git\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
 -- Target version: 3.0.0.0
@@ -424,8 +424,7 @@ CREATE TABLE `shopitem`(
 	`Upgrade` TINYINT UNSIGNED NOT NULL, 
 	`Rare` TINYINT UNSIGNED NOT NULL, 
 	`Color` smallint NOT NULL, 
-	`ShopId` int NOT NULL, 
-	`Gold` bigint NOT NULL);
+	`ShopId` int NOT NULL);
 
 ALTER TABLE `shopitem` ADD PRIMARY KEY (ShopItemId);
 

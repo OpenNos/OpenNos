@@ -26,7 +26,6 @@ namespace OpenNos.Data
         public byte Rare { get; set; }
         public short Color { get; set; }
         public int ShopId { get; set; }
-        public long Gold { get; set; }
 
         #endregion
     }
