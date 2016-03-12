@@ -44,9 +44,9 @@
 -- -----------------------------------------------------------
 -- Entity Designer DDL Script for MySQL Server 4.1 and higher
 -- -----------------------------------------------------------
--- Date Created: 03/12/2016 13:32:37
+-- Date Created: 03/12/2016 22:15:17
 
--- Generated from EDMX file: C:\Users\ERWAN\Desktop\OpenNos Git\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
+-- Generated from EDMX file: C:\Users\ERWAN\Desktop\OpenNos GIT\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
 -- Target version: 3.0.0.0
 
 -- --------------------------------------------------
@@ -154,7 +154,7 @@ CREATE TABLE `character`(
 	`Mp` int NOT NULL, 
 	`ArenaWinner` int NOT NULL, 
 	`Reput` bigint NOT NULL, 
-	`Dignite` TINYINT UNSIGNED NOT NULL, 
+	`Dignite` smallint NOT NULL, 
 	`Gold` bigint NOT NULL, 
 	`Backpack` int NOT NULL, 
 	`Level` TINYINT UNSIGNED NOT NULL, 

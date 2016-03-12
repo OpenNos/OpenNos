@@ -808,15 +808,15 @@ namespace OpenNos.GameObject
         public int GetDigniteIco()
         {
             int icoDignite = 1;
-            if (Convert.ToInt32(Dignite) <= -100)
+            if (Dignite <= -100)
                 icoDignite = 2;
-            if (Convert.ToInt32(Dignite) <= -200)
+            if (Dignite <= -200)
                 icoDignite = 3;
-            if (Convert.ToInt32(Dignite) <= -400)
+            if (Dignite <= -400)
                 icoDignite = 4;
-            if (Convert.ToInt32(Dignite) <= -600)
+            if (Dignite <= -600)
                 icoDignite = 5;
-            if (Convert.ToInt32(Dignite) <= -800)
+            if (Dignite <= -800)
                 icoDignite = 6;
 
             return icoDignite;
