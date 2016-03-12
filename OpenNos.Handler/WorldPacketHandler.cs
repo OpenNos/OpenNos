@@ -199,15 +199,24 @@ namespace OpenNos.Handler
 
                 long price = ServerManager.GetItem(item.ItemVNum).Price * amount;
 
-                if (price <= 0 || price > Session.Character.Gold)
+                double pourcent = 1;
+                if (Session.Character.GetDigniteIco() == 3)
+                    pourcent = 1.10;
+                else if (Session.Character.GetDigniteIco() == 4)
+                    pourcent = 1.20;
+                else if (Session.Character.GetDigniteIco() == 5 || Session.Character.GetDigniteIco() == 6)
+                    pourcent = 1.5;
+
+                if (price <= 0 || price* pourcent > Session.Character.Gold)
                 {
                     Session.Client.SendPacket(Session.Character.GenerateShopMemo(3, Language.Instance.GetMessageFromKey("NOT_ENOUGH_MONEY")));
                     return;
                 }
 
                 Session.Client.SendPacket(Session.Character.GenerateShopMemo(1, string.Format(Language.Instance.GetMessageFromKey("BUY_ITEM_VALIDE"), ServerManager.GetItem(item.ItemVNum).Name, amount)));
+               
 
-                Session.Character.Gold -= price;
+                Session.Character.Gold -= (long)(price*pourcent);
                 Session.Client.SendPacket(Session.Character.GenerateGold());
 
                 InventoryItem newItem = new InventoryItem
@@ -2163,11 +2172,19 @@ namespace OpenNos.Handler
             string shoplist = "";
             foreach (ShopItem item in npc.Shop.ShopItems.Where(s => s.Type.Equals(type)))
             {
+               
                 Item iteminfo = ServerManager.GetItem(item.ItemVNum);
+                double pourcent = 1;
+                if (Session.Character.GetDigniteIco() == 3)
+                    pourcent = 1.10;
+                else if (Session.Character.GetDigniteIco() == 4)
+                    pourcent = 1.20;
+                else if (Session.Character.GetDigniteIco() == 5 || Session.Character.GetDigniteIco() == 6)
+                    pourcent = 1.5;
                 if (iteminfo.Type != 0)
-                    shoplist += $" {iteminfo.Type}.{item.Slot}.{item.ItemVNum}.{-1}.{ServerManager.GetItem(item.ItemVNum).Price}";
+                    shoplist += $" {iteminfo.Type}.{item.Slot}.{item.ItemVNum}.{-1}.{ServerManager.GetItem(item.ItemVNum).Price* pourcent}";
                 else
-                    shoplist += $" {iteminfo.Type}.{item.Slot}.{item.ItemVNum}.{item.Rare}.{(iteminfo.IsColored ? item.Color : item.Upgrade)}.{ServerManager.GetItem(item.ItemVNum).Price}";
+                    shoplist += $" {iteminfo.Type}.{item.Slot}.{item.ItemVNum}.{item.Rare}.{(iteminfo.IsColored ? item.Color : item.Upgrade)}.{ServerManager.GetItem(item.ItemVNum).Price*pourcent}";
             }
 
             Session.Client.SendPacket($"n_inv 2 {npc.NpcId} 0 0{shoplist}");
