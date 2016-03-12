@@ -507,7 +507,11 @@ namespace OpenNos.GameObject
         {
             return $"s_memo {type} {message}";
         }
-
+        public string GenerateInvisible()
+        { 
+            return $"cl {CharacterId} {Invisible} 0";
+        }
+       
         public List<string> GenerateShopOnMap()
         {
             return ServerManager.GetMap(MapId).ShopUserList.Select(shop => $"shop 1 {shop.Key + 1} 1 3 0 {shop.Value.Name}").ToList();

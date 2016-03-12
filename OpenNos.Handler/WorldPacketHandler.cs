@@ -1182,8 +1182,7 @@ namespace OpenNos.Handler
         {
 
             Session.Character.Invisible = Session.Character.Invisible == 0 ? 1 : 0;
-            ClientLinkManager.Instance.MapOut(Session.Character.CharacterId);
-            ClientLinkManager.Instance.ChangeMap(Session.Character.CharacterId);
+            ClientLinkManager.Instance.Broadcast(Session,Session.Character.GenerateInvisible(),ReceiverType.AllOnMap);
         }
 
         [Packet("$JLvl")]
