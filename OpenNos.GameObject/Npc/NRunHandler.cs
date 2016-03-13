@@ -53,7 +53,7 @@ namespace OpenNos.GameObject
                     Session.Client.SendPacket($"wopen 27 0");
                     break;
                 default:
-                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NO_NRUN_HANDLER"), 0));
+                    Logger.Log.Warn(String.Format(Language.Instance.GetMessageFromKey("NO_NRUN_HANDLER"),runner));
                     break;
             }
         }
