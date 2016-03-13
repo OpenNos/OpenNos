@@ -1643,6 +1643,7 @@ namespace OpenNos.Handler
                         break;
                 }
             }
+            Session.Client.SendPacket(Session.Character.GenerateStat());
         }
 
         [Packet("$PlayMusic")]
