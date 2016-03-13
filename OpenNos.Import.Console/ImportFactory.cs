@@ -267,7 +267,7 @@ namespace OpenNos.Import.Console
                                 if (item.EquipmentSlot.Equals((byte)EquipmentType.Amulet))
                                 {
                                     item.LevelMinimum = Convert.ToByte(linesave[2]);
-                                    item.ItemValidTime = Convert.ToInt32(linesave[3])/10;
+                                    item.ItemValidTime = Convert.ToInt32(linesave[3]) / 10;
                                 }
                                 else if (item.EquipmentSlot.Equals((byte)EquipmentType.Fairy))
                                 {
@@ -357,7 +357,7 @@ namespace OpenNos.Import.Console
                                 //item.PetLoyality = Convert.ToInt16(linesave[4]);
                                 //item.PetFood = Convert.ToInt16(linesave[7]);
                                 break;
-                        
+
                             case (byte)ItemType.Part:
                                 //nothing to parse
                                 break;
@@ -378,7 +378,13 @@ namespace OpenNos.Import.Console
                                 item.EffectValue = Convert.ToInt32(linesave[4]);
                                 break;
                         }
-
+                        if (item.EquipmentSlot == (byte)EquipmentType.Boots || item.EquipmentSlot == (byte)EquipmentType.Gloves)
+                        {
+                            item.FireResistance = Convert.ToByte(linesave[7]);
+                            item.WaterResistance = Convert.ToByte(linesave[8]);
+                            item.LightResistance = Convert.ToByte(linesave[9]);
+                            item.DarkResistance = Convert.ToByte(linesave[11]);
+                        }
                     }
                     else if (linesave.Length > 1 && linesave[1] == "BUFF")
                     {
@@ -500,7 +506,7 @@ namespace OpenNos.Import.Console
                             npctest.IsSitting = linesave[13] == "1" ? true : false;
 
                             if (long.Parse(linesave[3]) >= 10000) continue; // Dialog too high. but why? in order to avoid partners
-                            if (DAOFactory.NpcDAO.LoadById(npctest.NpcId) != null || Maps.FirstOrDefault(s=>s.MapId == npctest.MapId) == null) continue; // Npc already existing
+                            if (DAOFactory.NpcDAO.LoadById(npctest.NpcId) != null || Maps.FirstOrDefault(s => s.MapId == npctest.MapId) == null) continue; // Npc already existing
                             DAOFactory.NpcDAO.Insert(npctest);
                             npcCounter++;
                         }
@@ -537,7 +543,7 @@ namespace OpenNos.Import.Console
                                 sitem.Type = type;
                                 sitem.Slot = short.Parse(item[1]);
                                 sitem.ItemVNum = short.Parse(item[2]);
-                               
+
                             }
                             else if (item.Count() == 6)
                             {
@@ -649,14 +655,14 @@ namespace OpenNos.Import.Console
 
         public void ImportShops()
         {
-           int shopCounter = 0;
+            int shopCounter = 0;
 
             foreach (string[] linesave in packetList.Where(o => o[0].Equals("shop")))
             {
                 if (linesave.Length > 6 && linesave[0] == "shop" && linesave[1] == "2")
                 {
-                    NpcDTO npc = DAOFactory.NpcDAO.LoadById(short.Parse(linesave[2])) ;
-                    if (npc ==null) continue;
+                    NpcDTO npc = DAOFactory.NpcDAO.LoadById(short.Parse(linesave[2]));
+                    if (npc == null) continue;
 
                     string named = "";
                     for (int j = 6; j < linesave.Length; j++)

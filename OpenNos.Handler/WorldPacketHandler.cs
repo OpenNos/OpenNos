@@ -270,29 +270,42 @@ namespace OpenNos.Handler
 
             if (packetsplit.Count() > 4)
             {
-                byte uptype, type, slot;
+                byte uptype, type, slot, type2 = 0, slot2=0;
                 byte.TryParse(packetsplit[2], out uptype);
                 byte.TryParse(packetsplit[3], out type);
                 byte.TryParse(packetsplit[4], out slot);
-                Inventory inventoryDTO;
+                if (packetsplit.Count() > 6)
+                {
+                    byte.TryParse(packetsplit[5], out type2);
+                    byte.TryParse(packetsplit[6], out slot2);
+                }
+                Inventory inventory;
                 switch (uptype)
                 {
                     case 1:
-                        inventoryDTO = Session.Character.InventoryList.LoadBySlotAndType(slot, type);
-                        if (inventoryDTO != null)
+                        inventory = Session.Character.InventoryList.LoadBySlotAndType(slot, type);
+                        if (inventory != null)
                         {
-                            UpgradeItem(inventoryDTO, InventoryItem.UpgradeMode.Normal, InventoryItem.UpgradeProtection.None);
+                            UpgradeItem(inventory, InventoryItem.UpgradeMode.Normal, InventoryItem.UpgradeProtection.None);
                         }
                         break;
 
                     case 7:
-                        inventoryDTO = Session.Character.InventoryList.LoadBySlotAndType(slot, type);
-                        if (inventoryDTO != null)
+                        inventory = Session.Character.InventoryList.LoadBySlotAndType(slot, type);
+                        if (inventory != null)
                         {
-                            RarifyItem(inventoryDTO, InventoryItem.RarifyMode.Normal, InventoryItem.RarifyProtection.None);
+                            RarifyItem(inventory, InventoryItem.RarifyMode.Normal, InventoryItem.RarifyProtection.None);
                         }
                         break;
+                    case 8:
+                        inventory = Session.Character.InventoryList.LoadBySlotAndType(slot, type);
+                        Inventory inventory2 = Session.Character.InventoryList.LoadBySlotAndType(slot2, type2);
 
+                        if (inventory != null && inventory2 != null && inventory!= inventory2)
+                        {
+                            SumItem(inventory, inventory2);
+                        }
+                        break;
 
                 }
             }
@@ -2904,6 +2917,49 @@ namespace OpenNos.Handler
             }
         }
 
+        public void SumItem(Inventory item, Inventory item2)
+        {
+            short[] upsuccess = { 100, 100, 85, 70, 50, 20 };
+            int[] goldprice = { 1500, 3000, 6000, 12000, 24000, 48000 };
+            short[] donna = { 5, 10, 15, 20, 25, 30 };
+            int donnaVnum = 1027;
+            Item iteminfo = ServerManager.GetItem(item.InventoryItem.ItemVNum);
+            Item iteminfo2 = ServerManager.GetItem(item2.InventoryItem.ItemVNum);
+            if ((item.InventoryItem.Upgrade + item2.InventoryItem.Upgrade) < 6 && ((iteminfo2.EquipmentSlot == (byte)EquipmentType.Gloves) || (iteminfo2.EquipmentSlot == (byte)EquipmentType.Boots)) && ((iteminfo.EquipmentSlot == (byte)EquipmentType.Gloves) || (iteminfo.EquipmentSlot == (byte)EquipmentType.Boots)))
+            {
+                if (Session.Character.Gold < goldprice[item.InventoryItem.Upgrade])
+                    return;
+                Session.Character.Gold = Session.Character.Gold - (long)(goldprice[item.InventoryItem.Upgrade]);
+                if (Session.Character.InventoryList.CountItem(donnaVnum) < donna[item.InventoryItem.Upgrade])
+                    return;
+                Session.Character.InventoryList.RemoveItemAmount(donnaVnum, (byte)(donna[item.InventoryItem.Upgrade]));
+
+                Random r = new Random();
+                int rnd = r.Next(100);
+                if (rnd <= upsuccess[item.InventoryItem.Upgrade + item2.InventoryItem.Upgrade])
+                {
+                    item.InventoryItem.Upgrade += (byte)(item2.InventoryItem.Upgrade + 1);
+                    item.InventoryItem.DarkResistance += (byte)(item2.InventoryItem.DarkResistance + iteminfo2.DarkResistance);
+                    item.InventoryItem.LightResistance += (byte)(item2.InventoryItem.LightResistance + iteminfo2.LightResistance);
+                    item.InventoryItem.WaterResistance += (byte)(item2.InventoryItem.WaterResistance + iteminfo2.WaterResistance);
+                    item.InventoryItem.FireResistance += (byte)(item2.InventoryItem.FireResistance + iteminfo2.FireResistance);
+                    DeleteItem(item2.Type, item2.Slot);
+                    Session.Client.SendPacket($"pdti 10 {item.InventoryItem.ItemVNum} 1 27 {item.InventoryItem.Upgrade} 0");
+                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SUM_SUCCESS"), 0));
+                    Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("SUM_SUCCESS"), 12));
+                    Session.Client.SendPacket(Session.Character.GenerateGold());
+                    GetStartupInventory();
+                }
+                else
+                {
+                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SUM_FAILED"), 0));
+                    Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("SUM_FAILED"), 11));
+                    DeleteItem(item2.Type, item2.Slot);
+                    DeleteItem(item.Type, item.Slot);
+                }
+                Session.Client.SendPacket("shop_end 1");
+            }
+        }
         public void UpgradeItem(Inventory item, InventoryItem.UpgradeMode mode, InventoryItem.UpgradeProtection protection)
         {
             if (item.InventoryItem.Upgrade < 10)
@@ -2947,6 +3003,7 @@ namespace OpenNos.Handler
                                 return;
                             Session.Character.InventoryList.RemoveItemAmount(gemmeFullVnum, (byte)(gemme[item.InventoryItem.Upgrade] * reducedpricefactor));
                         }
+                        Session.Client.SendPacket(Session.Character.GenerateGold());
                         break;
 
                     case InventoryItem.UpgradeMode.Normal:
@@ -2969,7 +3026,7 @@ namespace OpenNos.Handler
                                 return;
                             Session.Character.InventoryList.RemoveItemAmount(gemmeFullVnum, (byte)(gemme[item.InventoryItem.Upgrade]));
                         }
-                       
+                        Session.Client.SendPacket(Session.Character.GenerateGold());
                         break;
                 }
 

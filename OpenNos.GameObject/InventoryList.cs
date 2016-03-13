@@ -443,11 +443,14 @@ namespace OpenNos.GameObject
             foreach (Inventory inv in Inventory.Where(s => s.InventoryItem.ItemVNum == v))
             {
                 if (inv.InventoryItem.Amount >= amount)
+                {
                     inv.InventoryItem.Amount -= amount;
+                    amount = 0;
+                }
                 else
                 {
                     amount -= inv.InventoryItem.Amount;
-                    inv.InventoryItem.Amount = 0;                  
+                    inv.InventoryItem.Amount = 0;
                 }
             }
         }

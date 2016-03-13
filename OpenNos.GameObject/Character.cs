@@ -781,22 +781,22 @@ namespace OpenNos.GameObject
             Inventory item = null;
             for (short i = 1; i < 14; i++)
             {
-                if (i != 5)
-                    item = EquipmentList.LoadBySlotAndType(i, (byte)InventoryType.Equipment);
-            }
+             item = EquipmentList.LoadBySlotAndType(i, (byte)InventoryType.Equipment);
+            
             if (item != null)
             {
                 Item iteminfo = ServerManager.GetItem(item.InventoryItem.ItemVNum);
 
-                FireResistance += item.InventoryItem.FireElement;
-                LightResistance += item.InventoryItem.LightElement;
-                WaterResistance += item.InventoryItem.WaterElement;
-                DarkResistance += item.InventoryItem.DarkElement;
+                FireResistance += item.InventoryItem.FireResistance + iteminfo.FireResistance;
+                LightResistance += item.InventoryItem.LightResistance + iteminfo.LightResistance;
+                WaterResistance += item.InventoryItem.WaterResistance + iteminfo.WaterResistance;
+                DarkResistance += item.InventoryItem.DarkResistance + iteminfo.DarkResistance;
                 Defence += item.InventoryItem.CloseDefence + iteminfo.CloseDefence;
                 DefenceRate += item.InventoryItem.DefenceDodge + iteminfo.DefenceDodge;
                 DistanceDefence += item.InventoryItem.DistanceDefence + iteminfo.DistanceDefence;
                 DistanceDefenceRate += item.InventoryItem.DistanceDefenceDodge + iteminfo.DistanceDefenceDodge;
-                //maxhp-mp
+                    //maxhp-mp
+                }
             }
             return $"sc {type} {weaponUpgrade} {MinHit} {MaxHit} {HitRate} {HitCriticalRate} {HitCritical} {type2} {secondaryUpgrade} {MinDistance} {MaxDistance} {DistanceRate} {DistanceCriticalRate} {DistanceCritical} {armorUpgrade} {Defence} {DefenceRate} {DistanceDefence} {DistanceDefenceRate} {MagicalDefence} {FireResistance} {WaterResistance} {LightResistance} {DarkResistance}";
         }
