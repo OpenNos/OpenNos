@@ -29,7 +29,8 @@ namespace OpenNos.GameObject
 
         private static ClientLinkManager _instance;
         private readonly Thread _autoSave; // if this thread is never aborted by code, it can be declared only in constructor!
-        public Thread threadShutdown {
+        public Thread threadShutdown
+        {
             get; set;
         }
 
@@ -60,17 +61,17 @@ namespace OpenNos.GameObject
 
         public void MapOut(long id)
         {
-            foreach (ClientSession Session in Sessions.Where(s=> s.Character != null && s.Character.CharacterId == id))
+            foreach (ClientSession Session in Sessions.Where(s => s.Character != null && s.Character.CharacterId == id))
             {
                 Session.Client.SendPacket(Session.Character.GenerateMapOut());
                 ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateOut(), ReceiverType.AllOnMapExceptMe);
             }
-              
+
         }
 
         public void ChangeMap(long id)
         {
-            foreach (ClientSession Session in Sessions.Where(s => s.Character !=null && s.Character.CharacterId == id))
+            foreach (ClientSession Session in Sessions.Where(s => s.Character != null && s.Character.CharacterId == id))
             {
                 Session.CurrentMap = ServerManager.GetMap(Session.Character.MapId);
                 Session.Client.SendPacket(Session.Character.GenerateCInfo());
@@ -97,7 +98,7 @@ namespace OpenNos.GameObject
                 Session.Client.SendPacket(Session.Character.GenerateCond());
                 ClientLinkManager.Instance.Broadcast(Session, Session.Character.GeneratePairy(), ReceiverType.AllOnMap);
                 Session.Client.SendPacket($"rsfi 1 1 0 9 0 9"); // Act completion
-                ClientLinkManager.Instance.RequiereBroadcastFromAllMapUsers(Session, "GenerateIn");
+                ClientLinkManager.Instance.RequiereBroadcastFromAllMapUsersNotInvisible(Session, "GenerateIn");
                 ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllOnMapExceptMe);
                 if (Session.CurrentMap.IsDancing == 2 && Session.Character.IsDancing == 0)
                     ClientLinkManager.Instance.RequiereBroadcastFromMap(Session.Character.MapId, "dance 2");
@@ -266,6 +267,19 @@ namespace OpenNos.GameObject
             }
         }
 
+        public void RequiereBroadcastFromAllMapUsersNotInvisible(ClientSession client, string methodName)
+        {
+            foreach (ClientSession session in Sessions.Where(s => s.Character != null && s.Character.MapId.Equals(client.Character.MapId) && s.Character.Name != client.Character.Name))
+            {
+                if (session.Character.InvisibleGm == false)
+                {
+                    MethodInfo method = session.Character.GetType().GetMethod(methodName);
+                    string result = (string)method.Invoke(session.Character, null);
+                    client.Client.SendPacket(result);
+                }
+            }
+        }
+
         public void RequiereBroadcastFromMap(short mapId, string message)
         {
             foreach (ClientSession session in Sessions.Where(s => s.Character != null && s.Character.MapId.Equals(mapId)))
@@ -339,7 +353,7 @@ namespace OpenNos.GameObject
             while (true)
             {
                 SaveAll();
-                Thread.Sleep(60000*4);
+                Thread.Sleep(60000 * 4);
             }
         }
 

@@ -1192,6 +1192,9 @@ namespace OpenNos.Handler
 
             Session.Character.Invisible = Session.Character.Invisible == 0 ? 1 : 0;
             ClientLinkManager.Instance.Broadcast(Session,Session.Character.GenerateInvisible(),ReceiverType.AllOnMap);
+            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateOut(), ReceiverType.AllOnMapExceptMe);
+
+            Session.Character.InvisibleGm = true;
         }
 
         [Packet("$JLvl")]
@@ -2073,6 +2076,7 @@ namespace OpenNos.Handler
                         LastPortal = 0,
                         LastSp = 0,
                         Invisible = 0,
+                        InvisibleGm = false,
                         ArenaWinner = 0,
                         Morph = 0,
                         MorphUpgrade = 0,

@@ -104,6 +104,7 @@ namespace OpenNos.GameObject
         public int MaxSnack { get;  set; }
         public int SnackHp { get;  set; }
         public int SnackMp { get;  set; }
+        public bool InvisibleGm { get; set; }
 
         #endregion
 
