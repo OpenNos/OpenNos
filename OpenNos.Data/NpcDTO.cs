@@ -21,6 +21,9 @@ namespace OpenNos.Data
         public short NpcId { get; set; }
         public string Name { get; set; }
         public short Vnum { get; set; }
+        public short Effect { get; set; }
+        public short EffectDelay { get; set; }
+        public short Speed { get; set; }
         public short Dialog { get; set; }
         public short MapId { get; set; }
         public short MapX { get; set; }

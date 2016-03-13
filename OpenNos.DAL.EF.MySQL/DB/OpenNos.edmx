@@ -249,6 +249,9 @@
     <Property Name="NpcId" Type="smallint" Nullable="false" />
     <Property Name="Name" Type="longtext" Nullable="false" />
     <Property Name="Vnum" Type="smallint" Nullable="false" />
+    <Property Name="Effect" Type="smallint" Nullable="false" />
+    <Property Name="EffectDelay" Type="smallint" Nullable="false" />
+    <Property Name="Speed" Type="smallint" Nullable="false" />
     <Property Name="Dialog" Type="smallint" Nullable="false" />
     <Property Name="MapId" Type="smallint" Nullable="false" />
     <Property Name="MapX" Type="smallint" Nullable="false" />
@@ -880,6 +883,9 @@
           <Property Name="NpcId" Type="Int16" Nullable="false" annotation:StoreGeneratedPattern="None" />
           <Property Name="Name" Type="String" Nullable="false" />
           <Property Name="Vnum" Type="Int16" Nullable="false" />
+          <Property Name="Effect" Type="Int16" Nullable="false" />
+          <Property Name="EffectDelay" Type="Int16" Nullable="false" />
+          <Property Name="Speed" Type="Int16" Nullable="false" />
           <Property Name="Dialog" Type="Int16" Nullable="false" />
           <Property Name="MapId" Type="Int16" Nullable="false" />
           <Property Name="MapX" Type="Int16" Nullable="false" />
@@ -1289,6 +1295,9 @@
           <ScalarProperty Name="NpcId" ColumnName="NpcId" />
           <ScalarProperty Name="Name" ColumnName="Name" />
           <ScalarProperty Name="Vnum" ColumnName="Vnum" />
+          <ScalarProperty Name="Effect" ColumnName="Effect" />
+          <ScalarProperty Name="EffectDelay" ColumnName="EffectDelay" />
+          <ScalarProperty Name="Speed" ColumnName="Speed" />
           <ScalarProperty Name="Dialog" ColumnName="Dialog" />
           <ScalarProperty Name="MapId" ColumnName="MapId" />
           <ScalarProperty Name="MapX" ColumnName="MapX" />
