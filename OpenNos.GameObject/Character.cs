@@ -171,7 +171,6 @@ namespace OpenNos.GameObject
             DateTime test = item.ItemDeleteTime!=null ? (DateTime)item.ItemDeleteTime: DateTime.Now;
             long time = item.ItemDeleteTime != null ? (long)test.Subtract(DateTime.Now).TotalSeconds : 0; 
             long seconds = item.IsUsed ? time : iteminfo.ItemValidTime;
-            seconds = seconds * 10;
             switch (itemType)
             {
                 case (byte)ItemType.Weapon:
@@ -213,7 +212,7 @@ namespace OpenNos.GameObject
                     switch (equipmentslot)
                     {
                         case (byte)EquipmentType.Amulet:
-                            return $"e_info 4 {item.ItemVNum} {iteminfo.LevelMinimum}  {seconds} 0 0 {iteminfo.Price}";
+                            return $"e_info 4 {item.ItemVNum} {iteminfo.LevelMinimum}  {seconds * 10} 0 0 {iteminfo.Price}";
                         case (byte)EquipmentType.Fairy:
                             return $"e_info 4 {item.ItemVNum} {iteminfo.Element} {item.ElementRate + iteminfo.ElementRate} 0 0 0 0 0"; // last IsNosmall
                         default:
