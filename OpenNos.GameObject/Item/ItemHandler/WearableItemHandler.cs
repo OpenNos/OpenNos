@@ -36,7 +36,7 @@ namespace OpenNos.GameObject
                    
                     if (iteminfo.ItemValidTime > 0 && inventory.InventoryItem.IsUsed == false)
                     {
-                        inventory.InventoryItem.ItemDeleteTime = DateTime.Now.AddSeconds(iteminfo.ItemValidTime/10);
+                        inventory.InventoryItem.ItemDeleteTime = DateTime.Now.AddSeconds(iteminfo.ItemValidTime);
                     }
                     inventory.InventoryItem.IsUsed = true;
                     double timeSpanSinceLastSpUsage = (DateTime.Now - Process.GetCurrentProcess().StartTime.AddSeconds(-50)).TotalSeconds -

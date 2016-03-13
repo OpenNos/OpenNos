@@ -1705,32 +1705,39 @@ namespace OpenNos.Handler
                 Session.Client.Disconnect();
             }
 
-           
-            foreach (Inventory item in Session.Character.InventoryList.Inventory)
+
+            for (int i = Session.Character.InventoryList.Inventory.Count(); i >= 0; i--)
             {
-                DateTime test = item.InventoryItem.ItemDeleteTime != null ? (DateTime)item.InventoryItem.ItemDeleteTime : DateTime.Now;
-                long time = item.InventoryItem.ItemDeleteTime != null ? (long)test.Subtract(DateTime.Now).TotalSeconds : 0;
-
-                if(item.InventoryItem.IsUsed && ServerManager.GetItem(item.InventoryItem.ItemVNum).ItemValidTime >0 && time <= 0)
+                Inventory item = Session.Character.InventoryList.Inventory[i];
+                if (item != null)
                 {
-                    Session.Character.InventoryList.DeleteByInventoryItemId(item.InventoryItem.InventoryItemId);
-                    Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, item.Type, item.Slot, 0, 0, 0));
-                    Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("ITEM_TIMEOUT"), 6));
+                    DateTime test = item.InventoryItem.ItemDeleteTime != null ? (DateTime)item.InventoryItem.ItemDeleteTime : DateTime.Now;
+                    long time = item.InventoryItem.ItemDeleteTime != null ? (long)test.Subtract(DateTime.Now).TotalSeconds : 0;
 
+                    if (item.InventoryItem.IsUsed && ServerManager.GetItem(item.InventoryItem.ItemVNum).ItemValidTime > 0 && time <= 0)
+                    {
+                        Session.Character.InventoryList.DeleteByInventoryItemId(item.InventoryItem.InventoryItemId);
+                        Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, item.Type, item.Slot, 0, 0, 0));
+                        Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("ITEM_TIMEOUT"), 6));
+
+                    }
                 }
             }
-            foreach (Inventory item in Session.Character.EquipmentList.Inventory)
+            for (int i = Session.Character.EquipmentList.Inventory.Count(); i >= 0; i--)
             {
-                DateTime test = item.InventoryItem.ItemDeleteTime != null ? (DateTime)item.InventoryItem.ItemDeleteTime : DateTime.Now;
-                long time = item.InventoryItem.ItemDeleteTime != null ? (long)test.Subtract(DateTime.Now).TotalSeconds : 0;
-
-                if (item.InventoryItem.IsUsed && ServerManager.GetItem(item.InventoryItem.ItemVNum).ItemValidTime > 0 && time <= 0)
+                Inventory item = Session.Character.EquipmentList.Inventory[i];
+                if (item != null)
                 {
-                  Session.Character.EquipmentList.DeleteByInventoryItemId(item.InventoryItem.InventoryItemId);
-                  Session.Client.SendPacket(Session.Character.GenerateEquipment());
-                    Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("ITEM_TIMEOUT"),6));
-                }
+                    DateTime test = item.InventoryItem.ItemDeleteTime != null ? (DateTime)item.InventoryItem.ItemDeleteTime : DateTime.Now;
+                    long time = item.InventoryItem.ItemDeleteTime != null ? (long)test.Subtract(DateTime.Now).TotalSeconds : 0;
 
+                    if (item.InventoryItem.IsUsed && ServerManager.GetItem(item.InventoryItem.ItemVNum).ItemValidTime > 0 && time <= 0)
+                    {
+                        Session.Character.EquipmentList.DeleteByInventoryItemId(item.InventoryItem.InventoryItemId);
+                        Session.Client.SendPacket(Session.Character.GenerateEquipment());
+                        Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("ITEM_TIMEOUT"), 6));
+                    }
+                }
             }
         }
 

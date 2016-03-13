@@ -169,8 +169,8 @@ namespace OpenNos.GameObject
             byte classe = iteminfo.Class;
             byte subtype = iteminfo.ItemSubType;
             DateTime test = item.ItemDeleteTime!=null ? (DateTime)item.ItemDeleteTime: DateTime.Now;
-            long time = item.ItemDeleteTime != null ? (long)test.Subtract(DateTime.Now).TotalSeconds : iteminfo.ItemValidTime/10; 
-            long seconds = item.IsUsed ? time : iteminfo.ItemValidTime / 10;
+            long time = item.ItemDeleteTime != null ? (long)test.Subtract(DateTime.Now).TotalSeconds : 0; 
+            long seconds = item.IsUsed ? time : iteminfo.ItemValidTime;
             seconds = seconds * 10;
             switch (itemType)
             {

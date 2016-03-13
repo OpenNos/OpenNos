@@ -267,7 +267,7 @@ namespace OpenNos.Import.Console
                                 if (item.EquipmentSlot.Equals((byte)EquipmentType.Amulet))
                                 {
                                     item.LevelMinimum = Convert.ToByte(linesave[2]);
-                                    item.ItemValidTime = Convert.ToInt32(linesave[3]);
+                                    item.ItemValidTime = Convert.ToInt32(linesave[3])/10;
                                 }
                                 else if (item.EquipmentSlot.Equals((byte)EquipmentType.Fairy))
                                 {
