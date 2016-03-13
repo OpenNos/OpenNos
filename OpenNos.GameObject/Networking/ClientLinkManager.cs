@@ -69,6 +69,47 @@ namespace OpenNos.GameObject
 
         }
 
+        public void ClassChange(long id, byte Class)
+        {
+            foreach (ClientSession Session in Sessions.Where(s => s.Character != null && s.Character.CharacterId == id))
+            {
+                Session.Character.JobLevel = 1;
+                Session.Client.SendPacket("npinfo 0");
+                Session.Client.SendPacket("p_clear");
+
+                Session.Character.Class = Class;
+                Session.Character.Speed = ServersData.SpeedData[Session.Character.Class];
+                Session.Client.SendPacket(Session.Character.GenerateCond());
+                Session.Character.Hp = (int)Session.Character.HPLoad();
+                Session.Character.Mp = (int)Session.Character.MPLoad();
+                Session.Client.SendPacket(Session.Character.GenerateTit());
+
+                //eq 37 0 1 0 9 3 -1.120.46.86.-1.-1.-1.-1 0 0
+                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEq(), ReceiverType.AllOnMap);
+
+                //equip 0 0 0.46.0.0.0 1.120.0.0.0 5.86.0.0.0
+
+                Session.Client.SendPacket(Session.Character.GenerateLev());
+                Session.Client.SendPacket(Session.Character.GenerateStat());
+                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(8), ReceiverType.AllOnMap);
+                Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("JOB_CHANGED"), 0));
+                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(196), ReceiverType.AllOnMap);
+                Random rand = new Random();
+                int faction = 1 + (int)rand.Next(0, 2);
+                Session.Character.Faction = faction;
+                Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey($"GET_PROTECTION_POWER_{faction}"), 0));
+                Session.Client.SendPacket("scr 0 0 0 0 0 0");
+
+                Session.Client.SendPacket(Session.Character.GenerateFaction());
+                Session.Client.SendPacket(Session.Character.GenerateStatChar());
+
+                Session.Client.SendPacket(Session.Character.GenerateEff(4799 + faction));
+                Session.Client.SendPacket(Session.Character.GenerateLev());
+                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllOnMapExceptMe);
+                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(6), ReceiverType.AllOnMap);
+                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(198), ReceiverType.AllOnMap);
+            }
+        }
         public void ChangeMap(long id)
         {
             foreach (ClientSession Session in Sessions.Where(s => s.Character != null && s.Character.CharacterId == id))

@@ -273,7 +273,7 @@ namespace OpenNos.Handler
             {
                 if (Byte.TryParse(packetsplit[2], out Class) && Class < 4)
                 {
-                    ClassChange(Class);
+                    ClientLinkManager.Instance.ClassChange(Session.Character.CharacterId, Class);
                 }
             }
             else
@@ -347,44 +347,7 @@ namespace OpenNos.Handler
             ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(196), ReceiverType.AllOnMap);
         }
 
-        public void ClassChange(byte Class)
-        {
-            Session.Character.JobLevel = 1;
-            Session.Client.SendPacket("npinfo 0");
-            Session.Client.SendPacket("p_clear");
-
-            Session.Character.Class = Class;
-            Session.Character.Speed = ServersData.SpeedData[Session.Character.Class];
-            Session.Client.SendPacket(Session.Character.GenerateCond());
-            Session.Character.Hp = (int)Session.Character.HPLoad();
-            Session.Character.Mp = (int)Session.Character.MPLoad();
-            Session.Client.SendPacket(Session.Character.GenerateTit());
-
-            //eq 37 0 1 0 9 3 -1.120.46.86.-1.-1.-1.-1 0 0
-            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEq(), ReceiverType.AllOnMap);
-
-            //equip 0 0 0.46.0.0.0 1.120.0.0.0 5.86.0.0.0
-
-            Session.Client.SendPacket(Session.Character.GenerateLev());
-            Session.Client.SendPacket(Session.Character.GenerateStat());
-            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(8), ReceiverType.AllOnMap);
-            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("JOB_CHANGED"), 0));
-            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(196), ReceiverType.AllOnMap);
-            Random rand = new Random();
-            int faction = 1 + (int)rand.Next(0, 2);
-            Session.Character.Faction = faction;
-            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey($"GET_PROTECTION_POWER_{faction}"), 0));
-            Session.Client.SendPacket("scr 0 0 0 0 0 0");
-
-            Session.Client.SendPacket(Session.Character.GenerateFaction());
-            this.GetStats(String.Empty);
-
-            Session.Client.SendPacket(Session.Character.GenerateEff(4799 + faction));
-            Session.Client.SendPacket(Session.Character.GenerateLev());
-            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllOnMapExceptMe);
-            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(6), ReceiverType.AllOnMap);
-            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(198), ReceiverType.AllOnMap);
-        }
+       
 
         [Packet("$Command")]
         public void Command(string packet)
@@ -1483,47 +1446,7 @@ namespace OpenNos.Handler
             short data3; short.TryParse(packetsplit[4], out data3);
             short npcid; short.TryParse(packetsplit[5], out npcid);
 
-            switch (runner)
-            {
-                case 1:
-                    if (Session.Character.Class != (byte)ClassType.Adventurer)
-                    {
-                        Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ADVENTURER"), 0));
-                        return;
-                    }
-                    if (Session.Character.Level < 15 || Session.Character.JobLevel < 20)
-                    {
-                        Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("LOW_LVL"), 0));
-                        return;
-                    }
-
-                    if (Session.Character.EquipmentList.isEmpty())
-                    {
-                        ClassChange(Convert.ToByte(type));
-                    }
-                    else
-                    {
-                        Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("EQ_NOT_EMPTY"), 0));
-                    }
-                    break;
-
-                case 2:
-                    Session.Client.SendPacket($"wopen 1 0");
-                    break;
-
-                case 10:
-                    Session.Client.SendPacket($"wopen 3 0");
-                    break;
-
-                case 12:
-                    Session.Client.SendPacket($"wopen {type} 0");
-                    break;
-
-                case 14:
-                    // m_list 2 1002 1003 1004 1005 1006 1007 1008 1009 1010 180 181 2127 2178 1242 1243 1244 2504 2505 - 100
-                    Session.Client.SendPacket($"wopen 27 0");
-                    break;
-            }
+            NRunHandler.NRun(Session,type,runner,data3,npcid);
         }
 
         [Packet("gop")]
