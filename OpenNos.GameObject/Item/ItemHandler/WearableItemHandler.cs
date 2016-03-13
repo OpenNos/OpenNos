@@ -33,7 +33,12 @@ namespace OpenNos.GameObject
 
                     Item iteminfo = ServerManager.GetItem(inventory.InventoryItem.ItemVNum);
                     if (iteminfo == null) return;
-
+                   
+                    if (iteminfo.ItemValidTime > 0 && inventory.InventoryItem.IsUsed == false)
+                    {
+                        inventory.InventoryItem.ItemDeleteTime = DateTime.Now.AddSeconds(iteminfo.ItemValidTime/10);
+                    }
+                    inventory.InventoryItem.IsUsed = true;
                     double timeSpanSinceLastSpUsage = (DateTime.Now - Process.GetCurrentProcess().StartTime.AddSeconds(-50)).TotalSeconds -
                                                       Session.Character.LastSp;
                     if (iteminfo.EquipmentSlot == (byte)EquipmentType.Sp && timeSpanSinceLastSpUsage < 30)

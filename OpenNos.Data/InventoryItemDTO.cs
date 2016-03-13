@@ -18,7 +18,6 @@ namespace OpenNos.Data
     public class InventoryItemDTO
     {
         #region Properties
-
         public long InventoryItemId { get; set; }
         public short ItemVNum { get; set; }
         public byte Amount { get; set; }
@@ -45,7 +44,8 @@ namespace OpenNos.Data
         public byte FireElement { get; set; }
         public byte Ammo { get; set; }
         public bool IsFixed { get; set; }
-        public long ItemValidTime { get; set; }
+        public bool IsUsed { get; set; }
+        public Nullable<System.DateTime> ItemDeleteTime { get; set; }
         public byte Cellon { get; set; }
         public byte FireResistance { get; set; }
         public byte WaterResistance { get; set; }
@@ -68,6 +68,7 @@ namespace OpenNos.Data
         public byte SpFire { get; set; }
         public byte SpWater { get; set; }
         public byte SpStoneUpgrade { get; set; }
+
 
         #endregion
     }

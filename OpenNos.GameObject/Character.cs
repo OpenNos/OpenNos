@@ -168,6 +168,10 @@ namespace OpenNos.GameObject
             byte itemType = iteminfo.ItemType;
             byte classe = iteminfo.Class;
             byte subtype = iteminfo.ItemSubType;
+            DateTime test = item.ItemDeleteTime!=null ? (DateTime)item.ItemDeleteTime: DateTime.Now;
+            long time = item.ItemDeleteTime != null ? (long)test.Subtract(DateTime.Now).TotalSeconds : iteminfo.ItemValidTime/10; 
+            long seconds = item.IsUsed ? time : iteminfo.ItemValidTime / 10;
+            seconds = seconds * 10;
             switch (itemType)
             {
                 case (byte)ItemType.Weapon:
@@ -199,9 +203,9 @@ namespace OpenNos.GameObject
                     switch (equipmentslot)
                     {
                         case (byte)EquipmentType.CostumeHat:
-                            return $"e_info 3 {item.ItemVNum} {iteminfo.LevelMinimum} {iteminfo.CloseDefence + item.CloseDefence} {iteminfo.DistanceDefence + item.DistanceDefence} {iteminfo.MagicDefence + item.MagicDefence} {iteminfo.DefenceDodge + item.DefenceDodge} {iteminfo.FireResistance + item.FireResistance} {iteminfo.WaterResistance + item.WaterResistance} {iteminfo.LightResistance + item.LightResistance} {iteminfo.DarkResistance + item.DarkResistance} {iteminfo.Price} 0 1 {(iteminfo.ItemValidTime == 0 ? -1 : iteminfo.ItemValidTime / (3600))}";
+                            return $"e_info 3 {item.ItemVNum} {iteminfo.LevelMinimum} {iteminfo.CloseDefence + item.CloseDefence} {iteminfo.DistanceDefence + item.DistanceDefence} {iteminfo.MagicDefence + item.MagicDefence} {iteminfo.DefenceDodge + item.DefenceDodge} {iteminfo.FireResistance + item.FireResistance} {iteminfo.WaterResistance + item.WaterResistance} {iteminfo.LightResistance + item.LightResistance} {iteminfo.DarkResistance + item.DarkResistance} {iteminfo.Price} 0 1 {(seconds/ (3600))}";
                         case (byte)EquipmentType.CostumeSuit:
-                            return $"e_info 2 {item.ItemVNum} {item.Rare} {item.Upgrade} {(item.IsFixed ? 1 : 0)} {iteminfo.LevelMinimum} {iteminfo.CloseDefence + item.CloseDefence} {iteminfo.DistanceDefence + item.DistanceDefence} {iteminfo.MagicDefence + item.MagicDefence} {iteminfo.DefenceDodge + item.DefenceDodge} {iteminfo.Price} -1 1 {(iteminfo.ItemValidTime == 0 ? -1 : iteminfo.ItemValidTime / (3600))}"; // 1 = IsCosmetic -1 = no shells
+                            return $"e_info 2 {item.ItemVNum} {item.Rare} {item.Upgrade} {(item.IsFixed ? 1 : 0)} {iteminfo.LevelMinimum} {iteminfo.CloseDefence + item.CloseDefence} {iteminfo.DistanceDefence + item.DistanceDefence} {iteminfo.MagicDefence + item.MagicDefence} {iteminfo.DefenceDodge + item.DefenceDodge} {iteminfo.Price} -1 1 {(seconds / (3600))}"; // 1 = IsCosmetic -1 = no shells
                         default:
                             return $"e_info 3 {item.ItemVNum} {iteminfo.LevelMinimum} {iteminfo.CloseDefence + item.CloseDefence} {iteminfo.DistanceDefence + item.DistanceDefence} {iteminfo.MagicDefence + item.MagicDefence} {iteminfo.DefenceDodge + item.DefenceDodge} {iteminfo.FireResistance + item.FireResistance} {iteminfo.WaterResistance + item.WaterResistance} {iteminfo.LightResistance + item.LightResistance} {iteminfo.DarkResistance + item.DarkResistance} {iteminfo.Price} 0 0 -1"; // after iteminfo.Price theres TimesConnected {(iteminfo.ItemValidTime == 0 ? -1 : iteminfo.ItemValidTime / (3600))}
                     }
@@ -209,7 +213,7 @@ namespace OpenNos.GameObject
                     switch (equipmentslot)
                     {
                         case (byte)EquipmentType.Amulet:
-                            return $"e_info 4 {item.ItemVNum} {iteminfo.LevelMinimum}  {(iteminfo.ItemValidTime == 0 ? -1 : iteminfo.ItemValidTime)} 0 0 {iteminfo.Price}";
+                            return $"e_info 4 {item.ItemVNum} {iteminfo.LevelMinimum}  {seconds} 0 0 {iteminfo.Price}";
                         case (byte)EquipmentType.Fairy:
                             return $"e_info 4 {item.ItemVNum} {iteminfo.Element} {item.ElementRate + iteminfo.ElementRate} 0 0 0 0 0"; // last IsNosmall
                         default:
@@ -966,7 +970,8 @@ namespace OpenNos.GameObject
                     HP = inventory.InventoryItem.HP,
                     IsEmpty = inventory.InventoryItem.IsEmpty,
                     IsFixed = inventory.InventoryItem.IsFixed,
-                    ItemValidTime = inventory.InventoryItem.ItemValidTime,
+                    IsUsed = inventory.InventoryItem.IsUsed,
+                    ItemDeleteTime = inventory.InventoryItem.ItemDeleteTime,
                     LightResistance = inventory.InventoryItem.LightResistance,
                     MP = inventory.InventoryItem.MP,
                     SpDamage = inventory.InventoryItem.SpDamage,

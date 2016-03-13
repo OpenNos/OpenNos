@@ -266,8 +266,8 @@ namespace OpenNos.Import.Console
                             case (byte)ItemType.Jewelery:
                                 if (item.EquipmentSlot.Equals((byte)EquipmentType.Amulet))
                                 {
-                                    item.Effect = Convert.ToInt16(linesave[2]);
-                                    item.EffectValue = Convert.ToInt32(linesave[3]);
+                                    item.LevelMinimum = Convert.ToByte(linesave[2]);
+                                    item.ItemValidTime = Convert.ToInt32(linesave[3]);
                                 }
                                 else if (item.EquipmentSlot.Equals((byte)EquipmentType.Fairy))
                                 {

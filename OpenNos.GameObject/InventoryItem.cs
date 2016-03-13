@@ -66,7 +66,8 @@ namespace OpenNos.GameObject
             HP = inventoryItem.HP;
             IsEmpty = inventoryItem.IsEmpty;
             IsFixed = inventoryItem.IsFixed;
-            ItemValidTime = inventoryItem.ItemValidTime;
+            IsUsed = inventoryItem.IsUsed;
+            ItemDeleteTime = inventoryItem.ItemDeleteTime;
             LightResistance = inventoryItem.LightResistance;
             MP = inventoryItem.MP;
             SpDamage = inventoryItem.SpDamage;

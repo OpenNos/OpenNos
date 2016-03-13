@@ -40,7 +40,8 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public byte FireElement { get; set; }
         public byte Ammo { get; set; }
         public bool IsFixed { get; set; }
-        public long ItemValidTime { get; set; }
+        public bool IsUsed { get; set; }
+        public Nullable<System.DateTime> ItemDeleteTime { get; set; }
         public byte Cellon { get; set; }
         public byte FireResistance { get; set; }
         public byte WaterResistance { get; set; }

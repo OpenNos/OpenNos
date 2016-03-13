@@ -306,7 +306,8 @@
     <Property Name="FireElement" Type="utinyint" Nullable="false" />
     <Property Name="Ammo" Type="utinyint" Nullable="false" />
     <Property Name="IsFixed" Type="bool" Nullable="false" />
-    <Property Name="ItemValidTime" Type="bigint" Nullable="false" />
+    <Property Name="IsUsed" Type="bool" Nullable="false" />
+    <Property Name="ItemDeleteTime" Type="datetime" Nullable="true" />
     <Property Name="Cellon" Type="utinyint" Nullable="false" />
     <Property Name="FireResistance" Type="utinyint" Nullable="false" />
     <Property Name="WaterResistance" Type="utinyint" Nullable="false" />
@@ -951,7 +952,8 @@
           <NavigationProperty Name="item" Relationship="opennosModel.InventoryItemItem" FromRole="InventoryItem" ToRole="Item" />
           <Property Name="Ammo" Type="Byte" Nullable="false" />
           <Property Name="IsFixed" Type="Boolean" Nullable="false" />
-          <Property Name="ItemValidTime" Type="Int64" Nullable="false" />
+          <Property Name="IsUsed" Type="Boolean" Nullable="false" />
+          <Property Name="ItemDeleteTime" Type="DateTime" Nullable="true" />
           <Property Name="Cellon" Type="Byte" Nullable="false" />
           <Property Name="FireResistance" Type="Byte" Nullable="false" />
           <Property Name="WaterResistance" Type="Byte" Nullable="false" />
@@ -1345,7 +1347,8 @@
           <ScalarProperty Name="FireElement" ColumnName="FireElement" />
           <ScalarProperty Name="Ammo" ColumnName="Ammo" />
           <ScalarProperty Name="IsFixed" ColumnName="IsFixed" />
-          <ScalarProperty Name="ItemValidTime" ColumnName="ItemValidTime" />
+          <ScalarProperty Name="IsUsed" ColumnName="IsUsed" />
+          <ScalarProperty Name="ItemDeleteTime" ColumnName="ItemDeleteTime" />
           <ScalarProperty Name="Cellon" ColumnName="Cellon" />
           <ScalarProperty Name="FireResistance" ColumnName="FireResistance" />
           <ScalarProperty Name="WaterResistance" ColumnName="WaterResistance" />

@@ -44,7 +44,7 @@
 -- -----------------------------------------------------------
 -- Entity Designer DDL Script for MySQL Server 4.1 and higher
 -- -----------------------------------------------------------
--- Date Created: 03/12/2016 22:15:17
+-- Date Created: 03/13/2016 11:56:25
 
 -- Generated from EDMX file: C:\Users\ERWAN\Desktop\OpenNos GIT\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
 -- Target version: 3.0.0.0
@@ -373,7 +373,8 @@ CREATE TABLE `inventoryitem`(
 	`FireElement` TINYINT UNSIGNED NOT NULL, 
 	`Ammo` TINYINT UNSIGNED NOT NULL, 
 	`IsFixed` bool NOT NULL, 
-	`ItemValidTime` bigint NOT NULL, 
+	`IsUsed` bool NOT NULL, 
+	`ItemDeleteTime` datetime, 
 	`Cellon` TINYINT UNSIGNED NOT NULL, 
 	`FireResistance` TINYINT UNSIGNED NOT NULL, 
 	`WaterResistance` TINYINT UNSIGNED NOT NULL, 

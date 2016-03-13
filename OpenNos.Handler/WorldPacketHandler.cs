@@ -437,7 +437,7 @@ namespace OpenNos.Handler
                     {
                         if (Session.Account.LastCompliment.Date.AddDays(1) <= DateTime.Now.Date)
                         {
-                            short compliment = ClientLinkManager.Instance.GetProperty<short>(complimentCharacterId, "Compliment");
+                            short? compliment = ClientLinkManager.Instance.GetProperty<short?>(complimentCharacterId, "Compliment");
                             compliment++;
                             ClientLinkManager.Instance.SetProperty(complimentCharacterId, "Compliment", compliment);
                             Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("COMPLIMENT_GIVEN"), ClientLinkManager.Instance.GetProperty<string>(complimentCharacterId, "Name")), 12));
@@ -1703,6 +1703,34 @@ namespace OpenNos.Handler
             if (Convert.ToInt32(packetsplit[2]) != Session.Character.LastPulse)
             {
                 Session.Client.Disconnect();
+            }
+
+           
+            foreach (Inventory item in Session.Character.InventoryList.Inventory)
+            {
+                DateTime test = item.InventoryItem.ItemDeleteTime != null ? (DateTime)item.InventoryItem.ItemDeleteTime : DateTime.Now;
+                long time = item.InventoryItem.ItemDeleteTime != null ? (long)test.Subtract(DateTime.Now).TotalSeconds : 0;
+
+                if(item.InventoryItem.IsUsed && ServerManager.GetItem(item.InventoryItem.ItemVNum).ItemValidTime >0 && time <= 0)
+                {
+                    Session.Character.InventoryList.DeleteByInventoryItemId(item.InventoryItem.InventoryItemId);
+                    Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, item.Type, item.Slot, 0, 0, 0));
+                    Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("ITEM_TIMEOUT"), 6));
+
+                }
+            }
+            foreach (Inventory item in Session.Character.EquipmentList.Inventory)
+            {
+                DateTime test = item.InventoryItem.ItemDeleteTime != null ? (DateTime)item.InventoryItem.ItemDeleteTime : DateTime.Now;
+                long time = item.InventoryItem.ItemDeleteTime != null ? (long)test.Subtract(DateTime.Now).TotalSeconds : 0;
+
+                if (item.InventoryItem.IsUsed && ServerManager.GetItem(item.InventoryItem.ItemVNum).ItemValidTime > 0 && time <= 0)
+                {
+                  Session.Character.EquipmentList.DeleteByInventoryItemId(item.InventoryItem.InventoryItemId);
+                  Session.Client.SendPacket(Session.Character.GenerateEquipment());
+                    Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("ITEM_TIMEOUT"),6));
+                }
+
             }
         }
 
@@ -3044,7 +3072,7 @@ namespace OpenNos.Handler
 
             ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateSpk(message, 5), ReceiverType.OnlyMe);
 
-            bool Blocked = ClientLinkManager.Instance.GetProperty<bool>(packetsplit[1].Substring(1), "WhisperBlocked");
+            bool? Blocked = ClientLinkManager.Instance.GetProperty<bool?>(packetsplit[1].Substring(1), "WhisperBlocked");
             if (!Blocked.Equals(null))
             {
                 if (!Convert.ToBoolean(Blocked)) ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateSpk(message, 5), ReceiverType.OnlySomeone, packetsplit[1].Substring(1));
