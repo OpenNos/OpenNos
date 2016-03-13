@@ -1711,10 +1711,7 @@ namespace OpenNos.Handler
                 Inventory item = Session.Character.InventoryList.Inventory[i];
                 if (item != null)
                 {
-                    DateTime test = item.InventoryItem.ItemDeleteTime != null ? (DateTime)item.InventoryItem.ItemDeleteTime : DateTime.Now;
-                    long time = item.InventoryItem.ItemDeleteTime != null ? (long)test.Subtract(DateTime.Now).TotalSeconds : 0;
-
-                    if (item.InventoryItem.IsUsed && ServerManager.GetItem(item.InventoryItem.ItemVNum).ItemValidTime > 0 && time <= 0)
+                    if (item.InventoryItem.IsUsed && item.InventoryItem.ItemDeleteTime !=null && item.InventoryItem.ItemDeleteTime < DateTime.Now)
                     {
                         Session.Character.InventoryList.DeleteByInventoryItemId(item.InventoryItem.InventoryItemId);
                         Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, item.Type, item.Slot, 0, 0, 0));
@@ -1728,10 +1725,7 @@ namespace OpenNos.Handler
                 Inventory item = Session.Character.EquipmentList.Inventory[i];
                 if (item != null)
                 {
-                    DateTime test = item.InventoryItem.ItemDeleteTime != null ? (DateTime)item.InventoryItem.ItemDeleteTime : DateTime.Now;
-                    long time = item.InventoryItem.ItemDeleteTime != null ? (long)test.Subtract(DateTime.Now).TotalSeconds : 0;
-
-                    if (item.InventoryItem.IsUsed && ServerManager.GetItem(item.InventoryItem.ItemVNum).ItemValidTime > 0 && time <= 0)
+                    if (item.InventoryItem.IsUsed && item.InventoryItem.ItemDeleteTime != null && item.InventoryItem.ItemDeleteTime < DateTime.Now)
                     {
                         Session.Character.EquipmentList.DeleteByInventoryItemId(item.InventoryItem.InventoryItemId);
                         Session.Client.SendPacket(Session.Character.GenerateEquipment());
