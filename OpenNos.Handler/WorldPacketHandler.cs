@@ -1704,23 +1704,26 @@ namespace OpenNos.Handler
             {
                 Session.Client.Disconnect();
             }
-
-
-            for (int i = Session.Character.InventoryList.Inventory.Count(); i >= 0; i--)
+            deleteTimeout();
+        }
+        public void deleteTimeout()
+        {
+            for (int i = Session.Character.InventoryList.Inventory.Count() - 1; i >= 0; i--)
             {
+
                 Inventory item = Session.Character.InventoryList.Inventory[i];
                 if (item != null)
                 {
-                    if (item.InventoryItem.IsUsed && item.InventoryItem.ItemDeleteTime !=null && item.InventoryItem.ItemDeleteTime < DateTime.Now)
+                    if (item.InventoryItem.IsUsed && item.InventoryItem.ItemDeleteTime != null && item.InventoryItem.ItemDeleteTime < DateTime.Now)
                     {
                         Session.Character.InventoryList.DeleteByInventoryItemId(item.InventoryItem.InventoryItemId);
                         Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, item.Type, item.Slot, 0, 0, 0));
-                        Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("ITEM_TIMEOUT"), 6));
+                        Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("ITEM_TIMEOUT"), 10));
 
                     }
                 }
             }
-            for (int i = Session.Character.EquipmentList.Inventory.Count(); i >= 0; i--)
+            for (int i = Session.Character.EquipmentList.Inventory.Count() - 1; i >= 0; i--)
             {
                 Inventory item = Session.Character.EquipmentList.Inventory[i];
                 if (item != null)
@@ -1729,7 +1732,7 @@ namespace OpenNos.Handler
                     {
                         Session.Character.EquipmentList.DeleteByInventoryItemId(item.InventoryItem.InventoryItemId);
                         Session.Client.SendPacket(Session.Character.GenerateEquipment());
-                        Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("ITEM_TIMEOUT"), 6));
+                        Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("ITEM_TIMEOUT"), 10));
                     }
                 }
             }
@@ -2814,6 +2817,7 @@ namespace OpenNos.Handler
             Session.Client.SendPacket("pinit 0");
             Session.Client.SendPacket("zzim");
             Session.Client.SendPacket($"twk 1 {Session.Character.CharacterId} {Session.Account.Name} {Session.Character.Name} shtmxpdlfeoqkr");
+            deleteTimeout();
         }
 
         [Packet("$Teleport")]
