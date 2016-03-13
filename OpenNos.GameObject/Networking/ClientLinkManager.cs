@@ -99,6 +99,7 @@ namespace OpenNos.GameObject
                 ClientLinkManager.Instance.Broadcast(Session, Session.Character.GeneratePairy(), ReceiverType.AllOnMap);
                 Session.Client.SendPacket($"rsfi 1 1 0 9 0 9"); // Act completion
                 ClientLinkManager.Instance.RequiereBroadcastFromAllMapUsersNotInvisible(Session, "GenerateIn");
+                if(Session.Character.InvisibleGm == false)
                 ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllOnMapExceptMe);
                 if (Session.CurrentMap.IsDancing == 2 && Session.Character.IsDancing == 0)
                     ClientLinkManager.Instance.RequiereBroadcastFromMap(Session.Character.MapId, "dance 2");
