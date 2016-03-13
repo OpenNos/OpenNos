@@ -171,6 +171,8 @@ namespace OpenNos.GameObject
             DateTime test = item.ItemDeleteTime!=null ? (DateTime)item.ItemDeleteTime: DateTime.Now;
             long time = item.ItemDeleteTime != null ? (long)test.Subtract(DateTime.Now).TotalSeconds : 0; 
             long seconds = item.IsUsed ? time : iteminfo.ItemValidTime;
+            if (seconds < 0)
+                seconds = 0;
             switch (itemType)
             {
                 case (byte)ItemType.Weapon:
@@ -357,7 +359,7 @@ namespace OpenNos.GameObject
             int i = 0;
             foreach (Portal portal in ServerManager.GetMap(MapId).Portals)
             {
-                gpList.Add($"gp {portal.SourceX} {portal.SourceY} {portal.DestinationMapId} {portal.Type} {i} {portal.IsDisabled}");
+                gpList.Add($"gp {portal.SourceX} {portal.SourceY} {portal.DestinationMapId} {portal.Type} {i} {(portal.IsDisabled?1:0)}");
                 i++;
             }
 
