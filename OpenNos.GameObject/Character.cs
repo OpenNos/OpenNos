@@ -15,12 +15,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using AutoMapper;
 using OpenNos.Core;
 using OpenNos.Data;
 using OpenNos.DAL;
 using OpenNos.Domain;
+using System.Threading;
 
 namespace OpenNos.GameObject
 {

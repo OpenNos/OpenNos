@@ -207,16 +207,16 @@ namespace OpenNos.Handler
                 else if (Session.Character.GetDigniteIco() == 5 || Session.Character.GetDigniteIco() == 6)
                     pourcent = 1.5;
 
-                if (price <= 0 || price* pourcent > Session.Character.Gold)
+                if (price <= 0 || price * pourcent > Session.Character.Gold)
                 {
                     Session.Client.SendPacket(Session.Character.GenerateShopMemo(3, Language.Instance.GetMessageFromKey("NOT_ENOUGH_MONEY")));
                     return;
                 }
 
                 Session.Client.SendPacket(Session.Character.GenerateShopMemo(1, string.Format(Language.Instance.GetMessageFromKey("BUY_ITEM_VALIDE"), ServerManager.GetItem(item.ItemVNum).Name, amount)));
-               
 
-                Session.Character.Gold -= (long)(price*pourcent);
+
+                Session.Character.Gold -= (long)(price * pourcent);
                 Session.Client.SendPacket(Session.Character.GenerateGold());
 
                 InventoryItem newItem = new InventoryItem
@@ -1191,10 +1191,18 @@ namespace OpenNos.Handler
         {
 
             Session.Character.Invisible = Session.Character.Invisible == 0 ? 1 : 0;
-            ClientLinkManager.Instance.Broadcast(Session,Session.Character.GenerateInvisible(),ReceiverType.AllOnMap);
-            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateOut(), ReceiverType.AllOnMapExceptMe);
+            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateInvisible(), ReceiverType.AllOnMap);
+            Session.Character.InvisibleGm = Session.Character.InvisibleGm ? false : true;
+            if (Session.Character.InvisibleGm == true)
+            {
+                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateOut(), ReceiverType.AllOnMapExceptMe);
 
-            Session.Character.InvisibleGm = true;
+            }
+            else
+            {
+                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllOnMapExceptMe);
+
+            }
         }
 
         [Packet("$JLvl")]
@@ -2154,7 +2162,7 @@ namespace OpenNos.Handler
                     Session.Client.SendPacket(message);
                     return;
                 }
-                Session.Character.Gold += (item.Price/20) * amount;
+                Session.Character.Gold += (item.Price / 20) * amount;
                 DeleteItem(type, slot);
                 Session.Client.SendPacket(Session.Character.GenerateGold());
                 Session.Client.SendPacket(Session.Character.GenerateShopMemo(1, string.Format(Language.Instance.GetMessageFromKey("SELL_ITEM_VALIDE"), item.Name, amount)));
@@ -2176,7 +2184,7 @@ namespace OpenNos.Handler
             string shoplist = "";
             foreach (ShopItem item in npc.Shop.ShopItems.Where(s => s.Type.Equals(type)))
             {
-               
+
                 Item iteminfo = ServerManager.GetItem(item.ItemVNum);
                 double pourcent = 1;
                 if (Session.Character.GetDigniteIco() == 3)
@@ -2186,9 +2194,9 @@ namespace OpenNos.Handler
                 else if (Session.Character.GetDigniteIco() == 5 || Session.Character.GetDigniteIco() == 6)
                     pourcent = 1.5;
                 if (iteminfo.Type != 0)
-                    shoplist += $" {iteminfo.Type}.{item.Slot}.{item.ItemVNum}.{-1}.{ServerManager.GetItem(item.ItemVNum).Price* pourcent}";
+                    shoplist += $" {iteminfo.Type}.{item.Slot}.{item.ItemVNum}.{-1}.{ServerManager.GetItem(item.ItemVNum).Price * pourcent}";
                 else
-                    shoplist += $" {iteminfo.Type}.{item.Slot}.{item.ItemVNum}.{item.Rare}.{(iteminfo.IsColored ? item.Color : item.Upgrade)}.{ServerManager.GetItem(item.ItemVNum).Price*pourcent}";
+                    shoplist += $" {iteminfo.Type}.{item.Slot}.{item.ItemVNum}.{item.Rare}.{(iteminfo.IsColored ? item.Color : item.Upgrade)}.{ServerManager.GetItem(item.ItemVNum).Price * pourcent}";
             }
 
             Session.Client.SendPacket($"n_inv 2 {npc.NpcId} 0 0{shoplist}");
@@ -2971,45 +2979,9 @@ namespace OpenNos.Handler
             if (inv != null)
             {
                 Item iteminfo = ServerManager.GetItem(inv.InventoryItem.ItemVNum);
-                iteminfo.Use(Session,ref inv);
+                iteminfo.Use(Session, ref inv);
             }
         }
-        /*  public void UseItem(string packet)
-          {
-              string[] packetsplit = packet.Split(' ');
-              if (packetsplit.Length > 8)
-              {
-                  short uitype; short.TryParse(packetsplit[2], out uitype);
-                  byte type; byte.TryParse(packetsplit[4], out type);
-                  short slot; short.TryParse(packetsplit[5], out slot);
-                  switch (uitype)
-                  {
-                      case 1:
-                          Inventory inv = Session.Character.InventoryList.LoadBySlotAndType(slot, type);
-                          InventoryItem item = new InventoryItem(inv.InventoryItem);
-                          Item itemInfo = ServerManager.GetItem(item.ItemVNum);
-                          if (itemInfo.IsConsumable)
-                              item.Amount--;
-                          if (itemInfo.Morph != 0)
-                          {
-                              if (!Session.Character.IsVehicled)
-                              {
-                                  if (Session.Character.ThreadCharChange != null && Session.Character.ThreadCharChange.IsAlive)
-                                      Session.Character.ThreadCharChange.Abort();
-                                  Session.Character.ThreadCharChange = new Thread(() => ChangeVehicle(itemInfo));
-                                  Session.Character.ThreadCharChange.Start();
-                              }
-                              else
-                              {
-                                  RemoveVehicle();
-                              }
-                          }
-
-                          break;
-                  }
-              }
-          }*/
-
         [Packet("u_s")]
         public void UseSkill(string packet)
         {
@@ -3058,7 +3030,7 @@ namespace OpenNos.Handler
                     Item iteminfo = ServerManager.GetItem(inv.InventoryItem.ItemVNum);
                     iteminfo.Use(Session, ref inv);
                 }
-            } 
+            }
         }
 
         [Packet("/")]
