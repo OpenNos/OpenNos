@@ -253,7 +253,7 @@ namespace OpenNos.GameObject
         {
             inv = LoadBySlotAndType(slot, type);
             invdest = LoadBySlotAndType(destslot, type);
-            if (inv!=null && amount <= inv.InventoryItem.Amount)
+            if (inv != null && amount <= inv.InventoryItem.Amount)
             {
                 if (invdest == null)
                 {
@@ -404,7 +404,7 @@ namespace OpenNos.GameObject
                     return null;
                 }
             }
-           
+
             return inv;
         }
 
@@ -425,6 +425,31 @@ namespace OpenNos.GameObject
             }
 
             return inventory;
+        }
+
+        public int CountItem(int v)
+        {
+            int count = 0;
+            foreach (Inventory inv in Inventory.Where(s => s.InventoryItem.ItemVNum == v))
+            {
+                count += inv.InventoryItem.Amount;
+            }
+            return count;
+        }
+
+        public void RemoveItemAmount(int v, byte amount)
+        {
+
+            foreach (Inventory inv in Inventory.Where(s => s.InventoryItem.ItemVNum == v))
+            {
+                if (inv.InventoryItem.Amount >= amount)
+                    inv.InventoryItem.Amount -= amount;
+                else
+                {
+                    amount -= inv.InventoryItem.Amount;
+                    inv.InventoryItem.Amount = 0;                  
+                }
+            }
         }
 
         #endregion
