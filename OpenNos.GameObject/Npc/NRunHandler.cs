@@ -52,6 +52,7 @@ namespace OpenNos.GameObject
                     // m_list 2 1002 1003 1004 1005 1006 1007 1008 1009 1010 180 181 2127 2178 1242 1243 1244 2504 2505 - 100
                     Session.Client.SendPacket($"wopen 27 0");
                     break;
+
                 default:
                     Logger.Log.Warn(String.Format(Language.Instance.GetMessageFromKey("NO_NRUN_HANDLER"),runner));
                     break;

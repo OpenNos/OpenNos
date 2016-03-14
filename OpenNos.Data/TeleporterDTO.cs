@@ -12,18 +12,18 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Data;
-using System.Collections.Generic;
-
-namespace OpenNos.DAL.Interface
+namespace OpenNos.Data
 {
-    public interface INpcDAO
+    public class TeleporterDTO
     {
-        #region Methods
+        #region Properties
 
-        NpcDTO Insert(NpcDTO npc);
-        IEnumerable<NpcDTO> LoadFromMap(short MapId);
-        NpcDTO LoadById(short MapId);
+        public short TeleporterId { get; set; }
+        public short NpcId { get; set; }
+        public short Index { get; set; }
+        public short MapX { get; set; }
+        public short MapY { get; set; }
+        public short MapId { get; set; }
 
         #endregion
     }

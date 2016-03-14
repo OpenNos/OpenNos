@@ -65,6 +65,7 @@
     <Compile Include="IMapDAO.cs" />
     <Compile Include="INpcDAO.cs" />
     <Compile Include="IPortalDAO.cs" />
+    <Compile Include="ITeleporterDAO.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

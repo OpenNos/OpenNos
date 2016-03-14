@@ -17,13 +17,13 @@ using System.Collections.Generic;
 
 namespace OpenNos.DAL.Interface
 {
-    public interface INpcDAO
+    public interface ITeleporterDAO
     {
         #region Methods
 
-        NpcDTO Insert(NpcDTO npc);
-        IEnumerable<NpcDTO> LoadFromMap(short MapId);
-        NpcDTO LoadById(short MapId);
+        TeleporterDTO Insert(TeleporterDTO teleporter);
+        IEnumerable<TeleporterDTO> LoadFromNpc(short NpcId);
+        TeleporterDTO LoadById(short MapId);
 
         #endregion
     }

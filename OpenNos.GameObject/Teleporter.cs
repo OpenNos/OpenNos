@@ -12,18 +12,20 @@
  * GNU General Public License for more details.
  */
 
+using AutoMapper;
 using OpenNos.Data;
-using System.Collections.Generic;
 
-namespace OpenNos.DAL.Interface
+namespace OpenNos.GameObject
 {
-    public interface INpcDAO
+    public class Teleporter : TeleporterDTO
     {
-        #region Methods
+        #region Instantiation
 
-        NpcDTO Insert(NpcDTO npc);
-        IEnumerable<NpcDTO> LoadFromMap(short MapId);
-        NpcDTO LoadById(short MapId);
+        public Teleporter()
+        {
+            Mapper.CreateMap<TeleporterDTO, Teleporter>();
+            Mapper.CreateMap<Teleporter, TeleporterDTO>();
+        }
 
         #endregion
     }
