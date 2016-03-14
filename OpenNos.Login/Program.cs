@@ -54,15 +54,16 @@ namespace OpenNos.Login
                     try
                     {
                         ServiceFactory.Instance.CommunicationService.Open();
+                        NetworkManager<LoginEncryption> networkManager = new NetworkManager<LoginEncryption>(ip, port, typeof(LoginPacketHandler));
+
+                        //refresh WCF
+                        ServiceFactory.Instance.CommunicationService.CleanupAsync();
                     }
                     catch (Exception ex)
                     {
                         Logger.Log.Error(ex.Message);
                     }
-                    NetworkManager<LoginEncryption> networkManager = new NetworkManager<LoginEncryption>(ip, port, typeof(LoginPacketHandler));
-
-                    //refresh WCF
-                    ServiceFactory.Instance.CommunicationService.CleanupAsync();
+                  
                 }
                 catch (Exception ex)
                 {

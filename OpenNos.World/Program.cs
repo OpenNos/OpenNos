@@ -84,14 +84,15 @@ namespace OpenNos.World
             try
             {
                 ServiceFactory.Instance.CommunicationService.Open();
+                exitHandler += new EventHandler(ExitHandler);
+                SetConsoleCtrlHandler(exitHandler, true);
+                NetworkManager<WorldEncryption> networkManager = new NetworkManager<WorldEncryption>(ip, port, typeof(WorldPacketHandler));
             }
             catch (Exception ex)
             {
                 Logger.Log.Error(ex.Message);
             }
-            exitHandler += new EventHandler(ExitHandler);
-            SetConsoleCtrlHandler(exitHandler, true);
-            NetworkManager<WorldEncryption> networkManager = new NetworkManager<WorldEncryption>(ip, port, typeof(WorldPacketHandler));
+          
         }
 
         private static bool ExitHandler(CtrlType sig)
