@@ -2947,6 +2947,7 @@ namespace OpenNos.Handler
                     Session.Client.SendPacket($"pdti 10 {item.InventoryItem.ItemVNum} 1 27 {item.InventoryItem.Upgrade} 0");
                     Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SUM_SUCCESS"), 0));
                     Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("SUM_SUCCESS"), 12));
+                    Session.Client.SendPacket($"guri 19 1 {Session.Character.CharacterId} 1324");
                     Session.Client.SendPacket(Session.Character.GenerateGold());
                     GetStartupInventory();
                 }
@@ -2954,6 +2955,7 @@ namespace OpenNos.Handler
                 {
                     Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SUM_FAILED"), 0));
                     Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("SUM_FAILED"), 11));
+                    Session.Client.SendPacket($"guri 19 1 {Session.Character.CharacterId} 1332");
                     DeleteItem(item2.Type, item2.Slot);
                     DeleteItem(item.Type, item.Slot);
                 }
