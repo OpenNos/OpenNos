@@ -18,6 +18,7 @@ using OpenNos.Data;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace OpenNos.GameObject
 {
@@ -31,7 +32,7 @@ namespace OpenNos.GameObject
         private Guid _uniqueIdentifier;
         private int _xLength;
         private int _yLength;
-        
+
         #endregion
 
         #region Instantiation
@@ -79,13 +80,67 @@ namespace OpenNos.GameObject
                     Level = npc.Level,
                     Position = npc.Position,
                     Vnum = npc.Vnum,
+                    AttackClass = npc.AttackClass,
+                    AttackUpgrade = npc.AttackUpgrade,
+                    CloseDefence = npc.CloseDefence,
+                    Concentrate = npc.Concentrate,
+                    CriticalLuckRate = npc.CriticalLuckRate,
+                    CriticalRate = npc.CriticalRate,
+                    DamageMaximum = npc.DamageMaximum,
+                    DamageMinimum = npc.DamageMinimum,
+                    DarkResistance = npc.DarkResistance,
+                    DefenceDodge = npc.DefenceDodge,
+                    DefenceUpgrade = npc.DefenceUpgrade,
+                    DistanceDefence = npc.DistanceDefence,
+                    DistanceDefenceDodge = npc.DistanceDefenceDodge,
+                    Effect = npc.Effect,
+                    EffectDelay = npc.EffectDelay,
+                    Element = npc.Element,
+                    ElementRate = npc.ElementRate,
+                    FireResistance = npc.FireResistance,
+                    IsSitting = npc.IsSitting,
+                    LightResistance = npc.LightResistance,
+                    MagicDefence = npc.MagicDefence,
+                    Move = npc.Move,
+                    NpcId = npc.NpcId,
+                    Speed = npc.Speed,
+                    WaterResistance = npc.WaterResistance,
+
                 });
             }
         }
 
+        internal void MapTaskManager()
+        {
+            foreach (Npc npc in Npcs.Where(s => s.Move.Equals(true)))
+            {
+                if (npc.Move)
+                {
+                    Random r = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
+                    int oldx = npc.MapX;
+                    int oldy = npc.MapY;
+
+                    //  test.x += (((int)(r.Next(0, 6000)/1000)%2) == 0 )?(-((int)(r.Next(0, 10000)/1000)/2)):((int)(r.Next(0, 10000)/1000)/2);
+                    //test.y += (((int)(r.Next(0, 6000) / 1000) % 2) == 0) ? (-((int)(r.Next(0, 10000) / 1000) / 2)) : ((int)(r.Next(0, 10000) / 1000) / 2);
+
+                    short MapX = (short)r.Next(-2 + npc.firstX, 2 + npc.firstX);
+                    short MapY = (short)r.Next(-2 + npc.firstY, 2 + npc.firstY);
+                    if (!IsBlockedZone(MapX, MapY))
+                    {
+                        npc.MapX = MapX;
+                        npc.MapY = MapY;
+                        
+                        string movepacket = $"mv 3 {npc.NpcId} {npc.MapX} {npc.MapY} {npc.Speed}";
+                        ClientLinkManager.Instance.RequiereBroadcastFromMap(MapId,movepacket);
+                    }
+
+                }
+            }
+            }
+
         #endregion
 
-        #region Properties
+            #region Properties
 
         public IDictionary<long, MapItem> DroppedList { get; set; }
 

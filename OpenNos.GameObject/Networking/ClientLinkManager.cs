@@ -40,9 +40,14 @@ namespace OpenNos.GameObject
         #region Instantiation
         public async void TaskControl()
         {
-            while(true)
+            Task TaskMap;
+            while (true)
             {
-
+                foreach(ClientSession Session in Sessions.Where(s=>s.Character != null).GroupBy(s=>s.Character.MapId))
+                {
+                    TaskMap = new Task(() => Session.CurrentMap.MapTaskManager());
+                    TaskMap.Start();
+                }
                 await Task.Delay(500);
             }
         }

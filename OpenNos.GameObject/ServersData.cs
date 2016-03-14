@@ -817,6 +817,9 @@ namespace OpenNos.GameObject
                 int point = ServersData.RarityPoint(inv.InventoryItem.Rare, iteminfo.LevelMinimum);
                 Random rnd = new Random();
                 inv.InventoryItem.Concentrate = 0;
+                inv.InventoryItem.HitRate = 0;
+                inv.InventoryItem.DamageMinimum = 0;
+                inv.InventoryItem.DamageMaximum = 0;
                 for (int i = 0; i < point; i++)
                 {
                     int rndn = rnd.Next(0, 3);
