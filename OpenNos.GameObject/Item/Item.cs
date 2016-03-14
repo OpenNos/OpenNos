@@ -14,6 +14,8 @@
 
 using AutoMapper;
 using OpenNos.Data;
+using OpenNos.Domain;
+using System;
 
 namespace OpenNos.GameObject
 {
@@ -30,6 +32,9 @@ namespace OpenNos.GameObject
         #region Methods
 
         public abstract void Use(ClientSession Session, ref Inventory Inv);
+
+
+        
 
         #endregion
     }

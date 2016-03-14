@@ -70,6 +70,7 @@ namespace OpenNos.Data
         public byte SpStoneUpgrade { get; set; }
 
 
+
         #endregion
     }
 }

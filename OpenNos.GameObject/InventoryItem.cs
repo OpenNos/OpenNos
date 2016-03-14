@@ -15,6 +15,8 @@
 using AutoMapper;
 using OpenNos.DAL;
 using OpenNos.Data;
+using OpenNos.Domain;
+using System;
 
 namespace OpenNos.GameObject
 {
@@ -84,7 +86,7 @@ namespace OpenNos.GameObject
 
         #endregion
 
-        #region Enums
+            #region Enums
 
         public enum RarifyMode
         {

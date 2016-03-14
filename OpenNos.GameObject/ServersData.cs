@@ -809,6 +809,100 @@ namespace OpenNos.GameObject
                 //Console.WriteLine("lvl " + (i) + ":" + u[i - 1]);
             }
         }
+        public static void SetRarityPoint(ref Inventory inv)
+        {
+            Item iteminfo = ServerManager.GetItem(inv.InventoryItem.ItemVNum);
+            if (iteminfo.EquipmentSlot == (byte)EquipmentType.MainWeapon || iteminfo.EquipmentSlot == (byte)EquipmentType.SecondaryWeapon)
+            {
+                int point = ServersData.RarityPoint(inv.InventoryItem.Rare, iteminfo.LevelMinimum);
+                Random rnd = new Random();
+                inv.InventoryItem.Concentrate = 0;
+                for (int i = 0; i < point; i++)
+                {
+                    int rndn = rnd.Next(0, 3);
+                    if (rndn == 0)
+                    {
+                        inv.InventoryItem.Concentrate++;
+                        inv.InventoryItem.HitRate++;
+                    }
+                    else
+                    {
+                        inv.InventoryItem.DamageMinimum++;
+                        inv.InventoryItem.DamageMaximum++;
+                    }
+                }
+
+            }
+            else if (iteminfo.EquipmentSlot == (byte)EquipmentType.Armor)
+            {
+                int point = ServersData.RarityPoint(inv.InventoryItem.Rare, iteminfo.LevelMinimum);
+                Random rnd = new Random();
+                inv.InventoryItem.DefenceDodge = 0;
+                inv.InventoryItem.DistanceDefenceDodge = 0;
+                inv.InventoryItem.DistanceDefence = 0;
+                inv.InventoryItem.MagicDefence = 0;
+                inv.InventoryItem.CloseDefence = 0;
+                for (int i = 0; i < point; i++)
+                {
+                    int rndn = rnd.Next(0, 3);
+                    if (rndn == 0)
+                    {
+                        inv.InventoryItem.DefenceDodge++;
+                        inv.InventoryItem.DistanceDefenceDodge++;
+                    }
+                    else
+                    {
+                        inv.InventoryItem.DistanceDefence++;
+                        inv.InventoryItem.MagicDefence++;
+                        inv.InventoryItem.CloseDefence++;
+                    }
+                }
+            }
+        }
+
+        public static int RarityPoint(short rarity,short lvl)
+        {
+            int p;
+            switch(rarity)
+            {
+                default:
+                     p =0;
+                    
+                    break;
+                case -2:
+                     p = -2;
+                    break;
+                case -1:
+                     p = -1;
+                    break;
+                case 0:
+                     p = 0;
+                    break;
+                case 1:
+                     p = 1;
+                    break;
+                case 2:
+                     p = 2;
+                    break;
+                case 3:
+                     p = 3;
+                    break;
+                case 4:
+                     p = 4;
+                    break;
+                case 5:
+                     p = 5;
+                    break;
+                case 6:
+                     p = 7;
+                    break;
+                case 7:
+                     p = 10;
+                    break;
+
+            }
+            return p * (1 + lvl / 5);
+        }
 
         internal static double UpgradeBonus(byte upgrade)
         {
