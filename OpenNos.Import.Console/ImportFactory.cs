@@ -489,7 +489,7 @@ namespace OpenNos.Import.Console
 
             foreach (string[] linesave in packetList.Where(o => o[0].Equals("mv") && o[1].Equals("3")))
             {
-                if (movementlist.ContainsKey(Convert.ToInt16(linesave[2])))
+                if (!movementlist.ContainsKey(Convert.ToInt16(linesave[2])))
                     movementlist[Convert.ToInt16(linesave[2])] = true;
             }
 
