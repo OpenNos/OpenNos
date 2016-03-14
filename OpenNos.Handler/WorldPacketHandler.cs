@@ -3044,6 +3044,7 @@ namespace OpenNos.Handler
                 else if (rnd <= upfix[item.InventoryItem.Upgrade])
                 {
                     Session.Client.SendPacket(Session.Character.GenerateEff(3004));
+                    Session.Character.InventoryList.LoadByInventoryItem(item.InventoryItem.InventoryItemId).InventoryItem.IsFixed = true;
                     Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADE_FIXED"), 11));
                     Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADE_FIXED"), 0));
                 }
