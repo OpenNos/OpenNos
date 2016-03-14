@@ -442,7 +442,7 @@ namespace OpenNos.GameObject
 
             foreach (Inventory inv in Inventory.Where(s => s.InventoryItem.ItemVNum == v))
             {
-                if (inv.InventoryItem.Amount >= amount)
+                if (inv.InventoryItem.Amount > amount)
                 {
                     inv.InventoryItem.Amount -= amount;
                     amount = 0;
@@ -450,7 +450,7 @@ namespace OpenNos.GameObject
                 else
                 {
                     amount -= inv.InventoryItem.Amount;
-                    inv.InventoryItem.Amount = 0;
+                    DeleteFromSlotAndType(inv.Slot, inv.Type);
                 }
             }
         }
