@@ -100,10 +100,10 @@ namespace OpenNos.GameObject
         private int MinDistance { get; set; }
         private int MinHit { get; set; }
         private int WaterResistance { get; set; }
-        public int SnackAmount { get;  set; }
-        public int MaxSnack { get;  set; }
-        public int SnackHp { get;  set; }
-        public int SnackMp { get;  set; }
+        public int SnackAmount { get; set; }
+        public int MaxSnack { get; set; }
+        public int SnackHp { get; set; }
+        public int SnackMp { get; set; }
         public bool InvisibleGm { get; set; }
 
         #endregion
@@ -168,8 +168,8 @@ namespace OpenNos.GameObject
             byte itemType = iteminfo.ItemType;
             byte classe = iteminfo.Class;
             byte subtype = iteminfo.ItemSubType;
-            DateTime test = item.ItemDeleteTime!=null ? (DateTime)item.ItemDeleteTime: DateTime.Now;
-            long time = item.ItemDeleteTime != null ? (long)test.Subtract(DateTime.Now).TotalSeconds : 0; 
+            DateTime test = item.ItemDeleteTime != null ? (DateTime)item.ItemDeleteTime : DateTime.Now;
+            long time = item.ItemDeleteTime != null ? (long)test.Subtract(DateTime.Now).TotalSeconds : 0;
             long seconds = item.IsUsed ? time : iteminfo.ItemValidTime;
             if (seconds < 0)
                 seconds = 0;
@@ -204,7 +204,7 @@ namespace OpenNos.GameObject
                     switch (equipmentslot)
                     {
                         case (byte)EquipmentType.CostumeHat:
-                            return $"e_info 3 {item.ItemVNum} {iteminfo.LevelMinimum} {iteminfo.CloseDefence + item.CloseDefence} {iteminfo.DistanceDefence + item.DistanceDefence} {iteminfo.MagicDefence + item.MagicDefence} {iteminfo.DefenceDodge + item.DefenceDodge} {iteminfo.FireResistance + item.FireResistance} {iteminfo.WaterResistance + item.WaterResistance} {iteminfo.LightResistance + item.LightResistance} {iteminfo.DarkResistance + item.DarkResistance} {iteminfo.Price} 0 1 {(seconds/ (3600))}";
+                            return $"e_info 3 {item.ItemVNum} {iteminfo.LevelMinimum} {iteminfo.CloseDefence + item.CloseDefence} {iteminfo.DistanceDefence + item.DistanceDefence} {iteminfo.MagicDefence + item.MagicDefence} {iteminfo.DefenceDodge + item.DefenceDodge} {iteminfo.FireResistance + item.FireResistance} {iteminfo.WaterResistance + item.WaterResistance} {iteminfo.LightResistance + item.LightResistance} {iteminfo.DarkResistance + item.DarkResistance} {iteminfo.Price} 0 1 {(seconds / (3600))}";
                         case (byte)EquipmentType.CostumeSuit:
                             return $"e_info 2 {item.ItemVNum} {item.Rare} {item.Upgrade} {(item.IsFixed ? 1 : 0)} {iteminfo.LevelMinimum} {iteminfo.CloseDefence + item.CloseDefence} {iteminfo.DistanceDefence + item.DistanceDefence} {iteminfo.MagicDefence + item.MagicDefence} {iteminfo.DefenceDodge + item.DefenceDodge} {iteminfo.Price} -1 1 {(seconds / (3600))}"; // 1 = IsCosmetic -1 = no shells
                         default:
@@ -359,7 +359,7 @@ namespace OpenNos.GameObject
             int i = 0;
             foreach (Portal portal in ServerManager.GetMap(MapId).Portals)
             {
-                gpList.Add($"gp {portal.SourceX} {portal.SourceY} {portal.DestinationMapId} {portal.Type} {i} {(portal.IsDisabled?1:0)}");
+                gpList.Add($"gp {portal.SourceX} {portal.SourceY} {portal.DestinationMapId} {portal.Type} {i} {(portal.IsDisabled ? 1 : 0)}");
                 i++;
             }
 
@@ -514,10 +514,10 @@ namespace OpenNos.GameObject
             return $"s_memo {type} {message}";
         }
         public string GenerateInvisible()
-        { 
+        {
             return $"cl {CharacterId} {Invisible} 0";
         }
-       
+
         public List<string> GenerateShopOnMap()
         {
             return ServerManager.GetMap(MapId).ShopUserList.Select(shop => $"shop 1 {shop.Key + 1} 1 3 0 {shop.Value.Name}").ToList();
@@ -781,21 +781,24 @@ namespace OpenNos.GameObject
             Inventory item = null;
             for (short i = 1; i < 14; i++)
             {
-             item = EquipmentList.LoadBySlotAndType(i, (byte)InventoryType.Equipment);
-            
-            if (item != null)
-            {
-                Item iteminfo = ServerManager.GetItem(item.InventoryItem.ItemVNum);
 
-                FireResistance += item.InventoryItem.FireResistance + iteminfo.FireResistance;
-                LightResistance += item.InventoryItem.LightResistance + iteminfo.LightResistance;
-                WaterResistance += item.InventoryItem.WaterResistance + iteminfo.WaterResistance;
-                DarkResistance += item.InventoryItem.DarkResistance + iteminfo.DarkResistance;
-                Defence += item.InventoryItem.CloseDefence + iteminfo.CloseDefence;
-                DefenceRate += item.InventoryItem.DefenceDodge + iteminfo.DefenceDodge;
-                DistanceDefence += item.InventoryItem.DistanceDefence + iteminfo.DistanceDefence;
-                DistanceDefenceRate += item.InventoryItem.DistanceDefenceDodge + iteminfo.DistanceDefenceDodge;
-                    //maxhp-mp
+                item = EquipmentList.LoadBySlotAndType(i, (byte)InventoryType.Equipment);
+
+                if (item != null)
+                {
+                    Item iteminfo = ServerManager.GetItem(item.InventoryItem.ItemVNum);
+                    if ((iteminfo.EquipmentSlot != (byte)EquipmentType.MainWeapon) && (iteminfo.EquipmentSlot != (byte)EquipmentType.SecondaryWeapon) && iteminfo.EquipmentSlot != (byte)EquipmentType.Armor)
+                    {
+                        FireResistance += item.InventoryItem.FireResistance + iteminfo.FireResistance;
+                        LightResistance += item.InventoryItem.LightResistance + iteminfo.LightResistance;
+                        WaterResistance += item.InventoryItem.WaterResistance + iteminfo.WaterResistance;
+                        DarkResistance += item.InventoryItem.DarkResistance + iteminfo.DarkResistance;
+                        Defence += item.InventoryItem.CloseDefence + iteminfo.CloseDefence;
+                        DefenceRate += item.InventoryItem.DefenceDodge + iteminfo.DefenceDodge;
+                        DistanceDefence += item.InventoryItem.DistanceDefence + iteminfo.DistanceDefence;
+                        DistanceDefenceRate += item.InventoryItem.DistanceDefenceDodge + iteminfo.DistanceDefenceDodge;
+                        //maxhp-mp
+                    }
                 }
             }
             return $"sc {type} {weaponUpgrade} {MinHit} {MaxHit} {HitRate} {HitCriticalRate} {HitCritical} {type2} {secondaryUpgrade} {MinDistance} {MaxDistance} {DistanceRate} {DistanceCriticalRate} {DistanceCritical} {armorUpgrade} {Defence} {DefenceRate} {DistanceDefence} {DistanceDefenceRate} {MagicalDefence} {FireResistance} {WaterResistance} {LightResistance} {DarkResistance}";
