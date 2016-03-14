@@ -17,12 +17,15 @@ using OpenNos.DAL;
 using OpenNos.Data;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Threading.Tasks;
 
 namespace OpenNos.GameObject
 {
     public class Npc : NpcDTO
     {
         #region Instantiation
+
         public short firstX
         {
             get; set;
@@ -36,6 +39,7 @@ namespace OpenNos.GameObject
             Mapper.CreateMap<NpcDTO, Npc>();
             Mapper.CreateMap<Npc, NpcDTO>();
             NpcId = npcId;
+            LastMove = DateTime.Now;
             IEnumerable<TeleporterDTO> Teleporters = DAOFactory.TeleporterDAO.LoadFromNpc(NpcId);
             ShopDTO shop = DAOFactory.ShopDAO.LoadByNpc(NpcId);
             if (shop != null)
@@ -47,6 +51,7 @@ namespace OpenNos.GameObject
         #region Properties
         public IEnumerable<TeleporterDTO> Teleporters { get; set; }
         public Shop Shop { get; set; }
+        public DateTime LastMove { get; private set; }
 
         #endregion
 
@@ -64,6 +69,32 @@ namespace OpenNos.GameObject
         public string GenerateEInfo()
         {
             return $"e_info 10 {Vnum} {Level} {Element} {AttackClass} {ElementRate} {AttackUpgrade} {DamageMinimum} {DamageMaximum} {Concentrate} {CriticalLuckRate} {CriticalRate} {DefenceUpgrade} {CloseDefence} {DefenceDodge} {DistanceDefence} {DistanceDefenceDodge} {MagicDefence} {FireResistance} {WaterResistance} {LightResistance} {DarkResistance} 0 0 -1 {Name.Replace(' ', '^')}"; // {Hp} {Mp} in 0 0 
+        }
+
+        internal void MoveNpc()
+        {
+            double time = (DateTime.Now - LastMove).TotalSeconds;
+            if (this.Move && time > 1)
+            {
+                Random r = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
+                int oldx = this.MapX;
+                int oldy = this.MapY;
+
+                //  test.x += (((int)(r.Next(0, 6000)/1000)%2) == 0 )?(-((int)(r.Next(0, 10000)/1000)/2)):((int)(r.Next(0, 10000)/1000)/2);
+                //test.y += (((int)(r.Next(0, 6000) / 1000) % 2) == 0) ? (-((int)(r.Next(0, 10000) / 1000) / 2)) : ((int)(r.Next(0, 10000) / 1000) / 2);
+
+                short MapX = (short)r.Next(-1 + this.firstX, 1 + this.firstX);
+                short MapY = (short)r.Next(-1 + this.firstY, 1 + this.firstY);
+                if (!ServerManager.GetMap(MapId).IsBlockedZone(MapX, MapY))
+                {
+                    this.MapX = MapX;
+                    this.MapY = MapY;
+                    LastMove = DateTime.Now;
+
+                    string movepacket = $"mv 2 {this.NpcId} {this.MapX} {this.MapY} {this.Speed}";
+                    ClientLinkManager.Instance.RequiereBroadcastFromMap(MapId, movepacket);
+                }
+            }
         }
 
         #endregion

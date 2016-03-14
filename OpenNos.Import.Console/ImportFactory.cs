@@ -487,7 +487,7 @@ namespace OpenNos.Import.Console
             short map = 0;
             Dictionary<short, bool> movementlist = new Dictionary<short, bool>();
 
-            foreach (string[] linesave in packetList.Where(o => o[0].Equals("mv") && o[1].Equals("3")))
+            foreach (string[] linesave in packetList.Where(o => o[0].Equals("mv") && o[1].Equals("2")))
             {
                 if(!(long.Parse(linesave[2]) >= 10000))
                 if (!movementlist.ContainsKey(Convert.ToInt16(linesave[2])))
