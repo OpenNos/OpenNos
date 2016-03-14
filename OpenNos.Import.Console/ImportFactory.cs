@@ -380,10 +380,10 @@ namespace OpenNos.Import.Console
                         }
                         if (item.EquipmentSlot == (byte)EquipmentType.Boots || item.EquipmentSlot == (byte)EquipmentType.Gloves)
                         {
-                            item.FireResistance = Convert.ToByte(linesave[7]);
-                            item.WaterResistance = Convert.ToByte(linesave[8]);
-                            item.LightResistance = Convert.ToByte(linesave[9]);
-                            item.DarkResistance = Convert.ToByte(linesave[11]);
+                            item.FireResistance = Convert.ToInt16(linesave[7]);
+                            item.WaterResistance = Convert.ToInt16(linesave[8]);
+                            item.LightResistance = Convert.ToInt16(linesave[9]);
+                            item.DarkResistance = Convert.ToInt16(linesave[11]);
                         }
                     }
                     else if (linesave.Length > 1 && linesave[1] == "BUFF")
