@@ -16,6 +16,7 @@ using AutoMapper;
 using OpenNos.DAL;
 using OpenNos.Data;
 using System;
+using System.Collections.Generic;
 
 namespace OpenNos.GameObject
 {
@@ -28,6 +29,7 @@ namespace OpenNos.GameObject
             Mapper.CreateMap<NpcDTO, Npc>();
             Mapper.CreateMap<Npc, NpcDTO>();
             NpcId = npcId;
+            IEnumerable<TeleporterDTO> Teleporters = DAOFactory.TeleporterDAO.LoadFromNpc(NpcId);
             ShopDTO shop = DAOFactory.ShopDAO.LoadByNpc(NpcId);
             if (shop != null)
                 Shop = new Shop(shop.ShopId) { Name = shop.Name, NpcId = NpcId, MenuType = shop.MenuType, ShopType = shop.ShopType };
@@ -36,7 +38,7 @@ namespace OpenNos.GameObject
         #endregion
 
         #region Properties
-
+        public IEnumerable<TeleporterDTO> Teleporters { get; set; }
         public Shop Shop { get; set; }
 
         #endregion

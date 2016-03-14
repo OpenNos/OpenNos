@@ -32,6 +32,7 @@ namespace OpenNos.DAL
         private static IPortalDAO _portalDAO;
         private static IRespawnDAO _respawnDAO;
         private static IShopDAO _shopDAO;
+        private static ITeleporterDAO _teleporterDAO;
         private static IShopItemDAO _shopitemDAO;
 
         #endregion
@@ -192,7 +193,18 @@ namespace OpenNos.DAL
                 return _shopDAO;
             }
         }
+        public static ITeleporterDAO TeleporterDAO
+        {
+            get
+            {
+                if (_teleporterDAO == null)
+                {
+                    _teleporterDAO = new MySQL.TeleporterDAO();
+                }
 
+                return _teleporterDAO;
+            }
+        }
         public static IShopItemDAO ShopItemDAO
         {
             get
