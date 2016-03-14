@@ -31,7 +31,7 @@ namespace OpenNos.GameObject
         private Guid _uniqueIdentifier;
         private int _xLength;
         private int _yLength;
-
+        
         #endregion
 
         #region Instantiation

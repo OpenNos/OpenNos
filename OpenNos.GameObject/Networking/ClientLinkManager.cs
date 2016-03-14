@@ -20,15 +20,16 @@ using System.Threading;
 using System;
 using OpenNos.Data;
 using OpenNos.DAL;
+using System.Threading.Tasks;
 
 namespace OpenNos.GameObject
 {
     public class ClientLinkManager
     {
         #region Members
-
         private static ClientLinkManager _instance;
-        private readonly Thread _autoSave; // if this thread is never aborted by code, it can be declared only in constructor!
+        private readonly Task _autoSave; // if this thread is never aborted by code, it can be declared only in constructor!
+        Task TaskController;
         public Thread threadShutdown
         {
             get; set;
@@ -37,12 +38,21 @@ namespace OpenNos.GameObject
         #endregion
 
         #region Instantiation
+        public async void TaskControl()
+        {
+            while(true)
+            {
 
+                await Task.Delay(500);
+            }
+        }
         private ClientLinkManager()
         {
             Sessions = new List<ClientSession>();
-            _autoSave = new Thread(SaveAllProcess);
+            _autoSave = new Task(SaveAllProcess);
             _autoSave.Start();
+            TaskController = new Task(() => TaskControl());
+            TaskController.Start();
         }
 
         #endregion
@@ -390,12 +400,12 @@ namespace OpenNos.GameObject
                 session.Character?.Save();
         }
 
-        private void SaveAllProcess()
+        private async void SaveAllProcess()
         {
             while (true)
             {
                 SaveAll();
-                Thread.Sleep(60000 * 4);
+                await Task.Delay(60000 * 4);
             }
         }
 

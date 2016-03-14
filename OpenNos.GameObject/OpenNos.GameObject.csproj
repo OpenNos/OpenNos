@@ -85,6 +85,7 @@
     <Compile Include="Item\NoFunctionItem.cs" />
     <Compile Include="Item\WearableItem.cs" />
     <Compile Include="Item\ItemHandler\MagicalItemHandler.cs" />
+    <Compile Include="Map.cs" />
     <Compile Include="Npc\NRunHandler.cs" />
     <Compile Include="Shop.cs" />
     <Compile Include="Item\Item.cs" />
@@ -97,7 +98,6 @@
     <Compile Include="Inventory.cs" />
     <Compile Include="Networking\ClientLinkManager.cs" />
     <Compile Include="Networking\ClientSession.cs" />
-    <Compile Include="Map.cs" />
     <Compile Include="Networking\ServerManager.cs" />
     <Compile Include="Networking\MapPacket.cs" />
     <Compile Include="Networking\NetworkManager.cs" />
