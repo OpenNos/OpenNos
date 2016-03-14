@@ -43,10 +43,13 @@ namespace OpenNos.GameObject
             Task TaskMap;
             while (true)
             {
-                foreach(ClientSession Session in Sessions.Where(s=>s.Character != null).GroupBy(s=>s.Character.MapId))
+                foreach (var GroupedSession in Sessions.Where(s => s.Character != null).GroupBy(s => s.Character.MapId))
                 {
-                    TaskMap = new Task(() => Session.CurrentMap.MapTaskManager());
-                    TaskMap.Start();
+                    foreach (ClientSession Session in GroupedSession)
+                    {
+                        TaskMap = new Task(() => ServerManager.GetMap(Session.Character.MapId).MapTaskManager());
+                        TaskMap.Start();
+                    }
                 }
                 await Task.Delay(500);
             }
@@ -155,8 +158,8 @@ namespace OpenNos.GameObject
                 ClientLinkManager.Instance.Broadcast(Session, Session.Character.GeneratePairy(), ReceiverType.AllOnMap);
                 Session.Client.SendPacket($"rsfi 1 1 0 9 0 9"); // Act completion
                 ClientLinkManager.Instance.RequiereBroadcastFromAllMapUsersNotInvisible(Session, "GenerateIn");
-                if(Session.Character.InvisibleGm == false)
-                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllOnMapExceptMe);
+                if (Session.Character.InvisibleGm == false)
+                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllOnMapExceptMe);
                 if (Session.CurrentMap.IsDancing == 2 && Session.Character.IsDancing == 0)
                     ClientLinkManager.Instance.RequiereBroadcastFromMap(Session.Character.MapId, "dance 2");
                 else if (Session.CurrentMap.IsDancing == 0 && Session.Character.IsDancing == 1)

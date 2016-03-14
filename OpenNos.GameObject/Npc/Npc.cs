@@ -36,8 +36,6 @@ namespace OpenNos.GameObject
             Mapper.CreateMap<NpcDTO, Npc>();
             Mapper.CreateMap<Npc, NpcDTO>();
             NpcId = npcId;
-            firstX = MapX;
-            firstY = MapY;
             IEnumerable<TeleporterDTO> Teleporters = DAOFactory.TeleporterDAO.LoadFromNpc(NpcId);
             ShopDTO shop = DAOFactory.ShopDAO.LoadByNpc(NpcId);
             if (shop != null)

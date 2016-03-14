@@ -105,8 +105,9 @@ namespace OpenNos.GameObject
                     NpcId = npc.NpcId,
                     Speed = npc.Speed,
                     WaterResistance = npc.WaterResistance,
-
-                });
+                    firstX = npc.MapX,
+                    firstY = npc.MapY
+            });
             }
         }
 
