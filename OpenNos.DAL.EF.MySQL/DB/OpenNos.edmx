@@ -18,6 +18,7 @@
     <EntitySet Name="shopitem" EntityType="opennosModel.Store.shopitem" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="shop" EntityType="opennosModel.Store.shop" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="respawn" EntityType="opennosModel.Store.respawn" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="teleporter" EntityType="opennosModel.Store.teleporter" store:Type="Tables" Schema="dbo" />
     <AssociationSet Name="AccountCharacter" Association="opennosModel.Store.AccountCharacter">
       <End Role="Account" EntitySet="account" />
       <End Role="Character" EntitySet="character" />
@@ -73,6 +74,14 @@
     <AssociationSet Name="InventoryInventoryItem" Association="opennosModel.Store.InventoryInventoryItem">
       <End Role="Inventory" EntitySet="inventory" />
       <End Role="InventoryItem" EntitySet="inventoryitem" />
+    </AssociationSet>
+    <AssociationSet Name="TeleporterNpc" Association="opennosModel.Store.TeleporterNpc">
+      <End Role="Teleporter" EntitySet="teleporter" />
+      <End Role="Npc" EntitySet="npc" />
+    </AssociationSet>
+    <AssociationSet Name="TeleporterMap" Association="opennosModel.Store.TeleporterMap">
+      <End Role="Teleporter" EntitySet="teleporter" />
+      <End Role="Map" EntitySet="map" />
     </AssociationSet>
   </EntityContainer>
   <EntityType Name="account">
@@ -378,6 +387,17 @@
     <Property Name="RespawnType" Type="smallint" Nullable="false" />
     <Property Name="CharacterId" Type="bigint" Nullable="false" />
   </EntityType>
+  <EntityType Name="teleporter">
+    <Key>
+      <PropertyRef Name="TeleporterId" />
+    </Key>
+    <Property Name="TeleporterId" Type="smallint" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="NpcId" Type="smallint" Nullable="false" />
+    <Property Name="Index" Type="smallint" Nullable="false" />
+    <Property Name="MapX" Type="smallint" Nullable="false" />
+    <Property Name="MapY" Type="smallint" Nullable="false" />
+    <Property Name="MapId" Type="smallint" Nullable="false" />
+  </EntityType>
   <Association Name="AccountCharacter">
     <End Role="Account" Type="opennosModel.Store.account" Multiplicity="1" />
     <End Role="Character" Type="opennosModel.Store.character" Multiplicity="*" />
@@ -546,6 +566,30 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
+  <Association Name="TeleporterNpc">
+    <End Role="Teleporter" Type="opennosModel.Store.teleporter" Multiplicity="*" />
+    <End Role="Npc" Type="opennosModel.Store.npc" Multiplicity="1" />
+    <ReferentialConstraint>
+      <Principal Role="Npc">
+        <PropertyRef Name="NpcId" />
+      </Principal>
+      <Dependent Role="Teleporter">
+        <PropertyRef Name="NpcId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="TeleporterMap">
+    <End Role="Teleporter" Type="opennosModel.Store.teleporter" Multiplicity="*" />
+    <End Role="Map" Type="opennosModel.Store.map" Multiplicity="1" />
+    <ReferentialConstraint>
+      <Principal Role="Map">
+        <PropertyRef Name="MapId" />
+      </Principal>
+      <Dependent Role="Teleporter">
+        <PropertyRef Name="MapId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
 </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
@@ -705,6 +749,15 @@
             <End Role="Inventory" EntitySet="inventory" />
             <End Role="InventoryItem" EntitySet="inventoryitem" />
           </AssociationSet>
+          <EntitySet Name="teleporter" EntityType="opennosModel.Teleporter" />
+          <AssociationSet Name="TeleporterNpc" Association="opennosModel.TeleporterNpc">
+            <End Role="Teleporter" EntitySet="teleporter" />
+            <End Role="Npc" EntitySet="npc" />
+          </AssociationSet>
+          <AssociationSet Name="TeleporterMap" Association="opennosModel.TeleporterMap">
+            <End Role="Teleporter" EntitySet="teleporter" />
+            <End Role="Map" EntitySet="map" />
+          </AssociationSet>
           </EntityContainer>
         <Association Name="AccountCharacter">
           <End Type="opennosModel.Account" Role="Account" Multiplicity="1" />
@@ -756,6 +809,7 @@
           <NavigationProperty Name="npc" Relationship="opennosModel.NpcMap" FromRole="Map" ToRole="Npc" />
           <Property Name="Data" Type="Binary" Nullable="false" />
           <Property Name="Music" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="teleporter" Relationship="opennosModel.TeleporterMap" FromRole="Map" ToRole="Teleporter" />
         </EntityType>
         <Association Name="portalMap">
           <End Type="opennosModel.Portal" Role="portal" Multiplicity="*" />
@@ -914,6 +968,7 @@
           <Property Name="LightResistance" Type="Int16" Nullable="false" />
           <Property Name="DarkResistance" Type="Int16" Nullable="false" />
           <Property Name="IsSitting" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="teleporter" Relationship="opennosModel.TeleporterNpc" FromRole="Npc" ToRole="Teleporter" />
         </EntityType>
         <Association Name="NpcMap">
           <End Type="opennosModel.Npc" Role="Npc" Multiplicity="*" />
@@ -1109,6 +1164,43 @@
         <Association Name="InventoryInventoryItem">
           <End Type="opennosModel.Inventory" Role="Inventory" Multiplicity="1" />
           <End Type="opennosModel.InventoryItem" Role="InventoryItem" Multiplicity="1" />
+        </Association>
+        <EntityType Name="Teleporter">
+          <Key>
+            <PropertyRef Name="TeleporterId" />
+            </Key>
+          <Property Name="TeleporterId" Type="Int16" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <NavigationProperty Name="npc" Relationship="opennosModel.TeleporterNpc" FromRole="Teleporter" ToRole="Npc" />
+          <Property Name="NpcId" Type="Int16" Nullable="false" />
+          <Property Name="Index" Type="Int16" Nullable="false" />
+          <Property Name="MapX" Type="Int16" Nullable="false" />
+          <Property Name="MapY" Type="Int16" Nullable="false" />
+          <NavigationProperty Name="map" Relationship="opennosModel.TeleporterMap" FromRole="Teleporter" ToRole="Map" />
+          <Property Name="MapId" Type="Int16" Nullable="false" />
+          </EntityType>
+        <Association Name="TeleporterNpc">
+          <End Type="opennosModel.Teleporter" Role="Teleporter" Multiplicity="*" />
+          <End Type="opennosModel.Npc" Role="Npc" Multiplicity="1" />
+          <ReferentialConstraint>
+            <Principal Role="Npc">
+              <PropertyRef Name="NpcId" />
+            </Principal>
+            <Dependent Role="Teleporter">
+              <PropertyRef Name="NpcId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="TeleporterMap">
+          <End Type="opennosModel.Teleporter" Role="Teleporter" Multiplicity="*" />
+          <End Type="opennosModel.Map" Role="Map" Multiplicity="1" />
+          <ReferentialConstraint>
+            <Principal Role="Map">
+              <PropertyRef Name="MapId" />
+            </Principal>
+            <Dependent Role="Teleporter">
+              <PropertyRef Name="MapId" />
+            </Dependent>
+          </ReferentialConstraint>
         </Association>
         </Schema>
     </edmx:ConceptualModels>
@@ -1427,6 +1519,18 @@
           <ScalarProperty Name="MapId" ColumnName="MapId" />
           <ScalarProperty Name="RespawnType" ColumnName="RespawnType" />
           <ScalarProperty Name="CharacterId" ColumnName="CharacterId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="teleporter">
+      <EntityTypeMapping TypeName="IsTypeOf(opennosModel.Teleporter)">
+        <MappingFragment StoreEntitySet="teleporter">
+          <ScalarProperty Name="TeleporterId" ColumnName="TeleporterId" />
+          <ScalarProperty Name="NpcId" ColumnName="NpcId" />
+          <ScalarProperty Name="Index" ColumnName="Index" />
+          <ScalarProperty Name="MapX" ColumnName="MapX" />
+          <ScalarProperty Name="MapY" ColumnName="MapY" />
+          <ScalarProperty Name="MapId" ColumnName="MapId" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

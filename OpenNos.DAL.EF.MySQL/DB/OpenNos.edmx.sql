@@ -44,7 +44,7 @@
 -- -----------------------------------------------------------
 -- Entity Designer DDL Script for MySQL Server 4.1 and higher
 -- -----------------------------------------------------------
--- Date Created: 03/13/2016 23:10:13
+-- Date Created: 03/14/2016 16:33:09
 
 -- Generated from EDMX file: C:\Users\ERWAN\Desktop\OpenNos Git\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
 -- Target version: 3.0.0.0
@@ -463,6 +463,20 @@ ALTER TABLE `respawn` ADD PRIMARY KEY (RespawnId);
 
 
 
+CREATE TABLE `teleporter`(
+	`TeleporterId` smallint NOT NULL AUTO_INCREMENT UNIQUE, 
+	`NpcId` smallint NOT NULL, 
+	`Index` smallint NOT NULL, 
+	`MapX` smallint NOT NULL, 
+	`MapY` smallint NOT NULL, 
+	`MapId` smallint NOT NULL);
+
+ALTER TABLE `teleporter` ADD PRIMARY KEY (TeleporterId);
+
+
+
+
+
 
 
 -- --------------------------------------------------
@@ -719,6 +733,42 @@ ADD CONSTRAINT `FK_InventoryInventoryItem`
 CREATE INDEX `IX_FK_InventoryInventoryItem`
     ON `inventory`
     (`inventoryitem_InventoryItemId`);
+
+
+
+-- Creating foreign key on `NpcId` in table 'teleporter'
+
+ALTER TABLE `teleporter`
+ADD CONSTRAINT `FK_TeleporterNpc`
+    FOREIGN KEY (`NpcId`)
+    REFERENCES `npc`
+        (`NpcId`)
+    ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+
+-- Creating non-clustered index for FOREIGN KEY 'FK_TeleporterNpc'
+
+CREATE INDEX `IX_FK_TeleporterNpc`
+    ON `teleporter`
+    (`NpcId`);
+
+
+
+-- Creating foreign key on `MapId` in table 'teleporter'
+
+ALTER TABLE `teleporter`
+ADD CONSTRAINT `FK_TeleporterMap`
+    FOREIGN KEY (`MapId`)
+    REFERENCES `map`
+        (`MapId`)
+    ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+
+-- Creating non-clustered index for FOREIGN KEY 'FK_TeleporterMap'
+
+CREATE INDEX `IX_FK_TeleporterMap`
+    ON `teleporter`
+    (`MapId`);
 
 
 

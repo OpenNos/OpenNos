@@ -18,6 +18,7 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public Npc()
         {
             this.shop = new HashSet<Shop>();
+            this.teleporter = new HashSet<Teleporter>();
         }
     
         public short NpcId { get; set; }
@@ -56,5 +57,7 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public virtual Map map { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Shop> shop { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Teleporter> teleporter { get; set; }
     }
 }

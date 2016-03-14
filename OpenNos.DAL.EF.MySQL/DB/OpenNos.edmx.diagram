@@ -19,7 +19,7 @@
         <EntityTypeShape EntityType="opennosModel.Item" Width="2" PointX="12.125" PointY="0.625" />
         <EntityTypeShape EntityType="opennosModel.Npc" Width="1.875" PointX="7.125" PointY="0.625" />
         <AssociationConnector Association="opennosModel.NpcMap" />
-        <EntityTypeShape EntityType="opennosModel.InventoryItem" Width="1.875" PointX="8.125" PointY="8" />
+        <EntityTypeShape EntityType="opennosModel.InventoryItem" Width="1.875" PointX="7" PointY="9.5" />
         <EntityTypeShape EntityType="opennosModel.Inventory" Width="1.5" PointX="4.875" PointY="7.25" />
         <AssociationConnector Association="opennosModel.CharacterInventory" />
         <AssociationConnector Association="opennosModel.InventoryItemItem" />
@@ -32,6 +32,9 @@
         <EntityTypeShape EntityType="opennosModel.Respawn" Width="1.5" PointX="4.875" PointY="10" FillColor="0, 122, 204" IsExpanded="true" />
         <AssociationConnector Association="opennosModel.CharacterRespawn" />
         <AssociationConnector Association="opennosModel.InventoryInventoryItem" />
+        <EntityTypeShape EntityType="opennosModel.Teleporter" Width="1.5" PointX="9.625" PointY="7.25" />
+        <AssociationConnector Association="opennosModel.TeleporterNpc" />
+        <AssociationConnector Association="opennosModel.TeleporterMap" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
