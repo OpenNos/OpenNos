@@ -810,6 +810,36 @@ namespace OpenNos.GameObject
             }
         }
 
+        internal static double UpgradeBonus(byte upgrade)
+        {
+            switch (upgrade)
+            {
+               
+                case 1:
+                    return 1.10;
+                case 2:
+                    return 1.15;
+                case 3:
+                    return 1.22;
+                case 4:
+                    return 1.32;
+                case 5:
+                    return 1.43;
+                case 6:
+                    return 1.54;
+                case 7:
+                    return 1.65;
+                case 8:
+                    return 1.90;
+                case 9:
+                    return 2.20;
+                case 10:
+                    return 3;
+                default:
+                    return 1;
+            }
+        }
+
         #endregion
     }
 }

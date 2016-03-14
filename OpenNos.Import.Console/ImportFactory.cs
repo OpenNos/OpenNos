@@ -448,7 +448,7 @@ namespace OpenNos.Import.Console
                         else
                             npc.Name = "";
                     }
-                    else if(linesave.Length > 6 && linesave[1] == "PREATT")
+                    else if (linesave.Length > 6 && linesave[1] == "PREATT")
                     {
                         npc.Speed = Convert.ToInt16(linesave[5]);
                     }
@@ -485,6 +485,13 @@ namespace OpenNos.Import.Console
 
             int npcCounter = 0;
             short map = 0;
+            Dictionary<short, bool> movementlist = new Dictionary<short, bool>();
+
+            foreach (string[] linesave in packetList.Where(o => o[0].Equals("mv") && o[1].Equals("3")))
+            {
+                if (movementlist.ContainsKey(Convert.ToInt16(linesave[2])))
+                    movementlist[Convert.ToInt16(linesave[2])] = true;
+            }
 
             foreach (string[] linesave in packetList.Where(o => o[0].Equals("in") || o[0].Equals("at")))
             {
@@ -503,7 +510,10 @@ namespace OpenNos.Import.Console
                             npctest.MapY = short.Parse(linesave[5]);
                             npctest.MapId = map;
                             npctest.NpcId = short.Parse(linesave[3]);
-
+                            if (movementlist.ContainsKey(npctest.NpcId))
+                                npctest.Move = movementlist[npctest.NpcId];
+                            else
+                                npctest.Move = false;
                             npctest.Position = short.Parse(linesave[6]);
                             npctest.Dialog = short.Parse(linesave[9]);
                             npctest.IsSitting = linesave[13] == "1" ? false : true;
@@ -602,7 +612,7 @@ namespace OpenNos.Import.Console
             List<PortalDTO> listPortal = new List<PortalDTO>();
             short map = 0;
             int portalCounter = 0;
-
+           
             foreach (string[] linesave in packetList.Where(o => o[0].Equals("at") || o[0].Equals("gp")))
             {
                 if (linesave.Length > 5 && linesave[0] == "at")

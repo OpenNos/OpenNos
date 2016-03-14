@@ -261,6 +261,7 @@
     <Property Name="Effect" Type="smallint" Nullable="false" />
     <Property Name="EffectDelay" Type="smallint" Nullable="false" />
     <Property Name="Speed" Type="smallint" Nullable="false" />
+    <Property Name="Move" Type="bool" Nullable="false" />
     <Property Name="Dialog" Type="smallint" Nullable="false" />
     <Property Name="MapId" Type="smallint" Nullable="false" />
     <Property Name="MapX" Type="smallint" Nullable="false" />
@@ -1391,6 +1392,7 @@
           <ScalarProperty Name="Effect" ColumnName="Effect" />
           <ScalarProperty Name="EffectDelay" ColumnName="EffectDelay" />
           <ScalarProperty Name="Speed" ColumnName="Speed" />
+          <ScalarProperty Name="Move" ColumnName="Move" />
           <ScalarProperty Name="Dialog" ColumnName="Dialog" />
           <ScalarProperty Name="MapId" ColumnName="MapId" />
           <ScalarProperty Name="MapX" ColumnName="MapX" />

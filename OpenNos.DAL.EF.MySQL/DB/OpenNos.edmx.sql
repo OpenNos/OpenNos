@@ -44,9 +44,9 @@
 -- -----------------------------------------------------------
 -- Entity Designer DDL Script for MySQL Server 4.1 and higher
 -- -----------------------------------------------------------
--- Date Created: 03/14/2016 16:45:55
+-- Date Created: 03/14/2016 18:21:52
 
--- Generated from EDMX file: C:\Users\Dominik\Source\Repos\OpenNos\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
+-- Generated from EDMX file: C:\Users\ERWAN\Desktop\OpenNos Git\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
 -- Target version: 3.0.0.0
 
 -- --------------------------------------------------
@@ -322,6 +322,7 @@ CREATE TABLE `npc`(
 	`Effect` smallint NOT NULL, 
 	`EffectDelay` smallint NOT NULL, 
 	`Speed` smallint NOT NULL, 
+	`Move` bool NOT NULL, 
 	`Dialog` smallint NOT NULL, 
 	`MapId` smallint NOT NULL, 
 	`MapX` smallint NOT NULL, 
