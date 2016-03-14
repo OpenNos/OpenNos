@@ -27,6 +27,7 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public short Effect { get; set; }
         public short EffectDelay { get; set; }
         public short Speed { get; set; }
+        public bool Move { get; set; }
         public short Dialog { get; set; }
         public short MapId { get; set; }
         public short MapX { get; set; }

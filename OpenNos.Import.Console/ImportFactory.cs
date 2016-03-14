@@ -448,7 +448,10 @@ namespace OpenNos.Import.Console
                         else
                             npc.Name = "";
                     }
-
+                    else if(linesave.Length > 6 && linesave[1] == "PREATT")
+                    {
+                        npc.Speed = Convert.ToInt16(linesave[5]);
+                    }
                     else if (linesave.Length > 7 && linesave[1] == "ATTRIB")
                     {
                         npc.Element = Convert.ToByte(linesave[2]);
@@ -503,7 +506,7 @@ namespace OpenNos.Import.Console
 
                             npctest.Position = short.Parse(linesave[6]);
                             npctest.Dialog = short.Parse(linesave[9]);
-                            npctest.IsSitting = linesave[13] == "1" ? true : false;
+                            npctest.IsSitting = linesave[13] == "1" ? false : true;
 
                             if (long.Parse(linesave[3]) >= 10000) continue; // Dialog too high. but why? in order to avoid partners
                             if (DAOFactory.NpcDAO.LoadById(npctest.NpcId) != null || Maps.FirstOrDefault(s => s.MapId == npctest.MapId) == null) continue; // Npc already existing

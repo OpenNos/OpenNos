@@ -940,6 +940,7 @@
           <Property Name="Effect" Type="Int16" Nullable="false" />
           <Property Name="EffectDelay" Type="Int16" Nullable="false" />
           <Property Name="Speed" Type="Int16" Nullable="false" />
+          <Property Name="Move" Type="Boolean" Nullable="false" />
           <Property Name="Dialog" Type="Int16" Nullable="false" />
           <Property Name="MapId" Type="Int16" Nullable="false" />
           <Property Name="MapX" Type="Int16" Nullable="false" />
