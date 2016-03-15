@@ -1737,13 +1737,19 @@ namespace OpenNos.Handler
             Inventory invitem = Session.Character.InventoryList.LoadBySlotAndType(slot, type);
             if (invitem != null && ServerManager.GetItem(invitem.InventoryItem.ItemVNum).IsDroppable == true && ServerManager.GetItem(invitem.InventoryItem.ItemVNum).IsTradable == true)
             {
+                if(amount > 0 && amount < 100)
+                {
+                    MapItem DroppedItem = Session.Character.InventoryList.PutItem(Session, type, slot, amount, out inv);
+                    Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(inv.InventoryItem.ItemVNum, inv.InventoryItem.Amount, type, inv.Slot, inv.InventoryItem.Rare, inv.InventoryItem.Design, inv.InventoryItem.Upgrade));
 
-                MapItem DroppedItem = Session.Character.InventoryList.PutItem(Session, type, slot, amount, out inv);
-                Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(inv.InventoryItem.ItemVNum, inv.InventoryItem.Amount, type, inv.Slot, inv.InventoryItem.Rare, inv.InventoryItem.Design, inv.InventoryItem.Upgrade));
-
-                if (inv.InventoryItem.Amount == 0)
-                    DeleteItem(type, inv.Slot);
-                ClientLinkManager.Instance.Broadcast(Session, $"drop {DroppedItem.ItemVNum} {DroppedItem.InventoryItemId} {DroppedItem.PositionX} {DroppedItem.PositionY} {DroppedItem.Amount} 0 -1", ReceiverType.AllOnMap);
+                    if (inv.InventoryItem.Amount == 0)
+                        DeleteItem(type, inv.Slot);
+                    ClientLinkManager.Instance.Broadcast(Session, $"drop {DroppedItem.ItemVNum} {DroppedItem.InventoryItemId} {DroppedItem.PositionX} {DroppedItem.PositionY} {DroppedItem.Amount} 0 -1", ReceiverType.AllOnMap);
+                }
+                else
+                {
+                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("BAD_DROP_AMOUNT"), 0));
+                }
             }
             else
             {

@@ -138,6 +138,9 @@
   <data name="ASK_TO_DELETE" xml:space="preserve">
     <value>Czy chcesz usunac?</value>
   </data>
+  <data name="BAD_DROP_AMOUNT" xml:space="preserve">
+    <value>BAD_DROP_AMOUNT</value>
+  </data>
   <data name="BAD_EQUIPMENT" xml:space="preserve">
     <value>Nie mozesz zalozyc tego przedmiotu!</value>
   </data>
