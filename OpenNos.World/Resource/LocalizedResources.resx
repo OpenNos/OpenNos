@@ -390,6 +390,9 @@
   <data name="NO_SP" xml:space="preserve">
     <value>You're not wearing specialist card</value>
   </data>
+  <data name="NPCS_LOADED" xml:space="preserve">
+    <value>{0} Npcs Loaded!</value>
+  </data>
   <data name="PACKET_ARRIVED" xml:space="preserve">
     <value>Packet arrived, packet: {0}</value>
   </data>
@@ -419,6 +422,9 @@
   </data>
   <data name="SELL_ITEM_VALIDE" xml:space="preserve">
     <value>{0}: sell &lt;{1} : piece &gt;</value>
+  </data>
+  <data name="SHOPS_LOADED" xml:space="preserve">
+    <value>{0} Shops Loaded!</value>
   </data>
   <data name="SHOP_OPEN" xml:space="preserve">
     <value>Shop has ben opened</value>

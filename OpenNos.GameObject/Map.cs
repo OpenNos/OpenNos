@@ -111,7 +111,7 @@ namespace OpenNos.GameObject
                 });
             }
         }
-       public async void NpcMove()
+       public async void NpcLifeManager()
         {
             var rnd = new Random();
             Task NpcLifeTask = null;
@@ -126,7 +126,7 @@ namespace OpenNos.GameObject
         }
         internal async void MapTaskManager()
         {
-            Task NpcMoveTask = new Task(() => NpcMove());
+            Task NpcMoveTask = new Task(() => NpcLifeManager());
             NpcMoveTask.Start();
             await NpcMoveTask;
         }

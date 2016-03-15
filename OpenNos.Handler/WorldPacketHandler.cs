@@ -2177,7 +2177,6 @@ namespace OpenNos.Handler
                 Session.Character.Update();
                 Session.Character.LoadInventory();
                 DAOFactory.AccountDAO.WriteGeneralLog(Session.Character.AccountId, Session.Client.RemoteEndPoint.ToString(), Session.Character.CharacterId, "Connection", "World");
-                Session.CurrentMap = ServerManager.GetMap(Session.Character.MapId);
                 Session.Client.SendPacket("OK");
                 Session.HealthThread = new Thread(new ThreadStart(healthThread));
 
@@ -2807,6 +2806,8 @@ namespace OpenNos.Handler
         {
             if (Session.CurrentMap != null)
                 return;
+            Session.CurrentMap = ServerManager.GetMap(Session.Character.MapId);
+
             if (System.Configuration.ConfigurationManager.AppSettings["SceneOnCreate"].ToLower() == "true" & DAOFactory.GeneralLogDAO.LoadByLogType("Connection", Session.Character.CharacterId).Count() == 1) Session.Client.SendPacket("scene 40");
             if (System.Configuration.ConfigurationManager.AppSettings["WorldInformation"].ToLower() == "true")
             {
