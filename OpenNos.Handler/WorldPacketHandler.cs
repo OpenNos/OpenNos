@@ -3192,7 +3192,7 @@ namespace OpenNos.Handler
         [Packet("$Stat")]
         public void Stat(string packet)
         {
-            Session.Client.SendPacket(Session.Character.GenerateSay($"Total Session: {ClientLinkManager.Instance.GetNumberOfAllASession()} ", 12));
+            Session.Client.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("TOTAL_SESSION")}: {ClientLinkManager.Instance.GetNumberOfAllASession()} ", 13));
         }
 
         #endregion
