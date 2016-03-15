@@ -489,14 +489,14 @@ namespace OpenNos.Import.Console
             Dictionary<short, short> effectlist = new Dictionary<short, short>();
             foreach (string[] linesave in packetList.Where(o => o[0].Equals("mv") && o[1].Equals("2")))
             {
-                if(!(long.Parse(linesave[2]) >= 10000))
+                if(!(long.Parse(linesave[2]) >= 20000))
                 if (!movementlist.ContainsKey(Convert.ToInt16(linesave[2])))
                     movementlist[Convert.ToInt16(linesave[2])] = true;
             }
 
             foreach (string[] linesave in packetList.Where(o => o[0].Equals("eff") && o[1].Equals("2")))
             {
-                if (!(long.Parse(linesave[2]) >= 10000))
+                if (!(long.Parse(linesave[2]) >= 20000))
                     if (!effectlist.ContainsKey(Convert.ToInt16(linesave[2])))
                         effectlist[Convert.ToInt16(linesave[2])] = Convert.ToInt16(linesave[3]);
             }
@@ -529,7 +529,7 @@ namespace OpenNos.Import.Console
                             npctest.Dialog = short.Parse(linesave[9]);
                             npctest.IsSitting = linesave[13] == "1" ? false : true;
 
-                            if (long.Parse(linesave[3]) >= 10000) continue; // Dialog too high. but why? in order to avoid partners
+                            if (long.Parse(linesave[3]) >= 20000) continue; 
                             if (DAOFactory.NpcDAO.LoadById(npctest.NpcId) != null || Maps.FirstOrDefault(s => s.MapId == npctest.MapId) == null) continue; // Npc already existing
                             DAOFactory.NpcDAO.Insert(npctest);
                             npcCounter++;
