@@ -440,9 +440,9 @@ namespace OpenNos.GameObject
 
         public void RemoveItemAmount(int v, int amount)
         {
-            for (int i = 0; i < Inventory.Where(s => s.InventoryItem.ItemVNum == v).Count(); i++)
+            for (int i = 0; i < Inventory.Where(s => s.InventoryItem.ItemVNum == v).OrderBy(s=>s.Slot).Count(); i++)
             {
-                Inventory inv = Inventory.Where(s => s.InventoryItem.ItemVNum == v).ElementAt(i);
+                Inventory inv = Inventory.Where(s => s.InventoryItem.ItemVNum == v).OrderBy(s => s.Slot).ElementAt(i);
                 if ((int)inv.InventoryItem.Amount > amount)
                 {
                     inv.InventoryItem.Amount -= (byte)amount;
