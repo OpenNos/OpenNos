@@ -18,7 +18,7 @@ using OpenNos.Data;
 
 namespace OpenNos.GameObject
 {
-    public class TeacherItem: Item
+    public class TeacherItem : Item
     {
         public override void Use(ClientSession Session, ref Inventory Inv)
         {
@@ -31,7 +31,7 @@ namespace OpenNos.GameObject
 
         #region Methods
 
-       
+
         #endregion
     }
 }

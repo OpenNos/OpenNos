@@ -55,7 +55,7 @@ namespace OpenNos.GameObject
                         Thread workerThread2 = new Thread(() => sync(session, item));
                         workerThread2.Start();
                     }
-                        break;
+                    break;
             }
 
         }
@@ -63,7 +63,7 @@ namespace OpenNos.GameObject
         {
             session.Client.SendPacket(session.Character.GenerateEff(6000));
             session.Character.SnackAmount++;
-            session.Character.MaxSnack=0;
+            session.Character.MaxSnack = 0;
             session.Character.SnackHp += item.Hp / 5;
             session.Character.SnackMp += item.Mp / 5;
             for (int i = 0; i < 5; i++)

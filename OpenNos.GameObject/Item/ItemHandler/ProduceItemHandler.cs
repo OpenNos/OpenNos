@@ -25,7 +25,7 @@ namespace OpenNos.GameObject
             switch (effect)
             {
                 default:
-                     Logger.Log.Warn(Language.Instance.GetMessageFromKey(String.Format("NO_HANDLER_ITEM", this.GetType().ToString())));
+                    Logger.Log.Warn(Language.Instance.GetMessageFromKey(String.Format("NO_HANDLER_ITEM", this.GetType().ToString())));
                     break;
             }
 

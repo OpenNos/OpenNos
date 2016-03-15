@@ -23,18 +23,13 @@ namespace OpenNos.GameObject
     {
         #region Instantiation
 
-        public Item()
-        {
-        }
+        public Item() { }
 
         #endregion
 
         #region Methods
 
         public abstract void Use(ClientSession Session, ref Inventory Inv);
-
-
-        
 
         #endregion
     }

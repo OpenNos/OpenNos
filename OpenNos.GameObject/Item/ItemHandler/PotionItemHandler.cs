@@ -29,7 +29,7 @@ namespace OpenNos.GameObject
                     if (Session.Character.Hp == Session.Character.HPLoad() && Session.Character.Mp == Session.Character.MPLoad())
                         return;
                     inv.InventoryItem.Amount--;
-                    if (inv.InventoryItem.Amount>0)
+                    if (inv.InventoryItem.Amount > 0)
                         Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(inv.InventoryItem.ItemVNum, inv.InventoryItem.Amount, inv.Type, inv.Slot, inv.InventoryItem.Rare, inv.InventoryItem.Design, inv.InventoryItem.Upgrade));
                     else
                     {

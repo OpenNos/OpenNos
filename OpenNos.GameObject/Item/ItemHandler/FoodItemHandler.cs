@@ -29,8 +29,6 @@ namespace OpenNos.GameObject
             {
 
                 default:
-                
-                    
                     int amount = session.Character.SnackAmount;
                     if (amount < 5)
                     {
@@ -48,7 +46,7 @@ namespace OpenNos.GameObject
                     else
                     {
                         if (session.Character.Gender == 1)
-                        session.Client.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NOT_HUNGRY_FEMALE"), 1));
+                            session.Client.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NOT_HUNGRY_FEMALE"), 1));
                         else
                             session.Client.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NOT_HUNGRY_MALE"), 1));
                     }

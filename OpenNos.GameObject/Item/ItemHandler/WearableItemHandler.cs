@@ -33,7 +33,7 @@ namespace OpenNos.GameObject
 
                     Item iteminfo = ServerManager.GetItem(inventory.InventoryItem.ItemVNum);
                     if (iteminfo == null) return;
-                   
+
                     if (iteminfo.ItemValidTime > 0 && inventory.InventoryItem.IsUsed == false)
                     {
                         inventory.InventoryItem.ItemDeleteTime = DateTime.Now.AddSeconds(iteminfo.ItemValidTime);
@@ -137,8 +137,8 @@ namespace OpenNos.GameObject
                         Session.Client.SendPacket(Session.Character.GenerateEquipment());
                         ClientLinkManager.Instance.Broadcast(Session, Session.Character.GeneratePairy(), ReceiverType.AllOnMap);
                     }
-            
-            break;
+
+                    break;
             }
 
         }

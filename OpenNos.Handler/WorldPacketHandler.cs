@@ -270,7 +270,7 @@ namespace OpenNos.Handler
 
             if (packetsplit.Count() > 4)
             {
-                byte uptype, type, slot, type2 = 0, slot2=0;
+                byte uptype, type, slot, type2 = 0, slot2 = 0;
                 byte.TryParse(packetsplit[2], out uptype);
                 byte.TryParse(packetsplit[3], out type);
                 byte.TryParse(packetsplit[4], out slot);
@@ -301,7 +301,7 @@ namespace OpenNos.Handler
                         inventory = Session.Character.InventoryList.LoadBySlotAndType(slot, type);
                         Inventory inventory2 = Session.Character.InventoryList.LoadBySlotAndType(slot2, type2);
 
-                        if (inventory != null && inventory2 != null && inventory!= inventory2)
+                        if (inventory != null && inventory2 != null && inventory != inventory2)
                         {
                             SumItem(inventory, inventory2);
                         }
@@ -629,7 +629,7 @@ namespace OpenNos.Handler
                         SlHP = 0,
                         WaterElement = 0,
                     };
-                     Inventory inv = Session.Character.InventoryList.CreateItem(newItem, Session.Character);
+                    Inventory inv = Session.Character.InventoryList.CreateItem(newItem, Session.Character);
                     ServersData.SetRarityPoint(ref inv);
                     Session.Character.InventoryList.LoadByInventoryItem(inv.InventoryItem.InventoryItemId).InventoryItem = inv.InventoryItem;
                     if (inv != null)
@@ -1834,7 +1834,7 @@ namespace OpenNos.Handler
                 Inventory inv = Session.Character.InventoryList.LoadByInventoryItem(item.InventoryItem.InventoryItemId);
                 ServersData.SetRarityPoint(ref inv);
                 Session.Character.InventoryList.LoadByInventoryItem(item.InventoryItem.InventoryItemId).InventoryItem = inv.InventoryItem;
-              }
+            }
             else if (rnd <= rare6 && !(protection == InventoryItem.RarifyProtection.Scroll && item.InventoryItem.Rare >= 6))
             {
                 Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("RARIFY_SUCCESS"), 6), 12));
@@ -3060,9 +3060,9 @@ namespace OpenNos.Handler
                 int rnd = r.Next(100);
                 if (rnd <= upsuccess[item.InventoryItem.Upgrade])
                 {
+                    Session.Client.SendPacket(Session.Character.GenerateEff(3005));
                     Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADE_SUCCESS"), 12));
                     Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADE_SUCCESS"), 0));
-                    Session.Client.SendPacket(Session.Character.GenerateEff(3005));
                     Session.Character.InventoryList.LoadByInventoryItem(item.InventoryItem.InventoryItemId).InventoryItem.Upgrade++;
                 }
                 else if (rnd <= upfix[item.InventoryItem.Upgrade])
@@ -3186,7 +3186,7 @@ namespace OpenNos.Handler
         [Packet("$Stat")]
         public void Stat(string packet)
         {
-            Session.Client.SendPacket(Session.Character.GenerateSay($"Total Session: { ClientLinkManager.Instance.GetNumberOfAllASession()} ", 12));
+            Session.Client.SendPacket(Session.Character.GenerateSay($"Total Session: {ClientLinkManager.Instance.GetNumberOfAllASession()} ", 12));
         }
 
         #endregion

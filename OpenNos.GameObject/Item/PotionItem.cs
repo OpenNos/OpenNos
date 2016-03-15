@@ -18,7 +18,7 @@ using OpenNos.Data;
 
 namespace OpenNos.GameObject
 {
-    public class PotionItem: Item
+    public class PotionItem : Item
     {
         public override void Use(ClientSession Session, ref Inventory Inv)
         {
@@ -26,12 +26,12 @@ namespace OpenNos.GameObject
             instance.UseItemHandler(ref Inv, Session, Effect, EffectValue);
         }
         #region Instantiation
-        
+
         #endregion
 
         #region Methods
 
-       
+
         #endregion
     }
 }
