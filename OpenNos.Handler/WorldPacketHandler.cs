@@ -335,6 +335,8 @@ namespace OpenNos.Handler
 
             Inventory sp = Session.Character.EquipmentList.LoadBySlotAndType((byte)EquipmentType.Sp, (byte)InventoryType.Equipment);
             Inventory fairy = Session.Character.EquipmentList.LoadBySlotAndType((byte)EquipmentType.Fairy, (byte)InventoryType.Equipment);
+            if (sp == null)
+                return;
 
             if (Session.Character.GetReputIco() < ServerManager.GetItem(sp.InventoryItem.ItemVNum).ReputationMinimum)
             {
