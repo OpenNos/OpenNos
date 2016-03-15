@@ -1816,7 +1816,7 @@ namespace OpenNos.Handler
                     if (Session.Character.Gold < goldprice)
                         return;
                     Session.Character.Gold = Session.Character.Gold - goldprice;
-                    if (Session.Character.InventoryList.CountItem(1014) < cella)
+                    if (Session.Character.InventoryList.CountItem(cellavnum) < cella)
                         return;
                     Session.Character.InventoryList.RemoveItemAmount(cellavnum, cella);
                     Session.Client.SendPacket(Session.Character.GenerateGold());
@@ -2990,7 +2990,7 @@ namespace OpenNos.Handler
         {
             if (item.InventoryItem.Upgrade < 10)
             {
-                short[] upsuccess = { 100, 100, 90, 80, 60, 40, 20, 10, 5, 1 };
+                short[] upsuccess = { 100, 100, 100, 95, 80, 60, 40, 30, 20, 11 };
                 short[] upfix = { 0, 0, 10, 15, 20, 20, 20, 20, 15, 10 };
 
                 //short itempricevnum1 = 0;
@@ -3003,7 +3003,14 @@ namespace OpenNos.Handler
                 int gemmeVnum = 1015;
                 int gemmeFullVnum = 1016;
                 double reducedpricefactor = 0.5;
+                if (item.InventoryItem.IsFixed)
+                {
+                    Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("ITEM_IS_FIXED"), 10));
 
+                    GetStartupInventory();
+                    Session.Client.SendPacket("shop_end 1");
+                    return;
+                }
                 switch (mode)
                 {
                     case InventoryItem.UpgradeMode.Free:
@@ -3055,22 +3062,22 @@ namespace OpenNos.Handler
                         Session.Client.SendPacket(Session.Character.GenerateGold());
                         break;
                 }
-
+              
                 Random r = new Random();
                 int rnd = r.Next(100);
-                if (rnd <= upsuccess[item.InventoryItem.Upgrade])
-                {
-                    Session.Client.SendPacket(Session.Character.GenerateEff(3005));
-                    Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADE_SUCCESS"), 12));
-                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADE_SUCCESS"), 0));
-                    Session.Character.InventoryList.LoadByInventoryItem(item.InventoryItem.InventoryItemId).InventoryItem.Upgrade++;
-                }
-                else if (rnd <= upfix[item.InventoryItem.Upgrade])
+                if (rnd <= upfix[item.InventoryItem.Upgrade])
                 {
                     Session.Client.SendPacket(Session.Character.GenerateEff(3004));
                     Session.Character.InventoryList.LoadByInventoryItem(item.InventoryItem.InventoryItemId).InventoryItem.IsFixed = true;
                     Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADE_FIXED"), 11));
                     Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADE_FIXED"), 0));
+                }
+                else if (rnd <= upsuccess[item.InventoryItem.Upgrade])
+                {
+                    Session.Client.SendPacket(Session.Character.GenerateEff(3005));
+                    Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADE_SUCCESS"), 12));
+                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADE_SUCCESS"), 0));
+                    Session.Character.InventoryList.LoadByInventoryItem(item.InventoryItem.InventoryItemId).InventoryItem.Upgrade++;
                 }
                 else
                 {

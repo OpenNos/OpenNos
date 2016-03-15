@@ -438,14 +438,14 @@ namespace OpenNos.GameObject
             return count;
         }
 
-        public void RemoveItemAmount(int v, byte amount)
+        public void RemoveItemAmount(int v, int amount)
         {
-
-            foreach (Inventory inv in Inventory.Where(s => s.InventoryItem.ItemVNum == v))
+            for (int i = 0; i < Inventory.Where(s => s.InventoryItem.ItemVNum == v).Count(); i++)
             {
-                if (inv.InventoryItem.Amount > amount)
+                Inventory inv = Inventory.Where(s => s.InventoryItem.ItemVNum == v).ElementAt(i);
+                if ((int)inv.InventoryItem.Amount > amount)
                 {
-                    inv.InventoryItem.Amount -= amount;
+                    inv.InventoryItem.Amount -= (byte)amount;
                     amount = 0;
                 }
                 else
