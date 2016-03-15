@@ -19,6 +19,8 @@
     <EntitySet Name="shop" EntityType="opennosModel.Store.shop" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="respawn" EntityType="opennosModel.Store.respawn" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="teleporter" EntityType="opennosModel.Store.teleporter" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="MonsterSet" EntityType="opennosModel.Store.MonsterSet" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="MapMonsterSet" EntityType="opennosModel.Store.MapMonsterSet" store:Type="Tables" Schema="dbo" />
     <AssociationSet Name="AccountCharacter" Association="opennosModel.Store.AccountCharacter">
       <End Role="Account" EntitySet="account" />
       <End Role="Character" EntitySet="character" />
@@ -82,6 +84,14 @@
     <AssociationSet Name="TeleporterMap" Association="opennosModel.Store.TeleporterMap">
       <End Role="Teleporter" EntitySet="teleporter" />
       <End Role="Map" EntitySet="map" />
+    </AssociationSet>
+    <AssociationSet Name="MapMapMonster" Association="opennosModel.Store.MapMapMonster">
+      <End Role="Map" EntitySet="map" />
+      <End Role="MapMonster" EntitySet="MapMonsterSet" />
+    </AssociationSet>
+    <AssociationSet Name="MonsterMapMonster" Association="opennosModel.Store.MonsterMapMonster">
+      <End Role="Monster" EntitySet="MonsterSet" />
+      <End Role="MapMonster" EntitySet="MapMonsterSet" />
     </AssociationSet>
   </EntityContainer>
   <EntityType Name="account">
@@ -277,12 +287,12 @@
     <Property Name="Concentrate" Type="smallint" Nullable="false" />
     <Property Name="CriticalLuckRate" Type="smallint" Nullable="false" />
     <Property Name="CriticalRate" Type="smallint" Nullable="false" />
-    <Property Name="DefenceUpgrade" Type="utinyint" Nullable="false" />
+    <Property Name="CloseDefence" Type="smallint" Nullable="false" />
     <Property Name="DefenceDodge" Type="smallint" Nullable="false" />
+    <Property Name="MagicDefence" Type="smallint" Nullable="false" />
+    <Property Name="DefenceUpgrade" Type="utinyint" Nullable="false" />
     <Property Name="DistanceDefence" Type="smallint" Nullable="false" />
     <Property Name="DistanceDefenceDodge" Type="smallint" Nullable="false" />
-    <Property Name="MagicDefence" Type="smallint" Nullable="false" />
-    <Property Name="CloseDefence" Type="smallint" Nullable="false" />
     <Property Name="FireResistance" Type="smallint" Nullable="false" />
     <Property Name="WaterResistance" Type="smallint" Nullable="false" />
     <Property Name="LightResistance" Type="smallint" Nullable="false" />
@@ -398,6 +408,50 @@
     <Property Name="MapX" Type="smallint" Nullable="false" />
     <Property Name="MapY" Type="smallint" Nullable="false" />
     <Property Name="MapId" Type="smallint" Nullable="false" />
+  </EntityType>
+  <EntityType Name="MonsterSet">
+    <Key>
+      <PropertyRef Name="MonsterVNum" />
+    </Key>
+    <Property Name="MonsterVNum" Type="smallint" Nullable="false" />
+    <Property Name="Name" Type="longtext" Nullable="false" />
+    <Property Name="Level" Type="longtext" Nullable="false" />
+    <Property Name="AttackClass" Type="longtext" Nullable="false" />
+    <Property Name="AttackUpgrade" Type="longtext" Nullable="false" />
+    <Property Name="DamageMinimum" Type="smallint" Nullable="false" />
+    <Property Name="DamageMaximum" Type="smallint" Nullable="false" />
+    <Property Name="HitRate" Type="smallint" Nullable="false" />
+    <Property Name="Concentrate" Type="longtext" Nullable="false" />
+    <Property Name="CriticalLuck" Type="longtext" Nullable="false" />
+    <Property Name="CriticalLuckRate" Type="longtext" Nullable="false" />
+    <Property Name="Element" Type="longtext" Nullable="false" />
+    <Property Name="ElementRate" Type="longtext" Nullable="false" />
+    <Property Name="MaxHP" Type="longtext" Nullable="false" />
+    <Property Name="MaxMP" Type="longtext" Nullable="false" />
+    <Property Name="CloseDefence" Type="longtext" Nullable="false" />
+    <Property Name="DistanceDefence" Type="longtext" Nullable="false" />
+    <Property Name="MagicDefence" Type="longtext" Nullable="false" />
+    <Property Name="DefenceUpgrade" Type="smallint" Nullable="false" />
+    <Property Name="DefenceDodge" Type="smallint" Nullable="false" />
+    <Property Name="DistanceDefenceDodge" Type="smallint" Nullable="false" />
+    <Property Name="FireResistance" Type="smallint" Nullable="false" />
+    <Property Name="WaterResistance" Type="smallint" Nullable="false" />
+    <Property Name="LightResistance" Type="smallint" Nullable="false" />
+    <Property Name="DarkResistance" Type="smallint" Nullable="false" />
+    <Property Name="Effect" Type="smallint" Nullable="false" />
+    <Property Name="EffectValue" Type="smallint" Nullable="false" />
+    <Property Name="Speed" Type="smallint" Nullable="false" />
+  </EntityType>
+  <EntityType Name="MapMonsterSet">
+    <Key>
+      <PropertyRef Name="MapMonsterId" />
+    </Key>
+    <Property Name="MapMonsterId" Type="smallint" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="MonsterVNum" Type="smallint" Nullable="false" />
+    <Property Name="MapId" Type="smallint" Nullable="false" />
+    <Property Name="MapX" Type="smallint" Nullable="false" />
+    <Property Name="MapY" Type="smallint" Nullable="false" />
+    <Property Name="Move" Type="bool" Nullable="false" />
   </EntityType>
   <Association Name="AccountCharacter">
     <End Role="Account" Type="opennosModel.Store.account" Multiplicity="1" />
@@ -591,6 +645,30 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
+  <Association Name="MapMapMonster">
+    <End Role="Map" Type="opennosModel.Store.map" Multiplicity="1" />
+    <End Role="MapMonster" Type="opennosModel.Store.MapMonsterSet" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Map">
+        <PropertyRef Name="MapId" />
+      </Principal>
+      <Dependent Role="MapMonster">
+        <PropertyRef Name="MapId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="MonsterMapMonster">
+    <End Role="Monster" Type="opennosModel.Store.MonsterSet" Multiplicity="1" />
+    <End Role="MapMonster" Type="opennosModel.Store.MapMonsterSet" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Monster">
+        <PropertyRef Name="MonsterVNum" />
+      </Principal>
+      <Dependent Role="MapMonster">
+        <PropertyRef Name="MonsterVNum" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
 </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
@@ -759,6 +837,16 @@
             <End Role="Teleporter" EntitySet="teleporter" />
             <End Role="Map" EntitySet="map" />
           </AssociationSet>
+          <EntitySet Name="MonsterSet" EntityType="opennosModel.Monster" />
+          <EntitySet Name="MapMonsterSet" EntityType="opennosModel.MapMonster" />
+          <AssociationSet Name="MapMapMonster" Association="opennosModel.MapMapMonster">
+            <End Role="Map" EntitySet="map" />
+            <End Role="MapMonster" EntitySet="MapMonsterSet" />
+          </AssociationSet>
+          <AssociationSet Name="MonsterMapMonster" Association="opennosModel.MonsterMapMonster">
+            <End Role="Monster" EntitySet="MonsterSet" />
+            <End Role="MapMonster" EntitySet="MapMonsterSet" />
+          </AssociationSet>
           </EntityContainer>
         <Association Name="AccountCharacter">
           <End Type="opennosModel.Account" Role="Account" Multiplicity="1" />
@@ -811,6 +899,7 @@
           <Property Name="Data" Type="Binary" Nullable="false" />
           <Property Name="Music" Type="Int32" Nullable="false" />
           <NavigationProperty Name="teleporter" Relationship="opennosModel.TeleporterMap" FromRole="Map" ToRole="Teleporter" />
+          <NavigationProperty Name="mapmonster" Relationship="opennosModel.MapMapMonster" FromRole="Map" ToRole="MapMonster" />
         </EntityType>
         <Association Name="portalMap">
           <End Type="opennosModel.Portal" Role="portal" Multiplicity="*" />
@@ -959,12 +1048,12 @@
           <Property Name="Concentrate" Type="Int16" Nullable="false" />
           <Property Name="CriticalLuckRate" Type="Int16" Nullable="false" />
           <Property Name="CriticalRate" Type="Int16" Nullable="false" />
-          <Property Name="DefenceUpgrade" Type="Byte" Nullable="false" />
+          <Property Name="CloseDefence" Type="Int16" Nullable="false" />
           <Property Name="DefenceDodge" Type="Int16" Nullable="false" />
+          <Property Name="MagicDefence" Type="Int16" Nullable="false" />
+          <Property Name="DefenceUpgrade" Type="Byte" Nullable="false" />
           <Property Name="DistanceDefence" Type="Int16" Nullable="false" />
           <Property Name="DistanceDefenceDodge" Type="Int16" Nullable="false" />
-          <Property Name="MagicDefence" Type="Int16" Nullable="false" />
-          <Property Name="CloseDefence" Type="Int16" Nullable="false" />
           <Property Name="FireResistance" Type="Int16" Nullable="false" />
           <Property Name="WaterResistance" Type="Int16" Nullable="false" />
           <Property Name="LightResistance" Type="Int16" Nullable="false" />
@@ -1204,6 +1293,77 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="Monster">
+          <Key>
+            <PropertyRef Name="MonsterVNum" />
+          </Key>
+          <Property Name="MonsterVNum" Type="Int16" Nullable="false" annotation:StoreGeneratedPattern="None" />
+          <Property Name="Name" Type="String" Nullable="false" />
+          <Property Name="Level" Type="String" Nullable="false" />
+          <NavigationProperty Name="mapmonster" Relationship="opennosModel.MonsterMapMonster" FromRole="Monster" ToRole="MapMonster" />
+          <Property Name="AttackClass" Type="String" Nullable="false" />
+          <Property Name="AttackUpgrade" Type="String" Nullable="false" />
+          <Property Name="DamageMinimum" Type="Int16" Nullable="false" />
+          <Property Name="DamageMaximum" Type="Int16" Nullable="false" />
+          <Property Name="HitRate" Type="Int16" Nullable="false" />
+          <Property Name="Concentrate" Type="String" Nullable="false" />
+          <Property Name="CriticalLuck" Type="String" Nullable="false" />
+          <Property Name="CriticalLuckRate" Type="String" Nullable="false" />
+          <Property Name="Element" Type="String" Nullable="false" />
+          <Property Name="ElementRate" Type="String" Nullable="false" />
+          <Property Name="MaxHP" Type="String" Nullable="false" />
+          <Property Name="MaxMP" Type="String" Nullable="false" />
+          <Property Name="CloseDefence" Type="String" Nullable="false" />
+          <Property Name="DistanceDefence" Type="String" Nullable="false" />
+          <Property Name="MagicDefence" Type="String" Nullable="false" />
+          <Property Name="DefenceUpgrade" Type="Int16" Nullable="false" />
+          <Property Name="DefenceDodge" Type="Int16" Nullable="false" />
+          <Property Name="DistanceDefenceDodge" Type="Int16" Nullable="false" />
+          <Property Name="FireResistance" Type="Int16" Nullable="false" />
+          <Property Name="WaterResistance" Type="Int16" Nullable="false" />
+          <Property Name="LightResistance" Type="Int16" Nullable="false" />
+          <Property Name="DarkResistance" Type="Int16" Nullable="false" />
+          <Property Name="Effect" Type="Int16" Nullable="false" />
+          <Property Name="EffectValue" Type="Int16" Nullable="false" />
+          <Property Name="Speed" Type="Int16" Nullable="false" />
+        </EntityType>
+        <EntityType Name="MapMonster">
+          <Key>
+            <PropertyRef Name="MapMonsterId" />
+          </Key>
+          <Property Name="MapMonsterId" Type="Int16" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <NavigationProperty Name="map" Relationship="opennosModel.MapMapMonster" FromRole="MapMonster" ToRole="Map" />
+          <Property Name="MonsterVNum" Type="Int16" Nullable="false" />
+          <Property Name="MapId" Type="Int16" Nullable="false" />
+          <Property Name="MapX" Type="Int16" Nullable="false" />
+          <Property Name="MapY" Type="Int16" Nullable="false" />
+          <NavigationProperty Name="monster" Relationship="opennosModel.MonsterMapMonster" FromRole="MapMonster" ToRole="Monster" />
+          <Property Name="Move" Type="Boolean" Nullable="false" />
+        </EntityType>
+        <Association Name="MapMapMonster">
+          <End Type="opennosModel.Map" Role="Map" Multiplicity="1" />
+          <End Type="opennosModel.MapMonster" Role="MapMonster" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Map">
+              <PropertyRef Name="MapId" />
+            </Principal>
+            <Dependent Role="MapMonster">
+              <PropertyRef Name="MapId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="MonsterMapMonster">
+          <End Type="opennosModel.Monster" Role="Monster" Multiplicity="1" />
+          <End Type="opennosModel.MapMonster" Role="MapMonster" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Monster">
+              <PropertyRef Name="MonsterVNum" />
+            </Principal>
+            <Dependent Role="MapMonster">
+              <PropertyRef Name="MonsterVNum" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1408,12 +1568,12 @@
           <ScalarProperty Name="Concentrate" ColumnName="Concentrate" />
           <ScalarProperty Name="CriticalLuckRate" ColumnName="CriticalLuckRate" />
           <ScalarProperty Name="CriticalRate" ColumnName="CriticalRate" />
-          <ScalarProperty Name="DefenceUpgrade" ColumnName="DefenceUpgrade" />
+          <ScalarProperty Name="CloseDefence" ColumnName="CloseDefence" />
           <ScalarProperty Name="DefenceDodge" ColumnName="DefenceDodge" />
+          <ScalarProperty Name="MagicDefence" ColumnName="MagicDefence" />
+          <ScalarProperty Name="DefenceUpgrade" ColumnName="DefenceUpgrade" />
           <ScalarProperty Name="DistanceDefence" ColumnName="DistanceDefence" />
           <ScalarProperty Name="DistanceDefenceDodge" ColumnName="DistanceDefenceDodge" />
-          <ScalarProperty Name="MagicDefence" ColumnName="MagicDefence" />
-          <ScalarProperty Name="CloseDefence" ColumnName="CloseDefence" />
           <ScalarProperty Name="FireResistance" ColumnName="FireResistance" />
           <ScalarProperty Name="WaterResistance" ColumnName="WaterResistance" />
           <ScalarProperty Name="LightResistance" ColumnName="LightResistance" />
@@ -1534,6 +1694,52 @@
           <ScalarProperty Name="MapX" ColumnName="MapX" />
           <ScalarProperty Name="MapY" ColumnName="MapY" />
           <ScalarProperty Name="MapId" ColumnName="MapId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="MonsterSet">
+      <EntityTypeMapping TypeName="IsTypeOf(opennosModel.Monster)">
+        <MappingFragment StoreEntitySet="MonsterSet">
+          <ScalarProperty Name="MonsterVNum" ColumnName="MonsterVNum" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="Level" ColumnName="Level" />
+          <ScalarProperty Name="AttackClass" ColumnName="AttackClass" />
+          <ScalarProperty Name="AttackUpgrade" ColumnName="AttackUpgrade" />
+          <ScalarProperty Name="DamageMinimum" ColumnName="DamageMinimum" />
+          <ScalarProperty Name="DamageMaximum" ColumnName="DamageMaximum" />
+          <ScalarProperty Name="HitRate" ColumnName="HitRate" />
+          <ScalarProperty Name="Concentrate" ColumnName="Concentrate" />
+          <ScalarProperty Name="CriticalLuck" ColumnName="CriticalLuck" />
+          <ScalarProperty Name="CriticalLuckRate" ColumnName="CriticalLuckRate" />
+          <ScalarProperty Name="Element" ColumnName="Element" />
+          <ScalarProperty Name="ElementRate" ColumnName="ElementRate" />
+          <ScalarProperty Name="MaxHP" ColumnName="MaxHP" />
+          <ScalarProperty Name="MaxMP" ColumnName="MaxMP" />
+          <ScalarProperty Name="CloseDefence" ColumnName="CloseDefence" />
+          <ScalarProperty Name="DistanceDefence" ColumnName="DistanceDefence" />
+          <ScalarProperty Name="MagicDefence" ColumnName="MagicDefence" />
+          <ScalarProperty Name="DefenceUpgrade" ColumnName="DefenceUpgrade" />
+          <ScalarProperty Name="DefenceDodge" ColumnName="DefenceDodge" />
+          <ScalarProperty Name="DistanceDefenceDodge" ColumnName="DistanceDefenceDodge" />
+          <ScalarProperty Name="FireResistance" ColumnName="FireResistance" />
+          <ScalarProperty Name="WaterResistance" ColumnName="WaterResistance" />
+          <ScalarProperty Name="LightResistance" ColumnName="LightResistance" />
+          <ScalarProperty Name="DarkResistance" ColumnName="DarkResistance" />
+          <ScalarProperty Name="Effect" ColumnName="Effect" />
+          <ScalarProperty Name="EffectValue" ColumnName="EffectValue" />
+          <ScalarProperty Name="Speed" ColumnName="Speed" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="MapMonsterSet">
+      <EntityTypeMapping TypeName="IsTypeOf(opennosModel.MapMonster)">
+        <MappingFragment StoreEntitySet="MapMonsterSet">
+          <ScalarProperty Name="MapMonsterId" ColumnName="MapMonsterId" />
+          <ScalarProperty Name="MonsterVNum" ColumnName="MonsterVNum" />
+          <ScalarProperty Name="MapId" ColumnName="MapId" />
+          <ScalarProperty Name="MapX" ColumnName="MapX" />
+          <ScalarProperty Name="MapY" ColumnName="MapY" />
+          <ScalarProperty Name="Move" ColumnName="Move" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

@@ -44,7 +44,7 @@
 -- -----------------------------------------------------------
 -- Entity Designer DDL Script for MySQL Server 4.1 and higher
 -- -----------------------------------------------------------
--- Date Created: 03/15/2016 06:42:38
+-- Date Created: 03/16/2016 00:04:44
 
 -- Generated from EDMX file: C:\Users\Dominik\Source\Repos\OpenNos\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
 -- Target version: 3.0.0.0
@@ -338,12 +338,12 @@ CREATE TABLE `npc`(
 	`Concentrate` smallint NOT NULL, 
 	`CriticalLuckRate` smallint NOT NULL, 
 	`CriticalRate` smallint NOT NULL, 
-	`DefenceUpgrade` TINYINT UNSIGNED NOT NULL, 
+	`CloseDefence` smallint NOT NULL, 
 	`DefenceDodge` smallint NOT NULL, 
+	`MagicDefence` smallint NOT NULL, 
+	`DefenceUpgrade` TINYINT UNSIGNED NOT NULL, 
 	`DistanceDefence` smallint NOT NULL, 
 	`DistanceDefenceDodge` smallint NOT NULL, 
-	`MagicDefence` smallint NOT NULL, 
-	`CloseDefence` smallint NOT NULL, 
 	`FireResistance` smallint NOT NULL, 
 	`WaterResistance` smallint NOT NULL, 
 	`LightResistance` smallint NOT NULL, 
@@ -479,6 +479,56 @@ CREATE TABLE `teleporter`(
 	`MapId` smallint NOT NULL);
 
 ALTER TABLE `teleporter` ADD PRIMARY KEY (TeleporterId);
+
+
+
+
+
+CREATE TABLE `MonsterSet`(
+	`MonsterVNum` smallint NOT NULL, 
+	`Name` longtext NOT NULL, 
+	`Level` longtext NOT NULL, 
+	`AttackClass` longtext NOT NULL, 
+	`AttackUpgrade` longtext NOT NULL, 
+	`DamageMinimum` smallint NOT NULL, 
+	`DamageMaximum` smallint NOT NULL, 
+	`HitRate` smallint NOT NULL, 
+	`Concentrate` longtext NOT NULL, 
+	`CriticalLuck` longtext NOT NULL, 
+	`CriticalLuckRate` longtext NOT NULL, 
+	`Element` longtext NOT NULL, 
+	`ElementRate` longtext NOT NULL, 
+	`MaxHP` longtext NOT NULL, 
+	`MaxMP` longtext NOT NULL, 
+	`CloseDefence` longtext NOT NULL, 
+	`DistanceDefence` longtext NOT NULL, 
+	`MagicDefence` longtext NOT NULL, 
+	`DefenceUpgrade` smallint NOT NULL, 
+	`DefenceDodge` smallint NOT NULL, 
+	`DistanceDefenceDodge` smallint NOT NULL, 
+	`FireResistance` smallint NOT NULL, 
+	`WaterResistance` smallint NOT NULL, 
+	`LightResistance` smallint NOT NULL, 
+	`DarkResistance` smallint NOT NULL, 
+	`Effect` smallint NOT NULL, 
+	`EffectValue` smallint NOT NULL, 
+	`Speed` smallint NOT NULL);
+
+ALTER TABLE `MonsterSet` ADD PRIMARY KEY (MonsterVNum);
+
+
+
+
+
+CREATE TABLE `MapMonsterSet`(
+	`MapMonsterId` smallint NOT NULL AUTO_INCREMENT UNIQUE, 
+	`MonsterVNum` smallint NOT NULL, 
+	`MapId` smallint NOT NULL, 
+	`MapX` smallint NOT NULL, 
+	`MapY` smallint NOT NULL, 
+	`Move` bool NOT NULL);
+
+ALTER TABLE `MapMonsterSet` ADD PRIMARY KEY (MapMonsterId);
 
 
 
@@ -776,6 +826,42 @@ ADD CONSTRAINT `FK_TeleporterMap`
 CREATE INDEX `IX_FK_TeleporterMap`
     ON `teleporter`
     (`MapId`);
+
+
+
+-- Creating foreign key on `MapId` in table 'MapMonsterSet'
+
+ALTER TABLE `MapMonsterSet`
+ADD CONSTRAINT `FK_MapMapMonster`
+    FOREIGN KEY (`MapId`)
+    REFERENCES `map`
+        (`MapId`)
+    ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+
+-- Creating non-clustered index for FOREIGN KEY 'FK_MapMapMonster'
+
+CREATE INDEX `IX_FK_MapMapMonster`
+    ON `MapMonsterSet`
+    (`MapId`);
+
+
+
+-- Creating foreign key on `MonsterVNum` in table 'MapMonsterSet'
+
+ALTER TABLE `MapMonsterSet`
+ADD CONSTRAINT `FK_MonsterMapMonster`
+    FOREIGN KEY (`MonsterVNum`)
+    REFERENCES `MonsterSet`
+        (`MonsterVNum`)
+    ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+
+-- Creating non-clustered index for FOREIGN KEY 'FK_MonsterMapMonster'
+
+CREATE INDEX `IX_FK_MonsterMapMonster`
+    ON `MapMonsterSet`
+    (`MonsterVNum`);
 
 
 
