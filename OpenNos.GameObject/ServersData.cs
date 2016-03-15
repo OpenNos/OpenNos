@@ -811,6 +811,8 @@ namespace OpenNos.GameObject
         }
         public static void SetRarityPoint(ref Inventory inv)
         {
+            if (inv == null)
+                return;
             Item iteminfo = ServerManager.GetItem(inv.InventoryItem.ItemVNum);
             if (iteminfo.EquipmentSlot == (byte)EquipmentType.MainWeapon || iteminfo.EquipmentSlot == (byte)EquipmentType.SecondaryWeapon)
             {
