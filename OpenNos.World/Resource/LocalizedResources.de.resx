@@ -130,16 +130,16 @@
     <value>Bogenschütze</value>
   </data>
   <data name="ASK_ACCEPT" xml:space="preserve">
-    <value>{0} wants to exchange with you</value>
+    <value>{0} möchte mit dir tauschen.</value>
   </data>
   <data name="BAD_FAIRY" xml:space="preserve">
-    <value>The fairy element is not the same like sp!</value>
+    <value>Die Spezialistenkarte und deine Fee haben unterschiedliche Attribute.</value>
   </data>
   <data name="BAD_PASSWORD" xml:space="preserve">
     <value>Falsches Passwort</value>
   </data>
   <data name="BUY_ITEM_VALIDE" xml:space="preserve">
-    <value>Item bought</value>
+    <value>Handel war erfolgreich</value>
   </data>
   <data name="CLIENT_ARRIVED" xml:space="preserve">
     <value>Client verbunden, SessionId: {0}</value>
@@ -181,7 +181,7 @@
     <value>Ein Client hat die Verbindung getrennt! ClientId =</value>
   </data>
   <data name="EQ_NOT_EMPTY" xml:space="preserve">
-    <value>Your equipment is not empty</value>
+    <value>Deine Ausrüstung ist nicht leer</value>
   </data>
   <data name="FORCED_DISCONNECT" xml:space="preserve">
     <value>Die Verbindung zum Client {0} wurde getrennt, zu viele Verbindungen.</value>
@@ -193,31 +193,31 @@
     <value>Fehler beim Einfügen/Aktualisieren des Charakters {0} , {1}</value>
   </data>
   <data name="INVALID_CHARNAME" xml:space="preserve">
-    <value>Invalid characters in nickname</value>
+    <value>Der Name enthält ein ungültiges Wort oder Zeichen.</value>
   </data>
   <data name="ITEM_IS_FIXED" xml:space="preserve">
-    <value>Item upgrade level is locked.</value>
+    <value>Das Item ist fixiert.</value>
   </data>
   <data name="ITEM_NOT_DROPPABLE" xml:space="preserve">
-    <value>You cant drop that item!</value>
+    <value>Du kannst dieses Item nicht wegwerfen.</value>
   </data>
   <data name="ITEM_NOT_SOLDABLE" xml:space="preserve">
-    <value>Item cannot be sold!</value>
+    <value>Du kannst dieses Item nicht verkaufen.</value>
   </data>
   <data name="ITEM_NOT_TRADABLE" xml:space="preserve">
-    <value>Item cannot be traded!</value>
+    <value>Du kannst dieses Item nicht tauschen.</value>
   </data>
   <data name="JOBLEVEL_CHANGED" xml:space="preserve">
-    <value>Job level has been increased</value>
+    <value>Dein Joblevel wurde erhöht</value>
   </data>
   <data name="LOW_JOB_LVL" xml:space="preserve">
-    <value>Joblevel is too low</value>
+    <value>Dein Joblevel ist nicht hoch genug.</value>
   </data>
   <data name="LOW_LVL" xml:space="preserve">
-    <value>Your level is too low</value>
+    <value>Dein Level ist nicht hoch genug.</value>
   </data>
   <data name="LOW_REP" xml:space="preserve">
-    <value>Reputation is too low</value>
+    <value>Dein Ruf ist zu niedrig.</value>
   </data>
   <data name="MAGICIAN" xml:space="preserve">
     <value>Magier</value>
@@ -226,7 +226,7 @@
     <value>{0} Karten geladen!</value>
   </data>
   <data name="MAX_GOLD" xml:space="preserve">
-    <value>Maximum of gold reached!</value>
+    <value>Du hast das Gold Limit erreicht.</value>
   </data>
   <data name="MESSAGE_RECEIVED" xml:space="preserve">
     <value>Nachricht {0} von Client {1} empfangen</value>
@@ -238,16 +238,16 @@
     <value>Ein neuer Client hat sich verbunden. ClientId =</value>
   </data>
   <data name="NOT_ADVENTURER" xml:space="preserve">
-    <value>You can change class only once</value>
+    <value>Du kannst deine Klasse nur einmal ändern.</value>
   </data>
   <data name="NOT_ENOUGH_MONEY" xml:space="preserve">
-    <value>Not enough money</value>
+    <value>Du hast nicht genug Gold.</value>
   </data>
   <data name="NO_ENTRY" xml:space="preserve">
     <value>Kein Einsprungspunkt gefunden!</value>
   </data>
   <data name="NO_SP" xml:space="preserve">
-    <value>You're not wearing specialist card</value>
+    <value>Keine Spezialistenkarte ausgerüstet.</value>
   </data>
   <data name="PACKET_ARRIVED" xml:space="preserve">
     <value>Paket erhalten: {0}</value>
@@ -265,37 +265,40 @@
     <value>Das Wetten war erfolgreich! Neues Seltenheitslevel: {0}</value>
   </data>
   <data name="REP_CHANGED" xml:space="preserve">
-    <value>Reputation changed</value>
+    <value>Dein Ruf wurde verändert.</value>
   </data>
   <data name="SHOP_OPEN" xml:space="preserve">
-    <value>Shop has ben opened</value>
+    <value>Du hast einen Shop eröffnet.</value>
   </data>
   <data name="SHOP_VOID" xml:space="preserve">
-    <value>Shop darf nicht leer sein</value>
+    <value>Kein Item zum Verkauf verfügbar.</value>
   </data>
   <data name="SP_BLOCKED" xml:space="preserve">
-    <value>You can't change sp now!</value>
+    <value>Du kannst deine Spezialistenkarte jetzt nicht wechseln.</value>
   </data>
   <data name="SP_INLOADING" xml:space="preserve">
-    <value>SP card is loading {0} seconds</value>
+    <value>Kann nicht transformieren wegen des Nebeneffekts der Transformation: {0}</value>
   </data>
   <data name="STARTED" xml:space="preserve">
     <value>Server erfolgreich gestartet.</value>
   </data>
   <data name="STAY_TIME" xml:space="preserve">
-    <value>SP transformation needs cooldown, 30 seconds</value>
+    <value>Dauer des Nebeneffekts der Transformation: 30 Sekunden</value>
   </data>
   <data name="SWORDMAN" xml:space="preserve">
     <value>Schwertkämpfer</value>
   </data>
   <data name="TOO_BIG" xml:space="preserve">
-    <value>Nachricht ist zu groß ({0} bytes). Die maximale Länge beträgt{1} bytes.</value>
+    <value>Nachricht ist zu groß ({0} bytes). Die maximale Länge beträgt {1} bytes.</value>
+  </data>
+  <data name="TOTAL_SESSION" xml:space="preserve">
+    <value>Aktuelle Sitzungen</value>
   </data>
   <data name="TRADE_BLOCKED" xml:space="preserve">
-    <value>User has blocked exchanges</value>
+    <value>Dein Gegenüber blockiert Tauschgeschäfte.</value>
   </data>
   <data name="TRANSFORM_DISAPEAR" xml:space="preserve">
-    <value>Cooldown finished.</value>
+    <value>Der Nebeneffekt der Transformation ist vorüber.</value>
   </data>
   <data name="UPDATE_ACCOUNT_ERROR" xml:space="preserve">
     <value>Fehler beim Einfügen/Aktualisieren des Accounts {0} , {1}</value>
