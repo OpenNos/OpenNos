@@ -133,7 +133,7 @@
     <value>{0} möchte mit dir tauschen.</value>
   </data>
   <data name="BAD_DROP_AMOUNT" xml:space="preserve">
-    <value>BAD_DROP_AMOUNT</value>
+    <value>Bad drop amount.</value>
   </data>
   <data name="BAD_FAIRY" xml:space="preserve">
     <value>Die Spezialistenkarte und deine Fee haben unterschiedliche Attribute.</value>

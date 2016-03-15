@@ -136,7 +136,7 @@
     <value>{0} wants to exchange with you</value>
   </data>
   <data name="BAD_DROP_AMOUNT" xml:space="preserve">
-    <value>BAD_DROP_AMOUNT</value>
+    <value>Bad drop amount.</value>
   </data>
   <data name="BAD_FAIRY" xml:space="preserve">
     <value>La carte spécialiste et ta fée ont des attributs différents.</value>

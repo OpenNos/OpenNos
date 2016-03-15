@@ -139,7 +139,7 @@
     <value>Czy chcesz usunac?</value>
   </data>
   <data name="BAD_DROP_AMOUNT" xml:space="preserve">
-    <value>BAD_DROP_AMOUNT</value>
+    <value>Wyrzuciles zla ilosc przedmiotow!</value>
   </data>
   <data name="BAD_EQUIPMENT" xml:space="preserve">
     <value>Nie mozesz zalozyc tego przedmiotu!</value>
