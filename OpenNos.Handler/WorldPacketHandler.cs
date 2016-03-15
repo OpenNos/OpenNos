@@ -286,7 +286,9 @@ namespace OpenNos.Handler
                         inventory = Session.Character.InventoryList.LoadBySlotAndType(slot, type);
                         if (inventory != null)
                         {
-                            UpgradeItem(inventory, InventoryItem.UpgradeMode.Normal, InventoryItem.UpgradeProtection.None);
+                            Item iteminfo = ServerManager.GetItem(inventory.InventoryItem.ItemVNum);
+                            if (iteminfo.EquipmentSlot == (byte)EquipmentType.Armor || iteminfo.EquipmentSlot == (byte)EquipmentType.MainWeapon || iteminfo.EquipmentSlot == (byte)EquipmentType.SecondaryWeapon)
+                               UpgradeItem(inventory, InventoryItem.UpgradeMode.Normal, InventoryItem.UpgradeProtection.None);
                         }
                         break;
 
@@ -294,7 +296,10 @@ namespace OpenNos.Handler
                         inventory = Session.Character.InventoryList.LoadBySlotAndType(slot, type);
                         if (inventory != null)
                         {
-                            RarifyItem(inventory, InventoryItem.RarifyMode.Normal, InventoryItem.RarifyProtection.None);
+                            Item iteminfo = ServerManager.GetItem(inventory.InventoryItem.ItemVNum);
+                            if (iteminfo.EquipmentSlot == (byte)EquipmentType.Armor || iteminfo.EquipmentSlot == (byte)EquipmentType.MainWeapon || iteminfo.EquipmentSlot == (byte)EquipmentType.SecondaryWeapon)
+
+                                RarifyItem(inventory, InventoryItem.RarifyMode.Normal, InventoryItem.RarifyProtection.None);
                         }
                         break;
                     case 8:
@@ -303,7 +308,7 @@ namespace OpenNos.Handler
 
                         if (inventory != null && inventory2 != null && inventory != inventory2)
                         {
-                            SumItem(inventory, inventory2);
+                                SumItem(inventory, inventory2);
                         }
                         break;
 
