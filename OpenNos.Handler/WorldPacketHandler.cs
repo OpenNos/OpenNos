@@ -2996,17 +2996,16 @@ namespace OpenNos.Handler
                 //short itempricevnum1 = 0;
                 //short itempricevnum2 = 0;
                 int[] goldprice = { 500, 1500, 3000, 10000, 30000, 80000, 150000, 400000, 700000, 1000000 };
-                short[] cella = { 20, 50, 80, 120, 160, 200, 280, 380, 480, 600 };
-                short[] gemme = { 1, 1, 2, 2, 3, 3, 1, 2, 2, 3 };
+                short[] powder = { 20, 50, 80, 120, 160, 200, 280, 380, 480, 600 };
+                short[] gem = { 1, 1, 2, 2, 3, 3, 1, 2, 2, 3 };
 
-                int cellaVnum = 1014;
-                int gemmeVnum = 1015;
-                int gemmeFullVnum = 1016;
+                int powderVnum = 1014;
+                int gemVnum = 1015;
+                int gemFullVnum = 1016;
                 double reducedpricefactor = 0.5;
                 if (item.InventoryItem.IsFixed)
                 {
                     Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("ITEM_IS_FIXED"), 10));
-
                     GetStartupInventory();
                     Session.Client.SendPacket("shop_end 1");
                     return;
@@ -3021,20 +3020,20 @@ namespace OpenNos.Handler
                         if (Session.Character.Gold < goldprice[item.InventoryItem.Upgrade] * reducedpricefactor)
                             return;
                         Session.Character.Gold = Session.Character.Gold - (long)(goldprice[item.InventoryItem.Upgrade] * reducedpricefactor);
-                        if (Session.Character.InventoryList.CountItem(cellaVnum) < cella[item.InventoryItem.Upgrade] * reducedpricefactor)
+                        if (Session.Character.InventoryList.CountItem(powderVnum) < powder[item.InventoryItem.Upgrade] * reducedpricefactor)
                             return;
-                        Session.Character.InventoryList.RemoveItemAmount(cellaVnum, (byte)(cella[item.InventoryItem.Upgrade] * reducedpricefactor));
+                        Session.Character.InventoryList.RemoveItemAmount(powderVnum, (byte)(powder[item.InventoryItem.Upgrade] * reducedpricefactor));
                         if (item.InventoryItem.Upgrade <= 5)
                         {
-                            if (Session.Character.InventoryList.CountItem(gemmeVnum) < gemme[item.InventoryItem.Upgrade] * reducedpricefactor)
+                            if (Session.Character.InventoryList.CountItem(gemVnum) < gem[item.InventoryItem.Upgrade] * reducedpricefactor)
                                 return;
-                            Session.Character.InventoryList.RemoveItemAmount(gemmeVnum, (byte)(gemme[item.InventoryItem.Upgrade] * reducedpricefactor));
+                            Session.Character.InventoryList.RemoveItemAmount(gemVnum, (byte)(gem[item.InventoryItem.Upgrade] * reducedpricefactor));
                         }
                         else
                         {
-                            if (Session.Character.InventoryList.CountItem(gemmeFullVnum) < gemme[item.InventoryItem.Upgrade] * reducedpricefactor)
+                            if (Session.Character.InventoryList.CountItem(gemFullVnum) < gem[item.InventoryItem.Upgrade] * reducedpricefactor)
                                 return;
-                            Session.Character.InventoryList.RemoveItemAmount(gemmeFullVnum, (byte)(gemme[item.InventoryItem.Upgrade] * reducedpricefactor));
+                            Session.Character.InventoryList.RemoveItemAmount(gemFullVnum, (byte)(gem[item.InventoryItem.Upgrade] * reducedpricefactor));
                         }
                         Session.Client.SendPacket(Session.Character.GenerateGold());
                         break;
@@ -3044,20 +3043,20 @@ namespace OpenNos.Handler
                         if (Session.Character.Gold < goldprice[item.InventoryItem.Upgrade])
                             return;
                         Session.Character.Gold = Session.Character.Gold - goldprice[item.InventoryItem.Upgrade];
-                        if (Session.Character.InventoryList.CountItem(cellaVnum) < cella[item.InventoryItem.Upgrade])
+                        if (Session.Character.InventoryList.CountItem(powderVnum) < powder[item.InventoryItem.Upgrade])
                             return;
-                        Session.Character.InventoryList.RemoveItemAmount(cellaVnum, (byte)(cella[item.InventoryItem.Upgrade]));
+                        Session.Character.InventoryList.RemoveItemAmount(powderVnum, (byte)(powder[item.InventoryItem.Upgrade]));
                         if (item.InventoryItem.Upgrade <= 5)
                         {
-                            if (Session.Character.InventoryList.CountItem(gemmeVnum) < gemme[item.InventoryItem.Upgrade])
+                            if (Session.Character.InventoryList.CountItem(gemVnum) < gem[item.InventoryItem.Upgrade])
                                 return;
-                            Session.Character.InventoryList.RemoveItemAmount(gemmeVnum, (byte)(gemme[item.InventoryItem.Upgrade]));
+                            Session.Character.InventoryList.RemoveItemAmount(gemVnum, (byte)(gem[item.InventoryItem.Upgrade]));
                         }
                         else
                         {
-                            if (Session.Character.InventoryList.CountItem(gemmeFullVnum) < gemme[item.InventoryItem.Upgrade])
+                            if (Session.Character.InventoryList.CountItem(gemFullVnum) < gem[item.InventoryItem.Upgrade])
                                 return;
-                            Session.Character.InventoryList.RemoveItemAmount(gemmeFullVnum, (byte)(gemme[item.InventoryItem.Upgrade]));
+                            Session.Character.InventoryList.RemoveItemAmount(gemFullVnum, (byte)(gem[item.InventoryItem.Upgrade]));
                         }
                         Session.Client.SendPacket(Session.Character.GenerateGold());
                         break;
@@ -3193,7 +3192,7 @@ namespace OpenNos.Handler
         [Packet("$Stat")]
         public void Stat(string packet)
         {
-            Session.Client.SendPacket(Session.Character.GenerateSay($"Total Session: {ClientLinkManager.Instance.GetNumberOfAllASession()} ", 12));
+            Session.Client.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("TOTAL_SESSION")}: {ClientLinkManager.Instance.GetNumberOfAllASession()} ", 13));
         }
 
         #endregion

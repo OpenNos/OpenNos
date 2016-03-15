@@ -294,6 +294,9 @@
   <data name="IN_WAITING_FOR" xml:space="preserve">
     <value>In Waiting for {0}</value>
   </data>
+  <data name="ITEM_IS_FIXED" xml:space="preserve">
+    <value>Item upgrade level is locked.</value>
+  </data>
   <data name="ITEM_LOADED" xml:space="preserve">
     <value>{0} Items Loaded !</value>
   </data>
@@ -452,6 +455,9 @@
   </data>
   <data name="TOO_BIG" xml:space="preserve">
     <value>Message is too big ({0} bytes). Max allowed length is {1} bytes.</value>
+  </data>
+  <data name="TOTAL_SESSION" xml:space="preserve">
+    <value>Total number of sessions</value>
   </data>
   <data name="TRADE_BLOCKED" xml:space="preserve">
     <value>User has blocked exchanges</value>

@@ -294,6 +294,9 @@
   <data name="IN_WAITING_FOR" xml:space="preserve">
     <value>Oczekujesz na gracza {0}</value>
   </data>
+  <data name="ITEM_IS_FIXED" xml:space="preserve">
+    <value>Poziom ulepszenia przedmiotu zablokowany.</value>
+  </data>
   <data name="ITEM_LOADED" xml:space="preserve">
     <value>{0} Załadowanych przedmiotów!</value>
   </data>
@@ -449,6 +452,9 @@
   </data>
   <data name="TOO_BIG" xml:space="preserve">
     <value>Wiadomość jest za duża ({0} bytes). maksymalna długość to: {1} bytes.</value>
+  </data>
+  <data name="TOTAL_SESSION" xml:space="preserve">
+    <value>Ilosc sesji</value>
   </data>
   <data name="TRADE_BLOCKED" xml:space="preserve">
     <value>Użytkownik zablokowal opcje wymiany.</value>

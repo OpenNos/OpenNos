@@ -294,6 +294,9 @@
   <data name="IN_WAITING_FOR" xml:space="preserve">
     <value>In attesa di{0}</value>
   </data>
+  <data name="ITEM_IS_FIXED" xml:space="preserve">
+    <value>Item upgrade level is locked.</value>
+  </data>
   <data name="ITEM_LOADED" xml:space="preserve">
     <value>{0} Items caricati !</value>
   </data>
