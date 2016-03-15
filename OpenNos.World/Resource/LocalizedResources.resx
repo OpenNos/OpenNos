@@ -456,6 +456,9 @@
   <data name="TOO_BIG" xml:space="preserve">
     <value>Message is too big ({0} bytes). Max allowed length is {1} bytes.</value>
   </data>
+  <data name="TOTAL_SESSION" xml:space="preserve">
+    <value>Total number of sessions</value>
+  </data>
   <data name="TRADE_BLOCKED" xml:space="preserve">
     <value>User has blocked exchanges</value>
   </data>
