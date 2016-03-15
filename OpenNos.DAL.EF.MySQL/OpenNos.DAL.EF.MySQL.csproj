@@ -124,6 +124,8 @@
     <Compile Include="DB\Teleporter.cs">
       <DependentUpon>OpenNos.tt</DependentUpon>
     </Compile>
+    <Compile Include="MapMonsterDAO.cs" />
+    <Compile Include="MonsterDAO.cs" />
     <Compile Include="RespawnDAO.cs" />
     <Compile Include="GeneralLogDAO.cs" />
     <Compile Include="InventoryDAO.cs" />

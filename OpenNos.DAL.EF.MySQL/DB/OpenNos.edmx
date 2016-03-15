@@ -19,8 +19,8 @@
     <EntitySet Name="shop" EntityType="opennosModel.Store.shop" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="respawn" EntityType="opennosModel.Store.respawn" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="teleporter" EntityType="opennosModel.Store.teleporter" store:Type="Tables" Schema="dbo" />
-    <EntitySet Name="MonsterSet" EntityType="opennosModel.Store.MonsterSet" store:Type="Tables" Schema="dbo" />
-    <EntitySet Name="MapMonsterSet" EntityType="opennosModel.Store.MapMonsterSet" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="monster" EntityType="opennosModel.Store.monster" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="mapmonster" EntityType="opennosModel.Store.mapmonster" store:Type="Tables" Schema="dbo" />
     <AssociationSet Name="AccountCharacter" Association="opennosModel.Store.AccountCharacter">
       <End Role="Account" EntitySet="account" />
       <End Role="Character" EntitySet="character" />
@@ -87,11 +87,11 @@
     </AssociationSet>
     <AssociationSet Name="MapMapMonster" Association="opennosModel.Store.MapMapMonster">
       <End Role="Map" EntitySet="map" />
-      <End Role="MapMonster" EntitySet="MapMonsterSet" />
+      <End Role="MapMonster" EntitySet="mapmonster" />
     </AssociationSet>
     <AssociationSet Name="MonsterMapMonster" Association="opennosModel.Store.MonsterMapMonster">
-      <End Role="Monster" EntitySet="MonsterSet" />
-      <End Role="MapMonster" EntitySet="MapMonsterSet" />
+      <End Role="Monster" EntitySet="monster" />
+      <End Role="MapMonster" EntitySet="mapmonster" />
     </AssociationSet>
   </EntityContainer>
   <EntityType Name="account">
@@ -409,7 +409,7 @@
     <Property Name="MapY" Type="smallint" Nullable="false" />
     <Property Name="MapId" Type="smallint" Nullable="false" />
   </EntityType>
-  <EntityType Name="MonsterSet">
+  <EntityType Name="monster">
     <Key>
       <PropertyRef Name="MonsterVNum" />
     </Key>
@@ -438,11 +438,9 @@
     <Property Name="WaterResistance" Type="smallint" Nullable="false" />
     <Property Name="LightResistance" Type="smallint" Nullable="false" />
     <Property Name="DarkResistance" Type="smallint" Nullable="false" />
-    <Property Name="Effect" Type="smallint" Nullable="false" />
-    <Property Name="EffectValue" Type="smallint" Nullable="false" />
     <Property Name="Speed" Type="smallint" Nullable="false" />
   </EntityType>
-  <EntityType Name="MapMonsterSet">
+  <EntityType Name="mapmonster">
     <Key>
       <PropertyRef Name="MapMonsterId" />
     </Key>
@@ -647,7 +645,7 @@
   </Association>
   <Association Name="MapMapMonster">
     <End Role="Map" Type="opennosModel.Store.map" Multiplicity="1" />
-    <End Role="MapMonster" Type="opennosModel.Store.MapMonsterSet" Multiplicity="*" />
+    <End Role="MapMonster" Type="opennosModel.Store.mapmonster" Multiplicity="*" />
     <ReferentialConstraint>
       <Principal Role="Map">
         <PropertyRef Name="MapId" />
@@ -658,8 +656,8 @@
     </ReferentialConstraint>
   </Association>
   <Association Name="MonsterMapMonster">
-    <End Role="Monster" Type="opennosModel.Store.MonsterSet" Multiplicity="1" />
-    <End Role="MapMonster" Type="opennosModel.Store.MapMonsterSet" Multiplicity="*" />
+    <End Role="Monster" Type="opennosModel.Store.monster" Multiplicity="1" />
+    <End Role="MapMonster" Type="opennosModel.Store.mapmonster" Multiplicity="*" />
     <ReferentialConstraint>
       <Principal Role="Monster">
         <PropertyRef Name="MonsterVNum" />
@@ -837,15 +835,15 @@
             <End Role="Teleporter" EntitySet="teleporter" />
             <End Role="Map" EntitySet="map" />
           </AssociationSet>
-          <EntitySet Name="MonsterSet" EntityType="opennosModel.Monster" />
-          <EntitySet Name="MapMonsterSet" EntityType="opennosModel.MapMonster" />
+          <EntitySet Name="monster" EntityType="opennosModel.Monster" />
+          <EntitySet Name="mapmonster" EntityType="opennosModel.MapMonster" />
           <AssociationSet Name="MapMapMonster" Association="opennosModel.MapMapMonster">
             <End Role="Map" EntitySet="map" />
-            <End Role="MapMonster" EntitySet="MapMonsterSet" />
+            <End Role="MapMonster" EntitySet="mapmonster" />
           </AssociationSet>
           <AssociationSet Name="MonsterMapMonster" Association="opennosModel.MonsterMapMonster">
-            <End Role="Monster" EntitySet="MonsterSet" />
-            <End Role="MapMonster" EntitySet="MapMonsterSet" />
+            <End Role="Monster" EntitySet="monster" />
+            <End Role="MapMonster" EntitySet="mapmonster" />
           </AssociationSet>
           </EntityContainer>
         <Association Name="AccountCharacter">
@@ -1323,8 +1321,6 @@
           <Property Name="WaterResistance" Type="Int16" Nullable="false" />
           <Property Name="LightResistance" Type="Int16" Nullable="false" />
           <Property Name="DarkResistance" Type="Int16" Nullable="false" />
-          <Property Name="Effect" Type="Int16" Nullable="false" />
-          <Property Name="EffectValue" Type="Int16" Nullable="false" />
           <Property Name="Speed" Type="Int16" Nullable="false" />
         </EntityType>
         <EntityType Name="MapMonster">
@@ -1697,9 +1693,9 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
-    <EntitySetMapping Name="MonsterSet">
+    <EntitySetMapping Name="monster">
       <EntityTypeMapping TypeName="IsTypeOf(opennosModel.Monster)">
-        <MappingFragment StoreEntitySet="MonsterSet">
+        <MappingFragment StoreEntitySet="monster">
           <ScalarProperty Name="MonsterVNum" ColumnName="MonsterVNum" />
           <ScalarProperty Name="Name" ColumnName="Name" />
           <ScalarProperty Name="Level" ColumnName="Level" />
@@ -1725,15 +1721,13 @@
           <ScalarProperty Name="WaterResistance" ColumnName="WaterResistance" />
           <ScalarProperty Name="LightResistance" ColumnName="LightResistance" />
           <ScalarProperty Name="DarkResistance" ColumnName="DarkResistance" />
-          <ScalarProperty Name="Effect" ColumnName="Effect" />
-          <ScalarProperty Name="EffectValue" ColumnName="EffectValue" />
           <ScalarProperty Name="Speed" ColumnName="Speed" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
-    <EntitySetMapping Name="MapMonsterSet">
+    <EntitySetMapping Name="mapmonster">
       <EntityTypeMapping TypeName="IsTypeOf(opennosModel.MapMonster)">
-        <MappingFragment StoreEntitySet="MapMonsterSet">
+        <MappingFragment StoreEntitySet="mapmonster">
           <ScalarProperty Name="MapMonsterId" ColumnName="MapMonsterId" />
           <ScalarProperty Name="MonsterVNum" ColumnName="MonsterVNum" />
           <ScalarProperty Name="MapId" ColumnName="MapId" />

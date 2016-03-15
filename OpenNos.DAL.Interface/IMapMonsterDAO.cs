@@ -13,14 +13,17 @@
  */
 
 using OpenNos.Data;
+using System.Collections.Generic;
 
 namespace OpenNos.DAL.Interface
 {
-    public interface IInventoryItemDAO
+    public interface IMapMonsterDAO
     {
         #region Methods
 
-        InventoryItemDTO LoadByInventoryId(long InventoryId);
+        MapMonsterDTO Insert(MapMonsterDTO mapmonster);
+        IEnumerable<MapMonsterDTO> LoadFromMap(short MapId);
+        MapMonsterDTO LoadById(int MonsterId);
 
         #endregion
     }

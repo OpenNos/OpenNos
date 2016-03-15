@@ -12,15 +12,18 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Data;
-
-namespace OpenNos.DAL.Interface
+namespace OpenNos.Data
 {
-    public interface IInventoryItemDAO
+    public class MapMonsterDTO
     {
-        #region Methods
+        #region Properties
 
-        InventoryItemDTO LoadByInventoryId(long InventoryId);
+        public short MapId { get; set; }
+        public short MapMonsterId { get; set; }
+        public short MapX { get; set; }
+        public short MapY { get; set; }
+        public short MonsterVNum { get; set; }
+        public bool Move { get; set; }
 
         #endregion
     }

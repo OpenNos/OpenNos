@@ -56,6 +56,8 @@
     <Compile Include="IGeneralLogDAO.cs" />
     <Compile Include="IAccountDAO.cs" />
     <Compile Include="ICharacterDAO.cs" />
+    <Compile Include="IMapMonsterDAO.cs" />
+    <Compile Include="IMonsterDAO.cs" />
     <Compile Include="IRespawnDAO.cs" />
     <Compile Include="IShopDAO.cs" />
     <Compile Include="IShopItemDAO.cs" />

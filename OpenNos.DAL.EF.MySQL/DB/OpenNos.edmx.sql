@@ -44,7 +44,7 @@
 -- -----------------------------------------------------------
 -- Entity Designer DDL Script for MySQL Server 4.1 and higher
 -- -----------------------------------------------------------
--- Date Created: 03/16/2016 00:04:44
+-- Date Created: 03/16/2016 00:22:04
 
 -- Generated from EDMX file: C:\Users\Dominik\Source\Repos\OpenNos\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
 -- Target version: 3.0.0.0
@@ -91,6 +91,10 @@
 
 --    ALTER TABLE `teleporter` DROP CONSTRAINT `FK_TeleporterMap`;
 
+--    ALTER TABLE `MapMonsterSet` DROP CONSTRAINT `FK_MapMapMonster`;
+
+--    ALTER TABLE `MapMonsterSet` DROP CONSTRAINT `FK_MonsterMapMonster`;
+
 
 -- --------------------------------------------------
 -- Dropping existing tables
@@ -122,6 +126,10 @@ SET foreign_key_checks = 0;
     DROP TABLE IF EXISTS `respawn`;
 
     DROP TABLE IF EXISTS `teleporter`;
+
+    DROP TABLE IF EXISTS `MonsterSet`;
+
+    DROP TABLE IF EXISTS `MapMonsterSet`;
 
 SET foreign_key_checks = 1;
 
@@ -484,7 +492,7 @@ ALTER TABLE `teleporter` ADD PRIMARY KEY (TeleporterId);
 
 
 
-CREATE TABLE `MonsterSet`(
+CREATE TABLE `monster`(
 	`MonsterVNum` smallint NOT NULL, 
 	`Name` longtext NOT NULL, 
 	`Level` longtext NOT NULL, 
@@ -510,17 +518,15 @@ CREATE TABLE `MonsterSet`(
 	`WaterResistance` smallint NOT NULL, 
 	`LightResistance` smallint NOT NULL, 
 	`DarkResistance` smallint NOT NULL, 
-	`Effect` smallint NOT NULL, 
-	`EffectValue` smallint NOT NULL, 
 	`Speed` smallint NOT NULL);
 
-ALTER TABLE `MonsterSet` ADD PRIMARY KEY (MonsterVNum);
+ALTER TABLE `monster` ADD PRIMARY KEY (MonsterVNum);
 
 
 
 
 
-CREATE TABLE `MapMonsterSet`(
+CREATE TABLE `mapmonster`(
 	`MapMonsterId` smallint NOT NULL AUTO_INCREMENT UNIQUE, 
 	`MonsterVNum` smallint NOT NULL, 
 	`MapId` smallint NOT NULL, 
@@ -528,7 +534,7 @@ CREATE TABLE `MapMonsterSet`(
 	`MapY` smallint NOT NULL, 
 	`Move` bool NOT NULL);
 
-ALTER TABLE `MapMonsterSet` ADD PRIMARY KEY (MapMonsterId);
+ALTER TABLE `mapmonster` ADD PRIMARY KEY (MapMonsterId);
 
 
 
@@ -829,9 +835,9 @@ CREATE INDEX `IX_FK_TeleporterMap`
 
 
 
--- Creating foreign key on `MapId` in table 'MapMonsterSet'
+-- Creating foreign key on `MapId` in table 'mapmonster'
 
-ALTER TABLE `MapMonsterSet`
+ALTER TABLE `mapmonster`
 ADD CONSTRAINT `FK_MapMapMonster`
     FOREIGN KEY (`MapId`)
     REFERENCES `map`
@@ -842,17 +848,17 @@ ADD CONSTRAINT `FK_MapMapMonster`
 -- Creating non-clustered index for FOREIGN KEY 'FK_MapMapMonster'
 
 CREATE INDEX `IX_FK_MapMapMonster`
-    ON `MapMonsterSet`
+    ON `mapmonster`
     (`MapId`);
 
 
 
--- Creating foreign key on `MonsterVNum` in table 'MapMonsterSet'
+-- Creating foreign key on `MonsterVNum` in table 'mapmonster'
 
-ALTER TABLE `MapMonsterSet`
+ALTER TABLE `mapmonster`
 ADD CONSTRAINT `FK_MonsterMapMonster`
     FOREIGN KEY (`MonsterVNum`)
-    REFERENCES `MonsterSet`
+    REFERENCES `monster`
         (`MonsterVNum`)
     ON DELETE NO ACTION ON UPDATE NO ACTION;
 
@@ -860,7 +866,7 @@ ADD CONSTRAINT `FK_MonsterMapMonster`
 -- Creating non-clustered index for FOREIGN KEY 'FK_MonsterMapMonster'
 
 CREATE INDEX `IX_FK_MonsterMapMonster`
-    ON `MapMonsterSet`
+    ON `mapmonster`
     (`MonsterVNum`);
 
 

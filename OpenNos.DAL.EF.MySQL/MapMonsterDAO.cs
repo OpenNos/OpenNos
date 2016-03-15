@@ -21,36 +21,36 @@ using System.Linq;
 
 namespace OpenNos.DAL.EF.MySQL
 {
-    public class NpcDAO : INpcDAO
+    public class MapMonsterDAO : IMapMonsterDAO
     {
         #region Methods
 
-        public NpcDTO Insert(NpcDTO npc)
+        public MapMonsterDTO Insert(MapMonsterDTO mapmonster)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                Npc entity = Mapper.Map<Npc>(npc);
-                context.npc.Add(entity);
+                MapMonster entity = Mapper.Map<MapMonster>(mapmonster);
+                context.mapmonster.Add(entity);
                 context.SaveChanges();
-                return Mapper.Map<NpcDTO>(entity);
+                return Mapper.Map<MapMonsterDTO>(entity);
             }
         }
 
-        public NpcDTO LoadById(short MapId)
+        public MapMonsterDTO LoadById(int MonsterId)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                return Mapper.Map<NpcDTO>(context.npc.SingleOrDefault(i => i.NpcId.Equals(MapId)));
+                return Mapper.Map<MapMonsterDTO>(context.monster.SingleOrDefault(i => i.MonsterVNum.Equals(MonsterId)));
             }
         }
 
-        public IEnumerable<NpcDTO> LoadFromMap(short MapId)
+        public IEnumerable<MapMonsterDTO> LoadFromMap(short MapId)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                foreach (Npc npcobject in context.npc.Where(c => c.MapId.Equals(MapId)))
+                foreach (MapMonster mapmonsterobject in context.mapmonster.Where(c => c.MapId.Equals(MapId)))
                 {
-                    yield return Mapper.Map<NpcDTO>(npcobject);
+                    yield return Mapper.Map<MapMonsterDTO>(mapmonsterobject);
                 }
             }
         }
