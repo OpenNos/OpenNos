@@ -1814,7 +1814,7 @@ namespace OpenNos.Handler
                     Session.Character.Gold = Session.Character.Gold - (long)(goldprice * reducedpricefactor);
                     if (Session.Character.InventoryList.CountItem(cellavnum) < cella * reducedpricefactor)
                         return;
-                    Session.Character.InventoryList.RemoveItemAmount(cellavnum, (byte)(cella * reducedpricefactor));
+                    Session.Character.InventoryList.RemoveItemAmount(cellavnum, (int)(cella * reducedpricefactor));
                     Session.Client.SendPacket(Session.Character.GenerateGold());
                     break;
 
@@ -3030,18 +3030,18 @@ namespace OpenNos.Handler
                         Session.Character.Gold = Session.Character.Gold - (long)(goldprice[item.InventoryItem.Upgrade] * reducedpricefactor);
                         if (Session.Character.InventoryList.CountItem(cellaVnum) < cella[item.InventoryItem.Upgrade] * reducedpricefactor)
                             return;
-                        Session.Character.InventoryList.RemoveItemAmount(cellaVnum, (byte)(cella[item.InventoryItem.Upgrade] * reducedpricefactor));
+                        Session.Character.InventoryList.RemoveItemAmount(cellaVnum, (int)(cella[item.InventoryItem.Upgrade] * reducedpricefactor));
                         if (item.InventoryItem.Upgrade <= 5)
                         {
                             if (Session.Character.InventoryList.CountItem(gemVnum) < gem[item.InventoryItem.Upgrade] * reducedpricefactor)
                                 return;
-                            Session.Character.InventoryList.RemoveItemAmount(gemVnum, (byte)(gem[item.InventoryItem.Upgrade] * reducedpricefactor));
+                            Session.Character.InventoryList.RemoveItemAmount(gemVnum, (int)(gem[item.InventoryItem.Upgrade] * reducedpricefactor));
                         }
                         else
                         {
                             if (Session.Character.InventoryList.CountItem(gemFullVnum) < gem[item.InventoryItem.Upgrade] * reducedpricefactor)
                                 return;
-                            Session.Character.InventoryList.RemoveItemAmount(gemFullVnum, (byte)(gem[item.InventoryItem.Upgrade] * reducedpricefactor));
+                            Session.Character.InventoryList.RemoveItemAmount(gemFullVnum, (int)(gem[item.InventoryItem.Upgrade] * reducedpricefactor));
                         }
                         Session.Client.SendPacket(Session.Character.GenerateGold());
                         break;
@@ -3053,18 +3053,18 @@ namespace OpenNos.Handler
                         Session.Character.Gold = Session.Character.Gold - goldprice[item.InventoryItem.Upgrade];
                         if (Session.Character.InventoryList.CountItem(cellaVnum) < cella[item.InventoryItem.Upgrade])
                             return;
-                        Session.Character.InventoryList.RemoveItemAmount(cellaVnum, (byte)(cella[item.InventoryItem.Upgrade]));
+                        Session.Character.InventoryList.RemoveItemAmount(cellaVnum, (cella[item.InventoryItem.Upgrade]));
                         if (item.InventoryItem.Upgrade < 5)
                         {
                             if (Session.Character.InventoryList.CountItem(gemVnum) < gem[item.InventoryItem.Upgrade])
                                 return;
-                            Session.Character.InventoryList.RemoveItemAmount(gemVnum, (byte)(gem[item.InventoryItem.Upgrade]));
+                            Session.Character.InventoryList.RemoveItemAmount(gemVnum, (gem[item.InventoryItem.Upgrade]));
                         }
                         else
                         {
                             if (Session.Character.InventoryList.CountItem(gemFullVnum) < gem[item.InventoryItem.Upgrade])
                                 return;
-                            Session.Character.InventoryList.RemoveItemAmount(gemFullVnum, (byte)(gem[item.InventoryItem.Upgrade]));
+                            Session.Character.InventoryList.RemoveItemAmount(gemFullVnum, (gem[item.InventoryItem.Upgrade]));
                         }
                         Session.Client.SendPacket(Session.Character.GenerateGold());
                         break;
