@@ -500,6 +500,8 @@ namespace OpenNos.Handler
                 {
                     if (DAOFactory.CharacterDAO.LoadByName(packetsplit[2]) == null)
                     {
+                        if (Convert.ToByte(packetsplit[3]) > 2)
+                            return;
                         Random r = new Random();
                         CharacterDTO newCharacter = new CharacterDTO()
                         {
