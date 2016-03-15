@@ -3054,7 +3054,7 @@ namespace OpenNos.Handler
                         if (Session.Character.InventoryList.CountItem(cellaVnum) < cella[item.InventoryItem.Upgrade])
                             return;
                         Session.Character.InventoryList.RemoveItemAmount(cellaVnum, (byte)(cella[item.InventoryItem.Upgrade]));
-                        if (item.InventoryItem.Upgrade <= 5)
+                        if (item.InventoryItem.Upgrade < 5)
                         {
                             if (Session.Character.InventoryList.CountItem(gemVnum) < gem[item.InventoryItem.Upgrade])
                                 return;
