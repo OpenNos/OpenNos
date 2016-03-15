@@ -39,7 +39,8 @@ namespace OpenNos.GameObject
             Mapper.CreateMap<NpcDTO, Npc>();
             Mapper.CreateMap<Npc, NpcDTO>();
             NpcId = npcId;
-            LastMove = DateTime.Now;
+            LastEffect=LastMove = DateTime.Now;
+            
             IEnumerable<TeleporterDTO> Teleporters = DAOFactory.TeleporterDAO.LoadFromNpc(NpcId);
             ShopDTO shop = DAOFactory.ShopDAO.LoadByNpc(NpcId);
             if (shop != null)
@@ -52,7 +53,7 @@ namespace OpenNos.GameObject
         public IEnumerable<TeleporterDTO> Teleporters { get; set; }
         public Shop Shop { get; set; }
         public DateTime LastMove { get; private set; }
-
+        public DateTime LastEffect { get; private set; }
         #endregion
 
         #region Methods
@@ -71,9 +72,20 @@ namespace OpenNos.GameObject
             return $"e_info 10 {Vnum} {Level} {Element} {AttackClass} {ElementRate} {AttackUpgrade} {DamageMinimum} {DamageMaximum} {Concentrate} {CriticalLuckRate} {CriticalRate} {DefenceUpgrade} {CloseDefence} {DefenceDodge} {DistanceDefence} {DistanceDefenceDodge} {MagicDefence} {FireResistance} {WaterResistance} {LightResistance} {DarkResistance} 0 0 -1 {Name.Replace(' ', '^')}"; // {Hp} {Mp} in 0 0 
         }
 
-        internal void MoveNpc()
+        public string GenerateEff()
         {
-            double time = (DateTime.Now - LastMove).TotalSeconds;
+            return $"eff 2 {NpcId} {Effect}";
+        }
+
+        internal void NpcLife()
+        {
+            double time = (DateTime.Now - LastEffect).TotalMilliseconds;
+            if (Effect > 0 && time > EffectDelay)
+            {             
+                ClientLinkManager.Instance.RequiereBroadcastFromMap(MapId, GenerateEff());
+                LastEffect = DateTime.Now;
+            }
+             time = (DateTime.Now - LastMove).TotalSeconds;
             if (this.Move && time > 1)
             {
                 Random r = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);

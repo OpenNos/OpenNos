@@ -486,12 +486,19 @@ namespace OpenNos.Import.Console
             int npcCounter = 0;
             short map = 0;
             Dictionary<short, bool> movementlist = new Dictionary<short, bool>();
-
+            Dictionary<short, short> effectlist = new Dictionary<short, short>();
             foreach (string[] linesave in packetList.Where(o => o[0].Equals("mv") && o[1].Equals("2")))
             {
                 if(!(long.Parse(linesave[2]) >= 10000))
                 if (!movementlist.ContainsKey(Convert.ToInt16(linesave[2])))
                     movementlist[Convert.ToInt16(linesave[2])] = true;
+            }
+
+            foreach (string[] linesave in packetList.Where(o => o[0].Equals("eff") && o[1].Equals("2")))
+            {
+                if (!(long.Parse(linesave[2]) >= 10000))
+                    if (!effectlist.ContainsKey(Convert.ToInt16(linesave[2])))
+                        effectlist[Convert.ToInt16(linesave[2])] = Convert.ToInt16(linesave[3]);
             }
 
             foreach (string[] linesave in packetList.Where(o => o[0].Equals("in") || o[0].Equals("at")))
@@ -511,6 +518,9 @@ namespace OpenNos.Import.Console
                             npctest.MapY = short.Parse(linesave[5]);
                             npctest.MapId = map;
                             npctest.NpcId = short.Parse(linesave[3]);
+                            if (effectlist.ContainsKey(npctest.NpcId))
+                                npctest.Effect = effectlist[npctest.NpcId];
+                            npctest.EffectDelay = 5000;
                             if (movementlist.ContainsKey(npctest.NpcId))
                                 npctest.Move = movementlist[npctest.NpcId];
                             else

@@ -114,11 +114,12 @@ namespace OpenNos.GameObject
        public async void NpcMove()
         {
             var rnd = new Random();
-            Task NpcMoveTask = null;
-            foreach (Npc npc in Npcs.Where(s => s.Move.Equals(true)).OrderBy(i => rnd.Next()))
+            Task NpcLifeTask = null;
+            foreach (Npc npc in Npcs.OrderBy(i => rnd.Next()))
             {
-                NpcMoveTask = new Task(() => npc.MoveNpc());
-                NpcMoveTask.Start();
+                NpcLifeTask = new Task(() => npc.NpcLife());
+                NpcLifeTask.Start();
+
                 await Task.Delay(300);
             }
           

@@ -482,6 +482,8 @@ namespace OpenNos.Handler
         [Packet("Char_NEW")]
         public void CreateCharacter(string packet)
         {
+            if (Session.CurrentMap != null)
+                return;
             // TODO: Hold Account Information in Authorized object
             long accountId = Session.Account.AccountId;
             string[] packetsplit = packet.Split(' ');
@@ -779,6 +781,8 @@ namespace OpenNos.Handler
         [Packet("Char_DEL")]
         public void DeleteCharacter(string packet)
         {
+            if (Session.CurrentMap != null)
+                return;
             string[] packetsplit = packet.Split(' ');
             AccountDTO account = DAOFactory.AccountDAO.LoadBySessionId(Session.SessionId);
             if (packetsplit.Length <= 3)
@@ -2795,6 +2799,8 @@ namespace OpenNos.Handler
         [Packet("game_start")]
         public void StartGame(string packet)
         {
+            if (Session.CurrentMap != null)
+                return;
             if (System.Configuration.ConfigurationManager.AppSettings["SceneOnCreate"].ToLower() == "true" & DAOFactory.GeneralLogDAO.LoadByLogType("Connection", Session.Character.CharacterId).Count() == 1) Session.Client.SendPacket("scene 40");
             if (System.Configuration.ConfigurationManager.AppSettings["WorldInformation"].ToLower() == "true")
             {
