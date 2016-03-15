@@ -292,7 +292,7 @@
     <value>Nachricht ist zu groß ({0} bytes). Die maximale Länge beträgt {1} bytes.</value>
   </data>
   <data name="TOTAL_SESSION" xml:space="preserve">
-    <value>Aktuelle Sitzungen: </value>
+    <value>Aktuelle Sitzungen</value>
   </data>
   <data name="TRADE_BLOCKED" xml:space="preserve">
     <value>Dein Gegenüber blockiert Tauschgeschäfte.</value>
