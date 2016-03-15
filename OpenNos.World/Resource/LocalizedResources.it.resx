@@ -138,6 +138,9 @@
   <data name="ASK_TO_DELETE" xml:space="preserve">
     <value>L'item verrà distrutto.</value>
   </data>
+  <data name="BAD_DROP_AMOUNT" xml:space="preserve">
+    <value>Quantita' di drop errato.</value>
+  </data>
   <data name="BAD_EQUIPMENT" xml:space="preserve">
     <value>Il tuo personaggio non ha i requisiti necessari per poter utilizzare questo item.</value>
   </data>
@@ -463,7 +466,7 @@
     <value>L'upgrade è fallito, ma l'item non è scomparso.</value>
   </data>
   <data name="UPGRADE_FIXED" xml:space="preserve">
-    <value>Upgrade fixed - dunno</value>
+    <value>Upgrade fixed</value>
   </data>
   <data name="UPGRADE_SUCCESS" xml:space="preserve">
     <value>L'upgrade è avvenuto con successo</value>

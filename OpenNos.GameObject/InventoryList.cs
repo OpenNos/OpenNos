@@ -352,7 +352,7 @@ namespace OpenNos.GameObject
             int random = 0;
             inv = Session.Character.InventoryList.LoadBySlotAndType(slot, type);
             MapItem DroppedItem = null;
-            if (amount <= inv.InventoryItem.Amount)
+            if (amount > 0 && amount <= inv.InventoryItem.Amount)
             {
                 DroppedItem = new MapItem((short)(rnd.Next(Session.Character.MapX - 2, Session.Character.MapX + 3)), (short)(rnd.Next(Session.Character.MapY - 2, Session.Character.MapY + 3)))
                 {
