@@ -195,6 +195,9 @@
   <data name="INVALID_CHARNAME" xml:space="preserve">
     <value>Invalid characters in nickname</value>
   </data>
+  <data name="ITEM_IS_FIXED" xml:space="preserve">
+    <value>Item upgrade level is locked.</value>
+  </data>
   <data name="ITEM_NOT_DROPPABLE" xml:space="preserve">
     <value>You cant drop that item!</value>
   </data>

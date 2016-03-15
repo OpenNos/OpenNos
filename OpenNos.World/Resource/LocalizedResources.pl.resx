@@ -294,6 +294,9 @@
   <data name="IN_WAITING_FOR" xml:space="preserve">
     <value>Oczekujesz na gracza {0}</value>
   </data>
+  <data name="ITEM_IS_FIXED" xml:space="preserve">
+    <value>Poziom ulepszenia przedmiotu zablokowany.</value>
+  </data>
   <data name="ITEM_LOADED" xml:space="preserve">
     <value>{0} Załadowanych przedmiotów!</value>
   </data>

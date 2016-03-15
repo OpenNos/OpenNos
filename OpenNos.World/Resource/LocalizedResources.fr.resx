@@ -225,6 +225,9 @@
   <data name="INVALID_CHARNAME" xml:space="preserve">
     <value>Invalid characters in nickname</value>
   </data>
+  <data name="ITEM_IS_FIXED" xml:space="preserve">
+    <value>Niveau de mise à niveau d'objet est verrouillé</value>
+  </data>
   <data name="ITEM_NOT_DROPPABLE" xml:space="preserve">
     <value>Vous ne pouvez pas jeter cet objet.</value>
   </data>
