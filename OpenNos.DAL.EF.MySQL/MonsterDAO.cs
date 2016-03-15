@@ -36,11 +36,11 @@ namespace OpenNos.DAL.EF.MySQL
             }
         }
 
-        public MonsterDTO LoadById(short MapId)
+        public MonsterDTO LoadById(short MonsterVnum)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                return Mapper.Map<MonsterDTO>(context.monster.SingleOrDefault(i => i.MonsterVNum.Equals(MapId)));
+                return Mapper.Map<MonsterDTO>(context.monster.SingleOrDefault(i => i.MonsterVNum.Equals(MonsterVnum)));
             }
         }
 

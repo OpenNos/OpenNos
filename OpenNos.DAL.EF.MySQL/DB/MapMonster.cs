@@ -14,7 +14,7 @@ namespace OpenNos.DAL.EF.MySQL.DB
     
     public partial class MapMonster
     {
-        public short MapMonsterId { get; set; }
+        public int MapMonsterId { get; set; }
         public short MonsterVNum { get; set; }
         public short MapId { get; set; }
         public short MapX { get; set; }

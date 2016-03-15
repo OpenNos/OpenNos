@@ -40,7 +40,7 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                return Mapper.Map<MapMonsterDTO>(context.monster.SingleOrDefault(i => i.MonsterVNum.Equals(MonsterId)));
+                return Mapper.Map<MapMonsterDTO>(context.mapmonster.SingleOrDefault(i => i.MapMonsterId.Equals(MonsterId)));
             }
         }
 

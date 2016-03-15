@@ -1327,7 +1327,7 @@
           <Key>
             <PropertyRef Name="MapMonsterId" />
           </Key>
-          <Property Name="MapMonsterId" Type="Int16" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MapMonsterId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <NavigationProperty Name="map" Relationship="opennosModel.MapMapMonster" FromRole="MapMonster" ToRole="Map" />
           <Property Name="MonsterVNum" Type="Int16" Nullable="false" />
           <Property Name="MapId" Type="Int16" Nullable="false" />

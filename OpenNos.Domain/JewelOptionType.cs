@@ -12,19 +12,15 @@
  * GNU General Public License for more details.
  */
 
-namespace OpenNos.Data
+namespace OpenNos.Domain
 {
-    public class MapMonsterDTO
+    public enum JewelOptionType : byte
     {
-        #region Properties
-
-        public short MapId { get; set; }
-        public int MapMonsterId { get; set; }
-        public short MapX { get; set; }
-        public short MapY { get; set; }
-        public short MonsterVNum { get; set; }
-        public bool Move { get; set; }
-
-        #endregion
+        MaximumAugmentationHP = 0,
+        MaximumAugmentationMP = 1,
+        MaximumRegenerationHP = 2,
+        MaximumRegenerationMP = 3,
+        MinimiseUsedMP = 4,
+        MinimiseCriticalHit = 5
     }
 }
