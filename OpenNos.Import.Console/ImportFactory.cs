@@ -491,13 +491,13 @@ namespace OpenNos.Import.Console
         {
             int npcCounter = 0;
             short map = 0;
-            Dictionary<int, byte> movementlist = new Dictionary<int, byte>();
+            Dictionary<int, bool> movementlist = new Dictionary<int, bool>();
             Dictionary<int, short> effectlist = new Dictionary<int, short>();
-            foreach (string[] linesave in packetList.Where(o => o[0].Equals("mv") && (o[1].Equals("2") || o[1].Equals("3"))))
+            foreach (string[] linesave in packetList.Where(o => o[0].Equals("mv") && (o[1].Equals("2") )))
             {
                 if (!(long.Parse(linesave[2]) >= 20000))
                     if (!movementlist.ContainsKey(Convert.ToInt32(linesave[2])))
-                        movementlist[Convert.ToInt32(linesave[2])] = Convert.ToByte(linesave[1]);
+                        movementlist[Convert.ToInt32(linesave[2])] = true;
             }
 
             foreach (string[] linesave in packetList.Where(o => o[0].Equals("eff") && o[1].Equals("2")))
@@ -527,9 +527,9 @@ namespace OpenNos.Import.Console
                             npctest.Effect = effectlist[npctest.MapNpcId];
                         npctest.EffectDelay = 5000;
                     if (movementlist.ContainsKey(npctest.MapNpcId))
-                        npctest.MoveType = movementlist[npctest.MapNpcId];
+                        npctest.Move = movementlist[npctest.MapNpcId];
                         else
-                            npctest.MoveType = 0;
+                            npctest.Move = false;
                         npctest.Position = short.Parse(linesave[6]);
                         npctest.Dialog = short.Parse(linesave[9]);
                         npctest.IsSitting = linesave[13] == "1" ? false : true;

@@ -25,7 +25,7 @@ namespace OpenNos.Data
         public short MapY { get; set; }
         public short Position { get; set; }
         public bool IsSitting { get; set; }
-        public byte MoveType { get; set; }
+        public bool Move { get; set; }
         public short EffectDelay { get; set; }
         public short Effect { get; set; }
         public short Dialog { get; set; }

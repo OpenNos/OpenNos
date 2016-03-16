@@ -80,7 +80,7 @@ namespace OpenNos.GameObject
                     Position = npc.Position,
                     NpcVNum = npc.NpcVNum,
                     IsSitting = npc.IsSitting,
-                    MoveType = npc.MoveType,
+                    Move = npc.Move,
                     Effect = npc.Effect,
                     EffectDelay = npc.EffectDelay,
                     Dialog = npc.Dialog,

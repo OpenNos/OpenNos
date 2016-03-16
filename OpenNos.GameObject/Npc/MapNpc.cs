@@ -95,7 +95,7 @@ namespace OpenNos.GameObject
                 LastEffect = DateTime.Now;
             }
             time = (DateTime.Now - LastMove).TotalSeconds;
-            if (MoveType !=0 && time > 2.5)
+            if (Move && time > 2.5)
             {
                 Random r = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
                 int oldx = this.MapX;
@@ -112,7 +112,7 @@ namespace OpenNos.GameObject
                     this.MapY = MapY;
                     LastMove = DateTime.Now;
 
-                    string movepacket = $"mv {this.MoveType} {this.MapNpcId} {this.MapX} {this.MapY} {npc.Speed}";
+                    string movepacket = $"mv 2 {this.MapNpcId} {this.MapX} {this.MapY} {npc.Speed}";
                     ClientLinkManager.Instance.RequiereBroadcastFromMap(MapId, movepacket);
                 }
             }
