@@ -30,10 +30,6 @@ namespace OpenNos.GameObject
 
         #endregion
 
-        #region Properties
-
-        #endregion
-
         #region Methods
 
         public void Save()

@@ -20,19 +20,18 @@ namespace OpenNos.Data
 
         public short MonsterVNum { get; set; }
         public string Name { get; set; }
-        public string Level { get; set; }
-        public string AttackClass { get; set; }
-        public string AttackUpgrade { get; set; }
+        public byte Level { get; set; }
+        public byte AttackClass { get; set; }
+        public byte AttackUpgrade { get; set; }
         public short DamageMinimum { get; set; }
         public short DamageMaximum { get; set; }
-        public short HitRate { get; set; }
-        public string Concentrate { get; set; }
-        public string CriticalLuck { get; set; }
-        public string CriticalLuckRate { get; set; }
-        public string Element { get; set; }
-        public string ElementRate { get; set; }
-        public string MaxHP { get; set; }
-        public string MaxMP { get; set; }
+        public short Concentrate { get; set; }
+        public short CriticalRate { get; set; }
+        public short CriticalLuckRate { get; set; }
+        public byte Element { get; set; }
+        public short ElementRate { get; set; }
+        public short MaxHP { get; set; }
+        public short MaxMP { get; set; }
         public string CloseDefence { get; set; }
         public string DistanceDefence { get; set; }
         public string MagicDefence { get; set; }
@@ -43,7 +42,7 @@ namespace OpenNos.Data
         public short WaterResistance { get; set; }
         public short LightResistance { get; set; }
         public short DarkResistance { get; set; }
-        public short Speed { get; set; }
+        public byte Speed { get; set; }
 
         #endregion
     }

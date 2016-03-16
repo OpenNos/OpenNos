@@ -22,11 +22,6 @@ namespace OpenNos.GameObject
 {
     public class Shop : ShopDTO, IGameObject
     {
-        public List<ShopItem> ShopItems
-        {
-            get; set;
-        }
-
         #region Instantiation
 
         public Shop(int shopId)
@@ -37,8 +32,17 @@ namespace OpenNos.GameObject
             ShopId = shopId;
             foreach (ShopItemDTO item in DAOFactory.ShopItemDAO.LoadByShopId(ShopId))
             {
-                ShopItems.Add(new ShopItem() { ItemVNum = item.ItemVNum, Rare = item.Rare, ShopItemId = item.ShopItemId, Slot = item.Slot, Upgrade = item.Upgrade, Color = item.Color,Type =item.Type,ShopId=item.ShopId });
+                ShopItems.Add(new ShopItem() { ItemVNum = item.ItemVNum, Rare = item.Rare, ShopItemId = item.ShopItemId, Slot = item.Slot, Upgrade = item.Upgrade, Color = item.Color, Type = item.Type, ShopId = item.ShopId });
             }
+        }
+
+        #endregion
+
+        #region Properties
+
+        public List<ShopItem> ShopItems
+        {
+            get; set;
         }
 
         #endregion

@@ -19,6 +19,8 @@ namespace OpenNos.GameObject
 {
     public class MagicalItemHandler
     {
+        #region Methods
+
         internal void UseItemHandler(ref Inventory inv, ClientSession session, short effect, int effectValue)
         {
             switch (effect)
@@ -27,7 +29,8 @@ namespace OpenNos.GameObject
                     Logger.Log.Warn(Language.Instance.GetMessageFromKey(String.Format("NO_HANDLER_ITEM", this.GetType().ToString())));
                     break;
             }
-
         }
+
+        #endregion
     }
 }

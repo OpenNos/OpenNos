@@ -1,16 +1,14 @@
 ﻿using OpenNos.Core;
 using OpenNos.Domain;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OpenNos.GameObject
 {
     public class NRunHandler
     {
-       public static void NRun(ClientSession Session, byte type, short runner, short data3, short npcid)
+        #region Methods
+
+        public static void NRun(ClientSession Session, byte type, short runner, short data3, short npcid)
         {
             switch (runner)
             {
@@ -28,7 +26,7 @@ namespace OpenNos.GameObject
 
                     if (Session.Character.EquipmentList.isEmpty())
                     {
-                        ClientLinkManager.Instance.ClassChange(Session.Character.CharacterId,Convert.ToByte(type));
+                        ClientLinkManager.Instance.ClassChange(Session.Character.CharacterId, Convert.ToByte(type));
                     }
                     else
                     {
@@ -54,9 +52,11 @@ namespace OpenNos.GameObject
                     break;
 
                 default:
-                    Logger.Log.Warn(String.Format(Language.Instance.GetMessageFromKey("NO_NRUN_HANDLER"),runner));
+                    Logger.Log.Warn(String.Format(Language.Instance.GetMessageFromKey("NO_NRUN_HANDLER"), runner));
                     break;
             }
         }
+
+        #endregion
     }
 }

@@ -12,23 +12,20 @@
  * GNU General Public License for more details.
  */
 
+using AutoMapper;
 using OpenNos.Data;
 
 namespace OpenNos.GameObject
 {
-    public abstract class Item : ItemDTO
+    public class Monster : MonsterDTO
     {
         #region Instantiation
 
-        public Item()
+        public Monster()
         {
+            Mapper.CreateMap<MonsterDTO, Monster>();
+            Mapper.CreateMap<Monster, MonsterDTO>();
         }
-
-        #endregion
-
-        #region Methods
-
-        public abstract void Use(ClientSession Session, ref Inventory Inv);
 
         #endregion
     }

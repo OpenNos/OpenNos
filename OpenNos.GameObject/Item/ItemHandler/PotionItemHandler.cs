@@ -12,13 +12,12 @@
  * GNU General Public License for more details.
  */
 
-
-using System;
-
 namespace OpenNos.GameObject
 {
     public class PotionItemHandler
     {
+        #region Methods
+
         internal void UseItemHandler(ref Inventory inv, ClientSession Session, short effect, int effectValue)
         {
             Item item = ServerManager.GetItem(inv.InventoryItem.ItemVNum);
@@ -44,7 +43,8 @@ namespace OpenNos.GameObject
                     Session.Client.SendPacket(Session.Character.GenerateStat());
                     break;
             }
-
         }
+
+        #endregion
     }
 }

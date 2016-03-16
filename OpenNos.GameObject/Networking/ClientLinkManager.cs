@@ -13,13 +13,13 @@
  */
 
 using OpenNos.Core;
+using OpenNos.DAL;
+using OpenNos.Data;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
-using System;
-using OpenNos.Data;
-using OpenNos.DAL;
 using System.Threading.Tasks;
 
 namespace OpenNos.GameObject
@@ -27,33 +27,15 @@ namespace OpenNos.GameObject
     public class ClientLinkManager
     {
         #region Members
+
         private static ClientLinkManager _instance;
         private readonly Task _autoSave; // if this thread is never aborted by code, it can be declared only in constructor!
-        Task TaskController;
-        public Thread threadShutdown
-        {
-            get; set;
-        }
+        private Task TaskController;
 
         #endregion
 
         #region Instantiation
-        public async void TaskControl()
-        {
-            Task TaskMap;
-            while (true)
-            {
-                foreach (var GroupedSession in Sessions.Where(s => s.Character != null).GroupBy(s => s.Character.MapId))
-                {
-                    foreach (ClientSession Session in GroupedSession)
-                    {
-                        TaskMap = new Task(() => ServerManager.GetMap(Session.Character.MapId).MapTaskManager());
-                        TaskMap.Start();
-                    }
-                }
-                await Task.Delay(1000);
-            }
-        }
+
         private ClientLinkManager()
         {
             Sessions = new List<ClientSession>();
@@ -68,136 +50,13 @@ namespace OpenNos.GameObject
         #region Properties
 
         public static ClientLinkManager Instance => _instance ?? (_instance = new ClientLinkManager());
-
         public List<ClientSession> Sessions { get; set; }
-
         public bool ShutdownActive { get; set; }
+        public Thread threadShutdown { get; set; }
 
         #endregion
 
         #region Methods
-
-        public void MapOut(long id)
-        {
-            foreach (ClientSession Session in Sessions.Where(s => s.Character != null && s.Character.CharacterId == id))
-            {
-                Session.Client.SendPacket(Session.Character.GenerateMapOut());
-                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateOut(), ReceiverType.AllOnMapExceptMe);
-            }
-
-        }
-
-        public void ClassChange(long id, byte Class)
-        {
-            foreach (ClientSession Session in Sessions.Where(s => s.Character != null && s.Character.CharacterId == id))
-            {
-                Session.Character.JobLevel = 1;
-                Session.Client.SendPacket("npinfo 0");
-                Session.Client.SendPacket("p_clear");
-
-                Session.Character.Class = Class;
-                Session.Character.Speed = ServersData.SpeedData[Session.Character.Class];
-                Session.Client.SendPacket(Session.Character.GenerateCond());
-                Session.Character.Hp = (int)Session.Character.HPLoad();
-                Session.Character.Mp = (int)Session.Character.MPLoad();
-                Session.Client.SendPacket(Session.Character.GenerateTit());
-
-                //eq 37 0 1 0 9 3 -1.120.46.86.-1.-1.-1.-1 0 0
-                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEq(), ReceiverType.AllOnMap);
-
-                //equip 0 0 0.46.0.0.0 1.120.0.0.0 5.86.0.0.0
-
-                Session.Client.SendPacket(Session.Character.GenerateLev());
-                Session.Client.SendPacket(Session.Character.GenerateStat());
-                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(8), ReceiverType.AllOnMap);
-                Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("JOB_CHANGED"), 0));
-                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(196), ReceiverType.AllOnMap);
-                Random rand = new Random();
-                int faction = 1 + (int)rand.Next(0, 2);
-                Session.Character.Faction = faction;
-                Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey($"GET_PROTECTION_POWER_{faction}"), 0));
-                Session.Client.SendPacket("scr 0 0 0 0 0 0");
-
-                Session.Client.SendPacket(Session.Character.GenerateFaction());
-                Session.Client.SendPacket(Session.Character.GenerateStatChar());
-
-                Session.Client.SendPacket(Session.Character.GenerateEff(4799 + faction));
-                Session.Client.SendPacket(Session.Character.GenerateLev());
-                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllOnMapExceptMe);
-                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(6), ReceiverType.AllOnMap);
-                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(198), ReceiverType.AllOnMap);
-            }
-        }
-        public void ChangeMap(long id)
-        {
-            foreach (ClientSession Session in Sessions.Where(s => s.Character != null && s.Character.CharacterId == id))
-            {
-                Session.CurrentMap = ServerManager.GetMap(Session.Character.MapId);
-                Session.Client.SendPacket(Session.Character.GenerateCInfo());
-                Session.Client.SendPacket(Session.Character.GenerateCMode());
-                Session.Client.SendPacket(Session.Character.GenerateFaction());
-                Session.Client.SendPacket(Session.Character.GenerateFd());
-                Session.Client.SendPacket(Session.Character.GenerateLev());
-                Session.Client.SendPacket(Session.Character.GenerateStat());
-                // ski
-                Session.Client.SendPacket(Session.Character.GenerateAt());
-                Session.Client.SendPacket(Session.Character.GenerateCMap());
-                if (Session.Character.Size != 10)
-                    Session.Client.SendPacket(Session.Character.GenerateScal());
-                foreach (String portalPacket in Session.Character.GenerateGp())
-                    Session.Client.SendPacket(portalPacket);
-                foreach (String npcPacket in Session.Character.Generatein2())
-                    Session.Client.SendPacket(npcPacket);
-                foreach (String ShopPacket in Session.Character.GenerateNPCShopOnMap())
-                    Session.Client.SendPacket(ShopPacket);
-                foreach (String droppedPacket in Session.Character.GenerateDroppedItem())
-                    Session.Client.SendPacket(droppedPacket);
-
-                Session.Client.SendPacket(Session.Character.GenerateStatChar());
-                Session.Client.SendPacket(Session.Character.GenerateCond());
-                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GeneratePairy(), ReceiverType.AllOnMap);
-                Session.Client.SendPacket($"rsfi 1 1 0 9 0 9"); // Act completion
-                ClientLinkManager.Instance.RequiereBroadcastFromAllMapUsersNotInvisible(Session, "GenerateIn");
-                if (Session.Character.InvisibleGm == false)
-                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllOnMapExceptMe);
-                if (Session.CurrentMap.IsDancing == 2 && Session.Character.IsDancing == 0)
-                    ClientLinkManager.Instance.RequiereBroadcastFromMap(Session.Character.MapId, "dance 2");
-                else if (Session.CurrentMap.IsDancing == 0 && Session.Character.IsDancing == 1)
-                {
-                    Session.Character.IsDancing = 0;
-                    ClientLinkManager.Instance.RequiereBroadcastFromMap(Session.Character.MapId, "dance");
-                }
-                foreach (String ShopPacket in Session.Character.GenerateShopOnMap())
-                    Session.Client.SendPacket(ShopPacket);
-
-                foreach (String ShopPacketChar in Session.Character.GeneratePlayerShopOnMap())
-                    Session.Client.SendPacket(ShopPacketChar);
-
-                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEq(), ReceiverType.AllOnMap);
-                Session.Client.SendPacket(Session.Character.GenerateEquipment());
-                string clinit = "clinit";
-                string flinit = "flinit";
-                string kdlinit = "kdlinit";
-
-                foreach (CharacterDTO character in DAOFactory.CharacterDAO.GetTopComplimented())
-                {
-                    clinit += $" {character.CharacterId}|{character.Level}|{character.Compliment}|{character.Name}";
-                }
-                foreach (CharacterDTO character in DAOFactory.CharacterDAO.GetTopReputation())
-                {
-                    flinit += $" {character.CharacterId}|{character.Level}|{character.Reput}|{character.Name}";
-                }
-                foreach (CharacterDTO character in DAOFactory.CharacterDAO.GetTopPoints())
-                {
-                    kdlinit += $" {character.CharacterId}|{character.Level}|{character.Act4Points}|{character.Name}";
-                }
-
-                Session.Client.SendPacket(clinit);
-                Session.Client.SendPacket(flinit);
-                Session.Client.SendPacket(kdlinit);
-            }
-
-        }
 
         public bool Broadcast(ClientSession client, string message, ReceiverType receiver, string characterName = "", long characterId = -1)
         {
@@ -281,6 +140,118 @@ namespace OpenNos.GameObject
                 shopOwnerSession.Client.SendPacket(shopOwnerSession.Character.GenerateInventoryAdd(-1, 0, itemshop.InvType, itemshop.InvSlot, 0, 0, 0));
         }
 
+        public void ChangeMap(long id)
+        {
+            foreach (ClientSession Session in Sessions.Where(s => s.Character != null && s.Character.CharacterId == id))
+            {
+                Session.CurrentMap = ServerManager.GetMap(Session.Character.MapId);
+                Session.Client.SendPacket(Session.Character.GenerateCInfo());
+                Session.Client.SendPacket(Session.Character.GenerateCMode());
+                Session.Client.SendPacket(Session.Character.GenerateFaction());
+                Session.Client.SendPacket(Session.Character.GenerateFd());
+                Session.Client.SendPacket(Session.Character.GenerateLev());
+                Session.Client.SendPacket(Session.Character.GenerateStat());
+                // ski
+                Session.Client.SendPacket(Session.Character.GenerateAt());
+                Session.Client.SendPacket(Session.Character.GenerateCMap());
+                if (Session.Character.Size != 10)
+                    Session.Client.SendPacket(Session.Character.GenerateScal());
+                foreach (String portalPacket in Session.Character.GenerateGp())
+                    Session.Client.SendPacket(portalPacket);
+                foreach (String npcPacket in Session.Character.Generatein2())
+                    Session.Client.SendPacket(npcPacket);
+                foreach (String ShopPacket in Session.Character.GenerateNPCShopOnMap())
+                    Session.Client.SendPacket(ShopPacket);
+                foreach (String droppedPacket in Session.Character.GenerateDroppedItem())
+                    Session.Client.SendPacket(droppedPacket);
+
+                Session.Client.SendPacket(Session.Character.GenerateStatChar());
+                Session.Client.SendPacket(Session.Character.GenerateCond());
+                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GeneratePairy(), ReceiverType.AllOnMap);
+                Session.Client.SendPacket($"rsfi 1 1 0 9 0 9"); // Act completion
+                ClientLinkManager.Instance.RequiereBroadcastFromAllMapUsersNotInvisible(Session, "GenerateIn");
+                if (Session.Character.InvisibleGm == false)
+                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllOnMapExceptMe);
+                if (Session.CurrentMap.IsDancing == 2 && Session.Character.IsDancing == 0)
+                    ClientLinkManager.Instance.RequiereBroadcastFromMap(Session.Character.MapId, "dance 2");
+                else if (Session.CurrentMap.IsDancing == 0 && Session.Character.IsDancing == 1)
+                {
+                    Session.Character.IsDancing = 0;
+                    ClientLinkManager.Instance.RequiereBroadcastFromMap(Session.Character.MapId, "dance");
+                }
+                foreach (String ShopPacket in Session.Character.GenerateShopOnMap())
+                    Session.Client.SendPacket(ShopPacket);
+
+                foreach (String ShopPacketChar in Session.Character.GeneratePlayerShopOnMap())
+                    Session.Client.SendPacket(ShopPacketChar);
+
+                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEq(), ReceiverType.AllOnMap);
+                Session.Client.SendPacket(Session.Character.GenerateEquipment());
+                string clinit = "clinit";
+                string flinit = "flinit";
+                string kdlinit = "kdlinit";
+
+                foreach (CharacterDTO character in DAOFactory.CharacterDAO.GetTopComplimented())
+                {
+                    clinit += $" {character.CharacterId}|{character.Level}|{character.Compliment}|{character.Name}";
+                }
+                foreach (CharacterDTO character in DAOFactory.CharacterDAO.GetTopReputation())
+                {
+                    flinit += $" {character.CharacterId}|{character.Level}|{character.Reput}|{character.Name}";
+                }
+                foreach (CharacterDTO character in DAOFactory.CharacterDAO.GetTopPoints())
+                {
+                    kdlinit += $" {character.CharacterId}|{character.Level}|{character.Act4Points}|{character.Name}";
+                }
+
+                Session.Client.SendPacket(clinit);
+                Session.Client.SendPacket(flinit);
+                Session.Client.SendPacket(kdlinit);
+            }
+        }
+
+        public void ClassChange(long id, byte Class)
+        {
+            foreach (ClientSession Session in Sessions.Where(s => s.Character != null && s.Character.CharacterId == id))
+            {
+                Session.Character.JobLevel = 1;
+                Session.Client.SendPacket("npinfo 0");
+                Session.Client.SendPacket("p_clear");
+
+                Session.Character.Class = Class;
+                Session.Character.Speed = ServersData.SpeedData[Session.Character.Class];
+                Session.Client.SendPacket(Session.Character.GenerateCond());
+                Session.Character.Hp = (int)Session.Character.HPLoad();
+                Session.Character.Mp = (int)Session.Character.MPLoad();
+                Session.Client.SendPacket(Session.Character.GenerateTit());
+
+                //eq 37 0 1 0 9 3 -1.120.46.86.-1.-1.-1.-1 0 0
+                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEq(), ReceiverType.AllOnMap);
+
+                //equip 0 0 0.46.0.0.0 1.120.0.0.0 5.86.0.0.0
+
+                Session.Client.SendPacket(Session.Character.GenerateLev());
+                Session.Client.SendPacket(Session.Character.GenerateStat());
+                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(8), ReceiverType.AllOnMap);
+                Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("JOB_CHANGED"), 0));
+                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(196), ReceiverType.AllOnMap);
+                Random rand = new Random();
+                int faction = 1 + (int)rand.Next(0, 2);
+                Session.Character.Faction = faction;
+                Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey($"GET_PROTECTION_POWER_{faction}"), 0));
+                Session.Client.SendPacket("scr 0 0 0 0 0 0");
+
+                Session.Client.SendPacket(Session.Character.GenerateFaction());
+                Session.Client.SendPacket(Session.Character.GenerateStatChar());
+
+                Session.Client.SendPacket(Session.Character.GenerateEff(4799 + faction));
+                Session.Client.SendPacket(Session.Character.GenerateLev());
+                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllOnMapExceptMe);
+                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(6), ReceiverType.AllOnMap);
+                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(198), ReceiverType.AllOnMap);
+            }
+        }
+
         public void ExchangeValidate(ClientSession c1Session, long charId)
         {
             ClientSession c2Session = Sessions.FirstOrDefault(s => s.Character.CharacterId.Equals(charId));
@@ -308,6 +279,23 @@ namespace OpenNos.GameObject
             }
         }
 
+        public int GetNumberOfAllASession()
+        {
+            return Sessions.Count();
+        }
+
+        public T GetProperty<T>(string charName, string property)
+        {
+            ClientSession session = Sessions.FirstOrDefault(s => s.Character != null && s.Character.Name.Equals(charName));
+            return (T)session?.Character.GetType().GetProperties().Single(pi => pi.Name == property).GetValue(session.Character, null);
+        }
+
+        public T GetProperty<T>(long charId, string property)
+        {
+            ClientSession session = Sessions.FirstOrDefault(s => s.Character != null && s.Character.CharacterId.Equals(charId));
+            return (T)session?.Character.GetType().GetProperties().Single(pi => pi.Name == property).GetValue(session.Character, null);
+        }
+
         public bool Kick(string characterName)
         {
             ClientSession session = Sessions.FirstOrDefault(s => s.Character != null && s.Character.Name.Equals(characterName));
@@ -315,6 +303,15 @@ namespace OpenNos.GameObject
 
             session.Client.Disconnect();
             return true;
+        }
+
+        public void MapOut(long id)
+        {
+            foreach (ClientSession Session in Sessions.Where(s => s.Character != null && s.Character.CharacterId == id))
+            {
+                Session.Client.SendPacket(Session.Character.GenerateMapOut());
+                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateOut(), ReceiverType.AllOnMapExceptMe);
+            }
         }
 
         public void RequiereBroadcastFromAllMapUsers(ClientSession client, string methodName)
@@ -366,16 +363,10 @@ namespace OpenNos.GameObject
             client.Client.SendPacket(result);
         }
 
-        public T GetProperty<T>(string charName, string property)
+        public void SaveAll()
         {
-            ClientSession session = Sessions.FirstOrDefault(s => s.Character != null && s.Character.Name.Equals(charName));
-            return (T)session?.Character.GetType().GetProperties().Single(pi => pi.Name == property).GetValue(session.Character, null);
-        }
-
-        public T GetProperty<T>(long charId, string property)
-        {
-            ClientSession session = Sessions.FirstOrDefault(s => s.Character != null && s.Character.CharacterId.Equals(charId));
-            return (T)session?.Character.GetType().GetProperties().Single(pi => pi.Name == property).GetValue(session.Character, null);
+            foreach (ClientSession session in Sessions)
+                session.Character?.Save();
         }
 
         public void SetProperty(long charId, string property, object value)
@@ -385,8 +376,8 @@ namespace OpenNos.GameObject
 
             PropertyInfo propertyinfo = session.Character.GetType().GetProperties().Single(pi => pi.Name == property);
             propertyinfo.SetValue(session.Character, value, null);
-
         }
+
         public void SetProperty(string charName, string property, object value)
         {
             ClientSession session = Sessions.FirstOrDefault(s => s.Character != null && s.Character.Name.Equals(charName));
@@ -394,18 +385,23 @@ namespace OpenNos.GameObject
 
             PropertyInfo propertyinfo = session.Character.GetType().GetProperties().Single(pi => pi.Name == property);
             propertyinfo.SetValue(session.Character, value, null);
-
         }
 
-        public int GetNumberOfAllASession()
+        public async void TaskControl()
         {
-            return Sessions.Count();
-        }
-
-        public void SaveAll()
-        {
-            foreach (ClientSession session in Sessions)
-                session.Character?.Save();
+            Task TaskMap;
+            while (true)
+            {
+                foreach (var GroupedSession in Sessions.Where(s => s.Character != null).GroupBy(s => s.Character.MapId))
+                {
+                    foreach (ClientSession Session in GroupedSession)
+                    {
+                        TaskMap = new Task(() => ServerManager.GetMap(Session.Character.MapId).MapTaskManager());
+                        TaskMap.Start();
+                    }
+                }
+                await Task.Delay(1000);
+            }
         }
 
         private async void SaveAllProcess()

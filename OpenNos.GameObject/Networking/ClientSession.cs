@@ -38,7 +38,6 @@ namespace OpenNos.GameObject
 
         //Packetwait Packets
         private int? _waitForPacketsAmount;
-
         private Thread healthThread;
 
         #endregion
@@ -348,7 +347,6 @@ namespace OpenNos.GameObject
                 catch (Exception ex)
                 {
                     Logger.Log.Error(ex.InnerException);
-
                 }
                 return true;
             }

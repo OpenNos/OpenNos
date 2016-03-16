@@ -69,82 +69,104 @@ namespace OpenNos.GameObject
                     case (byte)Domain.ItemType.Ammo:
                         ItemGO = Mapper.DynamicMap<NoFunctionItem>(itemDTO);
                         break;
+
                     case (byte)Domain.ItemType.Armor:
                         ItemGO = Mapper.DynamicMap<WearableItem>(itemDTO);
                         break;
+
                     case (byte)Domain.ItemType.Box:
                         ItemGO = Mapper.DynamicMap<BoxItem>(itemDTO);
                         break;
+
                     case (byte)Domain.ItemType.Event:
                         ItemGO = Mapper.DynamicMap<MagicalItem>(itemDTO);
                         break;
+
                     case (byte)Domain.ItemType.Fashion:
                         ItemGO = Mapper.DynamicMap<WearableItem>(itemDTO);
                         break;
+
                     case (byte)Domain.ItemType.Food:
                         ItemGO = Mapper.DynamicMap<FoodItem>(itemDTO);
                         break;
+
                     case (byte)Domain.ItemType.Jewelery:
                         ItemGO = Mapper.DynamicMap<WearableItem>(itemDTO);
                         break;
+
                     case (byte)Domain.ItemType.Magical:
                         ItemGO = Mapper.DynamicMap<MagicalItem>(itemDTO);
                         break;
+
                     case (byte)Domain.ItemType.Main:
                         ItemGO = Mapper.DynamicMap<NoFunctionItem>(itemDTO);
                         break;
+
                     case (byte)Domain.ItemType.Map:
                         ItemGO = Mapper.DynamicMap<NoFunctionItem>(itemDTO);
                         break;
+
                     case (byte)Domain.ItemType.Part:
                         ItemGO = Mapper.DynamicMap<NoFunctionItem>(itemDTO);
                         break;
+
                     case (byte)Domain.ItemType.Potion:
                         ItemGO = Mapper.DynamicMap<PotionItem>(itemDTO);
                         break;
+
                     case (byte)Domain.ItemType.Production:
                         ItemGO = Mapper.DynamicMap<ProduceItem>(itemDTO);
                         break;
+
                     case (byte)Domain.ItemType.Quest1:
                         ItemGO = Mapper.DynamicMap<NoFunctionItem>(itemDTO);
                         break;
+
                     case (byte)Domain.ItemType.Quest2:
                         ItemGO = Mapper.DynamicMap<NoFunctionItem>(itemDTO);
                         break;
+
                     case (byte)Domain.ItemType.Sell:
                         ItemGO = Mapper.DynamicMap<NoFunctionItem>(itemDTO);
                         break;
+
                     case (byte)Domain.ItemType.Shell:
                         ItemGO = Mapper.DynamicMap<MagicalItem>(itemDTO);
                         break;
+
                     case (byte)Domain.ItemType.Snack:
                         ItemGO = Mapper.DynamicMap<SnackItem>(itemDTO);
                         break;
+
                     case (byte)Domain.ItemType.Special:
                         ItemGO = Mapper.DynamicMap<SpecialItem>(itemDTO);
                         break;
+
                     case (byte)Domain.ItemType.Specialist:
                         ItemGO = Mapper.DynamicMap<WearableItem>(itemDTO);
                         break;
+
                     case (byte)Domain.ItemType.Teacher:
                         ItemGO = Mapper.DynamicMap<TeacherItem>(itemDTO);
                         break;
+
                     case (byte)Domain.ItemType.Upgrade:
                         ItemGO = Mapper.DynamicMap<UpgradeItem>(itemDTO);
                         break;
+
                     case (byte)Domain.ItemType.Weapon:
                         ItemGO = Mapper.DynamicMap<WearableItem>(itemDTO);
                         break;
+
                     default:
                         ItemGO = Mapper.DynamicMap<NoFunctionItem>(itemDTO);
                         break;
-
                 }
                 _items.Add(ItemGO);
             }
 
             Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("ITEM_LOADED"), _items.Count()));
-            
+
             try
             {
                 int i = 0;

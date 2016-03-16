@@ -44,7 +44,7 @@
 -- -----------------------------------------------------------
 -- Entity Designer DDL Script for MySQL Server 4.1 and higher
 -- -----------------------------------------------------------
--- Date Created: 03/16/2016 00:22:04
+-- Date Created: 03/16/2016 06:17:13
 
 -- Generated from EDMX file: C:\Users\Dominik\Source\Repos\OpenNos\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
 -- Target version: 3.0.0.0
@@ -91,9 +91,9 @@
 
 --    ALTER TABLE `teleporter` DROP CONSTRAINT `FK_TeleporterMap`;
 
---    ALTER TABLE `MapMonsterSet` DROP CONSTRAINT `FK_MapMapMonster`;
+--    ALTER TABLE `mapmonster` DROP CONSTRAINT `FK_MapMapMonster`;
 
---    ALTER TABLE `MapMonsterSet` DROP CONSTRAINT `FK_MonsterMapMonster`;
+--    ALTER TABLE `mapmonster` DROP CONSTRAINT `FK_MonsterMapMonster`;
 
 
 -- --------------------------------------------------
@@ -127,9 +127,9 @@ SET foreign_key_checks = 0;
 
     DROP TABLE IF EXISTS `teleporter`;
 
-    DROP TABLE IF EXISTS `MonsterSet`;
+    DROP TABLE IF EXISTS `monster`;
 
-    DROP TABLE IF EXISTS `MapMonsterSet`;
+    DROP TABLE IF EXISTS `mapmonster`;
 
 SET foreign_key_checks = 1;
 
@@ -327,25 +327,24 @@ CREATE TABLE `npc`(
 	`NpcId` smallint NOT NULL, 
 	`Name` longtext NOT NULL, 
 	`Vnum` smallint NOT NULL, 
-	`Effect` smallint NOT NULL, 
-	`EffectDelay` smallint NOT NULL, 
-	`Speed` smallint NOT NULL, 
-	`Move` bool NOT NULL, 
-	`Dialog` smallint NOT NULL, 
 	`MapId` smallint NOT NULL, 
 	`MapX` smallint NOT NULL, 
 	`MapY` smallint NOT NULL, 
+	`Speed` smallint NOT NULL, 
+	`Move` bool NOT NULL, 
+	`Dialog` smallint NOT NULL, 
 	`Position` smallint NOT NULL, 
+	`IsSitting` bool NOT NULL, 
 	`Level` TINYINT UNSIGNED NOT NULL, 
-	`Element` TINYINT UNSIGNED NOT NULL, 
 	`AttackClass` TINYINT UNSIGNED NOT NULL, 
-	`ElementRate` smallint NOT NULL, 
 	`AttackUpgrade` TINYINT UNSIGNED NOT NULL, 
 	`DamageMinimum` smallint NOT NULL, 
 	`DamageMaximum` smallint NOT NULL, 
 	`Concentrate` smallint NOT NULL, 
-	`CriticalLuckRate` smallint NOT NULL, 
+	`Element` TINYINT UNSIGNED NOT NULL, 
+	`ElementRate` smallint NOT NULL, 
 	`CriticalRate` smallint NOT NULL, 
+	`CriticalLuckRate` smallint NOT NULL, 
 	`CloseDefence` smallint NOT NULL, 
 	`DefenceDodge` smallint NOT NULL, 
 	`MagicDefence` smallint NOT NULL, 
@@ -356,7 +355,8 @@ CREATE TABLE `npc`(
 	`WaterResistance` smallint NOT NULL, 
 	`LightResistance` smallint NOT NULL, 
 	`DarkResistance` smallint NOT NULL, 
-	`IsSitting` bool NOT NULL);
+	`Effect` smallint NOT NULL, 
+	`EffectDelay` smallint NOT NULL);
 
 ALTER TABLE `npc` ADD PRIMARY KEY (NpcId);
 
@@ -495,19 +495,18 @@ ALTER TABLE `teleporter` ADD PRIMARY KEY (TeleporterId);
 CREATE TABLE `monster`(
 	`MonsterVNum` smallint NOT NULL, 
 	`Name` longtext NOT NULL, 
-	`Level` longtext NOT NULL, 
-	`AttackClass` longtext NOT NULL, 
-	`AttackUpgrade` longtext NOT NULL, 
+	`Level` TINYINT UNSIGNED NOT NULL, 
+	`AttackClass` TINYINT UNSIGNED NOT NULL, 
+	`AttackUpgrade` TINYINT UNSIGNED NOT NULL, 
 	`DamageMinimum` smallint NOT NULL, 
 	`DamageMaximum` smallint NOT NULL, 
-	`HitRate` smallint NOT NULL, 
-	`Concentrate` longtext NOT NULL, 
-	`CriticalLuck` longtext NOT NULL, 
-	`CriticalLuckRate` longtext NOT NULL, 
-	`Element` longtext NOT NULL, 
-	`ElementRate` longtext NOT NULL, 
-	`MaxHP` longtext NOT NULL, 
-	`MaxMP` longtext NOT NULL, 
+	`Concentrate` smallint NOT NULL, 
+	`CriticalRate` smallint NOT NULL, 
+	`CriticalLuckRate` smallint NOT NULL, 
+	`Element` TINYINT UNSIGNED NOT NULL, 
+	`ElementRate` smallint NOT NULL, 
+	`MaxHP` smallint NOT NULL, 
+	`MaxMP` smallint NOT NULL, 
 	`CloseDefence` longtext NOT NULL, 
 	`DistanceDefence` longtext NOT NULL, 
 	`MagicDefence` longtext NOT NULL, 
@@ -518,7 +517,7 @@ CREATE TABLE `monster`(
 	`WaterResistance` smallint NOT NULL, 
 	`LightResistance` smallint NOT NULL, 
 	`DarkResistance` smallint NOT NULL, 
-	`Speed` smallint NOT NULL);
+	`Speed` TINYINT UNSIGNED NOT NULL);
 
 ALTER TABLE `monster` ADD PRIMARY KEY (MonsterVNum);
 
@@ -527,7 +526,7 @@ ALTER TABLE `monster` ADD PRIMARY KEY (MonsterVNum);
 
 
 CREATE TABLE `mapmonster`(
-	`MapMonsterId` smallint NOT NULL AUTO_INCREMENT UNIQUE, 
+	`MapMonsterId` int NOT NULL AUTO_INCREMENT UNIQUE, 
 	`MonsterVNum` smallint NOT NULL, 
 	`MapId` smallint NOT NULL, 
 	`MapX` smallint NOT NULL, 

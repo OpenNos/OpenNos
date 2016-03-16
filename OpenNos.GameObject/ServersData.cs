@@ -235,169 +235,112 @@ namespace OpenNos.GameObject
 
         #region Methods
 
-        public static int SpPoint(short spLevel, short upgrade)
+        public static int RarityPoint(short rarity, short lvl)
         {
-            int point = (spLevel - 20) * 3;
-            if (spLevel <= 20)
-                point = 0;
-            switch (upgrade)
+            int p;
+            switch (rarity)
             {
+                default:
+                    p = 0;
+
+                    break;
+
+                case -2:
+                    p = -2;
+                    break;
+
+                case -1:
+                    p = -1;
+                    break;
+
+                case 0:
+                    p = 0;
+                    break;
+
                 case 1:
-                    point += 5;
+                    p = 1;
                     break;
 
                 case 2:
-                    point += 10;
+                    p = 2;
                     break;
 
                 case 3:
-                    point += 15;
+                    p = 3;
                     break;
 
                 case 4:
-                    point += 20;
+                    p = 4;
                     break;
 
                 case 5:
-                    point += 28;
+                    p = 5;
                     break;
 
                 case 6:
-                    point += 36;
+                    p = 7;
                     break;
 
                 case 7:
-                    point += 46;
-                    break;
-
-                case 8:
-                    point += 56;
-                    break;
-
-                case 9:
-                    point += 68;
-                    break;
-
-                case 10:
-                    point += 80;
-                    break;
-
-                case 11:
-                    point += 95;
-                    break;
-
-                case 12:
-                    point += 110;
-                    break;
-
-                case 13:
-                    point += 128;
-                    break;
-
-                case 14:
-                    point += 148;
-                    break;
-
-                case 15:
-                    point += 173;
+                    p = 10;
                     break;
             }
-
-            return point;
+            return p * (1 + lvl / 5);
         }
 
-        internal static int DarkResistance(byte @class, byte level)
+        public static void SetRarityPoint(ref Inventory inv)
         {
-            return 0;
-        }
-        internal static int Element(byte @class, byte level)
-        {
-            return 0;
-        }
-
-        internal static int Defence(byte @class, byte level)
-        {
-            return hitDef[@class, level];
-        }
-
-        internal static int DefenceRate(byte @class, byte level)
-        {
-            return hitDodge[@class, level];
-        }
-
-        internal static int DistanceDefence(byte @class, byte level)
-        {
-            return DistDef[@class, level];
-        }
-
-        internal static int DistanceDefenceRate(byte @class, byte level)
-        {
-            return DistDodge[@class, level];
-        }
-
-        internal static int DistanceRate(byte @class, byte level)
-        {
-            return distRate[@class, level];
-        }
-
-        internal static int DistCritical(byte @class, byte level)
-        {
-            return criticalDist[@class, level];
-        }
-
-        internal static int DistCriticalRate(byte @class, byte level)
-        {
-            return criticalDistRate[@class, level];
-        }
-
-        internal static int FireResistance(byte @class, byte level)
-        {
-            return 0;
-        }
-
-        internal static int HitCritical(byte @class, byte level)
-        {
-            return criticalHit[@class, level];
-        }
-
-        internal static int HitCriticalRate(byte @class, byte level)
-        {
-            return criticalHitRate[@class, level];
-        }
-
-        internal static int HitRate(byte @class, byte level)
-        {
-            return hitRate[@class, level];
-        }
-
-        internal static int LightResistance(byte @class, byte level)
-        {
-            return 0;
-        }
-
-        internal static int MagicalDefence(byte @class, byte level)
-        {
-            return magicalDef[@class, level];
-        }
-
-        internal static int MaxDistance(byte @class, byte level)
-        {
-            return maxDist[@class, level];
-        }
-
-        internal static int MaxHit(byte @class, byte level)
-        {
-            return maxHit[@class, level];
-        }
-
-        internal static int MinDistance(byte @class, byte level)
-        {
-            return minDist[@class, level];
-        }
-
-        internal static int MinHit(byte @class, byte level)
-        {
-            return minHit[@class, level];
+            if (inv == null)
+                return;
+            Item iteminfo = ServerManager.GetItem(inv.InventoryItem.ItemVNum);
+            if (iteminfo.EquipmentSlot == (byte)EquipmentType.MainWeapon || iteminfo.EquipmentSlot == (byte)EquipmentType.SecondaryWeapon)
+            {
+                int point = ServersData.RarityPoint(inv.InventoryItem.Rare, iteminfo.LevelMinimum);
+                Random rnd = new Random();
+                inv.InventoryItem.Concentrate = 0;
+                inv.InventoryItem.HitRate = 0;
+                inv.InventoryItem.DamageMinimum = 0;
+                inv.InventoryItem.DamageMaximum = 0;
+                for (int i = 0; i < point; i++)
+                {
+                    int rndn = rnd.Next(0, 3);
+                    if (rndn == 0)
+                    {
+                        inv.InventoryItem.Concentrate++;
+                        inv.InventoryItem.HitRate++;
+                    }
+                    else
+                    {
+                        inv.InventoryItem.DamageMinimum++;
+                        inv.InventoryItem.DamageMaximum++;
+                    }
+                }
+            }
+            else if (iteminfo.EquipmentSlot == (byte)EquipmentType.Armor)
+            {
+                int point = ServersData.RarityPoint(inv.InventoryItem.Rare, iteminfo.LevelMinimum);
+                Random rnd = new Random();
+                inv.InventoryItem.DefenceDodge = 0;
+                inv.InventoryItem.DistanceDefenceDodge = 0;
+                inv.InventoryItem.DistanceDefence = 0;
+                inv.InventoryItem.MagicDefence = 0;
+                inv.InventoryItem.CloseDefence = 0;
+                for (int i = 0; i < point; i++)
+                {
+                    int rndn = rnd.Next(0, 3);
+                    if (rndn == 0)
+                    {
+                        inv.InventoryItem.DefenceDodge++;
+                        inv.InventoryItem.DistanceDefenceDodge++;
+                    }
+                    else
+                    {
+                        inv.InventoryItem.DistanceDefence++;
+                        inv.InventoryItem.MagicDefence++;
+                        inv.InventoryItem.CloseDefence++;
+                    }
+                }
+            }
         }
 
         public static int SlPoint(short spPoint, short mode)
@@ -486,6 +429,211 @@ namespace OpenNos.GameObject
                     break;
             }
             return point;
+        }
+
+        public static int SpPoint(short spLevel, short upgrade)
+        {
+            int point = (spLevel - 20) * 3;
+            if (spLevel <= 20)
+                point = 0;
+            switch (upgrade)
+            {
+                case 1:
+                    point += 5;
+                    break;
+
+                case 2:
+                    point += 10;
+                    break;
+
+                case 3:
+                    point += 15;
+                    break;
+
+                case 4:
+                    point += 20;
+                    break;
+
+                case 5:
+                    point += 28;
+                    break;
+
+                case 6:
+                    point += 36;
+                    break;
+
+                case 7:
+                    point += 46;
+                    break;
+
+                case 8:
+                    point += 56;
+                    break;
+
+                case 9:
+                    point += 68;
+                    break;
+
+                case 10:
+                    point += 80;
+                    break;
+
+                case 11:
+                    point += 95;
+                    break;
+
+                case 12:
+                    point += 110;
+                    break;
+
+                case 13:
+                    point += 128;
+                    break;
+
+                case 14:
+                    point += 148;
+                    break;
+
+                case 15:
+                    point += 173;
+                    break;
+            }
+
+            return point;
+        }
+
+        internal static int DarkResistance(byte @class, byte level)
+        {
+            return 0;
+        }
+
+        internal static int Defence(byte @class, byte level)
+        {
+            return hitDef[@class, level];
+        }
+
+        internal static int DefenceRate(byte @class, byte level)
+        {
+            return hitDodge[@class, level];
+        }
+
+        internal static int DistanceDefence(byte @class, byte level)
+        {
+            return DistDef[@class, level];
+        }
+
+        internal static int DistanceDefenceRate(byte @class, byte level)
+        {
+            return DistDodge[@class, level];
+        }
+
+        internal static int DistanceRate(byte @class, byte level)
+        {
+            return distRate[@class, level];
+        }
+
+        internal static int DistCritical(byte @class, byte level)
+        {
+            return criticalDist[@class, level];
+        }
+
+        internal static int DistCriticalRate(byte @class, byte level)
+        {
+            return criticalDistRate[@class, level];
+        }
+
+        internal static int Element(byte @class, byte level)
+        {
+            return 0;
+        }
+
+        internal static int FireResistance(byte @class, byte level)
+        {
+            return 0;
+        }
+
+        internal static int HitCritical(byte @class, byte level)
+        {
+            return criticalHit[@class, level];
+        }
+
+        internal static int HitCriticalRate(byte @class, byte level)
+        {
+            return criticalHitRate[@class, level];
+        }
+
+        internal static int HitRate(byte @class, byte level)
+        {
+            return hitRate[@class, level];
+        }
+
+        internal static int LightResistance(byte @class, byte level)
+        {
+            return 0;
+        }
+
+        internal static int MagicalDefence(byte @class, byte level)
+        {
+            return magicalDef[@class, level];
+        }
+
+        internal static int MaxDistance(byte @class, byte level)
+        {
+            return maxDist[@class, level];
+        }
+
+        internal static int MaxHit(byte @class, byte level)
+        {
+            return maxHit[@class, level];
+        }
+
+        internal static int MinDistance(byte @class, byte level)
+        {
+            return minDist[@class, level];
+        }
+
+        internal static int MinHit(byte @class, byte level)
+        {
+            return minHit[@class, level];
+        }
+
+        internal static double UpgradeBonus(byte upgrade)
+        {
+            switch (upgrade)
+            {
+                case 1:
+                    return 1.10;
+
+                case 2:
+                    return 1.15;
+
+                case 3:
+                    return 1.22;
+
+                case 4:
+                    return 1.32;
+
+                case 5:
+                    return 1.43;
+
+                case 6:
+                    return 1.54;
+
+                case 7:
+                    return 1.65;
+
+                case 8:
+                    return 1.90;
+
+                case 9:
+                    return 2.20;
+
+                case 10:
+                    return 3;
+
+                default:
+                    return 1;
+            }
         }
 
         internal static int WaterResistance(byte @class, byte level)
@@ -621,7 +769,6 @@ namespace OpenNos.GameObject
             for (int i = 0; i < MP.GetLength(1) - 1; i++)
             {
                 MP[(int)ClassType.Archer, i] = MP[(int)ClassType.Adventurer, i + 1];
-
             }
 
             //MAGICIAN MP
@@ -807,135 +954,6 @@ namespace OpenNos.GameObject
                 }
 
                 //Console.WriteLine("lvl " + (i) + ":" + u[i - 1]);
-            }
-        }
-        public static void SetRarityPoint(ref Inventory inv)
-        {
-            if (inv == null)
-                return;
-            Item iteminfo = ServerManager.GetItem(inv.InventoryItem.ItemVNum);
-            if (iteminfo.EquipmentSlot == (byte)EquipmentType.MainWeapon || iteminfo.EquipmentSlot == (byte)EquipmentType.SecondaryWeapon)
-            {
-                int point = ServersData.RarityPoint(inv.InventoryItem.Rare, iteminfo.LevelMinimum);
-                Random rnd = new Random();
-                inv.InventoryItem.Concentrate = 0;
-                inv.InventoryItem.HitRate = 0;
-                inv.InventoryItem.DamageMinimum = 0;
-                inv.InventoryItem.DamageMaximum = 0;
-                for (int i = 0; i < point; i++)
-                {
-                    int rndn = rnd.Next(0, 3);
-                    if (rndn == 0)
-                    {
-                        inv.InventoryItem.Concentrate++;
-                        inv.InventoryItem.HitRate++;
-                    }
-                    else
-                    {
-                        inv.InventoryItem.DamageMinimum++;
-                        inv.InventoryItem.DamageMaximum++;
-                    }
-                }
-
-            }
-            else if (iteminfo.EquipmentSlot == (byte)EquipmentType.Armor)
-            {
-                int point = ServersData.RarityPoint(inv.InventoryItem.Rare, iteminfo.LevelMinimum);
-                Random rnd = new Random();
-                inv.InventoryItem.DefenceDodge = 0;
-                inv.InventoryItem.DistanceDefenceDodge = 0;
-                inv.InventoryItem.DistanceDefence = 0;
-                inv.InventoryItem.MagicDefence = 0;
-                inv.InventoryItem.CloseDefence = 0;
-                for (int i = 0; i < point; i++)
-                {
-                    int rndn = rnd.Next(0, 3);
-                    if (rndn == 0)
-                    {
-                        inv.InventoryItem.DefenceDodge++;
-                        inv.InventoryItem.DistanceDefenceDodge++;
-                    }
-                    else
-                    {
-                        inv.InventoryItem.DistanceDefence++;
-                        inv.InventoryItem.MagicDefence++;
-                        inv.InventoryItem.CloseDefence++;
-                    }
-                }
-            }
-        }
-
-        public static int RarityPoint(short rarity,short lvl)
-        {
-            int p;
-            switch(rarity)
-            {
-                default:
-                     p =0;
-                    
-                    break;
-                case -2:
-                     p = -2;
-                    break;
-                case -1:
-                     p = -1;
-                    break;
-                case 0:
-                     p = 0;
-                    break;
-                case 1:
-                     p = 1;
-                    break;
-                case 2:
-                     p = 2;
-                    break;
-                case 3:
-                     p = 3;
-                    break;
-                case 4:
-                     p = 4;
-                    break;
-                case 5:
-                     p = 5;
-                    break;
-                case 6:
-                     p = 7;
-                    break;
-                case 7:
-                     p = 10;
-                    break;
-
-            }
-            return p * (1 + lvl / 5);
-        }
-
-        internal static double UpgradeBonus(byte upgrade)
-        {
-            switch (upgrade)
-            {
-               
-                case 1:
-                    return 1.10;
-                case 2:
-                    return 1.15;
-                case 3:
-                    return 1.22;
-                case 4:
-                    return 1.32;
-                case 5:
-                    return 1.43;
-                case 6:
-                    return 1.54;
-                case 7:
-                    return 1.65;
-                case 8:
-                    return 1.90;
-                case 9:
-                    return 2.20;
-                case 10:
-                    return 3;
-                default:
-                    return 1;
             }
         }
 

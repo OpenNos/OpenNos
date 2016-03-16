@@ -22,6 +22,8 @@ namespace OpenNos.GameObject
 {
     public class WearableItemHandler
     {
+        #region Methods
+
         internal void UseItemHandler(ref Inventory inventory, ClientSession Session, short effect, int effectValue)
         {
             switch (effect)
@@ -140,7 +142,8 @@ namespace OpenNos.GameObject
 
                     break;
             }
-
         }
+
+        #endregion
     }
 }

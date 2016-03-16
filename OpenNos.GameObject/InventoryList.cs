@@ -12,7 +12,6 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Domain;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,6 +36,16 @@ namespace OpenNos.GameObject
         #endregion
 
         #region Methods
+
+        public int CountItem(int v)
+        {
+            int count = 0;
+            foreach (Inventory inv in Inventory.Where(s => s.InventoryItem.ItemVNum == v))
+            {
+                count += inv.InventoryItem.Amount;
+            }
+            return count;
+        }
 
         public Inventory CreateItem(InventoryItem newItem, Character character)
         {
@@ -392,6 +401,24 @@ namespace OpenNos.GameObject
             return DroppedItem;
         }
 
+        public void RemoveItemAmount(int v, int amount)
+        {
+            for (int i = 0; i < Inventory.Where(s => s.InventoryItem.ItemVNum == v).OrderBy(s => s.Slot).Count(); i++)
+            {
+                Inventory inv = Inventory.Where(s => s.InventoryItem.ItemVNum == v).OrderBy(s => s.Slot).ElementAt(i);
+                if ((int)inv.InventoryItem.Amount > amount)
+                {
+                    inv.InventoryItem.Amount -= (byte)amount;
+                    amount = 0;
+                }
+                else
+                {
+                    amount -= inv.InventoryItem.Amount;
+                    DeleteFromSlotAndType(inv.Slot, inv.Type);
+                }
+            }
+        }
+
         internal Inventory AmountMinusFromSlotAndType(byte amount, short invSlot, byte invType)
         {
             Inventory inv = Inventory.SingleOrDefault(i => i.Slot.Equals(invSlot) && i.Type.Equals(invType));
@@ -426,34 +453,6 @@ namespace OpenNos.GameObject
             }
 
             return inventory;
-        }
-
-        public int CountItem(int v)
-        {
-            int count = 0;
-            foreach (Inventory inv in Inventory.Where(s => s.InventoryItem.ItemVNum == v))
-            {
-                count += inv.InventoryItem.Amount;
-            }
-            return count;
-        }
-
-        public void RemoveItemAmount(int v, int amount)
-        {
-            for (int i = 0; i < Inventory.Where(s => s.InventoryItem.ItemVNum == v).OrderBy(s=>s.Slot).Count(); i++)
-            {
-                Inventory inv = Inventory.Where(s => s.InventoryItem.ItemVNum == v).OrderBy(s => s.Slot).ElementAt(i);
-                if ((int)inv.InventoryItem.Amount > amount)
-                {
-                    inv.InventoryItem.Amount -= (byte)amount;
-                    amount = 0;
-                }
-                else
-                {
-                    amount -= inv.InventoryItem.Amount;
-                    DeleteFromSlotAndType(inv.Slot, inv.Type);
-                }
-            }
         }
 
         #endregion

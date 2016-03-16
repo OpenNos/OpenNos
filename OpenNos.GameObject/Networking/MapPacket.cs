@@ -47,9 +47,7 @@ namespace OpenNos.GameObject
         #region Properties
 
         public String Content { get; set; }
-
         public ReceiverType Receiver { get; set; }
-
         public ClientSession Session { get; set; }
 
         #endregion

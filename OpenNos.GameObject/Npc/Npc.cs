@@ -39,8 +39,8 @@ namespace OpenNos.GameObject
             Mapper.CreateMap<NpcDTO, Npc>();
             Mapper.CreateMap<Npc, NpcDTO>();
             NpcId = npcId;
-            LastEffect=LastMove = DateTime.Now;
-            
+            LastEffect = LastMove = DateTime.Now;
+
             IEnumerable<TeleporterDTO> Teleporters = DAOFactory.TeleporterDAO.LoadFromNpc(NpcId);
             ShopDTO shop = DAOFactory.ShopDAO.LoadByNpc(NpcId);
             if (shop != null)
@@ -81,19 +81,19 @@ namespace OpenNos.GameObject
         {
             double time = (DateTime.Now - LastEffect).TotalMilliseconds;
             if (Effect > 0 && time > EffectDelay)
-            {             
+            {
                 ClientLinkManager.Instance.RequiereBroadcastFromMap(MapId, GenerateEff());
                 LastEffect = DateTime.Now;
             }
-             time = (DateTime.Now - LastMove).TotalSeconds;
+            time = (DateTime.Now - LastMove).TotalSeconds;
             if (this.Move && time > 2.5)
             {
                 Random r = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
                 int oldx = this.MapX;
                 int oldy = this.MapY;
 
-                //  test.x += (((int)(r.Next(0, 6000)/1000)%2) == 0 )?(-((int)(r.Next(0, 10000)/1000)/2)):((int)(r.Next(0, 10000)/1000)/2);
-                //test.y += (((int)(r.Next(0, 6000) / 1000) % 2) == 0) ? (-((int)(r.Next(0, 10000) / 1000) / 2)) : ((int)(r.Next(0, 10000) / 1000) / 2);
+                // test.x += (((int)(r.Next(0, 6000)/1000)%2) == 0 )?(-((int)(r.Next(0, 10000)/1000)/2)):((int)(r.Next(0, 10000)/1000)/2);
+                // test.y += (((int)(r.Next(0, 6000) / 1000) % 2) == 0) ? (-((int)(r.Next(0, 10000) / 1000) / 2)) : ((int)(r.Next(0, 10000) / 1000) / 2);
 
                 short MapX = (short)r.Next(-2 + this.firstX, 2 + this.firstX);
                 short MapY = (short)r.Next(-2 + this.firstY, 2 + this.firstY);

@@ -12,16 +12,47 @@
  * GNU General Public License for more details.
  */
 
-
 using OpenNos.Core;
 using OpenNos.Core.Communication.Scs.Communication;
-using System;
 using System.Threading;
 
 namespace OpenNos.GameObject
 {
     public class SnackItemHandler
     {
+        #region Methods
+
+        public void regen(ClientSession session, Item item)
+        {
+            session.Client.SendPacket(session.Character.GenerateEff(6000));
+            session.Character.SnackAmount++;
+            session.Character.MaxSnack = 0;
+            session.Character.SnackHp += item.Hp / 5;
+            session.Character.SnackMp += item.Mp / 5;
+            for (int i = 0; i < 5; i++)
+            {
+                Thread.Sleep(1800);
+            }
+            session.Character.SnackHp -= item.Hp / 5;
+            session.Character.SnackMp -= item.Mp / 5;
+            session.Character.SnackAmount--;
+        }
+
+        public void sync(ClientSession session, Item item)
+        {
+            for (session.Character.MaxSnack = 0; session.Character.MaxSnack < 5; session.Character.MaxSnack++)
+            {
+                session.Character.Mp += session.Character.SnackHp;
+                session.Character.Hp += session.Character.SnackMp;
+                if (session.Character.Hp < session.Character.HPLoad() || session.Character.Mp < session.Character.MPLoad())
+                    ClientLinkManager.Instance.Broadcast(session, session.Character.GenerateRc(session.Character.SnackHp), ReceiverType.AllOnMap);
+                if (session.Client.CommunicationState == CommunicationStates.Connected)
+                    ClientLinkManager.Instance.Broadcast(session, session.Character.GenerateStat(), ReceiverType.OnlyMe);
+                else return;
+                Thread.Sleep(1800);
+            }
+        }
+
         internal void UseItemHandler(ref Inventory inv, ClientSession session, short effect, int effectValue)
         {
             Item item = ServerManager.GetItem(inv.InventoryItem.ItemVNum);
@@ -57,36 +88,8 @@ namespace OpenNos.GameObject
                     }
                     break;
             }
+        }
 
-        }
-        public void regen(ClientSession session, Item item)
-        {
-            session.Client.SendPacket(session.Character.GenerateEff(6000));
-            session.Character.SnackAmount++;
-            session.Character.MaxSnack = 0;
-            session.Character.SnackHp += item.Hp / 5;
-            session.Character.SnackMp += item.Mp / 5;
-            for (int i = 0; i < 5; i++)
-            {
-                Thread.Sleep(1800);
-            }
-            session.Character.SnackHp -= item.Hp / 5;
-            session.Character.SnackMp -= item.Mp / 5;
-            session.Character.SnackAmount--;
-        }
-        public void sync(ClientSession session, Item item)
-        {
-            for (session.Character.MaxSnack = 0; session.Character.MaxSnack < 5; session.Character.MaxSnack++)
-            {
-                session.Character.Mp += session.Character.SnackHp;
-                session.Character.Hp += session.Character.SnackMp;
-                if (session.Character.Hp < session.Character.HPLoad() || session.Character.Mp < session.Character.MPLoad())
-                    ClientLinkManager.Instance.Broadcast(session, session.Character.GenerateRc(session.Character.SnackHp), ReceiverType.AllOnMap);
-                if (session.Client.CommunicationState == CommunicationStates.Connected)
-                    ClientLinkManager.Instance.Broadcast(session, session.Character.GenerateStat(), ReceiverType.OnlyMe);
-                else return;
-                Thread.Sleep(1800);
-            }
-        }
+        #endregion
     }
 }

@@ -86,6 +86,8 @@
     <Compile Include="Item\WearableItem.cs" />
     <Compile Include="Item\ItemHandler\MagicalItemHandler.cs" />
     <Compile Include="Map.cs" />
+    <Compile Include="MapMonster.cs" />
+    <Compile Include="Monster.cs" />
     <Compile Include="Npc\NRunHandler.cs" />
     <Compile Include="Shop.cs" />
     <Compile Include="Item\Item.cs" />

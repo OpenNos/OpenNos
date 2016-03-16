@@ -12,25 +12,17 @@
  * GNU General Public License for more details.
  */
 
-using System;
-using AutoMapper;
-using OpenNos.Data;
-
 namespace OpenNos.GameObject
 {
     public class ProduceItem : Item
     {
+        #region Methods
+
         public override void Use(ClientSession Session, ref Inventory Inv)
         {
             ProduceItemHandler instance = new ProduceItemHandler();
             instance.UseItemHandler(ref Inv, Session, Effect, EffectValue);
         }
-        #region Instantiation
-
-        #endregion
-
-        #region Methods
-
 
         #endregion
     }

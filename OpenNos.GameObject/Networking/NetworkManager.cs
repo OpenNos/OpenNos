@@ -27,8 +27,8 @@ namespace OpenNos.GameObject
     {
         #region Members
 
-        private IDictionary<String, DateTime> _generalLog;
         private EncryptorT _encryptor;
+        private IDictionary<String, DateTime> _generalLog;
         private ConcurrentDictionary<Guid, Map> _maps = new ConcurrentDictionary<Guid, Map>();
         private Type _packetHandler;
         private ConcurrentDictionary<long, ClientSession> _sessions = new ConcurrentDictionary<long, ClientSession>();
@@ -135,7 +135,7 @@ namespace OpenNos.GameObject
             ClientSession session;
             _sessions.TryRemove(e.Client.ClientId, out session);
             ClientLinkManager.Instance.Sessions.Remove(session);
-             if (session.Character != null)
+            if (session.Character != null)
             {
                 session.Character.Save();
 

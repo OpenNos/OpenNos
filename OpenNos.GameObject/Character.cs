@@ -12,14 +12,14 @@
  * GNU General Public License for more details.
  */
 
+using AutoMapper;
+using OpenNos.Core;
+using OpenNos.DAL;
+using OpenNos.Data;
+using OpenNos.Domain;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using AutoMapper;
-using OpenNos.Core;
-using OpenNos.Data;
-using OpenNos.DAL;
-using OpenNos.Domain;
 using System.Threading;
 
 namespace OpenNos.GameObject
@@ -35,14 +35,15 @@ namespace OpenNos.GameObject
         private InventoryList _inventorylist;
         private int _invisible;
         private int _isDancing;
+        private bool _issitting;
         private double _lastPortal;
         private int _lastPulse;
         private int _morph;
         private int _morphUpgrade;
         private int _morphUpgrade2;
-        private bool _issitting;
         private int _size = 10;
         private int _speed;
+
         #endregion
 
         #region Instantiation
@@ -57,7 +58,6 @@ namespace OpenNos.GameObject
 
         #region Properties
 
-        public DateTime LastLogin { get; set; }
         public int Authority { get { return _authority; } set { _authority = value; } }
         public int BackPack { get { return _backpack; } set { _backpack = value; } }
         public int Direction { get { return _direction; } set { _direction = value; } }
@@ -65,30 +65,36 @@ namespace OpenNos.GameObject
         public ExchangeInfo ExchangeInfo { get; set; }
         public InventoryList InventoryList { get { return _inventorylist; } set { _inventorylist = value; } }
         public int Invisible { get { return _invisible; } set { _invisible = value; } }
+        public bool InvisibleGm { get; set; }
         public int IsDancing { get { return _isDancing; } set { _isDancing = value; } }
+        public bool IsSitting { get { return _issitting; } set { _issitting = value; } }
         public bool IsVehicled { get; set; }
+        public DateTime LastLogin { get; set; }
         public double LastPortal { get { return _lastPortal; } set { _lastPortal = value; } }
         public int LastPulse { get { return _lastPulse; } set { _lastPulse = value; } }
         public double LastSp { get; set; }
         public int LastSpeed { get; set; }
+        public int MaxSnack { get; set; }
         public int Morph { get { return _morph; } set { _morph = value; } }
         public int MorphUpgrade { get { return _morphUpgrade; } set { _morphUpgrade = value; } }
         public int MorphUpgrade2 { get { return _morphUpgrade2; } set { _morphUpgrade2 = value; } }
-        public bool IsSitting { get { return _issitting; } set { _issitting = value; } }
         public int Size { get { return _size; } set { _size = value; } }
+        public int SnackAmount { get; set; }
+        public int SnackHp { get; set; }
+        public int SnackMp { get; set; }
         public int Speed { get { return _speed; } set { _speed = value; } }
         public Thread ThreadCharChange { get; set; }
         public bool UseSp { get; set; }
         private int DarkResistance { get; set; }
         private int Defence { get; set; }
-        private int ElementRate { get; set; }
         private int DefenceRate { get; set; }
-        private int Element { get; set; }
         private int DistanceCritical { get; set; }
         private int DistanceCriticalRate { get; set; }
         private int DistanceDefence { get; set; }
         private int DistanceDefenceRate { get; set; }
         private int DistanceRate { get; set; }
+        private int Element { get; set; }
+        private int ElementRate { get; set; }
         private int FireResistance { get; set; }
         private int HitCritical { get; set; }
         private int HitCriticalRate { get; set; }
@@ -100,11 +106,6 @@ namespace OpenNos.GameObject
         private int MinDistance { get; set; }
         private int MinHit { get; set; }
         private int WaterResistance { get; set; }
-        public int SnackAmount { get; set; }
-        public int MaxSnack { get; set; }
-        public int SnackHp { get; set; }
-        public int SnackMp { get; set; }
-        public bool InvisibleGm { get; set; }
 
         #endregion
 
@@ -185,6 +186,7 @@ namespace OpenNos.GameObject
                                     return $"e_info 1 {item.ItemVNum} {item.Rare} {item.Upgrade} {(item.IsFixed ? 1 : 0)} {iteminfo.LevelMinimum} {iteminfo.DamageMinimum + item.DamageMinimum} {iteminfo.DamageMaximum + item.DamageMaximum} {iteminfo.HitRate + item.HitRate} {iteminfo.CriticalLuckRate + item.CriticalLuckRate} {iteminfo.CriticalRate + item.CriticalRate} {item.Ammo} {iteminfo.MaximumAmmo} {iteminfo.Price} -1 0 0 0"; // -1 = {item.ShellEffectValue} {item.FirstShell}...
                                 case 8:
                                     return $"e_info 5 {item.ItemVNum} {item.Rare} {item.Upgrade} {(item.IsFixed ? 1 : 0)} {iteminfo.LevelMinimum} {iteminfo.DamageMinimum + item.DamageMinimum} {iteminfo.DamageMaximum + item.DamageMaximum} {iteminfo.HitRate + item.HitRate} {iteminfo.CriticalLuckRate + item.CriticalLuckRate} {iteminfo.CriticalRate + item.CriticalRate} {item.Ammo} {iteminfo.MaximumAmmo} {iteminfo.Price} -1 0 0 0";
+
                                 default:
                                     return $"e_info 0 {item.ItemVNum} {item.Rare} {item.Upgrade} {(item.IsFixed ? 1 : 0)} {iteminfo.LevelMinimum} {iteminfo.DamageMinimum + item.DamageMinimum} {iteminfo.DamageMaximum + item.DamageMaximum} {iteminfo.HitRate + item.HitRate} {iteminfo.CriticalLuckRate + item.CriticalLuckRate} {iteminfo.CriticalRate + item.CriticalRate} {item.Ammo} {iteminfo.MaximumAmmo} {iteminfo.Price} -1 0 0 0";
                             }
@@ -193,18 +195,22 @@ namespace OpenNos.GameObject
                             {
                                 case 4:
                                     return $"e_info 1 {item.ItemVNum} {item.Rare} {item.Upgrade} {(item.IsFixed ? 1 : 0)} {iteminfo.LevelMinimum} {iteminfo.DamageMinimum + item.DamageMinimum} {iteminfo.DamageMaximum + item.DamageMaximum} {iteminfo.HitRate + item.HitRate} {iteminfo.CriticalLuckRate + item.CriticalLuckRate} {iteminfo.CriticalRate + item.CriticalRate} {item.Ammo} {iteminfo.MaximumAmmo} {iteminfo.Price} -1 0 0 0";
+
                                 default:
                                     return $"e_info 0 {item.ItemVNum} {item.Rare} {item.Upgrade} {(item.IsFixed ? 1 : 0)} {iteminfo.LevelMinimum} {iteminfo.DamageMinimum + item.DamageMinimum} {iteminfo.DamageMaximum + item.DamageMaximum} {iteminfo.HitRate + item.HitRate} {iteminfo.CriticalLuckRate + item.CriticalLuckRate} {iteminfo.CriticalRate + item.CriticalRate} {item.Ammo} {iteminfo.MaximumAmmo} {iteminfo.Price} -1 0 0 0";
                             }
                     }
                     break;
+
                 case (byte)ItemType.Armor:
                     return $"e_info 2 {item.ItemVNum} {item.Rare} {item.Upgrade} {(item.IsFixed ? 1 : 0)} {iteminfo.LevelMinimum} {iteminfo.CloseDefence + item.CloseDefence} {iteminfo.DistanceDefence + item.DistanceDefence} {iteminfo.MagicDefence + item.MagicDefence} {iteminfo.DefenceDodge + item.DefenceDodge} {iteminfo.Price} -1 0 0 0";
+
                 case (byte)ItemType.Fashion:
                     switch (equipmentslot)
                     {
                         case (byte)EquipmentType.CostumeHat:
                             return $"e_info 3 {item.ItemVNum} {iteminfo.LevelMinimum} {iteminfo.CloseDefence + item.CloseDefence} {iteminfo.DistanceDefence + item.DistanceDefence} {iteminfo.MagicDefence + item.MagicDefence} {iteminfo.DefenceDodge + item.DefenceDodge} {iteminfo.FireResistance + item.FireResistance} {iteminfo.WaterResistance + item.WaterResistance} {iteminfo.LightResistance + item.LightResistance} {iteminfo.DarkResistance + item.DarkResistance} {iteminfo.Price} 0 1 {(seconds / (3600))}";
+
                         case (byte)EquipmentType.CostumeSuit:
                             return $"e_info 2 {item.ItemVNum} {item.Rare} {item.Upgrade} {(item.IsFixed ? 1 : 0)} {iteminfo.LevelMinimum} {iteminfo.CloseDefence + item.CloseDefence} {iteminfo.DistanceDefence + item.DistanceDefence} {iteminfo.MagicDefence + item.MagicDefence} {iteminfo.DefenceDodge + item.DefenceDodge} {iteminfo.Price} -1 1 {(seconds / (3600))}"; // 1 = IsCosmetic -1 = no shells
                         default:
@@ -215,6 +221,7 @@ namespace OpenNos.GameObject
                     {
                         case (byte)EquipmentType.Amulet:
                             return $"e_info 4 {item.ItemVNum} {iteminfo.LevelMinimum}  {seconds * 10} 0 0 {iteminfo.Price}";
+
                         case (byte)EquipmentType.Fairy:
                             return $"e_info 4 {item.ItemVNum} {iteminfo.Element} {item.ElementRate + iteminfo.ElementRate} 0 0 0 0 0"; // last IsNosmall
                         default:
@@ -225,6 +232,7 @@ namespace OpenNos.GameObject
                     {
                         case 2:
                             return $"e_info 7 {item.ItemVNum} {(item.IsEmpty ? 1 : 0)} {item.Design} {item.SpLevel} {item.SpXp} {ServersData.SpXPData[JobLevel - 1]} {item.Upgrade} {item.SlDamage} {item.SlDefence} {item.SlElement} {item.SlHP} 10 {item.FireResistance} {item.WaterResistance} {item.LightResistance} {item.DarkResistance} {item.SpStoneUpgrade} {item.SpDamage} {item.SpDefence} {item.SpElement} {item.SpHP} {item.SpFire} {item.SpWater} {item.SpLight} {item.SpDark}";
+
                         default:
                             return $"e_info 8 {item.ItemVNum} {item.Design} {item.Rare}";
                     }
@@ -318,10 +326,6 @@ namespace OpenNos.GameObject
             }
             return $"equip {weaponUpgrade}{weaponRare} {armorUpgrade}{armorRare}{eqlist}";
         }
-        public string GenerateRc(int v)
-        {
-            return $"rc 1 {CharacterId} {v} 0";
-        }
 
         public string GenerateExts()
         {
@@ -379,7 +383,7 @@ namespace OpenNos.GameObject
 
         public List<string> Generatein2()
         {
-            return ServerManager.GetMap(MapId).Npcs.Select(npc => $"in 2 {npc.Vnum} {npc.NpcId} {npc.MapX} {npc.MapY} {npc.Position} 100 100 {npc.Dialog} 0 0 - {(npc.IsSitting?0:1)} 0 0 - 1 - 0 - 1 0 0 0 0 0 0 0 0").ToList();
+            return ServerManager.GetMap(MapId).Npcs.Select(npc => $"in 2 {npc.Vnum} {npc.NpcId} {npc.MapX} {npc.MapY} {npc.Position} 100 100 {npc.Dialog} 0 0 - {(npc.IsSitting ? 0 : 1)} 0 0 - 1 - 0 - 1 0 0 0 0 0 0 0 0").ToList();
         }
 
         public string GenerateInfo(string message)
@@ -408,6 +412,11 @@ namespace OpenNos.GameObject
                     return $"ivn 6 {slot}.{vnum}.{rare}.{upgrade}";
             }
             return string.Empty;
+        }
+
+        public string GenerateInvisible()
+        {
+            return $"cl {CharacterId} {Invisible} 0";
         }
 
         public string GenerateLev()
@@ -475,6 +484,11 @@ namespace OpenNos.GameObject
             return ServerManager.GetMap(MapId).ShopUserList.Select(shop => $"pflag 1 {shop.Value.OwnerId} {shop.Key + 1}").ToList();
         }
 
+        public string GenerateRc(int v)
+        {
+            return $"rc 1 {CharacterId} {v} 0";
+        }
+
         public string GenerateReqInfo()
         {
             Inventory fairy = EquipmentList.LoadBySlotAndType((byte)EquipmentType.Fairy, (byte)InventoryType.Equipment);
@@ -512,10 +526,6 @@ namespace OpenNos.GameObject
         public string GenerateShopMemo(int type, string message)
         {
             return $"s_memo {type} {message}";
-        }
-        public string GenerateInvisible()
-        {
-            return $"cl {CharacterId} {Invisible} 0";
         }
 
         public List<string> GenerateShopOnMap()
@@ -736,9 +746,7 @@ namespace OpenNos.GameObject
                     else
                         p = 50 + (point - 50) * 2;
                     Element += p;
-
                 }
-
             }
             //TODO: add base stats
             Inventory weapon = EquipmentList.LoadBySlotAndType((byte)EquipmentType.MainWeapon, (byte)InventoryType.Equipment);
@@ -747,8 +755,8 @@ namespace OpenNos.GameObject
                 Item iteminfo = ServerManager.GetItem(weapon.InventoryItem.ItemVNum);
                 weaponUpgrade = weapon.InventoryItem.Upgrade;
                 double upg = ServersData.UpgradeBonus(weapon.InventoryItem.Upgrade);
-                MinHit += (int)((weapon.InventoryItem.DamageMinimum + iteminfo.DamageMinimum)*upg);
-                MaxHit += (int)((weapon.InventoryItem.DamageMaximum + iteminfo.DamageMaximum)*upg);
+                MinHit += (int)((weapon.InventoryItem.DamageMinimum + iteminfo.DamageMinimum) * upg);
+                MaxHit += (int)((weapon.InventoryItem.DamageMaximum + iteminfo.DamageMaximum) * upg);
                 HitRate += weapon.InventoryItem.HitRate + iteminfo.HitRate;
                 HitCriticalRate += weapon.InventoryItem.CriticalLuckRate + iteminfo.CriticalLuckRate;
                 HitCritical += weapon.InventoryItem.CriticalRate + iteminfo.CriticalRate;
@@ -784,7 +792,6 @@ namespace OpenNos.GameObject
             Inventory item = null;
             for (short i = 1; i < 14; i++)
             {
-
                 item = EquipmentList.LoadBySlotAndType(i, (byte)InventoryType.Equipment);
 
                 if (item != null)
@@ -842,12 +849,16 @@ namespace OpenNos.GameObject
                 {
                     case 1:
                         return 28;
+
                     case 2:
                         return 29;
+
                     case 3:
                         return 30;
+
                     case 4:
                         return 31;
+
                     case 5:
                         return 32;
                 }
@@ -912,14 +923,12 @@ namespace OpenNos.GameObject
 
                     hp = inventory.InventoryItem.HP;
                 }
-
             }
             return (int)((ServersData.HPData[Class, Level] + hp) * multiplicator);
         }
 
         public double JobXPLoad()
         {
-
             if (Class == (byte)ClassType.Adventurer)
                 return ServersData.FirstJobXPData[JobLevel - 1];
             return ServersData.SecondJobXPData[JobLevel - 1];
@@ -1030,7 +1039,6 @@ namespace OpenNos.GameObject
 
                     mp = inventory.InventoryItem.MP;
                 }
-
             }
             return (int)((ServersData.MPData[Class, Level] + mp) * multiplicator);
         }

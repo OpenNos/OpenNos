@@ -19,10 +19,14 @@ namespace OpenNos.GameObject
 {
     public class GeneralLog : GeneralLogDTO
     {
+        #region Instantiation
+
         public GeneralLog()
         {
             Mapper.CreateMap<GeneralLogDTO, GeneralLog>();
             Mapper.CreateMap<GeneralLog, GeneralLogDTO>();
         }
+
+        #endregion
     }
 }

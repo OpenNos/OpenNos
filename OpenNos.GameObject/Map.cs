@@ -111,7 +111,7 @@ namespace OpenNos.GameObject
                 });
             }
         }
-       public async void NpcLifeManager()
+        public async void NpcLifeManager()
         {
             var rnd = new Random();
             Task NpcLifeTask = null;
@@ -122,7 +122,7 @@ namespace OpenNos.GameObject
 
                 await Task.Delay(300);
             }
-          
+
         }
         internal async void MapTaskManager()
         {
