@@ -44,7 +44,7 @@
 -- -----------------------------------------------------------
 -- Entity Designer DDL Script for MySQL Server 4.1 and higher
 -- -----------------------------------------------------------
--- Date Created: 03/16/2016 06:17:13
+-- Date Created: 03/16/2016 06:45:20
 
 -- Generated from EDMX file: C:\Users\Dominik\Source\Repos\OpenNos\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
 -- Target version: 3.0.0.0
@@ -507,9 +507,9 @@ CREATE TABLE `monster`(
 	`ElementRate` smallint NOT NULL, 
 	`MaxHP` smallint NOT NULL, 
 	`MaxMP` smallint NOT NULL, 
-	`CloseDefence` longtext NOT NULL, 
-	`DistanceDefence` longtext NOT NULL, 
-	`MagicDefence` longtext NOT NULL, 
+	`CloseDefence` smallint NOT NULL, 
+	`DistanceDefence` smallint NOT NULL, 
+	`MagicDefence` smallint NOT NULL, 
 	`DefenceUpgrade` smallint NOT NULL, 
 	`DefenceDodge` smallint NOT NULL, 
 	`DistanceDefenceDodge` smallint NOT NULL, 

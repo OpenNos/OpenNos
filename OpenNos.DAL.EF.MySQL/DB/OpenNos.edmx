@@ -427,9 +427,9 @@
     <Property Name="ElementRate" Type="smallint" Nullable="false" />
     <Property Name="MaxHP" Type="smallint" Nullable="false" />
     <Property Name="MaxMP" Type="smallint" Nullable="false" />
-    <Property Name="CloseDefence" Type="longtext" Nullable="false" />
-    <Property Name="DistanceDefence" Type="longtext" Nullable="false" />
-    <Property Name="MagicDefence" Type="longtext" Nullable="false" />
+    <Property Name="CloseDefence" Type="smallint" Nullable="false" />
+    <Property Name="DistanceDefence" Type="smallint" Nullable="false" />
+    <Property Name="MagicDefence" Type="smallint" Nullable="false" />
     <Property Name="DefenceUpgrade" Type="smallint" Nullable="false" />
     <Property Name="DefenceDodge" Type="smallint" Nullable="false" />
     <Property Name="DistanceDefenceDodge" Type="smallint" Nullable="false" />
