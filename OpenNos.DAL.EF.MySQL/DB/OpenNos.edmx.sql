@@ -44,7 +44,7 @@
 -- -----------------------------------------------------------
 -- Entity Designer DDL Script for MySQL Server 4.1 and higher
 -- -----------------------------------------------------------
--- Date Created: 03/16/2016 22:23:55
+-- Date Created: 03/16/2016 22:35:10
 
 -- Generated from EDMX file: C:\Users\ERWAN\Desktop\OpenNos Git\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
 -- Target version: 3.0.0.0
@@ -503,7 +503,6 @@ CREATE TABLE `mapnpc`(
 	`MapId` smallint NOT NULL, 
 	`MapX` smallint NOT NULL, 
 	`MapY` smallint NOT NULL, 
-	`Move` bool NOT NULL, 
 	`MoveType` TINYINT UNSIGNED NOT NULL, 
 	`Position` smallint NOT NULL, 
 	`IsSitting` bool NOT NULL, 

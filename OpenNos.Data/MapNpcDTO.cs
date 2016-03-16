@@ -23,7 +23,6 @@ namespace OpenNos.Data
         public short MapId { get; set; }
         public short MapX { get; set; }
         public short MapY { get; set; }
-        public bool Move { get; set; }
         public short Position { get; set; }
         public bool IsSitting { get; set; }
         public byte MoveType { get; set; }

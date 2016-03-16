@@ -95,7 +95,7 @@ namespace OpenNos.GameObject
                 LastEffect = DateTime.Now;
             }
             time = (DateTime.Now - LastMove).TotalSeconds;
-            if (this.Move && time > 2.5)
+            if (MoveType !=0 && time > 2.5)
             {
                 Random r = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
                 int oldx = this.MapX;
