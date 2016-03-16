@@ -106,7 +106,7 @@ namespace OpenNos.GameObject
 
                 short MapX = (short)r.Next(-2 + this.firstX, 2 + this.firstX);
                 short MapY = (short)r.Next(-2 + this.firstY, 2 + this.firstY);
-                if (ServerManager.GetMap(MapId).IsBlockedZone(MapX, MapY))
+                if (!ServerManager.GetMap(MapId).IsBlockedZone(MapX, MapY))
                 {
                     this.MapX = MapX;
                     this.MapY = MapY;
