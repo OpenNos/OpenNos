@@ -44,9 +44,9 @@
 -- -----------------------------------------------------------
 -- Entity Designer DDL Script for MySQL Server 4.1 and higher
 -- -----------------------------------------------------------
--- Date Created: 03/16/2016 06:45:20
+-- Date Created: 03/16/2016 15:40:01
 
--- Generated from EDMX file: C:\Users\Dominik\Source\Repos\OpenNos\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
+-- Generated from EDMX file: C:\Users\ERWAN\Desktop\OpenNos Git\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
 -- Target version: 3.0.0.0
 
 -- --------------------------------------------------
@@ -71,13 +71,9 @@
 
 --    ALTER TABLE `character` DROP CONSTRAINT `FK_CharacterMap`;
 
---    ALTER TABLE `npc` DROP CONSTRAINT `FK_NpcMap`;
-
 --    ALTER TABLE `inventory` DROP CONSTRAINT `FK_CharacterInventory`;
 
 --    ALTER TABLE `inventoryitem` DROP CONSTRAINT `FK_InventoryItemItem`;
-
---    ALTER TABLE `shop` DROP CONSTRAINT `FK_ShopNpc`;
 
 --    ALTER TABLE `shopitem` DROP CONSTRAINT `FK_ShopItemItem`;
 
@@ -87,13 +83,19 @@
 
 --    ALTER TABLE `inventory` DROP CONSTRAINT `FK_InventoryInventoryItem`;
 
---    ALTER TABLE `teleporter` DROP CONSTRAINT `FK_TeleporterNpc`;
-
 --    ALTER TABLE `teleporter` DROP CONSTRAINT `FK_TeleporterMap`;
 
 --    ALTER TABLE `mapmonster` DROP CONSTRAINT `FK_MapMapMonster`;
 
---    ALTER TABLE `mapmonster` DROP CONSTRAINT `FK_MonsterMapMonster`;
+--    ALTER TABLE `mapnpc` DROP CONSTRAINT `FK_MapNpcNpc`;
+
+--    ALTER TABLE `mapnpc` DROP CONSTRAINT `FK_MapMapNpc`;
+
+--    ALTER TABLE `teleporter` DROP CONSTRAINT `FK_TeleporterMapNpc`;
+
+--    ALTER TABLE `mapmonster` DROP CONSTRAINT `FK_MapMonsterNpcMonster`;
+
+--    ALTER TABLE `shop` DROP CONSTRAINT `FK_ShopMapNpc`;
 
 
 -- --------------------------------------------------
@@ -113,7 +115,7 @@ SET foreign_key_checks = 0;
 
     DROP TABLE IF EXISTS `item`;
 
-    DROP TABLE IF EXISTS `npc`;
+    DROP TABLE IF EXISTS `npcmonster`;
 
     DROP TABLE IF EXISTS `inventoryitem`;
 
@@ -127,9 +129,9 @@ SET foreign_key_checks = 0;
 
     DROP TABLE IF EXISTS `teleporter`;
 
-    DROP TABLE IF EXISTS `monster`;
-
     DROP TABLE IF EXISTS `mapmonster`;
+
+    DROP TABLE IF EXISTS `mapnpc`;
 
 SET foreign_key_checks = 1;
 
@@ -323,18 +325,10 @@ ALTER TABLE `item` ADD PRIMARY KEY (VNum);
 
 
 
-CREATE TABLE `npc`(
-	`NpcId` smallint NOT NULL, 
+CREATE TABLE `npcmonster`(
+	`NpcMonsterVNum` smallint NOT NULL, 
 	`Name` longtext NOT NULL, 
-	`Vnum` smallint NOT NULL, 
-	`MapId` smallint NOT NULL, 
-	`MapX` smallint NOT NULL, 
-	`MapY` smallint NOT NULL, 
 	`Speed` smallint NOT NULL, 
-	`Move` bool NOT NULL, 
-	`Dialog` smallint NOT NULL, 
-	`Position` smallint NOT NULL, 
-	`IsSitting` bool NOT NULL, 
 	`Level` TINYINT UNSIGNED NOT NULL, 
 	`AttackClass` TINYINT UNSIGNED NOT NULL, 
 	`AttackUpgrade` TINYINT UNSIGNED NOT NULL, 
@@ -354,11 +348,9 @@ CREATE TABLE `npc`(
 	`FireResistance` smallint NOT NULL, 
 	`WaterResistance` smallint NOT NULL, 
 	`LightResistance` smallint NOT NULL, 
-	`DarkResistance` smallint NOT NULL, 
-	`Effect` smallint NOT NULL, 
-	`EffectDelay` smallint NOT NULL);
+	`DarkResistance` smallint NOT NULL);
 
-ALTER TABLE `npc` ADD PRIMARY KEY (NpcId);
+ALTER TABLE `npcmonster` ADD PRIMARY KEY (NpcMonsterVNum);
 
 
 
@@ -454,9 +446,9 @@ ALTER TABLE `shopitem` ADD PRIMARY KEY (ShopItemId);
 CREATE TABLE `shop`(
 	`ShopId` int NOT NULL AUTO_INCREMENT UNIQUE, 
 	`Name` longtext NOT NULL, 
-	`NpcId` smallint NOT NULL, 
 	`MenuType` smallint NOT NULL, 
-	`ShopType` smallint NOT NULL);
+	`ShopType` smallint NOT NULL, 
+	`MapNpcId` int NOT NULL);
 
 ALTER TABLE `shop` ADD PRIMARY KEY (ShopId);
 
@@ -480,11 +472,11 @@ ALTER TABLE `respawn` ADD PRIMARY KEY (RespawnId);
 
 CREATE TABLE `teleporter`(
 	`TeleporterId` smallint NOT NULL AUTO_INCREMENT UNIQUE, 
-	`NpcId` smallint NOT NULL, 
 	`Index` smallint NOT NULL, 
 	`MapX` smallint NOT NULL, 
 	`MapY` smallint NOT NULL, 
-	`MapId` smallint NOT NULL);
+	`MapId` smallint NOT NULL, 
+	`MapNpcId` int NOT NULL);
 
 ALTER TABLE `teleporter` ADD PRIMARY KEY (TeleporterId);
 
@@ -492,48 +484,33 @@ ALTER TABLE `teleporter` ADD PRIMARY KEY (TeleporterId);
 
 
 
-CREATE TABLE `monster`(
-	`MonsterVNum` smallint NOT NULL, 
-	`Name` longtext NOT NULL, 
-	`Level` TINYINT UNSIGNED NOT NULL, 
-	`AttackClass` TINYINT UNSIGNED NOT NULL, 
-	`AttackUpgrade` TINYINT UNSIGNED NOT NULL, 
-	`DamageMinimum` smallint NOT NULL, 
-	`DamageMaximum` smallint NOT NULL, 
-	`Concentrate` smallint NOT NULL, 
-	`CriticalRate` smallint NOT NULL, 
-	`CriticalLuckRate` smallint NOT NULL, 
-	`Element` TINYINT UNSIGNED NOT NULL, 
-	`ElementRate` smallint NOT NULL, 
-	`MaxHP` smallint NOT NULL, 
-	`MaxMP` smallint NOT NULL, 
-	`CloseDefence` smallint NOT NULL, 
-	`DistanceDefence` smallint NOT NULL, 
-	`MagicDefence` smallint NOT NULL, 
-	`DefenceUpgrade` smallint NOT NULL, 
-	`DefenceDodge` smallint NOT NULL, 
-	`DistanceDefenceDodge` smallint NOT NULL, 
-	`FireResistance` smallint NOT NULL, 
-	`WaterResistance` smallint NOT NULL, 
-	`LightResistance` smallint NOT NULL, 
-	`DarkResistance` smallint NOT NULL, 
-	`Speed` TINYINT UNSIGNED NOT NULL);
-
-ALTER TABLE `monster` ADD PRIMARY KEY (MonsterVNum);
-
-
-
-
-
 CREATE TABLE `mapmonster`(
-	`MapMonsterId` int NOT NULL AUTO_INCREMENT UNIQUE, 
+	`MapMonsterId` int NOT NULL, 
 	`MonsterVNum` smallint NOT NULL, 
 	`MapId` smallint NOT NULL, 
 	`MapX` smallint NOT NULL, 
-	`MapY` smallint NOT NULL, 
-	`Move` bool NOT NULL);
+	`MapY` smallint NOT NULL);
 
 ALTER TABLE `mapmonster` ADD PRIMARY KEY (MapMonsterId);
+
+
+
+
+
+CREATE TABLE `mapnpc`(
+	`MapNpcId` int NOT NULL, 
+	`NpcVNum` smallint NOT NULL, 
+	`MapId` smallint NOT NULL, 
+	`MapX` smallint NOT NULL, 
+	`MapY` smallint NOT NULL, 
+	`Move` bool NOT NULL, 
+	`Position` smallint NOT NULL, 
+	`IsSitting` bool NOT NULL, 
+	`EffectDelay` smallint NOT NULL, 
+	`Effect` smallint NOT NULL, 
+	`Dialog` smallint NOT NULL);
+
+ALTER TABLE `mapnpc` ADD PRIMARY KEY (MapNpcId);
 
 
 
@@ -654,24 +631,6 @@ CREATE INDEX `IX_FK_CharacterMap`
 
 
 
--- Creating foreign key on `MapId` in table 'npc'
-
-ALTER TABLE `npc`
-ADD CONSTRAINT `FK_NpcMap`
-    FOREIGN KEY (`MapId`)
-    REFERENCES `map`
-        (`MapId`)
-    ON DELETE NO ACTION ON UPDATE NO ACTION;
-
-
--- Creating non-clustered index for FOREIGN KEY 'FK_NpcMap'
-
-CREATE INDEX `IX_FK_NpcMap`
-    ON `npc`
-    (`MapId`);
-
-
-
 -- Creating foreign key on `CharacterId` in table 'inventory'
 
 ALTER TABLE `inventory`
@@ -705,24 +664,6 @@ ADD CONSTRAINT `FK_InventoryItemItem`
 CREATE INDEX `IX_FK_InventoryItemItem`
     ON `inventoryitem`
     (`ItemVNum`);
-
-
-
--- Creating foreign key on `NpcId` in table 'shop'
-
-ALTER TABLE `shop`
-ADD CONSTRAINT `FK_ShopNpc`
-    FOREIGN KEY (`NpcId`)
-    REFERENCES `npc`
-        (`NpcId`)
-    ON DELETE NO ACTION ON UPDATE NO ACTION;
-
-
--- Creating non-clustered index for FOREIGN KEY 'FK_ShopNpc'
-
-CREATE INDEX `IX_FK_ShopNpc`
-    ON `shop`
-    (`NpcId`);
 
 
 
@@ -798,24 +739,6 @@ CREATE INDEX `IX_FK_InventoryInventoryItem`
 
 
 
--- Creating foreign key on `NpcId` in table 'teleporter'
-
-ALTER TABLE `teleporter`
-ADD CONSTRAINT `FK_TeleporterNpc`
-    FOREIGN KEY (`NpcId`)
-    REFERENCES `npc`
-        (`NpcId`)
-    ON DELETE NO ACTION ON UPDATE NO ACTION;
-
-
--- Creating non-clustered index for FOREIGN KEY 'FK_TeleporterNpc'
-
-CREATE INDEX `IX_FK_TeleporterNpc`
-    ON `teleporter`
-    (`NpcId`);
-
-
-
 -- Creating foreign key on `MapId` in table 'teleporter'
 
 ALTER TABLE `teleporter`
@@ -852,21 +775,93 @@ CREATE INDEX `IX_FK_MapMapMonster`
 
 
 
--- Creating foreign key on `MonsterVNum` in table 'mapmonster'
+-- Creating foreign key on `NpcVNum` in table 'mapnpc'
 
-ALTER TABLE `mapmonster`
-ADD CONSTRAINT `FK_MonsterMapMonster`
-    FOREIGN KEY (`MonsterVNum`)
-    REFERENCES `monster`
-        (`MonsterVNum`)
+ALTER TABLE `mapnpc`
+ADD CONSTRAINT `FK_MapNpcNpc`
+    FOREIGN KEY (`NpcVNum`)
+    REFERENCES `npcmonster`
+        (`NpcMonsterVNum`)
     ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 
--- Creating non-clustered index for FOREIGN KEY 'FK_MonsterMapMonster'
+-- Creating non-clustered index for FOREIGN KEY 'FK_MapNpcNpc'
 
-CREATE INDEX `IX_FK_MonsterMapMonster`
+CREATE INDEX `IX_FK_MapNpcNpc`
+    ON `mapnpc`
+    (`NpcVNum`);
+
+
+
+-- Creating foreign key on `MapId` in table 'mapnpc'
+
+ALTER TABLE `mapnpc`
+ADD CONSTRAINT `FK_MapMapNpc`
+    FOREIGN KEY (`MapId`)
+    REFERENCES `map`
+        (`MapId`)
+    ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+
+-- Creating non-clustered index for FOREIGN KEY 'FK_MapMapNpc'
+
+CREATE INDEX `IX_FK_MapMapNpc`
+    ON `mapnpc`
+    (`MapId`);
+
+
+
+-- Creating foreign key on `MapNpcId` in table 'teleporter'
+
+ALTER TABLE `teleporter`
+ADD CONSTRAINT `FK_TeleporterMapNpc`
+    FOREIGN KEY (`MapNpcId`)
+    REFERENCES `mapnpc`
+        (`MapNpcId`)
+    ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+
+-- Creating non-clustered index for FOREIGN KEY 'FK_TeleporterMapNpc'
+
+CREATE INDEX `IX_FK_TeleporterMapNpc`
+    ON `teleporter`
+    (`MapNpcId`);
+
+
+
+-- Creating foreign key on `MonsterVNum` in table 'mapmonster'
+
+ALTER TABLE `mapmonster`
+ADD CONSTRAINT `FK_MapMonsterNpcMonster`
+    FOREIGN KEY (`MonsterVNum`)
+    REFERENCES `npcmonster`
+        (`NpcMonsterVNum`)
+    ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+
+-- Creating non-clustered index for FOREIGN KEY 'FK_MapMonsterNpcMonster'
+
+CREATE INDEX `IX_FK_MapMonsterNpcMonster`
     ON `mapmonster`
     (`MonsterVNum`);
+
+
+
+-- Creating foreign key on `MapNpcId` in table 'shop'
+
+ALTER TABLE `shop`
+ADD CONSTRAINT `FK_ShopMapNpc`
+    FOREIGN KEY (`MapNpcId`)
+    REFERENCES `mapnpc`
+        (`MapNpcId`)
+    ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+
+-- Creating non-clustered index for FOREIGN KEY 'FK_ShopMapNpc'
+
+CREATE INDEX `IX_FK_ShopMapNpc`
+    ON `shop`
+    (`MapNpcId`);
 
 
 

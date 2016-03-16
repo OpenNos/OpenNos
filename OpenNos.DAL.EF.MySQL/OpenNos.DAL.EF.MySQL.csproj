@@ -103,10 +103,10 @@
     <Compile Include="DB\MapMonster.cs">
       <DependentUpon>OpenNos.tt</DependentUpon>
     </Compile>
-    <Compile Include="DB\Monster.cs">
+    <Compile Include="DB\MapNpc.cs">
       <DependentUpon>OpenNos.tt</DependentUpon>
     </Compile>
-    <Compile Include="DB\Npc.cs">
+    <Compile Include="DB\NpcMonster.cs">
       <DependentUpon>OpenNos.tt</DependentUpon>
     </Compile>
     <Compile Include="DB\Portal.cs">
@@ -125,7 +125,7 @@
       <DependentUpon>OpenNos.tt</DependentUpon>
     </Compile>
     <Compile Include="MapMonsterDAO.cs" />
-    <Compile Include="MonsterDAO.cs" />
+    <Compile Include="MapNpcDAO.cs" />
     <Compile Include="RespawnDAO.cs" />
     <Compile Include="GeneralLogDAO.cs" />
     <Compile Include="InventoryDAO.cs" />
@@ -134,7 +134,7 @@
     <Compile Include="InventoryItemDAO.cs" />
     <Compile Include="ItemDAO.cs" />
     <Compile Include="MapDAO.cs" />
-    <Compile Include="NpcDAO.cs" />
+    <Compile Include="NpcMonsterDAO.cs" />
     <Compile Include="PortalDAO.cs" />
     <Compile Include="AccountDAO.cs" />
     <Compile Include="CharacterDAO.cs" />

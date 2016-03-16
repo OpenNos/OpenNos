@@ -133,6 +133,15 @@ namespace OpenNos.Import.Console.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0} npcs-monsters parsed.
+        /// </summary>
+        internal static string NPCSMONSTERS_PARSED {
+            get {
+                return ResourceManager.GetString("NPCSMONSTERS_PARSED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Do you want to parse ALL?.
         /// </summary>
         internal static string PARSE_ALL {

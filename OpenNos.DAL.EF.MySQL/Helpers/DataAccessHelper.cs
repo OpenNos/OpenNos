@@ -41,8 +41,8 @@ namespace OpenNos.DAL.EF.MySQL
             Mapper.CreateMap<CharacterDTO, Character>();
             Mapper.CreateMap<Portal, PortalDTO>();
             Mapper.CreateMap<PortalDTO, Portal>();
-            Mapper.CreateMap<Npc, NpcDTO>();
-            Mapper.CreateMap<NpcDTO, Npc>();
+            Mapper.CreateMap<NpcMonster, NpcMonsterDTO>();
+            Mapper.CreateMap<NpcMonsterDTO, NpcMonster>();
             Mapper.CreateMap<Map, MapDTO>();
             Mapper.CreateMap<MapDTO, Map>();
             Mapper.CreateMap<Item, ItemDTO>();
@@ -51,7 +51,10 @@ namespace OpenNos.DAL.EF.MySQL
             Mapper.CreateMap<ShopDTO, Shop>();
             Mapper.CreateMap<ShopItem, ShopItemDTO>();
             Mapper.CreateMap<ShopItemDTO, ShopItem>();
-
+            Mapper.CreateMap<MapNpcDTO, MapNpc>();
+            Mapper.CreateMap<MapNpc, MapNpcDTO>();
+            Mapper.CreateMap<MapMonsterDTO, MapMonster>();
+            Mapper.CreateMap<MapMonster, MapMonsterDTO>();
             Mapper.CreateMap<Inventory, InventoryDTO>();
             Mapper.CreateMap<InventoryDTO, Inventory>();
             Mapper.CreateMap<InventoryItem, InventoryItemDTO>();
@@ -136,7 +139,9 @@ namespace OpenNos.DAL.EF.MySQL
                     context.portal.Any();
                     context.generallog.Any();
                     context.character.Any();
-                    context.npc.Any();
+                    context.npcmonster.Any();
+                    context.mapnpc.Any();
+                    context.mapmonster.Any();
                     context.inventory.Any();
                     context.inventoryitem.Any();
                     context.item.Any();

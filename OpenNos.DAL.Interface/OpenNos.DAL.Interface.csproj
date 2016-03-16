@@ -57,7 +57,7 @@
     <Compile Include="IAccountDAO.cs" />
     <Compile Include="ICharacterDAO.cs" />
     <Compile Include="IMapMonsterDAO.cs" />
-    <Compile Include="IMonsterDAO.cs" />
+    <Compile Include="IMapNpcDAO.cs" />
     <Compile Include="IRespawnDAO.cs" />
     <Compile Include="IShopDAO.cs" />
     <Compile Include="IShopItemDAO.cs" />
@@ -65,7 +65,7 @@
     <Compile Include="IInventoryDAO.cs" />
     <Compile Include="IItemDAO.cs" />
     <Compile Include="IMapDAO.cs" />
-    <Compile Include="INpcDAO.cs" />
+    <Compile Include="INpcMonsterDAO.cs" />
     <Compile Include="IPortalDAO.cs" />
     <Compile Include="ITeleporterDAO.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -12,20 +12,23 @@
  * GNU General Public License for more details.
  */
 
-using AutoMapper;
-using OpenNos.Data;
-
-namespace OpenNos.GameObject
+namespace OpenNos.Data
 {
-    public class Monster : MonsterDTO
+    public class MapNpcDTO
     {
-        #region Instantiation
+        #region Properties
 
-        public Monster()
-        {
-            Mapper.CreateMap<MonsterDTO, Monster>();
-            Mapper.CreateMap<Monster, MonsterDTO>();
-        }
+        public int MapNpcId { get; set; }
+        public short NpcVNum { get; set; }
+        public short MapId { get; set; }
+        public short MapX { get; set; }
+        public short MapY { get; set; }
+        public bool Move { get; set; }
+        public short Position { get; set; }
+        public bool IsSitting { get; set; }
+        public short EffectDelay { get; set; }
+        public short Effect { get; set; }
+        public short Dialog { get; set; }
 
         #endregion
     }

@@ -398,7 +398,7 @@ namespace OpenNos.Import.Console
 
         }
 
-        public void ImportNpcs()
+        public void ImportMonstersNpcs()
         {
             string fileNpcId = $"{_folder}\\monster.dat";
             string fileNpcLang = $"{_folder}\\_code_{System.Configuration.ConfigurationManager.AppSettings["language"]}_monster.txt";
@@ -406,10 +406,10 @@ namespace OpenNos.Import.Console
             // Store like this: (vnum, (name, level))
 
             Dictionary<string, string> dictionaryIdLang = new Dictionary<string, string>();
-            NpcDTO npc = new NpcDTO();
+            NpcMonsterDTO npc = new NpcMonsterDTO();
             string line;
             bool itemAreaBegin = false;
-            List<NpcDTO> npclist = new List<NpcDTO>();
+            int counter = 0;
             using (StreamReader npcIdLangStream = new StreamReader(fileNpcLang, Encoding.GetEncoding(1252)))
             {
                 while ((line = npcIdLangStream.ReadLine()) != null)
@@ -431,8 +431,8 @@ namespace OpenNos.Import.Console
 
                     if (linesave.Length > 2 && linesave[1] == "VNUM")
                     {
-                        npc = new NpcDTO();
-                        npc.Vnum = short.Parse(linesave[2]);
+                        npc = new NpcMonsterDTO();
+                        npc.NpcMonsterVNum = short.Parse(linesave[2]);
                         itemAreaBegin = true;
                     }
                     else if (linesave.Length > 2 && linesave[1] == "LEVEL")
@@ -472,33 +472,39 @@ namespace OpenNos.Import.Console
                     else if (linesave.Length > 3 && linesave[1] == "AINFO")
                     {
                         npc.DefenceUpgrade = Convert.ToByte(linesave[2]);
-
-                        npclist.Add(npc);
+                        if (DAOFactory.NpcMonsterDAO.LoadById(npc.NpcMonsterVNum) == null)
+                        {
+                            DAOFactory.NpcMonsterDAO.Insert(npc);
+                            counter++;
+                        }
                         itemAreaBegin = false;
                     }
 
                 }
+                Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("NPCSMONSTERS_PARSED"), counter));
                 npcIdStream.Close();
             }
 
+        }
 
-
+        public void ImportMapNpcs()
+        {
             int npcCounter = 0;
             short map = 0;
-            Dictionary<short, bool> movementlist = new Dictionary<short, bool>();
-            Dictionary<short, short> effectlist = new Dictionary<short, short>();
+            Dictionary<int, bool> movementlist = new Dictionary<int, bool>();
+            Dictionary<int, short> effectlist = new Dictionary<int, short>();
             foreach (string[] linesave in packetList.Where(o => o[0].Equals("mv") && o[1].Equals("2")))
             {
-                if(!(long.Parse(linesave[2]) >= 20000))
-                if (!movementlist.ContainsKey(Convert.ToInt16(linesave[2])))
-                    movementlist[Convert.ToInt16(linesave[2])] = true;
+                if (!(long.Parse(linesave[2]) >= 20000))
+                    if (!movementlist.ContainsKey(Convert.ToInt32(linesave[2])))
+                        movementlist[Convert.ToInt32(linesave[2])] = true;
             }
 
             foreach (string[] linesave in packetList.Where(o => o[0].Equals("eff") && o[1].Equals("2")))
             {
                 if (!(long.Parse(linesave[2]) >= 20000))
-                    if (!effectlist.ContainsKey(Convert.ToInt16(linesave[2])))
-                        effectlist[Convert.ToInt16(linesave[2])] = Convert.ToInt16(linesave[3]);
+                    if (!effectlist.ContainsKey(Convert.ToInt32(linesave[2])))
+                        effectlist[Convert.ToInt32(linesave[2])] = Convert.ToInt16(linesave[3]);
             }
 
             foreach (string[] linesave in packetList.Where(o => o[0].Equals("in") || o[0].Equals("at")))
@@ -509,36 +515,34 @@ namespace OpenNos.Import.Console
                 }
                 else if (linesave.Length > 7 && linesave[0] == "in" && linesave[1] == "2")
                 {
-                    try
-                    {
-                        NpcDTO npctest = npclist.First(s => s.Vnum == short.Parse(linesave[2]));
-                        if (npctest != null)
-                        {
-                            npctest.MapX = short.Parse(linesave[4]);
-                            npctest.MapY = short.Parse(linesave[5]);
-                            npctest.MapId = map;
-                            npctest.NpcId = short.Parse(linesave[3]);
-                            if (effectlist.ContainsKey(npctest.NpcId))
-                                npctest.Effect = effectlist[npctest.NpcId];
-                            npctest.EffectDelay = 5000;
-                            if (movementlist.ContainsKey(npctest.NpcId))
-                                npctest.Move = movementlist[npctest.NpcId];
-                            else
-                                npctest.Move = false;
-                            npctest.Position = short.Parse(linesave[6]);
-                            npctest.Dialog = short.Parse(linesave[9]);
-                            npctest.IsSitting = linesave[13] == "1" ? false : true;
+                        MapNpcDTO npctest = new MapNpcDTO();
 
-                            if (long.Parse(linesave[3]) >= 20000) continue; 
-                            if (DAOFactory.NpcDAO.LoadById(npctest.NpcId) != null || Maps.FirstOrDefault(s => s.MapId == npctest.MapId) == null) continue; // Npc already existing
-                            DAOFactory.NpcDAO.Insert(npctest);
-                            npcCounter++;
+                        npctest.MapX = short.Parse(linesave[4]);
+                        npctest.MapY = short.Parse(linesave[5]);
+                        npctest.MapId = map;
+                    npctest.NpcVNum = short.Parse(linesave[2]);
+                    if (long.Parse(linesave[3]) > 20000) continue;
+                        npctest.MapNpcId = short.Parse(linesave[3]);
+                        if (effectlist.ContainsKey(npctest.MapNpcId))
+                            npctest.Effect = effectlist[npctest.MapNpcId];
+                        npctest.EffectDelay = 5000;
+                        if (movementlist.ContainsKey(npctest.MapNpcId))
+                            npctest.Move = movementlist[npctest.MapNpcId];
+                        else
+                            npctest.Move = false;
+                        npctest.Position = short.Parse(linesave[6]);
+                        npctest.Dialog = short.Parse(linesave[9]);
+                        npctest.IsSitting = linesave[13] == "1" ? false : true;
+                    
+                        if (DAOFactory.NpcMonsterDAO.LoadById(npctest.NpcVNum) != null)
+                        {
+                            if (DAOFactory.MapNpcDAO.LoadById(npctest.MapNpcId) == null)
+                            {
+                                DAOFactory.MapNpcDAO.Insert(npctest);
+                                npcCounter++;
+                            }
                         }
-                    }
-                    catch (Exception)
-                    {
-                        // Continue with next line in packet file
-                    }
+                  
                 }
             }
 
@@ -623,7 +627,7 @@ namespace OpenNos.Import.Console
             List<PortalDTO> listPortal = new List<PortalDTO>();
             short map = 0;
             int portalCounter = 0;
-           
+
             foreach (string[] linesave in packetList.Where(o => o[0].Equals("at") || o[0].Equals("gp")))
             {
                 if (linesave.Length > 5 && linesave[0] == "at")
@@ -685,7 +689,7 @@ namespace OpenNos.Import.Console
             {
                 if (linesave.Length > 6 && linesave[0] == "shop" && linesave[1] == "2")
                 {
-                    NpcDTO npc = DAOFactory.NpcDAO.LoadById(short.Parse(linesave[2]));
+                   MapNpcDTO npc = DAOFactory.MapNpcDAO.LoadById(short.Parse(linesave[2]));
                     if (npc == null) continue;
 
                     string named = "";
@@ -698,11 +702,11 @@ namespace OpenNos.Import.Console
                     ShopDTO shop = new ShopDTO
                     {
                         Name = named,
-                        NpcId = npc.NpcId,
+                        MapNpcId = npc.MapNpcId,
                         MenuType = short.Parse(linesave[4]),
                         ShopType = short.Parse(linesave[5])
                     };
-                    if (DAOFactory.ShopDAO.LoadByNpc(shop.NpcId) == null)
+                    if (DAOFactory.ShopDAO.LoadByNpc(shop.MapNpcId) == null)
                     {
                         DAOFactory.ShopDAO.Insert(shop);
                         shopCounter++;

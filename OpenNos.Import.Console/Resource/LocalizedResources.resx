@@ -138,6 +138,9 @@
   <data name="NO_ITEM" xml:space="preserve">
     <value>This item id is not valid!</value>
   </data>
+  <data name="NPCSMONSTERS_PARSED" xml:space="preserve">
+    <value>{0} npcs-monsters parsed</value>
+  </data>
   <data name="NPCS_PARSED" xml:space="preserve">
     <value>{0} npcs parsed</value>
   </data>

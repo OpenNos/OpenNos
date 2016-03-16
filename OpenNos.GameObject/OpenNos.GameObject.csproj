@@ -87,7 +87,7 @@
     <Compile Include="Item\ItemHandler\MagicalItemHandler.cs" />
     <Compile Include="Map.cs" />
     <Compile Include="MapMonster.cs" />
-    <Compile Include="Monster.cs" />
+    <Compile Include="Npc\MapNpc.cs" />
     <Compile Include="Npc\NRunHandler.cs" />
     <Compile Include="Shop.cs" />
     <Compile Include="Item\Item.cs" />
@@ -104,7 +104,7 @@
     <Compile Include="Networking\MapPacket.cs" />
     <Compile Include="Networking\NetworkManager.cs" />
     <Compile Include="Networking\ReceiverType.cs" />
-    <Compile Include="Npc\Npc.cs" />
+    <Compile Include="Npc\NpcMonster.cs" />
     <Compile Include="Portal.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ServersData.cs" />

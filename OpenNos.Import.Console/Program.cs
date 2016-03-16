@@ -69,7 +69,8 @@ namespace OpenNos.Import.Console
                 factory.ImportMaps();
                 factory.loadMaps();
                 factory.ImportPortals();
-                factory.ImportNpcs();
+                factory.ImportMonstersNpcs();
+                factory.ImportMapNpcs();
                 factory.ImportShops();
                 factory.ImportItems();
                 factory.ImportShopItems();
@@ -93,7 +94,7 @@ namespace OpenNos.Import.Console
                 System.ConsoleKeyInfo key3 = System.Console.ReadKey(true);
                 if (key3.KeyChar != 'n')
                 {
-                    factory.ImportNpcs();
+                    factory.ImportMonstersNpcs();
                 }
                 System.Console.WriteLine($"{Language.Instance.GetMessageFromKey("PARSE_SHOPS")} [Y/n]");
                 System.ConsoleKeyInfo key4 = System.Console.ReadKey(true);

@@ -51,7 +51,7 @@
   <ItemGroup>
     <Compile Include="GeneralLogDTO.cs" />
     <Compile Include="MapMonsterDTO.cs" />
-    <Compile Include="MonsterDTO.cs" />
+    <Compile Include="MapNpcDTO.cs" />
     <Compile Include="RespawnDTO.cs" />
     <Compile Include="ShopItemDTO.cs" />
     <Compile Include="ShopDTO.cs" />
@@ -59,7 +59,7 @@
     <Compile Include="InventoryItemDTO.cs" />
     <Compile Include="ItemDTO.cs" />
     <Compile Include="MapDTO.cs" />
-    <Compile Include="NpcDTO.cs" />
+    <Compile Include="NpcMonsterDTO.cs" />
     <Compile Include="PortalDTO.cs" />
     <Compile Include="AccountDTO.cs" />
     <Compile Include="CharacterDTO.cs" />

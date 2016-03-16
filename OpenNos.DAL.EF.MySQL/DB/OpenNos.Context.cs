@@ -32,14 +32,14 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public virtual DbSet<GeneralLog> generallog { get; set; }
         public virtual DbSet<Map> map { get; set; }
         public virtual DbSet<Item> item { get; set; }
-        public virtual DbSet<Npc> npc { get; set; }
+        public virtual DbSet<NpcMonster> npcmonster { get; set; }
         public virtual DbSet<InventoryItem> inventoryitem { get; set; }
         public virtual DbSet<Inventory> inventory { get; set; }
         public virtual DbSet<ShopItem> shopitem { get; set; }
         public virtual DbSet<Shop> shop { get; set; }
         public virtual DbSet<Respawn> respawn { get; set; }
         public virtual DbSet<Teleporter> teleporter { get; set; }
-        public virtual DbSet<Monster> monster { get; set; }
         public virtual DbSet<MapMonster> mapmonster { get; set; }
+        public virtual DbSet<MapNpc> mapnpc { get; set; }
     }
 }

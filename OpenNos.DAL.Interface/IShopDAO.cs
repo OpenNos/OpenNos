@@ -24,7 +24,7 @@ namespace OpenNos.DAL.Interface
 
         ShopDTO LoadById(int ShopId);
 
-        ShopDTO LoadByNpc(short NpcId);
+        ShopDTO LoadByNpc(int NpcId);
 
         #endregion
     }

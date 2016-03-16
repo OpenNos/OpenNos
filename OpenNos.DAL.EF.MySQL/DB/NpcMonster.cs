@@ -12,26 +12,18 @@ namespace OpenNos.DAL.EF.MySQL.DB
     using System;
     using System.Collections.Generic;
     
-    public partial class Npc
+    public partial class NpcMonster
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Npc()
+        public NpcMonster()
         {
-            this.shop = new HashSet<Shop>();
-            this.teleporter = new HashSet<Teleporter>();
+            this.mapnpc = new HashSet<MapNpc>();
+            this.mapmonster = new HashSet<MapMonster>();
         }
     
-        public short NpcId { get; set; }
+        public short NpcMonsterVNum { get; set; }
         public string Name { get; set; }
-        public short Vnum { get; set; }
-        public short MapId { get; set; }
-        public short MapX { get; set; }
-        public short MapY { get; set; }
         public short Speed { get; set; }
-        public bool Move { get; set; }
-        public short Dialog { get; set; }
-        public short Position { get; set; }
-        public bool IsSitting { get; set; }
         public byte Level { get; set; }
         public byte AttackClass { get; set; }
         public byte AttackUpgrade { get; set; }
@@ -52,13 +44,10 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public short WaterResistance { get; set; }
         public short LightResistance { get; set; }
         public short DarkResistance { get; set; }
-        public short Effect { get; set; }
-        public short EffectDelay { get; set; }
     
-        public virtual Map map { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Shop> shop { get; set; }
+        public virtual ICollection<MapNpc> mapnpc { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Teleporter> teleporter { get; set; }
+        public virtual ICollection<MapMonster> mapmonster { get; set; }
     }
 }

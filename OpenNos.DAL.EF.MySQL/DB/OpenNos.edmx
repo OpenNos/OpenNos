@@ -12,15 +12,15 @@
     <EntitySet Name="generallog" EntityType="opennosModel.Store.generallog" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="map" EntityType="opennosModel.Store.map" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="item" EntityType="opennosModel.Store.item" store:Type="Tables" Schema="dbo" />
-    <EntitySet Name="npc" EntityType="opennosModel.Store.npc" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="npcmonster" EntityType="opennosModel.Store.npcmonster" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="inventoryitem" EntityType="opennosModel.Store.inventoryitem" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="inventory" EntityType="opennosModel.Store.inventory" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="shopitem" EntityType="opennosModel.Store.shopitem" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="shop" EntityType="opennosModel.Store.shop" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="respawn" EntityType="opennosModel.Store.respawn" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="teleporter" EntityType="opennosModel.Store.teleporter" store:Type="Tables" Schema="dbo" />
-    <EntitySet Name="monster" EntityType="opennosModel.Store.monster" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="mapmonster" EntityType="opennosModel.Store.mapmonster" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="mapnpc" EntityType="opennosModel.Store.mapnpc" store:Type="Tables" Schema="dbo" />
     <AssociationSet Name="AccountCharacter" Association="opennosModel.Store.AccountCharacter">
       <End Role="Account" EntitySet="account" />
       <End Role="Character" EntitySet="character" />
@@ -45,10 +45,6 @@
       <End Role="Character" EntitySet="character" />
       <End Role="Map" EntitySet="map" />
     </AssociationSet>
-    <AssociationSet Name="NpcMap" Association="opennosModel.Store.NpcMap">
-      <End Role="Npc" EntitySet="npc" />
-      <End Role="Map" EntitySet="map" />
-    </AssociationSet>
     <AssociationSet Name="CharacterInventory" Association="opennosModel.Store.CharacterInventory">
       <End Role="Character" EntitySet="character" />
       <End Role="Inventory" EntitySet="inventory" />
@@ -56,10 +52,6 @@
     <AssociationSet Name="InventoryItemItem" Association="opennosModel.Store.InventoryItemItem">
       <End Role="InventoryItem" EntitySet="inventoryitem" />
       <End Role="Item" EntitySet="item" />
-    </AssociationSet>
-    <AssociationSet Name="ShopNpc" Association="opennosModel.Store.ShopNpc">
-      <End Role="Shop" EntitySet="shop" />
-      <End Role="Npc" EntitySet="npc" />
     </AssociationSet>
     <AssociationSet Name="ShopItemItem" Association="opennosModel.Store.ShopItemItem">
       <End Role="ShopItem" EntitySet="shopitem" />
@@ -77,10 +69,6 @@
       <End Role="Inventory" EntitySet="inventory" />
       <End Role="InventoryItem" EntitySet="inventoryitem" />
     </AssociationSet>
-    <AssociationSet Name="TeleporterNpc" Association="opennosModel.Store.TeleporterNpc">
-      <End Role="Teleporter" EntitySet="teleporter" />
-      <End Role="Npc" EntitySet="npc" />
-    </AssociationSet>
     <AssociationSet Name="TeleporterMap" Association="opennosModel.Store.TeleporterMap">
       <End Role="Teleporter" EntitySet="teleporter" />
       <End Role="Map" EntitySet="map" />
@@ -89,9 +77,25 @@
       <End Role="Map" EntitySet="map" />
       <End Role="MapMonster" EntitySet="mapmonster" />
     </AssociationSet>
-    <AssociationSet Name="MonsterMapMonster" Association="opennosModel.Store.MonsterMapMonster">
-      <End Role="Monster" EntitySet="monster" />
+    <AssociationSet Name="MapNpcNpc" Association="opennosModel.Store.MapNpcNpc">
+      <End Role="MapNpc" EntitySet="mapnpc" />
+      <End Role="Npc" EntitySet="npcmonster" />
+    </AssociationSet>
+    <AssociationSet Name="MapMapNpc" Association="opennosModel.Store.MapMapNpc">
+      <End Role="Map" EntitySet="map" />
+      <End Role="MapNpc" EntitySet="mapnpc" />
+    </AssociationSet>
+    <AssociationSet Name="TeleporterMapNpc" Association="opennosModel.Store.TeleporterMapNpc">
+      <End Role="Teleporter" EntitySet="teleporter" />
+      <End Role="MapNpc" EntitySet="mapnpc" />
+    </AssociationSet>
+    <AssociationSet Name="MapMonsterNpcMonster" Association="opennosModel.Store.MapMonsterNpcMonster">
       <End Role="MapMonster" EntitySet="mapmonster" />
+      <End Role="NpcMonster" EntitySet="npcmonster" />
+    </AssociationSet>
+    <AssociationSet Name="ShopMapNpc" Association="opennosModel.Store.ShopMapNpc">
+      <End Role="Shop" EntitySet="shop" />
+      <End Role="MapNpc" EntitySet="mapnpc" />
     </AssociationSet>
   </EntityContainer>
   <EntityType Name="account">
@@ -261,21 +265,13 @@
     <Property Name="Sex" Type="utinyint" Nullable="false" />
     <Property Name="SecondaryElement" Type="utinyint" Nullable="false" />
   </EntityType>
-  <EntityType Name="npc">
+  <EntityType Name="npcmonster">
     <Key>
-      <PropertyRef Name="NpcId" />
+      <PropertyRef Name="NpcMonsterVNum" />
     </Key>
-    <Property Name="NpcId" Type="smallint" Nullable="false" />
+    <Property Name="NpcMonsterVNum" Type="smallint" Nullable="false" />
     <Property Name="Name" Type="longtext" Nullable="false" />
-    <Property Name="Vnum" Type="smallint" Nullable="false" />
-    <Property Name="MapId" Type="smallint" Nullable="false" />
-    <Property Name="MapX" Type="smallint" Nullable="false" />
-    <Property Name="MapY" Type="smallint" Nullable="false" />
     <Property Name="Speed" Type="smallint" Nullable="false" />
-    <Property Name="Move" Type="bool" Nullable="false" />
-    <Property Name="Dialog" Type="smallint" Nullable="false" />
-    <Property Name="Position" Type="smallint" Nullable="false" />
-    <Property Name="IsSitting" Type="bool" Nullable="false" />
     <Property Name="Level" Type="utinyint" Nullable="false" />
     <Property Name="AttackClass" Type="utinyint" Nullable="false" />
     <Property Name="AttackUpgrade" Type="utinyint" Nullable="false" />
@@ -296,8 +292,6 @@
     <Property Name="WaterResistance" Type="smallint" Nullable="false" />
     <Property Name="LightResistance" Type="smallint" Nullable="false" />
     <Property Name="DarkResistance" Type="smallint" Nullable="false" />
-    <Property Name="Effect" Type="smallint" Nullable="false" />
-    <Property Name="EffectDelay" Type="smallint" Nullable="false" />
   </EntityType>
   <EntityType Name="inventoryitem">
     <Key>
@@ -383,9 +377,9 @@
     </Key>
     <Property Name="ShopId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="Name" Type="longtext" Nullable="false" />
-    <Property Name="NpcId" Type="smallint" Nullable="false" />
     <Property Name="MenuType" Type="smallint" Nullable="false" />
     <Property Name="ShopType" Type="smallint" Nullable="false" />
+    <Property Name="MapNpcId" Type="int" Nullable="false" />
   </EntityType>
   <EntityType Name="respawn">
     <Key>
@@ -403,52 +397,37 @@
       <PropertyRef Name="TeleporterId" />
     </Key>
     <Property Name="TeleporterId" Type="smallint" StoreGeneratedPattern="Identity" Nullable="false" />
-    <Property Name="NpcId" Type="smallint" Nullable="false" />
     <Property Name="Index" Type="smallint" Nullable="false" />
     <Property Name="MapX" Type="smallint" Nullable="false" />
     <Property Name="MapY" Type="smallint" Nullable="false" />
     <Property Name="MapId" Type="smallint" Nullable="false" />
-  </EntityType>
-  <EntityType Name="monster">
-    <Key>
-      <PropertyRef Name="MonsterVNum" />
-    </Key>
-    <Property Name="MonsterVNum" Type="smallint" Nullable="false" />
-    <Property Name="Name" Type="longtext" Nullable="false" />
-    <Property Name="Level" Type="utinyint" Nullable="false" />
-    <Property Name="AttackClass" Type="utinyint" Nullable="false" />
-    <Property Name="AttackUpgrade" Type="utinyint" Nullable="false" />
-    <Property Name="DamageMinimum" Type="smallint" Nullable="false" />
-    <Property Name="DamageMaximum" Type="smallint" Nullable="false" />
-    <Property Name="Concentrate" Type="smallint" Nullable="false" />
-    <Property Name="CriticalRate" Type="smallint" Nullable="false" />
-    <Property Name="CriticalLuckRate" Type="smallint" Nullable="false" />
-    <Property Name="Element" Type="utinyint" Nullable="false" />
-    <Property Name="ElementRate" Type="smallint" Nullable="false" />
-    <Property Name="MaxHP" Type="smallint" Nullable="false" />
-    <Property Name="MaxMP" Type="smallint" Nullable="false" />
-    <Property Name="CloseDefence" Type="smallint" Nullable="false" />
-    <Property Name="DistanceDefence" Type="smallint" Nullable="false" />
-    <Property Name="MagicDefence" Type="smallint" Nullable="false" />
-    <Property Name="DefenceUpgrade" Type="smallint" Nullable="false" />
-    <Property Name="DefenceDodge" Type="smallint" Nullable="false" />
-    <Property Name="DistanceDefenceDodge" Type="smallint" Nullable="false" />
-    <Property Name="FireResistance" Type="smallint" Nullable="false" />
-    <Property Name="WaterResistance" Type="smallint" Nullable="false" />
-    <Property Name="LightResistance" Type="smallint" Nullable="false" />
-    <Property Name="DarkResistance" Type="smallint" Nullable="false" />
-    <Property Name="Speed" Type="utinyint" Nullable="false" />
+    <Property Name="MapNpcId" Type="int" Nullable="false" />
   </EntityType>
   <EntityType Name="mapmonster">
     <Key>
       <PropertyRef Name="MapMonsterId" />
     </Key>
-    <Property Name="MapMonsterId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="MapMonsterId" Type="int" Nullable="false" />
     <Property Name="MonsterVNum" Type="smallint" Nullable="false" />
     <Property Name="MapId" Type="smallint" Nullable="false" />
     <Property Name="MapX" Type="smallint" Nullable="false" />
     <Property Name="MapY" Type="smallint" Nullable="false" />
+  </EntityType>
+  <EntityType Name="mapnpc">
+    <Key>
+      <PropertyRef Name="MapNpcId" />
+    </Key>
+    <Property Name="MapNpcId" Type="int" Nullable="false" />
+    <Property Name="NpcVNum" Type="smallint" Nullable="false" />
+    <Property Name="MapId" Type="smallint" Nullable="false" />
+    <Property Name="MapX" Type="smallint" Nullable="false" />
+    <Property Name="MapY" Type="smallint" Nullable="false" />
     <Property Name="Move" Type="bool" Nullable="false" />
+    <Property Name="Position" Type="smallint" Nullable="false" />
+    <Property Name="IsSitting" Type="bool" Nullable="false" />
+    <Property Name="EffectDelay" Type="smallint" Nullable="false" />
+    <Property Name="Effect" Type="smallint" Nullable="false" />
+    <Property Name="Dialog" Type="smallint" Nullable="false" />
   </EntityType>
   <Association Name="AccountCharacter">
     <End Role="Account" Type="opennosModel.Store.account" Multiplicity="1" />
@@ -522,18 +501,6 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="NpcMap">
-    <End Role="Npc" Type="opennosModel.Store.npc" Multiplicity="*" />
-    <End Role="Map" Type="opennosModel.Store.map" Multiplicity="1" />
-    <ReferentialConstraint>
-      <Principal Role="Map">
-        <PropertyRef Name="MapId" />
-      </Principal>
-      <Dependent Role="Npc">
-        <PropertyRef Name="MapId" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
   <Association Name="CharacterInventory">
     <End Role="Character" Type="opennosModel.Store.character" Multiplicity="1" />
     <End Role="Inventory" Type="opennosModel.Store.inventory" Multiplicity="*" />
@@ -555,18 +522,6 @@
       </Principal>
       <Dependent Role="InventoryItem">
         <PropertyRef Name="ItemVNum" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
-  <Association Name="ShopNpc">
-    <End Role="Shop" Type="opennosModel.Store.shop" Multiplicity="*" />
-    <End Role="Npc" Type="opennosModel.Store.npc" Multiplicity="1" />
-    <ReferentialConstraint>
-      <Principal Role="Npc">
-        <PropertyRef Name="NpcId" />
-      </Principal>
-      <Dependent Role="Shop">
-        <PropertyRef Name="NpcId" />
       </Dependent>
     </ReferentialConstraint>
   </Association>
@@ -618,18 +573,6 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="TeleporterNpc">
-    <End Role="Teleporter" Type="opennosModel.Store.teleporter" Multiplicity="*" />
-    <End Role="Npc" Type="opennosModel.Store.npc" Multiplicity="1" />
-    <ReferentialConstraint>
-      <Principal Role="Npc">
-        <PropertyRef Name="NpcId" />
-      </Principal>
-      <Dependent Role="Teleporter">
-        <PropertyRef Name="NpcId" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
   <Association Name="TeleporterMap">
     <End Role="Teleporter" Type="opennosModel.Store.teleporter" Multiplicity="*" />
     <End Role="Map" Type="opennosModel.Store.map" Multiplicity="1" />
@@ -654,15 +597,63 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="MonsterMapMonster">
-    <End Role="Monster" Type="opennosModel.Store.monster" Multiplicity="1" />
-    <End Role="MapMonster" Type="opennosModel.Store.mapmonster" Multiplicity="*" />
+  <Association Name="MapNpcNpc">
+    <End Role="MapNpc" Type="opennosModel.Store.mapnpc" Multiplicity="*" />
+    <End Role="Npc" Type="opennosModel.Store.npcmonster" Multiplicity="1" />
     <ReferentialConstraint>
-      <Principal Role="Monster">
-        <PropertyRef Name="MonsterVNum" />
+      <Principal Role="Npc">
+        <PropertyRef Name="NpcMonsterVNum" />
+      </Principal>
+      <Dependent Role="MapNpc">
+        <PropertyRef Name="NpcVNum" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="MapMapNpc">
+    <End Role="Map" Type="opennosModel.Store.map" Multiplicity="1" />
+    <End Role="MapNpc" Type="opennosModel.Store.mapnpc" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Map">
+        <PropertyRef Name="MapId" />
+      </Principal>
+      <Dependent Role="MapNpc">
+        <PropertyRef Name="MapId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="TeleporterMapNpc">
+    <End Role="Teleporter" Type="opennosModel.Store.teleporter" Multiplicity="*" />
+    <End Role="MapNpc" Type="opennosModel.Store.mapnpc" Multiplicity="1" />
+    <ReferentialConstraint>
+      <Principal Role="MapNpc">
+        <PropertyRef Name="MapNpcId" />
+      </Principal>
+      <Dependent Role="Teleporter">
+        <PropertyRef Name="MapNpcId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="MapMonsterNpcMonster">
+    <End Role="MapMonster" Type="opennosModel.Store.mapmonster" Multiplicity="*" />
+    <End Role="NpcMonster" Type="opennosModel.Store.npcmonster" Multiplicity="1" />
+    <ReferentialConstraint>
+      <Principal Role="NpcMonster">
+        <PropertyRef Name="NpcMonsterVNum" />
       </Principal>
       <Dependent Role="MapMonster">
         <PropertyRef Name="MonsterVNum" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="ShopMapNpc">
+    <End Role="Shop" Type="opennosModel.Store.shop" Multiplicity="*" />
+    <End Role="MapNpc" Type="opennosModel.Store.mapnpc" Multiplicity="1" />
+    <ReferentialConstraint>
+      <Principal Role="MapNpc">
+        <PropertyRef Name="MapNpcId" />
+      </Principal>
+      <Dependent Role="Shop">
+        <PropertyRef Name="MapNpcId" />
       </Dependent>
     </ReferentialConstraint>
   </Association>
@@ -787,11 +778,7 @@
             <End Role="Map" EntitySet="map" />
           </AssociationSet>
           <EntitySet Name="item" EntityType="opennosModel.Item" />
-          <EntitySet Name="npc" EntityType="opennosModel.Npc" />
-          <AssociationSet Name="NpcMap" Association="opennosModel.NpcMap">
-            <End Role="Npc" EntitySet="npc" />
-            <End Role="Map" EntitySet="map" />
-          </AssociationSet>
+          <EntitySet Name="npcmonster" EntityType="opennosModel.NpcMonster" />
           <EntitySet Name="inventoryitem" EntityType="opennosModel.InventoryItem" />
           <EntitySet Name="inventory" EntityType="opennosModel.Inventory" />
           <AssociationSet Name="CharacterInventory" Association="opennosModel.CharacterInventory">
@@ -804,10 +791,6 @@
           </AssociationSet>
           <EntitySet Name="shopitem" EntityType="opennosModel.ShopItem" />
           <EntitySet Name="shop" EntityType="opennosModel.Shop" />
-          <AssociationSet Name="ShopNpc" Association="opennosModel.ShopNpc">
-            <End Role="Shop" EntitySet="shop" />
-            <End Role="Npc" EntitySet="npc" />
-          </AssociationSet>
           <AssociationSet Name="ShopItemItem" Association="opennosModel.ShopItemItem">
             <End Role="ShopItem" EntitySet="shopitem" />
             <End Role="Item" EntitySet="item" />
@@ -826,23 +809,35 @@
             <End Role="InventoryItem" EntitySet="inventoryitem" />
           </AssociationSet>
           <EntitySet Name="teleporter" EntityType="opennosModel.Teleporter" />
-          <AssociationSet Name="TeleporterNpc" Association="opennosModel.TeleporterNpc">
-            <End Role="Teleporter" EntitySet="teleporter" />
-            <End Role="Npc" EntitySet="npc" />
-          </AssociationSet>
           <AssociationSet Name="TeleporterMap" Association="opennosModel.TeleporterMap">
             <End Role="Teleporter" EntitySet="teleporter" />
             <End Role="Map" EntitySet="map" />
           </AssociationSet>
-          <EntitySet Name="monster" EntityType="opennosModel.Monster" />
           <EntitySet Name="mapmonster" EntityType="opennosModel.MapMonster" />
           <AssociationSet Name="MapMapMonster" Association="opennosModel.MapMapMonster">
             <End Role="Map" EntitySet="map" />
             <End Role="MapMonster" EntitySet="mapmonster" />
           </AssociationSet>
-          <AssociationSet Name="MonsterMapMonster" Association="opennosModel.MonsterMapMonster">
-            <End Role="Monster" EntitySet="monster" />
+          <EntitySet Name="mapnpc" EntityType="opennosModel.MapNpc" />
+          <AssociationSet Name="MapNpcNpc" Association="opennosModel.MapNpcNpc">
+            <End Role="MapNpc" EntitySet="mapnpc" />
+            <End Role="Npc" EntitySet="npcmonster" />
+          </AssociationSet>
+          <AssociationSet Name="MapMapNpc" Association="opennosModel.MapMapNpc">
+            <End Role="Map" EntitySet="map" />
+            <End Role="MapNpc" EntitySet="mapnpc" />
+          </AssociationSet>
+          <AssociationSet Name="TeleporterMapNpc" Association="opennosModel.TeleporterMapNpc">
+            <End Role="Teleporter" EntitySet="teleporter" />
+            <End Role="MapNpc" EntitySet="mapnpc" />
+          </AssociationSet>
+          <AssociationSet Name="MapMonsterNpcMonster" Association="opennosModel.MapMonsterNpcMonster">
             <End Role="MapMonster" EntitySet="mapmonster" />
+            <End Role="NpcMonster" EntitySet="npcmonster" />
+          </AssociationSet>
+          <AssociationSet Name="ShopMapNpc" Association="opennosModel.ShopMapNpc">
+            <End Role="Shop" EntitySet="shop" />
+            <End Role="MapNpc" EntitySet="mapnpc" />
           </AssociationSet>
           </EntityContainer>
         <Association Name="AccountCharacter">
@@ -892,11 +887,11 @@
           <NavigationProperty Name="sourceportal" Relationship="opennosModel.portalMap" FromRole="Map" ToRole="portal" />
           <NavigationProperty Name="destinationportal" Relationship="opennosModel.portalMap1" FromRole="Map" ToRole="portal" />
           <NavigationProperty Name="character" Relationship="opennosModel.CharacterMap" FromRole="Map" ToRole="Character" />
-          <NavigationProperty Name="npc" Relationship="opennosModel.NpcMap" FromRole="Map" ToRole="Npc" />
           <Property Name="Data" Type="Binary" Nullable="false" />
           <Property Name="Music" Type="Int32" Nullable="false" />
           <NavigationProperty Name="teleporter" Relationship="opennosModel.TeleporterMap" FromRole="Map" ToRole="Teleporter" />
           <NavigationProperty Name="mapmonster" Relationship="opennosModel.MapMapMonster" FromRole="Map" ToRole="MapMonster" />
+          <NavigationProperty Name="mapnpc" Relationship="opennosModel.MapMapNpc" FromRole="Map" ToRole="MapNpc" />
         </EntityType>
         <Association Name="portalMap">
           <End Type="opennosModel.Portal" Role="portal" Multiplicity="*" />
@@ -1017,24 +1012,14 @@
           <Property Name="Sex" Type="Byte" Nullable="false" />
           <Property Name="SecondaryElement" Type="Byte" Nullable="false" />
           </EntityType>
-        <EntityType Name="Npc">
+        <EntityType Name="NpcMonster">
           <Key>
-            <PropertyRef Name="NpcId" />
+            <PropertyRef Name="NpcMonsterVNum" />
           </Key>
-          <Property Name="NpcId" Type="Int16" Nullable="false" annotation:StoreGeneratedPattern="None" />
+          <Property Name="NpcMonsterVNum" Type="Int16" Nullable="false" annotation:StoreGeneratedPattern="None" />
           <Property Name="Name" Type="String" Nullable="false" />
-          <Property Name="Vnum" Type="Int16" Nullable="false" />
-          <Property Name="MapId" Type="Int16" Nullable="false" />
-          <Property Name="MapX" Type="Int16" Nullable="false" />
-          <Property Name="MapY" Type="Int16" Nullable="false" />
           <Property Name="Speed" Type="Int16" Nullable="false" />
-          <Property Name="Move" Type="Boolean" Nullable="false" />
-          <Property Name="Dialog" Type="Int16" Nullable="false" />
-          <Property Name="Position" Type="Int16" Nullable="false" />
-          <Property Name="IsSitting" Type="Boolean" Nullable="false" />
           <Property Name="Level" Type="Byte" Nullable="false" />
-          <NavigationProperty Name="map" Relationship="opennosModel.NpcMap" FromRole="Npc" ToRole="Map" />
-          <NavigationProperty Name="shop" Relationship="opennosModel.ShopNpc" FromRole="Npc" ToRole="Shop" />
           <Property Name="AttackClass" Type="Byte" Nullable="false" />
           <Property Name="AttackUpgrade" Type="Byte" Nullable="false" />
           <Property Name="DamageMinimum" Type="Int16" Nullable="false" />
@@ -1054,22 +1039,9 @@
           <Property Name="WaterResistance" Type="Int16" Nullable="false" />
           <Property Name="LightResistance" Type="Int16" Nullable="false" />
           <Property Name="DarkResistance" Type="Int16" Nullable="false" />
-          <Property Name="Effect" Type="Int16" Nullable="false" />
-          <Property Name="EffectDelay" Type="Int16" Nullable="false" />
-          <NavigationProperty Name="teleporter" Relationship="opennosModel.TeleporterNpc" FromRole="Npc" ToRole="Teleporter" />
+          <NavigationProperty Name="mapnpc" Relationship="opennosModel.MapNpcNpc" FromRole="Npc" ToRole="MapNpc" />
+          <NavigationProperty Name="mapmonster" Relationship="opennosModel.MapMonsterNpcMonster" FromRole="NpcMonster" ToRole="MapMonster" />
         </EntityType>
-        <Association Name="NpcMap">
-          <End Type="opennosModel.Npc" Role="Npc" Multiplicity="*" />
-          <End Type="opennosModel.Map" Role="Map" Multiplicity="1" />
-          <ReferentialConstraint>
-            <Principal Role="Map">
-              <PropertyRef Name="MapId" />
-            </Principal>
-            <Dependent Role="Npc">
-              <PropertyRef Name="MapId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EntityType Name="InventoryItem">
           <Key>
             <PropertyRef Name="InventoryItemId" />
@@ -1183,24 +1155,12 @@
           </Key>
           <Property Name="ShopId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Name" Type="String" Nullable="false" />
-          <NavigationProperty Name="npc" Relationship="opennosModel.ShopNpc" FromRole="Shop" ToRole="Npc" />
-          <Property Name="NpcId" Type="Int16" Nullable="false" />
           <Property Name="MenuType" Type="Int16" Nullable="false" />
           <Property Name="ShopType" Type="Int16" Nullable="false" />
           <NavigationProperty Name="shopitem" Relationship="opennosModel.ShopShopItem" FromRole="Shop" ToRole="ShopItem" />
+          <NavigationProperty Name="mapnpc" Relationship="opennosModel.ShopMapNpc" FromRole="Shop" ToRole="MapNpc" />
+          <Property Name="MapNpcId" Type="Int32" Nullable="false" />
         </EntityType>
-        <Association Name="ShopNpc">
-          <End Type="opennosModel.Shop" Role="Shop" Multiplicity="*" />
-          <End Type="opennosModel.Npc" Role="Npc" Multiplicity="1" />
-          <ReferentialConstraint>
-            <Principal Role="Npc">
-              <PropertyRef Name="NpcId" />
-            </Principal>
-            <Dependent Role="Shop">
-              <PropertyRef Name="NpcId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="ShopItemItem">
           <End Type="opennosModel.ShopItem" Role="ShopItem" Multiplicity="*" />
           <End Type="opennosModel.Item" Role="Item" Multiplicity="1" />
@@ -1258,26 +1218,14 @@
             <PropertyRef Name="TeleporterId" />
             </Key>
           <Property Name="TeleporterId" Type="Int16" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <NavigationProperty Name="npc" Relationship="opennosModel.TeleporterNpc" FromRole="Teleporter" ToRole="Npc" />
-          <Property Name="NpcId" Type="Int16" Nullable="false" />
           <Property Name="Index" Type="Int16" Nullable="false" />
           <Property Name="MapX" Type="Int16" Nullable="false" />
           <Property Name="MapY" Type="Int16" Nullable="false" />
           <NavigationProperty Name="map" Relationship="opennosModel.TeleporterMap" FromRole="Teleporter" ToRole="Map" />
           <Property Name="MapId" Type="Int16" Nullable="false" />
+          <NavigationProperty Name="mapnpc" Relationship="opennosModel.TeleporterMapNpc" FromRole="Teleporter" ToRole="MapNpc" />
+          <Property Name="MapNpcId" Type="Int32" Nullable="false" />
           </EntityType>
-        <Association Name="TeleporterNpc">
-          <End Type="opennosModel.Teleporter" Role="Teleporter" Multiplicity="*" />
-          <End Type="opennosModel.Npc" Role="Npc" Multiplicity="1" />
-          <ReferentialConstraint>
-            <Principal Role="Npc">
-              <PropertyRef Name="NpcId" />
-            </Principal>
-            <Dependent Role="Teleporter">
-              <PropertyRef Name="NpcId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="TeleporterMap">
           <End Type="opennosModel.Teleporter" Role="Teleporter" Multiplicity="*" />
           <End Type="opennosModel.Map" Role="Map" Multiplicity="1" />
@@ -1290,49 +1238,17 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityType Name="Monster">
-          <Key>
-            <PropertyRef Name="MonsterVNum" />
-          </Key>
-          <Property Name="MonsterVNum" Type="Int16" Nullable="false" annotation:StoreGeneratedPattern="None" />
-          <Property Name="Name" Type="String" Nullable="false" />
-          <Property Name="Level" Type="Byte" Nullable="false" />
-          <NavigationProperty Name="mapmonster" Relationship="opennosModel.MonsterMapMonster" FromRole="Monster" ToRole="MapMonster" />
-          <Property Name="AttackClass" Type="Byte" Nullable="false" />
-          <Property Name="AttackUpgrade" Type="Byte" Nullable="false" />
-          <Property Name="DamageMinimum" Type="Int16" Nullable="false" />
-          <Property Name="DamageMaximum" Type="Int16" Nullable="false" />
-          <Property Name="Concentrate" Type="Int16" Nullable="false" />
-          <Property Name="CriticalRate" Type="Int16" Nullable="false" />
-          <Property Name="CriticalLuckRate" Type="Int16" Nullable="false" />
-          <Property Name="Element" Type="Byte" Nullable="false" />
-          <Property Name="ElementRate" Type="Int16" Nullable="false" />
-          <Property Name="MaxHP" Type="Int16" Nullable="false" />
-          <Property Name="MaxMP" Type="Int16" Nullable="false" />
-          <Property Name="CloseDefence" Type="Int16" Nullable="false" />
-          <Property Name="DistanceDefence" Type="Int16" Nullable="false" />
-          <Property Name="MagicDefence" Type="Int16" Nullable="false" />
-          <Property Name="DefenceUpgrade" Type="Int16" Nullable="false" />
-          <Property Name="DefenceDodge" Type="Int16" Nullable="false" />
-          <Property Name="DistanceDefenceDodge" Type="Int16" Nullable="false" />
-          <Property Name="FireResistance" Type="Int16" Nullable="false" />
-          <Property Name="WaterResistance" Type="Int16" Nullable="false" />
-          <Property Name="LightResistance" Type="Int16" Nullable="false" />
-          <Property Name="DarkResistance" Type="Int16" Nullable="false" />
-          <Property Name="Speed" Type="Byte" Nullable="false" />
-        </EntityType>
         <EntityType Name="MapMonster">
           <Key>
             <PropertyRef Name="MapMonsterId" />
           </Key>
-          <Property Name="MapMonsterId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MapMonsterId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="None" />
           <NavigationProperty Name="map" Relationship="opennosModel.MapMapMonster" FromRole="MapMonster" ToRole="Map" />
           <Property Name="MonsterVNum" Type="Int16" Nullable="false" />
           <Property Name="MapId" Type="Int16" Nullable="false" />
           <Property Name="MapX" Type="Int16" Nullable="false" />
           <Property Name="MapY" Type="Int16" Nullable="false" />
-          <NavigationProperty Name="monster" Relationship="opennosModel.MonsterMapMonster" FromRole="MapMonster" ToRole="Monster" />
-          <Property Name="Move" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="npcmonster" Relationship="opennosModel.MapMonsterNpcMonster" FromRole="MapMonster" ToRole="NpcMonster" />
         </EntityType>
         <Association Name="MapMapMonster">
           <End Type="opennosModel.Map" Role="Map" Multiplicity="1" />
@@ -1346,15 +1262,83 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="MonsterMapMonster">
-          <End Type="opennosModel.Monster" Role="Monster" Multiplicity="1" />
-          <End Type="opennosModel.MapMonster" Role="MapMonster" Multiplicity="*" />
+        <EntityType Name="MapNpc">
+          <Key>
+            <PropertyRef Name="MapNpcId" />
+          </Key>
+          <Property Name="MapNpcId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="None" />
+          <NavigationProperty Name="npc" Relationship="opennosModel.MapNpcNpc" FromRole="MapNpc" ToRole="Npc" />
+          <Property Name="NpcVNum" Type="Int16" Nullable="false" />
+          <NavigationProperty Name="map" Relationship="opennosModel.MapMapNpc" FromRole="MapNpc" ToRole="Map" />
+          <Property Name="MapId" Type="Int16" Nullable="false" />
+          <Property Name="MapX" Type="Int16" Nullable="false" />
+          <Property Name="MapY" Type="Int16" Nullable="false" />
+          <Property Name="Move" Type="Boolean" Nullable="false" />
+          <Property Name="Position" Type="Int16" Nullable="false" />
+          <Property Name="IsSitting" Type="Boolean" Nullable="false" />
+          <Property Name="EffectDelay" Type="Int16" Nullable="false" />
+          <Property Name="Effect" Type="Int16" Nullable="false" />
+          <Property Name="Dialog" Type="Int16" Nullable="false" />
+          <NavigationProperty Name="teleporter" Relationship="opennosModel.TeleporterMapNpc" FromRole="MapNpc" ToRole="Teleporter" />
+          <NavigationProperty Name="shop" Relationship="opennosModel.ShopMapNpc" FromRole="MapNpc" ToRole="Shop" />
+        </EntityType>
+        <Association Name="MapNpcNpc">
+          <End Type="opennosModel.MapNpc" Role="MapNpc" Multiplicity="*" />
+          <End Type="opennosModel.NpcMonster" Role="Npc" Multiplicity="1" />
           <ReferentialConstraint>
-            <Principal Role="Monster">
-              <PropertyRef Name="MonsterVNum" />
+            <Principal Role="Npc">
+              <PropertyRef Name="NpcMonsterVNum" />
+            </Principal>
+            <Dependent Role="MapNpc">
+              <PropertyRef Name="NpcVNum" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="MapMapNpc">
+          <End Type="opennosModel.Map" Role="Map" Multiplicity="1" />
+          <End Type="opennosModel.MapNpc" Role="MapNpc" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Map">
+              <PropertyRef Name="MapId" />
+            </Principal>
+            <Dependent Role="MapNpc">
+              <PropertyRef Name="MapId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="TeleporterMapNpc">
+          <End Type="opennosModel.Teleporter" Role="Teleporter" Multiplicity="*" />
+          <End Type="opennosModel.MapNpc" Role="MapNpc" Multiplicity="1" />
+          <ReferentialConstraint>
+            <Principal Role="MapNpc">
+              <PropertyRef Name="MapNpcId" />
+            </Principal>
+            <Dependent Role="Teleporter">
+              <PropertyRef Name="MapNpcId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="MapMonsterNpcMonster">
+          <End Type="opennosModel.MapMonster" Role="MapMonster" Multiplicity="*" />
+          <End Type="opennosModel.NpcMonster" Role="NpcMonster" Multiplicity="1" />
+          <ReferentialConstraint>
+            <Principal Role="NpcMonster">
+              <PropertyRef Name="NpcMonsterVNum" />
             </Principal>
             <Dependent Role="MapMonster">
               <PropertyRef Name="MonsterVNum" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="ShopMapNpc">
+          <End Type="opennosModel.Shop" Role="Shop" Multiplicity="*" />
+          <End Type="opennosModel.MapNpc" Role="MapNpc" Multiplicity="1" />
+          <ReferentialConstraint>
+            <Principal Role="MapNpc">
+              <PropertyRef Name="MapNpcId" />
+            </Principal>
+            <Dependent Role="Shop">
+              <PropertyRef Name="MapNpcId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1537,20 +1521,12 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
-    <EntitySetMapping Name="npc">
-      <EntityTypeMapping TypeName="IsTypeOf(opennosModel.Npc)">
-        <MappingFragment StoreEntitySet="npc">
-          <ScalarProperty Name="NpcId" ColumnName="NpcId" />
+    <EntitySetMapping Name="npcmonster">
+      <EntityTypeMapping TypeName="IsTypeOf(opennosModel.NpcMonster)">
+        <MappingFragment StoreEntitySet="npcmonster">
+          <ScalarProperty Name="NpcMonsterVNum" ColumnName="NpcMonsterVNum" />
           <ScalarProperty Name="Name" ColumnName="Name" />
-          <ScalarProperty Name="Vnum" ColumnName="Vnum" />
-          <ScalarProperty Name="MapId" ColumnName="MapId" />
-          <ScalarProperty Name="MapX" ColumnName="MapX" />
-          <ScalarProperty Name="MapY" ColumnName="MapY" />
           <ScalarProperty Name="Speed" ColumnName="Speed" />
-          <ScalarProperty Name="Move" ColumnName="Move" />
-          <ScalarProperty Name="Dialog" ColumnName="Dialog" />
-          <ScalarProperty Name="Position" ColumnName="Position" />
-          <ScalarProperty Name="IsSitting" ColumnName="IsSitting" />
           <ScalarProperty Name="Level" ColumnName="Level" />
           <ScalarProperty Name="AttackClass" ColumnName="AttackClass" />
           <ScalarProperty Name="AttackUpgrade" ColumnName="AttackUpgrade" />
@@ -1571,8 +1547,6 @@
           <ScalarProperty Name="WaterResistance" ColumnName="WaterResistance" />
           <ScalarProperty Name="LightResistance" ColumnName="LightResistance" />
           <ScalarProperty Name="DarkResistance" ColumnName="DarkResistance" />
-          <ScalarProperty Name="Effect" ColumnName="Effect" />
-          <ScalarProperty Name="EffectDelay" ColumnName="EffectDelay" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -1661,9 +1635,9 @@
         <MappingFragment StoreEntitySet="shop">
           <ScalarProperty Name="ShopId" ColumnName="ShopId" />
           <ScalarProperty Name="Name" ColumnName="Name" />
-          <ScalarProperty Name="NpcId" ColumnName="NpcId" />
           <ScalarProperty Name="MenuType" ColumnName="MenuType" />
           <ScalarProperty Name="ShopType" ColumnName="ShopType" />
+          <ScalarProperty Name="MapNpcId" ColumnName="MapNpcId" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -1683,42 +1657,11 @@
       <EntityTypeMapping TypeName="IsTypeOf(opennosModel.Teleporter)">
         <MappingFragment StoreEntitySet="teleporter">
           <ScalarProperty Name="TeleporterId" ColumnName="TeleporterId" />
-          <ScalarProperty Name="NpcId" ColumnName="NpcId" />
           <ScalarProperty Name="Index" ColumnName="Index" />
           <ScalarProperty Name="MapX" ColumnName="MapX" />
           <ScalarProperty Name="MapY" ColumnName="MapY" />
           <ScalarProperty Name="MapId" ColumnName="MapId" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
-    <EntitySetMapping Name="monster">
-      <EntityTypeMapping TypeName="IsTypeOf(opennosModel.Monster)">
-        <MappingFragment StoreEntitySet="monster">
-          <ScalarProperty Name="MonsterVNum" ColumnName="MonsterVNum" />
-          <ScalarProperty Name="Name" ColumnName="Name" />
-          <ScalarProperty Name="Level" ColumnName="Level" />
-          <ScalarProperty Name="AttackClass" ColumnName="AttackClass" />
-          <ScalarProperty Name="AttackUpgrade" ColumnName="AttackUpgrade" />
-          <ScalarProperty Name="DamageMinimum" ColumnName="DamageMinimum" />
-          <ScalarProperty Name="DamageMaximum" ColumnName="DamageMaximum" />
-          <ScalarProperty Name="Concentrate" ColumnName="Concentrate" />
-          <ScalarProperty Name="CriticalRate" ColumnName="CriticalRate" />
-          <ScalarProperty Name="CriticalLuckRate" ColumnName="CriticalLuckRate" />
-          <ScalarProperty Name="Element" ColumnName="Element" />
-          <ScalarProperty Name="ElementRate" ColumnName="ElementRate" />
-          <ScalarProperty Name="MaxHP" ColumnName="MaxHP" />
-          <ScalarProperty Name="MaxMP" ColumnName="MaxMP" />
-          <ScalarProperty Name="CloseDefence" ColumnName="CloseDefence" />
-          <ScalarProperty Name="DistanceDefence" ColumnName="DistanceDefence" />
-          <ScalarProperty Name="MagicDefence" ColumnName="MagicDefence" />
-          <ScalarProperty Name="DefenceUpgrade" ColumnName="DefenceUpgrade" />
-          <ScalarProperty Name="DefenceDodge" ColumnName="DefenceDodge" />
-          <ScalarProperty Name="DistanceDefenceDodge" ColumnName="DistanceDefenceDodge" />
-          <ScalarProperty Name="FireResistance" ColumnName="FireResistance" />
-          <ScalarProperty Name="WaterResistance" ColumnName="WaterResistance" />
-          <ScalarProperty Name="LightResistance" ColumnName="LightResistance" />
-          <ScalarProperty Name="DarkResistance" ColumnName="DarkResistance" />
-          <ScalarProperty Name="Speed" ColumnName="Speed" />
+          <ScalarProperty Name="MapNpcId" ColumnName="MapNpcId" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -1730,7 +1673,23 @@
           <ScalarProperty Name="MapId" ColumnName="MapId" />
           <ScalarProperty Name="MapX" ColumnName="MapX" />
           <ScalarProperty Name="MapY" ColumnName="MapY" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="mapnpc">
+      <EntityTypeMapping TypeName="IsTypeOf(opennosModel.MapNpc)">
+        <MappingFragment StoreEntitySet="mapnpc">
+          <ScalarProperty Name="MapNpcId" ColumnName="MapNpcId" />
+          <ScalarProperty Name="NpcVNum" ColumnName="NpcVNum" />
+          <ScalarProperty Name="MapId" ColumnName="MapId" />
+          <ScalarProperty Name="MapX" ColumnName="MapX" />
+          <ScalarProperty Name="MapY" ColumnName="MapY" />
           <ScalarProperty Name="Move" ColumnName="Move" />
+          <ScalarProperty Name="Position" ColumnName="Position" />
+          <ScalarProperty Name="IsSitting" ColumnName="IsSitting" />
+          <ScalarProperty Name="EffectDelay" ColumnName="EffectDelay" />
+          <ScalarProperty Name="Effect" ColumnName="Effect" />
+          <ScalarProperty Name="Dialog" ColumnName="Dialog" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

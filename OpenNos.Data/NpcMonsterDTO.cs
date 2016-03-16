@@ -14,43 +14,33 @@
 
 namespace OpenNos.Data
 {
-    public class NpcDTO
+    public class NpcMonsterDTO
     {
         #region Properties
 
-        public short NpcId { get; set; }
+        public short NpcMonsterVNum { get; set; }
         public string Name { get; set; }
-        public short Vnum { get; set; }
-        public short Effect { get; set; }
-        public short EffectDelay { get; set; }
         public short Speed { get; set; }
-        public bool Move { get; set; }
-        public short Dialog { get; set; }
-        public short MapId { get; set; }
-        public short MapX { get; set; }
-        public short MapY { get; set; }
-        public short Position { get; set; }
         public byte Level { get; set; }
-        public byte Element { get; set; }
         public byte AttackClass { get; set; }
-        public short ElementRate { get; set; }
         public byte AttackUpgrade { get; set; }
         public short DamageMinimum { get; set; }
         public short DamageMaximum { get; set; }
         public short Concentrate { get; set; }
-        public short CriticalLuckRate { get; set; }
+        public byte Element { get; set; }
+        public short ElementRate { get; set; }
         public short CriticalRate { get; set; }
-        public byte DefenceUpgrade { get; set; }
+        public short CriticalLuckRate { get; set; }
+        public short CloseDefence { get; set; }
         public short DefenceDodge { get; set; }
+        public short MagicDefence { get; set; }
+        public byte DefenceUpgrade { get; set; }
         public short DistanceDefence { get; set; }
         public short DistanceDefenceDodge { get; set; }
-        public short MagicDefence { get; set; }
-        public short CloseDefence { get; set; }
         public short FireResistance { get; set; }
         public short WaterResistance { get; set; }
         public short LightResistance { get; set; }
         public short DarkResistance { get; set; }
-        public bool IsSitting { get; set; }
 
         #endregion
     }

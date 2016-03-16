@@ -22,7 +22,7 @@ using System.Threading.Tasks;
 
 namespace OpenNos.GameObject
 {
-    public class Npc : NpcDTO
+    public class MapNpc : MapNpcDTO
     {
         #region Instantiation
 
@@ -34,17 +34,19 @@ namespace OpenNos.GameObject
         {
             get; set;
         }
-        public Npc(short npcId)
-        {
-            Mapper.CreateMap<NpcDTO, Npc>();
-            Mapper.CreateMap<Npc, NpcDTO>();
-            NpcId = npcId;
-            LastEffect = LastMove = DateTime.Now;
 
-            IEnumerable<TeleporterDTO> Teleporters = DAOFactory.TeleporterDAO.LoadFromNpc(NpcId);
-            ShopDTO shop = DAOFactory.ShopDAO.LoadByNpc(NpcId);
+
+        public MapNpc(int npcId)
+        {
+            Mapper.CreateMap<MapNpcDTO, MapNpc>();
+            Mapper.CreateMap<MapNpc, MapNpcDTO>();
+            MapNpcId = npcId;
+            LastEffect = LastMove = DateTime.Now;
+            IEnumerable<TeleporterDTO> Teleporters = DAOFactory.TeleporterDAO.LoadFromNpc(MapNpcId);
+            ShopDTO shop = DAOFactory.ShopDAO.LoadByNpc(MapNpcId);
             if (shop != null)
-                Shop = new Shop(shop.ShopId) { Name = shop.Name, NpcId = NpcId, MenuType = shop.MenuType, ShopType = shop.ShopType };
+                Shop = new Shop(shop.ShopId) { Name = shop.Name, MapNpcId = MapNpcId, MenuType = shop.MenuType, ShopType = shop.ShopType };
+
         }
 
         #endregion
@@ -60,26 +62,33 @@ namespace OpenNos.GameObject
 
         public string GetNpcDialog()
         {
-            string dialog = String.Empty;
-
-            dialog = $"npc_req 2 {NpcId} {Dialog}";
-
-            return dialog;
+                return $"npc_req 2 {MapNpcId} {Dialog}";       
         }
 
         public string GenerateEInfo()
         {
-            return $"e_info 10 {Vnum} {Level} {Element} {AttackClass} {ElementRate} {AttackUpgrade} {DamageMinimum} {DamageMaximum} {Concentrate} {CriticalLuckRate} {CriticalRate} {DefenceUpgrade} {CloseDefence} {DefenceDodge} {DistanceDefence} {DistanceDefenceDodge} {MagicDefence} {FireResistance} {WaterResistance} {LightResistance} {DarkResistance} 0 0 -1 {Name.Replace(' ', '^')}"; // {Hp} {Mp} in 0 0 
+            NpcMonster npc = ServerManager.GetNpc(this.NpcVNum);
+            if (npc != null)
+                return $"e_info 10 {npc.NpcMonsterVNum} {npc.Level} {npc.Element} {npc.AttackClass} {npc.ElementRate} {npc.AttackUpgrade} {npc.DamageMinimum} {npc.DamageMaximum} {npc.Concentrate} {npc.CriticalLuckRate} {npc.CriticalRate} {npc.DefenceUpgrade} {npc.CloseDefence} {npc.DefenceDodge} {npc.DistanceDefence} {npc.DistanceDefenceDodge} {npc.MagicDefence} {npc.FireResistance} {npc.WaterResistance} {npc.LightResistance} {npc.DarkResistance} 0 0 -1 {npc.Name.Replace(' ', '^')}"; // {Hp} {Mp} in 0 0 
+            else
+                return "";
         }
 
         public string GenerateEff()
         {
-            return $"eff 2 {NpcId} {Effect}";
+            NpcMonster npc = ServerManager.GetNpc(this.NpcVNum);
+            if (npc != null)
+                return $"eff 2 {MapNpcId} {Effect}";
+            else
+                return "";
         }
 
         internal void NpcLife()
         {
-            double time = (DateTime.Now - LastEffect).TotalMilliseconds;
+            NpcMonster npc = ServerManager.GetNpc(this.NpcVNum);
+            if (npc == null)
+                return;
+                double time = (DateTime.Now - LastEffect).TotalMilliseconds;
             if (Effect > 0 && time > EffectDelay)
             {
                 ClientLinkManager.Instance.RequiereBroadcastFromMap(MapId, GenerateEff());
@@ -103,7 +112,7 @@ namespace OpenNos.GameObject
                     this.MapY = MapY;
                     LastMove = DateTime.Now;
 
-                    string movepacket = $"mv 2 {this.NpcId} {this.MapX} {this.MapY} {this.Speed}";
+                    string movepacket = $"mv 2 {this.MapNpcId} {this.MapX} {this.MapY} {npc.Speed}";
                     ClientLinkManager.Instance.RequiereBroadcastFromMap(MapId, movepacket);
                 }
             }

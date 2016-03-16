@@ -390,6 +390,9 @@
   <data name="NO_SP" xml:space="preserve">
     <value>You're not wearing specialist card</value>
   </data>
+  <data name="NPCSMONSTERS_LOADED" xml:space="preserve">
+    <value>{0} NPCs-Monsters Loaded!</value>
+  </data>
   <data name="NPCS_LOADED" xml:space="preserve">
     <value>{0} Npcs Loaded!</value>
   </data>

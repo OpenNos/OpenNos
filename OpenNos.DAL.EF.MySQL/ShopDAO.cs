@@ -28,7 +28,7 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                if (context.shop.SingleOrDefault(c => c.NpcId.Equals(shop.NpcId)) == null)
+                if (context.shop.SingleOrDefault(c => c.MapNpcId.Equals(shop.MapNpcId)) == null)
                 {
                     Shop entity = Mapper.Map<Shop>(shop);
                     context.shop.Add(entity);
@@ -47,11 +47,11 @@ namespace OpenNos.DAL.EF.MySQL
             }
         }
 
-        public ShopDTO LoadByNpc(short npcId)
+        public ShopDTO LoadByNpc(int npcId)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                return Mapper.Map<ShopDTO>(context.shop.FirstOrDefault(s => s.NpcId.Equals(npcId)));
+                return Mapper.Map<ShopDTO>(context.shop.FirstOrDefault(s => s.MapNpcId.Equals(npcId)));
             }
         }
 

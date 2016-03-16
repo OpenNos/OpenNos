@@ -189,7 +189,7 @@ namespace OpenNos.Handler
             }
             else
             {
-                Npc npc = Session.CurrentMap.Npcs.FirstOrDefault(n => n.NpcId.Equals((short)owner));
+                MapNpc npc = Session.CurrentMap.Npcs.FirstOrDefault(n => n.MapNpcId.Equals((short)owner));
 
                 ShopItem item = npc?.Shop.ShopItems.FirstOrDefault(it => it.Slot.Equals(slot));
                 if (item == null) return;
@@ -1057,9 +1057,14 @@ namespace OpenNos.Handler
             }
             if (packetsplit[2] == "2")
             {
-                foreach (Npc npc in ServerManager.GetMap(Session.Character.MapId).Npcs)
-                    if (npc.NpcId == Convert.ToInt16(packetsplit[3]))
-                        ClientLinkManager.Instance.Broadcast(Session, $"st 2 {packetsplit[3]} {npc.Level} 100 100 50000 50000", ReceiverType.OnlyMe);
+                foreach (MapNpc npc in ServerManager.GetMap(Session.Character.MapId).Npcs)
+                    if (npc.MapNpcId == Convert.ToInt16(packetsplit[3]))
+                    {
+                        NpcMonster npcinfo = ServerManager.GetNpc(npc.NpcVNum);
+                        if (npcinfo == null)
+                            return;
+                        ClientLinkManager.Instance.Broadcast(Session, $"st 2 {packetsplit[3]} {npcinfo.Level} 100 100 50000 50000", ReceiverType.OnlyMe);
+                    }
             }
         }
 
@@ -1977,7 +1982,7 @@ namespace OpenNos.Handler
             string[] packetsplit = packet.Split(' ');
             if (packetsplit[2] == "5")
             {
-                Npc npc = Session.CurrentMap.Npcs.First(s => s.Vnum == short.Parse(packetsplit[3]));
+                MapNpc npc = Session.CurrentMap.Npcs.First(s => s.NpcVNum == short.Parse(packetsplit[3]));
                 if (npc != null)
                 {
                     Session.Client.SendPacket(npc.GenerateEInfo());
@@ -2161,14 +2166,15 @@ namespace OpenNos.Handler
             // n_inv 2 1834 0 100 0.13.13.0.0.330 0.14.15.0.0.2299 0.18.120.0.0.3795 0.19.107.0.0.3795 0.20.94.0.0.3795 0.37.95.0.0.5643 0.38.97.0.0.11340 0.39.99.0.0.18564 0.48.108.0.0.5643 0.49.110.0.0.11340 0.50.112.0.0.18564 0.59.121.0.0.5643 0.60.123.0.0.11340 0.61.125.0.0.18564
             string[] packetsplit = packet.Split(' ');
             byte type;
-            short NpcId;
-            if (!short.TryParse(packetsplit[5], out NpcId) || !byte.TryParse(packetsplit[2], out type)) return;
+            int NpcId;
+            if (!int.TryParse(packetsplit[5], out NpcId) || !byte.TryParse(packetsplit[2], out type)) return;
 
-            Npc npc = Session.CurrentMap.Npcs.FirstOrDefault(n => n.NpcId.Equals(NpcId));
-            if (npc?.Shop == null) return;
+            MapNpc mapnpc = Session.CurrentMap.Npcs.FirstOrDefault(n => n.MapNpcId.Equals(NpcId));
+            NpcMonster npc = ServerManager.GetNpc(mapnpc.NpcVNum);
+            if (mapnpc?.Shop == null) return;
 
             string shoplist = "";
-            foreach (ShopItem item in npc.Shop.ShopItems.Where(s => s.Type.Equals(type)))
+            foreach (ShopItem item in mapnpc.Shop.ShopItems.Where(s => s.Type.Equals(type)))
             {
                 Item iteminfo = ServerManager.GetItem(item.ItemVNum);
                 double pourcent = 1;
@@ -2184,7 +2190,7 @@ namespace OpenNos.Handler
                     shoplist += $" {iteminfo.Type}.{item.Slot}.{item.ItemVNum}.{item.Rare}.{(iteminfo.IsColored ? item.Color : item.Upgrade)}.{ServerManager.GetItem(item.ItemVNum).Price * pourcent}";
             }
 
-            Session.Client.SendPacket($"n_inv 2 {npc.NpcId} 0 0{shoplist}");
+            Session.Client.SendPacket($"n_inv 2 {mapnpc.MapNpcId} 0 0{shoplist}");
         }
 
         [Packet("$Shout")]
@@ -2225,7 +2231,7 @@ namespace OpenNos.Handler
                 else
                 {
                     // Npc Shop
-                    Npc npc = ServerManager.GetMap(Session.Character.MapId).Npcs.FirstOrDefault(n => n.NpcId.Equals(Convert.ToInt16(packetsplit[3])));
+                    MapNpc npc = ServerManager.GetMap(Session.Character.MapId).Npcs.FirstOrDefault(n => n.MapNpcId.Equals(Convert.ToInt16(packetsplit[3])));
                     if (!string.IsNullOrEmpty(npc?.GetNpcDialog()))
                         Session.Client.SendPacket(npc.GetNpcDialog());
                 }

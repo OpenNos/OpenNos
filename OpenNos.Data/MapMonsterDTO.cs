@@ -23,7 +23,6 @@ namespace OpenNos.Data
         public short MapX { get; set; }
         public short MapY { get; set; }
         public short MonsterVNum { get; set; }
-        public bool Move { get; set; }
 
         #endregion
     }

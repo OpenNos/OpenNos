@@ -15,13 +15,13 @@ namespace OpenNos.DAL.EF.MySQL.DB
     public partial class Teleporter
     {
         public short TeleporterId { get; set; }
-        public short NpcId { get; set; }
         public short Index { get; set; }
         public short MapX { get; set; }
         public short MapY { get; set; }
         public short MapId { get; set; }
+        public int MapNpcId { get; set; }
     
-        public virtual Npc npc { get; set; }
         public virtual Map map { get; set; }
+        public virtual MapNpc mapnpc { get; set; }
     }
 }

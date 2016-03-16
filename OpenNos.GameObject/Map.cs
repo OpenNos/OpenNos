@@ -28,7 +28,7 @@ namespace OpenNos.GameObject
         #region Members
 
         private char[,] _grid;
-        private List<Npc> _npcs;
+        private List<MapNpc> _npcs;
         private List<Portal> _portals;
         private Guid _uniqueIdentifier;
         private int _xLength;
@@ -67,45 +67,23 @@ namespace OpenNos.GameObject
                     IsDisabled = portal.IsDisabled
                 });
             }
-            IEnumerable<NpcDTO> npcsDTO = DAOFactory.NpcDAO.LoadFromMap(MapId);
-            _npcs = new List<Npc>();
-            foreach (NpcDTO npc in npcsDTO)
+            IEnumerable<MapNpcDTO> npcsDTO = DAOFactory.MapNpcDAO.LoadFromMap(MapId);
+            _npcs = new List<MapNpc>();
+            foreach (MapNpcDTO npc in npcsDTO)
             {
-                _npcs.Add(new GameObject.Npc(npc.NpcId)
+                _npcs.Add(new GameObject.MapNpc(npc.MapNpcId)
                 {
-                    Dialog = npc.Dialog,
+                   
                     MapId = npc.MapId,
                     MapX = npc.MapX,
                     MapY = npc.MapY,
-                    Name = npc.Name,
-                    Level = npc.Level,
                     Position = npc.Position,
-                    Vnum = npc.Vnum,
-                    AttackClass = npc.AttackClass,
-                    AttackUpgrade = npc.AttackUpgrade,
-                    CloseDefence = npc.CloseDefence,
-                    Concentrate = npc.Concentrate,
-                    CriticalLuckRate = npc.CriticalLuckRate,
-                    CriticalRate = npc.CriticalRate,
-                    DamageMaximum = npc.DamageMaximum,
-                    DamageMinimum = npc.DamageMinimum,
-                    DarkResistance = npc.DarkResistance,
-                    DefenceDodge = npc.DefenceDodge,
-                    DefenceUpgrade = npc.DefenceUpgrade,
-                    DistanceDefence = npc.DistanceDefence,
-                    DistanceDefenceDodge = npc.DistanceDefenceDodge,
+                    NpcVNum = npc.NpcVNum,
+                    IsSitting = npc.IsSitting,
+                    Move = npc.Move,
                     Effect = npc.Effect,
                     EffectDelay = npc.EffectDelay,
-                    Element = npc.Element,
-                    ElementRate = npc.ElementRate,
-                    FireResistance = npc.FireResistance,
-                    IsSitting = npc.IsSitting,
-                    LightResistance = npc.LightResistance,
-                    MagicDefence = npc.MagicDefence,
-                    Move = npc.Move,
-                    NpcId = npc.NpcId,
-                    Speed = npc.Speed,
-                    WaterResistance = npc.WaterResistance,
+                    Dialog = npc.Dialog,
                     firstX = npc.MapX,
                     firstY = npc.MapY
                 });
@@ -115,7 +93,7 @@ namespace OpenNos.GameObject
         {
             var rnd = new Random();
             Task NpcLifeTask = null;
-            foreach (Npc npc in Npcs.OrderBy(i => rnd.Next()))
+            foreach (MapNpc npc in Npcs.OrderBy(i => rnd.Next()))
             {
                 NpcLifeTask = new Task(() => npc.NpcLife());
                 NpcLifeTask.Start();
@@ -141,7 +119,7 @@ namespace OpenNos.GameObject
 
         public EventHandler NotifyClients { get; set; }
 
-        public List<Npc> Npcs
+        public List<MapNpc> Npcs
         {
             get
             {

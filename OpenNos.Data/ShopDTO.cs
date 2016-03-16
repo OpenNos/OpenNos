@@ -17,12 +17,11 @@ namespace OpenNos.Data
     public class ShopDTO
     {
         #region Properties
-
         public int ShopId { get; set; }
         public string Name { get; set; }
-        public short NpcId { get; set; }
         public short MenuType { get; set; }
         public short ShopType { get; set; }
+        public int MapNpcId { get; set; }
 
         #endregion
     }

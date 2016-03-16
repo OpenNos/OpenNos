@@ -18,32 +18,45 @@ using OpenNos.DAL.Interface;
 using OpenNos.Data;
 using System.Collections.Generic;
 using System.Linq;
+using System;
 
 namespace OpenNos.DAL.EF.MySQL
 {
-    public class MonsterDAO : IMonsterDAO
+    public class NpcMonsterDAO : INpcMonsterDAO
     {
         #region Methods
 
-        public IEnumerable<MonsterDTO> LoadAll()
+        public NpcMonsterDTO Insert(NpcMonsterDTO npc)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                foreach (Monster monster in context.monster)
+                NpcMonster entity = Mapper.Map<NpcMonster>(npc);
+                context.npcmonster.Add(entity);
+                context.SaveChanges();
+                return Mapper.Map<NpcMonsterDTO>(entity);
+            }
+        }
+
+        public IEnumerable<NpcMonsterDTO> LoadAll()
+        {
+            using (var context = DataAccessHelper.CreateContext())
+            {
+                foreach (NpcMonster npcmonster in context.npcmonster)
                 {
-                    yield return Mapper.Map<MonsterDTO>(monster);
+                    yield return Mapper.Map<NpcMonsterDTO>(npcmonster);
                 }
             }
         }
 
-        public MonsterDTO LoadById(short MonsterVnum)
+        public NpcMonsterDTO LoadById(short Vnum)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                return Mapper.Map<MonsterDTO>(context.monster.SingleOrDefault(i => i.MonsterVNum.Equals(MonsterVnum)));
+                return Mapper.Map<NpcMonsterDTO>(context.npcmonster.SingleOrDefault(i => i.NpcMonsterVNum.Equals(Vnum)));
             }
         }
 
+       
         #endregion
     }
 }

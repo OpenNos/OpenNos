@@ -36,11 +36,11 @@ namespace OpenNos.DAL.EF.MySQL
             }
         }
 
-        public IEnumerable<TeleporterDTO> LoadFromNpc(short NpcId)
+        public IEnumerable<TeleporterDTO> LoadFromNpc(int NpcId)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                foreach (Teleporter teleporterobject in context.teleporter.Where(c => c.NpcId.Equals(NpcId)))
+                foreach (Teleporter teleporterobject in context.teleporter.Where(c => c.MapNpcId.Equals(NpcId)))
                 {
                     yield return Mapper.Map<TeleporterDTO>(teleporterobject);
                 }

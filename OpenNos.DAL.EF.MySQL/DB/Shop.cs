@@ -22,12 +22,12 @@ namespace OpenNos.DAL.EF.MySQL.DB
     
         public int ShopId { get; set; }
         public string Name { get; set; }
-        public short NpcId { get; set; }
         public short MenuType { get; set; }
         public short ShopType { get; set; }
+        public int MapNpcId { get; set; }
     
-        public virtual Npc npc { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ShopItem> shopitem { get; set; }
+        public virtual MapNpc mapnpc { get; set; }
     }
 }

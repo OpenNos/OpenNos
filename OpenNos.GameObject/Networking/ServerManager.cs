@@ -31,6 +31,7 @@ namespace OpenNos.GameObject
         #region Members
 
         private static List<Item> _items = new List<Item>();
+        private static List<NpcMonster> _npcs = new List<NpcMonster>();
         private static ConcurrentDictionary<Guid, Map> _maps = new ConcurrentDictionary<Guid, Map>();
 
         #endregion
@@ -60,7 +61,8 @@ namespace OpenNos.GameObject
 
         public static void Initialize()
         {
-            foreach (ItemDTO itemDTO in DAOFactory.ItemDAO.LoadAll())
+         
+                foreach (ItemDTO itemDTO in DAOFactory.ItemDAO.LoadAll())
             {
                 Item ItemGO = null;
 
@@ -167,6 +169,38 @@ namespace OpenNos.GameObject
 
             Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("ITEM_LOADED"), _items.Count()));
 
+            foreach (NpcMonsterDTO npcmonsterDTO in DAOFactory.NpcMonsterDAO.LoadAll())
+            {
+                NpcMonster npcmonster = new NpcMonster()
+                {
+                    AttackClass = npcmonsterDTO.AttackClass,
+                    DistanceDefenceDodge = npcmonsterDTO.DistanceDefenceDodge,
+                    Level = npcmonsterDTO.Level,
+                    LightResistance = npcmonsterDTO.LightResistance,
+                    NpcMonsterVNum = npcmonsterDTO.NpcMonsterVNum,
+                    AttackUpgrade = npcmonsterDTO.AttackUpgrade,
+                    DistanceDefence = npcmonsterDTO.DistanceDefence,
+                    WaterResistance = npcmonsterDTO.WaterResistance,
+                    MagicDefence = npcmonsterDTO.MagicDefence,
+                    ElementRate = npcmonsterDTO.ElementRate,
+                    CloseDefence = npcmonsterDTO.CloseDefence,
+                    Concentrate = npcmonsterDTO.Concentrate,
+                    CriticalLuckRate = npcmonsterDTO.CriticalLuckRate,
+                    CriticalRate = npcmonsterDTO.CriticalRate,
+                    DamageMaximum = npcmonsterDTO.DamageMaximum,
+                    DamageMinimum = npcmonsterDTO.DamageMinimum,
+                    DarkResistance = npcmonsterDTO.DarkResistance,
+                    DefenceDodge = npcmonsterDTO.DefenceDodge,
+                    DefenceUpgrade = npcmonsterDTO.DefenceUpgrade,
+                    Speed = npcmonsterDTO.Speed,
+                    FireResistance = npcmonsterDTO.FireResistance,
+                    Element = npcmonsterDTO.Element,
+                    Name = npcmonsterDTO.Name
+
+                };
+                _npcs.Add(npcmonster);
+            }
+            Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("NPCSMONSTERS_LOADED"), _npcs.Count()));
             try
             {
                 int i = 0;
@@ -181,8 +215,8 @@ namespace OpenNos.GameObject
                     _maps.TryAdd(guid, newMap);
                     i++;
                     npccount += newMap.Npcs.Count();
-                    foreach (Npc n in newMap.Npcs.Where(n => n.Shop != null))
-                        shopcount++;
+                    foreach (MapNpc n in newMap.Npcs.Where(n => n.Shop != null))
+                            shopcount++;
                 }
                 if (i != 0)
                     Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("MAP_LOADED"), i));
@@ -196,6 +230,11 @@ namespace OpenNos.GameObject
             {
                 Logger.Log.Error(ex.Message);
             }
+        }
+
+        public static NpcMonster GetNpc(short npcVNum)
+        {
+            return _npcs.SingleOrDefault(m => m.NpcMonsterVNum.Equals(npcVNum));
         }
 
         public static void MemoryWatch(string type)
