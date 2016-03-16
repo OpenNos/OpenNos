@@ -149,7 +149,16 @@ namespace OpenNos.GameObject
             if (Character != null)
             {
                 //disconnect client
+                KeyValuePair<long, MapShop> shop = this.CurrentMap.ShopUserList.FirstOrDefault(mapshop => mapshop.Value.OwnerId.Equals(this.Character.CharacterId));
+                if (!shop.Equals(default(KeyValuePair<long, MapShop>)))
+                {
+                    this.CurrentMap.ShopUserList.Remove(shop.Key);
+
+                    ClientLinkManager.Instance.Broadcast(this, Character.GenerateShopEnd(), ReceiverType.AllOnMap);
+                    ClientLinkManager.Instance.Broadcast(this, Character.GeneratePlayerFlag(0), ReceiverType.AllOnMapExceptMe);
+                }
                 ServiceFactory.Instance.CommunicationService.DisconnectCharacter(Character.Name);
+                CurrentMap = null;
             }
 
             if (Account != null)
