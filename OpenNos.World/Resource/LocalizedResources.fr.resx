@@ -124,7 +124,7 @@
     <value>Administrateur</value>
   </data>
   <data name="ADVENTURER" xml:space="preserve">
-    <value>Adventurier</value>
+    <value>Aventurier</value>
   </data>
   <data name="ALREADY_TAKEN" xml:space="preserve">
     <value>Ce nom est déjà utilisé.</value>
@@ -133,10 +133,10 @@
     <value>Archer</value>
   </data>
   <data name="ASK_ACCEPT" xml:space="preserve">
-    <value>{0} wants to exchange with you</value>
+    <value>{0} t'as envoyé une demande d'échange.</value>
   </data>
   <data name="BAD_DROP_AMOUNT" xml:space="preserve">
-    <value>Bad drop amount.</value>
+    <value>Mauvaise quantité d'objet.</value>
   </data>
   <data name="BAD_FAIRY" xml:space="preserve">
     <value>La carte spécialiste et ta fée ont des attributs différents.</value>
@@ -166,7 +166,7 @@
     <value>Entrez^dans^la^légende,^découvrez^le^Panthéon</value>
   </data>
   <data name="CANT_MOVE" xml:space="preserve">
-    <value>Tu pourras bientôt te déplacer</value>
+    <value>Tu pourras bientôt te déplacer.</value>
   </data>
   <data name="CLIENT_ARRIVED" xml:space="preserve">
     <value>Client arrived, SessionId: {0}</value>
@@ -226,10 +226,10 @@
     <value>Error inserting or updating character {0} , {1}</value>
   </data>
   <data name="INVALID_CHARNAME" xml:space="preserve">
-    <value>Invalid characters in nickname</value>
+    <value>Ce nom contient des caractères non valides.</value>
   </data>
   <data name="ITEM_IS_FIXED" xml:space="preserve">
-    <value>Niveau de mise à niveau d'objet est verrouillé</value>
+    <value>Niveau de mise à niveau d'objet est verrouillé.</value>
   </data>
   <data name="ITEM_NOT_DROPPABLE" xml:space="preserve">
     <value>Vous ne pouvez pas jeter cet objet.</value>
@@ -250,13 +250,13 @@
     <value>Ton niveau a augmenté.</value>
   </data>
   <data name="LOW_JOB_LVL" xml:space="preserve">
-    <value>Votre niveau métier est trop bas</value>
+    <value>Votre niveau de métier ne correspond pas.</value>
   </data>
   <data name="LOW_LVL" xml:space="preserve">
-    <value>Votre niveau est trop bas</value>
+    <value>Votre niveau ne correspond pas.</value>
   </data>
   <data name="LOW_REP" xml:space="preserve">
-    <value>Votre réputation est trop basse</value>
+    <value>Votre réputation n'est pas assez élevée.</value>
   </data>
   <data name="MAGICIAN" xml:space="preserve">
     <value>Magicien</value>
@@ -265,7 +265,7 @@
     <value>{0} Carte chargés !</value>
   </data>
   <data name="MAX_GOLD" xml:space="preserve">
-    <value>Maximum of gold reached!</value>
+    <value>Maximum d'or atteint.</value>
   </data>
   <data name="MESSAGE_RECEIVED" xml:space="preserve">
     <value>Message reçu {0} on client {1}</value>
@@ -307,7 +307,7 @@
     <value>Pari réussi ! Niveau de rareté : {0}</value>
   </data>
   <data name="REFUSED" xml:space="preserve">
-    <value>Exchange Refused</value>
+    <value>Échange refusé.</value>
   </data>
   <data name="REP_CHANGED" xml:space="preserve">
     <value>Réputation changée.</value>
@@ -316,7 +316,7 @@
     <value>Magasin ouvert.</value>
   </data>
   <data name="SHOP_VOID" xml:space="preserve">
-    <value>le magasin ne peut être vide</value>
+    <value>Le magasin ne peut être vide.</value>
   </data>
   <data name="SHUTDOWN_MIN" xml:space="preserve">
     <value>Le serveur sera fermé dans {0} minutes.</value>
@@ -343,7 +343,7 @@
     <value>Message is too big ({0} bytes). Max allowed length is {1} bytes.</value>
   </data>
   <data name="TRADE_BLOCKED" xml:space="preserve">
-    <value>User has blocked exchanges</value>
+    <value>L'utilisateur a bloqué les demandes d'échanges.</value>
   </data>
   <data name="TRANSFORM_DISAPEAR" xml:space="preserve">
     <value>L'effet secondaire de la transformation s'est dissiper</value>
@@ -355,22 +355,22 @@
     <value>{0}</value>
   </data>
   <data name="UPGRADE_FAILED" xml:space="preserve">
-    <value>Upgrade failed</value>
+    <value>L'amélioration a échoué.</value>
   </data>
   <data name="UPGRADE_FAILED_ITEM_SAVED" xml:space="preserve">
-    <value>Upgrade failed but item was saved.</value>
+    <value>L'amélioration a échoué. Heureusement, le parchemin protecteur a préservé.</value>
   </data>
   <data name="UPGRADE_FIXED" xml:space="preserve">
-    <value>Upgrade fixed</value>
+    <value>Niveau fixe.</value>
   </data>
   <data name="UPGRADE_SUCCESS" xml:space="preserve">
-    <value>Upgrade Success</value>
+    <value>L'amélioration au niveau suivant a réussi avec succès !</value>
   </data>
   <data name="USER_NOT_HERO" xml:space="preserve">
     <value>Seuls les héros peuvent utiliser des messages de héros.</value>
   </data>
   <data name="WHISPERED_BLOCKED" xml:space="preserve">
-    <value>User has blocked private messages</value>
+    <value>L'utilisateur a bloqué les messages privés.</value>
   </data>
   <data name="YOU_GET_OBJECT" xml:space="preserve">
     <value>Tu as reçu un objet</value>
