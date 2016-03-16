@@ -73,7 +73,7 @@ namespace OpenNos.GameObject
             {
                 _npcs.Add(new GameObject.MapNpc(npc.MapNpcId)
                 {
-                   
+
                     MapId = npc.MapId,
                     MapX = npc.MapX,
                     MapY = npc.MapY,
@@ -81,6 +81,7 @@ namespace OpenNos.GameObject
                     NpcVNum = npc.NpcVNum,
                     IsSitting = npc.IsSitting,
                     Move = npc.Move,
+                    MoveType = npc.MoveType,
                     Effect = npc.Effect,
                     EffectDelay = npc.EffectDelay,
                     Dialog = npc.Dialog,

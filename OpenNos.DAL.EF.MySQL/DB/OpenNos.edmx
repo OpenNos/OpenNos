@@ -423,6 +423,7 @@
     <Property Name="MapX" Type="smallint" Nullable="false" />
     <Property Name="MapY" Type="smallint" Nullable="false" />
     <Property Name="Move" Type="bool" Nullable="false" />
+    <Property Name="MoveType" Type="utinyint" Nullable="false" />
     <Property Name="Position" Type="smallint" Nullable="false" />
     <Property Name="IsSitting" Type="bool" Nullable="false" />
     <Property Name="EffectDelay" Type="smallint" Nullable="false" />
@@ -1274,6 +1275,7 @@
           <Property Name="MapX" Type="Int16" Nullable="false" />
           <Property Name="MapY" Type="Int16" Nullable="false" />
           <Property Name="Move" Type="Boolean" Nullable="false" />
+          <Property Name="MoveType" Type="Byte" Nullable="false" />
           <Property Name="Position" Type="Int16" Nullable="false" />
           <Property Name="IsSitting" Type="Boolean" Nullable="false" />
           <Property Name="EffectDelay" Type="Int16" Nullable="false" />
@@ -1685,6 +1687,7 @@
           <ScalarProperty Name="MapX" ColumnName="MapX" />
           <ScalarProperty Name="MapY" ColumnName="MapY" />
           <ScalarProperty Name="Move" ColumnName="Move" />
+          <ScalarProperty Name="MoveType" ColumnName="MoveType" />
           <ScalarProperty Name="Position" ColumnName="Position" />
           <ScalarProperty Name="IsSitting" ColumnName="IsSitting" />
           <ScalarProperty Name="EffectDelay" ColumnName="EffectDelay" />
