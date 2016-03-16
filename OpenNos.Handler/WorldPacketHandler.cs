@@ -871,6 +871,7 @@ namespace OpenNos.Handler
             }
             else if (mode == 3)
             {
+                if (Session.Character.ExchangeInfo.CharId == Session.Character.CharacterId) return;
                 ExchangeInfo exchange = ClientLinkManager.Instance.GetProperty<ExchangeInfo>(Session.Character.ExchangeInfo.CharId, "ExchangeInfo");
                 long gold = ClientLinkManager.Instance.GetProperty<long>(Session.Character.ExchangeInfo.CharId, "Gold");
                 int backpack = ClientLinkManager.Instance.GetProperty<int>(Session.Character.ExchangeInfo.CharId, "BackPack");
