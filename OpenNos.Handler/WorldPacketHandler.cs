@@ -65,6 +65,7 @@ namespace OpenNos.Handler
 
             if (mode == 2)
             {
+                if (charId == Session.Character.CharacterId) return;
                 Session.Client.SendPacket($"exc_list 1 {charId} -1");
                 ClientLinkManager.Instance.Broadcast(Session, $"exc_list 1 {Session.Character.CharacterId} -1", ReceiverType.OnlySomeone, "", charId);
             }
