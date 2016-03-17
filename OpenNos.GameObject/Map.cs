@@ -130,7 +130,7 @@ namespace OpenNos.GameObject
             {
                 MonsterLifeTask = new Task(() => monster.MonsterLife());
                 MonsterLifeTask.Start();
-                await Task.Delay(rnd.Next(Monsters.Count()/30, Monsters.Count() / 10));
+                await Task.Delay(rnd.Next(1000/Monsters.Count(), 1000 / Monsters.Count()));
             }
 
         }

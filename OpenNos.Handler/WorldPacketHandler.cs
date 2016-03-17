@@ -2859,7 +2859,7 @@ namespace OpenNos.Handler
                 {
                     short mapx = (short)rnd.Next(Session.Character.MapX - qty / 3, Session.Character.MapX+qty/3);
                     short mapy = (short)rnd.Next(Session.Character.MapY - qty / 3, Session.Character.MapY + qty / 3);
-                    while(Session.CurrentMap.IsBlockedZone(mapx, mapy))
+                    while(Session.CurrentMap!=null && Session.CurrentMap.IsBlockedZone(mapx, mapy))
                     {
                          mapx = (short)rnd.Next(Session.Character.MapX - qty / 3, Session.Character.MapX + qty / 3);
                          mapy = (short)rnd.Next(Session.Character.MapY - qty / 3, Session.Character.MapY + qty / 3);
