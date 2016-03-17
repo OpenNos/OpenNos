@@ -1043,6 +1043,8 @@
           <Property Name="DarkResistance" Type="Int16" Nullable="false" />
           <NavigationProperty Name="mapnpc" Relationship="opennosModel.MapNpcNpc" FromRole="Npc" ToRole="MapNpc" />
           <NavigationProperty Name="mapmonster" Relationship="opennosModel.MapMonsterNpcMonster" FromRole="NpcMonster" ToRole="MapMonster" />
+          <Property Name="MaxHP" Type="Int16" Nullable="false" />
+          <Property Name="MaxMP" Type="Int16" Nullable="false" />
         </EntityType>
         <EntityType Name="InventoryItem">
           <Key>
