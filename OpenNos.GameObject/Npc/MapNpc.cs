@@ -95,7 +95,7 @@ namespace OpenNos.GameObject
                 LastEffect = DateTime.Now;
             }
             time = (DateTime.Now - LastMove).TotalSeconds;
-            if (Move && time > 2.5)
+            if (Move && time > 4)
             {
                 Random r = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
                 int oldx = this.MapX;
@@ -104,8 +104,8 @@ namespace OpenNos.GameObject
                 // test.x += (((int)(r.Next(0, 6000)/1000)%2) == 0 )?(-((int)(r.Next(0, 10000)/1000)/2)):((int)(r.Next(0, 10000)/1000)/2);
                 // test.y += (((int)(r.Next(0, 6000) / 1000) % 2) == 0) ? (-((int)(r.Next(0, 10000) / 1000) / 2)) : ((int)(r.Next(0, 10000) / 1000) / 2);
 
-                short MapX = (short)r.Next(-2 + this.firstX, 2 + this.firstX);
-                short MapY = (short)r.Next(-2 + this.firstY, 2 + this.firstY);
+                short MapX = (short)r.Next(-3 + this.firstX, 3 + this.firstX);
+                short MapY = (short)r.Next(-3 + this.firstY, 3 + this.firstY);
                 if (!ServerManager.GetMap(MapId).IsBlockedZone(MapX, MapY))
                 {
                     this.MapX = MapX;
