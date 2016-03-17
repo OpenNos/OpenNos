@@ -16,6 +16,7 @@ using System;
 using AutoMapper;
 using OpenNos.Data;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace OpenNos.GameObject
 {
@@ -37,7 +38,7 @@ namespace OpenNos.GameObject
             Mapper.CreateMap<MapMonster, MapMonsterDTO>();
             LastEffect = LastMove = DateTime.Now;
         }
- 
+
 
         public DateTime LastMove { get; private set; }
         public DateTime LastEffect { get; private set; }
@@ -45,23 +46,20 @@ namespace OpenNos.GameObject
         public static int generateMapMonsterId()
         {
             Random rnd = new Random();
-            bool retry = true;
-            int max = 20000;
-            while (retry == true)
-            {
-                retry = false;
-                foreach (Map map in ServerManager.GetAllMap().Values)
-                {
+            List<int> test = new List<int>();
 
-                    MapMonster monst = map.Monsters.FirstOrDefault(s => s.MapMonsterId == max);
-                    if (monst != null)
-                    {
-                        retry = true;
-                        max++;
-                    }
+            foreach (Map map in ServerManager.GetAllMap().Values)
+            {
+                foreach (MapMonster mons in map.Monsters)
+                {
+                    test.Add(mons.MapMonsterId);
                 }
             }
-            return max;
+
+            for (int i = 0; i < int.MaxValue; i++)
+                if (!test.Contains(i))
+                    return i;
+           return -1;
         }
         internal void MonsterLife()
         {
