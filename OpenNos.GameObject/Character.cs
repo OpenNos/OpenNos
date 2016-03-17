@@ -759,9 +759,8 @@ namespace OpenNos.GameObject
             {
                 Item iteminfo = ServerManager.GetItem(weapon.InventoryItem.ItemVNum);
                 weaponUpgrade = weapon.InventoryItem.Upgrade;
-                double upg = ServersData.UpgradeBonus(weapon.InventoryItem.Upgrade);
-                MinHit += (int)((weapon.InventoryItem.DamageMinimum + iteminfo.DamageMinimum) * upg);
-                MaxHit += (int)((weapon.InventoryItem.DamageMaximum + iteminfo.DamageMaximum) * upg);
+                MinHit += (int)((weapon.InventoryItem.DamageMinimum + iteminfo.DamageMinimum) );
+                MaxHit += (int)((weapon.InventoryItem.DamageMaximum + iteminfo.DamageMaximum) );
                 HitRate += weapon.InventoryItem.HitRate + iteminfo.HitRate;
                 HitCriticalRate += weapon.InventoryItem.CriticalLuckRate + iteminfo.CriticalLuckRate;
                 HitCritical += weapon.InventoryItem.CriticalRate + iteminfo.CriticalRate;
@@ -773,9 +772,8 @@ namespace OpenNos.GameObject
             {
                 Item iteminfo = ServerManager.GetItem(weapon2.InventoryItem.ItemVNum);
                 secondaryUpgrade = weapon2.InventoryItem.Upgrade;
-                double upg = ServersData.UpgradeBonus(weapon2.InventoryItem.Upgrade);
-                MinDistance += (int)((weapon2.InventoryItem.DamageMinimum + iteminfo.DamageMinimum) * upg);
-                MaxDistance += (int)((weapon2.InventoryItem.DamageMaximum + iteminfo.DamageMaximum) * upg);
+                MinDistance += (int)((weapon2.InventoryItem.DamageMinimum + iteminfo.DamageMinimum));
+                MaxDistance += (int)((weapon2.InventoryItem.DamageMaximum + iteminfo.DamageMaximum) );
                 DistanceRate += weapon2.InventoryItem.HitRate + iteminfo.HitRate;
                 DistanceCriticalRate += weapon2.InventoryItem.CriticalLuckRate + iteminfo.CriticalLuckRate;
                 DistanceCritical += weapon2.InventoryItem.CriticalRate + iteminfo.CriticalRate;
@@ -787,10 +785,9 @@ namespace OpenNos.GameObject
             {
                 Item iteminfo = ServerManager.GetItem(armor.InventoryItem.ItemVNum); // unused variable
                 armorUpgrade = armor.InventoryItem.Upgrade;
-                double upg = ServersData.UpgradeBonus(armor.InventoryItem.Upgrade);
-                Defence += (int)((armor.InventoryItem.CloseDefence + iteminfo.CloseDefence) * upg);
-                DistanceDefence += (int)((armor.InventoryItem.DistanceDefence + iteminfo.DistanceDefence) * upg);
-                MagicalDefence += (int)((armor.InventoryItem.MagicDefence + iteminfo.MagicDefence) * upg);
+                Defence += (int)((armor.InventoryItem.CloseDefence + iteminfo.CloseDefence) );
+                DistanceDefence += (int)((armor.InventoryItem.DistanceDefence + iteminfo.DistanceDefence));
+                MagicalDefence += (int)((armor.InventoryItem.MagicDefence + iteminfo.MagicDefence)  );
                 DefenceRate += armor.InventoryItem.DefenceDodge + iteminfo.DefenceDodge;
                 DistanceDefenceRate += armor.InventoryItem.DistanceDefenceDodge + iteminfo.DistanceDefenceDodge;
             }
