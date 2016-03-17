@@ -185,7 +185,7 @@ namespace OpenNos.GameObject
         public bool IsBlockedZone(int x, int y)
         {
 
-            if (x < 1 || y < 1 || x > char.MaxValue || y > char.MaxValue || x > _grid.GetLength(0) || y > _grid.GetLength(1))
+            if (x < 1 || y < 1 || x > char.MaxValue || y > char.MaxValue || y > _grid.GetLength(0) || x > _grid.GetLength(1))
                 return false;
 
             if (_grid[y - 1, x - 1] == 1)
