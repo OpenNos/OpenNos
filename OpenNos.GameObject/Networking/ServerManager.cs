@@ -32,6 +32,10 @@ namespace OpenNos.GameObject
 
         private static List<Item> _items = new List<Item>();
         private static List<NpcMonster> _npcs = new List<NpcMonster>();
+        public static List<MapMonster> Monsters
+        {
+            get; set;
+        }
         private static ConcurrentDictionary<Guid, Map> _maps = new ConcurrentDictionary<Guid, Map>();
 
         #endregion
@@ -61,8 +65,8 @@ namespace OpenNos.GameObject
 
         public static void Initialize()
         {
-         
-                foreach (ItemDTO itemDTO in DAOFactory.ItemDAO.LoadAll())
+
+            foreach (ItemDTO itemDTO in DAOFactory.ItemDAO.LoadAll())
             {
                 Item ItemGO = null;
 
@@ -216,9 +220,12 @@ namespace OpenNos.GameObject
                     _maps.TryAdd(guid, newMap);
                     i++;
                     npccount += newMap.Npcs.Count();
+                    Monsters = new List<MapMonster>();
+                    foreach (MapMonster n in newMap.Monsters)
+                        Monsters.Add(n);
                     monstercount += newMap.Monsters.Count();
                     foreach (MapNpc n in newMap.Npcs.Where(n => n.Shop != null))
-                            shopcount++;
+                        shopcount++;
                 }
                 if (i != 0)
                     Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("MAP_LOADED"), i));

@@ -16,6 +16,7 @@ using System;
 using AutoMapper;
 using OpenNos.Data;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace OpenNos.GameObject
 {
@@ -37,7 +38,7 @@ namespace OpenNos.GameObject
             Mapper.CreateMap<MapMonster, MapMonsterDTO>();
             LastEffect = LastMove = DateTime.Now;
         }
- 
+
 
         public DateTime LastMove { get; private set; }
         public DateTime LastEffect { get; private set; }
@@ -45,23 +46,17 @@ namespace OpenNos.GameObject
         public static int generateMapMonsterId()
         {
             Random rnd = new Random();
-            bool retry = true;
-            int max = 20000;
-            while (retry == true)
-            {
-                retry = false;
-                foreach (Map map in ServerManager.GetAllMap().Values)
-                {
+            List<int> test = new List<int>();
 
-                    MapMonster monst = map.Monsters.FirstOrDefault(s => s.MapMonsterId == max);
-                    if (monst != null)
-                    {
-                        retry = true;
-                        max++;
-                    }
-                }
+            foreach (MapMonster mons in ServerManager.Monsters)
+            {
+                    test.Add(mons.MapMonsterId);
             }
-            return max;
+
+            for (int i = 20000; i < int.MaxValue; i++)
+                if (!test.Contains(i))
+                    return i;
+           return -1;
         }
         internal void MonsterLife()
         {
@@ -79,9 +74,52 @@ namespace OpenNos.GameObject
                 // test.x += (((int)(r.Next(0, 6000)/1000)%2) == 0 )?(-((int)(r.Next(0, 10000)/1000)/2)):((int)(r.Next(0, 10000)/1000)/2);
                 // test.y += (((int)(r.Next(0, 6000) / 1000) % 2) == 0) ? (-((int)(r.Next(0, 10000) / 1000) / 2)) : ((int)(r.Next(0, 10000) / 1000) / 2);
 
-                short MapX = (short)r.Next(-3 + this.firstX, 2 + this.firstX);
-                short MapY = (short)r.Next(-3 + this.firstY, 2 + this.firstY);
-                if (!ServerManager.GetMap(MapId).IsBlockedZone(MapX, MapY))
+                short MapX = (short)r.Next(-2 + this.firstX, 3 + this.firstX);
+                short MapY = (short)r.Next(-2 + this.firstY, 3 + this.firstY);
+                bool ok = true;
+                if (MapX > firstX)
+                {
+                    for (int i = 0; i < MapX - firstX; i++)
+                    {
+                        if (ServerManager.GetMap(MapId).IsBlockedZone(firstX + i, firstY))
+                        {
+                            ok = false;
+                        }
+                    }
+                }
+                else
+                {
+                    for (int i = 0; i < firstX - MapX ; i++)
+                    {
+                        if (ServerManager.GetMap(MapId).IsBlockedZone(MapX + i, MapY))
+                        {
+                            ok = false;
+                        }
+                    }
+                }
+
+
+                if (MapY > firstY)
+                {
+                    for (int i = 0; i < MapY - firstY; i++)
+                    {
+                        if (ServerManager.GetMap(MapId).IsBlockedZone(firstX, firstY + i))
+                        {
+                            ok = false;
+                        }
+                    }
+                }
+                else
+                {
+                    for (int i = 0; i < firstX - MapX; i++)
+                    {
+                        if (ServerManager.GetMap(MapId).IsBlockedZone(MapX, MapY + i))
+                        {
+                            ok = false;
+                        }
+                    }
+                }
+                if (ok)
                 {
                     this.MapX = MapX;
                     this.MapY = MapY;
