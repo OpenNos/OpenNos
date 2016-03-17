@@ -46,7 +46,7 @@ namespace OpenNos.GameObject
                 return;
 
             double time = (DateTime.Now - LastMove).TotalSeconds;
-            if (Move && time > 4)
+            if (Move && time > 3)
             {
                 Random r = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
                 int oldx = this.MapX;

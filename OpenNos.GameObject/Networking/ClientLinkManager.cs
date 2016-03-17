@@ -391,7 +391,7 @@ namespace OpenNos.GameObject
 
         public async void TaskControl()
         {
-            Task TaskMap;
+            Task TaskMap = null;
             while (true)
             {
                 foreach (var GroupedSession in Sessions.Where(s => s.Character != null).GroupBy(s => s.Character.MapId))
@@ -402,7 +402,8 @@ namespace OpenNos.GameObject
                         TaskMap.Start();
                     }
                 }
-                await Task.Delay(300);
+                await TaskMap;
+                await Task.Delay(100);
             }
         }
 

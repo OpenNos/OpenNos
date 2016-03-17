@@ -118,7 +118,7 @@ namespace OpenNos.GameObject
                 NpcLifeTask = new Task(() => npc.NpcLife());
                 NpcLifeTask.Start();
 
-                await Task.Delay(300);
+                await Task.Delay(500);
             }
 
         }
@@ -131,7 +131,7 @@ namespace OpenNos.GameObject
                 MonsterLifeTask = new Task(() => monster.MonsterLife());
                 MonsterLifeTask.Start();
 
-                await Task.Delay(300);
+                await Task.Delay(500);
             }
 
         }
