@@ -160,6 +160,8 @@ namespace OpenNos.GameObject
                     Session.Client.SendPacket(portalPacket);
                 foreach (String npcPacket in Session.Character.Generatein2())
                     Session.Client.SendPacket(npcPacket);
+                foreach (String monsterPacket in Session.Character.Generatein3())
+                    Session.Client.SendPacket(monsterPacket);
                 foreach (String ShopPacket in Session.Character.GenerateNPCShopOnMap())
                     Session.Client.SendPacket(ShopPacket);
                 foreach (String droppedPacket in Session.Character.GenerateDroppedItem())

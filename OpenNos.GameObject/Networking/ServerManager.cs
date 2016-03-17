@@ -206,6 +206,7 @@ namespace OpenNos.GameObject
                 int i = 0;
                 int npccount = 0;
                 int shopcount = 0;
+                int monstercount = 0;
                 foreach (MapDTO map in DAOFactory.MapDAO.LoadAll())
                 {
                     Guid guid = Guid.NewGuid();
@@ -215,6 +216,7 @@ namespace OpenNos.GameObject
                     _maps.TryAdd(guid, newMap);
                     i++;
                     npccount += newMap.Npcs.Count();
+                    monstercount += newMap.Monsters.Count();
                     foreach (MapNpc n in newMap.Npcs.Where(n => n.Shop != null))
                             shopcount++;
                 }
@@ -223,6 +225,7 @@ namespace OpenNos.GameObject
                 else
                     Logger.Log.Error(Language.Instance.GetMessageFromKey("NO_MAP"));
 
+                Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("MONSTERS_LOADED"), monstercount));
                 Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("NPCS_LOADED"), npccount));
                 Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("SHOPS_LOADED"), shopcount));
             }

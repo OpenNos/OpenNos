@@ -386,6 +386,11 @@ namespace OpenNos.GameObject
             return ServerManager.GetMap(MapId).Npcs.Select(npc => $"in 2 {npc.NpcVNum} {npc.MapNpcId} {npc.MapX} {npc.MapY} {npc.Position} 100 100 {npc.Dialog} 0 0 - {(npc.IsSitting ? 0 : 1)} 0 0 - 1 - 0 - 1 0 0 0 0 0 0 0 0").ToList();
         }
 
+
+        public List<string> Generatein3()
+        {
+            return ServerManager.GetMap(MapId).Monsters.Select(monster => $"in 3 {monster.MonsterVNum} {monster.MapMonsterId} {monster.MapX} {monster.MapY} {monster.Position} 100 100 0 0 0 -1 1 0 -1 - 0 -1 0 0 0 0 0 0 0 0").ToList();
+        }
         public string GenerateInfo(string message)
         {
             return $"info {message}";

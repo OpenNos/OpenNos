@@ -44,9 +44,9 @@
 -- -----------------------------------------------------------
 -- Entity Designer DDL Script for MySQL Server 4.1 and higher
 -- -----------------------------------------------------------
--- Date Created: 03/17/2016 00:00:28
+-- Date Created: 03/17/2016 01:23:09
 
--- Generated from EDMX file: C:\Users\ERWAN\Desktop\OpenNos Git\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
+-- Generated from EDMX file: C:\Users\ERWAN\Desktop\OpenNos GIT\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
 -- Target version: 3.0.0.0
 
 -- --------------------------------------------------
@@ -489,7 +489,8 @@ CREATE TABLE `mapmonster`(
 	`MonsterVNum` smallint NOT NULL, 
 	`MapId` smallint NOT NULL, 
 	`MapX` smallint NOT NULL, 
-	`MapY` smallint NOT NULL);
+	`MapY` smallint NOT NULL, 
+	`Position` smallint NOT NULL);
 
 ALTER TABLE `mapmonster` ADD PRIMARY KEY (MapMonsterId);
 

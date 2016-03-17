@@ -19,6 +19,7 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public short MapId { get; set; }
         public short MapX { get; set; }
         public short MapY { get; set; }
+        public short Position { get; set; }
     
         public virtual Map map { get; set; }
         public virtual NpcMonster npcmonster { get; set; }

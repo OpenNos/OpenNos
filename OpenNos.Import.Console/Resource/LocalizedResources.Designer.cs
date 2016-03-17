@@ -106,6 +106,15 @@ namespace OpenNos.Import.Console.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0} monster parsed.
+        /// </summary>
+        internal static string MONSTERS_PARSED {
+            get {
+                return ResourceManager.GetString("MONSTERS_PARSED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to You need a directory tree like this :.
         /// </summary>
         internal static string NEED_TREE {

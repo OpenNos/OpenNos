@@ -29,6 +29,7 @@ namespace OpenNos.GameObject
 
         private char[,] _grid;
         private List<MapNpc> _npcs;
+        private List<MapMonster> _monsters;
         private List<Portal> _portals;
         private Guid _uniqueIdentifier;
         private int _xLength;
@@ -67,7 +68,25 @@ namespace OpenNos.GameObject
                     IsDisabled = portal.IsDisabled
                 });
             }
+
+            _monsters = new List<MapMonster>();
+            foreach (MapMonsterDTO monster in DAOFactory.MapMonsterDAO.LoadFromMap(MapId))
+            {
+                _monsters.Add(new MapMonster()
+                {
+                    MapId = monster.MapId,
+                    MapX = monster.MapX,
+                    MapMonsterId = monster.MapMonsterId,
+                    MapY = monster.MapY,
+                    MonsterVNum = monster.MonsterVNum,
+                    Position = monster.Position,
+                    firstX = monster.MapX,
+                    firstY = monster.MapY,
+
+                });
+            }
             IEnumerable<MapNpcDTO> npcsDTO = DAOFactory.MapNpcDAO.LoadFromMap(MapId);
+
             _npcs = new List<MapNpc>();
             foreach (MapNpcDTO npc in npcsDTO)
             {
@@ -102,11 +121,27 @@ namespace OpenNos.GameObject
             }
 
         }
+        public async void MonsterLifeManager()
+        {
+            var rnd = new Random();
+            Task MonsterLifeTask = null;
+            foreach (MapMonster monster in Monsters.OrderBy(i => rnd.Next()))
+            {
+                MonsterLifeTask = new Task(() => monster.MonsterLife());
+                MonsterLifeTask.Start();
+
+                await Task.Delay(300);
+            }
+
+        }
         internal async void MapTaskManager()
         {
             Task NpcMoveTask = new Task(() => NpcLifeManager());
             NpcMoveTask.Start();
+            Task MonsterMoveTask = new Task(() => MonsterLifeManager());
+            MonsterMoveTask.Start();
             await NpcMoveTask;
+            await MonsterMoveTask;
         }
 
         #endregion
@@ -126,7 +161,13 @@ namespace OpenNos.GameObject
                 return _npcs;
             }
         }
-
+        public List<MapMonster> Monsters
+        {
+            get
+            {
+                return _monsters;
+            }
+        }
         public List<Portal> Portals
         {
             get
@@ -147,7 +188,7 @@ namespace OpenNos.GameObject
             if (x < 1 || y < 1 || x > char.MaxValue || y > char.MaxValue || x > _grid.GetLength(0) || x > _grid.GetLength(1))
                 return false;
 
-            if ( _grid[y - 1, x - 1] == 1)
+            if (_grid[y - 1, x - 1] == 1)
             {
                 return true;
             }

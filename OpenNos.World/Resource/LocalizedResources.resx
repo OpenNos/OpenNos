@@ -348,6 +348,9 @@
   <data name="MINI_INV_UNLOCKED" xml:space="preserve">
     <value>Miniland invite allowed</value>
   </data>
+  <data name="MONSTERS_LOADED" xml:space="preserve">
+    <value>{0} Monsters Loaded!</value>
+  </data>
   <data name="MOUSE_LOCKED" xml:space="preserve">
     <value>Mouse locked on enemy</value>
   </data>

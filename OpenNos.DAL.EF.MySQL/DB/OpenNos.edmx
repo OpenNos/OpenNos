@@ -412,6 +412,7 @@
     <Property Name="MapId" Type="smallint" Nullable="false" />
     <Property Name="MapX" Type="smallint" Nullable="false" />
     <Property Name="MapY" Type="smallint" Nullable="false" />
+    <Property Name="Position" Type="smallint" Nullable="false" />
   </EntityType>
   <EntityType Name="mapnpc">
     <Key>
@@ -1248,6 +1249,7 @@
           <Property Name="MapId" Type="Int16" Nullable="false" />
           <Property Name="MapX" Type="Int16" Nullable="false" />
           <Property Name="MapY" Type="Int16" Nullable="false" />
+          <Property Name="Position" Type="Int16" Nullable="false" />
           <NavigationProperty Name="npcmonster" Relationship="opennosModel.MapMonsterNpcMonster" FromRole="MapMonster" ToRole="NpcMonster" />
         </EntityType>
         <Association Name="MapMapMonster">
@@ -1673,6 +1675,7 @@
           <ScalarProperty Name="MapId" ColumnName="MapId" />
           <ScalarProperty Name="MapX" ColumnName="MapX" />
           <ScalarProperty Name="MapY" ColumnName="MapY" />
+          <ScalarProperty Name="Position" ColumnName="Position" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

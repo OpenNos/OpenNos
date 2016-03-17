@@ -18,11 +18,12 @@ namespace OpenNos.Data
     {
         #region Properties
 
-        public short MapId { get; set; }
         public int MapMonsterId { get; set; }
+        public short MonsterVNum { get; set; }
+        public short MapId { get; set; }
         public short MapX { get; set; }
         public short MapY { get; set; }
-        public short MonsterVNum { get; set; }
+        public short Position { get; set; }
 
         #endregion
     }

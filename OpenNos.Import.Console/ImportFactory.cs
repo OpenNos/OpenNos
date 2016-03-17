@@ -549,6 +549,50 @@ namespace OpenNos.Import.Console
             Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("NPCS_PARSED"), npcCounter));
         }
 
+        public void ImportMonsters()
+        {
+            int monsterCounter = 0;
+            short map = 0;
+            Dictionary<int, bool> movementlist = new Dictionary<int, bool>();
+            foreach (string[] linesave in packetList.Where(o => o[0].Equals("mv") && (o[1].Equals("3"))))
+            {
+                if (!(long.Parse(linesave[2]) >= 20000))
+                    if (!movementlist.ContainsKey(Convert.ToInt32(linesave[2])))
+                        movementlist[Convert.ToInt32(linesave[2])] = true;
+            }
+
+
+            foreach (string[] linesave in packetList.Where(o => o[0].Equals("in") || o[0].Equals("at")))
+            {
+                if (linesave.Length > 5 && linesave[0] == "at")
+                {
+                    map = short.Parse(linesave[2]);
+                }
+                else if (linesave.Length > 7 && linesave[0] == "in" && linesave[1] == "3")
+                {
+                   MapMonsterDTO monster = new MapMonsterDTO();
+
+                    monster.MapX = short.Parse(linesave[4]);
+                    monster.MapY = short.Parse(linesave[5]);
+                    monster.MapId = map;
+                    monster.MonsterVNum = short.Parse(linesave[2]);
+                    monster.MapMonsterId = int.Parse(linesave[3]);
+                  
+                    if (DAOFactory.NpcMonsterDAO.LoadById(monster.MonsterVNum) != null)
+                    {
+                        if (DAOFactory.MapMonsterDAO.LoadById(monster.MapMonsterId) == null)
+                        {
+                            DAOFactory.MapMonsterDAO.Insert(monster);
+                            monsterCounter++;
+                        }
+                    }
+
+                }
+            }
+
+            Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("MONSTERS_PARSED"), monsterCounter));
+        }
+
         public void ImportShopItems()
         {
             List<PortalDTO> listPacket = new List<PortalDTO>();
