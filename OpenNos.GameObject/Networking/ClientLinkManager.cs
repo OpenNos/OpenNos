@@ -402,7 +402,7 @@ namespace OpenNos.GameObject
                         TaskMap.Start();
                     }
                 }
-                await Task.Delay(1000);
+                await Task.Delay(300);
             }
         }
 
