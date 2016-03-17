@@ -77,10 +77,11 @@ namespace OpenNos.GameObject
                 LastEffect = DateTime.Now;
             }
             time = (DateTime.Now - LastMove).TotalSeconds;
-            if (Move && time > 2.2)
-            {
-                Random r = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
+            Random r = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
 
+            if (Move && time >(r.Next(2,4)* r.NextDouble()))
+            {
+            
                 byte point = (byte)r.Next(2, 6);
 
                 byte xpoint = (byte)r.Next(0, point);

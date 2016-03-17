@@ -69,12 +69,12 @@ namespace OpenNos.GameObject
             NpcMonster monster = ServerManager.GetNpc(this.MonsterVNum);
             if (monster == null)
                 return;
-
+            Random r = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
             double time = (DateTime.Now - LastMove).TotalSeconds;
-            if (Move && time > 2.2)
+            if (Move && time > r.Next(2, 4) * r.NextDouble())
             {
-                Random r = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
-                byte point = (byte)r.Next(2, 6);
+              
+                byte point = (byte)r.Next(2, 5);
 
                 byte xpoint = (byte)r.Next(0, point);
                 byte ypoint = (byte)(point - xpoint);
