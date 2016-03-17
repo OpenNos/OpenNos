@@ -212,7 +212,7 @@ namespace OpenNos.GameObject
                 NpcLifeTask = new Task(() => npc.NpcLife());
                 NpcLifeTask.Start();
 
-                await Task.Delay(500);
+                await Task.Delay(rnd.Next(1000 / Npcs.Count(), 1000 / Npcs.Count()));
             }
         }
 
