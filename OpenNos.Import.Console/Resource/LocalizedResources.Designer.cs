@@ -169,6 +169,15 @@ namespace OpenNos.Import.Console.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Do you want to parse MapNpcs?.
+        /// </summary>
+        internal static string PARSE_MAPNPCS {
+            get {
+                return ResourceManager.GetString("PARSE_MAPNPCS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Do you want to parse Maps?.
         /// </summary>
         internal static string PARSE_MAPS {

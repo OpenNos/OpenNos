@@ -153,6 +153,9 @@
   <data name="PARSE_ITEMS" xml:space="preserve">
     <value>Do you want to parse Items?</value>
   </data>
+  <data name="PARSE_MAPNPCS" xml:space="preserve">
+    <value>Do you want to parse MapNpcs?</value>
+  </data>
   <data name="PARSE_MAPS" xml:space="preserve">
     <value>Do you want to parse Maps?</value>
   </data>

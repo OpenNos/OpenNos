@@ -153,11 +153,14 @@
   <data name="PARSE_ITEMS" xml:space="preserve">
     <value>Czy chcesz wprowadzic Przedmioty?</value>
   </data>
+  <data name="PARSE_MAPNPCS" xml:space="preserve">
+    <value>Czy chcesz wprowadzic MapNpc?</value>
+  </data>
   <data name="PARSE_MAPS" xml:space="preserve">
     <value>Czy chcesz wprowadzic Mapy?</value>
   </data>
   <data name="PARSE_MONSTERS" xml:space="preserve">
-    <value>Czy chcesz wprowadzic Npc-Potwory?</value>
+    <value>Czy chcesz wprowadzic NpcMonster?</value>
   </data>
   <data name="PARSE_NPCS" xml:space="preserve">
     <value>Czy chcesz wprowadzic Npc?</value>
