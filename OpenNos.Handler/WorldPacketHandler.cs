@@ -2092,7 +2092,7 @@ namespace OpenNos.Handler
                         LastSp = 0,
                         Invisible = 0,
                         InvisibleGm = false,
-                        ArenaWinner = 0,
+                        ArenaWinner = characterDTO.ArenaWinner,
                         Morph = 0,
                         MorphUpgrade = 0,
                         MorphUpgrade2 = 0,
