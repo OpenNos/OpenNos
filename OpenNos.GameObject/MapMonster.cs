@@ -79,8 +79,8 @@ namespace OpenNos.GameObject
                 // test.x += (((int)(r.Next(0, 6000)/1000)%2) == 0 )?(-((int)(r.Next(0, 10000)/1000)/2)):((int)(r.Next(0, 10000)/1000)/2);
                 // test.y += (((int)(r.Next(0, 6000) / 1000) % 2) == 0) ? (-((int)(r.Next(0, 10000) / 1000) / 2)) : ((int)(r.Next(0, 10000) / 1000) / 2);
 
-                short MapX = (short)r.Next(-3 + this.firstX, 3 + this.firstX);
-                short MapY = (short)r.Next(-3 + this.firstY, 3 + this.firstY);
+                short MapX = (short)r.Next(-3 + this.firstX, 2 + this.firstX);
+                short MapY = (short)r.Next(-3 + this.firstY, 2 + this.firstY);
                 if (!ServerManager.GetMap(MapId).IsBlockedZone(MapX, MapY))
                 {
                     this.MapX = MapX;
