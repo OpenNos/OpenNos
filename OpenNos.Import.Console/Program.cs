@@ -69,7 +69,7 @@ namespace OpenNos.Import.Console
                 factory.ImportMaps();
                 factory.loadMaps();
                 factory.ImportPortals();
-                factory.ImportMonstersNpcs();
+                factory.ImportNpcMonsters();
                 factory.ImportMapNpcs();
                 factory.ImportMonsters();
                 factory.ImportShops();
@@ -95,22 +95,28 @@ namespace OpenNos.Import.Console
                 System.ConsoleKeyInfo key3 = System.Console.ReadKey(true);
                 if (key3.KeyChar != 'n')
                 {
-                    factory.ImportMonstersNpcs();
+                    factory.ImportNpcMonsters();
+                }
+                System.Console.WriteLine($"{Language.Instance.GetMessageFromKey("PARSE_MONSTERS")} [Y/n]");
+                System.ConsoleKeyInfo key4 = System.Console.ReadKey(true);
+                if (key3.KeyChar != 'n')
+                {
+                    factory.ImportMonsters();
                 }
                 System.Console.WriteLine($"{Language.Instance.GetMessageFromKey("PARSE_SHOPS")} [Y/n]");
-                System.ConsoleKeyInfo key4 = System.Console.ReadKey(true);
+                System.ConsoleKeyInfo key5 = System.Console.ReadKey(true);
                 if (key4.KeyChar != 'n')
                 {
                     factory.ImportShops();
                 }
                 System.Console.WriteLine($"{Language.Instance.GetMessageFromKey("PARSE_ITEMS")} [Y/n]");
-                System.ConsoleKeyInfo key5 = System.Console.ReadKey(true);
+                System.ConsoleKeyInfo key6 = System.Console.ReadKey(true);
                 if (key5.KeyChar != 'n')
                 {
                     factory.ImportItems();
                 }
                 System.Console.WriteLine($"{Language.Instance.GetMessageFromKey("PARSE_SHOPITEMS")} [Y/n]");
-                System.ConsoleKeyInfo key6 = System.Console.ReadKey(true);
+                System.ConsoleKeyInfo key7 = System.Console.ReadKey(true);
                 if (key6.KeyChar != 'n')
                 {
                     factory.ImportShopItems();

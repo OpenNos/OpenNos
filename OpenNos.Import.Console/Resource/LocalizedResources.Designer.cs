@@ -106,7 +106,7 @@ namespace OpenNos.Import.Console.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} monster parsed.
+        ///   Looks up a localized string similar to {0} monsters parsed.
         /// </summary>
         internal static string MONSTERS_PARSED {
             get {
@@ -133,20 +133,20 @@ namespace OpenNos.Import.Console.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0} npc-monsters parsed.
+        /// </summary>
+        internal static string NPCMONSTERS_PARSED {
+            get {
+                return ResourceManager.GetString("NPCMONSTERS_PARSED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0} npcs parsed.
         /// </summary>
         internal static string NPCS_PARSED {
             get {
                 return ResourceManager.GetString("NPCS_PARSED", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to {0} npcs-monsters parsed.
-        /// </summary>
-        internal static string NPCSMONSTERS_PARSED {
-            get {
-                return ResourceManager.GetString("NPCSMONSTERS_PARSED", resourceCulture);
             }
         }
         
@@ -174,6 +174,15 @@ namespace OpenNos.Import.Console.Resource {
         internal static string PARSE_MAPS {
             get {
                 return ResourceManager.GetString("PARSE_MAPS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Do you want to parse NpcMonsters?.
+        /// </summary>
+        internal static string PARSE_MONSTERS {
+            get {
+                return ResourceManager.GetString("PARSE_MONSTERS", resourceCulture);
             }
         }
         

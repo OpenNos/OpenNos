@@ -200,7 +200,7 @@ namespace OpenNos.GameObject
                 };
                 _npcs.Add(npcmonster);
             }
-            Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("NPCSMONSTERS_LOADED"), _npcs.Count()));
+            Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("NPCMONSTERS_LOADED"), _npcs.Count()));
             try
             {
                 int i = 0;

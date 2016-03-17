@@ -133,7 +133,7 @@
     <value>{0} maps parsed</value>
   </data>
   <data name="MONSTERS_PARSED" xml:space="preserve">
-    <value>{0} monster parsed</value>
+    <value>{0} monsters parsed</value>
   </data>
   <data name="NEED_TREE" xml:space="preserve">
     <value>You need a directory tree like this :</value>
@@ -141,8 +141,8 @@
   <data name="NO_ITEM" xml:space="preserve">
     <value>This item id is not valid!</value>
   </data>
-  <data name="NPCSMONSTERS_PARSED" xml:space="preserve">
-    <value>{0} npcs-monsters parsed</value>
+  <data name="NPCMONSTERS_PARSED" xml:space="preserve">
+    <value>{0} npc-monsters parsed</value>
   </data>
   <data name="NPCS_PARSED" xml:space="preserve">
     <value>{0} npcs parsed</value>
@@ -155,6 +155,9 @@
   </data>
   <data name="PARSE_MAPS" xml:space="preserve">
     <value>Do you want to parse Maps?</value>
+  </data>
+  <data name="PARSE_MONSTERS" xml:space="preserve">
+    <value>Do you want to parse NpcMonsters?</value>
   </data>
   <data name="PARSE_NPCS" xml:space="preserve">
     <value>Do you want to parse Npcs?</value>

@@ -132,8 +132,17 @@
   <data name="MAPS_PARSED" xml:space="preserve">
     <value>{0} map wprowadzonych</value>
   </data>
+  <data name="MONSTERS_PARSED" xml:space="preserve">
+    <value>{0} potworow wprowadzonych</value>
+  </data>
   <data name="NEED_TREE" xml:space="preserve">
     <value>Potrzebujesz aby struktura katalogow wygladala w ten sposob :</value>
+  </data>
+  <data name="NO_ITEM" xml:space="preserve">
+    <value>Id przedmiotu nie jest wlasciwe!</value>
+  </data>
+  <data name="NPCMONSTERS_PARSED" xml:space="preserve">
+    <value>{0} npc-potworow wprowadzonych</value>
   </data>
   <data name="NPCS_PARSED" xml:space="preserve">
     <value>{0} npc wprowadzonych</value>
@@ -146,6 +155,9 @@
   </data>
   <data name="PARSE_MAPS" xml:space="preserve">
     <value>Czy chcesz wprowadzic Mapy?</value>
+  </data>
+  <data name="PARSE_MONSTERS" xml:space="preserve">
+    <value>Czy chcesz wprowadzic Npc-Potwory?</value>
   </data>
   <data name="PARSE_NPCS" xml:space="preserve">
     <value>Czy chcesz wprowadzic Npc?</value>
@@ -161,6 +173,9 @@
   </data>
   <data name="PORTALS_PARSED" xml:space="preserve">
     <value>{0} portali wprowadzonych</value>
+  </data>
+  <data name="SHOPITEMS_PARSED" xml:space="preserve">
+    <value>{0} artykulow sklepowych wprowadzonych</value>
   </data>
   <data name="SHOPS_PARSED" xml:space="preserve">
     <value>{0} sklepow wprowadzonych</value>

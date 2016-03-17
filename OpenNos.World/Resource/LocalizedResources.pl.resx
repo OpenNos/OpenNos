@@ -348,6 +348,9 @@
   <data name="MINI_INV_UNLOCKED" xml:space="preserve">
     <value>Zaproszenia do minilandu odblokowane</value>
   </data>
+  <data name="MONSTERS_LOADED" xml:space="preserve">
+    <value>{0} zaladowanych potworow!</value>
+  </data>
   <data name="MOUSE_LOCKED" xml:space="preserve">
     <value>Wskaźnik myszy z wspomaganym celowaniem wlaczony</value>
   </data>
@@ -378,6 +381,9 @@
   <data name="NO_ENTRY" xml:space="preserve">
     <value>No EntryPoint found</value>
   </data>
+  <data name="NO_HANDLER_ITEM" xml:space="preserve">
+    <value>No handler found for this item in class {0}</value>
+  </data>
   <data name="NO_MAP" xml:space="preserve">
     <value>Server potrzebuję przynajmniej mapy nosville, aby działać poprawnie!</value>
   </data>
@@ -386,6 +392,12 @@
   </data>
   <data name="NO_SP" xml:space="preserve">
     <value>Nie zalozyles karty specjalisty!</value>
+  </data>
+  <data name="NPCMONSTERS_LOADED" xml:space="preserve">
+    <value>{0} zaladowanych npc-potworow!</value>
+  </data>
+  <data name="NPCS_LOADED" xml:space="preserve">
+    <value>{0} zaladowanych npc!</value>
   </data>
   <data name="PACKET_ARRIVED" xml:space="preserve">
     <value>Wysłano packet, packet: {0}</value>
@@ -416,6 +428,9 @@
   </data>
   <data name="SELL_ITEM_VALIDE" xml:space="preserve">
     <value>{0}: sprzedano &lt;{1} : sztuk &gt;</value>
+  </data>
+  <data name="SHOPS_LOADED" xml:space="preserve">
+    <value>{0} zaladowanych sklepow!</value>
   </data>
   <data name="SHOP_OPEN" xml:space="preserve">
     <value>Sklep zostal otwarty</value>

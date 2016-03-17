@@ -398,7 +398,7 @@ namespace OpenNos.Import.Console
 
         }
 
-        public void ImportMonstersNpcs()
+        public void ImportNpcMonsters()
         {
             string fileNpcId = $"{_folder}\\monster.dat";
             string fileNpcLang = $"{_folder}\\_code_{System.Configuration.ConfigurationManager.AppSettings["language"]}_monster.txt";
@@ -481,7 +481,7 @@ namespace OpenNos.Import.Console
                     }
 
                 }
-                Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("NPCSMONSTERS_PARSED"), counter));
+                Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("NPCMONSTERS_PARSED"), counter));
                 npcIdStream.Close();
             }
 
@@ -493,7 +493,7 @@ namespace OpenNos.Import.Console
             short map = 0;
             Dictionary<int, bool> movementlist = new Dictionary<int, bool>();
             Dictionary<int, short> effectlist = new Dictionary<int, short>();
-            foreach (string[] linesave in packetList.Where(o => o[0].Equals("mv") && (o[1].Equals("2") )))
+            foreach (string[] linesave in packetList.Where(o => o[0].Equals("mv") && (o[1].Equals("2"))))
             {
                 if (!(long.Parse(linesave[2]) >= 20000))
                     if (!movementlist.ContainsKey(Convert.ToInt32(linesave[2])))
@@ -515,34 +515,34 @@ namespace OpenNos.Import.Console
                 }
                 else if (linesave.Length > 7 && linesave[0] == "in" && linesave[1] == "2")
                 {
-                        MapNpcDTO npctest = new MapNpcDTO();
+                    MapNpcDTO npctest = new MapNpcDTO();
 
-                        npctest.MapX = short.Parse(linesave[4]);
-                        npctest.MapY = short.Parse(linesave[5]);
-                        npctest.MapId = map;
+                    npctest.MapX = short.Parse(linesave[4]);
+                    npctest.MapY = short.Parse(linesave[5]);
+                    npctest.MapId = map;
                     npctest.NpcVNum = short.Parse(linesave[2]);
                     if (long.Parse(linesave[3]) > 20000) continue;
-                        npctest.MapNpcId = short.Parse(linesave[3]);
-                        if (effectlist.ContainsKey(npctest.MapNpcId))
-                            npctest.Effect = effectlist[npctest.MapNpcId];
-                        npctest.EffectDelay = 5000;
+                    npctest.MapNpcId = short.Parse(linesave[3]);
+                    if (effectlist.ContainsKey(npctest.MapNpcId))
+                        npctest.Effect = effectlist[npctest.MapNpcId];
+                    npctest.EffectDelay = 5000;
                     if (movementlist.ContainsKey(npctest.MapNpcId))
                         npctest.Move = movementlist[npctest.MapNpcId];
-                        else
-                            npctest.Move = false;
-                        npctest.Position = short.Parse(linesave[6]);
-                        npctest.Dialog = short.Parse(linesave[9]);
-                        npctest.IsSitting = linesave[13] == "1" ? false : true;
-                    
-                        if (DAOFactory.NpcMonsterDAO.LoadById(npctest.NpcVNum) != null)
+                    else
+                        npctest.Move = false;
+                    npctest.Position = short.Parse(linesave[6]);
+                    npctest.Dialog = short.Parse(linesave[9]);
+                    npctest.IsSitting = linesave[13] == "1" ? false : true;
+
+                    if (DAOFactory.NpcMonsterDAO.LoadById(npctest.NpcVNum) != null)
+                    {
+                        if (DAOFactory.MapNpcDAO.LoadById(npctest.MapNpcId) == null)
                         {
-                            if (DAOFactory.MapNpcDAO.LoadById(npctest.MapNpcId) == null)
-                            {
-                                DAOFactory.MapNpcDAO.Insert(npctest);
-                                npcCounter++;
-                            }
+                            DAOFactory.MapNpcDAO.Insert(npctest);
+                            npcCounter++;
                         }
-                  
+                    }
+
                 }
             }
 
@@ -570,7 +570,7 @@ namespace OpenNos.Import.Console
                 }
                 else if (linesave.Length > 7 && linesave[0] == "in" && linesave[1] == "3")
                 {
-                   MapMonsterDTO monster = new MapMonsterDTO();
+                    MapMonsterDTO monster = new MapMonsterDTO();
 
                     monster.MapX = short.Parse(linesave[4]);
                     monster.MapY = short.Parse(linesave[5]);
@@ -736,7 +736,7 @@ namespace OpenNos.Import.Console
             {
                 if (linesave.Length > 6 && linesave[0] == "shop" && linesave[1] == "2")
                 {
-                   MapNpcDTO npc = DAOFactory.MapNpcDAO.LoadById(short.Parse(linesave[2]));
+                    MapNpcDTO npc = DAOFactory.MapNpcDAO.LoadById(short.Parse(linesave[2]));
                     if (npc == null) continue;
 
                     string named = "";
