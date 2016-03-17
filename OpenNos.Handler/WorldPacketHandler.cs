@@ -1069,6 +1069,17 @@ namespace OpenNos.Handler
                         ClientLinkManager.Instance.Broadcast(Session, $"st 2 {packetsplit[3]} {npcinfo.Level} 100 100 50000 50000", ReceiverType.OnlyMe);
                     }
             }
+            if (packetsplit[2] == "3")
+            {
+                foreach (MapMonster monster in ServerManager.GetMap(Session.Character.MapId).Monsters)
+                    if (monster.MapMonsterId == Convert.ToInt16(packetsplit[3]))
+                    {
+                        NpcMonster monsterinfo = ServerManager.GetNpc(monster.MonsterVNum);
+                        if (monsterinfo == null)
+                            return;
+                        ClientLinkManager.Instance.Broadcast(Session, $"st 3 {packetsplit[3]} {monsterinfo.Level} 100 100 50000 50000", ReceiverType.OnlyMe);
+                    }
+            }
         }
 
         public void GetStartupInventory()
