@@ -37,7 +37,10 @@ namespace OpenNos.Handler
 
         #region Instantiation
 
-        public WorldPacketHandler(ClientSession session) { _session = session; }
+        public WorldPacketHandler(ClientSession session)
+        {
+            _session = session;
+        }
 
         #endregion
 
@@ -74,6 +77,30 @@ namespace OpenNos.Handler
                 Session.Client.SendPacket(Session.Character.GenerateModal($"refused {Language.Instance.GetMessageFromKey("REFUSED")}"));
                 ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateModal($"refused {Language.Instance.GetMessageFromKey("REFUSED")}"), ReceiverType.OnlySomeone, "", charId);
             }
+        }
+
+        [Packet("$AddMonster")]
+        public void AddMonster(string packet)
+        {
+            string[] packetsplit = packet.Split(' ');
+            short vnum = 0, move = 0;
+            Random rnd = new Random();
+
+            if (packetsplit.Length == 4 && short.TryParse(packetsplit[2], out vnum) && short.TryParse(packetsplit[3], out move))
+            {
+                MapMonsterDTO monst = new MapMonsterDTO() { MonsterVNum = vnum, MapY = Session.Character.MapY, MapX = Session.Character.MapX, MapId = Session.Character.MapId, Position = (short)Session.Character.Direction, Move = move == 1 ? true : false, MapMonsterId = MapMonster.generateMapMonsterId() };
+                MapMonster monster = null;
+                if (DAOFactory.MapMonsterDAO.LoadById(monst.MapMonsterId) == null)
+                {
+                    DAOFactory.MapMonsterDAO.Insert(monst);
+                    monster = new MapMonster() { MonsterVNum = vnum, MapY = monst.MapY, MapX = monst.MapX, MapId = Session.Character.MapId, firstX = monst.MapX, firstY = monst.MapY, MapMonsterId = monst.MapMonsterId, Position = 1, Move = true };
+                    ServerManager.Monsters.Add(monster);
+                    ServerManager.GetMap(Session.Character.MapId).Monsters.Add(monster);
+                    ClientLinkManager.Instance.Broadcast(Session, monster.GenerateIn3(), ReceiverType.AllOnMap);
+                }
+            }
+            else
+                Session.Client.SendPacket(Session.Character.GenerateSay("$AddMonster VNUM MOVE", 10));
         }
 
         [Packet("#b_i")]
@@ -2847,6 +2874,7 @@ namespace OpenNos.Handler
                 Session.Client.SendPacket("shop_end 1");
             }
         }
+
         [Packet("$Summon")]
         public void Summon(string packet)
         {
@@ -2873,33 +2901,6 @@ namespace OpenNos.Handler
             }
             else
                 Session.Client.SendPacket(Session.Character.GenerateSay("$Summon VNUM AMOUNT", 10));
-        }
-        [Packet("$AddMonster")]
-        public void AddMonster(string packet)
-        {
-            string[] packetsplit = packet.Split(' ');
-            short vnum = 0, move = 0;
-            Random rnd = new Random();
-
-            if (packetsplit.Length == 4 && short.TryParse(packetsplit[2], out vnum) && short.TryParse(packetsplit[3], out move))
-            {
-
-
-                MapMonsterDTO monst = new MapMonsterDTO() { MonsterVNum = vnum, MapY = Session.Character.MapY, MapX = Session.Character.MapX, MapId = Session.Character.MapId, Position = (short)Session.Character.Direction, Move = move == 1 ? true : false, MapMonsterId = MapMonster.generateMapMonsterId() };
-                MapMonster monster = null;
-                if (DAOFactory.MapMonsterDAO.LoadById(monst.MapMonsterId) == null)
-                {
-                    DAOFactory.MapMonsterDAO.Insert(monst);
-                    monster = new MapMonster() { MonsterVNum = vnum, MapY = monst.MapY, MapX = monst.MapX, MapId = Session.Character.MapId, firstX = monst.MapX, firstY = monst.MapY, MapMonsterId = monst.MapMonsterId, Position = 1, Move = true };
-                    ServerManager.Monsters.Add(monster);
-                    ServerManager.GetMap(Session.Character.MapId).Monsters.Add(monster);
-                    ClientLinkManager.Instance.Broadcast(Session, monster.GenerateIn3(), ReceiverType.AllOnMap);
-
-                }
-
-            }
-            else
-                Session.Client.SendPacket(Session.Character.GenerateSay("$AddMonster VNUM MOVE", 10));
         }
 
         [Packet("$Teleport")]

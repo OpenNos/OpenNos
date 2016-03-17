@@ -17,24 +17,12 @@ using OpenNos.DAL;
 using OpenNos.Data;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Threading.Tasks;
 
 namespace OpenNos.GameObject
 {
     public class MapNpc : MapNpcDTO
     {
         #region Instantiation
-
-        public short firstX
-        {
-            get; set;
-        }
-        public short firstY
-        {
-            get; set;
-        }
-
 
         public MapNpc(int npcId)
         {
@@ -46,26 +34,22 @@ namespace OpenNos.GameObject
             ShopDTO shop = DAOFactory.ShopDAO.LoadByNpc(MapNpcId);
             if (shop != null)
                 Shop = new Shop(shop.ShopId) { Name = shop.Name, MapNpcId = MapNpcId, MenuType = shop.MenuType, ShopType = shop.ShopType };
-
         }
 
         #endregion
 
         #region Properties
-        public IEnumerable<TeleporterDTO> Teleporters { get; set; }
-        public Shop Shop { get; set; }
-        public DateTime LastMove { get; private set; }
+
+        public short firstX { get; set; }
+        public short firstY { get; set; }
         public DateTime LastEffect { get; private set; }
+        public DateTime LastMove { get; private set; }
+        public Shop Shop { get; set; }
+        public IEnumerable<TeleporterDTO> Teleporters { get; set; }
+
         #endregion
 
         #region Methods
-
-        public string GetNpcDialog()
-        {
-                return $"npc_req 2 {MapNpcId} {Dialog}";       
-        }
-
-      
 
         public string GenerateEff()
         {
@@ -76,12 +60,17 @@ namespace OpenNos.GameObject
                 return "";
         }
 
+        public string GetNpcDialog()
+        {
+            return $"npc_req 2 {MapNpcId} {Dialog}";
+        }
+
         internal void NpcLife()
         {
             NpcMonster npc = ServerManager.GetNpc(this.NpcVNum);
             if (npc == null)
                 return;
-                double time = (DateTime.Now - LastEffect).TotalMilliseconds;
+            double time = (DateTime.Now - LastEffect).TotalMilliseconds;
             if (Effect > 0 && time > EffectDelay)
             {
                 ClientLinkManager.Instance.RequiereBroadcastFromMap(MapId, GenerateEff());

@@ -31,17 +31,14 @@ namespace OpenNos.GameObject
         #region Members
 
         private static List<Item> _items = new List<Item>();
-        private static List<NpcMonster> _npcs = new List<NpcMonster>();
-        public static List<MapMonster> Monsters
-        {
-            get; set;
-        }
         private static ConcurrentDictionary<Guid, Map> _maps = new ConcurrentDictionary<Guid, Map>();
+        private static List<NpcMonster> _npcs = new List<NpcMonster>();
 
         #endregion
 
         #region Properties
 
+        public static List<MapMonster> Monsters { get; set; }
         public static EventHandler NotifyChildren { get; set; }
 
         #endregion
@@ -63,9 +60,13 @@ namespace OpenNos.GameObject
             return _maps.SingleOrDefault(m => m.Value.MapId.Equals(id)).Value;
         }
 
+        public static NpcMonster GetNpc(short npcVNum)
+        {
+            return _npcs.SingleOrDefault(m => m.NpcMonsterVNum.Equals(npcVNum));
+        }
+
         public static void Initialize()
         {
-
             foreach (ItemDTO itemDTO in DAOFactory.ItemDAO.LoadAll())
             {
                 Item ItemGO = null;
@@ -200,7 +201,6 @@ namespace OpenNos.GameObject
                     FireResistance = npcmonsterDTO.FireResistance,
                     Element = npcmonsterDTO.Element,
                     Name = npcmonsterDTO.Name
-
                 };
                 _npcs.Add(npcmonster);
             }
@@ -240,11 +240,6 @@ namespace OpenNos.GameObject
             {
                 Logger.Log.Error(ex.Message);
             }
-        }
-
-        public static NpcMonster GetNpc(short npcVNum)
-        {
-            return _npcs.SingleOrDefault(m => m.NpcMonsterVNum.Equals(npcVNum));
         }
 
         public static void MemoryWatch(string type)

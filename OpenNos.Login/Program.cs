@@ -63,7 +63,6 @@ namespace OpenNos.Login
                     {
                         Logger.Log.Error(ex.Message);
                     }
-                  
                 }
                 catch (Exception ex)
                 {

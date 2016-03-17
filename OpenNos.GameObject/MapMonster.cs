@@ -12,10 +12,9 @@
  * GNU General Public License for more details.
  */
 
-using System;
 using AutoMapper;
 using OpenNos.Data;
-using System.Linq;
+using System;
 using System.Collections.Generic;
 
 namespace OpenNos.GameObject
@@ -23,14 +22,6 @@ namespace OpenNos.GameObject
     public class MapMonster : MapMonsterDTO
     {
         #region Instantiation
-        public short firstX
-        {
-            get; set;
-        }
-        public short firstY
-        {
-            get; set;
-        }
 
         public MapMonster()
         {
@@ -39,25 +30,40 @@ namespace OpenNos.GameObject
             LastEffect = LastMove = DateTime.Now;
         }
 
+        #endregion
 
-        public DateTime LastMove { get; private set; }
+        #region Properties
+
+        public short firstX { get; set; }
+        public short firstY { get; set; }
         public DateTime LastEffect { get; private set; }
+        public DateTime LastMove { get; private set; }
+
+        #endregion
+
+        #region Methods
 
         public static int generateMapMonsterId()
         {
             Random rnd = new Random();
             List<int> test = new List<int>();
 
-            foreach (MapMonster mons in ServerManager.Monsters)
+            foreach (MapMonster monster in ServerManager.Monsters)
             {
-                    test.Add(mons.MapMonsterId);
+                test.Add(monster.MapMonsterId);
             }
 
             for (int i = 20000; i < int.MaxValue; i++)
                 if (!test.Contains(i))
                     return i;
-           return -1;
+            return -1;
         }
+
+        public string GenerateIn3()
+        {
+            return $"in 3 {MonsterVNum} {MapMonsterId} {MapX} {MapY} {Position} 100 100 0 0 0 -1 1 0 -1 - 0 -1 0 0 0 0 0 0 0 0";// 100 100 hp/mp
+        }
+
         internal void MonsterLife()
         {
             NpcMonster monster = ServerManager.GetNpc(this.MonsterVNum);
@@ -71,7 +77,7 @@ namespace OpenNos.GameObject
                 int oldx = this.MapX;
                 int oldy = this.MapY;
 
-                // test.x += (((int)(r.Next(0, 6000)/1000)%2) == 0 )?(-((int)(r.Next(0, 10000)/1000)/2)):((int)(r.Next(0, 10000)/1000)/2);
+                // test.x += (((int)(r.Next(0, 6000) / 1000) % 2) == 0) ? (-((int)(r.Next(0, 10000) / 1000) / 2)) : ((int)(r.Next(0, 10000) / 1000) / 2);
                 // test.y += (((int)(r.Next(0, 6000) / 1000) % 2) == 0) ? (-((int)(r.Next(0, 10000) / 1000) / 2)) : ((int)(r.Next(0, 10000) / 1000) / 2);
 
                 short MapX = (short)r.Next(-2 + this.firstX, 3 + this.firstX);
@@ -89,7 +95,7 @@ namespace OpenNos.GameObject
                 }
                 else
                 {
-                    for (int i = 0; i < firstX - MapX ; i++)
+                    for (int i = 0; i < firstX - MapX; i++)
                     {
                         if (ServerManager.GetMap(MapId).IsBlockedZone(MapX + i, MapY))
                         {
@@ -97,7 +103,6 @@ namespace OpenNos.GameObject
                         }
                     }
                 }
-
 
                 if (MapY > firstY)
                 {
@@ -129,11 +134,6 @@ namespace OpenNos.GameObject
                     ClientLinkManager.Instance.RequiereBroadcastFromMap(MapId, movepacket);
                 }
             }
-        }
-
-        public string GenerateIn3()
-        {
-            return $"in 3 {MonsterVNum} {MapMonsterId} {MapX} {MapY} {Position} 100 100 0 0 0 -1 1 0 -1 - 0 -1 0 0 0 0 0 0 0 0";
         }
 
         #endregion

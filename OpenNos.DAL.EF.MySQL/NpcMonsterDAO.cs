@@ -18,7 +18,6 @@ using OpenNos.DAL.Interface;
 using OpenNos.Data;
 using System.Collections.Generic;
 using System.Linq;
-using System;
 
 namespace OpenNos.DAL.EF.MySQL
 {
@@ -56,7 +55,6 @@ namespace OpenNos.DAL.EF.MySQL
             }
         }
 
-       
         #endregion
     }
 }

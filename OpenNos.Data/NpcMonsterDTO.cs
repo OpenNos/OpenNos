@@ -41,6 +41,8 @@ namespace OpenNos.Data
         public short WaterResistance { get; set; }
         public short LightResistance { get; set; }
         public short DarkResistance { get; set; }
+        public short MaxHP { get; set; }
+        public short MaxMP { get; set; }
 
         #endregion
     }

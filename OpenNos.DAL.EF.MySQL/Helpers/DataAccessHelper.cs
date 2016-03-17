@@ -34,7 +34,7 @@ namespace OpenNos.DAL.EF.MySQL
 
         static DataAccessHelper()
         {
-            //Mapper needs to Create Maps, this is a bit uncool, but the Framework itself is nice
+            //Mapper needs to Create Maps, this is a bit not cool, but the Framework itself is nice
             Mapper.CreateMap<Account, AccountDTO>();
             Mapper.CreateMap<AccountDTO, Account>();
             Mapper.CreateMap<Character, CharacterDTO>();
@@ -64,8 +64,6 @@ namespace OpenNos.DAL.EF.MySQL
         }
 
         #endregion
-
-        #region Public
 
         #region Properties
 
@@ -160,8 +158,5 @@ namespace OpenNos.DAL.EF.MySQL
         }
 
         #endregion
-
-        #endregion
-
     }
 }

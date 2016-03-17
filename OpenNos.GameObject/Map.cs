@@ -28,8 +28,8 @@ namespace OpenNos.GameObject
         #region Members
 
         private char[,] _grid;
-        private List<MapNpc> _npcs;
         private List<MapMonster> _monsters;
+        private List<MapNpc> _npcs;
         private List<Portal> _portals;
         private Guid _uniqueIdentifier;
         private int _xLength;
@@ -83,7 +83,6 @@ namespace OpenNos.GameObject
                     firstX = monster.MapX,
                     firstY = monster.MapY,
                     Move = monster.Move
-
                 });
             }
             IEnumerable<MapNpcDTO> npcsDTO = DAOFactory.MapNpcDAO.LoadFromMap(MapId);
@@ -93,7 +92,6 @@ namespace OpenNos.GameObject
             {
                 _npcs.Add(new GameObject.MapNpc(npc.MapNpcId)
                 {
-
                     MapId = npc.MapId,
                     MapX = npc.MapX,
                     MapY = npc.MapY,
@@ -109,40 +107,6 @@ namespace OpenNos.GameObject
                 });
             }
         }
-        public async void NpcLifeManager()
-        {
-            var rnd = new Random();
-            Task NpcLifeTask = null;
-            foreach (MapNpc npc in Npcs.OrderBy(i => rnd.Next()))
-            {
-                NpcLifeTask = new Task(() => npc.NpcLife());
-                NpcLifeTask.Start();
-
-                await Task.Delay(500);
-            }
-
-        }
-        public async void MonsterLifeManager()
-        {
-            var rnd = new Random();
-            Task MonsterLifeTask = null;
-            foreach (MapMonster monster in Monsters.OrderBy(i => rnd.Next()))
-            {
-                MonsterLifeTask = new Task(() => monster.MonsterLife());
-                MonsterLifeTask.Start();
-                await Task.Delay(rnd.Next(1000/Monsters.Count(), 1000 / Monsters.Count()));
-            }
-
-        }
-        internal async void MapTaskManager()
-        {
-            Task NpcMoveTask = new Task(() => NpcLifeManager());
-            NpcMoveTask.Start();
-            Task MonsterMoveTask = new Task(() => MonsterLifeManager());
-            MonsterMoveTask.Start();
-            await NpcMoveTask;
-            await MonsterMoveTask;
-        }
 
         #endregion
 
@@ -151,6 +115,14 @@ namespace OpenNos.GameObject
         public IDictionary<long, MapItem> DroppedList { get; set; }
 
         public int IsDancing { get; set; }
+
+        public List<MapMonster> Monsters
+        {
+            get
+            {
+                return _monsters;
+            }
+        }
 
         public EventHandler NotifyClients { get; set; }
 
@@ -161,13 +133,7 @@ namespace OpenNos.GameObject
                 return _npcs;
             }
         }
-        public List<MapMonster> Monsters
-        {
-            get
-            {
-                return _monsters;
-            }
-        }
+
         public List<Portal> Portals
         {
             get
@@ -184,7 +150,7 @@ namespace OpenNos.GameObject
 
         public bool IsBlockedZone(int x, int y)
         {
-            if (x < 1 || y < 1 || x > char.MaxValue || y > char.MaxValue || y > _grid.GetLength(0) || x > _grid.GetLength(1) ||_grid[y - 1, x - 1] == 1)
+            if (x < 1 || y < 1 || x > char.MaxValue || y > char.MaxValue || y > _grid.GetLength(0) || x > _grid.GetLength(1) || _grid[y - 1, x - 1] == 1)
             {
                 return true;
             }
@@ -223,6 +189,41 @@ namespace OpenNos.GameObject
                     _grid[i, t] = Convert.ToChar(bytes[0]);
                 }
             }
+        }
+
+        public async void MonsterLifeManager()
+        {
+            var rnd = new Random();
+            Task MonsterLifeTask = null;
+            foreach (MapMonster monster in Monsters.OrderBy(i => rnd.Next()))
+            {
+                MonsterLifeTask = new Task(() => monster.MonsterLife());
+                MonsterLifeTask.Start();
+                await Task.Delay(rnd.Next(1000 / Monsters.Count(), 1000 / Monsters.Count()));
+            }
+        }
+
+        public async void NpcLifeManager()
+        {
+            var rnd = new Random();
+            Task NpcLifeTask = null;
+            foreach (MapNpc npc in Npcs.OrderBy(i => rnd.Next()))
+            {
+                NpcLifeTask = new Task(() => npc.NpcLife());
+                NpcLifeTask.Start();
+
+                await Task.Delay(500);
+            }
+        }
+
+        internal async void MapTaskManager()
+        {
+            Task NpcMoveTask = new Task(() => NpcLifeManager());
+            NpcMoveTask.Start();
+            Task MonsterMoveTask = new Task(() => MonsterLifeManager());
+            MonsterMoveTask.Start();
+            await NpcMoveTask;
+            await MonsterMoveTask;
         }
 
         #endregion

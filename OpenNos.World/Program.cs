@@ -92,7 +92,6 @@ namespace OpenNos.World
             {
                 Logger.Log.Error(ex.Message);
             }
-          
         }
 
         private static bool ExitHandler(CtrlType sig)

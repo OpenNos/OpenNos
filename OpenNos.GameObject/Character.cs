@@ -386,11 +386,11 @@ namespace OpenNos.GameObject
             return ServerManager.GetMap(MapId).Npcs.Select(npc => $"in 2 {npc.NpcVNum} {npc.MapNpcId} {npc.MapX} {npc.MapY} {npc.Position} 100 100 {npc.Dialog} 0 0 - {(npc.IsSitting ? 0 : 1)} 0 0 - 1 - 0 - 1 0 0 0 0 0 0 0 0").ToList();
         }
 
-
         public List<string> Generatein3()
         {
             return ServerManager.GetMap(MapId).Monsters.Select(monster => monster.GenerateIn3()).ToList();
         }
+
         public string GenerateInfo(string message)
         {
             return $"info {message}";
@@ -759,8 +759,8 @@ namespace OpenNos.GameObject
             {
                 Item iteminfo = ServerManager.GetItem(weapon.InventoryItem.ItemVNum);
                 weaponUpgrade = weapon.InventoryItem.Upgrade;
-                MinHit += (int)((weapon.InventoryItem.DamageMinimum + iteminfo.DamageMinimum) );
-                MaxHit += (int)((weapon.InventoryItem.DamageMaximum + iteminfo.DamageMaximum) );
+                MinHit += (int)((weapon.InventoryItem.DamageMinimum + iteminfo.DamageMinimum));
+                MaxHit += (int)((weapon.InventoryItem.DamageMaximum + iteminfo.DamageMaximum));
                 HitRate += weapon.InventoryItem.HitRate + iteminfo.HitRate;
                 HitCriticalRate += weapon.InventoryItem.CriticalLuckRate + iteminfo.CriticalLuckRate;
                 HitCritical += weapon.InventoryItem.CriticalRate + iteminfo.CriticalRate;
@@ -773,7 +773,7 @@ namespace OpenNos.GameObject
                 Item iteminfo = ServerManager.GetItem(weapon2.InventoryItem.ItemVNum);
                 secondaryUpgrade = weapon2.InventoryItem.Upgrade;
                 MinDistance += (int)((weapon2.InventoryItem.DamageMinimum + iteminfo.DamageMinimum));
-                MaxDistance += (int)((weapon2.InventoryItem.DamageMaximum + iteminfo.DamageMaximum) );
+                MaxDistance += (int)((weapon2.InventoryItem.DamageMaximum + iteminfo.DamageMaximum));
                 DistanceRate += weapon2.InventoryItem.HitRate + iteminfo.HitRate;
                 DistanceCriticalRate += weapon2.InventoryItem.CriticalLuckRate + iteminfo.CriticalLuckRate;
                 DistanceCritical += weapon2.InventoryItem.CriticalRate + iteminfo.CriticalRate;
@@ -785,9 +785,9 @@ namespace OpenNos.GameObject
             {
                 Item iteminfo = ServerManager.GetItem(armor.InventoryItem.ItemVNum); // unused variable
                 armorUpgrade = armor.InventoryItem.Upgrade;
-                Defence += (int)((armor.InventoryItem.CloseDefence + iteminfo.CloseDefence) );
+                Defence += (int)((armor.InventoryItem.CloseDefence + iteminfo.CloseDefence));
                 DistanceDefence += (int)((armor.InventoryItem.DistanceDefence + iteminfo.DistanceDefence));
-                MagicalDefence += (int)((armor.InventoryItem.MagicDefence + iteminfo.MagicDefence)  );
+                MagicalDefence += (int)((armor.InventoryItem.MagicDefence + iteminfo.MagicDefence));
                 DefenceRate += armor.InventoryItem.DefenceDodge + iteminfo.DefenceDodge;
                 DistanceDefenceRate += armor.InventoryItem.DistanceDefenceDodge + iteminfo.DistanceDefenceDodge;
             }

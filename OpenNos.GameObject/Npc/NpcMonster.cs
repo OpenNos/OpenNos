@@ -17,9 +17,6 @@ using OpenNos.DAL;
 using OpenNos.Data;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace OpenNos.GameObject
 {
@@ -27,20 +24,12 @@ namespace OpenNos.GameObject
     {
         #region Instantiation
 
-        public short firstX
-        {
-            get; set;
-        }
-        public short firstY
-        {
-            get; set;
-        }
         public NpcMonster()
         {
             Mapper.CreateMap<NpcMonsterDTO, NpcMonster>();
             Mapper.CreateMap<NpcMonster, NpcMonsterDTO>();
-
         }
+
         public NpcMonster(short npcId)
         {
             Mapper.CreateMap<NpcMonsterDTO, NpcMonster>();
@@ -51,23 +40,24 @@ namespace OpenNos.GameObject
             IEnumerable<TeleporterDTO> Teleporters = DAOFactory.TeleporterDAO.LoadFromNpc(NpcMonsterVNum);
         }
 
-        public string GenerateEInfo()
-        {
-            return $"e_info 10 {NpcMonsterVNum} {Level} {Element} {AttackClass} {ElementRate} {AttackUpgrade} {DamageMinimum} {DamageMaximum} {Concentrate} {CriticalLuckRate} {CriticalRate} {DefenceUpgrade} {CloseDefence} {DefenceDodge} {DistanceDefence} {DistanceDefenceDodge} {MagicDefence} {FireResistance} {WaterResistance} {LightResistance} {DarkResistance} 0 0 -1 {Name.Replace(' ', '^')}"; // {Hp} {Mp} in 0 0 
-
-        }
-       
-
         #endregion
 
         #region Properties
-        public IEnumerable<TeleporterDTO> Teleporters { get; set; }
-        public DateTime LastMove { get; private set; }
+
+        public short firstX { get; set; }
+        public short firstY { get; set; }
         public DateTime LastEffect { get; private set; }
+        public DateTime LastMove { get; private set; }
+        public IEnumerable<TeleporterDTO> Teleporters { get; set; }
+
         #endregion
 
         #region Methods
 
+        public string GenerateEInfo()
+        {
+            return $"e_info 10 {NpcMonsterVNum} {Level} {Element} {AttackClass} {ElementRate} {AttackUpgrade} {DamageMinimum} {DamageMaximum} {Concentrate} {CriticalLuckRate} {CriticalRate} {DefenceUpgrade} {CloseDefence} {DefenceDodge} {DistanceDefence} {DistanceDefenceDodge} {MagicDefence} {FireResistance} {WaterResistance} {LightResistance} {DarkResistance} 0 0 -1 {Name.Replace(' ', '^')}"; // {Hp} {Mp} in 0 0
+        }
 
         #endregion
     }

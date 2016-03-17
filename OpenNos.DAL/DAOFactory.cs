@@ -28,14 +28,15 @@ namespace OpenNos.DAL
         private static IInventoryItemDAO _inventoryitemDAO;
         private static IItemDAO _itemDAO;
         private static IMapDAO _mapDAO;
+        private static IMapMonsterDAO _mapmonsterDAO;
+        private static IMapNpcDAO _mapnpcDAO;
         private static INpcMonsterDAO _npcmonsterDAO;
         private static IPortalDAO _portalDAO;
         private static IRespawnDAO _respawnDAO;
         private static IShopDAO _shopDAO;
-        private static ITeleporterDAO _teleporterDAO;
         private static IShopItemDAO _shopitemDAO;
-        private static IMapMonsterDAO _mapmonsterDAO;
-        private static IMapNpcDAO _mapnpcDAO;
+        private static ITeleporterDAO _teleporterDAO;
+
         #endregion
 
         #region Instantiation
@@ -64,32 +65,6 @@ namespace OpenNos.DAL
                 return _accountDAO;
             }
         }
-        public static IMapNpcDAO MapNpcDAO
-        {
-            get
-            {
-                if (_mapnpcDAO == null)
-                {
-                    _mapnpcDAO = new MySQL.MapNpcDAO();
-                }
-
-                return _mapnpcDAO;
-            }
-        }
-        public static IMapMonsterDAO MapMonsterDAO
-        {
-            get
-            {
-                if (_mapmonsterDAO == null)
-                {
-                    _mapmonsterDAO = new MySQL.MapMonsterDAO();
-                }
-
-                return _mapmonsterDAO;
-            }
-        }
-
-  
 
         public static ICharacterDAO CharacterDAO
         {
@@ -169,6 +144,32 @@ namespace OpenNos.DAL
             }
         }
 
+        public static IMapMonsterDAO MapMonsterDAO
+        {
+            get
+            {
+                if (_mapmonsterDAO == null)
+                {
+                    _mapmonsterDAO = new MySQL.MapMonsterDAO();
+                }
+
+                return _mapmonsterDAO;
+            }
+        }
+
+        public static IMapNpcDAO MapNpcDAO
+        {
+            get
+            {
+                if (_mapnpcDAO == null)
+                {
+                    _mapnpcDAO = new MySQL.MapNpcDAO();
+                }
+
+                return _mapnpcDAO;
+            }
+        }
+
         public static INpcMonsterDAO NpcMonsterDAO
         {
             get
@@ -220,18 +221,7 @@ namespace OpenNos.DAL
                 return _shopDAO;
             }
         }
-        public static ITeleporterDAO TeleporterDAO
-        {
-            get
-            {
-                if (_teleporterDAO == null)
-                {
-                    _teleporterDAO = new MySQL.TeleporterDAO();
-                }
 
-                return _teleporterDAO;
-            }
-        }
         public static IShopItemDAO ShopItemDAO
         {
             get
@@ -242,6 +232,19 @@ namespace OpenNos.DAL
                 }
 
                 return _shopitemDAO;
+            }
+        }
+
+        public static ITeleporterDAO TeleporterDAO
+        {
+            get
+            {
+                if (_teleporterDAO == null)
+                {
+                    _teleporterDAO = new MySQL.TeleporterDAO();
+                }
+
+                return _teleporterDAO;
             }
         }
 
