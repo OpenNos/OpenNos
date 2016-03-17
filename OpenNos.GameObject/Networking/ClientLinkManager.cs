@@ -73,7 +73,7 @@ namespace OpenNos.GameObject
                     break;
 
                 case ReceiverType.AllOnMap:
-                    for (int i=Sessions.Where(s => s.Character != null && s.Character.MapId.Equals(client.Character.MapId)).Count();i>=0;i--)
+                    for (int i=Sessions.Where(s => s.Character != null && s.Character.MapId.Equals(client.Character.MapId)).Count()-1;i>=0;i--)
                         Sessions.Where(s => s.Character != null && s.Character.MapId.Equals(client.Character.MapId)).ElementAt(i).Client.SendPacket(message);
                     break;
 
