@@ -1984,7 +1984,7 @@ namespace OpenNos.Handler
             string[] packetsplit = packet.Split(' ');
             if (packetsplit[2] == "5")
             {
-                MapNpc npc = Session.CurrentMap.Npcs.First(s => s.NpcVNum == short.Parse(packetsplit[3]));
+                NpcMonster npc = ServerManager.GetNpc(short.Parse(packetsplit[3]));
                 if (npc != null)
                 {
                     Session.Client.SendPacket(npc.GenerateEInfo());

@@ -65,14 +65,7 @@ namespace OpenNos.GameObject
                 return $"npc_req 2 {MapNpcId} {Dialog}";       
         }
 
-        public string GenerateEInfo()
-        {
-            NpcMonster npc = ServerManager.GetNpc(this.NpcVNum);
-            if (npc != null)
-                return $"e_info 10 {npc.NpcMonsterVNum} {npc.Level} {npc.Element} {npc.AttackClass} {npc.ElementRate} {npc.AttackUpgrade} {npc.DamageMinimum} {npc.DamageMaximum} {npc.Concentrate} {npc.CriticalLuckRate} {npc.CriticalRate} {npc.DefenceUpgrade} {npc.CloseDefence} {npc.DefenceDodge} {npc.DistanceDefence} {npc.DistanceDefenceDodge} {npc.MagicDefence} {npc.FireResistance} {npc.WaterResistance} {npc.LightResistance} {npc.DarkResistance} 0 0 -1 {npc.Name.Replace(' ', '^')}"; // {Hp} {Mp} in 0 0 
-            else
-                return "";
-        }
+      
 
         public string GenerateEff()
         {

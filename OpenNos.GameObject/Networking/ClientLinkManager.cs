@@ -73,8 +73,8 @@ namespace OpenNos.GameObject
                     break;
 
                 case ReceiverType.AllOnMap:
-                    foreach (ClientSession session in Sessions.Where(s => s.Character != null && s.Character.MapId.Equals(client.Character.MapId)))
-                        session.Client.SendPacket(message);
+                    for (int i=Sessions.Where(s => s.Character != null && s.Character.MapId.Equals(client.Character.MapId)).Count();i>=0;i--)
+                        Sessions.Where(s => s.Character != null && s.Character.MapId.Equals(client.Character.MapId)).ElementAt(i).Client.SendPacket(message);
                     break;
 
                 case ReceiverType.AllOnMapExceptMe:
