@@ -48,15 +48,12 @@ namespace OpenNos.GameObject
             Random rnd = new Random();
             List<int> test = new List<int>();
 
-            foreach (Map map in ServerManager.GetAllMap().Values)
+            foreach (MapMonster mons in ServerManager.Monsters)
             {
-                foreach (MapMonster mons in map.Monsters)
-                {
                     test.Add(mons.MapMonsterId);
-                }
             }
 
-            for (int i = 0; i < int.MaxValue; i++)
+            for (int i = 20000; i < int.MaxValue; i++)
                 if (!test.Contains(i))
                     return i;
            return -1;
@@ -77,9 +74,52 @@ namespace OpenNos.GameObject
                 // test.x += (((int)(r.Next(0, 6000)/1000)%2) == 0 )?(-((int)(r.Next(0, 10000)/1000)/2)):((int)(r.Next(0, 10000)/1000)/2);
                 // test.y += (((int)(r.Next(0, 6000) / 1000) % 2) == 0) ? (-((int)(r.Next(0, 10000) / 1000) / 2)) : ((int)(r.Next(0, 10000) / 1000) / 2);
 
-                short MapX = (short)r.Next(-3 + this.firstX, 2 + this.firstX);
-                short MapY = (short)r.Next(-3 + this.firstY, 2 + this.firstY);
-                if (!ServerManager.GetMap(MapId).IsBlockedZone(MapX, MapY))
+                short MapX = (short)r.Next(-2 + this.firstX, 3 + this.firstX);
+                short MapY = (short)r.Next(-2 + this.firstY, 3 + this.firstY);
+                bool ok = true;
+                if (MapX > firstX)
+                {
+                    for (int i = 0; i < MapX - firstX; i++)
+                    {
+                        if (ServerManager.GetMap(MapId).IsBlockedZone(firstX + i, firstY))
+                        {
+                            ok = false;
+                        }
+                    }
+                }
+                else
+                {
+                    for (int i = 0; i < firstX - MapX ; i++)
+                    {
+                        if (ServerManager.GetMap(MapId).IsBlockedZone(MapX + i, MapY))
+                        {
+                            ok = false;
+                        }
+                    }
+                }
+
+
+                if (MapY > firstY)
+                {
+                    for (int i = 0; i < MapY - firstY; i++)
+                    {
+                        if (ServerManager.GetMap(MapId).IsBlockedZone(firstX, firstY + i))
+                        {
+                            ok = false;
+                        }
+                    }
+                }
+                else
+                {
+                    for (int i = 0; i < firstX - MapX; i++)
+                    {
+                        if (ServerManager.GetMap(MapId).IsBlockedZone(MapX, MapY + i))
+                        {
+                            ok = false;
+                        }
+                    }
+                }
+                if (ok)
                 {
                     this.MapX = MapX;
                     this.MapY = MapY;
