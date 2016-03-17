@@ -184,11 +184,7 @@ namespace OpenNos.GameObject
 
         public bool IsBlockedZone(int x, int y)
         {
-
-            if (x < 1 || y < 1 || x > char.MaxValue || y > char.MaxValue || y > _grid.GetLength(0) || x > _grid.GetLength(1))
-                return false;
-
-            if (_grid[y - 1, x - 1] == 1)
+            if (x < 1 || y < 1 || x > char.MaxValue || y > char.MaxValue || y > _grid.GetLength(0) || x > _grid.GetLength(1) ||_grid[y - 1, x - 1] == 1)
             {
                 return true;
             }
@@ -204,12 +200,20 @@ namespace OpenNos.GameObject
             int numBytesToRead = 1;
             int numBytesRead = 0;
 
+            byte[] xlength = new byte[2];
+            byte[] ylength = new byte[2];
             stream.Read(bytes, numBytesRead, numBytesToRead);
-            _xLength = bytes[0];
+            xlength[0] = bytes[0];
             stream.Read(bytes, numBytesRead, numBytesToRead);
+            xlength[1] = bytes[0];
             stream.Read(bytes, numBytesRead, numBytesToRead);
-            _yLength = bytes[0];
+            ylength[0] = bytes[0];
             stream.Read(bytes, numBytesRead, numBytesToRead);
+            ylength[1] = bytes[0];
+
+            _yLength = BitConverter.ToInt16(ylength, 0);
+            _xLength = BitConverter.ToInt16(xlength, 0);
+
             _grid = new char[_yLength, _xLength];
             for (int i = 0; i < _yLength; ++i)
             {

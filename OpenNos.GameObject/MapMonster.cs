@@ -46,7 +46,7 @@ namespace OpenNos.GameObject
         {
             Random rnd = new Random();
             bool retry = true;
-            int max = rnd.Next(1, int.MaxValue);
+            int max = 20000;
             while (retry == true)
             {
                 retry = false;
@@ -57,7 +57,7 @@ namespace OpenNos.GameObject
                     if (monst != null)
                     {
                         retry = true;
-                        max = rnd.Next(1, int.MaxValue);
+                        max++;
                     }
                 }
             }
