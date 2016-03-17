@@ -1061,7 +1061,7 @@ namespace OpenNos.Handler
             if (packetsplit[2] == "2")
             {
                 foreach (MapNpc npc in ServerManager.GetMap(Session.Character.MapId).Npcs)
-                    if (npc.MapNpcId == Convert.ToInt16(packetsplit[3]))
+                    if (npc.MapNpcId == Convert.ToInt32(packetsplit[3]))
                     {
                         NpcMonster npcinfo = ServerManager.GetNpc(npc.NpcVNum);
                         if (npcinfo == null)
@@ -1072,7 +1072,7 @@ namespace OpenNos.Handler
             if (packetsplit[2] == "3")
             {
                 foreach (MapMonster monster in ServerManager.GetMap(Session.Character.MapId).Monsters)
-                    if (monster.MapMonsterId == Convert.ToInt16(packetsplit[3]))
+                    if (monster.MapMonsterId == Convert.ToInt32(packetsplit[3]))
                     {
                         NpcMonster monsterinfo = ServerManager.GetNpc(monster.MonsterVNum);
                         if (monsterinfo == null)
