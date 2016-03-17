@@ -341,8 +341,8 @@ namespace OpenNos.GameObject
 
         public void RequiereBroadcastFromMap(short mapId, string message)
         {
-            foreach (ClientSession session in Sessions.Where(s => s.Character != null && s.Character.MapId.Equals(mapId)))
-                Broadcast(session, string.Format(message, session.Character.CharacterId), ReceiverType.AllOnMap);
+            for(int i= Sessions.Where(s => s.Character != null && s.Character.MapId.Equals(mapId)).Count()-1;i>=0;i--)
+                Broadcast(Sessions.Where(s => s.Character != null && s.Character.MapId.Equals(mapId)).ElementAt(i), string.Format(message, Sessions.Where(s => s.Character != null && s.Character.MapId.Equals(mapId)).ElementAt(i).Character.CharacterId), ReceiverType.AllOnMap);
         }
 
         public void RequiereBroadcastFromUser(ClientSession client, long characterId, string methodName)

@@ -15,6 +15,7 @@
 using System;
 using AutoMapper;
 using OpenNos.Data;
+using System.Linq;
 
 namespace OpenNos.GameObject
 {
@@ -41,6 +42,27 @@ namespace OpenNos.GameObject
         public DateTime LastMove { get; private set; }
         public DateTime LastEffect { get; private set; }
 
+        public static int generateMapMonsterId()
+        {
+            Random rnd = new Random();
+            bool retry = true;
+            int max = rnd.Next(1, int.MaxValue);
+            while (retry == true)
+            {
+                retry = false;
+                foreach (Map map in ServerManager.GetAllMap().Values)
+                {
+
+                    MapMonster monst = map.Monsters.FirstOrDefault(s => s.MapMonsterId == max);
+                    if (monst != null)
+                    {
+                        retry = true;
+                        max = rnd.Next(1, int.MaxValue);
+                    }
+                }
+            }
+            return max;
+        }
         internal void MonsterLife()
         {
             NpcMonster monster = ServerManager.GetNpc(this.MonsterVNum);
@@ -69,6 +91,11 @@ namespace OpenNos.GameObject
                     ClientLinkManager.Instance.RequiereBroadcastFromMap(MapId, movepacket);
                 }
             }
+        }
+
+        public string GenerateIn3()
+        {
+            return $"in 3 {MonsterVNum} {MapMonsterId} {MapX} {MapY} {Position} 100 100 0 0 0 -1 1 0 -1 - 0 -1 0 0 0 0 0 0 0 0";
         }
 
         #endregion

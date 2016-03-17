@@ -18,6 +18,7 @@ using OpenNos.Data;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace OpenNos.GameObject
@@ -48,13 +49,14 @@ namespace OpenNos.GameObject
             LastEffect = LastMove = DateTime.Now;
 
             IEnumerable<TeleporterDTO> Teleporters = DAOFactory.TeleporterDAO.LoadFromNpc(NpcMonsterVNum);
-         }
+        }
 
         public string GenerateEInfo()
         {
             return $"e_info 10 {NpcMonsterVNum} {Level} {Element} {AttackClass} {ElementRate} {AttackUpgrade} {DamageMinimum} {DamageMaximum} {Concentrate} {CriticalLuckRate} {CriticalRate} {DefenceUpgrade} {CloseDefence} {DefenceDodge} {DistanceDefence} {DistanceDefenceDodge} {MagicDefence} {FireResistance} {WaterResistance} {LightResistance} {DarkResistance} 0 0 -1 {Name.Replace(' ', '^')}"; // {Hp} {Mp} in 0 0 
 
         }
+       
 
         #endregion
 
@@ -65,7 +67,7 @@ namespace OpenNos.GameObject
         #endregion
 
         #region Methods
-        
+
 
         #endregion
     }

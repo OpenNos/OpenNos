@@ -389,7 +389,7 @@ namespace OpenNos.GameObject
 
         public List<string> Generatein3()
         {
-            return ServerManager.GetMap(MapId).Monsters.Select(monster => $"in 3 {monster.MonsterVNum} {monster.MapMonsterId} {monster.MapX} {monster.MapY} {monster.Position} 100 100 0 0 0 -1 1 0 -1 - 0 -1 0 0 0 0 0 0 0 0").ToList();
+            return ServerManager.GetMap(MapId).Monsters.Select(monster => monster.GenerateIn3()).ToList();
         }
         public string GenerateInfo(string message)
         {

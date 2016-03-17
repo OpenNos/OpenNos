@@ -379,6 +379,7 @@ namespace OpenNos.Handler
             Session.Client.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID COLOR", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID AMOUNT", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$CreateItem SPID UPGRADE WINGS", 6));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$Summon VNUM AMOUNT", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$Shutdown", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("-----------------------------------------------", 10));
         }
@@ -2834,7 +2835,32 @@ namespace OpenNos.Handler
                 Session.Client.SendPacket("shop_end 1");
             }
         }
-
+        [Packet("$Summon")]
+        public void Summon(string packet)
+        {
+            string[] packetsplit = packet.Split(' ');
+            short vnum = 0;
+            byte qty = 1;
+            Random rnd = new Random();
+            if (packetsplit.Length == 4 && short.TryParse(packetsplit[2], out vnum) && byte.TryParse(packetsplit[3], out qty))
+            {
+                for (int i = 0; i < qty; i++)
+                {
+                    short mapx = (short)rnd.Next(Session.Character.MapX - qty / 3, Session.Character.MapX+qty/3);
+                    short mapy = (short)rnd.Next(Session.Character.MapY - qty / 3, Session.Character.MapY + qty / 3);
+                    while(Session.CurrentMap.IsBlockedZone(mapx, mapy))
+                    {
+                         mapx = (short)rnd.Next(Session.Character.MapX - qty / 3, Session.Character.MapX + qty / 3);
+                         mapy = (short)rnd.Next(Session.Character.MapY - qty / 3, Session.Character.MapY + qty / 3);
+                    }
+                    MapMonster monst = new MapMonster() { MonsterVNum = vnum, MapY = mapy, MapX = mapx, MapId = Session.Character.MapId, firstX = mapx, firstY = mapy, MapMonsterId = MapMonster.generateMapMonsterId(), Position = 1, Move = true };
+                    ServerManager.GetMap(Session.Character.MapId).Monsters.Add(monst);
+                    ClientLinkManager.Instance.Broadcast(Session, monst.GenerateIn3(),ReceiverType.AllOnMap);
+                }
+            }
+            else
+                Session.Client.SendPacket(Session.Character.GenerateSay("$Summon VNUM AMOUNT", 10));
+        }
         [Packet("$Teleport")]
         public void Teleport(string packet)
         {
