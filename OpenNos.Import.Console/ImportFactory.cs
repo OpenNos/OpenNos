@@ -577,7 +577,10 @@ namespace OpenNos.Import.Console
                     monster.MapId = map;
                     monster.MonsterVNum = short.Parse(linesave[2]);
                     monster.MapMonsterId = int.Parse(linesave[3]);
-                  
+                    if (movementlist.ContainsKey(monster.MapMonsterId))
+                        monster.Move = movementlist[monster.MapMonsterId];
+                    else
+                        monster.Move = false;
                     if (DAOFactory.NpcMonsterDAO.LoadById(monster.MonsterVNum) != null)
                     {
                         if (DAOFactory.MapMonsterDAO.LoadById(monster.MapMonsterId) == null)

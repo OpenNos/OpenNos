@@ -24,6 +24,7 @@ namespace OpenNos.Data
         public short MapX { get; set; }
         public short MapY { get; set; }
         public short Position { get; set; }
+        public bool Move { get; set; }
 
         #endregion
     }

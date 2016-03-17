@@ -82,6 +82,7 @@ namespace OpenNos.GameObject
                     Position = monster.Position,
                     firstX = monster.MapX,
                     firstY = monster.MapY,
+                    Move = monster.Move
 
                 });
             }

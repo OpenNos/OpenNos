@@ -46,7 +46,7 @@ namespace OpenNos.GameObject
                 return;
 
             double time = (DateTime.Now - LastMove).TotalSeconds;
-            if (monster.Speed > 0 && time > 2.5)
+            if (Move && time > 2.5)
             {
                 Random r = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
                 int oldx = this.MapX;
