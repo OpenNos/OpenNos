@@ -211,6 +211,7 @@ namespace OpenNos.GameObject
                 int npccount = 0;
                 int shopcount = 0;
                 int monstercount = 0;
+                Monsters = new List<MapMonster>();
                 foreach (MapDTO map in DAOFactory.MapDAO.LoadAll())
                 {
                     Guid guid = Guid.NewGuid();
@@ -220,7 +221,7 @@ namespace OpenNos.GameObject
                     _maps.TryAdd(guid, newMap);
                     i++;
                     npccount += newMap.Npcs.Count();
-                    Monsters = new List<MapMonster>();
+                  
                     foreach (MapMonster n in newMap.Monsters)
                         Monsters.Add(n);
                     monstercount += newMap.Monsters.Count();
