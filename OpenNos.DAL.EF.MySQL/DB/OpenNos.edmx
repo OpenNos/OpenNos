@@ -292,6 +292,8 @@
     <Property Name="WaterResistance" Type="smallint" Nullable="false" />
     <Property Name="LightResistance" Type="smallint" Nullable="false" />
     <Property Name="DarkResistance" Type="smallint" Nullable="false" />
+    <Property Name="MaxHP" Type="smallint" Nullable="false" />
+    <Property Name="MaxMP" Type="smallint" Nullable="false" />
   </EntityType>
   <EntityType Name="inventoryitem">
     <Key>
@@ -1553,6 +1555,8 @@
           <ScalarProperty Name="WaterResistance" ColumnName="WaterResistance" />
           <ScalarProperty Name="LightResistance" ColumnName="LightResistance" />
           <ScalarProperty Name="DarkResistance" ColumnName="DarkResistance" />
+          <ScalarProperty Name="MaxHP" ColumnName="MaxHP" />
+          <ScalarProperty Name="MaxMP" ColumnName="MaxMP" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
