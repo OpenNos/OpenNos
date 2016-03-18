@@ -26,18 +26,21 @@ namespace OpenNos.GameObject
         {
             session.Character.IsSitting = true;
             ClientLinkManager.Instance.Broadcast(session, session.Character.GenerateRest(), ReceiverType.AllOnMap);
-            session.Client.SendPacket(session.Character.GenerateEff(6000));
-            session.Character.SnackAmount++;
-            session.Character.MaxSnack = 0;
-            session.Character.SnackHp += item.Hp / 5;
-            session.Character.SnackMp += item.Mp / 5;
-            for (int i = 0; i < 5; i++)
+            if (session.Character.IsSitting == true)
             {
-                Thread.Sleep(1800);
+                session.Client.SendPacket(session.Character.GenerateEff(6000));
+                session.Character.SnackAmount++;
+                session.Character.MaxSnack = 0;
+                session.Character.SnackHp += item.Hp / 5;
+                session.Character.SnackMp += item.Mp / 5;
+                for (int i = 0; i < 5; i++)
+                {
+                    Thread.Sleep(1800);
+                }
+                session.Character.SnackHp -= item.Hp / 5;
+                session.Character.SnackMp -= item.Mp / 5;
+                session.Character.SnackAmount--;
             }
-            session.Character.SnackHp -= item.Hp / 5;
-            session.Character.SnackMp -= item.Mp / 5;
-            session.Character.SnackAmount--;
         }
 
         public void sync(ClientSession session, Item item)

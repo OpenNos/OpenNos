@@ -84,7 +84,7 @@ namespace OpenNos.GameObject
                 bool ok = true;
                 if (MapX > firstX)
                 {
-                    for (int i = 1; i <= MapX - firstX; i++)
+                    for (int i = 0; i <= MapX - firstX; i++)
                     {
                         if (ServerManager.GetMap(MapId).IsBlockedZone(firstX + i, firstY))
                         {
@@ -94,7 +94,7 @@ namespace OpenNos.GameObject
                 }
                 else
                 {
-                    for (int i = 1; i <= firstX - MapX; i++)
+                    for (int i = 0; i <= firstX - MapX; i++)
                     {
                         if (ServerManager.GetMap(MapId).IsBlockedZone(MapX + i, MapY))
                         {
@@ -105,7 +105,7 @@ namespace OpenNos.GameObject
 
                 if (MapY > firstY)
                 {
-                    for (int i = 1; i <= MapY - firstY; i++)
+                    for (int i = 0; i <= MapY - firstY; i++)
                     {
                         if (ServerManager.GetMap(MapId).IsBlockedZone(firstX, firstY + i))
                         {
@@ -115,7 +115,7 @@ namespace OpenNos.GameObject
                 }
                 else
                 {
-                    for (int i = 1; i <= firstY - MapY; i++)
+                    for (int i = 0; i <= firstY - MapY; i++)
                     {
                         if (ServerManager.GetMap(MapId).IsBlockedZone(MapX, MapY + i))
                         {
