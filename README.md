@@ -21,9 +21,11 @@ Installer Packages:
 - User: test
 - Password. test
 
-##3 Create Database (opennos)
+##3 Create new schema (opennos)
 
 ##4 Install MYSQL for Visual Studio
 
-##5 Run EDMX-Scripts against recently set up MySQL Database (OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx)
+##5 When in EDMX model viewer(visual studio) RMB in random empty space on your display and Generate Database from Model
+
+##6 Run EDMX-Scripts against recently set up MySQL Database (OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx)
 
