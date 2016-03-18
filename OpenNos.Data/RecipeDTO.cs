@@ -12,18 +12,15 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Data;
-using System.Collections.Generic;
-
-namespace OpenNos.DAL.Interface
+namespace OpenNos.Data
 {
-    public interface IItemDAO
+    public class RecipeDTO
     {
-        #region Methods
+        #region Properties
 
-        IEnumerable<ItemDTO> LoadAll();
-        ItemDTO LoadById(short Vnum);
-        ItemDTO Insert(ItemDTO item);
+        public short ItemVNum { get; set; }
+        public int MapNpcId { get; set; }
+        public short RecipeId { get; set; }
 
         #endregion
     }

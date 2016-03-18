@@ -13,17 +13,16 @@
  */
 
 using OpenNos.Data;
-using System.Collections.Generic;
 
 namespace OpenNos.DAL.Interface
 {
-    public interface IItemDAO
+    public interface IRecipeItemDAO
     {
         #region Methods
 
-        IEnumerable<ItemDTO> LoadAll();
-        ItemDTO LoadById(short Vnum);
-        ItemDTO Insert(ItemDTO item);
+        RecipeItemDTO Insert(RecipeItemDTO recipeitem);
+        RecipeItemDTO LoadById(int RecipeItemId);
+        RecipeItemDTO LoadByRecipe(int recipeId);
 
         #endregion
     }

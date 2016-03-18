@@ -17,42 +17,38 @@ using OpenNos.DAL.EF.MySQL.DB;
 using OpenNos.DAL.EF.MySQL.Helpers;
 using OpenNos.DAL.Interface;
 using OpenNos.Data;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace OpenNos.DAL.EF.MySQL
 {
-    public class ItemDAO : IItemDAO
+    public class RecipeItemDAO : IRecipeItemDAO
     {
         #region Methods
 
-        public ItemDTO Insert(ItemDTO item)
+        public RecipeItemDTO Insert(RecipeItemDTO recipeitem)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                Item entity = Mapper.Map<Item>(item);
-                context.item.Add(entity);
+                RecipeItem entity = Mapper.Map<RecipeItem>(recipeitem);
+                context.recipeitem.Add(entity);
                 context.SaveChanges();
-                return Mapper.Map<ItemDTO>(entity);
+                return Mapper.Map<RecipeItemDTO>(entity);
             }
         }
 
-        public IEnumerable<ItemDTO> LoadAll()
+        public RecipeItemDTO LoadById(int RecipeItemId)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                foreach (Item item in context.item)
-                {
-                    yield return Mapper.Map<ItemDTO>(item);
-                }
+                return Mapper.Map<RecipeItemDTO>(context.recipeitem.FirstOrDefault(s => s.RecipeItemId.Equals(RecipeItemId)));
             }
         }
 
-        public ItemDTO LoadById(short ItemVnum)
+        public RecipeItemDTO LoadByRecipe(int recipeId)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                return Mapper.Map<ItemDTO>(context.item.SingleOrDefault(i => i.VNum.Equals(ItemVnum)));
+                return Mapper.Map<RecipeItemDTO>(context.recipeitem.FirstOrDefault(s => s.RecipeItemId.Equals(recipeId)));
             }
         }
 

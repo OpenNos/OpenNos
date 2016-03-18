@@ -12,18 +12,20 @@
  * GNU General Public License for more details.
  */
 
+using AutoMapper;
 using OpenNos.Data;
-using System.Collections.Generic;
 
-namespace OpenNos.DAL.Interface
+namespace OpenNos.GameObject
 {
-    public interface IItemDAO
+    public class Recipe : RecipeDTO
     {
-        #region Methods
+        #region Instantiation
 
-        IEnumerable<ItemDTO> LoadAll();
-        ItemDTO LoadById(short Vnum);
-        ItemDTO Insert(ItemDTO item);
+        public Recipe()
+        {
+            Mapper.CreateMap<RecipeDTO, Recipe>();
+            Mapper.CreateMap<Recipe, RecipeDTO>();
+        }
 
         #endregion
     }

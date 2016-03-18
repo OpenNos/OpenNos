@@ -89,6 +89,8 @@
     <Compile Include="MapMonster.cs" />
     <Compile Include="Npc\MapNpc.cs" />
     <Compile Include="Npc\NRunHandler.cs" />
+    <Compile Include="Recipe.cs" />
+    <Compile Include="RecipeItem.cs" />
     <Compile Include="Shop.cs" />
     <Compile Include="Item\Item.cs" />
     <Compile Include="InventoryList.cs" />

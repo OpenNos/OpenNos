@@ -58,6 +58,8 @@
     <Compile Include="ICharacterDAO.cs" />
     <Compile Include="IMapMonsterDAO.cs" />
     <Compile Include="IMapNpcDAO.cs" />
+    <Compile Include="IRecipeDAO.cs" />
+    <Compile Include="IRecipeItemDAO.cs" />
     <Compile Include="IRespawnDAO.cs" />
     <Compile Include="IShopDAO.cs" />
     <Compile Include="IShopItemDAO.cs" />

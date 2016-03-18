@@ -17,42 +17,42 @@ using OpenNos.DAL.EF.MySQL.DB;
 using OpenNos.DAL.EF.MySQL.Helpers;
 using OpenNos.DAL.Interface;
 using OpenNos.Data;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace OpenNos.DAL.EF.MySQL
 {
-    public class ItemDAO : IItemDAO
+    public class RecipeDAO : IRecipeDAO
     {
         #region Methods
 
-        public ItemDTO Insert(ItemDTO item)
+        public RecipeDTO Insert(RecipeDTO recipe)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                Item entity = Mapper.Map<Item>(item);
-                context.item.Add(entity);
-                context.SaveChanges();
-                return Mapper.Map<ItemDTO>(entity);
-            }
-        }
-
-        public IEnumerable<ItemDTO> LoadAll()
-        {
-            using (var context = DataAccessHelper.CreateContext())
-            {
-                foreach (Item item in context.item)
+                if (context.shop.SingleOrDefault(c => c.MapNpcId.Equals(recipe.MapNpcId)) == null)
                 {
-                    yield return Mapper.Map<ItemDTO>(item);
+                    Recipe entity = Mapper.Map<Recipe>(recipe);
+                    context.recipe.Add(entity);
+                    context.SaveChanges();
+                    return Mapper.Map<RecipeDTO>(entity);
                 }
+                else return new RecipeDTO();
             }
         }
 
-        public ItemDTO LoadById(short ItemVnum)
+        public RecipeDTO LoadById(int RecipeId)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                return Mapper.Map<ItemDTO>(context.item.SingleOrDefault(i => i.VNum.Equals(ItemVnum)));
+                return Mapper.Map<RecipeDTO>(context.recipe.FirstOrDefault(s => s.RecipeId.Equals(RecipeId)));
+            }
+        }
+
+        public RecipeDTO LoadByNpc(int npcId)
+        {
+            using (var context = DataAccessHelper.CreateContext())
+            {
+                return Mapper.Map<RecipeDTO>(context.recipe.FirstOrDefault(s => s.MapNpcId.Equals(npcId)));
             }
         }
 

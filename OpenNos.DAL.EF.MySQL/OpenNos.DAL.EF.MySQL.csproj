@@ -132,6 +132,8 @@
     </Compile>
     <Compile Include="MapMonsterDAO.cs" />
     <Compile Include="MapNpcDAO.cs" />
+    <Compile Include="RecipeDAO.cs" />
+    <Compile Include="RecipeItemDAO.cs" />
     <Compile Include="RespawnDAO.cs" />
     <Compile Include="GeneralLogDAO.cs" />
     <Compile Include="InventoryDAO.cs" />

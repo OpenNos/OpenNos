@@ -18,10 +18,8 @@ namespace OpenNos.GameObject
     {
         #region Properties
 
-
-        public long Price { get; set; }
-        
         public byte Amount { get; set; }
+        public long Price { get; set; }
 
         #endregion
     }
