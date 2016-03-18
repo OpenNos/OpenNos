@@ -1,13 +1,13 @@
 ﻿using OpenNos.Core.Collections;
-using OpenNos.Core.Communication.Scs.Communication.Messages;
-using OpenNos.Core.Communication.Scs.Communication.Messengers;
-using OpenNos.Core.Communication.Scs.Server;
-using OpenNos.Core.Communication.ScsServices.Communication.Messages;
+using OpenNos.Core.Networking.Communication.Scs.Communication.Messages;
+using OpenNos.Core.Networking.Communication.Scs.Communication.Messengers;
+using OpenNos.Core.Networking.Communication.Scs.Server;
+using OpenNos.Core.Networking.Communication.ScsServices.Communication.Messages;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
 
-namespace OpenNos.Core.Communication.ScsServices.Service
+namespace OpenNos.Core.Networking.Communication.ScsServices.Service
 {
     /// <summary>
     /// Implements IScsServiceApplication and provides all functionallity.

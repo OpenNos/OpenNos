@@ -1,6 +1,6 @@
-﻿using OpenNos.Core.Communication.Scs.Communication.Channels;
-using OpenNos.Core.Communication.Scs.Communication.Messages;
-using OpenNos.Core.Communication.Scs.Server;
+﻿using OpenNos.Core.Networking.Communication.Scs.Communication.Channels;
+using OpenNos.Core.Networking.Communication.Scs.Communication.Messages;
+using OpenNos.Core.Networking.Communication.Scs.Server;
 using System;
 using System.Collections.Generic;
 

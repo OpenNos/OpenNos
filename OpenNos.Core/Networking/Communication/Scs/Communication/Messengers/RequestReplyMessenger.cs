@@ -1,10 +1,11 @@
-﻿using OpenNos.Core.Communication.Scs.Communication.Messages;
-using OpenNos.Core.Communication.Scs.Communication.Protocols;
+﻿using OpenNos.Core.Threading;
+using OpenNos.Core.Networking.Communication.Scs.Communication.Messages;
+using OpenNos.Core.Networking.Communication.Scs.Communication.Protocols;
 using System;
 using System.Collections.Generic;
 using System.Threading;
 
-namespace OpenNos.Core.Communication.Scs.Communication.Messengers
+namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messengers
 {
     /// <summary>
     /// This class adds SendMessageAndWaitForResponse(...) and SendAndReceiveMessage methods

@@ -15,6 +15,7 @@
 using OpenNos.Core;
 using OpenNos.DAL;
 using OpenNos.Data;
+using OpenNos.Data.Enums;
 using OpenNos.Domain;
 using OpenNos.GameObject;
 using OpenNos.ServiceRef.Internal;

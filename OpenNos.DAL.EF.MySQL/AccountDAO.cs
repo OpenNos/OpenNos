@@ -15,8 +15,10 @@
 using AutoMapper;
 using OpenNos.Core;
 using OpenNos.DAL.EF.MySQL.DB;
+using OpenNos.DAL.EF.MySQL.Helpers;
 using OpenNos.DAL.Interface;
 using OpenNos.Data;
+using OpenNos.Data.Enums;
 using System;
 using System.Linq;
 

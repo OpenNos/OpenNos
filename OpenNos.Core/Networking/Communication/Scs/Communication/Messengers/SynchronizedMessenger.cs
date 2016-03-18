@@ -1,9 +1,9 @@
-﻿using OpenNos.Core.Communication.Scs.Communication.Messages;
+﻿using OpenNos.Core.Networking.Communication.Scs.Communication.Messages;
 using System;
 using System.Collections.Generic;
 using System.Threading;
 
-namespace OpenNos.Core.Communication.Scs.Communication.Messengers
+namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messengers
 {
     /// <summary>
     /// This class is a wrapper for IMessenger and is used

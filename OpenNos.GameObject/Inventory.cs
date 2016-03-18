@@ -15,6 +15,7 @@
 using AutoMapper;
 using OpenNos.DAL;
 using OpenNos.Data;
+using OpenNos.Data.Enums;
 
 namespace OpenNos.GameObject
 {

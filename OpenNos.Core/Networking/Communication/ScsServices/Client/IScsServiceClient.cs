@@ -1,6 +1,6 @@
-﻿using OpenNos.Core.Communication.Scs.Client;
+﻿using OpenNos.Core.Networking.Communication.Scs.Client;
 
-namespace OpenNos.Core.Communication.ScsServices.Client
+namespace OpenNos.Core.Networking.Communication.ScsServices.Client
 {
     /// <summary>
     /// Represents a service client that consumes a SCS service.

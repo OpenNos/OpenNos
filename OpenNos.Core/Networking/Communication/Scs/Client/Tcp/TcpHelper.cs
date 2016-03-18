@@ -2,7 +2,7 @@
 using System.Net;
 using System.Net.Sockets;
 
-namespace OpenNos.Core.Communication.Scs.Client.Tcp
+namespace OpenNos.Core.Networking.Communication.Scs.Client.Tcp
 {
     /// <summary>
     /// This class is used to simplify TCP socket operations.

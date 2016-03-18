@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace OpenNos.Core
+namespace OpenNos.Core.Threading
 {
     public class ThreadedBase<TValue>
     {

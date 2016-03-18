@@ -1,6 +1,6 @@
 ﻿using System.Threading;
 
-namespace OpenNos.Core.Communication.Scs.Server
+namespace OpenNos.Core.Networking.Communication.Scs.Server
 {
     /// <summary>
     /// Provides some functionality that are used by servers.

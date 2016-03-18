@@ -1,8 +1,8 @@
-﻿using OpenNos.Core.Communication.Scs.Communication.EndPoints;
-using OpenNos.Core.Communication.Scs.Communication.Messengers;
+﻿using OpenNos.Core.Networking.Communication.Scs.Communication.EndPoints;
+using OpenNos.Core.Networking.Communication.Scs.Communication.Messengers;
 using System;
 
-namespace OpenNos.Core.Communication.Scs.Communication.Channels
+namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels
 {
     /// <summary>
     /// Represents a communication channel.

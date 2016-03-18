@@ -1,4 +1,4 @@
-﻿using OpenNos.Core.Communication.Scs.Communication.Messages;
+﻿using OpenNos.Core.Networking.Communication.Scs.Communication.Messages;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -6,7 +6,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 
-namespace OpenNos.Core.Communication.Scs.Communication.Protocols.BinarySerialization
+namespace OpenNos.Core.Networking.Communication.Scs.Communication.Protocols.BinarySerialization
 {
     /// <summary>
     /// Default communication protocol between server and clients to send and receive a message.

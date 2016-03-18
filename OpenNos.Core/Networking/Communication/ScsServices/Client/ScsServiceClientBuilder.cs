@@ -1,6 +1,6 @@
-﻿using OpenNos.Core.Communication.Scs.Communication.EndPoints;
+﻿using OpenNos.Core.Networking.Communication.Scs.Communication.EndPoints;
 
-namespace OpenNos.Core.Communication.ScsServices.Client
+namespace OpenNos.Core.Networking.Communication.ScsServices.Client
 {
     /// <summary>
     /// This class is used to build service clients to remotely invoke methods of a SCS service.

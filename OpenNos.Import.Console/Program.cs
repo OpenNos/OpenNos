@@ -14,7 +14,7 @@
 
 using log4net;
 using OpenNos.Core;
-using OpenNos.DAL.EF.MySQL;
+using OpenNos.DAL.EF.MySQL.Helpers;
 using System.Diagnostics;
 using System.Reflection;
 using System.Threading;

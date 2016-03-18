@@ -1,9 +1,9 @@
-﻿using OpenNos.Core.Communication.Scs.Communication.Channels;
-using OpenNos.Core.Communication.Scs.Communication.Channels.Tcp;
-using OpenNos.Core.Communication.Scs.Communication.EndPoints.Tcp;
+﻿using OpenNos.Core.Networking.Communication.Scs.Communication.Channels;
+using OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp;
+using OpenNos.Core.Networking.Communication.Scs.Communication.EndPoints.Tcp;
 using System.Net;
 
-namespace OpenNos.Core.Communication.Scs.Client.Tcp
+namespace OpenNos.Core.Networking.Communication.Scs.Client.Tcp
 {
     /// <summary>
     /// This class is used to communicate with server over TCP/IP protocol.

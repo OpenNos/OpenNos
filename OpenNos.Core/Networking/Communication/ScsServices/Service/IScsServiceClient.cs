@@ -1,8 +1,8 @@
-﻿using OpenNos.Core.Communication.Scs.Communication;
-using OpenNos.Core.Communication.Scs.Communication.EndPoints;
+﻿using OpenNos.Core.Networking.Communication.Scs.Communication;
+using OpenNos.Core.Networking.Communication.Scs.Communication.EndPoints;
 using System;
 
-namespace OpenNos.Core.Communication.ScsServices.Service
+namespace OpenNos.Core.Networking.Communication.ScsServices.Service
 {
     /// <summary>
     /// Represents a client that uses a SDS service.

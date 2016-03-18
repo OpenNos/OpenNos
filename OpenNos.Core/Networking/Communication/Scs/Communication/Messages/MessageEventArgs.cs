@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace OpenNos.Core.Communication.Scs.Communication.Messages
+namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messages
 {
     /// <summary>
     /// Stores message to be used by an event.

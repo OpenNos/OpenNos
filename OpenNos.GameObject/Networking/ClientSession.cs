@@ -13,7 +13,8 @@
  */
 
 using OpenNos.Core;
-using OpenNos.Core.Communication.Scs.Communication.Messages;
+using OpenNos.Core.Threading;
+using OpenNos.Core.Networking.Communication.Scs.Communication.Messages;
 using OpenNos.Domain;
 using OpenNos.ServiceRef.Internal;
 using System;

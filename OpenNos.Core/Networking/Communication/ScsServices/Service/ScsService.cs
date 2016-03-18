@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace OpenNos.Core.Communication.ScsServices.Service
+namespace OpenNos.Core.Networking.Communication.ScsServices.Service
 {
     /// <summary>
     /// Base class for all services that is serviced by IScsServiceApplication.

@@ -1,7 +1,7 @@
-﻿using OpenNos.Core.Communication.Scs.Communication.Messages;
+﻿using OpenNos.Core.Networking.Communication.Scs.Communication.Messages;
 using System.Collections.Generic;
 
-namespace OpenNos.Core.Communication.Scs.Communication.Protocols
+namespace OpenNos.Core.Networking.Communication.Scs.Communication.Protocols
 {
     /// <summary>
     /// Represents a byte-level communication protocol between applications.

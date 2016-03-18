@@ -12,8 +12,6 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Core;
-
 namespace OpenNos.Data
 {
     public class ItemDTO

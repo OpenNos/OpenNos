@@ -1,4 +1,4 @@
-﻿namespace OpenNos.Core.Communication.Scs.Communication.Protocols.BinarySerialization
+﻿namespace OpenNos.Core.Networking.Communication.Scs.Communication.Protocols.BinarySerialization
 {
     /// <summary>
     /// This class is used to create Binary Serialization Protocol objects.

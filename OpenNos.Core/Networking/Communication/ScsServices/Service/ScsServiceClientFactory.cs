@@ -1,7 +1,7 @@
-﻿using OpenNos.Core.Communication.Scs.Communication.Messengers;
-using OpenNos.Core.Communication.Scs.Server;
+﻿using OpenNos.Core.Networking.Communication.Scs.Communication.Messengers;
+using OpenNos.Core.Networking.Communication.Scs.Server;
 
-namespace OpenNos.Core.Communication.ScsServices.Service
+namespace OpenNos.Core.Networking.Communication.ScsServices.Service
 {
     /// <summary>
     /// This class is used to create service client objects that is used in server-side.

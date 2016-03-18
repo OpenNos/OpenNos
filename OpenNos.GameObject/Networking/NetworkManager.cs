@@ -13,8 +13,8 @@
  */
 
 using OpenNos.Core;
-using OpenNos.Core.Communication.Scs.Communication.EndPoints.Tcp;
-using OpenNos.Core.Communication.Scs.Server;
+using OpenNos.Core.Networking.Communication.Scs.Communication.EndPoints.Tcp;
+using OpenNos.Core.Networking.Communication.Scs.Server;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;

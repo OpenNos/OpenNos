@@ -20,7 +20,7 @@ using System;
 using System.Data.Common;
 using System.Linq;
 
-namespace OpenNos.DAL.EF.MySQL
+namespace OpenNos.DAL.EF.MySQL.Helpers
 {
     public static class DataAccessHelper
     {

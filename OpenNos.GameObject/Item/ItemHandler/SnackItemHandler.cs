@@ -13,7 +13,7 @@
  */
 
 using OpenNos.Core;
-using OpenNos.Core.Communication.Scs.Communication;
+using OpenNos.Core.Networking.Communication.Scs.Communication;
 using System.Threading;
 
 namespace OpenNos.GameObject

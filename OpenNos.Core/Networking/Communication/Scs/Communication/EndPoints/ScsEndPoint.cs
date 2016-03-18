@@ -1,9 +1,9 @@
-﻿using OpenNos.Core.Communication.Scs.Client;
-using OpenNos.Core.Communication.Scs.Communication.EndPoints.Tcp;
-using OpenNos.Core.Communication.Scs.Server;
+﻿using OpenNos.Core.Networking.Communication.Scs.Client;
+using OpenNos.Core.Networking.Communication.Scs.Communication.EndPoints.Tcp;
+using OpenNos.Core.Networking.Communication.Scs.Server;
 using System;
 
-namespace OpenNos.Core.Communication.Scs.Communication.EndPoints
+namespace OpenNos.Core.Networking.Communication.Scs.Communication.EndPoints
 {
     ///<summary>
     /// Represents a server side end point in SCS.

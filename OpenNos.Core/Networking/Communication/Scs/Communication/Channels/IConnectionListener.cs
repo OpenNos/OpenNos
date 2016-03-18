@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace OpenNos.Core.Communication.Scs.Communication.Channels
+namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels
 {
     /// <summary>
     /// Represents a communication listener.

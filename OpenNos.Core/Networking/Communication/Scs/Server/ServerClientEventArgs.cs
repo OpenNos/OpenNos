@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace OpenNos.Core.Communication.Scs.Server
+namespace OpenNos.Core.Networking.Communication.Scs.Server
 {
     /// <summary>
     /// Stores client information to be used by an event.

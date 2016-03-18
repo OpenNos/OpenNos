@@ -1,9 +1,9 @@
-﻿using OpenNos.Core.Communication.Scs.Communication.EndPoints;
-using OpenNos.Core.Communication.Scs.Communication.Messages;
-using OpenNos.Core.Communication.Scs.Communication.Protocols;
+﻿using OpenNos.Core.Networking.Communication.Scs.Communication.EndPoints;
+using OpenNos.Core.Networking.Communication.Scs.Communication.Messages;
+using OpenNos.Core.Networking.Communication.Scs.Communication.Protocols;
 using System;
 
-namespace OpenNos.Core.Communication.Scs.Communication.Channels
+namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels
 {
     /// <summary>
     /// This class provides base functionality for all communication channel Classs.

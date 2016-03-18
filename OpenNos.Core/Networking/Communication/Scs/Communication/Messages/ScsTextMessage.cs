@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace OpenNos.Core.Communication.Scs.Communication.Messages
+namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messages
 {
     /// <summary>
     /// This message is used to send/receive a text as message data.

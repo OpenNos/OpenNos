@@ -1,7 +1,7 @@
-﻿using OpenNos.Core.Communication.Scs.Communication.Messages;
+﻿using OpenNos.Core.Networking.Communication.Scs.Communication.Messages;
 using System;
 
-namespace OpenNos.Core.Communication.ScsServices.Communication.Messages
+namespace OpenNos.Core.Networking.Communication.ScsServices.Communication.Messages
 {
     /// <summary>
     /// This message is sent to invoke a method of a remote application.

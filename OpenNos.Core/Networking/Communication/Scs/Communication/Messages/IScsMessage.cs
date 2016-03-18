@@ -1,4 +1,4 @@
-﻿namespace OpenNos.Core.Communication.Scs.Communication.Messages
+﻿namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messages
 {
     /// <summary>
     /// Represents a message that is sent and received by server and client.

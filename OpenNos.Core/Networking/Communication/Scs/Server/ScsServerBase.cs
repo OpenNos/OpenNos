@@ -1,9 +1,9 @@
 ﻿using OpenNos.Core.Collections;
-using OpenNos.Core.Communication.Scs.Communication.Channels;
-using OpenNos.Core.Communication.Scs.Communication.Protocols;
+using OpenNos.Core.Networking.Communication.Scs.Communication.Channels;
+using OpenNos.Core.Networking.Communication.Scs.Communication.Protocols;
 using System;
 
-namespace OpenNos.Core.Communication.Scs.Server
+namespace OpenNos.Core.Networking.Communication.Scs.Server
 {
     /// <summary>
     /// This class provides base functionality for server Classs.

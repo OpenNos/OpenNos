@@ -12,7 +12,7 @@
  * GNU General Public License for more details.
  */
 
-namespace OpenNos.Data
+namespace OpenNos.Data.Enums
 {
     public enum DeleteResult : byte
     {

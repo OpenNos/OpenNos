@@ -1,9 +1,9 @@
-﻿using OpenNos.Core.Communication.Scs.Communication;
-using OpenNos.Core.Communication.Scs.Communication.EndPoints;
-using OpenNos.Core.Communication.Scs.Communication.Messengers;
+﻿using OpenNos.Core.Networking.Communication.Scs.Communication;
+using OpenNos.Core.Networking.Communication.Scs.Communication.EndPoints;
+using OpenNos.Core.Networking.Communication.Scs.Communication.Messengers;
 using System;
 
-namespace OpenNos.Core.Communication.Scs.Server
+namespace OpenNos.Core.Networking.Communication.Scs.Server
 {
     /// <summary>
     /// Represents a client from a perspective of a server.

@@ -1,8 +1,8 @@
-﻿using OpenNos.Core.Communication.Scs.Communication.Messages;
-using OpenNos.Core.Communication.Scs.Communication.Protocols;
+﻿using OpenNos.Core.Networking.Communication.Scs.Communication.Messages;
+using OpenNos.Core.Networking.Communication.Scs.Communication.Protocols;
 using System;
 
-namespace OpenNos.Core.Communication.Scs.Communication.Messengers
+namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messengers
 {
     /// <summary>
     /// Represents an object that can send and receive messages.

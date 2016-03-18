@@ -1,8 +1,8 @@
-﻿using OpenNos.Core.Communication.Scs.Communication.Channels;
-using OpenNos.Core.Communication.Scs.Communication.Channels.Tcp;
-using OpenNos.Core.Communication.Scs.Communication.EndPoints.Tcp;
+﻿using OpenNos.Core.Networking.Communication.Scs.Communication.Channels;
+using OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp;
+using OpenNos.Core.Networking.Communication.Scs.Communication.EndPoints.Tcp;
 
-namespace OpenNos.Core.Communication.Scs.Server.Tcp
+namespace OpenNos.Core.Networking.Communication.Scs.Server.Tcp
 {
     /// <summary>
     /// This class is used to create a TCP server.

@@ -1,7 +1,7 @@
-﻿using OpenNos.Core.Communication.Scs.Communication.EndPoints;
-using OpenNos.Core.Communication.Scs.Server;
+﻿using OpenNos.Core.Networking.Communication.Scs.Communication.EndPoints;
+using OpenNos.Core.Networking.Communication.Scs.Server;
 
-namespace OpenNos.Core.Communication.ScsServices.Service
+namespace OpenNos.Core.Networking.Communication.ScsServices.Service
 {
     /// <summary>
     /// This class is used to build ScsService applications.

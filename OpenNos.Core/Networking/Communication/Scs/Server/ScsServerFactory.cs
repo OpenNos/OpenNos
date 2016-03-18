@@ -1,6 +1,6 @@
-﻿using OpenNos.Core.Communication.Scs.Communication.EndPoints;
+﻿using OpenNos.Core.Networking.Communication.Scs.Communication.EndPoints;
 
-namespace OpenNos.Core.Communication.Scs.Server
+namespace OpenNos.Core.Networking.Communication.Scs.Server
 {
     /// <summary>
     /// This class is used to create SCS servers.

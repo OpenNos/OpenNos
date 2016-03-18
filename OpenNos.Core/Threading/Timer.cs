@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
 
-namespace OpenNos.Core
+namespace OpenNos.Core.Threading
 {
     /// <summary>
     /// This class is a timer that performs some tasks periodically.

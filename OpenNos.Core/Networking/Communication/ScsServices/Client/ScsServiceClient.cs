@@ -1,13 +1,13 @@
-﻿using OpenNos.Core.Communication.Scs.Client;
-using OpenNos.Core.Communication.Scs.Communication;
-using OpenNos.Core.Communication.Scs.Communication.Messages;
-using OpenNos.Core.Communication.Scs.Communication.Messengers;
-using OpenNos.Core.Communication.ScsServices.Communication;
-using OpenNos.Core.Communication.ScsServices.Communication.Messages;
+﻿using OpenNos.Core.Networking.Communication.Scs.Client;
+using OpenNos.Core.Networking.Communication.Scs.Communication;
+using OpenNos.Core.Networking.Communication.Scs.Communication.Messages;
+using OpenNos.Core.Networking.Communication.Scs.Communication.Messengers;
+using OpenNos.Core.Networking.Communication.ScsServices.Communication;
+using OpenNos.Core.Networking.Communication.ScsServices.Communication.Messages;
 using System;
 using System.Reflection;
 
-namespace OpenNos.Core.Communication.ScsServices.Client
+namespace OpenNos.Core.Networking.Communication.ScsServices.Client
 {
     /// <summary>
     /// Represents a service client that consumes a SCS service.

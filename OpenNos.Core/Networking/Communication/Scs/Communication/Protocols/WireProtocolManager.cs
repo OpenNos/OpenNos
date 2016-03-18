@@ -1,6 +1,6 @@
-﻿using OpenNos.Core.Communication.Scs.Communication.Protocols.BinarySerialization;
+﻿using OpenNos.Core.Networking.Communication.Scs.Communication.Protocols.BinarySerialization;
 
-namespace OpenNos.Core.Communication.Scs.Communication.Protocols
+namespace OpenNos.Core.Networking.Communication.Scs.Communication.Protocols
 {
     /// <summary>
     /// This class is used to get default protocols.

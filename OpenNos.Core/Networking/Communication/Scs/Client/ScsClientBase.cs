@@ -1,10 +1,11 @@
-﻿using OpenNos.Core.Communication.Scs.Communication;
-using OpenNos.Core.Communication.Scs.Communication.Channels;
-using OpenNos.Core.Communication.Scs.Communication.Messages;
-using OpenNos.Core.Communication.Scs.Communication.Protocols;
+﻿using OpenNos.Core.Threading;
+using OpenNos.Core.Networking.Communication.Scs.Communication;
+using OpenNos.Core.Networking.Communication.Scs.Communication.Channels;
+using OpenNos.Core.Networking.Communication.Scs.Communication.Messages;
+using OpenNos.Core.Networking.Communication.Scs.Communication.Protocols;
 using System;
 
-namespace OpenNos.Core.Communication.Scs.Client
+namespace OpenNos.Core.Networking.Communication.Scs.Client
 {
     /// <summary>
     /// This class provides base functionality for client Classs.

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.Serialization;
 
-namespace OpenNos.Core.Communication.ScsServices.Communication.Messages
+namespace OpenNos.Core.Networking.Communication.ScsServices.Communication.Messages
 {
     /// <summary>
     /// Represents a SCS Remote Exception.

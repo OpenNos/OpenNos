@@ -1,4 +1,4 @@
-﻿namespace OpenNos.Core.Communication.Scs.Communication
+﻿namespace OpenNos.Core.Networking.Communication.Scs.Communication
 {
     /// <summary>
     /// Communication states.

@@ -13,6 +13,7 @@
  */
 
 using System;
+
 namespace OpenNos.Data
 {
     public class InventoryItemDTO

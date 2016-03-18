@@ -349,7 +349,7 @@
     <value>Zaproszenia do minilandu odblokowane</value>
   </data>
   <data name="MONSTERS_LOADED" xml:space="preserve">
-    <value>{0} zaladowanych potworow!</value>
+    <value>{0} Załadowanych potworow!</value>
   </data>
   <data name="MOUSE_LOCKED" xml:space="preserve">
     <value>Wskaźnik myszy z wspomaganym celowaniem wlaczony</value>
@@ -394,10 +394,10 @@
     <value>Nie zalozyles karty specjalisty!</value>
   </data>
   <data name="NPCMONSTERS_LOADED" xml:space="preserve">
-    <value>{0} zaladowanych npc-potworow!</value>
+    <value>{0} Załadowanych npc-potworow!</value>
   </data>
   <data name="NPCS_LOADED" xml:space="preserve">
-    <value>{0} zaladowanych npc!</value>
+    <value>{0} Załadowanych npc!</value>
   </data>
   <data name="PACKET_ARRIVED" xml:space="preserve">
     <value>Wysłano packet, packet: {0}</value>
@@ -430,7 +430,7 @@
     <value>{0}: sprzedano &lt;{1} : sztuk &gt;</value>
   </data>
   <data name="SHOPS_LOADED" xml:space="preserve">
-    <value>{0} zaladowanych sklepow!</value>
+    <value>{0} Załadowanych sklepow!</value>
   </data>
   <data name="SHOP_OPEN" xml:space="preserve">
     <value>Sklep zostal otwarty</value>

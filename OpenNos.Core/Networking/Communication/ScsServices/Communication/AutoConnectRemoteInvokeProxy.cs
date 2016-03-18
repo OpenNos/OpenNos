@@ -1,9 +1,9 @@
-﻿using OpenNos.Core.Communication.Scs.Client;
-using OpenNos.Core.Communication.Scs.Communication;
-using OpenNos.Core.Communication.Scs.Communication.Messengers;
+﻿using OpenNos.Core.Networking.Communication.Scs.Client;
+using OpenNos.Core.Networking.Communication.Scs.Communication;
+using OpenNos.Core.Networking.Communication.Scs.Communication.Messengers;
 using System.Runtime.Remoting.Messaging;
 
-namespace OpenNos.Core.Communication.ScsServices.Communication
+namespace OpenNos.Core.Networking.Communication.ScsServices.Communication
 {
     /// <summary>
     /// This class extends RemoteInvokeProxy to provide auto connect/disconnect mechanism

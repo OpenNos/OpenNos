@@ -1,8 +1,8 @@
-﻿using OpenNos.Core.Communication.Scs.Communication.EndPoints.Tcp;
+﻿using OpenNos.Core.Networking.Communication.Scs.Communication.EndPoints.Tcp;
 using System.Net.Sockets;
 using System.Threading;
 
-namespace OpenNos.Core.Communication.Scs.Communication.Channels.Tcp
+namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
 {
     /// <summary>
     /// This class is used to listen and accept incoming TCP

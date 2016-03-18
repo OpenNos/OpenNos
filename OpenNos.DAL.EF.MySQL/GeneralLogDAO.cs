@@ -14,6 +14,7 @@
 
 using AutoMapper;
 using OpenNos.DAL.EF.MySQL.DB;
+using OpenNos.DAL.EF.MySQL.Helpers;
 using OpenNos.DAL.Interface;
 using OpenNos.Data;
 using System;

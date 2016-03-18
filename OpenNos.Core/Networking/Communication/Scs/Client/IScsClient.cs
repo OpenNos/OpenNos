@@ -1,6 +1,6 @@
-﻿using OpenNos.Core.Communication.Scs.Communication.Messengers;
+﻿using OpenNos.Core.Networking.Communication.Scs.Communication.Messengers;
 
-namespace OpenNos.Core.Communication.Scs.Client
+namespace OpenNos.Core.Networking.Communication.Scs.Client
 {
     /// <summary>
     /// Represents a client to connect to server.

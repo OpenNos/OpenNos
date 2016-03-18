@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.Serialization;
 
-namespace OpenNos.Core.Communication.Scs.Communication
+namespace OpenNos.Core.Networking.Communication.Scs.Communication
 {
     /// <summary>
     /// This application is thrown if communication is not expected state.

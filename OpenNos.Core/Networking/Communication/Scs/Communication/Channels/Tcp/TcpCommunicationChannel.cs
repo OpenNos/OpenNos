@@ -1,11 +1,11 @@
-﻿using OpenNos.Core.Communication.Scs.Communication.EndPoints;
-using OpenNos.Core.Communication.Scs.Communication.EndPoints.Tcp;
-using OpenNos.Core.Communication.Scs.Communication.Messages;
+﻿using OpenNos.Core.Networking.Communication.Scs.Communication.EndPoints;
+using OpenNos.Core.Networking.Communication.Scs.Communication.EndPoints.Tcp;
+using OpenNos.Core.Networking.Communication.Scs.Communication.Messages;
 using System;
 using System.Net;
 using System.Net.Sockets;
 
-namespace OpenNos.Core.Communication.Scs.Communication.Channels.Tcp
+namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
 {
     /// <summary>
     /// This class is used to communicate with a remote application over TCP/IP protocol.

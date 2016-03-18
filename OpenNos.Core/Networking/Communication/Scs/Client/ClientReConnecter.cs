@@ -1,7 +1,8 @@
-﻿using OpenNos.Core.Communication.Scs.Communication;
+﻿using OpenNos.Core.Threading;
+using OpenNos.Core.Networking.Communication.Scs.Communication;
 using System;
 
-namespace OpenNos.Core.Communication.Scs.Client
+namespace OpenNos.Core.Networking.Communication.Scs.Client
 {
     /// <summary>
     /// This class is used to automatically re-connect to server if disconnected.
