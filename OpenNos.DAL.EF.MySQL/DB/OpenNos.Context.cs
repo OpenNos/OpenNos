@@ -41,5 +41,7 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public virtual DbSet<Teleporter> teleporter { get; set; }
         public virtual DbSet<MapMonster> mapmonster { get; set; }
         public virtual DbSet<MapNpc> mapnpc { get; set; }
+        public virtual DbSet<Recipe> recipe { get; set; }
+        public virtual DbSet<RecipeItem> recipeitem { get; set; }
     }
 }

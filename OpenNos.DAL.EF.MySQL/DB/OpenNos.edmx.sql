@@ -44,9 +44,9 @@
 -- -----------------------------------------------------------
 -- Entity Designer DDL Script for MySQL Server 4.1 and higher
 -- -----------------------------------------------------------
--- Date Created: 03/17/2016 20:37:32
+-- Date Created: 03/18/2016 21:54:43
 
--- Generated from EDMX file: C:\Users\Dominik\Source\Repos\OpenNos\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
+-- Generated from EDMX file: C:\Users\ERWAN\Desktop\OpenNos Git\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
 -- Target version: 3.0.0.0
 
 -- --------------------------------------------------
@@ -520,6 +520,31 @@ ALTER TABLE `mapnpc` ADD PRIMARY KEY (MapNpcId);
 
 
 
+CREATE TABLE `recipe`(
+	`RecipeId` smallint NOT NULL AUTO_INCREMENT UNIQUE, 
+	`MapNpcId` int NOT NULL, 
+	`ItemVNum` smallint NOT NULL, 
+	`RecipeItemId` smallint NOT NULL, 
+	`recipeitem_RecipeItemId` smallint NOT NULL);
+
+ALTER TABLE `recipe` ADD PRIMARY KEY (RecipeId);
+
+
+
+
+
+CREATE TABLE `recipeitem`(
+	`RecipeItemId` smallint NOT NULL AUTO_INCREMENT UNIQUE, 
+	`ItemVNum` smallint NOT NULL, 
+	`Amount` TINYINT UNSIGNED NOT NULL, 
+	`RecipeId` smallint NOT NULL);
+
+ALTER TABLE `recipeitem` ADD PRIMARY KEY (RecipeItemId);
+
+
+
+
+
 
 
 -- --------------------------------------------------
@@ -866,6 +891,78 @@ ADD CONSTRAINT `FK_ShopMapNpc`
 CREATE INDEX `IX_FK_ShopMapNpc`
     ON `shop`
     (`MapNpcId`);
+
+
+
+-- Creating foreign key on `MapNpcId` in table 'recipe'
+
+ALTER TABLE `recipe`
+ADD CONSTRAINT `FK_MapNpcRecipe`
+    FOREIGN KEY (`MapNpcId`)
+    REFERENCES `mapnpc`
+        (`MapNpcId`)
+    ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+
+-- Creating non-clustered index for FOREIGN KEY 'FK_MapNpcRecipe'
+
+CREATE INDEX `IX_FK_MapNpcRecipe`
+    ON `recipe`
+    (`MapNpcId`);
+
+
+
+-- Creating foreign key on `ItemVNum` in table 'recipeitem'
+
+ALTER TABLE `recipeitem`
+ADD CONSTRAINT `FK_RecipeItemItem`
+    FOREIGN KEY (`ItemVNum`)
+    REFERENCES `item`
+        (`VNum`)
+    ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+
+-- Creating non-clustered index for FOREIGN KEY 'FK_RecipeItemItem'
+
+CREATE INDEX `IX_FK_RecipeItemItem`
+    ON `recipeitem`
+    (`ItemVNum`);
+
+
+
+-- Creating foreign key on `recipeitem_RecipeItemId` in table 'recipe'
+
+ALTER TABLE `recipe`
+ADD CONSTRAINT `FK_RecipeRecipeItem`
+    FOREIGN KEY (`recipeitem_RecipeItemId`)
+    REFERENCES `recipeitem`
+        (`RecipeItemId`)
+    ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+
+-- Creating non-clustered index for FOREIGN KEY 'FK_RecipeRecipeItem'
+
+CREATE INDEX `IX_FK_RecipeRecipeItem`
+    ON `recipe`
+    (`recipeitem_RecipeItemId`);
+
+
+
+-- Creating foreign key on `RecipeId` in table 'recipeitem'
+
+ALTER TABLE `recipeitem`
+ADD CONSTRAINT `FK_RecipeRecipeItem1`
+    FOREIGN KEY (`RecipeId`)
+    REFERENCES `recipe`
+        (`RecipeId`)
+    ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+
+-- Creating non-clustered index for FOREIGN KEY 'FK_RecipeRecipeItem1'
+
+CREATE INDEX `IX_FK_RecipeRecipeItem1`
+    ON `recipeitem`
+    (`RecipeId`);
 
 
 

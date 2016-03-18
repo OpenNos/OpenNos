@@ -112,6 +112,12 @@
     <Compile Include="DB\Portal.cs">
       <DependentUpon>OpenNos.tt</DependentUpon>
     </Compile>
+    <Compile Include="DB\Recipe.cs">
+      <DependentUpon>OpenNos.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DB\RecipeItem.cs">
+      <DependentUpon>OpenNos.tt</DependentUpon>
+    </Compile>
     <Compile Include="DB\Respawn.cs">
       <DependentUpon>OpenNos.tt</DependentUpon>
     </Compile>
