@@ -1,8 +1,8 @@
-#Thanks for all of the contributions
+#Thanks for all contributions!
 
 chucktheripper
 0lucifer0
 ciapa1
 genyx
-Masterdomino
-Martazza 
+MasterDomino
+Martazza
