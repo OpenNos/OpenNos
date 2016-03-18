@@ -13,6 +13,7 @@
  */
 
 using OpenNos.Data;
+using System.Collections.Generic;
 
 namespace OpenNos.DAL.Interface
 {
@@ -21,8 +22,8 @@ namespace OpenNos.DAL.Interface
         #region Methods
 
         RecipeDTO Insert(RecipeDTO recipe);
-        RecipeDTO LoadById(int RecipeId);
-        RecipeDTO LoadByNpc(int NpcId);
+        RecipeDTO LoadById(short RecipeId);
+        IEnumerable<RecipeDTO> LoadByNpc(int NpcId);
 
         #endregion
     }
