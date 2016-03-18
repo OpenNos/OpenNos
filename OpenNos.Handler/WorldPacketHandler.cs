@@ -2365,9 +2365,8 @@ namespace OpenNos.Handler
             switch (packetsplit.Length)
             {
                 case 3:
-                    if (verify)
+                    if (verify && arg < 60)
                     {
-                        if (arg > 59) arg = 59;
                         Session.Character.Speed = arg;
                         Session.Client.SendPacket(Session.Character.GenerateCond());
                     }
