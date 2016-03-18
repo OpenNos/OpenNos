@@ -13,6 +13,7 @@
  */
 
 using OpenNos.Data;
+using System.Collections.Generic;
 
 namespace OpenNos.DAL.Interface
 {
@@ -22,7 +23,7 @@ namespace OpenNos.DAL.Interface
 
         RecipeItemDTO Insert(RecipeItemDTO recipeitem);
         RecipeItemDTO LoadById(int RecipeItemId);
-        RecipeItemDTO LoadByRecipe(int recipeId);
+        IEnumerable<RecipeItemDTO> LoadByRecipe(int recipeId);
 
         #endregion
     }
