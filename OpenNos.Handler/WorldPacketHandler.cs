@@ -84,6 +84,7 @@ namespace OpenNos.Handler
         {
             string[] packetsplit = packet.Split(' ');
             short vnum = 0, move = 0;
+
             Random rnd = new Random();
 
             if (packetsplit.Length == 4 && short.TryParse(packetsplit[2], out vnum) && short.TryParse(packetsplit[3], out move))
@@ -2366,6 +2367,7 @@ namespace OpenNos.Handler
                 case 3:
                     if (verify)
                     {
+                        if (arg > 59) arg = 59;
                         Session.Character.Speed = arg;
                         Session.Client.SendPacket(Session.Character.GenerateCond());
                     }
