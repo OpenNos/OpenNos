@@ -23,11 +23,10 @@ namespace OpenNos.GameObject
         #region Methods
 
         public void regen(ClientSession session, Item item)
-        {
+        {        
             session.Character.IsSitting = true;
             ClientLinkManager.Instance.Broadcast(session, session.Character.GenerateRest(), ReceiverType.AllOnMap);
-            if (session.Character.IsSitting == true)
-            {
+          
                 session.Client.SendPacket(session.Character.GenerateEff(6000));
                 session.Character.SnackAmount++;
                 session.Character.MaxSnack = 0;
@@ -40,7 +39,8 @@ namespace OpenNos.GameObject
                 session.Character.SnackHp -= item.Hp / 5;
                 session.Character.SnackMp -= item.Mp / 5;
                 session.Character.SnackAmount--;
-            }
+            
+           
         }
 
         public void sync(ClientSession session, Item item)
@@ -49,7 +49,7 @@ namespace OpenNos.GameObject
             {
                 session.Character.Mp += session.Character.SnackHp;
                 session.Character.Hp += session.Character.SnackMp;
-                if (session.Character.Hp < session.Character.HPLoad() || session.Character.Mp < session.Character.MPLoad())
+                if ((session.Character.SnackHp > 0 && session.Character.SnackHp > 0) &&( session.Character.Hp < session.Character.HPLoad() || session.Character.Mp < session.Character.MPLoad()))
                     ClientLinkManager.Instance.Broadcast(session, session.Character.GenerateRc(session.Character.SnackHp), ReceiverType.AllOnMap);
                 if (session.Client.CommunicationState == CommunicationStates.Connected)
                     ClientLinkManager.Instance.Broadcast(session, session.Character.GenerateStat(), ReceiverType.OnlyMe);
@@ -64,9 +64,17 @@ namespace OpenNos.GameObject
             switch (effect)
             {
                 default:
+                    if (session.Character.IsSitting == false)
+                    {
+                        session.Character.SnackAmount = 0;
+                        session.Character.SnackHp = 0;
+                        session.Character.SnackMp = 0;
+
+                    }
                     int amount = session.Character.SnackAmount;
                     if (amount < 5)
                     {
+                      
                         Thread workerThread = new Thread(() => regen(session, item));
                         workerThread.Start();
                         inv.InventoryItem.Amount--;
