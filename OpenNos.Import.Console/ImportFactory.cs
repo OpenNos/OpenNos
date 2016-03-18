@@ -190,7 +190,6 @@ namespace OpenNos.Import.Console
             Dictionary<int, bool> movementlist = new Dictionary<int, bool>();
             foreach (string[] linesave in packetList.Where(o => o[0].Equals("mv") && (o[1].Equals("3"))))
             {
-                if (!(long.Parse(linesave[2]) >= 20000))
                     if (!movementlist.ContainsKey(Convert.ToInt32(linesave[2])))
                         movementlist[Convert.ToInt32(linesave[2])] = true;
             }
