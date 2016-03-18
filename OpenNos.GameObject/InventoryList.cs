@@ -431,7 +431,7 @@ namespace OpenNos.GameObject
                 else
                 {
                     amount -= inv.InventoryItem.Amount;
-                    DeleteFromSlotAndType(inv.Slot, inv.Type);
+                    DeleteByInventoryItemId(inv.InventoryItem.InventoryItemId);
                 }
             }
         }
