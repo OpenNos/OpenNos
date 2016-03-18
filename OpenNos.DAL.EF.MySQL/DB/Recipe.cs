@@ -23,7 +23,6 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public short RecipeId { get; set; }
         public int MapNpcId { get; set; }
         public short ItemVNum { get; set; }
-        public short RecipeItemId { get; set; }
     
         public virtual MapNpc mapnpc { get; set; }
         public virtual RecipeItem recipeitem { get; set; }

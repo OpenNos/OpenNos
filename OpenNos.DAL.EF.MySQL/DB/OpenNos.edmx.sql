@@ -44,7 +44,7 @@
 -- -----------------------------------------------------------
 -- Entity Designer DDL Script for MySQL Server 4.1 and higher
 -- -----------------------------------------------------------
--- Date Created: 03/18/2016 21:54:43
+-- Date Created: 03/18/2016 22:10:05
 
 -- Generated from EDMX file: C:\Users\ERWAN\Desktop\OpenNos Git\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
 -- Target version: 3.0.0.0
@@ -97,6 +97,14 @@
 
 --    ALTER TABLE `shop` DROP CONSTRAINT `FK_ShopMapNpc`;
 
+--    ALTER TABLE `recipe` DROP CONSTRAINT `FK_MapNpcRecipe`;
+
+--    ALTER TABLE `recipeitem` DROP CONSTRAINT `FK_RecipeItemItem`;
+
+--    ALTER TABLE `recipe` DROP CONSTRAINT `FK_RecipeRecipeItem`;
+
+--    ALTER TABLE `recipeitem` DROP CONSTRAINT `FK_RecipeRecipeItem1`;
+
 
 -- --------------------------------------------------
 -- Dropping existing tables
@@ -132,6 +140,10 @@ SET foreign_key_checks = 0;
     DROP TABLE IF EXISTS `mapmonster`;
 
     DROP TABLE IF EXISTS `mapnpc`;
+
+    DROP TABLE IF EXISTS `recipe`;
+
+    DROP TABLE IF EXISTS `recipeitem`;
 
 SET foreign_key_checks = 1;
 
@@ -524,7 +536,6 @@ CREATE TABLE `recipe`(
 	`RecipeId` smallint NOT NULL AUTO_INCREMENT UNIQUE, 
 	`MapNpcId` int NOT NULL, 
 	`ItemVNum` smallint NOT NULL, 
-	`RecipeItemId` smallint NOT NULL, 
 	`recipeitem_RecipeItemId` smallint NOT NULL);
 
 ALTER TABLE `recipe` ADD PRIMARY KEY (RecipeId);
@@ -537,7 +548,7 @@ CREATE TABLE `recipeitem`(
 	`RecipeItemId` smallint NOT NULL AUTO_INCREMENT UNIQUE, 
 	`ItemVNum` smallint NOT NULL, 
 	`Amount` TINYINT UNSIGNED NOT NULL, 
-	`RecipeId` smallint NOT NULL);
+	`RecipeId` smallint);
 
 ALTER TABLE `recipeitem` ADD PRIMARY KEY (RecipeItemId);
 
