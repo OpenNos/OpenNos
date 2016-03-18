@@ -705,9 +705,9 @@ namespace OpenNos.Handler
                                         Upgrade = inv.InventoryItem.Upgrade,
                                         WaterElement = inv.InventoryItem.WaterElement,
                                     }
-                                    
-                                 
-                                    
+
+
+
                                 };
                                 myShop.Items.Add(personalshopitem);
                             }
@@ -780,8 +780,10 @@ namespace OpenNos.Handler
 
         public void DeleteItem(byte type, short slot)
         {
-            Session.Character.InventoryList.DeleteFromSlotAndType(slot, type);
-            Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, type, slot, 0, 0, 0));
+         
+                Session.Character.InventoryList.DeleteFromSlotAndType(slot, type);
+                Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, type, slot, 0, 0, 0));
+            
         }
 
         public void deleteTimeout()
@@ -1720,7 +1722,7 @@ namespace OpenNos.Handler
             byte amount; byte.TryParse(packetsplit[4], out amount);
             Inventory inv;
             Inventory invitem = Session.Character.InventoryList.LoadBySlotAndType(slot, type);
-            if (invitem != null && ServerManager.GetItem(invitem.InventoryItem.ItemVNum).IsDroppable == true && ServerManager.GetItem(invitem.InventoryItem.ItemVNum).IsTradable == true)
+            if (invitem != null && ServerManager.GetItem(invitem.InventoryItem.ItemVNum).IsDroppable == true && ServerManager.GetItem(invitem.InventoryItem.ItemVNum).IsTradable == true && (Session.CurrentMap.ShopUserList.FirstOrDefault(mapshop => mapshop.Value.OwnerId.Equals(Session.Character.CharacterId)).Value == null))   
             {
                 if (amount > 0 && amount < 100)
                 {
@@ -1729,6 +1731,7 @@ namespace OpenNos.Handler
 
                     if (inv.InventoryItem.Amount == 0)
                         DeleteItem(type, inv.Slot);
+                    if(DroppedItem !=null)
                     ClientLinkManager.Instance.Broadcast(Session, $"drop {DroppedItem.ItemVNum} {DroppedItem.InventoryItemId} {DroppedItem.PositionX} {DroppedItem.PositionY} {DroppedItem.Amount} 0 -1", ReceiverType.AllOnMap);
                 }
                 else
@@ -1924,7 +1927,7 @@ namespace OpenNos.Handler
         {
             // Undress Equipment
             string[] packetsplit = packet.Split(' ');
-            if (packetsplit.Length > 3)
+            if (packetsplit.Length > 3 && Session.CurrentMap.ShopUserList.FirstOrDefault(mapshop => mapshop.Value.OwnerId.Equals(Session.Character.CharacterId)).Value == null)
             {
                 short slot;
                 if (!short.TryParse(packetsplit[2], out slot)) return; // Invalid Number
@@ -3239,7 +3242,7 @@ namespace OpenNos.Handler
         public void Wear(string packet)
         {
             string[] packetsplit = packet.Split(' ');
-            if (packetsplit.Length > 3)
+            if (packetsplit.Length > 3  &&Session.CurrentMap.ShopUserList.FirstOrDefault(mapshop => mapshop.Value.OwnerId.Equals(Session.Character.CharacterId)).Value == null)
             {
                 byte type;
                 short slot;
