@@ -123,21 +123,35 @@ namespace OpenNos.GameObject
             shopOwnerSession.Character.Gold += itemshop.Price * amount;
             shopOwnerSession.Client.SendPacket(shopOwnerSession.Character.GenerateGold());
             shopOwnerSession.Client.SendPacket(shopOwnerSession.Character.GenerateShopMemo(1,
-                string.Format(Language.Instance.GetMessageFromKey("BUY_ITEM"), shopOwnerSession.Character.Name, ServerManager.GetItem(itemshop.ItemVNum).Name, amount)));
+                string.Format(Language.Instance.GetMessageFromKey("BUY_ITEM"), shopOwnerSession.Character.Name, ServerManager.GetItem(itemshop.InventoryItem.ItemVNum).Name, amount)));
             clientSession.CurrentMap.ShopUserList[shop.Key].Sell += itemshop.Price * amount;
             shopOwnerSession.Client.SendPacket($"sell_list {shop.Value.Sell} {slot}.{amount}.{itemshop.Amount}");
 
-            Inventory inv = shopOwnerSession.Character.InventoryList.AmountMinusFromSlotAndType(amount, itemshop.InvSlot, itemshop.InvType);
+            Inventory inv = shopOwnerSession.Character.InventoryList.AmountMinusFromInventory(amount, itemshop);
 
             if (inv != null)
             {
                 // Send reduced-amount to owners inventory
                 shopOwnerSession.Client.SendPacket(shopOwnerSession.Character.GenerateInventoryAdd(inv.InventoryItem.ItemVNum, inv.InventoryItem.Amount, inv.Type,
                     inv.Slot, inv.InventoryItem.Rare, inv.InventoryItem.Design, inv.InventoryItem.Upgrade));
+
+              
             }
-            else
+            else {
                 // Send empty slot to owners inventory
-                shopOwnerSession.Client.SendPacket(shopOwnerSession.Character.GenerateInventoryAdd(-1, 0, itemshop.InvType, itemshop.InvSlot, 0, 0, 0));
+                shopOwnerSession.Client.SendPacket(shopOwnerSession.Character.GenerateInventoryAdd(-1, 0, itemshop.Type, itemshop.Slot, 0, 0, 0));
+                if (clientSession.CurrentMap.ShopUserList[shop.Key].Items.Count == 0)
+                {
+                    clientSession.Client.SendPacket("shop_end 0");
+
+                    ClientLinkManager.Instance.Broadcast(shopOwnerSession, shopOwnerSession.Character.GenerateShopEnd(), ReceiverType.AllOnMap);
+                    ClientLinkManager.Instance.Broadcast(shopOwnerSession, shopOwnerSession.Character.GeneratePlayerFlag(0), ReceiverType.AllOnMapExceptMe);
+                    shopOwnerSession.Character.Speed = shopOwnerSession.Character.LastSpeed != 0 ? shopOwnerSession.Character.LastSpeed : shopOwnerSession.Character.Speed;
+                    shopOwnerSession.Character.IsSitting = false;
+                    shopOwnerSession.Client.SendPacket(shopOwnerSession.Character.GenerateCond());
+                    ClientLinkManager.Instance.Broadcast(shopOwnerSession, shopOwnerSession.Character.GenerateRest(), ReceiverType.AllOnMap);
+                }
+            }
         }
 
         public void ChangeMap(long id)

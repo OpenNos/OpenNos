@@ -170,6 +170,23 @@ namespace OpenNos.GameObject
             return Inventory.Where(i => inventoryitemids.Contains(i.InventoryItem.InventoryItemId)).OrderBy(i => i.Slot).FirstOrDefault();
         }
 
+        internal Inventory AmountMinusFromInventory(byte amount, PersonalShopItem itemshop)
+        {
+            Inventory inv = Inventory.SingleOrDefault(i => i.InventoryId.Equals(itemshop.InventoryId));
+
+            if (inv != null)
+            {
+                inv.InventoryItem.Amount -= amount;
+                if (inv.InventoryItem.Amount <= 0)
+                {
+                    Inventory.Remove(inv);
+                    return null;
+                }
+            }
+
+            return inv;
+        }
+
         public bool getFreePlaceAmount(List<InventoryItem> item, int backPack)
         {
             short[] place = new short[10];
@@ -417,23 +434,6 @@ namespace OpenNos.GameObject
                     DeleteFromSlotAndType(inv.Slot, inv.Type);
                 }
             }
-        }
-
-        internal Inventory AmountMinusFromSlotAndType(byte amount, short invSlot, byte invType)
-        {
-            Inventory inv = Inventory.SingleOrDefault(i => i.Slot.Equals(invSlot) && i.Type.Equals(invType));
-
-            if (inv != null)
-            {
-                inv.InventoryItem.Amount -= amount;
-                if (inv.InventoryItem.Amount <= 0)
-                {
-                    Inventory.Remove(inv);
-                    return null;
-                }
-            }
-
-            return inv;
         }
 
         private Inventory Insert(Inventory inventory)

@@ -14,17 +14,14 @@
 
 namespace OpenNos.GameObject
 {
-    public class PersonalShopItem : InventoryItem
+    public class PersonalShopItem : Inventory
     {
         #region Properties
 
-        public short InvSlot { get; set; }
-
-        public byte InvType { get; set; }
 
         public long Price { get; set; }
-
-        public short Slot { get; set; }
+        
+        public byte Amount { get; set; }
 
         #endregion
     }
