@@ -90,6 +90,8 @@ namespace OpenNos.Handler
 
             if (packetsplit.Length == 4 && short.TryParse(packetsplit[2], out vnum) && short.TryParse(packetsplit[3], out move))
             {
+                if (ServerManager.GetNpc(vnum) == null)
+                    return;
                 MapMonsterDTO monst = new MapMonsterDTO() { MonsterVNum = vnum, MapY = Session.Character.MapY, MapX = Session.Character.MapX, MapId = Session.Character.MapId, Position = (short)Session.Character.Direction, Move = move == 1 ? true : false, MapMonsterId = MapMonster.generateMapMonsterId() };
                 MapMonster monster = null;
                 if (DAOFactory.MapMonsterDAO.LoadById(monst.MapMonsterId) == null)
@@ -2898,6 +2900,8 @@ namespace OpenNos.Handler
             Random rnd = new Random();
             if (packetsplit.Length == 5 && short.TryParse(packetsplit[2], out vnum) && byte.TryParse(packetsplit[3], out qty) && byte.TryParse(packetsplit[4], out move))
             {
+                if (ServerManager.GetNpc(vnum) == null)
+                    return;
                 for (int i = 0; i < qty; i++)
                 {
                     short mapx = (short)rnd.Next(Session.Character.MapX - qty / 3, Session.Character.MapX + qty / 3);
