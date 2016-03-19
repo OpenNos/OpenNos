@@ -90,6 +90,8 @@ namespace OpenNos.Handler
 
             if (packetsplit.Length == 4 && short.TryParse(packetsplit[2], out vnum) && short.TryParse(packetsplit[3], out move))
             {
+                if (ServerManager.GetNpc(vnum) == null)
+                    return;
                 MapMonsterDTO monst = new MapMonsterDTO() { MonsterVNum = vnum, MapY = Session.Character.MapY, MapX = Session.Character.MapX, MapId = Session.Character.MapId, Position = (byte)Session.Character.Direction, Move = move == 1 ? true : false, MapMonsterId = MapMonster.generateMapMonsterId() };
                 MapMonster monster = null;
                 if (DAOFactory.MapMonsterDAO.LoadById(monst.MapMonsterId) == null)
@@ -781,10 +783,10 @@ namespace OpenNos.Handler
 
         public void DeleteItem(byte type, short slot)
         {
-         
-                Session.Character.InventoryList.DeleteFromSlotAndType(slot, type);
-                Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, type, slot, 0, 0, 0));
-            
+
+            Session.Character.InventoryList.DeleteFromSlotAndType(slot, type);
+            Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, type, slot, 0, 0, 0));
+
         }
 
         public void deleteTimeout()
@@ -1724,7 +1726,7 @@ namespace OpenNos.Handler
             byte amount; byte.TryParse(packetsplit[4], out amount);
             Inventory inv;
             Inventory invitem = Session.Character.InventoryList.LoadBySlotAndType(slot, type);
-            if (invitem != null && ServerManager.GetItem(invitem.InventoryItem.ItemVNum).IsDroppable == true && ServerManager.GetItem(invitem.InventoryItem.ItemVNum).IsTradable == true && (Session.CurrentMap.ShopUserList.FirstOrDefault(mapshop => mapshop.Value.OwnerId.Equals(Session.Character.CharacterId)).Value == null && Session.Character.ExchangeInfo.ExchangeList.Count() == 0))   
+            if (invitem != null && ServerManager.GetItem(invitem.InventoryItem.ItemVNum).IsDroppable == true && ServerManager.GetItem(invitem.InventoryItem.ItemVNum).IsTradable == true && (Session.CurrentMap.ShopUserList.FirstOrDefault(mapshop => mapshop.Value.OwnerId.Equals(Session.Character.CharacterId)).Value == null && Session.Character.ExchangeInfo.ExchangeList.Count() == 0))
             {
                 if (amount > 0 && amount < 100)
                 {
@@ -1733,8 +1735,8 @@ namespace OpenNos.Handler
 
                     if (inv.InventoryItem.Amount == 0)
                         DeleteItem(type, inv.Slot);
-                    if(DroppedItem !=null)
-                    ClientLinkManager.Instance.Broadcast(Session, $"drop {DroppedItem.ItemVNum} {DroppedItem.InventoryItemId} {DroppedItem.PositionX} {DroppedItem.PositionY} {DroppedItem.Amount} 0 -1", ReceiverType.AllOnMap);
+                    if (DroppedItem != null)
+                        ClientLinkManager.Instance.Broadcast(Session, $"drop {DroppedItem.ItemVNum} {DroppedItem.InventoryItemId} {DroppedItem.PositionX} {DroppedItem.PositionY} {DroppedItem.Amount} 0 -1", ReceiverType.AllOnMap);
                 }
                 else
                 {
@@ -2896,6 +2898,8 @@ namespace OpenNos.Handler
             Random rnd = new Random();
             if (packetsplit.Length == 5 && short.TryParse(packetsplit[2], out vnum) && byte.TryParse(packetsplit[3], out qty) && byte.TryParse(packetsplit[4], out move))
             {
+                if (ServerManager.GetNpc(vnum) == null)
+                    return;
                 for (int i = 0; i < qty; i++)
                 {
                     short mapx = (short)rnd.Next(Session.Character.MapX - qty / 3, Session.Character.MapX + qty / 3);
@@ -3241,7 +3245,7 @@ namespace OpenNos.Handler
         public void Wear(string packet)
         {
             string[] packetsplit = packet.Split(' ');
-            if (packetsplit.Length > 3  &&Session.CurrentMap.ShopUserList.FirstOrDefault(mapshop => mapshop.Value.OwnerId.Equals(Session.Character.CharacterId)).Value == null)
+            if (packetsplit.Length > 3 && Session.CurrentMap.ShopUserList.FirstOrDefault(mapshop => mapshop.Value.OwnerId.Equals(Session.Character.CharacterId)).Value == null)
             {
                 byte type;
                 short slot;
