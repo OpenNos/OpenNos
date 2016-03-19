@@ -90,7 +90,7 @@ namespace OpenNos.Handler
 
             if (packetsplit.Length == 4 && short.TryParse(packetsplit[2], out vnum) && short.TryParse(packetsplit[3], out move))
             {
-                MapMonsterDTO monst = new MapMonsterDTO() { MonsterVNum = vnum, MapY = Session.Character.MapY, MapX = Session.Character.MapX, MapId = Session.Character.MapId, Position = (short)Session.Character.Direction, Move = move == 1 ? true : false, MapMonsterId = MapMonster.generateMapMonsterId() };
+                MapMonsterDTO monst = new MapMonsterDTO() { MonsterVNum = vnum, MapY = Session.Character.MapY, MapX = Session.Character.MapX, MapId = Session.Character.MapId, Position = (byte)Session.Character.Direction, Move = move == 1 ? true : false, MapMonsterId = MapMonster.generateMapMonsterId() };
                 MapMonster monster = null;
                 if (DAOFactory.MapMonsterDAO.LoadById(monst.MapMonsterId) == null)
                 {
@@ -156,7 +156,7 @@ namespace OpenNos.Handler
             string[] packetsplit = packet.Split(' ');
             long owner; long.TryParse(packetsplit[3], out owner);
             byte type; byte.TryParse(packetsplit[2], out type);
-            short slot; short.TryParse(packetsplit[4], out slot);
+            byte slot; byte.TryParse(packetsplit[4], out slot);
             byte amount; byte.TryParse(packetsplit[5], out amount);
             if (type == 1) // User shop
             {
@@ -2186,9 +2186,8 @@ namespace OpenNos.Handler
             string[] packetsplit = packet.Split(' ');
             if (packetsplit.Length > 6)
             {
-                byte type, amount;
-                short slot;
-                if (!byte.TryParse(packetsplit[4], out type) || !short.TryParse(packetsplit[5], out slot) || !byte.TryParse(packetsplit[6], out amount)) return;
+                byte type, amount, slot;
+                if (!byte.TryParse(packetsplit[4], out type) || !byte.TryParse(packetsplit[5], out slot) || !byte.TryParse(packetsplit[6], out amount)) return;
 
                 Inventory inv = Session.Character.InventoryList.LoadBySlotAndType(slot, type);
                 if (inv == null || amount > inv.InventoryItem.Amount) return;
@@ -2196,8 +2195,7 @@ namespace OpenNos.Handler
                 if (ServerManager.GetItem(inv.InventoryItem.ItemVNum).IsSoldable != true)
                 {
                     Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("ITEM_NOT_SOLDABLE"), 0));
-                    // TODO: Need to see if on global it's a MSG packet^^
-                    // maybe its a shopMemo?
+                    // TODO: Need to see if on global it's a MSG packet
                     return;
                 }
 

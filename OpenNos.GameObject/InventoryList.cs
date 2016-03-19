@@ -66,7 +66,7 @@ namespace OpenNos.GameObject
                 modified = true;
             }
             else
-                Slot = (sbyte)getFirstPlace(ServerManager.GetItem(newItem.ItemVNum).Type, character.BackPack, newItem);
+                Slot = getFirstPlace(ServerManager.GetItem(newItem.ItemVNum).Type, character.BackPack, newItem);
             if (Slot != -1)
             {
                 if (modified == false)

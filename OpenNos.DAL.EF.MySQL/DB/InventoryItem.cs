@@ -24,14 +24,14 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public short DamageMaximum { get; set; }
         public short Concentrate { get; set; }
         public short HitRate { get; set; }
-        public byte CriticalLuckRate { get; set; }
+        public short ElementRate { get; set; }
         public short CriticalRate { get; set; }
+        public byte CriticalLuckRate { get; set; }
         public short CloseDefence { get; set; }
         public short DistanceDefence { get; set; }
         public short MagicDefence { get; set; }
         public short DistanceDefenceDodge { get; set; }
         public short DefenceDodge { get; set; }
-        public short ElementRate { get; set; }
         public short HP { get; set; }
         public short MP { get; set; }
         public byte DarkElement { get; set; }
