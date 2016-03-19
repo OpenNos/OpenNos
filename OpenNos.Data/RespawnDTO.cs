@@ -22,7 +22,7 @@ namespace OpenNos.Data
         public short X { get; set; }
         public short Y { get; set; }
         public short MapId { get; set; }
-        public short RespawnType { get; set; }
+        public byte RespawnType { get; set; }
         public long CharacterId { get; set; }
 
         #endregion

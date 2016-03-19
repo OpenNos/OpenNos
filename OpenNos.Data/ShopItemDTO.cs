@@ -20,11 +20,11 @@ namespace OpenNos.Data
 
         public int ShopItemId { get; set; }
         public byte Type { get; set; }
-        public short Slot { get; set; }
+        public byte Slot { get; set; }
         public short ItemVNum { get; set; }
         public byte Upgrade { get; set; }
         public byte Rare { get; set; }
-        public short Color { get; set; }
+        public byte Color { get; set; }
         public int ShopId { get; set; }
 
         #endregion

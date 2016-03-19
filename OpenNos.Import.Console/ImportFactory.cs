@@ -88,7 +88,7 @@ namespace OpenNos.Import.Console
                         npctest.Move = movementlist[npctest.MapNpcId];
                     else
                         npctest.Move = false;
-                    npctest.Position = short.Parse(linesave[6]);
+                    npctest.Position = byte.Parse(linesave[6]);
                     npctest.Dialog = short.Parse(linesave[9]);
                     npctest.IsSitting = linesave[13] == "1" ? false : true;
 
@@ -276,16 +276,16 @@ namespace OpenNos.Import.Console
                     }
                     else if (linesave.Length > 6 && linesave[1] == "PREATT")
                     {
-                        npc.Speed = Convert.ToInt16(linesave[5]);
+                        npc.Speed = Convert.ToByte(linesave[5]);
                     }
                     else if (linesave.Length > 7 && linesave[1] == "ATTRIB")
                     {
                         npc.Element = Convert.ToByte(linesave[2]);
                         npc.ElementRate = Convert.ToInt16(linesave[3]);
-                        npc.FireResistance = Convert.ToInt16(linesave[4]);
-                        npc.WaterResistance = Convert.ToInt16(linesave[5]);
-                        npc.LightResistance = Convert.ToInt16(linesave[6]);
-                        npc.DarkResistance = Convert.ToInt16(linesave[7]);
+                        npc.FireResistance = Convert.ToSByte(linesave[4]);
+                        npc.WaterResistance = Convert.ToSByte(linesave[5]);
+                        npc.LightResistance = Convert.ToSByte(linesave[6]);
+                        npc.DarkResistance = Convert.ToSByte(linesave[7]);
                     }
                     else if (linesave.Length > 8 && linesave[1] == "ZSKILL")
                     {
@@ -346,7 +346,7 @@ namespace OpenNos.Import.Console
                         SourceX = short.Parse(linesave[1]),
                         SourceY = short.Parse(linesave[2]),
                         DestinationMapId = short.Parse(linesave[3]),
-                        Type = short.Parse(linesave[4]),
+                        Type = sbyte.Parse(linesave[4]),
                         DestinationX = -1,
                         DestinationY = -1,
                         IsDisabled = false
@@ -405,7 +405,7 @@ namespace OpenNos.Import.Console
                                 sitem = new ShopItemDTO();
                                 sitem.ShopId = DAOFactory.ShopDAO.LoadByNpc(short.Parse(linesave[2])).ShopId;
                                 sitem.Type = type;
-                                sitem.Slot = short.Parse(item[1]);
+                                sitem.Slot = byte.Parse(item[1]);
                                 sitem.ItemVNum = short.Parse(item[2]);
                             }
                             else if (item.Count() == 6)
@@ -413,7 +413,7 @@ namespace OpenNos.Import.Console
                                 sitem = new ShopItemDTO();
                                 sitem.ShopId = DAOFactory.ShopDAO.LoadByNpc(short.Parse(linesave[2])).ShopId;
                                 sitem.Type = type;
-                                sitem.Slot = short.Parse(item[1]);
+                                sitem.Slot = byte.Parse(item[1]);
                                 sitem.ItemVNum = short.Parse(item[2]);
                                 sitem.Rare = byte.Parse(item[3]);
                                 sitem.Upgrade = byte.Parse(item[4]);
@@ -458,8 +458,8 @@ namespace OpenNos.Import.Console
                     {
                         Name = named,
                         MapNpcId = npc.MapNpcId,
-                        MenuType = short.Parse(linesave[4]),
-                        ShopType = short.Parse(linesave[5])
+                        MenuType = byte.Parse(linesave[4]),
+                        ShopType = byte.Parse(linesave[5])
                     };
                     if (DAOFactory.ShopDAO.LoadByNpc(shop.MapNpcId) == null)
                     {
@@ -586,7 +586,7 @@ namespace OpenNos.Import.Console
                                 item.DamageMinimum = Convert.ToInt16(linesave[3]);
                                 item.DamageMaximum = Convert.ToInt16(linesave[4]);
                                 item.HitRate = Convert.ToInt16(linesave[5]);
-                                item.CriticalLuckRate = Convert.ToInt16(linesave[6]);
+                                item.CriticalLuckRate = Convert.ToByte(linesave[6]);
                                 item.CriticalRate = Convert.ToInt16(linesave[7]);
                                 item.BasicUpgrade = Convert.ToByte(linesave[10]);
                                 break;
@@ -751,12 +751,17 @@ namespace OpenNos.Import.Console
                                 item.EffectValue = Convert.ToInt32(linesave[4]);
                                 break;
                         }
-                        if (item.EquipmentSlot == (byte)EquipmentType.Boots || item.EquipmentSlot == (byte)EquipmentType.Gloves)
+                        if ((item.EquipmentSlot == (byte)EquipmentType.Boots || item.EquipmentSlot == (byte)EquipmentType.Gloves) && item.Type == 0)
                         {
-                            item.FireResistance = Convert.ToInt16(linesave[7]);
-                            item.WaterResistance = Convert.ToInt16(linesave[8]);
-                            item.LightResistance = Convert.ToInt16(linesave[9]);
-                            item.DarkResistance = Convert.ToInt16(linesave[11]);
+                            item.FireResistance = Convert.ToByte(linesave[7]);
+                            item.WaterResistance = Convert.ToByte(linesave[8]);
+                            item.LightResistance = Convert.ToByte(linesave[9]);
+                            item.DarkResistance = Convert.ToByte(linesave[11]);
+                        }
+                        else
+                        {
+                            item.Effect = Convert.ToInt16(linesave[2]);
+                            item.EffectValue = Convert.ToInt32(linesave[8]);
                         }
                     }
                     else if (linesave.Length > 1 && linesave[1] == "BUFF")

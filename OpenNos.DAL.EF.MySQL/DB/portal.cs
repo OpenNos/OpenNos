@@ -19,7 +19,7 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public short SourceY { get; set; }
         public short DestinationX { get; set; }
         public short DestinationY { get; set; }
-        public short Type { get; set; }
+        public sbyte Type { get; set; }
         public short DestinationMapId { get; set; }
         public short SourceMapId { get; set; }
         public bool IsDisabled { get; set; }

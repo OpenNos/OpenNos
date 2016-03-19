@@ -23,12 +23,9 @@ namespace OpenNos.DAL.Interface
         #region Methods
 
         DeleteResult DeleteById(int ItemId);
-
-        ShopItemDTO LoadById(int ItemId);
-
-        IEnumerable<ShopItemDTO> LoadByShopId(int ShopId);
-
         ShopItemDTO Insert(ShopItemDTO item);
+        ShopItemDTO LoadById(int ItemId);
+        IEnumerable<ShopItemDTO> LoadByShopId(int ShopId);
 
         #endregion
     }

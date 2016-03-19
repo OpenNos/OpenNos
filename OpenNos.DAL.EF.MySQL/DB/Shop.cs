@@ -22,8 +22,8 @@ namespace OpenNos.DAL.EF.MySQL.DB
     
         public int ShopId { get; set; }
         public string Name { get; set; }
-        public short MenuType { get; set; }
-        public short ShopType { get; set; }
+        public byte MenuType { get; set; }
+        public byte ShopType { get; set; }
         public int MapNpcId { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

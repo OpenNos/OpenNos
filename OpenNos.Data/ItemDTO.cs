@@ -40,8 +40,8 @@ namespace OpenNos.Data
         public short DamageMaximum { get; set; }
         public short Concentrate { get; set; }
         public short HitRate { get; set; }
-        public short CriticalLuckRate { get; set; }
         public short CriticalRate { get; set; }
+        public byte CriticalLuckRate { get; set; }
         public short CloseDefence { get; set; }
         public short DistanceDefence { get; set; }
         public short MagicDefence { get; set; }
@@ -52,15 +52,15 @@ namespace OpenNos.Data
         public byte LevelJobMinimum { get; set; }
         public byte MaxCellon { get; set; }
         public byte MaxCellonLvl { get; set; }
-        public short FireResistance { get; set; }
-        public short WaterResistance { get; set; }
-        public short LightResistance { get; set; }
-        public short DarkResistance { get; set; }
+        public byte FireResistance { get; set; }
+        public byte WaterResistance { get; set; }
+        public byte LightResistance { get; set; }
+        public byte DarkResistance { get; set; }
         public byte DarkElement { get; set; }
         public byte LightElement { get; set; }
         public byte FireElement { get; set; }
         public byte WaterElement { get; set; }
-        public short PvpStrength { get; set; }
+        public byte PvpStrength { get; set; }
         public byte Speed { get; set; }
         public byte Element { get; set; }
         public short ElementRate { get; set; }
@@ -74,7 +74,7 @@ namespace OpenNos.Data
         public byte FairyMaximumLevel { get; set; }
         public byte MaximumAmmo { get; set; }
         public byte BasicUpgrade { get; set; }
-        public short Color { get; set; }
+        public byte Color { get; set; }
         public long ItemValidTime { get; set; }
         public short Effect { get; set; }
         public int EffectValue { get; set; }

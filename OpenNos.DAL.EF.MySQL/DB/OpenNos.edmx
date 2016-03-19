@@ -188,7 +188,7 @@
     <Property Name="SourceY" Type="smallint" Nullable="false" />
     <Property Name="DestinationX" Type="smallint" Nullable="false" />
     <Property Name="DestinationY" Type="smallint" Nullable="false" />
-    <Property Name="Type" Type="smallint" Nullable="false" />
+    <Property Name="Type" Type="tinyint" Nullable="false" />
     <Property Name="DestinationMapId" Type="smallint" Nullable="false" />
     <Property Name="SourceMapId" Type="smallint" Nullable="false" />
     <Property Name="IsDisabled" Type="bool" Nullable="false" />
@@ -240,8 +240,8 @@
     <Property Name="DamageMaximum" Type="smallint" Nullable="false" />
     <Property Name="Concentrate" Type="smallint" Nullable="false" />
     <Property Name="HitRate" Type="smallint" Nullable="false" />
-    <Property Name="CriticalLuckRate" Type="smallint" Nullable="false" />
     <Property Name="CriticalRate" Type="smallint" Nullable="false" />
+    <Property Name="CriticalLuckRate" Type="utinyint" Nullable="false" />
     <Property Name="CloseDefence" Type="smallint" Nullable="false" />
     <Property Name="DistanceDefence" Type="smallint" Nullable="false" />
     <Property Name="MagicDefence" Type="smallint" Nullable="false" />
@@ -252,15 +252,15 @@
     <Property Name="LevelJobMinimum" Type="utinyint" Nullable="false" />
     <Property Name="MaxCellon" Type="utinyint" Nullable="false" />
     <Property Name="MaxCellonLvl" Type="utinyint" Nullable="false" />
-    <Property Name="FireResistance" Type="smallint" Nullable="false" />
-    <Property Name="WaterResistance" Type="smallint" Nullable="false" />
-    <Property Name="LightResistance" Type="smallint" Nullable="false" />
-    <Property Name="DarkResistance" Type="smallint" Nullable="false" />
+    <Property Name="FireResistance" Type="utinyint" Nullable="false" />
+    <Property Name="WaterResistance" Type="utinyint" Nullable="false" />
+    <Property Name="LightResistance" Type="utinyint" Nullable="false" />
+    <Property Name="DarkResistance" Type="utinyint" Nullable="false" />
     <Property Name="DarkElement" Type="utinyint" Nullable="false" />
     <Property Name="LightElement" Type="utinyint" Nullable="false" />
     <Property Name="FireElement" Type="utinyint" Nullable="false" />
     <Property Name="WaterElement" Type="utinyint" Nullable="false" />
-    <Property Name="PvpStrength" Type="smallint" Nullable="false" />
+    <Property Name="PvpStrength" Type="utinyint" Nullable="false" />
     <Property Name="Speed" Type="utinyint" Nullable="false" />
     <Property Name="Element" Type="utinyint" Nullable="false" />
     <Property Name="ElementRate" Type="smallint" Nullable="false" />
@@ -274,7 +274,7 @@
     <Property Name="FairyMaximumLevel" Type="utinyint" Nullable="false" />
     <Property Name="MaximumAmmo" Type="utinyint" Nullable="false" />
     <Property Name="BasicUpgrade" Type="utinyint" Nullable="false" />
-    <Property Name="Color" Type="smallint" Nullable="false" />
+    <Property Name="Color" Type="utinyint" Nullable="false" />
     <Property Name="ItemValidTime" Type="bigint" Nullable="false" />
     <Property Name="Effect" Type="smallint" Nullable="false" />
     <Property Name="EffectValue" Type="int" Nullable="false" />
@@ -289,7 +289,7 @@
     </Key>
     <Property Name="NpcMonsterVNum" Type="smallint" Nullable="false" />
     <Property Name="Name" Type="longtext" Nullable="false" />
-    <Property Name="Speed" Type="smallint" Nullable="false" />
+    <Property Name="Speed" Type="utinyint" Nullable="false" />
     <Property Name="Level" Type="utinyint" Nullable="false" />
     <Property Name="AttackClass" Type="utinyint" Nullable="false" />
     <Property Name="AttackUpgrade" Type="utinyint" Nullable="false" />
@@ -299,17 +299,17 @@
     <Property Name="Element" Type="utinyint" Nullable="false" />
     <Property Name="ElementRate" Type="smallint" Nullable="false" />
     <Property Name="CriticalRate" Type="smallint" Nullable="false" />
-    <Property Name="CriticalLuckRate" Type="smallint" Nullable="false" />
+    <Property Name="CriticalLuckRate" Type="utinyint" Nullable="false" />
     <Property Name="CloseDefence" Type="smallint" Nullable="false" />
     <Property Name="DefenceDodge" Type="smallint" Nullable="false" />
     <Property Name="MagicDefence" Type="smallint" Nullable="false" />
     <Property Name="DefenceUpgrade" Type="utinyint" Nullable="false" />
     <Property Name="DistanceDefence" Type="smallint" Nullable="false" />
     <Property Name="DistanceDefenceDodge" Type="smallint" Nullable="false" />
-    <Property Name="FireResistance" Type="smallint" Nullable="false" />
-    <Property Name="WaterResistance" Type="smallint" Nullable="false" />
-    <Property Name="LightResistance" Type="smallint" Nullable="false" />
-    <Property Name="DarkResistance" Type="smallint" Nullable="false" />
+    <Property Name="FireResistance" Type="tinyint" Nullable="false" />
+    <Property Name="WaterResistance" Type="tinyint" Nullable="false" />
+    <Property Name="LightResistance" Type="tinyint" Nullable="false" />
+    <Property Name="DarkResistance" Type="tinyint" Nullable="false" />
     <Property Name="MaxHP" Type="smallint" Nullable="false" />
     <Property Name="MaxMP" Type="smallint" Nullable="false" />
   </EntityType>
@@ -327,14 +327,14 @@
     <Property Name="DamageMaximum" Type="smallint" Nullable="false" />
     <Property Name="Concentrate" Type="smallint" Nullable="false" />
     <Property Name="HitRate" Type="smallint" Nullable="false" />
-    <Property Name="CriticalLuckRate" Type="utinyint" Nullable="false" />
+    <Property Name="ElementRate" Type="smallint" Nullable="false" />
     <Property Name="CriticalRate" Type="smallint" Nullable="false" />
+    <Property Name="CriticalLuckRate" Type="utinyint" Nullable="false" />
     <Property Name="CloseDefence" Type="smallint" Nullable="false" />
     <Property Name="DistanceDefence" Type="smallint" Nullable="false" />
     <Property Name="MagicDefence" Type="smallint" Nullable="false" />
     <Property Name="DistanceDefenceDodge" Type="smallint" Nullable="false" />
     <Property Name="DefenceDodge" Type="smallint" Nullable="false" />
-    <Property Name="ElementRate" Type="smallint" Nullable="false" />
     <Property Name="HP" Type="smallint" Nullable="false" />
     <Property Name="MP" Type="smallint" Nullable="false" />
     <Property Name="DarkElement" Type="utinyint" Nullable="false" />
@@ -384,11 +384,11 @@
     </Key>
     <Property Name="ShopItemId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="Type" Type="utinyint" Nullable="false" />
-    <Property Name="Slot" Type="smallint" Nullable="false" />
+    <Property Name="Slot" Type="utinyint" Nullable="false" />
     <Property Name="ItemVNum" Type="smallint" Nullable="false" />
     <Property Name="Upgrade" Type="utinyint" Nullable="false" />
     <Property Name="Rare" Type="utinyint" Nullable="false" />
-    <Property Name="Color" Type="smallint" Nullable="false" />
+    <Property Name="Color" Type="utinyint" Nullable="false" />
     <Property Name="ShopId" Type="int" Nullable="false" />
   </EntityType>
   <EntityType Name="shop">
@@ -397,8 +397,8 @@
     </Key>
     <Property Name="ShopId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="Name" Type="longtext" Nullable="false" />
-    <Property Name="MenuType" Type="smallint" Nullable="false" />
-    <Property Name="ShopType" Type="smallint" Nullable="false" />
+    <Property Name="MenuType" Type="utinyint" Nullable="false" />
+    <Property Name="ShopType" Type="utinyint" Nullable="false" />
     <Property Name="MapNpcId" Type="int" Nullable="false" />
   </EntityType>
   <EntityType Name="respawn">
@@ -409,7 +409,7 @@
     <Property Name="X" Type="smallint" Nullable="false" />
     <Property Name="Y" Type="smallint" Nullable="false" />
     <Property Name="MapId" Type="smallint" Nullable="false" />
-    <Property Name="RespawnType" Type="smallint" Nullable="false" />
+    <Property Name="RespawnType" Type="utinyint" Nullable="false" />
     <Property Name="CharacterId" Type="bigint" Nullable="false" />
   </EntityType>
   <EntityType Name="teleporter">
@@ -432,7 +432,7 @@
     <Property Name="MapId" Type="smallint" Nullable="false" />
     <Property Name="MapX" Type="smallint" Nullable="false" />
     <Property Name="MapY" Type="smallint" Nullable="false" />
-    <Property Name="Position" Type="smallint" Nullable="false" />
+    <Property Name="Position" Type="utinyint" Nullable="false" />
     <Property Name="Move" Type="bool" Nullable="false" />
   </EntityType>
   <EntityType Name="mapnpc">
@@ -445,7 +445,7 @@
     <Property Name="MapX" Type="smallint" Nullable="false" />
     <Property Name="MapY" Type="smallint" Nullable="false" />
     <Property Name="Move" Type="bool" Nullable="false" />
-    <Property Name="Position" Type="smallint" Nullable="false" />
+    <Property Name="Position" Type="utinyint" Nullable="false" />
     <Property Name="IsSitting" Type="bool" Nullable="false" />
     <Property Name="EffectDelay" Type="smallint" Nullable="false" />
     <Property Name="Effect" Type="smallint" Nullable="false" />
@@ -828,7 +828,7 @@
           <Property Name="SourceY" Type="Int16" Nullable="false" />
           <Property Name="DestinationX" Type="Int16" Nullable="false" />
           <Property Name="DestinationY" Type="Int16" Nullable="false" />
-          <Property Name="Type" Type="Int16" Nullable="false" />
+          <Property Name="Type" Type="SByte" Nullable="false" />
           <NavigationProperty Name="destinationmap" Relationship="opennosModel.portalMap" FromRole="portal" ToRole="Map" />
           <Property Name="DestinationMapId" Type="Int16" Nullable="false" />
           <NavigationProperty Name="sourcemap" Relationship="opennosModel.portalMap1" FromRole="portal" ToRole="Map" />
@@ -1073,8 +1073,8 @@
           <Property Name="DamageMaximum" Type="Int16" Nullable="false" />
           <Property Name="Concentrate" Type="Int16" Nullable="false" />
           <Property Name="HitRate" Type="Int16" Nullable="false" />
-          <Property Name="CriticalLuckRate" Type="Int16" Nullable="false" />
           <Property Name="CriticalRate" Type="Int16" Nullable="false" />
+          <Property Name="CriticalLuckRate" Type="Byte" Nullable="false" />
           <Property Name="CloseDefence" Type="Int16" Nullable="false" />
           <Property Name="DistanceDefence" Type="Int16" Nullable="false" />
           <Property Name="MagicDefence" Type="Int16" Nullable="false" />
@@ -1085,15 +1085,15 @@
           <Property Name="LevelJobMinimum" Type="Byte" Nullable="false" />
           <Property Name="MaxCellon" Type="Byte" Nullable="false" />
           <Property Name="MaxCellonLvl" Type="Byte" Nullable="false" />
-          <Property Name="FireResistance" Type="Int16" Nullable="false" />
-          <Property Name="WaterResistance" Type="Int16" Nullable="false" />
-          <Property Name="LightResistance" Type="Int16" Nullable="false" />
-          <Property Name="DarkResistance" Type="Int16" Nullable="false" />
+          <Property Name="FireResistance" Type="Byte" Nullable="false" />
+          <Property Name="WaterResistance" Type="Byte" Nullable="false" />
+          <Property Name="LightResistance" Type="Byte" Nullable="false" />
+          <Property Name="DarkResistance" Type="Byte" Nullable="false" />
           <Property Name="DarkElement" Type="Byte" Nullable="false" />
           <Property Name="LightElement" Type="Byte" Nullable="false" />
           <Property Name="FireElement" Type="Byte" Nullable="false" />
           <Property Name="WaterElement" Type="Byte" Nullable="false" />
-          <Property Name="PvpStrength" Type="Int16" Nullable="false" />
+          <Property Name="PvpStrength" Type="Byte" Nullable="false" />
           <Property Name="Speed" Type="Byte" Nullable="false" />
           <Property Name="Element" Type="Byte" Nullable="false" />
           <Property Name="ElementRate" Type="Int16" Nullable="false" />
@@ -1109,7 +1109,7 @@
           <Property Name="FairyMaximumLevel" Type="Byte" Nullable="false" />
           <Property Name="MaximumAmmo" Type="Byte" Nullable="false" />
           <Property Name="BasicUpgrade" Type="Byte" Nullable="false" />
-          <Property Name="Color" Type="Int16" Nullable="false" />
+          <Property Name="Color" Type="Byte" Nullable="false" />
           <Property Name="ItemValidTime" Type="Int64" Nullable="false" />
           <Property Name="Effect" Type="Int16" Nullable="false" />
           <Property Name="EffectValue" Type="Int32" Nullable="false" />
@@ -1125,7 +1125,7 @@
           </Key>
           <Property Name="NpcMonsterVNum" Type="Int16" Nullable="false" annotation:StoreGeneratedPattern="None" />
           <Property Name="Name" Type="String" Nullable="false" />
-          <Property Name="Speed" Type="Int16" Nullable="false" />
+          <Property Name="Speed" Type="Byte" Nullable="false" />
           <Property Name="Level" Type="Byte" Nullable="false" />
           <Property Name="AttackClass" Type="Byte" Nullable="false" />
           <Property Name="AttackUpgrade" Type="Byte" Nullable="false" />
@@ -1135,17 +1135,17 @@
           <Property Name="Element" Type="Byte" Nullable="false" />
           <Property Name="ElementRate" Type="Int16" Nullable="false" />
           <Property Name="CriticalRate" Type="Int16" Nullable="false" />
-          <Property Name="CriticalLuckRate" Type="Int16" Nullable="false" />
+          <Property Name="CriticalLuckRate" Type="Byte" Nullable="false" />
           <Property Name="CloseDefence" Type="Int16" Nullable="false" />
           <Property Name="DefenceDodge" Type="Int16" Nullable="false" />
           <Property Name="MagicDefence" Type="Int16" Nullable="false" />
           <Property Name="DefenceUpgrade" Type="Byte" Nullable="false" />
           <Property Name="DistanceDefence" Type="Int16" Nullable="false" />
           <Property Name="DistanceDefenceDodge" Type="Int16" Nullable="false" />
-          <Property Name="FireResistance" Type="Int16" Nullable="false" />
-          <Property Name="WaterResistance" Type="Int16" Nullable="false" />
-          <Property Name="LightResistance" Type="Int16" Nullable="false" />
-          <Property Name="DarkResistance" Type="Int16" Nullable="false" />
+          <Property Name="FireResistance" Type="SByte" Nullable="false" />
+          <Property Name="WaterResistance" Type="SByte" Nullable="false" />
+          <Property Name="LightResistance" Type="SByte" Nullable="false" />
+          <Property Name="DarkResistance" Type="SByte" Nullable="false" />
           <NavigationProperty Name="mapnpc" Relationship="opennosModel.MapNpcNpc" FromRole="Npc" ToRole="MapNpc" />
           <NavigationProperty Name="mapmonster" Relationship="opennosModel.MapMonsterNpcMonster" FromRole="NpcMonster" ToRole="MapMonster" />
           <Property Name="MaxHP" Type="Int16" Nullable="false" />
@@ -1165,14 +1165,14 @@
           <Property Name="DamageMaximum" Type="Int16" Nullable="false" />
           <Property Name="Concentrate" Type="Int16" Nullable="false" />
           <Property Name="HitRate" Type="Int16" Nullable="false" />
-          <Property Name="CriticalLuckRate" Type="Byte" Nullable="false" />
+          <Property Name="ElementRate" Type="Int16" Nullable="false" />
           <Property Name="CriticalRate" Type="Int16" Nullable="false" />
+          <Property Name="CriticalLuckRate" Type="Byte" Nullable="false" />
           <Property Name="CloseDefence" Type="Int16" Nullable="false" />
           <Property Name="DistanceDefence" Type="Int16" Nullable="false" />
           <Property Name="MagicDefence" Type="Int16" Nullable="false" />
           <Property Name="DistanceDefenceDodge" Type="Int16" Nullable="false" />
           <Property Name="DefenceDodge" Type="Int16" Nullable="false" />
-          <Property Name="ElementRate" Type="Int16" Nullable="false" />
           <Property Name="HP" Type="Int16" Nullable="false" />
           <Property Name="MP" Type="Int16" Nullable="false" />
           <Property Name="DarkElement" Type="Byte" Nullable="false" />
@@ -1249,13 +1249,13 @@
           </Key>
           <Property Name="ShopItemId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Type" Type="Byte" Nullable="false" />
-          <Property Name="Slot" Type="Int16" Nullable="false" />
+          <Property Name="Slot" Type="Byte" Nullable="false" />
           <NavigationProperty Name="item" Relationship="opennosModel.ShopItemItem" FromRole="ShopItem" ToRole="Item" />
           <Property Name="ItemVNum" Type="Int16" Nullable="false" />
           <Property Name="Upgrade" Type="Byte" Nullable="false" />
           <Property Name="Rare" Type="Byte" Nullable="false" />
           <NavigationProperty Name="shop" Relationship="opennosModel.ShopShopItem" FromRole="ShopItem" ToRole="Shop" />
-          <Property Name="Color" Type="Int16" Nullable="false" />
+          <Property Name="Color" Type="Byte" Nullable="false" />
           <Property Name="ShopId" Type="Int32" Nullable="false" />
         </EntityType>
         <EntityType Name="Shop">
@@ -1264,8 +1264,8 @@
           </Key>
           <Property Name="ShopId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Name" Type="String" Nullable="false" />
-          <Property Name="MenuType" Type="Int16" Nullable="false" />
-          <Property Name="ShopType" Type="Int16" Nullable="false" />
+          <Property Name="MenuType" Type="Byte" Nullable="false" />
+          <Property Name="ShopType" Type="Byte" Nullable="false" />
           <NavigationProperty Name="shopitem" Relationship="opennosModel.ShopShopItem" FromRole="Shop" ToRole="ShopItem" />
           <NavigationProperty Name="mapnpc" Relationship="opennosModel.ShopMapNpc" FromRole="Shop" ToRole="MapNpc" />
           <Property Name="MapNpcId" Type="Int32" Nullable="false" />
@@ -1302,7 +1302,7 @@
           <Property Name="X" Type="Int16" Nullable="false" />
           <Property Name="Y" Type="Int16" Nullable="false" />
           <Property Name="MapId" Type="Int16" Nullable="false" />
-          <Property Name="RespawnType" Type="Int16" Nullable="false" />
+          <Property Name="RespawnType" Type="Byte" Nullable="false" />
           <Property Name="CharacterId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="None" />
           <NavigationProperty Name="character" Relationship="opennosModel.CharacterRespawn" FromRole="Respawn" ToRole="Character" />
         </EntityType>
@@ -1357,7 +1357,7 @@
           <Property Name="MapId" Type="Int16" Nullable="false" />
           <Property Name="MapX" Type="Int16" Nullable="false" />
           <Property Name="MapY" Type="Int16" Nullable="false" />
-          <Property Name="Position" Type="Int16" Nullable="false" />
+          <Property Name="Position" Type="Byte" Nullable="false" />
           <Property Name="Move" Type="Boolean" Nullable="false" />
           <NavigationProperty Name="npcmonster" Relationship="opennosModel.MapMonsterNpcMonster" FromRole="MapMonster" ToRole="NpcMonster" />
         </EntityType>
@@ -1385,7 +1385,7 @@
           <Property Name="MapX" Type="Int16" Nullable="false" />
           <Property Name="MapY" Type="Int16" Nullable="false" />
           <Property Name="Move" Type="Boolean" Nullable="false" />
-          <Property Name="Position" Type="Int16" Nullable="false" />
+          <Property Name="Position" Type="Byte" Nullable="false" />
           <Property Name="IsSitting" Type="Boolean" Nullable="false" />
           <Property Name="EffectDelay" Type="Int16" Nullable="false" />
           <Property Name="Effect" Type="Int16" Nullable="false" />
@@ -1651,8 +1651,8 @@
           <ScalarProperty Name="DamageMaximum" ColumnName="DamageMaximum" />
           <ScalarProperty Name="Concentrate" ColumnName="Concentrate" />
           <ScalarProperty Name="HitRate" ColumnName="HitRate" />
-          <ScalarProperty Name="CriticalLuckRate" ColumnName="CriticalLuckRate" />
           <ScalarProperty Name="CriticalRate" ColumnName="CriticalRate" />
+          <ScalarProperty Name="CriticalLuckRate" ColumnName="CriticalLuckRate" />
           <ScalarProperty Name="CloseDefence" ColumnName="CloseDefence" />
           <ScalarProperty Name="DistanceDefence" ColumnName="DistanceDefence" />
           <ScalarProperty Name="MagicDefence" ColumnName="MagicDefence" />
@@ -1740,14 +1740,14 @@
           <ScalarProperty Name="DamageMaximum" ColumnName="DamageMaximum" />
           <ScalarProperty Name="Concentrate" ColumnName="Concentrate" />
           <ScalarProperty Name="HitRate" ColumnName="HitRate" />
-          <ScalarProperty Name="CriticalLuckRate" ColumnName="CriticalLuckRate" />
+          <ScalarProperty Name="ElementRate" ColumnName="ElementRate" />
           <ScalarProperty Name="CriticalRate" ColumnName="CriticalRate" />
+          <ScalarProperty Name="CriticalLuckRate" ColumnName="CriticalLuckRate" />
           <ScalarProperty Name="CloseDefence" ColumnName="CloseDefence" />
           <ScalarProperty Name="DistanceDefence" ColumnName="DistanceDefence" />
           <ScalarProperty Name="MagicDefence" ColumnName="MagicDefence" />
           <ScalarProperty Name="DistanceDefenceDodge" ColumnName="DistanceDefenceDodge" />
           <ScalarProperty Name="DefenceDodge" ColumnName="DefenceDodge" />
-          <ScalarProperty Name="ElementRate" ColumnName="ElementRate" />
           <ScalarProperty Name="HP" ColumnName="HP" />
           <ScalarProperty Name="MP" ColumnName="MP" />
           <ScalarProperty Name="DarkElement" ColumnName="DarkElement" />

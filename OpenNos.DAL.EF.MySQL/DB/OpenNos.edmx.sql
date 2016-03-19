@@ -44,9 +44,9 @@
 -- -----------------------------------------------------------
 -- Entity Designer DDL Script for MySQL Server 4.1 and higher
 -- -----------------------------------------------------------
--- Date Created: 03/18/2016 22:10:05
+-- Date Created: 03/19/2016 14:28:03
 
--- Generated from EDMX file: C:\Users\ERWAN\Desktop\OpenNos Git\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
+-- Generated from EDMX file: C:\Users\Dominik\Source\Repos\OpenNos\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
 -- Target version: 3.0.0.0
 
 -- --------------------------------------------------
@@ -227,7 +227,7 @@ CREATE TABLE `portal`(
 	`SourceY` smallint NOT NULL, 
 	`DestinationX` smallint NOT NULL, 
 	`DestinationY` smallint NOT NULL, 
-	`Type` smallint NOT NULL, 
+	`Type` tinyint NOT NULL, 
 	`DestinationMapId` smallint NOT NULL, 
 	`SourceMapId` smallint NOT NULL, 
 	`IsDisabled` bool NOT NULL);
@@ -288,8 +288,8 @@ CREATE TABLE `item`(
 	`DamageMaximum` smallint NOT NULL, 
 	`Concentrate` smallint NOT NULL, 
 	`HitRate` smallint NOT NULL, 
-	`CriticalLuckRate` smallint NOT NULL, 
 	`CriticalRate` smallint NOT NULL, 
+	`CriticalLuckRate` TINYINT UNSIGNED NOT NULL, 
 	`CloseDefence` smallint NOT NULL, 
 	`DistanceDefence` smallint NOT NULL, 
 	`MagicDefence` smallint NOT NULL, 
@@ -300,15 +300,15 @@ CREATE TABLE `item`(
 	`LevelJobMinimum` TINYINT UNSIGNED NOT NULL, 
 	`MaxCellon` TINYINT UNSIGNED NOT NULL, 
 	`MaxCellonLvl` TINYINT UNSIGNED NOT NULL, 
-	`FireResistance` smallint NOT NULL, 
-	`WaterResistance` smallint NOT NULL, 
-	`LightResistance` smallint NOT NULL, 
-	`DarkResistance` smallint NOT NULL, 
+	`FireResistance` TINYINT UNSIGNED NOT NULL, 
+	`WaterResistance` TINYINT UNSIGNED NOT NULL, 
+	`LightResistance` TINYINT UNSIGNED NOT NULL, 
+	`DarkResistance` TINYINT UNSIGNED NOT NULL, 
 	`DarkElement` TINYINT UNSIGNED NOT NULL, 
 	`LightElement` TINYINT UNSIGNED NOT NULL, 
 	`FireElement` TINYINT UNSIGNED NOT NULL, 
 	`WaterElement` TINYINT UNSIGNED NOT NULL, 
-	`PvpStrength` smallint NOT NULL, 
+	`PvpStrength` TINYINT UNSIGNED NOT NULL, 
 	`Speed` TINYINT UNSIGNED NOT NULL, 
 	`Element` TINYINT UNSIGNED NOT NULL, 
 	`ElementRate` smallint NOT NULL, 
@@ -322,7 +322,7 @@ CREATE TABLE `item`(
 	`FairyMaximumLevel` TINYINT UNSIGNED NOT NULL, 
 	`MaximumAmmo` TINYINT UNSIGNED NOT NULL, 
 	`BasicUpgrade` TINYINT UNSIGNED NOT NULL, 
-	`Color` smallint NOT NULL, 
+	`Color` TINYINT UNSIGNED NOT NULL, 
 	`ItemValidTime` bigint NOT NULL, 
 	`Effect` smallint NOT NULL, 
 	`EffectValue` int NOT NULL, 
@@ -340,7 +340,7 @@ ALTER TABLE `item` ADD PRIMARY KEY (VNum);
 CREATE TABLE `npcmonster`(
 	`NpcMonsterVNum` smallint NOT NULL, 
 	`Name` longtext NOT NULL, 
-	`Speed` smallint NOT NULL, 
+	`Speed` TINYINT UNSIGNED NOT NULL, 
 	`Level` TINYINT UNSIGNED NOT NULL, 
 	`AttackClass` TINYINT UNSIGNED NOT NULL, 
 	`AttackUpgrade` TINYINT UNSIGNED NOT NULL, 
@@ -350,17 +350,17 @@ CREATE TABLE `npcmonster`(
 	`Element` TINYINT UNSIGNED NOT NULL, 
 	`ElementRate` smallint NOT NULL, 
 	`CriticalRate` smallint NOT NULL, 
-	`CriticalLuckRate` smallint NOT NULL, 
+	`CriticalLuckRate` TINYINT UNSIGNED NOT NULL, 
 	`CloseDefence` smallint NOT NULL, 
 	`DefenceDodge` smallint NOT NULL, 
 	`MagicDefence` smallint NOT NULL, 
 	`DefenceUpgrade` TINYINT UNSIGNED NOT NULL, 
 	`DistanceDefence` smallint NOT NULL, 
 	`DistanceDefenceDodge` smallint NOT NULL, 
-	`FireResistance` smallint NOT NULL, 
-	`WaterResistance` smallint NOT NULL, 
-	`LightResistance` smallint NOT NULL, 
-	`DarkResistance` smallint NOT NULL, 
+	`FireResistance` tinyint NOT NULL, 
+	`WaterResistance` tinyint NOT NULL, 
+	`LightResistance` tinyint NOT NULL, 
+	`DarkResistance` tinyint NOT NULL, 
 	`MaxHP` smallint NOT NULL, 
 	`MaxMP` smallint NOT NULL);
 
@@ -381,14 +381,14 @@ CREATE TABLE `inventoryitem`(
 	`DamageMaximum` smallint NOT NULL, 
 	`Concentrate` smallint NOT NULL, 
 	`HitRate` smallint NOT NULL, 
-	`CriticalLuckRate` TINYINT UNSIGNED NOT NULL, 
+	`ElementRate` smallint NOT NULL, 
 	`CriticalRate` smallint NOT NULL, 
+	`CriticalLuckRate` TINYINT UNSIGNED NOT NULL, 
 	`CloseDefence` smallint NOT NULL, 
 	`DistanceDefence` smallint NOT NULL, 
 	`MagicDefence` smallint NOT NULL, 
 	`DistanceDefenceDodge` smallint NOT NULL, 
 	`DefenceDodge` smallint NOT NULL, 
-	`ElementRate` smallint NOT NULL, 
 	`HP` smallint NOT NULL, 
 	`MP` smallint NOT NULL, 
 	`DarkElement` TINYINT UNSIGNED NOT NULL, 
@@ -444,11 +444,11 @@ ALTER TABLE `inventory` ADD PRIMARY KEY (InventoryId);
 CREATE TABLE `shopitem`(
 	`ShopItemId` int NOT NULL AUTO_INCREMENT UNIQUE, 
 	`Type` TINYINT UNSIGNED NOT NULL, 
-	`Slot` smallint NOT NULL, 
+	`Slot` TINYINT UNSIGNED NOT NULL, 
 	`ItemVNum` smallint NOT NULL, 
 	`Upgrade` TINYINT UNSIGNED NOT NULL, 
 	`Rare` TINYINT UNSIGNED NOT NULL, 
-	`Color` smallint NOT NULL, 
+	`Color` TINYINT UNSIGNED NOT NULL, 
 	`ShopId` int NOT NULL);
 
 ALTER TABLE `shopitem` ADD PRIMARY KEY (ShopItemId);
@@ -460,8 +460,8 @@ ALTER TABLE `shopitem` ADD PRIMARY KEY (ShopItemId);
 CREATE TABLE `shop`(
 	`ShopId` int NOT NULL AUTO_INCREMENT UNIQUE, 
 	`Name` longtext NOT NULL, 
-	`MenuType` smallint NOT NULL, 
-	`ShopType` smallint NOT NULL, 
+	`MenuType` TINYINT UNSIGNED NOT NULL, 
+	`ShopType` TINYINT UNSIGNED NOT NULL, 
 	`MapNpcId` int NOT NULL);
 
 ALTER TABLE `shop` ADD PRIMARY KEY (ShopId);
@@ -475,7 +475,7 @@ CREATE TABLE `respawn`(
 	`X` smallint NOT NULL, 
 	`Y` smallint NOT NULL, 
 	`MapId` smallint NOT NULL, 
-	`RespawnType` smallint NOT NULL, 
+	`RespawnType` TINYINT UNSIGNED NOT NULL, 
 	`CharacterId` bigint NOT NULL);
 
 ALTER TABLE `respawn` ADD PRIMARY KEY (RespawnId);
@@ -504,7 +504,7 @@ CREATE TABLE `mapmonster`(
 	`MapId` smallint NOT NULL, 
 	`MapX` smallint NOT NULL, 
 	`MapY` smallint NOT NULL, 
-	`Position` smallint NOT NULL, 
+	`Position` TINYINT UNSIGNED NOT NULL, 
 	`Move` bool NOT NULL);
 
 ALTER TABLE `mapmonster` ADD PRIMARY KEY (MapMonsterId);
@@ -520,7 +520,7 @@ CREATE TABLE `mapnpc`(
 	`MapX` smallint NOT NULL, 
 	`MapY` smallint NOT NULL, 
 	`Move` bool NOT NULL, 
-	`Position` smallint NOT NULL, 
+	`Position` TINYINT UNSIGNED NOT NULL, 
 	`IsSitting` bool NOT NULL, 
 	`EffectDelay` smallint NOT NULL, 
 	`Effect` smallint NOT NULL, 

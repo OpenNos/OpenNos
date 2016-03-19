@@ -20,7 +20,7 @@ namespace OpenNos.Data
 
         public short NpcMonsterVNum { get; set; }
         public string Name { get; set; }
-        public short Speed { get; set; }
+        public byte Speed { get; set; }
         public byte Level { get; set; }
         public byte AttackClass { get; set; }
         public byte AttackUpgrade { get; set; }
@@ -30,17 +30,17 @@ namespace OpenNos.Data
         public byte Element { get; set; }
         public short ElementRate { get; set; }
         public short CriticalRate { get; set; }
-        public short CriticalLuckRate { get; set; }
+        public byte CriticalLuckRate { get; set; }
         public short CloseDefence { get; set; }
         public short DefenceDodge { get; set; }
         public short MagicDefence { get; set; }
         public byte DefenceUpgrade { get; set; }
         public short DistanceDefence { get; set; }
         public short DistanceDefenceDodge { get; set; }
-        public short FireResistance { get; set; }
-        public short WaterResistance { get; set; }
-        public short LightResistance { get; set; }
-        public short DarkResistance { get; set; }
+        public sbyte FireResistance { get; set; }
+        public sbyte WaterResistance { get; set; }
+        public sbyte LightResistance { get; set; }
+        public sbyte DarkResistance { get; set; }
         public short MaxHP { get; set; }
         public short MaxMP { get; set; }
 

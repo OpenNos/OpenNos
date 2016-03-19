@@ -99,31 +99,31 @@ namespace OpenNos.Import.Console
                 }
                 System.Console.WriteLine($"{Language.Instance.GetMessageFromKey("PARSE_MAPNPCS")} [Y/n]");
                 System.ConsoleKeyInfo key4 = System.Console.ReadKey(true);
-                if (key3.KeyChar != 'n')
+                if (key4.KeyChar != 'n')
                 {
                     factory.ImportMapNpcs();
                 }
                 System.Console.WriteLine($"{Language.Instance.GetMessageFromKey("PARSE_MONSTERS")} [Y/n]");
                 System.ConsoleKeyInfo key5 = System.Console.ReadKey(true);
-                if (key3.KeyChar != 'n')
+                if (key5.KeyChar != 'n')
                 {
                     factory.ImportMonsters();
                 }
                 System.Console.WriteLine($"{Language.Instance.GetMessageFromKey("PARSE_SHOPS")} [Y/n]");
                 System.ConsoleKeyInfo key6 = System.Console.ReadKey(true);
-                if (key4.KeyChar != 'n')
+                if (key6.KeyChar != 'n')
                 {
                     factory.ImportShops();
                 }
                 System.Console.WriteLine($"{Language.Instance.GetMessageFromKey("PARSE_ITEMS")} [Y/n]");
                 System.ConsoleKeyInfo key7 = System.Console.ReadKey(true);
-                if (key5.KeyChar != 'n')
+                if (key7.KeyChar != 'n')
                 {
                     factory.ImportItems();
                 }
                 System.Console.WriteLine($"{Language.Instance.GetMessageFromKey("PARSE_SHOPITEMS")} [Y/n]");
                 System.ConsoleKeyInfo key8 = System.Console.ReadKey(true);
-                if (key6.KeyChar != 'n')
+                if (key8.KeyChar != 'n')
                 {
                     factory.ImportShopItems();
                 }
