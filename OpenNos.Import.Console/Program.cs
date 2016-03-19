@@ -83,7 +83,6 @@ namespace OpenNos.Import.Console
                 if (key1.KeyChar != 'n')
                 {
                     factory.ImportMaps();
-                    factory.loadMaps();
                 }
                 factory.loadMaps();
                 System.Console.WriteLine($"{Language.Instance.GetMessageFromKey("PARSE_PORTALS")} [Y/n]");
