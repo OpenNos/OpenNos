@@ -934,7 +934,8 @@ namespace OpenNos.Handler
 
                         if (exchange.Gold + gold > 1000000000)
                             goldmax = true;
-
+                        if (Session.Character.ExchangeInfo.Gold > Session.Character.Gold)
+                            return;
                         if (Session.Character.ExchangeInfo.Gold + Session.Character.Gold > 1000000000)
                             goldmax = true;
 
