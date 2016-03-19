@@ -783,10 +783,10 @@ namespace OpenNos.Handler
 
         public void DeleteItem(byte type, short slot)
         {
-         
-                Session.Character.InventoryList.DeleteFromSlotAndType(slot, type);
-                Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, type, slot, 0, 0, 0));
-            
+
+            Session.Character.InventoryList.DeleteFromSlotAndType(slot, type);
+            Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, type, slot, 0, 0, 0));
+
         }
 
         public void deleteTimeout()
@@ -1726,7 +1726,7 @@ namespace OpenNos.Handler
             byte amount; byte.TryParse(packetsplit[4], out amount);
             Inventory inv;
             Inventory invitem = Session.Character.InventoryList.LoadBySlotAndType(slot, type);
-            if (invitem != null && ServerManager.GetItem(invitem.InventoryItem.ItemVNum).IsDroppable == true && ServerManager.GetItem(invitem.InventoryItem.ItemVNum).IsTradable == true && (Session.CurrentMap.ShopUserList.FirstOrDefault(mapshop => mapshop.Value.OwnerId.Equals(Session.Character.CharacterId)).Value == null && Session.Character.ExchangeInfo.ExchangeList.Count() == 0))   
+            if (invitem != null && ServerManager.GetItem(invitem.InventoryItem.ItemVNum).IsDroppable == true && ServerManager.GetItem(invitem.InventoryItem.ItemVNum).IsTradable == true && (Session.CurrentMap.ShopUserList.FirstOrDefault(mapshop => mapshop.Value.OwnerId.Equals(Session.Character.CharacterId)).Value == null && Session.Character.ExchangeInfo.ExchangeList.Count() == 0))
             {
                 if (amount > 0 && amount < 100)
                 {
@@ -1735,8 +1735,8 @@ namespace OpenNos.Handler
 
                     if (inv.InventoryItem.Amount == 0)
                         DeleteItem(type, inv.Slot);
-                    if(DroppedItem !=null)
-                    ClientLinkManager.Instance.Broadcast(Session, $"drop {DroppedItem.ItemVNum} {DroppedItem.InventoryItemId} {DroppedItem.PositionX} {DroppedItem.PositionY} {DroppedItem.Amount} 0 -1", ReceiverType.AllOnMap);
+                    if (DroppedItem != null)
+                        ClientLinkManager.Instance.Broadcast(Session, $"drop {DroppedItem.ItemVNum} {DroppedItem.InventoryItemId} {DroppedItem.PositionX} {DroppedItem.PositionY} {DroppedItem.Amount} 0 -1", ReceiverType.AllOnMap);
                 }
                 else
                 {
@@ -1931,7 +1931,7 @@ namespace OpenNos.Handler
         {
             // Undress Equipment
             string[] packetsplit = packet.Split(' ');
-            if (packetsplit.Length > 3 && Session.CurrentMap.ShopUserList.FirstOrDefault(mapshop => mapshop.Value.OwnerId.Equals(Session.Character.CharacterId)).Value == null && Session.Character.ExchangeInfo.ExchangeList.Count() == 0)
+            if (packetsplit.Length > 3 && Session.CurrentMap.ShopUserList.FirstOrDefault(mapshop => mapshop.Value.OwnerId.Equals(Session.Character.CharacterId)).Value == null && (Session.Character.ExchangeInfo == null || Session.Character.ExchangeInfo?.ExchangeList.Count() == 0))
             {
                 short slot;
                 if (!short.TryParse(packetsplit[2], out slot)) return; // Invalid Number
@@ -3050,6 +3050,18 @@ namespace OpenNos.Handler
                             SumItem(inventory, inventory2);
                         }
                         break;
+
+
+                    case 9:
+                        inventory = Session.Character.InventoryList.LoadBySlotAndType(slot, type);
+                        if (inventory != null)
+                        {
+                            Item iteminfo = ServerManager.GetItem(inventory.InventoryItem.ItemVNum);
+                            if (iteminfo.EquipmentSlot == (byte)EquipmentType.Sp)
+
+                                UpgradeSp(inventory,InventoryItem.UpgradeProtection.None);
+                        }
+                        break;
                 }
             }
         }
@@ -3201,6 +3213,146 @@ namespace OpenNos.Handler
             Session.Client.SendPacket("shop_end 1");
         }
 
+        public void UpgradeSp(Inventory item, InventoryItem.UpgradeProtection protect)
+        {
+            short[] upsuccess = { 80, 75, 70, 60, 50, 40, 35, 30, 25, 20, 10, 7, 5, 3, 1 };
+            short[] upfail = { 20, 25, 25, 30, 35, 40, 40, 40, 40, 40, 45, 43, 40, 37, 29 };
+
+            int[] goldprice = { 200000, 200000, 200000, 200000, 200000, 500000, 500000, 500000, 500000, 500000, 1000000, 1000000, 1000000, 1000000, 1000000 };
+            short[] feather = { 3, 5, 8, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 70 };
+            short[] fullmoon = { 1, 3, 5, 7, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30 };
+            short[] soul = { 2, 4, 6, 8, 10, 1, 2, 3, 4, 5, 1, 2, 3, 4, 5 };
+            short featherVnum =2282;
+            short fullmoonVnum = 1030;
+            short greenSoulVnum =2283;
+            short redSoulVnum =2284;
+            short blueSoulVnum =2285;
+            short dragonSkinVnum = 2511;
+            short dragonBloodVnum = 2512;
+            short dragonHeartVnum = 2513;
+
+            if (item.InventoryItem.IsFixed)
+                return;
+            if (Session.Character.Gold < goldprice[item.InventoryItem.Upgrade])
+                return;
+            if (Session.Character.InventoryList.CountItem(fullmoonVnum) < fullmoon[item.InventoryItem.Upgrade])
+                return;
+            if (Session.Character.InventoryList.CountItem(featherVnum) < feather[item.InventoryItem.Upgrade])
+                return;
+
+            if (item.InventoryItem.Upgrade < 5)
+            {
+                if (item.InventoryItem.SpLevel > 20)
+                {
+                    if(ServerManager.GetItem(item.InventoryItem.ItemVNum).Morph <= 15)
+                    {
+                        if (Session.Character.InventoryList.CountItem(greenSoulVnum) < soul[item.InventoryItem.Upgrade])
+                            return;
+                        Session.Character.InventoryList.RemoveItemAmount(greenSoulVnum, (soul[item.InventoryItem.Upgrade]));
+                    }
+                    else
+                    {
+                        if (Session.Character.InventoryList.CountItem(dragonSkinVnum) < soul[item.InventoryItem.Upgrade])
+                            return;
+                        Session.Character.InventoryList.RemoveItemAmount(dragonSkinVnum, (soul[item.InventoryItem.Upgrade]));
+                    }
+                }
+                else
+                {
+                    Session.Client.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("LVL_REQUIERED"), 21), 11));
+
+                    return;
+                }
+            }
+            else if (item.InventoryItem.Upgrade < 10)
+            {
+                if (item.InventoryItem.SpLevel > 40)
+                {
+                    if (ServerManager.GetItem(item.InventoryItem.ItemVNum).Morph <= 15)
+                    {
+                        if (Session.Character.InventoryList.CountItem(redSoulVnum) < soul[item.InventoryItem.Upgrade])
+                            return;
+                        Session.Character.InventoryList.RemoveItemAmount(redSoulVnum, (soul[item.InventoryItem.Upgrade]));
+                    }
+                    else
+                    {
+                        if (Session.Character.InventoryList.CountItem(dragonBloodVnum) < soul[item.InventoryItem.Upgrade])
+                            return;
+                        Session.Character.InventoryList.RemoveItemAmount(dragonBloodVnum, (soul[item.InventoryItem.Upgrade]));
+                    }
+                }
+                else
+                {
+                    Session.Client.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("LVL_REQUIERED"), 40), 11));
+
+                    return;
+                }
+            }
+            else
+            {
+                if (item.InventoryItem.SpLevel > 50)
+                {
+                    if (ServerManager.GetItem(item.InventoryItem.ItemVNum).Morph <= 15)
+                    {
+                        if (Session.Character.InventoryList.CountItem(blueSoulVnum) < soul[item.InventoryItem.Upgrade])
+                            return;
+                        Session.Character.InventoryList.RemoveItemAmount(blueSoulVnum, (soul[item.InventoryItem.Upgrade]));
+                    }
+                    else
+                    {
+                        if (Session.Character.InventoryList.CountItem(dragonHeartVnum) < soul[item.InventoryItem.Upgrade])
+                            return;
+                        Session.Character.InventoryList.RemoveItemAmount(dragonHeartVnum, (soul[item.InventoryItem.Upgrade]));
+                    }
+                }
+                else
+                {
+                    Session.Client.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("LVL_REQUIERED"),51), 11));
+
+                    return;
+                }
+           
+            }
+            Random r = new Random();
+            int rnd = r.Next(100);
+            if (rnd <= upfail[item.InventoryItem.Upgrade])
+            {
+
+                Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADESP_FAILED"), 11));
+                Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADESP_FAILED"), 0));
+            }
+            else if (rnd <= upsuccess[item.InventoryItem.Upgrade])
+            {
+                if(protect == InventoryItem.UpgradeProtection.Protected)
+                    Session.Client.SendPacket(Session.Character.GenerateEff(3004));
+                Session.Client.SendPacket(Session.Character.GenerateEff(3005));
+                Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADESP_SUCCESS"), 12));
+                Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADESP_SUCCESS"), 0));
+                Session.Character.InventoryList.LoadByInventoryItem(item.InventoryItem.InventoryItemId).InventoryItem.Upgrade++;
+            }
+            else
+            {
+                if (protect == InventoryItem.UpgradeProtection.Protected)
+                {
+                    Session.Character.InventoryList.LoadByInventoryItem(item.InventoryItem.InventoryItemId).InventoryItem.IsFixed = true;
+                    Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADESP_FAILED_SAVED"), 11));
+                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADESP_FAILED_SAVED"), 0));
+                }
+                else
+                {
+                    Session.Client.SendPacket(Session.Character.GenerateEff(3004));
+                    Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADESP_DESTROY"), 11));
+                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADESP_DESTROY"), 0));
+                }
+            }
+            Session.Character.Gold = Session.Character.Gold - goldprice[item.InventoryItem.Upgrade];
+            Session.Client.SendPacket(Session.Character.GenerateGold());
+            Session.Character.InventoryList.RemoveItemAmount(featherVnum, (feather[item.InventoryItem.Upgrade]));
+            Session.Character.InventoryList.RemoveItemAmount(fullmoonVnum, (fullmoon[item.InventoryItem.Upgrade]));
+            GetStartupInventory();
+            Session.Client.SendPacket("shop_end 1");
+        }
+
         [Packet("u_i")]
         public void UseItem(string packet)
         {
@@ -3247,7 +3399,7 @@ namespace OpenNos.Handler
         public void Wear(string packet)
         {
             string[] packetsplit = packet.Split(' ');
-            if (packetsplit.Length > 3  &&Session.CurrentMap.ShopUserList.FirstOrDefault(mapshop => mapshop.Value.OwnerId.Equals(Session.Character.CharacterId)).Value == null)
+            if (packetsplit.Length > 3 && Session.CurrentMap.ShopUserList.FirstOrDefault(mapshop => mapshop.Value.OwnerId.Equals(Session.Character.CharacterId)).Value == null)
             {
                 byte type;
                 short slot;
