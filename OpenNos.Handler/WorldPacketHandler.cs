@@ -1726,7 +1726,7 @@ namespace OpenNos.Handler
             byte amount; byte.TryParse(packetsplit[4], out amount);
             Inventory inv;
             Inventory invitem = Session.Character.InventoryList.LoadBySlotAndType(slot, type);
-            if (invitem != null && ServerManager.GetItem(invitem.InventoryItem.ItemVNum).IsDroppable == true && ServerManager.GetItem(invitem.InventoryItem.ItemVNum).IsTradable == true && (Session.CurrentMap.ShopUserList.FirstOrDefault(mapshop => mapshop.Value.OwnerId.Equals(Session.Character.CharacterId)).Value == null && Session.Character.ExchangeInfo.ExchangeList.Count() == 0))
+            if (invitem != null && ServerManager.GetItem(invitem.InventoryItem.ItemVNum).IsDroppable == true && ServerManager.GetItem(invitem.InventoryItem.ItemVNum).IsTradable == true && (Session.CurrentMap.ShopUserList.FirstOrDefault(mapshop => mapshop.Value.OwnerId.Equals(Session.Character.CharacterId)).Value == null && (Session.Character.ExchangeInfo ==null || Session.Character.ExchangeInfo?.ExchangeList.Count() == 0)))
             {
                 if (amount > 0 && amount < 100)
                 {
