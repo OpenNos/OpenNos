@@ -3228,12 +3228,11 @@ namespace OpenNos.Handler
         {
             if (Session.Character.ThreadCharChange != null && Session.Character.ThreadCharChange.IsAlive)
                 Session.Character.ThreadCharChange.Abort();
-
             string[] packetsplit = packet.Split(' ');
-
             Session.Character.MapX = Convert.ToInt16(packetsplit[2]);
             Session.Character.MapY = Convert.ToInt16(packetsplit[3]);
-            if (Session.Character.Speed.Equals(Convert.ToInt16(packetsplit[5])))
+
+            if (Session.Character.Speed.Equals(Convert.ToInt32(packetsplit[5])))
             {
                 ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateMv(), ReceiverType.AllOnMapExceptMe);
                 Session.Client.SendPacket(Session.Character.GenerateCond());
