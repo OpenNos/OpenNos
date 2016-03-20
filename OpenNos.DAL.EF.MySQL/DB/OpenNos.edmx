@@ -312,6 +312,7 @@
     <Property Name="DarkResistance" Type="tinyint" Nullable="false" />
     <Property Name="MaxHP" Type="smallint" Nullable="false" />
     <Property Name="MaxMP" Type="smallint" Nullable="false" />
+    <Property Name="Race" Type="utinyint" Nullable="false" />
   </EntityType>
   <EntityType Name="inventoryitem">
     <Key>
@@ -1150,6 +1151,7 @@
           <NavigationProperty Name="mapmonster" Relationship="opennosModel.MapMonsterNpcMonster" FromRole="NpcMonster" ToRole="MapMonster" />
           <Property Name="MaxHP" Type="Int16" Nullable="false" />
           <Property Name="MaxMP" Type="Int16" Nullable="false" />
+          <Property Name="Race" Type="Byte" Nullable="false" />
         </EntityType>
         <EntityType Name="InventoryItem">
           <Key>
@@ -1724,6 +1726,7 @@
           <ScalarProperty Name="DarkResistance" ColumnName="DarkResistance" />
           <ScalarProperty Name="MaxHP" ColumnName="MaxHP" />
           <ScalarProperty Name="MaxMP" ColumnName="MaxMP" />
+          <ScalarProperty Name="Race" ColumnName="Race" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

@@ -190,8 +190,8 @@ namespace OpenNos.Import.Console
             Dictionary<int, bool> movementlist = new Dictionary<int, bool>();
             foreach (string[] linesave in packetList.Where(o => o[0].Equals("mv") && (o[1].Equals("3"))))
             {
-                    if (!movementlist.ContainsKey(Convert.ToInt32(linesave[2])))
-                        movementlist[Convert.ToInt32(linesave[2])] = true;
+                if (!movementlist.ContainsKey(Convert.ToInt32(linesave[2])))
+                    movementlist[Convert.ToInt32(linesave[2])] = true;
             }
 
             foreach (string[] linesave in packetList.Where(o => o[0].Equals("in") || o[0].Equals("at")))
@@ -267,6 +267,10 @@ namespace OpenNos.Import.Console
                         if (!itemAreaBegin) continue;
                         npc.Level = byte.Parse(linesave[2]);
                     }
+                    else if (linesave.Length > 2 && linesave[1] == "RACE")
+                    {
+                        npc.Race = Convert.ToByte(linesave[2]);
+                    }
                     else if (linesave.Length > 2 && linesave[1] == "NAME")
                     {
                         if (dictionaryIdLang.ContainsKey(linesave[2]))
@@ -293,11 +297,17 @@ namespace OpenNos.Import.Console
                     }
                     else if (linesave.Length > 4 && linesave[1] == "WINFO")
                     {
-                        npc.AttackUpgrade = Convert.ToByte(linesave[2]);
+                        if (npc.Race == 3)
+                            npc.AttackUpgrade = Convert.ToByte(linesave[2]);
+                        else // normal npc and monsters have attack/armor upgrade in different columns
+                            npc.AttackUpgrade = Convert.ToByte(linesave[4]);
                     }
                     else if (linesave.Length > 3 && linesave[1] == "AINFO")
                     {
-                        npc.DefenceUpgrade = Convert.ToByte(linesave[2]);
+                        if (npc.Race == 3)
+                            npc.DefenceUpgrade = Convert.ToByte(linesave[2]);
+                        else
+                            npc.DefenceUpgrade = Convert.ToByte(linesave[3]);
                         if (DAOFactory.NpcMonsterDAO.LoadById(npc.NpcMonsterVNum) == null)
                         {
                             DAOFactory.NpcMonsterDAO.Insert(npc);
