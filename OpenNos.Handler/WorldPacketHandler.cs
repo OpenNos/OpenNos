@@ -120,6 +120,8 @@ namespace OpenNos.Handler
             }
             else if (Convert.ToInt32(packetsplit[4]) == 2)
             {
+                if ((Session.Character.ExchangeInfo != null && Session.Character.ExchangeInfo?.ExchangeList.Count() != 0) || Session.Character.Speed == 0)
+                    return;
                 DeleteItem(type, slot);
             }
         }
@@ -912,6 +914,7 @@ namespace OpenNos.Handler
                     {
                         Session.Client.SendPacket("exc_close 1");
                         ClientLinkManager.Instance.Broadcast(Session, "exc_close 1", ReceiverType.OnlySomeone, "", Session.Character.ExchangeInfo.CharId);
+
                         bool continu = true;
                         bool goldmax = false;
                         bool notsold = false;
@@ -936,6 +939,9 @@ namespace OpenNos.Handler
 
                             Session.Client.SendPacket("exc_close 0");
                             ClientLinkManager.Instance.Broadcast(Session, "exc_close 0", ReceiverType.OnlySomeone, "", Session.Character.ExchangeInfo.CharId);
+
+                            ClientLinkManager.Instance.SetProperty(Session.Character.ExchangeInfo.CharId, "ExchangeInfo", null);
+                            Session.Character.ExchangeInfo = null;
                         }
                         else if (goldmax == true)
                         {
@@ -945,6 +951,9 @@ namespace OpenNos.Handler
 
                             Session.Client.SendPacket("exc_close 0");
                             ClientLinkManager.Instance.Broadcast(Session, "exc_close 0", ReceiverType.OnlySomeone, "", Session.Character.ExchangeInfo.CharId);
+
+                            ClientLinkManager.Instance.SetProperty(Session.Character.ExchangeInfo.CharId, "ExchangeInfo", null);
+                            Session.Character.ExchangeInfo = null;
                         }
                         else
                         {
@@ -956,6 +965,9 @@ namespace OpenNos.Handler
                                     Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("ITEM_NOT_TRADABLE"), 0));
                                     Session.Client.SendPacket("exc_close 0");
                                     ClientLinkManager.Instance.Broadcast(Session, "exc_close 0", ReceiverType.OnlySomeone, "", Session.Character.ExchangeInfo.CharId);
+
+                                    ClientLinkManager.Instance.SetProperty(Session.Character.ExchangeInfo.CharId, "ExchangeInfo", null);
+                                    Session.Character.ExchangeInfo = null;
                                     notsold = true;
                                     break;
                                 }
@@ -1001,6 +1013,9 @@ namespace OpenNos.Handler
             {
                 Session.Client.SendPacket("exc_close 0");
                 ClientLinkManager.Instance.Broadcast(Session, "exc_close 0", ReceiverType.OnlySomeone, "", Session.Character.ExchangeInfo.CharId);
+
+                ClientLinkManager.Instance.SetProperty(Session.Character.ExchangeInfo.CharId, "ExchangeInfo", null);
+                Session.Character.ExchangeInfo = null;
             }
         }
 
@@ -1338,6 +1353,8 @@ namespace OpenNos.Handler
             byte slot; byte.TryParse(packetsplit[3], out slot);
             byte desttype; byte.TryParse(packetsplit[4], out desttype);
             short destslot; short.TryParse(packetsplit[5], out destslot);
+            if ((Session.Character.ExchangeInfo != null && Session.Character.ExchangeInfo?.ExchangeList.Count() != 0) || Session.Character.Speed == 0)
+                return;
             Inventory inv = Session.Character.InventoryList.moveInventory(type, slot, desttype, destslot);
             if (inv != null)
             {
@@ -1356,7 +1373,10 @@ namespace OpenNos.Handler
             short destslot; short.TryParse(packetsplit[5], out destslot);
             Inventory LastInventory;
             Inventory NewInventory;
+            if ((Session.Character.ExchangeInfo != null && Session.Character.ExchangeInfo?.ExchangeList.Count() != 0 )|| Session.Character.Speed == 0)
+                return;
             Session.Character.InventoryList.MoveItem(Session.Character, type, slot, amount, destslot, out LastInventory, out NewInventory);
+            if (NewInventory == null) return;
             Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(NewInventory.InventoryItem.ItemVNum, NewInventory.InventoryItem.Amount, type, NewInventory.Slot, NewInventory.InventoryItem.Rare, NewInventory.InventoryItem.Design, NewInventory.InventoryItem.Upgrade));
             if (LastInventory != null)
                 Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(LastInventory.InventoryItem.ItemVNum, LastInventory.InventoryItem.Amount, type, LastInventory.Slot, LastInventory.InventoryItem.Rare, LastInventory.InventoryItem.Design, LastInventory.InventoryItem.Upgrade));
@@ -2568,7 +2588,8 @@ namespace OpenNos.Handler
         public void upgr(string packet)
         {
             string[] packetsplit = packet.Split(' ');
-
+            if ((Session.Character.ExchangeInfo != null && Session.Character.ExchangeInfo?.ExchangeList.Count() != 0) || Session.Character.Speed == 0)
+                return;
             if (packetsplit.Count() > 4)
             {
                 byte uptype, type, slot, type2 = 0, slot2 = 0;
@@ -2934,6 +2955,8 @@ namespace OpenNos.Handler
         public void Wear(string packet)
         {
             string[] packetsplit = packet.Split(' ');
+            if ((Session.Character.ExchangeInfo != null && Session.Character.ExchangeInfo?.ExchangeList.Count() != 0) || Session.Character.Speed == 0)
+                return;
             if (packetsplit.Length > 3 && Session.CurrentMap.ShopUserList.FirstOrDefault(mapshop => mapshop.Value.OwnerId.Equals(Session.Character.CharacterId)).Value == null)
             {
                 byte type;
