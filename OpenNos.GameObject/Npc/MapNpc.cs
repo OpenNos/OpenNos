@@ -76,20 +76,21 @@ namespace OpenNos.GameObject
                 ClientLinkManager.Instance.RequiereBroadcastFromMap(MapId, GenerateEff());
                 LastEffect = DateTime.Now;
             }
-            time = (DateTime.Now - LastMove).TotalSeconds;
-            Random r = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
 
+    
+            Random r = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
+             time = (DateTime.Now - LastMove).TotalSeconds;
             if (Move && time > r.Next(1, 2) * (1 + r.NextDouble()))
             {
-            
-                byte point = (byte)r.Next(2, 6);
+                byte point = (byte)r.Next(2, 5);
+                byte fpoint = (byte)r.Next(0, 2);
 
-                byte xpoint = (byte)r.Next(0, point);
+                byte xpoint = (byte)r.Next(fpoint, point);
                 byte ypoint = (byte)(point - xpoint);
 
                 short MapX = (short)r.Next(-xpoint + firstX, xpoint + firstX);
                 short MapY = (short)r.Next(-ypoint + firstY, ypoint + firstY);
-                if (!ServerManager.GetMap(MapId).IsBlockedZone(MapX, MapY))
+                if (!ServerManager.GetMap(MapId).IsBlockedZone(firstX, firstY, MapX, MapY))
                 {
                     this.MapX = MapX;
                     this.MapY = MapY;
