@@ -620,9 +620,10 @@ namespace OpenNos.Handler
                     };
                     Inventory inv = Session.Character.InventoryList.CreateItem(newItem, Session.Character);
                     ServersData.SetRarityPoint(ref inv);
-                    Session.Character.InventoryList.LoadByInventoryItem(inv.InventoryItem.InventoryItemId).InventoryItem = inv.InventoryItem;
                     if (inv != null)
                     {
+                        Session.Character.InventoryList.LoadByInventoryItem(inv.InventoryItem.InventoryItemId).InventoryItem = inv.InventoryItem;
+
                         short Slot = inv.Slot;
                         if (Slot != -1)
                         {
