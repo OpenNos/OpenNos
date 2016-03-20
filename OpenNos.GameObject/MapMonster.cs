@@ -71,7 +71,7 @@ namespace OpenNos.GameObject
                 return;
             Random r = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
             double time = (DateTime.Now - LastMove).TotalSeconds;
-            if (Move && time > r.Next(2, 3) * (1+r.NextDouble()))
+            if (Move && time > r.Next(1, 2) * (1+r.NextDouble()))
             {
                 byte point = (byte)r.Next(2, 5);
                 byte fpoint = (byte)r.Next(0, 2);
