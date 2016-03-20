@@ -47,6 +47,7 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public short MaxHP { get; set; }
         public short MaxMP { get; set; }
         public byte Race { get; set; }
+        public byte RaceType { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<MapNpc> mapnpc { get; set; }
