@@ -158,6 +158,52 @@ namespace OpenNos.GameObject
             return false;
         }
 
+        public bool IsBlockedZone(int firstX, int firstY, int MapX, int MapY)
+        {
+            bool ok = false;
+            if (MapX > firstX)
+            {
+                for (int i = 0; i <= MapX - firstX; i++)
+                {
+                    if (IsBlockedZone(firstX + i, firstY))
+                    {
+                        ok = true;
+                    }
+                }
+            }
+            else
+            {
+                for (int i = 0; i <= firstX - MapX; i++)
+                {
+                    if (IsBlockedZone(MapX + i, MapY))
+                    {
+                        ok = true;
+                    }
+                }
+            }
+
+            if (MapY > firstY)
+            {
+                for (int i = 0; i <= MapY - firstY; i++)
+                {
+                    if (IsBlockedZone(firstX, firstY + i))
+                    {
+                        ok = true;
+                    }
+                }
+            }
+            else
+            {
+                for (int i = 0; i <= firstY - MapY; i++)
+                {
+                    if (IsBlockedZone(MapX, MapY + i))
+                    {
+                        ok = true;
+                    }
+                }
+            }
+            return ok;
+        }
         public void LoadZone()
         {
             Stream stream = new MemoryStream(Data);

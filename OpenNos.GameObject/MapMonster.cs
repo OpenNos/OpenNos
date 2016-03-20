@@ -81,49 +81,7 @@ namespace OpenNos.GameObject
 
                 short MapX = (short)r.Next(-xpoint + firstX, xpoint + firstX);
                 short MapY = (short)r.Next(-ypoint + firstY, ypoint + firstY);
-                bool ok = true;
-                if (MapX > firstX)
-                {
-                    for (int i = 0; i <= MapX - firstX; i++)
-                    {
-                        if (ServerManager.GetMap(MapId).IsBlockedZone(firstX + i, firstY))
-                        {
-                            ok = false;
-                        }
-                    }
-                }
-                else
-                {
-                    for (int i = 0; i <= firstX - MapX; i++)
-                    {
-                        if (ServerManager.GetMap(MapId).IsBlockedZone(MapX + i, MapY))
-                        {
-                            ok = false;
-                        }
-                    }
-                }
-
-                if (MapY > firstY)
-                {
-                    for (int i = 0; i <= MapY - firstY; i++)
-                    {
-                        if (ServerManager.GetMap(MapId).IsBlockedZone(firstX, firstY + i))
-                        {
-                            ok = false;
-                        }
-                    }
-                }
-                else
-                {
-                    for (int i = 0; i <= firstY - MapY; i++)
-                    {
-                        if (ServerManager.GetMap(MapId).IsBlockedZone(MapX, MapY + i))
-                        {
-                            ok = false;
-                        }
-                    }
-                }
-                if (ok)
+                if (!ServerManager.GetMap(MapId).IsBlockedZone(firstX, firstY, MapX, MapY))
                 {
                     this.MapX = MapX;
                     this.MapY = MapY;
