@@ -46,7 +46,6 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public sbyte DarkResistance { get; set; }
         public short MaxHP { get; set; }
         public short MaxMP { get; set; }
-        public short UnknownData { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<MapNpc> mapnpc { get; set; }

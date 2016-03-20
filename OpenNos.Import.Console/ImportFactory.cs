@@ -254,6 +254,7 @@ namespace OpenNos.Import.Console
             {
                 while ((line = npcIdStream.ReadLine()) != null)
                 {
+                    int UnknownData = 0;
                     string[] linesave = line.Split('\t');
 
                     if (linesave.Length > 2 && linesave[1] == "VNUM")
@@ -285,7 +286,7 @@ namespace OpenNos.Import.Console
                     }
                     else if (linesave.Length > 7 && linesave[1] == "ETC")
                     {
-                        npc.UnknownData = Convert.ToInt16(linesave[2]);
+                        UnknownData = Convert.ToInt16(linesave[2]);
                     }
                     else if (linesave.Length > 7 && linesave[1] == "ATTRIB")
                     {
@@ -302,14 +303,14 @@ namespace OpenNos.Import.Console
                     }
                     else if (linesave.Length > 4 && linesave[1] == "WINFO")
                     {
-                        if (npc.UnknownData == 1)
+                        if (UnknownData == 1)
                             npc.AttackUpgrade = Convert.ToByte(linesave[2]);
                         else // Stupid way of saving data ex.	0	0	10 and	2	0	0 because logic!
                             npc.AttackUpgrade = Convert.ToByte(linesave[4]);
                     }
                     else if (linesave.Length > 3 && linesave[1] == "AINFO")
                     {
-                        if (npc.UnknownData == 1)
+                        if (UnknownData == 1)
                             npc.DefenceUpgrade = Convert.ToByte(linesave[2]);
                         else
                             npc.DefenceUpgrade = Convert.ToByte(linesave[3]);

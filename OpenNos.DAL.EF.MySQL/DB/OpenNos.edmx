@@ -1150,7 +1150,6 @@
           <NavigationProperty Name="mapmonster" Relationship="opennosModel.MapMonsterNpcMonster" FromRole="NpcMonster" ToRole="MapMonster" />
           <Property Name="MaxHP" Type="Int16" Nullable="false" />
           <Property Name="MaxMP" Type="Int16" Nullable="false" />
-          <Property Name="UnknownData" Type="Int16" Nullable="false" />
         </EntityType>
         <EntityType Name="InventoryItem">
           <Key>
