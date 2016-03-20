@@ -32,8 +32,13 @@ namespace OpenNos.GameObject
         private List<MapNpc> _npcs;
         private List<Portal> _portals;
         private Guid _uniqueIdentifier;
-        private int _xLength;
-        private int _yLength;
+        public int XLength {
+            get; set;
+        }
+        public int YLength
+        {
+            get; set;
+        }
 
         #endregion
 
@@ -150,7 +155,7 @@ namespace OpenNos.GameObject
 
         public bool IsBlockedZone(int x, int y)
         {
-            if (x < 1 || y < 1 || x > char.MaxValue || y > char.MaxValue || y > _grid.GetLength(0) || x > _grid.GetLength(1) || _grid[y - 1, x - 1] == 1)
+            if (x < 1 || y < 1 || x > char.MaxValue || y > char.MaxValue || y > _grid.GetLength(0) || x > _grid.GetLength(1) || _grid[y - 1, x - 1] != 0)
             {
                 return true;
             }
@@ -160,49 +165,26 @@ namespace OpenNos.GameObject
 
         public bool IsBlockedZone(int firstX, int firstY, int MapX, int MapY)
         {
-            bool ok = false;
-            if (MapX > firstX)
+
+
+            for (int i = 0; i <= Math.Abs(MapX - firstX); i++)
             {
-                for (int i = 0; i <= MapX - firstX; i++)
+                if (IsBlockedZone(firstX + Math.Sign(MapX - firstX) * i, firstY))
                 {
-                    if (IsBlockedZone(firstX + i, firstY))
-                    {
-                        ok = true;
-                    }
-                }
-            }
-            else
-            {
-                for (int i = 0; i <= firstX - MapX; i++)
-                {
-                    if (IsBlockedZone(MapX + i, MapY))
-                    {
-                        ok = true;
-                    }
+                    return true;
                 }
             }
 
-            if (MapY > firstY)
+
+            for (int i = 0; i <= Math.Abs(MapY - firstY); i++)
             {
-                for (int i = 0; i <= MapY - firstY; i++)
+               
+                if (IsBlockedZone(firstX, firstX + Math.Sign(MapY - firstY) * i))
                 {
-                    if (IsBlockedZone(firstX, firstY + i))
-                    {
-                        ok = true;
-                    }
+                    return true;
                 }
             }
-            else
-            {
-                for (int i = 0; i <= firstY - MapY; i++)
-                {
-                    if (IsBlockedZone(MapX, MapY + i))
-                    {
-                        ok = true;
-                    }
-                }
-            }
-            return ok;
+            return false;
         }
         public void LoadZone()
         {
@@ -223,13 +205,13 @@ namespace OpenNos.GameObject
             stream.Read(bytes, numBytesRead, numBytesToRead);
             ylength[1] = bytes[0];
 
-            _yLength = BitConverter.ToInt16(ylength, 0);
-            _xLength = BitConverter.ToInt16(xlength, 0);
+            YLength = BitConverter.ToInt16(ylength, 0);
+            XLength = BitConverter.ToInt16(xlength, 0);
 
-            _grid = new char[_yLength, _xLength];
-            for (int i = 0; i < _yLength; ++i)
+            _grid = new char[YLength, XLength];
+            for (int i = 0; i < YLength; ++i)
             {
-                for (int t = 0; t < _xLength; ++t)
+                for (int t = 0; t < XLength; ++t)
                 {
                     stream.Read(bytes, numBytesRead, numBytesToRead);
                     _grid[i, t] = Convert.ToChar(bytes[0]);
