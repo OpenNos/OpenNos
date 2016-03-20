@@ -691,6 +691,8 @@ namespace OpenNos.Import.Console
                                     item.Element = 2;
                                 else if (item.VNum == 901)// need to hardcode...
                                     item.Element = 1;
+                                else if (item.VNum == 906)// need to hardcode...
+                                    item.Element = 3;
                                 break;
 
                             case (byte)ItemType.Shell:
