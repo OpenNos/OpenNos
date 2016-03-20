@@ -120,7 +120,7 @@ namespace OpenNos.Handler
             }
             else if (Convert.ToInt32(packetsplit[4]) == 2)
             {
-                if ((Session.Character.ExchangeInfo != null && Session.Character.ExchangeInfo?.ExchangeList.Count() != 0))
+                if ((Session.Character.ExchangeInfo != null && Session.Character.ExchangeInfo?.ExchangeList.Count() != 0) || Session.Character.Speed == 0)
                     return;
                 DeleteItem(type, slot);
             }
@@ -1353,7 +1353,7 @@ namespace OpenNos.Handler
             byte slot; byte.TryParse(packetsplit[3], out slot);
             byte desttype; byte.TryParse(packetsplit[4], out desttype);
             short destslot; short.TryParse(packetsplit[5], out destslot);
-            if ((Session.Character.ExchangeInfo != null && Session.Character.ExchangeInfo?.ExchangeList.Count() != 0))
+            if ((Session.Character.ExchangeInfo != null && Session.Character.ExchangeInfo?.ExchangeList.Count() != 0) || Session.Character.Speed == 0)
                 return;
             Inventory inv = Session.Character.InventoryList.moveInventory(type, slot, desttype, destslot);
             if (inv != null)
@@ -1373,7 +1373,7 @@ namespace OpenNos.Handler
             short destslot; short.TryParse(packetsplit[5], out destslot);
             Inventory LastInventory;
             Inventory NewInventory;
-            if ((Session.Character.ExchangeInfo != null && Session.Character.ExchangeInfo?.ExchangeList.Count() != 0))
+            if ((Session.Character.ExchangeInfo != null && Session.Character.ExchangeInfo?.ExchangeList.Count() != 0 )|| Session.Character.Speed == 0)
                 return;
             Session.Character.InventoryList.MoveItem(Session.Character, type, slot, amount, destslot, out LastInventory, out NewInventory);
             if (NewInventory == null) return;
@@ -2588,7 +2588,8 @@ namespace OpenNos.Handler
         public void upgr(string packet)
         {
             string[] packetsplit = packet.Split(' ');
-
+            if ((Session.Character.ExchangeInfo != null && Session.Character.ExchangeInfo?.ExchangeList.Count() != 0) || Session.Character.Speed == 0)
+                return;
             if (packetsplit.Count() > 4)
             {
                 byte uptype, type, slot, type2 = 0, slot2 = 0;
@@ -2954,6 +2955,8 @@ namespace OpenNos.Handler
         public void Wear(string packet)
         {
             string[] packetsplit = packet.Split(' ');
+            if ((Session.Character.ExchangeInfo != null && Session.Character.ExchangeInfo?.ExchangeList.Count() != 0) || Session.Character.Speed == 0)
+                return;
             if (packetsplit.Length > 3 && Session.CurrentMap.ShopUserList.FirstOrDefault(mapshop => mapshop.Value.OwnerId.Equals(Session.Character.CharacterId)).Value == null)
             {
                 byte type;
