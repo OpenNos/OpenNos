@@ -270,7 +270,6 @@ namespace OpenNos.Import.Console
                     else if (linesave.Length > 3 && linesave[1] == "RACE")
                     {
                         npc.Race = Convert.ToByte(linesave[2]);
-                        npc.RaceType = Convert.ToByte(linesave[3]);
                     }
                     else if (linesave.Length > 2 && linesave[1] == "NAME")
                     {
@@ -281,6 +280,7 @@ namespace OpenNos.Import.Console
                     }
                     else if (linesave.Length > 6 && linesave[1] == "PREATT")
                     {
+                        npc.RaceType = Convert.ToByte(linesave[2]);
                         npc.Speed = Convert.ToByte(linesave[5]);
                     }
                     else if (linesave.Length > 7 && linesave[1] == "ATTRIB")
@@ -299,16 +299,16 @@ namespace OpenNos.Import.Console
                     else if (linesave.Length > 4 && linesave[1] == "WINFO")
                     {
                         if (npc.RaceType == 0)
-                            npc.AttackUpgrade = Convert.ToByte(linesave[4]);
-                        else // normal npc and monsters have attack/armor upgrade in different columns
                             npc.AttackUpgrade = Convert.ToByte(linesave[2]);
+                        else // normal npc and monsters have attack/armor upgrade in different columns
+                            npc.AttackUpgrade = Convert.ToByte(linesave[4]);
                     }
                     else if (linesave.Length > 3 && linesave[1] == "AINFO")
                     {
                         if (npc.RaceType == 0)
-                            npc.DefenceUpgrade = Convert.ToByte(linesave[3]);
-                        else
                             npc.DefenceUpgrade = Convert.ToByte(linesave[2]);
+                        else
+                            npc.DefenceUpgrade = Convert.ToByte(linesave[3]);
                         if (DAOFactory.NpcMonsterDAO.LoadById(npc.NpcMonsterVNum) == null)
                         {
                             DAOFactory.NpcMonsterDAO.Insert(npc);
