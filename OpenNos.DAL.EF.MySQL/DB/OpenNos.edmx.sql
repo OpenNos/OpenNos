@@ -44,9 +44,9 @@
 -- -----------------------------------------------------------
 -- Entity Designer DDL Script for MySQL Server 4.1 and higher
 -- -----------------------------------------------------------
--- Date Created: 03/20/2016 11:51:14
+-- Date Created: 03/20/2016 21:53:13
 
--- Generated from EDMX file: C:\Users\ERWAN\Desktop\OpenNos Git\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
+-- Generated from EDMX file: C:\Users\Dominik\Source\Repos\OpenNos\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
 -- Target version: 3.0.0.0
 
 -- --------------------------------------------------
@@ -363,7 +363,8 @@ CREATE TABLE `npcmonster`(
 	`DarkResistance` tinyint NOT NULL, 
 	`MaxHP` smallint NOT NULL, 
 	`MaxMP` smallint NOT NULL, 
-	`Race` TINYINT UNSIGNED NOT NULL);
+	`Race` TINYINT UNSIGNED NOT NULL, 
+	`RaceType` TINYINT UNSIGNED NOT NULL);
 
 ALTER TABLE `npcmonster` ADD PRIMARY KEY (NpcMonsterVNum);
 

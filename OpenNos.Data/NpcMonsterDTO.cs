@@ -44,6 +44,7 @@ namespace OpenNos.Data
         public short MaxHP { get; set; }
         public short MaxMP { get; set; }
         public byte Race { get; set; }
+        public byte RaceType { get; set; }
 
         #endregion
     }

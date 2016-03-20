@@ -313,6 +313,7 @@
     <Property Name="MaxHP" Type="smallint" Nullable="false" />
     <Property Name="MaxMP" Type="smallint" Nullable="false" />
     <Property Name="Race" Type="utinyint" Nullable="false" />
+    <Property Name="RaceType" Type="utinyint" Nullable="false" />
   </EntityType>
   <EntityType Name="inventoryitem">
     <Key>
@@ -1152,6 +1153,7 @@
           <Property Name="MaxHP" Type="Int16" Nullable="false" />
           <Property Name="MaxMP" Type="Int16" Nullable="false" />
           <Property Name="Race" Type="Byte" Nullable="false" />
+          <Property Name="RaceType" Type="Byte" Nullable="false" />
         </EntityType>
         <EntityType Name="InventoryItem">
           <Key>
@@ -1727,6 +1729,7 @@
           <ScalarProperty Name="MaxHP" ColumnName="MaxHP" />
           <ScalarProperty Name="MaxMP" ColumnName="MaxMP" />
           <ScalarProperty Name="Race" ColumnName="Race" />
+          <ScalarProperty Name="RaceType" ColumnName="RaceType" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
