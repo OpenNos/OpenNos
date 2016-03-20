@@ -269,7 +269,8 @@ namespace OpenNos.Import.Console
                     }
                     else if (linesave.Length > 3 && linesave[1] == "RACE")
                     {
-                        npc.Race = Convert.ToByte(linesave[2]);
+                        //npc.Race = Convert.ToByte(linesave[2]);
+                        //npc.RaceType = Convert.ToByte(linesave[2]);
                     }
                     else if (linesave.Length > 2 && linesave[1] == "NAME")
                     {
@@ -280,8 +281,11 @@ namespace OpenNos.Import.Console
                     }
                     else if (linesave.Length > 6 && linesave[1] == "PREATT")
                     {
-                        npc.RaceType = Convert.ToByte(linesave[2]);
                         npc.Speed = Convert.ToByte(linesave[5]);
+                    }
+                    else if (linesave.Length > 7 && linesave[1] == "ETC")
+                    {
+                        npc.UnknownData = Convert.ToInt16(linesave[2]);
                     }
                     else if (linesave.Length > 7 && linesave[1] == "ATTRIB")
                     {
@@ -298,14 +302,14 @@ namespace OpenNos.Import.Console
                     }
                     else if (linesave.Length > 4 && linesave[1] == "WINFO")
                     {
-                        if (npc.RaceType == 0)
+                        if (npc.UnknownData == 1)
                             npc.AttackUpgrade = Convert.ToByte(linesave[2]);
-                        else // normal npc and monsters have attack/armor upgrade in different columns
+                        else // Stupid way of saving data ex.	0	0	10 and	2	0	0 because logic!
                             npc.AttackUpgrade = Convert.ToByte(linesave[4]);
                     }
                     else if (linesave.Length > 3 && linesave[1] == "AINFO")
                     {
-                        if (npc.RaceType == 0)
+                        if (npc.UnknownData == 1)
                             npc.DefenceUpgrade = Convert.ToByte(linesave[2]);
                         else
                             npc.DefenceUpgrade = Convert.ToByte(linesave[3]);
