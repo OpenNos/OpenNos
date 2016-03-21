@@ -286,7 +286,7 @@ namespace OpenNos.Import.Console
                     }
                     else if (linesave.Length > 7 && linesave[1] == "ETC")
                     {
-                     //   UnknownData = Convert.ToInt16(linesave[2]);
+                        UnknownData = Convert.ToInt32(linesave[2]);
                     }
                     else if (linesave.Length > 7 && linesave[1] == "ATTRIB")
                     {
