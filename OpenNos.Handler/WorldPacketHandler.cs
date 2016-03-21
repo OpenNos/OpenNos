@@ -2941,7 +2941,7 @@ namespace OpenNos.Handler
             Session.Character.MapX = Convert.ToInt16(packetsplit[2]);
             Session.Character.MapY = Convert.ToInt16(packetsplit[3]);
 
-            if (Session.Character.Speed.Equals(Convert.ToInt32(packetsplit[5])))
+            if (Session.Character.Speed.Equals(Convert.ToByte(packetsplit[5])))
             {
                 ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateMv(), ReceiverType.AllOnMapExceptMe);
                 Session.Client.SendPacket(Session.Character.GenerateCond());
@@ -2949,6 +2949,8 @@ namespace OpenNos.Handler
             else
             {
                 Session.Client.Disconnect();
+                //TODO : need to see why sometime Session.Character.Speed == 1
+                Logger.Log.Warn("the speed bug was detected - currentSpeed : "+ Session.Character.Speed);
             }
         }
 
@@ -3276,11 +3278,11 @@ namespace OpenNos.Handler
         public void Speed(string packet)
         {
             string[] packetsplit = packet.Split(' ');
-            int arg = 0;
+            byte arg = 0;
             bool verify = false;
             if (packetsplit.Length > 2)
             {
-                verify = (int.TryParse(packetsplit[2], out arg));
+                verify = (byte.TryParse(packetsplit[2], out arg));
             }
             switch (packetsplit.Length)
             {

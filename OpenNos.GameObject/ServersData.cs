@@ -69,7 +69,7 @@ namespace OpenNos.GameObject
         private static double[] secondjobxpData = null;
 
         //STAT DATA
-        private static int[] speedData = null;
+        private static byte[] speedData = null;
 
         private static double[] spxpData = null;
 
@@ -195,7 +195,7 @@ namespace OpenNos.GameObject
             }
         }
 
-        public static int[] SpeedData
+        public static byte[] SpeedData
         {
             get
             {
@@ -798,7 +798,7 @@ namespace OpenNos.GameObject
 
         private void LoadSpeedData()
         {
-            speedData = new int[4];
+            speedData = new byte[4];
             speedData[(int)ClassType.Archer] = 12;
             speedData[(int)ClassType.Adventurer] = 11;
             speedData[(int)ClassType.Swordman] = 11;
