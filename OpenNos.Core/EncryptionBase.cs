@@ -40,9 +40,9 @@ namespace OpenNos.Core
 
         public static string sha256(string inputString)
         {
-            using (SHA256 hash = SHA256.Create())
+            using (SHA256 hash = SHA256Managed.Create())
             {
-                return string.Join("", hash.ComputeHash(Encoding.UTF8.GetBytes(inputString)).Select(item => item.ToString("x2")));
+                return String.Join("", hash.ComputeHash(Encoding.UTF8.GetBytes(inputString)).Select(item => item.ToString("x2")));
             }
         }
 
