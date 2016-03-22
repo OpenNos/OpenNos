@@ -2655,7 +2655,7 @@ namespace OpenNos.Handler
                             Item iteminfo = ServerManager.GetItem(inventory.InventoryItem.ItemVNum);
                             if (iteminfo.EquipmentSlot == (byte)EquipmentType.Sp)
 
-                                Perfect(inventory, InventoryItem.UpgradeProtection.None);
+                                PerfectSP(inventory, InventoryItem.UpgradeProtection.None);
                         }
                         break;
                 }
