@@ -104,7 +104,7 @@ namespace OpenNos.Handler
                                     {
                                         int newSessionId = SessionFactory.Instance.GenerateSessionId();
 
-                                        DAOFactory.AccountDAO.UpdateLastSessionAndIp(user.Name, (int)newSessionId, _session.Client.RemoteEndPoint.ToString());
+                                        DAOFactory.AccountDAO.UpdateLastSessionAndIp(user.Name, newSessionId, _session.Client.RemoteEndPoint.ToString());
                                         Logger.Log.DebugFormat(Language.Instance.GetMessageFromKey("CONNECTION"), user.Name, newSessionId);
 
                                         //inform communication service about new player from login server
@@ -116,7 +116,7 @@ namespace OpenNos.Handler
                                         {
                                             Logger.Log.Error(ex.Message);
                                         }
-                                        _session.Client.SendPacket(BuildServersPacket((int)newSessionId));
+                                        _session.Client.SendPacket(BuildServersPacket(newSessionId));
                                     }
                                     break;
                             }

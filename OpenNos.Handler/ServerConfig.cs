@@ -53,11 +53,8 @@ namespace OpenNos.Handler
             #region Properties
 
             public int channelAmount { get; set; }
-
             public string name { get; set; }
-
             public string WorldIp { get; set; }
-
             public int WorldPort { get; set; }
 
             #endregion

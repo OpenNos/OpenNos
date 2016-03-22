@@ -103,7 +103,7 @@ namespace OpenNos.Import.Console
                 }
             }
 
-            Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("NPCS_PARSED"), npcCounter));
+            Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("NPCS_PARSED"), npcCounter));
         }
 
         public void ImportMaps()
@@ -180,7 +180,7 @@ namespace OpenNos.Import.Console
                 i++;
             }
 
-            Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("MAPS_PARSED"), i));
+            Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("MAPS_PARSED"), i));
         }
 
         public void ImportMonsters()
@@ -224,7 +224,7 @@ namespace OpenNos.Import.Console
                 }
             }
 
-            Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("MONSTERS_PARSED"), monsterCounter));
+            Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("MONSTERS_PARSED"), monsterCounter));
         }
 
         public void ImportNpcMonsters()
@@ -322,7 +322,7 @@ namespace OpenNos.Import.Console
                         itemAreaBegin = false;
                     }
                 }
-                Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("NPCMONSTERS_PARSED"), counter));
+                Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("NPCMONSTERS_PARSED"), counter));
                 npcIdStream.Close();
             }
         }
@@ -398,7 +398,7 @@ namespace OpenNos.Import.Console
                 portalCounter++;
             }
 
-            Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("PORTALS_PARSED"), portalCounter));
+            Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("PORTALS_PARSED"), portalCounter));
         }
 
         public void ImportShopItems()
@@ -449,7 +449,7 @@ namespace OpenNos.Import.Console
                 }
             }
 
-            Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("SHOPITEMS_PARSED"), portalCounter));
+            Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("SHOPITEMS_PARSED"), portalCounter));
         }
 
         public void ImportShops()
@@ -485,7 +485,7 @@ namespace OpenNos.Import.Console
                 }
             }
 
-            Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("SHOPS_PARSED"), shopCounter));
+            Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("SHOPS_PARSED"), shopCounter));
         }
 
         public void loadMaps()
@@ -787,7 +787,7 @@ namespace OpenNos.Import.Console
                         //need to see how to use them :D (we know how to get the buff from bcard ect)
                     }
                 }
-                Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("ITEMS_PARSED"), i));
+                Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("ITEMS_PARSED"), i));
                 npcIdStream.Close();
             }
         }

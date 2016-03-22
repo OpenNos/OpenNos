@@ -91,14 +91,14 @@ namespace OpenNos.DAL.EF.MySQL.Helpers
         public static DbTransaction BeginTransaction()
         {
             // an open connection is needed for a transaction
-            if (DataAccessHelper.Context.Database.Connection.State == System.Data.ConnectionState.Broken ||
-                DataAccessHelper.Context.Database.Connection.State == System.Data.ConnectionState.Closed)
+            if (Context.Database.Connection.State == System.Data.ConnectionState.Broken ||
+                Context.Database.Connection.State == System.Data.ConnectionState.Closed)
             {
-                DataAccessHelper.Context.Database.Connection.Open();
+                Context.Database.Connection.Open();
             }
 
             // begin and return new transaction
-            return DataAccessHelper.Context.Database.Connection.BeginTransaction();
+            return Context.Database.Connection.BeginTransaction();
         }
 
         /// <summary>
@@ -129,9 +129,7 @@ namespace OpenNos.DAL.EF.MySQL.Helpers
                 try
                 {
                     context.Database.Connection.Open();
-                    /*add on line as above for each tableset
-                   (it will load the table at startup and will speedup the first query)
-                   */
+                    //add on line as above for each tableset(it will load the table at startup and will speedup the first query)
                     context.account.Any();
                     context.map.Any();
                     context.portal.Any();

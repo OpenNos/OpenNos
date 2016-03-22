@@ -31,11 +31,8 @@ namespace OpenNos.GameObject
         #region Properties
 
         public List<PersonalShopItem> Items { get; set; }
-
         public string Name { get; set; }
-
         public long OwnerId { get; set; }
-
         public long Sell { get; internal set; }
 
         #endregion

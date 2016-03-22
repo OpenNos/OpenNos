@@ -22,57 +22,32 @@ namespace OpenNos.GameObject
         #region Members
 
         private static int[,] criticalDist = null;
-
         private static int[,] criticalDistRate = null;
-
         private static int[,] criticalHit = null;
-
         private static int[,] criticalHitRate = null;
-
         private static int[,] DistDef = null;
-
         private static int[,] DistDodge = null;
-
         private static int[,] distRate = null;
-
         private static double[] firstjobxpData = null;
-
         private static int[,] hitDef = null;
-
         private static int[,] hitDodge = null;
-
         private static int[,] hitRate = null;
-
         private static int[,] HP = null;
-
         private static int[] hpHealth = null;
-
         private static int[] hpHealthStand = null;
-
         private static int[,] magicalDef = null;
-
         private static int[,] maxDist = null;
-
         private static int[,] maxHit = null;
-
         private static int[,] minDist = null;
-
         //difference between class
         private static int[,] minHit = null;
-
         private static int[,] MP = null;
-
         private static int[] mpHealth = null;
-
         private static int[] mpHealthStand = null;
-
         private static double[] secondjobxpData = null;
-
         //STAT DATA
         private static byte[] speedData = null;
-
         private static double[] spxpData = null;
-
         //same for all class
         private static double[] xpData = null;
 
@@ -318,7 +293,7 @@ namespace OpenNos.GameObject
             }
             else if (iteminfo.EquipmentSlot == (byte)EquipmentType.Armor)
             {
-                int point = ServersData.RarityPoint(inv.InventoryItem.Rare, iteminfo.LevelMinimum);
+                int point = RarityPoint(inv.InventoryItem.Rare, iteminfo.LevelMinimum);
                 Random rnd = new Random();
                 inv.InventoryItem.DefenceDodge = 0;
                 inv.InventoryItem.DistanceDefenceDodge = 0;
@@ -938,8 +913,8 @@ namespace OpenNos.GameObject
 
                 {
                     if (i == 14) var = 6 / 3;
-                    else if (i == 39) var = (double)(19 / (double)3);
-                    else if (i == 59) var = (double)(70 / (double)3);
+                    else if (i == 39) var = (19 / (double)3);
+                    else if (i == 59) var = (70 / (double)3);
                     xpData[i] = Convert.ToInt64(xpData[i - 1] + var * v[i - 1]);
                 }
                 if (i >= 79)

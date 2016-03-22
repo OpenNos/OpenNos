@@ -40,18 +40,14 @@ namespace OpenNos.Core
 
         public static string sha256(string inputString)
         {
-            using (SHA256 hash = SHA256Managed.Create())
+            using (SHA256 hash = SHA256.Create())
             {
-                return String.Join("", hash
-                  .ComputeHash(Encoding.UTF8.GetBytes(inputString))
-                  .Select(item => item.ToString("x2")));
+                return string.Join("", hash.ComputeHash(Encoding.UTF8.GetBytes(inputString)).Select(item => item.ToString("x2")));
             }
         }
 
         public abstract string Decrypt(byte[] data, int customParameter = 0);
-
         public abstract string DecryptCustomParameter(byte[] data);
-
         public abstract byte[] Encrypt(string data);
 
         #endregion

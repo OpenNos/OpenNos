@@ -31,7 +31,6 @@ namespace OpenNos.World
         #region Members
 
         private static EventHandler exitHandler;
-
         private static ManualResetEvent run = new ManualResetEvent(true);
 
         #endregion

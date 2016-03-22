@@ -40,10 +40,7 @@ namespace OpenNos.GameObject
 
         #region Properties
 
-        public List<ShopItem> ShopItems
-        {
-            get; set;
-        }
+        public List<ShopItem> ShopItems { get; set; }
 
         #endregion
 

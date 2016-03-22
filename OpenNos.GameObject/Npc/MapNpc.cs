@@ -96,7 +96,7 @@ namespace OpenNos.GameObject
                     this.MapY = MapY;
                     LastMove = DateTime.Now;
 
-                    string movepacket = $"mv 2 {this.MapNpcId} {this.MapX} {this.MapY} {npc.Speed}";
+                    string movepacket = $"mv 2 {MapNpcId} {this.MapX} {this.MapY} {npc.Speed}";
                     ClientLinkManager.Instance.RequiereBroadcastFromMap(MapId, movepacket);
                 }
             }

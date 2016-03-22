@@ -12,8 +12,6 @@
  * GNU General Public License for more details.
  */
 
-using System;
-
 namespace OpenNos.GameObject
 {
     public class MapPacket
@@ -46,7 +44,7 @@ namespace OpenNos.GameObject
 
         #region Properties
 
-        public String Content { get; set; }
+        public string Content { get; set; }
         public ReceiverType Receiver { get; set; }
         public ClientSession Session { get; set; }
 
