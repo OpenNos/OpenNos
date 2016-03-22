@@ -48,9 +48,9 @@ namespace OpenNos.GameObject
             Random rnd = new Random();
             List<int> test = new List<int>();
 
-            foreach (MapMonster monster in ServerManager.Monsters)
+            for(int i= ServerManager.Monsters.Count-1;i>=0;i-- )
             {
-                test.Add(monster.MapMonsterId);
+                test.Add(ServerManager.Monsters[i].MapMonsterId);
             }
 
             for (int i = 20000; i < int.MaxValue; i++)

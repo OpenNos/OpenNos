@@ -25,6 +25,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace OpenNos.Handler
 {
@@ -1104,10 +1105,10 @@ namespace OpenNos.Handler
             }
             if (packetsplit[2] == "3")
             {
-                foreach (MapMonster monster in ServerManager.GetMap(Session.Character.MapId).Monsters)
-                    if (monster.MapMonsterId == Convert.ToInt32(packetsplit[3]))
+                for (int i=ServerManager.GetMap(Session.Character.MapId).Monsters.Count()-1;i>=0;i--)
+                    if (ServerManager.GetMap(Session.Character.MapId).Monsters[i].MapMonsterId == Convert.ToInt32(packetsplit[3]))
                     {
-                        NpcMonster monsterinfo = ServerManager.GetNpc(monster.MonsterVNum);
+                        NpcMonster monsterinfo = ServerManager.GetNpc(ServerManager.GetMap(Session.Character.MapId).Monsters[i].MonsterVNum);
                         if (monsterinfo == null)
                             return;
                         ClientLinkManager.Instance.Broadcast(Session, $"st 3 {packetsplit[3]} {monsterinfo.Level} 100 100 50000 50000", ReceiverType.OnlyMe);
@@ -3162,17 +3163,17 @@ namespace OpenNos.Handler
             Session.Character.MapX = Convert.ToInt16(packetsplit[2]);
             Session.Character.MapY = Convert.ToInt16(packetsplit[3]);
 
-            if (Session.Character.Speed.Equals(Convert.ToByte(packetsplit[5])))
+            if (Session.Character.Speed.Equals(Convert.ToByte(packetsplit[5])) || Convert.ToByte(packetsplit[5]) == 10)
             {
                 ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateMv(), ReceiverType.AllOnMapExceptMe);
                 Session.Client.SendPacket(Session.Character.GenerateCond());
             }
             else
             {
-                // Session.Client.Disconnect();
+                 Session.Client.Disconnect();
                 // TODO : need to see why sometime Session.Character.Speed == 1
-                Session.Client.SendPacket(Session.Character.GenerateMsg(("!Warning! Speed manipulation detected"), 0));
-                Logger.Log.Warn("Speed manipulation detected, Speed : "+ Session.Character.Speed);
+               //Session.Client.SendPacket(Session.Character.GenerateMsg(("!Warning! Speed manipulation detected"), 0));
+               // Logger.Log.Warn("Speed manipulation detected, Speed : "+ Session.Character.Speed);
             }
         }
 
@@ -3556,29 +3557,41 @@ namespace OpenNos.Handler
             short vnum = 0;
             byte qty = 1;
             byte move = 0;
-            Random rnd = new Random();
+          
             if (packetsplit.Length == 5 && short.TryParse(packetsplit[2], out vnum) && byte.TryParse(packetsplit[3], out qty) && byte.TryParse(packetsplit[4], out move))
             {
                 if (ServerManager.GetNpc(vnum) == null)
                     return;
-                for (int i = 0; i < qty; i++)
-                {
-                    short mapx = (short)rnd.Next(Session.Character.MapX - qty / 3, Session.Character.MapX + qty / 3);
-                    short mapy = (short)rnd.Next(Session.Character.MapY - qty / 3, Session.Character.MapY + qty / 3);
-                    while (Session.CurrentMap != null && Session.CurrentMap.IsBlockedZone(mapx, mapy))
-                    {
-                        mapx = (short)rnd.Next(Session.Character.MapX - qty / 3, Session.Character.MapX + qty / 3);
-                        mapy = (short)rnd.Next(Session.Character.MapY - qty / 3, Session.Character.MapY + qty / 3);
-                    }
-                    MapMonster monst = new MapMonster() { MonsterVNum = vnum, MapY = mapy, MapX = mapx, MapId = Session.Character.MapId, firstX = mapx, firstY = mapy, MapMonsterId = MapMonster.generateMapMonsterId(), Position = 1, Move = move != 0 ? true : false };
-                    ServerManager.GetMap(Session.Character.MapId).Monsters.Add(monst);
-                    ServerManager.Monsters.Add(monst);
-                    ClientLinkManager.Instance.Broadcast(Session, monst.GenerateIn3(), ReceiverType.AllOnMap);
-                }
+
+                Task MobSpawn = new Task(() => Spawn(vnum,qty,move));
+                MobSpawn.Start();
             }
             else
                 Session.Client.SendPacket(Session.Character.GenerateSay("$Summon VNUM AMOUNT MOVE", 10));
         }
+
+        private void Spawn(short vnum, byte qty, byte move)
+        {
+            Random rnd = new Random();
+
+            for (int i = 0; i < qty; i++)
+            {
+
+                short mapx = (short)rnd.Next(Session.Character.MapX - qty / 3, Session.Character.MapX + qty / 3);
+                short mapy = (short)rnd.Next(Session.Character.MapY - qty / 3, Session.Character.MapY + qty / 3);
+                while (Session.CurrentMap != null && Session.CurrentMap.IsBlockedZone(mapx, mapy))
+                {
+                    mapx = (short)rnd.Next(Session.Character.MapX - qty / 3, Session.Character.MapX + qty / 3);
+                    mapy = (short)rnd.Next(Session.Character.MapY - qty / 3, Session.Character.MapY + qty / 3);
+                }
+                MapMonster monst = new MapMonster() { MonsterVNum = vnum, MapY = mapy, MapX = mapx, MapId = Session.Character.MapId, firstX = mapx, firstY = mapy, MapMonsterId = MapMonster.generateMapMonsterId(), Position = 1, Move = move != 0 ? true : false };
+                ServerManager.GetMap(Session.Character.MapId).Monsters.Add(monst);
+                ServerManager.Monsters.Add(monst);
+                ClientLinkManager.Instance.Broadcast(Session, monst.GenerateIn3(), ReceiverType.AllOnMap);
+            }
+        }
+
+      
 
         [Packet("$Teleport")]
         public void Teleport(string packet)
