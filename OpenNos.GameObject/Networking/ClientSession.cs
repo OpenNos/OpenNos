@@ -35,7 +35,7 @@ namespace OpenNos.GameObject
         private NetworkClient _client;
         private IDictionary<Packet, Tuple<MethodInfo, object>> _handlerMethods;
         private SequentialItemProcessor<byte[]> _queue;
-        private IList<string> _waitForPacketList = new List<string>();
+        private IList<String> _waitForPacketList = new List<String>();
 
         //Packetwait Packets
         private int? _waitForPacketsAmount;
@@ -134,7 +134,6 @@ namespace OpenNos.GameObject
         }
 
         public int LastKeepAliveIdentity { get; set; }
-
         public int SessionId { get; set; }
 
         #endregion
@@ -151,7 +150,7 @@ namespace OpenNos.GameObject
             if (Character != null)
             {
                 //disconnect client
-                KeyValuePair<long, MapShop> shop = CurrentMap.ShopUserList.FirstOrDefault(mapshop => mapshop.Value.OwnerId.Equals(Character.CharacterId));
+                KeyValuePair<long, MapShop> shop = this.CurrentMap.ShopUserList.FirstOrDefault(mapshop => mapshop.Value.OwnerId.Equals(this.Character.CharacterId));
                 if (!shop.Equals(default(KeyValuePair<long, MapShop>)))
                 {
                     this.CurrentMap.ShopUserList.Remove(shop.Key);
@@ -219,8 +218,8 @@ namespace OpenNos.GameObject
                 //set the SessionId if Session Packet arrives
                 if (sessionParts.Count() < 2)
                     return;
-                SessionId = Convert.ToInt32(sessionParts[1].Split('\\').FirstOrDefault());
-                Logger.Log.DebugFormat(Language.Instance.GetMessageFromKey("CLIENT_ARRIVED"), SessionId);
+                this.SessionId = Convert.ToInt32(sessionParts[1].Split('\\').FirstOrDefault());
+                Logger.Log.DebugFormat(Language.Instance.GetMessageFromKey("CLIENT_ARRIVED"), this.SessionId);
 
                 if (!_waitForPacketsAmount.HasValue)
                 {
@@ -230,7 +229,7 @@ namespace OpenNos.GameObject
                 return;
             }
 
-            string packetConcatenated = _encryptor.Decrypt(packetData, SessionId);
+            string packetConcatenated = _encryptor.Decrypt(packetData, (int)this.SessionId);
 
             foreach (string packet in packetConcatenated.Split(new char[] { (char)0xFF }, StringSplitOptions.RemoveEmptyEntries))
             {
@@ -243,8 +242,8 @@ namespace OpenNos.GameObject
                 {
                     //keep alive
                     string nextKeepAliveRaw = packetsplit[0];
-                    short nextKeepaliveIdentity;
-                    if (!short.TryParse(nextKeepAliveRaw, out nextKeepaliveIdentity) && nextKeepaliveIdentity != (LastKeepAliveIdentity + 1))
+                    Int32 nextKeepaliveIdentity;
+                    if (!Int32.TryParse(nextKeepAliveRaw, out nextKeepaliveIdentity) && nextKeepaliveIdentity != (this.LastKeepAliveIdentity + 1))
                     {
                         Logger.Log.ErrorFormat(Language.Instance.GetMessageFromKey("CORRUPTED_KEEPALIVE"), _client.ClientId);
                         _client.Disconnect();
@@ -252,7 +251,7 @@ namespace OpenNos.GameObject
                     }
                     else if (nextKeepaliveIdentity == 0)
                     {
-                        if (LastKeepAliveIdentity == ushort.MaxValue)
+                        if (LastKeepAliveIdentity == UInt16.MaxValue)
                             LastKeepAliveIdentity = nextKeepaliveIdentity;
                     }
                     else
@@ -270,7 +269,7 @@ namespace OpenNos.GameObject
                         {
                             _waitForPacketList.Add(packet);
                             _waitForPacketsAmount = null;
-                            string queuedPackets = string.Join(" ", _waitForPacketList.ToArray());
+                            string queuedPackets = String.Join(" ", _waitForPacketList.ToArray());
                             string header = queuedPackets.Split(' ', '^')[1];
                             TriggerHandler(header, queuedPackets, true);
                             _waitForPacketList.Clear();

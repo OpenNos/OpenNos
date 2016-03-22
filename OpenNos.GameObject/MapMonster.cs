@@ -66,7 +66,7 @@ namespace OpenNos.GameObject
 
         internal void MonsterLife()
         {
-            NpcMonster monster = ServerManager.GetNpc(MonsterVNum);
+            NpcMonster monster = ServerManager.GetNpc(this.MonsterVNum);
             if (monster == null)
                 return;
             Random r = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
@@ -87,7 +87,7 @@ namespace OpenNos.GameObject
                     this.MapY = MapY;
                     LastMove = DateTime.Now;
 
-                    string movepacket = $"mv 3 {MapMonsterId} {this.MapX} {this.MapY} {monster.Speed}";
+                    string movepacket = $"mv 3 {this.MapMonsterId} {this.MapX} {this.MapY} {monster.Speed}";
                     ClientLinkManager.Instance.RequiereBroadcastFromMap(MapId, movepacket);
                 }
             }
