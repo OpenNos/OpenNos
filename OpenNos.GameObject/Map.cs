@@ -167,7 +167,7 @@ namespace OpenNos.GameObject
         {
 
 
-            for (int i = 0; i <= Math.Abs(MapX - firstX); i++)
+            for (int i = 1; i <= Math.Abs(MapX - firstX); i++)
             {
                 if (IsBlockedZone(firstX + Math.Sign(MapX - firstX) * i, firstY))
                 {
@@ -176,10 +176,10 @@ namespace OpenNos.GameObject
             }
 
 
-            for (int i = 0; i <= Math.Abs(MapY - firstY); i++)
+            for (int i = 1; i <= Math.Abs(MapY - firstY); i++)
             {
                
-                if (IsBlockedZone(firstX, firstX + Math.Sign(MapY - firstY) * i))
+                if (IsBlockedZone(firstX, firstY + Math.Sign(MapY - firstY) * i))
                 {
                     return true;
                 }
