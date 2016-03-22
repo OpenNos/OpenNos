@@ -834,7 +834,7 @@ namespace OpenNos.Handler
             }
         }
 
-      
+
         [Packet("eqinfo")]
         public void EqInfo(string packet)
         {
@@ -1374,7 +1374,7 @@ namespace OpenNos.Handler
             short destslot; short.TryParse(packetsplit[5], out destslot);
             Inventory LastInventory;
             Inventory NewInventory;
-            if ((Session.Character.ExchangeInfo != null && Session.Character.ExchangeInfo?.ExchangeList.Count() != 0 )|| Session.Character.Speed == 0)
+            if ((Session.Character.ExchangeInfo != null && Session.Character.ExchangeInfo?.ExchangeList.Count() != 0) || Session.Character.Speed == 0)
                 return;
             Session.Character.InventoryList.MoveItem(Session.Character, type, slot, amount, destslot, out LastInventory, out NewInventory);
             if (NewInventory == null) return;
@@ -2021,7 +2021,7 @@ namespace OpenNos.Handler
                 ClientLinkManager.Instance.RequiereBroadcastFromUser(Session, Convert.ToInt64(packetsplit[3]), "GenerateReqInfo");
         }
 
-    
+
         [Packet("npc_req")]
         public void ShowShop(string packet)
         {
@@ -2644,7 +2644,18 @@ namespace OpenNos.Handler
                             Item iteminfo = ServerManager.GetItem(inventory.InventoryItem.ItemVNum);
                             if (iteminfo.EquipmentSlot == (byte)EquipmentType.Sp)
 
-                                UpgradeSp(inventory,InventoryItem.UpgradeProtection.None);
+                                UpgradeSp(inventory, InventoryItem.UpgradeProtection.None);
+                        }
+                        break;
+
+                    case 41:
+                        inventory = Session.Character.InventoryList.LoadBySlotAndType(slot, type);
+                        if (inventory != null)
+                        {
+                            Item iteminfo = ServerManager.GetItem(inventory.InventoryItem.ItemVNum);
+                            if (iteminfo.EquipmentSlot == (byte)EquipmentType.Sp)
+
+                                Perfect(inventory, InventoryItem.UpgradeProtection.None);
                         }
                         break;
                 }
@@ -2779,11 +2790,11 @@ namespace OpenNos.Handler
             short[] feather = { 3, 5, 8, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 70 };
             short[] fullmoon = { 1, 3, 5, 7, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30 };
             short[] soul = { 2, 4, 6, 8, 10, 1, 2, 3, 4, 5, 1, 2, 3, 4, 5 };
-            short featherVnum =2282;
+            short featherVnum = 2282;
             short fullmoonVnum = 1030;
-            short greenSoulVnum =2283;
-            short redSoulVnum =2284;
-            short blueSoulVnum =2285;
+            short greenSoulVnum = 2283;
+            short redSoulVnum = 2284;
+            short blueSoulVnum = 2285;
             short dragonSkinVnum = 2511;
             short dragonBloodVnum = 2512;
             short dragonHeartVnum = 2513;
@@ -2801,7 +2812,7 @@ namespace OpenNos.Handler
             {
                 if (item.InventoryItem.SpLevel > 20)
                 {
-                    if(ServerManager.GetItem(item.InventoryItem.ItemVNum).Morph <= 15)
+                    if (ServerManager.GetItem(item.InventoryItem.ItemVNum).Morph <= 15)
                     {
                         if (Session.Character.InventoryList.CountItem(greenSoulVnum) < soul[item.InventoryItem.Upgrade])
                             return;
@@ -2864,11 +2875,11 @@ namespace OpenNos.Handler
                 }
                 else
                 {
-                    Session.Client.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("LVL_REQUIERED"),51), 11));
+                    Session.Client.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("LVL_REQUIERED"), 51), 11));
 
                     return;
                 }
-           
+
             }
             Random r = new Random();
             int rnd = r.Next(100);
@@ -2880,7 +2891,7 @@ namespace OpenNos.Handler
             }
             else if (rnd <= upsuccess[item.InventoryItem.Upgrade])
             {
-                if(protect == InventoryItem.UpgradeProtection.Protected)
+                if (protect == InventoryItem.UpgradeProtection.Protected)
                     Session.Client.SendPacket(Session.Character.GenerateEff(3004));
                 Session.Client.SendPacket(Session.Character.GenerateEff(3005));
                 Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADESP_SUCCESS"), 12));
@@ -2908,6 +2919,216 @@ namespace OpenNos.Handler
             Session.Character.InventoryList.RemoveItemAmount(fullmoonVnum, (fullmoon[item.InventoryItem.Upgrade]));
             GetStartupInventory();
             Session.Client.SendPacket("shop_end 1");
+        }
+
+        public void PerfectSP(Inventory item, InventoryItem.UpgradeProtection protect)
+        {
+            short[] upsuccess = { 50, 40, 30, 20, 10 };
+
+            int[] goldprice = { 5000, 1000, 20000, 50000, 100000 };
+            short[] stoneprice = { 1, 2, 3, 4, 5 };
+            short stonevnum;
+
+            byte upmode = 1;
+
+            switch (ServerManager.GetItem(item.InventoryItem.ItemVNum).Morph)
+            {
+                #region little Ruby
+                case 2:
+                    stonevnum = 2514;
+                    break;
+                case 6:
+                    stonevnum = 2514;
+                    break;
+                case 9:
+                    stonevnum = 2514;
+                    break;
+                case 12:
+                    stonevnum = 2514;
+                    break;
+                #endregion
+                #region little Sapphire
+                case 3:
+                    stonevnum = 2515;
+                    break;
+                case 4:
+                    stonevnum = 2515;
+                    break;
+                case 14:
+                    stonevnum = 2515;
+                    break;
+                #endregion
+                #region little Obsidian
+                case 5:
+                    stonevnum = 2516;
+                    break;
+                case 11:
+                    stonevnum = 2516;
+                    break;
+                case 15:
+                    stonevnum = 2516;
+                    break;
+                #endregion
+                #region little Topas
+                case 10:
+                    stonevnum = 2517;
+                    break;
+                case 13:
+                    stonevnum = 2517;
+                    break;
+                case 7:
+                    stonevnum = 2517;
+                    break;
+                #endregion
+                #region Ruby
+                case 17:
+                    stonevnum = 2518;
+                    break;
+                case 18:
+                    stonevnum = 2518;
+                    break;
+                case 19:
+                    stonevnum = 2518;
+                    break;
+                #endregion
+                #region Sapphire
+                case 20:
+                    stonevnum = 2519;
+                    break;
+                case 21:
+                    stonevnum = 2519;
+                    break;
+                case 22:
+                    stonevnum = 2519;
+                    break;
+                #endregion
+                #region Obsidian
+                case 23:
+                    stonevnum = 2520;
+                    break;
+                case 24:
+                    stonevnum = 2520;
+                    break;
+                case 25:
+                    stonevnum = 2520;
+                    break;
+                #endregion
+                #region Topas
+                case 26:
+                    stonevnum = 2521;
+                    break;
+                case 27:
+                    stonevnum = 2521;
+                    break;
+                case 28:
+                    stonevnum = 2521;
+                    break;
+                #endregion
+                default:
+                    return;
+            }
+
+            if (item.InventoryItem.SpStoneUpgrade > 80)
+            {
+                upmode = 5;
+            }
+            if (item.InventoryItem.SpStoneUpgrade > 60)
+            {
+                upmode = 4;
+            }
+            if (item.InventoryItem.SpStoneUpgrade > 40)
+            {
+                upmode = 3;
+            }
+            if (item.InventoryItem.SpStoneUpgrade > 20)
+            {
+                upmode = 2;
+            }
+
+            if (item.InventoryItem.IsFixed)
+                return;
+            if (Session.Character.Gold < goldprice[upmode])
+                return;
+            if (Session.Character.InventoryList.CountItem(stonevnum) < stoneprice[upmode])
+                return;
+
+            Random r = new Random();
+            int rnd = r.Next(100);
+            if (rnd <= upsuccess[upmode])
+            {
+                byte type = (byte)r.Next(16);
+                byte count = 1;
+
+                if(upmode == 4)
+                {
+                    count = 2;
+                }
+                if(count == 5)
+                {
+                    count = (byte)r.Next(3, 6);
+                }
+
+                Session.Client.SendPacket(Session.Character.GenerateEff(3005));
+
+                if (type < 3)
+                {
+                    Session.Character.InventoryList.LoadByInventoryItem(item.InventoryItem.InventoryItemId).InventoryItem.SpDamage += count;
+                    Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("PERFECTSP_SUCCESS"), Language.Instance.GetMessageFromKey("PERFECTSP_ATTACK"), count), 12));
+                    Session.Client.SendPacket(Session.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("PERFECTSP_SUCCESS"), Language.Instance.GetMessageFromKey("PERFECTSP_ATTACK"), count), 0));
+                }
+                else if(type < 6)
+                {
+                    Session.Character.InventoryList.LoadByInventoryItem(item.InventoryItem.InventoryItemId).InventoryItem.SpDefence += count;
+                    Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("PERFECTSP_SUCCESS"), Language.Instance.GetMessageFromKey("PERFECTSP_DEFENSE"), count), 12));
+                    Session.Client.SendPacket(Session.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("PERFECTSP_SUCCESS"), Language.Instance.GetMessageFromKey("PERFECTSP_DEFENSE"), count), 0));
+                }
+                else if (type < 9)
+                {
+                    Session.Character.InventoryList.LoadByInventoryItem(item.InventoryItem.InventoryItemId).InventoryItem.SpElement += count;
+                    Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("PERFECTSP_SUCCESS"), Language.Instance.GetMessageFromKey("PERFECTSP_ELEMENT"), count), 12));
+                    Session.Client.SendPacket(Session.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("PERFECTSP_SUCCESS"), Language.Instance.GetMessageFromKey("PERFECTSP_ELEMENT"), count), 0));
+                }
+                else if (type < 12)
+                {
+                    Session.Character.InventoryList.LoadByInventoryItem(item.InventoryItem.InventoryItemId).InventoryItem.SpHP += count;
+                    Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("PERFECTSP_SUCCESS"), Language.Instance.GetMessageFromKey("PERFECTSP_HPMP"), count), 12));
+                    Session.Client.SendPacket(Session.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("PERFECTSP_SUCCESS"), Language.Instance.GetMessageFromKey("PERFECTSP_HPMP"), count), 0));
+                }
+                else if (type == 12)
+                {
+                    Session.Character.InventoryList.LoadByInventoryItem(item.InventoryItem.InventoryItemId).InventoryItem.SpFire += count;
+                    Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("PERFECTSP_SUCCESS"), Language.Instance.GetMessageFromKey("PERFECTSP_FIRE"), count), 12));
+                    Session.Client.SendPacket(Session.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("PERFECTSP_SUCCESS"), Language.Instance.GetMessageFromKey("PERFECTSP_FIRE"), count), 0));
+                }
+                else if (type == 13)
+                {
+                    Session.Character.InventoryList.LoadByInventoryItem(item.InventoryItem.InventoryItemId).InventoryItem.SpWater += count;
+                    Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("PERFECTSP_SUCCESS"), Language.Instance.GetMessageFromKey("PERFECTSP_WATER"), count), 12));
+                    Session.Client.SendPacket(Session.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("PERFECTSP_SUCCESS"), Language.Instance.GetMessageFromKey("PERFECTSP_WATER"), count), 0));
+                }
+                else if (type == 14)
+                {
+                    Session.Character.InventoryList.LoadByInventoryItem(item.InventoryItem.InventoryItemId).InventoryItem.SpLight += count;
+                    Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("PERFECTSP_SUCCESS"), Language.Instance.GetMessageFromKey("PERFECTSP_LIGHT"), count), 12));
+                    Session.Client.SendPacket(Session.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("PERFECTSP_SUCCESS"), Language.Instance.GetMessageFromKey("PERFECTSP_LIGHT"), count), 0));
+                }
+                else if (type == 15)
+                {
+                    Session.Character.InventoryList.LoadByInventoryItem(item.InventoryItem.InventoryItemId).InventoryItem.SpDark += count;
+                    Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("PERFECTSP_SUCCESS"), Language.Instance.GetMessageFromKey("PERFECTSP_SHADOW"), count), 12));
+                    Session.Client.SendPacket(Session.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("PERFECTSP_SUCCESS"), Language.Instance.GetMessageFromKey("PERFECTSP_SHADOW"), count), 0));
+                }
+                Session.Character.InventoryList.LoadByInventoryItem(item.InventoryItem.InventoryItemId).InventoryItem.SpStoneUpgrade++;
+            }
+            else
+            {
+                Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("PERFECTSP_FAILED"), 11));
+                Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("PERFECTSP_FAILED"), 0));
+            }
+            Session.Character.Gold = Session.Character.Gold - goldprice[upmode];
+            Session.Client.SendPacket(Session.Character.GenerateGold());
+            Session.Character.InventoryList.RemoveItemAmount(stonevnum, stoneprice[upmode]);
+            GetStartupInventory();
         }
 
         [Packet("u_i")]

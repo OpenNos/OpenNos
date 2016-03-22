@@ -405,6 +405,36 @@
   <data name="PACKET_FAILURE" xml:space="preserve">
     <value>Failed to send packet {0} to client {1}, {2}.</value>
   </data>
+  <data name="PERFECTSP_ATTACK" xml:space="preserve">
+    <value>Attack</value>
+  </data>
+  <data name="PERFECTSP_DEFENSE" xml:space="preserve">
+    <value>Defense</value>
+  </data>
+  <data name="PERFECTSP_ELEMENT" xml:space="preserve">
+    <value>Element</value>
+  </data>
+  <data name="PERFECTSP_FAILURE" xml:space="preserve">
+    <value>Perfecting the SP failed</value>
+  </data>
+  <data name="PERFECTSP_FIRE" xml:space="preserve">
+    <value>Fire</value>
+  </data>
+  <data name="PERFECTSP_HPMP" xml:space="preserve">
+    <value>HP/MP</value>
+  </data>
+  <data name="PERFECTSP_LIGHT" xml:space="preserve">
+    <value>Light</value>
+  </data>
+  <data name="PERFECTSP_SHADOW" xml:space="preserve">
+    <value>Shadow</value>
+  </data>
+  <data name="PERFECTSP_SUCCESS" xml:space="preserve">
+    <value>Perfecting the SP successful: {0} +{1}</value>
+  </data>
+  <data name="PERFECTSP_WATER" xml:space="preserve">
+    <value>Water</value>
+  </data>
   <data name="QUICK_GET_UP_DISABLED" xml:space="preserve">
     <value>Quick get up disabled</value>
   </data>
