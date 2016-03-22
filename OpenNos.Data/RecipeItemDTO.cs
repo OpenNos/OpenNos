@@ -20,10 +20,10 @@ namespace OpenNos.Data
     {
         #region Properties
 
-        public byte Amount { get; set; }
-        public short ItemVNum { get; set; }
-        public Nullable<short> RecipeId { get; set; }
         public short RecipeItemId { get; set; }
+        public short ItemVNum { get; set; }
+        public byte Amount { get; set; }
+        public short? RecipeId { get; set; }
 
         #endregion
     }

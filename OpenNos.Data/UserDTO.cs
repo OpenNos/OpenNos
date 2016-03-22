@@ -21,19 +21,15 @@ namespace OpenNos.Data
         #region Properties
 
         public string Unknown { get; set; }
-
         public string Name { get; set; }
-
         public string PasswordDecrypted
         {
             get
             {
-                return LoginEncryption.sha256(LoginEncryption.GetPassword(PasswordEncrypted));
+                return EncryptionBase.sha256(LoginEncryption.GetPassword(PasswordEncrypted));
             }
         }
-
         public string PasswordEncrypted { get; set; }
-
       
         #endregion
     }

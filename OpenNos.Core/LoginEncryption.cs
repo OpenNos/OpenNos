@@ -21,9 +21,7 @@ namespace OpenNos.Core
     {
         #region Instantiation
 
-        public LoginEncryption() : base(false)
-        {
-        }
+        public LoginEncryption() : base(false) { }
 
         #endregion
 
@@ -54,7 +52,7 @@ namespace OpenNos.Core
         {
             try
             {
-                string decryptedPacket = String.Empty;
+                string decryptedPacket = string.Empty;
 
                 for (int i = 0; i < packet.Length; i++)
                 {
@@ -72,7 +70,7 @@ namespace OpenNos.Core
             }
             catch
             {
-                return String.Empty;
+                return string.Empty;
             }
         }
 

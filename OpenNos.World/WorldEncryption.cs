@@ -22,9 +22,7 @@ namespace OpenNos.World
     {
         #region Instantiation
 
-        public WorldEncryption() : base(true)
-        {
-        }
+        public WorldEncryption() : base(true) { }
 
         #endregion
 

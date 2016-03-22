@@ -34,13 +34,9 @@ namespace OpenNos.GameObject
         #region Properties
 
         public long CharId { get; set; }
-
         public bool Confirm { get; set; }
-
         public List<InventoryItem> ExchangeList { get; set; }
-
         public long Gold { get; set; }
-
         public bool Validate { get; set; }
 
         #endregion

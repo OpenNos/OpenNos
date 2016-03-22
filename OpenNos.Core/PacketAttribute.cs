@@ -28,8 +28,8 @@ namespace OpenNos.Core
 
         public Packet(string header, int amount = 1)
         {
-            this._header = header;
-            this._amount = amount;
+            _header = header;
+            _amount = amount;
         }
 
         #endregion

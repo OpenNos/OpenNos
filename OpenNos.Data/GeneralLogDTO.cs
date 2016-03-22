@@ -23,11 +23,10 @@ namespace OpenNos.Data
         public long LogId { get; set; }
         public long AccountId { get; set; }
         public string IpAddress { get; set; }
-        public System.DateTime Timestamp { get; set; }
+        public DateTime Timestamp { get; set; }
         public string LogType { get; set; }
         public string LogData { get; set; }
-        public Nullable<long> CharacterId { get; set; }
-        public Nullable<long> CharacterCharacterId { get; set; }
+        public long? CharacterId { get; set; }
 
         #endregion
     }

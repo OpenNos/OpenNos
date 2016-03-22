@@ -133,7 +133,7 @@
     <value>Lucznik</value>
   </data>
   <data name="ASK_ACCEPT" xml:space="preserve">
-    <value>Ktos chcial sie z toba wymienic</value>
+    <value>{0} chce sie z toba wymienic!</value>
   </data>
   <data name="ASK_TO_DELETE" xml:space="preserve">
     <value>Czy chcesz usunac?</value>

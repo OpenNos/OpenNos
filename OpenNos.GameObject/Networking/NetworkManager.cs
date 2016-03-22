@@ -28,7 +28,7 @@ namespace OpenNos.GameObject
         #region Members
 
         private EncryptorT _encryptor;
-        private IDictionary<String, DateTime> _generalLog;
+        private IDictionary<string, DateTime> _generalLog;
         private ConcurrentDictionary<Guid, Map> _maps = new ConcurrentDictionary<Guid, Map>();
         private Type _packetHandler;
         private ConcurrentDictionary<long, ClientSession> _sessions = new ConcurrentDictionary<long, ClientSession>();
@@ -57,13 +57,13 @@ namespace OpenNos.GameObject
 
         #region Properties
 
-        public IDictionary<String, DateTime> GeneralLog
+        public IDictionary<string, DateTime> GeneralLog
         {
             get
             {
                 if (_generalLog == null)
                 {
-                    _generalLog = new Dictionary<String, DateTime>();
+                    _generalLog = new Dictionary<string, DateTime>();
                 }
 
                 return _generalLog;
