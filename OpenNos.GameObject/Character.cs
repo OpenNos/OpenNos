@@ -73,7 +73,7 @@ namespace OpenNos.GameObject
         public double LastPortal { get { return _lastPortal; } set { _lastPortal = value; } }
         public int LastPulse { get { return _lastPulse; } set { _lastPulse = value; } }
         public double LastSp { get; set; }
-        public byte LastSpeed { get; set; }
+        public byte LastSpeed { get { return Speed; } set { if (value > 59) { Speed = 59; } else { Speed = value; } } }
         public int MaxSnack { get; set; }
         public int Morph { get { return _morph; } set { _morph = value; } }
         public int MorphUpgrade { get { return _morphUpgrade; } set { _morphUpgrade = value; } }

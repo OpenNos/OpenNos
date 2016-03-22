@@ -357,7 +357,7 @@ namespace OpenNos.Handler
             ClientLinkManager.Instance.Broadcast(Session, $"guri 6 1 {Session.Character.CharacterId} 0 0", ReceiverType.AllOnMap);
             Session.Client.SendPacket(Session.Character.GenerateSpPoint());
             Session.Character.Speed += ServerManager.GetItem(sp.InventoryItem.ItemVNum).Speed;
-            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateCond(), ReceiverType.AllOnMap);
+            Session.Client.SendPacket(Session.Character.GenerateCond());
             Session.Client.SendPacket(Session.Character.GenerateLev());
             Session.Client.SendPacket(Session.Character.GenerateStat());
             Session.Client.SendPacket(Session.Character.GenerateStatChar());
@@ -1790,8 +1790,8 @@ namespace OpenNos.Handler
             chara.Send(s2);
             s2 = "at " + chara.id + " " + chara.MapPoint.map + " " + chara.MapPoint.x + " " + +chara.MapPoint.y + " 2 0 0 1";
             chara.Send(s2); */
-
-            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateCond(), ReceiverType.AllOnMap);
+            
+            Session.Client.SendPacket(Session.Character.GenerateCond());
             Session.Client.SendPacket(Session.Character.GenerateLev());
 
             /* string s="sl 0";
@@ -3140,7 +3140,7 @@ namespace OpenNos.Handler
                         {
                             Session.Character.UseSp = false;
 
-                            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateCond(), ReceiverType.AllOnMap);
+                            Session.Client.SendPacket(Session.Character.GenerateCond());
                             Session.Client.SendPacket(Session.Character.GenerateLev());
 
                             ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateCMode(), ReceiverType.AllOnMap);
