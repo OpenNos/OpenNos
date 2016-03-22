@@ -430,7 +430,7 @@
     <value>Mrok</value>
   </data>
   <data name="PERFECTSP_SUCCESS" xml:space="preserve">
-    <value>Wprowadzanie perfekcji zakonczylo sie powodzeniem: {0} + {1}</value>
+    <value>Wprowadzanie perfekcji zakonczylo sie powodzeniem: {0} +{1}</value>
   </data>
   <data name="PERFECTSP_WATER" xml:space="preserve">
     <value>Woda</value>

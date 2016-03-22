@@ -258,6 +258,36 @@
   <data name="PACKET_FAILURE" xml:space="preserve">
     <value>Fehler beim Senden von Packet {0} an Client {1}, {2}.</value>
   </data>
+    <data name="PERFECTSP_ATTACK" xml:space="preserve">
+    <value>Angriff</value>
+  </data>
+  <data name="PERFECTSP_DEFENSE" xml:space="preserve">
+    <value>Verteidigung</value>
+  </data>
+  <data name="PERFECTSP_ELEMENT" xml:space="preserve">
+    <value>Element</value>
+  </data>
+  <data name="PERFECTSP_FAILURE" xml:space="preserve">
+    <value>Perfektionierung der SP fehlgeschlagen!</value>
+  </data>
+  <data name="PERFECTSP_FIRE" xml:space="preserve">
+    <value>Feuer</value>
+  </data>
+  <data name="PERFECTSP_HPMP" xml:space="preserve">
+    <value>HP/MP</value>
+  </data>
+  <data name="PERFECTSP_LIGHT" xml:space="preserve">
+    <value>Licht</value>
+  </data>
+  <data name="PERFECTSP_SHADOW" xml:space="preserve">
+    <value>Schatten</value>
+  </data>
+  <data name="PERFECTSP_SUCCESS" xml:space="preserve">
+    <value>Perfektionierung der SP erfolgreich: {0} +{1}</value>
+  </data>
+  <data name="PERFECTSP_WATER" xml:space="preserve">
+    <value>Wasser</value>
+  </data>
   <data name="RARIFY_FAILED" xml:space="preserve">
     <value>Das Wetten ist fehlgeschlagen. Das Item ist verschwunden.</value>
   </data>
