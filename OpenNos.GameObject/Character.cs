@@ -43,6 +43,7 @@ namespace OpenNos.GameObject
         private int _morphUpgrade;
         private int _morphUpgrade2;
         private int _size = 10;
+        private byte _speed;
 
         #endregion
 
@@ -73,7 +74,7 @@ namespace OpenNos.GameObject
         public double LastPortal { get { return _lastPortal; } set { _lastPortal = value; } }
         public int LastPulse { get { return _lastPulse; } set { _lastPulse = value; } }
         public double LastSp { get; set; }
-        public byte LastSpeed { get { return Speed; } set { if (value > 59) { Speed = 59; } else { Speed = value; } } }
+        public byte LastSpeed { get; set; }
         public int MaxSnack { get; set; }
         public int Morph { get { return _morph; } set { _morph = value; } }
         public int MorphUpgrade { get { return _morphUpgrade; } set { _morphUpgrade = value; } }
@@ -82,7 +83,7 @@ namespace OpenNos.GameObject
         public int SnackAmount { get; set; }
         public int SnackHp { get; set; }
         public int SnackMp { get; set; }
-        public byte Speed { get; set; }
+        public byte Speed { get { return _speed; } set { if (value > 59) { _speed = 59; } else { _speed = value; } } }
         public Thread ThreadCharChange { get; set; }
         public bool UseSp { get; set; }
         private int DarkResistance { get; set; }
