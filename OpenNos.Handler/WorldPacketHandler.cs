@@ -57,9 +57,9 @@ namespace OpenNos.Handler
         public void AcceptExchange(string packet)
         {
             string[] packetsplit = packet.Split(' ', '^');
-            short mode;
+            byte mode;
             long charId;
-            if (!short.TryParse(packetsplit[2], out mode) || !long.TryParse(packetsplit[3], out charId)) return;
+            if (!byte.TryParse(packetsplit[2], out mode) || !long.TryParse(packetsplit[3], out charId)) return;
 
             Session.Character.ExchangeInfo = new ExchangeInfo
             {
@@ -254,8 +254,8 @@ namespace OpenNos.Handler
                     InventoryItemId = Session.Character.InventoryList.generateInventoryItemId(),
                     Amount = amount,
                     ItemVNum = item.ItemVNum,
-                    Rare = (byte)item.Rare,
-                    Upgrade = (byte)item.Upgrade,
+                    Rare = item.Rare,
+                    Upgrade = item.Upgrade,
                     Design = item.Color,
                     Concentrate = 0,
                     CriticalLuckRate = 0,
@@ -301,7 +301,7 @@ namespace OpenNos.Handler
             byte Class;
             if (packetsplit.Length > 2)
             {
-                if (Byte.TryParse(packetsplit[2], out Class) && Class < 4)
+                if (byte.TryParse(packetsplit[2], out Class) && Class < 4)
                 {
                     ClientLinkManager.Instance.ClassChange(Session.Character.CharacterId, Class);
                 }
@@ -488,8 +488,8 @@ namespace OpenNos.Handler
                             Class = (byte)ClassType.Adventurer,
                             Gender = (Convert.ToByte(packetsplit[4]) >= 0 && Convert.ToByte(packetsplit[4]) <= 1 ? Convert.ToByte(packetsplit[4]) : Convert.ToByte(0)),
                             Gold = 0,
-                            HairColor = System.Enum.IsDefined(typeof(HairColorType), Convert.ToByte(packetsplit[6])) ? Convert.ToByte(packetsplit[6]) : Convert.ToByte(0),
-                            HairStyle = System.Enum.IsDefined(typeof(HairStyleType), Convert.ToByte(packetsplit[5])) ? Convert.ToByte(packetsplit[5]) : Convert.ToByte(0),
+                            HairColor = Enum.IsDefined(typeof(HairColorType), Convert.ToByte(packetsplit[6])) ? Convert.ToByte(packetsplit[6]) : Convert.ToByte(0),
+                            HairStyle = Enum.IsDefined(typeof(HairStyleType), Convert.ToByte(packetsplit[5])) ? Convert.ToByte(packetsplit[5]) : Convert.ToByte(0),
                             Hp = 221,
                             JobLevel = 1,
                             JobLevelXp = 0,
@@ -530,9 +530,8 @@ namespace OpenNos.Handler
         public void CreateItem(string packet)
         {
             string[] packetsplit = packet.Split(' ');
-            byte amount = 1;
+            byte amount = 1, rare = 0, upgrade = 0, level = 0;
             short vnum, design = 0;
-            byte rare = 0, upgrade = 0, level = 0;
             ItemDTO iteminfo = null;
             if (packetsplit.Length != 5 && packetsplit.Length != 4 && packetsplit.Length != 3)
             {
@@ -543,7 +542,7 @@ namespace OpenNos.Handler
                 Session.Client.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID COLOR", 10));
                 Session.Client.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID AMOUNT", 10));
             }
-            else if (Int16.TryParse(packetsplit[2], out vnum))
+            else if (short.TryParse(packetsplit[2], out vnum))
             {
                 iteminfo = ServerManager.GetItem(vnum);
                 if (iteminfo != null)
@@ -551,25 +550,25 @@ namespace OpenNos.Handler
                     if (iteminfo.IsColored)
                     {
                         if (packetsplit.Count() > 3)
-                            Int16.TryParse(packetsplit[3], out design);
+                            short.TryParse(packetsplit[3], out design);
                     }
                     else if (iteminfo.Type == 0)
                     {
                         if (packetsplit.Length == 4)
                         {
-                            Byte.TryParse(packetsplit[3], out rare);
+                            byte.TryParse(packetsplit[3], out rare);
                         }
                         else if (packetsplit.Length == 5)
                         {
                             if (iteminfo.EquipmentSlot == Convert.ToByte((byte)EquipmentType.Sp))
                             {
-                                Byte.TryParse(packetsplit[3], out upgrade);
-                                Int16.TryParse(packetsplit[4], out design);
+                                byte.TryParse(packetsplit[3], out upgrade);
+                                short.TryParse(packetsplit[4], out design);
                             }
                             else
                             {
-                                Byte.TryParse(packetsplit[3], out rare);
-                                Byte.TryParse(packetsplit[4], out upgrade);
+                                byte.TryParse(packetsplit[3], out rare);
+                                byte.TryParse(packetsplit[4], out upgrade);
                                 if (upgrade == 0)
                                     if (iteminfo.BasicUpgrade != 0)
                                     {
@@ -581,7 +580,7 @@ namespace OpenNos.Handler
                     else
                     {
                         if (packetsplit.Length > 3)
-                            Byte.TryParse(packetsplit[3], out amount);
+                            byte.TryParse(packetsplit[3], out amount);
                     }
                     if (iteminfo.EquipmentSlot == Convert.ToByte((byte)EquipmentType.Sp))
                         level = 1;
@@ -590,8 +589,8 @@ namespace OpenNos.Handler
                         InventoryItemId = Session.Character.InventoryList.generateInventoryItemId(),
                         Amount = amount,
                         ItemVNum = vnum,
-                        Rare = (byte)rare,
-                        Upgrade = (byte)upgrade,
+                        Rare = rare,
+                        Upgrade = upgrade,
                         Design = design,
                         Concentrate = 0,
                         CriticalLuckRate = 0,
@@ -611,7 +610,7 @@ namespace OpenNos.Handler
                         MagicDefence = 0,
                         CloseDefence = 0,
                         SpXp = 0,
-                        SpLevel = (byte)level,
+                        SpLevel = level,
                         SlDefence = 0,
                         SlElement = 0,
                         SlDamage = 0,
@@ -1062,7 +1061,7 @@ namespace OpenNos.Handler
             MapItem mapitem;
             if (Session.CurrentMap.DroppedList.TryGetValue(DropId, out mapitem))
             {
-                short Amount = mapitem.Amount;
+                byte Amount = mapitem.Amount;
                 if (mapitem.PositionX < Session.Character.MapX + 3 && mapitem.PositionX > Session.Character.MapX - 3 && mapitem.PositionY < Session.Character.MapY + 3 && mapitem.PositionY > Session.Character.MapY - 3)
                 {
                     Inventory newInv = Session.Character.InventoryList.CreateItem(mapitem, Session.Character);
@@ -1351,7 +1350,7 @@ namespace OpenNos.Handler
         {
             string[] packetsplit = packet.Split(' ');
             byte type; byte.TryParse(packetsplit[2], out type);
-            byte slot; byte.TryParse(packetsplit[3], out slot);
+            short slot; short.TryParse(packetsplit[3], out slot);
             byte desttype; byte.TryParse(packetsplit[4], out desttype);
             short destslot; short.TryParse(packetsplit[5], out destslot);
             if ((Session.Character.ExchangeInfo != null && Session.Character.ExchangeInfo?.ExchangeList.Count() != 0) || Session.Character.Speed == 0)
@@ -1790,7 +1789,7 @@ namespace OpenNos.Handler
             chara.Send(s2);
             s2 = "at " + chara.id + " " + chara.MapPoint.map + " " + chara.MapPoint.x + " " + +chara.MapPoint.y + " 2 0 0 1";
             chara.Send(s2); */
-            
+
             Session.Client.SendPacket(Session.Character.GenerateCond());
             Session.Client.SendPacket(Session.Character.GenerateLev());
 
@@ -2098,13 +2097,13 @@ namespace OpenNos.Handler
                         type = (i == 0) ? (byte)InventoryType.Sp : (byte)InventoryType.Costume;
                         if (Session.Character.InventoryList.LoadBySlotAndType(x, type) == null)
                         {
-                            if (Session.Character.InventoryList.LoadBySlotAndType((byte)(x + 1), type) != null)
+                            if (Session.Character.InventoryList.LoadBySlotAndType((short)(x + 1), type) != null)
                             {
                                 Inventory invdest = new Inventory();
                                 Inventory inv = new Inventory();
-                                Session.Character.InventoryList.MoveItem(Session.Character, type, (byte)(x + 1), 1, x, out inv, out invdest);
+                                Session.Character.InventoryList.MoveItem(Session.Character, type, (short)(x + 1), 1, x, out inv, out invdest);
                                 Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(invdest.InventoryItem.ItemVNum, invdest.InventoryItem.Amount, type, invdest.Slot, invdest.InventoryItem.Rare, invdest.InventoryItem.Design, invdest.InventoryItem.Upgrade));
-                                DeleteItem(type, (byte)(x + 1));
+                                DeleteItem(type, (short)(x + 1));
                                 gravity = true;
                             }
                         }
@@ -2550,7 +2549,7 @@ namespace OpenNos.Handler
             {
                 if (Session.Character.Gold < goldprice[item.InventoryItem.Upgrade])
                     return;
-                Session.Character.Gold = Session.Character.Gold - (long)(goldprice[item.InventoryItem.Upgrade]);
+                Session.Character.Gold = Session.Character.Gold - (goldprice[item.InventoryItem.Upgrade]);
                 if (Session.Character.InventoryList.CountItem(sandVnum) < sand[item.InventoryItem.Upgrade])
                     return;
                 Session.Character.InventoryList.RemoveItemAmount(sandVnum, (byte)(sand[item.InventoryItem.Upgrade]));
@@ -2597,6 +2596,7 @@ namespace OpenNos.Handler
                 byte.TryParse(packetsplit[2], out uptype);
                 byte.TryParse(packetsplit[3], out type);
                 byte.TryParse(packetsplit[4], out slot);
+
                 if (packetsplit.Count() > 6)
                 {
                     byte.TryParse(packetsplit[5], out type2);
@@ -2679,6 +2679,7 @@ namespace OpenNos.Handler
                 int gemVnum = 1015;
                 int gemFullVnum = 1016;
                 double reducedpricefactor = 0.5;
+
                 if (item.InventoryItem.IsFixed)
                 {
                     Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("ITEM_IS_FIXED"), 10));
@@ -2928,7 +2929,6 @@ namespace OpenNos.Handler
             int[] goldprice = { 5000, 1000, 20000, 50000, 100000 };
             short[] stoneprice = { 1, 2, 3, 4, 5 };
             short stonevnum;
-
             byte upmode = 1;
 
             switch (ServerManager.GetItem(item.InventoryItem.ItemVNum).Morph)
@@ -3056,14 +3056,13 @@ namespace OpenNos.Handler
             int rnd = r.Next(100);
             if (rnd <= upsuccess[upmode])
             {
-                byte type = (byte)r.Next(16);
-                byte count = 1;
+                byte type = (byte)r.Next(16), count = 1;
 
-                if(upmode == 4)
+                if (upmode == 4)
                 {
                     count = 2;
                 }
-                if(count == 5)
+                if (count == 5)
                 {
                     count = (byte)r.Next(3, 6);
                 }
@@ -3076,7 +3075,7 @@ namespace OpenNos.Handler
                     Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("PERFECTSP_SUCCESS"), Language.Instance.GetMessageFromKey("PERFECTSP_ATTACK"), count), 12));
                     Session.Client.SendPacket(Session.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("PERFECTSP_SUCCESS"), Language.Instance.GetMessageFromKey("PERFECTSP_ATTACK"), count), 0));
                 }
-                else if(type < 6)
+                else if (type < 6)
                 {
                     Session.Character.InventoryList.LoadByInventoryItem(item.InventoryItem.InventoryItemId).InventoryItem.SpDefence += count;
                     Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("PERFECTSP_SUCCESS"), Language.Instance.GetMessageFromKey("PERFECTSP_DEFENSE"), count), 12));
@@ -3172,7 +3171,7 @@ namespace OpenNos.Handler
                 // Session.Client.Disconnect();
                 // TODO : need to see why sometime Session.Character.Speed == 1
                 Session.Client.SendPacket(Session.Character.GenerateMsg(("!Warning! Speed manipulation detected"), 0));
-                Logger.Log.Warn("Speed manipulation detected, Speed : "+ Session.Character.Speed);
+                Logger.Log.Warn("Speed manipulation detected, Speed : " + Session.Character.Speed);
             }
         }
 
@@ -3188,7 +3187,6 @@ namespace OpenNos.Handler
                 short slot;
 
                 if (!byte.TryParse(packetsplit[3], out type) || !short.TryParse(packetsplit[2], out slot)) return;
-
                 Inventory inv = Session.Character.InventoryList.LoadBySlotAndType(slot, type);
                 if (inv != null)
                 {
@@ -3554,8 +3552,7 @@ namespace OpenNos.Handler
         {
             string[] packetsplit = packet.Split(' ');
             short vnum = 0;
-            byte qty = 1;
-            byte move = 0;
+            byte qty = 1, move = 0;
             Random rnd = new Random();
             if (packetsplit.Length == 5 && short.TryParse(packetsplit[2], out vnum) && byte.TryParse(packetsplit[3], out qty) && byte.TryParse(packetsplit[4], out move))
             {

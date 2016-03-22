@@ -22,10 +22,7 @@ namespace OpenNos.GameObject
     {
         #region Instantiation
 
-        public InventoryList()
-        {
-            Inventory = new List<Inventory>();
-        }
+        public InventoryList() { Inventory = new List<Inventory>(); }
 
         #endregion
 
@@ -192,7 +189,7 @@ namespace OpenNos.GameObject
             short[] place = new short[10];
             for (byte k = 0; k < place.Count(); k++)
             {
-                place[k] = (short)(48 + (backPack * 12));
+                place[k] = (byte)(48 + (backPack * 12));
                 for (short i = 0; i < 48 + (backPack * 12); i++)
                 {
                     Inventory result = LoadBySlotAndType(i, k);
@@ -200,14 +197,14 @@ namespace OpenNos.GameObject
                         place[k]--;
                     else if (result != null)
                     {
-                        bool test = false;
+                        bool check = false;
                         // If an item stuck
                         foreach (InventoryItem itemins in item)
                         {
                             if (ServerManager.GetItem(itemins.ItemVNum).Type != 0 && itemins.Amount + result.InventoryItem.Amount <= 99)
-                                test = true;
+                                check = true;
                         }
-                        if (!test)
+                        if (!check)
                             place[k]--;
                     }
                 }
@@ -258,7 +255,7 @@ namespace OpenNos.GameObject
             return Inventory.FirstOrDefault(i => i.Slot.Equals(slot) && i.Type.Equals(type));
         }
 
-        public Inventory moveInventory(byte type, byte slot, byte desttype, short destslot)
+        public Inventory moveInventory(byte type, short slot, byte desttype, short destslot)
         {
             Inventory inv = LoadBySlotAndType(slot, type);
             if (inv != null)
@@ -454,7 +451,7 @@ namespace OpenNos.GameObject
             for (int i = 0; i < Inventory.Where(s => s.InventoryItem.ItemVNum == v).OrderBy(s => s.Slot).Count(); i++)
             {
                 Inventory inv = Inventory.Where(s => s.InventoryItem.ItemVNum == v).OrderBy(s => s.Slot).ElementAt(i);
-                if ((int)inv.InventoryItem.Amount > amount)
+                if (inv.InventoryItem.Amount > amount)
                 {
                     inv.InventoryItem.Amount -= (byte)amount;
                     amount = 0;
