@@ -2948,9 +2948,10 @@ namespace OpenNos.Handler
             }
             else
             {
-                Session.Client.Disconnect();
-                //TODO : need to see why sometime Session.Character.Speed == 1
-                Logger.Log.Warn("the speed bug was detected - currentSpeed : "+ Session.Character.Speed);
+                // Session.Client.Disconnect();
+                // TODO : need to see why sometime Session.Character.Speed == 1
+                Session.Client.SendPacket(Session.Character.GenerateMsg(("!Warning! Speed manipulation detected"), 0));
+                Logger.Log.Warn("Speed manipulation detected : "+ Session.Character.Speed);
             }
         }
 
