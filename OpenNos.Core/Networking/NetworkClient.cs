@@ -3,7 +3,6 @@ using OpenNos.Core.Networking.Communication.Scs.Communication.Messages;
 using OpenNos.Core.Networking.Communication.Scs.Server;
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace OpenNos.Core
 {
@@ -30,40 +29,37 @@ namespace OpenNos.Core
 
         #region Methods
 
-        public void SendPacketFormat(string packet, params object[] param)
+        public bool SendPacketFormat(string packet, params object[] param)
         {
-             SendPacket(String.Format(packet, param));
+            return SendPacket(String.Format(packet, param));
         }
 
-        public void SendPacket(string packet)
+        public bool SendPacket(string packet)
         {
-            Task task = new Task(()=>TaskSendPacket(packet));
-            task.Start();      
-        }
-
-        private void TaskSendPacket(string packet)
-        {
-
             try
             {
                 ScsRawDataMessage rawMessage = new ScsRawDataMessage(_encryptor.Encrypt(packet));
                 SendMessage(rawMessage);
+                return true;
             }
             catch (Exception e)
             {
                 Logger.Log.ErrorFormat(Language.Instance.GetMessageFromKey("PACKET_FAILURE"), packet, ClientId, e.Message);
+                return false;
             }
         }
 
-        public void SendPackets(IEnumerable<String> packets)
+        public bool SendPackets(IEnumerable<String> packets)
         {
-           
+            bool result = true;
+
             //TODO maybe send at once with delimiter
             foreach (string packet in packets)
             {
-                SendPacket(packet);
+                result = result && SendPacket(packet);
             }
-            
+
+            return result;
         }
 
         #endregion
