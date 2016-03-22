@@ -415,7 +415,7 @@
     <value>Element</value>
   </data>
   <data name="PERFECTSP_FAILURE" xml:space="preserve">
-    <value>Perfecting the SP failed</value>
+    <value>Perfecting the SP failed!</value>
   </data>
   <data name="PERFECTSP_FIRE" xml:space="preserve">
     <value>Fire</value>
@@ -430,7 +430,7 @@
     <value>Shadow</value>
   </data>
   <data name="PERFECTSP_SUCCESS" xml:space="preserve">
-    <value>Perfecting the SP successful: {0} +{1}</value>
+    <value>Perfecting the SP successful: {0} + {1}</value>
   </data>
   <data name="PERFECTSP_WATER" xml:space="preserve">
     <value>Water</value>
@@ -458,6 +458,9 @@
   </data>
   <data name="SELL_ITEM_VALIDE" xml:space="preserve">
     <value>{0}: sell &lt;{1} : piece &gt;</value>
+  </data>
+  <data name="SEX_CHANGED" xml:space="preserve">
+    <value>Sex has been changed</value>
   </data>
   <data name="SHOPS_LOADED" xml:space="preserve">
     <value>{0} Shops Loaded!</value>

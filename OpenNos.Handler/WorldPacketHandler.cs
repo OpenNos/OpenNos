@@ -3172,7 +3172,7 @@ namespace OpenNos.Handler
                 // Session.Client.Disconnect();
                 // TODO : need to see why sometime Session.Character.Speed == 1
                 Session.Client.SendPacket(Session.Character.GenerateMsg(("!Warning! Speed manipulation detected"), 0));
-                Logger.Log.Warn("Speed manipulation detected : "+ Session.Character.Speed);
+                Logger.Log.Warn("Speed manipulation detected, Speed : "+ Session.Character.Speed);
             }
         }
 
@@ -3241,8 +3241,8 @@ namespace OpenNos.Handler
         {
             Session.Character.Gender = Session.Character.Gender == 1 ? (byte)0 : (byte)1;
             Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SEX_CHANGED"), 0));
-            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEq(), ReceiverType.OnlyMe);
-            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateGender(), ReceiverType.OnlyMe);
+            Session.Client.SendPacket(Session.Character.GenerateEq());
+            Session.Client.SendPacket(Session.Character.GenerateGender());
             ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllOnMapExceptMe);
             ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateCMode(), ReceiverType.AllOnMap);
             ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(198), ReceiverType.AllOnMap);

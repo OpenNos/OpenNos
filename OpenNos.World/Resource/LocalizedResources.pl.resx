@@ -405,6 +405,36 @@
   <data name="PACKET_FAILURE" xml:space="preserve">
     <value>Nie udało sie wysłac packet {0} do użytkownika {1}, {2}.</value>
   </data>
+  <data name="PERFECTSP_ATTACK" xml:space="preserve">
+    <value>Atak</value>
+  </data>
+  <data name="PERFECTSP_DEFENSE" xml:space="preserve">
+    <value>Obrona</value>
+  </data>
+  <data name="PERFECTSP_ELEMENT" xml:space="preserve">
+    <value>Element</value>
+  </data>
+  <data name="PERFECTSP_FAILURE" xml:space="preserve">
+    <value>Wprowadzanie perfekcji zakonczylo sie niepowodzeniem!</value>
+  </data>
+  <data name="PERFECTSP_FIRE" xml:space="preserve">
+    <value>Ogien</value>
+  </data>
+  <data name="PERFECTSP_HPMP" xml:space="preserve">
+    <value>HP/MP</value>
+  </data>
+  <data name="PERFECTSP_LIGHT" xml:space="preserve">
+    <value>Swiatlo</value>
+  </data>
+  <data name="PERFECTSP_SHADOW" xml:space="preserve">
+    <value>Mrok</value>
+  </data>
+  <data name="PERFECTSP_SUCCESS" xml:space="preserve">
+    <value>Wprowadzanie perfekcji zakonczylo sie powodzeniem: {0} + {1}</value>
+  </data>
+  <data name="PERFECTSP_WATER" xml:space="preserve">
+    <value>Woda</value>
+  </data>
   <data name="QUICK_GET_UP_DISABLED" xml:space="preserve">
     <value>Szybkie wstawanie wylaczone</value>
   </data>
@@ -428,6 +458,9 @@
   </data>
   <data name="SELL_ITEM_VALIDE" xml:space="preserve">
     <value>{0}: sprzedano &lt;{1} : sztuk &gt;</value>
+  </data>
+  <data name="SEX_CHANGED" xml:space="preserve">
+    <value>Plec zmieniona</value>
   </data>
   <data name="SHOPS_LOADED" xml:space="preserve">
     <value>{0} Załadowanych sklepow!</value>
