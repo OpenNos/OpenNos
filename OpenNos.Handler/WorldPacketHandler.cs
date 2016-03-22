@@ -1542,6 +1542,7 @@ namespace OpenNos.Handler
                     Session.Character.MapY = portal.DestinationY;
 
                     Session.Character.LastPortal = currentRunningSeconds;
+                    Session.Client.SendPacket(Session.Character.GenerateCMap());
                     ClientLinkManager.Instance.ChangeMap(Session.Character.CharacterId);
                     break;
                 }

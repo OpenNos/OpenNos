@@ -44,7 +44,7 @@ namespace OpenNos.GameObject
         private int _morphUpgrade2;
         private int _size = 10;
         private byte _speed;
-
+        private byte cmapcount = 0;
         #endregion
 
         #region Instantiation
@@ -130,7 +130,8 @@ namespace OpenNos.GameObject
 
         public string GenerateCMap()
         {
-            return $"c_map 0 {MapId} 1";
+            cmapcount = cmapcount == 1 ? (byte)0 : (byte)1;
+            return $"c_map 0 {MapId} {cmapcount}";
         }
 
         public string GenerateCMode()
