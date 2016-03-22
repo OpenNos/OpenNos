@@ -378,7 +378,7 @@ namespace OpenNos.Handler
             ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(196), ReceiverType.AllOnMap);
         }
 
-        [Packet("$Command")]
+        [Packet("$Help")]
         public void Command(string packet)
         {
             Session.Client.SendPacket(Session.Character.GenerateSay("-----------Commands Info--------------", 10));
