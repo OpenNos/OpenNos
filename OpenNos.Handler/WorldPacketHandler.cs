@@ -2784,7 +2784,7 @@ namespace OpenNos.Handler
 
         public void UpgradeSp(Inventory item, InventoryItem.UpgradeProtection protect)
         {
-            short[] upsuccess = { 80, 75, 70, 60, 50, 40, 35, 30, 25, 20, 10, 7, 5, 3, 1 };
+            short[] upsuccess = { 100, 100, 95, 90, 85, 80, 75, 70, 65, 60, 55, 50, 45, 40, 30 };
             short[] upfail = { 20, 25, 25, 30, 35, 40, 40, 40, 40, 40, 45, 43, 40, 37, 29 };
 
             int[] goldprice = { 200000, 200000, 200000, 200000, 200000, 500000, 500000, 500000, 500000, 500000, 1000000, 1000000, 1000000, 1000000, 1000000 };
