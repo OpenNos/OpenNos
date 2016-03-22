@@ -2903,13 +2903,13 @@ namespace OpenNos.Handler
             {
                 if (protect == InventoryItem.UpgradeProtection.Protected)
                 {
+                    Session.Client.SendPacket(Session.Character.GenerateEff(3004));
                     Session.Character.InventoryList.LoadByInventoryItem(item.InventoryItem.InventoryItemId).InventoryItem.IsFixed = true;
                     Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADESP_FAILED_SAVED"), 11));
                     Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADESP_FAILED_SAVED"), 0));
                 }
                 else
                 {
-                    Session.Client.SendPacket(Session.Character.GenerateEff(3004));
                     Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADESP_DESTROY"), 11));
                     Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADESP_DESTROY"), 0));
                 }
