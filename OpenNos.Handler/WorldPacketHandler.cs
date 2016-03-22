@@ -2886,6 +2886,8 @@ namespace OpenNos.Handler
             int rnd = r.Next(100);
             if (rnd <= upfail[item.InventoryItem.Upgrade])
             {
+                if (protect == InventoryItem.UpgradeProtection.Protected)
+                    Session.Client.SendPacket(Session.Character.GenerateEff(3004));
 
                 Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADESP_FAILED"), 11));
                 Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADESP_FAILED"), 0));
