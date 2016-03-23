@@ -18,11 +18,28 @@ using OpenNos.DAL.EF.MySQL.Helpers;
 using OpenNos.DAL.Interface;
 using OpenNos.Data;
 using System.Linq;
+using System;
+using System.Collections.Generic;
 
 namespace OpenNos.DAL.EF.MySQL
 {
     public class ShopDAO : IShopDAO
     {
+        public void Insert(List<ShopDTO> shops)
+        {
+            using (var context = DataAccessHelper.CreateContext())
+            {
+
+                context.Configuration.AutoDetectChangesEnabled = false;
+                foreach (ShopDTO item in shops)
+                {
+                    Shop entity = Mapper.Map<Shop>(item);
+                    context.shop.Add(entity);
+                }
+                context.SaveChanges();
+
+            }
+        }
         #region Methods
 
         public ShopDTO Insert(ShopDTO shop)

@@ -19,11 +19,27 @@ using OpenNos.DAL.Interface;
 using OpenNos.Data;
 using System.Collections.Generic;
 using System.Linq;
+using System;
 
 namespace OpenNos.DAL.EF.MySQL
 {
     public class NpcMonsterDAO : INpcMonsterDAO
     {
+        public void Insert(List<NpcMonsterDTO> npc)
+        {
+            using (var context = DataAccessHelper.CreateContext())
+            {
+
+                context.Configuration.AutoDetectChangesEnabled = false;
+                foreach (NpcMonsterDTO item in npc)
+                {
+                    NpcMonster entity = Mapper.Map<NpcMonster>(item);
+                    context.npcmonster.Add(entity);
+                }
+                context.SaveChanges();
+
+            }
+        }
         #region Methods
 
         public NpcMonsterDTO Insert(NpcMonsterDTO npc)

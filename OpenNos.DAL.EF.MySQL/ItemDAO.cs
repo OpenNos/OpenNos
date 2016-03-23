@@ -26,6 +26,22 @@ namespace OpenNos.DAL.EF.MySQL
     {
         #region Methods
 
+        public void Insert(List<ItemDTO> items)
+        {
+            using (var context = DataAccessHelper.CreateContext())
+            {
+                
+                    context.Configuration.AutoDetectChangesEnabled = false;
+                    foreach (ItemDTO item in items)
+                    {
+                        Item entity = Mapper.Map<Item>(item);
+                        context.item.Add(entity);
+                    }
+                    context.SaveChanges();
+                
+            }
+        }
+
         public ItemDTO Insert(ItemDTO item)
         {
             using (var context = DataAccessHelper.CreateContext())

@@ -13,6 +13,7 @@
  */
 
 using OpenNos.Data;
+using System.Collections.Generic;
 
 namespace OpenNos.DAL.Interface
 {
@@ -23,7 +24,7 @@ namespace OpenNos.DAL.Interface
         ShopDTO Insert(ShopDTO shop);
         ShopDTO LoadById(int ShopId);
         ShopDTO LoadByNpc(int NpcId);
-
+        void Insert(List<ShopDTO> shops);
         #endregion
     }
 }

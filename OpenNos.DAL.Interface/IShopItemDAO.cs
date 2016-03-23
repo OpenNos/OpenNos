@@ -26,7 +26,7 @@ namespace OpenNos.DAL.Interface
         ShopItemDTO Insert(ShopItemDTO item);
         ShopItemDTO LoadById(int ItemId);
         IEnumerable<ShopItemDTO> LoadByShopId(int ShopId);
-
+        void Insert(List<ShopItemDTO> items);
         #endregion
     }
 }

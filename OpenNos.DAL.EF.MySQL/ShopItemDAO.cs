@@ -20,6 +20,7 @@ using OpenNos.Data;
 using OpenNos.Data.Enums;
 using System.Collections.Generic;
 using System.Linq;
+using System;
 
 namespace OpenNos.DAL.EF.MySQL
 {
@@ -86,6 +87,22 @@ namespace OpenNos.DAL.EF.MySQL
             }
 
             return Mapper.Map<ShopItemDTO>(entity);
+        }
+
+        public void Insert(List<ShopItemDTO> items)
+        {
+            using (var context = DataAccessHelper.CreateContext())
+            {
+
+                context.Configuration.AutoDetectChangesEnabled = false;
+                foreach (ShopItemDTO item in items)
+                {
+                    ShopItem entity = Mapper.Map<ShopItem>(item);
+                    context.shopitem.Add(entity);
+                }
+                context.SaveChanges();
+
+            }
         }
 
         #endregion

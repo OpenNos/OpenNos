@@ -24,7 +24,7 @@ namespace OpenNos.DAL.Interface
         MapMonsterDTO Insert(MapMonsterDTO mapmonster);
         IEnumerable<MapMonsterDTO> LoadFromMap(short MapId);
         MapMonsterDTO LoadById(int MonsterId);
-
+        void Insert(List<MapMonsterDTO> monsters);
         #endregion
     }
 }

@@ -19,11 +19,27 @@ using OpenNos.DAL.Interface;
 using OpenNos.Data;
 using System.Collections.Generic;
 using System.Linq;
+using System;
 
 namespace OpenNos.DAL.EF.MySQL
 {
     public class PortalDAO : IPortalDAO
     {
+        public void Insert(List<PortalDTO> portals)
+        {
+            using (var context = DataAccessHelper.CreateContext())
+            {
+
+                context.Configuration.AutoDetectChangesEnabled = false;
+                foreach (PortalDTO item in portals)
+                {
+                    Portal entity = Mapper.Map<Portal>(item);
+                    context.portal.Add(entity);
+                }
+                context.SaveChanges();
+
+            }
+        }
         #region Methods
 
         public PortalDTO Insert(PortalDTO portal)

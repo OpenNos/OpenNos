@@ -26,6 +26,23 @@ namespace OpenNos.DAL.EF.MySQL
     {
         #region Methods
 
+
+        public void Insert(List<MapMonsterDTO> monsters)
+        {
+            using (var context = DataAccessHelper.CreateContext())
+            {
+
+                context.Configuration.AutoDetectChangesEnabled = false;
+                foreach (MapMonsterDTO monster in monsters)
+                {
+                    MapMonster entity = Mapper.Map<MapMonster>(monster);
+                    context.mapmonster.Add(entity);
+                }
+                context.SaveChanges();
+
+            }
+        }
+
         public MapMonsterDTO Insert(MapMonsterDTO mapmonster)
         {
             using (var context = DataAccessHelper.CreateContext())

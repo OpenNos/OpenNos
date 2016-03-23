@@ -24,6 +24,7 @@ namespace OpenNos.DAL.Interface
         IEnumerable<ItemDTO> LoadAll();
         ItemDTO LoadById(short Vnum);
         ItemDTO Insert(ItemDTO item);
+        void Insert(List<ItemDTO> items);
 
         #endregion
     }
