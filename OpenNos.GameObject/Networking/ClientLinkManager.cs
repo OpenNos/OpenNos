@@ -51,9 +51,8 @@ namespace OpenNos.GameObject
 
         public static ClientLinkManager Instance => _instance ?? (_instance = new ClientLinkManager());
         public List<ClientSession> Sessions { get; set; }
-        public bool ShutdownActive { get; set; }
-        public Thread threadShutdown { get; set; }
-
+        public Task taskShutdown { get; set; }
+        public Boolean ShutdownStop = false;
         #endregion
 
         #region Methods
@@ -63,17 +62,17 @@ namespace OpenNos.GameObject
             switch (receiver)
             {
                 case ReceiverType.All:
-                    foreach (ClientSession session in Sessions)
-                        session.Client.SendPacket(message);
+                    for (int i = Sessions.Where(s => s != null).Count() - 1; i >= 0; i--)
+                        Sessions.Where(s => s != null).ElementAt(i).Client.SendPacket(message);
                     break;
 
                 case ReceiverType.AllExceptMe:
-                    foreach (ClientSession session in Sessions.Where(c => c != client))
-                        session.Client.SendPacket(message);
+                    for (int i = Sessions.Where(s => s != null && s != client).Count() - 1; i >= 0; i--)
+                        Sessions.Where(s => s != null && s != client).ElementAt(i).Client.SendPacket(message);
                     break;
 
                 case ReceiverType.AllOnMap:
-                    for (int i = Sessions.Where(s => s!=null && s.Character != null && s.Character.MapId.Equals(client.Character.MapId)).Count() - 1; i >= 0; i--)
+                    for (int i = Sessions.Where(s => s != null && s.Character != null && s.Character.MapId.Equals(client.Character.MapId)).Count() - 1; i >= 0; i--)
                         Sessions.Where(s => s.Character != null && s.Character.MapId.Equals(client.Character.MapId)).ElementAt(i).Client.SendPacket(message);
                     break;
 
@@ -135,9 +134,10 @@ namespace OpenNos.GameObject
                 shopOwnerSession.Client.SendPacket(shopOwnerSession.Character.GenerateInventoryAdd(inv.InventoryItem.ItemVNum, inv.InventoryItem.Amount, inv.Type,
                     inv.Slot, inv.InventoryItem.Rare, inv.InventoryItem.Design, inv.InventoryItem.Upgrade));
 
-              
+
             }
-            else {
+            else
+            {
                 // Send empty slot to owners inventory
                 shopOwnerSession.Client.SendPacket(shopOwnerSession.Character.GenerateInventoryAdd(-1, 0, itemshop.Type, itemshop.Slot, 0, 0, 0));
                 if (clientSession.CurrentMap.ShopUserList[shop.Key].Items.Count == 0)
@@ -355,8 +355,8 @@ namespace OpenNos.GameObject
 
         public void RequiereBroadcastFromMap(short mapId, string message)
         {
-            for (int i = Sessions.Where(s => s.Character != null && s.Character.MapId.Equals(mapId)).Count() - 1; i >= 0; i--)
-                Broadcast(Sessions.Where(s => s.Character != null && s.Character.MapId.Equals(mapId)).ElementAt(i), string.Format(message, Sessions.Where(s => s.Character != null && s.Character.MapId.Equals(mapId)).ElementAt(i).Character.CharacterId), ReceiverType.AllOnMap);
+            for (int i = Sessions.Where(s => s!=null && s.Client != null && s.Character != null && s.Character.MapId.Equals(mapId)).Count() - 1; i >= 0; i--)
+                Broadcast(Sessions.Where(s => s != null && s.Client != null && s.Character != null && s.Character.MapId.Equals(mapId)).ElementAt(i), string.Format(message, Sessions.Where(s => s.Character != null && s.Character.MapId.Equals(mapId)).ElementAt(i).Character.CharacterId), ReceiverType.AllOnMap);
         }
 
         public void RequiereBroadcastFromUser(ClientSession client, long characterId, string methodName)
@@ -405,7 +405,7 @@ namespace OpenNos.GameObject
 
         public async void TaskControl()
         {
-            Task TaskMap;
+            Task TaskMap = null;
             while (true)
             {
                 foreach (var GroupedSession in Sessions.Where(s => s.Character != null).GroupBy(s => s.Character.MapId))
@@ -416,6 +416,8 @@ namespace OpenNos.GameObject
                         TaskMap.Start();
                     }
                 }
+                if(TaskMap!=null)
+                await TaskMap;
                 await Task.Delay(300);
             }
         }

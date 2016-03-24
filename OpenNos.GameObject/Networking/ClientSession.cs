@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace OpenNos.GameObject
 {
@@ -40,7 +41,7 @@ namespace OpenNos.GameObject
         //Packetwait Packets
         private int? _waitForPacketsAmount;
 
-        private Thread healthThread;
+        private Task healthTask;
 
         #endregion
 
@@ -121,15 +122,15 @@ namespace OpenNos.GameObject
             }
         }
 
-        public Thread HealthThread
+        public Task HealthTask
         {
             get
             {
-                return healthThread;
+                return healthTask;
             }
             set
             {
-                healthThread = value;
+                healthTask = value;
             }
         }
 

@@ -23,6 +23,7 @@ using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace OpenNos.World
 {
@@ -67,14 +68,15 @@ namespace OpenNos.World
                              + $"                 WORLD SERVER VERSION {fileVersionInfo.ProductVersion} by OpenNos Team\n" +
                              "===============================================================================\n");
 
-            //initialize DB
-            if (DataAccessHelper.Initialize())
-                //initialilize maps
-                ServerManager.Initialize();
-
-            Thread memory = new Thread(() => ServerManager.MemoryWatch("OpenNos World Server"));
+            Task memory = new Task(() => ServerManager.MemoryWatch("OpenNos World Server"));
             memory.Start();
 
+            //initialize DB
+            if (DataAccessHelper.Initialize())
+               //initialilize maps
+                ServerManager.Initialize();
+
+          
             //initialize ClientLinkManager
             //TODO
 

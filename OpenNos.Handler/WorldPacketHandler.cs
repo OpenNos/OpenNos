@@ -25,6 +25,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace OpenNos.Handler
 {
@@ -33,6 +34,7 @@ namespace OpenNos.Handler
         #region Members
 
         private readonly ClientSession _session;
+
 
         #endregion
 
@@ -1142,16 +1144,16 @@ namespace OpenNos.Handler
                 ClientLinkManager.Instance.Broadcast(Session, $"guri 2 1 {Session.Character.CharacterId}", ReceiverType.AllOnMap);
         }
 
-        public void healthThread()
+        public async void healthTask()
         {
             int x = 1;
             while (true)
             {
                 bool change = false;
                 if (Session.Character.IsSitting)
-                    Thread.Sleep(1500);
+                    await Task.Delay(1500);
                 else
-                    Thread.Sleep(2000);
+                    await Task.Delay(2000);
                 if (x == 0)
                     x = 1;
 
@@ -1757,7 +1759,7 @@ namespace OpenNos.Handler
                 if (slot == (byte)EquipmentType.Sp && Session.Character.UseSp)
                 {
                     Session.Character.LastSp = (DateTime.Now - Process.GetCurrentProcess().StartTime.AddSeconds(-50)).TotalSeconds;
-                    new Thread(() => RemoveSP(inventory.InventoryItem.ItemVNum)).Start();
+                    new Task(() => RemoveSP(inventory.InventoryItem.ItemVNum)).Start();
                 }
 
                 // Put item back to inventory
@@ -1780,7 +1782,7 @@ namespace OpenNos.Handler
             }
         }
 
-        public void RemoveSP(short vnum)
+        public async void RemoveSP(short vnum)
         {
             Inventory sp = Session.Character.EquipmentList.LoadBySlotAndType((byte)EquipmentType.Sp, (byte)InventoryType.Equipment);
             Session.Character.Speed -= ServerManager.GetItem(vnum).Speed;
@@ -1810,7 +1812,9 @@ namespace OpenNos.Handler
 
             Session.Client.SendPacket(Session.Character.GenerateStat());
             Session.Client.SendPacket(Session.Character.GenerateStatChar());
-            Thread.Sleep(30000);
+           await Task.Delay(30000);
+            if (Session == null || Session.Client == null)
+                return;
             Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("TRANSFORM_DISAPEAR")), 11));
             Session.Client.SendPacket("sd 0");
         }
@@ -1912,10 +1916,9 @@ namespace OpenNos.Handler
                 Session.Character.LoadInventory();
                 DAOFactory.AccountDAO.WriteGeneralLog(Session.Character.AccountId, Session.Client.RemoteEndPoint.ToString(), Session.Character.CharacterId, "Connection", "World");
                 Session.Client.SendPacket("OK");
-                Session.HealthThread = new Thread(new ThreadStart(healthThread));
+                Session.HealthTask = new Task(() => healthTask());
 
-                if (Session.HealthThread != null && !Session.HealthThread.IsAlive)
-                    Session.HealthThread.Start();
+                Session.HealthTask.Start();
 
                 // Inform everyone about connected character
                 ServiceFactory.Instance.CommunicationService.ConnectCharacter(Session.Character.Name, Session.Account.Name);
@@ -2053,20 +2056,36 @@ namespace OpenNos.Handler
             }
         }
 
-        public void ShutdownThread()
+        public async void ShutdownTask()
         {
             string message = String.Format(Language.Instance.GetMessageFromKey("SHUTDOWN_MIN"), 5);
             ClientLinkManager.Instance.Broadcast(Session, $"say 1 0 10 ({Language.Instance.GetMessageFromKey("ADMINISTRATOR")}){message}", ReceiverType.All);
             ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateMsg(message, 2), ReceiverType.All);
-            Thread.Sleep(60000 * 4);
+            await Task.Delay(60000 * 4);
+            if (ClientLinkManager.Instance.ShutdownStop == true)
+            {
+                ClientLinkManager.Instance.ShutdownStop = false;
+                return;
+            }
             message = String.Format(Language.Instance.GetMessageFromKey("SHUTDOWN_MIN"), 1);
             ClientLinkManager.Instance.Broadcast(Session, $"say 1 0 10 ({Language.Instance.GetMessageFromKey("ADMINISTRATOR")}){message}", ReceiverType.All);
             ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateMsg(message, 2), ReceiverType.All);
-            Thread.Sleep(30000);
+            await Task.Delay(30000);
+            if (ClientLinkManager.Instance.ShutdownStop == true)
+            {
+                ClientLinkManager.Instance.ShutdownStop = false;
+                return;
+            }
+             
             message = String.Format(Language.Instance.GetMessageFromKey("SHUTDOWN_SEC"), 30);
             ClientLinkManager.Instance.Broadcast(Session, $"say 1 0 10 ({Language.Instance.GetMessageFromKey("ADMINISTRATOR")}){message}", ReceiverType.All);
             ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateMsg(message, 2), ReceiverType.All);
-            Thread.Sleep(30000);
+            await Task.Delay(30000);
+            if (ClientLinkManager.Instance.ShutdownStop == true)
+            {
+                ClientLinkManager.Instance.ShutdownStop = false;
+                return;
+            }
             ClientLinkManager.Instance.SaveAll();
             Environment.Exit(0);
         }
@@ -2468,7 +2487,7 @@ namespace OpenNos.Handler
                 if (Session.Character.UseSp)
                 {
                     Session.Character.LastSp = currentRunningSeconds;
-                    new Thread(() => RemoveSP(spInventory.InventoryItem.ItemVNum)).Start();
+                    new Task(() => RemoveSP(spInventory.InventoryItem.ItemVNum)).Start();
                 }
                 else
                 {
@@ -3489,11 +3508,15 @@ namespace OpenNos.Handler
         [Packet("$Shutdown")]
         public void Shutdown(string packet)
         {
-            if (ClientLinkManager.Instance.ShutdownActive == false)
+            if (ClientLinkManager.Instance.taskShutdown != null)
             {
-                ClientLinkManager.Instance.threadShutdown = new Thread(ShutdownThread);
-                ClientLinkManager.Instance.threadShutdown.Start();
-                ClientLinkManager.Instance.ShutdownActive = true;
+                ClientLinkManager.Instance.ShutdownStop = true;
+                ClientLinkManager.Instance.taskShutdown = null;
+            }
+            else
+            {
+                ClientLinkManager.Instance.taskShutdown = new Task(ShutdownTask);
+                ClientLinkManager.Instance.taskShutdown.Start();
             }
         }
 

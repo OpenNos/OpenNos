@@ -142,8 +142,8 @@ namespace OpenNos.GameObject
                 //only remove the character from map if the character has been set
                 ClientLinkManager.Instance.Broadcast(session, session.Character.GenerateOut(), ReceiverType.AllOnMapExceptMe);
             }
-            if (session.HealthThread != null && session.HealthThread.IsAlive)
-                session.HealthThread.Abort();
+            if(session.HealthTask !=null)
+            session.HealthTask.Dispose();
             session.Destroy();
             e.Client.Disconnect();
             Logger.Log.Info(Language.Instance.GetMessageFromKey("DISCONNECT") + e.Client.ClientId);

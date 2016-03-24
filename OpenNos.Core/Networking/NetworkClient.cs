@@ -44,7 +44,6 @@ namespace OpenNos.Core
             }
             catch (Exception e)
             {
-                Logger.Log.ErrorFormat(Language.Instance.GetMessageFromKey("PACKET_FAILURE"), packet, ClientId, e.Message);
                 return false;
             }
         }

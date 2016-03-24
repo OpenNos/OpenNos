@@ -23,6 +23,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace OpenNos.GameObject
 {
@@ -243,14 +244,14 @@ namespace OpenNos.GameObject
             }
         }
 
-        public static void MemoryWatch(string type)
+        public static async void MemoryWatch(string type)
         {
             Assembly assembly = Assembly.GetEntryAssembly();
             FileVersionInfo fileVersionInfo = FileVersionInfo.GetVersionInfo(assembly.Location);
             while (true)
             {
                 Console.Title = $"{type} v{fileVersionInfo.ProductVersion} - Memory: {GC.GetTotalMemory(true) / (1024 * 1024)}MB";
-                Thread.Sleep(1000);
+                await Task.Delay(1000);
             }
         }
 

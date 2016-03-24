@@ -22,6 +22,7 @@ using System;
 using System.Diagnostics;
 using System.Reflection;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace OpenNos.Login
 {
@@ -44,10 +45,12 @@ namespace OpenNos.Login
                                      + $"                 LOGIN SERVER VERSION {fileVersionInfo.ProductVersion} by OpenNos Team\n" +
                                      "===============================================================================\n");
 
+                    Task memory = new Task(() => ServerManager.MemoryWatch("OpenNos Login Server"));
+                    memory.Start();
+
                     //initialize DB
                     DataAccessHelper.Initialize();
-                    Thread memory = new Thread(() => ServerManager.MemoryWatch("OpenNos Login Server"));
-                    memory.Start();
+                 
                     string ip = System.Configuration.ConfigurationManager.AppSettings["LoginIp"];
                     int port = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["LoginPort"]);
                     Logger.Log.Info(Language.Instance.GetMessageFromKey("CONFIG_LOADED"));
