@@ -58,7 +58,6 @@ namespace OpenNos.GameObject
         #endregion
 
         #region Properties
-        public Boolean ChangeCharStop = false;
         public int Authority { get { return _authority; } set { _authority = value; } }
         public int BackPack { get { return _backpack; } set { _backpack = value; } }
         public int Direction { get { return _direction; } set { _direction = value; } }

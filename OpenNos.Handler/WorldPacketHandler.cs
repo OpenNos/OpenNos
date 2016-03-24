@@ -35,7 +35,6 @@ namespace OpenNos.Handler
 
         private readonly ClientSession _session;
 
-
         #endregion
 
         #region Instantiation
@@ -1154,6 +1153,11 @@ namespace OpenNos.Handler
                     await Task.Delay(1500);
                 else
                     await Task.Delay(2000);
+                if(Session.healthStop == true)
+                {
+                    Session.healthStop = false;
+                    return;
+                }
                 if (x == 0)
                     x = 1;
 
@@ -2061,30 +2065,38 @@ namespace OpenNos.Handler
             string message = String.Format(Language.Instance.GetMessageFromKey("SHUTDOWN_MIN"), 5);
             ClientLinkManager.Instance.Broadcast(Session, $"say 1 0 10 ({Language.Instance.GetMessageFromKey("ADMINISTRATOR")}){message}", ReceiverType.All);
             ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateMsg(message, 2), ReceiverType.All);
-            await Task.Delay(60000 * 4);
-            if (ClientLinkManager.Instance.ShutdownStop == true)
+            for (int i = 0; i < 60*4; i++)
             {
-                ClientLinkManager.Instance.ShutdownStop = false;
-                return;
+                await Task.Delay(1000);
+                if (ClientLinkManager.Instance.ShutdownStop == true)
+                {
+                    ClientLinkManager.Instance.ShutdownStop = false;
+                    return;
+                }
             }
             message = String.Format(Language.Instance.GetMessageFromKey("SHUTDOWN_MIN"), 1);
             ClientLinkManager.Instance.Broadcast(Session, $"say 1 0 10 ({Language.Instance.GetMessageFromKey("ADMINISTRATOR")}){message}", ReceiverType.All);
             ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateMsg(message, 2), ReceiverType.All);
-            await Task.Delay(30000);
-            if (ClientLinkManager.Instance.ShutdownStop == true)
+            for (int i = 0; i < 30; i++)
             {
-                ClientLinkManager.Instance.ShutdownStop = false;
-                return;
+                await Task.Delay(1000);
+                if (ClientLinkManager.Instance.ShutdownStop == true)
+                {
+                    ClientLinkManager.Instance.ShutdownStop = false;
+                    return;
+                }
             }
-             
             message = String.Format(Language.Instance.GetMessageFromKey("SHUTDOWN_SEC"), 30);
             ClientLinkManager.Instance.Broadcast(Session, $"say 1 0 10 ({Language.Instance.GetMessageFromKey("ADMINISTRATOR")}){message}", ReceiverType.All);
             ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateMsg(message, 2), ReceiverType.All);
-            await Task.Delay(30000);
-            if (ClientLinkManager.Instance.ShutdownStop == true)
+            for (int i = 0; i < 30; i++)
             {
-                ClientLinkManager.Instance.ShutdownStop = false;
-                return;
+                await Task.Delay(1000);
+                if (ClientLinkManager.Instance.ShutdownStop == true)
+                {
+                    ClientLinkManager.Instance.ShutdownStop = false;
+                    return;
+                }
             }
             ClientLinkManager.Instance.SaveAll();
             Environment.Exit(0);

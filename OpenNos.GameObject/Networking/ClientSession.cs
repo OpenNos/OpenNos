@@ -37,7 +37,7 @@ namespace OpenNos.GameObject
         private IDictionary<Packet, Tuple<MethodInfo, object>> _handlerMethods;
         private SequentialItemProcessor<byte[]> _queue;
         private IList<String> _waitForPacketList = new List<String>();
-
+        public Boolean healthStop = false;
         //Packetwait Packets
         private int? _waitForPacketsAmount;
 
