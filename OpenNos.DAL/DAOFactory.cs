@@ -36,7 +36,8 @@ namespace OpenNos.DAL
         private static IShopDAO _shopDAO;
         private static IShopItemDAO _shopitemDAO;
         private static ITeleporterDAO _teleporterDAO;
-
+        private static IRecipeDAO _recipeDAO;
+        private static IRecipeItemDAO _recipeitemDAO;
         #endregion
 
         #region Instantiation
@@ -248,6 +249,30 @@ namespace OpenNos.DAL
             }
         }
 
+        public static IRecipeDAO RecipeDAO
+        {
+            get
+            {
+                if (_recipeDAO == null)
+                {
+                    _recipeDAO = new MySQL.RecipeDAO();
+                }
+
+                return _recipeDAO;
+            }
+        }
+        public static IRecipeItemDAO RecipeItemDAO
+        {
+            get
+            {
+                if (_recipeitemDAO == null)
+                {
+                    _recipeitemDAO = new MySQL.RecipeItemDAO();
+                }
+
+                return _recipeitemDAO;
+            }
+        }
         #endregion
     }
 }

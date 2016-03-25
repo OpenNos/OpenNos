@@ -63,6 +63,10 @@ namespace OpenNos.DAL.EF.MySQL.Helpers
             Mapper.CreateMap<GeneralLogDTO, GeneralLog>();
             Mapper.CreateMap<Teleporter, TeleporterDTO>();
             Mapper.CreateMap<TeleporterDTO, Teleporter>();
+            Mapper.CreateMap<Recipe, RecipeDTO>();
+            Mapper.CreateMap<RecipeDTO, Recipe>();
+            Mapper.CreateMap<RecipeItem, RecipeItemDTO>();
+            Mapper.CreateMap<RecipeItemDTO, RecipeItem>();
         }
 
         #endregion

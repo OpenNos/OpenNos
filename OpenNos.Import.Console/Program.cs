@@ -78,6 +78,7 @@ namespace OpenNos.Import.Console
                 factory.ImportTeleporters();
                 factory.ImportItems();
                 factory.ImportShopItems();
+                factory.ImportRecipe();
             }
             else
             {

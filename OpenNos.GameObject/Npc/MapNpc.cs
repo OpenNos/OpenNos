@@ -30,6 +30,13 @@ namespace OpenNos.GameObject
             Mapper.CreateMap<MapNpc, MapNpcDTO>();
             MapNpcId = npcId;
             LastEffect = LastMove = DateTime.Now;
+            IEnumerable<RecipeDTO> Recipe = DAOFactory.RecipeDAO.LoadByNpc(MapNpcId);
+            Recipes = new List<Recipe>();
+            foreach (RecipeDTO rec in Recipe)
+            {
+                Recipes.Add(new GameObject.Recipe() {ItemVNum = rec.ItemVNum,MapNpcId = rec.MapNpcId, RecipeId = rec.RecipeId });
+            }
+
             IEnumerable<TeleporterDTO> Teleporter = DAOFactory.TeleporterDAO.LoadFromNpc(MapNpcId);
             Teleporters = new List<Teleporter>();
             foreach (TeleporterDTO telep in Teleporter)
@@ -51,7 +58,7 @@ namespace OpenNos.GameObject
         public DateTime LastMove { get; private set; }
         public Shop Shop { get; set; }
         public List<Teleporter> Teleporters { get; set; }
-
+        public List<Recipe> Recipes { get; set; }
         #endregion
 
         #region Methods

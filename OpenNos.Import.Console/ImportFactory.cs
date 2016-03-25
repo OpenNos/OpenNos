@@ -415,8 +415,6 @@ namespace OpenNos.Import.Console
         }
         public void ImportTeleporters()
         {
-            List<PortalDTO> listPacket = new List<PortalDTO>();
-            List<PortalDTO> listPortal = new List<PortalDTO>();
             int i = 0;
             TeleporterDTO teleporter = null;
             foreach (string[] linesave in packetList.Where(o => o[0].Equals("at") || (o[0].Equals("n_run") && (o[1].Equals("16") || o[1].Equals("26")))))
@@ -429,7 +427,7 @@ namespace OpenNos.Import.Console
                         Index = short.Parse(linesave[2]),
                     };
 
-                 
+
                 }
                 else if (linesave.Length > 5 && linesave[0] == "at")
                 {
@@ -440,8 +438,8 @@ namespace OpenNos.Import.Console
                         teleporter.MapY = short.Parse(linesave[4]);
 
 
-                        if (DAOFactory.TeleporterDAO.LoadFromNpc(teleporter.MapNpcId).Where(s=>s.Index == teleporter.Index).Count() > 0)
-                            continue; 
+                        if (DAOFactory.TeleporterDAO.LoadFromNpc(teleporter.MapNpcId).Where(s => s.Index == teleporter.Index).Count() > 0)
+                            continue;
 
 
                         DAOFactory.TeleporterDAO.Insert(teleporter);
@@ -453,8 +451,51 @@ namespace OpenNos.Import.Console
                 }
             }
 
-       
+
             Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("TELEPORTERS_PARSED"), i));
+        }
+
+
+        public void ImportRecipe()
+        {
+
+            int count = 0;
+            int npc = 0;
+            RecipeDTO recipe = null;
+            foreach (string[] linesave in packetList.Where(o => o[0].Equals("n_run") || (o[0].Equals("m_list") && o[1].Equals("2"))))
+            {
+                if (linesave.Length > 4 && linesave[0] == "n_run")
+                {
+
+                    npc = int.Parse(linesave[4]);
+
+
+                }
+                else if (linesave.Length > 1 && linesave[0] == "m_list")
+                {
+                    for (int i = 2; i < linesave.Length-1; i++)
+                    {
+                        recipe = new RecipeDTO()
+                        {
+                            ItemVNum = short.Parse(linesave[i]),
+                            MapNpcId = npc
+                        };
+
+                        if (DAOFactory.RecipeDAO.LoadByNpc(npc).Count() > 0)
+                            if (DAOFactory.RecipeDAO.LoadByNpc(npc).Where(s => s.ItemVNum == recipe.ItemVNum).Count() > 0)
+                                continue;
+
+                        DAOFactory.RecipeDAO.Insert(recipe);
+                        count++;
+                    }
+
+
+                }
+
+            }
+
+
+            Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("RECIPE_PARSED"), count));
         }
         public void ImportShopItems()
         {

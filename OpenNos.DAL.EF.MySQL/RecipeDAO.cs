@@ -30,14 +30,10 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                if (context.shop.SingleOrDefault(c => c.MapNpcId.Equals(recipe.MapNpcId)) == null)
-                {
                     Recipe entity = Mapper.Map<Recipe>(recipe);
                     context.recipe.Add(entity);
                     context.SaveChanges();
-                    return Mapper.Map<RecipeDTO>(entity);
-                }
-                else return new RecipeDTO();
+                    return Mapper.Map<RecipeDTO>(entity); 
             }
         }
 

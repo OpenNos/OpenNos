@@ -16,6 +16,7 @@ using OpenNos.Core;
 using OpenNos.Data;
 using OpenNos.Domain;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace OpenNos.GameObject
@@ -26,6 +27,7 @@ namespace OpenNos.GameObject
 
         public static void NRun(ClientSession Session, byte type, short runner, short data3, short npcid)
         {
+            MapNpc npc = Session.CurrentMap.Npcs.FirstOrDefault(s => s.MapNpcId == npcid);
             switch (runner)
             {
                 case 1:
@@ -63,11 +65,22 @@ namespace OpenNos.GameObject
                     break;
 
                 case 14:
-                    // m_list 2 1002 1003 1004 1005 1006 1007 1008 1009 1010 180 181 2127 2178 1242 1243 1244 2504 2505 - 100
                     Session.Client.SendPacket($"wopen 27 0");
+                    string recipelist = "m_list 2";
+                  
+                    if (npc != null)
+                    {
+                        List<Recipe> tp = npc.Recipes;
+                        
+                        foreach (Recipe rec in tp)
+                        {
+                            recipelist += String.Format(" {0}", rec.ItemVNum);
+                        }
+                        recipelist += " -100";
+                        Session.Client.SendPacket(recipelist);
+                    }
                     break;
                 case 16:
-                    MapNpc npc = Session.CurrentMap.Npcs.FirstOrDefault(s => s.MapNpcId == npcid);
                     if (npc != null)
                     {
                         TeleporterDTO tp = npc.Teleporters?.FirstOrDefault(s => s.Index == type);
@@ -84,10 +97,9 @@ namespace OpenNos.GameObject
                     }
                     break;
                 case 26:
-                    MapNpc npc2 = Session.CurrentMap.Npcs.FirstOrDefault(s => s.MapNpcId == npcid);
-                    if (npc2 != null)
+                    if (npc != null)
                     {
-                        TeleporterDTO tp = npc2.Teleporters?.FirstOrDefault(s => s.Index == type);
+                        TeleporterDTO tp = npc.Teleporters?.FirstOrDefault(s => s.Index == type);
                         if (tp != null && Session.Character.Gold >= 5000 * type)
                         {
                             Session.Character.Gold -= 5000 * type;
