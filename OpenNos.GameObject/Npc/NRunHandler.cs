@@ -13,8 +13,10 @@
  */
 
 using OpenNos.Core;
+using OpenNos.Data;
 using OpenNos.Domain;
 using System;
+using System.Linq;
 
 namespace OpenNos.GameObject
 {
@@ -64,7 +66,20 @@ namespace OpenNos.GameObject
                     // m_list 2 1002 1003 1004 1005 1006 1007 1008 1009 1010 180 181 2127 2178 1242 1243 1244 2504 2505 - 100
                     Session.Client.SendPacket($"wopen 27 0");
                     break;
-
+                case 16:
+                    MapNpc npc = Session.CurrentMap.Npcs.FirstOrDefault(s => s.MapNpcId == npcid);
+                    if (npc != null)
+                    {
+                        TeleporterDTO tp = npc.Teleporters?.FirstOrDefault(s => s.Index == type);
+                        if (tp != null)
+                        {
+                            Session.Character.MapY = tp.MapY;
+                            Session.Character.MapX = tp.MapX;
+                            Session.Character.MapId = tp.MapId;
+                            ClientLinkManager.Instance.ChangeMap(Session.Character.CharacterId);
+                        }
+                    }
+                    break;
                 default:
                     Logger.Log.Warn(String.Format(Language.Instance.GetMessageFromKey("NO_NRUN_HANDLER"), runner));
                     break;

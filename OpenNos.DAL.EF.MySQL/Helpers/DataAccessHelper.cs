@@ -61,6 +61,8 @@ namespace OpenNos.DAL.EF.MySQL.Helpers
             Mapper.CreateMap<InventoryItemDTO, InventoryItem>();
             Mapper.CreateMap<GeneralLog, GeneralLogDTO>();
             Mapper.CreateMap<GeneralLogDTO, GeneralLog>();
+            Mapper.CreateMap<Teleporter, TeleporterDTO>();
+            Mapper.CreateMap<TeleporterDTO, Teleporter>();
         }
 
         #endregion

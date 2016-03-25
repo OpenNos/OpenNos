@@ -413,7 +413,49 @@ namespace OpenNos.Import.Console
 
             Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("PORTALS_PARSED"), portalCounter));
         }
+        public void ImportTeleporters()
+        {
+            List<PortalDTO> listPacket = new List<PortalDTO>();
+            List<PortalDTO> listPortal = new List<PortalDTO>();
+            int i = 0;
+            TeleporterDTO teleporter = null;
+            foreach (string[] linesave in packetList.Where(o => o[0].Equals("at") || (o[0].Equals("n_run") && o[1].Equals("16"))))
+            {
+                if (linesave.Length > 4 && linesave[0] == "n_run")
+                {
+                    teleporter = new TeleporterDTO
+                    {
+                        MapNpcId = int.Parse(linesave[4]),
+                        Index = short.Parse(linesave[2]),
+                    };
 
+                 
+                }
+                else if (linesave.Length > 5 && linesave[0] == "at")
+                {
+                    if (teleporter != null)
+                    {
+                        teleporter.MapId = short.Parse(linesave[2]);
+                        teleporter.MapX = short.Parse(linesave[3]);
+                        teleporter.MapY = short.Parse(linesave[4]);
+
+
+                        if (DAOFactory.TeleporterDAO.LoadFromNpc(teleporter.MapNpcId).Where(s=>s.Index == teleporter.Index).Count() > 0)
+                            continue; 
+
+
+                        DAOFactory.TeleporterDAO.Insert(teleporter);
+                        i++;
+                        teleporter = null;
+                    }
+
+
+                }
+            }
+
+       
+            Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("TELEPORTERS_PARSED"), i));
+        }
         public void ImportShopItems()
         {
             List<PortalDTO> listPacket = new List<PortalDTO>();

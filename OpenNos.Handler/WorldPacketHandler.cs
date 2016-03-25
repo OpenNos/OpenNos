@@ -3598,12 +3598,12 @@ namespace OpenNos.Handler
                     return;
                 for (int i = 0; i < qty; i++)
                 {
-                    short mapx = (short)rnd.Next(Session.Character.MapX - qty / 3, Session.Character.MapX + qty / 3);
-                    short mapy = (short)rnd.Next(Session.Character.MapY - qty / 3, Session.Character.MapY + qty / 3);
+                    short mapx = (short)rnd.Next((Session.Character.MapX - qty) % Session.CurrentMap.XLength,( Session.Character.MapX + qty / 3) % Session.CurrentMap.YLength);
+                    short mapy = (short)rnd.Next((Session.Character.MapY - qty) % Session.CurrentMap.XLength, (Session.Character.MapY + qty / 3) % Session.CurrentMap.YLength);
                     while (Session.CurrentMap != null && Session.CurrentMap.IsBlockedZone(mapx, mapy))
                     {
-                        mapx = (short)rnd.Next(Session.Character.MapX - qty / 3, Session.Character.MapX + qty / 3);
-                        mapy = (short)rnd.Next(Session.Character.MapY - qty / 3, Session.Character.MapY + qty / 3);
+                       mapx = (short)rnd.Next((Session.Character.MapX - qty) % Session.CurrentMap.XLength, (Session.Character.MapX + qty / 3) % Session.CurrentMap.YLength);
+                       mapy = (short)rnd.Next((Session.Character.MapY - qty) % Session.CurrentMap.XLength, (Session.Character.MapY + qty / 3) % Session.CurrentMap.YLength);
                     }
                     MapMonster monst = new MapMonster() { MonsterVNum = vnum, MapY = mapy, MapX = mapx, MapId = Session.Character.MapId, firstX = mapx, firstY = mapy, MapMonsterId = MapMonster.generateMapMonsterId(), Position = 1, Move = move != 0 ? true : false };
                     ServerManager.GetMap(Session.Character.MapId).Monsters.Add(monst);

@@ -30,7 +30,12 @@ namespace OpenNos.GameObject
             Mapper.CreateMap<MapNpc, MapNpcDTO>();
             MapNpcId = npcId;
             LastEffect = LastMove = DateTime.Now;
-            IEnumerable<TeleporterDTO> Teleporters = DAOFactory.TeleporterDAO.LoadFromNpc(MapNpcId);
+            IEnumerable<TeleporterDTO> Teleporter = DAOFactory.TeleporterDAO.LoadFromNpc(MapNpcId);
+            Teleporters = new List<Teleporter>();
+            foreach (TeleporterDTO telep in Teleporter)
+            {
+                Teleporters.Add(new GameObject.Teleporter() { MapId = telep.MapId,Index = telep.Index,MapNpcId = telep.MapNpcId,MapX = telep.MapX,MapY = telep.MapY, TeleporterId = telep.TeleporterId});
+            }
             ShopDTO shop = DAOFactory.ShopDAO.LoadByNpc(MapNpcId);
             if (shop != null)
                 Shop = new Shop(shop.ShopId) { Name = shop.Name, MapNpcId = MapNpcId, MenuType = shop.MenuType, ShopType = shop.ShopType };
@@ -45,7 +50,7 @@ namespace OpenNos.GameObject
         public DateTime LastEffect { get; private set; }
         public DateTime LastMove { get; private set; }
         public Shop Shop { get; set; }
-        public IEnumerable<TeleporterDTO> Teleporters { get; set; }
+        public List<Teleporter> Teleporters { get; set; }
 
         #endregion
 
@@ -77,9 +82,9 @@ namespace OpenNos.GameObject
                 LastEffect = DateTime.Now;
             }
 
-    
+
             Random r = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
-             time = (DateTime.Now - LastMove).TotalSeconds;
+            time = (DateTime.Now - LastMove).TotalSeconds;
             if (Move && time > r.Next(1, 3) * (0.5 + r.NextDouble()))
             {
                 byte point = (byte)r.Next(2, 5);

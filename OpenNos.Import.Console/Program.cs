@@ -73,6 +73,7 @@ namespace OpenNos.Import.Console
                 factory.ImportMapNpcs();
                 factory.ImportMonsters();
                 factory.ImportShops();
+                factory.ImportTeleporters();
                 factory.ImportItems();
                 factory.ImportShopItems();
             }
