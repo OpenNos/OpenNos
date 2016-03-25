@@ -461,19 +461,20 @@ namespace OpenNos.Import.Console
 
             int count = 0;
             int npc = 0;
+            short item = 0;
             RecipeDTO recipe = null;
-            foreach (string[] linesave in packetList.Where(o => o[0].Equals("n_run") || (o[0].Equals("m_list") && o[1].Equals("2"))))
+            RecipeItemDTO recipeitem = null;
+            foreach (string[] linesave in packetList.Where(o => o[0].Equals("n_run") || o[0].Equals("pdtse") || o[0].Equals("m_list")))
             {
                 if (linesave.Length > 4 && linesave[0] == "n_run")
                 {
 
                     npc = int.Parse(linesave[4]);
 
-
                 }
-                else if (linesave.Length > 1 && linesave[0] == "m_list")
+                else if (linesave.Length > 1 && linesave[0] == "m_list" && linesave[1] == "2")
                 {
-                    for (int i = 2; i < linesave.Length-1; i++)
+                    for (int i = 2; i < linesave.Length - 1; i++)
                     {
                         recipe = new RecipeDTO()
                         {
@@ -491,9 +492,36 @@ namespace OpenNos.Import.Console
 
 
                 }
+                else if (linesave.Length > 2 && linesave[0] == "pdtse")
+                {
+                    item = short.Parse(linesave[2]);
+                }
+                else if (linesave.Length > 1 && linesave[0] == "m_list" && linesave[1] == "3")
+                {
+
+                    for (int i = 3; i < linesave.Length - 1; i += 2)
+                    {
+
+                        RecipeDTO rec = DAOFactory.RecipeDAO.LoadByNpc(npc).FirstOrDefault(s => s.ItemVNum == item);
+                        if (rec != null)
+                        {
+                            rec.Amount = byte.Parse(linesave[2]);
+                            DAOFactory.RecipeDAO.Update(rec);
+                            short recipeId = DAOFactory.RecipeDAO.LoadByNpc(npc).FirstOrDefault(s => s.ItemVNum == item).RecipeId;
+                            recipeitem = new RecipeItemDTO
+                            {
+                                ItemVNum = short.Parse(linesave[i]),
+                                Amount = byte.Parse(linesave[i + 1]),
+                                RecipeId = recipeId
+                            };
+                            if (DAOFactory.RecipeItemDAO.LoadAll().FirstOrDefault(s => s.RecipeId == recipeId && s.ItemVNum == item) == null)
+                                DAOFactory.RecipeItemDAO.Insert(recipeitem);
+                        }
+                    }
+                    item = -1;
+                }
 
             }
-
 
             Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("RECIPE_PARSED"), count));
         }

@@ -13,7 +13,9 @@
  */
 
 using AutoMapper;
+using OpenNos.DAL;
 using OpenNos.Data;
+using System.Collections.Generic;
 
 namespace OpenNos.GameObject
 {
@@ -21,12 +23,24 @@ namespace OpenNos.GameObject
     {
         #region Instantiation
 
-        public Recipe()
+        public Recipe(short RecipeId)
         {
             Mapper.CreateMap<RecipeDTO, Recipe>();
             Mapper.CreateMap<Recipe, RecipeDTO>();
-        }
+            Items = new List<RecipeItem>();
+            foreach (RecipeItemDTO rec in DAOFactory.RecipeItemDAO.LoadByRecipe(RecipeId))
+            {
+                Items.Add(new RecipeItem()
+                {
+                    Amount = rec.Amount,
+                    ItemVNum = rec.ItemVNum,
+                    RecipeId = rec.RecipeId,
+                    RecipeItemId = rec.RecipeItemId
+                });
+            }
 
+        }
+        public List<RecipeItem> Items { get; set; }
         #endregion
     }
 }

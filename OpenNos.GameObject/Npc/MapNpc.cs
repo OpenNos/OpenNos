@@ -34,7 +34,7 @@ namespace OpenNos.GameObject
             Recipes = new List<Recipe>();
             foreach (RecipeDTO rec in Recipe)
             {
-                Recipes.Add(new GameObject.Recipe() {ItemVNum = rec.ItemVNum,MapNpcId = rec.MapNpcId, RecipeId = rec.RecipeId });
+                Recipes.Add(new GameObject.Recipe(rec.RecipeId) {ItemVNum = rec.ItemVNum,MapNpcId = rec.MapNpcId, RecipeId = rec.RecipeId ,Amount = rec.Amount});
             }
 
             IEnumerable<TeleporterDTO> Teleporter = DAOFactory.TeleporterDAO.LoadFromNpc(MapNpcId);

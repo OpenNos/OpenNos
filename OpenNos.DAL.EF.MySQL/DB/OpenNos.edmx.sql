@@ -44,7 +44,7 @@
 -- -----------------------------------------------------------
 -- Entity Designer DDL Script for MySQL Server 4.1 and higher
 -- -----------------------------------------------------------
--- Date Created: 03/25/2016 19:42:01
+-- Date Created: 03/25/2016 23:07:26
 
 -- Generated from EDMX file: C:\Users\ERWAN\Desktop\OpenNos Git\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
 -- Target version: 3.0.0.0
@@ -101,9 +101,9 @@
 
 --    ALTER TABLE `recipeitem` DROP CONSTRAINT `FK_RecipeItemItem`;
 
---    ALTER TABLE `recipe` DROP CONSTRAINT `FK_RecipeRecipeItem`;
-
 --    ALTER TABLE `recipeitem` DROP CONSTRAINT `FK_RecipeRecipeItem1`;
+
+--    ALTER TABLE `recipe` DROP CONSTRAINT `FK_ItemRecipe`;
 
 
 -- --------------------------------------------------
@@ -535,7 +535,8 @@ ALTER TABLE `mapnpc` ADD PRIMARY KEY (MapNpcId);
 CREATE TABLE `recipe`(
 	`RecipeId` smallint NOT NULL AUTO_INCREMENT UNIQUE, 
 	`MapNpcId` int NOT NULL, 
-	`ItemVNum` smallint NOT NULL);
+	`ItemVNum` smallint NOT NULL, 
+	`Amount` TINYINT UNSIGNED NOT NULL);
 
 ALTER TABLE `recipe` ADD PRIMARY KEY (RecipeId);
 
@@ -547,7 +548,7 @@ CREATE TABLE `recipeitem`(
 	`RecipeItemId` smallint NOT NULL AUTO_INCREMENT UNIQUE, 
 	`ItemVNum` smallint NOT NULL, 
 	`Amount` TINYINT UNSIGNED NOT NULL, 
-	`RecipeId` smallint);
+	`RecipeId` smallint NOT NULL);
 
 ALTER TABLE `recipeitem` ADD PRIMARY KEY (RecipeItemId);
 

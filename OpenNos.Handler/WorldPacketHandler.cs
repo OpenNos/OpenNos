@@ -1402,7 +1402,7 @@ namespace OpenNos.Handler
             short runner; short.TryParse(packetsplit[2], out runner);
             short data3; short.TryParse(packetsplit[4], out data3);
             short npcid; short.TryParse(packetsplit[5], out npcid);
-
+            Session.Character.LastNRunId = npcid;
             NRunHandler.NRun(Session, type, runner, data3, npcid);
         }
 
@@ -2519,6 +2519,30 @@ namespace OpenNos.Handler
             }
         }
 
+        [Packet("pdtse")]
+        public void pdtse(string packet)
+        {
+            string[] packetsplit = packet.Split(' ');
+            if (packetsplit.Count() < 4)
+                return;
+            MapNpc npc = Session.CurrentMap.Npcs.FirstOrDefault(s => s.MapNpcId == Session.Character.LastNRunId);
+            if(npc != null)
+            {
+              
+                Recipe rec = npc.Recipes.FirstOrDefault(s=>s.ItemVNum == short.Parse(packetsplit[3]));
+                if(rec!=null)
+                {
+                    String rece = $"m_list 3 {rec.Amount}";
+                    foreach (RecipeItem ite in rec.Items)
+                    {
+                        rece += String.Format($" {ite.ItemVNum} {ite.Amount}");
+                    }
+                    rece += " -1";
+                    Session.Client.SendPacket(rece);
+                }
+               
+            }
+        }
         [Packet("game_start")]
         public void StartGame(string packet)
         {
@@ -3061,7 +3085,8 @@ namespace OpenNos.Handler
                 default:
                     return;
             }
-
+            if (item.InventoryItem.SpStoneUpgrade > 99)
+                return;
             if (item.InventoryItem.SpStoneUpgrade > 80)
             {
                 upmode = 5;

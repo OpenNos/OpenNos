@@ -19,6 +19,7 @@ using OpenNos.DAL.Interface;
 using OpenNos.Data;
 using System.Collections.Generic;
 using System.Linq;
+using System;
 
 namespace OpenNos.DAL.EF.MySQL
 {
@@ -37,6 +38,17 @@ namespace OpenNos.DAL.EF.MySQL
             }
         }
 
+        public IEnumerable<RecipeItemDTO> LoadAll()
+        {
+            using (var context = DataAccessHelper.CreateContext())
+            {
+                foreach (RecipeItem rec in context.recipeitem)
+                {
+                    yield return Mapper.Map<RecipeItemDTO>(rec);
+                }
+            }
+        }
+
         public RecipeItemDTO LoadById(int RecipeItemId)
         {
             using (var context = DataAccessHelper.CreateContext())
@@ -45,11 +57,11 @@ namespace OpenNos.DAL.EF.MySQL
             }
         }
 
-        public IEnumerable<RecipeItemDTO> LoadByRecipe(int recipeId)
+        public IEnumerable<RecipeItemDTO> LoadByRecipe(short recipeId)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                foreach (RecipeItem recipeitem in context.recipeitem.Where(s => s.RecipeItemId.Equals(recipeId)))
+                foreach (RecipeItem recipeitem in context.recipeitem.Where(s => s.RecipeId.Equals(recipeId)))
                 {
                     yield return Mapper.Map<RecipeItemDTO>(recipeitem);
 

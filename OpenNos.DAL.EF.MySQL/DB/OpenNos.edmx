@@ -458,6 +458,7 @@
     <Property Name="RecipeId" Type="smallint" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="MapNpcId" Type="int" Nullable="false" />
     <Property Name="ItemVNum" Type="smallint" Nullable="false" />
+    <Property Name="Amount" Type="utinyint" Nullable="false" />
   </EntityType>
   <EntityType Name="recipeitem">
     <Key>
@@ -466,7 +467,7 @@
     <Property Name="RecipeItemId" Type="smallint" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="ItemVNum" Type="smallint" Nullable="false" />
     <Property Name="Amount" Type="utinyint" Nullable="false" />
-    <Property Name="RecipeId" Type="smallint" Nullable="true" />
+    <Property Name="RecipeId" Type="smallint" Nullable="false" />
   </EntityType>
   <Association Name="AccountCharacter">
     <End Role="Account" Type="opennosModel.Store.account" Multiplicity="1" />
@@ -721,7 +722,7 @@
     </ReferentialConstraint>
   </Association>
   <Association Name="RecipeRecipeItem1">
-    <End Role="Recipe" Type="opennosModel.Store.recipe" Multiplicity="0..1" />
+    <End Role="Recipe" Type="opennosModel.Store.recipe" Multiplicity="1" />
     <End Role="RecipeItem" Type="opennosModel.Store.recipeitem" Multiplicity="*" />
     <ReferentialConstraint>
       <Principal Role="Recipe">
@@ -1464,6 +1465,7 @@
           <NavigationProperty Name="recipeitem2" Relationship="opennosModel.RecipeRecipeItem1" FromRole="Recipe" ToRole="RecipeItem" />
           <NavigationProperty Name="item" Relationship="opennosModel.ItemRecipe" FromRole="Recipe" ToRole="Item" />
           <Property Name="ItemVNum" Type="Int16" Nullable="false" />
+          <Property Name="Amount" Type="Byte" Nullable="false" />
         </EntityType>
         <Association Name="MapNpcRecipe">
           <End Type="opennosModel.MapNpc" Role="MapNpc" Multiplicity="1" />
@@ -1486,7 +1488,7 @@
           <Property Name="ItemVNum" Type="Int16" Nullable="false" />
           <Property Name="Amount" Type="Byte" Nullable="false" />
           <NavigationProperty Name="recipe2" Relationship="opennosModel.RecipeRecipeItem1" FromRole="RecipeItem" ToRole="Recipe" />
-          <Property Name="RecipeId" Type="Int16" Nullable="true" />
+          <Property Name="RecipeId" Type="Int16" Nullable="false" />
         </EntityType>
         <Association Name="RecipeItemItem">
           <End Type="opennosModel.RecipeItem" Role="RecipeItem" Multiplicity="*" />
@@ -1501,7 +1503,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="RecipeRecipeItem1">
-          <End Type="opennosModel.Recipe" Role="Recipe" Multiplicity="0..1" />
+          <End Type="opennosModel.Recipe" Role="Recipe" Multiplicity="1" />
           <End Type="opennosModel.RecipeItem" Role="RecipeItem" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Recipe">
@@ -1885,6 +1887,7 @@
           <ScalarProperty Name="RecipeId" ColumnName="RecipeId" />
           <ScalarProperty Name="MapNpcId" ColumnName="MapNpcId" />
           <ScalarProperty Name="ItemVNum" ColumnName="ItemVNum" />
+          <ScalarProperty Name="Amount" ColumnName="Amount" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
