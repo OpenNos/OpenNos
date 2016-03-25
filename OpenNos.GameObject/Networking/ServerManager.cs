@@ -230,6 +230,7 @@ namespace OpenNos.GameObject
                     foreach (MapNpc n in newMap.Npcs.Where(n => n.Shop != null))
                         shopcount++;
                     foreach (MapNpc n in newMap.Npcs.Where(n => n.Recipes != null))
+                        foreach (Recipe n2 in n.Recipes)
                         recipescount++;
                 }
                 if (i != 0)
