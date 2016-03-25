@@ -301,7 +301,7 @@
     <value>Item upgrade level is locked.</value>
   </data>
   <data name="ITEM_LOADED" xml:space="preserve">
-    <value>{0} Items Loaded !</value>
+    <value>{0} Items Loaded!</value>
   </data>
   <data name="ITEM_NOT_DROPPABLE" xml:space="preserve">
     <value>You cant drop that item!</value>
@@ -334,7 +334,7 @@
     <value>Magician</value>
   </data>
   <data name="MAP_LOADED" xml:space="preserve">
-    <value>{0} Maps Loaded !</value>
+    <value>{0} Maps Loaded!</value>
   </data>
   <data name="MAX_GOLD" xml:space="preserve">
     <value>Maximum of gold reached!</value>

@@ -214,6 +214,15 @@ namespace OpenNos.Import.Console.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Do you want to parse Recipes?.
+        /// </summary>
+        internal static string PARSE_RECIPES {
+            get {
+                return ResourceManager.GetString("PARSE_RECIPES", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Do you want to parse Shopitems?.
         /// </summary>
         internal static string PARSE_SHOPITEMS {
@@ -250,7 +259,7 @@ namespace OpenNos.Import.Console.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} Recipes parsed.
+        ///   Looks up a localized string similar to {0} recipes parsed.
         /// </summary>
         internal static string RECIPES_PARSED {
             get {

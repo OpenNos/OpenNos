@@ -168,6 +168,9 @@
   <data name="PARSE_PORTALS" xml:space="preserve">
     <value>Do you want to parse Portals?</value>
   </data>
+  <data name="PARSE_RECIPES" xml:space="preserve">
+    <value>Do you want to parse Recipes?</value>
+  </data>
   <data name="PARSE_SHOPITEMS" xml:space="preserve">
     <value>Do you want to parse Shopitems?</value>
   </data>
@@ -181,7 +184,7 @@
     <value>{0} portals parsed</value>
   </data>
   <data name="RECIPES_PARSED" xml:space="preserve">
-    <value>{0} Recipes parsed</value>
+    <value>{0} recipes parsed</value>
   </data>
   <data name="SHOPITEMS_PARSED" xml:space="preserve">
     <value>{0} shopitems parsed</value>

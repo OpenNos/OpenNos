@@ -168,6 +168,9 @@
   <data name="PARSE_PORTALS" xml:space="preserve">
     <value>Czy chcesz wprowadzić Portale?</value>
   </data>
+  <data name="PARSE_RECIPES" xml:space="preserve">
+    <value>Czy chcesz wprowadzić Przepisy?</value>
+  </data>
   <data name="PARSE_SHOPITEMS" xml:space="preserve">
     <value>Czy chcesz wprowadzić ShopItems?</value>
   </data>
@@ -179,6 +182,9 @@
   </data>
   <data name="PORTALS_PARSED" xml:space="preserve">
     <value>{0} portali wprowadzonych</value>
+  </data>
+  <data name="RECIPES_PARSED" xml:space="preserve">
+    <value>{0} przepisów wprowadzonych</value>
   </data>
   <data name="SHOPITEMS_PARSED" xml:space="preserve">
     <value>{0} artykulów sklepowych wprowadzonych</value>

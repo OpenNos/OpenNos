@@ -138,6 +138,12 @@ namespace OpenNos.Import.Console
                 {
                     factory.ImportShopItems();
                 }
+                System.Console.WriteLine($"{Language.Instance.GetMessageFromKey("PARSE_RECIPES")} [Y/n]");
+                System.ConsoleKeyInfo key10 = System.Console.ReadKey(true);
+                if (key10.KeyChar != 'n')
+                {
+                    factory.ImportRecipe();
+                }
             }
             System.Console.WriteLine($"{Language.Instance.GetMessageFromKey("DONE")}");
             Thread.Sleep(5000);
