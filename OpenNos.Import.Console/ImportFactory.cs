@@ -523,7 +523,7 @@ namespace OpenNos.Import.Console
 
             }
 
-            Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("RECIPE_PARSED"), count));
+            Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("RECIPES_PARSED"), count));
         }
         public void ImportShopItems()
         {

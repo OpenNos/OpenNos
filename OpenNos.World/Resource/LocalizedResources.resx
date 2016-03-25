@@ -450,6 +450,9 @@
   <data name="RARIFY_SUCCESS" xml:space="preserve">
     <value>Gambling succeeded! New Rare level: {0}</value>
   </data>
+  <data name="RECIPES_LOADED" xml:space="preserve">
+    <value>{0} Recipes Loaded!</value>
+  </data>
   <data name="REFUSED" xml:space="preserve">
     <value>Exchange Refused</value>
   </data>

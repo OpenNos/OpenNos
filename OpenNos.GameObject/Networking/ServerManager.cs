@@ -210,6 +210,7 @@ namespace OpenNos.GameObject
             {
                 int i = 0;
                 int npccount = 0;
+                int recipescount = 0;
                 int shopcount = 0;
                 int monstercount = 0;
                 Monsters = new List<MapMonster>();
@@ -228,6 +229,8 @@ namespace OpenNos.GameObject
                     monstercount += newMap.Monsters.Count();
                     foreach (MapNpc n in newMap.Npcs.Where(n => n.Shop != null))
                         shopcount++;
+                    foreach (MapNpc n in newMap.Npcs.Where(n => n.Recipes != null))
+                        recipescount++;
                 }
                 if (i != 0)
                     Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("MAP_LOADED"), i));
@@ -237,6 +240,7 @@ namespace OpenNos.GameObject
                 Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("MONSTERS_LOADED"), monstercount));
                 Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("NPCS_LOADED"), npccount));
                 Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("SHOPS_LOADED"), shopcount));
+                Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("RECIPES_LOADED"), recipescount));
             }
             catch (Exception ex)
             {
