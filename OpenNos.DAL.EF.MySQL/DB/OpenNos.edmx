@@ -1174,6 +1174,7 @@
           <Property Name="MagicDefence" Type="Int16" Nullable="false" />
           <Property Name="DistanceDefenceDodge" Type="Int16" Nullable="false" />
           <Property Name="DefenceDodge" Type="Int16" Nullable="false" />
+          <Property Name="CriticalDodge" Type="Int16" Nullable="false" />
           <Property Name="HP" Type="Int16" Nullable="false" />
           <Property Name="MP" Type="Int16" Nullable="false" />
           <Property Name="DarkElement" Type="Byte" Nullable="false" />
@@ -1182,6 +1183,7 @@
           <Property Name="FireElement" Type="Byte" Nullable="false" />
           <NavigationProperty Name="item" Relationship="opennosModel.InventoryItemItem" FromRole="InventoryItem" ToRole="Item" />
           <Property Name="Ammo" Type="Byte" Nullable="false" />
+          <Property Name="IsEmpty" Type="Boolean" Nullable="false" />
           <Property Name="IsFixed" Type="Boolean" Nullable="false" />
           <Property Name="IsUsed" Type="Boolean" Nullable="false" />
           <Property Name="ItemDeleteTime" Type="DateTime" Nullable="true" />
@@ -1190,22 +1192,20 @@
           <Property Name="WaterResistance" Type="Byte" Nullable="false" />
           <Property Name="LightResistance" Type="Byte" Nullable="false" />
           <Property Name="DarkResistance" Type="Byte" Nullable="false" />
-          <Property Name="CriticalDodge" Type="Int16" Nullable="false" />
-          <Property Name="IsEmpty" Type="Boolean" Nullable="false" />
           <Property Name="SpLevel" Type="Byte" Nullable="false" />
-          <Property Name="SlDamage" Type="Int16" Nullable="false" />
           <Property Name="SpXp" Type="Int16" Nullable="false" />
           <Property Name="SlHP" Type="Int16" Nullable="false" />
+          <Property Name="SlDamage" Type="Int16" Nullable="false" />
           <Property Name="SlElement" Type="Int16" Nullable="false" />
           <Property Name="SlDefence" Type="Int16" Nullable="false" />
+          <Property Name="SpHP" Type="Byte" Nullable="false" />
           <Property Name="SpDamage" Type="Byte" Nullable="false" />
           <Property Name="SpElement" Type="Byte" Nullable="false" />
           <Property Name="SpDefence" Type="Byte" Nullable="false" />
-          <Property Name="SpHP" Type="Byte" Nullable="false" />
-          <Property Name="SpDark" Type="Byte" Nullable="false" />
-          <Property Name="SpLight" Type="Byte" Nullable="false" />
           <Property Name="SpFire" Type="Byte" Nullable="false" />
           <Property Name="SpWater" Type="Byte" Nullable="false" />
+          <Property Name="SpLight" Type="Byte" Nullable="false" />
+          <Property Name="SpDark" Type="Byte" Nullable="false" />
           <Property Name="SpStoneUpgrade" Type="Byte" Nullable="false" />
           <NavigationProperty Name="inventory" Relationship="opennosModel.InventoryInventoryItem" FromRole="InventoryItem" ToRole="Inventory" />
           </EntityType>
