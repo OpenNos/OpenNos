@@ -800,7 +800,7 @@ namespace OpenNos.GameObject
                 if (item != null)
                 {
                     Item iteminfo = ServerManager.GetItem(item.InventoryItem.ItemVNum);
-                    if ((iteminfo.EquipmentSlot != (byte)EquipmentType.MainWeapon) && (iteminfo.EquipmentSlot != (byte)EquipmentType.SecondaryWeapon) && iteminfo.EquipmentSlot != (byte)EquipmentType.Armor)
+                    if (((iteminfo.EquipmentSlot != (byte)EquipmentType.MainWeapon) && (iteminfo.EquipmentSlot != (byte)EquipmentType.SecondaryWeapon) && iteminfo.EquipmentSlot != (byte)EquipmentType.Armor && iteminfo.EquipmentSlot != (byte)EquipmentType.Sp) || ( iteminfo.EquipmentSlot == (byte)EquipmentType.Sp && UseSp))
                     {
                         FireResistance += item.InventoryItem.FireResistance + iteminfo.FireResistance;
                         LightResistance += item.InventoryItem.LightResistance + iteminfo.LightResistance;
