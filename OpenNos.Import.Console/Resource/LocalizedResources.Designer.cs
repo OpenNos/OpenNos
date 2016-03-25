@@ -232,6 +232,15 @@ namespace OpenNos.Import.Console.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Do you want to parse Teleporters?.
+        /// </summary>
+        internal static string PARSE_TELEPORTERS {
+            get {
+                return ResourceManager.GetString("PARSE_TELEPORTERS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0} portals parsed.
         /// </summary>
         internal static string PORTALS_PARSED {
@@ -255,6 +264,15 @@ namespace OpenNos.Import.Console.Resource {
         internal static string SHOPS_PARSED {
             get {
                 return ResourceManager.GetString("SHOPS_PARSED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} teleporters parsed.
+        /// </summary>
+        internal static string TELEPORTERS_PARSED {
+            get {
+                return ResourceManager.GetString("TELEPORTERS_PARSED", resourceCulture);
             }
         }
     }
