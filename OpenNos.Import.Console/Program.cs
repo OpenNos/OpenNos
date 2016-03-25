@@ -41,9 +41,11 @@ namespace OpenNos.Import.Console
             System.Console.BackgroundColor = System.ConsoleColor.Blue;
             System.Console.WriteLine("Root");
             System.Console.ResetColor();
+            // System.Console.WriteLine($"-----_code_{System.Configuration.ConfigurationManager.AppSettings["language"]}_BCard.txt");
             System.Console.WriteLine($"-----_code_{System.Configuration.ConfigurationManager.AppSettings["language"]}_Item.txt");
             System.Console.WriteLine($"-----_code_{System.Configuration.ConfigurationManager.AppSettings["language"]}_MapIDData.txt");
             System.Console.WriteLine($"-----_code_{System.Configuration.ConfigurationManager.AppSettings["language"]}_monster.txt");
+            // System.Console.WriteLine($"-----BCard.dat");
             System.Console.WriteLine($"-----Item.dat");
             System.Console.WriteLine($"-----MapIDData.dat");
             System.Console.WriteLine($"-----monster.dat");
@@ -116,15 +118,22 @@ namespace OpenNos.Import.Console
                 {
                     factory.ImportShops();
                 }
+
                 System.Console.WriteLine($"{Language.Instance.GetMessageFromKey("PARSE_ITEMS")} [Y/n]");
                 System.ConsoleKeyInfo key7 = System.Console.ReadKey(true);
                 if (key7.KeyChar != 'n')
                 {
                     factory.ImportItems();
                 }
-                System.Console.WriteLine($"{Language.Instance.GetMessageFromKey("PARSE_SHOPITEMS")} [Y/n]");
+                System.Console.WriteLine($"{Language.Instance.GetMessageFromKey("PARSE_TELEPORTERS")} [Y/n]");
                 System.ConsoleKeyInfo key8 = System.Console.ReadKey(true);
                 if (key8.KeyChar != 'n')
+                {
+                    factory.ImportTeleporters();
+                }
+                System.Console.WriteLine($"{Language.Instance.GetMessageFromKey("PARSE_SHOPITEMS")} [Y/n]");
+                System.ConsoleKeyInfo key9 = System.Console.ReadKey(true);
+                if (key9.KeyChar != 'n')
                 {
                     factory.ImportShopItems();
                 }

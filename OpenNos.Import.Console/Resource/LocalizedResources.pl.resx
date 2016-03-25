@@ -118,69 +118,75 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="DATABASE_INITIALIZED" xml:space="preserve">
-    <value>Baza danych zostala zaladowana!</value>
+    <value>Baza danych została załadowana!</value>
   </data>
   <data name="DONE" xml:space="preserve">
-    <value>Wprowadzanie ukonczone!</value>
+    <value>Wprowadzanie ukończone!</value>
   </data>
   <data name="ENTER_PATH" xml:space="preserve">
-    <value>Podaj sciezke pliku aby przeprowadzic rozbior danych</value>
+    <value>Podaj ściezkę pliku aby przeprowadzić rozbiór danych</value>
   </data>
   <data name="ITEMS_PARSED" xml:space="preserve">
-    <value>{0} przedmiotow wprowadzonych</value>
+    <value>{0} przedmiotów wprowadzonych</value>
   </data>
   <data name="MAPS_PARSED" xml:space="preserve">
     <value>{0} map wprowadzonych</value>
   </data>
   <data name="MONSTERS_PARSED" xml:space="preserve">
-    <value>{0} potworow wprowadzonych</value>
+    <value>{0} potworów wprowadzonych</value>
   </data>
   <data name="NEED_TREE" xml:space="preserve">
-    <value>Potrzebujesz aby struktura katalogow wygladala w ten sposob :</value>
+    <value>Struktura katalogów powinna wygladać w ten sposób :</value>
   </data>
   <data name="NO_ITEM" xml:space="preserve">
     <value>Id przedmiotu nie jest wlasciwe!</value>
   </data>
   <data name="NPCMONSTERS_PARSED" xml:space="preserve">
-    <value>{0} npc-potworow wprowadzonych</value>
+    <value>{0} npc-potworów wprowadzonych</value>
   </data>
   <data name="NPCS_PARSED" xml:space="preserve">
     <value>{0} npc wprowadzonych</value>
   </data>
   <data name="PARSE_ALL" xml:space="preserve">
-    <value>Czy chcesz wprowadzic WSZYSTKIE?</value>
+    <value>Czy chcesz wprowadzić WSZYSTKIE?</value>
   </data>
   <data name="PARSE_ITEMS" xml:space="preserve">
-    <value>Czy chcesz wprowadzic Przedmioty?</value>
+    <value>Czy chcesz wprowadzić Przedmioty?</value>
   </data>
   <data name="PARSE_MAPNPCS" xml:space="preserve">
-    <value>Czy chcesz wprowadzic MapNpc?</value>
+    <value>Czy chcesz wprowadzić MapNpc?</value>
   </data>
   <data name="PARSE_MAPS" xml:space="preserve">
-    <value>Czy chcesz wprowadzic Mapy?</value>
+    <value>Czy chcesz wprowadzić Mapy?</value>
   </data>
   <data name="PARSE_MONSTERS" xml:space="preserve">
-    <value>Czy chcesz wprowadzic NpcMonster?</value>
+    <value>Czy chcesz wprowadzić NpcMonster?</value>
   </data>
   <data name="PARSE_NPCS" xml:space="preserve">
-    <value>Czy chcesz wprowadzic Npc?</value>
+    <value>Czy chcesz wprowadzić Npc?</value>
   </data>
   <data name="PARSE_PORTALS" xml:space="preserve">
-    <value>Czy chcesz wprowadzic Portale?</value>
+    <value>Czy chcesz wprowadzić Portale?</value>
   </data>
   <data name="PARSE_SHOPITEMS" xml:space="preserve">
-    <value>Czy chcesz wprowadzic ShopItems?</value>
+    <value>Czy chcesz wprowadzić ShopItems?</value>
   </data>
   <data name="PARSE_SHOPS" xml:space="preserve">
-    <value>Czy chcesz wprowadzic Sklepy?</value>
+    <value>Czy chcesz wprowadzić Sklepy?</value>
+  </data>
+  <data name="PARSE_TELEPORTERS" xml:space="preserve">
+    <value>Czy chcesz wprowadzić Teleportery?</value>
   </data>
   <data name="PORTALS_PARSED" xml:space="preserve">
     <value>{0} portali wprowadzonych</value>
   </data>
   <data name="SHOPITEMS_PARSED" xml:space="preserve">
-    <value>{0} artykulow sklepowych wprowadzonych</value>
+    <value>{0} artykulów sklepowych wprowadzonych</value>
   </data>
   <data name="SHOPS_PARSED" xml:space="preserve">
-    <value>{0} sklepow wprowadzonych</value>
+    <value>{0} sklepów wprowadzonych</value>
+  </data>
+  <data name="TELEPORTERS_PARSED" xml:space="preserve">
+    <value>{0} teleporterów wprowadzonych</value>
   </data>
 </root>
