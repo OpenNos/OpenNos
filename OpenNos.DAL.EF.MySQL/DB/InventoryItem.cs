@@ -32,6 +32,7 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public short MagicDefence { get; set; }
         public short DistanceDefenceDodge { get; set; }
         public short DefenceDodge { get; set; }
+        public short CriticalDodge { get; set; }
         public short HP { get; set; }
         public short MP { get; set; }
         public byte DarkElement { get; set; }
@@ -39,6 +40,7 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public byte WaterElement { get; set; }
         public byte FireElement { get; set; }
         public byte Ammo { get; set; }
+        public bool IsEmpty { get; set; }
         public bool IsFixed { get; set; }
         public bool IsUsed { get; set; }
         public Nullable<System.DateTime> ItemDeleteTime { get; set; }
@@ -47,22 +49,20 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public byte WaterResistance { get; set; }
         public byte LightResistance { get; set; }
         public byte DarkResistance { get; set; }
-        public short CriticalDodge { get; set; }
-        public bool IsEmpty { get; set; }
         public byte SpLevel { get; set; }
-        public short SlDamage { get; set; }
         public short SpXp { get; set; }
         public short SlHP { get; set; }
+        public short SlDamage { get; set; }
         public short SlElement { get; set; }
         public short SlDefence { get; set; }
+        public byte SpHP { get; set; }
         public byte SpDamage { get; set; }
         public byte SpElement { get; set; }
         public byte SpDefence { get; set; }
-        public byte SpHP { get; set; }
-        public byte SpDark { get; set; }
-        public byte SpLight { get; set; }
         public byte SpFire { get; set; }
         public byte SpWater { get; set; }
+        public byte SpLight { get; set; }
+        public byte SpDark { get; set; }
         public byte SpStoneUpgrade { get; set; }
     
         public virtual Item item { get; set; }

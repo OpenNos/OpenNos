@@ -3253,7 +3253,8 @@ namespace OpenNos.Handler
         }
 
         #endregion
-        #region commands
+        
+        #region Commands
         [Packet("$Effect")]
         public void Effect(string packet)
         {
