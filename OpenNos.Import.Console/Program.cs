@@ -118,17 +118,18 @@ namespace OpenNos.Import.Console
                 {
                     factory.ImportShops();
                 }
-                System.Console.WriteLine($"{Language.Instance.GetMessageFromKey("PARSE_TELEPORTERS")} [Y/n]");
+
+                System.Console.WriteLine($"{Language.Instance.GetMessageFromKey("PARSE_ITEMS")} [Y/n]");
                 System.ConsoleKeyInfo key7 = System.Console.ReadKey(true);
                 if (key7.KeyChar != 'n')
                 {
-                    factory.ImportTeleporters();
+                    factory.ImportItems();
                 }
-                System.Console.WriteLine($"{Language.Instance.GetMessageFromKey("PARSE_ITEMS")} [Y/n]");
+                System.Console.WriteLine($"{Language.Instance.GetMessageFromKey("PARSE_TELEPORTERS")} [Y/n]");
                 System.ConsoleKeyInfo key8 = System.Console.ReadKey(true);
                 if (key8.KeyChar != 'n')
                 {
-                    factory.ImportItems();
+                    factory.ImportTeleporters();
                 }
                 System.Console.WriteLine($"{Language.Instance.GetMessageFromKey("PARSE_SHOPITEMS")} [Y/n]");
                 System.ConsoleKeyInfo key9 = System.Console.ReadKey(true);
