@@ -419,7 +419,7 @@ namespace OpenNos.Import.Console
             List<PortalDTO> listPortal = new List<PortalDTO>();
             int i = 0;
             TeleporterDTO teleporter = null;
-            foreach (string[] linesave in packetList.Where(o => o[0].Equals("at") || (o[0].Equals("n_run") && o[1].Equals("16"))))
+            foreach (string[] linesave in packetList.Where(o => o[0].Equals("at") || (o[0].Equals("n_run") && (o[1].Equals("16") || o[1].Equals("26")))))
             {
                 if (linesave.Length > 4 && linesave[0] == "n_run")
                 {

@@ -71,14 +71,37 @@ namespace OpenNos.GameObject
                     if (npc != null)
                     {
                         TeleporterDTO tp = npc.Teleporters?.FirstOrDefault(s => s.Index == type);
-                        if (tp != null)
+                        if (tp != null && Session.Character.Gold >= 1000 * type)
                         {
+                            Session.Character.Gold -= 1000 * type;
                             Session.Character.MapY = tp.MapY;
                             Session.Character.MapX = tp.MapX;
                             Session.Character.MapId = tp.MapId;
                             ClientLinkManager.Instance.ChangeMap(Session.Character.CharacterId);
                         }
+                        else
+                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_MONEY"), 0));
                     }
+                    break;
+                case 26:
+                    MapNpc npc2 = Session.CurrentMap.Npcs.FirstOrDefault(s => s.MapNpcId == npcid);
+                    if (npc2 != null)
+                    {
+                        TeleporterDTO tp = npc2.Teleporters?.FirstOrDefault(s => s.Index == type);
+                        if (tp != null && Session.Character.Gold >= 5000 * type)
+                        {
+                            Session.Character.Gold -= 5000 * type;
+                            Session.Character.MapY = tp.MapY;
+                            Session.Character.MapX = tp.MapX;
+                            Session.Character.MapId = tp.MapId;
+                            ClientLinkManager.Instance.ChangeMap(Session.Character.CharacterId);
+                        }
+                        else
+                        {
+                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_MONEY"), 0));
+                        }
+                    }
+
                     break;
                 default:
                     Logger.Log.Warn(String.Format(Language.Instance.GetMessageFromKey("NO_NRUN_HANDLER"), runner));
