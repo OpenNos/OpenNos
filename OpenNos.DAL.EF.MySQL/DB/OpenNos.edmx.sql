@@ -44,9 +44,9 @@
 -- -----------------------------------------------------------
 -- Entity Designer DDL Script for MySQL Server 4.1 and higher
 -- -----------------------------------------------------------
--- Date Created: 03/25/2016 15:52:28
+-- Date Created: 03/25/2016 19:42:01
 
--- Generated from EDMX file: C:\Users\Dominik\Source\Repos\OpenNos\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
+-- Generated from EDMX file: C:\Users\ERWAN\Desktop\OpenNos Git\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
 -- Target version: 3.0.0.0
 
 -- --------------------------------------------------
@@ -535,8 +535,7 @@ ALTER TABLE `mapnpc` ADD PRIMARY KEY (MapNpcId);
 CREATE TABLE `recipe`(
 	`RecipeId` smallint NOT NULL AUTO_INCREMENT UNIQUE, 
 	`MapNpcId` int NOT NULL, 
-	`ItemVNum` smallint NOT NULL, 
-	`recipeitem_RecipeItemId` smallint NOT NULL);
+	`ItemVNum` smallint NOT NULL);
 
 ALTER TABLE `recipe` ADD PRIMARY KEY (RecipeId);
 
@@ -941,24 +940,6 @@ CREATE INDEX `IX_FK_RecipeItemItem`
 
 
 
--- Creating foreign key on `recipeitem_RecipeItemId` in table 'recipe'
-
-ALTER TABLE `recipe`
-ADD CONSTRAINT `FK_RecipeRecipeItem`
-    FOREIGN KEY (`recipeitem_RecipeItemId`)
-    REFERENCES `recipeitem`
-        (`RecipeItemId`)
-    ON DELETE NO ACTION ON UPDATE NO ACTION;
-
-
--- Creating non-clustered index for FOREIGN KEY 'FK_RecipeRecipeItem'
-
-CREATE INDEX `IX_FK_RecipeRecipeItem`
-    ON `recipe`
-    (`recipeitem_RecipeItemId`);
-
-
-
 -- Creating foreign key on `RecipeId` in table 'recipeitem'
 
 ALTER TABLE `recipeitem`
@@ -974,6 +955,24 @@ ADD CONSTRAINT `FK_RecipeRecipeItem1`
 CREATE INDEX `IX_FK_RecipeRecipeItem1`
     ON `recipeitem`
     (`RecipeId`);
+
+
+
+-- Creating foreign key on `ItemVNum` in table 'recipe'
+
+ALTER TABLE `recipe`
+ADD CONSTRAINT `FK_ItemRecipe`
+    FOREIGN KEY (`ItemVNum`)
+    REFERENCES `item`
+        (`VNum`)
+    ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+
+-- Creating non-clustered index for FOREIGN KEY 'FK_ItemRecipe'
+
+CREATE INDEX `IX_FK_ItemRecipe`
+    ON `recipe`
+    (`ItemVNum`);
 
 
 

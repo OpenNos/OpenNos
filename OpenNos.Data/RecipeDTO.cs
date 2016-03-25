@@ -18,9 +18,9 @@ namespace OpenNos.Data
     {
         #region Properties
 
-        public short ItemVNum { get; set; }
-        public int MapNpcId { get; set; }
         public short RecipeId { get; set; }
+        public int MapNpcId { get; set; }
+        public short ItemVNum { get; set; }
 
         #endregion
     }

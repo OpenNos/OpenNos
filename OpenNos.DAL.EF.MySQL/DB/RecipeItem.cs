@@ -20,7 +20,6 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public Nullable<short> RecipeId { get; set; }
     
         public virtual Item item { get; set; }
-        public virtual Recipe recipe { get; set; }
         public virtual Recipe recipe2 { get; set; }
     }
 }

@@ -25,8 +25,8 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public short ItemVNum { get; set; }
     
         public virtual MapNpc mapnpc { get; set; }
-        public virtual RecipeItem recipeitem { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<RecipeItem> recipeitem2 { get; set; }
+        public virtual Item item { get; set; }
     }
 }

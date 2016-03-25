@@ -44,12 +44,12 @@
         <AssociationConnector Association="opennosModel.TeleporterMapNpc" />
         <AssociationConnector Association="opennosModel.MapMonsterNpcMonster" />
         <AssociationConnector Association="opennosModel.ShopMapNpc" />
-        <EntityTypeShape EntityType="opennosModel.Recipe" Width="1.5" PointX="11.125" PointY="0.5" />
+        <EntityTypeShape EntityType="opennosModel.Recipe" Width="1.5" PointX="11.75" PointY="1.625" />
         <AssociationConnector Association="opennosModel.MapNpcRecipe" />
-        <EntityTypeShape EntityType="opennosModel.RecipeItem" Width="1.5" PointX="10.75" PointY="3.125" />
+        <EntityTypeShape EntityType="opennosModel.RecipeItem" Width="1.5" PointX="11.75" PointY="4.875" />
         <AssociationConnector Association="opennosModel.RecipeItemItem" />
-        <AssociationConnector Association="opennosModel.RecipeRecipeItem" />
         <AssociationConnector Association="opennosModel.RecipeRecipeItem1" />
+        <AssociationConnector Association="opennosModel.ItemRecipe" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
