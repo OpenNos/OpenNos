@@ -283,7 +283,7 @@
     <value>Czat bohaterów widoczny</value>
   </data>
   <data name="HP_BLOCKED" xml:space="preserve">
-    <value>Stan zyciazablokowany</value>
+    <value>Stan zycia ukryty</value>
   </data>
   <data name="HP_UNLOCKED" xml:space="preserve">
     <value>Stan zycia widoczny</value>
