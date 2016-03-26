@@ -154,7 +154,7 @@
     <value>Lies^bitte^unsere^Bedingungen</value>
   </data>
   <data name="BN1" xml:space="preserve">
-    <value>Gib^dein^Passwort^nicht^weiter</value>
+    <value>Gib^dein^Passwort^nie^weiter</value>
   </data>
   <data name="BN2" xml:space="preserve">
     <value>Brauchst^du^hilfe^von^einem^GM?^Besuche^dann^unsere^Website:</value>
@@ -163,7 +163,7 @@
     <value>Viele^Grüße^von^dem^OpenNos^Team!</value>
   </data>
   <data name="BN4" xml:space="preserve">
-    <value>Willst^du^am^Projekt^mitwirken?^https://github.com/OpenNos/OpenNos</value>
+    <value>Du^willst^am^Projekt^mitwirken?^https://github.com/OpenNos/OpenNos</value>
   </data>
   <data name="BN5" xml:space="preserve">
     <value>Team:^0Lucifer0,^chucktheripper,^Ciapa1,^MasterDomino,^genyx,^martazza</value>
@@ -463,7 +463,7 @@
     <value>Dein Ruf wurde verändert.</value>
   </data>
   <data name="SELL_ITEM_VALIDE" xml:space="preserve">
-    <value>{0}: verkauft &lt;{1} : Stück &gt;</value>
+    <value>{0}: Verkauft &lt;{1} : Stück &gt;</value>
   </data>
   <data name="SEX_CHANGED" xml:space="preserve">
     <value>Dein Geschlecht hat sich verändert!</value>
@@ -538,7 +538,7 @@
     <value>Die Verbesserung war erfolgreich!</value>
   </data>
   <data name="USER_NOT_CONNECTED" xml:space="preserve">
-    <value>User is not connected.</value>
+    <value>Benutzer ist nicht online.</value>
   </data>
   <data name="USER_NOT_HERO" xml:space="preserve">
     <value>Nur Helden dürfen die Heldennachrichten benutzen.</value>
