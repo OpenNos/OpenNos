@@ -67,11 +67,11 @@ namespace OpenNos.GameObject
                 case 14:
                     Session.Client.SendPacket($"wopen 27 0");
                     string recipelist = "m_list 2";
-                  
+
                     if (npc != null)
                     {
                         List<Recipe> tp = npc.Recipes;
-                        
+
                         foreach (Recipe rec in tp)
                         {
                             recipelist += String.Format(" {0}", rec.ItemVNum);
@@ -84,33 +84,42 @@ namespace OpenNos.GameObject
                     if (npc != null)
                     {
                         TeleporterDTO tp = npc.Teleporters?.FirstOrDefault(s => s.Index == type);
-                        if (tp != null && Session.Character.Gold >= 1000 * type)
+                        if (tp != null)
                         {
-                            Session.Character.Gold -= 1000 * type;
-                            Session.Character.MapY = tp.MapY;
-                            Session.Character.MapX = tp.MapX;
-                            Session.Character.MapId = tp.MapId;
-                            ClientLinkManager.Instance.ChangeMap(Session.Character.CharacterId);
+                            if (Session.Character.Gold >= 1000 * type)
+                            {
+                                Session.Character.Gold -= 1000 * type;
+                                Session.Client.SendPacket(Session.Character.GenerateGold());
+                                Session.Character.MapY = tp.MapY;
+                                Session.Character.MapX = tp.MapX;
+                                Session.Character.MapId = tp.MapId;
+                                ClientLinkManager.Instance.ChangeMap(Session.Character.CharacterId);
+                            }
+                            else
+                                Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_MONEY"), 0));
                         }
-                        else
-                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_MONEY"), 0));
+
                     }
                     break;
                 case 26:
                     if (npc != null)
                     {
                         TeleporterDTO tp = npc.Teleporters?.FirstOrDefault(s => s.Index == type);
-                        if (tp != null && Session.Character.Gold >= 5000 * type)
+                        if (tp != null)
                         {
-                            Session.Character.Gold -= 5000 * type;
-                            Session.Character.MapY = tp.MapY;
-                            Session.Character.MapX = tp.MapX;
-                            Session.Character.MapId = tp.MapId;
-                            ClientLinkManager.Instance.ChangeMap(Session.Character.CharacterId);
-                        }
-                        else
-                        {
-                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_MONEY"), 0));
+                            if (Session.Character.Gold >= 5000 * type)
+                            {
+                                Session.Character.Gold -= 5000 * type;
+                                Session.Client.SendPacket(Session.Character.GenerateGold());
+                                Session.Character.MapY = tp.MapY;
+                                Session.Character.MapX = tp.MapX;
+                                Session.Character.MapId = tp.MapId;
+                                ClientLinkManager.Instance.ChangeMap(Session.Character.CharacterId);
+                            }
+                            else
+                            {
+                                Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_MONEY"), 0));
+                            }
                         }
                     }
 
