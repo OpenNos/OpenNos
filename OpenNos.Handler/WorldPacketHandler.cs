@@ -172,6 +172,14 @@ namespace OpenNos.Handler
                 if (amount > item.Amount)
                     amount = item.Amount;
 
+
+                if (item.Price * amount + ClientLinkManager.Instance.GetProperty<long>(shop.Value.OwnerId, "Gold") > 1000000000)
+                {
+                    Session.Client.SendPacket(Session.Character.GenerateShopMemo(3,
+                        Language.Instance.GetMessageFromKey("MAX_GOLD")));
+                    return;
+                }
+
                 if (item.Price * amount >= Session.Character.Gold)
                 {
                     Session.Client.SendPacket(Session.Character.GenerateShopMemo(3,
