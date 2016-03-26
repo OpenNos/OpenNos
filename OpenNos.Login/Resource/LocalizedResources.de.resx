@@ -118,10 +118,10 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ALREADY_CONNECTED" xml:space="preserve">
-    <value>Account is already connected.</value>
+    <value>Account ist bereits eingeloggt.</value>
   </data>
   <data name="BANNED" xml:space="preserve">
-    <value>Account Banned!</value>
+    <value>Account ist gesperrt!</value>
   </data>
   <data name="CLIENT_CLOSE" xml:space="preserve">
     <value>Verbindung wurde vom Client getrennt.</value>
@@ -157,10 +157,10 @@
     <value>Ein neuer Client hat sich verbunden. ClientId =</value>
   </data>
   <data name="NOTVALIDATE" xml:space="preserve">
-    <value>Account not validate!</value>
+    <value>Account ist nicht gültig.</value>
   </data>
   <data name="PACKET_FAILURE" xml:space="preserve">
-    <value>Failed to send packet {0} to client {1}, {2}.</value>
+    <value>Senden des Packets {0} zum Client {1}, {2} fehlgeschlagen.</value>
   </data>
   <data name="STARTED" xml:space="preserve">
     <value>Server erfolgreich gestartet.</value>

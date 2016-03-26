@@ -117,4 +117,82 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="DATABASE_INITIALIZED" xml:space="preserve">
+    <value>Datenbank wurde initialisiert.</value>
+  </data>
+  <data name="DONE" xml:space="preserve">
+    <value>Importieren der Daten ist fertigestellt!</value>
+  </data>
+  <data name="ENTER_PATH" xml:space="preserve">
+    <value>Bitte gib das Verzeichnis ein, wo die Daten zum importieren vorhanden sind:</value>
+  </data>
+  <data name="ITEMS_PARSED" xml:space="preserve">
+    <value>{0} Items importiert</value>
+  </data>
+  <data name="MAPS_PARSED" xml:space="preserve">
+    <value>{0} Karten importiert</value>
+  </data>
+  <data name="MONSTERS_PARSED" xml:space="preserve">
+    <value>{0} Monster importiert</value>
+  </data>
+  <data name="NEED_TREE" xml:space="preserve">
+    <value>Du benötigst ein Verzeichnisbaum wie z.B diese :</value>
+  </data>
+  <data name="NO_ITEM" xml:space="preserve">
+    <value>Diese Item ID ist nicht gültig</value>
+  </data>
+  <data name="NPCMONSTERS_PARSED" xml:space="preserve">
+    <value>{0} NPC-Monster importiert</value>
+  </data>
+  <data name="NPCS_PARSED" xml:space="preserve">
+    <value>{0} NPCs importiert</value>
+  </data>
+  <data name="PARSE_ALL" xml:space="preserve">
+    <value>Möchtest du die Gesamten Daten importieren?</value>
+  </data>
+  <data name="PARSE_ITEMS" xml:space="preserve">
+    <value>Möchtest du die Items importieren?</value>
+  </data>
+  <data name="PARSE_MAPNPCS" xml:space="preserve">
+    <value>Möchtest du die Map-Npcs importieren?</value>
+  </data>
+  <data name="PARSE_MAPS" xml:space="preserve">
+    <value>Möchtest du die Karten importieren?</value>
+  </data>
+  <data name="PARSE_MONSTERS" xml:space="preserve">
+    <value>Möchtest du die NPC-Monster importieren?</value>
+  </data>
+  <data name="PARSE_NPCS" xml:space="preserve">
+    <value>Möchtest du die NPCs importieren?</value>
+  </data>
+  <data name="PARSE_PORTALS" xml:space="preserve">
+    <value>Möchtest du die Portale importieren?</value>
+  </data>
+  <data name="PARSE_RECIPES" xml:space="preserve">
+    <value>Möchtest du die Rezepte importieren?</value>
+  </data>
+  <data name="PARSE_SHOPITEMS" xml:space="preserve">
+    <value>Möchtest du die Shop-Items importieren?</value>
+  </data>
+  <data name="PARSE_SHOPS" xml:space="preserve">
+    <value>Möchtest du die Shops importieren?</value>
+  </data>
+  <data name="PARSE_TELEPORTERS" xml:space="preserve">
+    <value>Möchtest du die Teleporter importieren</value>
+  </data>
+  <data name="PORTALS_PARSED" xml:space="preserve">
+    <value>{0} Portale importiert</value>
+  </data>
+  <data name="RECIPES_PARSED" xml:space="preserve">
+    <value>{0} Rezepte importiert</value>
+  </data>
+  <data name="SHOPITEMS_PARSED" xml:space="preserve">
+    <value>{0} Shop-Items importiert</value>
+  </data>
+  <data name="SHOPS_PARSED" xml:space="preserve">
+    <value>{0} Shops importiert</value>
+  </data>
+  <data name="TELEPORTERS_PARSED" xml:space="preserve">
+    <value>{0} Teleporter importiert</value>
+  </data>
 </root>
