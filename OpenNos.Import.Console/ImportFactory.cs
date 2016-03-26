@@ -469,7 +469,7 @@ namespace OpenNos.Import.Console
                 if (linesave.Length > 4 && linesave[0] == "n_run")
                 {
 
-                    npc = int.Parse(linesave[4]);
+                     int.TryParse(linesave[4], out npc);
 
                 }
                 else if (linesave.Length > 1 && linesave[0] == "m_list" && linesave[1] == "2")

@@ -229,7 +229,7 @@ namespace OpenNos.GameObject
                     monstercount += newMap.Monsters.Count();
                     foreach (MapNpc n in newMap.Npcs.Where(n => n.Shop != null))
                         shopcount++;
-                    foreach (MapNpc n in newMap.Npcs.Where(n => n.Recipes != null))
+                    foreach (MapNpc n in newMap.Npcs)
                         foreach (Recipe n2 in n.Recipes)
                         recipescount++;
                 }
