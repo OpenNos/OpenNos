@@ -387,6 +387,9 @@
   <data name="NO_MAP" xml:space="preserve">
     <value>Server potrzebuję przynajmniej mapy nosville, aby działać poprawnie!</value>
   </data>
+  <data name="NO_NRUN_HANDLER" xml:space="preserve">
+    <value>No n_run Handler implementation for {0}</value>
+  </data>
   <data name="NO_PREZ_MESSAGE" xml:space="preserve">
     <value>Brak opisu.</value>
   </data>
