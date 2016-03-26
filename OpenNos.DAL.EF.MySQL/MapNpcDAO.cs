@@ -57,7 +57,7 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                return Mapper.Map<MapNpcDTO>(context.mapnpc.SingleOrDefault(i => i.MapNpcId.Equals(id)));
+                return Mapper.Map<MapNpcDTO>(context.mapnpc.FirstOrDefault(i => i.MapNpcId.Equals(id)));
             }
         }
 

@@ -33,7 +33,7 @@ namespace OpenNos.DAL.EF.MySQL
             {
                 long characterId = respawn.CharacterId;
                 short respawnType = respawn.RespawnType;
-                Respawn entity = context.respawn.SingleOrDefault(c => c.RespawnType.Equals(respawnType) && c.CharacterId.Equals(characterId));
+                Respawn entity = context.respawn.FirstOrDefault(c => c.RespawnType.Equals(respawnType) && c.CharacterId.Equals(characterId));
 
                 if (entity == null) //new entity
                 {
@@ -80,7 +80,7 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (context)
             {
-                var result = context.respawn.SingleOrDefault(c => c.RespawnId == respawn.RespawnId);
+                var result = context.respawn.FirstOrDefault(c => c.RespawnId == respawn.RespawnId);
                 if (result != null)
                 {
                     result = Mapper.Map<RespawnDTO, Respawn>(respawn, entity);

@@ -91,7 +91,7 @@ namespace OpenNos.GameObject
 
         public void DeleteByInventoryItemId(long inventoryItemId)
         {
-            Inventory inv = Inventory.SingleOrDefault(i => i.InventoryItem.InventoryItemId.Equals(inventoryItemId));
+            Inventory inv = Inventory.FirstOrDefault(i => i.InventoryItem.InventoryItemId.Equals(inventoryItemId));
 
             if (inv != null)
             {
@@ -101,7 +101,7 @@ namespace OpenNos.GameObject
 
         public void DeleteFromSlotAndType(short slot, byte type)
         {
-            Inventory inv = Inventory.SingleOrDefault(i => i.Slot.Equals(slot) && i.Type.Equals(type));
+            Inventory inv = Inventory.FirstOrDefault(i => i.Slot.Equals(slot) && i.Type.Equals(type));
 
             if (inv != null)
             {
@@ -169,7 +169,7 @@ namespace OpenNos.GameObject
 
         internal Inventory AmountMinusFromInventory(byte amount, PersonalShopItem itemshop)
         {
-            Inventory inv = Inventory.SingleOrDefault(i => i.InventoryId.Equals(itemshop.InventoryId));
+            Inventory inv = Inventory.FirstOrDefault(i => i.InventoryId.Equals(itemshop.InventoryId));
 
             if (inv != null)
             {
@@ -220,7 +220,7 @@ namespace OpenNos.GameObject
 
         public Inventory getInventoryByInventoryItemId(long inventoryItemId)
         {
-            return Inventory.SingleOrDefault(i => i.InventoryItem.InventoryItemId.Equals(inventoryItemId));
+            return Inventory.FirstOrDefault(i => i.InventoryItem.InventoryItemId.Equals(inventoryItemId));
         }
 
         public void InsertOrUpdate(ref Inventory newInventory)
@@ -247,7 +247,7 @@ namespace OpenNos.GameObject
 
         public Inventory LoadByInventoryItem(long InventoryItemId)
         {
-            return Inventory.SingleOrDefault(i => i.InventoryItem.InventoryItemId.Equals(InventoryItemId));
+            return Inventory.FirstOrDefault(i => i.InventoryItem.InventoryItemId.Equals(InventoryItemId));
         }
 
         public Inventory LoadBySlotAndType(short slot, byte type)

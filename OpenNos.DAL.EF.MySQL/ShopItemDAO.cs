@@ -32,7 +32,7 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                ShopItem item = context.shopitem.SingleOrDefault(i => i.ShopItemId.Equals(ItemId));
+                ShopItem item = context.shopitem.FirstOrDefault(i => i.ShopItemId.Equals(ItemId));
 
                 if (item != null)
                 {
@@ -49,7 +49,7 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                return Mapper.Map<ShopItemDTO>(context.shopitem.SingleOrDefault(i => i.ShopItemId.Equals(ItemId)));
+                return Mapper.Map<ShopItemDTO>(context.shopitem.FirstOrDefault(i => i.ShopItemId.Equals(ItemId)));
             }
         }
 
@@ -78,7 +78,7 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (context)
             {
-                var result = context.shopitem.SingleOrDefault(c => c.ShopItemId.Equals(shopitem.ShopItemId));
+                var result = context.shopitem.FirstOrDefault(c => c.ShopItemId.Equals(shopitem.ShopItemId));
                 if (result != null)
                 {
                     result = Mapper.Map<ShopItemDTO, ShopItem>(shopitem, entity);

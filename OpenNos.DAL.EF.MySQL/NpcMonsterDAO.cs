@@ -68,7 +68,7 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                return Mapper.Map<NpcMonsterDTO>(context.npcmonster.SingleOrDefault(i => i.NpcMonsterVNum.Equals(Vnum)));
+                return Mapper.Map<NpcMonsterDTO>(context.npcmonster.FirstOrDefault(i => i.NpcMonsterVNum.Equals(Vnum)));
             }
         }
 

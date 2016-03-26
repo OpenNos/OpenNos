@@ -38,7 +38,7 @@ namespace OpenNos.DAL.EF.MySQL
                 {
                     //actually a character wont be deleted, it just will be disabled for future traces
                     byte state = (byte)CharacterState.Active;
-                    Character character = context.character.SingleOrDefault(c => c.AccountId.Equals(accountId) && c.Slot.Equals(characterSlot)
+                    Character character = context.character.FirstOrDefault(c => c.AccountId.Equals(accountId) && c.Slot.Equals(characterSlot)
                                             && c.State.Equals(state));
 
                     if (character != null)
@@ -98,7 +98,7 @@ namespace OpenNos.DAL.EF.MySQL
                 using (var context = DataAccessHelper.CreateContext())
                 {
                     long characterId = character.CharacterId;
-                    Character entity = context.character.SingleOrDefault(c => c.CharacterId.Equals(characterId));
+                    Character entity = context.character.FirstOrDefault(c => c.CharacterId.Equals(characterId));
 
                     if (entity == null) //new entity
                     {
@@ -173,7 +173,7 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                return Mapper.Map<CharacterDTO>(context.character.SingleOrDefault(c => c.CharacterId.Equals(characterId)));
+                return Mapper.Map<CharacterDTO>(context.character.FirstOrDefault(c => c.CharacterId.Equals(characterId)));
             }
         }
 
@@ -182,7 +182,7 @@ namespace OpenNos.DAL.EF.MySQL
             using (var context = DataAccessHelper.CreateContext())
             {
                 byte state = (byte)CharacterState.Active;
-                return Mapper.Map<CharacterDTO>(context.character.SingleOrDefault(c => c.Name.Equals(name) && c.State.Equals(state)));
+                return Mapper.Map<CharacterDTO>(context.character.FirstOrDefault(c => c.Name.Equals(name) && c.State.Equals(state)));
             }
         }
 
@@ -191,7 +191,7 @@ namespace OpenNos.DAL.EF.MySQL
             using (var context = DataAccessHelper.CreateContext())
             {
                 byte state = (byte)CharacterState.Active;
-                return Mapper.Map<CharacterDTO>(context.character.SingleOrDefault(c => c.AccountId.Equals(accountId) && c.Slot.Equals(slot)
+                return Mapper.Map<CharacterDTO>(context.character.FirstOrDefault(c => c.AccountId.Equals(accountId) && c.Slot.Equals(slot)
                                                                                         && c.State.Equals(state)));
             }
         }
@@ -208,7 +208,7 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (context)
             {
-                var result = context.character.SingleOrDefault(c => c.CharacterId == character.CharacterId);
+                var result = context.character.FirstOrDefault(c => c.CharacterId == character.CharacterId);
                 if (result != null)
                 {
                     result = Mapper.Map<CharacterDTO, Character>(character, entity);

@@ -46,7 +46,7 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                if (context.shop.SingleOrDefault(c => c.MapNpcId.Equals(shop.MapNpcId)) == null)
+                if (context.shop.FirstOrDefault(c => c.MapNpcId.Equals(shop.MapNpcId)) == null)
                 {
                     Shop entity = Mapper.Map<Shop>(shop);
                     context.shop.Add(entity);

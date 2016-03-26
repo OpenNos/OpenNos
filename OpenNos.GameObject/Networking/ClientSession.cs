@@ -190,7 +190,7 @@ namespace OpenNos.GameObject
 
             foreach (MethodInfo methodInfo in handlerType.GetMethods().Where(x => x.GetCustomAttributes(false).OfType<Packet>().Any()))
             {
-                Packet packetAttribute = methodInfo.GetCustomAttributes(false).OfType<Packet>().SingleOrDefault();
+                Packet packetAttribute = methodInfo.GetCustomAttributes(false).OfType<Packet>().FirstOrDefault();
 
                 if (packetAttribute != null)
                 {
@@ -340,7 +340,7 @@ namespace OpenNos.GameObject
 
         private bool TriggerHandler(string packetHeader, string packet, bool force)
         {
-            KeyValuePair<Packet, Tuple<MethodInfo, object>> methodInfo = HandlerMethods.SingleOrDefault(h => h.Key.Header.Equals(packetHeader));
+            KeyValuePair<Packet, Tuple<MethodInfo, object>> methodInfo = HandlerMethods.FirstOrDefault(h => h.Key.Header.Equals(packetHeader));
 
             if (methodInfo.Value != null)
             {

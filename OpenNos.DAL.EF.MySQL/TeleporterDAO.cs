@@ -52,7 +52,7 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                return Mapper.Map<TeleporterDTO>(context.teleporter.SingleOrDefault(i => i.TeleporterId.Equals(TeleporterId)));
+                return Mapper.Map<TeleporterDTO>(context.teleporter.FirstOrDefault(i => i.TeleporterId.Equals(TeleporterId)));
             }
         }
         #endregion

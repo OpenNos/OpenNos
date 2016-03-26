@@ -46,7 +46,7 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                if (context.map.SingleOrDefault(c => c.MapId.Equals(map.MapId)) == null)
+                if (context.map.FirstOrDefault(c => c.MapId.Equals(map.MapId)) == null)
                 {
                     Map entity = Mapper.Map<Map>(map);
                     context.map.Add(entity);
@@ -72,7 +72,7 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                return Mapper.Map<MapDTO>(context.map.SingleOrDefault(c => c.MapId.Equals(mapId)));
+                return Mapper.Map<MapDTO>(context.map.FirstOrDefault(c => c.MapId.Equals(mapId)));
             }
         }
 

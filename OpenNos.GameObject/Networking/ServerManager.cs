@@ -53,17 +53,17 @@ namespace OpenNos.GameObject
 
         public static Item GetItem(short vnum)
         {
-            return _items.SingleOrDefault(m => m.VNum.Equals(vnum));
+            return _items.FirstOrDefault(m => m.VNum.Equals(vnum));
         }
 
         public static Map GetMap(short id)
         {
-            return _maps.SingleOrDefault(m => m.Value.MapId.Equals(id)).Value;
+            return _maps.FirstOrDefault(m => m.Value.MapId.Equals(id)).Value;
         }
 
         public static NpcMonster GetNpc(short npcVNum)
         {
-            return _npcs.SingleOrDefault(m => m.NpcMonsterVNum.Equals(npcVNum));
+            return _npcs.FirstOrDefault(m => m.NpcMonsterVNum.Equals(npcVNum));
         }
 
         public static void Initialize()

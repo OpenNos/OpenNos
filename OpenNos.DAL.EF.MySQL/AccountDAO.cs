@@ -34,7 +34,7 @@ namespace OpenNos.DAL.EF.MySQL
             {
                 using (var context = DataAccessHelper.CreateContext())
                 {
-                    Account account = context.account.SingleOrDefault(c => c.AccountId.Equals(accountId));
+                    Account account = context.account.FirstOrDefault(c => c.AccountId.Equals(accountId));
 
                     if (account != null)
                     {
@@ -59,7 +59,7 @@ namespace OpenNos.DAL.EF.MySQL
                 using (var context = DataAccessHelper.CreateContext())
                 {
                     long accountId = account.AccountId;
-                    Account entity = context.account.SingleOrDefault(c => c.AccountId.Equals(accountId));
+                    Account entity = context.account.FirstOrDefault(c => c.AccountId.Equals(accountId));
 
                     if (entity == null) //new entity
                     {
@@ -129,7 +129,7 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                Account account = context.account.SingleOrDefault(a => a.Name.Equals(name));
+                Account account = context.account.FirstOrDefault(a => a.Name.Equals(name));
                 context.SaveChanges();
             }
         }
@@ -138,7 +138,7 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                Account account = context.account.SingleOrDefault(a => a.AccountId.Equals(id));
+                Account account = context.account.FirstOrDefault(a => a.AccountId.Equals(id));
                 account.Authority = account.Authority >= 1 ? (byte)0 : (byte)1;
                 context.SaveChanges();
             }
@@ -148,7 +148,7 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                Account account = context.account.SingleOrDefault(a => a.Name.Equals(name));
+                Account account = context.account.FirstOrDefault(a => a.Name.Equals(name));
                 account.LastSession = session;
                 context.SaveChanges();
             }
