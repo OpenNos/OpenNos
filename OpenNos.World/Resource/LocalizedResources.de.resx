@@ -120,6 +120,9 @@
   <data name="ACCOUNT_ARRIVED" xml:space="preserve">
     <value>Account mit SessionId {0} verbunden.</value>
   </data>
+  <data name="ADMINISTRATOR" xml:space="preserve">
+    <value>Administrator</value>
+  </data>
   <data name="ADVENTURER" xml:space="preserve">
     <value>Abenteurer</value>
   </data>
@@ -132,8 +135,14 @@
   <data name="ASK_ACCEPT" xml:space="preserve">
     <value>{0} möchte mit dir tauschen.</value>
   </data>
+  <data name="ASK_TO_DELETE" xml:space="preserve">
+    <value>Der Gegenstand wird zerstört.</value>
+  </data>
   <data name="BAD_DROP_AMOUNT" xml:space="preserve">
-    <value>Bad drop amount.</value>
+    <value>Falsche Anzahl zum wegwerfen.</value>
+  </data>
+  <data name="BAD_EQUIPMENT" xml:space="preserve">
+    <value>Dein Charakter entspricht nicht allen Anforderungen, um diesen Gegenstand zu tragen!</value>
   </data>
   <data name="BAD_FAIRY" xml:space="preserve">
     <value>Die Spezialistenkarte und deine Fee haben unterschiedliche Attribute.</value>
@@ -141,8 +150,44 @@
   <data name="BAD_PASSWORD" xml:space="preserve">
     <value>Falsches Passwort</value>
   </data>
+  <data name="BN0" xml:space="preserve">
+    <value>Lies^bitte^unsere^Bedingungen</value>
+  </data>
+  <data name="BN1" xml:space="preserve">
+    <value>Gib^dein^Passwort^nicht^weiter</value>
+  </data>
+  <data name="BN2" xml:space="preserve">
+    <value>Brauchst^du^hilfe^von^einem^GM?^Besuche^dann^unsere^Website:</value>
+  </data>
+  <data name="BN3" xml:space="preserve">
+    <value>Viele^Grüße^von^dem^OpenNos^Team!</value>
+  </data>
+  <data name="BN4" xml:space="preserve">
+    <value>Willst^du^am^Projekt^mitwirken?^https://github.com/OpenNos/OpenNos</value>
+  </data>
+  <data name="BN5" xml:space="preserve">
+    <value>Team:^0Lucifer0,^chucktheripper,^Ciapa1,^MasterDomino,^genyx,^martazza</value>
+  </data>
+  <data name="BN6" xml:space="preserve">
+    <value>Besuche:^https://github.com/OpenNos/OpenNos^für^die^aktuellsten^Updates.</value>
+  </data>
+  <data name="BUFF_BLOCKED" xml:space="preserve">
+    <value>Ab sofort wird das Ablaufen des Buffs ausgeblendet.</value>
+  </data>
+  <data name="BUFF_UNLOCKED" xml:space="preserve">
+    <value>Ab sofort wird das Ablaufen des Buffs angezeigt.</value>
+  </data>
+  <data name="BUY_ITEM" xml:space="preserve">
+    <value>{0}: Kaufe &lt;{1} {2}: Stück &gt;</value>
+  </data>
   <data name="BUY_ITEM_VALIDE" xml:space="preserve">
     <value>Handel war erfolgreich</value>
+  </data>
+  <data name="CANT_MOVE" xml:space="preserve">
+    <value>Du kannst dich in Kürze bewegen</value>
+  </data>
+  <data name="CHANGE_DONE" xml:space="preserve">
+    <value>Punkte wurden aktualisiert.</value>
   </data>
   <data name="CLIENT_ARRIVED" xml:space="preserve">
     <value>Client verbunden, SessionId: {0}</value>
@@ -183,14 +228,65 @@
   <data name="DISCONNECT" xml:space="preserve">
     <value>Ein Client hat die Verbindung getrennt! ClientId =</value>
   </data>
+  <data name="EMO_BLOCKED" xml:space="preserve">
+    <value>Ab sofort werden Smileys nicht mehr angezeigt.</value>
+  </data>
+  <data name="EMO_UNLOCKED" xml:space="preserve">
+    <value>Ab sofort werden Smileys angezeigt.</value>
+  </data>
   <data name="EQ_NOT_EMPTY" xml:space="preserve">
     <value>Deine Ausrüstung ist nicht leer</value>
+  </data>
+  <data name="EXCHANGE_BLOCKED" xml:space="preserve">
+    <value>Von jetzt an blockst du Tauschgeschäfte.</value>
+  </data>
+  <data name="EXCHANGE_UNLOCKED" xml:space="preserve">
+    <value>Von jetzt an akzeptierst du Tauschgeschäfte.</value>
+  </data>
+  <data name="FAMILY_REQ_LOCKED" xml:space="preserve">
+    <value>Von jetzt an blockst du Familien.</value>
+  </data>
+  <data name="FAMILY_REQ_UNLOCKED" xml:space="preserve">
+    <value>Von jetzt an akzeptierst du Familien.</value>
   </data>
   <data name="FORCED_DISCONNECT" xml:space="preserve">
     <value>Die Verbindung zum Client {0} wurde getrennt, zu viele Verbindungen.</value>
   </data>
+  <data name="FRIEND_REQ_BLOCKED" xml:space="preserve">
+    <value>Von jetzt an blockst du Freunde.</value>
+  </data>
+  <data name="FRIEND_REQ_UNLOCKED" xml:space="preserve">
+    <value>Von jetzt an akzeptierst du Freunde.</value>
+  </data>
+  <data name="GET_PROTECTION_POWER_1" xml:space="preserve">
+    <value>Du wurdest gesegnet durch die Kraft der Engel.</value>
+  </data>
+  <data name="GET_PROTECTION_POWER_2" xml:space="preserve">
+    <value>Du wurdest verflucht durch die Kraft der Dämonen.</value>
+  </data>
+  <data name="GOLD_SET" xml:space="preserve">
+    <value>Gold wurde aktualisiert</value>
+  </data>
+  <data name="GROUP_REQ_BLOCKED" xml:space="preserve">
+    <value>Von jetzt an blockst du Gruppen.</value>
+  </data>
+  <data name="GROUP_REQ_UNLOCKED" xml:space="preserve">
+    <value>Von jetzt an akzeptierst du Gruppen.</value>
+  </data>
   <data name="HANDLER_NOT_FOUND" xml:space="preserve">
     <value>Handler Implementierung des {0} Packets nicht gefunden</value>
+  </data>
+  <data name="HERO_CHAT_BLOCKED" xml:space="preserve">
+    <value>Du kannst den Lautsprecher ab sofort nicht mehr hören.</value>
+  </data>
+  <data name="HERO_CHAT_UNLOCKED" xml:space="preserve">
+    <value>Du kannst den Lautsprecher ab sofort hören.</value>
+  </data>
+  <data name="HP_BLOCKED" xml:space="preserve">
+    <value>Ab sofort ist die HP-Statusanzeige ausgeblendet.</value>
+  </data>
+  <data name="HP_UNLOCKED" xml:space="preserve">
+    <value>Ab sofort wird die HP-Statusanzeige angezeigt.</value>
   </data>
   <data name="INSERT_ERROR" xml:space="preserve">
     <value>Fehler beim Einfügen/Aktualisieren des Charakters {0} , {1}</value>
@@ -198,8 +294,14 @@
   <data name="INVALID_CHARNAME" xml:space="preserve">
     <value>Der Name enthält ein ungültiges Wort oder Zeichen.</value>
   </data>
+  <data name="IN_WAITING_FOR" xml:space="preserve">
+    <value>Warten auf {0}</value>
+  </data>
   <data name="ITEM_IS_FIXED" xml:space="preserve">
     <value>Das Item ist fixiert.</value>
+  </data>
+  <data name="ITEM_LOADED" xml:space="preserve">
+    <value>{0} Items geladen!</value>
   </data>
   <data name="ITEM_NOT_DROPPABLE" xml:space="preserve">
     <value>Du kannst dieses Item nicht wegwerfen.</value>
@@ -211,7 +313,13 @@
     <value>Du kannst dieses Item nicht tauschen.</value>
   </data>
   <data name="JOBLEVEL_CHANGED" xml:space="preserve">
-    <value>Dein Joblevel wurde erhöht</value>
+    <value>Dein Joblevel wurde erhöht!</value>
+  </data>
+  <data name="JOB_CHANGED" xml:space="preserve">
+    <value>Dein Job hat sich geändert.</value>
+  </data>
+  <data name="LEVEL_CHANGED" xml:space="preserve">
+    <value>Dein Level wurde erhöht!</value>
   </data>
   <data name="LOW_JOB_LVL" xml:space="preserve">
     <value>Dein Joblevel ist nicht hoch genug.</value>
@@ -234,6 +342,21 @@
   <data name="MESSAGE_RECEIVED" xml:space="preserve">
     <value>Nachricht {0} von Client {1} empfangen</value>
   </data>
+  <data name="MINI_INV_BLOCKED" xml:space="preserve">
+    <value>Miniland-Einladungen blockiert</value>
+  </data>
+  <data name="MINI_INV_UNLOCKED" xml:space="preserve">
+    <value>Miniland-Einladungen freigeschaltet</value>
+  </data>
+  <data name="MONSTERS_LOADED" xml:space="preserve">
+    <value>{0} Monster geladen!</value>
+  </data>
+  <data name="MOUSE_LOCKED" xml:space="preserve">
+    <value>Mausfalle aktiviert</value>
+  </data>
+  <data name="MOUSE_UNLOCKED" xml:space="preserve">
+    <value>Mausfalle deaktiviert</value>
+  </data>
   <data name="MSG_SENT" xml:space="preserve">
     <value>Nachricht {0} an Client {1} gesendet</value>
   </data>
@@ -246,11 +369,38 @@
   <data name="NOT_ENOUGH_MONEY" xml:space="preserve">
     <value>Du hast nicht genug Gold.</value>
   </data>
+  <data name="NOT_ENOUGH_PLACE" xml:space="preserve">
+    <value>Du hast nicht genug Platz.</value>
+  </data>
+  <data name="NOT_HUNGRY_FEMALE" xml:space="preserve">
+    <value>Ich glaube, ich bin nicht Hungrig</value>
+  </data>
+  <data name="NOT_HUNGRY_MALE" xml:space="preserve">
+    <value>Ich bin nicht Hungrig</value>
+  </data>
   <data name="NO_ENTRY" xml:space="preserve">
     <value>Kein Einsprungspunkt gefunden!</value>
   </data>
+  <data name="NO_HANDLER_ITEM" xml:space="preserve">
+    <value>Kein Handler gefunden für das Item in Klasse {0}</value>
+  </data>
+  <data name="NO_MAP" xml:space="preserve">
+    <value>Server braucht mindestens die Nosville Karte um zu funktionieren!</value>
+  </data>
+  <data name="NO_NRUN_HANDLER" xml:space="preserve">
+    <value>Keine n_run Handler Implementierung für {0}</value>
+  </data>
+  <data name="NO_PREZ_MESSAGE" xml:space="preserve">
+    <value>Keine Selbstbeschreibung.</value>
+  </data>
   <data name="NO_SP" xml:space="preserve">
     <value>Keine Spezialistenkarte ausgerüstet.</value>
+  </data>
+  <data name="NPCMONSTERS_LOADED" xml:space="preserve">
+    <value>{0} NPC-Monster geladen!</value>
+  </data>
+  <data name="NPCS_LOADED" xml:space="preserve">
+    <value>{0} NPCs geladen!</value>
   </data>
   <data name="PACKET_ARRIVED" xml:space="preserve">
     <value>Paket erhalten: {0}</value>
@@ -258,7 +408,7 @@
   <data name="PACKET_FAILURE" xml:space="preserve">
     <value>Fehler beim Senden von Packet {0} an Client {1}, {2}.</value>
   </data>
-    <data name="PERFECTSP_ATTACK" xml:space="preserve">
+  <data name="PERFECTSP_ATTACK" xml:space="preserve">
     <value>Angriff</value>
   </data>
   <data name="PERFECTSP_DEFENSE" xml:space="preserve">
@@ -288,6 +438,12 @@
   <data name="PERFECTSP_WATER" xml:space="preserve">
     <value>Wasser</value>
   </data>
+  <data name="QUICK_GET_UP_DISABLED" xml:space="preserve">
+    <value>Du kannst nicht sofort aufstehen, wenn du dich ausruhst.</value>
+  </data>
+  <data name="QUICK_GET_UP_ENABLED" xml:space="preserve">
+    <value>Um sofort aufzustehen, klicke mit der Maus auf einen beliebigen Punkt.</value>
+  </data>
   <data name="RARIFY_FAILED" xml:space="preserve">
     <value>Das Wetten ist fehlgeschlagen. Das Item ist verschwunden.</value>
   </data>
@@ -297,14 +453,41 @@
   <data name="RARIFY_SUCCESS" xml:space="preserve">
     <value>Das Wetten war erfolgreich! Neues Seltenheitslevel: {0}</value>
   </data>
+  <data name="RECIPES_LOADED" xml:space="preserve">
+    <value>{0} Rezepte geladen!</value>
+  </data>
+  <data name="REFUSED" xml:space="preserve">
+    <value>Tausch abgelehnt</value>
+  </data>
   <data name="REP_CHANGED" xml:space="preserve">
     <value>Dein Ruf wurde verändert.</value>
+  </data>
+  <data name="SELL_ITEM_VALIDE" xml:space="preserve">
+    <value>{0}: verkauft &lt;{1} : Stück &gt;</value>
+  </data>
+  <data name="SEX_CHANGED" xml:space="preserve">
+    <value>Dein Geschlecht hat sich verändert!</value>
+  </data>
+  <data name="SHOPS_LOADED" xml:space="preserve">
+    <value>{0} Shops geladen!</value>
   </data>
   <data name="SHOP_OPEN" xml:space="preserve">
     <value>Du hast einen Shop eröffnet.</value>
   </data>
   <data name="SHOP_VOID" xml:space="preserve">
     <value>Kein Item zum Verkauf verfügbar.</value>
+  </data>
+  <data name="SHUTDOWN_MIN" xml:space="preserve">
+    <value>Server wird in {0} Minuten heruntergefahren.</value>
+  </data>
+  <data name="SHUTDOWN_SEC" xml:space="preserve">
+    <value>Server wird in {0} Sekunden heruntergefahren.</value>
+  </data>
+  <data name="SPLEVEL_CHANGED" xml:space="preserve">
+    <value>Sperzialistenlevel wurde erhöht!</value>
+  </data>
+  <data name="SPUSE_NEEDED" xml:space="preserve">
+    <value>Du musst dich zum Spezialisten transformieren um Punkte zu verteilen.</value>
   </data>
   <data name="SP_BLOCKED" xml:space="preserve">
     <value>Du kannst deine Spezialistenkarte jetzt nicht wechseln.</value>
@@ -313,10 +496,13 @@
     <value>Kann nicht transformieren wegen des Nebeneffekts der Transformation: {0}</value>
   </data>
   <data name="STARTED" xml:space="preserve">
-    <value>Server erfolgreich gestartet.</value>
+    <value>Server erfolgreich gestartet!</value>
   </data>
   <data name="STAY_TIME" xml:space="preserve">
     <value>Dauer des Nebeneffekts der Transformation: 30 Sekunden</value>
+  </data>
+  <data name="SURE_TO_DELETE" xml:space="preserve">
+    <value>Wenn du den Gegenstand zerstörst, kann er nicht wiederhergestellt werden. Willst du ihn wirklich zerstören?</value>
   </data>
   <data name="SWORDMAN" xml:space="preserve">
     <value>Schwertkämpfer</value>
@@ -351,10 +537,28 @@
   <data name="UPGRADE_SUCCESS" xml:space="preserve">
     <value>Die Verbesserung war erfolgreich!</value>
   </data>
+  <data name="USER_NOT_CONNECTED" xml:space="preserve">
+    <value>User is not connected.</value>
+  </data>
   <data name="USER_NOT_HERO" xml:space="preserve">
     <value>Nur Helden dürfen die Heldennachrichten benutzen.</value>
   </data>
   <data name="WHISPERED_BLOCKED" xml:space="preserve">
     <value>Der Kontakt will nicht angeflüstert werden.</value>
+  </data>
+  <data name="WHISPER_BLOCKED" xml:space="preserve">
+    <value>Von jetzt an blockst du Flüstern.</value>
+  </data>
+  <data name="WHISPER_UNLOCKED" xml:space="preserve">
+    <value> Von jetzt an akzeptierst du Flüstern.</value>
+  </data>
+  <data name="WRONG_VALUE" xml:space="preserve">
+    <value>Falscher Wert</value>
+  </data>
+  <data name="YOU_ASK_FOR_EXCHANGE" xml:space="preserve">
+    <value>Du hast nach einem Tausch gefragt mit</value>
+  </data>
+  <data name="YOU_GET_OBJECT" xml:space="preserve">
+    <value>Du hast ein Item erhalten</value>
   </data>
 </root>
