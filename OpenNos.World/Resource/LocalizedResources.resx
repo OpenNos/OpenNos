@@ -151,13 +151,13 @@
     <value>Bad Password</value>
   </data>
   <data name="BN0" xml:space="preserve">
-    <value>Read^our^Terms^and^Copyrights</value>
+    <value>Read^our^License</value>
   </data>
   <data name="BN1" xml:space="preserve">
-    <value>Don't^give^your^password</value>
+    <value>Don't^give^your^password^to^anyone</value>
   </data>
   <data name="BN2" xml:space="preserve">
-    <value>Need^a^gm?^check^out^our^website:^</value>
+    <value>Need^a^GM^help?^check^out^our^website:</value>
   </data>
   <data name="BN3" xml:space="preserve">
     <value>Greetings^from^OpenNos^Team!</value>
@@ -166,7 +166,7 @@
     <value>Do^you^want^to^contribute?^https://github.com/OpenNos/OpenNos</value>
   </data>
   <data name="BN5" xml:space="preserve">
-    <value>Authors:^0Lucifer0^,^chucktheripper</value>
+    <value>Team:^0Lucifer0,^chucktheripper,^Ciapa1,^MasterDomino,^genyx,^martazza</value>
   </data>
   <data name="BN6" xml:space="preserve">
     <value>Check^out:^https://github.com/OpenNos/OpenNos^for^latest^updates.</value>
@@ -184,7 +184,7 @@
     <value>Item bought</value>
   </data>
   <data name="CANT_MOVE" xml:space="preserve">
-    <value>User can't move.</value>
+    <value>Teleportation in cooldown.</value>
   </data>
   <data name="CHANGE_DONE" xml:space="preserve">
     <value>Points has been set</value>
@@ -262,7 +262,7 @@
     <value>You were blessed by power of angel.</value>
   </data>
   <data name="GET_PROTECTION_POWER_2" xml:space="preserve">
-    <value>You get the protection power of demon.</value>
+    <value>You were cursed by  power of demon.</value>
   </data>
   <data name="GOLD_SET" xml:space="preserve">
     <value>Gold set</value>
@@ -277,16 +277,16 @@
     <value>Could not found Handler implementation for Packet with Header {0}</value>
   </data>
   <data name="HERO_CHAT_BLOCKED" xml:space="preserve">
-    <value>Hero chat blocked</value>
+    <value>Hero chat hidden</value>
   </data>
   <data name="HERO_CHAT_UNLOCKED" xml:space="preserve">
     <value>Hero chat visible</value>
   </data>
   <data name="HP_BLOCKED" xml:space="preserve">
-    <value>Hp bar disabled</value>
+    <value>Hp information disabled</value>
   </data>
   <data name="HP_UNLOCKED" xml:space="preserve">
-    <value>Hp bar allowed</value>
+    <value>Hp information enabled</value>
   </data>
   <data name="INSERT_ERROR" xml:space="preserve">
     <value>Error inserting or updating character {0} , {1}</value>
@@ -355,7 +355,7 @@
     <value>Mouse locked on enemy</value>
   </data>
   <data name="MOUSE_UNLOCKED" xml:space="preserve">
-    <value>Mouse moving free</value>
+    <value>Mouse moving freely</value>
   </data>
   <data name="MSG_SENT" xml:space="preserve">
     <value>Message sent {0} to client {1}</value>
@@ -370,10 +370,10 @@
     <value>Not enough money</value>
   </data>
   <data name="NOT_ENOUGH_PLACE" xml:space="preserve">
-    <value>Not enought places</value>
+    <value>Not enough places</value>
   </data>
   <data name="NOT_HUNGRY_FEMALE" xml:space="preserve">
-    <value>i think i'm not hungry</value>
+    <value>I think, i'm not hungry</value>
   </data>
   <data name="NOT_HUNGRY_MALE" xml:space="preserve">
     <value>I'm not hungry</value>
@@ -388,7 +388,7 @@
     <value>Server need at least nosville MAP to work!</value>
   </data>
   <data name="NO_PREZ_MESSAGE" xml:space="preserve">
-    <value>No Presentation Message.</value>
+    <value>No description.</value>
   </data>
   <data name="NO_SP" xml:space="preserve">
     <value>You're not wearing specialist card</value>
@@ -415,7 +415,7 @@
     <value>Element</value>
   </data>
   <data name="PERFECTSP_FAILURE" xml:space="preserve">
-    <value>Perfecting the SP failed!</value>
+    <value>SP Perfection failed!</value>
   </data>
   <data name="PERFECTSP_FIRE" xml:space="preserve">
     <value>Fire</value>
@@ -430,7 +430,7 @@
     <value>Shadow</value>
   </data>
   <data name="PERFECTSP_SUCCESS" xml:space="preserve">
-    <value>Perfecting the SP successful: {0} +{1}</value>
+    <value>SP Perfection successful: {0} +{1}</value>
   </data>
   <data name="PERFECTSP_WATER" xml:space="preserve">
     <value>Water</value>
@@ -478,7 +478,7 @@
     <value>Server will be shut in {0} Minutes.</value>
   </data>
   <data name="SHUTDOWN_SEC" xml:space="preserve">
-    <value>Server will be shut in {0} Secondes.</value>
+    <value>Server will be shut in {0} Seconds.</value>
   </data>
   <data name="SPLEVEL_CHANGED" xml:space="preserve">
     <value>Specialisty level has been changed!</value>
@@ -499,7 +499,7 @@
     <value>SP transformation needs cooldown, 30 seconds</value>
   </data>
   <data name="SURE_TO_DELETE" xml:space="preserve">
-    <value>Are you sure to delete?</value>
+    <value>Are you sure you want to delete?</value>
   </data>
   <data name="SWORDMAN" xml:space="preserve">
     <value>Swordman</value>
@@ -556,6 +556,6 @@
     <value>You ask for an echange with</value>
   </data>
   <data name="YOU_GET_OBJECT" xml:space="preserve">
-    <value>You get an object</value>
+    <value>You get item</value>
   </data>
 </root>

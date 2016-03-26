@@ -193,10 +193,10 @@
     <value>Użytkownik dołaczył, SessionId: {0}</value>
   </data>
   <data name="CLIENT_CLOSE" xml:space="preserve">
-    <value>Zamykanie połaczenia przez użytkownika.</value>
+    <value>Użytkownik zamknął połączenie.</value>
   </data>
   <data name="CLIENT_CLOSED" xml:space="preserve">
-    <value>Polaczenie zamkniete przez użytkownika.</value>
+    <value>Połaczenie zamkniete.</value>
   </data>
   <data name="COMPLIMENT_COOLDOWN" xml:space="preserve">
     <value>Mozesz skomplementowac tylko jednego gracza na dzień.</value>
@@ -250,7 +250,7 @@
     <value>Zaproszenia do rodziny: odblokowane</value>
   </data>
   <data name="FORCED_DISCONNECT" xml:space="preserve">
-    <value>Rozłaczanie użytkownika {0}, zbyt dużo połączeń.</value>
+    <value>Wyrzucono użytkownika {0}, zbyt dużo połączeń.</value>
   </data>
   <data name="FRIEND_REQ_BLOCKED" xml:space="preserve">
     <value>Wlaczono ignorowanie zaproszenia do przyjaciól</value>
@@ -283,10 +283,10 @@
     <value>Czat bohaterów widoczny</value>
   </data>
   <data name="HP_BLOCKED" xml:space="preserve">
-    <value>Pasek zycia zablokowany</value>
+    <value>Stan zycia ukryty</value>
   </data>
   <data name="HP_UNLOCKED" xml:space="preserve">
-    <value>Pasek zycia widoczny</value>
+    <value>Stan zycia widoczny</value>
   </data>
   <data name="INSERT_ERROR" xml:space="preserve">
     <value>Blad zapisywania badź odswiezania postaci {0} , {1}</value>
@@ -349,7 +349,7 @@
     <value>Zaproszenia do minilandu odblokowane</value>
   </data>
   <data name="MONSTERS_LOADED" xml:space="preserve">
-    <value>{0} Załadowanych potworow!</value>
+    <value>{0} Załadowanych potworów!</value>
   </data>
   <data name="MOUSE_LOCKED" xml:space="preserve">
     <value>Wskaźnik myszy z wspomaganym celowaniem wlaczony</value>
@@ -394,7 +394,7 @@
     <value>Nie zalozyles karty specjalisty!</value>
   </data>
   <data name="NPCMONSTERS_LOADED" xml:space="preserve">
-    <value>{0} Załadowanych npc-potworow!</value>
+    <value>{0} Załadowanych npc-potworów!</value>
   </data>
   <data name="NPCS_LOADED" xml:space="preserve">
     <value>{0} Załadowanych npc!</value>
@@ -451,7 +451,7 @@
     <value>Hazard sie udal! Rzadkosc: {0}</value>
   </data>
   <data name="RECIPES_LOADED" xml:space="preserve">
-    <value>{0} przepisów załadowanych</value>
+    <value>{0} Załadowanych przepisów!</value>
   </data>
   <data name="REFUSED" xml:space="preserve">
     <value>Wymiana odrzucona</value>
@@ -466,13 +466,13 @@
     <value>Plec zmieniona</value>
   </data>
   <data name="SHOPS_LOADED" xml:space="preserve">
-    <value>{0} Załadowanych sklepow!</value>
+    <value>{0} Załadowanych sklepów!</value>
   </data>
   <data name="SHOP_OPEN" xml:space="preserve">
     <value>Sklep zostal otwarty</value>
   </data>
   <data name="SHOP_VOID" xml:space="preserve">
-    <value>Sklep nie może byc pusty!</value>
+    <value>Sklep nie moze byc pusty!</value>
   </data>
   <data name="SHUTDOWN_MIN" xml:space="preserve">
     <value>Server zostanie wylaczony za {0} Minut.</value>
@@ -511,7 +511,7 @@
     <value>Ilosc sesji</value>
   </data>
   <data name="TRADE_BLOCKED" xml:space="preserve">
-    <value>Użytkownik zablokowal opcje wymiany.</value>
+    <value>Uzytkownik zablokowal opcje wymiany.</value>
   </data>
   <data name="TRANSFORM_DISAPEAR" xml:space="preserve">
     <value>Odblokowano transformacje!</value>

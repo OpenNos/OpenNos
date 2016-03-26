@@ -44,9 +44,9 @@
 -- -----------------------------------------------------------
 -- Entity Designer DDL Script for MySQL Server 4.1 and higher
 -- -----------------------------------------------------------
--- Date Created: 03/25/2016 23:07:26
+-- Date Created: 03/26/2016 11:16:36
 
--- Generated from EDMX file: C:\Users\ERWAN\Desktop\OpenNos Git\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
+-- Generated from EDMX file: C:\Users\Dominik\Source\Repos\OpenNos\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
 -- Target version: 3.0.0.0
 
 -- --------------------------------------------------
@@ -389,6 +389,7 @@ CREATE TABLE `inventoryitem`(
 	`MagicDefence` smallint NOT NULL, 
 	`DistanceDefenceDodge` smallint NOT NULL, 
 	`DefenceDodge` smallint NOT NULL, 
+	`CriticalDodge` smallint NOT NULL, 
 	`HP` smallint NOT NULL, 
 	`MP` smallint NOT NULL, 
 	`DarkElement` TINYINT UNSIGNED NOT NULL, 
@@ -396,6 +397,7 @@ CREATE TABLE `inventoryitem`(
 	`WaterElement` TINYINT UNSIGNED NOT NULL, 
 	`FireElement` TINYINT UNSIGNED NOT NULL, 
 	`Ammo` TINYINT UNSIGNED NOT NULL, 
+	`IsEmpty` bool NOT NULL, 
 	`IsFixed` bool NOT NULL, 
 	`IsUsed` bool NOT NULL, 
 	`ItemDeleteTime` datetime, 
@@ -404,22 +406,20 @@ CREATE TABLE `inventoryitem`(
 	`WaterResistance` TINYINT UNSIGNED NOT NULL, 
 	`LightResistance` TINYINT UNSIGNED NOT NULL, 
 	`DarkResistance` TINYINT UNSIGNED NOT NULL, 
-	`CriticalDodge` smallint NOT NULL, 
-	`IsEmpty` bool NOT NULL, 
 	`SpLevel` TINYINT UNSIGNED NOT NULL, 
-	`SlDamage` smallint NOT NULL, 
 	`SpXp` smallint NOT NULL, 
 	`SlHP` smallint NOT NULL, 
+	`SlDamage` smallint NOT NULL, 
 	`SlElement` smallint NOT NULL, 
 	`SlDefence` smallint NOT NULL, 
+	`SpHP` TINYINT UNSIGNED NOT NULL, 
 	`SpDamage` TINYINT UNSIGNED NOT NULL, 
 	`SpElement` TINYINT UNSIGNED NOT NULL, 
 	`SpDefence` TINYINT UNSIGNED NOT NULL, 
-	`SpHP` TINYINT UNSIGNED NOT NULL, 
-	`SpDark` TINYINT UNSIGNED NOT NULL, 
-	`SpLight` TINYINT UNSIGNED NOT NULL, 
 	`SpFire` TINYINT UNSIGNED NOT NULL, 
 	`SpWater` TINYINT UNSIGNED NOT NULL, 
+	`SpLight` TINYINT UNSIGNED NOT NULL, 
+	`SpDark` TINYINT UNSIGNED NOT NULL, 
 	`SpStoneUpgrade` TINYINT UNSIGNED NOT NULL);
 
 ALTER TABLE `inventoryitem` ADD PRIMARY KEY (InventoryItemId);

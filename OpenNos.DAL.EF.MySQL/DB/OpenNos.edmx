@@ -335,6 +335,7 @@
     <Property Name="MagicDefence" Type="smallint" Nullable="false" />
     <Property Name="DistanceDefenceDodge" Type="smallint" Nullable="false" />
     <Property Name="DefenceDodge" Type="smallint" Nullable="false" />
+    <Property Name="CriticalDodge" Type="smallint" Nullable="false" />
     <Property Name="HP" Type="smallint" Nullable="false" />
     <Property Name="MP" Type="smallint" Nullable="false" />
     <Property Name="DarkElement" Type="utinyint" Nullable="false" />
@@ -342,6 +343,7 @@
     <Property Name="WaterElement" Type="utinyint" Nullable="false" />
     <Property Name="FireElement" Type="utinyint" Nullable="false" />
     <Property Name="Ammo" Type="utinyint" Nullable="false" />
+    <Property Name="IsEmpty" Type="bool" Nullable="false" />
     <Property Name="IsFixed" Type="bool" Nullable="false" />
     <Property Name="IsUsed" Type="bool" Nullable="false" />
     <Property Name="ItemDeleteTime" Type="datetime" Nullable="true" />
@@ -350,22 +352,20 @@
     <Property Name="WaterResistance" Type="utinyint" Nullable="false" />
     <Property Name="LightResistance" Type="utinyint" Nullable="false" />
     <Property Name="DarkResistance" Type="utinyint" Nullable="false" />
-    <Property Name="CriticalDodge" Type="smallint" Nullable="false" />
-    <Property Name="IsEmpty" Type="bool" Nullable="false" />
     <Property Name="SpLevel" Type="utinyint" Nullable="false" />
-    <Property Name="SlDamage" Type="smallint" Nullable="false" />
     <Property Name="SpXp" Type="smallint" Nullable="false" />
     <Property Name="SlHP" Type="smallint" Nullable="false" />
+    <Property Name="SlDamage" Type="smallint" Nullable="false" />
     <Property Name="SlElement" Type="smallint" Nullable="false" />
     <Property Name="SlDefence" Type="smallint" Nullable="false" />
+    <Property Name="SpHP" Type="utinyint" Nullable="false" />
     <Property Name="SpDamage" Type="utinyint" Nullable="false" />
     <Property Name="SpElement" Type="utinyint" Nullable="false" />
     <Property Name="SpDefence" Type="utinyint" Nullable="false" />
-    <Property Name="SpHP" Type="utinyint" Nullable="false" />
-    <Property Name="SpDark" Type="utinyint" Nullable="false" />
-    <Property Name="SpLight" Type="utinyint" Nullable="false" />
     <Property Name="SpFire" Type="utinyint" Nullable="false" />
     <Property Name="SpWater" Type="utinyint" Nullable="false" />
+    <Property Name="SpLight" Type="utinyint" Nullable="false" />
+    <Property Name="SpDark" Type="utinyint" Nullable="false" />
     <Property Name="SpStoneUpgrade" Type="utinyint" Nullable="false" />
   </EntityType>
   <EntityType Name="inventory">
@@ -1757,6 +1757,7 @@
           <ScalarProperty Name="MagicDefence" ColumnName="MagicDefence" />
           <ScalarProperty Name="DistanceDefenceDodge" ColumnName="DistanceDefenceDodge" />
           <ScalarProperty Name="DefenceDodge" ColumnName="DefenceDodge" />
+          <ScalarProperty Name="CriticalDodge" ColumnName="CriticalDodge" />
           <ScalarProperty Name="HP" ColumnName="HP" />
           <ScalarProperty Name="MP" ColumnName="MP" />
           <ScalarProperty Name="DarkElement" ColumnName="DarkElement" />
@@ -1764,6 +1765,7 @@
           <ScalarProperty Name="WaterElement" ColumnName="WaterElement" />
           <ScalarProperty Name="FireElement" ColumnName="FireElement" />
           <ScalarProperty Name="Ammo" ColumnName="Ammo" />
+          <ScalarProperty Name="IsEmpty" ColumnName="IsEmpty" />
           <ScalarProperty Name="IsFixed" ColumnName="IsFixed" />
           <ScalarProperty Name="IsUsed" ColumnName="IsUsed" />
           <ScalarProperty Name="ItemDeleteTime" ColumnName="ItemDeleteTime" />
@@ -1772,22 +1774,20 @@
           <ScalarProperty Name="WaterResistance" ColumnName="WaterResistance" />
           <ScalarProperty Name="LightResistance" ColumnName="LightResistance" />
           <ScalarProperty Name="DarkResistance" ColumnName="DarkResistance" />
-          <ScalarProperty Name="CriticalDodge" ColumnName="CriticalDodge" />
-          <ScalarProperty Name="IsEmpty" ColumnName="IsEmpty" />
           <ScalarProperty Name="SpLevel" ColumnName="SpLevel" />
-          <ScalarProperty Name="SlDamage" ColumnName="SlDamage" />
           <ScalarProperty Name="SpXp" ColumnName="SpXp" />
           <ScalarProperty Name="SlHP" ColumnName="SlHP" />
+          <ScalarProperty Name="SlDamage" ColumnName="SlDamage" />
           <ScalarProperty Name="SlElement" ColumnName="SlElement" />
           <ScalarProperty Name="SlDefence" ColumnName="SlDefence" />
+          <ScalarProperty Name="SpHP" ColumnName="SpHP" />
           <ScalarProperty Name="SpDamage" ColumnName="SpDamage" />
           <ScalarProperty Name="SpElement" ColumnName="SpElement" />
           <ScalarProperty Name="SpDefence" ColumnName="SpDefence" />
-          <ScalarProperty Name="SpHP" ColumnName="SpHP" />
-          <ScalarProperty Name="SpDark" ColumnName="SpDark" />
-          <ScalarProperty Name="SpLight" ColumnName="SpLight" />
           <ScalarProperty Name="SpFire" ColumnName="SpFire" />
           <ScalarProperty Name="SpWater" ColumnName="SpWater" />
+          <ScalarProperty Name="SpLight" ColumnName="SpLight" />
+          <ScalarProperty Name="SpDark" ColumnName="SpDark" />
           <ScalarProperty Name="SpStoneUpgrade" ColumnName="SpStoneUpgrade" />
         </MappingFragment>
       </EntityTypeMapping>
