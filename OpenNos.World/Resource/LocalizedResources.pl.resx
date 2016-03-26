@@ -450,6 +450,9 @@
   <data name="RARIFY_SUCCESS" xml:space="preserve">
     <value>Hazard sie udal! Rzadkosc: {0}</value>
   </data>
+  <data name="RECIPES_LOADED" xml:space="preserve">
+    <value>{0} przepisów załadowanych</value>
+  </data>
   <data name="REFUSED" xml:space="preserve">
     <value>Wymiana odrzucona</value>
   </data>
