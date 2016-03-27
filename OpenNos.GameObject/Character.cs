@@ -373,6 +373,10 @@ namespace OpenNos.GameObject
 
             return gpList;
         }
+        public string GenerateGp(Portal portal)
+        {
+            return $"gp {portal.SourceX} {portal.SourceY} {portal.DestinationMapId} {portal.Type} {ServerManager.GetMap(MapId).Portals.Count} {(portal.IsDisabled ? 1 : 0)}";
+        }
 
         public string GenerateIn()
         {
@@ -1100,6 +1104,8 @@ namespace OpenNos.GameObject
         {
             return ServersData.XPData[Level - 1];
         }
+
+    
 
         #endregion
     }

@@ -422,6 +422,7 @@ namespace OpenNos.Handler
             Session.Client.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID AMOUNT", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$CreateItem SPID UPGRADE WINGS", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$Summon VNUM AMOUNT MOVE", 6));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$PortalTo MAPID DESTX DESTY PORTALTYPE", 10));
             Session.Client.SendPacket(Session.Character.GenerateSay("$AddMonster VNUM MOVE", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$Shutdown", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("-----------------------------------------------", 10));
@@ -3655,7 +3656,7 @@ namespace OpenNos.Handler
                 Session.Client.SendPacket(Session.Character.GenerateSay("$Summon VNUM AMOUNT MOVE", 10));
         }
 
-        [Packet("$CreatePortal")]
+        [Packet("$PortalTo")]
         public void CreatePortal(string packet)
         {
             string[] packetsplit = packet.Split(' ');
@@ -3669,10 +3670,10 @@ namespace OpenNos.Handler
 
                 Portal portal = new Portal() { SourceMapId = mapId, SourceX = mapX, SourceY = mapY, DestinationMapId = mapid, DestinationX = destx, DestinationY = desty , Type = portaltype};
                 ServerManager.GetMap(Session.Character.MapId).Portals.Add(portal);
-                ClientLinkManager.Instance.ChangeMap(Session.Character.CharacterId);
+                ClientLinkManager.Instance.Broadcast(Session,Session.Character.GenerateGp(portal),ReceiverType.AllOnMap);
             }
             else
-                Session.Client.SendPacket(Session.Character.GenerateSay("$CreatePortal MAPID DESTX DESTY PORTALTYPE", 10));
+                Session.Client.SendPacket(Session.Character.GenerateSay("$PortalTo MAPID DESTX DESTY PORTALTYPE", 10));
         }
 
         [Packet("$Teleport")]
