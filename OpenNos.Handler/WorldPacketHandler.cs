@@ -422,7 +422,8 @@ namespace OpenNos.Handler
             Session.Client.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID AMOUNT", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$CreateItem SPID UPGRADE WINGS", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$Summon VNUM AMOUNT MOVE", 6));
-            Session.Client.SendPacket(Session.Character.GenerateSay("$PortalTo MAPID DESTX DESTY PORTALTYPE", 10));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$PortalTo MAPID DESTX DESTY PORTALTYPE", 6));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$PortalTo MAPID DESTX DESTY", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$AddMonster VNUM MOVE", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$Shutdown", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("-----------------------------------------------", 10));
@@ -3661,13 +3662,14 @@ namespace OpenNos.Handler
         {
             string[] packetsplit = packet.Split(' ');
             short mapid, destx, desty = 0;
-            sbyte portaltype = 0;
-            if (packetsplit.Length == 6 && short.TryParse(packetsplit[2], out mapid) && short.TryParse(packetsplit[3], out destx) && short.TryParse(packetsplit[4], out desty) && sbyte.TryParse(packetsplit[5], out portaltype))
+            sbyte portaltype = -1;
+            if (packetsplit.Length > 4 && short.TryParse(packetsplit[2], out mapid) && short.TryParse(packetsplit[3], out destx) && short.TryParse(packetsplit[4], out desty))
             {
                 short mapId = Session.Character.MapId;
                 short mapX = Session.Character.MapX;
                 short mapY = Session.Character.MapY;
-
+                if (packetsplit.Length > 5)
+                    sbyte.TryParse(packetsplit[5], out portaltype);
                 Portal portal = new Portal() { SourceMapId = mapId, SourceX = mapX, SourceY = mapY, DestinationMapId = mapid, DestinationX = destx, DestinationY = desty , Type = portaltype};
                 ServerManager.GetMap(Session.Character.MapId).Portals.Add(portal);
                 ClientLinkManager.Instance.Broadcast(Session,Session.Character.GenerateGp(portal),ReceiverType.AllOnMap);
