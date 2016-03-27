@@ -421,6 +421,8 @@ namespace OpenNos.Import.Console
             {
                 if (linesave.Length > 4 && linesave[0] == "n_run")
                 {
+                    if (DAOFactory.MapNpcDAO.LoadById(int.Parse(linesave[4])) == null)
+                        continue;
                     teleporter = new TeleporterDTO
                     {
                         MapNpcId = int.Parse(linesave[4]),
