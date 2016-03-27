@@ -896,6 +896,8 @@ namespace OpenNos.Handler
                 if (!long.TryParse(packetsplit[3], out charId)) return;
                 Blocked = ClientLinkManager.Instance.GetProperty<bool>(charId, "ExchangeBlocked");
 
+                if (Session.Character.Speed == 0 || ClientLinkManager.Instance.GetProperty<byte>(charId, "Speed") == 0)
+                    Blocked = true;
                 if (Blocked)
                 {
                     ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("TRADE_BLOCKED"), 11), ReceiverType.OnlyMe);
