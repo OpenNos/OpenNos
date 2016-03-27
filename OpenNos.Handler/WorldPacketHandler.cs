@@ -3665,6 +3665,9 @@ namespace OpenNos.Handler
             sbyte portaltype = -1;
             if (packetsplit.Length > 4 && short.TryParse(packetsplit[2], out mapid) && short.TryParse(packetsplit[3], out destx) && short.TryParse(packetsplit[4], out desty))
             {
+                if (ServerManager.GetMap(mapid) == null)
+                    return;
+
                 short mapId = Session.Character.MapId;
                 short mapX = Session.Character.MapX;
                 short mapY = Session.Character.MapY;
