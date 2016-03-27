@@ -1163,7 +1163,7 @@ namespace OpenNos.Handler
                     await Task.Delay(1500);
                 else
                     await Task.Delay(2000);
-                if(Session.healthStop == true)
+                if (Session.healthStop == true)
                 {
                     Session.healthStop = false;
                     return;
@@ -1826,7 +1826,7 @@ namespace OpenNos.Handler
 
             Session.Client.SendPacket(Session.Character.GenerateStat());
             Session.Client.SendPacket(Session.Character.GenerateStatChar());
-           await Task.Delay(30000);
+            await Task.Delay(30000);
             if (Session == null || Session.Client == null)
                 return;
             Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("TRANSFORM_DISAPEAR")), 11));
@@ -2075,7 +2075,7 @@ namespace OpenNos.Handler
             string message = String.Format(Language.Instance.GetMessageFromKey("SHUTDOWN_MIN"), 5);
             ClientLinkManager.Instance.Broadcast(Session, $"say 1 0 10 ({Language.Instance.GetMessageFromKey("ADMINISTRATOR")}){message}", ReceiverType.All);
             ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateMsg(message, 2), ReceiverType.All);
-            for (int i = 0; i < 60*4; i++)
+            for (int i = 0; i < 60 * 4; i++)
             {
                 await Task.Delay(1000);
                 if (ClientLinkManager.Instance.ShutdownStop == true)
@@ -2536,11 +2536,11 @@ namespace OpenNos.Handler
             if (packetsplit.Count() < 4)
                 return;
             MapNpc npc = Session.CurrentMap.Npcs.FirstOrDefault(s => s.MapNpcId == Session.Character.LastNRunId);
-            if(npc != null)
+            if (npc != null)
             {
-              
-                Recipe rec = npc.Recipes.FirstOrDefault(s=>s.ItemVNum == short.Parse(packetsplit[3]));
-                if(rec!=null)
+
+                Recipe rec = npc.Recipes.FirstOrDefault(s => s.ItemVNum == short.Parse(packetsplit[3]));
+                if (rec != null)
                 {
                     String rece = $"m_list 3 {rec.Amount}";
                     foreach (RecipeItem ite in rec.Items)
@@ -2550,7 +2550,7 @@ namespace OpenNos.Handler
                     rece += " -1";
                     Session.Client.SendPacket(rece);
                 }
-               
+
             }
         }
         [Packet("game_start")]
@@ -3234,7 +3234,7 @@ namespace OpenNos.Handler
             {
                 if (Session.Character.MapX > Convert.ToByte(packetsplit[2]) + 5 || Session.Character.MapX < Convert.ToByte(packetsplit[2]) - 5
                    || Session.Character.MapY > Convert.ToByte(packetsplit[3]) + 5 || Session.Character.MapY < Convert.ToByte(packetsplit[3]) - 5)
-                     Session.Client.Disconnect();
+                    Session.Client.Disconnect();
                 ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateMv(), ReceiverType.AllOnMapExceptMe);
                 Session.Client.SendPacket(Session.Character.GenerateCond());
             }
@@ -3291,7 +3291,7 @@ namespace OpenNos.Handler
         }
 
         #endregion
-        
+
         #region Commands
         [Packet("$Effect")]
         public void Effect(string packet)
@@ -3624,6 +3624,7 @@ namespace OpenNos.Handler
         {
             Session.Client.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("TOTAL_SESSION")}: {ClientLinkManager.Instance.GetNumberOfAllASession()} ", 13));
         }
+
         [Packet("$Summon")]
         public void Summon(string packet)
         {
@@ -3637,12 +3638,12 @@ namespace OpenNos.Handler
                     return;
                 for (int i = 0; i < qty; i++)
                 {
-                    short mapx = (short)rnd.Next((Session.Character.MapX - qty) % Session.CurrentMap.XLength,( Session.Character.MapX + qty / 3) % Session.CurrentMap.YLength);
+                    short mapx = (short)rnd.Next((Session.Character.MapX - qty) % Session.CurrentMap.XLength, (Session.Character.MapX + qty / 3) % Session.CurrentMap.YLength);
                     short mapy = (short)rnd.Next((Session.Character.MapY - qty) % Session.CurrentMap.XLength, (Session.Character.MapY + qty / 3) % Session.CurrentMap.YLength);
-                    for (int j=100; j>0 && Session.CurrentMap != null && Session.CurrentMap.IsBlockedZone(mapx, mapy);j--)
+                    for (int j = 100; j > 0 && Session.CurrentMap != null && Session.CurrentMap.IsBlockedZone(mapx, mapy); j--)
                     {
-                       mapx = (short)rnd.Next((Session.Character.MapX - qty) % Session.CurrentMap.XLength, (Session.Character.MapX + qty / 3) % Session.CurrentMap.YLength);
-                       mapy = (short)rnd.Next((Session.Character.MapY - qty) % Session.CurrentMap.XLength, (Session.Character.MapY + qty / 3) % Session.CurrentMap.YLength);
+                        mapx = (short)rnd.Next((Session.Character.MapX - qty) % Session.CurrentMap.XLength, (Session.Character.MapX + qty / 3) % Session.CurrentMap.YLength);
+                        mapy = (short)rnd.Next((Session.Character.MapY - qty) % Session.CurrentMap.XLength, (Session.Character.MapY + qty / 3) % Session.CurrentMap.YLength);
                     }
                     MapMonster monst = new MapMonster() { MonsterVNum = vnum, MapY = mapy, MapX = mapx, MapId = Session.Character.MapId, firstX = mapx, firstY = mapy, MapMonsterId = MapMonster.generateMapMonsterId(), Position = 1, Move = move != 0 ? true : false };
                     ServerManager.GetMap(Session.Character.MapId).Monsters.Add(monst);
@@ -3652,6 +3653,26 @@ namespace OpenNos.Handler
             }
             else
                 Session.Client.SendPacket(Session.Character.GenerateSay("$Summon VNUM AMOUNT MOVE", 10));
+        }
+
+        [Packet("$CreatePortal")]
+        public void CreatePortal(string packet)
+        {
+            string[] packetsplit = packet.Split(' ');
+            short mapid, destx, desty = 0;
+            sbyte portaltype = 0;
+            if (packetsplit.Length == 6 && short.TryParse(packetsplit[2], out mapid) && short.TryParse(packetsplit[3], out destx) && short.TryParse(packetsplit[4], out desty) && sbyte.TryParse(packetsplit[5], out portaltype))
+            {
+                short mapId = Session.Character.MapId;
+                short mapX = Session.Character.MapX;
+                short mapY = Session.Character.MapY;
+
+                Portal portal = new Portal() { SourceMapId = mapId, SourceX = mapX, SourceY = mapY, DestinationMapId = mapid, DestinationX = destx, DestinationY = desty , Type = portaltype};
+                ServerManager.GetMap(Session.Character.MapId).Portals.Add(portal);
+                ClientLinkManager.Instance.ChangeMap(Session.Character.CharacterId);
+            }
+            else
+                Session.Client.SendPacket(Session.Character.GenerateSay("$CreatePortal MAPID DESTX DESTY PORTALTYPE", 10));
         }
 
         [Packet("$Teleport")]
@@ -3676,8 +3697,8 @@ namespace OpenNos.Handler
                     {
                         ClientLinkManager.Instance.MapOut(Session.Character.CharacterId);
                         Session.Character.MapId = (short)mapId;
-                        Session.Character.MapX = (short)((short)(mapx) + (short)1);
-                        Session.Character.MapY = (short)((short)(mapy) + (short)1);
+                        Session.Character.MapX = (short)((short)(mapx) + 1);
+                        Session.Character.MapY = (short)((short)(mapy) + 1);
 
                         ClientLinkManager.Instance.ChangeMap(Session.Character.CharacterId);
                     }
