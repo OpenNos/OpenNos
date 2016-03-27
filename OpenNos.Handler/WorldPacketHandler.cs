@@ -2624,6 +2624,11 @@ namespace OpenNos.Handler
                                     Session.Character.InventoryList.RemoveItemAmount(ite.ItemVNum, ite.Amount);
                                 }
                                 GetStartupInventory();
+
+                                Session.Client.SendPacket($"pdti 11 {inv.InventoryItem.ItemVNum} {rec.Amount} 29 {inv.InventoryItem.Upgrade} 0");
+                                Session.Client.SendPacket($"guri 19 1 {Session.Character.CharacterId} 1324");
+
+                                Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("MADE_OBJECT"), 0));
                             }
                         }
                         else
@@ -3314,8 +3319,8 @@ namespace OpenNos.Handler
 
             if (Session.Character.Speed.Equals(Convert.ToByte(packetsplit[5])) || Convert.ToByte(packetsplit[5]) == 10)
             {
-                if (Session.Character.MapX > Convert.ToByte(packetsplit[2]) + 5 || Session.Character.MapX < Convert.ToByte(packetsplit[2]) - 5
-                   || Session.Character.MapY > Convert.ToByte(packetsplit[3]) + 5 || Session.Character.MapY < Convert.ToByte(packetsplit[3]) - 5)
+                if (Session.Character.MapX > Convert.ToByte(packetsplit[2]) + 10 || Session.Character.MapX < Convert.ToByte(packetsplit[2]) - 10
+                   || Session.Character.MapY > Convert.ToByte(packetsplit[3]) + 10 || Session.Character.MapY < Convert.ToByte(packetsplit[3]) - 10)
                     Session.Client.Disconnect();
                 ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateMv(), ReceiverType.AllOnMapExceptMe);
                 Session.Client.SendPacket(Session.Character.GenerateCond());

@@ -76,6 +76,7 @@ namespace OpenNos.GameObject
                         InventoryId = generateInventoryId(),
                     };
                 else
+                    newItem.InventoryItemId = inv.InventoryItem.InventoryItemId;
                     newInventory = new Inventory()
                     {
                         CharacterId = character.CharacterId,
