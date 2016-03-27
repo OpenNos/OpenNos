@@ -125,7 +125,7 @@ namespace OpenNos.GameObject
 
         public string GenerateCInfo()
         {
-            return $"c_info {Name} - -1 -1 - {CharacterId} {Authority} {Gender} {HairStyle} {HairColor} {Class} {GetReputIco()} {Compliment} {(UseSp || IsVehicled ? Morph : 0)} {Invisible} 0 {(UseSp ? MorphUpgrade : 0)} {ArenaWinner} ";
+            return $"c_info {Name} - -1 -1 - {CharacterId} {Authority} {Gender} {HairStyle} {HairColor} {Class} {GetReputIco()} {Compliment} {(UseSp || IsVehicled ? Morph : 0)} {Invisible} 0 {(UseSp ? MorphUpgrade : 0)} {ArenaWinner}";
         }
 
         public string GenerateCMap()
@@ -386,7 +386,7 @@ namespace OpenNos.GameObject
                 color = head.InventoryItem.Design;
             Inventory fairy = EquipmentList.LoadBySlotAndType((byte)EquipmentType.Fairy, (byte)InventoryType.Equipment);
 
-            return $"in 1 {Name} - {CharacterId} {MapX} {MapY} {Direction} {(Authority == 2 ? 2 : 0)} {Gender} {HairStyle} {color} {Class} {generateEqListForPacket()} {(int)(Hp / HPLoad() * 100)} {(int)(Mp / MPLoad() * 100)} {(IsSitting ? 1 : 0)} 1 {(fairy != null ? 2 : 0)} {(fairy != null ? ServerManager.GetItem(fairy.InventoryItem.ItemVNum).Element : 0)} 0 {(fairy != null ? ServerManager.GetItem(fairy.InventoryItem.ItemVNum).Morph : 0)} 0 {(UseSp ? Morph : 0)} {generateEqRareUpgradeForPacket()} -1 - {((GetDigniteIco() == 1) ? GetReputIco() : -GetDigniteIco())} {_invisible} {(UseSp ? MorphUpgrade : 0)} 0 {(UseSp ? MorphUpgrade2 : 0)} {Level} 0 {ArenaWinner} {Compliment} {Size}";
+            return $"in 1 {Name} - {CharacterId} {MapX} {MapY} {Direction} {(Authority == 2 ? 2 : 0)} {Gender} {HairStyle} {color} {Class} {generateEqListForPacket()} {(int)(Hp / HPLoad() * 100)} {(int)(Mp / MPLoad() * 100)} {(IsSitting ? 1 : 0)} -1 {(fairy != null ? 2 : 0)} {(fairy != null ? ServerManager.GetItem(fairy.InventoryItem.ItemVNum).Element : 0)} 0 {(fairy != null ? ServerManager.GetItem(fairy.InventoryItem.ItemVNum).Morph : 0)} 0 {(UseSp ? Morph : 0)} {generateEqRareUpgradeForPacket()} -1 - {((GetDigniteIco() == 1) ? GetReputIco() : -GetDigniteIco())} {_invisible} {(UseSp ? MorphUpgrade : 0)} 0 {(UseSp ? MorphUpgrade2 : 0)} {Level} 0 {ArenaWinner} {Compliment} {Size}";
         }
 
         public List<string> Generatein2()
@@ -807,7 +807,7 @@ namespace OpenNos.GameObject
                 if (item != null)
                 {
                     Item iteminfo = ServerManager.GetItem(item.InventoryItem.ItemVNum);
-                    if (((iteminfo.EquipmentSlot != (byte)EquipmentType.MainWeapon) && (iteminfo.EquipmentSlot != (byte)EquipmentType.SecondaryWeapon) && iteminfo.EquipmentSlot != (byte)EquipmentType.Armor && iteminfo.EquipmentSlot != (byte)EquipmentType.Sp) || ( iteminfo.EquipmentSlot == (byte)EquipmentType.Sp && UseSp))
+                    if (((iteminfo.EquipmentSlot != (byte)EquipmentType.MainWeapon) && (iteminfo.EquipmentSlot != (byte)EquipmentType.SecondaryWeapon) && iteminfo.EquipmentSlot != (byte)EquipmentType.Armor && iteminfo.EquipmentSlot != (byte)EquipmentType.Sp) || (iteminfo.EquipmentSlot == (byte)EquipmentType.Sp && UseSp))
                     {
                         FireResistance += item.InventoryItem.FireResistance + iteminfo.FireResistance;
                         LightResistance += item.InventoryItem.LightResistance + iteminfo.LightResistance;
@@ -1105,7 +1105,7 @@ namespace OpenNos.GameObject
             return ServersData.XPData[Level - 1];
         }
 
-    
+
 
         #endregion
     }
