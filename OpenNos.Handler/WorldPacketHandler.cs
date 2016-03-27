@@ -2537,22 +2537,102 @@ namespace OpenNos.Handler
             string[] packetsplit = packet.Split(' ');
             if (packetsplit.Count() < 4)
                 return;
-            MapNpc npc = Session.CurrentMap.Npcs.FirstOrDefault(s => s.MapNpcId == Session.Character.LastNRunId);
-            if (npc != null)
+
+            byte type = 0;
+            byte.TryParse(packetsplit[2], out type);
+            if (type == 1)
             {
-
-                Recipe rec = npc.Recipes.FirstOrDefault(s => s.ItemVNum == short.Parse(packetsplit[3]));
-                if (rec != null)
+                MapNpc npc = Session.CurrentMap.Npcs.FirstOrDefault(s => s.MapNpcId == Session.Character.LastNRunId);
+                if (npc != null)
                 {
-                    String rece = $"m_list 3 {rec.Amount}";
-                    foreach (RecipeItem ite in rec.Items)
-                    {
-                        rece += String.Format($" {ite.ItemVNum} {ite.Amount}");
-                    }
-                    rece += " -1";
-                    Session.Client.SendPacket(rece);
-                }
 
+                    Recipe rec = npc.Recipes.FirstOrDefault(s => s.ItemVNum == short.Parse(packetsplit[3]));
+                    if (rec != null)
+                    {
+                        String rece = $"m_list 3 {rec.Amount}";
+                        foreach (RecipeItem ite in rec.Items)
+                        {
+                            rece += String.Format($" {ite.ItemVNum} {ite.Amount}");
+                        }
+                        rece += " -1";
+                        Session.Client.SendPacket(rece);
+                    }
+
+                }
+            }
+            else
+            {
+                MapNpc npc = Session.CurrentMap.Npcs.FirstOrDefault(s => s.MapNpcId == Session.Character.LastNRunId);
+                if (npc != null)
+                {
+
+                    Recipe rec = npc.Recipes.FirstOrDefault(s => s.ItemVNum == short.Parse(packetsplit[3]));
+                    if (rec != null)
+                    {
+                        foreach (RecipeItem ite in rec.Items)
+                        {
+                            if (Session.Character.InventoryList.CountItem(ite.ItemVNum) < ite.Amount)
+                                return;
+                        }
+
+
+                        InventoryItem newItem = new InventoryItem()
+                        {
+                            InventoryItemId = Session.Character.InventoryList.generateInventoryItemId(),
+                            Amount = rec.Amount,
+                            ItemVNum = rec.ItemVNum,
+                            Rare = 0,
+                            Upgrade = 0,
+                            Design = 0,
+                            Concentrate = 0,
+                            CriticalLuckRate = 0,
+                            CriticalRate = 0,
+                            DamageMaximum = 0,
+                            DamageMinimum = 0,
+                            DarkElement = 0,
+                            DistanceDefence = 0,
+                            DistanceDefenceDodge = 0,
+                            DefenceDodge = 0,
+                            ElementRate = 0,
+                            FireElement = 0,
+                            HitRate = 0,
+                            LightElement = 0,
+                            IsFixed = false,
+                            Ammo = 0,
+                            MagicDefence = 0,
+                            CloseDefence = 0,
+                            SpXp = 0,
+                            SpLevel = 0,
+                            SlDefence = 0,
+                            SlElement = 0,
+                            SlDamage = 0,
+                            SlHP = 0,
+                            WaterElement = 0,
+                        };
+                        Item iteminfo = ServerManager.GetItem(rec.ItemVNum);
+                        Inventory inv = Session.Character.InventoryList.CreateItem(newItem, Session.Character);
+                        ServersData.SetRarityPoint(ref inv);
+                        if (inv != null)
+                        {
+                            Session.Character.InventoryList.LoadByInventoryItem(inv.InventoryItem.InventoryItemId).InventoryItem = inv.InventoryItem;
+
+                            short Slot = inv.Slot;
+                            if (Slot != -1)
+                            {
+                                foreach (RecipeItem ite in rec.Items)
+                                {
+                                    Session.Character.InventoryList.RemoveItemAmount(ite.ItemVNum, ite.Amount);
+                                }
+                                GetStartupInventory();
+                            }
+                        }
+                        else
+                        {
+                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_PLACE"), 0));
+                        }
+                    }
+
+                }
             }
         }
         [Packet("game_start")]
@@ -3673,9 +3753,9 @@ namespace OpenNos.Handler
                 short mapY = Session.Character.MapY;
                 if (packetsplit.Length > 5)
                     sbyte.TryParse(packetsplit[5], out portaltype);
-                Portal portal = new Portal() { SourceMapId = mapId, SourceX = mapX, SourceY = mapY, DestinationMapId = mapid, DestinationX = destx, DestinationY = desty , Type = portaltype};
+                Portal portal = new Portal() { SourceMapId = mapId, SourceX = mapX, SourceY = mapY, DestinationMapId = mapid, DestinationX = destx, DestinationY = desty, Type = portaltype };
                 ServerManager.GetMap(Session.Character.MapId).Portals.Add(portal);
-                ClientLinkManager.Instance.Broadcast(Session,Session.Character.GenerateGp(portal),ReceiverType.AllOnMap);
+                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateGp(portal), ReceiverType.AllOnMap);
             }
             else
                 Session.Client.SendPacket(Session.Character.GenerateSay("$PortalTo MAPID DESTX DESTY PORTALTYPE", 10));
