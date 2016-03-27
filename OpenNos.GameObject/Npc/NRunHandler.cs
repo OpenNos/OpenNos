@@ -88,6 +88,7 @@ namespace OpenNos.GameObject
                         {
                             if (Session.Character.Gold >= 1000 * type)
                             {
+                                ClientLinkManager.Instance.MapOut(Session.Character.CharacterId);
                                 Session.Character.Gold -= 1000 * type;
                                 Session.Client.SendPacket(Session.Character.GenerateGold());
                                 Session.Character.MapY = tp.MapY;
@@ -109,6 +110,7 @@ namespace OpenNos.GameObject
                         {
                             if (Session.Character.Gold >= 5000 * type)
                             {
+                                ClientLinkManager.Instance.MapOut(Session.Character.CharacterId);
                                 Session.Character.Gold -= 5000 * type;
                                 Session.Client.SendPacket(Session.Character.GenerateGold());
                                 Session.Character.MapY = tp.MapY;
