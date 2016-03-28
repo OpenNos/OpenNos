@@ -441,6 +441,9 @@
   <data name="PERFECTSP_WATER" xml:space="preserve">
     <value>Woda</value>
   </data>
+  <data name="PORTAL_BLOCKED" xml:space="preserve">
+    <value>Cannot use this portal... It is blocked!</value>
+  </data>
   <data name="QUICK_GET_UP_DISABLED" xml:space="preserve">
     <value>Szybkie wstawanie wylaczone</value>
   </data>

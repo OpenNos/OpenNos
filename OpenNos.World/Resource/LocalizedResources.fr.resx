@@ -297,6 +297,9 @@
   <data name="PACKET_FAILURE" xml:space="preserve">
     <value>Failed to send packet {0} to client {1}, {2}.</value>
   </data>
+  <data name="PORTAL_BLOCKED" xml:space="preserve">
+    <value>Cannot use this portal... It is blocked!</value>
+  </data>
   <data name="RARIFY_FAILED" xml:space="preserve">
     <value>L'objet à disparu, car le pari à échoué !</value>
   </data>

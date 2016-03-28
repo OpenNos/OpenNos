@@ -387,6 +387,9 @@
   <data name="PACKET_FAILURE" xml:space="preserve">
     <value>Invio del pacchetto fallito {0} al client {1}, {2}.</value>
   </data>
+  <data name="PORTAL_BLOCKED" xml:space="preserve">
+    <value>Non puoi usare questo portale perche' e' bloccato</value>
+  </data>
   <data name="QUICK_GET_UP_DISABLED" xml:space="preserve">
     <value>Rialzati subito disattivato.</value>
   </data>

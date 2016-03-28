@@ -1562,11 +1562,26 @@ namespace OpenNos.Handler
                 Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("CANT_MOVE"), 10));
                 return;
             }
+            
             foreach (Portal portal in ServerManager.GetMap(Session.Character.MapId).Portals)
             {
                 if (Session.Character.MapY >= portal.SourceY - 1 && Session.Character.MapY <= portal.SourceY + 1
                     && Session.Character.MapX >= portal.SourceX - 1 && Session.Character.MapX <= portal.SourceX + 1)
                 {
+                    switch (portal.Type)
+                    {
+                        case (sbyte)PortalType.TSNormal:
+                            break;
+                        case (sbyte)PortalType.Closed:
+                        case (sbyte)PortalType.EndClosed:
+                        case (sbyte)PortalType.TSEndClosed:
+                        case (sbyte)PortalType.BlueRaidPortal: //todo
+                        case (sbyte)PortalType.DarkRaidPortal:
+                        default:
+                            Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("PORTAL_BLOCKED"), 10));
+                            return;
+                    }
+
                     ClientLinkManager.Instance.MapOut(Session.Character.CharacterId);
                     Session.Character.MapId = portal.DestinationMapId;
                     Session.Character.MapX = portal.DestinationX;
