@@ -809,15 +809,17 @@ namespace OpenNos.GameObject
                     Item iteminfo = ServerManager.GetItem(item.InventoryItem.ItemVNum);
                     if (((iteminfo.EquipmentSlot != (byte)EquipmentType.MainWeapon) && (iteminfo.EquipmentSlot != (byte)EquipmentType.SecondaryWeapon) && iteminfo.EquipmentSlot != (byte)EquipmentType.Armor && iteminfo.EquipmentSlot != (byte)EquipmentType.Sp) || (iteminfo.EquipmentSlot == (byte)EquipmentType.Sp && UseSp))
                     {
-                        FireResistance += item.InventoryItem.FireResistance + iteminfo.FireResistance;
-                        LightResistance += item.InventoryItem.LightResistance + iteminfo.LightResistance;
-                        WaterResistance += item.InventoryItem.WaterResistance + iteminfo.WaterResistance;
-                        DarkResistance += item.InventoryItem.DarkResistance + iteminfo.DarkResistance;
-                        Defence += item.InventoryItem.CloseDefence + iteminfo.CloseDefence;
+                        FireResistance += item.InventoryItem.FireResistance + iteminfo.FireResistance + item.InventoryItem.SpFire;
+                        LightResistance += item.InventoryItem.LightResistance + item.InventoryItem.SpLight + iteminfo.LightResistance;
+                        WaterResistance += item.InventoryItem.WaterResistance + item.InventoryItem.SpWater + iteminfo.WaterResistance;
+                        DarkResistance += item.InventoryItem.DarkResistance + iteminfo.DarkResistance + item.InventoryItem.SpWater;
+                        Defence += item.InventoryItem.CloseDefence + iteminfo.CloseDefence + item.InventoryItem.SpDefence * 10;
                         DefenceRate += item.InventoryItem.DefenceDodge + iteminfo.DefenceDodge;
-                        DistanceDefence += item.InventoryItem.DistanceDefence + iteminfo.DistanceDefence;
+                        DistanceDefence += item.InventoryItem.DistanceDefence + iteminfo.DistanceDefence + item.InventoryItem.SpDefence * 10;
                         DistanceDefenceRate += item.InventoryItem.DistanceDefenceDodge + iteminfo.DistanceDefenceDodge;
-                        //maxhp-mp
+
+                        MinHit += weapon.InventoryItem.SpDamage * 10;
+                        MaxHit += weapon.InventoryItem.SpDamage * 10;
                     }
                 }
             }
@@ -931,7 +933,7 @@ namespace OpenNos.GameObject
                     else
                         multiplicator += 0.5 + (point - 50.00) / 50.00;
 
-                    hp = inventory.InventoryItem.HP;
+                    hp = inventory.InventoryItem.HP+ inventory.InventoryItem.SpHP*100;
                 }
             }
             return (int)((ServersData.HPData[Class, Level] + hp) * multiplicator);
@@ -1047,7 +1049,8 @@ namespace OpenNos.GameObject
                     else
                         multiplicator += 0.5 + (point - 50.00) / 50.00; ;
 
-                    mp = inventory.InventoryItem.MP;
+                    mp = inventory.InventoryItem.MP + inventory.InventoryItem.SpHP * 100;
+
                 }
             }
             return (int)((ServersData.MPData[Class, Level] + mp) * multiplicator);
