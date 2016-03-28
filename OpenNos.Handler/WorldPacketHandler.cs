@@ -1570,13 +1570,15 @@ namespace OpenNos.Handler
                 {
                     switch (portal.Type)
                     {
+                        case (sbyte)PortalType.MapPortal:
                         case (sbyte)PortalType.TSNormal:
+                        case (sbyte)PortalType.Open:
+                        case (sbyte)PortalType.Miniland:
+                        case (sbyte)PortalType.TSEnd:
+                        case (sbyte)PortalType.End:
+                        case (sbyte)PortalType.Effect:
+                        case (sbyte)PortalType.ShopTeleport:
                             break;
-                        case (sbyte)PortalType.Closed:
-                        case (sbyte)PortalType.EndClosed:
-                        case (sbyte)PortalType.TSEndClosed:
-                        case (sbyte)PortalType.BlueRaidPortal: //todo
-                        case (sbyte)PortalType.DarkRaidPortal:
                         default:
                             Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("PORTAL_BLOCKED"), 10));
                             return;
