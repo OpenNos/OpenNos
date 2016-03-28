@@ -876,7 +876,7 @@ namespace OpenNos.Handler
         {
             string[] packetsplit = packet.Split(' ');
             if (packetsplit.Length <= 3) return;
-
+        
             byte type; byte.TryParse(packetsplit[2], out type);
             short slot; short.TryParse(packetsplit[3], out slot);
             Inventory inventory = null;
@@ -888,6 +888,46 @@ namespace OpenNos.Handler
 
                 case 1:
                     inventory = Session.Character.InventoryList.LoadBySlotAndType(slot, (byte)InventoryType.Wear);
+                    break;
+
+                case 2:
+                    Item item = ServerManager.GetItem(slot);
+                    inventory = new Inventory()
+                    {
+                        InventoryItem = new InventoryItem()
+                        {
+                            InventoryItemId = Session.Character.InventoryList.generateInventoryItemId(),
+                            Amount = 1,
+                            ItemVNum = item.VNum,
+                            Rare = 0,
+                            Upgrade = 0,
+                            Design = 0,
+                            Concentrate = 0,
+                            CriticalLuckRate = 0,
+                            CriticalRate = 0,
+                            DamageMaximum = 0,
+                            DamageMinimum = 0,
+                            DarkElement = 0,
+                            DistanceDefence = 0,
+                            DistanceDefenceDodge = 0,
+                            DefenceDodge = 0,
+                            ElementRate = 0,
+                            FireElement = 0,
+                            HitRate = 0,
+                            LightElement = 0,
+                            IsFixed = false,
+                            Ammo = 0,
+                            MagicDefence = 0,
+                            CloseDefence = 0,
+                            SpXp = 0,
+                            SpLevel = 0,
+                            SlDefence = 0,
+                            SlElement = 0,
+                            SlDamage = 0,
+                            SlHP = 0,
+                            WaterElement = 0
+                        }
+                    };
                     break;
 
                 case 10:
