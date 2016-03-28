@@ -49,6 +49,7 @@ namespace OpenNos.GameObject
             short Slot = -1;
             IEnumerable<InventoryItem> slotfree = null;
             Inventory inv = null;
+            Boolean test = false;
             if (ServerManager.GetItem(newItem.ItemVNum).Type != 0)
             {
                 slotfree = character.LoadBySlotAllowed(newItem.ItemVNum, newItem.Amount);
@@ -67,6 +68,7 @@ namespace OpenNos.GameObject
             if (Slot != -1)
             {
                 if (modified == false)
+                {
                     newInventory = new Inventory()
                     {
                         CharacterId = character.CharacterId,
@@ -75,7 +77,9 @@ namespace OpenNos.GameObject
                         InventoryItem = newItem,
                         InventoryId = generateInventoryId(),
                     };
+                }
                 else
+                {
                     newItem.InventoryItemId = inv.InventoryItem.InventoryItemId;
                     newInventory = new Inventory()
                     {
@@ -85,6 +89,7 @@ namespace OpenNos.GameObject
                         InventoryItem = newItem,
                         InventoryId = inv.InventoryId,
                     };
+                }
                 InsertOrUpdate(ref newInventory);
             }
             return newInventory;
