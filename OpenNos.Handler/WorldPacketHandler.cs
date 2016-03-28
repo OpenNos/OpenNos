@@ -1371,6 +1371,8 @@ namespace OpenNos.Handler
             short slot; short.TryParse(packetsplit[3], out slot);
             byte desttype; byte.TryParse(packetsplit[4], out desttype);
             short destslot; short.TryParse(packetsplit[5], out destslot);
+            if (destslot > 48 + (Session.Character.BackPack * 12))
+                return;
             if ((Session.Character.ExchangeInfo != null && Session.Character.ExchangeInfo?.ExchangeList.Count() != 0) || Session.Character.Speed == 0)
                 return;
             Inventory inv = Session.Character.InventoryList.moveInventory(type, slot, desttype, destslot);
@@ -1391,6 +1393,8 @@ namespace OpenNos.Handler
             short destslot; short.TryParse(packetsplit[5], out destslot);
             Inventory LastInventory;
             Inventory NewInventory;
+            if (destslot > 48 + (Session.Character.BackPack * 12))
+                return;
             if ((Session.Character.ExchangeInfo != null && Session.Character.ExchangeInfo?.ExchangeList.Count() != 0) || Session.Character.Speed == 0)
                 return;
             Session.Character.InventoryList.MoveItem(Session.Character, type, slot, amount, destslot, out LastInventory, out NewInventory);

@@ -49,7 +49,6 @@ namespace OpenNos.GameObject
             short Slot = -1;
             IEnumerable<InventoryItem> slotfree = null;
             Inventory inv = null;
-            Boolean test = false;
             if (ServerManager.GetItem(newItem.ItemVNum).Type != 0)
             {
                 slotfree = character.LoadBySlotAllowed(newItem.ItemVNum, newItem.Amount);
