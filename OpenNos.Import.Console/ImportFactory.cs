@@ -647,6 +647,7 @@ namespace OpenNos.Import.Console
                 bool itemAreaBegin = false;
                 string name = "";
                 int i = 0;
+               
                 while ((line = npcIdStream.ReadLine()) != null)
                 {
                     string[] linesave = line.Split('\t');
@@ -681,6 +682,10 @@ namespace OpenNos.Import.Console
                     else if (linesave.Length > 7 && linesave[1] == "INDEX")
                     {
                         item.Type = Convert.ToByte(linesave[2]) != 4 ? Convert.ToByte(linesave[2]) : (byte)0;
+                        if(Convert.ToByte(linesave[2]) == 4)
+                        {
+                            item.ReputPrice = item.Price;
+                        }
                         item.ItemType = linesave[3] != "-1" ? Convert.ToByte($"{item.Type}{linesave[3]}") : (byte)0;
                         item.ItemSubType = Convert.ToByte(linesave[4]);
                         item.EquipmentSlot = Convert.ToByte(linesave[5] != "-1" ? linesave[5] : "0");

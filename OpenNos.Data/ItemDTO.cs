@@ -20,6 +20,7 @@ namespace OpenNos.Data
 
         public short VNum { get; set; }
         public long Price { get; set; }
+        public long ReputPrice { get; set; }
         public string Name { get; set; }
         public byte ItemType { get; set; }
         public byte ItemSubType { get; set; }

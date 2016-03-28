@@ -2032,7 +2032,10 @@ namespace OpenNos.Handler
                     pourcent = 1.20;
                 else if (Session.Character.GetDigniteIco() == 5 || Session.Character.GetDigniteIco() == 6)
                     pourcent = 1.5;
-                if (iteminfo.Type != 0)
+
+                if (iteminfo.ReputPrice > 0)
+                    shoplist += $" {iteminfo.Type}.{item.Slot}.{item.ItemVNum}.0.0.{ServerManager.GetItem(item.ItemVNum).ReputPrice}";
+                else if (iteminfo.Type != 0)
                     shoplist += $" {iteminfo.Type}.{item.Slot}.{item.ItemVNum}.{-1}.{ServerManager.GetItem(item.ItemVNum).Price * pourcent}";
                 else
                     shoplist += $" {iteminfo.Type}.{item.Slot}.{item.ItemVNum}.{item.Rare}.{(iteminfo.IsColored ? item.Color : item.Upgrade)}.{ServerManager.GetItem(item.ItemVNum).Price * pourcent}";

@@ -220,6 +220,7 @@
     </Key>
     <Property Name="VNum" Type="smallint" Nullable="false" />
     <Property Name="Price" Type="bigint" Nullable="false" />
+    <Property Name="ReputPrice" Type="bigint" Nullable="false" />
     <Property Name="Name" Type="longtext" Nullable="false" />
     <Property Name="ItemType" Type="utinyint" Nullable="false" />
     <Property Name="ItemSubType" Type="utinyint" Nullable="false" />
@@ -1053,6 +1054,7 @@
           </Key>
           <Property Name="VNum" Type="Int16" Nullable="false" annotation:StoreGeneratedPattern="None" />
           <Property Name="Price" Type="Int64" Nullable="false" />
+          <Property Name="ReputPrice" Type="Int64" Nullable="false" />
           <Property Name="Name" Type="String" Nullable="false" />
           <Property Name="ItemType" Type="Byte" Nullable="false" />
           <Property Name="ItemSubType" Type="Byte" Nullable="false" />
@@ -1640,6 +1642,7 @@
         <MappingFragment StoreEntitySet="item">
           <ScalarProperty Name="VNum" ColumnName="VNum" />
           <ScalarProperty Name="Price" ColumnName="Price" />
+          <ScalarProperty Name="ReputPrice" ColumnName="ReputPrice" />
           <ScalarProperty Name="Name" ColumnName="Name" />
           <ScalarProperty Name="ItemType" ColumnName="ItemType" />
           <ScalarProperty Name="ItemSubType" ColumnName="ItemSubType" />

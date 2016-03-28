@@ -44,9 +44,9 @@
 -- -----------------------------------------------------------
 -- Entity Designer DDL Script for MySQL Server 4.1 and higher
 -- -----------------------------------------------------------
--- Date Created: 03/28/2016 14:15:31
+-- Date Created: 03/28/2016 20:48:39
 
--- Generated from EDMX file: C:\Users\Dominik\Source\Repos\OpenNos\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
+-- Generated from EDMX file: C:\Users\ERWAN\Desktop\OpenNos Git\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
 -- Target version: 3.0.0.0
 
 -- --------------------------------------------------
@@ -268,6 +268,7 @@ ALTER TABLE `map` ADD PRIMARY KEY (MapId);
 CREATE TABLE `item`(
 	`VNum` smallint NOT NULL, 
 	`Price` bigint NOT NULL, 
+	`ReputPrice` bigint NOT NULL, 
 	`Name` longtext NOT NULL, 
 	`ItemType` TINYINT UNSIGNED NOT NULL, 
 	`ItemSubType` TINYINT UNSIGNED NOT NULL, 
