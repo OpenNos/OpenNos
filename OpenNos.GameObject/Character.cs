@@ -818,8 +818,8 @@ namespace OpenNos.GameObject
                         DistanceDefence += item.InventoryItem.DistanceDefence + iteminfo.DistanceDefence + item.InventoryItem.SpDefence * 10;
                         DistanceDefenceRate += item.InventoryItem.DistanceDefenceDodge + iteminfo.DistanceDefenceDodge;
 
-                        MinHit += weapon.InventoryItem.SpDamage * 10;
-                        MaxHit += weapon.InventoryItem.SpDamage * 10;
+                        MinHit += item.InventoryItem.SpDamage * 10;
+                        MaxHit += item.InventoryItem.SpDamage * 10;
                     }
                 }
             }
