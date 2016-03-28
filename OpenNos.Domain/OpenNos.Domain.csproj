@@ -56,6 +56,7 @@
     <Compile Include="BCardType.cs" />
     <Compile Include="CharacterState.cs" />
     <Compile Include="JewelOptionType.cs" />
+    <Compile Include="PortalType.cs" />
     <Compile Include="RespawnType.cs" />
     <Compile Include="ConfigType.cs" />
     <Compile Include="ItemType.cs" />
