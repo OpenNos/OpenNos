@@ -2628,7 +2628,7 @@ namespace OpenNos.Handler
                                 Session.Client.SendPacket($"pdti 11 {inv.InventoryItem.ItemVNum} {rec.Amount} 29 {inv.InventoryItem.Upgrade} 0");
                                 Session.Client.SendPacket($"guri 19 1 {Session.Character.CharacterId} 1324");
 
-                                Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("MADE_OBJECT"), 0));
+                                Session.Client.SendPacket(Session.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("MADE_OBJECT"), iteminfo.Name, rec.Amount), 0));
                             }
                         }
                         else

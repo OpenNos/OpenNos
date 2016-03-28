@@ -330,6 +330,9 @@
   <data name="LOW_REP" xml:space="preserve">
     <value>Za niska reputacja</value>
   </data>
+  <data name="MADE_OBJECT" xml:space="preserve">
+    <value>Stworzyles: {0} x {1}</value>
+  </data>
   <data name="MAGICIAN" xml:space="preserve">
     <value>Mag</value>
   </data>

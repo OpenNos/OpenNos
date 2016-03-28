@@ -330,6 +330,9 @@
   <data name="LOW_REP" xml:space="preserve">
     <value>Reputation is too low</value>
   </data>
+  <data name="MADE_OBJECT" xml:space="preserve">
+    <value>You've crafted: {0} x {1}</value>
+  </data>
   <data name="MAGICIAN" xml:space="preserve">
     <value>Magician</value>
   </data>
