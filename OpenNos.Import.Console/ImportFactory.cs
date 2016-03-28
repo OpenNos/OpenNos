@@ -682,10 +682,7 @@ namespace OpenNos.Import.Console
                     else if (linesave.Length > 7 && linesave[1] == "INDEX")
                     {
                         item.Type = Convert.ToByte(linesave[2]) != 4 ? Convert.ToByte(linesave[2]) : (byte)0;
-                        if(Convert.ToByte(linesave[2]) == 4)
-                        {
-                            item.ReputPrice = item.Price;
-                        }
+                      
                         item.ItemType = linesave[3] != "-1" ? Convert.ToByte($"{item.Type}{linesave[3]}") : (byte)0;
                         item.ItemSubType = Convert.ToByte(linesave[4]);
                         item.EquipmentSlot = Convert.ToByte(linesave[5] != "-1" ? linesave[5] : "0");
@@ -710,7 +707,10 @@ namespace OpenNos.Import.Console
                         item.IsWarehouse = linesave[10] == "1" ? true : false;
                         item.IsColored = linesave[16] == "1" ? true : false;
                         item.Sex = linesave[18] == "1" ? (byte)1 : linesave[17] == "1" ? (byte)2 : (byte)0;
-
+                        if (linesave[21] == "1")
+                        {
+                            item.ReputPrice = item.Price;
+                        }
                         /*
                         ??item.IsVehicle = linesave[11] == "1" ? true : false;??
                         ??item.BoxedVehicle = linesave[12] == "1" ? true : false;??
@@ -724,7 +724,6 @@ namespace OpenNos.Import.Console
                         linesave[15] idk
                         linesave[19] idk
                         linesave[20] idk
-                        linesave[21] idk
                         */
                     }
                     else if (linesave.Length > 1 && linesave[1] == "DATA")

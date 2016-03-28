@@ -236,9 +236,9 @@ namespace OpenNos.Handler
 
                 ShopItem item = npc?.Shop.ShopItems.FirstOrDefault(it => it.Slot.Equals(slot));
                 if (item == null) return;
-
-                long price = ServerManager.GetItem(item.ItemVNum).Price * amount;
-
+                Item iteminfo = ServerManager.GetItem(item.ItemVNum);
+                long price = iteminfo.Price * amount;
+                long Reputprice = iteminfo.ReputPrice * amount;
                 double pourcent = 1;
                 if (Session.Character.GetDigniteIco() == 3)
                     pourcent = 1.10;
@@ -247,16 +247,33 @@ namespace OpenNos.Handler
                 else if (Session.Character.GetDigniteIco() == 5 || Session.Character.GetDigniteIco() == 6)
                     pourcent = 1.5;
 
-                if (price <= 0 || price * pourcent > Session.Character.Gold)
+                if (iteminfo.ReputPrice == 0)
                 {
-                    Session.Client.SendPacket(Session.Character.GenerateShopMemo(3, Language.Instance.GetMessageFromKey("NOT_ENOUGH_MONEY")));
-                    return;
+                    if (price <= 0 || price * pourcent > Session.Character.Gold)
+                    {
+                        Session.Client.SendPacket(Session.Character.GenerateShopMemo(3, Language.Instance.GetMessageFromKey("NOT_ENOUGH_MONEY")));
+                        return;
+                    }
+
+                    Session.Client.SendPacket(Session.Character.GenerateShopMemo(1, string.Format(Language.Instance.GetMessageFromKey("BUY_ITEM_VALIDE"), ServerManager.GetItem(item.ItemVNum).Name, amount)));
+                    Session.Character.Gold -= (long)(price * pourcent);
+                    Session.Client.SendPacket(Session.Character.GenerateGold());
+                }
+                else
+                {
+                    if (Reputprice <= 0 || Reputprice > Session.Character.Reput)
+                    {
+                        Session.Client.SendPacket(Session.Character.GenerateShopMemo(3, Language.Instance.GetMessageFromKey("NOT_ENOUGH_REPUT")));
+                        return;
+                    }
+
+                    Session.Client.SendPacket(Session.Character.GenerateShopMemo(1, string.Format(Language.Instance.GetMessageFromKey("BUY_ITEM_VALIDE"), ServerManager.GetItem(item.ItemVNum).Name, amount)));
+                    Session.Character.Reput -= (long)(Reputprice);
+                    Session.Client.SendPacket(Session.Character.GenerateFd());
+                    Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("REPUT_DECREASE"), 11));
+
                 }
 
-                Session.Client.SendPacket(Session.Character.GenerateShopMemo(1, string.Format(Language.Instance.GetMessageFromKey("BUY_ITEM_VALIDE"), ServerManager.GetItem(item.ItemVNum).Name, amount)));
-
-                Session.Character.Gold -= (long)(price * pourcent);
-                Session.Client.SendPacket(Session.Character.GenerateGold());
 
                 InventoryItem newItem = new InventoryItem
                 {
@@ -667,12 +684,12 @@ namespace OpenNos.Handler
             {
                 foreach (Portal por in Session.CurrentMap.Portals)
                 {
-                    if (Session.Character.MapX < por.SourceX+6 && Session.Character.MapX > por.SourceX - 6 && Session.Character.MapY < por.SourceY + 6 && Session.Character.MapY > por.SourceY - 6)
+                    if (Session.Character.MapX < por.SourceX + 6 && Session.Character.MapX > por.SourceX - 6 && Session.Character.MapY < por.SourceY + 6 && Session.Character.MapY > por.SourceY - 6)
                     {
-                        Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SHOP_NEAR_PORTAL"),0));
+                        Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SHOP_NEAR_PORTAL"), 0));
                         return;
                     }
-                
+
                 }
                 short typePacket; short.TryParse(packetsplit[2], out typePacket);
                 if (typePacket == 2)
@@ -1562,7 +1579,7 @@ namespace OpenNos.Handler
                 Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("CANT_MOVE"), 10));
                 return;
             }
-            
+
             foreach (Portal portal in ServerManager.GetMap(Session.Character.MapId).Portals)
             {
                 if (Session.Character.MapY >= portal.SourceY - 1 && Session.Character.MapY <= portal.SourceY + 1
@@ -2033,8 +2050,10 @@ namespace OpenNos.Handler
                 else if (Session.Character.GetDigniteIco() == 5 || Session.Character.GetDigniteIco() == 6)
                     pourcent = 1.5;
 
-                if (iteminfo.ReputPrice > 0)
-                    shoplist += $" {iteminfo.Type}.{item.Slot}.{item.ItemVNum}.0.0.{ServerManager.GetItem(item.ItemVNum).ReputPrice}";
+                if (iteminfo.ReputPrice > 0 && iteminfo.Type == 0)
+                    shoplist += $" {iteminfo.Type}.{item.Slot}.{item.ItemVNum}.{item.Rare}.{(iteminfo.IsColored ? item.Color : item.Upgrade)}.{ServerManager.GetItem(item.ItemVNum).ReputPrice}";
+                else if (iteminfo.ReputPrice > 0 && iteminfo.Type == 0)
+                    shoplist += $" {iteminfo.Type}.{item.Slot}.{item.ItemVNum}.{-1}.{ServerManager.GetItem(item.ItemVNum).ReputPrice}";
                 else if (iteminfo.Type != 0)
                     shoplist += $" {iteminfo.Type}.{item.Slot}.{item.ItemVNum}.{-1}.{ServerManager.GetItem(item.ItemVNum).Price * pourcent}";
                 else
