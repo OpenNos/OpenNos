@@ -665,6 +665,15 @@ namespace OpenNos.Handler
             string shopname = "";
             if (packetsplit.Length > 2)
             {
+                foreach (Portal por in Session.CurrentMap.Portals)
+                {
+                    if (Session.Character.MapX < por.SourceX+6 && Session.Character.MapX > por.SourceX - 6 && Session.Character.MapY < por.SourceY + 6 && Session.Character.MapY > por.SourceY - 6)
+                    {
+                        Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SHOP_NEAR_PORTAL"),0));
+                        return;
+                    }
+                
+                }
                 short typePacket; short.TryParse(packetsplit[2], out typePacket);
                 if (typePacket == 2)
                 {
