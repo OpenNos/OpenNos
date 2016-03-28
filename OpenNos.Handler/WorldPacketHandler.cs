@@ -2052,7 +2052,7 @@ namespace OpenNos.Handler
 
                 if (iteminfo.ReputPrice > 0 && iteminfo.Type == 0)
                     shoplist += $" {iteminfo.Type}.{item.Slot}.{item.ItemVNum}.{item.Rare}.{(iteminfo.IsColored ? item.Color : item.Upgrade)}.{ServerManager.GetItem(item.ItemVNum).ReputPrice}";
-                else if (iteminfo.ReputPrice > 0 && iteminfo.Type == 0)
+                else if (iteminfo.ReputPrice > 0 && iteminfo.Type != 0)
                     shoplist += $" {iteminfo.Type}.{item.Slot}.{item.ItemVNum}.{-1}.{ServerManager.GetItem(item.ItemVNum).ReputPrice}";
                 else if (iteminfo.Type != 0)
                     shoplist += $" {iteminfo.Type}.{item.Slot}.{item.ItemVNum}.{-1}.{ServerManager.GetItem(item.ItemVNum).Price * pourcent}";
