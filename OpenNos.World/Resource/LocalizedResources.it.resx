@@ -414,6 +414,9 @@
   <data name="SELL_ITEM_VALIDE" xml:space="preserve">
     <value>{0}: vendi &lt;{1} : pezzi &gt;</value>
   </data>
+  <data name="SHOP_NEAR_PORTAL" xml:space="preserve">
+    <value>You cannot create shop soo close to portal!</value>
+  </data>
   <data name="SHOP_OPEN" xml:space="preserve">
     <value>Il negozio è stato aperto</value>
   </data>

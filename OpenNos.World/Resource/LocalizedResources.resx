@@ -442,7 +442,7 @@
     <value>Water</value>
   </data>
   <data name="PORTAL_BLOCKED" xml:space="preserve">
-    <value>Cannot use this portal... It is blocked!</value>
+    <value>This portal is locked, i can't use it</value>
   </data>
   <data name="QUICK_GET_UP_DISABLED" xml:space="preserve">
     <value>Quick get up disabled</value>
@@ -476,6 +476,9 @@
   </data>
   <data name="SHOPS_LOADED" xml:space="preserve">
     <value>{0} Shops Loaded!</value>
+  </data>
+  <data name="SHOP_NEAR_PORTAL" xml:space="preserve">
+    <value>You cannot create shop soo close to portal!</value>
   </data>
   <data name="SHOP_OPEN" xml:space="preserve">
     <value>Shop has ben opened</value>

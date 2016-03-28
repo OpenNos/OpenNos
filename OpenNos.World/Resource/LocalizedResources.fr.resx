@@ -315,6 +315,9 @@
   <data name="REP_CHANGED" xml:space="preserve">
     <value>Réputation changée.</value>
   </data>
+  <data name="SHOP_NEAR_PORTAL" xml:space="preserve">
+    <value>You cannot create shop soo close to portal!</value>
+  </data>
   <data name="SHOP_OPEN" xml:space="preserve">
     <value>Magasin ouvert.</value>
   </data>

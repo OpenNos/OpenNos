@@ -442,7 +442,7 @@
     <value>Woda</value>
   </data>
   <data name="PORTAL_BLOCKED" xml:space="preserve">
-    <value>Cannot use this portal... It is blocked!</value>
+    <value>Portal zablokowany, nie moge go uzyc</value>
   </data>
   <data name="QUICK_GET_UP_DISABLED" xml:space="preserve">
     <value>Szybkie wstawanie wylaczone</value>
@@ -476,6 +476,9 @@
   </data>
   <data name="SHOPS_LOADED" xml:space="preserve">
     <value>{0} Załadowanych sklepów!</value>
+  </data>
+  <data name="SHOP_NEAR_PORTAL" xml:space="preserve">
+    <value>Nie mozesz ustawic sklepu tak blisko portalu!</value>
   </data>
   <data name="SHOP_OPEN" xml:space="preserve">
     <value>Sklep zostal otwarty</value>

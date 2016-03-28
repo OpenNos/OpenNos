@@ -474,6 +474,9 @@
   <data name="SHOPS_LOADED" xml:space="preserve">
     <value>{0} Shops geladen!</value>
   </data>
+  <data name="SHOP_NEAR_PORTAL" xml:space="preserve">
+    <value>You cannot create shop soo close to portal!</value>
+  </data>
   <data name="SHOP_OPEN" xml:space="preserve">
     <value>Du hast einen Shop eröffnet.</value>
   </data>
