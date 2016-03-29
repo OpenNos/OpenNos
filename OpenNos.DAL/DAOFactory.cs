@@ -23,6 +23,7 @@ namespace OpenNos.DAL
 
         private static IAccountDAO _accountDAO;
         private static ICharacterDAO _characterDAO;
+        private static IDropDAO _dropDAO;
         private static IGeneralLogDAO _generallogDAO;
         private static IInventoryDAO _inventoryDAO;
         private static IInventoryItemDAO _inventoryitemDAO;
@@ -32,12 +33,13 @@ namespace OpenNos.DAL
         private static IMapNpcDAO _mapnpcDAO;
         private static INpcMonsterDAO _npcmonsterDAO;
         private static IPortalDAO _portalDAO;
+        private static IRecipeDAO _recipeDAO;
+        private static IRecipeItemDAO _recipeitemDAO;
         private static IRespawnDAO _respawnDAO;
         private static IShopDAO _shopDAO;
         private static IShopItemDAO _shopitemDAO;
         private static ITeleporterDAO _teleporterDAO;
-        private static IRecipeDAO _recipeDAO;
-        private static IRecipeItemDAO _recipeitemDAO;
+
         #endregion
 
         #region Instantiation
@@ -77,6 +79,19 @@ namespace OpenNos.DAL
                 }
 
                 return _characterDAO;
+            }
+        }
+
+        public static IDropDAO DropDAO
+        {
+            get
+            {
+                if (_dropDAO == null)
+                {
+                    _dropDAO = new MySQL.DropDAO();
+                }
+
+                return _dropDAO;
             }
         }
 
@@ -197,6 +212,32 @@ namespace OpenNos.DAL
             }
         }
 
+        public static IRecipeDAO RecipeDAO
+        {
+            get
+            {
+                if (_recipeDAO == null)
+                {
+                    _recipeDAO = new MySQL.RecipeDAO();
+                }
+
+                return _recipeDAO;
+            }
+        }
+
+        public static IRecipeItemDAO RecipeItemDAO
+        {
+            get
+            {
+                if (_recipeitemDAO == null)
+                {
+                    _recipeitemDAO = new MySQL.RecipeItemDAO();
+                }
+
+                return _recipeitemDAO;
+            }
+        }
+
         public static IRespawnDAO RespawnDAO
         {
             get
@@ -249,30 +290,6 @@ namespace OpenNos.DAL
             }
         }
 
-        public static IRecipeDAO RecipeDAO
-        {
-            get
-            {
-                if (_recipeDAO == null)
-                {
-                    _recipeDAO = new MySQL.RecipeDAO();
-                }
-
-                return _recipeDAO;
-            }
-        }
-        public static IRecipeItemDAO RecipeItemDAO
-        {
-            get
-            {
-                if (_recipeitemDAO == null)
-                {
-                    _recipeitemDAO = new MySQL.RecipeItemDAO();
-                }
-
-                return _recipeitemDAO;
-            }
-        }
         #endregion
     }
 }

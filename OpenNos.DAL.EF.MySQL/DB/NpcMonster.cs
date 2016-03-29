@@ -19,6 +19,7 @@ namespace OpenNos.DAL.EF.MySQL.DB
         {
             this.mapnpc = new HashSet<MapNpc>();
             this.mapmonster = new HashSet<MapMonster>();
+            this.drop = new HashSet<Drop>();
         }
     
         public short NpcMonsterVNum { get; set; }
@@ -51,5 +52,7 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public virtual ICollection<MapNpc> mapnpc { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<MapMonster> mapmonster { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Drop> drop { get; set; }
     }
 }

@@ -51,6 +51,9 @@
         <AssociationConnector Association="opennosModel.RecipeRecipeItem1" />
         <AssociationConnector Association="opennosModel.ItemRecipe" ManuallyRouted="false" >
         </AssociationConnector>
+        <EntityTypeShape EntityType="opennosModel.Drop" Width="1.875" PointX="6.875" PointY="15.5" />
+        <AssociationConnector Association="opennosModel.DropItem" />
+        <AssociationConnector Association="opennosModel.DropNpcMonster" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
