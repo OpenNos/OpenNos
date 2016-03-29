@@ -19,10 +19,10 @@ namespace OpenNos.Data
         #region Properties
 
         public int Amount { get; set; }
+        public int DropChance { get; set; }
         public short DropId { get; set; }
         public short ItemVNum { get; set; }
         public short MonsterVNum { get; set; }
-        public int PercentChance { get; set; }
 
         #endregion
     }

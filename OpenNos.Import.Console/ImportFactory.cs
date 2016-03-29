@@ -326,12 +326,9 @@ namespace OpenNos.Import.Console
                             npc.DefenceUpgrade = Convert.ToByte(linesave[2]);
                         else
                             npc.DefenceUpgrade = Convert.ToByte(linesave[3]);
-
                     }
                     else if (linesave.Length > 3 && linesave[1] == "ITEM")
                     {
-
-
                         if (DAOFactory.NpcMonsterDAO.LoadById(npc.NpcMonsterVNum) == null)
                         {
                             npcs.Add(npc);
@@ -342,15 +339,14 @@ namespace OpenNos.Import.Console
                             short vnum = short.Parse(linesave[i]);
                             if (vnum == -1)
                                 break;
-                            if(DAOFactory.DropDAO.LoadByMonster(npc.NpcMonsterVNum).Where(s=>s.ItemVNum == vnum).Count() ==0)
-                            drops.Add(new DropDTO()
-                            {
-                                ItemVNum = vnum,
-                                Amount = int.Parse(linesave[i + 2]),
-                                MonsterVNum = npc.NpcMonsterVNum,
-                                PercentChance = int.Parse(linesave[i + 1]),
-                            });
-
+                            if (DAOFactory.DropDAO.LoadByMonster(npc.NpcMonsterVNum).Where(s => s.ItemVNum == vnum).Count() == 0)
+                                drops.Add(new DropDTO()
+                                {
+                                    ItemVNum = vnum,
+                                    Amount = int.Parse(linesave[i + 2]),
+                                    MonsterVNum = npc.NpcMonsterVNum,
+                                    DropChance = int.Parse(linesave[i + 1]),
+                                });
                         }
 
                         itemAreaBegin = false;
