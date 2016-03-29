@@ -18,7 +18,7 @@ namespace OpenNos.Data
     {
         #region Properties
 
-        public short Amount { get; set; }
+        public int Amount { get; set; }
         public short DropId { get; set; }
         public short ItemVNum { get; set; }
         public short MonsterVNum { get; set; }

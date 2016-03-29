@@ -44,9 +44,9 @@
 -- -----------------------------------------------------------
 -- Entity Designer DDL Script for MySQL Server 4.1 and higher
 -- -----------------------------------------------------------
--- Date Created: 03/29/2016 21:38:19
+-- Date Created: 03/29/2016 23:05:26
 
--- Generated from EDMX file: C:\Users\Dominik\Source\Repos\OpenNos\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
+-- Generated from EDMX file: C:\Users\ERWAN\Desktop\OpenNos Git\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
 -- Target version: 3.0.0.0
 
 -- --------------------------------------------------
@@ -105,6 +105,10 @@
 
 --    ALTER TABLE `recipe` DROP CONSTRAINT `FK_ItemRecipe`;
 
+--    ALTER TABLE `drop` DROP CONSTRAINT `FK_DropItem`;
+
+--    ALTER TABLE `drop` DROP CONSTRAINT `FK_DropNpcMonster`;
+
 
 -- --------------------------------------------------
 -- Dropping existing tables
@@ -144,6 +148,8 @@ SET foreign_key_checks = 0;
     DROP TABLE IF EXISTS `recipe`;
 
     DROP TABLE IF EXISTS `recipeitem`;
+
+    DROP TABLE IF EXISTS `drop`;
 
 SET foreign_key_checks = 1;
 
@@ -560,7 +566,7 @@ ALTER TABLE `recipeitem` ADD PRIMARY KEY (RecipeItemId);
 CREATE TABLE `drop`(
 	`DropId` smallint NOT NULL AUTO_INCREMENT UNIQUE, 
 	`PercentChance` int NOT NULL, 
-	`Amount` smallint NOT NULL, 
+	`Amount` int NOT NULL, 
 	`ItemVNum` smallint NOT NULL, 
 	`MonsterVNum` smallint NOT NULL);
 

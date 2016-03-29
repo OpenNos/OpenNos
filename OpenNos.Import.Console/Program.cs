@@ -71,12 +71,12 @@ namespace OpenNos.Import.Console
                 factory.ImportMaps();
                 factory.loadMaps();
                 factory.ImportPortals();
+                factory.ImportItems();
                 factory.ImportNpcMonsters();
                 factory.ImportMapNpcs();
                 factory.ImportMonsters();
                 factory.ImportShops();
                 factory.ImportTeleporters();
-                factory.ImportItems();
                 //factory.ImportDrop();
                 factory.ImportShopItems();
                 factory.ImportRecipe();

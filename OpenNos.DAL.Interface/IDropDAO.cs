@@ -24,6 +24,7 @@ namespace OpenNos.DAL.Interface
         DropDTO Insert(DropDTO drop);
         IEnumerable<DropDTO> LoadByMonster(short monsterVNum);
 
+        void Insert(List<DropDTO> drops);
         #endregion
     }
 }

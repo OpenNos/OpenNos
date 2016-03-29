@@ -247,6 +247,7 @@ namespace OpenNos.Import.Console
 
             Dictionary<string, string> dictionaryIdLang = new Dictionary<string, string>();
             NpcMonsterDTO npc = new NpcMonsterDTO();
+            List<DropDTO> drops = new List<DropDTO>();
             string line;
             bool itemAreaBegin = false;
             int counter = 0;
@@ -325,15 +326,38 @@ namespace OpenNos.Import.Console
                             npc.DefenceUpgrade = Convert.ToByte(linesave[2]);
                         else
                             npc.DefenceUpgrade = Convert.ToByte(linesave[3]);
+
+                    }
+                    else if (linesave.Length > 3 && linesave[1] == "ITEM")
+                    {
+
+
                         if (DAOFactory.NpcMonsterDAO.LoadById(npc.NpcMonsterVNum) == null)
                         {
                             npcs.Add(npc);
                             counter++;
                         }
+                        for (int i = 2; i < linesave.Count() - 3; i += 3)
+                        {
+                            short vnum = short.Parse(linesave[i]);
+                            if (vnum == -1)
+                                break;
+                            if(DAOFactory.DropDAO.LoadByMonster(npc.NpcMonsterVNum).Where(s=>s.ItemVNum == vnum).Count() ==0)
+                            drops.Add(new DropDTO()
+                            {
+                                ItemVNum = vnum,
+                                Amount = int.Parse(linesave[i + 2]),
+                                MonsterVNum = npc.NpcMonsterVNum,
+                                PercentChance = int.Parse(linesave[i + 1]),
+                            });
+
+                        }
+
                         itemAreaBegin = false;
                     }
                 }
                 DAOFactory.NpcMonsterDAO.Insert(npcs);
+                DAOFactory.DropDAO.Insert(drops);
                 Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("NPCMONSTERS_PARSED"), counter));
                 npcIdStream.Close();
             }

@@ -26,6 +26,22 @@ namespace OpenNos.DAL.EF.MySQL
     {
         #region Methods
 
+
+        public void Insert(List<DropDTO> drops)
+        {
+            using (var context = DataAccessHelper.CreateContext())
+            {
+
+                context.Configuration.AutoDetectChangesEnabled = false;
+                foreach (DropDTO drop in drops)
+                {
+                    Drop entity = Mapper.Map<Drop>(drop);
+                    context.drop.Add(entity);
+                }
+                context.SaveChanges();
+
+            }
+        }
         public DropDTO Insert(DropDTO drop)
         {
             using (var context = DataAccessHelper.CreateContext())
