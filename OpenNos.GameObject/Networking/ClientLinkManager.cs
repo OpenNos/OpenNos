@@ -32,6 +32,8 @@ namespace OpenNos.GameObject
         private readonly Task _autoSave; // if this thread is never aborted by code, it can be declared only in constructor!
         private Task TaskController;
 
+        public List<Group> Groups { get; set; }
+
         #endregion
 
         #region Instantiation
@@ -43,6 +45,7 @@ namespace OpenNos.GameObject
             _autoSave.Start();
             TaskController = new Task(() => TaskControl());
             TaskController.Start();
+            Groups = new List<Group>();
         }
 
         #endregion
