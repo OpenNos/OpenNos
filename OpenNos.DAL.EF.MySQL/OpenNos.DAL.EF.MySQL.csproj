@@ -85,6 +85,9 @@
     <Compile Include="DB\Character.cs">
       <DependentUpon>OpenNos.tt</DependentUpon>
     </Compile>
+    <Compile Include="DB\Drop.cs">
+      <DependentUpon>OpenNos.tt</DependentUpon>
+    </Compile>
     <Compile Include="DB\GeneralLog.cs">
       <DependentUpon>OpenNos.tt</DependentUpon>
     </Compile>
@@ -130,6 +133,7 @@
     <Compile Include="DB\Teleporter.cs">
       <DependentUpon>OpenNos.tt</DependentUpon>
     </Compile>
+    <Compile Include="DropDAO.cs" />
     <Compile Include="MapMonsterDAO.cs" />
     <Compile Include="MapNpcDAO.cs" />
     <Compile Include="RecipeDAO.cs" />

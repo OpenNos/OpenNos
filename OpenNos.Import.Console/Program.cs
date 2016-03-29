@@ -77,6 +77,7 @@ namespace OpenNos.Import.Console
                 factory.ImportShops();
                 factory.ImportTeleporters();
                 factory.ImportItems();
+                //factory.ImportDrop();
                 factory.ImportShopItems();
                 factory.ImportRecipe();
             }
@@ -126,21 +127,28 @@ namespace OpenNos.Import.Console
                 {
                     factory.ImportItems();
                 }
-                System.Console.WriteLine($"{Language.Instance.GetMessageFromKey("PARSE_TELEPORTERS")} [Y/n]");
+
+                /*System.Console.WriteLine($"{Language.Instance.GetMessageFromKey("PARSE_ITEMS")} [Y/n]");
                 System.ConsoleKeyInfo key8 = System.Console.ReadKey(true);
                 if (key8.KeyChar != 'n')
+                {
+                    factory.ImportDrop();
+                }*/
+                System.Console.WriteLine($"{Language.Instance.GetMessageFromKey("PARSE_TELEPORTERS")} [Y/n]");
+                System.ConsoleKeyInfo key9 = System.Console.ReadKey(true);
+                if (key9.KeyChar != 'n')
                 {
                     factory.ImportTeleporters();
                 }
                 System.Console.WriteLine($"{Language.Instance.GetMessageFromKey("PARSE_SHOPITEMS")} [Y/n]");
-                System.ConsoleKeyInfo key9 = System.Console.ReadKey(true);
-                if (key9.KeyChar != 'n')
+                System.ConsoleKeyInfo key10 = System.Console.ReadKey(true);
+                if (key10.KeyChar != 'n')
                 {
                     factory.ImportShopItems();
                 }
                 System.Console.WriteLine($"{Language.Instance.GetMessageFromKey("PARSE_RECIPES")} [Y/n]");
-                System.ConsoleKeyInfo key10 = System.Console.ReadKey(true);
-                if (key10.KeyChar != 'n')
+                System.ConsoleKeyInfo key11 = System.Console.ReadKey(true);
+                if (key11.KeyChar != 'n')
                 {
                     factory.ImportRecipe();
                 }

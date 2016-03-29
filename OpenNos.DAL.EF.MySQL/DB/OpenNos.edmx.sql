@@ -44,9 +44,9 @@
 -- -----------------------------------------------------------
 -- Entity Designer DDL Script for MySQL Server 4.1 and higher
 -- -----------------------------------------------------------
--- Date Created: 03/28/2016 20:48:39
+-- Date Created: 03/29/2016 21:38:19
 
--- Generated from EDMX file: C:\Users\ERWAN\Desktop\OpenNos Git\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
+-- Generated from EDMX file: C:\Users\Dominik\Source\Repos\OpenNos\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
 -- Target version: 3.0.0.0
 
 -- --------------------------------------------------
@@ -557,6 +557,19 @@ ALTER TABLE `recipeitem` ADD PRIMARY KEY (RecipeItemId);
 
 
 
+CREATE TABLE `drop`(
+	`DropId` smallint NOT NULL AUTO_INCREMENT UNIQUE, 
+	`PercentChance` int NOT NULL, 
+	`Amount` smallint NOT NULL, 
+	`ItemVNum` smallint NOT NULL, 
+	`MonsterVNum` smallint NOT NULL);
+
+ALTER TABLE `drop` ADD PRIMARY KEY (DropId);
+
+
+
+
+
 
 
 -- --------------------------------------------------
@@ -975,6 +988,42 @@ ADD CONSTRAINT `FK_ItemRecipe`
 CREATE INDEX `IX_FK_ItemRecipe`
     ON `recipe`
     (`ItemVNum`);
+
+
+
+-- Creating foreign key on `ItemVNum` in table 'drop'
+
+ALTER TABLE `drop`
+ADD CONSTRAINT `FK_DropItem`
+    FOREIGN KEY (`ItemVNum`)
+    REFERENCES `item`
+        (`VNum`)
+    ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+
+-- Creating non-clustered index for FOREIGN KEY 'FK_DropItem'
+
+CREATE INDEX `IX_FK_DropItem`
+    ON `drop`
+    (`ItemVNum`);
+
+
+
+-- Creating foreign key on `MonsterVNum` in table 'drop'
+
+ALTER TABLE `drop`
+ADD CONSTRAINT `FK_DropNpcMonster`
+    FOREIGN KEY (`MonsterVNum`)
+    REFERENCES `npcmonster`
+        (`NpcMonsterVNum`)
+    ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+
+-- Creating non-clustered index for FOREIGN KEY 'FK_DropNpcMonster'
+
+CREATE INDEX `IX_FK_DropNpcMonster`
+    ON `drop`
+    (`MonsterVNum`);
 
 
 

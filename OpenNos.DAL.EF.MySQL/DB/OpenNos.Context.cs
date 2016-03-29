@@ -43,5 +43,6 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public virtual DbSet<MapNpc> mapnpc { get; set; }
         public virtual DbSet<Recipe> recipe { get; set; }
         public virtual DbSet<RecipeItem> recipeitem { get; set; }
+        public virtual DbSet<Drop> drop { get; set; }
     }
 }

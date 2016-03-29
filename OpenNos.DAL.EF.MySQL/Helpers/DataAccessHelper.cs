@@ -67,6 +67,8 @@ namespace OpenNos.DAL.EF.MySQL.Helpers
             Mapper.CreateMap<RecipeDTO, Recipe>();
             Mapper.CreateMap<RecipeItem, RecipeItemDTO>();
             Mapper.CreateMap<RecipeItemDTO, RecipeItem>();
+            Mapper.CreateMap<Drop, DropDTO>();
+            Mapper.CreateMap<DropDTO, Drop>();
         }
 
         #endregion
@@ -150,6 +152,7 @@ namespace OpenNos.DAL.EF.MySQL.Helpers
                     context.respawn.Any();
                     context.shop.Any();
                     context.shopitem.Any();
+                    context.drop.Any();
                     Logger.Log.Info(Language.Instance.GetMessageFromKey("DATABASE_INITIALIZED"));
                 }
                 catch (Exception ex)

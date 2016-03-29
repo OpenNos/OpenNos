@@ -23,6 +23,7 @@
     <EntitySet Name="mapnpc" EntityType="opennosModel.Store.mapnpc" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="recipe" EntityType="opennosModel.Store.recipe" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="recipeitem" EntityType="opennosModel.Store.recipeitem" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="drop" EntityType="opennosModel.Store.drop" store:Type="Tables" Schema="dbo" />
     <AssociationSet Name="AccountCharacter" Association="opennosModel.Store.AccountCharacter">
       <End Role="Account" EntitySet="account" />
       <End Role="Character" EntitySet="character" />
@@ -114,6 +115,14 @@
     <AssociationSet Name="ItemRecipe" Association="opennosModel.Store.ItemRecipe">
       <End Role="Item" EntitySet="item" />
       <End Role="Recipe" EntitySet="recipe" />
+    </AssociationSet>
+    <AssociationSet Name="DropItem" Association="opennosModel.Store.DropItem">
+      <End Role="Drop" EntitySet="drop" />
+      <End Role="Item" EntitySet="item" />
+    </AssociationSet>
+    <AssociationSet Name="DropNpcMonster" Association="opennosModel.Store.DropNpcMonster">
+      <End Role="Drop" EntitySet="drop" />
+      <End Role="NpcMonster" EntitySet="npcmonster" />
     </AssociationSet>
   </EntityContainer>
   <EntityType Name="account">
@@ -470,6 +479,16 @@
     <Property Name="Amount" Type="utinyint" Nullable="false" />
     <Property Name="RecipeId" Type="smallint" Nullable="false" />
   </EntityType>
+  <EntityType Name="drop">
+    <Key>
+      <PropertyRef Name="DropId" />
+    </Key>
+    <Property Name="DropId" Type="smallint" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="PercentChance" Type="int" Nullable="false" />
+    <Property Name="Amount" Type="smallint" Nullable="false" />
+    <Property Name="ItemVNum" Type="smallint" Nullable="false" />
+    <Property Name="MonsterVNum" Type="smallint" Nullable="false" />
+  </EntityType>
   <Association Name="AccountCharacter">
     <End Role="Account" Type="opennosModel.Store.account" Multiplicity="1" />
     <End Role="Character" Type="opennosModel.Store.character" Multiplicity="*" />
@@ -746,6 +765,30 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
+  <Association Name="DropItem">
+    <End Role="Drop" Type="opennosModel.Store.drop" Multiplicity="*" />
+    <End Role="Item" Type="opennosModel.Store.item" Multiplicity="1" />
+    <ReferentialConstraint>
+      <Principal Role="Item">
+        <PropertyRef Name="VNum" />
+      </Principal>
+      <Dependent Role="Drop">
+        <PropertyRef Name="ItemVNum" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="DropNpcMonster">
+    <End Role="Drop" Type="opennosModel.Store.drop" Multiplicity="*" />
+    <End Role="NpcMonster" Type="opennosModel.Store.npcmonster" Multiplicity="1" />
+    <ReferentialConstraint>
+      <Principal Role="NpcMonster">
+        <PropertyRef Name="NpcMonsterVNum" />
+      </Principal>
+      <Dependent Role="Drop">
+        <PropertyRef Name="MonsterVNum" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
 </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
@@ -946,6 +989,15 @@
             <End Role="Item" EntitySet="item" />
             <End Role="Recipe" EntitySet="recipe" />
           </AssociationSet>
+          <EntitySet Name="drop" EntityType="opennosModel.Drop" />
+          <AssociationSet Name="DropItem" Association="opennosModel.DropItem">
+            <End Role="Drop" EntitySet="drop" />
+            <End Role="Item" EntitySet="item" />
+          </AssociationSet>
+          <AssociationSet Name="DropNpcMonster" Association="opennosModel.DropNpcMonster">
+            <End Role="Drop" EntitySet="drop" />
+            <End Role="NpcMonster" EntitySet="npcmonster" />
+          </AssociationSet>
           </EntityContainer>
         <Association Name="AccountCharacter">
           <End Type="opennosModel.Account" Role="Account" Multiplicity="1" />
@@ -1121,6 +1173,7 @@
           <Property Name="SecondaryElement" Type="Byte" Nullable="false" />
           <NavigationProperty Name="recipeitem" Relationship="opennosModel.RecipeItemItem" FromRole="Item" ToRole="RecipeItem" />
           <NavigationProperty Name="recipe" Relationship="opennosModel.ItemRecipe" FromRole="Item" ToRole="Recipe" />
+          <NavigationProperty Name="drop" Relationship="opennosModel.DropItem" FromRole="Item" ToRole="Drop" />
           </EntityType>
         <EntityType Name="NpcMonster">
           <Key>
@@ -1153,6 +1206,7 @@
           <NavigationProperty Name="mapmonster" Relationship="opennosModel.MapMonsterNpcMonster" FromRole="NpcMonster" ToRole="MapMonster" />
           <Property Name="MaxHP" Type="Int16" Nullable="false" />
           <Property Name="MaxMP" Type="Int16" Nullable="false" />
+          <NavigationProperty Name="drop" Relationship="opennosModel.DropNpcMonster" FromRole="NpcMonster" ToRole="Drop" />
         </EntityType>
         <EntityType Name="InventoryItem">
           <Key>
@@ -1525,6 +1579,42 @@
             </Principal>
             <Dependent Role="Recipe">
               <PropertyRef Name="ItemVNum" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="Drop">
+          <Key>
+            <PropertyRef Name="DropId" />
+          </Key>
+          <Property Name="DropId" Type="Int16" Nullable="false" annotation:StoreGeneratedPattern="Identity" xmlns="http://schemas.microsoft.com/ado/2009/11/edm" />
+          <Property Name="PercentChance" Type="Int32" Nullable="false" />
+          <Property Name="Amount" Type="Int16" Nullable="false" />
+          <NavigationProperty Name="item" Relationship="opennosModel.DropItem" FromRole="Drop" ToRole="Item" />
+          <Property Name="ItemVNum" Type="Int16" Nullable="false" />
+          <NavigationProperty Name="npcmonster" Relationship="opennosModel.DropNpcMonster" FromRole="Drop" ToRole="NpcMonster" />
+          <Property Name="MonsterVNum" Type="Int16" Nullable="false" />
+        </EntityType>
+        <Association Name="DropItem">
+          <End Type="opennosModel.Drop" Role="Drop" Multiplicity="*" />
+          <End Type="opennosModel.Item" Role="Item" Multiplicity="1" />
+          <ReferentialConstraint>
+            <Principal Role="Item">
+              <PropertyRef Name="VNum" />
+            </Principal>
+            <Dependent Role="Drop">
+              <PropertyRef Name="ItemVNum" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="DropNpcMonster">
+          <End Type="opennosModel.Drop" Role="Drop" Multiplicity="*" />
+          <End Type="opennosModel.NpcMonster" Role="NpcMonster" Multiplicity="1" />
+          <ReferentialConstraint>
+            <Principal Role="NpcMonster">
+              <PropertyRef Name="NpcMonsterVNum" />
+            </Principal>
+            <Dependent Role="Drop">
+              <PropertyRef Name="MonsterVNum" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1901,6 +1991,17 @@
           <ScalarProperty Name="ItemVNum" ColumnName="ItemVNum" />
           <ScalarProperty Name="Amount" ColumnName="Amount" />
           <ScalarProperty Name="RecipeId" ColumnName="RecipeId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="drop">
+      <EntityTypeMapping TypeName="IsTypeOf(opennosModel.Drop)">
+        <MappingFragment StoreEntitySet="drop">
+          <ScalarProperty Name="DropId" ColumnName="DropId" />
+          <ScalarProperty Name="PercentChance" ColumnName="PercentChance" />
+          <ScalarProperty Name="Amount" ColumnName="Amount" />
+          <ScalarProperty Name="ItemVNum" ColumnName="ItemVNum" />
+          <ScalarProperty Name="MonsterVNum" ColumnName="MonsterVNum" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

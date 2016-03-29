@@ -327,7 +327,6 @@ namespace OpenNos.Import.Console
                             npc.DefenceUpgrade = Convert.ToByte(linesave[3]);
                         if (DAOFactory.NpcMonsterDAO.LoadById(npc.NpcMonsterVNum) == null)
                         {
-
                             npcs.Add(npc);
                             counter++;
                         }
@@ -410,57 +409,11 @@ namespace OpenNos.Import.Console
 
             DAOFactory.PortalDAO.Insert(listPortal.Where(portal => !DAOFactory.PortalDAO.LoadByMap(portal.SourceMapId).Any(s => s.DestinationMapId.Equals(portal.DestinationMapId) && s.SourceX.Equals(portal.SourceX) && s.SourceY.Equals(portal.SourceY))).ToList());
 
-
             Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("PORTALS_PARSED"), portalCounter));
         }
-        public void ImportTeleporters()
-        {
-            int i = 0;
-            TeleporterDTO teleporter = null;
-            foreach (string[] linesave in packetList.Where(o => o[0].Equals("at") || (o[0].Equals("n_run") && (o[1].Equals("16") || o[1].Equals("26")))))
-            {
-                if (linesave.Length > 4 && linesave[0] == "n_run")
-                {
-                    if (DAOFactory.MapNpcDAO.LoadById(int.Parse(linesave[4])) == null)
-                        continue;
-                    teleporter = new TeleporterDTO
-                    {
-                        MapNpcId = int.Parse(linesave[4]),
-                        Index = short.Parse(linesave[2]),
-                    };
-
-
-                }
-                else if (linesave.Length > 5 && linesave[0] == "at")
-                {
-                    if (teleporter != null)
-                    {
-                        teleporter.MapId = short.Parse(linesave[2]);
-                        teleporter.MapX = short.Parse(linesave[3]);
-                        teleporter.MapY = short.Parse(linesave[4]);
-
-
-                        if (DAOFactory.TeleporterDAO.LoadFromNpc(teleporter.MapNpcId).Where(s => s.Index == teleporter.Index).Count() > 0)
-                            continue;
-
-
-                        DAOFactory.TeleporterDAO.Insert(teleporter);
-                        i++;
-                        teleporter = null;
-                    }
-
-
-                }
-            }
-
-
-            Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("TELEPORTERS_PARSED"), i));
-        }
-
 
         public void ImportRecipe()
         {
-
             int count = 0;
             int npc = 0;
             short item = 0;
@@ -470,9 +423,7 @@ namespace OpenNos.Import.Console
             {
                 if (linesave.Length > 4 && linesave[0] == "n_run")
                 {
-
-                     int.TryParse(linesave[4], out npc);
-
+                    int.TryParse(linesave[4], out npc);
                 }
                 else if (linesave.Length > 1 && linesave[0] == "m_list" && linesave[1] == "2")
                 {
@@ -491,8 +442,6 @@ namespace OpenNos.Import.Console
                         DAOFactory.RecipeDAO.Insert(recipe);
                         count++;
                     }
-
-
                 }
                 else if (linesave.Length > 2 && linesave[0] == "pdtse")
                 {
@@ -500,10 +449,8 @@ namespace OpenNos.Import.Console
                 }
                 else if (linesave.Length > 1 && linesave[0] == "m_list" && linesave[1] == "3")
                 {
-
                     for (int i = 3; i < linesave.Length - 1; i += 2)
                     {
-
                         RecipeDTO rec = DAOFactory.RecipeDAO.LoadByNpc(npc).FirstOrDefault(s => s.ItemVNum == item);
                         if (rec != null)
                         {
@@ -522,11 +469,11 @@ namespace OpenNos.Import.Console
                     }
                     item = -1;
                 }
-
             }
 
             Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("RECIPES_PARSED"), count));
         }
+
         public void ImportShopItems()
         {
             List<PortalDTO> listPacket = new List<PortalDTO>();
@@ -616,6 +563,43 @@ namespace OpenNos.Import.Console
             Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("SHOPS_PARSED"), shopCounter));
         }
 
+        public void ImportTeleporters()
+        {
+            int i = 0;
+            TeleporterDTO teleporter = null;
+            foreach (string[] linesave in packetList.Where(o => o[0].Equals("at") || (o[0].Equals("n_run") && (o[1].Equals("16") || o[1].Equals("26")))))
+            {
+                if (linesave.Length > 4 && linesave[0] == "n_run")
+                {
+                    if (DAOFactory.MapNpcDAO.LoadById(int.Parse(linesave[4])) == null)
+                        continue;
+                    teleporter = new TeleporterDTO
+                    {
+                        MapNpcId = int.Parse(linesave[4]),
+                        Index = short.Parse(linesave[2]),
+                    };
+                }
+                else if (linesave.Length > 5 && linesave[0] == "at")
+                {
+                    if (teleporter != null)
+                    {
+                        teleporter.MapId = short.Parse(linesave[2]);
+                        teleporter.MapX = short.Parse(linesave[3]);
+                        teleporter.MapY = short.Parse(linesave[4]);
+
+                        if (DAOFactory.TeleporterDAO.LoadFromNpc(teleporter.MapNpcId).Where(s => s.Index == teleporter.Index).Count() > 0)
+                            continue;
+
+                        DAOFactory.TeleporterDAO.Insert(teleporter);
+                        i++;
+                        teleporter = null;
+                    }
+                }
+            }
+
+            Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("TELEPORTERS_PARSED"), i));
+        }
+
         public void loadMaps()
         {
             Maps = DAOFactory.MapDAO.LoadAll();
@@ -647,7 +631,7 @@ namespace OpenNos.Import.Console
                 bool itemAreaBegin = false;
                 string name = "";
                 int i = 0;
-               
+
                 while ((line = npcIdStream.ReadLine()) != null)
                 {
                     string[] linesave = line.Split('\t');
@@ -682,7 +666,7 @@ namespace OpenNos.Import.Console
                     else if (linesave.Length > 7 && linesave[1] == "INDEX")
                     {
                         item.Type = Convert.ToByte(linesave[2]) != 4 ? Convert.ToByte(linesave[2]) : (byte)0;
-                      
+
                         item.ItemType = linesave[3] != "-1" ? Convert.ToByte($"{item.Type}{linesave[3]}") : (byte)0;
                         item.ItemSubType = Convert.ToByte(linesave[4]);
                         item.EquipmentSlot = Convert.ToByte(linesave[5] != "-1" ? linesave[5] : "0");
