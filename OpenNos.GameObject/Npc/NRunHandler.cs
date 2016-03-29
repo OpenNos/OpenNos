@@ -68,11 +68,11 @@ namespace OpenNos.GameObject
                     Session.Client.SendPacket($"wopen 27 0");
                     string recipelist = "m_list 2";
 
-                    if (npc != null)
+                    if (npc != null )
                     {
                         List<Recipe> tp = npc.Recipes;
 
-                        foreach (Recipe rec in tp)
+                        foreach (Recipe rec in tp.Where(s=>s.Amount > 0))
                         {
                             recipelist += String.Format(" {0}", rec.ItemVNum);
                         }

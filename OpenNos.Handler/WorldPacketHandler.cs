@@ -2639,11 +2639,12 @@ namespace OpenNos.Handler
                 {
 
                     Recipe rec = npc.Recipes.FirstOrDefault(s => s.ItemVNum == short.Parse(packetsplit[3]));
-                    if (rec != null)
+                    if (rec != null && rec.Amount > 0)
                     {
                         String rece = $"m_list 3 {rec.Amount}";
                         foreach (RecipeItem ite in rec.Items)
                         {
+                            if(ite.Amount > 0)
                             rece += String.Format($" {ite.ItemVNum} {ite.Amount}");
                         }
                         rece += " -1";
@@ -2661,6 +2662,8 @@ namespace OpenNos.Handler
                     Recipe rec = npc.Recipes.FirstOrDefault(s => s.ItemVNum == short.Parse(packetsplit[3]));
                     if (rec != null)
                     {
+                        if (rec.Amount <= 0)
+                            return;
                         foreach (RecipeItem ite in rec.Items)
                         {
                             if (Session.Character.InventoryList.CountItem(ite.ItemVNum) < ite.Amount)
