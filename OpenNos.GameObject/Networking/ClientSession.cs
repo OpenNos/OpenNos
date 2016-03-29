@@ -235,8 +235,8 @@ namespace OpenNos.GameObject
             foreach (string packet in packetConcatenated.Split(new char[] { (char)0xFF }, StringSplitOptions.RemoveEmptyEntries))
             {
                 string[] packetsplit = packet.Split(' ', '^');
-
-                if (packetsplit[1] != "0")
+                
+                if (packetsplit.Length> 1 && packetsplit[1] != "0")
                     Logger.Log.DebugFormat(Language.Instance.GetMessageFromKey("MESSAGE_RECEIVED"), packet, _client.ClientId);
 
                 if (_encryptor.HasCustomParameter)
