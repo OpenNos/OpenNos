@@ -484,7 +484,7 @@
       <PropertyRef Name="DropId" />
     </Key>
     <Property Name="DropId" Type="smallint" StoreGeneratedPattern="Identity" Nullable="false" />
-    <Property Name="PercentChance" Type="int" Nullable="false" />
+    <Property Name="DropChance" Type="int" Nullable="false" />
     <Property Name="Amount" Type="int" Nullable="false" />
     <Property Name="ItemVNum" Type="smallint" Nullable="false" />
     <Property Name="MonsterVNum" Type="smallint" Nullable="false" />
@@ -1587,7 +1587,7 @@
             <PropertyRef Name="DropId" />
           </Key>
           <Property Name="DropId" Type="Int16" Nullable="false" annotation:StoreGeneratedPattern="Identity" xmlns="http://schemas.microsoft.com/ado/2009/11/edm" />
-          <Property Name="PercentChance" Type="Int32" Nullable="false" />
+          <Property Name="DropChance" Type="Int32" Nullable="false" />
           <Property Name="Amount" Type="Int32" Nullable="false" />
           <NavigationProperty Name="item" Relationship="opennosModel.DropItem" FromRole="Drop" ToRole="Item" />
           <Property Name="ItemVNum" Type="Int16" Nullable="false" />
@@ -1998,7 +1998,7 @@
       <EntityTypeMapping TypeName="IsTypeOf(opennosModel.Drop)">
         <MappingFragment StoreEntitySet="drop">
           <ScalarProperty Name="DropId" ColumnName="DropId" />
-          <ScalarProperty Name="PercentChance" ColumnName="PercentChance" />
+          <ScalarProperty Name="DropChance" ColumnName="DropChance" />
           <ScalarProperty Name="Amount" ColumnName="Amount" />
           <ScalarProperty Name="ItemVNum" ColumnName="ItemVNum" />
           <ScalarProperty Name="MonsterVNum" ColumnName="MonsterVNum" />

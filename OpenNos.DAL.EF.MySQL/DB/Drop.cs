@@ -15,7 +15,7 @@ namespace OpenNos.DAL.EF.MySQL.DB
     public partial class Drop
     {
         public short DropId { get; set; }
-        public int PercentChance { get; set; }
+        public int DropChance { get; set; }
         public int Amount { get; set; }
         public short ItemVNum { get; set; }
         public short MonsterVNum { get; set; }
