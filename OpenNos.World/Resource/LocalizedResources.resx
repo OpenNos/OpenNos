@@ -126,6 +126,9 @@
   <data name="ADVENTURER" xml:space="preserve">
     <value>Adventurer</value>
   </data>
+  <data name="ALREADY_IN_GROUP" xml:space="preserve">
+    <value>You are already in group</value>
+  </data>
   <data name="ALREADY_TAKEN" xml:space="preserve">
     <value>This name is already taken!</value>
   </data>
@@ -267,6 +270,15 @@
   <data name="GOLD_SET" xml:space="preserve">
     <value>Gold set</value>
   </data>
+  <data name="GROUP_BLOCKED" xml:space="preserve">
+    <value>User blocked group invites</value>
+  </data>
+  <data name="GROUP_DENIED" xml:space="preserve">
+    <value>Group request rejected</value>
+  </data>
+  <data name="GROUP_REQUEST" xml:space="preserve">
+    <value>group request sent to: {0}</value>
+  </data>
   <data name="GROUP_REQ_BLOCKED" xml:space="preserve">
     <value>Group request blocked</value>
   </data>
@@ -294,8 +306,14 @@
   <data name="INVALID_CHARNAME" xml:space="preserve">
     <value>Invalid characters in nickname</value>
   </data>
+  <data name="INVITED_YOU" xml:space="preserve">
+    <value>{0} sent you a group request</value>
+  </data>
   <data name="IN_WAITING_FOR" xml:space="preserve">
     <value>In Waiting for {0}</value>
+  </data>
+  <data name="ITEM_ACQUIRED" xml:space="preserve">
+    <value>You get item</value>
   </data>
   <data name="ITEM_IS_FIXED" xml:space="preserve">
     <value>Item upgrade level is locked.</value>
@@ -386,6 +404,9 @@
   </data>
   <data name="NO_HANDLER_ITEM" xml:space="preserve">
     <value>No handler found for this item in class {0}</value>
+  </data>
+  <data name="NO_ITEM" xml:space="preserve">
+    <value>Item doesn't exist</value>
   </data>
   <data name="NO_MAP" xml:space="preserve">
     <value>Server need at least nosville MAP to work!</value>
@@ -566,8 +587,5 @@
   </data>
   <data name="YOU_ASK_FOR_EXCHANGE" xml:space="preserve">
     <value>You ask for an echange with</value>
-  </data>
-  <data name="YOU_GET_OBJECT" xml:space="preserve">
-    <value>You get item</value>
   </data>
 </root>

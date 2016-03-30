@@ -1668,6 +1668,21 @@ namespace OpenNos.Handler
                                 : "FAMILY_REQ_UNLOCKED"
                             ), 0));
                         break;
+                    case (int)ConfigType.GroupSharing:
+                        if (ClientLinkManager.Instance.Groups.FirstOrDefault(s => s.Characters.Contains(Session.Character.CharacterId)) == null)
+                            return;
+                        if (ClientLinkManager.Instance.Groups.FirstOrDefault(s => s.Characters.Contains(Session.Character.CharacterId))?.SharingMode == 0)
+                        {
+                            ClientLinkManager.Instance.Groups.FirstOrDefault(s => s.Characters.Contains(Session.Character.CharacterId)).SharingMode = 1;
+                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SHARING"), 0));
+                        }
+                        else
+                        {
+                            ClientLinkManager.Instance.Groups.FirstOrDefault(s => s.Characters.Contains(Session.Character.CharacterId)).SharingMode = 0;
+                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SHARING_IN_ORDER"),0));
+                        }
+
+                        break;
                 }
             }
             Session.Client.SendPacket(Session.Character.GenerateStat());
