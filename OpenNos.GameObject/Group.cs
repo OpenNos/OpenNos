@@ -18,8 +18,9 @@ namespace OpenNos.GameObject
 {
     public class Group
     {
-      public int GroupId { get; set; }
-      public List<long> Characters { get; set; }
+        public int GroupId { get; set; }
+        public List<long> Characters { get; set; }
+        public byte SharingMode { get; set; }
 
         public Group()
         {

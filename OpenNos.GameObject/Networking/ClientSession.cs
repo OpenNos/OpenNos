@@ -290,7 +290,7 @@ namespace OpenNos.GameObject
                                     permit = 0;
                             }
 
-                            if (packetHeader[0] == '/' || packetHeader[0] == ':')
+                            if (packetHeader[0] == '/' || packetHeader[0] == ':' || packetHeader[0] == ';')
                             {
                                 TriggerHandler(packetHeader[0].ToString(), packet, false);
                             }
@@ -309,7 +309,7 @@ namespace OpenNos.GameObject
                 {
                     //simple messaging
                     string packetHeader = packet.Split(' ')[0];
-                    if (packetHeader[0] == '/' || packetHeader[0] == ':')
+                    if (packetHeader[0] == '/' || packetHeader[0] == ':' || packetHeader[0] == ';')
                     {
                         TriggerHandler(packetHeader[0].ToString(), packet, false);
                     }

@@ -24,6 +24,7 @@ namespace OpenNos.GameObject
         AllOnMap = 5,
         OnlySomeone = 6,
         AllOnMapNoEmoBlocked = 7,
-        AllNoHeroBlocked = 8
+        AllNoHeroBlocked = 8,
+        Group = 9
     }
 }
