@@ -267,6 +267,9 @@
   <data name="GROUP_BLOCKED" xml:space="preserve">
     <value>Uzytkownik zablokowal zaproszenia do grupy</value>
   </data>
+  <data name="GROUP_CLOSED" xml:space="preserve">
+    <value>Group has been closed</value>
+  </data>
   <data name="GROUP_DENIED" xml:space="preserve">
     <value>Zaproszenie do grupy odrzucone</value>
   </data>
@@ -274,7 +277,7 @@
     <value>Grupa jest pelna</value>
   </data>
   <data name="GROUP_REQUEST" xml:space="preserve">
-    <value>Zaprosiles do grupy uzytkownika {0}</value>
+    <value>Gracz {0} zostal zaproszony do grupy</value>
   </data>
   <data name="GROUP_REQ_BLOCKED" xml:space="preserve">
     <value>Zaproszenia do grupy: zablokowane</value>

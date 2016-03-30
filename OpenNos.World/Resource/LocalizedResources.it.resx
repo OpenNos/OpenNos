@@ -267,6 +267,9 @@
   <data name="GROUP_BLOCKED" xml:space="preserve">
     <value>User blocked group invites</value>
   </data>
+  <data name="GROUP_CLOSED" xml:space="preserve">
+    <value>Group has been closed</value>
+  </data>
   <data name="GROUP_DENIED" xml:space="preserve">
     <value>Group request rejected</value>
   </data>
