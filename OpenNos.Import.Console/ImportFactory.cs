@@ -29,8 +29,8 @@ namespace OpenNos.Import.Console
         #region Members
 
         private readonly string _folder;
-        private IEnumerable<MapDTO> _maps;
         private readonly List<string[]> _packetList = new List<string[]>();
+        private IEnumerable<MapDTO> _maps;
 
         #endregion
 
@@ -186,7 +186,7 @@ namespace OpenNos.Import.Console
             short map = 0;
             List<int> mobMvPacketsList = new List<int>();
             List<MapMonsterDTO> monsters = new List<MapMonsterDTO>();
-            
+
             foreach (string[] currentPacket in _packetList.Where(o => o[0].Equals("mv") && o[1].Equals("3")))
             {
                 if (long.Parse(currentPacket[2]) >= 20000) continue;
@@ -800,7 +800,7 @@ namespace OpenNos.Import.Console
                                 item.LevelJobMinimum = Convert.ToByte(currentLine[20]);
                                 item.ReputationMinimum = Convert.ToByte(currentLine[21]);
 
-                                Dictionary<int, int> elementdic = new Dictionary<int, int> {{0, 0}};
+                                Dictionary<int, int> elementdic = new Dictionary<int, int> { { 0, 0 } };
                                 if (item.FireResistance != 0)
                                     elementdic.Add(1, item.FireResistance);
                                 if (item.WaterResistance != 0)

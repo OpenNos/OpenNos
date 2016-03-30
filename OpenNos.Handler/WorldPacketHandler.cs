@@ -326,7 +326,7 @@ namespace OpenNos.Handler
             if (packetsplit.Length > 3)
             {
                 int var = 0;
-                Boolean Blocked = false;
+                bool Blocked = false;
                 string charName;
                 long charId = -1;
                 if (!long.TryParse(packetsplit[3], out charId))
@@ -362,8 +362,8 @@ namespace OpenNos.Handler
                                 Session.Character.ExchangeInfo = new ExchangeInfo { CharId = charId, Confirm = false };
 
                                 charName = (string)ClientLinkManager.Instance.GetProperty<string>(charId, "Name");
-                                Session.Client.SendPacket(Session.Character.GenerateInfo($"{Language.Instance.GetMessageFromKey("YOU_ASK_FOR_GROUP")} {charName}"));
-                                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateDialog($"#pjoin^3^{ Session.Character.CharacterId} #pjoin^4^{Session.Character.CharacterId} {String.Format(Language.Instance.GetMessageFromKey("INVIT_YOU"), Session.Character.Name)}"), ReceiverType.OnlySomeone, charName);
+                                Session.Client.SendPacket(Session.Character.GenerateInfo(String.Format(Language.Instance.GetMessageFromKey("GROUP_REQUEST"), charName)));
+                                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateDialog($"#pjoin^3^{ Session.Character.CharacterId} #pjoin^4^{Session.Character.CharacterId} {String.Format(Language.Instance.GetMessageFromKey("INVITED_YOU"), Session.Character.Name)}"), ReceiverType.OnlySomeone, charName);
                             }
 
 

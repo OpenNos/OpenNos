@@ -126,6 +126,9 @@
   <data name="ADVENTURER" xml:space="preserve">
     <value>Poszukiwacz przygód</value>
   </data>
+  <data name="ALREADY_IN_GROUP" xml:space="preserve">
+    <value>Jestes juz w innej grupie</value>
+  </data>
   <data name="ALREADY_TAKEN" xml:space="preserve">
     <value>To imie jest zajete!</value>
   </data>
@@ -267,6 +270,15 @@
   <data name="GOLD_SET" xml:space="preserve">
     <value>Ilosc zlota zostala zmieniona</value>
   </data>
+  <data name="GROUP_BLOCKED" xml:space="preserve">
+    <value>Uzytkownik zablokowal zaproszenia do grupy</value>
+  </data>
+  <data name="GROUP_DENIED" xml:space="preserve">
+    <value>Zaproszenie do grupy odrzucone</value>
+  </data>
+  <data name="GROUP_REQUEST" xml:space="preserve">
+    <value>Zaprosiles do grupy uzytkownika {0}</value>
+  </data>
   <data name="GROUP_REQ_BLOCKED" xml:space="preserve">
     <value>Zaproszenia do grupy: zablokowane</value>
   </data>
@@ -293,6 +305,9 @@
   </data>
   <data name="INVALID_CHARNAME" xml:space="preserve">
     <value>Zle znaki w nazwie postaci</value>
+  </data>
+  <data name="INVITED_YOU" xml:space="preserve">
+    <value>{0} zaprasza cie do grupy</value>
   </data>
   <data name="IN_WAITING_FOR" xml:space="preserve">
     <value>Oczekujesz na gracza {0}</value>
