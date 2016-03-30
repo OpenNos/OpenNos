@@ -29,8 +29,8 @@ namespace OpenNos.Import.Console
         #region Members
 
         private readonly string _folder;
-        private IEnumerable<MapDTO> Maps = null;
-        private List<string[]> packetList = new List<string[]>();
+        private IEnumerable<MapDTO> _maps;
+        private readonly List<string[]> _packetList = new List<string[]>();
 
         #endregion
 
@@ -50,65 +50,58 @@ namespace OpenNos.Import.Console
             int npcCounter = 0;
             short map = 0;
             List<MapNpcDTO> npcs = new List<MapNpcDTO>();
-            Dictionary<int, bool> movementlist = new Dictionary<int, bool>();
-            Dictionary<int, short> effectlist = new Dictionary<int, short>();
-            foreach (string[] linesave in packetList.Where(o => o[0].Equals("mv") && (o[1].Equals("2"))))
+            List<int> npcMvPacketsList = new List<int>();
+            Dictionary<int, short> effPacketsDictionary = new Dictionary<int, short>();
+
+            foreach (string[] currentPacket in _packetList.Where(o => o[0].Equals("mv") && o[1].Equals("2")))
             {
-                if (!(long.Parse(linesave[2]) >= 20000))
-                    if (!movementlist.ContainsKey(Convert.ToInt32(linesave[2])))
-                        movementlist[Convert.ToInt32(linesave[2])] = true;
+                if (long.Parse(currentPacket[2]) >= 20000) continue;
+                if (!npcMvPacketsList.Contains(Convert.ToInt32(currentPacket[2])))
+                    npcMvPacketsList.Add(Convert.ToInt32(currentPacket[2]));
             }
 
-            foreach (string[] linesave in packetList.Where(o => o[0].Equals("eff") && o[1].Equals("2")))
+            foreach (string[] currentPacket in _packetList.Where(o => o[0].Equals("eff") && o[1].Equals("2")))
             {
-                if (!(long.Parse(linesave[2]) >= 20000))
-                    if (!effectlist.ContainsKey(Convert.ToInt32(linesave[2])))
-                        effectlist[Convert.ToInt32(linesave[2])] = Convert.ToInt16(linesave[3]);
+                if (long.Parse(currentPacket[2]) >= 20000) continue;
+                if (!effPacketsDictionary.ContainsKey(Convert.ToInt32(currentPacket[2])))
+                    effPacketsDictionary.Add(Convert.ToInt32(currentPacket[2]), Convert.ToInt16(currentPacket[3]));
             }
 
-            foreach (string[] linesave in packetList.Where(o => o[0].Equals("in") || o[0].Equals("at")))
+            foreach (string[] currentPacket in _packetList.Where(o => o[0].Equals("in") || o[0].Equals("at")))
             {
-                if (linesave.Length > 5 && linesave[0] == "at")
+                if (currentPacket.Length > 5 && currentPacket[0] == "at")
                 {
-                    map = short.Parse(linesave[2]);
+                    map = short.Parse(currentPacket[2]);
+                    continue;
                 }
-                else if (linesave.Length > 7 && linesave[0] == "in" && linesave[1] == "2")
+                if (currentPacket.Length > 7 && currentPacket[0] == "in" && currentPacket[1] == "2")
                 {
                     MapNpcDTO npctest = new MapNpcDTO();
 
-                    npctest.MapX = short.Parse(linesave[4]);
-                    npctest.MapY = short.Parse(linesave[5]);
+                    npctest.MapX = short.Parse(currentPacket[4]);
+                    npctest.MapY = short.Parse(currentPacket[5]);
                     npctest.MapId = map;
-                    npctest.NpcVNum = short.Parse(linesave[2]);
-                    if (long.Parse(linesave[3]) > 20000) continue;
-                    npctest.MapNpcId = short.Parse(linesave[3]);
-                    if (effectlist.ContainsKey(npctest.MapNpcId))
-                        npctest.Effect = effectlist[npctest.MapNpcId];
+                    npctest.NpcVNum = short.Parse(currentPacket[2]);
+                    if (long.Parse(currentPacket[3]) > 20000) continue;
+                    npctest.MapNpcId = short.Parse(currentPacket[3]);
+                    if (effPacketsDictionary.ContainsKey(npctest.MapNpcId))
+                        npctest.Effect = effPacketsDictionary[npctest.MapNpcId];
                     npctest.EffectDelay = 5000;
-                    if (movementlist.ContainsKey(npctest.MapNpcId))
-                        npctest.Move = movementlist[npctest.MapNpcId];
-                    else
-                        npctest.Move = false;
-                    npctest.Position = byte.Parse(linesave[6]);
-                    npctest.Dialog = short.Parse(linesave[9]);
-                    npctest.IsSitting = linesave[13] == "1" ? false : true;
+                    npctest.Move = npcMvPacketsList.Contains(npctest.MapNpcId);
+                    npctest.Position = byte.Parse(currentPacket[6]);
+                    npctest.Dialog = short.Parse(currentPacket[9]);
+                    npctest.IsSitting = currentPacket[13] != "1";
 
-                    if (DAOFactory.NpcMonsterDAO.LoadById(npctest.NpcVNum) != null)
-                    {
-                        if (DAOFactory.MapNpcDAO.LoadById(npctest.MapNpcId) == null)
-                        {
-                            if (npcs.Where(i => i.MapNpcId == npctest.MapNpcId).Count() == 0)
-                            {
-                                npcs.Add(npctest);
+                    if (DAOFactory.NpcMonsterDAO.LoadById(npctest.NpcVNum) == null) continue;
+                    if (DAOFactory.MapNpcDAO.LoadById(npctest.MapNpcId) != null) continue;
+                    if (npcs.Count(i => i.MapNpcId == npctest.MapNpcId) != 0) continue;
 
-                                npcCounter++;
-                            }
-                        }
-                    }
+                    npcs.Add(npctest);
+                    npcCounter++;
                 }
             }
             DAOFactory.MapNpcDAO.Insert(npcs);
-            Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("NPCS_PARSED"), npcCounter));
+            Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("NPCS_PARSED"), npcCounter));
         }
 
         public void ImportMaps()
@@ -128,14 +121,13 @@ namespace OpenNos.Import.Console
                 while ((line = mapIdStream.ReadLine()) != null)
                 {
                     string[] linesave = line.Split(' ');
-                    if (linesave.Length > 1)
-                    {
-                        int mapid;
-                        if (!int.TryParse(linesave[0], out mapid)) continue;
+                    if (linesave.Length <= 1) continue;
 
-                        if (!dictionaryId.ContainsKey(mapid))
-                            dictionaryId.Add(mapid, linesave[4]);
-                    }
+                    int mapid;
+                    if (!int.TryParse(linesave[0], out mapid)) continue;
+
+                    if (!dictionaryId.ContainsKey(mapid))
+                        dictionaryId.Add(mapid, linesave[4]);
                 }
                 mapIdStream.Close();
             }
@@ -145,27 +137,26 @@ namespace OpenNos.Import.Console
                 while ((line = mapIdLangStream.ReadLine()) != null)
                 {
                     string[] linesave = line.Split('\t');
-                    if (linesave.Length > 1 && !dictionaryIdLang.ContainsKey(linesave[0]))
-                    {
-                        dictionaryIdLang.Add(linesave[0], linesave[1]);
-                    }
+                    if (linesave.Length <= 1 || dictionaryIdLang.ContainsKey(linesave[0])) continue;
+
+                    dictionaryIdLang.Add(linesave[0], linesave[1]);
                 }
                 mapIdLangStream.Close();
             }
 
-            foreach (string[] linesave in packetList.Where(o => o[0].Equals("at")))
+            foreach (string[] linesave in _packetList.Where(o => o[0].Equals("at")))
             {
-                if (linesave.Length > 7 && linesave[0] == "at")
-                {
-                    if (!dictionaryMusic.ContainsKey(int.Parse(linesave[2])))
-                        dictionaryMusic.Add(int.Parse(linesave[2]), int.Parse(linesave[7]));
-                }
+                if (linesave.Length <= 7 || linesave[0] != "at") continue;
+                if (dictionaryMusic.ContainsKey(int.Parse(linesave[2]))) continue;
+
+                dictionaryMusic.Add(int.Parse(linesave[2]), int.Parse(linesave[7]));
             }
 
             foreach (FileInfo file in new DirectoryInfo(folderMap).GetFiles())
             {
                 string name = "";
                 int music = 0;
+
                 if (dictionaryId.ContainsKey(int.Parse(file.Name)) && dictionaryIdLang.ContainsKey(dictionaryId[int.Parse(file.Name)]))
                     name = dictionaryIdLang[dictionaryId[int.Parse(file.Name)]];
 
@@ -179,63 +170,60 @@ namespace OpenNos.Import.Console
                     MapId = short.Parse(file.Name),
                     Data = File.ReadAllBytes(file.FullName)
                 };
+
                 if (DAOFactory.MapDAO.LoadById(map.MapId) != null) continue; // Map already exists in list
 
                 maps.Add(map);
-
                 i++;
             }
             DAOFactory.MapDAO.Insert(maps);
-            Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("MAPS_PARSED"), i));
+            Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("MAPS_PARSED"), i));
         }
 
         public void ImportMonsters()
         {
             int monsterCounter = 0;
             short map = 0;
-            Dictionary<int, bool> movementlist = new Dictionary<int, bool>();
+            List<int> mobMvPacketsList = new List<int>();
             List<MapMonsterDTO> monsters = new List<MapMonsterDTO>();
-            foreach (string[] linesave in packetList.Where(o => o[0].Equals("mv") && (o[1].Equals("3"))))
+            
+            foreach (string[] currentPacket in _packetList.Where(o => o[0].Equals("mv") && o[1].Equals("3")))
             {
-                if (!movementlist.ContainsKey(Convert.ToInt32(linesave[2])))
-                    movementlist[Convert.ToInt32(linesave[2])] = true;
+                if (long.Parse(currentPacket[2]) >= 20000) continue;
+                if (!mobMvPacketsList.Contains(Convert.ToInt32(currentPacket[2])))
+                    mobMvPacketsList.Add(Convert.ToInt32(currentPacket[2]));
             }
 
-            foreach (string[] linesave in packetList.Where(o => o[0].Equals("in") || o[0].Equals("at")))
+            foreach (string[] currentPacket in _packetList.Where(o => o[0].Equals("in") || o[0].Equals("at")))
             {
-                if (linesave.Length > 5 && linesave[0] == "at")
+                if (currentPacket.Length > 5 && currentPacket[0] == "at")
                 {
-                    map = short.Parse(linesave[2]);
+                    map = short.Parse(currentPacket[2]);
+                    continue;
                 }
-                else if (linesave.Length > 7 && linesave[0] == "in" && linesave[1] == "3")
+                if (currentPacket.Length > 7 && currentPacket[0] == "in" && currentPacket[1] == "3")
                 {
-                    MapMonsterDTO monster = new MapMonsterDTO();
-
-                    monster.MapX = short.Parse(linesave[4]);
-                    monster.MapY = short.Parse(linesave[5]);
-                    monster.MapId = map;
-                    monster.MonsterVNum = short.Parse(linesave[2]);
-                    monster.MapMonsterId = int.Parse(linesave[3]);
-                    if (movementlist.ContainsKey(monster.MapMonsterId))
-                        monster.Move = movementlist[monster.MapMonsterId];
-                    else
-                        monster.Move = false;
-                    if (DAOFactory.NpcMonsterDAO.LoadById(monster.MonsterVNum) != null)
+                    MapMonsterDTO monster = new MapMonsterDTO
                     {
-                        if (DAOFactory.MapMonsterDAO.LoadById(monster.MapMonsterId) == null)
-                        {
-                            if (monsters.Where(i => i.MapMonsterId == monster.MapMonsterId).Count() == 0)
-                            {
-                                monsters.Add(monster);
-                                monsterCounter++;
-                            }
-                        }
-                    }
+                        MapX = short.Parse(currentPacket[4]),
+                        MapY = short.Parse(currentPacket[5]),
+                        MapId = map,
+                        MonsterVNum = short.Parse(currentPacket[2]),
+                        MapMonsterId = int.Parse(currentPacket[3])
+                    };
+                    monster.Move = mobMvPacketsList.Contains(monster.MapMonsterId);
+
+                    if (DAOFactory.NpcMonsterDAO.LoadById(monster.MonsterVNum) == null) continue;
+                    if (DAOFactory.MapMonsterDAO.LoadById(monster.MapMonsterId) != null) continue;
+                    if (monsters.Count(i => i.MapMonsterId == monster.MapMonsterId) != 0) continue;
+
+                    monsters.Add(monster);
+                    monsterCounter++;
                 }
             }
 
             DAOFactory.MapMonsterDAO.Insert(monsters);
-            Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("MONSTERS_PARSED"), monsterCounter));
+            Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("MONSTERS_PARSED"), monsterCounter));
         }
 
         public void ImportNpcMonsters()
@@ -251,6 +239,7 @@ namespace OpenNos.Import.Console
             string line;
             bool itemAreaBegin = false;
             int counter = 0;
+
             using (StreamReader npcIdLangStream = new StreamReader(fileNpcLang, Encoding.GetEncoding(1252)))
             {
                 while ((line = npcIdLangStream.ReadLine()) != null)
@@ -266,87 +255,81 @@ namespace OpenNos.Import.Console
             {
                 while ((line = npcIdStream.ReadLine()) != null)
                 {
-                    int UnknownData = 0;
-                    string[] linesave = line.Split('\t');
+                    int unknownData = 0;
+                    string[] currentLine = line.Split('\t');
 
-                    if (linesave.Length > 2 && linesave[1] == "VNUM")
+                    if (currentLine.Length > 2 && currentLine[1] == "VNUM")
                     {
                         npc = new NpcMonsterDTO();
-                        npc.NpcMonsterVNum = short.Parse(linesave[2]);
+                        npc.NpcMonsterVNum = short.Parse(currentLine[2]);
                         itemAreaBegin = true;
                     }
-                    else if (linesave.Length > 2 && linesave[1] == "LEVEL")
+                    else if (currentLine.Length > 2 && currentLine[1] == "LEVEL")
                     {
                         if (!itemAreaBegin) continue;
-                        npc.Level = byte.Parse(linesave[2]);
+                        npc.Level = byte.Parse(currentLine[2]);
                     }
-                    else if (linesave.Length > 3 && linesave[1] == "RACE")
+                    else if (currentLine.Length > 3 && currentLine[1] == "RACE")
                     {
                         //npc.Race = Convert.ToByte(linesave[2]);
                         //npc.RaceType = Convert.ToByte(linesave[2]);
                     }
-                    else if (linesave.Length > 2 && linesave[1] == "NAME")
+                    else if (currentLine.Length > 2 && currentLine[1] == "NAME")
                     {
-                        if (dictionaryIdLang.ContainsKey(linesave[2]))
-                            npc.Name = dictionaryIdLang[linesave[2]];
-                        else
-                            npc.Name = "";
+                        npc.Name = dictionaryIdLang.ContainsKey(currentLine[2]) ? dictionaryIdLang[currentLine[2]] : "";
                     }
-                    else if (linesave.Length > 6 && linesave[1] == "PREATT")
+                    else if (currentLine.Length > 6 && currentLine[1] == "PREATT")
                     {
-                        npc.Speed = Convert.ToByte(linesave[5]);
+                        npc.Speed = Convert.ToByte(currentLine[5]);
                     }
-                    else if (linesave.Length > 7 && linesave[1] == "ETC")
+                    else if (currentLine.Length > 7 && currentLine[1] == "ETC")
                     {
-                        UnknownData = Convert.ToInt32(linesave[2]);
+                        unknownData = Convert.ToInt32(currentLine[2]);
                     }
-                    else if (linesave.Length > 7 && linesave[1] == "ATTRIB")
+                    else if (currentLine.Length > 7 && currentLine[1] == "ATTRIB")
                     {
-                        npc.Element = Convert.ToByte(linesave[2]);
-                        npc.ElementRate = Convert.ToInt16(linesave[3]);
-                        npc.FireResistance = Convert.ToSByte(linesave[4]);
-                        npc.WaterResistance = Convert.ToSByte(linesave[5]);
-                        npc.LightResistance = Convert.ToSByte(linesave[6]);
-                        npc.DarkResistance = Convert.ToSByte(linesave[7]);
+                        npc.Element = Convert.ToByte(currentLine[2]);
+                        npc.ElementRate = Convert.ToInt16(currentLine[3]);
+                        npc.FireResistance = Convert.ToSByte(currentLine[4]);
+                        npc.WaterResistance = Convert.ToSByte(currentLine[5]);
+                        npc.LightResistance = Convert.ToSByte(currentLine[6]);
+                        npc.DarkResistance = Convert.ToSByte(currentLine[7]);
                     }
-                    else if (linesave.Length > 8 && linesave[1] == "ZSKILL")
+                    else if (currentLine.Length > 8 && currentLine[1] == "ZSKILL")
                     {
-                        npc.AttackClass = Convert.ToByte(linesave[2]);
+                        npc.AttackClass = Convert.ToByte(currentLine[2]);
                     }
-                    else if (linesave.Length > 4 && linesave[1] == "WINFO")
+                    else if (currentLine.Length > 4 && currentLine[1] == "WINFO")
                     {
-                        if (UnknownData == 1)
-                            npc.AttackUpgrade = Convert.ToByte(linesave[2]);
-                        else // Stupid way of saving data ex.	0	0	10 and	2	0	0 because logic!
-                            npc.AttackUpgrade = Convert.ToByte(linesave[4]);
+                        // Stupid way of saving data ex.	0	0	10 and	2	0	0 because logic!
+                        npc.AttackUpgrade = Convert.ToByte(unknownData == 1 ? currentLine[2] : currentLine[4]);
                     }
-                    else if (linesave.Length > 3 && linesave[1] == "AINFO")
+                    else if (currentLine.Length > 3 && currentLine[1] == "AINFO")
                     {
-                        if (UnknownData == 1)
-                            npc.DefenceUpgrade = Convert.ToByte(linesave[2]);
-                        else
-                            npc.DefenceUpgrade = Convert.ToByte(linesave[3]);
+                        npc.DefenceUpgrade = Convert.ToByte(unknownData == 1 ? currentLine[2] : currentLine[3]);
                     }
-                    else if (linesave.Length > 3 && linesave[1] == "ITEM")
+                    else if (currentLine.Length > 3 && currentLine[1] == "ITEM")
                     {
                         if (DAOFactory.NpcMonsterDAO.LoadById(npc.NpcMonsterVNum) == null)
                         {
                             npcs.Add(npc);
                             counter++;
                         }
-                        for (int i = 2; i < linesave.Count() - 3; i += 3)
+                        for (int i = 2; i < currentLine.Length - 3; i += 3)
                         {
-                            short vnum = short.Parse(linesave[i]);
+                            short vnum = short.Parse(currentLine[i]);
                             if (vnum == -1)
                                 break;
-                            if (DAOFactory.DropDAO.LoadByMonster(npc.NpcMonsterVNum).Where(s => s.ItemVNum == vnum).Count() == 0)
-                                drops.Add(new DropDTO()
-                                {
-                                    ItemVNum = vnum,
-                                    Amount = int.Parse(linesave[i + 2]),
-                                    MonsterVNum = npc.NpcMonsterVNum,
-                                    DropChance = int.Parse(linesave[i + 1]),
-                                });
+                            if (DAOFactory.DropDAO.LoadByMonster(npc.NpcMonsterVNum).Count(s => s.ItemVNum == vnum) != 0)
+                                continue; // only add new drops when there are 0
+
+                            drops.Add(new DropDTO
+                            {
+                                ItemVNum = vnum,
+                                Amount = int.Parse(currentLine[i + 2]),
+                                MonsterVNum = npc.NpcMonsterVNum,
+                                DropChance = int.Parse(currentLine[i + 1])
+                            });
                         }
 
                         itemAreaBegin = false;
@@ -354,7 +337,7 @@ namespace OpenNos.Import.Console
                 }
                 DAOFactory.NpcMonsterDAO.Insert(npcs);
                 DAOFactory.DropDAO.Insert(drops);
-                Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("NPCMONSTERS_PARSED"), counter));
+                Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("NPCMONSTERS_PARSED"), counter));
                 npcIdStream.Close();
             }
         }
@@ -368,68 +351,71 @@ namespace OpenNos.Import.Console
                 while ((line = packetTxtStream.ReadLine()) != null)
                 {
                     string[] linesave = line.Split(' ');
-                    packetList.Add(linesave);
+                    _packetList.Add(linesave);
                 }
             }
         }
 
         public void ImportPortals()
         {
-            List<PortalDTO> listPacket = new List<PortalDTO>();
-            List<PortalDTO> listPortal = new List<PortalDTO>();
+            List<PortalDTO> listPortals1 = new List<PortalDTO>();
+            List<PortalDTO> listPortals2 = new List<PortalDTO>();
             short map = 0;
-            int portalCounter = 0;
 
-            foreach (string[] linesave in packetList.Where(o => o[0].Equals("at") || o[0].Equals("gp")))
+            foreach (string[] currentPacket in _packetList.Where(o => o[0].Equals("at") || o[0].Equals("gp")))
             {
-                if (linesave.Length > 5 && linesave[0] == "at")
+                if (currentPacket.Length > 5 && currentPacket[0] == "at")
                 {
-                    map = short.Parse(linesave[2]);
+                    map = short.Parse(currentPacket[2]);
+                    continue;
                 }
-                else if (linesave.Length > 4 && linesave[0] == "gp")
+                if (currentPacket.Length > 4 && currentPacket[0] == "gp")
                 {
                     PortalDTO portal = new PortalDTO
                     {
                         SourceMapId = map,
-                        SourceX = short.Parse(linesave[1]),
-                        SourceY = short.Parse(linesave[2]),
-                        DestinationMapId = short.Parse(linesave[3]),
-                        Type = sbyte.Parse(linesave[4]),
+                        SourceX = short.Parse(currentPacket[1]),
+                        SourceY = short.Parse(currentPacket[2]),
+                        DestinationMapId = short.Parse(currentPacket[3]),
+                        Type = sbyte.Parse(currentPacket[4]),
                         DestinationX = -1,
                         DestinationY = -1,
                         IsDisabled = false
                     };
 
-                    if (listPacket.FirstOrDefault(s => s.SourceMapId == map && s.SourceX == portal.SourceX && s.SourceY == portal.SourceY && s.DestinationMapId == portal.DestinationMapId) != null || Maps.FirstOrDefault(s => s.MapId == portal.SourceMapId) == null || Maps.FirstOrDefault(s => s.MapId == portal.DestinationMapId) == null)
+                    if (listPortals1.FirstOrDefault(s => s.SourceMapId == map && s.SourceX == portal.SourceX && s.SourceY == portal.SourceY && s.DestinationMapId == portal.DestinationMapId) != null
+                        || _maps.FirstOrDefault(s => s.MapId == portal.SourceMapId) == null
+                        || _maps.FirstOrDefault(s => s.MapId == portal.DestinationMapId) == null)
                         continue; // Portal already in list
 
-                    listPacket.Add(portal);
+                    listPortals1.Add(portal);
                 }
             }
 
-            listPacket = listPacket.OrderBy(s => s.SourceMapId).ThenBy(s => s.DestinationMapId).ThenBy(s => s.SourceY).ThenBy(s => s.SourceX).ToList();
-            foreach (PortalDTO portal in listPacket)
+            listPortals1 = listPortals1.OrderBy(s => s.SourceMapId).ThenBy(s => s.DestinationMapId).ThenBy(s => s.SourceY).ThenBy(s => s.SourceX).ToList();
+            foreach (PortalDTO portal in listPortals1)
             {
-                PortalDTO p = listPacket.Except(listPortal).FirstOrDefault(s => s.SourceMapId.Equals(portal.DestinationMapId) && s.DestinationMapId.Equals(portal.SourceMapId));
+                PortalDTO p = listPortals1.Except(listPortals2).FirstOrDefault(s => s.SourceMapId == portal.DestinationMapId && s.DestinationMapId == portal.SourceMapId);
                 if (p == null) continue;
 
                 portal.DestinationX = p.SourceX;
                 portal.DestinationY = p.SourceY;
                 p.DestinationY = portal.SourceY;
                 p.DestinationX = portal.SourceX;
-                listPortal.Add(p);
-                listPortal.Add(portal);
+                listPortals2.Add(p);
+                listPortals2.Add(portal);
             }
 
             // foreach portal in the new list of Portals
             // where none (=> !Any()) are found in the existing
+            int portalCounter = listPortals2.Count(portal => !DAOFactory.PortalDAO.LoadByMap(portal.SourceMapId).Any(
+                s => s.DestinationMapId == portal.DestinationMapId && s.SourceX == portal.SourceX && s.SourceY == portal.SourceY));
 
             // so this dude doesnt exist yet in DAOFactory -> insert it
-            portalCounter = listPortal.Where(portal => !DAOFactory.PortalDAO.LoadByMap(portal.SourceMapId).Any(s => s.DestinationMapId.Equals(portal.DestinationMapId) && s.SourceX.Equals(portal.SourceX) && s.SourceY.Equals(portal.SourceY))).Count();
+            DAOFactory.PortalDAO.Insert(listPortals2.Where(portal => !DAOFactory.PortalDAO.LoadByMap(portal.SourceMapId).Any(
+                s => s.DestinationMapId == portal.DestinationMapId && s.SourceX == portal.SourceX && s.SourceY == portal.SourceY)).ToList());
 
-            DAOFactory.PortalDAO.Insert(listPortal.Where(portal => !DAOFactory.PortalDAO.LoadByMap(portal.SourceMapId).Any(s => s.DestinationMapId.Equals(portal.DestinationMapId) && s.SourceX.Equals(portal.SourceX) && s.SourceY.Equals(portal.SourceY))).ToList());
-
-            Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("PORTALS_PARSED"), portalCounter));
+            Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("PORTALS_PARSED"), portalCounter));
         }
 
         public void ImportRecipe()
@@ -437,52 +423,56 @@ namespace OpenNos.Import.Console
             int count = 0;
             int npc = 0;
             short item = 0;
-            RecipeDTO recipe = null;
-            RecipeItemDTO recipeitem = null;
-            foreach (string[] linesave in packetList.Where(o => o[0].Equals("n_run") || o[0].Equals("pdtse") || o[0].Equals("m_list")))
+            RecipeDTO recipe;
+
+            foreach (string[] currentPacket in _packetList.Where(o => o[0].Equals("n_run") || o[0].Equals("pdtse") || o[0].Equals("m_list")))
             {
-                if (linesave.Length > 4 && linesave[0] == "n_run")
+                if (currentPacket.Length > 4 && currentPacket[0] == "n_run")
                 {
-                    int.TryParse(linesave[4], out npc);
+                    int.TryParse(currentPacket[4], out npc);
+                    continue;
                 }
-                else if (linesave.Length > 1 && linesave[0] == "m_list" && linesave[1] == "2")
+                if (currentPacket.Length > 1 && currentPacket[0] == "m_list" && currentPacket[1] == "2")
                 {
-                    for (int i = 2; i < linesave.Length - 1; i++)
+                    for (int i = 2; i < currentPacket.Length - 1; i++)
                     {
-                        recipe = new RecipeDTO()
+                        recipe = new RecipeDTO
                         {
-                            ItemVNum = short.Parse(linesave[i]),
+                            ItemVNum = short.Parse(currentPacket[i]),
                             MapNpcId = npc
                         };
 
-                        if (DAOFactory.RecipeDAO.LoadByNpc(npc).Count() > 0)
-                            if (DAOFactory.RecipeDAO.LoadByNpc(npc).Where(s => s.ItemVNum == recipe.ItemVNum).Count() > 0)
-                                continue;
+                        if (DAOFactory.RecipeDAO.LoadByNpc(npc).Any() &&
+                            DAOFactory.RecipeDAO.LoadByNpc(npc).Any(s => s.ItemVNum == recipe.ItemVNum)) continue; // isnt one of this redundant?
 
                         DAOFactory.RecipeDAO.Insert(recipe);
                         count++;
                     }
+                    continue;
                 }
-                else if (linesave.Length > 2 && linesave[0] == "pdtse")
+                if (currentPacket.Length > 2 && currentPacket[0] == "pdtse")
                 {
-                    item = short.Parse(linesave[2]);
+                    item = short.Parse(currentPacket[2]);
+                    continue;
                 }
-                else if (linesave.Length > 1 && linesave[0] == "m_list" && linesave[1] == "3")
+                if (currentPacket.Length > 1 && currentPacket[0] == "m_list" && currentPacket[1] == "3")
                 {
-                    for (int i = 3; i < linesave.Length - 1; i += 2)
+                    for (int i = 3; i < currentPacket.Length - 1; i += 2)
                     {
                         RecipeDTO rec = DAOFactory.RecipeDAO.LoadByNpc(npc).FirstOrDefault(s => s.ItemVNum == item);
                         if (rec != null)
                         {
-                            rec.Amount = byte.Parse(linesave[2]);
+                            rec.Amount = byte.Parse(currentPacket[2]);
                             DAOFactory.RecipeDAO.Update(rec);
                             short recipeId = DAOFactory.RecipeDAO.LoadByNpc(npc).FirstOrDefault(s => s.ItemVNum == item).RecipeId;
-                            recipeitem = new RecipeItemDTO
+
+                            RecipeItemDTO recipeitem = new RecipeItemDTO
                             {
-                                ItemVNum = short.Parse(linesave[i]),
-                                Amount = byte.Parse(linesave[i + 1]),
+                                ItemVNum = short.Parse(currentPacket[i]),
+                                Amount = byte.Parse(currentPacket[i + 1]),
                                 RecipeId = recipeId
                             };
+
                             if (DAOFactory.RecipeItemDAO.LoadAll().FirstOrDefault(s => s.RecipeId == recipeId && s.ItemVNum == item) == null)
                                 DAOFactory.RecipeItemDAO.Insert(recipeitem);
                         }
@@ -491,138 +481,140 @@ namespace OpenNos.Import.Console
                 }
             }
 
-            Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("RECIPES_PARSED"), count));
+            Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("RECIPES_PARSED"), count));
         }
 
         public void ImportShopItems()
         {
-            List<PortalDTO> listPacket = new List<PortalDTO>();
             List<ShopItemDTO> shopitems = new List<ShopItemDTO>();
-            int portalCounter = 0;
+            int itemCounter = 0;
             byte type = 0;
-            foreach (string[] linesave in packetList.Where(o => o[0].Equals("n_inv") || o[0].Equals("shopping")))
+            foreach (string[] currentPacket in _packetList.Where(o => o[0].Equals("n_inv") || o[0].Equals("shopping")))
             {
-                if (linesave[0].Equals("n_inv"))
+                if (currentPacket[0].Equals("n_inv"))
                 {
-                    if (DAOFactory.ShopDAO.LoadByNpc(short.Parse(linesave[2])) != null)
+                    if (DAOFactory.ShopDAO.LoadByNpc(short.Parse(currentPacket[2])) != null)
                     {
-                        for (int i = 5; i < linesave.Count(); i++)
+                        for (int i = 5; i < currentPacket.Length; i++)
                         {
-                            string[] item = linesave[i].Split('.');
+                            string[] item = currentPacket[i].Split('.');
                             ShopItemDTO sitem = null;
-                            if (item.Count() == 5)
-                            {
-                                sitem = new ShopItemDTO();
-                                sitem.ShopId = DAOFactory.ShopDAO.LoadByNpc(short.Parse(linesave[2])).ShopId;
-                                sitem.Type = type;
-                                sitem.Slot = byte.Parse(item[1]);
-                                sitem.ItemVNum = short.Parse(item[2]);
-                            }
-                            else if (item.Count() == 6)
-                            {
-                                sitem = new ShopItemDTO();
-                                sitem.ShopId = DAOFactory.ShopDAO.LoadByNpc(short.Parse(linesave[2])).ShopId;
-                                sitem.Type = type;
-                                sitem.Slot = byte.Parse(item[1]);
-                                sitem.ItemVNum = short.Parse(item[2]);
-                                sitem.Rare = byte.Parse(item[3]);
-                                sitem.Upgrade = byte.Parse(item[4]);
-                            }
-                            if (sitem != null && DAOFactory.ShopItemDAO.LoadByShopId(sitem.ShopId).FirstOrDefault(s => s.ItemVNum.Equals(sitem.ItemVNum)) == null)
-                            {
-                                shopitems.Add(sitem);
 
-                                portalCounter++;
+                            if (item.Length == 5)
+                            {
+                                sitem = new ShopItemDTO
+                                {
+                                    ShopId = DAOFactory.ShopDAO.LoadByNpc(short.Parse(currentPacket[2])).ShopId,
+                                    Type = type,
+                                    Slot = byte.Parse(item[1]),
+                                    ItemVNum = short.Parse(item[2])
+                                };
                             }
+                            else if (item.Length == 6)
+                            {
+                                sitem = new ShopItemDTO
+                                {
+                                    ShopId = DAOFactory.ShopDAO.LoadByNpc(short.Parse(currentPacket[2])).ShopId,
+                                    Type = type,
+                                    Slot = byte.Parse(item[1]),
+                                    ItemVNum = short.Parse(item[2]),
+                                    Rare = byte.Parse(item[3]),
+                                    Upgrade = byte.Parse(item[4])
+                                };
+                            }
+
+                            if (sitem == null || DAOFactory.ShopItemDAO.LoadByShopId(sitem.ShopId).FirstOrDefault(s => s.ItemVNum.Equals(sitem.ItemVNum)) != null)
+                                continue;
+
+                            shopitems.Add(sitem);
+                            itemCounter++;
                         }
                     }
                 }
                 else
                 {
-                    if (linesave.Count() > 3)
-                        type = byte.Parse(linesave[1]);
+                    if (currentPacket.Length > 3)
+                        type = byte.Parse(currentPacket[1]);
                 }
             }
+
             DAOFactory.ShopItemDAO.Insert(shopitems);
-            Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("SHOPITEMS_PARSED"), portalCounter));
+            Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("SHOPITEMS_PARSED"), itemCounter));
         }
 
         public void ImportShops()
         {
             int shopCounter = 0;
             List<ShopDTO> shops = new List<ShopDTO>();
-            foreach (string[] linesave in packetList.Where(o => o[0].Equals("shop")))
+            foreach (string[] currentPacket in _packetList.Where(o => o.Length > 6 && o[0].Equals("shop") && o[1].Equals("2")))
             {
-                if (linesave.Length > 6 && linesave[0] == "shop" && linesave[1] == "2")
+                MapNpcDTO npc = DAOFactory.MapNpcDAO.LoadById(short.Parse(currentPacket[2]));
+                if (npc == null) continue;
+
+                string named = "";
+                for (int j = 6; j < currentPacket.Length; j++)
+                    named += $"{currentPacket[j]} ";
+                named = named.Trim();
+
+                ShopDTO shop = new ShopDTO
                 {
-                    MapNpcDTO npc = DAOFactory.MapNpcDAO.LoadById(short.Parse(linesave[2]));
-                    if (npc == null) continue;
+                    Name = named,
+                    MapNpcId = npc.MapNpcId,
+                    MenuType = byte.Parse(currentPacket[4]),
+                    ShopType = byte.Parse(currentPacket[5])
+                };
 
-                    string named = "";
-                    for (int j = 6; j < linesave.Length; j++)
-                    {
-                        named += $"{linesave[j]} ";
-                    }
-                    named = named.Trim();
+                if (DAOFactory.ShopDAO.LoadByNpc(shop.MapNpcId) != null) continue;
 
-                    ShopDTO shop = new ShopDTO
-                    {
-                        Name = named,
-                        MapNpcId = npc.MapNpcId,
-                        MenuType = byte.Parse(linesave[4]),
-                        ShopType = byte.Parse(linesave[5])
-                    };
-                    if (DAOFactory.ShopDAO.LoadByNpc(shop.MapNpcId) == null)
-                    {
-                        shops.Add(shop);
-                        shopCounter++;
-                    }
-                }
+                shops.Add(shop);
+                shopCounter++;
             }
+
             DAOFactory.ShopDAO.Insert(shops);
-            Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("SHOPS_PARSED"), shopCounter));
+            Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("SHOPS_PARSED"), shopCounter));
         }
 
         public void ImportTeleporters()
         {
-            int i = 0;
+            int teleporterCounter = 0;
             TeleporterDTO teleporter = null;
-            foreach (string[] linesave in packetList.Where(o => o[0].Equals("at") || (o[0].Equals("n_run") && (o[1].Equals("16") || o[1].Equals("26")))))
+            foreach (string[] currentPacket in _packetList.Where(o => o[0].Equals("at") || (o[0].Equals("n_run") && (o[1].Equals("16") || o[1].Equals("26")))))
             {
-                if (linesave.Length > 4 && linesave[0] == "n_run")
+                if (currentPacket.Length > 4 && currentPacket[0] == "n_run")
                 {
-                    if (DAOFactory.MapNpcDAO.LoadById(int.Parse(linesave[4])) == null)
+                    if (DAOFactory.MapNpcDAO.LoadById(int.Parse(currentPacket[4])) == null)
                         continue;
+
                     teleporter = new TeleporterDTO
                     {
-                        MapNpcId = int.Parse(linesave[4]),
-                        Index = short.Parse(linesave[2]),
+                        MapNpcId = int.Parse(currentPacket[4]),
+                        Index = short.Parse(currentPacket[2]),
                     };
+                    continue;
                 }
-                else if (linesave.Length > 5 && linesave[0] == "at")
+                if (currentPacket.Length > 5 && currentPacket[0] == "at")
                 {
-                    if (teleporter != null)
-                    {
-                        teleporter.MapId = short.Parse(linesave[2]);
-                        teleporter.MapX = short.Parse(linesave[3]);
-                        teleporter.MapY = short.Parse(linesave[4]);
+                    if (teleporter == null) continue;
 
-                        if (DAOFactory.TeleporterDAO.LoadFromNpc(teleporter.MapNpcId).Where(s => s.Index == teleporter.Index).Count() > 0)
-                            continue;
+                    teleporter.MapId = short.Parse(currentPacket[2]);
+                    teleporter.MapX = short.Parse(currentPacket[3]);
+                    teleporter.MapY = short.Parse(currentPacket[4]);
 
-                        DAOFactory.TeleporterDAO.Insert(teleporter);
-                        i++;
-                        teleporter = null;
-                    }
+                    if (DAOFactory.TeleporterDAO.LoadFromNpc(teleporter.MapNpcId).Any(s => s.Index == teleporter.Index))
+                        continue;
+
+                    DAOFactory.TeleporterDAO.Insert(teleporter);
+                    teleporterCounter++;
+                    teleporter = null;
                 }
             }
 
-            Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("TELEPORTERS_PARSED"), i));
+            Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("TELEPORTERS_PARSED"), teleporterCounter));
         }
 
-        public void loadMaps()
+        public void LoadMaps()
         {
-            Maps = DAOFactory.MapDAO.LoadAll();
+            _maps = DAOFactory.MapDAO.LoadAll();
         }
 
         internal void ImportItems()
@@ -630,17 +622,16 @@ namespace OpenNos.Import.Console
             string fileId = $"{_folder}\\Item.dat";
             string fileLang = $"{_folder}\\_code_{System.Configuration.ConfigurationManager.AppSettings["language"]}_Item.txt";
             Dictionary<string, string> dictionaryName = new Dictionary<string, string>();
-            string line = string.Empty;
+            string line;
             List<ItemDTO> items = new List<ItemDTO>();
+
             using (StreamReader mapIdLangStream = new StreamReader(fileLang, Encoding.GetEncoding(1252)))
             {
                 while ((line = mapIdLangStream.ReadLine()) != null)
                 {
                     string[] linesave = line.Split('\t');
-                    if (linesave.Length > 1 && !dictionaryName.ContainsKey(linesave[0]))
-                    {
-                        dictionaryName.Add(linesave[0], linesave[1]);
-                    }
+                    if (linesave.Length <= 1 || dictionaryName.ContainsKey(linesave[0])) continue;
+                    dictionaryName.Add(linesave[0], linesave[1]);
                 }
                 mapIdLangStream.Close();
             }
@@ -649,72 +640,65 @@ namespace OpenNos.Import.Console
             {
                 ItemDTO item = new ItemDTO();
                 bool itemAreaBegin = false;
-                string name = "";
-                int i = 0;
+                int itemCounter = 0;
 
                 while ((line = npcIdStream.ReadLine()) != null)
                 {
-                    string[] linesave = line.Split('\t');
+                    string[] currentLine = line.Split('\t');
 
-                    if (linesave.Length > 3 && linesave[1] == "VNUM")
+                    if (currentLine.Length > 3 && currentLine[1] == "VNUM")
                     {
                         itemAreaBegin = true;
-                        item.VNum = short.Parse(linesave[2]);
-                        item.Price = long.Parse(linesave[3]);
+                        item.VNum = short.Parse(currentLine[2]);
+                        item.Price = long.Parse(currentLine[3]);
                     }
-                    else if (linesave.Length > 1 && linesave[1] == "END")
+                    else if (currentLine.Length > 1 && currentLine[1] == "END")
                     {
                         if (!itemAreaBegin) continue;
 
                         if (DAOFactory.ItemDAO.LoadById(item.VNum) == null)
                         {
                             items.Add(item);
-                            i++;
+                            itemCounter++;
                         }
                         item = new ItemDTO();
                         itemAreaBegin = false;
                     }
-                    else if (linesave.Length > 2 && linesave[1] == "NAME")
+                    else if (currentLine.Length > 2 && currentLine[1] == "NAME")
                     {
-                        if (dictionaryName.TryGetValue(linesave[2].ToString(), out name))
-                        {
-                            item.Name = name;
-                        }
-                        else
-                            item.Name = string.Empty;
+                        string name;
+                        item.Name = dictionaryName.TryGetValue(currentLine[2], out name) ? name : string.Empty;
                     }
-                    else if (linesave.Length > 7 && linesave[1] == "INDEX")
+                    else if (currentLine.Length > 7 && currentLine[1] == "INDEX")
                     {
-                        item.Type = Convert.ToByte(linesave[2]) != 4 ? Convert.ToByte(linesave[2]) : (byte)0;
+                        item.Type = Convert.ToByte(currentLine[2]) != 4 ? Convert.ToByte(currentLine[2]) : (byte)0;
 
-                        item.ItemType = linesave[3] != "-1" ? Convert.ToByte($"{item.Type}{linesave[3]}") : (byte)0;
-                        item.ItemSubType = Convert.ToByte(linesave[4]);
-                        item.EquipmentSlot = Convert.ToByte(linesave[5] != "-1" ? linesave[5] : "0");
+                        item.ItemType = currentLine[3] != "-1" ? Convert.ToByte($"{item.Type}{currentLine[3]}") : (byte)0;
+                        item.ItemSubType = Convert.ToByte(currentLine[4]);
+                        item.EquipmentSlot = Convert.ToByte(currentLine[5] != "-1" ? currentLine[5] : "0");
                         //linesave[6] design id?
-                        item.Morph = Convert.ToInt16(linesave[7]);
+                        item.Morph = Convert.ToInt16(currentLine[7]);
                     }
-                    else if (linesave.Length > 3 && linesave[1] == "TYPE")
+                    else if (currentLine.Length > 3 && currentLine[1] == "TYPE")
                     {
                         //linesave[2] 0-range 2-range 3-magic but useless
                         if (item.EquipmentSlot == (byte)EquipmentType.Fairy)
                             item.Class = 15;
                         else
-                            item.Class = Convert.ToByte(linesave[3]);
+                            item.Class = Convert.ToByte(currentLine[3]);
                     }
-                    else if (linesave.Length > 3 && linesave[1] == "FLAG")
+                    else if (currentLine.Length > 3 && currentLine[1] == "FLAG")
                     {
-                        item.IsBlocked = linesave[5] == "1" ? true : false;
-                        item.IsDroppable = linesave[6] == "0" ? true : false;
-                        item.IsTradable = linesave[7] == "0" ? true : false;
-                        item.IsSoldable = linesave[8] == "0" ? true : false;
-                        item.IsMinilandObject = linesave[9] == "1" ? true : false;
-                        item.IsWarehouse = linesave[10] == "1" ? true : false;
-                        item.IsColored = linesave[16] == "1" ? true : false;
-                        item.Sex = linesave[18] == "1" ? (byte)1 : linesave[17] == "1" ? (byte)2 : (byte)0;
-                        if (linesave[21] == "1")
-                        {
+                        item.IsBlocked = currentLine[5] == "1";
+                        item.IsDroppable = currentLine[6] == "0";
+                        item.IsTradable = currentLine[7] == "0";
+                        item.IsSoldable = currentLine[8] == "0";
+                        item.IsMinilandObject = currentLine[9] == "1";
+                        item.IsWarehouse = currentLine[10] == "1";
+                        item.IsColored = currentLine[16] == "1";
+                        item.Sex = currentLine[18] == "1" ? (byte)1 : currentLine[17] == "1" ? (byte)2 : (byte)0;
+                        if (currentLine[21] == "1")
                             item.ReputPrice = item.Price;
-                        }
                         /*
                         ??item.IsVehicle = linesave[11] == "1" ? true : false;??
                         ??item.BoxedVehicle = linesave[12] == "1" ? true : false;??
@@ -730,105 +714,105 @@ namespace OpenNos.Import.Console
                         linesave[20] idk
                         */
                     }
-                    else if (linesave.Length > 1 && linesave[1] == "DATA")
+                    else if (currentLine.Length > 1 && currentLine[1] == "DATA")
                     {
                         switch (item.ItemType)
                         {
                             case (byte)ItemType.Weapon:
-                                item.LevelMinimum = Convert.ToByte(linesave[2]);
-                                item.DamageMinimum = Convert.ToInt16(linesave[3]);
-                                item.DamageMaximum = Convert.ToInt16(linesave[4]);
-                                item.HitRate = Convert.ToInt16(linesave[5]);
-                                item.CriticalLuckRate = Convert.ToByte(linesave[6]);
-                                item.CriticalRate = Convert.ToInt16(linesave[7]);
-                                item.BasicUpgrade = Convert.ToByte(linesave[10]);
+                                item.LevelMinimum = Convert.ToByte(currentLine[2]);
+                                item.DamageMinimum = Convert.ToInt16(currentLine[3]);
+                                item.DamageMaximum = Convert.ToInt16(currentLine[4]);
+                                item.HitRate = Convert.ToInt16(currentLine[5]);
+                                item.CriticalLuckRate = Convert.ToByte(currentLine[6]);
+                                item.CriticalRate = Convert.ToInt16(currentLine[7]);
+                                item.BasicUpgrade = Convert.ToByte(currentLine[10]);
                                 break;
 
                             case (byte)ItemType.Armor:
-                                item.LevelMinimum = Convert.ToByte(linesave[2]);
-                                item.CloseDefence = Convert.ToInt16(linesave[3]);
-                                item.DistanceDefence = Convert.ToInt16(linesave[4]);
-                                item.MagicDefence = Convert.ToInt16(linesave[5]);
-                                item.DefenceDodge = Convert.ToInt16(linesave[6]);
-                                item.DistanceDefenceDodge = Convert.ToInt16(linesave[6]);
-                                item.BasicUpgrade = Convert.ToByte(linesave[10]);
+                                item.LevelMinimum = Convert.ToByte(currentLine[2]);
+                                item.CloseDefence = Convert.ToInt16(currentLine[3]);
+                                item.DistanceDefence = Convert.ToInt16(currentLine[4]);
+                                item.MagicDefence = Convert.ToInt16(currentLine[5]);
+                                item.DefenceDodge = Convert.ToInt16(currentLine[6]);
+                                item.DistanceDefenceDodge = Convert.ToInt16(currentLine[6]);
+                                item.BasicUpgrade = Convert.ToByte(currentLine[10]);
                                 break;
 
                             case (byte)ItemType.Box:
-                                item.Effect = Convert.ToInt16(linesave[2]);
-                                item.EffectValue = Convert.ToInt32(linesave[3]);
+                                item.Effect = Convert.ToInt16(currentLine[2]);
+                                item.EffectValue = Convert.ToInt32(currentLine[3]);
                                 break;
 
                             case (byte)ItemType.Fashion:
-                                item.LevelMinimum = Convert.ToByte(linesave[2]);
-                                item.CloseDefence = Convert.ToInt16(linesave[3]);
-                                item.DistanceDefence = Convert.ToInt16(linesave[4]);
-                                item.MagicDefence = Convert.ToInt16(linesave[5]);
-                                item.DefenceDodge = Convert.ToInt16(linesave[6]);
-                                item.ItemValidTime = Convert.ToInt32(linesave[13]) * 3600;
+                                item.LevelMinimum = Convert.ToByte(currentLine[2]);
+                                item.CloseDefence = Convert.ToInt16(currentLine[3]);
+                                item.DistanceDefence = Convert.ToInt16(currentLine[4]);
+                                item.MagicDefence = Convert.ToInt16(currentLine[5]);
+                                item.DefenceDodge = Convert.ToInt16(currentLine[6]);
+                                item.ItemValidTime = Convert.ToInt32(currentLine[13]) * 3600;
                                 break;
 
                             case (byte)ItemType.Food:
-                                item.Hp = Convert.ToInt16(linesave[2]);
-                                item.Mp = Convert.ToInt16(linesave[4]);
+                                item.Hp = Convert.ToInt16(currentLine[2]);
+                                item.Mp = Convert.ToInt16(currentLine[4]);
                                 break;
 
                             case (byte)ItemType.Jewelery:
                                 if (item.EquipmentSlot.Equals((byte)EquipmentType.Amulet))
                                 {
-                                    item.LevelMinimum = Convert.ToByte(linesave[2]);
-                                    item.ItemValidTime = Convert.ToInt32(linesave[3]) / 10;
+                                    item.LevelMinimum = Convert.ToByte(currentLine[2]);
+                                    item.ItemValidTime = Convert.ToInt32(currentLine[3]) / 10;
                                 }
                                 else if (item.EquipmentSlot.Equals((byte)EquipmentType.Fairy))
                                 {
-                                    item.Element = Convert.ToByte(linesave[2]);
-                                    item.ElementRate = Convert.ToInt16(linesave[3]);
+                                    item.Element = Convert.ToByte(currentLine[2]);
+                                    item.ElementRate = Convert.ToInt16(currentLine[3]);
                                 }
                                 else
                                 {
-                                    item.LevelMinimum = Convert.ToByte(linesave[2]);
-                                    item.MaxCellonLvl = Convert.ToByte(linesave[3]);
-                                    item.MaxCellon = Convert.ToByte(linesave[4]);
+                                    item.LevelMinimum = Convert.ToByte(currentLine[2]);
+                                    item.MaxCellonLvl = Convert.ToByte(currentLine[3]);
+                                    item.MaxCellon = Convert.ToByte(currentLine[4]);
                                 }
                                 break;
 
                             case (byte)ItemType.Special:
-                                item.Effect = Convert.ToInt16(linesave[2]);
-                                item.EffectValue = Convert.ToInt32(linesave[4]);
+                                item.Effect = Convert.ToInt16(currentLine[2]);
+                                item.EffectValue = Convert.ToInt32(currentLine[4]);
                                 break;
 
                             case (byte)ItemType.Magical:
-                                item.Effect = Convert.ToInt16(linesave[2]);
-                                item.EffectValue = Convert.ToInt32(linesave[4]);
+                                item.Effect = Convert.ToInt16(currentLine[2]);
+                                item.EffectValue = Convert.ToInt32(currentLine[4]);
                                 break;
 
                             case (byte)ItemType.Specialist:
                                 //item.isSpecialist = Convert.ToByte(linesave[2]);
                                 //item.(...) = (...)(linesave[3]));
-                                item.Speed = Convert.ToByte(linesave[5]);
-                                item.SpType = Convert.ToByte(linesave[13]);
+                                item.Speed = Convert.ToByte(currentLine[5]);
+                                item.SpType = Convert.ToByte(currentLine[13]);
                                 //item.Morph = Convert.ToInt16(linesave[14]) + 1; // idk whats that, its useless
-                                item.FireResistance = Convert.ToByte(linesave[15]);
-                                item.WaterResistance = Convert.ToByte(linesave[16]);
-                                item.LightResistance = Convert.ToByte(linesave[17]);
-                                item.DarkResistance = Convert.ToByte(linesave[18]);
+                                item.FireResistance = Convert.ToByte(currentLine[15]);
+                                item.WaterResistance = Convert.ToByte(currentLine[16]);
+                                item.LightResistance = Convert.ToByte(currentLine[17]);
+                                item.DarkResistance = Convert.ToByte(currentLine[18]);
                                 //item.PartnerClass = Convert.ToInt16(linesave[19]);
-                                item.LevelJobMinimum = Convert.ToByte(linesave[20]);
-                                item.ReputationMinimum = Convert.ToByte(linesave[21]);
-                                Dictionary<int, int> Elementdic = new Dictionary<int, int>();
-                                Elementdic.Add(0, 0);
+                                item.LevelJobMinimum = Convert.ToByte(currentLine[20]);
+                                item.ReputationMinimum = Convert.ToByte(currentLine[21]);
+
+                                Dictionary<int, int> elementdic = new Dictionary<int, int> {{0, 0}};
                                 if (item.FireResistance != 0)
-                                    Elementdic.Add(1, item.FireResistance);
+                                    elementdic.Add(1, item.FireResistance);
                                 if (item.WaterResistance != 0)
-                                    Elementdic.Add(2, item.WaterResistance);
+                                    elementdic.Add(2, item.WaterResistance);
                                 if (item.LightResistance != 0)
-                                    Elementdic.Add(3, item.LightResistance);
+                                    elementdic.Add(3, item.LightResistance);
                                 if (item.DarkResistance != 0)
-                                    Elementdic.Add(4, item.DarkResistance);
-                                item.Element = (byte)Elementdic.OrderByDescending(s => s.Value).First().Key;
-                                if (Elementdic.Count > 1 && Elementdic.OrderByDescending(s => s.Value).First().Value == Elementdic.OrderByDescending(s => s.Value).ElementAt(1).Value)
+                                    elementdic.Add(4, item.DarkResistance);
+                                item.Element = (byte)elementdic.OrderByDescending(s => s.Value).First().Key;
+                                if (elementdic.Count > 1 && elementdic.OrderByDescending(s => s.Value).First().Value == elementdic.OrderByDescending(s => s.Value).ElementAt(1).Value)
                                 {
-                                    item.SecondaryElement = (byte)Elementdic.OrderByDescending(s => s.Value).ElementAt(1).Key;
+                                    item.SecondaryElement = (byte)elementdic.OrderByDescending(s => s.Value).ElementAt(1).Key;
                                 }
                                 if (item.VNum == 903) // need to hardcode...
                                     item.Element = 2;
@@ -845,38 +829,38 @@ namespace OpenNos.Import.Console
                                 break;
 
                             case (byte)ItemType.Main:
-                                item.Effect = Convert.ToInt16(linesave[2]);
-                                item.EffectValue = Convert.ToInt32(linesave[4]);
+                                item.Effect = Convert.ToInt16(currentLine[2]);
+                                item.EffectValue = Convert.ToInt32(currentLine[4]);
                                 break;
 
                             case (byte)ItemType.Upgrade:
-                                item.Effect = Convert.ToInt16(linesave[2]);
-                                item.EffectValue = Convert.ToInt32(linesave[4]);
+                                item.Effect = Convert.ToInt16(currentLine[2]);
+                                item.EffectValue = Convert.ToInt32(currentLine[4]);
                                 break;
 
                             case (byte)ItemType.Production:
-                                item.Effect = Convert.ToInt16(linesave[2]);
-                                item.EffectValue = Convert.ToInt32(linesave[4]);
+                                item.Effect = Convert.ToInt16(currentLine[2]);
+                                item.EffectValue = Convert.ToInt32(currentLine[4]);
                                 break;
 
                             case (byte)ItemType.Map:
-                                item.Effect = Convert.ToInt16(linesave[2]);
-                                item.EffectValue = Convert.ToInt32(linesave[4]);
+                                item.Effect = Convert.ToInt16(currentLine[2]);
+                                item.EffectValue = Convert.ToInt32(currentLine[4]);
                                 break;
 
                             case (byte)ItemType.Potion:
-                                item.Hp = Convert.ToInt16(linesave[2]);
-                                item.Mp = Convert.ToInt16(linesave[4]);
+                                item.Hp = Convert.ToInt16(currentLine[2]);
+                                item.Mp = Convert.ToInt16(currentLine[4]);
                                 break;
 
                             case (byte)ItemType.Snack:
-                                item.Hp = Convert.ToInt16(linesave[2]);
-                                item.Mp = Convert.ToInt16(linesave[4]);
+                                item.Hp = Convert.ToInt16(currentLine[2]);
+                                item.Mp = Convert.ToInt16(currentLine[4]);
                                 break;
 
                             case (byte)ItemType.Teacher:
-                                item.Effect = Convert.ToInt16(linesave[2]);
-                                item.EffectValue = Convert.ToInt32(linesave[4]);
+                                item.Effect = Convert.ToInt16(currentLine[2]);
+                                item.EffectValue = Convert.ToInt32(currentLine[4]);
                                 //item.PetLoyality = Convert.ToInt16(linesave[4]);
                                 //item.PetFood = Convert.ToInt16(linesave[7]);
                                 break;
@@ -902,30 +886,31 @@ namespace OpenNos.Import.Console
                                 break;
 
                             case (byte)ItemType.Event:
-                                item.Effect = Convert.ToInt16(linesave[2]);
-                                item.EffectValue = Convert.ToInt32(linesave[4]);
+                                item.Effect = Convert.ToInt16(currentLine[2]);
+                                item.EffectValue = Convert.ToInt32(currentLine[4]);
                                 break;
                         }
                         if ((item.EquipmentSlot == (byte)EquipmentType.Boots || item.EquipmentSlot == (byte)EquipmentType.Gloves) && item.Type == 0)
                         {
-                            item.FireResistance = Convert.ToByte(linesave[7]);
-                            item.WaterResistance = Convert.ToByte(linesave[8]);
-                            item.LightResistance = Convert.ToByte(linesave[9]);
-                            item.DarkResistance = Convert.ToByte(linesave[11]);
+                            item.FireResistance = Convert.ToByte(currentLine[7]);
+                            item.WaterResistance = Convert.ToByte(currentLine[8]);
+                            item.LightResistance = Convert.ToByte(currentLine[9]);
+                            item.DarkResistance = Convert.ToByte(currentLine[11]);
                         }
                         else
                         {
-                            item.Effect = Convert.ToInt16(linesave[2]);
-                            item.EffectValue = Convert.ToInt32(linesave[8]);
+                            item.Effect = Convert.ToInt16(currentLine[2]);
+                            item.EffectValue = Convert.ToInt32(currentLine[8]);
                         }
                     }
-                    else if (linesave.Length > 1 && linesave[1] == "BUFF")
+                    else if (currentLine.Length > 1 && currentLine[1] == "BUFF")
                     {
                         //need to see how to use them :D (we know how to get the buff from bcard ect)
                     }
                 }
+
                 DAOFactory.ItemDAO.Insert(items);
-                Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("ITEMS_PARSED"), i));
+                Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("ITEMS_PARSED"), itemCounter));
                 npcIdStream.Close();
             }
         }
