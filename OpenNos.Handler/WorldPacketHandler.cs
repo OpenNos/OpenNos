@@ -1723,7 +1723,7 @@ namespace OpenNos.Handler
             string[] packetsplit = packet.Split(' ', '^');
             int type = -1;
             long CharId = -1;
-          
+            int newgroup = 1;
             if (packetsplit.Length > 3)
             {
                 if (!int.TryParse(packetsplit[2], out type))
@@ -1732,11 +1732,83 @@ namespace OpenNos.Handler
 
                 if (type == 3)
                 {
-                  // TODO join
+                    foreach (Group group in ClientLinkManager.Instance.Groups)
+                    {
+                        if (group.Characters.Contains(CharId))
+                        {
+                            if (group.Characters.Count == 3)
+                            {
+                                // group full
+                                return;
+                            }
+                            else if (group.Characters.Contains(Session.Character.CharacterId))
+                            {
+                                //already grouped
+                                return;
+                            }
+                            else
+                            {
+                                group.Characters.Add(Session.Character.CharacterId);
+
+                            }
+
+                        }
+                        else
+                        {
+                            newgroup = 0;
+                        }
+                    }
+                    if (newgroup == 1)
+                    {
+                        if (ClientLinkManager.Instance.Groups.FirstOrDefault(s => s.Characters.Contains(Session.Character.CharacterId)) != null)
+                        {
+                            if (ClientLinkManager.Instance.Groups.FirstOrDefault(s => s.Characters.Contains(Session.Character.CharacterId)).Characters.Count == 3)
+                            {
+                                // group full
+                                return;
+                            }
+                            else if (ClientLinkManager.Instance.Groups.FirstOrDefault(s => s.Characters.Contains(Session.Character.CharacterId)).Characters.Contains(Session.Character.CharacterId))
+                            {
+                                ClientLinkManager.Instance.Groups.FirstOrDefault(s => s.Characters.Contains(Session.Character.CharacterId)).Characters.Add(CharId);
+                                return;
+                            }
+
+                        }
+                        else
+                        {
+                            Group group = new Group()
+                            {
+                                Characters = new List<long>()
+                            };
+                            group.Characters.Add(CharId);
+                            group.Characters.Add(Session.Character.CharacterId);
+                            ClientLinkManager.Instance.Groups.Add(group);
+                        }
+
+                    }
+
+                    //player join group
+                    string str = "pinit 2";
+                    int i = 0;
+                    foreach (long Id in ClientLinkManager.Instance.Groups.FirstOrDefault(s => s.Characters.Contains(CharId)).Characters)
+                    {
+                        i++;
+                        str += $" 1|{ClientLinkManager.Instance.GetProperty<long>(Id, "CharacterId")}|{i}|{ClientLinkManager.Instance.GetProperty<byte>(Id, "Level")}|{ClientLinkManager.Instance.GetProperty<string>(Id, "Name")}|{ClientLinkManager.Instance.GetProperty<byte>(Id, "Gender")}|{ClientLinkManager.Instance.GetProperty<byte>(Id, "Gender")+ ClientLinkManager.Instance.GetProperty<byte>(Id, "Class")}|{(ClientLinkManager.Instance.GetProperty<bool>(Id, "UseSp") ? ClientLinkManager.Instance.GetProperty<int>(Id, "Morph") : 0)} ";
+                    }
+
+                    foreach (long Id in ClientLinkManager.Instance.Groups.FirstOrDefault(s => s.Characters.Contains(CharId)).Characters)
+                    {
+                        ClientLinkManager.Instance.Broadcast(Session, str, ReceiverType.OnlySomeone, "", Id);
+                    }
+
+                    /* s = "pidx 1 1." + group.Users[0].id;
+                     Map.SendMap(group.Users[0], s, true);
+                   */
+
                 }
                 else if (type == 4)
                 {
-                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateInfo(String.Format(Language.Instance.GetMessageFromKey("REFUSED_REQUEST"), Session.Character.Name)), ReceiverType.OnlySomeone,"", CharId);  
+                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateInfo(String.Format(Language.Instance.GetMessageFromKey("REFUSED_REQUEST"), Session.Character.Name)), ReceiverType.OnlySomeone, "", CharId);
                 }
             }
         }
