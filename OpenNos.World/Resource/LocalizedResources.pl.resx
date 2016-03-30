@@ -402,6 +402,9 @@
   <data name="NOT_HUNGRY_MALE" xml:space="preserve">
     <value>Nie jestem glodny</value>
   </data>
+  <data name="NOT_MASTER" xml:space="preserve">
+    <value>Nie jestes liderem grupy</value>
+  </data>
   <data name="NO_ENTRY" xml:space="preserve">
     <value>No EntryPoint found</value>
   </data>
@@ -500,6 +503,12 @@
   </data>
   <data name="SEX_CHANGED" xml:space="preserve">
     <value>Plec zmieniona</value>
+  </data>
+  <data name="SHARING" xml:space="preserve">
+    <value>Dzielenie ze wszystkimi</value>
+  </data>
+  <data name="SHARING_BY_ORDER" xml:space="preserve">
+    <value>Dzielenie wzgledem kolejnosci</value>
   </data>
   <data name="SHOPS_LOADED" xml:space="preserve">
     <value>{0} Załadowanych sklepów!</value>

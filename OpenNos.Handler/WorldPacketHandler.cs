@@ -1685,7 +1685,7 @@ namespace OpenNos.Handler
                         else
                         {
                             ClientLinkManager.Instance.Groups.FirstOrDefault(s => s.Characters.Contains(Session.Character.CharacterId)).SharingMode = 0;
-                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SHARING_IN_ORDER"),0));
+                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SHARING_BY_ORDER"),0));
                         }
 
                         break;
