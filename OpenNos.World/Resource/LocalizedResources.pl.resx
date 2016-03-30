@@ -276,6 +276,9 @@
   <data name="GROUP_FULL" xml:space="preserve">
     <value>Grupa jest pelna</value>
   </data>
+  <data name="GROUP_LEFT" xml:space="preserve">
+    <value>Opusciles grupe</value>
+  </data>
   <data name="GROUP_REQUEST" xml:space="preserve">
     <value>Gracz {0} zostal zaproszony do grupy</value>
   </data>
@@ -342,6 +345,9 @@
   <data name="JOB_CHANGED" xml:space="preserve">
     <value>Zawod zostal zmieniony!</value>
   </data>
+  <data name="LEAVE_GROUP" xml:space="preserve">
+    <value>Gracz {0} opuscil grupe</value>
+  </data>
   <data name="LEVEL_CHANGED" xml:space="preserve">
     <value>Poziom postaci zostal zmieniony!</value>
   </data>
@@ -389,6 +395,9 @@
   </data>
   <data name="NEW_CONNECT" xml:space="preserve">
     <value>Połaczono użytkownika. ClientId = </value>
+  </data>
+  <data name="NEW_LEADER" xml:space="preserve">
+    <value>Jestes nowym liderem grupy</value>
   </data>
   <data name="NOT_ADVENTURER" xml:space="preserve">
     <value>Mozesz zmienic klase tylko raz.</value>

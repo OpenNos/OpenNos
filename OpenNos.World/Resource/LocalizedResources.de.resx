@@ -276,6 +276,9 @@
   <data name="GROUP_FULL" xml:space="preserve">
     <value>Group is full</value>
   </data>
+  <data name="GROUP_LEFT" xml:space="preserve">
+    <value>You left the party</value>
+  </data>
   <data name="GROUP_REQUEST" xml:space="preserve">
     <value>group request sent to: {0}</value>
   </data>
@@ -342,6 +345,9 @@
   <data name="JOB_CHANGED" xml:space="preserve">
     <value>Dein Job hat sich geändert.</value>
   </data>
+  <data name="LEAVE_GROUP" xml:space="preserve">
+    <value>{0} left the party</value>
+  </data>
   <data name="LEVEL_CHANGED" xml:space="preserve">
     <value>Dein Level wurde erhöht!</value>
   </data>
@@ -389,6 +395,9 @@
   </data>
   <data name="NEW_CONNECT" xml:space="preserve">
     <value>Ein neuer Client hat sich verbunden. ClientId =</value>
+  </data>
+  <data name="NEW_LEADER" xml:space="preserve">
+    <value>You are the new party leader</value>
   </data>
   <data name="NOT_ADVENTURER" xml:space="preserve">
     <value>Du kannst deine Klasse nur einmal ändern.</value>
