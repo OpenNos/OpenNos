@@ -312,6 +312,9 @@
   <data name="IN_WAITING_FOR" xml:space="preserve">
     <value>In Waiting for {0}</value>
   </data>
+  <data name="ITEM_ACQUIRED" xml:space="preserve">
+    <value>You get item</value>
+  </data>
   <data name="ITEM_IS_FIXED" xml:space="preserve">
     <value>Item upgrade level is locked.</value>
   </data>
@@ -401,6 +404,9 @@
   </data>
   <data name="NO_HANDLER_ITEM" xml:space="preserve">
     <value>No handler found for this item in class {0}</value>
+  </data>
+  <data name="NO_ITEM" xml:space="preserve">
+    <value>Item doesn't exist</value>
   </data>
   <data name="NO_MAP" xml:space="preserve">
     <value>Server need at least nosville MAP to work!</value>
@@ -581,8 +587,5 @@
   </data>
   <data name="YOU_ASK_FOR_EXCHANGE" xml:space="preserve">
     <value>You ask for an echange with</value>
-  </data>
-  <data name="YOU_GET_OBJECT" xml:space="preserve">
-    <value>You get item</value>
   </data>
 </root>

@@ -228,6 +228,9 @@
   <data name="INVALID_CHARNAME" xml:space="preserve">
     <value>Ce nom contient des caractères non valides.</value>
   </data>
+  <data name="ITEM_ACQUIRED" xml:space="preserve">
+    <value>Tu as reçu un objet</value>
+  </data>
   <data name="ITEM_IS_FIXED" xml:space="preserve">
     <value>Niveau de mise à niveau d'objet est verrouillé.</value>
   </data>
@@ -284,6 +287,9 @@
   </data>
   <data name="NO_ENTRY" xml:space="preserve">
     <value>Pas de point d'entrée trouvé</value>
+  </data>
+  <data name="NO_ITEM" xml:space="preserve">
+    <value>Item doesn't exist</value>
   </data>
   <data name="NO_PREZ_MESSAGE" xml:space="preserve">
     <value>Aucun message de présentation.</value>
@@ -377,8 +383,5 @@
   </data>
   <data name="WHISPERED_BLOCKED" xml:space="preserve">
     <value>L'utilisateur a bloqué les messages privés.</value>
-  </data>
-  <data name="YOU_GET_OBJECT" xml:space="preserve">
-    <value>Tu as reçu un objet</value>
   </data>
 </root>

@@ -297,6 +297,9 @@
   <data name="IN_WAITING_FOR" xml:space="preserve">
     <value>Warten auf {0}</value>
   </data>
+  <data name="ITEM_ACQUIRED" xml:space="preserve">
+    <value>Du hast ein Item erhalten</value>
+  </data>
   <data name="ITEM_IS_FIXED" xml:space="preserve">
     <value>Das Item ist fixiert.</value>
   </data>
@@ -383,6 +386,9 @@
   </data>
   <data name="NO_HANDLER_ITEM" xml:space="preserve">
     <value>Kein Handler gefunden für das Item in Klasse {0}</value>
+  </data>
+  <data name="NO_ITEM" xml:space="preserve">
+    <value>Item doesn't exist</value>
   </data>
   <data name="NO_MAP" xml:space="preserve">
     <value>Server braucht mindestens die Nosville Karte um zu funktionieren!</value>
@@ -563,8 +569,5 @@
   </data>
   <data name="YOU_ASK_FOR_EXCHANGE" xml:space="preserve">
     <value>Du hast nach einem Tausch gefragt mit</value>
-  </data>
-  <data name="YOU_GET_OBJECT" xml:space="preserve">
-    <value>Du hast ein Item erhalten</value>
   </data>
 </root>

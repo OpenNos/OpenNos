@@ -312,6 +312,9 @@
   <data name="IN_WAITING_FOR" xml:space="preserve">
     <value>Oczekujesz na gracza {0}</value>
   </data>
+  <data name="ITEM_ACQUIRED" xml:space="preserve">
+    <value>Otrzymales przedmiot</value>
+  </data>
   <data name="ITEM_IS_FIXED" xml:space="preserve">
     <value>Poziom ulepszenia przedmiotu zablokowany.</value>
   </data>
@@ -401,6 +404,9 @@
   </data>
   <data name="NO_HANDLER_ITEM" xml:space="preserve">
     <value>No handler found for this item in class {0}</value>
+  </data>
+  <data name="NO_ITEM" xml:space="preserve">
+    <value>Przedmiot nie istnieje</value>
   </data>
   <data name="NO_MAP" xml:space="preserve">
     <value>Server potrzebuję przynajmniej mapy nosville, aby działać poprawnie!</value>
@@ -581,8 +587,5 @@
   </data>
   <data name="YOU_ASK_FOR_EXCHANGE" xml:space="preserve">
     <value>Wyslano prosbe o wymiane</value>
-  </data>
-  <data name="YOU_GET_OBJECT" xml:space="preserve">
-    <value>Otrzymales przedmiot</value>
   </data>
 </root>
