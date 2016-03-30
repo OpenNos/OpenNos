@@ -31,6 +31,7 @@ namespace OpenNos.GameObject
         private static ClientLinkManager _instance;
         private readonly Task _autoSave; // if this thread is never aborted by code, it can be declared only in constructor!
         private Task TaskController;
+        private Task GroupTask;
 
         public List<Group> Groups { get; set; }
 
@@ -45,7 +46,26 @@ namespace OpenNos.GameObject
             _autoSave.Start();
             TaskController = new Task(() => TaskControl());
             TaskController.Start();
+            GroupTask = new Task(() => groupTask());
+            GroupTask.Start();
             Groups = new List<Group>();
+        }
+
+        private async void groupTask()
+        {
+            while (true)
+            {
+                foreach (Group grp in Groups)
+                {
+                    foreach (long id in grp.Characters)
+                    {
+                        foreach (ClientSession session in Sessions.Where(s => s.Character != null && s.Character.CharacterId == id))
+                            foreach (string str in grp.GeneratePst())
+                                session.Client.SendPacket(str);
+                    }
+                }
+                await Task.Delay(2000);
+            }
         }
 
         #endregion
@@ -389,6 +409,16 @@ namespace OpenNos.GameObject
         {
             for (int i = Sessions.Where(s => s != null && s.Client != null && s.Character != null && s.Character.MapId.Equals(mapId)).Count() - 1; i >= 0; i--)
                 Broadcast(Sessions.Where(s => s != null && s.Client != null && s.Character != null && s.Character.MapId.Equals(mapId)).ElementAt(i), string.Format(message, Sessions.Where(s => s.Character != null && s.Character.MapId.Equals(mapId)).ElementAt(i).Character.CharacterId), ReceiverType.AllOnMap);
+        }
+
+
+        public T RequiereMethodFromUser<T>(long characterId, string methodName)
+        {
+            ClientSession session = Sessions.FirstOrDefault(s => s.Character != null && s.Character.CharacterId.Equals(characterId));
+            if (session == null) return default(T);
+            MethodInfo method = session.Character.GetType().GetMethod(methodName);
+
+            return (T)method.Invoke(session.Character, null);
         }
 
         public void RequiereBroadcastFromUser(ClientSession client, long characterId, string methodName)

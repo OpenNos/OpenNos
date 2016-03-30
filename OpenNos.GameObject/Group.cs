@@ -26,5 +26,15 @@ namespace OpenNos.GameObject
         {
             Characters = new List<long>();
         }
+        public List<string> GeneratePst()
+        {
+            int i = 0;
+            List<string> str = new List<string>();
+            foreach (long id in Characters)
+            {
+                str.Add($"pst 1 {ClientLinkManager.Instance.GetProperty<long>(id, "CharacterId")} {++i} { ClientLinkManager.Instance.GetProperty<int>(id, "Hp") / ClientLinkManager.Instance.RequiereMethodFromUser<double>(id, "HPLoad") * 100 } {(int)(ClientLinkManager.Instance.GetProperty<int>(id, "Mp") / ClientLinkManager.Instance.RequiereMethodFromUser<double>(id, "MPLoad") * 100) } 0 0 {ClientLinkManager.Instance.GetProperty<byte>(id, "Class")} {ClientLinkManager.Instance.GetProperty<byte>(id, "Gender")} {(ClientLinkManager.Instance.GetProperty<bool>(id, "UseSp") ? ClientLinkManager.Instance.GetProperty<int>(id, "Morph") : 0)}");
+            }
+            return str;
+        }
     }
 }
