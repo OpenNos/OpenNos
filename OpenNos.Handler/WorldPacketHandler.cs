@@ -319,7 +319,59 @@ namespace OpenNos.Handler
         {
             // idk
         }
+        [Packet("pjoin")]
+        public void pjoin(string packet)
+        {
+            string[] packetsplit = packet.Split(' ');
+            if (packetsplit.Length > 3)
+            {
+                int var = 0;
+                Boolean Blocked = false;
+                string charName;
+                long charId = -1;
+                if (!long.TryParse(packetsplit[3], out charId))
+                    return;
+                foreach (Group group in ClientLinkManager.Instance.Groups)
+                {
+                    if (group.Characters.Contains(charId))
+                    {
+                        Session.Client.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("ALREADY_IN_GROUP")));
+                        var = 1;
+                    }
+                }
 
+
+                if (var == 0)
+                {
+                    if (Convert.ToInt32(packetsplit[2]) == 0 || Convert.ToInt32(packetsplit[2]) == 1)
+                    {
+
+                        if (Session.Character.CharacterId != charId)
+                        {
+
+                            if (!long.TryParse(packetsplit[3], out charId)) return;
+                            Blocked = ClientLinkManager.Instance.GetProperty<bool>(charId, "GroupRequestBlocked");
+
+
+                            if (Blocked)
+                            {
+                                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("GROUP_BLOCKED"), 11), ReceiverType.OnlyMe);
+                            }
+                            else
+                            {
+                                Session.Character.ExchangeInfo = new ExchangeInfo { CharId = charId, Confirm = false };
+
+                                charName = (string)ClientLinkManager.Instance.GetProperty<string>(charId, "Name");
+                                Session.Client.SendPacket(Session.Character.GenerateInfo($"{Language.Instance.GetMessageFromKey("YOU_ASK_FOR_GROUP")} {charName}"));
+                                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateDialog($"#pjoin^3^{ Session.Character.CharacterId} #pjoin^4^{Session.Character.CharacterId} {String.Format(Language.Instance.GetMessageFromKey("INVIT_YOU"), Session.Character.Name)}"), ReceiverType.OnlySomeone, charName);
+                            }
+
+
+                        }
+                    }
+                }
+            }
+        }
         [Packet("$ChangeClass")]
         public void ChangeClass(string packet)
         {
@@ -876,7 +928,7 @@ namespace OpenNos.Handler
         {
             string[] packetsplit = packet.Split(' ');
             if (packetsplit.Length <= 3) return;
-        
+
             byte type; byte.TryParse(packetsplit[2], out type);
             short slot; short.TryParse(packetsplit[3], out slot);
             Inventory inventory = null;
@@ -1665,7 +1717,29 @@ namespace OpenNos.Handler
             }
             deleteTimeout();
         }
+        [Packet("#pjoin")]
+        public void validpjoin(string packet)
+        {
+            string[] packetsplit = packet.Split(' ', '^');
+            int type = -1;
+            long CharId = -1;
+          
+            if (packetsplit.Length > 3)
+            {
+                if (!int.TryParse(packetsplit[2], out type))
+                    return;
+                long.TryParse(packetsplit[3], out CharId);
 
+                if (type == 3)
+                {
+                  // TODO join
+                }
+                else if (type == 4)
+                {
+                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateInfo(String.Format(Language.Instance.GetMessageFromKey("REFUSED_REQUEST"), Session.Character.Name)), ReceiverType.OnlySomeone,"", CharId);  
+                }
+            }
+        }
         [Packet("put")]
         public void PutItem(string packet)
         {
@@ -1680,6 +1754,11 @@ namespace OpenNos.Handler
                 if (amount > 0 && amount < 100)
                 {
                     MapItem DroppedItem = Session.Character.InventoryList.PutItem(Session, type, slot, amount, out inv);
+                    if (DroppedItem == null)
+                    {
+                        Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("ITEM_NOT_DROPPABLE_HERE"), 0)); ;
+                        return;
+                    }
                     Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(inv.InventoryItem.ItemVNum, inv.InventoryItem.Amount, type, inv.Slot, inv.InventoryItem.Rare, inv.InventoryItem.Design, inv.InventoryItem.Upgrade));
 
                     if (inv.InventoryItem.Amount == 0)
@@ -2644,8 +2723,8 @@ namespace OpenNos.Handler
                         String rece = $"m_list 3 {rec.Amount}";
                         foreach (RecipeItem ite in rec.Items)
                         {
-                            if(ite.Amount > 0)
-                            rece += String.Format($" {ite.ItemVNum} {ite.Amount}");
+                            if (ite.Amount > 0)
+                                rece += String.Format($" {ite.ItemVNum} {ite.Amount}");
                         }
                         rece += " -1";
                         Session.Client.SendPacket(rece);
