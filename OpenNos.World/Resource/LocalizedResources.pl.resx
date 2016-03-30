@@ -268,7 +268,7 @@
     <value>Uzytkownik zablokowal zaproszenia do grupy</value>
   </data>
   <data name="GROUP_CLOSED" xml:space="preserve">
-    <value>Group has been closed</value>
+    <value>Grupa zostala rozwiazana</value>
   </data>
   <data name="GROUP_DENIED" xml:space="preserve">
     <value>Zaproszenie do grupy odrzucone</value>
