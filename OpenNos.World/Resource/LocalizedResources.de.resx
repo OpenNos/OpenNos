@@ -270,6 +270,9 @@
   <data name="GROUP_DENIED" xml:space="preserve">
     <value>Group request rejected</value>
   </data>
+  <data name="GROUP_FULL" xml:space="preserve">
+    <value>Group is full</value>
+  </data>
   <data name="GROUP_REQUEST" xml:space="preserve">
     <value>group request sent to: {0}</value>
   </data>

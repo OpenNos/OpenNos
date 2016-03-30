@@ -270,6 +270,9 @@
   <data name="GROUP_DENIED" xml:space="preserve">
     <value>Zaproszenie do grupy odrzucone</value>
   </data>
+  <data name="GROUP_FULL" xml:space="preserve">
+    <value>Grupa jest pelna</value>
+  </data>
   <data name="GROUP_REQUEST" xml:space="preserve">
     <value>Zaprosiles do grupy uzytkownika {0}</value>
   </data>
