@@ -127,7 +127,7 @@
     <value>Avventuriero</value>
   </data>
   <data name="ALREADY_IN_GROUP" xml:space="preserve">
-    <value>You are already in group</value>
+    <value>Sei già in un gruppo!</value>
   </data>
   <data name="ALREADY_TAKEN" xml:space="preserve">
     <value>Questo nome è già in uso !</value>
@@ -160,16 +160,16 @@
     <value>Hai^bisogno^di^un^GM?^Contattaci^sul^sito!</value>
   </data>
   <data name="BN3" xml:space="preserve">
-    <value>Greetings^from^OpenNos^Team!</value>
+    <value>Auguri^dal^Team^OpenNos!</value>
   </data>
   <data name="BN4" xml:space="preserve">
-    <value>Do^you^want^to^contribute?^https://github.com/OpenNos/OpenNos</value>
+    <value>Vuoi^contribuire^allo^sviluppo?^https://github.com/OpenNos/OpenNos</value>
   </data>
   <data name="BN5" xml:space="preserve">
     <value>Authors:^0Lucifer0^,^chucktheripper</value>
   </data>
   <data name="BN6" xml:space="preserve">
-    <value>Check^out:^https://github.com/OpenNos/OpenNos^for^latest^updates.</value>
+    <value>Guarda^qui:^https://github.com/OpenNos/OpenNos^per^gli.</value>
   </data>
   <data name="BUFF_BLOCKED" xml:space="preserve">
     <value>Icone dei buff disabilitate</value>
@@ -265,16 +265,16 @@
     <value>Oro assegnato</value>
   </data>
   <data name="GROUP_BLOCKED" xml:space="preserve">
-    <value>User blocked group invites</value>
+    <value>L'utente ha bloccato gli inviti per il gruppo</value>
   </data>
   <data name="GROUP_DENIED" xml:space="preserve">
-    <value>Group request rejected</value>
+    <value>Richiesta gruppo rifiutata</value>
   </data>
   <data name="GROUP_FULL" xml:space="preserve">
-    <value>Group is full</value>
+    <value>Il gruppo e' pieno</value>
   </data>
   <data name="GROUP_REQUEST" xml:space="preserve">
-    <value>group request sent to: {0}</value>
+    <value>Richiesta di gruppo inviata a: {0}</value>
   </data>
   <data name="GROUP_REQ_BLOCKED" xml:space="preserve">
     <value>Da questo momento in poi le richieste di gruppo verranno bloccate.</value>
@@ -307,10 +307,10 @@
     <value>Il nome contiene caratteri non ammessi.</value>
   </data>
   <data name="INVITED_YOU" xml:space="preserve">
-    <value>{0} sent you a group request</value>
+    <value>{0} ti ha inviato una richiesta di gruppo</value>
   </data>
   <data name="IN_WAITING_FOR" xml:space="preserve">
-    <value>In attesa di{0}</value>
+    <value>In attesa di {0}</value>
   </data>
   <data name="ITEM_ACQUIRED" xml:space="preserve">
     <value>Hai ricevuto un oggetto</value>
@@ -331,7 +331,7 @@
     <value>Questo item non può essere scambiato.</value>
   </data>
   <data name="ITEM_TIMEOUT" xml:space="preserve">
-    <value>Item is no longer valid</value>
+    <value>L'item non è più longevo</value>
   </data>
   <data name="JOBLEVEL_CHANGED" xml:space="preserve">
     <value>Il tuo livello di lavoro è stato incrementato.</value>
@@ -352,7 +352,7 @@
     <value>La tua reputazione è troppo bassa.</value>
   </data>
   <data name="MADE_OBJECT" xml:space="preserve">
-    <value>You've crafted: {0} x {1}</value>
+    <value>Hai craftato: {0} x {1}</value>
   </data>
   <data name="MAGICIAN" xml:space="preserve">
     <value>Mago</value>
@@ -361,7 +361,7 @@
     <value>{0} Mappe caricate !</value>
   </data>
   <data name="MAX_GOLD" xml:space="preserve">
-    <value>Maximum of gold reached!</value>
+    <value>Massimo soldi raggiunto!</value>
   </data>
   <data name="MESSAGE_RECEIVED" xml:space="preserve">
     <value>Messaggi ricevuti {0} nel client {1}</value>
@@ -394,10 +394,13 @@
     <value>Non hai abbastanza spazio.</value>
   </data>
   <data name="NOT_HUNGRY_FEMALE" xml:space="preserve">
-    <value>I think, i'm not hungry</value>
+    <value>Credo di non essere affamata.</value>
   </data>
   <data name="NOT_HUNGRY_MALE" xml:space="preserve">
-    <value>I'm not hungry</value>
+    <value>Non sono affamato</value>
+  </data>
+  <data name="NOT_MASTER" xml:space="preserve">
+    <value>Non sei il leader del gruppo</value>
   </data>
   <data name="NO_ENTRY" xml:space="preserve">
     <value>No EntryPoint found</value>
@@ -406,7 +409,7 @@
     <value>No handler found for this item in class {0}</value>
   </data>
   <data name="NO_ITEM" xml:space="preserve">
-    <value>Item doesn't exist</value>
+    <value>L'oggetto non esiste</value>
   </data>
   <data name="NO_MAP" xml:space="preserve">
     <value>Il server ha bisogno al meno della mappa di NosVille per poter funzionare!</value>
@@ -421,10 +424,10 @@
     <value>Nessuna carta speciale in uso</value>
   </data>
   <data name="NPCMONSTERS_LOADED" xml:space="preserve">
-    <value>{0} Npc-Monsters Loaded!</value>
+    <value>{0} Npc-Mostri Caricati!</value>
   </data>
   <data name="NPCS_LOADED" xml:space="preserve">
-    <value>{0} Npcs Loaded!</value>
+    <value>{0} Npc Caricati!</value>
   </data>
   <data name="PACKET_ARRIVED" xml:space="preserve">
     <value>È arrivato un pacchetto: {0}</value>
@@ -433,37 +436,37 @@
     <value>Invio del pacchetto fallito {0} al client {1}, {2}.</value>
   </data>
   <data name="PERFECTSP_ATTACK" xml:space="preserve">
-    <value>Attack</value>
+    <value>Attacco</value>
   </data>
   <data name="PERFECTSP_DEFENSE" xml:space="preserve">
-    <value>Defense</value>
+    <value>Difesa</value>
   </data>
   <data name="PERFECTSP_ELEMENT" xml:space="preserve">
-    <value>Element</value>
+    <value>Elemento</value>
   </data>
   <data name="PERFECTSP_FAILURE" xml:space="preserve">
-    <value>SP Perfection failed!</value>
+    <value>Perfezione SP fallita</value>
   </data>
   <data name="PERFECTSP_FIRE" xml:space="preserve">
-    <value>Fire</value>
+    <value>Fuoco</value>
   </data>
   <data name="PERFECTSP_HPMP" xml:space="preserve">
     <value>HP/MP</value>
   </data>
   <data name="PERFECTSP_LIGHT" xml:space="preserve">
-    <value>Light</value>
+    <value>Luce</value>
   </data>
   <data name="PERFECTSP_SHADOW" xml:space="preserve">
-    <value>Shadow</value>
+    <value>Oscurità</value>
   </data>
   <data name="PERFECTSP_SUCCESS" xml:space="preserve">
-    <value>SP Perfection successful: {0} +{1}</value>
+    <value>Perfezione SP avvenuta: {0} +{1}</value>
   </data>
   <data name="PERFECTSP_WATER" xml:space="preserve">
-    <value>Water</value>
+    <value>Acqua</value>
   </data>
   <data name="POINTS_SET" xml:space="preserve">
-    <value>I punti sono stati assegnati</value>
+    <value>I punti sono stati assegnati.</value>
   </data>
   <data name="PORTAL_BLOCKED" xml:space="preserve">
     <value>Non puoi usare questo portale perche' e' bloccato</value>
@@ -484,7 +487,7 @@
     <value>Scommessa riuscita! Livello di rarità:{0}</value>
   </data>
   <data name="RECIPES_LOADED" xml:space="preserve">
-    <value>{0} Recipes Loaded!</value>
+    <value>{0} Ricette Caricate!</value>
   </data>
   <data name="REFUSED" xml:space="preserve">
     <value>Commercio rifiutato</value>
@@ -496,16 +499,22 @@
     <value>{0}: vendi &lt;{1} : pezzi &gt;</value>
   </data>
   <data name="SEX_CHANGED" xml:space="preserve">
-    <value>Sex has been changed</value>
+    <value>Il sesso è stato cambiato</value>
+  </data>
+  <data name="SHARING" xml:space="preserve">
+    <value>Condivisione per tutti gli elementi del gruppo</value>
+  </data>
+  <data name="SHARING_BY_ORDER" xml:space="preserve">
+    <value>Condivisione per ordine</value>
   </data>
   <data name="SHOPS_LOADED" xml:space="preserve">
-    <value>{0} Shops Loaded!</value>
+    <value>{0} Negozi Caricati!</value>
   </data>
   <data name="SHOP_EMPTY" xml:space="preserve">
     <value>Il negozio non può essere vuoto</value>
   </data>
   <data name="SHOP_NEAR_PORTAL" xml:space="preserve">
-    <value>You cannot create shop soo close to portal!</value>
+    <value>Non puoi aprire un negozio così vicino ad un portale!</value>
   </data>
   <data name="SHOP_OPEN" xml:space="preserve">
     <value>Il negozio è stato aperto</value>
@@ -520,7 +529,7 @@
     <value>Il livello della carta dello specialista è cambiato!</value>
   </data>
   <data name="SPUSE_NEEDED" xml:space="preserve">
-    <value>You need to transform into specialist to accept point change</value>
+    <value>Devi mettere la SP prima di applicare i punti</value>
   </data>
   <data name="SP_BLOCKED" xml:space="preserve">
     <value>Non puoi cambiare una Carta Speciale durante la trasformazione.</value>
@@ -553,7 +562,7 @@
     <value>L'effetto collaterale della trasformazione è terminato.</value>
   </data>
   <data name="UPDATE_ACCOUNT_ERROR" xml:space="preserve">
-    <value>Error inserting or updating Account {0} , {1}</value>
+    <value>Errore nell'inserimento o aggiornamento dell'Account {0} , {1}</value>
   </data>
   <data name="UPDATE_ERROR" xml:space="preserve">
     <value>{0}</value>
@@ -565,7 +574,7 @@
     <value>L'upgrade è fallito, ma l'item non è scomparso.</value>
   </data>
   <data name="UPGRADE_FIXED" xml:space="preserve">
-    <value>Upgrade fixed</value>
+    <value>Upgrade bloccato</value>
   </data>
   <data name="UPGRADE_SUCCESS" xml:space="preserve">
     <value>L'upgrade è avvenuto con successo</value>
