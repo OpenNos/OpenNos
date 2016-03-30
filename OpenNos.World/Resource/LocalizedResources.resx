@@ -541,7 +541,7 @@
     <value>Server will be shut in {0} Seconds.</value>
   </data>
   <data name="SPLEVEL_CHANGED" xml:space="preserve">
-    <value>Specialisty level has been changed!</value>
+    <value>Specialist level has been changed!</value>
   </data>
   <data name="SPUSE_NEEDED" xml:space="preserve">
     <value>You need to transform into specialist to accept point change</value>
