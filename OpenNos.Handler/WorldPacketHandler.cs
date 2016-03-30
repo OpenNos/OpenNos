@@ -4057,7 +4057,7 @@ namespace OpenNos.Handler
                     foreach (long Id in ClientLinkManager.Instance.Groups.FirstOrDefault(s => s.Characters.Contains(CharId)).Characters)
                     {
                         i++;
-                        str += $" 1|{ClientLinkManager.Instance.GetProperty<long>(Id, "CharacterId")}|{i}|{ClientLinkManager.Instance.GetProperty<byte>(Id, "Level")}|{ClientLinkManager.Instance.GetProperty<string>(Id, "Name")}|{ClientLinkManager.Instance.GetProperty<byte>(Id, "Gender")}|{ClientLinkManager.Instance.GetProperty<byte>(Id, "Gender") + 2*ClientLinkManager.Instance.GetProperty<byte>(Id, "Class")}|{(ClientLinkManager.Instance.GetProperty<bool>(Id, "UseSp") ? ClientLinkManager.Instance.GetProperty<int>(Id, "Morph") : 0)} ";
+                        str += $" 1|{ClientLinkManager.Instance.GetProperty<long>(Id, "CharacterId")}|{i}|{ClientLinkManager.Instance.GetProperty<byte>(Id, "Level")}|{ClientLinkManager.Instance.GetProperty<string>(Id, "Name")}|{ClientLinkManager.Instance.GetProperty<byte>(Id, "Gender")}|{(ClientLinkManager.Instance.GetProperty<bool>(Id, "UseSp")?(ClientLinkManager.Instance.GetProperty<byte>(Id, "Gender") + 2*ClientLinkManager.Instance.GetProperty<byte>(Id, "Class")):1)}|{(ClientLinkManager.Instance.GetProperty<bool>(Id, "UseSp") ? ClientLinkManager.Instance.GetProperty<int>(Id, "Morph") : 0)}";
                     }
 
                     foreach (long Id in ClientLinkManager.Instance.Groups.FirstOrDefault(s => s.Characters.Contains(CharId)).Characters)
