@@ -1202,7 +1202,7 @@ namespace OpenNos.Handler
                         ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateGet(DropId), ReceiverType.AllOnMap);
                         Item iteminfo = ServerManager.GetItem(newInv.InventoryItem.ItemVNum);
                         Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(newInv.InventoryItem.ItemVNum, newInv.InventoryItem.Amount, newInv.Type, newInv.Slot, newInv.InventoryItem.Rare, newInv.InventoryItem.Design, newInv.InventoryItem.Upgrade));
-                        Session.Client.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("YOU_GET_OBJECT")}: {iteminfo.Name} x {Amount}", 12));
+                        Session.Client.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {iteminfo.Name} x {Amount}", 12));
                     }
                     else
                     {
