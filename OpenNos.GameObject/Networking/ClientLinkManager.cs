@@ -526,7 +526,7 @@ namespace OpenNos.GameObject
                     }
                     Session.Client.SendPacket("pinit 0");
                     Broadcast(Session, $"pidx -1 1.{Session.Character.CharacterId}", ReceiverType.AllOnMap);
-                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("GROUP_LEAVED"),0));
+                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("GROUP_LEFT"), 0));
 
                 }
                 else

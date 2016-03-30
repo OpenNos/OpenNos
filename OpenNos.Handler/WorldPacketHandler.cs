@@ -172,7 +172,6 @@ namespace OpenNos.Handler
                 if (amount > item.Amount)
                     amount = item.Amount;
 
-
                 if (item.Price * amount + ClientLinkManager.Instance.GetProperty<long>(shop.Value.OwnerId, "Gold") > 1000000000)
                 {
                     Session.Client.SendPacket(Session.Character.GenerateShopMemo(3,
@@ -271,9 +270,7 @@ namespace OpenNos.Handler
                     Session.Character.Reput -= (long)(Reputprice);
                     Session.Client.SendPacket(Session.Character.GenerateFd());
                     Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("REPUT_DECREASE"), 11));
-
                 }
-
 
                 InventoryItem newItem = new InventoryItem
                 {
@@ -319,72 +316,7 @@ namespace OpenNos.Handler
         {
             // idk
         }
-        [Packet("pjoin")]
-        public void pjoin(string packet)
-        {
-            string[] packetsplit = packet.Split(' ');
-            if (packetsplit.Length > 3)
-            {
-                Boolean Blocked = false;
-                string charName;
-                long charId = -1;
-                if (!long.TryParse(packetsplit[3], out charId))
-                    return;
-                Boolean grouped1 = false;
-                Boolean grouped2 = false;
-                foreach (Group group in ClientLinkManager.Instance.Groups)
-                {
-                    if ((group.Characters.Contains(charId) || group.Characters.Contains(Session.Character.CharacterId)) && group.Characters.Count == 3)
-                    {
 
-                        Session.Client.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("GROUP_FULL")));
-                        return;
-                    }
-                    if (group.Characters.Contains(charId))
-                    {
-                        grouped1 = true;
-                    }
-                    if (group.Characters.Contains(Session.Character.CharacterId))
-                    {
-                        grouped2 = true;
-                    }
-                }
-
-
-                if (grouped1 && grouped2)
-                {
-                    Session.Client.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("ALREADY_IN_GROUP")));
-                    return;
-                }
-                if (Convert.ToInt32(packetsplit[2]) == 0 || Convert.ToInt32(packetsplit[2]) == 1)
-                {
-
-                    if (Session.Character.CharacterId != charId)
-                    {
-
-                        if (!long.TryParse(packetsplit[3], out charId)) return;
-                        Blocked = ClientLinkManager.Instance.GetProperty<bool>(charId, "GroupRequestBlocked");
-
-
-                        if (Blocked)
-                        {
-                            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("GROUP_BLOCKED"), 11), ReceiverType.OnlyMe);
-                        }
-                        else
-                        {
-                            Session.Character.ExchangeInfo = new ExchangeInfo { CharId = charId, Confirm = false };
-
-                            charName = (string)ClientLinkManager.Instance.GetProperty<string>(charId, "Name");
-                            Session.Client.SendPacket(Session.Character.GenerateInfo(String.Format(Language.Instance.GetMessageFromKey("GROUP_REQUEST"), charName)));
-                            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateDialog($"#pjoin^3^{ Session.Character.CharacterId} #pjoin^4^{Session.Character.CharacterId} {String.Format(Language.Instance.GetMessageFromKey("INVITED_YOU"), Session.Character.Name)}"), ReceiverType.OnlySomeone, charName);
-                        }
-
-
-                    }
-                }
-
-            }
-        }
         [Packet("$ChangeClass")]
         public void ChangeClass(string packet)
         {
@@ -735,6 +667,30 @@ namespace OpenNos.Handler
             }
         }
 
+        [Packet("$PortalTo")]
+        public void CreatePortal(string packet)
+        {
+            string[] packetsplit = packet.Split(' ');
+            short mapid, destx, desty = 0;
+            sbyte portaltype = -1;
+            if (packetsplit.Length > 4 && short.TryParse(packetsplit[2], out mapid) && short.TryParse(packetsplit[3], out destx) && short.TryParse(packetsplit[4], out desty))
+            {
+                if (ServerManager.GetMap(mapid) == null)
+                    return;
+
+                short mapId = Session.Character.MapId;
+                short mapX = Session.Character.MapX;
+                short mapY = Session.Character.MapY;
+                if (packetsplit.Length > 5)
+                    sbyte.TryParse(packetsplit[5], out portaltype);
+                Portal portal = new Portal() { SourceMapId = mapId, SourceX = mapX, SourceY = mapY, DestinationMapId = mapid, DestinationX = destx, DestinationY = desty, Type = portaltype };
+                ServerManager.GetMap(Session.Character.MapId).Portals.Add(portal);
+                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateGp(portal), ReceiverType.AllOnMap);
+            }
+            else
+                Session.Client.SendPacket(Session.Character.GenerateSay("$PortalTo MAPID DESTX DESTY PORTALTYPE", 10));
+        }
+
         [Packet("m_shop")]
         public void createShop(string packet)
         {
@@ -754,7 +710,6 @@ namespace OpenNos.Handler
                         Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SHOP_NEAR_PORTAL"), 0));
                         return;
                     }
-
                 }
                 short typePacket; short.TryParse(packetsplit[2], out typePacket);
                 if (typePacket == 2)
@@ -812,9 +767,6 @@ namespace OpenNos.Handler
                                         Upgrade = inv.InventoryItem.Upgrade,
                                         WaterElement = inv.InventoryItem.WaterElement,
                                     }
-
-
-
                                 };
                                 myShop.Items.Add(personalshopitem);
                             }
@@ -887,10 +839,8 @@ namespace OpenNos.Handler
 
         public void DeleteItem(byte type, short slot)
         {
-
             Session.Character.InventoryList.DeleteFromSlotAndType(slot, type);
             Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, type, slot, 0, 0, 0));
-
         }
 
         public void deleteTimeout()
@@ -935,6 +885,19 @@ namespace OpenNos.Handler
             }
         }
 
+        [Packet("$Effect")]
+        public void Effect(string packet)
+        {
+            string[] packetsplit = packet.Split(' ');
+            short arg = 0;
+            if (packetsplit.Length > 2)
+            {
+                short.TryParse(packetsplit[2], out arg);
+                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(arg), ReceiverType.AllOnMap);
+            }
+            else
+                Session.Client.SendPacket(Session.Character.GenerateSay("$Effect EFFECT", 10));
+        }
 
         [Packet("eqinfo")]
         public void EqInfo(string packet)
@@ -1197,6 +1160,30 @@ namespace OpenNos.Handler
             // idk
         }
 
+        [Packet("$ChangeSex")]
+        public void Gender(string packet)
+        {
+            Session.Character.Gender = Session.Character.Gender == 1 ? (byte)0 : (byte)1;
+            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SEX_CHANGED"), 0));
+            Session.Client.SendPacket(Session.Character.GenerateEq());
+            Session.Client.SendPacket(Session.Character.GenerateGender());
+            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllOnMapExceptMe);
+            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateCMode(), ReceiverType.AllOnMap);
+            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(198), ReceiverType.AllOnMap);
+        }
+
+        public string generatePidx(long CharId)
+        {
+            string stri = "pidx 1";
+            foreach (long Id in ClientLinkManager.Instance.Groups.FirstOrDefault(s => s.Characters.Contains(CharId)).Characters)
+            {
+                stri += $" 1.{Id} ";
+            }
+            if (stri == "pidx 1")
+                stri = "";
+            return stri;
+        }
+
         [Packet("get")]
         public void GetItem(string packet)
         {
@@ -1272,6 +1259,41 @@ namespace OpenNos.Handler
             Session.Client.SendPacket(Session.Character.GenerateStatChar());
         }
 
+        [Packet("$Gold")]
+        public void Gold(string packet)
+        {
+            string[] packetsplit = packet.Split(' ');
+            long gold;
+            if (packetsplit.Length > 2)
+            {
+                if (Int64.TryParse(packetsplit[2], out gold))
+                {
+                    if (gold <= 1000000000 && gold >= 0)
+                    {
+                        Session.Character.Gold = gold;
+                        Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("GOLD_SET"), 0));
+                        Session.Client.SendPacket(Session.Character.GenerateGold());
+                    }
+                    else
+                        Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("WRONG_VALUE"), 0));
+                }
+            }
+            else
+                Session.Client.SendPacket(Session.Character.GenerateSay("$Gold AMOUNT", 10));
+        }
+
+        [Packet(";")]
+        public void GroupTalk(string packet)
+        {
+            string[] packetsplit = packet.Split(' ');
+            string message = String.Empty;
+            for (int i = 1; i < packetsplit.Length; i++)
+                message += packetsplit[i] + " ";
+            message = message.Substring(1).Trim();
+
+            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateSpk(message, 3), ReceiverType.Group);
+        }
+
         [Packet("guri")]
         public void Guri(string packet)
         {
@@ -1337,6 +1359,70 @@ namespace OpenNos.Handler
             }
         }
 
+        [Packet("hero")]
+        public void Hero(string packet)
+        {
+            if (DAOFactory.CharacterDAO.IsReputHero(Session.Character.CharacterId) >= 3)
+            {
+                string[] packetsplit = packet.Split(' ');
+                string message = String.Empty;
+                for (int i = 2; i < packetsplit.Length; i++)
+                    message += packetsplit[i] + " ";
+                message.Trim();
+
+                ClientLinkManager.Instance.Broadcast(Session, $"msg 5 [{Session.Character.Name}]:{message}", ReceiverType.AllNoHeroBlocked);
+            }
+            else
+            {
+                Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("USER_NOT_HERO"), 11));
+            }
+        }
+
+        [Packet("$Invisible")]
+        public void Invisible(string packet)
+        {
+            Session.Character.Invisible = Session.Character.Invisible == 0 ? 1 : 0;
+            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateInvisible(), ReceiverType.AllOnMap);
+            Session.Character.InvisibleGm = Session.Character.InvisibleGm ? false : true;
+            if (Session.Character.InvisibleGm == true)
+            {
+                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateOut(), ReceiverType.AllOnMapExceptMe);
+            }
+            else
+            {
+                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllOnMapExceptMe);
+            }
+        }
+
+        [Packet("$JLvl")]
+        public void JLvl(string packet)
+        {
+            string[] packetsplit = packet.Split(' ');
+            byte joblevel;
+            if (packetsplit.Length > 2)
+            {
+                if (Byte.TryParse(packetsplit[2], out joblevel) && ((Session.Character.Class == 0 && joblevel <= 20) || (Session.Character.Class != 0 && joblevel <= 80)) && joblevel > 0)
+                {
+                    Session.Character.JobLevel = joblevel;
+                    Session.Client.SendPacket(Session.Character.GenerateLev());
+                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("JOBLEVEL_CHANGED"), 0));
+                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllOnMapExceptMe);
+                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(8), ReceiverType.AllOnMap);
+                }
+            }
+            else
+                Session.Client.SendPacket(Session.Character.GenerateSay("$JLvl JOBLEVEL", 10));
+        }
+
+        [Packet("$Kick")]
+        public void Kick(string packet)
+        {
+            string[] packetsplit = packet.Split(' ');
+            if (packetsplit.Length > 2)
+                ClientLinkManager.Instance.Kick(packetsplit[2]);
+            else
+                Session.Client.SendPacket(Session.Character.GenerateSay("$Kick CHARACTERNAME", 10));
+        }
 
         [Packet("lbs")]
         public void Lbs(string packet)
@@ -1476,24 +1562,67 @@ namespace OpenNos.Handler
                 Session.Client.SendPacket(Session.Character.GenerateSay("$Lvl LEVEL", 10));
         }
 
-        [Packet("hero")]
-        public void Hero(string packet)
+        [Packet("$MapDance")]
+        public void MapDance(string packet)
         {
-            if (DAOFactory.CharacterDAO.IsReputHero(Session.Character.CharacterId) >= 3)
+            Session.CurrentMap.IsDancing = Session.CurrentMap.IsDancing == 0 ? 2 : 0;
+            if (Session.CurrentMap.IsDancing == 2)
             {
-                string[] packetsplit = packet.Split(' ');
-                string message = String.Empty;
-                for (int i = 2; i < packetsplit.Length; i++)
-                    message += packetsplit[i] + " ";
-                message.Trim();
-
-                ClientLinkManager.Instance.Broadcast(Session, $"msg 5 [{Session.Character.Name}]:{message}", ReceiverType.AllNoHeroBlocked);
+                Session.Character.Dance();
+                ClientLinkManager.Instance.RequiereBroadcastFromAllMapUsers(Session, "Dance");
+                ClientLinkManager.Instance.RequiereBroadcastFromMap(Session.Character.MapId, "dance 2");
             }
             else
             {
-                Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("USER_NOT_HERO"), 11));
+                Session.Character.Dance();
+                ClientLinkManager.Instance.RequiereBroadcastFromAllMapUsers(Session, "Dance");
+                ClientLinkManager.Instance.RequiereBroadcastFromMap(Session.Character.MapId, "dance");
             }
         }
+
+        [Packet("$Morph")]
+        public void Morph(string packet)
+        {
+            string[] packetsplit = packet.Split(' ');
+            short[] arg = new short[4];
+            bool verify = false;
+            if (packetsplit.Length > 5)
+            {
+                verify = (short.TryParse(packetsplit[2], out arg[0]) && short.TryParse(packetsplit[3], out arg[1]) && short.TryParse(packetsplit[4], out arg[2]) && short.TryParse(packetsplit[5], out arg[3]));
+            }
+            switch (packetsplit.Length)
+            {
+                case 6:
+                    if (verify)
+                    {
+                        if (arg[0] != 0)
+                        {
+                            Session.Character.UseSp = true;
+                            Session.Character.Morph = arg[0];
+                            Session.Character.MorphUpgrade = arg[1];
+                            Session.Character.MorphUpgrade2 = arg[2];
+                            Session.Character.ArenaWinner = arg[3];
+                            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateCMode(), ReceiverType.AllOnMap);
+                        }
+                        else
+                        {
+                            Session.Character.UseSp = false;
+
+                            Session.Client.SendPacket(Session.Character.GenerateCond());
+                            Session.Client.SendPacket(Session.Character.GenerateLev());
+
+                            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateCMode(), ReceiverType.AllOnMap);
+                            ClientLinkManager.Instance.Broadcast(Session, $"guri 6 1 {Session.Character.CharacterId} 0 0", ReceiverType.AllOnMap);
+                        }
+                    }
+                    break;
+
+                default:
+                    Session.Client.SendPacket(Session.Character.GenerateSay("$Morph MORPHID UPGRADE WINGS ARENA", 10));
+                    break;
+            }
+        }
+
         [Packet("mve")]
         public void MoveInventory(string packet)
         {
@@ -1668,11 +1797,12 @@ namespace OpenNos.Handler
                                 : "FAMILY_REQ_UNLOCKED"
                             ), 0));
                         break;
+
                     case (int)ConfigType.GroupSharing:
                         Group grp = ClientLinkManager.Instance.Groups.FirstOrDefault(s => s.Characters.Contains(Session.Character.CharacterId));
                         if (grp == null)
                             return;
-                        if(grp.Characters.ElementAt(0)!=Session.Character.CharacterId)
+                        if (grp.Characters.ElementAt(0) != Session.Character.CharacterId)
                         {
                             Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_MASTER"), 0));
                             return;
@@ -1680,13 +1810,12 @@ namespace OpenNos.Handler
                         if (int.Parse(packetsplit[3]) == 0)
                         {
                             ClientLinkManager.Instance.Groups.FirstOrDefault(s => s.Characters.Contains(Session.Character.CharacterId)).SharingMode = 1;
-                            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SHARING"), 0), ReceiverType.Group);
-
+                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SHARING"), 0));
                         }
                         else
                         {
                             ClientLinkManager.Instance.Groups.FirstOrDefault(s => s.Characters.Contains(Session.Character.CharacterId)).SharingMode = 0;
-                            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SHARING_BY_ORDER"), 0), ReceiverType.Group);
+                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SHARING_BY_ORDER"), 0));
                         }
 
                         break;
@@ -1695,6 +1824,419 @@ namespace OpenNos.Handler
             Session.Client.SendPacket(Session.Character.GenerateStat());
         }
 
+        [Packet("pdtse")]
+        public void pdtse(string packet)
+        {
+            string[] packetsplit = packet.Split(' ');
+            if (packetsplit.Count() < 4)
+                return;
+
+            byte type = 0;
+            byte.TryParse(packetsplit[2], out type);
+            if (type == 1)
+            {
+                MapNpc npc = Session.CurrentMap.Npcs.FirstOrDefault(s => s.MapNpcId == Session.Character.LastNRunId);
+                if (npc != null)
+                {
+                    Recipe rec = npc.Recipes.FirstOrDefault(s => s.ItemVNum == short.Parse(packetsplit[3]));
+                    if (rec != null && rec.Amount > 0)
+                    {
+                        String rece = $"m_list 3 {rec.Amount}";
+                        foreach (RecipeItem ite in rec.Items)
+                        {
+                            if (ite.Amount > 0)
+                                rece += String.Format($" {ite.ItemVNum} {ite.Amount}");
+                        }
+                        rece += " -1";
+                        Session.Client.SendPacket(rece);
+                    }
+                }
+            }
+            else
+            {
+                MapNpc npc = Session.CurrentMap.Npcs.FirstOrDefault(s => s.MapNpcId == Session.Character.LastNRunId);
+                if (npc != null)
+                {
+                    Recipe rec = npc.Recipes.FirstOrDefault(s => s.ItemVNum == short.Parse(packetsplit[3]));
+                    if (rec != null)
+                    {
+                        if (rec.Amount <= 0)
+                            return;
+                        foreach (RecipeItem ite in rec.Items)
+                        {
+                            if (Session.Character.InventoryList.CountItem(ite.ItemVNum) < ite.Amount)
+                                return;
+                        }
+
+                        InventoryItem newItem = new InventoryItem()
+                        {
+                            InventoryItemId = Session.Character.InventoryList.generateInventoryItemId(),
+                            Amount = rec.Amount,
+                            ItemVNum = rec.ItemVNum,
+                            Rare = 0,
+                            Upgrade = 0,
+                            Design = 0,
+                            Concentrate = 0,
+                            CriticalLuckRate = 0,
+                            CriticalRate = 0,
+                            DamageMaximum = 0,
+                            DamageMinimum = 0,
+                            DarkElement = 0,
+                            DistanceDefence = 0,
+                            DistanceDefenceDodge = 0,
+                            DefenceDodge = 0,
+                            ElementRate = 0,
+                            FireElement = 0,
+                            HitRate = 0,
+                            LightElement = 0,
+                            IsFixed = false,
+                            Ammo = 0,
+                            MagicDefence = 0,
+                            CloseDefence = 0,
+                            SpXp = 0,
+                            SpLevel = 0,
+                            SlDefence = 0,
+                            SlElement = 0,
+                            SlDamage = 0,
+                            SlHP = 0,
+                            WaterElement = 0,
+                        };
+                        Item iteminfo = ServerManager.GetItem(rec.ItemVNum);
+                        Inventory inv = Session.Character.InventoryList.CreateItem(newItem, Session.Character);
+                        ServersData.SetRarityPoint(ref inv);
+                        if (inv != null)
+                        {
+                            Session.Character.InventoryList.LoadByInventoryItem(inv.InventoryItem.InventoryItemId).InventoryItem = inv.InventoryItem;
+
+                            short Slot = inv.Slot;
+                            if (Slot != -1)
+                            {
+                                foreach (RecipeItem ite in rec.Items)
+                                {
+                                    Session.Character.InventoryList.RemoveItemAmount(ite.ItemVNum, ite.Amount);
+                                }
+                                GetStartupInventory();
+
+                                Session.Client.SendPacket($"pdti 11 {inv.InventoryItem.ItemVNum} {rec.Amount} 29 {inv.InventoryItem.Upgrade} 0");
+                                Session.Client.SendPacket($"guri 19 1 {Session.Character.CharacterId} 1324");
+
+                                Session.Client.SendPacket(Session.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("MADE_OBJECT"), iteminfo.Name, rec.Amount), 0));
+                            }
+                        }
+                        else
+                        {
+                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_PLACE"), 0));
+                        }
+                    }
+                }
+            }
+        }
+
+        public void PerfectSP(Inventory item, InventoryItem.UpgradeProtection protect)
+        {
+            short[] upsuccess = { 50, 40, 30, 20, 10 };
+
+            int[] goldprice = { 5000, 1000, 20000, 50000, 100000 };
+            short[] stoneprice = { 1, 2, 3, 4, 5 };
+            short stonevnum;
+            byte upmode = 1;
+
+            switch (ServerManager.GetItem(item.InventoryItem.ItemVNum).Morph)
+            {
+                case 2:
+                    stonevnum = 2514;
+                    break;
+
+                case 6:
+                    stonevnum = 2514;
+                    break;
+
+                case 9:
+                    stonevnum = 2514;
+                    break;
+
+                case 12:
+                    stonevnum = 2514;
+                    break;
+
+                case 3:
+                    stonevnum = 2515;
+                    break;
+
+                case 4:
+                    stonevnum = 2515;
+                    break;
+
+                case 14:
+                    stonevnum = 2515;
+                    break;
+
+                case 5:
+                    stonevnum = 2516;
+                    break;
+
+                case 11:
+                    stonevnum = 2516;
+                    break;
+
+                case 15:
+                    stonevnum = 2516;
+                    break;
+
+                case 10:
+                    stonevnum = 2517;
+                    break;
+
+                case 13:
+                    stonevnum = 2517;
+                    break;
+
+                case 7:
+                    stonevnum = 2517;
+                    break;
+
+                case 17:
+                    stonevnum = 2518;
+                    break;
+
+                case 18:
+                    stonevnum = 2518;
+                    break;
+
+                case 19:
+                    stonevnum = 2518;
+                    break;
+
+                case 20:
+                    stonevnum = 2519;
+                    break;
+
+                case 21:
+                    stonevnum = 2519;
+                    break;
+
+                case 22:
+                    stonevnum = 2519;
+                    break;
+
+                case 23:
+                    stonevnum = 2520;
+                    break;
+
+                case 24:
+                    stonevnum = 2520;
+                    break;
+
+                case 25:
+                    stonevnum = 2520;
+                    break;
+
+                case 26:
+                    stonevnum = 2521;
+                    break;
+
+                case 27:
+                    stonevnum = 2521;
+                    break;
+
+                case 28:
+                    stonevnum = 2521;
+                    break;
+
+                default:
+                    return;
+            }
+            if (item.InventoryItem.SpStoneUpgrade > 99)
+                return;
+            if (item.InventoryItem.SpStoneUpgrade > 80)
+            {
+                upmode = 5;
+            }
+            if (item.InventoryItem.SpStoneUpgrade > 60)
+            {
+                upmode = 4;
+            }
+            if (item.InventoryItem.SpStoneUpgrade > 40)
+            {
+                upmode = 3;
+            }
+            if (item.InventoryItem.SpStoneUpgrade > 20)
+            {
+                upmode = 2;
+            }
+
+            if (item.InventoryItem.IsFixed)
+                return;
+            if (Session.Character.Gold < goldprice[upmode])
+                return;
+            if (Session.Character.InventoryList.CountItem(stonevnum) < stoneprice[upmode])
+                return;
+
+            Random r = new Random();
+            int rnd = r.Next(100);
+            if (rnd <= upsuccess[upmode])
+            {
+                byte type = (byte)r.Next(16), count = 1;
+
+                if (upmode == 4)
+                {
+                    count = 2;
+                }
+                if (count == 5)
+                {
+                    count = (byte)r.Next(3, 6);
+                }
+
+                Session.Client.SendPacket(Session.Character.GenerateEff(3005));
+
+                if (type < 3)
+                {
+                    Session.Character.InventoryList.LoadByInventoryItem(item.InventoryItem.InventoryItemId).InventoryItem.SpDamage += count;
+                    Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("PERFECTSP_SUCCESS"), Language.Instance.GetMessageFromKey("PERFECTSP_ATTACK"), count), 12));
+                    Session.Client.SendPacket(Session.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("PERFECTSP_SUCCESS"), Language.Instance.GetMessageFromKey("PERFECTSP_ATTACK"), count), 0));
+                }
+                else if (type < 6)
+                {
+                    Session.Character.InventoryList.LoadByInventoryItem(item.InventoryItem.InventoryItemId).InventoryItem.SpDefence += count;
+                    Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("PERFECTSP_SUCCESS"), Language.Instance.GetMessageFromKey("PERFECTSP_DEFENSE"), count), 12));
+                    Session.Client.SendPacket(Session.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("PERFECTSP_SUCCESS"), Language.Instance.GetMessageFromKey("PERFECTSP_DEFENSE"), count), 0));
+                }
+                else if (type < 9)
+                {
+                    Session.Character.InventoryList.LoadByInventoryItem(item.InventoryItem.InventoryItemId).InventoryItem.SpElement += count;
+                    Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("PERFECTSP_SUCCESS"), Language.Instance.GetMessageFromKey("PERFECTSP_ELEMENT"), count), 12));
+                    Session.Client.SendPacket(Session.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("PERFECTSP_SUCCESS"), Language.Instance.GetMessageFromKey("PERFECTSP_ELEMENT"), count), 0));
+                }
+                else if (type < 12)
+                {
+                    Session.Character.InventoryList.LoadByInventoryItem(item.InventoryItem.InventoryItemId).InventoryItem.SpHP += count;
+                    Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("PERFECTSP_SUCCESS"), Language.Instance.GetMessageFromKey("PERFECTSP_HPMP"), count), 12));
+                    Session.Client.SendPacket(Session.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("PERFECTSP_SUCCESS"), Language.Instance.GetMessageFromKey("PERFECTSP_HPMP"), count), 0));
+                }
+                else if (type == 12)
+                {
+                    Session.Character.InventoryList.LoadByInventoryItem(item.InventoryItem.InventoryItemId).InventoryItem.SpFire += count;
+                    Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("PERFECTSP_SUCCESS"), Language.Instance.GetMessageFromKey("PERFECTSP_FIRE"), count), 12));
+                    Session.Client.SendPacket(Session.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("PERFECTSP_SUCCESS"), Language.Instance.GetMessageFromKey("PERFECTSP_FIRE"), count), 0));
+                }
+                else if (type == 13)
+                {
+                    Session.Character.InventoryList.LoadByInventoryItem(item.InventoryItem.InventoryItemId).InventoryItem.SpWater += count;
+                    Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("PERFECTSP_SUCCESS"), Language.Instance.GetMessageFromKey("PERFECTSP_WATER"), count), 12));
+                    Session.Client.SendPacket(Session.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("PERFECTSP_SUCCESS"), Language.Instance.GetMessageFromKey("PERFECTSP_WATER"), count), 0));
+                }
+                else if (type == 14)
+                {
+                    Session.Character.InventoryList.LoadByInventoryItem(item.InventoryItem.InventoryItemId).InventoryItem.SpLight += count;
+                    Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("PERFECTSP_SUCCESS"), Language.Instance.GetMessageFromKey("PERFECTSP_LIGHT"), count), 12));
+                    Session.Client.SendPacket(Session.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("PERFECTSP_SUCCESS"), Language.Instance.GetMessageFromKey("PERFECTSP_LIGHT"), count), 0));
+                }
+                else if (type == 15)
+                {
+                    Session.Character.InventoryList.LoadByInventoryItem(item.InventoryItem.InventoryItemId).InventoryItem.SpDark += count;
+                    Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("PERFECTSP_SUCCESS"), Language.Instance.GetMessageFromKey("PERFECTSP_SHADOW"), count), 12));
+                    Session.Client.SendPacket(Session.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("PERFECTSP_SUCCESS"), Language.Instance.GetMessageFromKey("PERFECTSP_SHADOW"), count), 0));
+                }
+                Session.Character.InventoryList.LoadByInventoryItem(item.InventoryItem.InventoryItemId).InventoryItem.SpStoneUpgrade++;
+            }
+            else
+            {
+                Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("PERFECTSP_FAILED"), 11));
+                Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("PERFECTSP_FAILED"), 0));
+            }
+            Session.Character.Gold = Session.Character.Gold - goldprice[upmode];
+            Session.Client.SendPacket(Session.Character.GenerateGold());
+            Session.Character.InventoryList.RemoveItemAmount(stonevnum, stoneprice[upmode]);
+            GetStartupInventory();
+        }
+
+        [Packet("pjoin")]
+        public void pjoin(string packet)
+        {
+            string[] packetsplit = packet.Split(' ');
+            if (packetsplit.Length > 3)
+            {
+                Boolean Blocked = false;
+                string charName;
+                long charId = -1;
+                if (!long.TryParse(packetsplit[3], out charId))
+                    return;
+                Boolean grouped1 = false;
+                Boolean grouped2 = false;
+                foreach (Group group in ClientLinkManager.Instance.Groups)
+                {
+                    if ((group.Characters.Contains(charId) || group.Characters.Contains(Session.Character.CharacterId)) && group.Characters.Count == 3)
+                    {
+                        Session.Client.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("GROUP_FULL")));
+                        return;
+                    }
+                    if (group.Characters.Contains(charId))
+                    {
+                        grouped1 = true;
+                    }
+                    if (group.Characters.Contains(Session.Character.CharacterId))
+                    {
+                        grouped2 = true;
+                    }
+                }
+
+                if (grouped1 && grouped2)
+                {
+                    Session.Client.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("ALREADY_IN_GROUP")));
+                    return;
+                }
+                if (Convert.ToInt32(packetsplit[2]) == 0 || Convert.ToInt32(packetsplit[2]) == 1)
+                {
+                    if (Session.Character.CharacterId != charId)
+                    {
+                        if (!long.TryParse(packetsplit[3], out charId)) return;
+                        Blocked = ClientLinkManager.Instance.GetProperty<bool>(charId, "GroupRequestBlocked");
+
+                        if (Blocked)
+                        {
+                            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("GROUP_BLOCKED"), 11), ReceiverType.OnlyMe);
+                        }
+                        else
+                        {
+                            Session.Character.ExchangeInfo = new ExchangeInfo { CharId = charId, Confirm = false };
+
+                            charName = (string)ClientLinkManager.Instance.GetProperty<string>(charId, "Name");
+                            Session.Client.SendPacket(Session.Character.GenerateInfo(String.Format(Language.Instance.GetMessageFromKey("GROUP_REQUEST"), charName)));
+                            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateDialog($"#pjoin^3^{ Session.Character.CharacterId} #pjoin^4^{Session.Character.CharacterId} {String.Format(Language.Instance.GetMessageFromKey("INVITED_YOU"), Session.Character.Name)}"), ReceiverType.OnlySomeone, charName);
+                        }
+                    }
+                }
+            }
+        }
+
+        [Packet("$PlayMusic")]
+        public void PlayMusic(string packet)
+        {
+            string[] packetsplit = packet.Split(' ');
+            if (packetsplit.Length > 2)
+            {
+                if (packetsplit.Length <= 1) return;
+
+                short arg;
+                short.TryParse(packetsplit[2], out arg);
+                if (arg > -1)
+                    ClientLinkManager.Instance.Broadcast(Session, $"bgm {arg}", ReceiverType.AllOnMap);
+            }
+            else
+                Session.Client.SendPacket(Session.Character.GenerateSay("$PlayMusic BGMUSIC", 10));
+        }
+
+        [Packet("pleave")]
+        public void pleave(string packet)
+        {
+            ClientLinkManager.Instance.GroupLeave(Session);
+        }
+
+        [Packet("$Position")]
+        public void Position(string packet)
+        {
+            Session.Client.SendPacket(Session.Character.GenerateSay($"Map:{Session.Character.MapId} - X:{Session.Character.MapX} - Y:{Session.Character.MapY}", 12));
+        }
 
         [Packet("preq")]
         public void Preq(string packet)
@@ -1723,6 +2265,7 @@ namespace OpenNos.Handler
                         case (sbyte)PortalType.Effect:
                         case (sbyte)PortalType.ShopTeleport:
                             break;
+
                         default:
                             Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("PORTAL_BLOCKED"), 10));
                             return;
@@ -1752,97 +2295,7 @@ namespace OpenNos.Handler
             }
             deleteTimeout();
         }
-        [Packet("pleave")]
-        public void pleave(string packet)
-        {
-            ClientLinkManager.Instance.GroupLeave(Session);
-        
-        }
-        [Packet("#pjoin")]
-        public void validpjoin(string packet)
-        {
-            string[] packetsplit = packet.Split(' ', '^');
-            int type = -1;
-            long CharId = -1;
-            int newgroup = 1;
-            if (packetsplit.Length > 3)
-            {
-                if (!int.TryParse(packetsplit[2], out type))
-                    return;
-                long.TryParse(packetsplit[3], out CharId);
 
-                if (type == 3)
-                {
-                    foreach (Group group in ClientLinkManager.Instance.Groups)
-                    {
-                        if (group.Characters.Count == 3)
-                        {
-                            Session.Client.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("GROUP_FULL")));
-
-                            return;
-                        }
-                        else if (group.Characters.Contains(CharId))
-                        {
-                            group.Characters.Add(Session.Character.CharacterId);
-                            newgroup = 0;
-
-                        }
-                        else if (group.Characters.Contains(Session.Character.CharacterId))
-                        {
-                            group.Characters.Add(CharId);
-                            newgroup = 0;
-
-                        }
-                    }
-                    if (newgroup == 1)
-                    {
-                        Group group = new Group()
-                        {
-                            Characters = new List<long>()
-                        };
-                        group.Characters.Add(CharId);
-                        group.Characters.Add(Session.Character.CharacterId);
-                        ClientLinkManager.Instance.Groups.Add(group);
-                    }
-
-                    //player join group
-                    string str = $"pinit { ClientLinkManager.Instance.Groups.FirstOrDefault(s => s.Characters.Contains(CharId)).Characters.Count()}";
-
-                    int i = 0;
-                    foreach (long Id in ClientLinkManager.Instance.Groups.FirstOrDefault(s => s.Characters.Contains(CharId)).Characters)
-                    {
-                        i++;
-                        str += $" 1|{ClientLinkManager.Instance.GetProperty<long>(Id, "CharacterId")}|{i}|{ClientLinkManager.Instance.GetProperty<byte>(Id, "Level")}|{ClientLinkManager.Instance.GetProperty<string>(Id, "Name")}|{ClientLinkManager.Instance.GetProperty<byte>(Id, "Gender")}|{ClientLinkManager.Instance.GetProperty<byte>(Id, "Gender") + ClientLinkManager.Instance.GetProperty<byte>(Id, "Class")}|{(ClientLinkManager.Instance.GetProperty<bool>(Id, "UseSp") ? ClientLinkManager.Instance.GetProperty<int>(Id, "Morph") : 0)} ";
-
-                    }
-
-                    foreach (long Id in ClientLinkManager.Instance.Groups.FirstOrDefault(s => s.Characters.Contains(CharId)).Characters)
-                    {
-                        ClientLinkManager.Instance.Broadcast(Session, str, ReceiverType.OnlySomeone, "", Id);
-                    }
-
-                    string p = generatePidx(Session.Character.CharacterId);
-                    if (p != "")
-                        ClientLinkManager.Instance.Broadcast(Session, p, ReceiverType.AllOnMap);
-
-                }
-                else if (type == 4)
-                {
-                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateInfo(String.Format(Language.Instance.GetMessageFromKey("REFUSED_REQUEST"), Session.Character.Name)), ReceiverType.OnlySomeone, "", CharId);
-                }
-            }
-        }
-        public string generatePidx(long CharId)
-        {
-            string stri = "pidx 1";
-            foreach (long Id in ClientLinkManager.Instance.Groups.FirstOrDefault(s => s.Characters.Contains(CharId)).Characters)
-            {
-                stri += $" 1.{Id} ";
-            }
-            if (stri == "pidx 1")
-                stri = "";
-            return stri;
-        }
         [Packet("put")]
         public void PutItem(string packet)
         {
@@ -1879,6 +2332,35 @@ namespace OpenNos.Handler
                 Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("ITEM_NOT_DROPPABLE"), 0));
             }
         }
+
+        [Packet("$Rarify")]
+        public void Rarify(string packet)
+        {
+            string[] packetsplit = packet.Split(' ');
+            if (packetsplit.Length != 5)
+            {
+                Session.Client.SendPacket(Session.Character.GenerateSay("$Rarify SLOT MODE PROTECTION", 10));
+            }
+            else
+            {
+                short itemslot = -1;
+                short mode = -1;
+                short protection = -1;
+                short.TryParse(packetsplit[2], out itemslot);
+                short.TryParse(packetsplit[3], out mode);
+                short.TryParse(packetsplit[4], out protection);
+
+                if (itemslot > -1 && mode > -1 && protection > -1)
+                {
+                    Inventory inventoryDTO = Session.Character.InventoryList.LoadBySlotAndType(itemslot, 0);
+                    if (inventoryDTO != null)
+                    {
+                        RarifyItem(inventoryDTO, (InventoryItem.RarifyMode)mode, (InventoryItem.RarifyProtection)protection);
+                    }
+                }
+            }
+        }
+
         public void RarifyItem(Inventory item, InventoryItem.RarifyMode mode, InventoryItem.RarifyProtection protection)
         {
             double rare1 = 50;
@@ -2103,6 +2585,77 @@ namespace OpenNos.Handler
             Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("TRANSFORM_DISAPEAR")), 11));
             Session.Client.SendPacket("sd 0");
         }
+
+        public void RemoveVehicle()
+        {
+            Session.Character.IsVehicled = false;
+            Session.Character.Speed = ServersData.SpeedData[Session.Character.Class];
+            Session.Client.SendPacket(Session.Character.GenerateCond());
+            if (Session.Character.UseSp)
+            {
+                Session.Character.Morph = ServerManager.GetItem(Session.Character.EquipmentList.LoadBySlotAndType((byte)EquipmentType.Sp, (byte)InventoryType.Equipment).InventoryItem.ItemVNum).Morph;
+            }
+            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateCMode(), ReceiverType.AllOnMap);
+            ClientLinkManager.Instance.Broadcast(Session, $"guri 6 1 {Session.Character.CharacterId} 0 0", ReceiverType.AllOnMap);
+        }
+
+        [Packet("$ChangeRep")]
+        public void Rep(string packet)
+        {
+            string[] packetsplit = packet.Split(' ');
+            long reput;
+            if (packetsplit.Length != 3)
+            {
+                Session.Client.SendPacket(Session.Character.GenerateSay("$ChangeRep REPUTATION", 10));
+                return;
+            }
+
+            if (Int64.TryParse(packetsplit[2], out reput) && reput > 0)
+            {
+                Session.Character.Reput = reput;
+                Session.Client.SendPacket(Session.Character.GenerateFd());
+                Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("REP_CHANGED"), 0));
+                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllOnMapExceptMe);
+            }
+        }
+
+        [Packet("req_info")]
+        public void ReqInfo(string packet)
+        {
+            string[] packetsplit = packet.Split(' ');
+            if (packetsplit[2] == "5")
+            {
+                NpcMonster npc = ServerManager.GetNpc(short.Parse(packetsplit[3]));
+                if (npc != null)
+                {
+                    Session.Client.SendPacket(npc.GenerateEInfo());
+                }
+            }
+            else
+                ClientLinkManager.Instance.RequiereBroadcastFromUser(Session, Convert.ToInt64(packetsplit[3]), "GenerateReqInfo");
+        }
+
+        [Packet("$Resize")]
+        public void Resize(string packet)
+        {
+            string[] packetsplit = packet.Split(' ');
+            short arg = -1;
+
+            if (packetsplit.Length > 2)
+            {
+                short.TryParse(packetsplit[2], out arg);
+
+                if (arg > -1)
+
+                {
+                    Session.Character.Size = arg;
+                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateScal(), ReceiverType.AllOnMap);
+                }
+            }
+            else
+                Session.Client.SendPacket(Session.Character.GenerateSay("$Resize SIZE", 10));
+        }
+
         [Packet("rest")]
         public void Rest(string packet)
         {
@@ -2285,35 +2838,19 @@ namespace OpenNos.Handler
             Session.Client.SendPacket($"n_inv 2 {mapnpc.MapNpcId} 0 0{shoplist}");
         }
 
-        public void RemoveVehicle()
-        {
-            Session.Character.IsVehicled = false;
-            Session.Character.Speed = ServersData.SpeedData[Session.Character.Class];
-            Session.Client.SendPacket(Session.Character.GenerateCond());
-            if (Session.Character.UseSp)
-            {
-                Session.Character.Morph = ServerManager.GetItem(Session.Character.EquipmentList.LoadBySlotAndType((byte)EquipmentType.Sp, (byte)InventoryType.Equipment).InventoryItem.ItemVNum).Morph;
-            }
-            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateCMode(), ReceiverType.AllOnMap);
-            ClientLinkManager.Instance.Broadcast(Session, $"guri 6 1 {Session.Character.CharacterId} 0 0", ReceiverType.AllOnMap);
-        }
-
-        [Packet("req_info")]
-        public void ReqInfo(string packet)
+        [Packet("$Shout")]
+        public void Shout(string packet)
         {
             string[] packetsplit = packet.Split(' ');
-            if (packetsplit[2] == "5")
-            {
-                NpcMonster npc = ServerManager.GetNpc(short.Parse(packetsplit[3]));
-                if (npc != null)
-                {
-                    Session.Client.SendPacket(npc.GenerateEInfo());
-                }
-            }
-            else
-                ClientLinkManager.Instance.RequiereBroadcastFromUser(Session, Convert.ToInt64(packetsplit[3]), "GenerateReqInfo");
-        }
+            string message = String.Empty;
+            if (packetsplit.Length > 2)
+                for (int i = 2; i < packetsplit.Length; i++)
+                    message += packetsplit[i] + " ";
+            message.Trim();
 
+            ClientLinkManager.Instance.Broadcast(Session, $"say 1 0 10 ({Language.Instance.GetMessageFromKey("ADMINISTRATOR")}){message}", ReceiverType.All);
+            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateMsg(message, 2), ReceiverType.All);
+        }
 
         [Packet("npc_req")]
         public void ShowShop(string packet)
@@ -2343,6 +2880,21 @@ namespace OpenNos.Handler
                     if (!string.IsNullOrEmpty(npc?.GetNpcDialog()))
                         Session.Client.SendPacket(npc.GetNpcDialog());
                 }
+            }
+        }
+
+        [Packet("$Shutdown")]
+        public void Shutdown(string packet)
+        {
+            if (ClientLinkManager.Instance.taskShutdown != null)
+            {
+                ClientLinkManager.Instance.ShutdownStop = true;
+                ClientLinkManager.Instance.taskShutdown = null;
+            }
+            else
+            {
+                ClientLinkManager.Instance.taskShutdown = new Task(ShutdownTask);
+                ClientLinkManager.Instance.taskShutdown.Start();
             }
         }
 
@@ -2428,6 +2980,54 @@ namespace OpenNos.Handler
                     }
                 }
             }
+        }
+
+        [Packet("$Speed")]
+        public void Speed(string packet)
+        {
+            string[] packetsplit = packet.Split(' ');
+            byte arg = 0;
+            bool verify = false;
+            if (packetsplit.Length > 2)
+            {
+                verify = (byte.TryParse(packetsplit[2], out arg));
+            }
+            switch (packetsplit.Length)
+            {
+                case 3:
+                    if (verify && arg < 60)
+                    {
+                        Session.Character.Speed = arg;
+                        Session.Client.SendPacket(Session.Character.GenerateCond());
+                    }
+                    break;
+
+                default:
+                    Session.Client.SendPacket(Session.Character.GenerateSay("$Speed SPEED", 10));
+                    break;
+            }
+        }
+
+        [Packet("$SPLvl")]
+        public void SPLvl(string packet)
+        {
+            string[] packetsplit = packet.Split(' ');
+            byte splevel;
+            Inventory sp = Session.Character.EquipmentList.LoadBySlotAndType((byte)EquipmentType.Sp, (byte)InventoryType.Equipment);
+            if (sp != null && packetsplit.Length > 2 && Session.Character.UseSp)
+            {
+                if (Byte.TryParse(packetsplit[2], out splevel) && splevel <= 99 && splevel > 0)
+                {
+                    sp.InventoryItem.SpLevel = splevel;
+                    Session.Client.SendPacket(Session.Character.GenerateLev());
+                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SPLEVEL_CHANGED"), 0));
+                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllOnMapExceptMe);
+                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(8), ReceiverType.AllOnMap);
+                }
+            }
+            else
+
+                Session.Client.SendPacket(Session.Character.GenerateSay("$SPLvl SPLEVEL", 10));
         }
 
         [Packet("sl")]
@@ -2805,118 +3405,6 @@ namespace OpenNos.Handler
             }
         }
 
-        [Packet("pdtse")]
-        public void pdtse(string packet)
-        {
-            string[] packetsplit = packet.Split(' ');
-            if (packetsplit.Count() < 4)
-                return;
-
-            byte type = 0;
-            byte.TryParse(packetsplit[2], out type);
-            if (type == 1)
-            {
-                MapNpc npc = Session.CurrentMap.Npcs.FirstOrDefault(s => s.MapNpcId == Session.Character.LastNRunId);
-                if (npc != null)
-                {
-
-                    Recipe rec = npc.Recipes.FirstOrDefault(s => s.ItemVNum == short.Parse(packetsplit[3]));
-                    if (rec != null && rec.Amount > 0)
-                    {
-                        String rece = $"m_list 3 {rec.Amount}";
-                        foreach (RecipeItem ite in rec.Items)
-                        {
-                            if (ite.Amount > 0)
-                                rece += String.Format($" {ite.ItemVNum} {ite.Amount}");
-                        }
-                        rece += " -1";
-                        Session.Client.SendPacket(rece);
-                    }
-
-                }
-            }
-            else
-            {
-                MapNpc npc = Session.CurrentMap.Npcs.FirstOrDefault(s => s.MapNpcId == Session.Character.LastNRunId);
-                if (npc != null)
-                {
-
-                    Recipe rec = npc.Recipes.FirstOrDefault(s => s.ItemVNum == short.Parse(packetsplit[3]));
-                    if (rec != null)
-                    {
-                        if (rec.Amount <= 0)
-                            return;
-                        foreach (RecipeItem ite in rec.Items)
-                        {
-                            if (Session.Character.InventoryList.CountItem(ite.ItemVNum) < ite.Amount)
-                                return;
-                        }
-
-
-                        InventoryItem newItem = new InventoryItem()
-                        {
-                            InventoryItemId = Session.Character.InventoryList.generateInventoryItemId(),
-                            Amount = rec.Amount,
-                            ItemVNum = rec.ItemVNum,
-                            Rare = 0,
-                            Upgrade = 0,
-                            Design = 0,
-                            Concentrate = 0,
-                            CriticalLuckRate = 0,
-                            CriticalRate = 0,
-                            DamageMaximum = 0,
-                            DamageMinimum = 0,
-                            DarkElement = 0,
-                            DistanceDefence = 0,
-                            DistanceDefenceDodge = 0,
-                            DefenceDodge = 0,
-                            ElementRate = 0,
-                            FireElement = 0,
-                            HitRate = 0,
-                            LightElement = 0,
-                            IsFixed = false,
-                            Ammo = 0,
-                            MagicDefence = 0,
-                            CloseDefence = 0,
-                            SpXp = 0,
-                            SpLevel = 0,
-                            SlDefence = 0,
-                            SlElement = 0,
-                            SlDamage = 0,
-                            SlHP = 0,
-                            WaterElement = 0,
-                        };
-                        Item iteminfo = ServerManager.GetItem(rec.ItemVNum);
-                        Inventory inv = Session.Character.InventoryList.CreateItem(newItem, Session.Character);
-                        ServersData.SetRarityPoint(ref inv);
-                        if (inv != null)
-                        {
-                            Session.Character.InventoryList.LoadByInventoryItem(inv.InventoryItem.InventoryItemId).InventoryItem = inv.InventoryItem;
-
-                            short Slot = inv.Slot;
-                            if (Slot != -1)
-                            {
-                                foreach (RecipeItem ite in rec.Items)
-                                {
-                                    Session.Character.InventoryList.RemoveItemAmount(ite.ItemVNum, ite.Amount);
-                                }
-                                GetStartupInventory();
-
-                                Session.Client.SendPacket($"pdti 11 {inv.InventoryItem.ItemVNum} {rec.Amount} 29 {inv.InventoryItem.Upgrade} 0");
-                                Session.Client.SendPacket($"guri 19 1 {Session.Character.CharacterId} 1324");
-
-                                Session.Client.SendPacket(Session.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("MADE_OBJECT"), iteminfo.Name, rec.Amount), 0));
-                            }
-                        }
-                        else
-                        {
-                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_PLACE"), 0));
-                        }
-                    }
-
-                }
-            }
-        }
         [Packet("game_start")]
         public void StartGame(string packet)
         {
@@ -2966,6 +3454,11 @@ namespace OpenNos.Handler
             deleteTimeout();
         }
 
+        [Packet("$Stat")]
+        public void Stat(string packet)
+        {
+            Session.Client.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("TOTAL_SESSION")}: {ClientLinkManager.Instance.GetNumberOfAllASession()} ", 13));
+        }
 
         public void SumItem(Inventory item, Inventory item2)
         {
@@ -3013,6 +3506,115 @@ namespace OpenNos.Handler
             }
         }
 
+        [Packet("$Summon")]
+        public void Summon(string packet)
+        {
+            string[] packetsplit = packet.Split(' ');
+            short vnum = 0;
+            byte qty = 1, move = 0;
+            Random rnd = new Random();
+            if (packetsplit.Length == 5 && short.TryParse(packetsplit[2], out vnum) && byte.TryParse(packetsplit[3], out qty) && byte.TryParse(packetsplit[4], out move))
+            {
+                if (ServerManager.GetNpc(vnum) == null)
+                    return;
+                for (int i = 0; i < qty; i++)
+                {
+                    short mapx = (short)rnd.Next((Session.Character.MapX - qty) % Session.CurrentMap.XLength, (Session.Character.MapX + qty / 3) % Session.CurrentMap.YLength);
+                    short mapy = (short)rnd.Next((Session.Character.MapY - qty) % Session.CurrentMap.XLength, (Session.Character.MapY + qty / 3) % Session.CurrentMap.YLength);
+                    for (int j = 100; j > 0 && Session.CurrentMap != null && Session.CurrentMap.IsBlockedZone(mapx, mapy); j--)
+                    {
+                        mapx = (short)rnd.Next((Session.Character.MapX - qty) % Session.CurrentMap.XLength, (Session.Character.MapX + qty / 3) % Session.CurrentMap.YLength);
+                        mapy = (short)rnd.Next((Session.Character.MapY - qty) % Session.CurrentMap.XLength, (Session.Character.MapY + qty / 3) % Session.CurrentMap.YLength);
+                    }
+                    MapMonster monst = new MapMonster() { MonsterVNum = vnum, MapY = mapy, MapX = mapx, MapId = Session.Character.MapId, firstX = mapx, firstY = mapy, MapMonsterId = MapMonster.generateMapMonsterId(), Position = 1, Move = move != 0 ? true : false };
+                    ServerManager.GetMap(Session.Character.MapId).Monsters.Add(monst);
+                    ServerManager.Monsters.Add(monst);
+                    ClientLinkManager.Instance.Broadcast(Session, monst.GenerateIn3(), ReceiverType.AllOnMap);
+                }
+            }
+            else
+                Session.Client.SendPacket(Session.Character.GenerateSay("$Summon VNUM AMOUNT MOVE", 10));
+        }
+
+        [Packet("$Teleport")]
+        public void Teleport(string packet)
+        {
+            string[] packetsplit = packet.Split(' ');
+            short[] arg = new short[3];
+            bool verify = false;
+
+            if (packetsplit.Length > 4)
+            {
+                verify = (short.TryParse(packetsplit[2], out arg[0]) && short.TryParse(packetsplit[3], out arg[1]) && short.TryParse(packetsplit[4], out arg[2]) && DAOFactory.MapDAO.LoadById(arg[0]) != null);
+            }
+            switch (packetsplit.Length)
+            {
+                case 3:
+                    string name = packetsplit[2];
+                    short? mapy = ClientLinkManager.Instance.GetProperty<short?>(name, "MapY");
+                    short? mapx = ClientLinkManager.Instance.GetProperty<short?>(name, "MapX");
+                    short? mapId = ClientLinkManager.Instance.GetProperty<short?>(name, "MapId");
+                    if (mapy != null && mapx != null && mapId != null)
+                    {
+                        ClientLinkManager.Instance.MapOut(Session.Character.CharacterId);
+                        Session.Character.MapId = (short)mapId;
+                        Session.Character.MapX = (short)((short)(mapx) + 1);
+                        Session.Character.MapY = (short)((short)(mapy) + 1);
+
+                        ClientLinkManager.Instance.ChangeMap(Session.Character.CharacterId);
+                    }
+                    else
+                    {
+                        Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("USER_NOT_CONNECTED"), 0));
+                    }
+                    break;
+
+                case 5:
+                    if (verify)
+                    {
+                        ClientLinkManager.Instance.MapOut(Session.Character.CharacterId);
+                        Session.Character.MapId = arg[0];
+                        Session.Character.MapX = arg[1];
+                        Session.Character.MapY = arg[2];
+
+                        ClientLinkManager.Instance.ChangeMap(Session.Character.CharacterId);
+                    }
+                    break;
+
+                default:
+                    Session.Client.SendPacket(Session.Character.GenerateSay("$Teleport MAP X Y", 10));
+                    Session.Client.SendPacket(Session.Character.GenerateSay("$Teleport CHARACTERNAME", 10));
+                    break;
+            }
+        }
+
+        [Packet("$TeleportToMe")]
+        public void TeleportToMe(string packet)
+        {
+            string[] packetsplit = packet.Split(' ');
+
+            if (packetsplit.Length == 3)
+            {
+                string name = packetsplit[2];
+
+                long? id = ClientLinkManager.Instance.GetProperty<long?>(name, "CharacterId");
+
+                if (id != null)
+                {
+                    ClientLinkManager.Instance.MapOut((long)id);
+                    ClientLinkManager.Instance.SetProperty(name, "MapY", (short)((Session.Character.MapY) + (short)1));
+                    ClientLinkManager.Instance.SetProperty(name, "MapX", (short)((Session.Character.MapX) + (short)1));
+                    ClientLinkManager.Instance.SetProperty(name, "MapId", Session.Character.MapId);
+                    ClientLinkManager.Instance.ChangeMap((long)id);
+                }
+                else
+                {
+                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("USER_NOT_CONNECTED"), 0));
+                }
+            }
+            else
+                Session.Client.SendPacket(Session.Character.GenerateSay("$TeleportToMe CHARACTERNAME", 10));
+        }
 
         [Packet("up_gr")]
         public void upgr(string packet)
@@ -3066,7 +3668,6 @@ namespace OpenNos.Handler
                         }
                         break;
 
-
                     case 9:
                         inventory = Session.Character.InventoryList.LoadBySlotAndType(slot, type);
                         if (inventory != null)
@@ -3088,6 +3689,34 @@ namespace OpenNos.Handler
                                 PerfectSP(inventory, InventoryItem.UpgradeProtection.None);
                         }
                         break;
+                }
+            }
+        }
+
+        [Packet("$Upgrade")]
+        public void Upgrade(string packet)
+        {
+            string[] packetsplit = packet.Split(' ');
+            if (packetsplit.Length != 5)
+            {
+                Session.Client.SendPacket(Session.Character.GenerateSay("$Upgrade SLOT MODE PROTECTION", 10));
+            }
+            else
+            {
+                short itemslot = -1;
+                short mode = -1;
+                short protection = -1;
+                short.TryParse(packetsplit[2], out itemslot);
+                short.TryParse(packetsplit[3], out mode);
+                short.TryParse(packetsplit[4], out protection);
+
+                if (itemslot > -1 && mode > -1 && protection > -1)
+                {
+                    Inventory inventoryDTO = Session.Character.InventoryList.LoadBySlotAndType(itemslot, 0);
+                    if (inventoryDTO != null)
+                    {
+                        UpgradeItem(inventoryDTO, (InventoryItem.UpgradeMode)mode, (InventoryItem.UpgradeProtection)protection);
+                    }
                 }
             }
         }
@@ -3310,7 +3939,6 @@ namespace OpenNos.Handler
 
                     return;
                 }
-
             }
             Random r = new Random();
             int rnd = r.Next(100);
@@ -3354,215 +3982,6 @@ namespace OpenNos.Handler
             Session.Client.SendPacket("shop_end 1");
         }
 
-        public void PerfectSP(Inventory item, InventoryItem.UpgradeProtection protect)
-        {
-            short[] upsuccess = { 50, 40, 30, 20, 10 };
-
-            int[] goldprice = { 5000, 1000, 20000, 50000, 100000 };
-            short[] stoneprice = { 1, 2, 3, 4, 5 };
-            short stonevnum;
-            byte upmode = 1;
-
-            switch (ServerManager.GetItem(item.InventoryItem.ItemVNum).Morph)
-            {
-                #region little Ruby
-                case 2:
-                    stonevnum = 2514;
-                    break;
-                case 6:
-                    stonevnum = 2514;
-                    break;
-                case 9:
-                    stonevnum = 2514;
-                    break;
-                case 12:
-                    stonevnum = 2514;
-                    break;
-                #endregion
-                #region little Sapphire
-                case 3:
-                    stonevnum = 2515;
-                    break;
-                case 4:
-                    stonevnum = 2515;
-                    break;
-                case 14:
-                    stonevnum = 2515;
-                    break;
-                #endregion
-                #region little Obsidian
-                case 5:
-                    stonevnum = 2516;
-                    break;
-                case 11:
-                    stonevnum = 2516;
-                    break;
-                case 15:
-                    stonevnum = 2516;
-                    break;
-                #endregion
-                #region little Topas
-                case 10:
-                    stonevnum = 2517;
-                    break;
-                case 13:
-                    stonevnum = 2517;
-                    break;
-                case 7:
-                    stonevnum = 2517;
-                    break;
-                #endregion
-                #region Ruby
-                case 17:
-                    stonevnum = 2518;
-                    break;
-                case 18:
-                    stonevnum = 2518;
-                    break;
-                case 19:
-                    stonevnum = 2518;
-                    break;
-                #endregion
-                #region Sapphire
-                case 20:
-                    stonevnum = 2519;
-                    break;
-                case 21:
-                    stonevnum = 2519;
-                    break;
-                case 22:
-                    stonevnum = 2519;
-                    break;
-                #endregion
-                #region Obsidian
-                case 23:
-                    stonevnum = 2520;
-                    break;
-                case 24:
-                    stonevnum = 2520;
-                    break;
-                case 25:
-                    stonevnum = 2520;
-                    break;
-                #endregion
-                #region Topas
-                case 26:
-                    stonevnum = 2521;
-                    break;
-                case 27:
-                    stonevnum = 2521;
-                    break;
-                case 28:
-                    stonevnum = 2521;
-                    break;
-                #endregion
-                default:
-                    return;
-            }
-            if (item.InventoryItem.SpStoneUpgrade > 99)
-                return;
-            if (item.InventoryItem.SpStoneUpgrade > 80)
-            {
-                upmode = 5;
-            }
-            if (item.InventoryItem.SpStoneUpgrade > 60)
-            {
-                upmode = 4;
-            }
-            if (item.InventoryItem.SpStoneUpgrade > 40)
-            {
-                upmode = 3;
-            }
-            if (item.InventoryItem.SpStoneUpgrade > 20)
-            {
-                upmode = 2;
-            }
-
-            if (item.InventoryItem.IsFixed)
-                return;
-            if (Session.Character.Gold < goldprice[upmode])
-                return;
-            if (Session.Character.InventoryList.CountItem(stonevnum) < stoneprice[upmode])
-                return;
-
-            Random r = new Random();
-            int rnd = r.Next(100);
-            if (rnd <= upsuccess[upmode])
-            {
-                byte type = (byte)r.Next(16), count = 1;
-
-                if (upmode == 4)
-                {
-                    count = 2;
-                }
-                if (count == 5)
-                {
-                    count = (byte)r.Next(3, 6);
-                }
-
-                Session.Client.SendPacket(Session.Character.GenerateEff(3005));
-
-                if (type < 3)
-                {
-                    Session.Character.InventoryList.LoadByInventoryItem(item.InventoryItem.InventoryItemId).InventoryItem.SpDamage += count;
-                    Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("PERFECTSP_SUCCESS"), Language.Instance.GetMessageFromKey("PERFECTSP_ATTACK"), count), 12));
-                    Session.Client.SendPacket(Session.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("PERFECTSP_SUCCESS"), Language.Instance.GetMessageFromKey("PERFECTSP_ATTACK"), count), 0));
-                }
-                else if (type < 6)
-                {
-                    Session.Character.InventoryList.LoadByInventoryItem(item.InventoryItem.InventoryItemId).InventoryItem.SpDefence += count;
-                    Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("PERFECTSP_SUCCESS"), Language.Instance.GetMessageFromKey("PERFECTSP_DEFENSE"), count), 12));
-                    Session.Client.SendPacket(Session.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("PERFECTSP_SUCCESS"), Language.Instance.GetMessageFromKey("PERFECTSP_DEFENSE"), count), 0));
-                }
-                else if (type < 9)
-                {
-                    Session.Character.InventoryList.LoadByInventoryItem(item.InventoryItem.InventoryItemId).InventoryItem.SpElement += count;
-                    Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("PERFECTSP_SUCCESS"), Language.Instance.GetMessageFromKey("PERFECTSP_ELEMENT"), count), 12));
-                    Session.Client.SendPacket(Session.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("PERFECTSP_SUCCESS"), Language.Instance.GetMessageFromKey("PERFECTSP_ELEMENT"), count), 0));
-                }
-                else if (type < 12)
-                {
-                    Session.Character.InventoryList.LoadByInventoryItem(item.InventoryItem.InventoryItemId).InventoryItem.SpHP += count;
-                    Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("PERFECTSP_SUCCESS"), Language.Instance.GetMessageFromKey("PERFECTSP_HPMP"), count), 12));
-                    Session.Client.SendPacket(Session.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("PERFECTSP_SUCCESS"), Language.Instance.GetMessageFromKey("PERFECTSP_HPMP"), count), 0));
-                }
-                else if (type == 12)
-                {
-                    Session.Character.InventoryList.LoadByInventoryItem(item.InventoryItem.InventoryItemId).InventoryItem.SpFire += count;
-                    Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("PERFECTSP_SUCCESS"), Language.Instance.GetMessageFromKey("PERFECTSP_FIRE"), count), 12));
-                    Session.Client.SendPacket(Session.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("PERFECTSP_SUCCESS"), Language.Instance.GetMessageFromKey("PERFECTSP_FIRE"), count), 0));
-                }
-                else if (type == 13)
-                {
-                    Session.Character.InventoryList.LoadByInventoryItem(item.InventoryItem.InventoryItemId).InventoryItem.SpWater += count;
-                    Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("PERFECTSP_SUCCESS"), Language.Instance.GetMessageFromKey("PERFECTSP_WATER"), count), 12));
-                    Session.Client.SendPacket(Session.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("PERFECTSP_SUCCESS"), Language.Instance.GetMessageFromKey("PERFECTSP_WATER"), count), 0));
-                }
-                else if (type == 14)
-                {
-                    Session.Character.InventoryList.LoadByInventoryItem(item.InventoryItem.InventoryItemId).InventoryItem.SpLight += count;
-                    Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("PERFECTSP_SUCCESS"), Language.Instance.GetMessageFromKey("PERFECTSP_LIGHT"), count), 12));
-                    Session.Client.SendPacket(Session.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("PERFECTSP_SUCCESS"), Language.Instance.GetMessageFromKey("PERFECTSP_LIGHT"), count), 0));
-                }
-                else if (type == 15)
-                {
-                    Session.Character.InventoryList.LoadByInventoryItem(item.InventoryItem.InventoryItemId).InventoryItem.SpDark += count;
-                    Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("PERFECTSP_SUCCESS"), Language.Instance.GetMessageFromKey("PERFECTSP_SHADOW"), count), 12));
-                    Session.Client.SendPacket(Session.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("PERFECTSP_SUCCESS"), Language.Instance.GetMessageFromKey("PERFECTSP_SHADOW"), count), 0));
-                }
-                Session.Character.InventoryList.LoadByInventoryItem(item.InventoryItem.InventoryItemId).InventoryItem.SpStoneUpgrade++;
-            }
-            else
-            {
-                Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("PERFECTSP_FAILED"), 11));
-                Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("PERFECTSP_FAILED"), 0));
-            }
-            Session.Character.Gold = Session.Character.Gold - goldprice[upmode];
-            Session.Client.SendPacket(Session.Character.GenerateGold());
-            Session.Character.InventoryList.RemoveItemAmount(stonevnum, stoneprice[upmode]);
-            GetStartupInventory();
-        }
-
         [Packet("u_i")]
         public void UseItem(string packet)
         {
@@ -3583,6 +4002,77 @@ namespace OpenNos.Handler
             string[] packetsplit = packet.Split(' ');
 
             ClientLinkManager.Instance.Broadcast(Session, $"cancel 2 {packetsplit[4]}", ReceiverType.OnlyMe);
+        }
+
+        [Packet("#pjoin")]
+        public void validpjoin(string packet)
+        {
+            string[] packetsplit = packet.Split(' ', '^');
+            int type = -1;
+            long CharId = -1;
+            int newgroup = 1;
+            if (packetsplit.Length > 3)
+            {
+                if (!int.TryParse(packetsplit[2], out type))
+                    return;
+                long.TryParse(packetsplit[3], out CharId);
+
+                if (type == 3)
+                {
+                    foreach (Group group in ClientLinkManager.Instance.Groups)
+                    {
+                        if (group.Characters.Count == 3)
+                        {
+                            Session.Client.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("GROUP_FULL")));
+
+                            return;
+                        }
+                        else if (group.Characters.Contains(CharId))
+                        {
+                            group.Characters.Add(Session.Character.CharacterId);
+                            newgroup = 0;
+                        }
+                        else if (group.Characters.Contains(Session.Character.CharacterId))
+                        {
+                            group.Characters.Add(CharId);
+                            newgroup = 0;
+                        }
+                    }
+                    if (newgroup == 1)
+                    {
+                        Group group = new Group()
+                        {
+                            Characters = new List<long>()
+                        };
+                        group.Characters.Add(CharId);
+                        group.Characters.Add(Session.Character.CharacterId);
+                        ClientLinkManager.Instance.Groups.Add(group);
+                    }
+
+                    //player join group
+                    string str = $"pinit { ClientLinkManager.Instance.Groups.FirstOrDefault(s => s.Characters.Contains(CharId)).Characters.Count()}";
+
+                    int i = 0;
+                    foreach (long Id in ClientLinkManager.Instance.Groups.FirstOrDefault(s => s.Characters.Contains(CharId)).Characters)
+                    {
+                        i++;
+                        str += $" 1|{ClientLinkManager.Instance.GetProperty<long>(Id, "CharacterId")}|{i}|{ClientLinkManager.Instance.GetProperty<byte>(Id, "Level")}|{ClientLinkManager.Instance.GetProperty<string>(Id, "Name")}|{ClientLinkManager.Instance.GetProperty<byte>(Id, "Gender")}|{ClientLinkManager.Instance.GetProperty<byte>(Id, "Gender") + ClientLinkManager.Instance.GetProperty<byte>(Id, "Class")}|{(ClientLinkManager.Instance.GetProperty<bool>(Id, "UseSp") ? ClientLinkManager.Instance.GetProperty<int>(Id, "Morph") : 0)} ";
+                    }
+
+                    foreach (long Id in ClientLinkManager.Instance.Groups.FirstOrDefault(s => s.Characters.Contains(CharId)).Characters)
+                    {
+                        ClientLinkManager.Instance.Broadcast(Session, str, ReceiverType.OnlySomeone, "", Id);
+                    }
+
+                    string p = generatePidx(Session.Character.CharacterId);
+                    if (p != "")
+                        ClientLinkManager.Instance.Broadcast(Session, p, ReceiverType.AllOnMap);
+                }
+                else if (type == 4)
+                {
+                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateInfo(String.Format(Language.Instance.GetMessageFromKey("REFUSED_REQUEST"), Session.Character.Name)), ReceiverType.OnlySomeone, "", CharId);
+                }
+            }
         }
 
         [Packet("walk")]
@@ -3631,18 +4121,6 @@ namespace OpenNos.Handler
                 }
             }
         }
-        [Packet(";")]
-        public void GroupTalk(string packet)
-        {
-            string[] packetsplit = packet.Split(' ');
-            string message = String.Empty;
-            for (int i = 1; i < packetsplit.Length; i++)
-                message += packetsplit[i] + " ";
-            message = message.Substring(1).Trim();
-
-            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateSpk(message, 3), ReceiverType.Group);
-
-        }
 
         [Packet("/")]
         public void Whisper(string packet)
@@ -3667,502 +4145,5 @@ namespace OpenNos.Handler
         }
 
         #endregion
-
-        #region Commands
-        [Packet("$Effect")]
-        public void Effect(string packet)
-        {
-            string[] packetsplit = packet.Split(' ');
-            short arg = 0;
-            if (packetsplit.Length > 2)
-            {
-                short.TryParse(packetsplit[2], out arg);
-                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(arg), ReceiverType.AllOnMap);
-            }
-            else
-                Session.Client.SendPacket(Session.Character.GenerateSay("$Effect EFFECT", 10));
-        }
-
-        [Packet("$ChangeSex")]
-        public void Gender(string packet)
-        {
-            Session.Character.Gender = Session.Character.Gender == 1 ? (byte)0 : (byte)1;
-            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SEX_CHANGED"), 0));
-            Session.Client.SendPacket(Session.Character.GenerateEq());
-            Session.Client.SendPacket(Session.Character.GenerateGender());
-            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllOnMapExceptMe);
-            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateCMode(), ReceiverType.AllOnMap);
-            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(198), ReceiverType.AllOnMap);
-        }
-
-        [Packet("$Gold")]
-        public void Gold(string packet)
-        {
-            string[] packetsplit = packet.Split(' ');
-            long gold;
-            if (packetsplit.Length > 2)
-            {
-                if (Int64.TryParse(packetsplit[2], out gold))
-                {
-                    if (gold <= 1000000000 && gold >= 0)
-                    {
-                        Session.Character.Gold = gold;
-                        Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("GOLD_SET"), 0));
-                        Session.Client.SendPacket(Session.Character.GenerateGold());
-                    }
-                    else
-                        Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("WRONG_VALUE"), 0));
-                }
-            }
-            else
-                Session.Client.SendPacket(Session.Character.GenerateSay("$Gold AMOUNT", 10));
-        }
-
-        [Packet("$Invisible")]
-        public void Invisible(string packet)
-        {
-            Session.Character.Invisible = Session.Character.Invisible == 0 ? 1 : 0;
-            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateInvisible(), ReceiverType.AllOnMap);
-            Session.Character.InvisibleGm = Session.Character.InvisibleGm ? false : true;
-            if (Session.Character.InvisibleGm == true)
-            {
-                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateOut(), ReceiverType.AllOnMapExceptMe);
-            }
-            else
-            {
-                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllOnMapExceptMe);
-            }
-        }
-
-        [Packet("$JLvl")]
-        public void JLvl(string packet)
-        {
-            string[] packetsplit = packet.Split(' ');
-            byte joblevel;
-            if (packetsplit.Length > 2)
-            {
-                if (Byte.TryParse(packetsplit[2], out joblevel) && ((Session.Character.Class == 0 && joblevel <= 20) || (Session.Character.Class != 0 && joblevel <= 80)) && joblevel > 0)
-                {
-                    Session.Character.JobLevel = joblevel;
-                    Session.Client.SendPacket(Session.Character.GenerateLev());
-                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("JOBLEVEL_CHANGED"), 0));
-                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllOnMapExceptMe);
-                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(8), ReceiverType.AllOnMap);
-                }
-            }
-            else
-                Session.Client.SendPacket(Session.Character.GenerateSay("$JLvl JOBLEVEL", 10));
-        }
-
-        [Packet("$Kick")]
-        public void Kick(string packet)
-        {
-            string[] packetsplit = packet.Split(' ');
-            if (packetsplit.Length > 2)
-                ClientLinkManager.Instance.Kick(packetsplit[2]);
-            else
-                Session.Client.SendPacket(Session.Character.GenerateSay("$Kick CHARACTERNAME", 10));
-        }
-        [Packet("$MapDance")]
-        public void MapDance(string packet)
-        {
-            Session.CurrentMap.IsDancing = Session.CurrentMap.IsDancing == 0 ? 2 : 0;
-            if (Session.CurrentMap.IsDancing == 2)
-            {
-                Session.Character.Dance();
-                ClientLinkManager.Instance.RequiereBroadcastFromAllMapUsers(Session, "Dance");
-                ClientLinkManager.Instance.RequiereBroadcastFromMap(Session.Character.MapId, "dance 2");
-            }
-            else
-            {
-                Session.Character.Dance();
-                ClientLinkManager.Instance.RequiereBroadcastFromAllMapUsers(Session, "Dance");
-                ClientLinkManager.Instance.RequiereBroadcastFromMap(Session.Character.MapId, "dance");
-            }
-        }
-
-        [Packet("$Morph")]
-        public void Morph(string packet)
-        {
-            string[] packetsplit = packet.Split(' ');
-            short[] arg = new short[4];
-            bool verify = false;
-            if (packetsplit.Length > 5)
-            {
-                verify = (short.TryParse(packetsplit[2], out arg[0]) && short.TryParse(packetsplit[3], out arg[1]) && short.TryParse(packetsplit[4], out arg[2]) && short.TryParse(packetsplit[5], out arg[3]));
-            }
-            switch (packetsplit.Length)
-            {
-                case 6:
-                    if (verify)
-                    {
-                        if (arg[0] != 0)
-                        {
-                            Session.Character.UseSp = true;
-                            Session.Character.Morph = arg[0];
-                            Session.Character.MorphUpgrade = arg[1];
-                            Session.Character.MorphUpgrade2 = arg[2];
-                            Session.Character.ArenaWinner = arg[3];
-                            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateCMode(), ReceiverType.AllOnMap);
-                        }
-                        else
-                        {
-                            Session.Character.UseSp = false;
-
-                            Session.Client.SendPacket(Session.Character.GenerateCond());
-                            Session.Client.SendPacket(Session.Character.GenerateLev());
-
-                            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateCMode(), ReceiverType.AllOnMap);
-                            ClientLinkManager.Instance.Broadcast(Session, $"guri 6 1 {Session.Character.CharacterId} 0 0", ReceiverType.AllOnMap);
-                        }
-                    }
-                    break;
-
-                default:
-                    Session.Client.SendPacket(Session.Character.GenerateSay("$Morph MORPHID UPGRADE WINGS ARENA", 10));
-                    break;
-            }
-        }
-        [Packet("$PlayMusic")]
-        public void PlayMusic(string packet)
-        {
-            string[] packetsplit = packet.Split(' ');
-            if (packetsplit.Length > 2)
-            {
-                if (packetsplit.Length <= 1) return;
-
-                short arg;
-                short.TryParse(packetsplit[2], out arg);
-                if (arg > -1)
-                    ClientLinkManager.Instance.Broadcast(Session, $"bgm {arg}", ReceiverType.AllOnMap);
-            }
-            else
-                Session.Client.SendPacket(Session.Character.GenerateSay("$PlayMusic BGMUSIC", 10));
-        }
-
-        [Packet("$Position")]
-        public void Position(string packet)
-        {
-            Session.Client.SendPacket(Session.Character.GenerateSay($"Map:{Session.Character.MapId} - X:{Session.Character.MapX} - Y:{Session.Character.MapY}", 12));
-        }
-
-
-        [Packet("$Rarify")]
-        public void Rarify(string packet)
-        {
-            string[] packetsplit = packet.Split(' ');
-            if (packetsplit.Length != 5)
-            {
-                Session.Client.SendPacket(Session.Character.GenerateSay("$Rarify SLOT MODE PROTECTION", 10));
-            }
-            else
-            {
-                short itemslot = -1;
-                short mode = -1;
-                short protection = -1;
-                short.TryParse(packetsplit[2], out itemslot);
-                short.TryParse(packetsplit[3], out mode);
-                short.TryParse(packetsplit[4], out protection);
-
-                if (itemslot > -1 && mode > -1 && protection > -1)
-                {
-                    Inventory inventoryDTO = Session.Character.InventoryList.LoadBySlotAndType(itemslot, 0);
-                    if (inventoryDTO != null)
-                    {
-                        RarifyItem(inventoryDTO, (InventoryItem.RarifyMode)mode, (InventoryItem.RarifyProtection)protection);
-                    }
-                }
-            }
-        }
-
-
-        [Packet("$ChangeRep")]
-        public void Rep(string packet)
-        {
-            string[] packetsplit = packet.Split(' ');
-            long reput;
-            if (packetsplit.Length != 3)
-            {
-                Session.Client.SendPacket(Session.Character.GenerateSay("$ChangeRep REPUTATION", 10));
-                return;
-            }
-
-            if (Int64.TryParse(packetsplit[2], out reput) && reput > 0)
-            {
-                Session.Character.Reput = reput;
-                Session.Client.SendPacket(Session.Character.GenerateFd());
-                Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("REP_CHANGED"), 0));
-                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllOnMapExceptMe);
-            }
-        }
-
-        [Packet("$Resize")]
-        public void Resize(string packet)
-        {
-            string[] packetsplit = packet.Split(' ');
-            short arg = -1;
-
-            if (packetsplit.Length > 2)
-            {
-                short.TryParse(packetsplit[2], out arg);
-
-                if (arg > -1)
-
-                {
-                    Session.Character.Size = arg;
-                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateScal(), ReceiverType.AllOnMap);
-                }
-            }
-            else
-                Session.Client.SendPacket(Session.Character.GenerateSay("$Resize SIZE", 10));
-        }
-
-
-        [Packet("$Shout")]
-        public void Shout(string packet)
-        {
-            string[] packetsplit = packet.Split(' ');
-            string message = String.Empty;
-            if (packetsplit.Length > 2)
-                for (int i = 2; i < packetsplit.Length; i++)
-                    message += packetsplit[i] + " ";
-            message.Trim();
-
-            ClientLinkManager.Instance.Broadcast(Session, $"say 1 0 10 ({Language.Instance.GetMessageFromKey("ADMINISTRATOR")}){message}", ReceiverType.All);
-            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateMsg(message, 2), ReceiverType.All);
-        }
-
-        [Packet("$Shutdown")]
-        public void Shutdown(string packet)
-        {
-            if (ClientLinkManager.Instance.taskShutdown != null)
-            {
-                ClientLinkManager.Instance.ShutdownStop = true;
-                ClientLinkManager.Instance.taskShutdown = null;
-            }
-            else
-            {
-                ClientLinkManager.Instance.taskShutdown = new Task(ShutdownTask);
-                ClientLinkManager.Instance.taskShutdown.Start();
-            }
-        }
-
-        [Packet("$Speed")]
-        public void Speed(string packet)
-        {
-            string[] packetsplit = packet.Split(' ');
-            byte arg = 0;
-            bool verify = false;
-            if (packetsplit.Length > 2)
-            {
-                verify = (byte.TryParse(packetsplit[2], out arg));
-            }
-            switch (packetsplit.Length)
-            {
-                case 3:
-                    if (verify && arg < 60)
-                    {
-                        Session.Character.Speed = arg;
-                        Session.Client.SendPacket(Session.Character.GenerateCond());
-                    }
-                    break;
-
-                default:
-                    Session.Client.SendPacket(Session.Character.GenerateSay("$Speed SPEED", 10));
-                    break;
-            }
-        }
-
-        [Packet("$SPLvl")]
-        public void SPLvl(string packet)
-        {
-            string[] packetsplit = packet.Split(' ');
-            byte splevel;
-            Inventory sp = Session.Character.EquipmentList.LoadBySlotAndType((byte)EquipmentType.Sp, (byte)InventoryType.Equipment);
-            if (sp != null && packetsplit.Length > 2 && Session.Character.UseSp)
-            {
-                if (Byte.TryParse(packetsplit[2], out splevel) && splevel <= 99 && splevel > 0)
-                {
-                    sp.InventoryItem.SpLevel = splevel;
-                    Session.Client.SendPacket(Session.Character.GenerateLev());
-                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SPLEVEL_CHANGED"), 0));
-                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllOnMapExceptMe);
-                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(8), ReceiverType.AllOnMap);
-                }
-            }
-            else
-
-                Session.Client.SendPacket(Session.Character.GenerateSay("$SPLvl SPLEVEL", 10));
-        }
-
-        [Packet("$Stat")]
-        public void Stat(string packet)
-        {
-            Session.Client.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("TOTAL_SESSION")}: {ClientLinkManager.Instance.GetNumberOfAllASession()} ", 13));
-        }
-
-        [Packet("$Summon")]
-        public void Summon(string packet)
-        {
-            string[] packetsplit = packet.Split(' ');
-            short vnum = 0;
-            byte qty = 1, move = 0;
-            Random rnd = new Random();
-            if (packetsplit.Length == 5 && short.TryParse(packetsplit[2], out vnum) && byte.TryParse(packetsplit[3], out qty) && byte.TryParse(packetsplit[4], out move))
-            {
-                if (ServerManager.GetNpc(vnum) == null)
-                    return;
-                for (int i = 0; i < qty; i++)
-                {
-                    short mapx = (short)rnd.Next((Session.Character.MapX - qty) % Session.CurrentMap.XLength, (Session.Character.MapX + qty / 3) % Session.CurrentMap.YLength);
-                    short mapy = (short)rnd.Next((Session.Character.MapY - qty) % Session.CurrentMap.XLength, (Session.Character.MapY + qty / 3) % Session.CurrentMap.YLength);
-                    for (int j = 100; j > 0 && Session.CurrentMap != null && Session.CurrentMap.IsBlockedZone(mapx, mapy); j--)
-                    {
-                        mapx = (short)rnd.Next((Session.Character.MapX - qty) % Session.CurrentMap.XLength, (Session.Character.MapX + qty / 3) % Session.CurrentMap.YLength);
-                        mapy = (short)rnd.Next((Session.Character.MapY - qty) % Session.CurrentMap.XLength, (Session.Character.MapY + qty / 3) % Session.CurrentMap.YLength);
-                    }
-                    MapMonster monst = new MapMonster() { MonsterVNum = vnum, MapY = mapy, MapX = mapx, MapId = Session.Character.MapId, firstX = mapx, firstY = mapy, MapMonsterId = MapMonster.generateMapMonsterId(), Position = 1, Move = move != 0 ? true : false };
-                    ServerManager.GetMap(Session.Character.MapId).Monsters.Add(monst);
-                    ServerManager.Monsters.Add(monst);
-                    ClientLinkManager.Instance.Broadcast(Session, monst.GenerateIn3(), ReceiverType.AllOnMap);
-                }
-            }
-            else
-                Session.Client.SendPacket(Session.Character.GenerateSay("$Summon VNUM AMOUNT MOVE", 10));
-        }
-
-        [Packet("$PortalTo")]
-        public void CreatePortal(string packet)
-        {
-            string[] packetsplit = packet.Split(' ');
-            short mapid, destx, desty = 0;
-            sbyte portaltype = -1;
-            if (packetsplit.Length > 4 && short.TryParse(packetsplit[2], out mapid) && short.TryParse(packetsplit[3], out destx) && short.TryParse(packetsplit[4], out desty))
-            {
-                if (ServerManager.GetMap(mapid) == null)
-                    return;
-
-                short mapId = Session.Character.MapId;
-                short mapX = Session.Character.MapX;
-                short mapY = Session.Character.MapY;
-                if (packetsplit.Length > 5)
-                    sbyte.TryParse(packetsplit[5], out portaltype);
-                Portal portal = new Portal() { SourceMapId = mapId, SourceX = mapX, SourceY = mapY, DestinationMapId = mapid, DestinationX = destx, DestinationY = desty, Type = portaltype };
-                ServerManager.GetMap(Session.Character.MapId).Portals.Add(portal);
-                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateGp(portal), ReceiverType.AllOnMap);
-            }
-            else
-                Session.Client.SendPacket(Session.Character.GenerateSay("$PortalTo MAPID DESTX DESTY PORTALTYPE", 10));
-        }
-
-        [Packet("$Teleport")]
-        public void Teleport(string packet)
-        {
-            string[] packetsplit = packet.Split(' ');
-            short[] arg = new short[3];
-            bool verify = false;
-
-            if (packetsplit.Length > 4)
-            {
-                verify = (short.TryParse(packetsplit[2], out arg[0]) && short.TryParse(packetsplit[3], out arg[1]) && short.TryParse(packetsplit[4], out arg[2]) && DAOFactory.MapDAO.LoadById(arg[0]) != null);
-            }
-            switch (packetsplit.Length)
-            {
-                case 3:
-                    string name = packetsplit[2];
-                    short? mapy = ClientLinkManager.Instance.GetProperty<short?>(name, "MapY");
-                    short? mapx = ClientLinkManager.Instance.GetProperty<short?>(name, "MapX");
-                    short? mapId = ClientLinkManager.Instance.GetProperty<short?>(name, "MapId");
-                    if (mapy != null && mapx != null && mapId != null)
-                    {
-                        ClientLinkManager.Instance.MapOut(Session.Character.CharacterId);
-                        Session.Character.MapId = (short)mapId;
-                        Session.Character.MapX = (short)((short)(mapx) + 1);
-                        Session.Character.MapY = (short)((short)(mapy) + 1);
-
-                        ClientLinkManager.Instance.ChangeMap(Session.Character.CharacterId);
-                    }
-                    else
-                    {
-                        Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("USER_NOT_CONNECTED"), 0));
-                    }
-                    break;
-
-                case 5:
-                    if (verify)
-                    {
-                        ClientLinkManager.Instance.MapOut(Session.Character.CharacterId);
-                        Session.Character.MapId = arg[0];
-                        Session.Character.MapX = arg[1];
-                        Session.Character.MapY = arg[2];
-
-                        ClientLinkManager.Instance.ChangeMap(Session.Character.CharacterId);
-                    }
-                    break;
-
-                default:
-                    Session.Client.SendPacket(Session.Character.GenerateSay("$Teleport MAP X Y", 10));
-                    Session.Client.SendPacket(Session.Character.GenerateSay("$Teleport CHARACTERNAME", 10));
-                    break;
-            }
-        }
-
-        [Packet("$TeleportToMe")]
-        public void TeleportToMe(string packet)
-        {
-            string[] packetsplit = packet.Split(' ');
-
-            if (packetsplit.Length == 3)
-            {
-                string name = packetsplit[2];
-
-                long? id = ClientLinkManager.Instance.GetProperty<long?>(name, "CharacterId");
-
-                if (id != null)
-                {
-                    ClientLinkManager.Instance.MapOut((long)id);
-                    ClientLinkManager.Instance.SetProperty(name, "MapY", (short)((Session.Character.MapY) + (short)1));
-                    ClientLinkManager.Instance.SetProperty(name, "MapX", (short)((Session.Character.MapX) + (short)1));
-                    ClientLinkManager.Instance.SetProperty(name, "MapId", Session.Character.MapId);
-                    ClientLinkManager.Instance.ChangeMap((long)id);
-                }
-                else
-                {
-                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("USER_NOT_CONNECTED"), 0));
-                }
-            }
-            else
-                Session.Client.SendPacket(Session.Character.GenerateSay("$TeleportToMe CHARACTERNAME", 10));
-        }
-        [Packet("$Upgrade")]
-        public void Upgrade(string packet)
-        {
-            string[] packetsplit = packet.Split(' ');
-            if (packetsplit.Length != 5)
-            {
-                Session.Client.SendPacket(Session.Character.GenerateSay("$Upgrade SLOT MODE PROTECTION", 10));
-            }
-            else
-            {
-                short itemslot = -1;
-                short mode = -1;
-                short protection = -1;
-                short.TryParse(packetsplit[2], out itemslot);
-                short.TryParse(packetsplit[3], out mode);
-                short.TryParse(packetsplit[4], out protection);
-
-                if (itemslot > -1 && mode > -1 && protection > -1)
-                {
-                    Inventory inventoryDTO = Session.Character.InventoryList.LoadBySlotAndType(itemslot, 0);
-                    if (inventoryDTO != null)
-                    {
-                        UpgradeItem(inventoryDTO, (InventoryItem.UpgradeMode)mode, (InventoryItem.UpgradeProtection)protection);
-                    }
-                }
-            }
-        }
-
-        #endregion
-
     }
 }
