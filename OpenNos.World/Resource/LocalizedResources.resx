@@ -135,9 +135,6 @@
   <data name="ARCHER" xml:space="preserve">
     <value>Archer</value>
   </data>
-  <data name="ASK_ACCEPT" xml:space="preserve">
-    <value>{0} wants to exchange with you</value>
-  </data>
   <data name="ASK_TO_DELETE" xml:space="preserve">
     <value>Do you want to delete?</value>
   </data>
@@ -188,9 +185,6 @@
   </data>
   <data name="CANT_MOVE" xml:space="preserve">
     <value>Teleportation in cooldown.</value>
-  </data>
-  <data name="CHANGE_DONE" xml:space="preserve">
-    <value>Points has been set</value>
   </data>
   <data name="CLIENT_ARRIVED" xml:space="preserve">
     <value>Client arrived, SessionId: {0}</value>
@@ -300,6 +294,9 @@
   <data name="HP_UNLOCKED" xml:space="preserve">
     <value>Hp information enabled</value>
   </data>
+  <data name="INCOMING_EXCHANGE" xml:space="preserve">
+    <value>{0} wants to exchange with you</value>
+  </data>
   <data name="INSERT_ERROR" xml:space="preserve">
     <value>Error inserting or updating character {0} , {1}</value>
   </data>
@@ -329,6 +326,9 @@
   </data>
   <data name="ITEM_NOT_TRADABLE" xml:space="preserve">
     <value>Item cannot be traded!</value>
+  </data>
+  <data name="ITEM_TIMEOUT" xml:space="preserve">
+    <value>Item is no longer valid</value>
   </data>
   <data name="JOBLEVEL_CHANGED" xml:space="preserve">
     <value>Job level has been changed!</value>
@@ -462,6 +462,9 @@
   <data name="PERFECTSP_WATER" xml:space="preserve">
     <value>Water</value>
   </data>
+  <data name="POINTS_SET" xml:space="preserve">
+    <value>Points set</value>
+  </data>
   <data name="PORTAL_BLOCKED" xml:space="preserve">
     <value>This portal is locked, i can't use it</value>
   </data>
@@ -498,14 +501,14 @@
   <data name="SHOPS_LOADED" xml:space="preserve">
     <value>{0} Shops Loaded!</value>
   </data>
+  <data name="SHOP_EMPTY" xml:space="preserve">
+    <value>Shop cannot be empty!</value>
+  </data>
   <data name="SHOP_NEAR_PORTAL" xml:space="preserve">
     <value>You cannot create shop soo close to portal!</value>
   </data>
   <data name="SHOP_OPEN" xml:space="preserve">
     <value>Shop has ben opened</value>
-  </data>
-  <data name="SHOP_VOID" xml:space="preserve">
-    <value>Shop cannot be empty!</value>
   </data>
   <data name="SHUTDOWN_MIN" xml:space="preserve">
     <value>Server will be shut in {0} Minutes.</value>

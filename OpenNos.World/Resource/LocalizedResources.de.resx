@@ -126,14 +126,14 @@
   <data name="ADVENTURER" xml:space="preserve">
     <value>Abenteurer</value>
   </data>
+  <data name="ALREADY_IN_GROUP" xml:space="preserve">
+    <value>You are already in group</value>
+  </data>
   <data name="ALREADY_TAKEN" xml:space="preserve">
     <value>Dieser Name existiert bereits!</value>
   </data>
   <data name="ARCHER" xml:space="preserve">
     <value>Bogenschütze</value>
-  </data>
-  <data name="ASK_ACCEPT" xml:space="preserve">
-    <value>{0} möchte mit dir tauschen.</value>
   </data>
   <data name="ASK_TO_DELETE" xml:space="preserve">
     <value>Der Gegenstand wird zerstört.</value>
@@ -185,9 +185,6 @@
   </data>
   <data name="CANT_MOVE" xml:space="preserve">
     <value>Du kannst dich in Kürze bewegen</value>
-  </data>
-  <data name="CHANGE_DONE" xml:space="preserve">
-    <value>Punkte wurden aktualisiert.</value>
   </data>
   <data name="CLIENT_ARRIVED" xml:space="preserve">
     <value>Client verbunden, SessionId: {0}</value>
@@ -267,6 +264,15 @@
   <data name="GOLD_SET" xml:space="preserve">
     <value>Gold wurde aktualisiert</value>
   </data>
+  <data name="GROUP_BLOCKED" xml:space="preserve">
+    <value>User blocked group invites</value>
+  </data>
+  <data name="GROUP_DENIED" xml:space="preserve">
+    <value>Group request rejected</value>
+  </data>
+  <data name="GROUP_REQUEST" xml:space="preserve">
+    <value>group request sent to: {0}</value>
+  </data>
   <data name="GROUP_REQ_BLOCKED" xml:space="preserve">
     <value>Von jetzt an blockst du Gruppen.</value>
   </data>
@@ -288,11 +294,17 @@
   <data name="HP_UNLOCKED" xml:space="preserve">
     <value>Ab sofort wird die HP-Statusanzeige angezeigt.</value>
   </data>
+  <data name="INCOMING_EXCHANGE" xml:space="preserve">
+    <value>{0} möchte mit dir tauschen.</value>
+  </data>
   <data name="INSERT_ERROR" xml:space="preserve">
     <value>Fehler beim Einfügen/Aktualisieren des Charakters {0} , {1}</value>
   </data>
   <data name="INVALID_CHARNAME" xml:space="preserve">
     <value>Der Name enthält ein ungültiges Wort oder Zeichen.</value>
+  </data>
+  <data name="INVITED_YOU" xml:space="preserve">
+    <value>{0} sent you a group request</value>
   </data>
   <data name="IN_WAITING_FOR" xml:space="preserve">
     <value>Warten auf {0}</value>
@@ -315,6 +327,9 @@
   <data name="ITEM_NOT_TRADABLE" xml:space="preserve">
     <value>Du kannst dieses Item nicht tauschen.</value>
   </data>
+  <data name="ITEM_TIMEOUT" xml:space="preserve">
+    <value>Item is no longer valid</value>
+  </data>
   <data name="JOBLEVEL_CHANGED" xml:space="preserve">
     <value>Dein Joblevel wurde erhöht!</value>
   </data>
@@ -332,6 +347,9 @@
   </data>
   <data name="LOW_REP" xml:space="preserve">
     <value>Dein Ruf ist zu niedrig.</value>
+  </data>
+  <data name="MADE_OBJECT" xml:space="preserve">
+    <value>You've crafted: {0} x {1}</value>
   </data>
   <data name="MAGICIAN" xml:space="preserve">
     <value>Magier</value>
@@ -444,6 +462,9 @@
   <data name="PERFECTSP_WATER" xml:space="preserve">
     <value>Wasser</value>
   </data>
+  <data name="POINTS_SET" xml:space="preserve">
+    <value>Punkte wurden aktualisiert.</value>
+  </data>
   <data name="PORTAL_BLOCKED" xml:space="preserve">
     <value>Cannot use this portal... It is blocked!</value>
   </data>
@@ -480,14 +501,14 @@
   <data name="SHOPS_LOADED" xml:space="preserve">
     <value>{0} Shops geladen!</value>
   </data>
+  <data name="SHOP_EMPTY" xml:space="preserve">
+    <value>Kein Item zum Verkauf verfügbar.</value>
+  </data>
   <data name="SHOP_NEAR_PORTAL" xml:space="preserve">
     <value>You cannot create shop soo close to portal!</value>
   </data>
   <data name="SHOP_OPEN" xml:space="preserve">
     <value>Du hast einen Shop eröffnet.</value>
-  </data>
-  <data name="SHOP_VOID" xml:space="preserve">
-    <value>Kein Item zum Verkauf verfügbar.</value>
   </data>
   <data name="SHUTDOWN_MIN" xml:space="preserve">
     <value>Server wird in {0} Minuten heruntergefahren.</value>

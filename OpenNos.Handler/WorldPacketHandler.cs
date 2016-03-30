@@ -833,7 +833,7 @@ namespace OpenNos.Handler
                     else
                     {
                         Session.Client.SendPacket("shop_end 0");
-                        Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("SHOP_VOID"), 10));
+                        Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("SHOP_EMPTY"), 10));
                     }
                 }
                 else if (typePacket == 1)
@@ -1028,7 +1028,7 @@ namespace OpenNos.Handler
 
                     charName = (string)ClientLinkManager.Instance.GetProperty<string>(charId, "Name");
                     Session.Client.SendPacket(Session.Character.GenerateModal($"{Language.Instance.GetMessageFromKey("YOU_ASK_FOR_EXCHANGE")} {charName}"));
-                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateDialog($"#req_exc^2^{Session.Character.CharacterId} #req_exc^5^{Session.Character.CharacterId} {String.Format(Language.Instance.GetMessageFromKey("ASK_ACCEPT"), Session.Character.Name)}"), ReceiverType.OnlySomeone, charName);
+                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateDialog($"#req_exc^2^{Session.Character.CharacterId} #req_exc^5^{Session.Character.CharacterId} {String.Format(Language.Instance.GetMessageFromKey("INCOMING_EXCHANGE"), Session.Character.Name)}"), ReceiverType.OnlySomeone, charName);
                 }
             }
             else if (mode == 3)
@@ -2739,7 +2739,7 @@ namespace OpenNos.Handler
                 Session.Client.SendPacket(Session.Character.GenerateStatChar());
                 Session.Client.SendPacket(Session.Character.GenerateStat());
                 Session.Client.SendPacket(Session.Character.GenerateSlInfo(new InventoryItem(spInventory.InventoryItem), 2));
-                Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("CHANGE_DONE"), 0));
+                Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("POINTS_SET"), 0));
             }
             else if (!Session.Character.IsSitting)
             {

@@ -135,9 +135,6 @@
   <data name="ARCHER" xml:space="preserve">
     <value>Lucznik</value>
   </data>
-  <data name="ASK_ACCEPT" xml:space="preserve">
-    <value>{0} chce sie z toba wymienic!</value>
-  </data>
   <data name="ASK_TO_DELETE" xml:space="preserve">
     <value>Czy chcesz usunac?</value>
   </data>
@@ -188,9 +185,6 @@
   </data>
   <data name="CANT_MOVE" xml:space="preserve">
     <value>Teleportacja zablokowana.</value>
-  </data>
-  <data name="CHANGE_DONE" xml:space="preserve">
-    <value>Punkty specjalisty zostaly przypisane</value>
   </data>
   <data name="CLIENT_ARRIVED" xml:space="preserve">
     <value>Użytkownik dołaczył, SessionId: {0}</value>
@@ -300,6 +294,9 @@
   <data name="HP_UNLOCKED" xml:space="preserve">
     <value>Stan zycia widoczny</value>
   </data>
+  <data name="INCOMING_EXCHANGE" xml:space="preserve">
+    <value>{0} chce sie z toba wymienic!</value>
+  </data>
   <data name="INSERT_ERROR" xml:space="preserve">
     <value>Blad zapisywania badź odswiezania postaci {0} , {1}</value>
   </data>
@@ -329,6 +326,9 @@
   </data>
   <data name="ITEM_NOT_TRADABLE" xml:space="preserve">
     <value>Nie mozesz wymieniac sie tym przedmiotem!</value>
+  </data>
+  <data name="ITEM_TIMEOUT" xml:space="preserve">
+    <value>Waznosc przedmiotu przeminela</value>
   </data>
   <data name="JOBLEVEL_CHANGED" xml:space="preserve">
     <value>Poziom profesji zostal zmieniony!</value>
@@ -462,6 +462,9 @@
   <data name="PERFECTSP_WATER" xml:space="preserve">
     <value>Woda</value>
   </data>
+  <data name="POINTS_SET" xml:space="preserve">
+    <value>Punkty specjalisty zostaly przypisane</value>
+  </data>
   <data name="PORTAL_BLOCKED" xml:space="preserve">
     <value>Portal zablokowany, nie moge go uzyc</value>
   </data>
@@ -498,14 +501,14 @@
   <data name="SHOPS_LOADED" xml:space="preserve">
     <value>{0} Załadowanych sklepów!</value>
   </data>
+  <data name="SHOP_EMPTY" xml:space="preserve">
+    <value>Sklep nie moze byc pusty!</value>
+  </data>
   <data name="SHOP_NEAR_PORTAL" xml:space="preserve">
     <value>Nie mozesz ustawic sklepu tak blisko portalu!</value>
   </data>
   <data name="SHOP_OPEN" xml:space="preserve">
     <value>Sklep zostal otwarty</value>
-  </data>
-  <data name="SHOP_VOID" xml:space="preserve">
-    <value>Sklep nie moze byc pusty!</value>
   </data>
   <data name="SHUTDOWN_MIN" xml:space="preserve">
     <value>Server zostanie wylaczony za {0} Minut.</value>
