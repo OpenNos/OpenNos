@@ -105,6 +105,18 @@ namespace OpenNos.GameObject
                     foreach (ClientSession session in Sessions.Where(s => s.Character != null && !s.Character.HeroChatBlocked))
                         session.Client.SendPacket(message);
                     break;
+
+                case ReceiverType.Group:
+                    Group grp = Groups.FirstOrDefault(s => s.Characters.Contains(client.Character.CharacterId));
+                    if (grp != null)
+                    {
+                        foreach (long charId in grp.Characters)
+                        {
+                            foreach (ClientSession session in Sessions.Where(s => s.Character != null && s.Character.CharacterId == charId))
+                                session.Client.SendPacket(message);
+                        }
+                    }
+                    break;
             }
             return true;
         }
@@ -226,6 +238,23 @@ namespace OpenNos.GameObject
                 Session.Client.SendPacket(clinit);
                 Session.Client.SendPacket(flinit);
                 Session.Client.SendPacket(kdlinit);
+
+                foreach (Group g in Groups)
+                {
+                    foreach (long charId in g.Characters)
+                    {
+                        ClientSession chara = Sessions.FirstOrDefault(s => s.Character != null && s.Character.CharacterId == charId && s.CurrentMap.MapId == Session.CurrentMap.MapId);
+                        if (chara != null)
+                        {
+                            Session.Client.SendPacket($"pidx 1 1.{chara.Character.CharacterId}");
+                        }
+                        if (charId == Session.Character.CharacterId)
+                        {
+                            Broadcast(Session, $"pidx 1 1.{Session.Character.CharacterId}", ReceiverType.AllOnMap);
+                        }
+                    }
+                }
+
             }
         }
 
@@ -358,7 +387,7 @@ namespace OpenNos.GameObject
 
         public void RequiereBroadcastFromMap(short mapId, string message)
         {
-            for (int i = Sessions.Where(s => s!=null && s.Client != null && s.Character != null && s.Character.MapId.Equals(mapId)).Count() - 1; i >= 0; i--)
+            for (int i = Sessions.Where(s => s != null && s.Client != null && s.Character != null && s.Character.MapId.Equals(mapId)).Count() - 1; i >= 0; i--)
                 Broadcast(Sessions.Where(s => s != null && s.Client != null && s.Character != null && s.Character.MapId.Equals(mapId)).ElementAt(i), string.Format(message, Sessions.Where(s => s.Character != null && s.Character.MapId.Equals(mapId)).ElementAt(i).Character.CharacterId), ReceiverType.AllOnMap);
         }
 
@@ -419,8 +448,8 @@ namespace OpenNos.GameObject
                         TaskMap.Start();
                     }
                 }
-                if(TaskMap!=null)
-                await TaskMap;
+                if (TaskMap != null)
+                    await TaskMap;
                 await Task.Delay(300);
             }
         }
@@ -431,6 +460,58 @@ namespace OpenNos.GameObject
             {
                 SaveAll();
                 await Task.Delay(60000 * 4);
+            }
+        }
+
+        public void GroupLeave(ClientSession Session)
+        {
+            Group grp = ClientLinkManager.Instance.Groups.FirstOrDefault(s => s.Characters.Contains(Session.Character.CharacterId));
+            if (grp != null)
+            {
+                if (grp.Characters.Count() == 3)
+                {
+                    if (grp.Characters.ElementAt(0) == Session.Character.CharacterId)
+                    {
+                        Broadcast(Session, Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("NEW_LEADER")), ReceiverType.OnlySomeone, "", grp.Characters.ElementAt(1));
+                    }
+                    grp.Characters.Remove(Session.Character.CharacterId);
+                    foreach (long charid in grp.Characters)
+                    {
+                        string str = $"pinit {grp.Characters.Count()}";
+                        int i = 0;
+                        foreach (long Id in grp.Characters)
+                        {
+                            i++;
+                            str += $" 1|{ClientLinkManager.Instance.GetProperty<long>(Id, "CharacterId")}|{i}|{ClientLinkManager.Instance.GetProperty<byte>(Id, "Level")}|{ClientLinkManager.Instance.GetProperty<string>(Id, "Name")}|{ClientLinkManager.Instance.GetProperty<byte>(Id, "Gender")}|{ClientLinkManager.Instance.GetProperty<byte>(Id, "Gender") + ClientLinkManager.Instance.GetProperty<byte>(Id, "Class")}|{(ClientLinkManager.Instance.GetProperty<bool>(Id, "UseSp") ? ClientLinkManager.Instance.GetProperty<int>(Id, "Morph") : 0)} ";
+
+
+                        }
+                        foreach (ClientSession sess in Sessions.Where(s => s != null && s.Character != null && s.Character.CharacterId == charid))
+                        {
+                            sess.Client.SendPacket(str);
+                            sess.Client.SendPacket(sess.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("LEAVE_GROUP"), Session.Character.Name), 0));
+
+                        }
+
+                    }
+                    Session.Client.SendPacket("pinit 0");
+                    Broadcast(Session, $"pidx -1 1.{Session.Character.CharacterId}", ReceiverType.AllOnMap);
+                    Session.Client.SendPacket(Language.Instance.GetMessageFromKey("GROUP_LEAVED"));
+
+                }
+                else
+                {
+                    foreach (long charid in grp.Characters)
+                    {
+                        foreach (ClientSession sess in Sessions.Where(s => s != null && s.Character != null && s.Character.CharacterId == charid))
+                        {
+                            sess.Client.SendPacket("pinit 0");
+                            sess.Client.SendPacket(sess.Character.GenerateMsg(Language.Instance.GetMessageFromKey("GROUP_CLOSED"), 0));
+                            Broadcast(sess, $"pidx -1 1.{charid}", ReceiverType.AllOnMap);
+                        }
+                    }
+                    ClientLinkManager.Instance.Groups.Remove(grp);
+                }
             }
         }
 
