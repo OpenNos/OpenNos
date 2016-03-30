@@ -1669,8 +1669,13 @@ namespace OpenNos.Handler
                             ), 0));
                         break;
                     case (int)ConfigType.GroupSharing:
-                        if (ClientLinkManager.Instance.Groups.FirstOrDefault(s => s.Characters.Contains(Session.Character.CharacterId)) == null)
+                        Group grp = ClientLinkManager.Instance.Groups.FirstOrDefault(s => s.Characters.Contains(Session.Character.CharacterId));
+                        if (grp == null)
                             return;
+                        if(grp.Characters.ElementAt(0)!=Session.Character.CharacterId)
+                        {
+                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_MASTER"), 0));
+                        }
                         if (ClientLinkManager.Instance.Groups.FirstOrDefault(s => s.Characters.Contains(Session.Character.CharacterId))?.SharingMode == 0)
                         {
                             ClientLinkManager.Instance.Groups.FirstOrDefault(s => s.Characters.Contains(Session.Character.CharacterId)).SharingMode = 1;
