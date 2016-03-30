@@ -3595,8 +3595,8 @@ namespace OpenNos.Handler
 
             if (Session.Character.Speed.Equals(Convert.ToByte(packetsplit[5])) || Convert.ToByte(packetsplit[5]) == 10)
             {
-                if (Session.Character.MapX > Convert.ToByte(packetsplit[2]) + 10 || Session.Character.MapX < Convert.ToByte(packetsplit[2]) - 10
-                   || Session.Character.MapY > Convert.ToByte(packetsplit[3]) + 10 || Session.Character.MapY < Convert.ToByte(packetsplit[3]) - 10)
+                if (Session.Character.MapX > Convert.ToInt16(packetsplit[2]) + 10 || Session.Character.MapX < Convert.ToInt16(packetsplit[2]) - 10
+                   || Session.Character.MapY > Convert.ToInt16(packetsplit[3]) + 10 || Session.Character.MapY < Convert.ToInt16(packetsplit[3]) - 10)
                     Session.Client.Disconnect();
                 ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateMv(), ReceiverType.AllOnMapExceptMe);
                 Session.Client.SendPacket(Session.Character.GenerateCond());
