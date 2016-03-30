@@ -1677,7 +1677,7 @@ namespace OpenNos.Handler
                             Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_MASTER"), 0));
                             return;
                         }
-                        if (ClientLinkManager.Instance.Groups.FirstOrDefault(s => s.Characters.Contains(Session.Character.CharacterId))?.SharingMode == 0)
+                        if (int.Parse(packetsplit[3]) == 0)
                         {
                             ClientLinkManager.Instance.Groups.FirstOrDefault(s => s.Characters.Contains(Session.Character.CharacterId)).SharingMode = 1;
                             Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SHARING"), 0));

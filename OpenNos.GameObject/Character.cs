@@ -153,7 +153,7 @@ namespace OpenNos.GameObject
         {
             return $"dir 1 {CharacterId} {Direction}";
         }
-
+       
         public List<string> GenerateDroppedItem()
         {
             return ServerManager.GetMap(MapId).DroppedList.Select(item => $"in 9 {item.Value.ItemVNum} {item.Key} {item.Value.PositionX} {item.Value.PositionY} {item.Value.Amount} 0 0 -1").ToList();
