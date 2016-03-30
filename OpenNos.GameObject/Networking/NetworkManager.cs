@@ -137,11 +137,16 @@ namespace OpenNos.GameObject
             ClientLinkManager.Instance.Sessions.Remove(session);
             if (session.Character != null)
             {
+                if (ClientLinkManager.Instance.Groups.FirstOrDefault(s=>s.Characters.Contains(session.Character.CharacterId)) !=null)
+                {
+                    ClientLinkManager.Instance.GroupLeave(session);
+                }
                 session.Character.Save();
 
                 //only remove the character from map if the character has been set
                 ClientLinkManager.Instance.Broadcast(session, session.Character.GenerateOut(), ReceiverType.AllOnMapExceptMe);
             }
+           
             if (session.HealthTask != null)
             {
                 session.healthStop = true;
