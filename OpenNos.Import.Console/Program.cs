@@ -94,6 +94,11 @@ namespace OpenNos.Import.Console
                 if (key.KeyChar != 'n')
                     factory.ImportPortals();
 
+                System.Console.WriteLine($"{Language.Instance.GetMessageFromKey("PARSE_ITEMS")} [Y/n]");
+                key = System.Console.ReadKey(true);
+                if (key.KeyChar != 'n')
+                    factory.ImportItems();
+
                 System.Console.WriteLine($"{Language.Instance.GetMessageFromKey("PARSE_NPCS")} [Y/n]");
                 key = System.Console.ReadKey(true);
                 if (key.KeyChar != 'n')
@@ -114,21 +119,16 @@ namespace OpenNos.Import.Console
                 if (key.KeyChar != 'n')
                     factory.ImportShops();
 
-                System.Console.WriteLine($"{Language.Instance.GetMessageFromKey("PARSE_ITEMS")} [Y/n]");
-                key = System.Console.ReadKey(true);
-                if (key.KeyChar != 'n')
-                    factory.ImportItems();
-
-                /*System.Console.WriteLine($"{Language.Instance.GetMessageFromKey("PARSE_ITEMS")} [Y/n]");
-                key = System.Console.ReadKey(true);
-                if (key.KeyChar != 'n')
-                    factory.ImportDrop();
-                */
-
                 System.Console.WriteLine($"{Language.Instance.GetMessageFromKey("PARSE_TELEPORTERS")} [Y/n]");
                 key = System.Console.ReadKey(true);
                 if (key.KeyChar != 'n')
                     factory.ImportTeleporters();
+
+                /*System.Console.WriteLine($"{Language.Instance.GetMessageFromKey("PARSE_DROP")} [Y/n]");
+                key = System.Console.ReadKey(true);
+                if (key.KeyChar != 'n')
+                    factory.ImportDrop();
+                */
 
                 System.Console.WriteLine($"{Language.Instance.GetMessageFromKey("PARSE_SHOPITEMS")} [Y/n]");
                 key = System.Console.ReadKey(true);
@@ -139,7 +139,6 @@ namespace OpenNos.Import.Console
                 key = System.Console.ReadKey(true);
                 if (key.KeyChar != 'n')
                     factory.ImportRecipe();
-
             }
             System.Console.WriteLine($"{Language.Instance.GetMessageFromKey("DONE")}");
             Thread.Sleep(5000);
