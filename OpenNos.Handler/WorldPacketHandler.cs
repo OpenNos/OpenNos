@@ -4020,7 +4020,7 @@ namespace OpenNos.Handler
                     return;
                 long.TryParse(packetsplit[3], out CharId);
 
-                if (type == 3)
+                if (type == 3 && ClientLinkManager.Instance.GetProperty<string>(CharId,"Name") !=null)
                 {
                     foreach (Group group in ClientLinkManager.Instance.Groups)
                     {

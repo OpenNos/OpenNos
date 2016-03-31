@@ -355,12 +355,16 @@ namespace OpenNos.GameObject
         public T GetProperty<T>(string charName, string property)
         {
             ClientSession session = Sessions.FirstOrDefault(s => s.Character != null && s.Character.Name.Equals(charName));
+            if (session == null)
+                return default(T);
             return (T)session?.Character.GetType().GetProperties().Single(pi => pi.Name == property).GetValue(session.Character, null);
         }
 
         public T GetProperty<T>(long charId, string property)
         {
             ClientSession session = Sessions.FirstOrDefault(s => s.Character != null && s.Character.CharacterId.Equals(charId));
+            if (session == null)
+                return default(T);
             return (T)session?.Character.GetType().GetProperties().Single(pi => pi.Name == property).GetValue(session.Character, null);
         }
 

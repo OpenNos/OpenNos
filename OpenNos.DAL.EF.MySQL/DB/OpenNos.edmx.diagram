@@ -4,56 +4,56 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="f76ed05649d94abe8fc46f3ecc52e312" Name="Diagram1" ZoomLevel="82">
+      <Diagram DiagramId="f76ed05649d94abe8fc46f3ecc52e312" Name="Diagram1" ZoomLevel="34">
         <EntityTypeShape EntityType="opennosModel.Account" Width="1.5" PointX="0.75" PointY="22.75" IsExpanded="true" FillColor="0, 122, 204" />
-        <EntityTypeShape EntityType="opennosModel.Character" Width="1.5" PointX="5.25" PointY="18.375" IsExpanded="true" />
-        <EntityTypeShape EntityType="opennosModel.Portal" Width="1.5" PointX="5.25" PointY="13.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="opennosModel.Character" Width="1.5" PointX="5.25" PointY="24.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="opennosModel.Portal" Width="1.5" PointX="5.25" PointY="19.875" IsExpanded="true" />
         <AssociationConnector Association="opennosModel.AccountCharacter" />
-        <EntityTypeShape EntityType="opennosModel.GeneralLog" PointX="3" PointY="22.625" Width="1.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="opennosModel.GeneralLog" PointX="3" PointY="34.625" Width="1.5" IsExpanded="true" />
         <AssociationConnector Association="opennosModel.accountlog" />
-        <EntityTypeShape EntityType="opennosModel.Map" Width="1.5" PointX="7.5" PointY="22.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="opennosModel.Map" Width="1.5" PointX="7.5" PointY="28.625" IsExpanded="true" />
         <AssociationConnector Association="opennosModel.portalMap" />
         <AssociationConnector Association="opennosModel.portalMap1" />
         <AssociationConnector Association="opennosModel.GeneralLogCharacter" />
         <AssociationConnector Association="opennosModel.CharacterMap" />
-        <EntityTypeShape EntityType="opennosModel.Item" Width="2" PointX="22.5" PointY="17.375" IsExpanded="true" />
-        <EntityTypeShape EntityType="opennosModel.NpcMonster" Width="1.875" PointX="15" PointY="26.375" IsExpanded="true" />
-        <EntityTypeShape EntityType="opennosModel.InventoryItem" Width="1.875" PointX="9.75" PointY="22.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="opennosModel.Inventory" Width="1.5" PointX="7.5" PointY="26.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="opennosModel.Item" Width="2" PointX="22.5" PointY="23.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="opennosModel.NpcMonster" Width="1.875" PointX="15" PointY="32.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="opennosModel.InventoryItem" Width="1.875" PointX="9.75" PointY="28.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="opennosModel.Inventory" Width="1.5" PointX="7.5" PointY="32.625" IsExpanded="true" />
         <AssociationConnector Association="opennosModel.CharacterInventory" />
         <AssociationConnector Association="opennosModel.InventoryItemItem" />
         <AssociationConnector Association="opennosModel.InventoryItemInstance" />
-        <EntityTypeShape EntityType="opennosModel.ShopItem" Width="1.5" PointX="20.25" PointY="18.5" IsExpanded="true" />
-        <EntityTypeShape EntityType="opennosModel.Shop" Width="1.875" PointX="10.125" PointY="18.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="opennosModel.ShopItem" Width="1.5" PointX="20.25" PointY="24.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="opennosModel.Shop" Width="1.875" PointX="10.125" PointY="24.875" IsExpanded="true" />
         <AssociationConnector Association="opennosModel.ShopItemItem" />
         <AssociationConnector Association="opennosModel.ShopShopItem" />
-        <EntityTypeShape EntityType="opennosModel.Respawn" Width="1.5" PointX="3" PointY="18.875" FillColor="0, 122, 204" IsExpanded="true" />
+        <EntityTypeShape EntityType="opennosModel.Respawn" Width="1.5" PointX="3" PointY="28.875" FillColor="0, 122, 204" IsExpanded="true" />
         <AssociationConnector Association="opennosModel.CharacterRespawn" />
         <AssociationConnector Association="opennosModel.InventoryInventoryItem" />
-        <EntityTypeShape EntityType="opennosModel.Teleporter" Width="1.5" PointX="5.25" PointY="30.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="opennosModel.Teleporter" Width="1.5" PointX="5.25" PointY="36.75" IsExpanded="true" />
         <AssociationConnector Association="opennosModel.TeleporterMap" />
-        <EntityTypeShape EntityType="opennosModel.MapMonster" Width="1.5" PointX="9.75" PointY="34.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="opennosModel.MapMonster" Width="1.5" PointX="9.75" PointY="40.75" IsExpanded="true" />
         <AssociationConnector Association="opennosModel.MapMapMonster" />
-        <EntityTypeShape EntityType="opennosModel.MapNpc" Width="1.5" PointX="12.75" PointY="21.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="opennosModel.MapNpc" Width="1.5" PointX="12.75" PointY="27.875" IsExpanded="true" />
         <AssociationConnector Association="opennosModel.MapNpcNpc" />
         <AssociationConnector Association="opennosModel.MapMapNpc" ManuallyRouted="false" >
         </AssociationConnector>
         <AssociationConnector Association="opennosModel.TeleporterMapNpc" />
         <AssociationConnector Association="opennosModel.MapMonsterNpcMonster" />
         <AssociationConnector Association="opennosModel.ShopMapNpc" />
-        <EntityTypeShape EntityType="opennosModel.Recipe" Width="1.5" PointX="15" PointY="18.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="opennosModel.Recipe" Width="1.5" PointX="15" PointY="24.875" IsExpanded="true" />
         <AssociationConnector Association="opennosModel.MapNpcRecipe" />
-        <EntityTypeShape EntityType="opennosModel.RecipeItem" Width="1.5" PointX="17.25" PointY="17.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="opennosModel.RecipeItem" Width="1.5" PointX="17.25" PointY="24" IsExpanded="true" />
         <AssociationConnector Association="opennosModel.RecipeItemItem" />
         <AssociationConnector Association="opennosModel.RecipeRecipeItem1" />
         <AssociationConnector Association="opennosModel.ItemRecipe" ManuallyRouted="false" >
         </AssociationConnector>
-        <EntityTypeShape EntityType="opennosModel.Drop" Width="1.875" PointX="19.875" PointY="26.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="opennosModel.Drop" Width="1.875" PointX="19.875" PointY="32.25" IsExpanded="true" />
         <AssociationConnector Association="opennosModel.DropItem" />
         <AssociationConnector Association="opennosModel.DropNpcMonster" />
-        <EntityTypeShape EntityType="opennosModel.Skill" Width="1.5" PointX="17.25" PointY="20.875" IsExpanded="true" />
-        <EntityTypeShape EntityType="opennosModel.SkillUser" Width="1.5" PointX="19.5" PointY="22.875" IsExpanded="true" />
-        <EntityTypeShape EntityType="opennosModel.SkillShop" Width="1.5" PointX="15" PointY="22" IsExpanded="true" />
+        <EntityTypeShape EntityType="opennosModel.Skill" Width="1.5" PointX="17.25" PointY="27" IsExpanded="true" />
+        <EntityTypeShape EntityType="opennosModel.SkillUser" Width="1.5" PointX="19.5" PointY="28.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="opennosModel.SkillShop" Width="1.5" PointX="15" PointY="28.125" IsExpanded="true" />
         <AssociationConnector Association="opennosModel.skilluseras" />
         <AssociationConnector Association="opennosModel.SkillShopSkill" />
         <AssociationConnector Association="opennosModel.MapNpcSkillShop" />
