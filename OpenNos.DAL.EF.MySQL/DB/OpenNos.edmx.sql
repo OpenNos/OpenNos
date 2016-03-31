@@ -44,9 +44,9 @@
 -- -----------------------------------------------------------
 -- Entity Designer DDL Script for MySQL Server 4.1 and higher
 -- -----------------------------------------------------------
--- Date Created: 03/30/2016 16:00:27
+-- Date Created: 03/31/2016 12:36:12
 
--- Generated from EDMX file: C:\Users\Dominik\Source\Repos\OpenNos\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
+-- Generated from EDMX file: C:\Users\ERWAN\Desktop\OpenNos Git\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
 -- Target version: 3.0.0.0
 
 -- --------------------------------------------------
@@ -571,6 +571,29 @@ CREATE TABLE `drop`(
 	`MonsterVNum` smallint NOT NULL);
 
 ALTER TABLE `drop` ADD PRIMARY KEY (DropId);
+
+
+
+
+
+CREATE TABLE `skillset`(
+	`SkillVNum` int NOT NULL, 
+	`Name` longtext NOT NULL, 
+	`Cost` int NOT NULL, 
+	`JobLevelMinimum` int NOT NULL, 
+	`MinimumAdventurerLevel` int NOT NULL, 
+	`MinimumSwordmanLevel` int NOT NULL, 
+	`MinimumArcherLevel` int NOT NULL, 
+	`MinimumMagicianLevel` int NOT NULL, 
+	`Effect` int NOT NULL, 
+	`Level` int NOT NULL, 
+	`MpCost` int NOT NULL, 
+	`Cooldown` int NOT NULL, 
+	`CastAnim` int NOT NULL, 
+	`AttAnim` int NOT NULL, 
+	`CastEffect` int NOT NULL);
+
+ALTER TABLE `skillset` ADD PRIMARY KEY (SkillVNum);
 
 
 

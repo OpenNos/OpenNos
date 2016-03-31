@@ -24,6 +24,7 @@
     <EntitySet Name="recipe" EntityType="opennosModel.Store.recipe" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="recipeitem" EntityType="opennosModel.Store.recipeitem" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="drop" EntityType="opennosModel.Store.drop" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="skillset" EntityType="opennosModel.Store.skillset" store:Type="Tables" Schema="dbo" />
     <AssociationSet Name="AccountCharacter" Association="opennosModel.Store.AccountCharacter">
       <End Role="Account" EntitySet="account" />
       <End Role="Character" EntitySet="character" />
@@ -488,6 +489,26 @@
     <Property Name="Amount" Type="int" Nullable="false" />
     <Property Name="ItemVNum" Type="smallint" Nullable="false" />
     <Property Name="MonsterVNum" Type="smallint" Nullable="false" />
+  </EntityType>
+  <EntityType Name="skillset">
+    <Key>
+      <PropertyRef Name="SkillVNum" />
+    </Key>
+    <Property Name="SkillVNum" Type="int" Nullable="false" />
+    <Property Name="Name" Type="longtext" Nullable="false" />
+    <Property Name="Cost" Type="int" Nullable="false" />
+    <Property Name="JobLevelMinimum" Type="int" Nullable="false" />
+    <Property Name="MinimumAdventurerLevel" Type="int" Nullable="false" />
+    <Property Name="MinimumSwordmanLevel" Type="int" Nullable="false" />
+    <Property Name="MinimumArcherLevel" Type="int" Nullable="false" />
+    <Property Name="MinimumMagicianLevel" Type="int" Nullable="false" />
+    <Property Name="Effect" Type="int" Nullable="false" />
+    <Property Name="Level" Type="int" Nullable="false" />
+    <Property Name="MpCost" Type="int" Nullable="false" />
+    <Property Name="Cooldown" Type="int" Nullable="false" />
+    <Property Name="CastAnim" Type="int" Nullable="false" />
+    <Property Name="AttAnim" Type="int" Nullable="false" />
+    <Property Name="CastEffect" Type="int" Nullable="false" />
   </EntityType>
   <Association Name="AccountCharacter">
     <End Role="Account" Type="opennosModel.Store.account" Multiplicity="1" />
@@ -998,6 +1019,7 @@
             <End Role="Drop" EntitySet="drop" />
             <End Role="NpcMonster" EntitySet="npcmonster" />
           </AssociationSet>
+          <EntitySet Name="skillset" EntityType="opennosModel.Skills" />
           </EntityContainer>
         <Association Name="AccountCharacter">
           <End Type="opennosModel.Account" Role="Account" Multiplicity="1" />
@@ -1618,6 +1640,26 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="Skills">
+          <Key>
+            <PropertyRef Name="SkillVNum" />
+          </Key>
+          <Property Name="SkillVNum" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="None" />
+          <Property Name="Name" Type="String" Nullable="false" />
+          <Property Name="Cost" Type="Int32" Nullable="false" />
+          <Property Name="JobLevelMinimum" Type="Int32" Nullable="false" />
+          <Property Name="MinimumAdventurerLevel" Type="Int32" Nullable="false" />
+          <Property Name="MinimumSwordmanLevel" Type="Int32" Nullable="false" />
+          <Property Name="MinimumArcherLevel" Type="Int32" Nullable="false" />
+          <Property Name="MinimumMagicianLevel" Type="Int32" Nullable="false" />
+          <Property Name="Effect" Type="Int32" Nullable="false" />
+          <Property Name="Level" Type="Int32" Nullable="false" />
+          <Property Name="MpCost" Type="Int32" Nullable="false" />
+          <Property Name="Cooldown" Type="Int32" Nullable="false" />
+          <Property Name="CastAnim" Type="Int32" Nullable="false" />
+          <Property Name="AttAnim" Type="Int32" Nullable="false" />
+          <Property Name="CastEffect" Type="Int32" Nullable="false" />
+        </EntityType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -2002,6 +2044,27 @@
           <ScalarProperty Name="Amount" ColumnName="Amount" />
           <ScalarProperty Name="ItemVNum" ColumnName="ItemVNum" />
           <ScalarProperty Name="MonsterVNum" ColumnName="MonsterVNum" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="skillset">
+      <EntityTypeMapping TypeName="IsTypeOf(opennosModel.Skills)">
+        <MappingFragment StoreEntitySet="skillset">
+          <ScalarProperty Name="SkillVNum" ColumnName="SkillVNum" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="Cost" ColumnName="Cost" />
+          <ScalarProperty Name="JobLevelMinimum" ColumnName="JobLevelMinimum" />
+          <ScalarProperty Name="MinimumAdventurerLevel" ColumnName="MinimumAdventurerLevel" />
+          <ScalarProperty Name="MinimumSwordmanLevel" ColumnName="MinimumSwordmanLevel" />
+          <ScalarProperty Name="MinimumArcherLevel" ColumnName="MinimumArcherLevel" />
+          <ScalarProperty Name="MinimumMagicianLevel" ColumnName="MinimumMagicianLevel" />
+          <ScalarProperty Name="Effect" ColumnName="Effect" />
+          <ScalarProperty Name="Level" ColumnName="Level" />
+          <ScalarProperty Name="MpCost" ColumnName="MpCost" />
+          <ScalarProperty Name="Cooldown" ColumnName="Cooldown" />
+          <ScalarProperty Name="CastAnim" ColumnName="CastAnim" />
+          <ScalarProperty Name="AttAnim" ColumnName="AttAnim" />
+          <ScalarProperty Name="CastEffect" ColumnName="CastEffect" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
