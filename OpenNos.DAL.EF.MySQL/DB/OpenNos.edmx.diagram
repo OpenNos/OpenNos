@@ -55,6 +55,8 @@
         <AssociationConnector Association="opennosModel.DropItem" />
         <AssociationConnector Association="opennosModel.DropNpcMonster" />
         <EntityTypeShape EntityType="opennosModel.Skills" Width="1.5" PointX="15.125" PointY="0.5" />
+        <EntityTypeShape EntityType="opennosModel.SkillUser" Width="1.5" PointX="15.125" PointY="5" />
+        <EntityTypeShape EntityType="opennosModel.SkillShop" Width="1.5" PointX="17" PointY="5" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

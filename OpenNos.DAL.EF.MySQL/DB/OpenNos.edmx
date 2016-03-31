@@ -25,6 +25,8 @@
     <EntitySet Name="recipeitem" EntityType="opennosModel.Store.recipeitem" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="drop" EntityType="opennosModel.Store.drop" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="skillset" EntityType="opennosModel.Store.skillset" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="skilluser" EntityType="opennosModel.Store.skilluser" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="skillshop" EntityType="opennosModel.Store.skillshop" store:Type="Tables" Schema="dbo" />
     <AssociationSet Name="AccountCharacter" Association="opennosModel.Store.AccountCharacter">
       <End Role="Account" EntitySet="account" />
       <End Role="Character" EntitySet="character" />
@@ -509,6 +511,18 @@
     <Property Name="CastAnim" Type="int" Nullable="false" />
     <Property Name="AttAnim" Type="int" Nullable="false" />
     <Property Name="CastEffect" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="skilluser">
+    <Key>
+      <PropertyRef Name="SkillUserId" />
+    </Key>
+    <Property Name="SkillUserId" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+  </EntityType>
+  <EntityType Name="skillshop">
+    <Key>
+      <PropertyRef Name="SkillShopId" />
+    </Key>
+    <Property Name="SkillShopId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
   </EntityType>
   <Association Name="AccountCharacter">
     <End Role="Account" Type="opennosModel.Store.account" Multiplicity="1" />
@@ -1020,6 +1034,8 @@
             <End Role="NpcMonster" EntitySet="npcmonster" />
           </AssociationSet>
           <EntitySet Name="skillset" EntityType="opennosModel.Skills" />
+          <EntitySet Name="skilluser" EntityType="opennosModel.SkillUser" />
+          <EntitySet Name="skillshop" EntityType="opennosModel.SkillShop" />
           </EntityContainer>
         <Association Name="AccountCharacter">
           <End Type="opennosModel.Account" Role="Account" Multiplicity="1" />
@@ -1660,6 +1676,18 @@
           <Property Name="AttAnim" Type="Int32" Nullable="false" />
           <Property Name="CastEffect" Type="Int32" Nullable="false" />
         </EntityType>
+        <EntityType Name="SkillUser">
+          <Key>
+            <PropertyRef Name="SkillUserId" />
+          </Key>
+          <Property Name="SkillUserId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+        </EntityType>
+        <EntityType Name="SkillShop">
+          <Key>
+            <PropertyRef Name="SkillShopId" />
+          </Key>
+          <Property Name="SkillShopId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+        </EntityType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -2065,6 +2093,20 @@
           <ScalarProperty Name="CastAnim" ColumnName="CastAnim" />
           <ScalarProperty Name="AttAnim" ColumnName="AttAnim" />
           <ScalarProperty Name="CastEffect" ColumnName="CastEffect" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="skilluser">
+      <EntityTypeMapping TypeName="IsTypeOf(opennosModel.SkillUser)">
+        <MappingFragment StoreEntitySet="skilluser">
+          <ScalarProperty Name="SkillUserId" ColumnName="SkillUserId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="skillshop">
+      <EntityTypeMapping TypeName="IsTypeOf(opennosModel.SkillShop)">
+        <MappingFragment StoreEntitySet="skillshop">
+          <ScalarProperty Name="SkillShopId" ColumnName="SkillShopId" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

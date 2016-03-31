@@ -44,7 +44,7 @@
 -- -----------------------------------------------------------
 -- Entity Designer DDL Script for MySQL Server 4.1 and higher
 -- -----------------------------------------------------------
--- Date Created: 03/31/2016 12:36:12
+-- Date Created: 03/31/2016 15:12:49
 
 -- Generated from EDMX file: C:\Users\ERWAN\Desktop\OpenNos Git\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
 -- Target version: 3.0.0.0
@@ -150,6 +150,8 @@ SET foreign_key_checks = 0;
     DROP TABLE IF EXISTS `recipeitem`;
 
     DROP TABLE IF EXISTS `drop`;
+
+    DROP TABLE IF EXISTS `skillset`;
 
 SET foreign_key_checks = 1;
 
@@ -594,6 +596,24 @@ CREATE TABLE `skillset`(
 	`CastEffect` int NOT NULL);
 
 ALTER TABLE `skillset` ADD PRIMARY KEY (SkillVNum);
+
+
+
+
+
+CREATE TABLE `skilluser`(
+	`SkillUserId` bigint NOT NULL AUTO_INCREMENT UNIQUE);
+
+ALTER TABLE `skilluser` ADD PRIMARY KEY (SkillUserId);
+
+
+
+
+
+CREATE TABLE `skillshop`(
+	`SkillShopId` int NOT NULL AUTO_INCREMENT UNIQUE);
+
+ALTER TABLE `skillshop` ADD PRIMARY KEY (SkillShopId);
 
 
 
