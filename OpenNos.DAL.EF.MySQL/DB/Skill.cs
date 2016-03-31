@@ -12,8 +12,15 @@ namespace OpenNos.DAL.EF.MySQL.DB
     using System;
     using System.Collections.Generic;
     
-    public partial class Skills
+    public partial class Skill
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public Skill()
+        {
+            this.skilluser = new HashSet<SkillUser>();
+            this.skillshop = new HashSet<SkillShop>();
+        }
+    
         public int SkillVNum { get; set; }
         public string Name { get; set; }
         public int Cost { get; set; }
@@ -29,5 +36,10 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public int CastAnim { get; set; }
         public int AttAnim { get; set; }
         public int CastEffect { get; set; }
+    
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<SkillUser> skilluser { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<SkillShop> skillshop { get; set; }
     }
 }

@@ -130,7 +130,13 @@
     <Compile Include="DB\ShopItem.cs">
       <DependentUpon>OpenNos.tt</DependentUpon>
     </Compile>
-    <Compile Include="DB\Skills.cs">
+    <Compile Include="DB\Skill.cs">
+      <DependentUpon>OpenNos.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DB\SkillShop.cs">
+      <DependentUpon>OpenNos.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DB\SkillUser.cs">
       <DependentUpon>OpenNos.tt</DependentUpon>
     </Compile>
     <Compile Include="DB\Teleporter.cs">

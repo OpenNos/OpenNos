@@ -44,7 +44,7 @@
 -- -----------------------------------------------------------
 -- Entity Designer DDL Script for MySQL Server 4.1 and higher
 -- -----------------------------------------------------------
--- Date Created: 03/31/2016 15:12:49
+-- Date Created: 03/31/2016 17:36:52
 
 -- Generated from EDMX file: C:\Users\ERWAN\Desktop\OpenNos Git\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
 -- Target version: 3.0.0.0
@@ -152,6 +152,10 @@ SET foreign_key_checks = 0;
     DROP TABLE IF EXISTS `drop`;
 
     DROP TABLE IF EXISTS `skillset`;
+
+    DROP TABLE IF EXISTS `skilluser`;
+
+    DROP TABLE IF EXISTS `skillshop`;
 
 SET foreign_key_checks = 1;
 
@@ -602,7 +606,10 @@ ALTER TABLE `skillset` ADD PRIMARY KEY (SkillVNum);
 
 
 CREATE TABLE `skilluser`(
-	`SkillUserId` bigint NOT NULL AUTO_INCREMENT UNIQUE);
+	`SkillUserId` bigint NOT NULL AUTO_INCREMENT UNIQUE, 
+	`SkillVNum` int NOT NULL, 
+	`CharacterCharacterId` bigint, 
+	`NpcMonsterNpcMonsterVNum` smallint);
 
 ALTER TABLE `skilluser` ADD PRIMARY KEY (SkillUserId);
 
@@ -611,7 +618,9 @@ ALTER TABLE `skilluser` ADD PRIMARY KEY (SkillUserId);
 
 
 CREATE TABLE `skillshop`(
-	`SkillShopId` int NOT NULL AUTO_INCREMENT UNIQUE);
+	`SkillShopId` int NOT NULL AUTO_INCREMENT UNIQUE, 
+	`SkillSkillVNum` int NOT NULL, 
+	`MapNpcMapNpcId` int NOT NULL);
 
 ALTER TABLE `skillshop` ADD PRIMARY KEY (SkillShopId);
 
@@ -1073,6 +1082,96 @@ ADD CONSTRAINT `FK_DropNpcMonster`
 CREATE INDEX `IX_FK_DropNpcMonster`
     ON `drop`
     (`MonsterVNum`);
+
+
+
+-- Creating foreign key on `SkillVNum` in table 'skilluser'
+
+ALTER TABLE `skilluser`
+ADD CONSTRAINT `FK_skilluseras`
+    FOREIGN KEY (`SkillVNum`)
+    REFERENCES `skillset`
+        (`SkillVNum`)
+    ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+
+-- Creating non-clustered index for FOREIGN KEY 'FK_skilluseras'
+
+CREATE INDEX `IX_FK_skilluseras`
+    ON `skilluser`
+    (`SkillVNum`);
+
+
+
+-- Creating foreign key on `SkillSkillVNum` in table 'skillshop'
+
+ALTER TABLE `skillshop`
+ADD CONSTRAINT `FK_SkillShopSkill`
+    FOREIGN KEY (`SkillSkillVNum`)
+    REFERENCES `skillset`
+        (`SkillVNum`)
+    ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+
+-- Creating non-clustered index for FOREIGN KEY 'FK_SkillShopSkill'
+
+CREATE INDEX `IX_FK_SkillShopSkill`
+    ON `skillshop`
+    (`SkillSkillVNum`);
+
+
+
+-- Creating foreign key on `MapNpcMapNpcId` in table 'skillshop'
+
+ALTER TABLE `skillshop`
+ADD CONSTRAINT `FK_MapNpcSkillShop`
+    FOREIGN KEY (`MapNpcMapNpcId`)
+    REFERENCES `mapnpc`
+        (`MapNpcId`)
+    ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+
+-- Creating non-clustered index for FOREIGN KEY 'FK_MapNpcSkillShop'
+
+CREATE INDEX `IX_FK_MapNpcSkillShop`
+    ON `skillshop`
+    (`MapNpcMapNpcId`);
+
+
+
+-- Creating foreign key on `CharacterCharacterId` in table 'skilluser'
+
+ALTER TABLE `skilluser`
+ADD CONSTRAINT `FK_CharacterSkillUser`
+    FOREIGN KEY (`CharacterCharacterId`)
+    REFERENCES `character`
+        (`CharacterId`)
+    ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+
+-- Creating non-clustered index for FOREIGN KEY 'FK_CharacterSkillUser'
+
+CREATE INDEX `IX_FK_CharacterSkillUser`
+    ON `skilluser`
+    (`CharacterCharacterId`);
+
+
+
+-- Creating foreign key on `NpcMonsterNpcMonsterVNum` in table 'skilluser'
+
+ALTER TABLE `skilluser`
+ADD CONSTRAINT `FK_SkillUserNpcMonster`
+    FOREIGN KEY (`NpcMonsterNpcMonsterVNum`)
+    REFERENCES `npcmonster`
+        (`NpcMonsterVNum`)
+    ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+
+-- Creating non-clustered index for FOREIGN KEY 'FK_SkillUserNpcMonster'
+
+CREATE INDEX `IX_FK_SkillUserNpcMonster`
+    ON `skilluser`
+    (`NpcMonsterNpcMonsterVNum`);
 
 
 
