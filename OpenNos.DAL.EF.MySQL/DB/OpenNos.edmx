@@ -1780,11 +1780,19 @@
           <Property Name="Level" Type="Int32" Nullable="false" />
           <Property Name="MpCost" Type="Int32" Nullable="false" />
           <Property Name="Cooldown" Type="Int32" Nullable="false" />
-          <Property Name="CastAnim" Type="Int32" Nullable="false" />
-          <Property Name="AttAnim" Type="Int32" Nullable="false" />
+          <Property Name="CastAnimation" Type="Int32" Nullable="false" />
+          <Property Name="AttackAnimation" Type="Int32" Nullable="false" />
           <Property Name="CastEffect" Type="Int32" Nullable="false" />
           <NavigationProperty Name="skilluser" Relationship="opennosModel.skilluseras" FromRole="Skill" ToRole="SkillUser" />
           <NavigationProperty Name="skillshop" Relationship="opennosModel.SkillShopSkill" FromRole="Skill" ToRole="SkillShop" />
+          <Property Name="Range" Type="Int16" Nullable="false" />
+          <Property Name="Duration" Type="Int32" Nullable="false" />
+          <Property Name="Damage" Type="Int16" Nullable="false" />
+          <Property Name="ElementalDamage" Type="Int16" Nullable="false" />
+          <Property Name="Element" Type="Byte" Nullable="false" />
+          <Property Name="CastId" Type="Int32" Nullable="false" />
+          <Property Name="Type" Type="Int16" Nullable="false" />
+          <Property Name="AOERange" Type="Int32" Nullable="false" />
         </EntityType>
         <EntityType Name="SkillUser">
           <Key>
@@ -2270,8 +2278,8 @@
           <ScalarProperty Name="Level" ColumnName="Level" />
           <ScalarProperty Name="MpCost" ColumnName="MpCost" />
           <ScalarProperty Name="Cooldown" ColumnName="Cooldown" />
-          <ScalarProperty Name="CastAnim" ColumnName="CastAnim" />
-          <ScalarProperty Name="AttAnim" ColumnName="AttAnim" />
+          <ScalarProperty Name="CastAnimation" ColumnName="CastAnim" />
+          <ScalarProperty Name="AttackAnimation" ColumnName="AttAnim" />
           <ScalarProperty Name="CastEffect" ColumnName="CastEffect" />
         </MappingFragment>
       </EntityTypeMapping>

@@ -33,9 +33,17 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public int Level { get; set; }
         public int MpCost { get; set; }
         public int Cooldown { get; set; }
-        public int CastAnim { get; set; }
-        public int AttAnim { get; set; }
+        public int CastAnimation { get; set; }
+        public int AttackAnimation { get; set; }
         public int CastEffect { get; set; }
+        public short Range { get; set; }
+        public int Duration { get; set; }
+        public short Damage { get; set; }
+        public short ElementalDamage { get; set; }
+        public byte Element { get; set; }
+        public int CastId { get; set; }
+        public short Type { get; set; }
+        public int AOERange { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<SkillUser> skilluser { get; set; }
