@@ -1785,14 +1785,14 @@
           <Property Name="CastEffect" Type="Int32" Nullable="false" />
           <NavigationProperty Name="skilluser" Relationship="opennosModel.skilluseras" FromRole="Skill" ToRole="SkillUser" />
           <NavigationProperty Name="skillshop" Relationship="opennosModel.SkillShopSkill" FromRole="Skill" ToRole="SkillShop" />
-          <Property Name="Range" Type="Int16" Nullable="false" />
+          <Property Name="Distance" Type="Int16" Nullable="false" />
           <Property Name="Duration" Type="Int32" Nullable="false" />
           <Property Name="Damage" Type="Int16" Nullable="false" />
           <Property Name="ElementalDamage" Type="Int16" Nullable="false" />
           <Property Name="Element" Type="Byte" Nullable="false" />
           <Property Name="CastId" Type="Int32" Nullable="false" />
           <Property Name="Type" Type="Int16" Nullable="false" />
-          <Property Name="AOERange" Type="Int32" Nullable="false" />
+          <Property Name="Range" Type="Int32" Nullable="false" />
         </EntityType>
         <EntityType Name="SkillUser">
           <Key>
