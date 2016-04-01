@@ -44,7 +44,7 @@
 -- -----------------------------------------------------------
 -- Entity Designer DDL Script for MySQL Server 4.1 and higher
 -- -----------------------------------------------------------
--- Date Created: 03/31/2016 17:36:52
+-- Date Created: 03/31/2016 22:32:05
 
 -- Generated from EDMX file: C:\Users\ERWAN\Desktop\OpenNos Git\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
 -- Target version: 3.0.0.0
@@ -108,6 +108,16 @@
 --    ALTER TABLE `drop` DROP CONSTRAINT `FK_DropItem`;
 
 --    ALTER TABLE `drop` DROP CONSTRAINT `FK_DropNpcMonster`;
+
+--    ALTER TABLE `skilluser` DROP CONSTRAINT `FK_skilluseras`;
+
+--    ALTER TABLE `skillshop` DROP CONSTRAINT `FK_SkillShopSkill`;
+
+--    ALTER TABLE `skillshop` DROP CONSTRAINT `FK_MapNpcSkillShop`;
+
+--    ALTER TABLE `skilluser` DROP CONSTRAINT `FK_CharacterSkillUser`;
+
+--    ALTER TABLE `skilluser` DROP CONSTRAINT `FK_SkillUserNpcMonster`;
 
 
 -- --------------------------------------------------
@@ -595,9 +605,17 @@ CREATE TABLE `skillset`(
 	`Level` int NOT NULL, 
 	`MpCost` int NOT NULL, 
 	`Cooldown` int NOT NULL, 
-	`CastAnim` int NOT NULL, 
-	`AttAnim` int NOT NULL, 
-	`CastEffect` int NOT NULL);
+	`CastAnimation` int NOT NULL, 
+	`AttackAnimation` int NOT NULL, 
+	`CastEffect` int NOT NULL, 
+	`Distance` smallint NOT NULL, 
+	`Duration` int NOT NULL, 
+	`Damage` smallint NOT NULL, 
+	`ElementalDamage` smallint NOT NULL, 
+	`Element` TINYINT UNSIGNED NOT NULL, 
+	`CastId` int NOT NULL, 
+	`Type` smallint NOT NULL, 
+	`Range` int NOT NULL);
 
 ALTER TABLE `skillset` ADD PRIMARY KEY (SkillVNum);
 

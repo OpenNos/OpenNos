@@ -528,9 +528,17 @@
     <Property Name="Level" Type="int" Nullable="false" />
     <Property Name="MpCost" Type="int" Nullable="false" />
     <Property Name="Cooldown" Type="int" Nullable="false" />
-    <Property Name="CastAnim" Type="int" Nullable="false" />
-    <Property Name="AttAnim" Type="int" Nullable="false" />
+    <Property Name="CastAnimation" Type="int" Nullable="false" />
+    <Property Name="AttackAnimation" Type="int" Nullable="false" />
     <Property Name="CastEffect" Type="int" Nullable="false" />
+    <Property Name="Distance" Type="smallint" Nullable="false" />
+    <Property Name="Duration" Type="int" Nullable="false" />
+    <Property Name="Damage" Type="smallint" Nullable="false" />
+    <Property Name="ElementalDamage" Type="smallint" Nullable="false" />
+    <Property Name="Element" Type="utinyint" Nullable="false" />
+    <Property Name="CastId" Type="int" Nullable="false" />
+    <Property Name="Type" Type="smallint" Nullable="false" />
+    <Property Name="Range" Type="int" Nullable="false" />
   </EntityType>
   <EntityType Name="skilluser">
     <Key>
@@ -2278,9 +2286,17 @@
           <ScalarProperty Name="Level" ColumnName="Level" />
           <ScalarProperty Name="MpCost" ColumnName="MpCost" />
           <ScalarProperty Name="Cooldown" ColumnName="Cooldown" />
-          <ScalarProperty Name="CastAnimation" ColumnName="CastAnim" />
-          <ScalarProperty Name="AttackAnimation" ColumnName="AttAnim" />
+          <ScalarProperty Name="CastAnimation" ColumnName="CastAnimation" />
+          <ScalarProperty Name="AttackAnimation" ColumnName="AttackAnimation" />
           <ScalarProperty Name="CastEffect" ColumnName="CastEffect" />
+          <ScalarProperty Name="Distance" ColumnName="Distance" />
+          <ScalarProperty Name="Duration" ColumnName="Duration" />
+          <ScalarProperty Name="Damage" ColumnName="Damage" />
+          <ScalarProperty Name="ElementalDamage" ColumnName="ElementalDamage" />
+          <ScalarProperty Name="Element" ColumnName="Element" />
+          <ScalarProperty Name="CastId" ColumnName="CastId" />
+          <ScalarProperty Name="Type" ColumnName="Type" />
+          <ScalarProperty Name="Range" ColumnName="Range" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
