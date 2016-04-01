@@ -22,7 +22,7 @@ namespace OpenNos.DAL.Interface
         #region Methods
 
         ShopSkillDTO Insert(ShopSkillDTO shopskill);
-        IEnumerable<ShopSkillDTO> LoadByNpc(int npcId);
+        IEnumerable<ShopSkillDTO> LoadByShopId(int ShopId);
 
         #endregion
     }

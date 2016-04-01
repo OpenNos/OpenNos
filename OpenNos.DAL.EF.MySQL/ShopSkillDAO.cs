@@ -37,11 +37,11 @@ namespace OpenNos.DAL.EF.MySQL
             }
         }
 
-        public IEnumerable<ShopSkillDTO> LoadByNpc(int npcId)
+        public IEnumerable<ShopSkillDTO> LoadByShopId(int ShopId)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                foreach (ShopSkill shopskill in context.shopskill.Where(s => s.MapNpcId.Equals(npcId)))
+                foreach (ShopSkill shopskill in context.shopskill.Where(s => s.ShopId.Equals(ShopId)))
                 {
                     yield return Mapper.Map<ShopSkillDTO>(shopskill);
                 }
