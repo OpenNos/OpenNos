@@ -38,6 +38,9 @@ namespace OpenNos.DAL
         private static IRespawnDAO _respawnDAO;
         private static IShopDAO _shopDAO;
         private static IShopItemDAO _shopitemDAO;
+        private static ISkillDAO _skillDAO;
+        private static ISkillShopDAO _skillshopDAO;
+        private static ISkillUserDAO _skilluserDAO;
         private static ITeleporterDAO _teleporterDAO;
 
         #endregion
@@ -274,6 +277,45 @@ namespace OpenNos.DAL
                 }
 
                 return _shopitemDAO;
+            }
+        }
+
+        public static ISkillDAO SkillDAO
+        {
+            get
+            {
+                if (_skillDAO == null)
+                {
+                    _skillDAO = new MySQL.SkillDAO();
+                }
+
+                return _skillDAO;
+            }
+        }
+
+        public static ISkillShopDAO SkillShopDAO
+        {
+            get
+            {
+                if (_skillshopDAO == null)
+                {
+                    _skillshopDAO = new MySQL.SkillShopDAO();
+                }
+
+                return _skillshopDAO;
+            }
+        }
+
+        public static ISkillUserDAO SkillUserDAO
+        {
+            get
+            {
+                if (_skilluserDAO == null)
+                {
+                    _skilluserDAO = new MySQL.SkillUserDAO();
+                }
+
+                return _skilluserDAO;
             }
         }
 

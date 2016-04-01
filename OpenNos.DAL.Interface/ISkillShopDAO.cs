@@ -13,20 +13,16 @@
  */
 
 using OpenNos.Data;
-using OpenNos.Data.Enums;
 using System.Collections.Generic;
 
 namespace OpenNos.DAL.Interface
 {
-    public interface IInventoryDAO
+    public interface ISkillShopDAO
     {
         #region Methods
 
-        DeleteResult DeleteFromSlotAndType(long characterId, short slot, byte type);
-        SaveResult InsertOrUpdate(ref InventoryDTO inventory);
-        IEnumerable<InventoryDTO> LoadByCharacterId(long characterId);
-        InventoryDTO LoadBySlotAndType(long characterId, short slot, byte type);
-        IEnumerable<InventoryDTO> LoadByType(long characterId, byte type);
+        SkillShopDTO Insert(SkillShopDTO skillshop);
+        IEnumerable<SkillShopDTO> LoadByNpc(int npcId);
 
         #endregion
     }

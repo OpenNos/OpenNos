@@ -16,8 +16,8 @@ namespace OpenNos.DAL.EF.MySQL.DB
     {
         public long SkillUserId { get; set; }
         public int SkillVNum { get; set; }
-        public Nullable<long> CharacterCharacterId { get; set; }
-        public Nullable<short> NpcMonsterNpcMonsterVNum { get; set; }
+        public Nullable<long> CharacterId { get; set; }
+        public Nullable<short> NpcMonsterVNum { get; set; }
     
         public virtual Skill skill { get; set; }
         public virtual Character character { get; set; }

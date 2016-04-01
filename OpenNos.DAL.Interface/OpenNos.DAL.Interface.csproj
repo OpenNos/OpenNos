@@ -70,6 +70,9 @@
     <Compile Include="IMapDAO.cs" />
     <Compile Include="INpcMonsterDAO.cs" />
     <Compile Include="IPortalDAO.cs" />
+    <Compile Include="ISkillDAO.cs" />
+    <Compile Include="ISkillShopDAO.cs" />
+    <Compile Include="ISkillUserDAO.cs" />
     <Compile Include="ITeleporterDAO.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

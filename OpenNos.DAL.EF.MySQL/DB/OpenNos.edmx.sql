@@ -44,9 +44,9 @@
 -- -----------------------------------------------------------
 -- Entity Designer DDL Script for MySQL Server 4.1 and higher
 -- -----------------------------------------------------------
--- Date Created: 03/31/2016 22:32:05
+-- Date Created: 04/01/2016 15:39:07
 
--- Generated from EDMX file: C:\Users\ERWAN\Desktop\OpenNos Git\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
+-- Generated from EDMX file: C:\Users\Dominik\Source\Repos\OpenNos\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
 -- Target version: 3.0.0.0
 
 -- --------------------------------------------------
@@ -626,8 +626,8 @@ ALTER TABLE `skillset` ADD PRIMARY KEY (SkillVNum);
 CREATE TABLE `skilluser`(
 	`SkillUserId` bigint NOT NULL AUTO_INCREMENT UNIQUE, 
 	`SkillVNum` int NOT NULL, 
-	`CharacterCharacterId` bigint, 
-	`NpcMonsterNpcMonsterVNum` smallint);
+	`CharacterId` bigint, 
+	`NpcMonsterVNum` smallint);
 
 ALTER TABLE `skilluser` ADD PRIMARY KEY (SkillUserId);
 
@@ -637,8 +637,8 @@ ALTER TABLE `skilluser` ADD PRIMARY KEY (SkillUserId);
 
 CREATE TABLE `skillshop`(
 	`SkillShopId` int NOT NULL AUTO_INCREMENT UNIQUE, 
-	`SkillSkillVNum` int NOT NULL, 
-	`MapNpcMapNpcId` int NOT NULL);
+	`SkillVNum` int NOT NULL, 
+	`MapNpcId` int NOT NULL);
 
 ALTER TABLE `skillshop` ADD PRIMARY KEY (SkillShopId);
 
@@ -1121,11 +1121,11 @@ CREATE INDEX `IX_FK_skilluseras`
 
 
 
--- Creating foreign key on `SkillSkillVNum` in table 'skillshop'
+-- Creating foreign key on `SkillVNum` in table 'skillshop'
 
 ALTER TABLE `skillshop`
 ADD CONSTRAINT `FK_SkillShopSkill`
-    FOREIGN KEY (`SkillSkillVNum`)
+    FOREIGN KEY (`SkillVNum`)
     REFERENCES `skillset`
         (`SkillVNum`)
     ON DELETE NO ACTION ON UPDATE NO ACTION;
@@ -1135,15 +1135,15 @@ ADD CONSTRAINT `FK_SkillShopSkill`
 
 CREATE INDEX `IX_FK_SkillShopSkill`
     ON `skillshop`
-    (`SkillSkillVNum`);
+    (`SkillVNum`);
 
 
 
--- Creating foreign key on `MapNpcMapNpcId` in table 'skillshop'
+-- Creating foreign key on `MapNpcId` in table 'skillshop'
 
 ALTER TABLE `skillshop`
 ADD CONSTRAINT `FK_MapNpcSkillShop`
-    FOREIGN KEY (`MapNpcMapNpcId`)
+    FOREIGN KEY (`MapNpcId`)
     REFERENCES `mapnpc`
         (`MapNpcId`)
     ON DELETE NO ACTION ON UPDATE NO ACTION;
@@ -1153,15 +1153,15 @@ ADD CONSTRAINT `FK_MapNpcSkillShop`
 
 CREATE INDEX `IX_FK_MapNpcSkillShop`
     ON `skillshop`
-    (`MapNpcMapNpcId`);
+    (`MapNpcId`);
 
 
 
--- Creating foreign key on `CharacterCharacterId` in table 'skilluser'
+-- Creating foreign key on `CharacterId` in table 'skilluser'
 
 ALTER TABLE `skilluser`
 ADD CONSTRAINT `FK_CharacterSkillUser`
-    FOREIGN KEY (`CharacterCharacterId`)
+    FOREIGN KEY (`CharacterId`)
     REFERENCES `character`
         (`CharacterId`)
     ON DELETE NO ACTION ON UPDATE NO ACTION;
@@ -1171,15 +1171,15 @@ ADD CONSTRAINT `FK_CharacterSkillUser`
 
 CREATE INDEX `IX_FK_CharacterSkillUser`
     ON `skilluser`
-    (`CharacterCharacterId`);
+    (`CharacterId`);
 
 
 
--- Creating foreign key on `NpcMonsterNpcMonsterVNum` in table 'skilluser'
+-- Creating foreign key on `NpcMonsterVNum` in table 'skilluser'
 
 ALTER TABLE `skilluser`
 ADD CONSTRAINT `FK_SkillUserNpcMonster`
-    FOREIGN KEY (`NpcMonsterNpcMonsterVNum`)
+    FOREIGN KEY (`NpcMonsterVNum`)
     REFERENCES `npcmonster`
         (`NpcMonsterVNum`)
     ON DELETE NO ACTION ON UPDATE NO ACTION;
@@ -1189,7 +1189,7 @@ ADD CONSTRAINT `FK_SkillUserNpcMonster`
 
 CREATE INDEX `IX_FK_SkillUserNpcMonster`
     ON `skilluser`
-    (`NpcMonsterNpcMonsterVNum`);
+    (`NpcMonsterVNum`);
 
 
 

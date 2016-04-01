@@ -111,6 +111,9 @@
     <Compile Include="Portal.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ServersData.cs" />
+    <Compile Include="Skill.cs" />
+    <Compile Include="SkillShop.cs" />
+    <Compile Include="SkillUser.cs" />
     <Compile Include="Teleporter.cs" />
   </ItemGroup>
   <ItemGroup>

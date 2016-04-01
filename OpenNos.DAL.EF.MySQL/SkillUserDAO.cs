@@ -22,50 +22,39 @@ using System.Linq;
 
 namespace OpenNos.DAL.EF.MySQL
 {
-    public class RecipeDAO : IRecipeDAO
+    public class SkillUserDAO : ISkillUserDAO
     {
         #region Methods
 
-        public RecipeDTO Insert(RecipeDTO recipe)
+        public SkillUserDTO Insert(SkillUserDTO skilluser)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                Recipe entity = Mapper.Map<Recipe>(recipe);
-                context.recipe.Add(entity);
+                SkillUser entity = Mapper.Map<SkillUser>(skilluser);
+                context.skilluser.Add(entity);
                 context.SaveChanges();
-                return Mapper.Map<RecipeDTO>(entity);
+                return Mapper.Map<SkillUserDTO>(entity);
             }
         }
 
-        public RecipeDTO LoadById(short RecipeId)
+        public IEnumerable<SkillUserDTO> LoadByCharacterId(long characterId)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                return Mapper.Map<RecipeDTO>(context.recipe.FirstOrDefault(s => s.RecipeId.Equals(RecipeId)));
-            }
-        }
-
-        public IEnumerable<RecipeDTO> LoadByNpc(int npcId)
-        {
-            using (var context = DataAccessHelper.CreateContext())
-            {
-                foreach (Recipe recipe in context.recipe.Where(s => s.MapNpcId.Equals(npcId)))
+                foreach (SkillUser skilluserobject in context.skilluser.Where(i => i.CharacterId.Equals(characterId)))
                 {
-                    yield return Mapper.Map<RecipeDTO>(recipe);
+                    yield return Mapper.Map<SkillUserDTO>(skilluserobject);
                 }
             }
         }
 
-        public void Update(RecipeDTO recipe)
+        public IEnumerable<SkillUserDTO> LoadByMonsterNpc(int npcId)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                Recipe result = context.recipe.FirstOrDefault(c => c.MapNpcId == recipe.MapNpcId && c.ItemVNum == recipe.ItemVNum);
-                if (result != null)
+                foreach (SkillUser skilluser in context.skilluser.Where(s => s.NpcMonsterVNum.Equals(npcId)))
                 {
-                    recipe.RecipeId = result.RecipeId;
-                    result = Mapper.Map<RecipeDTO, Recipe>(recipe, result);
-                    context.SaveChanges();
+                    yield return Mapper.Map<SkillUserDTO>(skilluser);
                 }
             }
         }
