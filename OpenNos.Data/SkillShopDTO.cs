@@ -12,21 +12,15 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Data;
-using OpenNos.Data.Enums;
-using System.Collections.Generic;
-
-namespace OpenNos.DAL.Interface
+namespace OpenNos.Data
 {
-    public interface IInventoryDAO
+    public class SkillShopDTO
     {
-        #region Methods
+        #region Properties
 
-        DeleteResult DeleteFromSlotAndType(long characterId, short slot, byte type);
-        SaveResult InsertOrUpdate(ref InventoryDTO inventory);
-        IEnumerable<InventoryDTO> LoadByCharacterId(long characterId);
-        InventoryDTO LoadBySlotAndType(long characterId, short slot, byte type);
-        IEnumerable<InventoryDTO> LoadByType(long characterId, byte type);
+        public int MapNpcId { get; set; }
+        public int SkillShopId { get; set; }
+        public int SkillVNum { get; set; }
 
         #endregion
     }

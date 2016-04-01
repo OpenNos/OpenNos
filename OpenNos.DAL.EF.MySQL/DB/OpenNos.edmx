@@ -528,9 +528,17 @@
     <Property Name="Level" Type="int" Nullable="false" />
     <Property Name="MpCost" Type="int" Nullable="false" />
     <Property Name="Cooldown" Type="int" Nullable="false" />
-    <Property Name="CastAnim" Type="int" Nullable="false" />
-    <Property Name="AttAnim" Type="int" Nullable="false" />
+    <Property Name="CastAnimation" Type="int" Nullable="false" />
+    <Property Name="AttackAnimation" Type="int" Nullable="false" />
     <Property Name="CastEffect" Type="int" Nullable="false" />
+    <Property Name="Distance" Type="smallint" Nullable="false" />
+    <Property Name="Duration" Type="int" Nullable="false" />
+    <Property Name="Damage" Type="smallint" Nullable="false" />
+    <Property Name="ElementalDamage" Type="smallint" Nullable="false" />
+    <Property Name="Element" Type="utinyint" Nullable="false" />
+    <Property Name="CastId" Type="int" Nullable="false" />
+    <Property Name="Type" Type="smallint" Nullable="false" />
+    <Property Name="Range" Type="int" Nullable="false" />
   </EntityType>
   <EntityType Name="skilluser">
     <Key>
@@ -538,16 +546,16 @@
     </Key>
     <Property Name="SkillUserId" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="SkillVNum" Type="int" Nullable="false" />
-    <Property Name="CharacterCharacterId" Type="bigint" Nullable="true" />
-    <Property Name="NpcMonsterNpcMonsterVNum" Type="smallint" Nullable="true" />
+    <Property Name="CharacterId" Type="bigint" Nullable="true" />
+    <Property Name="NpcMonsterVNum" Type="smallint" Nullable="true" />
   </EntityType>
   <EntityType Name="skillshop">
     <Key>
       <PropertyRef Name="SkillShopId" />
     </Key>
     <Property Name="SkillShopId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-    <Property Name="SkillSkillVNum" Type="int" Nullable="false" />
-    <Property Name="MapNpcMapNpcId" Type="int" Nullable="false" />
+    <Property Name="SkillVNum" Type="int" Nullable="false" />
+    <Property Name="MapNpcId" Type="int" Nullable="false" />
   </EntityType>
   <Association Name="AccountCharacter">
     <End Role="Account" Type="opennosModel.Store.account" Multiplicity="1" />
@@ -869,7 +877,7 @@
         <PropertyRef Name="SkillVNum" />
       </Principal>
       <Dependent Role="SkillShop">
-        <PropertyRef Name="SkillSkillVNum" />
+        <PropertyRef Name="SkillVNum" />
       </Dependent>
     </ReferentialConstraint>
   </Association>
@@ -881,7 +889,7 @@
         <PropertyRef Name="MapNpcId" />
       </Principal>
       <Dependent Role="SkillShop">
-        <PropertyRef Name="MapNpcMapNpcId" />
+        <PropertyRef Name="MapNpcId" />
       </Dependent>
     </ReferentialConstraint>
   </Association>
@@ -893,7 +901,7 @@
         <PropertyRef Name="CharacterId" />
       </Principal>
       <Dependent Role="SkillUser">
-        <PropertyRef Name="CharacterCharacterId" />
+        <PropertyRef Name="CharacterId" />
       </Dependent>
     </ReferentialConstraint>
   </Association>
@@ -905,7 +913,7 @@
         <PropertyRef Name="NpcMonsterVNum" />
       </Principal>
       <Dependent Role="SkillUser">
-        <PropertyRef Name="NpcMonsterNpcMonsterVNum" />
+        <PropertyRef Name="NpcMonsterVNum" />
       </Dependent>
     </ReferentialConstraint>
   </Association>
@@ -1119,16 +1127,16 @@
             <End Role="Drop" EntitySet="drop" />
             <End Role="NpcMonster" EntitySet="npcmonster" />
           </AssociationSet>
-          <EntitySet Name="skillset" EntityType="opennosModel.Skill" />
+          <EntitySet Name="skill" EntityType="opennosModel.Skill" />
           <EntitySet Name="skilluser" EntityType="opennosModel.SkillUser" />
           <EntitySet Name="skillshop" EntityType="opennosModel.SkillShop" />
           <AssociationSet Name="skilluseras" Association="opennosModel.skilluseras">
-            <End Role="Skill" EntitySet="skillset" />
+            <End Role="Skill" EntitySet="skill" />
             <End Role="SkillUser" EntitySet="skilluser" />
           </AssociationSet>
           <AssociationSet Name="SkillShopSkill" Association="opennosModel.SkillShopSkill">
             <End Role="SkillShop" EntitySet="skillshop" />
-            <End Role="Skill" EntitySet="skillset" />
+            <End Role="Skill" EntitySet="skill" />
           </AssociationSet>
           <AssociationSet Name="MapNpcSkillShop" Association="opennosModel.MapNpcSkillShop">
             <End Role="MapNpc" EntitySet="mapnpc" />
@@ -1802,9 +1810,9 @@
           <NavigationProperty Name="skill" Relationship="opennosModel.skilluseras" FromRole="SkillUser" ToRole="Skill" />
           <Property Name="SkillVNum" Type="Int32" Nullable="false" />
           <NavigationProperty Name="character" Relationship="opennosModel.CharacterSkillUser" FromRole="SkillUser" ToRole="Character" />
-          <Property Name="CharacterCharacterId" Type="Int64" Nullable="true" />
+          <Property Name="CharacterId" Type="Int64" Nullable="true" />
           <NavigationProperty Name="npcmonster" Relationship="opennosModel.SkillUserNpcMonster" FromRole="SkillUser" ToRole="NpcMonster" />
-          <Property Name="NpcMonsterNpcMonsterVNum" Type="Int16" Nullable="true" />
+          <Property Name="NpcMonsterVNum" Type="Int16" Nullable="true" />
         </EntityType>
         <EntityType Name="SkillShop">
           <Key>
@@ -1812,9 +1820,9 @@
           </Key>
           <Property Name="SkillShopId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <NavigationProperty Name="skill" Relationship="opennosModel.SkillShopSkill" FromRole="SkillShop" ToRole="Skill" />
-          <Property Name="SkillSkillVNum" Type="Int32" Nullable="false" />
+          <Property Name="SkillVNum" Type="Int32" Nullable="false" />
           <NavigationProperty Name="mapnpc" Relationship="opennosModel.MapNpcSkillShop" FromRole="SkillShop" ToRole="MapNpc" />
-          <Property Name="MapNpcMapNpcId" Type="Int32" Nullable="false" />
+          <Property Name="MapNpcId" Type="Int32" Nullable="false" />
         </EntityType>
         <Association Name="skilluseras">
           <End Type="opennosModel.Skill" Role="Skill" Multiplicity="1" />
@@ -1836,7 +1844,7 @@
               <PropertyRef Name="SkillVNum" />
             </Principal>
             <Dependent Role="SkillShop">
-              <PropertyRef Name="SkillSkillVNum" />
+              <PropertyRef Name="SkillVNum" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1848,7 +1856,7 @@
               <PropertyRef Name="MapNpcId" />
             </Principal>
             <Dependent Role="SkillShop">
-              <PropertyRef Name="MapNpcMapNpcId" />
+              <PropertyRef Name="MapNpcId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1860,7 +1868,7 @@
               <PropertyRef Name="CharacterId" />
             </Principal>
             <Dependent Role="SkillUser">
-              <PropertyRef Name="CharacterCharacterId" />
+              <PropertyRef Name="CharacterId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1872,7 +1880,7 @@
               <PropertyRef Name="NpcMonsterVNum" />
             </Principal>
             <Dependent Role="SkillUser">
-              <PropertyRef Name="NpcMonsterNpcMonsterVNum" />
+              <PropertyRef Name="NpcMonsterVNum" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -2263,7 +2271,7 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
-    <EntitySetMapping Name="skillset">
+    <EntitySetMapping Name="skill">
       <EntityTypeMapping TypeName="IsTypeOf(opennosModel.Skill)">
         <MappingFragment StoreEntitySet="skillset">
           <ScalarProperty Name="SkillVNum" ColumnName="SkillVNum" />
@@ -2278,9 +2286,17 @@
           <ScalarProperty Name="Level" ColumnName="Level" />
           <ScalarProperty Name="MpCost" ColumnName="MpCost" />
           <ScalarProperty Name="Cooldown" ColumnName="Cooldown" />
-          <ScalarProperty Name="CastAnimation" ColumnName="CastAnim" />
-          <ScalarProperty Name="AttackAnimation" ColumnName="AttAnim" />
+          <ScalarProperty Name="CastAnimation" ColumnName="CastAnimation" />
+          <ScalarProperty Name="AttackAnimation" ColumnName="AttackAnimation" />
           <ScalarProperty Name="CastEffect" ColumnName="CastEffect" />
+          <ScalarProperty Name="Distance" ColumnName="Distance" />
+          <ScalarProperty Name="Duration" ColumnName="Duration" />
+          <ScalarProperty Name="Damage" ColumnName="Damage" />
+          <ScalarProperty Name="ElementalDamage" ColumnName="ElementalDamage" />
+          <ScalarProperty Name="Element" ColumnName="Element" />
+          <ScalarProperty Name="CastId" ColumnName="CastId" />
+          <ScalarProperty Name="Type" ColumnName="Type" />
+          <ScalarProperty Name="Range" ColumnName="Range" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -2289,8 +2305,8 @@
         <MappingFragment StoreEntitySet="skilluser">
           <ScalarProperty Name="SkillUserId" ColumnName="SkillUserId" />
           <ScalarProperty Name="SkillVNum" ColumnName="SkillVNum" />
-          <ScalarProperty Name="CharacterCharacterId" ColumnName="CharacterCharacterId" />
-          <ScalarProperty Name="NpcMonsterNpcMonsterVNum" ColumnName="NpcMonsterNpcMonsterVNum" />
+          <ScalarProperty Name="CharacterId" ColumnName="CharacterId" />
+          <ScalarProperty Name="NpcMonsterVNum" ColumnName="NpcMonsterVNum" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -2298,8 +2314,8 @@
       <EntityTypeMapping TypeName="IsTypeOf(opennosModel.SkillShop)">
         <MappingFragment StoreEntitySet="skillshop">
           <ScalarProperty Name="SkillShopId" ColumnName="SkillShopId" />
-          <ScalarProperty Name="SkillSkillVNum" ColumnName="SkillSkillVNum" />
-          <ScalarProperty Name="MapNpcMapNpcId" ColumnName="MapNpcMapNpcId" />
+          <ScalarProperty Name="SkillVNum" ColumnName="SkillVNum" />
+          <ScalarProperty Name="MapNpcId" ColumnName="MapNpcId" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

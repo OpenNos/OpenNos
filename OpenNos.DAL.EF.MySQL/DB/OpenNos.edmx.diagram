@@ -51,8 +51,8 @@
         <EntityTypeShape EntityType="opennosModel.Drop" Width="1.875" PointX="19.875" PointY="26.25" IsExpanded="true" />
         <AssociationConnector Association="opennosModel.DropItem" />
         <AssociationConnector Association="opennosModel.DropNpcMonster" />
-        <EntityTypeShape EntityType="opennosModel.Skill" Width="1.5" PointX="17.25" PointY="20.875" IsExpanded="true" />
-        <EntityTypeShape EntityType="opennosModel.SkillUser" Width="1.5" PointX="19.5" PointY="22.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="opennosModel.Skill" Width="2" PointX="17.25" PointY="20.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="opennosModel.SkillUser" Width="1.625" PointX="19.875" PointY="22.875" IsExpanded="true" />
         <EntityTypeShape EntityType="opennosModel.SkillShop" Width="1.5" PointX="15" PointY="22" IsExpanded="true" />
         <AssociationConnector Association="opennosModel.skilluseras" />
         <AssociationConnector Association="opennosModel.SkillShopSkill" />
