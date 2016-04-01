@@ -71,8 +71,8 @@ namespace OpenNos.DAL.EF.MySQL.Helpers
             Mapper.CreateMap<DropDTO, Drop>();
             Mapper.CreateMap<Skill, SkillDTO>();
             Mapper.CreateMap<SkillDTO, Skill>();
-            Mapper.CreateMap<SkillShop, SkillShopDTO>();
-            Mapper.CreateMap<SkillShopDTO, SkillShop>();
+            Mapper.CreateMap<ShopSkill, ShopSkillDTO>();
+            Mapper.CreateMap<ShopSkillDTO, ShopSkill>();
             Mapper.CreateMap<SkillUser, SkillUserDTO>();
             Mapper.CreateMap<SkillUserDTO, SkillUser>();
         }
@@ -160,7 +160,7 @@ namespace OpenNos.DAL.EF.MySQL.Helpers
                     context.shopitem.Any();
                     context.drop.Any();
                     context.skill.Any();
-                    context.skillshop.Any();
+                    context.shopskill.Any();
                     context.skilluser.Any();
                     Logger.Log.Info(Language.Instance.GetMessageFromKey("DATABASE_INITIALIZED"));
                 }

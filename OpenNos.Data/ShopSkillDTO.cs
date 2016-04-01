@@ -12,17 +12,15 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Data;
-using System.Collections.Generic;
-
-namespace OpenNos.DAL.Interface
+namespace OpenNos.Data
 {
-    public interface ISkillShopDAO
+    public class ShopSkillDTO
     {
-        #region Methods
+        #region Properties
 
-        SkillShopDTO Insert(SkillShopDTO skillshop);
-        IEnumerable<SkillShopDTO> LoadByNpc(int npcId);
+        public int MapNpcId { get; set; }
+        public int shopskillId { get; set; }
+        public int SkillVNum { get; set; }
 
         #endregion
     }

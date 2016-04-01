@@ -24,7 +24,7 @@
     <EntitySet Name="recipe" EntityType="opennosModel.Store.recipe" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="recipeitem" EntityType="opennosModel.Store.recipeitem" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="drop" EntityType="opennosModel.Store.drop" store:Type="Tables" Schema="dbo" />
-    <EntitySet Name="skillset" EntityType="opennosModel.Store.skillset" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="skill" EntityType="opennosModel.Store.skill" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="skilluser" EntityType="opennosModel.Store.skilluser" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="skillshop" EntityType="opennosModel.Store.skillshop" store:Type="Tables" Schema="dbo" />
     <AssociationSet Name="AccountCharacter" Association="opennosModel.Store.AccountCharacter">
@@ -128,16 +128,12 @@
       <End Role="NpcMonster" EntitySet="npcmonster" />
     </AssociationSet>
     <AssociationSet Name="skilluseras" Association="opennosModel.Store.skilluseras">
-      <End Role="Skill" EntitySet="skillset" />
+      <End Role="Skill" EntitySet="skill" />
       <End Role="SkillUser" EntitySet="skilluser" />
     </AssociationSet>
     <AssociationSet Name="SkillShopSkill" Association="opennosModel.Store.SkillShopSkill">
       <End Role="SkillShop" EntitySet="skillshop" />
-      <End Role="Skill" EntitySet="skillset" />
-    </AssociationSet>
-    <AssociationSet Name="MapNpcSkillShop" Association="opennosModel.Store.MapNpcSkillShop">
-      <End Role="MapNpc" EntitySet="mapnpc" />
-      <End Role="SkillShop" EntitySet="skillshop" />
+      <End Role="Skill" EntitySet="skill" />
     </AssociationSet>
     <AssociationSet Name="CharacterSkillUser" Association="opennosModel.Store.CharacterSkillUser">
       <End Role="Character" EntitySet="character" />
@@ -146,6 +142,10 @@
     <AssociationSet Name="SkillUserNpcMonster" Association="opennosModel.Store.SkillUserNpcMonster">
       <End Role="SkillUser" EntitySet="skilluser" />
       <End Role="NpcMonster" EntitySet="npcmonster" />
+    </AssociationSet>
+    <AssociationSet Name="SkillShopShop" Association="opennosModel.Store.SkillShopShop">
+      <End Role="SkillShop" EntitySet="skillshop" />
+      <End Role="Shop" EntitySet="shop" />
     </AssociationSet>
   </EntityContainer>
   <EntityType Name="account">
@@ -512,7 +512,7 @@
     <Property Name="ItemVNum" Type="smallint" Nullable="false" />
     <Property Name="MonsterVNum" Type="smallint" Nullable="false" />
   </EntityType>
-  <EntityType Name="skillset">
+  <EntityType Name="skill">
     <Key>
       <PropertyRef Name="SkillVNum" />
     </Key>
@@ -551,11 +551,12 @@
   </EntityType>
   <EntityType Name="skillshop">
     <Key>
-      <PropertyRef Name="SkillShopId" />
+      <PropertyRef Name="ShopSkillId" />
     </Key>
-    <Property Name="SkillShopId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="ShopSkillId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="SkillVNum" Type="int" Nullable="false" />
     <Property Name="MapNpcId" Type="int" Nullable="false" />
+    <Property Name="ShopId" Type="int" Nullable="false" />
   </EntityType>
   <Association Name="AccountCharacter">
     <End Role="Account" Type="opennosModel.Store.account" Multiplicity="1" />
@@ -858,7 +859,7 @@
     </ReferentialConstraint>
   </Association>
   <Association Name="skilluseras">
-    <End Role="Skill" Type="opennosModel.Store.skillset" Multiplicity="1" />
+    <End Role="Skill" Type="opennosModel.Store.skill" Multiplicity="1" />
     <End Role="SkillUser" Type="opennosModel.Store.skilluser" Multiplicity="*" />
     <ReferentialConstraint>
       <Principal Role="Skill">
@@ -871,25 +872,13 @@
   </Association>
   <Association Name="SkillShopSkill">
     <End Role="SkillShop" Type="opennosModel.Store.skillshop" Multiplicity="*" />
-    <End Role="Skill" Type="opennosModel.Store.skillset" Multiplicity="1" />
+    <End Role="Skill" Type="opennosModel.Store.skill" Multiplicity="1" />
     <ReferentialConstraint>
       <Principal Role="Skill">
         <PropertyRef Name="SkillVNum" />
       </Principal>
       <Dependent Role="SkillShop">
         <PropertyRef Name="SkillVNum" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
-  <Association Name="MapNpcSkillShop">
-    <End Role="MapNpc" Type="opennosModel.Store.mapnpc" Multiplicity="1" />
-    <End Role="SkillShop" Type="opennosModel.Store.skillshop" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="MapNpc">
-        <PropertyRef Name="MapNpcId" />
-      </Principal>
-      <Dependent Role="SkillShop">
-        <PropertyRef Name="MapNpcId" />
       </Dependent>
     </ReferentialConstraint>
   </Association>
@@ -914,6 +903,18 @@
       </Principal>
       <Dependent Role="SkillUser">
         <PropertyRef Name="NpcMonsterVNum" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="SkillShopShop">
+    <End Role="SkillShop" Type="opennosModel.Store.skillshop" Multiplicity="*" />
+    <End Role="Shop" Type="opennosModel.Store.shop" Multiplicity="1" />
+    <ReferentialConstraint>
+      <Principal Role="Shop">
+        <PropertyRef Name="ShopId" />
+      </Principal>
+      <Dependent Role="SkillShop">
+        <PropertyRef Name="ShopId" />
       </Dependent>
     </ReferentialConstraint>
   </Association>
@@ -1129,7 +1130,7 @@
           </AssociationSet>
           <EntitySet Name="skill" EntityType="opennosModel.Skill" />
           <EntitySet Name="skilluser" EntityType="opennosModel.SkillUser" />
-          <EntitySet Name="skillshop" EntityType="opennosModel.SkillShop" />
+          <EntitySet Name="skillshop" EntityType="opennosModel.ShopSkill" />
           <AssociationSet Name="skilluseras" Association="opennosModel.skilluseras">
             <End Role="Skill" EntitySet="skill" />
             <End Role="SkillUser" EntitySet="skilluser" />
@@ -1138,10 +1139,6 @@
             <End Role="SkillShop" EntitySet="skillshop" />
             <End Role="Skill" EntitySet="skill" />
           </AssociationSet>
-          <AssociationSet Name="MapNpcSkillShop" Association="opennosModel.MapNpcSkillShop">
-            <End Role="MapNpc" EntitySet="mapnpc" />
-            <End Role="SkillShop" EntitySet="skillshop" />
-          </AssociationSet>
           <AssociationSet Name="CharacterSkillUser" Association="opennosModel.CharacterSkillUser">
             <End Role="Character" EntitySet="character" />
             <End Role="SkillUser" EntitySet="skilluser" />
@@ -1149,6 +1146,10 @@
           <AssociationSet Name="SkillUserNpcMonster" Association="opennosModel.SkillUserNpcMonster">
             <End Role="SkillUser" EntitySet="skilluser" />
             <End Role="NpcMonster" EntitySet="npcmonster" />
+          </AssociationSet>
+          <AssociationSet Name="SkillShopShop" Association="opennosModel.SkillShopShop">
+            <End Role="SkillShop" EntitySet="skillshop" />
+            <End Role="Shop" EntitySet="shop" />
           </AssociationSet>
           </EntityContainer>
         <Association Name="AccountCharacter">
@@ -1479,6 +1480,7 @@
           <NavigationProperty Name="shopitem" Relationship="opennosModel.ShopShopItem" FromRole="Shop" ToRole="ShopItem" />
           <NavigationProperty Name="mapnpc" Relationship="opennosModel.ShopMapNpc" FromRole="Shop" ToRole="MapNpc" />
           <Property Name="MapNpcId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="skillshop" Relationship="opennosModel.SkillShopShop" FromRole="Shop" ToRole="SkillShop" />
         </EntityType>
         <Association Name="ShopItemItem">
           <End Type="opennosModel.ShopItem" Role="ShopItem" Multiplicity="*" />
@@ -1603,7 +1605,6 @@
           <NavigationProperty Name="teleporter" Relationship="opennosModel.TeleporterMapNpc" FromRole="MapNpc" ToRole="Teleporter" />
           <NavigationProperty Name="shop" Relationship="opennosModel.ShopMapNpc" FromRole="MapNpc" ToRole="Shop" />
           <NavigationProperty Name="recipe" Relationship="opennosModel.MapNpcRecipe" FromRole="MapNpc" ToRole="Recipe" />
-          <NavigationProperty Name="skillshop" Relationship="opennosModel.MapNpcSkillShop" FromRole="MapNpc" ToRole="SkillShop" />
         </EntityType>
         <Association Name="MapNpcNpc">
           <End Type="opennosModel.MapNpc" Role="MapNpc" Multiplicity="*" />
@@ -1814,15 +1815,16 @@
           <NavigationProperty Name="npcmonster" Relationship="opennosModel.SkillUserNpcMonster" FromRole="SkillUser" ToRole="NpcMonster" />
           <Property Name="NpcMonsterVNum" Type="Int16" Nullable="true" />
         </EntityType>
-        <EntityType Name="SkillShop">
+        <EntityType Name="ShopSkill">
           <Key>
-            <PropertyRef Name="SkillShopId" />
+            <PropertyRef Name="ShopSkillId" />
           </Key>
-          <Property Name="SkillShopId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ShopSkillId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <NavigationProperty Name="skill" Relationship="opennosModel.SkillShopSkill" FromRole="SkillShop" ToRole="Skill" />
           <Property Name="SkillVNum" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="mapnpc" Relationship="opennosModel.MapNpcSkillShop" FromRole="SkillShop" ToRole="MapNpc" />
           <Property Name="MapNpcId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="shop" Relationship="opennosModel.SkillShopShop" FromRole="SkillShop" ToRole="Shop" />
+          <Property Name="ShopId" Type="Int32" Nullable="false" />
         </EntityType>
         <Association Name="skilluseras">
           <End Type="opennosModel.Skill" Role="Skill" Multiplicity="1" />
@@ -1837,7 +1839,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="SkillShopSkill">
-          <End Type="opennosModel.SkillShop" Role="SkillShop" Multiplicity="*" />
+          <End Type="opennosModel.ShopSkill" Role="SkillShop" Multiplicity="*" />
           <End Type="opennosModel.Skill" Role="Skill" Multiplicity="1" />
           <ReferentialConstraint>
             <Principal Role="Skill">
@@ -1845,18 +1847,6 @@
             </Principal>
             <Dependent Role="SkillShop">
               <PropertyRef Name="SkillVNum" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="MapNpcSkillShop">
-          <End Type="opennosModel.MapNpc" Role="MapNpc" Multiplicity="1" />
-          <End Type="opennosModel.SkillShop" Role="SkillShop" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="MapNpc">
-              <PropertyRef Name="MapNpcId" />
-            </Principal>
-            <Dependent Role="SkillShop">
-              <PropertyRef Name="MapNpcId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1881,6 +1871,18 @@
             </Principal>
             <Dependent Role="SkillUser">
               <PropertyRef Name="NpcMonsterVNum" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="SkillShopShop">
+          <End Type="opennosModel.ShopSkill" Role="SkillShop" Multiplicity="*" />
+          <End Type="opennosModel.Shop" Role="Shop" Multiplicity="1" />
+          <ReferentialConstraint>
+            <Principal Role="Shop">
+              <PropertyRef Name="ShopId" />
+            </Principal>
+            <Dependent Role="SkillShop">
+              <PropertyRef Name="ShopId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -2273,7 +2275,7 @@
     </EntitySetMapping>
     <EntitySetMapping Name="skill">
       <EntityTypeMapping TypeName="IsTypeOf(opennosModel.Skill)">
-        <MappingFragment StoreEntitySet="skillset">
+        <MappingFragment StoreEntitySet="skill">
           <ScalarProperty Name="SkillVNum" ColumnName="SkillVNum" />
           <ScalarProperty Name="Name" ColumnName="Name" />
           <ScalarProperty Name="Cost" ColumnName="Cost" />
@@ -2311,11 +2313,12 @@
       </EntityTypeMapping>
     </EntitySetMapping>
     <EntitySetMapping Name="skillshop">
-      <EntityTypeMapping TypeName="IsTypeOf(opennosModel.SkillShop)">
+      <EntityTypeMapping TypeName="IsTypeOf(opennosModel.ShopSkill)">
         <MappingFragment StoreEntitySet="skillshop">
-          <ScalarProperty Name="SkillShopId" ColumnName="SkillShopId" />
+          <ScalarProperty Name="ShopSkillId" ColumnName="ShopSkillId" />
           <ScalarProperty Name="SkillVNum" ColumnName="SkillVNum" />
           <ScalarProperty Name="MapNpcId" ColumnName="MapNpcId" />
+          <ScalarProperty Name="ShopId" ColumnName="ShopId" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

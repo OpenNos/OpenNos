@@ -18,6 +18,7 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public Shop()
         {
             this.shopitem = new HashSet<ShopItem>();
+            this.shopskill = new HashSet<ShopSkill>();
         }
     
         public int ShopId { get; set; }
@@ -29,5 +30,7 @@ namespace OpenNos.DAL.EF.MySQL.DB
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ShopItem> shopitem { get; set; }
         public virtual MapNpc mapnpc { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<ShopSkill> shopskill { get; set; }
     }
 }

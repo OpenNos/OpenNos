@@ -22,28 +22,28 @@ using System.Linq;
 
 namespace OpenNos.DAL.EF.MySQL
 {
-    public class SkillShopDAO : ISkillShopDAO
+    public class ShopSkillDAO : IShopSkillDAO
     {
         #region Methods
 
-        public SkillShopDTO Insert(SkillShopDTO skillshop)
+        public ShopSkillDTO Insert(ShopSkillDTO shopskill)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                SkillShop entity = Mapper.Map<SkillShop>(skillshop);
-                context.skillshop.Add(entity);
+                ShopSkill entity = Mapper.Map<ShopSkill>(shopskill);
+                context.shopskill.Add(entity);
                 context.SaveChanges();
-                return Mapper.Map<SkillShopDTO>(entity);
+                return Mapper.Map<ShopSkillDTO>(entity);
             }
         }
 
-        public IEnumerable<SkillShopDTO> LoadByNpc(int npcId)
+        public IEnumerable<ShopSkillDTO> LoadByNpc(int npcId)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                foreach (SkillShop skillshop in context.skillshop.Where(s => s.MapNpcId.Equals(npcId)))
+                foreach (ShopSkill shopskill in context.shopskill.Where(s => s.MapNpcId.Equals(npcId)))
                 {
-                    yield return Mapper.Map<SkillShopDTO>(skillshop);
+                    yield return Mapper.Map<ShopSkillDTO>(shopskill);
                 }
             }
         }

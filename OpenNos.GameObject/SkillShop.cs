@@ -17,14 +17,14 @@ using OpenNos.Data;
 
 namespace OpenNos.GameObject
 {
-    public class SkillShop : SkillShopDTO
+    public class shopskill : ShopSkillDTO
     {
         #region Instantiation
 
-        public SkillShop()
+        public shopskill()
         {
-            Mapper.CreateMap<SkillShopDTO, SkillShop>();
-            Mapper.CreateMap<SkillShop, SkillShopDTO>();
+            Mapper.CreateMap<ShopSkillDTO, shopskill>();
+            Mapper.CreateMap<shopskill, ShopSkillDTO>();
         }
 
         #endregion

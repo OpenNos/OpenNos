@@ -18,7 +18,7 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public Skill()
         {
             this.skilluser = new HashSet<SkillUser>();
-            this.skillshop = new HashSet<SkillShop>();
+            this.shopskill = new HashSet<ShopSkill>();
         }
     
         public int SkillVNum { get; set; }
@@ -48,6 +48,6 @@ namespace OpenNos.DAL.EF.MySQL.DB
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<SkillUser> skilluser { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<SkillShop> skillshop { get; set; }
+        public virtual ICollection<ShopSkill> shopskill { get; set; }
     }
 }

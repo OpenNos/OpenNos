@@ -39,7 +39,7 @@ namespace OpenNos.DAL
         private static IShopDAO _shopDAO;
         private static IShopItemDAO _shopitemDAO;
         private static ISkillDAO _skillDAO;
-        private static ISkillShopDAO _skillshopDAO;
+        private static IShopSkillDAO _shopskillDAO;
         private static ISkillUserDAO _skilluserDAO;
         private static ITeleporterDAO _teleporterDAO;
 
@@ -293,16 +293,16 @@ namespace OpenNos.DAL
             }
         }
 
-        public static ISkillShopDAO SkillShopDAO
+        public static IShopSkillDAO shopskillDAO
         {
             get
             {
-                if (_skillshopDAO == null)
+                if (_shopskillDAO == null)
                 {
-                    _skillshopDAO = new MySQL.SkillShopDAO();
+                    _shopskillDAO = new MySQL.ShopSkillDAO();
                 }
 
-                return _skillshopDAO;
+                return _shopskillDAO;
             }
         }
 

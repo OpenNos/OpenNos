@@ -44,9 +44,9 @@
 -- -----------------------------------------------------------
 -- Entity Designer DDL Script for MySQL Server 4.1 and higher
 -- -----------------------------------------------------------
--- Date Created: 04/01/2016 15:39:07
+-- Date Created: 04/01/2016 17:01:01
 
--- Generated from EDMX file: C:\Users\Dominik\Source\Repos\OpenNos\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
+-- Generated from EDMX file: C:\Users\ERWAN\Desktop\OpenNos Git\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
 -- Target version: 3.0.0.0
 
 -- --------------------------------------------------
@@ -111,9 +111,9 @@
 
 --    ALTER TABLE `skilluser` DROP CONSTRAINT `FK_skilluseras`;
 
---    ALTER TABLE `skillshop` DROP CONSTRAINT `FK_SkillShopSkill`;
+--    ALTER TABLE `shopskill` DROP CONSTRAINT `FK_shopskillSkill`;
 
---    ALTER TABLE `skillshop` DROP CONSTRAINT `FK_MapNpcSkillShop`;
+--    ALTER TABLE `shopskill` DROP CONSTRAINT `FK_MapNpcshopskill`;
 
 --    ALTER TABLE `skilluser` DROP CONSTRAINT `FK_CharacterSkillUser`;
 
@@ -165,7 +165,7 @@ SET foreign_key_checks = 0;
 
     DROP TABLE IF EXISTS `skilluser`;
 
-    DROP TABLE IF EXISTS `skillshop`;
+    DROP TABLE IF EXISTS `shopskill`;
 
 SET foreign_key_checks = 1;
 
@@ -592,7 +592,7 @@ ALTER TABLE `drop` ADD PRIMARY KEY (DropId);
 
 
 
-CREATE TABLE `skillset`(
+CREATE TABLE `skill`(
 	`SkillVNum` int NOT NULL, 
 	`Name` longtext NOT NULL, 
 	`Cost` int NOT NULL, 
@@ -617,7 +617,7 @@ CREATE TABLE `skillset`(
 	`Type` smallint NOT NULL, 
 	`Range` int NOT NULL);
 
-ALTER TABLE `skillset` ADD PRIMARY KEY (SkillVNum);
+ALTER TABLE `skill` ADD PRIMARY KEY (SkillVNum);
 
 
 
@@ -635,12 +635,13 @@ ALTER TABLE `skilluser` ADD PRIMARY KEY (SkillUserId);
 
 
 
-CREATE TABLE `skillshop`(
-	`SkillShopId` int NOT NULL AUTO_INCREMENT UNIQUE, 
+CREATE TABLE `shopskill`(
+	`ShopSkillId` int NOT NULL AUTO_INCREMENT UNIQUE, 
 	`SkillVNum` int NOT NULL, 
-	`MapNpcId` int NOT NULL);
+	`MapNpcId` int NOT NULL, 
+	`ShopId` int NOT NULL);
 
-ALTER TABLE `skillshop` ADD PRIMARY KEY (SkillShopId);
+ALTER TABLE `shopskill` ADD PRIMARY KEY (ShopSkillId);
 
 
 
@@ -1108,7 +1109,7 @@ CREATE INDEX `IX_FK_DropNpcMonster`
 ALTER TABLE `skilluser`
 ADD CONSTRAINT `FK_skilluseras`
     FOREIGN KEY (`SkillVNum`)
-    REFERENCES `skillset`
+    REFERENCES `skill`
         (`SkillVNum`)
     ON DELETE NO ACTION ON UPDATE NO ACTION;
 
@@ -1121,39 +1122,21 @@ CREATE INDEX `IX_FK_skilluseras`
 
 
 
--- Creating foreign key on `SkillVNum` in table 'skillshop'
+-- Creating foreign key on `SkillVNum` in table 'shopskill'
 
-ALTER TABLE `skillshop`
-ADD CONSTRAINT `FK_SkillShopSkill`
+ALTER TABLE `shopskill`
+ADD CONSTRAINT `FK_shopskillSkill`
     FOREIGN KEY (`SkillVNum`)
-    REFERENCES `skillset`
+    REFERENCES `skill`
         (`SkillVNum`)
     ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 
--- Creating non-clustered index for FOREIGN KEY 'FK_SkillShopSkill'
+-- Creating non-clustered index for FOREIGN KEY 'FK_shopskillSkill'
 
-CREATE INDEX `IX_FK_SkillShopSkill`
-    ON `skillshop`
+CREATE INDEX `IX_FK_shopskillSkill`
+    ON `shopskill`
     (`SkillVNum`);
-
-
-
--- Creating foreign key on `MapNpcId` in table 'skillshop'
-
-ALTER TABLE `skillshop`
-ADD CONSTRAINT `FK_MapNpcSkillShop`
-    FOREIGN KEY (`MapNpcId`)
-    REFERENCES `mapnpc`
-        (`MapNpcId`)
-    ON DELETE NO ACTION ON UPDATE NO ACTION;
-
-
--- Creating non-clustered index for FOREIGN KEY 'FK_MapNpcSkillShop'
-
-CREATE INDEX `IX_FK_MapNpcSkillShop`
-    ON `skillshop`
-    (`MapNpcId`);
 
 
 
@@ -1190,6 +1173,24 @@ ADD CONSTRAINT `FK_SkillUserNpcMonster`
 CREATE INDEX `IX_FK_SkillUserNpcMonster`
     ON `skilluser`
     (`NpcMonsterVNum`);
+
+
+
+-- Creating foreign key on `ShopId` in table 'shopskill'
+
+ALTER TABLE `shopskill`
+ADD CONSTRAINT `FK_shopskillShop`
+    FOREIGN KEY (`ShopId`)
+    REFERENCES `shop`
+        (`ShopId`)
+    ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+
+-- Creating non-clustered index for FOREIGN KEY 'FK_shopskillShop'
+
+CREATE INDEX `IX_FK_shopskillShop`
+    ON `shopskill`
+    (`ShopId`);
 
 
 

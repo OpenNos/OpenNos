@@ -12,13 +12,14 @@ namespace OpenNos.DAL.EF.MySQL.DB
     using System;
     using System.Collections.Generic;
     
-    public partial class SkillShop
+    public partial class ShopSkill
     {
-        public int SkillShopId { get; set; }
+        public int ShopSkillId { get; set; }
         public int SkillVNum { get; set; }
         public int MapNpcId { get; set; }
+        public int ShopId { get; set; }
     
         public virtual Skill skill { get; set; }
-        public virtual MapNpc mapnpc { get; set; }
+        public virtual Shop shop { get; set; }
     }
 }
