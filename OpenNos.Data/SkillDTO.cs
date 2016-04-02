@@ -17,6 +17,7 @@ namespace OpenNos.Data
     public class SkillDTO
     {
         #region Properties
+
         public short SkillVNum { get; set; }
         public string Name { get; set; }
         public int Cost { get; set; }
@@ -41,6 +42,7 @@ namespace OpenNos.Data
         public short CastId { get; set; }
         public byte Type { get; set; }
         public byte Range { get; set; }
+        public short VNumRequired { get; set; }
 
         #endregion
     }

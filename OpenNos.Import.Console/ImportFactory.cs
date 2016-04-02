@@ -383,11 +383,13 @@ namespace OpenNos.Import.Console
                     }
                     else if (currentLine.Length > 2 && currentLine[1] == "TYPE")
                     {
-                     
+                        skill.CastId = short.Parse(currentLine[3]);
+                        skill.Type = byte.Parse(currentLine[5]);
+                        skill.Element = byte.Parse(currentLine[7]);
                     }
                     else if (currentLine.Length > 3 && currentLine[1] == "COST")
                     {
-                        skill.CPCost = currentLine[2]=="-1"?(byte)0: byte.Parse(currentLine[2]);
+                        skill.CPCost = currentLine[2] == "-1" ? (byte)0 : byte.Parse(currentLine[2]);
                         skill.Cost = int.Parse(currentLine[3]);
                     }
                     else if (currentLine.Length > 2 && currentLine[1] == "LEVEL")
@@ -396,39 +398,119 @@ namespace OpenNos.Import.Console
                         skill.MinimumAdventurerLevel = currentLine[3] != "-1" ? byte.Parse(currentLine[3]) : (byte)0;
                         skill.MinimumSwordmanLevel = currentLine[4] != "-1" ? byte.Parse(currentLine[4]) : (byte)0;
                         skill.MinimumArcherLevel = currentLine[5] != "-1" ? byte.Parse(currentLine[5]) : (byte)0;
-                        skill.MinimumMagicianLevel = currentLine[6] != "-1"?byte.Parse(currentLine[6]):(byte)0;
+                        skill.MinimumMagicianLevel = currentLine[6] != "-1" ? byte.Parse(currentLine[6]) : (byte)0;
                     }
                     else if (currentLine.Length > 2 && currentLine[1] == "EFFECT")
                     {
+                        //skill.Unknown = short.Parse(currentLine[2]);
+                        skill.CastEffect = short.Parse(currentLine[3]);
+                        skill.CastAnimation = short.Parse(currentLine[4]);
+                        skill.Effect = short.Parse(currentLine[5]);
+                        skill.AttackAnimation = short.Parse(currentLine[6]);
                     }
                     else if (currentLine.Length > 2 && currentLine[1] == "TARGET")
                     {
+                        //1&2 used as type
+                        //third unknown
+                        skill.Distance = byte.Parse(currentLine[4]);
+                        skill.Range = byte.Parse(currentLine[5]);
                     }
                     else if (currentLine.Length > 2 && currentLine[1] == "DATA")
                     {
+                        skill.Duration = short.Parse(currentLine[6]);
+                        skill.Cooldown = short.Parse(currentLine[7]);
                         skill.MpCost = short.Parse(currentLine[10]);
+                        skill.VNumRequired = short.Parse(currentLine[12]);
                     }
                     else if (currentLine.Length > 2 && currentLine[1] == "BASIC")
                     {
-                        switch(currentLine[2])
+                        switch (currentLine[2])
                         {
                             case "0":
+                                /*
+                                if (currentLine[4] == "1")
+                                skill.MonsterAmount = short.Parse(currentLine[5]); //Divide by 4
+                                skill.MonsterVNum = short.Parse(currentLine[6]); // Divide by 4
+                                else if (currentLine[4] == "0")
+                                skill.Buff = short.Parse(currentLine[5]); //Divide by 4
+                                skill.BuffId = short.Parse(currentLine[6]); // Divide by 4
+                                */
+                                skill.Damage = short.Parse(currentLine[5]); // Divide by 4(?)
                                 break;
                             case "1":
+                                skill.ElementalDamage = short.Parse(currentLine[5]); // Divide by 4(?)
+                                /*
+                                skill.Unknown = short.Parse(currentLine[2]);
+                                skill.Unknown = short.Parse(currentLine[3]);
+                                skill.Unknown = short.Parse(currentLine[4]);
+                                skill.Unknown = short.Parse(currentLine[6]);
+                                skill.Unknown = short.Parse(currentLine[7]);
+                                */
                                 break;
                             case "2":
+                                //unknown
+                                /*
+                                skill.Unknown = short.Parse(currentLine[2]);
+                                skill.Unknown = short.Parse(currentLine[3]);
+                                skill.Unknown = short.Parse(currentLine[4]);
+                                skill.Unknown = short.Parse(currentLine[5]);
+                                skill.Unknown = short.Parse(currentLine[6]);
+                                skill.Unknown = short.Parse(currentLine[7]);
+                                */
                                 break;
                             case "3":
+                                //unknown
+                                /*
+                                skill.Unknown = short.Parse(currentLine[2]);
+                                skill.Unknown = short.Parse(currentLine[3]);
+                                skill.Unknown = short.Parse(currentLine[4]);
+                                skill.Unknown = short.Parse(currentLine[5]);
+                                skill.Unknown = short.Parse(currentLine[6]);
+                                skill.Unknown = short.Parse(currentLine[7]);
+                                */
                                 break;
                             case "4":
+                                //unknown
+                                /*
+                                skill.Unknown = short.Parse(currentLine[2]);
+                                skill.Unknown = short.Parse(currentLine[3]);
+                                skill.Unknown = short.Parse(currentLine[4]);
+                                skill.Unknown = short.Parse(currentLine[5]);
+                                skill.Unknown = short.Parse(currentLine[6]);
+                                skill.Unknown = short.Parse(currentLine[7]);
+                                */
                                 break;
                         }
                     }
                     else if (currentLine.Length > 2 && currentLine[1] == "FCOMBO")
                     {
+                        /* parse when proper
+                        if (currentLine[2] == "1")
+                        {
+                            skill.FirstActivationHit = byte.Parse(currentLine[3]);
+                            skill.FirstComboAttackAnimation = short.Parse(currentLine[4]);
+                            skill.FirstComboEffect = short.Parse(currentLine[5]);
+                            skill.SecondActivationHit = byte.Parse(currentLine[3]);
+                            skill.SecondComboAttackAnimation = short.Parse(currentLine[4]);
+                            skill.SecondComboEffect = short.Parse(currentLine[5]);
+                            skill.ThirdActivationHit = byte.Parse(currentLine[3]);
+                            skill.ThirdComboAttackAnimation = short.Parse(currentLine[4]);
+                            skill.ThirdComboEffect = short.Parse(currentLine[5]);
+                            skill.FourthActivationHit = byte.Parse(currentLine[3]);
+                            skill.FourthComboAttackAnimation = short.Parse(currentLine[4]);
+                            skill.FourthComboEffect = short.Parse(currentLine[5]);
+                            skill.FifthActivationHit = byte.Parse(currentLine[3]);
+                            skill.FifthComboAttackAnimation = short.Parse(currentLine[4]);
+                            skill.FifthComboEffect = short.Parse(currentLine[5]);
+                        }
+                        */
+
                     }
                     else if (currentLine.Length > 2 && currentLine[1] == "CELL")
                     {
+                        /*
+                        skill.Unknown = short.Parse(currentLine[2]); // 2 - ??
+                        */
                     }
                     else if (currentLine.Length > 1 && currentLine[1] == "Z_DESC")
                     {
@@ -779,12 +861,12 @@ namespace OpenNos.Import.Console
                         item.ItemType = currentLine[3] != "-1" ? Convert.ToByte($"{item.Type}{currentLine[3]}") : (byte)0;
                         item.ItemSubType = Convert.ToByte(currentLine[4]);
                         item.EquipmentSlot = Convert.ToByte(currentLine[5] != "-1" ? currentLine[5] : "0");
-                        //linesave[6] design id?
+                        //item.DesignId = Convert.ToInt16(currentLine[6]);
                         item.Morph = Convert.ToInt16(currentLine[7]);
                     }
                     else if (currentLine.Length > 3 && currentLine[1] == "TYPE")
                     {
-                        //linesave[2] 0-range 2-range 3-magic but useless
+                        //linesave[2] 0-range 2-range 3-magic
                         if (item.EquipmentSlot == (byte)EquipmentType.Fairy)
                             item.Class = 15;
                         else
@@ -803,18 +885,16 @@ namespace OpenNos.Import.Console
                         if (currentLine[21] == "1")
                             item.ReputPrice = item.Price;
                         /*
-                        ??item.IsVehicle = linesave[11] == "1" ? true : false;??
-                        ??item.BoxedVehicle = linesave[12] == "1" ? true : false;??
-                        linesave[2]  not used
-                        linesave[3]  not used
-                        linesave[4]  idk
-                        linesave[11] idk
-                        linesave[12] idk
-                        linesave[13] idk
-                        linesave[14] idk
-                        linesave[15] idk
-                        linesave[19] idk
-                        linesave[20] idk
+                        item.IsVehicle = currentLine[11] == "1" ? true : false; // (?)
+                        item.BoxedVehicle = currentLine[12] == "1" ? true : false; // (?)
+                        linesave[4]  unknown
+                        linesave[11] unknown
+                        linesave[12] unknown
+                        linesave[13] unknown
+                        linesave[14] unknown
+                        linesave[15] unknown
+                        linesave[19] unknown
+                        linesave[20] unknown
                         */
                     }
                     else if (currentLine.Length > 1 && currentLine[1] == "DATA")
@@ -891,7 +971,7 @@ namespace OpenNos.Import.Console
 
                             case (byte)ItemType.Specialist:
                                 //item.isSpecialist = Convert.ToByte(linesave[2]);
-                                //item.(...) = (...)(linesave[3]));
+                                //item.Unknown = Convert.ToInt16(linesave[3]));
                                 item.Speed = Convert.ToByte(currentLine[5]);
                                 item.SpType = Convert.ToByte(currentLine[13]);
                                 //item.Morph = Convert.ToInt16(linesave[14]) + 1; // idk whats that, its useless
@@ -926,8 +1006,8 @@ namespace OpenNos.Import.Console
                                 break;
 
                             case (byte)ItemType.Shell:
-                                //item.ShellMinimumLevel = Convert.ToInt16(linesave[3]); // wtf\/\/ this two things are wrong in many ways
-                                //item.ShellMaximumLevel = Convert.ToInt16(linesave[4]); // wtf/\/\ this two things are wrong in many ways
+                                //item.ShellMinimumLevel = Convert.ToInt16(linesave[3]);
+                                //item.ShellMaximumLevel = Convert.ToInt16(linesave[4]);
                                 //item.ShellType = Convert.ToByte(linesave[5]); // 3 shells of each type
                                 break;
 
