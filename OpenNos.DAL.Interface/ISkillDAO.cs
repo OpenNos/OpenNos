@@ -13,6 +13,7 @@
  */
 
 using OpenNos.Data;
+using System.Collections.Generic;
 
 namespace OpenNos.DAL.Interface
 {
@@ -22,7 +23,7 @@ namespace OpenNos.DAL.Interface
 
         SkillDTO Insert(SkillDTO skill);
         SkillDTO LoadById(short SkillId);
-
+        void Insert(List<SkillDTO> skills);
         #endregion
     }
 }

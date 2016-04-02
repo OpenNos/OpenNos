@@ -20,7 +20,7 @@ namespace OpenNos.Data
 
         public int MapNpcId { get; set; }
         public int shopskillId { get; set; }
-        public int SkillVNum { get; set; }
+        public short SkillVNum { get; set; }
 
         #endregion
     }

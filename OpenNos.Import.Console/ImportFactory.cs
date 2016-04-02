@@ -342,6 +342,109 @@ namespace OpenNos.Import.Console
             }
         }
 
+        public void ImportSkills()
+        {
+            string fileSkillId = $"{_folder}\\Skill.dat";
+            string fileSkillLang = $"{_folder}\\_code_{System.Configuration.ConfigurationManager.AppSettings["language"]}_Skill.txt";
+            List<SkillDTO> skills = new List<SkillDTO>();
+
+            Dictionary<string, string> dictionaryIdLang = new Dictionary<string, string>();
+            SkillDTO skill = new SkillDTO();
+            string line;
+            bool itemAreaBegin = false;
+            int counter = 0;
+
+            using (StreamReader skillIdLangStream = new StreamReader(fileSkillLang, Encoding.GetEncoding(1252)))
+            {
+                while ((line = skillIdLangStream.ReadLine()) != null)
+                {
+                    string[] linesave = line.Split('\t');
+                    if (linesave.Length > 1 && !dictionaryIdLang.ContainsKey(linesave[0]))
+                        dictionaryIdLang.Add(linesave[0], linesave[1]);
+                }
+                skillIdLangStream.Close();
+            }
+
+            using (StreamReader skillIdStream = new StreamReader(fileSkillId, Encoding.GetEncoding(1252)))
+            {
+                while ((line = skillIdStream.ReadLine()) != null)
+                {
+                    string[] currentLine = line.Split('\t');
+
+                    if (currentLine.Length > 2 && currentLine[1] == "VNUM")
+                    {
+                        skill = new SkillDTO();
+                        skill.SkillVNum = short.Parse(currentLine[2]);
+                    }
+                    else if (currentLine.Length > 2 && currentLine[1] == "NAME")
+                    {
+                        string name;
+                        skill.Name = dictionaryIdLang.TryGetValue(currentLine[2], out name) ? name : string.Empty;
+                    }
+                    else if (currentLine.Length > 2 && currentLine[1] == "TYPE")
+                    {
+                     
+                    }
+                    else if (currentLine.Length > 3 && currentLine[1] == "COST")
+                    {
+                        skill.CPCost = byte.Parse(currentLine[2]);
+                        skill.Cost = byte.Parse(currentLine[3]);
+                    }
+                    else if (currentLine.Length > 2 && currentLine[1] == "LEVEL")
+                    {
+                        skill.JobLevelMinimum = int.Parse(currentLine[2]);
+                        skill.MinimumAdventurerLevel = int.Parse(currentLine[3]);
+                        skill.MinimumSwordmanLevel = int.Parse(currentLine[4]);
+                        skill.MinimumArcherLevel = int.Parse(currentLine[5]);
+                        skill.MinimumMagicianLevel = int.Parse(currentLine[6]);
+                    }
+                    else if (currentLine.Length > 2 && currentLine[1] == "EFFECT")
+                    {
+                    }
+                    else if (currentLine.Length > 2 && currentLine[1] == "TARGET")
+                    {
+                    }
+                    else if (currentLine.Length > 2 && currentLine[1] == "DATA")
+                    {
+                        skill.MpCost = int.Parse(currentLine[10]);
+                    }
+                    else if (currentLine.Length > 2 && currentLine[1] == "BASIC")
+                    {
+                        switch(currentLine[2])
+                        {
+                            case "0":
+                                break;
+                            case "1":
+                                break;
+                            case "2":
+                                break;
+                            case "3":
+                                break;
+                            case "4":
+                                break;
+                        }
+                    }
+                    else if (currentLine.Length > 2 && currentLine[1] == "FCOMBO")
+                    {
+                    }
+                    else if (currentLine.Length > 2 && currentLine[1] == "CELL")
+                    {
+                    }
+                    else if (currentLine.Length > 1 && currentLine[1] == "Z_DESC")
+                    {
+                        if (DAOFactory.SkillDAO.LoadById(skill.SkillVNum) == null)
+                        {
+                            skills.Add(skill);
+                            counter++;
+                        }
+                    }
+                }
+                DAOFactory.SkillDAO.Insert(skills);
+                Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("SKILLS_PARSED"), counter));
+                skillIdStream.Close();
+            }
+        }
+
         public void ImportPackets()
         {
             string filePacket = $"{_folder}\\packet.txt";

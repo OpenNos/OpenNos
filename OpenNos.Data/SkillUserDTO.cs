@@ -23,7 +23,7 @@ namespace OpenNos.Data
         public Nullable<long> CharacterId { get; set; }
         public Nullable<short> NpcMonsterVNum { get; set; }
         public long SkillUserId { get; set; }
-        public int SkillVNum { get; set; }
+        public short SkillVNum { get; set; }
 
         #endregion
     }

@@ -44,7 +44,7 @@
 -- -----------------------------------------------------------
 -- Entity Designer DDL Script for MySQL Server 4.1 and higher
 -- -----------------------------------------------------------
--- Date Created: 04/01/2016 17:01:01
+-- Date Created: 04/02/2016 12:29:03
 
 -- Generated from EDMX file: C:\Users\ERWAN\Desktop\OpenNos Git\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
 -- Target version: 3.0.0.0
@@ -113,11 +113,11 @@
 
 --    ALTER TABLE `shopskill` DROP CONSTRAINT `FK_shopskillSkill`;
 
---    ALTER TABLE `shopskill` DROP CONSTRAINT `FK_MapNpcshopskill`;
-
 --    ALTER TABLE `skilluser` DROP CONSTRAINT `FK_CharacterSkillUser`;
 
 --    ALTER TABLE `skilluser` DROP CONSTRAINT `FK_SkillUserNpcMonster`;
+
+--    ALTER TABLE `shopskill` DROP CONSTRAINT `FK_shopskillShop`;
 
 
 -- --------------------------------------------------
@@ -161,7 +161,7 @@ SET foreign_key_checks = 0;
 
     DROP TABLE IF EXISTS `drop`;
 
-    DROP TABLE IF EXISTS `skillset`;
+    DROP TABLE IF EXISTS `skill`;
 
     DROP TABLE IF EXISTS `skilluser`;
 
@@ -593,7 +593,7 @@ ALTER TABLE `drop` ADD PRIMARY KEY (DropId);
 
 
 CREATE TABLE `skill`(
-	`SkillVNum` int NOT NULL, 
+	`SkillVNum` smallint NOT NULL, 
 	`Name` longtext NOT NULL, 
 	`Cost` int NOT NULL, 
 	`JobLevelMinimum` int NOT NULL, 
@@ -604,6 +604,7 @@ CREATE TABLE `skill`(
 	`Effect` int NOT NULL, 
 	`Level` int NOT NULL, 
 	`MpCost` int NOT NULL, 
+	`CPCost` TINYINT UNSIGNED NOT NULL, 
 	`Cooldown` int NOT NULL, 
 	`CastAnimation` int NOT NULL, 
 	`AttackAnimation` int NOT NULL, 
@@ -625,7 +626,7 @@ ALTER TABLE `skill` ADD PRIMARY KEY (SkillVNum);
 
 CREATE TABLE `skilluser`(
 	`SkillUserId` bigint NOT NULL AUTO_INCREMENT UNIQUE, 
-	`SkillVNum` int NOT NULL, 
+	`SkillVNum` smallint NOT NULL, 
 	`CharacterId` bigint, 
 	`NpcMonsterVNum` smallint);
 
@@ -637,7 +638,7 @@ ALTER TABLE `skilluser` ADD PRIMARY KEY (SkillUserId);
 
 CREATE TABLE `shopskill`(
 	`ShopSkillId` int NOT NULL AUTO_INCREMENT UNIQUE, 
-	`SkillVNum` int NOT NULL, 
+	`SkillVNum` smallint NOT NULL, 
 	`MapNpcId` int NOT NULL, 
 	`ShopId` int NOT NULL);
 

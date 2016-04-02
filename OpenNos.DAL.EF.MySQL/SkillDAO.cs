@@ -17,6 +17,7 @@ using OpenNos.DAL.EF.MySQL.DB;
 using OpenNos.DAL.EF.MySQL.Helpers;
 using OpenNos.DAL.Interface;
 using OpenNos.Data;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace OpenNos.DAL.EF.MySQL
@@ -24,6 +25,22 @@ namespace OpenNos.DAL.EF.MySQL
     public class SkillDAO : ISkillDAO
     {
         #region Methods
+
+        public void Insert(List<SkillDTO> skills)
+        {
+            using (var context = DataAccessHelper.CreateContext())
+            {
+
+                context.Configuration.AutoDetectChangesEnabled = false;
+                foreach (SkillDTO skill in skills)
+                {
+                    Skill entity = Mapper.Map<Skill>(skill);
+                    context.skill.Add(entity);
+                }
+                context.SaveChanges();
+
+            }
+        }
 
         public SkillDTO Insert(SkillDTO skill)
         {

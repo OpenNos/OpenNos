@@ -15,7 +15,7 @@ namespace OpenNos.DAL.EF.MySQL.DB
     public partial class SkillUser
     {
         public long SkillUserId { get; set; }
-        public int SkillVNum { get; set; }
+        public short SkillVNum { get; set; }
         public Nullable<long> CharacterId { get; set; }
         public Nullable<short> NpcMonsterVNum { get; set; }
     

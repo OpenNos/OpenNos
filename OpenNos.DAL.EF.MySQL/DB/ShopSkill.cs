@@ -15,7 +15,7 @@ namespace OpenNos.DAL.EF.MySQL.DB
     public partial class ShopSkill
     {
         public int ShopSkillId { get; set; }
-        public int SkillVNum { get; set; }
+        public short SkillVNum { get; set; }
         public int MapNpcId { get; set; }
         public int ShopId { get; set; }
     

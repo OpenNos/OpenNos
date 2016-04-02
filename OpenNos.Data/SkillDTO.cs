@@ -37,9 +37,10 @@ namespace OpenNos.Data
         public int MinimumMagicianLevel { get; set; }
         public int MinimumSwordmanLevel { get; set; }
         public int MpCost { get; set; }
+        public byte CPCost { get; set; }
         public string Name { get; set; }
         public int Range { get; set; }
-        public int SkillVNum { get; set; }
+        public short SkillVNum { get; set; }
         public short Type { get; set; }
 
         #endregion

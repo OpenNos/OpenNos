@@ -21,7 +21,7 @@ namespace OpenNos.DAL.EF.MySQL.DB
             this.shopskill = new HashSet<ShopSkill>();
         }
     
-        public int SkillVNum { get; set; }
+        public short SkillVNum { get; set; }
         public string Name { get; set; }
         public int Cost { get; set; }
         public int JobLevelMinimum { get; set; }
@@ -32,6 +32,7 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public int Effect { get; set; }
         public int Level { get; set; }
         public int MpCost { get; set; }
+        public byte CPCost { get; set; }
         public int Cooldown { get; set; }
         public int CastAnimation { get; set; }
         public int AttackAnimation { get; set; }

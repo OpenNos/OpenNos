@@ -45,10 +45,12 @@ namespace OpenNos.Import.Console
             System.Console.WriteLine($"-----_code_{System.Configuration.ConfigurationManager.AppSettings["language"]}_Item.txt");
             System.Console.WriteLine($"-----_code_{System.Configuration.ConfigurationManager.AppSettings["language"]}_MapIDData.txt");
             System.Console.WriteLine($"-----_code_{System.Configuration.ConfigurationManager.AppSettings["language"]}_monster.txt");
+            System.Console.WriteLine($"-----_code_{System.Configuration.ConfigurationManager.AppSettings["language"]}_Skill.txt");
             // System.Console.WriteLine("-----BCard.dat");
             System.Console.WriteLine("-----Item.dat");
             System.Console.WriteLine("-----MapIDData.dat");
             System.Console.WriteLine("-----monster.dat");
+            System.Console.WriteLine("-----Skill.dat");
             System.Console.WriteLine("-----packet.txt");
             System.Console.BackgroundColor = System.ConsoleColor.Blue;
             System.Console.WriteLine("-----map");
@@ -80,6 +82,7 @@ namespace OpenNos.Import.Console
                 //factory.ImportDrop();
                 factory.ImportShopItems();
                 factory.ImportRecipe();
+                factory.ImportSkills();
             }
             else
             {
