@@ -387,8 +387,8 @@ namespace OpenNos.Import.Console
                     }
                     else if (currentLine.Length > 3 && currentLine[1] == "COST")
                     {
-                        skill.CPCost = byte.Parse(currentLine[2]);
-                        skill.Cost = byte.Parse(currentLine[3]);
+                        skill.CPCost = currentLine[2]=="-1"?(byte)0: byte.Parse(currentLine[2]);
+                        skill.Cost = int.Parse(currentLine[3]);
                     }
                     else if (currentLine.Length > 2 && currentLine[1] == "LEVEL")
                     {
