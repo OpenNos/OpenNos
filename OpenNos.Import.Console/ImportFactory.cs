@@ -392,11 +392,11 @@ namespace OpenNos.Import.Console
                     }
                     else if (currentLine.Length > 2 && currentLine[1] == "LEVEL")
                     {
-                        skill.JobLevelMinimum = int.Parse(currentLine[2]);
-                        skill.MinimumAdventurerLevel = int.Parse(currentLine[3]);
-                        skill.MinimumSwordmanLevel = int.Parse(currentLine[4]);
-                        skill.MinimumArcherLevel = int.Parse(currentLine[5]);
-                        skill.MinimumMagicianLevel = int.Parse(currentLine[6]);
+                        skill.JobLevelMinimum = currentLine[2] != "-1" ? byte.Parse(currentLine[2]) : (byte)0;
+                        skill.MinimumAdventurerLevel = currentLine[3] != "-1" ? byte.Parse(currentLine[3]) : (byte)0;
+                        skill.MinimumSwordmanLevel = currentLine[4] != "-1" ? byte.Parse(currentLine[4]) : (byte)0;
+                        skill.MinimumArcherLevel = currentLine[5] != "-1" ? byte.Parse(currentLine[5]) : (byte)0;
+                        skill.MinimumMagicianLevel = currentLine[6] != "-1"?byte.Parse(currentLine[6]):(byte)0;
                     }
                     else if (currentLine.Length > 2 && currentLine[1] == "EFFECT")
                     {
@@ -406,7 +406,7 @@ namespace OpenNos.Import.Console
                     }
                     else if (currentLine.Length > 2 && currentLine[1] == "DATA")
                     {
-                        skill.MpCost = int.Parse(currentLine[10]);
+                        skill.MpCost = short.Parse(currentLine[10]);
                     }
                     else if (currentLine.Length > 2 && currentLine[1] == "BASIC")
                     {

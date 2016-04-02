@@ -519,27 +519,27 @@
     <Property Name="SkillVNum" Type="smallint" Nullable="false" />
     <Property Name="Name" Type="longtext" Nullable="false" />
     <Property Name="Cost" Type="int" Nullable="false" />
-    <Property Name="JobLevelMinimum" Type="int" Nullable="false" />
-    <Property Name="MinimumAdventurerLevel" Type="int" Nullable="false" />
-    <Property Name="MinimumSwordmanLevel" Type="int" Nullable="false" />
-    <Property Name="MinimumArcherLevel" Type="int" Nullable="false" />
-    <Property Name="MinimumMagicianLevel" Type="int" Nullable="false" />
-    <Property Name="Effect" Type="int" Nullable="false" />
-    <Property Name="Level" Type="int" Nullable="false" />
-    <Property Name="MpCost" Type="int" Nullable="false" />
+    <Property Name="JobLevelMinimum" Type="utinyint" Nullable="false" />
+    <Property Name="MinimumAdventurerLevel" Type="utinyint" Nullable="false" />
+    <Property Name="MinimumSwordmanLevel" Type="utinyint" Nullable="false" />
+    <Property Name="MinimumArcherLevel" Type="utinyint" Nullable="false" />
+    <Property Name="MinimumMagicianLevel" Type="utinyint" Nullable="false" />
+    <Property Name="Effect" Type="smallint" Nullable="false" />
+    <Property Name="Level" Type="utinyint" Nullable="false" />
+    <Property Name="MpCost" Type="smallint" Nullable="false" />
     <Property Name="CPCost" Type="utinyint" Nullable="false" />
-    <Property Name="Cooldown" Type="int" Nullable="false" />
-    <Property Name="CastAnimation" Type="int" Nullable="false" />
-    <Property Name="AttackAnimation" Type="int" Nullable="false" />
-    <Property Name="CastEffect" Type="int" Nullable="false" />
-    <Property Name="Distance" Type="smallint" Nullable="false" />
-    <Property Name="Duration" Type="int" Nullable="false" />
+    <Property Name="Cooldown" Type="smallint" Nullable="false" />
+    <Property Name="CastAnimation" Type="smallint" Nullable="false" />
+    <Property Name="AttackAnimation" Type="smallint" Nullable="false" />
+    <Property Name="CastEffect" Type="smallint" Nullable="false" />
+    <Property Name="Distance" Type="utinyint" Nullable="false" />
+    <Property Name="Duration" Type="smallint" Nullable="false" />
     <Property Name="Damage" Type="smallint" Nullable="false" />
     <Property Name="ElementalDamage" Type="smallint" Nullable="false" />
     <Property Name="Element" Type="utinyint" Nullable="false" />
-    <Property Name="CastId" Type="int" Nullable="false" />
-    <Property Name="Type" Type="smallint" Nullable="false" />
-    <Property Name="Range" Type="int" Nullable="false" />
+    <Property Name="CastId" Type="smallint" Nullable="false" />
+    <Property Name="Type" Type="utinyint" Nullable="false" />
+    <Property Name="Range" Type="utinyint" Nullable="false" />
   </EntityType>
   <EntityType Name="skilluser">
     <Key>
@@ -1781,29 +1781,29 @@
           <Property Name="SkillVNum" Type="Int16" Nullable="false" annotation:StoreGeneratedPattern="None" />
           <Property Name="Name" Type="String" Nullable="false" />
           <Property Name="Cost" Type="Int32" Nullable="false" />
-          <Property Name="JobLevelMinimum" Type="Int32" Nullable="false" />
-          <Property Name="MinimumAdventurerLevel" Type="Int32" Nullable="false" />
-          <Property Name="MinimumSwordmanLevel" Type="Int32" Nullable="false" />
-          <Property Name="MinimumArcherLevel" Type="Int32" Nullable="false" />
-          <Property Name="MinimumMagicianLevel" Type="Int32" Nullable="false" />
-          <Property Name="Effect" Type="Int32" Nullable="false" />
-          <Property Name="Level" Type="Int32" Nullable="false" />
-          <Property Name="MpCost" Type="Int32" Nullable="false" />
+          <Property Name="JobLevelMinimum" Type="Byte" Nullable="false" />
+          <Property Name="MinimumAdventurerLevel" Type="Byte" Nullable="false" />
+          <Property Name="MinimumSwordmanLevel" Type="Byte" Nullable="false" />
+          <Property Name="MinimumArcherLevel" Type="Byte" Nullable="false" />
+          <Property Name="MinimumMagicianLevel" Type="Byte" Nullable="false" />
+          <Property Name="Effect" Type="Int16" Nullable="false" />
+          <Property Name="Level" Type="Byte" Nullable="false" />
+          <Property Name="MpCost" Type="Int16" Nullable="false" />
           <Property Name="CPCost" Type="Byte" Nullable="false" />
-          <Property Name="Cooldown" Type="Int32" Nullable="false" />
-          <Property Name="CastAnimation" Type="Int32" Nullable="false" />
-          <Property Name="AttackAnimation" Type="Int32" Nullable="false" />
-          <Property Name="CastEffect" Type="Int32" Nullable="false" />
+          <Property Name="Cooldown" Type="Int16" Nullable="false" />
+          <Property Name="CastAnimation" Type="Int16" Nullable="false" />
+          <Property Name="AttackAnimation" Type="Int16" Nullable="false" />
+          <Property Name="CastEffect" Type="Int16" Nullable="false" />
           <NavigationProperty Name="skilluser" Relationship="opennosModel.skilluseras" FromRole="Skill" ToRole="SkillUser" />
           <NavigationProperty Name="shopskill" Relationship="opennosModel.shopskillSkill" FromRole="Skill" ToRole="shopskill" />
-          <Property Name="Distance" Type="Int16" Nullable="false" />
-          <Property Name="Duration" Type="Int32" Nullable="false" />
+          <Property Name="Distance" Type="Byte" Nullable="false" />
+          <Property Name="Duration" Type="Int16" Nullable="false" />
           <Property Name="Damage" Type="Int16" Nullable="false" />
           <Property Name="ElementalDamage" Type="Int16" Nullable="false" />
           <Property Name="Element" Type="Byte" Nullable="false" />
-          <Property Name="CastId" Type="Int32" Nullable="false" />
-          <Property Name="Type" Type="Int16" Nullable="false" />
-          <Property Name="Range" Type="Int32" Nullable="false" />
+          <Property Name="CastId" Type="Int16" Nullable="false" />
+          <Property Name="Type" Type="Byte" Nullable="false" />
+          <Property Name="Range" Type="Byte" Nullable="false" />
         </EntityType>
         <EntityType Name="SkillUser">
           <Key>

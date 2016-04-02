@@ -44,9 +44,9 @@
 -- -----------------------------------------------------------
 -- Entity Designer DDL Script for MySQL Server 4.1 and higher
 -- -----------------------------------------------------------
--- Date Created: 04/02/2016 14:33:12
+-- Date Created: 04/02/2016 16:23:21
 
--- Generated from EDMX file: C:\Users\Dominik\Source\Repos\OpenNos\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
+-- Generated from EDMX file: C:\Users\ERWAN\Desktop\OpenNos Git\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
 -- Target version: 3.0.0.0
 
 -- --------------------------------------------------
@@ -596,27 +596,27 @@ CREATE TABLE `skill`(
 	`SkillVNum` smallint NOT NULL, 
 	`Name` longtext NOT NULL, 
 	`Cost` int NOT NULL, 
-	`JobLevelMinimum` int NOT NULL, 
-	`MinimumAdventurerLevel` int NOT NULL, 
-	`MinimumSwordmanLevel` int NOT NULL, 
-	`MinimumArcherLevel` int NOT NULL, 
-	`MinimumMagicianLevel` int NOT NULL, 
-	`Effect` int NOT NULL, 
-	`Level` int NOT NULL, 
-	`MpCost` int NOT NULL, 
+	`JobLevelMinimum` TINYINT UNSIGNED NOT NULL, 
+	`MinimumAdventurerLevel` TINYINT UNSIGNED NOT NULL, 
+	`MinimumSwordmanLevel` TINYINT UNSIGNED NOT NULL, 
+	`MinimumArcherLevel` TINYINT UNSIGNED NOT NULL, 
+	`MinimumMagicianLevel` TINYINT UNSIGNED NOT NULL, 
+	`Effect` smallint NOT NULL, 
+	`Level` TINYINT UNSIGNED NOT NULL, 
+	`MpCost` smallint NOT NULL, 
 	`CPCost` TINYINT UNSIGNED NOT NULL, 
-	`Cooldown` int NOT NULL, 
-	`CastAnimation` int NOT NULL, 
-	`AttackAnimation` int NOT NULL, 
-	`CastEffect` int NOT NULL, 
-	`Distance` smallint NOT NULL, 
-	`Duration` int NOT NULL, 
+	`Cooldown` smallint NOT NULL, 
+	`CastAnimation` smallint NOT NULL, 
+	`AttackAnimation` smallint NOT NULL, 
+	`CastEffect` smallint NOT NULL, 
+	`Distance` TINYINT UNSIGNED NOT NULL, 
+	`Duration` smallint NOT NULL, 
 	`Damage` smallint NOT NULL, 
 	`ElementalDamage` smallint NOT NULL, 
 	`Element` TINYINT UNSIGNED NOT NULL, 
-	`CastId` int NOT NULL, 
-	`Type` smallint NOT NULL, 
-	`Range` int NOT NULL);
+	`CastId` smallint NOT NULL, 
+	`Type` TINYINT UNSIGNED NOT NULL, 
+	`Range` TINYINT UNSIGNED NOT NULL);
 
 ALTER TABLE `skill` ADD PRIMARY KEY (SkillVNum);
 

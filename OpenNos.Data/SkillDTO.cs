@@ -17,31 +17,30 @@ namespace OpenNos.Data
     public class SkillDTO
     {
         #region Properties
-
-        public int AttackAnimation { get; set; }
-        public int CastAnimation { get; set; }
-        public int CastEffect { get; set; }
-        public int CastId { get; set; }
-        public int Cooldown { get; set; }
-        public int Cost { get; set; }
-        public short Damage { get; set; }
-        public short Distance { get; set; }
-        public int Duration { get; set; }
-        public int Effect { get; set; }
-        public byte Element { get; set; }
-        public short ElementalDamage { get; set; }
-        public int JobLevelMinimum { get; set; }
-        public int Level { get; set; }
-        public int MinimumAdventurerLevel { get; set; }
-        public int MinimumArcherLevel { get; set; }
-        public int MinimumMagicianLevel { get; set; }
-        public int MinimumSwordmanLevel { get; set; }
-        public int MpCost { get; set; }
-        public byte CPCost { get; set; }
-        public string Name { get; set; }
-        public int Range { get; set; }
         public short SkillVNum { get; set; }
-        public short Type { get; set; }
+        public string Name { get; set; }
+        public int Cost { get; set; }
+        public byte JobLevelMinimum { get; set; }
+        public byte MinimumAdventurerLevel { get; set; }
+        public byte MinimumSwordmanLevel { get; set; }
+        public byte MinimumArcherLevel { get; set; }
+        public byte MinimumMagicianLevel { get; set; }
+        public short Effect { get; set; }
+        public byte Level { get; set; }
+        public short MpCost { get; set; }
+        public byte CPCost { get; set; }
+        public short Cooldown { get; set; }
+        public short CastAnimation { get; set; }
+        public short AttackAnimation { get; set; }
+        public short CastEffect { get; set; }
+        public byte Distance { get; set; }
+        public short Duration { get; set; }
+        public short Damage { get; set; }
+        public short ElementalDamage { get; set; }
+        public byte Element { get; set; }
+        public short CastId { get; set; }
+        public byte Type { get; set; }
+        public byte Range { get; set; }
 
         #endregion
     }
