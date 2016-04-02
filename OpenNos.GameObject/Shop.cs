@@ -29,10 +29,15 @@ namespace OpenNos.GameObject
             Mapper.CreateMap<ShopDTO, Shop>();
             Mapper.CreateMap<Shop, ShopDTO>();
             ShopItems = new List<ShopItem>();
+            ShopSkills = new List<ShopSkill>();
             ShopId = shopId;
             foreach (ShopItemDTO item in DAOFactory.ShopItemDAO.LoadByShopId(ShopId))
             {
                 ShopItems.Add(new ShopItem() { ItemVNum = item.ItemVNum, Rare = item.Rare, ShopItemId = item.ShopItemId, Slot = item.Slot, Upgrade = item.Upgrade, Color = item.Color, Type = item.Type, ShopId = item.ShopId });
+            }
+            foreach (ShopSkillDTO skill in DAOFactory.ShopSkillDAO.LoadByShopId(ShopId))
+            {
+                ShopSkills.Add(new ShopSkill() { SkillVNum = skill.SkillVNum, ShopSkillId = skill.ShopSkillId, Slot = skill.Slot,Type = skill.Type, ShopId = skill.ShopId});
             }
         }
 
@@ -41,7 +46,7 @@ namespace OpenNos.GameObject
         #region Properties
 
         public List<ShopItem> ShopItems { get; set; }
-
+        public List<ShopSkill> ShopSkills { get; set; }
         #endregion
 
         #region Methods

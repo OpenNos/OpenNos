@@ -21,6 +21,7 @@ namespace OpenNos.Data
         public short SkillVNum { get; set; }
         public string Name { get; set; }
         public int Cost { get; set; }
+        public byte Class { get; set; }
         public byte JobLevelMinimum { get; set; }
         public byte MinimumAdventurerLevel { get; set; }
         public byte MinimumSwordmanLevel { get; set; }

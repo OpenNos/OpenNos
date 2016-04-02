@@ -520,6 +520,7 @@
     <Property Name="Name" Type="longtext" Nullable="false" />
     <Property Name="Cost" Type="int" Nullable="false" />
     <Property Name="JobLevelMinimum" Type="utinyint" Nullable="false" />
+    <Property Name="Class" Type="utinyint" Nullable="false" />
     <Property Name="MinimumAdventurerLevel" Type="utinyint" Nullable="false" />
     <Property Name="MinimumSwordmanLevel" Type="utinyint" Nullable="false" />
     <Property Name="MinimumArcherLevel" Type="utinyint" Nullable="false" />
@@ -540,6 +541,7 @@
     <Property Name="CastId" Type="smallint" Nullable="false" />
     <Property Name="Type" Type="utinyint" Nullable="false" />
     <Property Name="Range" Type="utinyint" Nullable="false" />
+    <Property Name="VNumRequired" Type="smallint" Nullable="false" />
   </EntityType>
   <EntityType Name="skilluser">
     <Key>
@@ -556,8 +558,9 @@
     </Key>
     <Property Name="ShopSkillId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="SkillVNum" Type="smallint" Nullable="false" />
-    <Property Name="MapNpcId" Type="int" Nullable="false" />
     <Property Name="ShopId" Type="int" Nullable="false" />
+    <Property Name="Type" Type="utinyint" Nullable="false" />
+    <Property Name="Slot" Type="utinyint" Nullable="false" />
   </EntityType>
   <Association Name="AccountCharacter">
     <End Role="Account" Type="opennosModel.Store.account" Multiplicity="1" />
@@ -1782,6 +1785,7 @@
           <Property Name="Name" Type="String" Nullable="false" />
           <Property Name="Cost" Type="Int32" Nullable="false" />
           <Property Name="JobLevelMinimum" Type="Byte" Nullable="false" />
+          <Property Name="Class" Type="Byte" Nullable="false" />
           <Property Name="MinimumAdventurerLevel" Type="Byte" Nullable="false" />
           <Property Name="MinimumSwordmanLevel" Type="Byte" Nullable="false" />
           <Property Name="MinimumArcherLevel" Type="Byte" Nullable="false" />
@@ -2284,6 +2288,7 @@
           <ScalarProperty Name="Name" ColumnName="Name" />
           <ScalarProperty Name="Cost" ColumnName="Cost" />
           <ScalarProperty Name="JobLevelMinimum" ColumnName="JobLevelMinimum" />
+          <ScalarProperty Name="Class" ColumnName="Class" />
           <ScalarProperty Name="MinimumAdventurerLevel" ColumnName="MinimumAdventurerLevel" />
           <ScalarProperty Name="MinimumSwordmanLevel" ColumnName="MinimumSwordmanLevel" />
           <ScalarProperty Name="MinimumArcherLevel" ColumnName="MinimumArcherLevel" />
@@ -2304,6 +2309,7 @@
           <ScalarProperty Name="CastId" ColumnName="CastId" />
           <ScalarProperty Name="Type" ColumnName="Type" />
           <ScalarProperty Name="Range" ColumnName="Range" />
+          <ScalarProperty Name="VNumRequired" ColumnName="VNumRequired" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -2323,6 +2329,8 @@
           <ScalarProperty Name="ShopSkillId" ColumnName="ShopSkillId" />
           <ScalarProperty Name="SkillVNum" ColumnName="SkillVNum" />
           <ScalarProperty Name="ShopId" ColumnName="ShopId" />
+          <ScalarProperty Name="Type" ColumnName="Type" />
+          <ScalarProperty Name="Slot" ColumnName="Slot" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

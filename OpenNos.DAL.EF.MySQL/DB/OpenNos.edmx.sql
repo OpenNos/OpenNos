@@ -44,7 +44,7 @@
 -- -----------------------------------------------------------
 -- Entity Designer DDL Script for MySQL Server 4.1 and higher
 -- -----------------------------------------------------------
--- Date Created: 04/02/2016 16:23:21
+-- Date Created: 04/02/2016 23:56:09
 
 -- Generated from EDMX file: C:\Users\ERWAN\Desktop\OpenNos Git\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
 -- Target version: 3.0.0.0
@@ -597,6 +597,7 @@ CREATE TABLE `skill`(
 	`Name` longtext NOT NULL, 
 	`Cost` int NOT NULL, 
 	`JobLevelMinimum` TINYINT UNSIGNED NOT NULL, 
+	`Class` TINYINT UNSIGNED NOT NULL, 
 	`MinimumAdventurerLevel` TINYINT UNSIGNED NOT NULL, 
 	`MinimumSwordmanLevel` TINYINT UNSIGNED NOT NULL, 
 	`MinimumArcherLevel` TINYINT UNSIGNED NOT NULL, 
@@ -616,7 +617,8 @@ CREATE TABLE `skill`(
 	`Element` TINYINT UNSIGNED NOT NULL, 
 	`CastId` smallint NOT NULL, 
 	`Type` TINYINT UNSIGNED NOT NULL, 
-	`Range` TINYINT UNSIGNED NOT NULL);
+	`Range` TINYINT UNSIGNED NOT NULL, 
+	`VNumRequired` smallint NOT NULL);
 
 ALTER TABLE `skill` ADD PRIMARY KEY (SkillVNum);
 
@@ -639,8 +641,9 @@ ALTER TABLE `skilluser` ADD PRIMARY KEY (SkillUserId);
 CREATE TABLE `shopskill`(
 	`ShopSkillId` int NOT NULL AUTO_INCREMENT UNIQUE, 
 	`SkillVNum` smallint NOT NULL, 
-	`MapNpcId` int NOT NULL, 
-	`ShopId` int NOT NULL);
+	`ShopId` int NOT NULL, 
+	`Type` TINYINT UNSIGNED NOT NULL, 
+	`Slot` TINYINT UNSIGNED NOT NULL);
 
 ALTER TABLE `shopskill` ADD PRIMARY KEY (ShopSkillId);
 

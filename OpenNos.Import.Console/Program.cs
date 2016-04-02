@@ -75,14 +75,16 @@ namespace OpenNos.Import.Console
                 factory.ImportPortals();
                 factory.ImportItems();
                 factory.ImportNpcMonsters();
+                factory.ImportSkills();
                 factory.ImportMapNpcs();
                 factory.ImportMonsters();
                 factory.ImportShops();
                 factory.ImportTeleporters();
                 //factory.ImportDrop();
                 factory.ImportShopItems();
+                factory.ImportShopSkills();
                 factory.ImportRecipe();
-                factory.ImportSkills();
+           
             }
             else
             {

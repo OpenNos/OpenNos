@@ -540,6 +540,9 @@
   <data name="SHUTDOWN_SEC" xml:space="preserve">
     <value>Server will be shut in {0} Seconds.</value>
   </data>
+  <data name="SKILLS_LOADED" xml:space="preserve">
+    <value>{0} Skills Loaded!</value>
+  </data>
   <data name="SPLEVEL_CHANGED" xml:space="preserve">
     <value>Specialist level has been changed!</value>
   </data>
@@ -571,7 +574,7 @@
     <value>Total number of sessions</value>
   </data>
   <data name="TRADE_BLOCKED" xml:space="preserve">
-    <value>User has blocked exchanges</value>
+    <value>sh</value>
   </data>
   <data name="TRANSFORM_DISAPEAR" xml:space="preserve">
     <value>Cooldown finished.</value>

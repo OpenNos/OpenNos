@@ -189,8 +189,14 @@
   <data name="SHOPITEMS_PARSED" xml:space="preserve">
     <value>{0} shopitems parsed</value>
   </data>
+  <data name="SHOPSKILLS_PARSED" xml:space="preserve">
+    <value>{0} shopskills parsed</value>
+  </data>
   <data name="SHOPS_PARSED" xml:space="preserve">
     <value>{0} shops parsed</value>
+  </data>
+  <data name="SKILLS_PARSED" xml:space="preserve">
+    <value>{0} skills parsed</value>
   </data>
   <data name="TELEPORTERS_PARSED" xml:space="preserve">
     <value>{0} teleporters parsed</value>

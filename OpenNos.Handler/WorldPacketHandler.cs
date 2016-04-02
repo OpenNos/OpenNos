@@ -159,10 +159,15 @@ namespace OpenNos.Handler
         public void BuyShop(string packet)
         {
             string[] packetsplit = packet.Split(' ');
+            if (packetsplit.Length < 5)
+                return;
             long owner; long.TryParse(packetsplit[3], out owner);
             byte type; byte.TryParse(packetsplit[2], out type);
             byte slot; byte.TryParse(packetsplit[4], out slot);
-            byte amount; byte.TryParse(packetsplit[5], out amount);
+            byte amount = 0;
+            if (packetsplit.Length == 6)
+                byte.TryParse(packetsplit[5], out amount);
+
             if (type == 1) // User shop
             {
                 KeyValuePair<long, MapShop> shop = Session.CurrentMap.ShopUserList.FirstOrDefault(mapshop => mapshop.Value.OwnerId.Equals(owner));
@@ -228,6 +233,10 @@ namespace OpenNos.Handler
                 ClientLinkManager.Instance.BuyValidate(Session, shop, slot, amount);
                 KeyValuePair<long, MapShop> shop2 = Session.CurrentMap.ShopUserList.FirstOrDefault(s => s.Value.OwnerId.Equals(owner));
                 loadShopItem(owner, shop2);
+            }
+            else if (type == 2) // skill shop
+            {
+
             }
             else
             {
@@ -309,8 +318,8 @@ namespace OpenNos.Handler
                     Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(newItem.ItemVNum,
                         inv.InventoryItem.Amount, inv.Type, inv.Slot, newItem.Rare, newItem.Design, newItem.Upgrade));
             }
-        }
 
+        }
         [Packet("c_close")]
         public void CClose(string packet)
         {
@@ -2808,6 +2817,7 @@ namespace OpenNos.Handler
             string[] packetsplit = packet.Split(' ');
             byte type;
             int NpcId;
+            byte typeshop = 0;
             if (!int.TryParse(packetsplit[5], out NpcId) || !byte.TryParse(packetsplit[2], out type)) return;
 
             MapNpc mapnpc = Session.CurrentMap.Npcs.FirstOrDefault(n => n.MapNpcId.Equals(NpcId));
@@ -2836,7 +2846,21 @@ namespace OpenNos.Handler
                     shoplist += $" {iteminfo.Type}.{item.Slot}.{item.ItemVNum}.{item.Rare}.{(iteminfo.IsColored ? item.Color : item.Upgrade)}.{ServerManager.GetItem(item.ItemVNum).Price * pourcent}";
             }
 
-            Session.Client.SendPacket($"n_inv 2 {mapnpc.MapNpcId} 0 0{shoplist}");
+            foreach (ShopSkill skill in mapnpc.Shop.ShopSkills.Where(s => s.Type.Equals(type)))
+            {
+                Skill skillinfo = ServerManager.GetSkill(skill.SkillVNum);
+
+                if (skill.Type != 0)
+                {
+                    typeshop = 1;
+                    if (skillinfo.Class == Session.Character.Class)
+                        shoplist += $" {skillinfo.SkillVNum}";
+                }
+                else
+                    shoplist += $" {skillinfo.SkillVNum}";
+            }
+
+            Session.Client.SendPacket($"n_inv 2 {mapnpc.MapNpcId} 0 {typeshop}{shoplist}");
         }
 
         [Packet("$Shout")]
@@ -4020,11 +4044,11 @@ namespace OpenNos.Handler
                     return;
                 long.TryParse(packetsplit[3], out CharId);
 
-                if (type == 3 && ClientLinkManager.Instance.GetProperty<string>(CharId,"Name") !=null)
+                if (type == 3 && ClientLinkManager.Instance.GetProperty<string>(CharId, "Name") != null)
                 {
                     foreach (Group group in ClientLinkManager.Instance.Groups)
                     {
-                        if(group.Characters.Contains(Session.Character.CharacterId))
+                        if (group.Characters.Contains(Session.Character.CharacterId))
                         {
                             blocked1 = true;
                         }
@@ -4053,7 +4077,7 @@ namespace OpenNos.Handler
                             group.Characters.Add(CharId);
                             newgroup = 0;
                         }
-                       
+
                     }
                     if (newgroup == 1)
                     {

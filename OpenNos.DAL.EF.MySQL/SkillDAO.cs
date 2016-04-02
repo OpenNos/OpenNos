@@ -53,6 +53,16 @@ namespace OpenNos.DAL.EF.MySQL
             }
         }
 
+        public IEnumerable<SkillDTO> LoadAll()
+        {
+            using (var context = DataAccessHelper.CreateContext())
+            {
+                foreach (Skill skill in context.skill)
+                {
+                    yield return Mapper.Map<SkillDTO>(skill);
+                }
+            }
+        }
         public SkillDTO LoadById(short SkillId)
         {
             using (var context = DataAccessHelper.CreateContext())

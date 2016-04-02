@@ -293,7 +293,7 @@ namespace OpenNos.DAL
             }
         }
 
-        public static IShopSkillDAO shopskillDAO
+        public static IShopSkillDAO ShopSkillDAO
         {
             get
             {

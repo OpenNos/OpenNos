@@ -46,9 +46,10 @@ namespace OpenNos.GameObject
             _autoSave.Start();
             TaskController = new Task(() => TaskControl());
             TaskController.Start();
+            Groups = new List<Group>();
             GroupTask = new Task(() => groupTask());
             GroupTask.Start();
-            Groups = new List<Group>();
+          
         }
 
         private async void groupTask()

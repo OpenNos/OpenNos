@@ -384,6 +384,7 @@ namespace OpenNos.Import.Console
                     else if (currentLine.Length > 2 && currentLine[1] == "TYPE")
                     {
                         skill.CastId = short.Parse(currentLine[3]);
+                        skill.Class = byte.Parse(currentLine[4]);
                         skill.Type = byte.Parse(currentLine[5]);
                         skill.Element = byte.Parse(currentLine[7]);
                     }
@@ -628,7 +629,8 @@ namespace OpenNos.Import.Console
                         };
 
                         if (DAOFactory.RecipeDAO.LoadByNpc(npc).Any() &&
-                            DAOFactory.RecipeDAO.LoadByNpc(npc).Any(s => s.ItemVNum == recipe.ItemVNum)) continue; // isnt one of this redundant?
+                            DAOFactory.RecipeDAO.LoadByNpc(npc).Any(s => s.ItemVNum == recipe.ItemVNum))
+                            continue; // isnt one of this redundant?
 
                         DAOFactory.RecipeDAO.Insert(recipe);
                         count++;
@@ -708,7 +710,7 @@ namespace OpenNos.Import.Console
                                 };
                             }
 
-                            if (sitem == null || DAOFactory.ShopItemDAO.LoadByShopId(sitem.ShopId).FirstOrDefault(s => s.ItemVNum.Equals(sitem.ItemVNum)) != null)
+                            if (sitem == null || shopitems.FirstOrDefault(s => s.ItemVNum.Equals(sitem.ItemVNum) && s.ShopId.Equals(sitem.ShopId)) != null || DAOFactory.ShopItemDAO.LoadByShopId(sitem.ShopId).FirstOrDefault(s => s.ItemVNum.Equals(sitem.ItemVNum)) != null)
                                 continue;
 
                             shopitems.Add(sitem);
@@ -739,24 +741,25 @@ namespace OpenNos.Import.Console
                     {
                         for (int i = 5; i < currentPacket.Length; i++)
                         {
-                            string[] item = currentPacket[i].Split('.');
                             ShopSkillDTO sskill = null;
+                            if (!currentPacket[i].Contains("."))
+                            {
 
-                         
                                 sskill = new ShopSkillDTO
                                 {
                                     ShopId = DAOFactory.ShopDAO.LoadByNpc(short.Parse(currentPacket[2])).ShopId,
                                     Type = type,
-                                    Slot = (byte)(i-5),
-                                    SkillVNum = short.Parse(item[2])
+                                    Slot = (byte)(i - 5),
+                                    SkillVNum = short.Parse(currentPacket[i])
                                 };
-                           
 
-                            if (sskill == null || DAOFactory.shopskillDAO.LoadByShopId(sskill.ShopId).FirstOrDefault(s => s.SkillVNum.Equals(sskill.SkillVNum)) != null)
-                                continue;
 
-                            shopskills.Add(sskill);
-                            itemCounter++;
+                                if (sskill == null || shopskills.FirstOrDefault(s => s.SkillVNum.Equals(sskill.SkillVNum) && s.ShopId.Equals(sskill.ShopId)) !=null || DAOFactory.ShopSkillDAO.LoadByShopId(sskill.ShopId).FirstOrDefault(s => s.SkillVNum.Equals(sskill.SkillVNum)) != null)
+                                    continue;
+
+                                shopskills.Add(sskill);
+                                itemCounter++;
+                            }
                         }
                     }
                 }
@@ -767,7 +770,7 @@ namespace OpenNos.Import.Console
                 }
             }
 
-            DAOFactory.shopskillDAO.Insert(shopskills);
+            DAOFactory.ShopSkillDAO.Insert(shopskills);
             Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("SHOPSKILLS_PARSED"), itemCounter));
         }
 

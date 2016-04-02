@@ -34,7 +34,7 @@ namespace OpenNos.GameObject
         private static List<Item> _items = new List<Item>();
         private static ConcurrentDictionary<Guid, Map> _maps = new ConcurrentDictionary<Guid, Map>();
         private static List<NpcMonster> _npcs = new List<NpcMonster>();
-
+        private static List<Skill> _skills = new List<Skill>();
         #endregion
 
         #region Properties
@@ -65,7 +65,10 @@ namespace OpenNos.GameObject
         {
             return _npcs.FirstOrDefault(m => m.NpcMonsterVNum.Equals(npcVNum));
         }
-
+        public static Skill GetSkill(short skillVNum)
+        {
+            return _skills.FirstOrDefault(m => m.SkillVNum.Equals(skillVNum));
+        }
         public static void Initialize()
         {
             foreach (ItemDTO itemDTO in DAOFactory.ItemDAO.LoadAll())
@@ -174,36 +177,13 @@ namespace OpenNos.GameObject
             }
 
             Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("ITEM_LOADED"), _items.Count()));
-
-            foreach (NpcMonsterDTO npcmonsterDTO in DAOFactory.NpcMonsterDAO.LoadAll())
+            foreach (SkillDTO skillDTO in DAOFactory.SkillDAO.LoadAll())
             {
-                NpcMonster npcmonster = new NpcMonster()
-                {
-                    AttackClass = npcmonsterDTO.AttackClass,
-                    DistanceDefenceDodge = npcmonsterDTO.DistanceDefenceDodge,
-                    Level = npcmonsterDTO.Level,
-                    LightResistance = npcmonsterDTO.LightResistance,
-                    NpcMonsterVNum = npcmonsterDTO.NpcMonsterVNum,
-                    AttackUpgrade = npcmonsterDTO.AttackUpgrade,
-                    DistanceDefence = npcmonsterDTO.DistanceDefence,
-                    WaterResistance = npcmonsterDTO.WaterResistance,
-                    MagicDefence = npcmonsterDTO.MagicDefence,
-                    ElementRate = npcmonsterDTO.ElementRate,
-                    CloseDefence = npcmonsterDTO.CloseDefence,
-                    Concentrate = npcmonsterDTO.Concentrate,
-                    CriticalLuckRate = npcmonsterDTO.CriticalLuckRate,
-                    CriticalRate = npcmonsterDTO.CriticalRate,
-                    DamageMaximum = npcmonsterDTO.DamageMaximum,
-                    DamageMinimum = npcmonsterDTO.DamageMinimum,
-                    DarkResistance = npcmonsterDTO.DarkResistance,
-                    DefenceDodge = npcmonsterDTO.DefenceDodge,
-                    DefenceUpgrade = npcmonsterDTO.DefenceUpgrade,
-                    Speed = npcmonsterDTO.Speed,
-                    FireResistance = npcmonsterDTO.FireResistance,
-                    Element = npcmonsterDTO.Element,
-                    Name = npcmonsterDTO.Name
-                };
-                _npcs.Add(npcmonster);
+                _skills.Add(Mapper.DynamicMap<Skill>(skillDTO));
+            } 
+                foreach (NpcMonsterDTO npcmonsterDTO in DAOFactory.NpcMonsterDAO.LoadAll())
+            {
+                _npcs.Add(Mapper.DynamicMap<NpcMonster>(npcmonsterDTO));
             }
             Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("NPCMONSTERS_LOADED"), _npcs.Count()));
             try
@@ -238,6 +218,7 @@ namespace OpenNos.GameObject
                 else
                     Logger.Log.Error(Language.Instance.GetMessageFromKey("NO_MAP"));
 
+                Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("SKILLS_LOADED"), _skills.Count()));
                 Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("MONSTERS_LOADED"), monstercount));
                 Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("NPCS_LOADED"), npccount));
                 Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("SHOPS_LOADED"), shopcount));

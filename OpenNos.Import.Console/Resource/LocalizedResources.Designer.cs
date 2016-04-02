@@ -286,6 +286,24 @@ namespace OpenNos.Import.Console.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0} shopskills parsed.
+        /// </summary>
+        internal static string SHOPSKILLS_PARSED {
+            get {
+                return ResourceManager.GetString("SHOPSKILLS_PARSED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} skills parsed.
+        /// </summary>
+        internal static string SKILLS_PARSED {
+            get {
+                return ResourceManager.GetString("SKILLS_PARSED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0} teleporters parsed.
         /// </summary>
         internal static string TELEPORTERS_PARSED {
