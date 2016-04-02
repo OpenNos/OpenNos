@@ -1824,7 +1824,6 @@
           <Property Name="ShopSkillId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <NavigationProperty Name="skill" Relationship="opennosModel.shopskillSkill" FromRole="shopskill" ToRole="Skill" />
           <Property Name="SkillVNum" Type="Int16" Nullable="false" />
-          <Property Name="MapNpcId" Type="Int32" Nullable="false" />
           <NavigationProperty Name="shop" Relationship="opennosModel.shopskillShop" FromRole="shopskill" ToRole="Shop" />
           <Property Name="ShopId" Type="Int32" Nullable="false" />
         </EntityType>
@@ -2320,7 +2319,6 @@
         <MappingFragment StoreEntitySet="shopskill">
           <ScalarProperty Name="ShopSkillId" ColumnName="ShopSkillId" />
           <ScalarProperty Name="SkillVNum" ColumnName="SkillVNum" />
-          <ScalarProperty Name="MapNpcId" ColumnName="MapNpcId" />
           <ScalarProperty Name="ShopId" ColumnName="ShopId" />
         </MappingFragment>
       </EntityTypeMapping>
