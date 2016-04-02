@@ -436,7 +436,13 @@ namespace OpenNos.GameObject
         {
             Inventory specialist = EquipmentList.LoadBySlotAndType((byte)EquipmentType.Sp, (byte)InventoryType.Equipment);
 
-            return $"lev {Level} {LevelXp} {(!UseSp || specialist == null ? JobLevel : specialist.InventoryItem.SpLevel)} {(!UseSp || specialist == null ? JobLevelXp : specialist.InventoryItem.SpXp)} {(!UseSp || specialist == null ? XPLoad() : SPXPLoad())} {JobXPLoad()} {Reput} 2";
+            return $"lev {Level} {LevelXp} {(!UseSp || specialist == null ? JobLevel : specialist.InventoryItem.SpLevel)} {(!UseSp || specialist == null ? JobLevelXp : specialist.InventoryItem.SpXp)} {(!UseSp || specialist == null ? XPLoad() : SPXPLoad())} {JobXPLoad()} {Reput} {getCP()}";
+        }
+
+        private int getCP()
+        {
+            return JobLevel * 2;
+            //decrease by sum of skills cp
         }
 
         public string GenerateMapOut()
