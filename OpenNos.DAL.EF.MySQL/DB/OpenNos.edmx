@@ -1804,6 +1804,7 @@
           <Property Name="CastId" Type="Int16" Nullable="false" />
           <Property Name="Type" Type="Byte" Nullable="false" />
           <Property Name="Range" Type="Byte" Nullable="false" />
+          <Property Name="VNumRequired" Type="Int16" Nullable="false" />
         </EntityType>
         <EntityType Name="SkillUser">
           <Key>
