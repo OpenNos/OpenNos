@@ -1826,6 +1826,8 @@
           <Property Name="SkillVNum" Type="Int16" Nullable="false" />
           <NavigationProperty Name="shop" Relationship="opennosModel.shopskillShop" FromRole="shopskill" ToRole="Shop" />
           <Property Name="ShopId" Type="Int32" Nullable="false" />
+          <Property Name="Type" Type="Byte" Nullable="false" />
+          <Property Name="Slot" Type="Byte" Nullable="false" />
         </EntityType>
         <Association Name="skilluseras">
           <End Type="opennosModel.Skill" Role="Skill" Multiplicity="1" />

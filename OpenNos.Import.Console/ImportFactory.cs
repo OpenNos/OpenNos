@@ -644,6 +644,50 @@ namespace OpenNos.Import.Console
             DAOFactory.ShopItemDAO.Insert(shopitems);
             Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("SHOPITEMS_PARSED"), itemCounter));
         }
+        public void ImportShopSkills()
+        {
+            List<ShopSkillDTO> shopskills = new List<ShopSkillDTO>();
+            int itemCounter = 0;
+            byte type = 0;
+            foreach (string[] currentPacket in _packetList.Where(o => o[0].Equals("n_inv") || o[0].Equals("shopping")))
+            {
+                if (currentPacket[0].Equals("n_inv"))
+                {
+                    if (DAOFactory.ShopDAO.LoadByNpc(short.Parse(currentPacket[2])) != null)
+                    {
+                        for (int i = 5; i < currentPacket.Length; i++)
+                        {
+                            string[] item = currentPacket[i].Split('.');
+                            ShopSkillDTO sskill = null;
+
+                         
+                                sskill = new ShopSkillDTO
+                                {
+                                    ShopId = DAOFactory.ShopDAO.LoadByNpc(short.Parse(currentPacket[2])).ShopId,
+                                    Type = type,
+                                    Slot = (byte)(i-5),
+                                    SkillVNum = short.Parse(item[2])
+                                };
+                           
+
+                            if (sskill == null || DAOFactory.shopskillDAO.LoadByShopId(sskill.ShopId).FirstOrDefault(s => s.SkillVNum.Equals(sskill.SkillVNum)) != null)
+                                continue;
+
+                            shopskills.Add(sskill);
+                            itemCounter++;
+                        }
+                    }
+                }
+                else
+                {
+                    if (currentPacket.Length > 3)
+                        type = byte.Parse(currentPacket[1]);
+                }
+            }
+
+            DAOFactory.shopskillDAO.Insert(shopskills);
+            Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("SHOPSKILLS_PARSED"), itemCounter));
+        }
 
         public void ImportShops()
         {

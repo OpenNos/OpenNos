@@ -21,6 +21,8 @@ namespace OpenNos.Data
         public int ShopSkillId { get; set; }
         public short SkillVNum { get; set; }
         public int ShopId { get; set; }
+        public byte Type { get; set; }
+        public byte Slot { get; set; }
 
         #endregion
     }
