@@ -18,9 +18,9 @@ namespace OpenNos.Data
     {
         #region Properties
 
-        public int MapNpcId { get; set; }
-        public int shopskillId { get; set; }
+        public int ShopSkillId { get; set; }
         public short SkillVNum { get; set; }
+        public int ShopId { get; set; }
 
         #endregion
     }
