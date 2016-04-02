@@ -519,7 +519,7 @@
     <Property Name="SkillVNum" Type="smallint" Nullable="false" />
     <Property Name="Name" Type="longtext" Nullable="false" />
     <Property Name="Cost" Type="int" Nullable="false" />
-    <Property Name="JobLevelMinimum" Type="utinyint" Nullable="false" />
+    <Property Name="LevelMinimum" Type="utinyint" Nullable="false" />
     <Property Name="Class" Type="utinyint" Nullable="false" />
     <Property Name="MinimumAdventurerLevel" Type="utinyint" Nullable="false" />
     <Property Name="MinimumSwordmanLevel" Type="utinyint" Nullable="false" />
@@ -1784,7 +1784,7 @@
           <Property Name="SkillVNum" Type="Int16" Nullable="false" annotation:StoreGeneratedPattern="None" />
           <Property Name="Name" Type="String" Nullable="false" />
           <Property Name="Cost" Type="Int32" Nullable="false" />
-          <Property Name="JobLevelMinimum" Type="Byte" Nullable="false" />
+          <Property Name="LevelMinimum" Type="Byte" Nullable="false" />
           <Property Name="Class" Type="Byte" Nullable="false" />
           <Property Name="MinimumAdventurerLevel" Type="Byte" Nullable="false" />
           <Property Name="MinimumSwordmanLevel" Type="Byte" Nullable="false" />
@@ -2287,7 +2287,7 @@
           <ScalarProperty Name="SkillVNum" ColumnName="SkillVNum" />
           <ScalarProperty Name="Name" ColumnName="Name" />
           <ScalarProperty Name="Cost" ColumnName="Cost" />
-          <ScalarProperty Name="JobLevelMinimum" ColumnName="JobLevelMinimum" />
+          <ScalarProperty Name="LevelMinimum" ColumnName="LevelMinimum" />
           <ScalarProperty Name="Class" ColumnName="Class" />
           <ScalarProperty Name="MinimumAdventurerLevel" ColumnName="MinimumAdventurerLevel" />
           <ScalarProperty Name="MinimumSwordmanLevel" ColumnName="MinimumSwordmanLevel" />

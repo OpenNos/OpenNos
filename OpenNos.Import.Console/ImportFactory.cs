@@ -351,7 +351,6 @@ namespace OpenNos.Import.Console
             Dictionary<string, string> dictionaryIdLang = new Dictionary<string, string>();
             SkillDTO skill = new SkillDTO();
             string line;
-            bool itemAreaBegin = false;
             int counter = 0;
 
             using (StreamReader skillIdLangStream = new StreamReader(fileSkillLang, Encoding.GetEncoding(1252)))
@@ -395,7 +394,7 @@ namespace OpenNos.Import.Console
                     }
                     else if (currentLine.Length > 2 && currentLine[1] == "LEVEL")
                     {
-                        skill.JobLevelMinimum = currentLine[2] != "-1" ? byte.Parse(currentLine[2]) : (byte)0;
+                        skill.LevelMinimum = currentLine[2] != "-1" ? byte.Parse(currentLine[2]) : (byte)0;
                         skill.MinimumAdventurerLevel = currentLine[3] != "-1" ? byte.Parse(currentLine[3]) : (byte)0;
                         skill.MinimumSwordmanLevel = currentLine[4] != "-1" ? byte.Parse(currentLine[4]) : (byte)0;
                         skill.MinimumArcherLevel = currentLine[5] != "-1" ? byte.Parse(currentLine[5]) : (byte)0;

@@ -53,6 +53,7 @@ namespace OpenNos.GameObject
         {
             Mapper.CreateMap<CharacterDTO, Character>();
             Mapper.CreateMap<Character, CharacterDTO>();
+            Skills = new List<SkillUser>();
         }
 
         #endregion
@@ -75,6 +76,7 @@ namespace OpenNos.GameObject
         public double LastSp { get; set; }
         public byte LastSpeed { get; set; }
         public int MaxSnack { get; set; }
+        public List<SkillUser> Skills { get; set; }
         public int Morph { get { return _morph; } set { _morph = value; } }
         public int MorphUpgrade { get { return _morphUpgrade; } set { _morphUpgrade = value; } }
         public int MorphUpgrade2 { get { return _morphUpgrade2; } set { _morphUpgrade2 = value; } }
@@ -438,11 +440,31 @@ namespace OpenNos.GameObject
 
             return $"lev {Level} {LevelXp} {(!UseSp || specialist == null ? JobLevel : specialist.InventoryItem.SpLevel)} {(!UseSp || specialist == null ? JobLevelXp : specialist.InventoryItem.SpXp)} {(!UseSp || specialist == null ? XPLoad() : SPXPLoad())} {JobXPLoad()} {Reput} {getCP()}";
         }
-
-        private int getCP()
+        public string GenerateSc()
         {
-            return JobLevel * 2;
-            //decrease by sum of skills cp
+            return "";
+        }
+        public string GenerateSki()
+        {
+            string skibase = "200 2O1";
+            string skills = "";
+            foreach(SkillUser ski in Skills)
+            {
+                skills+=$" {ski.SkillVNum}";
+            }
+
+            return $"ski {skibase} {skills}";
+        }
+        public int getCP()
+        {
+            int cpused = 0;
+            foreach(SkillUser ski in Skills)
+            {
+                Skill skillinfo = ServerManager.GetSkill(ski.SkillVNum);
+                if (skillinfo != null)
+                    cpused += skillinfo.CPCost;
+            }
+            return JobLevel * 2 - cpused;
         }
 
         public string GenerateMapOut()

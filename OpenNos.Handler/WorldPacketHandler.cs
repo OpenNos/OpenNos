@@ -236,7 +236,39 @@ namespace OpenNos.Handler
             }
             else if (type == 2) // skill shop
             {
+                Skill skillinfo = ServerManager.GetSkill(slot);
+                if (skillinfo == null)
+                    return;
+                if (Session.Character.Gold >= skillinfo.Cost && Session.Character.getCP() >= skillinfo.CPCost && Session.Character.Level >= skillinfo.LevelMinimum)
+                {
+                    switch(Session.Character.Class)
+                    {
+                        case (byte)ClassType.Adventurer:
+                            if (Session.Character.JobLevel < skillinfo.MinimumAdventurerLevel)
+                                return;
+                            break;
+                        case (byte)ClassType.Swordman:
+                            if (Session.Character.JobLevel < skillinfo.MinimumSwordmanLevel)
+                                return;
+                            break;
+                        case (byte)ClassType.Archer:
+                            if (Session.Character.JobLevel < skillinfo.MinimumArcherLevel)
+                                return;
+                            break;
+                        case (byte)ClassType.Magician:
+                            if (Session.Character.JobLevel < skillinfo.MinimumMagicianLevel)
+                                return;
+                            break;
+                    }
+                    if (Session.Character.Skills.FirstOrDefault(s => s.SkillVNum == slot) != null)
+                        return;
+                    Session.Character.Gold -= skillinfo.Cost;
+                    Session.Client.SendPacket(Session.Character.GenerateGold());
 
+                    Session.Character.Skills.Add(new SkillUser() { SkillVNum = slot, CharacterId = Session.Character.CharacterId });
+                    Session.Client.SendPacket(Session.Character.GenerateSki());
+                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("YOU_LEARN_SKILL"),0));
+                }
             }
             else
             {
