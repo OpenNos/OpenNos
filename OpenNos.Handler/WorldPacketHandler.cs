@@ -234,15 +234,15 @@ namespace OpenNos.Handler
                 KeyValuePair<long, MapShop> shop2 = Session.CurrentMap.ShopUserList.FirstOrDefault(s => s.Value.OwnerId.Equals(owner));
                 loadShopItem(owner, shop2);
             }
-            else if (packetsplit.Length==5) // skill shop
+            else if (packetsplit.Length == 5) // skill shop
             {
                 Skill skillinfo = ServerManager.GetSkill(slot);
-               
+
                 if (skillinfo == null)
                     return;
                 if (Session.Character.Gold >= skillinfo.Cost && Session.Character.getCP() >= skillinfo.CPCost && Session.Character.Level >= skillinfo.LevelMinimum)
                 {
-                    switch(Session.Character.Class)
+                    switch (Session.Character.Class)
                     {
                         case (byte)ClassType.Adventurer:
                             if (Session.Character.JobLevel < skillinfo.MinimumAdventurerLevel)
@@ -268,7 +268,7 @@ namespace OpenNos.Handler
 
                     Session.Character.Skills.Add(new SkillUser() { SkillVNum = slot, CharacterId = Session.Character.CharacterId });
                     Session.Client.SendPacket(Session.Character.GenerateSki());
-                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("YOU_LEARN_SKILL"),0));
+                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("YOU_LEARN_SKILL"), 0));
                     Session.Client.SendPacket(Session.Character.GenerateLev());//replace by the correct one
 
                 }
@@ -587,6 +587,10 @@ namespace OpenNos.Handler
                         };
 
                         SaveResult insertResult = DAOFactory.CharacterDAO.InsertOrUpdate(ref newCharacter);
+                        SkillUserDTO sk1 = new SkillUserDTO { CharacterId = newCharacter.CharacterId, SkillVNum = 200 };
+                        SkillUserDTO sk2 = new SkillUserDTO { CharacterId = newCharacter.CharacterId, SkillVNum = 201 };
+                        DAOFactory.SkillUserDAO.Insert(ref sk1);
+                        DAOFactory.SkillUserDAO.Insert(ref sk2);
                         LoadCharacters(packet);
                     }
                     else Session.Client.SendPacketFormat($"info {Language.Instance.GetMessageFromKey("ALREADY_TAKEN")}");
@@ -2847,10 +2851,10 @@ namespace OpenNos.Handler
             else if (packetsplit.Length == 5)
             {
                 short vnum = -1;
-                short.TryParse(packetsplit[4],out vnum);
+                short.TryParse(packetsplit[4], out vnum);
                 Skill skillinfo = ServerManager.GetSkill(vnum);
                 SkillUser skill = Session.Character.Skills.FirstOrDefault(s => s.SkillVNum == vnum);
-                if (skill == null || skillinfo==null)
+                if (skill == null || skillinfo == null)
                     return;
                 Session.Character.Gold -= skillinfo.Cost;
                 Session.Client.SendPacket(Session.Character.GenerateGold());
