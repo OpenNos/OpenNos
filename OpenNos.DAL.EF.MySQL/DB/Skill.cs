@@ -43,7 +43,7 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public short Damage { get; set; }
         public short ElementalDamage { get; set; }
         public byte Element { get; set; }
-        public short CastId { get; set; }
+        public short UpgradeType { get; set; }
         public byte Type { get; set; }
         public byte Range { get; set; }
         public short VNumRequired { get; set; }
