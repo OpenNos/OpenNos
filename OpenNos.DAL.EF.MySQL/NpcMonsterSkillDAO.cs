@@ -17,49 +17,33 @@ using OpenNos.DAL.EF.MySQL.DB;
 using OpenNos.DAL.EF.MySQL.Helpers;
 using OpenNos.DAL.Interface;
 using OpenNos.Data;
-using OpenNos.Data.Enums;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace OpenNos.DAL.EF.MySQL
 {
-    public class CharacterSkillDAO : ICharacterSkillDAO
+    public class NpcMonsterSkillDAO : INpcMonsterSkillDAO
     {
         #region Methods
 
-        public DeleteResult Delete(long characterId, short skillVNum)
+        public NpcMonsterSkillDTO Insert(ref NpcMonsterSkillDTO npcmonsterskill)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                CharacterSkill invitem = context.characterskill.FirstOrDefault(i => i.CharacterId == characterId && i.SkillVNum == skillVNum);
-                if (invitem != null)
-                {
-                    context.characterskill.Remove(invitem);
-                    context.SaveChanges();
-                }
-
-                return DeleteResult.Deleted;
-            }
-        }
-
-        public CharacterSkillDTO Insert(ref CharacterSkillDTO characterskill)
-        {
-            using (var context = DataAccessHelper.CreateContext())
-            {
-                CharacterSkill entity = Mapper.Map<CharacterSkill>(characterskill);
-                context.characterskill.Add(entity);
+                NpcMonsterSkill entity = Mapper.Map<NpcMonsterSkill>(npcmonsterskill);
+                context.npcmonsterskill.Add(entity);
                 context.SaveChanges();
-                return Mapper.Map<CharacterSkillDTO>(entity);
+                return Mapper.Map<NpcMonsterSkillDTO>(entity);
             }
         }
 
-        public IEnumerable<CharacterSkillDTO> LoadByCharacterId(long characterId)
+        public IEnumerable<NpcMonsterSkillDTO> LoadByNpcMonster(short npcId)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                foreach (CharacterSkill inventoryobject in context.characterskill.Where(i => i.CharacterId == characterId))
+                foreach (NpcMonsterSkill npcmonsterskillobject in context.npcmonsterskill.Where(i => i.NpcMonsterVNum == npcId))
                 {
-                    yield return Mapper.Map<CharacterSkillDTO>(inventoryobject);
+                    yield return Mapper.Map<NpcMonsterSkillDTO>(npcmonsterskillobject);
                 }
             }
         }

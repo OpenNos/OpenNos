@@ -53,6 +53,7 @@
     <Compile Include="GeneralLogDTO.cs" />
     <Compile Include="MapMonsterDTO.cs" />
     <Compile Include="MapNpcDTO.cs" />
+    <Compile Include="NpcMonsterSkillDTO.cs" />
     <Compile Include="RecipeDTO.cs" />
     <Compile Include="RecipeItemDTO.cs" />
     <Compile Include="RespawnDTO.cs" />

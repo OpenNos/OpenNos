@@ -12,19 +12,16 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Data;
-using System.Collections.Generic;
-
-namespace OpenNos.DAL.Interface
+namespace OpenNos.Data
 {
-    public interface INpcMonsterDAO
+    public class NpcMonsterSkillDTO
     {
-        #region Methods
+        #region Properties
 
-        NpcMonsterDTO Insert(NpcMonsterDTO npc);
-        NpcMonsterDTO LoadById(short MapId);
-        IEnumerable<NpcMonsterDTO> LoadAll();
-        void Insert(List<NpcMonsterDTO> npc);
+        public long CharacterSkillId { get; set; }
+        public short NpcMonsterVNum { get; set; }
+        public short Rate { get; set; }
+        public short SkillVNum { get; set; }
 
         #endregion
     }
