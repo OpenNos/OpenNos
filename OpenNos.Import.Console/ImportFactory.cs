@@ -236,6 +236,7 @@ namespace OpenNos.Import.Console
             Dictionary<string, string> dictionaryIdLang = new Dictionary<string, string>();
             NpcMonsterDTO npc = new NpcMonsterDTO();
             List<DropDTO> drops = new List<DropDTO>();
+            List<NpcMonsterSkillDTO> skills = new List<NpcMonsterSkillDTO>();
             string line;
             bool itemAreaBegin = false;
             int counter = 0;
@@ -308,6 +309,26 @@ namespace OpenNos.Import.Console
                     {
                         npc.DefenceUpgrade = Convert.ToByte(unknownData == 1 ? currentLine[2] : currentLine[3]);
                     }
+                    else if (currentLine.Length > 1 && currentLine[1] == "SKILL")
+                    {
+                        for (int i = 2; i < currentLine.Length - 3; i += 3)
+                        {
+                            short vnum = short.Parse(currentLine[i]);
+                            if (vnum == -1 || vnum == 0)
+                                break;
+                            if (DAOFactory.SkillDAO.LoadById(vnum) == null)
+                                continue;
+                            if (DAOFactory.NpcMonsterSkillDAO.LoadByNpcMonster(npc.NpcMonsterVNum).Count(s => s.SkillVNum == vnum) != 0)
+                                continue;
+
+                            skills.Add(new NpcMonsterSkillDTO
+                            {
+                                SkillVNum = vnum,
+                                Rate = short.Parse(currentLine[i+1]),
+                                NpcMonsterVNum = npc.NpcMonsterVNum
+                            });
+                        }
+                    }
                     else if (currentLine.Length > 3 && currentLine[1] == "ITEM")
                     {
                         if (DAOFactory.NpcMonsterDAO.LoadById(npc.NpcMonsterVNum) == null)
@@ -337,6 +358,7 @@ namespace OpenNos.Import.Console
                 }
                 DAOFactory.NpcMonsterDAO.Insert(npcs);
                 DAOFactory.DropDAO.Insert(drops);
+                DAOFactory.NpcMonsterSkillDAO.Insert(skills);
                 Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("NPCMONSTERS_PARSED"), counter));
                 npcIdStream.Close();
             }
@@ -754,7 +776,7 @@ namespace OpenNos.Import.Console
                                 };
 
 
-                                if (sskill == null || shopskills.FirstOrDefault(s => s.SkillVNum.Equals(sskill.SkillVNum) && s.ShopId.Equals(sskill.ShopId)) !=null || DAOFactory.ShopSkillDAO.LoadByShopId(sskill.ShopId).FirstOrDefault(s => s.SkillVNum.Equals(sskill.SkillVNum)) != null)
+                                if (sskill == null || shopskills.FirstOrDefault(s => s.SkillVNum.Equals(sskill.SkillVNum) && s.ShopId.Equals(sskill.ShopId)) != null || DAOFactory.ShopSkillDAO.LoadByShopId(sskill.ShopId).FirstOrDefault(s => s.SkillVNum.Equals(sskill.SkillVNum)) != null)
                                     continue;
 
                                 shopskills.Add(sskill);

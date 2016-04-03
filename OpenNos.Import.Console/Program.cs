@@ -74,8 +74,8 @@ namespace OpenNos.Import.Console
                 factory.LoadMaps();
                 factory.ImportPortals();
                 factory.ImportItems();
-                factory.ImportNpcMonsters();
                 factory.ImportSkills();
+                factory.ImportNpcMonsters();
                 factory.ImportMapNpcs();
                 factory.ImportMonsters();
                 factory.ImportShops();

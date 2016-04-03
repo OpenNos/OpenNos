@@ -36,7 +36,21 @@ namespace OpenNos.DAL.EF.MySQL
                 return Mapper.Map<NpcMonsterSkillDTO>(entity);
             }
         }
+        public void Insert(List<NpcMonsterSkillDTO> skills)
+        {
+            using (var context = DataAccessHelper.CreateContext())
+            {
 
+                context.Configuration.AutoDetectChangesEnabled = false;
+                foreach (NpcMonsterSkillDTO skill in skills)
+                {
+                    NpcMonsterSkill entity = Mapper.Map<NpcMonsterSkill>(skill);
+                    context.npcmonsterskill.Add(entity);
+                }
+                context.SaveChanges();
+
+            }
+        }
         public IEnumerable<NpcMonsterSkillDTO> LoadByNpcMonster(short npcId)
         {
             using (var context = DataAccessHelper.CreateContext())
