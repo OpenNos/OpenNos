@@ -44,7 +44,7 @@
 -- -----------------------------------------------------------
 -- Entity Designer DDL Script for MySQL Server 4.1 and higher
 -- -----------------------------------------------------------
--- Date Created: 04/03/2016 18:57:28
+-- Date Created: 04/03/2016 19:23:22
 
 -- Generated from EDMX file: C:\Users\ERWAN\Desktop\OpenNos Git\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
 -- Target version: 3.0.0.0
@@ -655,13 +655,13 @@ ALTER TABLE `shopskill` ADD PRIMARY KEY (ShopSkillId);
 
 
 
-CREATE TABLE `NpcMonsterSkillSet`(
+CREATE TABLE `npcmonsterskill`(
 	`CharacterSkillId` bigint NOT NULL AUTO_INCREMENT UNIQUE, 
 	`Rate` smallint NOT NULL, 
 	`SkillVNum` smallint NOT NULL, 
 	`NpcMonsterVNum` smallint NOT NULL);
 
-ALTER TABLE `NpcMonsterSkillSet` ADD PRIMARY KEY (CharacterSkillId);
+ALTER TABLE `npcmonsterskill` ADD PRIMARY KEY (CharacterSkillId);
 
 
 
@@ -1196,9 +1196,9 @@ CREATE INDEX `IX_FK_shopskillShop`
 
 
 
--- Creating foreign key on `SkillVNum` in table 'NpcMonsterSkillSet'
+-- Creating foreign key on `SkillVNum` in table 'npcmonsterskill'
 
-ALTER TABLE `NpcMonsterSkillSet`
+ALTER TABLE `npcmonsterskill`
 ADD CONSTRAINT `FK_NpcMonsterSkillSkill`
     FOREIGN KEY (`SkillVNum`)
     REFERENCES `skill`
@@ -1209,14 +1209,14 @@ ADD CONSTRAINT `FK_NpcMonsterSkillSkill`
 -- Creating non-clustered index for FOREIGN KEY 'FK_NpcMonsterSkillSkill'
 
 CREATE INDEX `IX_FK_NpcMonsterSkillSkill`
-    ON `NpcMonsterSkillSet`
+    ON `npcmonsterskill`
     (`SkillVNum`);
 
 
 
--- Creating foreign key on `NpcMonsterVNum` in table 'NpcMonsterSkillSet'
+-- Creating foreign key on `NpcMonsterVNum` in table 'npcmonsterskill'
 
-ALTER TABLE `NpcMonsterSkillSet`
+ALTER TABLE `npcmonsterskill`
 ADD CONSTRAINT `FK_NpcMonsterSkillNpcMonster`
     FOREIGN KEY (`NpcMonsterVNum`)
     REFERENCES `npcmonster`
@@ -1227,7 +1227,7 @@ ADD CONSTRAINT `FK_NpcMonsterSkillNpcMonster`
 -- Creating non-clustered index for FOREIGN KEY 'FK_NpcMonsterSkillNpcMonster'
 
 CREATE INDEX `IX_FK_NpcMonsterSkillNpcMonster`
-    ON `NpcMonsterSkillSet`
+    ON `npcmonsterskill`
     (`NpcMonsterVNum`);
 
 

@@ -25,9 +25,9 @@
     <EntitySet Name="recipeitem" EntityType="opennosModel.Store.recipeitem" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="drop" EntityType="opennosModel.Store.drop" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="skill" EntityType="opennosModel.Store.skill" store:Type="Tables" Schema="dbo" />
-    <EntitySet Name="skilluser" EntityType="opennosModel.Store.skilluser" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="characterskill" EntityType="opennosModel.Store.characterskill" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="shopskill" EntityType="opennosModel.Store.shopskill" store:Type="Tables" Schema="dbo" />
-    <EntitySet Name="NpcMonsterSkillSet" EntityType="opennosModel.Store.NpcMonsterSkillSet" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="npcmonsterskill" EntityType="opennosModel.Store.npcmonsterskill" store:Type="Tables" Schema="dbo" />
     <AssociationSet Name="AccountCharacter" Association="opennosModel.Store.AccountCharacter">
       <End Role="Account" EntitySet="account" />
       <End Role="Character" EntitySet="character" />
@@ -128,28 +128,28 @@
       <End Role="Drop" EntitySet="drop" />
       <End Role="NpcMonster" EntitySet="npcmonster" />
     </AssociationSet>
-    <AssociationSet Name="skilluseras" Association="opennosModel.Store.skilluseras">
+    <AssociationSet Name="characterskillas" Association="opennosModel.Store.characterskillas">
       <End Role="Skill" EntitySet="skill" />
-      <End Role="SkillUser" EntitySet="skilluser" />
+      <End Role="CharacterSkill" EntitySet="characterskill" />
     </AssociationSet>
     <AssociationSet Name="shopskillSkill" Association="opennosModel.Store.shopskillSkill">
       <End Role="shopskill" EntitySet="shopskill" />
       <End Role="Skill" EntitySet="skill" />
     </AssociationSet>
-    <AssociationSet Name="CharacterSkillUser" Association="opennosModel.Store.CharacterSkillUser">
+    <AssociationSet Name="CharacterCharacterSkill" Association="opennosModel.Store.CharacterCharacterSkill">
       <End Role="Character" EntitySet="character" />
-      <End Role="SkillUser" EntitySet="skilluser" />
+      <End Role="CharacterSkill" EntitySet="characterskill" />
     </AssociationSet>
     <AssociationSet Name="shopskillShop" Association="opennosModel.Store.shopskillShop">
       <End Role="shopskill" EntitySet="shopskill" />
       <End Role="Shop" EntitySet="shop" />
     </AssociationSet>
     <AssociationSet Name="NpcMonsterSkillSkill" Association="opennosModel.Store.NpcMonsterSkillSkill">
-      <End Role="NpcMonsterSkill" EntitySet="NpcMonsterSkillSet" />
+      <End Role="NpcMonsterSkill" EntitySet="npcmonsterskill" />
       <End Role="Skill" EntitySet="skill" />
     </AssociationSet>
     <AssociationSet Name="NpcMonsterSkillNpcMonster" Association="opennosModel.Store.NpcMonsterSkillNpcMonster">
-      <End Role="NpcMonsterSkill" EntitySet="NpcMonsterSkillSet" />
+      <End Role="NpcMonsterSkill" EntitySet="npcmonsterskill" />
       <End Role="NpcMonster" EntitySet="npcmonster" />
     </AssociationSet>
   </EntityContainer>
@@ -549,11 +549,11 @@
     <Property Name="VNumRequired" Type="smallint" Nullable="false" />
     <Property Name="UpgradeSkill" Type="smallint" Nullable="false" />
   </EntityType>
-  <EntityType Name="skilluser">
+  <EntityType Name="characterskill">
     <Key>
-      <PropertyRef Name="SkillUserId" />
+      <PropertyRef Name="CharacterSkillId" />
     </Key>
-    <Property Name="SkillUserId" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="CharacterSkillId" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="SkillVNum" Type="smallint" Nullable="false" />
     <Property Name="CharacterId" Type="bigint" Nullable="false" />
   </EntityType>
@@ -567,11 +567,11 @@
     <Property Name="Type" Type="utinyint" Nullable="false" />
     <Property Name="Slot" Type="utinyint" Nullable="false" />
   </EntityType>
-  <EntityType Name="NpcMonsterSkillSet">
+  <EntityType Name="npcmonsterskill">
     <Key>
-      <PropertyRef Name="SkillUserId" />
+      <PropertyRef Name="CharacterSkillId" />
     </Key>
-    <Property Name="SkillUserId" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="CharacterSkillId" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="Rate" Type="smallint" Nullable="false" />
     <Property Name="SkillVNum" Type="smallint" Nullable="false" />
     <Property Name="NpcMonsterVNum" Type="smallint" Nullable="false" />
@@ -876,14 +876,14 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="skilluseras">
+  <Association Name="characterskillas">
     <End Role="Skill" Type="opennosModel.Store.skill" Multiplicity="1" />
-    <End Role="SkillUser" Type="opennosModel.Store.skilluser" Multiplicity="*" />
+    <End Role="CharacterSkill" Type="opennosModel.Store.characterskill" Multiplicity="*" />
     <ReferentialConstraint>
       <Principal Role="Skill">
         <PropertyRef Name="SkillVNum" />
       </Principal>
-      <Dependent Role="SkillUser">
+      <Dependent Role="CharacterSkill">
         <PropertyRef Name="SkillVNum" />
       </Dependent>
     </ReferentialConstraint>
@@ -900,14 +900,14 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="CharacterSkillUser">
+  <Association Name="CharacterCharacterSkill">
     <End Role="Character" Type="opennosModel.Store.character" Multiplicity="1" />
-    <End Role="SkillUser" Type="opennosModel.Store.skilluser" Multiplicity="*" />
+    <End Role="CharacterSkill" Type="opennosModel.Store.characterskill" Multiplicity="*" />
     <ReferentialConstraint>
       <Principal Role="Character">
         <PropertyRef Name="CharacterId" />
       </Principal>
-      <Dependent Role="SkillUser">
+      <Dependent Role="CharacterSkill">
         <PropertyRef Name="CharacterId" />
       </Dependent>
     </ReferentialConstraint>
@@ -925,7 +925,7 @@
     </ReferentialConstraint>
   </Association>
   <Association Name="NpcMonsterSkillSkill">
-    <End Role="NpcMonsterSkill" Type="opennosModel.Store.NpcMonsterSkillSet" Multiplicity="*" />
+    <End Role="NpcMonsterSkill" Type="opennosModel.Store.npcmonsterskill" Multiplicity="*" />
     <End Role="Skill" Type="opennosModel.Store.skill" Multiplicity="1" />
     <ReferentialConstraint>
       <Principal Role="Skill">
@@ -937,7 +937,7 @@
     </ReferentialConstraint>
   </Association>
   <Association Name="NpcMonsterSkillNpcMonster">
-    <End Role="NpcMonsterSkill" Type="opennosModel.Store.NpcMonsterSkillSet" Multiplicity="*" />
+    <End Role="NpcMonsterSkill" Type="opennosModel.Store.npcmonsterskill" Multiplicity="*" />
     <End Role="NpcMonster" Type="opennosModel.Store.npcmonster" Multiplicity="1" />
     <ReferentialConstraint>
       <Principal Role="NpcMonster">
@@ -1021,7 +1021,7 @@
           <Property Name="TalentSurrender" Type="Int32" Nullable="false" />
           <Property Name="MasterPoints" Type="Int32" Nullable="false" />
           <Property Name="MasterTicket" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="skilluser" Relationship="opennosModel.CharacterSkillUser" FromRole="Character" ToRole="SkillUser" />
+          <NavigationProperty Name="characterskill" Relationship="opennosModel.CharacterCharacterSkill" FromRole="Character" ToRole="CharacterSkill" />
         </EntityType>
         <EntityType Name="Portal">
           <Key>
@@ -1159,31 +1159,31 @@
             <End Role="NpcMonster" EntitySet="npcmonster" />
           </AssociationSet>
           <EntitySet Name="skill" EntityType="opennosModel.Skill" />
-          <EntitySet Name="skilluser" EntityType="opennosModel.CharacterSkill" />
+          <EntitySet Name="characterskill" EntityType="opennosModel.CharacterSkill" />
           <EntitySet Name="shopskill" EntityType="opennosModel.ShopSkill" />
-          <AssociationSet Name="skilluseras" Association="opennosModel.skilluseras">
+          <AssociationSet Name="characterskillas" Association="opennosModel.characterskillas">
             <End Role="Skill" EntitySet="skill" />
-            <End Role="SkillUser" EntitySet="skilluser" />
+            <End Role="CharacterSkill" EntitySet="characterskill" />
           </AssociationSet>
           <AssociationSet Name="shopskillSkill" Association="opennosModel.shopskillSkill">
             <End Role="shopskill" EntitySet="shopskill" />
             <End Role="Skill" EntitySet="skill" />
           </AssociationSet>
-          <AssociationSet Name="CharacterSkillUser" Association="opennosModel.CharacterSkillUser">
+          <AssociationSet Name="CharacterCharacterSkill" Association="opennosModel.CharacterCharacterSkill">
             <End Role="Character" EntitySet="character" />
-            <End Role="SkillUser" EntitySet="skilluser" />
+            <End Role="CharacterSkill" EntitySet="characterskill" />
           </AssociationSet>
           <AssociationSet Name="shopskillShop" Association="opennosModel.shopskillShop">
             <End Role="shopskill" EntitySet="shopskill" />
             <End Role="Shop" EntitySet="shop" />
           </AssociationSet>
-          <EntitySet Name="NpcMonsterSkillSet" EntityType="opennosModel.NpcMonsterSkill" />
+          <EntitySet Name="npcmonsterskill" EntityType="opennosModel.NpcMonsterSkill" />
           <AssociationSet Name="NpcMonsterSkillSkill" Association="opennosModel.NpcMonsterSkillSkill">
-            <End EntitySet="NpcMonsterSkillSet" Role="NpcMonsterSkill" />
+            <End EntitySet="npcmonsterskill" Role="NpcMonsterSkill" />
             <End EntitySet="skill" Role="Skill" />
           </AssociationSet>
           <AssociationSet Name="NpcMonsterSkillNpcMonster" Association="opennosModel.NpcMonsterSkillNpcMonster">
-            <End EntitySet="NpcMonsterSkillSet" Role="NpcMonsterSkill" />
+            <End EntitySet="npcmonsterskill" Role="NpcMonsterSkill" />
             <End EntitySet="npcmonster" Role="NpcMonster" />
           </AssociationSet>
           </EntityContainer>
@@ -1829,7 +1829,7 @@
           <Property Name="CastAnimation" Type="Int16" Nullable="false" />
           <Property Name="AttackAnimation" Type="Int16" Nullable="false" />
           <Property Name="CastEffect" Type="Int16" Nullable="false" />
-          <NavigationProperty Name="skilluser" Relationship="opennosModel.skilluseras" FromRole="Skill" ToRole="SkillUser" />
+          <NavigationProperty Name="characterskill" Relationship="opennosModel.characterskillas" FromRole="Skill" ToRole="CharacterSkill" />
           <NavigationProperty Name="shopskill" Relationship="opennosModel.shopskillSkill" FromRole="Skill" ToRole="shopskill" />
           <Property Name="Distance" Type="Byte" Nullable="false" />
           <Property Name="Duration" Type="Int16" Nullable="false" />
@@ -1845,12 +1845,12 @@
         </EntityType>
         <EntityType Name="CharacterSkill">
           <Key>
-            <PropertyRef Name="SkillUserId" />
+            <PropertyRef Name="CharacterSkillId" />
           </Key>
-          <Property Name="SkillUserId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <NavigationProperty Name="skill" Relationship="opennosModel.skilluseras" FromRole="SkillUser" ToRole="Skill" />
+          <Property Name="CharacterSkillId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <NavigationProperty Name="skill" Relationship="opennosModel.characterskillas" FromRole="CharacterSkill" ToRole="Skill" />
           <Property Name="SkillVNum" Type="Int16" Nullable="false" />
-          <NavigationProperty Name="character" Relationship="opennosModel.CharacterSkillUser" FromRole="SkillUser" ToRole="Character" />
+          <NavigationProperty Name="character" Relationship="opennosModel.CharacterCharacterSkill" FromRole="CharacterSkill" ToRole="Character" />
           <Property Name="CharacterId" Type="Int64" Nullable="false" />
         </EntityType>
         <EntityType Name="ShopSkill">
@@ -1865,14 +1865,14 @@
           <Property Name="Type" Type="Byte" Nullable="false" />
           <Property Name="Slot" Type="Byte" Nullable="false" />
         </EntityType>
-        <Association Name="skilluseras">
+        <Association Name="characterskillas">
           <End Type="opennosModel.Skill" Role="Skill" Multiplicity="1" />
-          <End Type="opennosModel.CharacterSkill" Role="SkillUser" Multiplicity="*" />
+          <End Type="opennosModel.CharacterSkill" Role="CharacterSkill" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Skill">
               <PropertyRef Name="SkillVNum" />
             </Principal>
-            <Dependent Role="SkillUser">
+            <Dependent Role="CharacterSkill">
               <PropertyRef Name="SkillVNum" />
             </Dependent>
           </ReferentialConstraint>
@@ -1889,14 +1889,14 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="CharacterSkillUser">
+        <Association Name="CharacterCharacterSkill">
           <End Type="opennosModel.Character" Role="Character" Multiplicity="1" />
-          <End Type="opennosModel.CharacterSkill" Role="SkillUser" Multiplicity="*" />
+          <End Type="opennosModel.CharacterSkill" Role="CharacterSkill" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Character">
               <PropertyRef Name="CharacterId" />
             </Principal>
-            <Dependent Role="SkillUser">
+            <Dependent Role="CharacterSkill">
               <PropertyRef Name="CharacterId" />
             </Dependent>
           </ReferentialConstraint>
@@ -1915,9 +1915,9 @@
         </Association>
         <EntityType Name="NpcMonsterSkill">
           <Key>
-            <PropertyRef Name="SkillUserId" />
+            <PropertyRef Name="CharacterSkillId" />
           </Key>
-          <Property Name="SkillUserId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CharacterSkillId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Rate" Type="Int16" Nullable="false" />
           <NavigationProperty Name="skill" Relationship="opennosModel.NpcMonsterSkillSkill" FromRole="NpcMonsterSkill" ToRole="Skill" />
           <Property Name="SkillVNum" Type="Int16" Nullable="false" />
@@ -2368,10 +2368,10 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
-    <EntitySetMapping Name="skilluser">
+    <EntitySetMapping Name="characterskill">
       <EntityTypeMapping TypeName="IsTypeOf(opennosModel.CharacterSkill)">
-        <MappingFragment StoreEntitySet="skilluser">
-          <ScalarProperty Name="SkillUserId" ColumnName="SkillUserId" />
+        <MappingFragment StoreEntitySet="characterskill">
+          <ScalarProperty Name="CharacterSkillId" ColumnName="CharacterSkillId" />
           <ScalarProperty Name="SkillVNum" ColumnName="SkillVNum" />
           <ScalarProperty Name="CharacterId" ColumnName="CharacterId" />
         </MappingFragment>
@@ -2388,10 +2388,10 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
-    <EntitySetMapping Name="NpcMonsterSkillSet">
+    <EntitySetMapping Name="npcmonsterskill">
       <EntityTypeMapping TypeName="IsTypeOf(opennosModel.NpcMonsterSkill)">
-        <MappingFragment StoreEntitySet="NpcMonsterSkillSet">
-          <ScalarProperty Name="SkillUserId" ColumnName="SkillUserId" />
+        <MappingFragment StoreEntitySet="npcmonsterskill">
+          <ScalarProperty Name="CharacterSkillId" ColumnName="CharacterSkillId" />
           <ScalarProperty Name="Rate" ColumnName="Rate" />
           <ScalarProperty Name="SkillVNum" ColumnName="SkillVNum" />
           <ScalarProperty Name="NpcMonsterVNum" ColumnName="NpcMonsterVNum" />
