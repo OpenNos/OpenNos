@@ -412,7 +412,7 @@
     <value>Insufficient reputation</value>
   </data>
   <data name="NOT_HUNGRY_FEMALE" xml:space="preserve">
-    <value>I think, i'm not hungry</value>
+    <value>I think, I'm not hungry</value>
   </data>
   <data name="NOT_HUNGRY_MALE" xml:space="preserve">
     <value>I'm not hungry</value>
@@ -535,10 +535,10 @@
     <value>Shop cannot be empty!</value>
   </data>
   <data name="SHOP_NEAR_PORTAL" xml:space="preserve">
-    <value>You cannot create shop soo close to portal!</value>
+    <value>You cannot create shop so close to portal!</value>
   </data>
   <data name="SHOP_OPEN" xml:space="preserve">
-    <value>Shop has ben opened</value>
+    <value>Shop has been opened</value>
   </data>
   <data name="SHUTDOWN_MIN" xml:space="preserve">
     <value>Server will be shut in {0} Minutes.</value>
@@ -574,7 +574,7 @@
     <value>Are you sure you want to delete?</value>
   </data>
   <data name="SWORDMAN" xml:space="preserve">
-    <value>Swordman</value>
+    <value>Swordsman</value>
   </data>
   <data name="TOO_BIG" xml:space="preserve">
     <value>Message is too big ({0} bytes). Max allowed length is {1} bytes.</value>
@@ -628,6 +628,6 @@
     <value>Wrong value</value>
   </data>
   <data name="YOU_ASK_FOR_EXCHANGE" xml:space="preserve">
-    <value>You ask for an echange with</value>
+    <value>You ask for an exchange with</value>
   </data>
 </root>
