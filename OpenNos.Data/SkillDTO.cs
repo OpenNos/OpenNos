@@ -21,8 +21,8 @@ namespace OpenNos.Data
         public short SkillVNum { get; set; }
         public string Name { get; set; }
         public int Cost { get; set; }
-        public byte Class { get; set; }
         public byte LevelMinimum { get; set; }
+        public byte Class { get; set; }
         public byte MinimumAdventurerLevel { get; set; }
         public byte MinimumSwordmanLevel { get; set; }
         public byte MinimumArcherLevel { get; set; }
@@ -41,9 +41,11 @@ namespace OpenNos.Data
         public short ElementalDamage { get; set; }
         public byte Element { get; set; }
         public short CastId { get; set; }
+        public byte UpgradeType { get; set; }
         public byte Type { get; set; }
         public byte Range { get; set; }
         public short VNumRequired { get; set; }
+        public short UpgradeSkill { get; set; }
 
         #endregion
     }

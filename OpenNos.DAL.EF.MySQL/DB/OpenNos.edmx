@@ -539,9 +539,11 @@
     <Property Name="ElementalDamage" Type="smallint" Nullable="false" />
     <Property Name="Element" Type="utinyint" Nullable="false" />
     <Property Name="CastId" Type="smallint" Nullable="false" />
+    <Property Name="UpgradeType" Type="utinyint" Nullable="false" />
     <Property Name="Type" Type="utinyint" Nullable="false" />
     <Property Name="Range" Type="utinyint" Nullable="false" />
     <Property Name="VNumRequired" Type="smallint" Nullable="false" />
+    <Property Name="UpgradeSkill" Type="smallint" Nullable="false" />
   </EntityType>
   <EntityType Name="skilluser">
     <Key>
@@ -1806,9 +1808,11 @@
           <Property Name="ElementalDamage" Type="Int16" Nullable="false" />
           <Property Name="Element" Type="Byte" Nullable="false" />
           <Property Name="CastId" Type="Int16" Nullable="false" />
+          <Property Name="UpgradeType" Type="Byte" Nullable="false" />
           <Property Name="Type" Type="Byte" Nullable="false" />
           <Property Name="Range" Type="Byte" Nullable="false" />
           <Property Name="VNumRequired" Type="Int16" Nullable="false" />
+          <Property Name="UpgradeSkill" Type="Int16" Nullable="false" />
         </EntityType>
         <EntityType Name="SkillUser">
           <Key>
@@ -2307,9 +2311,11 @@
           <ScalarProperty Name="ElementalDamage" ColumnName="ElementalDamage" />
           <ScalarProperty Name="Element" ColumnName="Element" />
           <ScalarProperty Name="CastId" ColumnName="CastId" />
+          <ScalarProperty Name="UpgradeType" ColumnName="UpgradeType" />
           <ScalarProperty Name="Type" ColumnName="Type" />
           <ScalarProperty Name="Range" ColumnName="Range" />
           <ScalarProperty Name="VNumRequired" ColumnName="VNumRequired" />
+          <ScalarProperty Name="UpgradeSkill" ColumnName="UpgradeSkill" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

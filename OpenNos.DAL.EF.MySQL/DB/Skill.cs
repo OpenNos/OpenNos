@@ -44,9 +44,11 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public short ElementalDamage { get; set; }
         public byte Element { get; set; }
         public short CastId { get; set; }
+        public byte UpgradeType { get; set; }
         public byte Type { get; set; }
         public byte Range { get; set; }
         public short VNumRequired { get; set; }
+        public short UpgradeSkill { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<SkillUser> skilluser { get; set; }
