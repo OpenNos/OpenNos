@@ -418,7 +418,6 @@ namespace OpenNos.Import.Console
                     else if (currentLine.Length > 2 && currentLine[1] == "DATA")
                     {
                         skill.UpgradeSkill = short.Parse(currentLine[2]);
-                        skill.UpgradeType = byte.Parse(currentLine[3]);
                         skill.Duration = short.Parse(currentLine[6]);
                         skill.Cooldown = short.Parse(currentLine[7]);
                         skill.MpCost = short.Parse(currentLine[10]);
