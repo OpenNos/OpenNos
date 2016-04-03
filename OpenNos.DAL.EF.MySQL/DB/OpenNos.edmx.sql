@@ -44,9 +44,9 @@
 -- -----------------------------------------------------------
 -- Entity Designer DDL Script for MySQL Server 4.1 and higher
 -- -----------------------------------------------------------
--- Date Created: 04/03/2016 17:43:53
+-- Date Created: 04/03/2016 18:13:13
 
--- Generated from EDMX file: C:\Users\Dominik\Source\Repos\OpenNos\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
+-- Generated from EDMX file: C:\Users\ERWAN\Desktop\OpenNos Git\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
 -- Target version: 3.0.0.0
 
 -- --------------------------------------------------
@@ -630,8 +630,7 @@ ALTER TABLE `skill` ADD PRIMARY KEY (SkillVNum);
 CREATE TABLE `skilluser`(
 	`SkillUserId` bigint NOT NULL AUTO_INCREMENT UNIQUE, 
 	`SkillVNum` smallint NOT NULL, 
-	`CharacterId` bigint, 
-	`NpcMonsterVNum` smallint);
+	`CharacterId` bigint);
 
 ALTER TABLE `skilluser` ADD PRIMARY KEY (SkillUserId);
 
@@ -647,6 +646,18 @@ CREATE TABLE `shopskill`(
 	`Slot` TINYINT UNSIGNED NOT NULL);
 
 ALTER TABLE `shopskill` ADD PRIMARY KEY (ShopSkillId);
+
+
+
+
+
+CREATE TABLE `NpcMonsterSkillSet`(
+	`SkillUserId` bigint NOT NULL AUTO_INCREMENT UNIQUE, 
+	`Rate` smallint NOT NULL, 
+	`SkillVNum` smallint, 
+	`NpcMonsterVNum` smallint NOT NULL);
+
+ALTER TABLE `NpcMonsterSkillSet` ADD PRIMARY KEY (SkillUserId);
 
 
 
@@ -1163,24 +1174,6 @@ CREATE INDEX `IX_FK_CharacterSkillUser`
 
 
 
--- Creating foreign key on `NpcMonsterVNum` in table 'skilluser'
-
-ALTER TABLE `skilluser`
-ADD CONSTRAINT `FK_SkillUserNpcMonster`
-    FOREIGN KEY (`NpcMonsterVNum`)
-    REFERENCES `npcmonster`
-        (`NpcMonsterVNum`)
-    ON DELETE NO ACTION ON UPDATE NO ACTION;
-
-
--- Creating non-clustered index for FOREIGN KEY 'FK_SkillUserNpcMonster'
-
-CREATE INDEX `IX_FK_SkillUserNpcMonster`
-    ON `skilluser`
-    (`NpcMonsterVNum`);
-
-
-
 -- Creating foreign key on `ShopId` in table 'shopskill'
 
 ALTER TABLE `shopskill`
@@ -1196,6 +1189,42 @@ ADD CONSTRAINT `FK_shopskillShop`
 CREATE INDEX `IX_FK_shopskillShop`
     ON `shopskill`
     (`ShopId`);
+
+
+
+-- Creating foreign key on `SkillVNum` in table 'NpcMonsterSkillSet'
+
+ALTER TABLE `NpcMonsterSkillSet`
+ADD CONSTRAINT `FK_NpcMonsterSkillSkill`
+    FOREIGN KEY (`SkillVNum`)
+    REFERENCES `skill`
+        (`SkillVNum`)
+    ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+
+-- Creating non-clustered index for FOREIGN KEY 'FK_NpcMonsterSkillSkill'
+
+CREATE INDEX `IX_FK_NpcMonsterSkillSkill`
+    ON `NpcMonsterSkillSet`
+    (`SkillVNum`);
+
+
+
+-- Creating foreign key on `NpcMonsterVNum` in table 'NpcMonsterSkillSet'
+
+ALTER TABLE `NpcMonsterSkillSet`
+ADD CONSTRAINT `FK_NpcMonsterSkillNpcMonster`
+    FOREIGN KEY (`NpcMonsterVNum`)
+    REFERENCES `npcmonster`
+        (`NpcMonsterVNum`)
+    ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+
+-- Creating non-clustered index for FOREIGN KEY 'FK_NpcMonsterSkillNpcMonster'
+
+CREATE INDEX `IX_FK_NpcMonsterSkillNpcMonster`
+    ON `NpcMonsterSkillSet`
+    (`NpcMonsterVNum`);
 
 
 

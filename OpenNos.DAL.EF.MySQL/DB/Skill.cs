@@ -17,8 +17,9 @@ namespace OpenNos.DAL.EF.MySQL.DB
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Skill()
         {
-            this.skilluser = new HashSet<SkillUser>();
+            this.skilluser = new HashSet<CharacterSkill>();
             this.shopskill = new HashSet<ShopSkill>();
+            this.npcmonsterskill = new HashSet<NpcMonsterSkill>();
         }
     
         public short SkillVNum { get; set; }
@@ -50,8 +51,10 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public short UpgradeSkill { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<SkillUser> skilluser { get; set; }
+        public virtual ICollection<CharacterSkill> skilluser { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ShopSkill> shopskill { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<NpcMonsterSkill> npcmonsterskill { get; set; }
     }
 }

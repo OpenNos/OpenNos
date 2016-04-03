@@ -85,6 +85,9 @@
     <Compile Include="DB\Character.cs">
       <DependentUpon>OpenNos.tt</DependentUpon>
     </Compile>
+    <Compile Include="DB\CharacterSkill.cs">
+      <DependentUpon>OpenNos.tt</DependentUpon>
+    </Compile>
     <Compile Include="DB\Drop.cs">
       <DependentUpon>OpenNos.tt</DependentUpon>
     </Compile>
@@ -112,6 +115,9 @@
     <Compile Include="DB\NpcMonster.cs">
       <DependentUpon>OpenNos.tt</DependentUpon>
     </Compile>
+    <Compile Include="DB\NpcMonsterSkill.cs">
+      <DependentUpon>OpenNos.tt</DependentUpon>
+    </Compile>
     <Compile Include="DB\Portal.cs">
       <DependentUpon>OpenNos.tt</DependentUpon>
     </Compile>
@@ -134,9 +140,6 @@
       <DependentUpon>OpenNos.tt</DependentUpon>
     </Compile>
     <Compile Include="DB\Skill.cs">
-      <DependentUpon>OpenNos.tt</DependentUpon>
-    </Compile>
-    <Compile Include="DB\SkillUser.cs">
       <DependentUpon>OpenNos.tt</DependentUpon>
     </Compile>
     <Compile Include="DB\Teleporter.cs">
