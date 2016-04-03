@@ -268,7 +268,7 @@ namespace OpenNos.Handler
 
                     Session.Character.Skills.Add(new SkillUser() { SkillVNum = slot, CharacterId = Session.Character.CharacterId });
                     Session.Client.SendPacket(Session.Character.GenerateSki());
-                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("YOU_LEARN_SKILL"), 0));
+                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SKILL_LEARNED"), 0));
                     Session.Client.SendPacket(Session.Character.GenerateLev());//replace by the correct one
 
                 }
