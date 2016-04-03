@@ -266,7 +266,7 @@ namespace OpenNos.Handler
                     Session.Character.Gold -= skillinfo.Cost;
                     Session.Client.SendPacket(Session.Character.GenerateGold());
 
-                    Session.Character.Skills.Add(new SkillUser() { SkillVNum = slot, CharacterId = Session.Character.CharacterId });
+                    Session.Character.Skills.Add(new CharacterSkill() { SkillVNum = slot, CharacterId = Session.Character.CharacterId });
                     Session.Client.SendPacket(Session.Character.GenerateSki());
                     Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SKILL_LEARNED"), 0));
                     Session.Client.SendPacket(Session.Character.GenerateLev());//replace by the correct one
@@ -587,10 +587,10 @@ namespace OpenNos.Handler
                         };
 
                         SaveResult insertResult = DAOFactory.CharacterDAO.InsertOrUpdate(ref newCharacter);
-                        SkillUserDTO sk1 = new SkillUserDTO { CharacterId = newCharacter.CharacterId, SkillVNum = 200 };
-                        SkillUserDTO sk2 = new SkillUserDTO { CharacterId = newCharacter.CharacterId, SkillVNum = 201 };
-                        DAOFactory.SkillUserDAO.Insert(ref sk1);
-                        DAOFactory.SkillUserDAO.Insert(ref sk2);
+                        CharacterSkillDTO sk1 = new CharacterSkillDTO { CharacterId = newCharacter.CharacterId, SkillVNum = 200 };
+                        CharacterSkillDTO sk2 = new CharacterSkillDTO { CharacterId = newCharacter.CharacterId, SkillVNum = 201 };
+                        DAOFactory.CharacterSkillDAO.Insert(ref sk1);
+                        DAOFactory.CharacterSkillDAO.Insert(ref sk2);
                         LoadCharacters(packet);
                     }
                     else Session.Client.SendPacketFormat($"info {Language.Instance.GetMessageFromKey("ALREADY_TAKEN")}");
@@ -2853,13 +2853,13 @@ namespace OpenNos.Handler
                 short vnum = -1;
                 short.TryParse(packetsplit[4], out vnum);
                 Skill skillinfo = ServerManager.GetSkill(vnum);
-                SkillUser skill = Session.Character.Skills.FirstOrDefault(s => s.SkillVNum == vnum);
+                CharacterSkill skill = Session.Character.Skills.FirstOrDefault(s => s.SkillVNum == vnum);
                 if (skill == null || skillinfo == null)
                     return;
                 Session.Character.Gold -= skillinfo.Cost;
                 Session.Client.SendPacket(Session.Character.GenerateGold());
 
-                foreach (SkillUser sk in Session.Character.Skills)
+                foreach (CharacterSkill sk in Session.Character.Skills)
                 {
                     Skill skinfo = ServerManager.GetSkill(sk.SkillVNum);
                     if (skillinfo.UpgradeSkill == skinfo.UpgradeSkill)

@@ -24,16 +24,16 @@ using OpenNos.Data.Enums;
 
 namespace OpenNos.DAL.EF.MySQL
 {
-    public class SkillUserDAO : ISkillUserDAO
+    public class CharacterSkillDAO : ICharacterSkillDAO
     {
         public DeleteResult Delete(long characterId, short skillVNum)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                SkillUser invitem = context.skilluser.FirstOrDefault(i => i.CharacterId == characterId && i.SkillVNum == skillVNum);
+                CharacterSkill invitem = context.characterskill.FirstOrDefault(i => i.CharacterId == characterId && i.SkillVNum == skillVNum);
                 if (invitem != null)
                 {
-                    context.skilluser.Remove(invitem);
+                    context.characterskill.Remove(invitem);
                     context.SaveChanges();
                 }
 
@@ -42,38 +42,28 @@ namespace OpenNos.DAL.EF.MySQL
         }
         #region Methods
 
-        public SkillUserDTO Insert(ref SkillUserDTO skilluser)
+        public CharacterSkillDTO Insert(ref CharacterSkillDTO characterskill)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                SkillUser entity = Mapper.Map<SkillUser>(skilluser);
-                context.skilluser.Add(entity);
+                CharacterSkill entity = Mapper.Map<CharacterSkill>(characterskill);
+                context.characterskill.Add(entity);
                 context.SaveChanges();
-                return Mapper.Map<SkillUserDTO>(entity);
+                return Mapper.Map<CharacterSkillDTO>(entity);
             }
         }
 
-        public IEnumerable<SkillUserDTO> LoadByCharacterId(long characterId)
+        public IEnumerable<CharacterSkillDTO> LoadByCharacterId(long characterId)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                foreach (SkillUser inventoryobject in context.skilluser.Where(i => i.CharacterId==characterId))
+                foreach (CharacterSkill inventoryobject in context.characterskill.Where(i => i.CharacterId==characterId))
                 {
-                    yield return Mapper.Map<SkillUserDTO>(inventoryobject);
+                    yield return Mapper.Map<CharacterSkillDTO>(inventoryobject);
                 }
             }
         }
 
-        public IEnumerable<SkillUserDTO> LoadByMonsterNpc(int npcId)
-        {
-            using (var context = DataAccessHelper.CreateContext())
-            {
-                foreach (SkillUser skilluser in context.skilluser.Where(s => s.NpcMonsterVNum.Equals(npcId)))
-                {
-                    yield return Mapper.Map<SkillUserDTO>(skilluser);
-                }
-            }
-        }
 
         #endregion
     }

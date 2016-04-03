@@ -16,13 +16,13 @@ using System;
 
 namespace OpenNos.Data
 {
-    public class SkillUserDTO
+    public class CharacterSkillDTO
     {
         #region Properties
 
         public Nullable<long> CharacterId { get; set; }
         public Nullable<short> NpcMonsterVNum { get; set; }
-        public long SkillUserId { get; set; }
+        public long CharacterSkillId { get; set; }
         public short SkillVNum { get; set; }
 
         #endregion

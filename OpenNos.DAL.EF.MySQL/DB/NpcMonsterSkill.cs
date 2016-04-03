@@ -12,13 +12,14 @@ namespace OpenNos.DAL.EF.MySQL.DB
     using System;
     using System.Collections.Generic;
     
-    public partial class CharacterSkill
+    public partial class NpcMonsterSkill
     {
         public long CharacterSkillId { get; set; }
+        public short Rate { get; set; }
         public short SkillVNum { get; set; }
-        public long CharacterId { get; set; }
+        public short NpcMonsterVNum { get; set; }
     
         public virtual Skill skill { get; set; }
-        public virtual Character character { get; set; }
+        public virtual NpcMonster npcmonster { get; set; }
     }
 }

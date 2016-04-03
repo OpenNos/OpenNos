@@ -18,13 +18,12 @@ using System.Collections.Generic;
 
 namespace OpenNos.DAL.Interface
 {
-    public interface ISkillUserDAO
+    public interface ICharacterSkillDAO
     {
         #region Methods
 
-        SkillUserDTO Insert(ref SkillUserDTO skilluser);
-        IEnumerable<SkillUserDTO> LoadByCharacterId(long characterId);
-        IEnumerable<SkillUserDTO> LoadByMonsterNpc(int npcId);
+        CharacterSkillDTO Insert(ref CharacterSkillDTO characterskill);
+        IEnumerable<CharacterSkillDTO> LoadByCharacterId(long characterId);
         DeleteResult Delete(long characterId, short skillVNum);
 
         #endregion

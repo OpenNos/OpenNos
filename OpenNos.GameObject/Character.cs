@@ -75,7 +75,7 @@ namespace OpenNos.GameObject
         public double LastSp { get; set; }
         public byte LastSpeed { get; set; }
         public int MaxSnack { get; set; }
-        public List<SkillUser> Skills { get; set; }
+        public List<CharacterSkill> Skills { get; set; }
         public int Morph { get { return _morph; } set { _morph = value; } }
         public int MorphUpgrade { get { return _morphUpgrade; } set { _morphUpgrade = value; } }
         public int MorphUpgrade2 { get { return _morphUpgrade2; } set { _morphUpgrade2 = value; } }
@@ -461,7 +461,7 @@ namespace OpenNos.GameObject
                 }
             }
             string skills = "";
-            foreach (SkillUser ski in Skills)
+            foreach (CharacterSkill ski in Skills)
             {
                 Skill skillinfo = ServerManager.GetSkill(ski.SkillVNum);
                 if (skillinfo.Class == Class)
@@ -473,7 +473,7 @@ namespace OpenNos.GameObject
         public int getCP()
         {
             int cpused = 0;
-            foreach (SkillUser ski in Skills)
+            foreach (CharacterSkill ski in Skills)
             {
                 Skill skillinfo = ServerManager.GetSkill(ski.SkillVNum);
                 if (skillinfo != null)
@@ -996,11 +996,11 @@ namespace OpenNos.GameObject
 
         public void LoadSkills()
         {
-            Skills = new List<SkillUser>();
-            IEnumerable<SkillUserDTO> skilluserDTO = DAOFactory.SkillUserDAO.LoadByCharacterId(CharacterId);
-            foreach (SkillUserDTO skilluser in skilluserDTO)
+            Skills = new List<CharacterSkill>();
+            IEnumerable<CharacterSkillDTO> characterskillDTO = DAOFactory.CharacterSkillDAO.LoadByCharacterId(CharacterId);
+            foreach (CharacterSkillDTO characterskill in characterskillDTO)
             {
-                Skills.Add(Mapper.DynamicMap<SkillUser>(skilluser));
+                Skills.Add(Mapper.DynamicMap<CharacterSkill>(characterskill));
             }
         }
         public void LoadInventory()
@@ -1130,11 +1130,11 @@ namespace OpenNos.GameObject
                 }
             }
 
-            foreach (SkillUserDTO skill in DAOFactory.SkillUserDAO.LoadByCharacterId(CharacterId))
+            foreach (CharacterSkillDTO skill in DAOFactory.CharacterSkillDAO.LoadByCharacterId(CharacterId))
             {
                 if (Skills.FirstOrDefault(s => s.SkillVNum == skill.SkillVNum) != null)
                 {
-                    DAOFactory.SkillUserDAO.Delete(CharacterId, skill.SkillVNum);
+                    DAOFactory.CharacterSkillDAO.Delete(CharacterId, skill.SkillVNum);
                 }
             }
 

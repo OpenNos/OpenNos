@@ -71,7 +71,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SkillDTO.cs" />
     <Compile Include="ShopSkillDTO.cs" />
-    <Compile Include="SkillUserDTO.cs" />
+    <Compile Include="CharacterSkillDTO.cs" />
     <Compile Include="TeleporterDTO.cs" />
     <Compile Include="UserDTO.cs" />
   </ItemGroup>

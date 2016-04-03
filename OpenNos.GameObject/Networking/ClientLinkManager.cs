@@ -325,41 +325,41 @@ namespace OpenNos.GameObject
                     case (byte)ClassType.Adventurer:
                         if (Session.Character.Skills.FirstOrDefault(s => s.SkillVNum == 200) == null)
                         {
-                            Session.Character.Skills.Add(new SkillUser { SkillVNum = 200, CharacterId = Session.Character.CharacterId });
+                            Session.Character.Skills.Add(new CharacterSkill { SkillVNum = 200, CharacterId = Session.Character.CharacterId });
                         }
                         if (Session.Character.Skills.FirstOrDefault(s => s.SkillVNum == 201) == null)
                         {
-                            Session.Character.Skills.Add(new SkillUser { SkillVNum = 201, CharacterId = Session.Character.CharacterId });
+                            Session.Character.Skills.Add(new CharacterSkill { SkillVNum = 201, CharacterId = Session.Character.CharacterId });
                         }
                         break;
                     case (byte)ClassType.Swordman:
                         if (Session.Character.Skills.FirstOrDefault(s => s.SkillVNum == 220) == null)
                         {
-                            Session.Character.Skills.Add(new SkillUser { SkillVNum = 220, CharacterId = Session.Character.CharacterId });
+                            Session.Character.Skills.Add(new CharacterSkill { SkillVNum = 220, CharacterId = Session.Character.CharacterId });
                         }
                         if (Session.Character.Skills.FirstOrDefault(s => s.SkillVNum == 221) == null)
                         {
-                            Session.Character.Skills.Add(new SkillUser { SkillVNum = 221, CharacterId = Session.Character.CharacterId });
+                            Session.Character.Skills.Add(new CharacterSkill { SkillVNum = 221, CharacterId = Session.Character.CharacterId });
                         }
                         break;
                     case (byte)ClassType.Archer:
                         if (Session.Character.Skills.FirstOrDefault(s => s.SkillVNum == 240) == null)
                         {
-                            Session.Character.Skills.Add(new SkillUser { SkillVNum = 240, CharacterId = Session.Character.CharacterId });
+                            Session.Character.Skills.Add(new CharacterSkill { SkillVNum = 240, CharacterId = Session.Character.CharacterId });
                         }
                         if (Session.Character.Skills.FirstOrDefault(s => s.SkillVNum == 241) == null)
                         {
-                            Session.Character.Skills.Add(new SkillUser { SkillVNum = 241, CharacterId = Session.Character.CharacterId });
+                            Session.Character.Skills.Add(new CharacterSkill { SkillVNum = 241, CharacterId = Session.Character.CharacterId });
                         }
                         break;
                     case (byte)ClassType.Magician:
                         if (Session.Character.Skills.FirstOrDefault(s => s.SkillVNum == 260) == null)
                         {
-                            Session.Character.Skills.Add(new SkillUser { SkillVNum = 260, CharacterId = Session.Character.CharacterId });
+                            Session.Character.Skills.Add(new CharacterSkill { SkillVNum = 260, CharacterId = Session.Character.CharacterId });
                         }
                         if (Session.Character.Skills.FirstOrDefault(s => s.SkillVNum == 261) == null)
                         {
-                            Session.Character.Skills.Add(new SkillUser { SkillVNum = 261, CharacterId = Session.Character.CharacterId });
+                            Session.Character.Skills.Add(new CharacterSkill { SkillVNum = 261, CharacterId = Session.Character.CharacterId });
                         }
                         break;
                 }

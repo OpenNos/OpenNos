@@ -44,7 +44,7 @@
 -- -----------------------------------------------------------
 -- Entity Designer DDL Script for MySQL Server 4.1 and higher
 -- -----------------------------------------------------------
--- Date Created: 04/03/2016 18:13:13
+-- Date Created: 04/03/2016 18:57:28
 
 -- Generated from EDMX file: C:\Users\ERWAN\Desktop\OpenNos Git\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
 -- Target version: 3.0.0.0
@@ -109,15 +109,17 @@
 
 --    ALTER TABLE `drop` DROP CONSTRAINT `FK_DropNpcMonster`;
 
---    ALTER TABLE `skilluser` DROP CONSTRAINT `FK_skilluseras`;
+--    ALTER TABLE `characterskill` DROP CONSTRAINT `FK_characterskillas`;
 
 --    ALTER TABLE `shopskill` DROP CONSTRAINT `FK_shopskillSkill`;
 
---    ALTER TABLE `skilluser` DROP CONSTRAINT `FK_CharacterSkillUser`;
-
---    ALTER TABLE `skilluser` DROP CONSTRAINT `FK_SkillUserNpcMonster`;
+--    ALTER TABLE `characterskill` DROP CONSTRAINT `FK_CharacterCharacterSkill`;
 
 --    ALTER TABLE `shopskill` DROP CONSTRAINT `FK_shopskillShop`;
+
+--    ALTER TABLE `NpcMonsterSkillSet` DROP CONSTRAINT `FK_NpcMonsterSkillSkill`;
+
+--    ALTER TABLE `NpcMonsterSkillSet` DROP CONSTRAINT `FK_NpcMonsterSkillNpcMonster`;
 
 
 -- --------------------------------------------------
@@ -163,9 +165,11 @@ SET foreign_key_checks = 0;
 
     DROP TABLE IF EXISTS `skill`;
 
-    DROP TABLE IF EXISTS `skilluser`;
+    DROP TABLE IF EXISTS `characterskill`;
 
     DROP TABLE IF EXISTS `shopskill`;
+
+    DROP TABLE IF EXISTS `NpcMonsterSkillSet`;
 
 SET foreign_key_checks = 1;
 
@@ -627,12 +631,12 @@ ALTER TABLE `skill` ADD PRIMARY KEY (SkillVNum);
 
 
 
-CREATE TABLE `skilluser`(
-	`SkillUserId` bigint NOT NULL AUTO_INCREMENT UNIQUE, 
+CREATE TABLE `characterskill`(
+	`CharacterSkillId` bigint NOT NULL AUTO_INCREMENT UNIQUE, 
 	`SkillVNum` smallint NOT NULL, 
-	`CharacterId` bigint);
+	`CharacterId` bigint NOT NULL);
 
-ALTER TABLE `skilluser` ADD PRIMARY KEY (SkillUserId);
+ALTER TABLE `characterskill` ADD PRIMARY KEY (CharacterSkillId);
 
 
 
@@ -652,12 +656,12 @@ ALTER TABLE `shopskill` ADD PRIMARY KEY (ShopSkillId);
 
 
 CREATE TABLE `NpcMonsterSkillSet`(
-	`SkillUserId` bigint NOT NULL AUTO_INCREMENT UNIQUE, 
+	`CharacterSkillId` bigint NOT NULL AUTO_INCREMENT UNIQUE, 
 	`Rate` smallint NOT NULL, 
-	`SkillVNum` smallint, 
+	`SkillVNum` smallint NOT NULL, 
 	`NpcMonsterVNum` smallint NOT NULL);
 
-ALTER TABLE `NpcMonsterSkillSet` ADD PRIMARY KEY (SkillUserId);
+ALTER TABLE `NpcMonsterSkillSet` ADD PRIMARY KEY (CharacterSkillId);
 
 
 
@@ -1120,20 +1124,20 @@ CREATE INDEX `IX_FK_DropNpcMonster`
 
 
 
--- Creating foreign key on `SkillVNum` in table 'skilluser'
+-- Creating foreign key on `SkillVNum` in table 'characterskill'
 
-ALTER TABLE `skilluser`
-ADD CONSTRAINT `FK_skilluseras`
+ALTER TABLE `characterskill`
+ADD CONSTRAINT `FK_characterskillas`
     FOREIGN KEY (`SkillVNum`)
     REFERENCES `skill`
         (`SkillVNum`)
     ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 
--- Creating non-clustered index for FOREIGN KEY 'FK_skilluseras'
+-- Creating non-clustered index for FOREIGN KEY 'FK_characterskillas'
 
-CREATE INDEX `IX_FK_skilluseras`
-    ON `skilluser`
+CREATE INDEX `IX_FK_characterskillas`
+    ON `characterskill`
     (`SkillVNum`);
 
 
@@ -1156,20 +1160,20 @@ CREATE INDEX `IX_FK_shopskillSkill`
 
 
 
--- Creating foreign key on `CharacterId` in table 'skilluser'
+-- Creating foreign key on `CharacterId` in table 'characterskill'
 
-ALTER TABLE `skilluser`
-ADD CONSTRAINT `FK_CharacterSkillUser`
+ALTER TABLE `characterskill`
+ADD CONSTRAINT `FK_CharacterCharacterSkill`
     FOREIGN KEY (`CharacterId`)
     REFERENCES `character`
         (`CharacterId`)
     ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 
--- Creating non-clustered index for FOREIGN KEY 'FK_CharacterSkillUser'
+-- Creating non-clustered index for FOREIGN KEY 'FK_CharacterCharacterSkill'
 
-CREATE INDEX `IX_FK_CharacterSkillUser`
-    ON `skilluser`
+CREATE INDEX `IX_FK_CharacterCharacterSkill`
+    ON `characterskill`
     (`CharacterId`);
 
 

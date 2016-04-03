@@ -20,20 +20,20 @@ using OpenNos.DAL;
 
 namespace OpenNos.GameObject
 {
-    public class SkillUser : SkillUserDTO,IGameObject
+    public class CharacterSkill : CharacterSkillDTO,IGameObject
     {
         #region Instantiation
 
-        public SkillUser()
+        public CharacterSkill()
         {
-            Mapper.CreateMap<SkillUserDTO, SkillUser>();
-            Mapper.CreateMap<SkillUser, SkillUserDTO>();
+            Mapper.CreateMap<CharacterSkillDTO, CharacterSkill>();
+            Mapper.CreateMap<CharacterSkill, CharacterSkillDTO>();
         }
 
         public void Save()
         {
-            SkillUserDTO tempsave = this;
-            DAOFactory.SkillUserDAO.Insert(ref tempsave);
+            CharacterSkillDTO tempsave = this;
+            DAOFactory.CharacterSkillDAO.Insert(ref tempsave);
         }
 
         #endregion

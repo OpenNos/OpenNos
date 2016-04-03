@@ -54,9 +54,9 @@
         <EntityTypeShape EntityType="opennosModel.Skill" Width="2" PointX="4.75" PointY="13.375" IsExpanded="true" />
         <EntityTypeShape EntityType="opennosModel.CharacterSkill" Width="1.625" PointX="7.5" PointY="26.75" IsExpanded="true" />
         <EntityTypeShape EntityType="opennosModel.ShopSkill" Width="1.5" PointX="1.125" PointY="18.5" IsExpanded="true" />
-        <AssociationConnector Association="opennosModel.skilluseras" />
+        <AssociationConnector Association="opennosModel.characterskillas" />
         <AssociationConnector Association="opennosModel.shopskillSkill" />
-        <AssociationConnector Association="opennosModel.CharacterSkillUser" />
+        <AssociationConnector Association="opennosModel.CharacterCharacterSkill" />
         <AssociationConnector Association="opennosModel.shopskillShop" />
         <EntityTypeShape EntityType="opennosModel.NpcMonsterSkill" Width="2.5" PointX="1.5" PointY="14.125" />
         <AssociationConnector Association="opennosModel.NpcMonsterSkillSkill" />
