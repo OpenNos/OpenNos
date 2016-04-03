@@ -19,14 +19,30 @@ using OpenNos.DAL.Interface;
 using OpenNos.Data;
 using System.Collections.Generic;
 using System.Linq;
+using System;
+using OpenNos.Data.Enums;
 
 namespace OpenNos.DAL.EF.MySQL
 {
     public class SkillUserDAO : ISkillUserDAO
     {
+        public DeleteResult Delete(long characterId, short skillVNum)
+        {
+            using (var context = DataAccessHelper.CreateContext())
+            {
+                SkillUser invitem = context.skilluser.FirstOrDefault(i => i.CharacterId == characterId && i.SkillVNum == skillVNum);
+                if (invitem != null)
+                {
+                    context.skilluser.Remove(invitem);
+                    context.SaveChanges();
+                }
+
+                return DeleteResult.Deleted;
+            }
+        }
         #region Methods
 
-        public SkillUserDTO Insert(SkillUserDTO skilluser)
+        public SkillUserDTO Insert(ref SkillUserDTO skilluser)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
@@ -41,9 +57,9 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                foreach (SkillUser skilluserobject in context.skilluser.Where(i => i.CharacterId.Equals(characterId)))
+                foreach (SkillUser inventoryobject in context.skilluser.Where(i => i.CharacterId==characterId))
                 {
-                    yield return Mapper.Map<SkillUserDTO>(skilluserobject);
+                    yield return Mapper.Map<SkillUserDTO>(inventoryobject);
                 }
             }
         }

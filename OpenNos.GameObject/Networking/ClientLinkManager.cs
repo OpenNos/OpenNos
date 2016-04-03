@@ -201,7 +201,6 @@ namespace OpenNos.GameObject
                 Session.Client.SendPacket(Session.Character.GenerateFd());
                 Session.Client.SendPacket(Session.Character.GenerateLev());
                 Session.Client.SendPacket(Session.Character.GenerateStat());
-                Session.Client.SendPacket(Session.Character.GenerateSc());
                 Session.Client.SendPacket(Session.Character.GenerateSki());
                
                 Session.Client.SendPacket(Session.Character.GenerateAt());

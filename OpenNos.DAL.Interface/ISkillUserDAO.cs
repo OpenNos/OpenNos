@@ -13,6 +13,7 @@
  */
 
 using OpenNos.Data;
+using OpenNos.Data.Enums;
 using System.Collections.Generic;
 
 namespace OpenNos.DAL.Interface
@@ -21,9 +22,10 @@ namespace OpenNos.DAL.Interface
     {
         #region Methods
 
-        SkillUserDTO Insert(SkillUserDTO skilluser);
+        SkillUserDTO Insert(ref SkillUserDTO skilluser);
         IEnumerable<SkillUserDTO> LoadByCharacterId(long characterId);
         IEnumerable<SkillUserDTO> LoadByMonsterNpc(int npcId);
+        DeleteResult Delete(long characterId, short skillVNum);
 
         #endregion
     }

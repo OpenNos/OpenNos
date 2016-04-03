@@ -163,7 +163,7 @@ namespace OpenNos.Handler
                 return;
             long owner; long.TryParse(packetsplit[3], out owner);
             byte type; byte.TryParse(packetsplit[2], out type);
-            byte slot; byte.TryParse(packetsplit[4], out slot);
+            short slot; short.TryParse(packetsplit[4], out slot);
             byte amount = 0;
             if (packetsplit.Length == 6)
                 byte.TryParse(packetsplit[5], out amount);
@@ -234,7 +234,7 @@ namespace OpenNos.Handler
                 KeyValuePair<long, MapShop> shop2 = Session.CurrentMap.ShopUserList.FirstOrDefault(s => s.Value.OwnerId.Equals(owner));
                 loadShopItem(owner, shop2);
             }
-            else if (type == 2) // skill shop
+            else if (packetsplit.Length==5) // skill shop
             {
                 Skill skillinfo = ServerManager.GetSkill(slot);
                 if (skillinfo == null)
@@ -268,13 +268,15 @@ namespace OpenNos.Handler
                     Session.Character.Skills.Add(new SkillUser() { SkillVNum = slot, CharacterId = Session.Character.CharacterId });
                     Session.Client.SendPacket(Session.Character.GenerateSki());
                     Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("YOU_LEARN_SKILL"),0));
+                    Session.Client.SendPacket(Session.Character.GenerateLev());//replace by the correct one
+
                 }
             }
             else
             {
                 MapNpc npc = Session.CurrentMap.Npcs.FirstOrDefault(n => n.MapNpcId.Equals((short)owner));
 
-                ShopItem item = npc?.Shop.ShopItems.FirstOrDefault(it => it.Slot.Equals(slot));
+                ShopItem item = npc?.Shop.ShopItems.FirstOrDefault(it => it.Slot == slot);
                 if (item == null) return;
                 Item iteminfo = ServerManager.GetItem(item.ItemVNum);
                 long price = iteminfo.Price * amount;
@@ -2794,6 +2796,7 @@ namespace OpenNos.Handler
 
                 Session.Character.Update();
                 Session.Character.LoadInventory();
+                Session.Character.LoadSkills();
                 DAOFactory.AccountDAO.WriteGeneralLog(Session.Character.AccountId, Session.Client.RemoteEndPoint.ToString(), Session.Character.CharacterId, "Connection", "World");
                 Session.Client.SendPacket("OK");
                 Session.HealthTask = new Task(() => healthTask());
@@ -2839,6 +2842,22 @@ namespace OpenNos.Handler
                 DeleteItem(type, slot);
                 Session.Client.SendPacket(Session.Character.GenerateGold());
                 Session.Client.SendPacket(Session.Character.GenerateShopMemo(1, string.Format(Language.Instance.GetMessageFromKey("SELL_ITEM_VALIDE"), item.Name, amount)));
+            }
+            else if (packetsplit.Length == 5)
+            {
+                short vnum = -1;
+                short.TryParse(packetsplit[4],out vnum);
+                Skill skillinfo = ServerManager.GetSkill(vnum);
+                SkillUser skill = Session.Character.Skills.FirstOrDefault(s => s.SkillVNum == vnum);
+                if (skill == null || skillinfo==null)
+                    return;
+                Session.Character.Gold -= skillinfo.Cost;
+                Session.Client.SendPacket(Session.Character.GenerateGold());
+
+                Session.Character.Skills.Remove(skill);
+                Session.Client.SendPacket(Session.Character.GenerateSki());
+                Session.Client.SendPacket(Session.Character.GenerateLev());
+
             }
         }
 
@@ -3008,7 +3027,11 @@ namespace OpenNos.Handler
         {
             // Not needed for now. (pictures)
         }
-
+        [Packet("shopclose")]
+        public void shopclose(string packet)
+        {
+            // Not needed for now. 
+        }
         [Packet("sortopen")]
         public void sortopen(string packet)
         {

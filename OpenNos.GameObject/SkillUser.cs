@@ -12,12 +12,15 @@
  * GNU General Public License for more details.
  */
 
+using System;
 using AutoMapper;
 using OpenNos.Data;
+using OpenNos.Data.Enums;
+using OpenNos.DAL;
 
 namespace OpenNos.GameObject
 {
-    public class SkillUser : SkillUserDTO
+    public class SkillUser : SkillUserDTO,IGameObject
     {
         #region Instantiation
 
@@ -25,6 +28,12 @@ namespace OpenNos.GameObject
         {
             Mapper.CreateMap<SkillUserDTO, SkillUser>();
             Mapper.CreateMap<SkillUser, SkillUserDTO>();
+        }
+
+        public void Save()
+        {
+            SkillUserDTO tempsave = this;
+            DAOFactory.SkillUserDAO.Insert(ref tempsave);
         }
 
         #endregion

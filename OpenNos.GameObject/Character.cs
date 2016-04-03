@@ -53,7 +53,6 @@ namespace OpenNos.GameObject
         {
             Mapper.CreateMap<CharacterDTO, Character>();
             Mapper.CreateMap<Character, CharacterDTO>();
-            Skills = new List<SkillUser>();
         }
 
         #endregion
@@ -155,7 +154,7 @@ namespace OpenNos.GameObject
         {
             return $"dir 1 {CharacterId} {Direction}";
         }
-       
+
         public List<string> GenerateDroppedItem()
         {
             return ServerManager.GetMap(MapId).DroppedList.Select(item => $"in 9 {item.Value.ItemVNum} {item.Key} {item.Value.PositionX} {item.Value.PositionY} {item.Value.Amount} 0 0 -1").ToList();
@@ -440,17 +439,13 @@ namespace OpenNos.GameObject
 
             return $"lev {Level} {LevelXp} {(!UseSp || specialist == null ? JobLevel : specialist.InventoryItem.SpLevel)} {(!UseSp || specialist == null ? JobLevelXp : specialist.InventoryItem.SpXp)} {(!UseSp || specialist == null ? XPLoad() : SPXPLoad())} {JobXPLoad()} {Reput} {getCP()}";
         }
-        public string GenerateSc()
-        {
-            return "";
-        }
         public string GenerateSki()
         {
             string skibase = "200 2O1";
             string skills = "";
-            foreach(SkillUser ski in Skills)
+            foreach (SkillUser ski in Skills)
             {
-                skills+=$" {ski.SkillVNum}";
+                skills += $" {ski.SkillVNum}";
             }
 
             return $"ski {skibase} {skills}";
@@ -458,13 +453,13 @@ namespace OpenNos.GameObject
         public int getCP()
         {
             int cpused = 0;
-            foreach(SkillUser ski in Skills)
+            foreach (SkillUser ski in Skills)
             {
                 Skill skillinfo = ServerManager.GetSkill(ski.SkillVNum);
                 if (skillinfo != null)
                     cpused += skillinfo.CPCost;
             }
-            return JobLevel * 2 - cpused;
+            return (JobLevel - 1) * 2 - cpused;
         }
 
         public string GenerateMapOut()
@@ -961,7 +956,7 @@ namespace OpenNos.GameObject
                     else
                         multiplicator += 0.5 + (point - 50.00) / 50.00;
 
-                    hp = inventory.InventoryItem.HP+ inventory.InventoryItem.SpHP*100;
+                    hp = inventory.InventoryItem.HP + inventory.InventoryItem.SpHP * 100;
                 }
             }
             return (int)((ServersData.HPData[Class, Level] + hp) * multiplicator);
@@ -979,6 +974,15 @@ namespace OpenNos.GameObject
             return InventoryList.Inventory.Where(i => i.InventoryItem.ItemVNum.Equals(itemVNum) && i.InventoryItem.Amount + amount < 100).Select(inventoryitemobject => new InventoryItem(inventoryitemobject.InventoryItem));
         }
 
+        public void LoadSkills()
+        {
+            Skills = new List<SkillUser>();
+            IEnumerable<SkillUserDTO> skilluserDTO = DAOFactory.SkillUserDAO.LoadByCharacterId(CharacterId);
+            foreach (SkillUserDTO skilluser in skilluserDTO)
+            {
+                Skills.Add(Mapper.DynamicMap<SkillUser>(skilluser));
+            }
+        }
         public void LoadInventory()
         {
             IEnumerable<InventoryDTO> inventorysDTO = DAOFactory.InventoryDAO.LoadByCharacterId(CharacterId);
@@ -1106,10 +1110,20 @@ namespace OpenNos.GameObject
                 }
             }
 
+            foreach (SkillUserDTO skill in DAOFactory.SkillUserDAO.LoadByCharacterId(CharacterId))
+            {
+                if (Skills.FirstOrDefault(s => s.SkillVNum == skill.SkillVNum) != null)
+                {
+                    DAOFactory.SkillUserDAO.Delete(CharacterId, skill.SkillVNum);
+                }
+            }
+
             for (int i = 0; i < InventoryList.Inventory.Count(); i++)
                 InventoryList.Inventory[i].Save();
             for (int i = 0; i < EquipmentList.Inventory.Count(); i++)
                 EquipmentList.Inventory[i].Save();
+            for (int i = 0; i < Skills.Count(); i++)
+                Skills[i].Save();
         }
 
         public double SPXPLoad()
