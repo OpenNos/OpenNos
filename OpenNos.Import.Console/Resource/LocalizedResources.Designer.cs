@@ -79,6 +79,15 @@ namespace OpenNos.Import.Console.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0} drop items parsed.
+        /// </summary>
+        internal static string DROP_PARSED {
+            get {
+                return ResourceManager.GetString("DROP_PARSED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Please enter the directory of files to parse.
         /// </summary>
         internal static string ENTER_PATH {
@@ -160,6 +169,15 @@ namespace OpenNos.Import.Console.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Do you want to parse Drop?.
+        /// </summary>
+        internal static string PARSE_DROP {
+            get {
+                return ResourceManager.GetString("PARSE_DROP", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Do you want to parse Items?.
         /// </summary>
         internal static string PARSE_ITEMS {
@@ -237,6 +255,24 @@ namespace OpenNos.Import.Console.Resource {
         internal static string PARSE_SHOPS {
             get {
                 return ResourceManager.GetString("PARSE_SHOPS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Do you want to parse Shopskills?.
+        /// </summary>
+        internal static string PARSE_SHOPSKILLS {
+            get {
+                return ResourceManager.GetString("PARSE_SHOPSKILLS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Do you want to parse Skills?.
+        /// </summary>
+        internal static string PARSE_SKILLS {
+            get {
+                return ResourceManager.GetString("PARSE_SKILLS", resourceCulture);
             }
         }
         

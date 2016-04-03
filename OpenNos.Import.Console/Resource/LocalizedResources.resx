@@ -123,6 +123,9 @@
   <data name="DONE" xml:space="preserve">
     <value>Parsing done!</value>
   </data>
+  <data name="DROP_PARSED" xml:space="preserve">
+    <value>{0} drop items parsed</value>
+  </data>
   <data name="ENTER_PATH" xml:space="preserve">
     <value>Please enter the directory of files to parse</value>
   </data>
@@ -150,6 +153,9 @@
   <data name="PARSE_ALL" xml:space="preserve">
     <value>Do you want to parse ALL?</value>
   </data>
+  <data name="PARSE_DROP" xml:space="preserve">
+    <value>Do you want to parse Drop?</value>
+  </data>
   <data name="PARSE_ITEMS" xml:space="preserve">
     <value>Do you want to parse Items?</value>
   </data>
@@ -176,6 +182,12 @@
   </data>
   <data name="PARSE_SHOPS" xml:space="preserve">
     <value>Do you want to parse Shops?</value>
+  </data>
+  <data name="PARSE_SHOPSKILLS" xml:space="preserve">
+    <value>Do you want to parse Shopskills?</value>
+  </data>
+  <data name="PARSE_SKILLS" xml:space="preserve">
+    <value>Do you want to parse Skills?</value>
   </data>
   <data name="PARSE_TELEPORTERS" xml:space="preserve">
     <value>Do you want to parse Teleporters?</value>

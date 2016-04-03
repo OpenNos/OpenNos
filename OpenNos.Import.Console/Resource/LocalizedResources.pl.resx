@@ -123,6 +123,9 @@
   <data name="DONE" xml:space="preserve">
     <value>Wprowadzanie ukończone!</value>
   </data>
+  <data name="DROP_PARSED" xml:space="preserve">
+    <value>{0} przedmitów dropu wprowadzonych</value>
+  </data>
   <data name="ENTER_PATH" xml:space="preserve">
     <value>Podaj ściezkę pliku aby przeprowadzić rozbiór danych</value>
   </data>
@@ -139,7 +142,7 @@
     <value>Struktura katalogów powinna wygladać w ten sposób :</value>
   </data>
   <data name="NO_ITEM" xml:space="preserve">
-    <value>Id przedmiotu nie jest wlasciwe!</value>
+    <value>Id przedmiotu jest nie właściwe!</value>
   </data>
   <data name="NPCMONSTERS_PARSED" xml:space="preserve">
     <value>{0} npc-potworów wprowadzonych</value>
@@ -149,6 +152,9 @@
   </data>
   <data name="PARSE_ALL" xml:space="preserve">
     <value>Czy chcesz wprowadzić WSZYSTKIE?</value>
+  </data>
+  <data name="PARSE_DROP" xml:space="preserve">
+    <value>Czy chcesz wprowadzić Drop?</value>
   </data>
   <data name="PARSE_ITEMS" xml:space="preserve">
     <value>Czy chcesz wprowadzić Przedmioty?</value>
@@ -177,6 +183,12 @@
   <data name="PARSE_SHOPS" xml:space="preserve">
     <value>Czy chcesz wprowadzić Sklepy?</value>
   </data>
+  <data name="PARSE_SHOPSKILLS" xml:space="preserve">
+    <value>Czy chcesz wprowadzić Sklepy z umiejętnościami?</value>
+  </data>
+  <data name="PARSE_SKILLS" xml:space="preserve">
+    <value>Czy chcesz wprowadzić Umiejętności?</value>
+  </data>
   <data name="PARSE_TELEPORTERS" xml:space="preserve">
     <value>Czy chcesz wprowadzić Teleportery?</value>
   </data>
@@ -189,8 +201,14 @@
   <data name="SHOPITEMS_PARSED" xml:space="preserve">
     <value>{0} artykulów sklepowych wprowadzonych</value>
   </data>
+  <data name="SHOPSKILLS_PARSED" xml:space="preserve">
+    <value>{0} sklepów z umiejętnościami wprowadzonych</value>
+  </data>
   <data name="SHOPS_PARSED" xml:space="preserve">
     <value>{0} sklepów wprowadzonych</value>
+  </data>
+  <data name="SKILLS_PARSED" xml:space="preserve">
+    <value>{0} umiejętności wprowadzonych</value>
   </data>
   <data name="TELEPORTERS_PARSED" xml:space="preserve">
     <value>{0} teleporterów wprowadzonych</value>

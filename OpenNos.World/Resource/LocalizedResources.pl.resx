@@ -178,10 +178,10 @@
     <value>Ikony buff'ów odblokowane</value>
   </data>
   <data name="BUY_ITEM" xml:space="preserve">
-    <value>{0}: kup &lt;{1} {2}: sztuk &gt;</value>
+    <value>Gracz: {0} zakupil &lt;{1} {2}: sztuk &gt;</value>
   </data>
   <data name="BUY_ITEM_VALIDE" xml:space="preserve">
-    <value>Przedmiot zakupiony</value>
+    <value>Kupiles {1} sztuk {0}</value>
   </data>
   <data name="CANT_MOVE" xml:space="preserve">
     <value>Teleportacja zablokowana.</value>
@@ -408,6 +408,9 @@
   <data name="NOT_ENOUGH_PLACE" xml:space="preserve">
     <value>Niewystarczajaca ilosc miejsc.</value>
   </data>
+  <data name="NOT_ENOUGH_REPUT" xml:space="preserve">
+    <value>Nie wystarczajaca ilosc reputacji</value>
+  </data>
   <data name="NOT_HUNGRY_FEMALE" xml:space="preserve">
     <value>Nie jestem glodna</value>
   </data>
@@ -507,11 +510,14 @@
   <data name="REFUSED" xml:space="preserve">
     <value>Wymiana odrzucona</value>
   </data>
+  <data name="REPUT_DECREASE" xml:space="preserve">
+    <value>Reputacja obnizona</value>
+  </data>
   <data name="REP_CHANGED" xml:space="preserve">
     <value>Reputacja zmieniona</value>
   </data>
   <data name="SELL_ITEM_VALIDE" xml:space="preserve">
-    <value>{0}: sprzedano &lt;{1} : sztuk &gt;</value>
+    <value>Sprzedano: {0} &lt;{1} : sztuk &gt;</value>
   </data>
   <data name="SEX_CHANGED" xml:space="preserve">
     <value>Plec zmieniona</value>
@@ -539,6 +545,12 @@
   </data>
   <data name="SHUTDOWN_SEC" xml:space="preserve">
     <value>Server zostanie wylaczony za {0} Sekund.</value>
+  </data>
+  <data name="SKILLS_LOADED" xml:space="preserve">
+    <value>{0} Załadowanych umiejętności!</value>
+  </data>
+  <data name="SKILL_LEARNED" xml:space="preserve">
+    <value>Nauczyles sie nowej umiejetnosci</value>
   </data>
   <data name="SPLEVEL_CHANGED" xml:space="preserve">
     <value>Poziom specjalisty zostal zmieniony!</value>
@@ -599,6 +611,9 @@
   </data>
   <data name="USER_NOT_HERO" xml:space="preserve">
     <value>Tylko bohaterowie moga uzywac czatu bohaterów.</value>
+  </data>
+  <data name="WELCOME_MUSIC_INFO" xml:space="preserve">
+    <value>Wiosenna Melodia</value>
   </data>
   <data name="WHISPERED_BLOCKED" xml:space="preserve">
     <value>Uzytkownik zablokowal prywatne wiadomosci</value>

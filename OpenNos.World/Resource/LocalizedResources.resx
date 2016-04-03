@@ -178,10 +178,10 @@
     <value>Buff icons enabled</value>
   </data>
   <data name="BUY_ITEM" xml:space="preserve">
-    <value>{0}: buy &lt;{1} {2}: piece &gt;</value>
+    <value>Player: {0} buy &lt;{1} {2}: piece &gt;</value>
   </data>
   <data name="BUY_ITEM_VALIDE" xml:space="preserve">
-    <value>Item bought</value>
+    <value>You bought {1} of {0}</value>
   </data>
   <data name="CANT_MOVE" xml:space="preserve">
     <value>Teleportation in cooldown.</value>
@@ -408,6 +408,9 @@
   <data name="NOT_ENOUGH_PLACE" xml:space="preserve">
     <value>Not enough places</value>
   </data>
+  <data name="NOT_ENOUGH_REPUT" xml:space="preserve">
+    <value>Insufficient reputation</value>
+  </data>
   <data name="NOT_HUNGRY_FEMALE" xml:space="preserve">
     <value>I think, i'm not hungry</value>
   </data>
@@ -507,11 +510,14 @@
   <data name="REFUSED" xml:space="preserve">
     <value>Exchange Refused</value>
   </data>
+  <data name="REPUT_DECREASE" xml:space="preserve">
+    <value>Reputation decreased</value>
+  </data>
   <data name="REP_CHANGED" xml:space="preserve">
     <value>Reputation changed</value>
   </data>
   <data name="SELL_ITEM_VALIDE" xml:space="preserve">
-    <value>{0}: sell &lt;{1} : piece &gt;</value>
+    <value>Sold: {0} &lt;{1} : piece &gt;</value>
   </data>
   <data name="SEX_CHANGED" xml:space="preserve">
     <value>Sex has been changed</value>
@@ -542,6 +548,9 @@
   </data>
   <data name="SKILLS_LOADED" xml:space="preserve">
     <value>{0} Skills Loaded!</value>
+  </data>
+  <data name="SKILL_LEARNED" xml:space="preserve">
+    <value>You learned a new skill</value>
   </data>
   <data name="SPLEVEL_CHANGED" xml:space="preserve">
     <value>Specialist level has been changed!</value>
@@ -574,7 +583,7 @@
     <value>Total number of sessions</value>
   </data>
   <data name="TRADE_BLOCKED" xml:space="preserve">
-    <value>sh</value>
+    <value>User has blocked trading option</value>
   </data>
   <data name="TRANSFORM_DISAPEAR" xml:space="preserve">
     <value>Cooldown finished.</value>
@@ -602,6 +611,9 @@
   </data>
   <data name="USER_NOT_HERO" xml:space="preserve">
     <value>Only heroes may use hero messages.</value>
+  </data>
+  <data name="WELCOME_MUSIC_INFO" xml:space="preserve">
+    <value>Spring Melody</value>
   </data>
   <data name="WHISPERED_BLOCKED" xml:space="preserve">
     <value>User has blocked private messages</value>

@@ -109,6 +109,11 @@ namespace OpenNos.Import.Console
                 if (key.KeyChar != 'n')
                     factory.ImportNpcMonsters();
 
+                System.Console.WriteLine($"{Language.Instance.GetMessageFromKey("PARSE_SKILLS")} [Y/n]");
+                key = System.Console.ReadKey(true);
+                if (key.KeyChar != 'n')
+                    factory.ImportSkills();
+
                 System.Console.WriteLine($"{Language.Instance.GetMessageFromKey("PARSE_MAPNPCS")} [Y/n]");
                 key = System.Console.ReadKey(true);
                 if (key.KeyChar != 'n')
@@ -139,6 +144,11 @@ namespace OpenNos.Import.Console
                 key = System.Console.ReadKey(true);
                 if (key.KeyChar != 'n')
                     factory.ImportShopItems();
+
+                System.Console.WriteLine($"{Language.Instance.GetMessageFromKey("PARSE_SHOPSKILLS")} [Y/n]");
+                key = System.Console.ReadKey(true);
+                if (key.KeyChar != 'n')
+                    factory.ImportShopSkills();
 
                 System.Console.WriteLine($"{Language.Instance.GetMessageFromKey("PARSE_RECIPES")} [Y/n]");
                 key = System.Console.ReadKey(true);
