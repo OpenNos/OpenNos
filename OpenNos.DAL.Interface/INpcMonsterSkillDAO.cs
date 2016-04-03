@@ -17,14 +17,12 @@ using System.Collections.Generic;
 
 namespace OpenNos.DAL.Interface
 {
-    public interface INpcMonsterDAO
+    public interface INpcMonsterSkillDAO
     {
         #region Methods
 
-        NpcMonsterDTO Insert(NpcMonsterDTO npc);
-        NpcMonsterDTO LoadById(short MapId);
-        IEnumerable<NpcMonsterDTO> LoadAll();
-        void Insert(List<NpcMonsterDTO> npc);
+        NpcMonsterSkillDTO Insert(ref NpcMonsterSkillDTO npcmonsterskill);
+        IEnumerable<NpcMonsterSkillDTO> LoadByNpcMonster(short npcId);
 
         #endregion
     }

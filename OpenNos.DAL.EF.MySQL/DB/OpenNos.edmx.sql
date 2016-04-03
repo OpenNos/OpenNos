@@ -44,9 +44,9 @@
 -- -----------------------------------------------------------
 -- Entity Designer DDL Script for MySQL Server 4.1 and higher
 -- -----------------------------------------------------------
--- Date Created: 04/03/2016 19:23:22
+-- Date Created: 04/03/2016 20:24:47
 
--- Generated from EDMX file: C:\Users\ERWAN\Desktop\OpenNos Git\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
+-- Generated from EDMX file: C:\Users\Dominik\Source\Repos\OpenNos\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
 -- Target version: 3.0.0.0
 
 -- --------------------------------------------------
@@ -117,9 +117,9 @@
 
 --    ALTER TABLE `shopskill` DROP CONSTRAINT `FK_shopskillShop`;
 
---    ALTER TABLE `NpcMonsterSkillSet` DROP CONSTRAINT `FK_NpcMonsterSkillSkill`;
+--    ALTER TABLE `npcmonsterskill` DROP CONSTRAINT `FK_NpcMonsterSkillSkill`;
 
---    ALTER TABLE `NpcMonsterSkillSet` DROP CONSTRAINT `FK_NpcMonsterSkillNpcMonster`;
+--    ALTER TABLE `npcmonsterskill` DROP CONSTRAINT `FK_NpcMonsterSkillNpcMonster`;
 
 
 -- --------------------------------------------------
@@ -169,7 +169,7 @@ SET foreign_key_checks = 0;
 
     DROP TABLE IF EXISTS `shopskill`;
 
-    DROP TABLE IF EXISTS `NpcMonsterSkillSet`;
+    DROP TABLE IF EXISTS `npcmonsterskill`;
 
 SET foreign_key_checks = 1;
 

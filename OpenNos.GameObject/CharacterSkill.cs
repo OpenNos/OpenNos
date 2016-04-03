@@ -12,19 +12,31 @@
  * GNU General Public License for more details.
  */
 
+using AutoMapper;
+using OpenNos.DAL;
 using OpenNos.Data;
-using System.Collections.Generic;
 
-namespace OpenNos.DAL.Interface
+namespace OpenNos.GameObject
 {
-    public interface INpcMonsterDAO
+    public class CharacterSkill : CharacterSkillDTO, IGameObject
     {
+        #region Instantiation
+
+        public CharacterSkill()
+        {
+            Mapper.CreateMap<CharacterSkillDTO, CharacterSkill>();
+            Mapper.CreateMap<CharacterSkill, CharacterSkillDTO>();
+        }
+
+        #endregion
+
         #region Methods
 
-        NpcMonsterDTO Insert(NpcMonsterDTO npc);
-        NpcMonsterDTO LoadById(short MapId);
-        IEnumerable<NpcMonsterDTO> LoadAll();
-        void Insert(List<NpcMonsterDTO> npc);
+        public void Save()
+        {
+            CharacterSkillDTO tempsave = this;
+            DAOFactory.CharacterSkillDAO.Insert(ref tempsave);
+        }
 
         #endregion
     }

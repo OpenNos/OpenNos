@@ -23,6 +23,7 @@ namespace OpenNos.DAL
 
         private static IAccountDAO _accountDAO;
         private static ICharacterDAO _characterDAO;
+        private static ICharacterSkillDAO _characterskillDAO;
         private static IDropDAO _dropDAO;
         private static IGeneralLogDAO _generallogDAO;
         private static IInventoryDAO _inventoryDAO;
@@ -32,15 +33,15 @@ namespace OpenNos.DAL
         private static IMapMonsterDAO _mapmonsterDAO;
         private static IMapNpcDAO _mapnpcDAO;
         private static INpcMonsterDAO _npcmonsterDAO;
+        private static INpcMonsterSkillDAO _npcmonsterskillDAO;
         private static IPortalDAO _portalDAO;
         private static IRecipeDAO _recipeDAO;
         private static IRecipeItemDAO _recipeitemDAO;
         private static IRespawnDAO _respawnDAO;
         private static IShopDAO _shopDAO;
         private static IShopItemDAO _shopitemDAO;
-        private static ISkillDAO _skillDAO;
         private static IShopSkillDAO _shopskillDAO;
-        private static ICharacterSkillDAO _characterskillDAO;
+        private static ISkillDAO _skillDAO;
         private static ITeleporterDAO _teleporterDAO;
 
         #endregion
@@ -82,6 +83,19 @@ namespace OpenNos.DAL
                 }
 
                 return _characterDAO;
+            }
+        }
+
+        public static ICharacterSkillDAO CharacterSkillDAO
+        {
+            get
+            {
+                if (_characterskillDAO == null)
+                {
+                    _characterskillDAO = new MySQL.CharacterSkillDAO();
+                }
+
+                return _characterskillDAO;
             }
         }
 
@@ -202,6 +216,19 @@ namespace OpenNos.DAL
             }
         }
 
+        public static INpcMonsterSkillDAO NpcMonsterSkillDAO
+        {
+            get
+            {
+                if (_npcmonsterskillDAO == null)
+                {
+                    _npcmonsterskillDAO = new MySQL.NpcMonsterSkillDAO();
+                }
+
+                return _npcmonsterskillDAO;
+            }
+        }
+
         public static IPortalDAO PortalDAO
         {
             get
@@ -280,19 +307,6 @@ namespace OpenNos.DAL
             }
         }
 
-        public static ISkillDAO SkillDAO
-        {
-            get
-            {
-                if (_skillDAO == null)
-                {
-                    _skillDAO = new MySQL.SkillDAO();
-                }
-
-                return _skillDAO;
-            }
-        }
-
         public static IShopSkillDAO ShopSkillDAO
         {
             get
@@ -306,16 +320,16 @@ namespace OpenNos.DAL
             }
         }
 
-        public static ICharacterSkillDAO CharacterSkillDAO
+        public static ISkillDAO SkillDAO
         {
             get
             {
-                if (_characterskillDAO == null)
+                if (_skillDAO == null)
                 {
-                    _characterskillDAO = new MySQL.CharacterSkillDAO();
+                    _skillDAO = new MySQL.SkillDAO();
                 }
 
-                return _characterskillDAO;
+                return _skillDAO;
             }
         }
 

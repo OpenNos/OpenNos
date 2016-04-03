@@ -148,6 +148,7 @@
     <Compile Include="DropDAO.cs" />
     <Compile Include="MapMonsterDAO.cs" />
     <Compile Include="MapNpcDAO.cs" />
+    <Compile Include="NpcMonsterSkillDAO.cs" />
     <Compile Include="RecipeDAO.cs" />
     <Compile Include="RecipeItemDAO.cs" />
     <Compile Include="RespawnDAO.cs" />
