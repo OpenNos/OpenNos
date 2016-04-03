@@ -237,12 +237,7 @@ namespace OpenNos.Handler
             else if (packetsplit.Length==5) // skill shop
             {
                 Skill skillinfo = ServerManager.GetSkill(slot);
-                foreach(SkillUser sk in Session.Character.Skills)
-                {
-                    Skill skinfo = ServerManager.GetSkill(sk.SkillVNum);
-                    if (skillinfo.UpgradeSkill == skinfo.UpgradeSkill && skillinfo.UpgradeType == skinfo.UpgradeType)
-                        return;
-                }
+               
                 if (skillinfo == null)
                     return;
                 if (Session.Character.Gold >= skillinfo.Cost && Session.Character.getCP() >= skillinfo.CPCost && Session.Character.Level >= skillinfo.LevelMinimum)
@@ -2859,6 +2854,13 @@ namespace OpenNos.Handler
                     return;
                 Session.Character.Gold -= skillinfo.Cost;
                 Session.Client.SendPacket(Session.Character.GenerateGold());
+
+                foreach (SkillUser sk in Session.Character.Skills)
+                {
+                    Skill skinfo = ServerManager.GetSkill(sk.SkillVNum);
+                    if (skillinfo.UpgradeSkill == skinfo.UpgradeSkill)
+                        Session.Character.Skills.Remove(sk);
+                }
 
                 Session.Character.Skills.Remove(skill);
                 Session.Client.SendPacket(Session.Character.GenerateSki());
