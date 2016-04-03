@@ -91,14 +91,15 @@ namespace OpenNos.Handler
 
             if (packetsplit.Length == 4 && short.TryParse(packetsplit[2], out vnum) && short.TryParse(packetsplit[3], out move))
             {
-                if (ServerManager.GetNpc(vnum) == null)
+                NpcMonster npcmonster = ServerManager.GetNpc(vnum);
+                if (npcmonster == null)
                     return;
                 MapMonsterDTO monst = new MapMonsterDTO() { MonsterVNum = vnum, MapY = Session.Character.MapY, MapX = Session.Character.MapX, MapId = Session.Character.MapId, Position = (byte)Session.Character.Direction, Move = move == 1 ? true : false, MapMonsterId = MapMonster.generateMapMonsterId() };
                 MapMonster monster = null;
                 if (DAOFactory.MapMonsterDAO.LoadById(monst.MapMonsterId) == null)
                 {
                     DAOFactory.MapMonsterDAO.Insert(monst);
-                    monster = new MapMonster() { MonsterVNum = vnum, MapY = monst.MapY, MapX = monst.MapX, MapId = Session.Character.MapId, firstX = monst.MapX, firstY = monst.MapY, MapMonsterId = monst.MapMonsterId, Position = 1, Move = move == 1 ? true : false };
+                    monster = new MapMonster() { MonsterVNum = vnum, MapY = monst.MapY, Alive = true, CurrentHp = npcmonster.MaxHP, CurrentMp = npcmonster.MaxMP, MapX = monst.MapX, MapId = Session.Character.MapId, firstX = monst.MapX, firstY = monst.MapY, MapMonsterId = monst.MapMonsterId, Position = 1, Move = move == 1 ? true : false };
                     ServerManager.Monsters.Add(monster);
                     ServerManager.GetMap(Session.Character.MapId).Monsters.Add(monster);
                     ClientLinkManager.Instance.Broadcast(Session, monster.GenerateIn3(), ReceiverType.AllOnMap);
@@ -1288,7 +1289,7 @@ namespace OpenNos.Handler
                         NpcMonster monsterinfo = ServerManager.GetNpc(monster.MonsterVNum);
                         if (monsterinfo == null)
                             return;
-                        ClientLinkManager.Instance.Broadcast(Session, $"st 3 {packetsplit[3]} {monsterinfo.Level} 100 100 50000 50000", ReceiverType.OnlyMe);
+                        ClientLinkManager.Instance.Broadcast(Session, $"st 3 {packetsplit[3]} {monsterinfo.Level} {monster.CurrentHp/monsterinfo.MaxHP*100} {monster.CurrentMp / monsterinfo.MaxMP * 100} {monster.CurrentHp} {monster.CurrentMp}", ReceiverType.OnlyMe);
                     }
             }
         }
@@ -3607,7 +3608,8 @@ namespace OpenNos.Handler
             Random rnd = new Random();
             if (packetsplit.Length == 5 && short.TryParse(packetsplit[2], out vnum) && byte.TryParse(packetsplit[3], out qty) && byte.TryParse(packetsplit[4], out move))
             {
-                if (ServerManager.GetNpc(vnum) == null)
+                NpcMonster npcmonster = ServerManager.GetNpc(vnum);
+                if (npcmonster == null)
                     return;
                 for (int i = 0; i < qty; i++)
                 {
@@ -3618,7 +3620,7 @@ namespace OpenNos.Handler
                         mapx = (short)rnd.Next((Session.Character.MapX - qty) % Session.CurrentMap.XLength, (Session.Character.MapX + qty / 3) % Session.CurrentMap.YLength);
                         mapy = (short)rnd.Next((Session.Character.MapY - qty) % Session.CurrentMap.XLength, (Session.Character.MapY + qty / 3) % Session.CurrentMap.YLength);
                     }
-                    MapMonster monst = new MapMonster() { MonsterVNum = vnum, MapY = mapy, MapX = mapx, MapId = Session.Character.MapId, firstX = mapx, firstY = mapy, MapMonsterId = MapMonster.generateMapMonsterId(), Position = 1, Move = move != 0 ? true : false };
+                    MapMonster monst = new MapMonster() { MonsterVNum = vnum, Alive = true, CurrentHp = npcmonster.MaxHP, CurrentMp = npcmonster.MaxMP, MapY = mapy, MapX = mapx, MapId = Session.Character.MapId, firstX = mapx, firstY = mapy, MapMonsterId = MapMonster.generateMapMonsterId(), Position = 1, Move = move != 0 ? true : false };
                     ServerManager.GetMap(Session.Character.MapId).Monsters.Add(monst);
                     ServerManager.Monsters.Add(monst);
                     ClientLinkManager.Instance.Broadcast(Session, monst.GenerateIn3(), ReceiverType.AllOnMap);
@@ -4092,9 +4094,55 @@ namespace OpenNos.Handler
         public void UseSkill(string packet)
         {
             string[] packetsplit = packet.Split(' ');
-
-            ClientLinkManager.Instance.Broadcast(Session, $"cancel 2 {packetsplit[4]}", ReceiverType.OnlyMe);
+            TargetHit(Convert.ToInt32(packetsplit[2]), Convert.ToInt32(packetsplit[3]), Convert.ToInt32(packetsplit[4]));
         }
+
+        public void TargetHit(int Castingid, int targetobj, int targetid)
+        {
+            int skillsize = Session.Character.Skills.Count();
+            for (int i = 0; i < skillsize; i++)
+            {
+                CharacterSkill ski = Session.Character.Skills.ElementAt(Castingid);
+                MapMonster mmon = Session.CurrentMap.Monsters.FirstOrDefault(s => s.MapMonsterId == targetid);
+                if (ski != null && mmon != null)
+                {
+                    Skill skill = ServerManager.GetSkill(ski.SkillVNum);
+                    short dX = (short)(Session.Character.MapX - mmon.MapX);
+                    short dY = (short)(Session.Character.MapY - mmon.MapY);
+                    if (dX * dX + dY * dY > (skill.Range * skill.Range))
+                    {
+                        Random random = new Random();
+                        int hitmode = 0;
+                        short degats = 5000;//use real damage
+
+                        int generated = random.Next(0, 100);
+                        int critical_chance = 20;//use real critical chance
+                        int miss_chance = 30;//use real miss chance
+                        if (generated < critical_chance) {
+                            hitmode = 3;
+                            degats *= 2;
+                        }
+                        if (generated > 100 - miss_chance) { hitmode = 1; degats = 0; }
+                        if (mmon.CurrentHp <= degats)
+                        {
+                            mmon.Alive = false;
+                            mmon.CurrentHp = 0;
+                        }
+                        else
+                        {
+                            mmon.CurrentHp -= degats;
+                        }
+
+                        string packet = $"su 1 {Session.Character.CharacterId} 3 {mmon.MapMonsterId} {Castingid} 6 0 {skill.Effect} 0 0 {(mmon.Alive ? 1 : 0)} {mmon.CurrentHp} {degats} {hitmode} {skill.Type}";
+                        Session.Client.SendPacket(packet);
+                    }
+
+                }
+            }
+            Session.Client.SendPacket("cancel 0 0");
+        }
+
+
 
         [Packet("#pjoin")]
         public void validpjoin(string packet)

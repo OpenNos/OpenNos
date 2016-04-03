@@ -30,6 +30,10 @@ namespace OpenNos.GameObject
             LastEffect = LastMove = DateTime.Now;
         }
 
+        public bool Alive { get; set; }
+        public int CurrentHp { get; set; }
+        public int CurrentMp { get; set; }
+
         #endregion
 
         #region Properties

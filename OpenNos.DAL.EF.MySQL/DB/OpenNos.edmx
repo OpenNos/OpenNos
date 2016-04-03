@@ -348,8 +348,8 @@
     <Property Name="WaterResistance" Type="tinyint" Nullable="false" />
     <Property Name="LightResistance" Type="tinyint" Nullable="false" />
     <Property Name="DarkResistance" Type="tinyint" Nullable="false" />
-    <Property Name="MaxHP" Type="smallint" Nullable="false" />
-    <Property Name="MaxMP" Type="smallint" Nullable="false" />
+    <Property Name="MaxHP" Type="int" Nullable="false" />
+    <Property Name="MaxMP" Type="int" Nullable="false" />
   </EntityType>
   <EntityType Name="inventoryitem">
     <Key>
@@ -1392,8 +1392,8 @@
           <Property Name="DarkResistance" Type="SByte" Nullable="false" />
           <NavigationProperty Name="mapnpc" Relationship="opennosModel.MapNpcNpc" FromRole="Npc" ToRole="MapNpc" />
           <NavigationProperty Name="mapmonster" Relationship="opennosModel.MapMonsterNpcMonster" FromRole="NpcMonster" ToRole="MapMonster" />
-          <Property Name="MaxHP" Type="Int16" Nullable="false" />
-          <Property Name="MaxMP" Type="Int16" Nullable="false" />
+          <Property Name="MaxHP" Type="Int32" Nullable="false" />
+          <Property Name="MaxMP" Type="Int32" Nullable="false" />
           <NavigationProperty Name="drop" Relationship="opennosModel.DropNpcMonster" FromRole="NpcMonster" ToRole="Drop" />
           <NavigationProperty Name="npcmonsterskill" Relationship="opennosModel.NpcMonsterSkillNpcMonster" FromRole="NpcMonster" ToRole="NpcMonsterSkill" />
         </EntityType>

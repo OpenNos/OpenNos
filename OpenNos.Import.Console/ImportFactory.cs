@@ -275,6 +275,13 @@ namespace OpenNos.Import.Console
                         //npc.Race = Convert.ToByte(linesave[2]);
                         //npc.RaceType = Convert.ToByte(linesave[2]);
                     }
+                    else if (currentLine.Length > 3 && currentLine[1] == "HP/MP")
+                    {
+                        npc.MaxHP = Convert.ToInt32(currentLine[2]);
+                        npc.MaxMP = Convert.ToInt32(currentLine[3]);
+                        npc.MaxMP = npc.MaxMP == 0 ? 1 : npc.MaxMP;
+                        npc.MaxHP = npc.MaxHP == 0 ? 1 : npc.MaxHP;
+                    }
                     else if (currentLine.Length > 2 && currentLine[1] == "NAME")
                     {
                         npc.Name = dictionaryIdLang.ContainsKey(currentLine[2]) ? dictionaryIdLang[currentLine[2]] : "";
