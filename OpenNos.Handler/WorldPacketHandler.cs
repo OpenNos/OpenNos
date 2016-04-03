@@ -268,7 +268,7 @@ namespace OpenNos.Handler
 
                     Session.Character.Skills.Add(new SkillUser() { SkillVNum = slot, CharacterId = Session.Character.CharacterId });
                     Session.Client.SendPacket(Session.Character.GenerateSki());
-                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SKILL_LEARNED"), 0));
+                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("YOU_LEARN_SKILL"), 0));
                     Session.Client.SendPacket(Session.Character.GenerateLev());//replace by the correct one
 
                 }
@@ -587,6 +587,10 @@ namespace OpenNos.Handler
                         };
 
                         SaveResult insertResult = DAOFactory.CharacterDAO.InsertOrUpdate(ref newCharacter);
+                        SkillUserDTO sk1 = new SkillUserDTO { CharacterId = newCharacter.CharacterId, SkillVNum = 200 };
+                        SkillUserDTO sk2 = new SkillUserDTO { CharacterId = newCharacter.CharacterId, SkillVNum = 201 };
+                        DAOFactory.SkillUserDAO.Insert(ref sk1);
+                        DAOFactory.SkillUserDAO.Insert(ref sk2);
                         LoadCharacters(packet);
                     }
                     else Session.Client.SendPacketFormat($"info {Language.Instance.GetMessageFromKey("ALREADY_TAKEN")}");

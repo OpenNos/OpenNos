@@ -441,11 +441,31 @@ namespace OpenNos.GameObject
         }
         public string GenerateSki()
         {
-            string skibase = "200 2O1";
+            string skibase = "";
+            if (!UseSp)
+            {
+                switch (Class)
+                {
+                    case (byte)ClassType.Adventurer:
+                        skibase = "200 201";
+                        break;
+                    case (byte)ClassType.Swordman:
+                        skibase = "220 221";
+                        break;
+                    case (byte)ClassType.Archer:
+                        skibase = "240 241";
+                        break;
+                    case (byte)ClassType.Magician:
+                        skibase = "260 261";
+                        break;
+                }
+            }
             string skills = "";
             foreach (SkillUser ski in Skills)
             {
-                skills += $" {ski.SkillVNum}";
+                Skill skillinfo = ServerManager.GetSkill(ski.SkillVNum);
+                if (skillinfo.Class == Class)
+                    skills += $" {ski.SkillVNum}";
             }
 
             return $"ski {skibase} {skills}";
