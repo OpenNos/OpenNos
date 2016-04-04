@@ -406,7 +406,7 @@ namespace OpenNos.GameObject
             return $"info {message}";
         }
 
-        public string GenerateInventoryAdd(short vnum, byte amount, byte type, short slot, byte rare, short color, byte upgrade)
+        public string GenerateInventoryAdd(short vnum, short amount, byte type, short slot, byte rare, short color, byte upgrade)
         {
             Item item = ServerManager.GetItem(vnum);
             switch (type)
@@ -1032,7 +1032,7 @@ namespace OpenNos.GameObject
             return ServersData.SecondJobXPData[JobLevel - 1];
         }
 
-        public IEnumerable<InventoryItem> LoadBySlotAllowed(short itemVNum, byte amount)
+        public IEnumerable<InventoryItem> LoadBySlotAllowed(short itemVNum, short amount)
         {
             return InventoryList.Inventory.Where(i => i.InventoryItem.ItemVNum.Equals(itemVNum) && i.InventoryItem.Amount + amount < 100).Select(inventoryitemobject => new InventoryItem(inventoryitemobject.InventoryItem));
         }

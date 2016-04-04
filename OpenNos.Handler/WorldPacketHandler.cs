@@ -4175,7 +4175,7 @@ namespace OpenNos.Handler
 
                             }
                      
-                            int gold = (rnd.Next(1, 5) > 2 ? 1 : 0) * rnd.Next(6 * monsterinfo.Level, 12 * monsterinfo.Level);
+                            short gold = Convert.ToInt16((rnd.Next(1, 5) > 2 ? 1 : 0) * rnd.Next(6 * monsterinfo.Level, 12 * monsterinfo.Level));
                             if (gold != 0)
                             {
                                 DropDTO drop2 = new DropDTO()
