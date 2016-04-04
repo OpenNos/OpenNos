@@ -380,7 +380,7 @@ namespace OpenNos.GameObject
                         Pos = 1
                     }
                 };
-                Session.Character.QuicklistEntries[0].Save();
+                //Session.Character.QuicklistEntries[0].Save();
 
             }
         }
