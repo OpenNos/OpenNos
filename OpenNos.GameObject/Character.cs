@@ -86,27 +86,27 @@ namespace OpenNos.GameObject
         public byte Speed { get { return _speed; } set { if (value > 59) { _speed = 59; } else { _speed = value; } } }
         public Thread ThreadCharChange { get; set; }
         public bool UseSp { get; set; }
-        private int DarkResistance { get; set; }
-        private int Defence { get; set; }
-        private int DefenceRate { get; set; }
-        private int DistanceCritical { get; set; }
-        private int DistanceCriticalRate { get; set; }
-        private int DistanceDefence { get; set; }
-        private int DistanceDefenceRate { get; set; }
-        private int DistanceRate { get; set; }
-        private int Element { get; set; }
-        private int ElementRate { get; set; }
-        private int FireResistance { get; set; }
-        private int HitCritical { get; set; }
-        private int HitCriticalRate { get; set; }
-        private int HitRate { get; set; }
-        private int LightResistance { get; set; }
-        private int MagicalDefence { get; set; }
-        private int MaxDistance { get; set; }
-        private int MaxHit { get; set; }
-        private int MinDistance { get; set; }
-        private int MinHit { get; set; }
-        private int WaterResistance { get; set; }
+        public int DarkResistance { get; set; }
+        public int Defence { get; set; }
+        public int DefenceRate { get; set; }
+        public int DistanceCritical { get; set; }
+        public int DistanceCriticalRate { get; set; }
+        public int DistanceDefence { get; set; }
+        public int DistanceDefenceRate { get; set; }
+        public int DistanceRate { get; set; }
+        public int Element { get; set; }
+        public int ElementRate { get; set; }
+        public int FireResistance { get; set; }
+        public int HitCritical { get; set; }
+        public int HitCriticalRate { get; set; }
+        public int HitRate { get; set; }
+        public int LightResistance { get; set; }
+        public int MagicalDefence { get; set; }
+        public int MaxDistance { get; set; }
+        public int MaxHit { get; set; }
+        public int MinDistance { get; set; }
+        public int MinHit { get; set; }
+        public int WaterResistance { get; set; }
         public short LastNRunId { get; set; }
 
         #endregion

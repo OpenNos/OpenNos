@@ -26,10 +26,13 @@ namespace OpenNos.GameObject
         {
             Mapper.CreateMap<CharacterSkillDTO, CharacterSkill>();
             Mapper.CreateMap<CharacterSkill, CharacterSkillDTO>();
+            Used = false;
         }
 
         #endregion
-
+        public bool Used {
+            get; set;
+        }
         #region Methods
 
         public void Save()

@@ -17,6 +17,7 @@ using OpenNos.DAL;
 using OpenNos.Data;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -254,6 +255,7 @@ namespace OpenNos.GameObject
             NpcMoveTask.Start();
             Task MonsterMoveTask = new Task(() => MonsterLifeManager());
             MonsterMoveTask.Start();
+          
             await NpcMoveTask;
             await MonsterMoveTask;
         }

@@ -1289,7 +1289,7 @@ namespace OpenNos.Handler
                         NpcMonster monsterinfo = ServerManager.GetNpc(monster.MonsterVNum);
                         if (monsterinfo == null)
                             return;
-                        ClientLinkManager.Instance.Broadcast(Session, $"st 3 {packetsplit[3]} {monsterinfo.Level} {monster.CurrentHp/monsterinfo.MaxHP*100} {monster.CurrentMp / monsterinfo.MaxMP * 100} {monster.CurrentHp} {monster.CurrentMp}", ReceiverType.OnlyMe);
+                        ClientLinkManager.Instance.Broadcast(Session, $"st 3 {packetsplit[3]} {monsterinfo.Level} {monster.CurrentHp / monsterinfo.MaxHP * 100} {monster.CurrentMp / monsterinfo.MaxMP * 100} {monster.CurrentHp} {monster.CurrentMp}", ReceiverType.OnlyMe);
                     }
             }
         }
@@ -4104,7 +4104,8 @@ namespace OpenNos.Handler
             {
                 CharacterSkill ski = Session.Character.Skills.ElementAt(Castingid);
                 MapMonster mmon = Session.CurrentMap.Monsters.FirstOrDefault(s => s.MapMonsterId == targetid);
-                if (ski != null && mmon != null)
+                NpcMonster monsterinfo = ServerManager.GetNpc(mmon.MonsterVNum);
+                if (ski != null && mmon != null && monsterinfo != null && !ski.Used)
                 {
                     Skill skill = ServerManager.GetSkill(ski.SkillVNum);
                     short dX = (short)(Session.Character.MapX - mmon.MapX);
@@ -4113,28 +4114,62 @@ namespace OpenNos.Handler
                     {
                         Random random = new Random();
                         int hitmode = 0;
-                        short degats = 5000;//use real damage
-
+                        short damage = 5000;
                         int generated = random.Next(0, 100);
-                        int critical_chance = 20;//use real critical chance
-                        int miss_chance = 30;//use real miss chance
-                        if (generated < critical_chance) {
-                            hitmode = 3;
-                            degats *= 2;
+                        int critical_chance = 10;
+                        int miss_chance = 20;
+                        int criticalhit = 0;
+                        int AtkType = 0;
+                        switch (AtkType)
+                        {
+                            case 0:
+                                critical_chance *= Session.Character.HitCriticalRate / 100;
+                                criticalhit *= Session.Character.HitCritical / 100;
+                                miss_chance /= (int)(1+Session.Character.HitRate / 100.0);
+                                break;
+                            case 1:
+                                critical_chance *= Session.Character.DistanceCriticalRate / 100;
+                                criticalhit *= Session.Character.DistanceCritical / 100;
+                                miss_chance /= (int)(1 + Session.Character.DistanceRate / 100.0);
+                                break;
+                            case 2:
+                                critical_chance = 0;
+                                miss_chance = 0;
+                                break;
+
                         }
-                        if (generated > 100 - miss_chance) { hitmode = 1; degats = 0; }
-                        if (mmon.CurrentHp <= degats)
+
+
+                        if (generated < critical_chance)
+                        {
+                            hitmode = 3;
+                            damage *= 2;
+                        }
+                        if (generated > 100 - miss_chance) { hitmode = 1; damage = 0; }
+
+                        if (mmon.CurrentHp <= damage)
                         {
                             mmon.Alive = false;
                             mmon.CurrentHp = 0;
+                            //TODO drop
+                            //TODO add xp
+
+
                         }
                         else
                         {
-                            mmon.CurrentHp -= degats;
+                            mmon.CurrentHp -= damage;
                         }
 
-                        string packet = $"su 1 {Session.Character.CharacterId} 3 {mmon.MapMonsterId} {Castingid} 6 0 {skill.Effect} 0 0 {(mmon.Alive ? 1 : 0)} {mmon.CurrentHp} {degats} {hitmode} {skill.Type}";
+                        string packet = $"su {1} {Session.Character.CharacterId} {3} {mmon.MapMonsterId} {skill.Effect} 6 {skill.AttackAnimation} {skill.Effect} 0 0 {(mmon.Alive ? 1 : 0)} {mmon.CurrentHp / monsterinfo.MaxHP * 100} {damage} {hitmode} {skill.Type}";
                         Session.Client.SendPacket(packet);
+                        Task t = Task.Factory.StartNew(async () =>
+                        {
+                            ski.Used = true;
+                            await Task.Delay(skill.Cooldown * 100);
+                            Session.Client.SendPacket("sr 0");
+                            ski.Used = false;
+                        });
                     }
 
                 }
