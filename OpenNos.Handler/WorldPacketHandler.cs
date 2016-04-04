@@ -2803,6 +2803,7 @@ namespace OpenNos.Handler
                 Session.Character.Update();
                 Session.Character.LoadInventory();
                 Session.Character.LoadSkills();
+                Session.Character.LoadQuicklists();
                 DAOFactory.AccountDAO.WriteGeneralLog(Session.Character.AccountId, Session.Client.RemoteEndPoint.ToString(), Session.Character.CharacterId, "Connection", "World");
                 Session.Client.SendPacket("OK");
                 Session.HealthTask = new Task(() => healthTask());
@@ -3532,6 +3533,11 @@ namespace OpenNos.Handler
 
             Session.Client.SendPacket(Session.Character.GenerateExts());
             Session.Client.SendPacket(Session.Character.GenerateGold());
+
+            string[] quicklistpackets = Session.Character.GenerateQuicklist();
+            Session.Client.SendPacket(quicklistpackets[0]);
+            Session.Client.SendPacket(quicklistpackets[1]);
+            Session.Client.SendPacket(quicklistpackets[2]);
 
             ClientLinkManager.Instance.Broadcast(Session, Session.Character.GeneratePairy(), ReceiverType.AllOnMap);
             ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateSpPoint(), ReceiverType.AllOnMap);
@@ -4386,7 +4392,12 @@ namespace OpenNos.Handler
         {
             string[] packetsplit = packet.Split(' ');
             Console.WriteLine("Q: "+packetsplit[0]+" "+packetsplit[1]);
-            
+            int q1,q2;
+            if (int.TryParse(packetsplit[2], out q1) || int.TryParse(packetsplit[2], out q2)) return;
+            string[] data = packetsplit[4].Split('.');
+
+
+
         }
 
 

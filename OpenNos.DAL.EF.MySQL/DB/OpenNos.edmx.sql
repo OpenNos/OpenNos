@@ -1,52 +1,10 @@
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 -- -----------------------------------------------------------
 -- Entity Designer DDL Script for MySQL Server 4.1 and higher
 -- -----------------------------------------------------------
--- Date Created: 04/04/2016 18:30:16
+-- Date Created: 04/04/2016 18:00:28
 
--- Generated from EDMX file: C:\Users\ERWAN\Desktop\OpenNos Git\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
+-- Generated from EDMX file: D:\Projekte\C#\OpenNos\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
 -- Target version: 3.0.0.0
 
 -- --------------------------------------------------
@@ -675,7 +633,7 @@ ALTER TABLE `npcmonsterskill` ADD PRIMARY KEY (CharacterSkillId);
 
 
 CREATE TABLE `characterquicklist`(
-	`EntryId` longtext NOT NULL, 
+	`EntryId` bigint NOT NULL, 
 	`CharacterId` bigint NOT NULL, 
 	`Q1` smallint NOT NULL, 
 	`Q2` smallint NOT NULL, 

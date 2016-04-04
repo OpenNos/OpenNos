@@ -588,7 +588,7 @@
     <Key>
       <PropertyRef Name="EntryId" />
     </Key>
-    <Property Name="EntryId" Type="longtext" Nullable="false" />
+    <Property Name="EntryId" Type="bigint" Nullable="false" />
     <Property Name="CharacterId" Type="bigint" Nullable="false" />
     <Property Name="Q1" Type="smallint" Nullable="false" />
     <Property Name="Q2" Type="smallint" Nullable="false" />
@@ -1993,7 +1993,7 @@
           <Key>
             <PropertyRef Name="EntryId" />
           </Key>
-          <Property Name="EntryId" Type="String" Nullable="false" />
+          <Property Name="EntryId" Type="Int64" Nullable="false" />
           <Property Name="CharacterId" Type="Int64" Nullable="false" />
           <Property Name="Q1" Type="Int16" Nullable="false" />
           <Property Name="Q2" Type="Int16" Nullable="false" />

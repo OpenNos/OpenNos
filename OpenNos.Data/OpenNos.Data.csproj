@@ -49,7 +49,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CharacterQuicklistDTO.cs" />
+    <Compile Include="QuicklistEntryDTO.cs" />
     <Compile Include="DropDTO.cs" />
     <Compile Include="GeneralLogDTO.cs" />
     <Compile Include="MapMonsterDTO.cs" />

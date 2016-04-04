@@ -24,35 +24,35 @@ using OpenNos.DAL.Interface;
 
 namespace OpenNos.DAL.EF.MySQL
 {
-    public class CharacterQuicklistDAO : ICharacterQuicklistDAO
+    public class QuicklistEntryDAO : IQuicklistEntryDAO
     {
-        public CharacterQuicklistDTO Insert(ref CharacterQuicklistDTO characterquicklist)
+        public QuicklistEntryDTO Insert(ref QuicklistEntryDTO characterquicklist)
         {
             using (OpenNosContainer context = DataAccessHelper.CreateContext())
             {
                 CharacterQuicklist entity = Mapper.Map<CharacterQuicklist>(characterquicklist);
                 context.characterquicklist.Add(entity);
                 context.SaveChanges();
-                return Mapper.Map<CharacterQuicklistDTO>(entity);
+                return Mapper.Map<QuicklistEntryDTO>(entity);
             }
         }
 
-        public IEnumerable<CharacterQuicklistDTO> Load(long characterId)
+        public IEnumerable<QuicklistEntryDTO> Load(long characterId)
         {
             using (OpenNosContainer context = DataAccessHelper.CreateContext())
             {
                 foreach (CharacterQuicklist quicklistobject in context.characterquicklist.Where(i => i.CharacterId == characterId))
                 {
-                    yield return Mapper.Map<CharacterQuicklistDTO>(quicklistobject);
+                    yield return Mapper.Map<QuicklistEntryDTO>(quicklistobject);
                 }
             }
         }
 
-        public DeleteResult Delete(long characterId, short q1, short q2)
+        public DeleteResult Delete(long characterId, long entryId)
         {
             using (OpenNosContainer context = DataAccessHelper.CreateContext())
             {
-                CharacterQuicklist quicklistitem = context.characterquicklist.FirstOrDefault(i => i.CharacterId == characterId && i.Q1 == q1 && i.Q2 == q2);
+                CharacterQuicklist quicklistitem = context.characterquicklist.FirstOrDefault(i => i.CharacterId == characterId && i.EntryId == entryId);
                 if (quicklistitem != null)
                 {
                     context.characterquicklist.Remove(quicklistitem);

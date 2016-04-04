@@ -12,33 +12,16 @@
  * GNU General Public License for more details.
  */
 
-using AutoMapper;
-using OpenNos.DAL;
+using OpenNos.Data.Enums;
+using System.Collections.Generic;
 using OpenNos.Data;
 
-namespace OpenNos.GameObject
+namespace OpenNos.DAL.Interface
 {
-    public class CharacterQuicklist : CharacterQuicklistDTO, IGameObject
+    public interface IQuicklistEntryDAO
     {
-        #region Instantiation
-
-        public CharacterQuicklist()
-        {
-            Mapper.CreateMap<CharacterQuicklistDTO, CharacterQuicklist>();
-            Mapper.CreateMap<CharacterQuicklist, CharacterQuicklistDTO>();
-        }
-
-        #endregion
-        
-
-        #region Methods
-
-        public void Save()
-        {
-            CharacterQuicklistDTO tempsave = this;
-            DAOFactory.CharacterQuicklistDAO.Insert(ref tempsave);
-        }
-
-        #endregion
+        QuicklistEntryDTO Insert(ref QuicklistEntryDTO characterquicklist);
+        IEnumerable<QuicklistEntryDTO> Load(long characterId);
+        DeleteResult Delete(long characterId, long entryId);
     }
 }
