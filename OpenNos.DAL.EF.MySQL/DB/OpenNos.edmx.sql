@@ -44,7 +44,7 @@
 -- -----------------------------------------------------------
 -- Entity Designer DDL Script for MySQL Server 4.1 and higher
 -- -----------------------------------------------------------
--- Date Created: 04/04/2016 19:04:23
+-- Date Created: 04/04/2016 19:13:01
 
 -- Generated from EDMX file: C:\Users\ERWAN\Desktop\OpenNos Git\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
 -- Target version: 3.0.0.0
@@ -121,7 +121,7 @@
 
 --    ALTER TABLE `npcmonsterskill` DROP CONSTRAINT `FK_NpcMonsterSkillNpcMonster`;
 
---    ALTER TABLE `characterquicklist` DROP CONSTRAINT `FK_CharacterQuicklistCharacter`;
+--    ALTER TABLE `quicklist` DROP CONSTRAINT `FK_CharacterQuicklistCharacter`;
 
 --    ALTER TABLE `cellonoption` DROP CONSTRAINT `FK_CellonOptionInventoryItem`;
 
@@ -175,7 +175,7 @@ SET foreign_key_checks = 0;
 
     DROP TABLE IF EXISTS `npcmonsterskill`;
 
-    DROP TABLE IF EXISTS `characterquicklist`;
+    DROP TABLE IF EXISTS `quicklist`;
 
     DROP TABLE IF EXISTS `cellonoption`;
 
