@@ -4203,7 +4203,14 @@ namespace OpenNos.Handler
                                     };
                                     Session.CurrentMap.ItemSpawn(drop2, mmon.MapX, mmon.MapY);
                                 }
-                                Session.Character.LevelXp += monsterinfo.XP;
+                               if ((int)(Session.Character.LevelXp/(Session.Character.XPLoad() / 10)) < (int)((Session.Character.LevelXp+ monsterinfo.XP) / (Session.Character.XPLoad() / 10)))
+                                {
+                                    Session.Character.Hp = (int)Session.Character.HPLoad();
+                                    Session.Character.Mp = (int)Session.Character.MPLoad();
+                                    Session.Client.SendPacket(Session.Character.GenerateStatInfo());
+                                    Session.Client.SendPacket(Session.Character.GenerateEff(5));
+                                }
+                                    Session.Character.LevelXp += monsterinfo.XP;
                                 Session.Character.JobLevelXp += monsterinfo.JobXP;
                                 if (Session.Character.LevelXp >= Session.Character.XPLoad())
                                 {
