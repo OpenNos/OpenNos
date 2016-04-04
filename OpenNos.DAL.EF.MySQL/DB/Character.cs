@@ -21,6 +21,7 @@ namespace OpenNos.DAL.EF.MySQL.DB
             this.inventory = new HashSet<Inventory>();
             this.respawn = new HashSet<Respawn>();
             this.characterskill = new HashSet<CharacterSkill>();
+            this.quicklist = new HashSet<CharacterQuicklist>();
         }
     
         public long CharacterId { get; set; }
@@ -81,5 +82,7 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public virtual ICollection<Respawn> respawn { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<CharacterSkill> characterskill { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<CharacterQuicklist> quicklist { get; set; }
     }
 }

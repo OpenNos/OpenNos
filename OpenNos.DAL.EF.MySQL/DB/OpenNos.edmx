@@ -1054,7 +1054,7 @@
           <Property Name="MasterPoints" Type="Int32" Nullable="false" />
           <Property Name="MasterTicket" Type="Int32" Nullable="false" />
           <NavigationProperty Name="characterskill" Relationship="opennosModel.CharacterCharacterSkill" FromRole="Character" ToRole="CharacterSkill" />
-          <NavigationProperty Name="CharacterQuicklist" Relationship="opennosModel.CharacterQuicklistCharacter" FromRole="Character" ToRole="CharacterQuicklist" />
+          <NavigationProperty Name="quicklist" Relationship="opennosModel.CharacterQuicklistCharacter" FromRole="Character" ToRole="CharacterQuicklist" />
         </EntityType>
         <EntityType Name="Portal">
           <Key>
