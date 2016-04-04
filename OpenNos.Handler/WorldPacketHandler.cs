@@ -1241,21 +1241,35 @@ namespace OpenNos.Handler
             MapItem mapitem;
             if (Session.CurrentMap.DroppedList.TryGetValue(DropId, out mapitem))
             {
-                byte Amount = (byte)mapitem.Amount;
+                short Amount = mapitem.Amount;
                 if (mapitem.PositionX < Session.Character.MapX + 3 && mapitem.PositionX > Session.Character.MapX - 3 && mapitem.PositionY < Session.Character.MapY + 3 && mapitem.PositionY > Session.Character.MapY - 3)
                 {
-                    Inventory newInv = Session.Character.InventoryList.CreateItem((InventoryItem)mapitem, Session.Character);
-                    if (newInv != null)
+                    if (mapitem.ItemVNum != 1046)
                     {
-                        Session.CurrentMap.DroppedList.Remove(DropId);
-                        ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateGet(DropId), ReceiverType.AllOnMap);
-                        Item iteminfo = ServerManager.GetItem(newInv.InventoryItem.ItemVNum);
-                        Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(newInv.InventoryItem.ItemVNum, newInv.InventoryItem.Amount, newInv.Type, newInv.Slot, newInv.InventoryItem.Rare, newInv.InventoryItem.Design, newInv.InventoryItem.Upgrade));
-                        Session.Client.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {iteminfo.Name} x {Amount}", 12));
+                        Inventory newInv = Session.Character.InventoryList.CreateItem((InventoryItem)mapitem, Session.Character);
+                        if (newInv != null)
+                        {
+                            Session.CurrentMap.DroppedList.Remove(DropId);
+                            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateGet(DropId), ReceiverType.AllOnMap);
+                            Item iteminfo = ServerManager.GetItem(newInv.InventoryItem.ItemVNum);
+                            Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(newInv.InventoryItem.ItemVNum, newInv.InventoryItem.Amount, newInv.Type, newInv.Slot, newInv.InventoryItem.Rare, newInv.InventoryItem.Design, newInv.InventoryItem.Upgrade));
+                            Session.Client.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {iteminfo.Name} x {Amount}", 12));
+                        }
+                        else
+                        {
+                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_PLACE"), 0));
+                        }
                     }
                     else
                     {
-                        Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_PLACE"), 0));
+                        if (Session.Character.Gold + mapitem.Amount <= 1000000000)
+                        {
+                            Session.Character.Gold += mapitem.Amount;
+                        }
+                        else
+                        {
+                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("MAX_GOLD"), 0));
+                        }
                     }
                 }
             }
@@ -4115,121 +4129,122 @@ namespace OpenNos.Handler
                 MapMonster mmon = Session.CurrentMap.Monsters.FirstOrDefault(s => s.MapMonsterId == targetid);
                 if (mmon != null)
                 {
-                NpcMonster monsterinfo = ServerManager.GetNpc(mmon.MonsterVNum);
+                    NpcMonster monsterinfo = ServerManager.GetNpc(mmon.MonsterVNum);
                     if (ski != null && monsterinfo != null && !ski.Used)
-                {
-                    Skill skill = ServerManager.GetSkill(ski.SkillVNum);
-                    short dX = (short)(Session.Character.MapX - mmon.MapX);
-                    short dY = (short)(Session.Character.MapY - mmon.MapY);
-                    if (dX * dX + dY * dY > (skill.Range * skill.Range))
                     {
-                        Random random = new Random();
-                        int hitmode = 0;
-                        short damage = 5000;
-                        int generated = random.Next(0, 100);
-                        int critical_chance = 10;
-                        int miss_chance = 20;
-                        int criticalhit = 0;
-                        int AtkType = 0;
-                        switch (AtkType)
+                        Skill skill = ServerManager.GetSkill(ski.SkillVNum);
+                        short dX = (short)(Session.Character.MapX - mmon.MapX);
+                        short dY = (short)(Session.Character.MapY - mmon.MapY);
+                        if (dX * dX + dY * dY > (skill.Range * skill.Range))
                         {
-                            case 0:
-                                critical_chance *= Session.Character.HitCriticalRate / 100;
-                                criticalhit *= Session.Character.HitCritical / 100;
-                                miss_chance /= (int)(1 + Session.Character.HitRate / 100.0);
-                                break;
-                            case 1:
-                                critical_chance *= Session.Character.DistanceCriticalRate / 100;
-                                criticalhit *= Session.Character.DistanceCritical / 100;
-                                miss_chance /= (int)(1 + Session.Character.DistanceRate / 100.0);
-                                break;
-                            case 2:
-                                critical_chance = 0;
-                                miss_chance = 0;
-                                break;
-
-                        }
-
-
-                        if (generated < critical_chance)
-                        {
-                            hitmode = 3;
-                            damage *= 2;
-                        }
-                        if (generated > 100 - miss_chance) { hitmode = 1; damage = 0; }
-
-                        if (mmon.CurrentHp <= damage)
-                        {
-                            mmon.Alive = false;
-                            mmon.CurrentHp = 0;
-                            mmon.CurrentMp = 0;
-                            mmon.Death = DateTime.Now;
-                                Random rnd = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
-                            foreach (DropDTO drop in monsterinfo.Drops)
+                            Random random = new Random();
+                            int hitmode = 0;
+                            short damage = 5000;
+                            int generated = random.Next(0, 100);
+                            int critical_chance = 10;
+                            int miss_chance = 20;
+                            int criticalhit = 0;
+                            int AtkType = 0;
+                            switch (AtkType)
                             {
-                                double rndamount = rnd.Next(0, 100) * rnd.NextDouble();
-                                if (rndamount <= (double)drop.DropChance / 1000.000)
+                                case 0:
+                                    critical_chance *= Session.Character.HitCriticalRate / 100;
+                                    criticalhit *= Session.Character.HitCritical / 100;
+                                    miss_chance /= (int)(1 + Session.Character.HitRate / 100.0);
+                                    break;
+                                case 1:
+                                    critical_chance *= Session.Character.DistanceCriticalRate / 100;
+                                    criticalhit *= Session.Character.DistanceCritical / 100;
+                                    miss_chance /= (int)(1 + Session.Character.DistanceRate / 100.0);
+                                    break;
+                                case 2:
+                                    critical_chance = 0;
+                                    miss_chance = 0;
+                                    break;
+
+                            }
+
+
+                            if (generated < critical_chance)
+                            {
+                                hitmode = 3;
+                                damage *= 2;
+                            }
+                            if (generated > 100 - miss_chance) { hitmode = 1; damage = 0; }
+
+                            if (mmon.CurrentHp <= damage)
+                            {
+                                mmon.Alive = false;
+                                mmon.CurrentHp = 0;
+                                mmon.CurrentMp = 0;
+                                mmon.Death = DateTime.Now;
+                                Random rnd;
+                                foreach (DropDTO drop in monsterinfo.Drops)
                                 {
-                                    Session.CurrentMap.ItemSpawn(drop, mmon.MapX, mmon.MapY);
+                                    rnd = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
+                                    double rndamount = rnd.Next(0, 100) * rnd.NextDouble();
+                                    if (rndamount <= (double)drop.DropChance / 1000.000)
+                                    {
+                                        Session.CurrentMap.ItemSpawn(drop, mmon.MapX, mmon.MapY);
+                                    }
+
                                 }
-
-                            }
-                     
-                            short gold = Convert.ToInt16((rnd.Next(1, 5) > 2 ? 1 : 0) * rnd.Next(6 * monsterinfo.Level, 12 * monsterinfo.Level));
-                            if (gold != 0)
-                            {
-                                DropDTO drop2 = new DropDTO()
+                                rnd = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
+                                short gold = Convert.ToInt16((rnd.Next(1, 5) >= 4 ? 1 : 0) * rnd.Next(6 * monsterinfo.Level, 12 * monsterinfo.Level));
+                                if (gold != 0)
                                 {
-                                    Amount = gold,
-                                    ItemVNum = 1046
-                                };
-                                Session.CurrentMap.ItemSpawn(drop2, mmon.MapX, mmon.MapY);
-                            }
-                            Session.Character.LevelXp += monsterinfo.XP;
-                            Session.Character.JobLevelXp += monsterinfo.JobXP;
-                            if (Session.Character.LevelXp >= Session.Character.XPLoad())
-                            {
-                                Session.Character.LevelXp -= (int)Session.Character.XPLoad();
-                                Session.Character.Level++;
-                                Session.Character.Hp = (int)Session.Character.HPLoad();
-                                Session.Character.Mp = (int)Session.Character.MPLoad();
-                                Session.Client.SendPacket(Session.Character.GenerateStatInfo());
-                                Session.Client.SendPacket($"levelup {Session.Character.CharacterId}");
-                                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(6), ReceiverType.AllOnMap);
-                                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(198), ReceiverType.AllOnMap);
-                            }
-                            if (Session.Character.JobLevelXp >= Session.Character.JobXPLoad())
-                            {
-                                Session.Character.JobLevelXp -= (int)Session.Character.JobXPLoad();
-                                Session.Character.JobLevel++;
-                                Session.Character.Hp = (int)Session.Character.HPLoad();
-                                Session.Character.Mp = (int)Session.Character.MPLoad();
-                                Session.Client.SendPacket(Session.Character.GenerateStatInfo());
-                                Session.Client.SendPacket($"levelup {Session.Character.CharacterId}");
-                                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(6), ReceiverType.AllOnMap);
-                                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(198), ReceiverType.AllOnMap);
-                            }
-                            Session.Client.SendPacket(Session.Character.GenerateLev());
+                                    DropDTO drop2 = new DropDTO()
+                                    {
+                                        Amount = gold,
+                                        ItemVNum = 1046
+                                    };
+                                    Session.CurrentMap.ItemSpawn(drop2, mmon.MapX, mmon.MapY);
+                                }
+                                Session.Character.LevelXp += monsterinfo.XP;
+                                Session.Character.JobLevelXp += monsterinfo.JobXP;
+                                if (Session.Character.LevelXp >= Session.Character.XPLoad())
+                                {
+                                    Session.Character.LevelXp -= (int)Session.Character.XPLoad();
+                                    Session.Character.Level++;
+                                    Session.Character.Hp = (int)Session.Character.HPLoad();
+                                    Session.Character.Mp = (int)Session.Character.MPLoad();
+                                    Session.Client.SendPacket(Session.Character.GenerateStatInfo());
+                                    Session.Client.SendPacket($"levelup {Session.Character.CharacterId}");
+                                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(6), ReceiverType.AllOnMap);
+                                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(198), ReceiverType.AllOnMap);
+                                }
+                                if (Session.Character.JobLevelXp >= Session.Character.JobXPLoad())
+                                {
+                                    Session.Character.JobLevelXp -= (int)Session.Character.JobXPLoad();
+                                    Session.Character.JobLevel++;
+                                    Session.Character.Hp = (int)Session.Character.HPLoad();
+                                    Session.Character.Mp = (int)Session.Character.MPLoad();
+                                    Session.Client.SendPacket(Session.Character.GenerateStatInfo());
+                                    Session.Client.SendPacket($"levelup {Session.Character.CharacterId}");
+                                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(6), ReceiverType.AllOnMap);
+                                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(198), ReceiverType.AllOnMap);
+                                }
+                                Session.Client.SendPacket(Session.Character.GenerateLev());
 
-                        }
-                        else
-                        {
-                            mmon.CurrentHp -= damage;
+                            }
+                            else
+                            {
+                                mmon.CurrentHp -= damage;
+                            }
+
+                            string packet = $"su {1} {Session.Character.CharacterId} {3} {mmon.MapMonsterId} {skill.Effect} 6 {skill.AttackAnimation} {skill.Effect} 0 0 {(mmon.Alive ? 1 : 0)} {mmon.CurrentHp / monsterinfo.MaxHP * 100} {damage} {hitmode} {skill.Type}";
+                            Session.Client.SendPacket(packet);
+                            Task t = Task.Factory.StartNew(async () =>
+                            {
+                                ski.Used = true;
+                                await Task.Delay(skill.Cooldown * 100);
+                                Session.Client.SendPacket("sr 0");
+                                ski.Used = false;
+                            });
                         }
 
-                        string packet = $"su {1} {Session.Character.CharacterId} {3} {mmon.MapMonsterId} {skill.Effect} 6 {skill.AttackAnimation} {skill.Effect} 0 0 {(mmon.Alive ? 1 : 0)} {mmon.CurrentHp / monsterinfo.MaxHP * 100} {damage} {hitmode} {skill.Type}";
-                        Session.Client.SendPacket(packet);
-                        Task t = Task.Factory.StartNew(async () =>
-                        {
-                            ski.Used = true;
-                            await Task.Delay(skill.Cooldown * 100);
-                            Session.Client.SendPacket("sr 0");
-                            ski.Used = false;
-                        });
                     }
-
                 }
-            }
             }
             Session.Client.SendPacket("cancel 0 0");
         }
@@ -4399,76 +4414,77 @@ namespace OpenNos.Handler
             if (packetsplit.Length > 4)
             {
                 short type, q1, q2, data1 = 0, data2 = 0;
-            if (!short.TryParse(packetsplit[2], out type) ||
-                !short.TryParse(packetsplit[3], out q1) || !short.TryParse(packetsplit[4], out q2))
-                return;
+                if (!short.TryParse(packetsplit[2], out type) ||
+                    !short.TryParse(packetsplit[3], out q1) || !short.TryParse(packetsplit[4], out q2))
+                    return;
                 if (packetsplit.Length > 6)
                 {
                     short.TryParse(packetsplit[5], out data1);
                     short.TryParse(packetsplit[6], out data2);
                 }
-            // qset type q1 q2 data1 data2
-            
-            switch (type)
-            {
-                case 0:
-                case 1:
-                    // client says  qset 0 1 3 2 6
-                    // answer    -> qset 1 3 0.2.6.0
+                // qset type q1 q2 data1 data2
 
-                    Session.Character.QuicklistEntries.Add(new QuicklistEntry
-                    { CharacterId = Session.Character.CharacterId,
-                        Type = type,
-                        Q1 = q1,
-                        Q2 = q2,
-                        Slot = data1,
-                        Pos = data2
-                    });
+                switch (type)
+                {
+                    case 0:
+                    case 1:
+                        // client says  qset 0 1 3 2 6
+                        // answer    -> qset 1 3 0.2.6.0
 
-                    Session.Client.SendPacket(string.Format("qset {0} {1} {2}.{3}.{4}.0", q1, q2, type, data1, data2));
+                        Session.Character.QuicklistEntries.Add(new QuicklistEntry
+                        {
+                            CharacterId = Session.Character.CharacterId,
+                            Type = type,
+                            Q1 = q1,
+                            Q2 = q2,
+                            Slot = data1,
+                            Pos = data2
+                        });
 
-                    break;
-                case 2:
-                    // DragDrop / Reorder
+                        Session.Client.SendPacket(string.Format("qset {0} {1} {2}.{3}.{4}.0", q1, q2, type, data1, data2));
 
-                    // qset type to1 to2 from1 from2
-                    // vars ->   q1  q2  data1 data2
+                        break;
+                    case 2:
+                        // DragDrop / Reorder
 
-                    QuicklistEntry qlFrom = Session.Character.QuicklistEntries.Single(n => n.Q1 == data1 && n.Q2 == data2);
-                    QuicklistEntry qlTo = Session.Character.QuicklistEntries.SingleOrDefault(n => n.Q1 == q1 && n.Q2 == q2);
+                        // qset type to1 to2 from1 from2
+                        // vars ->   q1  q2  data1 data2
 
-                    qlFrom.Q1 = q1;
-                    qlFrom.Q2 = q2;
+                        QuicklistEntry qlFrom = Session.Character.QuicklistEntries.Single(n => n.Q1 == data1 && n.Q2 == data2);
+                        QuicklistEntry qlTo = Session.Character.QuicklistEntries.SingleOrDefault(n => n.Q1 == q1 && n.Q2 == q2);
 
-                    if (qlTo == null)
-                    {
-                        // Put 'from' to new position (datax)
-                        Session.Client.SendPacket(string.Format("qset {0} {1} {2}.{3}.{4}.0", qlFrom.Q1, qlFrom.Q2, qlFrom.Type, qlFrom.Slot, qlFrom.Pos));
-                        // old 'from' is now empty.
-                        Session.Client.SendPacket(string.Format("qset {0} {1} 7.7.-1.0", data1, data2));
-                    }
-                    else
-                    {
-                        // Put 'from' to new position (datax)
-                        Session.Client.SendPacket(string.Format("qset {0} {1} {2}.{3}.{4}.0", qlFrom.Q1, qlFrom.Q2, qlFrom.Type, qlFrom.Slot, qlFrom.Pos));
-                        // 'from' is now 'to' because they exchanged
-                        qlTo.Q1 = data1;
-                        qlTo.Q2 = data2;
-                        Session.Client.SendPacket(string.Format("qset {0} {1} {2}.{3}.{4}.0", qlTo.Q1, qlTo.Q2, qlTo.Type, qlTo.Slot, qlTo.Pos));
-                    }
+                        qlFrom.Q1 = q1;
+                        qlFrom.Q2 = q2;
 
-                    break;
-                case 3:
-                    // Remove from Quicklist
+                        if (qlTo == null)
+                        {
+                            // Put 'from' to new position (datax)
+                            Session.Client.SendPacket(string.Format("qset {0} {1} {2}.{3}.{4}.0", qlFrom.Q1, qlFrom.Q2, qlFrom.Type, qlFrom.Slot, qlFrom.Pos));
+                            // old 'from' is now empty.
+                            Session.Client.SendPacket(string.Format("qset {0} {1} 7.7.-1.0", data1, data2));
+                        }
+                        else
+                        {
+                            // Put 'from' to new position (datax)
+                            Session.Client.SendPacket(string.Format("qset {0} {1} {2}.{3}.{4}.0", qlFrom.Q1, qlFrom.Q2, qlFrom.Type, qlFrom.Slot, qlFrom.Pos));
+                            // 'from' is now 'to' because they exchanged
+                            qlTo.Q1 = data1;
+                            qlTo.Q2 = data2;
+                            Session.Client.SendPacket(string.Format("qset {0} {1} {2}.{3}.{4}.0", qlTo.Q1, qlTo.Q2, qlTo.Type, qlTo.Slot, qlTo.Pos));
+                        }
 
-                    Session.Character.QuicklistEntries.RemoveAll(n => n.Q1 == q1 && n.Q2 == q2);
+                        break;
+                    case 3:
+                        // Remove from Quicklist
 
-                    Session.Client.SendPacket(string.Format("qset {0} {1} 7.7.-1.0", q1, q2));
+                        Session.Character.QuicklistEntries.RemoveAll(n => n.Q1 == q1 && n.Q2 == q2);
 
-                    break;
-                default:
-                    return;
-            }
+                        Session.Client.SendPacket(string.Format("qset {0} {1} 7.7.-1.0", q1, q2));
+
+                        break;
+                    default:
+                        return;
+                }
             }
         }
 
