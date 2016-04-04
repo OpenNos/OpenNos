@@ -294,7 +294,7 @@ namespace OpenNos.Import.Console
                     else if (currentLine.Length > 6 && currentLine[1] == "PREATT")
                     {
                         npc.Speed = Convert.ToByte(currentLine[5]);
-                        npc.RespawnTime = Convert.ToByte(currentLine[6]);
+                        npc.RespawnTime = Convert.ToInt32(currentLine[6]);
                     }
                     else if (currentLine.Length > 7 && currentLine[1] == "ETC")
                     {
