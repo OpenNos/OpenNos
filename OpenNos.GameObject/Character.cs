@@ -1198,8 +1198,8 @@ namespace OpenNos.GameObject
                 t.Save();
             foreach (CharacterSkill t in Skills)
                 t.Save();
-            foreach (QuicklistEntry t in QuicklistEntries)
-                t.Save();
+            /*foreach (QuicklistEntry t in QuicklistEntries)
+                t.Save();*/
         }
 
         public double SPXPLoad()
