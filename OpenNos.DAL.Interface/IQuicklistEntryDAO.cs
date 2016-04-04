@@ -20,7 +20,7 @@ namespace OpenNos.DAL.Interface
 {
     public interface IQuicklistEntryDAO
     {
-        QuicklistEntryDTO Insert(ref QuicklistEntryDTO characterquicklist);
+        SaveResult InsertOrUpdate(ref QuicklistEntryDTO characterquicklist);
         IEnumerable<QuicklistEntryDTO> Load(long characterId);
         DeleteResult Delete(long characterId, long entryId);
     }

@@ -79,6 +79,8 @@ namespace OpenNos.DAL.EF.MySQL.Helpers
             Mapper.CreateMap<NpcMonsterSkillDTO, NpcMonsterSkill>();
             Mapper.CreateMap<CellonOption, CellonOptionDTO>();
             Mapper.CreateMap<CellonOptionDTO, CellonOption>();
+            Mapper.CreateMap<QuicklistEntry, QuicklistEntryDTO>();
+            Mapper.CreateMap<QuicklistEntryDTO, QuicklistEntry>();
         }
 
         #endregion

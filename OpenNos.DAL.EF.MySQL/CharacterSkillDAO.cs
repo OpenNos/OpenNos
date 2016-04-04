@@ -13,11 +13,13 @@
  */
 
 using AutoMapper;
+using OpenNos.Core;
 using OpenNos.DAL.EF.MySQL.DB;
 using OpenNos.DAL.EF.MySQL.Helpers;
 using OpenNos.DAL.Interface;
 using OpenNos.Data;
 using OpenNos.Data.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -42,16 +44,57 @@ namespace OpenNos.DAL.EF.MySQL
             }
         }
 
-        public CharacterSkillDTO Insert(ref CharacterSkillDTO characterskill)
+        public SaveResult InsertOrUpdate(ref CharacterSkillDTO characterskill)
         {
-            using (var context = DataAccessHelper.CreateContext())
+            try
             {
-                CharacterSkill entity = Mapper.Map<CharacterSkill>(characterskill);
-                context.characterskill.Add(entity);
-                context.SaveChanges();
-                return Mapper.Map<CharacterSkillDTO>(entity);
+                using (var context = DataAccessHelper.CreateContext())
+                {
+                    long EntryId = characterskill.CharacterSkillId;
+                    CharacterSkill entity = context.characterskill.FirstOrDefault(c => c.CharacterSkillId == EntryId);
+                    if (entity == null) //new entity
+                    {
+                        characterskill = Insert(characterskill, context);
+                        return SaveResult.Inserted;
+                    }
+                    else //existing entity
+                    {
+                        entity.CharacterSkillId = context.characterskill.FirstOrDefault(c => c.CharacterSkillId == EntryId).CharacterSkillId;
+                        characterskill = Update(entity, characterskill, context);
+                        return SaveResult.Updated;
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Log.ErrorFormat(Language.Instance.GetMessageFromKey("UPDATE_ERROR"), e.Message);
+                return SaveResult.Error;
             }
         }
+        private CharacterSkillDTO Insert(CharacterSkillDTO characterskill, OpenNosContainer context)
+        {
+
+            CharacterSkill entity = Mapper.Map<CharacterSkill>(characterskill);
+            context.characterskill.Add(entity);
+            context.SaveChanges();
+            return Mapper.Map<CharacterSkillDTO>(entity);
+        }
+
+        private CharacterSkillDTO Update(CharacterSkill entity, CharacterSkillDTO characterskill, OpenNosContainer context)
+        {
+            using (context)
+            {
+                var result = context.characterskill.FirstOrDefault(c => c.CharacterSkillId == characterskill.CharacterSkillId);
+                if (result != null)
+                {
+                    result = Mapper.Map<CharacterSkillDTO, CharacterSkill>(characterskill, entity);
+                    context.SaveChanges();
+                }
+            }
+
+            return Mapper.Map<CharacterSkillDTO>(characterskill);
+        }
+
 
         public IEnumerable<CharacterSkillDTO> LoadByCharacterId(long characterId)
         {

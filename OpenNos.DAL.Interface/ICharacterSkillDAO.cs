@@ -22,7 +22,7 @@ namespace OpenNos.DAL.Interface
     {
         #region Methods
 
-        CharacterSkillDTO Insert(ref CharacterSkillDTO characterskill);
+        SaveResult InsertOrUpdate(ref CharacterSkillDTO characterskill);
         IEnumerable<CharacterSkillDTO> LoadByCharacterId(long characterId);
         DeleteResult Delete(long characterId, short skillVNum);
 

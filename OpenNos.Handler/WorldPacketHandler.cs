@@ -590,8 +590,8 @@ namespace OpenNos.Handler
                         SaveResult insertResult = DAOFactory.CharacterDAO.InsertOrUpdate(ref newCharacter);
                         CharacterSkillDTO sk1 = new CharacterSkillDTO { CharacterId = newCharacter.CharacterId, SkillVNum = 200 };
                         CharacterSkillDTO sk2 = new CharacterSkillDTO { CharacterId = newCharacter.CharacterId, SkillVNum = 201 };
-                        DAOFactory.CharacterSkillDAO.Insert(ref sk1);
-                        DAOFactory.CharacterSkillDAO.Insert(ref sk2);
+                        DAOFactory.CharacterSkillDAO.InsertOrUpdate(ref sk1);
+                        DAOFactory.CharacterSkillDAO.InsertOrUpdate(ref sk2);
                         LoadCharacters(packet);
                     }
                     else Session.Client.SendPacketFormat($"info {Language.Instance.GetMessageFromKey("ALREADY_TAKEN")}");
@@ -4396,13 +4396,17 @@ namespace OpenNos.Handler
         public void QuicklistSet(string packet)
         {
             string[] packetsplit = packet.Split(' ');
-            short type, q1, q2, data1, data2;
+            if (packetsplit.Length > 4)
+            {
+                short type, q1, q2, data1 = 0, data2 = 0;
             if (!short.TryParse(packetsplit[2], out type) ||
                 !short.TryParse(packetsplit[3], out q1) || !short.TryParse(packetsplit[4], out q2))
                 return;
-            short.TryParse(packetsplit[5], out data1);
-            short.TryParse(packetsplit[6], out data2);
-
+                if (packetsplit.Length > 6)
+                {
+                    short.TryParse(packetsplit[5], out data1);
+                    short.TryParse(packetsplit[6], out data2);
+                }
             // qset type q1 q2 data1 data2
             
             switch (type)
@@ -4413,7 +4417,7 @@ namespace OpenNos.Handler
                     // answer    -> qset 1 3 0.2.6.0
 
                     Session.Character.QuicklistEntries.Add(new QuicklistEntry
-                    {
+                    { CharacterId = Session.Character.CharacterId,
                         Type = type,
                         Q1 = q1,
                         Q2 = q2,
@@ -4465,7 +4469,7 @@ namespace OpenNos.Handler
                 default:
                     return;
             }
-
+            }
         }
 
 

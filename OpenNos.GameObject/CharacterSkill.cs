@@ -38,7 +38,7 @@ namespace OpenNos.GameObject
         public void Save()
         {
             CharacterSkillDTO tempsave = this;
-            DAOFactory.CharacterSkillDAO.Insert(ref tempsave);
+            DAOFactory.CharacterSkillDAO.InsertOrUpdate(ref tempsave);
         }
 
         #endregion

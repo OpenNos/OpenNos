@@ -1182,12 +1182,12 @@ namespace OpenNos.GameObject
 
             // Character's Skills
             foreach (CharacterSkillDTO skill in DAOFactory.CharacterSkillDAO.LoadByCharacterId(CharacterId))
-                if (Skills.FirstOrDefault(s => s.SkillVNum == skill.SkillVNum) != null)
+                if (Skills.FirstOrDefault(s => s.SkillVNum == skill.SkillVNum) == null)
                     DAOFactory.CharacterSkillDAO.Delete(CharacterId, skill.SkillVNum);
 
             // Character's QuicklistEntries
             foreach (QuicklistEntryDTO quicklists in DAOFactory.QuicklistEntryDAO.Load(CharacterId))
-                if (QuicklistEntries.FirstOrDefault(s => s.EntryId == quicklists.EntryId) != null)
+                if (QuicklistEntries.FirstOrDefault(s => s.EntryId == quicklists.EntryId) == null)
                     DAOFactory.QuicklistEntryDAO.Delete(CharacterId, quicklists.EntryId);
 
 
@@ -1198,8 +1198,8 @@ namespace OpenNos.GameObject
                 t.Save();
             foreach (CharacterSkill t in Skills)
                 t.Save();
-            /*foreach (QuicklistEntry t in QuicklistEntries)
-                t.Save();*/
+            foreach (QuicklistEntry t in QuicklistEntries)
+                t.Save();
         }
 
         public double SPXPLoad()

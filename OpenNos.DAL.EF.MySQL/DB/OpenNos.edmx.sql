@@ -44,7 +44,7 @@
 -- -----------------------------------------------------------
 -- Entity Designer DDL Script for MySQL Server 4.1 and higher
 -- -----------------------------------------------------------
--- Date Created: 04/04/2016 22:52:52
+-- Date Created: 04/04/2016 23:29:09
 
 -- Generated from EDMX file: C:\Users\ERWAN\Desktop\OpenNos Git\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
 -- Target version: 3.0.0.0
@@ -680,7 +680,7 @@ ALTER TABLE `npcmonsterskill` ADD PRIMARY KEY (CharacterSkillId);
 
 
 CREATE TABLE `quicklist`(
-	`EntryId` bigint NOT NULL, 
+	`EntryId` bigint NOT NULL AUTO_INCREMENT UNIQUE, 
 	`CharacterId` bigint NOT NULL, 
 	`Q1` smallint NOT NULL, 
 	`Q2` smallint NOT NULL, 

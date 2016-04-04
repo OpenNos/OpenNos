@@ -18,7 +18,7 @@ using OpenNos.Data;
 
 namespace OpenNos.GameObject
 {
-    public class QuicklistEntry : QuicklistEntryDTO//, IGameObject
+    public class QuicklistEntry : QuicklistEntryDTO, IGameObject
     {
         #region Instantiation
 
@@ -33,15 +33,13 @@ namespace OpenNos.GameObject
 
         #region Methods
 
-        //TODO: fix this shizz
-
-        /*
+    
         public void Save()
         {
             QuicklistEntryDTO tempsave = this;
-            DAOFactory.QuicklistEntryDAO.Insert(ref tempsave);
+            DAOFactory.QuicklistEntryDAO.InsertOrUpdate(ref tempsave);
         }
-        */
+        
 
         #endregion
     }
