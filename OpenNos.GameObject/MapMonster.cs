@@ -76,11 +76,10 @@ namespace OpenNos.GameObject
             if (!Alive)
             {
                 double timeDeath = (DateTime.Now - Death).TotalMilliseconds;
-                if (timeDeath >= monster.RespawnTime)
+                if (timeDeath >= monster.RespawnTime*10)
                 {
                     ClientLinkManager.Instance.RequiereBroadcastFromMap(MapId, GenerateIn3());
-                }
-                
+                }   
             }
             if (monster == null || Alive == false)
                 return;

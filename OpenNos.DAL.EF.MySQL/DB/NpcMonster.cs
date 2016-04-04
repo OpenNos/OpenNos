@@ -49,6 +49,8 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public int MaxHP { get; set; }
         public int MaxMP { get; set; }
         public int RespawnTime { get; set; }
+        public int XP { get; set; }
+        public int JobXP { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<MapNpc> mapnpc { get; set; }

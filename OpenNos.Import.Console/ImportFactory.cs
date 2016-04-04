@@ -286,9 +286,15 @@ namespace OpenNos.Import.Console
                     {
                         npc.Name = dictionaryIdLang.ContainsKey(currentLine[2]) ? dictionaryIdLang[currentLine[2]] : "";
                     }
+                    else if (currentLine.Length > 2 && currentLine[1] == "EXP")
+                    {
+                        npc.XP = Convert.ToInt32(currentLine[2]);
+                        npc.JobXP = Convert.ToInt32(currentLine[3]);
+                    }
                     else if (currentLine.Length > 6 && currentLine[1] == "PREATT")
                     {
                         npc.Speed = Convert.ToByte(currentLine[5]);
+                        npc.RespawnTime = Convert.ToByte(currentLine[6]);
                     }
                     else if (currentLine.Length > 7 && currentLine[1] == "ETC")
                     {
