@@ -12,18 +12,20 @@
  * GNU General Public License for more details.
  */
 
+using AutoMapper;
 using OpenNos.Data;
-using System.Collections.Generic;
 
-namespace OpenNos.DAL.Interface
+namespace OpenNos.GameObject
 {
-    public interface IDropDAO
+    public class CellonOption : CellonOptionDTO
     {
-        #region Methods
+        #region Instantiation
 
-        DropDTO Insert(DropDTO drop);
-        IEnumerable<DropDTO> LoadByMonster(short monsterVNum);
-        void Insert(List<DropDTO> drops);
+        public CellonOption()
+        {
+            Mapper.CreateMap<CellonOptionDTO, CellonOption>();
+            Mapper.CreateMap<CellonOption, CellonOptionDTO>();
+        }
 
         #endregion
     }

@@ -49,6 +49,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CellonOptionDTO.cs" />
     <Compile Include="CharacterQuicklistDTO.cs" />
     <Compile Include="DropDTO.cs" />
     <Compile Include="GeneralLogDTO.cs" />

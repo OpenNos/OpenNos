@@ -14,6 +14,12 @@ namespace OpenNos.DAL.EF.MySQL.DB
     
     public partial class InventoryItem
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public InventoryItem()
+        {
+            this.cellonoption = new HashSet<CellonOption>();
+        }
+    
         public long InventoryItemId { get; set; }
         public short ItemVNum { get; set; }
         public byte Amount { get; set; }
@@ -64,8 +70,11 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public byte SpLight { get; set; }
         public byte SpDark { get; set; }
         public byte SpStoneUpgrade { get; set; }
+        public int CellonOptionId { get; set; }
     
         public virtual Item item { get; set; }
         public virtual Inventory inventory { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<CellonOption> cellonoption { get; set; }
     }
 }

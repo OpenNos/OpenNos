@@ -17,13 +17,11 @@ using System.Collections.Generic;
 
 namespace OpenNos.DAL.Interface
 {
-    public interface IDropDAO
+    public interface ICellonOptionDAO
     {
         #region Methods
 
-        DropDTO Insert(DropDTO drop);
-        IEnumerable<DropDTO> LoadByMonster(short monsterVNum);
-        void Insert(List<DropDTO> drops);
+        IEnumerable<CellonOptionDTO> GetOptionsByInventoryItemId(long inventoryitemId);
 
         #endregion
     }
