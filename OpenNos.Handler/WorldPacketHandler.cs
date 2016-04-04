@@ -1241,10 +1241,10 @@ namespace OpenNos.Handler
             MapItem mapitem;
             if (Session.CurrentMap.DroppedList.TryGetValue(DropId, out mapitem))
             {
-                int Amount = mapitem.Amount;
+                byte Amount = (byte)mapitem.Amount;
                 if (mapitem.PositionX < Session.Character.MapX + 3 && mapitem.PositionX > Session.Character.MapX - 3 && mapitem.PositionY < Session.Character.MapY + 3 && mapitem.PositionY > Session.Character.MapY - 3)
                 {
-                    Inventory newInv = Session.Character.InventoryList.CreateItem(mapitem, Session.Character);
+                    Inventory newInv = Session.Character.InventoryList.CreateItem((InventoryItem)mapitem, Session.Character);
                     if (newInv != null)
                     {
                         Session.CurrentMap.DroppedList.Remove(DropId);
