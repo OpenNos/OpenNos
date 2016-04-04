@@ -4391,12 +4391,75 @@ namespace OpenNos.Handler
         public void QuicklistSet(string packet)
         {
             string[] packetsplit = packet.Split(' ');
-            Console.WriteLine("Q: "+packetsplit[0]+" "+packetsplit[1]);
-            int q1,q2;
-            if (int.TryParse(packetsplit[2], out q1) || int.TryParse(packetsplit[2], out q2)) return;
-            string[] data = packetsplit[4].Split('.');
+            short type, q1, q2, data1, data2;
+            if (!short.TryParse(packetsplit[2], out type) ||
+                !short.TryParse(packetsplit[3], out q1) || !short.TryParse(packetsplit[4], out q2))
+                return;
+            short.TryParse(packetsplit[5], out data1);
+            short.TryParse(packetsplit[6], out data2);
 
+            // qset type q1 q2 data1 data2
+            
+            switch (type)
+            {
+                case 0:
+                case 1:
+                    // client says  qset 0 1 3 2 6
+                    // answer    -> qset 1 3 0.2.6.0
 
+                    Session.Character.QuicklistEntries.Add(new QuicklistEntry
+                    {
+                        Type = type,
+                        Q1 = q1,
+                        Q2 = q2,
+                        Slot = data1,
+                        Pos = data2
+                    });
+
+                    Session.Client.SendPacket(string.Format("qset {0} {1} {2}.{3}.{4}.0", q1, q2, type, data1, data2));
+
+                    break;
+                case 2:
+                    // DragDrop / Reorder
+
+                    // qset type to1 to2 from1 from2
+                    // vars ->   q1  q2  data1 data2
+
+                    QuicklistEntry qlFrom = Session.Character.QuicklistEntries.Single(n => n.Q1 == data1 && n.Q2 == data2);
+                    QuicklistEntry qlTo = Session.Character.QuicklistEntries.SingleOrDefault(n => n.Q1 == q1 && n.Q2 == q2);
+
+                    qlFrom.Q1 = q1;
+                    qlFrom.Q2 = q2;
+
+                    if (qlTo == null)
+                    {
+                        // Put 'from' to new position (datax)
+                        Session.Client.SendPacket(string.Format("qset {0} {1} {2}.{3}.{4}.0", qlFrom.Q1, qlFrom.Q2, qlFrom.Type, qlFrom.Slot, qlFrom.Pos));
+                        // old 'from' is now empty.
+                        Session.Client.SendPacket(string.Format("qset {0} {1} 7.7.-1.0", data1, data2));
+                    }
+                    else
+                    {
+                        // Put 'from' to new position (datax)
+                        Session.Client.SendPacket(string.Format("qset {0} {1} {2}.{3}.{4}.0", qlFrom.Q1, qlFrom.Q2, qlFrom.Type, qlFrom.Slot, qlFrom.Pos));
+                        // 'from' is now 'to' because they exchanged
+                        qlTo.Q1 = data1;
+                        qlTo.Q2 = data2;
+                        Session.Client.SendPacket(string.Format("qset {0} {1} {2}.{3}.{4}.0", qlTo.Q1, qlTo.Q2, qlTo.Type, qlTo.Slot, qlTo.Pos));
+                    }
+
+                    break;
+                case 3:
+                    // Remove from Quicklist
+
+                    Session.Character.QuicklistEntries.RemoveAll(n => n.Q1 == q1 && n.Q2 == q2);
+
+                    Session.Client.SendPacket(string.Format("qset {0} {1} 7.7.-1.0", q1, q2));
+
+                    break;
+                default:
+                    return;
+            }
 
         }
 
