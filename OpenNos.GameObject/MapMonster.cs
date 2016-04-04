@@ -16,6 +16,7 @@ using AutoMapper;
 using OpenNos.Data;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace OpenNos.GameObject
 {
@@ -31,6 +32,7 @@ namespace OpenNos.GameObject
         }
 
         public bool Alive { get; set; }
+        public DateTime Death { get; set; }
         public int CurrentHp { get; set; }
         public int CurrentMp { get; set; }
 
@@ -71,7 +73,15 @@ namespace OpenNos.GameObject
         internal void MonsterLife()
         {
             NpcMonster monster = ServerManager.GetNpc(this.MonsterVNum);
-            if (monster == null)
+            if (!Alive)
+            {
+                double timeDeath = (DateTime.Now - Death).TotalMilliseconds;
+                if (timeDeath >= monster.RespawnTime*10)
+                {
+                    ClientLinkManager.Instance.RequiereBroadcastFromMap(MapId, GenerateIn3());
+                }   
+            }
+            if (monster == null || Alive == false)
                 return;
             Random r = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
             double time = (DateTime.Now - LastMove).TotalSeconds;

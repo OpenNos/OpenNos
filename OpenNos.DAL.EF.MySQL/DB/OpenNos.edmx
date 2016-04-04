@@ -350,6 +350,9 @@
     <Property Name="DarkResistance" Type="tinyint" Nullable="false" />
     <Property Name="MaxHP" Type="int" Nullable="false" />
     <Property Name="MaxMP" Type="int" Nullable="false" />
+    <Property Name="RespawnTime" Type="int" Nullable="false" />
+    <Property Name="XP" Type="int" Nullable="false" />
+    <Property Name="JobXP" Type="int" Nullable="false" />
   </EntityType>
   <EntityType Name="inventoryitem">
     <Key>
@@ -1396,6 +1399,9 @@
           <Property Name="MaxMP" Type="Int32" Nullable="false" />
           <NavigationProperty Name="drop" Relationship="opennosModel.DropNpcMonster" FromRole="NpcMonster" ToRole="Drop" />
           <NavigationProperty Name="npcmonsterskill" Relationship="opennosModel.NpcMonsterSkillNpcMonster" FromRole="NpcMonster" ToRole="NpcMonsterSkill" />
+          <Property Name="RespawnTime" Type="Int32" Nullable="false" />
+          <Property Name="XP" Type="Int32" Nullable="false" />
+          <Property Name="JobXP" Type="Int32" Nullable="false" />
         </EntityType>
         <EntityType Name="InventoryItem">
           <Key>
@@ -2156,6 +2162,9 @@
           <ScalarProperty Name="DarkResistance" ColumnName="DarkResistance" />
           <ScalarProperty Name="MaxHP" ColumnName="MaxHP" />
           <ScalarProperty Name="MaxMP" ColumnName="MaxMP" />
+          <ScalarProperty Name="RespawnTime" ColumnName="RespawnTime" />
+          <ScalarProperty Name="XP" ColumnName="XP" />
+          <ScalarProperty Name="JobXP" ColumnName="JobXP" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

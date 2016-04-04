@@ -43,7 +43,9 @@ namespace OpenNos.Data
         public sbyte DarkResistance { get; set; }
         public int MaxHP { get; set; }
         public int MaxMP { get; set; }
-
+        public int RespawnTime { get; set; }
+        public int XP { get; set; }
+        public int JobXP { get; set; }
         #endregion
     }
 }
