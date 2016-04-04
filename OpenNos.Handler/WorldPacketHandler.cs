@@ -4100,8 +4100,10 @@ namespace OpenNos.Handler
         public void UseSkill(string packet)
         {
             string[] packetsplit = packet.Split(' ');
-            if(Convert.ToInt32(packetsplit[3]) == 2)
+
             TargetHit(Convert.ToInt32(packetsplit[2]), Convert.ToInt32(packetsplit[3]), Convert.ToInt32(packetsplit[4]));
+
+
         }
 
         public void TargetHit(int Castingid, int targetobj, int targetid)
@@ -4111,8 +4113,10 @@ namespace OpenNos.Handler
             {
                 CharacterSkill ski = Session.Character.Skills.ElementAt(Castingid);
                 MapMonster mmon = Session.CurrentMap.Monsters.FirstOrDefault(s => s.MapMonsterId == targetid);
+                if (mmon != null)
+                {
                 NpcMonster monsterinfo = ServerManager.GetNpc(mmon.MonsterVNum);
-                if (ski != null && mmon != null && monsterinfo != null && !ski.Used)
+                    if (ski != null && monsterinfo != null && !ski.Used)
                 {
                     Skill skill = ServerManager.GetSkill(ski.SkillVNum);
                     short dX = (short)(Session.Character.MapX - mmon.MapX);
@@ -4160,7 +4164,7 @@ namespace OpenNos.Handler
                             mmon.CurrentHp = 0;
                             mmon.CurrentMp = 0;
                             mmon.Death = DateTime.Now;
-                            Random rnd = new Random();
+                                Random rnd = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
                             foreach (DropDTO drop in monsterinfo.Drops)
                             {
                                 double rndamount = rnd.Next(0, 100) * rnd.NextDouble();
@@ -4225,6 +4229,7 @@ namespace OpenNos.Handler
                     }
 
                 }
+            }
             }
             Session.Client.SendPacket("cancel 0 0");
         }
