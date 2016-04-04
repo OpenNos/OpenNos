@@ -1266,6 +1266,7 @@ namespace OpenNos.Handler
                         {
                             Session.Character.Gold += mapitem.Amount;
                             Session.CurrentMap.DroppedList.Remove(DropId);
+                            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateGet(DropId), ReceiverType.AllOnMap);
                             Session.Client.SendPacket(Session.Character.GenerateGold());
                         }
                         else
@@ -4196,7 +4197,7 @@ namespace OpenNos.Handler
                                 if (gold != 0)
                                 {
                                     DropDTO drop2 = new DropDTO()
-                                    {
+                                    {   
                                         Amount = gold,
                                         ItemVNum = 1046
                                     };
