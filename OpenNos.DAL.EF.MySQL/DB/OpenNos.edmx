@@ -28,7 +28,7 @@
     <EntitySet Name="characterskill" EntityType="opennosModel.Store.characterskill" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="shopskill" EntityType="opennosModel.Store.shopskill" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="npcmonsterskill" EntityType="opennosModel.Store.npcmonsterskill" store:Type="Tables" Schema="dbo" />
-    <EntitySet Name="characterquicklist" EntityType="opennosModel.Store.characterquicklist" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="quicklist" EntityType="opennosModel.Store.quicklist" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="cellonoption" EntityType="opennosModel.Store.cellonoption" store:Type="Tables" Schema="dbo" />
     <AssociationSet Name="AccountCharacter" Association="opennosModel.Store.AccountCharacter">
       <End Role="Account" EntitySet="account" />
@@ -155,7 +155,7 @@
       <End Role="NpcMonster" EntitySet="npcmonster" />
     </AssociationSet>
     <AssociationSet Name="CharacterQuicklistCharacter" Association="opennosModel.Store.CharacterQuicklistCharacter">
-      <End Role="CharacterQuicklist" EntitySet="characterquicklist" />
+      <End Role="CharacterQuicklist" EntitySet="quicklist" />
       <End Role="Character" EntitySet="character" />
     </AssociationSet>
     <AssociationSet Name="CellonOptionInventoryItem" Association="opennosModel.Store.CellonOptionInventoryItem">
@@ -590,7 +590,7 @@
     <Property Name="SkillVNum" Type="smallint" Nullable="false" />
     <Property Name="NpcMonsterVNum" Type="smallint" Nullable="false" />
   </EntityType>
-  <EntityType Name="characterquicklist">
+  <EntityType Name="quicklist">
     <Key>
       <PropertyRef Name="EntryId" />
     </Key>
@@ -985,7 +985,7 @@
     </ReferentialConstraint>
   </Association>
   <Association Name="CharacterQuicklistCharacter">
-    <End Role="CharacterQuicklist" Type="opennosModel.Store.characterquicklist" Multiplicity="*" />
+    <End Role="CharacterQuicklist" Type="opennosModel.Store.quicklist" Multiplicity="*" />
     <End Role="Character" Type="opennosModel.Store.character" Multiplicity="1" />
     <ReferentialConstraint>
       <Principal Role="Character">
@@ -1247,9 +1247,9 @@
             <End EntitySet="npcmonsterskill" Role="NpcMonsterSkill" />
             <End EntitySet="npcmonster" Role="NpcMonster" />
           </AssociationSet>
-          <EntitySet Name="characterquicklist" EntityType="opennosModel.CharacterQuicklist" />
+          <EntitySet Name="quicklist" EntityType="opennosModel.QuicklistEntry" />
           <AssociationSet Name="CharacterQuicklistCharacter" Association="opennosModel.CharacterQuicklistCharacter">
-            <End Role="CharacterQuicklist" EntitySet="characterquicklist" />
+            <End Role="CharacterQuicklist" EntitySet="quicklist" />
             <End Role="Character" EntitySet="character" />
           </AssociationSet>
           <EntitySet Name="cellonoption" EntityType="opennosModel.CellonOption" />
@@ -2024,7 +2024,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityType Name="CharacterQuicklist" >
+        <EntityType Name="QuicklistEntry" >
           <Key>
             <PropertyRef Name="EntryId" />
           </Key>
@@ -2038,7 +2038,7 @@
           <NavigationProperty Name="Character" Relationship="opennosModel.CharacterQuicklistCharacter" FromRole="CharacterQuicklist" ToRole="Character" />
         </EntityType>
         <Association Name="CharacterQuicklistCharacter">
-          <End Type="opennosModel.CharacterQuicklist" Role="CharacterQuicklist" Multiplicity="*" />
+          <End Type="opennosModel.QuicklistEntry" Role="CharacterQuicklist" Multiplicity="*" />
           <End Type="opennosModel.Character" Role="Character" Multiplicity="1" />
           <ReferentialConstraint>
             <Principal Role="Character">
@@ -2526,9 +2526,9 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
-    <EntitySetMapping Name="characterquicklist">
-      <EntityTypeMapping TypeName="IsTypeOf(opennosModel.CharacterQuicklist)">
-        <MappingFragment StoreEntitySet="characterquicklist">
+    <EntitySetMapping Name="quicklist">
+      <EntityTypeMapping TypeName="IsTypeOf(opennosModel.QuicklistEntry)">
+        <MappingFragment StoreEntitySet="quicklist">
           <ScalarProperty Name="EntryId" ColumnName="EntryId" />
           <ScalarProperty Name="CharacterId" ColumnName="CharacterId" />
           <ScalarProperty Name="Q1" ColumnName="Q1" />

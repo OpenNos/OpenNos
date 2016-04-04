@@ -54,7 +54,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ICellonOptionDAO.cs" />
-    <Compile Include="ICharacterQuicklistDAO.cs" />
     <Compile Include="IDropDAO.cs" />
     <Compile Include="IGeneralLogDAO.cs" />
     <Compile Include="IAccountDAO.cs" />
@@ -62,6 +61,7 @@
     <Compile Include="IMapMonsterDAO.cs" />
     <Compile Include="IMapNpcDAO.cs" />
     <Compile Include="INpcMonsterSkillDAO.cs" />
+    <Compile Include="IQuicklistEntryDAO.cs" />
     <Compile Include="IRecipeDAO.cs" />
     <Compile Include="IRecipeItemDAO.cs" />
     <Compile Include="IRespawnDAO.cs" />

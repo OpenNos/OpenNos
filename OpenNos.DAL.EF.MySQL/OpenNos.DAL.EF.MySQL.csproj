@@ -80,7 +80,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CellonOptionDAO.cs" />
-    <Compile Include="CharacterQuicklistDAO.cs" />
     <Compile Include="DB\Account.cs">
       <DependentUpon>OpenNos.tt</DependentUpon>
     </Compile>
@@ -88,9 +87,6 @@
       <DependentUpon>OpenNos.tt</DependentUpon>
     </Compile>
     <Compile Include="DB\Character.cs">
-      <DependentUpon>OpenNos.tt</DependentUpon>
-    </Compile>
-    <Compile Include="DB\CharacterQuicklist.cs">
       <DependentUpon>OpenNos.tt</DependentUpon>
     </Compile>
     <Compile Include="DB\CharacterSkill.cs">
@@ -129,6 +125,9 @@
     <Compile Include="DB\Portal.cs">
       <DependentUpon>OpenNos.tt</DependentUpon>
     </Compile>
+    <Compile Include="DB\QuicklistEntry.cs">
+      <DependentUpon>OpenNos.tt</DependentUpon>
+    </Compile>
     <Compile Include="DB\Recipe.cs">
       <DependentUpon>OpenNos.tt</DependentUpon>
     </Compile>
@@ -157,6 +156,7 @@
     <Compile Include="MapMonsterDAO.cs" />
     <Compile Include="MapNpcDAO.cs" />
     <Compile Include="NpcMonsterSkillDAO.cs" />
+    <Compile Include="QuicklistEntryDao.cs" />
     <Compile Include="RecipeDAO.cs" />
     <Compile Include="RecipeItemDAO.cs" />
     <Compile Include="RespawnDAO.cs" />

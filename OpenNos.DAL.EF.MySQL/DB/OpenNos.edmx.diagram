@@ -61,7 +61,7 @@
         <EntityTypeShape EntityType="opennosModel.NpcMonsterSkill" Width="2.5" PointX="1.5" PointY="14.125" />
         <AssociationConnector Association="opennosModel.NpcMonsterSkillSkill" />
         <AssociationConnector Association="opennosModel.NpcMonsterSkillNpcMonster" />
-        <EntityTypeShape EntityType="opennosModel.CharacterQuicklist" Width="1.625" PointX="8.375" PointY="15.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="opennosModel.QuicklistEntry" Width="1.625" PointX="8.375" PointY="15.75" IsExpanded="true" />
         <AssociationConnector Association="opennosModel.CharacterQuicklistCharacter" />
         <EntityTypeShape EntityType="opennosModel.CellonOption" Width="1.5" PointX="12.375" PointY="37.75" />
         <AssociationConnector Association="opennosModel.CellonOptionInventoryItem" />

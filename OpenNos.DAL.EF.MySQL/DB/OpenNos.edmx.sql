@@ -44,9 +44,9 @@
 -- -----------------------------------------------------------
 -- Entity Designer DDL Script for MySQL Server 4.1 and higher
 -- -----------------------------------------------------------
--- Date Created: 04/04/2016 18:36:14
+-- Date Created: 04/04/2016 19:04:23
 
--- Generated from EDMX file: C:\Users\Dominik\Source\Repos\OpenNos\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
+-- Generated from EDMX file: C:\Users\ERWAN\Desktop\OpenNos Git\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
 -- Target version: 3.0.0.0
 
 -- --------------------------------------------------
@@ -123,6 +123,8 @@
 
 --    ALTER TABLE `characterquicklist` DROP CONSTRAINT `FK_CharacterQuicklistCharacter`;
 
+--    ALTER TABLE `cellonoption` DROP CONSTRAINT `FK_CellonOptionInventoryItem`;
+
 
 -- --------------------------------------------------
 -- Dropping existing tables
@@ -174,6 +176,8 @@ SET foreign_key_checks = 0;
     DROP TABLE IF EXISTS `npcmonsterskill`;
 
     DROP TABLE IF EXISTS `characterquicklist`;
+
+    DROP TABLE IF EXISTS `cellonoption`;
 
 SET foreign_key_checks = 1;
 
@@ -675,8 +679,8 @@ ALTER TABLE `npcmonsterskill` ADD PRIMARY KEY (CharacterSkillId);
 
 
 
-CREATE TABLE `characterquicklist`(
-	`EntryId` longtext NOT NULL, 
+CREATE TABLE `quicklist`(
+	`EntryId` bigint NOT NULL, 
 	`CharacterId` bigint NOT NULL, 
 	`Q1` smallint NOT NULL, 
 	`Q2` smallint NOT NULL, 
@@ -684,7 +688,7 @@ CREATE TABLE `characterquicklist`(
 	`Slot` smallint NOT NULL, 
 	`Pos` smallint NOT NULL);
 
-ALTER TABLE `characterquicklist` ADD PRIMARY KEY (EntryId);
+ALTER TABLE `quicklist` ADD PRIMARY KEY (EntryId);
 
 
 
@@ -1268,9 +1272,9 @@ CREATE INDEX `IX_FK_NpcMonsterSkillNpcMonster`
 
 
 
--- Creating foreign key on `CharacterId` in table 'characterquicklist'
+-- Creating foreign key on `CharacterId` in table 'quicklist'
 
-ALTER TABLE `characterquicklist`
+ALTER TABLE `quicklist`
 ADD CONSTRAINT `FK_CharacterQuicklistCharacter`
     FOREIGN KEY (`CharacterId`)
     REFERENCES `character`
@@ -1281,7 +1285,7 @@ ADD CONSTRAINT `FK_CharacterQuicklistCharacter`
 -- Creating non-clustered index for FOREIGN KEY 'FK_CharacterQuicklistCharacter'
 
 CREATE INDEX `IX_FK_CharacterQuicklistCharacter`
-    ON `characterquicklist`
+    ON `quicklist`
     (`CharacterId`);
 
 

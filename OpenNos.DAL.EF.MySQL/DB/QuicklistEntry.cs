@@ -12,7 +12,7 @@ namespace OpenNos.DAL.EF.MySQL.DB
     using System;
     using System.Collections.Generic;
     
-    public partial class CharacterQuicklist
+    public partial class QuicklistEntry
     {
         public long EntryId { get; set; }
         public long CharacterId { get; set; }

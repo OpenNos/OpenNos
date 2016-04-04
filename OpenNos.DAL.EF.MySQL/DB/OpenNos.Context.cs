@@ -48,7 +48,7 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public virtual DbSet<CharacterSkill> characterskill { get; set; }
         public virtual DbSet<ShopSkill> shopskill { get; set; }
         public virtual DbSet<NpcMonsterSkill> npcmonsterskill { get; set; }
-        public virtual DbSet<CharacterQuicklist> characterquicklist { get; set; }
+        public virtual DbSet<QuicklistEntry> quicklist { get; set; }
         public virtual DbSet<CellonOption> cellonoption { get; set; }
     }
 }

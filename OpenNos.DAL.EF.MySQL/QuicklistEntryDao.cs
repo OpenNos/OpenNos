@@ -30,8 +30,8 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (OpenNosContainer context = DataAccessHelper.CreateContext())
             {
-                CharacterQuicklist entity = Mapper.Map<CharacterQuicklist>(characterquicklist);
-                context.characterquicklist.Add(entity);
+                QuicklistEntry entity = Mapper.Map<QuicklistEntry>(characterquicklist);
+                context.quicklist.Add(entity);
                 context.SaveChanges();
                 return Mapper.Map<QuicklistEntryDTO>(entity);
             }
@@ -41,7 +41,7 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (OpenNosContainer context = DataAccessHelper.CreateContext())
             {
-                foreach (CharacterQuicklist quicklistobject in context.characterquicklist.Where(i => i.CharacterId == characterId))
+                foreach (QuicklistEntry quicklistobject in context.quicklist.Where(i => i.CharacterId == characterId))
                 {
                     yield return Mapper.Map<QuicklistEntryDTO>(quicklistobject);
                 }
@@ -52,10 +52,10 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (OpenNosContainer context = DataAccessHelper.CreateContext())
             {
-                CharacterQuicklist quicklistitem = context.characterquicklist.FirstOrDefault(i => i.CharacterId == characterId && i.EntryId == entryId);
+                QuicklistEntry quicklistitem = context.quicklist.FirstOrDefault(i => i.CharacterId == characterId && i.EntryId == entryId);
                 if (quicklistitem != null)
                 {
-                    context.characterquicklist.Remove(quicklistitem);
+                    context.quicklist.Remove(quicklistitem);
                     context.SaveChanges();
                 }
 

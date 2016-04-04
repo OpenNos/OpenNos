@@ -50,12 +50,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CellonOptionDTO.cs" />
-    <Compile Include="CharacterQuicklistDTO.cs" />
     <Compile Include="DropDTO.cs" />
     <Compile Include="GeneralLogDTO.cs" />
     <Compile Include="MapMonsterDTO.cs" />
     <Compile Include="MapNpcDTO.cs" />
     <Compile Include="NpcMonsterSkillDTO.cs" />
+    <Compile Include="QuicklistEntryDTO.cs" />
     <Compile Include="RecipeDTO.cs" />
     <Compile Include="RecipeItemDTO.cs" />
     <Compile Include="RespawnDTO.cs" />
