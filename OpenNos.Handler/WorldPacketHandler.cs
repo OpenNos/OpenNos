@@ -4151,9 +4151,28 @@ namespace OpenNos.Handler
                         {
                             mmon.Alive = false;
                             mmon.CurrentHp = 0;
+                            mmon.CurrentMp = 0;
+                            mmon.Death = DateTime.Now;
                             //TODO drop
-                            //TODO add xp
-
+                            Session.Character.LevelXp += monsterinfo.XP;
+                            Session.Character.JobLevelXp += monsterinfo.JobXP;
+                            if (Session.Character.LevelXp >= Session.Character.XPLoad())
+                            {
+                                Session.Character.LevelXp -= (int)Session.Character.XPLoad();
+                                Session.Character.Level++;
+                                Session.Client.SendPacket($"levelup {Session.Character.CharacterId}");
+                                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(6), ReceiverType.AllOnMap);
+                                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(198), ReceiverType.AllOnMap);
+                            }
+                            if (Session.Character.JobLevelXp >= Session.Character.JobXPLoad())
+                            {
+                                Session.Character.JobLevelXp -= (int)Session.Character.JobXPLoad();
+                                Session.Character.JobLevel++;
+                                Session.Client.SendPacket($"levelup {Session.Character.CharacterId}");
+                                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(6), ReceiverType.AllOnMap);
+                                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(198), ReceiverType.AllOnMap);
+                            }
+                              Session.Client.SendPacket(Session.Character.GenerateLev());
 
                         }
                         else

@@ -75,9 +75,12 @@ namespace OpenNos.GameObject
             NpcMonster monster = ServerManager.GetNpc(this.MonsterVNum);
             if (!Alive)
             {
-                double timeDeath = (DateTime.Now - Death).TotalMilliseconds;
-                if (timeDeath >= monster.RespawnTime*10)
+                double timeDeath = (DateTime.Now - Death).TotalSeconds;
+                if (timeDeath >= monster.RespawnTime/10)
                 {
+                    Alive = true;
+                    CurrentHp = monster.MaxHP;
+                    CurrentMp = monster.MaxMP;
                     ClientLinkManager.Instance.RequiereBroadcastFromMap(MapId, GenerateIn3());
                 }   
             }
