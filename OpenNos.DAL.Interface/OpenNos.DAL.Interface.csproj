@@ -53,7 +53,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ICharacterQuicklistDAO.cs" />
+    <Compile Include="IQuicklistEntryDAO.cs" />
     <Compile Include="IDropDAO.cs" />
     <Compile Include="IGeneralLogDAO.cs" />
     <Compile Include="IAccountDAO.cs" />

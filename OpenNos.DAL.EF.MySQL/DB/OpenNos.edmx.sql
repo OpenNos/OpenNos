@@ -1,50 +1,8 @@
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 -- -----------------------------------------------------------
 -- Entity Designer DDL Script for MySQL Server 4.1 and higher
 -- -----------------------------------------------------------
--- Date Created: 04/04/2016 14:56:55
+-- Date Created: 04/04/2016 18:00:28
 
 -- Generated from EDMX file: D:\Projekte\C#\OpenNos\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
 -- Target version: 3.0.0.0
@@ -121,6 +79,8 @@
 
 --    ALTER TABLE `npcmonsterskill` DROP CONSTRAINT `FK_NpcMonsterSkillNpcMonster`;
 
+--    ALTER TABLE `characterquicklist` DROP CONSTRAINT `FK_CharacterQuicklistCharacter`;
+
 
 -- --------------------------------------------------
 -- Dropping existing tables
@@ -170,6 +130,8 @@ SET foreign_key_checks = 0;
     DROP TABLE IF EXISTS `shopskill`;
 
     DROP TABLE IF EXISTS `npcmonsterskill`;
+
+    DROP TABLE IF EXISTS `characterquicklist`;
 
 SET foreign_key_checks = 1;
 
@@ -671,7 +633,7 @@ ALTER TABLE `npcmonsterskill` ADD PRIMARY KEY (CharacterSkillId);
 
 
 CREATE TABLE `characterquicklist`(
-	`EntryId` longtext NOT NULL, 
+	`EntryId` bigint NOT NULL, 
 	`CharacterId` bigint NOT NULL, 
 	`Q1` smallint NOT NULL, 
 	`Q2` smallint NOT NULL, 
