@@ -24,6 +24,7 @@ namespace OpenNos.DAL
         private static IAccountDAO _accountDAO;
         private static ICharacterDAO _characterDAO;
         private static ICharacterSkillDAO _characterskillDAO;
+        private static ICharacterQuicklistDAO _characterQuicklistDAO;
         private static IDropDAO _dropDAO;
         private static IGeneralLogDAO _generallogDAO;
         private static IInventoryDAO _inventoryDAO;
@@ -96,6 +97,18 @@ namespace OpenNos.DAL
                 }
 
                 return _characterskillDAO;
+            }
+        }
+
+        public static ICharacterQuicklistDAO CharacterQuicklistDAO
+        {
+            get
+            {
+                if (_characterQuicklistDAO == null)
+                {
+                    _characterQuicklistDAO = new MySQL.CharacterQuicklistDAO();
+                }
+                return _characterQuicklistDAO;
             }
         }
 

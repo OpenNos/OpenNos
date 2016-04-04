@@ -44,9 +44,9 @@
 -- -----------------------------------------------------------
 -- Entity Designer DDL Script for MySQL Server 4.1 and higher
 -- -----------------------------------------------------------
--- Date Created: 04/04/2016 14:18:58
+-- Date Created: 04/04/2016 14:56:55
 
--- Generated from EDMX file: C:\Users\ERWAN\Desktop\OpenNos Git\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
+-- Generated from EDMX file: D:\Projekte\C#\OpenNos\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
 -- Target version: 3.0.0.0
 
 -- --------------------------------------------------
@@ -670,6 +670,21 @@ ALTER TABLE `npcmonsterskill` ADD PRIMARY KEY (CharacterSkillId);
 
 
 
+CREATE TABLE `characterquicklist`(
+	`EntryId` longtext NOT NULL, 
+	`CharacterId` bigint NOT NULL, 
+	`Q1` smallint NOT NULL, 
+	`Q2` smallint NOT NULL, 
+	`Type` smallint NOT NULL, 
+	`Slot` smallint NOT NULL, 
+	`Pos` smallint NOT NULL);
+
+ALTER TABLE `characterquicklist` ADD PRIMARY KEY (EntryId);
+
+
+
+
+
 
 
 -- --------------------------------------------------
@@ -1232,6 +1247,24 @@ ADD CONSTRAINT `FK_NpcMonsterSkillNpcMonster`
 CREATE INDEX `IX_FK_NpcMonsterSkillNpcMonster`
     ON `npcmonsterskill`
     (`NpcMonsterVNum`);
+
+
+
+-- Creating foreign key on `CharacterId` in table 'characterquicklist'
+
+ALTER TABLE `characterquicklist`
+ADD CONSTRAINT `FK_CharacterQuicklistCharacter`
+    FOREIGN KEY (`CharacterId`)
+    REFERENCES `character`
+        (`CharacterId`)
+    ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+
+-- Creating non-clustered index for FOREIGN KEY 'FK_CharacterQuicklistCharacter'
+
+CREATE INDEX `IX_FK_CharacterQuicklistCharacter`
+    ON `characterquicklist`
+    (`CharacterId`);
 
 
 
