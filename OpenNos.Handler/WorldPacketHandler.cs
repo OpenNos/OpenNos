@@ -4381,6 +4381,15 @@ namespace OpenNos.Handler
             else ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("USER_NOT_CONNECTED")), ReceiverType.OnlyMe);
         }
 
+        [Packet("qset")]
+        public void QuicklistSet(string packet)
+        {
+            string[] packetsplit = packet.Split(' ');
+            Console.WriteLine("Q: "+packetsplit[0]+" "+packetsplit[1]);
+            
+        }
+
+
         #endregion
     }
 }
