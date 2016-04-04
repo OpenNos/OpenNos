@@ -1241,7 +1241,7 @@ namespace OpenNos.Handler
             MapItem mapitem;
             if (Session.CurrentMap.DroppedList.TryGetValue(DropId, out mapitem))
             {
-                byte Amount = mapitem.Amount;
+                int Amount = mapitem.Amount;
                 if (mapitem.PositionX < Session.Character.MapX + 3 && mapitem.PositionX > Session.Character.MapX - 3 && mapitem.PositionY < Session.Character.MapY + 3 && mapitem.PositionY > Session.Character.MapY - 3)
                 {
                     Inventory newInv = Session.Character.InventoryList.CreateItem(mapitem, Session.Character);
@@ -4125,7 +4125,7 @@ namespace OpenNos.Handler
                             case 0:
                                 critical_chance *= Session.Character.HitCriticalRate / 100;
                                 criticalhit *= Session.Character.HitCritical / 100;
-                                miss_chance /= (int)(1+Session.Character.HitRate / 100.0);
+                                miss_chance /= (int)(1 + Session.Character.HitRate / 100.0);
                                 break;
                             case 1:
                                 critical_chance *= Session.Character.DistanceCriticalRate / 100;
@@ -4151,9 +4151,54 @@ namespace OpenNos.Handler
                         {
                             mmon.Alive = false;
                             mmon.CurrentHp = 0;
-                            //TODO drop
-                            //TODO add xp
+                            mmon.CurrentMp = 0;
+                            mmon.Death = DateTime.Now;
+                            Random rnd = new Random();
+                            foreach (DropDTO drop in monsterinfo.Drops)
+                            {
+                                double rndamount = rnd.Next(0, 100) * rnd.NextDouble();
+                                if (rndamount <= (double)drop.DropChance / 1000.000)
+                                {
+                                    Session.CurrentMap.ItemSpawn(drop, mmon.MapX, mmon.MapY);
+                                }
 
+                            }
+                            Thread.Sleep(250);
+                            int gold = (rnd.Next(1, 5) > 2 ? 1 : 0) * rnd.Next(6 * monsterinfo.Level, 12 * monsterinfo.Level);
+                            if (gold != 0)
+                            {
+                                DropDTO drop2 = new DropDTO()
+                                {
+                                    Amount = gold,
+                                    ItemVNum = 1046
+                                };
+                                Session.CurrentMap.ItemSpawn(drop2, mmon.MapX, mmon.MapY);
+                            }
+                            Session.Character.LevelXp += monsterinfo.XP;
+                            Session.Character.JobLevelXp += monsterinfo.JobXP;
+                            if (Session.Character.LevelXp >= Session.Character.XPLoad())
+                            {
+                                Session.Character.LevelXp -= (int)Session.Character.XPLoad();
+                                Session.Character.Level++;
+                                Session.Character.Hp = (int)Session.Character.HPLoad();
+                                Session.Character.Mp = (int)Session.Character.MPLoad();
+                                Session.Client.SendPacket(Session.Character.GenerateStatInfo());
+                                Session.Client.SendPacket($"levelup {Session.Character.CharacterId}");
+                                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(6), ReceiverType.AllOnMap);
+                                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(198), ReceiverType.AllOnMap);
+                            }
+                            if (Session.Character.JobLevelXp >= Session.Character.JobXPLoad())
+                            {
+                                Session.Character.JobLevelXp -= (int)Session.Character.JobXPLoad();
+                                Session.Character.JobLevel++;
+                                Session.Character.Hp = (int)Session.Character.HPLoad();
+                                Session.Character.Mp = (int)Session.Character.MPLoad();
+                                Session.Client.SendPacket(Session.Character.GenerateStatInfo());
+                                Session.Client.SendPacket($"levelup {Session.Character.CharacterId}");
+                                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(6), ReceiverType.AllOnMap);
+                                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(198), ReceiverType.AllOnMap);
+                            }
+                            Session.Client.SendPacket(Session.Character.GenerateLev());
 
                         }
                         else

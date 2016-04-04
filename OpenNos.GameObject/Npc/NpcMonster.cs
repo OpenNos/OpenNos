@@ -24,20 +24,13 @@ namespace OpenNos.GameObject
     {
         #region Instantiation
 
-        public NpcMonster()
+        public NpcMonster(short NpcMonsterVNum)
         {
             Mapper.CreateMap<NpcMonsterDTO, NpcMonster>();
             Mapper.CreateMap<NpcMonster, NpcMonsterDTO>();
-        }
-
-        public NpcMonster(short npcId)
-        {
-            Mapper.CreateMap<NpcMonsterDTO, NpcMonster>();
-            Mapper.CreateMap<NpcMonster, NpcMonsterDTO>();
-
+            Teleporters = DAOFactory.TeleporterDAO.LoadFromNpc(NpcMonsterVNum);
+            Drops = DAOFactory.DropDAO.LoadByMonster(NpcMonsterVNum);
             LastEffect = LastMove = DateTime.Now;
-
-            IEnumerable<TeleporterDTO> Teleporters = DAOFactory.TeleporterDAO.LoadFromNpc(NpcMonsterVNum);
         }
 
         #endregion
@@ -49,7 +42,7 @@ namespace OpenNos.GameObject
         public DateTime LastEffect { get; private set; }
         public DateTime LastMove { get; private set; }
         public IEnumerable<TeleporterDTO> Teleporters { get; set; }
-
+        public IEnumerable<DropDTO> Drops { get; set; }
         #endregion
 
         #region Methods

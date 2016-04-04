@@ -33,7 +33,8 @@ namespace OpenNos.GameObject
         private List<MapNpc> _npcs;
         private List<Portal> _portals;
         private Guid _uniqueIdentifier;
-        public int XLength {
+        public int XLength
+        {
             get; set;
         }
         public int YLength
@@ -183,7 +184,7 @@ namespace OpenNos.GameObject
 
             for (int i = 1; i <= Math.Abs(MapY - firstY); i++)
             {
-               
+
                 if (IsBlockedZone(firstX, firstY + Math.Sign(MapY - firstY) * i))
                 {
                     return true;
@@ -255,9 +256,36 @@ namespace OpenNos.GameObject
             NpcMoveTask.Start();
             Task MonsterMoveTask = new Task(() => MonsterLifeManager());
             MonsterMoveTask.Start();
-          
+
             await NpcMoveTask;
             await MonsterMoveTask;
+        }
+
+        public void ItemSpawn(DropDTO drop, short mapX, short mapY)
+        {
+            Random rnd = new Random();
+            int random = 0;
+            MapItem DroppedItem = null;
+            short MapX = (short)(rnd.Next(mapX - 1, mapX + 1));
+            short MapY = (short)(rnd.Next(mapY - 1, mapY + 1));
+            while (IsBlockedZone(MapX, MapY))
+            {
+                MapX = (short)(rnd.Next(mapX - 1, mapX + 1));
+                MapY = (short)(rnd.Next(mapY - 1, mapY + 1));
+            }
+
+
+            DroppedItem = new MapItem(MapX, MapY)
+            { ItemVNum = drop.ItemVNum,
+                Amount = drop.Amount,
+            };
+            while (ServerManager.GetMap(MapId).DroppedList.ContainsKey(random = rnd.Next(1, 999999)))
+            { }
+            DroppedItem.InventoryItemId = random;
+            ServerManager.GetMap(MapId).DroppedList.Add(random, DroppedItem);
+           
+            ClientLinkManager.Instance.RequiereBroadcastFromMap(MapId, $"drop {DroppedItem.ItemVNum} {random} {DroppedItem.PositionX} {DroppedItem.PositionY} {DroppedItem.Amount} 0 0 -1");
+            
         }
 
         #endregion
