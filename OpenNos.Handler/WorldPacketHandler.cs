@@ -4094,6 +4094,7 @@ namespace OpenNos.Handler
         public void UseSkill(string packet)
         {
             string[] packetsplit = packet.Split(' ');
+            if(Convert.ToInt32(packetsplit[3]) == 2)
             TargetHit(Convert.ToInt32(packetsplit[2]), Convert.ToInt32(packetsplit[3]), Convert.ToInt32(packetsplit[4]));
         }
 
@@ -4163,7 +4164,7 @@ namespace OpenNos.Handler
                                 }
 
                             }
-                            Thread.Sleep(250);
+                     
                             int gold = (rnd.Next(1, 5) > 2 ? 1 : 0) * rnd.Next(6 * monsterinfo.Level, 12 * monsterinfo.Level);
                             if (gold != 0)
                             {
