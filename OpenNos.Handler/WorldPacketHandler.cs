@@ -1265,6 +1265,8 @@ namespace OpenNos.Handler
                         if (Session.Character.Gold + mapitem.Amount <= 1000000000)
                         {
                             Session.Character.Gold += mapitem.Amount;
+                            Session.CurrentMap.DroppedList.Remove(DropId);
+                            Session.Client.SendPacket(Session.Character.GenerateGold());
                         }
                         else
                         {
