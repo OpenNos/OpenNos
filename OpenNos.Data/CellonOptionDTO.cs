@@ -12,18 +12,17 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Data;
-using System.Collections.Generic;
-
-namespace OpenNos.DAL.Interface
+namespace OpenNos.Data
 {
-    public interface IDropDAO
+    public class CellonOptionDTO
     {
-        #region Methods
+        #region Properties
 
-        DropDTO Insert(DropDTO drop);
-        IEnumerable<DropDTO> LoadByMonster(short monsterVNum);
-        void Insert(List<DropDTO> drops);
+        public int CellonOptionId { get; set; }
+        public long InventoryItemId { get; set; }
+        public byte Level { get; set; }
+        public byte Type { get; set; }
+        public int Value { get; set; }
 
         #endregion
     }

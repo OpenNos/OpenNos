@@ -58,7 +58,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="QuicklistEntry.cs" />
+    <Compile Include="CellonOption.cs" />
+    <Compile Include="CharacterQuicklist.cs" />
     <Compile Include="GeneralLog.cs" />
     <Compile Include="Account.cs" />
     <Compile Include="Character.cs" />

@@ -22,9 +22,10 @@ namespace OpenNos.DAL
         #region Members
 
         private static IAccountDAO _accountDAO;
+        private static ICellonOptionDAO _cellonoptionDAO;
         private static ICharacterDAO _characterDAO;
+        private static ICharacterQuicklistDAO _characterQuicklistDAO;
         private static ICharacterSkillDAO _characterskillDAO;
-        private static IQuicklistEntryDAO _quicklistEntryDao;
         private static IDropDAO _dropDAO;
         private static IGeneralLogDAO _generallogDAO;
         private static IInventoryDAO _inventoryDAO;
@@ -74,6 +75,19 @@ namespace OpenNos.DAL
             }
         }
 
+        public static ICellonOptionDAO CellonOptionDAO
+        {
+            get
+            {
+                if (_cellonoptionDAO == null)
+                {
+                    _cellonoptionDAO = new MySQL.CellonOptionDAO();
+                }
+
+                return _cellonoptionDAO;
+            }
+        }
+
         public static ICharacterDAO CharacterDAO
         {
             get
@@ -87,6 +101,18 @@ namespace OpenNos.DAL
             }
         }
 
+        public static ICharacterQuicklistDAO CharacterQuicklistDAO
+        {
+            get
+            {
+                if (_characterQuicklistDAO == null)
+                {
+                    _characterQuicklistDAO = new MySQL.CharacterQuicklistDAO();
+                }
+                return _characterQuicklistDAO;
+            }
+        }
+
         public static ICharacterSkillDAO CharacterSkillDAO
         {
             get
@@ -97,18 +123,6 @@ namespace OpenNos.DAL
                 }
 
                 return _characterskillDAO;
-            }
-        }
-
-        public static IQuicklistEntryDAO QuicklistEntryDAO
-        {
-            get
-            {
-                if (_quicklistEntryDao == null)
-                {
-                    _quicklistEntryDao = new MySQL.QuicklistEntryDAO();
-                }
-                return _quicklistEntryDao;
             }
         }
 

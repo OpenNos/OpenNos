@@ -1,10 +1,52 @@
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 -- -----------------------------------------------------------
 -- Entity Designer DDL Script for MySQL Server 4.1 and higher
 -- -----------------------------------------------------------
--- Date Created: 04/04/2016 18:00:28
+-- Date Created: 04/04/2016 18:36:14
 
--- Generated from EDMX file: D:\Projekte\C#\OpenNos\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
+-- Generated from EDMX file: C:\Users\Dominik\Source\Repos\OpenNos\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
 -- Target version: 3.0.0.0
 
 -- --------------------------------------------------
@@ -412,7 +454,8 @@ CREATE TABLE `inventoryitem`(
 	`SpWater` TINYINT UNSIGNED NOT NULL, 
 	`SpLight` TINYINT UNSIGNED NOT NULL, 
 	`SpDark` TINYINT UNSIGNED NOT NULL, 
-	`SpStoneUpgrade` TINYINT UNSIGNED NOT NULL);
+	`SpStoneUpgrade` TINYINT UNSIGNED NOT NULL, 
+	`CellonOptionId` int NOT NULL);
 
 ALTER TABLE `inventoryitem` ADD PRIMARY KEY (InventoryItemId);
 
@@ -633,7 +676,7 @@ ALTER TABLE `npcmonsterskill` ADD PRIMARY KEY (CharacterSkillId);
 
 
 CREATE TABLE `characterquicklist`(
-	`EntryId` bigint NOT NULL, 
+	`EntryId` longtext NOT NULL, 
 	`CharacterId` bigint NOT NULL, 
 	`Q1` smallint NOT NULL, 
 	`Q2` smallint NOT NULL, 
@@ -642,6 +685,19 @@ CREATE TABLE `characterquicklist`(
 	`Pos` smallint NOT NULL);
 
 ALTER TABLE `characterquicklist` ADD PRIMARY KEY (EntryId);
+
+
+
+
+
+CREATE TABLE `cellonoption`(
+	`CellonOptionId` int NOT NULL AUTO_INCREMENT UNIQUE, 
+	`InventoryItemId` bigint NOT NULL, 
+	`Level` TINYINT UNSIGNED NOT NULL, 
+	`Type` TINYINT UNSIGNED NOT NULL, 
+	`Value` int NOT NULL);
+
+ALTER TABLE `cellonoption` ADD PRIMARY KEY (CellonOptionId);
 
 
 
@@ -1227,6 +1283,24 @@ ADD CONSTRAINT `FK_CharacterQuicklistCharacter`
 CREATE INDEX `IX_FK_CharacterQuicklistCharacter`
     ON `characterquicklist`
     (`CharacterId`);
+
+
+
+-- Creating foreign key on `InventoryItemId` in table 'cellonoption'
+
+ALTER TABLE `cellonoption`
+ADD CONSTRAINT `FK_CellonOptionInventoryItem`
+    FOREIGN KEY (`InventoryItemId`)
+    REFERENCES `inventoryitem`
+        (`InventoryItemId`)
+    ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+
+-- Creating non-clustered index for FOREIGN KEY 'FK_CellonOptionInventoryItem'
+
+CREATE INDEX `IX_FK_CellonOptionInventoryItem`
+    ON `cellonoption`
+    (`InventoryItemId`);
 
 
 

@@ -12,18 +12,30 @@
  * GNU General Public License for more details.
  */
 
+using AutoMapper;
+using OpenNos.DAL.EF.MySQL.DB;
+using OpenNos.DAL.EF.MySQL.Helpers;
+using OpenNos.DAL.Interface;
 using OpenNos.Data;
 using System.Collections.Generic;
+using System.Linq;
 
-namespace OpenNos.DAL.Interface
+namespace OpenNos.DAL.EF.MySQL
 {
-    public interface IDropDAO
+    public class CellonOptionDAO : ICellonOptionDAO
     {
         #region Methods
 
-        DropDTO Insert(DropDTO drop);
-        IEnumerable<DropDTO> LoadByMonster(short monsterVNum);
-        void Insert(List<DropDTO> drops);
+        public IEnumerable<CellonOptionDTO> GetOptionsByInventoryItemId(long inventoryitemId)
+        {
+            using (var context = DataAccessHelper.CreateContext())
+            {
+                foreach (CellonOption cellonoptionobject in context.cellonoption.Where(i => i.InventoryItemId.Equals(inventoryitemId)))
+                {
+                    yield return Mapper.Map<CellonOptionDTO>(cellonoptionobject);
+                }
+            }
+        }
 
         #endregion
     }

@@ -29,6 +29,7 @@
     <EntitySet Name="shopskill" EntityType="opennosModel.Store.shopskill" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="npcmonsterskill" EntityType="opennosModel.Store.npcmonsterskill" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="characterquicklist" EntityType="opennosModel.Store.characterquicklist" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="cellonoption" EntityType="opennosModel.Store.cellonoption" store:Type="Tables" Schema="dbo" />
     <AssociationSet Name="AccountCharacter" Association="opennosModel.Store.AccountCharacter">
       <End Role="Account" EntitySet="account" />
       <End Role="Character" EntitySet="character" />
@@ -156,6 +157,10 @@
     <AssociationSet Name="CharacterQuicklistCharacter" Association="opennosModel.Store.CharacterQuicklistCharacter">
       <End Role="CharacterQuicklist" EntitySet="characterquicklist" />
       <End Role="Character" EntitySet="character" />
+    </AssociationSet>
+    <AssociationSet Name="CellonOptionInventoryItem" Association="opennosModel.Store.CellonOptionInventoryItem">
+      <End Role="CellonOption" EntitySet="cellonoption" />
+      <End Role="InventoryItem" EntitySet="inventoryitem" />
     </AssociationSet>
   </EntityContainer>
   <EntityType Name="account">
@@ -413,6 +418,7 @@
     <Property Name="SpLight" Type="utinyint" Nullable="false" />
     <Property Name="SpDark" Type="utinyint" Nullable="false" />
     <Property Name="SpStoneUpgrade" Type="utinyint" Nullable="false" />
+    <Property Name="CellonOptionId" Type="int" Nullable="false" />
   </EntityType>
   <EntityType Name="inventory">
     <Key>
@@ -595,6 +601,16 @@
     <Property Name="Type" Type="smallint" Nullable="false" />
     <Property Name="Slot" Type="smallint" Nullable="false" />
     <Property Name="Pos" Type="smallint" Nullable="false" />
+  </EntityType>
+  <EntityType Name="cellonoption">
+    <Key>
+      <PropertyRef Name="CellonOptionId" />
+    </Key>
+    <Property Name="CellonOptionId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="InventoryItemId" Type="bigint" Nullable="false" />
+    <Property Name="Level" Type="utinyint" Nullable="false" />
+    <Property Name="Type" Type="utinyint" Nullable="false" />
+    <Property Name="Value" Type="int" Nullable="false" />
   </EntityType>
   <Association Name="AccountCharacter">
     <End Role="Account" Type="opennosModel.Store.account" Multiplicity="1" />
@@ -980,6 +996,18 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
+  <Association Name="CellonOptionInventoryItem">
+    <End Role="CellonOption" Type="opennosModel.Store.cellonoption" Multiplicity="*" />
+    <End Role="InventoryItem" Type="opennosModel.Store.inventoryitem" Multiplicity="1" />
+    <ReferentialConstraint>
+      <Principal Role="InventoryItem">
+        <PropertyRef Name="InventoryItemId" />
+      </Principal>
+      <Dependent Role="CellonOption">
+        <PropertyRef Name="InventoryItemId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
 </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
@@ -1223,6 +1251,11 @@
           <AssociationSet Name="CharacterQuicklistCharacter" Association="opennosModel.CharacterQuicklistCharacter">
             <End Role="CharacterQuicklist" EntitySet="characterquicklist" />
             <End Role="Character" EntitySet="character" />
+          </AssociationSet>
+          <EntitySet Name="cellonoption" EntityType="opennosModel.CellonOption" />
+          <AssociationSet Name="CellonOptionInventoryItem" Association="opennosModel.CellonOptionInventoryItem">
+            <End Role="CellonOption" EntitySet="cellonoption" />
+            <End Role="InventoryItem" EntitySet="inventoryitem" />
           </AssociationSet>
           </EntityContainer>
         <Association Name="AccountCharacter">
@@ -1494,6 +1527,8 @@
           <Property Name="SpDark" Type="Byte" Nullable="false" />
           <Property Name="SpStoneUpgrade" Type="Byte" Nullable="false" />
           <NavigationProperty Name="inventory" Relationship="opennosModel.InventoryInventoryItem" FromRole="InventoryItem" ToRole="Inventory" />
+          <NavigationProperty Name="cellonoption" Relationship="opennosModel.CellonOptionInventoryItem" FromRole="InventoryItem" ToRole="CellonOption" />
+          <Property Name="CellonOptionId" Type="Int32" Nullable="false" />
           </EntityType>
         <EntityType Name="Inventory">
           <Key>
@@ -2014,6 +2049,29 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="CellonOption">
+          <Key>
+            <PropertyRef Name="CellonOptionId" />
+          </Key>
+          <Property Name="CellonOptionId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <NavigationProperty Name="inventoryitem" Relationship="opennosModel.CellonOptionInventoryItem" FromRole="CellonOption" ToRole="InventoryItem" />
+          <Property Name="InventoryItemId" Type="Int64" Nullable="false" />
+          <Property Name="Level" Type="Byte" Nullable="false" />
+          <Property Name="Type" Type="Byte" Nullable="false" />
+          <Property Name="Value" Type="Int32" Nullable="false" />
+        </EntityType>
+        <Association Name="CellonOptionInventoryItem">
+          <End Type="opennosModel.CellonOption" Role="CellonOption" Multiplicity="*" />
+          <End Type="opennosModel.InventoryItem" Role="InventoryItem" Multiplicity="1" />
+          <ReferentialConstraint>
+            <Principal Role="InventoryItem">
+              <PropertyRef Name="InventoryItemId" />
+            </Principal>
+            <Dependent Role="CellonOption">
+              <PropertyRef Name="InventoryItemId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -2281,6 +2339,7 @@
           <ScalarProperty Name="SpLight" ColumnName="SpLight" />
           <ScalarProperty Name="SpDark" ColumnName="SpDark" />
           <ScalarProperty Name="SpStoneUpgrade" ColumnName="SpStoneUpgrade" />
+          <ScalarProperty Name="CellonOptionId" ColumnName="CellonOptionId" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -2477,6 +2536,17 @@
           <ScalarProperty Name="Type" ColumnName="Type" />
           <ScalarProperty Name="Slot" ColumnName="Slot" />
           <ScalarProperty Name="Pos" ColumnName="Pos" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="cellonoption">
+      <EntityTypeMapping TypeName="IsTypeOf(opennosModel.CellonOption)">
+        <MappingFragment StoreEntitySet="cellonoption">
+          <ScalarProperty Name="CellonOptionId" ColumnName="CellonOptionId" />
+          <ScalarProperty Name="InventoryItemId" ColumnName="InventoryItemId" />
+          <ScalarProperty Name="Level" ColumnName="Level" />
+          <ScalarProperty Name="Type" ColumnName="Type" />
+          <ScalarProperty Name="Value" ColumnName="Value" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

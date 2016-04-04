@@ -79,8 +79,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="QuicklistEntryDao.cs" />
+    <Compile Include="CellonOptionDAO.cs" />
+    <Compile Include="CharacterQuicklistDAO.cs" />
     <Compile Include="DB\Account.cs">
+      <DependentUpon>OpenNos.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DB\CellonOption.cs">
       <DependentUpon>OpenNos.tt</DependentUpon>
     </Compile>
     <Compile Include="DB\Character.cs">
