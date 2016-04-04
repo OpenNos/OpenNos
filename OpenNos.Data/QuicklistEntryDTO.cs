@@ -16,10 +16,10 @@ using System;
 
 namespace OpenNos.Data
 {
-    public class CharacterQuicklistDTO
+    public class QuicklistEntryDTO
     {
         #region Properties
-        public string EntryId { get; set; }
+        public long EntryId { get; set; }
         public long CharacterId { get; set; }
         public short Q1 { get; set; }
         public short Q2 { get; set; }

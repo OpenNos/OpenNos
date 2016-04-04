@@ -364,6 +364,24 @@ namespace OpenNos.GameObject
                         break;
                 }
                 Session.Client.SendPacket(Session.Character.GenerateSki());
+
+                // TODO Reset Quicklist (just add Rest-on-T Item)
+                foreach (QuicklistEntryDTO quicklists in DAOFactory.QuicklistEntryDAO.Load(Session.Character.CharacterId).Where(quicklists => Session.Character.QuicklistEntries.Any(qle => qle.EntryId == quicklists.EntryId)))
+                    DAOFactory.QuicklistEntryDAO.Delete(Session.Character.CharacterId, quicklists.EntryId);
+                Session.Character.QuicklistEntries = new List<QuicklistEntry>
+                {
+                    new QuicklistEntry
+                    {
+                        CharacterId = Session.Character.CharacterId,
+                        Q1 = 0,
+                        Q2 = 9,
+                        Type = 1,
+                        Slot = 3,
+                        Pos = 1
+                    }
+                };
+                Session.Character.QuicklistEntries[0].Save();
+
             }
         }
 

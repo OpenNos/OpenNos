@@ -263,7 +263,7 @@ namespace OpenNos.GameObject
 
         public void ItemSpawn(DropDTO drop, short mapX, short mapY)
         {
-            Random rnd = new Random();
+            Random rnd = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
             int random = 0;
             MapItem DroppedItem = null;
             short MapX = (short)(rnd.Next(mapX - 1, mapX + 1));
@@ -276,16 +276,17 @@ namespace OpenNos.GameObject
 
 
             DroppedItem = new MapItem(MapX, MapY)
-            { ItemVNum = drop.ItemVNum,
+            {
+                ItemVNum = drop.ItemVNum,
                 Amount = drop.Amount,
             };
             while (ServerManager.GetMap(MapId).DroppedList.ContainsKey(random = rnd.Next(1, 999999)))
             { }
             DroppedItem.InventoryItemId = random;
             ServerManager.GetMap(MapId).DroppedList.Add(random, DroppedItem);
-           
+
             ClientLinkManager.Instance.RequiereBroadcastFromMap(MapId, $"drop {DroppedItem.ItemVNum} {random} {DroppedItem.PositionX} {DroppedItem.PositionY} {DroppedItem.Amount} 0 0 -1");
-            
+
         }
 
         #endregion

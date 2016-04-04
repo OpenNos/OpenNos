@@ -108,6 +108,7 @@ namespace OpenNos.GameObject
         public int MinHit { get; set; }
         public int WaterResistance { get; set; }
         public short LastNRunId { get; set; }
+        public List<QuicklistEntry> QuicklistEntries { get; set; }
 
         #endregion
 
@@ -879,6 +880,48 @@ namespace OpenNos.GameObject
             return $"tit {Language.Instance.GetMessageFromKey(Class == (byte)ClassType.Adventurer ? ClassType.Adventurer.ToString().ToUpper() : Class == (byte)ClassType.Swordman ? ClassType.Swordman.ToString().ToUpper() : Class == (byte)ClassType.Archer ? ClassType.Archer.ToString().ToUpper() : ClassType.Magician.ToString().ToUpper())} {Name}";
         }
 
+
+        public string[] GenerateQuicklist()
+        {
+            string pktQs0 = "qslot 0";
+            string pktQs1 = "qslot 1";
+            string pktQs2 = "qslot 2";
+
+            for (int i = 0; i < 10; i++)
+            {
+                try
+                {
+                    QuicklistEntry qi = QuicklistEntries.First(n => n.Q1 == 0 && n.Q2 == i);
+                    pktQs0 += string.Format(" {0}.{1}.{2}", qi.Type, qi.Slot, qi.Pos);
+                }
+                catch
+                {
+                    pktQs0 += " 0.0.-1";
+                }
+                try
+                {
+                    QuicklistEntry qi = QuicklistEntries.First(n => n.Q1 == 1 && n.Q2 == i);
+                    pktQs1 += string.Format(" {0}.{1}.{2}", qi.Type, qi.Slot, qi.Pos);
+                }
+                catch
+                {
+                    pktQs1 += " 0.0.-1";
+                }
+                try
+                {
+                    QuicklistEntry qi = QuicklistEntries.First(n => n.Q1 == 2 && n.Q2 == i);
+                    pktQs2 += string.Format(" {0}.{1}.{2}", qi.Type, qi.Slot, qi.Pos);
+                }
+                catch
+                {
+                    pktQs2 += " 0.0.-1";
+                }
+            }
+
+            return new[] {pktQs0, pktQs1, pktQs2};
+        }
+
+
         public int GetDigniteIco()
         {
             int icoDignite = 1;
@@ -1003,6 +1046,15 @@ namespace OpenNos.GameObject
                 Skills.Add(Mapper.DynamicMap<CharacterSkill>(characterskill));
             }
         }
+        public void LoadQuicklists()
+        {
+            QuicklistEntries = new List<QuicklistEntry>();
+            IEnumerable<QuicklistEntryDTO> quicklistDTO = DAOFactory.QuicklistEntryDAO.Load(CharacterId);
+            foreach (QuicklistEntryDTO qle in quicklistDTO)
+            {
+                QuicklistEntries.Add(Mapper.DynamicMap<QuicklistEntry>(qle));
+            }
+        }
         public void LoadInventory()
         {
             IEnumerable<InventoryDTO> inventorysDTO = DAOFactory.InventoryDAO.LoadByCharacterId(CharacterId);
@@ -1111,39 +1163,43 @@ namespace OpenNos.GameObject
         public void Save()
         {
             CharacterDTO tempsave = this;
-            SaveResult insertResult = DAOFactory.CharacterDAO.InsertOrUpdate(ref tempsave); // unused variable
+            SaveResult insertResult = DAOFactory.CharacterDAO.InsertOrUpdate(ref tempsave); // unused variable, check for success?
+
+            // First remove the old...
+
+            // Character's Inventories
             foreach (InventoryDTO inv in DAOFactory.InventoryDAO.LoadByCharacterId(CharacterId))
-            {
-                if (inv.Type == (byte)InventoryType.Equipment)
+                if (inv.Type == (byte) InventoryType.Equipment)
                 {
                     if (EquipmentList.LoadBySlotAndType(inv.Slot, inv.Type) == null)
-                    {
                         DAOFactory.InventoryDAO.DeleteFromSlotAndType(CharacterId, inv.Slot, inv.Type);
-                    }
                 }
                 else
                 {
                     if (InventoryList.LoadBySlotAndType(inv.Slot, inv.Type) == null)
-                    {
                         DAOFactory.InventoryDAO.DeleteFromSlotAndType(CharacterId, inv.Slot, inv.Type);
-                    }
                 }
-            }
 
+            // Character's Skills
             foreach (CharacterSkillDTO skill in DAOFactory.CharacterSkillDAO.LoadByCharacterId(CharacterId))
-            {
                 if (Skills.FirstOrDefault(s => s.SkillVNum == skill.SkillVNum) != null)
-                {
                     DAOFactory.CharacterSkillDAO.Delete(CharacterId, skill.SkillVNum);
-                }
-            }
 
-            for (int i = 0; i < InventoryList.Inventory.Count(); i++)
-                InventoryList.Inventory[i].Save();
-            for (int i = 0; i < EquipmentList.Inventory.Count(); i++)
-                EquipmentList.Inventory[i].Save();
-            for (int i = 0; i < Skills.Count(); i++)
-                Skills[i].Save();
+            // Character's QuicklistEntries
+            foreach (QuicklistEntryDTO quicklists in DAOFactory.QuicklistEntryDAO.Load(CharacterId))
+                if (QuicklistEntries.FirstOrDefault(s => s.EntryId == quicklists.EntryId) != null)
+                    DAOFactory.QuicklistEntryDAO.Delete(CharacterId, quicklists.EntryId);
+
+
+            // ... then save the new
+            foreach (Inventory t in InventoryList.Inventory)
+                t.Save();
+            foreach (Inventory t in EquipmentList.Inventory)
+                t.Save();
+            foreach (CharacterSkill t in Skills)
+                t.Save();
+            foreach (QuicklistEntry t in QuicklistEntries)
+                t.Save();
         }
 
         public double SPXPLoad()
@@ -1169,6 +1225,7 @@ namespace OpenNos.GameObject
         {
             return ServersData.XPData[Level - 1];
         }
+
 
 
 
