@@ -14,7 +14,7 @@ namespace OpenNos.DAL.EF.MySQL.DB
     
     public partial class CharacterQuicklist
     {
-        public string EntryId { get; set; }
+        public long EntryId { get; set; }
         public long CharacterId { get; set; }
         public short Q1 { get; set; }
         public short Q2 { get; set; }
