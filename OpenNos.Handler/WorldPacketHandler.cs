@@ -4132,7 +4132,7 @@ namespace OpenNos.Handler
             {
                 CharacterSkill ski = Session.Character.Skills.ElementAt(Castingid);
                 MapMonster mmon = Session.CurrentMap.Monsters.FirstOrDefault(s => s.MapMonsterId == targetid);
-                if (mmon != null)
+                if (mmon != null && mmon.Alive)
                 {
                     NpcMonster monsterinfo = ServerManager.GetNpc(mmon.MonsterVNum);
                     if (ski != null && monsterinfo != null && !ski.Used)
