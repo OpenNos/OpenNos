@@ -218,7 +218,7 @@ namespace OpenNos.GameObject
                 Session.Client.SendPacket(Session.Character.GenerateFd());
                 Session.Client.SendPacket(Session.Character.GenerateLev());
                 Session.Client.SendPacket(Session.Character.GenerateStat());
-                Session.Client.SendPacket(Session.Character.GenerateSki());
+                //Session.Client.SendPacket(Session.Character.GenerateSki()); // Removed because official does not either.
 
                 Session.Client.SendPacket(Session.Character.GenerateAt());
                 Session.Client.SendPacket(Session.Character.GenerateCMap());
@@ -359,6 +359,7 @@ namespace OpenNos.GameObject
                     }
                 };
                 //Session.Character.QuicklistEntries[0].Save();
+                // TODO is this useless?
 
             }
         }

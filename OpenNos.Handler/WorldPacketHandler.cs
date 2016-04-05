@@ -270,6 +270,10 @@ namespace OpenNos.Handler
 
                     Session.Character.Skills.Add(new CharacterSkill() { SkillVNum = slot, CharacterId = Session.Character.CharacterId });
                     Session.Client.SendPacket(Session.Character.GenerateSki());
+                    string[] quicklistpackets = Session.Character.GenerateQuicklist();
+                    Session.Client.SendPacket(quicklistpackets[0]);
+                    Session.Client.SendPacket(quicklistpackets[1]);
+                    Session.Client.SendPacket(quicklistpackets[2]);
                     Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SKILL_LEARNED"), 0));
                     Session.Client.SendPacket(Session.Character.GenerateLev());
                 }
@@ -2893,6 +2897,10 @@ namespace OpenNos.Handler
 
                 Session.Character.Skills.Remove(skill);
                 Session.Client.SendPacket(Session.Character.GenerateSki());
+                string[] quicklistpackets = Session.Character.GenerateQuicklist();
+                Session.Client.SendPacket(quicklistpackets[0]);
+                Session.Client.SendPacket(quicklistpackets[1]);
+                Session.Client.SendPacket(quicklistpackets[2]);
                 Session.Client.SendPacket(Session.Character.GenerateLev());
 
             }
@@ -3542,6 +3550,9 @@ namespace OpenNos.Handler
             Session.Client.SendPacket(Session.Character.GenerateTit());
 
             ClientLinkManager.Instance.ChangeMap(Session.Character.CharacterId);
+
+            Session.Client.SendPacket(Session.Character.GenerateSki()); // Here. Not in ChangeMap() !
+
             Session.Client.SendPacket("rank_cool 0 0 18000");
 
             Session.Client.SendPacket("scr 0 0 0 0 0 0");
