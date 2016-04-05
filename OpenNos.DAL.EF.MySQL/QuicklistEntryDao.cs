@@ -32,19 +32,25 @@ namespace OpenNos.DAL.EF.MySQL
         {
             try
             {
-                using (var context = DataAccessHelper.CreateContext())
+                using (OpenNosContainer context = DataAccessHelper.CreateContext())
                 {
-                    long EntryId = quicklist.EntryId;
-                    QuicklistEntry entity = context.quicklist.FirstOrDefault(c => c.EntryId == EntryId);
-                    if (entity == null) //new entity
+                    long entryId = quicklist.EntryId;
+                    QuicklistEntry dbentry = context.quicklist.FirstOrDefault(c => c.EntryId == entryId);
+                    if (dbentry == null)
                     {
-                        quicklist = Insert(quicklist, context);
+                        // new entity
+                        QuicklistEntry entry = Mapper.Map<QuicklistEntry>(quicklist);
+                        context.quicklist.Add(entry);
+                        context.SaveChanges();
+                        Mapper.Map(entry, quicklist);
                         return SaveResult.Inserted;
                     }
-                    else //existing entity
+                    else
                     {
-                        entity.EntryId = context.quicklist.FirstOrDefault(c => c.EntryId== EntryId).EntryId;
-                        quicklist = Update(entity, quicklist, context);
+                        //existing entity
+                        Mapper.Map(quicklist, dbentry);
+                        context.SaveChanges();
+                        quicklist = Mapper.Map<QuicklistEntryDTO>(quicklist); // does this line anything?
                         return SaveResult.Updated;
                     }
                 }
@@ -55,30 +61,6 @@ namespace OpenNos.DAL.EF.MySQL
                 return SaveResult.Error;
             }
         }
-        private QuicklistEntryDTO Insert(QuicklistEntryDTO quicklist, OpenNosContainer context)
-        {
-
-            QuicklistEntry entity = Mapper.Map<QuicklistEntry>(quicklist);
-            context.quicklist.Add(entity);
-            context.SaveChanges();
-            return Mapper.Map<QuicklistEntryDTO>(entity);
-        }
-
-        private QuicklistEntryDTO Update(QuicklistEntry entity, QuicklistEntryDTO quicklist, OpenNosContainer context)
-        {
-            using (context)
-            {
-                var result = context.quicklist.FirstOrDefault(c => c.EntryId == quicklist.EntryId);
-                if (result != null)
-                {
-                    result = Mapper.Map<QuicklistEntryDTO, QuicklistEntry>(quicklist, entity);
-                    context.SaveChanges();
-                }
-            }
-
-            return Mapper.Map<QuicklistEntryDTO>(quicklist);
-        }
-
 
         public IEnumerable<QuicklistEntryDTO> Load(long characterId)
         {

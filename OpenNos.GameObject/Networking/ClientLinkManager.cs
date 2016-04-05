@@ -218,7 +218,7 @@ namespace OpenNos.GameObject
                 Session.Client.SendPacket(Session.Character.GenerateFd());
                 Session.Client.SendPacket(Session.Character.GenerateLev());
                 Session.Client.SendPacket(Session.Character.GenerateStat());
-                Session.Client.SendPacket(Session.Character.GenerateSki());
+                //Session.Client.SendPacket(Session.Character.GenerateSki()); // Removed because official does not either.
 
                 Session.Client.SendPacket(Session.Character.GenerateAt());
                 Session.Client.SendPacket(Session.Character.GenerateCMap());
@@ -358,8 +358,10 @@ namespace OpenNos.GameObject
                         Pos = 1
                     }
                 };
+
                 if (Groups.FirstOrDefault(s => s.Characters.Contains(Session.Character.CharacterId)) != null)
-                    ClientLinkManager.Instance.Broadcast(Session, $"pidx 1 1.{Session.Character.CharacterId}", ReceiverType.AllOnMapExceptMe);
+                    Instance.Broadcast(Session, $"pidx 1 1.{Session.Character.CharacterId}", ReceiverType.AllOnMapExceptMe);
+
             }
         }
 
