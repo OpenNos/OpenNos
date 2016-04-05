@@ -286,8 +286,8 @@ namespace OpenNos.Import.Console
                     }
                     else if (currentLine.Length > 2 && currentLine[1] == "EXP")
                     {
-                        npc.XP = Convert.ToInt32(currentLine[2])+ 180 * npc.Level;
-                        npc.JobXP = Convert.ToInt32(currentLine[3])+360*npc.Level;
+                        npc.XP = Convert.ToInt32(currentLine[2])+ 90 *(npc.Level+1);
+                        npc.JobXP = Convert.ToInt32(currentLine[3])+180*(npc.Level+1);
                     }
                     else if (currentLine.Length > 6 && currentLine[1] == "PREATT")
                     {
