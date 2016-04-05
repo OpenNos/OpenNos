@@ -345,7 +345,7 @@ namespace OpenNos.GameObject
                     {
                         if (invdest.InventoryItem.Amount + amount > 99)
                         {
-                            int saveItemCount = invdest.InventoryItem.Amount;
+                            short saveItemCount = invdest.InventoryItem.Amount;
                             invdest.InventoryItem.Amount = 99;
                             inv.InventoryItem.Amount = (byte)(saveItemCount + inv.InventoryItem.Amount - 99);
 
@@ -354,7 +354,7 @@ namespace OpenNos.GameObject
                         }
                         else
                         {
-                            int saveItemCount = invdest.InventoryItem.Amount;
+                            short saveItemCount = invdest.InventoryItem.Amount;
                             invdest.InventoryItem.Amount = (byte)(saveItemCount + amount);
                             inv.InventoryItem.Amount = (byte)(inv.InventoryItem.Amount - amount);
                             InsertOrUpdate(ref inv);

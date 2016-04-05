@@ -1241,7 +1241,7 @@ namespace OpenNos.Handler
             MapItem mapitem;
             if (Session.CurrentMap.DroppedList.TryGetValue(DropId, out mapitem))
             {
-                int Amount = mapitem.Amount;
+                short Amount = mapitem.Amount;
                 if (mapitem.PositionX < Session.Character.MapX + 3 && mapitem.PositionX > Session.Character.MapX - 3 && mapitem.PositionY < Session.Character.MapY + 3 && mapitem.PositionY > Session.Character.MapY - 3)
                 {
                     if (mapitem.ItemVNum != 1046)

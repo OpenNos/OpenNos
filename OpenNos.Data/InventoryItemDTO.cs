@@ -22,7 +22,7 @@ namespace OpenNos.Data
 
         public long InventoryItemId { get; set; }
         public short ItemVNum { get; set; }
-        public int Amount { get; set; }
+        public short Amount { get; set; }
         public byte Rare { get; set; }
         public byte Upgrade { get; set; }
         public short Design { get; set; }

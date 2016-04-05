@@ -278,7 +278,7 @@ namespace OpenNos.GameObject
             DroppedItem = new MapItem(MapX, MapY)
             {
                 ItemVNum = drop.ItemVNum,
-                Amount = drop.Amount,
+                Amount = (short)drop.Amount,
             };
             while (ServerManager.GetMap(MapId).DroppedList.ContainsKey(random = rnd.Next(1, 999999)))
             { }
