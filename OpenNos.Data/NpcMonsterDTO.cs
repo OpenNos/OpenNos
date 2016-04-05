@@ -46,6 +46,7 @@ namespace OpenNos.Data
         public int RespawnTime { get; set; }
         public int XP { get; set; }
         public int JobXP { get; set; }
+        public bool IsHostile { get; set; }
         #endregion
     }
 }

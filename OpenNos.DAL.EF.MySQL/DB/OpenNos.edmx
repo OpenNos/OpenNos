@@ -1470,6 +1470,7 @@
           <Property Name="RespawnTime" Type="Int32" Nullable="false" />
           <Property Name="XP" Type="Int32" Nullable="false" />
           <Property Name="JobXP" Type="Int32" Nullable="false" />
+          <Property Name="IsHostile" Type="Boolean" Nullable="false" />
         </EntityType>
         <EntityType Name="InventoryItem">
           <Key>
@@ -1477,7 +1478,7 @@
           </Key>
           <Property Name="InventoryItemId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="ItemVNum" Type="Int16" Nullable="false" />
-          <Property Name="Amount" Type="Int16" Nullable="false" />
+          <Property Name="Amount" Type="Int32" Nullable="false" />
           <Property Name="Rare" Type="Byte" Nullable="false" />
           <Property Name="Upgrade" Type="Byte" Nullable="false" />
           <Property Name="Design" Type="Int16" Nullable="false" />
