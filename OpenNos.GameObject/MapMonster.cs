@@ -54,7 +54,7 @@ namespace OpenNos.GameObject
         #region Methods
         public string GenerateEff(int Effect)
         {
-                return $"eff 2 {MapMonsterId} {Effect}";
+                return $"eff 3 {MapMonsterId} {Effect}";
         }
 
         public static int generateMapMonsterId()

@@ -405,7 +405,7 @@
     <Property Name="LightResistance" Type="utinyint" Nullable="false" />
     <Property Name="DarkResistance" Type="utinyint" Nullable="false" />
     <Property Name="SpLevel" Type="utinyint" Nullable="false" />
-    <Property Name="SpXp" Type="smallint" Nullable="false" />
+    <Property Name="SpXp" Type="int" Nullable="false" />
     <Property Name="SlHP" Type="smallint" Nullable="false" />
     <Property Name="SlDamage" Type="smallint" Nullable="false" />
     <Property Name="SlElement" Type="smallint" Nullable="false" />

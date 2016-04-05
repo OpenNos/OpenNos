@@ -44,7 +44,7 @@
 -- -----------------------------------------------------------
 -- Entity Designer DDL Script for MySQL Server 4.1 and higher
 -- -----------------------------------------------------------
--- Date Created: 04/05/2016 17:16:18
+-- Date Created: 04/05/2016 20:56:00
 
 -- Generated from EDMX file: C:\Users\ERWAN\Desktop\OpenNos Git\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
 -- Target version: 3.0.0.0
@@ -446,7 +446,7 @@ CREATE TABLE `inventoryitem`(
 	`LightResistance` TINYINT UNSIGNED NOT NULL, 
 	`DarkResistance` TINYINT UNSIGNED NOT NULL, 
 	`SpLevel` TINYINT UNSIGNED NOT NULL, 
-	`SpXp` smallint NOT NULL, 
+	`SpXp` int NOT NULL, 
 	`SlHP` smallint NOT NULL, 
 	`SlDamage` smallint NOT NULL, 
 	`SlElement` smallint NOT NULL, 
