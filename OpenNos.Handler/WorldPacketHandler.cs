@@ -4197,20 +4197,20 @@ namespace OpenNos.Handler
                                 if (gold != 0)
                                 {
                                     DropDTO drop2 = new DropDTO()
-                                    {   
+                                    {
                                         Amount = gold,
                                         ItemVNum = 1046
                                     };
                                     Session.CurrentMap.ItemSpawn(drop2, mmon.MapX, mmon.MapY);
                                 }
-                               if ((int)(Session.Character.LevelXp/(Session.Character.XPLoad() / 10)) < (int)((Session.Character.LevelXp+ monsterinfo.XP) / (Session.Character.XPLoad() / 10)))
+                                if ((int)(Session.Character.LevelXp / (Session.Character.XPLoad() / 10)) < (int)((Session.Character.LevelXp + monsterinfo.XP) / (Session.Character.XPLoad() / 10)))
                                 {
                                     Session.Character.Hp = (int)Session.Character.HPLoad();
                                     Session.Character.Mp = (int)Session.Character.MPLoad();
                                     Session.Client.SendPacket(Session.Character.GenerateStatInfo());
                                     Session.Client.SendPacket(Session.Character.GenerateEff(5));
                                 }
-                                    Session.Character.LevelXp += monsterinfo.XP;
+                                Session.Character.LevelXp += monsterinfo.XP;
                                 Session.Character.JobLevelXp += monsterinfo.JobXP;
                                 if (Session.Character.LevelXp >= Session.Character.XPLoad())
                                 {
@@ -4241,7 +4241,7 @@ namespace OpenNos.Handler
                             {
                                 mmon.CurrentHp -= damage;
                             }
-
+                            mmon.Target = Session.Character.CharacterId;
                             string packet = $"su {1} {Session.Character.CharacterId} {3} {mmon.MapMonsterId} {skill.Effect} 6 {skill.AttackAnimation} {skill.Effect} 0 0 {(mmon.Alive ? 1 : 0)} {mmon.CurrentHp / monsterinfo.MaxHP * 100} {damage} {hitmode} {skill.Type}";
                             Session.Client.SendPacket(packet);
                             Task t = Task.Factory.StartNew(async () =>

@@ -17,6 +17,8 @@ using OpenNos.Data;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace OpenNos.GameObject
 {
@@ -29,6 +31,7 @@ namespace OpenNos.GameObject
             Mapper.CreateMap<MapMonsterDTO, MapMonster>();
             Mapper.CreateMap<MapMonster, MapMonsterDTO>();
             LastEffect = LastMove = DateTime.Now;
+            Target = -1;
         }
 
         public bool Alive { get; set; }
@@ -44,6 +47,7 @@ namespace OpenNos.GameObject
         public short firstY { get; set; }
         public DateTime LastEffect { get; private set; }
         public DateTime LastMove { get; private set; }
+        public long Target { get; set; }
 
         #endregion
 
@@ -54,7 +58,7 @@ namespace OpenNos.GameObject
             Random rnd = new Random();
             List<int> test = new List<int>();
 
-            for(int i= ServerManager.Monsters.Count-1;i>=0;i-- )
+            for (int i = ServerManager.Monsters.Count - 1; i >= 0; i--)
             {
                 test.Add(ServerManager.Monsters[i].MapMonsterId);
             }
@@ -73,43 +77,102 @@ namespace OpenNos.GameObject
         internal void MonsterLife()
         {
             NpcMonster monster = ServerManager.GetNpc(this.MonsterVNum);
+            //Respawn
             if (!Alive)
             {
                 double timeDeath = (DateTime.Now - Death).TotalSeconds;
-                if (timeDeath >= monster.RespawnTime/10)
+                if (timeDeath >= monster.RespawnTime / 10)
                 {
                     Alive = true;
+                    Target = -1;
                     CurrentHp = monster.MaxHP;
                     CurrentMp = monster.MaxMP;
                     ClientLinkManager.Instance.RequiereBroadcastFromMap(MapId, GenerateIn3());
-                }   
-            }
-            if (monster == null || Alive == false)
+                }
                 return;
-            Random r = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
-            double time = (DateTime.Now - LastMove).TotalSeconds;
-            if (Move && time > r.Next(1, 3) * (0.5+r.NextDouble()))
+            }
+            if (Target == -1)
             {
-                byte point = (byte)r.Next(2, 5);
-                byte fpoint = (byte)r.Next(0, 2);
-
-                byte xpoint = (byte)r.Next(fpoint, point);
-                byte ypoint = (byte)(point - xpoint);
-
-                short MapX = (short)r.Next(-xpoint + firstX, xpoint + firstX);
-                short MapY = (short)r.Next(-ypoint + firstY, ypoint + firstY);
-                if (!ServerManager.GetMap(MapId).IsBlockedZone(firstX, firstY, MapX, MapY))
+                //Normal Move Mode
+                if (monster == null || Alive == false)
+                    return;
+                Random r = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
+                double time = (DateTime.Now - LastMove).TotalSeconds;
+                if (Move && time > r.Next(1, 3) * (0.5 + r.NextDouble()))
                 {
-                    this.MapX = MapX;
-                    this.MapY = MapY;
-                    LastMove = DateTime.Now;
+                    byte point = (byte)r.Next(2, 5);
+                    byte fpoint = (byte)r.Next(0, 2);
 
-                    string movepacket = $"mv 3 {this.MapMonsterId} {this.MapX} {this.MapY} {monster.Speed}";
-                    ClientLinkManager.Instance.RequiereBroadcastFromMap(MapId, movepacket);
+                    byte xpoint = (byte)r.Next(fpoint, point);
+                    byte ypoint = (byte)(point - xpoint);
+
+                    short MapX = (short)r.Next(-xpoint + firstX, xpoint + firstX);
+                    short MapY = (short)r.Next(-ypoint + firstY, ypoint + firstY);
+                    if (!ServerManager.GetMap(MapId).IsBlockedZone(firstX, firstY, MapX, MapY))
+                    {
+                        this.MapX = MapX;
+                        this.MapY = MapY;
+                        LastMove = DateTime.Now;
+
+                        string movepacket = $"mv 3 {this.MapMonsterId} {this.MapX} {this.MapY} {monster.Speed}";
+                        ClientLinkManager.Instance.RequiereBroadcastFromMap(MapId, movepacket);
+                    }
                 }
             }
+            else
+            {
+                short? MapX = ClientLinkManager.Instance.GetProperty<short?>(Target, "MapX");
+                short? MapY = ClientLinkManager.Instance.GetProperty<short?>(Target, "MapY");
+                short? mapId = ClientLinkManager.Instance.GetProperty<short?>(Target, "MapId");
+                short mapX = this.MapX;
+                short mapY = this.MapY;
+                short maxdistance = 30;
+                if (MapX == null || MapY == null) { Target = -1; }
+                else
+                {
+                    NextPositionByDistance((short)MapX, (short)MapY, ref mapX, ref mapY);
+
+                    if (MapId != mapId || (Math.Pow(this.MapY - (short)MapY, 2) + Math.Pow(this.MapY - (short)MapY, 2) > (Math.Pow(maxdistance, 2))))
+                    {
+                        //TODO add return to origin
+                        Target = -1;
+                    }
+                    else
+                    {
+
+                        if ((DateTime.Now - LastMove).TotalSeconds > 1.0/ monster.Speed)
+                        {
+                            this.MapX = mapX;
+                            this.MapY = mapY;
+                            LastMove = DateTime.Now;
+                            ClientLinkManager.Instance.RequiereBroadcastFromMap(MapId, $"mv 3 {this.MapMonsterId} {this.MapX} {this.MapY} {monster.Speed}");
+                        }
+                    }
+                }
+            }
+
         }
 
+        private void NextPositionByDistance(short MapX, short MapY, ref short mapX, ref short mapY)
+        {
+            NpcMonster monster = ServerManager.GetNpc(this.MonsterVNum);
+            if (MapX > this.MapX)
+            {
+                mapX++;
+            }
+            else if (MapX < this.MapX)
+            {
+                mapX--;
+            }
+            if (MapY > this.MapY)
+            {
+                mapY++;
+            }
+            else if (MapY < this.MapY)
+            {
+                mapY--;
+            }
+        }
         #endregion
     }
 }
