@@ -44,9 +44,9 @@
 -- -----------------------------------------------------------
 -- Entity Designer DDL Script for MySQL Server 4.1 and higher
 -- -----------------------------------------------------------
--- Date Created: 04/05/2016 16:17:42
+-- Date Created: 04/05/2016 17:16:18
 
--- Generated from EDMX file: C:\Users\Dominik\Source\Repos\OpenNos\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
+-- Generated from EDMX file: C:\Users\ERWAN\Desktop\OpenNos Git\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
 -- Target version: 3.0.0.0
 
 -- --------------------------------------------------
@@ -400,7 +400,8 @@ CREATE TABLE `npcmonster`(
 	`MaxMP` int NOT NULL, 
 	`RespawnTime` int NOT NULL, 
 	`XP` int NOT NULL, 
-	`JobXP` int NOT NULL);
+	`JobXP` int NOT NULL, 
+	`IsHostile` bool NOT NULL);
 
 ALTER TABLE `npcmonster` ADD PRIMARY KEY (NpcMonsterVNum);
 

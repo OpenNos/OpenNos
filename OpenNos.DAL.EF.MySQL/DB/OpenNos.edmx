@@ -363,6 +363,7 @@
     <Property Name="RespawnTime" Type="int" Nullable="false" />
     <Property Name="XP" Type="int" Nullable="false" />
     <Property Name="JobXP" Type="int" Nullable="false" />
+    <Property Name="IsHostile" Type="bool" Nullable="false" />
   </EntityType>
   <EntityType Name="inventoryitem">
     <Key>
@@ -2284,6 +2285,7 @@
           <ScalarProperty Name="RespawnTime" ColumnName="RespawnTime" />
           <ScalarProperty Name="XP" ColumnName="XP" />
           <ScalarProperty Name="JobXP" ColumnName="JobXP" />
+          <ScalarProperty Name="IsHostile" ColumnName="IsHostile" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
