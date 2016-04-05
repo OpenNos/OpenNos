@@ -52,6 +52,10 @@ namespace OpenNos.GameObject
         #endregion
 
         #region Methods
+        public string GenerateEff(int Effect)
+        {
+                return $"eff 2 {MapMonsterId} {Effect}";
+        }
 
         public static int generateMapMonsterId()
         {
@@ -118,7 +122,7 @@ namespace OpenNos.GameObject
                         ClientLinkManager.Instance.RequiereBroadcastFromMap(MapId, movepacket);
                     }
 
-                    if (monster.IsHostile)
+                    if (monster.IsHostile && Target ==-1)
                     {
                         Character character = ClientLinkManager.Instance.ClosestUser(MapId, MapX, MapY);
                         if (character != null)
@@ -126,6 +130,7 @@ namespace OpenNos.GameObject
                             if ((Math.Pow(character.MapX - MapX, 2) + Math.Pow(character.MapY - MapY, 2)) < (Math.Pow(7, 2)))
                             {
                                 Target = character.CharacterId;
+                                ClientLinkManager.Instance.RequiereBroadcastFromMap(MapId, GenerateEff(5000));
                             }
                         }
                     }
