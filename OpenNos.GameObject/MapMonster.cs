@@ -174,19 +174,19 @@ namespace OpenNos.GameObject
         {
             //TODO add pathfinding
             NpcMonster monster = ServerManager.GetNpc(this.MonsterVNum);
-            if (MapX > this.MapX)
+            if (MapX > this.MapX+1)
             {
                 mapX++;
             }
-            else if (MapX < this.MapX)
+            else if (MapX < this.MapX-1)
             {
                 mapX--;
             }
-            if (MapY > this.MapY)
+            if (MapY > this.MapY+1)
             {
                 mapY++;
             }
-            else if (MapY < this.MapY)
+            else if (MapY < this.MapY-1)
             {
                 mapY--;
             }

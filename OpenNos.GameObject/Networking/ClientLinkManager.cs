@@ -87,12 +87,12 @@ namespace OpenNos.GameObject
             switch (receiver)
             {
                 case ReceiverType.All:
-                    for (int i = Sessions.Where(s => s != null).Count() - 1; i >= 0; i--)
+                    for (int i = Sessions.Where(s => s != null && s.Character != null).Count() - 1; i >= 0; i--)
                         Sessions.Where(s => s != null).ElementAt(i).Client.SendPacket(message);
                     break;
 
                 case ReceiverType.AllExceptMe:
-                    for (int i = Sessions.Where(s => s != null && s != client).Count() - 1; i >= 0; i--)
+                    for (int i = Sessions.Where(s => s != null && s.Character != null && s != client).Count() - 1; i >= 0; i--)
                         Sessions.Where(s => s != null && s != client).ElementAt(i).Client.SendPacket(message);
                     break;
 
@@ -336,49 +336,11 @@ namespace OpenNos.GameObject
                 ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllOnMapExceptMe);
                 ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(6), ReceiverType.AllOnMap);
                 ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(198), ReceiverType.AllOnMap);
-                switch (Session.Character.Class)
-                {
-                    case (byte)ClassType.Adventurer:
-                        if (Session.Character.Skills.FirstOrDefault(s => s.SkillVNum == 200) == null)
-                        {
-                            Session.Character.Skills.Add(new CharacterSkill { SkillVNum = 200, CharacterId = Session.Character.CharacterId });
-                        }
-                        if (Session.Character.Skills.FirstOrDefault(s => s.SkillVNum == 201) == null)
-                        {
-                            Session.Character.Skills.Add(new CharacterSkill { SkillVNum = 201, CharacterId = Session.Character.CharacterId });
-                        }
-                        break;
-                    case (byte)ClassType.Swordman:
-                        if (Session.Character.Skills.FirstOrDefault(s => s.SkillVNum == 220) == null)
-                        {
-                            Session.Character.Skills.Add(new CharacterSkill { SkillVNum = 220, CharacterId = Session.Character.CharacterId });
-                        }
-                        if (Session.Character.Skills.FirstOrDefault(s => s.SkillVNum == 221) == null)
-                        {
-                            Session.Character.Skills.Add(new CharacterSkill { SkillVNum = 221, CharacterId = Session.Character.CharacterId });
-                        }
-                        break;
-                    case (byte)ClassType.Archer:
-                        if (Session.Character.Skills.FirstOrDefault(s => s.SkillVNum == 240) == null)
-                        {
-                            Session.Character.Skills.Add(new CharacterSkill { SkillVNum = 240, CharacterId = Session.Character.CharacterId });
-                        }
-                        if (Session.Character.Skills.FirstOrDefault(s => s.SkillVNum == 241) == null)
-                        {
-                            Session.Character.Skills.Add(new CharacterSkill { SkillVNum = 241, CharacterId = Session.Character.CharacterId });
-                        }
-                        break;
-                    case (byte)ClassType.Magician:
-                        if (Session.Character.Skills.FirstOrDefault(s => s.SkillVNum == 260) == null)
-                        {
-                            Session.Character.Skills.Add(new CharacterSkill { SkillVNum = 260, CharacterId = Session.Character.CharacterId });
-                        }
-                        if (Session.Character.Skills.FirstOrDefault(s => s.SkillVNum == 261) == null)
-                        {
-                            Session.Character.Skills.Add(new CharacterSkill { SkillVNum = 261, CharacterId = Session.Character.CharacterId });
-                        }
-                        break;
-                }
+
+                Session.Character.Skills = new List<CharacterSkill>();
+                Session.Character.Skills.Add(new CharacterSkill { SkillVNum = (short)(200 + 20 * Session.Character.Class), CharacterId = Session.Character.CharacterId });
+                Session.Character.Skills.Add(new CharacterSkill { SkillVNum = (short)(201 + 20 * Session.Character.Class), CharacterId = Session.Character.CharacterId });
+
                 Session.Client.SendPacket(Session.Character.GenerateSki());
 
                 // TODO Reset Quicklist (just add Rest-on-T Item)

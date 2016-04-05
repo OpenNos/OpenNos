@@ -262,6 +262,7 @@ namespace OpenNos.Handler
                                 return;
                             break;
                     }
+                   
                     if (Session.Character.Skills.FirstOrDefault(s => s.SkillVNum == slot) != null)
                         return;
                     Session.Character.Gold -= skillinfo.Cost;
@@ -271,7 +272,10 @@ namespace OpenNos.Handler
                     Session.Client.SendPacket(Session.Character.GenerateSki());
                     Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SKILL_LEARNED"), 0));
                     Session.Client.SendPacket(Session.Character.GenerateLev());
-
+                }
+                else
+                {
+                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NEED_CP"), 0));
                 }
             }
             else
