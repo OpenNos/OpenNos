@@ -277,10 +277,8 @@ namespace OpenNos.Import.Console
                     }
                     else if (currentLine.Length > 3 && currentLine[1] == "HP/MP")
                     {
-                        npc.MaxHP = Convert.ToInt32(currentLine[2]);
-                        npc.MaxMP = Convert.ToInt32(currentLine[3]);
-                        npc.MaxMP = npc.MaxMP == 0 ? 1 : npc.MaxMP;
-                        npc.MaxHP = npc.MaxHP == 0 ? 1 : npc.MaxHP;
+                        npc.MaxHP = Convert.ToInt32(currentLine[2]) + (npc.Level+1) * 62;
+                        npc.MaxMP = Convert.ToInt32(currentLine[3]) + (npc.Level+1) * 62;
                     }
                     else if (currentLine.Length > 2 && currentLine[1] == "NAME")
                     {
@@ -293,7 +291,7 @@ namespace OpenNos.Import.Console
                     }
                     else if (currentLine.Length > 6 && currentLine[1] == "PREATT")
                     {
-                        npc.IsHostile = currentLine[2] == "0" ? false : true; 
+                        npc.IsHostile = currentLine[2] == "0" ? false : true;
                         npc.Speed = Convert.ToByte(currentLine[5]);
                         npc.RespawnTime = Convert.ToInt32(currentLine[6]);
                     }
@@ -338,7 +336,7 @@ namespace OpenNos.Import.Console
                             skills.Add(new NpcMonsterSkillDTO
                             {
                                 SkillVNum = vnum,
-                                Rate = short.Parse(currentLine[i+1]),
+                                Rate = short.Parse(currentLine[i + 1]),
                                 NpcMonsterVNum = npc.NpcMonsterVNum
                             });
                         }
@@ -1088,7 +1086,7 @@ namespace OpenNos.Import.Console
                                     item.Element = 3;
                                 else if (item.VNum == 909)// need to hardcode...
                                     item.Element = 3;
-                                
+
                                 break;
 
                             case (byte)ItemType.Shell:
