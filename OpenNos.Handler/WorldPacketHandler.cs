@@ -4242,7 +4242,7 @@ namespace OpenNos.Handler
                                 mmon.CurrentHp -= damage;
                             }
                             mmon.Target = Session.Character.CharacterId;
-                            string packet = $"su {1} {Session.Character.CharacterId} {3} {mmon.MapMonsterId} {skill.Effect} 6 {skill.AttackAnimation} {skill.Effect} 0 0 {(mmon.Alive ? 1 : 0)} {mmon.CurrentHp / monsterinfo.MaxHP * 100} {damage} {hitmode} {skill.Type}";
+                            string packet = $"su {1} {Session.Character.CharacterId} {3} {mmon.MapMonsterId} {skill.Effect} 6 {skill.AttackAnimation} {skill.Effect} 0 0 {(mmon.Alive ? 1 : 0)} {(int)((mmon.CurrentHp / monsterinfo.MaxHP) * 100)} {damage} {hitmode} {skill.Type}";
                             Session.Client.SendPacket(packet);
                             Task t = Task.Factory.StartNew(async () =>
                             {

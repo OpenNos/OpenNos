@@ -131,7 +131,7 @@ namespace OpenNos.GameObject
                     }
                 }
             }
-            else
+            else if(Move == true)
             {
                 short? MapX = ClientLinkManager.Instance.GetProperty<short?>(Target, "MapX");
                 short? MapY = ClientLinkManager.Instance.GetProperty<short?>(Target, "MapY");
