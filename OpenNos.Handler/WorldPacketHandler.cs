@@ -4140,7 +4140,7 @@ namespace OpenNos.Handler
                         Skill skill = ServerManager.GetSkill(ski.SkillVNum);
                         short dX = (short)(Session.Character.MapX - mmon.MapX);
                           short dY = (short)(Session.Character.MapY - mmon.MapY);
-                        if (Math.Pow(dX,2) + Math.Pow(dY,2) <= Math.Pow(skill.Range,2))
+                         if (Math.Pow(dX,2) + Math.Pow(dY,2) <= Math.Pow(skill.Range+1, 2))
                         {
                             Random random = new Random();
                             int hitmode = 0;
@@ -4261,7 +4261,7 @@ namespace OpenNos.Handler
                             {
                                 ski.Used = true;
                                 await Task.Delay(skill.Cooldown * 100);
-                                Session.Client.SendPacket("sr 0");
+                                Session.Client.SendPacket($"sr {Castingid}");
                                 ski.Used = false;
                             });
                         }
