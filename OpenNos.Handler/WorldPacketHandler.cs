@@ -4256,7 +4256,7 @@ namespace OpenNos.Handler
                             }
                             mmon.Target = Session.Character.CharacterId;
                             string packet = $"su {1} {Session.Character.CharacterId} {3} {mmon.MapMonsterId} {skill.Effect} 6 {skill.AttackAnimation} {skill.Effect} 0 0 {(mmon.Alive ? 1 : 0)} {(int)(((float)mmon.CurrentHp / (float)monsterinfo.MaxHP) * 100)} {damage} {hitmode} {skill.Type}";
-                            Session.Client.SendPacket(packet);
+                            ClientLinkManager.Instance.Broadcast(Session, packet, ReceiverType.AllOnMap);
                             Task t = Task.Factory.StartNew(async () =>
                             {
                                 ski.Used = true;
