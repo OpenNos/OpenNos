@@ -4154,6 +4154,21 @@ namespace OpenNos.Handler
                             int miss_chance = 20;
                             int criticalhit = 0;
                             int AtkType = 0;
+                            switch(Session.Character.Class)
+                            {
+                                case 0:
+                                    AtkType = 0;
+                                    break;
+                                case 1:
+                                    AtkType = 0;
+                                    break;
+                                case 2:
+                                    AtkType = 1;
+                                    break;
+                                case 3:
+                                    AtkType = 2;
+                                    break;
+                            }
                             switch (AtkType)
                             {
                                 case 0:
@@ -4222,7 +4237,7 @@ namespace OpenNos.Handler
                                 if (Session.Character.JobLevel < 99)
                                 {
                                     if (sp2 != null && Session.Character.UseSp && sp2.InventoryItem.SpLevel < 99)
-                                        Session.Character.JobLevelXp += (int)((double)monsterinfo.JobXP/(double)100 * sp2.InventoryItem.SpLevel);
+                                        Session.Character.JobLevelXp += (int)((double)monsterinfo.JobXP / (double)100 * sp2.InventoryItem.SpLevel);
                                     else
                                         Session.Character.JobLevelXp += monsterinfo.JobXP;
                                 }
@@ -4269,8 +4284,27 @@ namespace OpenNos.Handler
                                 mmon.CurrentHp -= damage;
                             }
                             mmon.Target = Session.Character.CharacterId;
-                            string packet = $"su {1} {Session.Character.CharacterId} {3} {mmon.MapMonsterId} {skill.Effect} 6 {skill.AttackAnimation} {skill.Effect} 0 0 {(mmon.Alive ? 1 : 0)} {(int)(((float)mmon.CurrentHp / (float)monsterinfo.MaxHP) * 100)} {damage} {hitmode} {skill.Type}";
-                            ClientLinkManager.Instance.Broadcast(Session, packet, ReceiverType.AllOnMap);
+
+
+                           
+                            Task cast = Task.Factory.StartNew(async () =>
+                            {
+                                if (skill.CastEffect != 0)
+                                {
+                                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(skill.CastEffect), ReceiverType.AllOnMap);
+                                    await Task.Delay(skill.CastTime * 100);
+                                }
+                            });
+
+                            Task.Factory.StartNew(async () =>
+                             {
+
+                                 await cast;
+
+                                 string packet = $"su {1} {Session.Character.CharacterId} {3} {mmon.MapMonsterId} {skill.Effect} 6 {skill.AttackAnimation} {skill.Effect} 0 0 {(mmon.Alive ? 1 : 0)} {(int)(((float)mmon.CurrentHp / (float)monsterinfo.MaxHP) * 100)} {damage} {hitmode} {skill.Type}";
+                                 ClientLinkManager.Instance.Broadcast(Session, packet, ReceiverType.AllOnMap);
+
+                             });
                             Task t = Task.Factory.StartNew(async () =>
                             {
                                 ski.Used = true;

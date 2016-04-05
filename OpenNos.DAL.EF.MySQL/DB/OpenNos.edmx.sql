@@ -44,7 +44,7 @@
 -- -----------------------------------------------------------
 -- Entity Designer DDL Script for MySQL Server 4.1 and higher
 -- -----------------------------------------------------------
--- Date Created: 04/05/2016 20:56:00
+-- Date Created: 04/06/2016 01:23:21
 
 -- Generated from EDMX file: C:\Users\ERWAN\Desktop\OpenNos Git\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
 -- Target version: 3.0.0.0
@@ -636,7 +636,8 @@ CREATE TABLE `skill`(
 	`Type` TINYINT UNSIGNED NOT NULL, 
 	`Range` TINYINT UNSIGNED NOT NULL, 
 	`VNumRequired` smallint NOT NULL, 
-	`UpgradeSkill` smallint NOT NULL);
+	`UpgradeSkill` smallint NOT NULL, 
+	`CastTime` smallint NOT NULL);
 
 ALTER TABLE `skill` ADD PRIMARY KEY (SkillVNum);
 

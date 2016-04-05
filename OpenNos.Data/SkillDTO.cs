@@ -46,7 +46,7 @@ namespace OpenNos.Data
         public byte Range { get; set; }
         public short VNumRequired { get; set; }
         public short UpgradeSkill { get; set; }
-
+        public short CastTime { get; set; }
         #endregion
     }
 }

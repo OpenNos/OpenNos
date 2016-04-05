@@ -49,6 +49,7 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public byte Range { get; set; }
         public short VNumRequired { get; set; }
         public short UpgradeSkill { get; set; }
+        public short CastTime { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<CharacterSkill> characterskill { get; set; }
