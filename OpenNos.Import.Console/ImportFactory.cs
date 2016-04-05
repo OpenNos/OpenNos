@@ -234,8 +234,8 @@ namespace OpenNos.Import.Console
             int[] basicJXp = new int[100];
 
             //basicHpLoad
-            int baseHp = 137;
-            int basup = 19;
+            int baseHp = 138;
+            int basup = 17;
             for (int i = 0; i < 100; i++)
             {
                 basicHp[i] = baseHp;
@@ -245,8 +245,8 @@ namespace OpenNos.Import.Console
 
                 if (i == 37)
                 {
-                    baseHp = 1764;
-                    basup = 66;
+                    baseHp = 1766;
+                    basup = 64;
                 }
                 if (i >= 41)
                 {
