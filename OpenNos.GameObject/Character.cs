@@ -465,7 +465,7 @@ namespace OpenNos.GameObject
             foreach (CharacterSkill ski in Skills)
             {
                 Skill skillinfo = ServerManager.GetSkill(ski.SkillVNum);
-                if (skillinfo.Class == Class || Class == 0)
+                if (skillinfo.Class == Class || Class == 0 )
                     skills += $" {ski.SkillVNum}";
             }
 
