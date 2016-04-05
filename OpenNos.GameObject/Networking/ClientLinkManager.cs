@@ -358,8 +358,8 @@ namespace OpenNos.GameObject
                         Pos = 1
                     }
                 };
-                //Session.Character.QuicklistEntries[0].Save();
-
+                if (Groups.FirstOrDefault(s => s.Characters.Contains(Session.Character.CharacterId)) != null)
+                    ClientLinkManager.Instance.Broadcast(Session, $"pidx 1 1.{Session.Character.CharacterId}", ReceiverType.AllOnMapExceptMe);
             }
         }
 
