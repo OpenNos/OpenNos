@@ -4137,8 +4137,8 @@ namespace OpenNos.Handler
                     {
                         Skill skill = ServerManager.GetSkill(ski.SkillVNum);
                         short dX = (short)(Session.Character.MapX - mmon.MapX);
-                        short dY = (short)(Session.Character.MapY - mmon.MapY);
-                        if (dX * dX + dY * dY > (skill.Range * skill.Range))
+                          short dY = (short)(Session.Character.MapY - mmon.MapY);
+                        if (Math.Pow(dX,2) + Math.Pow(dY,2) <= Math.Pow(skill.Range+2,2))
                         {
                             Random random = new Random();
                             int hitmode = 0;

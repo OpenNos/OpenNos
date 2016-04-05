@@ -117,6 +117,18 @@ namespace OpenNos.GameObject
                         string movepacket = $"mv 3 {this.MapMonsterId} {this.MapX} {this.MapY} {monster.Speed}";
                         ClientLinkManager.Instance.RequiereBroadcastFromMap(MapId, movepacket);
                     }
+
+                    if (monster.IsHostile)
+                    {
+                        Character character = ClientLinkManager.Instance.ClosestUser(MapId, MapX, MapY);
+                        if (character != null)
+                        {
+                            if ((Math.Pow(character.MapX - MapX, 2) + Math.Pow(character.MapY - MapY, 2)) < (Math.Pow(7, 2)))
+                            {
+                                Target = character.CharacterId;
+                            }
+                        }
+                    }
                 }
             }
             else
@@ -140,7 +152,7 @@ namespace OpenNos.GameObject
                     else
                     {
 
-                        if ((DateTime.Now - LastMove).TotalSeconds > 1.0/ monster.Speed)
+                        if ((DateTime.Now - LastMove).TotalSeconds > 1.0 / monster.Speed)
                         {
                             this.MapX = mapX;
                             this.MapY = mapY;
@@ -155,6 +167,7 @@ namespace OpenNos.GameObject
 
         private void NextPositionByDistance(short MapX, short MapY, ref short mapX, ref short mapY)
         {
+            //TODO add pathfinding
             NpcMonster monster = ServerManager.GetNpc(this.MonsterVNum);
             if (MapX > this.MapX)
             {

@@ -143,6 +143,22 @@ namespace OpenNos.GameObject
             return true;
         }
 
+        internal Character ClosestUser(short mapId, short mapX, short mapY)
+        {
+            Character temp = null;
+            int distance = 200;
+            foreach (ClientSession sess in Sessions.Where(s => s.Character != null && s.Character.MapId == mapId))
+            {
+                int test = (int)(Math.Pow(mapX - sess.Character.MapX, 2) + Math.Pow(mapY - sess.Character.MapY, 2));
+                if (test < distance)
+                {
+                    distance = test;
+                    temp = sess.Character;
+                }
+            }
+            return temp;
+        }
+
         public void BuyValidate(ClientSession clientSession, KeyValuePair<long, MapShop> shop, short slot, byte amount)
         {
             PersonalShopItem itemshop = clientSession.CurrentMap.ShopUserList[shop.Key].Items.FirstOrDefault(i => i.Slot.Equals(slot));
