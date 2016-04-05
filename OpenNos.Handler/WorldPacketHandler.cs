@@ -246,19 +246,19 @@ namespace OpenNos.Handler
                     switch (Session.Character.Class)
                     {
                         case (byte)ClassType.Adventurer:
-                            if (Session.Character.JobLevel < skillinfo.MinimumAdventurerLevel)
+                            if (Session.Character.Level < skillinfo.MinimumAdventurerLevel)
                                 return;
                             break;
                         case (byte)ClassType.Swordman:
-                            if (Session.Character.JobLevel < skillinfo.MinimumSwordmanLevel)
+                            if (Session.Character.Level < (skillinfo.MinimumSwordmanLevel == 0 ? skillinfo.MinimumAdventurerLevel : skillinfo.MinimumSwordmanLevel))
                                 return;
                             break;
                         case (byte)ClassType.Archer:
-                            if (Session.Character.JobLevel < skillinfo.MinimumArcherLevel)
+                            if (Session.Character.Level < (skillinfo.MinimumArcherLevel == 0 ? skillinfo.MinimumAdventurerLevel : skillinfo.MinimumArcherLevel))
                                 return;
                             break;
                         case (byte)ClassType.Magician:
-                            if (Session.Character.JobLevel < skillinfo.MinimumMagicianLevel)
+                            if (Session.Character.Level < (skillinfo.MinimumMagicianLevel==0? skillinfo.MinimumAdventurerLevel : skillinfo.MinimumMagicianLevel))
                                 return;
                             break;
                     }
@@ -270,7 +270,7 @@ namespace OpenNos.Handler
                     Session.Character.Skills.Add(new CharacterSkill() { SkillVNum = slot, CharacterId = Session.Character.CharacterId });
                     Session.Client.SendPacket(Session.Character.GenerateSki());
                     Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SKILL_LEARNED"), 0));
-                    Session.Client.SendPacket(Session.Character.GenerateLev());//replace by the correct one
+                    Session.Client.SendPacket(Session.Character.GenerateLev());
 
                 }
             }
