@@ -146,7 +146,7 @@ namespace OpenNos.GameObject
         internal Character ClosestUser(short mapId, short mapX, short mapY)
         {
             Character temp = null;
-            int distance = 200;
+            int distance = int.MaxValue;
             foreach (ClientSession sess in Sessions.Where(s => s.Character != null && s.Character.MapId == mapId))
             {
                 int test = (int)(Math.Pow(mapX - sess.Character.MapX, 2) + Math.Pow(mapY - sess.Character.MapY, 2));

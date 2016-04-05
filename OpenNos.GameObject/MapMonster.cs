@@ -130,7 +130,7 @@ namespace OpenNos.GameObject
                         Character character = ClientLinkManager.Instance.ClosestUser(MapId, MapX, MapY);
                         if (character != null)
                         {
-                            if ((Math.Pow(character.MapX - MapX, 2) + Math.Pow(character.MapY - MapY, 2)) < (Math.Pow(7, 2)))
+                            if ((Math.Pow(character.MapX - MapX, 2) + Math.Pow(character.MapY - MapY, 2)) < (Math.Pow(11, 2)))
                             {
                                 Target = character.CharacterId;
                                 ClientLinkManager.Instance.RequiereBroadcastFromMap(MapId, GenerateEff(5000));
