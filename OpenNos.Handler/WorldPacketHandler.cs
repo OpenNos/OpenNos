@@ -4192,14 +4192,14 @@ namespace OpenNos.Handler
                                 {
                                     rnd = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
                                     double rndamount = rnd.Next(0, 100) * rnd.NextDouble();
-                                    if (rndamount <= (double)drop.DropChance / 1000.000)
+                                    if (rndamount <= (double)drop.DropChance / 5000.000)
                                     {
                                         Session.CurrentMap.ItemSpawn(drop, mmon.MapX, mmon.MapY);
                                     }
 
                                 }
                                 rnd = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
-                                short gold = Convert.ToInt16((rnd.Next(1, 5) >= 4 ? 1 : 0) * rnd.Next(6 * monsterinfo.Level, 12 * monsterinfo.Level));
+                                short gold = Convert.ToInt16((rnd.Next(1, 8) >= 7 ? 1 : 0) * rnd.Next(6 * monsterinfo.Level, 12 * monsterinfo.Level));
                                 if (gold != 0)
                                 {
                                     DropDTO drop2 = new DropDTO()
