@@ -80,7 +80,6 @@ namespace OpenNos.Import.Console
                 factory.ImportMonsters();
                 factory.ImportShops();
                 factory.ImportTeleporters();
-                //factory.ImportDrop();
                 factory.ImportShopItems();
                 factory.ImportShopSkills();
                 factory.ImportRecipe();
@@ -133,12 +132,6 @@ namespace OpenNos.Import.Console
                 key = System.Console.ReadKey(true);
                 if (key.KeyChar != 'n')
                     factory.ImportTeleporters();
-
-                /*System.Console.WriteLine($"{Language.Instance.GetMessageFromKey("PARSE_DROP")} [Y/n]");
-                key = System.Console.ReadKey(true);
-                if (key.KeyChar != 'n')
-                    factory.ImportDrop();
-                */
 
                 System.Console.WriteLine($"{Language.Instance.GetMessageFromKey("PARSE_SHOPITEMS")} [Y/n]");
                 key = System.Console.ReadKey(true);
