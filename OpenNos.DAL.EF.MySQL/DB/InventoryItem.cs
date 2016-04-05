@@ -56,7 +56,7 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public byte LightResistance { get; set; }
         public byte DarkResistance { get; set; }
         public byte SpLevel { get; set; }
-        public short SpXp { get; set; }
+        public int SpXp { get; set; }
         public short SlHP { get; set; }
         public short SlDamage { get; set; }
         public short SlElement { get; set; }

@@ -4212,6 +4212,7 @@ namespace OpenNos.Handler
                                     Session.Client.SendPacket(Session.Character.GenerateStatInfo());
                                     Session.Client.SendPacket(Session.Character.GenerateEff(5));
                                 }
+                                Inventory sp2 = Session.Character.InventoryList.LoadBySlotAndType((short)EquipmentType.Sp, (byte)InventoryType.Equipment);
                                 Session.Character.LevelXp += monsterinfo.XP;
                                 Session.Character.JobLevelXp += monsterinfo.JobXP;
                                 if (Session.Character.LevelXp >= Session.Character.XPLoad())
@@ -4231,6 +4232,16 @@ namespace OpenNos.Handler
                                     Session.Character.JobLevel++;
                                     Session.Character.Hp = (int)Session.Character.HPLoad();
                                     Session.Character.Mp = (int)Session.Character.MPLoad();
+                                    Session.Client.SendPacket(Session.Character.GenerateStatInfo());
+                                    Session.Client.SendPacket($"levelup {Session.Character.CharacterId}");
+                                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(6), ReceiverType.AllOnMap);
+                                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(198), ReceiverType.AllOnMap);
+                                }
+            
+                                if (sp2 != null && sp2.InventoryItem.SpXp >= Session.Character.SPXPLoad())
+                                {
+                                    sp2.InventoryItem.SpXp -= (int)Session.Character.SPXPLoad();
+                                    sp2.InventoryItem.SpLevel++;
                                     Session.Client.SendPacket(Session.Character.GenerateStatInfo());
                                     Session.Client.SendPacket($"levelup {Session.Character.CharacterId}");
                                     ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(6), ReceiverType.AllOnMap);

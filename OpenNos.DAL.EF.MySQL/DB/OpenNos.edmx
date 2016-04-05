@@ -1514,7 +1514,7 @@
           <Property Name="LightResistance" Type="Byte" Nullable="false" />
           <Property Name="DarkResistance" Type="Byte" Nullable="false" />
           <Property Name="SpLevel" Type="Byte" Nullable="false" />
-          <Property Name="SpXp" Type="Int16" Nullable="false" />
+          <Property Name="SpXp" Type="Int32" Nullable="false" />
           <Property Name="SlHP" Type="Int16" Nullable="false" />
           <Property Name="SlDamage" Type="Int16" Nullable="false" />
           <Property Name="SlElement" Type="Int16" Nullable="false" />
