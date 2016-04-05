@@ -245,8 +245,8 @@ namespace OpenNos.Import.Console
 
                 if (i == 37)
                 {
-                    baseHp = 1766;
-                    basup = 64;
+                    baseHp = 1765;
+                    basup = 65;
                 }
                 if (i >= 41)
                 {
