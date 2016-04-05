@@ -31,7 +31,7 @@ namespace OpenNos.Import.Console
         private readonly string _folder;
         private readonly List<string[]> _packetList = new List<string[]>();
         private IEnumerable<MapDTO> _maps;
-
+          
         #endregion
 
         #region Instantiation
@@ -228,6 +228,33 @@ namespace OpenNos.Import.Console
 
         public void ImportNpcMonsters()
         {
+            int[] basicHp = new int[100];
+            int[] basicMp = new int[100];
+            int[] basicXp = new int[100];
+            int[] basicJXp = new int[100];
+
+            //basicHpLoad
+            int baseHp = 137;
+            int basup = 19;
+            for(int i=0;i<100;i++)
+            {
+                basicHp[i] = baseHp;
+                basup++;
+                baseHp += basup;
+               
+
+                if(i==37)
+                {
+                    baseHp = 1764;
+                    basup = 66;
+                }
+                
+            }
+
+            //basicMpLoad
+            //basicXPLoad
+            //basicJXpLoad
+
             string fileNpcId = $"{_folder}\\monster.dat";
             string fileNpcLang = $"{_folder}\\_code_{System.Configuration.ConfigurationManager.AppSettings["language"]}_monster.txt";
             List<NpcMonsterDTO> npcs = new List<NpcMonsterDTO>();
@@ -277,8 +304,8 @@ namespace OpenNos.Import.Console
                     }
                     else if (currentLine.Length > 3 && currentLine[1] == "HP/MP")
                     {
-                        npc.MaxHP = Convert.ToInt32(currentLine[2]) + (npc.Level + 1) * 65;
-                        npc.MaxMP = Convert.ToInt32(currentLine[3]) + (npc.Level + 1) * 65;
+                        npc.MaxHP = Convert.ToInt32(currentLine[2]) + basicHp[npc.Level];
+                        npc.MaxMP = Convert.ToInt32(currentLine[3]) + basicMp[npc.Level];
                     }
                     else if (currentLine.Length > 2 && currentLine[1] == "NAME")
                     {
@@ -286,8 +313,8 @@ namespace OpenNos.Import.Console
                     }
                     else if (currentLine.Length > 2 && currentLine[1] == "EXP")
                     {
-                        npc.XP = Convert.ToInt32(currentLine[2]) + 90 * (npc.Level + 1);
-                        npc.JobXP = Convert.ToInt32(currentLine[3]) + 180 * (npc.Level + 1);
+                        npc.XP = Convert.ToInt32(currentLine[2]) + basicXp[npc.Level];
+                        npc.JobXP = Convert.ToInt32(currentLine[3]) + basicJXp[npc.Level];
                     }
                     else if (currentLine.Length > 6 && currentLine[1] == "PREATT")
                     {
