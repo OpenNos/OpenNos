@@ -872,7 +872,7 @@ namespace OpenNos.GameObject
 
         public string GenerateStatInfo()
         {
-            return $"st 1 {CharacterId} {Level} {(int)(Hp / HPLoad() * 100)} {(int)(Mp / MPLoad() * 100)} {Hp} {Mp}";
+            return $"st 1 {CharacterId} {Level} {(int)((float)Hp / (float)HPLoad() * 100)} {(int)((float)Mp / (float)MPLoad() * 100)} {Hp} {Mp}";
         }
 
         public string GenerateTit()

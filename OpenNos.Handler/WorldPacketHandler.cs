@@ -1264,9 +1264,11 @@ namespace OpenNos.Handler
                     {
                         if (Session.Character.Gold + mapitem.Amount <= 1000000000)
                         {
+                            Item iteminfo = ServerManager.GetItem(mapitem.ItemVNum);
                             Session.Character.Gold += mapitem.Amount;
                             Session.CurrentMap.DroppedList.Remove(DropId);
                             ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateGet(DropId), ReceiverType.AllOnMap);
+                            Session.Client.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {iteminfo.Name} x {Amount}", 12));
                             Session.Client.SendPacket(Session.Character.GenerateGold());
                         }
                         else
@@ -1306,7 +1308,7 @@ namespace OpenNos.Handler
                         NpcMonster monsterinfo = ServerManager.GetNpc(monster.MonsterVNum);
                         if (monsterinfo == null)
                             return;
-                        ClientLinkManager.Instance.Broadcast(Session, $"st 3 {packetsplit[3]} {monsterinfo.Level} {monster.CurrentHp / monsterinfo.MaxHP * 100} {monster.CurrentMp / monsterinfo.MaxMP * 100} {monster.CurrentHp} {monster.CurrentMp}", ReceiverType.OnlyMe);
+                        ClientLinkManager.Instance.Broadcast(Session, $"st 3 {packetsplit[3]} {monsterinfo.Level} {(int)((float)monster.CurrentHp / (float)monsterinfo.MaxHP * 100)} {(int)((float)monster.CurrentMp / (float)monsterinfo.MaxMP * 100)} {monster.CurrentHp} {monster.CurrentMp}", ReceiverType.OnlyMe);
                     }
             }
         }
@@ -4242,7 +4244,7 @@ namespace OpenNos.Handler
                                 mmon.CurrentHp -= damage;
                             }
                             mmon.Target = Session.Character.CharacterId;
-                            string packet = $"su {1} {Session.Character.CharacterId} {3} {mmon.MapMonsterId} {skill.Effect} 6 {skill.AttackAnimation} {skill.Effect} 0 0 {(mmon.Alive ? 1 : 0)} {(int)((mmon.CurrentHp / monsterinfo.MaxHP) * 100)} {damage} {hitmode} {skill.Type}";
+                            string packet = $"su {1} {Session.Character.CharacterId} {3} {mmon.MapMonsterId} {skill.Effect} 6 {skill.AttackAnimation} {skill.Effect} 0 0 {(mmon.Alive ? 1 : 0)} {(int)(((float)mmon.CurrentHp / (float)monsterinfo.MaxHP) * 100)} {damage} {hitmode} {skill.Type}";
                             Session.Client.SendPacket(packet);
                             Task t = Task.Factory.StartNew(async () =>
                             {
