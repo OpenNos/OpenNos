@@ -258,11 +258,11 @@ namespace OpenNos.Handler
                                 return;
                             break;
                         case (byte)ClassType.Magician:
-                            if (Session.Character.Level < (skillinfo.MinimumMagicianLevel==0? skillinfo.MinimumAdventurerLevel : skillinfo.MinimumMagicianLevel))
+                            if (Session.Character.Level < (skillinfo.MinimumMagicianLevel == 0 ? skillinfo.MinimumAdventurerLevel : skillinfo.MinimumMagicianLevel))
                                 return;
                             break;
                     }
-                   
+
                     if (Session.Character.Skills.FirstOrDefault(s => s.SkillVNum == slot) != null)
                         return;
                     Session.Character.Gold -= skillinfo.Cost;
@@ -4154,8 +4154,8 @@ namespace OpenNos.Handler
                     {
                         Skill skill = ServerManager.GetSkill(ski.SkillVNum);
                         short dX = (short)(Session.Character.MapX - mmon.MapX);
-                          short dY = (short)(Session.Character.MapY - mmon.MapY);
-                         if (Math.Pow(dX,2) + Math.Pow(dY,2) <= Math.Pow(skill.Range+1, 2))
+                        short dY = (short)(Session.Character.MapY - mmon.MapY);
+                        if (Math.Pow(dX, 2) + Math.Pow(dY, 2) <= Math.Pow(skill.Range + 1, 2))
                         {
                             Random random = new Random();
                             int hitmode = 0;
@@ -4203,14 +4203,14 @@ namespace OpenNos.Handler
                                 {
                                     rnd = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
                                     double rndamount = rnd.Next(0, 100) * rnd.NextDouble();
-                                    if (rndamount <= (double)drop.DropChance / 1000.000)
+                                    if (rndamount <= (double)drop.DropChance / 5000.000)
                                     {
                                         Session.CurrentMap.ItemSpawn(drop, mmon.MapX, mmon.MapY);
                                     }
 
                                 }
                                 rnd = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
-                                short gold = Convert.ToInt16((rnd.Next(1, 5) >= 4 ? 1 : 0) * rnd.Next(6 * monsterinfo.Level, 12 * monsterinfo.Level));
+                                short gold = Convert.ToInt16((rnd.Next(1, 8) >= 7 ? 1 : 0) * rnd.Next(6 * monsterinfo.Level, 12 * monsterinfo.Level));
                                 if (gold != 0)
                                 {
                                     DropDTO drop2 = new DropDTO()
@@ -4228,8 +4228,18 @@ namespace OpenNos.Handler
                                     Session.Client.SendPacket(Session.Character.GenerateEff(5));
                                 }
                                 Inventory sp2 = Session.Character.InventoryList.LoadBySlotAndType((short)EquipmentType.Sp, (byte)InventoryType.Equipment);
-                                Session.Character.LevelXp += monsterinfo.XP;
-                                Session.Character.JobLevelXp += monsterinfo.JobXP;
+                                if (Session.Character.Level < 99)
+                                    Session.Character.LevelXp += monsterinfo.XP;
+                                if (Session.Character.JobLevel < 99)
+                                {
+                                    if (sp2 != null && Session.Character.UseSp && sp2.InventoryItem.SpLevel < 99)
+                                        Session.Character.JobLevelXp += (int)((double)monsterinfo.JobXP/(double)100 * sp2.InventoryItem.SpLevel);
+                                    else
+                                        Session.Character.JobLevelXp += monsterinfo.JobXP;
+                                }
+                                if (sp2 != null && Session.Character.UseSp && sp2.InventoryItem.SpLevel < 99)
+                                    sp2.InventoryItem.SpXp += monsterinfo.JobXP * (100 - sp2.InventoryItem.SpLevel);
+
                                 if (Session.Character.LevelXp >= Session.Character.XPLoad())
                                 {
                                     Session.Character.LevelXp -= (int)Session.Character.XPLoad();
@@ -4252,7 +4262,7 @@ namespace OpenNos.Handler
                                     ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(6), ReceiverType.AllOnMap);
                                     ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(198), ReceiverType.AllOnMap);
                                 }
-            
+
                                 if (sp2 != null && sp2.InventoryItem.SpXp >= Session.Character.SPXPLoad())
                                 {
                                     sp2.InventoryItem.SpXp -= (int)Session.Character.SPXPLoad();

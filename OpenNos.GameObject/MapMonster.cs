@@ -75,7 +75,10 @@ namespace OpenNos.GameObject
 
         public string GenerateIn3()
         {
-            return $"in 3 {MonsterVNum} {MapMonsterId} {MapX} {MapY} {Position} 100 100 0 0 0 -1 1 0 -1 - 0 -1 0 0 0 0 0 0 0 0";// 100 100 hp/mp
+            NpcMonster monsterinfo = ServerManager.GetNpc(this.MonsterVNum);
+            if (monsterinfo != null && Alive)
+                return $"in 3 {MonsterVNum} {MapMonsterId} {MapX} {MapY} {Position} {(int)(((float)CurrentHp / (float)monsterinfo.MaxHP) * 100)} {(int)(((float)CurrentMp / (float)monsterinfo.MaxMP) * 100)} 0 0 0 -1 1 0 -1 - 0 -1 0 0 0 0 0 0 0 0";
+            else return "";
         }
 
         internal void MonsterLife()
@@ -127,7 +130,7 @@ namespace OpenNos.GameObject
                         Character character = ClientLinkManager.Instance.ClosestUser(MapId, MapX, MapY);
                         if (character != null)
                         {
-                            if ((Math.Pow(character.MapX - MapX, 2) + Math.Pow(character.MapY - MapY, 2)) < (Math.Pow(7, 2)))
+                            if ((Math.Pow(character.MapX - MapX, 2) + Math.Pow(character.MapY - MapY, 2)) < (Math.Pow(11, 2)))
                             {
                                 Target = character.CharacterId;
                                 ClientLinkManager.Instance.RequiereBroadcastFromMap(MapId, GenerateEff(5000));

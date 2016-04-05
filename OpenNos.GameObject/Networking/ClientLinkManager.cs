@@ -146,7 +146,7 @@ namespace OpenNos.GameObject
         internal Character ClosestUser(short mapId, short mapX, short mapY)
         {
             Character temp = null;
-            int distance = 200;
+            int distance = int.MaxValue;
             foreach (ClientSession sess in Sessions.Where(s => s.Character != null && s.Character.MapId == mapId))
             {
                 int test = (int)(Math.Pow(mapX - sess.Character.MapX, 2) + Math.Pow(mapY - sess.Character.MapY, 2));
@@ -358,8 +358,9 @@ namespace OpenNos.GameObject
                         Pos = 1
                     }
                 };
-                //Session.Character.QuicklistEntries[0].Save();
-                // TODO is this useless?
+
+                if (Groups.FirstOrDefault(s => s.Characters.Contains(Session.Character.CharacterId)) != null)
+                    Instance.Broadcast(Session, $"pidx 1 1.{Session.Character.CharacterId}", ReceiverType.AllOnMapExceptMe);
 
             }
         }
