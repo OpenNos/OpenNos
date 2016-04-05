@@ -293,7 +293,7 @@ namespace OpenNos.Import.Console
                     }
                     else if (currentLine.Length > 6 && currentLine[1] == "PREATT")
                     {
-                        npc.IsHostile = currentLine[2] == "0" ? false : true; ;
+                        npc.IsHostile = currentLine[2] == "0" ? false : true; 
                         npc.Speed = Convert.ToByte(currentLine[5]);
                         npc.RespawnTime = Convert.ToInt32(currentLine[6]);
                     }
