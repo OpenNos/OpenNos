@@ -31,7 +31,7 @@ namespace OpenNos.Import.Console
         private readonly string _folder;
         private readonly List<string[]> _packetList = new List<string[]>();
         private IEnumerable<MapDTO> _maps;
-          
+
         #endregion
 
         #region Instantiation
@@ -236,24 +236,56 @@ namespace OpenNos.Import.Console
             //basicHpLoad
             int baseHp = 137;
             int basup = 19;
-            for(int i=0;i<100;i++)
+            for (int i = 0; i < 100; i++)
             {
                 basicHp[i] = baseHp;
                 basup++;
                 baseHp += basup;
-               
 
-                if(i==37)
+
+                if (i == 37)
                 {
                     baseHp = 1764;
                     basup = 66;
                 }
-                
+                if (i >= 38)
+                {
+                    if ((99 - i) % 8 == 0)
+                    {
+                        basup++;
+                    }
+                }
+
             }
 
             //basicMpLoad
+            for (int i = 0; i < 100; i++)
+            {
+                basicMp[i] = basicHp[i];
+            }
             //basicXPLoad
+            int baseXp = 161;
+            int basupxp = 19;
+            for (int i = 0; i < 100; i++)
+            {
+                basicXp[i] = baseXp;
+                basupxp++;
+                baseXp += basupxp;
+
+
+                if (i == 37)
+                {
+                    baseXp = 1764;
+                    basupxp = 66;
+                }
+
+            }
+
             //basicJXpLoad
+            for (int i = 0; i < 100; i++)
+            {
+                basicJXp[i] = 2 * basicXp[i];
+            }
 
             string fileNpcId = $"{_folder}\\monster.dat";
             string fileNpcLang = $"{_folder}\\_code_{System.Configuration.ConfigurationManager.AppSettings["language"]}_monster.txt";
