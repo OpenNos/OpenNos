@@ -4353,7 +4353,7 @@ namespace OpenNos.Handler
                         Session.Client.SendPacket(Session.Character.GenerateStatInfo());
                         Session.Client.SendPacket(Session.Character.GenerateEff(5));
                     }
-                    Inventory sp2 = Session.Character.InventoryList.LoadBySlotAndType((short)EquipmentType.Sp, (byte)InventoryType.Equipment);
+                    Inventory sp2 = Session.Character.EquipmentList.LoadBySlotAndType((short)EquipmentType.Sp, (byte)InventoryType.Equipment);
                     if (Session.Character.Level < 99)
                         Session.Character.LevelXp += monsterinfo.XP;
                     if ((Session.Character.Class == 0 && Session.Character.JobLevel < 20) || (Session.Character.Class != 0 && Session.Character.JobLevel < 80))
