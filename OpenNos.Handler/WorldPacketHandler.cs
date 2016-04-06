@@ -4416,11 +4416,10 @@ namespace OpenNos.Handler
             string[] packetsplit = packet.Split(' ');
             Session.Character.MapX = Convert.ToInt16(packetsplit[2]);
             Session.Character.MapY = Convert.ToInt16(packetsplit[3]);
-
+          
             if (Session.Character.Speed.Equals(Convert.ToByte(packetsplit[5])) || Convert.ToByte(packetsplit[5]) == 10)
             {
-                if (Session.Character.MapX > Convert.ToInt16(packetsplit[2]) + 10 || Session.Character.MapX < Convert.ToInt16(packetsplit[2]) - 10
-                   || Session.Character.MapY > Convert.ToInt16(packetsplit[3]) + 10 || Session.Character.MapY < Convert.ToInt16(packetsplit[3]) - 10)
+                if ((Math.Pow(Session.Character.MapX - Convert.ToInt16(packetsplit[2]), 2) + Math.Pow(Session.Character.MapY - Convert.ToInt16(packetsplit[3]), 2)) > Math.Pow(10, 2))
                     Session.Client.Disconnect();
                 ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateMv(), ReceiverType.AllOnMapExceptMe);
                 Session.Client.SendPacket(Session.Character.GenerateCond());
