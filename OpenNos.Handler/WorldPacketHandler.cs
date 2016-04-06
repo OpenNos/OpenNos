@@ -278,7 +278,9 @@ namespace OpenNos.Handler
                         return;
                     Session.Character.Gold -= skillinfo.Cost;
                     Session.Client.SendPacket(Session.Character.GenerateGold());
-                    
+                    Skill ski = ServerManager.GetSkill(slot);
+                    if (ski == null || !(ski.Class == Session.Character.Class || (ski.Class == 0 && ski.SkillVNum <100)))
+                        return;
                     Session.Character.Skills.Add(new CharacterSkill() { SkillVNum = slot, CharacterId = Session.Character.CharacterId });
                     Session.Client.SendPacket(Session.Character.GenerateSki());
                     string[] quicklistpackets = Session.Character.GenerateQuicklist();
