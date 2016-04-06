@@ -71,7 +71,7 @@ namespace OpenNos.Handler
             if (mode == 2)
             {
                 ExchangeInfo exc = ClientLinkManager.Instance.GetProperty<ExchangeInfo>(charId, "ExchangeInfo");
-                if (exc != null && exc.ExchangeList.Count() != 0)
+                if (exc != null && exc.ExchangeList.Count() == 0)
                 {
                     if (charId == Session.Character.CharacterId) return;
                     Session.Client.SendPacket($"exc_list 1 {charId} -1");
@@ -278,7 +278,7 @@ namespace OpenNos.Handler
                         return;
                     Session.Character.Gold -= skillinfo.Cost;
                     Session.Client.SendPacket(Session.Character.GenerateGold());
-
+                    
                     Session.Character.Skills.Add(new CharacterSkill() { SkillVNum = slot, CharacterId = Session.Character.CharacterId });
                     Session.Client.SendPacket(Session.Character.GenerateSki());
                     string[] quicklistpackets = Session.Character.GenerateQuicklist();
@@ -4528,7 +4528,7 @@ namespace OpenNos.Handler
 
             if (Session.Character.Speed.Equals(Convert.ToByte(packetsplit[5])) || Convert.ToByte(packetsplit[5]) == 10)
             {
-                if ((Math.Pow(Session.Character.MapX - Convert.ToInt16(packetsplit[2]), 2) + Math.Pow(Session.Character.MapY - Convert.ToInt16(packetsplit[3]), 2)) > Math.Pow(10, 2))
+                if ((Math.Pow(Session.Character.MapX - Convert.ToInt16(packetsplit[2]), 2) + Math.Pow(Session.Character.MapY - Convert.ToInt16(packetsplit[3]), 2)) > Math.Pow(20, 2))
                     Session.Client.Disconnect();
                 ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateMv(), ReceiverType.AllOnMapExceptMe);
                 Session.Client.SendPacket(Session.Character.GenerateCond());
