@@ -4314,6 +4314,10 @@ namespace OpenNos.Handler
 
                                      string packet = $"su {1} {Session.Character.CharacterId} {3} {mmon.MapMonsterId} {skill.Effect} 6 {skill.AttackAnimation} {skill.Effect} 0 0 {(mmon.Alive ? 1 : 0)} {(int)(((float)mmon.CurrentHp / (float)monsterinfo.MaxHP) * 100)} {damage} {hitmode} {skill.Type}";
                                      ClientLinkManager.Instance.Broadcast(Session, packet, ReceiverType.AllOnMap);
+                                     foreach (MapMonster mon in Session.CurrentMap.GetListMonsterInRange(mmon.MapX, mmon.MapY, skill.Distance))
+                                     {
+                                         //add aoe distance
+                                     }
 
                                  });
 

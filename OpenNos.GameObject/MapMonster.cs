@@ -94,7 +94,9 @@ namespace OpenNos.GameObject
                     Target = -1;
                     CurrentHp = monster.MaxHP;
                     CurrentMp = monster.MaxMP;
+                   
                     ClientLinkManager.Instance.RequiereBroadcastFromMap(MapId, GenerateIn3());
+                    ClientLinkManager.Instance.RequiereBroadcastFromMap(MapId, GenerateEff(7));
                 }
                 return;
             }

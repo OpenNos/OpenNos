@@ -445,12 +445,12 @@ namespace OpenNos.GameObject
         {
             List<CharacterSkill> skill = UseSp ? SkillsSp : Skills;
             string skibase = $"{skill[0].SkillVNum} {skill[1].SkillVNum}";
-          
+
             string skills = "";
             foreach (CharacterSkill ski in skill)
             {
                 skills += $" {ski.SkillVNum}";
-               
+
             }
 
             return $"ski {skibase} {skills}";
@@ -584,8 +584,22 @@ namespace OpenNos.GameObject
             int slDefence = ServersData.SlPoint(inventoryItem.SlDefence, 1);
             int slHit = ServersData.SlPoint(inventoryItem.SlDamage, 0);
 
-            string skill = "-1"; //sk.sk.sk.sk.sk...
+            string skill = ""; //sk.sk.sk.sk.sk...
+            List<CharacterSkill> skillsSp = new List<CharacterSkill>();
+            foreach (Skill ski in ServerManager.GetAllSkill())
+            {
+                if (ski.Class == iteminfo.Morph + 31)
+                    skillsSp.Add(new CharacterSkill() { SkillVNum = ski.SkillVNum, CharacterId = CharacterId });
+            }
 
+            if (skillsSp.Count == 0)
+                skill = "-1";
+            for (int i = 0; i < 20; i++)
+            {
+                if (skillsSp.Count >= i + 1)
+                    skill += $"{skillsSp[i].SkillVNum}.";
+            }
+            skill.TrimEnd('.');
             return $"slinfo {type} {inventoryItem.ItemVNum} {iteminfo.Morph} {inventoryItem.SpLevel} {iteminfo.LevelJobMinimum} {iteminfo.ReputationMinimum + 1} 0 0 0 0 0 0 0 0 {iteminfo.FireResistance} {iteminfo.WaterResistance} {iteminfo.LightResistance} {iteminfo.DarkResistance} {inventoryItem.SpXp} {ServersData.SpXPData[inventoryItem.SpLevel - 1]} {skill} {inventoryItem.InventoryItemId} {freepoint} {slHit} {slDefence} {slElement} {slHp} {inventoryItem.Upgrade} - 1 12 0 0 0 0 {inventoryItem.SpStoneUpgrade} {inventoryItem.SpDamage} {inventoryItem.SpDefence} {inventoryItem.SpElement} {inventoryItem.SpHP} {inventoryItem.SpFire} {inventoryItem.SpWater} {inventoryItem.SpLight} {inventoryItem.SpDark} 0";
         }
 
