@@ -44,7 +44,7 @@
 -- -----------------------------------------------------------
 -- Entity Designer DDL Script for MySQL Server 4.1 and higher
 -- -----------------------------------------------------------
--- Date Created: 04/06/2016 17:00:53
+-- Date Created: 04/06/2016 18:08:09
 
 -- Generated from EDMX file: C:\Users\ERWAN\Desktop\OpenNos Git\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
 -- Target version: 3.0.0.0
@@ -629,6 +629,7 @@ CREATE TABLE `skill`(
 	`CastEffect` smallint NOT NULL, 
 	`TargetRange` TINYINT UNSIGNED NOT NULL, 
 	`TargetType` TINYINT UNSIGNED NOT NULL, 
+	`HitType` TINYINT UNSIGNED NOT NULL, 
 	`Duration` smallint NOT NULL, 
 	`Damage` smallint NOT NULL, 
 	`ElementalDamage` smallint NOT NULL, 

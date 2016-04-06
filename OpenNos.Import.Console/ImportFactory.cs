@@ -506,6 +506,7 @@ namespace OpenNos.Import.Console
                         //1&2 used as type
                         //third unknown
                         skill.TargetType = byte.Parse(currentLine[2]);
+                        skill.HitType = byte.Parse(currentLine[3]);
                         skill.TargetRange = byte.Parse(currentLine[5]);
                     }
                     else if (currentLine.Length > 2 && currentLine[1] == "DATA")

@@ -555,6 +555,7 @@
     <Property Name="CastEffect" Type="smallint" Nullable="false" />
     <Property Name="TargetRange" Type="utinyint" Nullable="false" />
     <Property Name="TargetType" Type="utinyint" Nullable="false" />
+    <Property Name="HitType" Type="utinyint" Nullable="false" />
     <Property Name="Duration" Type="smallint" Nullable="false" />
     <Property Name="Damage" Type="smallint" Nullable="false" />
     <Property Name="ElementalDamage" Type="smallint" Nullable="false" />
@@ -1913,6 +1914,7 @@
           <NavigationProperty Name="shopskill" Relationship="opennosModel.shopskillSkill" FromRole="Skill" ToRole="shopskill" />
           <Property Name="TargetRange" Type="Byte" Nullable="false" />
           <Property Name="TargetType" Type="Byte" Nullable="false" />
+          <Property Name="HitType" Type="Byte" Nullable="false" />
           <Property Name="Duration" Type="Int16" Nullable="false" />
           <Property Name="Damage" Type="Int16" Nullable="false" />
           <Property Name="ElementalDamage" Type="Int16" Nullable="false" />
@@ -2492,6 +2494,7 @@
           <ScalarProperty Name="CastEffect" ColumnName="CastEffect" />
           <ScalarProperty Name="TargetRange" ColumnName="TargetRange" />
           <ScalarProperty Name="TargetType" ColumnName="TargetType" />
+          <ScalarProperty Name="HitType" ColumnName="HitType" />
           <ScalarProperty Name="Duration" ColumnName="Duration" />
           <ScalarProperty Name="Damage" ColumnName="Damage" />
           <ScalarProperty Name="ElementalDamage" ColumnName="ElementalDamage" />

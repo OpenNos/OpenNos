@@ -37,6 +37,7 @@ namespace OpenNos.Data
         public short CastEffect { get; set; }
         public byte TargetRange { get; set; }
         public byte TargetType { get; set; }
+        public byte HitType { get; set; }
         public short Duration { get; set; }
         public short Damage { get; set; }
         public short ElementalDamage { get; set; }
@@ -47,6 +48,7 @@ namespace OpenNos.Data
         public short VNumRequired { get; set; }
         public short UpgradeSkill { get; set; }
         public short CastTime { get; set; }
+
         #endregion
     }
 }

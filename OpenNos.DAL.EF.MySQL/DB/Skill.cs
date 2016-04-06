@@ -41,6 +41,7 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public short CastEffect { get; set; }
         public byte TargetRange { get; set; }
         public byte TargetType { get; set; }
+        public byte HitType { get; set; }
         public short Duration { get; set; }
         public short Damage { get; set; }
         public short ElementalDamage { get; set; }
