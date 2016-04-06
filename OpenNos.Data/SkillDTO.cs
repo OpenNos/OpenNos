@@ -35,13 +35,13 @@ namespace OpenNos.Data
         public short CastAnimation { get; set; }
         public short AttackAnimation { get; set; }
         public short CastEffect { get; set; }
-        public byte Distance { get; set; }
+        public byte TargetRange { get; set; }
+        public byte TargetType { get; set; }
         public short Duration { get; set; }
         public short Damage { get; set; }
         public short ElementalDamage { get; set; }
         public byte Element { get; set; }
         public short CastId { get; set; }
-        public byte UpgradeType { get; set; }
         public byte Type { get; set; }
         public byte Range { get; set; }
         public short VNumRequired { get; set; }

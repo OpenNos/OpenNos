@@ -39,7 +39,8 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public short CastAnimation { get; set; }
         public short AttackAnimation { get; set; }
         public short CastEffect { get; set; }
-        public byte Distance { get; set; }
+        public byte TargetRange { get; set; }
+        public byte TargetType { get; set; }
         public short Duration { get; set; }
         public short Damage { get; set; }
         public short ElementalDamage { get; set; }
