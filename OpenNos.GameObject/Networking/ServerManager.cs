@@ -250,6 +250,11 @@ namespace OpenNos.GameObject
             }
         }
 
+        public static IEnumerable<Skill> GetAllSkill()
+        {
+            return _skills;
+        }
+
         #endregion
     }
 }

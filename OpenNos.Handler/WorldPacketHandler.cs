@@ -70,9 +70,15 @@ namespace OpenNos.Handler
 
             if (mode == 2)
             {
-                if (charId == Session.Character.CharacterId) return;
-                Session.Client.SendPacket($"exc_list 1 {charId} -1");
-                ClientLinkManager.Instance.Broadcast(Session, $"exc_list 1 {Session.Character.CharacterId} -1", ReceiverType.OnlySomeone, "", charId);
+                ExchangeInfo exc = ClientLinkManager.Instance.GetProperty<ExchangeInfo>(charId, "ExchangeInfo");
+                if (exc != null && exc.ExchangeList.Count() != 0)
+                {
+                    if (charId == Session.Character.CharacterId) return;
+                    Session.Client.SendPacket($"exc_list 1 {charId} -1");
+                    ClientLinkManager.Instance.Broadcast(Session, $"exc_list 1 {Session.Character.CharacterId} -1", ReceiverType.OnlySomeone, "", charId);
+                }
+                else
+                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateModal($"refused {Language.Instance.GetMessageFromKey("ALREADY_EXCHANGE")}"), ReceiverType.OnlySomeone, "", charId);
             }
             else if (mode == 5)
             {
@@ -437,6 +443,13 @@ namespace OpenNos.Handler
             Session.Client.SendPacket(Session.Character.GenerateLev());
             Session.Client.SendPacket(Session.Character.GenerateStat());
             Session.Client.SendPacket(Session.Character.GenerateStatChar());
+            Session.Character.SkillsSp = new List<CharacterSkill>();
+            foreach (Skill ski in ServerManager.GetAllSkill())
+            {
+                if (ski.Class == Session.Character.Morph + 31)
+                    Session.Character.SkillsSp.Add(new CharacterSkill() { SkillVNum = ski.SkillVNum, CharacterId = Session.Character.CharacterId });
+            }
+            Session.Client.SendPacket(Session.Character.GenerateSki());
         }
 
         public void ChangeVehicle(Item item)
@@ -955,6 +968,7 @@ namespace OpenNos.Handler
             else
                 Session.Client.SendPacket(Session.Character.GenerateSay("$Effect EFFECT", 10));
         }
+
 
         [Packet("eqinfo")]
         public void EqInfo(string packet)
@@ -2653,7 +2667,7 @@ namespace OpenNos.Handler
             chara.Send(s); */
 
             // lev 40 2288403 23 47450 3221180 113500 20086 5
-
+            Session.Client.SendPacket(Session.Character.GenerateSki());
             Session.Client.SendPacket(Session.Character.GenerateStat());
             Session.Client.SendPacket(Session.Character.GenerateStatChar());
             await Task.Delay(30000);
@@ -2888,11 +2902,11 @@ namespace OpenNos.Handler
                 Session.Character.Gold -= skillinfo.Cost;
                 Session.Client.SendPacket(Session.Character.GenerateGold());
 
-                foreach (CharacterSkill sk in Session.Character.Skills)
+                for (int i = Session.Character.Skills.Count - 1; i >= 0; i--)
                 {
-                    Skill skinfo = ServerManager.GetSkill(sk.SkillVNum);
+                    Skill skinfo = ServerManager.GetSkill(Session.Character.Skills[i].SkillVNum);
                     if (skillinfo.UpgradeSkill == skinfo.UpgradeSkill)
-                        Session.Character.Skills.Remove(sk);
+                        Session.Character.Skills.Remove(Session.Character.Skills[i]);
                 }
 
                 Session.Character.Skills.Remove(skill);
@@ -4136,16 +4150,15 @@ namespace OpenNos.Handler
             string[] packetsplit = packet.Split(' ');
 
             TargetHit(Convert.ToInt32(packetsplit[2]), Convert.ToInt32(packetsplit[3]), Convert.ToInt32(packetsplit[4]));
-
-
         }
 
         public void TargetHit(int Castingid, int targetobj, int targetid)
         {
-            int skillsize = Session.Character.Skills.Count();
+            List<CharacterSkill> skills = Session.Character.UseSp ? Session.Character.SkillsSp : Session.Character.Skills;
+            int skillsize = skills.Count();
             for (int i = 0; i < skillsize; i++)
             {
-                CharacterSkill ski = Session.Character.Skills.ElementAt(Castingid);
+                CharacterSkill ski = skills.ElementAt(Castingid);
                 MapMonster mmon = Session.CurrentMap.Monsters.FirstOrDefault(s => s.MapMonsterId == targetid);
                 if (mmon != null && mmon.Alive)
                 {
@@ -4231,7 +4244,7 @@ namespace OpenNos.Handler
                                 Inventory sp2 = Session.Character.InventoryList.LoadBySlotAndType((short)EquipmentType.Sp, (byte)InventoryType.Equipment);
                                 if (Session.Character.Level < 99)
                                     Session.Character.LevelXp += monsterinfo.XP;
-                                if (Session.Character.JobLevel < 99)
+                                if ((Session.Character.Class == 0 && Session.Character.JobLevel < 20) || (Session.Character.Class != 0 && Session.Character.JobLevel < 80))
                                 {
                                     if (sp2 != null && Session.Character.UseSp && sp2.InventoryItem.SpLevel < 99)
                                         Session.Character.JobLevelXp += (int)((double)monsterinfo.JobXP / (double)100 * sp2.InventoryItem.SpLevel);
@@ -4293,15 +4306,16 @@ namespace OpenNos.Handler
                                 }
                             });
 
-                         Task t=   Task.Factory.StartNew(async () =>
-                               {
+                            Task t = Task.Factory.StartNew(async () =>
+                                 {
 
-                                   await cast;
+                                     ClientLinkManager.Instance.Broadcast(Session, $"ct 1 {Session.Character.CharacterId} 3 {mmon.MapMonsterId} {skill.CastAnimation} -1 {skill.SkillVNum}", ReceiverType.AllOnMap);
+                                     await cast;
 
-                                   string packet = $"su {1} {Session.Character.CharacterId} {3} {mmon.MapMonsterId} {skill.Effect} 6 {skill.AttackAnimation} {skill.Effect} 0 0 {(mmon.Alive ? 1 : 0)} {(int)(((float)mmon.CurrentHp / (float)monsterinfo.MaxHP) * 100)} {damage} {hitmode} {skill.Type}";
-                                   ClientLinkManager.Instance.Broadcast(Session, packet, ReceiverType.AllOnMap);
+                                     string packet = $"su {1} {Session.Character.CharacterId} {3} {mmon.MapMonsterId} {skill.Effect} 6 {skill.AttackAnimation} {skill.Effect} 0 0 {(mmon.Alive ? 1 : 0)} {(int)(((float)mmon.CurrentHp / (float)monsterinfo.MaxHP) * 100)} {damage} {hitmode} {skill.Type}";
+                                     ClientLinkManager.Instance.Broadcast(Session, packet, ReceiverType.AllOnMap);
 
-                               });
+                                 });
 
                             Task.Factory.StartNew(async () =>
                             {
@@ -4416,7 +4430,7 @@ namespace OpenNos.Handler
             string[] packetsplit = packet.Split(' ');
             Session.Character.MapX = Convert.ToInt16(packetsplit[2]);
             Session.Character.MapY = Convert.ToInt16(packetsplit[3]);
-          
+
             if (Session.Character.Speed.Equals(Convert.ToByte(packetsplit[5])) || Convert.ToByte(packetsplit[5]) == 10)
             {
                 if ((Math.Pow(Session.Character.MapX - Convert.ToInt16(packetsplit[2]), 2) + Math.Pow(Session.Character.MapY - Convert.ToInt16(packetsplit[3]), 2)) > Math.Pow(10, 2))

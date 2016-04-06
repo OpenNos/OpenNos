@@ -76,6 +76,7 @@ namespace OpenNos.GameObject
         public byte LastSpeed { get; set; }
         public int MaxSnack { get; set; }
         public List<CharacterSkill> Skills { get; set; }
+        public List<CharacterSkill> SkillsSp { get; set; }
         public int Morph { get { return _morph; } set { _morph = value; } }
         public int MorphUpgrade { get { return _morphUpgrade; } set { _morphUpgrade = value; } }
         public int MorphUpgrade2 { get { return _morphUpgrade2; } set { _morphUpgrade2 = value; } }
@@ -442,31 +443,14 @@ namespace OpenNos.GameObject
         }
         public string GenerateSki()
         {
-            string skibase = "";
-            if (!UseSp)
-            {
-                switch (Class)
-                {
-                    case (byte)ClassType.Adventurer:
-                        skibase = "200 201";
-                        break;
-                    case (byte)ClassType.Swordman:
-                        skibase = "220 221";
-                        break;
-                    case (byte)ClassType.Archer:
-                        skibase = "240 241";
-                        break;
-                    case (byte)ClassType.Magician:
-                        skibase = "260 261";
-                        break;
-                }
-            }
+            List<CharacterSkill> skill = UseSp ? SkillsSp : Skills;
+            string skibase = $"{skill[0].SkillVNum} {skill[1].SkillVNum}";
+          
             string skills = "";
-            foreach (CharacterSkill ski in Skills)
+            foreach (CharacterSkill ski in skill)
             {
-                Skill skillinfo = ServerManager.GetSkill(ski.SkillVNum);
-                if (skillinfo.Class == Class || (skillinfo.Class == 0 && skillinfo.SkillVNum <100))
-                    skills += $" {ski.SkillVNum}";
+                skills += $" {ski.SkillVNum}";
+               
             }
 
             return $"ski {skibase} {skills}";
@@ -918,7 +902,7 @@ namespace OpenNos.GameObject
                 }
             }
 
-            return new[] {pktQs0, pktQs1, pktQs2};
+            return new[] { pktQs0, pktQs1, pktQs2 };
         }
 
 
@@ -1169,7 +1153,7 @@ namespace OpenNos.GameObject
 
             // Character's Inventories
             foreach (InventoryDTO inv in DAOFactory.InventoryDAO.LoadByCharacterId(CharacterId))
-                if (inv.Type == (byte) InventoryType.Equipment)
+                if (inv.Type == (byte)InventoryType.Equipment)
                 {
                     if (EquipmentList.LoadBySlotAndType(inv.Slot, inv.Type) == null)
                         DAOFactory.InventoryDAO.DeleteFromSlotAndType(CharacterId, inv.Slot, inv.Type);
