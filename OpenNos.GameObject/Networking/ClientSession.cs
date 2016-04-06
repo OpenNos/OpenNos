@@ -214,6 +214,8 @@ namespace OpenNos.GameObject
                 Logger.Log.DebugFormat(Language.Instance.GetMessageFromKey("PACKET_ARRIVED"), sessionPacket);
 
                 string[] sessionParts = sessionPacket.Split(' ');
+                if (sessionParts.Count() < 1)
+                    return;
                 this.LastKeepAliveIdentity = Convert.ToInt32(sessionParts[0]);
 
                 //set the SessionId if Session Packet arrives

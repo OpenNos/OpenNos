@@ -4184,7 +4184,11 @@ namespace OpenNos.Handler
             List<CharacterSkill> skills = Session.Character.UseSp ? Session.Character.SkillsSp : Session.Character.Skills;
             int damage;
             int hitmode = 0;
-
+            if (skills.Count()-1 < Castingid)
+            {
+                Session.Client.SendPacket("cancel 0 0");
+                return;
+            }
             CharacterSkill ski = skills.ElementAt(Castingid);
             Skill skill = null;
             if (ski != null)
