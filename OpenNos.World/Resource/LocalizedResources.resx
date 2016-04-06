@@ -568,7 +568,7 @@
     <value>Server is started successfully.</value>
   </data>
   <data name="STAY_TIME" xml:space="preserve">
-    <value>SP transformation needs cooldown, 30 seconds</value>
+    <value>SP transformation needs cooldown, {0} seconds</value>
   </data>
   <data name="SURE_TO_DELETE" xml:space="preserve">
     <value>Are you sure you want to delete?</value>

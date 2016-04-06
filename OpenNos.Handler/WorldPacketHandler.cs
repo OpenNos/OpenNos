@@ -2666,9 +2666,18 @@ namespace OpenNos.Handler
 
             /* string s="sl 0";
                chara.Send(s); */
+            Session.Character.SpCooldown = 30;
+            foreach (CharacterSkill ski in Session.Character.SkillsSp.Where(s => s.Used))
+            {
+                short time = ServerManager.GetSkill(ski.SkillVNum).Cooldown;
+                double temp = (ski.LastUse - DateTime.Now).TotalMilliseconds + time * 100;
+                Session.Character.SpCooldown = temp / 1000 > Session.Character.SpCooldown ? (int)(temp / 1000) : (int)(Session.Character.SpCooldown / 1000);
+            }
 
-            Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("STAY_TIME")), 11));
-            Session.Client.SendPacket("sd 30");
+            Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("STAY_TIME"), Session.Character.SpCooldown), 11));
+
+           
+            Session.Client.SendPacket($"sd {Session.Character.SpCooldown}");
 
             ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateCMode(), ReceiverType.AllOnMap);
             ClientLinkManager.Instance.Broadcast(Session, $"guri 6 1 {Session.Character.CharacterId} 0 0", ReceiverType.AllOnMap);
@@ -2684,7 +2693,10 @@ namespace OpenNos.Handler
             Session.Client.SendPacket(quicklistpackets[2]);
             Session.Client.SendPacket(Session.Character.GenerateStat());
             Session.Client.SendPacket(Session.Character.GenerateStatChar());
-            await Task.Delay(30000);
+
+
+
+            await Task.Delay(Session.Character.SpCooldown * 1000);
             if (Session == null || Session.Client == null)
                 return;
             Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("TRANSFORM_DISAPEAR")), 11));
@@ -3543,7 +3555,7 @@ namespace OpenNos.Handler
                 else
                 {
                     double timeSpanSinceLastSpUsage = currentRunningSeconds - Session.Character.LastSp;
-                    if (timeSpanSinceLastSpUsage >= 30)
+                    if (timeSpanSinceLastSpUsage >= Session.Character.SpCooldown)
                     {
                         if (Session.Character.ThreadCharChange?.IsAlive == true)
                             Session.Character.ThreadCharChange.Abort();
@@ -3552,7 +3564,7 @@ namespace OpenNos.Handler
                     }
                     else
                     {
-                        Session.Client.SendPacket(Session.Character.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("SP_INLOADING"), 30 - (int)Math.Round(timeSpanSinceLastSpUsage, 0)), 0));
+                        Session.Client.SendPacket(Session.Character.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("SP_INLOADING"), Session.Character.SpCooldown - (int)Math.Round(timeSpanSinceLastSpUsage, 0)), 0));
                     }
                 }
             }
@@ -4177,7 +4189,7 @@ namespace OpenNos.Handler
             if (ski != null)
                 skill = ServerManager.GetSkill(ski.SkillVNum);
 
-            if (skill != null && skill.TargetType == 1 && skill.HitType == 1)
+            if (skill != null && skill.TargetType == 1 && skill.HitType == 1 && !ski.Used)
             {
                 Task cast = Task.Factory.StartNew(async () =>
                 {
@@ -4212,6 +4224,7 @@ namespace OpenNos.Handler
                 {
                     await t;
                     ski.Used = true;
+                    ski.LastUse = DateTime.Now;
                     await Task.Delay(skill.Cooldown * 100);
                     Session.Client.SendPacket($"sr {Castingid}");
                     ski.Used = false;
@@ -4232,7 +4245,7 @@ namespace OpenNos.Handler
                             if (skill.CastEffect != 0)
                             {
                                 ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(skill.CastEffect), ReceiverType.AllOnMap);
-                                await Task.Delay(skill.CastTime * 100);
+                                await Task.Delay((skill.Cooldown - skill.CastTime) * 100);
                             }
                         });
 
@@ -4259,7 +4272,8 @@ namespace OpenNos.Handler
                         {
                             await t;
                             ski.Used = true;
-                            await Task.Delay(skill.Cooldown * 100);
+                            ski.LastUse = DateTime.Now;
+                            await Task.Delay((skill.Cooldown - skill.CastTime) * 100);
                             Session.Client.SendPacket($"sr {Castingid}");
                             ski.Used = false;
                         });
@@ -4366,7 +4380,7 @@ namespace OpenNos.Handler
                     if (sp2 != null && Session.Character.UseSp && sp2.InventoryItem.SpLevel < 99)
                         sp2.InventoryItem.SpXp += monsterinfo.JobXP * (100 - sp2.InventoryItem.SpLevel);
 
-                    if (Session.Character.LevelXp >= Session.Character.XPLoad())
+                    while (Session.Character.LevelXp >= Session.Character.XPLoad())
                     {
                         Session.Character.LevelXp -= (int)Session.Character.XPLoad();
                         Session.Character.Level++;
@@ -4377,7 +4391,7 @@ namespace OpenNos.Handler
                         ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(6), ReceiverType.AllOnMap);
                         ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(198), ReceiverType.AllOnMap);
                     }
-                    if (Session.Character.JobLevelXp >= Session.Character.JobXPLoad())
+                    while (Session.Character.JobLevelXp >= Session.Character.JobXPLoad())
                     {
                         Session.Character.JobLevelXp -= (int)Session.Character.JobXPLoad();
                         Session.Character.JobLevel++;
@@ -4389,7 +4403,7 @@ namespace OpenNos.Handler
                         ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(198), ReceiverType.AllOnMap);
                     }
 
-                    if (sp2 != null && sp2.InventoryItem.SpXp >= Session.Character.SPXPLoad())
+                    while (sp2 != null && sp2.InventoryItem.SpXp >= Session.Character.SPXPLoad())
                     {
                         sp2.InventoryItem.SpXp -= (int)Session.Character.SPXPLoad();
                         sp2.InventoryItem.SpLevel++;

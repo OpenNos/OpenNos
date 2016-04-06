@@ -556,7 +556,7 @@
     <value>Server erfolgreich gestartet!</value>
   </data>
   <data name="STAY_TIME" xml:space="preserve">
-    <value>Dauer des Nebeneffekts der Transformation: 30 Sekunden</value>
+    <value>Dauer des Nebeneffekts der Transformation: {0} Sekunden</value>
   </data>
   <data name="SURE_TO_DELETE" xml:space="preserve">
     <value>Wenn du den Gegenstand zerstörst, kann er nicht wiederhergestellt werden. Willst du ihn wirklich zerstören?</value>

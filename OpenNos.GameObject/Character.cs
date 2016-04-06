@@ -53,6 +53,7 @@ namespace OpenNos.GameObject
         {
             Mapper.CreateMap<CharacterDTO, Character>();
             Mapper.CreateMap<Character, CharacterDTO>();
+            SpCooldown = 30;
         }
 
         #endregion
@@ -110,6 +111,7 @@ namespace OpenNos.GameObject
         public int WaterResistance { get; set; }
         public short LastNRunId { get; set; }
         public List<QuicklistEntry> QuicklistEntries { get; set; }
+        public int SpCooldown { get; set; }
 
         #endregion
 
@@ -1202,7 +1204,9 @@ namespace OpenNos.GameObject
 
         public double SPXPLoad()
         {
-            return ServersData.SpXPData[JobLevel - 1];
+            Inventory sp2 = EquipmentList.LoadBySlotAndType((short)EquipmentType.Sp, (byte)InventoryType.Equipment);
+
+            return ServersData.SpXPData[sp2.InventoryItem.SpLevel - 1];
         }
 
         public bool Update()

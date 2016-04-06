@@ -15,6 +15,7 @@
 using AutoMapper;
 using OpenNos.DAL;
 using OpenNos.Data;
+using System;
 
 namespace OpenNos.GameObject
 {
@@ -26,11 +27,13 @@ namespace OpenNos.GameObject
         {
             Mapper.CreateMap<CharacterSkillDTO, CharacterSkill>();
             Mapper.CreateMap<CharacterSkill, CharacterSkillDTO>();
+            LastUse = DateTime.Now.AddHours(-1);
             Used = false;
         }
 
         #endregion
-        public bool Used {
+        public bool Used { get; set; }
+        public DateTime LastUse {
             get; set;
         }
         #region Methods

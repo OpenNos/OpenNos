@@ -553,7 +553,7 @@
     <value>Le serveur s'est lancé sans problèmes.</value>
   </data>
   <data name="STAY_TIME" xml:space="preserve">
-    <value>Durée de l'effet secondaire lié à la transformation : 30 secondes</value>
+    <value>Durée de l'effet secondaire lié à la transformation : {0} secondes</value>
   </data>
   <data name="SURE_TO_DELETE" xml:space="preserve">
     <value>Are you sure you want to delete?</value>

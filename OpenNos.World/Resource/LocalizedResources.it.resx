@@ -553,7 +553,7 @@
     <value>Il server si è avviato con successo!</value>
   </data>
   <data name="STAY_TIME" xml:space="preserve">
-    <value>La trasformazione non essere realizzata a causa dell'effetto collaterale della trasformazione, aspetta: 30 secondi</value>
+    <value>La trasformazione non essere realizzata a causa dell'effetto collaterale della trasformazione, aspetta: {0} secondi</value>
   </data>
   <data name="SURE_TO_DELETE" xml:space="preserve">
     <value>L'item verrà distrutto.</value>
