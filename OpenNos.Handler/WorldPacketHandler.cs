@@ -71,7 +71,7 @@ namespace OpenNos.Handler
             if (mode == 2)
             {
                 ExchangeInfo exc = ClientLinkManager.Instance.GetProperty<ExchangeInfo>(charId, "ExchangeInfo");
-                if (exc != null && exc.ExchangeList.Count() == 0)
+                if (exc == null || exc.ExchangeList.Count() == 0)
                 {
                     if (charId == Session.Character.CharacterId) return;
                     Session.Client.SendPacket($"exc_list 1 {charId} -1");
