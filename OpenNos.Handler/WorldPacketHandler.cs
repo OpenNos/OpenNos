@@ -449,7 +449,12 @@ namespace OpenNos.Handler
                 if (ski.Class == Session.Character.Morph + 31)
                     Session.Character.SkillsSp.Add(new CharacterSkill() { SkillVNum = ski.SkillVNum, CharacterId = Session.Character.CharacterId });
             }
+
             Session.Client.SendPacket(Session.Character.GenerateSki());
+            string[] quicklistpackets = Session.Character.GenerateQuicklist();
+            Session.Client.SendPacket(quicklistpackets[0]);
+            Session.Client.SendPacket(quicklistpackets[1]);
+            Session.Client.SendPacket(quicklistpackets[2]);
         }
 
         public void ChangeVehicle(Item item)
@@ -2668,6 +2673,10 @@ namespace OpenNos.Handler
 
             // lev 40 2288403 23 47450 3221180 113500 20086 5
             Session.Client.SendPacket(Session.Character.GenerateSki());
+            string[] quicklistpackets = Session.Character.GenerateQuicklist();
+            Session.Client.SendPacket(quicklistpackets[0]);
+            Session.Client.SendPacket(quicklistpackets[1]);
+            Session.Client.SendPacket(quicklistpackets[2]);
             Session.Client.SendPacket(Session.Character.GenerateStat());
             Session.Client.SendPacket(Session.Character.GenerateStatChar());
             await Task.Delay(30000);
@@ -4189,7 +4198,6 @@ namespace OpenNos.Handler
                                  if (skill.Distance !=0)
                                  foreach (MapMonster mon in Session.CurrentMap.GetListMonsterInRange(mmon.MapX, mmon.MapY, skill.Distance))
                                  {
-                                     //add aoe distance
                                      damage = GenerateDamage(Session, mmon, skill, ref hitmode);
                                      packet = $"su {1} {Session.Character.CharacterId} {3} {mon.MapMonsterId} {skill.SkillVNum} {skill.Cooldown} {skill.AttackAnimation} {skill.Effect} 0 0 {(mon.Alive ? 1 : 0)} {(int)(((float)mon.CurrentHp / (float)ServerManager.GetNpc(mon.MonsterVNum).MaxHP) * 100)} {damage} {5} {skill.Type}";
                                      ClientLinkManager.Instance.Broadcast(Session, packet, ReceiverType.AllOnMap);
