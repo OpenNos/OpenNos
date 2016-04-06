@@ -2671,7 +2671,8 @@ namespace OpenNos.Handler
             {
                 short time = ServerManager.GetSkill(ski.SkillVNum).Cooldown;
                 double temp = (ski.LastUse - DateTime.Now).TotalMilliseconds + time * 100;
-                Session.Character.SpCooldown = temp / 1000 > Session.Character.SpCooldown ? (int)(temp / 1000) : (int)(Session.Character.SpCooldown);
+                temp /= 1000;
+                Session.Character.SpCooldown = temp> Session.Character.SpCooldown ? (int)(temp) : (int)(Session.Character.SpCooldown);
             }
 
             Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("STAY_TIME"), Session.Character.SpCooldown), 11));
