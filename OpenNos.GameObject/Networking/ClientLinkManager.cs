@@ -143,6 +143,11 @@ namespace OpenNos.GameObject
             return true;
         }
 
+        internal void RequiereBroadcastToUser(long target, string v)
+        {
+            Sessions.FirstOrDefault(s => s != null && s.Client != null && s.Character != null && s.Character.CharacterId.Equals(target)).Client.SendPacket(v);   
+        }
+
         internal Character ClosestUser(short mapId, short mapX, short mapY)
         {
             Character temp = null;

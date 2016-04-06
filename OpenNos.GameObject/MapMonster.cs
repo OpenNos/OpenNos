@@ -135,7 +135,7 @@ namespace OpenNos.GameObject
                             if ((Math.Pow(character.MapX - MapX, 2) + Math.Pow(character.MapY - MapY, 2)) < (Math.Pow(11, 2)))
                             {
                                 Target = character.CharacterId;
-                                ClientLinkManager.Instance.RequiereBroadcastFromMap(MapId, GenerateEff(5000));
+                                ClientLinkManager.Instance.RequiereBroadcastToUser(Target, GenerateEff(5000));
                             }
                         }
                     }
