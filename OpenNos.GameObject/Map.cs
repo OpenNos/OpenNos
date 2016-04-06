@@ -292,7 +292,7 @@ namespace OpenNos.GameObject
         public List<MapMonster> GetListMonsterInRange(short mapX, short mapY, byte distance)
         {
             List<MapMonster> listmon = new List<MapMonster>();
-            foreach (MapMonster mo in Monsters)
+            foreach (MapMonster mo in Monsters.Where(s=>s.Alive))
             {
                 if (Math.Pow(mapX - mo.MapX, 2) + Math.Pow(mapY - mo.MapY, 2) <= Math.Pow(distance, 2))
                     listmon.Add(mo);

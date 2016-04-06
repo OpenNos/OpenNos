@@ -4166,178 +4166,188 @@ namespace OpenNos.Handler
                     if (ski != null && monsterinfo != null && !ski.Used)
                     {
                         Skill skill = ServerManager.GetSkill(ski.SkillVNum);
-                        short dX = (short)(Session.Character.MapX - mmon.MapX);
-                        short dY = (short)(Session.Character.MapY - mmon.MapY);
-                        if (Math.Pow(dX, 2) + Math.Pow(dY, 2) <= Math.Pow(skill.Range + 1, 2))
+                        int damage;
+
+
+                        Task cast = Task.Factory.StartNew(async () =>
                         {
-                            Random random = new Random();
-                            int hitmode = 0;
-                            short damage = 5000;
-                            int generated = random.Next(0, 100);
-                            int critical_chance = 10;
-                            int miss_chance = 20;
-                            int criticalhit = 0;
-                            int AtkType = skill.Type;
-
-                            switch (AtkType)
+                            if (skill.CastEffect != 0)
                             {
-                                case 0:
-                                    critical_chance *= Session.Character.HitCriticalRate / 100;
-                                    criticalhit *= Session.Character.HitCritical / 100;
-                                    miss_chance /= (int)(1 + Session.Character.HitRate / 100.0);
-                                    break;
-                                case 1:
-                                    critical_chance *= Session.Character.DistanceCriticalRate / 100;
-                                    criticalhit *= Session.Character.DistanceCritical / 100;
-                                    miss_chance /= (int)(1 + Session.Character.DistanceRate / 100.0);
-                                    break;
-                                case 2:
-                                    critical_chance = 0;
-                                    miss_chance = 0;
-                                    break;
-
+                                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(skill.CastEffect), ReceiverType.AllOnMap);
+                                await Task.Delay(skill.CastTime * 100);
                             }
+                        });
+                        int hitmode = 0;
+                        Task t = Task.Factory.StartNew(async () =>
+                             {
 
-
-                            if (generated < critical_chance)
-                            {
-                                hitmode = 3;
-                                damage *= 2;
-                            }
-                            if (generated > 100 - miss_chance) { hitmode = 1; damage = 0; }
-
-                            if (mmon.CurrentHp <= damage)
-                            {
-                                mmon.Alive = false;
-                                mmon.CurrentHp = 0;
-                                mmon.CurrentMp = 0;
-                                mmon.Death = DateTime.Now;
-                                Random rnd;
-                                foreach (DropDTO drop in monsterinfo.Drops)
-                                {
-                                    rnd = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
-                                    double rndamount = rnd.Next(0, 100) * rnd.NextDouble();
-                                    if (rndamount <= (double)drop.DropChance / 5000.000)
-                                    {
-                                        Session.CurrentMap.ItemSpawn(drop, mmon.MapX, mmon.MapY);
-                                    }
-
-                                }
-                                rnd = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
-                                short gold = Convert.ToInt16((rnd.Next(1, 8) >= 7 ? 1 : 0) * rnd.Next(6 * monsterinfo.Level, 12 * monsterinfo.Level));
-                                if (gold != 0)
-                                {
-                                    DropDTO drop2 = new DropDTO()
-                                    {
-                                        Amount = gold,
-                                        ItemVNum = 1046
-                                    };
-                                    Session.CurrentMap.ItemSpawn(drop2, mmon.MapX, mmon.MapY);
-                                }
-                                if ((int)(Session.Character.LevelXp / (Session.Character.XPLoad() / 10)) < (int)((Session.Character.LevelXp + monsterinfo.XP) / (Session.Character.XPLoad() / 10)))
-                                {
-                                    Session.Character.Hp = (int)Session.Character.HPLoad();
-                                    Session.Character.Mp = (int)Session.Character.MPLoad();
-                                    Session.Client.SendPacket(Session.Character.GenerateStatInfo());
-                                    Session.Client.SendPacket(Session.Character.GenerateEff(5));
-                                }
-                                Inventory sp2 = Session.Character.InventoryList.LoadBySlotAndType((short)EquipmentType.Sp, (byte)InventoryType.Equipment);
-                                if (Session.Character.Level < 99)
-                                    Session.Character.LevelXp += monsterinfo.XP;
-                                if ((Session.Character.Class == 0 && Session.Character.JobLevel < 20) || (Session.Character.Class != 0 && Session.Character.JobLevel < 80))
-                                {
-                                    if (sp2 != null && Session.Character.UseSp && sp2.InventoryItem.SpLevel < 99)
-                                        Session.Character.JobLevelXp += (int)((double)monsterinfo.JobXP / (double)100 * sp2.InventoryItem.SpLevel);
-                                    else
-                                        Session.Character.JobLevelXp += monsterinfo.JobXP;
-                                }
-                                if (sp2 != null && Session.Character.UseSp && sp2.InventoryItem.SpLevel < 99)
-                                    sp2.InventoryItem.SpXp += monsterinfo.JobXP * (100 - sp2.InventoryItem.SpLevel);
-
-                                if (Session.Character.LevelXp >= Session.Character.XPLoad())
-                                {
-                                    Session.Character.LevelXp -= (int)Session.Character.XPLoad();
-                                    Session.Character.Level++;
-                                    Session.Character.Hp = (int)Session.Character.HPLoad();
-                                    Session.Character.Mp = (int)Session.Character.MPLoad();
-                                    Session.Client.SendPacket(Session.Character.GenerateStatInfo());
-                                    Session.Client.SendPacket($"levelup {Session.Character.CharacterId}");
-                                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(6), ReceiverType.AllOnMap);
-                                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(198), ReceiverType.AllOnMap);
-                                }
-                                if (Session.Character.JobLevelXp >= Session.Character.JobXPLoad())
-                                {
-                                    Session.Character.JobLevelXp -= (int)Session.Character.JobXPLoad();
-                                    Session.Character.JobLevel++;
-                                    Session.Character.Hp = (int)Session.Character.HPLoad();
-                                    Session.Character.Mp = (int)Session.Character.MPLoad();
-                                    Session.Client.SendPacket(Session.Character.GenerateStatInfo());
-                                    Session.Client.SendPacket($"levelup {Session.Character.CharacterId}");
-                                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(6), ReceiverType.AllOnMap);
-                                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(198), ReceiverType.AllOnMap);
-                                }
-
-                                if (sp2 != null && sp2.InventoryItem.SpXp >= Session.Character.SPXPLoad())
-                                {
-                                    sp2.InventoryItem.SpXp -= (int)Session.Character.SPXPLoad();
-                                    sp2.InventoryItem.SpLevel++;
-                                    Session.Client.SendPacket(Session.Character.GenerateStatInfo());
-                                    Session.Client.SendPacket($"levelup {Session.Character.CharacterId}");
-                                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(6), ReceiverType.AllOnMap);
-                                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(198), ReceiverType.AllOnMap);
-                                }
-                                Session.Client.SendPacket(Session.Character.GenerateLev());
-
-                            }
-                            else
-                            {
-                                mmon.CurrentHp -= damage;
-                            }
-                            mmon.Target = Session.Character.CharacterId;
-
-
-
-                            Task cast = Task.Factory.StartNew(async () =>
-                            {
-                                if (skill.CastEffect != 0)
-                                {
-                                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(skill.CastEffect), ReceiverType.AllOnMap);
-                                    await Task.Delay(skill.CastTime * 100);
-                                }
-                            });
-
-                            Task t = Task.Factory.StartNew(async () =>
+                                 ClientLinkManager.Instance.Broadcast(Session, $"ct 1 {Session.Character.CharacterId} 3 {mmon.MapMonsterId} {skill.CastAnimation} -1 {skill.SkillVNum}", ReceiverType.AllOnMap);
+                                 await cast;
+                                 damage = GenerateDamage(Session, mmon, skill, ref hitmode);
+                                 string packet = $"su {1} {Session.Character.CharacterId} {3} {mmon.MapMonsterId} {skill.SkillVNum} {skill.Cooldown} {skill.AttackAnimation} {skill.Effect} 0 0 {(mmon.Alive ? 1 : 0)} {(int)(((float)mmon.CurrentHp / (float)monsterinfo.MaxHP) * 100)} {damage} {hitmode} {skill.Type}";
+                                 ClientLinkManager.Instance.Broadcast(Session, packet, ReceiverType.AllOnMap);
+                                 if (skill.Distance !=0)
+                                 foreach (MapMonster mon in Session.CurrentMap.GetListMonsterInRange(mmon.MapX, mmon.MapY, skill.Distance))
                                  {
-
-                                     ClientLinkManager.Instance.Broadcast(Session, $"ct 1 {Session.Character.CharacterId} 3 {mmon.MapMonsterId} {skill.CastAnimation} -1 {skill.SkillVNum}", ReceiverType.AllOnMap);
-                                     await cast;
-
-                                     string packet = $"su {1} {Session.Character.CharacterId} {3} {mmon.MapMonsterId} {skill.Effect} 6 {skill.AttackAnimation} {skill.Effect} 0 0 {(mmon.Alive ? 1 : 0)} {(int)(((float)mmon.CurrentHp / (float)monsterinfo.MaxHP) * 100)} {damage} {hitmode} {skill.Type}";
+                                     //add aoe distance
+                                     damage = GenerateDamage(Session, mmon, skill, ref hitmode);
+                                     packet = $"su {1} {Session.Character.CharacterId} {3} {mon.MapMonsterId} {skill.SkillVNum} {skill.Cooldown} {skill.AttackAnimation} {skill.Effect} 0 0 {(mon.Alive ? 1 : 0)} {(int)(((float)mon.CurrentHp / (float)ServerManager.GetNpc(mon.MonsterVNum).MaxHP) * 100)} {damage} {5} {skill.Type}";
                                      ClientLinkManager.Instance.Broadcast(Session, packet, ReceiverType.AllOnMap);
-                                     foreach (MapMonster mon in Session.CurrentMap.GetListMonsterInRange(mmon.MapX, mmon.MapY, skill.Distance))
-                                     {
-                                         //add aoe distance
-                                     }
+                                 }
 
-                                 });
+                             });
 
-                            Task.Factory.StartNew(async () =>
-                            {
-                                await t;
-                                ski.Used = true;
-                                await Task.Delay(skill.Cooldown * 100 - skill.CastTime * 100);
-                                Session.Client.SendPacket($"sr {Castingid}");
-                                ski.Used = false;
-                            });
-                        }
-
+                        Task.Factory.StartNew(async () =>
+                        {
+                            await t;
+                            ski.Used = true;
+                            await Task.Delay(skill.Cooldown * 100);
+                            Session.Client.SendPacket($"sr {Castingid}");
+                            ski.Used = false;
+                        });
                     }
+
+
                 }
             }
             Session.Client.SendPacket("cancel 0 0");
         }
 
+        private short GenerateDamage(ClientSession Session, MapMonster mmon, Skill skill, ref int hitmode)
+        {
+            short dX = (short)(Session.Character.MapX - mmon.MapX);
+            short dY = (short)(Session.Character.MapY - mmon.MapY);
+            short damage = 5000;
+            if (Math.Pow(dX, 2) + Math.Pow(dY, 2) <= Math.Pow(skill.Range + 1, 2))
+            {
+                NpcMonster monsterinfo = ServerManager.GetNpc(mmon.MonsterVNum);
+                Random random = new Random();
 
+                int generated = random.Next(0, 100);
+                int critical_chance = 10;
+                int miss_chance = 20;
+                int criticalhit = 0;
+                int AtkType = skill.Type;
+
+                switch (AtkType)
+                {
+                    case 0:
+                        critical_chance *= Session.Character.HitCriticalRate / 100;
+                        criticalhit *= Session.Character.HitCritical / 100;
+                        miss_chance /= (int)(1 + Session.Character.HitRate / 100.0);
+                        break;
+                    case 1:
+                        critical_chance *= Session.Character.DistanceCriticalRate / 100;
+                        criticalhit *= Session.Character.DistanceCritical / 100;
+                        miss_chance /= (int)(1 + Session.Character.DistanceRate / 100.0);
+                        break;
+                    case 2:
+                        critical_chance = 0;
+                        miss_chance = 0;
+                        break;
+
+                }
+
+
+                if (generated < critical_chance)
+                {
+                    hitmode = 3;
+                    damage *= 2;
+                }
+                if (generated > 100 - miss_chance) { hitmode = 1; damage = 0; }
+
+                if (mmon.CurrentHp <= damage)
+                {
+                    mmon.Alive = false;
+                    mmon.CurrentHp = 0;
+                    mmon.CurrentMp = 0;
+                    mmon.Death = DateTime.Now;
+                    Random rnd;
+                    foreach (DropDTO drop in monsterinfo.Drops)
+                    {
+                        rnd = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
+                        double rndamount = rnd.Next(0, 100) * rnd.NextDouble();
+                        if (rndamount <= (double)drop.DropChance / 5000.000)
+                        {
+                            Session.CurrentMap.ItemSpawn(drop, mmon.MapX, mmon.MapY);
+                        }
+
+                    }
+                    rnd = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
+                    short gold = Convert.ToInt16((rnd.Next(1, 8) >= 7 ? 1 : 0) * rnd.Next(6 * monsterinfo.Level, 12 * monsterinfo.Level));
+                    if (gold != 0)
+                    {
+                        DropDTO drop2 = new DropDTO()
+                        {
+                            Amount = gold,
+                            ItemVNum = 1046
+                        };
+                        Session.CurrentMap.ItemSpawn(drop2, mmon.MapX, mmon.MapY);
+                    }
+                    if ((int)(Session.Character.LevelXp / (Session.Character.XPLoad() / 10)) < (int)((Session.Character.LevelXp + monsterinfo.XP) / (Session.Character.XPLoad() / 10)))
+                    {
+                        Session.Character.Hp = (int)Session.Character.HPLoad();
+                        Session.Character.Mp = (int)Session.Character.MPLoad();
+                        Session.Client.SendPacket(Session.Character.GenerateStatInfo());
+                        Session.Client.SendPacket(Session.Character.GenerateEff(5));
+                    }
+                    Inventory sp2 = Session.Character.InventoryList.LoadBySlotAndType((short)EquipmentType.Sp, (byte)InventoryType.Equipment);
+                    if (Session.Character.Level < 99)
+                        Session.Character.LevelXp += monsterinfo.XP;
+                    if ((Session.Character.Class == 0 && Session.Character.JobLevel < 20) || (Session.Character.Class != 0 && Session.Character.JobLevel < 80))
+                    {
+                        if (sp2 != null && Session.Character.UseSp && sp2.InventoryItem.SpLevel < 99)
+                            Session.Character.JobLevelXp += (int)((double)monsterinfo.JobXP / (double)100 * sp2.InventoryItem.SpLevel);
+                        else
+                            Session.Character.JobLevelXp += monsterinfo.JobXP;
+                    }
+                    if (sp2 != null && Session.Character.UseSp && sp2.InventoryItem.SpLevel < 99)
+                        sp2.InventoryItem.SpXp += monsterinfo.JobXP * (100 - sp2.InventoryItem.SpLevel);
+
+                    if (Session.Character.LevelXp >= Session.Character.XPLoad())
+                    {
+                        Session.Character.LevelXp -= (int)Session.Character.XPLoad();
+                        Session.Character.Level++;
+                        Session.Character.Hp = (int)Session.Character.HPLoad();
+                        Session.Character.Mp = (int)Session.Character.MPLoad();
+                        Session.Client.SendPacket(Session.Character.GenerateStatInfo());
+                        Session.Client.SendPacket($"levelup {Session.Character.CharacterId}");
+                        ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(6), ReceiverType.AllOnMap);
+                        ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(198), ReceiverType.AllOnMap);
+                    }
+                    if (Session.Character.JobLevelXp >= Session.Character.JobXPLoad())
+                    {
+                        Session.Character.JobLevelXp -= (int)Session.Character.JobXPLoad();
+                        Session.Character.JobLevel++;
+                        Session.Character.Hp = (int)Session.Character.HPLoad();
+                        Session.Character.Mp = (int)Session.Character.MPLoad();
+                        Session.Client.SendPacket(Session.Character.GenerateStatInfo());
+                        Session.Client.SendPacket($"levelup {Session.Character.CharacterId}");
+                        ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(6), ReceiverType.AllOnMap);
+                        ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(198), ReceiverType.AllOnMap);
+                    }
+
+                    if (sp2 != null && sp2.InventoryItem.SpXp >= Session.Character.SPXPLoad())
+                    {
+                        sp2.InventoryItem.SpXp -= (int)Session.Character.SPXPLoad();
+                        sp2.InventoryItem.SpLevel++;
+                        Session.Client.SendPacket(Session.Character.GenerateStatInfo());
+                        Session.Client.SendPacket($"levelup {Session.Character.CharacterId}");
+                        ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(6), ReceiverType.AllOnMap);
+                        ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(198), ReceiverType.AllOnMap);
+                    }
+                    Session.Client.SendPacket(Session.Character.GenerateLev());
+
+                }
+                else
+                {
+                    mmon.CurrentHp -= damage;
+                }
+                mmon.Target = Session.Character.CharacterId;
+
+            }
+            return damage;
+        }
 
         [Packet("#pjoin")]
         public void validpjoin(string packet)
