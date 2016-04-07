@@ -43,9 +43,9 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public long Gold { get; set; }
         public int Backpack { get; set; }
         public byte Level { get; set; }
-        public int LevelXp { get; set; }
+        public long LevelXp { get; set; }
         public byte JobLevel { get; set; }
-        public int JobLevelXp { get; set; }
+        public long JobLevelXp { get; set; }
         public int Act4Dead { get; set; }
         public int Act4Kill { get; set; }
         public int Faction { get; set; }

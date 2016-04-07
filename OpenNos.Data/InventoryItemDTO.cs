@@ -57,7 +57,7 @@ namespace OpenNos.Data
         public bool IsEmpty { get; set; }
         public byte SpLevel { get; set; }
         public short SlDamage { get; set; }
-        public int SpXp { get; set; }
+        public long SpXp { get; set; }
         public short SlHP { get; set; }
         public short SlElement { get; set; }
         public short SlDefence { get; set; }
