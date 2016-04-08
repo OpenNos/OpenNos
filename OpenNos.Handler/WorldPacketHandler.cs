@@ -4236,11 +4236,11 @@ namespace OpenNos.Handler
                         Task t = Task.Factory.StartNew(async () =>
                              {
                                  ClientLinkManager.Instance.Broadcast(Session, $"ct 1 {Session.Character.CharacterId} 3 {mmon.MapMonsterId} {skill.CastAnimation} -1 {skill.SkillVNum}", ReceiverType.AllOnMap);
-
+                                 short dX = (short)(Session.Character.MapX - mmon.MapX);
+                                 short dY = (short)(Session.Character.MapY - mmon.MapY);
                                  damage = GenerateDamage(Session, mmon.MapMonsterId, skill, ref hitmode);
-                                 if (!(hitmode != 1 && damage == 0))
+                                 if (Math.Pow(dX, 2) + Math.Pow(dY, 2) <= Math.Pow(skill.Range + 1, 2) || skill.TargetRange != 0)
                                  {
-
 
                                      ski.Used = true;
                                      ski.LastUse = DateTime.Now;
@@ -4280,8 +4280,7 @@ namespace OpenNos.Handler
             short dX = (short)(Session.Character.MapX - mmon.MapX);
             short dY = (short)(Session.Character.MapY - mmon.MapY);
             short damage = 0;
-            if (Math.Pow(dX, 2) + Math.Pow(dY, 2) <= Math.Pow(skill.Range + 1, 2) || skill.TargetRange != 0)
-            {
+          
                 damage = 5000;
                 NpcMonster monsterinfo = ServerManager.GetNpc(mmon.MonsterVNum);
                 Random random = new Random();
@@ -4420,7 +4419,7 @@ namespace OpenNos.Handler
                 }
                 mmon.Target = Session.Character.CharacterId;
 
-            }
+            
             return damage;
         }
 
