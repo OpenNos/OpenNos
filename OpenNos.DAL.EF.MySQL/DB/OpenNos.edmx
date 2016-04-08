@@ -30,6 +30,7 @@
     <EntitySet Name="npcmonsterskill" EntityType="opennosModel.Store.npcmonsterskill" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="quicklist" EntityType="opennosModel.Store.quicklist" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="cellonoption" EntityType="opennosModel.Store.cellonoption" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="comboset" EntityType="opennosModel.Store.comboset" store:Type="Tables" Schema="dbo" />
     <AssociationSet Name="AccountCharacter" Association="opennosModel.Store.AccountCharacter">
       <End Role="Account" EntitySet="account" />
       <End Role="Character" EntitySet="character" />
@@ -161,6 +162,10 @@
     <AssociationSet Name="CellonOptionInventoryItem" Association="opennosModel.Store.CellonOptionInventoryItem">
       <End Role="CellonOption" EntitySet="cellonoption" />
       <End Role="InventoryItem" EntitySet="inventoryitem" />
+    </AssociationSet>
+    <AssociationSet Name="ComboSkill" Association="opennosModel.Store.ComboSkill">
+      <End Role="Combo" EntitySet="comboset" />
+      <End Role="Skill" EntitySet="skill" />
     </AssociationSet>
   </EntityContainer>
   <EntityType Name="account">
@@ -617,6 +622,16 @@
     <Property Name="Type" Type="utinyint" Nullable="false" />
     <Property Name="Value" Type="int" Nullable="false" />
   </EntityType>
+  <EntityType Name="comboset">
+    <Key>
+      <PropertyRef Name="ComboId" />
+    </Key>
+    <Property Name="ComboId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="SkillVNum" Type="smallint" Nullable="false" />
+    <Property Name="Hit" Type="smallint" Nullable="false" />
+    <Property Name="Effect" Type="smallint" Nullable="false" />
+    <Property Name="Animation" Type="smallint" Nullable="false" />
+  </EntityType>
   <Association Name="AccountCharacter">
     <End Role="Account" Type="opennosModel.Store.account" Multiplicity="1" />
     <End Role="Character" Type="opennosModel.Store.character" Multiplicity="*" />
@@ -1013,6 +1028,18 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
+  <Association Name="ComboSkill">
+    <End Role="Combo" Type="opennosModel.Store.comboset" Multiplicity="*" />
+    <End Role="Skill" Type="opennosModel.Store.skill" Multiplicity="1" />
+    <ReferentialConstraint>
+      <Principal Role="Skill">
+        <PropertyRef Name="SkillVNum" />
+      </Principal>
+      <Dependent Role="Combo">
+        <PropertyRef Name="SkillVNum" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
 </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
@@ -1261,6 +1288,11 @@
           <AssociationSet Name="CellonOptionInventoryItem" Association="opennosModel.CellonOptionInventoryItem">
             <End Role="CellonOption" EntitySet="cellonoption" />
             <End Role="InventoryItem" EntitySet="inventoryitem" />
+          </AssociationSet>
+          <EntitySet Name="comboset" EntityType="opennosModel.Combo" />
+          <AssociationSet Name="ComboSkill" Association="opennosModel.ComboSkill">
+            <End Role="Combo" EntitySet="comboset" />
+            <End Role="Skill" EntitySet="skill" />
           </AssociationSet>
           </EntityContainer>
         <Association Name="AccountCharacter">
@@ -1928,6 +1960,7 @@
           <Property Name="UpgradeSkill" Type="Int16" Nullable="false" />
           <NavigationProperty Name="npcmonsterskill" Relationship="opennosModel.NpcMonsterSkillSkill" FromRole="Skill" ToRole="NpcMonsterSkill" />
           <Property Name="CastTime" Type="Int16" Nullable="false" />
+          <NavigationProperty Name="combo" Relationship="opennosModel.ComboSkill" FromRole="Skill" ToRole="Combo" />
         </EntityType>
         <EntityType Name="CharacterSkill">
           <Key>
@@ -2079,6 +2112,29 @@
             </Principal>
             <Dependent Role="CellonOption">
               <PropertyRef Name="InventoryItemId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="Combo">
+          <Key>
+            <PropertyRef Name="ComboId" />
+          </Key>
+          <Property Name="ComboId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <NavigationProperty Name="skill" Relationship="opennosModel.ComboSkill" FromRole="Combo" ToRole="Skill" />
+          <Property Name="SkillVNum" Type="Int16" Nullable="false" />
+          <Property Name="Hit" Type="Int16" Nullable="false" />
+          <Property Name="Effect" Type="Int16" Nullable="false" />
+          <Property Name="Animation" Type="Int16" Nullable="false" />
+        </EntityType>
+        <Association Name="ComboSkill">
+          <End Type="opennosModel.Combo" Role="Combo" Multiplicity="*" />
+          <End Type="opennosModel.Skill" Role="Skill" Multiplicity="1" />
+          <ReferentialConstraint>
+            <Principal Role="Skill">
+              <PropertyRef Name="SkillVNum" />
+            </Principal>
+            <Dependent Role="Combo">
+              <PropertyRef Name="SkillVNum" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -2562,6 +2618,17 @@
           <ScalarProperty Name="Level" ColumnName="Level" />
           <ScalarProperty Name="Type" ColumnName="Type" />
           <ScalarProperty Name="Value" ColumnName="Value" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="comboset">
+      <EntityTypeMapping TypeName="IsTypeOf(opennosModel.Combo)">
+        <MappingFragment StoreEntitySet="comboset">
+          <ScalarProperty Name="ComboId" ColumnName="ComboId" />
+          <ScalarProperty Name="SkillVNum" ColumnName="SkillVNum" />
+          <ScalarProperty Name="Hit" ColumnName="Hit" />
+          <ScalarProperty Name="Effect" ColumnName="Effect" />
+          <ScalarProperty Name="Animation" ColumnName="Animation" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
