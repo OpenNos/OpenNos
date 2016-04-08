@@ -4203,6 +4203,8 @@ namespace OpenNos.Handler
                 Task t = Task.Factory.StartNew(async () =>
                 {
                     ClientLinkManager.Instance.Broadcast(Session, $"ct 1 {Session.Character.CharacterId} 1 {Session.Character.CharacterId} {skill.CastAnimation} -1 {skill.SkillVNum}", ReceiverType.AllOnMap);
+                    ski.Used = true;
+                    ski.LastUse = DateTime.Now;
                     if (skill.CastEffect != 0)
                     {
                         ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(skill.CastEffect), ReceiverType.AllOnMap);
@@ -4220,11 +4222,9 @@ namespace OpenNos.Handler
                             packet = $"su {1} {Session.Character.CharacterId} {3} {mmon.MapMonsterId} {skill.SkillVNum} {skill.Cooldown} {skill.AttackAnimation} {skill.Effect} 0 0 {(mmon.Alive ? 1 : 0)} {(int)(((float)mmon.CurrentHp / (float)ServerManager.GetNpc(mon.MonsterVNum).MaxHP) * 100)} {damage} {5} {skill.SkillType}";
                             ClientLinkManager.Instance.Broadcast(Session, packet, ReceiverType.AllOnMap);
                         }
-                    ski.Used = true;
-                    ski.LastUse = DateTime.Now;
-                    await Task.Delay((skill.Cooldown - 3) * 100);
+              
+                    await Task.Delay((skill.Cooldown) * 100);
                     ski.Used = false;
-                    await Task.Delay((skill.Cooldown - (skill.Cooldown - 3)) * 100);
                     Session.Client.SendPacket($"sr {Castingid}");
                 });
 
@@ -4241,6 +4241,8 @@ namespace OpenNos.Handler
                         Task t = Task.Factory.StartNew(async () =>
                              {
                                  ClientLinkManager.Instance.Broadcast(Session, $"ct 1 {Session.Character.CharacterId} 3 {mmon.MapMonsterId} {skill.CastAnimation} -1 {skill.SkillVNum}", ReceiverType.AllOnMap);
+                                 ski.Used = true;
+                                 ski.LastUse = DateTime.Now;
                                  if (skill.CastEffect != 0)
                                  {
                                      ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(skill.CastEffect), ReceiverType.AllOnMap);
@@ -4257,11 +4259,9 @@ namespace OpenNos.Handler
                                          ClientLinkManager.Instance.Broadcast(Session, packet, ReceiverType.AllOnMap);
 
                                      }
-                                 ski.Used = true;
-                                 ski.LastUse = DateTime.Now;
-                                 await Task.Delay((skill.Cooldown - 3) * 100);
+                                
+                                 await Task.Delay((skill.Cooldown) * 100);
                                  ski.Used = false;
-                                 await Task.Delay((skill.Cooldown - (skill.Cooldown - 3)) * 100);
                                  Session.Client.SendPacket($"sr {Castingid}");
 
                              });
