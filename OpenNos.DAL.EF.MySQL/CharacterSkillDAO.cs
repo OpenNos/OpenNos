@@ -44,14 +44,14 @@ namespace OpenNos.DAL.EF.MySQL
             }
         }
 
-        public SaveResult InsertOrUpdate(ref CharacterSkillDTO characterskill)
+        public SaveResult InsertOrUpdate(ref CharacterSkillDTO characterskills)
         {
             try
             {
                 using (var context = DataAccessHelper.CreateContext())
                 {
-                    long EntryId = characterskill.CharacterSkillId;
-                    CharacterSkill entity = context.characterskill.FirstOrDefault(c => c.CharacterSkillId == EntryId);
+                    CharacterSkillDTO characterskill = characterskills;
+                    CharacterSkill entity = context.characterskill.FirstOrDefault(i => i.CharacterId == characterskill.CharacterId && i.SkillVNum == characterskill.SkillVNum);
                     if (entity == null) //new entity
                     {
                         characterskill = Insert(characterskill, context);
@@ -59,7 +59,7 @@ namespace OpenNos.DAL.EF.MySQL
                     }
                     else //existing entity
                     {
-                        entity.CharacterSkillId = context.characterskill.FirstOrDefault(c => c.CharacterSkillId == EntryId).CharacterSkillId;
+                        entity.CharacterSkillId = context.characterskill.FirstOrDefault(i => i.CharacterId == characterskill.CharacterId && i.SkillVNum == characterskill.SkillVNum).CharacterSkillId;
                         characterskill = Update(entity, characterskill, context);
                         return SaveResult.Updated;
                     }
