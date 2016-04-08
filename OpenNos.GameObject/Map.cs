@@ -294,7 +294,7 @@ namespace OpenNos.GameObject
             List<MapMonster> listmon = new List<MapMonster>();
             foreach (MapMonster mo in Monsters.Where(s => s.Alive))
             {
-                if (Math.Pow(mapX - mo.MapX, 2) + Math.Pow(mapY - mo.MapY, 2) <= Math.Pow(distance + 1, 2))
+                if (Math.Pow(mapX - mo.MapX, 2) + Math.Pow(mapY - mo.MapY, 2) <= Math.Pow(distance, 2))
                     listmon.Add(mo);
             }
             return listmon;
