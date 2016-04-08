@@ -44,7 +44,7 @@
 -- -----------------------------------------------------------
 -- Entity Designer DDL Script for MySQL Server 4.1 and higher
 -- -----------------------------------------------------------
--- Date Created: 04/07/2016 15:04:19
+-- Date Created: 04/08/2016 14:31:37
 
 -- Generated from EDMX file: C:\Users\ERWAN\Desktop\OpenNos Git\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
 -- Target version: 3.0.0.0
@@ -636,6 +636,7 @@ CREATE TABLE `skill`(
 	`Element` TINYINT UNSIGNED NOT NULL, 
 	`CastId` smallint NOT NULL, 
 	`Type` TINYINT UNSIGNED NOT NULL, 
+	`SkillType` TINYINT UNSIGNED NOT NULL, 
 	`Range` TINYINT UNSIGNED NOT NULL, 
 	`VNumRequired` smallint NOT NULL, 
 	`UpgradeSkill` smallint NOT NULL, 

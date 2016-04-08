@@ -18,6 +18,7 @@ namespace OpenNos.Data
     {
         #region Properties
 
+
         public short SkillVNum { get; set; }
         public string Name { get; set; }
         public int Cost { get; set; }
@@ -44,6 +45,7 @@ namespace OpenNos.Data
         public byte Element { get; set; }
         public short CastId { get; set; }
         public byte Type { get; set; }
+        public byte SkillType { get; set; }
         public byte Range { get; set; }
         public short VNumRequired { get; set; }
         public short UpgradeSkill { get; set; }

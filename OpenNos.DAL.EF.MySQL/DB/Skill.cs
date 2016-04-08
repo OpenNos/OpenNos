@@ -48,6 +48,7 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public byte Element { get; set; }
         public short CastId { get; set; }
         public byte Type { get; set; }
+        public byte SkillType { get; set; }
         public byte Range { get; set; }
         public short VNumRequired { get; set; }
         public short UpgradeSkill { get; set; }

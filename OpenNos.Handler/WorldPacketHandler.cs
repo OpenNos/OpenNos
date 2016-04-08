@@ -4209,7 +4209,7 @@ namespace OpenNos.Handler
                         await Task.Delay(skill.CastTime * 100);
                     }
                     string packet;
-                    packet = $"su {1} {Session.Character.CharacterId} {1} {Session.Character.CharacterId} {skill.SkillVNum} {skill.Cooldown} {skill.AttackAnimation} {skill.Effect} 0 0 1 {(((double)Session.Character.Hp / Session.Character.HPLoad()) * 100)} {0} -2 {skill.Type}";
+                    packet = $"su {1} {Session.Character.CharacterId} {1} {Session.Character.CharacterId} {skill.SkillVNum} {skill.Cooldown} {skill.AttackAnimation} {skill.Effect} 0 0 1 {(((double)Session.Character.Hp / Session.Character.HPLoad()) * 100)} {0} -2 {skill.SkillType}";
                     ClientLinkManager.Instance.Broadcast(Session, packet, ReceiverType.AllOnMap);
                     MapMonster mmon;
                     if (skill.TargetRange != 0)
@@ -4217,7 +4217,7 @@ namespace OpenNos.Handler
                         {
                             damage = GenerateDamage(Session, mon.MapMonsterId, skill, ref hitmode);
                             mmon = ServerManager.GetMap(Session.Character.MapId).Monsters.FirstOrDefault(s => s.MapMonsterId == mon.MapMonsterId);
-                            packet = $"su {1} {Session.Character.CharacterId} {3} {mmon.MapMonsterId} {skill.SkillVNum} {skill.Cooldown} {skill.AttackAnimation} {skill.Effect} 0 0 {(mmon.Alive ? 1 : 0)} {(int)(((float)mmon.CurrentHp / (float)ServerManager.GetNpc(mon.MonsterVNum).MaxHP) * 100)} {damage} {5} {skill.Type}";
+                            packet = $"su {1} {Session.Character.CharacterId} {3} {mmon.MapMonsterId} {skill.SkillVNum} {skill.Cooldown} {skill.AttackAnimation} {skill.Effect} 0 0 {(mmon.Alive ? 1 : 0)} {(int)(((float)mmon.CurrentHp / (float)ServerManager.GetNpc(mon.MonsterVNum).MaxHP) * 100)} {damage} {5} {skill.SkillType}";
                             ClientLinkManager.Instance.Broadcast(Session, packet, ReceiverType.AllOnMap);
                         }
                     ski.Used = true;
@@ -4247,13 +4247,13 @@ namespace OpenNos.Handler
                                      await Task.Delay(skill.CastTime * 100);
                                  }
                                  damage = GenerateDamage(Session, mmon.MapMonsterId, skill, ref hitmode);
-                                 string packet = $"su {1} {Session.Character.CharacterId} {3} {mmon.MapMonsterId} {skill.SkillVNum} {skill.Cooldown} {skill.AttackAnimation} {skill.Effect} 0 0 {(mmon.Alive ? 1 : 0)} {(int)(((float)mmon.CurrentHp / (float)monsterinfo.MaxHP) * 100)} {damage} {hitmode} {skill.Type}";
+                                 string packet = $"su {1} {Session.Character.CharacterId} {3} {mmon.MapMonsterId} {skill.SkillVNum} {skill.Cooldown} {skill.AttackAnimation} {skill.Effect} 0 0 {(mmon.Alive ? 1 : 0)} {(int)(((float)mmon.CurrentHp / (float)monsterinfo.MaxHP) * 100)} {damage} {hitmode} {skill.SkillType}";
                                  ClientLinkManager.Instance.Broadcast(Session, packet, ReceiverType.AllOnMap);
                                  if (skill.TargetRange != 0)
                                      foreach (MapMonster mon in ServerManager.GetMap(Session.Character.MapId).GetListMonsterInRange(Session.Character.MapX, Session.Character.MapY, skill.TargetRange))
                                      {
                                          damage = GenerateDamage(Session, mon.MapMonsterId, skill, ref hitmode);
-                                         packet = $"su {1} {Session.Character.CharacterId} {3} {mon.MapMonsterId} {skill.SkillVNum} {skill.Cooldown} {skill.AttackAnimation} {skill.Effect} 0 0 {(mon.Alive ? 1 : 0)} {(int)(((float)mon.CurrentHp / (float)ServerManager.GetNpc(mon.MonsterVNum).MaxHP) * 100)} {damage} {5} {skill.Type}";
+                                         packet = $"su {1} {Session.Character.CharacterId} {3} {mon.MapMonsterId} {skill.SkillVNum} {skill.Cooldown} {skill.AttackAnimation} {skill.Effect} 0 0 {(mon.Alive ? 1 : 0)} {(int)(((float)mon.CurrentHp / (float)ServerManager.GetNpc(mon.MonsterVNum).MaxHP) * 100)} {damage} {5} {skill.SkillType}";
                                          ClientLinkManager.Instance.Broadcast(Session, packet, ReceiverType.AllOnMap);
 
                                      }

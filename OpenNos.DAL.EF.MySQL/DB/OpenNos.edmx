@@ -562,6 +562,7 @@
     <Property Name="Element" Type="utinyint" Nullable="false" />
     <Property Name="CastId" Type="smallint" Nullable="false" />
     <Property Name="Type" Type="utinyint" Nullable="false" />
+    <Property Name="SkillType" Type="utinyint" Nullable="false" />
     <Property Name="Range" Type="utinyint" Nullable="false" />
     <Property Name="VNumRequired" Type="smallint" Nullable="false" />
     <Property Name="UpgradeSkill" Type="smallint" Nullable="false" />
@@ -1921,6 +1922,7 @@
           <Property Name="Element" Type="Byte" Nullable="false" />
           <Property Name="CastId" Type="Int16" Nullable="false" />
           <Property Name="Type" Type="Byte" Nullable="false" />
+          <Property Name="SkillType" Type="Byte" Nullable="false" />
           <Property Name="Range" Type="Byte" Nullable="false" />
           <Property Name="VNumRequired" Type="Int16" Nullable="false" />
           <Property Name="UpgradeSkill" Type="Int16" Nullable="false" />
@@ -2501,6 +2503,7 @@
           <ScalarProperty Name="Element" ColumnName="Element" />
           <ScalarProperty Name="CastId" ColumnName="CastId" />
           <ScalarProperty Name="Type" ColumnName="Type" />
+          <ScalarProperty Name="SkillType" ColumnName="SkillType" />
           <ScalarProperty Name="Range" ColumnName="Range" />
           <ScalarProperty Name="VNumRequired" ColumnName="VNumRequired" />
           <ScalarProperty Name="UpgradeSkill" ColumnName="UpgradeSkill" />

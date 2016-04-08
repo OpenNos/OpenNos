@@ -475,6 +475,7 @@ namespace OpenNos.Import.Console
                     }
                     else if (currentLine.Length > 2 && currentLine[1] == "TYPE")
                     {
+                        skill.SkillType = byte.Parse(currentLine[2]);
                         skill.CastId = short.Parse(currentLine[3]);
                         skill.Class = byte.Parse(currentLine[4]);
                         skill.Type = byte.Parse(currentLine[5]);
