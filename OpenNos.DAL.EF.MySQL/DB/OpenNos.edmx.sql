@@ -44,7 +44,7 @@
 -- -----------------------------------------------------------
 -- Entity Designer DDL Script for MySQL Server 4.1 and higher
 -- -----------------------------------------------------------
--- Date Created: 04/08/2016 15:35:05
+-- Date Created: 04/08/2016 20:00:21
 
 -- Generated from EDMX file: C:\Users\ERWAN\Desktop\OpenNos Git\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
 -- Target version: 3.0.0.0
@@ -125,6 +125,8 @@
 
 --    ALTER TABLE `cellonoption` DROP CONSTRAINT `FK_CellonOptionInventoryItem`;
 
+--    ALTER TABLE `comboset` DROP CONSTRAINT `FK_ComboSkill`;
+
 
 -- --------------------------------------------------
 -- Dropping existing tables
@@ -178,6 +180,8 @@ SET foreign_key_checks = 0;
     DROP TABLE IF EXISTS `quicklist`;
 
     DROP TABLE IF EXISTS `cellonoption`;
+
+    DROP TABLE IF EXISTS `comboset`;
 
 SET foreign_key_checks = 1;
 
@@ -712,14 +716,14 @@ ALTER TABLE `cellonoption` ADD PRIMARY KEY (CellonOptionId);
 
 
 
-CREATE TABLE `comboset`(
+CREATE TABLE `combo`(
 	`ComboId` int NOT NULL AUTO_INCREMENT UNIQUE, 
 	`SkillVNum` smallint NOT NULL, 
 	`Hit` smallint NOT NULL, 
 	`Effect` smallint NOT NULL, 
 	`Animation` smallint NOT NULL);
 
-ALTER TABLE `comboset` ADD PRIMARY KEY (ComboId);
+ALTER TABLE `combo` ADD PRIMARY KEY (ComboId);
 
 
 
@@ -1326,9 +1330,9 @@ CREATE INDEX `IX_FK_CellonOptionInventoryItem`
 
 
 
--- Creating foreign key on `SkillVNum` in table 'comboset'
+-- Creating foreign key on `SkillVNum` in table 'combo'
 
-ALTER TABLE `comboset`
+ALTER TABLE `combo`
 ADD CONSTRAINT `FK_ComboSkill`
     FOREIGN KEY (`SkillVNum`)
     REFERENCES `skill`
@@ -1339,7 +1343,7 @@ ADD CONSTRAINT `FK_ComboSkill`
 -- Creating non-clustered index for FOREIGN KEY 'FK_ComboSkill'
 
 CREATE INDEX `IX_FK_ComboSkill`
-    ON `comboset`
+    ON `combo`
     (`SkillVNum`);
 
 

@@ -92,6 +92,9 @@
     <Compile Include="DB\CharacterSkill.cs">
       <DependentUpon>OpenNos.tt</DependentUpon>
     </Compile>
+    <Compile Include="DB\Combo.cs">
+      <DependentUpon>OpenNos.tt</DependentUpon>
+    </Compile>
     <Compile Include="DB\Drop.cs">
       <DependentUpon>OpenNos.tt</DependentUpon>
     </Compile>

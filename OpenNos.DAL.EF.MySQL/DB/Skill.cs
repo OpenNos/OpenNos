@@ -20,6 +20,7 @@ namespace OpenNos.DAL.EF.MySQL.DB
             this.characterskill = new HashSet<CharacterSkill>();
             this.shopskill = new HashSet<ShopSkill>();
             this.npcmonsterskill = new HashSet<NpcMonsterSkill>();
+            this.combo = new HashSet<Combo>();
         }
     
         public short SkillVNum { get; set; }
@@ -60,5 +61,7 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public virtual ICollection<ShopSkill> shopskill { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<NpcMonsterSkill> npcmonsterskill { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Combo> combo { get; set; }
     }
 }

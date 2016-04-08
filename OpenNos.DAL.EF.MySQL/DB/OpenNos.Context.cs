@@ -50,5 +50,6 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public virtual DbSet<NpcMonsterSkill> npcmonsterskill { get; set; }
         public virtual DbSet<QuicklistEntry> quicklist { get; set; }
         public virtual DbSet<CellonOption> cellonoption { get; set; }
+        public virtual DbSet<Combo> combo { get; set; }
     }
 }

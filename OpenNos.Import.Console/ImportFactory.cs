@@ -264,27 +264,16 @@ namespace OpenNos.Import.Console
                 basicMp[i] = basicHp[i];
             }
             //basicXPLoad
-            int baseXp = 161;
-            int basupxp = 19;
             for (int i = 0; i < 100; i++)
             {
-                basicXp[i] = baseXp;
-                basupxp++;
-                baseXp += basupxp;
-
-
-                if (i == 37)
-                {
-                    baseXp = 1764;
-                    basupxp = 66;
-                }
+                basicXp[i] = i * 180;
 
             }
 
             //basicJXpLoad
             for (int i = 0; i < 100; i++)
             {
-                basicJXp[i] = 2 * basicXp[i];
+                basicJXp[i] = 360;
             }
 
             string fileNpcId = $"{_folder}\\monster.dat";
