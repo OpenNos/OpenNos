@@ -4247,7 +4247,7 @@ namespace OpenNos.Handler
                                      await Task.Delay(skill.CastTime * 100);
                                  }
                                  damage = GenerateDamage(Session, mmon.MapMonsterId, skill, ref hitmode);
-                                 string packet = $"su {1} {Session.Character.CharacterId} {3} {mmon.MapMonsterId} {skill.SkillVNum} {skill.Cooldown} {skill.AttackAnimation} {skill.Effect} 0 0 {(mmon.Alive ? 1 : 0)} {(int)(((float)mmon.CurrentHp / (float)monsterinfo.MaxHP) * 100)} {damage} {hitmode} {skill.SkillType}";
+                                  string packet = $"su {1} {Session.Character.CharacterId} {3} {mmon.MapMonsterId} {skill.SkillVNum} {skill.Cooldown} {skill.AttackAnimation} {skill.Effect} 0 0 {(mmon.Alive ? 1 : 0)} {(int)(((float)mmon.CurrentHp / (float)monsterinfo.MaxHP) * 100)} {damage} {hitmode} {skill.SkillType-1}";
                                  ClientLinkManager.Instance.Broadcast(Session, packet, ReceiverType.AllOnMap);
                                  if (skill.TargetRange != 0)
                                      foreach (MapMonster mon in ServerManager.GetMap(Session.Character.MapId).GetListMonsterInRange(Session.Character.MapX, Session.Character.MapY, skill.TargetRange))
@@ -4399,6 +4399,7 @@ namespace OpenNos.Handler
                         ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(6), ReceiverType.AllOnMap);
                         ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(198), ReceiverType.AllOnMap);
                     }
+                    if(sp2 != null)
                     t = Session.Character.SPXPLoad();
                     while (sp2 != null && sp2.InventoryItem.SpXp >= t)
                     {
