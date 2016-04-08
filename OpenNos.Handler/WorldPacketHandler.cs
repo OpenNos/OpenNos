@@ -4386,7 +4386,7 @@ namespace OpenNos.Handler
                         ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(6), ReceiverType.AllOnMap);
                         ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(198), ReceiverType.AllOnMap);
                     }
-                    t = Session.Character.JobXPLoad();
+                     t = Session.Character.JobXPLoad();
                     while (Session.Character.JobLevelXp >= t)
                     {
                         Session.Character.JobLevelXp -= (long)t;

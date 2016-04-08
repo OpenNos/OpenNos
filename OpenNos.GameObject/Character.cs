@@ -1192,14 +1192,14 @@ namespace OpenNos.GameObject
 
 
             // ... then save the new
-            foreach (Inventory t in InventoryList.Inventory)
-                t.Save();
-            foreach (Inventory t in EquipmentList.Inventory)
-                t.Save();
-            foreach (CharacterSkill t in Skills)
-                t.Save();
-            foreach (QuicklistEntry t in QuicklistEntries)
-                t.Save();
+            for (int i= InventoryList.Inventory.Count()-1;i>=0;i--)
+                InventoryList.Inventory.ElementAt(i).Save();
+            for (int i = EquipmentList.Inventory.Count()-1;i>=0;i--)
+                EquipmentList.Inventory.ElementAt(i).Save();
+            for (int i = Skills.Count() - 1; i >= 0; i--)
+                Skills.ElementAt(i).Save();
+            for (int i = QuicklistEntries.Count() - 1; i >= 0; i--)
+                QuicklistEntries.ElementAt(i).Save();
         }
 
         public double SPXPLoad()
