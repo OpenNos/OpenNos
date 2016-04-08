@@ -101,7 +101,7 @@ namespace OpenNos.GameObject
                         Sessions.Where(s => s.Character != null && s.Character.MapId.Equals(client.Character.MapId)).ElementAt(i).Client.SendPacket(message);
                     break;
 
-                case ReceiverType.AllOnMapExceptMe:
+                case ReceiverType.AllOnMapExceptMe: 
                     foreach (ClientSession session in Sessions.Where(s => s.Character != null && s.Character.MapId.Equals(client.Character.MapId) && s.Character.CharacterId != client.Character.CharacterId))
                         session.Client.SendPacket(message);
                     break;
@@ -223,8 +223,6 @@ namespace OpenNos.GameObject
                 Session.Client.SendPacket(Session.Character.GenerateFd());
                 Session.Client.SendPacket(Session.Character.GenerateLev());
                 Session.Client.SendPacket(Session.Character.GenerateStat());
-                //Session.Client.SendPacket(Session.Character.GenerateSki()); // Removed because official does not either.
-
                 Session.Client.SendPacket(Session.Character.GenerateAt());
                 Session.Client.SendPacket(Session.Character.GenerateCMap());
                 if (Session.Character.Size != 10)

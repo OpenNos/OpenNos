@@ -3594,8 +3594,6 @@ namespace OpenNos.Handler
 
             ClientLinkManager.Instance.ChangeMap(Session.Character.CharacterId);
 
-            Session.Client.SendPacket(Session.Character.GenerateSki()); // Here. Not in ChangeMap() !
-
             Session.Client.SendPacket("rank_cool 0 0 18000");
 
             Session.Client.SendPacket("scr 0 0 0 0 0 0");
@@ -3610,6 +3608,7 @@ namespace OpenNos.Handler
 
             Session.Client.SendPacket(Session.Character.GenerateExts());
             Session.Client.SendPacket(Session.Character.GenerateGold());
+            Session.Client.SendPacket(Session.Character.GenerateSki());
 
             string[] quicklistpackets = Session.Character.GenerateQuicklist();
             Session.Client.SendPacket(quicklistpackets[0]);
@@ -4260,7 +4259,7 @@ namespace OpenNos.Handler
 
                                      await Task.Delay((skill.Cooldown) * 100);
                                      ski.Used = false;
-                                     Session.Client.SendPacket($"sr {Castingid}");
+                                      Session.Client.SendPacket($"sr {Castingid}");
 
                                  }
                              });

@@ -446,16 +446,16 @@ namespace OpenNos.GameObject
         public string GenerateSki()
         {
             List<CharacterSkill> skill = UseSp ? SkillsSp : Skills;
-            string skibase = $"{skill[0].SkillVNum} {skill[1].SkillVNum}";
+            string skibase = $"{200+20*Class} {201 + 20 * Class}";
 
             string skills = "";
-            foreach (CharacterSkill ski in skill)
+            foreach (CharacterSkill ski in skill.OrderBy(s=>s.SkillVNum))
             {
                 skills += $" {ski.SkillVNum}";
 
             }
 
-            return $"ski {skibase} {skills}";
+            return $"ski {skibase}{skills}";
         }
         public int getCP()
         {
