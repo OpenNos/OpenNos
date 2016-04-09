@@ -432,6 +432,7 @@ namespace OpenNos.Import.Console
 
             Dictionary<string, string> dictionaryIdLang = new Dictionary<string, string>();
             SkillDTO skill = new SkillDTO();
+            ComboDTO combo = new ComboDTO();
             string line;
             int counter = 0;
 
@@ -570,36 +571,35 @@ namespace OpenNos.Import.Console
                     }
                     else if (currentLine.Length > 2 && currentLine[1] == "FCOMBO")
                     {
-                        /* parse when proper
+                        /* Parse when done
                         if (currentLine[2] == "1")
                         {
-                            skill.FirstActivationHit = byte.Parse(currentLine[3]);
-                            skill.FirstComboAttackAnimation = short.Parse(currentLine[4]);
-                            skill.FirstComboEffect = short.Parse(currentLine[5]);
-                            skill.SecondActivationHit = byte.Parse(currentLine[3]);
-                            skill.SecondComboAttackAnimation = short.Parse(currentLine[4]);
-                            skill.SecondComboEffect = short.Parse(currentLine[5]);
-                            skill.ThirdActivationHit = byte.Parse(currentLine[3]);
-                            skill.ThirdComboAttackAnimation = short.Parse(currentLine[4]);
-                            skill.ThirdComboEffect = short.Parse(currentLine[5]);
-                            skill.FourthActivationHit = byte.Parse(currentLine[3]);
-                            skill.FourthComboAttackAnimation = short.Parse(currentLine[4]);
-                            skill.FourthComboEffect = short.Parse(currentLine[5]);
-                            skill.FifthActivationHit = byte.Parse(currentLine[3]);
-                            skill.FifthComboAttackAnimation = short.Parse(currentLine[4]);
-                            skill.FifthComboEffect = short.Parse(currentLine[5]);
+                            combo.FirstActivationHit = byte.Parse(currentLine[3]);
+                            combo.FirstComboAttackAnimation = short.Parse(currentLine[4]);
+                            combo.FirstComboEffect = short.Parse(currentLine[5]);
+                            combo.SecondActivationHit = byte.Parse(currentLine[3]);
+                            combo.SecondComboAttackAnimation = short.Parse(currentLine[4]);
+                            combo.SecondComboEffect = short.Parse(currentLine[5]);
+                            combo.ThirdActivationHit = byte.Parse(currentLine[3]);
+                            combo.ThirdComboAttackAnimation = short.Parse(currentLine[4]);
+                            combo.ThirdComboEffect = short.Parse(currentLine[5]);
+                            combo.FourthActivationHit = byte.Parse(currentLine[3]);
+                            combo.FourthComboAttackAnimation = short.Parse(currentLine[4]);
+                            combo.FourthComboEffect = short.Parse(currentLine[5]);
+                            combo.FifthActivationHit = byte.Parse(currentLine[3]);
+                            combo.FifthComboAttackAnimation = short.Parse(currentLine[4]);
+                            combo.FifthComboEffect = short.Parse(currentLine[5]);
                         }
                         */
 
                     }
                     else if (currentLine.Length > 2 && currentLine[1] == "CELL")
                     {
-                        /*
-                        skill.Unknown = short.Parse(currentLine[2]); // 2 - ??
-                        */
+                        //skill.Unknown = short.Parse(currentLine[2]); // 2 - ??
                     }
                     else if (currentLine.Length > 1 && currentLine[1] == "Z_DESC")
                     {
+                        //skill.Unknown = short.Parse(currentLine[2]); // 2 - ??
                         if (DAOFactory.SkillDAO.LoadById(skill.SkillVNum) == null)
                         {
                             skills.Add(skill);
