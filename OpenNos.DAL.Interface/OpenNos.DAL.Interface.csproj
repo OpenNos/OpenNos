@@ -54,6 +54,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ICellonOptionDAO.cs" />
+    <Compile Include="IComboDAO.cs" />
     <Compile Include="IDropDAO.cs" />
     <Compile Include="IGeneralLogDAO.cs" />
     <Compile Include="IAccountDAO.cs" />

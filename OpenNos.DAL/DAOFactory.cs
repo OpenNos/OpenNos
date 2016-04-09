@@ -24,9 +24,12 @@ namespace OpenNos.DAL
         private static IAccountDAO _accountDAO;
         private static ICellonOptionDAO _cellonoptionDAO;
         private static ICharacterDAO _characterDAO;
-        private static IQuicklistEntryDAO _quicklistDAO;
         private static ICharacterSkillDAO _characterskillDAO;
-        private static IDropDAO _dropDAO;
+
+        private static IComboDAO _comboDAO
+
+
+private static IDropDAO _dropDAO;
         private static IGeneralLogDAO _generallogDAO;
         private static IInventoryDAO _inventoryDAO;
         private static IInventoryItemDAO _inventoryitemDAO;
@@ -37,6 +40,7 @@ namespace OpenNos.DAL
         private static INpcMonsterDAO _npcmonsterDAO;
         private static INpcMonsterSkillDAO _npcmonsterskillDAO;
         private static IPortalDAO _portalDAO;
+        private static IQuicklistEntryDAO _quicklistDAO;
         private static IRecipeDAO _recipeDAO;
         private static IRecipeItemDAO _recipeitemDAO;
         private static IRespawnDAO _respawnDAO;
@@ -101,18 +105,6 @@ namespace OpenNos.DAL
             }
         }
 
-        public static IQuicklistEntryDAO QuicklistEntryDAO
-        {
-            get
-            {
-                if (_quicklistDAO == null)
-                {
-                    _quicklistDAO = new MySQL.QuicklistEntryDAO();
-                }
-                return _quicklistDAO;
-            }
-        }
-
         public static ICharacterSkillDAO CharacterSkillDAO
         {
             get
@@ -123,6 +115,19 @@ namespace OpenNos.DAL
                 }
 
                 return _characterskillDAO;
+            }
+        }
+
+        public static IComboDAO ComboDAO
+        {
+            get
+            {
+                if (_comboDAO == null)
+                {
+                    _comboDAO = new MySQL.ComboDAO();
+                }
+
+                return _comboDAO;
             }
         }
 
@@ -266,6 +271,18 @@ namespace OpenNos.DAL
                 }
 
                 return _portalDAO;
+            }
+        }
+
+        public static IQuicklistEntryDAO QuicklistEntryDAO
+        {
+            get
+            {
+                if (_quicklistDAO == null)
+                {
+                    _quicklistDAO = new MySQL.QuicklistEntryDAO();
+                }
+                return _quicklistDAO;
             }
         }
 

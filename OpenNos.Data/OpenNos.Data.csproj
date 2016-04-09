@@ -50,6 +50,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CellonOptionDTO.cs" />
+    <Compile Include="ComboDTO.cs" />
     <Compile Include="DropDTO.cs" />
     <Compile Include="GeneralLogDTO.cs" />
     <Compile Include="MapMonsterDTO.cs" />

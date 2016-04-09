@@ -80,6 +80,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CellonOptionDAO.cs" />
+    <Compile Include="ComboDAO.cs" />
     <Compile Include="DB\Account.cs">
       <DependentUpon>OpenNos.tt</DependentUpon>
     </Compile>

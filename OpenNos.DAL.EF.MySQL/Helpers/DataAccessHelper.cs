@@ -81,6 +81,8 @@ namespace OpenNos.DAL.EF.MySQL.Helpers
             Mapper.CreateMap<CellonOptionDTO, CellonOption>();
             Mapper.CreateMap<QuicklistEntry, QuicklistEntryDTO>();
             Mapper.CreateMap<QuicklistEntryDTO, QuicklistEntry>();
+            Mapper.CreateMap<Combo, ComboDTO>();
+            Mapper.CreateMap<ComboDTO, Combo>();
         }
 
         #endregion
@@ -169,6 +171,7 @@ namespace OpenNos.DAL.EF.MySQL.Helpers
                     context.shopskill.Any();
                     context.characterskill.Any();
                     context.npcmonsterskill.Any();
+                    context.combo.Any();
                     Logger.Log.Info(Language.Instance.GetMessageFromKey("DATABASE_INITIALIZED"));
                 }
                 catch (Exception ex)

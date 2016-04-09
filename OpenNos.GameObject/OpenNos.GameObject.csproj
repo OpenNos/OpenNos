@@ -59,6 +59,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CellonOption.cs" />
+    <Compile Include="Combo.cs" />
     <Compile Include="GeneralLog.cs" />
     <Compile Include="Account.cs" />
     <Compile Include="Character.cs" />
