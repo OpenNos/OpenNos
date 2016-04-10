@@ -449,7 +449,7 @@ namespace OpenNos.GameObject
             string skibase = $"{200+20*Class} {201 + 20 * Class}";
 
             string skills = "";
-            foreach (CharacterSkill ski in skill.OrderBy(s=>s.SkillVNum))
+            foreach (CharacterSkill ski in skill)
             {
                 skills += $" {ski.SkillVNum}";
 
@@ -1041,7 +1041,7 @@ namespace OpenNos.GameObject
         {
             Skills = new List<CharacterSkill>();
             IEnumerable<CharacterSkillDTO> characterskillDTO = DAOFactory.CharacterSkillDAO.LoadByCharacterId(CharacterId);
-            foreach (CharacterSkillDTO characterskill in characterskillDTO)
+            foreach (CharacterSkillDTO characterskill in characterskillDTO.OrderBy(s=>s.SkillVNum))
             {
                 Skills.Add(Mapper.DynamicMap<CharacterSkill>(characterskill));
             }

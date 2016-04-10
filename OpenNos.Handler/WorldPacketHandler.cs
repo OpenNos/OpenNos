@@ -2872,7 +2872,6 @@ namespace OpenNos.Handler
 
                 Session.Character.Update();
                 Session.Character.LoadInventory();
-                Session.Character.LoadSkills();
                 Session.Character.LoadQuicklists();
                 DAOFactory.AccountDAO.WriteGeneralLog(Session.Character.AccountId, Session.Client.RemoteEndPoint.ToString(), Session.Character.CharacterId, "Connection", "World");
                 Session.Client.SendPacket("OK");
@@ -3589,7 +3588,7 @@ namespace OpenNos.Handler
                 Session.Client.SendPacket(Session.Character.GenerateSay($"OpenNos by OpenNos Team\nVersion: v{fileVersionInfo.ProductVersion}", 6));
                 Session.Client.SendPacket(Session.Character.GenerateSay("-----------------------------------------------", 10));
             }
-
+            Session.Character.LoadSkills();
             Session.Client.SendPacket(Session.Character.GenerateTit());
 
             ClientLinkManager.Instance.ChangeMap(Session.Character.CharacterId);
@@ -3608,6 +3607,8 @@ namespace OpenNos.Handler
 
             Session.Client.SendPacket(Session.Character.GenerateExts());
             Session.Client.SendPacket(Session.Character.GenerateGold());
+
+   
             Session.Client.SendPacket(Session.Character.GenerateSki());
 
             string[] quicklistpackets = Session.Character.GenerateQuicklist();

@@ -185,8 +185,8 @@ namespace OpenNos.GameObject
                     skill.Combos.Add(Mapper.DynamicMap<Combo>(com));
                 }
                 _skills.Add(skill);
-            } 
-                foreach (NpcMonsterDTO npcmonsterDTO in DAOFactory.NpcMonsterDAO.LoadAll())
+            }
+            foreach (NpcMonsterDTO npcmonsterDTO in DAOFactory.NpcMonsterDAO.LoadAll())
             {
                 _npcs.Add(Mapper.DynamicMap<NpcMonster>(npcmonsterDTO));
             }
@@ -208,7 +208,7 @@ namespace OpenNos.GameObject
                     _maps.TryAdd(guid, newMap);
                     i++;
                     npccount += newMap.Npcs.Count();
-                  
+
                     foreach (MapMonster n in newMap.Monsters)
                         Monsters.Add(n);
                     monstercount += newMap.Monsters.Count();
@@ -216,7 +216,7 @@ namespace OpenNos.GameObject
                         shopcount++;
                     foreach (MapNpc n in newMap.Npcs)
                         foreach (Recipe n2 in n.Recipes)
-                        recipescount++;
+                            recipescount++;
                 }
                 if (i != 0)
                     Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("MAP_LOADED"), i));
