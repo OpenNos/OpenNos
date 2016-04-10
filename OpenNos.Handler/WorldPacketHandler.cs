@@ -4241,10 +4241,10 @@ namespace OpenNos.Handler
                                  ClientLinkManager.Instance.Broadcast(Session, $"ct 1 {Session.Character.CharacterId} 3 {mmon.MapMonsterId} {skill.CastAnimation} -1 {skill.SkillVNum}", ReceiverType.AllOnMap);
                                  short dX = (short)(Session.Character.MapX - mmon.MapX);
                                  short dY = (short)(Session.Character.MapY - mmon.MapY);
-                                 damage = GenerateDamage(Session, mmon.MapMonsterId, skill, ref hitmode);
+                            
                                  if (Math.Pow(dX, 2) + Math.Pow(dY, 2) <= Math.Pow(skill.Range + 2, 2) || skill.TargetRange != 0)
                                  {
-
+                                     damage = GenerateDamage(Session, mmon.MapMonsterId, skill, ref hitmode);
                                      ski.Used = true;
                                      ski.LastUse = DateTime.Now;
                                      if (damage == 0 || (DateTime.Now - ski.LastUse).TotalSeconds > 3)

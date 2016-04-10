@@ -148,7 +148,7 @@ namespace OpenNos.GameObject
                 short? mapId = ClientLinkManager.Instance.GetProperty<short?>(Target, "MapId");
                 short mapX = this.MapX;
                 short mapY = this.MapY;
-                short maxdistance = 30;
+                short maxdistance = 20;
                 if (MapX == null || MapY == null) { Target = -1; }
                 else
                 {
