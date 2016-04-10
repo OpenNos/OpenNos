@@ -4186,16 +4186,18 @@ namespace OpenNos.Handler
             List<CharacterSkill> skills = Session.Character.UseSp ? Session.Character.SkillsSp : Session.Character.Skills;
             int damage;
             int hitmode = 0;
-            if (skills.Count() - 1 < Castingid)
-            {
-                Session.Client.SendPacket("cancel 0 0");
-                return;
-            }
-            CharacterSkill ski = skills.ElementAt(Castingid);
+            CharacterSkill ski = null;
             Skill skill = null;
-            if (ski != null)
-                skill = ServerManager.GetSkill(ski.SkillVNum);
-
+            foreach (CharacterSkill sk in skills)
+            {
+                Skill skl = ServerManager.GetSkill(sk.SkillVNum);
+                if (skl!=null && skl.CastId == Castingid)
+                {
+                    ski = sk;
+                    skill = skl;
+                }
+            }
+          
             if (skill != null && skill.TargetType == 1 && skill.HitType == 1 && !ski.Used)
             {
                 Task t = Task.Factory.StartNew(async () =>
