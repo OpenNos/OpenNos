@@ -54,6 +54,8 @@ namespace OpenNos.GameObject
             Mapper.CreateMap<CharacterDTO, Character>();
             Mapper.CreateMap<Character, CharacterDTO>();
             SpCooldown = 30;
+            SaveX = 0;
+            SaveY = 0;
         }
 
         #endregion
@@ -112,6 +114,8 @@ namespace OpenNos.GameObject
         public short LastNRunId { get; set; }
         public List<QuicklistEntry> QuicklistEntries { get; set; }
         public int SpCooldown { get; set; }
+        public short SaveY { get; set; }
+        public short SaveX { get; set; }
 
         #endregion
 
