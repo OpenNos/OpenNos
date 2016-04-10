@@ -25,11 +25,8 @@ namespace OpenNos.DAL
         private static ICellonOptionDAO _cellonoptionDAO;
         private static ICharacterDAO _characterDAO;
         private static ICharacterSkillDAO _characterskillDAO;
-
-        private static IComboDAO _comboDAO
-
-
-private static IDropDAO _dropDAO;
+        private static IComboDAO _comboDAO;
+        private static IDropDAO _dropDAO;
         private static IGeneralLogDAO _generallogDAO;
         private static IInventoryDAO _inventoryDAO;
         private static IInventoryItemDAO _inventoryitemDAO;

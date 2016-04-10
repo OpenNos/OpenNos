@@ -29,6 +29,7 @@ namespace OpenNos.GameObject
             Mapper.CreateMap<CharacterSkill, CharacterSkillDTO>();
             LastUse = DateTime.Now.AddHours(-1);
             Used = false;
+            Hit = 0;
         }
 
         #endregion
@@ -36,6 +37,8 @@ namespace OpenNos.GameObject
         public DateTime LastUse {
             get; set;
         }
+        public short Hit { get; set; }
+
         #region Methods
 
         public void Save()

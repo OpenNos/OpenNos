@@ -432,7 +432,7 @@ namespace OpenNos.Import.Console
 
             Dictionary<string, string> dictionaryIdLang = new Dictionary<string, string>();
             SkillDTO skill = new SkillDTO();
-            ComboDTO combo = new ComboDTO();
+            List<ComboDTO> Combo = new List<ComboDTO>();
             string line;
             int counter = 0;
 
@@ -470,6 +470,26 @@ namespace OpenNos.Import.Console
                         skill.Class = byte.Parse(currentLine[4]);
                         skill.Type = byte.Parse(currentLine[5]);
                         skill.Element = byte.Parse(currentLine[7]);
+                    }
+                    else if (currentLine.Length > 2 && currentLine[1] == "FCOMBO")
+                    {
+                        for (int i = 3; i < currentLine.Count() - 4; i += 3)
+                        {
+                            ComboDTO comb = new ComboDTO()
+                            {
+                                SkillVNum = skill.SkillVNum,
+                                Hit = short.Parse(currentLine[i]),
+                                Animation = short.Parse(currentLine[i + 1]),
+                                Effect = short.Parse(currentLine[i + 2])
+                            };
+
+                            if (comb.Hit != 0 || comb.Animation != 0 || comb.Effect != 0)
+                                if (DAOFactory.ComboDAO.LoadAll().FirstOrDefault(s => s.SkillVNum == comb.SkillVNum && s.Hit == comb.Hit && s.Effect == comb.Effect) == null)
+                                {
+                                    Combo.Add(comb);
+                                }
+                        }
+
                     }
                     else if (currentLine.Length > 3 && currentLine[1] == "COST")
                     {
@@ -608,6 +628,8 @@ namespace OpenNos.Import.Console
                     }
                 }
                 DAOFactory.SkillDAO.Insert(skills);
+                DAOFactory.ComboDAO.Insert(Combo);
+
                 Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("SKILLS_PARSED"), counter));
                 skillIdStream.Close();
             }

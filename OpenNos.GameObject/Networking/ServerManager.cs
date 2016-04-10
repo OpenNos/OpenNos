@@ -179,7 +179,12 @@ namespace OpenNos.GameObject
             Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("ITEM_LOADED"), _items.Count()));
             foreach (SkillDTO skillDTO in DAOFactory.SkillDAO.LoadAll())
             {
-                _skills.Add(Mapper.DynamicMap<Skill>(skillDTO));
+                Skill skill = Mapper.DynamicMap<Skill>(skillDTO);
+                foreach (ComboDTO com in DAOFactory.ComboDAO.LoadAll().Where(s => s.SkillVNum == skill.SkillVNum))
+                {
+                    skill.Combos.Add(Mapper.DynamicMap<Combo>(com));
+                }
+                _skills.Add(skill);
             } 
                 foreach (NpcMonsterDTO npcmonsterDTO in DAOFactory.NpcMonsterDAO.LoadAll())
             {
