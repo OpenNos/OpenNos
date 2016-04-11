@@ -4179,6 +4179,37 @@ namespace OpenNos.Handler
             if (packetsplit.Length > 4)
                 ZoneHit(Convert.ToInt32(packetsplit[2]), Convert.ToInt16(packetsplit[3]), Convert.ToInt16(packetsplit[4]));
         }
+        [Packet("mtlist")]
+        public void SpecialZoneHit(string packet)
+        {
+            string[] packetsplit = packet.Split(' ');
+            int damage = 0;
+            int hitmode = 0;
+          
+            if (packetsplit.Length > 3)
+                for (int i = 3; i < packetsplit.Length-1; i+=2)
+                {
+
+                    List<CharacterSkill> skills = Session.Character.UseSp ? Session.Character.SkillsSp : Session.Character.Skills;
+                    Skill skill = null;
+                    foreach (CharacterSkill sk in skills)
+                    {
+                        Skill skl = ServerManager.GetSkill(sk.SkillVNum);
+                        if (skl != null && skl.CastId == short.Parse(packetsplit[i]))
+                        {
+                            skill = skl;
+                        }
+                    }
+
+                    MapMonster mon = Session.CurrentMap.Monsters.FirstOrDefault(s => s.MapMonsterId == short.Parse(packetsplit[i+1]));
+                    if (mon != null && skill !=null)
+                    {
+                        damage = GenerateDamage(Session, mon.MapMonsterId, skill, ref hitmode);
+                        ClientLinkManager.Instance.Broadcast(Session, $"su {1} {Session.Character.CharacterId} {3} {mon.MapMonsterId} {skill.SkillVNum} {skill.Cooldown} {skill.AttackAnimation} {skill.Effect} {Session.Character.MapX} {Session.Character.MapY} {(mon.Alive ? 1 : 0)} {(int)(((float)mon.CurrentHp / (float)ServerManager.GetNpc(mon.MonsterVNum).MaxHP) * 100)} {damage} {5} {skill.SkillType - 1}", ReceiverType.AllOnMap);
+                    }
+                }
+
+        }
 
         private void ZoneHit(int Castingid, short x, short y)
         {
@@ -4199,7 +4230,6 @@ namespace OpenNos.Handler
 
             if (skill != null)
             {
-
                 Task t = Task.Factory.StartNew(async () =>
                 {
 
@@ -4262,7 +4292,6 @@ namespace OpenNos.Handler
                     skill = skl;
                 }
             }
-
             if (skill != null && skill.TargetType == 1 && skill.HitType == 1 && !ski.Used)
             {
                 Task t = Task.Factory.StartNew(async () =>
