@@ -167,6 +167,10 @@
       <End Role="Combo" EntitySet="combo" />
       <End Role="Skill" EntitySet="skill" />
     </AssociationSet>
+    <AssociationSet Name="SkillItem" Association="opennosModel.Store.SkillItem">
+      <End Role="Skill" EntitySet="skill" />
+      <End Role="Item" EntitySet="item" />
+    </AssociationSet>
   </EntityContainer>
   <EntityType Name="account">
     <Key>
@@ -491,7 +495,7 @@
     <Property Name="MapX" Type="smallint" Nullable="false" />
     <Property Name="MapY" Type="smallint" Nullable="false" />
     <Property Name="Position" Type="utinyint" Nullable="false" />
-    <Property Name="Move" Type="bool" Nullable="false" />
+    <Property Name="IsMoving" Type="bool" Nullable="false" />
   </EntityType>
   <EntityType Name="mapnpc">
     <Key>
@@ -502,8 +506,8 @@
     <Property Name="MapId" Type="smallint" Nullable="false" />
     <Property Name="MapX" Type="smallint" Nullable="false" />
     <Property Name="MapY" Type="smallint" Nullable="false" />
-    <Property Name="Move" Type="bool" Nullable="false" />
     <Property Name="Position" Type="utinyint" Nullable="false" />
+    <Property Name="IsMoving" Type="bool" Nullable="false" />
     <Property Name="IsSitting" Type="bool" Nullable="false" />
     <Property Name="EffectDelay" Type="smallint" Nullable="false" />
     <Property Name="Effect" Type="smallint" Nullable="false" />
@@ -542,8 +546,9 @@
       <PropertyRef Name="SkillVNum" />
     </Key>
     <Property Name="SkillVNum" Type="smallint" Nullable="false" />
+    <Property Name="ItemVNum" Type="smallint" Nullable="false" />
     <Property Name="Name" Type="longtext" Nullable="false" />
-    <Property Name="Cost" Type="int" Nullable="false" />
+    <Property Name="Price" Type="int" Nullable="false" />
     <Property Name="LevelMinimum" Type="utinyint" Nullable="false" />
     <Property Name="Class" Type="utinyint" Nullable="false" />
     <Property Name="MinimumAdventurerLevel" Type="utinyint" Nullable="false" />
@@ -569,7 +574,6 @@
     <Property Name="Type" Type="utinyint" Nullable="false" />
     <Property Name="SkillType" Type="utinyint" Nullable="false" />
     <Property Name="Range" Type="utinyint" Nullable="false" />
-    <Property Name="VNumRequired" Type="smallint" Nullable="false" />
     <Property Name="UpgradeSkill" Type="smallint" Nullable="false" />
     <Property Name="CastTime" Type="smallint" Nullable="false" />
     <Property Name="Buff" Type="int" Nullable="false" />
@@ -1042,6 +1046,18 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
+  <Association Name="SkillItem">
+    <End Role="Skill" Type="opennosModel.Store.skill" Multiplicity="*" />
+    <End Role="Item" Type="opennosModel.Store.item" Multiplicity="1" />
+    <ReferentialConstraint>
+      <Principal Role="Item">
+        <PropertyRef Name="VNum" />
+      </Principal>
+      <Dependent Role="Skill">
+        <PropertyRef Name="ItemVNum" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
 </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
@@ -1296,6 +1312,10 @@
             <End Role="Combo" EntitySet="combo" />
             <End Role="Skill" EntitySet="skill" />
           </AssociationSet>
+          <AssociationSet Name="SkillItem" Association="opennosModel.SkillItem">
+            <End Role="Skill" EntitySet="skill" />
+            <End Role="Item" EntitySet="item" />
+          </AssociationSet>
           </EntityContainer>
         <Association Name="AccountCharacter">
           <End Type="opennosModel.Account" Role="Account" Multiplicity="1" />
@@ -1472,6 +1492,7 @@
           <NavigationProperty Name="recipeitem" Relationship="opennosModel.RecipeItemItem" FromRole="Item" ToRole="RecipeItem" />
           <NavigationProperty Name="recipe" Relationship="opennosModel.ItemRecipe" FromRole="Item" ToRole="Recipe" />
           <NavigationProperty Name="drop" Relationship="opennosModel.DropItem" FromRole="Item" ToRole="Drop" />
+          <NavigationProperty Name="skill" Relationship="opennosModel.SkillItem" FromRole="Item" ToRole="Skill" />
           </EntityType>
         <EntityType Name="NpcMonster">
           <Key>
@@ -1721,7 +1742,7 @@
           <Property Name="MapX" Type="Int16" Nullable="false" />
           <Property Name="MapY" Type="Int16" Nullable="false" />
           <Property Name="Position" Type="Byte" Nullable="false" />
-          <Property Name="Move" Type="Boolean" Nullable="false" />
+          <Property Name="IsMoving" Type="Boolean" Nullable="false" />
           <NavigationProperty Name="npcmonster" Relationship="opennosModel.MapMonsterNpcMonster" FromRole="MapMonster" ToRole="NpcMonster" />
         </EntityType>
         <Association Name="MapMapMonster">
@@ -1747,8 +1768,8 @@
           <Property Name="MapId" Type="Int16" Nullable="false" />
           <Property Name="MapX" Type="Int16" Nullable="false" />
           <Property Name="MapY" Type="Int16" Nullable="false" />
-          <Property Name="Move" Type="Boolean" Nullable="false" />
           <Property Name="Position" Type="Byte" Nullable="false" />
+          <Property Name="IsMoving" Type="Boolean" Nullable="false" />
           <Property Name="IsSitting" Type="Boolean" Nullable="false" />
           <Property Name="EffectDelay" Type="Int16" Nullable="false" />
           <Property Name="Effect" Type="Int16" Nullable="false" />
@@ -1929,8 +1950,9 @@
             <PropertyRef Name="SkillVNum" />
           </Key>
           <Property Name="SkillVNum" Type="Int16" Nullable="false" annotation:StoreGeneratedPattern="None" />
+          <Property Name="ItemVNum" Type="Int16" Nullable="false" />
           <Property Name="Name" Type="String" Nullable="false" />
-          <Property Name="Cost" Type="Int32" Nullable="false" />
+          <Property Name="Price" Type="Int32" Nullable="false" />
           <Property Name="LevelMinimum" Type="Byte" Nullable="false" />
           <Property Name="Class" Type="Byte" Nullable="false" />
           <Property Name="MinimumAdventurerLevel" Type="Byte" Nullable="false" />
@@ -1958,13 +1980,13 @@
           <Property Name="Type" Type="Byte" Nullable="false" />
           <Property Name="SkillType" Type="Byte" Nullable="false" />
           <Property Name="Range" Type="Byte" Nullable="false" />
-          <Property Name="VNumRequired" Type="Int16" Nullable="false" />
           <Property Name="UpgradeSkill" Type="Int16" Nullable="false" />
           <NavigationProperty Name="npcmonsterskill" Relationship="opennosModel.NpcMonsterSkillSkill" FromRole="Skill" ToRole="NpcMonsterSkill" />
           <Property Name="CastTime" Type="Int16" Nullable="false" />
           <NavigationProperty Name="combo" Relationship="opennosModel.ComboSkill" FromRole="Skill" ToRole="Combo" />
           <Property Name="Buff" Type="Int32" Nullable="false" />
           <Property Name="BuffId" Type="Int16" Nullable="false" />
+          <NavigationProperty Name="item" Relationship="opennosModel.SkillItem" FromRole="Skill" ToRole="Item" />
         </EntityType>
         <EntityType Name="CharacterSkill">
           <Key>
@@ -2139,6 +2161,18 @@
             </Principal>
             <Dependent Role="Combo">
               <PropertyRef Name="SkillVNum" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="SkillItem">
+          <End Type="opennosModel.Skill" Role="Skill" Multiplicity="*" />
+          <End Type="opennosModel.Item" Role="Item" Multiplicity="1" />
+          <ReferentialConstraint>
+            <Principal Role="Item">
+              <PropertyRef Name="VNum" />
+            </Principal>
+            <Dependent Role="Skill">
+              <PropertyRef Name="ItemVNum" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -2482,7 +2516,7 @@
           <ScalarProperty Name="MapX" ColumnName="MapX" />
           <ScalarProperty Name="MapY" ColumnName="MapY" />
           <ScalarProperty Name="Position" ColumnName="Position" />
-          <ScalarProperty Name="Move" ColumnName="Move" />
+          <ScalarProperty Name="IsMoving" ColumnName="IsMoving" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -2494,8 +2528,8 @@
           <ScalarProperty Name="MapId" ColumnName="MapId" />
           <ScalarProperty Name="MapX" ColumnName="MapX" />
           <ScalarProperty Name="MapY" ColumnName="MapY" />
-          <ScalarProperty Name="Move" ColumnName="Move" />
           <ScalarProperty Name="Position" ColumnName="Position" />
+          <ScalarProperty Name="IsMoving" ColumnName="IsMoving" />
           <ScalarProperty Name="IsSitting" ColumnName="IsSitting" />
           <ScalarProperty Name="EffectDelay" ColumnName="EffectDelay" />
           <ScalarProperty Name="Effect" ColumnName="Effect" />
@@ -2538,8 +2572,9 @@
       <EntityTypeMapping TypeName="IsTypeOf(opennosModel.Skill)">
         <MappingFragment StoreEntitySet="skill">
           <ScalarProperty Name="SkillVNum" ColumnName="SkillVNum" />
+          <ScalarProperty Name="ItemVNum" ColumnName="ItemVNum" />
           <ScalarProperty Name="Name" ColumnName="Name" />
-          <ScalarProperty Name="Cost" ColumnName="Cost" />
+          <ScalarProperty Name="Price" ColumnName="Price" />
           <ScalarProperty Name="LevelMinimum" ColumnName="LevelMinimum" />
           <ScalarProperty Name="Class" ColumnName="Class" />
           <ScalarProperty Name="MinimumAdventurerLevel" ColumnName="MinimumAdventurerLevel" />
@@ -2565,7 +2600,6 @@
           <ScalarProperty Name="Type" ColumnName="Type" />
           <ScalarProperty Name="SkillType" ColumnName="SkillType" />
           <ScalarProperty Name="Range" ColumnName="Range" />
-          <ScalarProperty Name="VNumRequired" ColumnName="VNumRequired" />
           <ScalarProperty Name="UpgradeSkill" ColumnName="UpgradeSkill" />
           <ScalarProperty Name="CastTime" ColumnName="CastTime" />
           <ScalarProperty Name="Buff" ColumnName="Buff" />

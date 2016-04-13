@@ -91,21 +91,21 @@ namespace OpenNos.Handler
         public void AddMonster(string packet)
         {
             string[] packetsplit = packet.Split(' ');
-            short vnum = 0, move = 0;
+            short vnum = 0, isMoving = 0;
 
             Random rnd = new Random();
 
-            if (packetsplit.Length == 4 && short.TryParse(packetsplit[2], out vnum) && short.TryParse(packetsplit[3], out move))
+            if (packetsplit.Length == 4 && short.TryParse(packetsplit[2], out vnum) && short.TryParse(packetsplit[3], out isMoving))
             {
                 NpcMonster npcmonster = ServerManager.GetNpc(vnum);
                 if (npcmonster == null)
                     return;
-                MapMonsterDTO monst = new MapMonsterDTO() { MonsterVNum = vnum, MapY = Session.Character.MapY, MapX = Session.Character.MapX, MapId = Session.Character.MapId, Position = (byte)Session.Character.Direction, Move = move == 1 ? true : false, MapMonsterId = MapMonster.generateMapMonsterId() };
+                MapMonsterDTO monst = new MapMonsterDTO() { MonsterVNum = vnum, MapY = Session.Character.MapY, MapX = Session.Character.MapX, MapId = Session.Character.MapId, Position = (byte)Session.Character.Direction, IsMoving = isMoving == 1 ? true : false, MapMonsterId = MapMonster.generateMapMonsterId() };
                 MapMonster monster = null;
                 if (DAOFactory.MapMonsterDAO.LoadById(monst.MapMonsterId) == null)
                 {
                     DAOFactory.MapMonsterDAO.Insert(monst);
-                    monster = new MapMonster() { MonsterVNum = vnum, MapY = monst.MapY, Alive = true, CurrentHp = npcmonster.MaxHP, CurrentMp = npcmonster.MaxMP, MapX = monst.MapX, MapId = Session.Character.MapId, firstX = monst.MapX, firstY = monst.MapY, MapMonsterId = monst.MapMonsterId, Position = 1, Move = move == 1 ? true : false };
+                    monster = new MapMonster() { MonsterVNum = vnum, MapY = monst.MapY, Alive = true, CurrentHp = npcmonster.MaxHP, CurrentMp = npcmonster.MaxMP, MapX = monst.MapX, MapId = Session.Character.MapId, firstX = monst.MapX, firstY = monst.MapY, MapMonsterId = monst.MapMonsterId, Position = 1, IsMoving = isMoving == 1 ? true : false };
                     ServerManager.Monsters.Add(monster);
                     ServerManager.GetMap(Session.Character.MapId).Monsters.Add(monster);
                     ClientLinkManager.Instance.Broadcast(Session, monster.GenerateIn3(), ReceiverType.AllOnMap);
@@ -252,7 +252,7 @@ namespace OpenNos.Handler
 
                 if (skillinfo == null)
                     return;
-                if (Session.Character.Gold >= skillinfo.Cost && Session.Character.getCP() >= skillinfo.CPCost && Session.Character.Level >= skillinfo.LevelMinimum)
+                if (Session.Character.Gold >= skillinfo.Price && Session.Character.getCP() >= skillinfo.CPCost && Session.Character.Level >= skillinfo.LevelMinimum)
                 {
                     switch (Session.Character.Class)
                     {
@@ -279,7 +279,7 @@ namespace OpenNos.Handler
 
                     if (Session.Character.Skills.FirstOrDefault(s => s.SkillVNum == slot) != null)
                         return;
-                    Session.Character.Gold -= skillinfo.Cost;
+                    Session.Character.Gold -= skillinfo.Price;
                     Session.Client.SendPacket(Session.Character.GenerateGold());
                     Skill ski = ServerManager.GetSkill(slot);
                     if (ski == null || !(ski.Class == Session.Character.Class || (ski.Class == 0 && ski.SkillVNum < 100)))
@@ -3009,7 +3009,7 @@ namespace OpenNos.Handler
                 CharacterSkill skill = Session.Character.Skills.FirstOrDefault(s => s.SkillVNum == vnum);
                 if (skill == null || skillinfo == null)
                     return;
-                Session.Character.Gold -= skillinfo.Cost;
+                Session.Character.Gold -= skillinfo.Price;
                 Session.Client.SendPacket(Session.Character.GenerateGold());
 
                 for (int i = Session.Character.Skills.Count - 1; i >= 0; i--)
@@ -3815,7 +3815,7 @@ namespace OpenNos.Handler
                         mapx = (short)rnd.Next((Session.Character.MapX - qty) % Session.CurrentMap.XLength, (Session.Character.MapX + qty / 3) % Session.CurrentMap.YLength);
                         mapy = (short)rnd.Next((Session.Character.MapY - qty) % Session.CurrentMap.XLength, (Session.Character.MapY + qty / 3) % Session.CurrentMap.YLength);
                     }
-                    MapMonster monst = new MapMonster() { MonsterVNum = vnum, Alive = true, CurrentHp = npcmonster.MaxHP, CurrentMp = npcmonster.MaxMP, MapY = mapy, MapX = mapx, MapId = Session.Character.MapId, firstX = mapx, firstY = mapy, MapMonsterId = MapMonster.generateMapMonsterId(), Position = 1, Move = move != 0 ? true : false };
+                    MapMonster monst = new MapMonster() { MonsterVNum = vnum, Alive = true, CurrentHp = npcmonster.MaxHP, CurrentMp = npcmonster.MaxMP, MapY = mapy, MapX = mapx, MapId = Session.Character.MapId, firstX = mapx, firstY = mapy, MapMonsterId = MapMonster.generateMapMonsterId(), Position = 1, IsMoving = move != 0 ? true : false };
                     ServerManager.GetMap(Session.Character.MapId).Monsters.Add(monst);
                     ServerManager.Monsters.Add(monst);
                     ClientLinkManager.Instance.Broadcast(Session, monst.GenerateIn3(), ReceiverType.AllOnMap);

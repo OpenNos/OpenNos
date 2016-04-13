@@ -87,7 +87,7 @@ namespace OpenNos.Import.Console
                     if (effPacketsDictionary.ContainsKey(npctest.MapNpcId))
                         npctest.Effect = effPacketsDictionary[npctest.MapNpcId];
                     npctest.EffectDelay = 5000;
-                    npctest.Move = npcMvPacketsList.Contains(npctest.MapNpcId);
+                    npctest.IsMoving = npcMvPacketsList.Contains(npctest.MapNpcId);
                     npctest.Position = byte.Parse(currentPacket[6]);
                     npctest.Dialog = short.Parse(currentPacket[9]);
                     npctest.IsSitting = currentPacket[13] != "1";
@@ -211,7 +211,7 @@ namespace OpenNos.Import.Console
                         MonsterVNum = short.Parse(currentPacket[2]),
                         MapMonsterId = int.Parse(currentPacket[3])
                     };
-                    monster.Move = mobMvPacketsList.Contains(monster.MapMonsterId);
+                    monster.IsMoving = mobMvPacketsList.Contains(monster.MapMonsterId);
 
                     if (DAOFactory.NpcMonsterDAO.LoadById(monster.MonsterVNum) == null) continue;
                     if (DAOFactory.MapMonsterDAO.LoadById(monster.MapMonsterId) != null) continue;
@@ -767,7 +767,7 @@ namespace OpenNos.Import.Console
                     else if (currentLine.Length > 3 && currentLine[1] == "COST")
                     {
                         skill.CPCost = currentLine[2] == "-1" ? (byte)0 : byte.Parse(currentLine[2]);
-                        skill.Cost = int.Parse(currentLine[3]);
+                        skill.Price = int.Parse(currentLine[3]);
                     }
                     else if (currentLine.Length > 2 && currentLine[1] == "LEVEL")
                     {
@@ -799,7 +799,7 @@ namespace OpenNos.Import.Console
                         skill.CastTime = short.Parse(currentLine[6]);
                         skill.Cooldown = short.Parse(currentLine[7]);
                         skill.MpCost = short.Parse(currentLine[10]);
-                        skill.VNumRequired = short.Parse(currentLine[12]);
+                        skill.ItemVNum = short.Parse(currentLine[12]);
                         skill.Range = byte.Parse(currentLine[13]);
                     }
                     else if (currentLine.Length > 2 && currentLine[1] == "BASIC")

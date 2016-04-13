@@ -44,7 +44,7 @@
 -- -----------------------------------------------------------
 -- Entity Designer DDL Script for MySQL Server 4.1 and higher
 -- -----------------------------------------------------------
--- Date Created: 04/13/2016 09:21:34
+-- Date Created: 04/13/2016 09:52:45
 
 -- Generated from EDMX file: C:\Users\Dominik\Source\Repos\OpenNos\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
 -- Target version: 3.0.0.0
@@ -549,7 +549,7 @@ CREATE TABLE `mapmonster`(
 	`MapX` smallint NOT NULL, 
 	`MapY` smallint NOT NULL, 
 	`Position` TINYINT UNSIGNED NOT NULL, 
-	`Move` bool NOT NULL);
+	`IsMoving` bool NOT NULL);
 
 ALTER TABLE `mapmonster` ADD PRIMARY KEY (MapMonsterId);
 
@@ -563,8 +563,8 @@ CREATE TABLE `mapnpc`(
 	`MapId` smallint NOT NULL, 
 	`MapX` smallint NOT NULL, 
 	`MapY` smallint NOT NULL, 
-	`Move` bool NOT NULL, 
 	`Position` TINYINT UNSIGNED NOT NULL, 
+	`IsMoving` bool NOT NULL, 
 	`IsSitting` bool NOT NULL, 
 	`EffectDelay` smallint NOT NULL, 
 	`Effect` smallint NOT NULL, 
@@ -615,8 +615,9 @@ ALTER TABLE `drop` ADD PRIMARY KEY (DropId);
 
 CREATE TABLE `skill`(
 	`SkillVNum` smallint NOT NULL, 
+	`ItemVNum` smallint NOT NULL, 
 	`Name` longtext NOT NULL, 
-	`Cost` int NOT NULL, 
+	`Price` int NOT NULL, 
 	`LevelMinimum` TINYINT UNSIGNED NOT NULL, 
 	`Class` TINYINT UNSIGNED NOT NULL, 
 	`MinimumAdventurerLevel` TINYINT UNSIGNED NOT NULL, 
@@ -642,7 +643,6 @@ CREATE TABLE `skill`(
 	`Type` TINYINT UNSIGNED NOT NULL, 
 	`SkillType` TINYINT UNSIGNED NOT NULL, 
 	`Range` TINYINT UNSIGNED NOT NULL, 
-	`VNumRequired` smallint NOT NULL, 
 	`UpgradeSkill` smallint NOT NULL, 
 	`CastTime` smallint NOT NULL, 
 	`Buff` int NOT NULL, 
@@ -1347,6 +1347,24 @@ ADD CONSTRAINT `FK_ComboSkill`
 CREATE INDEX `IX_FK_ComboSkill`
     ON `combo`
     (`SkillVNum`);
+
+
+
+-- Creating foreign key on `ItemVNum` in table 'skill'
+
+ALTER TABLE `skill`
+ADD CONSTRAINT `FK_SkillItem`
+    FOREIGN KEY (`ItemVNum`)
+    REFERENCES `item`
+        (`VNum`)
+    ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+
+-- Creating non-clustered index for FOREIGN KEY 'FK_SkillItem'
+
+CREATE INDEX `IX_FK_SkillItem`
+    ON `skill`
+    (`ItemVNum`);
 
 
 

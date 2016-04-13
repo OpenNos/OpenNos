@@ -24,8 +24,9 @@ namespace OpenNos.DAL.EF.MySQL.DB
         }
     
         public short SkillVNum { get; set; }
+        public short ItemVNum { get; set; }
         public string Name { get; set; }
-        public int Cost { get; set; }
+        public int Price { get; set; }
         public byte LevelMinimum { get; set; }
         public byte Class { get; set; }
         public byte MinimumAdventurerLevel { get; set; }
@@ -51,7 +52,6 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public byte Type { get; set; }
         public byte SkillType { get; set; }
         public byte Range { get; set; }
-        public short VNumRequired { get; set; }
         public short UpgradeSkill { get; set; }
         public short CastTime { get; set; }
         public int Buff { get; set; }
@@ -65,5 +65,6 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public virtual ICollection<NpcMonsterSkill> npcmonsterskill { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Combo> combo { get; set; }
+        public virtual Item item { get; set; }
     }
 }

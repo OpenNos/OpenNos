@@ -90,7 +90,7 @@ namespace OpenNos.GameObject
                     Position = monster.Position,
                     firstX = monster.MapX,
                     firstY = monster.MapY,
-                    Move = monster.Move,
+                    IsMoving = monster.IsMoving,
                     Alive = true,
                     CurrentHp = npcmonster.MaxHP,
                     CurrentMp = npcmonster.MaxMP
@@ -109,7 +109,7 @@ namespace OpenNos.GameObject
                     Position = npc.Position,
                     NpcVNum = npc.NpcVNum,
                     IsSitting = npc.IsSitting,
-                    Move = npc.Move,
+                    IsMoving = npc.IsMoving,
                     Effect = npc.Effect,
                     EffectDelay = npc.EffectDelay,
                     Dialog = npc.Dialog,

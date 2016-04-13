@@ -67,6 +67,7 @@
         <AssociationConnector Association="opennosModel.CellonOptionInventoryItem" />
         <EntityTypeShape EntityType="opennosModel.Combo" Width="1.5" PointX="5.5" PointY="14.375" />
         <AssociationConnector Association="opennosModel.ComboSkill" />
+        <AssociationConnector Association="opennosModel.SkillItem" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
