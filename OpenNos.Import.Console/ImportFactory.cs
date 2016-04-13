@@ -318,7 +318,7 @@ namespace OpenNos.Import.Console
                     else if (currentLine.Length > 3 && currentLine[1] == "RACE")
                     {
                         //npc.Race = Convert.ToByte(linesave[2]);
-                        //npc.RaceType = Convert.ToByte(linesave[2]);
+                        //npc.RaceType = Convert.ToByte(linesave[3]);
                     }
                     else if (currentLine.Length > 3 && currentLine[1] == "HP/MP")
                     {
@@ -359,7 +359,7 @@ namespace OpenNos.Import.Console
                     }
                     else if (currentLine.Length > 4 && currentLine[1] == "WINFO")
                     {
-                        // Stupid way of saving data ex.	0	0	10 and	2	0	0 because logic!
+                        // Stupid way of saving data ex.	0	0	10 and	2	0	0, because logic!
                         npc.AttackUpgrade = Convert.ToByte(unknownData == 1 ? currentLine[2] : currentLine[4]);
                     }
                     else if (currentLine.Length > 3 && currentLine[1] == "AINFO")
@@ -523,7 +523,7 @@ namespace OpenNos.Import.Console
 
                         if (DAOFactory.RecipeDAO.LoadByNpc(npc).Any() &&
                             DAOFactory.RecipeDAO.LoadByNpc(npc).Any(s => s.ItemVNum == recipe.ItemVNum))
-                            continue; // isnt one of this redundant?
+                            continue; // isn't one of this redundant?
 
                         DAOFactory.RecipeDAO.Insert(recipe);
                         count++;

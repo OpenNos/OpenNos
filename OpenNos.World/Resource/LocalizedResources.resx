@@ -213,6 +213,9 @@
   <data name="CORRUPTED_KEEPALIVE" xml:space="preserve">
     <value>Corrupted Keepalive on client {0}.</value>
   </data>
+  <data name="CRAFTED_OBJECT" xml:space="preserve">
+    <value>You've crafted: {0} x {1}</value>
+  </data>
   <data name="DATABASE_INITIALIZED" xml:space="preserve">
     <value>Database has been initialized.</value>
   </data>
@@ -224,6 +227,9 @@
   </data>
   <data name="DISCONNECT" xml:space="preserve">
     <value>A client is has been disconnected! ClientId =</value>
+  </data>
+  <data name="DONE" xml:space="preserve">
+    <value>Done</value>
   </data>
   <data name="EMO_BLOCKED" xml:space="preserve">
     <value>Emoticons disabled</value>
@@ -280,7 +286,7 @@
     <value>You left the party</value>
   </data>
   <data name="GROUP_REQUEST" xml:space="preserve">
-    <value>group request sent to: {0}</value>
+    <value>Group request sent to: {0}</value>
   </data>
   <data name="GROUP_REQ_BLOCKED" xml:space="preserve">
     <value>Group request blocked</value>
@@ -360,9 +366,6 @@
   <data name="LOW_REP" xml:space="preserve">
     <value>Reputation is too low</value>
   </data>
-  <data name="MADE_OBJECT" xml:space="preserve">
-    <value>You've crafted: {0} x {1}</value>
-  </data>
   <data name="MAGICIAN" xml:space="preserve">
     <value>Magician</value>
   </data>
@@ -401,6 +404,9 @@
   </data>
   <data name="NOT_ADVENTURER" xml:space="preserve">
     <value>You can change class only once</value>
+  </data>
+  <data name="NOT_ENOUGH_CP" xml:space="preserve">
+    <value>You don't have enough CP points </value>
   </data>
   <data name="NOT_ENOUGH_MONEY" xml:space="preserve">
     <value>Not enough money</value>
@@ -510,7 +516,10 @@
   <data name="REFUSED" xml:space="preserve">
     <value>Exchange Refused</value>
   </data>
-  <data name="REPUT_DECREASE" xml:space="preserve">
+  <data name="REMOVE_SP" xml:space="preserve">
+    <value>If you want to learn skill you need to remove your sp card</value>
+  </data>
+  <data name="REPUT_DECREASED" xml:space="preserve">
     <value>Reputation decreased</value>
   </data>
   <data name="REP_CHANGED" xml:space="preserve">
@@ -608,6 +617,9 @@
   </data>
   <data name="USER_NOT_CONNECTED" xml:space="preserve">
     <value>User is not connected.</value>
+  </data>
+  <data name="USER_NOT_FOUND" xml:space="preserve">
+    <value>User not found</value>
   </data>
   <data name="USER_NOT_HERO" xml:space="preserve">
     <value>Only heroes may use hero messages.</value>

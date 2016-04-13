@@ -245,7 +245,7 @@ namespace OpenNos.Handler
             {
                 if (Session.Character.UseSp)
                 {
-                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("REMOVESP"), 0));
+                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("REMOVE_SP"), 0));
                     return;
                 }
                 Skill skillinfo = ServerManager.GetSkill(slot);
@@ -279,23 +279,27 @@ namespace OpenNos.Handler
 
                     if (Session.Character.Skills.FirstOrDefault(s => s.SkillVNum == slot) != null)
                         return;
+
                     Session.Character.Gold -= skillinfo.Price;
                     Session.Client.SendPacket(Session.Character.GenerateGold());
                     Skill ski = ServerManager.GetSkill(slot);
+
                     if (ski == null || !(ski.Class == Session.Character.Class || (ski.Class == 0 && ski.SkillVNum < 100)))
                         return;
+
                     Session.Character.Skills.Add(new CharacterSkill() { SkillVNum = slot, CharacterId = Session.Character.CharacterId });
                     Session.Client.SendPacket(Session.Character.GenerateSki());
                     string[] quicklistpackets = Session.Character.GenerateQuicklist();
                     Session.Client.SendPacket(quicklistpackets[0]);
                     Session.Client.SendPacket(quicklistpackets[1]);
                     Session.Client.SendPacket(quicklistpackets[2]);
+
                     Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SKILL_LEARNED"), 0));
                     Session.Client.SendPacket(Session.Character.GenerateLev());
                 }
                 else
                 {
-                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NEED_CP"), 0));
+                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_CP"), 0));
                 }
             }
             else
@@ -338,7 +342,7 @@ namespace OpenNos.Handler
                     Session.Client.SendPacket(Session.Character.GenerateShopMemo(1, string.Format(Language.Instance.GetMessageFromKey("BUY_ITEM_VALIDE"), ServerManager.GetItem(item.ItemVNum).Name, amount)));
                     Session.Character.Reput -= (long)(Reputprice);
                     Session.Client.SendPacket(Session.Character.GenerateFd());
-                    Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("REPUT_DECREASE"), 11));
+                    Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("REPUT_DECREASED"), 11));
                 }
 
                 InventoryItem newItem = new InventoryItem
@@ -869,7 +873,6 @@ namespace OpenNos.Handler
                         Session.CurrentMap.ShopUserList.Add(Session.CurrentMap.ShopUserList.Count(), myShop);
 
                         ClientLinkManager.Instance.Broadcast(Session, Session.Character.GeneratePlayerFlag(Session.CurrentMap.ShopUserList.Count()), ReceiverType.AllOnMapExceptMe);
-
                         ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateShop(shopname), ReceiverType.AllOnMap);
 
                         Session.Client.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("SHOP_OPEN")));
@@ -2024,7 +2027,7 @@ namespace OpenNos.Handler
                                 Session.Client.SendPacket($"pdti 11 {inv.InventoryItem.ItemVNum} {rec.Amount} 29 {inv.InventoryItem.Upgrade} 0");
                                 Session.Client.SendPacket($"guri 19 1 {Session.Character.CharacterId} 1324");
 
-                                Session.Client.SendPacket(Session.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("MADE_OBJECT"), iteminfo.Name, rec.Amount), 0));
+                                Session.Client.SendPacket(Session.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("CRAFTED_OBJECT"), iteminfo.Name, rec.Amount), 0));
                             }
                         }
                         else

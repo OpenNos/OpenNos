@@ -213,6 +213,9 @@
   <data name="CORRUPTED_KEEPALIVE" xml:space="preserve">
     <value>Corrupted Keepalive on client {0}.</value>
   </data>
+  <data name="CRAFTED_OBJECT" xml:space="preserve">
+    <value>Stworzyles: {0} x {1}</value>
+  </data>
   <data name="DATABASE_INITIALIZED" xml:space="preserve">
     <value>Baza danych została załadowana.</value>
   </data>
@@ -224,6 +227,9 @@
   </data>
   <data name="DISCONNECT" xml:space="preserve">
     <value>Uzytkownik zostal rozłaczony! ClientId = </value>
+  </data>
+  <data name="DONE" xml:space="preserve">
+    <value>Zrobione</value>
   </data>
   <data name="EMO_BLOCKED" xml:space="preserve">
     <value>Emotikony zablokowane</value>
@@ -360,9 +366,6 @@
   <data name="LOW_REP" xml:space="preserve">
     <value>Za niska reputacja</value>
   </data>
-  <data name="MADE_OBJECT" xml:space="preserve">
-    <value>Stworzyles: {0} x {1}</value>
-  </data>
   <data name="MAGICIAN" xml:space="preserve">
     <value>Mag</value>
   </data>
@@ -401,6 +404,9 @@
   </data>
   <data name="NOT_ADVENTURER" xml:space="preserve">
     <value>Mozesz zmienic klase tylko raz.</value>
+  </data>
+  <data name="NOT_ENOUGH_CP" xml:space="preserve">
+    <value>Nie masz wystarczajacej ilosci punktow CP</value>
   </data>
   <data name="NOT_ENOUGH_MONEY" xml:space="preserve">
     <value>Za malo zlota.</value>
@@ -510,7 +516,10 @@
   <data name="REFUSED" xml:space="preserve">
     <value>Wymiana odrzucona</value>
   </data>
-  <data name="REPUT_DECREASE" xml:space="preserve">
+  <data name="REMOVE_SP" xml:space="preserve">
+    <value>Jesli chcesz nauczyc sie umiejetnosci zdejmij karte specialisty</value>
+  </data>
+  <data name="REPUT_DECREASED" xml:space="preserve">
     <value>Reputacja obnizona</value>
   </data>
   <data name="REP_CHANGED" xml:space="preserve">
@@ -608,6 +617,9 @@
   </data>
   <data name="USER_NOT_CONNECTED" xml:space="preserve">
     <value>Uzytkownik nie jest polaczony.</value>
+  </data>
+  <data name="USER_NOT_FOUND" xml:space="preserve">
+    <value>Uzytkownik nieznaleziony</value>
   </data>
   <data name="USER_NOT_HERO" xml:space="preserve">
     <value>Tylko bohaterowie moga uzywac czatu bohaterów.</value>

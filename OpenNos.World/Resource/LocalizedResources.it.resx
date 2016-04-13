@@ -213,6 +213,9 @@
   <data name="CORRUPTED_KEEPALIVE" xml:space="preserve">
     <value>Corrupted Keepalive on client {0}</value>
   </data>
+  <data name="CRAFTED_OBJECT" xml:space="preserve">
+    <value>Hai craftato: {0} x {1}</value>
+  </data>
   <data name="DATABASE_INITIALIZED" xml:space="preserve">
     <value>Il database è stato avviato.</value>
   </data>
@@ -359,9 +362,6 @@
   </data>
   <data name="LOW_REP" xml:space="preserve">
     <value>La tua reputazione è troppo bassa.</value>
-  </data>
-  <data name="MADE_OBJECT" xml:space="preserve">
-    <value>Hai craftato: {0} x {1}</value>
   </data>
   <data name="MAGICIAN" xml:space="preserve">
     <value>Mago</value>
