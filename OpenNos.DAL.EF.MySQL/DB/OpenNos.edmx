@@ -572,6 +572,8 @@
     <Property Name="VNumRequired" Type="smallint" Nullable="false" />
     <Property Name="UpgradeSkill" Type="smallint" Nullable="false" />
     <Property Name="CastTime" Type="smallint" Nullable="false" />
+    <Property Name="Buff" Type="int" Nullable="false" />
+    <Property Name="BuffId" Type="smallint" Nullable="false" />
   </EntityType>
   <EntityType Name="characterskill">
     <Key>
@@ -1961,6 +1963,8 @@
           <NavigationProperty Name="npcmonsterskill" Relationship="opennosModel.NpcMonsterSkillSkill" FromRole="Skill" ToRole="NpcMonsterSkill" />
           <Property Name="CastTime" Type="Int16" Nullable="false" />
           <NavigationProperty Name="combo" Relationship="opennosModel.ComboSkill" FromRole="Skill" ToRole="Combo" />
+          <Property Name="Buff" Type="Int32" Nullable="false" />
+          <Property Name="BuffId" Type="Int16" Nullable="false" />
         </EntityType>
         <EntityType Name="CharacterSkill">
           <Key>
@@ -2564,6 +2568,8 @@
           <ScalarProperty Name="VNumRequired" ColumnName="VNumRequired" />
           <ScalarProperty Name="UpgradeSkill" ColumnName="UpgradeSkill" />
           <ScalarProperty Name="CastTime" ColumnName="CastTime" />
+          <ScalarProperty Name="Buff" ColumnName="Buff" />
+          <ScalarProperty Name="BuffId" ColumnName="BuffId" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

@@ -242,7 +242,6 @@ namespace OpenNos.Import.Console
                 basup++;
                 baseHp += basup;
 
-
                 if (i == 37)
                 {
                     baseHp = 1765;
@@ -255,7 +254,6 @@ namespace OpenNos.Import.Console
                         basup++;
                     }
                 }
-
             }
 
             //basicMpLoad
@@ -267,7 +265,6 @@ namespace OpenNos.Import.Console
             for (int i = 0; i < 100; i++)
             {
                 basicXp[i] = i * 180;
-
             }
 
             //basicJXpLoad
@@ -421,217 +418,6 @@ namespace OpenNos.Import.Console
                 DAOFactory.NpcMonsterSkillDAO.Insert(skills);
                 Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("NPCMONSTERS_PARSED"), counter));
                 npcIdStream.Close();
-            }
-        }
-
-        public void ImportSkills()
-        {
-            string fileSkillId = $"{_folder}\\Skill.dat";
-            string fileSkillLang = $"{_folder}\\_code_{System.Configuration.ConfigurationManager.AppSettings["language"]}_Skill.txt";
-            List<SkillDTO> skills = new List<SkillDTO>();
-
-            Dictionary<string, string> dictionaryIdLang = new Dictionary<string, string>();
-            SkillDTO skill = new SkillDTO();
-            List<ComboDTO> Combo = new List<ComboDTO>();
-            string line;
-            int counter = 0;
-
-            using (StreamReader skillIdLangStream = new StreamReader(fileSkillLang, Encoding.GetEncoding(1252)))
-            {
-                while ((line = skillIdLangStream.ReadLine()) != null)
-                {
-                    string[] linesave = line.Split('\t');
-                    if (linesave.Length > 1 && !dictionaryIdLang.ContainsKey(linesave[0]))
-                        dictionaryIdLang.Add(linesave[0], linesave[1]);
-                }
-                skillIdLangStream.Close();
-            }
-
-            using (StreamReader skillIdStream = new StreamReader(fileSkillId, Encoding.GetEncoding(1252)))
-            {
-                while ((line = skillIdStream.ReadLine()) != null)
-                {
-                    string[] currentLine = line.Split('\t');
-
-                    if (currentLine.Length > 2 && currentLine[1] == "VNUM")
-                    {
-                        skill = new SkillDTO();
-                        skill.SkillVNum = short.Parse(currentLine[2]);
-                    }
-                    else if (currentLine.Length > 2 && currentLine[1] == "NAME")
-                    {
-                        string name;
-                        skill.Name = dictionaryIdLang.TryGetValue(currentLine[2], out name) ? name : string.Empty;
-                    }
-                    else if (currentLine.Length > 2 && currentLine[1] == "TYPE")
-                    {
-                        skill.SkillType = byte.Parse(currentLine[2]);
-                        skill.CastId = short.Parse(currentLine[3]);
-                        skill.Class = byte.Parse(currentLine[4]);
-                        skill.Type = byte.Parse(currentLine[5]);
-                        skill.Element = byte.Parse(currentLine[7]);
-                    }
-                    else if (currentLine.Length > 2 && currentLine[1] == "FCOMBO")
-                    {
-                        for (int i = 3; i < currentLine.Count() - 4; i += 3)
-                        {
-                            ComboDTO comb = new ComboDTO()
-                            {
-                                SkillVNum = skill.SkillVNum,
-                                Hit = short.Parse(currentLine[i]),
-                                Animation = short.Parse(currentLine[i + 1]),
-                                Effect = short.Parse(currentLine[i + 2])
-                            };
-
-                            if (comb.Hit != 0 || comb.Animation != 0 || comb.Effect != 0)
-                                if (DAOFactory.ComboDAO.LoadAll().FirstOrDefault(s => s.SkillVNum == comb.SkillVNum && s.Hit == comb.Hit && s.Effect == comb.Effect) == null)
-                                {
-                                    Combo.Add(comb);
-                                }
-                        }
-
-                    }
-                    else if (currentLine.Length > 3 && currentLine[1] == "COST")
-                    {
-                        skill.CPCost = currentLine[2] == "-1" ? (byte)0 : byte.Parse(currentLine[2]);
-                        skill.Cost = int.Parse(currentLine[3]);
-                    }
-                    else if (currentLine.Length > 2 && currentLine[1] == "LEVEL")
-                    {
-                        skill.LevelMinimum = currentLine[2] != "-1" ? byte.Parse(currentLine[2]) : (byte)0;
-                        skill.MinimumAdventurerLevel = currentLine[3] != "-1" ? byte.Parse(currentLine[3]) : (byte)0;
-                        skill.MinimumSwordmanLevel = currentLine[4] != "-1" ? byte.Parse(currentLine[4]) : (byte)0;
-                        skill.MinimumArcherLevel = currentLine[5] != "-1" ? byte.Parse(currentLine[5]) : (byte)0;
-                        skill.MinimumMagicianLevel = currentLine[6] != "-1" ? byte.Parse(currentLine[6]) : (byte)0;
-                    }
-                    else if (currentLine.Length > 2 && currentLine[1] == "EFFECT")
-                    {
-                        //skill.Unknown = short.Parse(currentLine[2]);
-                        skill.CastEffect = short.Parse(currentLine[3]);
-                        skill.CastAnimation = short.Parse(currentLine[4]);
-                        skill.Effect = short.Parse(currentLine[5]);
-                        skill.AttackAnimation = short.Parse(currentLine[6]);
-                    }
-                    else if (currentLine.Length > 2 && currentLine[1] == "TARGET")
-                    {
-                        //1&2 used as type
-                        //third unknown
-                        skill.TargetType = byte.Parse(currentLine[2]);
-                        skill.HitType = byte.Parse(currentLine[3]);
-                        skill.TargetRange = byte.Parse(currentLine[5]);
-                    }
-                    else if (currentLine.Length > 2 && currentLine[1] == "DATA")
-                    {
-                        skill.UpgradeSkill = short.Parse(currentLine[2]);
-                        skill.CastTime = short.Parse(currentLine[6]);
-                        skill.Cooldown = short.Parse(currentLine[7]);
-                        skill.MpCost = short.Parse(currentLine[10]);
-                        skill.VNumRequired = short.Parse(currentLine[12]);
-                        skill.Range = byte.Parse(currentLine[13]);
-                    }
-                    else if (currentLine.Length > 2 && currentLine[1] == "BASIC")
-                    {
-                        switch (currentLine[2])
-                        {
-                            case "0":
-                                /*
-                                if (currentLine[4] == "1")
-                                skill.MonsterAmount = short.Parse(currentLine[5]); //Divide by 4
-                                skill.MonsterVNum = short.Parse(currentLine[6]); // Divide by 4
-                                else if (currentLine[4] == "0")
-                                skill.Buff = short.Parse(currentLine[5]); //Divide by 4
-                                skill.BuffId = short.Parse(currentLine[6]); // Divide by 4
-                                */
-                                skill.Damage = short.Parse(currentLine[5]); // Divide by 4(?)
-                                break;
-                            case "1":
-                                skill.ElementalDamage = short.Parse(currentLine[5]); // Divide by 4(?)
-                                /*
-                                skill.Unknown = short.Parse(currentLine[2]);
-                                skill.Unknown = short.Parse(currentLine[3]);
-                                skill.Unknown = short.Parse(currentLine[4]);
-                                skill.Unknown = short.Parse(currentLine[6]);
-                                skill.Unknown = short.Parse(currentLine[7]);
-                                */
-                                break;
-                            case "2":
-                                //unknown
-                                /*
-                                skill.Unknown = short.Parse(currentLine[2]);
-                                skill.Unknown = short.Parse(currentLine[3]);
-                                skill.Unknown = short.Parse(currentLine[4]);
-                                skill.Unknown = short.Parse(currentLine[5]);
-                                skill.Unknown = short.Parse(currentLine[6]);
-                                skill.Unknown = short.Parse(currentLine[7]);
-                                */
-                                break;
-                            case "3":
-                                //unknown
-                                /*
-                                skill.Unknown = short.Parse(currentLine[2]);
-                                skill.Unknown = short.Parse(currentLine[3]);
-                                skill.Unknown = short.Parse(currentLine[4]);
-                                skill.Unknown = short.Parse(currentLine[5]);
-                                skill.Unknown = short.Parse(currentLine[6]);
-                                skill.Unknown = short.Parse(currentLine[7]);
-                                */
-                                break;
-                            case "4":
-                                //unknown
-                                /*
-                                skill.Unknown = short.Parse(currentLine[2]);
-                                skill.Unknown = short.Parse(currentLine[3]);
-                                skill.Unknown = short.Parse(currentLine[4]);
-                                skill.Unknown = short.Parse(currentLine[5]);
-                                skill.Unknown = short.Parse(currentLine[6]);
-                                skill.Unknown = short.Parse(currentLine[7]);
-                                */
-                                break;
-                        }
-                    }
-                    else if (currentLine.Length > 2 && currentLine[1] == "FCOMBO")
-                    {
-                        /* Parse when done
-                        if (currentLine[2] == "1")
-                        {
-                            combo.FirstActivationHit = byte.Parse(currentLine[3]);
-                            combo.FirstComboAttackAnimation = short.Parse(currentLine[4]);
-                            combo.FirstComboEffect = short.Parse(currentLine[5]);
-                            combo.SecondActivationHit = byte.Parse(currentLine[3]);
-                            combo.SecondComboAttackAnimation = short.Parse(currentLine[4]);
-                            combo.SecondComboEffect = short.Parse(currentLine[5]);
-                            combo.ThirdActivationHit = byte.Parse(currentLine[3]);
-                            combo.ThirdComboAttackAnimation = short.Parse(currentLine[4]);
-                            combo.ThirdComboEffect = short.Parse(currentLine[5]);
-                            combo.FourthActivationHit = byte.Parse(currentLine[3]);
-                            combo.FourthComboAttackAnimation = short.Parse(currentLine[4]);
-                            combo.FourthComboEffect = short.Parse(currentLine[5]);
-                            combo.FifthActivationHit = byte.Parse(currentLine[3]);
-                            combo.FifthComboAttackAnimation = short.Parse(currentLine[4]);
-                            combo.FifthComboEffect = short.Parse(currentLine[5]);
-                        }
-                        */
-
-                    }
-                    else if (currentLine.Length > 2 && currentLine[1] == "CELL")
-                    {
-                        //skill.Unknown = short.Parse(currentLine[2]); // 2 - ??
-                    }
-                    else if (currentLine.Length > 1 && currentLine[1] == "Z_DESC")
-                    {
-                        //skill.Unknown = short.Parse(currentLine[2]); // 2 - ??
-                        if (DAOFactory.SkillDAO.LoadById(skill.SkillVNum) == null)
-                        {
-                            skills.Add(skill);
-                            counter++;
-                        }
-                    }
-                }
-                DAOFactory.SkillDAO.Insert(skills);
-                DAOFactory.ComboDAO.Insert(Combo);
-
-                Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("SKILLS_PARSED"), counter));
-                skillIdStream.Close();
             }
         }
 
@@ -835,51 +621,6 @@ namespace OpenNos.Import.Console
             DAOFactory.ShopItemDAO.Insert(shopitems);
             Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("SHOPITEMS_PARSED"), itemCounter));
         }
-        public void ImportShopSkills()
-        {
-            List<ShopSkillDTO> shopskills = new List<ShopSkillDTO>();
-            int itemCounter = 0;
-            byte type = 0;
-            foreach (string[] currentPacket in _packetList.Where(o => o[0].Equals("n_inv") || o[0].Equals("shopping")))
-            {
-                if (currentPacket[0].Equals("n_inv"))
-                {
-                    if (DAOFactory.ShopDAO.LoadByNpc(short.Parse(currentPacket[2])) != null)
-                    {
-                        for (int i = 5; i < currentPacket.Length; i++)
-                        {
-                            ShopSkillDTO sskill = null;
-                            if (!currentPacket[i].Contains("."))
-                            {
-
-                                sskill = new ShopSkillDTO
-                                {
-                                    ShopId = DAOFactory.ShopDAO.LoadByNpc(short.Parse(currentPacket[2])).ShopId,
-                                    Type = type,
-                                    Slot = (byte)(i - 5),
-                                    SkillVNum = short.Parse(currentPacket[i])
-                                };
-
-
-                                if (sskill == null || shopskills.FirstOrDefault(s => s.SkillVNum.Equals(sskill.SkillVNum) && s.ShopId.Equals(sskill.ShopId)) != null || DAOFactory.ShopSkillDAO.LoadByShopId(sskill.ShopId).FirstOrDefault(s => s.SkillVNum.Equals(sskill.SkillVNum)) != null)
-                                    continue;
-
-                                shopskills.Add(sskill);
-                                itemCounter++;
-                            }
-                        }
-                    }
-                }
-                else
-                {
-                    if (currentPacket.Length > 3)
-                        type = byte.Parse(currentPacket[1]);
-                }
-            }
-
-            DAOFactory.ShopSkillDAO.Insert(shopskills);
-            Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("SHOPSKILLS_PARSED"), itemCounter));
-        }
 
         public void ImportShops()
         {
@@ -911,6 +652,267 @@ namespace OpenNos.Import.Console
 
             DAOFactory.ShopDAO.Insert(shops);
             Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("SHOPS_PARSED"), shopCounter));
+        }
+
+        public void ImportShopSkills()
+        {
+            List<ShopSkillDTO> shopskills = new List<ShopSkillDTO>();
+            int itemCounter = 0;
+            byte type = 0;
+            foreach (string[] currentPacket in _packetList.Where(o => o[0].Equals("n_inv") || o[0].Equals("shopping")))
+            {
+                if (currentPacket[0].Equals("n_inv"))
+                {
+                    if (DAOFactory.ShopDAO.LoadByNpc(short.Parse(currentPacket[2])) != null)
+                    {
+                        for (int i = 5; i < currentPacket.Length; i++)
+                        {
+                            ShopSkillDTO sskill = null;
+                            if (!currentPacket[i].Contains("."))
+                            {
+                                sskill = new ShopSkillDTO
+                                {
+                                    ShopId = DAOFactory.ShopDAO.LoadByNpc(short.Parse(currentPacket[2])).ShopId,
+                                    Type = type,
+                                    Slot = (byte)(i - 5),
+                                    SkillVNum = short.Parse(currentPacket[i])
+                                };
+
+                                if (sskill == null || shopskills.FirstOrDefault(s => s.SkillVNum.Equals(sskill.SkillVNum) && s.ShopId.Equals(sskill.ShopId)) != null || DAOFactory.ShopSkillDAO.LoadByShopId(sskill.ShopId).FirstOrDefault(s => s.SkillVNum.Equals(sskill.SkillVNum)) != null)
+                                    continue;
+
+                                shopskills.Add(sskill);
+                                itemCounter++;
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    if (currentPacket.Length > 3)
+                        type = byte.Parse(currentPacket[1]);
+                }
+            }
+
+            DAOFactory.ShopSkillDAO.Insert(shopskills);
+            Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("SHOPSKILLS_PARSED"), itemCounter));
+        }
+
+        public void ImportSkills()
+        {
+            string fileSkillId = $"{_folder}\\Skill.dat";
+            string fileSkillLang = $"{_folder}\\_code_{System.Configuration.ConfigurationManager.AppSettings["language"]}_Skill.txt";
+            List<SkillDTO> skills = new List<SkillDTO>();
+
+            Dictionary<string, string> dictionaryIdLang = new Dictionary<string, string>();
+            SkillDTO skill = new SkillDTO();
+            List<ComboDTO> Combo = new List<ComboDTO>();
+            string line;
+            int counter = 0;
+
+            using (StreamReader skillIdLangStream = new StreamReader(fileSkillLang, Encoding.GetEncoding(1252)))
+            {
+                while ((line = skillIdLangStream.ReadLine()) != null)
+                {
+                    string[] linesave = line.Split('\t');
+                    if (linesave.Length > 1 && !dictionaryIdLang.ContainsKey(linesave[0]))
+                        dictionaryIdLang.Add(linesave[0], linesave[1]);
+                }
+                skillIdLangStream.Close();
+            }
+
+            using (StreamReader skillIdStream = new StreamReader(fileSkillId, Encoding.GetEncoding(1252)))
+            {
+                while ((line = skillIdStream.ReadLine()) != null)
+                {
+                    string[] currentLine = line.Split('\t');
+
+                    if (currentLine.Length > 2 && currentLine[1] == "VNUM")
+                    {
+                        skill = new SkillDTO();
+                        skill.SkillVNum = short.Parse(currentLine[2]);
+                    }
+                    else if (currentLine.Length > 2 && currentLine[1] == "NAME")
+                    {
+                        string name;
+                        skill.Name = dictionaryIdLang.TryGetValue(currentLine[2], out name) ? name : string.Empty;
+                    }
+                    else if (currentLine.Length > 2 && currentLine[1] == "TYPE")
+                    {
+                        skill.SkillType = byte.Parse(currentLine[2]);
+                        skill.CastId = short.Parse(currentLine[3]);
+                        skill.Class = byte.Parse(currentLine[4]);
+                        skill.Type = byte.Parse(currentLine[5]);
+                        skill.Element = byte.Parse(currentLine[7]);
+                    }
+                    else if (currentLine.Length > 2 && currentLine[1] == "FCOMBO")
+                    {
+                        for (int i = 3; i < currentLine.Count() - 4; i += 3)
+                        {
+                            ComboDTO comb = new ComboDTO()
+                            {
+                                SkillVNum = skill.SkillVNum,
+                                Hit = short.Parse(currentLine[i]),
+                                Animation = short.Parse(currentLine[i + 1]),
+                                Effect = short.Parse(currentLine[i + 2])
+                            };
+
+                            if (comb.Hit != 0 || comb.Animation != 0 || comb.Effect != 0)
+                                if (DAOFactory.ComboDAO.LoadAll().FirstOrDefault(s => s.SkillVNum == comb.SkillVNum && s.Hit == comb.Hit && s.Effect == comb.Effect) == null)
+                                {
+                                    Combo.Add(comb);
+                                }
+                        }
+                    }
+                    else if (currentLine.Length > 3 && currentLine[1] == "COST")
+                    {
+                        skill.CPCost = currentLine[2] == "-1" ? (byte)0 : byte.Parse(currentLine[2]);
+                        skill.Cost = int.Parse(currentLine[3]);
+                    }
+                    else if (currentLine.Length > 2 && currentLine[1] == "LEVEL")
+                    {
+                        skill.LevelMinimum = currentLine[2] != "-1" ? byte.Parse(currentLine[2]) : (byte)0;
+                        skill.MinimumAdventurerLevel = currentLine[3] != "-1" ? byte.Parse(currentLine[3]) : (byte)0;
+                        skill.MinimumSwordmanLevel = currentLine[4] != "-1" ? byte.Parse(currentLine[4]) : (byte)0;
+                        skill.MinimumArcherLevel = currentLine[5] != "-1" ? byte.Parse(currentLine[5]) : (byte)0;
+                        skill.MinimumMagicianLevel = currentLine[6] != "-1" ? byte.Parse(currentLine[6]) : (byte)0;
+                    }
+                    else if (currentLine.Length > 2 && currentLine[1] == "EFFECT")
+                    {
+                        //skill.Unknown = short.Parse(currentLine[2]);
+                        skill.CastEffect = short.Parse(currentLine[3]);
+                        skill.CastAnimation = short.Parse(currentLine[4]);
+                        skill.Effect = short.Parse(currentLine[5]);
+                        skill.AttackAnimation = short.Parse(currentLine[6]);
+                    }
+                    else if (currentLine.Length > 2 && currentLine[1] == "TARGET")
+                    {
+                        //1&2 used as type
+                        //third unknown
+                        skill.TargetType = byte.Parse(currentLine[2]);
+                        skill.HitType = byte.Parse(currentLine[3]);
+                        skill.TargetRange = byte.Parse(currentLine[5]);
+                    }
+                    else if (currentLine.Length > 2 && currentLine[1] == "DATA")
+                    {
+                        skill.UpgradeSkill = short.Parse(currentLine[2]);
+                        skill.CastTime = short.Parse(currentLine[6]);
+                        skill.Cooldown = short.Parse(currentLine[7]);
+                        skill.MpCost = short.Parse(currentLine[10]);
+                        skill.VNumRequired = short.Parse(currentLine[12]);
+                        skill.Range = byte.Parse(currentLine[13]);
+                    }
+                    else if (currentLine.Length > 2 && currentLine[1] == "BASIC")
+                    {
+                        switch (currentLine[2])
+                        {
+                            case "0":
+                                /*
+                                if (currentLine[4] == "1")
+                                skill.MonsterAmount = short.Parse(currentLine[5]); //Divide by 4
+                                skill.MonsterVNum = short.Parse(currentLine[6]); // Divide by 4
+                                */
+                                if (currentLine[4] == "0")
+                                {
+                                    skill.Buff = int.Parse(currentLine[5]); //Divide by 4
+                                    skill.BuffId = short.Parse(currentLine[6]); // Divide by 4
+                                }
+                                else
+                                    skill.Damage = short.Parse(currentLine[5]); // Divide by 4(?)
+                                break;
+
+                            case "1":
+                                skill.ElementalDamage = short.Parse(currentLine[5]); // Divide by 4(?)
+                                /*
+                                skill.Unknown = short.Parse(currentLine[2]);
+                                skill.Unknown = short.Parse(currentLine[3]);
+                                skill.Unknown = short.Parse(currentLine[4]);
+                                skill.Unknown = short.Parse(currentLine[6]);
+                                skill.Unknown = short.Parse(currentLine[7]);
+                                */
+                                break;
+
+                            case "2":
+                                //unknown
+                                /*
+                                skill.Unknown = short.Parse(currentLine[2]);
+                                skill.Unknown = short.Parse(currentLine[3]);
+                                skill.Unknown = short.Parse(currentLine[4]);
+                                skill.Unknown = short.Parse(currentLine[5]);
+                                skill.Unknown = short.Parse(currentLine[6]);
+                                skill.Unknown = short.Parse(currentLine[7]);
+                                */
+                                break;
+
+                            case "3":
+                                //unknown
+                                /*
+                                skill.Unknown = short.Parse(currentLine[2]);
+                                skill.Unknown = short.Parse(currentLine[3]);
+                                skill.Unknown = short.Parse(currentLine[4]);
+                                skill.Unknown = short.Parse(currentLine[5]);
+                                skill.Unknown = short.Parse(currentLine[6]);
+                                skill.Unknown = short.Parse(currentLine[7]);
+                                */
+                                break;
+
+                            case "4":
+                                //unknown
+                                /*
+                                skill.Unknown = short.Parse(currentLine[2]);
+                                skill.Unknown = short.Parse(currentLine[3]);
+                                skill.Unknown = short.Parse(currentLine[4]);
+                                skill.Unknown = short.Parse(currentLine[5]);
+                                skill.Unknown = short.Parse(currentLine[6]);
+                                skill.Unknown = short.Parse(currentLine[7]);
+                                */
+                                break;
+                        }
+                    }
+                    else if (currentLine.Length > 2 && currentLine[1] == "FCOMBO")
+                    {
+                        /* Parse when done
+                        if (currentLine[2] == "1")
+                        {
+                            combo.FirstActivationHit = byte.Parse(currentLine[3]);
+                            combo.FirstComboAttackAnimation = short.Parse(currentLine[4]);
+                            combo.FirstComboEffect = short.Parse(currentLine[5]);
+                            combo.SecondActivationHit = byte.Parse(currentLine[3]);
+                            combo.SecondComboAttackAnimation = short.Parse(currentLine[4]);
+                            combo.SecondComboEffect = short.Parse(currentLine[5]);
+                            combo.ThirdActivationHit = byte.Parse(currentLine[3]);
+                            combo.ThirdComboAttackAnimation = short.Parse(currentLine[4]);
+                            combo.ThirdComboEffect = short.Parse(currentLine[5]);
+                            combo.FourthActivationHit = byte.Parse(currentLine[3]);
+                            combo.FourthComboAttackAnimation = short.Parse(currentLine[4]);
+                            combo.FourthComboEffect = short.Parse(currentLine[5]);
+                            combo.FifthActivationHit = byte.Parse(currentLine[3]);
+                            combo.FifthComboAttackAnimation = short.Parse(currentLine[4]);
+                            combo.FifthComboEffect = short.Parse(currentLine[5]);
+                        }
+                        */
+                    }
+                    else if (currentLine.Length > 2 && currentLine[1] == "CELL")
+                    {
+                        //skill.Unknown = short.Parse(currentLine[2]); // 2 - ??
+                    }
+                    else if (currentLine.Length > 1 && currentLine[1] == "Z_DESC")
+                    {
+                        //skill.Unknown = short.Parse(currentLine[2]);
+
+                        if (DAOFactory.SkillDAO.LoadById(skill.SkillVNum) == null)
+                        {
+                            skills.Add(skill);
+                            counter++;
+                        }
+                    }
+                }
+                DAOFactory.SkillDAO.Insert(skills);
+                DAOFactory.ComboDAO.Insert(Combo);
+
+                Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("SKILLS_PARSED"), counter));
+                skillIdStream.Close();
+            }
         }
 
         public void ImportTeleporters()

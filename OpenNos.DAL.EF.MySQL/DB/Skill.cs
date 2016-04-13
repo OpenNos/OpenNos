@@ -54,6 +54,8 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public short VNumRequired { get; set; }
         public short UpgradeSkill { get; set; }
         public short CastTime { get; set; }
+        public int Buff { get; set; }
+        public short BuffId { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<CharacterSkill> characterskill { get; set; }

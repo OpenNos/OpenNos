@@ -50,6 +50,8 @@ namespace OpenNos.Data
         public short VNumRequired { get; set; }
         public short UpgradeSkill { get; set; }
         public short CastTime { get; set; }
+        public int Buff { get; set; }
+        public short BuffId { get; set; }
 
         #endregion
     }

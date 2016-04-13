@@ -44,9 +44,9 @@
 -- -----------------------------------------------------------
 -- Entity Designer DDL Script for MySQL Server 4.1 and higher
 -- -----------------------------------------------------------
--- Date Created: 04/08/2016 20:00:21
+-- Date Created: 04/13/2016 09:21:34
 
--- Generated from EDMX file: C:\Users\ERWAN\Desktop\OpenNos Git\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
+-- Generated from EDMX file: C:\Users\Dominik\Source\Repos\OpenNos\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
 -- Target version: 3.0.0.0
 
 -- --------------------------------------------------
@@ -125,7 +125,7 @@
 
 --    ALTER TABLE `cellonoption` DROP CONSTRAINT `FK_CellonOptionInventoryItem`;
 
---    ALTER TABLE `comboset` DROP CONSTRAINT `FK_ComboSkill`;
+--    ALTER TABLE `combo` DROP CONSTRAINT `FK_ComboSkill`;
 
 
 -- --------------------------------------------------
@@ -181,7 +181,7 @@ SET foreign_key_checks = 0;
 
     DROP TABLE IF EXISTS `cellonoption`;
 
-    DROP TABLE IF EXISTS `comboset`;
+    DROP TABLE IF EXISTS `combo`;
 
 SET foreign_key_checks = 1;
 
@@ -644,7 +644,9 @@ CREATE TABLE `skill`(
 	`Range` TINYINT UNSIGNED NOT NULL, 
 	`VNumRequired` smallint NOT NULL, 
 	`UpgradeSkill` smallint NOT NULL, 
-	`CastTime` smallint NOT NULL);
+	`CastTime` smallint NOT NULL, 
+	`Buff` int NOT NULL, 
+	`BuffId` smallint NOT NULL);
 
 ALTER TABLE `skill` ADD PRIMARY KEY (SkillVNum);
 
