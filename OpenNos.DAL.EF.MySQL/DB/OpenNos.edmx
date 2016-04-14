@@ -167,10 +167,6 @@
       <End Role="Combo" EntitySet="combo" />
       <End Role="Skill" EntitySet="skill" />
     </AssociationSet>
-    <AssociationSet Name="SkillItem" Association="opennosModel.Store.SkillItem">
-      <End Role="Skill" EntitySet="skill" />
-      <End Role="Item" EntitySet="item" />
-    </AssociationSet>
   </EntityContainer>
   <EntityType Name="account">
     <Key>
@@ -576,8 +572,9 @@
     <Property Name="Range" Type="utinyint" Nullable="false" />
     <Property Name="UpgradeSkill" Type="smallint" Nullable="false" />
     <Property Name="CastTime" Type="smallint" Nullable="false" />
-    <Property Name="Buff" Type="int" Nullable="false" />
+    <Property Name="SkillChance" Type="smallint" Nullable="false" />
     <Property Name="BuffId" Type="smallint" Nullable="false" />
+    <Property Name="SecondarySkillVNum" Type="smallint" Nullable="false" />
   </EntityType>
   <EntityType Name="characterskill">
     <Key>
@@ -1046,18 +1043,6 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="SkillItem">
-    <End Role="Skill" Type="opennosModel.Store.skill" Multiplicity="*" />
-    <End Role="Item" Type="opennosModel.Store.item" Multiplicity="1" />
-    <ReferentialConstraint>
-      <Principal Role="Item">
-        <PropertyRef Name="VNum" />
-      </Principal>
-      <Dependent Role="Skill">
-        <PropertyRef Name="ItemVNum" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
 </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
@@ -1312,10 +1297,6 @@
             <End Role="Combo" EntitySet="combo" />
             <End Role="Skill" EntitySet="skill" />
           </AssociationSet>
-          <AssociationSet Name="SkillItem" Association="opennosModel.SkillItem">
-            <End Role="Skill" EntitySet="skill" />
-            <End Role="Item" EntitySet="item" />
-          </AssociationSet>
           </EntityContainer>
         <Association Name="AccountCharacter">
           <End Type="opennosModel.Account" Role="Account" Multiplicity="1" />
@@ -1492,7 +1473,6 @@
           <NavigationProperty Name="recipeitem" Relationship="opennosModel.RecipeItemItem" FromRole="Item" ToRole="RecipeItem" />
           <NavigationProperty Name="recipe" Relationship="opennosModel.ItemRecipe" FromRole="Item" ToRole="Recipe" />
           <NavigationProperty Name="drop" Relationship="opennosModel.DropItem" FromRole="Item" ToRole="Drop" />
-          <NavigationProperty Name="skill" Relationship="opennosModel.SkillItem" FromRole="Item" ToRole="Skill" />
           </EntityType>
         <EntityType Name="NpcMonster">
           <Key>
@@ -1984,9 +1964,9 @@
           <NavigationProperty Name="npcmonsterskill" Relationship="opennosModel.NpcMonsterSkillSkill" FromRole="Skill" ToRole="NpcMonsterSkill" />
           <Property Name="CastTime" Type="Int16" Nullable="false" />
           <NavigationProperty Name="combo" Relationship="opennosModel.ComboSkill" FromRole="Skill" ToRole="Combo" />
-          <Property Name="Buff" Type="Int32" Nullable="false" />
+          <Property Name="SkillChance" Type="Int16" Nullable="false" />
           <Property Name="BuffId" Type="Int16" Nullable="false" />
-          <NavigationProperty Name="item" Relationship="opennosModel.SkillItem" FromRole="Skill" ToRole="Item" />
+          <Property Name="SecondarySkillVNum" Type="Int16" Nullable="false" />
         </EntityType>
         <EntityType Name="CharacterSkill">
           <Key>
@@ -2161,18 +2141,6 @@
             </Principal>
             <Dependent Role="Combo">
               <PropertyRef Name="SkillVNum" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="SkillItem">
-          <End Type="opennosModel.Skill" Role="Skill" Multiplicity="*" />
-          <End Type="opennosModel.Item" Role="Item" Multiplicity="1" />
-          <ReferentialConstraint>
-            <Principal Role="Item">
-              <PropertyRef Name="VNum" />
-            </Principal>
-            <Dependent Role="Skill">
-              <PropertyRef Name="ItemVNum" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -2602,8 +2570,9 @@
           <ScalarProperty Name="Range" ColumnName="Range" />
           <ScalarProperty Name="UpgradeSkill" ColumnName="UpgradeSkill" />
           <ScalarProperty Name="CastTime" ColumnName="CastTime" />
-          <ScalarProperty Name="Buff" ColumnName="Buff" />
+          <ScalarProperty Name="SkillChance" ColumnName="SkillChance" />
           <ScalarProperty Name="BuffId" ColumnName="BuffId" />
+          <ScalarProperty Name="SecondarySkillVNum" ColumnName="SecondarySkillVNum" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

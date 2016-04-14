@@ -50,8 +50,9 @@ namespace OpenNos.Data
         public short ItemVNum { get; set; }
         public short UpgradeSkill { get; set; }
         public short CastTime { get; set; }
-        public int Buff { get; set; }
+        public short SkillChance { get; set; }
         public short BuffId { get; set; }
+        public short SecondarySkillVNum { get; set; }
 
         #endregion
     }

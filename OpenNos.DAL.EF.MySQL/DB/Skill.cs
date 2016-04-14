@@ -54,8 +54,9 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public byte Range { get; set; }
         public short UpgradeSkill { get; set; }
         public short CastTime { get; set; }
-        public int Buff { get; set; }
+        public short SkillChance { get; set; }
         public short BuffId { get; set; }
+        public short SecondarySkillVNum { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<CharacterSkill> characterskill { get; set; }
@@ -65,6 +66,5 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public virtual ICollection<NpcMonsterSkill> npcmonsterskill { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Combo> combo { get; set; }
-        public virtual Item item { get; set; }
     }
 }

@@ -44,7 +44,7 @@
 -- -----------------------------------------------------------
 -- Entity Designer DDL Script for MySQL Server 4.1 and higher
 -- -----------------------------------------------------------
--- Date Created: 04/13/2016 09:52:45
+-- Date Created: 04/14/2016 09:25:00
 
 -- Generated from EDMX file: C:\Users\Dominik\Source\Repos\OpenNos\OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx
 -- Target version: 3.0.0.0
@@ -645,8 +645,9 @@ CREATE TABLE `skill`(
 	`Range` TINYINT UNSIGNED NOT NULL, 
 	`UpgradeSkill` smallint NOT NULL, 
 	`CastTime` smallint NOT NULL, 
-	`Buff` int NOT NULL, 
-	`BuffId` smallint NOT NULL);
+	`SkillChance` smallint NOT NULL, 
+	`BuffId` smallint NOT NULL, 
+	`SecondarySkillVNum` smallint NOT NULL);
 
 ALTER TABLE `skill` ADD PRIMARY KEY (SkillVNum);
 
@@ -1347,24 +1348,6 @@ ADD CONSTRAINT `FK_ComboSkill`
 CREATE INDEX `IX_FK_ComboSkill`
     ON `combo`
     (`SkillVNum`);
-
-
-
--- Creating foreign key on `ItemVNum` in table 'skill'
-
-ALTER TABLE `skill`
-ADD CONSTRAINT `FK_SkillItem`
-    FOREIGN KEY (`ItemVNum`)
-    REFERENCES `item`
-        (`VNum`)
-    ON DELETE NO ACTION ON UPDATE NO ACTION;
-
-
--- Creating non-clustered index for FOREIGN KEY 'FK_SkillItem'
-
-CREATE INDEX `IX_FK_SkillItem`
-    ON `skill`
-    (`ItemVNum`);
 
 
 

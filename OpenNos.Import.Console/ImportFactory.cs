@@ -807,18 +807,69 @@ namespace OpenNos.Import.Console
                         switch (currentLine[2])
                         {
                             case "0":
-                                /*
-                                if (currentLine[4] == "1")
-                                skill.MonsterAmount = short.Parse(currentLine[5]); //Divide by 4
-                                skill.MonsterVNum = short.Parse(currentLine[6]); // Divide by 4
-                                */
-                                if (currentLine[4] == "0")
+                                // All needs to be divided by 4
+                                if (currentLine[3] == "3")
                                 {
-                                    skill.Buff = int.Parse(currentLine[5]); //Divide by 4
-                                    skill.BuffId = short.Parse(currentLine[6]); // Divide by 4
+                                    skill.Damage = short.Parse(currentLine[5]);
+                                }
+                                if (currentLine[3] == "7")
+                                {
+                                    skill.Damage = short.Parse(currentLine[5]);
+                                }
+                                if (currentLine[3] == "29")
+                                {
+                                    skill.SkillChance = short.Parse(currentLine[5]);
+                                    //skill.MonsterVNum = short.Parse(currentLine[6]);
+                                }
+                                if (currentLine[3] == "43")
+                                {
+                                    //skill.AdditionalDamage = short.Parse(currentLine[5]);
+                                }
+                                if (currentLine[3] == "48")
+                                {
+                                    //skill.MonsterSpawnAmount = short.Parse(currentLine[5]);
+                                    //skill.MonsterVNum = short.Parse(currentLine[6]);
+                                }
+                                if (currentLine[3] == "64")
+                                {
+                                    skill.SkillChance = short.Parse(currentLine[5]);
+                                    //skill.Unknown = short.Parse(currentLine[6]);
+                                }
+                                if (currentLine[3] == "66")
+                                {
+                                    skill.SkillChance = short.Parse(currentLine[5]);
+                                    //skill.Unknown = short.Parse(currentLine[6]);
+                                }
+                                if (currentLine[3] == "68")
+                                {
+                                    skill.SkillChance = short.Parse(currentLine[5]);
+                                    if (currentLine[4] == "0")
+                                        skill.SecondarySkillVNum = short.Parse(currentLine[6]);
+                                    else
+                                        skill.BuffId = short.Parse(currentLine[6]);
+                                }
+                                if (currentLine[3] == "69")
+                                {
+                                    skill.SkillChance = short.Parse(currentLine[5]);
+                                    //skill.MonsterVNum = short.Parse(currentLine[6]);
+                                }
+                                if (currentLine[3] == "72")
+                                {
+                                    //skill.Times = short.Parse(currentLine[5]);
+                                    skill.BuffId = short.Parse(currentLine[6]);
+                                }
+                                if (currentLine[3] == "80")
+                                {
+                                    skill.SkillChance = short.Parse(currentLine[5]);
+                                    //skill.CloneAmount = short.Parse(currentLine[6]);
+                                }
+                                if (currentLine[3] == "81")
+                                {
+                                    skill.SkillChance = short.Parse(currentLine[5]); // abs * 4
+                                    skill.BuffId = short.Parse(currentLine[6]);
                                 }
                                 else
-                                    skill.Damage = short.Parse(currentLine[5]); // Divide by 4(?)
+                                    skill.Damage = short.Parse(currentLine[5]);
                                 break;
 
                             case "1":
