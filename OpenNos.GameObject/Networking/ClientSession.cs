@@ -21,7 +21,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace OpenNos.GameObject
@@ -30,6 +29,7 @@ namespace OpenNos.GameObject
     {
         #region Members
 
+        public Boolean healthStop = false;
         private static EncryptionBase _encryptor;
         private Account _account;
         private Character _character;
@@ -37,7 +37,7 @@ namespace OpenNos.GameObject
         private IDictionary<Packet, Tuple<MethodInfo, object>> _handlerMethods;
         private SequentialItemProcessor<byte[]> _queue;
         private IList<String> _waitForPacketList = new List<String>();
-        public Boolean healthStop = false;
+
         //Packetwait Packets
         private int? _waitForPacketsAmount;
 
@@ -60,6 +60,32 @@ namespace OpenNos.GameObject
             //start queue
             _queue = new SequentialItemProcessor<byte[]>(HandlePacket);
             _queue.Start();
+
+            //register WCF events
+            ServiceFactory.Instance.CommunicationCallback.CharacterConnectedEvent += CommunicationCallback_CharacterConnectedEvent;
+            ServiceFactory.Instance.CommunicationCallback.CharacterDisconnectedEvent += CommunicationCallback_CharacterDisconnectedEvent;
+        }
+
+        private void CommunicationCallback_CharacterDisconnectedEvent(object sender, EventArgs e)
+        {
+            //TODO filter for friendlist
+            string characterNameWhichHasBeenLoggedIn = (string)sender;
+
+            if (Character != null && !Character.Name.Equals(characterNameWhichHasBeenLoggedIn))
+            {
+                _client.SendPacket(Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("CHARACTER_LOGGED_OUT"), characterNameWhichHasBeenLoggedIn), 10));
+            }
+        }
+
+        private void CommunicationCallback_CharacterConnectedEvent(object sender, EventArgs e)
+        {
+            //TODO filter for friendlist
+            string characterNameWhichHasBeenLoggedIn = (string)sender;
+
+            if(Character != null && !Character.Name.Equals(characterNameWhichHasBeenLoggedIn))
+            {
+                _client.SendPacket(Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("CHARACTER_LOGGED_IN"), characterNameWhichHasBeenLoggedIn), 10));
+            }        
         }
 
         #endregion
@@ -146,6 +172,10 @@ namespace OpenNos.GameObject
         /// </summary>
         public void Destroy()
         {
+            //unregister from WCF events
+            ServiceFactory.Instance.CommunicationCallback.CharacterConnectedEvent -= CommunicationCallback_CharacterConnectedEvent;
+            ServiceFactory.Instance.CommunicationCallback.CharacterDisconnectedEvent -= CommunicationCallback_CharacterDisconnectedEvent;
+
             //do everything necessary before removing client, DB save, Whatever
 
             if (Character != null)
@@ -237,8 +267,8 @@ namespace OpenNos.GameObject
             foreach (string packet in packetConcatenated.Split(new char[] { (char)0xFF }, StringSplitOptions.RemoveEmptyEntries))
             {
                 string[] packetsplit = packet.Split(' ', '^');
-                
-                if (packetsplit.Length> 1 && packetsplit[1] != "0")
+
+                if (packetsplit.Length > 1 && packetsplit[1] != "0")
                     Logger.Log.DebugFormat(Language.Instance.GetMessageFromKey("MESSAGE_RECEIVED"), packet, _client.ClientId);
 
                 if (_encryptor.HasCustomParameter)

@@ -17,7 +17,6 @@ using OpenNos.DAL;
 using OpenNos.Data;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -33,14 +32,6 @@ namespace OpenNos.GameObject
         private List<MapNpc> _npcs;
         private List<Portal> _portals;
         private Guid _uniqueIdentifier;
-        public int XLength
-        {
-            get; set;
-        }
-        public int YLength
-        {
-            get; set;
-        }
 
         #endregion
 
@@ -155,9 +146,30 @@ namespace OpenNos.GameObject
 
         public Dictionary<long, MapShop> ShopUserList { get; set; }
 
+        public int XLength
+        {
+            get; set;
+        }
+
+        public int YLength
+        {
+            get; set;
+        }
+
         #endregion
 
         #region Methods
+
+        public List<MapMonster> GetListMonsterInRange(short mapX, short mapY, byte distance)
+        {
+            List<MapMonster> listmon = new List<MapMonster>();
+            foreach (MapMonster mo in Monsters.Where(s => s.Alive))
+            {
+                if (Math.Pow(mapX - mo.MapX, 2) + Math.Pow(mapY - mo.MapY, 2) <= Math.Pow(distance, 2))
+                    listmon.Add(mo);
+            }
+            return listmon;
+        }
 
         public bool IsBlockedZone(int x, int y)
         {
@@ -171,8 +183,6 @@ namespace OpenNos.GameObject
 
         public bool IsBlockedZone(int firstX, int firstY, int MapX, int MapY)
         {
-
-
             for (int i = 1; i <= Math.Abs(MapX - firstX); i++)
             {
                 if (IsBlockedZone(firstX + Math.Sign(MapX - firstX) * i, firstY))
@@ -181,10 +191,8 @@ namespace OpenNos.GameObject
                 }
             }
 
-
             for (int i = 1; i <= Math.Abs(MapY - firstY); i++)
             {
-
                 if (IsBlockedZone(firstX, firstY + Math.Sign(MapY - firstY) * i))
                 {
                     return true;
@@ -192,6 +200,33 @@ namespace OpenNos.GameObject
             }
             return false;
         }
+
+        public void ItemSpawn(DropDTO drop, short mapX, short mapY)
+        {
+            Random rnd = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
+            int random = 0;
+            MapItem DroppedItem = null;
+            short MapX = (short)(rnd.Next(mapX - 1, mapX + 1));
+            short MapY = (short)(rnd.Next(mapY - 1, mapY + 1));
+            while (IsBlockedZone(MapX, MapY))
+            {
+                MapX = (short)(rnd.Next(mapX - 1, mapX + 1));
+                MapY = (short)(rnd.Next(mapY - 1, mapY + 1));
+            }
+
+            DroppedItem = new MapItem(MapX, MapY)
+            {
+                ItemVNum = drop.ItemVNum,
+                Amount = (short)drop.Amount,
+            };
+            while (ServerManager.GetMap(MapId).DroppedList.ContainsKey(random = rnd.Next(1, 999999)))
+            { }
+            DroppedItem.InventoryItemId = random;
+            ServerManager.GetMap(MapId).DroppedList.Add(random, DroppedItem);
+
+            ClientLinkManager.Instance.RequiereBroadcastFromMap(MapId, $"drop {DroppedItem.ItemVNum} {random} {DroppedItem.PositionX} {DroppedItem.PositionY} {DroppedItem.Amount} 0 0 -1");
+        }
+
         public void LoadZone()
         {
             Stream stream = new MemoryStream(Data);
@@ -259,45 +294,6 @@ namespace OpenNos.GameObject
 
             await NpcMoveTask;
             await MonsterMoveTask;
-        }
-
-        public void ItemSpawn(DropDTO drop, short mapX, short mapY)
-        {
-            Random rnd = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
-            int random = 0;
-            MapItem DroppedItem = null;
-            short MapX = (short)(rnd.Next(mapX - 1, mapX + 1));
-            short MapY = (short)(rnd.Next(mapY - 1, mapY + 1));
-            while (IsBlockedZone(MapX, MapY))
-            {
-                MapX = (short)(rnd.Next(mapX - 1, mapX + 1));
-                MapY = (short)(rnd.Next(mapY - 1, mapY + 1));
-            }
-
-
-            DroppedItem = new MapItem(MapX, MapY)
-            {
-                ItemVNum = drop.ItemVNum,
-                Amount = (short)drop.Amount,
-            };
-            while (ServerManager.GetMap(MapId).DroppedList.ContainsKey(random = rnd.Next(1, 999999)))
-            { }
-            DroppedItem.InventoryItemId = random;
-            ServerManager.GetMap(MapId).DroppedList.Add(random, DroppedItem);
-
-            ClientLinkManager.Instance.RequiereBroadcastFromMap(MapId, $"drop {DroppedItem.ItemVNum} {random} {DroppedItem.PositionX} {DroppedItem.PositionY} {DroppedItem.Amount} 0 0 -1");
-
-        }
-
-        public List<MapMonster> GetListMonsterInRange(short mapX, short mapY, byte distance)
-        {
-            List<MapMonster> listmon = new List<MapMonster>();
-            foreach (MapMonster mo in Monsters.Where(s => s.Alive))
-            {
-                if (Math.Pow(mapX - mo.MapX, 2) + Math.Pow(mapY - mo.MapY, 2) <= Math.Pow(distance, 2))
-                    listmon.Add(mo);
-            }
-            return listmon;
         }
 
         #endregion

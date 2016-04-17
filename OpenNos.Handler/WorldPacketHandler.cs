@@ -116,7 +116,7 @@ namespace OpenNos.Handler
         }
 
         [Packet("#b_i")]
-        public void answerToDelete(string packet)
+        public void AnswerToDelete(string packet)
         {
             string[] packetsplit = packet.Split(' ', '^');
             byte type; byte.TryParse(packetsplit[2], out type);
@@ -135,7 +135,7 @@ namespace OpenNos.Handler
         }
 
         [Packet("b_i")]
-        public void askToDelete(string packet)
+        public void AskToDelete(string packet)
         {
             string[] packetsplit = packet.Split(' ');
             byte type; byte.TryParse(packetsplit[2], out type);
@@ -781,7 +781,7 @@ namespace OpenNos.Handler
         }
 
         [Packet("m_shop")]
-        public void createShop(string packet)
+        public void CreateShop(string packet)
         {
             string[] packetsplit = packet.Split(' ');
             byte[] type = new byte[20];
@@ -931,7 +931,7 @@ namespace OpenNos.Handler
             Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, type, slot, 0, 0, 0));
         }
 
-        public void deleteTimeout()
+        public void DeleteTimeout()
         {
             for (int i = Session.Character.InventoryList.Inventory.Count() - 1; i >= 0; i--)
             {
@@ -1260,7 +1260,7 @@ namespace OpenNos.Handler
             ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(198), ReceiverType.AllOnMap);
         }
 
-        public string generatePidx(long CharId)
+        public string GeneratePidx(long CharId)
         {
             string stri = "pidx 1";
             foreach (long Id in ClientLinkManager.Instance.Groups.FirstOrDefault(s => s.Characters.Contains(CharId)).Characters)
@@ -2400,7 +2400,7 @@ namespace OpenNos.Handler
             {
                 Session.Client.Disconnect();
             }
-            deleteTimeout();
+            DeleteTimeout();
         }
 
         [Packet("put")]
@@ -3742,7 +3742,7 @@ namespace OpenNos.Handler
             Session.Client.SendPacket("pinit 0");
             Session.Client.SendPacket("zzim");
             Session.Client.SendPacket($"twk 1 {Session.Character.CharacterId} {Session.Account.Name} {Session.Character.Name} shtmxpdlfeoqkr");
-            deleteTimeout();
+            DeleteTimeout();
         }
 
         [Packet("$Stat")]
@@ -4488,7 +4488,7 @@ namespace OpenNos.Handler
                         ClientLinkManager.Instance.Broadcast(Session, str, ReceiverType.OnlySomeone, "", Id);
                     }
 
-                    string p = generatePidx(Session.Character.CharacterId);
+                    string p = GeneratePidx(Session.Character.CharacterId);
                     if (p != "")
                         ClientLinkManager.Instance.Broadcast(Session, p, ReceiverType.AllOnMap);
                 }

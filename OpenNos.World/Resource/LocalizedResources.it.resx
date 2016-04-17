@@ -612,4 +612,10 @@
   <data name="YOU_ASK_FOR_EXCHANGE" xml:space="preserve">
     <value>Hai richiesto il commercio a</value>
   </data>
+  <data name="CHARACTER_LOGGED_IN" xml:space="preserve">
+    <value>{0} has logged in.</value>
+  </data>
+  <data name="CHARACTER_LOGGED_OUT" xml:space="preserve">
+    <value>{0} has logged out.</value>
+  </data>
 </root>

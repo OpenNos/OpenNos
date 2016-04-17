@@ -53,6 +53,14 @@ namespace OpenNos.ServiceRef.Internal
             }
         }
 
+        public CommunicationCallback CommunicationCallback
+        {
+            get
+            {
+                return _instanceCallback;
+            }
+        }
+
         public CommunicationServiceReference.CommunicationServiceClient CommunicationService
         {
             get
