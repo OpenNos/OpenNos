@@ -4573,11 +4573,45 @@ namespace OpenNos.Handler
             MapMonster mmon = ServerManager.GetMap(Session.Character.MapId).Monsters.FirstOrDefault(s => s.MapMonsterId == monsterid);
             short dX = (short)(Session.Character.MapX - mmon.MapX);
             short dY = (short)(Session.Character.MapY - mmon.MapY);
-            short damage = 0;
-
-            damage = 5000;
             NpcMonster monsterinfo = ServerManager.GetNpc(mmon.MonsterVNum);
             Random random = new Random();
+
+            int[] gradebonus = new int[] { 0, 10, 15, 22, 32, 43, 54, 65, 90, 120, 200 };
+
+            int[][] elementaladvantages = new int[][] { new int[] { 0, 100, 0, 50, 0 }, new int[] { 100, 0, 50, 0, 0 }, new int[] { 50, 0, 0, 200, 0 }, new int[] { 0, 50, 200, 0, 0 }, new int[] { 30, 30, 30, 30, 0 } };
+            Inventory weapon = Session.Character.EquipmentList.LoadBySlotAndType((short)EquipmentType.MainWeapon, (byte)InventoryType.Equipment);
+            Inventory fairy = Session.Character.EquipmentList.LoadBySlotAndType((short)EquipmentType.Fairy, (byte)InventoryType.Equipment);
+            Inventory weapon2 = Session.Character.EquipmentList.LoadBySlotAndType((short)EquipmentType.SecondaryWeapon, (byte)InventoryType.Equipment);
+
+            int temp = monsterinfo.DefenceUpgrade - (weapon != null ? weapon.InventoryItem.Upgrade : 0);
+            int grade = 1 + gradebonus[temp] / 100;
+
+            int elementaladvantage = (100 + elementaladvantages[fairy!=null?ServerManager.GetItem(fairy.InventoryItem.ItemVNum).Element:0][monsterinfo.Element]) / 100;
+
+             int totalattack = Session.Character.Level*(15 + random.Next(ServersData.MinHit(Session.Character.Class, Session.Character.Level),ServersData.MaxHit(Session.Character.Class, Session.Character.Level)) + (weapon != null ? (random.Next(ServerManager.GetItem(weapon.InventoryItem.ItemVNum).DamageMinimum, ServerManager.GetItem(weapon.InventoryItem.ItemVNum).DamageMaximum)) : 0) * (1 + (weapon != null ? ServerManager.GetItem(weapon.InventoryItem.ItemVNum).HitRate : 0) / 100));
+            int fairyelement = (totalattack + 100) * (fairy != null ? (ServerManager.GetItem(fairy.InventoryItem.ItemVNum).ElementRate + fairy.InventoryItem.ElementRate) : 0) / 100;
+            int rez = 0;
+            switch (Session.Character.Element)
+            {
+                case 1:
+                    rez = monsterinfo.FireResistance;
+                    break;
+                case 2:
+                    rez = monsterinfo.WaterResistance;
+                    break;
+                case 3:
+                    rez = monsterinfo.LightResistance;
+                    break;
+                case 4:
+                    rez = monsterinfo.DarkResistance;
+                    break;
+            }
+            int elementaldamage = fairyelement * elementaladvantage * (1 - rez / 100);
+            int normaldamage = (totalattack - monsterinfo.DefenceDodge - monsterinfo.CloseDefence) * grade * (1 - monsterinfo.DefenceUpgrade / 100);
+
+             int damage = normaldamage + elementaldamage;
+
+
 
             int generated = random.Next(0, 100);
             int critical_chance = 10;
@@ -4709,8 +4743,9 @@ namespace OpenNos.Handler
                 mmon.CurrentHp -= damage;
             }
             mmon.Target = Session.Character.CharacterId;
-
-            return damage;
+            short damageFinal = short.MaxValue;
+            short.TryParse((damage%65000).ToString(),out damageFinal);
+            return damageFinal;
         }
 
         private void ZoneHit(int Castingid, short x, short y)

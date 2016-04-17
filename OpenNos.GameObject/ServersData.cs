@@ -547,27 +547,27 @@ namespace OpenNos.GameObject
             return 0;
         }
 
-        internal static int MagicalDefence(byte @class, byte level)
+        public static int MagicalDefence(byte @class, byte level)
         {
             return magicalDef[@class, level];
         }
 
-        internal static int MaxDistance(byte @class, byte level)
+        public static int MaxDistance(byte @class, byte level)
         {
             return maxDist[@class, level];
         }
 
-        internal static int MaxHit(byte @class, byte level)
+        public static int MaxHit(byte @class, byte level)
         {
             return maxHit[@class, level];
         }
 
-        internal static int MinDistance(byte @class, byte level)
+        public static int MinDistance(byte @class, byte level)
         {
             return minDist[@class, level];
         }
 
-        internal static int MinHit(byte @class, byte level)
+        public static int MinHit(byte @class, byte level)
         {
             return minHit[@class, level];
         }
