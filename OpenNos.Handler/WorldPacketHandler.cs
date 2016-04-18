@@ -344,13 +344,13 @@ namespace OpenNos.Handler
                     Session.Client.SendPacket(Session.Character.GenerateFd());
                     Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("REPUT_DECREASED"), 11));
                 }
-
+                Random rnd = new Random();
                 InventoryItem newItem = new InventoryItem
                 {
                     InventoryItemId = Session.Character.InventoryList.generateInventoryItemId(),
                     Amount = amount,
                     ItemVNum = item.ItemVNum,
-                    Rare = item.Rare,
+                    Rare = (byte)rnd.Next(0,7),
                     Upgrade = item.Upgrade,
                     Design = item.Color,
                     Concentrate = 0,
