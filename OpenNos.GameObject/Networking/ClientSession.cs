@@ -20,6 +20,7 @@ using OpenNos.ServiceRef.Internal;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
 using System.Threading.Tasks;
 
@@ -34,7 +35,7 @@ namespace OpenNos.GameObject
         private Account _account;
         private Character _character;
         private NetworkClient _client;
-        private IDictionary<Packet, Tuple<MethodInfo, object>> _handlerMethods;
+        private IDictionary<Packet, Tuple<Action<object, string>, object>> _handlerMethods;
         private SequentialItemProcessor<byte[]> _queue;
         private IList<String> _waitForPacketList = new List<String>();
 
@@ -64,28 +65,6 @@ namespace OpenNos.GameObject
             //register WCF events
             ServiceFactory.Instance.CommunicationCallback.CharacterConnectedEvent += CommunicationCallback_CharacterConnectedEvent;
             ServiceFactory.Instance.CommunicationCallback.CharacterDisconnectedEvent += CommunicationCallback_CharacterDisconnectedEvent;
-        }
-
-        private void CommunicationCallback_CharacterDisconnectedEvent(object sender, EventArgs e)
-        {
-            //TODO filter for friendlist
-            string characterNameWhichHasBeenLoggedIn = (string)sender;
-
-            if (Character != null && !Character.Name.Equals(characterNameWhichHasBeenLoggedIn))
-            {
-                _client.SendPacket(Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("CHARACTER_LOGGED_OUT"), characterNameWhichHasBeenLoggedIn), 10));
-            }
-        }
-
-        private void CommunicationCallback_CharacterConnectedEvent(object sender, EventArgs e)
-        {
-            //TODO filter for friendlist
-            string characterNameWhichHasBeenLoggedIn = (string)sender;
-
-            if(Character != null && !Character.Name.Equals(characterNameWhichHasBeenLoggedIn))
-            {
-                _client.SendPacket(Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("CHARACTER_LOGGED_IN"), characterNameWhichHasBeenLoggedIn), 10));
-            }        
         }
 
         #endregion
@@ -130,13 +109,13 @@ namespace OpenNos.GameObject
 
         public Map CurrentMap { get; set; }
 
-        public IDictionary<Packet, Tuple<MethodInfo, object>> HandlerMethods
+        public IDictionary<Packet, Tuple<Action<object, string>, object>> HandlerMethods
         {
             get
             {
                 if (_handlerMethods == null)
                 {
-                    _handlerMethods = new Dictionary<Packet, Tuple<MethodInfo, object>>();
+                    _handlerMethods = new Dictionary<Packet, Tuple<Action<object, string>, object>>();
                 }
 
                 return _handlerMethods;
@@ -161,6 +140,7 @@ namespace OpenNos.GameObject
         }
 
         public int LastKeepAliveIdentity { get; set; }
+
         public int SessionId { get; set; }
 
         #endregion
@@ -214,6 +194,28 @@ namespace OpenNos.GameObject
             ServiceFactory.Instance.CommunicationService.ConnectAccount(account.Name, SessionId);
         }
 
+        private void CommunicationCallback_CharacterConnectedEvent(object sender, EventArgs e)
+        {
+            //TODO filter for friendlist
+            string characterNameWhichHasBeenLoggedIn = (string)sender;
+
+            if (Character != null && !Character.Name.Equals(characterNameWhichHasBeenLoggedIn))
+            {
+                _client.SendPacket(Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("CHARACTER_LOGGED_IN"), characterNameWhichHasBeenLoggedIn), 10));
+            }
+        }
+
+        private void CommunicationCallback_CharacterDisconnectedEvent(object sender, EventArgs e)
+        {
+            //TODO filter for friendlist
+            string characterNameWhichHasBeenLoggedIn = (string)sender;
+
+            if (Character != null && !Character.Name.Equals(characterNameWhichHasBeenLoggedIn))
+            {
+                _client.SendPacket(Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("CHARACTER_LOGGED_OUT"), characterNameWhichHasBeenLoggedIn), 10));
+            }
+        }
+
         private bool GenerateHandlerReferences(Type handlerType)
         {
             object handler = Activator.CreateInstance(handlerType, new object[] { this });
@@ -224,7 +226,7 @@ namespace OpenNos.GameObject
 
                 if (packetAttribute != null)
                 {
-                    HandlerMethods.Add(packetAttribute, new Tuple<MethodInfo, object>(methodInfo, handler));
+                    HandlerMethods.Add(packetAttribute, new Tuple<Action<object, string>, object>(DelegateBuilder.BuildDelegate<Action<object, string>>(methodInfo), handler));
                 }
             }
 
@@ -372,20 +374,21 @@ namespace OpenNos.GameObject
 
         private bool TriggerHandler(string packetHeader, string packet, bool force)
         {
-            KeyValuePair<Packet, Tuple<MethodInfo, object>> methodInfo = HandlerMethods.FirstOrDefault(h => h.Key.Header.Equals(packetHeader));
+            KeyValuePair<Packet, Tuple<Action<object,string>, object>> action = HandlerMethods.FirstOrDefault(h => h.Key.Header.Equals(packetHeader));
 
-            if (methodInfo.Value != null)
+            if (action.Value != null)
             {
-                if (!force && methodInfo.Key.Amount > 1 && !_waitForPacketsAmount.HasValue)
+                if (!force && action.Key.Amount > 1 && !_waitForPacketsAmount.HasValue)
                 {
                     //we need to wait for more
-                    _waitForPacketsAmount = methodInfo.Key.Amount;
+                    _waitForPacketsAmount = action.Key.Amount;
                     _waitForPacketList.Add(packet != String.Empty ? packet : $"1 {packetHeader} ");
                     return false;
                 }
                 try
                 {
-                    methodInfo.Value.Item1.Invoke(methodInfo.Value.Item2, new object[] { packet });
+                    //call actual handler method
+                    action.Value.Item1(action.Value.Item2, packet);
                 }
                 catch (Exception ex)
                 {
