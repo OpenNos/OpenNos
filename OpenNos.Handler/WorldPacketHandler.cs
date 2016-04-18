@@ -345,12 +345,22 @@ namespace OpenNos.Handler
                     Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("REPUT_DECREASED"), 11));
                 }
                 Random rnd = new Random();
+                byte ra = (byte)rnd.Next(0, 100);
+                byte rare = 0;
+                int[] rareprob = { 100, 70, 50, 30, 20, 10, 5, 1 };
+
+                for(int i=0;i< rareprob.Length;i++)
+                {
+                    if(ra<=rareprob[i])
+                    rare = (byte)i;
+                }
+             
                 InventoryItem newItem = new InventoryItem
                 {
                     InventoryItemId = Session.Character.InventoryList.generateInventoryItemId(),
                     Amount = amount,
                     ItemVNum = item.ItemVNum,
-                    Rare = (byte)rnd.Next(0,7),
+                    Rare = rare,
                     Upgrade = item.Upgrade,
                     Design = item.Color,
                     Concentrate = 0,
@@ -3828,8 +3838,8 @@ namespace OpenNos.Handler
             int damage;
             int hitmode = 0;
             Skill skill = null;
-            CharacterSkill ski = skills.FirstOrDefault(s => (skill = ServerManager.GetSkill(s.SkillVNum))!=null && skill.CastId == Castingid);
-        
+            CharacterSkill ski = skills.FirstOrDefault(s => (skill = ServerManager.GetSkill(s.SkillVNum)) != null && skill.CastId == Castingid);
+
             if (!ski.Used)
             {
                 if (skill != null && skill.TargetType == 1 && skill.HitType == 1)
@@ -3866,7 +3876,7 @@ namespace OpenNos.Handler
                     if (mmon != null && mmon.Alive)
                     {
                         NpcMonster monsterinfo = ServerManager.GetNpc(mmon.MonsterVNum);
-                        if (ski != null && monsterinfo != null && skill !=null && !ski.Used )
+                        if (ski != null && monsterinfo != null && skill != null && !ski.Used)
                         {
                             Task t = Task.Factory.StartNew(async () =>
                                  {
@@ -3908,7 +3918,7 @@ namespace OpenNos.Handler
                                                  ClientLinkManager.Instance.Broadcast(Session, $"su {1} {Session.Character.CharacterId} {3} {mon.MapMonsterId} {skill.SkillVNum} {skill.Cooldown} {skill.AttackAnimation} {skill.Effect} {Session.Character.MapX} {Session.Character.MapY} {(mon.Alive ? 1 : 0)} {(int)(((float)mon.CurrentHp / (float)ServerManager.GetNpc(mon.MonsterVNum).MaxHP) * 100)} {damage} {5} {skill.SkillType - 1}", ReceiverType.AllOnMap);
                                              }
 
-                                          await Task.Delay((skill.Cooldown) * 100);
+                                         await Task.Delay((skill.Cooldown) * 100);
                                          ski.Used = false;
                                          Session.Client.SendPacket($"sr {Castingid}");
                                      }
