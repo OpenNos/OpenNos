@@ -85,7 +85,7 @@ namespace OpenNos.GameObject
             double time = (DateTime.Now - LastEffect).TotalMilliseconds;
             if (Effect > 0 && time > EffectDelay)
             {
-                ClientLinkManager.Instance.RequiereBroadcastFromMap(MapId, GenerateEff());
+                ClientLinkManager.Instance.RequireBroadcastFromMap(MapId, GenerateEff());
                 LastEffect = DateTime.Now;
             }
 
@@ -109,7 +109,7 @@ namespace OpenNos.GameObject
                     LastMove = DateTime.Now;
 
                     string movepacket = $"mv 2 {this.MapNpcId} {this.MapX} {this.MapY} {npc.Speed}";
-                    ClientLinkManager.Instance.RequiereBroadcastFromMap(MapId, movepacket);
+                    ClientLinkManager.Instance.RequireBroadcastFromMap(MapId, movepacket);
                 }
             }
         }

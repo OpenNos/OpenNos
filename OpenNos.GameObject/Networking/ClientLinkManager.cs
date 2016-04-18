@@ -15,12 +15,10 @@
 using OpenNos.Core;
 using OpenNos.DAL;
 using OpenNos.Data;
-using OpenNos.Domain;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace OpenNos.GameObject
@@ -29,12 +27,11 @@ namespace OpenNos.GameObject
     {
         #region Members
 
+        public Boolean ShutdownStop = false;
         private static ClientLinkManager _instance;
         private readonly Task _autoSave; // if this thread is never aborted by code, it can be declared only in constructor!
-        private Task TaskController;
-        private Task GroupTask;
-
-        public List<Group> Groups { get; set; }
+        private Task _groupTask;
+        private Task _taskController;
 
         #endregion
 
@@ -45,39 +42,25 @@ namespace OpenNos.GameObject
             Sessions = new List<ClientSession>();
             _autoSave = new Task(SaveAllProcess);
             _autoSave.Start();
-            TaskController = new Task(() => TaskControl());
-            TaskController.Start();
+            _taskController = new Task(() => TaskControl());
+            _taskController.Start();
             Groups = new List<Group>();
-            GroupTask = new Task(() => groupTask());
-            GroupTask.Start();
-
-        }
-
-        private async void groupTask()
-        {
-            while (true)
-            {
-                foreach (Group grp in Groups)
-                {
-                    foreach (long id in grp.Characters)
-                    {
-                        foreach (ClientSession session in Sessions.Where(s => s.Character != null && s.Character.CharacterId == id))
-                            foreach (string str in grp.GeneratePst())
-                                session.Client.SendPacket(str);
-                    }
-                }
-                await Task.Delay(2000);
-            }
+            _groupTask = new Task(() => GroupTask());
+            _groupTask.Start();
         }
 
         #endregion
 
         #region Properties
 
+        public List<Group> Groups { get; set; }
+
         public static ClientLinkManager Instance => _instance ?? (_instance = new ClientLinkManager());
+
         public List<ClientSession> Sessions { get; set; }
-        public Task taskShutdown { get; set; }
-        public Boolean ShutdownStop = false;
+
+        public Task TaskShutdown { get; set; }
+
         #endregion
 
         #region Methods
@@ -101,7 +84,7 @@ namespace OpenNos.GameObject
                         Sessions.Where(s => s.Character != null && s.Character.MapId.Equals(client.Character.MapId)).ElementAt(i).Client.SendPacket(message);
                     break;
 
-                case ReceiverType.AllOnMapExceptMe: 
+                case ReceiverType.AllOnMapExceptMe:
                     foreach (ClientSession session in Sessions.Where(s => s.Character != null && s.Character.MapId.Equals(client.Character.MapId) && s.Character.CharacterId != client.Character.CharacterId))
                         session.Client.SendPacket(message);
                     break;
@@ -143,27 +126,6 @@ namespace OpenNos.GameObject
             return true;
         }
 
-        internal void RequiereBroadcastToUser(long target, string v)
-        {
-            Sessions.FirstOrDefault(s => s != null && s.Client != null && s.Character != null && s.Character.CharacterId.Equals(target)).Client.SendPacket(v);   
-        }
-
-        internal Character ClosestUser(short mapId, short mapX, short mapY)
-        {
-            Character temp = null;
-            int distance = int.MaxValue;
-            foreach (ClientSession sess in Sessions.Where(s => s.Character != null && s.Character.MapId == mapId))
-            {
-                int test = (int)(Math.Pow(mapX - sess.Character.MapX, 2) + Math.Pow(mapY - sess.Character.MapY, 2));
-                if (test < distance)
-                {
-                    distance = test;
-                    temp = sess.Character;
-                }
-            }
-            return temp;
-        }
-
         public void BuyValidate(ClientSession clientSession, KeyValuePair<long, MapShop> shop, short slot, byte amount)
         {
             PersonalShopItem itemshop = clientSession.CurrentMap.ShopUserList[shop.Key].Items.FirstOrDefault(i => i.Slot.Equals(slot));
@@ -191,8 +153,6 @@ namespace OpenNos.GameObject
                 // Send reduced-amount to owners inventory
                 shopOwnerSession.Client.SendPacket(shopOwnerSession.Character.GenerateInventoryAdd(inv.InventoryItem.ItemVNum, inv.InventoryItem.Amount, inv.Type,
                     inv.Slot, inv.InventoryItem.Rare, inv.InventoryItem.Design, inv.InventoryItem.Upgrade));
-
-
             }
             else
             {
@@ -242,15 +202,15 @@ namespace OpenNos.GameObject
                 Session.Client.SendPacket(Session.Character.GenerateCond());
                 ClientLinkManager.Instance.Broadcast(Session, Session.Character.GeneratePairy(), ReceiverType.AllOnMap);
                 Session.Client.SendPacket($"rsfi 1 1 0 9 0 9"); // Act completion
-                ClientLinkManager.Instance.RequiereBroadcastFromAllMapUsersNotInvisible(Session, "GenerateIn");
+                ClientLinkManager.Instance.RequireBroadcastFromAllMapUsersNotInvisible(Session, "GenerateIn");
                 if (Session.Character.InvisibleGm == false)
                     ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllOnMapExceptMe);
                 if (Session.CurrentMap.IsDancing == 2 && Session.Character.IsDancing == 0)
-                    ClientLinkManager.Instance.RequiereBroadcastFromMap(Session.Character.MapId, "dance 2");
+                    ClientLinkManager.Instance.RequireBroadcastFromMap(Session.Character.MapId, "dance 2");
                 else if (Session.CurrentMap.IsDancing == 0 && Session.Character.IsDancing == 1)
                 {
                     Session.Character.IsDancing = 0;
-                    ClientLinkManager.Instance.RequiereBroadcastFromMap(Session.Character.MapId, "dance");
+                    ClientLinkManager.Instance.RequireBroadcastFromMap(Session.Character.MapId, "dance");
                 }
                 foreach (String ShopPacket in Session.Character.GenerateShopOnMap())
                     Session.Client.SendPacket(ShopPacket);
@@ -296,7 +256,6 @@ namespace OpenNos.GameObject
                         }
                     }
                 }
-
             }
         }
 
@@ -364,7 +323,6 @@ namespace OpenNos.GameObject
 
                 if (Groups.FirstOrDefault(s => s.Characters.Contains(Session.Character.CharacterId)) != null)
                     Instance.Broadcast(Session, $"pidx 1 1.{Session.Character.CharacterId}", ReceiverType.AllOnMapExceptMe);
-
             }
         }
 
@@ -416,6 +374,53 @@ namespace OpenNos.GameObject
             return (T)session?.Character.GetType().GetProperties().Single(pi => pi.Name == property).GetValue(session.Character, null);
         }
 
+        public void GroupLeave(ClientSession Session)
+        {
+            Group grp = ClientLinkManager.Instance.Groups.FirstOrDefault(s => s.Characters.Contains(Session.Character.CharacterId));
+            if (grp != null)
+            {
+                if (grp.Characters.Count() == 3)
+                {
+                    if (grp.Characters.ElementAt(0) == Session.Character.CharacterId)
+                    {
+                        Broadcast(Session, Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("NEW_LEADER")), ReceiverType.OnlySomeone, "", grp.Characters.ElementAt(1));
+                    }
+                    grp.Characters.Remove(Session.Character.CharacterId);
+                    foreach (long charid in grp.Characters)
+                    {
+                        string str = $"pinit {grp.Characters.Count()}";
+                        int i = 0;
+                        foreach (long Id in grp.Characters)
+                        {
+                            i++;
+                            str += $" 1|{ClientLinkManager.Instance.GetProperty<long>(Id, "CharacterId")}|{i}|{ClientLinkManager.Instance.GetProperty<byte>(Id, "Level")}|{ClientLinkManager.Instance.GetProperty<string>(Id, "Name")}|11|{ClientLinkManager.Instance.GetProperty<byte>(Id, "Gender")}|{ClientLinkManager.Instance.GetProperty<byte>(Id, "Class")}|{(ClientLinkManager.Instance.GetProperty<bool>(Id, "UseSp") ? ClientLinkManager.Instance.GetProperty<int>(Id, "Morph") : 0)}";
+                        }
+                        foreach (ClientSession sess in Sessions.Where(s => s != null && s.Character != null && s.Character.CharacterId == charid))
+                        {
+                            sess.Client.SendPacket(str);
+                            sess.Client.SendPacket(sess.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("LEAVE_GROUP"), Session.Character.Name), 0));
+                        }
+                    }
+                    Session.Client.SendPacket("pinit 0");
+                    Broadcast(Session, $"pidx -1 1.{Session.Character.CharacterId}", ReceiverType.AllOnMap);
+                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("GROUP_LEFT"), 0));
+                }
+                else
+                {
+                    foreach (long charid in grp.Characters)
+                    {
+                        foreach (ClientSession sess in Sessions.Where(s => s != null && s.Character != null && s.Character.CharacterId == charid))
+                        {
+                            sess.Client.SendPacket("pinit 0");
+                            sess.Client.SendPacket(sess.Character.GenerateMsg(Language.Instance.GetMessageFromKey("GROUP_CLOSED"), 0));
+                            Broadcast(sess, $"pidx -1 1.{charid}", ReceiverType.AllOnMap);
+                        }
+                    }
+                    ClientLinkManager.Instance.Groups.Remove(grp);
+                }
+            }
+        }
+
         public bool Kick(string characterName)
         {
             ClientSession session = Sessions.FirstOrDefault(s => s.Character != null && s.Character.Name.Equals(characterName));
@@ -434,7 +439,7 @@ namespace OpenNos.GameObject
             }
         }
 
-        public void RequiereBroadcastFromAllMapUsers(ClientSession client, string methodName)
+        public void RequireBroadcastFromAllMapUsers(ClientSession client, string methodName)
         {
             foreach (ClientSession session in Sessions.Where(s => s.Character != null && s.Character.MapId.Equals(client.Character.MapId) && s.Character.Name != client.Character.Name))
             {
@@ -444,7 +449,7 @@ namespace OpenNos.GameObject
             }
         }
 
-        public void RequiereBroadcastFromAllMapUsersNotInvisible(ClientSession client, string methodName)
+        public void RequireBroadcastFromAllMapUsersNotInvisible(ClientSession client, string methodName)
         {
             foreach (ClientSession session in Sessions.Where(s => s.Character != null && s.Character.MapId.Equals(client.Character.MapId) && s.Character.Name != client.Character.Name))
             {
@@ -457,23 +462,13 @@ namespace OpenNos.GameObject
             }
         }
 
-        public void RequiereBroadcastFromMap(short mapId, string message)
+        public void RequireBroadcastFromMap(short mapId, string message)
         {
             for (int i = Sessions.Where(s => s != null && s.Client != null && s.Character != null && s.Character.MapId.Equals(mapId)).Count() - 1; i >= 0; i--)
                 Sessions.Where(s => s != null && s.Client != null && s.Character != null && s.Character.MapId.Equals(mapId)).ElementAt(i).Client.SendPacket(message);
         }
 
-
-        public T RequiereMethodFromUser<T>(long characterId, string methodName)
-        {
-            ClientSession session = Sessions.FirstOrDefault(s => s.Character != null && s.Character.CharacterId.Equals(characterId));
-            if (session == null) return default(T);
-            MethodInfo method = session.Character.GetType().GetMethod(methodName);
-
-            return (T)method.Invoke(session.Character, null);
-        }
-
-        public void RequiereBroadcastFromUser(ClientSession client, long characterId, string methodName)
+        public void RequireBroadcastFromUser(ClientSession client, long characterId, string methodName)
         {
             ClientSession session = Sessions.FirstOrDefault(s => s.Character != null && s.Character.CharacterId.Equals(characterId));
             if (session == null) return;
@@ -483,7 +478,7 @@ namespace OpenNos.GameObject
             client.Client.SendPacket(result);
         }
 
-        public void RequiereBroadcastFromUser(ClientSession client, string characterName, string methodName)
+        public void RequireBroadcastFromUser(ClientSession client, string characterName, string methodName)
         {
             ClientSession session = Sessions.FirstOrDefault(s => s.Character != null && s.Character.Name.Equals(characterName));
             if (session == null) return;
@@ -491,6 +486,15 @@ namespace OpenNos.GameObject
             MethodInfo method = session.Character.GetType().GetMethod(methodName);
             string result = (string)method.Invoke(session.Character, null);
             client.Client.SendPacket(result);
+        }
+
+        public T RequireMethodFromUser<T>(long characterId, string methodName)
+        {
+            ClientSession session = Sessions.FirstOrDefault(s => s.Character != null && s.Character.CharacterId.Equals(characterId));
+            if (session == null) return default(T);
+            MethodInfo method = session.Character.GetType().GetMethod(methodName);
+
+            return (T)method.Invoke(session.Character, null);
         }
 
         public void SaveAll()
@@ -536,6 +540,44 @@ namespace OpenNos.GameObject
             }
         }
 
+        internal Character ClosestUser(short mapId, short mapX, short mapY)
+        {
+            Character temp = null;
+            int distance = int.MaxValue;
+            foreach (ClientSession sess in Sessions.Where(s => s.Character != null && s.Character.MapId == mapId))
+            {
+                int test = (int)(Math.Pow(mapX - sess.Character.MapX, 2) + Math.Pow(mapY - sess.Character.MapY, 2));
+                if (test < distance)
+                {
+                    distance = test;
+                    temp = sess.Character;
+                }
+            }
+            return temp;
+        }
+
+        internal void RequireBroadcastToUser(long target, string v)
+        {
+            Sessions.FirstOrDefault(s => s != null && s.Client != null && s.Character != null && s.Character.CharacterId.Equals(target)).Client.SendPacket(v);
+        }
+
+        private async void GroupTask()
+        {
+            while (true)
+            {
+                foreach (Group grp in Groups)
+                {
+                    foreach (long id in grp.Characters)
+                    {
+                        foreach (ClientSession session in Sessions.Where(s => s.Character != null && s.Character.CharacterId == id))
+                            foreach (string str in grp.GeneratePst())
+                                session.Client.SendPacket(str);
+                    }
+                }
+                await Task.Delay(2000);
+            }
+        }
+
         private async void SaveAllProcess()
         {
             while (true)
@@ -545,58 +587,6 @@ namespace OpenNos.GameObject
             }
         }
 
-        public void GroupLeave(ClientSession Session)
-        {
-            Group grp = ClientLinkManager.Instance.Groups.FirstOrDefault(s => s.Characters.Contains(Session.Character.CharacterId));
-            if (grp != null)
-            {
-                if (grp.Characters.Count() == 3)
-                {
-                    if (grp.Characters.ElementAt(0) == Session.Character.CharacterId)
-                    {
-                        Broadcast(Session, Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("NEW_LEADER")), ReceiverType.OnlySomeone, "", grp.Characters.ElementAt(1));
-                    }
-                    grp.Characters.Remove(Session.Character.CharacterId);
-                    foreach (long charid in grp.Characters)
-                    {
-                        string str = $"pinit {grp.Characters.Count()}";
-                        int i = 0;
-                        foreach (long Id in grp.Characters)
-                        {
-                            i++;
-                            str += $" 1|{ClientLinkManager.Instance.GetProperty<long>(Id, "CharacterId")}|{i}|{ClientLinkManager.Instance.GetProperty<byte>(Id, "Level")}|{ClientLinkManager.Instance.GetProperty<string>(Id, "Name")}|11|{ClientLinkManager.Instance.GetProperty<byte>(Id, "Gender")}|{ClientLinkManager.Instance.GetProperty<byte>(Id, "Class")}|{(ClientLinkManager.Instance.GetProperty<bool>(Id, "UseSp") ? ClientLinkManager.Instance.GetProperty<int>(Id, "Morph") : 0)}";
-
-                        }
-                        foreach (ClientSession sess in Sessions.Where(s => s != null && s.Character != null && s.Character.CharacterId == charid))
-                        {
-                            sess.Client.SendPacket(str);
-                            sess.Client.SendPacket(sess.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("LEAVE_GROUP"), Session.Character.Name), 0));
-
-                        }
-
-                    }
-                    Session.Client.SendPacket("pinit 0");
-                    Broadcast(Session, $"pidx -1 1.{Session.Character.CharacterId}", ReceiverType.AllOnMap);
-                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("GROUP_LEFT"), 0));
-
-                }
-                else
-                {
-                    foreach (long charid in grp.Characters)
-                    {
-                        foreach (ClientSession sess in Sessions.Where(s => s != null && s.Character != null && s.Character.CharacterId == charid))
-                        {
-                            sess.Client.SendPacket("pinit 0");
-                            sess.Client.SendPacket(sess.Character.GenerateMsg(Language.Instance.GetMessageFromKey("GROUP_CLOSED"), 0));
-                            Broadcast(sess, $"pidx -1 1.{charid}", ReceiverType.AllOnMap);
-                        }
-                    }
-                    ClientLinkManager.Instance.Groups.Remove(grp);
-                }
-            }
-        }
-
-      
         #endregion
     }
 }

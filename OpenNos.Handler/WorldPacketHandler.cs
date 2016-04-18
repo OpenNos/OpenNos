@@ -239,7 +239,7 @@ namespace OpenNos.Handler
 
                 ClientLinkManager.Instance.BuyValidate(Session, shop, slot, amount);
                 KeyValuePair<long, MapShop> shop2 = Session.CurrentMap.ShopUserList.FirstOrDefault(s => s.Value.OwnerId.Equals(owner));
-                loadShopItem(owner, shop2);
+                LoadShopItem(owner, shop2);
             }
             else if (packetsplit.Length == 5) // skill shop
             {
@@ -1249,7 +1249,7 @@ namespace OpenNos.Handler
         }
 
         [Packet("$ChangeSex")]
-        public void Gender(string packet)
+        public void ChangeSex(string packet)
         {
             Session.Character.Gender = Session.Character.Gender == 1 ? (byte)0 : (byte)1;
             Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SEX_CHANGED"), 0));
@@ -1260,7 +1260,7 @@ namespace OpenNos.Handler
             ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(198), ReceiverType.AllOnMap);
         }
 
-        public string GeneratePidx(long CharId)
+        private string GeneratePidx(long CharId)
         {
             string stri = "pidx 1";
             foreach (long Id in ClientLinkManager.Instance.Groups.FirstOrDefault(s => s.Characters.Contains(CharId)).Characters)
@@ -1326,7 +1326,7 @@ namespace OpenNos.Handler
 
             if (packetsplit[2] == "1")
             {
-                ClientLinkManager.Instance.RequiereBroadcastFromUser(Session, Convert.ToInt64(packetsplit[3]), "GenerateStatInfo");
+                ClientLinkManager.Instance.RequireBroadcastFromUser(Session, Convert.ToInt64(packetsplit[3]), "GenerateStatInfo");
             }
             if (packetsplit[2] == "2")
             {
@@ -1415,7 +1415,7 @@ namespace OpenNos.Handler
                 ClientLinkManager.Instance.Broadcast(Session, $"guri 2 1 {Session.Character.CharacterId}", ReceiverType.AllOnMap);
         }
 
-        public async void healthTask()
+        private async void HealthTask()
         {
             int x = 1;
             while (true)
@@ -1502,7 +1502,7 @@ namespace OpenNos.Handler
         }
 
         [Packet("$JLvl")]
-        public void JLvl(string packet)
+        public void ChangeJobLevel(string packet)
         {
             string[] packetsplit = packet.Split(' ');
             byte joblevel;
@@ -1620,7 +1620,7 @@ namespace OpenNos.Handler
             Session.Client.SendPacket("clist_end");
         }
 
-        public void loadShopItem(long owner, KeyValuePair<long, MapShop> shop)
+        private void LoadShopItem(long owner, KeyValuePair<long, MapShop> shop)
         {
             string packetToSend = $"n_inv 1 {owner} 0 0";
             for (short i = 0; i < 20; i++)
@@ -1644,7 +1644,7 @@ namespace OpenNos.Handler
         }
 
         [Packet("$Lvl")]
-        public void Lvl(string packet)
+        public void CHangeLevel(string packet)
         {
             string[] packetsplit = packet.Split(' ');
             byte level;
@@ -1676,14 +1676,14 @@ namespace OpenNos.Handler
             if (Session.CurrentMap.IsDancing == 2)
             {
                 Session.Character.Dance();
-                ClientLinkManager.Instance.RequiereBroadcastFromAllMapUsers(Session, "Dance");
-                ClientLinkManager.Instance.RequiereBroadcastFromMap(Session.Character.MapId, "dance 2");
+                ClientLinkManager.Instance.RequireBroadcastFromAllMapUsers(Session, "Dance");
+                ClientLinkManager.Instance.RequireBroadcastFromMap(Session.Character.MapId, "dance 2");
             }
             else
             {
                 Session.Character.Dance();
-                ClientLinkManager.Instance.RequiereBroadcastFromAllMapUsers(Session, "Dance");
-                ClientLinkManager.Instance.RequiereBroadcastFromMap(Session.Character.MapId, "dance");
+                ClientLinkManager.Instance.RequireBroadcastFromAllMapUsers(Session, "Dance");
+                ClientLinkManager.Instance.RequireBroadcastFromMap(Session.Character.MapId, "dance");
             }
         }
 
@@ -1776,7 +1776,7 @@ namespace OpenNos.Handler
         }
 
         [Packet("n_run")]
-        public void npcRunFunction(string packet)
+        public void NpcRunFunction(string packet)
         {
             string[] packetsplit = packet.Split(' ');
             if (packetsplit.Length <= 5) return;
@@ -1790,7 +1790,7 @@ namespace OpenNos.Handler
         }
 
         [Packet("gop")]
-        public void option(string packet)
+        public void Option(string packet)
         {
             string[] packetsplit = packet.Split(' ');
             if (packetsplit.Length == 4)
@@ -1932,7 +1932,7 @@ namespace OpenNos.Handler
         }
 
         [Packet("pdtse")]
-        public void pdtse(string packet)
+        public void Pdtse(string packet)
         {
             string[] packetsplit = packet.Split(' ');
             if (packetsplit.Count() < 4)
@@ -2258,7 +2258,7 @@ namespace OpenNos.Handler
         }
 
         [Packet("pjoin")]
-        public void pjoin(string packet)
+        public void PJoin(string packet)
         {
             string[] packetsplit = packet.Split(' ');
             if (packetsplit.Length > 3)
@@ -2334,7 +2334,7 @@ namespace OpenNos.Handler
         }
 
         [Packet("pleave")]
-        public void pleave(string packet)
+        public void PlayerLeave(string packet)
         {
             ClientLinkManager.Instance.GroupLeave(Session);
         }
@@ -2552,7 +2552,7 @@ namespace OpenNos.Handler
             }
         }
 
-        public void RarifyItem(Inventory item, InventoryItem.RarifyMode mode, InventoryItem.RarifyProtection protection)
+        private void RarifyItem(Inventory item, InventoryItem.RarifyMode mode, InventoryItem.RarifyProtection protection)
         {
             double rare1 = 50;
             double rare2 = 35;
@@ -2702,7 +2702,7 @@ namespace OpenNos.Handler
         }
 
         [Packet("remove")]
-        public void remove(string packet)
+        public void Remove(string packet)
         {
             // Undress Equipment
             string[] packetsplit = packet.Split(' ');
@@ -2740,7 +2740,7 @@ namespace OpenNos.Handler
             }
         }
 
-        public async void RemoveSP(short vnum)
+        private async void RemoveSP(short vnum)
         {
             Inventory sp = Session.Character.EquipmentList.LoadBySlotAndType((byte)EquipmentType.Sp, (byte)InventoryType.Equipment);
             Session.Character.Speed -= ServerManager.GetItem(vnum).Speed;
@@ -2805,7 +2805,7 @@ namespace OpenNos.Handler
         }
 
         [Packet("$ChangeRep")]
-        public void Rep(string packet)
+        public void ChangeReputation(string packet)
         {
             string[] packetsplit = packet.Split(' ');
             long reput;
@@ -2837,7 +2837,7 @@ namespace OpenNos.Handler
                 }
             }
             else
-                ClientLinkManager.Instance.RequiereBroadcastFromUser(Session, Convert.ToInt64(packetsplit[3]), "GenerateReqInfo");
+                ClientLinkManager.Instance.RequireBroadcastFromUser(Session, Convert.ToInt64(packetsplit[3]), "GenerateReqInfo");
         }
 
         [Packet("$Resize")]
@@ -2960,7 +2960,7 @@ namespace OpenNos.Handler
                 Session.Character.LoadQuicklists();
                 DAOFactory.AccountDAO.WriteGeneralLog(Session.Character.AccountId, Session.Client.RemoteEndPoint.ToString(), Session.Character.CharacterId, "Connection", "World");
                 Session.Client.SendPacket("OK");
-                Session.HealthTask = new Task(() => healthTask());
+                Session.HealthTask = new Task(() => HealthTask());
 
                 Session.HealthTask.Start();
 
@@ -3033,7 +3033,7 @@ namespace OpenNos.Handler
         }
 
         [Packet("shopclose")]
-        public void shopclose(string packet)
+        public void ShopClose(string packet)
         {
             // Not needed for now.
         }
@@ -3124,7 +3124,7 @@ namespace OpenNos.Handler
                     if (!long.TryParse(packetsplit[3], out owner)) return;
 
                     KeyValuePair<long, MapShop> shopList = Session.CurrentMap.ShopUserList.FirstOrDefault(s => s.Value.OwnerId.Equals(owner));
-                    loadShopItem(owner, shopList);
+                    LoadShopItem(owner, shopList);
                 }
                 else
                 {
@@ -3139,15 +3139,15 @@ namespace OpenNos.Handler
         [Packet("$Shutdown")]
         public void Shutdown(string packet)
         {
-            if (ClientLinkManager.Instance.taskShutdown != null)
+            if (ClientLinkManager.Instance.TaskShutdown != null)
             {
                 ClientLinkManager.Instance.ShutdownStop = true;
-                ClientLinkManager.Instance.taskShutdown = null;
+                ClientLinkManager.Instance.TaskShutdown = null;
             }
             else
             {
-                ClientLinkManager.Instance.taskShutdown = new Task(ShutdownTask);
-                ClientLinkManager.Instance.taskShutdown.Start();
+                ClientLinkManager.Instance.TaskShutdown = new Task(ShutdownTask);
+                ClientLinkManager.Instance.TaskShutdown.Start();
             }
         }
 
@@ -3194,7 +3194,7 @@ namespace OpenNos.Handler
         }
 
         [Packet("#sl")]
-        public void sl(string packet)
+        public void Sl(string packet)
         {
             // idk
         }
@@ -3206,7 +3206,7 @@ namespace OpenNos.Handler
         }
 
         [Packet("sortopen")]
-        public void sortopen(string packet)
+        public void SortOpen(string packet)
         {
             Boolean gravity = true;
             byte type;
@@ -3292,7 +3292,7 @@ namespace OpenNos.Handler
         }
 
         [Packet("$SPLvl")]
-        public void SPLvl(string packet)
+        public void ChangeSpecialistLevel(string packet)
         {
             string[] packetsplit = packet.Split(' ');
             byte splevel;
@@ -4013,7 +4013,7 @@ namespace OpenNos.Handler
         }
 
         [Packet("up_gr")]
-        public void upgr(string packet)
+        public void UpgradeCommand(string packet)
         {
             string[] packetsplit = packet.Split(' ');
             if ((Session.Character.ExchangeInfo != null && Session.Character.ExchangeInfo?.ExchangeList.Count() != 0) || Session.Character.Speed == 0)
@@ -4414,7 +4414,7 @@ namespace OpenNos.Handler
         }
 
         [Packet("#pjoin")]
-        public void validpjoin(string packet)
+        public void ValidPJoin(string packet)
         {
             string[] packetsplit = packet.Split(' ', '^');
             int type = -1;

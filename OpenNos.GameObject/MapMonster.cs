@@ -95,8 +95,8 @@ namespace OpenNos.GameObject
                     CurrentHp = monster.MaxHP;
                     CurrentMp = monster.MaxMP;
                    
-                    ClientLinkManager.Instance.RequiereBroadcastFromMap(MapId, GenerateIn3());
-                    ClientLinkManager.Instance.RequiereBroadcastFromMap(MapId, GenerateEff(7));
+                    ClientLinkManager.Instance.RequireBroadcastFromMap(MapId, GenerateIn3());
+                    ClientLinkManager.Instance.RequireBroadcastFromMap(MapId, GenerateEff(7));
                 }
                 return;
             }
@@ -124,7 +124,7 @@ namespace OpenNos.GameObject
                         LastMove = DateTime.Now;
 
                         string movepacket = $"mv 3 {this.MapMonsterId} {this.MapX} {this.MapY} {monster.Speed}";
-                        ClientLinkManager.Instance.RequiereBroadcastFromMap(MapId, movepacket);
+                        ClientLinkManager.Instance.RequireBroadcastFromMap(MapId, movepacket);
                     }
 
                     if (monster.IsHostile && Target ==-1)
@@ -135,7 +135,7 @@ namespace OpenNos.GameObject
                             if ((Math.Pow(character.MapX - MapX, 2) + Math.Pow(character.MapY - MapY, 2)) < (Math.Pow(11, 2)))
                             {
                                 Target = character.CharacterId;
-                                ClientLinkManager.Instance.RequiereBroadcastToUser(Target, GenerateEff(5000));
+                                ClientLinkManager.Instance.RequireBroadcastToUser(Target, GenerateEff(5000));
                             }
                         }
                     }
@@ -167,7 +167,7 @@ namespace OpenNos.GameObject
                             this.MapX = mapX;
                             this.MapY = mapY;
                             LastMove = DateTime.Now;
-                            ClientLinkManager.Instance.RequiereBroadcastFromMap(MapId, $"mv 3 {this.MapMonsterId} {this.MapX} {this.MapY} {monster.Speed}");
+                            ClientLinkManager.Instance.RequireBroadcastFromMap(MapId, $"mv 3 {this.MapMonsterId} {this.MapX} {this.MapY} {monster.Speed}");
                         }
                     }
                 }

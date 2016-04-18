@@ -224,7 +224,7 @@ namespace OpenNos.GameObject
             DroppedItem.InventoryItemId = random;
             ServerManager.GetMap(MapId).DroppedList.Add(random, DroppedItem);
 
-            ClientLinkManager.Instance.RequiereBroadcastFromMap(MapId, $"drop {DroppedItem.ItemVNum} {random} {DroppedItem.PositionX} {DroppedItem.PositionY} {DroppedItem.Amount} 0 0 -1");
+            ClientLinkManager.Instance.RequireBroadcastFromMap(MapId, $"drop {DroppedItem.ItemVNum} {random} {DroppedItem.PositionX} {DroppedItem.PositionY} {DroppedItem.Amount} 0 0 -1");
         }
 
         public void LoadZone()
