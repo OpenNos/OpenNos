@@ -347,7 +347,7 @@ namespace OpenNos.Handler
                 Random rnd = new Random();
                 byte ra = (byte)rnd.Next(0, 100);
                 byte rare = 0;
-                int[] rareprob = { 100, 70, 50, 30, 20, 10, 5, 1 };
+                int[] rareprob = { 100, 100, 70, 50, 30, 15, 5, 1 };
 
                 for(int i=0;i< rareprob.Length;i++)
                 {
