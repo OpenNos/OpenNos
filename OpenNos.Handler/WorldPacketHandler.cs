@@ -1583,7 +1583,8 @@ namespace OpenNos.Handler
                                 AccountId = accountDTO.AccountId,
                                 Name = accountDTO.Name,
                                 Password = accountDTO.Password,
-                                Authority = accountDTO.Authority
+                                Authority = accountDTO.Authority,
+                                LastCompliment = accountDTO.LastCompliment
                             };
 
                             Session.InitializeAccount(account);
