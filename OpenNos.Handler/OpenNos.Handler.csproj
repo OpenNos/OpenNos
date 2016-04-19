@@ -55,10 +55,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CommandPacketHandler.cs" />
+    <Compile Include="Configuration\ServerConfig.cs" />
+    <Compile Include="Interface\IPacketHandler.cs" />
     <Compile Include="LoginPacketHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WorldPacketHandler.cs" />
-    <Compile Include="ServerConfig.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\OpenNos.Core\OpenNos.Core.csproj">
@@ -93,10 +95,6 @@
       <Project>{d30674c8-15a6-4fee-8a79-82416f078725}</Project>
       <Name>OpenNos.WCF</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="App.config" />
-    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -24,7 +24,7 @@ using System.Configuration;
 
 namespace OpenNos.Handler
 {
-    public class LoginPacketHandler
+    public class LoginPacketHandler : IPacketHandler
     {
         #region Members
 
@@ -54,9 +54,9 @@ namespace OpenNos.Handler
                 foreach (ServerConfig.Server serv in myServs)
                 {
                     w++;
-                    for (int j = 1; j <= serv.channelAmount; j++)
+                    for (int j = 1; j <= serv.ChannelAmount; j++)
                     {
-                        channelPacket += $"{serv.WorldIp}:{(serv.WorldPort + j - 1)}:1:{w}.{j}.{serv.name} ";
+                        channelPacket += $"{serv.WorldIp}:{(serv.WorldPort + j - 1)}:1:{w}.{j}.{serv.Name} ";
                     }
                 }
                 return channelPacket;

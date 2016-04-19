@@ -216,21 +216,22 @@ namespace OpenNos.GameObject
             }
         }
 
-        private bool GenerateHandlerReferences(Type handlerType)
+        private void GenerateHandlerReferences(Type type)
         {
-            object handler = Activator.CreateInstance(handlerType, new object[] { this });
-
-            foreach (MethodInfo methodInfo in handlerType.GetMethods().Where(x => x.GetCustomAttributes(false).OfType<Packet>().Any()))
+            foreach(Type handlerType in type.Assembly.GetTypes().Where(p => !p.IsInterface && type.GetInterface("IPacketHandler").IsAssignableFrom(p)))
             {
-                Packet packetAttribute = methodInfo.GetCustomAttributes(false).OfType<Packet>().FirstOrDefault();
+                object handler = Activator.CreateInstance(handlerType, new object[] { this });
 
-                if (packetAttribute != null)
+                foreach (MethodInfo methodInfo in handlerType.GetMethods().Where(x => x.GetCustomAttributes(false).OfType<Packet>().Any()))
                 {
-                    HandlerMethods.Add(packetAttribute, new Tuple<Action<object, string>, object>(DelegateBuilder.BuildDelegate<Action<object, string>>(methodInfo), handler));
+                    Packet packetAttribute = methodInfo.GetCustomAttributes(false).OfType<Packet>().FirstOrDefault();
+
+                    if (packetAttribute != null)
+                    {
+                        HandlerMethods.Add(packetAttribute, new Tuple<Action<object, string>, object>(DelegateBuilder.BuildDelegate<Action<object, string>>(methodInfo), handler));
+                    }
                 }
             }
-
-            return false;
         }
 
         /// <summary>

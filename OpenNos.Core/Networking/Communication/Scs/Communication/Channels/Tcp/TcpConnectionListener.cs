@@ -1,4 +1,5 @@
 ﻿using OpenNos.Core.Networking.Communication.Scs.Communication.EndPoints.Tcp;
+using System;
 using System.Net.Sockets;
 using System.Threading;
 
@@ -85,7 +86,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
                         OnCommunicationChannelConnected(new TcpCommunicationChannel(clientSocket));
                     }
                 }
-                catch
+                catch (Exception e)
                 {
                     //Disconnect, wait for a while and connect again.
                     StopSocket();
