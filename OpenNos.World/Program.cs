@@ -64,9 +64,15 @@ namespace OpenNos.World
             Assembly assembly = Assembly.GetExecutingAssembly();
             FileVersionInfo fileVersionInfo = FileVersionInfo.GetVersionInfo(assembly.Location);
             Console.Title = $"OpenNos World Server v{fileVersionInfo.ProductVersion}";
-            Console.WriteLine("===============================================================================\n"
-                             + $"                 WORLD SERVER VERSION {fileVersionInfo.ProductVersion} by OpenNos Team\n" +
-                             "===============================================================================\n");
+
+            string ip = System.Configuration.ConfigurationManager.AppSettings["WorldIp"];
+            int port = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["WorldPort"]);
+            string text = $"WORLD SERVER VERSION {fileVersionInfo.ProductVersion} - PORT : {port} by OpenNos Team";
+            int offset = (Console.WindowWidth - text.Length) / 2;
+            Console.WriteLine("===============================================================================");
+            Console.SetCursorPosition(offset<0?0:offset, Console.CursorTop);
+            Console.WriteLine(text+"\n"+
+            "===============================================================================\n");
 
             Task memory = new Task(() => ServerManager.MemoryWatch("OpenNos World Server"));
             memory.Start();
@@ -80,8 +86,6 @@ namespace OpenNos.World
             //initialize ClientLinkManager
             //TODO
 
-            string ip = System.Configuration.ConfigurationManager.AppSettings["WorldIp"];
-            int port = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["WorldPort"]);
             try
             {
                 ServiceFactory.Instance.CommunicationService.Open();

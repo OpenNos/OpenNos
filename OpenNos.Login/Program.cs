@@ -41,9 +41,13 @@ namespace OpenNos.Login
                     Assembly assembly = Assembly.GetExecutingAssembly();
                     FileVersionInfo fileVersionInfo = FileVersionInfo.GetVersionInfo(assembly.Location);
                     Console.Title = $"OpenNos Login Server v{fileVersionInfo.ProductVersion}";
-                    Console.WriteLine("===============================================================================\n"
-                                     + $"                 LOGIN SERVER VERSION {fileVersionInfo.ProductVersion} by OpenNos Team\n" +
-                                     "===============================================================================\n");
+                    int port = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["LoginPort"]);
+                    string text = $"LOGIN SERVER VERSION {fileVersionInfo.ProductVersion} - PORT : {port} by OpenNos Team";
+                    int offset = (Console.WindowWidth - text.Length) / 2;
+                    Console.WriteLine("===============================================================================");
+                    Console.SetCursorPosition(offset < 0 ? 0 : offset, Console.CursorTop);
+                    Console.WriteLine(text + "\n" +
+                    "===============================================================================\n");
 
                     Task memory = new Task(() => ServerManager.MemoryWatch("OpenNos Login Server"));
                     memory.Start();
@@ -51,13 +55,12 @@ namespace OpenNos.Login
                     //initialize DB
                     DataAccessHelper.Initialize();
                  
-                    string ip = System.Configuration.ConfigurationManager.AppSettings["LoginIp"];
-                    int port = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["LoginPort"]);
+                   
                     Logger.Log.Info(Language.Instance.GetMessageFromKey("CONFIG_LOADED"));
                     try
                     {
                         ServiceFactory.Instance.CommunicationService.Open();
-                        NetworkManager<LoginEncryption> networkManager = new NetworkManager<LoginEncryption>(ip, port, typeof(LoginPacketHandler));
+                        NetworkManager<LoginEncryption> networkManager = new NetworkManager<LoginEncryption>("127.0.0.1", port, typeof(LoginPacketHandler));
 
                         //refresh WCF
                         ServiceFactory.Instance.CommunicationService.CleanupAsync();

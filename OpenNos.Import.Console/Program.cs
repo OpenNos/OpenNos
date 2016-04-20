@@ -31,9 +31,12 @@ namespace OpenNos.Import.Console
             Assembly assembly = Assembly.GetExecutingAssembly();
             FileVersionInfo fileVersionInfo = FileVersionInfo.GetVersionInfo(assembly.Location);
             System.Console.Title = $"OpenNos Import Console v{fileVersionInfo.ProductVersion}";
-            System.Console.WriteLine("===============================================================================\n" +
-                                     $"                 IMPORT CONSOLE VERSION {fileVersionInfo.ProductVersion} by OpenNos Team\n" +
-                                     "===============================================================================\n");
+            string text = $"IMPORT CONSOLE VERSION {fileVersionInfo.ProductVersion} by OpenNos Team";
+            int offset = (System.Console.WindowWidth - text.Length) / 2;
+            System.Console.WriteLine("===============================================================================");
+            System.Console.SetCursorPosition(offset < 0 ? 0 : offset, System.Console.CursorTop);
+            System.Console.WriteLine(text + "\n" +
+            "===============================================================================\n");
 
             DataAccessHelper.Initialize();
 
