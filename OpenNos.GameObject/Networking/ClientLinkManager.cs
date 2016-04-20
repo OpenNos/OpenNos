@@ -29,9 +29,6 @@ namespace OpenNos.GameObject
 
         public Boolean ShutdownStop = false;
         private static ClientLinkManager _instance;
-        private readonly Task _autoSave; // if this thread is never aborted by code, it can be declared only in constructor!
-        private Task _groupTask;
-        private Task _taskController;
 
         #endregion
 
@@ -42,14 +39,16 @@ namespace OpenNos.GameObject
             Sessions = new List<ClientSession>();
             Groups = new List<Group>();
 
-            _autoSave = new Task(SaveAllProcess);
-            _autoSave.Start();
+            Task autosave = new Task(SaveAllProcess);
+            autosave.Start();
 
-            _taskController = new Task(() => TaskLauncherProcess());
-            _taskController.Start();
+            Task GroupTask = new Task(() => GroupProcess());
+            GroupTask.Start();
 
-            _groupTask = new Task(() => GroupProcess());
-            _groupTask.Start();
+            Task TaskController = new Task(() => TaskLauncherProcess());
+            TaskController.Start();
+
+
         }
 
         #endregion
@@ -355,7 +354,7 @@ namespace OpenNos.GameObject
         }
         #endregion
 
-        #region getters
+        #region Getters
         public T GetProperty<T>(string charName, string property)
         {
             ClientSession session = Sessions.FirstOrDefault(s => s.Character != null && s.Character.Name.Equals(charName));
@@ -380,7 +379,7 @@ namespace OpenNos.GameObject
         }
         #endregion
 
-        #region setters
+        #region Setters
         public void SetProperty(long charId, string property, object value)
         {
             ClientSession session = Sessions.FirstOrDefault(s => s.Character != null && s.Character.CharacterId.Equals(charId));
@@ -391,7 +390,7 @@ namespace OpenNos.GameObject
         }
         #endregion
 
-        #region broadcast
+        #region Broadcast
         public bool Broadcast(ClientSession client, string message, ReceiverType receiver, string characterName = "", long characterId = -1)
         {
             switch (receiver)
@@ -468,7 +467,7 @@ namespace OpenNos.GameObject
         }
         #endregion
 
-        #region process
+        #region Process
         private async void TaskLauncherProcess()
         {
             Task TaskMap = null;
