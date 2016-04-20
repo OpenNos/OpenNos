@@ -637,6 +637,19 @@ namespace OpenNos.Handler
                     inventory = Session.Character.EquipmentList.LoadBySlotAndType(slot, (byte)InventoryType.Equipment);
                     break;
 
+                case 5:
+                    if (Session.Character.ExchangeInfo != null)
+                    {
+                        byte inven; ;
+                        
+                        if(byte.TryParse(packetsplit[3], out inven) && short.TryParse(packetsplit[4], out slot))
+                        {
+                        InventoryList inv = ClientLinkManager.Instance.GetProperty<InventoryList>(Session.Character.ExchangeInfo.CharId, "InventoryList");
+                        inventory = inv.LoadBySlotAndType(slot, inven);
+                        }
+                    }
+                    break;
+
                 case 1:
                     inventory = Session.Character.InventoryList.LoadBySlotAndType(slot, (byte)InventoryType.Wear);
                     break;

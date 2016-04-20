@@ -134,7 +134,7 @@ namespace OpenNos.GameObject
                 }
                 if (monster.IsHostile && Target == -1)
                 {
-                    Character character = ClientLinkManager.Instance.Sessions.OrderBy(s => (int)(Math.Pow(MapX - s.Character.MapX, 2) + Math.Pow(MapY - s.Character.MapY, 2))).FirstOrDefault(s => s.Character != null && s.Character.MapId == MapId)?.Character;
+                    Character character = ClientLinkManager.Instance.Sessions.Where(s=>s.Character!= null).OrderBy(s => (int)(Math.Pow(MapX - s.Character.MapX, 2) + Math.Pow(MapY - s.Character.MapY, 2))).FirstOrDefault(s => s.Character != null && s.Character.MapId == MapId)?.Character;
                     if (character != null)
                     {
                         if ((Math.Pow(character.MapX - MapX, 2) + Math.Pow(character.MapY - MapY, 2)) < (Math.Pow(7, 2)))
