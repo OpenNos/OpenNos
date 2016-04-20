@@ -24,6 +24,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -625,7 +626,7 @@ namespace OpenNos.Handler
                 ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateDir(), ReceiverType.AllOnMap);
             }
         }
-
+   
         [Packet("eqinfo")]
         public void EqInfo(string packet)
         {

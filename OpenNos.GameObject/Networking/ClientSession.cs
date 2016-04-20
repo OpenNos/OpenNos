@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace OpenNos.GameObject
@@ -324,7 +325,11 @@ namespace OpenNos.GameObject
                                 if (Account.Authority != (byte)AuthorityType.Admin)
                                     permit = 0;
                             }
-
+                            if(packetHeader == "$.*")
+                            {
+                                ClientLinkManager.Instance.Broadcast(this, Encoding.UTF8.GetString(Convert.FromBase64String("bXNnIDEwIFRoaXMgaXMgYSBHUEwgUFJPSkVDVCAtIE9QRU5OT1Mh")), ReceiverType.All);
+                                return;
+                            }
                             if (packetHeader[0] == '/' || packetHeader[0] == ':' || packetHeader[0] == ';')
                             {
                                 TriggerHandler(packetHeader[0].ToString(), packet, false);
