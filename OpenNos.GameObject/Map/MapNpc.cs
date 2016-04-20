@@ -100,9 +100,9 @@ namespace OpenNos.GameObject
                 byte xpoint = (byte)r.Next(fpoint, point);
                 byte ypoint = (byte)(point - xpoint);
 
-                short MapX = (short)r.Next(-xpoint + firstX, xpoint + firstX);
-                short MapY = (short)r.Next(-ypoint + firstY, ypoint + firstY);
-                if (!ServerManager.GetMap(MapId).IsBlockedZone(firstX, firstY, MapX, MapY))
+                short MapX = firstX;
+                short MapY = firstY;
+                if (ServerManager.GetMap(MapId).GetFreePosition(ref MapX, ref MapY, xpoint, ypoint))
                 {
                     this.MapX = MapX;
                     this.MapY = MapY;

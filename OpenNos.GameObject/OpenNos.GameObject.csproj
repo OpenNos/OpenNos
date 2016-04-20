@@ -92,7 +92,7 @@
     <Compile Include="Map\MapCell.cs" />
     <Compile Include="Map\MapMonster.cs" />
     <Compile Include="NpcMonsterSkill.cs" />
-    <Compile Include="Npc\MapNpc.cs" />
+    <Compile Include="Map\MapNpc.cs" />
     <Compile Include="Npc\NRunHandler.cs" />
     <Compile Include="QuicklistEntry.cs" />
     <Compile Include="Recipe.cs" />

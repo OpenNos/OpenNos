@@ -95,6 +95,8 @@ namespace OpenNos.GameObject
                     Target = -1;
                     CurrentHp = monster.MaxHP;
                     CurrentMp = monster.MaxMP;
+                    MapX = firstX;
+                    MapY = firstY;
 
                     ClientLinkManager.Instance.BroadcastToMap(MapId, GenerateIn3());
                     ClientLinkManager.Instance.BroadcastToMap(MapId, GenerateEff(7));
@@ -134,7 +136,7 @@ namespace OpenNos.GameObject
                         Character character = ClientLinkManager.Instance.Sessions.OrderBy(s => (int)(Math.Pow(MapX - s.Character.MapX, 2) + Math.Pow(MapY - s.Character.MapY, 2))).FirstOrDefault(s => s.Character != null && s.Character.MapId == MapId)?.Character;
                         if (character != null)
                         {
-                            if ((Math.Pow(character.MapX - MapX, 2) + Math.Pow(character.MapY - MapY, 2)) < (Math.Pow(11, 2)))
+                            if ((Math.Pow(character.MapX - MapX, 2) + Math.Pow(character.MapY - MapY, 2)) < (Math.Pow(7, 2)))
                             {
                                 Target = character.CharacterId;
 
