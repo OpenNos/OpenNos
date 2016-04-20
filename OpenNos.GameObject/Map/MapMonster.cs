@@ -130,18 +130,18 @@ namespace OpenNos.GameObject
                         string movepacket = $"mv 3 {this.MapMonsterId} {this.MapX} {this.MapY} {monster.Speed}";
                         ClientLinkManager.Instance.BroadcastToMap(MapId, movepacket);
 
-                    }
-                    if (monster.IsHostile && Target == -1)
+                    }   
+                }
+                if (monster.IsHostile && Target == -1)
+                {
+                    Character character = ClientLinkManager.Instance.Sessions.OrderBy(s => (int)(Math.Pow(MapX - s.Character.MapX, 2) + Math.Pow(MapY - s.Character.MapY, 2))).FirstOrDefault(s => s.Character != null && s.Character.MapId == MapId)?.Character;
+                    if (character != null)
                     {
-                        Character character = ClientLinkManager.Instance.Sessions.OrderBy(s => (int)(Math.Pow(MapX - s.Character.MapX, 2) + Math.Pow(MapY - s.Character.MapY, 2))).FirstOrDefault(s => s.Character != null && s.Character.MapId == MapId)?.Character;
-                        if (character != null)
+                        if ((Math.Pow(character.MapX - MapX, 2) + Math.Pow(character.MapY - MapY, 2)) < (Math.Pow(7, 2)))
                         {
-                            if ((Math.Pow(character.MapX - MapX, 2) + Math.Pow(character.MapY - MapY, 2)) < (Math.Pow(7, 2)))
-                            {
-                                Target = character.CharacterId;
+                            Target = character.CharacterId;
 
-                                ClientLinkManager.Instance.Sessions.FirstOrDefault(s => s != null && s.Client != null && s.Character != null && s.Character.CharacterId.Equals(Target)).Client.SendPacket(GenerateEff(5000));
-                            }
+                            ClientLinkManager.Instance.Sessions.FirstOrDefault(s => s != null && s.Client != null && s.Character != null && s.Character.CharacterId.Equals(Target)).Client.SendPacket(GenerateEff(5000));
                         }
                     }
                 }
