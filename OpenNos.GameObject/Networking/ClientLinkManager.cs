@@ -143,15 +143,15 @@ namespace OpenNos.GameObject
                 Session.Client.SendPacket(Session.Character.GenerateCond());
                 ClientLinkManager.Instance.Broadcast(Session, Session.Character.GeneratePairy(), ReceiverType.AllOnMap);
                 Session.Client.SendPacket($"rsfi 1 1 0 9 0 9"); // Act completion
-                ClientLinkManager.Instance.RequireBroadcastFromAllMapUsersNotInvisible(Session, "GenerateIn");
+                ClientLinkManager.Instance.Sessions.Where(s=>s.Character.MapId.Equals(Session.Character.MapId) && s.Character.Name != Session.Character.Name && !Session.Character.InvisibleGm).ToList().ForEach(s=>RequireBroadcastFromUser(Session,s.Character.CharacterId , "GenerateIn"));
                 if (Session.Character.InvisibleGm == false)
                     ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllOnMapExceptMe);
                 if (Session.CurrentMap.IsDancing == 2 && Session.Character.IsDancing == 0)
-                    ClientLinkManager.Instance.RequireBroadcastFromMap(Session.Character.MapId, "dance 2");
+                    ClientLinkManager.Instance.BroadcastToMap(Session.Character.MapId, "dance 2");
                 else if (Session.CurrentMap.IsDancing == 0 && Session.Character.IsDancing == 1)
                 {
                     Session.Character.IsDancing = 0;
-                    ClientLinkManager.Instance.RequireBroadcastFromMap(Session.Character.MapId, "dance");
+                    ClientLinkManager.Instance.BroadcastToMap(Session.Character.MapId, "dance");
                 }
                 foreach (String ShopPacket in Session.Character.GenerateShopOnMap())
                     Session.Client.SendPacket(ShopPacket);
@@ -452,28 +452,7 @@ namespace OpenNos.GameObject
             }
             return true;
         }
-        public void RequireBroadcastFromAllMapUsers(ClientSession client, string methodName)
-        {
-            foreach (ClientSession session in Sessions.Where(s => s.Character != null && s.Character.MapId.Equals(client.Character.MapId) && s.Character.Name != client.Character.Name))
-            {
-                MethodInfo method = session.Character.GetType().GetMethod(methodName);
-                string result = (string)method.Invoke(session.Character, null);
-                client.Client.SendPacket(result);
-            }
-        }
-        public void RequireBroadcastFromAllMapUsersNotInvisible(ClientSession client, string methodName)
-        {
-            foreach (ClientSession session in Sessions.Where(s => s.Character != null && s.Character.MapId.Equals(client.Character.MapId) && s.Character.Name != client.Character.Name))
-            {
-                if (session.Character.InvisibleGm == false)
-                {
-                    MethodInfo method = session.Character.GetType().GetMethod(methodName);
-                    string result = (string)method.Invoke(session.Character, null);
-                    client.Client.SendPacket(result);
-                }
-            }
-        }
-        public void RequireBroadcastFromMap(short mapId, string message)
+        public void BroadcastToMap(short mapId, string message)
         {
             for (int i = Sessions.Where(s => s != null && s.Client != null && s.Character != null && s.Character.MapId.Equals(mapId)).Count() - 1; i >= 0; i--)
                 Sessions.Where(s => s != null && s.Client != null && s.Character != null && s.Character.MapId.Equals(mapId)).ElementAt(i).Client.SendPacket(message);

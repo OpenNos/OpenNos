@@ -96,8 +96,8 @@ namespace OpenNos.GameObject
                     CurrentHp = monster.MaxHP;
                     CurrentMp = monster.MaxMP;
                    
-                    ClientLinkManager.Instance.RequireBroadcastFromMap(MapId, GenerateIn3());
-                    ClientLinkManager.Instance.RequireBroadcastFromMap(MapId, GenerateEff(7));
+                    ClientLinkManager.Instance.BroadcastToMap(MapId, GenerateIn3());
+                    ClientLinkManager.Instance.BroadcastToMap(MapId, GenerateEff(7));
                 }
                 return;
             }
@@ -125,7 +125,7 @@ namespace OpenNos.GameObject
                         LastMove = DateTime.Now;
 
                         string movepacket = $"mv 3 {this.MapMonsterId} {this.MapX} {this.MapY} {monster.Speed}";
-                        ClientLinkManager.Instance.RequireBroadcastFromMap(MapId, movepacket);
+                        ClientLinkManager.Instance.BroadcastToMap(MapId, movepacket);
                     }
 
                     if (monster.IsHostile && Target ==-1)
@@ -169,7 +169,7 @@ namespace OpenNos.GameObject
                             this.MapX = mapX;
                             this.MapY = mapY;
                             LastMove = DateTime.Now;
-                            ClientLinkManager.Instance.RequireBroadcastFromMap(MapId, $"mv 3 {this.MapMonsterId} {this.MapX} {this.MapY} {monster.Speed}");
+                            ClientLinkManager.Instance.BroadcastToMap(MapId, $"mv 3 {this.MapMonsterId} {this.MapX} {this.MapY} {monster.Speed}");
                         }
                     }
                 }

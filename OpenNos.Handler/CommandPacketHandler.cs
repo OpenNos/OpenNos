@@ -454,14 +454,14 @@ namespace OpenNos.Handler
             if (Session.CurrentMap.IsDancing == 2)
             {
                 Session.Character.Dance();
-                ClientLinkManager.Instance.RequireBroadcastFromAllMapUsers(Session, "Dance");
-                ClientLinkManager.Instance.RequireBroadcastFromMap(Session.Character.MapId, "dance 2");
+                ClientLinkManager.Instance.Sessions.Where(s => s.Character.MapId.Equals(Session.Character.MapId) && s.Character.Name != Session.Character.Name).ToList().ForEach(s => ClientLinkManager.Instance.RequireBroadcastFromUser(Session, s.Character.CharacterId, "Dance"));
+                ClientLinkManager.Instance.BroadcastToMap(Session.Character.MapId, "dance 2");
             }
             else
             {
                 Session.Character.Dance();
-                ClientLinkManager.Instance.RequireBroadcastFromAllMapUsers(Session, "Dance");
-                ClientLinkManager.Instance.RequireBroadcastFromMap(Session.Character.MapId, "dance");
+                ClientLinkManager.Instance.Sessions.Where(s => s.Character.MapId.Equals(Session.Character.MapId) && s.Character.Name != Session.Character.Name).ToList().ForEach(s => ClientLinkManager.Instance.RequireBroadcastFromUser(Session, s.Character.CharacterId, "GenerateIn"));
+                ClientLinkManager.Instance.BroadcastToMap(Session.Character.MapId, "dance");
             }
         }
 
