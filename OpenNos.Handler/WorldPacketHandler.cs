@@ -492,6 +492,10 @@ namespace OpenNos.Handler
                 }
                 else if (typePacket == 0)
                 {
+                    if (Session.CurrentMap.ShopUserList.Where(s=>s.Value.OwnerId == Session.Character.CharacterId).Count() !=0)
+                    {
+                        return;
+                    }
                     MapShop myShop = new MapShop();
 
                     if (packetsplit.Length > 2)
