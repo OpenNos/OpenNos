@@ -158,9 +158,9 @@ namespace OpenNos.GameObject
                 if (MapX == null || MapY == null) { Target = -1; }
                 else
                 {
-                    if(path.Count <= 1)
+                    if(path.Count <= 2)
                     path = ServerManager.GetMap(MapId).AStar(new MapCell() { X = this.MapX, Y = this.MapY, MapId = this.MapId }, new MapCell() { X = (short)MapX, Y = (short)MapY, MapId = this.MapId });
-                    if (path.Count > 1)
+                    if (path.Count > 2)
                     {
                         mapX = path.ElementAt(1).X;
                         mapY = path.ElementAt(1).Y;
