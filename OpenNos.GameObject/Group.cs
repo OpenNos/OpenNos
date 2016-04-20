@@ -32,7 +32,7 @@ namespace OpenNos.GameObject
             List<string> str = new List<string>();
             foreach (long id in Characters)
             {
-                str.Add($"pst 1 {ClientLinkManager.Instance.GetProperty<long>(id, "CharacterId")} {++i} { ClientLinkManager.Instance.GetProperty<int>(id, "Hp") / ClientLinkManager.Instance.RequireMethodFromUser<double>(id, "HPLoad") * 100 } {(int)(ClientLinkManager.Instance.GetProperty<int>(id, "Mp") / ClientLinkManager.Instance.RequireMethodFromUser<double>(id, "MPLoad") * 100) } 0 0 {ClientLinkManager.Instance.GetProperty<byte>(id, "Class")} {ClientLinkManager.Instance.GetProperty<byte>(id, "Gender")} {(ClientLinkManager.Instance.GetProperty<bool>(id, "UseSp") ? ClientLinkManager.Instance.GetProperty<int>(id, "Morph") : 0)}");
+                str.Add($"pst 1 {ClientLinkManager.Instance.GetProperty<long>(id, "CharacterId")} {++i} { ClientLinkManager.Instance.GetProperty<int>(id, "Hp") / ClientLinkManager.Instance.GetUserMethod<double>(id, "HPLoad") * 100 } {(int)(ClientLinkManager.Instance.GetProperty<int>(id, "Mp") / ClientLinkManager.Instance.GetUserMethod<double>(id, "MPLoad") * 100) } 0 0 {ClientLinkManager.Instance.GetProperty<byte>(id, "Class")} {ClientLinkManager.Instance.GetProperty<byte>(id, "Gender")} {(ClientLinkManager.Instance.GetProperty<bool>(id, "UseSp") ? ClientLinkManager.Instance.GetProperty<int>(id, "Morph") : 0)}");
             }
             return str;
         }

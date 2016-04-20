@@ -17,6 +17,7 @@ using OpenNos.Data;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -129,13 +130,14 @@ namespace OpenNos.GameObject
 
                     if (monster.IsHostile && Target ==-1)
                     {
-                        Character character = ClientLinkManager.Instance.ClosestUser(MapId, MapX, MapY);
+                        Character character = ClientLinkManager.Instance.Sessions.OrderBy(s => (int)(Math.Pow(MapX - s.Character.MapX, 2) + Math.Pow(MapY - s.Character.MapY, 2))).First(s => s.Character != null && s.Character.MapId == MapId).Character;
                         if (character != null)
                         {
                             if ((Math.Pow(character.MapX - MapX, 2) + Math.Pow(character.MapY - MapY, 2)) < (Math.Pow(11, 2)))
                             {
                                 Target = character.CharacterId;
-                                ClientLinkManager.Instance.RequireBroadcastToUser(Target, GenerateEff(5000));
+
+                                ClientLinkManager.Instance.Sessions.FirstOrDefault(s => s != null && s.Client != null && s.Character != null && s.Character.CharacterId.Equals(Target)).Client.SendPacket(GenerateEff(5000));
                             }
                         }
                     }

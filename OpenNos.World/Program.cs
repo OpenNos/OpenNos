@@ -97,7 +97,7 @@ namespace OpenNos.World
 
         private static bool ExitHandler(CtrlType sig)
         {
-            ClientLinkManager.Instance.SaveAll();
+            ClientLinkManager.Instance.Sessions.ForEach(s => s.Character?.Save());
             return false;
         }
 

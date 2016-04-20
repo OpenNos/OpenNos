@@ -3200,7 +3200,7 @@ namespace OpenNos.Handler
                     return;
                 }
             }
-            ClientLinkManager.Instance.SaveAll();
+            ClientLinkManager.Instance.Sessions.ForEach(s => s.Character?.Save());
             Environment.Exit(0);
         }
 
@@ -3753,7 +3753,7 @@ namespace OpenNos.Handler
         [Packet("$Stat")]
         public void Stat(string packet)
         {
-            Session.Client.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("TOTAL_SESSION")}: {ClientLinkManager.Instance.GetNumberOfAllASession()} ", 13));
+            Session.Client.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("TOTAL_SESSION")}: {ClientLinkManager.Instance.Sessions.Count()} ", 13));
         }
 
         public void SumItem(Inventory item, Inventory item2)
@@ -3998,9 +3998,9 @@ namespace OpenNos.Handler
                 if (id != null)
                 {
                     ClientLinkManager.Instance.MapOut((long)id);
-                    ClientLinkManager.Instance.SetProperty(name, "MapY", (short)((Session.Character.MapY) + (short)1));
-                    ClientLinkManager.Instance.SetProperty(name, "MapX", (short)((Session.Character.MapX) + (short)1));
-                    ClientLinkManager.Instance.SetProperty(name, "MapId", Session.Character.MapId);
+                    ClientLinkManager.Instance.SetProperty((long)id, "MapY", (short)((Session.Character.MapY) + (short)1));
+                    ClientLinkManager.Instance.SetProperty((long)id, "MapX", (short)((Session.Character.MapX) + (short)1));
+                    ClientLinkManager.Instance.SetProperty((long)id, "MapId", Session.Character.MapId);
                     ClientLinkManager.Instance.ChangeMap((long)id);
                 }
                 else
