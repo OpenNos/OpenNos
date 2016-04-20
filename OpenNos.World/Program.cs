@@ -70,8 +70,8 @@ namespace OpenNos.World
             string text = $"WORLD SERVER VERSION {fileVersionInfo.ProductVersion} - PORT : {port} by OpenNos Team";
             int offset = (Console.WindowWidth - text.Length) / 2;
             Console.WriteLine("===============================================================================");
-            Console.SetCursorPosition(offset<0?0:offset, Console.CursorTop);
-            Console.WriteLine(text+"\n"+
+            Console.SetCursorPosition(offset < 0 ? 0 : offset, Console.CursorTop);
+            Console.WriteLine(text + "\n" +
             "===============================================================================\n");
 
             Task memory = new Task(() => ServerManager.MemoryWatch("OpenNos World Server"));
@@ -79,10 +79,9 @@ namespace OpenNos.World
 
             //initialize DB
             if (DataAccessHelper.Initialize())
-               //initialilize maps
+                //initialilize maps
                 ServerManager.Initialize();
 
-          
             //initialize ClientLinkManager
             //TODO
 

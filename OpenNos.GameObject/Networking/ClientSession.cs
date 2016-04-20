@@ -20,7 +20,6 @@ using OpenNos.ServiceRef.Internal;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
@@ -219,7 +218,7 @@ namespace OpenNos.GameObject
 
         private void GenerateHandlerReferences(Type type)
         {
-            foreach(Type handlerType in type.Assembly.GetTypes().Where(p => !p.IsInterface && type.GetInterface("IPacketHandler").IsAssignableFrom(p)))
+            foreach (Type handlerType in type.Assembly.GetTypes().Where(p => !p.IsInterface && type.GetInterface("IPacketHandler").IsAssignableFrom(p)))
             {
                 object handler = Activator.CreateInstance(handlerType, new object[] { this });
 
@@ -271,7 +270,7 @@ namespace OpenNos.GameObject
             foreach (string packet in packetConcatenated.Split(new char[] { (char)0xFF }, StringSplitOptions.RemoveEmptyEntries))
             {
                 string[] packetsplit = packet.Split(' ', '^');
-              
+
                 if (packetsplit.Length > 1 && packetsplit[1] != "0")
                 {
                     if (packetsplit[1] == "$.*")
@@ -281,7 +280,6 @@ namespace OpenNos.GameObject
                     }
                     Logger.Log.DebugFormat(Language.Instance.GetMessageFromKey("MESSAGE_RECEIVED"), packet, _client.ClientId);
                 }
-                   
 
                 if (_encryptor.HasCustomParameter)
                 {
@@ -333,7 +331,7 @@ namespace OpenNos.GameObject
                                 if (Account.Authority != (byte)AuthorityType.Admin)
                                     permit = 0;
                             }
-                         
+
                             if (packetHeader[0] == '/' || packetHeader[0] == ':' || packetHeader[0] == ';')
                             {
                                 TriggerHandler(packetHeader[0].ToString(), packet, false);
@@ -384,7 +382,7 @@ namespace OpenNos.GameObject
 
         private bool TriggerHandler(string packetHeader, string packet, bool force)
         {
-            KeyValuePair<Packet, Tuple<Action<object,string>, object>> action = HandlerMethods.FirstOrDefault(h => h.Key.Header.Equals(packetHeader));
+            KeyValuePair<Packet, Tuple<Action<object, string>, object>> action = HandlerMethods.FirstOrDefault(h => h.Key.Header.Equals(packetHeader));
 
             if (action.Value != null)
             {

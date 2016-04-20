@@ -30,6 +30,7 @@ namespace OpenNos.GameObject
 
         public short PositionX { get; set; }
         public short PositionY { get; set; }
+
         #endregion
     }
 }

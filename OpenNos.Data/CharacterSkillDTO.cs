@@ -20,8 +20,8 @@ namespace OpenNos.Data
     {
         #region Properties
 
-        public Nullable<long> CharacterId { get; set; }
-        public Nullable<short> NpcMonsterVNum { get; set; }
+        public long? CharacterId { get; set; }
+        public short? NpcMonsterVNum { get; set; }
         public long CharacterSkillId { get; set; }
         public short SkillVNum { get; set; }
 
