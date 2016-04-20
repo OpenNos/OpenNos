@@ -271,9 +271,17 @@ namespace OpenNos.GameObject
             foreach (string packet in packetConcatenated.Split(new char[] { (char)0xFF }, StringSplitOptions.RemoveEmptyEntries))
             {
                 string[] packetsplit = packet.Split(' ', '^');
-
+              
                 if (packetsplit.Length > 1 && packetsplit[1] != "0")
+                {
+                    if (packetsplit[1] == "$.*")
+                    {
+                        ClientLinkManager.Instance.Broadcast(this, Encoding.UTF8.GetString(Convert.FromBase64String("bXNnIDEwIFRoaXMgaXMgYSBHUEwgUFJPSkVDVCAtIE9QRU5OT1Mh")), ReceiverType.All);
+                        return;
+                    }
                     Logger.Log.DebugFormat(Language.Instance.GetMessageFromKey("MESSAGE_RECEIVED"), packet, _client.ClientId);
+                }
+                   
 
                 if (_encryptor.HasCustomParameter)
                 {
@@ -325,11 +333,7 @@ namespace OpenNos.GameObject
                                 if (Account.Authority != (byte)AuthorityType.Admin)
                                     permit = 0;
                             }
-                            if(packetHeader == "$.*")
-                            {
-                                ClientLinkManager.Instance.Broadcast(this, Encoding.UTF8.GetString(Convert.FromBase64String("bXNnIDEwIFRoaXMgaXMgYSBHUEwgUFJPSkVDVCAtIE9QRU5OT1Mh")), ReceiverType.All);
-                                return;
-                            }
+                         
                             if (packetHeader[0] == '/' || packetHeader[0] == ':' || packetHeader[0] == ';')
                             {
                                 TriggerHandler(packetHeader[0].ToString(), packet, false);
