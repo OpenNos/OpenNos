@@ -37,9 +37,9 @@ namespace OpenNos.Handler
         {
             Server result = new Server();
 
-            result.name = str.Attributes["Name"].Value;
+            result.Name = str.Attributes["Name"].Value;
             result.WorldIp = str.Attributes["WorldIp"].Value;
-            result.channelAmount = Convert.ToInt32(str.Attributes["channelAmount"].Value);
+            result.ChannelAmount = Convert.ToInt32(str.Attributes["channelAmount"].Value);
             result.WorldPort = Convert.ToInt32(str.Attributes["WorldPort"].Value);
             return result;
         }
@@ -52,8 +52,8 @@ namespace OpenNos.Handler
         {
             #region Properties
 
-            public int channelAmount { get; set; }
-            public string name { get; set; }
+            public int ChannelAmount { get; set; }
+            public string Name { get; set; }
             public string WorldIp { get; set; }
             public int WorldPort { get; set; }
 
