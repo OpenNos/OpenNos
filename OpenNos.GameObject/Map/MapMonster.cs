@@ -33,13 +33,14 @@ namespace OpenNos.GameObject
             Mapper.CreateMap<MapMonster, MapMonsterDTO>();
             LastEffect = LastMove = DateTime.Now;
             Target = -1;
+            path = new List<MapCell>();
         }
 
         public bool Alive { get; set; }
         public DateTime Death { get; set; }
         public int CurrentHp { get; set; }
         public int CurrentMp { get; set; }
-
+        public List<MapCell> path { get; set; }
         #endregion
 
         #region Properties
@@ -130,11 +131,11 @@ namespace OpenNos.GameObject
                         string movepacket = $"mv 3 {this.MapMonsterId} {this.MapX} {this.MapY} {monster.Speed}";
                         ClientLinkManager.Instance.BroadcastToMap(MapId, movepacket);
 
-                    }   
+                    }
                 }
-                if (monster.IsHostile && Target == -1)
+                if (monster.IsHostile)
                 {
-                    Character character = ClientLinkManager.Instance.Sessions.Where(s=>s.Character!= null).OrderBy(s => (int)(Math.Pow(MapX - s.Character.MapX, 2) + Math.Pow(MapY - s.Character.MapY, 2))).FirstOrDefault(s => s.Character != null && s.Character.MapId == MapId)?.Character;
+                    Character character = ClientLinkManager.Instance.Sessions.Where(s => s.Character != null).OrderBy(s => (int)(Math.Pow(MapX - s.Character.MapX, 2) + Math.Pow(MapY - s.Character.MapY, 2))).FirstOrDefault(s => s.Character != null && s.Character.MapId == MapId)?.Character;
                     if (character != null)
                     {
                         if ((Math.Pow(character.MapX - MapX, 2) + Math.Pow(character.MapY - MapY, 2)) < (Math.Pow(7, 2)))
@@ -157,8 +158,14 @@ namespace OpenNos.GameObject
                 if (MapX == null || MapY == null) { Target = -1; }
                 else
                 {
-                    NextPositionByDistance((short)MapX, (short)MapY, ref mapX, ref mapY);
-
+                    if(path.Count <= 1)
+                    path = ServerManager.GetMap(MapId).AStar(new MapCell() { X = this.MapX, Y = this.MapY, MapId = this.MapId }, new MapCell() { X = (short)MapX, Y = (short)MapY, MapId = this.MapId });
+                    if (path.Count > 1)
+                    {
+                        mapX = path.ElementAt(1).X;
+                        mapY = path.ElementAt(1).Y;
+                        path.RemoveAt(1);
+                    }
                     if (MapId != mapId || (Math.Pow(this.MapY - (short)MapY, 2) + Math.Pow(this.MapY - (short)MapY, 2) > (Math.Pow(maxdistance, 2))))
                     {
                         //TODO add return to origin
@@ -180,27 +187,6 @@ namespace OpenNos.GameObject
 
         }
 
-        private void NextPositionByDistance(short MapX, short MapY, ref short mapX, ref short mapY)
-        {
-            //TODO add pathfinding
-            NpcMonster monster = ServerManager.GetNpc(this.MonsterVNum);
-            if (MapX > this.MapX + 1)
-            {
-                mapX++;
-            }
-            else if (MapX < this.MapX - 1)
-            {
-                mapX--;
-            }
-            if (MapY > this.MapY + 1)
-            {
-                mapY++;
-            }
-            else if (MapY < this.MapY - 1)
-            {
-                mapY--;
-            }
-        }
         #endregion
     }
 }

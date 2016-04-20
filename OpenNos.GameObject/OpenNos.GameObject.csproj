@@ -90,7 +90,9 @@
     <Compile Include="Map\Map.cs" />
     <Compile Include="Group.cs" />
     <Compile Include="Map\MapCell.cs" />
+    <Compile Include="Map\MapCellComparer.cs" />
     <Compile Include="Map\MapMonster.cs" />
+    <Compile Include="Map\SortedCostMapCellList.cs" />
     <Compile Include="NpcMonsterSkill.cs" />
     <Compile Include="Map\MapNpc.cs" />
     <Compile Include="Npc\NRunHandler.cs" />

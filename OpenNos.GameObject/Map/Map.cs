@@ -16,6 +16,7 @@ using AutoMapper;
 using OpenNos.DAL;
 using OpenNos.Data;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -141,7 +142,7 @@ namespace OpenNos.GameObject
                 for (short x = MinX; x <= MaxX; x++)
                 {
                     if(x!= firstX && y!= firstY)
-                    cells.Add(new MapCell() { X = x, Y = y });
+                    cells.Add(new MapCell() { X = x, Y = y,MapId = MapId });
                 }
             }
 
@@ -330,6 +331,74 @@ namespace OpenNos.GameObject
             await MonsterMoveTask;
         }
 
+        #endregion
+        #region A*
+
+        public List<MapCell> AStar(MapCell cell_start, MapCell cell_goal)
+        {
+            List<MapCell> SolutionPathList = new List<MapCell>();
+
+
+            SortedCostMapCellList OPEN = new SortedCostMapCellList();
+            SortedCostMapCellList CLOSED = new SortedCostMapCellList();
+
+        
+            OPEN.push(cell_start);
+            
+            while (OPEN.Count > 0)
+            {
+              
+                MapCell cell_current = OPEN.pop();
+  
+                if (cell_current.isMatch(cell_goal))
+                {
+                    cell_goal.parentcell = cell_current.parentcell;
+                    break;
+                }
+                
+                ArrayList successors = cell_current.GetSuccessors();
+                
+                foreach (MapCell cell_successor in successors)
+                {
+                    int oFound = OPEN.IndexOf(cell_successor);
+                    
+
+                    if (oFound > 0)
+                    {
+                        MapCell existing_cell = OPEN.CellAt(oFound);
+                        if (existing_cell.CompareTo(cell_current) <= 0)
+                            continue;
+                    }
+
+                    
+                    int cFound = CLOSED.IndexOf(cell_successor);
+
+                    if (cFound > 0)
+                    {
+                        MapCell existing_cell = CLOSED.CellAt(cFound);
+                        if (existing_cell.CompareTo(cell_current) <= 0)
+                            continue;
+                    }
+
+                    if (oFound != -1)
+                        OPEN.RemoveAt(oFound);
+                    if (cFound != -1)
+                        CLOSED.RemoveAt(cFound);
+
+                  
+                    OPEN.push(cell_successor);
+
+                }
+                CLOSED.push(cell_current);
+            }
+            MapCell p = cell_goal;
+            while (p != null)
+            {
+                SolutionPathList.Insert(0, p);
+                p = p.parentcell;
+            }
+            return SolutionPathList;
+        }
         #endregion
     }
 }
