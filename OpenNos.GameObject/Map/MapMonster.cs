@@ -55,7 +55,7 @@ namespace OpenNos.GameObject
         #region Methods
         public string GenerateEff(int Effect)
         {
-                return $"eff 3 {MapMonsterId} {Effect}";
+            return $"eff 3 {MapMonsterId} {Effect}";
         }
 
         public static int generateMapMonsterId()
@@ -95,7 +95,7 @@ namespace OpenNos.GameObject
                     Target = -1;
                     CurrentHp = monster.MaxHP;
                     CurrentMp = monster.MaxMP;
-                   
+
                     ClientLinkManager.Instance.BroadcastToMap(MapId, GenerateIn3());
                     ClientLinkManager.Instance.BroadcastToMap(MapId, GenerateEff(7));
                 }
@@ -116,21 +116,22 @@ namespace OpenNos.GameObject
                     byte xpoint = (byte)r.Next(fpoint, point);
                     byte ypoint = (byte)(point - xpoint);
 
-                    short MapX = (short)r.Next(-xpoint + firstX, xpoint + firstX);
-                    short MapY = (short)r.Next(-ypoint + firstY, ypoint + firstY);
-                    if (!ServerManager.GetMap(MapId).IsBlockedZone(firstX, firstY, MapX, MapY))
+                    short MapX = firstX;
+                    short MapY = firstY;
+                    if (ServerManager.GetMap(MapId).GetFreePosition(ref MapX, ref MapY, xpoint, ypoint))
                     {
+
                         this.MapX = MapX;
                         this.MapY = MapY;
                         LastMove = DateTime.Now;
 
                         string movepacket = $"mv 3 {this.MapMonsterId} {this.MapX} {this.MapY} {monster.Speed}";
                         ClientLinkManager.Instance.BroadcastToMap(MapId, movepacket);
-                    }
 
-                    if (monster.IsHostile && Target ==-1)
+                    }
+                    if (monster.IsHostile && Target == -1)
                     {
-                        Character character = ClientLinkManager.Instance.Sessions.OrderBy(s => (int)(Math.Pow(MapX - s.Character.MapX, 2) + Math.Pow(MapY - s.Character.MapY, 2))).First(s => s.Character != null && s.Character.MapId == MapId).Character;
+                        Character character = ClientLinkManager.Instance.Sessions.OrderBy(s => (int)(Math.Pow(MapX - s.Character.MapX, 2) + Math.Pow(MapY - s.Character.MapY, 2))).FirstOrDefault(s => s.Character != null && s.Character.MapId == MapId)?.Character;
                         if (character != null)
                         {
                             if ((Math.Pow(character.MapX - MapX, 2) + Math.Pow(character.MapY - MapY, 2)) < (Math.Pow(11, 2)))
@@ -143,7 +144,7 @@ namespace OpenNos.GameObject
                     }
                 }
             }
-            else if(IsMoving == true)
+            else if (IsMoving == true)
             {
                 short? MapX = ClientLinkManager.Instance.GetProperty<short?>(Target, "MapX");
                 short? MapY = ClientLinkManager.Instance.GetProperty<short?>(Target, "MapY");
@@ -181,19 +182,19 @@ namespace OpenNos.GameObject
         {
             //TODO add pathfinding
             NpcMonster monster = ServerManager.GetNpc(this.MonsterVNum);
-            if (MapX > this.MapX+1)
+            if (MapX > this.MapX + 1)
             {
                 mapX++;
             }
-            else if (MapX < this.MapX-1)
+            else if (MapX < this.MapX - 1)
             {
                 mapX--;
             }
-            if (MapY > this.MapY+1)
+            if (MapY > this.MapY + 1)
             {
                 mapY++;
             }
-            else if (MapY < this.MapY-1)
+            else if (MapY < this.MapY - 1)
             {
                 mapY--;
             }

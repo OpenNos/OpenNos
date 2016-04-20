@@ -126,6 +126,40 @@ namespace OpenNos.GameObject
             }
         }
 
+        internal bool GetFreePosition(ref short firstX, ref short firstY, byte xpoint, byte ypoint)
+        {
+            Random r = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
+            short MinX = (short)(-xpoint + firstX);
+            short MaxX = (short)(xpoint + firstX);
+
+            short MinY = (short)(-ypoint + firstY);
+            short MaxY = (short)(ypoint + firstY);
+
+            List<MapCell> cells = new List<MapCell>();
+            for (short y = MinY; y <= MaxY; y++)
+            {
+                for (short x = MinX; x <= MaxX; x++)
+                {
+                    if(x!= firstX && y!= firstY)
+                    cells.Add(new MapCell() { X = x, Y = y });
+                }
+            }
+
+            foreach (MapCell cell in cells.OrderBy(s => r.Next(int.MaxValue)))
+            {
+                if (!ServerManager.GetMap(MapId).IsBlockedZone(firstX, firstY, cell.X, cell.Y))
+                {
+                    firstX = cell.X;
+                    firstY = cell.Y;
+                    return true;
+                }
+            }
+
+
+            return false;
+
+        }
+
         public EventHandler NotifyClients { get; set; }
 
         public List<MapNpc> Npcs
@@ -173,7 +207,7 @@ namespace OpenNos.GameObject
 
         public bool IsBlockedZone(int x, int y)
         {
-            if (x < 1 || y < 1 || x > char.MaxValue || y > char.MaxValue || y > _grid.GetLength(0) || x > _grid.GetLength(1) || _grid[y - 1, x - 1] != 0)
+            if (_grid[y, x] != 0)
             {
                 return true;
             }
