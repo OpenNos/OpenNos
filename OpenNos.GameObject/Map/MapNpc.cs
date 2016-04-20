@@ -34,14 +34,14 @@ namespace OpenNos.GameObject
             Recipes = new List<Recipe>();
             foreach (RecipeDTO rec in Recipe)
             {
-                Recipes.Add(new GameObject.Recipe(rec.RecipeId) {ItemVNum = rec.ItemVNum,MapNpcId = rec.MapNpcId, RecipeId = rec.RecipeId ,Amount = rec.Amount});
+                Recipes.Add(new GameObject.Recipe(rec.RecipeId) { ItemVNum = rec.ItemVNum, MapNpcId = rec.MapNpcId, RecipeId = rec.RecipeId, Amount = rec.Amount });
             }
 
             IEnumerable<TeleporterDTO> Teleporter = DAOFactory.TeleporterDAO.LoadFromNpc(MapNpcId);
             Teleporters = new List<Teleporter>();
             foreach (TeleporterDTO telep in Teleporter)
             {
-                Teleporters.Add(new GameObject.Teleporter() { MapId = telep.MapId,Index = telep.Index,MapNpcId = telep.MapNpcId,MapX = telep.MapX,MapY = telep.MapY, TeleporterId = telep.TeleporterId});
+                Teleporters.Add(new GameObject.Teleporter() { MapId = telep.MapId, Index = telep.Index, MapNpcId = telep.MapNpcId, MapX = telep.MapX, MapY = telep.MapY, TeleporterId = telep.TeleporterId });
             }
             ShopDTO shop = DAOFactory.ShopDAO.LoadByNpc(MapNpcId);
             if (shop != null)
@@ -56,9 +56,10 @@ namespace OpenNos.GameObject
         public short firstY { get; set; }
         public DateTime LastEffect { get; private set; }
         public DateTime LastMove { get; private set; }
+        public List<Recipe> Recipes { get; set; }
         public Shop Shop { get; set; }
         public List<Teleporter> Teleporters { get; set; }
-        public List<Recipe> Recipes { get; set; }
+
         #endregion
 
         #region Methods
@@ -88,7 +89,6 @@ namespace OpenNos.GameObject
                 ClientLinkManager.Instance.BroadcastToMap(MapId, GenerateEff());
                 LastEffect = DateTime.Now;
             }
-
 
             Random r = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
             time = (DateTime.Now - LastMove).TotalSeconds;

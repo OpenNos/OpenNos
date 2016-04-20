@@ -16,10 +16,7 @@ using AutoMapper;
 using OpenNos.Data;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace OpenNos.GameObject
 {
@@ -35,15 +32,14 @@ namespace OpenNos.GameObject
             Target = -1;
         }
 
-        public bool Alive { get; set; }
-        public DateTime Death { get; set; }
-        public int CurrentHp { get; set; }
-        public int CurrentMp { get; set; }
-
         #endregion
 
         #region Properties
 
+        public bool Alive { get; set; }
+        public int CurrentHp { get; set; }
+        public int CurrentMp { get; set; }
+        public DateTime Death { get; set; }
         public short firstX { get; set; }
         public short firstY { get; set; }
         public DateTime LastEffect { get; private set; }
@@ -53,10 +49,6 @@ namespace OpenNos.GameObject
         #endregion
 
         #region Methods
-        public string GenerateEff(int Effect)
-        {
-            return $"eff 3 {MapMonsterId} {Effect}";
-        }
 
         public static int generateMapMonsterId()
         {
@@ -72,6 +64,11 @@ namespace OpenNos.GameObject
                 if (!test.Contains(i))
                     return i;
             return -1;
+        }
+
+        public string GenerateEff(int Effect)
+        {
+            return $"eff 3 {MapMonsterId} {Effect}";
         }
 
         public string GenerateIn3()
@@ -122,19 +119,17 @@ namespace OpenNos.GameObject
                     short MapY = firstY;
                     if (ServerManager.GetMap(MapId).GetFreePosition(ref MapX, ref MapY, xpoint, ypoint))
                     {
-
                         this.MapX = MapX;
                         this.MapY = MapY;
                         LastMove = DateTime.Now;
 
                         string movepacket = $"mv 3 {this.MapMonsterId} {this.MapX} {this.MapY} {monster.Speed}";
                         ClientLinkManager.Instance.BroadcastToMap(MapId, movepacket);
-
-                    }   
+                    }
                 }
                 if (monster.IsHostile && Target == -1)
                 {
-                    Character character = ClientLinkManager.Instance.Sessions.Where(s=>s.Character!= null).OrderBy(s => (int)(Math.Pow(MapX - s.Character.MapX, 2) + Math.Pow(MapY - s.Character.MapY, 2))).FirstOrDefault(s => s.Character != null && s.Character.MapId == MapId)?.Character;
+                    Character character = ClientLinkManager.Instance.Sessions.Where(s => s.Character != null).OrderBy(s => (int)(Math.Pow(MapX - s.Character.MapX, 2) + Math.Pow(MapY - s.Character.MapY, 2))).FirstOrDefault(s => s.Character != null && s.Character.MapId == MapId)?.Character;
                     if (character != null)
                     {
                         if ((Math.Pow(character.MapX - MapX, 2) + Math.Pow(character.MapY - MapY, 2)) < (Math.Pow(7, 2)))
@@ -166,7 +161,6 @@ namespace OpenNos.GameObject
                     }
                     else
                     {
-
                         if ((DateTime.Now - LastMove).TotalSeconds > 1.0 / monster.Speed)
                         {
                             this.MapX = mapX;
@@ -177,7 +171,6 @@ namespace OpenNos.GameObject
                     }
                 }
             }
-
         }
 
         private void NextPositionByDistance(short MapX, short MapY, ref short mapX, ref short mapY)
@@ -201,6 +194,7 @@ namespace OpenNos.GameObject
                 mapY--;
             }
         }
+
         #endregion
     }
 }

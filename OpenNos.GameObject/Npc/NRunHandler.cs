@@ -68,11 +68,11 @@ namespace OpenNos.GameObject
                     Session.Client.SendPacket($"wopen 27 0");
                     string recipelist = "m_list 2";
 
-                    if (npc != null )
+                    if (npc != null)
                     {
                         List<Recipe> tp = npc.Recipes;
 
-                        foreach (Recipe rec in tp.Where(s=>s.Amount > 0))
+                        foreach (Recipe rec in tp.Where(s => s.Amount > 0))
                         {
                             recipelist += String.Format(" {0}", rec.ItemVNum);
                         }
@@ -80,6 +80,7 @@ namespace OpenNos.GameObject
                         Session.Client.SendPacket(recipelist);
                     }
                     break;
+
                 case 16:
                     if (npc != null)
                     {
@@ -99,9 +100,9 @@ namespace OpenNos.GameObject
                             else
                                 Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_MONEY"), 0));
                         }
-
                     }
                     break;
+
                 case 26:
                     if (npc != null)
                     {
@@ -126,6 +127,7 @@ namespace OpenNos.GameObject
                     }
 
                     break;
+
                 default:
                     Logger.Log.Warn(String.Format(Language.Instance.GetMessageFromKey("NO_NRUN_HANDLER"), runner));
                     break;

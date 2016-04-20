@@ -21,7 +21,6 @@ using OpenNos.ServiceRef.Internal;
 using System;
 using System.Diagnostics;
 using System.Reflection;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace OpenNos.Login
@@ -54,8 +53,7 @@ namespace OpenNos.Login
 
                     //initialize DB
                     DataAccessHelper.Initialize();
-                 
-                   
+
                     Logger.Log.Info(Language.Instance.GetMessageFromKey("CONFIG_LOADED"));
                     try
                     {

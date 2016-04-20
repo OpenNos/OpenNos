@@ -24,7 +24,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -493,7 +492,7 @@ namespace OpenNos.Handler
                 }
                 else if (typePacket == 0)
                 {
-                    if (Session.CurrentMap.ShopUserList.Where(s=>s.Value.OwnerId == Session.Character.CharacterId).Count() !=0)
+                    if (Session.CurrentMap.ShopUserList.Where(s => s.Value.OwnerId == Session.Character.CharacterId).Count() != 0)
                     {
                         return;
                     }
@@ -626,7 +625,7 @@ namespace OpenNos.Handler
                 ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateDir(), ReceiverType.AllOnMap);
             }
         }
-   
+
         [Packet("eqinfo")]
         public void EqInfo(string packet)
         {
@@ -646,11 +645,11 @@ namespace OpenNos.Handler
                     if (Session.Character.ExchangeInfo != null)
                     {
                         byte inven; ;
-                        
-                        if(byte.TryParse(packetsplit[3], out inven) && short.TryParse(packetsplit[4], out slot))
+
+                        if (byte.TryParse(packetsplit[3], out inven) && short.TryParse(packetsplit[4], out slot))
                         {
-                        InventoryList inv = ClientLinkManager.Instance.GetProperty<InventoryList>(Session.Character.ExchangeInfo.CharId, "InventoryList");
-                        inventory = inv.LoadBySlotAndType(slot, inven);
+                            InventoryList inv = ClientLinkManager.Instance.GetProperty<InventoryList>(Session.Character.ExchangeInfo.CharId, "InventoryList");
+                            inventory = inv.LoadBySlotAndType(slot, inven);
                         }
                     }
                     break;
