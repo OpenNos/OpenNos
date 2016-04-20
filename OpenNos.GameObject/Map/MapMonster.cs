@@ -158,13 +158,13 @@ namespace OpenNos.GameObject
                 if (MapX == null || MapY == null) { Target = -1; }
                 else
                 {
-                    if(path.Count <= 2)
+                    if(path.Count <= 1)
                     path = ServerManager.GetMap(MapId).AStar(new MapCell() { X = this.MapX, Y = this.MapY, MapId = this.MapId }, new MapCell() { X = (short)MapX, Y = (short)MapY, MapId = this.MapId });
-                    if (path.Count > 2)
+                    if (path.Count > 1)
                     {
-                        mapX = path.ElementAt(1).X;
-                        mapY = path.ElementAt(1).Y;
-                        path.RemoveAt(1);
+                        mapX = path.ElementAt(0).X;
+                        mapY = path.ElementAt(0).Y;
+                        path.RemoveAt(0);
                     }
                     if (MapId != mapId || (Math.Pow(this.MapY - (short)MapY, 2) + Math.Pow(this.MapY - (short)MapY, 2) > (Math.Pow(maxdistance, 2))))
                     {

@@ -141,8 +141,8 @@ namespace OpenNos.GameObject
             {
                 for (short x = MinX; x <= MaxX; x++)
                 {
-                    if(x!= firstX && y!= firstY)
-                    cells.Add(new MapCell() { X = x, Y = y,MapId = MapId });
+                    if (x != firstX && y != firstY)
+                        cells.Add(new MapCell() { X = x, Y = y, MapId = MapId });
                 }
             }
 
@@ -342,26 +342,26 @@ namespace OpenNos.GameObject
             SortedCostMapCellList OPEN = new SortedCostMapCellList();
             SortedCostMapCellList CLOSED = new SortedCostMapCellList();
 
-        
+
             OPEN.push(cell_start);
-            
+
             while (OPEN.Count > 0)
             {
-              
+
                 MapCell cell_current = OPEN.pop();
-  
+
                 if (cell_current.isMatch(cell_goal))
                 {
                     cell_goal.parentcell = cell_current.parentcell;
                     break;
                 }
-                
+
                 ArrayList successors = cell_current.GetSuccessors();
-                
+
                 foreach (MapCell cell_successor in successors)
                 {
                     int oFound = OPEN.IndexOf(cell_successor);
-                    
+
 
                     if (oFound > 0)
                     {
@@ -370,7 +370,7 @@ namespace OpenNos.GameObject
                             continue;
                     }
 
-                    
+
                     int cFound = CLOSED.IndexOf(cell_successor);
 
                     if (cFound > 0)
@@ -385,7 +385,7 @@ namespace OpenNos.GameObject
                     if (cFound != -1)
                         CLOSED.RemoveAt(cFound);
 
-                  
+
                     OPEN.push(cell_successor);
 
                 }
@@ -396,6 +396,11 @@ namespace OpenNos.GameObject
             {
                 SolutionPathList.Insert(0, p);
                 p = p.parentcell;
+            }
+            if (SolutionPathList.Count > 0)
+            {
+                SolutionPathList.RemoveAt(0);
+                SolutionPathList.RemoveAt(SolutionPathList.Count - 1);
             }
             return SolutionPathList;
         }
