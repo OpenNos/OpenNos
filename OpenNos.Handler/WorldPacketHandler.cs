@@ -2468,8 +2468,10 @@ namespace OpenNos.Handler
             }
             Session.Character.LoadSkills();
             Session.Client.SendPacket(Session.Character.GenerateTit());
-
-            ClientLinkManager.Instance.ChangeMap(Session.Character.CharacterId);
+            if (Session.Character.Hp <= 0)
+                ClientLinkManager.Instance.ReviveFirstPosition(Session.Character.CharacterId);
+            else
+                ClientLinkManager.Instance.ChangeMap(Session.Character.CharacterId);
 
             Session.Client.SendPacket("rank_cool 0 0 18000");
 
@@ -2504,6 +2506,7 @@ namespace OpenNos.Handler
             Session.Client.SendPacket("pinit 0");
             Session.Client.SendPacket("zzim");
             Session.Client.SendPacket($"twk 1 {Session.Character.CharacterId} {Session.Account.Name} {Session.Character.Name} shtmxpdlfeoqkr");
+
             DeleteTimeout();
         }
 
@@ -3041,18 +3044,9 @@ namespace OpenNos.Handler
                         int seed = 1012;
                         if (Session.Character.InventoryList.CountItem(seed) < 10)
                         {
-                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_POWER_SEED"), 0));
-                            ClientLinkManager.Instance.MapOut(Session.Character.CharacterId);
-                            Session.Character.MapId = 1;
-                            Session.Character.MapX = 85;
-                            Session.Character.MapY = 114;
-                            ClientLinkManager.Instance.ChangeMap(Session.Character.CharacterId);
-                            Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NOT_ENOUGH_SEED_SAY"), 0));
-                            Session.Character.Hp = 1;
-                            Session.Character.Mp = 1;
-                            Session.Client.SendPacket(Session.Character.GenerateTp());
-                            Session.Client.SendPacket(Session.Character.GenerateRevive());
-                            Session.Client.SendPacket(Session.Character.GenerateStat());
+                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("YOU_DONT_HAVE_ENOUGH_SEED"), 0));
+                            ClientLinkManager.Instance.ReviveFirstPosition(Session.Character.CharacterId);
+                            Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("I_DONT_HAVE_ENOUGH_SEED"), 0));
                         }
                         else
                         {
@@ -3067,16 +3061,7 @@ namespace OpenNos.Handler
                         }
                         break;
                     case 1:
-                        ClientLinkManager.Instance.MapOut(Session.Character.CharacterId);
-                        Session.Character.MapId = 1;
-                        Session.Character.MapX = 85;
-                        Session.Character.MapY = 114;
-                        ClientLinkManager.Instance.ChangeMap(Session.Character.CharacterId);
-                        Session.Character.Hp = 1;
-                        Session.Character.Mp = 1;
-                        Session.Client.SendPacket(Session.Character.GenerateTp());
-                        Session.Client.SendPacket(Session.Character.GenerateRevive());
-                        Session.Client.SendPacket(Session.Character.GenerateStat());
+                        ClientLinkManager.Instance.ReviveFirstPosition(Session.Character.CharacterId);
                         break;
                 }
             }

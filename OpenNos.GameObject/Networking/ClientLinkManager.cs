@@ -513,6 +513,24 @@ namespace OpenNos.GameObject
                 await Task.Delay(60000 * 4);
             }
         }
+
+        public void ReviveFirstPosition(long characterId)
+        {
+            ClientSession Session = Sessions.FirstOrDefault(s => s.Character != null && s.Character.CharacterId == characterId && s.Character.Hp <= 0);
+            if (Session != null)
+            {
+                MapOut(Session.Character.CharacterId);
+                Session.Character.MapId = 1;
+                Session.Character.MapX = 80;
+                Session.Character.MapY = 116;
+                ChangeMap(Session.Character.CharacterId);
+                Session.Character.Hp = 1;
+                Session.Character.Mp = 1;
+                Session.Client.SendPacket(Session.Character.GenerateTp());
+                Session.Client.SendPacket(Session.Character.GenerateRevive());
+                Session.Client.SendPacket(Session.Character.GenerateStat());
+            }
+        }
         #endregion
     }
 }
