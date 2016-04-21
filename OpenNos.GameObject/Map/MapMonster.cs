@@ -222,7 +222,13 @@ namespace OpenNos.GameObject
 
                                 Session.Client.SendPacket(Session.Character.GenerateFd());
                                 Session.Client.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("LOSE_DIGNITY"), (short)(Session.Character.Level < 50 ? Session.Character.Level : 50)), 11));
-                                //Revive if no answer 20sec
+
+                                Task.Factory.StartNew(async () =>
+                                {
+                                    await Task.Delay(30000);
+                                    ClientLinkManager.Instance.ReviveFirstPosition(Session.Character.CharacterId);
+                                });
+
                             }
                             Target = -1;
                         }
