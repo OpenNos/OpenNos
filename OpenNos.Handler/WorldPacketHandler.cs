@@ -1116,7 +1116,7 @@ namespace OpenNos.Handler
                         item[i] = inv.InventoryItem;
                     }
                 }
-                Session.Client.SendPacket($"clist {character.Slot} {character.Name} 0 {character.Gender} {character.HairStyle} {character.HairColor} 0 {character.Class} {character.Level} {(item[(byte)EquipmentType.Hat] != null ? item[(byte)EquipmentType.Hat].ItemVNum : 0)}.{(item[(byte)EquipmentType.Armor] != null ? item[(byte)EquipmentType.Armor].ItemVNum : 0)}.{(item[(byte)EquipmentType.MainWeapon] != null ? item[(byte)EquipmentType.MainWeapon].ItemVNum : 0)}.{(item[(byte)EquipmentType.SecondaryWeapon] != null ? item[(byte)EquipmentType.SecondaryWeapon].ItemVNum : 0)}.{(item[(byte)EquipmentType.Mask] != null ? item[(byte)EquipmentType.Mask].ItemVNum : 0)}.{(item[(byte)EquipmentType.Fairy] != null ? item[(byte)EquipmentType.Fairy].ItemVNum : 0)}.{(item[(byte)EquipmentType.CostumeSuit] != null ? item[(byte)EquipmentType.CostumeSuit].ItemVNum : 0)}.{(item[(byte)EquipmentType.CostumeHat] != null ? item[(byte)EquipmentType.CostumeHat].ItemVNum : 0)} 1 0 0 -1.-1 {(item[(byte)EquipmentType.Hat] != null ? (ServerManager.GetItem(item[(byte)EquipmentType.Hat].ItemVNum).IsColored ? item[(byte)EquipmentType.Hat].Design : character.HairColor) : character.HairColor)} 0");
+                Session.Client.SendPacket($"clist {character.Slot} {character.Name} 0 {character.Gender} {character.HairStyle} {character.HairColor} 0 {character.Class} {character.Level} {character.HeroLvl} {(item[(byte)EquipmentType.Hat] != null ? item[(byte)EquipmentType.Hat].ItemVNum : 0)}.{(item[(byte)EquipmentType.Armor] != null ? item[(byte)EquipmentType.Armor].ItemVNum : 0)}.{(item[(byte)EquipmentType.MainWeapon] != null ? item[(byte)EquipmentType.MainWeapon].ItemVNum : 0)}.{(item[(byte)EquipmentType.SecondaryWeapon] != null ? item[(byte)EquipmentType.SecondaryWeapon].ItemVNum : 0)}.{(item[(byte)EquipmentType.Mask] != null ? item[(byte)EquipmentType.Mask].ItemVNum : 0)}.{(item[(byte)EquipmentType.Fairy] != null ? item[(byte)EquipmentType.Fairy].ItemVNum : 0)}.{(item[(byte)EquipmentType.CostumeSuit] != null ? item[(byte)EquipmentType.CostumeSuit].ItemVNum : 0)}.{(item[(byte)EquipmentType.CostumeHat] != null ? item[(byte)EquipmentType.CostumeHat].ItemVNum : 0)} 1 0 0 -1.-1 {(item[(byte)EquipmentType.Hat] != null ? (ServerManager.GetItem(item[(byte)EquipmentType.Hat].ItemVNum).IsColored ? item[(byte)EquipmentType.Hat].Design : character.HairColor) : character.HairColor)} 0");
             }
             Session.Client.SendPacket("clist_end");
         }
@@ -2466,6 +2466,7 @@ namespace OpenNos.Handler
             else
                 ClientLinkManager.Instance.ChangeMap(Session.Character.CharacterId);
 
+            Session.Client.SendPacket("rage 0 250000");
             Session.Client.SendPacket("rank_cool 0 0 18000");
 
             Session.Client.SendPacket("scr 0 0 0 0 0 0");

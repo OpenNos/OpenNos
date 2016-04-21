@@ -67,6 +67,9 @@ namespace OpenNos.Data
         public int TalentSurrender { get; set; }
         public int MasterPoints { get; set; }
         public int MasterTicket { get; set; }
+        public byte HeroLvl { get; set; }
+        public long HeroXp { get; set; }
+        public long RagePoint { get; set; }
         public ClassType Classnum { get { return (ClassType)Class; } set { Class = (byte)value; } }
         public CharacterState StateEnum { get { return (CharacterState)State; } set { State = (byte)value; } }
 
