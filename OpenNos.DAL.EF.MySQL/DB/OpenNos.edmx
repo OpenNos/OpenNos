@@ -370,6 +370,9 @@
     <Property Name="JobXP" Type="int" Nullable="false" />
     <Property Name="IsHostile" Type="bool" Nullable="false" />
     <Property Name="BasicSkill" Type="smallint" Nullable="false" />
+    <Property Name="BasicRange" Type="utinyint" Nullable="false" />
+    <Property Name="BasicArea" Type="utinyint" Nullable="false" />
+    <Property Name="BasicCooldown" Type="smallint" Nullable="false" />
   </EntityType>
   <EntityType Name="inventoryitem">
     <Key>
@@ -1514,6 +1517,8 @@
           <Property Name="IsHostile" Type="Boolean" Nullable="false" />
           <Property Name="BasicSkill" Type="Int16" Nullable="false" />
           <Property Name="BasicRange" Type="Byte" Nullable="false" />
+          <Property Name="BasicArea" Type="Byte" Nullable="false" />
+          <Property Name="BasicCooldown" Type="Int16" Nullable="false" />
         </EntityType>
         <EntityType Name="InventoryItem">
           <Key>
@@ -2360,6 +2365,9 @@
           <ScalarProperty Name="JobXP" ColumnName="JobXP" />
           <ScalarProperty Name="IsHostile" ColumnName="IsHostile" />
           <ScalarProperty Name="BasicSkill" ColumnName="BasicSkill" />
+          <ScalarProperty Name="BasicRange" ColumnName="BasicRange" />
+          <ScalarProperty Name="BasicArea" ColumnName="BasicArea" />
+          <ScalarProperty Name="BasicCooldown" ColumnName="BasicCooldown" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

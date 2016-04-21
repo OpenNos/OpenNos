@@ -135,7 +135,7 @@ namespace OpenNos.GameObject
                 }
                 if (monster.IsHostile)
                 {
-                    Character character = ClientLinkManager.Instance.Sessions.Where(s => s.Character != null).OrderBy(s => (int)(Math.Pow(MapX - s.Character.MapX, 2) + Math.Pow(MapY - s.Character.MapY, 2))).FirstOrDefault(s => s.Character != null && s.Character.MapId == MapId)?.Character;
+                    Character character = ClientLinkManager.Instance.Sessions.Where(s => s.Character != null && s.Character.Hp > 0).OrderBy(s => (int)(Math.Pow(MapX - s.Character.MapX, 2) + Math.Pow(MapY - s.Character.MapY, 2))).FirstOrDefault(s => s.Character != null && s.Character.MapId == MapId)?.Character;
                     if (character != null)
                     {
                         if ((Math.Pow(character.MapX - MapX, 2) + Math.Pow(character.MapY - MapY, 2)) < (Math.Pow(7, 2)))
@@ -152,6 +152,7 @@ namespace OpenNos.GameObject
                 short? MapX = ClientLinkManager.Instance.GetProperty<short?>(Target, "MapX");
                 short? MapY = ClientLinkManager.Instance.GetProperty<short?>(Target, "MapY");
                 short? mapId = ClientLinkManager.Instance.GetProperty<short?>(Target, "MapId");
+
                 if (MapX == null || MapY == null) { Target = -1; return; }
                 short mapX = this.MapX;
                 short mapY = this.MapY;
@@ -182,13 +183,34 @@ namespace OpenNos.GameObject
                 }
                 else
                 {
-                   
-                    if((DateTime.Now - LastEffect).TotalMilliseconds >= 1000 && (Math.Pow(this.MapX - (short)MapX, 2) + Math.Pow(this.MapY - (short)MapY, 2) <= (Math.Pow(monster.BasicRange + 1, 2)) + 1))
+
+                    if ((DateTime.Now - LastEffect).TotalMilliseconds >= monster.BasicCooldown * 100 && (Math.Pow(this.MapX - (short)MapX, 2) + Math.Pow(this.MapY - (short)MapY, 2) <= (Math.Pow(monster.BasicRange + 1, 2))))
                     {
                         LastEffect = DateTime.Now;
                         ClientLinkManager.Instance.BroadcastToMap(MapId, $"ct 3 {MapMonsterId} 1 {Target} -1 -1 0");
+                        int? Hp = ClientLinkManager.Instance.GetProperty<int?>(Target, "Hp");
+                        
+                        int damage = 100;
+                        int HP = ((int)Hp - damage);
+                        ClientLinkManager.Instance.SetProperty(Target, "Hp", (int)((HP) <= 0 ? 0 : HP));
+                      
+                        ClientLinkManager.Instance.SetProperty(Target, "LastDefence", DateTime.Now);
+                        ClientLinkManager.Instance.Broadcast(null, ClientLinkManager.Instance.GetUserMethod<string>(Target, "GenerateStat"), ReceiverType.OnlySomeone, "", Target);
+                        ClientLinkManager.Instance.BroadcastToMap(MapId, $"su 3 {MapMonsterId} 1 {Target} 0 {monster.BasicCooldown} 11 {monster.BasicSkill} 0 0 {((HP) > 0?1:0)} {(int)((double)(HP) / ClientLinkManager.Instance.GetUserMethod<double>(Target, "HPLoad"))} {damage} 0 0");
+                        if (HP <= 0)
+                            Target = -1;
+                        /* area mode - tortle
+                        foreach (MapMonster mon in ServerManager.GetMap(MapId).GetListPeopleInRange(MapX, MapY, monster.BasicArea))
+                           {
+                               damage = 100;
+                               int? Hp2 = ClientLinkManager.Instance.GetProperty<int?>(Target, "Hp");
+                               ClientLinkManager.Instance.SetProperty(Target, "Hp", (int)(Hp2 - damage));
+                               ClientLinkManager.Instance.SetProperty(Target, "LastDefence", DateTime.Now);
+                               ClientLinkManager.Instance.Broadcast(null, ClientLinkManager.Instance.GetUserMethod<string>(Target, "GenerateStat"), ReceiverType.OnlySomeone, "", Target);
+                               ClientLinkManager.Instance.BroadcastToMap(MapId, $"su 3 {MapMonsterId} 1 {Target} 0 {monster.BasicCooldown} 11 {monster.BasicSkill} 0 0 1 {(int)((double)Hp / ClientLinkManager.Instance.GetUserMethod<double>(Target, "HPLoad"))} {damage} 0 0");
+                           }
+                        */
 
-                        ClientLinkManager.Instance.BroadcastToMap(MapId, $"su 3 {MapMonsterId} 1 {Target} 0 10 11 {monster.BasicSkill} 0 0 1 100 0 1 0");
                     }
                 }
                 if (IsMoving == true)

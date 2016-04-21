@@ -49,6 +49,8 @@ namespace OpenNos.Data
         public int XP { get; set; }
         public short BasicSkill { get; set; }
         public byte BasicRange { get; set; }
+        public short BasicCooldown { get; set; }
+        public byte BasicArea { get; set; }
         #endregion
     }
 }

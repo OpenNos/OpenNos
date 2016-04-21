@@ -56,11 +56,13 @@ namespace OpenNos.GameObject
             SpCooldown = 30;
             SaveX = 0;
             SaveY = 0;
+            LastDefence = DateTime.Now;
         }
 
         #endregion
 
         #region Properties
+        public DateTime LastDefence { get; set; }
         public int Authority { get { return _authority; } set { _authority = value; } }
         public int BackPack { get { return _backpack; } set { _backpack = value; } }
         public int Direction { get { return _direction; } set { _direction = value; } }
@@ -450,7 +452,7 @@ namespace OpenNos.GameObject
         public string GenerateSki()
         {
             List<CharacterSkill> skill = UseSp ? SkillsSp : Skills;
-            string skibase = $"{200+20*Class} {201 + 20 * Class}";
+            string skibase = $"{200 + 20 * Class} {201 + 20 * Class}";
 
             string skills = "";
             foreach (CharacterSkill ski in skill)
@@ -605,7 +607,7 @@ namespace OpenNos.GameObject
                 if (skillsSp.Count >= i + 1)
                     skill += $"{skillsSp[i].SkillVNum}.";
             }
-            skill= skill.TrimEnd('.');
+            skill = skill.TrimEnd('.');
             return $"slinfo {type} {inventoryItem.ItemVNum} {iteminfo.Morph} {inventoryItem.SpLevel} {iteminfo.LevelJobMinimum} {iteminfo.ReputationMinimum + 1} 0 0 0 0 0 0 0 0 {iteminfo.FireResistance} {iteminfo.WaterResistance} {iteminfo.LightResistance} {iteminfo.DarkResistance} {inventoryItem.SpXp} {ServersData.SpXPData[inventoryItem.SpLevel - 1]} {skill} {inventoryItem.InventoryItemId} {freepoint} {slHit} {slDefence} {slElement} {slHp} {inventoryItem.Upgrade} - 1 12 0 0 0 0 {inventoryItem.SpStoneUpgrade} {inventoryItem.SpDamage} {inventoryItem.SpDefence} {inventoryItem.SpElement} {inventoryItem.SpHP} {inventoryItem.SpFire} {inventoryItem.SpWater} {inventoryItem.SpLight} {inventoryItem.SpDark} 0";
         }
 
@@ -876,7 +878,7 @@ namespace OpenNos.GameObject
 
         public string GenerateStatInfo()
         {
-            return $"st 1 {CharacterId} {Level} {(int)((float)Hp / (float)HPLoad() * 100)} {(int)((float)Mp / (float)MPLoad() * 100)} {Hp} {Mp}";
+            return $"st 1 {CharacterId} {Level} {(int)(Hp / (float)HPLoad() * 100)} {(int)(Mp / (float)MPLoad() * 100)} {Hp} {Mp}";
         }
 
         public string GenerateTit()
@@ -998,14 +1000,20 @@ namespace OpenNos.GameObject
         {
             if (IsSitting)
                 return ServersData.HpHealth[Class];
-            return ServersData.HpHealthStand[Class];
+            else if ((DateTime.Now - LastDefence).TotalSeconds > 2)
+                return ServersData.HpHealthStand[Class];
+            else
+                return 0;
         }
 
         public int HealthMPLoad()
         {
             if (IsSitting)
                 return ServersData.MpHealth[Class];
-            return ServersData.MpHealthStand[Class];
+            else if ((DateTime.Now - LastDefence).TotalSeconds > 2)
+                return ServersData.MpHealthStand[Class];
+            else
+                return 0;
         }
 
         public double HPLoad()
@@ -1045,7 +1053,7 @@ namespace OpenNos.GameObject
         {
             Skills = new List<CharacterSkill>();
             IEnumerable<CharacterSkillDTO> characterskillDTO = DAOFactory.CharacterSkillDAO.LoadByCharacterId(CharacterId);
-            foreach (CharacterSkillDTO characterskill in characterskillDTO.OrderBy(s=>s.SkillVNum))
+            foreach (CharacterSkillDTO characterskill in characterskillDTO.OrderBy(s => s.SkillVNum))
             {
                 Skills.Add(Mapper.DynamicMap<CharacterSkill>(characterskill));
             }
@@ -1196,9 +1204,9 @@ namespace OpenNos.GameObject
 
 
             // ... then save the new
-            for (int i= InventoryList.Inventory.Count()-1;i>=0;i--)
+            for (int i = InventoryList.Inventory.Count() - 1; i >= 0; i--)
                 InventoryList.Inventory.ElementAt(i).Save();
-            for (int i = EquipmentList.Inventory.Count()-1;i>=0;i--)
+            for (int i = EquipmentList.Inventory.Count() - 1; i >= 0; i--)
                 EquipmentList.Inventory.ElementAt(i).Save();
             for (int i = Skills.Count() - 1; i >= 0; i--)
                 Skills.ElementAt(i).Save();

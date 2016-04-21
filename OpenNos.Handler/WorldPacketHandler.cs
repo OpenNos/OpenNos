@@ -3391,7 +3391,7 @@ namespace OpenNos.Handler
                     t = Session.Character.XPLoad();
                     Session.Character.Hp = (int)Session.Character.HPLoad();
                     Session.Character.Mp = (int)Session.Character.MPLoad();
-                    Session.Client.SendPacket(Session.Character.GenerateStatInfo());
+                    Session.Client.SendPacket(Session.Character.GenerateStat());
                     Session.Client.SendPacket($"levelup {Session.Character.CharacterId}");
                     ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(6), ReceiverType.AllOnMap);
                     ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(198), ReceiverType.AllOnMap);
@@ -3404,7 +3404,7 @@ namespace OpenNos.Handler
                     t = Session.Character.JobXPLoad();
                     Session.Character.Hp = (int)Session.Character.HPLoad();
                     Session.Character.Mp = (int)Session.Character.MPLoad();
-                    Session.Client.SendPacket(Session.Character.GenerateStatInfo());
+                    Session.Client.SendPacket(Session.Character.GenerateStat());
                     Session.Client.SendPacket($"levelup {Session.Character.CharacterId}");
                     ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(6), ReceiverType.AllOnMap);
                     ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(198), ReceiverType.AllOnMap);
@@ -3457,6 +3457,12 @@ namespace OpenNos.Handler
             while (true)
             {
                 bool change = false;
+                if (Session.Character.Hp == 0)
+                {
+                    Session.Character.Mp = 0;
+                    Session.Client.SendPacket(Session.Character.GenerateStat());
+                    continue;
+                }
                 if (Session.Character.IsSitting)
                     await Task.Delay(1500);
                 else

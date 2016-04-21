@@ -295,6 +295,11 @@ namespace OpenNos.GameObject
             }
         }
 
+        internal IEnumerable<MapMonster> GetListPeopleInRange(short? mapX, short? mapY, byte basicArea)
+        {
+            throw new NotImplementedException();
+        }
+
         public async void MonsterLifeManager()
         {
             var rnd = new Random();

@@ -356,7 +356,9 @@ namespace OpenNos.Import.Console
                     else if (currentLine.Length > 8 && currentLine[1] == "ZSKILL")
                     {
                         npc.AttackClass = Convert.ToByte(currentLine[2]);
-                        npc.BasicRange = Convert.ToByte(currentLine[3]);                   
+                        npc.BasicRange = Convert.ToByte(currentLine[3]);
+                        npc.BasicArea = Convert.ToByte(currentLine[5]);
+                        npc.BasicCooldown = Convert.ToInt16(currentLine[6]);
                     }
                     else if (currentLine.Length > 4 && currentLine[1] == "WINFO")
                     {
