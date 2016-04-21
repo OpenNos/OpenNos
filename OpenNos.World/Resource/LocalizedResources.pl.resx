@@ -406,16 +406,16 @@
     <value>Mozesz zmienic klase tylko raz.</value>
   </data>
   <data name="NOT_ENOUGH_CP" xml:space="preserve">
-    <value>Nie masz wystarczajacej ilosci punktow CP</value>
+    <value>Niewystarczajaca ilosci punktow CP</value>
   </data>
   <data name="NOT_ENOUGH_MONEY" xml:space="preserve">
-    <value>Za malo zlota.</value>
+    <value>Niewystarczajaca ilosc zlota.</value>
   </data>
   <data name="NOT_ENOUGH_PLACE" xml:space="preserve">
     <value>Niewystarczajaca ilosc miejsc.</value>
   </data>
   <data name="NOT_ENOUGH_REPUT" xml:space="preserve">
-    <value>Nie wystarczajaca ilosc reputacji</value>
+    <value>Niewystarczajaca ilosc reputacji</value>
   </data>
   <data name="NOT_HUNGRY_FEMALE" xml:space="preserve">
     <value>Nie jestem glodna</value>
@@ -647,5 +647,14 @@
   </data>
   <data name="CHARACTER_LOGGED_OUT" xml:space="preserve">
     <value>{0} has logged out.</value>
+  </data>
+  <data name="NOT_ENOUGH_POWER_SEED" xml:space="preserve">
+    <value>Niewystarczajaca ilosc ziaren mocy </value>
+  </data>
+  <data name="NOT_ENOUGH_SEED_SAY" xml:space="preserve">
+    <value>Nie mam wystarczajacej ilosci ziaren mocy</value>
+  </data>
+  <data name="SEED_USED" xml:space="preserve">
+    <value>Uzyles ziaren mocy</value>
   </data>
 </root>
