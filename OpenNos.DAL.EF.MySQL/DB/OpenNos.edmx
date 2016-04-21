@@ -203,7 +203,7 @@
     <Property Name="Backpack" Type="int" Nullable="false" />
     <Property Name="Level" Type="utinyint" Nullable="false" />
     <Property Name="LevelXp" Type="bigint" Nullable="false" />
-    <Property Name="HeroLvl" Type="utinyint" Nullable="false" />
+    <Property Name="HeroLevel" Type="utinyint" Nullable="false" />
     <Property Name="HeroXp" Type="bigint" Nullable="false" />
     <Property Name="RagePoint" Type="bigint" Nullable="false" />
     <Property Name="JobLevel" Type="utinyint" Nullable="false" />
@@ -1091,7 +1091,7 @@
           <Property Name="Backpack" Type="Int32" Nullable="false" />
           <Property Name="Level" Type="Byte" Nullable="false" />
           <Property Name="LevelXp" Type="Int64" Nullable="false" />
-          <Property Name="HeroLvl" Type="Byte" Nullable="false" />
+          <Property Name="HeroLevel" Type="Byte" Nullable="false" />
           <Property Name="HeroXp" Type="Int64" Nullable="false" />
           <Property Name="RagePoint" Type="Int64" Nullable="false" />
           <Property Name="JobLevel" Type="Byte" Nullable="false" />
@@ -2199,7 +2199,7 @@
           <ScalarProperty Name="Backpack" ColumnName="Backpack" />
           <ScalarProperty Name="Level" ColumnName="Level" />
           <ScalarProperty Name="LevelXp" ColumnName="LevelXp" />
-          <ScalarProperty Name="HeroLvl" ColumnName="HeroLvl" />
+          <ScalarProperty Name="HeroLevel" ColumnName="HeroLevel" />
           <ScalarProperty Name="HeroXp" ColumnName="HeroXp" />
           <ScalarProperty Name="RagePoint" ColumnName="RagePoint" />
           <ScalarProperty Name="JobLevel" ColumnName="JobLevel" />
