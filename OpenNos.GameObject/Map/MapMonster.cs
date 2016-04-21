@@ -13,6 +13,7 @@
  */
 
 using AutoMapper;
+using OpenNos.Core;
 using OpenNos.Data;
 using System;
 using System.Collections.Generic;
@@ -189,16 +190,15 @@ namespace OpenNos.GameObject
                         LastEffect = DateTime.Now;
                         ClientLinkManager.Instance.BroadcastToMap(MapId, $"ct 3 {MapMonsterId} 1 {Target} -1 -1 0");
                         int? Hp = ClientLinkManager.Instance.GetProperty<int?>(Target, "Hp");
-                        
+
                         int damage = 100;
                         int HP = ((int)Hp - damage);
                         ClientLinkManager.Instance.SetProperty(Target, "Hp", (int)((HP) <= 0 ? 0 : HP));
-                      
+
                         ClientLinkManager.Instance.SetProperty(Target, "LastDefence", DateTime.Now);
+
+                        ClientLinkManager.Instance.BroadcastToMap(MapId, $"su 3 {MapMonsterId} 1 {Target} 0 {monster.BasicCooldown} 11 {monster.BasicSkill} 0 0 {((HP) > 0 ? 1 : 0)} {(int)((double)(HP) / ClientLinkManager.Instance.GetUserMethod<double>(Target, "HPLoad"))} {damage} 0 0");
                         ClientLinkManager.Instance.Broadcast(null, ClientLinkManager.Instance.GetUserMethod<string>(Target, "GenerateStat"), ReceiverType.OnlySomeone, "", Target);
-                        ClientLinkManager.Instance.BroadcastToMap(MapId, $"su 3 {MapMonsterId} 1 {Target} 0 {monster.BasicCooldown} 11 {monster.BasicSkill} 0 0 {((HP) > 0?1:0)} {(int)((double)(HP) / ClientLinkManager.Instance.GetUserMethod<double>(Target, "HPLoad"))} {damage} 0 0");
-                        if (HP <= 0)
-                            Target = -1;
                         /* area mode - tortle
                         foreach (MapMonster mon in ServerManager.GetMap(MapId).GetListPeopleInRange(MapX, MapY, monster.BasicArea))
                            {
@@ -210,7 +210,22 @@ namespace OpenNos.GameObject
                                ClientLinkManager.Instance.BroadcastToMap(MapId, $"su 3 {MapMonsterId} 1 {Target} 0 {monster.BasicCooldown} 11 {monster.BasicSkill} 0 0 1 {(int)((double)Hp / ClientLinkManager.Instance.GetUserMethod<double>(Target, "HPLoad"))} {damage} 0 0");
                            }
                         */
+                        if (HP <= 0)
+                        {
+                            ClientSession Session = ClientLinkManager.Instance.Sessions.FirstOrDefault(s => s.Character != null && s.Character.CharacterId == Target);
+                            if (Session != null && Session.Character != null)
+                            {
+                                Session.Client.SendPacket(Session.Character.GenerateDialog($"#revival^0 #revival^1 {Language.Instance.GetMessageFromKey("ASK_REVIVE")}"));
+                                Session.Character.Dignite -= (short)(Session.Character.Level < 50 ? Session.Character.Level : 50);
+                                if (Session.Character.Dignite < -1000)
+                                    Session.Character.Dignite = -1000;
 
+                                Session.Client.SendPacket(Session.Character.GenerateFd());
+                                Session.Client.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("LOSE_DIGNITY"), (short)(Session.Character.Level < 50 ? Session.Character.Level : 50)), 11));
+                                //Revive if no answer 20sec
+                            }
+                            Target = -1;
+                        }
                     }
                 }
                 if (IsMoving == true)

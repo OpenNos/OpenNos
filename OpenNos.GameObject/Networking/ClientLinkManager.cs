@@ -114,7 +114,8 @@ namespace OpenNos.GameObject
         }
         public void ChangeMap(long id)
         {
-            foreach (ClientSession Session in Sessions.Where(s => s.Character != null && s.Character.CharacterId == id))
+            ClientSession Session = Sessions.FirstOrDefault(s => s.Character != null && s.Character.CharacterId == id);
+            if (Session != null)
             {
                 Session.CurrentMap = ServerManager.GetMap(Session.Character.MapId);
                 Session.Client.SendPacket(Session.Character.GenerateCInfo());
@@ -142,7 +143,7 @@ namespace OpenNos.GameObject
                 Session.Client.SendPacket(Session.Character.GenerateCond());
                 ClientLinkManager.Instance.Broadcast(Session, Session.Character.GeneratePairy(), ReceiverType.AllOnMap);
                 Session.Client.SendPacket($"rsfi 1 1 0 9 0 9"); // Act completion
-                ClientLinkManager.Instance.Sessions.Where(s=>s.Character.MapId.Equals(Session.Character.MapId) && s.Character.Name != Session.Character.Name && !Session.Character.InvisibleGm).ToList().ForEach(s=>RequireBroadcastFromUser(Session,s.Character.CharacterId , "GenerateIn"));
+                ClientLinkManager.Instance.Sessions.Where(s => s.Character.MapId.Equals(Session.Character.MapId) && s.Character.Name != Session.Character.Name && !Session.Character.InvisibleGm).ToList().ForEach(s => RequireBroadcastFromUser(Session, s.Character.CharacterId, "GenerateIn"));
                 if (Session.Character.InvisibleGm == false)
                     ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllOnMapExceptMe);
                 if (Session.CurrentMap.IsDancing == 2 && Session.Character.IsDancing == 0)
@@ -198,6 +199,8 @@ namespace OpenNos.GameObject
                 }
             }
         }
+
+
         public void ClassChange(long id, byte Class)
         {
             foreach (ClientSession Session in Sessions.Where(s => s.Character != null && s.Character.CharacterId == id))
@@ -506,7 +509,7 @@ namespace OpenNos.GameObject
         {
             while (true)
             {
-                Sessions.ForEach(s => s.Character?.Save()); 
+                Sessions.ForEach(s => s.Character?.Save());
                 await Task.Delay(60000 * 4);
             }
         }

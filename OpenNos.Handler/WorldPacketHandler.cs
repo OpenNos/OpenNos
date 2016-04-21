@@ -3017,7 +3017,39 @@ namespace OpenNos.Handler
             if (packetsplit.Length > 4)
                 Task.Factory.StartNew(() => ZoneHit(Convert.ToInt32(packetsplit[2]), Convert.ToInt16(packetsplit[3]), Convert.ToInt16(packetsplit[4])));
         }
+        [Packet("#revival")]
+        public void Revive(string packet)
+        {
+            string[] packetsplit = packet.Split(' ', '^');
+            byte type;
+            if (packetsplit.Length > 2)
+            {
+                if (!byte.TryParse(packetsplit[2], out type))
+                    return;
+                switch(type)
+                {
+                    case 1:
+                        /*
+                        say 1 630933 10 Tu as utilisé 10 de Graine de pouvoir.
+                        tp 1 630933 23 136 0
+                        revive 1 630933 0
+                        
+                        else
 
+                        msg 0 Tu n'as pas assez de graines de pouvoir.
+                        tp
+                        
+                        say 1 630933 0 Je n'ai pas assez de graines de pouvoir.
+                        tp 1 630933 85 114 0
+                        revive 1 630933 0
+
+                        */
+                        break;
+                    case 0:
+                        break;
+                }
+            }
+        }
         [Packet("#pjoin")]
         public void ValidPJoin(string packet)
         {
@@ -3213,9 +3245,9 @@ namespace OpenNos.Handler
                 qslot 2 7.7.-1 7.7.-1 7.7.-1 7.7.-1 7.7.-1 7.7.-1 7.7.-1 7.7.-1 7.7.-1 7.7.-1
                 */
 
-            // lev 40 2288403 14 72745 3221180 145000 20086 5
+                        // lev 40 2288403 14 72745 3221180 145000 20086 5
 
-            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(196), ReceiverType.AllOnMap);
+                        ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(196), ReceiverType.AllOnMap);
             ClientLinkManager.Instance.Broadcast(Session, $"guri 6 1 {Session.Character.CharacterId} 0 0", ReceiverType.AllOnMap);
             Session.Client.SendPacket(Session.Character.GenerateSpPoint());
             Session.Character.Speed += ServerManager.GetItem(sp.InventoryItem.ItemVNum).Speed;
@@ -3983,6 +4015,6 @@ namespace OpenNos.Handler
             Session.Client.SendPacket("cancel 0 0");
         }
 
-        #endregion
+#endregion
     }
 }
