@@ -34,11 +34,13 @@ namespace OpenNos.GameObject
             Mapper.CreateMap<MapMonster, MapMonsterDTO>();
             LastEffect = LastMove = DateTime.Now;
             Target = -1;
+            inBattle = false;
             path = new List<MapCell>();
         }
 
         public bool Alive { get; set; }
         public DateTime Death { get; set; }
+        public bool inBattle { get; set; }
         public int CurrentHp { get; set; }
         public int CurrentMp { get; set; }
         public List<MapCell> path { get; set; }
@@ -184,53 +186,58 @@ namespace OpenNos.GameObject
                 }
                 else
                 {
-
-                    if ((DateTime.Now - LastEffect).TotalMilliseconds >= monster.BasicCooldown * 100 && (Math.Pow(this.MapX - (short)MapX, 2) + Math.Pow(this.MapY - (short)MapY, 2) <= (Math.Pow(monster.BasicRange + 1, 2))))
+                    if (!inBattle)
                     {
-                        LastEffect = DateTime.Now;
-                        ClientLinkManager.Instance.BroadcastToMap(MapId, $"ct 3 {MapMonsterId} 1 {Target} -1 -1 0");
-                        int? Hp = ClientLinkManager.Instance.GetProperty<int?>(Target, "Hp");
-
-                        int damage = 100;
-                        int HP = ((int)Hp - damage);
-                        ClientLinkManager.Instance.SetProperty(Target, "Hp", (int)((HP) <= 0 ? 0 : HP));
-
-                        ClientLinkManager.Instance.SetProperty(Target, "LastDefence", DateTime.Now);
-
-                        ClientLinkManager.Instance.BroadcastToMap(MapId, $"su 3 {MapMonsterId} 1 {Target} 0 {monster.BasicCooldown} 11 {monster.BasicSkill} 0 0 {((HP) > 0 ? 1 : 0)} {(int)((double)(HP) / ClientLinkManager.Instance.GetUserMethod<double>(Target, "HPLoad"))} {damage} 0 0");
-                        ClientLinkManager.Instance.Broadcast(null, ClientLinkManager.Instance.GetUserMethod<string>(Target, "GenerateStat"), ReceiverType.OnlySomeone, "", Target);
-                        /* area mode - tortle
-                        foreach (MapMonster mon in ServerManager.GetMap(MapId).GetListPeopleInRange(MapX, MapY, monster.BasicArea))
-                           {
-                               damage = 100;
-                               int? Hp2 = ClientLinkManager.Instance.GetProperty<int?>(Target, "Hp");
-                               ClientLinkManager.Instance.SetProperty(Target, "Hp", (int)(Hp2 - damage));
-                               ClientLinkManager.Instance.SetProperty(Target, "LastDefence", DateTime.Now);
-                               ClientLinkManager.Instance.Broadcast(null, ClientLinkManager.Instance.GetUserMethod<string>(Target, "GenerateStat"), ReceiverType.OnlySomeone, "", Target);
-                               ClientLinkManager.Instance.BroadcastToMap(MapId, $"su 3 {MapMonsterId} 1 {Target} 0 {monster.BasicCooldown} 11 {monster.BasicSkill} 0 0 1 {(int)((double)Hp / ClientLinkManager.Instance.GetUserMethod<double>(Target, "HPLoad"))} {damage} 0 0");
-                           }
-                        */
-                        if (HP <= 0)
+                        if ((DateTime.Now - LastEffect).TotalMilliseconds >= monster.BasicCooldown * 100 && (Math.Pow(this.MapX - (short)MapX, 2) + Math.Pow(this.MapY - (short)MapY, 2) <= (Math.Pow(monster.BasicRange + 1, 2))))
                         {
-                            ClientSession Session = ClientLinkManager.Instance.Sessions.FirstOrDefault(s => s.Character != null && s.Character.CharacterId == Target);
-                            if (Session != null && Session.Character != null)
+                            LastEffect = DateTime.Now;
+                            inBattle = true;
+                            ClientLinkManager.Instance.BroadcastToMap(MapId, $"ct 3 {MapMonsterId} 1 {Target} -1 -1 0");
+                            int? Hp = ClientLinkManager.Instance.GetProperty<int?>(Target, "Hp");
+
+                            int damage = 100;
+                            int HP = ((int)Hp - damage);
+                            ClientLinkManager.Instance.SetProperty(Target, "Hp", (int)((HP) <= 0 ? 0 : HP));
+
+                            ClientLinkManager.Instance.SetProperty(Target, "LastDefence", DateTime.Now);
+
+                            ClientLinkManager.Instance.BroadcastToMap(MapId, $"su 3 {MapMonsterId} 1 {Target} 0 {monster.BasicCooldown} 11 {monster.BasicSkill} 0 0 {((HP) > 0 ? 1 : 0)} {(int)((double)(HP) / ClientLinkManager.Instance.GetUserMethod<double>(Target, "HPLoad"))} {damage} 0 0");
+                            ClientLinkManager.Instance.Broadcast(null, ClientLinkManager.Instance.GetUserMethod<string>(Target, "GenerateStat"), ReceiverType.OnlySomeone, "", Target);
+                            /* area mode - tortle
+                            foreach (MapMonster mon in ServerManager.GetMap(MapId).GetListPeopleInRange(MapX, MapY, monster.BasicArea))
+                               {
+                                   damage = 100;
+                                   int? Hp2 = ClientLinkManager.Instance.GetProperty<int?>(Target, "Hp");
+                                   ClientLinkManager.Instance.SetProperty(Target, "Hp", (int)(Hp2 - damage));
+                                   ClientLinkManager.Instance.SetProperty(Target, "LastDefence", DateTime.Now);
+                                   ClientLinkManager.Instance.Broadcast(null, ClientLinkManager.Instance.GetUserMethod<string>(Target, "GenerateStat"), ReceiverType.OnlySomeone, "", Target);
+                                   ClientLinkManager.Instance.BroadcastToMap(MapId, $"su 3 {MapMonsterId} 1 {Target} 0 {monster.BasicCooldown} 11 {monster.BasicSkill} 0 0 1 {(int)((double)Hp / ClientLinkManager.Instance.GetUserMethod<double>(Target, "HPLoad"))} {damage} 0 0");
+                               }
+                            */
+                            if (HP <= 0)
                             {
-                                Session.Client.SendPacket(Session.Character.GenerateDialog($"#revival^0 #revival^1 {Language.Instance.GetMessageFromKey("ASK_REVIVE")}"));
-                                Session.Character.Dignite -= (short)(Session.Character.Level < 50 ? Session.Character.Level : 50);
-                                if (Session.Character.Dignite < -1000)
-                                    Session.Character.Dignite = -1000;
-
-                                Session.Client.SendPacket(Session.Character.GenerateFd());
-                                Session.Client.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("LOSE_DIGNITY"), (short)(Session.Character.Level < 50 ? Session.Character.Level : 50)), 11));
-
-                                Task.Factory.StartNew(async () =>
+                                ClientSession Session = ClientLinkManager.Instance.Sessions.FirstOrDefault(s => s.Character != null && s.Character.CharacterId == Target);
+                                Target = -1;
+                                if (Session != null && Session.Character != null)
                                 {
-                                    await Task.Delay(30000);
-                                    ClientLinkManager.Instance.ReviveFirstPosition(Session.Character.CharacterId);
-                                });
+                                    Session.Client.SendPacket(Session.Character.GenerateDialog($"#revival^0 #revival^1 {Language.Instance.GetMessageFromKey("ASK_REVIVE")}"));
+                                    Session.Character.Dignite -= (short)(Session.Character.Level < 50 ? Session.Character.Level : 50);
+                                    if (Session.Character.Dignite < -1000)
+                                        Session.Character.Dignite = -1000;
+
+                                    Session.Client.SendPacket(Session.Character.GenerateFd());
+                                    Session.Client.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("LOSE_DIGNITY"), (short)(Session.Character.Level < 50 ? Session.Character.Level : 50)), 11));
+
+                                    Task.Factory.StartNew(async () =>
+                                    {
+                                        await Task.Delay(30000);
+                                        ClientLinkManager.Instance.ReviveFirstPosition(Session.Character.CharacterId);
+                                    });
+
+                                }
 
                             }
-                            Target = -1;
+                            inBattle = false;
                         }
                     }
                 }
