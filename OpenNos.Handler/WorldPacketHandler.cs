@@ -293,7 +293,7 @@ namespace OpenNos.Handler
                     }
                     Random rnd = new Random();
                     byte ra = (byte)rnd.Next(0, 100);
-                   
+
                     int[] rareprob = { 100, 100, 70, 50, 30, 15, 5, 1 };
 
                     for (int i = 0; i < rareprob.Length; i++)
@@ -306,7 +306,7 @@ namespace OpenNos.Handler
                     Session.Client.SendPacket(Session.Character.GenerateFd());
                     Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("REPUT_DECREASED"), 11));
                 }
-     
+
 
                 InventoryItem newItem = new InventoryItem
                 {
@@ -3026,30 +3026,55 @@ namespace OpenNos.Handler
             {
                 if (!byte.TryParse(packetsplit[2], out type))
                     return;
-                switch(type)
+                if (Session.Character.Hp > 0)
+                    return;
+                switch (type)
                 {
-                    case 1:
-                        /*
-                        say 1 630933 10 Tu as utilisé 10 de Graine de pouvoir.
-                        tp 1 630933 23 136 0
-                        revive 1 630933 0
-                        
-                        else
-
-                        msg 0 Tu n'as pas assez de graines de pouvoir.
-                        tp
-                        
-                        say 1 630933 0 Je n'ai pas assez de graines de pouvoir.
-                        tp 1 630933 85 114 0
-                        revive 1 630933 0
-
-                        */
-                        break;
                     case 0:
+                        int seed = 1012;
+                        if (Session.Character.InventoryList.CountItem(seed) < 10)
+                        {
+                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("YOU_DONT_HAVE_ENOUGH_SEED"), 0));
+                            ClientLinkManager.Instance.MapOut(Session.Character.CharacterId);
+                            Session.Character.MapId = 1;
+                            Session.Character.MapX = 85;
+                            Session.Character.MapY = 114;
+                            ClientLinkManager.Instance.ChangeMap(Session.Character.CharacterId);
+                            Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("I_DONT_HAVE_ENOUGH_SEED"), 0));
+                            Session.Character.Hp = 1;
+                            Session.Character.Mp = 1;
+                            Session.Client.SendPacket(Session.Character.GenerateTp());
+                            Session.Client.SendPacket(Session.Character.GenerateRevive());
+                            Session.Client.SendPacket(Session.Character.GenerateStat());
+                        }
+                        else
+                        {
+                            Session.Client.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("SEED_USED"), 10), 10));
+                            Session.Client.SendPacket(Session.Character.GenerateTp());
+                            Session.Character.Hp = (int)(Session.Character.HPLoad() / 2);
+                            Session.Character.Mp = (int)(Session.Character.MPLoad() / 2);
+                            Session.Client.SendPacket(Session.Character.GenerateRevive());
+                            Session.Client.SendPacket(Session.Character.GenerateStat());
+                            Session.Character.InventoryList.RemoveItemAmount(seed, 10);
+                            GetStartupInventory();
+                        }
+                        break;
+                    case 1:
+                        ClientLinkManager.Instance.MapOut(Session.Character.CharacterId);
+                        Session.Character.MapId = 1;
+                        Session.Character.MapX = 85;
+                        Session.Character.MapY = 114;
+                        ClientLinkManager.Instance.ChangeMap(Session.Character.CharacterId);
+                        Session.Character.Hp = 1;
+                        Session.Character.Mp = 1;
+                        Session.Client.SendPacket(Session.Character.GenerateTp());
+                        Session.Client.SendPacket(Session.Character.GenerateRevive());
+                        Session.Client.SendPacket(Session.Character.GenerateStat());
                         break;
                 }
             }
         }
+
         [Packet("#pjoin")]
         public void ValidPJoin(string packet)
         {
@@ -3245,9 +3270,9 @@ namespace OpenNos.Handler
                 qslot 2 7.7.-1 7.7.-1 7.7.-1 7.7.-1 7.7.-1 7.7.-1 7.7.-1 7.7.-1 7.7.-1 7.7.-1
                 */
 
-                        // lev 40 2288403 14 72745 3221180 145000 20086 5
+            // lev 40 2288403 14 72745 3221180 145000 20086 5
 
-                        ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(196), ReceiverType.AllOnMap);
+            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(196), ReceiverType.AllOnMap);
             ClientLinkManager.Instance.Broadcast(Session, $"guri 6 1 {Session.Character.CharacterId} 0 0", ReceiverType.AllOnMap);
             Session.Client.SendPacket(Session.Character.GenerateSpPoint());
             Session.Character.Speed += ServerManager.GetItem(sp.InventoryItem.ItemVNum).Speed;
@@ -3493,6 +3518,7 @@ namespace OpenNos.Handler
                 {
                     Session.Character.Mp = 0;
                     Session.Client.SendPacket(Session.Character.GenerateStat());
+                    await Task.Delay(2000);
                     continue;
                 }
                 if (Session.Character.IsSitting)
@@ -4015,6 +4041,6 @@ namespace OpenNos.Handler
             Session.Client.SendPacket("cancel 0 0");
         }
 
-#endregion
+        #endregion
     }
 }

@@ -1240,6 +1240,16 @@ namespace OpenNos.GameObject
             return ServersData.XPData[Level - 1];
         }
 
+        public string GenerateRevive()
+        {
+            return $"revive 1 {CharacterId} 0";
+        }
+
+        public string GenerateTp()
+        {
+            return $"tp 1 {CharacterId} {MapX} {MapY} 0";
+        }
+
 
 
 
