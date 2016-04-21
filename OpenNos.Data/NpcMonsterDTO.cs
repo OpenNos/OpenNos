@@ -48,7 +48,7 @@ namespace OpenNos.Data
         public sbyte WaterResistance { get; set; }
         public int XP { get; set; }
         public short BasicSkill { get; set; }
-
+        public byte BasicRange { get; set; }
         #endregion
     }
 }

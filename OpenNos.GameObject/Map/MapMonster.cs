@@ -183,7 +183,7 @@ namespace OpenNos.GameObject
                 else
                 {
                    
-                    if((DateTime.Now - LastEffect).TotalMilliseconds >= 1000)
+                    if((DateTime.Now - LastEffect).TotalMilliseconds >= 1000 && (Math.Pow(this.MapX - (short)MapX, 2) + Math.Pow(this.MapY - (short)MapY, 2) <= (Math.Pow(monster.BasicRange + 1, 2)) + 1))
                     {
                         LastEffect = DateTime.Now;
                         ClientLinkManager.Instance.BroadcastToMap(MapId, $"ct 3 {MapMonsterId} 1 {Target} -1 -1 0");

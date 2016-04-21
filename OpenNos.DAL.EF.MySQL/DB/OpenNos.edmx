@@ -1513,6 +1513,7 @@
           <Property Name="JobXP" Type="Int32" Nullable="false" />
           <Property Name="IsHostile" Type="Boolean" Nullable="false" />
           <Property Name="BasicSkill" Type="Int16" Nullable="false" />
+          <Property Name="BasicRange" Type="Byte" Nullable="false" />
         </EntityType>
         <EntityType Name="InventoryItem">
           <Key>
