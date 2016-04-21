@@ -14,6 +14,7 @@
 
 using AutoMapper;
 using OpenNos.Data;
+using System;
 
 namespace OpenNos.GameObject
 {
@@ -25,7 +26,17 @@ namespace OpenNos.GameObject
         {
             Mapper.CreateMap<NpcMonsterSkillDTO, NpcMonsterSkill>();
             Mapper.CreateMap<NpcMonsterSkill, NpcMonsterSkillDTO>();
+            LastUse = DateTime.Now.AddHours(-1);
+            Used = false;
+            Hit = 0;
         }
+
+        public bool Used { get; set; }
+        public DateTime LastUse
+        {
+            get; set;
+        }
+        public short Hit { get; set; }
 
         #endregion
     }

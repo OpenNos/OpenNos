@@ -400,6 +400,9 @@ namespace OpenNos.GameObject
             if (SolutionPathList.Count > 0)
             {
                 SolutionPathList.RemoveAt(0);
+            }
+            if (SolutionPathList.Count > 0)
+            {
                 SolutionPathList.RemoveAt(SolutionPathList.Count - 1);
             }
             return SolutionPathList;

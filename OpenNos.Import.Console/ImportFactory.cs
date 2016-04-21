@@ -366,6 +366,12 @@ namespace OpenNos.Import.Console
                     {
                         npc.DefenceUpgrade = Convert.ToByte(unknownData == 1 ? currentLine[2] : currentLine[3]);
                     }
+                    else if (currentLine.Length > 2 && currentLine[1] == "EFF")
+                    {
+                        short vnum = short.Parse(currentLine[2]);
+                        npc.BasicSkill = vnum;
+
+                    }
                     else if (currentLine.Length > 1 && currentLine[1] == "SKILL")
                     {
                         for (int i = 2; i < currentLine.Length - 3; i += 3)

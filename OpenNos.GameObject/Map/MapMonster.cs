@@ -104,7 +104,7 @@ namespace OpenNos.GameObject
                 }
                 return;
             }
-            if (Target == -1)
+            else if (Target == -1)
             {
                 //Normal Move Mode
                 if (monster == null || Alive == false)
@@ -147,26 +147,63 @@ namespace OpenNos.GameObject
                     }
                 }
             }
-            else if (IsMoving == true)
+            else
             {
                 short? MapX = ClientLinkManager.Instance.GetProperty<short?>(Target, "MapX");
                 short? MapY = ClientLinkManager.Instance.GetProperty<short?>(Target, "MapY");
                 short? mapId = ClientLinkManager.Instance.GetProperty<short?>(Target, "MapId");
+                if (MapX == null || MapY == null) { Target = -1; return; }
                 short mapX = this.MapX;
                 short mapY = this.MapY;
-                short maxdistance = 20;
-                if (MapX == null || MapY == null) { Target = -1; }
+
+                Random r = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
+                NpcMonsterSkill ski = monster.Skills.Where(s => !s.Used && (DateTime.Now - s.LastUse).TotalMilliseconds >= 100 * ServerManager.GetSkill(s.SkillVNum).Cooldown).OrderBy(rnd => r.Next()).FirstOrDefault();
+                if (ski != null)
+                {
+                    Skill sk = ServerManager.GetSkill(ski.SkillVNum);
+                    if (MapId == mapId && (Math.Pow(this.MapX - (short)MapX, 2) + Math.Pow(this.MapY - (short)MapY, 2) <= (Math.Pow(sk.Range + 1, 2)) + 1))
+                    {
+                        ski.Used = true;
+                        ski.LastUse = DateTime.Now;
+                        LastMove = DateTime.Now;
+
+
+                        ClientLinkManager.Instance.BroadcastToMap(MapId, $"ct 3 {MapMonsterId} 1 {Target} {sk.CastAnimation} -1 {sk.SkillVNum}");
+
+                        if (sk.CastEffect != 0)
+                        {
+                            ClientLinkManager.Instance.BroadcastToMap(MapId, GenerateEff(sk.CastEffect));
+                            Thread.Sleep(sk.CastTime * 100);
+                        }
+
+                        ClientLinkManager.Instance.BroadcastToMap(MapId, $"su 3 {MapMonsterId} 1 {Target} {ski.SkillVNum} {sk.Cooldown} {sk.AttackAnimation} {sk.Effect} {this.MapX} {this.MapY} 1 100 0 1 0");
+                        ski.Used = false;
+                    }
+                }
                 else
                 {
-                    if(path.Count <= 1)
-                    path = ServerManager.GetMap(MapId).AStar(new MapCell() { X = this.MapX, Y = this.MapY, MapId = this.MapId }, new MapCell() { X = (short)MapX, Y = (short)MapY, MapId = this.MapId });
-                    if (path.Count > 1)
+                   
+                    if((DateTime.Now - LastEffect).TotalMilliseconds >= 1000)
                     {
-                        mapX = path.ElementAt(0).X;
-                        mapY = path.ElementAt(0).Y;
+                        LastEffect = DateTime.Now;
+                        ClientLinkManager.Instance.BroadcastToMap(MapId, $"ct 3 {MapMonsterId} 1 {Target} -1 -1 0");
+
+                        ClientLinkManager.Instance.BroadcastToMap(MapId, $"su 3 {MapMonsterId} 1 {Target} 0 10 11 {monster.BasicSkill} 0 0 1 100 0 1 0");
+                    }
+                }
+                if (IsMoving == true)
+                {
+
+                    short maxdistance = 20;
+                    if (path.Count == 0)
+                        path = ServerManager.GetMap(MapId).AStar(new MapCell() { X = this.MapX, Y = this.MapY, MapId = this.MapId }, new MapCell() { X = (short)MapX, Y = (short)MapY, MapId = this.MapId });
+                    if (path.Count >= 1)
+                    {
+                        mapX = path.ElementAt(0) == null ? mapX : path.ElementAt(0).X;
+                        mapY = path.ElementAt(0) == null ? mapY : path.ElementAt(0).Y;
                         path.RemoveAt(0);
                     }
-                    if (MapId != mapId || (Math.Pow(this.MapY - (short)MapY, 2) + Math.Pow(this.MapY - (short)MapY, 2) > (Math.Pow(maxdistance, 2))))
+                    if (MapId != mapId || (Math.Pow(this.MapX - (short)MapX, 2) + Math.Pow(this.MapY - (short)MapY, 2) > (Math.Pow(maxdistance, 2))))
                     {
                         //TODO add return to origin
                         Target = -1;
@@ -183,6 +220,7 @@ namespace OpenNos.GameObject
                         }
                     }
                 }
+
             }
 
         }
