@@ -271,7 +271,7 @@ namespace OpenNos.Handler
                     pourcent = 1.20;
                 else if (Session.Character.GetDigniteIco() == 5 || Session.Character.GetDigniteIco() == 6)
                     pourcent = 1.5;
-
+                byte rare = 0;
                 if (iteminfo.ReputPrice == 0)
                 {
                     if (price <= 0 || price * pourcent > Session.Character.Gold)
@@ -291,22 +291,22 @@ namespace OpenNos.Handler
                         Session.Client.SendPacket(Session.Character.GenerateShopMemo(3, Language.Instance.GetMessageFromKey("NOT_ENOUGH_REPUT")));
                         return;
                     }
+                    Random rnd = new Random();
+                    byte ra = (byte)rnd.Next(0, 100);
+                   
+                    int[] rareprob = { 100, 100, 70, 50, 30, 15, 5, 1 };
 
+                    for (int i = 0; i < rareprob.Length; i++)
+                    {
+                        if (ra <= rareprob[i])
+                            rare = (byte)i;
+                    }
                     Session.Client.SendPacket(Session.Character.GenerateShopMemo(1, string.Format(Language.Instance.GetMessageFromKey("BUY_ITEM_VALIDE"), ServerManager.GetItem(item.ItemVNum).Name, amount)));
                     Session.Character.Reput -= (long)(Reputprice);
                     Session.Client.SendPacket(Session.Character.GenerateFd());
                     Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("REPUT_DECREASED"), 11));
                 }
-                Random rnd = new Random();
-                byte ra = (byte)rnd.Next(0, 100);
-                byte rare = 0;
-                int[] rareprob = { 100, 100, 70, 50, 30, 15, 5, 1 };
-
-                for (int i = 0; i < rareprob.Length; i++)
-                {
-                    if (ra <= rareprob[i])
-                        rare = (byte)i;
-                }
+     
 
                 InventoryItem newItem = new InventoryItem
                 {
