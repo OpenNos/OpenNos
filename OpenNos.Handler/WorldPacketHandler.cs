@@ -3034,13 +3034,13 @@ namespace OpenNos.Handler
                         int seed = 1012;
                         if (Session.Character.InventoryList.CountItem(seed) < 10)
                         {
-                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("YOU_DONT_HAVE_ENOUGH_SEED"), 0));
+                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_POWER_SEED"), 0));
                             ClientLinkManager.Instance.MapOut(Session.Character.CharacterId);
                             Session.Character.MapId = 1;
                             Session.Character.MapX = 85;
                             Session.Character.MapY = 114;
                             ClientLinkManager.Instance.ChangeMap(Session.Character.CharacterId);
-                            Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("I_DONT_HAVE_ENOUGH_SEED"), 0));
+                            Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NOT_ENOUGH_SEED_SAY"), 0));
                             Session.Character.Hp = 1;
                             Session.Character.Mp = 1;
                             Session.Client.SendPacket(Session.Character.GenerateTp());
