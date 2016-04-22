@@ -141,7 +141,7 @@ namespace OpenNos.GameObject
                     Character character = ClientLinkManager.Instance.Sessions.Where(s => s.Character != null && s.Character.Hp > 0).OrderBy(s => (int)(Math.Pow(MapX - s.Character.MapX, 2) + Math.Pow(MapY - s.Character.MapY, 2))).FirstOrDefault(s => s.Character != null && s.Character.MapId == MapId)?.Character;
                     if (character != null)
                     {
-                        if ((Math.Pow(character.MapX - MapX, 2) + Math.Pow(character.MapY - MapY, 2)) < (Math.Pow(7, 2)))
+                        if ((Math.Pow(character.MapX - 1 - MapX, 2) + Math.Pow(character.MapY - 1 - MapY, 2)) <= (Math.Pow(7, 2)))
                         {
                             Target = character.CharacterId;
 
@@ -165,7 +165,7 @@ namespace OpenNos.GameObject
                 if (ski != null)
                 {
                     Skill sk = ServerManager.GetSkill(ski.SkillVNum);
-                    if (MapId == mapId && (Math.Pow(this.MapX - (short)MapX, 2) + Math.Pow(this.MapY - (short)MapY, 2) <= (Math.Pow(sk.Range + 1, 2)) + 1))
+                    if (MapId == mapId && (Math.Pow(this.MapX - 1 - (short)MapX, 2) + Math.Pow(this.MapY - 1 - (short)MapY, 2) <= Math.Pow(sk.Range, 2)))
                     {
                         ski.Used = true;
                         ski.LastUse = DateTime.Now;
@@ -188,7 +188,7 @@ namespace OpenNos.GameObject
                 {
                     if (!inBattle)
                     {
-                        if ((DateTime.Now - LastEffect).TotalMilliseconds >= monster.BasicCooldown * 100 && (Math.Pow(this.MapX - (short)MapX, 2) + Math.Pow(this.MapY - (short)MapY, 2) <= (Math.Pow(monster.BasicRange + 1, 2))))
+                        if ((DateTime.Now - LastEffect).TotalMilliseconds >= monster.BasicCooldown * 100 && (Math.Pow(this.MapX - 1 - (short)MapX, 2) + Math.Pow(this.MapY - 1 - (short)MapY, 2) <= (Math.Pow(monster.BasicRange, 2))))
                         {
                             LastEffect = DateTime.Now;
                             inBattle = true;
@@ -253,7 +253,7 @@ namespace OpenNos.GameObject
                         mapY = path.ElementAt(0) == null ? mapY : path.ElementAt(0).Y;
                         path.RemoveAt(0);
                     }
-                    if (MapId != mapId || (Math.Pow(this.MapX - (short)MapX, 2) + Math.Pow(this.MapY - (short)MapY, 2) > (Math.Pow(maxdistance, 2))))
+                    if (MapId != mapId || (Math.Pow(this.MapX - 1 - (short)MapX, 2) + Math.Pow(this.MapY - 1 - (short)MapY, 2) > (Math.Pow(maxdistance, 2))))
                     {
                         //TODO add return to origin
                         Target = -1;

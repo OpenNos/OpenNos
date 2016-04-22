@@ -2601,7 +2601,7 @@ namespace OpenNos.Handler
                                      short dX = (short)(Session.Character.MapX - mmon.MapX);
                                      short dY = (short)(Session.Character.MapY - mmon.MapY);
 
-                                     if (Math.Pow(dX, 2) + Math.Pow(dY, 2) <= Math.Pow(skill.Range + 1, 2) || skill.TargetRange != 0)
+                                     if (Math.Pow((dX - 1) < 0 ? 0: (dX - 1), 2) + Math.Pow((dY - 1) < 0 ? 0 : (dY - 1), 2) <= Math.Pow(skill.Range, 2) || skill.TargetRange != 0)
                                      {
                                          ClientLinkManager.Instance.Broadcast(Session, $"ct 1 {Session.Character.CharacterId} 3 {mmon.MapMonsterId} {skill.CastAnimation} -1 {skill.SkillVNum}", ReceiverType.AllOnMap);
                                          damage = GenerateDamage(Session, mmon.MapMonsterId, skill, ref hitmode);
@@ -3161,7 +3161,7 @@ namespace OpenNos.Handler
 
             if (Session.Character.Speed.Equals(Convert.ToByte(packetsplit[5])) || Convert.ToByte(packetsplit[5]) == 10)
             {
-                if ((Math.Pow(Session.Character.MapX - Convert.ToInt16(packetsplit[2]), 2) + Math.Pow(Session.Character.MapY - Convert.ToInt16(packetsplit[3]), 2)) > Math.Pow(20, 2))
+                if ((Math.Pow(Session.Character.MapX - 1 - Convert.ToInt16(packetsplit[2]), 2) + Math.Pow(Session.Character.MapY - 1 - Convert.ToInt16(packetsplit[3]), 2)) > Math.Pow(20, 2))
                     Session.Client.Disconnect();
                 ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateMv(), ReceiverType.AllOnMapExceptMe);
                 Session.Client.SendPacket(Session.Character.GenerateCond());

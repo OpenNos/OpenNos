@@ -376,6 +376,7 @@
     <Property Name="BasicRange" Type="utinyint" Nullable="false" />
     <Property Name="BasicArea" Type="utinyint" Nullable="false" />
     <Property Name="BasicCooldown" Type="smallint" Nullable="false" />
+    <Property Name="HeroLevel" Type="utinyint" Nullable="false" />
   </EntityType>
   <EntityType Name="inventoryitem">
     <Key>
@@ -2378,6 +2379,7 @@
           <ScalarProperty Name="BasicRange" ColumnName="BasicRange" />
           <ScalarProperty Name="BasicArea" ColumnName="BasicArea" />
           <ScalarProperty Name="BasicCooldown" ColumnName="BasicCooldown" />
+          <ScalarProperty Name="HeroLevel" ColumnName="HeroLevel" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
