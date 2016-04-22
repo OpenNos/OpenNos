@@ -238,7 +238,7 @@ namespace OpenNos.GameObject
                     short maxdistance = 20;
                     if (path.Count() < 1)
                         path = ServerManager.GetMap(MapId).AStar(new MapCell() { X = this.MapX, Y = this.MapY, MapId = this.MapId }, new MapCell() { X = (short)MapX, Y = (short)MapY, MapId = this.MapId });
-                    if (path.Count >= 1 && Map.GetDistance(new MapCell() { X = this.MapX, Y = this.MapY, MapId = this.MapId }, new MapCell() { X = (short)MapX, Y = (short)MapY, MapId = this.MapId }) > 1)
+                    if (path.Count > 0 && Map.GetDistance(new MapCell() { X = this.MapX, Y = this.MapY, MapId = this.MapId }, new MapCell() { X = (short)MapX, Y = (short)MapY, MapId = this.MapId }) > 1)
                     {
                         mapX = path.ElementAt(0) == null ? mapX : path.ElementAt(0).X;
                         mapY = path.ElementAt(0) == null ? mapY : path.ElementAt(0).Y;
