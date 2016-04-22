@@ -660,4 +660,13 @@
   <data name="SEED_USED" xml:space="preserve">
     <value>You used power seeds</value>
   </data>
+  <data name="ASK_REVIVE" xml:space="preserve">
+    <value>Do you want to revive? it will cost you 10 power seeds</value>
+  </data>
+  <data name="ASK_REVIVE_FREE" xml:space="preserve">
+    <value>Do you want to revive? it will be free</value>
+  </data>
+  <data name="LOSE_DIGNITY" xml:space="preserve">
+    <value>You've lost some dignity</value>
+  </data>
 </root>

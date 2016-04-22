@@ -3038,9 +3038,9 @@ namespace OpenNos.Handler
                         int seed = 1012;
                         if (Session.Character.InventoryList.CountItem(seed) < 10 && Session.Character.Level > 20)
                         {
-                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("YOU_DONT_HAVE_ENOUGH_SEED"), 0));
+                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_POWER_SEED"), 0));
                             ClientLinkManager.Instance.ReviveFirstPosition(Session.Character.CharacterId);
-                            Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("I_DONT_HAVE_ENOUGH_SEED"), 0));
+                            Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NOT_ENOUGH_SEED_SAY"), 0));
                         }
                         else
                         {

@@ -655,6 +655,15 @@
     <value>Nie mam wystarczajacej ilosci ziaren mocy</value>
   </data>
   <data name="SEED_USED" xml:space="preserve">
-    <value>Uzyles ziaren mocy</value>
+    <value>Uzyles ziarna mocy</value>
+  </data>
+  <data name="ASK_REVIVE" xml:space="preserve">
+    <value>Czy chcesz sie ozywic? bedzie cie to kosztowac 10 ziaren mocy</value>
+  </data>
+  <data name="ASK_REVIVE_FREE" xml:space="preserve">
+    <value>Czy chcesz sie ozywic? bedzie to darmowy proces</value>
+  </data>
+  <data name="LOSE_DIGNITY" xml:space="preserve">
+    <value>Straciles godnosc</value>
   </data>
 </root>
