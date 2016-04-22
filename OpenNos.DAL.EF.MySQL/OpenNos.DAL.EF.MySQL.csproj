@@ -162,6 +162,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="DB\OpenNos.Additional.sql" />
+    <Content Include="DB\OpenNos.sql" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\OpenNos.Core\OpenNos.Core.csproj">
