@@ -227,6 +227,7 @@ namespace OpenNos.GameObject
                             if (HP <= 0)
                             {
                                 ClientLinkManager.Instance.AskRevive(Target);
+                                Target = -1;
                             }
                             inBattle = false;
                         }
