@@ -2581,7 +2581,7 @@ namespace OpenNos.Handler
                                 mmon = ServerManager.GetMap(Session.Character.MapId).Monsters.FirstOrDefault(s => s.MapMonsterId == mon.MapMonsterId);
                                 ClientLinkManager.Instance.Broadcast(Session, $"su {1} {Session.Character.CharacterId} {3} {mmon.MapMonsterId} {skill.SkillVNum} {skill.Cooldown} {skill.AttackAnimation} {skill.Effect} {Session.Character.MapX} {Session.Character.MapY} {(mmon.Alive ? 1 : 0)} {(int)(((float)mmon.CurrentHp / (float)ServerManager.GetNpc(mon.MonsterVNum).MaxHP) * 100)} {damage} {5} {skill.SkillType - 1}", ReceiverType.AllOnMap);
                             }
-                        Session.Client.SendPacket("cancel 0 0");
+                        
                         await Task.Delay((skill.Cooldown) * 100);
                         ski.Used = false;
                         Session.Client.SendPacket($"sr {Castingid}");
@@ -2634,11 +2634,13 @@ namespace OpenNos.Handler
                                                  damage = GenerateDamage(Session, mon.MapMonsterId, skill, ref hitmode);
                                                  ClientLinkManager.Instance.Broadcast(Session, $"su {1} {Session.Character.CharacterId} {3} {mon.MapMonsterId} {skill.SkillVNum} {skill.Cooldown} {skill.AttackAnimation} {skill.Effect} {Session.Character.MapX} {Session.Character.MapY} {(mon.Alive ? 1 : 0)} {(int)(((float)mon.CurrentHp / (float)ServerManager.GetNpc(mon.MonsterVNum).MaxHP) * 100)} {damage} {5} {skill.SkillType - 1}", ReceiverType.AllOnMap);
                                              }
-                                         Session.Client.SendPacket("cancel 0 0");
+                                       
                                          await Task.Delay((skill.Cooldown) * 100);
                                          ski.Used = false;
                                          Session.Client.SendPacket($"sr {Castingid}");
                                      }
+                                     else
+                                         Session.Client.SendPacket("cancel 0 0");
                                  });
                         }
                     }
