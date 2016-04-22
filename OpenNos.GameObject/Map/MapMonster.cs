@@ -138,7 +138,7 @@ namespace OpenNos.GameObject
                 }
                 if (monster.IsHostile)
                 {
-                    Character character = ClientLinkManager.Instance.Sessions.Where(s => s.Character != null && s.Character.Hp > 0).OrderBy(s => (int)(Math.Pow(MapX - s.Character.MapX, 2) + Math.Pow(MapY - s.Character.MapY, 2))).FirstOrDefault(s => s.Character != null && s.Character.MapId == MapId)?.Character;
+                    Character character = ClientLinkManager.Instance.Sessions.Where(s => s.Character != null && s.Character.Hp > 0).OrderBy(s => Map.GetDistance(new MapCell() { X= MapX ,Y= MapY}, new MapCell() { X = s.Character.MapX, Y = s.Character.MapY })).FirstOrDefault(s => s.Character != null && s.Character.MapId == MapId)?.Character;
                     if (character != null)
                     {
                         if (Map.GetDistance(new MapCell() { X = character.MapX, Y = character.MapY }, new MapCell() { X = MapX, Y = MapY }) <  7)
