@@ -62,7 +62,7 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                foreach (Character Character in context.Character.Where(c => c.Account.Authority == (byte)AuthorityType.User).OrderByDescending(c => c.Compliment).Take(30).ToList())
+                foreach (Character Character in context.Character.Where(c => c.Account.Authority == AuthorityType.User).OrderByDescending(c => c.Compliment).Take(30).ToList())
                 {
                     yield return Mapper.DynamicMap<CharacterDTO>(Character);
                 }
@@ -73,7 +73,7 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                foreach (Character Character in context.Character.Where(c => c.Account.Authority == (byte)AuthorityType.User).OrderByDescending(c => c.Act4Points).Take(30).ToList())
+                foreach (Character Character in context.Character.Where(c => c.Account.Authority == AuthorityType.User).OrderByDescending(c => c.Act4Points).Take(30).ToList())
                 {
                     yield return Mapper.DynamicMap<CharacterDTO>(Character);
                 }
@@ -84,7 +84,7 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                foreach (Character Character in context.Character.Where(c => c.Account.Authority == (byte)AuthorityType.User).OrderByDescending(c => c.Reput).Take(43).ToList())
+                foreach (Character Character in context.Character.Where(c => c.Account.Authority == AuthorityType.User).OrderByDescending(c => c.Reput).Take(43).ToList())
                 {
                     yield return Mapper.DynamicMap<CharacterDTO>(Character);
                 }
@@ -123,7 +123,7 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                List<Character> heroes = context.Character.Where(c => c.Account.Authority != (byte)AuthorityType.Admin).OrderByDescending(c => c.Reput).Take(43).ToList();
+                List<Character> heroes = context.Character.Where(c => c.Account.Authority != AuthorityType.Admin).OrderByDescending(c => c.Reput).Take(43).ToList();
 
                 int i = 0;
                 foreach (Character c in heroes)

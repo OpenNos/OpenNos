@@ -84,7 +84,7 @@ namespace OpenNos.Handler
 
                         if (!ServiceFactory.Instance.CommunicationService.AccountIsConnected(loadedAccount.Name))
                         {
-                            AuthorityType type = loadedAccount.AuthorityEnum; //0 banned 1 registered 2 user 3 GM
+                            AuthorityType type = loadedAccount.Authority; //0 banned 1 registered 2 user 3 GM
 
                             switch (type)
                             {

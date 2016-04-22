@@ -19,6 +19,7 @@ using OpenNos.DAL.EF.MySQL.Helpers;
 using OpenNos.DAL.Interface;
 using OpenNos.Data;
 using OpenNos.Data.Enums;
+using OpenNos.Domain;
 using System;
 using System.Linq;
 
@@ -139,7 +140,7 @@ namespace OpenNos.DAL.EF.MySQL
             using (var context = DataAccessHelper.CreateContext())
             {
                 Account Account = context.Account.FirstOrDefault(a => a.AccountId.Equals(id));
-                Account.Authority = Account.Authority >= 1 ? (byte)0 : (byte)1;
+                Account.Authority = Account.Authority == AuthorityType.User ? AuthorityType.Banned : AuthorityType.User;
                 context.SaveChanges();
             }
         }
