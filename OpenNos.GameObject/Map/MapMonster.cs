@@ -132,7 +132,7 @@ namespace OpenNos.GameObject
 
                         string movepacket = $"mv 3 {this.MapMonsterId} {MapX} {MapY} {monster.Speed}";
                         ClientLinkManager.Instance.BroadcastToMap(MapId, movepacket);
-                        Thread.Sleep(1000);
+                        Thread.Sleep(500);
                         this.MapX = MapX;
                         this.MapY = MapY;
 
