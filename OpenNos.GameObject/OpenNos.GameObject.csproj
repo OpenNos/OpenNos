@@ -89,6 +89,7 @@
     <Compile Include="Item\ItemHandler\MagicalItemHandler.cs" />
     <Compile Include="Map\Map.cs" />
     <Compile Include="Group.cs" />
+    <Compile Include="Map\MapCellAStar.cs" />
     <Compile Include="Map\MapCell.cs" />
     <Compile Include="Map\MapCellComparer.cs" />
     <Compile Include="Map\MapMonster.cs" />

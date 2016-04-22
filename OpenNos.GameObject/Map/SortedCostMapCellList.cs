@@ -32,9 +32,9 @@ namespace OpenNos.GameObject
             }
 
 
-            public MapCell CellAt(int i)
+            public MapCellAStar CellAt(int i)
             {
-                return (MapCell)_list[i];
+                return (MapCellAStar)_list[i];
             }
 
             public void RemoveAt(int i)
@@ -42,18 +42,18 @@ namespace OpenNos.GameObject
                 _list.RemoveAt(i);
             }
 
-            public int IndexOf(MapCell n)
+            public int IndexOf(MapCellAStar n)
             {
                 for (int i = 0; i < _list.Count; i++)
                 {
-                MapCell cellInTheList = (MapCell)_list[i];
+                MapCellAStar cellInTheList = (MapCellAStar)_list[i];
                     if (cellInTheList.isMatch(n))
                         return i;
                 }
                 return -1;
             }
 
-            public int push(MapCell n)
+            public int push(MapCellAStar n)
             {
 
                 int k = _list.BinarySearch(n, _cellComparer);
@@ -71,9 +71,9 @@ namespace OpenNos.GameObject
                 return k;
             }
 
-            public MapCell pop()
+            public MapCellAStar pop()
             {
-            MapCell r = (MapCell)_list[0];
+            MapCellAStar r = (MapCellAStar)_list[0];
                 _list.RemoveAt(0);
                 return r;
             }

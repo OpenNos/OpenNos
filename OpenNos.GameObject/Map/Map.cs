@@ -200,7 +200,7 @@ namespace OpenNos.GameObject
             List<MapMonster> listmon = new List<MapMonster>();
             foreach (MapMonster mo in Monsters.Where(s => s.Alive))
             {
-                if (Math.Pow(mapX - mo.MapX, 2) + Math.Pow(mapY - mo.MapY, 2) <= Math.Pow(distance, 2))
+                if (GetDistance(new MapCell() { X = mapX ,Y=mapY }, new MapCell() { X = mo.MapX, Y = mo.MapY }) <= distance+1)
                     listmon.Add(mo);
             }
             return listmon;
@@ -324,7 +324,16 @@ namespace OpenNos.GameObject
                 await Task.Delay(rnd.Next(1000 / Npcs.Count(), 1000 / Npcs.Count()));
             }
         }
+        public static int GetDistance(MapCell p, MapCell q)
+        {
+            double a = p.X - q.X;
+            double b = p.Y - q.Y;
 
+            if (a * a == b * b)
+                a = 0;
+            double distance = Math.Sqrt(a * a + b * b);
+            return (int)distance;
+        }
         internal async void MapTaskManager()
         {
             Task NpcMoveTask = new Task(() => NpcLifeManager());
@@ -339,21 +348,21 @@ namespace OpenNos.GameObject
         #endregion
         #region A*
 
-        public List<MapCell> AStar(MapCell cell_start, MapCell cell_goal)
+        public List<MapCell> AStar(MapCell cell1, MapCell cell2)
         {
             List<MapCell> SolutionPathList = new List<MapCell>();
 
 
             SortedCostMapCellList OPEN = new SortedCostMapCellList();
             SortedCostMapCellList CLOSED = new SortedCostMapCellList();
-
-
+            MapCellAStar cell_start = new MapCellAStar(null,null, cell1.X, cell1.Y, cell1.MapId);
+            MapCellAStar cell_goal = new MapCellAStar(null, null, cell2.X, cell2.Y, cell2.MapId);
             OPEN.push(cell_start);
 
             while (OPEN.Count > 0)
             {
 
-                MapCell cell_current = OPEN.pop();
+                MapCellAStar cell_current = OPEN.pop();
 
                 if (cell_current.isMatch(cell_goal))
                 {
@@ -363,14 +372,14 @@ namespace OpenNos.GameObject
 
                 ArrayList successors = cell_current.GetSuccessors();
 
-                foreach (MapCell cell_successor in successors)
+                foreach (MapCellAStar cell_successor in successors)
                 {
                     int oFound = OPEN.IndexOf(cell_successor);
 
 
                     if (oFound > 0)
                     {
-                        MapCell existing_cell = OPEN.CellAt(oFound);
+                        MapCellAStar existing_cell = OPEN.CellAt(oFound);
                         if (existing_cell.CompareTo(cell_current) <= 0)
                             continue;
                     }
@@ -380,7 +389,7 @@ namespace OpenNos.GameObject
 
                     if (cFound > 0)
                     {
-                        MapCell existing_cell = CLOSED.CellAt(cFound);
+                        MapCellAStar existing_cell = CLOSED.CellAt(cFound);
                         if (existing_cell.CompareTo(cell_current) <= 0)
                             continue;
                     }
@@ -396,7 +405,7 @@ namespace OpenNos.GameObject
                 }
                 CLOSED.push(cell_current);
             }
-            MapCell p = cell_goal;
+            MapCellAStar p = cell_goal;
             while (p != null)
             {
                 SolutionPathList.Insert(0, p);

@@ -188,7 +188,7 @@ namespace OpenNos.GameObject
                 {
                     if (!inBattle)
                     {
-                        if ((DateTime.Now - LastEffect).TotalMilliseconds >= monster.BasicCooldown * 100 && (Math.Pow(this.MapX - 1 - (short)MapX, 2) + Math.Pow(this.MapY - 1 - (short)MapY, 2) <= (Math.Pow(monster.BasicRange, 2))))
+                        if ((DateTime.Now - LastEffect).TotalMilliseconds >= monster.BasicCooldown * 100 && (Map.GetDistance(new MapCell() { X = this.MapX, Y = this.MapY }, new MapCell() { X = (short)MapX, Y = (short)MapY }) <= monster.BasicRange+1))
                         {
                             LastEffect = DateTime.Now;
                             inBattle = true;
@@ -258,7 +258,7 @@ namespace OpenNos.GameObject
                         mapY = path.ElementAt(0) == null ? mapY : path.ElementAt(0).Y;
                         path.RemoveAt(0);
                     }
-                    if (MapId != mapId || (Math.Pow(this.MapX - 1 - (short)MapX, 2) + Math.Pow(this.MapY - 1 - (short)MapY, 2) > (Math.Pow(maxdistance, 2))))
+                    if (MapId != mapId || (Map.GetDistance(new MapCell() { X = this.MapX, Y = this.MapY }, new MapCell() { X = (short)MapX, Y = (short)MapY }) > maxdistance+1))
                     {
                         //TODO add return to origin
                         Target = -1;
