@@ -243,9 +243,8 @@ namespace OpenNos.Handler
                     Session.Character.Skills.Add(new CharacterSkill() { SkillVNum = slot, CharacterId = Session.Character.CharacterId });
                     Session.Client.SendPacket(Session.Character.GenerateSki());
                     string[] quicklistpackets = Session.Character.GenerateQuicklist();
-                    Session.Client.SendPacket(quicklistpackets[0]);
-                    Session.Client.SendPacket(quicklistpackets[1]);
-                    Session.Client.SendPacket(quicklistpackets[2]);
+                    foreach (string quicklist in quicklistpackets)
+                        Session.Client.SendPacket(quicklist);
 
                     Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SKILL_LEARNED"), 0));
                     Session.Client.SendPacket(Session.Character.GenerateLev());
@@ -1906,9 +1905,8 @@ namespace OpenNos.Handler
                 Session.Character.Skills.Remove(skill);
                 Session.Client.SendPacket(Session.Character.GenerateSki());
                 string[] quicklistpackets = Session.Character.GenerateQuicklist();
-                Session.Client.SendPacket(quicklistpackets[0]);
-                Session.Client.SendPacket(quicklistpackets[1]);
-                Session.Client.SendPacket(quicklistpackets[2]);
+                foreach (string quicklist in quicklistpackets)
+                    Session.Client.SendPacket(quicklist);
                 Session.Client.SendPacket(Session.Character.GenerateLev());
             }
         }
@@ -2485,9 +2483,8 @@ namespace OpenNos.Handler
             Session.Client.SendPacket(Session.Character.GenerateSki());
 
             string[] quicklistpackets = Session.Character.GenerateQuicklist();
-            Session.Client.SendPacket(quicklistpackets[0]);
-            Session.Client.SendPacket(quicklistpackets[1]);
-            Session.Client.SendPacket(quicklistpackets[2]);
+            foreach (string quicklist in quicklistpackets)
+                Session.Client.SendPacket(quicklist);
 
             ClientLinkManager.Instance.Broadcast(Session, Session.Character.GeneratePairy(), ReceiverType.AllOnMap);
             ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateSpPoint(), ReceiverType.AllOnMap);
@@ -3283,9 +3280,8 @@ namespace OpenNos.Handler
 
             Session.Client.SendPacket(Session.Character.GenerateSki());
             string[] quicklistpackets = Session.Character.GenerateQuicklist();
-            Session.Client.SendPacket(quicklistpackets[0]);
-            Session.Client.SendPacket(quicklistpackets[1]);
-            Session.Client.SendPacket(quicklistpackets[2]);
+            foreach (string quicklist in quicklistpackets)
+                Session.Client.SendPacket(quicklist);
         }
 
         private void ChangeVehicle(Item item)
@@ -3988,9 +3984,8 @@ namespace OpenNos.Handler
             // lev 40 2288403 23 47450 3221180 113500 20086 5
             Session.Client.SendPacket(Session.Character.GenerateSki());
             string[] quicklistpackets = Session.Character.GenerateQuicklist();
-            Session.Client.SendPacket(quicklistpackets[0]);
-            Session.Client.SendPacket(quicklistpackets[1]);
-            Session.Client.SendPacket(quicklistpackets[2]);
+            foreach(string quicklist in quicklistpackets)
+            Session.Client.SendPacket(quicklist);
             Session.Client.SendPacket(Session.Character.GenerateStat());
             Session.Client.SendPacket(Session.Character.GenerateStatChar());
 
