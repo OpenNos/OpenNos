@@ -2600,7 +2600,7 @@ namespace OpenNos.Handler
                                      short dX = (short)(Session.Character.MapX - mmon.MapX);
                                      short dY = (short)(Session.Character.MapY - mmon.MapY);
 
-                                     if (Map.GetDistance(new MapCell() { X= Session.Character.MapX, Y= Session.Character.MapY}, new MapCell() { X = mmon.MapX, Y = mmon.MapY })<= skill.Range || skill.TargetRange != 0)
+                                     if (Map.GetDistance(new MapCell() { X= Session.Character.MapX, Y= Session.Character.MapY}, new MapCell() { X = mmon.MapX, Y = mmon.MapY })<= skill.Range + 1|| skill.TargetRange != 0)
                                      {
                                          ClientLinkManager.Instance.Broadcast(Session, $"ct 1 {Session.Character.CharacterId} 3 {mmon.MapMonsterId} {skill.CastAnimation} -1 {skill.SkillVNum}", ReceiverType.AllOnMap);
                                          damage = GenerateDamage(Session, mmon.MapMonsterId, skill, ref hitmode);
@@ -2640,7 +2640,9 @@ namespace OpenNos.Handler
                                          Session.Client.SendPacket($"sr {Castingid}");
                                      }
                                      else
+                                     {
                                          Session.Client.SendPacket("cancel 0 0");
+                                     }
                                  });
                         }
                         else

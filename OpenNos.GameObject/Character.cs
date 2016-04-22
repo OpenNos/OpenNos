@@ -458,8 +458,11 @@ namespace OpenNos.GameObject
         public string GenerateSki()
         {
             List<CharacterSkill> skill = UseSp ? SkillsSp : Skills;
-            string skibase = $"{200 + 20 * Class} {201 + 20 * Class}";
-
+            string skibase = "";
+            if (!UseSp)
+                skibase = $"{200 + 20 * Class} {201 + 20 * Class}";
+            else
+                skibase = $"{skill.ElementAt(0).SkillVNum} {skill.ElementAt(1).SkillVNum}";
             string skills = "";
             foreach (CharacterSkill ski in skill)
             {
