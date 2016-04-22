@@ -39,7 +39,7 @@ namespace OpenNos.Import.Console
             "===============================================================================\n");
 
             DataAccessHelper.Initialize();
-
+            System.ConsoleKeyInfo key = new System.ConsoleKeyInfo();
             Logger.Log.Warn(Language.Instance.GetMessageFromKey("NEED_TREE"));
             System.Console.BackgroundColor = System.ConsoleColor.Blue;
             System.Console.WriteLine("Root");
@@ -62,15 +62,23 @@ namespace OpenNos.Import.Console
             System.Console.WriteLine("----------1");
             System.Console.WriteLine("----------...");
             Logger.Log.Warn(Language.Instance.GetMessageFromKey("ENTER_PATH"));
-            string folder = System.Console.ReadLine();
-            ImportFactory factory = new ImportFactory(folder);
 
+            string folder = "";
+            if (args.Length == 0)
+            {
+                 folder = System.Console.ReadLine();
+                // Confirmation: All at once, or every step
+                System.Console.WriteLine($"{Language.Instance.GetMessageFromKey("PARSE_ALL")} [Y/n]");
+                key = System.Console.ReadKey(true);
+            }
+            else
+            {
+                foreach (string str in args)
+                folder += str + " ";
+            }
+            ImportFactory factory = new ImportFactory(folder);
             factory.ImportPackets();
 
-            // Confirmation: All at once, or every step
-
-            System.Console.WriteLine($"{Language.Instance.GetMessageFromKey("PARSE_ALL")} [Y/n]");
-            System.ConsoleKeyInfo key = System.Console.ReadKey(true);
             if (key.KeyChar != 'n')
             {
                 factory.ImportMaps();
