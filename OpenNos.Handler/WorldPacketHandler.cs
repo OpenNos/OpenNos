@@ -404,7 +404,7 @@ namespace OpenNos.Handler
                 bool isIllegalCharacter = false;
                 for (int i = 0; i < packetsplit[2].Length; i++)
                 {
-                    if (packetsplit[2][i] < 0x30 || packetsplit[2][i] > 0x7E)
+                    if (packetsplit[2][i] < 0x23 || packetsplit[2][i] > 0x7E)
                     {
                         isIllegalCharacter = true;
                     }
@@ -2553,7 +2553,7 @@ namespace OpenNos.Handler
             int damage;
             int hitmode = 0;
             Skill skill = null;
-            CharacterSkill ski = skills.FirstOrDefault(s => (skill = ServerManager.GetSkill(s.SkillVNum)) != null && skill.CastId == Castingid);
+            CharacterSkill ski = skills.FirstOrDefault(s => (skill = ServerManager.GetSkill(s.SkillVNum)) != null && skill?.CastId == Castingid);
             if (!ski.Used)
             {
                 if (skill != null && skill.TargetType == 1 && skill.HitType == 1)

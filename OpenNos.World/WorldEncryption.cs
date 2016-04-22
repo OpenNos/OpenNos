@@ -87,14 +87,7 @@ namespace OpenNos.World
             return decrypted_string;
         }
 
-        public static string getextendedascii(int x)
-        {
-            var e = Encoding.GetEncoding("Windows-1252");
-            var s = e.GetString(new byte[] { Convert.ToByte(x) });
-
-            return s;
-        }
-
+    
         public override string Decrypt(byte[] str, int session_id)
         {
             int length = str.Length;
@@ -225,33 +218,52 @@ namespace OpenNos.World
 
         public override byte[] Encrypt(string str)
         {
-            string encrypted_string = "";
-            int length = str.Length;
-            int secondlength = (length / 122);
-            int compteur = 0;
-
-            for (int i = 0; i < length; i++)
+            String encryptedString = String.Empty;
+            while (str.Length > 60)
             {
-                if (i == (122 * compteur))
+
+                encryptedString += Encrypt2(str.Substring(0, 60));
+                encryptedString = encryptedString.Substring(0, encryptedString.Length - 1);
+                str = str.Substring(60, str.Length - 60);
+            }
+
+            if (str.Length > 0)
+                encryptedString += Encrypt2(str);
+            else
+                encryptedString += 0xFF;
+
+            byte[] encryptedData = new byte[encryptedString.Length];
+
+            for (int i = 0; i < encryptedString.Length; i++)
+                encryptedData[i] = (byte)encryptedString[i];
+
+            return encryptedData;
+        }
+
+        public static string Encrypt2(String str)
+        {
+            String encryptedString = String.Empty;
+
+            for (int i = 0; i < str.Length; i++)
+            {
+                if (i % 0x7A == 0)
                 {
-                    if (secondlength == 0)
+                    if ((str.Length - i) > 0x7A)
                     {
-                        encrypted_string += getextendedascii((char)Math.Abs((((length / 122) * 122) - length)));
+                        encryptedString += Convert.ToChar(0x7A);
                     }
                     else
                     {
-                        encrypted_string += getextendedascii((char)0x7A);
-                        secondlength--;
-                        compteur++;
+                        encryptedString += Convert.ToChar(str.Length - i);
                     }
                 }
 
-                encrypted_string += getextendedascii((byte)(str[i] ^ (byte)0xFF));
+                encryptedString += Convert.ToChar((byte)str[i] ^ 0xFF);
             }
 
-            encrypted_string += getextendedascii((char)0xFF);
-            byte[] ret = Encoding.GetEncoding(1252).GetBytes(encrypted_string);
-            return ret;
+            encryptedString += Convert.ToChar(0xFF);
+
+            return encryptedString;
         }
 
         #endregion

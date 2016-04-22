@@ -29,7 +29,7 @@ namespace OpenNos.GameObject
     {
         #region Members
 
-        private int _authority;
+        private AuthorityType _authority;
         private int _backpack;
         private int _direction;
         private InventoryList _equipmentlist;
@@ -63,7 +63,7 @@ namespace OpenNos.GameObject
 
         #region Properties
         public DateTime LastDefence { get; set; }
-        public int Authority { get { return _authority; } set { _authority = value; } }
+        public AuthorityType Authority { get { return _authority; } set { _authority = value; } }
         public int BackPack { get { return _backpack; } set { _backpack = value; } }
         public int Direction { get { return _direction; } set { _direction = value; } }
         public InventoryList EquipmentList { get { return _equipmentlist; } set { _equipmentlist = value; } }
@@ -264,7 +264,7 @@ namespace OpenNos.GameObject
             if (head != null && ServerManager.GetItem(head.InventoryItem.ItemVNum).IsColored)
                 color = head.InventoryItem.Design;
 
-            return $"eq {CharacterId} {(Authority == 2 ? 2 : 0)} {Gender} {HairStyle} {color} {Class} {generateEqListForPacket()} {generateEqRareUpgradeForPacket()}";
+            return $"eq {CharacterId} {(Authority == AuthorityType.Admin ? 2 : 0)} {Gender} {HairStyle} {color} {Class} {generateEqListForPacket()} {generateEqRareUpgradeForPacket()}";
         }
 
         public string generateEqListForPacket()
@@ -397,7 +397,7 @@ namespace OpenNos.GameObject
                 color = head.InventoryItem.Design;
             Inventory fairy = EquipmentList.LoadBySlotAndType((byte)EquipmentType.Fairy, (byte)InventoryType.Equipment);
 
-            return $"in 1 {Name} - {CharacterId} {MapX} {MapY} {Direction} {(Authority == 2 ? 2 : 0)} {Gender} {HairStyle} {color} {Class} {generateEqListForPacket()} {(int)(Hp / HPLoad() * 100)} {(int)(Mp / MPLoad() * 100)} {(IsSitting ? 1 : 0)} -1 {(fairy != null ? 2 : 0)} {(fairy != null ? ServerManager.GetItem(fairy.InventoryItem.ItemVNum).Element : 0)} 0 {(fairy != null ? ServerManager.GetItem(fairy.InventoryItem.ItemVNum).Morph : 0)} 0 {(UseSp ? Morph : 0)} {generateEqRareUpgradeForPacket()} -1 - {((GetDigniteIco() == 1) ? GetReputIco() : -GetDigniteIco())} {_invisible} {(UseSp ? MorphUpgrade : 0)} 0 {(UseSp ? MorphUpgrade2 : 0)} {Level} 0 {ArenaWinner} {Compliment} {Size} {HeroLevel}";
+            return $"in 1 {Name} - {CharacterId} {MapX} {MapY} {Direction} {(Authority == AuthorityType.Admin ? 2 : 0)} {Gender} {HairStyle} {color} {Class} {generateEqListForPacket()} {(int)(Hp / HPLoad() * 100)} {(int)(Mp / MPLoad() * 100)} {(IsSitting ? 1 : 0)} -1 {(fairy != null ? 2 : 0)} {(fairy != null ? ServerManager.GetItem(fairy.InventoryItem.ItemVNum).Element : 0)} 0 {(fairy != null ? ServerManager.GetItem(fairy.InventoryItem.ItemVNum).Morph : 0)} 0 {(UseSp ? Morph : 0)} {generateEqRareUpgradeForPacket()} -1 - {((GetDigniteIco() == 1) ? GetReputIco() : -GetDigniteIco())} {_invisible} {(UseSp ? MorphUpgrade : 0)} 0 {(UseSp ? MorphUpgrade2 : 0)} {Level} 0 {ArenaWinner} {Compliment} {Size} {HeroLevel}";
         }
 
         public List<string> Generatein2()

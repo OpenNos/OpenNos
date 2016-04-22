@@ -107,6 +107,7 @@ namespace OpenNos.Handler
                 if (Byte.TryParse(packetsplit[2], out joblevel) && ((Session.Character.Class == 0 && joblevel <= 20) || (Session.Character.Class != 0 && joblevel <= 80)) && joblevel > 0)
                 {
                     Session.Character.JobLevel = joblevel;
+                    Session.Character.JobLevelXp = 0;
                     Session.Client.SendPacket(Session.Character.GenerateLev());
                     Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("JOBLEVEL_CHANGED"), 0));
                     ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllOnMapExceptMe);
@@ -127,6 +128,7 @@ namespace OpenNos.Handler
                 if (Byte.TryParse(packetsplit[2], out level) && level < 100 && level > 0)
                 {
                     Session.Character.Level = level;
+                    Session.Character.LevelXp = 0;
                     Session.Character.Hp = (int)Session.Character.HPLoad();
                     Session.Character.Mp = (int)Session.Character.MPLoad();
                     Session.Client.SendPacket(Session.Character.GenerateStat());
