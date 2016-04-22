@@ -523,9 +523,9 @@ namespace OpenNos.GameObject
                 Session.Character.MapId = 1;
                 Session.Character.MapX = 80;
                 Session.Character.MapY = 116;
-                ChangeMap(Session.Character.CharacterId);
                 Session.Character.Hp = 1;
                 Session.Character.Mp = 1;
+                ChangeMap(Session.Character.CharacterId);
                 Session.Client.SendPacket(Session.Character.GenerateTp());
                 Session.Client.SendPacket(Session.Character.GenerateRevive());
                 Session.Client.SendPacket(Session.Character.GenerateStat());
