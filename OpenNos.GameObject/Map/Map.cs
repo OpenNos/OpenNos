@@ -295,9 +295,17 @@ namespace OpenNos.GameObject
             }
         }
 
-        internal IEnumerable<MapMonster> GetListPeopleInRange(short? mapX, short? mapY, byte basicArea)
+        internal IEnumerable<Character> GetListPeopleInRange(short mapX, short mapY, byte distance)
         {
-            throw new NotImplementedException();
+            List<Character> listch = new List<Character>();
+            IEnumerable<ClientSession> cl = ClientLinkManager.Instance.Sessions.Where(s => s.Character != null && s.Character.Hp > 0);
+            for (int i = cl.Count() - 1; i >= 0; i--)
+            {
+
+                if (GetDistance(new MapCell() { X = mapX, Y = mapY }, new MapCell() { X = cl.ElementAt(i).Character.MapX, Y = cl.ElementAt(i).Character.MapY }) <= distance + 1)
+                    listch.Add(cl.ElementAt(i).Character);
+            }
+            return listch;
         }
 
         public async void MonsterLifeManager()

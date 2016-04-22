@@ -200,6 +200,35 @@ namespace OpenNos.GameObject
             }
         }
 
+        public void AskRevive(long Target)
+        {
+           
+                ClientSession Session = Instance.Sessions.FirstOrDefault(s => s.Character != null && s.Character.CharacterId == Target);
+                if (Session != null && Session.Character != null)
+                {
+                    Session.Client.SendPacket(Session.Character.GenerateDialog($"#revival^0 #revival^1 {Language.Instance.GetMessageFromKey("ASK_REVIVE")}"));
+                    Session.Character.Dignite -= (short)(Session.Character.Level < 50 ? Session.Character.Level : 50);
+                    if (Session.Character.Dignite < -1000)
+                        Session.Character.Dignite = -1000;
+
+                    Session.Client.SendPacket(Session.Character.GenerateFd());
+                    Session.Client.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("LOSE_DIGNITY"), (short)(Session.Character.Level < 50 ? Session.Character.Level : 50)), 11));
+
+                    Task.Factory.StartNew(async () =>
+                    {
+                        for (int i = 1; i <= 30; i++)
+                        {
+                            await Task.Delay(1000);
+                            if (Session.Character.Hp > 0)
+                                return;
+                        }
+                       Instance.ReviveFirstPosition(Session.Character.CharacterId);
+                    });
+
+                }
+
+            
+        }
 
         public void ClassChange(long id, byte Class)
         {
