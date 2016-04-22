@@ -30,10 +30,10 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                Teleporter entity = Mapper.Map<Teleporter>(Teleporter);
+                Teleporter entity = Mapper.DynamicMap<Teleporter>(Teleporter);
                 context.Teleporter.Add(entity);
                 context.SaveChanges();
-                return Mapper.Map<TeleporterDTO>(entity);
+                return Mapper.DynamicMap<TeleporterDTO>(entity);
             }
         }
 
@@ -43,7 +43,7 @@ namespace OpenNos.DAL.EF.MySQL
             {
                 foreach (Teleporter Teleporterobject in context.Teleporter.Where(c => c.MapNpcId.Equals(NpcId)))
                 {
-                    yield return Mapper.Map<TeleporterDTO>(Teleporterobject);
+                    yield return Mapper.DynamicMap<TeleporterDTO>(Teleporterobject);
                 }
             }
         }
@@ -52,7 +52,7 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                return Mapper.Map<TeleporterDTO>(context.Teleporter.FirstOrDefault(i => i.TeleporterId.Equals(TeleporterId)));
+                return Mapper.DynamicMap<TeleporterDTO>(context.Teleporter.FirstOrDefault(i => i.TeleporterId.Equals(TeleporterId)));
             }
         }
         #endregion

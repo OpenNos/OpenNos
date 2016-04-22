@@ -34,7 +34,7 @@ namespace OpenNos.DAL.EF.MySQL
                 context.Configuration.AutoDetectChangesEnabled = false;
                 foreach (ComboDTO Combo in Combos)
                 {
-                    Combo entity = Mapper.Map<Combo>(Combo);
+                    Combo entity = Mapper.DynamicMap<Combo>(Combo);
                     context.Combo.Add(entity);
                 }
                 context.SaveChanges();
@@ -46,10 +46,10 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                Combo entity = Mapper.Map<Combo>(Combo);
+                Combo entity = Mapper.DynamicMap<Combo>(Combo);
                 context.Combo.Add(entity);
                 context.SaveChanges();
-                return Mapper.Map<ComboDTO>(entity);
+                return Mapper.DynamicMap<ComboDTO>(entity);
             }
         }
 
@@ -59,7 +59,7 @@ namespace OpenNos.DAL.EF.MySQL
             {
                 foreach (Combo Combo in context.Combo)
                 {
-                    yield return Mapper.Map<ComboDTO>(Combo);
+                    yield return Mapper.DynamicMap<ComboDTO>(Combo);
                 }
             }
         }
@@ -67,7 +67,7 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                return Mapper.Map<ComboDTO>(context.Combo.FirstOrDefault(s => s.SkillVNum.Equals(ComboId)));
+                return Mapper.DynamicMap<ComboDTO>(context.Combo.FirstOrDefault(s => s.SkillVNum.Equals(ComboId)));
             }
         }
 

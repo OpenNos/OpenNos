@@ -30,10 +30,10 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                Recipe entity = Mapper.Map<Recipe>(Recipe);
+                Recipe entity = Mapper.DynamicMap<Recipe>(Recipe);
                 context.Recipe.Add(entity);
                 context.SaveChanges();
-                return Mapper.Map<RecipeDTO>(entity);
+                return Mapper.DynamicMap<RecipeDTO>(entity);
             }
         }
 
@@ -41,7 +41,7 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                return Mapper.Map<RecipeDTO>(context.Recipe.FirstOrDefault(s => s.RecipeId.Equals(RecipeId)));
+                return Mapper.DynamicMap<RecipeDTO>(context.Recipe.FirstOrDefault(s => s.RecipeId.Equals(RecipeId)));
             }
         }
 
@@ -51,7 +51,7 @@ namespace OpenNos.DAL.EF.MySQL
             {
                 foreach (Recipe Recipe in context.Recipe.Where(s => s.MapNpcId.Equals(npcId)))
                 {
-                    yield return Mapper.Map<RecipeDTO>(Recipe);
+                    yield return Mapper.DynamicMap<RecipeDTO>(Recipe);
                 }
             }
         }

@@ -40,18 +40,18 @@ namespace OpenNos.DAL.EF.MySQL
                     if (dbentry == null)
                     {
                         // new entity
-                        QuicklistEntry entry = Mapper.Map<QuicklistEntry>(QuicklistEntry);
+                        QuicklistEntry entry = Mapper.DynamicMap<QuicklistEntry>(QuicklistEntry);
                         context.QuicklistEntry.Add(entry);
                         context.SaveChanges();
-                        Mapper.Map(entry, QuicklistEntry);
+                        Mapper.DynamicMap(entry, QuicklistEntry);
                         return SaveResult.Inserted;
                     }
                     else
                     {
                         //existing entity
-                        Mapper.Map(QuicklistEntry, dbentry);
+                        Mapper.DynamicMap(QuicklistEntry, dbentry);
                         context.SaveChanges();
-                        QuicklistEntry = Mapper.Map<QuicklistEntryDTO>(QuicklistEntry); // does this line anything?
+                        QuicklistEntry = Mapper.DynamicMap<QuicklistEntryDTO>(QuicklistEntry); // does this line anything?
                         return SaveResult.Updated;
                     }
                 }
@@ -69,7 +69,7 @@ namespace OpenNos.DAL.EF.MySQL
             {
                 foreach (QuicklistEntry QuicklistEntryobject in context.QuicklistEntry.Where(i => i.CharacterId == CharacterId))
                 {
-                    yield return Mapper.Map<QuicklistEntryDTO>(QuicklistEntryobject);
+                    yield return Mapper.DynamicMap<QuicklistEntryDTO>(QuicklistEntryobject);
                 }
             }
         }

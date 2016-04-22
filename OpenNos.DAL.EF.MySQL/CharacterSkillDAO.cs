@@ -74,10 +74,10 @@ namespace OpenNos.DAL.EF.MySQL
         private CharacterSkillDTO Insert(CharacterSkillDTO CharacterSkill, OpenNosContext context)
         {
 
-            CharacterSkill entity = Mapper.Map<CharacterSkill>(CharacterSkill);
+            CharacterSkill entity = Mapper.DynamicMap<CharacterSkill>(CharacterSkill);
             context.CharacterSkill.Add(entity);
             context.SaveChanges();
-            return Mapper.Map<CharacterSkillDTO>(entity);
+            return Mapper.DynamicMap<CharacterSkillDTO>(entity);
         }
 
         private CharacterSkillDTO Update(CharacterSkill entity, CharacterSkillDTO CharacterSkill, OpenNosContext context)
@@ -92,7 +92,7 @@ namespace OpenNos.DAL.EF.MySQL
                 }
             }
 
-            return Mapper.Map<CharacterSkillDTO>(CharacterSkill);
+            return Mapper.DynamicMap<CharacterSkillDTO>(CharacterSkill);
         }
 
 
@@ -102,7 +102,7 @@ namespace OpenNos.DAL.EF.MySQL
             {
                 foreach (CharacterSkill Inventoryobject in context.CharacterSkill.Where(i => i.CharacterId == CharacterId))
                 {
-                    yield return Mapper.Map<CharacterSkillDTO>(Inventoryobject);
+                    yield return Mapper.DynamicMap<CharacterSkillDTO>(Inventoryobject);
                 }
             }
         }

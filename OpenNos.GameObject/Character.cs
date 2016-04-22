@@ -898,42 +898,18 @@ namespace OpenNos.GameObject
 
         public string[] GenerateQuicklist()
         {
-            string pktQs0 = "qslot 0";
-            string pktQs1 = "qslot 1";
-            string pktQs2 = "qslot 2";
+            string[] pktQs = new[] { "qslot 0", "qslot 1", "qslot 2" };
 
             for (int i = 0; i < 10; i++)
             {
-                try
+                for (int j = 0; j < 3; j++)
                 {
-                    QuicklistEntry qi = QuicklistEntries.FirstOrDefault(n => n.Q1 == 0 && n.Q2 == i);
-                    pktQs0 += string.Format(" {0}.{1}.{2}", qi.Type, qi.Slot, qi.Pos);
-                }
-                catch
-                {
-                    pktQs0 += " 0.0.-1";
-                }
-                try
-                {
-                    QuicklistEntry qi = QuicklistEntries.FirstOrDefault(n => n.Q1 == 1 && n.Q2 == i);
-                    pktQs1 += string.Format(" {0}.{1}.{2}", qi.Type, qi.Slot, qi.Pos);
-                }
-                catch
-                {
-                    pktQs1 += " 0.0.-1";
-                }
-                try
-                {
-                    QuicklistEntry qi = QuicklistEntries.FirstOrDefault(n => n.Q1 == 2 && n.Q2 == i);
-                    pktQs2 += string.Format(" {0}.{1}.{2}", qi.Type, qi.Slot, qi.Pos);
-                }
-                catch
-                {
-                   pktQs2 += " 0.0.-1";
+                    QuicklistEntry qi = QuicklistEntries.FirstOrDefault(n => n.Q1 == j && n.Q2 == i);
+                    pktQs[j] += string.Format(" {0}.{1}.{2}", qi?.Type, qi?.Slot, qi != null ? qi.Pos : -1);
                 }
             }
 
-            return new[] { pktQs0, pktQs1, pktQs2 };
+            return pktQs;
         }
 
 
@@ -1078,7 +1054,7 @@ namespace OpenNos.GameObject
         }
         public void LoadInventory()
         {
-            IEnumerable<InventoryDTO> inventorysDTO = DAOFactory.InventoryDAO.LoadByCharacterId(CharacterId);
+            IEnumerable<InventoryDTO> inventorysDTO = DAOFactory.InventoryDAO.LoadByCharacterId(CharacterId).ToList();
 
             InventoryList = new InventoryList();
             EquipmentList = new InventoryList();
@@ -1234,7 +1210,7 @@ namespace OpenNos.GameObject
         {
             try
             {
-                CharacterDTO characterToUpdate = Mapper.Map<CharacterDTO>(this);
+                CharacterDTO characterToUpdate = Mapper.DynamicMap<CharacterDTO>(this);
                 DAOFactory.CharacterDAO.InsertOrUpdate(ref characterToUpdate);
                 return true;
             }

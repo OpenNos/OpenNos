@@ -30,10 +30,10 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                NpcMonsterSkill entity = Mapper.Map<NpcMonsterSkill>(NpcMonsterSkill);
+                NpcMonsterSkill entity = Mapper.DynamicMap<NpcMonsterSkill>(NpcMonsterSkill);
                 context.NpcMonsterSkill.Add(entity);
                 context.SaveChanges();
-                return Mapper.Map<NpcMonsterSkillDTO>(entity);
+                return Mapper.DynamicMap<NpcMonsterSkillDTO>(entity);
             }
         }
         public void Insert(List<NpcMonsterSkillDTO> Skills)
@@ -44,7 +44,7 @@ namespace OpenNos.DAL.EF.MySQL
                 context.Configuration.AutoDetectChangesEnabled = false;
                 foreach (NpcMonsterSkillDTO Skill in Skills)
                 {
-                    NpcMonsterSkill entity = Mapper.Map<NpcMonsterSkill>(Skill);
+                    NpcMonsterSkill entity = Mapper.DynamicMap<NpcMonsterSkill>(Skill);
                     context.NpcMonsterSkill.Add(entity);
                 }
                 context.SaveChanges();
@@ -57,7 +57,7 @@ namespace OpenNos.DAL.EF.MySQL
             {
                 foreach (NpcMonsterSkill NpcMonsterSkillobject in context.NpcMonsterSkill.Where(i => i.NpcMonsterVNum == npcId))
                 {
-                    yield return Mapper.Map<NpcMonsterSkillDTO>(NpcMonsterSkillobject);
+                    yield return Mapper.DynamicMap<NpcMonsterSkillDTO>(NpcMonsterSkillobject);
                 }
             }
         }

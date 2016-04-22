@@ -33,7 +33,7 @@ namespace OpenNos.DAL.EF.MySQL
                 context.Configuration.AutoDetectChangesEnabled = false;
                 foreach (PortalDTO Item in Portals)
                 {
-                    Portal entity = Mapper.Map<Portal>(Item);
+                    Portal entity = Mapper.DynamicMap<Portal>(Item);
                     context.Portal.Add(entity);
                 }
                 context.SaveChanges();
@@ -44,10 +44,10 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                Portal entity = Mapper.Map<Portal>(Portal);
+                Portal entity = Mapper.DynamicMap<Portal>(Portal);
                 context.Portal.Add(entity);
                 context.SaveChanges();
-                return Mapper.Map<PortalDTO>(entity);
+                return Mapper.DynamicMap<PortalDTO>(entity);
             }
         }
 
@@ -57,7 +57,7 @@ namespace OpenNos.DAL.EF.MySQL
             {
                 foreach (Portal Portalobject in context.Portal.Where(c => c.SourceMapId.Equals(MapId)))
                 {
-                    yield return Mapper.Map<PortalDTO>(Portalobject);
+                    yield return Mapper.DynamicMap<PortalDTO>(Portalobject);
                 }
             }
         }

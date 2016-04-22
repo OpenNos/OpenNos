@@ -35,7 +35,7 @@ namespace OpenNos.DAL.EF.MySQL
                 context.Configuration.AutoDetectChangesEnabled = false;
                 foreach (MapMonsterDTO monster in monsters)
                 {
-                    MapMonster entity = Mapper.Map<MapMonster>(monster);
+                    MapMonster entity = Mapper.DynamicMap<MapMonster>(monster);
                     context.MapMonster.Add(entity);
                 }
                 context.SaveChanges();
@@ -47,10 +47,10 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                MapMonster entity = Mapper.Map<MapMonster>(MapMonster);
+                MapMonster entity = Mapper.DynamicMap<MapMonster>(MapMonster);
                 context.MapMonster.Add(entity);
                 context.SaveChanges();
-                return Mapper.Map<MapMonsterDTO>(entity);
+                return Mapper.DynamicMap<MapMonsterDTO>(entity);
             }
         }
 
@@ -58,7 +58,7 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                return Mapper.Map<MapMonsterDTO>(context.MapMonster.FirstOrDefault(i => i.MapMonsterId.Equals(MonsterId)));
+                return Mapper.DynamicMap<MapMonsterDTO>(context.MapMonster.FirstOrDefault(i => i.MapMonsterId.Equals(MonsterId)));
             }
         }
 
@@ -68,7 +68,7 @@ namespace OpenNos.DAL.EF.MySQL
             {
                 foreach (MapMonster MapMonsterobject in context.MapMonster.Where(c => c.MapId.Equals(MapId)))
                 {
-                    yield return Mapper.Map<MapMonsterDTO>(MapMonsterobject);
+                    yield return Mapper.DynamicMap<MapMonsterDTO>(MapMonsterobject);
                 }
             }
         }

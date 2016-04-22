@@ -88,7 +88,7 @@ namespace OpenNos.DAL.EF.MySQL
 
                 if (Account != null)
                 {
-                    return Mapper.Map<AccountDTO>(Account);
+                    return Mapper.DynamicMap<AccountDTO>(Account);
                 }
             }
 
@@ -103,7 +103,7 @@ namespace OpenNos.DAL.EF.MySQL
 
                 if (Account != null)
                 {
-                    return Mapper.Map<AccountDTO>(Account);
+                    return Mapper.DynamicMap<AccountDTO>(Account);
                 }
             }
 
@@ -118,7 +118,7 @@ namespace OpenNos.DAL.EF.MySQL
 
                 if (Account != null)
                 {
-                    return Mapper.Map<AccountDTO>(Account);
+                    return Mapper.DynamicMap<AccountDTO>(Account);
                 }
             }
 
@@ -175,17 +175,17 @@ namespace OpenNos.DAL.EF.MySQL
 
         private AccountDTO Insert(AccountDTO Account, OpenNosContext context)
         {
-            Account entity = Mapper.Map<Account>(Account);
+            Account entity = Mapper.DynamicMap<Account>(Account);
             context.Account.Add(entity);
             context.SaveChanges();
-            return Mapper.Map<AccountDTO>(entity);
+            return Mapper.DynamicMap<AccountDTO>(entity);
         }
 
         private AccountDTO Update(Account entity, AccountDTO Account, OpenNosContext context)
         {
-            entity = Mapper.Map<Account>(Account);
+            entity = Mapper.DynamicMap<Account>(Account);
             context.SaveChanges();
-            return Mapper.Map<AccountDTO>(entity);
+            return Mapper.DynamicMap<AccountDTO>(entity);
         }
 
         #endregion

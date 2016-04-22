@@ -32,7 +32,7 @@ namespace OpenNos.DAL.EF.MySQL
             {
                 foreach (CellonOption CellonOptionobject in context.CellonOption.Where(i => i.InventoryItemId.Equals(InventoryItemId)))
                 {
-                    yield return Mapper.Map<CellonOptionDTO>(CellonOptionobject);
+                    yield return Mapper.DynamicMap<CellonOptionDTO>(CellonOptionobject);
                 }
             }
         }

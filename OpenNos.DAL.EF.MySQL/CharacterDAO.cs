@@ -45,7 +45,7 @@ namespace OpenNos.DAL.EF.MySQL
                     {
                         byte obsoleteState = (byte)CharacterState.Inactive;
                         Character.State = obsoleteState;
-                        Update(Character, Mapper.Map<CharacterDTO>(Character), context);
+                        Update(Character, Mapper.DynamicMap<CharacterDTO>(Character), context);
                     }
 
                     return DeleteResult.Deleted;
@@ -64,7 +64,7 @@ namespace OpenNos.DAL.EF.MySQL
             {
                 foreach (Character Character in context.Character.Where(c => c.Account.Authority == (byte)AuthorityType.User).OrderByDescending(c => c.Compliment).Take(30).ToList())
                 {
-                    yield return Mapper.Map<CharacterDTO>(Character);
+                    yield return Mapper.DynamicMap<CharacterDTO>(Character);
                 }
             }
         }
@@ -75,7 +75,7 @@ namespace OpenNos.DAL.EF.MySQL
             {
                 foreach (Character Character in context.Character.Where(c => c.Account.Authority == (byte)AuthorityType.User).OrderByDescending(c => c.Act4Points).Take(30).ToList())
                 {
-                    yield return Mapper.Map<CharacterDTO>(Character);
+                    yield return Mapper.DynamicMap<CharacterDTO>(Character);
                 }
             }
         }
@@ -86,7 +86,7 @@ namespace OpenNos.DAL.EF.MySQL
             {
                 foreach (Character Character in context.Character.Where(c => c.Account.Authority == (byte)AuthorityType.User).OrderByDescending(c => c.Reput).Take(43).ToList())
                 {
-                    yield return Mapper.Map<CharacterDTO>(Character);
+                    yield return Mapper.DynamicMap<CharacterDTO>(Character);
                 }
             }
         }
@@ -164,7 +164,7 @@ namespace OpenNos.DAL.EF.MySQL
                 byte state = (byte)CharacterState.Active;
                 foreach (Character Character in context.Character.Where(c => c.AccountId.Equals(AccountId) && c.State.Equals(state)).OrderByDescending(c => c.Slot))
                 {
-                    yield return Mapper.Map<CharacterDTO>(Character);
+                    yield return Mapper.DynamicMap<CharacterDTO>(Character);
                 }
             }
         }
@@ -173,7 +173,7 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                return Mapper.Map<CharacterDTO>(context.Character.FirstOrDefault(c => c.CharacterId.Equals(CharacterId)));
+                return Mapper.DynamicMap<CharacterDTO>(context.Character.FirstOrDefault(c => c.CharacterId.Equals(CharacterId)));
             }
         }
 
@@ -182,7 +182,7 @@ namespace OpenNos.DAL.EF.MySQL
             using (var context = DataAccessHelper.CreateContext())
             {
                 byte state = (byte)CharacterState.Active;
-                return Mapper.Map<CharacterDTO>(context.Character.FirstOrDefault(c => c.Name.Equals(name) && c.State.Equals(state)));
+                return Mapper.DynamicMap<CharacterDTO>(context.Character.FirstOrDefault(c => c.Name.Equals(name) && c.State.Equals(state)));
             }
         }
 
@@ -191,17 +191,17 @@ namespace OpenNos.DAL.EF.MySQL
             using (var context = DataAccessHelper.CreateContext())
             {
                 byte state = (byte)CharacterState.Active;
-                return Mapper.Map<CharacterDTO>(context.Character.FirstOrDefault(c => c.AccountId.Equals(AccountId) && c.Slot.Equals(slot)
+                return Mapper.DynamicMap<CharacterDTO>(context.Character.FirstOrDefault(c => c.AccountId.Equals(AccountId) && c.Slot.Equals(slot)
                                                                                         && c.State.Equals(state)));
             }
         }
 
         private CharacterDTO Insert(CharacterDTO Character, OpenNosContext context)
         {
-            Character entity = Mapper.Map<Character>(Character);
+            Character entity = Mapper.DynamicMap<Character>(Character);
             context.Character.Add(entity);
             context.SaveChanges();
-            return Mapper.Map<CharacterDTO>(entity);
+            return Mapper.DynamicMap<CharacterDTO>(entity);
         }
 
         private CharacterDTO Update(Character entity, CharacterDTO Character, OpenNosContext context)
@@ -216,7 +216,7 @@ namespace OpenNos.DAL.EF.MySQL
                 }
             }
 
-            return Mapper.Map<CharacterDTO>(entity);
+            return Mapper.DynamicMap<CharacterDTO>(entity);
         }
 
         #endregion

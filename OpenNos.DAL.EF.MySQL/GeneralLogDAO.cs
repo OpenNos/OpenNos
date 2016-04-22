@@ -33,7 +33,7 @@ namespace OpenNos.DAL.EF.MySQL
             {
                 foreach (GeneralLog log in context.GeneralLog.Where(c => c.LogType.Equals(LogType) && c.CharacterId == CharacterId))
                 {
-                    yield return Mapper.Map<GeneralLogDTO>(log);
+                    yield return Mapper.DynamicMap<GeneralLogDTO>(log);
                 }
             }
         }

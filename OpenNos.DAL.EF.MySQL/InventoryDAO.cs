@@ -90,7 +90,7 @@ namespace OpenNos.DAL.EF.MySQL
             {
                 foreach (Inventory Inventoryobject in context.Inventory.Where(i => i.CharacterId.Equals(CharacterId)))
                 {
-                    yield return Mapper.Map<InventoryDTO>(Inventoryobject);
+                    yield return Mapper.DynamicMap<InventoryDTO>(Inventoryobject);
                 }
             }
         }
@@ -99,7 +99,7 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                return Mapper.Map<InventoryDTO>(context.Inventory.FirstOrDefault(i => i.Slot.Equals(slot) && i.Type.Equals(type) && i.CharacterId.Equals(CharacterId)));
+                return Mapper.DynamicMap<InventoryDTO>(context.Inventory.FirstOrDefault(i => i.Slot.Equals(slot) && i.Type.Equals(type) && i.CharacterId.Equals(CharacterId)));
             }
         }
 
@@ -109,17 +109,17 @@ namespace OpenNos.DAL.EF.MySQL
             {
                 foreach (Inventory Inventoryobject in context.Inventory.Where(i => i.Type.Equals(type) && i.CharacterId.Equals(CharacterId)))
                 {
-                    yield return Mapper.Map<InventoryDTO>(Inventoryobject);
+                    yield return Mapper.DynamicMap<InventoryDTO>(Inventoryobject);
                 }
             }
         }
 
         private InventoryDTO Insert(InventoryDTO Inventory, OpenNosContext context)
         {
-            Inventory entity = Mapper.Map<Inventory>(Inventory);
+            Inventory entity = Mapper.DynamicMap<Inventory>(Inventory);
             context.Inventory.Add(entity);
             context.SaveChanges();
-            return Mapper.Map<InventoryDTO>(entity);
+            return Mapper.DynamicMap<InventoryDTO>(entity);
         }
 
         private InventoryDTO Update(Inventory entity, InventoryDTO Inventory, OpenNosContext context)
@@ -134,7 +134,7 @@ namespace OpenNos.DAL.EF.MySQL
                 }
             }
 
-            return Mapper.Map<InventoryDTO>(entity);
+            return Mapper.DynamicMap<InventoryDTO>(entity);
         }
 
         #endregion

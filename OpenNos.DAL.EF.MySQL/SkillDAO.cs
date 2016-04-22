@@ -34,7 +34,7 @@ namespace OpenNos.DAL.EF.MySQL
                 context.Configuration.AutoDetectChangesEnabled = false;
                 foreach (SkillDTO Skill in Skills)
                 {
-                    Skill entity = Mapper.Map<Skill>(Skill);
+                    Skill entity = Mapper.DynamicMap<Skill>(Skill);
                     context.Skill.Add(entity);
                 }
                 context.SaveChanges();
@@ -46,10 +46,10 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                Skill entity = Mapper.Map<Skill>(Skill);
+                Skill entity = Mapper.DynamicMap<Skill>(Skill);
                 context.Skill.Add(entity);
                 context.SaveChanges();
-                return Mapper.Map<SkillDTO>(entity);
+                return Mapper.DynamicMap<SkillDTO>(entity);
             }
         }
 
@@ -59,7 +59,7 @@ namespace OpenNos.DAL.EF.MySQL
             {
                 foreach (Skill Skill in context.Skill)
                 {
-                    yield return Mapper.Map<SkillDTO>(Skill);
+                    yield return Mapper.DynamicMap<SkillDTO>(Skill);
                 }
             }
         }
@@ -67,7 +67,7 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                return Mapper.Map<SkillDTO>(context.Skill.FirstOrDefault(s => s.SkillVNum.Equals(SkillId)));
+                return Mapper.DynamicMap<SkillDTO>(context.Skill.FirstOrDefault(s => s.SkillVNum.Equals(SkillId)));
             }
         }
 

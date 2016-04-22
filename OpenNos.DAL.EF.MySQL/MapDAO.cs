@@ -32,7 +32,7 @@ namespace OpenNos.DAL.EF.MySQL
             {
                 foreach (MapDTO Item in Maps)
                 {
-                    Map entity = Mapper.Map<Map>(Item);
+                    Map entity = Mapper.DynamicMap<Map>(Item);
                     context.Map.Add(entity);
                 }
                 context.SaveChanges();
@@ -45,10 +45,10 @@ namespace OpenNos.DAL.EF.MySQL
             {
                 if (context.Map.FirstOrDefault(c => c.MapId.Equals(Map.MapId)) == null)
                 {
-                    Map entity = Mapper.Map<Map>(Map);
+                    Map entity = Mapper.DynamicMap<Map>(Map);
                     context.Map.Add(entity);
                     context.SaveChanges();
-                    return Mapper.Map<MapDTO>(entity);
+                    return Mapper.DynamicMap<MapDTO>(entity);
                 }
                 else return new MapDTO();
             }
@@ -60,7 +60,7 @@ namespace OpenNos.DAL.EF.MySQL
             {
                 foreach (Map Map in context.Map)
                 {
-                    yield return Mapper.Map<MapDTO>(Map);
+                    yield return Mapper.DynamicMap<MapDTO>(Map);
                 }
             }
         }
@@ -69,7 +69,7 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                return Mapper.Map<MapDTO>(context.Map.FirstOrDefault(c => c.MapId.Equals(MapId)));
+                return Mapper.DynamicMap<MapDTO>(context.Map.FirstOrDefault(c => c.MapId.Equals(MapId)));
             }
         }
 

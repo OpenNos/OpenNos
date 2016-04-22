@@ -11,6 +11,7 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public OpenNosContext()
             : base("name=OpenNosContext")
         {
+            this.Configuration.LazyLoadingEnabled = false;
         }
 
         #endregion

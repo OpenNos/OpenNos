@@ -33,7 +33,7 @@ namespace OpenNos.DAL.EF.MySQL
                 context.Configuration.AutoDetectChangesEnabled = false;
                 foreach (ItemDTO Item in Items)
                 {
-                    Item entity = Mapper.Map<Item>(Item);
+                    Item entity = Mapper.DynamicMap<Item>(Item);
                     context.Item.Add(entity);
                 }
                 context.SaveChanges();
@@ -44,10 +44,10 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                Item entity = Mapper.Map<Item>(Item);
+                Item entity = Mapper.DynamicMap<Item>(Item);
                 context.Item.Add(entity);
                 context.SaveChanges();
-                return Mapper.Map<ItemDTO>(entity);
+                return Mapper.DynamicMap<ItemDTO>(entity);
             }
         }
 
@@ -57,7 +57,7 @@ namespace OpenNos.DAL.EF.MySQL
             {
                 foreach (Item Item in context.Item)
                 {
-                    yield return Mapper.Map<ItemDTO>(Item);
+                    yield return Mapper.DynamicMap<ItemDTO>(Item);
                 }
             }
         }
@@ -66,7 +66,7 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                return Mapper.Map<ItemDTO>(context.Item.FirstOrDefault(i => i.VNum.Equals(ItemVnum)));
+                return Mapper.DynamicMap<ItemDTO>(context.Item.FirstOrDefault(i => i.VNum.Equals(ItemVnum)));
             }
         }
 

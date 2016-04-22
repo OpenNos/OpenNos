@@ -33,7 +33,7 @@ namespace OpenNos.DAL.EF.MySQL
                 context.Configuration.AutoDetectChangesEnabled = false;
                 foreach (MapNpcDTO Item in npcs)
                 {
-                    MapNpc entity = Mapper.Map<MapNpc>(Item);
+                    MapNpc entity = Mapper.DynamicMap<MapNpc>(Item);
                     context.MapNpc.Add(entity);
                 }
                 context.SaveChanges();
@@ -46,10 +46,10 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                MapNpc entity = Mapper.Map<MapNpc>(npc);
+                MapNpc entity = Mapper.DynamicMap<MapNpc>(npc);
                 context.MapNpc.Add(entity);
                 context.SaveChanges();
-                return Mapper.Map<MapNpcDTO>(entity);
+                return Mapper.DynamicMap<MapNpcDTO>(entity);
             }
         }
 
@@ -57,7 +57,7 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                return Mapper.Map<MapNpcDTO>(context.MapNpc.FirstOrDefault(i => i.MapNpcId.Equals(id)));
+                return Mapper.DynamicMap<MapNpcDTO>(context.MapNpc.FirstOrDefault(i => i.MapNpcId.Equals(id)));
             }
         }
 
@@ -67,7 +67,7 @@ namespace OpenNos.DAL.EF.MySQL
             {
                 foreach (MapNpc npcobject in context.MapNpc.Where(c => c.MapId.Equals(MapId)))
                 {
-                    yield return Mapper.Map<MapNpcDTO>(npcobject);
+                    yield return Mapper.DynamicMap<MapNpcDTO>(npcobject);
                 }
             }
         }

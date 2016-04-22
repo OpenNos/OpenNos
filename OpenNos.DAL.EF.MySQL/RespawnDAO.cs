@@ -55,7 +55,7 @@ namespace OpenNos.DAL.EF.MySQL
             {
                 foreach (Respawn Respawnobject in context.Respawn.Where(i => i.CharacterId.Equals(CharacterId)))
                 {
-                    yield return Mapper.Map<RespawnDTO>(Respawnobject);
+                    yield return Mapper.DynamicMap<RespawnDTO>(Respawnobject);
                 }
             }
         }
@@ -64,7 +64,7 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                return Mapper.Map<RespawnDTO>(context.Respawn.FirstOrDefault(s => s.RespawnId.Equals(RespawnId)));
+                return Mapper.DynamicMap<RespawnDTO>(context.Respawn.FirstOrDefault(s => s.RespawnId.Equals(RespawnId)));
             }
         }
 
@@ -73,7 +73,7 @@ namespace OpenNos.DAL.EF.MySQL
             Respawn entity = new Respawn() { CharacterId = Respawn.CharacterId };
             context.Respawn.Add(entity);
             context.SaveChanges();
-            return Mapper.Map<RespawnDTO>(entity);
+            return Mapper.DynamicMap<RespawnDTO>(entity);
         }
 
         private RespawnDTO Update(Respawn entity, RespawnDTO Respawn, OpenNosContext context)
@@ -88,7 +88,7 @@ namespace OpenNos.DAL.EF.MySQL
                 }
             }
 
-            return Mapper.Map<RespawnDTO>(entity);
+            return Mapper.DynamicMap<RespawnDTO>(entity);
         }
 
         #endregion

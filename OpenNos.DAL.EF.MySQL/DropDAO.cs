@@ -35,7 +35,7 @@ namespace OpenNos.DAL.EF.MySQL
                 context.Configuration.AutoDetectChangesEnabled = false;
                 foreach (DropDTO Drop in Drops)
                 {
-                    Drop entity = Mapper.Map<Drop>(Drop);
+                    Drop entity = Mapper.DynamicMap<Drop>(Drop);
                     context.Drop.Add(entity);
                 }
                 context.SaveChanges();
@@ -46,10 +46,10 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                Drop entity = Mapper.Map<Drop>(Drop);
+                Drop entity = Mapper.DynamicMap<Drop>(Drop);
                 context.Drop.Add(entity);
                 context.SaveChanges();
-                return Mapper.Map<DropDTO>(Drop);
+                return Mapper.DynamicMap<DropDTO>(Drop);
             }
         }
 
@@ -59,7 +59,7 @@ namespace OpenNos.DAL.EF.MySQL
             {
                 foreach (Drop Drop in context.Drop.Where(s => s.MonsterVNum.Equals(monsterVNum)))
                 {
-                    yield return Mapper.Map<DropDTO>(Drop);
+                    yield return Mapper.DynamicMap<DropDTO>(Drop);
                 }
             }
         }

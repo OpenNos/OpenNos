@@ -33,7 +33,7 @@ namespace OpenNos.DAL.EF.MySQL
                 context.Configuration.AutoDetectChangesEnabled = false;
                 foreach (ShopDTO Item in Shops)
                 {
-                    Shop entity = Mapper.Map<Shop>(Item);
+                    Shop entity = Mapper.DynamicMap<Shop>(Item);
                     context.Shop.Add(entity);
                 }
                 context.SaveChanges();
@@ -46,10 +46,10 @@ namespace OpenNos.DAL.EF.MySQL
             {
                 if (context.Shop.FirstOrDefault(c => c.MapNpcId.Equals(Shop.MapNpcId)) == null)
                 {
-                    Shop entity = Mapper.Map<Shop>(Shop);
+                    Shop entity = Mapper.DynamicMap<Shop>(Shop);
                     context.Shop.Add(entity);
                     context.SaveChanges();
-                    return Mapper.Map<ShopDTO>(entity);
+                    return Mapper.DynamicMap<ShopDTO>(entity);
                 }
                 else return new ShopDTO();
             }
@@ -59,7 +59,7 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                return Mapper.Map<ShopDTO>(context.Shop.FirstOrDefault(s => s.ShopId.Equals(ShopId)));
+                return Mapper.DynamicMap<ShopDTO>(context.Shop.FirstOrDefault(s => s.ShopId.Equals(ShopId)));
             }
         }
 
@@ -67,7 +67,7 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                return Mapper.Map<ShopDTO>(context.Shop.FirstOrDefault(s => s.MapNpcId.Equals(npcId)));
+                return Mapper.DynamicMap<ShopDTO>(context.Shop.FirstOrDefault(s => s.MapNpcId.Equals(npcId)));
             }
         }
 
