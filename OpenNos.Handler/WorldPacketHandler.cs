@@ -2648,8 +2648,12 @@ namespace OpenNos.Handler
                     else
                         Session.Client.SendPacket("cancel 0 0");
                 }
+                else
+                    Session.Client.SendPacket("cancel 0 0");
             }
-               
+            else
+                Session.Client.SendPacket("cancel 0 0");
+
         }
 
         [Packet("up_gr")]
