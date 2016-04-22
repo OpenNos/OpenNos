@@ -3049,8 +3049,8 @@ namespace OpenNos.Handler
                             Session.Character.Hp = (int)(Session.Character.HPLoad() / 2);
                             Session.Character.Mp = (int)(Session.Character.MPLoad() / 2);
                             Session.Client.SendPacket(Session.Character.GenerateTp());
-                            Session.Client.SendPacket(Session.Character.GenerateRevive());
-                            Session.Client.SendPacket(Session.Character.GenerateStat());
+                            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateTp(), ReceiverType.AllOnMap);
+                            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateRevive(), ReceiverType.AllOnMap);
                             Session.Character.InventoryList.RemoveItemAmount(seed, 10);
                             GetStartupInventory();
                         }

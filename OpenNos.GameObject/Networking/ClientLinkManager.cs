@@ -526,8 +526,8 @@ namespace OpenNos.GameObject
                 Session.Character.Hp = 1;
                 Session.Character.Mp = 1;
                 ChangeMap(Session.Character.CharacterId);
-                Session.Client.SendPacket(Session.Character.GenerateTp());
-                Session.Client.SendPacket(Session.Character.GenerateRevive());
+                Broadcast(Session, Session.Character.GenerateTp(), ReceiverType.AllOnMap);
+                Broadcast(Session,Session.Character.GenerateRevive(),ReceiverType.AllOnMap);
                 Session.Client.SendPacket(Session.Character.GenerateStat());
             }
         }
