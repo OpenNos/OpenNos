@@ -25,7 +25,8 @@ Installer Packages:
 
 ##4 Install MYSQL for Visual Studio
 
-##5 When in EDMX model viewer(visual studio) RMB in random empty space on your display and Generate Database from Model
+##5 Use the NuGet Package Manager to Update the Database
 
-##6 Run EDMX-Scripts against recently set up MySQL Database (OpenNos.DAL.EF.MySQL\DB\OpenNos.edmx)
+- Go to Tools -> NuGet Package Manager -> Package Manager Console
+- 'Type update-database' and update the Database
 
