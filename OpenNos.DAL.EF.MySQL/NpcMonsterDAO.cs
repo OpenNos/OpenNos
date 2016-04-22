@@ -16,7 +16,6 @@ using AutoMapper;
 using OpenNos.DAL.EF.MySQL.Helpers;
 using OpenNos.DAL.Interface;
 using OpenNos.Data;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -28,22 +27,15 @@ namespace OpenNos.DAL.EF.MySQL
 
         public void Insert(List<NpcMonsterDTO> npc)
         {
-            try
+            using (var context = DataAccessHelper.CreateContext())
             {
-                using (var context = DataAccessHelper.CreateContext())
+                context.Configuration.AutoDetectChangesEnabled = false;
+                foreach (NpcMonsterDTO Item in npc)
                 {
-                    context.Configuration.AutoDetectChangesEnabled = false;
-                    foreach (NpcMonsterDTO Item in npc)
-                    {
-                        NpcMonster entity = Mapper.Map<NpcMonster>(Item);
-                        context.NpcMonster.Add(entity);
-                    }
-                    context.SaveChanges();
+                    NpcMonster entity = Mapper.Map<NpcMonster>(Item);
+                    context.NpcMonster.Add(entity);
                 }
-            }
-            catch (Exception e)
-            {
-                int i = 0;
+                context.SaveChanges();
             }
         }
 
