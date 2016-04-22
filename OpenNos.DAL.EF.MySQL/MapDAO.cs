@@ -17,7 +17,6 @@ using AutoMapper;
 using OpenNos.DAL.EF.MySQL.Helpers;
 using OpenNos.DAL.Interface;
 using OpenNos.Data;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -29,21 +28,14 @@ namespace OpenNos.DAL.EF.MySQL
 
         public void Insert(List<MapDTO> Maps)
         {
-            try
+            using (var context = DataAccessHelper.CreateContext())
             {
-                using (var context = DataAccessHelper.CreateContext())
+                foreach (MapDTO Item in Maps)
                 {
-                    foreach (MapDTO Item in Maps)
-                    {
-                        Map entity = Mapper.Map<Map>(Item);
-                        context.Map.Add(entity);
-                    }
-                    context.SaveChanges();
+                    Map entity = Mapper.Map<Map>(Item);
+                    context.Map.Add(entity);
                 }
-            }
-            catch(Exception ex)
-            {
-                int i = 0;
+                context.SaveChanges();
             }
         }
 
