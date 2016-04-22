@@ -2643,7 +2643,11 @@ namespace OpenNos.Handler
                                          Session.Client.SendPacket("cancel 0 0");
                                  });
                         }
+                        else
+                            Session.Client.SendPacket("cancel 0 0");
                     }
+                    else
+                        Session.Client.SendPacket("cancel 0 0");
                 }
             }
                
