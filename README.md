@@ -1,3 +1,4 @@
+[![Build Status](http://134.255.238.79:8080/job/OpenNos/badge/icon)](http://134.255.238.79:8080/job/OpenNos/)
 #Instructions to contribute
 
 ###Contribution is only possible with Visual Studio 2015 (Community or other editions) and MySQL.
