@@ -13,7 +13,7 @@
  */
 
 using AutoMapper;
-using OpenNos.DAL.EF.MySQL.DB;
+
 using OpenNos.DAL.EF.MySQL.Helpers;
 using OpenNos.DAL.Interface;
 using OpenNos.Data;
@@ -26,26 +26,26 @@ namespace OpenNos.DAL.EF.MySQL
     {
         #region Methods
 
-        public NpcMonsterSkillDTO Insert(ref NpcMonsterSkillDTO npcmonsterskill)
+        public NpcMonsterSkillDTO Insert(ref NpcMonsterSkillDTO NpcMonsterSkill)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                NpcMonsterSkill entity = Mapper.Map<NpcMonsterSkill>(npcmonsterskill);
-                context.npcmonsterskill.Add(entity);
+                NpcMonsterSkill entity = Mapper.Map<NpcMonsterSkill>(NpcMonsterSkill);
+                context.NpcMonsterSkill.Add(entity);
                 context.SaveChanges();
                 return Mapper.Map<NpcMonsterSkillDTO>(entity);
             }
         }
-        public void Insert(List<NpcMonsterSkillDTO> skills)
+        public void Insert(List<NpcMonsterSkillDTO> Skills)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
 
                 context.Configuration.AutoDetectChangesEnabled = false;
-                foreach (NpcMonsterSkillDTO skill in skills)
+                foreach (NpcMonsterSkillDTO Skill in Skills)
                 {
-                    NpcMonsterSkill entity = Mapper.Map<NpcMonsterSkill>(skill);
-                    context.npcmonsterskill.Add(entity);
+                    NpcMonsterSkill entity = Mapper.Map<NpcMonsterSkill>(Skill);
+                    context.NpcMonsterSkill.Add(entity);
                 }
                 context.SaveChanges();
 
@@ -55,9 +55,9 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                foreach (NpcMonsterSkill npcmonsterskillobject in context.npcmonsterskill.Where(i => i.NpcMonsterVNum == npcId))
+                foreach (NpcMonsterSkill NpcMonsterSkillobject in context.NpcMonsterSkill.Where(i => i.NpcMonsterVNum == npcId))
                 {
-                    yield return Mapper.Map<NpcMonsterSkillDTO>(npcmonsterskillobject);
+                    yield return Mapper.Map<NpcMonsterSkillDTO>(NpcMonsterSkillobject);
                 }
             }
         }

@@ -32,11 +32,14 @@ namespace OpenNos.Import.Console
             FileVersionInfo fileVersionInfo = FileVersionInfo.GetVersionInfo(assembly.Location);
             System.Console.Title = $"OpenNos Import Console v{fileVersionInfo.ProductVersion}";
             string text = $"IMPORT CONSOLE VERSION {fileVersionInfo.ProductVersion} by OpenNos Team";
+            if(args.Length ==0)
+            {
             int offset = (System.Console.WindowWidth - text.Length) / 2;
             System.Console.WriteLine("===============================================================================");
             System.Console.SetCursorPosition(offset < 0 ? 0 : offset, System.Console.CursorTop);
             System.Console.WriteLine(text + "\n" +
             "===============================================================================\n");
+            }
 
             DataAccessHelper.Initialize();
             System.ConsoleKeyInfo key = new System.ConsoleKeyInfo();

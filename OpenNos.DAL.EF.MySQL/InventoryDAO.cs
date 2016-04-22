@@ -29,16 +29,16 @@ namespace OpenNos.DAL.EF.MySQL
     {
         #region Methods
 
-        public DeleteResult DeleteFromSlotAndType(long characterId, short slot, byte type)
+        public DeleteResult DeleteFromSlotAndType(long CharacterId, short slot, byte type)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                Inventory inv = context.inventory.FirstOrDefault(i => i.Slot.Equals(slot) && i.Type.Equals(type) && i.CharacterId.Equals(characterId));
-                InventoryItem invitem = context.inventoryitem.FirstOrDefault(i => i.inventory.InventoryId == inv.InventoryId);
+                Inventory inv = context.Inventory.FirstOrDefault(i => i.Slot.Equals(slot) && i.Type.Equals(type) && i.CharacterId.Equals(CharacterId));
+                InventoryItem invItem = context.InventoryItem.FirstOrDefault(i => i.Inventory.InventoryId == inv.InventoryId);
                 if (inv != null)
                 {
-                    context.inventory.Remove(inv);
-                    context.inventoryitem.Remove(invitem);
+                    context.Inventory.Remove(inv);
+                    context.InventoryItem.Remove(invItem);
                     context.SaveChanges();
                 }
 
@@ -46,34 +46,33 @@ namespace OpenNos.DAL.EF.MySQL
             }
         }
 
-        public SaveResult InsertOrUpdate(ref InventoryDTO inventory)
+        public SaveResult InsertOrUpdate(ref InventoryDTO Inventory)
         {
             try
             {
                 using (var context = DataAccessHelper.CreateContext())
                 {
-                    long InventoryId = inventory.InventoryId;
-                    byte Type = inventory.Type;
-                    short Slot = inventory.Slot;
-                    long CharacterId = inventory.CharacterId;
-                    Inventory entity = context.inventory.FirstOrDefault(c => c.InventoryId == InventoryId);
+                    long InventoryId = Inventory.InventoryId;
+                    byte Type = Inventory.Type;
+                    short Slot = Inventory.Slot;
+                    long CharacterId = Inventory.CharacterId;
+                    Inventory entity = context.Inventory.FirstOrDefault(c => c.InventoryId == InventoryId);
                     if (entity == null) //new entity
                     {
-                        Inventory delete = context.inventory.FirstOrDefault(s =>s.CharacterId ==CharacterId && s.Slot == Slot && s.Type == Type);
+                        Inventory delete = context.Inventory.FirstOrDefault(s => s.CharacterId == CharacterId && s.Slot == Slot && s.Type == Type);
                         if (delete != null)
                         {
-                            InventoryItem deleteItem = context.inventoryitem.FirstOrDefault(s=>s.inventory.InventoryId == delete.InventoryId);
-                           context.inventoryitem.Remove(deleteItem);
-                            context.inventory.Remove(delete);
-                         
+                            InventoryItem deleteItem = context.InventoryItem.FirstOrDefault(s => s.Inventory.InventoryId == delete.InventoryId);
+                            context.InventoryItem.Remove(deleteItem);
+                            context.Inventory.Remove(delete);
                         }
-                        inventory = Insert(inventory, context);
+                        Inventory = Insert(Inventory, context);
                         return SaveResult.Inserted;
                     }
                     else //existing entity
                     {
-                        entity.inventoryitem = context.inventoryitem.FirstOrDefault(c => c.inventory.InventoryId == entity.InventoryId);
-                        inventory = Update(entity, inventory, context);
+                        entity.InventoryItem = context.InventoryItem.FirstOrDefault(c => c.Inventory.InventoryId == entity.InventoryId);
+                        Inventory = Update(entity, Inventory, context);
                         return SaveResult.Updated;
                     }
                 }
@@ -85,54 +84,52 @@ namespace OpenNos.DAL.EF.MySQL
             }
         }
 
-        public IEnumerable<InventoryDTO> LoadByCharacterId(long characterId)
+        public IEnumerable<InventoryDTO> LoadByCharacterId(long CharacterId)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                foreach (Inventory inventoryobject in context.inventory.Where(i => i.CharacterId.Equals(characterId)))
+                foreach (Inventory Inventoryobject in context.Inventory.Where(i => i.CharacterId.Equals(CharacterId)))
                 {
-                    yield return Mapper.Map<InventoryDTO>(inventoryobject);
+                    yield return Mapper.Map<InventoryDTO>(Inventoryobject);
                 }
             }
         }
 
-
-        public InventoryDTO LoadBySlotAndType(long characterId, short slot, byte type)
+        public InventoryDTO LoadBySlotAndType(long CharacterId, short slot, byte type)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                return Mapper.Map<InventoryDTO>(context.inventory.FirstOrDefault(i => i.Slot.Equals(slot) && i.Type.Equals(type) && i.CharacterId.Equals(characterId)));
+                return Mapper.Map<InventoryDTO>(context.Inventory.FirstOrDefault(i => i.Slot.Equals(slot) && i.Type.Equals(type) && i.CharacterId.Equals(CharacterId)));
             }
         }
 
-        public IEnumerable<InventoryDTO> LoadByType(long characterId, byte type)
+        public IEnumerable<InventoryDTO> LoadByType(long CharacterId, byte type)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                foreach (Inventory inventoryobject in context.inventory.Where(i => i.Type.Equals(type) && i.CharacterId.Equals(characterId)))
+                foreach (Inventory Inventoryobject in context.Inventory.Where(i => i.Type.Equals(type) && i.CharacterId.Equals(CharacterId)))
                 {
-                    yield return Mapper.Map<InventoryDTO>(inventoryobject);
+                    yield return Mapper.Map<InventoryDTO>(Inventoryobject);
                 }
             }
         }
 
-        private InventoryDTO Insert(InventoryDTO inventory, OpenNosContainer context)
+        private InventoryDTO Insert(InventoryDTO Inventory, OpenNosContext context)
         {
-
-            Inventory entity = Mapper.Map<Inventory>(inventory);
-            context.inventory.Add(entity);
+            Inventory entity = Mapper.Map<Inventory>(Inventory);
+            context.Inventory.Add(entity);
             context.SaveChanges();
             return Mapper.Map<InventoryDTO>(entity);
         }
 
-        private InventoryDTO Update(Inventory entity, InventoryDTO inventory, OpenNosContainer context)
+        private InventoryDTO Update(Inventory entity, InventoryDTO Inventory, OpenNosContext context)
         {
             using (context)
             {
-                var result = context.inventory.FirstOrDefault(c => c.InventoryId == inventory.InventoryId);
+                var result = context.Inventory.FirstOrDefault(c => c.InventoryId == Inventory.InventoryId);
                 if (result != null)
                 {
-                    result = Mapper.Map<InventoryDTO, Inventory>(inventory, entity);
+                    result = Mapper.Map<InventoryDTO, Inventory>(Inventory, entity);
                     context.SaveChanges();
                 }
             }

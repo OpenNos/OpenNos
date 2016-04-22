@@ -28,7 +28,7 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                return Mapper.Map<InventoryItemDTO>(context.inventoryitem.FirstOrDefault(i => i.inventory.InventoryId.Equals(InventoryId)));
+                return Mapper.Map<InventoryItemDTO>(context.InventoryItem.FirstOrDefault(i => i.Inventory.InventoryId.Equals(InventoryId)));
             }
         }
 

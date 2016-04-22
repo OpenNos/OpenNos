@@ -13,7 +13,7 @@
  */
 
 using AutoMapper;
-using OpenNos.DAL.EF.MySQL.DB;
+
 using OpenNos.DAL.EF.MySQL.Helpers;
 using OpenNos.DAL.Interface;
 using OpenNos.Data;
@@ -26,28 +26,26 @@ namespace OpenNos.DAL.EF.MySQL
     {
         #region Methods
 
-        public void Insert(List<ItemDTO> items)
+        public void Insert(List<ItemDTO> Items)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                
-                    context.Configuration.AutoDetectChangesEnabled = false;
-                    foreach (ItemDTO item in items)
-                    {
-                        Item entity = Mapper.Map<Item>(item);
-                        context.item.Add(entity);
-                    }
-                    context.SaveChanges();
-                
+                context.Configuration.AutoDetectChangesEnabled = false;
+                foreach (ItemDTO Item in Items)
+                {
+                    Item entity = Mapper.Map<Item>(Item);
+                    context.Item.Add(entity);
+                }
+                context.SaveChanges();
             }
         }
 
-        public ItemDTO Insert(ItemDTO item)
+        public ItemDTO Insert(ItemDTO Item)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                Item entity = Mapper.Map<Item>(item);
-                context.item.Add(entity);
+                Item entity = Mapper.Map<Item>(Item);
+                context.Item.Add(entity);
                 context.SaveChanges();
                 return Mapper.Map<ItemDTO>(entity);
             }
@@ -57,9 +55,9 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                foreach (Item item in context.item)
+                foreach (Item Item in context.Item)
                 {
-                    yield return Mapper.Map<ItemDTO>(item);
+                    yield return Mapper.Map<ItemDTO>(Item);
                 }
             }
         }
@@ -68,7 +66,7 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                return Mapper.Map<ItemDTO>(context.item.FirstOrDefault(i => i.VNum.Equals(ItemVnum)));
+                return Mapper.Map<ItemDTO>(context.Item.FirstOrDefault(i => i.VNum.Equals(ItemVnum)));
             }
         }
 

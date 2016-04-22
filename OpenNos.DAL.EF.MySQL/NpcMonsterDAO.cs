@@ -13,10 +13,10 @@
  */
 
 using AutoMapper;
-using OpenNos.DAL.EF.MySQL.DB;
 using OpenNos.DAL.EF.MySQL.Helpers;
 using OpenNos.DAL.Interface;
 using OpenNos.Data;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -28,15 +28,22 @@ namespace OpenNos.DAL.EF.MySQL
 
         public void Insert(List<NpcMonsterDTO> npc)
         {
-            using (var context = DataAccessHelper.CreateContext())
+            try
             {
-                context.Configuration.AutoDetectChangesEnabled = false;
-                foreach (NpcMonsterDTO item in npc)
+                using (var context = DataAccessHelper.CreateContext())
                 {
-                    NpcMonster entity = Mapper.Map<NpcMonster>(item);
-                    context.npcmonster.Add(entity);
+                    context.Configuration.AutoDetectChangesEnabled = false;
+                    foreach (NpcMonsterDTO Item in npc)
+                    {
+                        NpcMonster entity = Mapper.Map<NpcMonster>(Item);
+                        context.NpcMonster.Add(entity);
+                    }
+                    context.SaveChanges();
                 }
-                context.SaveChanges();
+            }
+            catch (Exception e)
+            {
+                int i = 0;
             }
         }
 
@@ -45,7 +52,7 @@ namespace OpenNos.DAL.EF.MySQL
             using (var context = DataAccessHelper.CreateContext())
             {
                 NpcMonster entity = Mapper.Map<NpcMonster>(npc);
-                context.npcmonster.Add(entity);
+                context.NpcMonster.Add(entity);
                 context.SaveChanges();
                 return Mapper.Map<NpcMonsterDTO>(entity);
             }
@@ -55,9 +62,9 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                foreach (NpcMonster npcmonster in context.npcmonster)
+                foreach (NpcMonster NpcMonster in context.NpcMonster)
                 {
-                    yield return Mapper.Map<NpcMonsterDTO>(npcmonster);
+                    yield return Mapper.Map<NpcMonsterDTO>(NpcMonster);
                 }
             }
         }
@@ -66,7 +73,7 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                return Mapper.Map<NpcMonsterDTO>(context.npcmonster.FirstOrDefault(i => i.NpcMonsterVNum.Equals(Vnum)));
+                return Mapper.Map<NpcMonsterDTO>(context.NpcMonster.FirstOrDefault(i => i.NpcMonsterVNum.Equals(Vnum)));
             }
         }
 

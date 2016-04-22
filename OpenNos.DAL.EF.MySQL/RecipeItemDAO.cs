@@ -13,7 +13,7 @@
  */
 
 using AutoMapper;
-using OpenNos.DAL.EF.MySQL.DB;
+
 using OpenNos.DAL.EF.MySQL.Helpers;
 using OpenNos.DAL.Interface;
 using OpenNos.Data;
@@ -27,12 +27,12 @@ namespace OpenNos.DAL.EF.MySQL
     {
         #region Methods
 
-        public RecipeItemDTO Insert(RecipeItemDTO recipeitem)
+        public RecipeItemDTO Insert(RecipeItemDTO RecipeItem)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                RecipeItem entity = Mapper.Map<RecipeItem>(recipeitem);
-                context.recipeitem.Add(entity);
+                RecipeItem entity = Mapper.Map<RecipeItem>(RecipeItem);
+                context.RecipeItem.Add(entity);
                 context.SaveChanges();
                 return Mapper.Map<RecipeItemDTO>(entity);
             }
@@ -42,7 +42,7 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                foreach (RecipeItem rec in context.recipeitem)
+                foreach (RecipeItem rec in context.RecipeItem)
                 {
                     yield return Mapper.Map<RecipeItemDTO>(rec);
                 }
@@ -53,17 +53,17 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                return Mapper.Map<RecipeItemDTO>(context.recipeitem.FirstOrDefault(s => s.RecipeItemId.Equals(RecipeItemId)));
+                return Mapper.Map<RecipeItemDTO>(context.RecipeItem.FirstOrDefault(s => s.RecipeItemId.Equals(RecipeItemId)));
             }
         }
 
-        public IEnumerable<RecipeItemDTO> LoadByRecipe(short recipeId)
+        public IEnumerable<RecipeItemDTO> LoadByRecipe(short RecipeId)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                foreach (RecipeItem recipeitem in context.recipeitem.Where(s => s.RecipeId.Equals(recipeId)))
+                foreach (RecipeItem RecipeItem in context.RecipeItem.Where(s => s.RecipeId.Equals(RecipeId)))
                 {
-                    yield return Mapper.Map<RecipeItemDTO>(recipeitem);
+                    yield return Mapper.Map<RecipeItemDTO>(RecipeItem);
 
                 }
             }

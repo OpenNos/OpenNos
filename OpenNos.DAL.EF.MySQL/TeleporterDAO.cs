@@ -13,7 +13,7 @@
  */
 
 using AutoMapper;
-using OpenNos.DAL.EF.MySQL.DB;
+
 using OpenNos.DAL.EF.MySQL.Helpers;
 using OpenNos.DAL.Interface;
 using OpenNos.Data;
@@ -26,12 +26,12 @@ namespace OpenNos.DAL.EF.MySQL
     {
         #region Methods
 
-        public TeleporterDTO Insert(TeleporterDTO teleporter)
+        public TeleporterDTO Insert(TeleporterDTO Teleporter)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                Teleporter entity = Mapper.Map<Teleporter>(teleporter);
-                context.teleporter.Add(entity);
+                Teleporter entity = Mapper.Map<Teleporter>(Teleporter);
+                context.Teleporter.Add(entity);
                 context.SaveChanges();
                 return Mapper.Map<TeleporterDTO>(entity);
             }
@@ -41,9 +41,9 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                foreach (Teleporter teleporterobject in context.teleporter.Where(c => c.MapNpcId.Equals(NpcId)))
+                foreach (Teleporter Teleporterobject in context.Teleporter.Where(c => c.MapNpcId.Equals(NpcId)))
                 {
-                    yield return Mapper.Map<TeleporterDTO>(teleporterobject);
+                    yield return Mapper.Map<TeleporterDTO>(Teleporterobject);
                 }
             }
         }
@@ -52,7 +52,7 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                return Mapper.Map<TeleporterDTO>(context.teleporter.FirstOrDefault(i => i.TeleporterId.Equals(TeleporterId)));
+                return Mapper.Map<TeleporterDTO>(context.Teleporter.FirstOrDefault(i => i.TeleporterId.Equals(TeleporterId)));
             }
         }
         #endregion
