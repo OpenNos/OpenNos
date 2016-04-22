@@ -2557,7 +2557,6 @@ namespace OpenNos.Handler
             int hitmode = 0;
             Skill skill = null;
             CharacterSkill ski = skills.FirstOrDefault(s => (skill = ServerManager.GetSkill(s.SkillVNum)) != null && skill.CastId == Castingid);
-            bool done = false;
             if (!ski.Used)
             {
                 if (skill != null && skill.TargetType == 1 && skill.HitType == 1)
@@ -2582,7 +2581,7 @@ namespace OpenNos.Handler
                                 mmon = ServerManager.GetMap(Session.Character.MapId).Monsters.FirstOrDefault(s => s.MapMonsterId == mon.MapMonsterId);
                                 ClientLinkManager.Instance.Broadcast(Session, $"su {1} {Session.Character.CharacterId} {3} {mmon.MapMonsterId} {skill.SkillVNum} {skill.Cooldown} {skill.AttackAnimation} {skill.Effect} {Session.Character.MapX} {Session.Character.MapY} {(mmon.Alive ? 1 : 0)} {(int)(((float)mmon.CurrentHp / (float)ServerManager.GetNpc(mon.MonsterVNum).MaxHP) * 100)} {damage} {5} {skill.SkillType - 1}", ReceiverType.AllOnMap);
                             }
-                        done = true;
+                        
                         await Task.Delay((skill.Cooldown) * 100);
                         ski.Used = false;
                         Session.Client.SendPacket($"sr {Castingid}");
@@ -2601,7 +2600,7 @@ namespace OpenNos.Handler
                                      short dX = (short)(Session.Character.MapX - mmon.MapX);
                                      short dY = (short)(Session.Character.MapY - mmon.MapY);
 
-                                     if (Math.Pow((dX - 1) < 0 ? 0: (dX - 1), 2) + Math.Pow((dY - 1) < 0 ? 0 : (dY - 1), 2) <= Math.Pow(skill.Range, 2) || skill.TargetRange != 0)
+                                     if (Map.GetDistance(new MapCell() { X= Session.Character.MapX, Y= Session.Character.MapY}, new MapCell() { X = mmon.MapX, Y = mmon.MapY })<= skill.Range || skill.TargetRange != 0)
                                      {
                                          ClientLinkManager.Instance.Broadcast(Session, $"ct 1 {Session.Character.CharacterId} 3 {mmon.MapMonsterId} {skill.CastAnimation} -1 {skill.SkillVNum}", ReceiverType.AllOnMap);
                                          damage = GenerateDamage(Session, mmon.MapMonsterId, skill, ref hitmode);
@@ -2635,18 +2634,23 @@ namespace OpenNos.Handler
                                                  damage = GenerateDamage(Session, mon.MapMonsterId, skill, ref hitmode);
                                                  ClientLinkManager.Instance.Broadcast(Session, $"su {1} {Session.Character.CharacterId} {3} {mon.MapMonsterId} {skill.SkillVNum} {skill.Cooldown} {skill.AttackAnimation} {skill.Effect} {Session.Character.MapX} {Session.Character.MapY} {(mon.Alive ? 1 : 0)} {(int)(((float)mon.CurrentHp / (float)ServerManager.GetNpc(mon.MonsterVNum).MaxHP) * 100)} {damage} {5} {skill.SkillType - 1}", ReceiverType.AllOnMap);
                                              }
-                                         done = true;
+                                       
                                          await Task.Delay((skill.Cooldown) * 100);
                                          ski.Used = false;
                                          Session.Client.SendPacket($"sr {Castingid}");
                                      }
+                                     else
+                                         Session.Client.SendPacket("cancel 0 0");
                                  });
                         }
+                        else
+                            Session.Client.SendPacket("cancel 0 0");
                     }
+                    else
+                        Session.Client.SendPacket("cancel 0 0");
                 }
             }
-            if (!done)
-                Session.Client.SendPacket("cancel 0 0");
+               
         }
 
         [Packet("up_gr")]
@@ -3036,15 +3040,15 @@ namespace OpenNos.Handler
                 {
                     case 0:
                         int seed = 1012;
-                        if (Session.Character.InventoryList.CountItem(seed) < 10 && Session.Character.Level > 20)
+                        if (Session.Character.InventoryList.CountItem(seed) < 10 && Session.Character.Level >= 20)
                         {
-                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("YOU_DONT_HAVE_ENOUGH_SEED"), 0));
+                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_POWER_SEED"), 0));
                             ClientLinkManager.Instance.ReviveFirstPosition(Session.Character.CharacterId);
-                            Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("I_DONT_HAVE_ENOUGH_SEED"), 0));
+                            Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NOT_ENOUGH_SEED_SAY"), 0));
                         }
                         else
                         {
-                            if(Session.Character.Level > 20)
+                            if(Session.Character.Level >= 20)
                             Session.Client.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("SEED_USED"), 10), 10));
                             Session.Character.Hp = (int)(Session.Character.HPLoad() / 2);
                             Session.Character.Mp = (int)(Session.Character.MPLoad() / 2);
@@ -3162,7 +3166,8 @@ namespace OpenNos.Handler
 
             if (Session.Character.Speed.Equals(Convert.ToByte(packetsplit[5])) || Convert.ToByte(packetsplit[5]) == 10)
             {
-                if ((Math.Pow(Session.Character.MapX - 1 - Convert.ToInt16(packetsplit[2]), 2) + Math.Pow(Session.Character.MapY - 1 - Convert.ToInt16(packetsplit[3]), 2)) > Math.Pow(20, 2))
+
+                if (Map.GetDistance(new MapCell() { X= Session.Character.MapX,Y= Session.Character.MapY }, new MapCell() { X = Convert.ToInt16(packetsplit[2]), Y = Convert.ToInt16(packetsplit[3]) }) > 20)
                     Session.Client.Disconnect();
                 ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateMv(), ReceiverType.AllOnMapExceptMe);
                 Session.Client.SendPacket(Session.Character.GenerateCond());
