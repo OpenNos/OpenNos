@@ -200,7 +200,7 @@ namespace OpenNos.GameObject
             List<MapMonster> listmon = new List<MapMonster>();
             foreach (MapMonster mo in Monsters.Where(s => s.Alive))
             {
-                if (GetDistance(new MapCell() { X = mapX ,Y=mapY }, new MapCell() { X = mo.MapX, Y = mo.MapY }) <= distance+1)
+                if (GetDistance(new MapCell() { X = mapX, Y = mapY }, new MapCell() { X = mo.MapX, Y = mo.MapY }) <= distance + 1)
                     listmon.Add(mo);
             }
             return listmon;
@@ -295,9 +295,17 @@ namespace OpenNos.GameObject
             }
         }
 
-        internal IEnumerable<MapMonster> GetListPeopleInRange(short? mapX, short? mapY, byte basicArea)
+        internal IEnumerable<Character> GetListPeopleInRange(short mapX, short mapY, byte distance)
         {
-            throw new NotImplementedException();
+            List<Character> listch = new List<Character>();
+            IEnumerable<ClientSession> cl = ClientLinkManager.Instance.Sessions.Where(s => s.Character != null && s.Character.Hp > 0);
+            for (int i = cl.Count() - 1; i >= 0; i--)
+            {
+
+                if (GetDistance(new MapCell() { X = mapX, Y = mapY }, new MapCell() { X = cl.ElementAt(i).Character.MapX, Y = cl.ElementAt(i).Character.MapY }) <= distance + 1)
+                    listch.Add(cl.ElementAt(i).Character);
+            }
+            return listch;
         }
 
         public async void MonsterLifeManager()
@@ -355,7 +363,7 @@ namespace OpenNos.GameObject
 
             SortedCostMapCellList OPEN = new SortedCostMapCellList();
             SortedCostMapCellList CLOSED = new SortedCostMapCellList();
-            MapCellAStar cell_start = new MapCellAStar(null,null, cell1.X, cell1.Y, cell1.MapId);
+            MapCellAStar cell_start = new MapCellAStar(null, null, cell1.X, cell1.Y, cell1.MapId);
             MapCellAStar cell_goal = new MapCellAStar(null, null, cell2.X, cell2.Y, cell2.MapId);
             OPEN.push(cell_start);
 
@@ -408,16 +416,10 @@ namespace OpenNos.GameObject
             MapCellAStar p = cell_goal;
             while (p != null)
             {
+
                 SolutionPathList.Insert(0, p);
                 p = p.parentcell;
-            }
-            if (SolutionPathList.Count > 0)
-            {
-                SolutionPathList.RemoveAt(0);
-            }
-            if (SolutionPathList.Count > 0)
-            {
-                SolutionPathList.RemoveAt(SolutionPathList.Count - 1);
+
             }
             return SolutionPathList;
         }

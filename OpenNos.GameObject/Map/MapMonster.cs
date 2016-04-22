@@ -127,21 +127,28 @@ namespace OpenNos.GameObject
                     if (ServerManager.GetMap(MapId).GetFreePosition(ref MapX, ref MapY, xpoint, ypoint))
                     {
 
-                        this.MapX = MapX;
-                        this.MapY = MapY;
+
                         LastMove = DateTime.Now;
 
-                        string movepacket = $"mv 3 {this.MapMonsterId} {this.MapX} {this.MapY} {monster.Speed}";
+                        string movepacket = $"mv 3 {this.MapMonsterId} {MapX} {MapY} {monster.Speed}";
                         ClientLinkManager.Instance.BroadcastToMap(MapId, movepacket);
+
+                        Task.Factory.StartNew(async () =>
+                        {
+                            await Task.Delay(500);
+                            this.MapX = MapX;
+                            this.MapY = MapY;
+                        });
+
 
                     }
                 }
                 if (monster.IsHostile)
                 {
-                    Character character = ClientLinkManager.Instance.Sessions.Where(s => s.Character != null && s.Character.Hp > 0).OrderBy(s => (int)(Math.Pow(MapX - s.Character.MapX, 2) + Math.Pow(MapY - s.Character.MapY, 2))).FirstOrDefault(s => s.Character != null && s.Character.MapId == MapId)?.Character;
+                    Character character = ClientLinkManager.Instance.Sessions.Where(s => s.Character != null && s.Character.Hp > 0).OrderBy(s => Map.GetDistance(new MapCell() { X = MapX, Y = MapY }, new MapCell() { X = s.Character.MapX, Y = s.Character.MapY })).FirstOrDefault(s => s.Character != null && s.Character.MapId == MapId)?.Character;
                     if (character != null)
                     {
-                        if ((Math.Pow(character.MapX - 1 - MapX, 2) + Math.Pow(character.MapY - 1 - MapY, 2)) <= (Math.Pow(7, 2)))
+                        if (Map.GetDistance(new MapCell() { X = character.MapX, Y = character.MapY }, new MapCell() { X = MapX, Y = MapY }) < 7)
                         {
                             Target = character.CharacterId;
 
@@ -165,7 +172,7 @@ namespace OpenNos.GameObject
                 if (ski != null)
                 {
                     Skill sk = ServerManager.GetSkill(ski.SkillVNum);
-                    if (MapId == mapId && (Math.Pow(this.MapX - 1 - (short)MapX, 2) + Math.Pow(this.MapY - 1 - (short)MapY, 2) <= Math.Pow(sk.Range, 2)))
+                    if (MapId == mapId && Map.GetDistance(new MapCell() { X = this.MapX, Y = this.MapY }, new MapCell() { X = (short)MapX, Y = (short)MapY }) < sk.Range + 1)
                     {
                         ski.Used = true;
                         ski.LastUse = DateTime.Now;
@@ -188,7 +195,7 @@ namespace OpenNos.GameObject
                 {
                     if (!inBattle)
                     {
-                        if ((DateTime.Now - LastEffect).TotalMilliseconds >= monster.BasicCooldown * 100 && (Map.GetDistance(new MapCell() { X = this.MapX, Y = this.MapY }, new MapCell() { X = (short)MapX, Y = (short)MapY }) <= monster.BasicRange+1))
+                        if ((DateTime.Now - LastEffect).TotalMilliseconds >= monster.BasicCooldown * 100 && (Map.GetDistance(new MapCell() { X = this.MapX, Y = this.MapY }, new MapCell() { X = (short)MapX, Y = (short)MapY }) <= monster.BasicRange + 1))
                         {
                             LastEffect = DateTime.Now;
                             inBattle = true;
@@ -203,44 +210,24 @@ namespace OpenNos.GameObject
 
                             ClientLinkManager.Instance.BroadcastToMap(MapId, $"su 3 {MapMonsterId} 1 {Target} 0 {monster.BasicCooldown} 11 {monster.BasicSkill} 0 0 {((HP) > 0 ? 1 : 0)} {(int)((double)(HP) / ClientLinkManager.Instance.GetUserMethod<double>(Target, "HPLoad"))} {damage} 0 0");
                             ClientLinkManager.Instance.Broadcast(null, ClientLinkManager.Instance.GetUserMethod<string>(Target, "GenerateStat"), ReceiverType.OnlySomeone, "", Target);
-                            /* area mode - tortle
-                            foreach (MapMonster mon in ServerManager.GetMap(MapId).GetListPeopleInRange(MapX, MapY, monster.BasicArea))
-                               {
-                                   damage = 100;
-                                   int? Hp2 = ClientLinkManager.Instance.GetProperty<int?>(Target, "Hp");
-                                   ClientLinkManager.Instance.SetProperty(Target, "Hp", (int)(Hp2 - damage));
-                                   ClientLinkManager.Instance.SetProperty(Target, "LastDefence", DateTime.Now);
-                                   ClientLinkManager.Instance.Broadcast(null, ClientLinkManager.Instance.GetUserMethod<string>(Target, "GenerateStat"), ReceiverType.OnlySomeone, "", Target);
-                                   ClientLinkManager.Instance.BroadcastToMap(MapId, $"su 3 {MapMonsterId} 1 {Target} 0 {monster.BasicCooldown} 11 {monster.BasicSkill} 0 0 1 {(int)((double)Hp / ClientLinkManager.Instance.GetUserMethod<double>(Target, "HPLoad"))} {damage} 0 0");
-                               }
-                            */
+
+                            foreach (Character chara in ServerManager.GetMap(MapId).GetListPeopleInRange((short)MapX, (short)MapY, monster.BasicArea).Where(s => s.CharacterId != Target))
+                            {
+                                damage = 100;
+                                chara.Hp -= damage;
+                                chara.LastDefence = DateTime.Now;
+                                ClientLinkManager.Instance.Broadcast(null, ClientLinkManager.Instance.GetUserMethod<string>(chara.CharacterId, "GenerateStat"), ReceiverType.OnlySomeone, "", Target);
+                                ClientLinkManager.Instance.BroadcastToMap(MapId, $"su 3 {MapMonsterId} 1 {chara.CharacterId} 0 {monster.BasicCooldown} 11 {monster.BasicSkill} 0 0 1 {(int)((double)Hp / chara.HPLoad())} {damage} 0 0");
+
+                                if (HP <= 0)
+                                {
+                                    ClientLinkManager.Instance.AskRevive(chara.CharacterId);
+                                }
+                            }
                             if (HP <= 0)
                             {
-                                ClientSession Session = ClientLinkManager.Instance.Sessions.FirstOrDefault(s => s.Character != null && s.Character.CharacterId == Target);
+                                ClientLinkManager.Instance.AskRevive(Target);
                                 Target = -1;
-                                if (Session != null && Session.Character != null)
-                                {
-                                    Session.Client.SendPacket(Session.Character.GenerateDialog($"#revival^0 #revival^1 {Language.Instance.GetMessageFromKey("ASK_REVIVE")}"));
-                                    Session.Character.Dignite -= (short)(Session.Character.Level < 50 ? Session.Character.Level : 50);
-                                    if (Session.Character.Dignite < -1000)
-                                        Session.Character.Dignite = -1000;
-
-                                    Session.Client.SendPacket(Session.Character.GenerateFd());
-                                    Session.Client.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("LOSE_DIGNITY"), (short)(Session.Character.Level < 50 ? Session.Character.Level : 50)), 11));
-
-                                    Task.Factory.StartNew(async () =>
-                                    {
-                                        for (int i = 1; i <= 30; i++)
-                                        {
-                                            await Task.Delay(1000);
-                                            if (Session.Character.Hp > 0)
-                                                return;
-                                        }
-                                        ClientLinkManager.Instance.ReviveFirstPosition(Session.Character.CharacterId);
-                                    });
-
-                                }
-
                             }
                             inBattle = false;
                         }
@@ -250,15 +237,15 @@ namespace OpenNos.GameObject
                 {
 
                     short maxdistance = 20;
-                    if (path.Count == 0)
+                    if (path.Count() < 1)
                         path = ServerManager.GetMap(MapId).AStar(new MapCell() { X = this.MapX, Y = this.MapY, MapId = this.MapId }, new MapCell() { X = (short)MapX, Y = (short)MapY, MapId = this.MapId });
-                    if (path.Count >= 1)
+                    if (path.Count > 0 && Map.GetDistance(new MapCell() { X = this.MapX, Y = this.MapY, MapId = this.MapId }, new MapCell() { X = (short)MapX, Y = (short)MapY, MapId = this.MapId }) > 1)
                     {
                         mapX = path.ElementAt(0) == null ? mapX : path.ElementAt(0).X;
                         mapY = path.ElementAt(0) == null ? mapY : path.ElementAt(0).Y;
                         path.RemoveAt(0);
                     }
-                    if (MapId != mapId || (Map.GetDistance(new MapCell() { X = this.MapX, Y = this.MapY }, new MapCell() { X = (short)MapX, Y = (short)MapY }) > maxdistance+1))
+                    if (MapId != mapId || (Map.GetDistance(new MapCell() { X = this.MapX, Y = this.MapY }, new MapCell() { X = (short)MapX, Y = (short)MapY }) > maxdistance + 1))
                     {
                         //TODO add return to origin
                         Target = -1;
