@@ -141,7 +141,7 @@ namespace OpenNos.GameObject
                     Character character = ClientLinkManager.Instance.Sessions.Where(s => s.Character != null && s.Character.Hp > 0).OrderBy(s => (int)(Math.Pow(MapX - s.Character.MapX, 2) + Math.Pow(MapY - s.Character.MapY, 2))).FirstOrDefault(s => s.Character != null && s.Character.MapId == MapId)?.Character;
                     if (character != null)
                     {
-                        if ((Math.Pow(character.MapX - 1 - MapX, 2) + Math.Pow(character.MapY - 1 - MapY, 2)) <= (Math.Pow(7, 2)))
+                        if (Map.GetDistance(new MapCell() { X = character.MapX, Y = character.MapY }, new MapCell() { X = MapX, Y = MapY }) <  7)
                         {
                             Target = character.CharacterId;
 
@@ -165,7 +165,7 @@ namespace OpenNos.GameObject
                 if (ski != null)
                 {
                     Skill sk = ServerManager.GetSkill(ski.SkillVNum);
-                    if (MapId == mapId && (Math.Pow(this.MapX - 1 - (short)MapX, 2) + Math.Pow(this.MapY - 1 - (short)MapY, 2) <= Math.Pow(sk.Range, 2)))
+                    if (MapId == mapId && Map.GetDistance(new MapCell() { X= this.MapX,Y=this.MapY }, new MapCell() { X = (short)MapX, Y = (short)MapY }) < sk.Range+1)
                     {
                         ski.Used = true;
                         ski.LastUse = DateTime.Now;
@@ -188,7 +188,7 @@ namespace OpenNos.GameObject
                 {
                     if (!inBattle)
                     {
-                        if ((DateTime.Now - LastEffect).TotalMilliseconds >= monster.BasicCooldown * 100 && (Map.GetDistance(new MapCell() { X = this.MapX, Y = this.MapY }, new MapCell() { X = (short)MapX, Y = (short)MapY }) <= monster.BasicRange+1))
+                        if ((DateTime.Now - LastEffect).TotalMilliseconds >= monster.BasicCooldown * 100 && (Map.GetDistance(new MapCell() { X = this.MapX, Y = this.MapY }, new MapCell() { X = (short)MapX, Y = (short)MapY }) <= monster.BasicRange + 1))
                         {
                             LastEffect = DateTime.Now;
                             inBattle = true;
@@ -250,15 +250,15 @@ namespace OpenNos.GameObject
                 {
 
                     short maxdistance = 20;
-                    if (path.Count == 0)
+                    if (path.Count() < 1)
                         path = ServerManager.GetMap(MapId).AStar(new MapCell() { X = this.MapX, Y = this.MapY, MapId = this.MapId }, new MapCell() { X = (short)MapX, Y = (short)MapY, MapId = this.MapId });
-                    if (path.Count >= 1)
+                    if (path.Count >= 1 && Map.GetDistance(new MapCell() { X = this.MapX, Y = this.MapY, MapId = this.MapId }, new MapCell() { X = (short)MapX, Y = (short)MapY, MapId = this.MapId }) > 1)
                     {
                         mapX = path.ElementAt(0) == null ? mapX : path.ElementAt(0).X;
                         mapY = path.ElementAt(0) == null ? mapY : path.ElementAt(0).Y;
                         path.RemoveAt(0);
                     }
-                    if (MapId != mapId || (Map.GetDistance(new MapCell() { X = this.MapX, Y = this.MapY }, new MapCell() { X = (short)MapX, Y = (short)MapY }) > maxdistance+1))
+                    if (MapId != mapId || (Map.GetDistance(new MapCell() { X = this.MapX, Y = this.MapY }, new MapCell() { X = (short)MapX, Y = (short)MapY }) > maxdistance + 1))
                     {
                         //TODO add return to origin
                         Target = -1;
