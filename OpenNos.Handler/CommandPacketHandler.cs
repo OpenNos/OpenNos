@@ -252,13 +252,14 @@ namespace OpenNos.Handler
                 if (id != null)
                 {
                     int? Hp = ClientLinkManager.Instance.GetProperty<int?>((long)id, "Hp");
-
+                    if(Hp == 0)
+                        return;
                     ClientLinkManager.Instance.SetProperty((long)id, "Hp", 0);
 
                     ClientLinkManager.Instance.SetProperty((long)id, "LastDefence", DateTime.Now);
 
-                    ClientLinkManager.Instance.Broadcast(Session, $"su 1 {Session.Character.CharacterId} 1 {id} 0 0 11 0 0 0 0 {0} {60000} 0 0", ReceiverType.AllOnMap);
-
+                    ClientLinkManager.Instance.Broadcast(Session, $"su 1 {Session.Character.CharacterId} 1 {id} 1114 4 11 4260 0 0 0 0 {60000} 3 0", ReceiverType.AllOnMap);
+                    
                     ClientLinkManager.Instance.Broadcast(null, ClientLinkManager.Instance.GetUserMethod<string>((long)id, "GenerateStat"), ReceiverType.OnlySomeone, "", (long)id);
 
                     ClientSession Session2 = ClientLinkManager.Instance.Sessions.FirstOrDefault(s => s.Character != null && s.Character.CharacterId == (long)id);
@@ -274,7 +275,12 @@ namespace OpenNos.Handler
 
                         Task.Factory.StartNew(async () =>
                         {
-                            await Task.Delay(30000);
+                            for(int i=1;i<=30;i++)
+                            { 
+                                await Task.Delay(1000);
+                                if (Session2.Character.Hp > 0)
+                                    return;
+                            }
                             ClientLinkManager.Instance.ReviveFirstPosition(Session2.Character.CharacterId);
                         });
 
