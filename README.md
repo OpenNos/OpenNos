@@ -28,5 +28,4 @@ Installer Packages:
 ##5 Use the NuGet Package Manager to Update the Database
 
 - Go to Tools -> NuGet Package Manager -> Package Manager Console
-- 'Type update-database' and update the Database
-
+- Type 'update-database' and update the Database
