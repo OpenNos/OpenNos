@@ -1525,6 +1525,7 @@
           <Property Name="BasicRange" Type="Byte" Nullable="false" />
           <Property Name="BasicArea" Type="Byte" Nullable="false" />
           <Property Name="BasicCooldown" Type="Int16" Nullable="false" />
+          <Property Name="HeroLevel" Type="Byte" Nullable="false" />
         </EntityType>
         <EntityType Name="InventoryItem">
           <Key>

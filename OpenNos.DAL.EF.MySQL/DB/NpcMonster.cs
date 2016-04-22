@@ -56,6 +56,7 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public byte BasicRange { get; set; }
         public byte BasicArea { get; set; }
         public short BasicCooldown { get; set; }
+        public byte HeroLevel { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<MapNpc> mapnpc { get; set; }

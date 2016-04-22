@@ -51,6 +51,7 @@ namespace OpenNos.Data
         public byte BasicRange { get; set; }
         public short BasicCooldown { get; set; }
         public byte BasicArea { get; set; }
+        public byte HeroLevel { get; set; }
         #endregion
     }
 }
