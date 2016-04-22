@@ -404,7 +404,7 @@ namespace OpenNos.Handler
                 bool isIllegalCharacter = false;
                 for (int i = 0; i < packetsplit[2].Length; i++)
                 {
-                    if (packetsplit[2][i] < 0x30 || packetsplit[2][i] > 0x7E)
+                    if (packetsplit[2][i] < 0x23 || packetsplit[2][i] > 0x7E)
                     {
                         isIllegalCharacter = true;
                     }
