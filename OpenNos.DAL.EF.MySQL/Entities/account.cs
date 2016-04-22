@@ -1,5 +1,6 @@
 namespace OpenNos.DAL.EF.MySQL
 {
+    using Domain;
     using System;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
@@ -22,7 +23,7 @@ namespace OpenNos.DAL.EF.MySQL
 
         public long AccountId { get; set; }
 
-        public byte Authority { get; set; }
+        public AuthorityType Authority { get; set; }
 
         public virtual ICollection<Character> Character { get; set; }
 

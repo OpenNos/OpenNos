@@ -328,7 +328,7 @@ namespace OpenNos.GameObject
                         {
                             if (packetHeader[0] == '$')
                             {
-                                if (Account.Authority != (byte)AuthorityType.Admin)
+                                if (Account.Authority != AuthorityType.Admin)
                                     permit = 0;
                             }
 
