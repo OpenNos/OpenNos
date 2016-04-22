@@ -13,7 +13,7 @@
  */
 
 using AutoMapper;
-using OpenNos.DAL.EF.MySQL.DB;
+
 using OpenNos.DAL.EF.MySQL.Helpers;
 using OpenNos.DAL.Interface;
 using OpenNos.Data;
@@ -26,28 +26,28 @@ namespace OpenNos.DAL.EF.MySQL
     {
         #region Methods
 
-        public void Insert(List<ShopDTO> shops)
+        public void Insert(List<ShopDTO> Shops)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
                 context.Configuration.AutoDetectChangesEnabled = false;
-                foreach (ShopDTO item in shops)
+                foreach (ShopDTO Item in Shops)
                 {
-                    Shop entity = Mapper.Map<Shop>(item);
-                    context.shop.Add(entity);
+                    Shop entity = Mapper.Map<Shop>(Item);
+                    context.Shop.Add(entity);
                 }
                 context.SaveChanges();
             }
         }
 
-        public ShopDTO Insert(ShopDTO shop)
+        public ShopDTO Insert(ShopDTO Shop)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                if (context.shop.FirstOrDefault(c => c.MapNpcId.Equals(shop.MapNpcId)) == null)
+                if (context.Shop.FirstOrDefault(c => c.MapNpcId.Equals(Shop.MapNpcId)) == null)
                 {
-                    Shop entity = Mapper.Map<Shop>(shop);
-                    context.shop.Add(entity);
+                    Shop entity = Mapper.Map<Shop>(Shop);
+                    context.Shop.Add(entity);
                     context.SaveChanges();
                     return Mapper.Map<ShopDTO>(entity);
                 }
@@ -59,7 +59,7 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                return Mapper.Map<ShopDTO>(context.shop.FirstOrDefault(s => s.ShopId.Equals(ShopId)));
+                return Mapper.Map<ShopDTO>(context.Shop.FirstOrDefault(s => s.ShopId.Equals(ShopId)));
             }
         }
 
@@ -67,7 +67,7 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                return Mapper.Map<ShopDTO>(context.shop.FirstOrDefault(s => s.MapNpcId.Equals(npcId)));
+                return Mapper.Map<ShopDTO>(context.Shop.FirstOrDefault(s => s.MapNpcId.Equals(npcId)));
             }
         }
 

@@ -13,7 +13,7 @@
  */
 
 using AutoMapper;
-using OpenNos.DAL.EF.MySQL.DB;
+
 using OpenNos.DAL.EF.MySQL.Helpers;
 using OpenNos.DAL.Interface;
 using OpenNos.Data;
@@ -26,28 +26,28 @@ namespace OpenNos.DAL.EF.MySQL
     {
         #region Methods
 
-        public void Insert(List<ComboDTO> combos)
+        public void Insert(List<ComboDTO> Combos)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
 
                 context.Configuration.AutoDetectChangesEnabled = false;
-                foreach (ComboDTO combo in combos)
+                foreach (ComboDTO Combo in Combos)
                 {
-                    Combo entity = Mapper.Map<Combo>(combo);
-                    context.combo.Add(entity);
+                    Combo entity = Mapper.Map<Combo>(Combo);
+                    context.Combo.Add(entity);
                 }
                 context.SaveChanges();
 
             }
         }
 
-        public ComboDTO Insert(ComboDTO combo)
+        public ComboDTO Insert(ComboDTO Combo)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                Combo entity = Mapper.Map<Combo>(combo);
-                context.combo.Add(entity);
+                Combo entity = Mapper.Map<Combo>(Combo);
+                context.Combo.Add(entity);
                 context.SaveChanges();
                 return Mapper.Map<ComboDTO>(entity);
             }
@@ -57,9 +57,9 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                foreach (Combo combo in context.combo)
+                foreach (Combo Combo in context.Combo)
                 {
-                    yield return Mapper.Map<ComboDTO>(combo);
+                    yield return Mapper.Map<ComboDTO>(Combo);
                 }
             }
         }
@@ -67,7 +67,7 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                return Mapper.Map<ComboDTO>(context.combo.FirstOrDefault(s => s.SkillVNum.Equals(ComboId)));
+                return Mapper.Map<ComboDTO>(context.Combo.FirstOrDefault(s => s.SkillVNum.Equals(ComboId)));
             }
         }
 

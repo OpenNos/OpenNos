@@ -13,7 +13,7 @@
  */
 
 using AutoMapper;
-using OpenNos.DAL.EF.MySQL.DB;
+
 using OpenNos.DAL.EF.MySQL.Helpers;
 using OpenNos.DAL.Interface;
 using OpenNos.Data;
@@ -26,13 +26,13 @@ namespace OpenNos.DAL.EF.MySQL
     {
         #region Methods
 
-        public IEnumerable<CellonOptionDTO> GetOptionsByInventoryItemId(long inventoryitemId)
+        public IEnumerable<CellonOptionDTO> GetOptionsByInventoryItemId(long InventoryItemId)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                foreach (CellonOption cellonoptionobject in context.cellonoption.Where(i => i.InventoryItemId.Equals(inventoryitemId)))
+                foreach (CellonOption CellonOptionobject in context.CellonOption.Where(i => i.InventoryItemId.Equals(InventoryItemId)))
                 {
-                    yield return Mapper.Map<CellonOptionDTO>(cellonoptionobject);
+                    yield return Mapper.Map<CellonOptionDTO>(CellonOptionobject);
                 }
             }
         }

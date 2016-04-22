@@ -27,63 +27,63 @@ namespace OpenNos.DAL.EF.MySQL
     {
         #region Methods
 
-        public SaveResult InsertOrUpdate(ref RespawnDTO respawn)
+        public SaveResult InsertOrUpdate(ref RespawnDTO Respawn)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                long characterId = respawn.CharacterId;
-                short respawnType = respawn.RespawnType;
-                Respawn entity = context.respawn.FirstOrDefault(c => c.RespawnType.Equals(respawnType) && c.CharacterId.Equals(characterId));
+                long CharacterId = Respawn.CharacterId;
+                short RespawnType = Respawn.RespawnType;
+                Respawn entity = context.Respawn.FirstOrDefault(c => c.RespawnType.Equals(RespawnType) && c.CharacterId.Equals(CharacterId));
 
                 if (entity == null) //new entity
                 {
-                    respawn = Insert(respawn, context);
+                    Respawn = Insert(Respawn, context);
                     return SaveResult.Inserted;
                 }
                 else //existing entity
                 {
-                    respawn.RespawnId = entity.RespawnId;
-                    respawn = Update(entity, respawn, context);
+                    Respawn.RespawnId = entity.RespawnId;
+                    Respawn = Update(entity, Respawn, context);
                     return SaveResult.Updated;
                 }
             }
         }
 
-        public IEnumerable<RespawnDTO> LoadByCharacterId(long characterId)
+        public IEnumerable<RespawnDTO> LoadByCharacterId(long CharacterId)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                foreach (Respawn respawnobject in context.respawn.Where(i => i.CharacterId.Equals(characterId)))
+                foreach (Respawn Respawnobject in context.Respawn.Where(i => i.CharacterId.Equals(CharacterId)))
                 {
-                    yield return Mapper.Map<RespawnDTO>(respawnobject);
+                    yield return Mapper.Map<RespawnDTO>(Respawnobject);
                 }
             }
         }
 
-        public RespawnDTO LoadById(long respawnId)
+        public RespawnDTO LoadById(long RespawnId)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                return Mapper.Map<RespawnDTO>(context.respawn.FirstOrDefault(s => s.RespawnId.Equals(respawnId)));
+                return Mapper.Map<RespawnDTO>(context.Respawn.FirstOrDefault(s => s.RespawnId.Equals(RespawnId)));
             }
         }
 
-        private RespawnDTO Insert(RespawnDTO respawn, OpenNosContainer context)
+        private RespawnDTO Insert(RespawnDTO Respawn, OpenNosContext context)
         {
-            Respawn entity = new Respawn() { CharacterId = respawn.CharacterId };
-            context.respawn.Add(entity);
+            Respawn entity = new Respawn() { CharacterId = Respawn.CharacterId };
+            context.Respawn.Add(entity);
             context.SaveChanges();
             return Mapper.Map<RespawnDTO>(entity);
         }
 
-        private RespawnDTO Update(Respawn entity, RespawnDTO respawn, OpenNosContainer context)
+        private RespawnDTO Update(Respawn entity, RespawnDTO Respawn, OpenNosContext context)
         {
             using (context)
             {
-                var result = context.respawn.FirstOrDefault(c => c.RespawnId == respawn.RespawnId);
+                var result = context.Respawn.FirstOrDefault(c => c.RespawnId == Respawn.RespawnId);
                 if (result != null)
                 {
-                    result = Mapper.Map<RespawnDTO, Respawn>(respawn, entity);
+                    result = Mapper.Map<RespawnDTO, Respawn>(Respawn, entity);
                     context.SaveChanges();
                 }
             }

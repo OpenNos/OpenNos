@@ -13,7 +13,7 @@
  */
 
 using AutoMapper;
-using OpenNos.DAL.EF.MySQL.DB;
+
 using OpenNos.DAL.EF.MySQL.Helpers;
 using OpenNos.DAL.Interface;
 using OpenNos.Data;
@@ -36,19 +36,19 @@ namespace OpenNos.DAL.EF.MySQL
                 foreach (MapMonsterDTO monster in monsters)
                 {
                     MapMonster entity = Mapper.Map<MapMonster>(monster);
-                    context.mapmonster.Add(entity);
+                    context.MapMonster.Add(entity);
                 }
                 context.SaveChanges();
 
             }
         }
 
-        public MapMonsterDTO Insert(MapMonsterDTO mapmonster)
+        public MapMonsterDTO Insert(MapMonsterDTO MapMonster)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                MapMonster entity = Mapper.Map<MapMonster>(mapmonster);
-                context.mapmonster.Add(entity);
+                MapMonster entity = Mapper.Map<MapMonster>(MapMonster);
+                context.MapMonster.Add(entity);
                 context.SaveChanges();
                 return Mapper.Map<MapMonsterDTO>(entity);
             }
@@ -58,7 +58,7 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                return Mapper.Map<MapMonsterDTO>(context.mapmonster.FirstOrDefault(i => i.MapMonsterId.Equals(MonsterId)));
+                return Mapper.Map<MapMonsterDTO>(context.MapMonster.FirstOrDefault(i => i.MapMonsterId.Equals(MonsterId)));
             }
         }
 
@@ -66,9 +66,9 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                foreach (MapMonster mapmonsterobject in context.mapmonster.Where(c => c.MapId.Equals(MapId)))
+                foreach (MapMonster MapMonsterobject in context.MapMonster.Where(c => c.MapId.Equals(MapId)))
                 {
-                    yield return Mapper.Map<MapMonsterDTO>(mapmonsterobject);
+                    yield return Mapper.Map<MapMonsterDTO>(MapMonsterobject);
                 }
             }
         }

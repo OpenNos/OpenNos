@@ -895,42 +895,45 @@ namespace OpenNos.GameObject
 
         public string[] GenerateQuicklist()
         {
-            string pktQs0 = "qslot 0";
-            string pktQs1 = "qslot 1";
-            string pktQs2 = "qslot 2";
+            //TODO FIX QUICKLIST
+            //string pktQs0 = "qslot 0";
+            //string pktQs1 = "qslot 1";
+            //string pktQs2 = "qslot 2";
 
-            for (int i = 0; i < 10; i++)
-            {
-                try
-                {
-                    QuicklistEntry qi = QuicklistEntries.First(n => n.Q1 == 0 && n.Q2 == i);
-                    pktQs0 += string.Format(" {0}.{1}.{2}", qi.Type, qi.Slot, qi.Pos);
-                }
-                catch
-                {
-                    pktQs0 += " 0.0.-1";
-                }
-                try
-                {
-                    QuicklistEntry qi = QuicklistEntries.First(n => n.Q1 == 1 && n.Q2 == i);
-                    pktQs1 += string.Format(" {0}.{1}.{2}", qi.Type, qi.Slot, qi.Pos);
-                }
-                catch
-                {
-                    pktQs1 += " 0.0.-1";
-                }
-                try
-                {
-                    QuicklistEntry qi = QuicklistEntries.First(n => n.Q1 == 2 && n.Q2 == i);
-                    pktQs2 += string.Format(" {0}.{1}.{2}", qi.Type, qi.Slot, qi.Pos);
-                }
-                catch
-                {
-                    pktQs2 += " 0.0.-1";
-                }
-            }
+            //for (int i = 0; i < 10; i++)
+            //{
+            //    try
+            //    {
+            //        QuicklistEntry qi = QuicklistEntries.FirstOrDefault(n => n.Q1 == 0 && n.Q2 == i);
+            //        pktQs0 += string.Format(" {0}.{1}.{2}", qi.Type, qi.Slot, qi.Pos);
+            //    }
+            //    catch
+            //    {
+            //        pktQs0 += " 0.0.-1";
+            //    }
+            //    try
+            //    {
+            //        QuicklistEntry qi = QuicklistEntries.FirstOrDefault(n => n.Q1 == 1 && n.Q2 == i);
+            //        pktQs1 += string.Format(" {0}.{1}.{2}", qi.Type, qi.Slot, qi.Pos);
+            //    }
+            //    catch
+            //    {
+            //        pktQs1 += " 0.0.-1";
+            //    }
+            //    try
+            //    {
+            //        QuicklistEntry qi = QuicklistEntries.FirstOrDefault(n => n.Q1 == 2 && n.Q2 == i);
+            //        pktQs2 += string.Format(" {0}.{1}.{2}", qi.Type, qi.Slot, qi.Pos);
+            //    }
+            //    catch
+            //    {
+            //        pktQs2 += " 0.0.-1";
+            //    }
+            //}
 
-            return new[] { pktQs0, pktQs1, pktQs2 };
+            //return new[] { pktQs0, pktQs1, pktQs2 };
+
+            return new string[] { String.Empty };
         }
 
 

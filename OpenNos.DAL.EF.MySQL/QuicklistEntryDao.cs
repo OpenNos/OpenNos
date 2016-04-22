@@ -18,39 +18,40 @@ using System.Linq;
 using AutoMapper;
 using OpenNos.Data;
 using OpenNos.Data.Enums;
-using OpenNos.DAL.EF.MySQL.DB;
+
 using OpenNos.DAL.EF.MySQL.Helpers;
 using OpenNos.DAL.Interface;
 using OpenNos.Core;
+using OpenNos.DAL.EF.MySQL.DB;
 
 namespace OpenNos.DAL.EF.MySQL
 {
     public class QuicklistEntryDAO : IQuicklistEntryDAO
     {
 
-        public SaveResult InsertOrUpdate(ref QuicklistEntryDTO quicklist)
+        public SaveResult InsertOrUpdate(ref QuicklistEntryDTO QuicklistEntry)
         {
             try
             {
-                using (OpenNosContainer context = DataAccessHelper.CreateContext())
+                using (OpenNosContext context = DataAccessHelper.CreateContext())
                 {
-                    long entryId = quicklist.EntryId;
-                    QuicklistEntry dbentry = context.quicklist.FirstOrDefault(c => c.EntryId == entryId);
+                    long entryId = QuicklistEntry.EntryId;
+                    QuicklistEntry dbentry = context.QuicklistEntry.FirstOrDefault(c => c.EntryId == entryId);
                     if (dbentry == null)
                     {
                         // new entity
-                        QuicklistEntry entry = Mapper.Map<QuicklistEntry>(quicklist);
-                        context.quicklist.Add(entry);
+                        QuicklistEntry entry = Mapper.Map<QuicklistEntry>(QuicklistEntry);
+                        context.QuicklistEntry.Add(entry);
                         context.SaveChanges();
-                        Mapper.Map(entry, quicklist);
+                        Mapper.Map(entry, QuicklistEntry);
                         return SaveResult.Inserted;
                     }
                     else
                     {
                         //existing entity
-                        Mapper.Map(quicklist, dbentry);
+                        Mapper.Map(QuicklistEntry, dbentry);
                         context.SaveChanges();
-                        quicklist = Mapper.Map<QuicklistEntryDTO>(quicklist); // does this line anything?
+                        QuicklistEntry = Mapper.Map<QuicklistEntryDTO>(QuicklistEntry); // does this line anything?
                         return SaveResult.Updated;
                     }
                 }
@@ -62,25 +63,25 @@ namespace OpenNos.DAL.EF.MySQL
             }
         }
 
-        public IEnumerable<QuicklistEntryDTO> Load(long characterId)
+        public IEnumerable<QuicklistEntryDTO> Load(long CharacterId)
         {
-            using (OpenNosContainer context = DataAccessHelper.CreateContext())
+            using (OpenNosContext context = DataAccessHelper.CreateContext())
             {
-                foreach (QuicklistEntry quicklistobject in context.quicklist.Where(i => i.CharacterId == characterId))
+                foreach (QuicklistEntry QuicklistEntryobject in context.QuicklistEntry.Where(i => i.CharacterId == CharacterId))
                 {
-                    yield return Mapper.Map<QuicklistEntryDTO>(quicklistobject);
+                    yield return Mapper.Map<QuicklistEntryDTO>(QuicklistEntryobject);
                 }
             }
         }
 
-        public DeleteResult Delete(long characterId, long entryId)
+        public DeleteResult Delete(long CharacterId, long entryId)
         {
-            using (OpenNosContainer context = DataAccessHelper.CreateContext())
+            using (OpenNosContext context = DataAccessHelper.CreateContext())
             {
-                QuicklistEntry quicklistitem = context.quicklist.FirstOrDefault(i => i.CharacterId == characterId && i.EntryId == entryId);
-                if (quicklistitem != null)
+                QuicklistEntry QuicklistEntryItem = context.QuicklistEntry.FirstOrDefault(i => i.CharacterId == CharacterId && i.EntryId == entryId);
+                if (QuicklistEntryItem != null)
                 {
-                    context.quicklist.Remove(quicklistitem);
+                    context.QuicklistEntry.Remove(QuicklistEntryItem);
                     context.SaveChanges();
                 }
 

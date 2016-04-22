@@ -121,7 +121,7 @@ Copyright (C) Sayed Ibrahim Hashimi, Chuck England 2011-2013. All rights reserve
 
   <Target Name="TransformAllFiles"
           DependsOnTargets="$(TransformAllFilesDependsOn)" BeforeTargets="_CopyAppConfigFile">
-    <!-- Now we have the item list _FilesToTransformNotAppConfig and _AppConfigToTransform item lists -->
+    <!-- Now we have the Item list _FilesToTransformNotAppConfig and _AppConfigToTransform Item lists -->
     <!-- Transform the app.config file -->
     <ItemGroup>
       <_AppConfigTarget Include="@(AppConfigWithTargetPath->'$(OutDir)%(TargetPath)')" />
@@ -197,7 +197,7 @@ Copyright (C) Sayed Ibrahim Hashimi, Chuck England 2011-2013. All rights reserve
 
   <Target Name="DiscoverFilesToTransform">
     <!-- 
-    This will look through items list: None & Content for those
+    This will look through Items list: None & Content for those
     with Metadata <TransformOnBuild>True</TransformOnBuild>.
     
     -->
@@ -205,7 +205,7 @@ Copyright (C) Sayed Ibrahim Hashimi, Chuck England 2011-2013. All rights reserve
       <_FilesToTransform Include="@(None);@(Content);@(Resource);@(EmbeddedResource)"
                          Condition=" '%(TransformOnBuild)' == 'true' ">
         <Link>%(Link)</Link>
-        <!-- Required to remove the item if necessary later -->
+        <!-- Required to remove the Item if necessary later -->
         <OriginalItemSpec>%(Identity)</OriginalItemSpec>
       </_FilesToTransform>
     </ItemGroup>
@@ -218,7 +218,7 @@ Copyright (C) Sayed Ibrahim Hashimi, Chuck England 2011-2013. All rights reserve
     <ItemGroup>
       <_FilesToTransform Condition=" '%(Filename)%(Extension)'=='app.config' ">
         <IsAppConfig>true</IsAppConfig>
-        <!-- Required to remove the item if necessary later -->
+        <!-- Required to remove the Item if necessary later -->
         <OriginalItemSpec>%(Identity)</OriginalItemSpec>
       </_FilesToTransform>
     </ItemGroup>
@@ -226,7 +226,7 @@ Copyright (C) Sayed Ibrahim Hashimi, Chuck England 2011-2013. All rights reserve
     <ItemGroup>
       <_FilesToTransformNotAppConfig Include="@(_FilesToTransform)"
                                      Condition=" '%(IsAppConfig)'!='true'">
-        <!-- Required to remove the item if necessary later -->
+        <!-- Required to remove the Item if necessary later -->
         <OriginalItemSpec>%(Identity)</OriginalItemSpec>
         <Link>%(_FilesToTransform.Link)</Link>
       </_FilesToTransformNotAppConfig>
@@ -238,7 +238,7 @@ Copyright (C) Sayed Ibrahim Hashimi, Chuck England 2011-2013. All rights reserve
 
 
   <!-- ***********************************************************
-  WAP related items below
+  WAP related Items below
   ****************************************************************-->
   <ItemGroup>
     <!-- This will exclude packageRestore.proj from the web publish process -->
@@ -344,7 +344,7 @@ Copyright (C) Sayed Ibrahim Hashimi, Chuck England 2011-2013. All rights reserve
   </Target>
 
   <!-- ***********************************************************
-  ClickOnce related items below
+  ClickOnce related Items below
   ****************************************************************-->
 
   <!-- Target was named: SlowCheetah_ClickOnceUpdate -->
@@ -380,7 +380,7 @@ Copyright (C) Sayed Ibrahim Hashimi, Chuck England 2011-2013. All rights reserve
   </Target>
 
   <Target Name="SlowCheetah_ClickOnceLooseFileUpdate" AfterTargets="_DeploymentComputeClickOnceManifestInfo" DependsOnTargets="DiscoverFilesToTransform">
-    <!-- For non app.config files which are being transformed we need to remove the original item and replace it with the transformed one -->
+    <!-- For non app.config files which are being transformed we need to remove the original Item and replace it with the transformed one -->
     <ItemGroup>
       <_DeploymentManifestFiles Remove="%(_FilesToTransformNotAppConfig.OriginalItemSpec)" />
       <!-- Implementation for non-Link files -->
@@ -399,7 +399,7 @@ Copyright (C) Sayed Ibrahim Hashimi, Chuck England 2011-2013. All rights reserve
 
 
   <!-- ***********************************************************
-  Setup project related items below
+  Setup project related Items below
   ****************************************************************-->
   <PropertyGroup>
     <SlowCheetahEnableSetupProjects Condition=" '$(SlowCheetahEnableSetupProjects)'=='' ">true</SlowCheetahEnableSetupProjects>

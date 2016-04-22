@@ -13,7 +13,7 @@
  */
 
 using AutoMapper;
-using OpenNos.DAL.EF.MySQL.DB;
+
 using OpenNos.DAL.EF.MySQL.Helpers;
 using OpenNos.DAL.Interface;
 using OpenNos.Data;
@@ -31,7 +31,7 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                foreach (GeneralLog log in context.generallog.Where(c => c.LogType.Equals(LogType) && c.CharacterId == CharacterId))
+                foreach (GeneralLog log in context.GeneralLog.Where(c => c.LogType.Equals(LogType) && c.CharacterId == CharacterId))
                 {
                     yield return Mapper.Map<GeneralLogDTO>(log);
                 }
@@ -42,7 +42,7 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                foreach (GeneralLog log in context.generallog.Where(c => c.CharacterId == CharacterId))
+                foreach (GeneralLog log in context.GeneralLog.Where(c => c.CharacterId == CharacterId))
                 {
                     log.CharacterId = null;
                 }
@@ -50,21 +50,21 @@ namespace OpenNos.DAL.EF.MySQL
             }
         }
 
-        public void WriteGeneralLog(long accountId, string ipAddress, Nullable<long> characterId, string logType, string logData)
+        public void WriteGeneralLog(long AccountId, string ipAddress, Nullable<long> CharacterId, string logType, string logData)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
                 GeneralLog log = new GeneralLog()
                 {
-                    AccountId = accountId,
+                    AccountId = AccountId,
                     IpAddress = ipAddress,
                     Timestamp = DateTime.Now,
                     LogType = logType,
                     LogData = logData,
-                    CharacterId = characterId
+                    CharacterId = CharacterId
                 };
 
-                context.generallog.Add(log);
+                context.GeneralLog.Add(log);
                 context.SaveChanges();
             }
         }

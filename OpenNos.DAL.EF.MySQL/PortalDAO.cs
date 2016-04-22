@@ -13,7 +13,7 @@
  */
 
 using AutoMapper;
-using OpenNos.DAL.EF.MySQL.DB;
+
 using OpenNos.DAL.EF.MySQL.Helpers;
 using OpenNos.DAL.Interface;
 using OpenNos.Data;
@@ -26,26 +26,26 @@ namespace OpenNos.DAL.EF.MySQL
     {
         #region Methods
 
-        public void Insert(List<PortalDTO> portals)
+        public void Insert(List<PortalDTO> Portals)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
                 context.Configuration.AutoDetectChangesEnabled = false;
-                foreach (PortalDTO item in portals)
+                foreach (PortalDTO Item in Portals)
                 {
-                    Portal entity = Mapper.Map<Portal>(item);
-                    context.portal.Add(entity);
+                    Portal entity = Mapper.Map<Portal>(Item);
+                    context.Portal.Add(entity);
                 }
                 context.SaveChanges();
             }
         }
 
-        public PortalDTO Insert(PortalDTO portal)
+        public PortalDTO Insert(PortalDTO Portal)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                Portal entity = Mapper.Map<Portal>(portal);
-                context.portal.Add(entity);
+                Portal entity = Mapper.Map<Portal>(Portal);
+                context.Portal.Add(entity);
                 context.SaveChanges();
                 return Mapper.Map<PortalDTO>(entity);
             }
@@ -55,9 +55,9 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                foreach (Portal portalobject in context.portal.Where(c => c.SourceMapId.Equals(MapId)))
+                foreach (Portal Portalobject in context.Portal.Where(c => c.SourceMapId.Equals(MapId)))
                 {
-                    yield return Mapper.Map<PortalDTO>(portalobject);
+                    yield return Mapper.Map<PortalDTO>(Portalobject);
                 }
             }
         }

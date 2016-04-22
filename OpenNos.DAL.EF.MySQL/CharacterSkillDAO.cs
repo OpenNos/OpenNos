@@ -29,14 +29,14 @@ namespace OpenNos.DAL.EF.MySQL
     {
         #region Methods
 
-        public DeleteResult Delete(long characterId, short skillVNum)
+        public DeleteResult Delete(long CharacterId, short SkillVNum)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                CharacterSkill invitem = context.characterskill.FirstOrDefault(i => i.CharacterId == characterId && i.SkillVNum == skillVNum);
-                if (invitem != null)
+                CharacterSkill invItem = context.CharacterSkill.FirstOrDefault(i => i.CharacterId == CharacterId && i.SkillVNum == SkillVNum);
+                if (invItem != null)
                 {
-                    context.characterskill.Remove(invitem);
+                    context.CharacterSkill.Remove(invItem);
                     context.SaveChanges();
                 }
 
@@ -44,23 +44,23 @@ namespace OpenNos.DAL.EF.MySQL
             }
         }
 
-        public SaveResult InsertOrUpdate(ref CharacterSkillDTO characterskills)
+        public SaveResult InsertOrUpdate(ref CharacterSkillDTO CharacterSkills)
         {
             try
             {
                 using (var context = DataAccessHelper.CreateContext())
                 {
-                    CharacterSkillDTO characterskill = characterskills;
-                    CharacterSkill entity = context.characterskill.FirstOrDefault(i => i.CharacterId == characterskill.CharacterId && i.SkillVNum == characterskill.SkillVNum);
+                    CharacterSkillDTO CharacterSkill = CharacterSkills;
+                    CharacterSkill entity = context.CharacterSkill.FirstOrDefault(i => i.CharacterId == CharacterSkill.CharacterId && i.SkillVNum == CharacterSkill.SkillVNum);
                     if (entity == null) //new entity
                     {
-                        characterskill = Insert(characterskill, context);
+                        CharacterSkill = Insert(CharacterSkill, context);
                         return SaveResult.Inserted;
                     }
                     else //existing entity
                     {
-                        entity.CharacterSkillId = context.characterskill.FirstOrDefault(i => i.CharacterId == characterskill.CharacterId && i.SkillVNum == characterskill.SkillVNum).CharacterSkillId;
-                        characterskill = Update(entity, characterskill, context);
+                        entity.CharacterSkillId = context.CharacterSkill.FirstOrDefault(i => i.CharacterId == CharacterSkill.CharacterId && i.SkillVNum == CharacterSkill.SkillVNum).CharacterSkillId;
+                        CharacterSkill = Update(entity, CharacterSkill, context);
                         return SaveResult.Updated;
                     }
                 }
@@ -71,38 +71,38 @@ namespace OpenNos.DAL.EF.MySQL
                 return SaveResult.Error;
             }
         }
-        private CharacterSkillDTO Insert(CharacterSkillDTO characterskill, OpenNosContainer context)
+        private CharacterSkillDTO Insert(CharacterSkillDTO CharacterSkill, OpenNosContext context)
         {
 
-            CharacterSkill entity = Mapper.Map<CharacterSkill>(characterskill);
-            context.characterskill.Add(entity);
+            CharacterSkill entity = Mapper.Map<CharacterSkill>(CharacterSkill);
+            context.CharacterSkill.Add(entity);
             context.SaveChanges();
             return Mapper.Map<CharacterSkillDTO>(entity);
         }
 
-        private CharacterSkillDTO Update(CharacterSkill entity, CharacterSkillDTO characterskill, OpenNosContainer context)
+        private CharacterSkillDTO Update(CharacterSkill entity, CharacterSkillDTO CharacterSkill, OpenNosContext context)
         {
             using (context)
             {
-                var result = context.characterskill.FirstOrDefault(c => c.CharacterSkillId == characterskill.CharacterSkillId);
+                var result = context.CharacterSkill.FirstOrDefault(c => c.CharacterSkillId == CharacterSkill.CharacterSkillId);
                 if (result != null)
                 {
-                    result = Mapper.Map<CharacterSkillDTO, CharacterSkill>(characterskill, entity);
+                    result = Mapper.Map<CharacterSkillDTO, CharacterSkill>(CharacterSkill, entity);
                     context.SaveChanges();
                 }
             }
 
-            return Mapper.Map<CharacterSkillDTO>(characterskill);
+            return Mapper.Map<CharacterSkillDTO>(CharacterSkill);
         }
 
 
-        public IEnumerable<CharacterSkillDTO> LoadByCharacterId(long characterId)
+        public IEnumerable<CharacterSkillDTO> LoadByCharacterId(long CharacterId)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                foreach (CharacterSkill inventoryobject in context.characterskill.Where(i => i.CharacterId == characterId))
+                foreach (CharacterSkill Inventoryobject in context.CharacterSkill.Where(i => i.CharacterId == CharacterId))
                 {
-                    yield return Mapper.Map<CharacterSkillDTO>(inventoryobject);
+                    yield return Mapper.Map<CharacterSkillDTO>(Inventoryobject);
                 }
             }
         }

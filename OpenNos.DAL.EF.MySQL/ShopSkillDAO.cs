@@ -13,7 +13,7 @@
  */
 
 using AutoMapper;
-using OpenNos.DAL.EF.MySQL.DB;
+
 using OpenNos.DAL.EF.MySQL.Helpers;
 using OpenNos.DAL.Interface;
 using OpenNos.Data;
@@ -26,26 +26,26 @@ namespace OpenNos.DAL.EF.MySQL
     {
         #region Methods
 
-        public ShopSkillDTO Insert(ShopSkillDTO shopskill)
+        public ShopSkillDTO Insert(ShopSkillDTO ShopSkill)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                ShopSkill entity = Mapper.Map<ShopSkill>(shopskill);
-                context.shopskill.Add(entity);
+                ShopSkill entity = Mapper.Map<ShopSkill>(ShopSkill);
+                context.ShopSkill.Add(entity);
                 context.SaveChanges();
                 return Mapper.Map<ShopSkillDTO>(entity);
             }
         }
-        public void Insert(List<ShopSkillDTO> skills)
+        public void Insert(List<ShopSkillDTO> Skills)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
 
                 context.Configuration.AutoDetectChangesEnabled = false;
-                foreach (ShopSkillDTO skill in skills)
+                foreach (ShopSkillDTO Skill in Skills)
                 {
-                    ShopSkill entity = Mapper.Map<ShopSkill>(skill);
-                    context.shopskill.Add(entity);
+                    ShopSkill entity = Mapper.Map<ShopSkill>(Skill);
+                    context.ShopSkill.Add(entity);
                 }
                 context.SaveChanges();
 
@@ -55,9 +55,9 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                foreach (ShopSkill shopskill in context.shopskill.Where(s => s.ShopId.Equals(ShopId)))
+                foreach (ShopSkill ShopSkill in context.ShopSkill.Where(s => s.ShopId.Equals(ShopId)))
                 {
-                    yield return Mapper.Map<ShopSkillDTO>(shopskill);
+                    yield return Mapper.Map<ShopSkillDTO>(ShopSkill);
                 }
             }
         }

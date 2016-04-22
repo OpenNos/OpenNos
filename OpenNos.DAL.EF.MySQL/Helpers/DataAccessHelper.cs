@@ -26,7 +26,7 @@ namespace OpenNos.DAL.EF.MySQL.Helpers
     {
         #region Members
 
-        private static OpenNosContainer _context;
+        private static OpenNosContext _context;
 
         #endregion
 
@@ -89,7 +89,7 @@ namespace OpenNos.DAL.EF.MySQL.Helpers
 
         #region Properties
 
-        public static OpenNosContainer Context
+        public static OpenNosContext Context
         {
             get
             {
@@ -126,9 +126,9 @@ namespace OpenNos.DAL.EF.MySQL.Helpers
         /// <summary>
         /// Creates new instance of database context.
         /// </summary>
-        public static OpenNosContainer CreateContext()
+        public static OpenNosContext CreateContext()
         {
-            return new OpenNosContainer();
+            return new OpenNosContext();
         }
 
         /// <summary>
@@ -152,26 +152,26 @@ namespace OpenNos.DAL.EF.MySQL.Helpers
                 {
                     context.Database.Connection.Open();
                     //add on line as above for each tableset(it will load the table at startup and will speedup the first query)
-                    context.account.Any();
-                    context.map.Any();
-                    context.portal.Any();
-                    context.generallog.Any();
-                    context.character.Any();
-                    context.npcmonster.Any();
-                    context.mapnpc.Any();
-                    context.mapmonster.Any();
-                    context.inventory.Any();
-                    context.inventoryitem.Any();
-                    context.item.Any();
-                    context.respawn.Any();
-                    context.shop.Any();
-                    context.shopitem.Any();
-                    context.drop.Any();
-                    context.skill.Any();
-                    context.shopskill.Any();
-                    context.characterskill.Any();
-                    context.npcmonsterskill.Any();
-                    context.combo.Any();
+                    context.Account.Any();
+                    context.Map.Any();
+                    context.Portal.Any();
+                    context.GeneralLog.Any();
+                    context.Character.Any();
+                    context.NpcMonster.Any();
+                    context.MapNpc.Any();
+                    context.MapMonster.Any();
+                    context.Inventory.Any();
+                    context.InventoryItem.Any();
+                    context.Item.Any();
+                    context.Respawn.Any();
+                    context.Shop.Any();
+                    context.ShopItem.Any();
+                    context.Drop.Any();
+                    context.Skill.Any();
+                    context.ShopSkill.Any();
+                    context.CharacterSkill.Any();
+                    context.NpcMonsterSkill.Any();
+                    context.Combo.Any();
                     Logger.Log.Info(Language.Instance.GetMessageFromKey("DATABASE_INITIALIZED"));
                 }
                 catch (Exception ex)

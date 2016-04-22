@@ -13,7 +13,7 @@
  */
 
 using AutoMapper;
-using OpenNos.DAL.EF.MySQL.DB;
+
 using OpenNos.DAL.EF.MySQL.Helpers;
 using OpenNos.DAL.Interface;
 using OpenNos.Data;
@@ -26,28 +26,28 @@ namespace OpenNos.DAL.EF.MySQL
     {
         #region Methods
 
-        public void Insert(List<SkillDTO> skills)
+        public void Insert(List<SkillDTO> Skills)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
 
                 context.Configuration.AutoDetectChangesEnabled = false;
-                foreach (SkillDTO skill in skills)
+                foreach (SkillDTO Skill in Skills)
                 {
-                    Skill entity = Mapper.Map<Skill>(skill);
-                    context.skill.Add(entity);
+                    Skill entity = Mapper.Map<Skill>(Skill);
+                    context.Skill.Add(entity);
                 }
                 context.SaveChanges();
 
             }
         }
 
-        public SkillDTO Insert(SkillDTO skill)
+        public SkillDTO Insert(SkillDTO Skill)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                Skill entity = Mapper.Map<Skill>(skill);
-                context.skill.Add(entity);
+                Skill entity = Mapper.Map<Skill>(Skill);
+                context.Skill.Add(entity);
                 context.SaveChanges();
                 return Mapper.Map<SkillDTO>(entity);
             }
@@ -57,9 +57,9 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                foreach (Skill skill in context.skill)
+                foreach (Skill Skill in context.Skill)
                 {
-                    yield return Mapper.Map<SkillDTO>(skill);
+                    yield return Mapper.Map<SkillDTO>(Skill);
                 }
             }
         }
@@ -67,7 +67,7 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                return Mapper.Map<SkillDTO>(context.skill.FirstOrDefault(s => s.SkillVNum.Equals(SkillId)));
+                return Mapper.Map<SkillDTO>(context.Skill.FirstOrDefault(s => s.SkillVNum.Equals(SkillId)));
             }
         }
 

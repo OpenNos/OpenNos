@@ -30,22 +30,22 @@ namespace OpenNos.DAL.EF.MySQL
     {
         #region Methods
 
-        public DeleteResult Delete(long accountId, byte characterSlot)
+        public DeleteResult Delete(long AccountId, byte CharacterSlot)
         {
             try
             {
                 using (var context = DataAccessHelper.CreateContext())
                 {
-                    //actually a character wont be deleted, it just will be disabled for future traces
+                    //actually a Character wont be deleted, it just will be disabled for future traces
                     byte state = (byte)CharacterState.Active;
-                    Character character = context.character.FirstOrDefault(c => c.AccountId.Equals(accountId) && c.Slot.Equals(characterSlot)
+                    Character Character = context.Character.FirstOrDefault(c => c.AccountId.Equals(AccountId) && c.Slot.Equals(CharacterSlot)
                                             && c.State.Equals(state));
 
-                    if (character != null)
+                    if (Character != null)
                     {
                         byte obsoleteState = (byte)CharacterState.Inactive;
-                        character.State = obsoleteState;
-                        Update(character, Mapper.Map<CharacterDTO>(character), context);
+                        Character.State = obsoleteState;
+                        Update(Character, Mapper.Map<CharacterDTO>(Character), context);
                     }
 
                     return DeleteResult.Deleted;
@@ -53,7 +53,7 @@ namespace OpenNos.DAL.EF.MySQL
             }
             catch (Exception e)
             {
-                Logger.Log.ErrorFormat("DELETE_ERROR", characterSlot, e.Message);
+                Logger.Log.ErrorFormat("DELETE_ERROR", CharacterSlot, e.Message);
                 return DeleteResult.Error;
             }
         }
@@ -62,9 +62,9 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                foreach (Character character in context.character.Where(c => c.account.Authority == (byte)AuthorityType.User).OrderByDescending(c => c.Compliment).Take(30).ToList())
+                foreach (Character Character in context.Character.Where(c => c.Account.Authority == (byte)AuthorityType.User).OrderByDescending(c => c.Compliment).Take(30).ToList())
                 {
-                    yield return Mapper.Map<CharacterDTO>(character);
+                    yield return Mapper.Map<CharacterDTO>(Character);
                 }
             }
         }
@@ -73,9 +73,9 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                foreach (Character character in context.character.Where(c => c.account.Authority == (byte)AuthorityType.User).OrderByDescending(c => c.Act4Points).Take(30).ToList())
+                foreach (Character Character in context.Character.Where(c => c.Account.Authority == (byte)AuthorityType.User).OrderByDescending(c => c.Act4Points).Take(30).ToList())
                 {
-                    yield return Mapper.Map<CharacterDTO>(character);
+                    yield return Mapper.Map<CharacterDTO>(Character);
                 }
             }
         }
@@ -84,52 +84,52 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                foreach (Character character in context.character.Where(c => c.account.Authority == (byte)AuthorityType.User).OrderByDescending(c => c.Reput).Take(43).ToList())
+                foreach (Character Character in context.Character.Where(c => c.Account.Authority == (byte)AuthorityType.User).OrderByDescending(c => c.Reput).Take(43).ToList())
                 {
-                    yield return Mapper.Map<CharacterDTO>(character);
+                    yield return Mapper.Map<CharacterDTO>(Character);
                 }
             }
         }
 
-        public SaveResult InsertOrUpdate(ref CharacterDTO character)
+        public SaveResult InsertOrUpdate(ref CharacterDTO Character)
         {
             try
             {
                 using (var context = DataAccessHelper.CreateContext())
                 {
-                    long characterId = character.CharacterId;
-                    Character entity = context.character.FirstOrDefault(c => c.CharacterId.Equals(characterId));
+                    long CharacterId = Character.CharacterId;
+                    Character entity = context.Character.FirstOrDefault(c => c.CharacterId.Equals(CharacterId));
 
                     if (entity == null) //new entity
                     {
-                        character = Insert(character, context);
+                        Character = Insert(Character, context);
                         return SaveResult.Inserted;
                     }
                     else //existing entity
                     {
-                        character = Update(entity, character, context);
+                        Character = Update(entity, Character, context);
                         return SaveResult.Updated;
                     }
                 }
             }
             catch (Exception e)
             {
-                Logger.Log.ErrorFormat("INSERT_ERROR", character, e.Message);
+                Logger.Log.ErrorFormat("INSERT_ERROR", Character, e.Message);
                 return SaveResult.Error;
             }
         }
 
-        public int IsReputHero(long characterId)
+        public int IsReputHero(long CharacterId)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                List<Character> heroes = context.character.Where(c => c.account.Authority != (byte)AuthorityType.Admin).OrderByDescending(c => c.Reput).Take(43).ToList();
+                List<Character> heroes = context.Character.Where(c => c.Account.Authority != (byte)AuthorityType.Admin).OrderByDescending(c => c.Reput).Take(43).ToList();
 
                 int i = 0;
                 foreach (Character c in heroes)
                 {
                     i++;
-                    if (c.CharacterId == characterId)
+                    if (c.CharacterId == CharacterId)
                     {
                         if (i == 1)
                         {
@@ -157,23 +157,23 @@ namespace OpenNos.DAL.EF.MySQL
             }
         }
 
-        public IEnumerable<CharacterDTO> LoadByAccount(long accountId)
+        public IEnumerable<CharacterDTO> LoadByAccount(long AccountId)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
                 byte state = (byte)CharacterState.Active;
-                foreach (Character character in context.character.Where(c => c.AccountId.Equals(accountId) && c.State.Equals(state)).OrderByDescending(c => c.Slot))
+                foreach (Character Character in context.Character.Where(c => c.AccountId.Equals(AccountId) && c.State.Equals(state)).OrderByDescending(c => c.Slot))
                 {
-                    yield return Mapper.Map<CharacterDTO>(character);
+                    yield return Mapper.Map<CharacterDTO>(Character);
                 }
             }
         }
 
-        public CharacterDTO LoadById(long characterId)
+        public CharacterDTO LoadById(long CharacterId)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                return Mapper.Map<CharacterDTO>(context.character.FirstOrDefault(c => c.CharacterId.Equals(characterId)));
+                return Mapper.Map<CharacterDTO>(context.Character.FirstOrDefault(c => c.CharacterId.Equals(CharacterId)));
             }
         }
 
@@ -182,36 +182,36 @@ namespace OpenNos.DAL.EF.MySQL
             using (var context = DataAccessHelper.CreateContext())
             {
                 byte state = (byte)CharacterState.Active;
-                return Mapper.Map<CharacterDTO>(context.character.FirstOrDefault(c => c.Name.Equals(name) && c.State.Equals(state)));
+                return Mapper.Map<CharacterDTO>(context.Character.FirstOrDefault(c => c.Name.Equals(name) && c.State.Equals(state)));
             }
         }
 
-        public CharacterDTO LoadBySlot(long accountId, byte slot)
+        public CharacterDTO LoadBySlot(long AccountId, byte slot)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
                 byte state = (byte)CharacterState.Active;
-                return Mapper.Map<CharacterDTO>(context.character.FirstOrDefault(c => c.AccountId.Equals(accountId) && c.Slot.Equals(slot)
+                return Mapper.Map<CharacterDTO>(context.Character.FirstOrDefault(c => c.AccountId.Equals(AccountId) && c.Slot.Equals(slot)
                                                                                         && c.State.Equals(state)));
             }
         }
 
-        private CharacterDTO Insert(CharacterDTO character, OpenNosContainer context)
+        private CharacterDTO Insert(CharacterDTO Character, OpenNosContext context)
         {
-            Character entity = Mapper.Map<Character>(character);
-            context.character.Add(entity);
+            Character entity = Mapper.Map<Character>(Character);
+            context.Character.Add(entity);
             context.SaveChanges();
             return Mapper.Map<CharacterDTO>(entity);
         }
 
-        private CharacterDTO Update(Character entity, CharacterDTO character, OpenNosContainer context)
+        private CharacterDTO Update(Character entity, CharacterDTO Character, OpenNosContext context)
         {
             using (context)
             {
-                var result = context.character.FirstOrDefault(c => c.CharacterId == character.CharacterId);
+                var result = context.Character.FirstOrDefault(c => c.CharacterId == Character.CharacterId);
                 if (result != null)
                 {
-                    result = Mapper.Map<CharacterDTO, Character>(character, entity);
+                    result = Mapper.Map<CharacterDTO, Character>(Character, entity);
                     context.SaveChanges();
                 }
             }
