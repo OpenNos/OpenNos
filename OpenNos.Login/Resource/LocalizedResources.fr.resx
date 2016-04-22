@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ALREADY_CONNECTED" xml:space="preserve">
-    <value>Votre ID est déjà utilisé.</value>
+    <value>Cet ID est déjà utilisé.</value>
   </data>
   <data name="BANNED" xml:space="preserve">
     <value>Échec. Votre compte à été banni. Veuillez contactez l'équipe du jeu.</value>
@@ -145,7 +145,7 @@
     <value>Forced Disconnecting of client {0}, too much connections.</value>
   </data>
   <data name="IDERROR" xml:space="preserve">
-    <value>Votre ID ou MDP est incorrect</value>
+    <value>Erreur : Votre identifiant ou mot de passe est incorrect.</value>
   </data>
   <data name="MESSAGE_RECEIVED" xml:space="preserve">
     <value>Message reçu {0} on client {1}</value>
