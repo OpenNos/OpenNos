@@ -230,7 +230,12 @@ namespace OpenNos.GameObject
 
                                     Task.Factory.StartNew(async () =>
                                     {
-                                        await Task.Delay(30000);
+                                        for (int i = 1; i <= 30; i++)
+                                        {
+                                            await Task.Delay(1000);
+                                            if (Session.Character.Hp > 0)
+                                                return;
+                                        }
                                         ClientLinkManager.Instance.ReviveFirstPosition(Session.Character.CharacterId);
                                     });
 
