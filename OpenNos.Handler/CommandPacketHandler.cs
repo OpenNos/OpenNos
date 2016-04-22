@@ -219,6 +219,7 @@ namespace OpenNos.Handler
             Session.Client.SendPacket(Session.Character.GenerateSay("$ChangeRep REPUTATION", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$Kick CHARACTERNAME", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$MapDance", 6));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$Kill CHARACTERNAME", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$Effect EFFECTID", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$Resize SIZE", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$PlayMusic MUSIC", 6));
@@ -238,7 +239,56 @@ namespace OpenNos.Handler
             Session.Client.SendPacket(Session.Character.GenerateSay("$Shutdown", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("-----------------------------------------------", 10));
         }
+        [Packet("$Kill")]
+        public void Kill(string packet)
+        {
+            string[] packetsplit = packet.Split(' ');
+            if (packetsplit.Length == 3)
+            {
+                string name = packetsplit[2];
 
+                long? id = ClientLinkManager.Instance.GetProperty<long?>(name, "CharacterId");
+
+                if (id != null)
+                {
+                    int? Hp = ClientLinkManager.Instance.GetProperty<int?>((long)id, "Hp");
+
+                    ClientLinkManager.Instance.SetProperty((long)id, "Hp", 0);
+
+                    ClientLinkManager.Instance.SetProperty((long)id, "LastDefence", DateTime.Now);
+
+                    ClientLinkManager.Instance.Broadcast(Session, $"su 1 {Session.Character.CharacterId} 1 {id} 0 0 11 0 0 0 0 {0} {60000} 0 0", ReceiverType.AllOnMap);
+
+                    ClientLinkManager.Instance.Broadcast(null, ClientLinkManager.Instance.GetUserMethod<string>((long)id, "GenerateStat"), ReceiverType.OnlySomeone, "", (long)id);
+
+                    ClientSession Session2 = ClientLinkManager.Instance.Sessions.FirstOrDefault(s => s.Character != null && s.Character.CharacterId == (long)id);
+                    if (Session2 != null && Session.Character != null)
+                    {
+                        Session2.Client.SendPacket(Session2.Character.GenerateDialog($"#revival^0 #revival^1 {Language.Instance.GetMessageFromKey("ASK_REVIVE")}"));
+                        Session2.Character.Dignite -= (short)(Session2.Character.Level < 50 ? Session2.Character.Level : 50);
+                        if (Session2.Character.Dignite < -1000)
+                            Session2.Character.Dignite = -1000;
+
+                        Session2.Client.SendPacket(Session2.Character.GenerateFd());
+                        Session2.Client.SendPacket(Session2.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("LOSE_DIGNITY"), (short)(Session2.Character.Level < 50 ? Session2.Character.Level : 50)), 11));
+
+                        Task.Factory.StartNew(async () =>
+                        {
+                            await Task.Delay(30000);
+                            ClientLinkManager.Instance.ReviveFirstPosition(Session2.Character.CharacterId);
+                        });
+
+
+                    }
+                    else
+                    {
+                        Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("USER_NOT_CONNECTED"), 0));
+                    }
+                }
+                else
+                    Session.Client.SendPacket(Session.Character.GenerateSay("$Kill CHARACTERNAME", 10));
+            }
+        }
         [Packet("$CreateItem")]
         public void CreateItem(string packet)
         {
