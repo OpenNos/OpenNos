@@ -127,12 +127,14 @@ namespace OpenNos.GameObject
                     if (ServerManager.GetMap(MapId).GetFreePosition(ref MapX, ref MapY, xpoint, ypoint))
                     {
 
-                        this.MapX = MapX;
-                        this.MapY = MapY;
+                       
                         LastMove = DateTime.Now;
 
-                        string movepacket = $"mv 3 {this.MapMonsterId} {this.MapX} {this.MapY} {monster.Speed}";
+                        string movepacket = $"mv 3 {this.MapMonsterId} {MapX} {MapY} {monster.Speed}";
                         ClientLinkManager.Instance.BroadcastToMap(MapId, movepacket);
+                        Thread.Sleep(1000);
+                        this.MapX = MapX;
+                        this.MapY = MapY;
 
                     }
                 }
