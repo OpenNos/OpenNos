@@ -2553,7 +2553,7 @@ namespace OpenNos.Handler
             int damage;
             int hitmode = 0;
             Skill skill = null;
-            CharacterSkill ski = skills.FirstOrDefault(s => (skill = ServerManager.GetSkill(s.SkillVNum)) != null && skill.CastId == Castingid);
+            CharacterSkill ski = skills.FirstOrDefault(s => (skill = ServerManager.GetSkill(s.SkillVNum)) != null && skill?.CastId == Castingid);
             if (!ski.Used)
             {
                 if (skill != null && skill.TargetType == 1 && skill.HitType == 1)
