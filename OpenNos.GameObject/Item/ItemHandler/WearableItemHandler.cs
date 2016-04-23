@@ -58,7 +58,7 @@ namespace OpenNos.GameObject
                          && iteminfo.ItemType != (byte)ItemType.Fashion
                          && iteminfo.ItemType != (byte)ItemType.Jewelery
                          && iteminfo.ItemType != (byte)ItemType.Specialist)
-                        || iteminfo.LevelMinimum > Session.Character.Level || (iteminfo.Sex != 0 && iteminfo.Sex != Session.Character.Gender + 1)
+                        || iteminfo.LevelMinimum > (iteminfo.IsHeroItem ? Session.Character.HeroLevel : Session.Character.Level) || (iteminfo.Sex != 0 && iteminfo.Sex != Session.Character.Gender + 1)
                         || ((iteminfo.ItemType != (byte)ItemType.Jewelery && iteminfo.EquipmentSlot != (byte)EquipmentType.Boots && iteminfo.EquipmentSlot != (byte)EquipmentType.Gloves) && ((iteminfo.Class >> Session.Character.Class) & 1) != 1))
                     {
                         Session.Client.SendPacket(

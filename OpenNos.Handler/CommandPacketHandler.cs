@@ -485,7 +485,7 @@ namespace OpenNos.Handler
         [Packet("$Invisible")]
         public void Invisible(string packet)
         {
-            Session.Character.Invisible = Session.Character.Invisible == 0 ? 1 : 0;
+            Session.Character.Invisible = !Session.Character.Invisible;
             ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateInvisible(), ReceiverType.AllOnMap);
             Session.Character.InvisibleGm = Session.Character.InvisibleGm ? false : true;
             if (Session.Character.InvisibleGm == true)
