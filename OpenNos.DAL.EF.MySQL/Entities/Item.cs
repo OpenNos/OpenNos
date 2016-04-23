@@ -104,6 +104,8 @@ namespace OpenNos.DAL.EF.MySQL
 
         public byte LevelMinimum { get; set; }
 
+        public byte HeroLevelMinimum { get; set; }
+
         public byte LightElement { get; set; }
 
         public byte LightResistance { get; set; }
@@ -162,6 +164,7 @@ namespace OpenNos.DAL.EF.MySQL
         public short VNum { get; set; }
 
         public byte WaterElement { get; set; }
+
         public byte WaterResistance { get; set; }
 
         #endregion

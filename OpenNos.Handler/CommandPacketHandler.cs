@@ -119,7 +119,7 @@ namespace OpenNos.Handler
         }
 
         [Packet("$Lvl")]
-        public void CHangeLevel(string packet)
+        public void ChangeLevel(string packet)
         {
             string[] packetsplit = packet.Split(' ');
             byte level;
@@ -132,7 +132,7 @@ namespace OpenNos.Handler
                     Session.Character.Hp = (int)Session.Character.HPLoad();
                     Session.Character.Mp = (int)Session.Character.MPLoad();
                     Session.Client.SendPacket(Session.Character.GenerateStat());
-                    // sc 0 0 31 39 31 4 70 1 0 33 35 43 2 70 0 17 35 19 35 17 0 0 0 0
+                    Session.Client.SendPacket(Session.Character.GenerateStatInfo());
                     Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("LEVEL_CHANGED"), 0));
                     Session.Client.SendPacket(Session.Character.GenerateLev());
                     ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllOnMapExceptMe);
@@ -143,6 +143,30 @@ namespace OpenNos.Handler
             }
             else
                 Session.Client.SendPacket(Session.Character.GenerateSay("$Lvl LEVEL", 10));
+        }
+
+        [Packet("$HeroLvl")]
+        public void ChangeHeroLevel(string packet)
+        {
+            string[] packetsplit = packet.Split(' ');
+            byte hlevel;
+            if (packetsplit.Length > 2)
+            {
+                if (Byte.TryParse(packetsplit[2], out hlevel) && hlevel < 31 && hlevel > 0)
+                {
+                    Session.Character.HeroLevel = hlevel;
+                    Session.Character.HeroXp = 0;
+                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("HEROLEVEL_CHANGED"), 0));
+                    Session.Client.SendPacket(Session.Character.GenerateLev());
+                    Session.Client.SendPacket(Session.Character.GenerateStatInfo());
+                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllOnMapExceptMe);
+                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(6), ReceiverType.AllOnMap);
+                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(198), ReceiverType.AllOnMap);
+                    this.GetStats(String.Empty);
+                }
+            }
+            else
+                Session.Client.SendPacket(Session.Character.GenerateSay("$HeroLvl HEROLEVEL", 10));
         }
 
         [Packet("$ChangeRep")]
@@ -216,6 +240,7 @@ namespace OpenNos.Handler
             Session.Client.SendPacket(Session.Character.GenerateSay("$Lvl LEVEL", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$JLvl JOBLEVEL", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$SPLvl SPLEVEL", 6));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$HeroLvl HEROLEVEL", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$ChangeSex", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$ChangeClass CLASS", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$ChangeRep REPUTATION", 6));

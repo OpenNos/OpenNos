@@ -83,6 +83,7 @@ namespace OpenNos.Data
         public short VNum { get; set; }
         public byte WaterElement { get; set; }
         public byte WaterResistance { get; set; }
+        public byte HeroLevelMinimum { get; set; }
 
         #endregion
     }
