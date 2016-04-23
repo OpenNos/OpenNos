@@ -58,7 +58,7 @@ namespace OpenNos.Login
                     try
                     {
                         ServiceFactory.Instance.CommunicationService.Open();
-                        NetworkManager<LoginEncryption> networkManager = new NetworkManager<LoginEncryption>("127.0.0.1", port, typeof(LoginPacketHandler));
+                        NetworkManager<LoginEncryption> networkManager = new NetworkManager<LoginEncryption>("127.0.0.1", port, typeof(LoginPacketHandler), typeof(LoginEncryption));
 
                         //refresh WCF
                         ServiceFactory.Instance.CommunicationService.CleanupAsync();
