@@ -666,4 +666,7 @@
   <data name="LOSE_DIGNITY" xml:space="preserve">
     <value>Straciles godnosc</value>
   </data>
+  <data name="HEROLEVEL_CHANGED" xml:space="preserve">
+    <value>Poziom bohatera twojej postaci zostal zmieniony!</value>
+  </data>
 </root>

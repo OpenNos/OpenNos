@@ -669,4 +669,7 @@
   <data name="LOSE_DIGNITY" xml:space="preserve">
     <value>You've lost some dignity</value>
   </data>
+  <data name="HEROLEVEL_CHANGED" xml:space="preserve">
+    <value>Hero level has been changed!</value>
+  </data>
 </root>
