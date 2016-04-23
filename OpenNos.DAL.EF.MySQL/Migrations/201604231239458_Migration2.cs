@@ -7,12 +7,12 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
     {
         public override void Up()
         {
-            AddColumn("dbo.Item", "IsHeroItem", c => c.Boolean(nullable: false));
+            AddColumn("dbo.Item", "IsHeroic", c => c.Boolean(nullable: false));
         }
         
         public override void Down()
         {
-            DropColumn("dbo.Item", "IsHeroItem");
+            DropColumn("dbo.Item", "IsHeroic");
         }
     }
 }
