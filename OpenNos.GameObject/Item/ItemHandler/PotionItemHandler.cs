@@ -38,6 +38,11 @@ namespace OpenNos.GameObject
                     }
                     Session.Character.Mp += item.Mp;
                     Session.Character.Hp += item.Hp;
+                    if (Session.Character.Mp > Session.Character.MPLoad())
+                        Session.Character.Mp = (int)Session.Character.MPLoad();
+                    if (Session.Character.Hp > Session.Character.HPLoad())
+                        Session.Character.Hp = (int)Session.Character.HPLoad();
+
                     if (Session.Character.Hp < Session.Character.HPLoad() || Session.Character.Mp < Session.Character.MPLoad())
                         ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateRc(item.Hp), ReceiverType.AllOnMap);
                     Session.Client.SendPacket(Session.Character.GenerateStat());
