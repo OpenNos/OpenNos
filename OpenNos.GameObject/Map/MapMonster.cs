@@ -189,6 +189,7 @@ namespace OpenNos.GameObject
 
                         ClientLinkManager.Instance.BroadcastToMap(MapId, $"su 3 {MapMonsterId} 1 {Target} {ski.SkillVNum} {sk.Cooldown} {sk.AttackAnimation} {sk.Effect} {this.MapX} {this.MapY} 1 100 0 1 0");
                         ski.Used = false;
+                        //TODO range skill
                     }
                 }
                 else

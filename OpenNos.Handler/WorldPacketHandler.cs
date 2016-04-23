@@ -151,8 +151,6 @@ namespace OpenNos.Handler
                     return;
                 }
 
-                Session.Character.Gold -= item.Price * amount;
-                Session.Client.SendPacket(Session.Character.GenerateGold());
                 InventoryItem newItem = new InventoryItem
                 {
                     InventoryItemId = Session.Character.InventoryList.generateInventoryItemId(),
@@ -187,9 +185,14 @@ namespace OpenNos.Handler
 
                 Inventory inv = Session.Character.InventoryList.CreateItem(newItem, Session.Character);
                 if (inv != null && inv.Slot != -1)
+                {
                     Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(newItem.ItemVNum,
                         inv.InventoryItem.Amount, inv.Type, inv.Slot, newItem.Rare, newItem.Design, newItem.Upgrade));
-
+                    Session.Character.Gold -= item.Price * amount;
+                    Session.Client.SendPacket(Session.Character.GenerateGold());
+                }
+                else
+                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_PLACE"), 0));
                 ClientLinkManager.Instance.BuyValidate(Session, shop, slot, amount);
                 KeyValuePair<long, MapShop> shop2 = Session.CurrentMap.ShopUserList.FirstOrDefault(s => s.Value.OwnerId.Equals(owner));
                 LoadShopItem(owner, shop2);
@@ -278,10 +281,6 @@ namespace OpenNos.Handler
                         Session.Client.SendPacket(Session.Character.GenerateShopMemo(3, Language.Instance.GetMessageFromKey("NOT_ENOUGH_MONEY")));
                         return;
                     }
-
-                    Session.Client.SendPacket(Session.Character.GenerateShopMemo(1, string.Format(Language.Instance.GetMessageFromKey("BUY_ITEM_VALIDE"), ServerManager.GetItem(item.ItemVNum).Name, amount)));
-                    Session.Character.Gold -= (long)(price * pourcent);
-                    Session.Client.SendPacket(Session.Character.GenerateGold());
                 }
                 else
                 {
@@ -300,10 +299,7 @@ namespace OpenNos.Handler
                         if (ra <= rareprob[i])
                             rare = (byte)i;
                     }
-                    Session.Client.SendPacket(Session.Character.GenerateShopMemo(1, string.Format(Language.Instance.GetMessageFromKey("BUY_ITEM_VALIDE"), ServerManager.GetItem(item.ItemVNum).Name, amount)));
-                    Session.Character.Reput -= (long)(Reputprice);
-                    Session.Client.SendPacket(Session.Character.GenerateFd());
-                    Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("REPUT_DECREASED"), 11));
+                
                 }
 
 
@@ -341,8 +337,25 @@ namespace OpenNos.Handler
 
                 Inventory inv = Session.Character.InventoryList.CreateItem(newItem, Session.Character);
                 if (inv != null && inv.Slot != -1)
+                {
                     Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(newItem.ItemVNum,
                         inv.InventoryItem.Amount, inv.Type, inv.Slot, newItem.Rare, newItem.Design, newItem.Upgrade));
+                    if (iteminfo.ReputPrice == 0)
+                    {
+                        Session.Client.SendPacket(Session.Character.GenerateShopMemo(1, string.Format(Language.Instance.GetMessageFromKey("BUY_ITEM_VALIDE"), ServerManager.GetItem(item.ItemVNum).Name, amount)));
+                        Session.Character.Gold -= (long)(price * pourcent);
+                        Session.Client.SendPacket(Session.Character.GenerateGold());
+                    }
+                    else
+                    {
+                        Session.Client.SendPacket(Session.Character.GenerateShopMemo(1, string.Format(Language.Instance.GetMessageFromKey("BUY_ITEM_VALIDE"), ServerManager.GetItem(item.ItemVNum).Name, amount)));
+                        Session.Character.Reput -= (long)(Reputprice);
+                        Session.Client.SendPacket(Session.Character.GenerateFd());
+                        Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("REPUT_DECREASED"), 11));
+                    }
+                }
+                else
+                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_PLACE"), 0));
             }
         }
 
@@ -2577,7 +2590,7 @@ namespace OpenNos.Handler
                                 mmon = ServerManager.GetMap(Session.Character.MapId).Monsters.FirstOrDefault(s => s.MapMonsterId == mon.MapMonsterId);
                                 ClientLinkManager.Instance.Broadcast(Session, $"su {1} {Session.Character.CharacterId} {3} {mmon.MapMonsterId} {skill.SkillVNum} {skill.Cooldown} {skill.AttackAnimation} {skill.Effect} {Session.Character.MapX} {Session.Character.MapY} {(mmon.Alive ? 1 : 0)} {(int)(((float)mmon.CurrentHp / (float)ServerManager.GetNpc(mon.MonsterVNum).MaxHP) * 100)} {damage} {5} {skill.SkillType - 1}", ReceiverType.AllOnMap);
                             }
-                        
+
                         await Task.Delay((skill.Cooldown) * 100);
                         ski.Used = false;
                         Session.Client.SendPacket($"sr {Castingid}");
@@ -2596,7 +2609,7 @@ namespace OpenNos.Handler
                                      short dX = (short)(Session.Character.MapX - mmon.MapX);
                                      short dY = (short)(Session.Character.MapY - mmon.MapY);
 
-                                     if (Map.GetDistance(new MapCell() { X= Session.Character.MapX, Y= Session.Character.MapY}, new MapCell() { X = mmon.MapX, Y = mmon.MapY })<= skill.Range + 1|| skill.TargetRange != 0)
+                                     if (Map.GetDistance(new MapCell() { X = Session.Character.MapX, Y = Session.Character.MapY }, new MapCell() { X = mmon.MapX, Y = mmon.MapY }) <= skill.Range + 1 || skill.TargetRange != 0)
                                      {
                                          ClientLinkManager.Instance.Broadcast(Session, $"ct 1 {Session.Character.CharacterId} 3 {mmon.MapMonsterId} {skill.CastAnimation} -1 {skill.SkillVNum}", ReceiverType.AllOnMap);
                                          damage = GenerateDamage(Session, mmon.MapMonsterId, skill, ref hitmode);
@@ -2630,7 +2643,7 @@ namespace OpenNos.Handler
                                                  damage = GenerateDamage(Session, mon.MapMonsterId, skill, ref hitmode);
                                                  ClientLinkManager.Instance.Broadcast(Session, $"su {1} {Session.Character.CharacterId} {3} {mon.MapMonsterId} {skill.SkillVNum} {skill.Cooldown} {skill.AttackAnimation} {skill.Effect} {Session.Character.MapX} {Session.Character.MapY} {(mon.Alive ? 1 : 0)} {(int)(((float)mon.CurrentHp / (float)ServerManager.GetNpc(mon.MonsterVNum).MaxHP) * 100)} {damage} {5} {skill.SkillType - 1}", ReceiverType.AllOnMap);
                                              }
-                                       
+
                                          await Task.Delay((skill.Cooldown) * 100);
                                          ski.Used = false;
                                          Session.Client.SendPacket($"sr {Castingid}");
@@ -3050,8 +3063,8 @@ namespace OpenNos.Handler
                         }
                         else
                         {
-                            if(Session.Character.Level <= 20)
-                            Session.Client.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("SEED_USED"), 10), 10));
+                            if (Session.Character.Level <= 20)
+                                Session.Client.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("SEED_USED"), 10), 10));
                             Session.Character.Hp = (int)(Session.Character.HPLoad() / 2);
                             Session.Character.Mp = (int)(Session.Character.MPLoad() / 2);
                             Session.Client.SendPacket(Session.Character.GenerateTp());
@@ -3169,7 +3182,7 @@ namespace OpenNos.Handler
             if (Session.Character.Speed.Equals(Convert.ToByte(packetsplit[5])) || Convert.ToByte(packetsplit[5]) == 10)
             {
 
-                if (Map.GetDistance(new MapCell() { X= Session.Character.MapX,Y= Session.Character.MapY }, new MapCell() { X = Convert.ToInt16(packetsplit[2]), Y = Convert.ToInt16(packetsplit[3]) }) > 20)
+                if (Map.GetDistance(new MapCell() { X = Session.Character.MapX, Y = Session.Character.MapY }, new MapCell() { X = Convert.ToInt16(packetsplit[2]), Y = Convert.ToInt16(packetsplit[3]) }) > 20)
                     Session.Client.Disconnect();
                 ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateMv(), ReceiverType.AllOnMapExceptMe);
                 Session.Client.SendPacket(Session.Character.GenerateCond());
@@ -3987,8 +4000,8 @@ namespace OpenNos.Handler
             // lev 40 2288403 23 47450 3221180 113500 20086 5
             Session.Client.SendPacket(Session.Character.GenerateSki());
             string[] quicklistpackets = Session.Character.GenerateQuicklist();
-            foreach(string quicklist in quicklistpackets)
-            Session.Client.SendPacket(quicklist);
+            foreach (string quicklist in quicklistpackets)
+                Session.Client.SendPacket(quicklist);
             Session.Client.SendPacket(Session.Character.GenerateStat());
             Session.Client.SendPacket(Session.Character.GenerateStatChar());
 
