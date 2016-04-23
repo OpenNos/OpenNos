@@ -1090,10 +1090,10 @@ namespace OpenNos.Import.Console
                     }
                     else if (currentLine.Length > 3 && currentLine[1] == "FLAG")
                     {
-                        item.IsBlocked = currentLine[5] == "1";
+                        item.IsSoldable = currentLine[5] == "0";
                         item.IsDroppable = currentLine[6] == "0";
                         item.IsTradable = currentLine[7] == "0";
-                        item.IsSoldable = currentLine[8] == "0";
+                        item.IsBlocked = currentLine[8] == "1";
                         item.IsMinilandObject = currentLine[9] == "1";
                         item.IsWarehouse = currentLine[10] == "1";
                         item.IsColored = currentLine[16] == "1";

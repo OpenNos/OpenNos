@@ -1867,8 +1867,7 @@ namespace OpenNos.Handler
 
                 if (ServerManager.GetItem(inv.InventoryItem.ItemVNum).IsSoldable != true)
                 {
-                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("ITEM_NOT_SOLDABLE"), 0));
-                    // TODO: Need to see if on global it's a MSG packet
+                    Session.Client.SendPacket(Session.Character.GenerateShopMemo(2, string.Format(Language.Instance.GetMessageFromKey("ITEM_NOT_SOLDABLE"))));
                     return;
                 }
 
