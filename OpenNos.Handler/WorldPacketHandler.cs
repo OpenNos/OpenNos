@@ -3431,7 +3431,7 @@ namespace OpenNos.Handler
                 {
                     Session.Character.Hp = (int)Session.Character.HPLoad();
                     Session.Character.Mp = (int)Session.Character.MPLoad();
-                    Session.Client.SendPacket(Session.Character.GenerateStatInfo());
+                    Session.Client.SendPacket(Session.Character.GenerateStat());
                     Session.Client.SendPacket(Session.Character.GenerateEff(5));
                 }
                 Inventory sp2 = Session.Character.EquipmentList.LoadBySlotAndType((short)EquipmentType.Sp, (byte)InventoryType.Equipment);
@@ -3479,7 +3479,7 @@ namespace OpenNos.Handler
                     sp2.InventoryItem.SpXp -= (long)t;
                     sp2.InventoryItem.SpLevel++;
                     t = Session.Character.SPXPLoad();
-                    Session.Client.SendPacket(Session.Character.GenerateStatInfo());
+                    Session.Client.SendPacket(Session.Character.GenerateStat());
                     Session.Client.SendPacket($"levelup {Session.Character.CharacterId}");
                     ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(6), ReceiverType.AllOnMap);
                     ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(198), ReceiverType.AllOnMap);
