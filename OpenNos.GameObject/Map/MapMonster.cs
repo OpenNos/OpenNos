@@ -204,6 +204,7 @@ namespace OpenNos.GameObject
                             int? Hp = ClientLinkManager.Instance.GetProperty<int?>(Target, "Hp");
 
                             int damage = 100;
+                            bool AlreadyDead = Hp <= 0;
                             int HP = ((int)Hp - damage);
                             ClientLinkManager.Instance.SetProperty(Target, "Hp", (int)((HP) <= 0 ? 0 : HP));
 
@@ -216,17 +217,19 @@ namespace OpenNos.GameObject
                                 foreach (Character chara in ServerManager.GetMap(MapId).GetListPeopleInRange((short)MapX, (short)MapY, monster.BasicArea).Where(s => s.CharacterId != Target))
                                 {
                                     damage = 100;
+                                    bool AlreadyDead2 = chara.Hp <= 0;
                                     chara.Hp -= damage;
                                     chara.LastDefence = DateTime.Now;
                                     ClientLinkManager.Instance.Broadcast(null, ClientLinkManager.Instance.GetUserMethod<string>(chara.CharacterId, "GenerateStat"), ReceiverType.OnlySomeone, "", chara.CharacterId);
                                     ClientLinkManager.Instance.BroadcastToMap(MapId, $"su 3 {MapMonsterId} 1 {chara.CharacterId} 0 {monster.BasicCooldown} 11 {monster.BasicSkill} 0 0 1 {(int)((double)Hp / chara.HPLoad())} {damage} 0 0");
-                                    if (chara.Hp <= 0)
+                                    if (chara.Hp <= 0 && !AlreadyDead2)
                                     {
                                         ClientLinkManager.Instance.AskRevive(chara.CharacterId);
                                     }
                                 }
                             if (HP <= 0)
                             {
+                                if(!AlreadyDead)
                                 ClientLinkManager.Instance.AskRevive(Target);
                                 Target = -1;
                             }
