@@ -139,6 +139,9 @@ namespace OpenNos.Handler
                     ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(6), ReceiverType.AllOnMap);
                     ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(198), ReceiverType.AllOnMap);
                     this.GetStats(String.Empty);
+
+                    ClientLinkManager.Instance.UpdateGroup(Session.Character.CharacterId);
+
                 }
             }
             else

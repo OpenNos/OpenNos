@@ -3143,20 +3143,9 @@ namespace OpenNos.Handler
                         ClientLinkManager.Instance.Groups.Add(group);
                     }
 
-                    //player join group
-                    string str = $"pinit { ClientLinkManager.Instance.Groups.FirstOrDefault(s => s.Characters.Contains(CharId)).Characters.Count()}";
-
-                    int i = 0;
-                    foreach (long Id in ClientLinkManager.Instance.Groups.FirstOrDefault(s => s.Characters.Contains(CharId)).Characters)
-                    {
-                        i++;
-                        str += $" 1|{ClientLinkManager.Instance.GetProperty<long>(Id, "CharacterId")}|{i}|{ClientLinkManager.Instance.GetProperty<byte>(Id, "Level")}|{ClientLinkManager.Instance.GetProperty<string>(Id, "Name")}|11|{ClientLinkManager.Instance.GetProperty<byte>(Id, "Gender")}|{ClientLinkManager.Instance.GetProperty<byte>(Id, "Class")}|{(ClientLinkManager.Instance.GetProperty<bool>(Id, "UseSp") ? ClientLinkManager.Instance.GetProperty<int>(Id, "Morph") : 0)}";
-                    }
-
-                    foreach (long Id in ClientLinkManager.Instance.Groups.FirstOrDefault(s => s.Characters.Contains(CharId)).Characters)
-                    {
-                        ClientLinkManager.Instance.Broadcast(Session, str, ReceiverType.OnlySomeone, "", Id);
-                    }
+                    //player join group                 
+                    ClientLinkManager.Instance.UpdateGroup(CharId);
+                 
 
                     string p = GeneratePidx(Session.Character.CharacterId);
                     if (p != "")
@@ -3460,6 +3449,8 @@ namespace OpenNos.Handler
                     Session.Client.SendPacket($"levelup {Session.Character.CharacterId}");
                     ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(6), ReceiverType.AllOnMap);
                     ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(198), ReceiverType.AllOnMap);
+                    ClientLinkManager.Instance.UpdateGroup(Session.Character.CharacterId);
+
                 }
                 t = Session.Character.JobXPLoad();
                 while (Session.Character.JobLevelXp >= t)
