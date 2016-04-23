@@ -104,17 +104,9 @@
     <Compile Include="Migrations\201604221748026_Migration1.Designer.cs">
       <DependentUpon>201604221748026_Migration1.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201604231019422_migration.cs" />
-    <Compile Include="Migrations\201604231019422_migration.Designer.cs">
-      <DependentUpon>201604231019422_migration.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201604231103450_migration2.cs" />
-    <Compile Include="Migrations\201604231103450_migration2.Designer.cs">
-      <DependentUpon>201604231103450_migration2.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201604231120326_migration3.cs" />
-    <Compile Include="Migrations\201604231120326_migration3.Designer.cs">
-      <DependentUpon>201604231120326_migration3.cs</DependentUpon>
+    <Compile Include="Migrations\201604231142014_Migration2.cs" />
+    <Compile Include="Migrations\201604231142014_Migration2.Designer.cs">
+      <DependentUpon>201604231142014_Migration2.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="NpcMonsterSkillDAO.cs" />
@@ -198,14 +190,8 @@
     <EmbeddedResource Include="Migrations\201604221748026_Migration1.resx">
       <DependentUpon>201604221748026_Migration1.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201604231019422_migration.resx">
-      <DependentUpon>201604231019422_migration.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201604231103450_migration2.resx">
-      <DependentUpon>201604231103450_migration2.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201604231120326_migration3.resx">
-      <DependentUpon>201604231120326_migration3.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201604231142014_Migration2.resx">
+      <DependentUpon>201604231142014_Migration2.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
