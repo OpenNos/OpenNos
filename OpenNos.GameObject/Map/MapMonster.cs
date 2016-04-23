@@ -211,19 +211,20 @@ namespace OpenNos.GameObject
                             ClientLinkManager.Instance.BroadcastToMap(MapId, $"su 3 {MapMonsterId} 1 {Target} 0 {monster.BasicCooldown} 11 {monster.BasicSkill} 0 0 {((HP) > 0 ? 1 : 0)} {(int)((double)(HP) / ClientLinkManager.Instance.GetUserMethod<double>(Target, "HPLoad"))} {damage} 0 0");
                             ClientLinkManager.Instance.Broadcast(null, ClientLinkManager.Instance.GetUserMethod<string>(Target, "GenerateStat"), ReceiverType.OnlySomeone, "", Target);
 
-                            foreach (Character chara in ServerManager.GetMap(MapId).GetListPeopleInRange((short)MapX, (short)MapY, monster.BasicArea).Where(s => s.CharacterId != Target))
-                            {
-                                damage = 100;
-                                chara.Hp -= damage;
-                                chara.LastDefence = DateTime.Now;
-                                ClientLinkManager.Instance.Broadcast(null, ClientLinkManager.Instance.GetUserMethod<string>(chara.CharacterId, "GenerateStat"), ReceiverType.OnlySomeone, "", Target);
-                                ClientLinkManager.Instance.BroadcastToMap(MapId, $"su 3 {MapMonsterId} 1 {chara.CharacterId} 0 {monster.BasicCooldown} 11 {monster.BasicSkill} 0 0 1 {(int)((double)Hp / chara.HPLoad())} {damage} 0 0");
-
-                                if (HP <= 0)
+                            if (monster.AttackClass == 0)
+                                foreach (Character chara in ServerManager.GetMap(MapId).GetListPeopleInRange((short)MapX, (short)MapY, monster.BasicArea).Where(s => s.CharacterId != Target))
                                 {
-                                    ClientLinkManager.Instance.AskRevive(chara.CharacterId);
+                                    damage = 100;
+                                    chara.Hp -= damage;
+                                    chara.LastDefence = DateTime.Now;
+                                    ClientLinkManager.Instance.Broadcast(null, ClientLinkManager.Instance.GetUserMethod<string>(chara.CharacterId, "GenerateStat"), ReceiverType.OnlySomeone, "", chara.CharacterId);
+                                    ClientLinkManager.Instance.BroadcastToMap(MapId, $"su 3 {MapMonsterId} 1 {chara.CharacterId} 0 {monster.BasicCooldown} 11 {monster.BasicSkill} 0 0 1 {(int)((double)Hp / chara.HPLoad())} {damage} 0 0");
+
+                                    if (chara.Hp <= 0)
+                                    {
+                                        ClientLinkManager.Instance.AskRevive(chara.CharacterId);
+                                    }
                                 }
-                            }
                             if (HP <= 0)
                             {
                                 ClientLinkManager.Instance.AskRevive(Target);
