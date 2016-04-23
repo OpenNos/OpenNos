@@ -122,7 +122,7 @@ namespace OpenNos.GameObject
                         equip.Type = type;
 
                         Session.Character.InventoryList.DeleteFromSlotAndType(inventory.Slot, inventory.Type);
-                        Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, inventory.Type, inventory.Slot, 0, 0, 0));
+                        Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, equip.Type, inventory.Slot, 0, 0, 0));
                         Session.Character.EquipmentList.DeleteFromSlotAndType(slot, type);
 
                         Session.Character.InventoryList.InsertOrUpdate(ref equip);
@@ -134,7 +134,6 @@ namespace OpenNos.GameObject
                                 equip.InventoryItem.Upgrade));
 
                         Session.Client.SendPacket(Session.Character.GenerateStatChar());
-                        Thread.Sleep(100);
                         ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEq(), ReceiverType.AllOnMap);
                         Session.Client.SendPacket(Session.Character.GenerateEquipment());
                         ClientLinkManager.Instance.Broadcast(Session, Session.Character.GeneratePairy(), ReceiverType.AllOnMap);
