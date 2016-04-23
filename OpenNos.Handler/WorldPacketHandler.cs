@@ -3043,7 +3043,7 @@ namespace OpenNos.Handler
                 {
                     case 0:
                         int seed = 1012;
-                        if (Session.Character.InventoryList.CountItem(seed) < 10 && Session.Character.Level >= 20)
+                        if (Session.Character.InventoryList.CountItem(seed) < 10 && Session.Character.Level <= 20)
                         {
                             Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_POWER_SEED"), 0));
                             ClientLinkManager.Instance.ReviveFirstPosition(Session.Character.CharacterId);
@@ -3051,7 +3051,7 @@ namespace OpenNos.Handler
                         }
                         else
                         {
-                            if(Session.Character.Level >= 20)
+                            if(Session.Character.Level <= 20)
                             Session.Client.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("SEED_USED"), 10), 10));
                             Session.Character.Hp = (int)(Session.Character.HPLoad() / 2);
                             Session.Character.Mp = (int)(Session.Character.MPLoad() / 2);
