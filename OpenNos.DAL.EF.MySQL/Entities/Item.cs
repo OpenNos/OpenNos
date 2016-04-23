@@ -94,6 +94,8 @@ namespace OpenNos.DAL.EF.MySQL
 
         public bool IsWarehouse { get; set; }
 
+        public bool IsHeroItem { get; set; }
+
         public byte ItemSubType { get; set; }
 
         public byte ItemType { get; set; }
@@ -103,8 +105,6 @@ namespace OpenNos.DAL.EF.MySQL
         public byte LevelJobMinimum { get; set; }
 
         public byte LevelMinimum { get; set; }
-
-        public byte HeroLevelMinimum { get; set; }
 
         public byte LightElement { get; set; }
 
