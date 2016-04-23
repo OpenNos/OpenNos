@@ -1846,6 +1846,8 @@ namespace OpenNos.Handler
                         SnackMp = 0,
                         SnackAmount = 0,
                         MaxSnack = 0,
+                        HeroLevel = characterDTO.HeroLevel,
+                        HeroXp = characterDTO.HeroXp
                     };
 
                 Session.Character.Update();
