@@ -28,6 +28,7 @@ namespace OpenNos.GameObject
         #region Members
 
         private EncryptorT _encryptor;
+        private EncryptionBase _fallbackEncryptor;
         private IDictionary<string, DateTime> _generalLog;
         private ConcurrentDictionary<Guid, Map> _maps = new ConcurrentDictionary<Guid, Map>();
         private Type _packetHandler;
@@ -37,10 +38,13 @@ namespace OpenNos.GameObject
 
         #region Instantiation
 
-        public NetworkManager(string ipAddress, int port, Type packetHandler)
+        public NetworkManager(string ipAddress, int port, Type packetHandler, Type fallbackEncryptor)
         {
             _packetHandler = packetHandler;
             _encryptor = (EncryptorT)Activator.CreateInstance(typeof(EncryptorT));
+
+            if(fallbackEncryptor != null)
+                _fallbackEncryptor = (EncryptionBase)Activator.CreateInstance(fallbackEncryptor);
 
             var server = ScsServerFactory.CreateServer(new ScsTcpEndPoint(ipAddress, port));
             //Register events of the server to be informed about clients
@@ -83,24 +87,23 @@ namespace OpenNos.GameObject
 
         private bool CheckGeneralLog(NetworkClient client)
         {
+            ScsTcpEndPoint currentEndpoint = client.RemoteEndPoint as ScsTcpEndPoint;
+
             if (GeneralLog.Any())
             {
-                IEnumerable<KeyValuePair<string, DateTime>> logsToDelete = GeneralLog
-                    .Where(cl => cl.Key.Equals(client.RemoteEndPoint.ToString()) && (DateTime.Now - cl.Value).Seconds > 5);
-
-                foreach (KeyValuePair<string, DateTime> connectionLogEntry in logsToDelete)
+                foreach (var item in GeneralLog.Where(cl => cl.Key.Equals(currentEndpoint.IpAddress) && (DateTime.Now - cl.Value).Seconds > 5).ToList())
                 {
-                    GeneralLog.Remove(connectionLogEntry);
+                    GeneralLog.Remove(item.Key);
                 }
             }
 
-            if (GeneralLog.ContainsKey(client.RemoteEndPoint.ToString()))
+            if (GeneralLog.ContainsKey(currentEndpoint.IpAddress))
             {
                 return false;
             }
             else
             {
-                GeneralLog.Add(client.RemoteEndPoint.ToString(), DateTime.Now);
+                GeneralLog.Add(currentEndpoint.IpAddress, DateTime.Now);
                 return true;
             }
         }
@@ -113,7 +116,10 @@ namespace OpenNos.GameObject
             if (!CheckGeneralLog(customClient))
             {
                 Logger.Log.WarnFormat(Language.Instance.GetMessageFromKey("FORCED_DISCONNECT"), customClient.ClientId);
+                customClient.Initialize(_fallbackEncryptor);
+                customClient.SendPacket($"fail {Language.Instance.GetMessageFromKey("ALREADY_CONNECTED")}");
                 customClient.Disconnect();
+                customClient = null;
                 return;
             }
 
@@ -134,28 +140,34 @@ namespace OpenNos.GameObject
         {
             ClientSession session;
             _sessions.TryRemove(e.Client.ClientId, out session);
-            ClientLinkManager.Instance.Sessions.Remove(session);
-            if (session.Character != null)
-            {
-                if (ClientLinkManager.Instance.Groups.FirstOrDefault(s=>s.Characters.Contains(session.Character.CharacterId)) !=null)
-                {
-                    ClientLinkManager.Instance.GroupLeave(session);
-                }
-                session.Character.Save();
 
-                //only remove the character from map if the character has been set
-                ClientLinkManager.Instance.Broadcast(session, session.Character.GenerateOut(), ReceiverType.AllOnMapExceptMe);
-            }
-           
-            if (session.HealthTask != null)
+            //check if session hasnt been already removed
+            if(session != null)
             {
-                session.healthStop = true;
-                session.HealthTask.Dispose();
+                ClientLinkManager.Instance.Sessions.Remove(session);
+                if (session.Character != null)
+                {
+                    if (ClientLinkManager.Instance.Groups.FirstOrDefault(s => s.Characters.Contains(session.Character.CharacterId)) != null)
+                    {
+                        ClientLinkManager.Instance.GroupLeave(session);
+                    }
+                    session.Character.Save();
+
+                    //only remove the character from map if the character has been set
+                    ClientLinkManager.Instance.Broadcast(session, session.Character.GenerateOut(), ReceiverType.AllOnMapExceptMe);
+                }
+
+                if (session.HealthTask != null)
+                {
+                    session.healthStop = true;
+                    session.HealthTask.Dispose();
+                }
+                session.Destroy();
+                e.Client.Disconnect();
+                Logger.Log.Info(Language.Instance.GetMessageFromKey("DISCONNECT") + e.Client.ClientId);
+                session = null;
             }
-            session.Destroy();
-            e.Client.Disconnect();
-            Logger.Log.Info(Language.Instance.GetMessageFromKey("DISCONNECT") + e.Client.ClientId);
-            session = null;
+            
         }
 
         #endregion
