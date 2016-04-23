@@ -26,6 +26,7 @@ namespace OpenNos.Import.Console
 {
     public class ImportFactory
     {
+
         #region Members
 
         private readonly string _folder;
@@ -1100,7 +1101,7 @@ namespace OpenNos.Import.Console
                         item.Sex = currentLine[18] == "1" ? (byte)1 : currentLine[17] == "1" ? (byte)2 : (byte)0;
                         if (currentLine[21] == "1")
                             item.ReputPrice = item.Price;
-                        item.IsHeroItem = currentLine[22] == "1";
+                        item.IsHeroic = currentLine[22] == "1";
                         /*
                         item.IsVehicle = currentLine[11] == "1" ? true : false; // (?)
                         item.BoxedVehicle = currentLine[12] == "1" ? true : false; // (?)
@@ -1319,5 +1320,6 @@ namespace OpenNos.Import.Console
         }
 
         #endregion
+
     }
 }

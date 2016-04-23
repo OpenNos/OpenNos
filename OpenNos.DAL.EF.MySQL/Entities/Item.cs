@@ -94,7 +94,7 @@ namespace OpenNos.DAL.EF.MySQL
 
         public bool IsWarehouse { get; set; }
 
-        public bool IsHeroItem { get; set; }
+        public bool IsHeroic { get; set; }
 
         public byte ItemSubType { get; set; }
 
