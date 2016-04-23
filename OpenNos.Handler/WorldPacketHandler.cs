@@ -1804,7 +1804,7 @@ namespace OpenNos.Handler
                         LastPulse = 0,
                         LastPortal = 0,
                         LastSp = 0,
-                        Invisible = 0,
+                        Invisible = false,
                         InvisibleGm = false,
                         ArenaWinner = characterDTO.ArenaWinner,
                         Morph = 0,
