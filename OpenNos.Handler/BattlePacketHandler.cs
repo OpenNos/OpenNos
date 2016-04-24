@@ -265,65 +265,9 @@ namespace OpenNos.Handler
                     };
                     Session.CurrentMap.ItemSpawn(drop2, mmon.MapX, mmon.MapY);
                 }
-                if ((int)(Session.Character.LevelXp / (Session.Character.XPLoad() / 10)) < (int)((Session.Character.LevelXp + monsterinfo.XP) / (Session.Character.XPLoad() / 10)))
-                {
-                    Session.Character.Hp = (int)Session.Character.HPLoad();
-                    Session.Character.Mp = (int)Session.Character.MPLoad();
-                    Session.Client.SendPacket(Session.Character.GenerateStat());
-                    Session.Client.SendPacket(Session.Character.GenerateEff(5));
-                }
-                Inventory sp2 = Session.Character.EquipmentList.LoadBySlotAndType((short)EquipmentType.Sp, (byte)InventoryType.Equipment);
-                if (Session.Character.Level < 99)
-                    Session.Character.LevelXp += monsterinfo.XP;
-                if ((Session.Character.Class == 0 && Session.Character.JobLevel < 20) || (Session.Character.Class != 0 && Session.Character.JobLevel < 80))
-                {
-                    if (sp2 != null && Session.Character.UseSp && sp2.InventoryItem.SpLevel < 99)
-                        Session.Character.JobLevelXp += (int)((double)monsterinfo.JobXP / (double)100 * sp2.InventoryItem.SpLevel);
-                    else
-                        Session.Character.JobLevelXp += monsterinfo.JobXP;
-                }
-                if (sp2 != null && Session.Character.UseSp && sp2.InventoryItem.SpLevel < 99)
-                    sp2.InventoryItem.SpXp += monsterinfo.JobXP * (100 - sp2.InventoryItem.SpLevel);
-                double t = Session.Character.XPLoad();
-                while (Session.Character.LevelXp >= t)
-                {
-                    Session.Character.LevelXp -= (long)t;
-                    Session.Character.Level++;
-                    t = Session.Character.XPLoad();
-                    Session.Character.Hp = (int)Session.Character.HPLoad();
-                    Session.Character.Mp = (int)Session.Character.MPLoad();
-                    Session.Client.SendPacket(Session.Character.GenerateStat());
-                    Session.Client.SendPacket($"levelup {Session.Character.CharacterId}");
-                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(6), ReceiverType.AllOnMap);
-                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(198), ReceiverType.AllOnMap);
-                    ClientLinkManager.Instance.UpdateGroup(Session.Character.CharacterId);
-                }
-                t = Session.Character.JobXPLoad();
-                while (Session.Character.JobLevelXp >= t)
-                {
-                    Session.Character.JobLevelXp -= (long)t;
-                    Session.Character.JobLevel++;
-                    t = Session.Character.JobXPLoad();
-                    Session.Character.Hp = (int)Session.Character.HPLoad();
-                    Session.Character.Mp = (int)Session.Character.MPLoad();
-                    Session.Client.SendPacket(Session.Character.GenerateStat());
-                    Session.Client.SendPacket($"levelup {Session.Character.CharacterId}");
-                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(6), ReceiverType.AllOnMap);
-                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(198), ReceiverType.AllOnMap);
-                }
-                if (sp2 != null)
-                    t = Session.Character.SPXPLoad();
-                while (sp2 != null && sp2.InventoryItem.SpXp >= t)
-                {
-                    sp2.InventoryItem.SpXp -= (long)t;
-                    sp2.InventoryItem.SpLevel++;
-                    t = Session.Character.SPXPLoad();
-                    Session.Client.SendPacket(Session.Character.GenerateStat());
-                    Session.Client.SendPacket($"levelup {Session.Character.CharacterId}");
-                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(6), ReceiverType.AllOnMap);
-                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(198), ReceiverType.AllOnMap);
-                }
-                Session.Client.SendPacket(Session.Character.GenerateLev());
+                if(Session.Character.Hp > 0)
+                GenerateXp(monsterinfo);
+
             }
             else
             {
@@ -332,7 +276,69 @@ namespace OpenNos.Handler
             mmon.Target = Session.Character.CharacterId;
             return damage;
         }
+        private void GenerateXp(NpcMonster monsterinfo)
+        {
 
+            if ((int)(Session.Character.LevelXp / (Session.Character.XPLoad() / 10)) < (int)((Session.Character.LevelXp + monsterinfo.XP) / (Session.Character.XPLoad() / 10)))
+            {
+                Session.Character.Hp = (int)Session.Character.HPLoad();
+                Session.Character.Mp = (int)Session.Character.MPLoad();
+                Session.Client.SendPacket(Session.Character.GenerateStat());
+                Session.Client.SendPacket(Session.Character.GenerateEff(5));
+            }
+            Inventory sp2 = Session.Character.EquipmentList.LoadBySlotAndType((short)EquipmentType.Sp, (byte)InventoryType.Equipment);
+            if (Session.Character.Level < 99)
+                Session.Character.LevelXp += monsterinfo.XP;
+            if ((Session.Character.Class == 0 && Session.Character.JobLevel < 20) || (Session.Character.Class != 0 && Session.Character.JobLevel < 80))
+            {
+                if (sp2 != null && Session.Character.UseSp && sp2.InventoryItem.SpLevel < 99)
+                    Session.Character.JobLevelXp += (int)((double)monsterinfo.JobXP / (double)100 * sp2.InventoryItem.SpLevel);
+                else
+                    Session.Character.JobLevelXp += monsterinfo.JobXP;
+            }
+            if (sp2 != null && Session.Character.UseSp && sp2.InventoryItem.SpLevel < 99)
+                sp2.InventoryItem.SpXp += monsterinfo.JobXP * (100 - sp2.InventoryItem.SpLevel);
+            double t = Session.Character.XPLoad();
+            while (Session.Character.LevelXp >= t)
+            {
+                Session.Character.LevelXp -= (long)t;
+                Session.Character.Level++;
+                t = Session.Character.XPLoad();
+                Session.Character.Hp = (int)Session.Character.HPLoad();
+                Session.Character.Mp = (int)Session.Character.MPLoad();
+                Session.Client.SendPacket(Session.Character.GenerateStat());
+                Session.Client.SendPacket($"levelup {Session.Character.CharacterId}");
+                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(6), ReceiverType.AllOnMap);
+                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(198), ReceiverType.AllOnMap);
+                ClientLinkManager.Instance.UpdateGroup(Session.Character.CharacterId);
+            }
+            t = Session.Character.JobXPLoad();
+            while (Session.Character.JobLevelXp >= t)
+            {
+                Session.Character.JobLevelXp -= (long)t;
+                Session.Character.JobLevel++;
+                t = Session.Character.JobXPLoad();
+                Session.Character.Hp = (int)Session.Character.HPLoad();
+                Session.Character.Mp = (int)Session.Character.MPLoad();
+                Session.Client.SendPacket(Session.Character.GenerateStat());
+                Session.Client.SendPacket($"levelup {Session.Character.CharacterId}");
+                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(6), ReceiverType.AllOnMap);
+                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(198), ReceiverType.AllOnMap);
+            }
+            if (sp2 != null)
+                t = Session.Character.SPXPLoad();
+            while (sp2 != null && sp2.InventoryItem.SpXp >= t)
+            {
+                sp2.InventoryItem.SpXp -= (long)t;
+                sp2.InventoryItem.SpLevel++;
+                t = Session.Character.SPXPLoad();
+                Session.Client.SendPacket(Session.Character.GenerateStat());
+                Session.Client.SendPacket($"levelup {Session.Character.CharacterId}");
+                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(6), ReceiverType.AllOnMap);
+                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(198), ReceiverType.AllOnMap);
+            }
+            Session.Client.SendPacket(Session.Character.GenerateLev());
+        }
         private void ZoneHit(int Castingid, short x, short y)
         {
             List<CharacterSkill> skills = Session.Character.UseSp ? Session.Character.SkillsSp : Session.Character.Skills;

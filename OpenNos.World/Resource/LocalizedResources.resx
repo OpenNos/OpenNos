@@ -667,7 +667,7 @@
     <value>Do you want to revive? it will be free</value>
   </data>
   <data name="LOSE_DIGNITY" xml:space="preserve">
-    <value>You've lost some dignity</value>
+    <value>You've lost {0} dignity</value>
   </data>
   <data name="HEROLEVEL_CHANGED" xml:space="preserve">
     <value>Hero level has been changed!</value>
