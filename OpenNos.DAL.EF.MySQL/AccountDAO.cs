@@ -29,13 +29,13 @@ namespace OpenNos.DAL.EF.MySQL
     {
         #region Methods
 
-        public DeleteResult Delete(long AccountId)
+        public DeleteResult Delete(long accountId)
         {
             try
             {
                 using (var context = DataAccessHelper.CreateContext())
                 {
-                    Account Account = context.Account.FirstOrDefault(c => c.AccountId.Equals(AccountId));
+                    Account Account = context.Account.FirstOrDefault(c => c.AccountId.Equals(accountId));
 
                     if (Account != null)
                     {
@@ -48,44 +48,44 @@ namespace OpenNos.DAL.EF.MySQL
             }
             catch (Exception e)
             {
-                Logger.Log.ErrorFormat(Language.Instance.GetMessageFromKey("DELETE_Account_ERROR"), AccountId, e.Message);
+                Logger.Log.ErrorFormat(Language.Instance.GetMessageFromKey("DELETE_Account_ERROR"), accountId, e.Message);
                 return DeleteResult.Error;
             }
         }
 
-        public SaveResult InsertOrUpdate(ref AccountDTO Account)
+        public SaveResult InsertOrUpdate(ref AccountDTO account)
         {
             try
             {
                 using (var context = DataAccessHelper.CreateContext())
                 {
-                    long AccountId = Account.AccountId;
+                    long AccountId = account.AccountId;
                     Account entity = context.Account.FirstOrDefault(c => c.AccountId.Equals(AccountId));
 
                     if (entity == null) //new entity
                     {
-                        Account = Insert(Account, context);
+                        account = Insert(account, context);
                         return SaveResult.Inserted;
                     }
                     else //existing entity
                     {
-                        Account = Update(entity, Account, context);
+                        account = Update(entity, account, context);
                         return SaveResult.Updated;
                     }
                 }
             }
             catch (Exception e)
             {
-                Logger.Log.ErrorFormat(Language.Instance.GetMessageFromKey("UPDATE_Account_ERROR"), Account.AccountId, e.Message);
+                Logger.Log.ErrorFormat(Language.Instance.GetMessageFromKey("UPDATE_Account_ERROR"), account.AccountId, e.Message);
                 return SaveResult.Error;
             }
         }
 
-        public AccountDTO LoadById(long AccountId)
+        public AccountDTO LoadById(long accountId)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                Account Account = context.Account.FirstOrDefault(a => a.AccountId.Equals(AccountId));
+                Account Account = context.Account.FirstOrDefault(a => a.AccountId.Equals(accountId));
 
                 if (Account != null)
                 {
@@ -155,13 +155,13 @@ namespace OpenNos.DAL.EF.MySQL
             }
         }
 
-        public void WriteGeneralLog(long AccountId, string ipAddress, long? CharacterId, string logType, string logData)
+        public void WriteGeneralLog(long accountId, string ipAddress, long? CharacterId, string logType, string logData)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
                 GeneralLog log = new GeneralLog()
                 {
-                    AccountId = AccountId,
+                    AccountId = accountId,
                     IpAddress = ipAddress,
                     Timestamp = DateTime.Now,
                     LogType = logType,
@@ -174,17 +174,17 @@ namespace OpenNos.DAL.EF.MySQL
             }
         }
 
-        private AccountDTO Insert(AccountDTO Account, OpenNosContext context)
+        private AccountDTO Insert(AccountDTO account, OpenNosContext context)
         {
-            Account entity = Mapper.DynamicMap<Account>(Account);
+            Account entity = Mapper.DynamicMap<Account>(account);
             context.Account.Add(entity);
             context.SaveChanges();
             return Mapper.DynamicMap<AccountDTO>(entity);
         }
 
-        private AccountDTO Update(Account entity, AccountDTO Account, OpenNosContext context)
+        private AccountDTO Update(Account entity, AccountDTO account, OpenNosContext context)
         {
-            entity = Mapper.DynamicMap<Account>(Account);
+            entity = Mapper.DynamicMap<Account>(account);
             context.SaveChanges();
             return Mapper.DynamicMap<AccountDTO>(entity);
         }

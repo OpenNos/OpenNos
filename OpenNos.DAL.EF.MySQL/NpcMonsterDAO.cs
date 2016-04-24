@@ -25,12 +25,12 @@ namespace OpenNos.DAL.EF.MySQL
     {
         #region Methods
 
-        public void Insert(List<NpcMonsterDTO> npc)
+        public void Insert(List<NpcMonsterDTO> npcs)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
                 context.Configuration.AutoDetectChangesEnabled = false;
-                foreach (NpcMonsterDTO Item in npc)
+                foreach (NpcMonsterDTO Item in npcs)
                 {
                     NpcMonster entity = Mapper.DynamicMap<NpcMonster>(Item);
                     context.NpcMonster.Add(entity);
@@ -61,11 +61,11 @@ namespace OpenNos.DAL.EF.MySQL
             }
         }
 
-        public NpcMonsterDTO LoadById(short Vnum)
+        public NpcMonsterDTO LoadByVnum(short vnum)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                return Mapper.DynamicMap<NpcMonsterDTO>(context.NpcMonster.FirstOrDefault(i => i.NpcMonsterVNum.Equals(Vnum)));
+                return Mapper.DynamicMap<NpcMonsterDTO>(context.NpcMonster.FirstOrDefault(i => i.NpcMonsterVNum.Equals(vnum)));
             }
         }
 

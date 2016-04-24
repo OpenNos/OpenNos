@@ -26,12 +26,12 @@ namespace OpenNos.DAL.EF.MySQL
     {
         #region Methods
 
-        public void Insert(List<ItemDTO> Items)
+        public void Insert(List<ItemDTO> items)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
                 context.Configuration.AutoDetectChangesEnabled = false;
-                foreach (ItemDTO Item in Items)
+                foreach (ItemDTO Item in items)
                 {
                     Item entity = Mapper.DynamicMap<Item>(Item);
                     context.Item.Add(entity);
@@ -40,11 +40,11 @@ namespace OpenNos.DAL.EF.MySQL
             }
         }
 
-        public ItemDTO Insert(ItemDTO Item)
+        public ItemDTO Insert(ItemDTO item)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                Item entity = Mapper.DynamicMap<Item>(Item);
+                Item entity = Mapper.DynamicMap<Item>(item);
                 context.Item.Add(entity);
                 context.SaveChanges();
                 return Mapper.DynamicMap<ItemDTO>(entity);

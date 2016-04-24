@@ -29,11 +29,11 @@ namespace OpenNos.DAL.EF.MySQL
     {
         #region Methods
 
-        public DeleteResult DeleteFromSlotAndType(long CharacterId, short slot, byte type)
+        public DeleteResult DeleteFromSlotAndType(long characterId, short slot, byte type)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                Inventory inv = context.Inventory.FirstOrDefault(i => i.Slot.Equals(slot) && i.Type.Equals(type) && i.CharacterId.Equals(CharacterId));
+                Inventory inv = context.Inventory.FirstOrDefault(i => i.Slot.Equals(slot) && i.Type.Equals(type) && i.CharacterId.Equals(characterId));
                 InventoryItem invItem = context.InventoryItem.FirstOrDefault(i => i.Inventory.InventoryId == inv.InventoryId);
                 if (inv != null)
                 {
@@ -46,16 +46,16 @@ namespace OpenNos.DAL.EF.MySQL
             }
         }
 
-        public SaveResult InsertOrUpdate(ref InventoryDTO Inventory)
+        public SaveResult InsertOrUpdate(ref InventoryDTO inventory)
         {
             try
             {
                 using (var context = DataAccessHelper.CreateContext())
                 {
-                    long InventoryId = Inventory.InventoryId;
-                    byte Type = Inventory.Type;
-                    short Slot = Inventory.Slot;
-                    long CharacterId = Inventory.CharacterId;
+                    long InventoryId = inventory.InventoryId;
+                    byte Type = inventory.Type;
+                    short Slot = inventory.Slot;
+                    long CharacterId = inventory.CharacterId;
                     Inventory entity = context.Inventory.FirstOrDefault(c => c.InventoryId == InventoryId);
                     if (entity == null) //new entity
                     {
@@ -66,13 +66,13 @@ namespace OpenNos.DAL.EF.MySQL
                             context.InventoryItem.Remove(deleteItem);
                             context.Inventory.Remove(delete);
                         }
-                        Inventory = Insert(Inventory, context);
+                        inventory = Insert(inventory, context);
                         return SaveResult.Inserted;
                     }
                     else //existing entity
                     {
                         entity.InventoryItem = context.InventoryItem.FirstOrDefault(c => c.Inventory.InventoryId == entity.InventoryId);
-                        Inventory = Update(entity, Inventory, context);
+                        inventory = Update(entity, inventory, context);
                         return SaveResult.Updated;
                     }
                 }
@@ -84,30 +84,30 @@ namespace OpenNos.DAL.EF.MySQL
             }
         }
 
-        public IEnumerable<InventoryDTO> LoadByCharacterId(long CharacterId)
+        public IEnumerable<InventoryDTO> LoadByCharacterId(long characterId)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                foreach (Inventory Inventoryobject in context.Inventory.Where(i => i.CharacterId.Equals(CharacterId)))
+                foreach (Inventory Inventoryobject in context.Inventory.Where(i => i.CharacterId.Equals(characterId)))
                 {
                     yield return Mapper.DynamicMap<InventoryDTO>(Inventoryobject);
                 }
             }
         }
 
-        public InventoryDTO LoadBySlotAndType(long CharacterId, short slot, byte type)
+        public InventoryDTO LoadBySlotAndType(long characterId, short slot, byte type)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                return Mapper.DynamicMap<InventoryDTO>(context.Inventory.FirstOrDefault(i => i.Slot.Equals(slot) && i.Type.Equals(type) && i.CharacterId.Equals(CharacterId)));
+                return Mapper.DynamicMap<InventoryDTO>(context.Inventory.FirstOrDefault(i => i.Slot.Equals(slot) && i.Type.Equals(type) && i.CharacterId.Equals(characterId)));
             }
         }
 
-        public IEnumerable<InventoryDTO> LoadByType(long CharacterId, byte type)
+        public IEnumerable<InventoryDTO> LoadByType(long characterId, byte type)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                foreach (Inventory Inventoryobject in context.Inventory.Where(i => i.Type.Equals(type) && i.CharacterId.Equals(CharacterId)))
+                foreach (Inventory Inventoryobject in context.Inventory.Where(i => i.Type.Equals(type) && i.CharacterId.Equals(characterId)))
                 {
                     yield return Mapper.DynamicMap<InventoryDTO>(Inventoryobject);
                 }
@@ -122,16 +122,12 @@ namespace OpenNos.DAL.EF.MySQL
             return Mapper.DynamicMap<InventoryDTO>(entity);
         }
 
-        private InventoryDTO Update(Inventory entity, InventoryDTO Inventory, OpenNosContext context)
+        private InventoryDTO Update(Inventory entity, InventoryDTO inventory, OpenNosContext context)
         {
-            using (context)
+            if (entity != null)
             {
-                var result = context.Inventory.FirstOrDefault(c => c.InventoryId == Inventory.InventoryId);
-                if (result != null)
-                {
-                    result = Mapper.Map<InventoryDTO, Inventory>(Inventory, entity);
-                    context.SaveChanges();
-                }
+                Mapper.DynamicMap(inventory, entity);
+                context.SaveChanges();
             }
 
             return Mapper.DynamicMap<InventoryDTO>(entity);

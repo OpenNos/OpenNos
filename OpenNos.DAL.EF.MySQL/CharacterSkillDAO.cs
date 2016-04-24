@@ -29,11 +29,11 @@ namespace OpenNos.DAL.EF.MySQL
     {
         #region Methods
 
-        public DeleteResult Delete(long CharacterId, short SkillVNum)
+        public DeleteResult Delete(long characterId, short skillVNum)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                CharacterSkill invItem = context.CharacterSkill.FirstOrDefault(i => i.CharacterId == CharacterId && i.SkillVNum == SkillVNum);
+                CharacterSkill invItem = context.CharacterSkill.FirstOrDefault(i => i.CharacterId == characterId && i.SkillVNum == skillVNum);
                 if (invItem != null)
                 {
                     context.CharacterSkill.Remove(invItem);
@@ -44,13 +44,13 @@ namespace OpenNos.DAL.EF.MySQL
             }
         }
 
-        public SaveResult InsertOrUpdate(ref CharacterSkillDTO CharacterSkills)
+        public SaveResult InsertOrUpdate(ref CharacterSkillDTO characterSkills)
         {
             try
             {
                 using (var context = DataAccessHelper.CreateContext())
                 {
-                    CharacterSkillDTO CharacterSkill = CharacterSkills;
+                    CharacterSkillDTO CharacterSkill = characterSkills;
                     CharacterSkill entity = context.CharacterSkill.FirstOrDefault(i => i.CharacterId == CharacterSkill.CharacterId && i.SkillVNum == CharacterSkill.SkillVNum);
                     if (entity == null) //new entity
                     {
@@ -71,40 +71,35 @@ namespace OpenNos.DAL.EF.MySQL
                 return SaveResult.Error;
             }
         }
-        private CharacterSkillDTO Insert(CharacterSkillDTO CharacterSkill, OpenNosContext context)
-        {
 
-            CharacterSkill entity = Mapper.DynamicMap<CharacterSkill>(CharacterSkill);
+        public IEnumerable<CharacterSkillDTO> LoadByCharacterId(long characterId)
+        {
+            using (var context = DataAccessHelper.CreateContext())
+            {
+                foreach (CharacterSkill Inventoryobject in context.CharacterSkill.Where(i => i.CharacterId == characterId))
+                {
+                    yield return Mapper.DynamicMap<CharacterSkillDTO>(Inventoryobject);
+                }
+            }
+        }
+
+        private CharacterSkillDTO Insert(CharacterSkillDTO characterSkill, OpenNosContext context)
+        {
+            CharacterSkill entity = Mapper.DynamicMap<CharacterSkill>(characterSkill);
             context.CharacterSkill.Add(entity);
             context.SaveChanges();
             return Mapper.DynamicMap<CharacterSkillDTO>(entity);
         }
 
-        private CharacterSkillDTO Update(CharacterSkill entity, CharacterSkillDTO CharacterSkill, OpenNosContext context)
+        private CharacterSkillDTO Update(CharacterSkill entity, CharacterSkillDTO characterSkill, OpenNosContext context)
         {
-            using (context)
+            if (entity != null)
             {
-                var result = context.CharacterSkill.FirstOrDefault(c => c.CharacterSkillId == CharacterSkill.CharacterSkillId);
-                if (result != null)
-                {
-                    result = Mapper.Map<CharacterSkillDTO, CharacterSkill>(CharacterSkill, entity);
-                    context.SaveChanges();
-                }
+                Mapper.DynamicMap(characterSkill, entity);
+                context.SaveChanges();
             }
 
-            return Mapper.DynamicMap<CharacterSkillDTO>(CharacterSkill);
-        }
-
-
-        public IEnumerable<CharacterSkillDTO> LoadByCharacterId(long CharacterId)
-        {
-            using (var context = DataAccessHelper.CreateContext())
-            {
-                foreach (CharacterSkill Inventoryobject in context.CharacterSkill.Where(i => i.CharacterId == CharacterId))
-                {
-                    yield return Mapper.DynamicMap<CharacterSkillDTO>(Inventoryobject);
-                }
-            }
+            return Mapper.DynamicMap<CharacterSkillDTO>(characterSkill);
         }
 
         #endregion

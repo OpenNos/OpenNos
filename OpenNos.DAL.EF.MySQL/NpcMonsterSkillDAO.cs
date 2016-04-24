@@ -26,31 +26,31 @@ namespace OpenNos.DAL.EF.MySQL
     {
         #region Methods
 
-        public NpcMonsterSkillDTO Insert(ref NpcMonsterSkillDTO NpcMonsterSkill)
+        public NpcMonsterSkillDTO Insert(ref NpcMonsterSkillDTO npcMonsterskill)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                NpcMonsterSkill entity = Mapper.DynamicMap<NpcMonsterSkill>(NpcMonsterSkill);
+                NpcMonsterSkill entity = Mapper.DynamicMap<NpcMonsterSkill>(npcMonsterskill);
                 context.NpcMonsterSkill.Add(entity);
                 context.SaveChanges();
                 return Mapper.DynamicMap<NpcMonsterSkillDTO>(entity);
             }
         }
-        public void Insert(List<NpcMonsterSkillDTO> Skills)
+
+        public void Insert(List<NpcMonsterSkillDTO> skills)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-
                 context.Configuration.AutoDetectChangesEnabled = false;
-                foreach (NpcMonsterSkillDTO Skill in Skills)
+                foreach (NpcMonsterSkillDTO Skill in skills)
                 {
                     NpcMonsterSkill entity = Mapper.DynamicMap<NpcMonsterSkill>(Skill);
                     context.NpcMonsterSkill.Add(entity);
                 }
                 context.SaveChanges();
-
             }
         }
+
         public IEnumerable<NpcMonsterSkillDTO> LoadByNpcMonster(short npcId)
         {
             using (var context = DataAccessHelper.CreateContext())

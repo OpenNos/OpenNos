@@ -19,17 +19,17 @@ using OpenNos.DAL.Interface;
 using OpenNos.Data;
 using System.Collections.Generic;
 using System.Linq;
-using System;
 
 namespace OpenNos.DAL.EF.MySQL
 {
     public class MapNpcDAO : IMapNpcDAO
     {
+        #region Methods
+
         public void Insert(List<MapNpcDTO> npcs)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-
                 context.Configuration.AutoDetectChangesEnabled = false;
                 foreach (MapNpcDTO Item in npcs)
                 {
@@ -37,10 +37,8 @@ namespace OpenNos.DAL.EF.MySQL
                     context.MapNpc.Add(entity);
                 }
                 context.SaveChanges();
-
             }
         }
-        #region Methods
 
         public MapNpcDTO Insert(MapNpcDTO npc)
         {
@@ -61,11 +59,11 @@ namespace OpenNos.DAL.EF.MySQL
             }
         }
 
-        public IEnumerable<MapNpcDTO> LoadFromMap(short MapId)
+        public IEnumerable<MapNpcDTO> LoadFromMap(short mapId)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                foreach (MapNpc npcobject in context.MapNpc.Where(c => c.MapId.Equals(MapId)))
+                foreach (MapNpc npcobject in context.MapNpc.Where(c => c.MapId.Equals(mapId)))
                 {
                     yield return Mapper.DynamicMap<MapNpcDTO>(npcobject);
                 }

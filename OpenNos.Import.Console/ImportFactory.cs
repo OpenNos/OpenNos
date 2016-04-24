@@ -93,7 +93,7 @@ namespace OpenNos.Import.Console
                     npctest.Dialog = short.Parse(currentPacket[9]);
                     npctest.IsSitting = currentPacket[13] != "1";
 
-                    if (DAOFactory.NpcMonsterDAO.LoadById(npctest.NpcVNum) == null) continue;
+                    if (DAOFactory.NpcMonsterDAO.LoadByVnum(npctest.NpcVNum) == null) continue;
                     if (DAOFactory.MapNpcDAO.LoadById(npctest.MapNpcId) != null) continue;
                     if (npcs.Count(i => i.MapNpcId == npctest.MapNpcId) != 0) continue;
 
@@ -214,7 +214,7 @@ namespace OpenNos.Import.Console
                     };
                     monster.IsMoving = mobMvPacketsList.Contains(monster.MapMonsterId);
 
-                    if (DAOFactory.NpcMonsterDAO.LoadById(monster.MonsterVNum) == null) continue;
+                    if (DAOFactory.NpcMonsterDAO.LoadByVnum(monster.MonsterVNum) == null) continue;
                     if (DAOFactory.MapMonsterDAO.LoadById(monster.MapMonsterId) != null) continue;
                     if (monsters.Count(i => i.MapMonsterId == monster.MapMonsterId) != 0) continue;
 
@@ -398,7 +398,7 @@ namespace OpenNos.Import.Console
                     }
                     else if (currentLine.Length > 3 && currentLine[1] == "ITEM")
                     {
-                        if (DAOFactory.NpcMonsterDAO.LoadById(npc.NpcMonsterVNum) == null)
+                        if (DAOFactory.NpcMonsterDAO.LoadByVnum(npc.NpcMonsterVNum) == null)
                         {
                             npcs.Add(npc);
                             counter++;

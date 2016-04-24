@@ -26,27 +26,25 @@ namespace OpenNos.DAL.EF.MySQL
     {
         #region Methods
 
-        public void Insert(List<SkillDTO> Skills)
+        public void Insert(List<SkillDTO> skills)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-
                 context.Configuration.AutoDetectChangesEnabled = false;
-                foreach (SkillDTO Skill in Skills)
+                foreach (SkillDTO Skill in skills)
                 {
                     Skill entity = Mapper.DynamicMap<Skill>(Skill);
                     context.Skill.Add(entity);
                 }
                 context.SaveChanges();
-
             }
         }
 
-        public SkillDTO Insert(SkillDTO Skill)
+        public SkillDTO Insert(SkillDTO skill)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                Skill entity = Mapper.DynamicMap<Skill>(Skill);
+                Skill entity = Mapper.DynamicMap<Skill>(skill);
                 context.Skill.Add(entity);
                 context.SaveChanges();
                 return Mapper.DynamicMap<SkillDTO>(entity);
@@ -63,11 +61,12 @@ namespace OpenNos.DAL.EF.MySQL
                 }
             }
         }
-        public SkillDTO LoadById(short SkillId)
+
+        public SkillDTO LoadById(short skillId)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                return Mapper.DynamicMap<SkillDTO>(context.Skill.FirstOrDefault(s => s.SkillVNum.Equals(SkillId)));
+                return Mapper.DynamicMap<SkillDTO>(context.Skill.FirstOrDefault(s => s.SkillVNum.Equals(skillId)));
             }
         }
 

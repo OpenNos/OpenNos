@@ -617,7 +617,7 @@ namespace OpenNos.Handler
             if (account != null && account.Password == OpenNos.Core.EncryptionBase.sha256(packetsplit[3]))
             {
                 DAOFactory.GeneralLogDAO.SetCharIdNull((long?)Convert.ToInt64(DAOFactory.CharacterDAO.LoadBySlot(account.AccountId, Convert.ToByte(packetsplit[2])).CharacterId));
-                DAOFactory.CharacterDAO.Delete(account.AccountId, Convert.ToByte(packetsplit[2]));
+                DAOFactory.CharacterDAO.DeleteByPrimaryKey(account.AccountId, Convert.ToByte(packetsplit[2]));
                 LoadCharacters(packet);
             }
             else

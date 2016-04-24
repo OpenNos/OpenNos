@@ -26,30 +26,28 @@ namespace OpenNos.DAL.EF.MySQL
     {
         #region Methods
 
-
-        public void Insert(List<DropDTO> Drops)
+        public void Insert(List<DropDTO> drops)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-
                 context.Configuration.AutoDetectChangesEnabled = false;
-                foreach (DropDTO Drop in Drops)
+                foreach (DropDTO Drop in drops)
                 {
                     Drop entity = Mapper.DynamicMap<Drop>(Drop);
                     context.Drop.Add(entity);
                 }
                 context.SaveChanges();
-
             }
         }
-        public DropDTO Insert(DropDTO Drop)
+
+        public DropDTO Insert(DropDTO drop)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                Drop entity = Mapper.DynamicMap<Drop>(Drop);
+                Drop entity = Mapper.DynamicMap<Drop>(drop);
                 context.Drop.Add(entity);
                 context.SaveChanges();
-                return Mapper.DynamicMap<DropDTO>(Drop);
+                return Mapper.DynamicMap<DropDTO>(drop);
             }
         }
 

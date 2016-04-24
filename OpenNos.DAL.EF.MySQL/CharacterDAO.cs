@@ -30,7 +30,7 @@ namespace OpenNos.DAL.EF.MySQL
     {
         #region Methods
 
-        public DeleteResult Delete(long AccountId, byte CharacterSlot)
+        public DeleteResult DeleteByPrimaryKey(long accountId, byte characterSlot)
         {
             try
             {
@@ -38,7 +38,7 @@ namespace OpenNos.DAL.EF.MySQL
                 {
                     //actually a Character wont be deleted, it just will be disabled for future traces
                     byte state = (byte)CharacterState.Active;
-                    Character Character = context.Character.FirstOrDefault(c => c.AccountId.Equals(AccountId) && c.Slot.Equals(CharacterSlot)
+                    Character Character = context.Character.FirstOrDefault(c => c.AccountId.Equals(accountId) && c.Slot.Equals(characterSlot)
                                             && c.State.Equals(state));
 
                     if (Character != null)
@@ -53,7 +53,7 @@ namespace OpenNos.DAL.EF.MySQL
             }
             catch (Exception e)
             {
-                Logger.Log.ErrorFormat("DELETE_ERROR", CharacterSlot, e.Message);
+                Logger.Log.ErrorFormat("DELETE_ERROR", characterSlot, e.Message);
                 return DeleteResult.Error;
             }
         }
@@ -91,35 +91,35 @@ namespace OpenNos.DAL.EF.MySQL
             }
         }
 
-        public SaveResult InsertOrUpdate(ref CharacterDTO Character)
+        public SaveResult InsertOrUpdate(ref CharacterDTO character)
         {
             try
             {
                 using (var context = DataAccessHelper.CreateContext())
                 {
-                    long CharacterId = Character.CharacterId;
+                    long CharacterId = character.CharacterId;
                     Character entity = context.Character.FirstOrDefault(c => c.CharacterId.Equals(CharacterId));
 
                     if (entity == null) //new entity
                     {
-                        Character = Insert(Character, context);
+                        character = Insert(character, context);
                         return SaveResult.Inserted;
                     }
                     else //existing entity
                     {
-                        Character = Update(entity, Character, context);
+                        character = Update(entity, character, context);
                         return SaveResult.Updated;
                     }
                 }
             }
             catch (Exception e)
             {
-                Logger.Log.ErrorFormat("INSERT_ERROR", Character, e.Message);
+                Logger.Log.ErrorFormat("INSERT_ERROR", character, e.Message);
                 return SaveResult.Error;
             }
         }
 
-        public int IsReputHero(long CharacterId)
+        public int IsReputHero(long characterId)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
@@ -129,7 +129,7 @@ namespace OpenNos.DAL.EF.MySQL
                 foreach (Character c in heroes)
                 {
                     i++;
-                    if (c.CharacterId == CharacterId)
+                    if (c.CharacterId == characterId)
                     {
                         if (i == 1)
                         {
@@ -157,23 +157,23 @@ namespace OpenNos.DAL.EF.MySQL
             }
         }
 
-        public IEnumerable<CharacterDTO> LoadByAccount(long AccountId)
+        public IEnumerable<CharacterDTO> LoadByAccount(long accountId)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
                 byte state = (byte)CharacterState.Active;
-                foreach (Character Character in context.Character.Where(c => c.AccountId.Equals(AccountId) && c.State.Equals(state)).OrderByDescending(c => c.Slot))
+                foreach (Character Character in context.Character.Where(c => c.AccountId.Equals(accountId) && c.State.Equals(state)).OrderByDescending(c => c.Slot))
                 {
                     yield return Mapper.DynamicMap<CharacterDTO>(Character);
                 }
             }
         }
 
-        public CharacterDTO LoadById(long CharacterId)
+        public CharacterDTO LoadById(long characterId)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                return Mapper.DynamicMap<CharacterDTO>(context.Character.FirstOrDefault(c => c.CharacterId.Equals(CharacterId)));
+                return Mapper.DynamicMap<CharacterDTO>(context.Character.FirstOrDefault(c => c.CharacterId.Equals(characterId)));
             }
         }
 
@@ -186,34 +186,30 @@ namespace OpenNos.DAL.EF.MySQL
             }
         }
 
-        public CharacterDTO LoadBySlot(long AccountId, byte slot)
+        public CharacterDTO LoadBySlot(long accountId, byte slot)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
                 byte state = (byte)CharacterState.Active;
-                return Mapper.DynamicMap<CharacterDTO>(context.Character.FirstOrDefault(c => c.AccountId.Equals(AccountId) && c.Slot.Equals(slot)
+                return Mapper.DynamicMap<CharacterDTO>(context.Character.FirstOrDefault(c => c.AccountId.Equals(accountId) && c.Slot.Equals(slot)
                                                                                         && c.State.Equals(state)));
             }
         }
 
-        private CharacterDTO Insert(CharacterDTO Character, OpenNosContext context)
+        private CharacterDTO Insert(CharacterDTO character, OpenNosContext context)
         {
-            Character entity = Mapper.DynamicMap<Character>(Character);
+            Character entity = Mapper.DynamicMap<Character>(character);
             context.Character.Add(entity);
             context.SaveChanges();
             return Mapper.DynamicMap<CharacterDTO>(entity);
         }
 
-        private CharacterDTO Update(Character entity, CharacterDTO Character, OpenNosContext context)
+        private CharacterDTO Update(Character entity, CharacterDTO character, OpenNosContext context)
         {
-            using (context)
+            if (entity != null)
             {
-                var result = context.Character.FirstOrDefault(c => c.CharacterId == Character.CharacterId);
-                if (result != null)
-                {
-                    result = Mapper.Map<CharacterDTO, Character>(Character, entity);
-                    context.SaveChanges();
-                }
+                Mapper.DynamicMap(character, entity);
+                context.SaveChanges();
             }
 
             return Mapper.DynamicMap<CharacterDTO>(entity);

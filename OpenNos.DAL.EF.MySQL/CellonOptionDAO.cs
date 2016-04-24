@@ -26,11 +26,11 @@ namespace OpenNos.DAL.EF.MySQL
     {
         #region Methods
 
-        public IEnumerable<CellonOptionDTO> GetOptionsByInventoryItemId(long InventoryItemId)
+        public IEnumerable<CellonOptionDTO> GetOptionsByInventoryItemId(long inventoryItemId)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                foreach (CellonOption CellonOptionobject in context.CellonOption.Where(i => i.InventoryItemId.Equals(InventoryItemId)))
+                foreach (CellonOption CellonOptionobject in context.CellonOption.Where(i => i.InventoryItemId.Equals(inventoryItemId)))
                 {
                     yield return Mapper.DynamicMap<CellonOptionDTO>(CellonOptionobject);
                 }

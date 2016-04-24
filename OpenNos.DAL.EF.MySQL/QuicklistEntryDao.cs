@@ -29,29 +29,29 @@ namespace OpenNos.DAL.EF.MySQL
     public class QuicklistEntryDAO : IQuicklistEntryDAO
     {
 
-        public SaveResult InsertOrUpdate(ref QuicklistEntryDTO QuicklistEntry)
+        public SaveResult InsertOrUpdate(ref QuicklistEntryDTO quickListEntry)
         {
             try
             {
                 using (OpenNosContext context = DataAccessHelper.CreateContext())
                 {
-                    long entryId = QuicklistEntry.EntryId;
+                    long entryId = quickListEntry.EntryId;
                     QuicklistEntry dbentry = context.QuicklistEntry.FirstOrDefault(c => c.EntryId == entryId);
                     if (dbentry == null)
                     {
                         // new entity
-                        QuicklistEntry entry = Mapper.DynamicMap<QuicklistEntry>(QuicklistEntry);
+                        QuicklistEntry entry = Mapper.DynamicMap<QuicklistEntry>(quickListEntry);
                         context.QuicklistEntry.Add(entry);
                         context.SaveChanges();
-                        Mapper.DynamicMap(entry, QuicklistEntry);
+                        Mapper.DynamicMap(entry, quickListEntry);
                         return SaveResult.Inserted;
                     }
                     else
                     {
                         //existing entity
-                        Mapper.DynamicMap(QuicklistEntry, dbentry);
+                        Mapper.DynamicMap(quickListEntry, dbentry);
                         context.SaveChanges();
-                        QuicklistEntry = Mapper.DynamicMap<QuicklistEntryDTO>(QuicklistEntry); // does this line anything?
+                        quickListEntry = Mapper.DynamicMap<QuicklistEntryDTO>(quickListEntry); // does this line anything?
                         return SaveResult.Updated;
                     }
                 }
@@ -63,22 +63,22 @@ namespace OpenNos.DAL.EF.MySQL
             }
         }
 
-        public IEnumerable<QuicklistEntryDTO> Load(long CharacterId)
+        public IEnumerable<QuicklistEntryDTO> Load(long characterId)
         {
             using (OpenNosContext context = DataAccessHelper.CreateContext())
             {
-                foreach (QuicklistEntry QuicklistEntryobject in context.QuicklistEntry.Where(i => i.CharacterId == CharacterId))
+                foreach (QuicklistEntry QuicklistEntryobject in context.QuicklistEntry.Where(i => i.CharacterId == characterId))
                 {
                     yield return Mapper.DynamicMap<QuicklistEntryDTO>(QuicklistEntryobject);
                 }
             }
         }
 
-        public DeleteResult Delete(long CharacterId, long entryId)
+        public DeleteResult Delete(long characterId, long entryId)
         {
             using (OpenNosContext context = DataAccessHelper.CreateContext())
             {
-                QuicklistEntry QuicklistEntryItem = context.QuicklistEntry.FirstOrDefault(i => i.CharacterId == CharacterId && i.EntryId == entryId);
+                QuicklistEntry QuicklistEntryItem = context.QuicklistEntry.FirstOrDefault(i => i.CharacterId == characterId && i.EntryId == entryId);
                 if (QuicklistEntryItem != null)
                 {
                     context.QuicklistEntry.Remove(QuicklistEntryItem);
