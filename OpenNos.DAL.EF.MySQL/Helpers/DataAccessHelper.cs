@@ -57,8 +57,8 @@ namespace OpenNos.DAL.EF.MySQL.Helpers
             Mapper.CreateMap<MapMonster, MapMonsterDTO>();
             Mapper.CreateMap<Inventory, InventoryDTO>();
             Mapper.CreateMap<InventoryDTO, Inventory>();
-            Mapper.CreateMap<InventoryItem, InventoryItemDTO>();
-            Mapper.CreateMap<InventoryItemDTO, InventoryItem>();
+            Mapper.CreateMap<ItemInstance, ItemInstanceDTO>();
+            Mapper.CreateMap<ItemInstanceDTO, ItemInstance>();
             Mapper.CreateMap<GeneralLog, GeneralLogDTO>();
             Mapper.CreateMap<GeneralLogDTO, GeneralLog>();
             Mapper.CreateMap<Teleporter, TeleporterDTO>();
@@ -161,7 +161,7 @@ namespace OpenNos.DAL.EF.MySQL.Helpers
                     context.MapNpc.Any();
                     context.MapMonster.Any();
                     context.Inventory.Any();
-                    context.InventoryItem.Any();
+                    context.ItemInstance.Any();
                     context.Item.Any();
                     context.Respawn.Any();
                     context.Shop.Any();

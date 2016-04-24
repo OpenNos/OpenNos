@@ -21,7 +21,7 @@ namespace OpenNos.DAL.Interface
     {
         #region Methods
 
-        IEnumerable<CellonOptionDTO> GetOptionsByInventoryItemId(long inventoryitemId);
+        IEnumerable<CellonOptionDTO> GetOptionsByWearableInstanceId(long inventoryitemId);
 
         #endregion
     }

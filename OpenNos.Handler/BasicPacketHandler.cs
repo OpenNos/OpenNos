@@ -350,7 +350,7 @@ namespace OpenNos.Handler
             foreach (CharacterDTO character in characters)
             {
                 // Move to character
-                InventoryItemDTO[] item = new InventoryItemDTO[15];
+                ItemInstanceDTO[] item = new ItemInstanceDTO[15];
                 for (short i = 0; i < 15; i++)
                 {
                     InventoryDTO inv = DAOFactory.InventoryDAO.LoadBySlotAndType(character.CharacterId, i, (byte)InventoryType.Equipment);

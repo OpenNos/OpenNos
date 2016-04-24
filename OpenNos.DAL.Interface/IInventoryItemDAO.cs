@@ -16,11 +16,11 @@ using OpenNos.Data;
 
 namespace OpenNos.DAL.Interface
 {
-    public interface IInventoryItemDAO
+    public interface IItemInstanceDAO
     {
         #region Methods
 
-        InventoryItemDTO LoadByInventoryId(long InventoryId);
+        ItemInstanceDTO LoadByInventoryId(long InventoryId);
 
         #endregion
     }

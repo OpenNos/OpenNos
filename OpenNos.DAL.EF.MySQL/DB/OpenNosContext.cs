@@ -26,7 +26,10 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public virtual DbSet<Drop> Drop { get; set; }
         public virtual DbSet<GeneralLog> GeneralLog { get; set; }
         public virtual DbSet<Inventory> Inventory { get; set; }
-        public virtual DbSet<InventoryItem> InventoryItem { get; set; }
+        public virtual DbSet<ItemInstance> ItemInstance { get; set; }
+        public virtual DbSet<WearableInstance> WearableInstance { get; set; }
+        public virtual DbSet<SpecialistInstance> SpecialistInstance { get; set; }
+        public virtual DbSet<UsableInstance> UsableInstance { get; set; }
         public virtual DbSet<Item> Item { get; set; }
         public virtual DbSet<Map> Map { get; set; }
         public virtual DbSet<MapMonster> MapMonster { get; set; }
@@ -88,18 +91,13 @@ namespace OpenNos.DAL.EF.MySQL.DB
                 .WithRequired(e => e.Character)
                 .WillCascadeOnDelete(false);
 
-            modelBuilder.Entity<InventoryItem>()
-                .HasMany(e => e.CellonOption)
-                .WithRequired(e => e.InventoryItem)
-                .WillCascadeOnDelete(false);
-
             modelBuilder.Entity<Item>()
                 .HasMany(e => e.Drop)
                 .WithRequired(e => e.Item)
                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<Item>()
-                .HasMany(e => e.InventoryItem)
+                .HasMany(e => e.ItemInstance)
                 .WithRequired(e => e.Item)
                 .WillCascadeOnDelete(false);
 

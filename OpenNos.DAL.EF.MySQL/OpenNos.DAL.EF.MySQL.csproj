@@ -90,23 +90,22 @@
     <Compile Include="DropDAO.cs" />
     <Compile Include="Entities\GeneralLog.cs" />
     <Compile Include="Entities\Inventory.cs" />
-    <Compile Include="Entities\InventoryItem.cs" />
     <Compile Include="Entities\Item.cs" />
+    <Compile Include="Entities\ItemInstance.cs" />
     <Compile Include="Entities\Map.cs" />
     <Compile Include="Entities\MapMonster.cs" />
+    <Compile Include="Entities\SpecialistInstance.cs" />
+    <Compile Include="Entities\UsableInstance.cs" />
+    <Compile Include="Entities\WearableInstance.cs" />
     <Compile Include="Helpers\ColumnBuilderExtension.cs" />
     <Compile Include="MapMonsterDAO.cs" />
     <Compile Include="Entities\MapNpc.cs" />
     <Compile Include="MapNpcDAO.cs" />
     <Compile Include="Entities\NpcMonster.cs" />
     <Compile Include="Entities\NpcMonsterskill.cs" />
-    <Compile Include="Migrations\201604221748026_Migration1.cs" />
-    <Compile Include="Migrations\201604221748026_Migration1.Designer.cs">
-      <DependentUpon>201604221748026_Migration1.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201604231239458_Migration2.cs" />
-    <Compile Include="Migrations\201604231239458_Migration2.Designer.cs">
-      <DependentUpon>201604231239458_Migration2.cs</DependentUpon>
+    <Compile Include="Migrations\201604240819524_Migration1.cs" />
+    <Compile Include="Migrations\201604240819524_Migration1.Designer.cs">
+      <DependentUpon>201604240819524_Migration1.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="NpcMonsterSkillDAO.cs" />
@@ -187,11 +186,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201604221748026_Migration1.resx">
-      <DependentUpon>201604221748026_Migration1.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201604231239458_Migration2.resx">
-      <DependentUpon>201604231239458_Migration2.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201604240819524_Migration1.resx">
+      <DependentUpon>201604240819524_Migration1.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

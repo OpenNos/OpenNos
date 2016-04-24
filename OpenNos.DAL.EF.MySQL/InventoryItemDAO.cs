@@ -20,15 +20,15 @@ using System.Linq;
 
 namespace OpenNos.DAL.EF.MySQL
 {
-    public class InventoryItemDAO : IInventoryItemDAO
+    public class ItemInstanceDAO : IItemInstanceDAO
     {
         #region Methods
 
-        public InventoryItemDTO LoadByInventoryId(long inventoryId)
+        public ItemInstanceDTO LoadByInventoryId(long inventoryId)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                return Mapper.DynamicMap<InventoryItemDTO>(context.InventoryItem.FirstOrDefault(i => i.Inventory.InventoryId.Equals(inventoryId)));
+                return Mapper.DynamicMap<ItemInstanceDTO>(context.ItemInstance.FirstOrDefault(i => i.Inventory.InventoryId.Equals(inventoryId)));
             }
         }
 

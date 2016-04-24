@@ -34,11 +34,11 @@ namespace OpenNos.DAL.EF.MySQL
             using (var context = DataAccessHelper.CreateContext())
             {
                 Inventory inv = context.Inventory.FirstOrDefault(i => i.Slot.Equals(slot) && i.Type.Equals(type) && i.CharacterId.Equals(characterId));
-                InventoryItem invItem = context.InventoryItem.FirstOrDefault(i => i.Inventory.InventoryId == inv.InventoryId);
+                ItemInstance invItem = context.ItemInstance.FirstOrDefault(i => i.Inventory.InventoryId == inv.InventoryId);
                 if (inv != null)
                 {
                     context.Inventory.Remove(inv);
-                    context.InventoryItem.Remove(invItem);
+                    context.ItemInstance.Remove(invItem);
                     context.SaveChanges();
                 }
 
@@ -62,8 +62,8 @@ namespace OpenNos.DAL.EF.MySQL
                         Inventory delete = context.Inventory.FirstOrDefault(s => s.CharacterId == CharacterId && s.Slot == Slot && s.Type == Type);
                         if (delete != null)
                         {
-                            InventoryItem deleteItem = context.InventoryItem.FirstOrDefault(s => s.Inventory.InventoryId == delete.InventoryId);
-                            context.InventoryItem.Remove(deleteItem);
+                            ItemInstance deleteItem = context.ItemInstance.FirstOrDefault(s => s.Inventory.InventoryId == delete.InventoryId);
+                            context.ItemInstance.Remove(deleteItem);
                             context.Inventory.Remove(delete);
                         }
                         inventory = Insert(inventory, context);
@@ -71,7 +71,7 @@ namespace OpenNos.DAL.EF.MySQL
                     }
                     else //existing entity
                     {
-                        entity.InventoryItem = context.InventoryItem.FirstOrDefault(c => c.Inventory.InventoryId == entity.InventoryId);
+                        entity.ItemInstance = context.ItemInstance.FirstOrDefault(c => c.Inventory.InventoryId == entity.InventoryId);
                         inventory = Update(entity, inventory, context);
                         return SaveResult.Updated;
                     }

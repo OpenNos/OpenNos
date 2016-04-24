@@ -16,7 +16,7 @@ using System;
 
 namespace OpenNos.Data
 {
-    public class InventoryItemDTO
+    public class ItemInstanceDTO
     {
         #region Properties
 

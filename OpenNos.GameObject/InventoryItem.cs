@@ -17,17 +17,17 @@ using OpenNos.Data;
 
 namespace OpenNos.GameObject
 {
-    public class InventoryItem : InventoryItemDTO, IGameObject
+    public class InventoryItem : ItemInstanceDTO, IGameObject
     {
         #region Instantiation
 
         public InventoryItem()
         {
-            Mapper.CreateMap<InventoryItemDTO, InventoryItem>();
-            Mapper.CreateMap<InventoryItem, InventoryItemDTO>();
+            Mapper.CreateMap<ItemInstanceDTO, InventoryItem>();
+            Mapper.CreateMap<InventoryItem, ItemInstanceDTO>();
         }
 
-        public InventoryItem(InventoryItemDTO inventoryItem)
+        public InventoryItem(ItemInstanceDTO inventoryItem)
         {
             InventoryItemId = inventoryItem.InventoryItemId;
             Amount = inventoryItem.Amount;
