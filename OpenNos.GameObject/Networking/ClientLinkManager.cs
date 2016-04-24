@@ -516,7 +516,10 @@ namespace OpenNos.GameObject
 
         public void UpdateGroup(long charId)
         {
-            string str = $"pinit { Groups.FirstOrDefault(s => s.Characters.Contains(charId))?.Characters.Count()}";
+            Group myGroup = Groups.FirstOrDefault(s => s.Characters.Contains(charId));
+            if (myGroup == null)
+                return;
+            string str = $"pinit { myGroup.Characters.Count()}";
 
             int i = 0;
             foreach (long Id in Groups.FirstOrDefault(s => s.Characters.Contains(charId))?.Characters)
@@ -525,7 +528,7 @@ namespace OpenNos.GameObject
                 str += $" 1|{GetProperty<long>(Id, "CharacterId")}|{i}|{ClientLinkManager.Instance.GetProperty<byte>(Id, "Level")}|{ClientLinkManager.Instance.GetProperty<string>(Id, "Name")}|11|{ClientLinkManager.Instance.GetProperty<byte>(Id, "Gender")}|{ClientLinkManager.Instance.GetProperty<byte>(Id, "Class")}|{(ClientLinkManager.Instance.GetProperty<bool>(Id, "UseSp") ? ClientLinkManager.Instance.GetProperty<int>(Id, "Morph") : 0)}";
             }
 
-            foreach (long Id in Instance.Groups.FirstOrDefault(s => s.Characters.Contains(charId))?.Characters)
+            foreach (long Id in myGroup.Characters)
             {
                 Instance.Broadcast(null, str, ReceiverType.OnlySomeone, "", Id);
             }
