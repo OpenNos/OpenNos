@@ -2650,22 +2650,12 @@ namespace OpenNos.Handler
                                          ski.Used = false;
                                          Session.Client.SendPacket($"sr {Castingid}");
                                      }
-                                     else
-                                     {
-                                         Session.Client.SendPacket("cancel 0 0");
-                                     }
+                                   
                                  });
                         }
-                        else
-                            Session.Client.SendPacket("cancel 0 0");
                     }
-                    else
-                        Session.Client.SendPacket("cancel 0 0");
                 }
-                else
-                    Session.Client.SendPacket("cancel 0 0");
             }
-            else
                 Session.Client.SendPacket("cancel 0 0");
 
         }
