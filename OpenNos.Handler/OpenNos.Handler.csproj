@@ -55,12 +55,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="NpcPacketHandler.cs" />
+    <Compile Include="BattlePacketHandler.cs" />
+    <Compile Include="UselessPacketHandler.cs" />
+    <Compile Include="InventoryPacketHandler.cs" />
     <Compile Include="CommandPacketHandler.cs" />
     <Compile Include="Configuration\ServerConfig.cs" />
     <Compile Include="Interface\IPacketHandler.cs" />
     <Compile Include="LoginPacketHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="WorldPacketHandler.cs" />
+    <Compile Include="BasicPacketHandler.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\OpenNos.Core\OpenNos.Core.csproj">

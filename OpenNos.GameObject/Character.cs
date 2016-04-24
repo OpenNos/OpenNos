@@ -138,7 +138,49 @@ namespace OpenNos.GameObject
         {
             return $"c_info {Name} - -1 -1 - {CharacterId} {Authority} {Gender} {HairStyle} {HairColor} {Class} {GetReputIco()} {Compliment} {(UseSp || IsVehicled ? Morph : 0)} {(Invisible?1:0)} 0 {(UseSp ? MorphUpgrade : 0)} {ArenaWinner}";
         }
+        public void DeleteTimeout(ClientSession Session)
+        {
+            for (int i = Session.Character.InventoryList.Inventory.Count() - 1; i >= 0; i--)
+            {
+                Inventory item = Session.Character.InventoryList.Inventory[i];
+                if (item != null)
+                {
+                    if (item.InventoryItem.IsUsed && item.InventoryItem.ItemDeleteTime != null && item.InventoryItem.ItemDeleteTime < DateTime.Now)
+                    {
+                        Session.Character.InventoryList.DeleteByInventoryItemId(item.InventoryItem.InventoryItemId);
+                        Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, item.Type, item.Slot, 0, 0, 0));
+                        Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("ITEM_TIMEOUT"), 10));
+                    }
+                }
+            }
+            for (int i = Session.Character.EquipmentList.Inventory.Count() - 1; i >= 0; i--)
+            {
+                Inventory item = Session.Character.EquipmentList.Inventory[i];
+                if (item != null)
+                {
+                    if (item.InventoryItem.IsUsed && item.InventoryItem.ItemDeleteTime != null && item.InventoryItem.ItemDeleteTime < DateTime.Now)
+                    {
+                        Session.Character.EquipmentList.DeleteByInventoryItemId(item.InventoryItem.InventoryItemId);
+                        Session.Client.SendPacket(Session.Character.GenerateEquipment());
+                        Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("ITEM_TIMEOUT"), 10));
+                    }
+                }
+            }
+        }
 
+
+        public void GetStartupInventory(ClientSession Session)
+        {
+            foreach (String inv in GenerateStartupInventory())
+            {
+                Session.Client.SendPacket(inv);
+            }
+        }
+        public void DeleteItem(ClientSession Session, byte type, short slot)
+        {
+            InventoryList.DeleteFromSlotAndType(slot, type);
+            Session.Client.SendPacket(GenerateInventoryAdd(-1, 0, type, slot, 0, 0, 0));
+        }
         public string GenerateCMap()
         {
             cmapcount = cmapcount == 1 ? (byte)0 : (byte)1;

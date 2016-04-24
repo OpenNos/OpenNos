@@ -83,37 +83,7 @@ namespace OpenNos.GameObject
 
         #endregion
 
-        #region Enums
 
-        public enum RarifyMode
-        {
-            Normal,
-            Reduced,
-            Free
-        }
-
-        public enum RarifyProtection
-        {
-            None,
-            BlueAmulet,
-            RedAmulet,
-            Scroll
-        }
-
-        public enum UpgradeMode
-        {
-            Normal,
-            Reduced,
-            Free
-        }
-
-        public enum UpgradeProtection
-        {
-            None,
-            Protected
-        }
-
-        #endregion
 
         #region Methods
 

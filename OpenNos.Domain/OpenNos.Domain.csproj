@@ -58,6 +58,10 @@
     <Compile Include="GroupSharingType.cs" />
     <Compile Include="JewelOptionType.cs" />
     <Compile Include="PortalType.cs" />
+    <Compile Include="UpgradeProtection.cs" />
+    <Compile Include="RarifyProtection.cs" />
+    <Compile Include="RarifyMode.cs" />
+    <Compile Include="UpgradeMode.cs" />
     <Compile Include="RespawnType.cs" />
     <Compile Include="ConfigType.cs" />
     <Compile Include="ItemType.cs" />
