@@ -218,7 +218,8 @@ namespace OpenNos.GameObject
 
         private void GenerateHandlerReferences(Type type)
         {
-            foreach (Type handlerType in type.Assembly.GetTypes().Where(p => !p.IsInterface && type.GetInterface("IPacketHandler").IsAssignableFrom(p)))
+            //iterate thru each type in the given assembly, the IPacketHandler is expected in the same dll 
+            foreach (Type handlerType in type.Assembly.GetTypes().Where(p => !p.IsInterface && type.GetInterfaces().FirstOrDefault().IsAssignableFrom(p)))
             {
                 object handler = Activator.CreateInstance(handlerType, new object[] { this });
 

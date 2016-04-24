@@ -90,7 +90,7 @@ namespace OpenNos.World
                 ServiceFactory.Instance.CommunicationService.Open();
                 exitHandler += new EventHandler(ExitHandler);
                 SetConsoleCtrlHandler(exitHandler, true);
-                NetworkManager<WorldEncryption> networkManager = new NetworkManager<WorldEncryption>(ip, port, typeof(IPacketHandler), typeof(LoginEncryption));
+                NetworkManager<WorldEncryption> networkManager = new NetworkManager<WorldEncryption>(ip, port, typeof(CommandPacketHandler), typeof(LoginEncryption));
             }
             catch (Exception ex)
             {
