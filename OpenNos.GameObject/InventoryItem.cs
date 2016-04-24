@@ -83,11 +83,11 @@ namespace OpenNos.GameObject
 
         #endregion
 
-
-
         #region Methods
 
-        public void Save() { }
+        public void Save()
+        {
+        }
 
         #endregion
     }

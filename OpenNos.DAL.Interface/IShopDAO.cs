@@ -22,9 +22,13 @@ namespace OpenNos.DAL.Interface
         #region Methods
 
         ShopDTO Insert(ShopDTO shop);
-        ShopDTO LoadById(int ShopId);
-        ShopDTO LoadByNpc(int NpcId);
+
         void Insert(List<ShopDTO> shops);
+
+        ShopDTO LoadById(int ShopId);
+
+        ShopDTO LoadByNpc(int NpcId);
+
         #endregion
     }
 }

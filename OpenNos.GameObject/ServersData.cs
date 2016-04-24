@@ -39,15 +39,20 @@ namespace OpenNos.GameObject
         private static int[,] maxDist = null;
         private static int[,] maxHit = null;
         private static int[,] minDist = null;
+
         //difference between class
         private static int[,] minHit = null;
+
         private static int[,] MP = null;
         private static int[] mpHealth = null;
         private static int[] mpHealthStand = null;
         private static double[] secondjobxpData = null;
+
         //STAT DATA
         private static byte[] speedData = null;
+
         private static double[] spxpData = null;
+
         //same for all class
         private static double[] xpData = null;
 
@@ -209,6 +214,31 @@ namespace OpenNos.GameObject
         #endregion
 
         #region Methods
+
+        public static int MagicalDefence(byte @class, byte level)
+        {
+            return magicalDef[@class, level];
+        }
+
+        public static int MaxDistance(byte @class, byte level)
+        {
+            return maxDist[@class, level];
+        }
+
+        public static int MaxHit(byte @class, byte level)
+        {
+            return maxHit[@class, level];
+        }
+
+        public static int MinDistance(byte @class, byte level)
+        {
+            return minDist[@class, level];
+        }
+
+        public static int MinHit(byte @class, byte level)
+        {
+            return minHit[@class, level];
+        }
 
         public static int RarityPoint(short rarity, short lvl)
         {
@@ -545,31 +575,6 @@ namespace OpenNos.GameObject
         internal static int LightResistance(byte @class, byte level)
         {
             return 0;
-        }
-
-        public static int MagicalDefence(byte @class, byte level)
-        {
-            return magicalDef[@class, level];
-        }
-
-        public static int MaxDistance(byte @class, byte level)
-        {
-            return maxDist[@class, level];
-        }
-
-        public static int MaxHit(byte @class, byte level)
-        {
-            return maxHit[@class, level];
-        }
-
-        public static int MinDistance(byte @class, byte level)
-        {
-            return minDist[@class, level];
-        }
-
-        public static int MinHit(byte @class, byte level)
-        {
-            return minHit[@class, level];
         }
 
         internal static double UpgradeBonus(byte upgrade)

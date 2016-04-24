@@ -1,6 +1,6 @@
-﻿using OpenNos.Core.Threading;
-using OpenNos.Core.Networking.Communication.Scs.Communication.Messages;
+﻿using OpenNos.Core.Networking.Communication.Scs.Communication.Messages;
 using OpenNos.Core.Networking.Communication.Scs.Communication.Protocols;
+using OpenNos.Core.Threading;
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -100,6 +100,8 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messengers
 
         #endregion
 
+        #region Properties
+
         /// <summary>
         /// Gets the time of the last succesfully received message.
         /// </summary>
@@ -142,6 +144,10 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messengers
             get { return Messenger.WireProtocol; }
             set { Messenger.WireProtocol = value; }
         }
+
+        #endregion
+
+        #region Methods
 
         /// <summary>
         /// Calls Stop method of this object.
@@ -336,27 +342,17 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messengers
             OnMessageSent(e.Message);
         }
 
+        #endregion
+
+        #region Classes
+
         /// <summary>
         /// This class is used to store messaging context for a request message
         /// until response is received.
         /// </summary>
         private sealed class WaitingMessage
         {
-            /// <summary>
-            /// Response message for request message
-            /// (null if response is not received yet).
-            /// </summary>
-            public IScsMessage ResponseMessage { get; set; }
-
-            /// <summary>
-            /// ManualResetEvent to block thread until response is received.
-            /// </summary>
-            public ManualResetEventSlim WaitEvent { get; private set; }
-
-            /// <summary>
-            /// State of the request message.
-            /// </summary>
-            public WaitingMessageStates State { get; set; }
+            #region Instantiation
 
             /// <summary>
             /// Creates a new WaitingMessage object.
@@ -366,6 +362,30 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messengers
                 WaitEvent = new ManualResetEventSlim(false);
                 State = WaitingMessageStates.WaitingForResponse;
             }
+
+            #endregion
+
+            #region Properties
+
+            /// <summary>
+            /// Response message for request message
+            /// (null if response is not received yet).
+            /// </summary>
+            public IScsMessage ResponseMessage { get; set; }
+
+            /// <summary>
+            /// State of the request message.
+            /// </summary>
+            public WaitingMessageStates State { get; set; }
+
+            /// <summary>
+            /// ManualResetEvent to block thread until response is received.
+            /// </summary>
+            public ManualResetEventSlim WaitEvent { get; private set; }
+
+            #endregion
         }
+
+        #endregion
     }
 }

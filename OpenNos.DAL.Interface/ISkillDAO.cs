@@ -22,10 +22,13 @@ namespace OpenNos.DAL.Interface
         #region Methods
 
         SkillDTO Insert(SkillDTO skill);
-        SkillDTO LoadById(short SkillId);
+
         void Insert(List<SkillDTO> skills);
+
         IEnumerable<SkillDTO> LoadAll();
-      
+
+        SkillDTO LoadById(short SkillId);
+
         #endregion
     }
 }

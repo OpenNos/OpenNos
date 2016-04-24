@@ -22,9 +22,13 @@ namespace OpenNos.DAL.Interface
         #region Methods
 
         MapNpcDTO Insert(MapNpcDTO npc);
-        IEnumerable<MapNpcDTO> LoadFromMap(short MapId);
-        MapNpcDTO LoadById(int MapNpcId);
+
         void Insert(List<MapNpcDTO> npcs);
+
+        MapNpcDTO LoadById(int MapNpcId);
+
+        IEnumerable<MapNpcDTO> LoadFromMap(short MapId);
+
         #endregion
     }
 }

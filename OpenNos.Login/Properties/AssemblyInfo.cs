@@ -2,6 +2,7 @@ using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+
 [assembly: AssemblyVersion("1.0.0.0")]
 [assembly: Debuggable(DebuggableAttribute.DebuggingModes.Default | DebuggableAttribute.DebuggingModes.DisableOptimizations | DebuggableAttribute.DebuggingModes.IgnoreSymbolStoreSequencePoints | DebuggableAttribute.DebuggingModes.EnableEditAndContinue)]
 [assembly: AssemblyCompany("")]
@@ -15,4 +16,3 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 [assembly: log4net.Config.XmlConfigurator(Watch = true)]
 [assembly: AssemblyCopyright("OpenNos Team 2016")]
-

@@ -1,28 +1,24 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace OpenNos.GameObject
+﻿namespace OpenNos.GameObject
 {
     public class MapCell
     {
-       
-        public short X {
-            get; set;
-        }
-
-        public short Y {
-            get; set;
-        }
+        #region Properties
 
         public short MapId
         {
             get; set;
         }
 
-      
+        public short X
+        {
+            get; set;
+        }
+
+        public short Y
+        {
+            get; set;
+        }
+
+        #endregion
     }
 }

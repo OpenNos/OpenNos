@@ -20,13 +20,13 @@ namespace OpenNos.Data
     {
         #region Properties
 
-        public long LogId { get; set; }
         public long AccountId { get; set; }
-        public string IpAddress { get; set; }
-        public DateTime Timestamp { get; set; }
-        public string LogType { get; set; }
-        public string LogData { get; set; }
         public long? CharacterId { get; set; }
+        public string IpAddress { get; set; }
+        public string LogData { get; set; }
+        public long LogId { get; set; }
+        public string LogType { get; set; }
+        public DateTime Timestamp { get; set; }
 
         #endregion
     }

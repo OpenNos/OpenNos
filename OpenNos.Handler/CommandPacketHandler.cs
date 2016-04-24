@@ -97,6 +97,30 @@ namespace OpenNos.Handler
                 Session.Client.SendPacket(Session.Character.GenerateSay("$ChangeClass CLASS", 10));
         }
 
+        [Packet("$HeroLvl")]
+        public void ChangeHeroLevel(string packet)
+        {
+            string[] packetsplit = packet.Split(' ');
+            byte hlevel;
+            if (packetsplit.Length > 2)
+            {
+                if (Byte.TryParse(packetsplit[2], out hlevel) && hlevel < 31 && hlevel > 0)
+                {
+                    Session.Character.HeroLevel = hlevel;
+                    Session.Character.HeroXp = 0;
+                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("HEROLEVEL_CHANGED"), 0));
+                    Session.Client.SendPacket(Session.Character.GenerateLev());
+                    Session.Client.SendPacket(Session.Character.GenerateStatInfo());
+                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllOnMapExceptMe);
+                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(6), ReceiverType.AllOnMap);
+                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(198), ReceiverType.AllOnMap);
+                    this.GetStats(String.Empty);
+                }
+            }
+            else
+                Session.Client.SendPacket(Session.Character.GenerateSay("$HeroLvl HEROLEVEL", 10));
+        }
+
         [Packet("$JLvl")]
         public void ChangeJobLevel(string packet)
         {
@@ -141,35 +165,10 @@ namespace OpenNos.Handler
                     this.GetStats(String.Empty);
 
                     ClientLinkManager.Instance.UpdateGroup(Session.Character.CharacterId);
-
                 }
             }
             else
                 Session.Client.SendPacket(Session.Character.GenerateSay("$Lvl LEVEL", 10));
-        }
-
-        [Packet("$HeroLvl")]
-        public void ChangeHeroLevel(string packet)
-        {
-            string[] packetsplit = packet.Split(' ');
-            byte hlevel;
-            if (packetsplit.Length > 2)
-            {
-                if (Byte.TryParse(packetsplit[2], out hlevel) && hlevel < 31 && hlevel > 0)
-                {
-                    Session.Character.HeroLevel = hlevel;
-                    Session.Character.HeroXp = 0;
-                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("HEROLEVEL_CHANGED"), 0));
-                    Session.Client.SendPacket(Session.Character.GenerateLev());
-                    Session.Client.SendPacket(Session.Character.GenerateStatInfo());
-                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllOnMapExceptMe);
-                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(6), ReceiverType.AllOnMap);
-                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(198), ReceiverType.AllOnMap);
-                    this.GetStats(String.Empty);
-                }
-            }
-            else
-                Session.Client.SendPacket(Session.Character.GenerateSay("$HeroLvl HEROLEVEL", 10));
         }
 
         [Packet("$ChangeRep")]
@@ -269,40 +268,7 @@ namespace OpenNos.Handler
             Session.Client.SendPacket(Session.Character.GenerateSay("$Shutdown", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("-----------------------------------------------", 10));
         }
-        [Packet("$Kill")]
-        public void Kill(string packet)
-        {
-            string[] packetsplit = packet.Split(' ');
-            if (packetsplit.Length == 3)
-            {
-                string name = packetsplit[2];
 
-                long? id = ClientLinkManager.Instance.GetProperty<long?>(name, "CharacterId");
-
-                if (id != null)
-                {
-                    int? Hp = ClientLinkManager.Instance.GetProperty<int?>((long)id, "Hp");
-                    if (Hp == 0)
-                        return;
-                    ClientLinkManager.Instance.SetProperty((long)id, "Hp", 0);
-
-                    ClientLinkManager.Instance.SetProperty((long)id, "LastDefence", DateTime.Now);
-
-                    ClientLinkManager.Instance.Broadcast(Session, $"su 1 {Session.Character.CharacterId} 1 {id} 1114 4 11 4260 0 0 0 0 {60000} 3 0", ReceiverType.AllOnMap);
-
-                    ClientLinkManager.Instance.Broadcast(null, ClientLinkManager.Instance.GetUserMethod<string>((long)id, "GenerateStat"), ReceiverType.OnlySomeone, "", (long)id);
-                    ClientLinkManager.Instance.AskRevive((long)id);
-
-                }
-                else
-                {
-                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("USER_NOT_CONNECTED"), 0));
-                }
-            }
-            else
-                Session.Client.SendPacket(Session.Character.GenerateSay("$Kill CHARACTERNAME", 10));
-
-        }
         [Packet("$CreateItem")]
         public void CreateItem(string packet)
         {
@@ -509,6 +475,39 @@ namespace OpenNos.Handler
                 ClientLinkManager.Instance.Kick(packetsplit[2]);
             else
                 Session.Client.SendPacket(Session.Character.GenerateSay("$Kick CHARACTERNAME", 10));
+        }
+
+        [Packet("$Kill")]
+        public void Kill(string packet)
+        {
+            string[] packetsplit = packet.Split(' ');
+            if (packetsplit.Length == 3)
+            {
+                string name = packetsplit[2];
+
+                long? id = ClientLinkManager.Instance.GetProperty<long?>(name, "CharacterId");
+
+                if (id != null)
+                {
+                    int? Hp = ClientLinkManager.Instance.GetProperty<int?>((long)id, "Hp");
+                    if (Hp == 0)
+                        return;
+                    ClientLinkManager.Instance.SetProperty((long)id, "Hp", 0);
+
+                    ClientLinkManager.Instance.SetProperty((long)id, "LastDefence", DateTime.Now);
+
+                    ClientLinkManager.Instance.Broadcast(Session, $"su 1 {Session.Character.CharacterId} 1 {id} 1114 4 11 4260 0 0 0 0 {60000} 3 0", ReceiverType.AllOnMap);
+
+                    ClientLinkManager.Instance.Broadcast(null, ClientLinkManager.Instance.GetUserMethod<string>((long)id, "GenerateStat"), ReceiverType.OnlySomeone, "", (long)id);
+                    ClientLinkManager.Instance.AskRevive((long)id);
+                }
+                else
+                {
+                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("USER_NOT_CONNECTED"), 0));
+                }
+            }
+            else
+                Session.Client.SendPacket(Session.Character.GenerateSay("$Kill CHARACTERNAME", 10));
         }
 
         [Packet("$MapDance")]

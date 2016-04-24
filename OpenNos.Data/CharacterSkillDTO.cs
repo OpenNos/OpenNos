@@ -12,8 +12,6 @@
  * GNU General Public License for more details.
  */
 
-using System;
-
 namespace OpenNos.Data
 {
     public class CharacterSkillDTO
@@ -21,8 +19,8 @@ namespace OpenNos.Data
         #region Properties
 
         public long? CharacterId { get; set; }
-        public short? NpcMonsterVNum { get; set; }
         public long CharacterSkillId { get; set; }
+        public short? NpcMonsterVNum { get; set; }
         public short SkillVNum { get; set; }
 
         #endregion

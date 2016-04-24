@@ -13,18 +13,12 @@
  */
 
 using OpenNos.Core;
-using OpenNos.DAL;
 using OpenNos.Data;
-using OpenNos.Data.Enums;
 using OpenNos.Domain;
 using OpenNos.GameObject;
-using OpenNos.ServiceRef.Internal;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Reflection;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace OpenNos.Handler
@@ -53,6 +47,30 @@ namespace OpenNos.Handler
         #endregion
 
         #region Methods
+
+        [Packet("mtlist")]
+        public void SpecialZoneHit(string packet)
+        {
+            string[] packetsplit = packet.Split(' ');
+            int damage = 0;
+            int hitmode = 0;
+
+            if (packetsplit.Length > 3)
+                for (int i = 3; i < packetsplit.Length - 1; i += 2)
+                {
+                    List<CharacterSkill> skills = Session.Character.UseSp ? Session.Character.SkillsSp : Session.Character.Skills;
+                    Skill skill = null;
+                    CharacterSkill ski = skills.FirstOrDefault(s => (skill = ServerManager.GetSkill(s.SkillVNum)) != null && skill.CastId == short.Parse(packetsplit[i]));
+
+                    MapMonster mon = Session.CurrentMap.Monsters.FirstOrDefault(s => s.MapMonsterId == short.Parse(packetsplit[i + 1]));
+                    if (mon != null && skill != null)
+                    {
+                        damage = GenerateDamage(mon.MapMonsterId, skill, ref hitmode);
+                        ClientLinkManager.Instance.Broadcast(Session, $"su {1} {Session.Character.CharacterId} {3} {mon.MapMonsterId} {skill.SkillVNum} {skill.Cooldown} {skill.AttackAnimation} {skill.Effect} {Session.Character.MapX} {Session.Character.MapY} {(mon.Alive ? 1 : 0)} {(int)(((float)mon.CurrentHp / (float)ServerManager.GetNpc(mon.MonsterVNum).MaxHP) * 100)} {damage} {5} {skill.SkillType - 1}", ReceiverType.AllOnMap);
+                    }
+                }
+        }
+
         public void TargetHit(int Castingid, int targetobj, int targetid)
         {
             List<CharacterSkill> skills = Session.Character.UseSp ? Session.Character.SkillsSp : Session.Character.Skills;
@@ -80,7 +98,7 @@ namespace OpenNos.Handler
                         if (skill.TargetRange != 0)
                             foreach (MapMonster mon in ServerManager.GetMap(Session.Character.MapId).GetListMonsterInRange(Session.Character.MapX, Session.Character.MapY, skill.TargetRange))
                             {
-                                damage = GenerateDamage( mon.MapMonsterId, skill, ref hitmode);
+                                damage = GenerateDamage(mon.MapMonsterId, skill, ref hitmode);
                                 mmon = ServerManager.GetMap(Session.Character.MapId).Monsters.FirstOrDefault(s => s.MapMonsterId == mon.MapMonsterId);
                                 ClientLinkManager.Instance.Broadcast(Session, $"su {1} {Session.Character.CharacterId} {3} {mmon.MapMonsterId} {skill.SkillVNum} {skill.Cooldown} {skill.AttackAnimation} {skill.Effect} {Session.Character.MapX} {Session.Character.MapY} {(mmon.Alive ? 1 : 0)} {(int)(((float)mmon.CurrentHp / (float)ServerManager.GetNpc(mon.MonsterVNum).MaxHP) * 100)} {damage} {5} {skill.SkillType - 1}", ReceiverType.AllOnMap);
                             }
@@ -106,7 +124,7 @@ namespace OpenNos.Handler
                                 if (Map.GetDistance(new MapCell() { X = Session.Character.MapX, Y = Session.Character.MapY }, new MapCell() { X = mmon.MapX, Y = mmon.MapY }) <= skill.Range + 1 || skill.TargetRange != 0)
                                 {
                                     ClientLinkManager.Instance.Broadcast(Session, $"ct 1 {Session.Character.CharacterId} 3 {mmon.MapMonsterId} {skill.CastAnimation} -1 {skill.SkillVNum}", ReceiverType.AllOnMap);
-                                    damage = GenerateDamage( mmon.MapMonsterId, skill, ref hitmode);
+                                    damage = GenerateDamage(mmon.MapMonsterId, skill, ref hitmode);
                                     ski.Used = true;
                                     ski.LastUse = DateTime.Now;
                                     if (damage == 0 || (DateTime.Now - ski.LastUse).TotalSeconds > 3)
@@ -134,7 +152,7 @@ namespace OpenNos.Handler
                                     if (skill.TargetRange != 0)
                                         foreach (MapMonster mon in ServerManager.GetMap(Session.Character.MapId).GetListMonsterInRange(Session.Character.MapX, Session.Character.MapY, skill.TargetRange))
                                         {
-                                            damage = GenerateDamage( mon.MapMonsterId, skill, ref hitmode);
+                                            damage = GenerateDamage(mon.MapMonsterId, skill, ref hitmode);
                                             ClientLinkManager.Instance.Broadcast(Session, $"su {1} {Session.Character.CharacterId} {3} {mon.MapMonsterId} {skill.SkillVNum} {skill.Cooldown} {skill.AttackAnimation} {skill.Effect} {Session.Character.MapX} {Session.Character.MapY} {(mon.Alive ? 1 : 0)} {(int)(((float)mon.CurrentHp / (float)ServerManager.GetNpc(mon.MonsterVNum).MaxHP) * 100)} {damage} {5} {skill.SkillType - 1}", ReceiverType.AllOnMap);
                                         }
 
@@ -142,38 +160,14 @@ namespace OpenNos.Handler
                                     ski.Used = false;
                                     Session.Client.SendPacket($"sr {Castingid}");
                                 }
-
                             });
                         }
                     }
                 }
             }
             Session.Client.SendPacket("cancel 0 0");
-
         }
 
-        [Packet("mtlist")]
-        public void SpecialZoneHit(string packet)
-        {
-            string[] packetsplit = packet.Split(' ');
-            int damage = 0;
-            int hitmode = 0;
-
-            if (packetsplit.Length > 3)
-                for (int i = 3; i < packetsplit.Length - 1; i += 2)
-                {
-                    List<CharacterSkill> skills = Session.Character.UseSp ? Session.Character.SkillsSp : Session.Character.Skills;
-                    Skill skill = null;
-                    CharacterSkill ski = skills.FirstOrDefault(s => (skill = ServerManager.GetSkill(s.SkillVNum)) != null && skill.CastId == short.Parse(packetsplit[i]));
-
-                    MapMonster mon = Session.CurrentMap.Monsters.FirstOrDefault(s => s.MapMonsterId == short.Parse(packetsplit[i + 1]));
-                    if (mon != null && skill != null)
-                    {
-                        damage = GenerateDamage( mon.MapMonsterId, skill, ref hitmode);
-                        ClientLinkManager.Instance.Broadcast(Session, $"su {1} {Session.Character.CharacterId} {3} {mon.MapMonsterId} {skill.SkillVNum} {skill.Cooldown} {skill.AttackAnimation} {skill.Effect} {Session.Character.MapX} {Session.Character.MapY} {(mon.Alive ? 1 : 0)} {(int)(((float)mon.CurrentHp / (float)ServerManager.GetNpc(mon.MonsterVNum).MaxHP) * 100)} {damage} {5} {skill.SkillType - 1}", ReceiverType.AllOnMap);
-                    }
-                }
-        }
         [Packet("u_s")]
         public void UseSkill(string packet)
         {
@@ -303,7 +297,6 @@ namespace OpenNos.Handler
                     ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(6), ReceiverType.AllOnMap);
                     ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(198), ReceiverType.AllOnMap);
                     ClientLinkManager.Instance.UpdateGroup(Session.Character.CharacterId);
-
                 }
                 t = Session.Character.JobXPLoad();
                 while (Session.Character.JobLevelXp >= t)
@@ -339,6 +332,7 @@ namespace OpenNos.Handler
             mmon.Target = Session.Character.CharacterId;
             return damage;
         }
+
         private void ZoneHit(int Castingid, short x, short y)
         {
             List<CharacterSkill> skills = Session.Character.UseSp ? Session.Character.SkillsSp : Session.Character.Skills;
@@ -372,8 +366,6 @@ namespace OpenNos.Handler
 
             Session.Client.SendPacket("cancel 0 0");
         }
-
-
 
         #endregion
     }

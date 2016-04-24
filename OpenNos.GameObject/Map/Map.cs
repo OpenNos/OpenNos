@@ -16,7 +16,6 @@ using AutoMapper;
 using OpenNos.DAL;
 using OpenNos.Data;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -127,40 +126,6 @@ namespace OpenNos.GameObject
             }
         }
 
-        internal bool GetFreePosition(ref short firstX, ref short firstY, byte xpoint, byte ypoint)
-        {
-            Random r = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
-            short MinX = (short)(-xpoint + firstX);
-            short MaxX = (short)(xpoint + firstX);
-
-            short MinY = (short)(-ypoint + firstY);
-            short MaxY = (short)(ypoint + firstY);
-
-            List<MapCell> cells = new List<MapCell>();
-            for (short y = MinY; y <= MaxY; y++)
-            {
-                for (short x = MinX; x <= MaxX; x++)
-                {
-                    if (x != firstX && y != firstY)
-                        cells.Add(new MapCell() { X = x, Y = y, MapId = MapId });
-                }
-            }
-
-            foreach (MapCell cell in cells.OrderBy(s => r.Next(int.MaxValue)))
-            {
-                if (!ServerManager.GetMap(MapId).IsBlockedZone(firstX, firstY, cell.X, cell.Y))
-                {
-                    firstX = cell.X;
-                    firstY = cell.Y;
-                    return true;
-                }
-            }
-
-
-            return false;
-
-        }
-
         public EventHandler NotifyClients { get; set; }
 
         public List<MapNpc> Npcs
@@ -194,6 +159,77 @@ namespace OpenNos.GameObject
         #endregion
 
         #region Methods
+
+        public static int GetDistance(MapCell p, MapCell q)
+        {
+            double a = p.X - q.X;
+            double b = p.Y - q.Y;
+
+            if (a * a == b * b)
+                a = 0;
+            double distance = Math.Sqrt(a * a + b * b);
+            return (int)distance;
+        }
+
+        public List<MapCell> AStar(MapCell cell1, MapCell cell2)
+        {
+            List<MapCell> SolutionPathList = new List<MapCell>();
+
+            SortedCostMapCellList OPEN = new SortedCostMapCellList();
+            SortedCostMapCellList CLOSED = new SortedCostMapCellList();
+            MapCellAStar cell_start = new MapCellAStar(null, null, cell1.X, cell1.Y, cell1.MapId);
+            MapCellAStar cell_goal = new MapCellAStar(null, null, cell2.X, cell2.Y, cell2.MapId);
+            OPEN.push(cell_start);
+
+            while (OPEN.Count > 0)
+            {
+                MapCellAStar cell_current = OPEN.pop();
+
+                if (cell_current.isMatch(cell_goal))
+                {
+                    cell_goal.parentcell = cell_current.parentcell;
+                    break;
+                }
+
+                List<MapCellAStar> successors = cell_current.GetSuccessors();
+
+                foreach (MapCellAStar cell_successor in successors)
+                {
+                    int oFound = OPEN.IndexOf(cell_successor);
+
+                    if (oFound > 0)
+                    {
+                        MapCellAStar existing_cell = OPEN.CellAt(oFound);
+                        if (existing_cell.CompareTo(cell_current) <= 0)
+                            continue;
+                    }
+
+                    int cFound = CLOSED.IndexOf(cell_successor);
+
+                    if (cFound > 0)
+                    {
+                        MapCellAStar existing_cell = CLOSED.CellAt(cFound);
+                        if (existing_cell.CompareTo(cell_current) <= 0)
+                            continue;
+                    }
+
+                    if (oFound != -1)
+                        OPEN.RemoveAt(oFound);
+                    if (cFound != -1)
+                        CLOSED.RemoveAt(cFound);
+
+                    OPEN.push(cell_successor);
+                }
+                CLOSED.push(cell_current);
+            }
+            MapCellAStar p = cell_goal;
+            while (p != null)
+            {
+                SolutionPathList.Insert(0, p);
+                p = p.parentcell;
+            }
+            return SolutionPathList;
+        }
 
         public List<MapMonster> GetListMonsterInRange(short mapX, short mapY, byte distance)
         {
@@ -295,19 +331,6 @@ namespace OpenNos.GameObject
             }
         }
 
-        internal IEnumerable<Character> GetListPeopleInRange(short mapX, short mapY, byte distance)
-        {
-            List<Character> listch = new List<Character>();
-            IEnumerable<ClientSession> cl = ClientLinkManager.Instance.Sessions.Where(s => s.Character != null && s.Character.Hp > 0);
-            for (int i = cl.Count() - 1; i >= 0; i--)
-            {
-
-                if (GetDistance(new MapCell() { X = mapX, Y = mapY }, new MapCell() { X = cl.ElementAt(i).Character.MapX, Y = cl.ElementAt(i).Character.MapY }) <= distance + 1)
-                    listch.Add(cl.ElementAt(i).Character);
-            }
-            return listch;
-        }
-
         public async void MonsterLifeManager()
         {
             var rnd = new Random();
@@ -332,16 +355,51 @@ namespace OpenNos.GameObject
                 await Task.Delay(rnd.Next(1000 / Npcs.Count(), 1000 / Npcs.Count()));
             }
         }
-        public static int GetDistance(MapCell p, MapCell q)
-        {
-            double a = p.X - q.X;
-            double b = p.Y - q.Y;
 
-            if (a * a == b * b)
-                a = 0;
-            double distance = Math.Sqrt(a * a + b * b);
-            return (int)distance;
+        internal bool GetFreePosition(ref short firstX, ref short firstY, byte xpoint, byte ypoint)
+        {
+            Random r = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
+            short MinX = (short)(-xpoint + firstX);
+            short MaxX = (short)(xpoint + firstX);
+
+            short MinY = (short)(-ypoint + firstY);
+            short MaxY = (short)(ypoint + firstY);
+
+            List<MapCell> cells = new List<MapCell>();
+            for (short y = MinY; y <= MaxY; y++)
+            {
+                for (short x = MinX; x <= MaxX; x++)
+                {
+                    if (x != firstX && y != firstY)
+                        cells.Add(new MapCell() { X = x, Y = y, MapId = MapId });
+                }
+            }
+
+            foreach (MapCell cell in cells.OrderBy(s => r.Next(int.MaxValue)))
+            {
+                if (!ServerManager.GetMap(MapId).IsBlockedZone(firstX, firstY, cell.X, cell.Y))
+                {
+                    firstX = cell.X;
+                    firstY = cell.Y;
+                    return true;
+                }
+            }
+
+            return false;
         }
+
+        internal IEnumerable<Character> GetListPeopleInRange(short mapX, short mapY, byte distance)
+        {
+            List<Character> listch = new List<Character>();
+            IEnumerable<ClientSession> cl = ClientLinkManager.Instance.Sessions.Where(s => s.Character != null && s.Character.Hp > 0);
+            for (int i = cl.Count() - 1; i >= 0; i--)
+            {
+                if (GetDistance(new MapCell() { X = mapX, Y = mapY }, new MapCell() { X = cl.ElementAt(i).Character.MapX, Y = cl.ElementAt(i).Character.MapY }) <= distance + 1)
+                    listch.Add(cl.ElementAt(i).Character);
+            }
+            return listch;
+        }
+
         internal async void MapTaskManager()
         {
             Task NpcMoveTask = new Task(() => NpcLifeManager());
@@ -353,76 +411,6 @@ namespace OpenNos.GameObject
             await MonsterMoveTask;
         }
 
-        #endregion
-        #region A*
-
-        public List<MapCell> AStar(MapCell cell1, MapCell cell2)
-        {
-            List<MapCell> SolutionPathList = new List<MapCell>();
-
-
-            SortedCostMapCellList OPEN = new SortedCostMapCellList();
-            SortedCostMapCellList CLOSED = new SortedCostMapCellList();
-            MapCellAStar cell_start = new MapCellAStar(null, null, cell1.X, cell1.Y, cell1.MapId);
-            MapCellAStar cell_goal = new MapCellAStar(null, null, cell2.X, cell2.Y, cell2.MapId);
-            OPEN.push(cell_start);
-
-            while (OPEN.Count > 0)
-            {
-
-                MapCellAStar cell_current = OPEN.pop();
-
-                if (cell_current.isMatch(cell_goal))
-                {
-                    cell_goal.parentcell = cell_current.parentcell;
-                    break;
-                }
-
-                List<MapCellAStar> successors = cell_current.GetSuccessors();
-
-                foreach (MapCellAStar cell_successor in successors)
-                {
-                    int oFound = OPEN.IndexOf(cell_successor);
-
-
-                    if (oFound > 0)
-                    {
-                        MapCellAStar existing_cell = OPEN.CellAt(oFound);
-                        if (existing_cell.CompareTo(cell_current) <= 0)
-                            continue;
-                    }
-
-
-                    int cFound = CLOSED.IndexOf(cell_successor);
-
-                    if (cFound > 0)
-                    {
-                        MapCellAStar existing_cell = CLOSED.CellAt(cFound);
-                        if (existing_cell.CompareTo(cell_current) <= 0)
-                            continue;
-                    }
-
-                    if (oFound != -1)
-                        OPEN.RemoveAt(oFound);
-                    if (cFound != -1)
-                        CLOSED.RemoveAt(cFound);
-
-
-                    OPEN.push(cell_successor);
-
-                }
-                CLOSED.push(cell_current);
-            }
-            MapCellAStar p = cell_goal;
-            while (p != null)
-            {
-
-                SolutionPathList.Insert(0, p);
-                p = p.parentcell;
-
-            }
-            return SolutionPathList;
-        }
         #endregion
     }
 }

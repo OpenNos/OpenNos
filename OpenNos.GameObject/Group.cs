@@ -18,14 +18,25 @@ namespace OpenNos.GameObject
 {
     public class Group
     {
-        public int GroupId { get; set; }
-        public List<long> Characters { get; set; }
-        public byte SharingMode { get; set; }
+        #region Instantiation
 
         public Group()
         {
             Characters = new List<long>();
         }
+
+        #endregion
+
+        #region Properties
+
+        public List<long> Characters { get; set; }
+        public int GroupId { get; set; }
+        public byte SharingMode { get; set; }
+
+        #endregion
+
+        #region Methods
+
         public List<string> GeneratePst()
         {
             int i = 0;
@@ -36,5 +47,7 @@ namespace OpenNos.GameObject
             }
             return str;
         }
+
+        #endregion
     }
 }

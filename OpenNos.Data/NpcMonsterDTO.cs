@@ -20,6 +20,10 @@ namespace OpenNos.Data
 
         public byte AttackClass { get; set; }
         public byte AttackUpgrade { get; set; }
+        public byte BasicArea { get; set; }
+        public short BasicCooldown { get; set; }
+        public byte BasicRange { get; set; }
+        public short BasicSkill { get; set; }
         public short CloseDefence { get; set; }
         public short Concentrate { get; set; }
         public byte CriticalLuckRate { get; set; }
@@ -34,6 +38,7 @@ namespace OpenNos.Data
         public byte Element { get; set; }
         public short ElementRate { get; set; }
         public sbyte FireResistance { get; set; }
+        public byte HeroLevel { get; set; }
         public bool IsHostile { get; set; }
         public int JobXP { get; set; }
         public byte Level { get; set; }
@@ -47,11 +52,7 @@ namespace OpenNos.Data
         public byte Speed { get; set; }
         public sbyte WaterResistance { get; set; }
         public int XP { get; set; }
-        public short BasicSkill { get; set; }
-        public byte BasicRange { get; set; }
-        public short BasicCooldown { get; set; }
-        public byte BasicArea { get; set; }
-        public byte HeroLevel { get; set; }
+
         #endregion
     }
 }

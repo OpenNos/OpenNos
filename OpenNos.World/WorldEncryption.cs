@@ -14,7 +14,6 @@
 
 using OpenNos.Core;
 using System;
-using System.Text;
 
 namespace OpenNos.World
 {
@@ -22,7 +21,9 @@ namespace OpenNos.World
     {
         #region Instantiation
 
-        public WorldEncryption() : base(true) { }
+        public WorldEncryption() : base(true)
+        {
+        }
 
         #endregion
 
@@ -87,7 +88,32 @@ namespace OpenNos.World
             return decrypted_string;
         }
 
-    
+        public static string Encrypt2(String str)
+        {
+            String encryptedString = String.Empty;
+
+            for (int i = 0; i < str.Length; i++)
+            {
+                if (i % 0x7A == 0)
+                {
+                    if ((str.Length - i) > 0x7A)
+                    {
+                        encryptedString += Convert.ToChar(0x7A);
+                    }
+                    else
+                    {
+                        encryptedString += Convert.ToChar(str.Length - i);
+                    }
+                }
+
+                encryptedString += Convert.ToChar((byte)str[i] ^ 0xFF);
+            }
+
+            encryptedString += Convert.ToChar(0xFF);
+
+            return encryptedString;
+        }
+
         public override string Decrypt(byte[] str, int session_id)
         {
             int length = str.Length;
@@ -221,7 +247,6 @@ namespace OpenNos.World
             String encryptedString = String.Empty;
             while (str.Length > 60)
             {
-
                 encryptedString += Encrypt2(str.Substring(0, 60));
                 encryptedString = encryptedString.Substring(0, encryptedString.Length - 1);
                 str = str.Substring(60, str.Length - 60);
@@ -238,32 +263,6 @@ namespace OpenNos.World
                 encryptedData[i] = (byte)encryptedString[i];
 
             return encryptedData;
-        }
-
-        public static string Encrypt2(String str)
-        {
-            String encryptedString = String.Empty;
-
-            for (int i = 0; i < str.Length; i++)
-            {
-                if (i % 0x7A == 0)
-                {
-                    if ((str.Length - i) > 0x7A)
-                    {
-                        encryptedString += Convert.ToChar(0x7A);
-                    }
-                    else
-                    {
-                        encryptedString += Convert.ToChar(str.Length - i);
-                    }
-                }
-
-                encryptedString += Convert.ToChar((byte)str[i] ^ 0xFF);
-            }
-
-            encryptedString += Convert.ToChar(0xFF);
-
-            return encryptedString;
         }
 
         #endregion

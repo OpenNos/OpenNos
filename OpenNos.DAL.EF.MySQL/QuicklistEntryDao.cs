@@ -12,22 +12,37 @@
  * GNU General Public License for more details.
  */
 
+using AutoMapper;
+using OpenNos.Core;
+using OpenNos.DAL.EF.MySQL.DB;
+using OpenNos.DAL.EF.MySQL.Helpers;
+using OpenNos.DAL.Interface;
+using OpenNos.Data;
+using OpenNos.Data.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using AutoMapper;
-using OpenNos.Data;
-using OpenNos.Data.Enums;
-
-using OpenNos.DAL.EF.MySQL.Helpers;
-using OpenNos.DAL.Interface;
-using OpenNos.Core;
-using OpenNos.DAL.EF.MySQL.DB;
 
 namespace OpenNos.DAL.EF.MySQL
 {
     public class QuicklistEntryDAO : IQuicklistEntryDAO
     {
+        #region Methods
+
+        public DeleteResult Delete(long characterId, long entryId)
+        {
+            using (OpenNosContext context = DataAccessHelper.CreateContext())
+            {
+                QuicklistEntry QuicklistEntryItem = context.QuicklistEntry.FirstOrDefault(i => i.CharacterId == characterId && i.EntryId == entryId);
+                if (QuicklistEntryItem != null)
+                {
+                    context.QuicklistEntry.Remove(QuicklistEntryItem);
+                    context.SaveChanges();
+                }
+
+                return DeleteResult.Deleted;
+            }
+        }
 
         public SaveResult InsertOrUpdate(ref QuicklistEntryDTO quickListEntry)
         {
@@ -74,20 +89,6 @@ namespace OpenNos.DAL.EF.MySQL
             }
         }
 
-        public DeleteResult Delete(long characterId, long entryId)
-        {
-            using (OpenNosContext context = DataAccessHelper.CreateContext())
-            {
-                QuicklistEntry QuicklistEntryItem = context.QuicklistEntry.FirstOrDefault(i => i.CharacterId == characterId && i.EntryId == entryId);
-                if (QuicklistEntryItem != null)
-                {
-                    context.QuicklistEntry.Remove(QuicklistEntryItem);
-                    context.SaveChanges();
-                }
-
-                return DeleteResult.Deleted;
-            }
-        }
+        #endregion
     }
 }
-

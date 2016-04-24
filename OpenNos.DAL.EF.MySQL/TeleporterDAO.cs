@@ -24,7 +24,6 @@ namespace OpenNos.DAL.EF.MySQL
 {
     public class TeleporterDAO : ITeleporterDAO
     {
-
         #region Methods
 
         public TeleporterDTO Insert(TeleporterDTO teleporter)

@@ -22,7 +22,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace OpenNos.GameObject
@@ -35,6 +34,7 @@ namespace OpenNos.GameObject
         private static ConcurrentDictionary<Guid, Map> _maps = new ConcurrentDictionary<Guid, Map>();
         private static List<NpcMonster> _npcs = new List<NpcMonster>();
         private static List<Skill> _skills = new List<Skill>();
+
         #endregion
 
         #region Properties
@@ -51,6 +51,11 @@ namespace OpenNos.GameObject
             return _maps;
         }
 
+        public static IEnumerable<Skill> GetAllSkill()
+        {
+            return _skills;
+        }
+
         public static Item GetItem(short vnum)
         {
             return _items.FirstOrDefault(m => m.VNum.Equals(vnum));
@@ -65,10 +70,12 @@ namespace OpenNos.GameObject
         {
             return _npcs.FirstOrDefault(m => m.NpcMonsterVNum.Equals(npcVNum));
         }
+
         public static Skill GetSkill(short skillVNum)
         {
             return _skills.FirstOrDefault(m => m.SkillVNum.Equals(skillVNum));
         }
+
         public static void Initialize()
         {
             foreach (ItemDTO itemDTO in DAOFactory.ItemDAO.LoadAll())
@@ -253,11 +260,6 @@ namespace OpenNos.GameObject
             {
                 handler(mapPacket, new EventArgs());
             }
-        }
-
-        public static IEnumerable<Skill> GetAllSkill()
-        {
-            return _skills;
         }
 
         #endregion

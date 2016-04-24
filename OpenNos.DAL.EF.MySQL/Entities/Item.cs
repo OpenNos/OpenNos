@@ -86,6 +86,7 @@ namespace OpenNos.DAL.EF.MySQL
 
         public bool IsDroppable { get; set; }
 
+        public bool IsHeroic { get; set; }
         public bool IsMinilandObject { get; set; }
 
         public bool IsSoldable { get; set; }
@@ -93,9 +94,6 @@ namespace OpenNos.DAL.EF.MySQL
         public bool IsTradable { get; set; }
 
         public bool IsWarehouse { get; set; }
-
-        public bool IsHeroic { get; set; }
-
         public byte ItemSubType { get; set; }
 
         public byte ItemType { get; set; }

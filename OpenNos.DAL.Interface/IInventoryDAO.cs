@@ -23,9 +23,13 @@ namespace OpenNos.DAL.Interface
         #region Methods
 
         DeleteResult DeleteFromSlotAndType(long characterId, short slot, byte type);
+
         SaveResult InsertOrUpdate(ref InventoryDTO inventory);
+
         IEnumerable<InventoryDTO> LoadByCharacterId(long characterId);
+
         InventoryDTO LoadBySlotAndType(long characterId, short slot, byte type);
+
         IEnumerable<InventoryDTO> LoadByType(long characterId, byte type);
 
         #endregion

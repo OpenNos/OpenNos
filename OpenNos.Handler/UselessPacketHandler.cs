@@ -13,19 +13,7 @@
  */
 
 using OpenNos.Core;
-using OpenNos.DAL;
-using OpenNos.Data;
-using OpenNos.Data.Enums;
-using OpenNos.Domain;
 using OpenNos.GameObject;
-using OpenNos.ServiceRef.Internal;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Reflection;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace OpenNos.Handler
 {
@@ -53,21 +41,25 @@ namespace OpenNos.Handler
         #endregion
 
         #region Methods
+
         [Packet("c_close")]
         public void CClose(string packet)
         {
             // idk
         }
+
         [Packet("f_stash_end")]
         public void FStashEnd(string packet)
         {
             // idk
         }
+
         [Packet("lbs")]
         public void Lbs(string packet)
         {
             // idk
         }
+
         [Packet("shopclose")]
         public void ShopClose(string packet)
         {
@@ -85,7 +77,6 @@ namespace OpenNos.Handler
         {
             // Not needed for now. (pictures)
         }
-
 
         #endregion
     }

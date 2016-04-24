@@ -13,10 +13,8 @@
  */
 
 using AutoMapper;
-using OpenNos.DAL;
 using OpenNos.Data;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace OpenNos.GameObject
 {
@@ -31,7 +29,12 @@ namespace OpenNos.GameObject
             Combos = new List<Combo>();
         }
 
+        #endregion
+
+        #region Properties
+
         public List<Combo> Combos { get; set; }
+
         #endregion
     }
 }

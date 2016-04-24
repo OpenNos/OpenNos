@@ -22,8 +22,10 @@ namespace OpenNos.DAL.Interface
         #region Methods
 
         TeleporterDTO Insert(TeleporterDTO teleporter);
-        IEnumerable<TeleporterDTO> LoadFromNpc(int NpcId);
+
         TeleporterDTO LoadById(short TeleporterId);
+
+        IEnumerable<TeleporterDTO> LoadFromNpc(int NpcId);
 
         #endregion
     }

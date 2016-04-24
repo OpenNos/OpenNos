@@ -18,10 +18,10 @@ namespace OpenNos.Data
     {
         #region Properties
 
-        public short MapId { get; set; }
-        public string Name { get; set; }
         public byte[] Data { get; set; }
+        public short MapId { get; set; }
         public int Music { get; set; }
+        public string Name { get; set; }
 
         #endregion
     }

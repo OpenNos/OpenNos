@@ -19,11 +19,14 @@ namespace OpenNos.ServiceRef.Internal
 {
     public class CommunicationCallback : ICommunicationServiceCallback, IDisposable
     {
-        #region Members
+        #region Events
 
         public event EventHandler AccountConnectedEvent;
+
         public event EventHandler AccountDisconnectedEvent;
+
         public event EventHandler CharacterConnectedEvent;
+
         public event EventHandler CharacterDisconnectedEvent;
 
         #endregion

@@ -30,7 +30,6 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-
                 context.Configuration.AutoDetectChangesEnabled = false;
                 foreach (ComboDTO Combo in combos)
                 {
@@ -38,7 +37,6 @@ namespace OpenNos.DAL.EF.MySQL
                     context.Combo.Add(entity);
                 }
                 context.SaveChanges();
-
             }
         }
 
@@ -63,6 +61,7 @@ namespace OpenNos.DAL.EF.MySQL
                 }
             }
         }
+
         public ComboDTO LoadById(short comboId)
         {
             using (var context = DataAccessHelper.CreateContext())

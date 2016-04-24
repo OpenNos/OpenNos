@@ -12,16 +12,22 @@
  * GNU General Public License for more details.
  */
 
+using OpenNos.Data;
 using OpenNos.Data.Enums;
 using System.Collections.Generic;
-using OpenNos.Data;
 
 namespace OpenNos.DAL.Interface
 {
     public interface IQuicklistEntryDAO
     {
-        SaveResult InsertOrUpdate(ref QuicklistEntryDTO characterquicklist);
-        IEnumerable<QuicklistEntryDTO> Load(long characterId);
+        #region Methods
+
         DeleteResult Delete(long characterId, long entryId);
+
+        SaveResult InsertOrUpdate(ref QuicklistEntryDTO characterquicklist);
+
+        IEnumerable<QuicklistEntryDTO> Load(long characterId);
+
+        #endregion
     }
 }

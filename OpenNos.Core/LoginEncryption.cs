@@ -21,7 +21,9 @@ namespace OpenNos.Core
     {
         #region Instantiation
 
-        public LoginEncryption() : base(false) { }
+        public LoginEncryption() : base(false)
+        {
+        }
 
         #endregion
 

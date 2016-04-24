@@ -48,6 +48,7 @@ namespace OpenNos.Data
         public bool IsColored { get; set; }
         public bool IsConsumable { get; set; }
         public bool IsDroppable { get; set; }
+        public bool IsHeroic { get; set; }
         public bool IsMinilandObject { get; set; }
         public bool IsSoldable { get; set; }
         public bool IsTradable { get; set; }
@@ -83,7 +84,6 @@ namespace OpenNos.Data
         public short VNum { get; set; }
         public byte WaterElement { get; set; }
         public byte WaterResistance { get; set; }
-        public bool IsHeroic { get; set; }
 
         #endregion
     }

@@ -1,5 +1,4 @@
 ﻿using OpenNos.Core.Networking.Communication.Scs.Communication.EndPoints.Tcp;
-using System;
 using System.Net.Sockets;
 using System.Threading;
 

@@ -32,13 +32,13 @@ namespace OpenNos.Import.Console
             FileVersionInfo fileVersionInfo = FileVersionInfo.GetVersionInfo(assembly.Location);
             System.Console.Title = $"OpenNos Import Console v{fileVersionInfo.ProductVersion}";
             string text = $"IMPORT CONSOLE VERSION {fileVersionInfo.ProductVersion} by OpenNos Team";
-            if(args.Length ==0)
+            if (args.Length == 0)
             {
-            int offset = (System.Console.WindowWidth - text.Length) / 2;
-            System.Console.WriteLine("===============================================================================");
-            System.Console.SetCursorPosition(offset < 0 ? 0 : offset, System.Console.CursorTop);
-            System.Console.WriteLine(text + "\n" +
-            "===============================================================================\n");
+                int offset = (System.Console.WindowWidth - text.Length) / 2;
+                System.Console.WriteLine("===============================================================================");
+                System.Console.SetCursorPosition(offset < 0 ? 0 : offset, System.Console.CursorTop);
+                System.Console.WriteLine(text + "\n" +
+                "===============================================================================\n");
             }
 
             DataAccessHelper.Initialize();
@@ -69,7 +69,7 @@ namespace OpenNos.Import.Console
             string folder = "";
             if (args.Length == 0)
             {
-                 folder = System.Console.ReadLine();
+                folder = System.Console.ReadLine();
                 // Confirmation: All at once, or every step
                 System.Console.WriteLine($"{Language.Instance.GetMessageFromKey("PARSE_ALL")} [Y/n]");
                 key = System.Console.ReadKey(true);
@@ -77,7 +77,7 @@ namespace OpenNos.Import.Console
             else
             {
                 foreach (string str in args)
-                folder += str + " ";
+                    folder += str + " ";
             }
             ImportFactory factory = new ImportFactory(folder);
             factory.ImportPackets();

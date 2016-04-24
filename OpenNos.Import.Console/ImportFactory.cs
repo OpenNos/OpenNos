@@ -26,7 +26,6 @@ namespace OpenNos.Import.Console
 {
     public class ImportFactory
     {
-
         #region Members
 
         private readonly string _folder;
@@ -374,7 +373,6 @@ namespace OpenNos.Import.Console
                     {
                         short vnum = short.Parse(currentLine[2]);
                         npc.BasicSkill = vnum;
-
                     }
                     else if (currentLine.Length > 1 && currentLine[1] == "SKILL")
                     {
@@ -1320,6 +1318,5 @@ namespace OpenNos.Import.Console
         }
 
         #endregion
-
     }
 }

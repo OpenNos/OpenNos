@@ -93,6 +93,7 @@ namespace OpenNos.Domain
 
             // Missingno = 61,
             HideBarrelSkill = 62,
+
             FocusEnemyAttentionSkill = 63,
             TauntSkill = 64,
             FireCannoneerRangeBuff = 65,
@@ -793,9 +794,11 @@ namespace OpenNos.Domain
         {
             IncreaseMaximumMP = 11,
             DecreaseMaximumMP = 12,
+
             // Unknown = 21,
             // Unknown2 = 22,
             IncreaseMaximumHP = 31,
+
             DecreaseMaximumHP = 32
         }
 
@@ -806,6 +809,7 @@ namespace OpenNos.Domain
             // Unknown3 = 21,
             // Unknown4 = 22,
             Summon = 31,
+
             SummonTimed = 32
         }
 
@@ -816,7 +820,7 @@ namespace OpenNos.Domain
         }
 
         //61-80
-        /* 
+        /*
         private enum Missingno : byte
          {
              Unknown = 11,
@@ -918,11 +922,13 @@ namespace OpenNos.Domain
         {
             AddDamageToHP = 11,
             RemoveDamnageFromHP = 12,
+
             // Unknown = 21,
             // Unknown2 = 22,
             // Unknown3 = 31,
             // Unknown4 = 32,
             DamageIncreasedSkill = 41,
+
             DamageDecreasedSkill = 42,
             CriticalIncreasedSkill = 51,
             CriticalDecreasedSkill = 52
@@ -981,8 +987,10 @@ namespace OpenNos.Domain
         private enum JumpBackPush : byte
         {
             JumpBackChance = 11,
+
             // Unknown = 12,
             PushBackChance = 21,
+
             PushBackChanceNegated = 22,
             MeleeDurationIncreased = 31,
             MeleeDurationDecreased = 32,

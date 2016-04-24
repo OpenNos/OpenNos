@@ -13,11 +13,9 @@
  */
 
 using AutoMapper;
-using OpenNos.Core;
 using OpenNos.Data;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -38,29 +36,25 @@ namespace OpenNos.GameObject
             path = new List<MapCell>();
         }
 
-        public bool Alive { get; set; }
-        public DateTime Death { get; set; }
-        public bool inBattle { get; set; }
-        public int CurrentHp { get; set; }
-        public int CurrentMp { get; set; }
-        public List<MapCell> path { get; set; }
         #endregion
 
         #region Properties
 
+        public bool Alive { get; set; }
+        public int CurrentHp { get; set; }
+        public int CurrentMp { get; set; }
+        public DateTime Death { get; set; }
         public short firstX { get; set; }
         public short firstY { get; set; }
+        public bool inBattle { get; set; }
         public DateTime LastEffect { get; private set; }
         public DateTime LastMove { get; private set; }
+        public List<MapCell> path { get; set; }
         public long Target { get; set; }
 
         #endregion
 
         #region Methods
-        public string GenerateEff(int Effect)
-        {
-            return $"eff 3 {MapMonsterId} {Effect}";
-        }
 
         public static int generateMapMonsterId()
         {
@@ -76,6 +70,11 @@ namespace OpenNos.GameObject
                 if (!test.Contains(i))
                     return i;
             return -1;
+        }
+
+        public string GenerateEff(int Effect)
+        {
+            return $"eff 3 {MapMonsterId} {Effect}";
         }
 
         public string GenerateIn3()
@@ -126,8 +125,6 @@ namespace OpenNos.GameObject
                     short MapY = firstY;
                     if (ServerManager.GetMap(MapId).GetFreePosition(ref MapX, ref MapY, xpoint, ypoint))
                     {
-
-
                         LastMove = DateTime.Now;
 
                         string movepacket = $"mv 3 {this.MapMonsterId} {MapX} {MapY} {monster.Speed}";
@@ -139,8 +136,6 @@ namespace OpenNos.GameObject
                             this.MapX = MapX;
                             this.MapY = MapY;
                         });
-
-
                     }
                 }
                 if (monster.IsHostile)
@@ -177,7 +172,6 @@ namespace OpenNos.GameObject
                         ski.Used = true;
                         ski.LastUse = DateTime.Now;
                         LastMove = DateTime.Now;
-
 
                         ClientLinkManager.Instance.BroadcastToMap(MapId, $"ct 3 {MapMonsterId} 1 {Target} {sk.CastAnimation} -1 {sk.SkillVNum}");
 
@@ -229,8 +223,8 @@ namespace OpenNos.GameObject
                                 }
                             if (HP <= 0)
                             {
-                                if(!AlreadyDead)
-                                ClientLinkManager.Instance.AskRevive(Target);
+                                if (!AlreadyDead)
+                                    ClientLinkManager.Instance.AskRevive(Target);
                                 Target = -1;
                             }
                             inBattle = false;
@@ -239,7 +233,6 @@ namespace OpenNos.GameObject
                 }
                 if (IsMoving == true)
                 {
-
                     short maxdistance = 20;
                     if (path.Count() < 1)
                         path = ServerManager.GetMap(MapId).AStar(new MapCell() { X = this.MapX, Y = this.MapY, MapId = this.MapId }, new MapCell() { X = (short)MapX, Y = (short)MapY, MapId = this.MapId });
@@ -256,7 +249,6 @@ namespace OpenNos.GameObject
                     }
                     else
                     {
-
                         if ((DateTime.Now - LastMove).TotalSeconds > 1.0 / monster.Speed)
                         {
                             this.MapX = mapX;
@@ -266,9 +258,7 @@ namespace OpenNos.GameObject
                         }
                     }
                 }
-
             }
-
         }
 
         #endregion

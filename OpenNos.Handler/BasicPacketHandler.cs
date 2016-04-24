@@ -23,8 +23,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Reflection;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace OpenNos.Handler
@@ -53,17 +51,7 @@ namespace OpenNos.Handler
         #endregion
 
         #region Methods
-        [Packet("dir")]
-        public void Dir(string packet)
-        {
-            string[] packetsplit = packet.Split(' ');
 
-            if (Convert.ToInt32(packetsplit[4]) == Session.Character.CharacterId)
-            {
-                Session.Character.Direction = Convert.ToInt32(packetsplit[2]);
-                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateDir(), ReceiverType.AllOnMap);
-            }
-        }
         [Packet("compl")]
         public void Compliment(string packet)
         {
@@ -100,6 +88,112 @@ namespace OpenNos.Handler
                 {
                     Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("COMPLIMENT_NOT_MINLVL"), 11));
                 }
+            }
+        }
+
+        [Packet("Char_NEW")]
+        public void CreateCharacter(string packet)
+        {
+            if (Session.CurrentMap != null)
+                return;
+            // TODO: Hold Account Information in Authorized object
+            long accountId = Session.Account.AccountId;
+            string[] packetsplit = packet.Split(' ');
+            if (packetsplit[2].Length > 3 && packetsplit[2].Length < 15)
+            {
+                bool isIllegalCharacter = false;
+                for (int i = 0; i < packetsplit[2].Length; i++)
+                {
+                    if (packetsplit[2][i] < 0x23 || packetsplit[2][i] > 0x7E)
+                    {
+                        isIllegalCharacter = true;
+                    }
+                }
+
+                if (!isIllegalCharacter)
+                {
+                    if (DAOFactory.CharacterDAO.LoadByName(packetsplit[2]) == null)
+                    {
+                        if (Convert.ToByte(packetsplit[3]) > 2)
+                            return;
+                        Random r = new Random();
+                        CharacterDTO newCharacter = new CharacterDTO()
+                        {
+                            Class = (byte)ClassType.Adventurer,
+                            Gender = (Convert.ToByte(packetsplit[4]) >= 0 && Convert.ToByte(packetsplit[4]) <= 1 ? Convert.ToByte(packetsplit[4]) : Convert.ToByte(0)),
+                            Gold = 0,
+                            HairColor = Enum.IsDefined(typeof(HairColorType), Convert.ToByte(packetsplit[6])) ? Convert.ToByte(packetsplit[6]) : Convert.ToByte(0),
+                            HairStyle = Enum.IsDefined(typeof(HairStyleType), Convert.ToByte(packetsplit[5])) ? Convert.ToByte(packetsplit[5]) : Convert.ToByte(0),
+                            Hp = 221,
+                            JobLevel = 1,
+                            JobLevelXp = 0,
+                            Level = 1,
+                            LevelXp = 0,
+                            MapId = 1,
+                            MapX = (short)(r.Next(78, 81)),
+                            MapY = (short)(r.Next(114, 118)),
+                            Mp = 221,
+                            Name = packetsplit[2],
+                            Slot = Convert.ToByte(packetsplit[3]),
+                            AccountId = accountId,
+                            StateEnum = CharacterState.Active,
+                            WhisperBlocked = false,
+                            FamilyRequestBlocked = false,
+                            ExchangeBlocked = false,
+                            BuffBlocked = false,
+                            EmoticonsBlocked = false,
+                            FriendRequestBlocked = false,
+                            GroupRequestBlocked = false,
+                            MinilandInviteBlocked = false,
+                            HeroChatBlocked = false,
+                            QuickGetUp = false,
+                            MouseAimLock = false,
+                            HpBlocked = false,
+                        };
+
+                        SaveResult insertResult = DAOFactory.CharacterDAO.InsertOrUpdate(ref newCharacter);
+                        CharacterSkillDTO sk1 = new CharacterSkillDTO { CharacterId = newCharacter.CharacterId, SkillVNum = 200 };
+                        CharacterSkillDTO sk2 = new CharacterSkillDTO { CharacterId = newCharacter.CharacterId, SkillVNum = 201 };
+                        DAOFactory.CharacterSkillDAO.InsertOrUpdate(ref sk1);
+                        DAOFactory.CharacterSkillDAO.InsertOrUpdate(ref sk2);
+                        LoadCharacters(packet);
+                    }
+                    else Session.Client.SendPacketFormat($"info {Language.Instance.GetMessageFromKey("ALREADY_TAKEN")}");
+                }
+                else Session.Client.SendPacketFormat($"info {Language.Instance.GetMessageFromKey("INVALID_CHARNAME")}");
+            }
+        }
+
+        [Packet("Char_DEL")]
+        public void DeleteCharacter(string packet)
+        {
+            if (Session.CurrentMap != null)
+                return;
+            string[] packetsplit = packet.Split(' ');
+            AccountDTO account = DAOFactory.AccountDAO.LoadBySessionId(Session.SessionId);
+            if (packetsplit.Length <= 3)
+                return;
+            if (account != null && account.Password == OpenNos.Core.EncryptionBase.sha256(packetsplit[3]))
+            {
+                DAOFactory.GeneralLogDAO.SetCharIdNull((long?)Convert.ToInt64(DAOFactory.CharacterDAO.LoadBySlot(account.AccountId, Convert.ToByte(packetsplit[2])).CharacterId));
+                DAOFactory.CharacterDAO.DeleteByPrimaryKey(account.AccountId, Convert.ToByte(packetsplit[2]));
+                LoadCharacters(packet);
+            }
+            else
+            {
+                Session.Client.SendPacket($"info {Language.Instance.GetMessageFromKey("BAD_PASSWORD")}");
+            }
+        }
+
+        [Packet("dir")]
+        public void Dir(string packet)
+        {
+            string[] packetsplit = packet.Split(' ');
+
+            if (Convert.ToInt32(packetsplit[4]) == Session.Character.CharacterId)
+            {
+                Session.Character.Direction = Convert.ToInt32(packetsplit[2]);
+                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateDir(), ReceiverType.AllOnMap);
             }
         }
 
@@ -167,6 +261,110 @@ namespace OpenNos.Handler
             if (packetsplit[2] == "2")
                 ClientLinkManager.Instance.Broadcast(Session, $"guri 2 1 {Session.Character.CharacterId}", ReceiverType.AllOnMap);
         }
+
+        [Packet("hero")]
+        public void Hero(string packet)
+        {
+            if (DAOFactory.CharacterDAO.IsReputHero(Session.Character.CharacterId) >= 3)
+            {
+                string[] packetsplit = packet.Split(' ');
+                string message = String.Empty;
+                for (int i = 2; i < packetsplit.Length; i++)
+                    message += packetsplit[i] + " ";
+                message.Trim();
+
+                ClientLinkManager.Instance.Broadcast(Session, $"msg 5 [{Session.Character.Name}]:{message}", ReceiverType.AllNoHeroBlocked);
+            }
+            else
+            {
+                Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("USER_NOT_HERO"), 11));
+            }
+        }
+
+        /// <summary>
+        /// Load Characters, this is the Entrypoint for the Client, Wait for 3 Packets.
+        /// </summary>
+        /// <param name="packet"></param>
+        /// <returns></returns>
+        [Packet("OpenNos.EntryPoint", 3)]
+        public void LoadCharacters(string packet)
+        {
+            string[] loginPacketParts = packet.Split(' ');
+
+            // Load account by given SessionId
+            if (Session.Account == null)
+            {
+                bool hasRegisteredAccountLogin = true;
+                try
+                {
+                    hasRegisteredAccountLogin = ServiceFactory.Instance.CommunicationService.HasRegisteredAccountLogin(loginPacketParts[4], Session.SessionId);
+                }
+                catch (Exception ex)
+                {
+                    Logger.Log.Error(ex.Message);
+                }
+
+                if (loginPacketParts.Length > 4 && hasRegisteredAccountLogin)
+                {
+                    AccountDTO accountDTO = DAOFactory.AccountDAO.LoadByName(loginPacketParts[4]);
+
+                    if (accountDTO != null)
+                    {
+                        if (accountDTO.Password.Equals(EncryptionBase.sha256(loginPacketParts[6])))
+                        {
+                            var account = new GameObject.Account()
+                            {
+                                AccountId = accountDTO.AccountId,
+                                Name = accountDTO.Name,
+                                Password = accountDTO.Password,
+                                Authority = accountDTO.Authority,
+                                LastCompliment = accountDTO.LastCompliment
+                            };
+
+                            Session.InitializeAccount(account);
+                        }
+                        else
+                        {
+                            Logger.Log.ErrorFormat($"Client {Session.Client.ClientId} forced Disconnection, invalid Password or SessionId.");
+                            Session.Client.Disconnect();
+                        }
+                    }
+                    else
+                    {
+                        Logger.Log.ErrorFormat($"Client {Session.Client.ClientId} forced Disconnection, invalid AccountName.");
+                        Session.Client.Disconnect();
+                    }
+                }
+                else
+                {
+                    Logger.Log.ErrorFormat($"Client {Session.Client.ClientId} forced Disconnection, login has not been registered or Account is already logged in.");
+                    Session.Client.Disconnect();
+                    Session.Destroy();
+                    return;
+                }
+            }
+
+            IEnumerable<CharacterDTO> characters = DAOFactory.CharacterDAO.LoadByAccount(Session.Account.AccountId);
+            Logger.Log.InfoFormat(Language.Instance.GetMessageFromKey("ACCOUNT_ARRIVED"), Session.SessionId);
+            Session.Client.SendPacket("clist_start 0");
+            foreach (CharacterDTO character in characters)
+            {
+                // Move to character
+                InventoryItemDTO[] item = new InventoryItemDTO[15];
+                for (short i = 0; i < 15; i++)
+                {
+                    InventoryDTO inv = DAOFactory.InventoryDAO.LoadBySlotAndType(character.CharacterId, i, (byte)InventoryType.Equipment);
+                    if (inv != null)
+                    {
+                        inv.InventoryItem = DAOFactory.InventoryItemDAO.LoadByInventoryId(inv.InventoryId);
+                        item[i] = inv.InventoryItem;
+                    }
+                }
+                Session.Client.SendPacket($"clist {character.Slot} {character.Name} 0 {character.Gender} {character.HairStyle} {character.HairColor} 0 {character.Class} {character.Level} {character.HeroLevel} {(item[(byte)EquipmentType.Hat] != null ? item[(byte)EquipmentType.Hat].ItemVNum : 0)}.{(item[(byte)EquipmentType.Armor] != null ? item[(byte)EquipmentType.Armor].ItemVNum : 0)}.{(item[(byte)EquipmentType.MainWeapon] != null ? item[(byte)EquipmentType.MainWeapon].ItemVNum : 0)}.{(item[(byte)EquipmentType.SecondaryWeapon] != null ? item[(byte)EquipmentType.SecondaryWeapon].ItemVNum : 0)}.{(item[(byte)EquipmentType.Mask] != null ? item[(byte)EquipmentType.Mask].ItemVNum : 0)}.{(item[(byte)EquipmentType.Fairy] != null ? item[(byte)EquipmentType.Fairy].ItemVNum : 0)}.{(item[(byte)EquipmentType.CostumeSuit] != null ? item[(byte)EquipmentType.CostumeSuit].ItemVNum : 0)}.{(item[(byte)EquipmentType.CostumeHat] != null ? item[(byte)EquipmentType.CostumeHat].ItemVNum : 0)} 1 0 0 -1.-1 {(item[(byte)EquipmentType.Hat] != null ? (ServerManager.GetItem(item[(byte)EquipmentType.Hat].ItemVNum).IsColored ? item[(byte)EquipmentType.Hat].Design : character.HairColor) : character.HairColor)} 0");
+            }
+            Session.Client.SendPacket("clist_end");
+        }
+
         [Packet("gop")]
         public void Option(string packet)
         {
@@ -309,279 +507,6 @@ namespace OpenNos.Handler
             Session.Client.SendPacket(Session.Character.GenerateStat());
         }
 
-  
-
-        [Packet("Char_NEW")]
-        public void CreateCharacter(string packet)
-        {
-            if (Session.CurrentMap != null)
-                return;
-            // TODO: Hold Account Information in Authorized object
-            long accountId = Session.Account.AccountId;
-            string[] packetsplit = packet.Split(' ');
-            if (packetsplit[2].Length > 3 && packetsplit[2].Length < 15)
-            {
-                bool isIllegalCharacter = false;
-                for (int i = 0; i < packetsplit[2].Length; i++)
-                {
-                    if (packetsplit[2][i] < 0x23 || packetsplit[2][i] > 0x7E)
-                    {
-                        isIllegalCharacter = true;
-                    }
-                }
-
-                if (!isIllegalCharacter)
-                {
-                    if (DAOFactory.CharacterDAO.LoadByName(packetsplit[2]) == null)
-                    {
-                        if (Convert.ToByte(packetsplit[3]) > 2)
-                            return;
-                        Random r = new Random();
-                        CharacterDTO newCharacter = new CharacterDTO()
-                        {
-                            Class = (byte)ClassType.Adventurer,
-                            Gender = (Convert.ToByte(packetsplit[4]) >= 0 && Convert.ToByte(packetsplit[4]) <= 1 ? Convert.ToByte(packetsplit[4]) : Convert.ToByte(0)),
-                            Gold = 0,
-                            HairColor = Enum.IsDefined(typeof(HairColorType), Convert.ToByte(packetsplit[6])) ? Convert.ToByte(packetsplit[6]) : Convert.ToByte(0),
-                            HairStyle = Enum.IsDefined(typeof(HairStyleType), Convert.ToByte(packetsplit[5])) ? Convert.ToByte(packetsplit[5]) : Convert.ToByte(0),
-                            Hp = 221,
-                            JobLevel = 1,
-                            JobLevelXp = 0,
-                            Level = 1,
-                            LevelXp = 0,
-                            MapId = 1,
-                            MapX = (short)(r.Next(78, 81)),
-                            MapY = (short)(r.Next(114, 118)),
-                            Mp = 221,
-                            Name = packetsplit[2],
-                            Slot = Convert.ToByte(packetsplit[3]),
-                            AccountId = accountId,
-                            StateEnum = CharacterState.Active,
-                            WhisperBlocked = false,
-                            FamilyRequestBlocked = false,
-                            ExchangeBlocked = false,
-                            BuffBlocked = false,
-                            EmoticonsBlocked = false,
-                            FriendRequestBlocked = false,
-                            GroupRequestBlocked = false,
-                            MinilandInviteBlocked = false,
-                            HeroChatBlocked = false,
-                            QuickGetUp = false,
-                            MouseAimLock = false,
-                            HpBlocked = false,
-                        };
-
-                        SaveResult insertResult = DAOFactory.CharacterDAO.InsertOrUpdate(ref newCharacter);
-                        CharacterSkillDTO sk1 = new CharacterSkillDTO { CharacterId = newCharacter.CharacterId, SkillVNum = 200 };
-                        CharacterSkillDTO sk2 = new CharacterSkillDTO { CharacterId = newCharacter.CharacterId, SkillVNum = 201 };
-                        DAOFactory.CharacterSkillDAO.InsertOrUpdate(ref sk1);
-                        DAOFactory.CharacterSkillDAO.InsertOrUpdate(ref sk2);
-                        LoadCharacters(packet);
-                    }
-                    else Session.Client.SendPacketFormat($"info {Language.Instance.GetMessageFromKey("ALREADY_TAKEN")}");
-                }
-                else Session.Client.SendPacketFormat($"info {Language.Instance.GetMessageFromKey("INVALID_CHARNAME")}");
-            }
-        }
-
-        [Packet("Char_DEL")]
-        public void DeleteCharacter(string packet)
-        {
-            if (Session.CurrentMap != null)
-                return;
-            string[] packetsplit = packet.Split(' ');
-            AccountDTO account = DAOFactory.AccountDAO.LoadBySessionId(Session.SessionId);
-            if (packetsplit.Length <= 3)
-                return;
-            if (account != null && account.Password == OpenNos.Core.EncryptionBase.sha256(packetsplit[3]))
-            {
-                DAOFactory.GeneralLogDAO.SetCharIdNull((long?)Convert.ToInt64(DAOFactory.CharacterDAO.LoadBySlot(account.AccountId, Convert.ToByte(packetsplit[2])).CharacterId));
-                DAOFactory.CharacterDAO.DeleteByPrimaryKey(account.AccountId, Convert.ToByte(packetsplit[2]));
-                LoadCharacters(packet);
-            }
-            else
-            {
-                Session.Client.SendPacket($"info {Language.Instance.GetMessageFromKey("BAD_PASSWORD")}");
-            }
-        }
-
-
-        /// <summary>
-        /// Load Characters, this is the Entrypoint for the Client, Wait for 3 Packets.
-        /// </summary>
-        /// <param name="packet"></param>
-        /// <returns></returns>
-        [Packet("OpenNos.EntryPoint", 3)]
-        public void LoadCharacters(string packet)
-        {
-            string[] loginPacketParts = packet.Split(' ');
-
-            // Load account by given SessionId
-            if (Session.Account == null)
-            {
-                bool hasRegisteredAccountLogin = true;
-                try
-                {
-                    hasRegisteredAccountLogin = ServiceFactory.Instance.CommunicationService.HasRegisteredAccountLogin(loginPacketParts[4], Session.SessionId);
-                }
-                catch (Exception ex)
-                {
-                    Logger.Log.Error(ex.Message);
-                }
-
-                if (loginPacketParts.Length > 4 && hasRegisteredAccountLogin)
-                {
-                    AccountDTO accountDTO = DAOFactory.AccountDAO.LoadByName(loginPacketParts[4]);
-
-                    if (accountDTO != null)
-                    {
-                        if (accountDTO.Password.Equals(EncryptionBase.sha256(loginPacketParts[6])))
-                        {
-                            var account = new GameObject.Account()
-                            {
-                                AccountId = accountDTO.AccountId,
-                                Name = accountDTO.Name,
-                                Password = accountDTO.Password,
-                                Authority = accountDTO.Authority,
-                                LastCompliment = accountDTO.LastCompliment
-                            };
-
-                            Session.InitializeAccount(account);
-                        }
-                        else
-                        {
-                            Logger.Log.ErrorFormat($"Client {Session.Client.ClientId} forced Disconnection, invalid Password or SessionId.");
-                            Session.Client.Disconnect();
-                        }
-                    }
-                    else
-                    {
-                        Logger.Log.ErrorFormat($"Client {Session.Client.ClientId} forced Disconnection, invalid AccountName.");
-                        Session.Client.Disconnect();
-                    }
-                }
-                else
-                {
-                    Logger.Log.ErrorFormat($"Client {Session.Client.ClientId} forced Disconnection, login has not been registered or Account is already logged in.");
-                    Session.Client.Disconnect();
-                    Session.Destroy();
-                    return;
-                }
-            }
-
-            IEnumerable<CharacterDTO> characters = DAOFactory.CharacterDAO.LoadByAccount(Session.Account.AccountId);
-            Logger.Log.InfoFormat(Language.Instance.GetMessageFromKey("ACCOUNT_ARRIVED"), Session.SessionId);
-            Session.Client.SendPacket("clist_start 0");
-            foreach (CharacterDTO character in characters)
-            {
-                // Move to character
-                InventoryItemDTO[] item = new InventoryItemDTO[15];
-                for (short i = 0; i < 15; i++)
-                {
-                    InventoryDTO inv = DAOFactory.InventoryDAO.LoadBySlotAndType(character.CharacterId, i, (byte)InventoryType.Equipment);
-                    if (inv != null)
-                    {
-                        inv.InventoryItem = DAOFactory.InventoryItemDAO.LoadByInventoryId(inv.InventoryId);
-                        item[i] = inv.InventoryItem;
-                    }
-                }
-                Session.Client.SendPacket($"clist {character.Slot} {character.Name} 0 {character.Gender} {character.HairStyle} {character.HairColor} 0 {character.Class} {character.Level} {character.HeroLevel} {(item[(byte)EquipmentType.Hat] != null ? item[(byte)EquipmentType.Hat].ItemVNum : 0)}.{(item[(byte)EquipmentType.Armor] != null ? item[(byte)EquipmentType.Armor].ItemVNum : 0)}.{(item[(byte)EquipmentType.MainWeapon] != null ? item[(byte)EquipmentType.MainWeapon].ItemVNum : 0)}.{(item[(byte)EquipmentType.SecondaryWeapon] != null ? item[(byte)EquipmentType.SecondaryWeapon].ItemVNum : 0)}.{(item[(byte)EquipmentType.Mask] != null ? item[(byte)EquipmentType.Mask].ItemVNum : 0)}.{(item[(byte)EquipmentType.Fairy] != null ? item[(byte)EquipmentType.Fairy].ItemVNum : 0)}.{(item[(byte)EquipmentType.CostumeSuit] != null ? item[(byte)EquipmentType.CostumeSuit].ItemVNum : 0)}.{(item[(byte)EquipmentType.CostumeHat] != null ? item[(byte)EquipmentType.CostumeHat].ItemVNum : 0)} 1 0 0 -1.-1 {(item[(byte)EquipmentType.Hat] != null ? (ServerManager.GetItem(item[(byte)EquipmentType.Hat].ItemVNum).IsColored ? item[(byte)EquipmentType.Hat].Design : character.HairColor) : character.HairColor)} 0");
-            }
-            Session.Client.SendPacket("clist_end");
-        }
-
-
-        [Packet("hero")]
-        public void Hero(string packet)
-        {
-            if (DAOFactory.CharacterDAO.IsReputHero(Session.Character.CharacterId) >= 3)
-            {
-                string[] packetsplit = packet.Split(' ');
-                string message = String.Empty;
-                for (int i = 2; i < packetsplit.Length; i++)
-                    message += packetsplit[i] + " ";
-                message.Trim();
-
-                ClientLinkManager.Instance.Broadcast(Session, $"msg 5 [{Session.Character.Name}]:{message}", ReceiverType.AllNoHeroBlocked);
-            }
-            else
-            {
-                Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("USER_NOT_HERO"), 11));
-            }
-        }
-
-  
-        private string GeneratePidx(long CharId)
-        {
-            string stri = "pidx 1";
-            foreach (long Id in ClientLinkManager.Instance.Groups.FirstOrDefault(s => s.Characters.Contains(CharId)).Characters)
-            {
-                stri += $" 1.{Id} ";
-            }
-            if (stri == "pidx 1")
-                stri = "";
-            return stri;
-        }
-
-        private async void HealthTask()
-        {
-            int x = 1;
-            while (true)
-            {
-                bool change = false;
-                if (Session.Character.Hp == 0)
-                {
-                    Session.Character.Mp = 0;
-                    Session.Client.SendPacket(Session.Character.GenerateStat());
-                    await Task.Delay(2000);
-                    continue;
-                }
-                if (Session.Character.IsSitting)
-                    await Task.Delay(1500);
-                else
-                    await Task.Delay(2000);
-                if (Session.healthStop == true)
-                {
-                    Session.healthStop = false;
-                    return;
-                }
-                if (x == 0)
-                    x = 1;
-
-                if (Session.Character.Hp + Session.Character.HealthHPLoad() < Session.Character.HPLoad())
-                {
-                    change = true;
-                    Session.Character.Hp += Session.Character.HealthHPLoad();
-                }
-                else
-                {
-                    if (Session.Character.Hp != (int)Session.Character.HPLoad())
-                        change = true;
-                    Session.Character.Hp = (int)Session.Character.HPLoad();
-                }
-                if (x == 1)
-                {
-                    if (Session.Character.Mp + Session.Character.HealthMPLoad() < Session.Character.MPLoad())
-                    {
-                        Session.Character.Mp += Session.Character.HealthMPLoad();
-                        change = true;
-                    }
-                    else
-                    {
-                        if (Session.Character.Mp != (int)Session.Character.MPLoad())
-                            change = true;
-                        Session.Character.Mp = (int)Session.Character.MPLoad();
-                    }
-                    x = 0;
-                }
-                if (change)
-                {
-                    Session.Client.SendPacket(Session.Character.GenerateStat());
-                }
-            }
-        }
-
-      
         [Packet("pjoin")]
         public void PJoin(string packet)
         {
@@ -704,6 +629,7 @@ namespace OpenNos.Handler
             }
             Session.Character.DeleteTimeout();
         }
+
         [Packet("qset")]
         public void QuicklistSet(string packet)
         {
@@ -788,7 +714,6 @@ namespace OpenNos.Handler
             }
         }
 
-
         [Packet("req_info")]
         public void ReqInfo(string packet)
         {
@@ -815,6 +740,48 @@ namespace OpenNos.Handler
                 Session.Character.ThreadCharChange.Abort();
 
             ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateRest(), ReceiverType.AllOnMap);
+        }
+
+        [Packet("#revival")]
+        public void Revive(string packet)
+        {
+            string[] packetsplit = packet.Split(' ', '^');
+            byte type;
+            if (packetsplit.Length > 2)
+            {
+                if (!byte.TryParse(packetsplit[2], out type))
+                    return;
+                if (Session.Character.Hp > 0)
+                    return;
+                switch (type)
+                {
+                    case 0:
+                        int seed = 1012;
+                        if (Session.Character.InventoryList.CountItem(seed) < 10 && Session.Character.Level <= 20)
+                        {
+                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_POWER_SEED"), 0));
+                            ClientLinkManager.Instance.ReviveFirstPosition(Session.Character.CharacterId);
+                            Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NOT_ENOUGH_SEED_SAY"), 0));
+                        }
+                        else
+                        {
+                            if (Session.Character.Level <= 20)
+                                Session.Client.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("SEED_USED"), 10), 10));
+                            Session.Character.Hp = (int)(Session.Character.HPLoad() / 2);
+                            Session.Character.Mp = (int)(Session.Character.MPLoad() / 2);
+                            Session.Client.SendPacket(Session.Character.GenerateTp());
+                            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateTp(), ReceiverType.AllOnMap);
+                            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateRevive(), ReceiverType.AllOnMap);
+                            Session.Character.InventoryList.RemoveItemAmount(seed, 10);
+                            Session.Character.GetStartupInventory();
+                        }
+                        break;
+
+                    case 1:
+                        ClientLinkManager.Instance.ReviveFirstPosition(Session.Character.CharacterId);
+                        break;
+                }
+            }
         }
 
         [Packet("say")]
@@ -919,47 +886,6 @@ namespace OpenNos.Handler
             }
         }
 
-        [Packet("#revival")]
-        public void Revive(string packet)
-        {
-            string[] packetsplit = packet.Split(' ', '^');
-            byte type;
-            if (packetsplit.Length > 2)
-            {
-                if (!byte.TryParse(packetsplit[2], out type))
-                    return;
-                if (Session.Character.Hp > 0)
-                    return;
-                switch (type)
-                {
-                    case 0:
-                        int seed = 1012;
-                        if (Session.Character.InventoryList.CountItem(seed) < 10 && Session.Character.Level <= 20)
-                        {
-                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_POWER_SEED"), 0));
-                            ClientLinkManager.Instance.ReviveFirstPosition(Session.Character.CharacterId);
-                            Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NOT_ENOUGH_SEED_SAY"), 0));
-                        }
-                        else
-                        {
-                            if (Session.Character.Level <= 20)
-                                Session.Client.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("SEED_USED"), 10), 10));
-                            Session.Character.Hp = (int)(Session.Character.HPLoad() / 2);
-                            Session.Character.Mp = (int)(Session.Character.MPLoad() / 2);
-                            Session.Client.SendPacket(Session.Character.GenerateTp());
-                            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateTp(), ReceiverType.AllOnMap);
-                            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateRevive(), ReceiverType.AllOnMap);
-                            Session.Character.InventoryList.RemoveItemAmount(seed, 10);
-                            Session.Character.GetStartupInventory();
-                        }
-                        break;
-                    case 1:
-                        ClientLinkManager.Instance.ReviveFirstPosition(Session.Character.CharacterId);
-                        break;
-                }
-            }
-        }
-
         [Packet("#pjoin")]
         public void ValidPJoin(string packet)
         {
@@ -1020,9 +946,8 @@ namespace OpenNos.Handler
                         ClientLinkManager.Instance.Groups.Add(group);
                     }
 
-                    //player join group                 
+                    //player join group
                     ClientLinkManager.Instance.UpdateGroup(CharId);
-
 
                     string p = GeneratePidx(Session.Character.CharacterId);
                     if (p != "")
@@ -1049,7 +974,6 @@ namespace OpenNos.Handler
 
             if (Session.Character.Speed.Equals(Convert.ToByte(packetsplit[5])) || Convert.ToByte(packetsplit[5]) == 10)
             {
-
                 if (Map.GetDistance(new MapCell() { X = Session.Character.MapX, Y = Session.Character.MapY }, new MapCell() { X = Convert.ToInt16(packetsplit[2]), Y = Convert.ToInt16(packetsplit[3]) }) > 20)
                     Session.Client.Disconnect();
                 ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateMv(), ReceiverType.AllOnMapExceptMe);
@@ -1060,7 +984,6 @@ namespace OpenNos.Handler
                 Session.Client.Disconnect();
             }
         }
-
 
         [Packet("/")]
         public void Whisper(string packet)
@@ -1082,6 +1005,76 @@ namespace OpenNos.Handler
                     Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("WHISPERED_BLOCKED"), 11));
             }
             else ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("USER_NOT_CONNECTED")), ReceiverType.OnlyMe);
+        }
+
+        private string GeneratePidx(long CharId)
+        {
+            string stri = "pidx 1";
+            foreach (long Id in ClientLinkManager.Instance.Groups.FirstOrDefault(s => s.Characters.Contains(CharId)).Characters)
+            {
+                stri += $" 1.{Id} ";
+            }
+            if (stri == "pidx 1")
+                stri = "";
+            return stri;
+        }
+
+        private async void HealthTask()
+        {
+            int x = 1;
+            while (true)
+            {
+                bool change = false;
+                if (Session.Character.Hp == 0)
+                {
+                    Session.Character.Mp = 0;
+                    Session.Client.SendPacket(Session.Character.GenerateStat());
+                    await Task.Delay(2000);
+                    continue;
+                }
+                if (Session.Character.IsSitting)
+                    await Task.Delay(1500);
+                else
+                    await Task.Delay(2000);
+                if (Session.healthStop == true)
+                {
+                    Session.healthStop = false;
+                    return;
+                }
+                if (x == 0)
+                    x = 1;
+
+                if (Session.Character.Hp + Session.Character.HealthHPLoad() < Session.Character.HPLoad())
+                {
+                    change = true;
+                    Session.Character.Hp += Session.Character.HealthHPLoad();
+                }
+                else
+                {
+                    if (Session.Character.Hp != (int)Session.Character.HPLoad())
+                        change = true;
+                    Session.Character.Hp = (int)Session.Character.HPLoad();
+                }
+                if (x == 1)
+                {
+                    if (Session.Character.Mp + Session.Character.HealthMPLoad() < Session.Character.MPLoad())
+                    {
+                        Session.Character.Mp += Session.Character.HealthMPLoad();
+                        change = true;
+                    }
+                    else
+                    {
+                        if (Session.Character.Mp != (int)Session.Character.MPLoad())
+                            change = true;
+                        Session.Character.Mp = (int)Session.Character.MPLoad();
+                    }
+                    x = 0;
+                }
+                if (change)
+                {
+                    Session.Client.SendPacket(Session.Character.GenerateStat());
+                }
+            }
         }
 
         #endregion

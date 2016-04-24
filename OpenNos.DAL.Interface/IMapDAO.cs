@@ -23,11 +23,11 @@ namespace OpenNos.DAL.Interface
 
         MapDTO Insert(MapDTO map);
 
+        void Insert(List<MapDTO> maps);
+
         IEnumerable<MapDTO> LoadAll();
 
         MapDTO LoadById(short mapId);
-
-        void Insert(List<MapDTO> maps);
 
         #endregion
     }

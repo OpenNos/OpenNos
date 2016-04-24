@@ -16,7 +16,6 @@ namespace OpenNos.Domain
 {
     public enum ItemType : byte
     {
-
         Weapon = 0,
         Armor = 1,
         Fashion = 2,

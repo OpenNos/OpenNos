@@ -30,16 +30,13 @@ namespace OpenNos.GameObject
 
         #endregion
 
-
         #region Methods
 
-    
         public void Save()
         {
             QuicklistEntryDTO tempsave = this;
             DAOFactory.QuicklistEntryDAO.InsertOrUpdate(ref tempsave);
         }
-        
 
         #endregion
     }

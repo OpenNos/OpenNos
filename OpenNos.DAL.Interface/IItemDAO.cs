@@ -21,10 +21,13 @@ namespace OpenNos.DAL.Interface
     {
         #region Methods
 
-        IEnumerable<ItemDTO> LoadAll();
-        ItemDTO LoadById(short Vnum);
         ItemDTO Insert(ItemDTO item);
+
         void Insert(List<ItemDTO> items);
+
+        IEnumerable<ItemDTO> LoadAll();
+
+        ItemDTO LoadById(short Vnum);
 
         #endregion
     }

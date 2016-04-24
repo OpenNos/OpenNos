@@ -19,7 +19,6 @@ using OpenNos.DAL.Interface;
 using OpenNos.Data;
 using System.Collections.Generic;
 using System.Linq;
-using System;
 
 namespace OpenNos.DAL.EF.MySQL
 {
@@ -64,7 +63,6 @@ namespace OpenNos.DAL.EF.MySQL
                 foreach (RecipeItem RecipeItem in context.RecipeItem.Where(s => s.RecipeId.Equals(recipeId)))
                 {
                     yield return Mapper.DynamicMap<RecipeItemDTO>(RecipeItem);
-
                 }
             }
         }

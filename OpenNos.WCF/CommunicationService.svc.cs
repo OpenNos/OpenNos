@@ -4,10 +4,7 @@ using OpenNos.WCF.Interface;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Serialization;
 using System.ServiceModel;
-using System.ServiceModel.Web;
-using System.Text;
 
 namespace OpenNos.WCF
 {
@@ -16,33 +13,33 @@ namespace OpenNos.WCF
     {
         #region Members
 
-        private IDictionary<String, long> _registeredAccountLogins;
-        private IDictionary<String, String> _connectedCharacters;
         private IDictionary<String, int> _connectedAccounts;
+        private IDictionary<String, String> _connectedCharacters;
+        private IDictionary<String, long> _registeredAccountLogins;
 
         #endregion
 
         #region Instantiation
 
-
         public CommunicationService()
         {
             Logger.InitializeLogger(LogManager.GetLogger(typeof(CommunicationService)));
         }
+
         #endregion
 
         #region Properties
 
-        public IDictionary<String, long> RegisteredAccountLogins
+        public IDictionary<String, int> ConnectedAccounts
         {
             get
             {
-                if (_registeredAccountLogins == null)
+                if (_connectedAccounts == null)
                 {
-                    _registeredAccountLogins = new Dictionary<String, long>();
+                    _connectedAccounts = new Dictionary<String, int>();
                 }
 
-                return _registeredAccountLogins;
+                return _connectedAccounts;
             }
         }
 
@@ -59,22 +56,40 @@ namespace OpenNos.WCF
             }
         }
 
-        public IDictionary<String, int> ConnectedAccounts
+        public IDictionary<String, long> RegisteredAccountLogins
         {
             get
             {
-                if (_connectedAccounts == null)
+                if (_registeredAccountLogins == null)
                 {
-                    _connectedAccounts = new Dictionary<String, int>();
+                    _registeredAccountLogins = new Dictionary<String, long>();
                 }
 
-                return _connectedAccounts;
+                return _registeredAccountLogins;
             }
         }
 
         #endregion
 
         #region Methods
+
+        /// <summary>
+        /// Checks if the Account has a connected Character
+        /// </summary>
+        /// <param name="accountName">Name of the Account</param>
+        /// <returns></returns>
+        public bool AccountIsConnected(string accountName)
+        {
+            try
+            {
+                return ConnectedAccounts.Any(cc => cc.Key.Equals(accountName));
+            }
+            catch (Exception ex)
+            {
+                Logger.Log.Error(ex.Message);
+                return false;
+            }
+        }
 
         /// <summary>
         /// Cleanup hold Data, this is for restarting the server
@@ -84,6 +99,120 @@ namespace OpenNos.WCF
             _registeredAccountLogins = null;
             _connectedAccounts = null;
             _connectedCharacters = null;
+        }
+
+        /// <summary>
+        /// Registers that the given Account has now logged in
+        /// </summary>
+        /// <param name="accountName">Name of the Account.</param>
+        /// <param name="sessionId">SessionId of the login.</param>
+        public bool ConnectAccount(string accountName, int sessionId)
+        {
+            try
+            {
+                //Account cant connect twice
+                if (ConnectedAccounts.ContainsKey(accountName))
+                {
+                    Logger.Log.DebugFormat($"[WCF] Account {accountName} is already connected.");
+                    return false;
+                }
+                else
+                {
+                    //TODO move in own method, cannot do this here because it needs to be called by a client who wants to know if the
+                    //Account is allowed to connect without doing it actually
+                    Logger.Log.DebugFormat($"[WCF] Account {accountName} has connected.");
+                    ConnectedAccounts.Add(accountName, sessionId);
+
+                    //inform clients
+                    ICommunicationCallback callback = OperationContext.Current.GetCallbackChannel<ICommunicationCallback>();
+                    callback.ConnectAccountCallback(accountName, sessionId);
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Log.Error(ex.Message);
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Registers that the given Character has now logged in
+        /// </summary>
+        /// <param name="characterName">Name of the Character.</param>
+        /// <param name="accountName">Account of the Character to login.</param>
+        public bool ConnectCharacter(string characterName, string accountName)
+        {
+            try
+            {
+                //character cant connect twice
+                if (ConnectedCharacters.ContainsKey(characterName))
+                {
+                    Logger.Log.DebugFormat($"[WCF] Character {characterName} is already connected.");
+                    return false;
+                }
+                else
+                {
+                    //TODO move in own method, cannot do this here because it needs to be called by a client who wants to know if the
+                    //character is allowed to connect without doing it actually
+                    Logger.Log.DebugFormat($"[WCF] Character {characterName} has connected.");
+                    ConnectedCharacters.Add(characterName, accountName);
+
+                    //inform clients
+                    ICommunicationCallback callback = OperationContext.Current.GetCallbackChannel<ICommunicationCallback>();
+                    callback.ConnectCharacterCallback(characterName);
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Log.Error(ex.Message);
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Disconnect Account from server.
+        /// </summary>
+        /// <param name="accountName">Account who wants to disconnect.</param>
+        public void DisconnectAccount(string accountName)
+        {
+            try
+            {
+                ConnectedAccounts.Remove(accountName);
+
+                //inform clients
+                ICommunicationCallback callback = OperationContext.Current.GetCallbackChannel<ICommunicationCallback>();
+                callback.DisconnectAccountCallback(accountName);
+
+                Logger.Log.DebugFormat($"[WCF] Account {accountName} has been disconnected.");
+            }
+            catch (Exception ex)
+            {
+                Logger.Log.Error(ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Disconnect character from server.
+        /// </summary>
+        /// <param name="characterName">Character who wants to disconnect.</param>
+        public void DisconnectCharacter(string characterName)
+        {
+            try
+            {
+                ConnectedCharacters.Remove(characterName);
+
+                //inform clients
+                ICommunicationCallback callback = OperationContext.Current.GetCallbackChannel<ICommunicationCallback>();
+                callback.DisconnectCharacterCallback(characterName);
+
+                Logger.Log.DebugFormat($"[WCF] Character {characterName} has been disconnected.");
+            }
+            catch (Exception ex)
+            {
+                Logger.Log.Error(ex.Message);
+            }
         }
 
         /// <summary>
@@ -140,138 +269,6 @@ namespace OpenNos.WCF
             catch (Exception ex)
             {
                 Logger.Log.Error(ex.Message);
-            }
-        }
-
-        /// <summary>
-        /// Registers that the given Character has now logged in
-        /// </summary>
-        /// <param name="characterName">Name of the Character.</param>
-        /// <param name="accountName">Account of the Character to login.</param>
-        public bool ConnectCharacter(string characterName, string accountName)
-        {
-            try
-            {
-                //character cant connect twice
-                if (ConnectedCharacters.ContainsKey(characterName))
-                {
-                    Logger.Log.DebugFormat($"[WCF] Character {characterName} is already connected.");
-                    return false;
-                }
-                else
-                {
-                    //TODO move in own method, cannot do this here because it needs to be called by a client who wants to know if the 
-                    //character is allowed to connect without doing it actually
-                    Logger.Log.DebugFormat($"[WCF] Character {characterName} has connected.");
-                    ConnectedCharacters.Add(characterName, accountName);
-
-                    //inform clients
-                    ICommunicationCallback callback = OperationContext.Current.GetCallbackChannel<ICommunicationCallback>();
-                    callback.ConnectCharacterCallback(characterName);
-                    return true;
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.Log.Error(ex.Message);
-                return false;
-            }
-        }
-
-        /// <summary>
-        /// Disconnect character from server.
-        /// </summary>
-        /// <param name="characterName">Character who wants to disconnect.</param>
-        public void DisconnectCharacter(string characterName)
-        {
-            try
-            {
-                ConnectedCharacters.Remove(characterName);
-
-                //inform clients
-                ICommunicationCallback callback = OperationContext.Current.GetCallbackChannel<ICommunicationCallback>();
-                callback.DisconnectCharacterCallback(characterName);
-
-                Logger.Log.DebugFormat($"[WCF] Character {characterName} has been disconnected.");
-            }
-            catch (Exception ex)
-            {
-                Logger.Log.Error(ex.Message);
-            }
-        }
-
-        /// <summary>
-        /// Registers that the given Account has now logged in
-        /// </summary>
-        /// <param name="accountName">Name of the Account.</param>
-        /// <param name="sessionId">SessionId of the login.</param>
-        public bool ConnectAccount(string accountName, int sessionId)
-        {
-            try
-            {
-                //Account cant connect twice
-                if (ConnectedAccounts.ContainsKey(accountName))
-                {
-                    Logger.Log.DebugFormat($"[WCF] Account {accountName} is already connected.");
-                    return false;
-                }
-                else
-                {
-                    //TODO move in own method, cannot do this here because it needs to be called by a client who wants to know if the 
-                    //Account is allowed to connect without doing it actually
-                    Logger.Log.DebugFormat($"[WCF] Account {accountName} has connected.");
-                    ConnectedAccounts.Add(accountName, sessionId);
-
-                    //inform clients
-                    ICommunicationCallback callback = OperationContext.Current.GetCallbackChannel<ICommunicationCallback>();
-                    callback.ConnectAccountCallback(accountName, sessionId);
-                    return true;
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.Log.Error(ex.Message);
-                return false;
-            }
-        }
-
-        /// <summary>
-        /// Disconnect Account from server.
-        /// </summary>
-        /// <param name="accountName">Account who wants to disconnect.</param>
-        public void DisconnectAccount(string accountName)
-        {
-            try
-            {
-                ConnectedAccounts.Remove(accountName);
-
-                //inform clients
-                ICommunicationCallback callback = OperationContext.Current.GetCallbackChannel<ICommunicationCallback>();
-                callback.DisconnectAccountCallback(accountName);
-
-                Logger.Log.DebugFormat($"[WCF] Account {accountName} has been disconnected.");
-            }
-            catch (Exception ex)
-            {
-                Logger.Log.Error(ex.Message);
-            }
-        }
-
-        /// <summary>
-        /// Checks if the Account has a connected Character
-        /// </summary>
-        /// <param name="accountName">Name of the Account</param>
-        /// <returns></returns>
-        public bool AccountIsConnected(string accountName)
-        {
-            try
-            {
-                return ConnectedAccounts.Any(cc => cc.Key.Equals(accountName));
-            }
-            catch (Exception ex)
-            {
-                Logger.Log.Error(ex.Message);
-                return false;
             }
         }
 

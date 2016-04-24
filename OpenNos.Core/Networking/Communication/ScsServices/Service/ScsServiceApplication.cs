@@ -299,19 +299,7 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Service
         /// </summary>
         private sealed class ServiceObject
         {
-            #region Properties
-
-            /// <summary>
-            /// The service object that is used to invoke methods on.
-            /// </summary>
-            public ScsService Service { get; private set; }
-
-            /// <summary>
-            /// ScsService attribute of Service object's class.
-            /// </summary>
-            public ScsServiceAttribute ServiceAttribute { get; private set; }
-
-            #endregion
+            #region Members
 
             /// <summary>
             /// This collection stores a list of all methods of service object.
@@ -319,6 +307,10 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Service
             /// Value: Informations about method.
             /// </summary>
             private readonly SortedList<string, MethodInfo> _methods;
+
+            #endregion
+
+            #region Instantiation
 
             /// <summary>
             /// Creates a new ServiceObject.
@@ -342,6 +334,24 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Service
                 }
             }
 
+            #endregion
+
+            #region Properties
+
+            /// <summary>
+            /// The service object that is used to invoke methods on.
+            /// </summary>
+            public ScsService Service { get; private set; }
+
+            /// <summary>
+            /// ScsService attribute of Service object's class.
+            /// </summary>
+            public ScsServiceAttribute ServiceAttribute { get; private set; }
+
+            #endregion
+
+            #region Methods
+
             /// <summary>
             /// Invokes a method of Service object.
             /// </summary>
@@ -362,6 +372,8 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Service
                 //Invoke method and return invoke result
                 return method.Invoke(Service, parameters);
             }
+
+            #endregion
         }
 
         #endregion

@@ -22,9 +22,12 @@ namespace OpenNos.DAL.Interface
         #region Methods
 
         RecipeItemDTO Insert(RecipeItemDTO recipeitem);
+
+        IEnumerable<RecipeItemDTO> LoadAll();
+
         RecipeItemDTO LoadById(int RecipeItemId);
+
         IEnumerable<RecipeItemDTO> LoadByRecipe(short recipeId);
-        IEnumerable<RecipeItemDTO> LoadAll();  
 
         #endregion
     }

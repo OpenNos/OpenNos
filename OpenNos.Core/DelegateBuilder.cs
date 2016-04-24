@@ -1,4 +1,5 @@
 ﻿/*Source: http://stackoverflow.com/questions/13041674/create-func-or-action-for-any-method-using-reflection-in-c*/
+
 using System;
 using System.Collections.Generic;
 using System.Linq;

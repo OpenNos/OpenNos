@@ -36,267 +36,6 @@ namespace OpenNos.GameObject
 
         #region Methods
 
-        public void UpgradeItem(ClientSession Session,UpgradeMode mode,UpgradeProtection protection)
-        {
-            if (this.InventoryItem.Upgrade < 10)
-            {
-                short[] upsuccess = { 100, 100, 100, 95, 80, 60, 40, 30, 20, 11 };
-                short[] upfix = { 0, 0, 10, 15, 20, 20, 20, 20, 15, 10 };
-
-                //short itempricevnum1 = 0;
-                //short itempricevnum2 = 0;
-                int[] goldprice = { 500, 1500, 3000, 10000, 30000, 80000, 150000, 400000, 700000, 1000000 };
-                short[] cella = { 20, 50, 80, 120, 160, 220, 280, 380, 480, 600 };
-                short[] gem = { 1, 1, 2, 2, 3, 3, 1, 2, 2, 3 };
-
-                int cellaVnum = 1014;
-                int gemVnum = 1015;
-                int gemFullVnum = 1016;
-                double reducedpricefactor = 0.5;
-
-                if (this.InventoryItem.IsFixed)
-                {
-                    Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("ITEM_IS_FIXED"), 10));
-
-                    Session.Character.GetStartupInventory();
-                    Session.Client.SendPacket("shop_end 1");
-                    return;
-                }
-                switch (mode)
-                {
-                    case UpgradeMode.Free:
-                        break;
-
-                    case UpgradeMode.Reduced:
-                        // TODO: Reduced Item Amount
-                        if (Session.Character.Gold < goldprice[this.InventoryItem.Upgrade] * reducedpricefactor)
-                            return;
-                        Session.Character.Gold = Session.Character.Gold - (long)(goldprice[this.InventoryItem.Upgrade] * reducedpricefactor);
-                        if (Session.Character.InventoryList.CountItem(cellaVnum) < cella[this.InventoryItem.Upgrade] * reducedpricefactor)
-                            return;
-                        Session.Character.InventoryList.RemoveItemAmount(cellaVnum, (int)(cella[this.InventoryItem.Upgrade] * reducedpricefactor));
-                        if (this.InventoryItem.Upgrade <= 5)
-                        {
-                            if (Session.Character.InventoryList.CountItem(gemVnum) < gem[this.InventoryItem.Upgrade] * reducedpricefactor)
-                                return;
-                            Session.Character.InventoryList.RemoveItemAmount(gemVnum, (int)(gem[this.InventoryItem.Upgrade] * reducedpricefactor));
-                        }
-                        else
-                        {
-                            if (Session.Character.InventoryList.CountItem(gemFullVnum) < gem[this.InventoryItem.Upgrade] * reducedpricefactor)
-                                return;
-                            Session.Character.InventoryList.RemoveItemAmount(gemFullVnum, (int)(gem[this.InventoryItem.Upgrade] * reducedpricefactor));
-                        }
-                        Session.Client.SendPacket(Session.Character.GenerateGold());
-                        break;
-
-                    case UpgradeMode.Normal:
-                        // TODO: Normal Item Amount
-                        if (Session.Character.Gold < goldprice[this.InventoryItem.Upgrade])
-                            return;
-                        Session.Character.Gold = Session.Character.Gold - goldprice[this.InventoryItem.Upgrade];
-                        if (Session.Character.InventoryList.CountItem(cellaVnum) < cella[this.InventoryItem.Upgrade])
-                            return;
-                        Session.Character.InventoryList.RemoveItemAmount(cellaVnum, (cella[this.InventoryItem.Upgrade]));
-                        if (this.InventoryItem.Upgrade < 5)
-                        {
-                            if (Session.Character.InventoryList.CountItem(gemVnum) < gem[this.InventoryItem.Upgrade])
-                                return;
-                            Session.Character.InventoryList.RemoveItemAmount(gemVnum, (gem[this.InventoryItem.Upgrade]));
-                        }
-                        else
-                        {
-                            if (Session.Character.InventoryList.CountItem(gemFullVnum) < gem[this.InventoryItem.Upgrade])
-                                return;
-                            Session.Character.InventoryList.RemoveItemAmount(gemFullVnum, (gem[this.InventoryItem.Upgrade]));
-                        }
-                        Session.Client.SendPacket(Session.Character.GenerateGold());
-                        break;
-                }
-
-                Random r = new Random();
-                int rnd = r.Next(100);
-                if (rnd <= upfix[this.InventoryItem.Upgrade])
-                {
-                    Session.Client.SendPacket(Session.Character.GenerateEff(3004));
-                    Session.Character.InventoryList.LoadByInventoryItem(this.InventoryItem.InventoryItemId).InventoryItem.IsFixed = true;
-                    Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADE_FIXED"), 11));
-                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADE_FIXED"), 0));
-                }
-                else if (rnd <= upsuccess[this.InventoryItem.Upgrade])
-                {
-                    Session.Client.SendPacket(Session.Character.GenerateEff(3005));
-                    Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADE_SUCCESS"), 12));
-                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADE_SUCCESS"), 0));
-                    Session.Character.InventoryList.LoadByInventoryItem(this.InventoryItem.InventoryItemId).InventoryItem.Upgrade++;
-                }
-                else
-                {
-                    if (protection ==UpgradeProtection.None)
-                    {
-                        Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADE_FAILED"), 11));
-                        Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADE_FAILED"), 0));
-                        Session.Character.DeleteItem(this.Type, this.Slot);
-                    }
-                    else
-                    {
-                        Session.Client.SendPacket(Session.Character.GenerateEff(3004));
-                        Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADE_FAILED_ITEM_SAVED"), 11));
-                        Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADE_FAILED_ITEM_SAVED"), 0));
-                    }
-                }
-            }
-            else
-            {
-                Session.Client.SendPacket(Session.Character.GenerateEff(3004));
-                Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADE_FAILED_ITEM_SAVED"), 11));
-                Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADE_FAILED_ITEM_SAVED"), 0));
-            }
-            Session.Character.GetStartupInventory();
-            Session.Client.SendPacket("shop_end 1");
-        }
-
-        public void UpgradeSp(ClientSession Session,UpgradeProtection protect)
-        {
-            short[] upsuccess = { 100, 100, 95, 90, 85, 80, 75, 70, 65, 60, 55, 50, 45, 40, 30 };
-            short[] upfail = { 20, 25, 25, 30, 35, 40, 40, 40, 40, 40, 45, 43, 40, 37, 29 };
-
-            int[] goldprice = { 200000, 200000, 200000, 200000, 200000, 500000, 500000, 500000, 500000, 500000, 1000000, 1000000, 1000000, 1000000, 1000000 };
-            short[] feather = { 3, 5, 8, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 70 };
-            short[] fullmoon = { 1, 3, 5, 7, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30 };
-            short[] soul = { 2, 4, 6, 8, 10, 1, 2, 3, 4, 5, 1, 2, 3, 4, 5 };
-            short featherVnum = 2282;
-            short fullmoonVnum = 1030;
-            short greenSoulVnum = 2283;
-            short redSoulVnum = 2284;
-            short blueSoulVnum = 2285;
-            short dragonSkinVnum = 2511;
-            short dragonBloodVnum = 2512;
-            short dragonHeartVnum = 2513;
-
-            if (this.InventoryItem.IsFixed)
-                return;
-            if (Session.Character.Gold < goldprice[this.InventoryItem.Upgrade])
-                return;
-            if (Session.Character.InventoryList.CountItem(fullmoonVnum) < fullmoon[this.InventoryItem.Upgrade])
-                return;
-            if (Session.Character.InventoryList.CountItem(featherVnum) < feather[this.InventoryItem.Upgrade])
-                return;
-
-            if (this.InventoryItem.Upgrade < 5)
-            {
-                if (this.InventoryItem.SpLevel > 20)
-                {
-                    if (ServerManager.GetItem(this.InventoryItem.ItemVNum).Morph <= 15)
-                    {
-                        if (Session.Character.InventoryList.CountItem(greenSoulVnum) < soul[this.InventoryItem.Upgrade])
-                            return;
-                        Session.Character.InventoryList.RemoveItemAmount(greenSoulVnum, (soul[this.InventoryItem.Upgrade]));
-                    }
-                    else
-                    {
-                        if (Session.Character.InventoryList.CountItem(dragonSkinVnum) < soul[this.InventoryItem.Upgrade])
-                            return;
-                        Session.Character.InventoryList.RemoveItemAmount(dragonSkinVnum, (soul[this.InventoryItem.Upgrade]));
-                    }
-                }
-                else
-                {
-                    Session.Client.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("LVL_REQUIERED"), 21), 11));
-
-                    return;
-                }
-            }
-            else if (this.InventoryItem.Upgrade < 10)
-            {
-                if (this.InventoryItem.SpLevel > 40)
-                {
-                    if (ServerManager.GetItem(this.InventoryItem.ItemVNum).Morph <= 15)
-                    {
-                        if (Session.Character.InventoryList.CountItem(redSoulVnum) < soul[this.InventoryItem.Upgrade])
-                            return;
-                        Session.Character.InventoryList.RemoveItemAmount(redSoulVnum, (soul[this.InventoryItem.Upgrade]));
-                    }
-                    else
-                    {
-                        if (Session.Character.InventoryList.CountItem(dragonBloodVnum) < soul[this.InventoryItem.Upgrade])
-                            return;
-                        Session.Character.InventoryList.RemoveItemAmount(dragonBloodVnum, (soul[this.InventoryItem.Upgrade]));
-                    }
-                }
-                else
-                {
-                    Session.Client.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("LVL_REQUIERED"), 40), 11));
-
-                    return;
-                }
-            }
-            else
-            {
-                if (this.InventoryItem.SpLevel > 50)
-                {
-                    if (ServerManager.GetItem(this.InventoryItem.ItemVNum).Morph <= 15)
-                    {
-                        if (Session.Character.InventoryList.CountItem(blueSoulVnum) < soul[this.InventoryItem.Upgrade])
-                            return;
-                        Session.Character.InventoryList.RemoveItemAmount(blueSoulVnum, (soul[this.InventoryItem.Upgrade]));
-                    }
-                    else
-                    {
-                        if (Session.Character.InventoryList.CountItem(dragonHeartVnum) < soul[this.InventoryItem.Upgrade])
-                            return;
-                        Session.Character.InventoryList.RemoveItemAmount(dragonHeartVnum, (soul[this.InventoryItem.Upgrade]));
-                    }
-                }
-                else
-                {
-                    Session.Client.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("LVL_REQUIERED"), 51), 11));
-
-                    return;
-                }
-            }
-            Random r = new Random();
-            int rnd = r.Next(100);
-            if (rnd <= upfail[this.InventoryItem.Upgrade])
-            {
-                if (protect ==UpgradeProtection.Protected)
-                    Session.Client.SendPacket(Session.Character.GenerateEff(3004));
-
-                Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADESP_FAILED"), 11));
-                Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADESP_FAILED"), 0));
-            }
-            else if (rnd <= upsuccess[this.InventoryItem.Upgrade])
-            {
-                if (protect ==UpgradeProtection.Protected)
-                    Session.Client.SendPacket(Session.Character.GenerateEff(3004));
-                Session.Client.SendPacket(Session.Character.GenerateEff(3005));
-                Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADESP_SUCCESS"), 12));
-                Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADESP_SUCCESS"), 0));
-                Session.Character.InventoryList.LoadByInventoryItem(this.InventoryItem.InventoryItemId).InventoryItem.Upgrade++;
-            }
-            else
-            {
-                if (protect ==UpgradeProtection.Protected)
-                {
-                    Session.Client.SendPacket(Session.Character.GenerateEff(3004));
-                    Session.Character.InventoryList.LoadByInventoryItem(this.InventoryItem.InventoryItemId).InventoryItem.IsFixed = true;
-                    Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADESP_FAILED_SAVED"), 11));
-                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADESP_FAILED_SAVED"), 0));
-                }
-                else
-                {
-                    Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADESP_DESTROY"), 11));
-                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADESP_DESTROY"), 0));
-                }
-            }
-            Session.Character.Gold = Session.Character.Gold - goldprice[this.InventoryItem.Upgrade];
-            Session.Client.SendPacket(Session.Character.GenerateGold());
-            Session.Character.InventoryList.RemoveItemAmount(featherVnum, (feather[this.InventoryItem.Upgrade]));
-            Session.Character.InventoryList.RemoveItemAmount(fullmoonVnum, (fullmoon[this.InventoryItem.Upgrade]));
-            Session.Character.GetStartupInventory();
-            Session.Client.SendPacket("shop_end 1");
-        }
-
         public void PerfectSP(ClientSession Session, UpgradeProtection protect)
         {
             short[] upsuccess = { 50, 40, 30, 20, 10 };
@@ -663,7 +402,13 @@ namespace OpenNos.GameObject
             Session.Character.GetStartupInventory();
             Session.Client.SendPacket("shop_end 1");
         }
-    
+
+        public void Save()
+        {
+            InventoryDTO tempsave = this;
+            SaveResult insertResult = DAOFactory.InventoryDAO.InsertOrUpdate(ref tempsave);
+        }
+
         public void SumItem(ClientSession Session, Inventory item2)
         {
             short[] upsuccess = { 100, 100, 85, 70, 50, 20 };
@@ -703,17 +448,272 @@ namespace OpenNos.GameObject
                     Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SUM_FAILED"), 0));
                     Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("SUM_FAILED"), 11));
                     Session.Client.SendPacket($"guri 19 1 {Session.Character.CharacterId} 1332");
-                    Session.Character.DeleteItem( item2.Type, item2.Slot);
+                    Session.Character.DeleteItem(item2.Type, item2.Slot);
                     Session.Character.DeleteItem(this.Type, this.Slot);
                 }
                 Session.Client.SendPacket("shop_end 1");
             }
         }
 
-        public void Save()
+        public void UpgradeItem(ClientSession Session, UpgradeMode mode, UpgradeProtection protection)
         {
-            InventoryDTO tempsave = this;
-            SaveResult insertResult = DAOFactory.InventoryDAO.InsertOrUpdate(ref tempsave);
+            if (this.InventoryItem.Upgrade < 10)
+            {
+                short[] upsuccess = { 100, 100, 100, 95, 80, 60, 40, 30, 20, 11 };
+                short[] upfix = { 0, 0, 10, 15, 20, 20, 20, 20, 15, 10 };
+
+                //short itempricevnum1 = 0;
+                //short itempricevnum2 = 0;
+                int[] goldprice = { 500, 1500, 3000, 10000, 30000, 80000, 150000, 400000, 700000, 1000000 };
+                short[] cella = { 20, 50, 80, 120, 160, 220, 280, 380, 480, 600 };
+                short[] gem = { 1, 1, 2, 2, 3, 3, 1, 2, 2, 3 };
+
+                int cellaVnum = 1014;
+                int gemVnum = 1015;
+                int gemFullVnum = 1016;
+                double reducedpricefactor = 0.5;
+
+                if (this.InventoryItem.IsFixed)
+                {
+                    Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("ITEM_IS_FIXED"), 10));
+
+                    Session.Character.GetStartupInventory();
+                    Session.Client.SendPacket("shop_end 1");
+                    return;
+                }
+                switch (mode)
+                {
+                    case UpgradeMode.Free:
+                        break;
+
+                    case UpgradeMode.Reduced:
+                        // TODO: Reduced Item Amount
+                        if (Session.Character.Gold < goldprice[this.InventoryItem.Upgrade] * reducedpricefactor)
+                            return;
+                        Session.Character.Gold = Session.Character.Gold - (long)(goldprice[this.InventoryItem.Upgrade] * reducedpricefactor);
+                        if (Session.Character.InventoryList.CountItem(cellaVnum) < cella[this.InventoryItem.Upgrade] * reducedpricefactor)
+                            return;
+                        Session.Character.InventoryList.RemoveItemAmount(cellaVnum, (int)(cella[this.InventoryItem.Upgrade] * reducedpricefactor));
+                        if (this.InventoryItem.Upgrade <= 5)
+                        {
+                            if (Session.Character.InventoryList.CountItem(gemVnum) < gem[this.InventoryItem.Upgrade] * reducedpricefactor)
+                                return;
+                            Session.Character.InventoryList.RemoveItemAmount(gemVnum, (int)(gem[this.InventoryItem.Upgrade] * reducedpricefactor));
+                        }
+                        else
+                        {
+                            if (Session.Character.InventoryList.CountItem(gemFullVnum) < gem[this.InventoryItem.Upgrade] * reducedpricefactor)
+                                return;
+                            Session.Character.InventoryList.RemoveItemAmount(gemFullVnum, (int)(gem[this.InventoryItem.Upgrade] * reducedpricefactor));
+                        }
+                        Session.Client.SendPacket(Session.Character.GenerateGold());
+                        break;
+
+                    case UpgradeMode.Normal:
+                        // TODO: Normal Item Amount
+                        if (Session.Character.Gold < goldprice[this.InventoryItem.Upgrade])
+                            return;
+                        Session.Character.Gold = Session.Character.Gold - goldprice[this.InventoryItem.Upgrade];
+                        if (Session.Character.InventoryList.CountItem(cellaVnum) < cella[this.InventoryItem.Upgrade])
+                            return;
+                        Session.Character.InventoryList.RemoveItemAmount(cellaVnum, (cella[this.InventoryItem.Upgrade]));
+                        if (this.InventoryItem.Upgrade < 5)
+                        {
+                            if (Session.Character.InventoryList.CountItem(gemVnum) < gem[this.InventoryItem.Upgrade])
+                                return;
+                            Session.Character.InventoryList.RemoveItemAmount(gemVnum, (gem[this.InventoryItem.Upgrade]));
+                        }
+                        else
+                        {
+                            if (Session.Character.InventoryList.CountItem(gemFullVnum) < gem[this.InventoryItem.Upgrade])
+                                return;
+                            Session.Character.InventoryList.RemoveItemAmount(gemFullVnum, (gem[this.InventoryItem.Upgrade]));
+                        }
+                        Session.Client.SendPacket(Session.Character.GenerateGold());
+                        break;
+                }
+
+                Random r = new Random();
+                int rnd = r.Next(100);
+                if (rnd <= upfix[this.InventoryItem.Upgrade])
+                {
+                    Session.Client.SendPacket(Session.Character.GenerateEff(3004));
+                    Session.Character.InventoryList.LoadByInventoryItem(this.InventoryItem.InventoryItemId).InventoryItem.IsFixed = true;
+                    Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADE_FIXED"), 11));
+                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADE_FIXED"), 0));
+                }
+                else if (rnd <= upsuccess[this.InventoryItem.Upgrade])
+                {
+                    Session.Client.SendPacket(Session.Character.GenerateEff(3005));
+                    Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADE_SUCCESS"), 12));
+                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADE_SUCCESS"), 0));
+                    Session.Character.InventoryList.LoadByInventoryItem(this.InventoryItem.InventoryItemId).InventoryItem.Upgrade++;
+                }
+                else
+                {
+                    if (protection == UpgradeProtection.None)
+                    {
+                        Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADE_FAILED"), 11));
+                        Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADE_FAILED"), 0));
+                        Session.Character.DeleteItem(this.Type, this.Slot);
+                    }
+                    else
+                    {
+                        Session.Client.SendPacket(Session.Character.GenerateEff(3004));
+                        Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADE_FAILED_ITEM_SAVED"), 11));
+                        Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADE_FAILED_ITEM_SAVED"), 0));
+                    }
+                }
+            }
+            else
+            {
+                Session.Client.SendPacket(Session.Character.GenerateEff(3004));
+                Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADE_FAILED_ITEM_SAVED"), 11));
+                Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADE_FAILED_ITEM_SAVED"), 0));
+            }
+            Session.Character.GetStartupInventory();
+            Session.Client.SendPacket("shop_end 1");
+        }
+
+        public void UpgradeSp(ClientSession Session, UpgradeProtection protect)
+        {
+            short[] upsuccess = { 100, 100, 95, 90, 85, 80, 75, 70, 65, 60, 55, 50, 45, 40, 30 };
+            short[] upfail = { 20, 25, 25, 30, 35, 40, 40, 40, 40, 40, 45, 43, 40, 37, 29 };
+
+            int[] goldprice = { 200000, 200000, 200000, 200000, 200000, 500000, 500000, 500000, 500000, 500000, 1000000, 1000000, 1000000, 1000000, 1000000 };
+            short[] feather = { 3, 5, 8, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 70 };
+            short[] fullmoon = { 1, 3, 5, 7, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30 };
+            short[] soul = { 2, 4, 6, 8, 10, 1, 2, 3, 4, 5, 1, 2, 3, 4, 5 };
+            short featherVnum = 2282;
+            short fullmoonVnum = 1030;
+            short greenSoulVnum = 2283;
+            short redSoulVnum = 2284;
+            short blueSoulVnum = 2285;
+            short dragonSkinVnum = 2511;
+            short dragonBloodVnum = 2512;
+            short dragonHeartVnum = 2513;
+
+            if (this.InventoryItem.IsFixed)
+                return;
+            if (Session.Character.Gold < goldprice[this.InventoryItem.Upgrade])
+                return;
+            if (Session.Character.InventoryList.CountItem(fullmoonVnum) < fullmoon[this.InventoryItem.Upgrade])
+                return;
+            if (Session.Character.InventoryList.CountItem(featherVnum) < feather[this.InventoryItem.Upgrade])
+                return;
+
+            if (this.InventoryItem.Upgrade < 5)
+            {
+                if (this.InventoryItem.SpLevel > 20)
+                {
+                    if (ServerManager.GetItem(this.InventoryItem.ItemVNum).Morph <= 15)
+                    {
+                        if (Session.Character.InventoryList.CountItem(greenSoulVnum) < soul[this.InventoryItem.Upgrade])
+                            return;
+                        Session.Character.InventoryList.RemoveItemAmount(greenSoulVnum, (soul[this.InventoryItem.Upgrade]));
+                    }
+                    else
+                    {
+                        if (Session.Character.InventoryList.CountItem(dragonSkinVnum) < soul[this.InventoryItem.Upgrade])
+                            return;
+                        Session.Character.InventoryList.RemoveItemAmount(dragonSkinVnum, (soul[this.InventoryItem.Upgrade]));
+                    }
+                }
+                else
+                {
+                    Session.Client.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("LVL_REQUIERED"), 21), 11));
+
+                    return;
+                }
+            }
+            else if (this.InventoryItem.Upgrade < 10)
+            {
+                if (this.InventoryItem.SpLevel > 40)
+                {
+                    if (ServerManager.GetItem(this.InventoryItem.ItemVNum).Morph <= 15)
+                    {
+                        if (Session.Character.InventoryList.CountItem(redSoulVnum) < soul[this.InventoryItem.Upgrade])
+                            return;
+                        Session.Character.InventoryList.RemoveItemAmount(redSoulVnum, (soul[this.InventoryItem.Upgrade]));
+                    }
+                    else
+                    {
+                        if (Session.Character.InventoryList.CountItem(dragonBloodVnum) < soul[this.InventoryItem.Upgrade])
+                            return;
+                        Session.Character.InventoryList.RemoveItemAmount(dragonBloodVnum, (soul[this.InventoryItem.Upgrade]));
+                    }
+                }
+                else
+                {
+                    Session.Client.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("LVL_REQUIERED"), 40), 11));
+
+                    return;
+                }
+            }
+            else
+            {
+                if (this.InventoryItem.SpLevel > 50)
+                {
+                    if (ServerManager.GetItem(this.InventoryItem.ItemVNum).Morph <= 15)
+                    {
+                        if (Session.Character.InventoryList.CountItem(blueSoulVnum) < soul[this.InventoryItem.Upgrade])
+                            return;
+                        Session.Character.InventoryList.RemoveItemAmount(blueSoulVnum, (soul[this.InventoryItem.Upgrade]));
+                    }
+                    else
+                    {
+                        if (Session.Character.InventoryList.CountItem(dragonHeartVnum) < soul[this.InventoryItem.Upgrade])
+                            return;
+                        Session.Character.InventoryList.RemoveItemAmount(dragonHeartVnum, (soul[this.InventoryItem.Upgrade]));
+                    }
+                }
+                else
+                {
+                    Session.Client.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("LVL_REQUIERED"), 51), 11));
+
+                    return;
+                }
+            }
+            Random r = new Random();
+            int rnd = r.Next(100);
+            if (rnd <= upfail[this.InventoryItem.Upgrade])
+            {
+                if (protect == UpgradeProtection.Protected)
+                    Session.Client.SendPacket(Session.Character.GenerateEff(3004));
+
+                Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADESP_FAILED"), 11));
+                Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADESP_FAILED"), 0));
+            }
+            else if (rnd <= upsuccess[this.InventoryItem.Upgrade])
+            {
+                if (protect == UpgradeProtection.Protected)
+                    Session.Client.SendPacket(Session.Character.GenerateEff(3004));
+                Session.Client.SendPacket(Session.Character.GenerateEff(3005));
+                Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADESP_SUCCESS"), 12));
+                Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADESP_SUCCESS"), 0));
+                Session.Character.InventoryList.LoadByInventoryItem(this.InventoryItem.InventoryItemId).InventoryItem.Upgrade++;
+            }
+            else
+            {
+                if (protect == UpgradeProtection.Protected)
+                {
+                    Session.Client.SendPacket(Session.Character.GenerateEff(3004));
+                    Session.Character.InventoryList.LoadByInventoryItem(this.InventoryItem.InventoryItemId).InventoryItem.IsFixed = true;
+                    Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADESP_FAILED_SAVED"), 11));
+                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADESP_FAILED_SAVED"), 0));
+                }
+                else
+                {
+                    Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADESP_DESTROY"), 11));
+                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADESP_DESTROY"), 0));
+                }
+            }
+            Session.Character.Gold = Session.Character.Gold - goldprice[this.InventoryItem.Upgrade];
+            Session.Client.SendPacket(Session.Character.GenerateGold());
+            Session.Character.InventoryList.RemoveItemAmount(featherVnum, (feather[this.InventoryItem.Upgrade]));
+            Session.Character.InventoryList.RemoveItemAmount(fullmoonVnum, (fullmoon[this.InventoryItem.Upgrade]));
+            Session.Character.GetStartupInventory();
+            Session.Client.SendPacket("shop_end 1");
         }
 
         #endregion

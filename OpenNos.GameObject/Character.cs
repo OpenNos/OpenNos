@@ -29,6 +29,7 @@ namespace OpenNos.GameObject
     {
         #region Members
 
+        private readonly ClientSession _session;
         private AuthorityType _authority;
         private int _backpack;
         private int _direction;
@@ -45,7 +46,7 @@ namespace OpenNos.GameObject
         private int _size = 10;
         private byte _speed;
         private byte cmapcount = 0;
-        private readonly ClientSession _session;
+
         #endregion
 
         #region Instantiation
@@ -60,44 +61,17 @@ namespace OpenNos.GameObject
             LastDefence = DateTime.Now;
             _session = Session;
         }
-       
+
         #endregion
 
         #region Properties
-        public DateTime LastDefence { get; set; }
-        public ClientSession Session { get { return _session; } }
+
         public AuthorityType Authority { get { return _authority; } set { _authority = value; } }
         public int BackPack { get { return _backpack; } set { _backpack = value; } }
-        public int Direction { get { return _direction; } set { _direction = value; } }
-        public InventoryList EquipmentList { get { return _equipmentlist; } set { _equipmentlist = value; } }
-        public ExchangeInfo ExchangeInfo { get; set; }
-        public InventoryList InventoryList { get { return _inventorylist; } set { _inventorylist = value; } }
-        public bool Invisible { get { return _invisible; } set { _invisible = value; } }
-        public bool InvisibleGm { get; set; }
-        public int IsDancing { get { return _isDancing; } set { _isDancing = value; } }
-        public bool IsSitting { get { return _issitting; } set { _issitting = value; } }
-        public bool IsVehicled { get; set; }
-        public DateTime LastLogin { get; set; }
-        public double LastPortal { get { return _lastPortal; } set { _lastPortal = value; } }
-        public int LastPulse { get { return _lastPulse; } set { _lastPulse = value; } }
-        public double LastSp { get; set; }
-        public byte LastSpeed { get; set; }
-        public int MaxSnack { get; set; }
-        public List<CharacterSkill> Skills { get; set; }
-        public List<CharacterSkill> SkillsSp { get; set; }
-        public int Morph { get { return _morph; } set { _morph = value; } }
-        public int MorphUpgrade { get { return _morphUpgrade; } set { _morphUpgrade = value; } }
-        public int MorphUpgrade2 { get { return _morphUpgrade2; } set { _morphUpgrade2 = value; } }
-        public int Size { get { return _size; } set { _size = value; } }
-        public int SnackAmount { get; set; }
-        public int SnackHp { get; set; }
-        public int SnackMp { get; set; }
-        public byte Speed { get { return _speed; } set { if (value > 59) { _speed = 59; } else { _speed = value; } } }
-        public Thread ThreadCharChange { get; set; }
-        public bool UseSp { get; set; }
         public int DarkResistance { get; set; }
         public int Defence { get; set; }
         public int DefenceRate { get; set; }
+        public int Direction { get { return _direction; } set { _direction = value; } }
         public int DistanceCritical { get; set; }
         public int DistanceCriticalRate { get; set; }
         public int DistanceDefence { get; set; }
@@ -105,22 +79,50 @@ namespace OpenNos.GameObject
         public int DistanceRate { get; set; }
         public int Element { get; set; }
         public int ElementRate { get; set; }
+        public InventoryList EquipmentList { get { return _equipmentlist; } set { _equipmentlist = value; } }
+        public ExchangeInfo ExchangeInfo { get; set; }
         public int FireResistance { get; set; }
         public int HitCritical { get; set; }
         public int HitCriticalRate { get; set; }
         public int HitRate { get; set; }
+        public InventoryList InventoryList { get { return _inventorylist; } set { _inventorylist = value; } }
+        public bool Invisible { get { return _invisible; } set { _invisible = value; } }
+        public bool InvisibleGm { get; set; }
+        public int IsDancing { get { return _isDancing; } set { _isDancing = value; } }
+        public bool IsSitting { get { return _issitting; } set { _issitting = value; } }
+        public bool IsVehicled { get; set; }
+        public DateTime LastDefence { get; set; }
+        public DateTime LastLogin { get; set; }
+        public short LastNRunId { get; set; }
+        public double LastPortal { get { return _lastPortal; } set { _lastPortal = value; } }
+        public int LastPulse { get { return _lastPulse; } set { _lastPulse = value; } }
+        public double LastSp { get; set; }
+        public byte LastSpeed { get; set; }
         public int LightResistance { get; set; }
         public int MagicalDefence { get; set; }
         public int MaxDistance { get; set; }
         public int MaxHit { get; set; }
+        public int MaxSnack { get; set; }
         public int MinDistance { get; set; }
         public int MinHit { get; set; }
-        public int WaterResistance { get; set; }
-        public short LastNRunId { get; set; }
+        public int Morph { get { return _morph; } set { _morph = value; } }
+        public int MorphUpgrade { get { return _morphUpgrade; } set { _morphUpgrade = value; } }
+        public int MorphUpgrade2 { get { return _morphUpgrade2; } set { _morphUpgrade2 = value; } }
         public List<QuicklistEntry> QuicklistEntries { get; set; }
-        public int SpCooldown { get; set; }
-        public short SaveY { get; set; }
         public short SaveX { get; set; }
+        public short SaveY { get; set; }
+        public ClientSession Session { get { return _session; } }
+        public int Size { get { return _size; } set { _size = value; } }
+        public List<CharacterSkill> Skills { get; set; }
+        public List<CharacterSkill> SkillsSp { get; set; }
+        public int SnackAmount { get; set; }
+        public int SnackHp { get; set; }
+        public int SnackMp { get; set; }
+        public int SpCooldown { get; set; }
+        public byte Speed { get { return _speed; } set { if (value > 59) { _speed = 59; } else { _speed = value; } } }
+        public Thread ThreadCharChange { get; set; }
+        public bool UseSp { get; set; }
+        public int WaterResistance { get; set; }
 
         #endregion
 
@@ -132,15 +134,12 @@ namespace OpenNos.GameObject
             return string.Empty;
         }
 
-        public string GenerateAt()
+        public void DeleteItem(byte type, short slot)
         {
-            return $"at {CharacterId} {MapId} {MapX} {MapY} 2 0 {ServerManager.GetMap(MapId).Music} 1";
+            InventoryList.DeleteFromSlotAndType(slot, type);
+            Session.Client.SendPacket(GenerateInventoryAdd(-1, 0, type, slot, 0, 0, 0));
         }
 
-        public string GenerateCInfo()
-        {
-            return $"c_info {Name} - -1 -1 - {CharacterId} {Authority} {Gender} {HairStyle} {HairColor} {Class} {GetReputIco()} {Compliment} {(UseSp || IsVehicled ? Morph : 0)} {(Invisible?1:0)} 0 {(UseSp ? MorphUpgrade : 0)} {ArenaWinner}";
-        }
         public void DeleteTimeout()
         {
             for (int i = Session.Character.InventoryList.Inventory.Count() - 1; i >= 0; i--)
@@ -171,19 +170,16 @@ namespace OpenNos.GameObject
             }
         }
 
+        public string GenerateAt()
+        {
+            return $"at {CharacterId} {MapId} {MapX} {MapY} 2 0 {ServerManager.GetMap(MapId).Music} 1";
+        }
 
-        public void GetStartupInventory()
+        public string GenerateCInfo()
         {
-            foreach (String inv in GenerateStartupInventory())
-            {
-                Session.Client.SendPacket(inv);
-            }
+            return $"c_info {Name} - -1 -1 - {CharacterId} {Authority} {Gender} {HairStyle} {HairColor} {Class} {GetReputIco()} {Compliment} {(UseSp || IsVehicled ? Morph : 0)} {(Invisible ? 1 : 0)} 0 {(UseSp ? MorphUpgrade : 0)} {ArenaWinner}";
         }
-        public void DeleteItem( byte type, short slot)
-        {
-            InventoryList.DeleteFromSlotAndType(slot, type);
-            Session.Client.SendPacket(GenerateInventoryAdd(-1, 0, type, slot, 0, 0, 0));
-        }
+
         public string GenerateCMap()
         {
             cmapcount = cmapcount == 1 ? (byte)0 : (byte)1;
@@ -289,7 +285,6 @@ namespace OpenNos.GameObject
                     int freepoint = ServersData.SpPoint(item.SpLevel, item.Upgrade) - item.SlDamage - item.SlHP - item.SlElement - item.SlDefence;
                     switch (subtype) //0 = NOSMATE pearl 1= npc pearl 2 = sp box 3 = raid box 4= VEHICLE pearl 5=fairy pearl
                     {
-
                         case 2:
                             return $"e_info 7 {item.ItemVNum} {(item.IsEmpty ? 1 : 0)} {item.Design} {item.SpLevel} {item.SpXp} {ServersData.SpXPData[JobLevel - 1]} {item.Upgrade} {item.SlDamage} {item.SlDefence} {item.SlElement} {item.SlHP} {freepoint} {item.FireResistance} {item.WaterResistance} {item.LightResistance} {item.DarkResistance} {item.SpStoneUpgrade} {item.SpDamage} {item.SpDefence} {item.SpElement} {item.SpHP} {item.SpFire} {item.SpWater} {item.SpLight} {item.SpDark}";
 
@@ -429,6 +424,7 @@ namespace OpenNos.GameObject
 
             return gpList;
         }
+
         public string GenerateGp(Portal portal)
         {
             return $"gp {portal.SourceX} {portal.SourceY} {portal.DestinationMapId} {portal.Type} {ServerManager.GetMap(MapId).Portals.Count} {(portal.IsDisabled ? 1 : 0)}";
@@ -442,7 +438,7 @@ namespace OpenNos.GameObject
                 color = head.InventoryItem.Design;
             Inventory fairy = EquipmentList.LoadBySlotAndType((byte)EquipmentType.Fairy, (byte)InventoryType.Equipment);
 
-            return $"in 1 {Name} - {CharacterId} {MapX} {MapY} {Direction} {(Authority == AuthorityType.Admin ? 2 : 0)} {Gender} {HairStyle} {color} {Class} {generateEqListForPacket()} {(int)(Hp / HPLoad() * 100)} {(int)(Mp / MPLoad() * 100)} {(IsSitting ? 1 : 0)} -1 {(fairy != null ? 2 : 0)} {(fairy != null ? ServerManager.GetItem(fairy.InventoryItem.ItemVNum).Element : 0)} 0 {(fairy != null ? ServerManager.GetItem(fairy.InventoryItem.ItemVNum).Morph : 0)} 0 {(UseSp ? Morph : 0)} {generateEqRareUpgradeForPacket()} -1 - {((GetDigniteIco() == 1) ? GetReputIco() : -GetDigniteIco())} {(_invisible?1:0)} {(UseSp ? MorphUpgrade : 0)} 0 {(UseSp ? MorphUpgrade2 : 0)} {Level} 0 {ArenaWinner} {Compliment} {Size} {HeroLevel}";
+            return $"in 1 {Name} - {CharacterId} {MapX} {MapY} {Direction} {(Authority == AuthorityType.Admin ? 2 : 0)} {Gender} {HairStyle} {color} {Class} {generateEqListForPacket()} {(int)(Hp / HPLoad() * 100)} {(int)(Mp / MPLoad() * 100)} {(IsSitting ? 1 : 0)} -1 {(fairy != null ? 2 : 0)} {(fairy != null ? ServerManager.GetItem(fairy.InventoryItem.ItemVNum).Element : 0)} 0 {(fairy != null ? ServerManager.GetItem(fairy.InventoryItem.ItemVNum).Morph : 0)} 0 {(UseSp ? Morph : 0)} {generateEqRareUpgradeForPacket()} -1 - {((GetDigniteIco() == 1) ? GetReputIco() : -GetDigniteIco())} {(_invisible ? 1 : 0)} {(UseSp ? MorphUpgrade : 0)} 0 {(UseSp ? MorphUpgrade2 : 0)} {Level} 0 {ArenaWinner} {Compliment} {Size} {HeroLevel}";
         }
 
         public List<string> Generatein2()
@@ -485,7 +481,7 @@ namespace OpenNos.GameObject
 
         public string GenerateInvisible()
         {
-            return $"cl {CharacterId} {(Invisible?1:0)} 0";
+            return $"cl {CharacterId} {(Invisible ? 1 : 0)} 0";
         }
 
         public string GenerateLev()
@@ -493,40 +489,6 @@ namespace OpenNos.GameObject
             Inventory specialist = EquipmentList.LoadBySlotAndType((byte)EquipmentType.Sp, (byte)InventoryType.Equipment);
 
             return $"lev {Level} {LevelXp} {(!UseSp || specialist == null ? JobLevel : specialist.InventoryItem.SpLevel)} {(!UseSp || specialist == null ? JobLevelXp : specialist.InventoryItem.SpXp)} {XPLoad()} {(!UseSp || specialist == null ? JobXPLoad() : SPXPLoad())} {Reput} {getCP()} {HeroXp} {HeroLevel} {HeroXPLoad()}";
-        }
-
-        private object HeroXPLoad()
-        {
-            return 949560;//need to load true algoritm
-        }
-
-        public string GenerateSki()
-        {
-            List<CharacterSkill> skill = UseSp ? SkillsSp : Skills;
-            string skibase = "";
-            if (!UseSp)
-                skibase = $"{200 + 20 * Class} {201 + 20 * Class}";
-            else
-                skibase = $"{skill.ElementAt(0).SkillVNum} {skill.ElementAt(1).SkillVNum}";
-            string skills = "";
-            foreach (CharacterSkill ski in skill)
-            {
-                skills += $" {ski.SkillVNum}";
-
-            }
-
-            return $"ski {skibase}{skills}";
-        }
-        public int getCP()
-        {
-            int cpused = 0;
-            foreach (CharacterSkill ski in Skills)
-            {
-                Skill skillinfo = ServerManager.GetSkill(ski.SkillVNum);
-                if (skillinfo != null)
-                    cpused += skillinfo.CPCost;
-            }
-            return (JobLevel - 1) * 2 - cpused;
         }
 
         public string GenerateMapOut()
@@ -587,6 +549,22 @@ namespace OpenNos.GameObject
             return ServerManager.GetMap(MapId).ShopUserList.Select(shop => $"pflag 1 {shop.Value.OwnerId} {shop.Key + 1}").ToList();
         }
 
+        public string[] GenerateQuicklist()
+        {
+            string[] pktQs = new[] { "qslot 0", "qslot 1", "qslot 2" };
+
+            for (int i = 0; i < 10; i++)
+            {
+                for (int j = 0; j < 3; j++)
+                {
+                    QuicklistEntry qi = QuicklistEntries.FirstOrDefault(n => n.Q1 == j && n.Q2 == i);
+                    pktQs[j] += string.Format(" {0}.{1}.{2}", qi?.Type, qi?.Slot, qi != null ? qi.Pos : -1);
+                }
+            }
+
+            return pktQs;
+        }
+
         public string GenerateRc(int v)
         {
             return $"rc 1 {CharacterId} {v} 0";
@@ -604,6 +582,11 @@ namespace OpenNos.GameObject
         public string GenerateRest()
         {
             return $"rest 1 {CharacterId} {(IsSitting ? 1 : 0)}";
+        }
+
+        public string GenerateRevive()
+        {
+            return $"revive 1 {CharacterId} 0";
         }
 
         public string GenerateSay(string message, int type)
@@ -634,6 +617,23 @@ namespace OpenNos.GameObject
         public List<string> GenerateShopOnMap()
         {
             return ServerManager.GetMap(MapId).ShopUserList.Select(shop => $"shop 1 {shop.Key + 1} 1 3 0 {shop.Value.Name}").ToList();
+        }
+
+        public string GenerateSki()
+        {
+            List<CharacterSkill> skill = UseSp ? SkillsSp : Skills;
+            string skibase = "";
+            if (!UseSp)
+                skibase = $"{200 + 20 * Class} {201 + 20 * Class}";
+            else
+                skibase = $"{skill.ElementAt(0).SkillVNum} {skill.ElementAt(1).SkillVNum}";
+            string skills = "";
+            foreach (CharacterSkill ski in skill)
+            {
+                skills += $" {ski.SkillVNum}";
+            }
+
+            return $"ski {skibase}{skills}";
         }
 
         public string GenerateSlInfo(InventoryItem inventoryItem, int type)
@@ -940,23 +940,22 @@ namespace OpenNos.GameObject
             return $"tit {Language.Instance.GetMessageFromKey(Class == (byte)ClassType.Adventurer ? ClassType.Adventurer.ToString().ToUpper() : Class == (byte)ClassType.Swordman ? ClassType.Swordman.ToString().ToUpper() : Class == (byte)ClassType.Archer ? ClassType.Archer.ToString().ToUpper() : ClassType.Magician.ToString().ToUpper())} {Name}";
         }
 
-
-        public string[] GenerateQuicklist()
+        public string GenerateTp()
         {
-            string[] pktQs = new[] { "qslot 0", "qslot 1", "qslot 2" };
-
-            for (int i = 0; i < 10; i++)
-            {
-                for (int j = 0; j < 3; j++)
-                {
-                    QuicklistEntry qi = QuicklistEntries.FirstOrDefault(n => n.Q1 == j && n.Q2 == i);
-                    pktQs[j] += string.Format(" {0}.{1}.{2}", qi?.Type, qi?.Slot, qi != null ? qi.Pos : -1);
-                }
-            }
-
-            return pktQs;
+            return $"tp 1 {CharacterId} {MapX} {MapY} 0";
         }
 
+        public int getCP()
+        {
+            int cpused = 0;
+            foreach (CharacterSkill ski in Skills)
+            {
+                Skill skillinfo = ServerManager.GetSkill(ski.SkillVNum);
+                if (skillinfo != null)
+                    cpused += skillinfo.CPCost;
+            }
+            return (JobLevel - 1) * 2 - cpused;
+        }
 
         public int GetDigniteIco()
         {
@@ -1026,6 +1025,14 @@ namespace OpenNos.GameObject
             return 27;
         }
 
+        public void GetStartupInventory()
+        {
+            foreach (String inv in GenerateStartupInventory())
+            {
+                Session.Client.SendPacket(inv);
+            }
+        }
+
         public int HealthHPLoad()
         {
             if (IsSitting)
@@ -1079,24 +1086,6 @@ namespace OpenNos.GameObject
             return InventoryList.Inventory.Where(i => i.InventoryItem.ItemVNum.Equals(itemVNum) && i.InventoryItem.Amount + amount < 100).Select(inventoryitemobject => new InventoryItem(inventoryitemobject.InventoryItem));
         }
 
-        public void LoadSkills()
-        {
-            Skills = new List<CharacterSkill>();
-            IEnumerable<CharacterSkillDTO> characterskillDTO = DAOFactory.CharacterSkillDAO.LoadByCharacterId(CharacterId);
-            foreach (CharacterSkillDTO characterskill in characterskillDTO.OrderBy(s => s.SkillVNum))
-            {
-                Skills.Add(Mapper.DynamicMap<CharacterSkill>(characterskill));
-            }
-        }
-        public void LoadQuicklists()
-        {
-            QuicklistEntries = new List<QuicklistEntry>();
-            IEnumerable<QuicklistEntryDTO> quicklistDTO = DAOFactory.QuicklistEntryDAO.Load(CharacterId);
-            foreach (QuicklistEntryDTO qle in quicklistDTO)
-            {
-                QuicklistEntries.Add(Mapper.DynamicMap<QuicklistEntry>(qle));
-            }
-        }
         public void LoadInventory()
         {
             IEnumerable<InventoryDTO> inventorysDTO = DAOFactory.InventoryDAO.LoadByCharacterId(CharacterId).ToList();
@@ -1180,6 +1169,26 @@ namespace OpenNos.GameObject
             }
         }
 
+        public void LoadQuicklists()
+        {
+            QuicklistEntries = new List<QuicklistEntry>();
+            IEnumerable<QuicklistEntryDTO> quicklistDTO = DAOFactory.QuicklistEntryDAO.Load(CharacterId);
+            foreach (QuicklistEntryDTO qle in quicklistDTO)
+            {
+                QuicklistEntries.Add(Mapper.DynamicMap<QuicklistEntry>(qle));
+            }
+        }
+
+        public void LoadSkills()
+        {
+            Skills = new List<CharacterSkill>();
+            IEnumerable<CharacterSkillDTO> characterskillDTO = DAOFactory.CharacterSkillDAO.LoadByCharacterId(CharacterId);
+            foreach (CharacterSkillDTO characterskill in characterskillDTO.OrderBy(s => s.SkillVNum))
+            {
+                Skills.Add(Mapper.DynamicMap<CharacterSkill>(characterskill));
+            }
+        }
+
         public double MPLoad()
         {
             int mp = 0;
@@ -1196,7 +1205,6 @@ namespace OpenNos.GameObject
                         multiplicator += 0.5 + (point - 50.00) / 50.00; ;
 
                     mp = inventory.InventoryItem.MP + inventory.InventoryItem.SpHP * 100;
-
                 }
             }
             return (int)((ServersData.MPData[Class, Level] + mp) * multiplicator);
@@ -1231,7 +1239,6 @@ namespace OpenNos.GameObject
             foreach (QuicklistEntryDTO quicklists in DAOFactory.QuicklistEntryDAO.Load(CharacterId))
                 if (QuicklistEntries.FirstOrDefault(s => s.EntryId == quicklists.EntryId) == null)
                     DAOFactory.QuicklistEntryDAO.Delete(CharacterId, quicklists.EntryId);
-
 
             // ... then save the new
             for (int i = InventoryList.Inventory.Count() - 1; i >= 0; i--)
@@ -1270,18 +1277,10 @@ namespace OpenNos.GameObject
             return ServersData.XPData[Level - 1];
         }
 
-        public string GenerateRevive()
+        private object HeroXPLoad()
         {
-            return $"revive 1 {CharacterId} 0";
+            return 949560;//need to load true algoritm
         }
-
-        public string GenerateTp()
-        {
-            return $"tp 1 {CharacterId} {MapX} {MapY} 0";
-        }
-
-
-
 
         #endregion
     }

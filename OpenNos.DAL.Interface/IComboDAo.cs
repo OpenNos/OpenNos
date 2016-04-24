@@ -22,9 +22,12 @@ namespace OpenNos.DAL.Interface
         #region Methods
 
         ComboDTO Insert(ComboDTO combo);
-        ComboDTO LoadById(short ComboId);
+
         void Insert(List<ComboDTO> combos);
+
         IEnumerable<ComboDTO> LoadAll();
+
+        ComboDTO LoadById(short ComboId);
 
         #endregion
     }

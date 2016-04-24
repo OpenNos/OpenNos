@@ -25,7 +25,9 @@ namespace OpenNos.Core
 
         #region Instantiation
 
-        private SessionFactory() { }
+        private SessionFactory()
+        {
+        }
 
         #endregion
 

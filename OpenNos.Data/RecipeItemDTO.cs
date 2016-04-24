@@ -12,18 +12,16 @@
  * GNU General Public License for more details.
  */
 
-using System;
-
 namespace OpenNos.Data
 {
     public class RecipeItemDTO
     {
         #region Properties
 
-        public short RecipeItemId { get; set; }
-        public short ItemVNum { get; set; }
         public byte Amount { get; set; }
+        public short ItemVNum { get; set; }
         public short RecipeId { get; set; }
+        public short RecipeItemId { get; set; }
 
         #endregion
     }

@@ -43,7 +43,7 @@ namespace OpenNos.GameObject
             _packetHandler = packetHandler;
             _encryptor = (EncryptorT)Activator.CreateInstance(typeof(EncryptorT));
 
-            if(fallbackEncryptor != null)
+            if (fallbackEncryptor != null)
                 _fallbackEncryptor = (EncryptionBase)Activator.CreateInstance(fallbackEncryptor);
 
             var server = ScsServerFactory.CreateServer(new ScsTcpEndPoint(ipAddress, port));
@@ -142,7 +142,7 @@ namespace OpenNos.GameObject
             _sessions.TryRemove(e.Client.ClientId, out session);
 
             //check if session hasnt been already removed
-            if(session != null)
+            if (session != null)
             {
                 ClientLinkManager.Instance.Sessions.Remove(session);
                 if (session.Character != null)
@@ -167,7 +167,6 @@ namespace OpenNos.GameObject
                 Logger.Log.Info(Language.Instance.GetMessageFromKey("DISCONNECT") + e.Client.ClientId);
                 session = null;
             }
-            
         }
 
         #endregion

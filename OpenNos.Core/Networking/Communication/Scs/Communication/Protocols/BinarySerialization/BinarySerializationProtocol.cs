@@ -287,6 +287,8 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Protocols.Bina
         /// </summary>
         protected sealed class DeserializationAppDomainBinder : SerializationBinder
         {
+            #region Methods
+
             public override Type BindToType(string assemblyName, string typeName)
             {
                 var toAssemblyName = assemblyName.Split(',')[0];
@@ -294,6 +296,8 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Protocols.Bina
                         where assembly.FullName.Split(',')[0] == toAssemblyName
                         select assembly.GetType(typeName)).FirstOrDefault();
             }
+
+            #endregion
         }
 
         #endregion

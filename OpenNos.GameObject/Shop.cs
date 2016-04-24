@@ -37,7 +37,7 @@ namespace OpenNos.GameObject
             }
             foreach (ShopSkillDTO skill in DAOFactory.ShopSkillDAO.LoadByShopId(ShopId))
             {
-                ShopSkills.Add(new ShopSkill() { SkillVNum = skill.SkillVNum, ShopSkillId = skill.ShopSkillId, Slot = skill.Slot,Type = skill.Type, ShopId = skill.ShopId});
+                ShopSkills.Add(new ShopSkill() { SkillVNum = skill.SkillVNum, ShopSkillId = skill.ShopSkillId, Slot = skill.Slot, Type = skill.Type, ShopId = skill.ShopId });
             }
         }
 
@@ -47,6 +47,7 @@ namespace OpenNos.GameObject
 
         public List<ShopItem> ShopItems { get; set; }
         public List<ShopSkill> ShopSkills { get; set; }
+
         #endregion
 
         #region Methods

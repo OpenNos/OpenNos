@@ -20,18 +20,13 @@ namespace OpenNos.Core
         {
         }
 
-        public void Initialize(EncryptionBase encryptor)
-        {
-            _encryptor = encryptor;
-        }
-
         #endregion
 
         #region Methods
 
-        public bool SendPacketFormat(string packet, params object[] param)
+        public void Initialize(EncryptionBase encryptor)
         {
-            return SendPacket(String.Format(packet, param));
+            _encryptor = encryptor;
         }
 
         public bool SendPacket(string packet)
@@ -46,6 +41,11 @@ namespace OpenNos.Core
             {
                 return false;
             }
+        }
+
+        public bool SendPacketFormat(string packet, params object[] param)
+        {
+            return SendPacket(String.Format(packet, param));
         }
 
         public bool SendPackets(IEnumerable<String> packets)

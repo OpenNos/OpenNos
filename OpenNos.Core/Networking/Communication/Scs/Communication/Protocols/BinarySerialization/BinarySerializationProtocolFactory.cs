@@ -5,6 +5,8 @@
     /// </summary>
     public class BinarySerializationProtocolFactory : IScsWireProtocolFactory
     {
+        #region Methods
+
         /// <summary>
         /// Creates a new Wire Protocol object.
         /// </summary>
@@ -13,5 +15,7 @@
         {
             return new BinarySerializationProtocol();
         }
+
+        #endregion
     }
 }

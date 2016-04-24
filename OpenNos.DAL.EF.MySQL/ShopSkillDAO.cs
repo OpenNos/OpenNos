@@ -36,11 +36,11 @@ namespace OpenNos.DAL.EF.MySQL
                 return Mapper.DynamicMap<ShopSkillDTO>(entity);
             }
         }
+
         public void Insert(List<ShopSkillDTO> skills)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-
                 context.Configuration.AutoDetectChangesEnabled = false;
                 foreach (ShopSkillDTO Skill in skills)
                 {
@@ -48,9 +48,9 @@ namespace OpenNos.DAL.EF.MySQL
                     context.ShopSkill.Add(entity);
                 }
                 context.SaveChanges();
-
             }
         }
+
         public IEnumerable<ShopSkillDTO> LoadByShopId(int shopId)
         {
             using (var context = DataAccessHelper.CreateContext())

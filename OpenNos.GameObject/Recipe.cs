@@ -38,9 +38,14 @@ namespace OpenNos.GameObject
                     RecipeItemId = rec.RecipeItemId
                 });
             }
-
         }
+
+        #endregion
+
+        #region Properties
+
         public List<RecipeItem> Items { get; set; }
+
         #endregion
     }
 }

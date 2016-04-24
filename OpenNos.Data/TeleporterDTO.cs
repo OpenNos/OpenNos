@@ -18,12 +18,12 @@ namespace OpenNos.Data
     {
         #region Properties
 
-        public short TeleporterId { get; set; }
         public short Index { get; set; }
-        public short MapX { get; set; }
-        public short MapY { get; set; }
         public short MapId { get; set; }
         public int MapNpcId { get; set; }
+        public short MapX { get; set; }
+        public short MapY { get; set; }
+        public short TeleporterId { get; set; }
 
         #endregion
     }

@@ -30,7 +30,6 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-
                 context.Configuration.AutoDetectChangesEnabled = false;
                 foreach (MapMonsterDTO monster in monsters)
                 {
@@ -38,7 +37,6 @@ namespace OpenNos.DAL.EF.MySQL
                     context.MapMonster.Add(entity);
                 }
                 context.SaveChanges();
-
             }
         }
 

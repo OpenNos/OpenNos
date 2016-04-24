@@ -10,10 +10,16 @@ namespace OpenNos.Core.Networking.Communication.Scs.Client.Tcp
     /// </summary>
     public class ScsTcpClient : ScsClientBase
     {
+        #region Members
+
         /// <summary>
         /// The endpoint address of the server.
         /// </summary>
         private readonly ScsTcpEndPoint _serverEndPoint;
+
+        #endregion
+
+        #region Instantiation
 
         /// <summary>
         /// Creates a new ScsTcpClient object.
@@ -23,6 +29,10 @@ namespace OpenNos.Core.Networking.Communication.Scs.Client.Tcp
         {
             _serverEndPoint = serverEndPoint;
         }
+
+        #endregion
+
+        #region Methods
 
         /// <summary>
         /// Creates a communication channel using ServerIpAddress and ServerPort.
@@ -36,5 +46,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Client.Tcp
                     ConnectTimeout
                     ));
         }
+
+        #endregion
     }
 }

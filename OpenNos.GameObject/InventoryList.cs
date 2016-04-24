@@ -22,7 +22,10 @@ namespace OpenNos.GameObject
     {
         #region Instantiation
 
-        public InventoryList() { Inventory = new List<Inventory>(); }
+        public InventoryList()
+        {
+            Inventory = new List<Inventory>();
+        }
 
         #endregion
 
@@ -170,23 +173,6 @@ namespace OpenNos.GameObject
                 inventoryitemids.Add(itemfree.InventoryItemId);
             }
             return Inventory.Where(i => inventoryitemids.Contains(i.InventoryItem.InventoryItemId)).OrderBy(i => i.Slot).FirstOrDefault();
-        }
-
-        internal Inventory AmountMinusFromInventory(byte amount, PersonalShopItem itemshop)
-        {
-            Inventory inv = Inventory.FirstOrDefault(i => i.InventoryId.Equals(itemshop.InventoryId));
-
-            if (inv != null)
-            {
-                inv.InventoryItem.Amount -= amount;
-                if (inv.InventoryItem.Amount <= 0)
-                {
-                    Inventory.Remove(inv);
-                    return null;
-                }
-            }
-
-            return inv;
         }
 
         public bool getFreePlaceAmount(List<InventoryItem> item, int backPack)
@@ -383,7 +369,7 @@ namespace OpenNos.GameObject
             MapItem DroppedItem = null;
             short MapX = (short)(rnd.Next(Session.Character.MapX - 1, Session.Character.MapX + 1));
             short MapY = (short)(rnd.Next(Session.Character.MapY - 1, Session.Character.MapY + 1));
-            while (Session.CurrentMap.IsBlockedZone(MapX, MapY) && i<5)
+            while (Session.CurrentMap.IsBlockedZone(MapX, MapY) && i < 5)
             {
                 MapX = (short)(rnd.Next(Session.Character.MapX - 1, Session.Character.MapX + 1));
                 MapY = (short)(rnd.Next(Session.Character.MapY - 1, Session.Character.MapY + 1));
@@ -471,6 +457,23 @@ namespace OpenNos.GameObject
                     DeleteByInventoryItemId(inv.InventoryItem.InventoryItemId);
                 }
             }
+        }
+
+        internal Inventory AmountMinusFromInventory(byte amount, PersonalShopItem itemshop)
+        {
+            Inventory inv = Inventory.FirstOrDefault(i => i.InventoryId.Equals(itemshop.InventoryId));
+
+            if (inv != null)
+            {
+                inv.InventoryItem.Amount -= amount;
+                if (inv.InventoryItem.Amount <= 0)
+                {
+                    Inventory.Remove(inv);
+                    return null;
+                }
+            }
+
+            return inv;
         }
 
         private Inventory Insert(Inventory inventory)

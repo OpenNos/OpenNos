@@ -1,17 +1,16 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections;
 
 namespace OpenNos.GameObject
 {
-    class MapCellComparer : IComparer
-    { 
+    internal class MapCellComparer : IComparer
+    {
+        #region Methods
+
         public int Compare(object x, object y)
         {
             return ((MapCellAStar)x).totalCost - ((MapCellAStar)y).totalCost;
         }
+
+        #endregion
     }
 }

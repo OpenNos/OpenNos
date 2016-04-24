@@ -22,9 +22,13 @@ namespace OpenNos.DAL.Interface
         #region Methods
 
         MapMonsterDTO Insert(MapMonsterDTO mapmonster);
-        IEnumerable<MapMonsterDTO> LoadFromMap(short MapId);
-        MapMonsterDTO LoadById(int MonsterId);
+
         void Insert(List<MapMonsterDTO> monsters);
+
+        MapMonsterDTO LoadById(int MonsterId);
+
+        IEnumerable<MapMonsterDTO> LoadFromMap(short MapId);
+
         #endregion
     }
 }

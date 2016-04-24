@@ -31,12 +31,18 @@ namespace OpenNos.GameObject
             Hit = 0;
         }
 
-        public bool Used { get; set; }
+        #endregion
+
+        #region Properties
+
+        public short Hit { get; set; }
+
         public DateTime LastUse
         {
             get; set;
         }
-        public short Hit { get; set; }
+
+        public bool Used { get; set; }
 
         #endregion
     }
