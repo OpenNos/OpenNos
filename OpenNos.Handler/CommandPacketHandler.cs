@@ -865,7 +865,7 @@ namespace OpenNos.Handler
                 {
                     Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("ITEM_IS_FIXED"), 10));
 
-                    GetStartupInventory();
+                    Session.Character.GenerateStartupInventory();
                     Session.Client.SendPacket("shop_end 1");
                     return;
                 }
@@ -959,7 +959,7 @@ namespace OpenNos.Handler
                 Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADE_FAILED_ITEM_SAVED"), 11));
                 Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADE_FAILED_ITEM_SAVED"), 0));
             }
-            GetStartupInventory();
+            Session.Character.GenerateStartupInventory();
             Session.Client.SendPacket("shop_end 1");
         }
 
@@ -969,13 +969,7 @@ namespace OpenNos.Handler
             Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, type, slot, 0, 0, 0));
         }
 
-        private void GetStartupInventory()
-        {
-            foreach (String inv in Session.Character.GenerateStartupInventory())
-            {
-                Session.Client.SendPacket(inv);
-            }
-        }
+ 
 
         private void RarifyItem(Inventory item, RarifyMode mode, RarifyProtection protection)
         {
@@ -1122,7 +1116,7 @@ namespace OpenNos.Handler
                     Session.Character.InventoryList.LoadByInventoryItem(item.InventoryItem.InventoryItemId).InventoryItem.IsFixed = true;
                 }
             }
-            GetStartupInventory();
+            Session.Character.GenerateStartupInventory();
             Session.Client.SendPacket("shop_end 1");
         }
 

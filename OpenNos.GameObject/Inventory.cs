@@ -251,7 +251,7 @@ namespace OpenNos.GameObject
             Session.Character.Gold = Session.Character.Gold - goldprice[upmode];
             Session.Client.SendPacket(Session.Character.GenerateGold());
             Session.Character.InventoryList.RemoveItemAmount(stonevnum, stoneprice[upmode]);
-            Session.Character.GetStartupInventory();
+            Session.Character.GenerateStartupInventory();
         }
 
         public void RarifyItem(ClientSession Session, RarifyMode mode, RarifyProtection protection)
@@ -399,7 +399,7 @@ namespace OpenNos.GameObject
                     Session.Character.InventoryList.LoadByInventoryItem(this.InventoryItem.InventoryItemId).InventoryItem.IsFixed = true;
                 }
             }
-            Session.Character.GetStartupInventory();
+            Session.Character.GenerateStartupInventory();
             Session.Client.SendPacket("shop_end 1");
         }
 
@@ -441,7 +441,7 @@ namespace OpenNos.GameObject
                     Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("SUM_SUCCESS"), 12));
                     Session.Client.SendPacket($"guri 19 1 {Session.Character.CharacterId} 1324");
                     Session.Client.SendPacket(Session.Character.GenerateGold());
-                    Session.Character.GetStartupInventory();
+                    Session.Character.GenerateStartupInventory();
                 }
                 else
                 {
@@ -477,7 +477,7 @@ namespace OpenNos.GameObject
                 {
                     Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("ITEM_IS_FIXED"), 10));
 
-                    Session.Character.GetStartupInventory();
+                    Session.Character.GenerateStartupInventory();
                     Session.Client.SendPacket("shop_end 1");
                     return;
                 }
@@ -571,7 +571,7 @@ namespace OpenNos.GameObject
                 Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADE_FAILED_ITEM_SAVED"), 11));
                 Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADE_FAILED_ITEM_SAVED"), 0));
             }
-            Session.Character.GetStartupInventory();
+            Session.Character.GenerateStartupInventory();
             Session.Client.SendPacket("shop_end 1");
         }
 
@@ -712,7 +712,7 @@ namespace OpenNos.GameObject
             Session.Client.SendPacket(Session.Character.GenerateGold());
             Session.Character.InventoryList.RemoveItemAmount(featherVnum, (feather[this.InventoryItem.Upgrade]));
             Session.Character.InventoryList.RemoveItemAmount(fullmoonVnum, (fullmoon[this.InventoryItem.Upgrade]));
-            Session.Character.GetStartupInventory();
+            Session.Character.GenerateStartupInventory();
             Session.Client.SendPacket("shop_end 1");
         }
 

@@ -1000,7 +1000,7 @@ namespace OpenNos.Handler
 
             ClientLinkManager.Instance.Broadcast(Session, Session.Character.GeneratePairy(), ReceiverType.AllOnMap);
             ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateSpPoint(), ReceiverType.AllOnMap);
-            Session.Character.GetStartupInventory();
+            Session.Character.GenerateStartupInventory();
             // gidx
             Session.Client.SendPacket($"mlinfo 3800 2000 100 0 0 10 0 {Language.Instance.GetMessageFromKey("WELCOME_MUSIC_INFO")}");
             // cond

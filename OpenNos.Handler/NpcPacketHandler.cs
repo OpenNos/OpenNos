@@ -521,7 +521,7 @@ namespace OpenNos.Handler
                                 {
                                     Session.Character.InventoryList.RemoveItemAmount(ite.ItemVNum, ite.Amount);
                                 }
-                                Session.Character.GetStartupInventory();
+                                Session.Character.GenerateStartupInventory();
 
                                 Session.Client.SendPacket($"pdti 11 {inv.InventoryItem.ItemVNum} {rec.Amount} 29 {inv.InventoryItem.Upgrade} 0");
                                 Session.Client.SendPacket($"guri 19 1 {Session.Character.CharacterId} 1324");
