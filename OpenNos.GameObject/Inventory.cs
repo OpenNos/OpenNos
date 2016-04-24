@@ -58,7 +58,7 @@ namespace OpenNos.GameObject
                 {
                     Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("ITEM_IS_FIXED"), 10));
 
-                    Session.Character.GetStartupInventory(Session);
+                    Session.Character.GetStartupInventory();
                     Session.Client.SendPacket("shop_end 1");
                     return;
                 }
@@ -136,7 +136,7 @@ namespace OpenNos.GameObject
                     {
                         Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADE_FAILED"), 11));
                         Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADE_FAILED"), 0));
-                        Session.Character.DeleteItem(Session, this.Type, this.Slot);
+                        Session.Character.DeleteItem(this.Type, this.Slot);
                     }
                     else
                     {
@@ -152,7 +152,7 @@ namespace OpenNos.GameObject
                 Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADE_FAILED_ITEM_SAVED"), 11));
                 Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADE_FAILED_ITEM_SAVED"), 0));
             }
-            Session.Character.GetStartupInventory(Session);
+            Session.Character.GetStartupInventory();
             Session.Client.SendPacket("shop_end 1");
         }
 
@@ -293,7 +293,7 @@ namespace OpenNos.GameObject
             Session.Client.SendPacket(Session.Character.GenerateGold());
             Session.Character.InventoryList.RemoveItemAmount(featherVnum, (feather[this.InventoryItem.Upgrade]));
             Session.Character.InventoryList.RemoveItemAmount(fullmoonVnum, (fullmoon[this.InventoryItem.Upgrade]));
-            Session.Character.GetStartupInventory(Session);
+            Session.Character.GetStartupInventory();
             Session.Client.SendPacket("shop_end 1");
         }
 
@@ -512,7 +512,7 @@ namespace OpenNos.GameObject
             Session.Character.Gold = Session.Character.Gold - goldprice[upmode];
             Session.Client.SendPacket(Session.Character.GenerateGold());
             Session.Character.InventoryList.RemoveItemAmount(stonevnum, stoneprice[upmode]);
-            Session.Character.GetStartupInventory(Session);
+            Session.Character.GetStartupInventory();
         }
 
         public void RarifyItem(ClientSession Session, RarifyMode mode, RarifyProtection protection)
@@ -648,7 +648,7 @@ namespace OpenNos.GameObject
             {
                 if (protection == RarifyProtection.None)
                 {
-                    Session.Character.DeleteItem(Session, this.Type, this.Slot);
+                    Session.Character.DeleteItem(this.Type, this.Slot);
                     Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("RARIFY_FAILED"), 11));
                     Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("RARIFY_FAILED"), 0));
                 }
@@ -660,7 +660,7 @@ namespace OpenNos.GameObject
                     Session.Character.InventoryList.LoadByInventoryItem(this.InventoryItem.InventoryItemId).InventoryItem.IsFixed = true;
                 }
             }
-            Session.Character.GetStartupInventory(Session);
+            Session.Character.GetStartupInventory();
             Session.Client.SendPacket("shop_end 1");
         }
     
@@ -690,26 +690,25 @@ namespace OpenNos.GameObject
                     this.InventoryItem.LightResistance += (byte)(item2.InventoryItem.LightResistance + iteminfo2.LightResistance);
                     this.InventoryItem.WaterResistance += (byte)(item2.InventoryItem.WaterResistance + iteminfo2.WaterResistance);
                     this.InventoryItem.FireResistance += (byte)(item2.InventoryItem.FireResistance + iteminfo2.FireResistance);
-                    Session.Character.DeleteItem(Session, item2.Type, item2.Slot);
+                    Session.Character.DeleteItem(item2.Type, item2.Slot);
                     Session.Client.SendPacket($"pdti 10 {this.InventoryItem.ItemVNum} 1 27 {this.InventoryItem.Upgrade} 0");
                     Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SUM_SUCCESS"), 0));
                     Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("SUM_SUCCESS"), 12));
                     Session.Client.SendPacket($"guri 19 1 {Session.Character.CharacterId} 1324");
                     Session.Client.SendPacket(Session.Character.GenerateGold());
-                    Session.Character.GetStartupInventory(Session);
+                    Session.Character.GetStartupInventory();
                 }
                 else
                 {
                     Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SUM_FAILED"), 0));
                     Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("SUM_FAILED"), 11));
                     Session.Client.SendPacket($"guri 19 1 {Session.Character.CharacterId} 1332");
-                    Session.Character.DeleteItem(Session, item2.Type, item2.Slot);
-                    Session.Character.DeleteItem(Session, this.Type, this.Slot);
+                    Session.Character.DeleteItem( item2.Type, item2.Slot);
+                    Session.Character.DeleteItem(this.Type, this.Slot);
                 }
                 Session.Client.SendPacket("shop_end 1");
             }
         }
-
 
         public void Save()
         {

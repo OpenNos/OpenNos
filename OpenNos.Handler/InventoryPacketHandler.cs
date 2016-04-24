@@ -184,7 +184,7 @@ namespace OpenNos.Handler
                 Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(LastInventory.InventoryItem.ItemVNum, LastInventory.InventoryItem.Amount, type, LastInventory.Slot, LastInventory.InventoryItem.Rare, LastInventory.InventoryItem.Design, LastInventory.InventoryItem.Upgrade));
             else
             {
-                Session.Character.DeleteItem(Session, type, slot);
+                Session.Character.DeleteItem(type, slot);
             }
         }
 
@@ -210,7 +210,7 @@ namespace OpenNos.Handler
                     Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(inv.InventoryItem.ItemVNum, inv.InventoryItem.Amount, type, inv.Slot, inv.InventoryItem.Rare, inv.InventoryItem.Design, inv.InventoryItem.Upgrade));
 
                     if (inv.InventoryItem.Amount == 0)
-                        Session.Character.DeleteItem(Session, inv.Type, inv.Slot);
+                        Session.Character.DeleteItem(inv.Type, inv.Slot);
                     if (DroppedItem != null)
                         ClientLinkManager.Instance.Broadcast(Session, $"drop {DroppedItem.ItemVNum} {DroppedItem.InventoryItemId} {DroppedItem.PositionX} {DroppedItem.PositionY} {DroppedItem.Amount} 0 -1", ReceiverType.AllOnMap);
                 }
@@ -285,7 +285,7 @@ namespace OpenNos.Handler
                                 Inventory inv = new Inventory();
                                 Session.Character.InventoryList.MoveItem(Session.Character, type, (short)(x + 1), 1, x, out inv, out invdest);
                                 Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(invdest.InventoryItem.ItemVNum, invdest.InventoryItem.Amount, type, invdest.Slot, invdest.InventoryItem.Rare, invdest.InventoryItem.Design, invdest.InventoryItem.Upgrade));
-                                Session.Character.DeleteItem(Session, type, (short)(x + 1));
+                                Session.Character.DeleteItem(type, (short)(x + 1));
                                 gravity = true;
                             }
                         }
@@ -340,7 +340,7 @@ namespace OpenNos.Handler
 
             ClientLinkManager.Instance.Broadcast(Session, Session.Character.GeneratePairy(), ReceiverType.AllOnMap);
             ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateSpPoint(), ReceiverType.AllOnMap);
-            Session.Character.GetStartupInventory(Session);
+            Session.Character.GetStartupInventory();
             // gidx
             Session.Client.SendPacket($"mlinfo 3800 2000 100 0 0 10 0 {Language.Instance.GetMessageFromKey("WELCOME_MUSIC_INFO")}");
             // cond
@@ -350,7 +350,7 @@ namespace OpenNos.Handler
             Session.Client.SendPacket("zzim");
             Session.Client.SendPacket($"twk 1 {Session.Character.CharacterId} {Session.Account.Name} {Session.Character.Name} shtmxpdlfeoqkr");
 
-            Session.Character.DeleteTimeout(Session);
+            Session.Character.DeleteTimeout();
         }
 
 
@@ -738,7 +738,7 @@ namespace OpenNos.Handler
             {
                 if ((Session.Character.ExchangeInfo != null && Session.Character.ExchangeInfo?.ExchangeList.Count() != 0) || Session.Character.Speed == 0)
                     return;
-                Session.Character.DeleteItem(Session, type, slot);
+                Session.Character.DeleteItem(type, slot);
             }
         }
 

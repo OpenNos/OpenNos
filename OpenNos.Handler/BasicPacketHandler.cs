@@ -702,7 +702,7 @@ namespace OpenNos.Handler
             {
                 Session.Client.Disconnect();
             }
-            Session.Character.DeleteTimeout(Session);
+            Session.Character.DeleteTimeout();
         }
         [Packet("qset")]
         public void QuicklistSet(string packet)
@@ -838,7 +838,7 @@ namespace OpenNos.Handler
                 string[] packetsplit = packet.Split(' ');
                 CharacterDTO characterDTO = DAOFactory.CharacterDAO.LoadBySlot(Session.Account.AccountId, Convert.ToByte(packetsplit[2]));
                 if (characterDTO != null)
-                    Session.Character = new Character
+                    Session.Character = new Character(Session)
                     {
                         AccountId = characterDTO.AccountId,
                         CharacterId = characterDTO.CharacterId,
@@ -950,7 +950,7 @@ namespace OpenNos.Handler
                             ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateTp(), ReceiverType.AllOnMap);
                             ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateRevive(), ReceiverType.AllOnMap);
                             Session.Character.InventoryList.RemoveItemAmount(seed, 10);
-                            Session.Character.GetStartupInventory(Session);
+                            Session.Character.GetStartupInventory();
                         }
                         break;
                     case 1:

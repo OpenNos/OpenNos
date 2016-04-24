@@ -157,7 +157,7 @@ namespace OpenNos.Handler
                                 {
                                     Session.Character.InventoryList.RemoveItemAmount(ite.ItemVNum, ite.Amount);
                                 }
-                                Session.Character.GetStartupInventory(Session);
+                                Session.Character.GetStartupInventory();
 
                                 Session.Client.SendPacket($"pdti 11 {inv.InventoryItem.ItemVNum} {rec.Amount} 29 {inv.InventoryItem.Upgrade} 0");
                                 Session.Client.SendPacket($"guri 19 1 {Session.Character.CharacterId} 1324");
@@ -385,7 +385,7 @@ namespace OpenNos.Handler
                     return;
                 }
                 Session.Character.Gold += (item.Price / 20) * amount;
-                Session.Character.DeleteItem(Session, type, slot);
+                Session.Character.DeleteItem(type, slot);
                 Session.Client.SendPacket(Session.Character.GenerateGold());
                 Session.Client.SendPacket(Session.Character.GenerateShopMemo(1, string.Format(Language.Instance.GetMessageFromKey("SELL_ITEM_VALIDE"), item.Name, amount)));
             }

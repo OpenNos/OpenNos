@@ -45,11 +45,12 @@ namespace OpenNos.GameObject
         private int _size = 10;
         private byte _speed;
         private byte cmapcount = 0;
+        private readonly ClientSession Session;
         #endregion
 
         #region Instantiation
 
-        public Character()
+        public Character(ClientSession session)
         {
             Mapper.CreateMap<CharacterDTO, Character>();
             Mapper.CreateMap<Character, CharacterDTO>();
@@ -57,6 +58,7 @@ namespace OpenNos.GameObject
             SaveX = 0;
             SaveY = 0;
             LastDefence = DateTime.Now;
+            Session = session;
         }
 
         #endregion
@@ -138,7 +140,7 @@ namespace OpenNos.GameObject
         {
             return $"c_info {Name} - -1 -1 - {CharacterId} {Authority} {Gender} {HairStyle} {HairColor} {Class} {GetReputIco()} {Compliment} {(UseSp || IsVehicled ? Morph : 0)} {(Invisible?1:0)} 0 {(UseSp ? MorphUpgrade : 0)} {ArenaWinner}";
         }
-        public void DeleteTimeout(ClientSession Session)
+        public void DeleteTimeout()
         {
             for (int i = Session.Character.InventoryList.Inventory.Count() - 1; i >= 0; i--)
             {
@@ -169,14 +171,14 @@ namespace OpenNos.GameObject
         }
 
 
-        public void GetStartupInventory(ClientSession Session)
+        public void GetStartupInventory()
         {
             foreach (String inv in GenerateStartupInventory())
             {
                 Session.Client.SendPacket(inv);
             }
         }
-        public void DeleteItem(ClientSession Session, byte type, short slot)
+        public void DeleteItem( byte type, short slot)
         {
             InventoryList.DeleteFromSlotAndType(slot, type);
             Session.Client.SendPacket(GenerateInventoryAdd(-1, 0, type, slot, 0, 0, 0));
