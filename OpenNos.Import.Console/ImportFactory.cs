@@ -189,7 +189,6 @@ namespace OpenNos.Import.Console
 
             foreach (string[] currentPacket in _packetList.Where(o => o[0].Equals("mv") && o[1].Equals("3")))
             {
-                if (long.Parse(currentPacket[2]) >= 20000) continue;
                 if (!mobMvPacketsList.Contains(Convert.ToInt32(currentPacket[2])))
                     mobMvPacketsList.Add(Convert.ToInt32(currentPacket[2]));
             }
