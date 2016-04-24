@@ -682,7 +682,7 @@ namespace OpenNos.GameObject
             return $"sp {SpAdditionPoint} 1000000 {SpPoint} 10000";
         }
 
-        public List<string> GenerateStartupInventory()
+        public void GenerateStartupInventory()
         {
             List<string> inventoriesStringPacket = new List<string>();
             string inv0 = "inv 0", inv1 = "inv 1", inv2 = "inv 2", inv6 = "inv 6", inv7 = "inv 7";
@@ -719,12 +719,12 @@ namespace OpenNos.GameObject
                         break;
                 }
             }
-            inventoriesStringPacket.Add(inv0);
-            inventoriesStringPacket.Add(inv1);
-            inventoriesStringPacket.Add(inv2);
-            inventoriesStringPacket.Add(inv6);
-            inventoriesStringPacket.Add(inv7);
-            return inventoriesStringPacket;
+
+            Session.Client.SendPacket(inv0);
+            Session.Client.SendPacket(inv1);
+            Session.Client.SendPacket(inv2);
+            Session.Client.SendPacket(inv6);
+            Session.Client.SendPacket(inv7);
         }
 
         public string GenerateStat()
@@ -1049,14 +1049,6 @@ namespace OpenNos.GameObject
             if (Reput <= 3750000) return 25;
             if (Reput <= 5000000) return 26;
             return 27;
-        }
-
-        public void GetStartupInventory()
-        {
-            foreach (String inv in GenerateStartupInventory())
-            {
-                Session.Client.SendPacket(inv);
-            }
         }
 
         public int HealthHPLoad()

@@ -773,7 +773,7 @@ namespace OpenNos.Handler
                             ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateTp(), ReceiverType.AllOnMap);
                             ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateRevive(), ReceiverType.AllOnMap);
                             Session.Character.InventoryList.RemoveItemAmount(seed, 10);
-                            Session.Character.GetStartupInventory();
+                            Session.Character.GenerateStartupInventory();
                         }
                         break;
 
