@@ -26,23 +26,23 @@ namespace OpenNos.DAL.EF.MySQL
     {
         #region Methods
 
-        public ShopSkillDTO Insert(ShopSkillDTO ShopSkill)
+        public ShopSkillDTO Insert(ShopSkillDTO shopSkill)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                ShopSkill entity = Mapper.DynamicMap<ShopSkill>(ShopSkill);
+                ShopSkill entity = Mapper.DynamicMap<ShopSkill>(shopSkill);
                 context.ShopSkill.Add(entity);
                 context.SaveChanges();
                 return Mapper.DynamicMap<ShopSkillDTO>(entity);
             }
         }
-        public void Insert(List<ShopSkillDTO> Skills)
+        public void Insert(List<ShopSkillDTO> skills)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
 
                 context.Configuration.AutoDetectChangesEnabled = false;
-                foreach (ShopSkillDTO Skill in Skills)
+                foreach (ShopSkillDTO Skill in skills)
                 {
                     ShopSkill entity = Mapper.DynamicMap<ShopSkill>(Skill);
                     context.ShopSkill.Add(entity);
@@ -51,11 +51,11 @@ namespace OpenNos.DAL.EF.MySQL
 
             }
         }
-        public IEnumerable<ShopSkillDTO> LoadByShopId(int ShopId)
+        public IEnumerable<ShopSkillDTO> LoadByShopId(int shopId)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                foreach (ShopSkill ShopSkill in context.ShopSkill.Where(s => s.ShopId.Equals(ShopId)))
+                foreach (ShopSkill ShopSkill in context.ShopSkill.Where(s => s.ShopId.Equals(shopId)))
                 {
                     yield return Mapper.DynamicMap<ShopSkillDTO>(ShopSkill);
                 }

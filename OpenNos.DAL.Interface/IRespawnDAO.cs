@@ -24,7 +24,7 @@ namespace OpenNos.DAL.Interface
 
         SaveResult InsertOrUpdate(ref RespawnDTO respawn);
 
-        IEnumerable<RespawnDTO> LoadByCharacterId(long characterId);
+        IEnumerable<RespawnDTO> LoadByCharacter(long characterId);
 
         RespawnDTO LoadById(long respawnId);
 

@@ -26,7 +26,6 @@ namespace OpenNos.DAL.EF.MySQL
     {
         #region Methods
 
-
         public void Insert(List<MapMonsterDTO> monsters)
         {
             using (var context = DataAccessHelper.CreateContext())
@@ -43,30 +42,30 @@ namespace OpenNos.DAL.EF.MySQL
             }
         }
 
-        public MapMonsterDTO Insert(MapMonsterDTO MapMonster)
+        public MapMonsterDTO Insert(MapMonsterDTO mapMonster)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                MapMonster entity = Mapper.DynamicMap<MapMonster>(MapMonster);
+                MapMonster entity = Mapper.DynamicMap<MapMonster>(mapMonster);
                 context.MapMonster.Add(entity);
                 context.SaveChanges();
                 return Mapper.DynamicMap<MapMonsterDTO>(entity);
             }
         }
 
-        public MapMonsterDTO LoadById(int MonsterId)
+        public MapMonsterDTO LoadById(int monsterId)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                return Mapper.DynamicMap<MapMonsterDTO>(context.MapMonster.FirstOrDefault(i => i.MapMonsterId.Equals(MonsterId)));
+                return Mapper.DynamicMap<MapMonsterDTO>(context.MapMonster.FirstOrDefault(i => i.MapMonsterId.Equals(monsterId)));
             }
         }
 
-        public IEnumerable<MapMonsterDTO> LoadFromMap(short MapId)
+        public IEnumerable<MapMonsterDTO> LoadFromMap(short mapId)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                foreach (MapMonster MapMonsterobject in context.MapMonster.Where(c => c.MapId.Equals(MapId)))
+                foreach (MapMonster MapMonsterobject in context.MapMonster.Where(c => c.MapId.Equals(mapId)))
                 {
                     yield return Mapper.DynamicMap<MapMonsterDTO>(MapMonsterobject);
                 }

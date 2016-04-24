@@ -13,15 +13,13 @@
  */
 
 using AutoMapper;
-
+using OpenNos.DAL.EF.MySQL.DB;
 using OpenNos.DAL.EF.MySQL.Helpers;
 using OpenNos.DAL.Interface;
 using OpenNos.Data;
 using OpenNos.Data.Enums;
 using System.Collections.Generic;
 using System.Linq;
-using System;
-using OpenNos.DAL.EF.MySQL.DB;
 
 namespace OpenNos.DAL.EF.MySQL
 {
@@ -29,11 +27,11 @@ namespace OpenNos.DAL.EF.MySQL
     {
         #region Methods
 
-        public DeleteResult DeleteById(int ItemId)
+        public DeleteResult DeleteById(int itemId)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                ShopItem Item = context.ShopItem.FirstOrDefault(i => i.ShopItemId.Equals(ItemId));
+                ShopItem Item = context.ShopItem.FirstOrDefault(i => i.ShopItemId.Equals(itemId));
 
                 if (Item != null)
                 {
@@ -44,66 +42,60 @@ namespace OpenNos.DAL.EF.MySQL
                 return DeleteResult.Deleted;
             }
         }
-       
 
-        public ShopItemDTO LoadById(int ItemId)
+        public ShopItemDTO Insert(ShopItemDTO item)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                return Mapper.DynamicMap<ShopItemDTO>(context.ShopItem.FirstOrDefault(i => i.ShopItemId.Equals(ItemId)));
-            }
-        }
-
-        public IEnumerable<ShopItemDTO> LoadByShopId(int ShopId)
-        {
-            using (var context = DataAccessHelper.CreateContext())
-            {
-                foreach (ShopItem ShopItem in context.ShopItem.Where(i => i.ShopId.Equals(ShopId)))
-                {
-                    yield return Mapper.DynamicMap<ShopItemDTO>(ShopItem);
-                }
-            }
-        }
-        public ShopItemDTO Insert(ShopItemDTO Item)
-        {
-            using (var context = DataAccessHelper.CreateContext())
-            {
-                ShopItem entity = Mapper.DynamicMap<ShopItem>(Item);
+                ShopItem entity = Mapper.DynamicMap<ShopItem>(item);
                 context.ShopItem.Add(entity);
                 context.SaveChanges();
                 return Mapper.DynamicMap<ShopItemDTO>(entity);
             }
         }
 
-        private ShopItemDTO Update(ShopItem entity, ShopItemDTO ShopItem, OpenNosContext context)
-        {
-            using (context)
-            {
-                var result = context.ShopItem.FirstOrDefault(c => c.ShopItemId.Equals(ShopItem.ShopItemId));
-                if (result != null)
-                {
-                    result = Mapper.Map<ShopItemDTO, ShopItem>(ShopItem, entity);
-                    context.SaveChanges();
-                }
-            }
-
-            return Mapper.DynamicMap<ShopItemDTO>(entity);
-        }
-
-        public void Insert(List<ShopItemDTO> Items)
+        public void Insert(List<ShopItemDTO> items)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-
                 context.Configuration.AutoDetectChangesEnabled = false;
-                foreach (ShopItemDTO Item in Items)
+                foreach (ShopItemDTO Item in items)
                 {
                     ShopItem entity = Mapper.DynamicMap<ShopItem>(Item);
                     context.ShopItem.Add(entity);
                 }
                 context.SaveChanges();
-
             }
+        }
+
+        public ShopItemDTO LoadById(int itemId)
+        {
+            using (var context = DataAccessHelper.CreateContext())
+            {
+                return Mapper.DynamicMap<ShopItemDTO>(context.ShopItem.FirstOrDefault(i => i.ShopItemId.Equals(itemId)));
+            }
+        }
+
+        public IEnumerable<ShopItemDTO> LoadByShopId(int shopId)
+        {
+            using (var context = DataAccessHelper.CreateContext())
+            {
+                foreach (ShopItem ShopItem in context.ShopItem.Where(i => i.ShopId.Equals(shopId)))
+                {
+                    yield return Mapper.DynamicMap<ShopItemDTO>(ShopItem);
+                }
+            }
+        }
+
+        private ShopItemDTO Update(ShopItem entity, ShopItemDTO shopItem, OpenNosContext context)
+        {
+            if (entity != null)
+            {
+                Mapper.DynamicMap(shopItem, entity);
+                context.SaveChanges();
+            }
+
+            return Mapper.DynamicMap<ShopItemDTO>(entity);
         }
 
         #endregion

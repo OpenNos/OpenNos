@@ -26,22 +26,22 @@ namespace OpenNos.DAL.EF.MySQL
     {
         #region Methods
 
-        public RecipeDTO Insert(RecipeDTO Recipe)
+        public RecipeDTO Insert(RecipeDTO recipe)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                Recipe entity = Mapper.DynamicMap<Recipe>(Recipe);
+                Recipe entity = Mapper.DynamicMap<Recipe>(recipe);
                 context.Recipe.Add(entity);
                 context.SaveChanges();
                 return Mapper.DynamicMap<RecipeDTO>(entity);
             }
         }
 
-        public RecipeDTO LoadById(short RecipeId)
+        public RecipeDTO LoadById(short recipeId)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                return Mapper.DynamicMap<RecipeDTO>(context.Recipe.FirstOrDefault(s => s.RecipeId.Equals(RecipeId)));
+                return Mapper.DynamicMap<RecipeDTO>(context.Recipe.FirstOrDefault(s => s.RecipeId.Equals(recipeId)));
             }
         }
 
@@ -56,15 +56,15 @@ namespace OpenNos.DAL.EF.MySQL
             }
         }
 
-        public void Update(RecipeDTO Recipe)
+        public void Update(RecipeDTO recipe)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                Recipe result = context.Recipe.FirstOrDefault(c => c.MapNpcId == Recipe.MapNpcId && c.ItemVNum == Recipe.ItemVNum);
+                Recipe result = context.Recipe.FirstOrDefault(c => c.MapNpcId == recipe.MapNpcId && c.ItemVNum == recipe.ItemVNum);
                 if (result != null)
                 {
-                    Recipe.RecipeId = result.RecipeId;
-                    result = Mapper.Map<RecipeDTO, Recipe>(Recipe, result);
+                    recipe.RecipeId = result.RecipeId;
+                    Mapper.DynamicMap(recipe, result);
                     context.SaveChanges();
                 }
             }

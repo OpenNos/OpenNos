@@ -26,11 +26,11 @@ namespace OpenNos.DAL.EF.MySQL
     {
         #region Methods
 
-        public void Insert(List<MapDTO> Maps)
+        public void Insert(List<MapDTO> maps)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                foreach (MapDTO Item in Maps)
+                foreach (MapDTO Item in maps)
                 {
                     Map entity = Mapper.DynamicMap<Map>(Item);
                     context.Map.Add(entity);
@@ -39,13 +39,13 @@ namespace OpenNos.DAL.EF.MySQL
             }
         }
 
-        public MapDTO Insert(MapDTO Map)
+        public MapDTO Insert(MapDTO map)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                if (context.Map.FirstOrDefault(c => c.MapId.Equals(Map.MapId)) == null)
+                if (context.Map.FirstOrDefault(c => c.MapId.Equals(map.MapId)) == null)
                 {
-                    Map entity = Mapper.DynamicMap<Map>(Map);
+                    Map entity = Mapper.DynamicMap<Map>(map);
                     context.Map.Add(entity);
                     context.SaveChanges();
                     return Mapper.DynamicMap<MapDTO>(entity);
@@ -65,11 +65,11 @@ namespace OpenNos.DAL.EF.MySQL
             }
         }
 
-        public MapDTO LoadById(short MapId)
+        public MapDTO LoadById(short mapId)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                return Mapper.DynamicMap<MapDTO>(context.Map.FirstOrDefault(c => c.MapId.Equals(MapId)));
+                return Mapper.DynamicMap<MapDTO>(context.Map.FirstOrDefault(c => c.MapId.Equals(mapId)));
             }
         }
 

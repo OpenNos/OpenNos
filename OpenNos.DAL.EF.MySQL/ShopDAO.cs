@@ -26,12 +26,12 @@ namespace OpenNos.DAL.EF.MySQL
     {
         #region Methods
 
-        public void Insert(List<ShopDTO> Shops)
+        public void Insert(List<ShopDTO> shops)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
                 context.Configuration.AutoDetectChangesEnabled = false;
-                foreach (ShopDTO Item in Shops)
+                foreach (ShopDTO Item in shops)
                 {
                     Shop entity = Mapper.DynamicMap<Shop>(Item);
                     context.Shop.Add(entity);
@@ -40,13 +40,13 @@ namespace OpenNos.DAL.EF.MySQL
             }
         }
 
-        public ShopDTO Insert(ShopDTO Shop)
+        public ShopDTO Insert(ShopDTO shop)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                if (context.Shop.FirstOrDefault(c => c.MapNpcId.Equals(Shop.MapNpcId)) == null)
+                if (context.Shop.FirstOrDefault(c => c.MapNpcId.Equals(shop.MapNpcId)) == null)
                 {
-                    Shop entity = Mapper.DynamicMap<Shop>(Shop);
+                    Shop entity = Mapper.DynamicMap<Shop>(shop);
                     context.Shop.Add(entity);
                     context.SaveChanges();
                     return Mapper.DynamicMap<ShopDTO>(entity);
@@ -55,11 +55,11 @@ namespace OpenNos.DAL.EF.MySQL
             }
         }
 
-        public ShopDTO LoadById(int ShopId)
+        public ShopDTO LoadById(int shopId)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                return Mapper.DynamicMap<ShopDTO>(context.Shop.FirstOrDefault(s => s.ShopId.Equals(ShopId)));
+                return Mapper.DynamicMap<ShopDTO>(context.Shop.FirstOrDefault(s => s.ShopId.Equals(shopId)));
             }
         }
 

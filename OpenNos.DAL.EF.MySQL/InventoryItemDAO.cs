@@ -24,11 +24,11 @@ namespace OpenNos.DAL.EF.MySQL
     {
         #region Methods
 
-        public InventoryItemDTO LoadByInventoryId(long InventoryId)
+        public InventoryItemDTO LoadByInventoryId(long inventoryId)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                return Mapper.DynamicMap<InventoryItemDTO>(context.InventoryItem.FirstOrDefault(i => i.Inventory.InventoryId.Equals(InventoryId)));
+                return Mapper.DynamicMap<InventoryItemDTO>(context.InventoryItem.FirstOrDefault(i => i.Inventory.InventoryId.Equals(inventoryId)));
             }
         }
 

@@ -26,13 +26,13 @@ namespace OpenNos.DAL.EF.MySQL
     {
         #region Methods
 
-        public void Insert(List<ComboDTO> Combos)
+        public void Insert(List<ComboDTO> combos)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
 
                 context.Configuration.AutoDetectChangesEnabled = false;
-                foreach (ComboDTO Combo in Combos)
+                foreach (ComboDTO Combo in combos)
                 {
                     Combo entity = Mapper.DynamicMap<Combo>(Combo);
                     context.Combo.Add(entity);
@@ -42,11 +42,11 @@ namespace OpenNos.DAL.EF.MySQL
             }
         }
 
-        public ComboDTO Insert(ComboDTO Combo)
+        public ComboDTO Insert(ComboDTO combo)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                Combo entity = Mapper.DynamicMap<Combo>(Combo);
+                Combo entity = Mapper.DynamicMap<Combo>(combo);
                 context.Combo.Add(entity);
                 context.SaveChanges();
                 return Mapper.DynamicMap<ComboDTO>(entity);
@@ -63,11 +63,11 @@ namespace OpenNos.DAL.EF.MySQL
                 }
             }
         }
-        public ComboDTO LoadById(short ComboId)
+        public ComboDTO LoadById(short comboId)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                return Mapper.DynamicMap<ComboDTO>(context.Combo.FirstOrDefault(s => s.SkillVNum.Equals(ComboId)));
+                return Mapper.DynamicMap<ComboDTO>(context.Combo.FirstOrDefault(s => s.SkillVNum.Equals(comboId)));
             }
         }
 

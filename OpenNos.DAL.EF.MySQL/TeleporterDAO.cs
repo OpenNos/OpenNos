@@ -24,37 +24,39 @@ namespace OpenNos.DAL.EF.MySQL
 {
     public class TeleporterDAO : ITeleporterDAO
     {
+
         #region Methods
 
-        public TeleporterDTO Insert(TeleporterDTO Teleporter)
+        public TeleporterDTO Insert(TeleporterDTO teleporter)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                Teleporter entity = Mapper.DynamicMap<Teleporter>(Teleporter);
+                Teleporter entity = Mapper.DynamicMap<Teleporter>(teleporter);
                 context.Teleporter.Add(entity);
                 context.SaveChanges();
                 return Mapper.DynamicMap<TeleporterDTO>(entity);
             }
         }
 
-        public IEnumerable<TeleporterDTO> LoadFromNpc(int NpcId)
+        public TeleporterDTO LoadById(short teleporterId)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                foreach (Teleporter Teleporterobject in context.Teleporter.Where(c => c.MapNpcId.Equals(NpcId)))
+                return Mapper.DynamicMap<TeleporterDTO>(context.Teleporter.FirstOrDefault(i => i.TeleporterId.Equals(teleporterId)));
+            }
+        }
+
+        public IEnumerable<TeleporterDTO> LoadFromNpc(int npcId)
+        {
+            using (var context = DataAccessHelper.CreateContext())
+            {
+                foreach (Teleporter Teleporterobject in context.Teleporter.Where(c => c.MapNpcId.Equals(npcId)))
                 {
                     yield return Mapper.DynamicMap<TeleporterDTO>(Teleporterobject);
                 }
             }
         }
 
-        public TeleporterDTO LoadById(short TeleporterId)
-        {
-            using (var context = DataAccessHelper.CreateContext())
-            {
-                return Mapper.DynamicMap<TeleporterDTO>(context.Teleporter.FirstOrDefault(i => i.TeleporterId.Equals(TeleporterId)));
-            }
-        }
         #endregion
     }
 }

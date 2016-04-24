@@ -22,7 +22,7 @@ namespace OpenNos.DAL.Interface
     {
         #region Methods
 
-        DeleteResult Delete(long accountId, byte characterSlot);
+        DeleteResult DeleteByPrimaryKey(long accountId, byte characterSlot);
 
         IEnumerable<CharacterDTO> GetTopComplimented();
 

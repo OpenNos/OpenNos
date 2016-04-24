@@ -22,7 +22,7 @@ namespace OpenNos.DAL.Interface
         #region Methods
 
         NpcMonsterDTO Insert(NpcMonsterDTO npc);
-        NpcMonsterDTO LoadById(short MapId);
+        NpcMonsterDTO LoadByVnum(short MapId);
         IEnumerable<NpcMonsterDTO> LoadAll();
         void Insert(List<NpcMonsterDTO> npc);
 

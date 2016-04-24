@@ -27,22 +27,22 @@ namespace OpenNos.DAL.EF.MySQL
     {
         #region Methods
 
-        public IEnumerable<GeneralLogDTO> LoadByLogType(string LogType, Nullable<long> CharacterId)
+        public IEnumerable<GeneralLogDTO> LoadByLogType(string logType, Nullable<long> characterId)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                foreach (GeneralLog log in context.GeneralLog.Where(c => c.LogType.Equals(LogType) && c.CharacterId == CharacterId))
+                foreach (GeneralLog log in context.GeneralLog.Where(c => c.LogType.Equals(logType) && c.CharacterId == characterId))
                 {
                     yield return Mapper.DynamicMap<GeneralLogDTO>(log);
                 }
             }
         }
 
-        public void SetCharIdNull(long? CharacterId)
+        public void SetCharIdNull(long? characterId)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                foreach (GeneralLog log in context.GeneralLog.Where(c => c.CharacterId == CharacterId))
+                foreach (GeneralLog log in context.GeneralLog.Where(c => c.CharacterId == characterId))
                 {
                     log.CharacterId = null;
                 }
@@ -50,18 +50,18 @@ namespace OpenNos.DAL.EF.MySQL
             }
         }
 
-        public void WriteGeneralLog(long AccountId, string ipAddress, Nullable<long> CharacterId, string logType, string logData)
+        public void WriteGeneralLog(long accountId, string ipAddress, Nullable<long> characterId, string logType, string logData)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
                 GeneralLog log = new GeneralLog()
                 {
-                    AccountId = AccountId,
+                    AccountId = accountId,
                     IpAddress = ipAddress,
                     Timestamp = DateTime.Now,
                     LogType = logType,
                     LogData = logData,
-                    CharacterId = CharacterId
+                    CharacterId = characterId
                 };
 
                 context.GeneralLog.Add(log);
