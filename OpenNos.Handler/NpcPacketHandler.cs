@@ -205,7 +205,7 @@ namespace OpenNos.Handler
                     pourcent = 1.20;
                 else if (Session.Character.GetDigniteIco() == 5 || Session.Character.GetDigniteIco() == 6)
                     pourcent = 1.5;
-                byte rare = 0;
+                byte rare = item.Rare;
                 if (iteminfo.ReputPrice == 0)
                 {
                     if (price <= 0 || price * pourcent > Session.Character.Gold)
@@ -225,7 +225,7 @@ namespace OpenNos.Handler
                     byte ra = (byte)rnd.Next(0, 100);
 
                     int[] rareprob = { 100, 100, 70, 50, 30, 15, 5, 1 };
-
+                    if(iteminfo.ReputPrice !=0)
                     for (int i = 0; i < rareprob.Length; i++)
                     {
                         if (ra <= rareprob[i])
