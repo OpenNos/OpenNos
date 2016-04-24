@@ -5,7 +5,7 @@ using System;
 
 namespace OpenNos.GameObject
 {
-    public class WearableInstance : ItemInstance, IWearableInstanceDTO, IGameObject
+    public class WearableInstance : ItemInstance, IWearableInstance, IGameObject
     {
         #region Instantiation
 

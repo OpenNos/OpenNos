@@ -1,6 +1,6 @@
 ﻿namespace OpenNos.Data
 {
-    public class WearableInstanceDTO : ItemInstanceDTO, IWearableInstanceDTO
+    public class WearableInstanceDTO : ItemInstanceDTO, IWearableInstance
     {
         #region Properties
 

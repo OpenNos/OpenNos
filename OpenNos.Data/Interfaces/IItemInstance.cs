@@ -2,7 +2,7 @@
 
 namespace OpenNos.Data
 {
-    public interface IItemInstanceDTO
+    public interface IItemInstance
     {
         #region Properties
 
