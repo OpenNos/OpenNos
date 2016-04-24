@@ -68,9 +68,9 @@ namespace OpenNos.GameObject
                 return false;
         }
 
-        public ArrayList GetSuccessors()
+        public List<MapCellAStar> GetSuccessors()
         {
-            ArrayList successors = new ArrayList();
+            List<MapCellAStar> successors = new List<MapCellAStar>();
 
             for (short xd = -1; xd <= 1; xd++)
             {

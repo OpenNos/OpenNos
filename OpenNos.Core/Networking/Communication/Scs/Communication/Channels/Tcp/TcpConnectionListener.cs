@@ -86,7 +86,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
                         OnCommunicationChannelConnected(new TcpCommunicationChannel(clientSocket));
                     }
                 }
-                catch (Exception e)
+                catch
                 {
                     //Disconnect, wait for a while and connect again.
                     StopSocket();

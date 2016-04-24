@@ -378,7 +378,7 @@ namespace OpenNos.GameObject
                     break;
                 }
 
-                ArrayList successors = cell_current.GetSuccessors();
+                List<MapCellAStar> successors = cell_current.GetSuccessors();
 
                 foreach (MapCellAStar cell_successor in successors)
                 {

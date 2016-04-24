@@ -42,7 +42,7 @@ namespace OpenNos.Core
                 SendMessage(rawMessage);
                 return true;
             }
-            catch (Exception e)
+            catch
             {
                 return false;
             }

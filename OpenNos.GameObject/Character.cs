@@ -45,12 +45,12 @@ namespace OpenNos.GameObject
         private int _size = 10;
         private byte _speed;
         private byte cmapcount = 0;
-        private readonly ClientSession Session;
+        private readonly ClientSession _session;
         #endregion
 
         #region Instantiation
 
-        public Character(ClientSession session)
+        public Character(ClientSession Session)
         {
             Mapper.CreateMap<CharacterDTO, Character>();
             Mapper.CreateMap<Character, CharacterDTO>();
@@ -58,13 +58,14 @@ namespace OpenNos.GameObject
             SaveX = 0;
             SaveY = 0;
             LastDefence = DateTime.Now;
-            Session = session;
+            _session = Session;
         }
-
+       
         #endregion
 
         #region Properties
         public DateTime LastDefence { get; set; }
+        public ClientSession Session { get { return _session; } }
         public AuthorityType Authority { get { return _authority; } set { _authority = value; } }
         public int BackPack { get { return _backpack; } set { _backpack = value; } }
         public int Direction { get { return _direction; } set { _direction = value; } }
