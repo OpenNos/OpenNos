@@ -34,6 +34,7 @@ namespace OpenNos.GameObject
             Target = -1;
             inBattle = false;
             path = new List<MapCell>();
+            Blocked = false;
         }
 
         #endregion
@@ -41,6 +42,7 @@ namespace OpenNos.GameObject
         #region Properties
 
         public bool Alive { get; set; }
+        private bool Blocked { get; set; }
         public int CurrentHp { get; set; }
         public int CurrentMp { get; set; }
         public DateTime Death { get; set; }
@@ -113,29 +115,52 @@ namespace OpenNos.GameObject
                     return;
                 Random r = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
                 double time = (DateTime.Now - LastMove).TotalSeconds;
-                if (IsMoving && time > r.Next(1, 3) * (0.5 + r.NextDouble()))
+                if (IsMoving)
                 {
-                    byte point = (byte)r.Next(2, 5);
-                    byte fpoint = (byte)r.Next(0, 2);
-
-                    byte xpoint = (byte)r.Next(fpoint, point);
-                    byte ypoint = (byte)(point - xpoint);
-
-                    short MapX = firstX;
-                    short MapY = firstY;
-                    if (ServerManager.GetMap(MapId).GetFreePosition(ref MapX, ref MapY, xpoint, ypoint))
+                    if (path.Count > 0)
                     {
-                        LastMove = DateTime.Now;
-
-                        string movepacket = $"mv 3 {this.MapMonsterId} {MapX} {MapY} {monster.Speed}";
-                        ClientLinkManager.Instance.BroadcastToMap(MapId, movepacket);
-
-                        Task.Factory.StartNew(async () =>
+                        if ((DateTime.Now - LastMove).TotalSeconds > 1.0 / monster.Speed)
                         {
-                            await Task.Delay(500);
-                            this.MapX = MapX;
-                            this.MapY = MapY;
-                        });
+                            short MapX = path.ElementAt(0).X;
+                            short MapY = path.ElementAt(0).Y;
+                            path.RemoveAt(0);
+                            LastMove = DateTime.Now;
+                            ClientLinkManager.Instance.BroadcastToMap(MapId, $"mv 3 {this.MapMonsterId} {this.MapX} {this.MapY} {monster.Speed}");
+
+                            Task.Factory.StartNew(async () =>
+                            {
+                                await Task.Delay(500);
+                                this.MapX = MapX;
+                                this.MapY = MapY;
+                            });
+
+                            return;
+                        }
+                    }
+                    else if (time > r.Next(1, 3) * (0.5 + r.NextDouble()))
+                    {
+                        byte point = (byte)r.Next(2, 5);
+                        byte fpoint = (byte)r.Next(0, 2);
+
+                        byte xpoint = (byte)r.Next(fpoint, point);
+                        byte ypoint = (byte)(point - xpoint);
+
+                        short MapX = firstX;
+                        short MapY = firstY;
+                        if (ServerManager.GetMap(MapId).GetFreePosition(ref MapX, ref MapY, xpoint, ypoint))
+                        {
+                            LastMove = DateTime.Now;
+
+                            string movepacket = $"mv 3 {this.MapMonsterId} {MapX} {MapY} {monster.Speed}";
+                            ClientLinkManager.Instance.BroadcastToMap(MapId, movepacket);
+
+                            Task.Factory.StartNew(async () =>
+                            {
+                                await Task.Delay(500);
+                                this.MapX = MapX;
+                                this.MapY = MapY;
+                            });
+                        }
                     }
                 }
                 if (monster.IsHostile)
@@ -161,7 +186,7 @@ namespace OpenNos.GameObject
                 if (MapX == null || MapY == null) { Target = -1; return; }
                 short mapX = this.MapX;
                 short mapY = this.MapY;
-
+                int damage = 100;
                 Random r = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
                 NpcMonsterSkill ski = monster.Skills.Where(s => !s.Used && (DateTime.Now - s.LastUse).TotalMilliseconds >= 100 * ServerManager.GetSkill(s.SkillVNum).Cooldown).OrderBy(rnd => r.Next()).FirstOrDefault();
                 if (ski != null)
@@ -183,82 +208,112 @@ namespace OpenNos.GameObject
 
                         ClientLinkManager.Instance.BroadcastToMap(MapId, $"su 3 {MapMonsterId} 1 {Target} {ski.SkillVNum} {sk.Cooldown} {sk.AttackAnimation} {sk.Effect} {this.MapX} {this.MapY} 1 100 0 1 0");
                         ski.Used = false;
-                        //TODO range skill
+                        if (sk.SkillType == 0)
+                            foreach (Character chara in ServerManager.GetMap(MapId).GetListPeopleInRange((short)MapX, (short)MapY, monster.BasicArea).Where(s => s.CharacterId != Target))
+                            {
+                                damage = 100;
+                                bool AlreadyDead2 = chara.Hp <= 0;
+                                chara.Hp -= damage;
+                                chara.LastDefence = DateTime.Now;
+                                ClientLinkManager.Instance.Broadcast(null, ClientLinkManager.Instance.GetUserMethod<string>(chara.CharacterId, "GenerateStat"), ReceiverType.OnlySomeone, "", chara.CharacterId);
+                                ClientLinkManager.Instance.BroadcastToMap(MapId, $"su 3 {MapMonsterId} 1 {chara.CharacterId} 0 {monster.BasicCooldown} 11 {monster.BasicSkill} 0 0 1 {(int)((double)chara.Hp / chara.HPLoad())} {damage} 0 0");
+                                if (chara.Hp <= 0 && !AlreadyDead2)
+                                {
+                                    Thread.Sleep(1000);
+                                    ClientLinkManager.Instance.AskRevive(chara.CharacterId);
+                                }
+                            }
                     }
                 }
                 else
                 {
                     if (!inBattle)
                     {
-                        if ((DateTime.Now - LastEffect).TotalMilliseconds >= monster.BasicCooldown * 100 && (Map.GetDistance(new MapCell() { X = this.MapX, Y = this.MapY }, new MapCell() { X = (short)MapX, Y = (short)MapY }) <= monster.BasicRange + 1))
+                        if ((DateTime.Now - LastEffect).TotalMilliseconds >= monster.BasicCooldown * 100)
                         {
-                            LastEffect = DateTime.Now;
-                            inBattle = true;
-                            ClientLinkManager.Instance.BroadcastToMap(MapId, $"ct 3 {MapMonsterId} 1 {Target} -1 -1 0");
-                            int? Hp = ClientLinkManager.Instance.GetProperty<int?>(Target, "Hp");
+                            if (Map.GetDistance(new MapCell() { X = this.MapX, Y = this.MapY }, new MapCell() { X = (short)MapX, Y = (short)MapY }) <= monster.BasicRange + 1)
+                            {
+                                LastEffect = DateTime.Now;
+                                inBattle = true;
+                                ClientLinkManager.Instance.BroadcastToMap(MapId, $"ct 3 {MapMonsterId} 1 {Target} -1 -1 0");
+                                int? Hp = ClientLinkManager.Instance.GetProperty<int?>(Target, "Hp");
 
-                            int damage = 100;
-                            bool AlreadyDead = Hp <= 0;
-                            int HP = ((int)Hp - damage);
-                            ClientLinkManager.Instance.SetProperty(Target, "Hp", (int)((HP) <= 0 ? 0 : HP));
 
-                            ClientLinkManager.Instance.SetProperty(Target, "LastDefence", DateTime.Now);
+                                bool AlreadyDead = Hp <= 0;
+                                int HP = ((int)Hp - damage);
+                                ClientLinkManager.Instance.SetProperty(Target, "Hp", (int)((HP) <= 0 ? 0 : HP));
 
-                            ClientLinkManager.Instance.BroadcastToMap(MapId, $"su 3 {MapMonsterId} 1 {Target} 0 {monster.BasicCooldown} 11 {monster.BasicSkill} 0 0 {((HP) > 0 ? 1 : 0)} {(int)((double)(HP) / ClientLinkManager.Instance.GetUserMethod<double>(Target, "HPLoad"))} {damage} 0 0");
-                            ClientLinkManager.Instance.Broadcast(null, ClientLinkManager.Instance.GetUserMethod<string>(Target, "GenerateStat"), ReceiverType.OnlySomeone, "", Target);
+                                ClientLinkManager.Instance.SetProperty(Target, "LastDefence", DateTime.Now);
+                                path = new List<MapCell>();
+                                ClientLinkManager.Instance.BroadcastToMap(MapId, $"su 3 {MapMonsterId} 1 {Target} 0 {monster.BasicCooldown} 11 {monster.BasicSkill} 0 0 {((HP) > 0 ? 1 : 0)} {(int)((double)(HP) / ClientLinkManager.Instance.GetUserMethod<double>(Target, "HPLoad"))} {damage} 0 0");
+                                ClientLinkManager.Instance.Broadcast(null, ClientLinkManager.Instance.GetUserMethod<string>(Target, "GenerateStat"), ReceiverType.OnlySomeone, "", Target);
 
-                            if (monster.AttackClass == 0)
-                                foreach (Character chara in ServerManager.GetMap(MapId).GetListPeopleInRange((short)MapX, (short)MapY, monster.BasicArea).Where(s => s.CharacterId != Target))
+                                if (monster.AttackClass == 0)
+                                    foreach (Character chara in ServerManager.GetMap(MapId).GetListPeopleInRange((short)MapX, (short)MapY, monster.BasicArea).Where(s => s.CharacterId != Target))
+                                    {
+                                        damage = 100;
+                                        bool AlreadyDead2 = chara.Hp <= 0;
+                                        chara.Hp -= damage;
+                                        chara.LastDefence = DateTime.Now;
+                                        ClientLinkManager.Instance.Broadcast(null, ClientLinkManager.Instance.GetUserMethod<string>(chara.CharacterId, "GenerateStat"), ReceiverType.OnlySomeone, "", chara.CharacterId);
+                                        ClientLinkManager.Instance.BroadcastToMap(MapId, $"su 3 {MapMonsterId} 1 {chara.CharacterId} 0 {monster.BasicCooldown} 11 {monster.BasicSkill} 0 0 1 {(int)((double)chara.Hp / chara.HPLoad())} {damage} 0 0");
+                                        if (chara.Hp <= 0 && !AlreadyDead2)
+                                        {
+                                            Thread.Sleep(1000);
+                                            ClientLinkManager.Instance.AskRevive(chara.CharacterId);
+                                        }
+                                    }
+                                if (HP <= 0)
                                 {
-                                    damage = 100;
-                                    bool AlreadyDead2 = chara.Hp <= 0;
-                                    chara.Hp -= damage;
-                                    chara.LastDefence = DateTime.Now;
-                                    ClientLinkManager.Instance.Broadcast(null, ClientLinkManager.Instance.GetUserMethod<string>(chara.CharacterId, "GenerateStat"), ReceiverType.OnlySomeone, "", chara.CharacterId);
-                                    ClientLinkManager.Instance.BroadcastToMap(MapId, $"su 3 {MapMonsterId} 1 {chara.CharacterId} 0 {monster.BasicCooldown} 11 {monster.BasicSkill} 0 0 1 {(int)((double)Hp / chara.HPLoad())} {damage} 0 0");
-                                    if (chara.Hp <= 0 && !AlreadyDead2)
+                                    if (!AlreadyDead)
                                     {
                                         Thread.Sleep(1000);
-                                        ClientLinkManager.Instance.AskRevive(chara.CharacterId);
+                                        ClientLinkManager.Instance.AskRevive(Target);
+                                    }
+                                    Target = -1;
+                                }
+                                inBattle = false;
+                            }
+                            else
+                            {
+                                if (IsMoving == true)
+                                {
+                                    short maxdistance = 20;
+
+                                    if (Blocked == false)
+                                    {
+                                        if (path.Count() < 1)
+                                        {
+                                            Blocked = true;
+                                            path = ServerManager.GetMap(MapId).AStar(new MapCell() { X = this.MapX, Y = this.MapY, MapId = this.MapId }, new MapCell() { X = (short)MapX, Y = (short)MapY, MapId = this.MapId });
+                                            Blocked = false;
+                                        }
+                                        if (path.Count > 0 && Map.GetDistance(new MapCell() { X = this.MapX, Y = this.MapY, MapId = this.MapId }, new MapCell() { X = (short)MapX, Y = (short)MapY, MapId = this.MapId }) > 1)
+                                        {
+                                            mapX =  path.ElementAt(0).X;
+                                            mapY =  path.ElementAt(0).Y;
+                                            path.RemoveAt(0);
+                                        }
+                                        if (MapId != mapId || (Map.GetDistance(new MapCell() { X = this.MapX, Y = this.MapY }, new MapCell() { X = (short)MapX, Y = (short)MapY }) > maxdistance + 1))
+                                        {
+                                            Blocked = true;
+                                            path = ServerManager.GetMap(MapId).AStar(new MapCell() { X = this.MapX, Y = this.MapY, MapId = this.MapId }, new MapCell() { X = firstX, Y = firstY, MapId = this.MapId });
+                                            Blocked = false;
+                                            Target = -1;
+                                        }
+                                        else
+                                        {
+                                            if ((DateTime.Now - LastMove).TotalSeconds > 1.0 / monster.Speed)
+                                            {
+                                                this.MapX = mapX;
+                                                this.MapY = mapY;
+                                                LastMove = DateTime.Now;
+                                                ClientLinkManager.Instance.BroadcastToMap(MapId, $"mv 3 {this.MapMonsterId} {this.MapX} {this.MapY} {monster.Speed}");
+                                            }
+                                        }
                                     }
                                 }
-                            if (HP <= 0)
-                            {
-                                if (!AlreadyDead)
-                                {
-                                    Thread.Sleep(1000);
-                                    ClientLinkManager.Instance.AskRevive(Target);
-                                }
-                                Target = -1;
                             }
-                            inBattle = false;
-                        }
-                    }
-                }
-                if (IsMoving == true)
-                {
-                    short maxdistance = 20;
-                    if (path.Count() < 1)
-                        path = ServerManager.GetMap(MapId).AStar(new MapCell() { X = this.MapX, Y = this.MapY, MapId = this.MapId }, new MapCell() { X = (short)MapX, Y = (short)MapY, MapId = this.MapId });
-                    if (path.Count > 0 && Map.GetDistance(new MapCell() { X = this.MapX, Y = this.MapY, MapId = this.MapId }, new MapCell() { X = (short)MapX, Y = (short)MapY, MapId = this.MapId }) > 1)
-                    {
-                        mapX = path.ElementAt(0) == null ? mapX : path.ElementAt(0).X;
-                        mapY = path.ElementAt(0) == null ? mapY : path.ElementAt(0).Y;
-                        path.RemoveAt(0);
-                    }
-                    if (MapId != mapId || (Map.GetDistance(new MapCell() { X = this.MapX, Y = this.MapY }, new MapCell() { X = (short)MapX, Y = (short)MapY }) > maxdistance + 1))
-                    {
-                        //TODO add return to origin
-                        Target = -1;
-                    }
-                    else
-                    {
-                        if ((DateTime.Now - LastMove).TotalSeconds > 1.0 / monster.Speed)
-                        {
-                            this.MapX = mapX;
-                            this.MapY = mapY;
-                            LastMove = DateTime.Now;
-                            ClientLinkManager.Instance.BroadcastToMap(MapId, $"mv 3 {this.MapMonsterId} {this.MapX} {this.MapY} {monster.Speed}");
                         }
                     }
                 }
