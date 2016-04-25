@@ -574,7 +574,8 @@ namespace OpenNos.Handler
             int NpcId;
             byte typeshop = 0;
             if (!int.TryParse(packetsplit[5], out NpcId) || !byte.TryParse(packetsplit[2], out type)) return;
-
+            if (Session.Character.Speed == 0)
+                return;
             MapNpc mapnpc = Session.CurrentMap.Npcs.FirstOrDefault(n => n.MapNpcId.Equals(NpcId));
             NpcMonster npc = ServerManager.GetNpc(mapnpc.NpcVNum);
             if (mapnpc?.Shop == null) return;

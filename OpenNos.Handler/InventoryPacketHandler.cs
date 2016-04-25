@@ -71,6 +71,8 @@ namespace OpenNos.Handler
                 if (exc == null || exc.ExchangeList.Count() == 0)
                 {
                     if (charId == Session.Character.CharacterId) return;
+                    if (Session.Character.Speed == 0)
+                        return;
                     Session.Client.SendPacket($"exc_list 1 {charId} -1");
                     ClientLinkManager.Instance.Broadcast(Session, $"exc_list 1 {Session.Character.CharacterId} -1", ReceiverType.OnlySomeone, "", charId);
                 }
@@ -226,6 +228,8 @@ namespace OpenNos.Handler
                 }
                 else
                 {
+                    if (Session.Character.Speed == 0)
+                        return;
                     Session.Character.ExchangeInfo = new ExchangeInfo { CharId = charId, Confirm = false };
 
                     charName = (string)ClientLinkManager.Instance.GetProperty<string>(charId, "Name");
