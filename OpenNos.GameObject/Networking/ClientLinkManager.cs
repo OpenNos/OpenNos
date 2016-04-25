@@ -261,15 +261,15 @@ namespace OpenNos.GameObject
 
                 foreach (CharacterDTO character in DAOFactory.CharacterDAO.GetTopComplimented())
                 {
-                    clinit += $" {character.CharacterId}|{character.Level}|{character.Compliment}|{character.Name}";
+                    clinit += $" {character.CharacterId}|{character.Level}|{character.HeroLevel}|{character.Compliment}|{character.Name}";
                 }
                 foreach (CharacterDTO character in DAOFactory.CharacterDAO.GetTopReputation())
                 {
-                    flinit += $" {character.CharacterId}|{character.Level}|{character.Reput}|{character.Name}";
+                    flinit += $" {character.CharacterId}|{character.Level}|{character.HeroLevel}|{character.Reput}|{character.Name}";
                 }
                 foreach (CharacterDTO character in DAOFactory.CharacterDAO.GetTopPoints())
                 {
-                    kdlinit += $" {character.CharacterId}|{character.Level}|{character.Act4Points}|{character.Name}";
+                    kdlinit += $" {character.CharacterId}|{character.Level}|{character.HeroLevel}|{character.Act4Points}|{character.Name}";
                 }
 
                 Session.Client.SendPacket(clinit);
