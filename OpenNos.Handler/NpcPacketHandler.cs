@@ -548,7 +548,7 @@ namespace OpenNos.Handler
                 if (!byte.TryParse(packetsplit[4], out type) || !byte.TryParse(packetsplit[5], out slot) || !byte.TryParse(packetsplit[6], out amount)) return;
 
                 Inventory inv = Session.Character.InventoryList.LoadBySlotAndType(slot, type);
-                if (inv == null || amount > inv.InventoryItem.Amount) return;
+                if (inv == null || amount < 0 || amount > inv.InventoryItem.Amount) return;
 
                 if (ServerManager.GetItem(inv.InventoryItem.ItemVNum).IsSoldable != true)
                 {
@@ -564,7 +564,15 @@ namespace OpenNos.Handler
                     return;
                 }
                 Session.Character.Gold += (item.Price / 20) * amount;
-                Session.Character.DeleteItem(type, slot);
+                if (amount == inv.InventoryItem.Amount)
+                    Session.Character.DeleteItem(type, slot);
+                else { 
+                    inv.InventoryItem.Amount = inv.InventoryItem.Amount - amount;
+                    Session.Client.SendPacket(
+                     Session.Character.GenerateInventoryAdd(inv.InventoryItem.ItemVNum,
+                         inv.InventoryItem.Amount, inv.Type, inv.Slot, inv.InventoryItem.Rare,
+                         inv.InventoryItem.Design, inv.InventoryItem.Upgrade));
+                }
                 Session.Client.SendPacket(Session.Character.GenerateGold());
                 Session.Client.SendPacket(Session.Character.GenerateShopMemo(1, string.Format(Language.Instance.GetMessageFromKey("SELL_ITEM_VALIDE"), item.Name, amount)));
             }
