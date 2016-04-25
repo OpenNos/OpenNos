@@ -27,6 +27,10 @@ namespace OpenNos.GameObject
                 default:
                     if (Session.Character.Hp == Session.Character.HPLoad() && Session.Character.Mp == Session.Character.MPLoad())
                         return;
+                    if (Session.Character.Hp == Session.Character.HPLoad() && item.Hp > 0 && item.Mp == 0)
+                        return;
+                    if (Session.Character.Mp == Session.Character.MPLoad() && item.Mp > 0 && item.Hp == 0)
+                        return;
                     inv.InventoryItem.Amount--;
                     if (inv.InventoryItem.Amount > 0)
                         Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(inv.InventoryItem.ItemVNum, inv.InventoryItem.Amount, inv.Type, inv.Slot, inv.InventoryItem.Rare, inv.InventoryItem.Design, inv.InventoryItem.Upgrade));
