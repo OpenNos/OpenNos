@@ -63,7 +63,7 @@
     <Compile Include="ShopItemDTO.cs" />
     <Compile Include="ShopDTO.cs" />
     <Compile Include="InventoryDTO.cs" />
-    <Compile Include="InventoryItemDTO.cs" />
+    <Compile Include="ItemInstanceDTO.cs" />
     <Compile Include="ItemDTO.cs" />
     <Compile Include="MapDTO.cs" />
     <Compile Include="NpcMonsterDTO.cs" />
@@ -76,8 +76,11 @@
     <Compile Include="SkillDTO.cs" />
     <Compile Include="ShopSkillDTO.cs" />
     <Compile Include="CharacterSkillDTO.cs" />
+    <Compile Include="SpecialistInstanceDTO.cs" />
     <Compile Include="TeleporterDTO.cs" />
+    <Compile Include="UsableInstanceDTO.cs" />
     <Compile Include="UserDTO.cs" />
+    <Compile Include="WearableInstanceDTO.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\OpenNos.Core\OpenNos.Core.csproj">

@@ -27,6 +27,8 @@ namespace OpenNos.DAL.EF.MySQL
         public DateTime? ItemDeleteTime { get; set; }
         public short ItemVNum { get; set; }
 
+        public bool IsUsed { get; set; }
+
         #endregion
     }
 }

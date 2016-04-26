@@ -20,16 +20,16 @@ namespace OpenNos.GameObject
 
         internal void UseItemHandler(ref Inventory inv, ClientSession Session, short effect, int effectValue)
         {
-            Item item = ServerManager.GetItem(inv.InventoryItem.ItemVNum);
+            Item item = ServerManager.GetItem(inv.ItemInstance.ItemVNum);
 
             switch (effect)
             {
                 default:
                     if (Session.Character.Hp == Session.Character.HPLoad() && Session.Character.Mp == Session.Character.MPLoad())
                         return;
-                    inv.InventoryItem.Amount--;
-                    if (inv.InventoryItem.Amount > 0)
-                        Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(inv.InventoryItem.ItemVNum, inv.InventoryItem.Amount, inv.Type, inv.Slot, inv.InventoryItem.Rare, inv.InventoryItem.Design, inv.InventoryItem.Upgrade));
+                    inv.ItemInstance.Amount--;
+                    if (inv.ItemInstance.Amount > 0)
+                        Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(inv.ItemInstance.ItemVNum, inv.ItemInstance.Amount, inv.Type, inv.Slot, 0, 0, 0));
                     else
                     {
                         Session.Character.InventoryList.DeleteFromSlotAndType(inv.

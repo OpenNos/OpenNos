@@ -287,15 +287,14 @@ namespace OpenNos.GameObject
 
             DroppedItem = new MapItem(MapX, MapY)
             {
-                ItemVNum = drop.ItemVNum,
-                Amount = (short)drop.Amount,
+                ItemInstance = new ItemInstanceDTO() { ItemVNum = drop.ItemVNum, Amount = (short)drop.Amount }
             };
             while (ServerManager.GetMap(MapId).DroppedList.ContainsKey(random = rnd.Next(1, 999999)))
             { }
-            DroppedItem.InventoryItemId = random;
+            DroppedItem.ItemInstance.ItemInstanceId = random;
             ServerManager.GetMap(MapId).DroppedList.Add(random, DroppedItem);
 
-            ClientLinkManager.Instance.BroadcastToMap(MapId, $"drop {DroppedItem.ItemVNum} {random} {DroppedItem.PositionX} {DroppedItem.PositionY} {DroppedItem.Amount} 0 0 -1");
+            ClientLinkManager.Instance.BroadcastToMap(MapId, $"drop {DroppedItem.ItemInstance.ItemVNum} {random} {DroppedItem.PositionX} {DroppedItem.PositionY} {DroppedItem.ItemInstance.Amount} 0 0 -1");
         }
 
         public void LoadZone()

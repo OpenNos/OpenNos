@@ -125,7 +125,7 @@
     <Compile Include="ShopDAO.cs" />
     <Compile Include="Entities\ShopItem.cs" />
     <Compile Include="ShopItemDAO.cs" />
-    <Compile Include="InventoryItemDAO.cs" />
+    <Compile Include="ItemInstanceDAO.cs" />
     <Compile Include="ItemDAO.cs" />
     <Compile Include="MapDAO.cs" />
     <Compile Include="NpcMonsterDAO.cs" />

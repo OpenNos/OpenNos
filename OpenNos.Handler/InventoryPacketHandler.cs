@@ -120,11 +120,11 @@ namespace OpenNos.Handler
 
             byte type; byte.TryParse(packetsplit[2], out type);
             short slot; short.TryParse(packetsplit[3], out slot);
-            Inventory inventory = null;
+            WearableInstance inventory = null;
             switch (type)
             {
                 case 0:
-                    inventory = Session.Character.EquipmentList.LoadBySlotAndType(slot, (byte)InventoryType.Equipment);
+                    inventory = Session.Character.EquipmentList.LoadBySlotAndType<WearableInstance>(slot, (byte)InventoryType.Equipment);
                     break;
 
                 case 5:
@@ -135,70 +135,70 @@ namespace OpenNos.Handler
                         if (byte.TryParse(packetsplit[3], out inven) && short.TryParse(packetsplit[4], out slot))
                         {
                             InventoryList inv = ClientLinkManager.Instance.GetProperty<InventoryList>(Session.Character.ExchangeInfo.CharId, "InventoryList");
-                            inventory = inv.LoadBySlotAndType(slot, inven);
+                            inventory = inv.LoadBySlotAndType<WearableInstance>(slot, inven);
                         }
                     }
                     break;
 
                 case 1:
-                    inventory = Session.Character.InventoryList.LoadBySlotAndType(slot, (byte)InventoryType.Wear);
+                    inventory = Session.Character.InventoryList.LoadBySlotAndType<WearableInstance>(slot, (byte)InventoryType.Wear);
                     break;
 
                 case 2:
                     Item item = ServerManager.GetItem(slot);
-                    inventory = new Inventory()
-                    {
-                        InventoryItem = new InventoryItem()
-                        {
-                            InventoryItemId = Session.Character.InventoryList.generateInventoryItemId(),
-                            Amount = 1,
-                            ItemVNum = item.VNum,
-                            Rare = 0,
-                            Upgrade = 0,
-                            Design = 0,
-                            Concentrate = 0,
-                            CriticalLuckRate = 0,
-                            CriticalRate = 0,
-                            DamageMaximum = 0,
-                            DamageMinimum = 0,
-                            DarkElement = 0,
-                            DistanceDefence = 0,
-                            DistanceDefenceDodge = 0,
-                            DefenceDodge = 0,
-                            ElementRate = 0,
-                            FireElement = 0,
-                            HitRate = 0,
-                            LightElement = 0,
-                            IsFixed = false,
-                            Ammo = 0,
-                            MagicDefence = 0,
-                            CloseDefence = 0,
-                            SpXp = 0,
-                            SpLevel = 0,
-                            SlDefence = 0,
-                            SlElement = 0,
-                            SlDamage = 0,
-                            SlHP = 0,
-                            WaterElement = 0
-                        }
-                    };
+                    inventory  = new WearableInstance(Session.Character.InventoryList.GenerateInventoryItemId());
+                    //TODO inventoryitem
+                    //{
+                    //    ItemInstanceId = Session.Character.InventoryList.GenerateInventoryItemId(),
+                    //    Amount = 1,
+                    //    ItemVNum = item.VNum,
+                    //    Rare = 0,
+                    //    Upgrade = 0,
+                    //    Design = 0,
+                    //    Concentrate = 0,
+                    //    CriticalLuckRate = 0,
+                    //    CriticalRate = 0,
+                    //    DamageMaximum = 0,
+                    //    DamageMinimum = 0,
+                    //    DarkElement = 0,
+                    //    DistanceDefence = 0,
+                    //    DistanceDefenceDodge = 0,
+                    //    DefenceDodge = 0,
+                    //    ElementRate = 0,
+                    //    FireElement = 0,
+                    //    HitRate = 0,
+                    //    LightElement = 0,
+                    //    IsFixed = false,
+                    //    Ammo = 0,
+                    //    MagicDefence = 0,
+                    //    CloseDefence = 0,
+                    //    SpXp = 0,
+                    //    SpLevel = 0,
+                    //    SlDefence = 0,
+                    //    SlElement = 0,
+                    //    SlDamage = 0,
+                    //    SlHP = 0,
+                    //    WaterElement = 0
+                    //}
+                    //};
                     break;
 
                 case 10:
-                    inventory = Session.Character.InventoryList.LoadBySlotAndType(slot, (byte)InventoryType.Sp);
+                    inventory = Session.Character.InventoryList.LoadBySlotAndType<WearableInstance>(slot, (byte)InventoryType.Sp);
                     break;
 
                 case 11:
-                    inventory = Session.Character.InventoryList.LoadBySlotAndType(slot, (byte)InventoryType.Costume);
+                    inventory = Session.Character.InventoryList.LoadBySlotAndType<WearableInstance>(slot, (byte)InventoryType.Costume);
                     break;
             }
 
             if (inventory != null)
             {
-                Session.Client.SendPacket(
-                    ServerManager.GetItem(inventory.InventoryItem.ItemVNum).EquipmentSlot != (byte)EquipmentType.Sp
-                        ? Session.Character.GenerateEInfo(new InventoryItem(inventory.InventoryItem))
-                        : Session.Character.GenerateSlInfo(new InventoryItem(inventory.InventoryItem), 0));
+                //TODO inventoryitem
+                //Session.Client.SendPacket(
+                //    ServerManager.GetItem(inventory.ItemVNum).EquipmentSlot != (byte)EquipmentType.Sp
+                //        ? Session.Character.GenerateEInfo(inventory)
+                //        : Session.Character.GenerateSlInfo(inventory, 0));
             }
         }
 
@@ -251,10 +251,10 @@ namespace OpenNos.Handler
                         bool continu = true;
                         bool goldmax = false;
                         bool notsold = false;
-                        if (!Session.Character.InventoryList.getFreePlaceAmount(Session.Character.ExchangeInfo.ExchangeList, Session.Character.BackPack))
+                        if (!Session.Character.InventoryList.GetFreePlaceAmount(Session.Character.ExchangeInfo.ExchangeList, Session.Character.BackPack))
                             continu = false;
 
-                        if (!inventory.getFreePlaceAmount(exchange.ExchangeList, backpack))
+                        if (!inventory.GetFreePlaceAmount(exchange.ExchangeList, backpack))
                             continu = false;
 
                         if (Session.Character.ExchangeInfo.Gold + gold > 1000000000)
@@ -290,10 +290,10 @@ namespace OpenNos.Handler
                         }
                         else
                         {
-                            foreach (InventoryItem item in Session.Character.ExchangeInfo.ExchangeList)
+                            foreach (ItemInstance item in Session.Character.ExchangeInfo.ExchangeList)
                             {
-                                Inventory inv = Session.Character.InventoryList.getInventoryByInventoryItemId(item.InventoryItemId);
-                                if (inv != null && ServerManager.GetItem(inv.InventoryItem.ItemVNum).IsTradable != true)
+                                Inventory inv = Session.Character.InventoryList.GetInventoryByInventoryItemId(item.ItemInstanceId);
+                                if (inv != null && ServerManager.GetItem(inv.ItemInstance.ItemVNum).IsTradable != true)
                                 {
                                     Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("ITEM_NOT_TRADABLE"), 0));
                                     Session.Client.SendPacket("exc_close 0");
@@ -307,23 +307,23 @@ namespace OpenNos.Handler
                             }
                             if (!notsold)
                             {
-                                foreach (InventoryItem item in Session.Character.ExchangeInfo.ExchangeList)
+                                foreach (ItemInstance item in Session.Character.ExchangeInfo.ExchangeList)
                                 {
                                     // Delete items from their owners
-                                    Inventory inv = Session.Character.InventoryList.getInventoryByInventoryItemId(item.InventoryItemId);
-                                    Session.Character.InventoryList.DeleteByInventoryItemId(item.InventoryItemId);
+                                    Inventory inv = Session.Character.InventoryList.GetInventoryByInventoryItemId(item.ItemInstanceId);
+                                    Session.Character.InventoryList.DeleteByInventoryItemId(item.ItemInstanceId);
                                     Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, inv.Type, inv.Slot, 0, 0, 0));
                                 }
 
-                                foreach (InventoryItem item in exchange.ExchangeList)
+                                foreach (ItemInstance item in exchange.ExchangeList)
                                 {
                                     // Add items to their new owners
                                     Inventory inv = Session.Character.InventoryList.CreateItem(item, Session.Character);
                                     if (inv != null && inv.Slot != -1)
                                         Session.Client.SendPacket(
-                                            Session.Character.GenerateInventoryAdd(inv.InventoryItem.ItemVNum,
-                                                inv.InventoryItem.Amount, inv.Type, inv.Slot, inv.InventoryItem.Rare,
-                                                inv.InventoryItem.Design, inv.InventoryItem.Upgrade));
+                                            Session.Character.GenerateInventoryAdd(inv.ItemInstance.ItemVNum,
+                                                inv.ItemInstance.Amount, inv.Type, inv.Slot, 0,
+                                                0, 0));
                                 }
 
                                 Session.Character.Gold = Session.Character.Gold - Session.Character.ExchangeInfo.Gold + exchange.Gold;
@@ -366,14 +366,13 @@ namespace OpenNos.Handler
                 byte.TryParse(packetsplit[j - 3], out type[i]);
                 short.TryParse(packetsplit[j - 2], out slot[i]);
                 byte.TryParse(packetsplit[j - 1], out qty[i]);
-                Inventory inv = Session.Character.InventoryList.LoadBySlotAndType(slot[i], type[i]);
-                InventoryItem item = new InventoryItem(inv.InventoryItem);
+                ItemInstance item = Session.Character.InventoryList.LoadBySlotAndType<ItemInstance>(slot[i], type[i]);
                 Session.Character.ExchangeInfo.ExchangeList.Add(item);
                 item.Amount = qty[i];
                 if (type[i] != 0)
                     packetList += $"{i}.{type[i]}.{item.ItemVNum}.{qty[i]} ";
                 else
-                    packetList += $"{i}.{type[i]}.{item.ItemVNum}.{inv.InventoryItem.Rare}.{inv.InventoryItem.Upgrade} ";
+                    packetList += $"{i}.{type[i]}.{item.ItemVNum}.0.0 ";
             }
             Session.Character.ExchangeInfo.Gold = Gold;
             ClientLinkManager.Instance.Broadcast(Session, $"exc_list 1 {Session.Character.CharacterId} {Gold} {packetList}", ReceiverType.OnlySomeone, "", Session.Character.ExchangeInfo.CharId);
@@ -388,18 +387,18 @@ namespace OpenNos.Handler
             MapItem mapitem;
             if (Session.CurrentMap.DroppedList.TryGetValue(DropId, out mapitem))
             {
-                int Amount = mapitem.Amount;
+                int Amount = mapitem.ItemInstance.Amount;
                 if (mapitem.PositionX < Session.Character.MapX + 3 && mapitem.PositionX > Session.Character.MapX - 3 && mapitem.PositionY < Session.Character.MapY + 3 && mapitem.PositionY > Session.Character.MapY - 3)
                 {
-                    if (mapitem.ItemVNum != 1046)
+                    if (mapitem.ItemInstance.ItemVNum != 1046)
                     {
-                        Inventory newInv = Session.Character.InventoryList.CreateItem((InventoryItem)mapitem, Session.Character);
+                        Inventory newInv = Session.Character.InventoryList.CreateItem(mapitem.ItemInstance, Session.Character);
                         if (newInv != null)
                         {
                             Session.CurrentMap.DroppedList.Remove(DropId);
                             ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateGet(DropId), ReceiverType.AllOnMap);
-                            Item iteminfo = ServerManager.GetItem(newInv.InventoryItem.ItemVNum);
-                            Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(newInv.InventoryItem.ItemVNum, newInv.InventoryItem.Amount, newInv.Type, newInv.Slot, newInv.InventoryItem.Rare, newInv.InventoryItem.Design, newInv.InventoryItem.Upgrade));
+                            Item iteminfo = ServerManager.GetItem(newInv.ItemInstance.ItemVNum);
+                            Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(newInv.ItemInstance.ItemVNum, newInv.ItemInstance.Amount, newInv.Type, newInv.Slot, 0, 0, 0));
                             Session.Client.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {iteminfo.Name} x {Amount}", 12));
                         }
                         else
@@ -409,10 +408,10 @@ namespace OpenNos.Handler
                     }
                     else
                     {
-                        if (Session.Character.Gold + mapitem.Amount <= 1000000000)
+                        if (Session.Character.Gold + mapitem.ItemInstance.Amount <= 1000000000)
                         {
-                            Item iteminfo = ServerManager.GetItem(mapitem.ItemVNum);
-                            Session.Character.Gold += mapitem.Amount;
+                            Item iteminfo = ServerManager.GetItem(mapitem.ItemInstance.ItemVNum);
+                            Session.Character.Gold += mapitem.ItemInstance.Amount;
                             Session.CurrentMap.DroppedList.Remove(DropId);
                             ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateGet(DropId), ReceiverType.AllOnMap);
                             Session.Client.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {iteminfo.Name} x {Amount}", 12));
@@ -439,10 +438,10 @@ namespace OpenNos.Handler
                 return;
             if ((Session.Character.ExchangeInfo != null && Session.Character.ExchangeInfo?.ExchangeList.Count() != 0) || Session.Character.Speed == 0)
                 return;
-            Inventory inv = Session.Character.InventoryList.moveInventory(type, slot, desttype, destslot);
+            Inventory inv = Session.Character.InventoryList.MoveInventory(type, slot, desttype, destslot);
             if (inv != null)
             {
-                Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(inv.InventoryItem.ItemVNum, inv.InventoryItem.Amount, desttype, inv.Slot, inv.InventoryItem.Rare, inv.InventoryItem.Design, inv.InventoryItem.Upgrade));
+                Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(inv.ItemInstance.ItemVNum, inv.ItemInstance.Amount, desttype, inv.Slot, inv.ItemInstance.Rare, inv.ItemInstance.Design, inv.ItemInstance.Upgrade));
                 Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, type, slot, 0, 0, 0));
             }
         }
@@ -463,9 +462,9 @@ namespace OpenNos.Handler
                 return;
             Session.Character.InventoryList.MoveItem(Session.Character, type, slot, amount, destslot, out LastInventory, out NewInventory);
             if (NewInventory == null) return;
-            Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(NewInventory.InventoryItem.ItemVNum, NewInventory.InventoryItem.Amount, type, NewInventory.Slot, NewInventory.InventoryItem.Rare, NewInventory.InventoryItem.Design, NewInventory.InventoryItem.Upgrade));
+            Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(NewInventory.ItemInstance.ItemVNum, NewInventory.ItemInstance.Amount, type, NewInventory.Slot, NewInventory.ItemInstance.Rare, NewInventory.ItemInstance.Design, NewInventory.ItemInstance.Upgrade));
             if (LastInventory != null)
-                Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(LastInventory.InventoryItem.ItemVNum, LastInventory.InventoryItem.Amount, type, LastInventory.Slot, LastInventory.InventoryItem.Rare, LastInventory.InventoryItem.Design, LastInventory.InventoryItem.Upgrade));
+                Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(LastInventory.ItemInstance.ItemVNum, LastInventory.ItemInstance.Amount, type, LastInventory.Slot, LastInventory.ItemInstance.Rare, LastInventory.ItemInstance.Design, LastInventory.ItemInstance.Upgrade));
             else
             {
                 Session.Character.DeleteItem(type, slot);
@@ -479,9 +478,9 @@ namespace OpenNos.Handler
             byte type; byte.TryParse(packetsplit[2], out type);
             short slot; short.TryParse(packetsplit[3], out slot);
             byte amount; byte.TryParse(packetsplit[4], out amount);
-            Inventory inv;
-            Inventory invitem = Session.Character.InventoryList.LoadBySlotAndType(slot, type);
-            if (invitem != null && ServerManager.GetItem(invitem.InventoryItem.ItemVNum).IsDroppable == true && ServerManager.GetItem(invitem.InventoryItem.ItemVNum).IsTradable == true && (Session.CurrentMap.ShopUserList.FirstOrDefault(mapshop => mapshop.Value.OwnerId.Equals(Session.Character.CharacterId)).Value == null && (Session.Character.ExchangeInfo == null || Session.Character.ExchangeInfo?.ExchangeList.Count() == 0)))
+            ItemInstance inv;
+            ItemInstance invitem = Session.Character.InventoryList.LoadBySlotAndType<ItemInstance>(slot, type);
+            if (invitem != null && ServerManager.GetItem(invitem.ItemVNum).IsDroppable == true && ServerManager.GetItem(invitem.ItemVNum).IsTradable == true && (Session.CurrentMap.ShopUserList.FirstOrDefault(mapshop => mapshop.Value.OwnerId.Equals(Session.Character.CharacterId)).Value == null && (Session.Character.ExchangeInfo == null || Session.Character.ExchangeInfo?.ExchangeList.Count() == 0)))
             {
                 if (amount > 0 && amount < 100)
                 {
@@ -491,12 +490,13 @@ namespace OpenNos.Handler
                         Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("ITEM_NOT_DROPPABLE_HERE"), 0)); ;
                         return;
                     }
-                    Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(inv.InventoryItem.ItemVNum, inv.InventoryItem.Amount, type, inv.Slot, inv.InventoryItem.Rare, inv.InventoryItem.Design, inv.InventoryItem.Upgrade));
+                    //TODO inventoryitem
+                    //Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(inv.ItemVNum, inv.Amount, type, inv.Slot, inv.Rare, inv.Design, inv.Upgrade));
 
-                    if (inv.InventoryItem.Amount == 0)
-                        Session.Character.DeleteItem(inv.Type, inv.Slot);
+                    if (inv.Amount == 0)
+                        Session.Character.DeleteItemByItemInstanceId(inv.ItemInstanceId);
                     if (DroppedItem != null)
-                        ClientLinkManager.Instance.Broadcast(Session, $"drop {DroppedItem.ItemVNum} {DroppedItem.InventoryItemId} {DroppedItem.PositionX} {DroppedItem.PositionY} {DroppedItem.Amount} 0 -1", ReceiverType.AllOnMap);
+                        ClientLinkManager.Instance.Broadcast(Session, $"drop {DroppedItem.ItemInstance.ItemVNum} {DroppedItem.ItemInstance.ItemInstanceId} {DroppedItem.PositionX} {DroppedItem.PositionY} {DroppedItem.ItemInstance.Amount} 0 -1", ReceiverType.AllOnMap);
                 }
                 else
                 {
@@ -519,24 +519,24 @@ namespace OpenNos.Handler
                 short slot;
                 if (!short.TryParse(packetsplit[2], out slot)) return; // Invalid Number
 
-                Inventory inventory = Session.Character.EquipmentList.LoadBySlotAndType(slot, (byte)InventoryType.Equipment);
+                WearableInstance inventory = Session.Character.EquipmentList.LoadBySlotAndType<WearableInstance>(slot, (byte)InventoryType.Equipment);
                 if (inventory == null) return; // This eqslot is not equipped
 
                 if (slot == (byte)EquipmentType.Sp && Session.Character.UseSp)
                 {
                     Session.Character.LastSp = (DateTime.Now - Process.GetCurrentProcess().StartTime.AddSeconds(-50)).TotalSeconds;
-                    new Task(() => RemoveSP(inventory.InventoryItem.ItemVNum)).Start();
+                    new Task(() => RemoveSP(inventory.ItemVNum)).Start();
                 }
 
                 // Put item back to inventory
-                Inventory inv = Session.Character.InventoryList.CreateItem(new InventoryItem(inventory.InventoryItem), Session.Character);
+                Inventory inv = Session.Character.InventoryList.CreateItem(new ItemInstance(inventory), Session.Character);
                 if (inv == null) return;
 
                 if (inv.Slot != -1)
                     Session.Client.SendPacket(
-                        Session.Character.GenerateInventoryAdd(inventory.InventoryItem.ItemVNum,
-                            inv.InventoryItem.Amount, inv.Type, inv.Slot, inventory.InventoryItem.Rare,
-                            inventory.InventoryItem.Design, inventory.InventoryItem.Upgrade));
+                        Session.Character.GenerateInventoryAdd(inventory.ItemVNum,
+                            inv.ItemInstance.Amount, inv.Type, inv.Slot, inventory.Rare,
+                            inventory.Design, inventory.Upgrade));
 
                 Session.Character.EquipmentList.DeleteFromSlotAndType(slot, (byte)InventoryType.Equipment);
 
@@ -561,14 +561,15 @@ namespace OpenNos.Handler
                     for (short i = 0; i < 2; i++)
                     {
                         type = (i == 0) ? (byte)InventoryType.Sp : (byte)InventoryType.Costume;
-                        if (Session.Character.InventoryList.LoadBySlotAndType(x, type) == null)
+                        if (Session.Character.InventoryList.LoadBySlotAndType<ItemInstance>(x, type) == null)
                         {
-                            if (Session.Character.InventoryList.LoadBySlotAndType((short)(x + 1), type) != null)
+                            if (Session.Character.InventoryList.LoadBySlotAndType<ItemInstance>((short)(x + 1), type) != null)
                             {
                                 Inventory invdest = new Inventory();
                                 Inventory inv = new Inventory();
                                 Session.Character.InventoryList.MoveItem(Session.Character, type, (short)(x + 1), 1, x, out inv, out invdest);
-                                Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(invdest.InventoryItem.ItemVNum, invdest.InventoryItem.Amount, type, invdest.Slot, invdest.InventoryItem.Rare, invdest.InventoryItem.Design, invdest.InventoryItem.Upgrade));
+                                WearableInstance wearableInstance = invdest.ItemInstance as WearableInstance;
+                                Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(invdest.ItemInstance.ItemVNum, invdest.ItemInstance.Amount, type, invdest.Slot, wearableInstance.Rare, wearableInstance.Design, wearableInstance.Upgrade));
                                 Session.Character.DeleteItem(type, (short)(x + 1));
                                 gravity = true;
                             }
@@ -583,346 +584,346 @@ namespace OpenNos.Handler
         {
             string[] packetsplit = packet.Split(' ');
 
-            Inventory spInventory = Session.Character.EquipmentList.LoadBySlotAndType((byte)EquipmentType.Sp, (byte)InventoryType.Equipment);
+            SpecialistInstance specialistInstance = Session.Character.EquipmentList.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, (byte)InventoryType.Equipment);
 
             if (packetsplit.Length == 10 && packetsplit[2] == "10")
             {
                 // There you go, SP!
 
-                if (!Session.Character.UseSp || spInventory == null || int.Parse(packetsplit[5]) != spInventory.InventoryItem.InventoryItemId)
+                if (!Session.Character.UseSp || specialistInstance == null || int.Parse(packetsplit[5]) != specialistInstance.ItemInstanceId)
                 {
                     Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SPUSE_NEEDED"), 0));
                     return;
                 }
 
-                if (ServersData.SpPoint(spInventory.InventoryItem.SpLevel, spInventory.InventoryItem.Upgrade)
-                    - spInventory.InventoryItem.SlDamage - spInventory.InventoryItem.SlHP
-                    - spInventory.InventoryItem.SlElement - spInventory.InventoryItem.SlDefence
+                if (ServersData.SpPoint(specialistInstance.SpLevel, specialistInstance.Upgrade)
+                    - specialistInstance.SlDamage - specialistInstance.SlHP
+                    - specialistInstance.SlElement - specialistInstance.SlDefence
                     - short.Parse(packetsplit[6]) - short.Parse(packetsplit[7])
                     - short.Parse(packetsplit[8]) - short.Parse(packetsplit[9]) < 0)
                     return;
 
-                spInventory.InventoryItem.SlDamage += short.Parse(packetsplit[6]);
-                spInventory.InventoryItem.SlDefence += short.Parse(packetsplit[7]);
-                spInventory.InventoryItem.SlElement += short.Parse(packetsplit[8]);
-                spInventory.InventoryItem.SlHP += short.Parse(packetsplit[9]);
+                specialistInstance.SlDamage += short.Parse(packetsplit[6]);
+                specialistInstance.SlDefence += short.Parse(packetsplit[7]);
+                specialistInstance.SlElement += short.Parse(packetsplit[8]);
+                specialistInstance.SlHP += short.Parse(packetsplit[9]);
 
-                int slElement = ServersData.SlPoint(spInventory.InventoryItem.SlElement, 2);
-                int slHp = ServersData.SlPoint(spInventory.InventoryItem.SlHP, 3);
-                int slDefence = ServersData.SlPoint(spInventory.InventoryItem.SlDefence, 1);
-                int slHit = ServersData.SlPoint(spInventory.InventoryItem.SlDamage, 0);
+                int slElement = ServersData.SlPoint(specialistInstance.SlElement, 2);
+                int slHp = ServersData.SlPoint(specialistInstance.SlHP, 3);
+                int slDefence = ServersData.SlPoint(specialistInstance.SlDefence, 1);
+                int slHit = ServersData.SlPoint(specialistInstance.SlDamage, 0);
 
                 //so add upgrade to sp
                 //slhit
-                spInventory.InventoryItem.DamageMinimum = 0;
-                spInventory.InventoryItem.DamageMaximum = 0;
-                spInventory.InventoryItem.HitRate = 0;
-                spInventory.InventoryItem.CriticalLuckRate = 0;
-                spInventory.InventoryItem.CriticalRate = 0;
-                spInventory.InventoryItem.DefenceDodge = 0;
-                spInventory.InventoryItem.DistanceDefenceDodge = 0;
-                spInventory.InventoryItem.ElementRate = 0;
-                spInventory.InventoryItem.DarkResistance = 0;
-                spInventory.InventoryItem.LightResistance = 0;
-                spInventory.InventoryItem.FireResistance = 0;
-                spInventory.InventoryItem.WaterResistance = 0;
-                spInventory.InventoryItem.CriticalDodge = 0;
-                spInventory.InventoryItem.MagicDefence = 0;
-                spInventory.InventoryItem.HP = 0;
-                spInventory.InventoryItem.MP = 0;
+                specialistInstance.DamageMinimum = 0;
+                specialistInstance.DamageMaximum = 0;
+                specialistInstance.HitRate = 0;
+                specialistInstance.CriticalLuckRate = 0;
+                specialistInstance.CriticalRate = 0;
+                specialistInstance.DefenceDodge = 0;
+                specialistInstance.DistanceDefenceDodge = 0;
+                specialistInstance.ElementRate = 0;
+                specialistInstance.DarkResistance = 0;
+                specialistInstance.LightResistance = 0;
+                specialistInstance.FireResistance = 0;
+                specialistInstance.WaterResistance = 0;
+                specialistInstance.CriticalDodge = 0;
+                specialistInstance.MagicDefence = 0;
+                specialistInstance.HP = 0;
+                specialistInstance.MP = 0;
 
                 if (slHit >= 1)
                 {
-                    spInventory.InventoryItem.DamageMinimum += 5;
-                    spInventory.InventoryItem.DamageMaximum += 5;
+                    specialistInstance.DamageMinimum += 5;
+                    specialistInstance.DamageMaximum += 5;
                 }
                 if (slHit >= 10)
                 {
-                    spInventory.InventoryItem.HitRate += 10;
+                    specialistInstance.HitRate += 10;
                 }
                 if (slHit >= 20)
                 {
-                    spInventory.InventoryItem.CriticalLuckRate += 2;
+                    specialistInstance.CriticalLuckRate += 2;
                 }
                 if (slHit >= 30)
                 {
-                    spInventory.InventoryItem.DamageMinimum += 5;
-                    spInventory.InventoryItem.DamageMaximum += 5;
-                    spInventory.InventoryItem.HitRate += 10;
+                    specialistInstance.DamageMinimum += 5;
+                    specialistInstance.DamageMaximum += 5;
+                    specialistInstance.HitRate += 10;
                 }
                 if (slHit >= 40)
                 {
-                    spInventory.InventoryItem.CriticalRate += 10;
+                    specialistInstance.CriticalRate += 10;
                 }
                 if (slHit >= 50)
                 {
-                    spInventory.InventoryItem.HP += 200;
-                    spInventory.InventoryItem.MP += 200;
+                    specialistInstance.HP += 200;
+                    specialistInstance.MP += 200;
                 }
                 if (slHit >= 60)
                 {
-                    spInventory.InventoryItem.HitRate += 15;
+                    specialistInstance.HitRate += 15;
                 }
                 if (slHit >= 70)
                 {
-                    spInventory.InventoryItem.HitRate += 15;
-                    spInventory.InventoryItem.DamageMinimum += 5;
-                    spInventory.InventoryItem.DamageMaximum += 5;
+                    specialistInstance.HitRate += 15;
+                    specialistInstance.DamageMinimum += 5;
+                    specialistInstance.DamageMaximum += 5;
                 }
                 if (slHit >= 80)
                 {
-                    spInventory.InventoryItem.CriticalLuckRate += 2;
+                    specialistInstance.CriticalLuckRate += 2;
                 }
                 if (slHit >= 90)
                 {
-                    spInventory.InventoryItem.CriticalRate += 20;
+                    specialistInstance.CriticalRate += 20;
                 }
                 //sldef
                 if (slDefence >= 20)
                 {
-                    spInventory.InventoryItem.DefenceDodge += 2;
-                    spInventory.InventoryItem.DistanceDefenceDodge += 2;
+                    specialistInstance.DefenceDodge += 2;
+                    specialistInstance.DistanceDefenceDodge += 2;
                 }
                 if (slDefence >= 30)
                 {
-                    spInventory.InventoryItem.HP += 100;
+                    specialistInstance.HP += 100;
                 }
                 if (slDefence >= 40)
                 {
-                    spInventory.InventoryItem.DefenceDodge += 2;
-                    spInventory.InventoryItem.DistanceDefenceDodge += 2;
+                    specialistInstance.DefenceDodge += 2;
+                    specialistInstance.DistanceDefenceDodge += 2;
                 }
                 if (slDefence >= 60)
                 {
-                    spInventory.InventoryItem.HP += 200;
+                    specialistInstance.HP += 200;
                 }
                 if (slDefence >= 70)
                 {
-                    spInventory.InventoryItem.DefenceDodge += 3;
-                    spInventory.InventoryItem.DistanceDefenceDodge += 3;
+                    specialistInstance.DefenceDodge += 3;
+                    specialistInstance.DistanceDefenceDodge += 3;
                 }
                 if (slDefence >= 75)
                 {
-                    spInventory.InventoryItem.FireResistance += 2;
-                    spInventory.InventoryItem.WaterResistance += 2;
-                    spInventory.InventoryItem.LightResistance += 2;
-                    spInventory.InventoryItem.DarkResistance += 2;
+                    specialistInstance.FireResistance += 2;
+                    specialistInstance.WaterResistance += 2;
+                    specialistInstance.LightResistance += 2;
+                    specialistInstance.DarkResistance += 2;
                 }
                 if (slDefence >= 80)
                 {
-                    spInventory.InventoryItem.DefenceDodge += 3;
-                    spInventory.InventoryItem.DistanceDefenceDodge += 3;
+                    specialistInstance.DefenceDodge += 3;
+                    specialistInstance.DistanceDefenceDodge += 3;
                 }
                 if (slDefence >= 90)
                 {
-                    spInventory.InventoryItem.FireResistance += 3;
-                    spInventory.InventoryItem.WaterResistance += 3;
-                    spInventory.InventoryItem.LightResistance += 3;
-                    spInventory.InventoryItem.DarkResistance += 3;
+                    specialistInstance.FireResistance += 3;
+                    specialistInstance.WaterResistance += 3;
+                    specialistInstance.LightResistance += 3;
+                    specialistInstance.DarkResistance += 3;
                 }
                 if (slDefence >= 95)
                 {
-                    spInventory.InventoryItem.HP += 300;
+                    specialistInstance.HP += 300;
                 }
                 //slele
                 if (slElement >= 1)
                 {
-                    spInventory.InventoryItem.ElementRate += 2;
+                    specialistInstance.ElementRate += 2;
                 }
                 if (slElement >= 10)
                 {
-                    spInventory.InventoryItem.MP += 100;
+                    specialistInstance.MP += 100;
                 }
                 if (slElement >= 20)
                 {
-                    spInventory.InventoryItem.MagicDefence += 5;
+                    specialistInstance.MagicDefence += 5;
                 }
                 if (slElement >= 30)
                 {
-                    spInventory.InventoryItem.FireResistance += 2;
-                    spInventory.InventoryItem.WaterResistance += 2;
-                    spInventory.InventoryItem.LightResistance += 2;
-                    spInventory.InventoryItem.DarkResistance += 2;
-                    spInventory.InventoryItem.ElementRate += 2;
+                    specialistInstance.FireResistance += 2;
+                    specialistInstance.WaterResistance += 2;
+                    specialistInstance.LightResistance += 2;
+                    specialistInstance.DarkResistance += 2;
+                    specialistInstance.ElementRate += 2;
                 }
                 if (slElement >= 40)
                 {
-                    spInventory.InventoryItem.MP += 100;
+                    specialistInstance.MP += 100;
                 }
                 if (slElement >= 50)
                 {
-                    spInventory.InventoryItem.MagicDefence += 5;
+                    specialistInstance.MagicDefence += 5;
                 }
                 if (slElement >= 60)
                 {
-                    spInventory.InventoryItem.FireResistance += 3;
-                    spInventory.InventoryItem.WaterResistance += 3;
-                    spInventory.InventoryItem.LightResistance += 3;
-                    spInventory.InventoryItem.DarkResistance += 3;
-                    spInventory.InventoryItem.ElementRate += 2;
+                    specialistInstance.FireResistance += 3;
+                    specialistInstance.WaterResistance += 3;
+                    specialistInstance.LightResistance += 3;
+                    specialistInstance.DarkResistance += 3;
+                    specialistInstance.ElementRate += 2;
                 }
                 if (slElement >= 70)
                 {
-                    spInventory.InventoryItem.MP += 100;
+                    specialistInstance.MP += 100;
                 }
                 if (slElement >= 80)
                 {
-                    spInventory.InventoryItem.MagicDefence += 5;
+                    specialistInstance.MagicDefence += 5;
                 }
                 if (slElement >= 90)
                 {
-                    spInventory.InventoryItem.FireResistance += 4;
-                    spInventory.InventoryItem.WaterResistance += 4;
-                    spInventory.InventoryItem.LightResistance += 4;
-                    spInventory.InventoryItem.DarkResistance += 4;
+                    specialistInstance.FireResistance += 4;
+                    specialistInstance.WaterResistance += 4;
+                    specialistInstance.LightResistance += 4;
+                    specialistInstance.DarkResistance += 4;
                 }
                 if (slElement == 100)
                 {
-                    spInventory.InventoryItem.FireResistance += 6;
-                    spInventory.InventoryItem.WaterResistance += 6;
-                    spInventory.InventoryItem.LightResistance += 6;
-                    spInventory.InventoryItem.DarkResistance += 6;
+                    specialistInstance.FireResistance += 6;
+                    specialistInstance.WaterResistance += 6;
+                    specialistInstance.LightResistance += 6;
+                    specialistInstance.DarkResistance += 6;
                 }
                 //slhp
                 if (slElement >= 5)
                 {
-                    spInventory.InventoryItem.DamageMinimum += 5;
-                    spInventory.InventoryItem.DamageMaximum += 5;
+                    specialistInstance.DamageMinimum += 5;
+                    specialistInstance.DamageMaximum += 5;
                 }
                 if (slElement >= 10)
                 {
-                    spInventory.InventoryItem.DamageMinimum += 5;
-                    spInventory.InventoryItem.DamageMaximum += 5;
+                    specialistInstance.DamageMinimum += 5;
+                    specialistInstance.DamageMaximum += 5;
                 }
                 if (slElement >= 15)
                 {
-                    spInventory.InventoryItem.DamageMinimum += 5;
-                    spInventory.InventoryItem.DamageMaximum += 5;
+                    specialistInstance.DamageMinimum += 5;
+                    specialistInstance.DamageMaximum += 5;
                 }
                 if (slElement >= 20)
                 {
-                    spInventory.InventoryItem.DamageMinimum += 5;
-                    spInventory.InventoryItem.DamageMaximum += 5;
-                    spInventory.InventoryItem.CloseDefence += 10;
-                    spInventory.InventoryItem.DistanceDefence += 10;
-                    spInventory.InventoryItem.MagicDefence += 10;
+                    specialistInstance.DamageMinimum += 5;
+                    specialistInstance.DamageMaximum += 5;
+                    specialistInstance.CloseDefence += 10;
+                    specialistInstance.DistanceDefence += 10;
+                    specialistInstance.MagicDefence += 10;
                 }
                 if (slElement >= 25)
                 {
-                    spInventory.InventoryItem.DamageMinimum += 5;
-                    spInventory.InventoryItem.DamageMaximum += 5;
+                    specialistInstance.DamageMinimum += 5;
+                    specialistInstance.DamageMaximum += 5;
                 }
                 if (slElement >= 30)
                 {
-                    spInventory.InventoryItem.DamageMinimum += 5;
-                    spInventory.InventoryItem.DamageMaximum += 5;
+                    specialistInstance.DamageMinimum += 5;
+                    specialistInstance.DamageMaximum += 5;
                 }
                 if (slElement >= 35)
                 {
-                    spInventory.InventoryItem.DamageMinimum += 5;
-                    spInventory.InventoryItem.DamageMaximum += 5;
+                    specialistInstance.DamageMinimum += 5;
+                    specialistInstance.DamageMaximum += 5;
                 }
                 if (slElement >= 40)
                 {
-                    spInventory.InventoryItem.DamageMinimum += 5;
-                    spInventory.InventoryItem.DamageMaximum += 5;
-                    spInventory.InventoryItem.CloseDefence += 15;
-                    spInventory.InventoryItem.DistanceDefence += 15;
-                    spInventory.InventoryItem.MagicDefence += 15;
+                    specialistInstance.DamageMinimum += 5;
+                    specialistInstance.DamageMaximum += 5;
+                    specialistInstance.CloseDefence += 15;
+                    specialistInstance.DistanceDefence += 15;
+                    specialistInstance.MagicDefence += 15;
                 }
                 if (slElement >= 45)
                 {
-                    spInventory.InventoryItem.DamageMinimum += 10;
-                    spInventory.InventoryItem.DamageMaximum += 10;
+                    specialistInstance.DamageMinimum += 10;
+                    specialistInstance.DamageMaximum += 10;
                 }
                 if (slElement >= 50)
                 {
-                    spInventory.InventoryItem.DamageMinimum += 10;
-                    spInventory.InventoryItem.DamageMaximum += 10;
-                    spInventory.InventoryItem.FireResistance += 2;
-                    spInventory.InventoryItem.WaterResistance += 2;
-                    spInventory.InventoryItem.LightResistance += 2;
-                    spInventory.InventoryItem.DarkResistance += 2;
+                    specialistInstance.DamageMinimum += 10;
+                    specialistInstance.DamageMaximum += 10;
+                    specialistInstance.FireResistance += 2;
+                    specialistInstance.WaterResistance += 2;
+                    specialistInstance.LightResistance += 2;
+                    specialistInstance.DarkResistance += 2;
                 }
                 if (slElement >= 60)
                 {
-                    spInventory.InventoryItem.DamageMinimum += 10;
-                    spInventory.InventoryItem.DamageMaximum += 10;
+                    specialistInstance.DamageMinimum += 10;
+                    specialistInstance.DamageMaximum += 10;
                 }
                 if (slElement >= 65)
                 {
-                    spInventory.InventoryItem.DamageMinimum += 10;
-                    spInventory.InventoryItem.DamageMaximum += 10;
+                    specialistInstance.DamageMinimum += 10;
+                    specialistInstance.DamageMaximum += 10;
                 }
                 if (slElement >= 70)
                 {
-                    spInventory.InventoryItem.DamageMinimum += 10;
-                    spInventory.InventoryItem.DamageMaximum += 10;
-                    spInventory.InventoryItem.CloseDefence += 45;
-                    spInventory.InventoryItem.DistanceDefence += 45;
-                    spInventory.InventoryItem.MagicDefence += 45;
+                    specialistInstance.DamageMinimum += 10;
+                    specialistInstance.DamageMaximum += 10;
+                    specialistInstance.CloseDefence += 45;
+                    specialistInstance.DistanceDefence += 45;
+                    specialistInstance.MagicDefence += 45;
                 }
                 if (slElement >= 75)
                 {
-                    spInventory.InventoryItem.DamageMinimum += 15;
-                    spInventory.InventoryItem.DamageMaximum += 15;
+                    specialistInstance.DamageMinimum += 15;
+                    specialistInstance.DamageMaximum += 15;
                 }
                 if (slElement >= 80)
                 {
-                    spInventory.InventoryItem.DamageMinimum += 15;
-                    spInventory.InventoryItem.DamageMaximum += 15;
+                    specialistInstance.DamageMinimum += 15;
+                    specialistInstance.DamageMaximum += 15;
                 }
                 if (slElement >= 85)
                 {
-                    spInventory.InventoryItem.DamageMinimum += 15;
-                    spInventory.InventoryItem.DamageMaximum += 15;
-                    spInventory.InventoryItem.CriticalDodge += 1;
+                    specialistInstance.DamageMinimum += 15;
+                    specialistInstance.DamageMaximum += 15;
+                    specialistInstance.CriticalDodge += 1;
                 }
                 if (slElement >= 86)
                 {
-                    spInventory.InventoryItem.CriticalDodge += 1;
+                    specialistInstance.CriticalDodge += 1;
                 }
                 if (slElement >= 87)
                 {
-                    spInventory.InventoryItem.CriticalDodge += 1;
+                    specialistInstance.CriticalDodge += 1;
                 }
                 if (slElement >= 88)
                 {
-                    spInventory.InventoryItem.CriticalDodge += 1;
+                    specialistInstance.CriticalDodge += 1;
                 }
                 if (slElement >= 90)
                 {
-                    spInventory.InventoryItem.DamageMinimum += 15;
-                    spInventory.InventoryItem.DamageMaximum += 15;
-                    spInventory.InventoryItem.DefenceDodge += (short)((slElement - 90) * 2);
-                    spInventory.InventoryItem.DistanceDefenceDodge += (short)((slElement - 90) * 2);
+                    specialistInstance.DamageMinimum += 15;
+                    specialistInstance.DamageMaximum += 15;
+                    specialistInstance.DefenceDodge += (short)((slElement - 90) * 2);
+                    specialistInstance.DistanceDefenceDodge += (short)((slElement - 90) * 2);
                 }
                 if (slElement >= 95)
                 {
-                    spInventory.InventoryItem.DamageMinimum += 15;
-                    spInventory.InventoryItem.DamageMaximum += 15;
+                    specialistInstance.DamageMinimum += 15;
+                    specialistInstance.DamageMaximum += 15;
                 }
                 if (slElement >= 100)
                 {
-                    spInventory.InventoryItem.DamageMinimum += 20;
-                    spInventory.InventoryItem.DamageMaximum += 20;
-                    spInventory.InventoryItem.FireResistance += 3;
-                    spInventory.InventoryItem.WaterResistance += 3;
-                    spInventory.InventoryItem.LightResistance += 3;
-                    spInventory.InventoryItem.DarkResistance += 3;
-                    spInventory.InventoryItem.CloseDefence += 30;
-                    spInventory.InventoryItem.DistanceDefence += 30;
-                    spInventory.InventoryItem.MagicDefence += 30;
-                    spInventory.InventoryItem.CriticalDodge += 3;
+                    specialistInstance.DamageMinimum += 20;
+                    specialistInstance.DamageMaximum += 20;
+                    specialistInstance.FireResistance += 3;
+                    specialistInstance.WaterResistance += 3;
+                    specialistInstance.LightResistance += 3;
+                    specialistInstance.DarkResistance += 3;
+                    specialistInstance.CloseDefence += 30;
+                    specialistInstance.DistanceDefence += 30;
+                    specialistInstance.MagicDefence += 30;
+                    specialistInstance.CriticalDodge += 3;
                 }
                 Session.Client.SendPacket(Session.Character.GenerateStatChar());
                 Session.Client.SendPacket(Session.Character.GenerateStat());
-                Session.Client.SendPacket(Session.Character.GenerateSlInfo(new InventoryItem(spInventory.InventoryItem), 2));
+                Session.Client.SendPacket(Session.Character.GenerateSlInfo(specialistInstance, 2));
                 Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("POINTS_SET"), 0));
             }
             else if (!Session.Character.IsSitting)
             {
-                if (spInventory == null)
+                if (specialistInstance == null)
                 {
                     Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NO_SP"), 0));
                     return;
@@ -933,7 +934,7 @@ namespace OpenNos.Handler
                 if (Session.Character.UseSp)
                 {
                     Session.Character.LastSp = currentRunningSeconds;
-                    new Task(() => RemoveSP(spInventory.InventoryItem.ItemVNum)).Start();
+                    new Task(() => RemoveSP(specialistInstance.ItemVNum)).Start();
                 }
                 else
                 {
@@ -1031,24 +1032,24 @@ namespace OpenNos.Handler
                     byte.TryParse(packetsplit[5], out type2);
                     byte.TryParse(packetsplit[6], out slot2);
                 }
-                Inventory inventory;
+                WearableInstance inventory;
                 switch (uptype)
                 {
                     case 1:
-                        inventory = Session.Character.InventoryList.LoadBySlotAndType(slot, type);
+                        inventory = Session.Character.InventoryList.LoadBySlotAndType<WearableInstance>(slot, type);
                         if (inventory != null)
                         {
-                            Item iteminfo = ServerManager.GetItem(inventory.InventoryItem.ItemVNum);
+                            Item iteminfo = ServerManager.GetItem(inventory.ItemVNum);
                             if (iteminfo.EquipmentSlot == (byte)EquipmentType.Armor || iteminfo.EquipmentSlot == (byte)EquipmentType.MainWeapon || iteminfo.EquipmentSlot == (byte)EquipmentType.SecondaryWeapon)
                                 inventory.UpgradeItem(Session, UpgradeMode.Normal, UpgradeProtection.None);
                         }
                         break;
 
                     case 7:
-                        inventory = Session.Character.InventoryList.LoadBySlotAndType(slot, type);
+                        inventory = Session.Character.InventoryList.LoadBySlotAndType<WearableInstance>(slot, type);
                         if (inventory != null)
                         {
-                            Item iteminfo = ServerManager.GetItem(inventory.InventoryItem.ItemVNum);
+                            Item iteminfo = ServerManager.GetItem(inventory.ItemVNum);
                             if (iteminfo.EquipmentSlot == (byte)EquipmentType.Armor || iteminfo.EquipmentSlot == (byte)EquipmentType.MainWeapon || iteminfo.EquipmentSlot == (byte)EquipmentType.SecondaryWeapon)
 
                                 inventory.RarifyItem(Session, RarifyMode.Normal, RarifyProtection.None);
@@ -1056,8 +1057,8 @@ namespace OpenNos.Handler
                         break;
 
                     case 8:
-                        inventory = Session.Character.InventoryList.LoadBySlotAndType(slot, type);
-                        Inventory inventory2 = Session.Character.InventoryList.LoadBySlotAndType(slot2, type2);
+                        inventory = Session.Character.InventoryList.LoadBySlotAndType<WearableInstance>(slot, type);
+                        WearableInstance inventory2 = Session.Character.InventoryList.LoadBySlotAndType<WearableInstance>(slot2, type2);
 
                         if (inventory != null && inventory2 != null && inventory != inventory2)
                         {
@@ -1066,24 +1067,24 @@ namespace OpenNos.Handler
                         break;
 
                     case 9:
-                        inventory = Session.Character.InventoryList.LoadBySlotAndType(slot, type);
-                        if (inventory != null)
+                        SpecialistInstance specialist = Session.Character.InventoryList.LoadBySlotAndType<SpecialistInstance>(slot, type);
+                        if (specialist != null)
                         {
-                            Item iteminfo = ServerManager.GetItem(inventory.InventoryItem.ItemVNum);
+                            Item iteminfo = ServerManager.GetItem(specialist.ItemVNum);
                             if (iteminfo.EquipmentSlot == (byte)EquipmentType.Sp)
 
-                                inventory.UpgradeSp(Session, UpgradeProtection.None);
+                                specialist.UpgradeSp(Session, UpgradeProtection.None);
                         }
                         break;
 
                     case 41:
-                        inventory = Session.Character.InventoryList.LoadBySlotAndType(slot, type);
-                        if (inventory != null)
+                        specialist = Session.Character.InventoryList.LoadBySlotAndType<SpecialistInstance>(slot, type);
+                        if (specialist != null)
                         {
-                            Item iteminfo = ServerManager.GetItem(inventory.InventoryItem.ItemVNum);
+                            Item iteminfo = ServerManager.GetItem(specialist.ItemVNum);
                             if (iteminfo.EquipmentSlot == (byte)EquipmentType.Sp)
 
-                                inventory.PerfectSP(Session, UpgradeProtection.None);
+                                specialist.PerfectSP(Session, UpgradeProtection.None);
                         }
                         break;
                 }
@@ -1096,11 +1097,10 @@ namespace OpenNos.Handler
             string[] packetsplit = packet.Split(' ');
             byte type; byte.TryParse(packetsplit[4], out type);
             short slot; short.TryParse(packetsplit[5], out slot);
-            Inventory inv = Session.Character.InventoryList.LoadBySlotAndType(slot, type);
+            ItemInstance inv = Session.Character.InventoryList.LoadBySlotAndType<ItemInstance>(slot, type);
             if (inv != null)
             {
-                Item iteminfo = ServerManager.GetItem(inv.InventoryItem.ItemVNum);
-                iteminfo.Use(Session, ref inv);
+                inv.Use();
             }
         }
 
@@ -1116,11 +1116,10 @@ namespace OpenNos.Handler
                 short slot;
 
                 if (!byte.TryParse(packetsplit[3], out type) || !short.TryParse(packetsplit[2], out slot)) return;
-                Inventory inv = Session.Character.InventoryList.LoadBySlotAndType(slot, type);
+                ItemInstance inv = Session.Character.InventoryList.LoadBySlotAndType<ItemInstance>(slot, type);
                 if (inv != null)
                 {
-                    Item iteminfo = ServerManager.GetItem(inv.InventoryItem.ItemVNum);
-                    iteminfo.Use(Session, ref inv);
+                    inv.Use();
                 }
             }
         }
@@ -1131,27 +1130,27 @@ namespace OpenNos.Handler
             ClientLinkManager.Instance.Broadcast(Session, $"guri 2 1 {Session.Character.CharacterId}", ReceiverType.AllOnMap);
             Thread.Sleep(5000);
 
-            Inventory sp = Session.Character.EquipmentList.LoadBySlotAndType((byte)EquipmentType.Sp, (byte)InventoryType.Equipment);
-            Inventory fairy = Session.Character.EquipmentList.LoadBySlotAndType((byte)EquipmentType.Fairy, (byte)InventoryType.Equipment);
+            SpecialistInstance sp = Session.Character.EquipmentList.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, (byte)InventoryType.Equipment);
+            WearableInstance fairy = Session.Character.EquipmentList.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Fairy, (byte)InventoryType.Equipment);
             if (sp == null)
                 return;
 
-            if (Session.Character.GetReputIco() < ServerManager.GetItem(sp.InventoryItem.ItemVNum).ReputationMinimum)
+            if (Session.Character.GetReputIco() < ServerManager.GetItem(sp.ItemVNum).ReputationMinimum)
             {
                 Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("LOW_REP"), 0));
                 return;
             }
 
-            if (fairy != null && ServerManager.GetItem(fairy.InventoryItem.ItemVNum).Element != ServerManager.GetItem(sp.InventoryItem.ItemVNum).Element && ServerManager.GetItem(fairy.InventoryItem.ItemVNum).Element != ServerManager.GetItem(sp.InventoryItem.ItemVNum).SecondaryElement)
+            if (fairy != null && ServerManager.GetItem(fairy.ItemVNum).Element != ServerManager.GetItem(sp.ItemVNum).Element && ServerManager.GetItem(fairy.ItemVNum).Element != ServerManager.GetItem(sp.ItemVNum).SecondaryElement)
             {
                 Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("BAD_FAIRY"), 0));
                 return;
             }
 
             Session.Character.UseSp = true;
-            Session.Character.Morph = ServerManager.GetItem(sp.InventoryItem.ItemVNum).Morph;
-            Session.Character.MorphUpgrade = sp.InventoryItem.Upgrade;
-            Session.Character.MorphUpgrade2 = sp.InventoryItem.Design;
+            Session.Character.Morph = ServerManager.GetItem(sp.ItemVNum).Morph;
+            Session.Character.MorphUpgrade = sp.Upgrade;
+            Session.Character.MorphUpgrade2 = sp.Design;
             ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateCMode(), ReceiverType.AllOnMap);
 
             // TODO: Send SP Skills here
@@ -1171,7 +1170,7 @@ namespace OpenNos.Handler
             ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(196), ReceiverType.AllOnMap);
             ClientLinkManager.Instance.Broadcast(Session, $"guri 6 1 {Session.Character.CharacterId} 0 0", ReceiverType.AllOnMap);
             Session.Client.SendPacket(Session.Character.GenerateSpPoint());
-            Session.Character.Speed += ServerManager.GetItem(sp.InventoryItem.ItemVNum).Speed;
+            Session.Character.Speed += ServerManager.GetItem(sp.ItemVNum).Speed;
             Session.Client.SendPacket(Session.Character.GenerateCond());
             Session.Client.SendPacket(Session.Character.GenerateLev());
             Session.Client.SendPacket(Session.Character.GenerateStat());
@@ -1191,7 +1190,7 @@ namespace OpenNos.Handler
 
         private async void RemoveSP(short vnum)
         {
-            Inventory sp = Session.Character.EquipmentList.LoadBySlotAndType((byte)EquipmentType.Sp, (byte)InventoryType.Equipment);
+            SpecialistInstance sp = Session.Character.EquipmentList.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, (byte)InventoryType.Equipment);
             Session.Character.Speed -= ServerManager.GetItem(vnum).Speed;
             Session.Character.UseSp = false;
 

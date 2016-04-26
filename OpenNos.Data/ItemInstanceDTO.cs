@@ -12,17 +12,23 @@
  * GNU General Public License for more details.
  */
 
+using System;
+
 namespace OpenNos.Data
 {
-    public class InventoryDTO 
+    public class ItemInstanceDTO
     {
         #region Properties
 
-        public long CharacterId { get; set; }
-        public long InventoryId { get; set; }
-        public ItemInstanceDTO ItemInstance { get; set; }
-        public short Slot { get; set; }
-        public byte Type { get; set; }
+        public bool IsUsed { get; set; }
+        public int Amount { get; set; }
+        public DateTime? ItemDeleteTime { get; set; }
+        public long ItemInstanceId { get; set; }
+        public short ItemVNum { get; set; }
+
+        public byte Rare { get; set; }
+        public byte Upgrade { get; set; }
+        public byte Design { get; set; }
 
         #endregion
     }

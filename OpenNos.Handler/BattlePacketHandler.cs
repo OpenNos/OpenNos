@@ -272,18 +272,18 @@ namespace OpenNos.Handler
                     Session.Client.SendPacket(Session.Character.GenerateStat());
                     Session.Client.SendPacket(Session.Character.GenerateEff(5));
                 }
-                Inventory sp2 = Session.Character.EquipmentList.LoadBySlotAndType((short)EquipmentType.Sp, (byte)InventoryType.Equipment);
+                SpecialistInstance sp2 = Session.Character.EquipmentList.LoadBySlotAndType<SpecialistInstance>((short)EquipmentType.Sp, (byte)InventoryType.Equipment);
                 if (Session.Character.Level < 99)
                     Session.Character.LevelXp += monsterinfo.XP;
                 if ((Session.Character.Class == 0 && Session.Character.JobLevel < 20) || (Session.Character.Class != 0 && Session.Character.JobLevel < 80))
                 {
-                    if (sp2 != null && Session.Character.UseSp && sp2.InventoryItem.SpLevel < 99)
-                        Session.Character.JobLevelXp += (int)((double)monsterinfo.JobXP / (double)100 * sp2.InventoryItem.SpLevel);
+                    if (sp2 != null && Session.Character.UseSp && sp2.SpLevel < 99)
+                        Session.Character.JobLevelXp += (int)((double)monsterinfo.JobXP / (double)100 * sp2.SpLevel);
                     else
                         Session.Character.JobLevelXp += monsterinfo.JobXP;
                 }
-                if (sp2 != null && Session.Character.UseSp && sp2.InventoryItem.SpLevel < 99)
-                    sp2.InventoryItem.SpXp += monsterinfo.JobXP * (100 - sp2.InventoryItem.SpLevel);
+                if (sp2 != null && Session.Character.UseSp && sp2.SpLevel < 99)
+                    sp2.SpXp += monsterinfo.JobXP * (100 - sp2.SpLevel);
                 double t = Session.Character.XPLoad();
                 while (Session.Character.LevelXp >= t)
                 {
@@ -313,10 +313,10 @@ namespace OpenNos.Handler
                 }
                 if (sp2 != null)
                     t = Session.Character.SPXPLoad();
-                while (sp2 != null && sp2.InventoryItem.SpXp >= t)
+                while (sp2 != null && sp2.SpXp >= t)
                 {
-                    sp2.InventoryItem.SpXp -= (long)t;
-                    sp2.InventoryItem.SpLevel++;
+                    sp2.SpXp -= (long)t;
+                    sp2.SpLevel++;
                     t = Session.Character.SPXPLoad();
                     Session.Client.SendPacket(Session.Character.GenerateStat());
                     Session.Client.SendPacket($"levelup {Session.Character.CharacterId}");

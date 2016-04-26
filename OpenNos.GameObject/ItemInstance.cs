@@ -12,32 +12,41 @@
  * GNU General Public License for more details.
  */
 
-using System.Collections.Generic;
+using AutoMapper;
+using OpenNos.Data;
 
 namespace OpenNos.GameObject
 {
-    public class ExchangeInfo
+    public class ItemInstance : ItemInstanceDTO, IGameObject
     {
         #region Instantiation
 
-        public ExchangeInfo()
+        public ItemInstance()
         {
-            Confirm = false;
-            Gold = 0;
-            CharId = -1;
-            ExchangeList = new List<ItemInstance>();
-            Validate = false;
+            Mapper.CreateMap<ItemInstanceDTO, ItemInstance>();
+            Mapper.CreateMap<ItemInstance, ItemInstanceDTO>();
+        }
+
+        public ItemInstance(ItemInstanceDTO inventoryItem)
+        {
+            ItemInstanceId = inventoryItem.ItemInstanceId;
+            Amount = inventoryItem.Amount;
+            ItemVNum = inventoryItem.ItemVNum;
+            
         }
 
         #endregion
 
-        #region Properties
+        #region Methods
 
-        public long CharId { get; set; }
-        public bool Confirm { get; set; }
-        public List<ItemInstance> ExchangeList { get; set; }
-        public long Gold { get; set; }
-        public bool Validate { get; set; }
+        public void Save()
+        {
+        }
+
+        public void Use()
+        {
+
+        }
 
         #endregion
     }

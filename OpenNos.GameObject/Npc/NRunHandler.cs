@@ -42,7 +42,7 @@ namespace OpenNos.GameObject
                         return;
                     }
 
-                    if (Session.Character.EquipmentList.isEmpty())
+                    if (Session.Character.EquipmentList.IsEmpty())
                     {
                         ClientLinkManager.Instance.ClassChange(Session.Character.CharacterId, Convert.ToByte(type));
                     }

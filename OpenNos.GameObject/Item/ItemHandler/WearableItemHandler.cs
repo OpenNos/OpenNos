@@ -33,14 +33,14 @@ namespace OpenNos.GameObject
                     byte type = inventory.Type;
                     if (inventory == null) return;
 
-                    Item iteminfo = ServerManager.GetItem(inventory.InventoryItem.ItemVNum);
+                    Item iteminfo = ServerManager.GetItem(inventory.ItemInstance.ItemVNum);
                     if (iteminfo == null) return;
 
-                    if (iteminfo.ItemValidTime > 0 && inventory.InventoryItem.IsUsed == false)
+                    if (iteminfo.ItemValidTime > 0 && inventory.ItemInstance.IsUsed == false)
                     {
-                        inventory.InventoryItem.ItemDeleteTime = DateTime.Now.AddSeconds(iteminfo.ItemValidTime);
+                        inventory.ItemInstance.ItemDeleteTime = DateTime.Now.AddSeconds(iteminfo.ItemValidTime);
                     }
-                    inventory.InventoryItem.IsUsed = true;
+                    inventory.ItemInstance.IsUsed = true;
                     double timeSpanSinceLastSpUsage = (DateTime.Now - Process.GetCurrentProcess().StartTime.AddSeconds(-50)).TotalSeconds -
                                                       Session.Character.LastSp;
                     if (iteminfo.EquipmentSlot == (byte)EquipmentType.Sp && timeSpanSinceLastSpUsage < 30)
@@ -69,13 +69,13 @@ namespace OpenNos.GameObject
                     if (Session.Character.UseSp
                         && iteminfo.EquipmentSlot == (byte)EquipmentType.Fairy
                         && iteminfo.Element != ServerManager.GetItem(
-                            Session.Character.EquipmentList.LoadBySlotAndType(
+                            Session.Character.EquipmentList.LoadBySlotAndType<WearableInstance>(
                                 (byte)EquipmentType.Sp,
-                                (byte)InventoryType.Equipment).InventoryItem.ItemVNum).Element &&
+                                (byte)InventoryType.Equipment).ItemVNum).Element &&
                                 iteminfo.Element != ServerManager.GetItem(
-                            Session.Character.EquipmentList.LoadBySlotAndType(
+                            Session.Character.EquipmentList.LoadBySlotAndType<WearableInstance>(
                                 (byte)EquipmentType.Sp,
-                                (byte)InventoryType.Equipment).InventoryItem.ItemVNum).SecondaryElement)
+                                (byte)InventoryType.Equipment).ItemVNum).SecondaryElement)
                     {
                         Session.Client.SendPacket(
                             Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("BAD_FAIRY"), 0));
@@ -96,7 +96,7 @@ namespace OpenNos.GameObject
                         return;
                     }
 
-                    Inventory equip = Session.Character.EquipmentList.LoadBySlotAndType(iteminfo.EquipmentSlot, (byte)InventoryType.Equipment);
+                    Inventory equip = Session.Character.EquipmentList.LoadInventoryBySlotAndType(iteminfo.EquipmentSlot, (byte)InventoryType.Equipment);
                     if (equip == null)
                     {
                         inventory.Type = (byte)InventoryType.Equipment;
@@ -127,11 +127,13 @@ namespace OpenNos.GameObject
 
                         Session.Character.InventoryList.InsertOrUpdate(ref equip);
                         Session.Character.EquipmentList.InsertOrUpdate(ref inventory);
-                        Session.Client.SendPacket(
-                            Session.Character.GenerateInventoryAdd(equip.InventoryItem.ItemVNum,
-                                equip.InventoryItem.Amount, type, equip.Slot,
-                                equip.InventoryItem.Rare, equip.InventoryItem.Design,
-                                equip.InventoryItem.Upgrade));
+
+                        //TODO inventoryitem
+                        //Session.Client.SendPacket(
+                        //    Session.Character.GenerateInventoryAdd(equip.ItemInstance.ItemVNum,
+                        //        equip.ItemInstance.Amount, type, equip.Slot,
+                        //        equip.ItemInstance.Rare, equip.ItemInstance.Design,
+                        //        equip.ItemInstance.Upgrade));
 
                         Session.Client.SendPacket(Session.Character.GenerateStatChar());
                         ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEq(), ReceiverType.AllOnMap);
