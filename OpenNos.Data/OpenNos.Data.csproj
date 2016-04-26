@@ -53,6 +53,9 @@
     <Compile Include="ComboDTO.cs" />
     <Compile Include="DropDTO.cs" />
     <Compile Include="GeneralLogDTO.cs" />
+    <Compile Include="Interfaces\IItemInstanceDTO.cs" />
+    <Compile Include="Interfaces\ISpecialistInstanceDTO.cs" />
+    <Compile Include="Interfaces\IWearableInstanceDTO.cs" />
     <Compile Include="MapMonsterDTO.cs" />
     <Compile Include="MapNpcDTO.cs" />
     <Compile Include="NpcMonsterSkillDTO.cs" />

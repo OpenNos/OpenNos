@@ -146,7 +146,7 @@ namespace OpenNos.Handler
 
                 case 2:
                     Item item = ServerManager.GetItem(slot);
-                    inventory  = new WearableInstance(Session.Character.InventoryList.GenerateInventoryItemId());
+                    inventory = new WearableInstance(Session.Character.InventoryList.GenerateInventoryItemId());
                     //TODO inventoryitem
                     //{
                     //    ItemInstanceId = Session.Character.InventoryList.GenerateInventoryItemId(),
@@ -392,7 +392,7 @@ namespace OpenNos.Handler
                 {
                     if (mapitem.ItemInstance.ItemVNum != 1046)
                     {
-                        Inventory newInv = Session.Character.InventoryList.CreateItem(mapitem.ItemInstance, Session.Character);
+                        Inventory newInv = Session.Character.InventoryList.CreateItem(mapitem.ItemInstance as ItemInstance, Session.Character);
                         if (newInv != null)
                         {
                             Session.CurrentMap.DroppedList.Remove(DropId);

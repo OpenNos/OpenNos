@@ -50,7 +50,7 @@ namespace OpenNos.GameObject
         }
 
         public Inventory CreateItem<T>(T newItem, Character character)
-            where T : ItemInstanceDTO
+            where T : ItemInstance
         {
             short Slot = -1;
             IEnumerable<ItemInstance> slotfree = null;
@@ -255,7 +255,7 @@ namespace OpenNos.GameObject
         }
 
         public T LoadBySlotAndType<T>(short slot, byte type)
-            where T : ItemInstanceDTO
+            where T : ItemInstance
         {
             return (T)Inventory.FirstOrDefault(i => i.Type.Equals(typeof(T)) && i.Slot.Equals(slot) && i.Type.Equals(type))?.ItemInstance;
         }
