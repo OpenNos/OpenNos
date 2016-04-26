@@ -77,6 +77,7 @@ namespace OpenNos.Handler
             int damage;
             int hitmode = 0;
             Skill skill = null;
+            bool notcancel = false;
             CharacterSkill ski = skills.FirstOrDefault(s => (skill = ServerManager.GetSkill(s.SkillVNum)) != null && skill?.CastId == Castingid);
             if (ski!=null && !ski.Used)
             {
@@ -93,6 +94,7 @@ namespace OpenNos.Handler
                             ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(skill.CastEffect), ReceiverType.AllOnMap);
                             await Task.Delay(skill.CastTime * 100);
                         }
+                        notcancel = true;
                         ClientLinkManager.Instance.Broadcast(Session, $"su {1} {Session.Character.CharacterId} {1} {Session.Character.CharacterId} {skill.SkillVNum} {skill.Cooldown} {skill.AttackAnimation} {skill.Effect} {Session.Character.MapX} {Session.Character.MapY} 1 {(((double)Session.Character.Hp / Session.Character.HPLoad()) * 100)} {0} -2 {skill.SkillType}", ReceiverType.AllOnMap);
                         MapMonster mmon;
                         if (skill.TargetRange != 0)
@@ -126,6 +128,7 @@ namespace OpenNos.Handler
                                     ClientLinkManager.Instance.Broadcast(Session, $"ct 1 {Session.Character.CharacterId} 3 {mmon.MapMonsterId} {skill.CastAnimation} -1 {skill.SkillVNum}", ReceiverType.AllOnMap);
                                     damage = GenerateDamage(mmon.MapMonsterId, skill, ref hitmode);
                                     ski.Used = true;
+                                    notcancel = true;
                                     ski.LastUse = DateTime.Now;
                                     if (damage == 0 || (DateTime.Now - ski.LastUse).TotalSeconds > 3)
                                         ski.Hit = 0;
@@ -165,6 +168,7 @@ namespace OpenNos.Handler
                     }
                 }
             }
+            if(!notcancel)
             Session.Client.SendPacket("cancel 0 0");
         }
 
