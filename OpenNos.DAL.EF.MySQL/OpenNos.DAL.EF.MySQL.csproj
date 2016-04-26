@@ -103,9 +103,9 @@
     <Compile Include="MapNpcDAO.cs" />
     <Compile Include="Entities\NpcMonster.cs" />
     <Compile Include="Entities\NpcMonsterskill.cs" />
-    <Compile Include="Migrations\201604240819524_Migration1.cs" />
-    <Compile Include="Migrations\201604240819524_Migration1.Designer.cs">
-      <DependentUpon>201604240819524_Migration1.cs</DependentUpon>
+    <Compile Include="Migrations\201604261733302_Migration1.cs" />
+    <Compile Include="Migrations\201604261733302_Migration1.Designer.cs">
+      <DependentUpon>201604261733302_Migration1.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="NpcMonsterSkillDAO.cs" />
@@ -186,8 +186,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201604240819524_Migration1.resx">
-      <DependentUpon>201604240819524_Migration1.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201604261733302_Migration1.resx">
+      <DependentUpon>201604261733302_Migration1.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

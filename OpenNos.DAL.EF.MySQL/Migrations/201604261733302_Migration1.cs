@@ -303,6 +303,7 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
                         Amount = c.Int(nullable: false),
                         ItemDeleteTime = c.DateTime(precision: 0),
                         ItemVNum = c.Short(nullable: false),
+                        IsUsed = c.Boolean(nullable: false),
                     })
                 .PrimaryKey(t => t.ItemInstanceId)
                 .ForeignKey("dbo.Item", t => t.ItemVNum)
@@ -588,6 +589,8 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
                         Upgrade = c.Byte(nullable: false),
                         WaterElement = c.Byte(nullable: false),
                         WaterResistance = c.SByte(nullable: false),
+                        HP = c.Short(nullable: false),
+                        MP = c.Short(nullable: false),
                     })
                 .PrimaryKey(t => t.ItemInstanceId)
                 .ForeignKey("dbo.ItemInstance", t => t.ItemInstanceId)
