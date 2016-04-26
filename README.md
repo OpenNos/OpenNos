@@ -29,4 +29,5 @@ Installer Packages:
 ##5 Use the NuGet Package Manager to Update the Database
 
 - Go to Tools -> NuGet Package Manager -> Package Manager Console
+- Choose Project OpenNos.DAL.EF.MySQL
 - Type 'update-database' and update the Database
