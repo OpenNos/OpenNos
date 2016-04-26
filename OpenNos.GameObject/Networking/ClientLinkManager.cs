@@ -70,7 +70,7 @@ namespace OpenNos.GameObject
             ClientSession Session = Instance.Sessions.FirstOrDefault(s => s.Character != null && s.Character.CharacterId == Target);
             if (Session != null && Session.Character != null)
             {
-                Session.Client.SendPacket(Session.Character.GenerateDialog($"#revival^0 #revival^1 {(Session.Character.Level <= 20 ? Language.Instance.GetMessageFromKey("ASK_REVIVE") : Language.Instance.GetMessageFromKey("ASK_REVIVE_FREE"))}"));
+                Session.Client.SendPacket(Session.Character.GenerateDialog($"#revival^0 #revival^1 {(Session.Character.Level > 20 ? Language.Instance.GetMessageFromKey("ASK_REVIVE") : Language.Instance.GetMessageFromKey("ASK_REVIVE_FREE"))}"));
                 Session.Character.Dignite -= (short)(Session.Character.Level < 50 ? Session.Character.Level : 50);
                 if (Session.Character.Dignite < -1000)
                     Session.Character.Dignite = -1000;
