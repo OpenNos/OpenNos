@@ -369,14 +369,14 @@ namespace OpenNos.GameObject
 
                 foreach (ItemInstance item in c2Session.Character.ExchangeInfo.ExchangeList)
                 {
-                    Inventory inv = c2Session.Character.InventoryList.GetInventoryByInventoryItemId(item.ItemInstanceId);
+                    Inventory inv = c2Session.Character.InventoryList.GetInventoryByItemInstanceId(item.ItemInstanceId);
                     c2Session.Character.InventoryList.DeleteByInventoryItemId(item.ItemInstanceId);
                     c2Session.Client.SendPacket(c2Session.Character.GenerateInventoryAdd(-1, 0, inv.Type, inv.Slot, 0, 0, 0));
                 }
 
                 foreach (ItemInstance item in c1Session.Character.ExchangeInfo.ExchangeList)
                 {
-                    Inventory inv = c2Session.Character.InventoryList.CreateInventory<ItemInstance>(item);
+                    Inventory inv = c2Session.Character.InventoryList.AddToInventory<ItemInstance>(item);
                     if (inv == null) continue;
                     if (inv.Slot == -1) continue;
 

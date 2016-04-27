@@ -51,7 +51,7 @@ namespace OpenNos.GameObject
             return count;
         }
 
-        public Inventory CreateInventory<T>(short vnum)
+        public Inventory AddNewItemToInventory<T>(short vnum)
                      where T : ItemInstance
         {
             short Slot = -1;
@@ -72,13 +72,13 @@ namespace OpenNos.GameObject
                 Slot = GetFirstPlace(newItem.Item.Type, Owner.BackPack);
                 if (Slot != -1)
                 {
-                    inv = AddToInventory(newItem, newItem.Item.Type, Slot);
+                    inv = AddToInventoryWithSlotAndType(newItem, newItem.Item.Type, Slot);
                 }
             }
             return inv;
         }
 
-        public Inventory CreateInventory<T>(T newItem)
+        public Inventory AddToInventory<T>(T newItem)
             where T : ItemInstance
         {
             short Slot = -1;
@@ -98,7 +98,7 @@ namespace OpenNos.GameObject
                 Slot = GetFirstPlace(newItem.Item.Type, Owner.BackPack);
                 if (Slot != -1)
                 {
-                    inv = AddToInventory(newItem, newItem.Item.Type, Slot);
+                    inv = AddToInventoryWithSlotAndType(newItem, newItem.Item.Type, Slot);
                 }
             }
             return inv;
@@ -146,7 +146,7 @@ namespace OpenNos.GameObject
             return inventoryId;
         }
 
-        public long GenerateInventoryItemId()
+        public long GenerateItemInstanceId()
         {
             Random r = new Random();
             bool boolean = true;
@@ -164,7 +164,7 @@ namespace OpenNos.GameObject
             return inventoryitemId;
         }
 
-        public short GetFirstPlace(byte type, int backPack)
+        private short GetFirstPlace(byte type, int backPack)
         {
             Inventory result;
             for (short i = 0; i < 48 + (backPack * 12); i++)
@@ -220,7 +220,7 @@ namespace OpenNos.GameObject
             return test2;
         }
 
-        public Inventory GetInventoryByInventoryItemId(long inventoryItemId)
+        public Inventory GetInventoryByItemInstanceId(long inventoryItemId)
         {
             return Inventory.FirstOrDefault(i => i.ItemInstance.ItemInstanceId.Equals(inventoryItemId));
         }
@@ -230,7 +230,7 @@ namespace OpenNos.GameObject
             return !Inventory.Any();
         }
 
-        public T LoadByInventoryItem<T>(long InventoryItemId)
+        public T LoadByItemInstance<T>(long InventoryItemId)
             where T : ItemInstanceDTO
         {
             return (T)Inventory.FirstOrDefault(i => i.ItemInstance.ItemInstanceId.Equals(InventoryItemId))?.ItemInstance;
@@ -284,7 +284,7 @@ namespace OpenNos.GameObject
                         ItemInstance itemDest = inv.ItemInstance as ItemInstance;
                         Update(ref inv);
 
-                        invdest = AddToInventory(itemDest, inv.Type, destslot);
+                        invdest = AddToInventoryWithSlotAndType(itemDest, inv.Type, destslot);
                     }
                 }
                 else
@@ -432,7 +432,7 @@ namespace OpenNos.GameObject
             }
         }
 
-        public Inventory AddToInventory(ItemInstance iteminstance, byte Type, short Slot)
+        public Inventory AddToInventoryWithSlotAndType(ItemInstance iteminstance, byte Type, short Slot)
         {
             Inventory inv = new Inventory() { Type = Type, Slot = Slot, ItemInstance = iteminstance, CharacterId = Owner.CharacterId,InventoryId= GenerateInventoryId() };
             if (Inventory.Any(s => s.Slot == Slot && s.Type == Type))

@@ -354,7 +354,7 @@ namespace OpenNos.GameObject
                 if (rnd <= upfix[this.Upgrade])
                 {
                     Session.Client.SendPacket(Session.Character.GenerateEff(3004));
-                    Session.Character.InventoryList.LoadByInventoryItem<WearableInstance>(this.ItemInstanceId).IsFixed = true;
+                    Session.Character.InventoryList.LoadByItemInstance<WearableInstance>(this.ItemInstanceId).IsFixed = true;
                     Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADE_FIXED"), 11));
                     Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADE_FIXED"), 0));
                 }
@@ -363,7 +363,7 @@ namespace OpenNos.GameObject
                     Session.Client.SendPacket(Session.Character.GenerateEff(3005));
                     Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADE_SUCCESS"), 12));
                     Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADE_SUCCESS"), 0));
-                    Session.Character.InventoryList.LoadByInventoryItem<WearableInstance>(this.ItemInstanceId).Upgrade++;
+                    Session.Character.InventoryList.LoadByItemInstance<WearableInstance>(this.ItemInstanceId).Upgrade++;
                 }
                 else
                 {
