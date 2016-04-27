@@ -30,7 +30,7 @@ namespace OpenNos.GameObject
 
         #region Properties
 
-        public ItemInstanceDTO ItemInstance { get; set; }
+        public ItemInstance ItemInstance { get; set; }
         public short PositionX { get; set; }
         public short PositionY { get; set; }
 
