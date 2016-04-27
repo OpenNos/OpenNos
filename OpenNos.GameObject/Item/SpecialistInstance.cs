@@ -12,6 +12,7 @@ namespace OpenNos.GameObject
 
         public SpecialistInstance()
         {
+
         }
 
         public SpecialistInstance(long itemInstanceId)
@@ -235,53 +236,53 @@ namespace OpenNos.GameObject
 
                 if (type < 3)
                 {
-                    Session.Character.InventoryList.LoadByInventoryItem<SpecialistInstance>(this.ItemInstanceId).SpDamage += count;
+                    Session.Character.InventoryList.LoadByItemInstance<SpecialistInstance>(this.ItemInstanceId).SpDamage += count;
                     Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("PERFECTSP_SUCCESS"), Language.Instance.GetMessageFromKey("PERFECTSP_ATTACK"), count), 12));
                     Session.Client.SendPacket(Session.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("PERFECTSP_SUCCESS"), Language.Instance.GetMessageFromKey("PERFECTSP_ATTACK"), count), 0));
                 }
                 else if (type < 6)
                 {
-                    Session.Character.InventoryList.LoadByInventoryItem<SpecialistInstance>(this.ItemInstanceId).SpDefence += count;
+                    Session.Character.InventoryList.LoadByItemInstance<SpecialistInstance>(this.ItemInstanceId).SpDefence += count;
                     Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("PERFECTSP_SUCCESS"), Language.Instance.GetMessageFromKey("PERFECTSP_DEFENSE"), count), 12));
                     Session.Client.SendPacket(Session.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("PERFECTSP_SUCCESS"), Language.Instance.GetMessageFromKey("PERFECTSP_DEFENSE"), count), 0));
                 }
                 else if (type < 9)
                 {
-                    Session.Character.InventoryList.LoadByInventoryItem<SpecialistInstance>(this.ItemInstanceId).SpElement += count;
+                    Session.Character.InventoryList.LoadByItemInstance<SpecialistInstance>(this.ItemInstanceId).SpElement += count;
                     Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("PERFECTSP_SUCCESS"), Language.Instance.GetMessageFromKey("PERFECTSP_ELEMENT"), count), 12));
                     Session.Client.SendPacket(Session.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("PERFECTSP_SUCCESS"), Language.Instance.GetMessageFromKey("PERFECTSP_ELEMENT"), count), 0));
                 }
                 else if (type < 12)
                 {
-                    Session.Character.InventoryList.LoadByInventoryItem<SpecialistInstance>(this.ItemInstanceId).SpHP += count;
+                    Session.Character.InventoryList.LoadByItemInstance<SpecialistInstance>(this.ItemInstanceId).SpHP += count;
                     Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("PERFECTSP_SUCCESS"), Language.Instance.GetMessageFromKey("PERFECTSP_HPMP"), count), 12));
                     Session.Client.SendPacket(Session.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("PERFECTSP_SUCCESS"), Language.Instance.GetMessageFromKey("PERFECTSP_HPMP"), count), 0));
                 }
                 else if (type == 12)
                 {
-                    Session.Character.InventoryList.LoadByInventoryItem<SpecialistInstance>(this.ItemInstanceId).SpFire += count;
+                    Session.Character.InventoryList.LoadByItemInstance<SpecialistInstance>(this.ItemInstanceId).SpFire += count;
                     Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("PERFECTSP_SUCCESS"), Language.Instance.GetMessageFromKey("PERFECTSP_FIRE"), count), 12));
                     Session.Client.SendPacket(Session.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("PERFECTSP_SUCCESS"), Language.Instance.GetMessageFromKey("PERFECTSP_FIRE"), count), 0));
                 }
                 else if (type == 13)
                 {
-                    Session.Character.InventoryList.LoadByInventoryItem<SpecialistInstance>(this.ItemInstanceId).SpWater += count;
+                    Session.Character.InventoryList.LoadByItemInstance<SpecialistInstance>(this.ItemInstanceId).SpWater += count;
                     Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("PERFECTSP_SUCCESS"), Language.Instance.GetMessageFromKey("PERFECTSP_WATER"), count), 12));
                     Session.Client.SendPacket(Session.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("PERFECTSP_SUCCESS"), Language.Instance.GetMessageFromKey("PERFECTSP_WATER"), count), 0));
                 }
                 else if (type == 14)
                 {
-                    Session.Character.InventoryList.LoadByInventoryItem<SpecialistInstance>(this.ItemInstanceId).SpLight += count;
+                    Session.Character.InventoryList.LoadByItemInstance<SpecialistInstance>(this.ItemInstanceId).SpLight += count;
                     Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("PERFECTSP_SUCCESS"), Language.Instance.GetMessageFromKey("PERFECTSP_LIGHT"), count), 12));
                     Session.Client.SendPacket(Session.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("PERFECTSP_SUCCESS"), Language.Instance.GetMessageFromKey("PERFECTSP_LIGHT"), count), 0));
                 }
                 else if (type == 15)
                 {
-                    Session.Character.InventoryList.LoadByInventoryItem<SpecialistInstance>(this.ItemInstanceId).SpDark += count;
+                    Session.Character.InventoryList.LoadByItemInstance<SpecialistInstance>(this.ItemInstanceId).SpDark += count;
                     Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("PERFECTSP_SUCCESS"), Language.Instance.GetMessageFromKey("PERFECTSP_SHADOW"), count), 12));
                     Session.Client.SendPacket(Session.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("PERFECTSP_SUCCESS"), Language.Instance.GetMessageFromKey("PERFECTSP_SHADOW"), count), 0));
                 }
-                Session.Character.InventoryList.LoadByInventoryItem<SpecialistInstance>(this.ItemInstanceId).SpStoneUpgrade++;
+                Session.Character.InventoryList.LoadByItemInstance<SpecialistInstance>(this.ItemInstanceId).SpStoneUpgrade++;
             }
             else
             {
@@ -410,14 +411,14 @@ namespace OpenNos.GameObject
                 Session.Client.SendPacket(Session.Character.GenerateEff(3005));
                 Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADESP_SUCCESS"), 12));
                 Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADESP_SUCCESS"), 0));
-                Session.Character.InventoryList.LoadByInventoryItem<WearableInstance>(this.ItemInstanceId).Upgrade++;
+                Session.Character.InventoryList.LoadByItemInstance<WearableInstance>(this.ItemInstanceId).Upgrade++;
             }
             else
             {
                 if (protect == UpgradeProtection.Protected)
                 {
                     Session.Client.SendPacket(Session.Character.GenerateEff(3004));
-                    Session.Character.InventoryList.LoadByInventoryItem<WearableInstance>(this.ItemInstanceId).IsFixed = true;
+                    Session.Character.InventoryList.LoadByItemInstance<WearableInstance>(this.ItemInstanceId).IsFixed = true;
                     Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADESP_FAILED_SAVED"), 11));
                     Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADESP_FAILED_SAVED"), 0));
                 }

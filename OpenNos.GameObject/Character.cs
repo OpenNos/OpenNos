@@ -1116,8 +1116,8 @@ namespace OpenNos.GameObject
         {
             IEnumerable<InventoryDTO> inventorysDTO = DAOFactory.InventoryDAO.LoadByCharacterId(CharacterId).ToList();
 
-            InventoryList = new InventoryList(Session.Character.CharacterId);
-            EquipmentList = new InventoryList(Session.Character.CharacterId);
+            InventoryList = new InventoryList(Session.Character);
+            EquipmentList = new InventoryList(Session.Character);
             foreach (InventoryDTO inventory in inventorysDTO)
             {
                 inventory.ItemInstance = DAOFactory.ItemInstanceDAO.LoadByInventoryId(inventory.InventoryId);

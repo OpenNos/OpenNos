@@ -83,7 +83,7 @@ namespace OpenNos.Handler
                 }
 
                 //TODO inventoryitem
-                WearableInstance newItem = new WearableInstance(Session.Character.InventoryList.GenerateInventoryItemId());
+                WearableInstance newItem = new WearableInstance(Session.Character.InventoryList.GenerateItemInstanceId());
                 //{
                 //    ItemInstanceId = Session.Character.InventoryList.GenerateInventoryItemId(),
                 //    Amount = amount,
@@ -115,7 +115,7 @@ namespace OpenNos.Handler
                 //    WaterElement = item.ItemInstance.WaterElement,
                 //};
 
-                Inventory inv = Session.Character.InventoryList.CreateItem(newItem, Session.Character);
+                Inventory inv = Session.Character.InventoryList.AddToInventory(newItem);
                 if (inv != null && inv.Slot != -1)
                 {
                     Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(newItem.ItemVNum,
@@ -234,7 +234,7 @@ namespace OpenNos.Handler
                 }
 
                 //TODO inventoryitem
-                WearableInstance newItem = new WearableInstance(Session.Character.InventoryList.GenerateInventoryItemId());
+                WearableInstance newItem = new WearableInstance(Session.Character.InventoryList.GenerateItemInstanceId());
                 //{
                 //    ItemInstanceId = Session.Character.InventoryList.GenerateInventoryItemId(),
                 //    Amount = amount,
@@ -266,7 +266,7 @@ namespace OpenNos.Handler
                 //    WaterElement = 0,
                 //};
 
-                Inventory inv = Session.Character.InventoryList.CreateItem(newItem, Session.Character);
+                Inventory inv = Session.Character.InventoryList.AddToInventory(newItem);
                 if (inv != null && inv.Slot != -1)
                 {
                     Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(newItem.ItemVNum,
@@ -477,10 +477,10 @@ namespace OpenNos.Handler
                                 return;
                         }
 
-                        WearableInstance newItem = new WearableInstance(Session.Character.InventoryList.GenerateInventoryItemId());
+                        WearableInstance newItem = new WearableInstance(Session.Character.InventoryList.GenerateItemInstanceId());
 
                         Item iteminfo = ServerManager.GetItem(rec.ItemVNum);
-                        Inventory inv = Session.Character.InventoryList.CreateItem(newItem, Session.Character);
+                        Inventory inv = Session.Character.InventoryList.AddToInventory(newItem);
                         ServersData.SetRarityPoint(ref newItem);
                         if (inv != null)
                         {

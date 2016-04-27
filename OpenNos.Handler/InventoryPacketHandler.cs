@@ -146,7 +146,7 @@ namespace OpenNos.Handler
 
                 case 2:
                     Item item = ServerManager.GetItem(slot);
-                    inventory = new WearableInstance(Session.Character.InventoryList.GenerateInventoryItemId());
+                    inventory = new WearableInstance(Session.Character.InventoryList.GenerateItemInstanceId());
                     //TODO inventoryitem
                     //{
                     //    ItemInstanceId = Session.Character.InventoryList.GenerateInventoryItemId(),
@@ -292,7 +292,7 @@ namespace OpenNos.Handler
                         {
                             foreach (ItemInstance item in Session.Character.ExchangeInfo.ExchangeList)
                             {
-                                Inventory inv = Session.Character.InventoryList.GetInventoryByInventoryItemId(item.ItemInstanceId);
+                                Inventory inv = Session.Character.InventoryList.GetInventoryByItemInstanceId(item.ItemInstanceId);
                                 if (inv != null && ServerManager.GetItem(inv.ItemInstance.ItemVNum).IsTradable != true)
                                 {
                                     Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("ITEM_NOT_TRADABLE"), 0));
@@ -310,7 +310,7 @@ namespace OpenNos.Handler
                                 foreach (ItemInstance item in Session.Character.ExchangeInfo.ExchangeList)
                                 {
                                     // Delete items from their owners
-                                    Inventory inv = Session.Character.InventoryList.GetInventoryByInventoryItemId(item.ItemInstanceId);
+                                    Inventory inv = Session.Character.InventoryList.GetInventoryByItemInstanceId(item.ItemInstanceId);
                                     Session.Character.InventoryList.DeleteByInventoryItemId(item.ItemInstanceId);
                                     Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, inv.Type, inv.Slot, 0, 0, 0));
                                 }
@@ -318,7 +318,7 @@ namespace OpenNos.Handler
                                 foreach (ItemInstance item in exchange.ExchangeList)
                                 {
                                     // Add items to their new owners
-                                    Inventory inv = Session.Character.InventoryList.CreateItem(item, Session.Character);
+                                    Inventory inv = Session.Character.InventoryList.AddToInventory(item);
                                     if (inv != null && inv.Slot != -1)
                                         Session.Client.SendPacket(
                                             Session.Character.GenerateInventoryAdd(inv.ItemInstance.ItemVNum,
@@ -392,7 +392,7 @@ namespace OpenNos.Handler
                 {
                     if (mapitem.ItemInstance.ItemVNum != 1046)
                     {
-                        Inventory newInv = Session.Character.InventoryList.CreateItem(mapitem.ItemInstance as ItemInstance, Session.Character);
+                        Inventory newInv = Session.Character.InventoryList.AddToInventory(mapitem.ItemInstance as ItemInstance);
                         if (newInv != null)
                         {
                             Session.CurrentMap.DroppedList.Remove(DropId);
@@ -528,7 +528,7 @@ namespace OpenNos.Handler
                 }
 
                 // Put item back to inventory
-                Inventory inv = Session.Character.InventoryList.CreateItem(new ItemInstance(inventory), Session.Character);
+                Inventory inv = Session.Character.InventoryList.AddToInventory(new ItemInstance(inventory));
                 if (inv == null) return;
 
                 if (inv.Slot != -1)

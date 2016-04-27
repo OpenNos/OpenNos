@@ -102,7 +102,7 @@ namespace OpenNos.GameObject
                         inventory.Type = (byte)InventoryType.Equipment;
                         inventory.Slot = iteminfo.EquipmentSlot;
 
-                        Session.Character.EquipmentList.InsertOrUpdate(ref inventory);
+                        Session.Character.EquipmentList.Update(ref inventory);
                         Session.Character.InventoryList.DeleteFromSlotAndType(slot, type);
                         Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, type, slot, 0, 0, 0));
                         Session.Character.InventoryList.DeleteFromSlotAndType(inventory.Slot, inventory.Type);
@@ -125,8 +125,8 @@ namespace OpenNos.GameObject
                         Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, equip.Type, inventory.Slot, 0, 0, 0));
                         Session.Character.EquipmentList.DeleteFromSlotAndType(slot, type);
 
-                        Session.Character.InventoryList.InsertOrUpdate(ref equip);
-                        Session.Character.EquipmentList.InsertOrUpdate(ref inventory);
+                        Session.Character.InventoryList.Update(ref equip);
+                        Session.Character.EquipmentList.Update(ref inventory);
 
                         //TODO inventoryitem
                         //Session.Client.SendPacket(

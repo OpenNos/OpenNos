@@ -361,7 +361,7 @@ namespace OpenNos.Handler
                     //    SlHP = 0,
                     //    WaterElement = 0,
                     //};
-                    Inventory inv = Session.Character.InventoryList.CreateItem(newItem, Session.Character);
+                    Inventory inv = Session.Character.InventoryList.AddToInventory(newItem);
                     WearableInstance wearable = Session.Character.InventoryList.LoadBySlotAndType<WearableInstance>(inv.Slot,inv.Type);
                     ServersData.SetRarityPoint(ref wearable);
                     if (inv != null)
