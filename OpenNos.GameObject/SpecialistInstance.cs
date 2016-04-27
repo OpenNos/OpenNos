@@ -9,6 +9,7 @@ namespace OpenNos.GameObject
     {
         public SpecialistInstance()
         {
+
         }
         #region Instantiation
 

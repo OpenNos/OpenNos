@@ -51,6 +51,33 @@ namespace OpenNos.GameObject
             return count;
         }
 
+        public Inventory CreateItem<T>(short vnum, Character character)
+                     where T : ItemInstance
+        {
+            short Slot = -1;
+            IEnumerable<ItemInstance> slotfree = null;
+            Inventory inv = null;
+            ItemInstance newItem = CreateItemInstance<ItemInstance>(vnum);
+            if (newItem.Item.Type != 0)
+            {
+                slotfree = character.LoadBySlotAllowed(newItem.ItemVNum, newItem.Amount);
+                inv = GetFirstSlot(slotfree);
+            }
+            if (inv != null)
+            {
+                inv.ItemInstance.Amount = (byte)(newItem.Amount + inv.ItemInstance.Amount);
+            }
+            else
+            {
+                Slot = GetFirstPlace(newItem.Item.Type, character.BackPack);
+                if (Slot != -1)
+                {
+                    inv = AddToInventory(newItem, newItem.Item.Type, Slot);
+                }
+            }
+            return inv;
+        }
+
         public Inventory CreateItem<T>(T newItem, Character character)
             where T : ItemInstance
         {
