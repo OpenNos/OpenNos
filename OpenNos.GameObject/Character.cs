@@ -684,7 +684,6 @@ namespace OpenNos.GameObject
 
         public void GenerateStartupInventory()
         {
-            List<string> inventoriesStringPacket = new List<string>();
             string inv0 = "inv 0", inv1 = "inv 1", inv2 = "inv 2", inv6 = "inv 6", inv7 = "inv 7";
 
             foreach (Inventory inv in InventoryList.Inventory)

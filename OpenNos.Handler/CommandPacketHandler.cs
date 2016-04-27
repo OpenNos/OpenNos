@@ -849,14 +849,6 @@ namespace OpenNos.Handler
             Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, type, slot, 0, 0, 0));
         }
 
-        private void GetStartupInventory()
-        {
-            foreach (String inv in Session.Character.GenerateStartupInventory())
-            {
-                Session.Client.SendPacket(inv);
-            }
-        }
-
         private async void ShutdownTask()
         {
             string message = String.Format(Language.Instance.GetMessageFromKey("SHUTDOWN_MIN"), 5);

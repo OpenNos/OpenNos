@@ -88,7 +88,6 @@ namespace OpenNos.GameObject
         internal void MonsterLife()
         {
             NpcMonster monster = ServerManager.GetNpc(this.MonsterVNum);
-            bool follow = false;
             //Respawn
             if (!Alive)
             {
