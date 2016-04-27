@@ -461,7 +461,7 @@ namespace OpenNos.Handler
                 return;
             if ((Session.Character.ExchangeInfo != null && Session.Character.ExchangeInfo?.ExchangeList.Count() != 0) || Session.Character.Speed == 0)
                 return;
-            Session.Character.InventoryList.MoveItem(Session.Character, type, slot, amount, destslot, out LastInventory, out NewInventory);
+            Session.Character.InventoryList.MoveItem( type, slot, amount, destslot, out LastInventory, out NewInventory);
             if (NewInventory == null) return;
             Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(NewInventory.ItemInstance.ItemVNum, NewInventory.ItemInstance.Amount, type, NewInventory.Slot, NewInventory.ItemInstance.Rare, NewInventory.ItemInstance.Design, NewInventory.ItemInstance.Upgrade));
             if (LastInventory != null)
@@ -484,7 +484,7 @@ namespace OpenNos.Handler
             {
                 if (amount > 0 && amount < 100)
                 {
-                    MapItem DroppedItem = Session.Character.InventoryList.PutItem(Session, type, slot, amount, out invitem);
+                    MapItem DroppedItem = Session.Character.InventoryList.PutItem( type, slot, amount, out invitem);
                     if (DroppedItem == null)
                     {
                         Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("ITEM_NOT_DROPPABLE_HERE"), 0)); ;
@@ -566,7 +566,7 @@ namespace OpenNos.Handler
                             {
                                 Inventory invdest = new Inventory();
                                 Inventory inv = new Inventory();
-                                Session.Character.InventoryList.MoveItem(Session.Character, type, (short)(x + 1), 1, x, out inv, out invdest);
+                                Session.Character.InventoryList.MoveItem(type, (short)(x + 1), 1, x, out inv, out invdest);
                                 WearableInstance wearableInstance = invdest.ItemInstance as WearableInstance;
                                 Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(invdest.ItemInstance.ItemVNum, invdest.ItemInstance.Amount, type, invdest.Slot, wearableInstance.Rare, wearableInstance.Design, wearableInstance.Upgrade));
                                 Session.Character.DeleteItem(type, (short)(x + 1));

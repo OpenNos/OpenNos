@@ -264,7 +264,7 @@ namespace OpenNos.GameObject
             return null;
         }
 
-        public void MoveItem(Character character, byte type, short slot, byte amount, short destslot, out Inventory inv, out Inventory invdest)
+        public void MoveItem(byte type, short slot, byte amount, short destslot, out Inventory inv, out Inventory invdest)
         {
             inv = LoadInventoryBySlotAndType(slot, type);
             invdest = LoadInventoryBySlotAndType(destslot, type);
@@ -322,19 +322,19 @@ namespace OpenNos.GameObject
             invdest = LoadInventoryBySlotAndType(destslot, type);
         }
 
-        public MapItem PutItem(ClientSession Session, byte type, short slot, byte amount, out Inventory inv)
+        public MapItem PutItem(byte type, short slot, byte amount, out Inventory inv)
         {
             Random rnd = new Random();
             int random = 0;
             int i = 0;
-            inv = Session.Character.InventoryList.LoadInventoryBySlotAndType(slot, type);
+            inv = LoadInventoryBySlotAndType(slot, type);
             MapItem droppedItem = null;
-            short MapX = (short)(rnd.Next(Session.Character.MapX - 1, Session.Character.MapX + 1));
-            short MapY = (short)(rnd.Next(Session.Character.MapY - 1, Session.Character.MapY + 1));
-            while (Session.CurrentMap.IsBlockedZone(MapX, MapY) && i < 5)
+            short MapX = (short)(rnd.Next(Owner.MapX - 1, Owner.MapX + 1));
+            short MapY = (short)(rnd.Next(Owner.MapY - 1, Owner.MapY + 1));
+            while (ServerManager.GetMap(Owner.MapId).IsBlockedZone(MapX, MapY) && i < 5)
             {
-                MapX = (short)(rnd.Next(Session.Character.MapX - 1, Session.Character.MapX + 1));
-                MapY = (short)(rnd.Next(Session.Character.MapY - 1, Session.Character.MapY + 1));
+                MapX = (short)(rnd.Next(Owner.MapX - 1, Owner.MapX + 1));
+                MapY = (short)(rnd.Next(Owner.MapY - 1, Owner.MapY + 1));
                 i++;
             }
             if (i == 5)
@@ -345,12 +345,12 @@ namespace OpenNos.GameObject
                 {
                     ItemInstance = inv.ItemInstance as ItemInstance
                 };
-                while (Session.CurrentMap.DroppedList.ContainsKey(random = rnd.Next(1, 999999)))
+                while (ServerManager.GetMap(Owner.MapId).DroppedList.ContainsKey(random = rnd.Next(1, 999999)))
                 { }
                 droppedItem.ItemInstance.ItemInstanceId = random;
-                Session.CurrentMap.DroppedList.Add(random, droppedItem);
+                ServerManager.GetMap(Owner.MapId).DroppedList.Add(random, droppedItem);
                 inv.ItemInstance.Amount = (byte)(inv.ItemInstance.Amount - amount);
-                Session.Character.InventoryList.Update(ref inv);
+                Update(ref inv);
             }
             return droppedItem;
         }

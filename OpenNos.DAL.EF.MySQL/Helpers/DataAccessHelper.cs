@@ -151,7 +151,7 @@ namespace OpenNos.DAL.EF.MySQL.Helpers
                 try
                 {
                     context.Database.Connection.Open();
-                    //add on line as above for each tableset(it will load the table at startup and will speedup the first query)
+                    //add on line as above for each tableset(it will load the table at startup and will speedup the first query)      
                     context.Account.Any();
                     context.Map.Any();
                     context.Portal.Any();
