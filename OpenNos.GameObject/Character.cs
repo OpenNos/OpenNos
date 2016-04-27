@@ -1216,7 +1216,7 @@ namespace OpenNos.GameObject
                     DAOFactory.QuicklistEntryDAO.Delete(CharacterId, quicklists.EntryId);
 
             SpecialistInstance newInventory = new SpecialistInstance() { ItemVNum = 1 };
-            InventoryDTO dto = InventoryList.CreateItem<SpecialistInstance>(newInventory, this);
+            InventoryDTO dto = InventoryList.AddToInventory<SpecialistInstance>(newInventory);
             DAOFactory.InventoryDAO.InsertOrUpdate(ref dto);
 
 
