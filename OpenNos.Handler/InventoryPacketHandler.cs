@@ -438,7 +438,8 @@ namespace OpenNos.Handler
                 return;
             if ((Session.Character.ExchangeInfo != null && Session.Character.ExchangeInfo?.ExchangeList.Count() != 0) || Session.Character.Speed == 0)
                 return;
-            Inventory inv = Session.Character.InventoryList.MoveInventory(type, slot, desttype, destslot);
+            
+            Inventory inv = Session.Character.InventoryList.MoveInventory(Session.Character.InventoryList.LoadInventoryBySlotAndType(slot,type), desttype, destslot);
             if (inv != null)
             {
                 Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(inv.ItemInstance.ItemVNum, inv.ItemInstance.Amount, desttype, inv.Slot, inv.ItemInstance.Rare, inv.ItemInstance.Design, inv.ItemInstance.Upgrade));
@@ -478,23 +479,21 @@ namespace OpenNos.Handler
             byte type; byte.TryParse(packetsplit[2], out type);
             short slot; short.TryParse(packetsplit[3], out slot);
             byte amount; byte.TryParse(packetsplit[4], out amount);
-            ItemInstance inv;
-            ItemInstance invitem = Session.Character.InventoryList.LoadBySlotAndType<ItemInstance>(slot, type);
-            if (invitem != null && ServerManager.GetItem(invitem.ItemVNum).IsDroppable == true && ServerManager.GetItem(invitem.ItemVNum).IsTradable == true && (Session.CurrentMap.ShopUserList.FirstOrDefault(mapshop => mapshop.Value.OwnerId.Equals(Session.Character.CharacterId)).Value == null && (Session.Character.ExchangeInfo == null || Session.Character.ExchangeInfo?.ExchangeList.Count() == 0)))
+            Inventory invitem = Session.Character.InventoryList.LoadInventoryBySlotAndType(slot, type);
+            if (invitem != null && (invitem.ItemInstance as ItemInstance).Item.IsDroppable == true && (invitem.ItemInstance as ItemInstance).Item.IsTradable == true && (Session.CurrentMap.ShopUserList.FirstOrDefault(mapshop => mapshop.Value.OwnerId.Equals(Session.Character.CharacterId)).Value == null && (Session.Character.ExchangeInfo == null || Session.Character.ExchangeInfo?.ExchangeList.Count() == 0)))
             {
                 if (amount > 0 && amount < 100)
                 {
-                    MapItem DroppedItem = Session.Character.InventoryList.PutItem(Session, type, slot, amount, out inv);
+                    MapItem DroppedItem = Session.Character.InventoryList.PutItem(Session, type, slot, amount, out invitem);
                     if (DroppedItem == null)
                     {
                         Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("ITEM_NOT_DROPPABLE_HERE"), 0)); ;
                         return;
                     }
-                    //TODO inventoryitem
-                    //Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(inv.ItemVNum, inv.Amount, type, inv.Slot, inv.Rare, inv.Design, inv.Upgrade));
+                    Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(invitem.ItemInstance.ItemVNum, invitem.ItemInstance.Amount, type, invitem.Slot, invitem.ItemInstance.Rare, invitem.ItemInstance.Design, invitem.ItemInstance.Upgrade));
 
-                    if (inv.Amount == 0)
-                        Session.Character.DeleteItemByItemInstanceId(inv.ItemInstanceId);
+                    if (invitem.ItemInstance.Amount == 0)
+                        Session.Character.DeleteItemByItemInstanceId(invitem.ItemInstance.ItemInstanceId);
                     if (DroppedItem != null)
                         ClientLinkManager.Instance.Broadcast(Session, $"drop {DroppedItem.ItemInstance.ItemVNum} {DroppedItem.ItemInstance.ItemInstanceId} {DroppedItem.PositionX} {DroppedItem.PositionY} {DroppedItem.ItemInstance.Amount} 0 -1", ReceiverType.AllOnMap);
                 }
