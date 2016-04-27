@@ -2,8 +2,7 @@ namespace OpenNos.DAL.EF.MySQL
 {
     using System.ComponentModel.DataAnnotations.Schema;
 
-    [Table("Teleporter")]
-    public partial class Teleporter
+    public class Teleporter
     {
         #region Properties
 

@@ -3,8 +3,7 @@ namespace OpenNos.DAL.EF.MySQL
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
 
-    [Table("QuicklistEntry")]
-    public partial class QuicklistEntry
+    public class QuicklistEntry
     {
         #region Properties
 

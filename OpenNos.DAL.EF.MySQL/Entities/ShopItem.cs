@@ -2,8 +2,7 @@ namespace OpenNos.DAL.EF.MySQL
 {
     using System.ComponentModel.DataAnnotations.Schema;
 
-    [Table("ShopItem")]
-    public partial class ShopItem
+    public class ShopItem
     {
         #region Properties
 

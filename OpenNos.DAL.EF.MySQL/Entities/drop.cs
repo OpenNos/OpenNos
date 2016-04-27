@@ -2,8 +2,7 @@ namespace OpenNos.DAL.EF.MySQL
 {
     using System.ComponentModel.DataAnnotations.Schema;
 
-    [Table("Drop")]
-    public partial class Drop
+    public class Drop
     {
         #region Properties
 

@@ -4,8 +4,7 @@ namespace OpenNos.DAL.EF.MySQL
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
 
-    [Table("Skill")]
-    public partial class Skill
+    public class Skill
     {
         #region Instantiation
 

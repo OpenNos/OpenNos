@@ -2,7 +2,7 @@ namespace OpenNos.DAL.EF.MySQL.DB
 {
     using MySql.Data.Entity;
     using System.Data.Entity;
-
+    using System.Data.Entity.ModelConfiguration.Conventions;
     [DbConfigurationType(typeof(MySqlEFConfiguration))]
     public partial class OpenNosContext : DbContext
     {
@@ -53,6 +53,15 @@ namespace OpenNos.DAL.EF.MySQL.DB
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
+            //remove automatic pluralization
+            modelBuilder.Conventions.Remove<PluralizingTableNameConvention>();
+
+            //build TPH tables for inheritance
+            modelBuilder.Entity<ItemInstance>()
+                 .Map<WearableInstance>(m => m.Requires("WearableInstance"))
+                 .Map<SpecialistInstance>(m => m.Requires("SpecialistInstance"))
+                 .Map<UsableInstance>(m => m.Requires("UsableInstance"));
+
             modelBuilder.Entity<Account>()
                 .Property(e => e.Password)
                 .IsUnicode(false);
