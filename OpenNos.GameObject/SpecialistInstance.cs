@@ -7,6 +7,9 @@ namespace OpenNos.GameObject
 {
     public class SpecialistInstance : WearableInstance, ISpecialistInstance, IGameObject
     {
+        public SpecialistInstance()
+        {
+        }
         #region Instantiation
 
         public SpecialistInstance(long itemInstanceId)

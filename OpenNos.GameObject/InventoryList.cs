@@ -14,6 +14,7 @@
 
 using AutoMapper;
 using OpenNos.Data;
+using OpenNos.Domain;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -435,6 +436,28 @@ namespace OpenNos.GameObject
             return inventory;
         }
 
+        public ItemInstance CreateItemInstance<T>(short vnum)
+        {
+            Item item = ServerManager.GetItem(vnum);
+            ItemInstance iteminstance = new ItemInstance() ;
+            if(item !=null)
+            {
+                switch(item.Type)
+                {
+                    case (byte)InventoryType.Wear:
+                        if(item.ItemType == (byte)ItemType.Specialist)
+                            iteminstance = new SpecialistInstance() { ItemVNum = vnum,SpLevel = 1 };
+                        else
+                            iteminstance = new WearableInstance() { ItemVNum = vnum };
+                        break;
+                    default:
+                        iteminstance = new ItemInstance() { ItemVNum = vnum };
+                        break;
+                        
+                }
+            }
+            return iteminstance;
+    }
         #endregion
     }
 }
