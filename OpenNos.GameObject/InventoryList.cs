@@ -25,9 +25,11 @@ namespace OpenNos.GameObject
     {
         #region Instantiation
 
-        public InventoryList()
+        private long Owner { get;set;}
+        public InventoryList(long CharacterId)
         {
             Inventory = new List<Inventory>();
+            Owner = CharacterId;
         }
 
         #endregion
@@ -56,7 +58,7 @@ namespace OpenNos.GameObject
             short Slot = -1;
             IEnumerable<ItemInstance> slotfree = null;
             Inventory inv = null;
-            if (ServerManager.GetItem(newItem.ItemVNum).Type != 0)
+            if (newItem.Item.Type != 0)
             {
                 slotfree = character.LoadBySlotAllowed(newItem.ItemVNum, newItem.Amount);
                 inv = GetFirstSlot(slotfree);
@@ -70,7 +72,7 @@ namespace OpenNos.GameObject
                 modified = true;
             }
             else
-                Slot = GetFirstPlace(ServerManager.GetItem(newItem.ItemVNum).Type, character.BackPack);
+                Slot = GetFirstPlace(newItem.Item.Type, character.BackPack);
             if (Slot != -1)
             {
                 if (modified == false)
@@ -79,7 +81,7 @@ namespace OpenNos.GameObject
                     {
                         CharacterId = character.CharacterId,
                         Slot = Slot,
-                        Type = ServerManager.GetItem(newItem.ItemVNum).Type,
+                        Type = newItem.Item.Type,
                         ItemInstance = newItem,
                         InventoryId = GenerateInventoryId(),
                     };
@@ -91,7 +93,7 @@ namespace OpenNos.GameObject
                     {
                         CharacterId = character.CharacterId,
                         Slot = Slot,
-                        Type = ServerManager.GetItem(newItem.ItemVNum).Type,
+                        Type = newItem.Item.Type,
                         ItemInstance = newItem,
                         InventoryId = inv.InventoryId,
                     };
@@ -200,7 +202,7 @@ namespace OpenNos.GameObject
                         // If an item stuck
                         foreach (ItemInstance itemins in item)
                         {
-                            if (ServerManager.GetItem(itemins.ItemVNum).Type != 0 && itemins.Amount + result.ItemInstance.Amount <= 99)
+                            if (itemins.Item.Type != 0 && itemins.Amount + result.ItemInstance.Amount <= 99)
                                 check = true;
                         }
                         if (!check)
@@ -211,7 +213,7 @@ namespace OpenNos.GameObject
             bool test2 = true;
             foreach (ItemInstance itemins in item)
             {
-                if (place[ServerManager.GetItem(itemins.ItemVNum).Type] == 0)
+                if (place[itemins.Item.Type] == 0)
                     test2 = false;
             }
             return test2;
@@ -438,14 +440,13 @@ namespace OpenNos.GameObject
 
         public ItemInstance CreateItemInstance<T>(short vnum)
         {
-            Item item = ServerManager.GetItem(vnum);
             ItemInstance iteminstance = new ItemInstance() ;
-            if(item !=null)
+            if(iteminstance.Item != null)
             {
-                switch(item.Type)
+                switch(iteminstance.Item.Type)
                 {
                     case (byte)InventoryType.Wear:
-                        if(item.ItemType == (byte)ItemType.Specialist)
+                        if(iteminstance.Item.ItemType == (byte)ItemType.Specialist)
                             iteminstance = new SpecialistInstance() { ItemVNum = vnum,SpLevel = 1 };
                         else
                             iteminstance = new WearableInstance() { ItemVNum = vnum };
@@ -458,6 +459,15 @@ namespace OpenNos.GameObject
             }
             return iteminstance;
     }
+     
+        public Inventory AddToInventory(ItemInstance iteminstance, byte Type, short Slot)
+        {
+            Inventory inv= new Inventory() { Type = Type, Slot = Slot, ItemInstance = iteminstance ,CharacterId = Owner };
+            if (Inventory.Any(s => s.Slot == Slot && s.Type == Type))
+                return null;
+            Inventory.Add(inv);
+            return inv;
+        }
         #endregion
     }
 }

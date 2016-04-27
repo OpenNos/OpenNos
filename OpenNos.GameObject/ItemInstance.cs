@@ -20,6 +20,10 @@ namespace OpenNos.GameObject
     public class ItemInstance : ItemInstanceDTO, IGameObject
     {
         #region Instantiation
+        public Item Item
+        {
+            get { return ServerManager.GetItem(this.ItemVNum); }
+        }
 
         public ItemInstance()
         {

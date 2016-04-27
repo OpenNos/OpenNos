@@ -224,7 +224,7 @@ namespace OpenNos.GameObject
 
         public string GenerateEInfo(WearableInstance item)
         {
-            Item iteminfo = ServerManager.GetItem(item.ItemVNum);
+            Item iteminfo = item.Item;
             byte equipmentslot = iteminfo.EquipmentSlot;
             byte itemType = iteminfo.ItemType;
             byte classe = iteminfo.Class;
@@ -1116,8 +1116,8 @@ namespace OpenNos.GameObject
         {
             IEnumerable<InventoryDTO> inventorysDTO = DAOFactory.InventoryDAO.LoadByCharacterId(CharacterId).ToList();
 
-            InventoryList = new InventoryList();
-            EquipmentList = new InventoryList();
+            InventoryList = new InventoryList(Session.Character.CharacterId);
+            EquipmentList = new InventoryList(Session.Character.CharacterId);
             foreach (InventoryDTO inventory in inventorysDTO)
             {
                 inventory.ItemInstance = DAOFactory.InventoryItemDAO.LoadByInventoryId(inventory.InventoryId);
