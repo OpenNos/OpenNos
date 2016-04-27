@@ -22,12 +22,20 @@ using OpenNos.Data.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
 namespace OpenNos.DAL.EF.MySQL
 {
     public class InventoryDAO : IInventoryDAO
     {
         #region Methods
+
+        public void RegisterMapping(Type gameObjectType)
+        {
+            Type targetType = Assembly.GetExecutingAssembly().GetTypes().SingleOrDefault(t => t.Name.Equals(gameObjectType.Name));
+            Type itemInstanceType = typeof(ItemInstance);
+            Mapper.CreateMap(gameObjectType, itemInstanceType).As(targetType);
+        }
 
         public DeleteResult DeleteFromSlotAndType(long characterId, short slot, byte type)
         {

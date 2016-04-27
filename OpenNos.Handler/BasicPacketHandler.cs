@@ -356,7 +356,7 @@ namespace OpenNos.Handler
                     InventoryDTO inv = DAOFactory.InventoryDAO.LoadBySlotAndType(character.CharacterId, i, (byte)InventoryType.Equipment);
                     if (inv != null)
                     {
-                        inv.ItemInstance = DAOFactory.InventoryItemDAO.LoadByInventoryId(inv.InventoryId);
+                        inv.ItemInstance = DAOFactory.ItemInstanceDAO.LoadByInventoryId(inv.InventoryId);
                         item[i] = inv.ItemInstance;
                     }
                 }

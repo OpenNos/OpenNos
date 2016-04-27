@@ -1,4 +1,5 @@
 ﻿using OpenNos.Core;
+using OpenNos.DAL;
 using OpenNos.Data;
 using OpenNos.Domain;
 using System;
@@ -7,11 +8,12 @@ namespace OpenNos.GameObject
 {
     public class SpecialistInstance : WearableInstance, ISpecialistInstance, IGameObject
     {
+        #region Instantiation
+
         public SpecialistInstance()
         {
 
         }
-        #region Instantiation
 
         public SpecialistInstance(long itemInstanceId)
         {
@@ -293,7 +295,6 @@ namespace OpenNos.GameObject
             Session.Character.GetStartupInventory();
         }
 
-    
         public void UpgradeSp(ClientSession Session, UpgradeProtection protect)
         {
             short[] upsuccess = { 100, 100, 95, 90, 85, 80, 75, 70, 65, 60, 55, 50, 45, 40, 30 };

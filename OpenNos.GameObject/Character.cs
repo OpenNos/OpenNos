@@ -1120,7 +1120,7 @@ namespace OpenNos.GameObject
             EquipmentList = new InventoryList(Session.Character);
             foreach (InventoryDTO inventory in inventorysDTO)
             {
-                inventory.ItemInstance = DAOFactory.InventoryItemDAO.LoadByInventoryId(inventory.InventoryId);
+                inventory.ItemInstance = DAOFactory.ItemInstanceDAO.LoadByInventoryId(inventory.InventoryId);
                 ItemInstance invitem = Mapper.DynamicMap<ItemInstance>(inventory.ItemInstance);
 
                 if (inventory.Type != (byte)InventoryType.Equipment)
@@ -1214,6 +1214,11 @@ namespace OpenNos.GameObject
             foreach (QuicklistEntryDTO quicklists in DAOFactory.QuicklistEntryDAO.Load(CharacterId))
                 if (QuicklistEntries.FirstOrDefault(s => s.EntryId == quicklists.EntryId) == null)
                     DAOFactory.QuicklistEntryDAO.Delete(CharacterId, quicklists.EntryId);
+
+            SpecialistInstance newInventory = new SpecialistInstance() { ItemVNum = 1 };
+            InventoryDTO dto = InventoryList.CreateItem<SpecialistInstance>(newInventory, this);
+            DAOFactory.InventoryDAO.InsertOrUpdate(ref dto);
+
 
             // ... then save the new
             for (int i = InventoryList.Inventory.Count() - 1; i >= 0; i--)

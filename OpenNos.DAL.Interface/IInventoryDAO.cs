@@ -14,6 +14,7 @@
 
 using OpenNos.Data;
 using OpenNos.Data.Enums;
+using System;
 using System.Collections.Generic;
 
 namespace OpenNos.DAL.Interface
@@ -31,6 +32,8 @@ namespace OpenNos.DAL.Interface
         InventoryDTO LoadBySlotAndType(long characterId, short slot, byte type);
 
         IEnumerable<InventoryDTO> LoadByType(long characterId, byte type);
+
+        void RegisterMapping(Type gameObjectType);
 
         #endregion
     }

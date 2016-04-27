@@ -111,10 +111,10 @@
     <Compile Include="Skill.cs" />
     <Compile Include="ShopSkill.cs" />
     <Compile Include="CharacterSkill.cs" />
-    <Compile Include="SpecialistInstance.cs" />
+    <Compile Include="Item\SpecialistInstance.cs" />
     <Compile Include="Teleporter.cs" />
-    <Compile Include="UsableInstance.cs" />
-    <Compile Include="WearableInstance.cs" />
+    <Compile Include="Item\UsableInstance.cs" />
+    <Compile Include="Item\WearableInstance.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\OpenNos.Core\OpenNos.Core.csproj">
