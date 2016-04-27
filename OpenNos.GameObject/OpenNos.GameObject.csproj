@@ -66,16 +66,6 @@
     <Compile Include="Interface\IGameObject.cs" />
     <Compile Include="ExchangeInfo.cs" />
     <Compile Include="Item\FoodItem.cs" />
-    <Compile Include="Item\ItemHandler\PotionItemHandler.cs" />
-    <Compile Include="Item\ItemHandler\FoodItemHandler.cs" />
-    <Compile Include="Item\ItemHandler\NoFunctionItemHandler.cs" />
-    <Compile Include="Item\ItemHandler\SpecialItemHandler.cs" />
-    <Compile Include="Item\ItemHandler\UpgradeItemHandler.cs" />
-    <Compile Include="Item\ItemHandler\WearableItemHandler.cs" />
-    <Compile Include="Item\ItemHandler\TeacherItemHandler.cs" />
-    <Compile Include="Item\ItemHandler\SnackItemHandler.cs" />
-    <Compile Include="Item\ItemHandler\ProduceItemHandler.cs" />
-    <Compile Include="Item\ItemHandler\BoxItemHandler.cs" />
     <Compile Include="Item\MagicalItem.cs" />
     <Compile Include="Item\ProduceItem.cs" />
     <Compile Include="Item\SnackItem.cs" />
@@ -86,7 +76,6 @@
     <Compile Include="Item\UpgradeItem.cs" />
     <Compile Include="Item\NoFunctionItem.cs" />
     <Compile Include="Item\WearableItem.cs" />
-    <Compile Include="Item\ItemHandler\MagicalItemHandler.cs" />
     <Compile Include="Map\Map.cs" />
     <Compile Include="Group.cs" />
     <Compile Include="Map\MapCellAStar.cs" />
