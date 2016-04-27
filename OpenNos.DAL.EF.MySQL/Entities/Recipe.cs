@@ -3,8 +3,7 @@ namespace OpenNos.DAL.EF.MySQL
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations.Schema;
 
-    [Table("Recipe")]
-    public partial class Recipe
+    public class Recipe
     {
         #region Instantiation
 

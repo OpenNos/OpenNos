@@ -3,8 +3,7 @@ namespace OpenNos.DAL.EF.MySQL
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations.Schema;
 
-    [Table("MapNpc")]
-    public partial class MapNpc
+    public class MapNpc
     {
         #region Instantiation
 

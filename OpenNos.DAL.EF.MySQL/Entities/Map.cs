@@ -4,8 +4,7 @@ namespace OpenNos.DAL.EF.MySQL
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
 
-    [Table("Map")]
-    public partial class Map
+    public class Map
     {
         #region Instantiation
 

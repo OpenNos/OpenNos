@@ -4,8 +4,7 @@ namespace OpenNos.DAL.EF.MySQL
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
 
-    [Table("GeneralLog")]
-    public partial class GeneralLog
+    public class GeneralLog
     {
         #region Properties
 
