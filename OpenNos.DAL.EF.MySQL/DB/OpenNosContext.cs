@@ -12,6 +12,9 @@ namespace OpenNos.DAL.EF.MySQL.DB
             : base("name=OpenNosContext")
         {
             this.Configuration.LazyLoadingEnabled = false;
+
+            //--DO NOT DISABLE, otherwise the mapping will fail
+            this.Configuration.ProxyCreationEnabled = false; //only one time access to database so no proxy generation needed, its just slowing down in our case
         }
 
         #endregion
@@ -27,9 +30,6 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public virtual DbSet<GeneralLog> GeneralLog { get; set; }
         public virtual DbSet<Inventory> Inventory { get; set; }
         public virtual DbSet<ItemInstance> ItemInstance { get; set; }
-        public virtual DbSet<WearableInstance> WearableInstance { get; set; }
-        public virtual DbSet<SpecialistInstance> SpecialistInstance { get; set; }
-        public virtual DbSet<UsableInstance> UsableInstance { get; set; }
         public virtual DbSet<Item> Item { get; set; }
         public virtual DbSet<Map> Map { get; set; }
         public virtual DbSet<MapMonster> MapMonster { get; set; }

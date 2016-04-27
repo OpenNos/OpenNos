@@ -15,6 +15,7 @@
 using OpenNos.Core;
 using OpenNos.Core.Networking.Communication.Scs.Communication.Messages;
 using OpenNos.Core.Threading;
+using OpenNos.DAL;
 using OpenNos.Domain;
 using OpenNos.ServiceRef.Internal;
 using System;
@@ -65,6 +66,11 @@ namespace OpenNos.GameObject
             //register WCF events
             ServiceFactory.Instance.CommunicationCallback.CharacterConnectedEvent += CommunicationCallback_CharacterConnectedEvent;
             ServiceFactory.Instance.CommunicationCallback.CharacterDisconnectedEvent += CommunicationCallback_CharacterDisconnectedEvent;
+
+            //register mappings for test
+            DAOFactory.InventoryDAO.RegisterMapping(typeof(ItemInstance));
+            DAOFactory.InventoryDAO.RegisterMapping(typeof(SpecialistInstance));
+            DAOFactory.InventoryDAO.RegisterMapping(typeof(WearableInstance));
         }
 
         #endregion
@@ -218,7 +224,7 @@ namespace OpenNos.GameObject
 
         private void GenerateHandlerReferences(Type type)
         {
-            //iterate thru each type in the given assembly, the IPacketHandler is expected in the same dll 
+            //iterate thru each type in the given assembly, the IPacketHandler is expected in the same dll
             foreach (Type handlerType in type.Assembly.GetTypes().Where(p => !p.IsInterface && type.GetInterfaces().FirstOrDefault().IsAssignableFrom(p)))
             {
                 object handler = Activator.CreateInstance(handlerType, new object[] { this });
