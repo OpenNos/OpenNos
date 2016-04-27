@@ -5,7 +5,7 @@ using System;
 
 namespace OpenNos.GameObject
 {
-    public class SpecialistInstance : WearableInstance, ISpecialistInstanceDTO, IGameObject
+    public class SpecialistInstance : WearableInstance, ISpecialistInstance, IGameObject
     {
         #region Instantiation
 
@@ -289,11 +289,7 @@ namespace OpenNos.GameObject
             Session.Character.GetStartupInventory();
         }
 
-        public void Save()
-        {
-            throw new NotImplementedException();
-        }
-
+    
         public void UpgradeSp(ClientSession Session, UpgradeProtection protect)
         {
             short[] upsuccess = { 100, 100, 95, 90, 85, 80, 75, 70, 65, 60, 55, 50, 45, 40, 30 };

@@ -5,7 +5,7 @@ using System;
 
 namespace OpenNos.GameObject
 {
-    public class WearableInstance : ItemInstance, IWearableInstanceDTO, IGameObject
+    public class WearableInstance : ItemInstance, IWearableInstance, IGameObject
     {
         #region Instantiation
 
@@ -223,11 +223,6 @@ namespace OpenNos.GameObject
             //}
             Session.Character.GetStartupInventory();
             Session.Client.SendPacket("shop_end 1");
-        }
-
-        public void Save()
-        {
-            throw new NotImplementedException();
         }
 
         public void SumItem(ClientSession Session, WearableInstance itemToSum)

@@ -1,6 +1,6 @@
 ﻿namespace OpenNos.Data
 {
-    public class WearableInstanceDTO : ItemInstanceDTO, IWearableInstanceDTO
+    public class WearableInstanceDTO : ItemInstanceDTO, IWearableInstance
     {
         #region Properties
 
@@ -25,12 +25,9 @@
         public short HitRate { get; set; }
         public bool IsEmpty { get; set; }
         public bool IsFixed { get; set; }
-        public bool IsUsed { get; set; }
         public byte LightElement { get; set; }
         public byte LightResistance { get; set; }
         public short MagicDefence { get; set; }
-        public byte Rare { get; set; }
-        public byte Upgrade { get; set; }
         public byte WaterElement { get; set; }
         public byte WaterResistance { get; set; }
         public short HP { get; set; }
