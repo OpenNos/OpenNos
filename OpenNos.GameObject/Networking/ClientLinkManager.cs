@@ -376,7 +376,7 @@ namespace OpenNos.GameObject
 
                 foreach (ItemInstance item in c1Session.Character.ExchangeInfo.ExchangeList)
                 {
-                    Inventory inv = c2Session.Character.InventoryList.CreateItem<ItemInstance>(item, c1Session.Character);
+                    Inventory inv = c2Session.Character.InventoryList.CreateInventory<ItemInstance>(item);
                     if (inv == null) continue;
                     if (inv.Slot == -1) continue;
 

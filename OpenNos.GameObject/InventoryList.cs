@@ -25,16 +25,16 @@ namespace OpenNos.GameObject
     {
         #region Instantiation
 
-        public InventoryList(long CharacterId)
+        public InventoryList(Character Character)
         {
             Inventory = new List<Inventory>();
-            Owner = CharacterId;
+            Owner = Character;
         }
 
         #endregion
 
         #region Properties
-        public long Owner { get; set; }
+        public Character Owner { get; set; }
         public List<Inventory> Inventory { get; set; }
 
         #endregion
@@ -51,7 +51,7 @@ namespace OpenNos.GameObject
             return count;
         }
 
-        public Inventory CreateItem<T>(short vnum, Character character)
+        public Inventory CreateInventory<T>(short vnum)
                      where T : ItemInstance
         {
             short Slot = -1;
@@ -60,7 +60,7 @@ namespace OpenNos.GameObject
             ItemInstance newItem = CreateItemInstance<ItemInstance>(vnum);
             if (newItem.Item.Type != 0)
             {
-                slotfree = character.LoadBySlotAllowed(newItem.ItemVNum, newItem.Amount);
+                slotfree = Owner.LoadBySlotAllowed(newItem.ItemVNum, newItem.Amount);
                 inv = GetFirstSlot(slotfree);
             }
             if (inv != null)
@@ -69,7 +69,7 @@ namespace OpenNos.GameObject
             }
             else
             {
-                Slot = GetFirstPlace(newItem.Item.Type, character.BackPack);
+                Slot = GetFirstPlace(newItem.Item.Type, Owner.BackPack);
                 if (Slot != -1)
                 {
                     inv = AddToInventory(newItem, newItem.Item.Type, Slot);
@@ -78,7 +78,7 @@ namespace OpenNos.GameObject
             return inv;
         }
 
-        public Inventory CreateItem<T>(T newItem, Character character)
+        public Inventory CreateInventory<T>(T newItem)
             where T : ItemInstance
         {
             short Slot = -1;
@@ -86,7 +86,7 @@ namespace OpenNos.GameObject
             Inventory inv = null;
             if (newItem.Item.Type != 0)
             {
-                slotfree = character.LoadBySlotAllowed(newItem.ItemVNum, newItem.Amount);
+                slotfree = Owner.LoadBySlotAllowed(newItem.ItemVNum, newItem.Amount);
                 inv = GetFirstSlot(slotfree);
             }
             if (inv != null)
@@ -95,7 +95,7 @@ namespace OpenNos.GameObject
             }
             else
             {
-                Slot = GetFirstPlace(newItem.Item.Type, character.BackPack);
+                Slot = GetFirstPlace(newItem.Item.Type, Owner.BackPack);
                 if (Slot != -1)
                 {
                     inv = AddToInventory(newItem, newItem.Item.Type, Slot);
@@ -434,7 +434,7 @@ namespace OpenNos.GameObject
 
         public Inventory AddToInventory(ItemInstance iteminstance, byte Type, short Slot)
         {
-            Inventory inv = new Inventory() { Type = Type, Slot = Slot, ItemInstance = iteminstance, CharacterId = Owner,InventoryId= GenerateInventoryId() };
+            Inventory inv = new Inventory() { Type = Type, Slot = Slot, ItemInstance = iteminstance, CharacterId = Owner.CharacterId,InventoryId= GenerateInventoryId() };
             if (Inventory.Any(s => s.Slot == Slot && s.Type == Type))
                 return null;
             Inventory.Add(inv);

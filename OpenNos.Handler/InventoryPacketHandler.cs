@@ -318,7 +318,7 @@ namespace OpenNos.Handler
                                 foreach (ItemInstance item in exchange.ExchangeList)
                                 {
                                     // Add items to their new owners
-                                    Inventory inv = Session.Character.InventoryList.CreateItem(item, Session.Character);
+                                    Inventory inv = Session.Character.InventoryList.CreateInventory(item);
                                     if (inv != null && inv.Slot != -1)
                                         Session.Client.SendPacket(
                                             Session.Character.GenerateInventoryAdd(inv.ItemInstance.ItemVNum,
@@ -392,7 +392,7 @@ namespace OpenNos.Handler
                 {
                     if (mapitem.ItemInstance.ItemVNum != 1046)
                     {
-                        Inventory newInv = Session.Character.InventoryList.CreateItem(mapitem.ItemInstance as ItemInstance, Session.Character);
+                        Inventory newInv = Session.Character.InventoryList.CreateInventory(mapitem.ItemInstance as ItemInstance, Session.Character);
                         if (newInv != null)
                         {
                             Session.CurrentMap.DroppedList.Remove(DropId);
@@ -528,7 +528,7 @@ namespace OpenNos.Handler
                 }
 
                 // Put item back to inventory
-                Inventory inv = Session.Character.InventoryList.CreateItem(new ItemInstance(inventory), Session.Character);
+                Inventory inv = Session.Character.InventoryList.CreateInventory(new ItemInstance(inventory), Session.Character);
                 if (inv == null) return;
 
                 if (inv.Slot != -1)
