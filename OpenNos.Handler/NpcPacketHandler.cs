@@ -115,7 +115,7 @@ namespace OpenNos.Handler
                 //    WaterElement = item.ItemInstance.WaterElement,
                 //};
 
-                Inventory inv = Session.Character.InventoryList.CreateInventory(newItem, Session.Character);
+                Inventory inv = Session.Character.InventoryList.CreateInventory(newItem);
                 if (inv != null && inv.Slot != -1)
                 {
                     Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(newItem.ItemVNum,
@@ -266,7 +266,7 @@ namespace OpenNos.Handler
                 //    WaterElement = 0,
                 //};
 
-                Inventory inv = Session.Character.InventoryList.CreateInventory(newItem, Session.Character);
+                Inventory inv = Session.Character.InventoryList.CreateInventory(newItem);
                 if (inv != null && inv.Slot != -1)
                 {
                     Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(newItem.ItemVNum,
@@ -480,7 +480,7 @@ namespace OpenNos.Handler
                         WearableInstance newItem = new WearableInstance(Session.Character.InventoryList.GenerateInventoryItemId());
 
                         Item iteminfo = ServerManager.GetItem(rec.ItemVNum);
-                        Inventory inv = Session.Character.InventoryList.CreateInventory(newItem, Session.Character);
+                        Inventory inv = Session.Character.InventoryList.CreateInventory(newItem);
                         ServersData.SetRarityPoint(ref newItem);
                         if (inv != null)
                         {
