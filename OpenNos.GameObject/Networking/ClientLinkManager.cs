@@ -179,7 +179,7 @@ namespace OpenNos.GameObject
             clientSession.CurrentMap.ShopUserList[shop.Key].Sell += itemshop.Price * amount;
             shopOwnerSession.Client.SendPacket($"sell_list {shop.Value.Sell} {slot}.{amount}.{itemshop.Amount}");
 
-            Inventory inv = shopOwnerSession.Character.InventoryList.AmountMinusFromInventory(amount, itemshop);
+            Inventory inv = shopOwnerSession.Character.InventoryList.RemoveItemAmountFromInventory(amount, itemshop.InventoryId);
 
             if (inv != null)
             {

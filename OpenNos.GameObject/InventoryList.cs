@@ -25,7 +25,6 @@ namespace OpenNos.GameObject
     {
         #region Instantiation
 
-        private long Owner { get;set;}
         public InventoryList(long CharacterId)
         {
             Inventory = new List<Inventory>();
@@ -35,7 +34,7 @@ namespace OpenNos.GameObject
         #endregion
 
         #region Properties
-
+        public long Owner { get; set; }
         public List<Inventory> Inventory { get; set; }
 
         #endregion
@@ -63,49 +62,24 @@ namespace OpenNos.GameObject
                 slotfree = character.LoadBySlotAllowed(newItem.ItemVNum, newItem.Amount);
                 inv = GetFirstSlot(slotfree);
             }
-            bool modified = false;
-            Inventory newInventory = null;
             if (inv != null)
             {
-                Slot = inv.Slot;
-                newItem.Amount = (byte)(newItem.Amount + inv.ItemInstance.Amount);
-                modified = true;
+                inv.ItemInstance.Amount = (byte)(newItem.Amount + inv.ItemInstance.Amount);
             }
             else
-                Slot = GetFirstPlace(newItem.Item.Type, character.BackPack);
-            if (Slot != -1)
             {
-                if (modified == false)
+                Slot = GetFirstPlace(newItem.Item.Type, character.BackPack);
+                if (Slot != -1)
                 {
-                    newInventory = new Inventory()
-                    {
-                        CharacterId = character.CharacterId,
-                        Slot = Slot,
-                        Type = newItem.Item.Type,
-                        ItemInstance = newItem,
-                        InventoryId = GenerateInventoryId(),
-                    };
+                    inv = AddToInventory(newItem, newItem.Item.Type, Slot);
                 }
-                else
-                {
-                    newItem.ItemInstanceId = inv.ItemInstance.ItemInstanceId;
-                    newInventory = new Inventory()
-                    {
-                        CharacterId = character.CharacterId,
-                        Slot = Slot,
-                        Type = newItem.Item.Type,
-                        ItemInstance = newItem,
-                        InventoryId = inv.InventoryId,
-                    };
-                }
-                InsertOrUpdate(ref newInventory);
             }
-            return newInventory;
+            return inv;
         }
 
-        public Tuple<short,byte> DeleteByInventoryItemId(long inventoryItemId)
+        public Tuple<short, byte> DeleteByInventoryItemId(long inventoryItemId)
         {
-            Tuple<short, byte> removedPlace = new Tuple<short, byte>(0,0);
+            Tuple<short, byte> removedPlace = new Tuple<short, byte>(0, 0);
             Inventory inv = Inventory.FirstOrDefault(i => i.ItemInstance.ItemInstanceId.Equals(inventoryItemId));
 
             if (inv != null)
@@ -224,32 +198,15 @@ namespace OpenNos.GameObject
             return Inventory.FirstOrDefault(i => i.ItemInstance.ItemInstanceId.Equals(inventoryItemId));
         }
 
-        public void InsertOrUpdate(ref Inventory newInventory)
-        {
-            short SLOT = newInventory.Slot;
-            byte TYPE = newInventory.Type;
-
-            Inventory entity = Inventory.FirstOrDefault(c => c.Slot.Equals(SLOT) && c.Type.Equals(TYPE));
-
-            if (entity == null) //new entity
-            {
-                newInventory = Insert(newInventory);
-            }
-            else //existing entity
-            {
-                newInventory = Update(entity, newInventory);
-            }
-        }
-
         public bool IsEmpty()
         {
-            return Inventory.Count > 0 ? false : true;
+            return !Inventory.Any();
         }
 
         public T LoadByInventoryItem<T>(long InventoryItemId)
             where T : ItemInstanceDTO
         {
-            return (T)Inventory.FirstOrDefault(i => i.ItemInstance.ItemInstanceId.Equals(InventoryItemId)).ItemInstance;
+            return (T)Inventory.FirstOrDefault(i => i.ItemInstance.ItemInstanceId.Equals(InventoryItemId))?.ItemInstance;
         }
 
         public Inventory LoadInventoryBySlotAndType(short slot, byte type)
@@ -263,22 +220,21 @@ namespace OpenNos.GameObject
             return (T)Inventory.FirstOrDefault(i => i.Type.Equals(typeof(T)) && i.Slot.Equals(slot) && i.Type.Equals(type))?.ItemInstance;
         }
 
-        public Inventory MoveInventory(byte type, short slot, byte desttype, short destslot)
+        public Inventory MoveInventory(Inventory inv,  byte desttype, short destslot)
         {
-            Inventory inv = LoadInventoryBySlotAndType(slot, type);
             if (inv != null)
             {
-                Item iteminfo = ServerManager.GetItem(inv.ItemInstance.ItemVNum);
+                Item iteminfo = (inv.ItemInstance as ItemInstance).Item;
                 Inventory invdest = LoadInventoryBySlotAndType(destslot, desttype);
 
                 if (invdest == null && ((desttype == 6 && iteminfo.ItemType == 4) || (desttype == 7 && iteminfo.ItemType == 2) || desttype == 0))
                 {
                     inv.Slot = destslot;
                     inv.Type = desttype;
-                    InsertOrUpdate(ref inv);
+                    return inv;
                 }
             }
-            return inv;
+            return null;
         }
 
         public void MoveItem(Character character, byte type, short slot, byte amount, short destslot, out Inventory inv, out Inventory invdest)
@@ -350,12 +306,12 @@ namespace OpenNos.GameObject
             invdest = LoadInventoryBySlotAndType(destslot, type);
         }
 
-        public MapItem PutItem(ClientSession Session, byte type, short slot, byte amount, out ItemInstance inv)
+        public MapItem PutItem(ClientSession Session, byte type, short slot, byte amount, out Inventory inv)
         {
             Random rnd = new Random();
             int random = 0;
             int i = 0;
-            inv = Session.Character.InventoryList.LoadBySlotAndType<ItemInstance>(slot, type);
+            inv = Session.Character.InventoryList.LoadInventoryBySlotAndType(slot, type);
             MapItem droppedItem = null;
             short MapX = (short)(rnd.Next(Session.Character.MapX - 1, Session.Character.MapX + 1));
             short MapY = (short)(rnd.Next(Session.Character.MapY - 1, Session.Character.MapY + 1));
@@ -367,19 +323,18 @@ namespace OpenNos.GameObject
             }
             if (i == 5)
                 return null;
-            if (amount > 0 && amount <= inv.Amount)
+            if (amount > 0 && amount <= inv.ItemInstance.Amount)
             {
                 droppedItem = new MapItem(MapX, MapY)
                 {
-                    ItemInstance = inv
+                    ItemInstance = inv.ItemInstance as ItemInstance
                 };
                 while (Session.CurrentMap.DroppedList.ContainsKey(random = rnd.Next(1, 999999)))
                 { }
                 droppedItem.ItemInstance.ItemInstanceId = random;
                 Session.CurrentMap.DroppedList.Add(random, droppedItem);
-                inv.Amount = (byte)(inv.Amount - amount);
-                //TODO save ItemInstance
-                //Session.Character.InventoryList.InsertOrUpdate(ref inv);
+                inv.ItemInstance.Amount = (byte)(inv.ItemInstance.Amount - amount);
+                Session.Character.InventoryList.InsertOrUpdate(ref inv);
             }
             return droppedItem;
         }
@@ -402,9 +357,9 @@ namespace OpenNos.GameObject
             }
         }
 
-        internal Inventory AmountMinusFromInventory(byte amount, PersonalShopItem itemshop)
+        internal Inventory RemoveItemAmountFromInventory(byte amount, long InventoryId)
         {
-            Inventory inv = Inventory.FirstOrDefault(i => i.InventoryId.Equals(itemshop.InventoryId));
+            Inventory inv = Inventory.FirstOrDefault(i => i.InventoryId.Equals(InventoryId));
 
             if (inv != null)
             {
@@ -419,7 +374,46 @@ namespace OpenNos.GameObject
             return inv;
         }
 
-        private Inventory Insert(Inventory inventory)
+        public ItemInstance CreateItemInstance<T>(short vnum)
+        {
+            ItemInstance iteminstance = new ItemInstance();
+            if (iteminstance.Item != null)
+            {
+                switch (iteminstance.Item.Type)
+                {
+                    case (byte)InventoryType.Wear:
+                        if (iteminstance.Item.ItemType == (byte)ItemType.Specialist)
+                            iteminstance = new SpecialistInstance() { ItemVNum = vnum, SpLevel = 1 };
+                        else
+                            iteminstance = new WearableInstance() { ItemVNum = vnum };
+                        break;
+                    default:
+                        iteminstance = new ItemInstance() { ItemVNum = vnum };
+                        break;
+
+                }
+            }
+            return iteminstance;
+        }
+
+        public void InsertOrUpdate(ref Inventory newInventory)
+        {
+            short SLOT = newInventory.Slot;
+            byte TYPE = newInventory.Type;
+
+            Inventory entity = Inventory.FirstOrDefault(c => c.Slot.Equals(SLOT) && c.Type.Equals(TYPE));
+
+            if (entity == null) //new entity
+            {
+                newInventory = Insert(newInventory);
+            }
+            else //existing entity
+            {
+                newInventory = Update(entity, newInventory);
+            }
+        }
+		
+		private Inventory Insert(Inventory inventory)
         {
             Inventory entity = inventory;
             Inventory.Add(entity);
@@ -438,31 +432,9 @@ namespace OpenNos.GameObject
             return inventory;
         }
 
-        public ItemInstance CreateItemInstance<T>(short vnum)
-        {
-            ItemInstance iteminstance = new ItemInstance() ;
-            if(iteminstance.Item != null)
-            {
-                switch(iteminstance.Item.Type)
-                {
-                    case (byte)InventoryType.Wear:
-                        if(iteminstance.Item.ItemType == (byte)ItemType.Specialist)
-                            iteminstance = new SpecialistInstance() { ItemVNum = vnum,SpLevel = 1 };
-                        else
-                            iteminstance = new WearableInstance() { ItemVNum = vnum };
-                        break;
-                    default:
-                        iteminstance = new ItemInstance() { ItemVNum = vnum };
-                        break;
-                        
-                }
-            }
-            return iteminstance;
-    }
-     
         public Inventory AddToInventory(ItemInstance iteminstance, byte Type, short Slot)
         {
-            Inventory inv= new Inventory() { Type = Type, Slot = Slot, ItemInstance = iteminstance ,CharacterId = Owner };
+            Inventory inv = new Inventory() { Type = Type, Slot = Slot, ItemInstance = iteminstance, CharacterId = Owner,InventoryId= GenerateInventoryId() };
             if (Inventory.Any(s => s.Slot == Slot && s.Type == Type))
                 return null;
             Inventory.Add(inv);
