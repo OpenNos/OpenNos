@@ -248,27 +248,16 @@ namespace OpenNos.GameObject
                     if (inv.ItemInstance.Amount == amount)
                     {
                         inv.Slot = destslot;
-                        InsertOrUpdate(ref inv);
+                        Update(ref inv);
                     }
                     else
                     {
                         inv.ItemInstance.Amount = (byte)(inv.ItemInstance.Amount - amount);
+                       
+                        ItemInstance itemDest = inv.ItemInstance as ItemInstance;
+                        Update(ref inv);
 
-                        //TODO inventoryitem
-                        //ItemInstance itemDest = Mapper.DynamicMap(inv.ItemInstance);
-
-                        InsertOrUpdate(ref inv);
-
-                        Inventory invDest = new Inventory
-                        {
-                            CharacterId = character.CharacterId,
-                            Slot = destslot,
-                            Type = inv.Type,
-                            InventoryId = GenerateInventoryId(),
-                            //ItemInstance = itemDest,
-                        };
-                        InsertOrUpdate(ref invDest);
-                        invdest = invDest;
+                        invdest = AddToInventory(itemDest, inv.Type, destslot);
                     }
                 }
                 else
@@ -281,24 +270,24 @@ namespace OpenNos.GameObject
                             invdest.ItemInstance.Amount = 99;
                             inv.ItemInstance.Amount = (byte)(saveItemCount + inv.ItemInstance.Amount - 99);
 
-                            InsertOrUpdate(ref inv);
-                            InsertOrUpdate(ref invdest);
+                            Update(ref inv);
+                            Update(ref invdest);
                         }
                         else
                         {
                             int saveItemCount = invdest.ItemInstance.Amount;
                             invdest.ItemInstance.Amount = (byte)(saveItemCount + amount);
                             inv.ItemInstance.Amount = (byte)(inv.ItemInstance.Amount - amount);
-                            InsertOrUpdate(ref inv);
-                            InsertOrUpdate(ref invdest);
+                            Update(ref inv);
+                            Update(ref invdest);
                         }
                     }
                     else
                     {
                         invdest.Slot = slot;
                         inv.Slot = destslot;
-                        InsertOrUpdate(ref inv);
-                        InsertOrUpdate(ref invdest);
+                        Update(ref inv);
+                        Update(ref invdest);
                     }
                 }
             }
@@ -334,7 +323,7 @@ namespace OpenNos.GameObject
                 droppedItem.ItemInstance.ItemInstanceId = random;
                 Session.CurrentMap.DroppedList.Add(random, droppedItem);
                 inv.ItemInstance.Amount = (byte)(inv.ItemInstance.Amount - amount);
-                Session.Character.InventoryList.InsertOrUpdate(ref inv);
+                Session.Character.InventoryList.Update(ref inv);
             }
             return droppedItem;
         }
@@ -396,40 +385,24 @@ namespace OpenNos.GameObject
             return iteminstance;
         }
 
-        public void InsertOrUpdate(ref Inventory newInventory)
+        public void Update(ref Inventory newInventory)
         {
             short SLOT = newInventory.Slot;
             byte TYPE = newInventory.Type;
 
             Inventory entity = Inventory.FirstOrDefault(c => c.Slot.Equals(SLOT) && c.Type.Equals(TYPE));
 
-            if (entity == null) //new entity
+            if (entity != null) 
             {
-                newInventory = Insert(newInventory);
+                long id = newInventory.InventoryId;
+                var result = Inventory.FirstOrDefault(c => c.InventoryId == id);
+                if (result != null)
+                {
+                    Inventory.Remove(result);
+                    Inventory.Add(newInventory);
+                }
+                
             }
-            else //existing entity
-            {
-                newInventory = Update(entity, newInventory);
-            }
-        }
-		
-		private Inventory Insert(Inventory inventory)
-        {
-            Inventory entity = inventory;
-            Inventory.Add(entity);
-            return entity;
-        }
-
-        private Inventory Update(Inventory entity, Inventory inventory)
-        {
-            var result = Inventory.FirstOrDefault(c => c.InventoryId == inventory.InventoryId);
-            if (result != null)
-            {
-                Inventory.Remove(result);
-                Inventory.Add(inventory);
-            }
-
-            return inventory;
         }
 
         public Inventory AddToInventory(ItemInstance iteminstance, byte Type, short Slot)
