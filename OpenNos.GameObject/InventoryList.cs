@@ -244,7 +244,7 @@ namespace OpenNos.GameObject
         public T LoadBySlotAndType<T>(short slot, byte type)
             where T : ItemInstance
         {
-            return (T)Inventory.FirstOrDefault(i => i.Type.Equals(typeof(T)) && i.Slot.Equals(slot) && i.Type.Equals(type))?.ItemInstance;
+            return (T)Inventory.FirstOrDefault(i => i.ItemInstance.GetType().Equals(typeof(T)) && i.Slot == slot && i.Type == type)?.ItemInstance;
         }
 
         public Inventory MoveInventory(Inventory inv,  byte desttype, short destslot)

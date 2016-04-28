@@ -1115,7 +1115,7 @@ namespace OpenNos.Handler
                 short slot;
 
                 if (!byte.TryParse(packetsplit[3], out type) || !short.TryParse(packetsplit[2], out slot)) return;
-                ItemInstance inv = Session.Character.InventoryList.LoadBySlotAndType<ItemInstance>(slot, type);
+                WearableInstance inv = Session.Character.InventoryList.LoadBySlotAndType<WearableInstance>(slot, type);
                 if (inv != null)
                 {
                     inv.Use();
