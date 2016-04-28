@@ -392,7 +392,7 @@ namespace OpenNos.GameObject
 
         public ItemInstance CreateItemInstance<T>(short vnum)
         {
-            ItemInstance iteminstance = new ItemInstance();
+            ItemInstance iteminstance = new ItemInstance() { ItemVNum = vnum };
             if (iteminstance.Item != null)
             {
                 switch (iteminstance.Item.Type)
@@ -402,9 +402,6 @@ namespace OpenNos.GameObject
                             iteminstance = new SpecialistInstance() { ItemVNum = vnum, SpLevel = 1 };
                         else
                             iteminstance = new WearableInstance() { ItemVNum = vnum };
-                        break;
-                    default:
-                        iteminstance = new ItemInstance() { ItemVNum = vnum };
                         break;
 
                 }

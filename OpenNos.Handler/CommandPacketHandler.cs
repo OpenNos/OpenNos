@@ -273,8 +273,8 @@ namespace OpenNos.Handler
         public void CreateItem(string packet)
         {
             string[] packetsplit = packet.Split(' ');
-            byte amount = 1, rare = 0, upgrade = 0, level = 0;
-            short vnum, design = 0;
+            byte amount = 1, rare = 0, upgrade = 0,design = 0;
+            short vnum;
             ItemDTO iteminfo = null;
             if (packetsplit.Length != 5 && packetsplit.Length != 4 && packetsplit.Length != 3)
             {
@@ -293,7 +293,7 @@ namespace OpenNos.Handler
                     if (iteminfo.IsColored)
                     {
                         if (packetsplit.Count() > 3)
-                            short.TryParse(packetsplit[3], out design);
+                            byte.TryParse(packetsplit[3], out design);
                     }
                     else if (iteminfo.Type == 0)
                     {
@@ -306,7 +306,7 @@ namespace OpenNos.Handler
                             if (iteminfo.EquipmentSlot == Convert.ToByte((byte)EquipmentType.Sp))
                             {
                                 byte.TryParse(packetsplit[3], out upgrade);
-                                short.TryParse(packetsplit[4], out design);
+                                byte.TryParse(packetsplit[4], out design);
                             }
                             else
                             {
@@ -325,43 +325,13 @@ namespace OpenNos.Handler
                         if (packetsplit.Length > 3)
                             byte.TryParse(packetsplit[3], out amount);
                     }
-                    if (iteminfo.EquipmentSlot == Convert.ToByte((byte)EquipmentType.Sp))
-                        level = 1;
-                    //TODO inventoryitem
-                    ItemInstance newItem = new ItemInstance();
-                    //{
-                    //    ItemInstanceId = Session.Character.InventoryList.GenerateInventoryItemId(),
-                    //    Amount = amount,
-                    //    ItemVNum = vnum,
-                    //    Rare = rare,
-                    //    Upgrade = upgrade,
-                    //    Design = design,
-                    //    Concentrate = 0,
-                    //    CriticalLuckRate = 0,
-                    //    CriticalRate = 0,
-                    //    DamageMaximum = 0,
-                    //    DamageMinimum = 0,
-                    //    DarkElement = 0,
-                    //    DistanceDefence = 0,
-                    //    DistanceDefenceDodge = 0,
-                    //    DefenceDodge = 0,
-                    //    ElementRate = 0,
-                    //    FireElement = 0,
-                    //    HitRate = 0,
-                    //    LightElement = 0,
-                    //    IsFixed = false,
-                    //    Ammo = 0,
-                    //    MagicDefence = 0,
-                    //    CloseDefence = 0,
-                    //    SpXp = 0,
-                    //    SpLevel = level,
-                    //    SlDefence = 0,
-                    //    SlElement = 0,
-                    //    SlDamage = 0,
-                    //    SlHP = 0,
-                    //    WaterElement = 0,
-                    //};
-                    Inventory inv = Session.Character.InventoryList.AddToInventory(newItem);
+                    Inventory inv = Session.Character.InventoryList.AddNewItemToInventory<ItemInstance>(vnum);
+                    inv.ItemInstance.Amount = amount;
+                    inv.ItemInstance.Rare = rare;
+                    inv.ItemInstance.Upgrade = upgrade;
+                    inv.ItemInstance.Design = design;
+                    Session.Character.InventoryList.Update(ref inv);
+                    
                     WearableInstance wearable = Session.Character.InventoryList.LoadBySlotAndType<WearableInstance>(inv.Slot,inv.Type);
                     ServersData.SetRarityPoint(ref wearable);
                     if (inv != null)
