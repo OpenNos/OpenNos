@@ -99,10 +99,8 @@ namespace OpenNos.GameObject
                     Inventory equip = Session.Character.EquipmentList.LoadInventoryBySlotAndType(iteminfo.EquipmentSlot, (byte)InventoryType.Equipment);
                     if (equip == null)
                     {
-                        inventory.Type = (byte)InventoryType.Equipment;
-                        inventory.Slot = iteminfo.EquipmentSlot;
 
-                        Session.Character.EquipmentList.Update(ref inventory);
+                        Session.Character.EquipmentList.AddToInventoryWithSlotAndType( inventory.ItemInstance as ItemInstance, (byte)InventoryType.Equipment, iteminfo.EquipmentSlot);
                         Session.Character.InventoryList.DeleteFromSlotAndType(slot, type);
                         Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, type, slot, 0, 0, 0));
                         Session.Character.InventoryList.DeleteFromSlotAndType(inventory.Slot, inventory.Type);
@@ -128,12 +126,11 @@ namespace OpenNos.GameObject
                         Session.Character.InventoryList.Update(ref equip);
                         Session.Character.EquipmentList.Update(ref inventory);
 
-                        //TODO inventoryitem
-                        //Session.Client.SendPacket(
-                        //    Session.Character.GenerateInventoryAdd(equip.ItemInstance.ItemVNum,
-                        //        equip.ItemInstance.Amount, type, equip.Slot,
-                        //        equip.ItemInstance.Rare, equip.ItemInstance.Design,
-                        //        equip.ItemInstance.Upgrade));
+                        Session.Client.SendPacket(
+                            Session.Character.GenerateInventoryAdd(equip.ItemInstance.ItemVNum,
+                                equip.ItemInstance.Amount, type, equip.Slot,
+                                equip.ItemInstance.Rare, equip.ItemInstance.Design,
+                                equip.ItemInstance.Upgrade));
 
                         Session.Client.SendPacket(Session.Character.GenerateStatChar());
                         ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEq(), ReceiverType.AllOnMap);

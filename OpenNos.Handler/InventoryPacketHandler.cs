@@ -146,45 +146,11 @@ namespace OpenNos.Handler
 
                 case 2:
                     Item item = ServerManager.GetItem(slot);
-                    inventory = new WearableInstance(Session.Character.InventoryList.GenerateItemInstanceId());
-                    //TODO inventoryitem
-                    //{
-                    //    ItemInstanceId = Session.Character.InventoryList.GenerateInventoryItemId(),
-                    //    Amount = 1,
-                    //    ItemVNum = item.VNum,
-                    //    Rare = 0,
-                    //    Upgrade = 0,
-                    //    Design = 0,
-                    //    Concentrate = 0,
-                    //    CriticalLuckRate = 0,
-                    //    CriticalRate = 0,
-                    //    DamageMaximum = 0,
-                    //    DamageMinimum = 0,
-                    //    DarkElement = 0,
-                    //    DistanceDefence = 0,
-                    //    DistanceDefenceDodge = 0,
-                    //    DefenceDodge = 0,
-                    //    ElementRate = 0,
-                    //    FireElement = 0,
-                    //    HitRate = 0,
-                    //    LightElement = 0,
-                    //    IsFixed = false,
-                    //    Ammo = 0,
-                    //    MagicDefence = 0,
-                    //    CloseDefence = 0,
-                    //    SpXp = 0,
-                    //    SpLevel = 0,
-                    //    SlDefence = 0,
-                    //    SlElement = 0,
-                    //    SlDamage = 0,
-                    //    SlHP = 0,
-                    //    WaterElement = 0
-                    //}
-                    //};
+                    inventory = new WearableInstance(Session.Character.InventoryList.GenerateItemInstanceId());       
                     break;
 
                 case 10:
-                    inventory = Session.Character.InventoryList.LoadBySlotAndType<WearableInstance>(slot, (byte)InventoryType.Sp);
+                    inventory = Session.Character.InventoryList.LoadBySlotAndType<SpecialistInstance>(slot, (byte)InventoryType.Sp);
                     break;
 
                 case 11:
@@ -194,11 +160,10 @@ namespace OpenNos.Handler
 
             if (inventory != null)
             {
-                //TODO inventoryitem
-                //Session.Client.SendPacket(
-                //    ServerManager.GetItem(inventory.ItemVNum).EquipmentSlot != (byte)EquipmentType.Sp
-                //        ? Session.Character.GenerateEInfo(inventory)
-                //        : Session.Character.GenerateSlInfo(inventory, 0));
+                Session.Client.SendPacket(
+                    inventory.Item.EquipmentSlot != (byte)EquipmentType.Sp
+                        ? Session.Character.GenerateEInfo(inventory)
+                        : Session.Character.GenerateSlInfo(inventory as SpecialistInstance, 0));
             }
         }
 
@@ -1098,10 +1063,10 @@ namespace OpenNos.Handler
             string[] packetsplit = packet.Split(' ');
             byte type; byte.TryParse(packetsplit[4], out type);
             short slot; short.TryParse(packetsplit[5], out slot);
-            ItemInstance inv = Session.Character.InventoryList.LoadBySlotAndType<ItemInstance>(slot, type);
+            Inventory inv = Session.Character.InventoryList.LoadInventoryBySlotAndType(slot, type);
             if (inv != null)
             {
-                inv.Use();
+                (inv.ItemInstance as ItemInstance).Item.Use(Session, ref inv);
             }
         }
 
@@ -1117,10 +1082,10 @@ namespace OpenNos.Handler
                 short slot;
 
                 if (!byte.TryParse(packetsplit[3], out type) || !short.TryParse(packetsplit[2], out slot)) return;
-                WearableInstance inv = Session.Character.InventoryList.LoadBySlotAndType<WearableInstance>(slot, type);
+                Inventory inv = Session.Character.InventoryList.LoadInventoryBySlotAndType(slot, type);
                 if (inv != null)
                 {
-                    inv.Use();
+                    (inv.ItemInstance as ItemInstance).Item.Use(Session, ref inv);
                 }
             }
         }

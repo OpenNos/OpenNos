@@ -391,10 +391,6 @@ namespace OpenNos.GameObject
             Session.Client.SendPacket("shop_end 1");
         }
 
-        public new void Use()
-        {
-           
-        }
         #endregion
     }
 }

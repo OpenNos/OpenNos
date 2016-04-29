@@ -44,11 +44,7 @@ namespace OpenNos.GameObject
         public void Save()
         {
         }
-
-        public void Use()
-        {
-
-        }
+        
 
         #endregion
     }
