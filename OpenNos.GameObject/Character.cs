@@ -367,7 +367,7 @@ namespace OpenNos.GameObject
 
             for (short i = 0; i < 15; i++)
             {
-                WearableInstance wearable = EquipmentList.LoadBySlotAndType<WearableInstance>(i, (byte)InventoryType.Equipment);
+                ItemInstance wearable = (i!= (byte)EquipmentType.Sp )?EquipmentList.LoadBySlotAndType<WearableInstance>(i, (byte)InventoryType.Equipment): EquipmentList.LoadBySlotAndType<SpecialistInstance>(i, (byte)InventoryType.Equipment);
                 if (wearable != null)
                 {
                     Item iteminfo = ServerManager.GetItem(wearable.ItemVNum);
@@ -687,17 +687,16 @@ namespace OpenNos.GameObject
 
             foreach (Inventory inv in InventoryList.Inventory)
             {
-                Item item = ServerManager.GetItem(inv.ItemInstance.ItemVNum);
                 switch (inv.Type)
                 {
                     case (byte)InventoryType.Costume:
-                        var costumeInstance = inv.ItemInstance as WearableInstanceDTO;
+                        var costumeInstance = inv.ItemInstance as WearableInstance;
                         inv7 += $" {inv.Slot}.{inv.ItemInstance.ItemVNum}.{costumeInstance.Rare}.{costumeInstance.Upgrade}";
                         break;
 
                     case (byte)InventoryType.Wear:
-                        var wearableInstance = inv.ItemInstance as WearableInstanceDTO;
-                        inv0 += $" {inv.Slot}.{inv.ItemInstance.ItemVNum}.{wearableInstance.Rare}.{(item.IsColored ? wearableInstance.Design : wearableInstance.Upgrade)}";
+                        var wearableInstance = inv.ItemInstance as WearableInstance;
+                        inv0 += $" {inv.Slot}.{inv.ItemInstance.ItemVNum}.{wearableInstance.Rare}.{(wearableInstance.Item.IsColored ? wearableInstance.Design : wearableInstance.Upgrade)}";
                         break;
 
                     case (byte)InventoryType.Main:
@@ -709,7 +708,7 @@ namespace OpenNos.GameObject
                         break;
 
                     case (byte)InventoryType.Sp:
-                        var specialist = inv.ItemInstance as SpecialistInstanceDTO;
+                        var specialist = inv.ItemInstance as SpecialistInstance;
                         inv6 += $" {inv.Slot}.{inv.ItemInstance.ItemVNum}.{specialist.Rare}.{specialist.Upgrade}";
                         break;
 

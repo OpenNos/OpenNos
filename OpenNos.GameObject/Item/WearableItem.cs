@@ -101,34 +101,28 @@ namespace OpenNos.GameObject
                     {
 
                         Session.Character.EquipmentList.AddToInventoryWithSlotAndType( inventory.ItemInstance as ItemInstance, (byte)InventoryType.Equipment, iteminfo.EquipmentSlot);
-                        Session.Character.InventoryList.DeleteFromSlotAndType(slot, type);
                         Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, type, slot, 0, 0, 0));
                         Session.Character.InventoryList.DeleteFromSlotAndType(inventory.Slot, inventory.Type);
 
                         Session.Client.SendPacket(Session.Character.GenerateStatChar());
-                        Thread.Sleep(100);
                         ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEq(), ReceiverType.AllOnMap);
                         Session.Client.SendPacket(Session.Character.GenerateEquipment());
                         ClientLinkManager.Instance.Broadcast(Session, Session.Character.GeneratePairy(), ReceiverType.AllOnMap);
                     }
                     else
                     {
-                        inventory.Type = (byte)InventoryType.Equipment;
-                        inventory.Slot = iteminfo.EquipmentSlot;
-
-                        equip.Slot = slot;
-                        equip.Type = type;
-
+                     
                         Session.Character.InventoryList.DeleteFromSlotAndType(inventory.Slot, inventory.Type);
-                        Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, equip.Type, inventory.Slot, 0, 0, 0));
-                        Session.Character.EquipmentList.DeleteFromSlotAndType(slot, type);
+                        Session.Character.EquipmentList.DeleteFromSlotAndType(equip.Slot, equip.Type);
 
-                        Session.Character.InventoryList.Update(ref equip);
-                        Session.Character.EquipmentList.Update(ref inventory);
+                        Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, inventory.Type, inventory.Slot, 0, 0, 0));
+
+                        Session.Character.EquipmentList.AddToInventoryWithSlotAndType(inventory.ItemInstance as ItemInstance, (byte)InventoryType.Equipment, iteminfo.EquipmentSlot);
+                        Session.Character.InventoryList.AddToInventoryWithSlotAndType(equip.ItemInstance as ItemInstance, type, slot);
 
                         Session.Client.SendPacket(
                             Session.Character.GenerateInventoryAdd(equip.ItemInstance.ItemVNum,
-                                equip.ItemInstance.Amount, type, equip.Slot,
+                                equip.ItemInstance.Amount, type, slot,
                                 equip.ItemInstance.Rare, equip.ItemInstance.Design,
                                 equip.ItemInstance.Upgrade));
 

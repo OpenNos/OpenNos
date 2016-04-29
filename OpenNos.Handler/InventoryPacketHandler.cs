@@ -485,7 +485,7 @@ namespace OpenNos.Handler
                 short slot;
                 if (!short.TryParse(packetsplit[2], out slot)) return; // Invalid Number
 
-                WearableInstance inventory = Session.Character.EquipmentList.LoadBySlotAndType<WearableInstance>(slot, (byte)InventoryType.Equipment);
+                ItemInstance inventory = (slot != (byte)EquipmentType.Sp) ? Session.Character.EquipmentList.LoadBySlotAndType<WearableInstance>(slot, (byte)InventoryType.Equipment) : Session.Character.EquipmentList.LoadBySlotAndType<SpecialistInstance>(slot, (byte)InventoryType.Equipment);
                 if (inventory == null) return; // This eqslot is not equipped
 
                 if (slot == (byte)EquipmentType.Sp && Session.Character.UseSp)
@@ -495,7 +495,7 @@ namespace OpenNos.Handler
                 }
 
                 // Put item back to inventory
-                Inventory inv = Session.Character.InventoryList.AddToInventory(new ItemInstance(inventory));
+                Inventory inv = Session.Character.InventoryList.AddToInventory(inventory);
                 if (inv == null) return;
 
                 if (inv.Slot != -1)
@@ -507,7 +507,6 @@ namespace OpenNos.Handler
                 Session.Character.EquipmentList.DeleteFromSlotAndType(slot, (byte)InventoryType.Equipment);
 
                 Session.Client.SendPacket(Session.Character.GenerateStatChar());
-                Thread.Sleep(100);
                 ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEq(), ReceiverType.AllOnMap);
                 Session.Client.SendPacket(Session.Character.GenerateEquipment());
                 ClientLinkManager.Instance.Broadcast(Session, Session.Character.GeneratePairy(), ReceiverType.AllOnMap);
@@ -1083,7 +1082,7 @@ namespace OpenNos.Handler
 
                 if (!byte.TryParse(packetsplit[3], out type) || !short.TryParse(packetsplit[2], out slot)) return;
                 Inventory inv = Session.Character.InventoryList.LoadInventoryBySlotAndType(slot, type);
-                if (inv != null)
+                if (inv != null && inv.ItemInstance != null && (inv.ItemInstance as ItemInstance).Item != null)
                 {
                     (inv.ItemInstance as ItemInstance).Item.Use(Session, ref inv);
                 }
