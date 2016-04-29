@@ -11,7 +11,7 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public OpenNosContext()
             : base("name=OpenNosContext")
         {
-            this.Configuration.LazyLoadingEnabled = false;
+            this.Configuration.LazyLoadingEnabled = true;
 
             //--DO NOT DISABLE, otherwise the mapping will fail
             this.Configuration.ProxyCreationEnabled = false; //only one time access to database so no proxy generation needed, its just slowing down in our case
@@ -61,6 +61,11 @@ namespace OpenNos.DAL.EF.MySQL.DB
                  .Map<WearableInstance>(m => m.Requires("WearableInstance"))
                  .Map<SpecialistInstance>(m => m.Requires("SpecialistInstance"))
                  .Map<UsableInstance>(m => m.Requires("UsableInstance"));
+
+            modelBuilder.Entity<ItemInstance>()
+               .HasOptional(ii => ii.Inventory) // Mark Address property optional in Student entity
+               .WithRequired(inv => inv.ItemInstance); // mark Student property as required in StudentAddress entity. Cannot save StudentAddress without Student
+
 
             modelBuilder.Entity<Account>()
                 .Property(e => e.Password)

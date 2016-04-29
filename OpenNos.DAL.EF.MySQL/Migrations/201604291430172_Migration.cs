@@ -484,20 +484,22 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
                 "dbo.Inventory",
                 c => new
                     {
-                        InventoryId = c.Long(nullable: false, identity: true),
+                        InventoryId = c.Long(nullable: false),
                         CharacterId = c.Long(nullable: false),
                         Slot = c.Short(nullable: false),
                         Type = c.Byte(nullable: false),
                     })
                 .PrimaryKey(t => t.InventoryId)
+                .ForeignKey("dbo.ItemInstance", t => t.InventoryId)
                 .ForeignKey("dbo.Character", t => t.CharacterId)
+                .Index(t => t.InventoryId)
                 .Index(t => t.CharacterId);
             
             CreateTable(
                 "dbo.ItemInstance",
                 c => new
                     {
-                        ItemInstanceId = c.Long(nullable: false),
+                        ItemInstanceId = c.Long(nullable: false, identity: true),
                         Amount = c.Int(nullable: false),
                         Design = c.Short(nullable: false),
                         IsUsed = c.Boolean(nullable: false),
@@ -553,9 +555,7 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
                         Discriminator = c.String(nullable: false, maxLength: 128, storeType: "nvarchar"),
                     })
                 .PrimaryKey(t => t.ItemInstanceId)
-                .ForeignKey("dbo.Inventory", t => t.ItemInstanceId)
                 .ForeignKey("dbo.Item", t => t.ItemVNum, cascadeDelete: true)
-                .Index(t => t.ItemInstanceId)
                 .Index(t => t.ItemVNum);
             
             CreateTable(
@@ -614,7 +614,7 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
             DropForeignKey("dbo.Inventory", "CharacterId", "dbo.Character");
             DropForeignKey("dbo.CellonOption", "WearableInstanceId", "dbo.ItemInstance");
             DropForeignKey("dbo.ItemInstance", "ItemVNum", "dbo.Item");
-            DropForeignKey("dbo.ItemInstance", "ItemInstanceId", "dbo.Inventory");
+            DropForeignKey("dbo.Inventory", "InventoryId", "dbo.ItemInstance");
             DropForeignKey("dbo.GeneralLog", "CharacterId", "dbo.Character");
             DropForeignKey("dbo.CharacterSkill", "CharacterId", "dbo.Character");
             DropForeignKey("dbo.ShopSkill", "SkillVNum", "dbo.Skill");
@@ -645,8 +645,8 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
             DropIndex("dbo.QuicklistEntry", new[] { "CharacterId" });
             DropIndex("dbo.CellonOption", new[] { "WearableInstanceId" });
             DropIndex("dbo.ItemInstance", new[] { "ItemVNum" });
-            DropIndex("dbo.ItemInstance", new[] { "ItemInstanceId" });
             DropIndex("dbo.Inventory", new[] { "CharacterId" });
+            DropIndex("dbo.Inventory", new[] { "InventoryId" });
             DropIndex("dbo.GeneralLog", new[] { "CharacterId" });
             DropIndex("dbo.GeneralLog", new[] { "AccountId" });
             DropIndex("dbo.RecipeItem", new[] { "RecipeId" });

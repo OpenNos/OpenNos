@@ -139,7 +139,7 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                foreach (Inventory inventory in context.Inventory.Where(i => i.CharacterId.Equals(characterId)))
+                foreach (Inventory inventory in context.Inventory.Include(nameof(ItemInstance)).Where(i => i.CharacterId.Equals(characterId)))
                 {
                     yield return _mapper.Map<InventoryDTO>(inventory);
                 }
@@ -188,10 +188,7 @@ namespace OpenNos.DAL.EF.MySQL
             {
                 entity.ItemInstance = _mapper.Map(inventory.ItemInstance, targetMapping.Key, targetMapping.Value) as ItemInstance;
             }
-            else
-            {
-                entity.ItemInstance = _mapper.Map(inventory.ItemInstance, _baseType, typeof(ItemInstance)) as ItemInstance;
-            }
+
             context.Inventory.Add(entity);
             context.SaveChanges();
             return _mapper.Map<InventoryDTO>(entity);
