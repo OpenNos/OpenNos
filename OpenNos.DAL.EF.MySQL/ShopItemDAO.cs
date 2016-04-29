@@ -25,6 +25,27 @@ namespace OpenNos.DAL.EF.MySQL
 {
     public class ShopItemDAO : IShopItemDAO
     {
+        #region Members
+
+        private IMapper _mapper;
+
+        #endregion
+
+        #region Instantiation
+
+        public ShopItemDAO()
+        {
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<ShopItem, ShopItemDTO>();
+                cfg.CreateMap<ShopItemDTO, ShopItem>();
+            });
+
+            _mapper = config.CreateMapper();
+        }
+
+        #endregion
+
         #region Methods
 
         public DeleteResult DeleteById(int itemId)
@@ -47,10 +68,10 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                ShopItem entity = Mapper.DynamicMap<ShopItem>(item);
+                ShopItem entity = _mapper.Map<ShopItem>(item);
                 context.ShopItem.Add(entity);
                 context.SaveChanges();
-                return Mapper.DynamicMap<ShopItemDTO>(entity);
+                return _mapper.Map<ShopItemDTO>(entity);
             }
         }
 
@@ -61,7 +82,7 @@ namespace OpenNos.DAL.EF.MySQL
                 context.Configuration.AutoDetectChangesEnabled = false;
                 foreach (ShopItemDTO Item in items)
                 {
-                    ShopItem entity = Mapper.DynamicMap<ShopItem>(Item);
+                    ShopItem entity = _mapper.Map<ShopItem>(Item);
                     context.ShopItem.Add(entity);
                 }
                 context.SaveChanges();
@@ -72,7 +93,7 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                return Mapper.DynamicMap<ShopItemDTO>(context.ShopItem.FirstOrDefault(i => i.ShopItemId.Equals(itemId)));
+                return _mapper.Map<ShopItemDTO>(context.ShopItem.FirstOrDefault(i => i.ShopItemId.Equals(itemId)));
             }
         }
 
@@ -82,7 +103,7 @@ namespace OpenNos.DAL.EF.MySQL
             {
                 foreach (ShopItem ShopItem in context.ShopItem.Where(i => i.ShopId.Equals(shopId)))
                 {
-                    yield return Mapper.DynamicMap<ShopItemDTO>(ShopItem);
+                    yield return _mapper.Map<ShopItemDTO>(ShopItem);
                 }
             }
         }
@@ -91,11 +112,11 @@ namespace OpenNos.DAL.EF.MySQL
         {
             if (entity != null)
             {
-                Mapper.DynamicMap(shopItem, entity);
+                _mapper.Map(shopItem, entity);
                 context.SaveChanges();
             }
 
-            return Mapper.DynamicMap<ShopItemDTO>(entity);
+            return _mapper.Map<ShopItemDTO>(entity);
         }
 
         #endregion

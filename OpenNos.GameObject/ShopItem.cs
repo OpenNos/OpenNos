@@ -12,7 +12,6 @@
  * GNU General Public License for more details.
  */
 
-using AutoMapper;
 using OpenNos.Data;
 using System;
 
@@ -20,16 +19,6 @@ namespace OpenNos.GameObject
 {
     public class ShopItem : ShopItemDTO
     {
-        #region Instantiation
-
-        public ShopItem()
-        {
-            Mapper.CreateMap<ShopItemDTO, ShopItem>();
-            Mapper.CreateMap<ShopItem, ShopItemDTO>();
-        }
-
-        #endregion
-
         #region Methods
 
         public void Save()

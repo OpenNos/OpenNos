@@ -12,7 +12,6 @@
  * GNU General Public License for more details.
  */
 
-using AutoMapper;
 using OpenNos.Data;
 using System.Collections.Generic;
 
@@ -24,8 +23,6 @@ namespace OpenNos.GameObject
 
         public Skill()
         {
-            Mapper.CreateMap<SkillDTO, Skill>();
-            Mapper.CreateMap<Skill, SkillDTO>();
             Combos = new List<Combo>();
         }
 

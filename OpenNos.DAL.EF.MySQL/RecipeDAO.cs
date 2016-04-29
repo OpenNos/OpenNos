@@ -24,16 +24,37 @@ namespace OpenNos.DAL.EF.MySQL
 {
     public class RecipeDAO : IRecipeDAO
     {
+        #region Members
+
+        private IMapper _mapper;
+
+        #endregion
+
+        #region Instantiation
+
+        public RecipeDAO()
+        {
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<Recipe, RecipeDTO>();
+                cfg.CreateMap<RecipeDTO, Recipe>();
+            });
+
+            _mapper = config.CreateMapper();
+        }
+
+        #endregion
+
         #region Methods
 
         public RecipeDTO Insert(RecipeDTO recipe)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                Recipe entity = Mapper.DynamicMap<Recipe>(recipe);
+                Recipe entity = _mapper.Map<Recipe>(recipe);
                 context.Recipe.Add(entity);
                 context.SaveChanges();
-                return Mapper.DynamicMap<RecipeDTO>(entity);
+                return _mapper.Map<RecipeDTO>(entity);
             }
         }
 
@@ -41,7 +62,7 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                return Mapper.DynamicMap<RecipeDTO>(context.Recipe.FirstOrDefault(s => s.RecipeId.Equals(recipeId)));
+                return _mapper.Map<RecipeDTO>(context.Recipe.FirstOrDefault(s => s.RecipeId.Equals(recipeId)));
             }
         }
 
@@ -51,7 +72,7 @@ namespace OpenNos.DAL.EF.MySQL
             {
                 foreach (Recipe Recipe in context.Recipe.Where(s => s.MapNpcId.Equals(npcId)))
                 {
-                    yield return Mapper.DynamicMap<RecipeDTO>(Recipe);
+                    yield return _mapper.Map<RecipeDTO>(Recipe);
                 }
             }
         }
@@ -64,7 +85,7 @@ namespace OpenNos.DAL.EF.MySQL
                 if (result != null)
                 {
                     recipe.RecipeId = result.RecipeId;
-                    Mapper.DynamicMap(recipe, result);
+                    _mapper.Map(recipe, result);
                     context.SaveChanges();
                 }
             }

@@ -12,21 +12,11 @@
  * GNU General Public License for more details.
  */
 
-using AutoMapper;
 using OpenNos.Data;
 
 namespace OpenNos.GameObject
 {
     public class Portal : PortalDTO
     {
-        #region Instantiation
-
-        public Portal()
-        {
-            Mapper.CreateMap<PortalDTO, Portal>();
-            Mapper.CreateMap<Portal, PortalDTO>();
-        }
-
-        #endregion
     }
 }

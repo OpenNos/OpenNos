@@ -12,21 +12,11 @@
  * GNU General Public License for more details.
  */
 
-using AutoMapper;
 using OpenNos.Data;
 
 namespace OpenNos.GameObject
 {
     public class Teleporter : TeleporterDTO
     {
-        #region Instantiation
-
-        public Teleporter()
-        {
-            Mapper.CreateMap<TeleporterDTO, Teleporter>();
-            Mapper.CreateMap<Teleporter, TeleporterDTO>();
-        }
-
-        #endregion
     }
 }

@@ -16,7 +16,6 @@
         public byte DarkElement { get; set; }
         public byte DarkResistance { get; set; }
         public short DefenceDodge { get; set; }
-        public short Design { get; set; }
         public short DistanceDefence { get; set; }
         public short DistanceDefenceDodge { get; set; }
         public short ElementRate { get; set; }

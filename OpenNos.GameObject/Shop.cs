@@ -12,7 +12,6 @@
  * GNU General Public License for more details.
  */
 
-using AutoMapper;
 using OpenNos.DAL;
 using OpenNos.Data;
 using System;
@@ -26,8 +25,6 @@ namespace OpenNos.GameObject
 
         public Shop(int shopId)
         {
-            Mapper.CreateMap<ShopDTO, Shop>();
-            Mapper.CreateMap<Shop, ShopDTO>();
             ShopItems = new List<ShopItem>();
             ShopSkills = new List<ShopSkill>();
             ShopId = shopId;
