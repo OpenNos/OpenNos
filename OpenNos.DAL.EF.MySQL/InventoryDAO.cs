@@ -30,6 +30,7 @@ namespace OpenNos.DAL.EF.MySQL
     {
         #region Members
 
+        private Type _baseType;
         private IMapper _mapper;
         private IDictionary<Type, Type> itemInstanceMappings = new Dictionary<Type, Type>();
 
@@ -65,8 +66,12 @@ namespace OpenNos.DAL.EF.MySQL
 
         public void InitializeMapper(Type baseType)
         {
+            _baseType = baseType;
             var config = new MapperConfiguration(cfg =>
             {
+                cfg.CreateMap(baseType, typeof(ItemInstance))
+                .ForMember("Item", opts => opts.Ignore());
+
                 Type itemInstanceType = typeof(ItemInstance);
                 foreach (KeyValuePair<Type, Type> entry in itemInstanceMappings)
                 {
@@ -134,9 +139,9 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                foreach (Inventory Inventoryobject in context.Inventory.Where(i => i.CharacterId.Equals(characterId)))
+                foreach (Inventory inventory in context.Inventory.Where(i => i.CharacterId.Equals(characterId)))
                 {
-                    yield return _mapper.Map<InventoryDTO>(Inventoryobject);
+                    yield return _mapper.Map<InventoryDTO>(inventory);
                 }
             }
         }
@@ -179,7 +184,14 @@ namespace OpenNos.DAL.EF.MySQL
         {
             Inventory entity = Mapper.Map<Inventory>(inventory);
             KeyValuePair<Type, Type> targetMapping = itemInstanceMappings.FirstOrDefault(k => k.Key.Equals(inventory.ItemInstance.GetType()));
-            entity.ItemInstance = _mapper.Map(inventory.ItemInstance, targetMapping.Key, targetMapping.Value) as ItemInstance;
+            if (targetMapping.Key != null)
+            {
+                entity.ItemInstance = _mapper.Map(inventory.ItemInstance, targetMapping.Key, targetMapping.Value) as ItemInstance;
+            }
+            else
+            {
+                entity.ItemInstance = _mapper.Map(inventory.ItemInstance, _baseType, typeof(ItemInstance)) as ItemInstance;
+            }
             context.Inventory.Add(entity);
             context.SaveChanges();
             return _mapper.Map<InventoryDTO>(entity);

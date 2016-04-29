@@ -140,7 +140,7 @@ namespace OpenNos.GameObject
 
         public void DeleteItemByItemInstanceId(long itemInstanceId)
         {
-            Tuple<short,byte> result = InventoryList.DeleteByInventoryItemId(itemInstanceId);
+            Tuple<short, byte> result = InventoryList.DeleteByInventoryItemId(itemInstanceId);
             Session.Client.SendPacket(GenerateInventoryAdd(-1, 0, result.Item2, result.Item1, 0, 0, 0));
         }
 
@@ -1118,33 +1118,13 @@ namespace OpenNos.GameObject
             EquipmentList = new InventoryList(Session.Character);
             foreach (InventoryDTO inventory in inventorysDTO)
             {
-                //TODO inventoryitem load inventory
-                //inventory.ItemInstance = DAOFactory.ItemInstanceDAO.LoadByInventoryId(inventory.InventoryId);
-                //ItemInstance invitem = Mapper.DynamicMap<ItemInstance>(inventory.ItemInstance);
+                inventory.CharacterId = CharacterId;
 
-                //if (inventory.Type != (byte)InventoryType.Equipment)
-                //    InventoryList.Inventory.Add(new Inventory
-                //    {
-                //        CharacterId = inventory.CharacterId,
-                //        Slot = inventory.Slot,
-                //        InventoryId = inventory.InventoryId,
-                //        Type = inventory.Type,
-                //        ItemInstance = invitem
-                //    });
-                //else
-                //    EquipmentList.Inventory.Add(new Inventory
-                //    {
-                //        CharacterId = inventory.CharacterId,
-                //        Slot = inventory.Slot,
-                //        InventoryId = inventory.InventoryId,
-                //        Type = inventory.Type,
-                //        ItemInstance = invitem
-                //    });
+                if (inventory.Type != (byte)InventoryType.Equipment)
+                    InventoryList.Inventory.Add(new Inventory(inventory));
+                else
+                    EquipmentList.Inventory.Add(new Inventory(inventory));
             }
-
-            SpecialistInstance newInventory = new SpecialistInstance() { ItemVNum = 1 };
-            InventoryDTO dto = InventoryList.AddToInventory<SpecialistInstance>(newInventory);
-            DAOFactory.InventoryDAO.InsertOrUpdate(ref dto);
         }
 
         public void LoadQuicklists()
