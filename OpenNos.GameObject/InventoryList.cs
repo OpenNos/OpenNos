@@ -57,7 +57,7 @@ namespace OpenNos.GameObject
             short Slot = -1;
             IEnumerable<ItemInstance> slotfree = null;
             Inventory inv = null;
-            ItemInstance newItem = CreateItemInstance<ItemInstance>(vnum);
+            ItemInstance newItem = CreateItemInstance(vnum);
             if (newItem.Item.Type != 0)
             {
                 slotfree = Owner.LoadBySlotAllowed(newItem.ItemVNum, newItem.Amount);
@@ -390,7 +390,7 @@ namespace OpenNos.GameObject
             return inv;
         }
 
-        public ItemInstance CreateItemInstance<T>(short vnum)
+        public ItemInstance CreateItemInstance(short vnum)
         {
             ItemInstance iteminstance = new ItemInstance() { ItemVNum = vnum };
             if (iteminstance.Item != null)
