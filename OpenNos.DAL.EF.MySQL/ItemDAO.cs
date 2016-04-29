@@ -24,6 +24,27 @@ namespace OpenNos.DAL.EF.MySQL
 {
     public class ItemDAO : IItemDAO
     {
+        #region Members
+
+        private IMapper _mapper;
+
+        #endregion
+
+        #region Instantiation
+
+        public ItemDAO()
+        {
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<Item, ItemDTO>();
+                cfg.CreateMap<ItemDTO, Item>();
+            });
+
+            _mapper = config.CreateMapper();
+        }
+
+        #endregion
+
         #region Methods
 
         public void Insert(List<ItemDTO> items)
@@ -33,7 +54,7 @@ namespace OpenNos.DAL.EF.MySQL
                 context.Configuration.AutoDetectChangesEnabled = false;
                 foreach (ItemDTO Item in items)
                 {
-                    Item entity = Mapper.DynamicMap<Item>(Item);
+                    Item entity = _mapper.Map<Item>(Item);
                     context.Item.Add(entity);
                 }
                 context.SaveChanges();
@@ -44,10 +65,10 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                Item entity = Mapper.DynamicMap<Item>(item);
+                Item entity = _mapper.Map<Item>(item);
                 context.Item.Add(entity);
                 context.SaveChanges();
-                return Mapper.DynamicMap<ItemDTO>(entity);
+                return _mapper.Map<ItemDTO>(entity);
             }
         }
 
@@ -57,7 +78,7 @@ namespace OpenNos.DAL.EF.MySQL
             {
                 foreach (Item Item in context.Item)
                 {
-                    yield return Mapper.DynamicMap<ItemDTO>(Item);
+                    yield return _mapper.Map<ItemDTO>(Item);
                 }
             }
         }
@@ -66,7 +87,7 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                return Mapper.DynamicMap<ItemDTO>(context.Item.FirstOrDefault(i => i.VNum.Equals(ItemVnum)));
+                return _mapper.Map<ItemDTO>(context.Item.FirstOrDefault(i => i.VNum.Equals(ItemVnum)));
             }
         }
 

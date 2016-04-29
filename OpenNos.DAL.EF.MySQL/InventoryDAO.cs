@@ -36,6 +36,21 @@ namespace OpenNos.DAL.EF.MySQL
 
         #endregion
 
+        #region Instantiation
+
+        public InventoryDAO()
+        {
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<Inventory, InventoryDTO>();
+                cfg.CreateMap<InventoryDTO, Inventory>();
+            });
+
+            _mapper = config.CreateMapper();
+        }
+
+        #endregion
+
         #region Methods
 
         public DeleteResult DeleteFromSlotAndType(long characterId, short slot, byte type)
@@ -77,16 +92,16 @@ namespace OpenNos.DAL.EF.MySQL
                 {
                     //GameObject -> Entity
                     cfg.CreateMap(entry.Key, entry.Value).ForMember("Item", opts => opts.Ignore())
-                            .IncludeBase(baseType, typeof(ItemInstance));
+                                .IncludeBase(baseType, typeof(ItemInstance));
 
                     //Entity -> GameObject
                     cfg.CreateMap(entry.Value, entry.Key)
-                            .IncludeBase(typeof(ItemInstance), baseType);
+                                .IncludeBase(typeof(ItemInstance), baseType);
 
                     Type retrieveDTOType = Type.GetType($"OpenNos.Data.{entry.Key.Name}DTO, OpenNos.Data");
                     //Entity -> DTO
                     cfg.CreateMap(entry.Value, retrieveDTOType)
-                            .IncludeBase(typeof(ItemInstance), typeof(ItemInstanceDTO));
+                                .IncludeBase(typeof(ItemInstance), typeof(ItemInstanceDTO));
                 }
 
                 //Inventory Mappings

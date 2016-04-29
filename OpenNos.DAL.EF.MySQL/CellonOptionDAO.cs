@@ -24,6 +24,27 @@ namespace OpenNos.DAL.EF.MySQL
 {
     public class CellonOptionDAO : ICellonOptionDAO
     {
+        #region Members
+
+        private IMapper _mapper;
+
+        #endregion
+
+        #region Instantiation
+
+        public CellonOptionDAO()
+        {
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<CellonOption, CellonOptionDTO>();
+                cfg.CreateMap<CellonOptionDTO, CellonOption>();
+            });
+
+            _mapper = config.CreateMapper();
+        }
+
+        #endregion
+
         #region Methods
 
         public IEnumerable<CellonOptionDTO> GetOptionsByWearableInstanceId(long wearableInstanceId)
@@ -32,7 +53,7 @@ namespace OpenNos.DAL.EF.MySQL
             {
                 foreach (CellonOption CellonOptionobject in context.CellonOption.Where(i => i.WearableInstanceId.Equals(wearableInstanceId)))
                 {
-                    yield return Mapper.DynamicMap<CellonOptionDTO>(CellonOptionobject);
+                    yield return _mapper.Map<CellonOptionDTO>(CellonOptionobject);
                 }
             }
         }
