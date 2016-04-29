@@ -691,12 +691,12 @@ namespace OpenNos.GameObject
                 switch (inv.Type)
                 {
                     case (byte)InventoryType.Costume:
-                        var costumeInstance = inv.ItemInstance as WearableInstance;
+                        var costumeInstance = inv.ItemInstance as WearableInstanceDTO;
                         inv7 += $" {inv.Slot}.{inv.ItemInstance.ItemVNum}.{costumeInstance.Rare}.{costumeInstance.Upgrade}";
                         break;
 
                     case (byte)InventoryType.Wear:
-                        var wearableInstance = inv.ItemInstance as WearableInstance;
+                        var wearableInstance = inv.ItemInstance as WearableInstanceDTO;
                         inv0 += $" {inv.Slot}.{inv.ItemInstance.ItemVNum}.{wearableInstance.Rare}.{(item.IsColored ? wearableInstance.Design : wearableInstance.Upgrade)}";
                         break;
 
@@ -709,7 +709,7 @@ namespace OpenNos.GameObject
                         break;
 
                     case (byte)InventoryType.Sp:
-                        var specialist = inv.ItemInstance as SpecialistInstance;
+                        var specialist = inv.ItemInstance as SpecialistInstanceDTO;
                         inv6 += $" {inv.Slot}.{inv.ItemInstance.ItemVNum}.{specialist.Rare}.{specialist.Upgrade}";
                         break;
 

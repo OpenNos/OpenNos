@@ -204,6 +204,8 @@ namespace OpenNos.DAL.EF.MySQL
                 entity.ItemInstance = _mapper.Map(inventory.ItemInstance, targetMapping.Key, targetMapping.Value) as ItemInstance;
             }
 
+            entity.ItemInstance.Item = null; //stupid references
+
             context.Inventory.Add(entity);
             context.SaveChanges();
             return _mapper.Map<InventoryDTO>(entity);

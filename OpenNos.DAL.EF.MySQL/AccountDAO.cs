@@ -140,7 +140,7 @@ namespace OpenNos.DAL.EF.MySQL
 
                 if (Account != null)
                 {
-                    return _mapper.map<AccountDTO>(Account);
+                    return _mapper.Map<AccountDTO>(Account);
                 }
             }
 

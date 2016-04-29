@@ -392,7 +392,9 @@ namespace OpenNos.Handler
                 {
                     if (mapitem.ItemInstance.ItemVNum != 1046)
                     {
-                        Inventory newInv = Session.Character.InventoryList.AddToInventory(mapitem.ItemInstance as ItemInstance);
+                        var newItemInstance = Session.Character.InventoryList.CreateItemInstance(mapitem.ItemInstance.ItemVNum);
+                        newItemInstance.Amount = mapitem.ItemInstance.Amount;
+                        Inventory newInv = Session.Character.InventoryList.AddToInventory(newItemInstance);
                         if (newInv != null)
                         {
                             Session.CurrentMap.DroppedList.Remove(DropId);
