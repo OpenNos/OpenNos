@@ -11,7 +11,6 @@ namespace OpenNos.DAL.EF.MySQL
         public Item()
         {
             Drop = new HashSet<Drop>();
-            ItemInstance = new HashSet<ItemInstance>();
             Recipe = new HashSet<Recipe>();
             RecipeItem = new HashSet<RecipeItem>();
             ShopItem = new HashSet<ShopItem>();
@@ -74,8 +73,6 @@ namespace OpenNos.DAL.EF.MySQL
         public short Hp { get; set; }
 
         public short HpRegeneration { get; set; }
-
-        public virtual ICollection<ItemInstance> ItemInstance { get; set; }
 
         public bool IsBlocked { get; set; }
 

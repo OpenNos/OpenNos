@@ -296,98 +296,6 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
                 .PrimaryKey(t => t.VNum);
             
             CreateTable(
-                "dbo.ItemInstance",
-                c => new
-                    {
-                        ItemInstanceId = c.Long(nullable: false),
-                        Amount = c.Int(nullable: false),
-                        Design = c.Short(nullable: false),
-                        IsUsed = c.Boolean(nullable: false),
-                        ItemDeleteTime = c.DateTime(precision: 0),
-                        ItemVNum = c.Short(nullable: false),
-                        Rare = c.Byte(nullable: false),
-                        Upgrade = c.Byte(nullable: false),
-                        HP = c.Short(),
-                        MP = c.Short(),
-                        Ammo = c.Byte(),
-                        Cellon = c.Byte(),
-                        CellonOptionId = c.Int(),
-                        CloseDefence = c.Short(),
-                        Concentrate = c.Short(),
-                        CriticalDodge = c.Short(),
-                        CriticalLuckRate = c.Byte(),
-                        CriticalRate = c.Short(),
-                        DamageMaximum = c.Short(),
-                        DamageMinimum = c.Short(),
-                        DarkElement = c.Byte(),
-                        DarkResistance = c.SByte(),
-                        DefenceDodge = c.Short(),
-                        DistanceDefence = c.Short(),
-                        DistanceDefenceDodge = c.Short(),
-                        ElementRate = c.Short(),
-                        FireElement = c.Byte(),
-                        FireResistance = c.SByte(),
-                        HitRate = c.Short(),
-                        IsEmpty = c.Boolean(),
-                        IsFixed = c.Boolean(),
-                        LightElement = c.Byte(),
-                        LightResistance = c.SByte(),
-                        MagicDefence = c.Short(),
-                        WaterElement = c.Byte(),
-                        WaterResistance = c.SByte(),
-                        HP1 = c.Short(),
-                        MP1 = c.Short(),
-                        SlDamage = c.Short(),
-                        SlDefence = c.Short(),
-                        SlElement = c.Short(),
-                        SlHP = c.Short(),
-                        SpDamage = c.Byte(),
-                        SpDark = c.Byte(),
-                        SpDefence = c.Byte(),
-                        SpElement = c.Byte(),
-                        SpFire = c.Byte(),
-                        SpHP = c.Byte(),
-                        SpLevel = c.Byte(),
-                        SpLight = c.Byte(),
-                        SpStoneUpgrade = c.Byte(),
-                        SpWater = c.Byte(),
-                        SpXp = c.Long(),
-                        Discriminator = c.String(nullable: false, maxLength: 128, storeType: "nvarchar"),
-                    })
-                .PrimaryKey(t => t.ItemInstanceId)
-                .ForeignKey("dbo.Inventory", t => t.ItemInstanceId)
-                .ForeignKey("dbo.Item", t => t.ItemVNum)
-                .Index(t => t.ItemInstanceId)
-                .Index(t => t.ItemVNum);
-            
-            CreateTable(
-                "dbo.Inventory",
-                c => new
-                    {
-                        InventoryId = c.Long(nullable: false, identity: true),
-                        CharacterId = c.Long(nullable: false),
-                        Slot = c.Short(nullable: false),
-                        Type = c.Byte(nullable: false),
-                    })
-                .PrimaryKey(t => t.InventoryId)
-                .ForeignKey("dbo.Character", t => t.CharacterId)
-                .Index(t => t.CharacterId);
-            
-            CreateTable(
-                "dbo.CellonOption",
-                c => new
-                    {
-                        CellonOptionId = c.Int(nullable: false, identity: true),
-                        WearableInstanceId = c.Long(nullable: false),
-                        Level = c.Byte(nullable: false),
-                        Type = c.Byte(nullable: false),
-                        Value = c.Int(nullable: false),
-                    })
-                .PrimaryKey(t => t.CellonOptionId)
-                .ForeignKey("dbo.ItemInstance", t => t.WearableInstanceId, cascadeDelete: true)
-                .Index(t => t.WearableInstanceId);
-            
-            CreateTable(
                 "dbo.Recipe",
                 c => new
                     {
@@ -573,6 +481,98 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
                 .Index(t => t.CharacterId);
             
             CreateTable(
+                "dbo.Inventory",
+                c => new
+                    {
+                        InventoryId = c.Long(nullable: false, identity: true),
+                        CharacterId = c.Long(nullable: false),
+                        Slot = c.Short(nullable: false),
+                        Type = c.Byte(nullable: false),
+                    })
+                .PrimaryKey(t => t.InventoryId)
+                .ForeignKey("dbo.Character", t => t.CharacterId)
+                .Index(t => t.CharacterId);
+            
+            CreateTable(
+                "dbo.ItemInstance",
+                c => new
+                    {
+                        ItemInstanceId = c.Long(nullable: false),
+                        Amount = c.Int(nullable: false),
+                        Design = c.Short(nullable: false),
+                        IsUsed = c.Boolean(nullable: false),
+                        ItemDeleteTime = c.DateTime(precision: 0),
+                        ItemVNum = c.Short(nullable: false),
+                        Rare = c.Byte(nullable: false),
+                        Upgrade = c.Byte(nullable: false),
+                        HP = c.Short(),
+                        MP = c.Short(),
+                        Ammo = c.Byte(),
+                        Cellon = c.Byte(),
+                        CellonOptionId = c.Int(),
+                        CloseDefence = c.Short(),
+                        Concentrate = c.Short(),
+                        CriticalDodge = c.Short(),
+                        CriticalLuckRate = c.Byte(),
+                        CriticalRate = c.Short(),
+                        DamageMaximum = c.Short(),
+                        DamageMinimum = c.Short(),
+                        DarkElement = c.Byte(),
+                        DarkResistance = c.SByte(),
+                        DefenceDodge = c.Short(),
+                        DistanceDefence = c.Short(),
+                        DistanceDefenceDodge = c.Short(),
+                        ElementRate = c.Short(),
+                        FireElement = c.Byte(),
+                        FireResistance = c.SByte(),
+                        HitRate = c.Short(),
+                        IsEmpty = c.Boolean(),
+                        IsFixed = c.Boolean(),
+                        LightElement = c.Byte(),
+                        LightResistance = c.SByte(),
+                        MagicDefence = c.Short(),
+                        WaterElement = c.Byte(),
+                        WaterResistance = c.SByte(),
+                        HP1 = c.Short(),
+                        MP1 = c.Short(),
+                        SlDamage = c.Short(),
+                        SlDefence = c.Short(),
+                        SlElement = c.Short(),
+                        SlHP = c.Short(),
+                        SpDamage = c.Byte(),
+                        SpDark = c.Byte(),
+                        SpDefence = c.Byte(),
+                        SpElement = c.Byte(),
+                        SpFire = c.Byte(),
+                        SpHP = c.Byte(),
+                        SpLevel = c.Byte(),
+                        SpLight = c.Byte(),
+                        SpStoneUpgrade = c.Byte(),
+                        SpWater = c.Byte(),
+                        SpXp = c.Long(),
+                        Discriminator = c.String(nullable: false, maxLength: 128, storeType: "nvarchar"),
+                    })
+                .PrimaryKey(t => t.ItemInstanceId)
+                .ForeignKey("dbo.Inventory", t => t.ItemInstanceId)
+                .ForeignKey("dbo.Item", t => t.ItemVNum, cascadeDelete: true)
+                .Index(t => t.ItemInstanceId)
+                .Index(t => t.ItemVNum);
+            
+            CreateTable(
+                "dbo.CellonOption",
+                c => new
+                    {
+                        CellonOptionId = c.Int(nullable: false, identity: true),
+                        WearableInstanceId = c.Long(nullable: false),
+                        Level = c.Byte(nullable: false),
+                        Type = c.Byte(nullable: false),
+                        Value = c.Int(nullable: false),
+                    })
+                .PrimaryKey(t => t.CellonOptionId)
+                .ForeignKey("dbo.ItemInstance", t => t.WearableInstanceId, cascadeDelete: true)
+                .Index(t => t.WearableInstanceId);
+            
+            CreateTable(
                 "dbo.QuicklistEntry",
                 c => new
                     {
@@ -612,6 +612,9 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
             DropForeignKey("dbo.Respawn", "CharacterId", "dbo.Character");
             DropForeignKey("dbo.QuicklistEntry", "CharacterId", "dbo.Character");
             DropForeignKey("dbo.Inventory", "CharacterId", "dbo.Character");
+            DropForeignKey("dbo.CellonOption", "WearableInstanceId", "dbo.ItemInstance");
+            DropForeignKey("dbo.ItemInstance", "ItemVNum", "dbo.Item");
+            DropForeignKey("dbo.ItemInstance", "ItemInstanceId", "dbo.Inventory");
             DropForeignKey("dbo.GeneralLog", "CharacterId", "dbo.Character");
             DropForeignKey("dbo.CharacterSkill", "CharacterId", "dbo.Character");
             DropForeignKey("dbo.ShopSkill", "SkillVNum", "dbo.Skill");
@@ -635,14 +638,15 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
             DropForeignKey("dbo.MapNpc", "MapId", "dbo.Map");
             DropForeignKey("dbo.MapMonster", "MapId", "dbo.Map");
             DropForeignKey("dbo.Character", "MapId", "dbo.Map");
-            DropForeignKey("dbo.ItemInstance", "ItemVNum", "dbo.Item");
-            DropForeignKey("dbo.CellonOption", "WearableInstanceId", "dbo.ItemInstance");
-            DropForeignKey("dbo.ItemInstance", "ItemInstanceId", "dbo.Inventory");
             DropForeignKey("dbo.Drop", "ItemVNum", "dbo.Item");
             DropForeignKey("dbo.Combo", "SkillVNum", "dbo.Skill");
             DropForeignKey("dbo.CharacterSkill", "SkillVNum", "dbo.Skill");
             DropIndex("dbo.Respawn", new[] { "CharacterId" });
             DropIndex("dbo.QuicklistEntry", new[] { "CharacterId" });
+            DropIndex("dbo.CellonOption", new[] { "WearableInstanceId" });
+            DropIndex("dbo.ItemInstance", new[] { "ItemVNum" });
+            DropIndex("dbo.ItemInstance", new[] { "ItemInstanceId" });
+            DropIndex("dbo.Inventory", new[] { "CharacterId" });
             DropIndex("dbo.GeneralLog", new[] { "CharacterId" });
             DropIndex("dbo.GeneralLog", new[] { "AccountId" });
             DropIndex("dbo.RecipeItem", new[] { "RecipeId" });
@@ -662,10 +666,6 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
             DropIndex("dbo.MapNpc", new[] { "MapId" });
             DropIndex("dbo.Recipe", new[] { "MapNpcId" });
             DropIndex("dbo.Recipe", new[] { "ItemVNum" });
-            DropIndex("dbo.CellonOption", new[] { "WearableInstanceId" });
-            DropIndex("dbo.Inventory", new[] { "CharacterId" });
-            DropIndex("dbo.ItemInstance", new[] { "ItemVNum" });
-            DropIndex("dbo.ItemInstance", new[] { "ItemInstanceId" });
             DropIndex("dbo.Drop", new[] { "MonsterVNum" });
             DropIndex("dbo.Drop", new[] { "ItemVNum" });
             DropIndex("dbo.NpcMonsterSkill", new[] { "SkillVNum" });
@@ -677,6 +677,9 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
             DropIndex("dbo.Character", new[] { "AccountId" });
             DropTable("dbo.Respawn");
             DropTable("dbo.QuicklistEntry");
+            DropTable("dbo.CellonOption");
+            DropTable("dbo.ItemInstance");
+            DropTable("dbo.Inventory");
             DropTable("dbo.GeneralLog");
             DropTable("dbo.RecipeItem");
             DropTable("dbo.ShopSkill");
@@ -688,9 +691,6 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
             DropTable("dbo.Map");
             DropTable("dbo.MapNpc");
             DropTable("dbo.Recipe");
-            DropTable("dbo.CellonOption");
-            DropTable("dbo.Inventory");
-            DropTable("dbo.ItemInstance");
             DropTable("dbo.Item");
             DropTable("dbo.Drop");
             DropTable("dbo.NpcMonster");

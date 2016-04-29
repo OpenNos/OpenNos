@@ -23,8 +23,6 @@ namespace OpenNos.GameObject
 
         public CellonOption()
         {
-            Mapper.CreateMap<CellonOptionDTO, CellonOption>();
-            Mapper.CreateMap<CellonOption, CellonOptionDTO>();
         }
 
         #endregion

@@ -29,7 +29,6 @@ namespace OpenNos.DAL
         private static IDropDAO _dropDAO;
         private static IGeneralLogDAO _generallogDAO;
         private static IInventoryDAO _inventoryDAO;
-        private static IItemInstanceDAO _inventoryitemDAO;
         private static IItemDAO _itemDAO;
         private static IMapDAO _mapDAO;
         private static IMapMonsterDAO _mapmonsterDAO;
@@ -164,19 +163,6 @@ namespace OpenNos.DAL
                 }
 
                 return _inventoryDAO;
-            }
-        }
-
-        public static IItemInstanceDAO ItemInstanceDAO
-        {
-            get
-            {
-                if (_inventoryitemDAO == null)
-                {
-                    _inventoryitemDAO = new MySQL.ItemInstanceDAO();
-                }
-
-                return _inventoryitemDAO;
             }
         }
 

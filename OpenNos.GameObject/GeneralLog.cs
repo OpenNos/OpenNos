@@ -23,8 +23,6 @@ namespace OpenNos.GameObject
 
         public GeneralLog()
         {
-            Mapper.CreateMap<GeneralLogDTO, GeneralLog>();
-            Mapper.CreateMap<GeneralLog, GeneralLogDTO>();
         }
 
         #endregion

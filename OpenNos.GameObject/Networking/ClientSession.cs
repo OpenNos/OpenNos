@@ -66,11 +66,6 @@ namespace OpenNos.GameObject
             //register WCF events
             ServiceFactory.Instance.CommunicationCallback.CharacterConnectedEvent += CommunicationCallback_CharacterConnectedEvent;
             ServiceFactory.Instance.CommunicationCallback.CharacterDisconnectedEvent += CommunicationCallback_CharacterDisconnectedEvent;
-
-            //register mappings for test
-            DAOFactory.InventoryDAO.RegisterMapping(typeof(ItemInstance));
-            DAOFactory.InventoryDAO.RegisterMapping(typeof(SpecialistInstance));
-            DAOFactory.InventoryDAO.RegisterMapping(typeof(WearableInstance));
         }
 
         #endregion

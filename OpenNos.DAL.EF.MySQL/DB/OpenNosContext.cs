@@ -106,11 +106,6 @@ namespace OpenNos.DAL.EF.MySQL.DB
                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<Item>()
-                .HasMany(e => e.ItemInstance)
-                .WithRequired(e => e.Item)
-                .WillCascadeOnDelete(false);
-
-            modelBuilder.Entity<Item>()
                 .HasMany(e => e.Recipe)
                 .WithRequired(e => e.Item)
                 .WillCascadeOnDelete(false);

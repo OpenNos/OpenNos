@@ -28,14 +28,14 @@ namespace OpenNos.DAL.EF.MySQL
 {
     public class InventoryDAO : IInventoryDAO
     {
-        #region Methods
+        #region Members
 
-        public void RegisterMapping(Type gameObjectType)
-        {
-            Type targetType = Assembly.GetExecutingAssembly().GetTypes().SingleOrDefault(t => t.Name.Equals(gameObjectType.Name));
-            Type itemInstanceType = typeof(ItemInstance);
-            Mapper.CreateMap(gameObjectType, itemInstanceType).As(targetType);
-        }
+        private IMapper _mapper;
+        private IDictionary<Type, Type> itemInstanceMappings = new Dictionary<Type, Type>();
+
+        #endregion
+
+        #region Methods
 
         public DeleteResult DeleteFromSlotAndType(long characterId, short slot, byte type)
         {
@@ -52,6 +52,44 @@ namespace OpenNos.DAL.EF.MySQL
 
                 return DeleteResult.Deleted;
             }
+        }
+
+        public ItemInstanceDTO Id(long inventoryId)
+        {
+            using (var context = DataAccessHelper.CreateContext())
+            {
+                var itemInstance = context.ItemInstance.Include(nameof(Inventory)).FirstOrDefault(i => i.Inventory.InventoryId.Equals(inventoryId));
+                return _mapper.Map<ItemInstanceDTO>(itemInstance);
+            }
+        }
+
+        public void InitializeMapper(Type baseType)
+        {
+            var config = new MapperConfiguration(cfg =>
+            {
+                Type itemInstanceType = typeof(ItemInstance);
+                foreach (KeyValuePair<Type, Type> entry in itemInstanceMappings)
+                {
+                    //GameObject -> Entity
+                    cfg.CreateMap(entry.Key, entry.Value).ForMember("Item", opts => opts.Ignore())
+                            .IncludeBase(baseType, typeof(ItemInstance));
+
+                    //Entity -> GameObject
+                    cfg.CreateMap(entry.Value, entry.Key)
+                            .IncludeBase(typeof(ItemInstance), baseType);
+
+                    Type retrieveDTOType = Type.GetType($"OpenNos.Data.{entry.Key.Name}DTO, OpenNos.Data");
+                    //Entity -> DTO
+                    cfg.CreateMap(entry.Value, retrieveDTOType)
+                            .IncludeBase(typeof(ItemInstance), typeof(ItemInstanceDTO));
+                }
+
+                //Inventory Mappings
+                cfg.CreateMap<InventoryDTO, Inventory>();
+                cfg.CreateMap<Inventory, InventoryDTO>();
+            });
+
+            _mapper = config.CreateMapper();
         }
 
         public SaveResult InsertOrUpdate(ref InventoryDTO inventory)
@@ -98,8 +136,16 @@ namespace OpenNos.DAL.EF.MySQL
             {
                 foreach (Inventory Inventoryobject in context.Inventory.Where(i => i.CharacterId.Equals(characterId)))
                 {
-                    yield return Mapper.DynamicMap<InventoryDTO>(Inventoryobject);
+                    yield return _mapper.Map<InventoryDTO>(Inventoryobject);
                 }
+            }
+        }
+
+        public InventoryDTO LoadById(long inventoryId)
+        {
+            using (var context = DataAccessHelper.CreateContext())
+            {
+                return _mapper.Map<InventoryDTO>(context.Inventory.FirstOrDefault(i => i.InventoryId.Equals(inventoryId)));
             }
         }
 
@@ -107,7 +153,7 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                return Mapper.DynamicMap<InventoryDTO>(context.Inventory.FirstOrDefault(i => i.Slot.Equals(slot) && i.Type.Equals(type) && i.CharacterId.Equals(characterId)));
+                return _mapper.Map<InventoryDTO>(context.Inventory.FirstOrDefault(i => i.Slot.Equals(slot) && i.Type.Equals(type) && i.CharacterId.Equals(characterId)));
             }
         }
 
@@ -117,28 +163,37 @@ namespace OpenNos.DAL.EF.MySQL
             {
                 foreach (Inventory Inventoryobject in context.Inventory.Where(i => i.Type.Equals(type) && i.CharacterId.Equals(characterId)))
                 {
-                    yield return Mapper.DynamicMap<InventoryDTO>(Inventoryobject);
+                    yield return _mapper.Map<InventoryDTO>(Inventoryobject);
                 }
             }
         }
 
-        private InventoryDTO Insert(InventoryDTO Inventory, OpenNosContext context)
+        public void RegisterMapping(Type gameObjectType)
         {
-            Inventory entity = Mapper.DynamicMap<Inventory>(Inventory);
+            Type targetType = Assembly.GetExecutingAssembly().GetTypes().SingleOrDefault(t => t.Name.Equals(gameObjectType.Name));
+            Type itemInstanceType = typeof(ItemInstance);
+            itemInstanceMappings.Add(gameObjectType, targetType);
+        }
+
+        private InventoryDTO Insert(InventoryDTO inventory, OpenNosContext context)
+        {
+            Inventory entity = Mapper.Map<Inventory>(inventory);
+            KeyValuePair<Type, Type> targetMapping = itemInstanceMappings.FirstOrDefault(k => k.Key.Equals(inventory.ItemInstance.GetType()));
+            entity.ItemInstance = _mapper.Map(inventory.ItemInstance, targetMapping.Key, targetMapping.Value) as ItemInstance;
             context.Inventory.Add(entity);
             context.SaveChanges();
-            return Mapper.DynamicMap<InventoryDTO>(entity);
+            return _mapper.Map<InventoryDTO>(entity);
         }
 
         private InventoryDTO Update(Inventory entity, InventoryDTO inventory, OpenNosContext context)
         {
             if (entity != null)
             {
-                Mapper.DynamicMap(inventory, entity);
+                _mapper.Map(inventory, entity);
                 context.SaveChanges();
             }
 
-            return Mapper.DynamicMap<InventoryDTO>(entity);
+            return _mapper.Map<InventoryDTO>(entity);
         }
 
         #endregion

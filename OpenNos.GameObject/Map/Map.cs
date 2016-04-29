@@ -39,8 +39,6 @@ namespace OpenNos.GameObject
 
         public Map(short mapId, Guid uniqueIdentifier, byte[] data)
         {
-            Mapper.CreateMap<MapDTO, Map>();
-            Mapper.CreateMap<Map, MapDTO>();
 
             MapId = mapId;
             _uniqueIdentifier = uniqueIdentifier;

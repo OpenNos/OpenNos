@@ -14,6 +14,7 @@
 
 using log4net;
 using OpenNos.Core;
+using OpenNos.DAL;
 using OpenNos.DAL.EF.MySQL.Helpers;
 using OpenNos.GameObject;
 using OpenNos.Handler;
@@ -81,6 +82,12 @@ namespace OpenNos.World
             if (DataAccessHelper.Initialize())
                 //initialilize maps
                 ServerManager.Initialize();
+
+            //register mappings for items
+            DAOFactory.InventoryDAO.RegisterMapping(typeof(SpecialistInstance));
+            DAOFactory.InventoryDAO.RegisterMapping(typeof(WearableInstance));
+            DAOFactory.InventoryDAO.RegisterMapping(typeof(UsableInstance));
+            DAOFactory.InventoryDAO.InitializeMapper(typeof(ItemInstance));
 
             //initialize ClientLinkManager
             //TODO
