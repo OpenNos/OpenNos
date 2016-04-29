@@ -25,6 +25,27 @@ namespace OpenNos.DAL.EF.MySQL
 {
     public class GeneralLogDAO : IGeneralLogDAO
     {
+        #region Members
+
+        private IMapper _mapper;
+
+        #endregion
+
+        #region Instantiation
+
+        public GeneralLogDAO()
+        {
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<GeneralLog, GeneralLogDTO>();
+                cfg.CreateMap<GeneralLogDTO, GeneralLog>();
+            });
+
+            _mapper = config.CreateMapper();
+        }
+
+        #endregion
+
         #region Methods
 
         public IEnumerable<GeneralLogDTO> LoadByLogType(string logType, Nullable<long> characterId)
@@ -33,7 +54,7 @@ namespace OpenNos.DAL.EF.MySQL
             {
                 foreach (GeneralLog log in context.GeneralLog.Where(c => c.LogType.Equals(logType) && c.CharacterId == characterId))
                 {
-                    yield return Mapper.DynamicMap<GeneralLogDTO>(log);
+                    yield return _mapper.Map<GeneralLogDTO>(log);
                 }
             }
         }

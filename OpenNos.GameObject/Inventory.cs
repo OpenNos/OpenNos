@@ -12,21 +12,31 @@
  * GNU General Public License for more details.
  */
 
-using AutoMapper;
-using OpenNos.Core;
 using OpenNos.DAL;
 using OpenNos.Data;
 using OpenNos.Data.Enums;
-using OpenNos.Domain;
-using System;
 
 namespace OpenNos.GameObject
 {
     public class Inventory : InventoryDTO, IGameObject
     {
+        #region Instantiation
+
+        public Inventory()
+        {
+        }
+
+        public Inventory(InventoryDTO inventory)
+        {
+            this.CharacterId = inventory.CharacterId;
+            this.Slot = inventory.Slot;
+            this.Type = inventory.Type;
+            this.ItemInstance = inventory.ItemInstance;
+        }
+
+        #endregion
 
         #region Methods
-
 
         public void Save()
         {

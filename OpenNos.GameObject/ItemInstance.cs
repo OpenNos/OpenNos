@@ -27,8 +27,6 @@ namespace OpenNos.GameObject
 
         public ItemInstance()
         {
-            Mapper.CreateMap<ItemInstanceDTO, ItemInstance>();
-            Mapper.CreateMap<ItemInstance, ItemInstanceDTO>();
         }
 
         public ItemInstance(ItemInstanceDTO inventoryItem)

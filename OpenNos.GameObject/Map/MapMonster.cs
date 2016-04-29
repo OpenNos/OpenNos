@@ -12,7 +12,6 @@
  * GNU General Public License for more details.
  */
 
-using AutoMapper;
 using OpenNos.Data;
 using System;
 using System.Collections.Generic;
@@ -28,8 +27,6 @@ namespace OpenNos.GameObject
 
         public MapMonster()
         {
-            Mapper.CreateMap<MapMonsterDTO, MapMonster>();
-            Mapper.CreateMap<MapMonster, MapMonsterDTO>();
             LastEffect = LastMove = DateTime.Now;
             Target = -1;
             inBattle = false;
