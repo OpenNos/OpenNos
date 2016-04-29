@@ -24,6 +24,27 @@ namespace OpenNos.DAL.EF.MySQL
 {
     public class DropDAO : IDropDAO
     {
+        #region Members
+
+        private IMapper _mapper;
+
+        #endregion
+
+        #region Instantiation
+
+        public DropDAO()
+        {
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<Drop, DropDTO>();
+                cfg.CreateMap<DropDTO, Drop>();
+            });
+
+            _mapper = config.CreateMapper();
+        }
+
+        #endregion
+
         #region Methods
 
         public void Insert(List<DropDTO> drops)
@@ -33,7 +54,7 @@ namespace OpenNos.DAL.EF.MySQL
                 context.Configuration.AutoDetectChangesEnabled = false;
                 foreach (DropDTO Drop in drops)
                 {
-                    Drop entity = Mapper.DynamicMap<Drop>(Drop);
+                    Drop entity = _mapper.Map<Drop>(Drop);
                     context.Drop.Add(entity);
                 }
                 context.SaveChanges();
@@ -44,10 +65,10 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                Drop entity = Mapper.DynamicMap<Drop>(drop);
+                Drop entity = _mapper.Map<Drop>(drop);
                 context.Drop.Add(entity);
                 context.SaveChanges();
-                return Mapper.DynamicMap<DropDTO>(drop);
+                return _mapper.Map<DropDTO>(drop);
             }
         }
 
@@ -57,7 +78,7 @@ namespace OpenNos.DAL.EF.MySQL
             {
                 foreach (Drop Drop in context.Drop.Where(s => s.MonsterVNum.Equals(monsterVNum)))
                 {
-                    yield return Mapper.DynamicMap<DropDTO>(Drop);
+                    yield return _mapper.Map<DropDTO>(Drop);
                 }
             }
         }

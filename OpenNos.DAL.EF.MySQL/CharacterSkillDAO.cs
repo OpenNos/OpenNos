@@ -27,6 +27,27 @@ namespace OpenNos.DAL.EF.MySQL
 {
     public class CharacterSkillDAO : ICharacterSkillDAO
     {
+        #region Members
+
+        private IMapper _mapper;
+
+        #endregion
+
+        #region Instantiation
+
+        public CharacterSkillDAO()
+        {
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<CharacterSkill, CharacterSkillDTO>();
+                cfg.CreateMap<CharacterSkillDTO, CharacterSkill>();
+            });
+
+            _mapper = config.CreateMapper();
+        }
+
+        #endregion
+
         #region Methods
 
         public DeleteResult Delete(long characterId, short skillVNum)
@@ -78,28 +99,28 @@ namespace OpenNos.DAL.EF.MySQL
             {
                 foreach (CharacterSkill Inventoryobject in context.CharacterSkill.Where(i => i.CharacterId == characterId))
                 {
-                    yield return Mapper.DynamicMap<CharacterSkillDTO>(Inventoryobject);
+                    yield return _mapper.Map<CharacterSkillDTO>(Inventoryobject);
                 }
             }
         }
 
         private CharacterSkillDTO Insert(CharacterSkillDTO characterSkill, OpenNosContext context)
         {
-            CharacterSkill entity = Mapper.DynamicMap<CharacterSkill>(characterSkill);
+            CharacterSkill entity = _mapper.Map<CharacterSkill>(characterSkill);
             context.CharacterSkill.Add(entity);
             context.SaveChanges();
-            return Mapper.DynamicMap<CharacterSkillDTO>(entity);
+            return _mapper.Map<CharacterSkillDTO>(entity);
         }
 
         private CharacterSkillDTO Update(CharacterSkill entity, CharacterSkillDTO characterSkill, OpenNosContext context)
         {
             if (entity != null)
             {
-                Mapper.DynamicMap(characterSkill, entity);
+                _mapper.Map(characterSkill, entity);
                 context.SaveChanges();
             }
 
-            return Mapper.DynamicMap<CharacterSkillDTO>(characterSkill);
+            return _mapper.Map<CharacterSkillDTO>(characterSkill);
         }
 
         #endregion

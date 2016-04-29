@@ -27,6 +27,27 @@ namespace OpenNos.DAL.EF.MySQL
 {
     public class AccountDAO : IAccountDAO
     {
+        #region Members
+
+        private IMapper _mapper;
+
+        #endregion
+
+        #region Instantiation
+
+        public AccountDAO()
+        {
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<Account, AccountDTO>();
+                cfg.CreateMap<AccountDTO, Account>();
+            });
+
+            _mapper = config.CreateMapper();
+        }
+
+        #endregion
+
         #region Methods
 
         public DeleteResult Delete(long accountId)
@@ -89,7 +110,7 @@ namespace OpenNos.DAL.EF.MySQL
 
                 if (Account != null)
                 {
-                    return Mapper.DynamicMap<AccountDTO>(Account);
+                    return _mapper.Map<AccountDTO>(Account);
                 }
             }
 
@@ -104,7 +125,7 @@ namespace OpenNos.DAL.EF.MySQL
 
                 if (Account != null)
                 {
-                    return Mapper.DynamicMap<AccountDTO>(Account);
+                    return _mapper.Map<AccountDTO>(Account);
                 }
             }
 
@@ -119,7 +140,7 @@ namespace OpenNos.DAL.EF.MySQL
 
                 if (Account != null)
                 {
-                    return Mapper.DynamicMap<AccountDTO>(Account);
+                    return _mapper.map<AccountDTO>(Account);
                 }
             }
 
@@ -176,17 +197,17 @@ namespace OpenNos.DAL.EF.MySQL
 
         private AccountDTO Insert(AccountDTO account, OpenNosContext context)
         {
-            Account entity = Mapper.DynamicMap<Account>(account);
+            Account entity = _mapper.Map<Account>(account);
             context.Account.Add(entity);
             context.SaveChanges();
-            return Mapper.DynamicMap<AccountDTO>(entity);
+            return _mapper.Map<AccountDTO>(entity);
         }
 
         private AccountDTO Update(Account entity, AccountDTO account, OpenNosContext context)
         {
-            entity = Mapper.DynamicMap<Account>(account);
+            entity = _mapper.Map<Account>(account);
             context.SaveChanges();
-            return Mapper.DynamicMap<AccountDTO>(entity);
+            return _mapper.Map<AccountDTO>(entity);
         }
 
         #endregion
