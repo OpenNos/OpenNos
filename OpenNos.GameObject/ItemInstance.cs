@@ -44,6 +44,11 @@ namespace OpenNos.GameObject
         public void Save()
         {
         }
+
+            public ItemInstance DeepCopy()
+            {
+                return (ItemInstance)this.MemberwiseClone();
+            }
         
 
         #endregion

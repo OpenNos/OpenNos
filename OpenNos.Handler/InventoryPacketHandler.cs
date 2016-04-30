@@ -364,9 +364,8 @@ namespace OpenNos.Handler
                         {
                             Session.CurrentMap.DroppedList.Remove(DropId);
                             ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateGet(DropId), ReceiverType.AllOnMap);
-                            Item iteminfo = ServerManager.GetItem(newInv.ItemInstance.ItemVNum);
                             Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(newInv.ItemInstance.ItemVNum, newInv.ItemInstance.Amount, newInv.Type, newInv.Slot, 0, 0, 0));
-                            Session.Client.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {iteminfo.Name} x {Amount}", 12));
+                            Session.Client.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {(newInv.ItemInstance as ItemInstance).Item.Name} x {Amount}", 12));
                         }
                         else
                         {
@@ -451,7 +450,7 @@ namespace OpenNos.Handler
             {
                 if (amount > 0 && amount < 100)
                 {
-                    MapItem DroppedItem = Session.Character.InventoryList.PutItem( type, slot, amount, out invitem);
+                    MapItem DroppedItem = Session.Character.InventoryList.PutItem( type, slot, amount, ref invitem);
                     if (DroppedItem == null)
                     {
                         Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("ITEM_NOT_DROPPABLE_HERE"), 0)); ;
@@ -460,7 +459,7 @@ namespace OpenNos.Handler
                     Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(invitem.ItemInstance.ItemVNum, invitem.ItemInstance.Amount, type, invitem.Slot, invitem.ItemInstance.Rare, invitem.ItemInstance.Design, invitem.ItemInstance.Upgrade));
 
                     if (invitem.ItemInstance.Amount == 0)
-                        Session.Character.DeleteItemByItemInstanceId(invitem.ItemInstance.ItemInstanceId);
+                        Session.Character.DeleteItem(invitem.Type,invitem.Slot);
                     if (DroppedItem != null)
                         ClientLinkManager.Instance.Broadcast(Session, $"drop {DroppedItem.ItemInstance.ItemVNum} {DroppedItem.ItemInstance.ItemInstanceId} {DroppedItem.PositionX} {DroppedItem.PositionY} {DroppedItem.ItemInstance.Amount} 0 -1", ReceiverType.AllOnMap);
                 }
