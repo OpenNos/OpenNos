@@ -124,7 +124,7 @@
     <value>Importieren der Daten ist fertigestellt!</value>
   </data>
   <data name="ENTER_PATH" xml:space="preserve">
-    <value>Bitte gib das Verzeichnis ein, wo die Daten zum importieren vorhanden sind:</value>
+    <value>Verzeichnis der Daten eingeben:</value>
   </data>
   <data name="ITEMS_PARSED" xml:space="preserve">
     <value>{0} Items importiert</value>
@@ -136,7 +136,7 @@
     <value>{0} Monster importiert</value>
   </data>
   <data name="NEED_TREE" xml:space="preserve">
-    <value>Du benötigst ein Verzeichnisbaum wie z.B diese :</value>
+    <value>Du benötigst ein Verzeichnisbaum wie z.B:</value>
   </data>
   <data name="NO_ITEM" xml:space="preserve">
     <value>Diese Item ID ist nicht gültig</value>
