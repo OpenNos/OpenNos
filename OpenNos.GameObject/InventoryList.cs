@@ -381,16 +381,16 @@ namespace OpenNos.GameObject
 
         public ItemInstance CreateItemInstance(short vnum)
         {
-            ItemInstance iteminstance = new ItemInstance() { ItemVNum = vnum, Amount = 1 };
+            ItemInstance iteminstance = new ItemInstance() { ItemVNum = vnum, Amount = 1,ItemInstanceId = GenerateItemInstanceId() };
             if (iteminstance.Item != null)
             {
                 switch (iteminstance.Item.Type)
                 {
                     case (byte)InventoryType.Wear:
                         if (iteminstance.Item.ItemType == (byte)ItemType.Specialist)
-                            iteminstance = new SpecialistInstance() { ItemVNum = vnum, SpLevel = 1, Amount = 1 };
+                            iteminstance = new SpecialistInstance() { ItemVNum = vnum, SpLevel = 1, Amount = 1, ItemInstanceId = GenerateItemInstanceId() };
                         else
-                            iteminstance = new WearableInstance() { ItemVNum = vnum , Amount = 1};
+                            iteminstance = new WearableInstance() { ItemVNum = vnum , Amount = 1, ItemInstanceId = GenerateItemInstanceId() };
                         break;
 
                 }
