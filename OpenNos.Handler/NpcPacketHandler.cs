@@ -233,44 +233,15 @@ namespace OpenNos.Handler
                     }
                 }
 
-                //TODO inventoryitem
-                WearableInstance newItem = new WearableInstance(Session.Character.InventoryList.GenerateItemInstanceId());
-                //{
-                //    ItemInstanceId = Session.Character.InventoryList.GenerateInventoryItemId(),
-                //    Amount = amount,
-                //    ItemVNum = item.ItemVNum,
-                //    Rare = rare,
-                //    Upgrade = item.Upgrade,
-                //    Design = item.Color,
-                //    Concentrate = 0,
-                //    CriticalLuckRate = 0,
-                //    CriticalRate = 0,
-                //    DamageMaximum = 0,
-                //    DamageMinimum = 0,
-                //    DarkElement = 0,
-                //    DistanceDefence = 0,
-                //    DistanceDefenceDodge = 0,
-                //    DefenceDodge = 0,
-                //    ElementRate = 0,
-                //    FireElement = 0,
-                //    HitRate = 0,
-                //    LightElement = 0,
-                //    MagicDefence = 0,
-                //    CloseDefence = 0,
-                //    SpXp = 0,
-                //    SpLevel = ServerManager.GetItem(item.ItemVNum).EquipmentSlot.Equals((byte)EquipmentType.Sp) ? (byte)1 : (byte)0,
-                //    SlDefence = 0,
-                //    SlElement = 0,
-                //    SlDamage = 0,
-                //    SlHP = 0,
-                //    WaterElement = 0,
-                //};
-
-                Inventory inv = Session.Character.InventoryList.AddToInventory(newItem);
-                if (inv != null && inv.Slot != -1)
+                Inventory newItem = Session.Character.InventoryList.AddNewItemToInventory(item.ItemVNum, amount);
+                newItem.ItemInstance.Rare = rare;
+                newItem.ItemInstance.Upgrade = item.Upgrade;
+                newItem.ItemInstance.Design = item.Color;
+               
+                if (newItem != null && newItem.Slot != -1)
                 {
-                    Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(newItem.ItemVNum,
-                        inv.ItemInstance.Amount, inv.Type, inv.Slot, newItem.Rare, newItem.Design, newItem.Upgrade));
+                    Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(newItem.ItemInstance.ItemVNum,
+                        newItem.ItemInstance.Amount, newItem.Type, newItem.Slot, newItem.ItemInstance.Rare, newItem.ItemInstance.Design, newItem.ItemInstance.Upgrade));
                     if (iteminfo.ReputPrice == 0)
                     {
                         Session.Client.SendPacket(Session.Character.GenerateShopMemo(1, string.Format(Language.Instance.GetMessageFromKey("BUY_ITEM_VALIDE"), ServerManager.GetItem(item.ItemVNum).Name, amount)));

@@ -53,13 +53,13 @@ namespace OpenNos.GameObject
             return count;
         }
 
-        public Inventory AddNewItemToInventory<T>(short vnum)
-                     where T : ItemInstance
+        public Inventory AddNewItemToInventory(short vnum,int amount = 1)
         {
             short Slot = -1;
             IEnumerable<ItemInstance> slotfree = null;
             Inventory inv = null;
             ItemInstance newItem = CreateItemInstance(vnum);
+            newItem.Amount = amount;
             if (newItem.Item.Type != 0)
             {
                 slotfree = Owner.LoadBySlotAllowed(newItem.ItemVNum, newItem.Amount);
@@ -67,7 +67,7 @@ namespace OpenNos.GameObject
             }
             if (inv != null)
             {
-                inv.ItemInstance.Amount -= newItem.Amount;
+                inv.ItemInstance.Amount += newItem.Amount;
             }
             else
             {
