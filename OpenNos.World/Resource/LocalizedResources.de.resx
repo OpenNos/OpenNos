@@ -127,7 +127,7 @@
     <value>Abenteurer</value>
   </data>
   <data name="ALREADY_IN_GROUP" xml:space="preserve">
-    <value>You are already in group</value>
+    <value>Du bist bereits in einer Gruppe.</value>
   </data>
   <data name="ALREADY_TAKEN" xml:space="preserve">
     <value>Dieser Name existiert bereits!</value>
@@ -214,7 +214,7 @@
     <value>Fehlerhaftes KeepAlive von Client {0}.</value>
   </data>
   <data name="CRAFTED_OBJECT" xml:space="preserve">
-    <value>You've crafted: {0} x {1}</value>
+    <value>Du hast {0} x {1} hergestellt.</value>
   </data>
   <data name="DATABASE_INITIALIZED" xml:space="preserve">
     <value>Datenbank wurde initialisiert.</value>
@@ -268,22 +268,22 @@
     <value>Gold wurde aktualisiert</value>
   </data>
   <data name="GROUP_BLOCKED" xml:space="preserve">
-    <value>User blocked group invites</value>
+    <value>Die Gruppenoption des Gegenübers ist geblockt.</value>
   </data>
   <data name="GROUP_CLOSED" xml:space="preserve">
-    <value>Group disbanded</value>
+    <value>Gruppe aufgelöst</value>
   </data>
   <data name="GROUP_DENIED" xml:space="preserve">
-    <value>Group request rejected</value>
+    <value>Gruppeneinladung wurde abgelehnt.</value>
   </data>
   <data name="GROUP_FULL" xml:space="preserve">
-    <value>Group is full</value>
+    <value>Die Gruppe ist voll.</value>
   </data>
   <data name="GROUP_LEFT" xml:space="preserve">
-    <value>You left the party</value>
+    <value>Du hast die Gruppe verlassen.</value>
   </data>
   <data name="GROUP_REQUEST" xml:space="preserve">
-    <value>group request sent to: {0}</value>
+    <value>{0} wurde eingeladen.</value>
   </data>
   <data name="GROUP_REQ_BLOCKED" xml:space="preserve">
     <value>Von jetzt an blockst du Gruppen.</value>
@@ -307,7 +307,7 @@
     <value>Ab sofort wird die HP-Statusanzeige angezeigt.</value>
   </data>
   <data name="INCOMING_EXCHANGE" xml:space="preserve">
-    <value>{0} möchte mit dir tauschen.</value>
+    <value>Tausch von {0} akzeptieren?</value>
   </data>
   <data name="INSERT_ERROR" xml:space="preserve">
     <value>Fehler beim Einfügen/Aktualisieren des Charakters {0} , {1}</value>
@@ -316,7 +316,7 @@
     <value>Der Name enthält ein ungültiges Wort oder Zeichen.</value>
   </data>
   <data name="INVITED_YOU" xml:space="preserve">
-    <value>{0} sent you a group request</value>
+    <value>{0} hat dich in eine Gruppe eingeladen.</value>
   </data>
   <data name="IN_WAITING_FOR" xml:space="preserve">
     <value>Warten auf {0}</value>
@@ -340,16 +340,16 @@
     <value>Du kannst dieses Item nicht tauschen.</value>
   </data>
   <data name="ITEM_TIMEOUT" xml:space="preserve">
-    <value>Item is no longer valid</value>
+    <value>Item ist nicht mehr benutzbar</value>
   </data>
   <data name="JOBLEVEL_CHANGED" xml:space="preserve">
     <value>Dein Joblevel wurde erhöht!</value>
   </data>
   <data name="JOB_CHANGED" xml:space="preserve">
-    <value>Dein Job hat sich geändert.</value>
+    <value>Deine Klasse hat sich geändert.</value>
   </data>
   <data name="LEAVE_GROUP" xml:space="preserve">
-    <value>{0} left the party</value>
+    <value>{0} hat die Gruppe verlassen.</value>
   </data>
   <data name="LEVEL_CHANGED" xml:space="preserve">
     <value>Dein Level wurde erhöht!</value>
@@ -397,7 +397,7 @@
     <value>Ein neuer Client hat sich verbunden. ClientId =</value>
   </data>
   <data name="NEW_LEADER" xml:space="preserve">
-    <value>You are the new party leader</value>
+    <value>Du bist Gruppenmeister.</value>
   </data>
   <data name="NOT_ADVENTURER" xml:space="preserve">
     <value>Du kannst deine Klasse nur einmal ändern.</value>
@@ -415,19 +415,19 @@
     <value>Ich bin nicht Hungrig</value>
   </data>
   <data name="NOT_MASTER" xml:space="preserve">
-    <value>You are not leader of group</value>
+    <value>Du bist kein Gruppenmeister.</value>
   </data>
   <data name="NO_ENTRY" xml:space="preserve">
-    <value>Kein Einsprungspunkt gefunden!</value>
+    <value>Kein Einstiegspunkt gefunden!</value>
   </data>
   <data name="NO_HANDLER_ITEM" xml:space="preserve">
     <value>Kein Handler gefunden für das Item in Klasse {0}</value>
   </data>
   <data name="NO_ITEM" xml:space="preserve">
-    <value>Item doesn't exist</value>
+    <value>Das Item existiert nicht.</value>
   </data>
   <data name="NO_MAP" xml:space="preserve">
-    <value>Server braucht mindestens die Nosville Karte um zu funktionieren!</value>
+    <value>Server braucht die Nosville Karte um zu funktionieren!</value>
   </data>
   <data name="NO_NRUN_HANDLER" xml:space="preserve">
     <value>Keine n_run Handler Implementierung für {0}</value>
@@ -484,7 +484,7 @@
     <value>Punkte wurden aktualisiert.</value>
   </data>
   <data name="PORTAL_BLOCKED" xml:space="preserve">
-    <value>Cannot use this portal... It is blocked!</value>
+    <value>Kann Portal nicht benutzen da es gesperrt ist!</value>
   </data>
   <data name="QUICK_GET_UP_DISABLED" xml:space="preserve">
     <value>Du kannst nicht sofort aufstehen, wenn du dich ausruhst.</value>
@@ -517,10 +517,10 @@
     <value>Dein Geschlecht hat sich verändert!</value>
   </data>
   <data name="SHARING" xml:space="preserve">
-    <value>Sharing with everyone in group</value>
+    <value>Teilen als Gruppe.</value>
   </data>
   <data name="SHARING_BY_ORDER" xml:space="preserve">
-    <value>Sharing by order</value>
+    <value>Nach der Reihe plündern.</value>
   </data>
   <data name="SHOPS_LOADED" xml:space="preserve">
     <value>{0} Shops geladen!</value>
@@ -529,7 +529,7 @@
     <value>Kein Item zum Verkauf verfügbar.</value>
   </data>
   <data name="SHOP_NEAR_PORTAL" xml:space="preserve">
-    <value>You cannot create shop soo close to portal!</value>
+    <value>Öffne den Shop nicht am Portal.</value>
   </data>
   <data name="SHOP_OPEN" xml:space="preserve">
     <value>Du hast einen Shop eröffnet.</value>
@@ -613,7 +613,7 @@
     <value>Falscher Wert</value>
   </data>
   <data name="YOU_ASK_FOR_EXCHANGE" xml:space="preserve">
-    <value>Du hast nach einem Tausch gefragt mit</value>
+    <value>Nach einem Tausch gefragt:</value>
   </data>
   <data name="CHARACTER_LOGGED_IN" xml:space="preserve">
     <value>{0} hat sich gerade eingeloggt.</value>
@@ -622,12 +622,24 @@
     <value>{0} hat sich gerade ausgeloggt.</value>
   </data>
   <data name="NOT_ENOUGH_POWER_SEED" xml:space="preserve">
-    <value>You dont have enough power seeds</value>
+    <value>Du hast nicht genug Saat der Macht.</value>
   </data>
   <data name="NOT_ENOUGH_SEED_SAY" xml:space="preserve">
-    <value>I don't have enough power seeds</value>
+    <value>Ich habe nicht genug Saat der Macht</value>
   </data>
   <data name="SEED_USED" xml:space="preserve">
-    <value>You used power seeds</value>
+    <value>Du Saat der Macht verbraucht.</value>
+  </data>
+  <data name="ASK_REVIVE" xml:space="preserve">
+    <value>Hier fortfahren? Es werden 10 Saat der Macht verbraucht.</value>
+  </data>
+  <data name="ASK_REVIVE_FREE" xml:space="preserve">
+    <value>Hier fortfahren? Es ist frei für Level 20 oder niedriger.</value>
+  </data>
+  <data name="LOSE_DIGNITY" xml:space="preserve">
+    <value>Du hast {0} Würde verloren.</value>
+  </data>
+  <data name="HEROLEVEL_CHANGED" xml:space="preserve">
+    <value>Dein Helden Level hat sich erhöht!</value>
   </data>
 </root>
