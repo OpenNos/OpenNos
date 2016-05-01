@@ -98,9 +98,9 @@ namespace OpenNos.DAL.EF.MySQL.Helpers
         {
             using (var context = CreateContext())
             {
-                context.Database.Initialize(force: true);
-                try
+                 try
                 {
+                    context.Database.Initialize(force: true);
                     context.Database.Connection.Open();
                     //add on line as above for each tableset(it will load the table at startup and will speedup the first query)      
                     context.Account.Any();
