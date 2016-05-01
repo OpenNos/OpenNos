@@ -287,15 +287,14 @@ namespace OpenNos.Handler
                                     if (inv != null && inv.Slot != -1)
                                         Session.Client.SendPacket(
                                             Session.Character.GenerateInventoryAdd(inv.ItemInstance.ItemVNum,
-                                                inv.ItemInstance.Amount, inv.Type, inv.Slot, 0,
-                                                0, 0));
+                                                inv.ItemInstance.Amount, inv.Type, inv.Slot, inv.ItemInstance.Rare,
+                                                 inv.ItemInstance.Design, inv.ItemInstance.Upgrade));
                                 }
 
                                 Session.Character.Gold = Session.Character.Gold - Session.Character.ExchangeInfo.Gold + exchange.Gold;
                                 Session.Client.SendPacket(Session.Character.GenerateGold());
                                 ClientLinkManager.Instance.ExchangeValidate(Session, Session.Character.ExchangeInfo.CharId);
-
-                                // TODO: Maybe log exchanges to a (new) table, so that the server admins could trace cheaters
+                                
                             }
                         }
                     }
@@ -331,13 +330,13 @@ namespace OpenNos.Handler
                 byte.TryParse(packetsplit[j - 3], out type[i]);
                 short.TryParse(packetsplit[j - 2], out slot[i]);
                 byte.TryParse(packetsplit[j - 1], out qty[i]);
-                ItemInstance item = Session.Character.InventoryList.LoadBySlotAndType<ItemInstance>(slot[i], type[i]);
-                Session.Character.ExchangeInfo.ExchangeList.Add(item);
-                item.Amount = qty[i];
+                Inventory item = Session.Character.InventoryList.LoadInventoryBySlotAndType(slot[i], type[i]);
+                Session.Character.ExchangeInfo.ExchangeList.Add(item.ItemInstance as ItemInstance);
+                item.ItemInstance.Amount = qty[i];
                 if (type[i] != 0)
-                    packetList += $"{i}.{type[i]}.{item.ItemVNum}.{qty[i]} ";
+                    packetList += $"{i}.{type[i]}.{item.ItemInstance.ItemVNum}.{qty[i]} ";
                 else
-                    packetList += $"{i}.{type[i]}.{item.ItemVNum}.0.0 ";
+                    packetList += $"{i}.{type[i]}.{item.ItemInstance.ItemVNum}.0.0 ";
             }
             Session.Character.ExchangeInfo.Gold = Gold;
             ClientLinkManager.Instance.Broadcast(Session, $"exc_list 1 {Session.Character.CharacterId} {Gold} {packetList}", ReceiverType.OnlySomeone, "", Session.Character.ExchangeInfo.CharId);

@@ -237,7 +237,7 @@ namespace OpenNos.GameObject
                 Session.Client.SendPacket(Session.Character.GenerateCond());
                 ClientLinkManager.Instance.Broadcast(Session, Session.Character.GeneratePairy(), ReceiverType.AllOnMap);
                 Session.Client.SendPacket($"rsfi 1 1 0 9 0 9"); // Act completion
-                ClientLinkManager.Instance.Sessions.Where(s => s.Character.MapId.Equals(Session.Character.MapId) && s.Character.Name != Session.Character.Name && !Session.Character.InvisibleGm).ToList().ForEach(s => RequireBroadcastFromUser(Session, s.Character.CharacterId, "GenerateIn"));
+                ClientLinkManager.Instance.Sessions.Where(s => s.Character.MapId.Equals(Session.Character.MapId) && s.Character?.Name != Session.Character.Name && !Session.Character.InvisibleGm).ToList().ForEach(s => RequireBroadcastFromUser(Session, s.Character.CharacterId, "GenerateIn"));
                 if (Session.Character.InvisibleGm == false)
                     ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllOnMapExceptMe);
                 if (Session.CurrentMap.IsDancing == 2 && Session.Character.IsDancing == 0)
@@ -379,11 +379,8 @@ namespace OpenNos.GameObject
                     Inventory inv = c2Session.Character.InventoryList.AddToInventory<ItemInstance>(item);
                     if (inv == null) continue;
                     if (inv.Slot == -1) continue;
-
-                    //TODO inventoryitem
-                    c2Session.Client.SendPacket(c2Session.Character.GenerateInventoryAdd(inv.ItemInstance.ItemVNum, inv.ItemInstance.Amount, inv.Type, inv.Slot, 0, 0, 0));
+                    c2Session.Client.SendPacket(c2Session.Character.GenerateInventoryAdd(inv.ItemInstance.ItemVNum, inv.ItemInstance.Amount, inv.Type, inv.Slot, inv.ItemInstance.Rare, inv.ItemInstance.Design, inv.ItemInstance.Upgrade));
                 }
-
                 c2Session.Character.Gold = c2Session.Character.Gold - c2Session.Character.ExchangeInfo.Gold + c1Session.Character.ExchangeInfo.Gold;
                 c2Session.Client.SendPacket(c2Session.Character.GenerateGold());
             }
