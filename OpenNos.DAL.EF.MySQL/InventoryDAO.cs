@@ -85,7 +85,9 @@ namespace OpenNos.DAL.EF.MySQL
             var config = new MapperConfiguration(cfg =>
             {
                 cfg.CreateMap(baseType, typeof(ItemInstance))
-                .ForMember("Item", opts => opts.Ignore());
+                    .ForMember("Item", opts => opts.Ignore());
+
+                cfg.CreateMap(typeof(ItemInstance), typeof(ItemInstanceDTO)).As(baseType);
 
                 Type itemInstanceType = typeof(ItemInstance);
                 foreach (KeyValuePair<Type, Type> entry in itemInstanceMappings)
@@ -100,8 +102,7 @@ namespace OpenNos.DAL.EF.MySQL
 
                     Type retrieveDTOType = Type.GetType($"OpenNos.Data.{entry.Key.Name}DTO, OpenNos.Data");
                     //Entity -> DTO
-                    cfg.CreateMap(entry.Value, retrieveDTOType)
-                                .IncludeBase(typeof(ItemInstance), typeof(ItemInstanceDTO));
+                    cfg.CreateMap(entry.Value, typeof(ItemInstanceDTO)).As(entry.Key);
                 }
 
                 //Inventory Mappings

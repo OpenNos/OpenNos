@@ -44,16 +44,6 @@ namespace OpenNos.GameObject
 
         #region Methods
 
-        public int CountItem(int v)
-        {
-            int count = 0;
-            foreach (Inventory inv in Inventory.Where(s => s.ItemInstance.ItemVNum == v))
-            {
-                count += inv.ItemInstance.Amount;
-            }
-            return count;
-        }
-
         public Inventory AddNewItemToInventory(short vnum,int amount = 1)
         {
             short Slot = -1;
@@ -124,24 +114,6 @@ namespace OpenNos.GameObject
                 count += inv.ItemInstance.Amount;
             }
             return count;
-        }
-
-        public ItemInstance CreateItemInstance(short vnum)
-        {
-            ItemInstance iteminstance = new ItemInstance() { ItemVNum = vnum, Amount = 1 };
-            if (iteminstance.Item != null)
-            {
-                switch (iteminstance.Item.Type)
-                {
-                    case (byte)InventoryType.Wear:
-                        if (iteminstance.Item.ItemType == (byte)ItemType.Specialist)
-                            iteminstance = new SpecialistInstance() { ItemVNum = vnum, SpLevel = 1, Amount = 1 };
-                        else
-                            iteminstance = new WearableInstance() { ItemVNum = vnum, Amount = 1 };
-                        break;
-                }
-            }
-            return iteminstance;
         }
 
         public Tuple<short, byte> DeleteByInventoryItemId(long inventoryItemId)
