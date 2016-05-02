@@ -400,7 +400,7 @@ namespace OpenNos.GameObject
             }
         }
 
-        internal Inventory RemoveItemAmountFromInventory(byte amount, long InventoryId)
+        public Inventory RemoveItemAmountFromInventory(byte amount, long InventoryId)
         {
             Inventory inv = Inventory.FirstOrDefault(i => i.InventoryId.Equals(InventoryId));
 

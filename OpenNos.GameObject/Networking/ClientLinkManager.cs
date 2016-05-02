@@ -184,9 +184,7 @@ namespace OpenNos.GameObject
             if (inv != null)
             {
                 // Send reduced-amount to owners inventory
-                //shopOwnerSession.Client.SendPacket(shopOwnerSession.Character.GenerateInventoryAdd(inv.ItemInstance.ItemVNum, inv.ItemInstance.Amount, inv.Type,
-                //    inv.Slot, inv.ItemInstance.Rare, inv.ItemInstance.Design, inv.ItemInstance.Upgrade));
-                //TODO inventoryitem
+                shopOwnerSession.Client.SendPacket(shopOwnerSession.Character.GenerateInventoryAdd(inv.ItemInstance.ItemVNum, inv.ItemInstance.Amount, inv.Type, inv.Slot, inv.ItemInstance.Rare, inv.ItemInstance.Design, inv.ItemInstance.Upgrade));
             }
             else
             {
@@ -369,14 +367,26 @@ namespace OpenNos.GameObject
 
                 foreach (ItemInstance item in c2Session.Character.ExchangeInfo.ExchangeList)
                 {
-                    Inventory inv = c2Session.Character.InventoryList.GetInventoryByItemInstanceId(item.ItemInstanceId);
-                    c2Session.Character.InventoryList.DeleteByInventoryItemId(item.ItemInstanceId);
-                    c2Session.Client.SendPacket(c2Session.Character.GenerateInventoryAdd(-1, 0, inv.Type, inv.Slot, 0, 0, 0));
+                    Inventory invtemp = c2Session.Character.InventoryList.Inventory.FirstOrDefault(s => s.ItemInstance.ItemInstanceId == item.ItemInstanceId);
+                    short slot = invtemp.Slot;
+                    byte type = invtemp.Type;
+
+                    Inventory inv = c2Session.Character.InventoryList.RemoveItemAmountFromInventory((byte)item.Amount, invtemp.InventoryId);
+                    if (inv != null)
+                    {
+                        // Send reduced-amount to owners inventory
+                        c2Session.Client.SendPacket(c2Session.Character.GenerateInventoryAdd(inv.ItemInstance.ItemVNum, inv.ItemInstance.Amount, inv.Type, inv.Slot, inv.ItemInstance.Rare, inv.ItemInstance.Design, inv.ItemInstance.Upgrade));
+                    }
+                    else
+                    {
+                        // Send empty slot to owners inventory
+                        c2Session.Client.SendPacket(c2Session.Character.GenerateInventoryAdd(-1, 0, type, slot, 0, 0, 0));
+                    }
                 }
 
                 foreach (ItemInstance item in c1Session.Character.ExchangeInfo.ExchangeList)
                 {
-                    Inventory inv = c2Session.Character.InventoryList.AddToInventory<ItemInstance>(item);
+                    Inventory inv = c2Session.Character.InventoryList.AddToInventory(item.DeepCopy());
                     if (inv == null) continue;
                     if (inv.Slot == -1) continue;
                     c2Session.Client.SendPacket(c2Session.Character.GenerateInventoryAdd(inv.ItemInstance.ItemVNum, inv.ItemInstance.Amount, inv.Type, inv.Slot, inv.ItemInstance.Rare, inv.ItemInstance.Design, inv.ItemInstance.Upgrade));

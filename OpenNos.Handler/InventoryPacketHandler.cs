@@ -275,9 +275,20 @@ namespace OpenNos.Handler
                                 foreach (ItemInstance item in Session.Character.ExchangeInfo.ExchangeList)
                                 {
                                     // Delete items from their owners
-                                    Inventory inv = Session.Character.InventoryList.GetInventoryByItemInstanceId(item.ItemInstanceId);
-                                    Session.Character.InventoryList.DeleteByInventoryItemId(item.ItemInstanceId);
-                                    Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, inv.Type, inv.Slot, 0, 0, 0));
+                                    Inventory invtemp = Session.Character.InventoryList.Inventory.FirstOrDefault(s => s.ItemInstance.ItemInstanceId == item.ItemInstanceId);
+                                    short slot = invtemp.Slot;
+                                    byte type = invtemp.Type;
+                                    Inventory inv = Session.Character.InventoryList.RemoveItemAmountFromInventory((byte)item.Amount, invtemp.InventoryId);
+                                    if (inv != null)
+                                    {
+                                        // Send reduced-amount to owners inventory
+                                        Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(inv.ItemInstance.ItemVNum, inv.ItemInstance.Amount, inv.Type, inv.Slot, inv.ItemInstance.Rare, inv.ItemInstance.Design, inv.ItemInstance.Upgrade));
+                                    }
+                                    else
+                                    {
+                                        // Send empty slot to owners inventory
+                                        Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, type, slot, 0, 0, 0));
+                                    }
                                 }
 
                                 foreach (ItemInstance item in exchange.ExchangeList)

@@ -82,7 +82,7 @@ namespace OpenNos.Handler
                     return;
                 }
 
-                //TODO inventoryitem
+       
                 Inventory inv = Session.Character.InventoryList.AddToInventory(item.ItemInstance as ItemInstance);
                 inv.ItemInstance.Amount = amount;
                
