@@ -83,43 +83,13 @@ namespace OpenNos.Handler
                 }
 
                 //TODO inventoryitem
-                WearableInstance newItem = new WearableInstance(Session.Character.InventoryList.GenerateItemInstanceId());
-                //{
-                //    ItemInstanceId = Session.Character.InventoryList.GenerateInventoryItemId(),
-                //    Amount = amount,
-                //    ItemVNum = item.ItemInstance.ItemVNum,
-                //    Rare = item.ItemInstance.Rare,
-                //    Upgrade = item.ItemInstance.Upgrade,
-                //    Design = item.ItemInstance.Design,
-                //    Concentrate = item.ItemInstance.Concentrate,
-                //    CriticalLuckRate = item.ItemInstance.CriticalLuckRate,
-                //    CriticalRate = item.ItemInstance.CriticalRate,
-                //    DamageMaximum = item.ItemInstance.DamageMaximum,
-                //    DamageMinimum = item.ItemInstance.DamageMinimum,
-                //    DarkElement = item.ItemInstance.DarkElement,
-                //    DistanceDefence = item.ItemInstance.DistanceDefence,
-                //    DistanceDefenceDodge = item.ItemInstance.DistanceDefenceDodge,
-                //    DefenceDodge = item.ItemInstance.DefenceDodge,
-                //    ElementRate = item.ItemInstance.ElementRate,
-                //    FireElement = item.ItemInstance.FireElement,
-                //    HitRate = item.ItemInstance.HitRate,
-                //    LightElement = item.ItemInstance.LightElement,
-                //    MagicDefence = item.ItemInstance.MagicDefence,
-                //    CloseDefence = item.ItemInstance.CloseDefence,
-                //    SlDefence = item.ItemInstance.SlDefence,
-                //    SpXp = item.ItemInstance.SpXp,
-                //    SpLevel = item.ItemInstance.SpLevel,
-                //    SlElement = item.ItemInstance.SlElement,
-                //    SlDamage = item.ItemInstance.SlDamage,
-                //    SlHP = item.ItemInstance.SlHP,
-                //    WaterElement = item.ItemInstance.WaterElement,
-                //};
-
-                Inventory inv = Session.Character.InventoryList.AddToInventory(newItem);
-                if (inv != null && inv.Slot != -1)
+                Inventory inv = Session.Character.InventoryList.AddToInventory(item.ItemInstance as ItemInstance);
+                inv.ItemInstance.Amount = amount;
+               
+                if (inv != null)
                 {
-                    Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(newItem.ItemVNum,
-                        inv.ItemInstance.Amount, inv.Type, inv.Slot, newItem.Rare, newItem.Design, newItem.Upgrade));
+                    Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(inv.ItemInstance.ItemVNum,
+                        inv.ItemInstance.Amount, inv.Type, inv.Slot, inv.ItemInstance.Rare, inv.ItemInstance.Design, inv.ItemInstance.Upgrade));
                     Session.Character.Gold -= item.Price * amount;
                     Session.Client.SendPacket(Session.Character.GenerateGold());
                 }
@@ -233,44 +203,15 @@ namespace OpenNos.Handler
                     }
                 }
 
-                //TODO inventoryitem
-                WearableInstance newItem = new WearableInstance(Session.Character.InventoryList.GenerateItemInstanceId());
-                //{
-                //    ItemInstanceId = Session.Character.InventoryList.GenerateInventoryItemId(),
-                //    Amount = amount,
-                //    ItemVNum = item.ItemVNum,
-                //    Rare = rare,
-                //    Upgrade = item.Upgrade,
-                //    Design = item.Color,
-                //    Concentrate = 0,
-                //    CriticalLuckRate = 0,
-                //    CriticalRate = 0,
-                //    DamageMaximum = 0,
-                //    DamageMinimum = 0,
-                //    DarkElement = 0,
-                //    DistanceDefence = 0,
-                //    DistanceDefenceDodge = 0,
-                //    DefenceDodge = 0,
-                //    ElementRate = 0,
-                //    FireElement = 0,
-                //    HitRate = 0,
-                //    LightElement = 0,
-                //    MagicDefence = 0,
-                //    CloseDefence = 0,
-                //    SpXp = 0,
-                //    SpLevel = ServerManager.GetItem(item.ItemVNum).EquipmentSlot.Equals((byte)EquipmentType.Sp) ? (byte)1 : (byte)0,
-                //    SlDefence = 0,
-                //    SlElement = 0,
-                //    SlDamage = 0,
-                //    SlHP = 0,
-                //    WaterElement = 0,
-                //};
+                Inventory newItem = Session.Character.InventoryList.AddNewItemToInventory(item.ItemVNum, amount);
+                newItem.ItemInstance.Rare = rare;
+                newItem.ItemInstance.Upgrade = item.Upgrade;
+                newItem.ItemInstance.Design = item.Color;
 
-                Inventory inv = Session.Character.InventoryList.AddToInventory(newItem);
-                if (inv != null && inv.Slot != -1)
+                if (newItem != null && newItem.Slot != -1)
                 {
-                    Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(newItem.ItemVNum,
-                        inv.ItemInstance.Amount, inv.Type, inv.Slot, newItem.Rare, newItem.Design, newItem.Upgrade));
+                    Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(newItem.ItemInstance.ItemVNum,
+                        newItem.ItemInstance.Amount, newItem.Type, newItem.Slot, newItem.ItemInstance.Rare, newItem.ItemInstance.Design, newItem.ItemInstance.Upgrade));
                     if (iteminfo.ReputPrice == 0)
                     {
                         Session.Client.SendPacket(Session.Character.GenerateShopMemo(1, string.Format(Language.Instance.GetMessageFromKey("BUY_ITEM_VALIDE"), ServerManager.GetItem(item.ItemVNum).Name, amount)));
@@ -332,47 +273,19 @@ namespace OpenNos.Handler
                             long.TryParse(packetsplit[j + 3], out gold[i]);
                             if (qty[i] != 0)
                             {
-                                //TODO inventoryitem
-                                //Inventory inv = Session.Character.InventoryList.LoadBySlotAndType(slot[i], type[i]);
-                                //PersonalShopItem personalshopitem = new PersonalShopItem()
-                                //{
-                                //    Slot = slot[i],
-                                //    Type = type[i],
-                                //    Price = gold[i],
-                                //    InventoryId = inv.InventoryId,
-                                //    CharacterId = inv.CharacterId,
-                                //    Amount = qty[i],
-                                //    ItemInstance = new InventoryItem()
-                                //    {
-                                //        Design = inv.ItemInstance.Design,
-                                //        Concentrate = inv.ItemInstance.Concentrate,
-                                //        CriticalLuckRate = inv.ItemInstance.CriticalLuckRate,
-                                //        CriticalRate = inv.ItemInstance.CriticalRate,
-                                //        DamageMaximum = inv.ItemInstance.DamageMaximum,
-                                //        DamageMinimum = inv.ItemInstance.DamageMinimum,
-                                //        DarkElement = inv.ItemInstance.DarkElement,
-                                //        DistanceDefence = inv.ItemInstance.DistanceDefence,
-                                //        DistanceDefenceDodge = inv.ItemInstance.DistanceDefenceDodge,
-                                //        DefenceDodge = inv.ItemInstance.DefenceDodge,
-                                //        ElementRate = inv.ItemInstance.ElementRate,
-                                //        FireElement = inv.ItemInstance.FireElement,
-                                //        HitRate = inv.ItemInstance.HitRate,
-                                //        ItemVNum = inv.ItemInstance.ItemVNum,
-                                //        LightElement = inv.ItemInstance.LightElement,
-                                //        MagicDefence = inv.ItemInstance.MagicDefence,
-                                //        CloseDefence = inv.ItemInstance.CloseDefence,
-                                //        Rare = inv.ItemInstance.Rare,
-                                //        SpXp = inv.ItemInstance.SpXp,
-                                //        SpLevel = inv.ItemInstance.SpLevel,
-                                //        SlDefence = inv.ItemInstance.SlDefence,
-                                //        SlElement = inv.ItemInstance.SlElement,
-                                //        SlDamage = inv.ItemInstance.SlDamage,
-                                //        SlHP = inv.ItemInstance.SlHP,
-                                //        Upgrade = inv.ItemInstance.Upgrade,
-                                //        WaterElement = inv.ItemInstance.WaterElement,
-                                //    }
-                                //};
-                                //myShop.Items.Add(personalshopitem);
+                                Inventory inv = Session.Character.InventoryList.LoadInventoryBySlotAndType(slot[i], type[i]);
+
+                                PersonalShopItem personalshopitem = new PersonalShopItem()
+                                {
+                                    Slot = slot[i],
+                                    Type = type[i],
+                                    Price = gold[i],
+                                    InventoryId = inv.InventoryId,
+                                    CharacterId = inv.CharacterId,
+                                    Amount = qty[i],
+                                    ItemInstance = inv.ItemInstance
+                                };
+                                myShop.Items.Add(personalshopitem);
                             }
                         }
                     if (myShop.Items.Count != 0)
@@ -657,10 +570,10 @@ namespace OpenNos.Handler
                 PersonalShopItem item = shop.Value.Items.FirstOrDefault(it => it.Slot.Equals(i));
                 if (item != null)
                 {
-                    if (ServerManager.GetItem(item.ItemInstance.ItemVNum).Type == 0)
-                        packetToSend += $" 0.{i}.{item.ItemInstance.ItemVNum}.0.0.{item.Price}.";
+                    if ((item.ItemInstance as ItemInstance).Item.Type == 0)
+                        packetToSend += $" 0.{i}.{item.ItemInstance.ItemVNum}.{item.ItemInstance.Rare}.{item.ItemInstance.Upgrade}.{item.Price}.";
                     else
-                        packetToSend += $" {ServerManager.GetItem(item.ItemInstance.ItemVNum).Type}.{i}.{item.ItemInstance.ItemVNum}.{item.Amount}.{item.Price}.-1.";
+                        packetToSend += $" {(item.ItemInstance as ItemInstance).Item.Type}.{i}.{item.ItemInstance.ItemVNum}.{item.Amount}.{item.Price}.-1.";
                 }
                 else
                 {

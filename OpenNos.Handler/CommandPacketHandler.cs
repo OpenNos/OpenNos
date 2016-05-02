@@ -325,7 +325,7 @@ namespace OpenNos.Handler
                         if (packetsplit.Length > 3)
                             byte.TryParse(packetsplit[3], out amount);
                     }
-                    Inventory inv = Session.Character.InventoryList.AddNewItemToInventory<ItemInstance>(vnum);
+                    Inventory inv = Session.Character.InventoryList.AddNewItemToInventory(vnum);
                     inv.ItemInstance.Amount = amount;
                     inv.ItemInstance.Rare = rare;
                     inv.ItemInstance.Upgrade = upgrade;

@@ -17,7 +17,9 @@ using OpenNos.Data;
 using OpenNos.Domain;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace OpenNos.GameObject
 {
@@ -42,13 +44,23 @@ namespace OpenNos.GameObject
 
         #region Methods
 
-        public Inventory AddNewItemToInventory<T>(short vnum)
-                     where T : ItemInstance
+        public int CountItem(int v)
+        {
+            int count = 0;
+            foreach (Inventory inv in Inventory.Where(s => s.ItemInstance.ItemVNum == v))
+            {
+                count += inv.ItemInstance.Amount;
+            }
+            return count;
+        }
+
+        public Inventory AddNewItemToInventory(short vnum,int amount = 1)
         {
             short Slot = -1;
             IEnumerable<ItemInstance> slotfree = null;
             Inventory inv = null;
             ItemInstance newItem = CreateItemInstance(vnum);
+            newItem.Amount = amount;
             if (newItem.Item.Type != 0)
             {
                 slotfree = Owner.LoadBySlotAllowed(newItem.ItemVNum, newItem.Amount);
@@ -56,7 +68,7 @@ namespace OpenNos.GameObject
             }
             if (inv != null)
             {
-                inv.ItemInstance.Amount = (byte)(newItem.Amount + inv.ItemInstance.Amount);
+                inv.ItemInstance.Amount += newItem.Amount;
             }
             else
             {
@@ -291,15 +303,12 @@ namespace OpenNos.GameObject
                     if (inv.ItemInstance.Amount == amount)
                     {
                         inv.Slot = destslot;
-                        Update(ref inv);
                     }
                     else
                     {
-                        inv.ItemInstance.Amount = (byte)(inv.ItemInstance.Amount - amount);
-
-                        ItemInstance itemDest = inv.ItemInstance as ItemInstance;
-                        Update(ref inv);
-
+                        ItemInstance itemDest = (inv.ItemInstance as ItemInstance).DeepCopy();
+                        inv.ItemInstance.Amount -= amount;
+                        itemDest.Amount = amount;
                         invdest = AddToInventoryWithSlotAndType(itemDest, inv.Type, destslot);
                     }
                 }
@@ -312,25 +321,17 @@ namespace OpenNos.GameObject
                             int saveItemCount = invdest.ItemInstance.Amount;
                             invdest.ItemInstance.Amount = 99;
                             inv.ItemInstance.Amount = (byte)(saveItemCount + inv.ItemInstance.Amount - 99);
-
-                            Update(ref inv);
-                            Update(ref invdest);
                         }
                         else
                         {
-                            int saveItemCount = invdest.ItemInstance.Amount;
-                            invdest.ItemInstance.Amount = (byte)(saveItemCount + amount);
-                            inv.ItemInstance.Amount = (byte)(inv.ItemInstance.Amount - amount);
-                            Update(ref inv);
-                            Update(ref invdest);
+                            invdest.ItemInstance.Amount += amount;
+                            inv.ItemInstance.Amount-=  amount;
                         }
                     }
                     else
                     {
                         invdest.Slot = slot;
                         inv.Slot = destslot;
-                        Update(ref inv);
-                        Update(ref invdest);
                     }
                 }
             }
@@ -338,12 +339,11 @@ namespace OpenNos.GameObject
             invdest = LoadInventoryBySlotAndType(destslot, type);
         }
 
-        public MapItem PutItem(byte type, short slot, byte amount, out Inventory inv)
+        public MapItem PutItem(byte type, short slot, byte amount, ref Inventory inv)
         {
             Random rnd = new Random();
             int random = 0;
             int i = 0;
-            inv = LoadInventoryBySlotAndType(slot, type);
             MapItem droppedItem = null;
             short MapX = (short)(rnd.Next(Owner.MapX - 1, Owner.MapX + 1));
             short MapY = (short)(rnd.Next(Owner.MapY - 1, Owner.MapY + 1));
@@ -359,14 +359,13 @@ namespace OpenNos.GameObject
             {
                 droppedItem = new MapItem(MapX, MapY)
                 {
-                    ItemInstance = inv.ItemInstance as ItemInstance
+                    ItemInstance = (inv.ItemInstance as ItemInstance).DeepCopy()
                 };
-                while (ServerManager.GetMap(Owner.MapId).DroppedList.ContainsKey(random = rnd.Next(1, 999999)))
-                { }
+                while (ServerManager.GetMap(Owner.MapId).DroppedList.ContainsKey(random = rnd.Next(1, 999999))){ }
                 droppedItem.ItemInstance.ItemInstanceId = random;
+                droppedItem.ItemInstance.Amount = amount;
                 ServerManager.GetMap(Owner.MapId).DroppedList.Add(random, droppedItem);
-                inv.ItemInstance.Amount = (byte)(inv.ItemInstance.Amount - amount);
-                Update(ref inv);
+                inv.ItemInstance.Amount -= amount;
             }
             return droppedItem;
         }
@@ -389,7 +388,26 @@ namespace OpenNos.GameObject
             }
         }
 
-        public void Save()
+        public ItemInstance CreateItemInstance(short vnum)
+        {
+            ItemInstance iteminstance = new ItemInstance() { ItemVNum = vnum, Amount = 1, ItemInstanceId = GenerateItemInstanceId() };
+            if (iteminstance.Item != null)
+            {
+                switch (iteminstance.Item.Type)
+                {
+                    case (byte)InventoryType.Wear:
+                        if (iteminstance.Item.ItemType == (byte)ItemType.Specialist)
+                            iteminstance = new SpecialistInstance() { ItemVNum = vnum, SpLevel = 1, Amount = 1, ItemInstanceId = GenerateItemInstanceId() };
+                        else
+                            iteminstance = new WearableInstance() { ItemVNum = vnum, Amount = 1, ItemInstanceId = GenerateItemInstanceId() };
+                        break;
+
+                }
+            }
+            return iteminstance;
+        }
+            
+            public void Save()
         {
             Inventory = DAOFactory.InventoryDAO.InsertOrUpdate(Inventory).Select(i => new Inventory(i)).ToList();
         }

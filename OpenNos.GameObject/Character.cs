@@ -367,7 +367,7 @@ namespace OpenNos.GameObject
 
             for (short i = 0; i < 15; i++)
             {
-                ItemInstance wearable = (i!= (byte)EquipmentType.Sp )?EquipmentList.LoadBySlotAndType<WearableInstance>(i, (byte)InventoryType.Equipment): EquipmentList.LoadBySlotAndType<SpecialistInstance>(i, (byte)InventoryType.Equipment);
+                WearableInstance wearable = EquipmentList.LoadBySlotAndType<WearableInstance>(i, (byte)InventoryType.Equipment);
                 if (wearable != null)
                 {
                     Item iteminfo = ServerManager.GetItem(wearable.ItemVNum);
@@ -696,7 +696,7 @@ namespace OpenNos.GameObject
                         break;
 
                     case (byte)InventoryType.Wear:
-                        var wearableInstance = inv.ItemInstance as ItemInstanceDTO;
+                        var wearableInstance = inv.ItemInstance as WearableInstanceDTO;
                         inv0 += $" {inv.Slot}.{inv.ItemInstance.ItemVNum}.{wearableInstance.Rare}.{(item.IsColored ? wearableInstance.Design : wearableInstance.Upgrade)}";
                         break;
 
