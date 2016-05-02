@@ -96,7 +96,7 @@
     <Compile Include="ShopItem.cs" />
     <Compile Include="Map\MapShop.cs" />
     <Compile Include="Map\MapItem.cs" />
-    <Compile Include="ItemInstance.cs" />
+    <Compile Include="Item\Instance\ItemInstance.cs" />
     <Compile Include="Inventory.cs" />
     <Compile Include="Networking\ClientLinkManager.cs" />
     <Compile Include="Networking\ClientSession.cs" />

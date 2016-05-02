@@ -28,7 +28,9 @@ namespace OpenNos.DAL.Interface
 
         DeleteResult DeleteFromSlotAndType(long characterId, short slot, byte type);
 
-        SaveResult InsertOrUpdate(ref InventoryDTO inventory);
+        IEnumerable<InventoryDTO> InsertOrUpdate(IEnumerable<InventoryDTO> inventories);
+
+        InventoryDTO InsertOrUpdate(InventoryDTO inventory);
 
         IEnumerable<InventoryDTO> LoadByCharacterId(long characterId);
 

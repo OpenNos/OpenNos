@@ -112,41 +112,41 @@ namespace OpenNos.DAL.EF.MySQL
             _mapper = config.CreateMapper();
         }
 
-        public SaveResult InsertOrUpdate(ref InventoryDTO inventory)
+        public IEnumerable<InventoryDTO> InsertOrUpdate(IEnumerable<InventoryDTO> inventories)
+        {
+            try
+            {
+                IList<InventoryDTO> results = new List<InventoryDTO>();
+                using (var context = DataAccessHelper.CreateContext())
+                {
+                    foreach (InventoryDTO inventory in inventories)
+                    {
+                        results.Add(InsertOrUpdate(context, inventory));
+                    }
+                }
+
+                return results;
+            }
+            catch (Exception e)
+            {
+                Logger.Log.ErrorFormat(Language.Instance.GetMessageFromKey("UPDATE_ERROR"), e.Message);
+                return Enumerable.Empty<InventoryDTO>();
+            }
+        }
+
+        public InventoryDTO InsertOrUpdate(InventoryDTO inventory)
         {
             try
             {
                 using (var context = DataAccessHelper.CreateContext())
                 {
-                    long InventoryId = inventory.InventoryId;
-                    byte Type = inventory.Type;
-                    short Slot = inventory.Slot;
-                    long CharacterId = inventory.CharacterId;
-                    Inventory entity = context.Inventory.FirstOrDefault(c => c.InventoryId == InventoryId);
-                    if (entity == null) //new entity
-                    {
-                        Inventory delete = context.Inventory.FirstOrDefault(s => s.CharacterId == CharacterId && s.Slot == Slot && s.Type == Type);
-                        if (delete != null)
-                        {
-                            ItemInstance deleteItem = context.ItemInstance.FirstOrDefault(s => s.Inventory.InventoryId == delete.InventoryId);
-                            context.ItemInstance.Remove(deleteItem);
-                            context.Inventory.Remove(delete);
-                        }
-                        inventory = Insert(inventory, context);
-                        return SaveResult.Inserted;
-                    }
-                    else //existing entity
-                    {
-                        entity.ItemInstance = context.ItemInstance.FirstOrDefault(c => c.Inventory.InventoryId == entity.InventoryId);
-                        inventory = Update(entity, inventory, context);
-                        return SaveResult.Updated;
-                    }
+                    return InsertOrUpdate(context, inventory);
                 }
             }
             catch (Exception e)
             {
                 Logger.Log.ErrorFormat(Language.Instance.GetMessageFromKey("UPDATE_ERROR"), e.Message);
-                return SaveResult.Error;
+                return null;
             }
         }
 
@@ -209,6 +209,33 @@ namespace OpenNos.DAL.EF.MySQL
             context.Inventory.Add(entity);
             context.SaveChanges();
             return _mapper.Map<InventoryDTO>(entity);
+        }
+
+        private InventoryDTO InsertOrUpdate(OpenNosContext context, InventoryDTO inventory)
+        {
+            long InventoryId = inventory.InventoryId;
+            byte Type = inventory.Type;
+            short Slot = inventory.Slot;
+            long CharacterId = inventory.CharacterId;
+            Inventory entity = context.Inventory.FirstOrDefault(c => c.InventoryId == InventoryId);
+            if (entity == null) //new entity
+            {
+                Inventory delete = context.Inventory.FirstOrDefault(s => s.CharacterId == CharacterId && s.Slot == Slot && s.Type == Type);
+                if (delete != null)
+                {
+                    ItemInstance deleteItem = context.ItemInstance.FirstOrDefault(s => s.Inventory.InventoryId == delete.InventoryId);
+                    context.ItemInstance.Remove(deleteItem);
+                    context.Inventory.Remove(delete);
+                }
+                inventory = Insert(inventory, context);
+            }
+            else //existing entity
+            {
+                entity.ItemInstance = context.ItemInstance.FirstOrDefault(c => c.Inventory.InventoryId == entity.InventoryId);
+                inventory = Update(entity, inventory, context);
+            }
+
+            return inventory;
         }
 
         private InventoryDTO Update(Inventory entity, InventoryDTO inventory, OpenNosContext context)

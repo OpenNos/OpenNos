@@ -1177,6 +1177,7 @@ namespace OpenNos.GameObject
 
             // Character's Inventories
             foreach (InventoryDTO inv in DAOFactory.InventoryDAO.LoadByCharacterId(CharacterId))
+            {
                 if (inv.Type == (byte)InventoryType.Equipment)
                 {
                     if (EquipmentList.LoadInventoryBySlotAndType(inv.Slot, inv.Type) == null)
@@ -1187,6 +1188,7 @@ namespace OpenNos.GameObject
                     if (InventoryList.LoadInventoryBySlotAndType(inv.Slot, inv.Type) == null)
                         DAOFactory.InventoryDAO.DeleteFromSlotAndType(CharacterId, inv.Slot, inv.Type);
                 }
+            }
 
             // Character's Skills
             foreach (CharacterSkillDTO skill in DAOFactory.CharacterSkillDAO.LoadByCharacterId(CharacterId))
@@ -1199,10 +1201,9 @@ namespace OpenNos.GameObject
                     DAOFactory.QuicklistEntryDAO.Delete(CharacterId, quicklists.EntryId);
 
             // ... then save the new
-            for (int i = InventoryList.Inventory.Count() - 1; i >= 0; i--)
-                InventoryList.Inventory.ElementAt(i).Save();
-            for (int i = EquipmentList.Inventory.Count() - 1; i >= 0; i--)
-                EquipmentList.Inventory.ElementAt(i).Save();
+            InventoryList.Save();
+            EquipmentList.Save();
+
             for (int i = Skills.Count() - 1; i >= 0; i--)
                 Skills.ElementAt(i).Save();
             for (int i = QuicklistEntries.Count() - 1; i >= 0; i--)

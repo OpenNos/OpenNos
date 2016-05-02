@@ -12,13 +12,11 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.DAL;
 using OpenNos.Data;
-using OpenNos.Data.Enums;
 
 namespace OpenNos.GameObject
 {
-    public class Inventory : InventoryDTO, IGameObject
+    public class Inventory : InventoryDTO
     {
         #region Instantiation
 
@@ -32,16 +30,6 @@ namespace OpenNos.GameObject
             this.Slot = inventory.Slot;
             this.Type = inventory.Type;
             this.ItemInstance = inventory.ItemInstance;
-        }
-
-        #endregion
-
-        #region Methods
-
-        public void Save()
-        {
-            InventoryDTO tempsave = this;
-            SaveResult insertResult = DAOFactory.InventoryDAO.InsertOrUpdate(ref tempsave);
         }
 
         #endregion
