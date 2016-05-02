@@ -390,11 +390,13 @@ namespace OpenNos.Handler
                                 return;
                         }
 
-                        WearableInstance newItem = new WearableInstance(Session.Character.InventoryList.GenerateItemInstanceId());
-
-                        Item iteminfo = ServerManager.GetItem(rec.ItemVNum);
-                        Inventory inv = Session.Character.InventoryList.AddToInventory(newItem);
-                        ServersData.SetRarityPoint(ref newItem);
+                        Inventory inv = Session.Character.InventoryList.AddNewItemToInventory(rec.ItemVNum,rec.Amount);
+                        if(inv.ItemInstance.GetType().Equals(typeof(WearableInstance)))
+                        {
+                            WearableInstance item = inv.ItemInstance as WearableInstance;
+                            ServersData.SetRarityPoint(ref item);
+                        }
+               
                         if (inv != null)
                         {
                             short Slot = inv.Slot;
@@ -406,10 +408,10 @@ namespace OpenNos.Handler
                                 }
                                 Session.Character.GetStartupInventory();
 
-                                Session.Client.SendPacket($"pdti 11 {inv.ItemInstance.ItemVNum} {rec.Amount} 29 {newItem.Upgrade} 0");
+                                Session.Client.SendPacket($"pdti 11 {inv.ItemInstance.ItemVNum} {rec.Amount} 29 {inv.ItemInstance.Upgrade} 0");
                                 Session.Client.SendPacket($"guri 19 1 {Session.Character.CharacterId} 1324");
 
-                                Session.Client.SendPacket(Session.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("CRAFTED_OBJECT"), iteminfo.Name, rec.Amount), 0));
+                                Session.Client.SendPacket(Session.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("CRAFTED_OBJECT"), (inv.ItemInstance as ItemInstance).Item.Name, rec.Amount), 0));
                             }
                         }
                         else
