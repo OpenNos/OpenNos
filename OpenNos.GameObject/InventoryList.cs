@@ -17,9 +17,7 @@ using OpenNos.Data;
 using OpenNos.Domain;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Runtime.Serialization.Formatters.Binary;
 
 namespace OpenNos.GameObject
 {
@@ -44,7 +42,7 @@ namespace OpenNos.GameObject
 
         #region Methods
 
-        public Inventory AddNewItemToInventory(short vnum,int amount = 1)
+        public Inventory AddNewItemToInventory(short vnum, int amount = 1)
         {
             short Slot = -1;
             IEnumerable<ItemInstance> slotfree = null;
@@ -114,6 +112,24 @@ namespace OpenNos.GameObject
                 count += inv.ItemInstance.Amount;
             }
             return count;
+        }
+
+        public ItemInstance CreateItemInstance(short vnum)
+        {
+            ItemInstance iteminstance = new ItemInstance() { ItemVNum = vnum, Amount = 1, ItemInstanceId = GenerateItemInstanceId() };
+            if (iteminstance.Item != null)
+            {
+                switch (iteminstance.Item.Type)
+                {
+                    case (byte)InventoryType.Wear:
+                        if (iteminstance.Item.ItemType == (byte)ItemType.Specialist)
+                            iteminstance = new SpecialistInstance() { ItemVNum = vnum, SpLevel = 1, Amount = 1, ItemInstanceId = GenerateItemInstanceId() };
+                        else
+                            iteminstance = new WearableInstance() { ItemVNum = vnum, Amount = 1, ItemInstanceId = GenerateItemInstanceId() };
+                        break;
+                }
+            }
+            return iteminstance;
         }
 
         public Tuple<short, byte> DeleteByInventoryItemId(long inventoryItemId)
@@ -297,7 +313,7 @@ namespace OpenNos.GameObject
                         else
                         {
                             invdest.ItemInstance.Amount += amount;
-                            inv.ItemInstance.Amount-=  amount;
+                            inv.ItemInstance.Amount -= amount;
                         }
                     }
                     else
@@ -333,7 +349,7 @@ namespace OpenNos.GameObject
                 {
                     ItemInstance = (inv.ItemInstance as ItemInstance).DeepCopy()
                 };
-                while (ServerManager.GetMap(Owner.MapId).DroppedList.ContainsKey(random = rnd.Next(1, 999999))){ }
+                while (ServerManager.GetMap(Owner.MapId).DroppedList.ContainsKey(random = rnd.Next(1, 999999))) { }
                 droppedItem.ItemInstance.ItemInstanceId = random;
                 droppedItem.ItemInstance.Amount = amount;
                 ServerManager.GetMap(Owner.MapId).DroppedList.Add(random, droppedItem);
@@ -360,26 +376,7 @@ namespace OpenNos.GameObject
             }
         }
 
-        public ItemInstance CreateItemInstance(short vnum)
-        {
-            ItemInstance iteminstance = new ItemInstance() { ItemVNum = vnum, Amount = 1, ItemInstanceId = GenerateItemInstanceId() };
-            if (iteminstance.Item != null)
-            {
-                switch (iteminstance.Item.Type)
-                {
-                    case (byte)InventoryType.Wear:
-                        if (iteminstance.Item.ItemType == (byte)ItemType.Specialist)
-                            iteminstance = new SpecialistInstance() { ItemVNum = vnum, SpLevel = 1, Amount = 1, ItemInstanceId = GenerateItemInstanceId() };
-                        else
-                            iteminstance = new WearableInstance() { ItemVNum = vnum, Amount = 1, ItemInstanceId = GenerateItemInstanceId() };
-                        break;
-
-                }
-            }
-            return iteminstance;
-        }
-            
-            public void Save()
+        public void Save()
         {
             Inventory = DAOFactory.InventoryDAO.InsertOrUpdate(Inventory).Select(i => new Inventory(i)).ToList();
         }
