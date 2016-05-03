@@ -345,12 +345,13 @@ namespace OpenNos.Handler
                 short.TryParse(packetsplit[j - 2], out slot[i]);
                 byte.TryParse(packetsplit[j - 1], out qty[i]);
                 Inventory item = Session.Character.InventoryList.LoadInventoryBySlotAndType(slot[i], type[i]);
-                Session.Character.ExchangeInfo.ExchangeList.Add(item.ItemInstance as ItemInstance);
-                item.ItemInstance.Amount = qty[i];
+                ItemInstance it = (item.ItemInstance as ItemInstance).DeepCopy();
+                it.Amount = qty[i];
+                Session.Character.ExchangeInfo.ExchangeList.Add(it);
                 if (type[i] != 0)
-                    packetList += $"{i}.{type[i]}.{item.ItemInstance.ItemVNum}.{qty[i]} ";
+                    packetList += $"{i}.{type[i]}.{it.ItemVNum}.{qty[i]} ";
                 else
-                    packetList += $"{i}.{type[i]}.{item.ItemInstance.ItemVNum}.0.0 ";
+                    packetList += $"{i}.{type[i]}.{it.ItemVNum}.0.0 ";
             }
             Session.Character.ExchangeInfo.Gold = Gold;
             ClientLinkManager.Instance.Broadcast(Session, $"exc_list 1 {Session.Character.CharacterId} {Gold} {packetList}", ReceiverType.OnlySomeone, "", Session.Character.ExchangeInfo.CharId);
