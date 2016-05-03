@@ -232,30 +232,29 @@ namespace OpenNos.Handler
 
             #region Get Weapon Stats
 
-            //TODO inventoryitem
-            //Inventory weapon = Session.Character.EquipmentList.LoadBySlotAndType((byte)EquipmentType.MainWeapon, (byte)InventoryType.Equipment);
-            //if (weapon != null)
-            //{
-            //    Item iteminfo = ServerManager.GetItem(weapon.InventoryItem.ItemVNum);
-            //    MainUpgrade = weapon.InventoryItem.Upgrade;
-            //    MainMinDmg += weapon.InventoryItem.DamageMinimum + iteminfo.DamageMinimum;
-            //    MainMaxDmg += weapon.InventoryItem.DamageMaximum + iteminfo.DamageMaximum;
-            //    MainHitRate += weapon.InventoryItem.HitRate + iteminfo.HitRate;
-            //    MainCritChance += weapon.InventoryItem.CriticalLuckRate + iteminfo.CriticalLuckRate;
-            //    MainCritHit += weapon.InventoryItem.CriticalRate + iteminfo.CriticalRate;
-            //}
+            WearableInstance weapon = Session.Character.EquipmentList.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.MainWeapon, (byte)InventoryType.Equipment);
+            if (weapon != null)
+            {
+                Item iteminfo = ServerManager.GetItem(weapon.ItemVNum);
+                MainUpgrade = weapon.Upgrade;
+                MainMinDmg += weapon.DamageMinimum + iteminfo.DamageMinimum;
+                MainMaxDmg += weapon.DamageMaximum + iteminfo.DamageMaximum;
+                MainHitRate += weapon.HitRate + iteminfo.HitRate;
+                MainCritChance += weapon.CriticalLuckRate + iteminfo.CriticalLuckRate;
+                MainCritHit += weapon.CriticalRate + iteminfo.CriticalRate;
+            }
 
-            //Inventory weapon2 = Session.Character.EquipmentList.LoadBySlotAndType((byte)EquipmentType.SecondaryWeapon, (byte)InventoryType.Equipment);
-            //if (weapon2 != null)
-            //{
-            //    Item iteminfo = ServerManager.GetItem(weapon2.InventoryItem.ItemVNum);
-            //    SecUpgrade = weapon2.InventoryItem.Upgrade;
-            //    SecMinDmg += weapon2.InventoryItem.DamageMinimum + iteminfo.DamageMinimum;
-            //    SecMaxDmg += weapon2.InventoryItem.DamageMaximum + iteminfo.DamageMaximum;
-            //    SecHitRate += weapon2.InventoryItem.HitRate + iteminfo.HitRate;
-            //    SecCritChance += weapon2.InventoryItem.CriticalLuckRate + iteminfo.CriticalLuckRate;
-            //    SecCritHit += weapon2.InventoryItem.CriticalRate + iteminfo.CriticalRate;
-            //}
+            WearableInstance weapon2 = Session.Character.EquipmentList.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.SecondaryWeapon, (byte)InventoryType.Equipment);
+            if (weapon2 != null)
+            {
+                Item iteminfo = ServerManager.GetItem(weapon2.ItemVNum);
+                SecUpgrade = weapon2.Upgrade;
+                SecMinDmg += weapon2.DamageMinimum + iteminfo.DamageMinimum;
+                SecMaxDmg += weapon2.DamageMaximum + iteminfo.DamageMaximum;
+                SecHitRate += weapon2.HitRate + iteminfo.HitRate;
+                SecCritChance += weapon2.CriticalLuckRate + iteminfo.CriticalLuckRate;
+                SecCritHit += weapon2.CriticalRate + iteminfo.CriticalRate;
+            }
 
             #endregion
 
@@ -893,73 +892,13 @@ namespace OpenNos.Handler
                     };
                     Session.CurrentMap.ItemSpawn(drop2, mmon.MapX, mmon.MapY);
                 }
-                if ((int)(Session.Character.LevelXp / (Session.Character.XPLoad() / 10)) < (int)((Session.Character.LevelXp + monsterinfo.XP) / (Session.Character.XPLoad() / 10)))
-                {
-                    Session.Character.Hp = (int)Session.Character.HPLoad();
-                    Session.Character.Mp = (int)Session.Character.MPLoad();
-                    Session.Client.SendPacket(Session.Character.GenerateStat());
-                    Session.Client.SendPacket(Session.Character.GenerateEff(5));
-                }
-                SpecialistInstance sp2 = Session.Character.EquipmentList.LoadBySlotAndType<SpecialistInstance>((short)EquipmentType.Sp, (byte)InventoryType.Equipment);
-                if (Session.Character.Level < 99)
-                    Session.Character.LevelXp += monsterinfo.XP;
-                if ((Session.Character.Class == 0 && Session.Character.JobLevel < 20) || (Session.Character.Class != 0 && Session.Character.JobLevel < 80))
-                {
-                    if (sp2 != null && Session.Character.UseSp && sp2.SpLevel < 99)
-                        Session.Character.JobLevelXp += (int)((double)monsterinfo.JobXP / (double)100 * sp2.SpLevel);
-                    else
-                        Session.Character.JobLevelXp += monsterinfo.JobXP;
-                }
-                if (sp2 != null && Session.Character.UseSp && sp2.SpLevel < 99)
-                    sp2.SpXp += monsterinfo.JobXP * (100 - sp2.SpLevel);
-                double t = Session.Character.XPLoad();
-                while (Session.Character.LevelXp >= t)
-                {
-                    Session.Character.LevelXp -= (long)t;
-                    Session.Character.Level++;
-                    t = Session.Character.XPLoad();
-                    Session.Character.Hp = (int)Session.Character.HPLoad();
-                    Session.Character.Mp = (int)Session.Character.MPLoad();
-                    Session.Client.SendPacket(Session.Character.GenerateStat());
-                    Session.Client.SendPacket($"levelup {Session.Character.CharacterId}");
-                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(6), ReceiverType.AllOnMap);
-                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(198), ReceiverType.AllOnMap);
-                    ClientLinkManager.Instance.UpdateGroup(Session.Character.CharacterId);
-                }
-                t = Session.Character.JobXPLoad();
-                while (Session.Character.JobLevelXp >= t)
-                {
-                    Session.Character.JobLevelXp -= (long)t;
-                    Session.Character.JobLevel++;
-                    t = Session.Character.JobXPLoad();
-                    Session.Character.Hp = (int)Session.Character.HPLoad();
-                    Session.Character.Mp = (int)Session.Character.MPLoad();
-                    Session.Client.SendPacket(Session.Character.GenerateStat());
-                    Session.Client.SendPacket($"levelup {Session.Character.CharacterId}");
-                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(6), ReceiverType.AllOnMap);
-                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(198), ReceiverType.AllOnMap);
-                }
-                if (sp2 != null)
-                    t = Session.Character.SPXPLoad();
-                while (sp2 != null && sp2.SpXp >= t)
-                {
-                    sp2.SpXp -= (long)t;
-                    sp2.SpLevel++;
-                    t = Session.Character.SPXPLoad();
-                    Session.Client.SendPacket(Session.Character.GenerateStat());
-                    Session.Client.SendPacket($"levelup {Session.Character.CharacterId}");
-                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(6), ReceiverType.AllOnMap);
-                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(198), ReceiverType.AllOnMap);
-                }
-                Session.Client.SendPacket(Session.Character.GenerateLev());
+                if (Session.Character.Hp > 0)
+                    GenerateXp(monsterinfo);
             }
-            if (Session.Character.Hp > 0)
-                GenerateXp(monsterinfo);
             else
             {
                 mmon.CurrentHp -= damage;
             }
-
             mmon.Target = Session.Character.CharacterId;
             return damage;
         }
@@ -974,58 +913,57 @@ namespace OpenNos.Handler
                 Session.Client.SendPacket(Session.Character.GenerateEff(5));
             }
 
-            //todo inventoryitem
-            //Inventory sp2 = Session.Character.EquipmentList.LoadBySlotAndType((short)EquipmentType.Sp, (byte)InventoryType.Equipment);
-            //if (Session.Character.Level < 99)
-            //    Session.Character.LevelXp += monsterinfo.XP;
-            //if ((Session.Character.Class == 0 && Session.Character.JobLevel < 20) || (Session.Character.Class != 0 && Session.Character.JobLevel < 80))
-            //{
-            //    if (sp2 != null && Session.Character.UseSp && sp2.InventoryItem.SpLevel < 99)
-            //        Session.Character.JobLevelXp += (int)((double)monsterinfo.JobXP / (double)100 * sp2.InventoryItem.SpLevel);
-            //    else
-            //        Session.Character.JobLevelXp += monsterinfo.JobXP;
-            //}
-            //if (sp2 != null && Session.Character.UseSp && sp2.InventoryItem.SpLevel < 99)
-            //    sp2.InventoryItem.SpXp += monsterinfo.JobXP * (100 - sp2.InventoryItem.SpLevel);
-            //double t = Session.Character.XPLoad();
-            //while (Session.Character.LevelXp >= t)
-            //{
-            //    Session.Character.LevelXp -= (long)t;
-            //    Session.Character.Level++;
-            //    t = Session.Character.XPLoad();
-            //    Session.Character.Hp = (int)Session.Character.HPLoad();
-            //    Session.Character.Mp = (int)Session.Character.MPLoad();
-            //    Session.Client.SendPacket(Session.Character.GenerateStat());
-            //    Session.Client.SendPacket($"levelup {Session.Character.CharacterId}");
-            //    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(6), ReceiverType.AllOnMap);
-            //    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(198), ReceiverType.AllOnMap);
-            //    ClientLinkManager.Instance.UpdateGroup(Session.Character.CharacterId);
-            //}
-            //t = Session.Character.JobXPLoad();
-            //while (Session.Character.JobLevelXp >= t)
-            //{
-            //    Session.Character.JobLevelXp -= (long)t;
-            //    Session.Character.JobLevel++;
-            //    t = Session.Character.JobXPLoad();
-            //    Session.Character.Hp = (int)Session.Character.HPLoad();
-            //    Session.Character.Mp = (int)Session.Character.MPLoad();
-            //    Session.Client.SendPacket(Session.Character.GenerateStat());
-            //    Session.Client.SendPacket($"levelup {Session.Character.CharacterId}");
-            //    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(6), ReceiverType.AllOnMap);
-            //    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(198), ReceiverType.AllOnMap);
-            //}
-            //if (sp2 != null)
-            //    t = Session.Character.SPXPLoad();
-            //while (sp2 != null && sp2.InventoryItem.SpXp >= t)
-            //{
-            //    sp2.InventoryItem.SpXp -= (long)t;
-            //    sp2.InventoryItem.SpLevel++;
-            //    t = Session.Character.SPXPLoad();
-            //    Session.Client.SendPacket(Session.Character.GenerateStat());
-            //    Session.Client.SendPacket($"levelup {Session.Character.CharacterId}");
-            //    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(6), ReceiverType.AllOnMap);
-            //    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(198), ReceiverType.AllOnMap);
-            //}
+            SpecialistInstance specialist = Session.Character.EquipmentList.LoadBySlotAndType<SpecialistInstance>((short)EquipmentType.Sp, (byte)InventoryType.Equipment);
+            if (Session.Character.Level < 99)
+                Session.Character.LevelXp += monsterinfo.XP;
+            if ((Session.Character.Class == 0 && Session.Character.JobLevel < 20) || (Session.Character.Class != 0 && Session.Character.JobLevel < 80))
+            {
+                if (specialist != null && Session.Character.UseSp && specialist.SpLevel < 99)
+                    Session.Character.JobLevelXp += (int)((double)monsterinfo.JobXP / (double)100 * specialist.SpLevel);
+                else
+                    Session.Character.JobLevelXp += monsterinfo.JobXP;
+            }
+            if (specialist != null && Session.Character.UseSp && specialist.SpLevel < 99)
+                specialist.SpXp += monsterinfo.JobXP * (100 - specialist.SpLevel);
+            double t = Session.Character.XPLoad();
+            while (Session.Character.LevelXp >= t)
+            {
+                Session.Character.LevelXp -= (long)t;
+                Session.Character.Level++;
+                t = Session.Character.XPLoad();
+                Session.Character.Hp = (int)Session.Character.HPLoad();
+                Session.Character.Mp = (int)Session.Character.MPLoad();
+                Session.Client.SendPacket(Session.Character.GenerateStat());
+                Session.Client.SendPacket($"levelup {Session.Character.CharacterId}");
+                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(6), ReceiverType.AllOnMap);
+                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(198), ReceiverType.AllOnMap);
+                ClientLinkManager.Instance.UpdateGroup(Session.Character.CharacterId);
+            }
+            t = Session.Character.JobXPLoad();
+            while (Session.Character.JobLevelXp >= t)
+            {
+                Session.Character.JobLevelXp -= (long)t;
+                Session.Character.JobLevel++;
+                t = Session.Character.JobXPLoad();
+                Session.Character.Hp = (int)Session.Character.HPLoad();
+                Session.Character.Mp = (int)Session.Character.MPLoad();
+                Session.Client.SendPacket(Session.Character.GenerateStat());
+                Session.Client.SendPacket($"levelup {Session.Character.CharacterId}");
+                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(6), ReceiverType.AllOnMap);
+                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(198), ReceiverType.AllOnMap);
+            }
+            if (specialist != null)
+                t = Session.Character.SPXPLoad();
+            while (specialist != null && specialist.SpXp >= t)
+            {
+                specialist.SpXp -= (long)t;
+                specialist.SpLevel++;
+                t = Session.Character.SPXPLoad();
+                Session.Client.SendPacket(Session.Character.GenerateStat());
+                Session.Client.SendPacket($"levelup {Session.Character.CharacterId}");
+                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(6), ReceiverType.AllOnMap);
+                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(198), ReceiverType.AllOnMap);
+            }
             Session.Client.SendPacket(Session.Character.GenerateLev());
         }
 
