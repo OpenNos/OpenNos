@@ -1,6 +1,5 @@
 -- ========================================== --
--- File generated on: 03.05.2016 20:27:51
--- Using migration: 201604291502062_Migration
+-- Current Migration: 201604291502062_Migration
 -- ========================================== --
 
 DROP PROCEDURE IF EXISTS `_idempotent_script`;

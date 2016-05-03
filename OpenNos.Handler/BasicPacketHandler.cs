@@ -99,68 +99,75 @@ namespace OpenNos.Handler
             // TODO: Hold Account Information in Authorized object
             long accountId = Session.Account.AccountId;
             string[] packetsplit = packet.Split(' ');
-            if (packetsplit[2].Length > 3 && packetsplit[2].Length < 15)
+
+            byte slot = Convert.ToByte(packetsplit[3]);
+            string characterName = packetsplit[2];
+
+            if (slot <= 2 && DAOFactory.CharacterDAO.LoadBySlot(accountId, slot) == null)
             {
-                bool isIllegalCharacter = false;
-                for (int i = 0; i < packetsplit[2].Length; i++)
+                if (characterName.Length > 3 && characterName.Length < 15)
                 {
-                    if (packetsplit[2][i] < 0x23 || packetsplit[2][i] > 0x7E)
+                    bool isIllegalCharacter = false;
+                    for (int i = 0; i < characterName.Length; i++)
                     {
-                        isIllegalCharacter = true;
-                    }
-                }
-
-                if (!isIllegalCharacter)
-                {
-                    if (DAOFactory.CharacterDAO.LoadByName(packetsplit[2]) == null)
-                    {
-                        if (Convert.ToByte(packetsplit[3]) > 2)
-                            return;
-                        Random r = new Random();
-                        CharacterDTO newCharacter = new CharacterDTO()
+                        if (characterName[i] < 0x23 || characterName[i] > 0x7E)
                         {
-                            Class = (byte)ClassType.Adventurer,
-                            Gender = (Convert.ToByte(packetsplit[4]) >= 0 && Convert.ToByte(packetsplit[4]) <= 1 ? Convert.ToByte(packetsplit[4]) : Convert.ToByte(0)),
-                            Gold = 0,
-                            HairColor = Enum.IsDefined(typeof(HairColorType), Convert.ToByte(packetsplit[6])) ? Convert.ToByte(packetsplit[6]) : Convert.ToByte(0),
-                            HairStyle = Enum.IsDefined(typeof(HairStyleType), Convert.ToByte(packetsplit[5])) ? Convert.ToByte(packetsplit[5]) : Convert.ToByte(0),
-                            Hp = 221,
-                            JobLevel = 1,
-                            JobLevelXp = 0,
-                            Level = 1,
-                            LevelXp = 0,
-                            MapId = 1,
-                            MapX = (short)(r.Next(78, 81)),
-                            MapY = (short)(r.Next(114, 118)),
-                            Mp = 221,
-                            Name = packetsplit[2],
-                            Slot = Convert.ToByte(packetsplit[3]),
-                            AccountId = accountId,
-                            StateEnum = CharacterState.Active,
-                            WhisperBlocked = false,
-                            FamilyRequestBlocked = false,
-                            ExchangeBlocked = false,
-                            BuffBlocked = false,
-                            EmoticonsBlocked = false,
-                            FriendRequestBlocked = false,
-                            GroupRequestBlocked = false,
-                            MinilandInviteBlocked = false,
-                            HeroChatBlocked = false,
-                            QuickGetUp = false,
-                            MouseAimLock = false,
-                            HpBlocked = false,
-                        };
-
-                        SaveResult insertResult = DAOFactory.CharacterDAO.InsertOrUpdate(ref newCharacter);
-                        CharacterSkillDTO sk1 = new CharacterSkillDTO { CharacterId = newCharacter.CharacterId, SkillVNum = 200 };
-                        CharacterSkillDTO sk2 = new CharacterSkillDTO { CharacterId = newCharacter.CharacterId, SkillVNum = 201 };
-                        DAOFactory.CharacterSkillDAO.InsertOrUpdate(ref sk1);
-                        DAOFactory.CharacterSkillDAO.InsertOrUpdate(ref sk2);
-                        LoadCharacters(packet);
+                            isIllegalCharacter = true;
+                        }
                     }
-                    else Session.Client.SendPacketFormat($"info {Language.Instance.GetMessageFromKey("ALREADY_TAKEN")}");
+
+                    if (!isIllegalCharacter)
+                    {
+                        if (DAOFactory.CharacterDAO.LoadByName(characterName) == null)
+                        {
+                            if (Convert.ToByte(packetsplit[3]) > 2)
+                                return;
+                            Random r = new Random();
+                            CharacterDTO newCharacter = new CharacterDTO()
+                            {
+                                Class = (byte)ClassType.Adventurer,
+                                Gender = (Convert.ToByte(packetsplit[4]) >= 0 && Convert.ToByte(packetsplit[4]) <= 1 ? Convert.ToByte(packetsplit[4]) : Convert.ToByte(0)),
+                                Gold = 0,
+                                HairColor = Enum.IsDefined(typeof(HairColorType), Convert.ToByte(packetsplit[6])) ? Convert.ToByte(packetsplit[6]) : Convert.ToByte(0),
+                                HairStyle = Enum.IsDefined(typeof(HairStyleType), Convert.ToByte(packetsplit[5])) ? Convert.ToByte(packetsplit[5]) : Convert.ToByte(0),
+                                Hp = 221,
+                                JobLevel = 1,
+                                JobLevelXp = 0,
+                                Level = 1,
+                                LevelXp = 0,
+                                MapId = 1,
+                                MapX = (short)(r.Next(78, 81)),
+                                MapY = (short)(r.Next(114, 118)),
+                                Mp = 221,
+                                Name = characterName,
+                                Slot = slot,
+                                AccountId = accountId,
+                                StateEnum = CharacterState.Active,
+                                WhisperBlocked = false,
+                                FamilyRequestBlocked = false,
+                                ExchangeBlocked = false,
+                                BuffBlocked = false,
+                                EmoticonsBlocked = false,
+                                FriendRequestBlocked = false,
+                                GroupRequestBlocked = false,
+                                MinilandInviteBlocked = false,
+                                HeroChatBlocked = false,
+                                QuickGetUp = false,
+                                MouseAimLock = false,
+                                HpBlocked = false,
+                            };
+
+                            SaveResult insertResult = DAOFactory.CharacterDAO.InsertOrUpdate(ref newCharacter);
+                            CharacterSkillDTO sk1 = new CharacterSkillDTO { CharacterId = newCharacter.CharacterId, SkillVNum = 200 };
+                            CharacterSkillDTO sk2 = new CharacterSkillDTO { CharacterId = newCharacter.CharacterId, SkillVNum = 201 };
+                            DAOFactory.CharacterSkillDAO.InsertOrUpdate(ref sk1);
+                            DAOFactory.CharacterSkillDAO.InsertOrUpdate(ref sk2);
+                            LoadCharacters(packet);
+                        }
+                        else Session.Client.SendPacketFormat($"info {Language.Instance.GetMessageFromKey("ALREADY_TAKEN")}");
+                    }
+                    else Session.Client.SendPacketFormat($"info {Language.Instance.GetMessageFromKey("INVALID_CHARNAME")}");
                 }
-                else Session.Client.SendPacketFormat($"info {Language.Instance.GetMessageFromKey("INVALID_CHARNAME")}");
             }
         }
 
