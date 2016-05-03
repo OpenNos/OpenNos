@@ -265,7 +265,7 @@
     <value>Tu as obtenu le pouvoir du démon grâce à l'oeuf de Latheore.</value>
   </data>
   <data name="GOLD_SET" xml:space="preserve">
-    <value>Or obtenue</value>
+    <value>Or obtenue !</value>
   </data>
   <data name="GROUP_BLOCKED" xml:space="preserve">
     <value>Ce joueur a bloqué les demandes de groupe.</value>
@@ -328,7 +328,7 @@
     <value>Niveau de mise à niveau d'objet est verrouillé.</value>
   </data>
   <data name="ITEM_LOADED" xml:space="preserve">
-    <value>{0} Objets chargés.</value>
+    <value>{0} Objets chargés !</value>
   </data>
   <data name="ITEM_NOT_DROPPABLE" xml:space="preserve">
     <value>Vous ne pouvez pas jeter cet objet.</value>
@@ -361,7 +361,7 @@
     <value>Votre niveau est trop bas.</value>
   </data>
   <data name="LOW_REP" xml:space="preserve">
-    <value>Votre réputation est trop basse.</value>
+    <value>Ton personnage ne remplit pas les conditions d'utilisation de cet objet.</value>
   </data>
   <data name="MAGICIAN" xml:space="preserve">
     <value>Magicien</value>
@@ -565,7 +565,7 @@
     <value>Message is too big ({0} bytes). Max allowed length is {1} bytes.</value>
   </data>
   <data name="TOTAL_SESSION" xml:space="preserve">
-    <value>Utilisateur total connectés</value>
+    <value>Utilisateurs totaux connectés</value>
   </data>
   <data name="TRADE_BLOCKED" xml:space="preserve">
     <value>L'utilisateur a bloqué les demandes d'échanges.</value>
