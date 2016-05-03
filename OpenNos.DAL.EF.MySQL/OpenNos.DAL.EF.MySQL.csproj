@@ -98,6 +98,7 @@
     <Compile Include="Entities\UsableInstance.cs" />
     <Compile Include="Entities\WearableInstance.cs" />
     <Compile Include="Helpers\ColumnBuilderExtension.cs" />
+    <Compile Include="Helpers\MigrationHelper.cs" />
     <Compile Include="MapMonsterDAO.cs" />
     <Compile Include="Entities\MapNpc.cs" />
     <Compile Include="MapNpcDAO.cs" />

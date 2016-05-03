@@ -8,11 +8,9 @@ namespace OpenNos.DAL.EF.MySQL.DB
     {
         #region Instantiation
 
-        public OpenNosContext()
-            : base("name=OpenNosContext")
+        public OpenNosContext() : base("name=OpenNosContext")
         {
             this.Configuration.LazyLoadingEnabled = true;
-
             //--DO NOT DISABLE, otherwise the mapping will fail
             this.Configuration.ProxyCreationEnabled = false; //only one time access to database so no proxy generation needed, its just slowing down in our case
         }

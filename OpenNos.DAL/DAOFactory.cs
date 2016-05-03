@@ -12,8 +12,10 @@
  * GNU General Public License for more details.
  */
 
+using System;
 using OpenNos.DAL.Interface;
 using MySQL = OpenNos.DAL.EF.MySQL;
+using OpenNos.Core;
 
 namespace OpenNos.DAL
 {
@@ -50,11 +52,15 @@ namespace OpenNos.DAL
 
         #region Instantiation
 
-        public DAOFactory()
+        static DAOFactory()
         {
-            if (_accountDAO == null)
+            try
             {
-                _accountDAO = new MySQL.AccountDAO();
+                MySQL.Helpers.MigrationHelper.GenerateSQLScript();
+            }
+            catch (Exception ex)
+            {
+                Logger.Log.Error(ex.Message);
             }
         }
 
