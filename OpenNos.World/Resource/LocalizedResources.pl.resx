@@ -640,7 +640,7 @@
     <value>Zla wartosc</value>
   </data>
   <data name="YOU_ASK_FOR_EXCHANGE" xml:space="preserve">
-    <value>Wyslano prosbe o wymiane</value>
+    <value>poprosiles o wymiane od</value>
   </data>
   <data name="CHARACTER_LOGGED_IN" xml:space="preserve">
     <value>{0} has logged in.</value>
