@@ -213,7 +213,7 @@ namespace OpenNos.GameObject
                     Session.Character.InventoryList.LoadByItemInstance<WearableInstance>(this.ItemInstanceId).IsFixed = true;
                 }
             }
-            Session.Character.GetStartupInventory();
+            Session.Character.GenerateStartupInventory();
             Session.Client.SendPacket("shop_end 1");
         }
 
@@ -249,7 +249,7 @@ namespace OpenNos.GameObject
                     Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("SUM_SUCCESS"), 12));
                     Session.Client.SendPacket($"guri 19 1 {Session.Character.CharacterId} 1324");
                     Session.Client.SendPacket(Session.Character.GenerateGold());
-                    Session.Character.GetStartupInventory();
+                    Session.Character.GenerateStartupInventory();
                 }
                 else
                 {
@@ -285,7 +285,7 @@ namespace OpenNos.GameObject
                 {
                     Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("ITEM_IS_FIXED"), 10));
 
-                    Session.Character.GetStartupInventory();
+                    Session.Character.GenerateStartupInventory();
                     Session.Client.SendPacket("shop_end 1");
                     return;
                 }
@@ -379,7 +379,7 @@ namespace OpenNos.GameObject
                 Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADE_FAILED_ITEM_SAVED"), 11));
                 Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADE_FAILED_ITEM_SAVED"), 0));
             }
-            Session.Character.GetStartupInventory();
+            Session.Character.GenerateStartupInventory();
             Session.Client.SendPacket("shop_end 1");
         }
 

@@ -292,7 +292,7 @@ namespace OpenNos.GameObject
             Session.Character.Gold = Session.Character.Gold - goldprice[upmode];
             Session.Client.SendPacket(Session.Character.GenerateGold());
             Session.Character.InventoryList.RemoveItemAmount(stonevnum, stoneprice[upmode]);
-            Session.Character.GetStartupInventory();
+            Session.Character.GenerateStartupInventory();
         }
 
         public void UpgradeSp(ClientSession Session, UpgradeProtection protect)
@@ -432,7 +432,7 @@ namespace OpenNos.GameObject
             Session.Client.SendPacket(Session.Character.GenerateGold());
             Session.Character.InventoryList.RemoveItemAmount(featherVnum, (feather[this.Upgrade]));
             Session.Character.InventoryList.RemoveItemAmount(fullmoonVnum, (fullmoon[this.Upgrade]));
-            Session.Character.GetStartupInventory();
+            Session.Character.GenerateStartupInventory();
             Session.Client.SendPacket("shop_end 1");
         }
 

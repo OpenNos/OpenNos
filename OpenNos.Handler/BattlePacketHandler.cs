@@ -168,8 +168,8 @@ namespace OpenNos.Handler
                     }
                 }
             }
-            if(!notcancel)
-            Session.Client.SendPacket("cancel 0 0");
+            if (!notcancel)
+                Session.Client.SendPacket("cancel 0 0");
         }
 
         [Packet("u_s")]
@@ -196,6 +196,7 @@ namespace OpenNos.Handler
         private short GenerateDamage(int monsterid, Skill skill, ref int hitmode)
         {
             #region Definitions
+
             MapMonster mmon = ServerManager.GetMap(Session.Character.MapId).Monsters.FirstOrDefault(s => s.MapMonsterId == monsterid);
             short dX = (short)(Session.Character.MapX - mmon.MapX);
             short dY = (short)(Session.Character.MapY - mmon.MapY);
@@ -226,35 +227,40 @@ namespace OpenNos.Handler
             int MaxDmg = 0;
             int HitRate = 0;
             sbyte Upgrade = 0;
+
             #endregion
 
             #region Get Weapon Stats
-            Inventory weapon = Session.Character.EquipmentList.LoadBySlotAndType((byte)EquipmentType.MainWeapon, (byte)InventoryType.Equipment);
-            if (weapon != null)
-            {
-                Item iteminfo = ServerManager.GetItem(weapon.InventoryItem.ItemVNum);
-                MainUpgrade = weapon.InventoryItem.Upgrade;
-                MainMinDmg += weapon.InventoryItem.DamageMinimum + iteminfo.DamageMinimum;
-                MainMaxDmg += weapon.InventoryItem.DamageMaximum + iteminfo.DamageMaximum;
-                MainHitRate += weapon.InventoryItem.HitRate + iteminfo.HitRate;
-                MainCritChance += weapon.InventoryItem.CriticalLuckRate + iteminfo.CriticalLuckRate;
-                MainCritHit += weapon.InventoryItem.CriticalRate + iteminfo.CriticalRate;
-            }
 
-            Inventory weapon2 = Session.Character.EquipmentList.LoadBySlotAndType((byte)EquipmentType.SecondaryWeapon, (byte)InventoryType.Equipment);
-            if (weapon2 != null)
-            {
-                Item iteminfo = ServerManager.GetItem(weapon2.InventoryItem.ItemVNum);
-                SecUpgrade = weapon2.InventoryItem.Upgrade;
-                SecMinDmg += weapon2.InventoryItem.DamageMinimum + iteminfo.DamageMinimum;
-                SecMaxDmg += weapon2.InventoryItem.DamageMaximum + iteminfo.DamageMaximum;
-                SecHitRate += weapon2.InventoryItem.HitRate + iteminfo.HitRate;
-                SecCritChance += weapon2.InventoryItem.CriticalLuckRate + iteminfo.CriticalLuckRate;
-                SecCritHit += weapon2.InventoryItem.CriticalRate + iteminfo.CriticalRate;
-            }
+            //TODO inventoryitem
+            //Inventory weapon = Session.Character.EquipmentList.LoadBySlotAndType((byte)EquipmentType.MainWeapon, (byte)InventoryType.Equipment);
+            //if (weapon != null)
+            //{
+            //    Item iteminfo = ServerManager.GetItem(weapon.InventoryItem.ItemVNum);
+            //    MainUpgrade = weapon.InventoryItem.Upgrade;
+            //    MainMinDmg += weapon.InventoryItem.DamageMinimum + iteminfo.DamageMinimum;
+            //    MainMaxDmg += weapon.InventoryItem.DamageMaximum + iteminfo.DamageMaximum;
+            //    MainHitRate += weapon.InventoryItem.HitRate + iteminfo.HitRate;
+            //    MainCritChance += weapon.InventoryItem.CriticalLuckRate + iteminfo.CriticalLuckRate;
+            //    MainCritHit += weapon.InventoryItem.CriticalRate + iteminfo.CriticalRate;
+            //}
+
+            //Inventory weapon2 = Session.Character.EquipmentList.LoadBySlotAndType((byte)EquipmentType.SecondaryWeapon, (byte)InventoryType.Equipment);
+            //if (weapon2 != null)
+            //{
+            //    Item iteminfo = ServerManager.GetItem(weapon2.InventoryItem.ItemVNum);
+            //    SecUpgrade = weapon2.InventoryItem.Upgrade;
+            //    SecMinDmg += weapon2.InventoryItem.DamageMinimum + iteminfo.DamageMinimum;
+            //    SecMaxDmg += weapon2.InventoryItem.DamageMaximum + iteminfo.DamageMaximum;
+            //    SecHitRate += weapon2.InventoryItem.HitRate + iteminfo.HitRate;
+            //    SecCritChance += weapon2.InventoryItem.CriticalLuckRate + iteminfo.CriticalLuckRate;
+            //    SecCritHit += weapon2.InventoryItem.CriticalRate + iteminfo.CriticalRate;
+            //}
+
             #endregion
 
             #region Switch skill.Type
+
             switch (skill.Type)
             {
                 case 0:
@@ -266,81 +272,103 @@ namespace OpenNos.Handler
                         MaxDmg = ServersData.MinHit(Session.Character.Class, Session.Character.Level) + SecMaxDmg;
 
                         #region Upgrade Boost Calculation
+
                         switch (Upgrade)
                         {
                             case -10:
                                 MonsterDefense += (int)(MonsterDefense * 2);
                                 break;
+
                             case -9:
                                 MonsterDefense += (int)(MonsterDefense * 1.2);
                                 break;
+
                             case -8:
                                 MonsterDefense += (int)(MonsterDefense * 0.9);
                                 break;
+
                             case -7:
                                 MonsterDefense += (int)(MonsterDefense * 0.65);
                                 break;
+
                             case -6:
                                 MonsterDefense += (int)(MonsterDefense * 0.54);
                                 break;
+
                             case -5:
                                 MonsterDefense += (int)(MonsterDefense * 0.43);
                                 break;
+
                             case -4:
                                 MonsterDefense += (int)(MonsterDefense * 0.32);
                                 break;
+
                             case -3:
                                 MonsterDefense += (int)(MonsterDefense * 0.22);
                                 break;
+
                             case -2:
                                 MonsterDefense += (int)(MonsterDefense * 0.15);
                                 break;
+
                             case -1:
                                 MonsterDefense += (int)(MonsterDefense * 0.1);
                                 break;
+
                             case 0:
                                 break;
+
                             case 1:
                                 MinDmg += (int)(MinDmg * 0.1);
                                 MaxDmg += (int)(MaxDmg * 0.1);
                                 break;
+
                             case 2:
                                 MinDmg += (int)(MinDmg * 0.15);
                                 MaxDmg += (int)(MaxDmg * 0.15);
                                 break;
+
                             case 3:
                                 MinDmg += (int)(MinDmg * 0.22);
                                 MaxDmg += (int)(MaxDmg * 0.22);
                                 break;
+
                             case 4:
                                 MinDmg += (int)(MinDmg * 0.32);
                                 MaxDmg += (int)(MaxDmg * 0.32);
                                 break;
+
                             case 5:
                                 MinDmg += (int)(MinDmg * 0.43);
                                 MaxDmg += (int)(MaxDmg * 0.43);
                                 break;
+
                             case 6:
                                 MinDmg += (int)(MinDmg * 0.54);
                                 MaxDmg += (int)(MaxDmg * 0.54);
                                 break;
+
                             case 7:
                                 MinDmg += (int)(MinDmg * 0.65);
                                 MaxDmg += (int)(MaxDmg * 0.65);
                                 break;
+
                             case 8:
                                 MinDmg += (int)(MinDmg * 0.9);
                                 MaxDmg += (int)(MaxDmg * 0.9);
                                 break;
+
                             case 9:
                                 MinDmg += (int)(MinDmg * 1.2);
                                 MaxDmg += (int)(MaxDmg * 1.2);
                                 break;
+
                             case 10:
                                 MinDmg += (int)(MinDmg * 2);
                                 MaxDmg += (int)(MaxDmg * 2);
                                 break;
                         }
+
                         #endregion
 
                         MinDmg -= MonsterDefense;
@@ -357,81 +385,103 @@ namespace OpenNos.Handler
                         MaxDmg = ServersData.MinHit(Session.Character.Class, Session.Character.Level) + MainMaxDmg;
 
                         #region Upgrade Boost Calculation
+
                         switch (Upgrade)
                         {
                             case -10:
                                 MonsterDefense += (int)(MonsterDefense * 2);
                                 break;
+
                             case -9:
                                 MonsterDefense += (int)(MonsterDefense * 1.2);
                                 break;
+
                             case -8:
                                 MonsterDefense += (int)(MonsterDefense * 0.9);
                                 break;
+
                             case -7:
                                 MonsterDefense += (int)(MonsterDefense * 0.65);
                                 break;
+
                             case -6:
                                 MonsterDefense += (int)(MonsterDefense * 0.54);
                                 break;
+
                             case -5:
                                 MonsterDefense += (int)(MonsterDefense * 0.43);
                                 break;
+
                             case -4:
                                 MonsterDefense += (int)(MonsterDefense * 0.32);
                                 break;
+
                             case -3:
                                 MonsterDefense += (int)(MonsterDefense * 0.22);
                                 break;
+
                             case -2:
                                 MonsterDefense += (int)(MonsterDefense * 0.15);
                                 break;
+
                             case -1:
                                 MonsterDefense += (int)(MonsterDefense * 0.1);
                                 break;
+
                             case 0:
                                 break;
+
                             case 1:
                                 MinDmg += (int)(MinDmg * 0.1);
                                 MaxDmg += (int)(MaxDmg * 0.1);
                                 break;
+
                             case 2:
                                 MinDmg += (int)(MinDmg * 0.15);
                                 MaxDmg += (int)(MaxDmg * 0.15);
                                 break;
+
                             case 3:
                                 MinDmg += (int)(MinDmg * 0.22);
                                 MaxDmg += (int)(MaxDmg * 0.22);
                                 break;
+
                             case 4:
                                 MinDmg += (int)(MinDmg * 0.32);
                                 MaxDmg += (int)(MaxDmg * 0.32);
                                 break;
+
                             case 5:
                                 MinDmg += (int)(MinDmg * 0.43);
                                 MaxDmg += (int)(MaxDmg * 0.43);
                                 break;
+
                             case 6:
                                 MinDmg += (int)(MinDmg * 0.54);
                                 MaxDmg += (int)(MaxDmg * 0.54);
                                 break;
+
                             case 7:
                                 MinDmg += (int)(MinDmg * 0.65);
                                 MaxDmg += (int)(MaxDmg * 0.65);
                                 break;
+
                             case 8:
                                 MinDmg += (int)(MinDmg * 0.9);
                                 MaxDmg += (int)(MaxDmg * 0.9);
                                 break;
+
                             case 9:
                                 MinDmg += (int)(MinDmg * 1.2);
                                 MaxDmg += (int)(MaxDmg * 1.2);
                                 break;
+
                             case 10:
                                 MinDmg += (int)(MinDmg * 2);
                                 MaxDmg += (int)(MaxDmg * 2);
                                 break;
                         }
+
                         #endregion
 
                         MinDmg -= MonsterDefense;
@@ -453,81 +503,103 @@ namespace OpenNos.Handler
                         MaxDmg = ServersData.MinHit(Session.Character.Class, Session.Character.Level) + SecMaxDmg;
 
                         #region Upgrade Boost Calculation
+
                         switch (Upgrade)
                         {
                             case -10:
                                 MonsterDefense += (int)(MonsterDefense * 2);
                                 break;
+
                             case -9:
                                 MonsterDefense += (int)(MonsterDefense * 1.2);
                                 break;
+
                             case -8:
                                 MonsterDefense += (int)(MonsterDefense * 0.9);
                                 break;
+
                             case -7:
                                 MonsterDefense += (int)(MonsterDefense * 0.65);
                                 break;
+
                             case -6:
                                 MonsterDefense += (int)(MonsterDefense * 0.54);
                                 break;
+
                             case -5:
                                 MonsterDefense += (int)(MonsterDefense * 0.43);
                                 break;
+
                             case -4:
                                 MonsterDefense += (int)(MonsterDefense * 0.32);
                                 break;
+
                             case -3:
                                 MonsterDefense += (int)(MonsterDefense * 0.22);
                                 break;
+
                             case -2:
                                 MonsterDefense += (int)(MonsterDefense * 0.15);
                                 break;
+
                             case -1:
                                 MonsterDefense += (int)(MonsterDefense * 0.1);
                                 break;
+
                             case 0:
                                 break;
+
                             case 1:
                                 MinDmg += (int)(MinDmg * 0.1);
                                 MaxDmg += (int)(MaxDmg * 0.1);
                                 break;
+
                             case 2:
                                 MinDmg += (int)(MinDmg * 0.15);
                                 MaxDmg += (int)(MaxDmg * 0.15);
                                 break;
+
                             case 3:
                                 MinDmg += (int)(MinDmg * 0.22);
                                 MaxDmg += (int)(MaxDmg * 0.22);
                                 break;
+
                             case 4:
                                 MinDmg += (int)(MinDmg * 0.32);
                                 MaxDmg += (int)(MaxDmg * 0.32);
                                 break;
+
                             case 5:
                                 MinDmg += (int)(MinDmg * 0.43);
                                 MaxDmg += (int)(MaxDmg * 0.43);
                                 break;
+
                             case 6:
                                 MinDmg += (int)(MinDmg * 0.54);
                                 MaxDmg += (int)(MaxDmg * 0.54);
                                 break;
+
                             case 7:
                                 MinDmg += (int)(MinDmg * 0.65);
                                 MaxDmg += (int)(MaxDmg * 0.65);
                                 break;
+
                             case 8:
                                 MinDmg += (int)(MinDmg * 0.9);
                                 MaxDmg += (int)(MaxDmg * 0.9);
                                 break;
+
                             case 9:
                                 MinDmg += (int)(MinDmg * 1.2);
                                 MaxDmg += (int)(MaxDmg * 1.2);
                                 break;
+
                             case 10:
                                 MinDmg += (int)(MinDmg * 2);
                                 MaxDmg += (int)(MaxDmg * 2);
                                 break;
                         }
+
                         #endregion
 
                         MinDmg -= MonsterDefense;
@@ -544,81 +616,103 @@ namespace OpenNos.Handler
                         MaxDmg = ServersData.MinHit(Session.Character.Class, Session.Character.Level) + MainMaxDmg;
 
                         #region Upgrade Boost Calculation
+
                         switch (Upgrade)
                         {
                             case -10:
                                 MonsterDefense += (int)(MonsterDefense * 2);
                                 break;
+
                             case -9:
                                 MonsterDefense += (int)(MonsterDefense * 1.2);
                                 break;
+
                             case -8:
                                 MonsterDefense += (int)(MonsterDefense * 0.9);
                                 break;
+
                             case -7:
                                 MonsterDefense += (int)(MonsterDefense * 0.65);
                                 break;
+
                             case -6:
                                 MonsterDefense += (int)(MonsterDefense * 0.54);
                                 break;
+
                             case -5:
                                 MonsterDefense += (int)(MonsterDefense * 0.43);
                                 break;
+
                             case -4:
                                 MonsterDefense += (int)(MonsterDefense * 0.32);
                                 break;
+
                             case -3:
                                 MonsterDefense += (int)(MonsterDefense * 0.22);
                                 break;
+
                             case -2:
                                 MonsterDefense += (int)(MonsterDefense * 0.15);
                                 break;
+
                             case -1:
                                 MonsterDefense += (int)(MonsterDefense * 0.1);
                                 break;
+
                             case 0:
                                 break;
+
                             case 1:
                                 MinDmg += (int)(MinDmg * 0.1);
                                 MaxDmg += (int)(MaxDmg * 0.1);
                                 break;
+
                             case 2:
                                 MinDmg += (int)(MinDmg * 0.15);
                                 MaxDmg += (int)(MaxDmg * 0.15);
                                 break;
+
                             case 3:
                                 MinDmg += (int)(MinDmg * 0.22);
                                 MaxDmg += (int)(MaxDmg * 0.22);
                                 break;
+
                             case 4:
                                 MinDmg += (int)(MinDmg * 0.32);
                                 MaxDmg += (int)(MaxDmg * 0.32);
                                 break;
+
                             case 5:
                                 MinDmg += (int)(MinDmg * 0.43);
                                 MaxDmg += (int)(MaxDmg * 0.43);
                                 break;
+
                             case 6:
                                 MinDmg += (int)(MinDmg * 0.54);
                                 MaxDmg += (int)(MaxDmg * 0.54);
                                 break;
+
                             case 7:
                                 MinDmg += (int)(MinDmg * 0.65);
                                 MaxDmg += (int)(MaxDmg * 0.65);
                                 break;
+
                             case 8:
                                 MinDmg += (int)(MinDmg * 0.9);
                                 MaxDmg += (int)(MaxDmg * 0.9);
                                 break;
+
                             case 9:
                                 MinDmg += (int)(MinDmg * 1.2);
                                 MaxDmg += (int)(MaxDmg * 1.2);
                                 break;
+
                             case 10:
                                 MinDmg += (int)(MinDmg * 2);
                                 MaxDmg += (int)(MaxDmg * 2);
                                 break;
                         }
+
                         #endregion
 
                         MinDmg -= MonsterDefense;
@@ -637,81 +731,103 @@ namespace OpenNos.Handler
                     MaxDmg = ServersData.MinHit(Session.Character.Class, Session.Character.Level) + MainMaxDmg;
 
                     #region Upgrade Boost Calculation
+
                     switch (Upgrade)
                     {
                         case -10:
                             MonsterDefense += (int)(MonsterDefense * 2);
                             break;
+
                         case -9:
                             MonsterDefense += (int)(MonsterDefense * 1.2);
                             break;
+
                         case -8:
                             MonsterDefense += (int)(MonsterDefense * 0.9);
                             break;
+
                         case -7:
                             MonsterDefense += (int)(MonsterDefense * 0.65);
                             break;
+
                         case -6:
                             MonsterDefense += (int)(MonsterDefense * 0.54);
                             break;
+
                         case -5:
                             MonsterDefense += (int)(MonsterDefense * 0.43);
                             break;
+
                         case -4:
                             MonsterDefense += (int)(MonsterDefense * 0.32);
                             break;
+
                         case -3:
                             MonsterDefense += (int)(MonsterDefense * 0.22);
                             break;
+
                         case -2:
                             MonsterDefense += (int)(MonsterDefense * 0.15);
                             break;
+
                         case -1:
                             MonsterDefense += (int)(MonsterDefense * 0.1);
                             break;
+
                         case 0:
                             break;
+
                         case 1:
                             MinDmg += (int)(MinDmg * 0.1);
                             MaxDmg += (int)(MaxDmg * 0.1);
                             break;
+
                         case 2:
                             MinDmg += (int)(MinDmg * 0.15);
                             MaxDmg += (int)(MaxDmg * 0.15);
                             break;
+
                         case 3:
                             MinDmg += (int)(MinDmg * 0.22);
                             MaxDmg += (int)(MaxDmg * 0.22);
                             break;
+
                         case 4:
                             MinDmg += (int)(MinDmg * 0.32);
                             MaxDmg += (int)(MaxDmg * 0.32);
                             break;
+
                         case 5:
                             MinDmg += (int)(MinDmg * 0.43);
                             MaxDmg += (int)(MaxDmg * 0.43);
                             break;
+
                         case 6:
                             MinDmg += (int)(MinDmg * 0.54);
                             MaxDmg += (int)(MaxDmg * 0.54);
                             break;
+
                         case 7:
                             MinDmg += (int)(MinDmg * 0.65);
                             MaxDmg += (int)(MaxDmg * 0.65);
                             break;
+
                         case 8:
                             MinDmg += (int)(MinDmg * 0.9);
                             MaxDmg += (int)(MaxDmg * 0.9);
                             break;
+
                         case 9:
                             MinDmg += (int)(MinDmg * 1.2);
                             MaxDmg += (int)(MaxDmg * 1.2);
                             break;
+
                         case 10:
                             MinDmg += (int)(MinDmg * 2);
                             MaxDmg += (int)(MaxDmg * 2);
                             break;
                     }
+
                     #endregion
 
                     MinDmg -= MonsterDefense;
@@ -723,12 +839,13 @@ namespace OpenNos.Handler
                     miss_chance = 0;
                     break;
             }
+
             #endregion
 
-            int intdamage = random.Next(MinDmg, MaxDmg+1);
+            int intdamage = random.Next(MinDmg, MaxDmg + 1);
             short damage = 0;
 
-            while(intdamage > short.MaxValue)
+            while (intdamage > short.MaxValue)
             {
                 intdamage -= short.MaxValue;
             }
@@ -836,28 +953,19 @@ namespace OpenNos.Handler
                 }
                 Session.Client.SendPacket(Session.Character.GenerateLev());
             }
-            else
-            {
-                mmon.CurrentHp -= damage;
-            }
-            mmon.Target = Session.Character.CharacterId;
-            return damage;
-        }
-
-                if(Session.Character.Hp > 0)
+            if (Session.Character.Hp > 0)
                 GenerateXp(monsterinfo);
-
-            }
             else
             {
                 mmon.CurrentHp -= damage;
             }
+
             mmon.Target = Session.Character.CharacterId;
             return damage;
         }
+
         private void GenerateXp(NpcMonster monsterinfo)
         {
-
             if ((int)(Session.Character.LevelXp / (Session.Character.XPLoad() / 10)) < (int)((Session.Character.LevelXp + monsterinfo.XP) / (Session.Character.XPLoad() / 10)))
             {
                 Session.Character.Hp = (int)Session.Character.HPLoad();
@@ -865,59 +973,62 @@ namespace OpenNos.Handler
                 Session.Client.SendPacket(Session.Character.GenerateStat());
                 Session.Client.SendPacket(Session.Character.GenerateEff(5));
             }
-            Inventory sp2 = Session.Character.EquipmentList.LoadBySlotAndType((short)EquipmentType.Sp, (byte)InventoryType.Equipment);
-            if (Session.Character.Level < 99)
-                Session.Character.LevelXp += monsterinfo.XP;
-            if ((Session.Character.Class == 0 && Session.Character.JobLevel < 20) || (Session.Character.Class != 0 && Session.Character.JobLevel < 80))
-            {
-                if (sp2 != null && Session.Character.UseSp && sp2.InventoryItem.SpLevel < 99)
-                    Session.Character.JobLevelXp += (int)((double)monsterinfo.JobXP / (double)100 * sp2.InventoryItem.SpLevel);
-                else
-                    Session.Character.JobLevelXp += monsterinfo.JobXP;
-            }
-            if (sp2 != null && Session.Character.UseSp && sp2.InventoryItem.SpLevel < 99)
-                sp2.InventoryItem.SpXp += monsterinfo.JobXP * (100 - sp2.InventoryItem.SpLevel);
-            double t = Session.Character.XPLoad();
-            while (Session.Character.LevelXp >= t)
-            {
-                Session.Character.LevelXp -= (long)t;
-                Session.Character.Level++;
-                t = Session.Character.XPLoad();
-                Session.Character.Hp = (int)Session.Character.HPLoad();
-                Session.Character.Mp = (int)Session.Character.MPLoad();
-                Session.Client.SendPacket(Session.Character.GenerateStat());
-                Session.Client.SendPacket($"levelup {Session.Character.CharacterId}");
-                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(6), ReceiverType.AllOnMap);
-                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(198), ReceiverType.AllOnMap);
-                ClientLinkManager.Instance.UpdateGroup(Session.Character.CharacterId);
-            }
-            t = Session.Character.JobXPLoad();
-            while (Session.Character.JobLevelXp >= t)
-            {
-                Session.Character.JobLevelXp -= (long)t;
-                Session.Character.JobLevel++;
-                t = Session.Character.JobXPLoad();
-                Session.Character.Hp = (int)Session.Character.HPLoad();
-                Session.Character.Mp = (int)Session.Character.MPLoad();
-                Session.Client.SendPacket(Session.Character.GenerateStat());
-                Session.Client.SendPacket($"levelup {Session.Character.CharacterId}");
-                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(6), ReceiverType.AllOnMap);
-                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(198), ReceiverType.AllOnMap);
-            }
-            if (sp2 != null)
-                t = Session.Character.SPXPLoad();
-            while (sp2 != null && sp2.InventoryItem.SpXp >= t)
-            {
-                sp2.InventoryItem.SpXp -= (long)t;
-                sp2.InventoryItem.SpLevel++;
-                t = Session.Character.SPXPLoad();
-                Session.Client.SendPacket(Session.Character.GenerateStat());
-                Session.Client.SendPacket($"levelup {Session.Character.CharacterId}");
-                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(6), ReceiverType.AllOnMap);
-                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(198), ReceiverType.AllOnMap);
-            }
+
+            //todo inventoryitem
+            //Inventory sp2 = Session.Character.EquipmentList.LoadBySlotAndType((short)EquipmentType.Sp, (byte)InventoryType.Equipment);
+            //if (Session.Character.Level < 99)
+            //    Session.Character.LevelXp += monsterinfo.XP;
+            //if ((Session.Character.Class == 0 && Session.Character.JobLevel < 20) || (Session.Character.Class != 0 && Session.Character.JobLevel < 80))
+            //{
+            //    if (sp2 != null && Session.Character.UseSp && sp2.InventoryItem.SpLevel < 99)
+            //        Session.Character.JobLevelXp += (int)((double)monsterinfo.JobXP / (double)100 * sp2.InventoryItem.SpLevel);
+            //    else
+            //        Session.Character.JobLevelXp += monsterinfo.JobXP;
+            //}
+            //if (sp2 != null && Session.Character.UseSp && sp2.InventoryItem.SpLevel < 99)
+            //    sp2.InventoryItem.SpXp += monsterinfo.JobXP * (100 - sp2.InventoryItem.SpLevel);
+            //double t = Session.Character.XPLoad();
+            //while (Session.Character.LevelXp >= t)
+            //{
+            //    Session.Character.LevelXp -= (long)t;
+            //    Session.Character.Level++;
+            //    t = Session.Character.XPLoad();
+            //    Session.Character.Hp = (int)Session.Character.HPLoad();
+            //    Session.Character.Mp = (int)Session.Character.MPLoad();
+            //    Session.Client.SendPacket(Session.Character.GenerateStat());
+            //    Session.Client.SendPacket($"levelup {Session.Character.CharacterId}");
+            //    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(6), ReceiverType.AllOnMap);
+            //    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(198), ReceiverType.AllOnMap);
+            //    ClientLinkManager.Instance.UpdateGroup(Session.Character.CharacterId);
+            //}
+            //t = Session.Character.JobXPLoad();
+            //while (Session.Character.JobLevelXp >= t)
+            //{
+            //    Session.Character.JobLevelXp -= (long)t;
+            //    Session.Character.JobLevel++;
+            //    t = Session.Character.JobXPLoad();
+            //    Session.Character.Hp = (int)Session.Character.HPLoad();
+            //    Session.Character.Mp = (int)Session.Character.MPLoad();
+            //    Session.Client.SendPacket(Session.Character.GenerateStat());
+            //    Session.Client.SendPacket($"levelup {Session.Character.CharacterId}");
+            //    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(6), ReceiverType.AllOnMap);
+            //    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(198), ReceiverType.AllOnMap);
+            //}
+            //if (sp2 != null)
+            //    t = Session.Character.SPXPLoad();
+            //while (sp2 != null && sp2.InventoryItem.SpXp >= t)
+            //{
+            //    sp2.InventoryItem.SpXp -= (long)t;
+            //    sp2.InventoryItem.SpLevel++;
+            //    t = Session.Character.SPXPLoad();
+            //    Session.Client.SendPacket(Session.Character.GenerateStat());
+            //    Session.Client.SendPacket($"levelup {Session.Character.CharacterId}");
+            //    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(6), ReceiverType.AllOnMap);
+            //    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(198), ReceiverType.AllOnMap);
+            //}
             Session.Client.SendPacket(Session.Character.GenerateLev());
         }
+
         private void ZoneHit(int Castingid, short x, short y)
         {
             List<CharacterSkill> skills = Session.Character.UseSp ? Session.Character.SkillsSp : Session.Character.Skills;
