@@ -459,7 +459,7 @@ namespace OpenNos.Handler
                 short.TryParse(packetsplit[4], out vnum);
                 Skill skillinfo = ServerManager.GetSkill(vnum);
                 CharacterSkill skill = Session.Character.Skills.FirstOrDefault(s => s.SkillVNum == vnum);
-                if (skill == null || skillinfo == null)
+                if (skill == null || skillinfo == null || skill == Session.Character.Skills.ElementAt(0) || skill == Session.Character.Skills.ElementAt(1))
                     return;
                 Session.Character.Gold -= skillinfo.Price;
                 Session.Client.SendPacket(Session.Character.GenerateGold());
