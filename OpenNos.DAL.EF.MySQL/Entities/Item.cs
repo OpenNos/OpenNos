@@ -4,15 +4,13 @@ namespace OpenNos.DAL.EF.MySQL
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
 
-    [Table("Item")]
-    public partial class Item
+    public class Item
     {
         #region Instantiation
 
         public Item()
         {
             Drop = new HashSet<Drop>();
-            ItemInstance = new HashSet<ItemInstance>();
             Recipe = new HashSet<Recipe>();
             RecipeItem = new HashSet<RecipeItem>();
             ShopItem = new HashSet<ShopItem>();
@@ -75,8 +73,6 @@ namespace OpenNos.DAL.EF.MySQL
         public short Hp { get; set; }
 
         public short HpRegeneration { get; set; }
-
-        public virtual ICollection<ItemInstance> ItemInstance { get; set; }
 
         public bool IsBlocked { get; set; }
 

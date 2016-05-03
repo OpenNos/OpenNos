@@ -20,11 +20,17 @@ namespace OpenNos.GameObject
     public class ItemInstance : ItemInstanceDTO, IGameObject
     {
         #region Instantiation
+        private Item item;
+        public Item Item
+        {
+            get {
+                if (item == null) item = ServerManager.GetItem(this.ItemVNum);
+                return item;
+            }
+        }
 
         public ItemInstance()
         {
-            Mapper.CreateMap<ItemInstanceDTO, ItemInstance>();
-            Mapper.CreateMap<ItemInstance, ItemInstanceDTO>();
         }
 
         public ItemInstance(ItemInstanceDTO inventoryItem)
@@ -43,10 +49,11 @@ namespace OpenNos.GameObject
         {
         }
 
-        public void Use()
+        public ItemInstance DeepCopy()
         {
-
+                return (ItemInstance)this.MemberwiseClone();
         }
+        
 
         #endregion
     }

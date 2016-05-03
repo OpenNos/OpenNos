@@ -2,6 +2,13 @@
 #Instructions to contribute
 
 ###Contribution is only possible with Visual Studio 2015 (Community or other editions) and MySQL.
+#NOTE BEFORE INSTALL#
+- Error listen point : - This is WCF error install it or run opennos on visual studio
+- What's the commands? : $Help
+- Can we have you're packet.txt : No!
+- Can we have other files for parser? : Yes, simply by extracting them from your client : nslangdata.dat, nsgtddata.dat, nstcdata.dat
+- On login nothing happen : verify you can connect with telnet on the correct port "telnet 127.0.0.1 80". if yes you're not on the correct port of your client. If no, you installed something wrong, check if you have disabled any programs working on port 80.
+- If issue still hasnt been fixed look inside our troubleshooting file.
 
 ##1 Install SSDT For VS
 http://go.microsoft.com/fwlink/?LinkID=393520&clcid=0x409

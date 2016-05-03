@@ -24,16 +24,37 @@ namespace OpenNos.DAL.EF.MySQL
 {
     public class RecipeItemDAO : IRecipeItemDAO
     {
+        #region Members
+
+        private IMapper _mapper;
+
+        #endregion
+
+        #region Instantiation
+
+        public RecipeItemDAO()
+        {
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<RecipeItem, RecipeItemDTO>();
+                cfg.CreateMap<RecipeItemDTO, RecipeItem>();
+            });
+
+            _mapper = config.CreateMapper();
+        }
+
+        #endregion
+
         #region Methods
 
         public RecipeItemDTO Insert(RecipeItemDTO recipeItem)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                RecipeItem entity = Mapper.DynamicMap<RecipeItem>(recipeItem);
+                RecipeItem entity = _mapper.Map<RecipeItem>(recipeItem);
                 context.RecipeItem.Add(entity);
                 context.SaveChanges();
-                return Mapper.DynamicMap<RecipeItemDTO>(entity);
+                return _mapper.Map<RecipeItemDTO>(entity);
             }
         }
 
@@ -43,7 +64,7 @@ namespace OpenNos.DAL.EF.MySQL
             {
                 foreach (RecipeItem rec in context.RecipeItem)
                 {
-                    yield return Mapper.DynamicMap<RecipeItemDTO>(rec);
+                    yield return _mapper.Map<RecipeItemDTO>(rec);
                 }
             }
         }
@@ -52,7 +73,7 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                return Mapper.DynamicMap<RecipeItemDTO>(context.RecipeItem.FirstOrDefault(s => s.RecipeItemId.Equals(recipeItemId)));
+                return _mapper.Map<RecipeItemDTO>(context.RecipeItem.FirstOrDefault(s => s.RecipeItemId.Equals(recipeItemId)));
             }
         }
 
@@ -62,7 +83,7 @@ namespace OpenNos.DAL.EF.MySQL
             {
                 foreach (RecipeItem RecipeItem in context.RecipeItem.Where(s => s.RecipeId.Equals(recipeId)))
                 {
-                    yield return Mapper.DynamicMap<RecipeItemDTO>(RecipeItem);
+                    yield return _mapper.Map<RecipeItemDTO>(RecipeItem);
                 }
             }
         }

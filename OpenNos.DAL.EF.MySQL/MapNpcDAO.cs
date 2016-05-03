@@ -24,6 +24,27 @@ namespace OpenNos.DAL.EF.MySQL
 {
     public class MapNpcDAO : IMapNpcDAO
     {
+        #region Members
+
+        private IMapper _mapper;
+
+        #endregion
+
+        #region Instantiation
+
+        public MapNpcDAO()
+        {
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<MapNpc, MapNpcDTO>();
+                cfg.CreateMap<MapNpcDTO, MapNpc>();
+            });
+
+            _mapper = config.CreateMapper();
+        }
+
+        #endregion
+
         #region Methods
 
         public void Insert(List<MapNpcDTO> npcs)
@@ -33,7 +54,7 @@ namespace OpenNos.DAL.EF.MySQL
                 context.Configuration.AutoDetectChangesEnabled = false;
                 foreach (MapNpcDTO Item in npcs)
                 {
-                    MapNpc entity = Mapper.DynamicMap<MapNpc>(Item);
+                    MapNpc entity = _mapper.Map<MapNpc>(Item);
                     context.MapNpc.Add(entity);
                 }
                 context.SaveChanges();
@@ -44,10 +65,10 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                MapNpc entity = Mapper.DynamicMap<MapNpc>(npc);
+                MapNpc entity = _mapper.Map<MapNpc>(npc);
                 context.MapNpc.Add(entity);
                 context.SaveChanges();
-                return Mapper.DynamicMap<MapNpcDTO>(entity);
+                return _mapper.Map<MapNpcDTO>(entity);
             }
         }
 
@@ -55,7 +76,7 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                return Mapper.DynamicMap<MapNpcDTO>(context.MapNpc.FirstOrDefault(i => i.MapNpcId.Equals(id)));
+                return _mapper.Map<MapNpcDTO>(context.MapNpc.FirstOrDefault(i => i.MapNpcId.Equals(id)));
             }
         }
 
@@ -65,7 +86,7 @@ namespace OpenNos.DAL.EF.MySQL
             {
                 foreach (MapNpc npcobject in context.MapNpc.Where(c => c.MapId.Equals(mapId)))
                 {
-                    yield return Mapper.DynamicMap<MapNpcDTO>(npcobject);
+                    yield return _mapper.Map<MapNpcDTO>(npcobject);
                 }
             }
         }

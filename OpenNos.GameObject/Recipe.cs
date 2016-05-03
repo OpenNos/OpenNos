@@ -12,7 +12,6 @@
  * GNU General Public License for more details.
  */
 
-using AutoMapper;
 using OpenNos.DAL;
 using OpenNos.Data;
 using System.Collections.Generic;
@@ -25,8 +24,6 @@ namespace OpenNos.GameObject
 
         public Recipe(short RecipeId)
         {
-            Mapper.CreateMap<RecipeDTO, Recipe>();
-            Mapper.CreateMap<Recipe, RecipeDTO>();
             Items = new List<RecipeItem>();
             foreach (RecipeItemDTO rec in DAOFactory.RecipeItemDAO.LoadByRecipe(RecipeId))
             {

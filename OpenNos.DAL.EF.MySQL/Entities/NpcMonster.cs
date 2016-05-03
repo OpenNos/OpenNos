@@ -4,8 +4,7 @@ namespace OpenNos.DAL.EF.MySQL
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
 
-    [Table("NpcMonster")]
-    public partial class NpcMonster
+    public class NpcMonster
     {
         #region Instantiation
 

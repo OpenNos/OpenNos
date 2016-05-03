@@ -53,8 +53,6 @@ namespace OpenNos.GameObject
 
         public Character(ClientSession Session)
         {
-            Mapper.CreateMap<CharacterDTO, Character>();
-            Mapper.CreateMap<Character, CharacterDTO>();
             SpCooldown = 30;
             SaveX = 0;
             SaveY = 0;
@@ -142,7 +140,7 @@ namespace OpenNos.GameObject
 
         public void DeleteItemByItemInstanceId(long itemInstanceId)
         {
-            Tuple<short,byte> result = InventoryList.DeleteByInventoryItemId(itemInstanceId);
+            Tuple<short, byte> result = InventoryList.DeleteByInventoryItemId(itemInstanceId);
             Session.Client.SendPacket(GenerateInventoryAdd(-1, 0, result.Item2, result.Item1, 0, 0, 0));
         }
 
@@ -224,7 +222,7 @@ namespace OpenNos.GameObject
 
         public string GenerateEInfo(WearableInstance item)
         {
-            Item iteminfo = ServerManager.GetItem(item.ItemVNum);
+            Item iteminfo = item.Item;
             byte equipmentslot = iteminfo.EquipmentSlot;
             byte itemType = iteminfo.ItemType;
             byte classe = iteminfo.Class;
@@ -369,7 +367,9 @@ namespace OpenNos.GameObject
 
             for (short i = 0; i < 15; i++)
             {
-                WearableInstance wearable = EquipmentList.LoadBySlotAndType<WearableInstance>(i, (byte)InventoryType.Equipment);
+                ItemInstance wearable = EquipmentList.LoadBySlotAndType<WearableInstance>(i, (byte)InventoryType.Equipment);
+                if(wearable == null)
+                    wearable= EquipmentList.LoadBySlotAndType<SpecialistInstance>(i, (byte)InventoryType.Equipment);
                 if (wearable != null)
                 {
                     Item iteminfo = ServerManager.GetItem(wearable.ItemVNum);
@@ -1107,31 +1107,16 @@ namespace OpenNos.GameObject
         {
             IEnumerable<InventoryDTO> inventorysDTO = DAOFactory.InventoryDAO.LoadByCharacterId(CharacterId).ToList();
 
-            InventoryList = new InventoryList();
-            EquipmentList = new InventoryList();
+            InventoryList = new InventoryList(Session.Character);
+            EquipmentList = new InventoryList(Session.Character);
             foreach (InventoryDTO inventory in inventorysDTO)
             {
-                inventory.ItemInstance = DAOFactory.InventoryItemDAO.LoadByInventoryId(inventory.InventoryId);
-                ItemInstance invitem = Mapper.DynamicMap<ItemInstance>(inventory.ItemInstance);
+                inventory.CharacterId = CharacterId;
 
                 if (inventory.Type != (byte)InventoryType.Equipment)
-                    InventoryList.Inventory.Add(new Inventory
-                    {
-                        CharacterId = inventory.CharacterId,
-                        Slot = inventory.Slot,
-                        InventoryId = inventory.InventoryId,
-                        Type = inventory.Type,
-                        ItemInstance = invitem
-                    });
+                    InventoryList.Inventory.Add(new Inventory(inventory));
                 else
-                    EquipmentList.Inventory.Add(new Inventory
-                    {
-                        CharacterId = inventory.CharacterId,
-                        Slot = inventory.Slot,
-                        InventoryId = inventory.InventoryId,
-                        Type = inventory.Type,
-                        ItemInstance = invitem
-                    });
+                    EquipmentList.Inventory.Add(new Inventory(inventory));
             }
         }
 
@@ -1185,6 +1170,7 @@ namespace OpenNos.GameObject
 
             // Character's Inventories
             foreach (InventoryDTO inv in DAOFactory.InventoryDAO.LoadByCharacterId(CharacterId))
+            {
                 if (inv.Type == (byte)InventoryType.Equipment)
                 {
                     if (EquipmentList.LoadInventoryBySlotAndType(inv.Slot, inv.Type) == null)
@@ -1195,6 +1181,7 @@ namespace OpenNos.GameObject
                     if (InventoryList.LoadInventoryBySlotAndType(inv.Slot, inv.Type) == null)
                         DAOFactory.InventoryDAO.DeleteFromSlotAndType(CharacterId, inv.Slot, inv.Type);
                 }
+            }
 
             // Character's Skills
             foreach (CharacterSkillDTO skill in DAOFactory.CharacterSkillDAO.LoadByCharacterId(CharacterId))
@@ -1207,10 +1194,9 @@ namespace OpenNos.GameObject
                     DAOFactory.QuicklistEntryDAO.Delete(CharacterId, quicklists.EntryId);
 
             // ... then save the new
-            for (int i = InventoryList.Inventory.Count() - 1; i >= 0; i--)
-                InventoryList.Inventory.ElementAt(i).Save();
-            for (int i = EquipmentList.Inventory.Count() - 1; i >= 0; i--)
-                EquipmentList.Inventory.ElementAt(i).Save();
+            InventoryList.Save();
+            EquipmentList.Save();
+
             for (int i = Skills.Count() - 1; i >= 0; i--)
                 Skills.ElementAt(i).Save();
             for (int i = QuicklistEntries.Count() - 1; i >= 0; i--)

@@ -12,7 +12,6 @@
  * GNU General Public License for more details.
  */
 
-using AutoMapper;
 using OpenNos.Data;
 using System;
 
@@ -24,8 +23,6 @@ namespace OpenNos.GameObject
 
         public NpcMonsterSkill()
         {
-            Mapper.CreateMap<NpcMonsterSkillDTO, NpcMonsterSkill>();
-            Mapper.CreateMap<NpcMonsterSkill, NpcMonsterSkillDTO>();
             LastUse = DateTime.Now.AddHours(-1);
             Used = false;
             Hit = 0;

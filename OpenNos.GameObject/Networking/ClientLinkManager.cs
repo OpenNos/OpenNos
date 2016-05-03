@@ -164,7 +164,7 @@ namespace OpenNos.GameObject
             PersonalShopItem itemshop = clientSession.CurrentMap.ShopUserList[shop.Key].Items.FirstOrDefault(i => i.Slot.Equals(slot));
             if (itemshop == null)
                 return;
-
+            long id = itemshop.InventoryId;
             itemshop.Amount -= amount;
             if (itemshop.Amount <= 0)
                 clientSession.CurrentMap.ShopUserList[shop.Key].Items.Remove(itemshop);
@@ -175,18 +175,16 @@ namespace OpenNos.GameObject
             shopOwnerSession.Character.Gold += itemshop.Price * amount;
             shopOwnerSession.Client.SendPacket(shopOwnerSession.Character.GenerateGold());
             shopOwnerSession.Client.SendPacket(shopOwnerSession.Character.GenerateShopMemo(1,
-                string.Format(Language.Instance.GetMessageFromKey("BUY_ITEM"), shopOwnerSession.Character.Name, ServerManager.GetItem(itemshop.ItemInstance.ItemVNum).Name, amount)));
+                string.Format(Language.Instance.GetMessageFromKey("BUY_ITEM"), shopOwnerSession.Character.Name, (itemshop.ItemInstance as ItemInstance).Item.Name, amount)));
             clientSession.CurrentMap.ShopUserList[shop.Key].Sell += itemshop.Price * amount;
             shopOwnerSession.Client.SendPacket($"sell_list {shop.Value.Sell} {slot}.{amount}.{itemshop.Amount}");
 
-            Inventory inv = shopOwnerSession.Character.InventoryList.AmountMinusFromInventory(amount, itemshop);
+            Inventory inv = shopOwnerSession.Character.InventoryList.RemoveItemAmountFromInventory(amount, id);
 
             if (inv != null)
             {
                 // Send reduced-amount to owners inventory
-                //shopOwnerSession.Client.SendPacket(shopOwnerSession.Character.GenerateInventoryAdd(inv.ItemInstance.ItemVNum, inv.ItemInstance.Amount, inv.Type,
-                //    inv.Slot, inv.ItemInstance.Rare, inv.ItemInstance.Design, inv.ItemInstance.Upgrade));
-                //TODO inventoryitem
+                shopOwnerSession.Client.SendPacket(shopOwnerSession.Character.GenerateInventoryAdd(inv.ItemInstance.ItemVNum, inv.ItemInstance.Amount, inv.Type, inv.Slot, inv.ItemInstance.Rare, inv.ItemInstance.Design, inv.ItemInstance.Upgrade));
             }
             else
             {
@@ -237,7 +235,7 @@ namespace OpenNos.GameObject
                 Session.Client.SendPacket(Session.Character.GenerateCond());
                 ClientLinkManager.Instance.Broadcast(Session, Session.Character.GeneratePairy(), ReceiverType.AllOnMap);
                 Session.Client.SendPacket($"rsfi 1 1 0 9 0 9"); // Act completion
-                ClientLinkManager.Instance.Sessions.Where(s => s.Character.MapId.Equals(Session.Character.MapId) && s.Character.Name != Session.Character.Name && !Session.Character.InvisibleGm).ToList().ForEach(s => RequireBroadcastFromUser(Session, s.Character.CharacterId, "GenerateIn"));
+                ClientLinkManager.Instance.Sessions.Where(s => s.Character !=null && s.Character.MapId.Equals(Session.Character.MapId) && s.Character.Name != Session.Character.Name && !Session.Character.InvisibleGm).ToList().ForEach(s => RequireBroadcastFromUser(Session, s.Character.CharacterId, "GenerateIn"));
                 if (Session.Character.InvisibleGm == false)
                     ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllOnMapExceptMe);
                 if (Session.CurrentMap.IsDancing == 2 && Session.Character.IsDancing == 0)
@@ -369,23 +367,37 @@ namespace OpenNos.GameObject
 
                 foreach (ItemInstance item in c2Session.Character.ExchangeInfo.ExchangeList)
                 {
-                    Inventory inv = c2Session.Character.InventoryList.GetInventoryByInventoryItemId(item.ItemInstanceId);
-                    c2Session.Character.InventoryList.DeleteByInventoryItemId(item.ItemInstanceId);
-                    c2Session.Client.SendPacket(c2Session.Character.GenerateInventoryAdd(-1, 0, inv.Type, inv.Slot, 0, 0, 0));
+                    Inventory invtemp = c2Session.Character.InventoryList.Inventory.FirstOrDefault(s => s.ItemInstance.ItemInstanceId == item.ItemInstanceId);
+                    short slot = invtemp.Slot;
+                    byte type = invtemp.Type;
+
+                    Inventory inv = c2Session.Character.InventoryList.RemoveItemAmountFromInventory((byte)item.Amount, invtemp.InventoryId);
+                    if (inv != null)
+                    {
+                        // Send reduced-amount to owners inventory
+                        c2Session.Client.SendPacket(c2Session.Character.GenerateInventoryAdd(inv.ItemInstance.ItemVNum, inv.ItemInstance.Amount, inv.Type, inv.Slot, inv.ItemInstance.Rare, inv.ItemInstance.Design, inv.ItemInstance.Upgrade));
+                    }
+                    else
+                    {
+                        // Send empty slot to owners inventory
+                        c2Session.Client.SendPacket(c2Session.Character.GenerateInventoryAdd(-1, 0, type, slot, 0, 0, 0));
+                    }
                 }
 
                 foreach (ItemInstance item in c1Session.Character.ExchangeInfo.ExchangeList)
                 {
-                    Inventory inv = c2Session.Character.InventoryList.CreateItem<ItemInstance>(item, c1Session.Character);
+                    ItemInstance item2 = item.DeepCopy();
+                    item2.ItemInstanceId = c2Session.Character.InventoryList.GenerateItemInstanceId();
+                    Inventory inv = c2Session.Character.InventoryList.AddToInventory(item2);
                     if (inv == null) continue;
                     if (inv.Slot == -1) continue;
-
-                    //TODO inventoryitem
-                    c2Session.Client.SendPacket(c2Session.Character.GenerateInventoryAdd(inv.ItemInstance.ItemVNum, inv.ItemInstance.Amount, inv.Type, inv.Slot, 0, 0, 0));
+                    c2Session.Client.SendPacket(c2Session.Character.GenerateInventoryAdd(inv.ItemInstance.ItemVNum, inv.ItemInstance.Amount, inv.Type, inv.Slot, inv.ItemInstance.Rare, inv.ItemInstance.Design, inv.ItemInstance.Upgrade));
                 }
-
+            
                 c2Session.Character.Gold = c2Session.Character.Gold - c2Session.Character.ExchangeInfo.Gold + c1Session.Character.ExchangeInfo.Gold;
                 c2Session.Client.SendPacket(c2Session.Character.GenerateGold());
+                c1Session.Character.ExchangeInfo = null;
+                c2Session.Character.ExchangeInfo = null;
             }
         }
 
@@ -518,21 +530,21 @@ namespace OpenNos.GameObject
 
         public void UpdateGroup(long charId)
         {
-            if(Groups.Any())
+            Group myGroup = Groups.FirstOrDefault(s => s.Characters.Contains(charId));
+            if (myGroup == null)
+                return;
+            string str = $"pinit { myGroup.Characters.Count()}";
+
+            int i = 0;
+            foreach (long Id in Groups.FirstOrDefault(s => s.Characters.Contains(charId))?.Characters)
             {
-                string str = $"pinit { Groups.FirstOrDefault(s => s.Characters.Contains(charId))?.Characters.Count()}";
+                i++;
+                str += $" 1|{GetProperty<long>(Id, "CharacterId")}|{i}|{ClientLinkManager.Instance.GetProperty<byte>(Id, "Level")}|{ClientLinkManager.Instance.GetProperty<string>(Id, "Name")}|11|{ClientLinkManager.Instance.GetProperty<byte>(Id, "Gender")}|{ClientLinkManager.Instance.GetProperty<byte>(Id, "Class")}|{(ClientLinkManager.Instance.GetProperty<bool>(Id, "UseSp") ? ClientLinkManager.Instance.GetProperty<int>(Id, "Morph") : 0)}";
+            }
 
-                int i = 0;
-                foreach (long id in Groups.FirstOrDefault(s => s.Characters.Contains(charId))?.Characters)
-                {
-                    i++;
-                    str += $" 1|{GetProperty<long>(id, "CharacterId")}|{i}|{ClientLinkManager.Instance.GetProperty<byte>(id, "Level")}|{ClientLinkManager.Instance.GetProperty<string>(id, "Name")}|11|{ClientLinkManager.Instance.GetProperty<byte>(id, "Gender")}|{ClientLinkManager.Instance.GetProperty<byte>(id, "Class")}|{(ClientLinkManager.Instance.GetProperty<bool>(id, "UseSp") ? ClientLinkManager.Instance.GetProperty<int>(id, "Morph") : 0)}";
-                }
-
-                foreach (long Id in Instance.Groups.FirstOrDefault(s => s.Characters.Contains(charId)).Characters)
-                {
-                    Instance.Broadcast(null, str, ReceiverType.OnlySomeone, "", Id);
-                }
+            foreach (long Id in myGroup.Characters)
+            {
+                Instance.Broadcast(null, str, ReceiverType.OnlySomeone, "", Id);
             }
         }
 

@@ -24,6 +24,27 @@ namespace OpenNos.DAL.EF.MySQL
 {
     public class MapDAO : IMapDAO
     {
+        #region Members
+
+        private IMapper _mapper;
+
+        #endregion
+
+        #region Instantiation
+
+        public MapDAO()
+        {
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<Map, MapDTO>();
+                cfg.CreateMap<MapDTO, Map>();
+            });
+
+            _mapper = config.CreateMapper();
+        }
+
+        #endregion
+
         #region Methods
 
         public void Insert(List<MapDTO> maps)
@@ -32,7 +53,7 @@ namespace OpenNos.DAL.EF.MySQL
             {
                 foreach (MapDTO Item in maps)
                 {
-                    Map entity = Mapper.DynamicMap<Map>(Item);
+                    Map entity = _mapper.Map<Map>(Item);
                     context.Map.Add(entity);
                 }
                 context.SaveChanges();
@@ -45,10 +66,10 @@ namespace OpenNos.DAL.EF.MySQL
             {
                 if (context.Map.FirstOrDefault(c => c.MapId.Equals(map.MapId)) == null)
                 {
-                    Map entity = Mapper.DynamicMap<Map>(map);
+                    Map entity = _mapper.Map<Map>(map);
                     context.Map.Add(entity);
                     context.SaveChanges();
-                    return Mapper.DynamicMap<MapDTO>(entity);
+                    return _mapper.Map<MapDTO>(entity);
                 }
                 else return new MapDTO();
             }
@@ -60,7 +81,7 @@ namespace OpenNos.DAL.EF.MySQL
             {
                 foreach (Map Map in context.Map)
                 {
-                    yield return Mapper.DynamicMap<MapDTO>(Map);
+                    yield return _mapper.Map<MapDTO>(Map);
                 }
             }
         }
@@ -69,7 +90,7 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                return Mapper.DynamicMap<MapDTO>(context.Map.FirstOrDefault(c => c.MapId.Equals(mapId)));
+                return _mapper.Map<MapDTO>(context.Map.FirstOrDefault(c => c.MapId.Equals(mapId)));
             }
         }
 

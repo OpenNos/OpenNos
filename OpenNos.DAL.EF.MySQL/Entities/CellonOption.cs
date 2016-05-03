@@ -3,8 +3,7 @@ namespace OpenNos.DAL.EF.MySQL
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
 
-    [Table("CellonOption")]
-    public partial class CellonOption
+    public class CellonOption
     {
         #region Properties
 

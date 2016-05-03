@@ -2,8 +2,7 @@ namespace OpenNos.DAL.EF.MySQL
 {
     using System.ComponentModel.DataAnnotations.Schema;
 
-    [Table("CharacterSkill")]
-    public partial class CharacterSkill
+    public class CharacterSkill
     {
         #region Properties
 

@@ -2,8 +2,7 @@ namespace OpenNos.DAL.EF.MySQL
 {
     using System.ComponentModel.DataAnnotations.Schema;
 
-    [Table("Respawn")]
-    public partial class Respawn
+    public class Respawn
     {
         #region Properties
 

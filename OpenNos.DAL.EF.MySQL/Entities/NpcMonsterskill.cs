@@ -3,8 +3,7 @@ namespace OpenNos.DAL.EF.MySQL
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
 
-    [Table("NpcMonsterSkill")]
-    public partial class NpcMonsterSkill
+    public class NpcMonsterSkill
     {
         #region Properties
 

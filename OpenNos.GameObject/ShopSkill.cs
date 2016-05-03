@@ -12,21 +12,11 @@
  * GNU General Public License for more details.
  */
 
-using AutoMapper;
 using OpenNos.Data;
 
 namespace OpenNos.GameObject
 {
     public class ShopSkill : ShopSkillDTO
     {
-        #region Instantiation
-
-        public ShopSkill()
-        {
-            Mapper.CreateMap<ShopSkillDTO, ShopSkill>();
-            Mapper.CreateMap<ShopSkill, ShopSkillDTO>();
-        }
-
-        #endregion
     }
 }

@@ -24,6 +24,27 @@ namespace OpenNos.DAL.EF.MySQL
 {
     public class ShopDAO : IShopDAO
     {
+        #region Members
+
+        private IMapper _mapper;
+
+        #endregion
+
+        #region Instantiation
+
+        public ShopDAO()
+        {
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<Shop, ShopDTO>();
+                cfg.CreateMap<ShopDTO, Shop>();
+            });
+
+            _mapper = config.CreateMapper();
+        }
+
+        #endregion
+
         #region Methods
 
         public void Insert(List<ShopDTO> shops)
@@ -33,7 +54,7 @@ namespace OpenNos.DAL.EF.MySQL
                 context.Configuration.AutoDetectChangesEnabled = false;
                 foreach (ShopDTO Item in shops)
                 {
-                    Shop entity = Mapper.DynamicMap<Shop>(Item);
+                    Shop entity = _mapper.Map<Shop>(Item);
                     context.Shop.Add(entity);
                 }
                 context.SaveChanges();
@@ -46,10 +67,10 @@ namespace OpenNos.DAL.EF.MySQL
             {
                 if (context.Shop.FirstOrDefault(c => c.MapNpcId.Equals(shop.MapNpcId)) == null)
                 {
-                    Shop entity = Mapper.DynamicMap<Shop>(shop);
+                    Shop entity = _mapper.Map<Shop>(shop);
                     context.Shop.Add(entity);
                     context.SaveChanges();
-                    return Mapper.DynamicMap<ShopDTO>(entity);
+                    return _mapper.Map<ShopDTO>(entity);
                 }
                 else return new ShopDTO();
             }
@@ -59,7 +80,7 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                return Mapper.DynamicMap<ShopDTO>(context.Shop.FirstOrDefault(s => s.ShopId.Equals(shopId)));
+                return _mapper.Map<ShopDTO>(context.Shop.FirstOrDefault(s => s.ShopId.Equals(shopId)));
             }
         }
 
@@ -67,7 +88,7 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                return Mapper.DynamicMap<ShopDTO>(context.Shop.FirstOrDefault(s => s.MapNpcId.Equals(npcId)));
+                return _mapper.Map<ShopDTO>(context.Shop.FirstOrDefault(s => s.MapNpcId.Equals(npcId)));
             }
         }
 

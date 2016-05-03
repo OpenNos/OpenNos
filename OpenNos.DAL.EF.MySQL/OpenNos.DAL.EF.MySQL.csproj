@@ -36,8 +36,8 @@
     <SlowCheetahTargets Condition=" '$(SlowCheetah_EnableImportFromNuGet)'=='true' and Exists('$(SlowCheetah_NuGetImportPath)') ">$(SlowCheetah_NuGetImportPath)</SlowCheetahTargets>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AutoMapper, Version=4.1.1.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
-      <HintPath>..\packages\AutoMapper.4.1.1\lib\net45\AutoMapper.dll</HintPath>
+    <Reference Include="AutoMapper, Version=4.2.1.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
+      <HintPath>..\packages\AutoMapper.4.2.1\lib\net45\AutoMapper.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
@@ -98,14 +98,15 @@
     <Compile Include="Entities\UsableInstance.cs" />
     <Compile Include="Entities\WearableInstance.cs" />
     <Compile Include="Helpers\ColumnBuilderExtension.cs" />
+    <Compile Include="Helpers\MigrationHelper.cs" />
     <Compile Include="MapMonsterDAO.cs" />
     <Compile Include="Entities\MapNpc.cs" />
     <Compile Include="MapNpcDAO.cs" />
     <Compile Include="Entities\NpcMonster.cs" />
     <Compile Include="Entities\NpcMonsterskill.cs" />
-    <Compile Include="Migrations\201604261733302_Migration1.cs" />
-    <Compile Include="Migrations\201604261733302_Migration1.Designer.cs">
-      <DependentUpon>201604261733302_Migration1.cs</DependentUpon>
+    <Compile Include="Migrations\201604291502062_Migration.cs" />
+    <Compile Include="Migrations\201604291502062_Migration.Designer.cs">
+      <DependentUpon>201604291502062_Migration.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="NpcMonsterSkillDAO.cs" />
@@ -125,7 +126,6 @@
     <Compile Include="ShopDAO.cs" />
     <Compile Include="Entities\ShopItem.cs" />
     <Compile Include="ShopItemDAO.cs" />
-    <Compile Include="ItemInstanceDAO.cs" />
     <Compile Include="ItemDAO.cs" />
     <Compile Include="MapDAO.cs" />
     <Compile Include="NpcMonsterDAO.cs" />
@@ -186,8 +186,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201604261733302_Migration1.resx">
-      <DependentUpon>201604261733302_Migration1.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201604291502062_Migration.resx">
+      <DependentUpon>201604291502062_Migration.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

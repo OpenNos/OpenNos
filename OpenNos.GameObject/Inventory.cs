@@ -12,26 +12,26 @@
  * GNU General Public License for more details.
  */
 
-using AutoMapper;
-using OpenNos.Core;
-using OpenNos.DAL;
 using OpenNos.Data;
-using OpenNos.Data.Enums;
-using OpenNos.Domain;
-using System;
 
 namespace OpenNos.GameObject
 {
-    public class Inventory : InventoryDTO, IGameObject
+    public class Inventory : InventoryDTO
     {
+        #region Instantiation
 
-        #region Methods
-
-
-        public void Save()
+        public Inventory()
         {
-            InventoryDTO tempsave = this;
-            SaveResult insertResult = DAOFactory.InventoryDAO.InsertOrUpdate(ref tempsave);
+            
+        }
+
+        public Inventory(InventoryDTO inventory)
+        {
+            this.CharacterId = inventory.CharacterId;
+            this.Slot = inventory.Slot;
+            this.Type = inventory.Type;
+            this.ItemInstance = inventory.ItemInstance;
+            this.InventoryId = inventory.InventoryId;
         }
 
         #endregion

@@ -12,21 +12,11 @@
  * GNU General Public License for more details.
  */
 
-using AutoMapper;
 using OpenNos.Data;
 
 namespace OpenNos.GameObject
 {
     public class RecipeItem : RecipeItemDTO
     {
-        #region Instantiation
-
-        public RecipeItem()
-        {
-            Mapper.CreateMap<RecipeItemDTO, RecipeItem>();
-            Mapper.CreateMap<RecipeItem, RecipeItemDTO>();
-        }
-
-        #endregion
     }
 }

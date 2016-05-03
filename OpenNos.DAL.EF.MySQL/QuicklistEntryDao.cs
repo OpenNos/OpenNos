@@ -27,6 +27,27 @@ namespace OpenNos.DAL.EF.MySQL
 {
     public class QuicklistEntryDAO : IQuicklistEntryDAO
     {
+        #region Members
+
+        private IMapper _mapper;
+
+        #endregion
+
+        #region Instantiation
+
+        public QuicklistEntryDAO()
+        {
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<QuicklistEntry, QuicklistEntryDTO>();
+                cfg.CreateMap<QuicklistEntryDTO, QuicklistEntry>();
+            });
+
+            _mapper = config.CreateMapper();
+        }
+
+        #endregion
+
         #region Methods
 
         public DeleteResult Delete(long characterId, long entryId)
@@ -55,18 +76,18 @@ namespace OpenNos.DAL.EF.MySQL
                     if (dbentry == null)
                     {
                         // new entity
-                        QuicklistEntry entry = Mapper.DynamicMap<QuicklistEntry>(quickListEntry);
+                        QuicklistEntry entry = _mapper.Map<QuicklistEntry>(quickListEntry);
                         context.QuicklistEntry.Add(entry);
                         context.SaveChanges();
-                        Mapper.DynamicMap(entry, quickListEntry);
+                        _mapper.Map(entry, quickListEntry);
                         return SaveResult.Inserted;
                     }
                     else
                     {
                         //existing entity
-                        Mapper.DynamicMap(quickListEntry, dbentry);
+                        _mapper.Map(quickListEntry, dbentry);
                         context.SaveChanges();
-                        quickListEntry = Mapper.DynamicMap<QuicklistEntryDTO>(quickListEntry); // does this line anything?
+                        quickListEntry = _mapper.Map<QuicklistEntryDTO>(quickListEntry); // does this line anything?
                         return SaveResult.Updated;
                     }
                 }
@@ -84,7 +105,7 @@ namespace OpenNos.DAL.EF.MySQL
             {
                 foreach (QuicklistEntry QuicklistEntryobject in context.QuicklistEntry.Where(i => i.CharacterId == characterId))
                 {
-                    yield return Mapper.DynamicMap<QuicklistEntryDTO>(QuicklistEntryobject);
+                    yield return _mapper.Map<QuicklistEntryDTO>(QuicklistEntryobject);
                 }
             }
         }

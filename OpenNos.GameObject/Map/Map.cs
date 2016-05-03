@@ -39,8 +39,6 @@ namespace OpenNos.GameObject
 
         public Map(short mapId, Guid uniqueIdentifier, byte[] data)
         {
-            Mapper.CreateMap<MapDTO, Map>();
-            Mapper.CreateMap<Map, MapDTO>();
 
             MapId = mapId;
             _uniqueIdentifier = uniqueIdentifier;
@@ -287,7 +285,7 @@ namespace OpenNos.GameObject
 
             DroppedItem = new MapItem(MapX, MapY)
             {
-                ItemInstance = new ItemInstanceDTO() { ItemVNum = drop.ItemVNum, Amount = (short)drop.Amount }
+                ItemInstance = new ItemInstance() { ItemVNum = drop.ItemVNum, Amount = (short)drop.Amount }
             };
             while (ServerManager.GetMap(MapId).DroppedList.ContainsKey(random = rnd.Next(1, 999999)))
             { }
