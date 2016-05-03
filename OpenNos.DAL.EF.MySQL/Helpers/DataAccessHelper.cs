@@ -12,10 +12,8 @@
  * GNU General Public License for more details.
  */
 
-using AutoMapper;
 using OpenNos.Core;
 using OpenNos.DAL.EF.MySQL.DB;
-using OpenNos.Data;
 using System;
 using System.Data.Common;
 using System.Linq;
@@ -98,11 +96,11 @@ namespace OpenNos.DAL.EF.MySQL.Helpers
         {
             using (var context = CreateContext())
             {
-                 try
+                try
                 {
                     context.Database.Initialize(force: true);
                     context.Database.Connection.Open();
-                    //add on line as above for each tableset(it will load the table at startup and will speedup the first query)      
+                    //add on line as above for each tableset(it will load the table at startup and will speedup the first query)
                     context.Account.Any();
                     context.Map.Any();
                     context.Portal.Any();

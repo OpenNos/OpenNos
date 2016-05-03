@@ -14,6 +14,7 @@
 
 using log4net;
 using OpenNos.Core;
+using OpenNos.DAL;
 using OpenNos.DAL.EF.MySQL.Helpers;
 using OpenNos.GameObject;
 using OpenNos.Handler;
@@ -50,7 +51,6 @@ namespace OpenNos.Login
 
                     Task memory = new Task(() => ServerManager.MemoryWatch("OpenNos Login Server"));
                     memory.Start();
-
                     //initialize DB
                     DataAccessHelper.Initialize();
 
@@ -75,7 +75,6 @@ namespace OpenNos.Login
                 }
             }
         }
-
         #endregion
     }
 }
