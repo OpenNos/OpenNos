@@ -433,26 +433,25 @@ namespace OpenNos.Handler
                 byte type, amount, slot;
                 if (!byte.TryParse(packetsplit[4], out type) || !byte.TryParse(packetsplit[5], out slot) || !byte.TryParse(packetsplit[6], out amount)) return;
 
-                ItemInstance inv = Session.Character.InventoryList.LoadBySlotAndType<ItemInstance>(slot, type);
-                if (inv == null || amount > inv.Amount) return;
+                Inventory inv = Session.Character.InventoryList.LoadInventoryBySlotAndType(slot, type);
+                if (inv == null || amount > inv.ItemInstance.Amount) return;
 
-                if (ServerManager.GetItem(inv.ItemVNum).IsSoldable != true)
+                if ((inv.ItemInstance as ItemInstance).Item.IsSoldable != true)
                 {
                     Session.Client.SendPacket(Session.Character.GenerateShopMemo(2, string.Format(Language.Instance.GetMessageFromKey("ITEM_NOT_SOLDABLE"))));
                     return;
                 }
-
-                Item item = ServerManager.GetItem(inv.ItemVNum);
-                if (Session.Character.Gold + item.Price * amount > 1000000000)
+                
+                if (Session.Character.Gold + (inv.ItemInstance as ItemInstance).Item.Price * amount > 1000000000)
                 {
                     string message = Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("MAX_GOLD"), 0);
                     Session.Client.SendPacket(message);
                     return;
                 }
-                Session.Character.Gold += (item.Price / 20) * amount;
+                Session.Character.Gold += ((inv.ItemInstance as ItemInstance).Item.Price / 20) * amount;
                 Session.Character.DeleteItem(type, slot);
                 Session.Client.SendPacket(Session.Character.GenerateGold());
-                Session.Client.SendPacket(Session.Character.GenerateShopMemo(1, string.Format(Language.Instance.GetMessageFromKey("SELL_ITEM_VALIDE"), item.Name, amount)));
+                Session.Client.SendPacket(Session.Character.GenerateShopMemo(1, string.Format(Language.Instance.GetMessageFromKey("SELL_ITEM_VALIDE"), (inv.ItemInstance as ItemInstance).Item.Name, amount)));
             }
             else if (packetsplit.Length == 5)
             {
