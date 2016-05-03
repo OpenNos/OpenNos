@@ -330,7 +330,6 @@ namespace OpenNos.Handler
                     inv.ItemInstance.Rare = rare;
                     inv.ItemInstance.Upgrade = upgrade;
                     inv.ItemInstance.Design = design;
-                    Session.Character.InventoryList.Update(ref inv);
                     
                     WearableInstance wearable = Session.Character.InventoryList.LoadBySlotAndType<WearableInstance>(inv.Slot,inv.Type);
                     ServersData.SetRarityPoint(ref wearable);

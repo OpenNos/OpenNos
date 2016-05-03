@@ -20,9 +20,13 @@ namespace OpenNos.GameObject
     public class ItemInstance : ItemInstanceDTO, IGameObject
     {
         #region Instantiation
+        private Item item;
         public Item Item
         {
-            get { return ServerManager.GetItem(this.ItemVNum); }
+            get {
+                if (item == null) item = ServerManager.GetItem(this.ItemVNum);
+                return item;
+            }
         }
 
         public ItemInstance()
@@ -45,10 +49,10 @@ namespace OpenNos.GameObject
         {
         }
 
-            public ItemInstance DeepCopy()
-            {
+        public ItemInstance DeepCopy()
+        {
                 return (ItemInstance)this.MemberwiseClone();
-            }
+        }
         
 
         #endregion

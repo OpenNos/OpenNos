@@ -82,9 +82,10 @@ namespace OpenNos.Handler
                     return;
                 }
 
-       
-                Inventory inv = Session.Character.InventoryList.AddToInventory(item.ItemInstance as ItemInstance);
-                inv.ItemInstance.Amount = amount;
+                ItemInstance item2 = (item.ItemInstance as ItemInstance).DeepCopy();
+                item2.Amount = amount;
+                item2.ItemInstanceId = Session.Character.InventoryList.GenerateItemInstanceId();
+                Inventory inv = Session.Character.InventoryList.AddToInventory(item2);
                
                 if (inv != null)
                 {

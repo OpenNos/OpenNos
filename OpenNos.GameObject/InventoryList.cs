@@ -69,8 +69,7 @@ namespace OpenNos.GameObject
             return inv;
         }
 
-        public Inventory AddToInventory<T>(T newItem)
-            where T : ItemInstance
+        public Inventory AddToInventory(ItemInstance newItem)
         {
             short Slot = -1;
             IEnumerable<ItemInstance> slotfree = null;
@@ -297,6 +296,7 @@ namespace OpenNos.GameObject
                         ItemInstance itemDest = (inv.ItemInstance as ItemInstance).DeepCopy();
                         inv.ItemInstance.Amount -= amount;
                         itemDest.Amount = amount;
+                        itemDest.ItemInstanceId = GenerateItemInstanceId();
                         invdest = AddToInventoryWithSlotAndType(itemDest, inv.Type, destslot);
                     }
                 }
@@ -379,25 +379,6 @@ namespace OpenNos.GameObject
         public void Save()
         {
             Inventory = DAOFactory.InventoryDAO.InsertOrUpdate(Inventory).Select(i => new Inventory(i)).ToList();
-        }
-
-        public void Update(ref Inventory newInventory)
-        {
-            short SLOT = newInventory.Slot;
-            byte TYPE = newInventory.Type;
-
-            Inventory entity = Inventory.FirstOrDefault(c => c.Slot.Equals(SLOT) && c.Type.Equals(TYPE));
-
-            if (entity != null)
-            {
-                long id = newInventory.InventoryId;
-                var result = Inventory.FirstOrDefault(c => c.InventoryId == id);
-                if (result != null)
-                {
-                    Inventory.Remove(result);
-                    Inventory.Add(newInventory);
-                }
-            }
         }
 
         public Inventory RemoveItemAmountFromInventory(byte amount, long InventoryId)

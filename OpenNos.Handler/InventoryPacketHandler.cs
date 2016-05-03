@@ -125,6 +125,8 @@ namespace OpenNos.Handler
             {
                 case 0:
                     inventory = Session.Character.EquipmentList.LoadBySlotAndType<WearableInstance>(slot, (byte)InventoryType.Equipment);
+                    if (inventory == null)
+                        inventory = Session.Character.EquipmentList.LoadBySlotAndType<SpecialistInstance>(slot, (byte)InventoryType.Equipment);
                     break;
 
                 case 5:
@@ -142,11 +144,12 @@ namespace OpenNos.Handler
 
                 case 1:
                     inventory = Session.Character.InventoryList.LoadBySlotAndType<WearableInstance>(slot, (byte)InventoryType.Wear);
+                    if (inventory == null)
+                        inventory = Session.Character.InventoryList.LoadBySlotAndType<SpecialistInstance>(slot, (byte)InventoryType.Wear);
                     break;
 
                 case 2:
-                    Item item = ServerManager.GetItem(slot);
-                    inventory = new WearableInstance(Session.Character.InventoryList.GenerateItemInstanceId());       
+                    inventory = new WearableInstance(Session.Character.InventoryList.GenerateItemInstanceId());
                     break;
 
                 case 10:
@@ -305,7 +308,7 @@ namespace OpenNos.Handler
                                 Session.Character.Gold = Session.Character.Gold - Session.Character.ExchangeInfo.Gold + exchange.Gold;
                                 Session.Client.SendPacket(Session.Character.GenerateGold());
                                 ClientLinkManager.Instance.ExchangeValidate(Session, Session.Character.ExchangeInfo.CharId);
-                                
+
                             }
                         }
                     }
@@ -342,12 +345,13 @@ namespace OpenNos.Handler
                 short.TryParse(packetsplit[j - 2], out slot[i]);
                 byte.TryParse(packetsplit[j - 1], out qty[i]);
                 Inventory item = Session.Character.InventoryList.LoadInventoryBySlotAndType(slot[i], type[i]);
-                Session.Character.ExchangeInfo.ExchangeList.Add(item.ItemInstance as ItemInstance);
-                item.ItemInstance.Amount = qty[i];
+                ItemInstance it = (item.ItemInstance as ItemInstance).DeepCopy();
+                it.Amount = qty[i];
+                Session.Character.ExchangeInfo.ExchangeList.Add(it);
                 if (type[i] != 0)
-                    packetList += $"{i}.{type[i]}.{item.ItemInstance.ItemVNum}.{qty[i]} ";
+                    packetList += $"{i}.{type[i]}.{it.ItemVNum}.{qty[i]} ";
                 else
-                    packetList += $"{i}.{type[i]}.{item.ItemInstance.ItemVNum}.0.0 ";
+                    packetList += $"{i}.{type[i]}.{it.ItemVNum}.0.0 ";
             }
             Session.Character.ExchangeInfo.Gold = Gold;
             ClientLinkManager.Instance.Broadcast(Session, $"exc_list 1 {Session.Character.CharacterId} {Gold} {packetList}", ReceiverType.OnlySomeone, "", Session.Character.ExchangeInfo.CharId);
@@ -367,14 +371,13 @@ namespace OpenNos.Handler
                 {
                     if (mapitem.ItemInstance.ItemVNum != 1046)
                     {
-                        var newItemInstance = Session.Character.InventoryList.CreateItemInstance(mapitem.ItemInstance.ItemVNum);
-                        newItemInstance.Amount = mapitem.ItemInstance.Amount;
-                        Inventory newInv = Session.Character.InventoryList.AddToInventory(newItemInstance);
+        
+                        Inventory newInv = Session.Character.InventoryList.AddToInventory(mapitem.ItemInstance);
                         if (newInv != null)
                         {
                             Session.CurrentMap.DroppedList.Remove(DropId);
                             ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateGet(DropId), ReceiverType.AllOnMap);
-                            Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(newInv.ItemInstance.ItemVNum, newInv.ItemInstance.Amount, newInv.Type, newInv.Slot, 0, 0, 0));
+                            Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(newInv.ItemInstance.ItemVNum, newInv.ItemInstance.Amount, newInv.Type, newInv.Slot, mapitem.ItemInstance.Rare, mapitem.ItemInstance.Design, mapitem.ItemInstance.Upgrade));
                             Session.Client.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {(newInv.ItemInstance as ItemInstance).Item.Name} x {Amount}", 12));
                         }
                         else
@@ -414,8 +417,8 @@ namespace OpenNos.Handler
                 return;
             if ((Session.Character.ExchangeInfo != null && Session.Character.ExchangeInfo?.ExchangeList.Count() != 0) || Session.Character.Speed == 0)
                 return;
-            
-            Inventory inv = Session.Character.InventoryList.MoveInventory(Session.Character.InventoryList.LoadInventoryBySlotAndType(slot,type), desttype, destslot);
+
+            Inventory inv = Session.Character.InventoryList.MoveInventory(Session.Character.InventoryList.LoadInventoryBySlotAndType(slot, type), desttype, destslot);
             if (inv != null)
             {
                 Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(inv.ItemInstance.ItemVNum, inv.ItemInstance.Amount, desttype, inv.Slot, inv.ItemInstance.Rare, inv.ItemInstance.Design, inv.ItemInstance.Upgrade));
@@ -437,7 +440,7 @@ namespace OpenNos.Handler
                 return;
             if ((Session.Character.ExchangeInfo != null && Session.Character.ExchangeInfo?.ExchangeList.Count() != 0) || Session.Character.Speed == 0)
                 return;
-            Session.Character.InventoryList.MoveItem( type, slot, amount, destslot, out LastInventory, out NewInventory);
+            Session.Character.InventoryList.MoveItem(type, slot, amount, destslot, out LastInventory, out NewInventory);
             if (NewInventory == null) return;
             Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(NewInventory.ItemInstance.ItemVNum, NewInventory.ItemInstance.Amount, type, NewInventory.Slot, NewInventory.ItemInstance.Rare, NewInventory.ItemInstance.Design, NewInventory.ItemInstance.Upgrade));
             if (LastInventory != null)
@@ -460,7 +463,7 @@ namespace OpenNos.Handler
             {
                 if (amount > 0 && amount < 100)
                 {
-                    MapItem DroppedItem = Session.Character.InventoryList.PutItem( type, slot, amount, ref invitem);
+                    MapItem DroppedItem = Session.Character.InventoryList.PutItem(type, slot, amount, ref invitem);
                     if (DroppedItem == null)
                     {
                         Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("ITEM_NOT_DROPPABLE_HERE"), 0)); ;
@@ -469,7 +472,7 @@ namespace OpenNos.Handler
                     Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(invitem.ItemInstance.ItemVNum, invitem.ItemInstance.Amount, type, invitem.Slot, invitem.ItemInstance.Rare, invitem.ItemInstance.Design, invitem.ItemInstance.Upgrade));
 
                     if (invitem.ItemInstance.Amount == 0)
-                        Session.Character.DeleteItem(invitem.Type,invitem.Slot);
+                        Session.Character.DeleteItem(invitem.Type, invitem.Slot);
                     if (DroppedItem != null)
                         ClientLinkManager.Instance.Broadcast(Session, $"drop {DroppedItem.ItemInstance.ItemVNum} {DroppedItem.ItemInstance.ItemInstanceId} {DroppedItem.PositionX} {DroppedItem.PositionY} {DroppedItem.ItemInstance.Amount} 0 -1", ReceiverType.AllOnMap);
                 }
