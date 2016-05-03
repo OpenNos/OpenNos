@@ -133,7 +133,6 @@ namespace OpenNos.GameObject
 
             Random r = new Random();
             int rnd = r.Next(100);
-            //TODO inventoryitem
             if (rnd <= rare7 && !(protection == RarifyProtection.Scroll && this.Rare >= 7))
             {
                 Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("RARIFY_SUCCESS"), 7), 12));

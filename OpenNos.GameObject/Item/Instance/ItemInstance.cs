@@ -45,10 +45,10 @@ namespace OpenNos.GameObject
         {
         }
 
-            public ItemInstance DeepCopy()
-            {
+        public ItemInstance DeepCopy()
+        {
                 return (ItemInstance)this.MemberwiseClone();
-            }
+        }
         
 
         #endregion

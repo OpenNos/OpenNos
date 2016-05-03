@@ -164,7 +164,7 @@ namespace OpenNos.GameObject
             PersonalShopItem itemshop = clientSession.CurrentMap.ShopUserList[shop.Key].Items.FirstOrDefault(i => i.Slot.Equals(slot));
             if (itemshop == null)
                 return;
-
+            long id = itemshop.InventoryId;
             itemshop.Amount -= amount;
             if (itemshop.Amount <= 0)
                 clientSession.CurrentMap.ShopUserList[shop.Key].Items.Remove(itemshop);
@@ -175,11 +175,11 @@ namespace OpenNos.GameObject
             shopOwnerSession.Character.Gold += itemshop.Price * amount;
             shopOwnerSession.Client.SendPacket(shopOwnerSession.Character.GenerateGold());
             shopOwnerSession.Client.SendPacket(shopOwnerSession.Character.GenerateShopMemo(1,
-                string.Format(Language.Instance.GetMessageFromKey("BUY_ITEM"), shopOwnerSession.Character.Name, ServerManager.GetItem(itemshop.ItemInstance.ItemVNum).Name, amount)));
+                string.Format(Language.Instance.GetMessageFromKey("BUY_ITEM"), shopOwnerSession.Character.Name, (itemshop.ItemInstance as ItemInstance).Item.Name, amount)));
             clientSession.CurrentMap.ShopUserList[shop.Key].Sell += itemshop.Price * amount;
             shopOwnerSession.Client.SendPacket($"sell_list {shop.Value.Sell} {slot}.{amount}.{itemshop.Amount}");
 
-            Inventory inv = shopOwnerSession.Character.InventoryList.RemoveItemAmountFromInventory(amount, itemshop.InventoryId);
+            Inventory inv = shopOwnerSession.Character.InventoryList.RemoveItemAmountFromInventory(amount, id);
 
             if (inv != null)
             {

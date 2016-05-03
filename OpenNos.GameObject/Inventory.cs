@@ -22,6 +22,7 @@ namespace OpenNos.GameObject
 
         public Inventory()
         {
+            
         }
 
         public Inventory(InventoryDTO inventory)
@@ -30,6 +31,7 @@ namespace OpenNos.GameObject
             this.Slot = inventory.Slot;
             this.Type = inventory.Type;
             this.ItemInstance = inventory.ItemInstance;
+            this.InventoryId = inventory.InventoryId;
         }
 
         #endregion

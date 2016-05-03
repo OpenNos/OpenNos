@@ -297,6 +297,7 @@ namespace OpenNos.GameObject
                         ItemInstance itemDest = (inv.ItemInstance as ItemInstance).DeepCopy();
                         inv.ItemInstance.Amount -= amount;
                         itemDest.Amount = amount;
+                        itemDest.ItemInstanceId = GenerateItemInstanceId();
                         invdest = AddToInventoryWithSlotAndType(itemDest, inv.Type, destslot);
                     }
                 }
