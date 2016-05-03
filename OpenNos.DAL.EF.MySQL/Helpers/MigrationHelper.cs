@@ -13,6 +13,7 @@
  */
 
 using OpenNos.DAL.EF.MySQL.Migrations;
+using System;
 using System.Data.Entity.Migrations;
 using System.Data.Entity.Migrations.Infrastructure;
 using System.IO;
@@ -23,16 +24,18 @@ namespace OpenNos.DAL.EF.MySQL.Helpers
     public static class MigrationHelper
     {
         #region Methods
-
         public static void GenerateSQLScript()
         {
+#if DEBUG
             var migrator = new DbMigrator(new Configuration());
             var scriptor = new MigratorScriptingDecorator(migrator);
-            var sql = scriptor.ScriptUpdate("0", migrator.GetLocalMigrations().LastOrDefault());
+            var migration = migrator.GetLocalMigrations().LastOrDefault();
+            var sql = scriptor.ScriptUpdate("0", migration);
+            string info =$"-- ========================================== --\r\n-- File generated on: {DateTime.Now.ToString()}\r\n-- Using migration: {migration}\r\n-- ========================================== --\r\n\r\n";
             string fileName = "OpenNos.sql";
-            File.WriteAllText(Path.Combine((@"../../../OpenNos.DAL.EF.MySQL/DB/") + fileName), sql);
+            File.WriteAllText(Path.Combine((@"../../../OpenNos.DAL.EF.MySQL/DB/") + fileName), info + sql);
+#endif
         }
-
         #endregion
     }
 }
