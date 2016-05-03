@@ -63,7 +63,7 @@ namespace OpenNos.Handler
             {
                 KeyValuePair<long, MapShop> shop = Session.CurrentMap.ShopUserList.FirstOrDefault(mapshop => mapshop.Value.OwnerId.Equals(owner));
                 PersonalShopItem item = shop.Value.Items.FirstOrDefault(i => i.Slot.Equals(slot));
-                if (item == null) return;
+                if (item == null || amount <= 0) return;
 
                 if (amount > item.Amount)
                     amount = item.Amount;
