@@ -108,6 +108,10 @@
     <Compile Include="Migrations\201604291502062_Migration.Designer.cs">
       <DependentUpon>201604291502062_Migration.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201605032025579_Alpha.cs" />
+    <Compile Include="Migrations\201605032025579_Alpha.Designer.cs">
+      <DependentUpon>201605032025579_Alpha.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="NpcMonsterSkillDAO.cs" />
     <Compile Include="DB\OpenNosContext.cs" />
@@ -164,7 +168,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="DB\OpenNos.Additional.sql" />
     <Content Include="DB\OpenNos.sql" />
   </ItemGroup>
   <ItemGroup>
@@ -188,6 +191,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201604291502062_Migration.resx">
       <DependentUpon>201604291502062_Migration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201605032025579_Alpha.resx">
+      <DependentUpon>201605032025579_Alpha.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
