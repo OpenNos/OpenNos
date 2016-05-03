@@ -12,8 +12,10 @@
  * GNU General Public License for more details.
  */
 
+using AutoMapper;
 using OpenNos.Data;
 using OpenNos.Data.Enums;
+using System;
 using System.Collections.Generic;
 
 namespace OpenNos.DAL.Interface
@@ -22,15 +24,21 @@ namespace OpenNos.DAL.Interface
     {
         #region Methods
 
+        void InitializeMapper(Type baseType);
+
         DeleteResult DeleteFromSlotAndType(long characterId, short slot, byte type);
 
-        SaveResult InsertOrUpdate(ref InventoryDTO inventory);
+        IEnumerable<InventoryDTO> InsertOrUpdate(IEnumerable<InventoryDTO> inventories);
+
+        InventoryDTO InsertOrUpdate(InventoryDTO inventory);
 
         IEnumerable<InventoryDTO> LoadByCharacterId(long characterId);
 
         InventoryDTO LoadBySlotAndType(long characterId, short slot, byte type);
 
         IEnumerable<InventoryDTO> LoadByType(long characterId, byte type);
+
+        void RegisterMapping(Type gameObjectType);
 
         #endregion
     }

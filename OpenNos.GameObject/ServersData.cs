@@ -293,56 +293,56 @@ namespace OpenNos.GameObject
             return p * (1 + lvl / 5);
         }
 
-        public static void SetRarityPoint(ref Inventory inv)
+        public static void SetRarityPoint(ref WearableInstance wearableInstance)
         {
-            if (inv == null)
+            if (wearableInstance == null)
                 return;
-            Item iteminfo = ServerManager.GetItem(inv.InventoryItem.ItemVNum);
+            Item iteminfo = ServerManager.GetItem(wearableInstance.ItemVNum);
             if (iteminfo.EquipmentSlot == (byte)EquipmentType.MainWeapon || iteminfo.EquipmentSlot == (byte)EquipmentType.SecondaryWeapon)
             {
-                int point = ServersData.RarityPoint(inv.InventoryItem.Rare, iteminfo.LevelMinimum);
+                int point = ServersData.RarityPoint(wearableInstance.Rare, iteminfo.LevelMinimum);
                 Random rnd = new Random();
-                inv.InventoryItem.Concentrate = 0;
-                inv.InventoryItem.HitRate = 0;
-                inv.InventoryItem.DamageMinimum = 0;
-                inv.InventoryItem.DamageMaximum = 0;
+                wearableInstance.Concentrate = 0;
+                wearableInstance.HitRate = 0;
+                wearableInstance.DamageMinimum = 0;
+                wearableInstance.DamageMaximum = 0;
                 for (int i = 0; i < point; i++)
                 {
                     int rndn = rnd.Next(0, 3);
                     if (rndn == 0)
                     {
-                        inv.InventoryItem.Concentrate++;
-                        inv.InventoryItem.HitRate++;
+                        wearableInstance.Concentrate++;
+                        wearableInstance.HitRate++;
                     }
                     else
                     {
-                        inv.InventoryItem.DamageMinimum++;
-                        inv.InventoryItem.DamageMaximum++;
+                        wearableInstance.DamageMinimum++;
+                        wearableInstance.DamageMaximum++;
                     }
                 }
             }
             else if (iteminfo.EquipmentSlot == (byte)EquipmentType.Armor)
             {
-                int point = RarityPoint(inv.InventoryItem.Rare, iteminfo.LevelMinimum);
+                int point = RarityPoint(wearableInstance.Rare, iteminfo.LevelMinimum);
                 Random rnd = new Random();
-                inv.InventoryItem.DefenceDodge = 0;
-                inv.InventoryItem.DistanceDefenceDodge = 0;
-                inv.InventoryItem.DistanceDefence = 0;
-                inv.InventoryItem.MagicDefence = 0;
-                inv.InventoryItem.CloseDefence = 0;
+                wearableInstance.DefenceDodge = 0;
+                wearableInstance.DistanceDefenceDodge = 0;
+                wearableInstance.DistanceDefence = 0;
+                wearableInstance.MagicDefence = 0;
+                wearableInstance.CloseDefence = 0;
                 for (int i = 0; i < point; i++)
                 {
                     int rndn = rnd.Next(0, 3);
                     if (rndn == 0)
                     {
-                        inv.InventoryItem.DefenceDodge++;
-                        inv.InventoryItem.DistanceDefenceDodge++;
+                        wearableInstance.DefenceDodge++;
+                        wearableInstance.DistanceDefenceDodge++;
                     }
                     else
                     {
-                        inv.InventoryItem.DistanceDefence++;
-                        inv.InventoryItem.MagicDefence++;
-                        inv.InventoryItem.CloseDefence++;
+                        wearableInstance.DistanceDefence++;
+                        wearableInstance.MagicDefence++;
+                        wearableInstance.CloseDefence++;
                     }
                 }
             }

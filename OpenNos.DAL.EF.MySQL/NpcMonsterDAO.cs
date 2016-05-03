@@ -23,6 +23,27 @@ namespace OpenNos.DAL.EF.MySQL
 {
     public class NpcMonsterDAO : INpcMonsterDAO
     {
+        #region Members
+
+        private IMapper _mapper;
+
+        #endregion
+
+        #region Instantiation
+
+        public NpcMonsterDAO()
+        {
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<NpcMonster, NpcMonsterDTO>();
+                cfg.CreateMap<NpcMonsterDTO, NpcMonster>();
+            });
+
+            _mapper = config.CreateMapper();
+        }
+
+        #endregion
+
         #region Methods
 
         public void Insert(List<NpcMonsterDTO> npcs)
@@ -32,7 +53,7 @@ namespace OpenNos.DAL.EF.MySQL
                 context.Configuration.AutoDetectChangesEnabled = false;
                 foreach (NpcMonsterDTO Item in npcs)
                 {
-                    NpcMonster entity = Mapper.DynamicMap<NpcMonster>(Item);
+                    NpcMonster entity = _mapper.Map<NpcMonster>(Item);
                     context.NpcMonster.Add(entity);
                 }
                 context.SaveChanges();
@@ -43,10 +64,10 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                NpcMonster entity = Mapper.DynamicMap<NpcMonster>(npc);
+                NpcMonster entity = _mapper.Map<NpcMonster>(npc);
                 context.NpcMonster.Add(entity);
                 context.SaveChanges();
-                return Mapper.DynamicMap<NpcMonsterDTO>(entity);
+                return _mapper.Map<NpcMonsterDTO>(entity);
             }
         }
 
@@ -56,7 +77,7 @@ namespace OpenNos.DAL.EF.MySQL
             {
                 foreach (NpcMonster NpcMonster in context.NpcMonster)
                 {
-                    yield return Mapper.DynamicMap<NpcMonsterDTO>(NpcMonster);
+                    yield return _mapper.Map<NpcMonsterDTO>(NpcMonster);
                 }
             }
         }
@@ -65,7 +86,7 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                return Mapper.DynamicMap<NpcMonsterDTO>(context.NpcMonster.FirstOrDefault(i => i.NpcMonsterVNum.Equals(vnum)));
+                return _mapper.Map<NpcMonsterDTO>(context.NpcMonster.FirstOrDefault(i => i.NpcMonsterVNum.Equals(vnum)));
             }
         }
 

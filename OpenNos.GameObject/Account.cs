@@ -23,8 +23,6 @@ namespace OpenNos.GameObject
 
         public Account()
         {
-            Mapper.CreateMap<AccountDTO, Account>();
-            Mapper.CreateMap<Account, AccountDTO>();
         }
 
         #endregion

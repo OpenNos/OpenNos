@@ -12,8 +12,10 @@
  * GNU General Public License for more details.
  */
 
+using System;
 using OpenNos.DAL.Interface;
 using MySQL = OpenNos.DAL.EF.MySQL;
+using OpenNos.Core;
 
 namespace OpenNos.DAL
 {
@@ -29,7 +31,6 @@ namespace OpenNos.DAL
         private static IDropDAO _dropDAO;
         private static IGeneralLogDAO _generallogDAO;
         private static IInventoryDAO _inventoryDAO;
-        private static IInventoryItemDAO _inventoryitemDAO;
         private static IItemDAO _itemDAO;
         private static IMapDAO _mapDAO;
         private static IMapMonsterDAO _mapmonsterDAO;
@@ -51,11 +52,15 @@ namespace OpenNos.DAL
 
         #region Instantiation
 
-        public DAOFactory()
+        static DAOFactory()
         {
-            if (_accountDAO == null)
+            try
             {
-                _accountDAO = new MySQL.AccountDAO();
+                MySQL.Helpers.MigrationHelper.GenerateSQLScript();
+            }
+            catch (Exception ex)
+            {
+                Logger.Log.Error(ex.Message);
             }
         }
 
@@ -164,19 +169,6 @@ namespace OpenNos.DAL
                 }
 
                 return _inventoryDAO;
-            }
-        }
-
-        public static IInventoryItemDAO InventoryItemDAO
-        {
-            get
-            {
-                if (_inventoryitemDAO == null)
-                {
-                    _inventoryitemDAO = new MySQL.InventoryItemDAO();
-                }
-
-                return _inventoryitemDAO;
             }
         }
 

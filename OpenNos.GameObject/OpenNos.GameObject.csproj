@@ -30,9 +30,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AutoMapper, Version=4.1.1.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\AutoMapper.4.1.1\lib\net45\AutoMapper.dll</HintPath>
+    <Reference Include="AutoMapper, Version=4.2.1.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
+      <HintPath>..\packages\AutoMapper.4.2.1\lib\net45\AutoMapper.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
@@ -66,16 +66,6 @@
     <Compile Include="Interface\IGameObject.cs" />
     <Compile Include="ExchangeInfo.cs" />
     <Compile Include="Item\FoodItem.cs" />
-    <Compile Include="Item\ItemHandler\PotionItemHandler.cs" />
-    <Compile Include="Item\ItemHandler\FoodItemHandler.cs" />
-    <Compile Include="Item\ItemHandler\NoFunctionItemHandler.cs" />
-    <Compile Include="Item\ItemHandler\SpecialItemHandler.cs" />
-    <Compile Include="Item\ItemHandler\UpgradeItemHandler.cs" />
-    <Compile Include="Item\ItemHandler\WearableItemHandler.cs" />
-    <Compile Include="Item\ItemHandler\TeacherItemHandler.cs" />
-    <Compile Include="Item\ItemHandler\SnackItemHandler.cs" />
-    <Compile Include="Item\ItemHandler\ProduceItemHandler.cs" />
-    <Compile Include="Item\ItemHandler\BoxItemHandler.cs" />
     <Compile Include="Item\MagicalItem.cs" />
     <Compile Include="Item\ProduceItem.cs" />
     <Compile Include="Item\SnackItem.cs" />
@@ -86,7 +76,6 @@
     <Compile Include="Item\UpgradeItem.cs" />
     <Compile Include="Item\NoFunctionItem.cs" />
     <Compile Include="Item\WearableItem.cs" />
-    <Compile Include="Item\ItemHandler\MagicalItemHandler.cs" />
     <Compile Include="Map\Map.cs" />
     <Compile Include="Group.cs" />
     <Compile Include="Map\MapCellAStar.cs" />
@@ -107,7 +96,7 @@
     <Compile Include="ShopItem.cs" />
     <Compile Include="Map\MapShop.cs" />
     <Compile Include="Map\MapItem.cs" />
-    <Compile Include="InventoryItem.cs" />
+    <Compile Include="Item\Instance\ItemInstance.cs" />
     <Compile Include="Inventory.cs" />
     <Compile Include="Networking\ClientLinkManager.cs" />
     <Compile Include="Networking\ClientSession.cs" />
@@ -122,7 +111,10 @@
     <Compile Include="Skill.cs" />
     <Compile Include="ShopSkill.cs" />
     <Compile Include="CharacterSkill.cs" />
+    <Compile Include="Item\Instance\SpecialistInstance.cs" />
     <Compile Include="Teleporter.cs" />
+    <Compile Include="Item\Instance\UsableInstance.cs" />
+    <Compile Include="Item\Instance\WearableInstance.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\OpenNos.Core\OpenNos.Core.csproj">

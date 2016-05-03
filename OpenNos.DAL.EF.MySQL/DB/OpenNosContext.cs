@@ -2,16 +2,17 @@ namespace OpenNos.DAL.EF.MySQL.DB
 {
     using MySql.Data.Entity;
     using System.Data.Entity;
-
+    using System.Data.Entity.ModelConfiguration.Conventions;
     [DbConfigurationType(typeof(MySqlEFConfiguration))]
     public partial class OpenNosContext : DbContext
     {
         #region Instantiation
 
-        public OpenNosContext()
-            : base("name=OpenNosContext")
+        public OpenNosContext() : base("name=OpenNosContext")
         {
-            this.Configuration.LazyLoadingEnabled = false;
+            this.Configuration.LazyLoadingEnabled = true;
+            //--DO NOT DISABLE, otherwise the mapping will fail
+            this.Configuration.ProxyCreationEnabled = false; //only one time access to database so no proxy generation needed, its just slowing down in our case
         }
 
         #endregion
@@ -26,7 +27,7 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public virtual DbSet<Drop> Drop { get; set; }
         public virtual DbSet<GeneralLog> GeneralLog { get; set; }
         public virtual DbSet<Inventory> Inventory { get; set; }
-        public virtual DbSet<InventoryItem> InventoryItem { get; set; }
+        public virtual DbSet<ItemInstance> ItemInstance { get; set; }
         public virtual DbSet<Item> Item { get; set; }
         public virtual DbSet<Map> Map { get; set; }
         public virtual DbSet<MapMonster> MapMonster { get; set; }
@@ -50,6 +51,20 @@ namespace OpenNos.DAL.EF.MySQL.DB
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
+            //remove automatic pluralization
+            modelBuilder.Conventions.Remove<PluralizingTableNameConvention>();
+
+            //build TPH tables for inheritance
+            modelBuilder.Entity<ItemInstance>()
+                 .Map<WearableInstance>(m => m.Requires("WearableInstance"))
+                 .Map<SpecialistInstance>(m => m.Requires("SpecialistInstance"))
+                 .Map<UsableInstance>(m => m.Requires("UsableInstance"));
+
+            modelBuilder.Entity<ItemInstance>()
+               .HasOptional(ii => ii.Inventory) // Mark Address property optional in Student entity
+               .WithRequired(inv => inv.ItemInstance); // mark Student property as required in StudentAddress entity. Cannot save StudentAddress without Student
+
+
             modelBuilder.Entity<Account>()
                 .Property(e => e.Password)
                 .IsUnicode(false);
@@ -88,18 +103,8 @@ namespace OpenNos.DAL.EF.MySQL.DB
                 .WithRequired(e => e.Character)
                 .WillCascadeOnDelete(false);
 
-            modelBuilder.Entity<InventoryItem>()
-                .HasMany(e => e.CellonOption)
-                .WithRequired(e => e.InventoryItem)
-                .WillCascadeOnDelete(false);
-
             modelBuilder.Entity<Item>()
                 .HasMany(e => e.Drop)
-                .WithRequired(e => e.Item)
-                .WillCascadeOnDelete(false);
-
-            modelBuilder.Entity<Item>()
-                .HasMany(e => e.InventoryItem)
                 .WithRequired(e => e.Item)
                 .WillCascadeOnDelete(false);
 

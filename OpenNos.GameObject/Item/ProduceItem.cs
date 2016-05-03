@@ -12,6 +12,9 @@
  * GNU General Public License for more details.
  */
 
+using OpenNos.Core;
+using System;
+
 namespace OpenNos.GameObject
 {
     public class ProduceItem : Item
@@ -20,8 +23,12 @@ namespace OpenNos.GameObject
 
         public override void Use(ClientSession Session, ref Inventory Inv)
         {
-            ProduceItemHandler instance = new ProduceItemHandler();
-            instance.UseItemHandler(ref Inv, Session, Effect, EffectValue);
+            switch (Effect)
+            {
+                default:
+                    Logger.Log.Warn(Language.Instance.GetMessageFromKey(String.Format("NO_HANDLER_ITEM", this.GetType().ToString())));
+                    break;
+            }
         }
 
         #endregion

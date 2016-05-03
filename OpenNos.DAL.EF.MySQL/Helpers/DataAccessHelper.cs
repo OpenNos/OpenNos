@@ -12,10 +12,8 @@
  * GNU General Public License for more details.
  */
 
-using AutoMapper;
 using OpenNos.Core;
 using OpenNos.DAL.EF.MySQL.DB;
-using OpenNos.Data;
 using System;
 using System.Data.Common;
 using System.Linq;
@@ -34,55 +32,6 @@ namespace OpenNos.DAL.EF.MySQL.Helpers
 
         static DataAccessHelper()
         {
-            //Mapper needs to Create Maps, this is a bit not cool, but the Framework itself is nice
-            Mapper.CreateMap<Account, AccountDTO>();
-            Mapper.CreateMap<AccountDTO, Account>();
-            Mapper.CreateMap<Character, CharacterDTO>();
-            Mapper.CreateMap<CharacterDTO, Character>();
-            Mapper.CreateMap<Portal, PortalDTO>();
-            Mapper.CreateMap<PortalDTO, Portal>();
-            Mapper.CreateMap<NpcMonster, NpcMonsterDTO>();
-            Mapper.CreateMap<NpcMonsterDTO, NpcMonster>();
-            Mapper.CreateMap<Map, MapDTO>();
-            Mapper.CreateMap<MapDTO, Map>();
-            Mapper.CreateMap<Item, ItemDTO>();
-            Mapper.CreateMap<ItemDTO, Item>();
-            Mapper.CreateMap<Shop, ShopDTO>();
-            Mapper.CreateMap<ShopDTO, Shop>();
-            Mapper.CreateMap<ShopItem, ShopItemDTO>();
-            Mapper.CreateMap<ShopItemDTO, ShopItem>();
-            Mapper.CreateMap<MapNpcDTO, MapNpc>();
-            Mapper.CreateMap<MapNpc, MapNpcDTO>();
-            Mapper.CreateMap<MapMonsterDTO, MapMonster>();
-            Mapper.CreateMap<MapMonster, MapMonsterDTO>();
-            Mapper.CreateMap<Inventory, InventoryDTO>();
-            Mapper.CreateMap<InventoryDTO, Inventory>();
-            Mapper.CreateMap<InventoryItem, InventoryItemDTO>();
-            Mapper.CreateMap<InventoryItemDTO, InventoryItem>();
-            Mapper.CreateMap<GeneralLog, GeneralLogDTO>();
-            Mapper.CreateMap<GeneralLogDTO, GeneralLog>();
-            Mapper.CreateMap<Teleporter, TeleporterDTO>();
-            Mapper.CreateMap<TeleporterDTO, Teleporter>();
-            Mapper.CreateMap<Recipe, RecipeDTO>();
-            Mapper.CreateMap<RecipeDTO, Recipe>();
-            Mapper.CreateMap<RecipeItem, RecipeItemDTO>();
-            Mapper.CreateMap<RecipeItemDTO, RecipeItem>();
-            Mapper.CreateMap<Drop, DropDTO>();
-            Mapper.CreateMap<DropDTO, Drop>();
-            Mapper.CreateMap<Skill, SkillDTO>();
-            Mapper.CreateMap<SkillDTO, Skill>();
-            Mapper.CreateMap<ShopSkill, ShopSkillDTO>();
-            Mapper.CreateMap<ShopSkillDTO, ShopSkill>();
-            Mapper.CreateMap<CharacterSkill, CharacterSkillDTO>();
-            Mapper.CreateMap<CharacterSkillDTO, CharacterSkill>();
-            Mapper.CreateMap<NpcMonsterSkill, NpcMonsterSkillDTO>();
-            Mapper.CreateMap<NpcMonsterSkillDTO, NpcMonsterSkill>();
-            Mapper.CreateMap<CellonOption, CellonOptionDTO>();
-            Mapper.CreateMap<CellonOptionDTO, CellonOption>();
-            Mapper.CreateMap<QuicklistEntry, QuicklistEntryDTO>();
-            Mapper.CreateMap<QuicklistEntryDTO, QuicklistEntry>();
-            Mapper.CreateMap<Combo, ComboDTO>();
-            Mapper.CreateMap<ComboDTO, Combo>();
         }
 
         #endregion
@@ -147,9 +96,9 @@ namespace OpenNos.DAL.EF.MySQL.Helpers
         {
             using (var context = CreateContext())
             {
-                context.Database.Initialize(force: true);
                 try
                 {
+                    context.Database.Initialize(force: true);
                     context.Database.Connection.Open();
                     //add on line as above for each tableset(it will load the table at startup and will speedup the first query)
                     context.Account.Any();
@@ -161,7 +110,7 @@ namespace OpenNos.DAL.EF.MySQL.Helpers
                     context.MapNpc.Any();
                     context.MapMonster.Any();
                     context.Inventory.Any();
-                    context.InventoryItem.Any();
+                    context.ItemInstance.Any();
                     context.Item.Any();
                     context.Respawn.Any();
                     context.Shop.Any();

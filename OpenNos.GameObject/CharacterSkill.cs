@@ -25,8 +25,6 @@ namespace OpenNos.GameObject
 
         public CharacterSkill()
         {
-            Mapper.CreateMap<CharacterSkillDTO, CharacterSkill>();
-            Mapper.CreateMap<CharacterSkill, CharacterSkillDTO>();
             LastUse = DateTime.Now.AddHours(-1);
             Used = false;
             Hit = 0;

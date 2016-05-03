@@ -12,21 +12,11 @@
  * GNU General Public License for more details.
  */
 
-using AutoMapper;
 using OpenNos.Data;
 
 namespace OpenNos.GameObject
 {
     public class Combo : ComboDTO
     {
-        #region Instantiation
-
-        public Combo()
-        {
-            Mapper.CreateMap<ComboDTO, Combo>();
-            Mapper.CreateMap<Combo, ComboDTO>();
-        }
-
-        #endregion
     }
 }

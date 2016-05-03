@@ -17,6 +17,7 @@ using OpenNos.DAL;
 using OpenNos.Data;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace OpenNos.GameObject
 {
@@ -26,12 +27,13 @@ namespace OpenNos.GameObject
 
         public NpcMonster(short NpcMonsterVNum)
         {
-            Mapper.CreateMap<NpcMonsterDTO, NpcMonster>();
-            Mapper.CreateMap<NpcMonster, NpcMonsterDTO>();
+            var config = new MapperConfiguration(c => c.CreateMap<NpcMonsterSkillDTO, NpcMonsterSkill>());
+            IMapper _mapper = config.CreateMapper();
+
             Teleporters = DAOFactory.TeleporterDAO.LoadFromNpc(NpcMonsterVNum);
             Drops = DAOFactory.DropDAO.LoadByMonster(NpcMonsterVNum);
             LastEffect = LastMove = DateTime.Now;
-            Skills = Mapper.DynamicMap<IEnumerable<NpcMonsterSkill>>(DAOFactory.NpcMonsterSkillDAO.LoadByNpcMonster(NpcMonsterVNum));
+            Skills = DAOFactory.NpcMonsterSkillDAO.LoadByNpcMonster(NpcMonsterVNum).Select(n => _mapper.Map<NpcMonsterSkill>(n));
         }
 
         #endregion

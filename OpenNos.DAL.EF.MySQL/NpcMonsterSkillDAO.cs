@@ -24,16 +24,37 @@ namespace OpenNos.DAL.EF.MySQL
 {
     public class NpcMonsterSkillDAO : INpcMonsterSkillDAO
     {
+        #region Members
+
+        private IMapper _mapper;
+
+        #endregion
+
+        #region Instantiation
+
+        public NpcMonsterSkillDAO()
+        {
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<NpcMonsterSkill, NpcMonsterSkillDTO>();
+                cfg.CreateMap<NpcMonsterSkillDTO, NpcMonsterSkill>();
+            });
+
+            _mapper = config.CreateMapper();
+        }
+
+        #endregion
+
         #region Methods
 
         public NpcMonsterSkillDTO Insert(ref NpcMonsterSkillDTO npcMonsterskill)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                NpcMonsterSkill entity = Mapper.DynamicMap<NpcMonsterSkill>(npcMonsterskill);
+                NpcMonsterSkill entity = _mapper.Map<NpcMonsterSkill>(npcMonsterskill);
                 context.NpcMonsterSkill.Add(entity);
                 context.SaveChanges();
-                return Mapper.DynamicMap<NpcMonsterSkillDTO>(entity);
+                return _mapper.Map<NpcMonsterSkillDTO>(entity);
             }
         }
 
@@ -44,7 +65,7 @@ namespace OpenNos.DAL.EF.MySQL
                 context.Configuration.AutoDetectChangesEnabled = false;
                 foreach (NpcMonsterSkillDTO Skill in skills)
                 {
-                    NpcMonsterSkill entity = Mapper.DynamicMap<NpcMonsterSkill>(Skill);
+                    NpcMonsterSkill entity = _mapper.Map<NpcMonsterSkill>(Skill);
                     context.NpcMonsterSkill.Add(entity);
                 }
                 context.SaveChanges();
@@ -57,7 +78,7 @@ namespace OpenNos.DAL.EF.MySQL
             {
                 foreach (NpcMonsterSkill NpcMonsterSkillobject in context.NpcMonsterSkill.Where(i => i.NpcMonsterVNum == npcId))
                 {
-                    yield return Mapper.DynamicMap<NpcMonsterSkillDTO>(NpcMonsterSkillobject);
+                    yield return _mapper.Map<NpcMonsterSkillDTO>(NpcMonsterSkillobject);
                 }
             }
         }

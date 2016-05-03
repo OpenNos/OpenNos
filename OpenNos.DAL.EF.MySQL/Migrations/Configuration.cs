@@ -13,6 +13,14 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
             AutomaticMigrationsEnabled = false;
             SetSqlGenerator("MySql.Data.MySqlClient", new MySql.Data.Entity.MySqlMigrationSqlGenerator());
         }
+        /*private void ScriptGenerator()
+        {
+            var migrator = new DbMigrator(new Configuration());
+            var scriptor = new MigratorScriptingDecorator(migrator);
+            var sql = scriptor.ScriptUpdate("0", migrator.GetLocalMigrations().LastOrDefault());
+            string fileName = "OpenNos.sql";
+            File.WriteAllText(Path.Combine(@"C:\\OpenNos.sql"), sql);
+        }*/
 
         #endregion
 

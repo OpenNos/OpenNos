@@ -25,7 +25,7 @@ namespace OpenNos.GameObject
             Confirm = false;
             Gold = 0;
             CharId = -1;
-            ExchangeList = new List<InventoryItem>();
+            ExchangeList = new List<ItemInstance>();
             Validate = false;
         }
 
@@ -35,7 +35,7 @@ namespace OpenNos.GameObject
 
         public long CharId { get; set; }
         public bool Confirm { get; set; }
-        public List<InventoryItem> ExchangeList { get; set; }
+        public List<ItemInstance> ExchangeList { get; set; }
         public long Gold { get; set; }
         public bool Validate { get; set; }
 

@@ -12,24 +12,23 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Core;
 using System;
 
-namespace OpenNos.GameObject
+namespace OpenNos.Data
 {
-    public class SpecialItemHandler
+    public class ItemInstanceDTO : IItemInstance
     {
-        #region Methods
+        #region Properties
 
-        internal void UseItemHandler(ref Inventory inv, ClientSession session, short effect, int effectValue)
-        {
-            switch (effect)
-            {
-                default:
-                    Logger.Log.Warn(Language.Instance.GetMessageFromKey(String.Format("NO_HANDLER_ITEM", this.GetType().ToString())));
-                    break;
-            }
-        }
+        public bool IsUsed { get; set; }
+        public int Amount { get; set; }
+        public DateTime? ItemDeleteTime { get; set; }
+        public long ItemInstanceId { get; set; }
+        public short ItemVNum { get; set; }
+
+        public byte Rare { get; set; }
+        public byte Upgrade { get; set; }
+        public byte Design { get; set; }
 
         #endregion
     }

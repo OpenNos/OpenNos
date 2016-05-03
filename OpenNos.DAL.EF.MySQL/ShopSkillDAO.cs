@@ -24,16 +24,37 @@ namespace OpenNos.DAL.EF.MySQL
 {
     public class ShopSkillDAO : IShopSkillDAO
     {
+        #region Members
+
+        private IMapper _mapper;
+
+        #endregion
+
+        #region Instantiation
+
+        public ShopSkillDAO()
+        {
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<ShopSkill, ShopSkillDTO>();
+                cfg.CreateMap<ShopSkillDTO, ShopSkill>();
+            });
+
+            _mapper = config.CreateMapper();
+        }
+
+        #endregion
+
         #region Methods
 
         public ShopSkillDTO Insert(ShopSkillDTO shopSkill)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                ShopSkill entity = Mapper.DynamicMap<ShopSkill>(shopSkill);
+                ShopSkill entity = _mapper.Map<ShopSkill>(shopSkill);
                 context.ShopSkill.Add(entity);
                 context.SaveChanges();
-                return Mapper.DynamicMap<ShopSkillDTO>(entity);
+                return _mapper.Map<ShopSkillDTO>(entity);
             }
         }
 
@@ -44,7 +65,7 @@ namespace OpenNos.DAL.EF.MySQL
                 context.Configuration.AutoDetectChangesEnabled = false;
                 foreach (ShopSkillDTO Skill in skills)
                 {
-                    ShopSkill entity = Mapper.DynamicMap<ShopSkill>(Skill);
+                    ShopSkill entity = _mapper.Map<ShopSkill>(Skill);
                     context.ShopSkill.Add(entity);
                 }
                 context.SaveChanges();
@@ -57,7 +78,7 @@ namespace OpenNos.DAL.EF.MySQL
             {
                 foreach (ShopSkill ShopSkill in context.ShopSkill.Where(s => s.ShopId.Equals(shopId)))
                 {
-                    yield return Mapper.DynamicMap<ShopSkillDTO>(ShopSkill);
+                    yield return _mapper.Map<ShopSkillDTO>(ShopSkill);
                 }
             }
         }

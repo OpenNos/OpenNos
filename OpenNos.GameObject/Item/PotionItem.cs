@@ -18,12 +18,38 @@ namespace OpenNos.GameObject
     {
         #region Methods
 
-        public override void Use(ClientSession Session, ref Inventory Inv)
+        public override void Use(ClientSession Session, ref Inventory inv)
         {
-            PotionItemHandler instance = new PotionItemHandler();
-            instance.UseItemHandler(ref Inv, Session, Effect, EffectValue);
-        }
+            Item item = ServerManager.GetItem(inv.ItemInstance.ItemVNum);
 
+            switch (Effect)
+            {
+                default:
+                    if (Session.Character.Hp == Session.Character.HPLoad() && Session.Character.Mp == Session.Character.MPLoad())
+                        return;
+                    inv.ItemInstance.Amount--;
+                    if (inv.ItemInstance.Amount > 0)
+                        Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(inv.ItemInstance.ItemVNum, inv.ItemInstance.Amount, inv.Type, inv.Slot, 0, 0, 0));
+                    else
+                    {
+                        Session.Character.InventoryList.DeleteFromSlotAndType(inv.
+                            Slot, inv.Type);
+                        Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, inv.Type, inv.Slot, 0, 0, 0));
+                    }
+                    Session.Character.Mp += item.Mp;
+                    Session.Character.Hp += item.Hp;
+                    if (Session.Character.Mp > Session.Character.MPLoad())
+                        Session.Character.Mp = (int)Session.Character.MPLoad();
+                    if (Session.Character.Hp > Session.Character.HPLoad())
+                        Session.Character.Hp = (int)Session.Character.HPLoad();
+
+                    if (Session.Character.Hp < Session.Character.HPLoad() || Session.Character.Mp < Session.Character.MPLoad())
+                        ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateRc(item.Hp), ReceiverType.AllOnMap);
+                    Session.Client.SendPacket(Session.Character.GenerateStat());
+                    break;
+            }
+        }
+    
         #endregion
     }
 }

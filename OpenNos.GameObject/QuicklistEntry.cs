@@ -12,7 +12,6 @@
  * GNU General Public License for more details.
  */
 
-using AutoMapper;
 using OpenNos.DAL;
 using OpenNos.Data;
 
@@ -20,16 +19,6 @@ namespace OpenNos.GameObject
 {
     public class QuicklistEntry : QuicklistEntryDTO, IGameObject
     {
-        #region Instantiation
-
-        public QuicklistEntry()
-        {
-            Mapper.CreateMap<QuicklistEntryDTO, QuicklistEntry>();
-            Mapper.CreateMap<QuicklistEntry, QuicklistEntryDTO>();
-        }
-
-        #endregion
-
         #region Methods
 
         public void Save()

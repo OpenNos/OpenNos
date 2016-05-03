@@ -24,6 +24,27 @@ namespace OpenNos.DAL.EF.MySQL
 {
     public class PortalDAO : IPortalDAO
     {
+        #region Members
+
+        private IMapper _mapper;
+
+        #endregion
+
+        #region Instantiation
+
+        public PortalDAO()
+        {
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<Portal, PortalDTO>();
+                cfg.CreateMap<PortalDTO, Portal>();
+            });
+
+            _mapper = config.CreateMapper();
+        }
+
+        #endregion
+
         #region Methods
 
         public void Insert(List<PortalDTO> portals)
@@ -33,7 +54,7 @@ namespace OpenNos.DAL.EF.MySQL
                 context.Configuration.AutoDetectChangesEnabled = false;
                 foreach (PortalDTO Item in portals)
                 {
-                    Portal entity = Mapper.DynamicMap<Portal>(Item);
+                    Portal entity = _mapper.Map<Portal>(Item);
                     context.Portal.Add(entity);
                 }
                 context.SaveChanges();
@@ -44,10 +65,10 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                Portal entity = Mapper.DynamicMap<Portal>(portal);
+                Portal entity = _mapper.Map<Portal>(portal);
                 context.Portal.Add(entity);
                 context.SaveChanges();
-                return Mapper.DynamicMap<PortalDTO>(entity);
+                return _mapper.Map<PortalDTO>(entity);
             }
         }
 
@@ -57,7 +78,7 @@ namespace OpenNos.DAL.EF.MySQL
             {
                 foreach (Portal Portalobject in context.Portal.Where(c => c.SourceMapId.Equals(mapId)))
                 {
-                    yield return Mapper.DynamicMap<PortalDTO>(Portalobject);
+                    yield return _mapper.Map<PortalDTO>(Portalobject);
                 }
             }
         }

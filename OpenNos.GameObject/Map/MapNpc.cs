@@ -12,7 +12,6 @@
  * GNU General Public License for more details.
  */
 
-using AutoMapper;
 using OpenNos.DAL;
 using OpenNos.Data;
 using System;
@@ -26,8 +25,6 @@ namespace OpenNos.GameObject
 
         public MapNpc(int npcId)
         {
-            Mapper.CreateMap<MapNpcDTO, MapNpc>();
-            Mapper.CreateMap<MapNpc, MapNpcDTO>();
             MapNpcId = npcId;
             LastEffect = LastMove = DateTime.Now;
             IEnumerable<RecipeDTO> Recipe = DAOFactory.RecipeDAO.LoadByNpc(MapNpcId);

@@ -25,6 +25,27 @@ namespace OpenNos.DAL.EF.MySQL
 {
     public class RespawnDAO : IRespawnDAO
     {
+        #region Members
+
+        private IMapper _mapper;
+
+        #endregion
+
+        #region Instantiation
+
+        public RespawnDAO()
+        {
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<Respawn, RespawnDTO>();
+                cfg.CreateMap<RespawnDTO, Respawn>();
+            });
+
+            _mapper = config.CreateMapper();
+        }
+
+        #endregion
+
         #region Methods
 
         public SaveResult InsertOrUpdate(ref RespawnDTO respawn)
@@ -55,7 +76,7 @@ namespace OpenNos.DAL.EF.MySQL
             {
                 foreach (Respawn Respawnobject in context.Respawn.Where(i => i.CharacterId.Equals(characterId)))
                 {
-                    yield return Mapper.DynamicMap<RespawnDTO>(Respawnobject);
+                    yield return _mapper.Map<RespawnDTO>(Respawnobject);
                 }
             }
         }
@@ -64,7 +85,7 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                return Mapper.DynamicMap<RespawnDTO>(context.Respawn.FirstOrDefault(s => s.RespawnId.Equals(respawnId)));
+                return _mapper.Map<RespawnDTO>(context.Respawn.FirstOrDefault(s => s.RespawnId.Equals(respawnId)));
             }
         }
 
@@ -73,18 +94,18 @@ namespace OpenNos.DAL.EF.MySQL
             Respawn entity = new Respawn() { CharacterId = respawn.CharacterId };
             context.Respawn.Add(entity);
             context.SaveChanges();
-            return Mapper.DynamicMap<RespawnDTO>(entity);
+            return _mapper.Map<RespawnDTO>(entity);
         }
 
         private RespawnDTO Update(Respawn entity, RespawnDTO respawn, OpenNosContext context)
         {
             if (entity != null)
             {
-                Mapper.DynamicMap(respawn, entity);
+                _mapper.Map(respawn, entity);
                 context.SaveChanges();
             }
 
-            return Mapper.DynamicMap<RespawnDTO>(entity);
+            return _mapper.Map<RespawnDTO>(entity);
         }
 
         #endregion

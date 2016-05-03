@@ -12,9 +12,11 @@
  * GNU General Public License for more details.
  */
 
+using OpenNos.Data;
+
 namespace OpenNos.GameObject
 {
-    public class MapItem : InventoryItem
+    public class MapItem
     {
         #region Instantiation
 
@@ -28,6 +30,7 @@ namespace OpenNos.GameObject
 
         #region Properties
 
+        public ItemInstance ItemInstance { get; set; }
         public short PositionX { get; set; }
         public short PositionY { get; set; }
 
