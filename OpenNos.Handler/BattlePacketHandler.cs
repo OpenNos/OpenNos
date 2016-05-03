@@ -121,7 +121,7 @@ namespace OpenNos.Handler
                             Task t = Task.Factory.StartNew(async () =>
                             {
                                 short dX = (short)(Session.Character.MapX - mmon.MapX);
-                                short dY = (short)(Session.Character.MapY - mmon.MapY);
+                                 short dY = (short)(Session.Character.MapY - mmon.MapY);
 
                                 if (Map.GetDistance(new MapCell() { X = Session.Character.MapX, Y = Session.Character.MapY }, new MapCell() { X = mmon.MapX, Y = mmon.MapY }) <= skill.Range + 1 || skill.TargetRange != 0)
                                 {

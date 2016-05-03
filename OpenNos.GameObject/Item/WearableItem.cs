@@ -69,11 +69,11 @@ namespace OpenNos.GameObject
                     if (Session.Character.UseSp
                         && iteminfo.EquipmentSlot == (byte)EquipmentType.Fairy
                         && iteminfo.Element != ServerManager.GetItem(
-                            Session.Character.EquipmentList.LoadBySlotAndType<WearableInstance>(
+                            Session.Character.EquipmentList.LoadBySlotAndType<SpecialistInstance>(
                                 (byte)EquipmentType.Sp,
                                 (byte)InventoryType.Equipment).ItemVNum).Element &&
                                 iteminfo.Element != ServerManager.GetItem(
-                            Session.Character.EquipmentList.LoadBySlotAndType<WearableInstance>(
+                            Session.Character.EquipmentList.LoadBySlotAndType<SpecialistInstance>(
                                 (byte)EquipmentType.Sp,
                                 (byte)InventoryType.Equipment).ItemVNum).SecondaryElement)
                     {
