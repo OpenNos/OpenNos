@@ -382,25 +382,6 @@ namespace OpenNos.GameObject
             Inventory = DAOFactory.InventoryDAO.InsertOrUpdate(Inventory).Select(i => new Inventory(i)).ToList();
         }
 
-        public void Update(ref Inventory newInventory)
-        {
-            short SLOT = newInventory.Slot;
-            byte TYPE = newInventory.Type;
-
-            Inventory entity = Inventory.FirstOrDefault(c => c.Slot.Equals(SLOT) && c.Type.Equals(TYPE));
-
-            if (entity != null)
-            {
-                long id = newInventory.InventoryId;
-                var result = Inventory.FirstOrDefault(c => c.InventoryId == id);
-                if (result != null)
-                {
-                    Inventory.Remove(result);
-                    Inventory.Add(newInventory);
-                }
-            }
-        }
-
         public Inventory RemoveItemAmountFromInventory(byte amount, long InventoryId)
         {
             Inventory inv = Inventory.FirstOrDefault(i => i.InventoryId.Equals(InventoryId));
