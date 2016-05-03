@@ -69,8 +69,7 @@ namespace OpenNos.GameObject
             return inv;
         }
 
-        public Inventory AddToInventory<T>(T newItem)
-            where T : ItemInstance
+        public Inventory AddToInventory(ItemInstance newItem)
         {
             short Slot = -1;
             IEnumerable<ItemInstance> slotfree = null;

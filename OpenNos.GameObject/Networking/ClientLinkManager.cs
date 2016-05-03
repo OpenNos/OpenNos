@@ -393,8 +393,11 @@ namespace OpenNos.GameObject
                     if (inv.Slot == -1) continue;
                     c2Session.Client.SendPacket(c2Session.Character.GenerateInventoryAdd(inv.ItemInstance.ItemVNum, inv.ItemInstance.Amount, inv.Type, inv.Slot, inv.ItemInstance.Rare, inv.ItemInstance.Design, inv.ItemInstance.Upgrade));
                 }
+            
                 c2Session.Character.Gold = c2Session.Character.Gold - c2Session.Character.ExchangeInfo.Gold + c1Session.Character.ExchangeInfo.Gold;
                 c2Session.Client.SendPacket(c2Session.Character.GenerateGold());
+                c1Session.Character.ExchangeInfo = null;
+                c2Session.Character.ExchangeInfo = null;
             }
         }
 
