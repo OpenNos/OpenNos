@@ -666,7 +666,7 @@ namespace OpenNos.GameObject
 
             if (skillsSp.Count == 0)
                 skill = "-1";
-            for (int i = 0; i < 10; i++)
+            for (int i = 1; i < 11; i++)
             {
                 if (skillsSp.Count >= i + 1)
                     skill += $"{skillsSp[i].SkillVNum}.";
