@@ -86,7 +86,7 @@ namespace OpenNos.Handler
                 item2.Amount = amount;
                 item2.ItemInstanceId = Session.Character.InventoryList.GenerateItemInstanceId();
                 Inventory inv = Session.Character.InventoryList.AddToInventory(item2);
-               
+
                 if (inv != null)
                 {
                     Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(inv.ItemInstance.ItemVNum,
@@ -196,12 +196,12 @@ namespace OpenNos.Handler
                     byte ra = (byte)rnd.Next(0, 100);
 
                     int[] rareprob = { 100, 100, 70, 50, 30, 15, 5, 1 };
-                    if(iteminfo.ReputPrice !=0)
-                    for (int i = 0; i < rareprob.Length; i++)
-                    {
-                        if (ra <= rareprob[i])
-                            rare = (byte)i;
-                    }
+                    if (iteminfo.ReputPrice != 0)
+                        for (int i = 0; i < rareprob.Length; i++)
+                        {
+                            if (ra <= rareprob[i])
+                                rare = (byte)i;
+                        }
                 }
 
                 Inventory newItem = Session.Character.InventoryList.AddNewItemToInventory(item.ItemVNum, amount);
@@ -391,13 +391,13 @@ namespace OpenNos.Handler
                                 return;
                         }
 
-                        Inventory inv = Session.Character.InventoryList.AddNewItemToInventory(rec.ItemVNum,rec.Amount);
-                        if(inv.ItemInstance.GetType().Equals(typeof(WearableInstance)))
+                        Inventory inv = Session.Character.InventoryList.AddNewItemToInventory(rec.ItemVNum, rec.Amount);
+                        if (inv.ItemInstance.GetType().Equals(typeof(WearableInstance)))
                         {
                             WearableInstance item = inv.ItemInstance as WearableInstance;
                             ServersData.SetRarityPoint(ref item);
                         }
-               
+
                         if (inv != null)
                         {
                             short Slot = inv.Slot;
@@ -441,7 +441,7 @@ namespace OpenNos.Handler
                     Session.Client.SendPacket(Session.Character.GenerateShopMemo(2, string.Format(Language.Instance.GetMessageFromKey("ITEM_NOT_SOLDABLE"))));
                     return;
                 }
-                
+
                 if (Session.Character.Gold + (inv.ItemInstance as ItemInstance).Item.Price * amount > 1000000000)
                 {
                     string message = Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("MAX_GOLD"), 0);
@@ -570,7 +570,8 @@ namespace OpenNos.Handler
             string packetToSend = $"n_inv 1 {owner} 0 0";
             for (short i = 0; i < 20; i++)
             {
-                PersonalShopItem item = shop.Value.Items.FirstOrDefault(it => it.Slot.Equals(i));
+
+                PersonalShopItem item = shop.Value.Items.Count() > i ? shop.Value.Items.ElementAt(i) : null;
                 if (item != null)
                 {
                     if ((item.ItemInstance as ItemInstance).Item.Type == 0)
