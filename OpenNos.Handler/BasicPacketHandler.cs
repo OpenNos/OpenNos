@@ -356,17 +356,16 @@ namespace OpenNos.Handler
             Session.Client.SendPacket("clist_start 0");
             foreach (CharacterDTO character in characters)
             {
-                // Move to character
-                ItemInstanceDTO[] item = new ItemInstanceDTO[15];
-                for (short i = 0; i < 15; i++)
+                IEnumerable<InventoryDTO> inventory = DAOFactory.InventoryDAO.LoadByType(character.CharacterId, (byte)InventoryType.Equipment);
+
+                WearableInstance[] equipment = new WearableInstance[15];
+                foreach (InventoryDTO equipmentEntry in inventory)
                 {
-                    InventoryDTO inv = DAOFactory.InventoryDAO.LoadBySlotAndType(character.CharacterId, i, (byte)InventoryType.Equipment);
-                    if (inv != null)
-                    {
-                        item[i] = inv.ItemInstance;
-                    }
+                    WearableInstance currentInstance = equipmentEntry.ItemInstance as WearableInstance;
+                    equipment[currentInstance.Item.EquipmentSlot] = currentInstance;
                 }
-                Session.Client.SendPacket($"clist {character.Slot} {character.Name} 0 {character.Gender} {character.HairStyle} {character.HairColor} 0 {character.Class} {character.Level} {character.HeroLevel} {(item[(byte)EquipmentType.Hat] != null ? item[(byte)EquipmentType.Hat].ItemVNum : 0)}.{(item[(byte)EquipmentType.Armor] != null ? item[(byte)EquipmentType.Armor].ItemVNum : 0)}.{(item[(byte)EquipmentType.MainWeapon] != null ? item[(byte)EquipmentType.MainWeapon].ItemVNum : 0)}.{(item[(byte)EquipmentType.SecondaryWeapon] != null ? item[(byte)EquipmentType.SecondaryWeapon].ItemVNum : 0)}.{(item[(byte)EquipmentType.Mask] != null ? item[(byte)EquipmentType.Mask].ItemVNum : 0)}.{(item[(byte)EquipmentType.Fairy] != null ? item[(byte)EquipmentType.Fairy].ItemVNum : 0)}.{(item[(byte)EquipmentType.CostumeSuit] != null ? item[(byte)EquipmentType.CostumeSuit].ItemVNum : 0)}.{(item[(byte)EquipmentType.CostumeHat] != null ? item[(byte)EquipmentType.CostumeHat].ItemVNum : 0)} 1  1 0 -1.-1 {(item[(byte)EquipmentType.Hat] != null ? (ServerManager.GetItem(item[(byte)EquipmentType.Hat].ItemVNum).IsColored ? ((WearableInstance)item[(byte)EquipmentType.Hat]).Design : character.HairColor) : character.HairColor)} 0 0");
+
+                Session.Client.SendPacket($"clist {character.Slot} {character.Name} 0 {character.Gender} {character.HairStyle} {character.HairColor} 0 {character.Class} {character.Level} {character.HeroLevel} {(equipment[(byte)EquipmentType.Hat] != null ? equipment[(byte)EquipmentType.Hat].ItemVNum : 0)}.{(equipment[(byte)EquipmentType.Armor] != null ? equipment[(byte)EquipmentType.Armor].ItemVNum : 0)}.{(equipment[(byte)EquipmentType.MainWeapon] != null ? equipment[(byte)EquipmentType.MainWeapon].ItemVNum : 0)}.{(equipment[(byte)EquipmentType.SecondaryWeapon] != null ? equipment[(byte)EquipmentType.SecondaryWeapon].ItemVNum : 0)}.{(equipment[(byte)EquipmentType.Mask] != null ? equipment[(byte)EquipmentType.Mask].ItemVNum : 0)}.{(equipment[(byte)EquipmentType.Fairy] != null ? equipment[(byte)EquipmentType.Fairy].ItemVNum : 0)}.{(equipment[(byte)EquipmentType.CostumeSuit] != null ? equipment[(byte)EquipmentType.CostumeSuit].ItemVNum : 0)}.{(equipment[(byte)EquipmentType.CostumeHat] != null ? equipment[(byte)EquipmentType.CostumeHat].ItemVNum : 0)} 1  1 0 -1.-1 {(equipment[(byte)EquipmentType.Hat] != null ? (ServerManager.GetItem(equipment[(byte)EquipmentType.Hat].ItemVNum).IsColored ? ((WearableInstance)equipment[(byte)EquipmentType.Hat]).Design : character.HairColor) : character.HairColor)} 0 0");
             }
             Session.Client.SendPacket("clist_end");
         }

@@ -166,7 +166,7 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                return _mapper.Map<InventoryDTO>(context.Inventory.FirstOrDefault(i => i.InventoryId.Equals(inventoryId)));
+                return _mapper.Map<InventoryDTO>(context.Inventory.Include(nameof(ItemInstance)).FirstOrDefault(i => i.InventoryId.Equals(inventoryId)));
             }
         }
 
@@ -174,7 +174,7 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                return _mapper.Map<InventoryDTO>(context.Inventory.FirstOrDefault(i => i.Slot.Equals(slot) && i.Type.Equals(type) && i.CharacterId.Equals(characterId)));
+                return _mapper.Map<InventoryDTO>(context.Inventory.Include(nameof(ItemInstance)).FirstOrDefault(i => i.Slot.Equals(slot) && i.Type.Equals(type) && i.CharacterId.Equals(characterId)));
             }
         }
 
@@ -182,9 +182,9 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                foreach (Inventory Inventoryobject in context.Inventory.Where(i => i.Type.Equals(type) && i.CharacterId.Equals(characterId)))
+                foreach (Inventory inventoryEntry in context.Inventory.Include(nameof(ItemInstance)).Where(i => i.Type.Equals(type) && i.CharacterId.Equals(characterId)))
                 {
-                    yield return _mapper.Map<InventoryDTO>(Inventoryobject);
+                    yield return _mapper.Map<InventoryDTO>(inventoryEntry);
                 }
             }
         }

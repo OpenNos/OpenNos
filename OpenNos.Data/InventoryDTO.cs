@@ -14,7 +14,7 @@
 
 namespace OpenNos.Data
 {
-    public class InventoryDTO 
+    public class InventoryDTO
     {
         #region Properties
 
