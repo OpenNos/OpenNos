@@ -125,13 +125,16 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
                 //Send all bytes to the remote application
                 while (totalSent < messageBytes.Length)
                 {
-                    var sent = _clientSocket.Send(messageBytes, totalSent, messageBytes.Length - totalSent, SocketFlags.None);
-                    if (sent <= 0)
+                    if (_clientSocket.Connected)
                     {
-                        throw new CommunicationException("Message could not be sent via TCP socket. Only " + totalSent + " bytes of " + messageBytes.Length + " bytes are sent.");
-                    }
+                        var sent = _clientSocket.Send(messageBytes, totalSent, messageBytes.Length - totalSent, SocketFlags.None);
+                        if (sent <= 0)
+                        {
+                            throw new CommunicationException("Message could not be sent via TCP socket. Only " + totalSent + " bytes of " + messageBytes.Length + " bytes are sent.");
+                        }
 
-                    totalSent += sent;
+                        totalSent += sent;
+                    }
                 }
 
                 LastSentMessageTime = DateTime.Now;
