@@ -136,7 +136,7 @@
     <value>Lucznik</value>
   </data>
   <data name="ASK_TO_DELETE" xml:space="preserve">
-    <value>Czy chcesz usunac?</value>
+    <value>Przedmiot zostanie zniszczony, czy na pewno chcesz sie go pozbyc?</value>
   </data>
   <data name="BAD_DROP_AMOUNT" xml:space="preserve">
     <value>Wyrzuciles zla ilosc przedmiotow!</value>
@@ -513,7 +513,7 @@
   <data name="RECIPES_LOADED" xml:space="preserve">
     <value>{0} Załadowanych przepisów!</value>
   </data>
-  <data name="REFUSED" xml:space="preserve">
+  <data name="YOU_REFUSED" xml:space="preserve">
     <value>Wymiana odrzucona</value>
   </data>
   <data name="REMOVE_SP" xml:space="preserve">
@@ -580,7 +580,7 @@
     <value>Transformacja potrzebuje 30 sekund na odswiezenie</value>
   </data>
   <data name="SURE_TO_DELETE" xml:space="preserve">
-    <value>Juz nigdy nie odzyskasz tego przedmiotu, jestes pewien?</value>
+    <value>Jeśli zniszczysz ten przedmiot, nie będzie już można go odzyskać. Czy na pewno chcesz to zrobic?</value>
   </data>
   <data name="SWORDMAN" xml:space="preserve">
     <value>Wojownik</value>
@@ -668,5 +668,8 @@
   </data>
   <data name="HEROLEVEL_CHANGED" xml:space="preserve">
     <value>Poziom bohatera twojej postaci zostal zmieniony!</value>
+  </data>
+  <data name="REFUSED" xml:space="preserve">
+    <value>odrzucil wymiane</value>
   </data>
 </root>

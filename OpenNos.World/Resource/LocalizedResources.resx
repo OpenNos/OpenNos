@@ -513,7 +513,7 @@
   <data name="RECIPES_LOADED" xml:space="preserve">
     <value>{0} Recipes Loaded!</value>
   </data>
-  <data name="REFUSED" xml:space="preserve">
+  <data name="YOU_REFUSED" xml:space="preserve">
     <value>Exchange Refused</value>
   </data>
   <data name="REMOVE_SP" xml:space="preserve">
@@ -671,5 +671,8 @@
   </data>
   <data name="HEROLEVEL_CHANGED" xml:space="preserve">
     <value>Hero level has been changed!</value>
+  </data>
+  <data name="REFUSED" xml:space="preserve">
+    <value>refused exchange</value>
   </data>
 </root>
