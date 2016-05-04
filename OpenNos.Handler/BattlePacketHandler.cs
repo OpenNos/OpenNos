@@ -840,25 +840,15 @@ namespace OpenNos.Handler
             #endregion
 
             int intdamage = random.Next(MinDmg, MaxDmg + 1);
-            ushort damage = 0;
-
-            while (intdamage > short.MaxValue)
-            {
-                intdamage -= short.MaxValue;
-            }
-
-            damage = Convert.ToUInt16(intdamage);
-
             //unchanged from here on
             if (generated < CritChance)
             {
                 hitmode = 3;
-                damage *= 2;
+                intdamage *= 2;
             }
             if (generated > 100 - miss_chance)
             {
                 hitmode = 1;
-                damage = 0;
                 intdamage = 0;
             }
 
@@ -899,6 +889,15 @@ namespace OpenNos.Handler
             {
                 mmon.CurrentHp -= intdamage;
             }
+            ushort damage = 0;
+
+            while (intdamage > ushort.MaxValue)
+            {
+                intdamage -= ushort.MaxValue;
+            }
+
+            damage = Convert.ToUInt16(intdamage);
+
             mmon.Target = Session.Character.CharacterId;
             return damage;
         }
