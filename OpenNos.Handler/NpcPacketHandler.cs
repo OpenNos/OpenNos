@@ -561,6 +561,7 @@ namespace OpenNos.Handler
                     MapNpc npc = ServerManager.GetMap(Session.Character.MapId).Npcs.FirstOrDefault(n => n.MapNpcId.Equals(Convert.ToInt16(packetsplit[3])));
                     if (!string.IsNullOrEmpty(npc?.GetNpcDialog()))
                         Session.Client.SendPacket(npc.GetNpcDialog());
+
                 }
             }
         }
