@@ -227,6 +227,7 @@ namespace OpenNos.DAL.EF.MySQL
                     ItemInstance deleteItem = context.ItemInstance.FirstOrDefault(s => s.Inventory.InventoryId == delete.InventoryId);
                     context.ItemInstance.Remove(deleteItem);
                     context.Inventory.Remove(delete);
+                    context.SaveChanges();
                 }
                 inventory = Insert(inventory, context);
             }

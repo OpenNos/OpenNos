@@ -314,7 +314,6 @@ namespace OpenNos.Handler
                                 Session.Character.Gold = Session.Character.Gold - Session.Character.ExchangeInfo.Gold + exchange.Gold;
                                 Session.Client.SendPacket(Session.Character.GenerateGold());
                                 ClientLinkManager.Instance.ExchangeValidate(Session, Session.Character.ExchangeInfo.CharId);
-
                             }
                         }
                     }
@@ -372,19 +371,22 @@ namespace OpenNos.Handler
             MapItem mapitem;
             if (Session.CurrentMap.DroppedList.TryGetValue(DropId, out mapitem))
             {
-                int Amount = mapitem.ItemInstance.Amount;
+                //rarify
+                mapitem.Rarify(Session);
+
+                int amount = mapitem.ItemInstance.Amount;
+
                 if (mapitem.PositionX < Session.Character.MapX + 3 && mapitem.PositionX > Session.Character.MapX - 3 && mapitem.PositionY < Session.Character.MapY + 3 && mapitem.PositionY > Session.Character.MapY - 3)
                 {
                     if (mapitem.ItemInstance.ItemVNum != 1046)
                     {
-
                         Inventory newInv = Session.Character.InventoryList.AddToInventory(mapitem.ItemInstance);
                         if (newInv != null)
                         {
                             Session.CurrentMap.DroppedList.Remove(DropId);
                             ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateGet(DropId), ReceiverType.AllOnMap);
                             Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(newInv.ItemInstance.ItemVNum, newInv.ItemInstance.Amount, newInv.Type, newInv.Slot, mapitem.ItemInstance.Rare, mapitem.ItemInstance.Design, mapitem.ItemInstance.Upgrade));
-                            Session.Client.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {(newInv.ItemInstance as ItemInstance).Item.Name} x {Amount}", 12));
+                            Session.Client.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {(newInv.ItemInstance as ItemInstance).Item.Name} x {amount}", 12));
                         }
                         else
                         {
@@ -399,7 +401,7 @@ namespace OpenNos.Handler
                             Session.Character.Gold += mapitem.ItemInstance.Amount;
                             Session.CurrentMap.DroppedList.Remove(DropId);
                             ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateGet(DropId), ReceiverType.AllOnMap);
-                            Session.Client.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {iteminfo.Name} x {Amount}", 12));
+                            Session.Client.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {iteminfo.Name} x {amount}", 12));
                             Session.Client.SendPacket(Session.Character.GenerateGold());
                         }
                         else
@@ -1036,6 +1038,8 @@ namespace OpenNos.Handler
                             if (iteminfo.EquipmentSlot == (byte)EquipmentType.Armor || iteminfo.EquipmentSlot == (byte)EquipmentType.MainWeapon || iteminfo.EquipmentSlot == (byte)EquipmentType.SecondaryWeapon)
 
                                 inventory.RarifyItem(Session, RarifyMode.Normal, RarifyProtection.None);
+                            Session.Character.GenerateStartupInventory();
+                            Session.Client.SendPacket("shop_end 1");
                         }
                         break;
 

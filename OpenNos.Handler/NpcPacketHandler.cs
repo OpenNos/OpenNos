@@ -395,7 +395,7 @@ namespace OpenNos.Handler
                         if (inv.ItemInstance.GetType().Equals(typeof(WearableInstance)))
                         {
                             WearableInstance item = inv.ItemInstance as WearableInstance;
-                            ServersData.SetRarityPoint(ref item);
+                            item.SetRarityPoint();
                         }
 
                         if (inv != null)
@@ -561,7 +561,6 @@ namespace OpenNos.Handler
                     MapNpc npc = ServerManager.GetMap(Session.Character.MapId).Npcs.FirstOrDefault(n => n.MapNpcId.Equals(Convert.ToInt16(packetsplit[3])));
                     if (!string.IsNullOrEmpty(npc?.GetNpcDialog()))
                         Session.Client.SendPacket(npc.GetNpcDialog());
-
                 }
             }
         }
@@ -571,7 +570,6 @@ namespace OpenNos.Handler
             string packetToSend = $"n_inv 1 {owner} 0 0";
             for (short i = 0; i < 20; i++)
             {
-
                 PersonalShopItem item = shop.Value.Items.Count() > i ? shop.Value.Items.ElementAt(i) : null;
                 if (item != null)
                 {

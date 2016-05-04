@@ -115,16 +115,21 @@ namespace OpenNos.GameObject
 
         public ItemInstance CreateItemInstance(short vnum)
         {
-            ItemInstance iteminstance = new ItemInstance() { ItemVNum = vnum, Amount = 1, ItemInstanceId = GenerateItemInstanceId() };
+            return CreateItemInstance(vnum, GenerateItemInstanceId());
+        }
+
+        public static ItemInstance CreateItemInstance(short vnum, long itemInstanceId)
+        {
+            ItemInstance iteminstance = new ItemInstance() { ItemVNum = vnum, Amount = 1, ItemInstanceId = itemInstanceId };
             if (iteminstance.Item != null)
             {
                 switch (iteminstance.Item.Type)
                 {
                     case (byte)InventoryType.Wear:
                         if (iteminstance.Item.ItemType == (byte)ItemType.Specialist)
-                            iteminstance = new SpecialistInstance() { ItemVNum = vnum, SpLevel = 1, Amount = 1, ItemInstanceId = GenerateItemInstanceId() };
+                            iteminstance = new SpecialistInstance() { ItemVNum = vnum, SpLevel = 1, Amount = 1, ItemInstanceId = itemInstanceId };
                         else
-                            iteminstance = new WearableInstance() { ItemVNum = vnum, Amount = 1, ItemInstanceId = GenerateItemInstanceId() };
+                            iteminstance = new WearableInstance() { ItemVNum = vnum, Amount = 1, ItemInstanceId = itemInstanceId };
                         break;
                 }
             }
@@ -345,7 +350,7 @@ namespace OpenNos.GameObject
                 return null;
             if (amount > 0 && amount <= inv.ItemInstance.Amount)
             {
-                droppedItem = new MapItem(MapX, MapY)
+                droppedItem = new MapItem(MapX, MapY, false)
                 {
                     ItemInstance = (inv.ItemInstance as ItemInstance).DeepCopy()
                 };

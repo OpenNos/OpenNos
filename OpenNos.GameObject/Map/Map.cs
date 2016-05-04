@@ -12,7 +12,6 @@
  * GNU General Public License for more details.
  */
 
-using AutoMapper;
 using OpenNos.DAL;
 using OpenNos.Data;
 using System;
@@ -39,7 +38,6 @@ namespace OpenNos.GameObject
 
         public Map(short mapId, Guid uniqueIdentifier, byte[] data)
         {
-
             MapId = mapId;
             _uniqueIdentifier = uniqueIdentifier;
             Data = data;
@@ -229,6 +227,35 @@ namespace OpenNos.GameObject
             return SolutionPathList;
         }
 
+        public void DropItemByMonster(DropDTO drop, short mapX, short mapY)
+        {
+            Random rnd = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
+            int random = 0;
+            MapItem droppedItem = null;
+            short MapX = (short)(rnd.Next(mapX - 1, mapX + 1));
+            short MapY = (short)(rnd.Next(mapY - 1, mapY + 1));
+            while (IsBlockedZone(MapX, MapY))
+            {
+                MapX = (short)(rnd.Next(mapX - 1, mapX + 1));
+                MapY = (short)(rnd.Next(mapY - 1, mapY + 1));
+            }
+
+            ItemInstance newInstance = InventoryList.CreateItemInstance(drop.ItemVNum, 0);
+            newInstance.Amount = (short)drop.Amount;
+
+            droppedItem = new MapItem(MapX, MapY, true)
+            {
+                ItemInstance = newInstance
+            };
+
+            while (ServerManager.GetMap(MapId).DroppedList.ContainsKey(random = rnd.Next(1, 999999)))
+            { }
+            droppedItem.ItemInstance.ItemInstanceId = random;
+            ServerManager.GetMap(MapId).DroppedList.Add(random, droppedItem);
+
+            ClientLinkManager.Instance.BroadcastToMap(MapId, $"drop {droppedItem.ItemInstance.ItemVNum} {random} {droppedItem.PositionX} {droppedItem.PositionY} {droppedItem.ItemInstance.Amount} 0 0 -1");
+        }
+
         public List<MapMonster> GetListMonsterInRange(short mapX, short mapY, byte distance)
         {
             List<MapMonster> listmon = new List<MapMonster>();
@@ -268,31 +295,6 @@ namespace OpenNos.GameObject
                 }
             }
             return false;
-        }
-
-        public void ItemSpawn(DropDTO drop, short mapX, short mapY)
-        {
-            Random rnd = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
-            int random = 0;
-            MapItem DroppedItem = null;
-            short MapX = (short)(rnd.Next(mapX - 1, mapX + 1));
-            short MapY = (short)(rnd.Next(mapY - 1, mapY + 1));
-            while (IsBlockedZone(MapX, MapY))
-            {
-                MapX = (short)(rnd.Next(mapX - 1, mapX + 1));
-                MapY = (short)(rnd.Next(mapY - 1, mapY + 1));
-            }
-
-            DroppedItem = new MapItem(MapX, MapY)
-            {
-                ItemInstance = new ItemInstance() { ItemVNum = drop.ItemVNum, Amount = (short)drop.Amount }
-            };
-            while (ServerManager.GetMap(MapId).DroppedList.ContainsKey(random = rnd.Next(1, 999999)))
-            { }
-            DroppedItem.ItemInstance.ItemInstanceId = random;
-            ServerManager.GetMap(MapId).DroppedList.Add(random, DroppedItem);
-
-            ClientLinkManager.Instance.BroadcastToMap(MapId, $"drop {DroppedItem.ItemInstance.ItemVNum} {random} {DroppedItem.PositionX} {DroppedItem.PositionY} {DroppedItem.ItemInstance.Amount} 0 0 -1");
         }
 
         public void LoadZone()

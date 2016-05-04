@@ -18,6 +18,7 @@ namespace OpenNos.Domain
     {
         Normal,
         Reduced,
-        Free
+        Free,
+        Drop
     }
 }

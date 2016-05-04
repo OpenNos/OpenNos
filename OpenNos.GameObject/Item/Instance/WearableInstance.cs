@@ -135,86 +135,139 @@ namespace OpenNos.GameObject
             int rnd = r.Next(100);
             if (rnd <= rare7 && !(protection == RarifyProtection.Scroll && this.Rare >= 7))
             {
-                Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("RARIFY_SUCCESS"), 7), 12));
-                Session.Client.SendPacket(Session.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("RARIFY_SUCCESS"), 7), 0));
-                Session.Client.SendPacket(Session.Character.GenerateEff(3005));
-                Session.Character.InventoryList.LoadByItemInstance<WearableInstance>(this.ItemInstanceId).Rare = 7;
-                WearableInstance inv = Session.Character.InventoryList.LoadByItemInstance<WearableInstance>(this.ItemInstanceId);
-                ServersData.SetRarityPoint(ref inv);
-                
+                if (mode != RarifyMode.Drop)
+                {
+                    Session.Character.NotiyRarifyResult(7);
+                }
+
+                this.Rare = 7;
+                SetRarityPoint();
             }
             else if (rnd <= rare6 && !(protection == RarifyProtection.Scroll && this.Rare >= 6))
             {
-                Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("RARIFY_SUCCESS"), 6), 12));
-                Session.Client.SendPacket(Session.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("RARIFY_SUCCESS"), 6), 0));
-                Session.Client.SendPacket(Session.Character.GenerateEff(3005));
-                Session.Character.InventoryList.LoadByItemInstance<WearableInstance>(this.ItemInstanceId).Rare = 6;
-                WearableInstance inv = Session.Character.InventoryList.LoadByItemInstance<WearableInstance>(this.ItemInstanceId);
-                ServersData.SetRarityPoint(ref inv);
+                if (mode != RarifyMode.Drop)
+                {
+                    Session.Character.NotiyRarifyResult(6);
+                }
+                this.Rare = 6;
+                SetRarityPoint();
             }
             else if (rnd <= rare5 && !(protection == RarifyProtection.Scroll && this.Rare >= 5))
             {
-                Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("RARIFY_SUCCESS"), 5), 12));
-                Session.Client.SendPacket(Session.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("RARIFY_SUCCESS"), 5), 0));
-                Session.Client.SendPacket(Session.Character.GenerateEff(3005));
-                Session.Character.InventoryList.LoadByItemInstance<WearableInstance>(this.ItemInstanceId).Rare = 5;
-                WearableInstance inv = Session.Character.InventoryList.LoadByItemInstance<WearableInstance>(this.ItemInstanceId);
-                ServersData.SetRarityPoint(ref inv);
+                if (mode != RarifyMode.Drop)
+                {
+                    Session.Character.NotiyRarifyResult(5);
+                }
+                this.Rare = 5;
+                SetRarityPoint();
             }
             else if (rnd <= rare4 && !(protection == RarifyProtection.Scroll && this.Rare >= 4))
             {
-                Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("RARIFY_SUCCESS"), 4), 12));
-                Session.Client.SendPacket(Session.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("RARIFY_SUCCESS"), 4), 0));
-                Session.Client.SendPacket(Session.Character.GenerateEff(3005));
-                Session.Character.InventoryList.LoadByItemInstance<WearableInstance>(this.ItemInstanceId).Rare = 4;
-                WearableInstance inv = Session.Character.InventoryList.LoadByItemInstance<WearableInstance>(this.ItemInstanceId);
-                ServersData.SetRarityPoint(ref inv);
+                if (mode != RarifyMode.Drop)
+                {
+                    Session.Character.NotiyRarifyResult(4);
+                }
+                this.Rare = 4;
+                SetRarityPoint();
             }
             else if (rnd <= rare3 && !(protection == RarifyProtection.Scroll && this.Rare >= 3))
             {
-                Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("RARIFY_SUCCESS"), 3), 12));
-                Session.Client.SendPacket(Session.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("RARIFY_SUCCESS"), 3), 0));
-                Session.Client.SendPacket(Session.Character.GenerateEff(3005));
-                Session.Character.InventoryList.LoadByItemInstance<WearableInstance>(this.ItemInstanceId).Rare = 3;
-                WearableInstance inv = Session.Character.InventoryList.LoadByItemInstance<WearableInstance>(this.ItemInstanceId);
-                ServersData.SetRarityPoint(ref inv);
+                if (mode != RarifyMode.Drop)
+                {
+                    Session.Character.NotiyRarifyResult(3);
+                }
+                this.Rare = 3;
+                SetRarityPoint();
             }
             else if (rnd <= rare2 && !(protection == RarifyProtection.Scroll && this.Rare >= 2))
             {
-                Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("RARIFY_SUCCESS"), 2), 12));
-                Session.Client.SendPacket(Session.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("RARIFY_SUCCESS"), 2), 0));
-                Session.Client.SendPacket(Session.Character.GenerateEff(3005));
-                Session.Character.InventoryList.LoadByItemInstance<WearableInstance>(this.ItemInstanceId).Rare = 2;
-                WearableInstance inv = Session.Character.InventoryList.LoadByItemInstance<WearableInstance>(this.ItemInstanceId);
-                ServersData.SetRarityPoint(ref inv);
+                if (mode != RarifyMode.Drop)
+                {
+                    Session.Character.NotiyRarifyResult(2);
+                }
+                this.Rare = 2;
+                SetRarityPoint();
             }
             else if (rnd <= rare1 && !(protection == RarifyProtection.Scroll && this.Rare >= 1))
             {
-                Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("RARIFY_SUCCESS"), 1), 12));
-                Session.Client.SendPacket(Session.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("RARIFY_SUCCESS"), 1), 0));
-                Session.Client.SendPacket(Session.Character.GenerateEff(3005));
-                Session.Character.InventoryList.LoadByItemInstance<WearableInstance>(this.ItemInstanceId).Rare = 1;
-                WearableInstance inv = Session.Character.InventoryList.LoadByItemInstance<WearableInstance>(this.ItemInstanceId);
-                ServersData.SetRarityPoint(ref inv);
+                if (mode != RarifyMode.Drop)
+                {
+                    Session.Character.NotiyRarifyResult(1);
+                }
+                this.Rare = 1;
+                SetRarityPoint();
             }
             else
             {
-                if (protection == RarifyProtection.None)
+                if (mode != RarifyMode.Drop)
                 {
-                    Session.Character.DeleteItemByItemInstanceId (this.ItemInstanceId);
-                    Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("RARIFY_FAILED"), 11));
-                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("RARIFY_FAILED"), 0));
-                }
-                else
-                {
-                    Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("RARIFY_FAILED_ITEM_SAVED"), 11));
-                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("RARIFY_FAILED_ITEM_SAVED"), 0));
-                    Session.Client.SendPacket(Session.Character.GenerateEff(3004));
-                    Session.Character.InventoryList.LoadByItemInstance<WearableInstance>(this.ItemInstanceId).IsFixed = true;
+                    if (protection == RarifyProtection.None)
+                    {
+                        Session.Character.DeleteItemByItemInstanceId(this.ItemInstanceId);
+                        Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("RARIFY_FAILED"), 11));
+                        Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("RARIFY_FAILED"), 0));
+                    }
+                    else
+                    {
+                        Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("RARIFY_FAILED_ITEM_SAVED"), 11));
+                        Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("RARIFY_FAILED_ITEM_SAVED"), 0));
+                        Session.Client.SendPacket(Session.Character.GenerateEff(3004));
+                        Session.Character.InventoryList.LoadByItemInstance<WearableInstance>(this.ItemInstanceId).IsFixed = true;
+                    }
                 }
             }
-            Session.Character.GenerateStartupInventory();
-            Session.Client.SendPacket("shop_end 1");
+        }
+
+        public void SetRarityPoint()
+        {
+            if (this.Item.EquipmentSlot == (byte)EquipmentType.MainWeapon || this.Item.EquipmentSlot == (byte)EquipmentType.SecondaryWeapon)
+            {
+                int point = ServersData.RarityPoint(this.Rare, this.Item.LevelMinimum);
+                Random rnd = new Random();
+                this.Concentrate = 0;
+                this.HitRate = 0;
+                this.DamageMinimum = 0;
+                this.DamageMaximum = 0;
+                for (int i = 0; i < point; i++)
+                {
+                    int rndn = rnd.Next(0, 3);
+                    if (rndn == 0)
+                    {
+                        this.Concentrate++;
+                        this.HitRate++;
+                    }
+                    else
+                    {
+                        this.DamageMinimum++;
+                        this.DamageMaximum++;
+                    }
+                }
+            }
+            else if (this.Item.EquipmentSlot == (byte)EquipmentType.Armor)
+            {
+                int point = ServersData.RarityPoint(this.Rare, this.Item.LevelMinimum);
+                Random rnd = new Random();
+                this.DefenceDodge = 0;
+                this.DistanceDefenceDodge = 0;
+                this.DistanceDefence = 0;
+                this.MagicDefence = 0;
+                this.CloseDefence = 0;
+                for (int i = 0; i < point; i++)
+                {
+                    int rndn = rnd.Next(0, 3);
+                    if (rndn == 0)
+                    {
+                        this.DefenceDodge++;
+                        this.DistanceDefenceDodge++;
+                    }
+                    else
+                    {
+                        this.DistanceDefence++;
+                        this.MagicDefence++;
+                        this.CloseDefence++;
+                    }
+                }
+            }
         }
 
         public void SumItem(ClientSession Session, WearableInstance itemToSum)

@@ -332,7 +332,7 @@ namespace OpenNos.Handler
                     inv.ItemInstance.Design = design;
                     
                     WearableInstance wearable = Session.Character.InventoryList.LoadBySlotAndType<WearableInstance>(inv.Slot,inv.Type);
-                    ServersData.SetRarityPoint(ref wearable);
+                    wearable.SetRarityPoint();
                     if (inv != null)
                     {
                         short Slot = inv.Slot;
@@ -588,6 +588,8 @@ namespace OpenNos.Handler
                         wearableInstance.RarifyItem(Session, (RarifyMode)mode, (RarifyProtection)protection);
                     }
                 }
+
+                Session.Character.GenerateStartupInventory();
             }
         }
 

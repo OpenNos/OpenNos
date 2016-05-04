@@ -293,61 +293,6 @@ namespace OpenNos.GameObject
             return p * (1 + lvl / 5);
         }
 
-        public static void SetRarityPoint(ref WearableInstance wearableInstance)
-        {
-            if (wearableInstance == null)
-                return;
-            Item iteminfo = ServerManager.GetItem(wearableInstance.ItemVNum);
-            if (iteminfo.EquipmentSlot == (byte)EquipmentType.MainWeapon || iteminfo.EquipmentSlot == (byte)EquipmentType.SecondaryWeapon)
-            {
-                int point = ServersData.RarityPoint(wearableInstance.Rare, iteminfo.LevelMinimum);
-                Random rnd = new Random();
-                wearableInstance.Concentrate = 0;
-                wearableInstance.HitRate = 0;
-                wearableInstance.DamageMinimum = 0;
-                wearableInstance.DamageMaximum = 0;
-                for (int i = 0; i < point; i++)
-                {
-                    int rndn = rnd.Next(0, 3);
-                    if (rndn == 0)
-                    {
-                        wearableInstance.Concentrate++;
-                        wearableInstance.HitRate++;
-                    }
-                    else
-                    {
-                        wearableInstance.DamageMinimum++;
-                        wearableInstance.DamageMaximum++;
-                    }
-                }
-            }
-            else if (iteminfo.EquipmentSlot == (byte)EquipmentType.Armor)
-            {
-                int point = RarityPoint(wearableInstance.Rare, iteminfo.LevelMinimum);
-                Random rnd = new Random();
-                wearableInstance.DefenceDodge = 0;
-                wearableInstance.DistanceDefenceDodge = 0;
-                wearableInstance.DistanceDefence = 0;
-                wearableInstance.MagicDefence = 0;
-                wearableInstance.CloseDefence = 0;
-                for (int i = 0; i < point; i++)
-                {
-                    int rndn = rnd.Next(0, 3);
-                    if (rndn == 0)
-                    {
-                        wearableInstance.DefenceDodge++;
-                        wearableInstance.DistanceDefenceDodge++;
-                    }
-                    else
-                    {
-                        wearableInstance.DistanceDefence++;
-                        wearableInstance.MagicDefence++;
-                        wearableInstance.CloseDefence++;
-                    }
-                }
-            }
-        }
-
         public static int SlPoint(short spPoint, short mode)
         {
             int point = 0;

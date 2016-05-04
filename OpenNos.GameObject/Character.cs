@@ -174,6 +174,13 @@ namespace OpenNos.GameObject
             }
         }
 
+        public void NotiyRarifyResult(byte rare)
+        {
+            Session.Client.SendPacket(GenerateSay(String.Format(Language.Instance.GetMessageFromKey("RARIFY_SUCCESS"), rare), 12));
+            Session.Client.SendPacket(GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("RARIFY_SUCCESS"), rare), 0));
+            Session.Client.SendPacket(GenerateEff(3005));
+        }
+
         public string GenerateAt()
         {
             return $"at {CharacterId} {MapId} {MapX} {MapY} 2 0 {ServerManager.GetMap(MapId).Music} 1";
@@ -306,10 +313,10 @@ namespace OpenNos.GameObject
             int color = HairColor;
             WearableInstance head = EquipmentList.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Hat, (byte)InventoryType.Equipment);
 
-            if (head != null && ServerManager.GetItem(head.ItemVNum).IsColored)
+            if (head != null && head.Item.IsColored)
                 color = head.Design;
 
-            return $"eq {CharacterId} {(Authority == AuthorityType.Admin ? 2 : 0)} {Gender} {HairStyle} {color} {Class} {GenerateEqListForPacket()} {generateEqRareUpgradeForPacket()}";
+            return $"eq {CharacterId} {(Authority == AuthorityType.Admin ? 2 : 0)} {Gender} {HairStyle} {color} {Class} {GenerateEqListForPacket()} {GenerateEqRareUpgradeForPacket()}";
         }
 
         public string GenerateEqListForPacket()
@@ -328,7 +335,7 @@ namespace OpenNos.GameObject
             return $"{invarray[(byte)EquipmentType.Hat]}.{invarray[(byte)EquipmentType.Armor]}.{invarray[(byte)EquipmentType.MainWeapon]}.{invarray[(byte)EquipmentType.SecondaryWeapon]}.{invarray[(byte)EquipmentType.Mask]}.{invarray[(byte)EquipmentType.Fairy]}.{invarray[(byte)EquipmentType.CostumeSuit]}.{invarray[(byte)EquipmentType.CostumeHat]}";
         }
 
-        public string generateEqRareUpgradeForPacket()
+        public string GenerateEqRareUpgradeForPacket()
         {
             byte weaponRare = 0;
             byte weaponUpgrade = 0;
@@ -339,14 +346,12 @@ namespace OpenNos.GameObject
                 WearableInstance wearable = EquipmentList.LoadBySlotAndType<WearableInstance>(i, (byte)InventoryType.Equipment);
                 if (wearable != null)
                 {
-                    Item iteminfo = ServerManager.GetItem(wearable.ItemVNum);
-
-                    if (iteminfo.EquipmentSlot == (byte)EquipmentType.Armor)
+                    if (wearable.Item.EquipmentSlot == (byte)EquipmentType.Armor)
                     {
                         armorRare = wearable.Rare;
                         armorUpgrade = wearable.Upgrade;
                     }
-                    else if (iteminfo.EquipmentSlot == (byte)EquipmentType.MainWeapon)
+                    else if (wearable.Item.EquipmentSlot == (byte)EquipmentType.MainWeapon)
                     {
                         weaponRare = wearable.Rare;
                         weaponUpgrade = wearable.Upgrade;
@@ -372,18 +377,17 @@ namespace OpenNos.GameObject
                     wearable = EquipmentList.LoadBySlotAndType<SpecialistInstance>(i, (byte)InventoryType.Equipment);
                 if (wearable != null)
                 {
-                    Item iteminfo = ServerManager.GetItem(wearable.ItemVNum);
-                    if (iteminfo.EquipmentSlot == (byte)EquipmentType.Armor)
+                    if (wearable.Item.EquipmentSlot == (byte)EquipmentType.Armor)
                     {
                         armorRare = wearable.Rare;
                         armorUpgrade = wearable.Upgrade;
                     }
-                    else if (iteminfo.EquipmentSlot == (byte)EquipmentType.MainWeapon)
+                    else if (wearable.Item.EquipmentSlot == (byte)EquipmentType.MainWeapon)
                     {
                         weaponRare = wearable.Rare;
                         weaponUpgrade = wearable.Upgrade;
                     }
-                    eqlist += $" {i}.{iteminfo.VNum}.{wearable.Rare}.{(iteminfo.IsColored ? wearable.Design : wearable.Upgrade)}.0";
+                    eqlist += $" {i}.{wearable.Item.VNum}.{wearable.Rare}.{(wearable.Item.IsColored ? wearable.Design : wearable.Upgrade)}.0";
                 }
             }
             return $"equip {weaponUpgrade}{weaponRare} {armorUpgrade}{armorRare}{eqlist}";
@@ -445,7 +449,7 @@ namespace OpenNos.GameObject
                 color = headWearable.Design;
             Inventory fairy = EquipmentList.LoadInventoryBySlotAndType((byte)EquipmentType.Fairy, (byte)InventoryType.Equipment);
 
-            return $"in 1 {Name} - {CharacterId} {MapX} {MapY} {Direction} {(Authority == AuthorityType.Admin ? 2 : 0)} {Gender} {HairStyle} {color} {Class} {GenerateEqListForPacket()} {(int)(Hp / HPLoad() * 100)} {(int)(Mp / MPLoad() * 100)} {(IsSitting ? 1 : 0)} -1 {(fairy != null ? 2 : 0)} {(fairy != null ? ServerManager.GetItem(fairy.ItemInstance.ItemVNum).Element : 0)} 0 {(fairy != null ? ServerManager.GetItem(fairy.ItemInstance.ItemVNum).Morph : 0)} 0 {(UseSp ? Morph : 0)} {generateEqRareUpgradeForPacket()} -1 - {((GetDigniteIco() == 1) ? GetReputIco() : -GetDigniteIco())} {(_invisible ? 1 : 0)} {(UseSp ? MorphUpgrade : 0)} 0 {(UseSp ? MorphUpgrade2 : 0)} {Level} 0 {ArenaWinner} {Compliment} {Size} {HeroLevel}";
+            return $"in 1 {Name} - {CharacterId} {MapX} {MapY} {Direction} {(Authority == AuthorityType.Admin ? 2 : 0)} {Gender} {HairStyle} {color} {Class} {GenerateEqListForPacket()} {(int)(Hp / HPLoad() * 100)} {(int)(Mp / MPLoad() * 100)} {(IsSitting ? 1 : 0)} -1 {(fairy != null ? 2 : 0)} {(fairy != null ? ServerManager.GetItem(fairy.ItemInstance.ItemVNum).Element : 0)} 0 {(fairy != null ? ServerManager.GetItem(fairy.ItemInstance.ItemVNum).Morph : 0)} 0 {(UseSp ? Morph : 0)} {GenerateEqRareUpgradeForPacket()} -1 - {((GetDigniteIco() == 1) ? GetReputIco() : -GetDigniteIco())} {(_invisible ? 1 : 0)} {(UseSp ? MorphUpgrade : 0)} 0 {(UseSp ? MorphUpgrade2 : 0)} {Level} 0 {ArenaWinner} {Compliment} {Size} {HeroLevel}";
         }
 
         public List<string> Generatein2()
@@ -584,7 +588,6 @@ namespace OpenNos.GameObject
             WearableInstance weapon2 = EquipmentList.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.SecondaryWeapon, (byte)InventoryType.Equipment);
             WearableInstance weapon = EquipmentList.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.MainWeapon, (byte)InventoryType.Equipment);
             //tc_info 0  name   0 0  0 0 -1 - 0  0 0 0 0 0 0 0 0 0 0 wins deaths reput 0 0 0 morph talentwin talentlose capitul rankingpoints arenapoints 0 0 ispvpprimary ispvpsecondary ispvparmor herolvl desc
-
 
             return $"tc_info {Level} {Name} {(fairy != null ? ServerManager.GetItem(fairy.ItemVNum).Element : 0)} {(element != 0 ? elementRate : 0)} {Class} {Gender} -1 - {GetReputIco()} {GetDigniteIco()} {(weapon != null ? 1 : 0)} {weapon?.Rare ?? 0} {weapon?.Upgrade ?? 0} {(weapon2 != null ? 1 : 0)} {weapon2?.Rare ?? 0} {weapon2?.Upgrade ?? 0} {(armor != null ? 1 : 0)} {armor?.Rare ?? 0} {armor?.Upgrade ?? 0} 0 0 {Reput} 0 0 0 {(UseSp ? Morph : 0)} 0 0 0 0 0 {Compliment} 0 0 0 0 {HeroLevel} {Language.Instance.GetMessageFromKey("NO_PREZ_MESSAGE")}";
         }

@@ -121,7 +121,7 @@ namespace OpenNos.Handler
                             Task t = Task.Factory.StartNew(async () =>
                             {
                                 short dX = (short)(Session.Character.MapX - mmon.MapX);
-                                 short dY = (short)(Session.Character.MapY - mmon.MapY);
+                                short dY = (short)(Session.Character.MapY - mmon.MapY);
 
                                 if (Map.GetDistance(new MapCell() { X = Session.Character.MapX, Y = Session.Character.MapY }, new MapCell() { X = mmon.MapX, Y = mmon.MapY }) <= skill.Range + 1 || skill.TargetRange != 0)
                                 {
@@ -235,25 +235,23 @@ namespace OpenNos.Handler
             WearableInstance weapon = Session.Character.EquipmentList.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.MainWeapon, (byte)InventoryType.Equipment);
             if (weapon != null)
             {
-                Item iteminfo = ServerManager.GetItem(weapon.ItemVNum);
                 MainUpgrade = weapon.Upgrade;
-                MainMinDmg += weapon.DamageMinimum + iteminfo.DamageMinimum;
-                MainMaxDmg += weapon.DamageMaximum + iteminfo.DamageMaximum;
-                MainHitRate += weapon.HitRate + iteminfo.HitRate;
-                MainCritChance += weapon.CriticalLuckRate + iteminfo.CriticalLuckRate;
-                MainCritHit += weapon.CriticalRate + iteminfo.CriticalRate;
+                MainMinDmg += weapon.DamageMinimum + weapon.Item.DamageMinimum;
+                MainMaxDmg += weapon.DamageMaximum + weapon.Item.DamageMaximum;
+                MainHitRate += weapon.HitRate + weapon.Item.HitRate;
+                MainCritChance += weapon.CriticalLuckRate + weapon.Item.CriticalLuckRate;
+                MainCritHit += weapon.CriticalRate + weapon.Item.CriticalRate;
             }
 
             WearableInstance weapon2 = Session.Character.EquipmentList.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.SecondaryWeapon, (byte)InventoryType.Equipment);
             if (weapon2 != null)
             {
-                Item iteminfo = ServerManager.GetItem(weapon2.ItemVNum);
                 SecUpgrade = weapon2.Upgrade;
-                SecMinDmg += weapon2.DamageMinimum + iteminfo.DamageMinimum;
-                SecMaxDmg += weapon2.DamageMaximum + iteminfo.DamageMaximum;
-                SecHitRate += weapon2.HitRate + iteminfo.HitRate;
-                SecCritChance += weapon2.CriticalLuckRate + iteminfo.CriticalLuckRate;
-                SecCritHit += weapon2.CriticalRate + iteminfo.CriticalRate;
+                SecMinDmg += weapon2.DamageMinimum + weapon2.Item.DamageMinimum;
+                SecMaxDmg += weapon2.DamageMaximum + weapon2.Item.DamageMaximum;
+                SecHitRate += weapon2.HitRate + weapon2.Item.HitRate;
+                SecCritChance += weapon2.CriticalLuckRate + weapon2.Item.CriticalLuckRate;
+                SecCritHit += weapon2.CriticalRate + weapon2.Item.CriticalRate;
             }
 
             #endregion
@@ -879,7 +877,7 @@ namespace OpenNos.Handler
                     double rndamount = rnd.Next(0, 100) * rnd.NextDouble();
                     if (rndamount <= (double)drop.DropChance / 5000.000)
                     {
-                        Session.CurrentMap.ItemSpawn(drop, mmon.MapX, mmon.MapY);
+                        Session.CurrentMap.DropItemByMonster(drop, mmon.MapX, mmon.MapY);
                     }
                 }
 
@@ -892,7 +890,7 @@ namespace OpenNos.Handler
                         Amount = gold,
                         ItemVNum = 1046
                     };
-                    Session.CurrentMap.ItemSpawn(drop2, mmon.MapX, mmon.MapY);
+                    Session.CurrentMap.DropItemByMonster(drop2, mmon.MapX, mmon.MapY);
                 }
                 if (Session.Character.Hp > 0)
                     GenerateXp(monsterinfo);
