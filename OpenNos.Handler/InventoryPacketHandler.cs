@@ -57,6 +57,7 @@ namespace OpenNos.Handler
             string[] packetsplit = packet.Split(' ', '^');
             byte mode;
             long charId;
+            string charName;
             if (!byte.TryParse(packetsplit[2], out mode) || !long.TryParse(packetsplit[3], out charId)) return;
 
             Session.Character.ExchangeInfo = new ExchangeInfo
@@ -81,8 +82,9 @@ namespace OpenNos.Handler
             }
             else if (mode == 5)
             {
-                Session.Client.SendPacket(Session.Character.GenerateModal($"refused {Language.Instance.GetMessageFromKey("REFUSED")}", 0));
-                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateModal($"refused {Language.Instance.GetMessageFromKey("REFUSED")}", 0), ReceiverType.OnlySomeone, "", charId);
+                charName = (string)ClientLinkManager.Instance.GetProperty<string>(charId, "Name");
+                Session.Client.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("YOU_REFUSED")}", 10));
+                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateSay($"{charName} {Language.Instance.GetMessageFromKey("REFUSED")}", 10), ReceiverType.OnlySomeone, "", charId);
             }
         }
 
