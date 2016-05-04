@@ -12,12 +12,13 @@ namespace OpenNos.DAL.EF.MySQL
             Recipe = new HashSet<Recipe>();
             Shop = new HashSet<Shop>();
             Teleporter = new HashSet<Teleporter>();
+            LifeTaskIsRunning = false;
         }
 
         #endregion
 
         #region Properties
-
+        public bool LifeTaskIsRunning { get; internal set; }
         public short Dialog { get; set; }
 
         public short Effect { get; set; }

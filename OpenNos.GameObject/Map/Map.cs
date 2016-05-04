@@ -334,9 +334,12 @@ namespace OpenNos.GameObject
             Task MonsterLifeTask = null;
             foreach (MapMonster monster in Monsters.OrderBy(i => rnd.Next()))
             {
-                MonsterLifeTask = new Task(() => monster.MonsterLife());
-                MonsterLifeTask.Start();
-                await Task.Delay(rnd.Next(1000 / Monsters.Count(), 1000 / Monsters.Count()));
+                if (!monster.LifeTaskIsRunning)
+                {
+                    MonsterLifeTask = new Task(() => monster.MonsterLife());
+                    MonsterLifeTask.Start();
+                    await Task.Delay(rnd.Next(1000 / Monsters.Count(), 1000 / Monsters.Count()));
+                }
             }
         }
 

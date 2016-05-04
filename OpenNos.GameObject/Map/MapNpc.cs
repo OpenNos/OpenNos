@@ -25,6 +25,7 @@ namespace OpenNos.GameObject
 
         public MapNpc(int npcId)
         {
+            LifeTaskIsRunning = false;
             MapNpcId = npcId;
             LastEffect = LastMove = DateTime.Now;
             IEnumerable<RecipeDTO> Recipe = DAOFactory.RecipeDAO.LoadByNpc(MapNpcId);
@@ -56,6 +57,7 @@ namespace OpenNos.GameObject
         public List<Recipe> Recipes { get; set; }
         public Shop Shop { get; set; }
         public List<Teleporter> Teleporters { get; set; }
+        public bool LifeTaskIsRunning { get; internal set; }
 
         #endregion
 
@@ -77,9 +79,13 @@ namespace OpenNos.GameObject
 
         internal void NpcLife()
         {
+            LifeTaskIsRunning = true;
             NpcMonster npc = ServerManager.GetNpc(this.NpcVNum);
             if (npc == null)
+            {
+                LifeTaskIsRunning = false;
                 return;
+            }
             double time = (DateTime.Now - LastEffect).TotalMilliseconds;
             if (Effect > 0 && time > EffectDelay)
             {
@@ -109,6 +115,7 @@ namespace OpenNos.GameObject
                     ClientLinkManager.Instance.BroadcastToMap(MapId, movepacket);
                 }
             }
+            LifeTaskIsRunning = false;
         }
 
         #endregion

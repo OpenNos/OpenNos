@@ -30,7 +30,7 @@ namespace OpenNos.GameObject
             LastEffect = LastMove = DateTime.Now;
             Target = -1;
             path = new List<MapCell>();
-            Blocked = false;
+            LifeTaskIsRunning = false;
         }
 
         #endregion
@@ -38,7 +38,6 @@ namespace OpenNos.GameObject
         #region Properties
 
         public bool Alive { get; set; }
-        private bool Blocked { get; set; }
         public int CurrentHp { get; set; }
         public int CurrentMp { get; set; }
         public DateTime Death { get; set; }
@@ -48,6 +47,7 @@ namespace OpenNos.GameObject
         public DateTime LastMove { get; private set; }
         public List<MapCell> path { get; set; }
         public long Target { get; set; }
+        public bool LifeTaskIsRunning { get; internal set; }
 
         #endregion
 
@@ -84,8 +84,10 @@ namespace OpenNos.GameObject
 
         internal void MonsterLife()
         {
+            LifeTaskIsRunning = true;
             NpcMonster monster = ServerManager.GetNpc(this.MonsterVNum);
             bool follow = false;
+        
             //Respawn
             if (!Alive)
             {
@@ -102,13 +104,18 @@ namespace OpenNos.GameObject
                     ClientLinkManager.Instance.BroadcastToMap(MapId, GenerateIn3());
                     ClientLinkManager.Instance.BroadcastToMap(MapId, GenerateEff(7));
                 }
+                LifeTaskIsRunning = false;
                 return;
             }
             else if (Target == -1)
             {
                 //Normal Move Mode
                 if (monster == null || Alive == false)
+                {
+                    LifeTaskIsRunning = false;
                     return;
+                  
+                }
                 Random r = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
                 double time = (DateTime.Now - LastMove).TotalSeconds;
                 if (IsMoving)
@@ -129,7 +136,7 @@ namespace OpenNos.GameObject
                                 this.MapX = MapX;
                                 this.MapY = MapY;
                             });
-
+                            LifeTaskIsRunning = false;
                             return;
                         }
                     }
@@ -180,11 +187,8 @@ namespace OpenNos.GameObject
                 int? Hp = ClientLinkManager.Instance.GetProperty<int?>(Target, "Hp");
                 short? mapId = ClientLinkManager.Instance.GetProperty<short?>(Target, "MapId");
              
-                if (MapX == null || MapY == null) { Target = -1; return; }
-                if (Hp <= 0)
-                {
-                    return;
-                }
+                if (MapX == null || MapY == null) { Target = -1; LifeTaskIsRunning = false; return; }
+              
                 int damage = 100;
                 Random r = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
                 NpcMonsterSkill ski = monster.Skills.Where(s => !s.Used && (DateTime.Now - s.LastUse).TotalMilliseconds >= 100 * ServerManager.GetSkill(s.SkillVNum).Cooldown).OrderBy(rnd => r.Next()).FirstOrDefault();
@@ -260,13 +264,12 @@ namespace OpenNos.GameObject
                     {
                         short maxdistance = 20;
 
-                        if (Blocked == false)
-                        {
+                        
                             if (path.Count() == 0)
                             {
-                                Blocked = true;
+                                
                                 path = ServerManager.GetMap(MapId).AStar(new MapCell() { X = this.MapX, Y = this.MapY, MapId = this.MapId }, new MapCell() { X = (short)MapX, Y = (short)MapY, MapId = this.MapId });
-                                Blocked = false;
+                                
                             }
                             if (path.Count > 0 && Map.GetDistance(new MapCell() { X = this.MapX, Y = this.MapY, MapId = this.MapId }, new MapCell() { X = (short)MapX, Y = (short)MapY, MapId = this.MapId }) > 1)
                             {
@@ -276,9 +279,8 @@ namespace OpenNos.GameObject
                             }
                             if (MapId != mapId || (Map.GetDistance(new MapCell() { X = this.MapX, Y = this.MapY }, new MapCell() { X = (short)MapX, Y = (short)MapY }) > maxdistance))
                             {
-                                Blocked = true;
+                              
                                 path = ServerManager.GetMap(MapId).AStar(new MapCell() { X = this.MapX, Y = this.MapY, MapId = this.MapId }, new MapCell() { X = firstX, Y = firstY, MapId = this.MapId });
-                                Blocked = false;
                                 Target = -1;
                             }
                             else
@@ -291,14 +293,14 @@ namespace OpenNos.GameObject
                             }
                         }
                     }
-                }
+                
 
 
 
 
 
             }
-
+            LifeTaskIsRunning = false;
         }
 
         #endregion
