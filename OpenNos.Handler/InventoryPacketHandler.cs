@@ -77,12 +77,12 @@ namespace OpenNos.Handler
                     ClientLinkManager.Instance.Broadcast(Session, $"exc_list 1 {Session.Character.CharacterId} -1", ReceiverType.OnlySomeone, "", charId);
                 }
                 else
-                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateModal($"refused {Language.Instance.GetMessageFromKey("ALREADY_EXCHANGE")}"), ReceiverType.OnlySomeone, "", charId);
+                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateModal($"refused {Language.Instance.GetMessageFromKey("ALREADY_EXCHANGE")}", 0), ReceiverType.OnlySomeone, "", charId);
             }
             else if (mode == 5)
             {
-                Session.Client.SendPacket(Session.Character.GenerateModal($"refused {Language.Instance.GetMessageFromKey("REFUSED")}"));
-                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateModal($"refused {Language.Instance.GetMessageFromKey("REFUSED")}"), ReceiverType.OnlySomeone, "", charId);
+                Session.Client.SendPacket(Session.Character.GenerateModal($"refused {Language.Instance.GetMessageFromKey("REFUSED")}", 0));
+                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateModal($"refused {Language.Instance.GetMessageFromKey("REFUSED")}", 0), ReceiverType.OnlySomeone, "", charId);
             }
         }
 
@@ -201,7 +201,7 @@ namespace OpenNos.Handler
                     Session.Character.ExchangeInfo = new ExchangeInfo { CharId = charId, Confirm = false };
 
                     charName = (string)ClientLinkManager.Instance.GetProperty<string>(charId, "Name");
-                    Session.Client.SendPacket(Session.Character.GenerateModal($"{Language.Instance.GetMessageFromKey("YOU_ASK_FOR_EXCHANGE")} {charName}"));
+                    Session.Client.SendPacket(Session.Character.GenerateModal($"{Language.Instance.GetMessageFromKey("YOU_ASK_FOR_EXCHANGE")} {charName}", 0));
                     ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateDialog($"#req_exc^2^{Session.Character.CharacterId} #req_exc^5^{Session.Character.CharacterId} {String.Format(Language.Instance.GetMessageFromKey("INCOMING_EXCHANGE"), Session.Character.Name)}"), ReceiverType.OnlySomeone, charName);
                 }
             }
@@ -375,7 +375,7 @@ namespace OpenNos.Handler
                 {
                     if (mapitem.ItemInstance.ItemVNum != 1046)
                     {
-        
+
                         Inventory newInv = Session.Character.InventoryList.AddToInventory(mapitem.ItemInstance);
                         if (newInv != null)
                         {

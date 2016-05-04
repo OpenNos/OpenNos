@@ -503,14 +503,14 @@ namespace OpenNos.GameObject
             return "mapout";
         }
 
-        public string GenerateModal(string message)
+        public string GenerateModal(string message, int type)
         {
-            return $"modal 0 {message}";
+            return $"modal {type} {message}";
         }
 
-        public string GenerateMsg(string message, int v)
+        public string GenerateMsg(string message, int type)
         {
-            return $"msg {v} {message}";
+            return $"msg {type} {message}";
         }
 
         public string GenerateMv()
