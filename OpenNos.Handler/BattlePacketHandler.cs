@@ -52,7 +52,7 @@ namespace OpenNos.Handler
         public void SpecialZoneHit(string packet)
         {
             string[] packetsplit = packet.Split(' ');
-            int damage = 0;
+            ushort damage = 0;
             int hitmode = 0;
 
             if (packetsplit.Length > 3)
@@ -74,7 +74,7 @@ namespace OpenNos.Handler
         public void TargetHit(int Castingid, int targetobj, int targetid)
         {
             List<CharacterSkill> skills = Session.Character.UseSp ? Session.Character.SkillsSp : Session.Character.Skills;
-            int damage;
+            ushort damage = 0; ;
             int hitmode = 0;
             Skill skill = null;
             bool notcancel = false;
@@ -193,7 +193,7 @@ namespace OpenNos.Handler
                 Task.Factory.StartNew(() => ZoneHit(Convert.ToInt32(packetsplit[2]), Convert.ToInt16(packetsplit[3]), Convert.ToInt16(packetsplit[4])));
         }
 
-        private short GenerateDamage(int monsterid, Skill skill, ref int hitmode)
+        private ushort GenerateDamage(int monsterid, Skill skill, ref int hitmode)
         {
             #region Definitions
 
@@ -842,14 +842,14 @@ namespace OpenNos.Handler
             #endregion
 
             int intdamage = random.Next(MinDmg, MaxDmg + 1);
-            short damage = 0;
+            ushort damage = 0;
 
             while (intdamage > short.MaxValue)
             {
                 intdamage -= short.MaxValue;
             }
 
-            damage = Convert.ToInt16(intdamage);
+            damage = Convert.ToUInt16(intdamage);
 
             //unchanged from here on
             if (generated < CritChance)
@@ -859,10 +859,12 @@ namespace OpenNos.Handler
             }
             if (generated > 100 - miss_chance)
             {
-                hitmode = 1; damage = 0;
+                hitmode = 1;
+                damage = 0;
+                intdamage = 0;
             }
 
-            if (mmon.CurrentHp <= damage)
+            if (mmon.CurrentHp <= intdamage)
             {
                 mmon.Alive = false;
                 mmon.CurrentHp = 0;
@@ -897,7 +899,7 @@ namespace OpenNos.Handler
             }
             else
             {
-                mmon.CurrentHp -= damage;
+                mmon.CurrentHp -= intdamage;
             }
             mmon.Target = Session.Character.CharacterId;
             return damage;
@@ -970,7 +972,7 @@ namespace OpenNos.Handler
         private void ZoneHit(int Castingid, short x, short y)
         {
             List<CharacterSkill> skills = Session.Character.UseSp ? Session.Character.SkillsSp : Session.Character.Skills;
-            int damage;
+            ushort damage = 0;
             int hitmode = 0;
             Skill skill = null;
             CharacterSkill ski = skills.FirstOrDefault(s => (skill = ServerManager.GetSkill(s.SkillVNum)) != null && skill.CastId == Castingid);
