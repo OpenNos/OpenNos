@@ -266,7 +266,7 @@ namespace OpenNos.Handler
                     {
                         Upgrade = Convert.ToSByte(SecUpgrade - monsterinfo.DefenceUpgrade);
                         MinDmg = ServersData.MinHit(Session.Character.Class, Session.Character.Level) + SecMinDmg;
-                        MaxDmg = ServersData.MinHit(Session.Character.Class, Session.Character.Level) + SecMaxDmg;
+                        MaxDmg = ServersData.MaxHit(Session.Character.Class, Session.Character.Level) + SecMaxDmg;
 
                         #region Upgrade Boost Calculation
 
@@ -371,15 +371,15 @@ namespace OpenNos.Handler
                         MinDmg -= MonsterDefense;
                         MaxDmg -= MonsterDefense;
 
-                        HitRate = ServersData.MinHit(Session.Character.Class, Session.Character.Level) + SecHitRate;
-                        CritChance = ServersData.MinHit(Session.Character.Class, Session.Character.Level) + SecCritChance;
-                        CritHit = ServersData.MinHit(Session.Character.Class, Session.Character.Level) + SecCritHit;
+                        HitRate = SecHitRate;
+                        CritChance = SecCritChance;
+                        CritHit = SecCritHit;
                     }
                     else
                     {
                         Upgrade = Convert.ToSByte(MainUpgrade - monsterinfo.DefenceUpgrade);
                         MinDmg = ServersData.MinHit(Session.Character.Class, Session.Character.Level) + MainMinDmg;
-                        MaxDmg = ServersData.MinHit(Session.Character.Class, Session.Character.Level) + MainMaxDmg;
+                        MaxDmg = ServersData.MaxHit(Session.Character.Class, Session.Character.Level) + MainMaxDmg;
 
                         #region Upgrade Boost Calculation
 
@@ -484,9 +484,9 @@ namespace OpenNos.Handler
                         MinDmg -= MonsterDefense;
                         MaxDmg -= MonsterDefense;
 
-                        HitRate = ServersData.MinHit(Session.Character.Class, Session.Character.Level) + MainHitRate;
-                        CritChance = ServersData.MinHit(Session.Character.Class, Session.Character.Level) + MainCritChance;
-                        CritHit = ServersData.MinHit(Session.Character.Class, Session.Character.Level) + MainCritHit;
+                        HitRate = MainHitRate;
+                        CritChance = MainCritChance;
+                        CritHit = MainCritHit;
                     }
                     miss_chance /= (int)(1 + HitRate / 100.0);//unsure
                     break;
@@ -497,7 +497,7 @@ namespace OpenNos.Handler
                     {
                         Upgrade = Convert.ToSByte(SecUpgrade - monsterinfo.DefenceUpgrade);
                         MinDmg = ServersData.MinHit(Session.Character.Class, Session.Character.Level) + SecMinDmg;
-                        MaxDmg = ServersData.MinHit(Session.Character.Class, Session.Character.Level) + SecMaxDmg;
+                        MaxDmg = ServersData.MaxHit(Session.Character.Class, Session.Character.Level) + SecMaxDmg;
 
                         #region Upgrade Boost Calculation
 
@@ -602,15 +602,15 @@ namespace OpenNos.Handler
                         MinDmg -= MonsterDefense;
                         MaxDmg -= MonsterDefense;
 
-                        HitRate = ServersData.MinHit(Session.Character.Class, Session.Character.Level) + SecHitRate;
-                        CritChance = ServersData.MinHit(Session.Character.Class, Session.Character.Level) + SecCritChance;
-                        CritHit = ServersData.MinHit(Session.Character.Class, Session.Character.Level) + SecCritHit;
+                        HitRate = SecHitRate;
+                        CritChance = SecCritChance;
+                        CritHit = SecCritHit;
                     }
                     else
                     {
                         Upgrade = Convert.ToSByte(MainUpgrade - monsterinfo.DefenceUpgrade);
                         MinDmg = ServersData.MinHit(Session.Character.Class, Session.Character.Level) + MainMinDmg;
-                        MaxDmg = ServersData.MinHit(Session.Character.Class, Session.Character.Level) + MainMaxDmg;
+                        MaxDmg = ServersData.MaxHit(Session.Character.Class, Session.Character.Level) + MainMaxDmg;
 
                         #region Upgrade Boost Calculation
 
@@ -715,9 +715,9 @@ namespace OpenNos.Handler
                         MinDmg -= MonsterDefense;
                         MaxDmg -= MonsterDefense;
 
-                        HitRate = ServersData.MinHit(Session.Character.Class, Session.Character.Level) + MainHitRate;
-                        CritChance = ServersData.MinHit(Session.Character.Class, Session.Character.Level) + MainCritChance;
-                        CritHit = ServersData.MinHit(Session.Character.Class, Session.Character.Level) + MainCritHit;
+                        HitRate = MainHitRate;
+                        CritChance = MainCritChance;
+                        CritHit = MainCritHit;
                     }
                     miss_chance /= (int)(1 + HitRate / 100.0);//unsure
                     break;
@@ -725,7 +725,7 @@ namespace OpenNos.Handler
                 case 2:
                     Upgrade = Convert.ToSByte(MainUpgrade - monsterinfo.MagicDefence);
                     MinDmg = ServersData.MinHit(Session.Character.Class, Session.Character.Level) + MainMinDmg;
-                    MaxDmg = ServersData.MinHit(Session.Character.Class, Session.Character.Level) + MainMaxDmg;
+                    MaxDmg = ServersData.MaxHit(Session.Character.Class, Session.Character.Level) + MainMaxDmg;
 
                     #region Upgrade Boost Calculation
 
@@ -830,7 +830,7 @@ namespace OpenNos.Handler
                     MinDmg -= MonsterDefense;
                     MaxDmg -= MonsterDefense;
 
-                    HitRate = ServersData.MinHit(Session.Character.Class, Session.Character.Level) + MainHitRate;
+                    HitRate = MainHitRate;
                     CritChance = 0;
                     CritHit = 0;
                     miss_chance = 0;
