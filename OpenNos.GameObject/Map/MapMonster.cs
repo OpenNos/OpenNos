@@ -183,7 +183,6 @@ namespace OpenNos.GameObject
                 if (MapX == null || MapY == null) { Target = -1; return; }
                 if (Hp <= 0)
                 {
-                    Target = -1;
                     return;
                 }
                 int damage = 100;
@@ -217,23 +216,21 @@ namespace OpenNos.GameObject
                             Thread.Sleep(sk.CastTime * 100);
                         }
                         path = new List<MapCell>();
-                        int? hp = ClientLinkManager.Instance.GetProperty<int?>(Target, "Hp");
-                        bool AlreadyDead = hp <= 0;
-                        hp -= damage;
+                        Hp -= damage;
                         ClientLinkManager.Instance.SetProperty(Target, "LastDefence", DateTime.Now);
-                        ClientLinkManager.Instance.SetProperty(Target, "Hp", (int)((hp) <= 0 ? 0 : hp));
+                        ClientLinkManager.Instance.SetProperty(Target, "Hp", (int)((Hp) <= 0 ? 0 : Hp));
                         ClientLinkManager.Instance.Broadcast(null, ClientLinkManager.Instance.GetUserMethod<string>(Target, "GenerateStat"), ReceiverType.OnlySomeone, "", Target);
             
                       
                         if (sk != null)
-                            ClientLinkManager.Instance.BroadcastToMap(MapId, $"su 3 {MapMonsterId} 1 {Target} {ski.SkillVNum} {sk.Cooldown} {sk.AttackAnimation} {sk.Effect} {this.MapX} {this.MapY} {(hp>0?1:0)} {(int)((double)Hp / ClientLinkManager.Instance.GetUserMethod<double>(Target, "HPLoad"))} {damage} 0 0");
+                            ClientLinkManager.Instance.BroadcastToMap(MapId, $"su 3 {MapMonsterId} 1 {Target} {ski.SkillVNum} {sk.Cooldown} {sk.AttackAnimation} {sk.Effect} {this.MapX} {this.MapY} {(Hp > 0?1:0)} {(int)((double)Hp / ClientLinkManager.Instance.GetUserMethod<double>(Target, "HPLoad"))} {damage} 0 0");
                         else
-                            ClientLinkManager.Instance.BroadcastToMap(MapId, $"su 3 {MapMonsterId} 1 {Target} 0 {monster.BasicCooldown} 11 {monster.BasicSkill} 0 0 {(hp > 0 ? 1 : 0)} {(int)((double)Hp / ClientLinkManager.Instance.GetUserMethod<double>(Target, "HPLoad"))} {damage} 0 0");
+                            ClientLinkManager.Instance.BroadcastToMap(MapId, $"su 3 {MapMonsterId} 1 {Target} 0 {monster.BasicCooldown} 11 {monster.BasicSkill} 0 0 {(Hp > 0 ? 1 : 0)} {(int)((double)Hp / ClientLinkManager.Instance.GetUserMethod<double>(Target, "HPLoad"))} {damage} 0 0");
 
                         if (ski != null)
                             ski.Used = false;
                         LastEffect = DateTime.Now;
-                        if (hp <= 0 && !AlreadyDead)
+                        if (Hp <= 0)
                         {
                             Thread.Sleep(1000);
                             ClientLinkManager.Instance.AskRevive(Target);
