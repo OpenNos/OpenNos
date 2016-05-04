@@ -168,4 +168,7 @@
   <data name="TOO_BIG" xml:space="preserve">
     <value>Il messaggio è troppo lungo ({0} bytes). La lunghezza massima consentità è di {1} bytes.</value>
   </data>
+  <data name="CONNECTION_LOST" xml:space="preserve">
+    <value>Connection to the server has been lost.</value>
+  </data>
 </root>

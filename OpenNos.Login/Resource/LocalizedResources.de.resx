@@ -168,4 +168,7 @@
   <data name="TOO_BIG" xml:space="preserve">
     <value>Nachricht ist zu groß ({0} bytes). Die maximale Länge beträgt{1} bytes.</value>
   </data>
+  <data name="CONNECTION_LOST" xml:space="preserve">
+    <value>Die Verbindung zum Server wurde unterbrochen.</value>
+  </data>
 </root>

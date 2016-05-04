@@ -115,6 +115,15 @@ namespace OpenNos.Login.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Connection to the server has been lost..
+        /// </summary>
+        internal static string CONNECTION_LOST {
+            get {
+                return ResourceManager.GetString("CONNECTION_LOST", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Database has been initialized!.
         /// </summary>
         internal static string DATABASE_INITIALIZED {

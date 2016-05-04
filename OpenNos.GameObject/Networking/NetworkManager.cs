@@ -117,7 +117,7 @@ namespace OpenNos.GameObject
             {
                 Logger.Log.WarnFormat(Language.Instance.GetMessageFromKey("FORCED_DISCONNECT"), customClient.ClientId);
                 customClient.Initialize(_fallbackEncryptor);
-                customClient.SendPacket($"fail {Language.Instance.GetMessageFromKey("ALREADY_CONNECTED")}");
+                customClient.SendPacket($"fail {Language.Instance.GetMessageFromKey("CONNECTION_LOST")}");
                 customClient.Disconnect();
                 customClient = null;
                 return;
