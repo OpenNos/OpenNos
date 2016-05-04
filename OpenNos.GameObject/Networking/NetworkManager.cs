@@ -91,7 +91,7 @@ namespace OpenNos.GameObject
 
             if (GeneralLog.Any())
             {
-                foreach (var item in GeneralLog.Where(cl => cl.Key.Equals(currentEndpoint.IpAddress) && (DateTime.Now - cl.Value).Seconds > 5).ToList())
+                foreach (var item in GeneralLog.Where(cl => cl.Key.Equals(currentEndpoint.IpAddress) && (DateTime.Now - cl.Value).Seconds > 3).ToList())
                 {
                     GeneralLog.Remove(item.Key);
                 }
