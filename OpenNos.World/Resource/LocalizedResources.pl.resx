@@ -643,10 +643,10 @@
     <value>poprosiles o wymiane od</value>
   </data>
   <data name="CHARACTER_LOGGED_IN" xml:space="preserve">
-    <value>{0} has logged in.</value>
+    <value>{0} polaczyl sie.</value>
   </data>
   <data name="CHARACTER_LOGGED_OUT" xml:space="preserve">
-    <value>{0} has logged out.</value>
+    <value>{0} rozlaczyl sie.</value>
   </data>
   <data name="NOT_ENOUGH_POWER_SEED" xml:space="preserve">
     <value>Niewystarczajaca ilosc ziaren mocy </value>
@@ -671,5 +671,8 @@
   </data>
   <data name="REFUSED" xml:space="preserve">
     <value>odrzucil wymiane</value>
+  </data>
+  <data name="CONNECTION_LOST" xml:space="preserve">
+    <value>Utracono polaczenie z serwerem.</value>
   </data>
 </root>
