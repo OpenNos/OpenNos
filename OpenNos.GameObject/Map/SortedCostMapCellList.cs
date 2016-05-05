@@ -45,20 +45,20 @@ namespace OpenNos.GameObject
             for (int i = 0; i < _list.Count; i++)
             {
                 MapCellAStar cellInTheList = (MapCellAStar)_list[i];
-                if (cellInTheList.isMatch(n))
+                if (cellInTheList.IsMatch(n))
                     return i;
             }
             return -1;
         }
 
-        public MapCellAStar pop()
+        public MapCellAStar Pop()
         {
             MapCellAStar r = (MapCellAStar)_list[0];
             _list.RemoveAt(0);
             return r;
         }
 
-        public int push(MapCellAStar n)
+        public int Push(MapCellAStar n)
         {
             int k = _list.BinarySearch(n, _cellComparer);
 

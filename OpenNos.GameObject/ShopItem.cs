@@ -19,13 +19,5 @@ namespace OpenNos.GameObject
 {
     public class ShopItem : ShopItemDTO
     {
-        #region Methods
-
-        public void Save()
-        {
-            throw new NotImplementedException();
-        }
-
-        #endregion
     }
 }

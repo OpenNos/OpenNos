@@ -222,9 +222,9 @@ namespace OpenNos.GameObject
                     Session.Client.SendPacket(Session.Character.GenerateScal());
                 foreach (String portalPacket in Session.Character.GenerateGp())
                     Session.Client.SendPacket(portalPacket);
-                foreach (String npcPacket in Session.Character.Generatein2())
+                foreach (String npcPacket in Session.Character.GenerateIn2())
                     Session.Client.SendPacket(npcPacket);
-                foreach (String monsterPacket in Session.Character.Generatein3())
+                foreach (String monsterPacket in Session.Character.GenerateIn3())
                     Session.Client.SendPacket(monsterPacket);
                 foreach (String ShopPacket in Session.Character.GenerateNPCShopOnMap())
                     Session.Client.SendPacket(ShopPacket);

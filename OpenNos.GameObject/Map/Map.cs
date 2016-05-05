@@ -175,13 +175,13 @@ namespace OpenNos.GameObject
             SortedCostMapCellList CLOSED = new SortedCostMapCellList();
             MapCellAStar cell_start = new MapCellAStar(null, null, cell1.X, cell1.Y, cell1.MapId);
             MapCellAStar cell_goal = new MapCellAStar(null, null, cell2.X, cell2.Y, cell2.MapId);
-            OPEN.push(cell_start);
+            OPEN.Push(cell_start);
 
             while (OPEN.Count > 0)
             {
-                MapCellAStar cell_current = OPEN.pop();
+                MapCellAStar cell_current = OPEN.Pop();
 
-                if (cell_current.isMatch(cell_goal))
+                if (cell_current.IsMatch(cell_goal))
                 {
                     cell_goal.parentcell = cell_current.parentcell;
                     break;
@@ -214,9 +214,9 @@ namespace OpenNos.GameObject
                     if (cFound != -1)
                         CLOSED.RemoveAt(cFound);
 
-                    OPEN.push(cell_successor);
+                    OPEN.Push(cell_successor);
                 }
-                CLOSED.push(cell_current);
+                CLOSED.Push(cell_current);
             }
             MapCellAStar p = cell_goal;
             while (p != null)

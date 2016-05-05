@@ -63,7 +63,6 @@
     <Compile Include="GeneralLog.cs" />
     <Compile Include="Account.cs" />
     <Compile Include="Character.cs" />
-    <Compile Include="Interface\IGameObject.cs" />
     <Compile Include="ExchangeInfo.cs" />
     <Compile Include="Item\FoodItem.cs" />
     <Compile Include="Item\MagicalItem.cs" />

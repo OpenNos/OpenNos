@@ -17,7 +17,7 @@ using OpenNos.Data;
 
 namespace OpenNos.GameObject
 {
-    public class ItemInstance : ItemInstanceDTO, IGameObject
+    public class ItemInstance : ItemInstanceDTO
     {
         #region Instantiation
         private Item item;

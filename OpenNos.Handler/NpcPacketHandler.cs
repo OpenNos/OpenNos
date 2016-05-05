@@ -111,7 +111,7 @@ namespace OpenNos.Handler
 
                 if (skillinfo == null)
                     return;
-                if (Session.Character.Gold >= skillinfo.Price && Session.Character.getCP() >= skillinfo.CPCost && Session.Character.Level >= skillinfo.LevelMinimum)
+                if (Session.Character.Gold >= skillinfo.Price && Session.Character.GetCP() >= skillinfo.CPCost && Session.Character.Level >= skillinfo.LevelMinimum)
                 {
                     switch (Session.Character.Class)
                     {

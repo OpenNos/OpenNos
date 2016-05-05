@@ -25,7 +25,7 @@ using System.Threading;
 
 namespace OpenNos.GameObject
 {
-    public class Character : CharacterDTO, IGameObject
+    public class Character : CharacterDTO
     {
         #region Members
 
@@ -45,7 +45,7 @@ namespace OpenNos.GameObject
         private int _morphUpgrade2;
         private int _size = 10;
         private byte _speed;
-        private byte cmapcount = 0;
+        private byte _cmapcount = 0;
 
         #endregion
 
@@ -75,8 +75,8 @@ namespace OpenNos.GameObject
         public int DistanceDefence { get; set; }
         public int DistanceDefenceRate { get; set; }
         public int DistanceRate { get; set; }
-        public int element { get; set; }
-        public int elementRate { get; set; }
+        public int Element { get; set; }
+        public int ElementRate { get; set; }
         public InventoryList EquipmentList { get { return _equipmentlist; } set { _equipmentlist = value; } }
         public ExchangeInfo ExchangeInfo { get; set; }
         public int FireResistance { get; set; }
@@ -193,8 +193,8 @@ namespace OpenNos.GameObject
 
         public string GenerateCMap()
         {
-            cmapcount = cmapcount == 1 ? (byte)0 : (byte)1;
-            return $"c_map 0 {MapId} {cmapcount}";
+            _cmapcount = _cmapcount == 1 ? (byte)0 : (byte)1;
+            return $"c_map 0 {MapId} {_cmapcount}";
         }
 
         public string GenerateCMode()
@@ -452,12 +452,12 @@ namespace OpenNos.GameObject
             return $"in 1 {Name} - {CharacterId} {MapX} {MapY} {Direction} {(Authority == AuthorityType.Admin ? 2 : 0)} {Gender} {HairStyle} {color} {Class} {GenerateEqListForPacket()} {(int)(Hp / HPLoad() * 100)} {(int)(Mp / MPLoad() * 100)} {(IsSitting ? 1 : 0)} -1 {(fairy != null ? 2 : 0)} {(fairy != null ? ServerManager.GetItem(fairy.ItemInstance.ItemVNum).Element : 0)} 0 {(fairy != null ? ServerManager.GetItem(fairy.ItemInstance.ItemVNum).Morph : 0)} 0 {(UseSp ? Morph : 0)} {GenerateEqRareUpgradeForPacket()} -1 - {((GetDigniteIco() == 1) ? GetReputIco() : -GetDigniteIco())} {(_invisible ? 1 : 0)} {(UseSp ? MorphUpgrade : 0)} 0 {(UseSp ? MorphUpgrade2 : 0)} {Level} 0 {ArenaWinner} {Compliment} {Size} {HeroLevel}";
         }
 
-        public List<string> Generatein2()
+        public List<string> GenerateIn2()
         {
             return ServerManager.GetMap(MapId).Npcs.Select(npc => $"in 2 {npc.NpcVNum} {npc.MapNpcId} {npc.MapX} {npc.MapY} {npc.Position} 100 100 {npc.Dialog} 0 0 - {(npc.IsSitting ? 0 : 1)} 0 0 - 1 - 0 - 1 0 0 0 0 0 0 0 0").ToList();
         }
 
-        public List<string> Generatein3()
+        public List<string> GenerateIn3()
         {
             return ServerManager.GetMap(MapId).Monsters.Select(monster => monster.GenerateIn3()).ToList();
         }
@@ -499,7 +499,7 @@ namespace OpenNos.GameObject
         {
             SpecialistInstance specialist = EquipmentList.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, (byte)InventoryType.Equipment);
 
-            return $"lev {Level} {LevelXp} {(!UseSp || specialist == null ? JobLevel : specialist.SpLevel)} {(!UseSp || specialist == null ? JobLevelXp : specialist.SpXp)} {XPLoad()} {(!UseSp || specialist == null ? JobXPLoad() : SPXPLoad())} {Reput} {getCP()} {HeroXp} {HeroLevel} {HeroXPLoad()}";
+            return $"lev {Level} {LevelXp} {(!UseSp || specialist == null ? JobLevel : specialist.SpLevel)} {(!UseSp || specialist == null ? JobLevelXp : specialist.SpXp)} {XPLoad()} {(!UseSp || specialist == null ? JobXPLoad() : SPXPLoad())} {Reput} {GetCP()} {HeroXp} {HeroLevel} {HeroXPLoad()}";
         }
 
         public string GenerateMapOut()
@@ -536,13 +536,13 @@ namespace OpenNos.GameObject
         {
             WearableInstance fairy = EquipmentList.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Fairy, (byte)InventoryType.Equipment);
             Item iteminfo = null;
-            elementRate = 0;
-            element = 0;
+            ElementRate = 0;
+            Element = 0;
             if (fairy != null)
             {
                 iteminfo = ServerManager.GetItem(fairy.ItemVNum);
-                elementRate += fairy.ElementRate + iteminfo.ElementRate;
-                element = iteminfo.Element;
+                ElementRate += fairy.ElementRate + iteminfo.ElementRate;
+                Element = iteminfo.Element;
             }
 
             return fairy != null
@@ -589,7 +589,7 @@ namespace OpenNos.GameObject
             WearableInstance weapon = EquipmentList.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.MainWeapon, (byte)InventoryType.Equipment);
             //tc_info 0  name   0 0  0 0 -1 - 0  0 0 0 0 0 0 0 0 0 0 wins deaths reput 0 0 0 morph talentwin talentlose capitul rankingpoints arenapoints 0 0 ispvpprimary ispvpsecondary ispvparmor herolvl desc
 
-            return $"tc_info {Level} {Name} {(fairy != null ? ServerManager.GetItem(fairy.ItemVNum).Element : 0)} {(element != 0 ? elementRate : 0)} {Class} {Gender} -1 - {GetReputIco()} {GetDigniteIco()} {(weapon != null ? 1 : 0)} {weapon?.Rare ?? 0} {weapon?.Upgrade ?? 0} {(weapon2 != null ? 1 : 0)} {weapon2?.Rare ?? 0} {weapon2?.Upgrade ?? 0} {(armor != null ? 1 : 0)} {armor?.Rare ?? 0} {armor?.Upgrade ?? 0} 0 0 {Reput} 0 0 0 {(UseSp ? Morph : 0)} 0 0 0 0 0 {Compliment} 0 0 0 0 {HeroLevel} {Language.Instance.GetMessageFromKey("NO_PREZ_MESSAGE")}";
+            return $"tc_info {Level} {Name} {(fairy != null ? ServerManager.GetItem(fairy.ItemVNum).Element : 0)} {(Element != 0 ? ElementRate : 0)} {Class} {Gender} -1 - {GetReputIco()} {GetDigniteIco()} {(weapon != null ? 1 : 0)} {weapon?.Rare ?? 0} {weapon?.Upgrade ?? 0} {(weapon2 != null ? 1 : 0)} {weapon2?.Rare ?? 0} {weapon2?.Upgrade ?? 0} {(armor != null ? 1 : 0)} {armor?.Rare ?? 0} {armor?.Upgrade ?? 0} 0 0 {Reput} 0 0 0 {(UseSp ? Morph : 0)} 0 0 0 0 0 {Compliment} 0 0 0 0 {HeroLevel} {Language.Instance.GetMessageFromKey("NO_PREZ_MESSAGE")}";
         }
 
         public string GenerateRest()
@@ -799,7 +799,7 @@ namespace OpenNos.GameObject
             DarkResistance = ServersData.DarkResistance(Class, Level);
             Defence = ServersData.Defence(Class, Level);
             DefenceRate = ServersData.DefenceRate(Class, Level);
-            element = ServersData.Element(Class, Level);
+            Element = ServersData.Element(Class, Level);
             DistanceDefence = ServersData.DistanceDefence(Class, Level);
             DistanceDefenceRate = ServersData.DistanceDefenceRate(Class, Level);
             MagicalDefence = ServersData.MagicalDefence(Class, Level);
@@ -879,7 +879,7 @@ namespace OpenNos.GameObject
                         p = point;
                     else
                         p = 50 + (point - 50) * 2;
-                    element += p;
+                    Element += p;
                 }
             }
             //TODO: add base stats
@@ -978,7 +978,7 @@ namespace OpenNos.GameObject
             return $"tp 1 {CharacterId} {MapX} {MapY} 0";
         }
 
-        public int getCP()
+        public int GetCP()
         {
             int cpused = 0;
             foreach (CharacterSkill ski in Skills)

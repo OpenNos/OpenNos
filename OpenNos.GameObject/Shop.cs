@@ -19,7 +19,7 @@ using System.Collections.Generic;
 
 namespace OpenNos.GameObject
 {
-    public class Shop : ShopDTO, IGameObject
+    public class Shop : ShopDTO
     {
         #region Instantiation
 

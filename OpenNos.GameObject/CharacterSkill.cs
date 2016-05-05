@@ -12,14 +12,13 @@
  * GNU General Public License for more details.
  */
 
-using AutoMapper;
 using OpenNos.DAL;
 using OpenNos.Data;
 using System;
 
 namespace OpenNos.GameObject
 {
-    public class CharacterSkill : CharacterSkillDTO, IGameObject
+    public class CharacterSkill : CharacterSkillDTO
     {
         #region Instantiation
 

@@ -255,11 +255,7 @@ namespace OpenNos.GameObject
 
         public static void OnBroadCast(MapPacket mapPacket)
         {
-            var handler = NotifyChildren;
-            if (handler != null)
-            {
-                handler(mapPacket, new EventArgs());
-            }
+            NotifyChildren?.Invoke(mapPacket, new EventArgs());
         }
 
         #endregion

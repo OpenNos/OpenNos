@@ -17,7 +17,7 @@ using OpenNos.Data;
 
 namespace OpenNos.GameObject
 {
-    public class QuicklistEntry : QuicklistEntryDTO, IGameObject
+    public class QuicklistEntry : QuicklistEntryDTO
     {
         #region Methods
 

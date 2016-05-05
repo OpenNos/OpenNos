@@ -26,14 +26,14 @@ namespace OpenNos.GameObject
             this.X = x;
             this.Y = y;
             this.MapId = MapId;
-            Initcell();
+            InitCell();
         }
 
         #endregion
 
         #region Properties
 
-        public int totalCost
+        public int TotalCost
         {
             get
             {
@@ -41,7 +41,7 @@ namespace OpenNos.GameObject
             }
             set
             {
-                totalCost = value;
+                TotalCost = value;
             }
         }
 
@@ -52,7 +52,7 @@ namespace OpenNos.GameObject
         public int CompareTo(object obj)
         {
             MapCellAStar n = (MapCellAStar)obj;
-            int cFactor = this.totalCost - n.totalCost;
+            int cFactor = this.TotalCost - n.TotalCost;
             return cFactor;
         }
 
@@ -67,7 +67,7 @@ namespace OpenNos.GameObject
                     if (!ServerManager.GetMap(MapId).IsBlockedZone(X + xd, Y + yd))
                     {
                         MapCellAStar n = new MapCellAStar(this, this._goalcell, (short)(X + xd), (short)(Y + yd), MapId);
-                        if (!n.isMatch(this.parentcell) && !n.isMatch(this))
+                        if (!n.IsMatch(this.parentcell) && !n.IsMatch(this))
                             successors.Add(n);
                     }
                 }
@@ -75,7 +75,7 @@ namespace OpenNos.GameObject
             return successors;
         }
 
-        public bool isMatch(MapCellAStar n)
+        public bool IsMatch(MapCellAStar n)
         {
             if (n != null)
                 return (X == n.X && Y == n.Y);
@@ -90,7 +90,7 @@ namespace OpenNos.GameObject
             return Math.Sqrt((xd * xd) + (yd * yd));
         }
 
-        private void Initcell()
+        private void InitCell()
         {
             this.g = (parentcell != null) ? this.parentcell.g + 1 : 1;
             this.h = (_goalcell != null) ? (int)Euclidean_H() : 0;

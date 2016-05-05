@@ -45,15 +45,15 @@ namespace OpenNos.GameObject
         public short firstY { get; set; }
         public DateTime LastEffect { get; private set; }
         public DateTime LastMove { get; private set; }
+        public bool LifeTaskIsRunning { get; internal set; }
         public List<MapCell> path { get; set; }
         public long Target { get; set; }
-        public bool LifeTaskIsRunning { get; internal set; }
 
         #endregion
 
         #region Methods
 
-        public static int generateMapMonsterId()
+        public static int GenerateMapMonsterId()
         {
             Random rnd = new Random();
             List<int> test = new List<int>();
@@ -87,7 +87,7 @@ namespace OpenNos.GameObject
             LifeTaskIsRunning = true;
             NpcMonster monster = ServerManager.GetNpc(this.MonsterVNum);
             bool follow = false;
-        
+
             //Respawn
             if (!Alive)
             {
@@ -114,7 +114,6 @@ namespace OpenNos.GameObject
                 {
                     LifeTaskIsRunning = false;
                     return;
-                  
                 }
                 Random r = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
                 double time = (DateTime.Now - LastMove).TotalSeconds;
@@ -186,9 +185,9 @@ namespace OpenNos.GameObject
                 short? MapY = ClientLinkManager.Instance.GetProperty<short?>(Target, "MapY");
                 int? Hp = ClientLinkManager.Instance.GetProperty<int?>(Target, "Hp");
                 short? mapId = ClientLinkManager.Instance.GetProperty<short?>(Target, "MapId");
-             
+
                 if (MapX == null || MapY == null) { Target = -1; LifeTaskIsRunning = false; return; }
-              
+
                 int damage = 100;
                 Random r = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
                 NpcMonsterSkill ski = monster.Skills.Where(s => !s.Used && (DateTime.Now - s.LastUse).TotalMilliseconds >= 100 * ServerManager.GetSkill(s.SkillVNum).Cooldown).OrderBy(rnd => r.Next()).FirstOrDefault();
@@ -202,14 +201,11 @@ namespace OpenNos.GameObject
                 {
                     if ((sk != null && ((DateTime.Now - LastEffect).TotalMilliseconds >= sk.Cooldown * 100 + 1000)) || ((DateTime.Now - LastEffect).TotalMilliseconds >= monster.BasicCooldown * 100 + 1000))
                     {
-
-
                         if (ski != null)
                         {
                             ski.Used = true;
                             ski.LastUse = DateTime.Now;
                             ClientLinkManager.Instance.BroadcastToMap(MapId, $"ct 3 {MapMonsterId} 1 {Target} {sk.CastAnimation} -1 {sk.SkillVNum}");
-
                         }
 
                         LastMove = DateTime.Now;
@@ -224,10 +220,9 @@ namespace OpenNos.GameObject
                         ClientLinkManager.Instance.SetProperty(Target, "LastDefence", DateTime.Now);
                         ClientLinkManager.Instance.SetProperty(Target, "Hp", (int)((Hp) <= 0 ? 0 : Hp));
                         ClientLinkManager.Instance.Broadcast(null, ClientLinkManager.Instance.GetUserMethod<string>(Target, "GenerateStat"), ReceiverType.OnlySomeone, "", Target);
-            
-                      
+
                         if (sk != null)
-                            ClientLinkManager.Instance.BroadcastToMap(MapId, $"su 3 {MapMonsterId} 1 {Target} {ski.SkillVNum} {sk.Cooldown} {sk.AttackAnimation} {sk.Effect} {this.MapX} {this.MapY} {(Hp > 0?1:0)} {(int)((double)Hp / ClientLinkManager.Instance.GetUserMethod<double>(Target, "HPLoad"))} {damage} 0 0");
+                            ClientLinkManager.Instance.BroadcastToMap(MapId, $"su 3 {MapMonsterId} 1 {Target} {ski.SkillVNum} {sk.Cooldown} {sk.AttackAnimation} {sk.Effect} {this.MapX} {this.MapY} {(Hp > 0 ? 1 : 0)} {(int)((double)Hp / ClientLinkManager.Instance.GetUserMethod<double>(Target, "HPLoad"))} {damage} 0 0");
                         else
                             ClientLinkManager.Instance.BroadcastToMap(MapId, $"su 3 {MapMonsterId} 1 {Target} 0 {monster.BasicCooldown} 11 {monster.BasicSkill} 0 0 {(Hp > 0 ? 1 : 0)} {(int)((double)Hp / ClientLinkManager.Instance.GetUserMethod<double>(Target, "HPLoad"))} {damage} 0 0");
 
@@ -255,8 +250,7 @@ namespace OpenNos.GameObject
                                     ClientLinkManager.Instance.AskRevive(chara.CharacterId);
                                 }
                             }
-                        }
-                    
+                    }
                 }
                 else
                 {
@@ -264,41 +258,31 @@ namespace OpenNos.GameObject
                     {
                         short maxdistance = 20;
 
-                        
-                            if (path.Count() == 0)
+                        if (path.Count() == 0)
+                        {
+                            path = ServerManager.GetMap(MapId).AStar(new MapCell() { X = this.MapX, Y = this.MapY, MapId = this.MapId }, new MapCell() { X = (short)MapX, Y = (short)MapY, MapId = this.MapId });
+                        }
+                        if (path.Count > 0 && Map.GetDistance(new MapCell() { X = this.MapX, Y = this.MapY, MapId = this.MapId }, new MapCell() { X = (short)MapX, Y = (short)MapY, MapId = this.MapId }) > 1)
+                        {
+                            this.MapX = path.ElementAt(0).X;
+                            this.MapY = path.ElementAt(0).Y;
+                            path.RemoveAt(0);
+                        }
+                        if (MapId != mapId || (Map.GetDistance(new MapCell() { X = this.MapX, Y = this.MapY }, new MapCell() { X = (short)MapX, Y = (short)MapY }) > maxdistance))
+                        {
+                            path = ServerManager.GetMap(MapId).AStar(new MapCell() { X = this.MapX, Y = this.MapY, MapId = this.MapId }, new MapCell() { X = firstX, Y = firstY, MapId = this.MapId });
+                            Target = -1;
+                        }
+                        else
+                        {
+                            if ((DateTime.Now - LastMove).TotalSeconds > 1.0 / monster.Speed)
                             {
-                                
-                                path = ServerManager.GetMap(MapId).AStar(new MapCell() { X = this.MapX, Y = this.MapY, MapId = this.MapId }, new MapCell() { X = (short)MapX, Y = (short)MapY, MapId = this.MapId });
-                                
-                            }
-                            if (path.Count > 0 && Map.GetDistance(new MapCell() { X = this.MapX, Y = this.MapY, MapId = this.MapId }, new MapCell() { X = (short)MapX, Y = (short)MapY, MapId = this.MapId }) > 1)
-                            {
-                                this.MapX = path.ElementAt(0).X;
-                                this.MapY = path.ElementAt(0).Y;
-                                path.RemoveAt(0);
-                            }
-                            if (MapId != mapId || (Map.GetDistance(new MapCell() { X = this.MapX, Y = this.MapY }, new MapCell() { X = (short)MapX, Y = (short)MapY }) > maxdistance))
-                            {
-                              
-                                path = ServerManager.GetMap(MapId).AStar(new MapCell() { X = this.MapX, Y = this.MapY, MapId = this.MapId }, new MapCell() { X = firstX, Y = firstY, MapId = this.MapId });
-                                Target = -1;
-                            }
-                            else
-                            {
-                                if ((DateTime.Now - LastMove).TotalSeconds > 1.0 / monster.Speed)
-                                {
-                                    LastMove = DateTime.Now;
-                                    ClientLinkManager.Instance.BroadcastToMap(MapId, $"mv 3 {this.MapMonsterId} {this.MapX} {this.MapY} {monster.Speed}");
-                                }
+                                LastMove = DateTime.Now;
+                                ClientLinkManager.Instance.BroadcastToMap(MapId, $"mv 3 {this.MapMonsterId} {this.MapX} {this.MapY} {monster.Speed}");
                             }
                         }
                     }
-                
-
-
-
-
-
+                }
             }
             LifeTaskIsRunning = false;
         }

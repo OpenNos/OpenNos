@@ -3,7 +3,7 @@ using System;
 
 namespace OpenNos.GameObject
 {
-    public class UsableInstance : UsableInstanceDTO, IGameObject
+    public class UsableInstance : UsableInstanceDTO
     {
         #region Instantiation
 

@@ -8,7 +8,7 @@ namespace OpenNos.GameObject
 
         public int Compare(object x, object y)
         {
-            return ((MapCellAStar)x).totalCost - ((MapCellAStar)y).totalCost;
+            return ((MapCellAStar)x).TotalCost - ((MapCellAStar)y).TotalCost;
         }
 
         #endregion

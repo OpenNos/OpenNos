@@ -6,7 +6,7 @@ using System;
 
 namespace OpenNos.GameObject
 {
-    public class SpecialistInstance : WearableInstance, ISpecialistInstance, IGameObject
+    public class SpecialistInstance : WearableInstance, ISpecialistInstance
     {
         #region Instantiation
 

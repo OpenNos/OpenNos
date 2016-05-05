@@ -12,7 +12,6 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Data;
 using OpenNos.Domain;
 
 namespace OpenNos.GameObject
@@ -32,14 +31,18 @@ namespace OpenNos.GameObject
 
         #region Properties
 
+        public bool IsNew { get; set; }
         public ItemInstance ItemInstance { get; set; }
         public short PositionX { get; set; }
         public short PositionY { get; set; }
-        public bool IsNew { get; set; }
+
+        #endregion
+
+        #region Methods
 
         public void Rarify(ClientSession session)
         {
-            if(IsNew && ItemInstance is WearableInstance)
+            if (IsNew && ItemInstance is WearableInstance)
             {
                 ((WearableInstance)ItemInstance).RarifyItem(session, RarifyMode.Drop, RarifyProtection.None);
             }
