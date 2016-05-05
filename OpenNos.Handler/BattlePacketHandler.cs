@@ -182,7 +182,8 @@ namespace OpenNos.Handler
                 Session.Character.MapY = Convert.ToInt16(packetsplit[6]);
             }
             if (packetsplit.Length > 4)
-                Task.Factory.StartNew(() => TargetHit(Convert.ToInt32(packetsplit[2]), Convert.ToInt32(packetsplit[3]), Convert.ToInt32(packetsplit[4])));
+                if (Session.Character.Hp > 0)
+                    Task.Factory.StartNew(() => TargetHit(Convert.ToInt32(packetsplit[2]), Convert.ToInt32(packetsplit[3]), Convert.ToInt32(packetsplit[4])));
         }
 
         [Packet("u_as")]
@@ -190,7 +191,8 @@ namespace OpenNos.Handler
         {
             string[] packetsplit = packet.Split(' ');
             if (packetsplit.Length > 4)
-                Task.Factory.StartNew(() => ZoneHit(Convert.ToInt32(packetsplit[2]), Convert.ToInt16(packetsplit[3]), Convert.ToInt16(packetsplit[4])));
+                if (Session.Character.Hp > 0)
+                    Task.Factory.StartNew(() => ZoneHit(Convert.ToInt32(packetsplit[2]), Convert.ToInt16(packetsplit[3]), Convert.ToInt16(packetsplit[4])));
         }
 
         private ushort GenerateDamage(int monsterid, Skill skill, ref int hitmode)
