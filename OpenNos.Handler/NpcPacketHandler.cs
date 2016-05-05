@@ -344,6 +344,7 @@ namespace OpenNos.Handler
             short data3; short.TryParse(packetsplit[4], out data3);
             short npcid; short.TryParse(packetsplit[5], out npcid);
             Session.Character.LastNRunId = npcid;
+            if(Session.Character.Hp > 0)
             NRunHandler.NRun(Session, type, runner, data3, npcid);
         }
 
