@@ -273,7 +273,7 @@ namespace OpenNos.Handler
         public void CreateItem(string packet)
         {
             string[] packetsplit = packet.Split(' ');
-            byte amount = 1, rare = 0, upgrade = 0,design = 0;
+            byte amount = 1, rare = 0, upgrade = 0, design = 0;
             short vnum;
             ItemDTO iteminfo = null;
             if (packetsplit.Length != 5 && packetsplit.Length != 4 && packetsplit.Length != 3)
@@ -330,9 +330,15 @@ namespace OpenNos.Handler
                     inv.ItemInstance.Rare = rare;
                     inv.ItemInstance.Upgrade = upgrade;
                     inv.ItemInstance.Design = design;
-                    
-                    WearableInstance wearable = Session.Character.InventoryList.LoadBySlotAndType<WearableInstance>(inv.Slot,inv.Type);
-                    wearable.SetRarityPoint();
+
+                    WearableInstance wearable = Session.Character.InventoryList.LoadBySlotAndType<WearableInstance>(inv.Slot, inv.Type);
+
+                    if (wearable != null)
+                    {
+                        //ROLL
+                        wearable.SetRarityPoint();
+                    }
+
                     if (inv != null)
                     {
                         short Slot = inv.Slot;

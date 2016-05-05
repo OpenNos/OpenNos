@@ -15,7 +15,6 @@
 using OpenNos.Core;
 using OpenNos.Core.Networking.Communication.Scs.Communication.Messages;
 using OpenNos.Core.Threading;
-using OpenNos.DAL;
 using OpenNos.Domain;
 using OpenNos.ServiceRef.Internal;
 using System;
@@ -358,7 +357,7 @@ namespace OpenNos.GameObject
                         TriggerHandler(packetHeader[0].ToString(), packet, false);
                     }
                     else
-                   if (!TriggerHandler(packetHeader, packet, false))
+                    if (!TriggerHandler(packetHeader, packet, false))
                     {
                         Logger.Log.WarnFormat(Language.Instance.GetMessageFromKey("HANDLER_NOT_FOUND"), packetHeader);
                     }
@@ -402,7 +401,7 @@ namespace OpenNos.GameObject
                 }
                 catch (Exception ex)
                 {
-                    Logger.Log.Error(ex.InnerException);
+                    Logger.Log.Error(ex.Message);
                 }
                 return true;
             }

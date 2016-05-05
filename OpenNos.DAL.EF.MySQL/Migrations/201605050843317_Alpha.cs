@@ -3,7 +3,7 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class Migration : DbMigration
+    public partial class Alpha : DbMigration
     {
         public override void Up()
         {
@@ -493,7 +493,7 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
                 .ForeignKey("dbo.ItemInstance", t => t.InventoryId)
                 .ForeignKey("dbo.Character", t => t.CharacterId)
                 .Index(t => t.InventoryId)
-                .Index(t => t.CharacterId);
+                .Index(t => new { t.CharacterId, t.Slot, t.Type }, unique: true, name: "IX_SlotAndType");
             
             CreateTable(
                 "dbo.ItemInstance",
@@ -578,6 +578,7 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
                     {
                         EntryId = c.Long(nullable: false, identity: true),
                         CharacterId = c.Long(nullable: false),
+                        Morph = c.Short(nullable: false),
                         Pos = c.Short(nullable: false),
                         Q1 = c.Short(nullable: false),
                         Q2 = c.Short(nullable: false),
@@ -645,7 +646,7 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
             DropIndex("dbo.QuicklistEntry", new[] { "CharacterId" });
             DropIndex("dbo.CellonOption", new[] { "WearableInstanceId" });
             DropIndex("dbo.ItemInstance", new[] { "ItemVNum" });
-            DropIndex("dbo.Inventory", new[] { "CharacterId" });
+            DropIndex("dbo.Inventory", "IX_SlotAndType");
             DropIndex("dbo.Inventory", new[] { "InventoryId" });
             DropIndex("dbo.GeneralLog", new[] { "CharacterId" });
             DropIndex("dbo.GeneralLog", new[] { "AccountId" });

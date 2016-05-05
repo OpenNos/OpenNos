@@ -1,6 +1,7 @@
 ﻿using OpenNos.Core.Networking.Communication.Scs.Communication.Channels;
 using OpenNos.Core.Networking.Communication.Scs.Communication.Messages;
 using OpenNos.Core.Networking.Communication.Scs.Server;
+using OpenNos.Core.Threading;
 using System;
 using System.Collections.Generic;
 
@@ -11,6 +12,7 @@ namespace OpenNos.Core
         #region Members
 
         private EncryptionBase _encryptor;
+        private SequentialItemProcessor<string> _queue;
 
         #endregion
 
@@ -18,6 +20,8 @@ namespace OpenNos.Core
 
         public NetworkClient(ICommunicationChannel communicationChannel) : base(communicationChannel)
         {
+            _queue = new SequentialItemProcessor<string>(Send);
+            _queue.Start();
         }
 
         #endregion
@@ -29,12 +33,17 @@ namespace OpenNos.Core
             _encryptor = encryptor;
         }
 
+        public void Send(string packet)
+        {
+            ScsRawDataMessage rawMessage = new ScsRawDataMessage(_encryptor.Encrypt(packet));
+            SendMessage(rawMessage);
+        }
+
         public bool SendPacket(string packet)
         {
             try
             {
-                ScsRawDataMessage rawMessage = new ScsRawDataMessage(_encryptor.Encrypt(packet));
-                SendMessage(rawMessage);
+                _queue.EnqueueMessage(packet);
                 return true;
             }
             catch
