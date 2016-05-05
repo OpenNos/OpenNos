@@ -925,15 +925,18 @@ namespace OpenNos.GameObject
             if (UseSp)
             {
                 SpecialistInstance specialist = EquipmentList.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, (byte)InventoryType.Equipment);
-                FireResistance += specialist.SpFire;
-                LightResistance += specialist.SpLight;
-                WaterResistance += specialist.SpWater;
-                DarkResistance += specialist.SpWater;
-                Defence += specialist.SpDefence * 10;
-                DistanceDefence += specialist.SpDefence * 10;
+                if (specialist != null)
+                {
+                    FireResistance += specialist.SpFire;
+                    LightResistance += specialist.SpLight;
+                    WaterResistance += specialist.SpWater;
+                    DarkResistance += specialist.SpWater;
+                    Defence += specialist.SpDefence * 10;
+                    DistanceDefence += specialist.SpDefence * 10;
 
-                MinHit += specialist.SpDamage * 10;
-                MaxHit += specialist.SpDamage * 10;
+                    MinHit += specialist.SpDamage * 10;
+                    MaxHit += specialist.SpDamage * 10;
+                }
             }
 
             WearableInstance item = null;

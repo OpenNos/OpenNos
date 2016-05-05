@@ -185,9 +185,9 @@ namespace OpenNos.GameObject
                 short? MapY = ClientLinkManager.Instance.GetProperty<short?>(Target, "MapY");
                 int? Hp = ClientLinkManager.Instance.GetProperty<int?>(Target, "Hp");
                 short? mapId = ClientLinkManager.Instance.GetProperty<short?>(Target, "MapId");
-
-                if (MapX == null || MapY == null) { Target = -1; LifeTaskIsRunning = false; return; }
-
+             
+                if (MapX == null || MapY == null || Hp <= 0) {Target = -1; LifeTaskIsRunning = false; return; }
+              
                 int damage = 100;
                 Random r = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
                 NpcMonsterSkill ski = monster.Skills.Where(s => !s.Used && (DateTime.Now - s.LastUse).TotalMilliseconds >= 100 * ServerManager.GetSkill(s.SkillVNum).Cooldown).OrderBy(rnd => r.Next()).FirstOrDefault();
@@ -216,6 +216,7 @@ namespace OpenNos.GameObject
                             Thread.Sleep(sk.CastTime * 100);
                         }
                         path = new List<MapCell>();
+                        if(Hp >=0)
                         Hp -= damage;
                         ClientLinkManager.Instance.SetProperty(Target, "LastDefence", DateTime.Now);
                         ClientLinkManager.Instance.SetProperty(Target, "Hp", (int)((Hp) <= 0 ? 0 : Hp));
