@@ -165,8 +165,14 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
 
             try
             {
+                var bytesRead = -1;
+
                 //Get received bytes count
-                var bytesRead = _clientSocket.EndReceive(ar);
+                if(_clientSocket.Connected)
+                {
+                    bytesRead = _clientSocket.EndReceive(ar);
+                }
+                
                 if (bytesRead > 0)
                 {
                     LastReceivedMessageTime = DateTime.Now;
