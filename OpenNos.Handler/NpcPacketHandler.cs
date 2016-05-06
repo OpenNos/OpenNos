@@ -179,7 +179,7 @@ namespace OpenNos.Handler
                 byte rare = item.Rare;
                 if (iteminfo.ReputPrice == 0)
                 {
-                    if (price <= 0 || price * pourcent > Session.Character.Gold)
+                    if (price < 0 || price * pourcent > Session.Character.Gold)
                     {
                         Session.Client.SendPacket(Session.Character.GenerateShopMemo(3, Language.Instance.GetMessageFromKey("NOT_ENOUGH_MONEY")));
                         return;

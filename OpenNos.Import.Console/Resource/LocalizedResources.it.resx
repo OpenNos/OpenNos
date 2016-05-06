@@ -118,46 +118,46 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="DATABASE_INITIALIZED" xml:space="preserve">
-    <value>Database e' stato inizializzato</value>
+    <value>Il Database è stato avviato !</value>
   </data>
   <data name="DONE" xml:space="preserve">
-    <value>Parsing done!</value>
+    <value>Parsing Completato !</value>
   </data>
   <data name="ENTER_PATH" xml:space="preserve">
     <value>Immetti la directory dei file da sincronizzare</value>
   </data>
   <data name="ITEMS_PARSED" xml:space="preserve">
-    <value>{0} Items parsed</value>
+    <value>{0} Items sincronizzati </value>
   </data>
   <data name="MAPS_PARSED" xml:space="preserve">
     <value>{0} Mappe sincronizzate</value>
   </data>
   <data name="NEED_TREE" xml:space="preserve">
-    <value>You need a directory tree like this :</value>
+    <value>Hai bisogno di una directory come questa :</value>
   </data>
   <data name="NPCS_PARSED" xml:space="preserve">
     <value>{0} NPCs sincronizzati</value>
   </data>
   <data name="PARSE_ALL" xml:space="preserve">
-    <value>Do you want to parse ALL?</value>
+    <value>Vuoi sincronizzare TUTTO?</value>
   </data>
   <data name="PARSE_ITEMS" xml:space="preserve">
-    <value>Do you want to parse Items?</value>
+    <value>Vuoi sincronizzare Items?</value>
   </data>
   <data name="PARSE_MAPS" xml:space="preserve">
-    <value>Do you want to parse Maps?</value>
+    <value>Vuoi sincronizzare Maps?</value>
   </data>
   <data name="PARSE_NPCS" xml:space="preserve">
-    <value>Do you want to parse Npcs?</value>
+    <value>Vuoi sincronizzare Npcs?</value>
   </data>
   <data name="PARSE_PORTALS" xml:space="preserve">
-    <value>Do you want to parse Portals?</value>
+    <value>Vuoi sincronizzare Portals?</value>
   </data>
   <data name="PARSE_SHOPITEMS" xml:space="preserve">
-    <value>Do you want to parse Shopitems?</value>
+    <value>Vuoi sincronizzare Shopitems?</value>
   </data>
   <data name="PARSE_SHOPS" xml:space="preserve">
-    <value>Do you want to parse Shops?</value>
+    <value>Vuoi sincronizzare Shops?</value>
   </data>
   <data name="PORTALS_PARSED" xml:space="preserve">
     <value>{0} Portali sincronizzati</value>
