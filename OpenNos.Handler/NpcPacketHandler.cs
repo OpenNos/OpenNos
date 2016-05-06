@@ -272,6 +272,8 @@ namespace OpenNos.Handler
                             short.TryParse(packetsplit[j + 1], out slot[i]);
                             byte.TryParse(packetsplit[j + 2], out qty[i]);
                             long.TryParse(packetsplit[j + 3], out gold[i]);
+                            if (gold[i] < 0)
+                                return;
                             if (qty[i] != 0)
                             {
                                 Inventory inv = Session.Character.InventoryList.LoadInventoryBySlotAndType(slot[i], type[i]);

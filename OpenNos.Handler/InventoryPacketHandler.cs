@@ -587,7 +587,7 @@ namespace OpenNos.Handler
                     - short.Parse(packetsplit[6]) - short.Parse(packetsplit[7])
                     - short.Parse(packetsplit[8]) - short.Parse(packetsplit[9]) < 0)
                     return;
-
+                if (short.Parse(packetsplit[6]) < 0 || short.Parse(packetsplit[7]) < 0|| short.Parse(packetsplit[8]) < 0|| short.Parse(packetsplit[9]) < 0 ) { return; }
                 specialistInstance.SlDamage += short.Parse(packetsplit[6]);
                 specialistInstance.SlDefence += short.Parse(packetsplit[7]);
                 specialistInstance.SlElement += short.Parse(packetsplit[8]);
