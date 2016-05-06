@@ -299,6 +299,12 @@ namespace OpenNos.Handler
                         //trim shopname
                         shopname.TrimEnd(' ');
 
+                        //create default shopname if it's empty
+                        if(String.IsNullOrWhiteSpace(shopname) || String.IsNullOrEmpty(shopname))
+                        {
+                            shopname = Language.Instance.GetMessageFromKey("SHOP_PRIVATE_SHOP");
+                        }
+
                         //truncate the string to a max-length of 20
                         shopname = StringHelper.Truncate(shopname, 20);
 

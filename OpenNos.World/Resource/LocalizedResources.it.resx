@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -626,5 +626,8 @@
   </data>
   <data name="SEED_USED" xml:space="preserve">
     <value>Hai usato semi della potenza</value>
+  </data>
+  <data name="SHOP_PRIVATE_SHOP" xml:space="preserve">
+    <value>Private shop</value>
   </data>
 </root>
