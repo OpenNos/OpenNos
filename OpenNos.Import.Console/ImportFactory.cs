@@ -528,9 +528,8 @@ namespace OpenNos.Import.Console
                             MapNpcId = npc
                         };
 
-                        if (DAOFactory.RecipeDAO.LoadByNpc(npc).Any() &&
-                            DAOFactory.RecipeDAO.LoadByNpc(npc).Any(s => s.ItemVNum == recipe.ItemVNum))
-                            continue; // isn't one of this redundant?
+                        if (DAOFactory.RecipeDAO.LoadByNpc(npc).Any(s => s.ItemVNum == recipe.ItemVNum))
+                            continue; 
 
                         DAOFactory.RecipeDAO.Insert(recipe);
                         count++;
@@ -560,7 +559,7 @@ namespace OpenNos.Import.Console
                                 RecipeId = recipeId
                             };
 
-                            if (DAOFactory.RecipeItemDAO.LoadAll().FirstOrDefault(s => s.RecipeId == recipeId && s.ItemVNum == item) == null)
+                            if (!DAOFactory.RecipeItemDAO.LoadAll().Any(s => s.RecipeId == recipeId && s.ItemVNum == recipeitem.ItemVNum))
                                 DAOFactory.RecipeItemDAO.Insert(recipeitem);
                         }
                     }
