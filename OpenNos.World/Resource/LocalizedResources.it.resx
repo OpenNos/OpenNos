@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -169,7 +169,7 @@
     <value>Authors:^0Lucifer0^,^chucktheripper</value>
   </data>
   <data name="BN6" xml:space="preserve">
-    <value>Guarda^qui:^https://github.com/OpenNos/OpenNos^per^gli.</value>
+    <value>Guarda^qui:^https://github.com/OpenNos/OpenNos^per^gli^aggiornamenti.</value>
   </data>
   <data name="BUFF_BLOCKED" xml:space="preserve">
     <value>Icone dei buff disabilitate</value>
@@ -205,7 +205,7 @@
     <value>Devi aspettare ancora {0} minuti prima di poter lodare qualcuno.</value>
   </data>
   <data name="COMPLIMENT_NOT_MINLVL" xml:space="preserve">
-    <value>Solo i personaggi di livello combatitmento superiore a 30 possono lodare altri giocatori.</value>
+    <value>Solo i personaggi di livello combattimento superiore a 30 possono lodare altri giocatori.</value>
   </data>
   <data name="COMPLIMENT_RECEIVED" xml:space="preserve">
     <value>Sei stato lodato da {0}.</value>
@@ -271,7 +271,7 @@
     <value>L'utente ha bloccato gli inviti per il gruppo</value>
   </data>
   <data name="GROUP_CLOSED" xml:space="preserve">
-    <value>Group disbanded</value>
+    <value>Gruppo chiuso</value>
   </data>
   <data name="GROUP_DENIED" xml:space="preserve">
     <value>Richiesta gruppo rifiutata</value>
@@ -280,7 +280,7 @@
     <value>Il gruppo e' pieno</value>
   </data>
   <data name="GROUP_LEFT" xml:space="preserve">
-    <value>You left the party</value>
+    <value>Sei uscito dal gruppo</value>
   </data>
   <data name="GROUP_REQUEST" xml:space="preserve">
     <value>Richiesta di gruppo inviata a: {0}</value>
@@ -325,7 +325,7 @@
     <value>Hai ricevuto un oggetto</value>
   </data>
   <data name="ITEM_IS_FIXED" xml:space="preserve">
-    <value>Item upgrade level is locked.</value>
+    <value>L'upgrade dell'item è stato bloccato.</value>
   </data>
   <data name="ITEM_LOADED" xml:space="preserve">
     <value>{0} Items caricati !</value>
@@ -349,7 +349,7 @@
     <value>Il livello di lavoro è stato cambiato.</value>
   </data>
   <data name="LEAVE_GROUP" xml:space="preserve">
-    <value>{0} left the party</value>
+    <value>{0} ha lasciato il gruppo</value>
   </data>
   <data name="LEVEL_CHANGED" xml:space="preserve">
     <value>Il tuo livello di combattimento è stato incrementato.</value>
@@ -394,7 +394,7 @@
     <value>Un nuovo client si è connesso. ClientId =</value>
   </data>
   <data name="NEW_LEADER" xml:space="preserve">
-    <value>You are the new party leader</value>
+    <value>Adesso sei il leader del gruppo</value>
   </data>
   <data name="NOT_ADVENTURER" xml:space="preserve">
     <value>Puoi cambiare classe una sola volta.</value>
@@ -415,19 +415,19 @@
     <value>Non sei il leader del gruppo</value>
   </data>
   <data name="NO_ENTRY" xml:space="preserve">
-    <value>No EntryPoint found</value>
+    <value>Nessun EntryPoint trovato</value>
   </data>
   <data name="NO_HANDLER_ITEM" xml:space="preserve">
-    <value>No handler found for this item in class {0}</value>
+    <value>Nessun handler trovato per questo item {0}</value>
   </data>
   <data name="NO_ITEM" xml:space="preserve">
     <value>L'oggetto non esiste</value>
   </data>
   <data name="NO_MAP" xml:space="preserve">
-    <value>Il server ha bisogno al meno della mappa di NosVille per poter funzionare!</value>
+    <value>Il server ha bisogno almeno della mappa di NosVille per poter funzionare!</value>
   </data>
   <data name="NO_NRUN_HANDLER" xml:space="preserve">
-    <value>No n_run Handler implementation for {0}</value>
+    <value>Nessun n_run Handler implementazione per {0}</value>
   </data>
   <data name="NO_PREZ_MESSAGE" xml:space="preserve">
     <value>Nessun messaggio di presentazione</value>
@@ -565,10 +565,10 @@
     <value>Il messaggio è troppo lungo ({0} bytes). La lunghezza massima consentità è di {1} bytes.</value>
   </data>
   <data name="TOTAL_SESSION" xml:space="preserve">
-    <value>Total number of sessions</value>
+    <value>Numero totale di sessioni</value>
   </data>
   <data name="TRADE_BLOCKED" xml:space="preserve">
-    <value>L'altra persona a il commercio bloccato</value>
+    <value>L'altra persona ha il commercio bloccato</value>
   </data>
   <data name="TRANSFORM_DISAPEAR" xml:space="preserve">
     <value>L'effetto collaterale della trasformazione è terminato.</value>
@@ -613,18 +613,18 @@
     <value>Hai richiesto il commercio a</value>
   </data>
   <data name="CHARACTER_LOGGED_IN" xml:space="preserve">
-    <value>{0} has logged in.</value>
+    <value>{0} si è connesso.</value>
   </data>
   <data name="CHARACTER_LOGGED_OUT" xml:space="preserve">
-    <value>{0} has logged out.</value>
+    <value>{0} si è disconnesso.</value>
   </data>
   <data name="NOT_ENOUGH_POWER_SEED" xml:space="preserve">
-    <value>You dont have enough power seeds</value>
+    <value>Non hai abbastanza semi della potenza</value>
   </data>
   <data name="NOT_ENOUGH_SEED_SAY" xml:space="preserve">
-    <value>I don't have enough power seeds</value>
+    <value>Non ho abbastanza semi della potenza</value>
   </data>
   <data name="SEED_USED" xml:space="preserve">
-    <value>You used power seeds</value>
+    <value>Hai usato semi della potenza</value>
   </data>
 </root>
