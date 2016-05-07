@@ -237,7 +237,7 @@ namespace OpenNos.GameObject
                             ClientLinkManager.Instance.AskRevive(Target);
                             Target = -1;
                         }
-                        if ((sk != null && sk.SkillType == 0) || (monster.AttackClass == 0 && monster.BasicRange > 0))
+                        if ((sk != null && sk.SkillType == 0) )//|| (monster.AttackClass == 0 && monster.BasicRange > 0))
                             foreach (Character chara in ServerManager.GetMap(MapId).GetListPeopleInRange(sk != null ? (short)MapX : this.MapX, sk != null ? (short)MapY : this.MapY, sk == null ? monster.BasicArea : sk.TargetRange).Where(s => s.CharacterId != Target))
                             {
                                 damage = 100;
