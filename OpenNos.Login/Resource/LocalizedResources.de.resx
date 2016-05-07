@@ -171,4 +171,7 @@
   <data name="CONNECTION_LOST" xml:space="preserve">
     <value>Die Verbindung zum Server wurde unterbrochen.</value>
   </data>
+  <data name="DATABASE_NOT_UPTODATE" xml:space="preserve">
+    <value>Die Datenbank könnte nicht aktuell sein. Sie muss upgedated werden um eine Verbindung herstellen zu können.</value>
+  </data>
 </root>

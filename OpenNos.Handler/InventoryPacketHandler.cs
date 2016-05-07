@@ -945,7 +945,7 @@ namespace OpenNos.Handler
         [Packet("game_start")]
         public void StartGame(string packet)
         {
-            if (Session.CurrentMap != null)
+            if (Session.CurrentMap != null || Session.Character == null)
                 return;
             Session.CurrentMap = ServerManager.GetMap(Session.Character.MapId);
 

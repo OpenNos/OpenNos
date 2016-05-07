@@ -177,6 +177,8 @@ namespace OpenNos.GameObject
             {
                 ServiceFactory.Instance.CommunicationService.DisconnectAccount(Account.Name);
             }
+
+            Client.Disconnect();
         }
 
         public void Initialize(EncryptionBase encryptor, Type packetHandler)

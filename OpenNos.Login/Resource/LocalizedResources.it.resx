@@ -171,4 +171,7 @@
   <data name="CONNECTION_LOST" xml:space="preserve">
     <value>Connessione al server persa..</value>
   </data>
+  <data name="DATABASE_NOT_UPTODATE" xml:space="preserve">
+    <value>Database may not up to date. Please consider updating your database.</value>
+  </data>
 </root>
