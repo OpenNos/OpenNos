@@ -18,6 +18,7 @@ using OpenNos.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reactive.Subjects;
 using System.Reflection;
 using System.Threading.Tasks;
 
@@ -29,6 +30,7 @@ namespace OpenNos.GameObject
 
         public Boolean ShutdownStop = false;
         private static ClientLinkManager _instance;
+        private ISubject<SessionPacket> _subject;
 
         #endregion
 
@@ -38,6 +40,8 @@ namespace OpenNos.GameObject
         {
             Sessions = new List<ClientSession>();
             Groups = new List<Group>();
+
+            _subject = new Subject<SessionPacket>();
 
             Task autosave = new Task(SaveAllProcess);
             autosave.Start();
@@ -93,62 +97,8 @@ namespace OpenNos.GameObject
 
         public bool Broadcast(ClientSession client, string message, ReceiverType receiver, string characterName = "", long characterId = -1)
         {
-            switch (receiver)
-            {
-                case ReceiverType.All:
-                    for (int i = Sessions.Where(s => s != null && s.Character != null).Count() - 1; i >= 0; i--)
-                        Sessions.Where(s => s != null).ElementAt(i).Client.SendPacket(message);
-                    break;
-
-                case ReceiverType.AllExceptMe:
-                    for (int i = Sessions.Where(s => s != null && s.Character != null && s != client).Count() - 1; i >= 0; i--)
-                        Sessions.Where(s => s != null && s != client).ElementAt(i).Client.SendPacket(message);
-                    break;
-
-                case ReceiverType.AllOnMap:
-                    for (int i = Sessions.Where(s => s != null && s.Character != null && s.Character.MapId.Equals(client.Character.MapId)).Count() - 1; i >= 0; i--)
-                        Sessions.Where(s => s.Character != null && s.Character.MapId.Equals(client.Character.MapId)).ElementAt(i).Client.SendPacket(message);
-                    break;
-
-                case ReceiverType.AllOnMapExceptMe:
-                    foreach (ClientSession session in Sessions.Where(s => s.Character != null && s.Character.MapId.Equals(client.Character.MapId) && s.Character.CharacterId != client.Character.CharacterId))
-                        session.Client.SendPacket(message);
-                    break;
-
-                case ReceiverType.OnlyMe:
-                    client.Client.SendPacket(message);
-                    break;
-
-                case ReceiverType.OnlySomeone:
-                    ClientSession targetSession = Sessions.FirstOrDefault(s => s.Character != null && (s.Character.Name.Equals(characterName) || s.Character.CharacterId.Equals(characterId)));
-
-                    if (targetSession == null) return false;
-
-                    targetSession.Client.SendPacket(message);
-                    return true;
-
-                case ReceiverType.AllOnMapNoEmoBlocked:
-                    foreach (ClientSession session in Sessions.Where(s => s.Character != null && s.Character.MapId.Equals(client.Character.MapId) && !s.Character.EmoticonsBlocked))
-                        session.Client.SendPacket(message);
-                    break;
-
-                case ReceiverType.AllNoHeroBlocked:
-                    foreach (ClientSession session in Sessions.Where(s => s.Character != null && !s.Character.HeroChatBlocked))
-                        session.Client.SendPacket(message);
-                    break;
-
-                case ReceiverType.Group:
-                    Group grp = Groups.FirstOrDefault(s => s.Characters.Contains(client.Character.CharacterId));
-                    if (grp != null)
-                    {
-                        foreach (long charId in grp.Characters)
-                        {
-                            foreach (ClientSession session in Sessions.Where(s => s.Character != null && s.Character.CharacterId == charId))
-                                session.Client.SendPacket(message);
-                        }
-                    }
-                    break;
-            }
+            SessionPacket packet = new SessionPacket(client, message, receiver, characterName, characterId);
+            _subject.OnNext(packet);
             return true;
         }
 
@@ -194,12 +144,12 @@ namespace OpenNos.GameObject
                 {
                     clientSession.Client.SendPacket("shop_end 0");
 
-                    ClientLinkManager.Instance.Broadcast(shopOwnerSession, shopOwnerSession.Character.GenerateShopEnd(), ReceiverType.AllOnMap);
-                    ClientLinkManager.Instance.Broadcast(shopOwnerSession, shopOwnerSession.Character.GeneratePlayerFlag(0), ReceiverType.AllOnMapExceptMe);
+                    ClientLinkManager.Instance.Broadcast(shopOwnerSession, shopOwnerSession.Character.GenerateShopEnd(), ReceiverType.All);
+                    ClientLinkManager.Instance.Broadcast(shopOwnerSession, shopOwnerSession.Character.GeneratePlayerFlag(0), ReceiverType.AllExceptMe);
                     shopOwnerSession.Character.Speed = shopOwnerSession.Character.LastSpeed != 0 ? shopOwnerSession.Character.LastSpeed : shopOwnerSession.Character.Speed;
                     shopOwnerSession.Character.IsSitting = false;
                     shopOwnerSession.Client.SendPacket(shopOwnerSession.Character.GenerateCond());
-                    ClientLinkManager.Instance.Broadcast(shopOwnerSession, shopOwnerSession.Character.GenerateRest(), ReceiverType.AllOnMap);
+                    ClientLinkManager.Instance.Broadcast(shopOwnerSession, shopOwnerSession.Character.GenerateRest(), ReceiverType.All);
                 }
             }
         }
@@ -233,11 +183,11 @@ namespace OpenNos.GameObject
 
                 Session.Client.SendPacket(Session.Character.GenerateStatChar());
                 Session.Client.SendPacket(Session.Character.GenerateCond());
-                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GeneratePairy(), ReceiverType.AllOnMap);
+                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GeneratePairy(), ReceiverType.All);
                 Session.Client.SendPacket($"rsfi 1 1 0 9 0 9"); // Act completion
-                ClientLinkManager.Instance.Sessions.Where(s => s.Character !=null && s.Character.MapId.Equals(Session.Character.MapId) && s.Character.Name != Session.Character.Name && !Session.Character.InvisibleGm).ToList().ForEach(s => RequireBroadcastFromUser(Session, s.Character.CharacterId, "GenerateIn"));
+                ClientLinkManager.Instance.Sessions.Where(s => s.Character != null && s.Character.MapId.Equals(Session.Character.MapId) && s.Character.Name != Session.Character.Name && !Session.Character.InvisibleGm).ToList().ForEach(s => RequireBroadcastFromUser(Session, s.Character.CharacterId, "GenerateIn"));
                 if (Session.Character.InvisibleGm == false)
-                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllOnMapExceptMe);
+                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
                 if (Session.CurrentMap.IsDancing == 2 && Session.Character.IsDancing == 0)
                     ClientLinkManager.Instance.BroadcastToMap(Session.Character.MapId, "dance 2");
                 else if (Session.CurrentMap.IsDancing == 0 && Session.Character.IsDancing == 1)
@@ -251,7 +201,7 @@ namespace OpenNos.GameObject
                 foreach (String ShopPacketChar in Session.Character.GeneratePlayerShopOnMap())
                     Session.Client.SendPacket(ShopPacketChar);
 
-                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEq(), ReceiverType.AllOnMap);
+                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEq(), ReceiverType.All);
                 Session.Client.SendPacket(Session.Character.GenerateEquipment());
                 string clinit = "clinit";
                 string flinit = "flinit";
@@ -285,7 +235,7 @@ namespace OpenNos.GameObject
                         }
                         if (charId == Session.Character.CharacterId)
                         {
-                            Broadcast(Session, $"pidx 1 1.{Session.Character.CharacterId}", ReceiverType.AllOnMap);
+                            Broadcast(Session, $"pidx 1 1.{Session.Character.CharacterId}", ReceiverType.All);
                         }
                     }
                 }
@@ -308,15 +258,15 @@ namespace OpenNos.GameObject
                 Session.Client.SendPacket(Session.Character.GenerateTit());
 
                 //eq 37 0 1 0 9 3 -1.120.46.86.-1.-1.-1.-1 0 0
-                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEq(), ReceiverType.AllOnMap);
+                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEq(), ReceiverType.All);
 
                 //equip 0 0 0.46.0.0.0 1.120.0.0.0 5.86.0.0.0
 
                 Session.Client.SendPacket(Session.Character.GenerateLev());
                 Session.Client.SendPacket(Session.Character.GenerateStat());
-                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(8), ReceiverType.AllOnMap);
+                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(8), ReceiverType.All);
                 Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("JOB_CHANGED"), 0));
-                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(196), ReceiverType.AllOnMap);
+                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(196), ReceiverType.All);
                 Random rand = new Random();
                 int faction = 1 + (int)rand.Next(0, 2);
                 Session.Character.Faction = faction;
@@ -328,9 +278,9 @@ namespace OpenNos.GameObject
 
                 Session.Client.SendPacket(Session.Character.GenerateEff(4799 + faction));
                 Session.Client.SendPacket(Session.Character.GenerateLev());
-                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllOnMapExceptMe);
-                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(6), ReceiverType.AllOnMap);
-                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(198), ReceiverType.AllOnMap);
+                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
+                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(6), ReceiverType.All);
+                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(198), ReceiverType.All);
 
                 Session.Character.Skills = new List<CharacterSkill>();
                 Session.Character.Skills.Add(new CharacterSkill { SkillVNum = (short)(200 + 20 * Session.Character.Class), CharacterId = Session.Character.CharacterId });
@@ -355,7 +305,7 @@ namespace OpenNos.GameObject
                 };
 
                 if (Groups.FirstOrDefault(s => s.Characters.Contains(Session.Character.CharacterId)) != null)
-                    Instance.Broadcast(Session, $"pidx 1 1.{Session.Character.CharacterId}", ReceiverType.AllOnMapExceptMe);
+                    Instance.Broadcast(Session, $"pidx 1 1.{Session.Character.CharacterId}", ReceiverType.AllExceptMe);
             }
         }
 
@@ -393,7 +343,7 @@ namespace OpenNos.GameObject
                     if (inv.Slot == -1) continue;
                     c2Session.Client.SendPacket(c2Session.Character.GenerateInventoryAdd(inv.ItemInstance.ItemVNum, inv.ItemInstance.Amount, inv.Type, inv.Slot, inv.ItemInstance.Rare, inv.ItemInstance.Design, inv.ItemInstance.Upgrade));
                 }
-            
+
                 c2Session.Character.Gold = c2Session.Character.Gold - c2Session.Character.ExchangeInfo.Gold + c1Session.Character.ExchangeInfo.Gold;
                 c2Session.Client.SendPacket(c2Session.Character.GenerateGold());
                 c1Session.Character.ExchangeInfo = null;
@@ -454,7 +404,7 @@ namespace OpenNos.GameObject
                         }
                     }
                     Session.Client.SendPacket("pinit 0");
-                    Broadcast(Session, $"pidx -1 1.{Session.Character.CharacterId}", ReceiverType.AllOnMap);
+                    Broadcast(Session, $"pidx -1 1.{Session.Character.CharacterId}", ReceiverType.All);
                     Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("GROUP_LEFT"), 0));
                 }
                 else
@@ -465,7 +415,7 @@ namespace OpenNos.GameObject
                         {
                             sess.Client.SendPacket("pinit 0");
                             sess.Client.SendPacket(sess.Character.GenerateMsg(Language.Instance.GetMessageFromKey("GROUP_CLOSED"), 0));
-                            Broadcast(sess, $"pidx -1 1.{charid}", ReceiverType.AllOnMap);
+                            Broadcast(sess, $"pidx -1 1.{charid}", ReceiverType.All);
                         }
                     }
                     ClientLinkManager.Instance.Groups.Remove(grp);
@@ -487,7 +437,7 @@ namespace OpenNos.GameObject
             foreach (ClientSession Session in Sessions.Where(s => s.Character != null && s.Character.CharacterId == id))
             {
                 Session.Client.SendPacket(Session.Character.GenerateMapOut());
-                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateOut(), ReceiverType.AllOnMapExceptMe);
+                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateOut(), ReceiverType.AllExceptMe);
             }
         }
 
@@ -513,8 +463,8 @@ namespace OpenNos.GameObject
                 Session.Character.Hp = 1;
                 Session.Character.Mp = 1;
                 ChangeMap(Session.Character.CharacterId);
-                Broadcast(Session, Session.Character.GenerateTp(), ReceiverType.AllOnMap);
-                Broadcast(Session, Session.Character.GenerateRevive(), ReceiverType.AllOnMap);
+                Broadcast(Session, Session.Character.GenerateTp(), ReceiverType.All);
+                Broadcast(Session, Session.Character.GenerateRevive(), ReceiverType.All);
                 Session.Client.SendPacket(Session.Character.GenerateStat());
             }
         }
@@ -546,6 +496,18 @@ namespace OpenNos.GameObject
             {
                 Instance.Broadcast(null, str, ReceiverType.OnlySomeone, "", Id);
             }
+        }
+
+        internal void RegisterSession(ClientSession session)
+        {
+            _subject.Subscribe(s => session.CallbackSessionRequest(s));
+            Sessions.Add(session);
+        }
+
+        internal void UnregisterSession(ClientSession session)
+        {
+            session.Dispose();
+            Sessions.Remove(session);
         }
 
         private async void GroupProcess()

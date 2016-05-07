@@ -253,7 +253,7 @@ namespace OpenNos.GameObject
             }
         }
 
-        public static void OnBroadCast(MapPacket mapPacket)
+        public static void OnBroadCast(SessionPacket mapPacket)
         {
             NotifyChildren?.Invoke(mapPacket, new EventArgs());
         }

@@ -200,7 +200,7 @@ namespace OpenNos.Handler
             if (Convert.ToInt32(packetsplit[4]) == Session.Character.CharacterId)
             {
                 Session.Character.Direction = Convert.ToInt32(packetsplit[2]);
-                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateDir(), ReceiverType.AllOnMap);
+                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateDir(), ReceiverType.All);
             }
         }
 
@@ -263,10 +263,10 @@ namespace OpenNos.Handler
             {
                 Session.Client.SendPacket(Session.Character.GenerateEff(Convert.ToInt32(packetsplit[5]) + 4099));
                 ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(Convert.ToInt32(packetsplit[5]) + 4099),
-                    ReceiverType.AllOnMapNoEmoBlocked);
+                    ReceiverType.AllNoEmoBlocked);
             }
             if (packetsplit[2] == "2")
-                ClientLinkManager.Instance.Broadcast(Session, $"guri 2 1 {Session.Character.CharacterId}", ReceiverType.AllOnMap);
+                ClientLinkManager.Instance.Broadcast(Session, $"guri 2 1 {Session.Character.CharacterId}", ReceiverType.All);
         }
 
         [Packet("hero")]
@@ -744,7 +744,7 @@ namespace OpenNos.Handler
             if (Session.Character.ThreadCharChange != null && Session.Character.ThreadCharChange.IsAlive)
                 Session.Character.ThreadCharChange.Abort();
 
-            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateRest(), ReceiverType.AllOnMap);
+            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateRest(), ReceiverType.All);
         }
 
         [Packet("#revival")]
@@ -775,8 +775,8 @@ namespace OpenNos.Handler
                             Session.Character.Hp = (int)(Session.Character.HPLoad() / 2);
                             Session.Character.Mp = (int)(Session.Character.MPLoad() / 2);
                             Session.Client.SendPacket(Session.Character.GenerateTp());
-                            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateTp(), ReceiverType.AllOnMap);
-                            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateRevive(), ReceiverType.AllOnMap);
+                            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateTp(), ReceiverType.All);
+                            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateRevive(), ReceiverType.All);
                             Session.Character.InventoryList.RemoveItemAmount(seed, 10);
                             Session.Character.GenerateStartupInventory();
                         }
@@ -799,7 +799,7 @@ namespace OpenNos.Handler
 
             ClientLinkManager.Instance.Broadcast(Session,
                 Session.Character.GenerateSay(message.Trim(), 0),
-                ReceiverType.AllOnMapExceptMe);
+                ReceiverType.AllExceptMe);
         }
 
         [Packet("select")]
@@ -956,7 +956,7 @@ namespace OpenNos.Handler
 
                     string p = GeneratePidx(Session.Character.CharacterId);
                     if (p != "")
-                        ClientLinkManager.Instance.Broadcast(Session, p, ReceiverType.AllOnMap);
+                        ClientLinkManager.Instance.Broadcast(Session, p, ReceiverType.All);
                 }
                 else if (type == 4)
                 {
@@ -981,7 +981,7 @@ namespace OpenNos.Handler
                     Session.Client.Disconnect();
                 Session.Character.MapX = Convert.ToInt16(packetsplit[2]);
                 Session.Character.MapY = Convert.ToInt16(packetsplit[3]);
-                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateMv(), ReceiverType.AllOnMapExceptMe);
+                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateMv(), ReceiverType.AllExceptMe);
                 Session.Client.SendPacket(Session.Character.GenerateCond());
             }
             else

@@ -133,6 +133,15 @@ namespace OpenNos.Login.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Database may not up to date. Please consider updating your database..
+        /// </summary>
+        internal static string DATABASE_NOT_UPTODATE {
+            get {
+                return ResourceManager.GetString("DATABASE_NOT_UPTODATE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A client is has been disconnected! ClientId = .
         /// </summary>
         internal static string DISCONNECT {

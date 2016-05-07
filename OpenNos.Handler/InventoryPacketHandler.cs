@@ -387,7 +387,7 @@ namespace OpenNos.Handler
                         if (newInv != null)
                         {
                             Session.CurrentMap.DroppedList.Remove(DropId);
-                            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateGet(DropId), ReceiverType.AllOnMap);
+                            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateGet(DropId), ReceiverType.All);
                             Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(newInv.ItemInstance.ItemVNum, newInv.ItemInstance.Amount, newInv.Type, newInv.Slot, mapitem.ItemInstance.Rare, mapitem.ItemInstance.Design, mapitem.ItemInstance.Upgrade));
                             Session.Client.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {(newInv.ItemInstance as ItemInstance).Item.Name} x {amount}", 12));
                         }
@@ -403,7 +403,7 @@ namespace OpenNos.Handler
                             Item iteminfo = ServerManager.GetItem(mapitem.ItemInstance.ItemVNum);
                             Session.Character.Gold += mapitem.ItemInstance.Amount;
                             Session.CurrentMap.DroppedList.Remove(DropId);
-                            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateGet(DropId), ReceiverType.AllOnMap);
+                            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateGet(DropId), ReceiverType.All);
                             Session.Client.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {iteminfo.Name} x {amount}", 12));
                             Session.Client.SendPacket(Session.Character.GenerateGold());
                         }
@@ -485,7 +485,7 @@ namespace OpenNos.Handler
                     if (invitem.ItemInstance.Amount == 0)
                         Session.Character.DeleteItem(invitem.Type, invitem.Slot);
                     if (DroppedItem != null)
-                        ClientLinkManager.Instance.Broadcast(Session, $"drop {DroppedItem.ItemInstance.ItemVNum} {DroppedItem.ItemInstance.ItemInstanceId} {DroppedItem.PositionX} {DroppedItem.PositionY} {DroppedItem.ItemInstance.Amount} 0 -1", ReceiverType.AllOnMap);
+                        ClientLinkManager.Instance.Broadcast(Session, $"drop {DroppedItem.ItemInstance.ItemVNum} {DroppedItem.ItemInstance.ItemInstanceId} {DroppedItem.PositionX} {DroppedItem.PositionY} {DroppedItem.ItemInstance.Amount} 0 -1", ReceiverType.All);
                 }
                 else
                 {
@@ -530,9 +530,9 @@ namespace OpenNos.Handler
                 Session.Character.EquipmentList.DeleteFromSlotAndType(slot, (byte)InventoryType.Equipment);
 
                 Session.Client.SendPacket(Session.Character.GenerateStatChar());
-                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEq(), ReceiverType.AllOnMap);
+                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEq(), ReceiverType.All);
                 Session.Client.SendPacket(Session.Character.GenerateEquipment());
-                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GeneratePairy(), ReceiverType.AllOnMap);
+                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GeneratePairy(), ReceiverType.All);
             }
         }
 
@@ -945,7 +945,7 @@ namespace OpenNos.Handler
         [Packet("game_start")]
         public void StartGame(string packet)
         {
-            if (Session.CurrentMap != null)
+            if (Session.CurrentMap != null || Session.Character == null)
                 return;
             Session.CurrentMap = ServerManager.GetMap(Session.Character.MapId);
 
@@ -987,8 +987,8 @@ namespace OpenNos.Handler
             foreach (string quicklist in quicklistpackets)
                 Session.Client.SendPacket(quicklist);
 
-            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GeneratePairy(), ReceiverType.AllOnMap);
-            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateSpPoint(), ReceiverType.AllOnMap);
+            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GeneratePairy(), ReceiverType.All);
+            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateSpPoint(), ReceiverType.All);
             Session.Character.GenerateStartupInventory();
             // gidx
             Session.Client.SendPacket($"mlinfo 3800 2000 100 0 0 10 0 {Language.Instance.GetMessageFromKey("WELCOME_MUSIC_INFO")}");
@@ -1117,7 +1117,7 @@ namespace OpenNos.Handler
         private void ChangeSP()
         {
             Session.Client.SendPacket("delay 5000 3 #sl^1");
-            ClientLinkManager.Instance.Broadcast(Session, $"guri 2 1 {Session.Character.CharacterId}", ReceiverType.AllOnMap);
+            ClientLinkManager.Instance.Broadcast(Session, $"guri 2 1 {Session.Character.CharacterId}", ReceiverType.All);
             Thread.Sleep(5000);
 
             SpecialistInstance sp = Session.Character.EquipmentList.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, (byte)InventoryType.Equipment);
@@ -1141,7 +1141,7 @@ namespace OpenNos.Handler
             Session.Character.Morph = ServerManager.GetItem(sp.ItemVNum).Morph;
             Session.Character.MorphUpgrade = sp.Upgrade;
             Session.Character.MorphUpgrade2 = sp.Design;
-            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateCMode(), ReceiverType.AllOnMap);
+            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateCMode(), ReceiverType.All);
 
             // TODO: Send SP Skills here
 
@@ -1157,8 +1157,8 @@ namespace OpenNos.Handler
 
             // lev 40 2288403 14 72745 3221180 145000 20086 5
 
-            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(196), ReceiverType.AllOnMap);
-            ClientLinkManager.Instance.Broadcast(Session, $"guri 6 1 {Session.Character.CharacterId} 0 0", ReceiverType.AllOnMap);
+            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(196), ReceiverType.All);
+            ClientLinkManager.Instance.Broadcast(Session, $"guri 6 1 {Session.Character.CharacterId} 0 0", ReceiverType.All);
             Session.Client.SendPacket(Session.Character.GenerateSpPoint());
             Session.Character.Speed += ServerManager.GetItem(sp.ItemVNum).Speed;
             Session.Client.SendPacket(Session.Character.GenerateCond());
@@ -1207,8 +1207,8 @@ namespace OpenNos.Handler
 
             Session.Client.SendPacket($"sd {Session.Character.SpCooldown}");
 
-            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateCMode(), ReceiverType.AllOnMap);
-            ClientLinkManager.Instance.Broadcast(Session, $"guri 6 1 {Session.Character.CharacterId} 0 0", ReceiverType.AllOnMap);
+            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateCMode(), ReceiverType.All);
+            ClientLinkManager.Instance.Broadcast(Session, $"guri 6 1 {Session.Character.CharacterId} 0 0", ReceiverType.All);
 
             /* s="ms_c";
             chara.Send(s); */

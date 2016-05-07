@@ -14,30 +14,18 @@
 
 namespace OpenNos.GameObject
 {
-    public class MapPacket
+    public class SessionPacket
     {
-        #region Members
-
-        private ReceiverType all;
-        private string characterName;
-        private string packet;
-
-        #endregion
 
         #region Instantiation
 
-        public MapPacket(ClientSession session, string content, ReceiverType receiver)
+        public SessionPacket(ClientSession session, string content, ReceiverType receiver, string senderCharacterName = "", long someonesCharacterId = -1)
         {
-            Session = session;
+            Sender = session;
             Content = content;
             Receiver = receiver;
-        }
-
-        public MapPacket(string characterName, string packet, ReceiverType all)
-        {
-            this.characterName = characterName;
-            this.packet = packet;
-            this.all = all;
+            SenderCharacterName = senderCharacterName;
+            SomeonesCharacterId = SomeonesCharacterId;
         }
 
         #endregion
@@ -46,7 +34,9 @@ namespace OpenNos.GameObject
 
         public string Content { get; set; }
         public ReceiverType Receiver { get; set; }
-        public ClientSession Session { get; set; }
+        public ClientSession Sender { get; set; }
+        public string SenderCharacterName { get; set; }
+        public long SomeonesCharacterId { get; set; }
 
         #endregion
     }

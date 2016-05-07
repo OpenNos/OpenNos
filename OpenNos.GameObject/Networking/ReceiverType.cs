@@ -20,11 +20,9 @@ namespace OpenNos.GameObject
         All = 1,
         AllExceptMe = 2,
         OnlyMe = 3,
-        AllOnMapExceptMe = 4,
-        AllOnMap = 5,
-        OnlySomeone = 6,
-        AllOnMapNoEmoBlocked = 7,
-        AllNoHeroBlocked = 8,
-        Group = 9
+        OnlySomeone = 4,
+        AllNoEmoBlocked = 5,
+        AllNoHeroBlocked = 6,
+        Group = 7
     }
 }

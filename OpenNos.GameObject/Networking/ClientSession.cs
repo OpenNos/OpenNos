@@ -26,7 +26,7 @@ using System.Threading.Tasks;
 
 namespace OpenNos.GameObject
 {
-    public class ClientSession
+    public class ClientSession : IDisposable
     {
         #region Members
 
@@ -147,6 +147,59 @@ namespace OpenNos.GameObject
 
         #region Methods
 
+        public bool CallbackSessionRequest(SessionPacket sessionPacket)
+        {
+            switch (sessionPacket.Receiver)
+            {
+                case ReceiverType.All:
+                    Client.SendPacket(sessionPacket.Content);
+                    break;
+
+                case ReceiverType.AllExceptMe:
+                    if (Client.ClientId != sessionPacket.Sender.Client.ClientId)
+                    {
+                        Client.SendPacket(sessionPacket.Content);
+                    }
+                    break;
+
+                case ReceiverType.OnlyMe: //necessary?
+                    if (Client.ClientId == sessionPacket.Sender.Client.ClientId)
+                    {
+                        Client.SendPacket(sessionPacket.Content);
+                    }
+                    break;
+
+                case ReceiverType.OnlySomeone:
+                    if (Character != null && Character.CharacterId == sessionPacket.SomeonesCharacterId)
+                    {
+                        Client.SendPacket(sessionPacket.Content);
+                    }
+                    return true;
+
+                case ReceiverType.AllNoEmoBlocked:
+                    if (Character != null && !Character.EmoticonsBlocked)
+                    {
+                        Client.SendPacket(sessionPacket.Content);
+                    }
+                    break;
+
+                case ReceiverType.AllNoHeroBlocked:
+                    if (Character != null && !Character.HeroChatBlocked)
+                    {
+                        Client.SendPacket(sessionPacket.Content);
+                    }
+                    break;
+
+                case ReceiverType.Group:
+                    if (Character.Group != null && Character.Group.GroupId.Equals(sessionPacket.Sender.Character.Group.GroupId))
+                    {
+                        Client.SendPacket(sessionPacket.Content);
+                    }
+                    break;
+            }
+            return true;
+        }
+
         /// <summary>
         /// Destroy ClientSession
         /// </summary>
@@ -166,8 +219,8 @@ namespace OpenNos.GameObject
                 {
                     this.CurrentMap.ShopUserList.Remove(shop.Key);
 
-                    ClientLinkManager.Instance.Broadcast(this, Character.GenerateShopEnd(), ReceiverType.AllOnMap);
-                    ClientLinkManager.Instance.Broadcast(this, Character.GeneratePlayerFlag(0), ReceiverType.AllOnMapExceptMe);
+                    ClientLinkManager.Instance.Broadcast(this, Character.GenerateShopEnd(), ReceiverType.All);
+                    ClientLinkManager.Instance.Broadcast(this, Character.GeneratePlayerFlag(0), ReceiverType.AllExceptMe);
                 }
                 ServiceFactory.Instance.CommunicationService.DisconnectCharacter(Character.Name);
                 CurrentMap = null;
@@ -177,6 +230,10 @@ namespace OpenNos.GameObject
             {
                 ServiceFactory.Instance.CommunicationService.DisconnectAccount(Account.Name);
             }
+        }
+
+        public void Dispose()
+        {
         }
 
         public void Initialize(EncryptionBase encryptor, Type packetHandler)
