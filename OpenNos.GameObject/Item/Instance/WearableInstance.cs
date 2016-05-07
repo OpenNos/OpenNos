@@ -278,7 +278,7 @@ namespace OpenNos.GameObject
             int sandVnum = 1027;
             Item iteminfo = ServerManager.GetItem(this.ItemVNum);
             Item iteminfo2 = ServerManager.GetItem(itemToSum.ItemVNum);
-            if ((this.Upgrade + itemToSum.Upgrade) < 6 && ((((iteminfo2.EquipmentSlot == (byte)EquipmentType.Gloves) && (iteminfo2.EquipmentSlot == (byte)EquipmentType.Gloves)) || ((iteminfo.EquipmentSlot == (byte)EquipmentType.Boots) && (iteminfo2.EquipmentSlot == (byte)EquipmentType.Boots)))))
+            if ((this.Upgrade + itemToSum.Upgrade) < 6 && ((((iteminfo2.EquipmentSlot == (byte)EquipmentType.Gloves) && (iteminfo.EquipmentSlot == (byte)EquipmentType.Gloves)) || ((iteminfo.EquipmentSlot == (byte)EquipmentType.Boots) && (iteminfo2.EquipmentSlot == (byte)EquipmentType.Boots)))))
             {
                 if (Session.Character.Gold < goldprice[this.Upgrade])
                     return;
