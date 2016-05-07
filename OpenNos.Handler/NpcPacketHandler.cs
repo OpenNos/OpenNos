@@ -441,6 +441,8 @@ namespace OpenNos.Handler
         public void SellShop(string packet)
         {
             string[] packetsplit = packet.Split(' ');
+            if ((Session.Character.ExchangeInfo != null && Session.Character.ExchangeInfo?.ExchangeList.Count() != 0) || Session.Character.Speed == 0)
+                return;
             if (packetsplit.Length > 6)
             {
                 byte type, amount, slot;
