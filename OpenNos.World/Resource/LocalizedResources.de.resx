@@ -645,4 +645,10 @@
   <data name="SHOP_PRIVATE_SHOP" xml:space="preserve">
     <value>Privater Shop</value>
   </data>
+  <data name="SHOP_ONLY_TRADABLE_ITEMS" xml:space="preserve">
+    <value>Du kannst nur handelbare Gegenstände verkaufen.</value>
+  </data>
+  <data name="CONNECTION_LOST" xml:space="preserve">
+    <value>Die Verbindung zum Server wurde unterbrochen.</value>
+  </data>
 </root>

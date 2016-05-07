@@ -278,6 +278,12 @@ namespace OpenNos.Handler
                             {
                                 Inventory inv = Session.Character.InventoryList.LoadInventoryBySlotAndType(slot[i], type[i]);
 
+                                if(!((ItemInstance)inv.ItemInstance).Item.IsTradable)
+                                {
+                                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SHOP_ONLY_TRADABLE_ITEMS"), 0));
+                                    return;
+                                }
+
                                 PersonalShopItem personalshopitem = new PersonalShopItem()
                                 {
                                     Slot = slot[i],
@@ -451,7 +457,7 @@ namespace OpenNos.Handler
                 Inventory inv = Session.Character.InventoryList.LoadInventoryBySlotAndType(slot, type);
                 if (inv == null || amount > inv.ItemInstance.Amount) return;
 
-                if ((inv.ItemInstance as ItemInstance).Item.IsSoldable != true)
+                if (!(inv.ItemInstance as ItemInstance).Item.IsSoldable)
                 {
                     Session.Client.SendPacket(Session.Character.GenerateShopMemo(2, string.Format(Language.Instance.GetMessageFromKey("ITEM_NOT_SOLDABLE"))));
                     return;
