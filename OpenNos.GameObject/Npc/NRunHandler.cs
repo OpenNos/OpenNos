@@ -41,7 +41,10 @@ namespace OpenNos.GameObject
                         Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("LOW_LVL"), 0));
                         return;
                     }
-
+                    if (type == Session.Character.Class)
+                    {
+                        return;
+                    }
                     if (Session.Character.EquipmentList.IsEmpty())
                     {
                         ClientLinkManager.Instance.ClassChange(Session.Character.CharacterId, Convert.ToByte(type));

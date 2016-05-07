@@ -320,7 +320,6 @@ namespace OpenNos.Handler
                     else
                     {
                         charName = ClientLinkManager.Instance.GetProperty<string>(charId, "Name");
-
                         Session.Client.SendPacket(Session.Character.GenerateInfo(String.Format(Language.Instance.GetMessageFromKey("IN_WAITING_FOR"), charName)));
                     }
                 }
@@ -351,12 +350,16 @@ namespace OpenNos.Handler
                 byte.TryParse(packetsplit[j - 1], out qty[i]);
                 Inventory item = Session.Character.InventoryList.LoadInventoryBySlotAndType(slot[i], type[i]);
                 ItemInstance it = (item.ItemInstance as ItemInstance).DeepCopy();
-                it.Amount = qty[i];
-                Session.Character.ExchangeInfo.ExchangeList.Add(it);
-                if (type[i] != 0)
-                    packetList += $"{i}.{type[i]}.{it.ItemVNum}.{qty[i]} ";
-                else
-                    packetList += $"{i}.{type[i]}.{it.ItemVNum}.0.0 ";
+
+                if (it.Item.IsTradable)
+                {
+                    it.Amount = qty[i];
+                    Session.Character.ExchangeInfo.ExchangeList.Add(it);
+                    if (type[i] != 0)
+                        packetList += $"{i}.{type[i]}.{it.ItemVNum}.{qty[i]} ";
+                    else
+                        packetList += $"{i}.{type[i]}.{it.ItemVNum}.0.0 ";
+                }
             }
             Session.Character.ExchangeInfo.Gold = Gold;
             ClientLinkManager.Instance.Broadcast(Session, $"exc_list 1 {Session.Character.CharacterId} {Gold} {packetList}", ReceiverType.OnlySomeone, "", Session.Character.ExchangeInfo.CharId);
@@ -587,7 +590,7 @@ namespace OpenNos.Handler
                     - short.Parse(packetsplit[6]) - short.Parse(packetsplit[7])
                     - short.Parse(packetsplit[8]) - short.Parse(packetsplit[9]) < 0)
                     return;
-                if (short.Parse(packetsplit[6]) < 0 || short.Parse(packetsplit[7]) < 0|| short.Parse(packetsplit[8]) < 0|| short.Parse(packetsplit[9]) < 0 ) { return; }
+                if (short.Parse(packetsplit[6]) < 0 || short.Parse(packetsplit[7]) < 0 || short.Parse(packetsplit[8]) < 0 || short.Parse(packetsplit[9]) < 0) { return; }
                 specialistInstance.SlDamage += short.Parse(packetsplit[6]);
                 specialistInstance.SlDefence += short.Parse(packetsplit[7]);
                 specialistInstance.SlElement += short.Parse(packetsplit[8]);

@@ -128,6 +128,7 @@
     <Compile Include="Networking\WireProtocolFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SessionFactory.cs" />
+    <Compile Include="StringHelper.cs" />
     <Compile Include="Threading\SequentialItemProcessor.cs" />
     <Compile Include="Threading\ThreadedBase.cs" />
     <Compile Include="Threading\Timer.cs" />

@@ -121,7 +121,7 @@
     <value>Il tuo account e' gia' connesso.</value>
   </data>
   <data name="BANNED" xml:space="preserve">
-    <value>Quest'account è stato bannato!</value>
+    <value>Questo account è stato bannato!</value>
   </data>
   <data name="CLIENT_CLOSE" xml:space="preserve">
     <value>Il client ha interrotto la connessione.</value>
@@ -160,7 +160,7 @@
     <value>L'account non è attivo!</value>
   </data>
   <data name="PACKET_FAILURE" xml:space="preserve">
-    <value>Failed to send packet {0} to client {1}, {2}.</value>
+    <value>Errore nel mandare il pacchetto {0} al client {1}, {2}.</value>
   </data>
   <data name="STARTED" xml:space="preserve">
     <value>Server avviato con successo.</value>
@@ -169,6 +169,6 @@
     <value>Il messaggio è troppo lungo ({0} bytes). La lunghezza massima consentità è di {1} bytes.</value>
   </data>
   <data name="CONNECTION_LOST" xml:space="preserve">
-    <value>Connection to the server has been lost.</value>
+    <value>Connessione al server persa..</value>
   </data>
 </root>

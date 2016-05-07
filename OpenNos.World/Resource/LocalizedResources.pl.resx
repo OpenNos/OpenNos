@@ -675,4 +675,7 @@
   <data name="CONNECTION_LOST" xml:space="preserve">
     <value>Utracono polaczenie z serwerem.</value>
   </data>
+  <data name="SHOP_PRIVATE_SHOP" xml:space="preserve">
+    <value>Private shop</value>
+  </data>
 </root>

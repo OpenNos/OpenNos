@@ -627,4 +627,7 @@
   <data name="SEED_USED" xml:space="preserve">
     <value>Tu as utilisé des graine de pouvoir.</value>
   </data>
+  <data name="SHOP_PRIVATE_SHOP" xml:space="preserve">
+    <value>Private shop</value>
+  </data>
 </root>

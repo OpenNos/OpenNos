@@ -241,7 +241,7 @@ namespace OpenNos.Handler
             short[] slot = new short[20];
             byte[] qty = new byte[20];
 
-            string shopname = "";
+            string shopname = String.Empty;
             if (packetsplit.Length > 2)
             {
                 foreach (Portal por in Session.CurrentMap.Portals)
@@ -296,7 +296,17 @@ namespace OpenNos.Handler
                         for (int i = 83; i < packetsplit.Length; i++)
                             shopname += $"{packetsplit[i]} ";
 
+                        //trim shopname
                         shopname.TrimEnd(' ');
+
+                        //create default shopname if it's empty
+                        if(String.IsNullOrWhiteSpace(shopname) || String.IsNullOrEmpty(shopname))
+                        {
+                            shopname = Language.Instance.GetMessageFromKey("SHOP_PRIVATE_SHOP");
+                        }
+
+                        //truncate the string to a max-length of 20
+                        shopname = StringHelper.Truncate(shopname, 20);
 
                         myShop.OwnerId = Session.Character.CharacterId;
                         myShop.Name = shopname;
@@ -346,8 +356,8 @@ namespace OpenNos.Handler
             short data3; short.TryParse(packetsplit[4], out data3);
             short npcid; short.TryParse(packetsplit[5], out npcid);
             Session.Character.LastNRunId = npcid;
-            if(Session.Character.Hp > 0)
-            NRunHandler.NRun(Session, type, runner, data3, npcid);
+            if (Session.Character.Hp > 0)
+                NRunHandler.NRun(Session, type, runner, data3, npcid);
         }
 
         [Packet("pdtse")]

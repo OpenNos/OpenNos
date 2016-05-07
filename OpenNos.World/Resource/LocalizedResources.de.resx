@@ -642,4 +642,7 @@
   <data name="HEROLEVEL_CHANGED" xml:space="preserve">
     <value>Dein Helden Level hat sich erhöht!</value>
   </data>
+  <data name="SHOP_PRIVATE_SHOP" xml:space="preserve">
+    <value>Privater Shop</value>
+  </data>
 </root>
