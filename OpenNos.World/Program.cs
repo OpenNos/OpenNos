@@ -61,6 +61,7 @@ namespace OpenNos.World
         public static void Main(string[] args)
         {
             //initialize Logger
+            System.Globalization.CultureInfo.DefaultThreadCurrentUICulture = System.Globalization.CultureInfo.GetCultureInfo("en-US");
             Logger.InitializeLogger(LogManager.GetLogger(typeof(Program)));
             Assembly assembly = Assembly.GetExecutingAssembly();
             FileVersionInfo fileVersionInfo = FileVersionInfo.GetVersionInfo(assembly.Location);
