@@ -125,10 +125,10 @@ namespace OpenNos.GameObject
 
             ClientSession session = new ClientSession(customClient);
             session.Initialize(_encryptor, _packetHandler);
-            ClientLinkManager.Instance.Sessions.Add(session);
+            ClientLinkManager.Instance.RegisterSession(session);
             if (!_sessions.TryAdd(customClient.ClientId, session))
             {
-                ClientLinkManager.Instance.Sessions.Remove(session);
+                ClientLinkManager.Instance.UnregisterSession(session);
                 Logger.Log.WarnFormat(Language.Instance.GetMessageFromKey("FORCED_DISCONNECT"), customClient.ClientId);
                 customClient.Disconnect();
                 _sessions.TryRemove(customClient.ClientId, out session);
@@ -144,7 +144,7 @@ namespace OpenNos.GameObject
             //check if session hasnt been already removed
             if (session != null)
             {
-                ClientLinkManager.Instance.Sessions.Remove(session);
+                ClientLinkManager.Instance.UnregisterSession(session);
                 if (session.Character != null)
                 {
                     if (ClientLinkManager.Instance.Groups.FirstOrDefault(s => s.Characters.Contains(session.Character.CharacterId)) != null)
@@ -154,7 +154,7 @@ namespace OpenNos.GameObject
                     session.Character.Save();
 
                     //only remove the character from map if the character has been set
-                    ClientLinkManager.Instance.Broadcast(session, session.Character.GenerateOut(), ReceiverType.AllOnMapExceptMe);
+                    ClientLinkManager.Instance.Broadcast(session, session.Character.GenerateOut(), ReceiverType.AllExceptMe);
                 }
 
                 if (session.HealthTask != null)

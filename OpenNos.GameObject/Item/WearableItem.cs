@@ -105,9 +105,9 @@ namespace OpenNos.GameObject
                         Session.Character.InventoryList.DeleteFromSlotAndType(inventory.Slot, inventory.Type);
 
                         Session.Client.SendPacket(Session.Character.GenerateStatChar());
-                        ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEq(), ReceiverType.AllOnMap);
+                        ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEq(), ReceiverType.All);
                         Session.Client.SendPacket(Session.Character.GenerateEquipment());
-                        ClientLinkManager.Instance.Broadcast(Session, Session.Character.GeneratePairy(), ReceiverType.AllOnMap);
+                        ClientLinkManager.Instance.Broadcast(Session, Session.Character.GeneratePairy(), ReceiverType.All);
                     }
                     else
                     {
@@ -127,9 +127,9 @@ namespace OpenNos.GameObject
                                 equip.ItemInstance.Upgrade));
 
                         Session.Client.SendPacket(Session.Character.GenerateStatChar());
-                        ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEq(), ReceiverType.AllOnMap);
+                        ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEq(), ReceiverType.All);
                         Session.Client.SendPacket(Session.Character.GenerateEquipment());
-                        ClientLinkManager.Instance.Broadcast(Session, Session.Character.GeneratePairy(), ReceiverType.AllOnMap);
+                        ClientLinkManager.Instance.Broadcast(Session, Session.Character.GeneratePairy(), ReceiverType.All);
                     }
 
                     break;

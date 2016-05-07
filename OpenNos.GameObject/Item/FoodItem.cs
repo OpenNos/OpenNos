@@ -39,7 +39,7 @@ namespace OpenNos.GameObject
                     int amount = Session.Character.SnackAmount;
                     if (amount < 5)
                     {
-                        Thread workerThread = new Thread(() => regen(Session, item));
+                        Thread workerThread = new Thread(() => Regenerate(Session, item));
                         workerThread.Start();
                         Inv.ItemInstance.Amount--;
                         if (Inv.ItemInstance.Amount > 0)
@@ -67,10 +67,10 @@ namespace OpenNos.GameObject
 
         }
 
-        public void regen(ClientSession Session, Item item)
+        public void Regenerate(ClientSession Session, Item item)
         {
             Session.Character.IsSitting = true;
-            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateRest(), ReceiverType.AllOnMap);
+            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateRest(), ReceiverType.All);
 
             Session.Client.SendPacket(Session.Character.GenerateEff(6000));
             Session.Character.SnackAmount++;
@@ -93,7 +93,7 @@ namespace OpenNos.GameObject
                 Session.Character.Mp += Session.Character.SnackHp;
                 Session.Character.Hp += Session.Character.SnackMp;
                 if ((Session.Character.SnackHp > 0 && Session.Character.SnackHp > 0) && (Session.Character.Hp < Session.Character.HPLoad() || Session.Character.Mp < Session.Character.MPLoad()))
-                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateRc(Session.Character.SnackHp), ReceiverType.AllOnMap);
+                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateRc(Session.Character.SnackHp), ReceiverType.All);
                 if (Session.Client.CommunicationState == CommunicationStates.Connected)
                     ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateStat(), ReceiverType.OnlyMe);
                 else return;

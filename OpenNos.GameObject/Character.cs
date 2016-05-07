@@ -32,6 +32,7 @@ namespace OpenNos.GameObject
         private readonly ClientSession _session;
         private AuthorityType _authority;
         private int _backpack;
+        private byte _cmapcount = 0;
         private int _direction;
         private InventoryList _equipmentlist;
         private InventoryList _inventorylist;
@@ -45,7 +46,6 @@ namespace OpenNos.GameObject
         private int _morphUpgrade2;
         private int _size = 10;
         private byte _speed;
-        private byte _cmapcount = 0;
 
         #endregion
 
@@ -80,6 +80,7 @@ namespace OpenNos.GameObject
         public InventoryList EquipmentList { get { return _equipmentlist; } set { _equipmentlist = value; } }
         public ExchangeInfo ExchangeInfo { get; set; }
         public int FireResistance { get; set; }
+        public Group Group { get; set; }
         public int HitCritical { get; set; }
         public int HitCriticalRate { get; set; }
         public int HitRate { get; set; }
@@ -172,13 +173,6 @@ namespace OpenNos.GameObject
                     }
                 }
             }
-        }
-
-        public void NotiyRarifyResult(byte rare)
-        {
-            Session.Client.SendPacket(GenerateSay(String.Format(Language.Instance.GetMessageFromKey("RARIFY_SUCCESS"), rare), 12));
-            Session.Client.SendPacket(GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("RARIFY_SUCCESS"), rare), 0));
-            Session.Client.SendPacket(GenerateEff(3005));
         }
 
         public string GenerateAt()
@@ -1170,6 +1164,13 @@ namespace OpenNos.GameObject
                 }
             }
             return (int)((ServersData.MPData[Class, Level] + mp) * multiplicator);
+        }
+
+        public void NotiyRarifyResult(byte rare)
+        {
+            Session.Client.SendPacket(GenerateSay(String.Format(Language.Instance.GetMessageFromKey("RARIFY_SUCCESS"), rare), 12));
+            Session.Client.SendPacket(GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("RARIFY_SUCCESS"), rare), 0));
+            Session.Client.SendPacket(GenerateEff(3005));
         }
 
         public void Save()
