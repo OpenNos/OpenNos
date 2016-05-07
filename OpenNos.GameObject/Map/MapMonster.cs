@@ -237,15 +237,17 @@ namespace OpenNos.GameObject
                             ClientLinkManager.Instance.AskRevive(Target);
                             Target = -1;
                         }
-                        if ((sk != null && sk.SkillType == 0) )//|| (monster.AttackClass == 0 && monster.BasicRange > 0))
+                        if ((sk != null && sk.SkillType == 0))// || monster.AttackClass == 0 && monster.BasicArea > 1 && monster.BasicRange > 0)
                             foreach (Character chara in ServerManager.GetMap(MapId).GetListPeopleInRange(sk != null ? (short)MapX : this.MapX, sk != null ? (short)MapY : this.MapY, sk == null ? monster.BasicArea : sk.TargetRange).Where(s => s.CharacterId != Target))
                             {
                                 damage = 100;
                                 bool AlreadyDead2 = chara.Hp <= 0;
                                 chara.Hp -= damage;
+                                if (chara.Hp < 0)
+                                    chara.Hp = 0;
                                 chara.LastDefence = DateTime.Now;
                                 ClientLinkManager.Instance.Broadcast(null, ClientLinkManager.Instance.GetUserMethod<string>(chara.CharacterId, "GenerateStat"), ReceiverType.OnlySomeone, "", chara.CharacterId);
-                                ClientLinkManager.Instance.BroadcastToMap(MapId, $"su 3 {MapMonsterId} 1 {chara.CharacterId} 0 {monster.BasicCooldown} 11 {monster.BasicSkill} 0 0 1 {(int)((double)chara.Hp / chara.HPLoad())} {damage} 0 0");
+                                ClientLinkManager.Instance.BroadcastToMap(MapId, $"su 3 {MapMonsterId} 1 {chara.CharacterId} 0 {monster.BasicCooldown} 11 {monster.BasicSkill} 0 0 {(chara.Hp > 0 ? 1 : 0)} {(int)((double)chara.Hp / chara.HPLoad())} {damage} 0 0");
                                 if (chara.Hp <= 0 && !AlreadyDead2)
                                 {
                                     Thread.Sleep(1000);
