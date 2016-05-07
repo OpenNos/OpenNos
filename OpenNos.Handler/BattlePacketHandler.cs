@@ -175,24 +175,30 @@ namespace OpenNos.Handler
         [Packet("u_s")]
         public void UseSkill(string packet)
         {
-            string[] packetsplit = packet.Split(' ');
-            if (packetsplit.Length > 6)
+            if (Session.Character.CanFight)
             {
-                Session.Character.MapX = Convert.ToInt16(packetsplit[5]);
-                Session.Character.MapY = Convert.ToInt16(packetsplit[6]);
+                string[] packetsplit = packet.Split(' ');
+                if (packetsplit.Length > 6)
+                {
+                    Session.Character.MapX = Convert.ToInt16(packetsplit[5]);
+                    Session.Character.MapY = Convert.ToInt16(packetsplit[6]);
+                }
+                if (packetsplit.Length > 4)
+                    if (Session.Character.Hp > 0)
+                        Task.Factory.StartNew(() => TargetHit(Convert.ToInt32(packetsplit[2]), Convert.ToInt32(packetsplit[3]), Convert.ToInt32(packetsplit[4])));
             }
-            if (packetsplit.Length > 4)
-                if (Session.Character.Hp > 0)
-                    Task.Factory.StartNew(() => TargetHit(Convert.ToInt32(packetsplit[2]), Convert.ToInt32(packetsplit[3]), Convert.ToInt32(packetsplit[4])));
         }
 
         [Packet("u_as")]
         public void UseZonesSkill(string packet)
         {
-            string[] packetsplit = packet.Split(' ');
-            if (packetsplit.Length > 4)
-                if (Session.Character.Hp > 0)
-                    Task.Factory.StartNew(() => ZoneHit(Convert.ToInt32(packetsplit[2]), Convert.ToInt16(packetsplit[3]), Convert.ToInt16(packetsplit[4])));
+            if (Session.Character.CanFight)
+            {
+                string[] packetsplit = packet.Split(' ');
+                if (packetsplit.Length > 4)
+                    if (Session.Character.Hp > 0)
+                        Task.Factory.StartNew(() => ZoneHit(Convert.ToInt32(packetsplit[2]), Convert.ToInt16(packetsplit[3]), Convert.ToInt16(packetsplit[4])));
+            }
         }
 
         private ushort GenerateDamage(int monsterid, Skill skill, ref int hitmode)

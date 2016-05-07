@@ -111,13 +111,13 @@ namespace OpenNos.GameObject
         // we can move them to packethandler
         public void BuyValidate(ClientSession clientSession, KeyValuePair<long, MapShop> shop, short slot, byte amount)
         {
-            PersonalShopItem itemshop = clientSession.CurrentMap.ShopUserList[shop.Key].Items.FirstOrDefault(i => i.Slot.Equals(slot));
+            PersonalShopItem itemshop = clientSession.CurrentMap.UserShops[shop.Key].Items.FirstOrDefault(i => i.Slot.Equals(slot));
             if (itemshop == null)
                 return;
             long id = itemshop.InventoryId;
             itemshop.Amount -= amount;
             if (itemshop.Amount <= 0)
-                clientSession.CurrentMap.ShopUserList[shop.Key].Items.Remove(itemshop);
+                clientSession.CurrentMap.UserShops[shop.Key].Items.Remove(itemshop);
 
             ClientSession shopOwnerSession = Sessions.FirstOrDefault(s => s.Character.CharacterId.Equals(shop.Value.OwnerId));
             if (shopOwnerSession == null) return;
@@ -126,7 +126,7 @@ namespace OpenNos.GameObject
             shopOwnerSession.Client.SendPacket(shopOwnerSession.Character.GenerateGold());
             shopOwnerSession.Client.SendPacket(shopOwnerSession.Character.GenerateShopMemo(1,
                 string.Format(Language.Instance.GetMessageFromKey("BUY_ITEM"), shopOwnerSession.Character.Name, (itemshop.ItemInstance as ItemInstance).Item.Name, amount)));
-            clientSession.CurrentMap.ShopUserList[shop.Key].Sell += itemshop.Price * amount;
+            clientSession.CurrentMap.UserShops[shop.Key].Sell += itemshop.Price * amount;
             shopOwnerSession.Client.SendPacket($"sell_list {shop.Value.Sell} {slot}.{amount}.{itemshop.Amount}");
 
             Inventory inv = shopOwnerSession.Character.InventoryList.RemoveItemAmountFromInventory(amount, id);
@@ -140,7 +140,7 @@ namespace OpenNos.GameObject
             {
                 // Send empty slot to owners inventory
                 shopOwnerSession.Client.SendPacket(shopOwnerSession.Character.GenerateInventoryAdd(-1, 0, itemshop.Type, itemshop.Slot, 0, 0, 0));
-                if (clientSession.CurrentMap.ShopUserList[shop.Key].Items.Count == 0)
+                if (clientSession.CurrentMap.UserShops[shop.Key].Items.Count == 0)
                 {
                     clientSession.Client.SendPacket("shop_end 0");
 

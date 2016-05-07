@@ -46,7 +46,7 @@ namespace OpenNos.GameObject
             _portals = new List<Portal>();
             DroppedList = new Dictionary<long, MapItem>();
 
-            ShopUserList = new Dictionary<long, MapShop>();
+            UserShops = new Dictionary<long, MapShop>();
             foreach (PortalDTO portal in portalsDTO)
             {
                 _portals.Add(new GameObject.Portal()
@@ -140,7 +140,7 @@ namespace OpenNos.GameObject
             }
         }
 
-        public Dictionary<long, MapShop> ShopUserList { get; set; }
+        public Dictionary<long, MapShop> UserShops { get; set; }
 
         public int XLength
         {

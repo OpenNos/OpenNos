@@ -122,6 +122,13 @@ namespace OpenNos.GameObject
         public Thread ThreadCharChange { get; set; }
         public bool UseSp { get; set; }
         public int WaterResistance { get; set; }
+        public bool CanFight
+        {
+            get
+            {
+                return !IsSitting && ExchangeInfo == null;
+            } 
+        }
 
         #endregion
 
@@ -172,6 +179,18 @@ namespace OpenNos.GameObject
                         Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("ITEM_TIMEOUT"), 10));
                     }
                 }
+            }
+        }
+
+        public void CloseShop()
+        {
+            KeyValuePair<long, MapShop> shop = this.Session.CurrentMap.UserShops.FirstOrDefault(mapshop => mapshop.Value.OwnerId.Equals(this.CharacterId));
+            if (!shop.Equals(default(KeyValuePair<long, MapShop>)))
+            {
+                this.Session.CurrentMap.UserShops.Remove(shop.Key);
+
+                ClientLinkManager.Instance.Broadcast(Session, GenerateShopEnd(), ReceiverType.All);
+                ClientLinkManager.Instance.Broadcast(Session, GeneratePlayerFlag(0), ReceiverType.AllExceptMe);
             }
         }
 
@@ -551,7 +570,7 @@ namespace OpenNos.GameObject
 
         public List<string> GeneratePlayerShopOnMap()
         {
-            return ServerManager.GetMap(MapId).ShopUserList.Select(shop => $"pflag 1 {shop.Value.OwnerId} {shop.Key + 1}").ToList();
+            return ServerManager.GetMap(MapId).UserShops.Select(shop => $"pflag 1 {shop.Value.OwnerId} {shop.Key + 1}").ToList();
         }
 
         public string[] GenerateQuicklist()
@@ -623,7 +642,7 @@ namespace OpenNos.GameObject
 
         public List<string> GenerateShopOnMap()
         {
-            return ServerManager.GetMap(MapId).ShopUserList.Select(shop => $"shop 1 {shop.Key + 1} 1 3 0 {shop.Value.Name}").ToList();
+            return ServerManager.GetMap(MapId).UserShops.Select(shop => $"shop 1 {shop.Key + 1} 1 3 0 {shop.Value.Name}").ToList();
         }
 
         public string GenerateSki()

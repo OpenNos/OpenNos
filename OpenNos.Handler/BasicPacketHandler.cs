@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace OpenNos.Handler
@@ -889,6 +890,66 @@ namespace OpenNos.Handler
             {
                 Logger.Log.Error(ex);
             }
+        }
+
+        [Packet("game_start")]
+        public void StartGame(string packet)
+        {
+            if (Session.CurrentMap != null || Session.Character == null)
+                return;
+            Session.CurrentMap = ServerManager.GetMap(Session.Character.MapId);
+
+            if (System.Configuration.ConfigurationManager.AppSettings["SceneOnCreate"].ToLower() == "true" & DAOFactory.GeneralLogDAO.LoadByLogType("Connection", Session.Character.CharacterId).Count() == 1) Session.Client.SendPacket("scene 40");
+            if (System.Configuration.ConfigurationManager.AppSettings["WorldInformation"].ToLower() == "true")
+            {
+                Session.Client.SendPacket(Session.Character.GenerateSay("---------- World Information ----------", 10));
+                Assembly assembly = Assembly.GetEntryAssembly();
+                FileVersionInfo fileVersionInfo = FileVersionInfo.GetVersionInfo(assembly.Location);
+                Session.Client.SendPacket(Session.Character.GenerateSay($"OpenNos by OpenNos Team\nVersion: v{fileVersionInfo.ProductVersion}", 6));
+                Session.Client.SendPacket(Session.Character.GenerateSay("-----------------------------------------------", 10));
+            }
+            Session.Character.LoadSkills();
+            Session.Client.SendPacket(Session.Character.GenerateTit());
+            if (Session.Character.Hp <= 0)
+                ClientLinkManager.Instance.ReviveFirstPosition(Session.Character.CharacterId);
+            else
+                ClientLinkManager.Instance.ChangeMap(Session.Character.CharacterId);
+
+            Session.Client.SendPacket("rage 0 250000");
+            Session.Client.SendPacket("rank_cool 0 0 18000");
+
+            Session.Client.SendPacket("scr 0 0 0 0 0 0");
+
+            Session.Client.SendPacket($"bn 0 {Language.Instance.GetMessageFromKey("BN0")}");
+            Session.Client.SendPacket($"bn 1 {Language.Instance.GetMessageFromKey("BN1")}");
+            Session.Client.SendPacket($"bn 2 {Language.Instance.GetMessageFromKey("BN2")}");
+            Session.Client.SendPacket($"bn 3 {Language.Instance.GetMessageFromKey("BN3")}");
+            Session.Client.SendPacket($"bn 4 {Language.Instance.GetMessageFromKey("BN4")}");
+            Session.Client.SendPacket($"bn 5 {Language.Instance.GetMessageFromKey("BN5")}");
+            Session.Client.SendPacket($"bn 6 {Language.Instance.GetMessageFromKey("BN6")}");
+
+            Session.Client.SendPacket(Session.Character.GenerateExts());
+            Session.Client.SendPacket(Session.Character.GenerateGold());
+
+            Session.Client.SendPacket(Session.Character.GenerateSki());
+
+            string[] quicklistpackets = Session.Character.GenerateQuicklist();
+            foreach (string quicklist in quicklistpackets)
+                Session.Client.SendPacket(quicklist);
+
+            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GeneratePairy(), ReceiverType.All);
+            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateSpPoint(), ReceiverType.All);
+            Session.Character.GenerateStartupInventory();
+            // gidx
+            Session.Client.SendPacket($"mlinfo 3800 2000 100 0 0 10 0 {Language.Instance.GetMessageFromKey("WELCOME_MUSIC_INFO")}");
+            // cond
+            Session.Client.SendPacket("p_clear");
+            // sc_p pet
+            Session.Client.SendPacket("pinit 0");
+            Session.Client.SendPacket("zzim");
+            Session.Client.SendPacket($"twk 1 {Session.Character.CharacterId} {Session.Account.Name} {Session.Character.Name} shtmxpdlfeoqkr");
+
+            Session.Character.DeleteTimeout();
         }
 
         [Packet("#pjoin")]

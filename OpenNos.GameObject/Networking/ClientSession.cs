@@ -170,7 +170,7 @@ namespace OpenNos.GameObject
                     break;
 
                 case ReceiverType.OnlySomeone:
-                    if (Character != null && (Character.CharacterId == sessionPacket.SomeonesCharacterId || 
+                    if (Character != null && (Character.CharacterId == sessionPacket.SomeonesCharacterId ||
                          Character.Name.Equals(sessionPacket.SomeonesCharacterName)))
                     {
                         Client.SendPacket(sessionPacket.Content);
@@ -214,15 +214,9 @@ namespace OpenNos.GameObject
 
             if (Character != null)
             {
-                //disconnect client
-                KeyValuePair<long, MapShop> shop = this.CurrentMap.ShopUserList.FirstOrDefault(mapshop => mapshop.Value.OwnerId.Equals(this.Character.CharacterId));
-                if (!shop.Equals(default(KeyValuePair<long, MapShop>)))
-                {
-                    this.CurrentMap.ShopUserList.Remove(shop.Key);
+                Character.CloseShop();
 
-                    ClientLinkManager.Instance.Broadcast(this, Character.GenerateShopEnd(), ReceiverType.All);
-                    ClientLinkManager.Instance.Broadcast(this, Character.GeneratePlayerFlag(0), ReceiverType.AllExceptMe);
-                }
+                //disconnect client
                 ServiceFactory.Instance.CommunicationService.DisconnectCharacter(Character.Name);
                 CurrentMap = null;
             }

@@ -61,7 +61,7 @@ namespace OpenNos.Handler
 
             if (type == 1) // User shop
             {
-                KeyValuePair<long, MapShop> shop = Session.CurrentMap.ShopUserList.FirstOrDefault(mapshop => mapshop.Value.OwnerId.Equals(owner));
+                KeyValuePair<long, MapShop> shop = Session.CurrentMap.UserShops.FirstOrDefault(mapshop => mapshop.Value.OwnerId.Equals(owner));
                 PersonalShopItem item = shop.Value.Items.FirstOrDefault(i => i.Slot.Equals(slot));
                 if (item == null || amount <= 0) return;
 
@@ -97,7 +97,7 @@ namespace OpenNos.Handler
                 else
                     Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_PLACE"), 0));
                 ClientLinkManager.Instance.BuyValidate(Session, shop, slot, amount);
-                KeyValuePair<long, MapShop> shop2 = Session.CurrentMap.ShopUserList.FirstOrDefault(s => s.Value.OwnerId.Equals(owner));
+                KeyValuePair<long, MapShop> shop2 = Session.CurrentMap.UserShops.FirstOrDefault(s => s.Value.OwnerId.Equals(owner));
                 LoadShopItem(owner, shop2);
             }
             else if (packetsplit.Length == 5) // skill shop
@@ -259,7 +259,7 @@ namespace OpenNos.Handler
                 }
                 else if (typePacket == 0)
                 {
-                    if (Session.CurrentMap.ShopUserList.Where(s => s.Value.OwnerId == Session.Character.CharacterId).Count() != 0)
+                    if (Session.CurrentMap.UserShops.Where(s => s.Value.OwnerId == Session.Character.CharacterId).Count() != 0)
                     {
                         return;
                     }
@@ -311,9 +311,9 @@ namespace OpenNos.Handler
                         myShop.OwnerId = Session.Character.CharacterId;
                         myShop.Name = shopname;
 
-                        Session.CurrentMap.ShopUserList.Add(Session.CurrentMap.ShopUserList.Count(), myShop);
+                        Session.CurrentMap.UserShops.Add(Session.CurrentMap.UserShops.Count(), myShop);
 
-                        ClientLinkManager.Instance.Broadcast(Session, Session.Character.GeneratePlayerFlag(Session.CurrentMap.ShopUserList.Count()), ReceiverType.AllExceptMe);
+                        ClientLinkManager.Instance.Broadcast(Session, Session.Character.GeneratePlayerFlag(Session.CurrentMap.UserShops.Count()), ReceiverType.AllExceptMe);
                         ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateShop(shopname), ReceiverType.All);
 
                         Session.Client.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("SHOP_OPEN")));
@@ -332,8 +332,8 @@ namespace OpenNos.Handler
                 }
                 else if (typePacket == 1)
                 {
-                    KeyValuePair<long, MapShop> shop = Session.CurrentMap.ShopUserList.FirstOrDefault(mapshop => mapshop.Value.OwnerId.Equals(Session.Character.CharacterId));
-                    Session.CurrentMap.ShopUserList.Remove(shop.Key);
+                    KeyValuePair<long, MapShop> shop = Session.CurrentMap.UserShops.FirstOrDefault(mapshop => mapshop.Value.OwnerId.Equals(Session.Character.CharacterId));
+                    Session.CurrentMap.UserShops.Remove(shop.Key);
 
                     ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateShopEnd(), ReceiverType.All);
                     ClientLinkManager.Instance.Broadcast(Session, Session.Character.GeneratePlayerFlag(0), ReceiverType.AllExceptMe);
@@ -578,7 +578,7 @@ namespace OpenNos.Handler
                     long owner;
                     if (!long.TryParse(packetsplit[3], out owner)) return;
 
-                    KeyValuePair<long, MapShop> shopList = Session.CurrentMap.ShopUserList.FirstOrDefault(s => s.Value.OwnerId.Equals(owner));
+                    KeyValuePair<long, MapShop> shopList = Session.CurrentMap.UserShops.FirstOrDefault(s => s.Value.OwnerId.Equals(owner));
                     LoadShopItem(owner, shopList);
                 }
                 else
