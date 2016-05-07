@@ -441,6 +441,8 @@ namespace OpenNos.Handler
         public void SellShop(string packet)
         {
             string[] packetsplit = packet.Split(' ');
+            if ((Session.Character.ExchangeInfo != null && Session.Character.ExchangeInfo?.ExchangeList.Count() != 0) || Session.Character.Speed == 0)
+                return;
             if (packetsplit.Length > 6)
             {
                 byte type, amount, slot;
@@ -462,9 +464,20 @@ namespace OpenNos.Handler
                     return;
                 }
                 Session.Character.Gold += ((inv.ItemInstance as ItemInstance).Item.Price / 20) * amount;
-                Session.Character.DeleteItem(type, slot);
-                Session.Client.SendPacket(Session.Character.GenerateGold());
                 Session.Client.SendPacket(Session.Character.GenerateShopMemo(1, string.Format(Language.Instance.GetMessageFromKey("SELL_ITEM_VALIDE"), (inv.ItemInstance as ItemInstance).Item.Name, amount)));
+
+                inv = Session.Character.InventoryList.RemoveItemAmountFromInventory(amount, inv.InventoryId);
+                if (inv != null)
+                {
+                    // Send reduced-amount to owners inventory
+                    Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(inv.ItemInstance.ItemVNum, inv.ItemInstance.Amount, inv.Type, inv.Slot, inv.ItemInstance.Rare, inv.ItemInstance.Design, inv.ItemInstance.Upgrade));
+                }
+                else
+                {
+                    // Send empty slot to owners inventory
+                    Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, type, slot, 0, 0, 0));
+                }
+                Session.Client.SendPacket(Session.Character.GenerateGold());
             }
             else if (packetsplit.Length == 5)
             {

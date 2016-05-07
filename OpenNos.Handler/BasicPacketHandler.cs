@@ -974,13 +974,13 @@ namespace OpenNos.Handler
             string[] packetsplit = packet.Split(' ');
             if (packetsplit.Length <= 5)
                 return;
-            Session.Character.MapX = Convert.ToInt16(packetsplit[2]);
-            Session.Character.MapY = Convert.ToInt16(packetsplit[3]);
 
             if (Session.Character.Speed.Equals(Convert.ToByte(packetsplit[5])) || Convert.ToByte(packetsplit[5]) == 10)
             {
                 if (Map.GetDistance(new MapCell() { X = Session.Character.MapX, Y = Session.Character.MapY }, new MapCell() { X = Convert.ToInt16(packetsplit[2]), Y = Convert.ToInt16(packetsplit[3]) }) > 20)
                     Session.Client.Disconnect();
+                Session.Character.MapX = Convert.ToInt16(packetsplit[2]);
+                Session.Character.MapY = Convert.ToInt16(packetsplit[3]);
                 ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateMv(), ReceiverType.AllOnMapExceptMe);
                 Session.Client.SendPacket(Session.Character.GenerateCond());
             }
