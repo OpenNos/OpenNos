@@ -170,7 +170,8 @@ namespace OpenNos.GameObject
                     break;
 
                 case ReceiverType.OnlySomeone:
-                    if (Character != null && Character.CharacterId == sessionPacket.SomeonesCharacterId)
+                    if (Character != null && (Character.CharacterId == sessionPacket.SomeonesCharacterId || 
+                         Character.Name.Equals(sessionPacket.SomeonesCharacterName)))
                     {
                         Client.SendPacket(sessionPacket.Content);
                     }
