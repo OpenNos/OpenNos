@@ -185,8 +185,9 @@ namespace OpenNos.GameObject
                 short? MapY = ClientLinkManager.Instance.GetProperty<short?>(Target, "MapY");
                 int? Hp = ClientLinkManager.Instance.GetProperty<int?>(Target, "Hp");
                 short? mapId = ClientLinkManager.Instance.GetProperty<short?>(Target, "MapId");
-             
-                if (MapX == null || MapY == null || Hp <= 0) {Target = -1; LifeTaskIsRunning = false; return; }
+                bool? Invisible = ClientLinkManager.Instance.GetProperty<bool?>(Target, "Invisible");
+
+                if (MapX == null || MapY == null || Hp <= 0 || Invisible != null && (bool)Invisible) {Target = -1; LifeTaskIsRunning = false; return; }
               
                 int damage = 100;
                 Random r = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
