@@ -14,7 +14,6 @@
 
 using log4net;
 using OpenNos.Core;
-using OpenNos.DAL;
 using OpenNos.DAL.EF.MySQL.Helpers;
 using OpenNos.GameObject;
 using OpenNos.Handler;
@@ -37,6 +36,7 @@ namespace OpenNos.Login
                 try
                 {
                     //initialize Logger
+                    System.Globalization.CultureInfo.DefaultThreadCurrentUICulture = System.Globalization.CultureInfo.GetCultureInfo("en-US");
                     Logger.InitializeLogger(LogManager.GetLogger(typeof(Program)));
                     Assembly assembly = Assembly.GetExecutingAssembly();
                     FileVersionInfo fileVersionInfo = FileVersionInfo.GetVersionInfo(assembly.Location);
@@ -75,6 +75,7 @@ namespace OpenNos.Login
                 }
             }
         }
+
         #endregion
     }
 }
