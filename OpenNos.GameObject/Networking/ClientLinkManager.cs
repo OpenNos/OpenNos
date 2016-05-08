@@ -226,14 +226,14 @@ namespace OpenNos.GameObject
 
                 foreach (Group g in Groups)
                 {
-                    foreach (long charId in g.Characters)
+                    foreach (ClientSession session in g.Characters)
                     {
-                        ClientSession chara = Sessions.FirstOrDefault(s => s.Character != null && s.Character.CharacterId == charId && s.CurrentMap.MapId == Session.CurrentMap.MapId);
+                        ClientSession chara = Sessions.FirstOrDefault(s => s.Character != null && s.Character.CharacterId == session.Character.CharacterId && s.CurrentMap.MapId == Session.CurrentMap.MapId);
                         if (chara != null)
                         {
                             Session.Client.SendPacket($"pidx 1 1.{chara.Character.CharacterId}");
                         }
-                        if (charId == Session.Character.CharacterId)
+                        if (session.Character.CharacterId == Session.Character.CharacterId)
                         {
                             Broadcast(Session, $"pidx 1 1.{Session.Character.CharacterId}", ReceiverType.All);
                         }
@@ -244,58 +244,58 @@ namespace OpenNos.GameObject
 
         public void ClassChange(long id, byte Class)
         {
-            foreach (ClientSession Session in Sessions.Where(s => s.Character != null && s.Character.CharacterId == id))
+            foreach (ClientSession session in Sessions.Where(s => s.Character != null && s.Character.CharacterId == id))
             {
-                Session.Character.JobLevel = 1;
-                Session.Client.SendPacket("npinfo 0");
-                Session.Client.SendPacket("p_clear");
+                session.Character.JobLevel = 1;
+                session.Client.SendPacket("npinfo 0");
+                session.Client.SendPacket("p_clear");
 
-                Session.Character.Class = Class;
-                Session.Character.Speed = ServersData.SpeedData[Session.Character.Class];
-                Session.Client.SendPacket(Session.Character.GenerateCond());
-                Session.Character.Hp = (int)Session.Character.HPLoad();
-                Session.Character.Mp = (int)Session.Character.MPLoad();
-                Session.Client.SendPacket(Session.Character.GenerateTit());
+                session.Character.Class = Class;
+                session.Character.Speed = ServersData.SpeedData[session.Character.Class];
+                session.Client.SendPacket(session.Character.GenerateCond());
+                session.Character.Hp = (int)session.Character.HPLoad();
+                session.Character.Mp = (int)session.Character.MPLoad();
+                session.Client.SendPacket(session.Character.GenerateTit());
 
                 //eq 37 0 1 0 9 3 -1.120.46.86.-1.-1.-1.-1 0 0
-                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEq(), ReceiverType.All);
+                ClientLinkManager.Instance.Broadcast(session, session.Character.GenerateEq(), ReceiverType.All);
 
                 //equip 0 0 0.46.0.0.0 1.120.0.0.0 5.86.0.0.0
 
-                Session.Client.SendPacket(Session.Character.GenerateLev());
-                Session.Client.SendPacket(Session.Character.GenerateStat());
-                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(8), ReceiverType.All);
-                Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("JOB_CHANGED"), 0));
-                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(196), ReceiverType.All);
+                session.Client.SendPacket(session.Character.GenerateLev());
+                session.Client.SendPacket(session.Character.GenerateStat());
+                ClientLinkManager.Instance.Broadcast(session, session.Character.GenerateEff(8), ReceiverType.All);
+                session.Client.SendPacket(session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("JOB_CHANGED"), 0));
+                ClientLinkManager.Instance.Broadcast(session, session.Character.GenerateEff(196), ReceiverType.All);
                 Random rand = new Random();
                 int faction = 1 + (int)rand.Next(0, 2);
-                Session.Character.Faction = faction;
-                Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey($"GET_PROTECTION_POWER_{faction}"), 0));
-                Session.Client.SendPacket("scr 0 0 0 0 0 0");
+                session.Character.Faction = faction;
+                session.Client.SendPacket(session.Character.GenerateMsg(Language.Instance.GetMessageFromKey($"GET_PROTECTION_POWER_{faction}"), 0));
+                session.Client.SendPacket("scr 0 0 0 0 0 0");
 
-                Session.Client.SendPacket(Session.Character.GenerateFaction());
-                Session.Client.SendPacket(Session.Character.GenerateStatChar());
+                session.Client.SendPacket(session.Character.GenerateFaction());
+                session.Client.SendPacket(session.Character.GenerateStatChar());
 
-                Session.Client.SendPacket(Session.Character.GenerateEff(4799 + faction));
-                Session.Client.SendPacket(Session.Character.GenerateLev());
-                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
-                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(6), ReceiverType.All);
-                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(198), ReceiverType.All);
+                session.Client.SendPacket(session.Character.GenerateEff(4799 + faction));
+                session.Client.SendPacket(session.Character.GenerateLev());
+                ClientLinkManager.Instance.Broadcast(session, session.Character.GenerateIn(), ReceiverType.AllExceptMe);
+                ClientLinkManager.Instance.Broadcast(session, session.Character.GenerateEff(6), ReceiverType.All);
+                ClientLinkManager.Instance.Broadcast(session, session.Character.GenerateEff(198), ReceiverType.All);
 
-                Session.Character.Skills = new List<CharacterSkill>();
-                Session.Character.Skills.Add(new CharacterSkill { SkillVNum = (short)(200 + 20 * Session.Character.Class), CharacterId = Session.Character.CharacterId });
-                Session.Character.Skills.Add(new CharacterSkill { SkillVNum = (short)(201 + 20 * Session.Character.Class), CharacterId = Session.Character.CharacterId });
+                session.Character.Skills = new List<CharacterSkill>();
+                session.Character.Skills.Add(new CharacterSkill { SkillVNum = (short)(200 + 20 * session.Character.Class), CharacterId = session.Character.CharacterId });
+                session.Character.Skills.Add(new CharacterSkill { SkillVNum = (short)(201 + 20 * session.Character.Class), CharacterId = session.Character.CharacterId });
 
-                Session.Client.SendPacket(Session.Character.GenerateSki());
+                session.Client.SendPacket(session.Character.GenerateSki());
 
                 // TODO Reset Quicklist (just add Rest-on-T Item)
-                foreach (QuicklistEntryDTO quicklists in DAOFactory.QuicklistEntryDAO.Load(Session.Character.CharacterId).Where(quicklists => Session.Character.QuicklistEntries.Any(qle => qle.EntryId == quicklists.EntryId)))
-                    DAOFactory.QuicklistEntryDAO.Delete(Session.Character.CharacterId, quicklists.EntryId);
-                Session.Character.QuicklistEntries = new List<QuicklistEntry>
+                foreach (QuicklistEntryDTO quicklists in DAOFactory.QuicklistEntryDAO.Load(session.Character.CharacterId).Where(quicklists => session.Character.QuicklistEntries.Any(qle => qle.EntryId == quicklists.EntryId)))
+                    DAOFactory.QuicklistEntryDAO.Delete(session.Character.CharacterId, quicklists.EntryId);
+                session.Character.QuicklistEntries = new List<QuicklistEntry>
                 {
                     new QuicklistEntry
                     {
-                        CharacterId = Session.Character.CharacterId,
+                        CharacterId = session.Character.CharacterId,
                         Q1 = 0,
                         Q2 = 9,
                         Type = 1,
@@ -304,8 +304,8 @@ namespace OpenNos.GameObject
                     }
                 };
 
-                if (Groups.FirstOrDefault(s => s.Characters.Contains(Session.Character.CharacterId)) != null)
-                    Instance.Broadcast(Session, $"pidx 1 1.{Session.Character.CharacterId}", ReceiverType.AllExceptMe);
+                if (Groups.FirstOrDefault(s => s.IsMemberOfGroup(session)) != null)
+                    Instance.Broadcast(session, $"pidx 1 1.{session.Character.CharacterId}", ReceiverType.AllExceptMe);
             }
         }
 
@@ -376,50 +376,52 @@ namespace OpenNos.GameObject
             return (T)method.Invoke(session.Character, null);
         }
 
-        public void GroupLeave(ClientSession Session)
+        public void GroupLeave(ClientSession session)
         {
-            Group grp = ClientLinkManager.Instance.Groups.FirstOrDefault(s => s.Characters.Contains(Session.Character.CharacterId));
+            Group grp = ClientLinkManager.Instance.Groups.FirstOrDefault(s => s.IsMemberOfGroup(session.Character.CharacterId));
             if (grp != null)
             {
                 if (grp.Characters.Count() == 3)
                 {
-                    if (grp.Characters.ElementAt(0) == Session.Character.CharacterId)
+                    if (grp.Characters.ElementAt(0) == session)
                     {
-                        Broadcast(Session, Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("NEW_LEADER")), ReceiverType.OnlySomeone, "", grp.Characters.ElementAt(1));
+                        Broadcast(session, session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("NEW_LEADER")), ReceiverType.OnlySomeone, "", grp.Characters.ElementAt(1).Character.CharacterId);
                     }
-                    grp.Characters.Remove(Session.Character.CharacterId);
-                    foreach (long charid in grp.Characters)
+                    grp.LeaveGroup(session);
+                    foreach (ClientSession groupSession in grp.Characters)
                     {
                         string str = $"pinit {grp.Characters.Count()}";
                         int i = 0;
-                        foreach (long Id in grp.Characters)
+                        foreach (ClientSession groupSessionForId in grp.Characters)
                         {
                             i++;
-                            str += $" 1|{ClientLinkManager.Instance.GetProperty<long>(Id, "CharacterId")}|{i}|{ClientLinkManager.Instance.GetProperty<byte>(Id, "Level")}|{ClientLinkManager.Instance.GetProperty<string>(Id, "Name")}|11|{ClientLinkManager.Instance.GetProperty<byte>(Id, "Gender")}|{ClientLinkManager.Instance.GetProperty<byte>(Id, "Class")}|{(ClientLinkManager.Instance.GetProperty<bool>(Id, "UseSp") ? ClientLinkManager.Instance.GetProperty<int>(Id, "Morph") : 0)}";
+                            str += $" 1|{groupSessionForId.Character.CharacterId}|{i}|{groupSessionForId.Character.Level}|{groupSessionForId.Character.Name}|11|{groupSessionForId.Character.Gender}|{groupSessionForId.Character.Class}|{(groupSessionForId.Character.UseSp ? groupSessionForId.Character.Morph : 0)}";
                         }
-                        foreach (ClientSession sess in Sessions.Where(s => s != null && s.Character != null && s.Character.CharacterId == charid))
+                        foreach (ClientSession sess in Sessions.Where(s => s != null && s.Character != null && s.Character.CharacterId == groupSession.Character.CharacterId))
                         {
                             sess.Client.SendPacket(str);
-                            sess.Client.SendPacket(sess.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("LEAVE_GROUP"), Session.Character.Name), 0));
+                            sess.Client.SendPacket(sess.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("LEAVE_GROUP"), session.Character.Name), 0));
                         }
                     }
-                    Session.Client.SendPacket("pinit 0");
-                    Broadcast(Session, $"pidx -1 1.{Session.Character.CharacterId}", ReceiverType.All);
-                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("GROUP_LEFT"), 0));
+                    session.Client.SendPacket("pinit 0");
+                    Broadcast(session, $"pidx -1 1.{session.Character.CharacterId}", ReceiverType.All);
+                    session.Client.SendPacket(session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("GROUP_LEFT"), 0));
                 }
                 else
                 {
-                    foreach (long charid in grp.Characters)
+                    foreach (ClientSession targetSession in grp.Characters)
                     {
-                        foreach (ClientSession sess in Sessions.Where(s => s != null && s.Character != null && s.Character.CharacterId == charid))
+                        foreach (ClientSession sess in Sessions.Where(s => s != null && s.Character != null && s.Character.CharacterId == targetSession.Character.CharacterId))
                         {
                             sess.Client.SendPacket("pinit 0");
                             sess.Client.SendPacket(sess.Character.GenerateMsg(Language.Instance.GetMessageFromKey("GROUP_CLOSED"), 0));
-                            Broadcast(sess, $"pidx -1 1.{charid}", ReceiverType.All);
+                            Broadcast(sess, $"pidx -1 1.{targetSession.Character.CharacterId}", ReceiverType.All);
                         }
                     }
                     ClientLinkManager.Instance.Groups.Remove(grp);
                 }
+
+                session.Character.Group = null;
             }
         }
 
@@ -480,21 +482,21 @@ namespace OpenNos.GameObject
 
         public void UpdateGroup(long charId)
         {
-            Group myGroup = Groups.FirstOrDefault(s => s.Characters.Contains(charId));
+            Group myGroup = Groups.FirstOrDefault(s => s.IsMemberOfGroup(charId));
             if (myGroup == null)
                 return;
             string str = $"pinit { myGroup.Characters.Count()}";
 
             int i = 0;
-            foreach (long Id in Groups.FirstOrDefault(s => s.Characters.Contains(charId))?.Characters)
+            foreach (ClientSession session in Groups.FirstOrDefault(s => s.IsMemberOfGroup(charId))?.Characters)
             {
                 i++;
-                str += $" 1|{GetProperty<long>(Id, "CharacterId")}|{i}|{ClientLinkManager.Instance.GetProperty<byte>(Id, "Level")}|{ClientLinkManager.Instance.GetProperty<string>(Id, "Name")}|11|{ClientLinkManager.Instance.GetProperty<byte>(Id, "Gender")}|{ClientLinkManager.Instance.GetProperty<byte>(Id, "Class")}|{(ClientLinkManager.Instance.GetProperty<bool>(Id, "UseSp") ? ClientLinkManager.Instance.GetProperty<int>(Id, "Morph") : 0)}";
+                str += $" 1|{session.Character.CharacterId}|{i}|{session.Character.Level}|{session.Character.Name}|11|{session.Character.Gender}|{session.Character.Class}|{(session.Character.UseSp ? session.Character.Morph : 0)}";
             }
 
-            foreach (long Id in myGroup.Characters)
+            foreach (ClientSession session in myGroup.Characters)
             {
-                Instance.Broadcast(null, str, ReceiverType.OnlySomeone, "", Id);
+                session.Client.SendPacket(str);
             }
         }
 
@@ -516,11 +518,10 @@ namespace OpenNos.GameObject
             {
                 foreach (Group grp in Groups)
                 {
-                    foreach (long id in grp.Characters)
+                    foreach (ClientSession session in grp.Characters)
                     {
-                        foreach (ClientSession session in Sessions.Where(s => s.Character != null && s.Character.CharacterId == id))
-                            foreach (string str in grp.GeneratePst())
-                                session.Client.SendPacket(str);
+                        foreach (string str in grp.GeneratePst())
+                            session.Client.SendPacket(str);
                     }
                 }
                 await Task.Delay(2000);

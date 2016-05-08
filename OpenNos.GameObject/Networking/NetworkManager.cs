@@ -147,7 +147,7 @@ namespace OpenNos.GameObject
                 ClientLinkManager.Instance.UnregisterSession(session);
                 if (session.Character != null)
                 {
-                    if (ClientLinkManager.Instance.Groups.FirstOrDefault(s => s.Characters.Contains(session.Character.CharacterId)) != null)
+                    if (ClientLinkManager.Instance.Groups.FirstOrDefault(s => s.IsMemberOfGroup(session.Character.CharacterId)) != null)
                     {
                         ClientLinkManager.Instance.GroupLeave(session);
                     }

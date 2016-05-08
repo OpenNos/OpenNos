@@ -13,6 +13,7 @@
  */
 
 using System.Collections.Generic;
+using System.Linq;
 
 namespace OpenNos.GameObject
 {
@@ -22,16 +23,16 @@ namespace OpenNos.GameObject
 
         public Group()
         {
-            Characters = new List<long>();
+            Characters = new List<ClientSession>();
         }
 
         #endregion
 
         #region Properties
 
-        public List<long> Characters { get; set; }
         public int GroupId { get; set; }
         public byte SharingMode { get; set; }
+        public List<ClientSession> Characters { get; set; }
 
         #endregion
 
@@ -41,11 +42,38 @@ namespace OpenNos.GameObject
         {
             int i = 0;
             List<string> str = new List<string>();
-            foreach (long id in Characters)
+            foreach (ClientSession session in Characters)
             {
-                str.Add($"pst 1 {ClientLinkManager.Instance.GetProperty<long>(id, "CharacterId")} {++i} { ClientLinkManager.Instance.GetProperty<int>(id, "Hp") / ClientLinkManager.Instance.GetUserMethod<double>(id, "HPLoad") * 100 } {(int)(ClientLinkManager.Instance.GetProperty<int>(id, "Mp") / ClientLinkManager.Instance.GetUserMethod<double>(id, "MPLoad") * 100) } 0 0 {ClientLinkManager.Instance.GetProperty<byte>(id, "Class")} {ClientLinkManager.Instance.GetProperty<byte>(id, "Gender")} {(ClientLinkManager.Instance.GetProperty<bool>(id, "UseSp") ? ClientLinkManager.Instance.GetProperty<int>(id, "Morph") : 0)}");
+                str.Add($"pst 1 {session.Character.CharacterId} {++i} { session.Character.Hp / session.Character.HPLoad() * 100 } {(int)(session.Character.Mp / session.Character.MPLoad() * 100) } 0 0 {session.Character.Class} {session.Character.Gender} {(session.Character.UseSp ? session.Character.Morph : 0)}");
             }
             return str;
+        }
+
+        public bool IsMemberOfGroup(long characterId)
+        {
+            return Characters.Any(c => c.Character.CharacterId.Equals(characterId));
+        }
+
+        public bool IsMemberOfGroup(ClientSession session)
+        {
+            return Characters.Any(c => c.Character.CharacterId.Equals(session.Character.CharacterId));
+        }
+
+        public void JoinGroup(long characterId)
+        {
+            JoinGroup(ClientLinkManager.Instance.Sessions.SingleOrDefault(s => s.Character.CharacterId.Equals(characterId)));
+        }
+
+        public void JoinGroup(ClientSession session)
+        {
+            session.Character.Group = this;
+            Characters.Add(session);
+        }
+
+        public void LeaveGroup(ClientSession session)
+        {
+            session.Character.Group = null;
+            Characters.Remove(session);
         }
 
         #endregion
