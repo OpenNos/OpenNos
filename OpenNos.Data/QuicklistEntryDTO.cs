@@ -25,6 +25,7 @@ namespace OpenNos.Data
         public short Q2 { get; set; }
         public short Slot { get; set; }
         public short Type { get; set; }
+        public short Morph { get; set; }
 
         #endregion
     }
