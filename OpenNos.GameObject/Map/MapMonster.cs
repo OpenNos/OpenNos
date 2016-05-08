@@ -186,7 +186,7 @@ namespace OpenNos.GameObject
                 int? Hp = ClientLinkManager.Instance.GetProperty<int?>(Target, "Hp");
                 short? mapId = ClientLinkManager.Instance.GetProperty<short?>(Target, "MapId");
                 bool? Invisible = ClientLinkManager.Instance.GetProperty<bool?>(Target, "Invisible");
-
+                
                 if (MapX == null || MapY == null || Hp <= 0 || Invisible != null && (bool)Invisible) {Target = -1; LifeTaskIsRunning = false; return; }
               
                 int damage = 100;
@@ -197,6 +197,10 @@ namespace OpenNos.GameObject
                 {
                     sk = ServerManager.GetSkill(ski.SkillVNum);
                 }
+                Thread thread = ClientLinkManager.Instance.GetProperty<Thread>(Target, "ThreadCharChange");
+
+                if (thread != null && thread.IsAlive)
+                    thread.Abort();
 
                 if ((sk != null && Map.GetDistance(new MapCell() { X = this.MapX, Y = this.MapY }, new MapCell() { X = (short)MapX, Y = (short)MapY }) < sk.Range) || (Map.GetDistance(new MapCell() { X = this.MapX, Y = this.MapY }, new MapCell() { X = (short)MapX, Y = (short)MapY }) <= monster.BasicRange))
                 {

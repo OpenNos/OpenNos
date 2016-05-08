@@ -175,6 +175,9 @@ namespace OpenNos.Handler
         [Packet("u_s")]
         public void UseSkill(string packet)
         {
+            if (Session.Character.ThreadCharChange != null && Session.Character.ThreadCharChange.IsAlive)
+                Session.Character.ThreadCharChange.Abort();
+
             if (Session.Character.CanFight)
             {
                 string[] packetsplit = packet.Split(' ');
@@ -192,6 +195,8 @@ namespace OpenNos.Handler
         [Packet("u_as")]
         public void UseZonesSkill(string packet)
         {
+            if (Session.Character.ThreadCharChange != null && Session.Character.ThreadCharChange.IsAlive)
+                Session.Character.ThreadCharChange.Abort();
             if (Session.Character.CanFight)
             {
                 string[] packetsplit = packet.Split(' ');
@@ -976,6 +981,7 @@ namespace OpenNos.Handler
 
         private void ZoneHit(int Castingid, short x, short y)
         {
+
             List<CharacterSkill> skills = Session.Character.UseSp ? Session.Character.SkillsSp : Session.Character.Skills;
             ushort damage = 0;
             int hitmode = 0;
