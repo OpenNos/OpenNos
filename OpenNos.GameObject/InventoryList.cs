@@ -214,7 +214,7 @@ namespace OpenNos.GameObject
                 place[k] = (byte)(48 + (backPack * 12));
                 for (short i = 0; i < 48 + (backPack * 12); i++)
                 {
-                    Inventory result = LoadInventoryBySlotAndType(i, k);
+                    Inventory result = LoadInventoryBySlotAndType(i, item[k].Item.Type);
                     if (result != null && result.Type == 0)
                         place[k]--;
                     else if (result != null)

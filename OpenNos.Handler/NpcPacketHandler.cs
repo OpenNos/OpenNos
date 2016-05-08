@@ -93,12 +93,13 @@ namespace OpenNos.Handler
                         inv.ItemInstance.Amount, inv.Type, inv.Slot, inv.ItemInstance.Rare, inv.ItemInstance.Design, inv.ItemInstance.Upgrade));
                     Session.Character.Gold -= item.Price * amount;
                     Session.Client.SendPacket(Session.Character.GenerateGold());
+                    ClientLinkManager.Instance.BuyValidate(Session, shop, slot, amount);
+                    KeyValuePair<long, MapShop> shop2 = Session.CurrentMap.UserShops.FirstOrDefault(s => s.Value.OwnerId.Equals(owner));
+                    LoadShopItem(owner, shop2);
                 }
                 else
                     Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_PLACE"), 0));
-                ClientLinkManager.Instance.BuyValidate(Session, shop, slot, amount);
-                KeyValuePair<long, MapShop> shop2 = Session.CurrentMap.UserShops.FirstOrDefault(s => s.Value.OwnerId.Equals(owner));
-                LoadShopItem(owner, shop2);
+              
             }
             else if (packetsplit.Length == 5) // skill shop
             {
