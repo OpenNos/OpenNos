@@ -154,7 +154,7 @@ namespace OpenNos.GameObject
                     session.Character.Save();
 
                     //only remove the character from map if the character has been set
-                    ClientLinkManager.Instance.Broadcast(session, session.Character.GenerateOut(), ReceiverType.AllExceptMe);
+                    session.CurrentMap.Broadcast(session, session.Character.GenerateOut(), ReceiverType.AllExceptMe);
                 }
 
                 if (session.HealthTask != null)

@@ -126,12 +126,12 @@ namespace OpenNos.GameObject
                 {
                     clientSession.Client.SendPacket("shop_end 0");
 
-                    ClientLinkManager.Instance.Broadcast(shopOwnerSession, shopOwnerSession.Character.GenerateShopEnd(), ReceiverType.All);
-                    ClientLinkManager.Instance.Broadcast(shopOwnerSession, shopOwnerSession.Character.GeneratePlayerFlag(0), ReceiverType.AllExceptMe);
+                    Broadcast(shopOwnerSession, shopOwnerSession.Character.GenerateShopEnd(), ReceiverType.All);
+                    Broadcast(shopOwnerSession, shopOwnerSession.Character.GeneratePlayerFlag(0), ReceiverType.AllExceptMe);
                     shopOwnerSession.Character.Speed = shopOwnerSession.Character.LastSpeed != 0 ? shopOwnerSession.Character.LastSpeed : shopOwnerSession.Character.Speed;
                     shopOwnerSession.Character.IsSitting = false;
                     shopOwnerSession.Client.SendPacket(shopOwnerSession.Character.GenerateCond());
-                    ClientLinkManager.Instance.Broadcast(shopOwnerSession, shopOwnerSession.Character.GenerateRest(), ReceiverType.All);
+                    Broadcast(shopOwnerSession, shopOwnerSession.Character.GenerateRest(), ReceiverType.All);
                 }
             }
         }
@@ -139,55 +139,55 @@ namespace OpenNos.GameObject
         //Both partly
         public void ChangeMap(long id)
         {
-            ClientSession Session = Sessions.FirstOrDefault(s => s.Character != null && s.Character.CharacterId == id);
-            if (Session != null)
+            ClientSession session = Sessions.FirstOrDefault(s => s.Character != null && s.Character.CharacterId == id);
+            if (session != null)
             {
-                Session.CurrentMap.UnregisterSession(Session);
-                Session.CurrentMap = ServerManager.GetMap(Session.Character.MapId);
-                Session.CurrentMap.RegisterSession(Session);
-                Session.Client.SendPacket(Session.Character.GenerateCInfo());
-                Session.Client.SendPacket(Session.Character.GenerateCMode());
-                Session.Client.SendPacket(Session.Character.GenerateFaction());
-                Session.Client.SendPacket(Session.Character.GenerateFd());
-                Session.Client.SendPacket(Session.Character.GenerateLev());
-                Session.Client.SendPacket(Session.Character.GenerateStat());
-                Session.Client.SendPacket(Session.Character.GenerateAt());
-                Session.Client.SendPacket(Session.Character.GenerateCMap());
-                if (Session.Character.Size != 10)
-                    Session.Client.SendPacket(Session.Character.GenerateScal());
-                foreach (String portalPacket in Session.Character.GenerateGp())
-                    Session.Client.SendPacket(portalPacket);
-                foreach (String npcPacket in Session.Character.GenerateIn2())
-                    Session.Client.SendPacket(npcPacket);
-                foreach (String monsterPacket in Session.Character.GenerateIn3())
-                    Session.Client.SendPacket(monsterPacket);
-                foreach (String ShopPacket in Session.Character.GenerateNPCShopOnMap())
-                    Session.Client.SendPacket(ShopPacket);
-                foreach (String droppedPacket in Session.Character.GenerateDroppedItem())
-                    Session.Client.SendPacket(droppedPacket);
+                session.CurrentMap.UnregisterSession(session);
+                session.CurrentMap = ServerManager.GetMap(session.Character.MapId);
+                session.CurrentMap.RegisterSession(session);
+                session.Client.SendPacket(session.Character.GenerateCInfo());
+                session.Client.SendPacket(session.Character.GenerateCMode());
+                session.Client.SendPacket(session.Character.GenerateFaction());
+                session.Client.SendPacket(session.Character.GenerateFd());
+                session.Client.SendPacket(session.Character.GenerateLev());
+                session.Client.SendPacket(session.Character.GenerateStat());
+                session.Client.SendPacket(session.Character.GenerateAt());
+                session.Client.SendPacket(session.Character.GenerateCMap());
+                if (session.Character.Size != 10)
+                    session.Client.SendPacket(session.Character.GenerateScal());
+                foreach (String portalPacket in session.Character.GenerateGp())
+                    session.Client.SendPacket(portalPacket);
+                foreach (String npcPacket in session.Character.GenerateIn2())
+                    session.Client.SendPacket(npcPacket);
+                foreach (String monsterPacket in session.Character.GenerateIn3())
+                    session.Client.SendPacket(monsterPacket);
+                foreach (String ShopPacket in session.Character.GenerateNPCShopOnMap())
+                    session.Client.SendPacket(ShopPacket);
+                foreach (String droppedPacket in session.Character.GenerateDroppedItem())
+                    session.Client.SendPacket(droppedPacket);
 
-                Session.Client.SendPacket(Session.Character.GenerateStatChar());
-                Session.Client.SendPacket(Session.Character.GenerateCond());
-                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GeneratePairy(), ReceiverType.All);
-                Session.Client.SendPacket($"rsfi 1 1 0 9 0 9"); // Act completion
-                ClientLinkManager.Instance.Sessions.Where(s => s.Character != null && s.Character.MapId.Equals(Session.Character.MapId) && s.Character.Name != Session.Character.Name && !Session.Character.InvisibleGm).ToList().ForEach(s => RequireBroadcastFromUser(Session, s.Character.CharacterId, "GenerateIn"));
-                if (Session.Character.InvisibleGm == false)
-                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
-                if (Session.CurrentMap.IsDancing == 2 && Session.Character.IsDancing == 0)
-                    Session.CurrentMap.Broadcast("dance 2");
-                else if (Session.CurrentMap.IsDancing == 0 && Session.Character.IsDancing == 1)
+                session.Client.SendPacket(session.Character.GenerateStatChar());
+                session.Client.SendPacket(session.Character.GenerateCond());
+                Broadcast(session, session.Character.GeneratePairy(), ReceiverType.All);
+                session.Client.SendPacket($"rsfi 1 1 0 9 0 9"); // Act completion
+                ClientLinkManager.Instance.Sessions.Where(s => s.Character != null && s.Character.MapId.Equals(session.Character.MapId) && s.Character.Name != session.Character.Name && !session.Character.InvisibleGm).ToList().ForEach(s => RequireBroadcastFromUser(session, s.Character.CharacterId, "GenerateIn"));
+                if (session.Character.InvisibleGm == false)
+                    Broadcast(session, session.Character.GenerateIn(), ReceiverType.AllExceptMe);
+                if (session.CurrentMap.IsDancing == 2 && session.Character.IsDancing == 0)
+                    session.CurrentMap.Broadcast("dance 2");
+                else if (session.CurrentMap.IsDancing == 0 && session.Character.IsDancing == 1)
                 {
-                    Session.Character.IsDancing = 0;
-                    Session.CurrentMap.Broadcast("dance");
+                    session.Character.IsDancing = 0;
+                    session.CurrentMap.Broadcast("dance");
                 }
-                foreach (String ShopPacket in Session.Character.GenerateShopOnMap())
-                    Session.Client.SendPacket(ShopPacket);
+                foreach (String ShopPacket in session.Character.GenerateShopOnMap())
+                    session.Client.SendPacket(ShopPacket);
 
-                foreach (String ShopPacketChar in Session.Character.GeneratePlayerShopOnMap())
-                    Session.Client.SendPacket(ShopPacketChar);
+                foreach (String ShopPacketChar in session.Character.GeneratePlayerShopOnMap())
+                    session.Client.SendPacket(ShopPacketChar);
 
-                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEq(), ReceiverType.All);
-                Session.Client.SendPacket(Session.Character.GenerateEquipment());
+                Broadcast(session, session.Character.GenerateEq(), ReceiverType.All);
+                session.Client.SendPacket(session.Character.GenerateEquipment());
                 string clinit = "clinit";
                 string flinit = "flinit";
                 string kdlinit = "kdlinit";
@@ -205,22 +205,22 @@ namespace OpenNos.GameObject
                     kdlinit += $" {character.CharacterId}|{character.Level}|{character.HeroLevel}|{character.Act4Points}|{character.Name}";
                 }
 
-                Session.Client.SendPacket(clinit);
-                Session.Client.SendPacket(flinit);
-                Session.Client.SendPacket(kdlinit);
+                session.Client.SendPacket(clinit);
+                session.Client.SendPacket(flinit);
+                session.Client.SendPacket(kdlinit);
 
                 foreach (Group g in Groups)
                 {
-                    foreach (ClientSession session in g.Characters)
+                    foreach (ClientSession groupSession in g.Characters)
                     {
-                        ClientSession chara = Sessions.FirstOrDefault(s => s.Character != null && s.Character.CharacterId == session.Character.CharacterId && s.CurrentMap.MapId == Session.CurrentMap.MapId);
+                        ClientSession chara = Sessions.FirstOrDefault(s => s.Character != null && s.Character.CharacterId == groupSession.Character.CharacterId && s.CurrentMap.MapId == groupSession.CurrentMap.MapId);
                         if (chara != null)
                         {
-                            Session.Client.SendPacket($"pidx 1 1.{chara.Character.CharacterId}");
+                            groupSession.Client.SendPacket($"pidx 1 1.{chara.Character.CharacterId}");
                         }
-                        if (session.Character.CharacterId == Session.Character.CharacterId)
+                        if (groupSession.Character.CharacterId == groupSession.Character.CharacterId)
                         {
-                            Broadcast(Session, $"pidx 1 1.{Session.Character.CharacterId}", ReceiverType.All);
+                            Broadcast(groupSession, $"pidx 1 1.{groupSession.Character.CharacterId}", ReceiverType.All);
                         }
                     }
                 }
@@ -244,15 +244,15 @@ namespace OpenNos.GameObject
                 session.Client.SendPacket(session.Character.GenerateTit());
 
                 //eq 37 0 1 0 9 3 -1.120.46.86.-1.-1.-1.-1 0 0
-                ClientLinkManager.Instance.Broadcast(session, session.Character.GenerateEq(), ReceiverType.All);
+                session.CurrentMap.Broadcast(session.Character.GenerateEq());
 
                 //equip 0 0 0.46.0.0.0 1.120.0.0.0 5.86.0.0.0
 
                 session.Client.SendPacket(session.Character.GenerateLev());
                 session.Client.SendPacket(session.Character.GenerateStat());
-                ClientLinkManager.Instance.Broadcast(session, session.Character.GenerateEff(8), ReceiverType.All);
+                Broadcast(session, session.Character.GenerateEff(8), ReceiverType.All);
                 session.Client.SendPacket(session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("JOB_CHANGED"), 0));
-                ClientLinkManager.Instance.Broadcast(session, session.Character.GenerateEff(196), ReceiverType.All);
+                Broadcast(session, session.Character.GenerateEff(196), ReceiverType.All);
                 Random rand = new Random();
                 int faction = 1 + (int)rand.Next(0, 2);
                 session.Character.Faction = faction;
@@ -264,9 +264,9 @@ namespace OpenNos.GameObject
 
                 session.Client.SendPacket(session.Character.GenerateEff(4799 + faction));
                 session.Client.SendPacket(session.Character.GenerateLev());
-                ClientLinkManager.Instance.Broadcast(session, session.Character.GenerateIn(), ReceiverType.AllExceptMe);
-                ClientLinkManager.Instance.Broadcast(session, session.Character.GenerateEff(6), ReceiverType.All);
-                ClientLinkManager.Instance.Broadcast(session, session.Character.GenerateEff(198), ReceiverType.All);
+                Broadcast(session, session.Character.GenerateIn(), ReceiverType.AllExceptMe);
+                Broadcast(session, session.Character.GenerateEff(6), ReceiverType.All);
+                Broadcast(session, session.Character.GenerateEff(198), ReceiverType.All);
 
                 session.Character.Skills = new List<CharacterSkill>();
                 session.Character.Skills.Add(new CharacterSkill { SkillVNum = (short)(200 + 20 * session.Character.Class), CharacterId = session.Character.CharacterId });
@@ -425,10 +425,10 @@ namespace OpenNos.GameObject
         //Map
         public void MapOut(long id)
         {
-            foreach (ClientSession Session in Sessions.Where(s => s.Character != null && s.Character.CharacterId == id))
+            foreach (ClientSession session in Sessions.Where(s => s.Character != null && s.Character.CharacterId == id))
             {
-                Session.Client.SendPacket(Session.Character.GenerateMapOut());
-                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateOut(), ReceiverType.AllExceptMe);
+                session.Client.SendPacket(session.Character.GenerateMapOut());
+                session.CurrentMap.Broadcast(session, session.Character.GenerateOut(), ReceiverType.AllExceptMe);
             }
         }
 

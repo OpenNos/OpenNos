@@ -57,7 +57,7 @@ namespace OpenNos.Handler
                     monster = new MapMonster(map) { MonsterVNum = vnum, MapY = monst.MapY, Alive = true, CurrentHp = npcmonster.MaxHP, CurrentMp = npcmonster.MaxMP, MapX = monst.MapX, MapId = Session.Character.MapId, firstX = monst.MapX, firstY = monst.MapY, MapMonsterId = monst.MapMonsterId, Position = 1, IsMoving = isMoving == 1 ? true : false };
                     ServerManager.Monsters.Add(monster);
                     ServerManager.GetMap(Session.Character.MapId).Monsters.Add(monster);
-                    ClientLinkManager.Instance.Broadcast(Session, monster.GenerateIn3(), ReceiverType.All);
+                    Session.CurrentMap.Broadcast(monster.GenerateIn3());
                 }
             }
             else
@@ -113,9 +113,9 @@ namespace OpenNos.Handler
                     Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("HEROLEVEL_CHANGED"), 0));
                     Session.Client.SendPacket(Session.Character.GenerateLev());
                     Session.Client.SendPacket(Session.Character.GenerateStatInfo());
-                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
-                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(6), ReceiverType.All);
-                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(198), ReceiverType.All);
+                    Session.CurrentMap.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
+                    Session.CurrentMap.Broadcast(Session.Character.GenerateEff(6));
+                    Session.CurrentMap.Broadcast(Session.Character.GenerateEff(198));
                     this.GetStats(String.Empty);
                 }
             }
@@ -136,8 +136,8 @@ namespace OpenNos.Handler
                     Session.Character.JobLevelXp = 0;
                     Session.Client.SendPacket(Session.Character.GenerateLev());
                     Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("JOBLEVEL_CHANGED"), 0));
-                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
-                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(8), ReceiverType.All);
+                    Session.CurrentMap.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
+                    Session.CurrentMap.Broadcast(Session.Character.GenerateEff(8));
                 }
             }
             else
@@ -161,9 +161,9 @@ namespace OpenNos.Handler
                     Session.Client.SendPacket(Session.Character.GenerateStatInfo());
                     Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("LEVEL_CHANGED"), 0));
                     Session.Client.SendPacket(Session.Character.GenerateLev());
-                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
-                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(6), ReceiverType.All);
-                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(198), ReceiverType.All);
+                    Session.CurrentMap.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
+                    Session.CurrentMap.Broadcast(Session.Character.GenerateEff(6));
+                    Session.CurrentMap.Broadcast(Session.Character.GenerateEff(198));
                     this.GetStats(String.Empty);
 
                     ClientLinkManager.Instance.UpdateGroup(Session.Character.CharacterId);
@@ -189,7 +189,7 @@ namespace OpenNos.Handler
                 Session.Character.Reput = reput;
                 Session.Client.SendPacket(Session.Character.GenerateFd());
                 Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("REP_CHANGED"), 0));
-                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
+                Session.CurrentMap.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
             }
         }
 
@@ -200,9 +200,9 @@ namespace OpenNos.Handler
             Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SEX_CHANGED"), 0));
             Session.Client.SendPacket(Session.Character.GenerateEq());
             Session.Client.SendPacket(Session.Character.GenerateGender());
-            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
-            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateCMode(), ReceiverType.All);
-            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(198), ReceiverType.All);
+            Session.CurrentMap.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
+            Session.CurrentMap.Broadcast(Session.Character.GenerateCMode());
+            Session.CurrentMap.Broadcast(Session.Character.GenerateEff(198));
         }
 
         [Packet("$SPLvl")]
@@ -218,8 +218,8 @@ namespace OpenNos.Handler
                     sp.SpLevel = splevel;
                     Session.Client.SendPacket(Session.Character.GenerateLev());
                     Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SPLEVEL_CHANGED"), 0));
-                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
-                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(8), ReceiverType.All);
+                    Session.CurrentMap.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
+                    Session.CurrentMap.Broadcast(Session.Character.GenerateEff(8));
                 }
             }
             else
@@ -380,7 +380,7 @@ namespace OpenNos.Handler
                     sbyte.TryParse(packetsplit[5], out portaltype);
                 Portal portal = new Portal() { SourceMapId = mapId, SourceX = mapX, SourceY = mapY, DestinationMapId = mapid, DestinationX = destx, DestinationY = desty, Type = portaltype };
                 ServerManager.GetMap(Session.Character.MapId).Portals.Add(portal);
-                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateGp(portal), ReceiverType.All);
+                Session.CurrentMap.Broadcast(Session.Character.GenerateGp(portal));
             }
             else
                 Session.Client.SendPacket(Session.Character.GenerateSay("$PortalTo MAPID DESTX DESTY PORTALTYPE", 10));
@@ -394,7 +394,7 @@ namespace OpenNos.Handler
             if (packetsplit.Length > 2)
             {
                 short.TryParse(packetsplit[2], out arg);
-                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEff(arg), ReceiverType.All);
+                Session.CurrentMap.Broadcast(Session.Character.GenerateEff(arg));
             }
             else
                 Session.Client.SendPacket(Session.Character.GenerateSay("$Effect EFFECT", 10));
@@ -432,15 +432,15 @@ namespace OpenNos.Handler
         public void Invisible(string packet)
         {
             Session.Character.Invisible = !Session.Character.Invisible;
-            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateInvisible(), ReceiverType.All);
+            Session.CurrentMap.Broadcast(Session.Character.GenerateInvisible());
             Session.Character.InvisibleGm = Session.Character.InvisibleGm ? false : true;
             if (Session.Character.InvisibleGm == true)
             {
-                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateOut(), ReceiverType.AllExceptMe);
+                Session.CurrentMap.Broadcast(Session, Session.Character.GenerateOut(), ReceiverType.AllExceptMe);
             }
             else
             {
-                ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
+                Session.CurrentMap.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
             }
         }
 
@@ -473,9 +473,9 @@ namespace OpenNos.Handler
 
                     ClientLinkManager.Instance.SetProperty((long)id, "LastDefence", DateTime.Now);
 
-                    ClientLinkManager.Instance.Broadcast(Session, $"su 1 {Session.Character.CharacterId} 1 {id} 1114 4 11 4260 0 0 0 0 {60000} 3 0", ReceiverType.All);
+                    Session.CurrentMap.Broadcast($"su 1 {Session.Character.CharacterId} 1 {id} 1114 4 11 4260 0 0 0 0 {60000} 3 0");
 
-                    ClientLinkManager.Instance.Broadcast(null, ClientLinkManager.Instance.GetUserMethod<string>((long)id, "GenerateStat"), ReceiverType.OnlySomeone, "", (long)id);
+                    Session.CurrentMap.Broadcast(null, ClientLinkManager.Instance.GetUserMethod<string>((long)id, "GenerateStat"), ReceiverType.OnlySomeone, "", (long)id);
                     ClientLinkManager.Instance.AskRevive((long)id);
                 }
                 else
@@ -527,7 +527,7 @@ namespace OpenNos.Handler
                             Session.Character.MorphUpgrade = arg[1];
                             Session.Character.MorphUpgrade2 = arg[2];
                             Session.Character.ArenaWinner = arg[3];
-                            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateCMode(), ReceiverType.All);
+                            Session.CurrentMap.Broadcast(Session.Character.GenerateCMode());
                         }
                         else
                         {
@@ -536,8 +536,8 @@ namespace OpenNos.Handler
                             Session.Client.SendPacket(Session.Character.GenerateCond());
                             Session.Client.SendPacket(Session.Character.GenerateLev());
 
-                            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateCMode(), ReceiverType.All);
-                            ClientLinkManager.Instance.Broadcast(Session, $"guri 6 1 {Session.Character.CharacterId} 0 0", ReceiverType.All);
+                            Session.CurrentMap.Broadcast(Session.Character.GenerateCMode());
+                            Session.CurrentMap.Broadcast($"guri 6 1 {Session.Character.CharacterId} 0 0");
                         }
                     }
                     break;
@@ -559,7 +559,7 @@ namespace OpenNos.Handler
                 short arg;
                 short.TryParse(packetsplit[2], out arg);
                 if (arg > -1)
-                    ClientLinkManager.Instance.Broadcast(Session, $"bgm {arg}", ReceiverType.All);
+                    Session.CurrentMap.Broadcast($"bgm {arg}");
             }
             else
                 Session.Client.SendPacket(Session.Character.GenerateSay("$PlayMusic BGMUSIC", 10));
@@ -615,7 +615,7 @@ namespace OpenNos.Handler
 
                 {
                     Session.Character.Size = arg;
-                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateScal(), ReceiverType.All);
+                    Session.CurrentMap.Broadcast(Session.Character.GenerateScal());
                 }
             }
             else
@@ -632,8 +632,8 @@ namespace OpenNos.Handler
                     message += packetsplit[i] + " ";
             message.Trim();
 
-            ClientLinkManager.Instance.Broadcast(Session, $"say 1 0 10 ({Language.Instance.GetMessageFromKey("ADMINISTRATOR")}){message}", ReceiverType.All);
-            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateMsg(message, 2), ReceiverType.All);
+            ClientLinkManager.Instance.Broadcast($"say 1 0 10 ({Language.Instance.GetMessageFromKey("ADMINISTRATOR")}){message}");
+            ClientLinkManager.Instance.Broadcast(Session.Character.GenerateMsg(message, 2));
         }
 
         [Packet("$Shutdown")]
@@ -708,7 +708,7 @@ namespace OpenNos.Handler
                     MapMonster monst = new MapMonster(map) { MonsterVNum = vnum, Alive = true, CurrentHp = npcmonster.MaxHP, CurrentMp = npcmonster.MaxMP, MapY = mapy, MapX = mapx, MapId = Session.Character.MapId, firstX = mapx, firstY = mapy, MapMonsterId = MapMonster.GenerateMapMonsterId(), Position = 1, IsMoving = move != 0 ? true : false };
                     ServerManager.GetMap(Session.Character.MapId).Monsters.Add(monst);
                     ServerManager.Monsters.Add(monst);
-                    ClientLinkManager.Instance.Broadcast(Session, monst.GenerateIn3(), ReceiverType.All);
+                    Session.CurrentMap.Broadcast(monst.GenerateIn3());
                 }
             }
             else
@@ -832,8 +832,8 @@ namespace OpenNos.Handler
         private async void ShutdownTask()
         {
             string message = String.Format(Language.Instance.GetMessageFromKey("SHUTDOWN_MIN"), 5);
-            ClientLinkManager.Instance.Broadcast(Session, $"say 1 0 10 ({Language.Instance.GetMessageFromKey("ADMINISTRATOR")}){message}", ReceiverType.All);
-            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateMsg(message, 2), ReceiverType.All);
+            Session.CurrentMap.Broadcast($"say 1 0 10 ({Language.Instance.GetMessageFromKey("ADMINISTRATOR")}){message}");
+            Session.CurrentMap.Broadcast(Session.Character.GenerateMsg(message, 2));
             for (int i = 0; i < 60 * 4; i++)
             {
                 await Task.Delay(1000);
@@ -844,8 +844,8 @@ namespace OpenNos.Handler
                 }
             }
             message = String.Format(Language.Instance.GetMessageFromKey("SHUTDOWN_MIN"), 1);
-            ClientLinkManager.Instance.Broadcast(Session, $"say 1 0 10 ({Language.Instance.GetMessageFromKey("ADMINISTRATOR")}){message}", ReceiverType.All);
-            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateMsg(message, 2), ReceiverType.All);
+            Session.CurrentMap.Broadcast($"say 1 0 10 ({Language.Instance.GetMessageFromKey("ADMINISTRATOR")}){message}");
+            Session.CurrentMap.Broadcast(Session.Character.GenerateMsg(message, 2));
             for (int i = 0; i < 30; i++)
             {
                 await Task.Delay(1000);
@@ -856,8 +856,8 @@ namespace OpenNos.Handler
                 }
             }
             message = String.Format(Language.Instance.GetMessageFromKey("SHUTDOWN_SEC"), 30);
-            ClientLinkManager.Instance.Broadcast(Session, $"say 1 0 10 ({Language.Instance.GetMessageFromKey("ADMINISTRATOR")}){message}", ReceiverType.All);
-            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateMsg(message, 2), ReceiverType.All);
+            Session.CurrentMap.Broadcast($"say 1 0 10 ({Language.Instance.GetMessageFromKey("ADMINISTRATOR")}){message}");
+            Session.CurrentMap.Broadcast(Session.Character.GenerateMsg(message, 2));
             for (int i = 0; i < 30; i++)
             {
                 await Task.Delay(1000);

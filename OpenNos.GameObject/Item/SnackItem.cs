@@ -49,9 +49,9 @@ namespace OpenNos.GameObject
                 if (session.Character.Hp > session.Character.HPLoad())
                     session.Character.Hp = (int)session.Character.HPLoad();
                 if (session.Character.Hp < session.Character.HPLoad() || session.Character.Mp < session.Character.MPLoad())
-                    ClientLinkManager.Instance.Broadcast(session, session.Character.GenerateRc(session.Character.SnackHp), ReceiverType.All);
+                    session.CurrentMap.Broadcast(session.Character.GenerateRc(session.Character.SnackHp));
                 if (session.Client.CommunicationState == CommunicationStates.Connected)
-                    ClientLinkManager.Instance.Broadcast(session, session.Character.GenerateStat(), ReceiverType.OnlyMe);
+                    session.Client.SendPacket(session.Character.GenerateStat());
                 else return;
                 Thread.Sleep(1800);
             }

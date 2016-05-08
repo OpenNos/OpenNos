@@ -74,7 +74,7 @@ namespace OpenNos.Handler
                         Language.Instance.GetMessageFromKey("MAX_GOLD")));
                     return;
                 }
-              
+
                 if (item.Price * amount >= Session.Character.Gold)
                 {
                     Session.Client.SendPacket(Session.Character.GenerateShopMemo(3,
@@ -99,7 +99,6 @@ namespace OpenNos.Handler
                 }
                 else
                     Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_PLACE"), 0));
-              
             }
             else if (packetsplit.Length == 5) // skill shop
             {
@@ -285,7 +284,7 @@ namespace OpenNos.Handler
 
                                 if (inv.ItemInstance.Amount < qty[i])
                                     return;
-                                if(!((ItemInstance)inv.ItemInstance).Item.IsTradable)
+                                if (!((ItemInstance)inv.ItemInstance).Item.IsTradable)
                                 {
                                     Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SHOP_ONLY_TRADABLE_ITEMS"), 0));
                                     return;
@@ -313,7 +312,7 @@ namespace OpenNos.Handler
                         shopname.TrimEnd(' ');
 
                         //create default shopname if it's empty
-                        if(String.IsNullOrWhiteSpace(shopname) || String.IsNullOrEmpty(shopname))
+                        if (String.IsNullOrWhiteSpace(shopname) || String.IsNullOrEmpty(shopname))
                         {
                             shopname = Language.Instance.GetMessageFromKey("SHOP_PRIVATE_SHOP");
                         }
@@ -326,8 +325,8 @@ namespace OpenNos.Handler
 
                         Session.CurrentMap.UserShops.Add(Session.CurrentMap.UserShops.Count(), myShop);
 
-                        ClientLinkManager.Instance.Broadcast(Session, Session.Character.GeneratePlayerFlag(Session.CurrentMap.UserShops.Count()), ReceiverType.AllExceptMe);
-                        ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateShop(shopname), ReceiverType.All);
+                        Session.CurrentMap.Broadcast(Session, Session.Character.GeneratePlayerFlag(Session.CurrentMap.UserShops.Count()), ReceiverType.AllExceptMe);
+                        Session.CurrentMap.Broadcast(Session.Character.GenerateShop(shopname));
 
                         Session.Client.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("SHOP_OPEN")));
                         Session.Character.IsSitting = true;
@@ -335,7 +334,7 @@ namespace OpenNos.Handler
                         Session.Character.Speed = 0;
                         Session.Client.SendPacket(Session.Character.GenerateCond());
 
-                        ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateRest(), ReceiverType.All);
+                        Session.CurrentMap.Broadcast(Session.Character.GenerateRest());
                     }
                     else
                     {
@@ -348,12 +347,12 @@ namespace OpenNos.Handler
                     KeyValuePair<long, MapShop> shop = Session.CurrentMap.UserShops.FirstOrDefault(mapshop => mapshop.Value.OwnerId.Equals(Session.Character.CharacterId));
                     Session.CurrentMap.UserShops.Remove(shop.Key);
 
-                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateShopEnd(), ReceiverType.All);
-                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GeneratePlayerFlag(0), ReceiverType.AllExceptMe);
+                    Session.CurrentMap.Broadcast(Session.Character.GenerateShopEnd());
+                    Session.CurrentMap.Broadcast(Session, Session.Character.GeneratePlayerFlag(0), ReceiverType.AllExceptMe);
                     Session.Character.Speed = Session.Character.LastSpeed != 0 ? Session.Character.LastSpeed : Session.Character.Speed;
                     Session.Character.IsSitting = false;
                     Session.Client.SendPacket(Session.Character.GenerateCond());
-                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateRest(), ReceiverType.All);
+                    Session.CurrentMap.Broadcast(Session.Character.GenerateRest());
                 }
             }
         }

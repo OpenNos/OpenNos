@@ -66,6 +66,15 @@ namespace OpenNos.GameObject
 
         public AuthorityType Authority { get { return _authority; } set { _authority = value; } }
         public int BackPack { get { return _backpack; } set { _backpack = value; } }
+
+        public bool CanFight
+        {
+            get
+            {
+                return !IsSitting && ExchangeInfo == null;
+            }
+        }
+
         public int DarkResistance { get; set; }
         public int Defence { get; set; }
         public int DefenceRate { get; set; }
@@ -99,6 +108,7 @@ namespace OpenNos.GameObject
         public byte LastSpeed { get; set; }
         public int LightResistance { get; set; }
         public int MagicalDefence { get; set; }
+        public Map Map { get; set; }
         public int MaxDistance { get; set; }
         public int MaxHit { get; set; }
         public int MaxSnack { get; set; }
@@ -122,17 +132,21 @@ namespace OpenNos.GameObject
         public Thread ThreadCharChange { get; set; }
         public bool UseSp { get; set; }
         public int WaterResistance { get; set; }
-        public bool CanFight
-        {
-            get
-            {
-                return !IsSitting && ExchangeInfo == null;
-            }
-        }
 
         #endregion
 
         #region Methods
+
+        public void CloseShop()
+        {
+            KeyValuePair<long, MapShop> shop = this.Session.CurrentMap.UserShops.FirstOrDefault(mapshop => mapshop.Value.OwnerId.Equals(this.CharacterId));
+            if (!shop.Equals(default(KeyValuePair<long, MapShop>)))
+            {
+                this.Session.CurrentMap.UserShops.Remove(shop.Key);
+                this.Session.CurrentMap.Broadcast(GenerateShopEnd());
+                this.Session.CurrentMap.Broadcast(Session, GeneratePlayerFlag(0), ReceiverType.AllExceptMe);
+            }
+        }
 
         public string Dance()
         {
@@ -179,18 +193,6 @@ namespace OpenNos.GameObject
                         Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("ITEM_TIMEOUT"), 10));
                     }
                 }
-            }
-        }
-
-        public void CloseShop()
-        {
-            KeyValuePair<long, MapShop> shop = this.Session.CurrentMap.UserShops.FirstOrDefault(mapshop => mapshop.Value.OwnerId.Equals(this.CharacterId));
-            if (!shop.Equals(default(KeyValuePair<long, MapShop>)))
-            {
-                this.Session.CurrentMap.UserShops.Remove(shop.Key);
-
-                ClientLinkManager.Instance.Broadcast(Session, GenerateShopEnd(), ReceiverType.All);
-                ClientLinkManager.Instance.Broadcast(Session, GeneratePlayerFlag(0), ReceiverType.AllExceptMe);
             }
         }
 
@@ -581,7 +583,7 @@ namespace OpenNos.GameObject
             {
                 for (int j = 0; j < 3; j++)
                 {
-                    QuicklistEntry qi = QuicklistEntries.FirstOrDefault(n => n.Q1 == j && n.Q2 == i && n.Morph == (UseSp?Morph:0));                  
+                    QuicklistEntry qi = QuicklistEntries.FirstOrDefault(n => n.Q1 == j && n.Q2 == i && n.Morph == (UseSp ? Morph : 0));
                     pktQs[j] += string.Format(" {0}.{1}.{2}", qi?.Type, qi?.Slot, qi != null ? qi.Pos : 0);
                 }
             }
