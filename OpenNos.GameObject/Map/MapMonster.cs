@@ -244,7 +244,7 @@ namespace OpenNos.GameObject
                             Target = -1;
                         }
                         if ((sk != null && (sk.Range > 0 ||sk.TargetRange > 0)))
-                            foreach (Character chara in ServerManager.GetMap(MapId).GetListPeopleInRange(sk == null || sk.TargetRange == 0 ? this.MapX : (short)MapX, sk == null || sk.TargetRange == 0 ? this.MapY : (short)MapY, sk == null ? monster.BasicArea :(byte)( sk.TargetRange + sk.Range)).Where(s => s.CharacterId != Target))
+                            foreach (Character chara in ServerManager.GetMap(MapId).GetListPeopleInRange( sk.TargetRange == 0 ? this.MapX : (short)MapX,  sk.TargetRange == 0 ? this.MapY : (short)MapY,  (byte)( sk.TargetRange + sk.Range)).Where(s => s.CharacterId != Target))
                             {
                                 damage = 100;
                                 bool AlreadyDead2 = chara.Hp <= 0;
