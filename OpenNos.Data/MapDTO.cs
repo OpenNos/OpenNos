@@ -14,7 +14,7 @@
 
 namespace OpenNos.Data
 {
-    public class MapDTO
+    public class MapDTO : IMapDTO
     {
         #region Properties
 

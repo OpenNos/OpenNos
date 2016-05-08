@@ -24,13 +24,12 @@ using System.Threading.Tasks;
 
 namespace OpenNos.GameObject
 {
-    public class ClientLinkManager
+    public class ClientLinkManager : BroadcastableBase
     {
         #region Members
 
         public Boolean ShutdownStop = false;
         private static ClientLinkManager _instance;
-        private ISubject<SessionPacket> _subject;
 
         #endregion
 
@@ -38,10 +37,7 @@ namespace OpenNos.GameObject
 
         private ClientLinkManager()
         {
-            Sessions = new List<ClientSession>();
             Groups = new List<Group>();
-
-            _subject = new Subject<SessionPacket>();
 
             Task autosave = new Task(SaveAllProcess);
             autosave.Start();
@@ -61,14 +57,13 @@ namespace OpenNos.GameObject
 
         public static ClientLinkManager Instance => _instance ?? (_instance = new ClientLinkManager());
 
-        public List<ClientSession> Sessions { get; set; }
-
         public Task TaskShutdown { get; set; }
 
         #endregion
 
         #region Methods
 
+        //PacketHandler -> with Callback?
         public void AskRevive(long Target)
         {
             ClientSession Session = Instance.Sessions.FirstOrDefault(s => s.Character != null && s.Character.CharacterId == Target);
@@ -95,20 +90,7 @@ namespace OpenNos.GameObject
             }
         }
 
-        public bool Broadcast(ClientSession client, string message, ReceiverType receiver, string characterName = "", long characterId = -1)
-        {
-            SessionPacket packet = new SessionPacket(client, message, receiver, characterName, characterId);
-            _subject.OnNext(packet);
-            return true;
-        }
-
-        public void BroadcastToMap(short mapId, string message)
-        {
-            for (int i = Sessions.Where(s => s != null && s.Client != null && s.Character != null && s.Character.MapId.Equals(mapId)).Count() - 1; i >= 0; i--)
-                Sessions.Where(s => s != null && s.Client != null && s.Character != null && s.Character.MapId.Equals(mapId)).ElementAt(i).Client.SendPacket(message);
-        }
-
-        // we can move them to packethandler
+        //PacketHandler
         public void BuyValidate(ClientSession clientSession, KeyValuePair<long, MapShop> shop, short slot, byte amount)
         {
             PersonalShopItem itemshop = clientSession.CurrentMap.UserShops[shop.Key].Items.FirstOrDefault(i => i.Slot.Equals(slot));
@@ -154,12 +136,15 @@ namespace OpenNos.GameObject
             }
         }
 
+        //Both partly
         public void ChangeMap(long id)
         {
             ClientSession Session = Sessions.FirstOrDefault(s => s.Character != null && s.Character.CharacterId == id);
             if (Session != null)
             {
+                Session.CurrentMap.UnregisterSession(Session);
                 Session.CurrentMap = ServerManager.GetMap(Session.Character.MapId);
+                Session.CurrentMap.RegisterSession(Session);
                 Session.Client.SendPacket(Session.Character.GenerateCInfo());
                 Session.Client.SendPacket(Session.Character.GenerateCMode());
                 Session.Client.SendPacket(Session.Character.GenerateFaction());
@@ -189,11 +174,11 @@ namespace OpenNos.GameObject
                 if (Session.Character.InvisibleGm == false)
                     ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
                 if (Session.CurrentMap.IsDancing == 2 && Session.Character.IsDancing == 0)
-                    ClientLinkManager.Instance.BroadcastToMap(Session.Character.MapId, "dance 2");
+                    Session.CurrentMap.Broadcast("dance 2");
                 else if (Session.CurrentMap.IsDancing == 0 && Session.Character.IsDancing == 1)
                 {
                     Session.Character.IsDancing = 0;
-                    ClientLinkManager.Instance.BroadcastToMap(Session.Character.MapId, "dance");
+                    Session.CurrentMap.Broadcast("dance");
                 }
                 foreach (String ShopPacket in Session.Character.GenerateShopOnMap())
                     Session.Client.SendPacket(ShopPacket);
@@ -242,6 +227,7 @@ namespace OpenNos.GameObject
             }
         }
 
+        //PacketHandler
         public void ClassChange(long id, byte Class)
         {
             foreach (ClientSession session in Sessions.Where(s => s.Character != null && s.Character.CharacterId == id))
@@ -309,6 +295,7 @@ namespace OpenNos.GameObject
             }
         }
 
+        //PacketHandler
         public void ExchangeValidate(ClientSession c1Session, long charId)
         {
             ClientSession c2Session = Sessions.FirstOrDefault(s => s.Character.CharacterId.Equals(charId));
@@ -425,6 +412,7 @@ namespace OpenNos.GameObject
             }
         }
 
+        //Server
         public bool Kick(string characterName)
         {
             ClientSession session = Sessions.FirstOrDefault(s => s.Character != null && s.Character.Name.Equals(characterName));
@@ -434,6 +422,7 @@ namespace OpenNos.GameObject
             return true;
         }
 
+        //Map
         public void MapOut(long id)
         {
             foreach (ClientSession Session in Sessions.Where(s => s.Character != null && s.Character.CharacterId == id))
@@ -453,6 +442,7 @@ namespace OpenNos.GameObject
             client.Client.SendPacket(result);
         }
 
+        //Map
         public void ReviveFirstPosition(long characterId)
         {
             ClientSession Session = Sessions.FirstOrDefault(s => s.Character != null && s.Character.CharacterId == characterId && s.Character.Hp <= 0);
@@ -480,6 +470,7 @@ namespace OpenNos.GameObject
             propertyinfo.SetValue(session.Character, value, null);
         }
 
+        //Server
         public void UpdateGroup(long charId)
         {
             Group myGroup = Groups.FirstOrDefault(s => s.IsMemberOfGroup(charId));
@@ -500,18 +491,7 @@ namespace OpenNos.GameObject
             }
         }
 
-        internal void RegisterSession(ClientSession session)
-        {
-            _subject.Subscribe(s => session.CallbackSessionRequest(s));
-            Sessions.Add(session);
-        }
-
-        internal void UnregisterSession(ClientSession session)
-        {
-            session.Dispose();
-            Sessions.Remove(session);
-        }
-
+        //Server
         private async void GroupProcess()
         {
             while (true)
@@ -528,6 +508,7 @@ namespace OpenNos.GameObject
             }
         }
 
+        //Server
         private async void SaveAllProcess()
         {
             while (true)
@@ -537,6 +518,7 @@ namespace OpenNos.GameObject
             }
         }
 
+        //Map ??
         private async void TaskLauncherProcess()
         {
             Task TaskMap = null;

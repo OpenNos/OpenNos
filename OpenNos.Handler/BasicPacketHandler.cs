@@ -900,6 +900,7 @@ namespace OpenNos.Handler
             if (Session.CurrentMap != null || Session.Character == null)
                 return;
             Session.CurrentMap = ServerManager.GetMap(Session.Character.MapId);
+            Session.CurrentMap.RegisterSession(Session);
 
             if (System.Configuration.ConfigurationManager.AppSettings["SceneOnCreate"].ToLower() == "true" & DAOFactory.GeneralLogDAO.LoadByLogType("Connection", Session.Character.CharacterId).Count() == 1) Session.Client.SendPacket("scene 40");
             if (System.Configuration.ConfigurationManager.AppSettings["WorldInformation"].ToLower() == "true")

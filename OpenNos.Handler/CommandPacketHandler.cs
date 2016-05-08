@@ -47,12 +47,14 @@ namespace OpenNos.Handler
                 NpcMonster npcmonster = ServerManager.GetNpc(vnum);
                 if (npcmonster == null)
                     return;
+
                 MapMonsterDTO monst = new MapMonsterDTO() { MonsterVNum = vnum, MapY = Session.Character.MapY, MapX = Session.Character.MapX, MapId = Session.Character.MapId, Position = (byte)Session.Character.Direction, IsMoving = isMoving == 1 ? true : false, MapMonsterId = MapMonster.GenerateMapMonsterId() };
                 MapMonster monster = null;
+                Map map = ServerManager.GetMap(monst.MapId);
                 if (DAOFactory.MapMonsterDAO.LoadById(monst.MapMonsterId) == null)
                 {
                     DAOFactory.MapMonsterDAO.Insert(monst);
-                    monster = new MapMonster() { MonsterVNum = vnum, MapY = monst.MapY, Alive = true, CurrentHp = npcmonster.MaxHP, CurrentMp = npcmonster.MaxMP, MapX = monst.MapX, MapId = Session.Character.MapId, firstX = monst.MapX, firstY = monst.MapY, MapMonsterId = monst.MapMonsterId, Position = 1, IsMoving = isMoving == 1 ? true : false };
+                    monster = new MapMonster(map) { MonsterVNum = vnum, MapY = monst.MapY, Alive = true, CurrentHp = npcmonster.MaxHP, CurrentMp = npcmonster.MaxMP, MapX = monst.MapX, MapId = Session.Character.MapId, firstX = monst.MapX, firstY = monst.MapY, MapMonsterId = monst.MapMonsterId, Position = 1, IsMoving = isMoving == 1 ? true : false };
                     ServerManager.Monsters.Add(monster);
                     ServerManager.GetMap(Session.Character.MapId).Monsters.Add(monster);
                     ClientLinkManager.Instance.Broadcast(Session, monster.GenerateIn3(), ReceiverType.All);
@@ -493,13 +495,13 @@ namespace OpenNos.Handler
             {
                 Session.Character.Dance();
                 ClientLinkManager.Instance.Sessions.Where(s => s.Character.MapId.Equals(Session.Character.MapId) && s.Character.Name != Session.Character.Name).ToList().ForEach(s => ClientLinkManager.Instance.RequireBroadcastFromUser(Session, s.Character.CharacterId, "Dance"));
-                ClientLinkManager.Instance.BroadcastToMap(Session.Character.MapId, "dance 2");
+                Session.CurrentMap.Broadcast("dance 2");
             }
             else
             {
                 Session.Character.Dance();
                 ClientLinkManager.Instance.Sessions.Where(s => s.Character.MapId.Equals(Session.Character.MapId) && s.Character.Name != Session.Character.Name).ToList().ForEach(s => ClientLinkManager.Instance.RequireBroadcastFromUser(Session, s.Character.CharacterId, "GenerateIn"));
-                ClientLinkManager.Instance.BroadcastToMap(Session.Character.MapId, "dance");
+                Session.CurrentMap.Broadcast("dance");
             }
         }
 
@@ -702,7 +704,8 @@ namespace OpenNos.Handler
                         mapx = (short)rnd.Next((Session.Character.MapX - qty) % Session.CurrentMap.XLength, (Session.Character.MapX + qty / 3) % Session.CurrentMap.YLength);
                         mapy = (short)rnd.Next((Session.Character.MapY - qty) % Session.CurrentMap.XLength, (Session.Character.MapY + qty / 3) % Session.CurrentMap.YLength);
                     }
-                    MapMonster monst = new MapMonster() { MonsterVNum = vnum, Alive = true, CurrentHp = npcmonster.MaxHP, CurrentMp = npcmonster.MaxMP, MapY = mapy, MapX = mapx, MapId = Session.Character.MapId, firstX = mapx, firstY = mapy, MapMonsterId = MapMonster.GenerateMapMonsterId(), Position = 1, IsMoving = move != 0 ? true : false };
+                    Map map = ServerManager.GetMap(Session.Character.MapId);
+                    MapMonster monst = new MapMonster(map) { MonsterVNum = vnum, Alive = true, CurrentHp = npcmonster.MaxHP, CurrentMp = npcmonster.MaxMP, MapY = mapy, MapX = mapx, MapId = Session.Character.MapId, firstX = mapx, firstY = mapy, MapMonsterId = MapMonster.GenerateMapMonsterId(), Position = 1, IsMoving = move != 0 ? true : false };
                     ServerManager.GetMap(Session.Character.MapId).Monsters.Add(monst);
                     ServerManager.Monsters.Add(monst);
                     ClientLinkManager.Instance.Broadcast(Session, monst.GenerateIn3(), ReceiverType.All);

@@ -25,12 +25,13 @@ namespace OpenNos.GameObject
     {
         #region Instantiation
 
-        public MapMonster()
+        public MapMonster(Map parent)
         {
             LastEffect = LastMove = DateTime.Now;
             Target = -1;
             path = new List<MapCell>();
             LifeTaskIsRunning = false;
+            Map = parent;
         }
 
         #endregion
@@ -46,6 +47,7 @@ namespace OpenNos.GameObject
         public DateTime LastEffect { get; private set; }
         public DateTime LastMove { get; private set; }
         public bool LifeTaskIsRunning { get; internal set; }
+        public Map Map { get; set; }
         public List<MapCell> path { get; set; }
         public long Target { get; set; }
 
@@ -101,8 +103,8 @@ namespace OpenNos.GameObject
                     MapX = firstX;
                     MapY = firstY;
 
-                    ClientLinkManager.Instance.BroadcastToMap(MapId, GenerateIn3());
-                    ClientLinkManager.Instance.BroadcastToMap(MapId, GenerateEff(7));
+                    Map.Broadcast(GenerateIn3());
+                    Map.Broadcast(GenerateEff(7));
                 }
                 LifeTaskIsRunning = false;
                 return;
@@ -127,7 +129,7 @@ namespace OpenNos.GameObject
                             short MapY = path.ElementAt(0).Y;
                             path.RemoveAt(0);
                             LastMove = DateTime.Now;
-                            ClientLinkManager.Instance.BroadcastToMap(MapId, $"mv 3 {this.MapMonsterId} {this.MapX} {this.MapY} {monster.Speed}");
+                            Map.Broadcast($"mv 3 {this.MapMonsterId} {this.MapX} {this.MapY} {monster.Speed}");
 
                             Task.Factory.StartNew(async () =>
                             {
@@ -154,7 +156,7 @@ namespace OpenNos.GameObject
                             LastMove = DateTime.Now;
 
                             string movepacket = $"mv 3 {this.MapMonsterId} {MapX} {MapY} {monster.Speed}";
-                            ClientLinkManager.Instance.BroadcastToMap(MapId, movepacket);
+                            Map.Broadcast(movepacket);
 
                             Task.Factory.StartNew(async () =>
                             {
@@ -186,9 +188,9 @@ namespace OpenNos.GameObject
                 int? Hp = ClientLinkManager.Instance.GetProperty<int?>(Target, "Hp");
                 short? mapId = ClientLinkManager.Instance.GetProperty<short?>(Target, "MapId");
                 bool? Invisible = ClientLinkManager.Instance.GetProperty<bool?>(Target, "Invisible");
-                
-                if (MapX == null || MapY == null || Hp <= 0 || Invisible != null && (bool)Invisible) {Target = -1; LifeTaskIsRunning = false; return; }
-              
+
+                if (MapX == null || MapY == null || Hp <= 0 || Invisible != null && (bool)Invisible) { Target = -1; LifeTaskIsRunning = false; return; }
+
                 int damage = 100;
                 Random r = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
                 NpcMonsterSkill ski = monster.Skills.Where(s => !s.Used && (DateTime.Now - s.LastUse).TotalMilliseconds >= 100 * ServerManager.GetSkill(s.SkillVNum).Cooldown).OrderBy(rnd => r.Next()).FirstOrDefault();
@@ -210,27 +212,27 @@ namespace OpenNos.GameObject
                         {
                             ski.Used = true;
                             ski.LastUse = DateTime.Now;
-                            ClientLinkManager.Instance.BroadcastToMap(MapId, $"ct 3 {MapMonsterId} 1 {Target} {sk.CastAnimation} -1 {sk.SkillVNum}");
+                            Map.Broadcast($"ct 3 {MapMonsterId} 1 {Target} {sk.CastAnimation} -1 {sk.SkillVNum}");
                         }
 
                         LastMove = DateTime.Now;
 
                         if (sk != null && sk.CastEffect != 0)
                         {
-                            ClientLinkManager.Instance.BroadcastToMap(MapId, GenerateEff(sk.CastEffect));
+                            Map.Broadcast(GenerateEff(sk.CastEffect));
                             Thread.Sleep(sk.CastTime * 100);
                         }
                         path = new List<MapCell>();
-                        if(Hp >=0)
-                        Hp -= damage;
+                        if (Hp >= 0)
+                            Hp -= damage;
                         ClientLinkManager.Instance.SetProperty(Target, "LastDefence", DateTime.Now);
                         ClientLinkManager.Instance.SetProperty(Target, "Hp", (int)((Hp) <= 0 ? 0 : Hp));
                         ClientLinkManager.Instance.Broadcast(null, ClientLinkManager.Instance.GetUserMethod<string>(Target, "GenerateStat"), ReceiverType.OnlySomeone, "", Target);
 
                         if (sk != null)
-                            ClientLinkManager.Instance.BroadcastToMap(MapId, $"su 3 {MapMonsterId} 1 {Target} {ski.SkillVNum} {sk.Cooldown} {sk.AttackAnimation} {sk.Effect} {this.MapX} {this.MapY} {(Hp > 0 ? 1 : 0)} {(int)((double)Hp / ClientLinkManager.Instance.GetUserMethod<double>(Target, "HPLoad"))} {damage} 0 0");
+                            Map.Broadcast($"su 3 {MapMonsterId} 1 {Target} {ski.SkillVNum} {sk.Cooldown} {sk.AttackAnimation} {sk.Effect} {this.MapX} {this.MapY} {(Hp > 0 ? 1 : 0)} {(int)((double)Hp / ClientLinkManager.Instance.GetUserMethod<double>(Target, "HPLoad"))} {damage} 0 0");
                         else
-                            ClientLinkManager.Instance.BroadcastToMap(MapId, $"su 3 {MapMonsterId} 1 {Target} 0 {monster.BasicCooldown} 11 {monster.BasicSkill} 0 0 {(Hp > 0 ? 1 : 0)} {(int)((double)Hp / ClientLinkManager.Instance.GetUserMethod<double>(Target, "HPLoad"))} {damage} 0 0");
+                            Map.Broadcast($"su 3 {MapMonsterId} 1 {Target} 0 {monster.BasicCooldown} 11 {monster.BasicSkill} 0 0 {(Hp > 0 ? 1 : 0)} {(int)((double)Hp / ClientLinkManager.Instance.GetUserMethod<double>(Target, "HPLoad"))} {damage} 0 0");
 
                         if (ski != null)
                             ski.Used = false;
@@ -250,8 +252,8 @@ namespace OpenNos.GameObject
                                 if (chara.Hp < 0)
                                     chara.Hp = 0;
                                 chara.LastDefence = DateTime.Now;
-                                ClientLinkManager.Instance.Broadcast(null, ClientLinkManager.Instance.GetUserMethod<string>(chara.CharacterId, "GenerateStat"), ReceiverType.OnlySomeone, "", chara.CharacterId);
-                                ClientLinkManager.Instance.BroadcastToMap(MapId, $"su 3 {MapMonsterId} 1 {chara.CharacterId} 0 {monster.BasicCooldown} 11 {monster.BasicSkill} 0 0 {(chara.Hp > 0 ? 1 : 0)} {(int)((double)chara.Hp / chara.HPLoad())} {damage} 0 0");
+                                ClientLinkManager.Instance.Broadcast(null, chara.GenerateStat(), ReceiverType.OnlySomeone, "", chara.CharacterId);
+                                Map.Broadcast($"su 3 {MapMonsterId} 1 {chara.CharacterId} 0 {monster.BasicCooldown} 11 {monster.BasicSkill} 0 0 {(chara.Hp > 0 ? 1 : 0)} {(int)((double)chara.Hp / chara.HPLoad())} {damage} 0 0");
                                 if (chara.Hp <= 0 && !AlreadyDead2)
                                 {
                                     Thread.Sleep(1000);
@@ -286,7 +288,7 @@ namespace OpenNos.GameObject
                             if ((DateTime.Now - LastMove).TotalSeconds > 1.0 / monster.Speed)
                             {
                                 LastMove = DateTime.Now;
-                                ClientLinkManager.Instance.BroadcastToMap(MapId, $"mv 3 {this.MapMonsterId} {this.MapX} {this.MapY} {monster.Speed}");
+                                Map.Broadcast($"mv 3 {this.MapMonsterId} {this.MapX} {this.MapY} {monster.Speed}");
                             }
                         }
                     }
