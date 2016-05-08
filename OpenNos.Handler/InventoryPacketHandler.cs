@@ -349,8 +349,10 @@ namespace OpenNos.Handler
                 short.TryParse(packetsplit[j - 2], out slot[i]);
                 byte.TryParse(packetsplit[j - 1], out qty[i]);
                 Inventory item = Session.Character.InventoryList.LoadInventoryBySlotAndType(slot[i], type[i]);
+                if (item.ItemInstance.Amount < qty[i])
+                    return;
                 ItemInstance it = (item.ItemInstance as ItemInstance).DeepCopy();
-
+              
                 if (it.Item.IsTradable)
                 {
                     it.Amount = qty[i];

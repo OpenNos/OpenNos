@@ -74,7 +74,7 @@ namespace OpenNos.Handler
                         Language.Instance.GetMessageFromKey("MAX_GOLD")));
                     return;
                 }
-
+              
                 if (item.Price * amount >= Session.Character.Gold)
                 {
                     Session.Client.SendPacket(Session.Character.GenerateShopMemo(3,
@@ -177,6 +177,9 @@ namespace OpenNos.Handler
                 else if (Session.Character.GetDigniteIco() == 5 || Session.Character.GetDigniteIco() == 6)
                     pourcent = 1.5;
                 byte rare = item.Rare;
+                if (iteminfo.Type == 0)
+                    amount = 1;
+
                 if (iteminfo.ReputPrice == 0)
                 {
                     if (price < 0 || price * pourcent > Session.Character.Gold)
@@ -271,13 +274,16 @@ namespace OpenNos.Handler
                             byte.TryParse(packetsplit[j], out type[i]);
                             short.TryParse(packetsplit[j + 1], out slot[i]);
                             byte.TryParse(packetsplit[j + 2], out qty[i]);
+
                             long.TryParse(packetsplit[j + 3], out gold[i]);
                             if (gold[i] < 0)
                                 return;
-                            if (qty[i] != 0)
+                            if (qty[i] > 0)
                             {
                                 Inventory inv = Session.Character.InventoryList.LoadInventoryBySlotAndType(slot[i], type[i]);
 
+                                if (inv.ItemInstance.Amount < qty[i])
+                                    return;
                                 if(!((ItemInstance)inv.ItemInstance).Item.IsTradable)
                                 {
                                     Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SHOP_ONLY_TRADABLE_ITEMS"), 0));
