@@ -243,8 +243,8 @@ namespace OpenNos.GameObject
                             ClientLinkManager.Instance.AskRevive(Target);
                             Target = -1;
                         }
-                        if ((sk != null && sk.SkillType == 0))// || monster.AttackClass == 0 && monster.BasicArea > 1 && monster.BasicRange > 0)
-                            foreach (Character chara in ServerManager.GetMap(MapId).GetListPeopleInRange(sk != null ? (short)MapX : this.MapX, sk != null ? (short)MapY : this.MapY, sk == null ? monster.BasicArea : sk.TargetRange).Where(s => s.CharacterId != Target))
+                        if ((sk != null && (sk.Range > 0 ||sk.TargetRange > 0)))
+                            foreach (Character chara in ServerManager.GetMap(MapId).GetListPeopleInRange(sk == null || sk.TargetRange == 0 ? this.MapX : (short)MapX, sk == null || sk.TargetRange == 0 ? this.MapY : (short)MapY, sk == null ? monster.BasicArea :(byte)( sk.TargetRange + sk.Range)).Where(s => s.CharacterId != Target))
                             {
                                 damage = 100;
                                 bool AlreadyDead2 = chara.Hp <= 0;
