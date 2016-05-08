@@ -22,7 +22,7 @@ using System.Threading.Tasks;
 
 namespace OpenNos.GameObject
 {
-    public class Map : MapDTO
+    public class Map : BroadcastableBase, IMapDTO
     {
         #region Members
 
@@ -67,7 +67,7 @@ namespace OpenNos.GameObject
             foreach (MapMonsterDTO monster in DAOFactory.MapMonsterDAO.LoadFromMap(MapId))
             {
                 NpcMonster npcmonster = ServerManager.GetNpc(monster.MonsterVNum);
-                _monsters.Add(new MapMonster()
+                _monsters.Add(new MapMonster(this)
                 {
                     MapId = monster.MapId,
                     MapX = monster.MapX,
@@ -88,7 +88,7 @@ namespace OpenNos.GameObject
             _npcs = new List<MapNpc>();
             foreach (MapNpcDTO npc in npcsDTO)
             {
-                _npcs.Add(new GameObject.MapNpc(npc.MapNpcId)
+                _npcs.Add(new GameObject.MapNpc(npc.MapNpcId, this)
                 {
                     MapId = npc.MapId,
                     MapX = npc.MapX,
@@ -100,8 +100,8 @@ namespace OpenNos.GameObject
                     Effect = npc.Effect,
                     EffectDelay = npc.EffectDelay,
                     Dialog = npc.Dialog,
-                    firstX = npc.MapX,
-                    firstY = npc.MapY
+                    FirstX = npc.MapX,
+                    FirstY = npc.MapY
                 });
             }
         }
@@ -110,9 +110,13 @@ namespace OpenNos.GameObject
 
         #region Properties
 
+        public byte[] Data { get; set; }
+
         public IDictionary<long, MapItem> DroppedList { get; set; }
 
         public int IsDancing { get; set; }
+
+        public short MapId { get; set; }
 
         public List<MapMonster> Monsters
         {
@@ -121,6 +125,10 @@ namespace OpenNos.GameObject
                 return _monsters;
             }
         }
+
+        public int Music { get; set; }
+
+        public string Name { get; set; }
 
         public EventHandler NotifyClients { get; set; }
 
@@ -253,7 +261,7 @@ namespace OpenNos.GameObject
             droppedItem.ItemInstance.ItemInstanceId = random;
             ServerManager.GetMap(MapId).DroppedList.Add(random, droppedItem);
 
-            ClientLinkManager.Instance.BroadcastToMap(MapId, $"drop {droppedItem.ItemInstance.ItemVNum} {random} {droppedItem.PositionX} {droppedItem.PositionY} {droppedItem.ItemInstance.Amount} 0 0 -1");
+            Broadcast($"drop {droppedItem.ItemInstance.ItemVNum} {random} {droppedItem.PositionX} {droppedItem.PositionY} {droppedItem.ItemInstance.Amount} 0 0 -1");
         }
 
         public List<MapMonster> GetListMonsterInRange(short mapX, short mapY, byte distance)

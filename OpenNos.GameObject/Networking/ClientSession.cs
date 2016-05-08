@@ -218,6 +218,7 @@ namespace OpenNos.GameObject
 
                 //disconnect client
                 ServiceFactory.Instance.CommunicationService.DisconnectCharacter(Character.Name);
+                CurrentMap.UnregisterSession(this);
                 CurrentMap = null;
             }
 

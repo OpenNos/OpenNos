@@ -23,7 +23,7 @@ namespace OpenNos.GameObject
     {
         #region Instantiation
 
-        public MapNpc(int npcId)
+        public MapNpc(int npcId, Map parent)
         {
             LifeTaskIsRunning = false;
             MapNpcId = npcId;
@@ -44,20 +44,23 @@ namespace OpenNos.GameObject
             ShopDTO shop = DAOFactory.ShopDAO.LoadByNpc(MapNpcId);
             if (shop != null)
                 Shop = new Shop(shop.ShopId) { Name = shop.Name, MapNpcId = MapNpcId, MenuType = shop.MenuType, ShopType = shop.ShopType };
+
+            Map = parent;
         }
 
         #endregion
 
         #region Properties
 
-        public short firstX { get; set; }
-        public short firstY { get; set; }
+        public short FirstX { get; set; }
+        public short FirstY { get; set; }
         public DateTime LastEffect { get; private set; }
         public DateTime LastMove { get; private set; }
+        public bool LifeTaskIsRunning { get; internal set; }
+        public Map Map { get; set; }
         public List<Recipe> Recipes { get; set; }
         public Shop Shop { get; set; }
         public List<Teleporter> Teleporters { get; set; }
-        public bool LifeTaskIsRunning { get; internal set; }
 
         #endregion
 
@@ -89,7 +92,7 @@ namespace OpenNos.GameObject
             double time = (DateTime.Now - LastEffect).TotalMilliseconds;
             if (Effect > 0 && time > EffectDelay)
             {
-                ClientLinkManager.Instance.BroadcastToMap(MapId, GenerateEff());
+                Map.Broadcast(GenerateEff());
                 LastEffect = DateTime.Now;
             }
 
@@ -103,16 +106,16 @@ namespace OpenNos.GameObject
                 byte xpoint = (byte)r.Next(fpoint, point);
                 byte ypoint = (byte)(point - xpoint);
 
-                short MapX = firstX;
-                short MapY = firstY;
-                if (ServerManager.GetMap(MapId).GetFreePosition(ref MapX, ref MapY, xpoint, ypoint))
+                short mapX = FirstX;
+                short mapY = FirstY;
+                if (ServerManager.GetMap(MapId).GetFreePosition(ref mapX, ref mapY, xpoint, ypoint))
                 {
-                    this.MapX = MapX;
-                    this.MapY = MapY;
+                    this.MapX = mapX;
+                    this.MapY = mapY;
                     LastMove = DateTime.Now;
 
                     string movepacket = $"mv 2 {this.MapNpcId} {this.MapX} {this.MapY} {npc.Speed}";
-                    ClientLinkManager.Instance.BroadcastToMap(MapId, movepacket);
+                    Map.Broadcast(movepacket);
                 }
             }
             LifeTaskIsRunning = false;
