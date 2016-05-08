@@ -227,7 +227,7 @@ namespace OpenNos.GameObject
                             Hp -= damage;
                         ClientLinkManager.Instance.SetProperty(Target, "LastDefence", DateTime.Now);
                         ClientLinkManager.Instance.SetProperty(Target, "Hp", (int)((Hp) <= 0 ? 0 : Hp));
-                        ClientLinkManager.Instance.Broadcast(null, ClientLinkManager.Instance.GetUserMethod<string>(Target, "GenerateStat"), ReceiverType.OnlySomeone, "", Target);
+                        Map.Broadcast(null, ClientLinkManager.Instance.GetUserMethod<string>(Target, "GenerateStat"), ReceiverType.OnlySomeone, "", Target);
 
                         if (sk != null)
                             Map.Broadcast($"su 3 {MapMonsterId} 1 {Target} {ski.SkillVNum} {sk.Cooldown} {sk.AttackAnimation} {sk.Effect} {this.MapX} {this.MapY} {(Hp > 0 ? 1 : 0)} {(int)((double)Hp / ClientLinkManager.Instance.GetUserMethod<double>(Target, "HPLoad"))} {damage} 0 0");
@@ -252,7 +252,7 @@ namespace OpenNos.GameObject
                                 if (chara.Hp < 0)
                                     chara.Hp = 0;
                                 chara.LastDefence = DateTime.Now;
-                                ClientLinkManager.Instance.Broadcast(null, chara.GenerateStat(), ReceiverType.OnlySomeone, "", chara.CharacterId);
+                                Map.Broadcast(null, chara.GenerateStat(), ReceiverType.OnlySomeone, "", chara.CharacterId);
                                 Map.Broadcast($"su 3 {MapMonsterId} 1 {chara.CharacterId} 0 {monster.BasicCooldown} 11 {monster.BasicSkill} 0 0 {(chara.Hp > 0 ? 1 : 0)} {(int)((double)chara.Hp / chara.HPLoad())} {damage} 0 0");
                                 if (chara.Hp <= 0 && !AlreadyDead2)
                                 {

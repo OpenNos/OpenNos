@@ -67,35 +67,35 @@ namespace OpenNos.GameObject
 
         }
 
-        public void Regenerate(ClientSession Session, Item item)
+        public void Regenerate(ClientSession session, Item item)
         {
-            Session.Character.IsSitting = true;
-            ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateRest(), ReceiverType.All);
+            session.Character.IsSitting = true;
+            session.CurrentMap.Broadcast(session, session.Character.GenerateRest(), ReceiverType.All);
 
-            Session.Client.SendPacket(Session.Character.GenerateEff(6000));
-            Session.Character.SnackAmount++;
-            Session.Character.MaxSnack = 0;
-            Session.Character.SnackHp += item.Hp / 5;
-            Session.Character.SnackMp += item.Mp / 5;
+            session.Client.SendPacket(session.Character.GenerateEff(6000));
+            session.Character.SnackAmount++;
+            session.Character.MaxSnack = 0;
+            session.Character.SnackHp += item.Hp / 5;
+            session.Character.SnackMp += item.Mp / 5;
             for (int i = 0; i < 5; i++)
             {
                 Thread.Sleep(1800);
             }
-            Session.Character.SnackHp = item.Hp / 5;
-            Session.Character.SnackMp = item.Mp / 5;
-            Session.Character.SnackAmount--;
+            session.Character.SnackHp = item.Hp / 5;
+            session.Character.SnackMp = item.Mp / 5;
+            session.Character.SnackAmount--;
         }
 
-        public void sync(ClientSession Session, Item item)
+        public void sync(ClientSession session, Item item)
         {
-            for (Session.Character.MaxSnack = 0; Session.Character.MaxSnack < 5 && Session.Character.IsSitting; Session.Character.MaxSnack++)
+            for (session.Character.MaxSnack = 0; session.Character.MaxSnack < 5 && session.Character.IsSitting; session.Character.MaxSnack++)
             {
-                Session.Character.Mp += Session.Character.SnackHp;
-                Session.Character.Hp += Session.Character.SnackMp;
-                if ((Session.Character.SnackHp > 0 && Session.Character.SnackHp > 0) && (Session.Character.Hp < Session.Character.HPLoad() || Session.Character.Mp < Session.Character.MPLoad()))
-                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateRc(Session.Character.SnackHp), ReceiverType.All);
-                if (Session.Client.CommunicationState == CommunicationStates.Connected)
-                    ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateStat(), ReceiverType.OnlyMe);
+                session.Character.Mp += session.Character.SnackHp;
+                session.Character.Hp += session.Character.SnackMp;
+                if ((session.Character.SnackHp > 0 && session.Character.SnackHp > 0) && (session.Character.Hp < session.Character.HPLoad() || session.Character.Mp < session.Character.MPLoad()))
+                    session.CurrentMap.Broadcast(session, session.Character.GenerateRc(session.Character.SnackHp), ReceiverType.All);
+                if (session.Client.CommunicationState == CommunicationStates.Connected)
+                    session.CurrentMap.Broadcast(session, session.Character.GenerateStat(), ReceiverType.OnlyMe);
                 else return;
                 Thread.Sleep(1800);
             }

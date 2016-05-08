@@ -24,7 +24,7 @@ namespace OpenNos.GameObject
     {
         #region Methods
 
-        public override void Use(ClientSession Session, ref Inventory inventory)
+        public override void Use(ClientSession session, ref Inventory inventory)
         {
             switch (Effect)
             {
@@ -42,11 +42,11 @@ namespace OpenNos.GameObject
                     }
                     inventory.ItemInstance.IsUsed = true;
                     double timeSpanSinceLastSpUsage = (DateTime.Now - Process.GetCurrentProcess().StartTime.AddSeconds(-50)).TotalSeconds -
-                                                      Session.Character.LastSp;
+                                                      session.Character.LastSp;
                     if (iteminfo.EquipmentSlot == (byte)EquipmentType.Sp && timeSpanSinceLastSpUsage < 30)
                     {
-                        Session.Client.SendPacket(
-                            Session.Character.GenerateMsg(
+                        session.Client.SendPacket(
+                            session.Character.GenerateMsg(
                                 string.Format(Language.Instance.GetMessageFromKey("SP_INLOADING"),
                                     30 - (int)Math.Round(timeSpanSinceLastSpUsage)),
                                 0));
@@ -58,78 +58,78 @@ namespace OpenNos.GameObject
                          && iteminfo.ItemType != (byte)Domain.ItemType.Fashion
                          && iteminfo.ItemType != (byte)Domain.ItemType.Jewelery
                          && iteminfo.ItemType != (byte)Domain.ItemType.Specialist)
-                        || iteminfo.LevelMinimum > (iteminfo.IsHeroic ? Session.Character.HeroLevel : Session.Character.Level) || (iteminfo.Sex != 0 && iteminfo.Sex != Session.Character.Gender + 1)
-                        || ((iteminfo.ItemType != (byte)Domain.ItemType.Jewelery && iteminfo.EquipmentSlot != (byte)EquipmentType.Boots && iteminfo.EquipmentSlot != (byte)EquipmentType.Gloves) && ((iteminfo.Class >> Session.Character.Class) & 1) != 1))
+                        || iteminfo.LevelMinimum > (iteminfo.IsHeroic ? session.Character.HeroLevel : session.Character.Level) || (iteminfo.Sex != 0 && iteminfo.Sex != session.Character.Gender + 1)
+                        || ((iteminfo.ItemType != (byte)Domain.ItemType.Jewelery && iteminfo.EquipmentSlot != (byte)EquipmentType.Boots && iteminfo.EquipmentSlot != (byte)EquipmentType.Gloves) && ((iteminfo.Class >> session.Character.Class) & 1) != 1))
                     {
-                        Session.Client.SendPacket(
-                            Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("BAD_EQUIPMENT"), 10));
+                        session.Client.SendPacket(
+                            session.Character.GenerateSay(Language.Instance.GetMessageFromKey("BAD_EQUIPMENT"), 10));
                         return;
                     }
 
-                    if (Session.Character.UseSp
+                    if (session.Character.UseSp
                         && iteminfo.EquipmentSlot == (byte)EquipmentType.Fairy
                         && iteminfo.Element != ServerManager.GetItem(
-                            Session.Character.EquipmentList.LoadBySlotAndType<SpecialistInstance>(
+                            session.Character.EquipmentList.LoadBySlotAndType<SpecialistInstance>(
                                 (byte)EquipmentType.Sp,
                                 (byte)InventoryType.Equipment).ItemVNum).Element &&
                                 iteminfo.Element != ServerManager.GetItem(
-                            Session.Character.EquipmentList.LoadBySlotAndType<SpecialistInstance>(
+                            session.Character.EquipmentList.LoadBySlotAndType<SpecialistInstance>(
                                 (byte)EquipmentType.Sp,
                                 (byte)InventoryType.Equipment).ItemVNum).SecondaryElement)
                     {
-                        Session.Client.SendPacket(
-                            Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("BAD_FAIRY"), 0));
+                        session.Client.SendPacket(
+                            session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("BAD_FAIRY"), 0));
                         return;
                     }
 
-                    if (Session.Character.UseSp && iteminfo.EquipmentSlot == (byte)EquipmentType.Sp)
+                    if (session.Character.UseSp && iteminfo.EquipmentSlot == (byte)EquipmentType.Sp)
                     {
-                        Session.Client.SendPacket(
-                            Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("SP_BLOCKED"), 10));
+                        session.Client.SendPacket(
+                            session.Character.GenerateSay(Language.Instance.GetMessageFromKey("SP_BLOCKED"), 10));
                         return;
                     }
 
-                    if (Session.Character.JobLevel < iteminfo.LevelJobMinimum)
+                    if (session.Character.JobLevel < iteminfo.LevelJobMinimum)
                     {
-                        Session.Client.SendPacket(
-                            Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("LOW_JOB_LVL"), 10));
+                        session.Client.SendPacket(
+                            session.Character.GenerateSay(Language.Instance.GetMessageFromKey("LOW_JOB_LVL"), 10));
                         return;
                     }
 
-                    Inventory equip = Session.Character.EquipmentList.LoadInventoryBySlotAndType(iteminfo.EquipmentSlot, (byte)InventoryType.Equipment);
+                    Inventory equip = session.Character.EquipmentList.LoadInventoryBySlotAndType(iteminfo.EquipmentSlot, (byte)InventoryType.Equipment);
                     if (equip == null)
                     {
 
-                        Session.Character.EquipmentList.AddToInventoryWithSlotAndType( inventory.ItemInstance as ItemInstance, (byte)InventoryType.Equipment, iteminfo.EquipmentSlot);
-                        Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, type, slot, 0, 0, 0));
-                        Session.Character.InventoryList.DeleteFromSlotAndType(inventory.Slot, inventory.Type);
+                        session.Character.EquipmentList.AddToInventoryWithSlotAndType( inventory.ItemInstance as ItemInstance, (byte)InventoryType.Equipment, iteminfo.EquipmentSlot);
+                        session.Client.SendPacket(session.Character.GenerateInventoryAdd(-1, 0, type, slot, 0, 0, 0));
+                        session.Character.InventoryList.DeleteFromSlotAndType(inventory.Slot, inventory.Type);
 
-                        Session.Client.SendPacket(Session.Character.GenerateStatChar());
-                        ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEq(), ReceiverType.All);
-                        Session.Client.SendPacket(Session.Character.GenerateEquipment());
-                        ClientLinkManager.Instance.Broadcast(Session, Session.Character.GeneratePairy(), ReceiverType.All);
+                        session.Client.SendPacket(session.Character.GenerateStatChar());
+                        session.CurrentMap.Broadcast(session.Character.GenerateEq());
+                        session.Client.SendPacket(session.Character.GenerateEquipment());
+                        session.CurrentMap.Broadcast(session.Character.GeneratePairy());
                     }
                     else
                     {
                      
-                        Session.Character.InventoryList.DeleteFromSlotAndType(inventory.Slot, inventory.Type);
-                        Session.Character.EquipmentList.DeleteFromSlotAndType(equip.Slot, equip.Type);
+                        session.Character.InventoryList.DeleteFromSlotAndType(inventory.Slot, inventory.Type);
+                        session.Character.EquipmentList.DeleteFromSlotAndType(equip.Slot, equip.Type);
 
-                        Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, inventory.Type, inventory.Slot, 0, 0, 0));
+                        session.Client.SendPacket(session.Character.GenerateInventoryAdd(-1, 0, inventory.Type, inventory.Slot, 0, 0, 0));
 
-                        Session.Character.EquipmentList.AddToInventoryWithSlotAndType(inventory.ItemInstance as ItemInstance, (byte)InventoryType.Equipment, iteminfo.EquipmentSlot);
-                        Session.Character.InventoryList.AddToInventoryWithSlotAndType(equip.ItemInstance as ItemInstance, type, slot);
+                        session.Character.EquipmentList.AddToInventoryWithSlotAndType(inventory.ItemInstance as ItemInstance, (byte)InventoryType.Equipment, iteminfo.EquipmentSlot);
+                        session.Character.InventoryList.AddToInventoryWithSlotAndType(equip.ItemInstance as ItemInstance, type, slot);
 
-                        Session.Client.SendPacket(
-                            Session.Character.GenerateInventoryAdd(equip.ItemInstance.ItemVNum,
+                        session.Client.SendPacket(
+                            session.Character.GenerateInventoryAdd(equip.ItemInstance.ItemVNum,
                                 equip.ItemInstance.Amount, type, slot,
                                 equip.ItemInstance.Rare, equip.ItemInstance.Design,
                                 equip.ItemInstance.Upgrade));
 
-                        Session.Client.SendPacket(Session.Character.GenerateStatChar());
-                        ClientLinkManager.Instance.Broadcast(Session, Session.Character.GenerateEq(), ReceiverType.All);
-                        Session.Client.SendPacket(Session.Character.GenerateEquipment());
-                        ClientLinkManager.Instance.Broadcast(Session, Session.Character.GeneratePairy(), ReceiverType.All);
+                        session.Client.SendPacket(session.Character.GenerateStatChar());
+                        session.CurrentMap.Broadcast(session.Character.GenerateEq());
+                        session.Client.SendPacket(session.Character.GenerateEquipment());
+                        session.CurrentMap.Broadcast(session.Character.GeneratePairy());
                     }
 
                     break;

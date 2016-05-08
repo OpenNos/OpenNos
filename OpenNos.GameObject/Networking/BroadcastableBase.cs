@@ -42,13 +42,13 @@ namespace OpenNos.GameObject
             return true;
         }
 
-        public void RegisterSession(ClientSession session)
+        public virtual void RegisterSession(ClientSession session)
         {
             _subject.Subscribe(s => session.CallbackSessionRequest(s));
             Sessions.Add(session);
         }
 
-        public void UnregisterSession(ClientSession session)
+        public virtual void UnregisterSession(ClientSession session)
         {
             session.Dispose();
             Sessions.Remove(session);
