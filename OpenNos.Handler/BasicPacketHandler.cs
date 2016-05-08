@@ -659,7 +659,7 @@ namespace OpenNos.Handler
                     case 1:
                         // client says  qset 0 1 3 2 6
                         // answer    -> qset 1 3 0.2.6.0
-                        Session.Character.QuicklistEntries.RemoveAll(n => n.Q1 == q1 && n.Q2 == q2 && (Session.Character.UseSp ? n.Morph == Session.Character.Morph : n.Morph == -1));
+                        Session.Character.QuicklistEntries.RemoveAll(n => n.Q1 == q1 && n.Q2 == q2 && (Session.Character.UseSp ? n.Morph == Session.Character.Morph : n.Morph == 0));
 
                         Session.Character.QuicklistEntries.Add(new QuicklistEntry
                         {
@@ -669,7 +669,7 @@ namespace OpenNos.Handler
                             Q2 = q2,
                             Slot = data1,
                             Pos = data2,
-                            Morph = Session.Character.UseSp ? (short)Session.Character.Morph : (short)-1
+                            Morph = Session.Character.UseSp ? (short)Session.Character.Morph : (short)0
                         });
 
                         Session.Client.SendPacket(string.Format("qset {0} {1} {2}.{3}.{4}.0", q1, q2, type, data1, data2));
@@ -682,8 +682,8 @@ namespace OpenNos.Handler
                         // qset type to1 to2 from1 from2
                         // vars ->   q1  q2  data1 data2
 
-                        QuicklistEntry qlFrom = Session.Character.QuicklistEntries.Single(n => n.Q1 == data1 && n.Q2 == data2 && (Session.Character.UseSp ? n.Morph == Session.Character.Morph : n.Morph == -1));
-                        QuicklistEntry qlTo = Session.Character.QuicklistEntries.SingleOrDefault(n => n.Q1 == q1 && n.Q2 == q2 && (Session.Character.UseSp ? n.Morph == Session.Character.Morph : n.Morph == -1));
+                        QuicklistEntry qlFrom = Session.Character.QuicklistEntries.Single(n => n.Q1 == data1 && n.Q2 == data2 && (Session.Character.UseSp ? n.Morph == Session.Character.Morph : n.Morph == 0));
+                        QuicklistEntry qlTo = Session.Character.QuicklistEntries.SingleOrDefault(n => n.Q1 == q1 && n.Q2 == q2 && (Session.Character.UseSp ? n.Morph == Session.Character.Morph : n.Morph == 0));
 
                         qlFrom.Q1 = q1;
                         qlFrom.Q2 = q2;
@@ -710,7 +710,7 @@ namespace OpenNos.Handler
                     case 3:
                         // Remove from Quicklist
 
-                        Session.Character.QuicklistEntries.RemoveAll(n => n.Q1 == q1 && n.Q2 == q2 && (Session.Character.UseSp?n.Morph == Session.Character.Morph :n.Morph == -1));
+                        Session.Character.QuicklistEntries.RemoveAll(n => n.Q1 == q1 && n.Q2 == q2 && (Session.Character.UseSp?n.Morph == Session.Character.Morph :n.Morph == 0));
 
                         Session.Client.SendPacket(string.Format("qset {0} {1} 7.7.-1.0", q1, q2));
 
