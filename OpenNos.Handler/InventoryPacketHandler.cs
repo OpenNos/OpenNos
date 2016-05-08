@@ -343,7 +343,7 @@ namespace OpenNos.Handler
             short[] slot = new short[10];
             byte[] qty = new byte[10];
             string packetList = "";
-            if (Gold < 0)
+            if (Gold < 0 || Gold > Session.Character.Gold)
                 return;
             for (int j = 6, i = 0; j <= packetsplit.Length; j += 3, i++)
             {
