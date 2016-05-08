@@ -225,10 +225,10 @@ namespace OpenNos.Handler
                         bool continu = true;
                         bool goldmax = false;
                         bool notsold = false;
-                        if (!Session.Character.InventoryList.GetFreePlaceAmount(Session.Character.ExchangeInfo.ExchangeList, Session.Character.BackPack))
+                        if (!Session.Character.InventoryList.GetFreePlaceAmount(exchange.ExchangeList, Session.Character.BackPack))
                             continu = false;
 
-                        if (!inventory.GetFreePlaceAmount(exchange.ExchangeList, backpack))
+                        if (!inventory.GetFreePlaceAmount(Session.Character.ExchangeInfo.ExchangeList, backpack))
                             continu = false;
 
                         if (Session.Character.ExchangeInfo.Gold + gold > 1000000000)

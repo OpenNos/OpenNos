@@ -208,8 +208,8 @@ namespace OpenNos.GameObject
 
         public bool GetFreePlaceAmount(List<ItemInstance> item, int backPack)
         {
-            short[] place = new short[10];
-            for (byte k = 0; k < place.Count(); k++)
+            short[] place = new short[item.Count()];
+            for (byte k = 0; k < item.Count(); k++)
             {
                 place[k] = (byte)(48 + (backPack * 12));
                 for (short i = 0; i < 48 + (backPack * 12); i++)
@@ -220,7 +220,6 @@ namespace OpenNos.GameObject
                     else if (result != null)
                     {
                         bool check = false;
-                        // If an item stuck
                         foreach (ItemInstance itemins in item)
                         {
                             if (itemins.Item.Type != 0 && itemins.Amount + result.ItemInstance.Amount <= 99)
@@ -231,13 +230,12 @@ namespace OpenNos.GameObject
                     }
                 }
             }
-            bool test2 = true;
-            foreach (ItemInstance itemins in item)
+            for (int i = 0; i < item.Count(); i++)
             {
-                if (place[itemins.Item.Type] == 0)
-                    test2 = false;
+                if (place[i] == 0)
+                    return false;
             }
-            return test2;
+            return true;
         }
 
         public Inventory GetInventoryByItemInstanceId(long inventoryItemId)
