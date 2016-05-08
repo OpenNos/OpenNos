@@ -127,7 +127,7 @@ namespace OpenNos.GameObject
             get
             {
                 return !IsSitting && ExchangeInfo == null;
-            } 
+            }
         }
 
         #endregion
@@ -581,8 +581,8 @@ namespace OpenNos.GameObject
             {
                 for (int j = 0; j < 3; j++)
                 {
-                    QuicklistEntry qi = QuicklistEntries.FirstOrDefault(n => n.Q1 == j && n.Q2 == i);
-                    pktQs[j] += string.Format(" {0}.{1}.{2}", qi?.Type, qi?.Slot, qi != null ? qi.Pos : -1);
+                    QuicklistEntry qi = QuicklistEntries.FirstOrDefault(n => n.Q1 == j && n.Q2 == i && n.Morph == (UseSp?Morph:0));                  
+                    pktQs[j] += string.Format(" {0}.{1}.{2}", qi?.Type, qi?.Slot, qi != null ? qi.Pos : 0);
                 }
             }
 
