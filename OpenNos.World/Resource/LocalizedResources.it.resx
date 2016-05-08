@@ -166,7 +166,7 @@
     <value>Vuoi^contribuire^allo^sviluppo?^https://github.com/OpenNos/OpenNos</value>
   </data>
   <data name="BN5" xml:space="preserve">
-    <value>Authors:^0Lucifer0^,^chucktheripper</value>
+    <value>Autori:^0Lucifer0^,^chucktheripper</value>
   </data>
   <data name="BN6" xml:space="preserve">
     <value>Guarda^qui:^https://github.com/OpenNos/OpenNos^per^gli^aggiornamenti.</value>
@@ -628,6 +628,6 @@
     <value>Hai usato semi della potenza</value>
   </data>
   <data name="SHOP_PRIVATE_SHOP" xml:space="preserve">
-    <value>Private shop</value>
+    <value>Bottega Privata</value>
   </data>
 </root>
