@@ -343,13 +343,15 @@ namespace OpenNos.Handler
             short[] slot = new short[10];
             byte[] qty = new byte[10];
             string packetList = "";
+            if (Gold < 0)
+                return;
             for (int j = 6, i = 0; j <= packetsplit.Length; j += 3, i++)
             {
                 byte.TryParse(packetsplit[j - 3], out type[i]);
                 short.TryParse(packetsplit[j - 2], out slot[i]);
                 byte.TryParse(packetsplit[j - 1], out qty[i]);
                 Inventory item = Session.Character.InventoryList.LoadInventoryBySlotAndType(slot[i], type[i]);
-                if (item.ItemInstance.Amount < qty[i])
+                if (qty[i] <= 0 || item.ItemInstance.Amount < qty[i])
                     return;
                 ItemInstance it = (item.ItemInstance as ItemInstance).DeepCopy();
               
