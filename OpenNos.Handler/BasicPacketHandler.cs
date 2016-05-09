@@ -253,7 +253,7 @@ namespace OpenNos.Handler
                 message += packetsplit[i] + " ";
             message = message.Substring(1).Trim();
 
-            Session.CurrentMap.Broadcast(Session, Session.Character.GenerateSpk(message, 3), ReceiverType.Group);
+            ServerManager.Instance.Broadcast(Session, Session.Character.GenerateSpk(message, 3), ReceiverType.Group);
         }
 
         [Packet("guri")]
@@ -1065,11 +1065,11 @@ namespace OpenNos.Handler
 
             Session.Client.SendPacket(Session.Character.GenerateSpk(message, 5));
 
-            bool? Blocked = ServerManager.Instance.GetProperty<bool?>(packetsplit[1].Substring(1), "WhisperBlocked");
-            if (!Blocked.Equals(null))
+            bool? whisperBlocked = ServerManager.Instance.GetProperty<bool?>(packetsplit[1].Substring(1), "WhisperBlocked");
+            if (whisperBlocked.HasValue)
             {
-                if (!Convert.ToBoolean(Blocked))
-                    Session.CurrentMap.Broadcast(Session, Session.Character.GenerateSpk(message, 5), ReceiverType.OnlySomeone, packetsplit[1].Substring(1));
+                if (!whisperBlocked.Value)
+                    ServerManager.Instance.Broadcast(Session, Session.Character.GenerateSpk(message, 5), ReceiverType.OnlySomeone, packetsplit[1].Substring(1));
                 else
                     Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("WHISPERED_BLOCKED"), 11));
             }
