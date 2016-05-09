@@ -949,7 +949,7 @@ namespace OpenNos.Handler
                 Session.Client.SendPacket($"levelup {Session.Character.CharacterId}");
                 Session.CurrentMap.Broadcast( Session.Character.GenerateEff(6));
                 Session.CurrentMap.Broadcast( Session.Character.GenerateEff(198));
-                ClientLinkManager.Instance.UpdateGroup(Session.Character.CharacterId);
+                ServerManager.Instance.UpdateGroup(Session.Character.CharacterId);
             }
             t = Session.Character.JobXPLoad();
             while (Session.Character.JobLevelXp >= t)

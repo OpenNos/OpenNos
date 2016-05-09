@@ -70,7 +70,7 @@ namespace OpenNos.Handler
             string[] packetsplit = packet.Split(' ');
             if (packetsplit.Length > 2)
             {
-                ClientLinkManager.Instance.Kick(packetsplit[2]);
+                ServerManager.Instance.Kick(packetsplit[2]);
                 if (DAOFactory.CharacterDAO.LoadByName(packetsplit[2]) != null)
                 {
                     DAOFactory.AccountDAO.ToggleBan(DAOFactory.CharacterDAO.LoadByName(packetsplit[2]).AccountId);
@@ -92,7 +92,7 @@ namespace OpenNos.Handler
             {
                 if (byte.TryParse(packetsplit[2], out Class) && Class < 4)
                 {
-                    ClientLinkManager.Instance.ClassChange(Session.Character.CharacterId, Class);
+                    ServerManager.Instance.ClassChange(Session.Character.CharacterId, Class);
                 }
             }
             else
@@ -166,7 +166,7 @@ namespace OpenNos.Handler
                     Session.CurrentMap.Broadcast(Session.Character.GenerateEff(198));
                     this.GetStats(String.Empty);
 
-                    ClientLinkManager.Instance.UpdateGroup(Session.Character.CharacterId);
+                    ServerManager.Instance.UpdateGroup(Session.Character.CharacterId);
                 }
             }
             else
@@ -449,7 +449,7 @@ namespace OpenNos.Handler
         {
             string[] packetsplit = packet.Split(' ');
             if (packetsplit.Length > 2)
-                ClientLinkManager.Instance.Kick(packetsplit[2]);
+                ServerManager.Instance.Kick(packetsplit[2]);
             else
                 Session.Client.SendPacket(Session.Character.GenerateSay("$Kick CHARACTERNAME", 10));
         }
@@ -462,21 +462,21 @@ namespace OpenNos.Handler
             {
                 string name = packetsplit[2];
 
-                long? id = ClientLinkManager.Instance.GetProperty<long?>(name, "CharacterId");
+                long? id = ServerManager.Instance.GetProperty<long?>(name, "CharacterId");
 
                 if (id != null)
                 {
-                    int? Hp = ClientLinkManager.Instance.GetProperty<int?>((long)id, "Hp");
+                    int? Hp = ServerManager.Instance.GetProperty<int?>((long)id, "Hp");
                     if (Hp == 0)
                         return;
-                    ClientLinkManager.Instance.SetProperty((long)id, "Hp", 0);
+                    ServerManager.Instance.SetProperty((long)id, "Hp", 0);
 
-                    ClientLinkManager.Instance.SetProperty((long)id, "LastDefence", DateTime.Now);
+                    ServerManager.Instance.SetProperty((long)id, "LastDefence", DateTime.Now);
 
                     Session.CurrentMap.Broadcast($"su 1 {Session.Character.CharacterId} 1 {id} 1114 4 11 4260 0 0 0 0 {60000} 3 0");
 
-                    Session.CurrentMap.Broadcast(null, ClientLinkManager.Instance.GetUserMethod<string>((long)id, "GenerateStat"), ReceiverType.OnlySomeone, "", (long)id);
-                    ClientLinkManager.Instance.AskRevive((long)id);
+                    Session.CurrentMap.Broadcast(null, ServerManager.Instance.GetUserMethod<string>((long)id, "GenerateStat"), ReceiverType.OnlySomeone, "", (long)id);
+                    ServerManager.Instance.AskRevive((long)id);
                 }
                 else
                 {
@@ -494,13 +494,13 @@ namespace OpenNos.Handler
             if (Session.CurrentMap.IsDancing == 2)
             {
                 Session.Character.Dance();
-                ClientLinkManager.Instance.Sessions.Where(s => s.Character.MapId.Equals(Session.Character.MapId) && s.Character.Name != Session.Character.Name).ToList().ForEach(s => ClientLinkManager.Instance.RequireBroadcastFromUser(Session, s.Character.CharacterId, "Dance"));
+                ServerManager.Instance.Sessions.Where(s => s.Character.MapId.Equals(Session.Character.MapId) && s.Character.Name != Session.Character.Name).ToList().ForEach(s => ServerManager.Instance.RequireBroadcastFromUser(Session, s.Character.CharacterId, "Dance"));
                 Session.CurrentMap.Broadcast("dance 2");
             }
             else
             {
                 Session.Character.Dance();
-                ClientLinkManager.Instance.Sessions.Where(s => s.Character.MapId.Equals(Session.Character.MapId) && s.Character.Name != Session.Character.Name).ToList().ForEach(s => ClientLinkManager.Instance.RequireBroadcastFromUser(Session, s.Character.CharacterId, "GenerateIn"));
+                ServerManager.Instance.Sessions.Where(s => s.Character.MapId.Equals(Session.Character.MapId) && s.Character.Name != Session.Character.Name).ToList().ForEach(s => ServerManager.Instance.RequireBroadcastFromUser(Session, s.Character.CharacterId, "GenerateIn"));
                 Session.CurrentMap.Broadcast("dance");
             }
         }
@@ -632,22 +632,22 @@ namespace OpenNos.Handler
                     message += packetsplit[i] + " ";
             message.Trim();
 
-            ClientLinkManager.Instance.Broadcast($"say 1 0 10 ({Language.Instance.GetMessageFromKey("ADMINISTRATOR")}){message}");
-            ClientLinkManager.Instance.Broadcast(Session.Character.GenerateMsg(message, 2));
+            ServerManager.Instance.Broadcast($"say 1 0 10 ({Language.Instance.GetMessageFromKey("ADMINISTRATOR")}){message}");
+            ServerManager.Instance.Broadcast(Session.Character.GenerateMsg(message, 2));
         }
 
         [Packet("$Shutdown")]
         public void Shutdown(string packet)
         {
-            if (ClientLinkManager.Instance.TaskShutdown != null)
+            if (ServerManager.Instance.TaskShutdown != null)
             {
-                ClientLinkManager.Instance.ShutdownStop = true;
-                ClientLinkManager.Instance.TaskShutdown = null;
+                ServerManager.Instance.ShutdownStop = true;
+                ServerManager.Instance.TaskShutdown = null;
             }
             else
             {
-                ClientLinkManager.Instance.TaskShutdown = new Task(ShutdownTask);
-                ClientLinkManager.Instance.TaskShutdown.Start();
+                ServerManager.Instance.TaskShutdown = new Task(ShutdownTask);
+                ServerManager.Instance.TaskShutdown.Start();
             }
         }
 
@@ -680,7 +680,7 @@ namespace OpenNos.Handler
         [Packet("$Stat")]
         public void Stat(string packet)
         {
-            Session.Client.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("TOTAL_SESSION")}: {ClientLinkManager.Instance.Sessions.Count()} ", 13));
+            Session.Client.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("TOTAL_SESSION")}: {ServerManager.Instance.Sessions.Count()} ", 13));
         }
 
         [Packet("$Summon")]
@@ -730,17 +730,17 @@ namespace OpenNos.Handler
             {
                 case 3:
                     string name = packetsplit[2];
-                    short? mapy = ClientLinkManager.Instance.GetProperty<short?>(name, "MapY");
-                    short? mapx = ClientLinkManager.Instance.GetProperty<short?>(name, "MapX");
-                    short? mapId = ClientLinkManager.Instance.GetProperty<short?>(name, "MapId");
+                    short? mapy = ServerManager.Instance.GetProperty<short?>(name, "MapY");
+                    short? mapx = ServerManager.Instance.GetProperty<short?>(name, "MapX");
+                    short? mapId = ServerManager.Instance.GetProperty<short?>(name, "MapId");
                     if (mapy != null && mapx != null && mapId != null)
                     {
-                        ClientLinkManager.Instance.MapOut(Session.Character.CharacterId);
+                        ServerManager.Instance.MapOut(Session.Character.CharacterId);
                         Session.Character.MapId = (short)mapId;
                         Session.Character.MapX = (short)((short)(mapx) + 1);
                         Session.Character.MapY = (short)((short)(mapy) + 1);
 
-                        ClientLinkManager.Instance.ChangeMap(Session.Character.CharacterId);
+                        ServerManager.Instance.ChangeMap(Session.Character.CharacterId);
                     }
                     else
                     {
@@ -751,12 +751,12 @@ namespace OpenNos.Handler
                 case 5:
                     if (verify)
                     {
-                        ClientLinkManager.Instance.MapOut(Session.Character.CharacterId);
+                        ServerManager.Instance.MapOut(Session.Character.CharacterId);
                         Session.Character.MapId = arg[0];
                         Session.Character.MapX = arg[1];
                         Session.Character.MapY = arg[2];
 
-                        ClientLinkManager.Instance.ChangeMap(Session.Character.CharacterId);
+                        ServerManager.Instance.ChangeMap(Session.Character.CharacterId);
                     }
                     break;
 
@@ -776,15 +776,15 @@ namespace OpenNos.Handler
             {
                 string name = packetsplit[2];
 
-                long? id = ClientLinkManager.Instance.GetProperty<long?>(name, "CharacterId");
+                long? id = ServerManager.Instance.GetProperty<long?>(name, "CharacterId");
 
                 if (id != null)
                 {
-                    ClientLinkManager.Instance.MapOut((long)id);
-                    ClientLinkManager.Instance.SetProperty((long)id, "MapY", (short)((Session.Character.MapY) + (short)1));
-                    ClientLinkManager.Instance.SetProperty((long)id, "MapX", (short)((Session.Character.MapX) + (short)1));
-                    ClientLinkManager.Instance.SetProperty((long)id, "MapId", Session.Character.MapId);
-                    ClientLinkManager.Instance.ChangeMap((long)id);
+                    ServerManager.Instance.MapOut((long)id);
+                    ServerManager.Instance.SetProperty((long)id, "MapY", (short)((Session.Character.MapY) + (short)1));
+                    ServerManager.Instance.SetProperty((long)id, "MapX", (short)((Session.Character.MapX) + (short)1));
+                    ServerManager.Instance.SetProperty((long)id, "MapId", Session.Character.MapId);
+                    ServerManager.Instance.ChangeMap((long)id);
                 }
                 else
                 {
@@ -837,9 +837,9 @@ namespace OpenNos.Handler
             for (int i = 0; i < 60 * 4; i++)
             {
                 await Task.Delay(1000);
-                if (ClientLinkManager.Instance.ShutdownStop == true)
+                if (ServerManager.Instance.ShutdownStop == true)
                 {
-                    ClientLinkManager.Instance.ShutdownStop = false;
+                    ServerManager.Instance.ShutdownStop = false;
                     return;
                 }
             }
@@ -849,9 +849,9 @@ namespace OpenNos.Handler
             for (int i = 0; i < 30; i++)
             {
                 await Task.Delay(1000);
-                if (ClientLinkManager.Instance.ShutdownStop == true)
+                if (ServerManager.Instance.ShutdownStop == true)
                 {
-                    ClientLinkManager.Instance.ShutdownStop = false;
+                    ServerManager.Instance.ShutdownStop = false;
                     return;
                 }
             }
@@ -861,13 +861,13 @@ namespace OpenNos.Handler
             for (int i = 0; i < 30; i++)
             {
                 await Task.Delay(1000);
-                if (ClientLinkManager.Instance.ShutdownStop == true)
+                if (ServerManager.Instance.ShutdownStop == true)
                 {
-                    ClientLinkManager.Instance.ShutdownStop = false;
+                    ServerManager.Instance.ShutdownStop = false;
                     return;
                 }
             }
-            ClientLinkManager.Instance.Sessions.ForEach(s => s.Character?.Save());
+            ServerManager.Instance.Sessions.ForEach(s => s.Character?.Save());
             Environment.Exit(0);
         }
 

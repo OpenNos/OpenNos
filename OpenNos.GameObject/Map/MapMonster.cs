@@ -169,25 +169,25 @@ namespace OpenNos.GameObject
                 }
                 if (monster.IsHostile)
                 {
-                    Character character = ClientLinkManager.Instance.Sessions.Where(s => s.Character != null && s.Character.Hp > 0).OrderBy(s => Map.GetDistance(new MapCell() { X = MapX, Y = MapY }, new MapCell() { X = s.Character.MapX, Y = s.Character.MapY })).FirstOrDefault(s => s.Character != null && !s.Character.Invisible && s.Character.MapId == MapId)?.Character;
+                    Character character = ServerManager.Instance.Sessions.Where(s => s.Character != null && s.Character.Hp > 0).OrderBy(s => Map.GetDistance(new MapCell() { X = MapX, Y = MapY }, new MapCell() { X = s.Character.MapX, Y = s.Character.MapY })).FirstOrDefault(s => s.Character != null && !s.Character.Invisible && s.Character.MapId == MapId)?.Character;
                     if (character != null)
                     {
                         if (Map.GetDistance(new MapCell() { X = character.MapX, Y = character.MapY }, new MapCell() { X = MapX, Y = MapY }) < 7)
                         {
                             Target = character.CharacterId;
 
-                            ClientLinkManager.Instance.Sessions.FirstOrDefault(s => s != null && s.Client != null && s.Character != null && s.Character.CharacterId.Equals(Target)).Client.SendPacket(GenerateEff(5000));
+                            ServerManager.Instance.Sessions.FirstOrDefault(s => s != null && s.Client != null && s.Character != null && s.Character.CharacterId.Equals(Target)).Client.SendPacket(GenerateEff(5000));
                         }
                     }
                 }
             }
             else
             {
-                short? MapX = ClientLinkManager.Instance.GetProperty<short?>(Target, "MapX");
-                short? MapY = ClientLinkManager.Instance.GetProperty<short?>(Target, "MapY");
-                int? Hp = ClientLinkManager.Instance.GetProperty<int?>(Target, "Hp");
-                short? mapId = ClientLinkManager.Instance.GetProperty<short?>(Target, "MapId");
-                bool? Invisible = ClientLinkManager.Instance.GetProperty<bool?>(Target, "Invisible");
+                short? MapX = ServerManager.Instance.GetProperty<short?>(Target, "MapX");
+                short? MapY = ServerManager.Instance.GetProperty<short?>(Target, "MapY");
+                int? Hp = ServerManager.Instance.GetProperty<int?>(Target, "Hp");
+                short? mapId = ServerManager.Instance.GetProperty<short?>(Target, "MapId");
+                bool? Invisible = ServerManager.Instance.GetProperty<bool?>(Target, "Invisible");
 
                 if (MapX == null || MapY == null || Hp <= 0 || Invisible != null && (bool)Invisible) { Target = -1; LifeTaskIsRunning = false; return; }
 
@@ -199,7 +199,7 @@ namespace OpenNos.GameObject
                 {
                     sk = ServerManager.GetSkill(ski.SkillVNum);
                 }
-                Thread thread = ClientLinkManager.Instance.GetProperty<Thread>(Target, "ThreadCharChange");
+                Thread thread = ServerManager.Instance.GetProperty<Thread>(Target, "ThreadCharChange");
 
                 if (thread != null && thread.IsAlive)
                     thread.Abort();
@@ -225,14 +225,14 @@ namespace OpenNos.GameObject
                         path = new List<MapCell>();
                         if (Hp >= 0)
                             Hp -= damage;
-                        ClientLinkManager.Instance.SetProperty(Target, "LastDefence", DateTime.Now);
-                        ClientLinkManager.Instance.SetProperty(Target, "Hp", (int)((Hp) <= 0 ? 0 : Hp));
-                        Map.Broadcast(null, ClientLinkManager.Instance.GetUserMethod<string>(Target, "GenerateStat"), ReceiverType.OnlySomeone, "", Target);
+                        ServerManager.Instance.SetProperty(Target, "LastDefence", DateTime.Now);
+                        ServerManager.Instance.SetProperty(Target, "Hp", (int)((Hp) <= 0 ? 0 : Hp));
+                        Map.Broadcast(null, ServerManager.Instance.GetUserMethod<string>(Target, "GenerateStat"), ReceiverType.OnlySomeone, "", Target);
 
                         if (sk != null)
-                            Map.Broadcast($"su 3 {MapMonsterId} 1 {Target} {ski.SkillVNum} {sk.Cooldown} {sk.AttackAnimation} {sk.Effect} {this.MapX} {this.MapY} {(Hp > 0 ? 1 : 0)} {(int)((double)Hp / ClientLinkManager.Instance.GetUserMethod<double>(Target, "HPLoad"))} {damage} 0 0");
+                            Map.Broadcast($"su 3 {MapMonsterId} 1 {Target} {ski.SkillVNum} {sk.Cooldown} {sk.AttackAnimation} {sk.Effect} {this.MapX} {this.MapY} {(Hp > 0 ? 1 : 0)} {(int)((double)Hp / ServerManager.Instance.GetUserMethod<double>(Target, "HPLoad"))} {damage} 0 0");
                         else
-                            Map.Broadcast($"su 3 {MapMonsterId} 1 {Target} 0 {monster.BasicCooldown} 11 {monster.BasicSkill} 0 0 {(Hp > 0 ? 1 : 0)} {(int)((double)Hp / ClientLinkManager.Instance.GetUserMethod<double>(Target, "HPLoad"))} {damage} 0 0");
+                            Map.Broadcast($"su 3 {MapMonsterId} 1 {Target} 0 {monster.BasicCooldown} 11 {monster.BasicSkill} 0 0 {(Hp > 0 ? 1 : 0)} {(int)((double)Hp / ServerManager.Instance.GetUserMethod<double>(Target, "HPLoad"))} {damage} 0 0");
 
                         if (ski != null)
                             ski.Used = false;
@@ -240,7 +240,7 @@ namespace OpenNos.GameObject
                         if (Hp <= 0)
                         {
                             Thread.Sleep(1000);
-                            ClientLinkManager.Instance.AskRevive(Target);
+                            ServerManager.Instance.AskRevive(Target);
                             Target = -1;
                         }
                         if ((sk != null && (sk.Range > 0 ||sk.TargetRange > 0)))
@@ -257,7 +257,7 @@ namespace OpenNos.GameObject
                                 if (chara.Hp <= 0 && !AlreadyDead2)
                                 {
                                     Thread.Sleep(1000);
-                                    ClientLinkManager.Instance.AskRevive(chara.CharacterId);
+                                    ServerManager.Instance.AskRevive(chara.CharacterId);
                                 }
                             }
                     }

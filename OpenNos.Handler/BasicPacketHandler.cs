@@ -66,10 +66,10 @@ namespace OpenNos.Handler
                     {
                         if (Session.Account.LastCompliment.Date.AddDays(1) <= DateTime.Now.Date)
                         {
-                            short? compliment = ClientLinkManager.Instance.GetProperty<short?>(complimentCharacterId, "Compliment");
+                            short? compliment = ServerManager.Instance.GetProperty<short?>(complimentCharacterId, "Compliment");
                             compliment++;
-                            ClientLinkManager.Instance.SetProperty(complimentCharacterId, "Compliment", compliment);
-                            Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("COMPLIMENT_GIVEN"), ClientLinkManager.Instance.GetProperty<string>(complimentCharacterId, "Name")), 12));
+                            ServerManager.Instance.SetProperty(complimentCharacterId, "Compliment", compliment);
+                            Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("COMPLIMENT_GIVEN"), ServerManager.Instance.GetProperty<string>(complimentCharacterId, "Name")), 12));
                             AccountDTO account = Session.Account;
                             account.LastCompliment = DateTime.Now;
                             DAOFactory.AccountDAO.InsertOrUpdate(ref account);
@@ -212,7 +212,7 @@ namespace OpenNos.Handler
 
             if (packetsplit[2] == "1")
             {
-                ClientLinkManager.Instance.RequireBroadcastFromUser(Session, Convert.ToInt64(packetsplit[3]), "GenerateStatInfo");
+                ServerManager.Instance.RequireBroadcastFromUser(Session, Convert.ToInt64(packetsplit[3]), "GenerateStatInfo");
             }
             if (packetsplit[2] == "2")
             {
@@ -488,7 +488,7 @@ namespace OpenNos.Handler
                         break;
 
                     case (int)ConfigType.GroupSharing:
-                        Group grp = ClientLinkManager.Instance.Groups.FirstOrDefault(g => g.IsMemberOfGroup(Session.Character.CharacterId));
+                        Group grp = ServerManager.Instance.Groups.FirstOrDefault(g => g.IsMemberOfGroup(Session.Character.CharacterId));
                         if (grp == null)
                             return;
                         if (grp.Characters.ElementAt(0) != Session)
@@ -498,12 +498,12 @@ namespace OpenNos.Handler
                         }
                         if (int.Parse(packetsplit[3]) == 0)
                         {
-                            ClientLinkManager.Instance.Groups.FirstOrDefault(s => s.IsMemberOfGroup(Session.Character.CharacterId)).SharingMode = 1;
+                            ServerManager.Instance.Groups.FirstOrDefault(s => s.IsMemberOfGroup(Session.Character.CharacterId)).SharingMode = 1;
                             Session.CurrentMap.Broadcast(Session, Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SHARING"), 0), ReceiverType.Group);
                         }
                         else
                         {
-                            ClientLinkManager.Instance.Groups.FirstOrDefault(s => s.IsMemberOfGroup(Session.Character.CharacterId)).SharingMode = 0;
+                            ServerManager.Instance.Groups.FirstOrDefault(s => s.IsMemberOfGroup(Session.Character.CharacterId)).SharingMode = 0;
                             Session.CurrentMap.Broadcast(Session, Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SHARING_BY_ORDER"), 0), ReceiverType.Group);
                         }
 
@@ -526,7 +526,7 @@ namespace OpenNos.Handler
                     return;
                 bool grouped1 = false;
                 bool grouped2 = false;
-                foreach (Group group in ClientLinkManager.Instance.Groups)
+                foreach (Group group in ServerManager.Instance.Groups)
                 {
                     if ((group.IsMemberOfGroup(charId) || group.IsMemberOfGroup(Session.Character.CharacterId)) && group.Characters.Count == 3)
                     {
@@ -553,7 +553,7 @@ namespace OpenNos.Handler
                     if (Session.Character.CharacterId != charId)
                     {
                         if (!long.TryParse(packetsplit[3], out charId)) return;
-                        isBlocked = ClientLinkManager.Instance.GetProperty<bool>(charId, "GroupRequestBlocked");
+                        isBlocked = ServerManager.Instance.GetProperty<bool>(charId, "GroupRequestBlocked");
 
                         if (isBlocked)
                         {
@@ -563,7 +563,7 @@ namespace OpenNos.Handler
                         {
                             Session.Character.ExchangeInfo = new ExchangeInfo { CharId = charId, Confirm = false };
 
-                            charName = (string)ClientLinkManager.Instance.GetProperty<string>(charId, "Name");
+                            charName = (string)ServerManager.Instance.GetProperty<string>(charId, "Name");
                             Session.Client.SendPacket(Session.Character.GenerateInfo(String.Format(Language.Instance.GetMessageFromKey("GROUP_REQUEST"), charName)));
                             Session.CurrentMap.Broadcast(Session, Session.Character.GenerateDialog($"#pjoin^3^{ Session.Character.CharacterId} #pjoin^4^{Session.Character.CharacterId} {String.Format(Language.Instance.GetMessageFromKey("INVITED_YOU"), Session.Character.Name)}"), ReceiverType.OnlySomeone, charName);
                         }
@@ -575,7 +575,7 @@ namespace OpenNos.Handler
         [Packet("pleave")]
         public void PlayerLeave(string packet)
         {
-            ClientLinkManager.Instance.GroupLeave(Session);
+            ServerManager.Instance.GroupLeave(Session);
         }
 
         [Packet("preq")]
@@ -611,14 +611,14 @@ namespace OpenNos.Handler
                             return;
                     }
 
-                    ClientLinkManager.Instance.MapOut(Session.Character.CharacterId);
+                    ServerManager.Instance.MapOut(Session.Character.CharacterId);
                     Session.Character.MapId = portal.DestinationMapId;
                     Session.Character.MapX = portal.DestinationX;
                     Session.Character.MapY = portal.DestinationY;
 
                     Session.Character.LastPortal = currentRunningSeconds;
                     Session.Client.SendPacket(Session.Character.GenerateCMap());
-                    ClientLinkManager.Instance.ChangeMap(Session.Character.CharacterId);
+                    ServerManager.Instance.ChangeMap(Session.Character.CharacterId);
                     break;
                 }
             }
@@ -735,7 +735,7 @@ namespace OpenNos.Handler
                 }
             }
             else
-                ClientLinkManager.Instance.RequireBroadcastFromUser(Session, Convert.ToInt64(packetsplit[3]), "GenerateReqInfo");
+                ServerManager.Instance.RequireBroadcastFromUser(Session, Convert.ToInt64(packetsplit[3]), "GenerateReqInfo");
         }
 
         [Packet("rest")]
@@ -768,7 +768,7 @@ namespace OpenNos.Handler
                         if (Session.Character.InventoryList.CountItem(seed) < 10 && Session.Character.Level > 20)
                         {
                             Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_POWER_SEED"), 0));
-                            ClientLinkManager.Instance.ReviveFirstPosition(Session.Character.CharacterId);
+                            ServerManager.Instance.ReviveFirstPosition(Session.Character.CharacterId);
                             Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NOT_ENOUGH_SEED_SAY"), 0));
                         }
                         else
@@ -786,7 +786,7 @@ namespace OpenNos.Handler
                         break;
 
                     case 1:
-                        ClientLinkManager.Instance.ReviveFirstPosition(Session.Character.CharacterId);
+                        ServerManager.Instance.ReviveFirstPosition(Session.Character.CharacterId);
                         break;
                 }
             }
@@ -913,9 +913,9 @@ namespace OpenNos.Handler
             Session.Character.LoadSkills();
             Session.Client.SendPacket(Session.Character.GenerateTit());
             if (Session.Character.Hp <= 0)
-                ClientLinkManager.Instance.ReviveFirstPosition(Session.Character.CharacterId);
+                ServerManager.Instance.ReviveFirstPosition(Session.Character.CharacterId);
             else
-                ClientLinkManager.Instance.ChangeMap(Session.Character.CharacterId);
+                ServerManager.Instance.ChangeMap(Session.Character.CharacterId);
 
             Session.Client.SendPacket("rage 0 250000");
             Session.Client.SendPacket("rank_cool 0 0 18000");
@@ -969,9 +969,9 @@ namespace OpenNos.Handler
                     return;
                 long.TryParse(packetsplit[3], out charId);
 
-                if (type == 3 && ClientLinkManager.Instance.GetProperty<string>(charId, "Name") != null)
+                if (type == 3 && ServerManager.Instance.GetProperty<string>(charId, "Name") != null)
                 {
-                    foreach (Group group in ClientLinkManager.Instance.Groups)
+                    foreach (Group group in ServerManager.Instance.Groups)
                     {
                         if (group.IsMemberOfGroup(Session))
                         {
@@ -982,7 +982,7 @@ namespace OpenNos.Handler
                             blocked2 = true;
                         }
                     }
-                    foreach (Group group in ClientLinkManager.Instance.Groups)
+                    foreach (Group group in ServerManager.Instance.Groups)
                     {
                         if (group.Characters.Count == 3)
                         {
@@ -1008,15 +1008,15 @@ namespace OpenNos.Handler
                         Group group = new Group();
                         group.JoinGroup(charId);
                         group.JoinGroup(Session.Character.CharacterId);
-                        ClientLinkManager.Instance.Groups.Add(group);
+                        ServerManager.Instance.Groups.Add(group);
 
                         //set back reference to group
                         Session.Character.Group = group;
-                        ClientLinkManager.Instance.Sessions.SingleOrDefault(c => c.Character.CharacterId.Equals(charId)).Character.Group = group;
+                        ServerManager.Instance.Sessions.SingleOrDefault(c => c.Character.CharacterId.Equals(charId)).Character.Group = group;
                     }
 
                     //player join group
-                    ClientLinkManager.Instance.UpdateGroup(charId);
+                    ServerManager.Instance.UpdateGroup(charId);
 
                     string p = GeneratePidx(Session.Character.CharacterId);
                     if (p != "")
@@ -1065,7 +1065,7 @@ namespace OpenNos.Handler
 
             Session.Client.SendPacket(Session.Character.GenerateSpk(message, 5));
 
-            bool? Blocked = ClientLinkManager.Instance.GetProperty<bool?>(packetsplit[1].Substring(1), "WhisperBlocked");
+            bool? Blocked = ServerManager.Instance.GetProperty<bool?>(packetsplit[1].Substring(1), "WhisperBlocked");
             if (!Blocked.Equals(null))
             {
                 if (!Convert.ToBoolean(Blocked))
@@ -1080,7 +1080,7 @@ namespace OpenNos.Handler
         private string GeneratePidx(long charId)
         {
             string stri = "pidx 1";
-            foreach (long Id in ClientLinkManager.Instance.Groups.FirstOrDefault(s => s.IsMemberOfGroup(charId)).Characters?.Select(c => c.Character.CharacterId))
+            foreach (long Id in ServerManager.Instance.Groups.FirstOrDefault(s => s.IsMemberOfGroup(charId)).Characters?.Select(c => c.Character.CharacterId))
             {
                 stri += $" 1.{Id} ";
             }

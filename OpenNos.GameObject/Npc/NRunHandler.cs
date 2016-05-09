@@ -47,7 +47,7 @@ namespace OpenNos.GameObject
                     }
                     if (Session.Character.EquipmentList.IsEmpty())
                     {
-                        ClientLinkManager.Instance.ClassChange(Session.Character.CharacterId, Convert.ToByte(type));
+                        ServerManager.Instance.ClassChange(Session.Character.CharacterId, Convert.ToByte(type));
                     }
                     else
                     {
@@ -92,13 +92,13 @@ namespace OpenNos.GameObject
                         {
                             if (Session.Character.Gold >= 1000 * type)
                             {
-                                ClientLinkManager.Instance.MapOut(Session.Character.CharacterId);
+                                ServerManager.Instance.MapOut(Session.Character.CharacterId);
                                 Session.Character.Gold -= 1000 * type;
                                 Session.Client.SendPacket(Session.Character.GenerateGold());
                                 Session.Character.MapY = tp.MapY;
                                 Session.Character.MapX = tp.MapX;
                                 Session.Character.MapId = tp.MapId;
-                                ClientLinkManager.Instance.ChangeMap(Session.Character.CharacterId);
+                                ServerManager.Instance.ChangeMap(Session.Character.CharacterId);
                             }
                             else
                                 Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_MONEY"), 0));
@@ -114,13 +114,13 @@ namespace OpenNos.GameObject
                         {
                             if (Session.Character.Gold >= 5000 * type)
                             {
-                                ClientLinkManager.Instance.MapOut(Session.Character.CharacterId);
+                                ServerManager.Instance.MapOut(Session.Character.CharacterId);
                                 Session.Character.Gold -= 5000 * type;
                                 Session.Client.SendPacket(Session.Character.GenerateGold());
                                 Session.Character.MapY = tp.MapY;
                                 Session.Character.MapX = tp.MapX;
                                 Session.Character.MapId = tp.MapId;
-                                ClientLinkManager.Instance.ChangeMap(Session.Character.CharacterId);
+                                ServerManager.Instance.ChangeMap(Session.Character.CharacterId);
                             }
                             else
                             {

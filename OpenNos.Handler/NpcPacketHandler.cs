@@ -68,7 +68,7 @@ namespace OpenNos.Handler
                 if (amount > item.Amount)
                     amount = item.Amount;
 
-                if (item.Price * amount + ClientLinkManager.Instance.GetProperty<long>(shop.Value.OwnerId, "Gold") > 1000000000)
+                if (item.Price * amount + ServerManager.Instance.GetProperty<long>(shop.Value.OwnerId, "Gold") > 1000000000)
                 {
                     Session.Client.SendPacket(Session.Character.GenerateShopMemo(3,
                         Language.Instance.GetMessageFromKey("MAX_GOLD")));
@@ -93,7 +93,7 @@ namespace OpenNos.Handler
                         inv.ItemInstance.Amount, inv.Type, inv.Slot, inv.ItemInstance.Rare, inv.ItemInstance.Design, inv.ItemInstance.Upgrade));
                     Session.Character.Gold -= item.Price * amount;
                     Session.Client.SendPacket(Session.Character.GenerateGold());
-                    ClientLinkManager.Instance.BuyValidate(Session, shop, slot, amount);
+                    ServerManager.Instance.BuyValidate(Session, shop, slot, amount);
                     KeyValuePair<long, MapShop> shop2 = Session.CurrentMap.UserShops.FirstOrDefault(s => s.Value.OwnerId.Equals(owner));
                     LoadShopItem(owner, shop2);
                 }
