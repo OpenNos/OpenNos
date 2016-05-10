@@ -38,8 +38,9 @@ namespace OpenNos.GameObject
 
         #region Instantiation
 
-        public NetworkManager(string ipAddress, int port, Type packetHandler, Type fallbackEncryptor)
+        public NetworkManager(string ipAddress, int port, Type packetHandler, Type fallbackEncryptor, bool isWorldServer)
         {
+            IsWorldServer = isWorldServer;
             _packetHandler = packetHandler;
             _encryptor = (EncryptorT)Activator.CreateInstance(typeof(EncryptorT));
 
@@ -55,6 +56,7 @@ namespace OpenNos.GameObject
             server.Start(); //Start the server
 
             Logger.Log.Info(Language.Instance.GetMessageFromKey("STARTED"));
+
         }
 
         #endregion
@@ -80,6 +82,8 @@ namespace OpenNos.GameObject
                 }
             }
         }
+
+        public bool IsWorldServer { get; set; }
 
         #endregion
 
@@ -125,15 +129,19 @@ namespace OpenNos.GameObject
 
             ClientSession session = new ClientSession(customClient);
             session.Initialize(_encryptor, _packetHandler);
-            ServerManager.Instance.RegisterSession(session);
-            if (!_sessions.TryAdd(customClient.ClientId, session))
+
+            if(IsWorldServer)
             {
-                ServerManager.Instance.UnregisterSession(session);
-                Logger.Log.WarnFormat(Language.Instance.GetMessageFromKey("FORCED_DISCONNECT"), customClient.ClientId);
-                customClient.Disconnect();
-                _sessions.TryRemove(customClient.ClientId, out session);
-                return;
-            };
+                ServerManager.Instance.RegisterSession(session);
+                if (!_sessions.TryAdd(customClient.ClientId, session))
+                {
+                    ServerManager.Instance.UnregisterSession(session);
+                    Logger.Log.WarnFormat(Language.Instance.GetMessageFromKey("FORCED_DISCONNECT"), customClient.ClientId);
+                    customClient.Disconnect();
+                    _sessions.TryRemove(customClient.ClientId, out session);
+                    return;
+                };
+            }
         }
 
         private void Server_ClientDisconnected(object sender, ServerClientEventArgs e)
@@ -144,24 +152,29 @@ namespace OpenNos.GameObject
             //check if session hasnt been already removed
             if (session != null)
             {
-                ServerManager.Instance.UnregisterSession(session);
-                if (session.Character != null)
+
+                if(IsWorldServer)
                 {
-                    if (ServerManager.Instance.Groups.FirstOrDefault(s => s.IsMemberOfGroup(session.Character.CharacterId)) != null)
+                    ServerManager.Instance.UnregisterSession(session);
+                    if (session.Character != null)
                     {
-                        ServerManager.Instance.GroupLeave(session);
+                        if (ServerManager.Instance.Groups.FirstOrDefault(s => s.IsMemberOfGroup(session.Character.CharacterId)) != null)
+                        {
+                            ServerManager.Instance.GroupLeave(session);
+                        }
+                        session.Character.Save();
+
+                        //only remove the character from map if the character has been set
+                        session.CurrentMap.Broadcast(session, session.Character.GenerateOut(), ReceiverType.AllExceptMe);
                     }
-                    session.Character.Save();
 
-                    //only remove the character from map if the character has been set
-                    session.CurrentMap.Broadcast(session, session.Character.GenerateOut(), ReceiverType.AllExceptMe);
+                    if (session.HealthTask != null)
+                    {
+                        session.healthStop = true;
+                        session.HealthTask.Dispose();
+                    }
                 }
 
-                if (session.HealthTask != null)
-                {
-                    session.healthStop = true;
-                    session.HealthTask.Dispose();
-                }
                 session.Destroy();
                 e.Client.Disconnect();
                 Logger.Log.Info(Language.Instance.GetMessageFromKey("DISCONNECT") + e.Client.ClientId);

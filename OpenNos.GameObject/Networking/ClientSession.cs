@@ -38,7 +38,6 @@ namespace OpenNos.GameObject
         private IDictionary<Packet, Tuple<Action<object, string>, object>> _handlerMethods;
         private SequentialItemProcessor<byte[]> _queue;
         private IList<String> _waitForPacketList = new List<String>();
-        IDisposable _disposable;
 
         //Packetwait Packets
         private int? _waitForPacketsAmount;
@@ -229,10 +228,6 @@ namespace OpenNos.GameObject
             }
         }
 
-        public void Dispose()
-        {
-            _disposable?.Dispose();
-        }
 
         public void Initialize(EncryptionBase encryptor, Type packetHandler)
         {

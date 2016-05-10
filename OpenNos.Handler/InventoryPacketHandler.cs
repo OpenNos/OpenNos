@@ -163,7 +163,7 @@ namespace OpenNos.Handler
                     break;
             }
 
-            if (inventory != null)
+            if (inventory != null && inventory.Item != null)
             {
                 Session.Client.SendPacket(
                     inventory.Item.EquipmentSlot != (byte)EquipmentType.Sp
