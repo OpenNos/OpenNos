@@ -16,7 +16,7 @@ namespace OpenNos.GameObject
 
         public BroadcastableBase()
         {
-            Sessions = new List<ClientSession>();
+            Sessions = new Dictionary<ClientSession, IDisposable>();
             _subject = new Subject<SessionPacket>();
         }
 
@@ -24,7 +24,7 @@ namespace OpenNos.GameObject
 
         #region Properties
 
-        public List<ClientSession> Sessions { get; set; }
+        public IDictionary<ClientSession, IDisposable> Sessions { get; set; }
 
         #endregion
 
@@ -44,14 +44,19 @@ namespace OpenNos.GameObject
 
         public virtual void RegisterSession(ClientSession session)
         {
-            _subject.Subscribe(s => session.CallbackSessionRequest(s));
-            Sessions.Add(session);
+            if(!Sessions.ContainsKey(session))
+            {
+                Sessions.Add(session, _subject.Subscribe(s => session.CallbackSessionRequest(s)));
+            }
         }
 
         public virtual void UnregisterSession(ClientSession session)
         {
-            session.Dispose();
-            Sessions.Remove(session);
+            if(Sessions.ContainsKey(session))
+            {
+                Sessions[session].Dispose();
+                Sessions.Remove(session);
+            }
         }
 
         #endregion

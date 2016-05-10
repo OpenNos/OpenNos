@@ -61,7 +61,7 @@ namespace OpenNos.GameObject
 
         public void JoinGroup(long characterId)
         {
-            JoinGroup(ServerManager.Instance.Sessions.SingleOrDefault(s => s.Character.CharacterId.Equals(characterId)));
+            JoinGroup(ServerManager.Instance.Sessions.Keys.SingleOrDefault(s => s.Character.CharacterId.Equals(characterId)));
         }
 
         public void JoinGroup(ClientSession session)

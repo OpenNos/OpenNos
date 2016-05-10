@@ -108,7 +108,7 @@ namespace OpenNos.World
 
         private static bool ExitHandler(CtrlType sig)
         {
-            ServerManager.Instance.Sessions.ForEach(s => s.Character?.Save());
+            ServerManager.Instance.SaveAll();
             return false;
         }
 

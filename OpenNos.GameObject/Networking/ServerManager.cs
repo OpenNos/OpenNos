@@ -68,7 +68,7 @@ namespace OpenNos.GameObject
         //PacketHandler -> with Callback?
         public void AskRevive(long Target)
         {
-            ClientSession Session = Instance.Sessions.FirstOrDefault(s => s.Character != null && s.Character.CharacterId == Target);
+            ClientSession Session = Sessions.Keys.FirstOrDefault(s => s.Character != null && s.Character.CharacterId == Target);
             if (Session != null && Session.Character != null)
             {
                 Session.Client.SendPacket(Session.Character.GenerateDialog($"#revival^0 #revival^1 {(Session.Character.Level > 20 ? Language.Instance.GetMessageFromKey("ASK_REVIVE") : Language.Instance.GetMessageFromKey("ASK_REVIVE_FREE"))}"));
@@ -103,7 +103,7 @@ namespace OpenNos.GameObject
             if (itemshop.Amount <= 0)
                 clientSession.CurrentMap.UserShops[shop.Key].Items.Remove(itemshop);
 
-            ClientSession shopOwnerSession = Sessions.FirstOrDefault(s => s.Character.CharacterId.Equals(shop.Value.OwnerId));
+            ClientSession shopOwnerSession = Sessions.Keys.FirstOrDefault(s => s.Character.CharacterId.Equals(shop.Value.OwnerId));
             if (shopOwnerSession == null) return;
 
             shopOwnerSession.Character.Gold += itemshop.Price * amount;
@@ -141,7 +141,7 @@ namespace OpenNos.GameObject
         //Both partly
         public void ChangeMap(long id)
         {
-            ClientSession session = Sessions.FirstOrDefault(s => s.Character != null && s.Character.CharacterId == id);
+            ClientSession session = Sessions.Keys.FirstOrDefault(s => s.Character != null && s.Character.CharacterId == id);
             if (session != null)
             {
                 session.CurrentMap.UnregisterSession(session);
@@ -172,7 +172,7 @@ namespace OpenNos.GameObject
                 session.Client.SendPacket(session.Character.GenerateCond());
                 Broadcast(session, session.Character.GeneratePairy(), ReceiverType.All);
                 session.Client.SendPacket($"rsfi 1 1 0 9 0 9"); // Act completion
-                ServerManager.Instance.Sessions.Where(s => s.Character != null && s.Character.MapId.Equals(session.Character.MapId) && s.Character.Name != session.Character.Name && !session.Character.InvisibleGm).ToList().ForEach(s => RequireBroadcastFromUser(session, s.Character.CharacterId, "GenerateIn"));
+                ServerManager.Instance.Sessions.Keys.Where(s => s.Character != null && s.Character.MapId.Equals(session.Character.MapId) && s.Character.Name != session.Character.Name && !session.Character.InvisibleGm).ToList().ForEach(s => RequireBroadcastFromUser(session, s.Character.CharacterId, "GenerateIn"));
                 if (session.Character.InvisibleGm == false)
                     Broadcast(session, session.Character.GenerateIn(), ReceiverType.AllExceptMe);
                 if (session.CurrentMap.IsDancing == 2 && session.Character.IsDancing == 0)
@@ -215,7 +215,7 @@ namespace OpenNos.GameObject
                 {
                     foreach (ClientSession groupSession in g.Characters)
                     {
-                        ClientSession chara = Sessions.FirstOrDefault(s => s.Character != null && s.Character.CharacterId == groupSession.Character.CharacterId && s.CurrentMap.MapId == groupSession.CurrentMap.MapId);
+                        ClientSession chara = Sessions.Keys.FirstOrDefault(s => s.Character != null && s.Character.CharacterId == groupSession.Character.CharacterId && s.CurrentMap.MapId == groupSession.CurrentMap.MapId);
                         if (chara != null)
                         {
                             groupSession.Client.SendPacket($"pidx 1 1.{chara.Character.CharacterId}");
@@ -232,7 +232,7 @@ namespace OpenNos.GameObject
         //PacketHandler
         public void ExchangeValidate(ClientSession c1Session, long charId)
         {
-            ClientSession c2Session = Sessions.FirstOrDefault(s => s.Character.CharacterId.Equals(charId));
+            ClientSession c2Session = Sessions.Keys.FirstOrDefault(s => s.Character.CharacterId.Equals(charId));
             {
                 if (c2Session == null) return;
 
@@ -274,7 +274,7 @@ namespace OpenNos.GameObject
 
         public T GetProperty<T>(string charName, string property)
         {
-            ClientSession session = Sessions.FirstOrDefault(s => s.Character != null && s.Character.Name.Equals(charName));
+            ClientSession session = Sessions.Keys.FirstOrDefault(s => s.Character != null && s.Character.Name.Equals(charName));
             if (session == null)
                 return default(T);
             return (T)session?.Character.GetType().GetProperties().Single(pi => pi.Name == property).GetValue(session.Character, null);
@@ -282,7 +282,7 @@ namespace OpenNos.GameObject
 
         public T GetProperty<T>(long charId, string property)
         {
-            ClientSession session = Sessions.FirstOrDefault(s => s.Character != null && s.Character.CharacterId.Equals(charId));
+            ClientSession session = Sessions.Keys.FirstOrDefault(s => s.Character != null && s.Character.CharacterId.Equals(charId));
             if (session == null)
                 return default(T);
             return (T)session?.Character.GetType().GetProperties().Single(pi => pi.Name == property).GetValue(session.Character, null);
@@ -290,7 +290,7 @@ namespace OpenNos.GameObject
 
         public T GetUserMethod<T>(long characterId, string methodName)
         {
-            ClientSession session = Sessions.FirstOrDefault(s => s.Character != null && s.Character.CharacterId.Equals(characterId));
+            ClientSession session = Sessions.Keys.FirstOrDefault(s => s.Character != null && s.Character.CharacterId.Equals(characterId));
             if (session == null) return default(T);
             MethodInfo method = session.Character.GetType().GetMethod(methodName);
 
@@ -318,7 +318,7 @@ namespace OpenNos.GameObject
                             i++;
                             str += $" 1|{groupSessionForId.Character.CharacterId}|{i}|{groupSessionForId.Character.Level}|{groupSessionForId.Character.Name}|11|{groupSessionForId.Character.Gender}|{groupSessionForId.Character.Class}|{(groupSessionForId.Character.UseSp ? groupSessionForId.Character.Morph : 0)}";
                         }
-                        foreach (ClientSession sess in Sessions.Where(s => s != null && s.Character != null && s.Character.CharacterId == groupSession.Character.CharacterId))
+                        foreach (ClientSession sess in Sessions.Keys.Where(s => s != null && s.Character != null && s.Character.CharacterId == groupSession.Character.CharacterId))
                         {
                             sess.Client.SendPacket(str);
                             sess.Client.SendPacket(sess.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("LEAVE_GROUP"), session.Character.Name), 0));
@@ -332,7 +332,7 @@ namespace OpenNos.GameObject
                 {
                     foreach (ClientSession targetSession in grp.Characters)
                     {
-                        foreach (ClientSession sess in Sessions.Where(s => s != null && s.Character != null && s.Character.CharacterId == targetSession.Character.CharacterId))
+                        foreach (ClientSession sess in Sessions.Keys.Where(s => s != null && s.Character != null && s.Character.CharacterId == targetSession.Character.CharacterId))
                         {
                             sess.Client.SendPacket("pinit 0");
                             sess.Client.SendPacket(sess.Character.GenerateMsg(Language.Instance.GetMessageFromKey("GROUP_CLOSED"), 0));
@@ -349,7 +349,7 @@ namespace OpenNos.GameObject
         //Server
         public bool Kick(string characterName)
         {
-            ClientSession session = Sessions.FirstOrDefault(s => s.Character != null && s.Character.Name.Equals(characterName));
+            ClientSession session = Sessions.Keys.FirstOrDefault(s => s.Character != null && s.Character.Name.Equals(characterName));
             if (session == null) return false;
 
             session.Client.Disconnect();
@@ -359,7 +359,7 @@ namespace OpenNos.GameObject
         //Map
         public void MapOut(long id)
         {
-            foreach (ClientSession session in Sessions.Where(s => s.Character != null && s.Character.CharacterId == id))
+            foreach (ClientSession session in Sessions.Keys.Where(s => s.Character != null && s.Character.CharacterId == id))
             {
                 session.Client.SendPacket(session.Character.GenerateMapOut());
                 session.CurrentMap.Broadcast(session, session.Character.GenerateOut(), ReceiverType.AllExceptMe);
@@ -368,7 +368,7 @@ namespace OpenNos.GameObject
 
         public void RequireBroadcastFromUser(ClientSession client, long characterId, string methodName)
         {
-            ClientSession session = Sessions.FirstOrDefault(s => s.Character != null && s.Character.CharacterId.Equals(characterId));
+            ClientSession session = Sessions.Keys.FirstOrDefault(s => s.Character != null && s.Character.CharacterId.Equals(characterId));
             if (session == null) return;
 
             MethodInfo method = session.Character.GetType().GetMethod(methodName);
@@ -379,7 +379,7 @@ namespace OpenNos.GameObject
         //Map
         public void ReviveFirstPosition(long characterId)
         {
-            ClientSession Session = Sessions.FirstOrDefault(s => s.Character != null && s.Character.CharacterId == characterId && s.Character.Hp <= 0);
+            ClientSession Session = Sessions.Keys.FirstOrDefault(s => s.Character != null && s.Character.CharacterId == characterId && s.Character.Hp <= 0);
             if (Session != null)
             {
                 MapOut(Session.Character.CharacterId);
@@ -397,7 +397,7 @@ namespace OpenNos.GameObject
 
         public void SetProperty(long charId, string property, object value)
         {
-            ClientSession session = Sessions.FirstOrDefault(s => s.Character != null && s.Character.CharacterId.Equals(charId));
+            ClientSession session = Sessions.Keys.FirstOrDefault(s => s.Character != null && s.Character.CharacterId.Equals(charId));
             if (session == null) return;
 
             PropertyInfo propertyinfo = session.Character.GetType().GetProperties().Single(pi => pi.Name == property);
@@ -447,9 +447,15 @@ namespace OpenNos.GameObject
         {
             while (true)
             {
-                Sessions.ForEach(s => s.Character?.Save());
+                SaveAll();
                 await Task.Delay(60000 * 4);
             }
+        }
+
+        public void SaveAll()
+        {
+            List<ClientSession> sessions = Sessions.Keys.Where(c => c.Client.CommunicationState == Core.Networking.Communication.Scs.Communication.CommunicationStates.Connected).ToList();
+            sessions.ForEach(s => s.Character?.Save());
         }
 
         //Map ??
@@ -458,7 +464,7 @@ namespace OpenNos.GameObject
             Task TaskMap = null;
             while (true)
             {
-                foreach (var GroupedSession in Sessions.Where(s => s.Character != null).GroupBy(s => s.Character.MapId))
+                foreach (var GroupedSession in Sessions.Keys.Where(s => s.Character != null).GroupBy(s => s.Character.MapId))
                 {
                     foreach (ClientSession Session in GroupedSession)
                     {
