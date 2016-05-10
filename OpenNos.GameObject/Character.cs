@@ -648,7 +648,7 @@ namespace OpenNos.GameObject
                 for (int j = 0; j < 3; j++)
                 {
                     QuicklistEntry qi = QuicklistEntries.FirstOrDefault(n => n.Q1 == j && n.Q2 == i && n.Morph == (UseSp ? Morph : 0));
-                    pktQs[j] += string.Format(" {0}.{1}.{2}", qi?.Type, qi?.Slot, qi != null ? qi.Pos : 0);
+                    pktQs[j] += string.Format(" {0}.{1}.{2}", qi?.Type != null ? qi?.Type : 7 , qi?.Slot != null ? qi?.Slot : 7, qi != null ? qi.Pos.ToString() : "-1");
                 }
             }
 
