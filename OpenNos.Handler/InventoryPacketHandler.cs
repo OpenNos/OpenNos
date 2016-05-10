@@ -931,8 +931,7 @@ namespace OpenNos.Handler
                     double timeSpanSinceLastSpUsage = currentRunningSeconds - Session.Character.LastSp;
                     if (timeSpanSinceLastSpUsage >= Session.Character.SpCooldown)
                     {
-                        if (Session.Character.ThreadCharChange?.IsAlive == true)
-                            Session.Character.ThreadCharChange.Abort();
+                        Session.Character.InterruptCharChange();
                         Session.Character.ThreadCharChange = new Thread(ChangeSP);
                         Session.Character.ThreadCharChange.Start();
                     }

@@ -60,6 +60,13 @@ namespace OpenNos.GameObject
             _session = Session;
         }
 
+
+        public void InterruptCharChange()
+        {
+            if (ThreadCharChange != null && ThreadCharChange.IsAlive)
+                ThreadCharChange.Suspend();
+        }
+
         #endregion
 
         #region Properties

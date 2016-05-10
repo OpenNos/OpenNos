@@ -175,8 +175,7 @@ namespace OpenNos.Handler
         [Packet("u_s")]
         public void UseSkill(string packet)
         {
-            if (Session.Character.ThreadCharChange != null && Session.Character.ThreadCharChange.IsAlive)
-                Session.Character.ThreadCharChange.Abort();
+            Session.Character.InterruptCharChange();
 
             if (Session.Character.CanFight)
             {
@@ -195,8 +194,7 @@ namespace OpenNos.Handler
         [Packet("u_as")]
         public void UseZonesSkill(string packet)
         {
-            if (Session.Character.ThreadCharChange != null && Session.Character.ThreadCharChange.IsAlive)
-                Session.Character.ThreadCharChange.Abort();
+            Session.Character.InterruptCharChange();
             if (Session.Character.CanFight)
             {
                 string[] packetsplit = packet.Split(' ');
