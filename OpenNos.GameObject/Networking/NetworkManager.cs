@@ -134,11 +134,11 @@ namespace OpenNos.GameObject
             {
                 ServerManager.Instance.RegisterSession(session);
                 if (!_sessions.TryAdd(customClient.ClientId, session))
-                {
-                    ServerManager.Instance.UnregisterSession(session);
+                {                 
                     Logger.Log.WarnFormat(Language.Instance.GetMessageFromKey("FORCED_DISCONNECT"), customClient.ClientId);
                     customClient.Disconnect();
                     _sessions.TryRemove(customClient.ClientId, out session);
+                    ServerManager.Instance.UnregisterSession(session);
                     return;
                 };
             }
@@ -155,7 +155,7 @@ namespace OpenNos.GameObject
 
                 if(IsWorldServer)
                 {
-                    ServerManager.Instance.UnregisterSession(session);
+                   
                     if (session.Character != null)
                     {
                         if (ServerManager.Instance.Groups.FirstOrDefault(s => s.IsMemberOfGroup(session.Character.CharacterId)) != null)

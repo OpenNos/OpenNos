@@ -226,6 +226,8 @@ namespace OpenNos.GameObject
             {
                 ServiceFactory.Instance.CommunicationService.DisconnectAccount(Account.Name);
             }
+
+            ServerManager.Instance.UnregisterSession(session);
         }
 
 
