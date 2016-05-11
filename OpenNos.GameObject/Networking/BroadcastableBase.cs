@@ -85,7 +85,7 @@ namespace OpenNos.GameObject
         {
             if (!Sessions.ContainsKey(session))
             {
-                Sessions.Add(session, _subject.Subscribe(s => session.CallbackSessionRequest(s)));
+                Sessions.Add(session, null);
             }
         }
 
@@ -93,7 +93,7 @@ namespace OpenNos.GameObject
         {
             if (Sessions.ContainsKey(session))
             {
-                Sessions[session].Dispose();
+                //Sessions[session].Dispose();
                 Sessions.Remove(session);
             }
         }

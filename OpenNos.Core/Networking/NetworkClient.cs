@@ -12,7 +12,6 @@ namespace OpenNos.Core
         #region Members
 
         private EncryptionBase _encryptor;
-        private SequentialItemProcessor<string> _queue;
 
         #endregion
 
@@ -20,8 +19,7 @@ namespace OpenNos.Core
 
         public NetworkClient(ICommunicationChannel communicationChannel) : base(communicationChannel)
         {
-            _queue = new SequentialItemProcessor<string>(Send);
-            _queue.Start();
+
         }
 
         #endregion
@@ -43,7 +41,7 @@ namespace OpenNos.Core
         {
             try
             {
-                _queue.EnqueueMessage(packet);
+                Send(packet);
                 return true;
             }
             catch
