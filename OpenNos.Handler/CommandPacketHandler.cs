@@ -494,13 +494,13 @@ namespace OpenNos.Handler
             if (Session.CurrentMap.IsDancing == 2)
             {
                 Session.Character.Dance();
-                ServerManager.Instance.Sessions.Keys.Where(s => s.Character.MapId.Equals(Session.Character.MapId) && s.Character.Name != Session.Character.Name).ToList().ForEach(s => ServerManager.Instance.RequireBroadcastFromUser(Session, s.Character.CharacterId, "Dance"));
+                ServerManager.Instance.Sessions.Keys.Where(s => s.Character != null && s.Character.MapId.Equals(Session.Character.MapId) && s.Character.Name != Session.Character.Name).ToList().ForEach(s => ServerManager.Instance.RequireBroadcastFromUser(Session, s.Character.CharacterId, "Dance"));
                 Session.CurrentMap.Broadcast("dance 2");
             }
             else
             {
                 Session.Character.Dance();
-                ServerManager.Instance.Sessions.Keys.Where(s => s.Character.MapId.Equals(Session.Character.MapId) && s.Character.Name != Session.Character.Name).ToList().ForEach(s => ServerManager.Instance.RequireBroadcastFromUser(Session, s.Character.CharacterId, "GenerateIn"));
+                ServerManager.Instance.Sessions.Keys.Where(s => s.Character != null && s.Character.MapId.Equals(Session.Character.MapId) && s.Character.Name != Session.Character.Name).ToList().ForEach(s => ServerManager.Instance.RequireBroadcastFromUser(Session, s.Character.CharacterId, "GenerateIn"));
                 Session.CurrentMap.Broadcast("dance");
             }
         }
