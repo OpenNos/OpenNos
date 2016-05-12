@@ -505,7 +505,7 @@ namespace OpenNos.Handler
                 for (int i = Session.Character.Skills.Count - 1; i >= 0; i--)
                 {
                     Skill skinfo = ServerManager.GetSkill(Session.Character.Skills[i].SkillVNum);
-                    if (skillinfo.UpgradeSkill == skinfo.UpgradeSkill)
+                    if (skillinfo.SkillVNum == skinfo.UpgradeSkill)
                         Session.Character.Skills.Remove(Session.Character.Skills[i]);
                 }
 
