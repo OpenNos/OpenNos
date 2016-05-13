@@ -1291,23 +1291,32 @@ namespace OpenNos.GameObject
             }
 
             // Character's Skills
-            foreach (CharacterSkillDTO skill in DAOFactory.CharacterSkillDAO.LoadByCharacterId(CharacterId))
-                if (Skills.FirstOrDefault(s => s.SkillVNum == skill.SkillVNum) == null)
-                    DAOFactory.CharacterSkillDAO.Delete(CharacterId, skill.SkillVNum);
+            if(Skills != null)
+            {
+                foreach (CharacterSkillDTO skill in DAOFactory.CharacterSkillDAO.LoadByCharacterId(CharacterId))
+                    if (Skills.FirstOrDefault(s => s.SkillVNum == skill.SkillVNum) == null)
+                        DAOFactory.CharacterSkillDAO.Delete(CharacterId, skill.SkillVNum);
+            }
 
             // Character's QuicklistEntries
-            foreach (QuicklistEntryDTO quicklists in DAOFactory.QuicklistEntryDAO.Load(CharacterId))
-                if (QuicklistEntries.FirstOrDefault(s => s.EntryId == quicklists.EntryId) == null)
-                    DAOFactory.QuicklistEntryDAO.Delete(CharacterId, quicklists.EntryId);
+            if (QuicklistEntries != null)
+            {
+                foreach (QuicklistEntryDTO quicklists in DAOFactory.QuicklistEntryDAO.Load(CharacterId))
+                    if (QuicklistEntries.FirstOrDefault(s => s.EntryId == quicklists.EntryId) == null)
+                        DAOFactory.QuicklistEntryDAO.Delete(CharacterId, quicklists.EntryId);
+            }
 
             // ... then save the new
             InventoryList.Save();
             EquipmentList.Save();
 
-            for (int i = Skills.Count() - 1; i >= 0; i--)
-                Skills.ElementAt(i).Save();
-            for (int i = QuicklistEntries.Count() - 1; i >= 0; i--)
-                QuicklistEntries.ElementAt(i).Save();
+            if(Skills != null)
+                for (int i = Skills.Count() - 1; i >= 0; i--)
+                    Skills.ElementAt(i).Save();
+
+            if(QuicklistEntries != null)
+                for (int i = QuicklistEntries.Count() - 1; i >= 0; i--)
+                    QuicklistEntries.ElementAt(i).Save();
         }
 
         public double SPXPLoad()

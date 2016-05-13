@@ -809,83 +809,87 @@ namespace OpenNos.Handler
         {
             try
             {
-                string[] packetsplit = packet.Split(' ');
-                CharacterDTO characterDTO = DAOFactory.CharacterDAO.LoadBySlot(Session.Account.AccountId, Convert.ToByte(packetsplit[2]));
-                if (characterDTO != null)
-                    Session.Character = new Character(Session)
-                    {
-                        AccountId = characterDTO.AccountId,
-                        CharacterId = characterDTO.CharacterId,
-                        Class = characterDTO.Class,
-                        Dignite = characterDTO.Dignite,
-                        Gender = characterDTO.Gender,
-                        Gold = characterDTO.Gold,
-                        HairColor = characterDTO.HairColor,
-                        HairStyle = characterDTO.HairStyle,
-                        Hp = characterDTO.Hp,
-                        JobLevel = characterDTO.JobLevel,
-                        JobLevelXp = characterDTO.JobLevelXp,
-                        Level = characterDTO.Level,
-                        LevelXp = characterDTO.LevelXp,
-                        MapId = characterDTO.MapId,
-                        MapX = characterDTO.MapX,
-                        MapY = characterDTO.MapY,
-                        Mp = characterDTO.Mp,
-                        State = characterDTO.State,
-                        Faction = characterDTO.Faction,
-                        Name = characterDTO.Name,
-                        Reput = characterDTO.Reput,
-                        Slot = characterDTO.Slot,
-                        Authority = Session.Account.Authority,
-                        SpAdditionPoint = characterDTO.SpAdditionPoint,
-                        SpPoint = characterDTO.SpPoint,
-                        LastPulse = 0,
-                        LastPortal = 0,
-                        LastSp = 0,
-                        Invisible = false,
-                        InvisibleGm = false,
-                        ArenaWinner = characterDTO.ArenaWinner,
-                        Morph = 0,
-                        MorphUpgrade = 0,
-                        MorphUpgrade2 = 0,
-                        Direction = 0,
-                        IsSitting = false,
-                        BackPack = characterDTO.Backpack,
-                        Speed = ServersData.SpeedData[characterDTO.Class],
-                        Compliment = characterDTO.Compliment,
-                        Backpack = characterDTO.Backpack,
-                        BuffBlocked = characterDTO.BuffBlocked,
-                        EmoticonsBlocked = characterDTO.EmoticonsBlocked,
-                        WhisperBlocked = characterDTO.WhisperBlocked,
-                        FamilyRequestBlocked = characterDTO.FamilyRequestBlocked,
-                        ExchangeBlocked = characterDTO.ExchangeBlocked,
-                        FriendRequestBlocked = characterDTO.FriendRequestBlocked,
-                        GroupRequestBlocked = characterDTO.GroupRequestBlocked,
-                        HeroChatBlocked = characterDTO.HeroChatBlocked,
-                        HpBlocked = characterDTO.HpBlocked,
-                        MinilandInviteBlocked = characterDTO.MinilandInviteBlocked,
-                        QuickGetUp = characterDTO.QuickGetUp,
-                        MouseAimLock = characterDTO.MouseAimLock,
-                        LastLogin = DateTime.Now,
-                        SnackHp = 0,
-                        SnackMp = 0,
-                        SnackAmount = 0,
-                        MaxSnack = 0,
-                        HeroLevel = characterDTO.HeroLevel,
-                        HeroXp = characterDTO.HeroXp
-                    };
+                if(Session != null && Session.Account != null && Session.Character == null)
+                {
+                    string[] packetsplit = packet.Split(' ');
+                    CharacterDTO characterDTO = DAOFactory.CharacterDAO.LoadBySlot(Session.Account.AccountId, Convert.ToByte(packetsplit[2]));
+                    if (characterDTO != null)
+                        Session.Character = new Character(Session)
+                        {
+                            AccountId = characterDTO.AccountId,
+                            CharacterId = characterDTO.CharacterId,
+                            Class = characterDTO.Class,
+                            Dignite = characterDTO.Dignite,
+                            Gender = characterDTO.Gender,
+                            Gold = characterDTO.Gold,
+                            HairColor = characterDTO.HairColor,
+                            HairStyle = characterDTO.HairStyle,
+                            Hp = characterDTO.Hp,
+                            JobLevel = characterDTO.JobLevel,
+                            JobLevelXp = characterDTO.JobLevelXp,
+                            Level = characterDTO.Level,
+                            LevelXp = characterDTO.LevelXp,
+                            MapId = characterDTO.MapId,
+                            MapX = characterDTO.MapX,
+                            MapY = characterDTO.MapY,
+                            Mp = characterDTO.Mp,
+                            State = characterDTO.State,
+                            Faction = characterDTO.Faction,
+                            Name = characterDTO.Name,
+                            Reput = characterDTO.Reput,
+                            Slot = characterDTO.Slot,
+                            Authority = Session.Account.Authority,
+                            SpAdditionPoint = characterDTO.SpAdditionPoint,
+                            SpPoint = characterDTO.SpPoint,
+                            LastPulse = 0,
+                            LastPortal = 0,
+                            LastSp = 0,
+                            Invisible = false,
+                            InvisibleGm = false,
+                            ArenaWinner = characterDTO.ArenaWinner,
+                            Morph = 0,
+                            MorphUpgrade = 0,
+                            MorphUpgrade2 = 0,
+                            Direction = 0,
+                            IsSitting = false,
+                            BackPack = characterDTO.Backpack,
+                            Speed = ServersData.SpeedData[characterDTO.Class],
+                            Compliment = characterDTO.Compliment,
+                            Backpack = characterDTO.Backpack,
+                            BuffBlocked = characterDTO.BuffBlocked,
+                            EmoticonsBlocked = characterDTO.EmoticonsBlocked,
+                            WhisperBlocked = characterDTO.WhisperBlocked,
+                            FamilyRequestBlocked = characterDTO.FamilyRequestBlocked,
+                            ExchangeBlocked = characterDTO.ExchangeBlocked,
+                            FriendRequestBlocked = characterDTO.FriendRequestBlocked,
+                            GroupRequestBlocked = characterDTO.GroupRequestBlocked,
+                            HeroChatBlocked = characterDTO.HeroChatBlocked,
+                            HpBlocked = characterDTO.HpBlocked,
+                            MinilandInviteBlocked = characterDTO.MinilandInviteBlocked,
+                            QuickGetUp = characterDTO.QuickGetUp,
+                            MouseAimLock = characterDTO.MouseAimLock,
+                            LastLogin = DateTime.Now,
+                            SnackHp = 0,
+                            SnackMp = 0,
+                            SnackAmount = 0,
+                            MaxSnack = 0,
+                            HeroLevel = characterDTO.HeroLevel,
+                            HeroXp = characterDTO.HeroXp
+                        };
 
-                Session.Character.Update();
-                Session.Character.LoadInventory();
-                Session.Character.LoadQuicklists();
-                DAOFactory.AccountDAO.WriteGeneralLog(Session.Character.AccountId, Session.Client.RemoteEndPoint.ToString(), Session.Character.CharacterId, "Connection", "World");
-                Session.Client.SendPacket("OK");
-                Session.HealthTask = new Task(() => HealthTask());
+                    Session.Character.Update();
+                    Session.Character.LoadInventory();
+                    Session.Character.LoadQuicklists();
+                    DAOFactory.AccountDAO.WriteGeneralLog(Session.Character.AccountId, Session.Client.RemoteEndPoint.ToString(), Session.Character.CharacterId, "Connection", "World");
+                    Session.Client.SendPacket("OK");
+                    Session.HealthTask = new Task(() => HealthTask());
 
-                Session.HealthTask.Start();
+                    Session.HealthTask.Start();
 
-                // Inform everyone about connected character
-                ServiceFactory.Instance.CommunicationService.ConnectCharacter(Session.Character.Name, Session.Account.Name);
+                    // Inform everyone about connected character
+                    ServiceFactory.Instance.CommunicationService.ConnectCharacter(Session.Character.Name, Session.Account.Name);
+                }
+                
             }
             catch (Exception ex)
             {
