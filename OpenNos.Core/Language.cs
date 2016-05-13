@@ -33,13 +33,10 @@ namespace OpenNos.Core
 
         private Language()
         {
-            CultureInfo currentCulture = Thread.CurrentThread.CurrentCulture;
             CultureInfo newCultureInfo = new System.Globalization.CultureInfo(System.Configuration.ConfigurationManager.AppSettings["language"]);
             Thread.CurrentThread.CurrentCulture = newCultureInfo;
             Thread.CurrentThread.CurrentUICulture = newCultureInfo;
             _manager = new ResourceManager(Assembly.GetEntryAssembly().GetName().Name + ".Resource.LocalizedResources", Assembly.GetEntryAssembly());
-            Thread.CurrentThread.CurrentCulture = currentCulture;
-            Thread.CurrentThread.CurrentUICulture = currentCulture;
         }
 
         #endregion

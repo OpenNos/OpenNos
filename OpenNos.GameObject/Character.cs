@@ -1272,53 +1272,60 @@ namespace OpenNos.GameObject
 
         public void Save()
         {
-            CharacterDTO tempsave = this;
-            SaveResult insertResult = DAOFactory.CharacterDAO.InsertOrUpdate(ref tempsave); // unused variable, check for success?
-
-            // First remove the old...
-
-            // Character's Inventories
-            foreach (InventoryDTO inv in DAOFactory.InventoryDAO.LoadByCharacterId(CharacterId))
+            try
             {
-                if (inv.Type == (byte)InventoryType.Equipment)
+                CharacterDTO tempsave = this;
+                SaveResult insertResult = DAOFactory.CharacterDAO.InsertOrUpdate(ref tempsave); // unused variable, check for success?
+
+                // First remove the old...
+
+                // Character's Inventories
+                foreach (InventoryDTO inv in DAOFactory.InventoryDAO.LoadByCharacterId(CharacterId))
                 {
-                    if (EquipmentList.LoadInventoryBySlotAndType(inv.Slot, inv.Type) == null)
-                        DAOFactory.InventoryDAO.DeleteFromSlotAndType(CharacterId, inv.Slot, inv.Type);
+                    if (inv.Type == (byte)InventoryType.Equipment)
+                    {
+                        if (EquipmentList.LoadInventoryBySlotAndType(inv.Slot, inv.Type) == null)
+                            DAOFactory.InventoryDAO.DeleteFromSlotAndType(CharacterId, inv.Slot, inv.Type);
+                    }
+                    else
+                    {
+                        if (InventoryList.LoadInventoryBySlotAndType(inv.Slot, inv.Type) == null)
+                            DAOFactory.InventoryDAO.DeleteFromSlotAndType(CharacterId, inv.Slot, inv.Type);
+                    }
                 }
-                else
+
+                // Character's Skills
+                if (Skills != null)
                 {
-                    if (InventoryList.LoadInventoryBySlotAndType(inv.Slot, inv.Type) == null)
-                        DAOFactory.InventoryDAO.DeleteFromSlotAndType(CharacterId, inv.Slot, inv.Type);
+                    foreach (CharacterSkillDTO skill in DAOFactory.CharacterSkillDAO.LoadByCharacterId(CharacterId))
+                        if (Skills.FirstOrDefault(s => s.SkillVNum == skill.SkillVNum) == null)
+                            DAOFactory.CharacterSkillDAO.Delete(CharacterId, skill.SkillVNum);
                 }
-            }
 
-            // Character's Skills
-            if(Skills != null)
+                // Character's QuicklistEntries
+                if (QuicklistEntries != null)
+                {
+                    foreach (QuicklistEntryDTO quicklists in DAOFactory.QuicklistEntryDAO.Load(CharacterId))
+                        if (QuicklistEntries.FirstOrDefault(s => s.EntryId == quicklists.EntryId) == null)
+                            DAOFactory.QuicklistEntryDAO.Delete(CharacterId, quicklists.EntryId);
+                }
+
+                // ... then save the new
+                InventoryList.Save();
+                EquipmentList.Save();
+
+                if (Skills != null)
+                    for (int i = Skills.Count() - 1; i >= 0; i--)
+                        Skills.ElementAt(i).Save();
+
+                if (QuicklistEntries != null)
+                    for (int i = QuicklistEntries.Count() - 1; i >= 0; i--)
+                        QuicklistEntries.ElementAt(i).Save();
+            }
+            catch(Exception e)
             {
-                foreach (CharacterSkillDTO skill in DAOFactory.CharacterSkillDAO.LoadByCharacterId(CharacterId))
-                    if (Skills.FirstOrDefault(s => s.SkillVNum == skill.SkillVNum) == null)
-                        DAOFactory.CharacterSkillDAO.Delete(CharacterId, skill.SkillVNum);
+                Logger.Log.Error(e);
             }
-
-            // Character's QuicklistEntries
-            if (QuicklistEntries != null)
-            {
-                foreach (QuicklistEntryDTO quicklists in DAOFactory.QuicklistEntryDAO.Load(CharacterId))
-                    if (QuicklistEntries.FirstOrDefault(s => s.EntryId == quicklists.EntryId) == null)
-                        DAOFactory.QuicklistEntryDAO.Delete(CharacterId, quicklists.EntryId);
-            }
-
-            // ... then save the new
-            InventoryList.Save();
-            EquipmentList.Save();
-
-            if(Skills != null)
-                for (int i = Skills.Count() - 1; i >= 0; i--)
-                    Skills.ElementAt(i).Save();
-
-            if(QuicklistEntries != null)
-                for (int i = QuicklistEntries.Count() - 1; i >= 0; i--)
-                    QuicklistEntries.ElementAt(i).Save();
         }
 
         public double SPXPLoad()
