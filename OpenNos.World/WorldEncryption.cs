@@ -218,28 +218,28 @@ namespace OpenNos.World
 
         public override byte[] Encrypt(string str)
         {
-            byte[] big5Bytes = System.Text.Encoding.Convert(System.Text.Encoding.UTF8, System.Text.Encoding.GetEncoding(950), System.Text.Encoding.UTF8.GetBytes(str));
-            int sringLength = big5Bytes.Length;
+            int EncCodepage = 1252;
+            byte[] StrBytes = System.Text.Encoding.Convert(System.Text.Encoding.UTF8, System.Text.Encoding.GetEncoding(EncCodepage), System.Text.Encoding.UTF8.GetBytes(str));
+            int BytesLength = StrBytes.Length;
 
             String encryptedString = String.Empty;
 
-            for (int i = 0; i < sringLength; i++)
+            for (int i = 0; i < BytesLength; i++)
             {
                 if (i % 0x7A == 0)
                 {
-                    if ((sringLength - i) > 0x7A)
+                    if ((BytesLength - i) > 0x7A)
                     {
                         encryptedString += Convert.ToChar(0x7A);
                     }
                     else
                     {
-                        encryptedString += Convert.ToChar(sringLength - i);
+                        encryptedString += Convert.ToChar(BytesLength - i);
                     }
                 }
 
-                encryptedString += Convert.ToChar(big5Bytes[i] ^ 0xFF);
+                encryptedString += Convert.ToChar(StrBytes[i] ^ 0xFF);
             }
-
             encryptedString += Convert.ToChar(0xFF);
 
             byte[] encryptedData = new byte[encryptedString.Length];
