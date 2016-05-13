@@ -144,14 +144,17 @@ namespace OpenNos.GameObject
 
         #region Methods
 
-        public void ClassChange(long id, byte Class)
+        public void ClassChange(long id, byte characterClass)
         {
+            if (!ServersData.SpeedData.Contains(characterClass))
+                return;
+
             ClientSession session = ServerManager.Instance.Sessions.Keys.SingleOrDefault(s => s.Character != null && s.Character.CharacterId.Equals(id));
             session.Character.JobLevel = 1;
             session.Client.SendPacket("npinfo 0");
             session.Client.SendPacket("p_clear");
 
-            session.Character.Class = Class;
+            session.Character.Class = characterClass;
             session.Character.Speed = ServersData.SpeedData[session.Character.Class];
             session.Client.SendPacket(session.Character.GenerateCond());
             session.Character.Hp = (int)session.Character.HPLoad();
