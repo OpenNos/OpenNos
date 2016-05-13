@@ -24,13 +24,14 @@ namespace OpenNos.GameObject
         public Group()
         {
             Characters = new List<ClientSession>();
+            GroupId = ServerManager.Instance.GetNextGroupId();
         }
 
         #endregion
 
         #region Properties
 
-        public int GroupId { get; set; }
+        public long GroupId { get; set; }
         public byte SharingMode { get; set; }
         public List<ClientSession> Characters { get; set; }
 

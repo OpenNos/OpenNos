@@ -32,6 +32,7 @@ namespace OpenNos.GameObject
 
         public Boolean ShutdownStop = false;
         private static ServerManager _instance;
+        private long lastGroupId;
 
         #endregion
 
@@ -49,6 +50,8 @@ namespace OpenNos.GameObject
 
             Task TaskController = new Task(() => TaskLauncherProcess());
             TaskController.Start();
+
+            lastGroupId = 1;
         }
 
         #endregion
@@ -295,6 +298,12 @@ namespace OpenNos.GameObject
             MethodInfo method = session.Character.GetType().GetMethod(methodName);
 
             return (T)method.Invoke(session.Character, null);
+        }
+
+        public long GetNextGroupId()
+        {
+            lastGroupId++;
+            return lastGroupId;
         }
 
         public void GroupLeave(ClientSession session)
