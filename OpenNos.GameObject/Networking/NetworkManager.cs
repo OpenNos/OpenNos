@@ -56,7 +56,6 @@ namespace OpenNos.GameObject
             server.Start(); //Start the server
 
             Logger.Log.Info(Language.Instance.GetMessageFromKey("STARTED"));
-
         }
 
         #endregion
@@ -130,11 +129,11 @@ namespace OpenNos.GameObject
             ClientSession session = new ClientSession(customClient);
             session.Initialize(_encryptor, _packetHandler);
 
-            if(IsWorldServer)
+            if (IsWorldServer)
             {
                 ServerManager.Instance.RegisterSession(session);
                 if (!_sessions.TryAdd(customClient.ClientId, session))
-                {                 
+                {
                     Logger.Log.WarnFormat(Language.Instance.GetMessageFromKey("FORCED_DISCONNECT"), customClient.ClientId);
                     customClient.Disconnect();
                     _sessions.TryRemove(customClient.ClientId, out session);
@@ -152,10 +151,11 @@ namespace OpenNos.GameObject
             //check if session hasnt been already removed
             if (session != null)
             {
+                session.IsDisposing = true;
 
-                if(IsWorldServer)
+
+                if (IsWorldServer)
                 {
-                   
                     if (session.Character != null)
                     {
                         if (ServerManager.Instance.Groups.FirstOrDefault(s => s.IsMemberOfGroup(session.Character.CharacterId)) != null)
@@ -166,12 +166,12 @@ namespace OpenNos.GameObject
 
                         //only remove the character from map if the character has been set
                         session.CurrentMap.Broadcast(session, session.Character.GenerateOut(), ReceiverType.AllExceptMe);
-                    }
 
-                    if (session.HealthTask != null)
-                    {
-                        session.healthStop = true;
-                        session.HealthTask.Dispose();
+                        if (session.HealthTask != null)
+                        {
+                            session.healthStop = true;
+                            session.HealthTask.Dispose();
+                        }
                     }
                 }
 

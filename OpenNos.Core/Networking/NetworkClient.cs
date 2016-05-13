@@ -1,7 +1,6 @@
 ﻿using OpenNos.Core.Networking.Communication.Scs.Communication.Channels;
 using OpenNos.Core.Networking.Communication.Scs.Communication.Messages;
 using OpenNos.Core.Networking.Communication.Scs.Server;
-using OpenNos.Core.Threading;
 using System;
 using System.Collections.Generic;
 
@@ -19,8 +18,13 @@ namespace OpenNos.Core
 
         public NetworkClient(ICommunicationChannel communicationChannel) : base(communicationChannel)
         {
-
         }
+
+        #endregion
+
+        #region Properties
+
+        public bool IsDisposing { get; set; }
 
         #endregion
 
@@ -33,8 +37,11 @@ namespace OpenNos.Core
 
         public void Send(string packet)
         {
-            ScsRawDataMessage rawMessage = new ScsRawDataMessage(_encryptor.Encrypt(packet));
-            SendMessage(rawMessage);
+            if(!IsDisposing)
+            {
+                ScsRawDataMessage rawMessage = new ScsRawDataMessage(_encryptor.Encrypt(packet));
+                SendMessage(rawMessage);
+            }           
         }
 
         public bool SendPacket(string packet)

@@ -26,7 +26,7 @@ using System.Threading.Tasks;
 
 namespace OpenNos.GameObject
 {
-    public class ClientSession 
+    public class ClientSession
     {
         #region Members
 
@@ -139,6 +139,18 @@ namespace OpenNos.GameObject
             }
         }
 
+        public bool IsDisposing
+        {
+            get
+            {
+                return Client.IsDisposing;
+            }
+            set
+            {
+                Client.IsDisposing = value;
+            }
+        }
+
         public int LastKeepAliveIdentity { get; set; }
 
         public int SessionId { get; set; }
@@ -146,60 +158,6 @@ namespace OpenNos.GameObject
         #endregion
 
         #region Methods
-
-        public bool CallbackSessionRequest(SessionPacket sessionPacket)
-        {
-            switch (sessionPacket.Receiver)
-            {
-                case ReceiverType.All:
-                    Client.SendPacket(sessionPacket.Content);
-                    break;
-
-                case ReceiverType.AllExceptMe:
-                    if (Client.ClientId != sessionPacket.Sender.Client.ClientId)
-                    {
-                        Client.SendPacket(sessionPacket.Content);
-                    }
-                    break;
-
-                case ReceiverType.OnlyMe: //necessary?
-                    if (Client.ClientId == sessionPacket.Sender.Client.ClientId)
-                    {
-                        Client.SendPacket(sessionPacket.Content);
-                    }
-                    break;
-
-                case ReceiverType.OnlySomeone:
-                    if (Character != null && (Character.CharacterId == sessionPacket.SomeonesCharacterId ||
-                         Character.Name.Equals(sessionPacket.SomeonesCharacterName)))
-                    {
-                        Client.SendPacket(sessionPacket.Content);
-                    }
-                    return true;
-
-                case ReceiverType.AllNoEmoBlocked:
-                    if (Character != null && !Character.EmoticonsBlocked)
-                    {
-                        Client.SendPacket(sessionPacket.Content);
-                    }
-                    break;
-
-                case ReceiverType.AllNoHeroBlocked:
-                    if (Character != null && !Character.HeroChatBlocked)
-                    {
-                        Client.SendPacket(sessionPacket.Content);
-                    }
-                    break;
-
-                case ReceiverType.Group:
-                    if (Character.Group != null && Character.Group.GroupId.Equals(sessionPacket.Sender.Character.Group.GroupId))
-                    {
-                        Client.SendPacket(sessionPacket.Content);
-                    }
-                    break;
-            }
-            return true;
-        }
 
         /// <summary>
         /// Destroy ClientSession
@@ -226,10 +184,8 @@ namespace OpenNos.GameObject
             {
                 ServiceFactory.Instance.CommunicationService.DisconnectAccount(Account.Name);
             }
-
             ServerManager.Instance.UnregisterSession(this);
         }
-
 
         public void Initialize(EncryptionBase encryptor, Type packetHandler)
         {

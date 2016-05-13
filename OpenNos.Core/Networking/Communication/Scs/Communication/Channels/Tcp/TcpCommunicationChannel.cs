@@ -125,7 +125,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
                 //Send all bytes to the remote application
                 while (totalSent < messageBytes.Length)
                 {
-                    if (_clientSocket.Connected)
+                    if(_clientSocket.Connected)
                     {
                         var sent = _clientSocket.Send(messageBytes, totalSent, messageBytes.Length - totalSent, SocketFlags.None);
                         if (sent <= 0)
@@ -168,11 +168,8 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
                 var bytesRead = -1;
 
                 //Get received bytes count
-                if(_clientSocket.Connected)
-                {
-                    bytesRead = _clientSocket.EndReceive(ar);
-                }
-                
+                bytesRead = _clientSocket.EndReceive(ar);
+
                 if (bytesRead > 0)
                 {
                     LastReceivedMessageTime = DateTime.Now;
