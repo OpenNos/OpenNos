@@ -97,7 +97,7 @@ namespace OpenNos.Login.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Config loaded !.
+        ///   Looks up a localized string similar to Config loaded!.
         /// </summary>
         internal static string CONFIG_LOADED {
             get {
@@ -142,7 +142,7 @@ namespace OpenNos.Login.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A client is has been disconnected! ClientId = .
+        ///   Looks up a localized string similar to A client has been disconnected! ClientId = .
         /// </summary>
         internal static string DISCONNECT {
             get {

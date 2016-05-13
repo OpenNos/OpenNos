@@ -226,7 +226,7 @@
     <value>Error deleting Character with Slot {0} , {1}</value>
   </data>
   <data name="DISCONNECT" xml:space="preserve">
-    <value>A client is has been disconnected! ClientId =</value>
+    <value>A client has been disconnected! ClientId =</value>
   </data>
   <data name="DONE" xml:space="preserve">
     <value>Done</value>
