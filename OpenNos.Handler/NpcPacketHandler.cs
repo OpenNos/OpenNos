@@ -155,6 +155,12 @@ namespace OpenNos.Handler
                             Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("LOW_LVL"), 0));
                             return;
                         }
+                        for (int i = Session.Character.Skills.Count - 1; i >= 0; i--)
+                        {
+                            Skill skinfo = ServerManager.GetSkill(Session.Character.Skills[i].SkillVNum);
+                            if (skillinfo.CastId == skinfo.CastId)
+                                Session.Character.Skills.Remove(Session.Character.Skills[i]);
+                        }
                     }
                     else
                     {
