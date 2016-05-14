@@ -88,7 +88,6 @@ namespace OpenNos.GameObject
         {
             LifeTaskIsRunning = true;
             NpcMonster monster = ServerManager.GetNpc(this.MonsterVNum);
-            bool follow = false;
 
             //Respawn
             if (!Alive)
@@ -175,7 +174,6 @@ namespace OpenNos.GameObject
                         if (Map.GetDistance(new MapCell() { X = character.MapX, Y = character.MapY }, new MapCell() { X = MapX, Y = MapY }) < 7)
                         {
                             Target = character.CharacterId;
-
                             ServerManager.Instance.Sessions.FirstOrDefault(s => s != null && s.Client != null && s.Character != null && s.Character.CharacterId.Equals(Target)).Client.SendPacket(GenerateEff(5000));
                         }
                     }
@@ -187,9 +185,9 @@ namespace OpenNos.GameObject
                 short? MapY = ServerManager.Instance.GetProperty<short?>(Target, "MapY");
                 int? Hp = ServerManager.Instance.GetProperty<int?>(Target, "Hp");
                 short? mapId = ServerManager.Instance.GetProperty<short?>(Target, "MapId");
-                bool? Invisible = ServerManager.Instance.GetProperty<bool?>(Target, "Invisible");
+                bool? invisible = ServerManager.Instance.GetProperty<bool?>(Target, "Invisible");
 
-                if (MapX == null || MapY == null || Hp <= 0 || Invisible != null && (bool)Invisible) { Target = -1; LifeTaskIsRunning = false; return; }
+                if (MapX == null || MapY == null || Hp <= 0 || invisible != null && (bool)invisible) { Target = -1; LifeTaskIsRunning = false; return; }
 
                 int damage = 100;
                 Random r = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
@@ -199,7 +197,10 @@ namespace OpenNos.GameObject
                 {
                     sk = ServerManager.GetSkill(ski.SkillVNum);
                 }
-                Thread thread = ServerManager.Instance.GetProperty<Thread>(Target, "ThreadCharChange");
+
+                ClientSession targetSession = Map.Sessions.Single(s => s.Character.CharacterId == Target);
+
+                Thread thread = targetSession.Character.ThreadCharChange;
 
                 if (thread != null && thread.IsAlive)
                     thread.Abort();
@@ -223,21 +224,19 @@ namespace OpenNos.GameObject
                             Thread.Sleep(sk.CastTime * 100);
                         }
                         path = new List<MapCell>();
-                        if (Hp >= 0)
-                            Hp -= damage;
-                        ServerManager.Instance.SetProperty(Target, "LastDefence", DateTime.Now);
-                        ServerManager.Instance.SetProperty(Target, "Hp", (int)((Hp) <= 0 ? 0 : Hp));
+                        targetSession.Character.LastDefence = DateTime.Now;
+                        targetSession.Character.GetDamage(damage);
                         Map.Broadcast(null, ServerManager.Instance.GetUserMethod<string>(Target, "GenerateStat"), ReceiverType.OnlySomeone, "", Target);
 
                         if (sk != null)
-                            Map.Broadcast($"su 3 {MapMonsterId} 1 {Target} {ski.SkillVNum} {sk.Cooldown} {sk.AttackAnimation} {sk.Effect} {this.MapX} {this.MapY} {(Hp > 0 ? 1 : 0)} {(int)((double)Hp / ServerManager.Instance.GetUserMethod<double>(Target, "HPLoad"))} {damage} 0 0");
+                            Map.Broadcast($"su 3 {MapMonsterId} 1 {Target} {ski.SkillVNum} {sk.Cooldown} {sk.AttackAnimation} {sk.Effect} {this.MapX} {this.MapY} {(targetSession.Character.Hp > 0 ? 1 : 0)} {(int)((double)targetSession.Character.Hp / ServerManager.Instance.GetUserMethod<double>(Target, "HPLoad"))} {damage} 0 0");
                         else
-                            Map.Broadcast($"su 3 {MapMonsterId} 1 {Target} 0 {monster.BasicCooldown} 11 {monster.BasicSkill} 0 0 {(Hp > 0 ? 1 : 0)} {(int)((double)Hp / ServerManager.Instance.GetUserMethod<double>(Target, "HPLoad"))} {damage} 0 0");
+                            Map.Broadcast($"su 3 {MapMonsterId} 1 {Target} 0 {monster.BasicCooldown} 11 {monster.BasicSkill} 0 0 {(targetSession.Character.Hp > 0 ? 1 : 0)} {(int)((double)targetSession.Character.Hp / ServerManager.Instance.GetUserMethod<double>(Target, "HPLoad"))} {damage} 0 0");
 
                         if (ski != null)
                             ski.Used = false;
                         LastEffect = DateTime.Now;
-                        if (Hp <= 0)
+                        if (targetSession.Character.Hp <= 0)
                         {
                             Thread.Sleep(1000);
                             ServerManager.Instance.AskRevive(Target);
@@ -248,7 +247,7 @@ namespace OpenNos.GameObject
                             {
                                 damage = 100;
                                 bool AlreadyDead2 = chara.Hp <= 0;
-                                chara.Hp -= damage;
+                                chara.GetDamage(damage);
                                 if (chara.Hp < 0)
                                     chara.Hp = 0;
                                 chara.LastDefence = DateTime.Now;

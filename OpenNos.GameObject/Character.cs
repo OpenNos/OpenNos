@@ -77,35 +77,21 @@ namespace OpenNos.GameObject
         }
 
         public int DarkResistance { get; set; }
-
         public int Defence { get; set; }
-
         public int DefenceRate { get; set; }
-
         public int Direction { get { return _direction; } set { _direction = value; } }
-
         public int DistanceCritical { get; set; }
-
         public int DistanceCriticalRate { get; set; }
-
         public int DistanceDefence { get; set; }
-
         public int DistanceDefenceRate { get; set; }
-
         public int DistanceRate { get; set; }
-
         public int Element { get; set; }
-
         public int ElementRate { get; set; }
-
         public InventoryList EquipmentList { get { return _equipmentlist; } set { _equipmentlist = value; } }
-
         public ExchangeInfo ExchangeInfo { get; set; }
-
         public int FireResistance { get; set; }
-
         public Group Group { get; set; }
-
+        public bool HasShopOpened { get; set; }
         public int HitCritical { get; set; }
 
         public int HitCriticalRate { get; set; }
@@ -265,12 +251,22 @@ namespace OpenNos.GameObject
 
         public void CloseShop()
         {
-            KeyValuePair<long, MapShop> shop = this.Session.CurrentMap.UserShops.FirstOrDefault(mapshop => mapshop.Value.OwnerId.Equals(this.CharacterId));
-            if (!shop.Equals(default(KeyValuePair<long, MapShop>)))
+            if (HasShopOpened)
             {
-                this.Session.CurrentMap.UserShops.Remove(shop.Key);
-                this.Session.CurrentMap.Broadcast(GenerateShopEnd());
-                this.Session.CurrentMap.Broadcast(Session, GeneratePlayerFlag(0), ReceiverType.AllExceptMe);
+                KeyValuePair<long, MapShop> shop = this.Session.CurrentMap.UserShops.FirstOrDefault(mapshop => mapshop.Value.OwnerId.Equals(this.CharacterId));
+                if (!shop.Equals(default(KeyValuePair<long, MapShop>)))
+                {
+                    this.Session.CurrentMap.UserShops.Remove(shop.Key);
+                    this.Session.CurrentMap.Broadcast(GenerateShopEnd());
+                    this.Session.CurrentMap.Broadcast(Session, GeneratePlayerFlag(0), ReceiverType.AllExceptMe);
+                    Speed = Session.Character.LastSpeed != 0 ? Session.Character.LastSpeed : Session.Character.Speed;
+                    IsSitting = false;
+                    Session.Client.SendPacket(Session.Character.GenerateCond());
+                    Session.CurrentMap.Broadcast(Session.Character.GenerateRest());
+                    Session.Client.SendPacket("shop_end 0");
+                }
+
+                HasShopOpened = false;
             }
         }
 
@@ -1132,6 +1128,17 @@ namespace OpenNos.GameObject
                     cpused += skillinfo.CPCost;
             }
             return (JobLevel - 1) * 2 - cpused;
+        }
+
+        public int GetDamage(int damage)
+        {
+            CloseShop();
+            if (Hp >= 0)
+            {
+                Hp -= damage;
+            }
+
+            return Hp;
         }
 
         public int GetDigniteIco()

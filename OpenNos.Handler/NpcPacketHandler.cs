@@ -324,6 +324,7 @@ namespace OpenNos.Handler
                         myShop.Name = shopname;
 
                         Session.CurrentMap.UserShops.Add(Session.CurrentMap.UserShops.Count(), myShop);
+                        Session.Character.HasShopOpened = true;
 
                         Session.CurrentMap.Broadcast(Session, Session.Character.GeneratePlayerFlag(Session.CurrentMap.UserShops.Count()), ReceiverType.AllExceptMe);
                         Session.CurrentMap.Broadcast(Session.Character.GenerateShop(shopname));
