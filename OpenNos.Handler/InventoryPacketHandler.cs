@@ -1109,7 +1109,7 @@ namespace OpenNos.Handler
             Session.Character.SkillsSp = new List<CharacterSkill>();
             foreach (Skill ski in ServerManager.GetAllSkill())
             {
-                if (ski.Class == Session.Character.Morph + 31)
+                if (ski.Class == Session.Character.Morph + 31 && sp.SpLevel >= ski.LevelMinimum)
                     Session.Character.SkillsSp.Add(new CharacterSkill() { SkillVNum = ski.SkillVNum, CharacterId = Session.Character.CharacterId });
             }
 

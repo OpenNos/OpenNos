@@ -776,7 +776,7 @@ namespace OpenNos.GameObject
             if (!UseSp)
                 skibase = $"{200 + 20 * Class} {201 + 20 * Class}";
             else
-                skibase = $"{skill.ElementAt(0).SkillVNum} {skill.ElementAt(1).SkillVNum}";
+                skibase = $"{skill.ElementAt(0).SkillVNum} {skill.ElementAt(0).SkillVNum}";
             string skills = "";
             foreach (CharacterSkill ski in skill)
             {
