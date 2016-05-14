@@ -92,7 +92,7 @@ namespace OpenNos.Handler
             {
                 if (byte.TryParse(packetsplit[2], out Class) && Class < 4)
                 {
-                    Session.Character.ClassChange(Session.Character.CharacterId, Class);
+                    Session.Character.ChangeClass(Session.Character.CharacterId, Class);
                 }
             }
             else

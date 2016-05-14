@@ -47,7 +47,7 @@ namespace OpenNos.GameObject
                     }
                     if (Session.Character.EquipmentList.IsEmpty())
                     {
-                        Session.Character.ClassChange(Session.Character.CharacterId, Convert.ToByte(type));
+                        Session.Character.ChangeClass(Session.Character.CharacterId, Convert.ToByte(type));
                     }
                     else
                     {

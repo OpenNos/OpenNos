@@ -60,18 +60,12 @@ namespace OpenNos.GameObject
             _session = Session;
         }
 
-
-        public void InterruptCharChange()
-        {
-            if (ThreadCharChange != null && ThreadCharChange.IsAlive)
-                ThreadCharChange.Suspend();
-        }
-
         #endregion
 
         #region Properties
 
         public AuthorityType Authority { get { return _authority; } set { _authority = value; } }
+
         public int BackPack { get { return _backpack; } set { _backpack = value; } }
 
         public bool CanFight
@@ -83,70 +77,126 @@ namespace OpenNos.GameObject
         }
 
         public int DarkResistance { get; set; }
+
         public int Defence { get; set; }
+
         public int DefenceRate { get; set; }
+
         public int Direction { get { return _direction; } set { _direction = value; } }
+
         public int DistanceCritical { get; set; }
+
         public int DistanceCriticalRate { get; set; }
+
         public int DistanceDefence { get; set; }
+
         public int DistanceDefenceRate { get; set; }
+
         public int DistanceRate { get; set; }
+
         public int Element { get; set; }
+
         public int ElementRate { get; set; }
+
         public InventoryList EquipmentList { get { return _equipmentlist; } set { _equipmentlist = value; } }
+
         public ExchangeInfo ExchangeInfo { get; set; }
+
         public int FireResistance { get; set; }
+
         public Group Group { get; set; }
+
         public int HitCritical { get; set; }
+
         public int HitCriticalRate { get; set; }
+
         public int HitRate { get; set; }
+
         public InventoryList InventoryList { get { return _inventorylist; } set { _inventorylist = value; } }
+
         public bool Invisible { get { return _invisible; } set { _invisible = value; } }
+
         public bool InvisibleGm { get; set; }
+
         public int IsDancing { get { return _isDancing; } set { _isDancing = value; } }
+
         public bool IsSitting { get { return _issitting; } set { _issitting = value; } }
+
         public bool IsVehicled { get; set; }
+
         public DateTime LastDefence { get; set; }
+
         public DateTime LastLogin { get; set; }
+
         public short LastNRunId { get; set; }
+
         public double LastPortal { get { return _lastPortal; } set { _lastPortal = value; } }
+
         public int LastPulse { get { return _lastPulse; } set { _lastPulse = value; } }
+
         public double LastSp { get; set; }
+
         public byte LastSpeed { get; set; }
+
         public int LightResistance { get; set; }
+
         public int MagicalDefence { get; set; }
+
         public Map Map { get; set; }
+
         public int MaxDistance { get; set; }
+
         public int MaxHit { get; set; }
+
         public int MaxSnack { get; set; }
+
         public int MinDistance { get; set; }
+
         public int MinHit { get; set; }
+
         public int Morph { get { return _morph; } set { _morph = value; } }
+
         public int MorphUpgrade { get { return _morphUpgrade; } set { _morphUpgrade = value; } }
+
         public int MorphUpgrade2 { get { return _morphUpgrade2; } set { _morphUpgrade2 = value; } }
+
         public List<QuicklistEntry> QuicklistEntries { get; set; }
+
         public short SaveX { get; set; }
+
         public short SaveY { get; set; }
+
         public ClientSession Session { get { return _session; } }
+
         public int Size { get { return _size; } set { _size = value; } }
+
         public List<CharacterSkill> Skills { get; set; }
+
         public List<CharacterSkill> SkillsSp { get; set; }
+
         public int SnackAmount { get; set; }
+
         public int SnackHp { get; set; }
+
         public int SnackMp { get; set; }
+
         public int SpCooldown { get; set; }
+
         public byte Speed { get { return _speed; } set { if (value > 59) { _speed = 59; } else { _speed = value; } } }
+
         public Thread ThreadCharChange { get; set; }
+
         public bool UseSp { get; set; }
+
         public int WaterResistance { get; set; }
 
         #endregion
 
         #region Methods
 
-        public void ClassChange(long id, byte characterClass)
+        public void ChangeClass(long id, byte characterClass)
         {
-            if(characterClass < 4)
+            if (characterClass < 4)
             {
                 ClientSession session = ServerManager.Instance.Sessions.Keys.SingleOrDefault(s => s.Character != null && s.Character.CharacterId.Equals(id));
                 session.Character.JobLevel = 1;
@@ -210,7 +260,7 @@ namespace OpenNos.GameObject
 
                 if (ServerManager.Instance.Groups.FirstOrDefault(s => s.IsMemberOfGroup(session)) != null)
                     ServerManager.Instance.Broadcast(session, $"pidx 1 1.{session.Character.CharacterId}", ReceiverType.AllExceptMe);
-            }           
+            }
         }
 
         public void CloseShop()
@@ -660,7 +710,7 @@ namespace OpenNos.GameObject
                 for (int j = 0; j < 3; j++)
                 {
                     QuicklistEntry qi = QuicklistEntries.FirstOrDefault(n => n.Q1 == j && n.Q2 == i && n.Morph == (UseSp ? Morph : 0));
-                    pktQs[j] += string.Format(" {0}.{1}.{2}", qi?.Type != null ? qi?.Type : 7 , qi?.Slot != null ? qi?.Slot : 7, qi != null ? qi.Pos.ToString() : "-1");
+                    pktQs[j] += string.Format(" {0}.{1}.{2}", qi?.Type != null ? qi?.Type : 7, qi?.Slot != null ? qi?.Slot : 7, qi != null ? qi.Pos.ToString() : "-1");
                 }
             }
 
@@ -1193,6 +1243,12 @@ namespace OpenNos.GameObject
             return (int)((ServersData.HPData[Class, Level] + hp) * multiplicator);
         }
 
+        public void InterruptCharChange()
+        {
+            if (ThreadCharChange != null && ThreadCharChange.IsAlive)
+                ThreadCharChange.Suspend();
+        }
+
         public double JobXPLoad()
         {
             if (Class == (byte)ClassType.Adventurer)
@@ -1315,14 +1371,15 @@ namespace OpenNos.GameObject
                 EquipmentList.Save();
 
                 if (Skills != null)
-                    for (int i = Skills.Count() - 1; i >= 0; i--)
-                        Skills.ElementAt(i).Save();
+                {
+                    Skills = DAOFactory.CharacterSkillDAO.InsertOrUpdate(Skills).Select(cs => new CharacterSkill(cs)).ToList();
+                }
 
                 if (QuicklistEntries != null)
                     for (int i = QuicklistEntries.Count() - 1; i >= 0; i--)
                         QuicklistEntries.ElementAt(i).Save();
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Logger.Log.Error(e);
             }

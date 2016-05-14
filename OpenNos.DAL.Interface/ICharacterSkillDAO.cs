@@ -26,6 +26,8 @@ namespace OpenNos.DAL.Interface
 
         SaveResult InsertOrUpdate(ref CharacterSkillDTO characterskill);
 
+        IEnumerable<CharacterSkillDTO> InsertOrUpdate(IEnumerable<CharacterSkillDTO> characterSkills);
+
         IEnumerable<CharacterSkillDTO> LoadByCharacterId(long characterId);
 
         #endregion

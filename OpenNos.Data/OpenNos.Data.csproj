@@ -53,7 +53,7 @@
     <Compile Include="ComboDTO.cs" />
     <Compile Include="DropDTO.cs" />
     <Compile Include="GeneralLogDTO.cs" />
-    <Compile Include="IMapDTO.cs" />
+    <Compile Include="Interfaces\IMapDTO.cs" />
     <Compile Include="Interfaces\IItemInstance.cs" />
     <Compile Include="Interfaces\ISpecialistInstance.cs" />
     <Compile Include="Interfaces\IWearableInstance.cs" />

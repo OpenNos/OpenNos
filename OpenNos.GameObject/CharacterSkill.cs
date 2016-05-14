@@ -12,7 +12,6 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.DAL;
 using OpenNos.Data;
 using System;
 
@@ -21,6 +20,17 @@ namespace OpenNos.GameObject
     public class CharacterSkill : CharacterSkillDTO
     {
         #region Instantiation
+
+        public CharacterSkill(CharacterSkillDTO dto)
+        {
+            this.CharacterId = dto.CharacterId;
+            this.CharacterSkillId = dto.CharacterSkillId;
+            this.SkillVNum = dto.SkillVNum;
+            this.NpcMonsterVNum = dto.NpcMonsterVNum;
+            LastUse = DateTime.Now.AddHours(-1);
+            Used = false;
+            Hit = 0;
+        }
 
         public CharacterSkill()
         {
@@ -41,16 +51,6 @@ namespace OpenNos.GameObject
         }
 
         public bool Used { get; set; }
-
-        #endregion
-
-        #region Methods
-
-        public void Save()
-        {
-            CharacterSkillDTO tempsave = this;
-            DAOFactory.CharacterSkillDAO.InsertOrUpdate(ref tempsave);
-        }
 
         #endregion
     }

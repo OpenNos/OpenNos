@@ -14,11 +14,11 @@
 
 namespace OpenNos.Data
 {
-    public class CharacterSkillDTO
+    public class CharacterSkillDTO 
     {
         #region Properties
 
-        public long? CharacterId { get; set; }
+        public long CharacterId { get; set; }
         public long CharacterSkillId { get; set; }
         public short? NpcMonsterVNum { get; set; }
         public short SkillVNum { get; set; }

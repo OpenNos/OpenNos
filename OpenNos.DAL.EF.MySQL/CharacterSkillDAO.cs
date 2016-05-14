@@ -65,31 +65,61 @@ namespace OpenNos.DAL.EF.MySQL
             }
         }
 
-        public SaveResult InsertOrUpdate(ref CharacterSkillDTO characterSkills)
+        public IEnumerable<CharacterSkillDTO> InsertOrUpdate(IEnumerable<CharacterSkillDTO> characterSkills)
+        {
+            try
+            {
+                List<CharacterSkillDTO> returnSkills = new List<CharacterSkillDTO>();
+
+                using (var context = DataAccessHelper.CreateContext())
+                {
+                    foreach(CharacterSkillDTO skill in characterSkills)
+                    {
+                        CharacterSkillDTO returnSkill = skill;
+                        SaveResult result = InsertOrUpdate(ref returnSkill, context);
+                        returnSkills.Add(returnSkill);
+                    }
+                }
+
+                return returnSkills;
+            }
+            catch (Exception e)
+            {
+                Logger.Log.ErrorFormat(Language.Instance.GetMessageFromKey("UPDATE_ERROR"), e.Message);
+                return Enumerable.Empty<CharacterSkillDTO>();
+            }
+        }
+
+        public SaveResult InsertOrUpdate(ref CharacterSkillDTO characterSkill)
         {
             try
             {
                 using (var context = DataAccessHelper.CreateContext())
                 {
-                    CharacterSkillDTO CharacterSkill = characterSkills;
-                    CharacterSkill entity = context.CharacterSkill.FirstOrDefault(i => i.CharacterId == CharacterSkill.CharacterId && i.SkillVNum == CharacterSkill.SkillVNum);
-                    if (entity == null) //new entity
-                    {
-                        CharacterSkill = Insert(CharacterSkill, context);
-                        return SaveResult.Inserted;
-                    }
-                    else //existing entity
-                    {
-                        entity.CharacterSkillId = context.CharacterSkill.FirstOrDefault(i => i.CharacterId == CharacterSkill.CharacterId && i.SkillVNum == CharacterSkill.SkillVNum).CharacterSkillId;
-                        CharacterSkill = Update(entity, CharacterSkill, context);
-                        return SaveResult.Updated;
-                    }
+                    return InsertOrUpdate(ref characterSkill, context);
                 }
             }
             catch (Exception e)
             {
                 Logger.Log.ErrorFormat(Language.Instance.GetMessageFromKey("UPDATE_ERROR"), e.Message);
                 return SaveResult.Error;
+            }
+        }
+
+        private SaveResult InsertOrUpdate(ref CharacterSkillDTO characterSkill, OpenNosContext context)
+        {
+            long characterId = characterSkill.CharacterId;
+            long skillVnum = characterSkill.SkillVNum;
+            CharacterSkill entity = context.CharacterSkill.FirstOrDefault(i => i.CharacterId == characterId && i.SkillVNum == skillVnum);
+            if (entity == null) //new entity
+            {
+                characterSkill = Insert(characterSkill, context);
+                return SaveResult.Inserted;
+            }
+            else //existing entity
+            {
+                 characterSkill = Update(entity, characterSkill, context);
+                return SaveResult.Updated;
             }
         }
 
