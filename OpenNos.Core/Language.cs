@@ -12,10 +12,10 @@
  * GNU General Public License for more details.
  */
 
+using System;
 using System.Globalization;
 using System.Reflection;
 using System.Resources;
-using System.Threading;
 
 namespace OpenNos.Core
 {
@@ -26,6 +26,7 @@ namespace OpenNos.Core
         private static readonly object myLock = new object();
         private static Language instance = null;
         private ResourceManager _manager;
+        private CultureInfo _resourceCulture;
 
         #endregion
 
@@ -33,9 +34,7 @@ namespace OpenNos.Core
 
         private Language()
         {
-            CultureInfo newCultureInfo = new System.Globalization.CultureInfo(System.Configuration.ConfigurationManager.AppSettings["language"]);
-            Thread.CurrentThread.CurrentCulture = newCultureInfo;
-            Thread.CurrentThread.CurrentUICulture = newCultureInfo;
+            _resourceCulture = new System.Globalization.CultureInfo(System.Configuration.ConfigurationManager.AppSettings["language"]);
             _manager = new ResourceManager(Assembly.GetEntryAssembly().GetName().Name + ".Resource.LocalizedResources", Assembly.GetEntryAssembly());
         }
 
@@ -58,10 +57,16 @@ namespace OpenNos.Core
 
         public string GetMessageFromKey(string message)
         {
-            if (_manager.GetString(message) != null && _manager.GetString(message) != "")
-                return _manager.GetString(message);
+            string resourceMessage = _manager.GetString(message, _resourceCulture);
+
+            if (!String.IsNullOrEmpty(resourceMessage))
+            {
+                return resourceMessage;
+            }
             else
+            {
                 return $"#<{message}>";
+            }
         }
 
         #endregion
