@@ -118,6 +118,9 @@ namespace OpenNos.GameObject
                 }
                 Random r = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
                 double time = (DateTime.Now - LastMove).TotalSeconds;
+                int MoveFrequent = 5 - (int)Math.Round((double)(monster.Speed / 5));
+                if (MoveFrequent < 1)
+                    MoveFrequent = 1;
                 if (IsMoving)
                 {
                     if (path.Count > 0)
@@ -140,13 +143,11 @@ namespace OpenNos.GameObject
                             return;
                         }
                     }
-                    else if (time > r.Next(1, 3) * (0.5 + r.NextDouble()))
+                    else if (time > r.Next(1, MoveFrequent) + 1)
                     {
-                        byte point = (byte)r.Next(2, 5);
-                        byte fpoint = (byte)r.Next(0, 2);
-
-                        byte xpoint = (byte)r.Next(fpoint, point);
-                        byte ypoint = (byte)(point - xpoint);
+                        int MoveDistance = (int)Math.Round((double)monster.Speed / 2);
+                        byte xpoint = (byte)(r.Next(1, MoveDistance));
+                        byte ypoint = (byte)(r.Next(1, MoveDistance));
 
                         short MapX = firstX;
                         short MapY = firstY;
@@ -207,7 +208,7 @@ namespace OpenNos.GameObject
 
                 if ((sk != null && Map.GetDistance(new MapCell() { X = this.MapX, Y = this.MapY }, new MapCell() { X = (short)MapX, Y = (short)MapY }) < sk.Range) || (Map.GetDistance(new MapCell() { X = this.MapX, Y = this.MapY }, new MapCell() { X = (short)MapX, Y = (short)MapY }) <= monster.BasicRange))
                 {
-                    if ((sk != null && ((DateTime.Now - LastEffect).TotalMilliseconds >= sk.Cooldown * 100 + 1000)) || ((DateTime.Now - LastEffect).TotalMilliseconds >= monster.BasicCooldown * 100 + 1000))
+                    if ((sk != null && ((DateTime.Now - LastEffect).TotalMilliseconds >= sk.Cooldown * 100 + 1000)) || ((DateTime.Now - LastEffect).TotalMilliseconds >= monster.BasicCooldown * 100 + 100))
                     {
                         if (ski != null)
                         {
