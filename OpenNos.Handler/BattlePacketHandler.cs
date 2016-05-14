@@ -969,6 +969,36 @@ namespace OpenNos.Handler
                 Session.Character.Mp = (int)Session.Character.MPLoad();
                 Session.Client.SendPacket(Session.Character.GenerateStat());
                 Session.Client.SendPacket($"levelup {Session.Character.CharacterId}");
+
+                if (Session.Character.Class == 0)
+                {
+                    for (int i = 200; i <= 210; i++)
+                    {
+                        if (i == 209)
+                            i++;
+
+                        Skill skinfo = ServerManager.GetSkill((short)i);
+                        if (skinfo.Class == 0 && Session.Character.JobLevel >= skinfo.LevelMinimum)
+                        {
+                            byte NewSkillVNum = (byte)i;
+                            for (int ii = Session.Character.Skills.Count - 1; ii >= 0; ii--)
+                            {
+                                Skill myskinfo = ServerManager.GetSkill(Session.Character.Skills[ii].SkillVNum);
+                                if (skinfo.SkillVNum == myskinfo.SkillVNum)
+                                {
+                                    NewSkillVNum = 0;
+                                    break;
+                                }
+                            }
+                            if (NewSkillVNum > 0)
+                            {
+                                Session.Character.Skills.Add(new CharacterSkill() { SkillVNum = NewSkillVNum, CharacterId = Session.Character.CharacterId });
+                                Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SKILL_LEARNED"), 0));
+                                Session.Client.SendPacket(Session.Character.GenerateSki());
+                            }
+                        }
+                    }
+                }
                 Session.CurrentMap.Broadcast(Session.Character.GenerateEff(6));
                 Session.CurrentMap.Broadcast(Session.Character.GenerateEff(198));
             }
@@ -981,6 +1011,19 @@ namespace OpenNos.Handler
                 t = Session.Character.SPXPLoad();
                 Session.Client.SendPacket(Session.Character.GenerateStat());
                 Session.Client.SendPacket($"levelup {Session.Character.CharacterId}");
+
+                byte SkillSpCount = (byte)Session.Character.SkillsSp.Count;
+                List<CharacterSkill> skillsSp = new List<CharacterSkill>();
+                foreach (Skill ski in ServerManager.GetAllSkill())
+                {
+                    if (ski.Class == Session.Character.Morph + 31 && specialist.SpLevel >= ski.LevelMinimum)
+                        Session.Character.SkillsSp.Add(new CharacterSkill() { SkillVNum = ski.SkillVNum, CharacterId = Session.Character.CharacterId });
+                }
+                if (Session.Character.SkillsSp.Count > SkillSpCount)
+                {
+                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SKILL_LEARNED"), 0));
+                    Session.Client.SendPacket(Session.Character.GenerateSki());
+                }
                 Session.CurrentMap.Broadcast(Session.Character.GenerateEff(6));
                 Session.CurrentMap.Broadcast(Session.Character.GenerateEff(198));
             }
