@@ -561,6 +561,9 @@
   <data name="SKILL_LEARNED" xml:space="preserve">
     <value>You learned a new skill</value>
   </data>
+  <data name="SKILL_CANT_LEARN" xml:space="preserve">
+    <value>You can't learn this skill</value>
+  </data>
   <data name="SPLEVEL_CHANGED" xml:space="preserve">
     <value>Specialist level has been changed!</value>
   </data>

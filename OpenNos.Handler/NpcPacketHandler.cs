@@ -111,29 +111,64 @@ namespace OpenNos.Handler
 
                 if (skillinfo == null)
                     return;
-                if (Session.Character.Gold >= skillinfo.Price && Session.Character.GetCP() >= skillinfo.CPCost && Session.Character.Level >= skillinfo.LevelMinimum)
+                if (Session.Character.Gold < skillinfo.Price)
+                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_MONEY"), 0));
+                else if(Session.Character.GetCP() < skillinfo.CPCost)
+                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_CP"), 0));
+                else
                 {
-                    switch (Session.Character.Class)
+                    if (skillinfo.SkillVNum < 200)
                     {
-                        case (byte)ClassType.Adventurer:
-                            if (Session.Character.Level < skillinfo.MinimumAdventurerLevel)
-                                return;
-                            break;
+                        int SkillMiniumLevel = 0;
+                        if (skillinfo.MinimumSwordmanLevel == 0 && skillinfo.MinimumArcherLevel == 0 && skillinfo.MinimumMagicianLevel == 0)
+                            SkillMiniumLevel = skillinfo.MinimumAdventurerLevel;
+                        else
+                        {
+                            switch (Session.Character.Class)
+                            {
+                                case (byte)ClassType.Adventurer:
+                                    SkillMiniumLevel = skillinfo.MinimumAdventurerLevel;
+                                    break;
 
-                        case (byte)ClassType.Swordman:
-                            if (Session.Character.Level < (skillinfo.MinimumSwordmanLevel == 0 ? skillinfo.MinimumAdventurerLevel : skillinfo.MinimumSwordmanLevel))
-                                return;
-                            break;
+                                case (byte)ClassType.Swordman:
+                                    SkillMiniumLevel = skillinfo.MinimumSwordmanLevel;
+                                    break;
 
-                        case (byte)ClassType.Archer:
-                            if (Session.Character.Level < (skillinfo.MinimumArcherLevel == 0 ? skillinfo.MinimumAdventurerLevel : skillinfo.MinimumArcherLevel))
-                                return;
-                            break;
+                                case (byte)ClassType.Archer:
+                                    SkillMiniumLevel = skillinfo.MinimumArcherLevel;
+                                    break;
 
-                        case (byte)ClassType.Magician:
-                            if (Session.Character.Level < (skillinfo.MinimumMagicianLevel == 0 ? skillinfo.MinimumAdventurerLevel : skillinfo.MinimumMagicianLevel))
-                                return;
-                            break;
+                                case (byte)ClassType.Magician:
+                                    SkillMiniumLevel = skillinfo.MinimumMagicianLevel;
+                                    break;
+
+                            }
+
+                        }
+                        if (SkillMiniumLevel == 0)
+                        {
+                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SKILL_CANT_LEARN"), 0));
+                            return;
+                        }
+                        else if (Session.Character.Level < SkillMiniumLevel)
+                        {
+                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("LOW_LVL"), 0));
+                            return;
+                        }
+                    }
+                    else
+                    {
+                        if (Session.Character.Class != skillinfo.Class)
+                        {
+                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SKILL_CANT_LEARN"), 0));
+                            return;
+                        }
+                        else if (Session.Character.JobLevel < skillinfo.LevelMinimum)
+                        {
+                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("LOW_JOB_LVL"), 0));
+                            return;
+                        }
+
                     }
 
                     if (Session.Character.Skills.FirstOrDefault(s => s.SkillVNum == slot) != null)
@@ -141,10 +176,6 @@ namespace OpenNos.Handler
 
                     Session.Character.Gold -= skillinfo.Price;
                     Session.Client.SendPacket(Session.Character.GenerateGold());
-                    Skill ski = ServerManager.GetSkill(slot);
-
-                    if (ski == null || !(ski.Class == Session.Character.Class || (ski.Class == 0 && ski.SkillVNum < 100)))
-                        return;
 
                     Session.Character.Skills.Add(new CharacterSkill() { SkillVNum = slot, CharacterId = Session.Character.CharacterId });
                     Session.Client.SendPacket(Session.Character.GenerateSki());
@@ -154,10 +185,6 @@ namespace OpenNos.Handler
 
                     Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SKILL_LEARNED"), 0));
                     Session.Client.SendPacket(Session.Character.GenerateLev());
-                }
-                else
-                {
-                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_CP"), 0));
                 }
             }
             else
