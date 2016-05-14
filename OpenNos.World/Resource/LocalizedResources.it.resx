@@ -537,6 +537,12 @@
   <data name="SHUTDOWN_SEC" xml:space="preserve">
     <value>Il server si spegnerà in {0} Secondi.</value>
   </data>
+  <data name="SKILL_LEARNED" xml:space="preserve">
+     <value>Hai imparato una nuova skill</value>
+   </data>
+  <data name="SKILL_CANT_LEARN" xml:space="preserve">
+   <value>Non puoi imparare questa skill</value>
+  </data>
   <data name="SPLEVEL_CHANGED" xml:space="preserve">
     <value>Il livello della carta dello specialista è cambiato!</value>
   </data>
