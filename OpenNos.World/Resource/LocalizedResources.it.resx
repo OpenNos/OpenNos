@@ -549,6 +549,9 @@
   <data name="SPUSE_NEEDED" xml:space="preserve">
     <value>Devi mettere la SP prima di applicare i punti</value>
   </data>
+  <data name="SP_REFILL" xml:space="preserve">
+   <value>Punti specialista assegnati</value>
+   </data>
   <data name="SP_BLOCKED" xml:space="preserve">
     <value>Non puoi cambiare una Carta Speciale durante la trasformazione.</value>
   </data>
