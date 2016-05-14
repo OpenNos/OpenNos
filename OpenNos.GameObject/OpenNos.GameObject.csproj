@@ -100,7 +100,7 @@
     <Compile Include="Inventory.cs" />
     <Compile Include="Networking\ClientSession.cs" />
     <Compile Include="Networking\ServerManager.cs" />
-    <Compile Include="Networking\SessionPacket.cs" />
+    <Compile Include="Networking\BroadcastPacket.cs" />
     <Compile Include="Networking\NetworkManager.cs" />
     <Compile Include="Networking\ReceiverType.cs" />
     <Compile Include="Npc\NpcMonster.cs" />

@@ -14,12 +14,11 @@
 
 namespace OpenNos.GameObject
 {
-    public class SessionPacket
+    public class BroacastPacket
     {
-
         #region Instantiation
 
-        public SessionPacket(ClientSession session, string content, ReceiverType receiver, string someonesCharacterName = "", long someonesCharacterId = -1)
+        public BroacastPacket(ClientSession session, string content, ReceiverType receiver, string someonesCharacterName = "", long someonesCharacterId = -1)
         {
             Sender = session;
             Content = content;
@@ -35,8 +34,8 @@ namespace OpenNos.GameObject
         public string Content { get; set; }
         public ReceiverType Receiver { get; set; }
         public ClientSession Sender { get; set; }
-        public string SomeonesCharacterName { get; set; }
         public long SomeonesCharacterId { get; set; }
+        public string SomeonesCharacterName { get; set; }
 
         #endregion
     }

@@ -14,7 +14,6 @@
 
 using OpenNos.Core;
 using OpenNos.Core.Networking.Communication.Scs.Communication;
-using System;
 using System.Threading;
 
 namespace OpenNos.GameObject
@@ -23,9 +22,42 @@ namespace OpenNos.GameObject
     {
         #region Methods
 
+        public void Regenerate(ClientSession session, Item item)
+        {
+            session.Character.IsSitting = true;
+            session.CurrentMap.Broadcast(session, session.Character.GenerateRest(), ReceiverType.All);
+
+            session.Client.SendPacket(session.Character.GenerateEff(6000));
+            session.Character.SnackAmount++;
+            session.Character.MaxSnack = 0;
+            session.Character.SnackHp += item.Hp / 5;
+            session.Character.SnackMp += item.Mp / 5;
+            for (int i = 0; i < 5; i++)
+            {
+                Thread.Sleep(1800);
+            }
+            session.Character.SnackHp = item.Hp / 5;
+            session.Character.SnackMp = item.Mp / 5;
+            session.Character.SnackAmount--;
+        }
+
+        public void Sync(ClientSession session, Item item)
+        {
+            for (session.Character.MaxSnack = 0; session.Character.MaxSnack < 5 && session.Character.IsSitting; session.Character.MaxSnack++)
+            {
+                session.Character.Mp += session.Character.SnackHp;
+                session.Character.Hp += session.Character.SnackMp;
+                if ((session.Character.SnackHp > 0 && session.Character.SnackHp > 0) && (session.Character.Hp < session.Character.HPLoad() || session.Character.Mp < session.Character.MPLoad()))
+                    session.CurrentMap.Broadcast(session, session.Character.GenerateRc(session.Character.SnackHp), ReceiverType.All);
+                if (session.Client.CommunicationState == CommunicationStates.Connected)
+                    session.Client.SendPacket(session.Character.GenerateStat());
+                else return;
+                Thread.Sleep(1800);
+            }
+        }
+
         public override void Use(ClientSession Session, ref Inventory Inv)
         {
-
             Item item = ServerManager.GetItem(Inv.ItemInstance.ItemVNum);
             switch (Effect)
             {
@@ -59,48 +91,12 @@ namespace OpenNos.GameObject
                     }
                     if (amount == 0)
                     {
-                        Thread workerThread2 = new Thread(() => sync(Session, item));
+                        Thread workerThread2 = new Thread(() => Sync(Session, item));
                         workerThread2.Start();
                     }
                     break;
             }
-
         }
-
-        public void Regenerate(ClientSession session, Item item)
-        {
-            session.Character.IsSitting = true;
-            session.CurrentMap.Broadcast(session, session.Character.GenerateRest(), ReceiverType.All);
-
-            session.Client.SendPacket(session.Character.GenerateEff(6000));
-            session.Character.SnackAmount++;
-            session.Character.MaxSnack = 0;
-            session.Character.SnackHp += item.Hp / 5;
-            session.Character.SnackMp += item.Mp / 5;
-            for (int i = 0; i < 5; i++)
-            {
-                Thread.Sleep(1800);
-            }
-            session.Character.SnackHp = item.Hp / 5;
-            session.Character.SnackMp = item.Mp / 5;
-            session.Character.SnackAmount--;
-        }
-
-        public void sync(ClientSession session, Item item)
-        {
-            for (session.Character.MaxSnack = 0; session.Character.MaxSnack < 5 && session.Character.IsSitting; session.Character.MaxSnack++)
-            {
-                session.Character.Mp += session.Character.SnackHp;
-                session.Character.Hp += session.Character.SnackMp;
-                if ((session.Character.SnackHp > 0 && session.Character.SnackHp > 0) && (session.Character.Hp < session.Character.HPLoad() || session.Character.Mp < session.Character.MPLoad()))
-                    session.CurrentMap.Broadcast(session, session.Character.GenerateRc(session.Character.SnackHp), ReceiverType.All);
-                if (session.Client.CommunicationState == CommunicationStates.Connected)
-                    session.CurrentMap.Broadcast(session, session.Character.GenerateStat(), ReceiverType.OnlyMe);
-                else return;
-                Thread.Sleep(1800);
-            }
-        }
-
 
         #endregion
     }

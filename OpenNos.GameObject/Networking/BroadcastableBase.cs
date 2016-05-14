@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 namespace OpenNos.GameObject
 {
     public abstract class BroadcastableBase
     {
-
         #region Instantiation
 
         public BroadcastableBase()
@@ -43,10 +41,6 @@ namespace OpenNos.GameObject
                 case ReceiverType.AllExceptMe:
                     for (int i = Sessions.Where(s => s != null && s.Character != null && s != client && !s.IsDisposing).Count() - 1; i >= 0; i--)
                         Sessions.Where(s => s != null && s != client).ElementAt(i).Client.SendPacket(message);
-                    break;
-
-                case ReceiverType.OnlyMe:
-                    client.Client.SendPacket(message);
                     break;
 
                 case ReceiverType.OnlySomeone:
