@@ -227,6 +227,16 @@ namespace OpenNos.Handler
                 Session.Client.SendPacket(Session.Character.GenerateSay("$SPLvl SPLEVEL", 10));
         }
 
+        [Packet("$SPRefill")]
+        public void SPRefill(string packet)
+        {
+            Session.Character.SpPoint = 10000;
+            Session.Character.SpAdditionPoint = 1000000;
+
+            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SP_REFILL"), 0));
+            Session.Client.SendPacket(Session.Character.GenerateSpPoint());
+        }
+
         [Packet("$Help")]
         public void Command(string packet)
         {
@@ -244,6 +254,7 @@ namespace OpenNos.Handler
             Session.Client.SendPacket(Session.Character.GenerateSay("$Lvl LEVEL", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$JLvl JOBLEVEL", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$SPLvl SPLEVEL", 6));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$SPRefill", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$HeroLvl HEROLEVEL", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$ChangeSex", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$ChangeClass CLASS", 6));
