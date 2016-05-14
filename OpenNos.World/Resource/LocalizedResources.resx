@@ -570,6 +570,9 @@
   <data name="SPUSE_NEEDED" xml:space="preserve">
     <value>You need to transform into specialist to accept point change</value>
   </data>
+  <data name="SP_REFILL" xml:space="preserve">
+    <value>Specialist point set</value>
+  </data>
   <data name="SP_BLOCKED" xml:space="preserve">
     <value>You can't change sp now!</value>
   </data>
