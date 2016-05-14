@@ -198,7 +198,7 @@ namespace OpenNos.GameObject
         {
             if (characterClass < 4)
             {
-                ClientSession session = ServerManager.Instance.Sessions.Keys.SingleOrDefault(s => s.Character != null && s.Character.CharacterId.Equals(id));
+                ClientSession session = ServerManager.Instance.Sessions.SingleOrDefault(s => s.Character != null && s.Character.CharacterId.Equals(id));
                 session.Character.JobLevel = 1;
                 session.Client.SendPacket("npinfo 0");
                 session.Client.SendPacket("p_clear");

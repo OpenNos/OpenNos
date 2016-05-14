@@ -1015,7 +1015,7 @@ namespace OpenNos.Handler
 
                         //set back reference to group
                         Session.Character.Group = group;
-                        ServerManager.Instance.Sessions.Keys.SingleOrDefault(c => c.Character.CharacterId.Equals(charId)).Character.Group = group;
+                        ServerManager.Instance.Sessions.SingleOrDefault(c => c.Character.CharacterId.Equals(charId)).Character.Group = group;
                     }
 
                     //player join group

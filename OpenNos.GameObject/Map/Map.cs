@@ -401,7 +401,7 @@ namespace OpenNos.GameObject
         internal IEnumerable<Character> GetListPeopleInRange(short mapX, short mapY, byte distance)
         {
             List<Character> listch = new List<Character>();
-            IEnumerable<ClientSession> cl = ServerManager.Instance.Sessions.Keys.Where(s => s.Character != null && s.Character.Hp > 0);
+            IEnumerable<ClientSession> cl = ServerManager.Instance.Sessions.Where(s => s.Character != null && s.Character.Hp > 0);
             for (int i = cl.Count() - 1; i >= 0; i--)
             {
                 if (GetDistance(new MapCell() { X = mapX, Y = mapY }, new MapCell() { X = cl.ElementAt(i).Character.MapX, Y = cl.ElementAt(i).Character.MapY }) <= distance + 1)

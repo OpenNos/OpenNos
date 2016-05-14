@@ -1,31 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reactive.Subjects;
 
 namespace OpenNos.GameObject
 {
     public abstract class BroadcastableBase
     {
-        #region Members
-
-        private ISubject<SessionPacket> _subject;
-
-        #endregion
 
         #region Instantiation
 
         public BroadcastableBase()
         {
-            Sessions = new Dictionary<ClientSession, IDisposable>();
-            _subject = new Subject<SessionPacket>();
+            Sessions = new List<ClientSession>();
         }
 
         #endregion
 
         #region Properties
 
-        public IDictionary<ClientSession, IDisposable> Sessions { get; set; }
+        public List<ClientSession> Sessions { get; set; }
 
         #endregion
 
@@ -41,15 +34,15 @@ namespace OpenNos.GameObject
             switch (receiver)
             {
                 case ReceiverType.All:
-                    for (int i = Sessions.Keys.Where(s => s != null && s.Character != null && !s.IsDisposing).Count() - 1; i >= 0; i--)
+                    for (int i = Sessions.Where(s => s != null && s.Character != null && !s.IsDisposing).Count() - 1; i >= 0; i--)
                     {
-                        Sessions.Keys.Where(s => s != null).ElementAt(i).Client.SendPacket(message);
+                        Sessions.Where(s => s != null).ElementAt(i).Client.SendPacket(message);
                     }
                     break;
 
                 case ReceiverType.AllExceptMe:
-                    for (int i = Sessions.Keys.Where(s => s != null && s.Character != null && s != client && !s.IsDisposing).Count() - 1; i >= 0; i--)
-                        Sessions.Keys.Where(s => s != null && s != client).ElementAt(i).Client.SendPacket(message);
+                    for (int i = Sessions.Where(s => s != null && s.Character != null && s != client && !s.IsDisposing).Count() - 1; i >= 0; i--)
+                        Sessions.Where(s => s != null && s != client).ElementAt(i).Client.SendPacket(message);
                     break;
 
                 case ReceiverType.OnlyMe:
@@ -57,7 +50,7 @@ namespace OpenNos.GameObject
                     break;
 
                 case ReceiverType.OnlySomeone:
-                    ClientSession targetSession = Sessions.Keys.FirstOrDefault(s => s.Character != null && !s.IsDisposing && (s.Character.Name.Equals(characterName) || s.Character.CharacterId.Equals(characterId)));
+                    ClientSession targetSession = Sessions.FirstOrDefault(s => s.Character != null && !s.IsDisposing && (s.Character.Name.Equals(characterName) || s.Character.CharacterId.Equals(characterId)));
 
                     if (targetSession == null) return false;
 
@@ -65,17 +58,17 @@ namespace OpenNos.GameObject
                     return true;
 
                 case ReceiverType.AllNoEmoBlocked:
-                    foreach (ClientSession session in Sessions.Keys.Where(s => s.Character != null && !s.IsDisposing && s.Character.MapId.Equals(client.Character.MapId) && !s.Character.EmoticonsBlocked))
+                    foreach (ClientSession session in Sessions.Where(s => s.Character != null && !s.IsDisposing && s.Character.MapId.Equals(client.Character.MapId) && !s.Character.EmoticonsBlocked))
                         session.Client.SendPacket(message);
                     break;
 
                 case ReceiverType.AllNoHeroBlocked:
-                    foreach (ClientSession session in Sessions.Keys.Where(s => s.Character != null && !s.IsDisposing && !s.Character.HeroChatBlocked))
+                    foreach (ClientSession session in Sessions.Where(s => s.Character != null && !s.IsDisposing && !s.Character.HeroChatBlocked))
                         session.Client.SendPacket(message);
                     break;
 
                 case ReceiverType.Group:
-                    foreach (ClientSession session in Sessions.Keys.Where(s => s.Character != null && !s.IsDisposing && s.Character.Group != null && s.Character.Group.GroupId.Equals(client.Character.Group.GroupId)))
+                    foreach (ClientSession session in Sessions.Where(s => s.Character != null && !s.IsDisposing && s.Character.Group != null && s.Character.Group.GroupId.Equals(client.Character.Group.GroupId)))
                         session.Client.SendPacket(message);
                     break;
             }
@@ -85,17 +78,16 @@ namespace OpenNos.GameObject
 
         public virtual void RegisterSession(ClientSession session)
         {
-            if (!Sessions.ContainsKey(session))
+            if (!Sessions.Contains(session))
             {
-                Sessions.Add(session, null);
+                Sessions.Add(session);
             }
         }
 
         public virtual void UnregisterSession(ClientSession session)
         {
-            if (Sessions.ContainsKey(session))
+            if (Sessions.Contains(session))
             {
-                //Sessions[session].Dispose();
                 Sessions.Remove(session);
             }
         }
