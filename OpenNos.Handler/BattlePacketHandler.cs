@@ -1013,16 +1013,14 @@ namespace OpenNos.Handler
                 Session.Client.SendPacket($"levelup {Session.Character.CharacterId}");
 
                 byte SkillSpCount = (byte)Session.Character.SkillsSp.Count;
-                List<CharacterSkill> skillsSp = new List<CharacterSkill>();
                 foreach (Skill ski in ServerManager.GetAllSkill())
                 {
-                    if (ski.Class == Session.Character.Morph + 31 && specialist.SpLevel >= ski.LevelMinimum)
+                    if (ski.Class == Session.Character.Morph + 31 && specialist.SpLevel >= ski.LevelMinimum && SkillSpCount <= ski.CastId)
+                    {
                         Session.Character.SkillsSp.Add(new CharacterSkill() { SkillVNum = ski.SkillVNum, CharacterId = Session.Character.CharacterId });
-                }
-                if (Session.Character.SkillsSp.Count > SkillSpCount)
-                {
-                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SKILL_LEARNED"), 0));
-                    Session.Client.SendPacket(Session.Character.GenerateSki());
+                        Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SKILL_LEARNED"), 0));
+                        Session.Client.SendPacket(Session.Character.GenerateSki());
+                    }
                 }
                 Session.CurrentMap.Broadcast(Session.Character.GenerateEff(6));
                 Session.CurrentMap.Broadcast(Session.Character.GenerateEff(198));
