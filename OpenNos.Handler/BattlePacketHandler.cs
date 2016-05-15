@@ -80,7 +80,7 @@ namespace OpenNos.Handler
             List<CharacterSkill> skills = Session.Character.UseSp ? Session.Character.SkillsSp : Session.Character.Skills;
             bool notcancel = false;
 
-             if (skills != null)
+            if (skills != null)
             {
                 ushort damage = 0; ;
                 int hitmode = 0;
