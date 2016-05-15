@@ -972,6 +972,7 @@ namespace OpenNos.Handler
 
                 if (Session.Character.Class == 0)
                 {
+                    byte NewSkill = 0;
                     for (int i = 200; i <= 210; i++)
                     {
                         if (i == 209)
@@ -992,11 +993,18 @@ namespace OpenNos.Handler
                             }
                             if (NewSkillVNum > 0)
                             {
+                                NewSkill = 1;
                                 Session.Character.Skills.Add(new CharacterSkill() { SkillVNum = NewSkillVNum, CharacterId = Session.Character.CharacterId });
-                                Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SKILL_LEARNED"), 0));
-                                Session.Client.SendPacket(Session.Character.GenerateSki());
                             }
                         }
+                    }
+                    if (NewSkill > 0)
+                    {
+                        Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SKILL_LEARNED"), 0));
+                        Session.Client.SendPacket(Session.Character.GenerateSki());
+                        string[] quicklistpackets = Session.Character.GenerateQuicklist();
+                        foreach (string quicklist in quicklistpackets)
+                            Session.Client.SendPacket(quicklist);
                     }
                 }
                 Session.CurrentMap.Broadcast(Session.Character.GenerateEff(6));
@@ -1016,11 +1024,15 @@ namespace OpenNos.Handler
                 foreach (Skill ski in ServerManager.GetAllSkill())
                 {
                     if (ski.Class == Session.Character.Morph + 31 && specialist.SpLevel >= ski.LevelMinimum && SkillSpCount <= ski.CastId)
-                    {
                         Session.Character.SkillsSp.Add(new CharacterSkill() { SkillVNum = ski.SkillVNum, CharacterId = Session.Character.CharacterId });
-                        Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SKILL_LEARNED"), 0));
-                        Session.Client.SendPacket(Session.Character.GenerateSki());
-                    }
+                }
+                if (Session.Character.SkillsSp.Count > SkillSpCount)
+                {
+                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SKILL_LEARNED"), 0));
+                    Session.Client.SendPacket(Session.Character.GenerateSki());
+                    string[] quicklistpackets = Session.Character.GenerateQuicklist();
+                    foreach (string quicklist in quicklistpackets)
+                        Session.Client.SendPacket(quicklist);
                 }
                 Session.CurrentMap.Broadcast(Session.Character.GenerateEff(6));
                 Session.CurrentMap.Broadcast(Session.Character.GenerateEff(198));
