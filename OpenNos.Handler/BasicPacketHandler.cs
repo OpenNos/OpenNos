@@ -163,6 +163,52 @@ namespace OpenNos.Handler
                             CharacterSkillDTO sk2 = new CharacterSkillDTO { CharacterId = newCharacter.CharacterId, SkillVNum = 201 };
                             DAOFactory.CharacterSkillDAO.InsertOrUpdate(ref sk1);
                             DAOFactory.CharacterSkillDAO.InsertOrUpdate(ref sk2);
+
+                            IList<InventoryDTO> startupInventory = new List<InventoryDTO>();
+                            InventoryDTO inventory = new InventoryDTO() //first weapon
+                            {
+                                CharacterId = newCharacter.CharacterId,
+                                Slot = (short)EquipmentType.MainWeapon,
+                                Type = (byte)InventoryType.Equipment,
+                                ItemInstance = new WearableInstance() { Amount = 1, ItemVNum = 1 },
+                            };
+                            startupInventory.Add(inventory);
+                            inventory = new InventoryDTO() //second weapon
+                            {
+                                CharacterId = newCharacter.CharacterId,
+                                Slot = (short)EquipmentType.SecondaryWeapon,
+                                Type = (byte)InventoryType.Equipment,
+                                ItemInstance = new WearableInstance() { Amount = 1, ItemVNum = 8 },
+                            };
+                            startupInventory.Add(inventory);
+
+                            inventory = new InventoryDTO() //armor
+                            {
+                                CharacterId = newCharacter.CharacterId,
+                                Slot = (short)EquipmentType.Armor,
+                                Type = (byte)InventoryType.Equipment,
+                                ItemInstance = new WearableInstance() { Amount = 1, ItemVNum = 12 },
+                            };
+                            startupInventory.Add(inventory);
+                            inventory = new InventoryDTO() //snack
+                            {
+                                CharacterId = newCharacter.CharacterId,
+                                Slot = 0,
+                                Type = (byte)InventoryType.Etc,
+                                ItemInstance = new ItemInstance() { Amount = 10, ItemVNum = 2024 },
+                            };
+                            startupInventory.Add(inventory);
+                            inventory = new InventoryDTO() //ammo
+                            {
+                                CharacterId = newCharacter.CharacterId,
+                                Slot = 1,
+                                Type = (byte)InventoryType.Etc,
+                                ItemInstance = new ItemInstance() { Amount = 1, ItemVNum = 2081 },
+                            };
+                            startupInventory.Add(inventory);
+
+                            DAOFactory.InventoryDAO.InsertOrUpdate(startupInventory);
+
                             LoadCharacters(packet);
                         }
                         else Session.Client.SendPacketFormat($"info {Language.Instance.GetMessageFromKey("ALREADY_TAKEN")}");
@@ -809,7 +855,7 @@ namespace OpenNos.Handler
         {
             try
             {
-                if(Session != null && Session.Account != null && Session.Character == null)
+                if (Session != null && Session.Account != null && Session.Character == null)
                 {
                     string[] packetsplit = packet.Split(' ');
                     CharacterDTO characterDTO = DAOFactory.CharacterDAO.LoadBySlot(Session.Account.AccountId, Convert.ToByte(packetsplit[2]));
@@ -889,7 +935,6 @@ namespace OpenNos.Handler
                     // Inform everyone about connected character
                     ServiceFactory.Instance.CommunicationService.ConnectCharacter(Session.Character.Name, Session.Account.Name);
                 }
-                
             }
             catch (Exception ex)
             {
