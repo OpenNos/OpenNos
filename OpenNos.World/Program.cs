@@ -102,7 +102,7 @@ namespace OpenNos.World
             }
             catch (Exception ex)
             {
-                Logger.Log.Error(ex.Message);
+                Logger.Log.Error("General Error", ex);
             }
         }
 

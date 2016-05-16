@@ -69,7 +69,7 @@ namespace OpenNos.DAL.EF.MySQL
             }
             catch (Exception e)
             {
-                Logger.Log.ErrorFormat(Language.Instance.GetMessageFromKey("DELETE_Account_ERROR"), accountId, e.Message);
+                Logger.Log.Error(String.Format(Language.Instance.GetMessageFromKey("DELETE_Account_ERROR"), accountId, e.Message), e);
                 return DeleteResult.Error;
             }
         }
@@ -97,7 +97,7 @@ namespace OpenNos.DAL.EF.MySQL
             }
             catch (Exception e)
             {
-                Logger.Log.ErrorFormat(Language.Instance.GetMessageFromKey("UPDATE_Account_ERROR"), account.AccountId, e.Message);
+                Logger.Log.Error(String.Format(Language.Instance.GetMessageFromKey("UPDATE_Account_ERROR"), account.AccountId, e.Message),e);
                 return SaveResult.Error;
             }
         }

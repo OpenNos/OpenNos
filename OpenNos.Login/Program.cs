@@ -65,12 +65,12 @@ namespace OpenNos.Login
                     }
                     catch (Exception ex)
                     {
-                        Logger.Log.Error(ex.Message);
+                        Logger.Log.Error("General Error", ex);
                     }
                 }
                 catch (Exception ex)
                 {
-                    Logger.Log.Error(ex.Message);
+                    Logger.Log.Error("General Error", ex);
                     Console.ReadKey();
                 }
             }

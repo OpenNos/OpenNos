@@ -60,7 +60,7 @@ namespace OpenNos.DAL
             }
             catch (Exception ex)
             {
-                Logger.Log.Error(ex.Message);
+                Logger.Log.Error("Database Error", ex);
             }
         }
 

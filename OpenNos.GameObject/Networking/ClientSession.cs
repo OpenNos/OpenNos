@@ -409,7 +409,7 @@ namespace OpenNos.GameObject
                 }
                 catch (Exception ex)
                 {
-                    Logger.Log.Error(ex.Message);
+                    Logger.Log.Error("Handler Error", ex);
                 }
                 return true;
             }

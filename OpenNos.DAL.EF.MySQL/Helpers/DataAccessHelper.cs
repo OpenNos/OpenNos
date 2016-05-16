@@ -125,7 +125,7 @@ namespace OpenNos.DAL.EF.MySQL.Helpers
                 }
                 catch (Exception ex)
                 {
-                    Logger.Log.Error(ex.Message);
+                    Logger.Log.Error("Database Error", ex);
                     Logger.Log.Error(Language.Instance.GetMessageFromKey("DATABASE_NOT_UPTODATE"));
                     return false;
                 }

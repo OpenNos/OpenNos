@@ -86,7 +86,7 @@ namespace OpenNos.WCF
             }
             catch (Exception ex)
             {
-                Logger.Log.Error(ex.Message);
+                Logger.Log.Error("General Error", ex);
                 return false;
             }
         }
@@ -131,7 +131,7 @@ namespace OpenNos.WCF
             }
             catch (Exception ex)
             {
-                Logger.Log.Error(ex.Message);
+                Logger.Log.Error("General Error", ex);
                 return false;
             }
         }
@@ -166,7 +166,7 @@ namespace OpenNos.WCF
             }
             catch (Exception ex)
             {
-                Logger.Log.Error(ex.Message);
+                Logger.Log.Error("General Error", ex);
                 return false;
             }
         }
@@ -189,7 +189,7 @@ namespace OpenNos.WCF
             }
             catch (Exception ex)
             {
-                Logger.Log.Error(ex.Message);
+                Logger.Log.Error("General Error", ex);
             }
         }
 
@@ -211,7 +211,7 @@ namespace OpenNos.WCF
             }
             catch (Exception ex)
             {
-                Logger.Log.Error(ex.Message);
+                Logger.Log.Error("General Error", ex);
             }
         }
 
@@ -241,7 +241,7 @@ namespace OpenNos.WCF
             }
             catch (Exception ex)
             {
-                Logger.Log.Error(ex.Message);
+                Logger.Log.Error("General Error", ex);
             }
 
             return false;
@@ -268,7 +268,7 @@ namespace OpenNos.WCF
             }
             catch (Exception ex)
             {
-                Logger.Log.Error(ex.Message);
+                Logger.Log.Error("General Error", ex);
             }
         }
 

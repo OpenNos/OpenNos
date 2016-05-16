@@ -85,7 +85,7 @@ namespace OpenNos.DAL.EF.MySQL
             }
             catch (Exception e)
             {
-                Logger.Log.ErrorFormat(Language.Instance.GetMessageFromKey("UPDATE_ERROR"), e.Message);
+                Logger.Log.Error(String.Format(Language.Instance.GetMessageFromKey("UPDATE_ERROR"), e.Message), e);
                 return Enumerable.Empty<CharacterSkillDTO>();
             }
         }
@@ -101,7 +101,7 @@ namespace OpenNos.DAL.EF.MySQL
             }
             catch (Exception e)
             {
-                Logger.Log.ErrorFormat(Language.Instance.GetMessageFromKey("UPDATE_ERROR"), e.Message);
+                Logger.Log.Error(String.Format(Language.Instance.GetMessageFromKey("UPDATE_ERROR"), e.Message), e);
                 return SaveResult.Error;
             }
         }

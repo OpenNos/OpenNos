@@ -74,7 +74,7 @@ namespace OpenNos.DAL.EF.MySQL
             }
             catch (Exception e)
             {
-                Logger.Log.ErrorFormat("DELETE_ERROR", characterSlot, e.Message);
+                Logger.Log.Error(String.Format("CHARACTER_DELETE_ERROR", characterSlot, e.Message), e);
                 return DeleteResult.Error;
             }
         }
@@ -135,7 +135,7 @@ namespace OpenNos.DAL.EF.MySQL
             }
             catch (Exception e)
             {
-                Logger.Log.ErrorFormat("INSERT_ERROR", character, e.Message);
+                Logger.Log.Error(String.Format("INSERT_ERROR", character, e.Message), e);
                 return SaveResult.Error;
             }
         }

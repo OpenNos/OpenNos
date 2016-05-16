@@ -355,7 +355,7 @@ namespace OpenNos.Handler
                 }
                 catch (Exception ex)
                 {
-                    Logger.Log.Error(ex.Message);
+                    Logger.Log.Error("WCF Communication Failed.", ex);
                 }
 
                 if (loginPacketParts.Length > 4 && hasRegisteredAccountLogin)
@@ -938,7 +938,7 @@ namespace OpenNos.Handler
             }
             catch (Exception ex)
             {
-                Logger.Log.Error(ex);
+                Logger.Log.Error("Select character failed.", ex);
             }
         }
 
