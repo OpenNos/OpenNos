@@ -1136,12 +1136,15 @@ namespace OpenNos.Handler
             /* string s="sl 0";
                chara.Send(s); */
             Session.Character.SpCooldown = 30;
-            foreach (CharacterSkill ski in Session.Character.SkillsSp.Where(s => s.Used))
+            if (Session.Character != null && Session.Character.SkillsSp != null)
             {
-                short time = ServerManager.GetSkill(ski.SkillVNum).Cooldown;
-                double temp = (ski.LastUse - DateTime.Now).TotalMilliseconds + time * 100;
-                temp /= 1000;
-                Session.Character.SpCooldown = temp > Session.Character.SpCooldown ? (int)(temp) : (int)(Session.Character.SpCooldown);
+                foreach (CharacterSkill ski in Session.Character.SkillsSp.Where(s => s.Used))
+                {
+                    short time = ServerManager.GetSkill(ski.SkillVNum).Cooldown;
+                    double temp = (ski.LastUse - DateTime.Now).TotalMilliseconds + time * 100;
+                    temp /= 1000;
+                    Session.Character.SpCooldown = temp > Session.Character.SpCooldown ? (int)(temp) : (int)(Session.Character.SpCooldown);
+                }
             }
 
             Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("STAY_TIME"), Session.Character.SpCooldown), 11));
