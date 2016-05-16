@@ -73,7 +73,7 @@ namespace OpenNos.DAL.EF.MySQL
 
                 using (var context = DataAccessHelper.CreateContext())
                 {
-                    foreach(CharacterSkillDTO skill in characterSkills)
+                    foreach (CharacterSkillDTO skill in characterSkills)
                     {
                         CharacterSkillDTO returnSkill = skill;
                         SaveResult result = InsertOrUpdate(ref returnSkill, context);
@@ -106,23 +106,6 @@ namespace OpenNos.DAL.EF.MySQL
             }
         }
 
-        private SaveResult InsertOrUpdate(ref CharacterSkillDTO characterSkill, OpenNosContext context)
-        {
-            long characterId = characterSkill.CharacterId;
-            long skillVnum = characterSkill.SkillVNum;
-            CharacterSkill entity = context.CharacterSkill.FirstOrDefault(i => i.CharacterId == characterId && i.SkillVNum == skillVnum);
-            if (entity == null) //new entity
-            {
-                characterSkill = Insert(characterSkill, context);
-                return SaveResult.Inserted;
-            }
-            else //existing entity
-            {
-                 characterSkill = Update(entity, characterSkill, context);
-                return SaveResult.Updated;
-            }
-        }
-
         public IEnumerable<CharacterSkillDTO> LoadByCharacterId(long characterId)
         {
             using (var context = DataAccessHelper.CreateContext())
@@ -140,6 +123,22 @@ namespace OpenNos.DAL.EF.MySQL
             context.CharacterSkill.Add(entity);
             context.SaveChanges();
             return _mapper.Map<CharacterSkillDTO>(entity);
+        }
+
+        private SaveResult InsertOrUpdate(ref CharacterSkillDTO characterSkill, OpenNosContext context)
+        {
+            long characterSkillId = characterSkill.CharacterSkillId;
+            CharacterSkill entity = context.CharacterSkill.FirstOrDefault(i => i.CharacterSkillId == characterSkillId);
+            if (entity == null) //new entity
+            {
+                characterSkill = Insert(characterSkill, context);
+                return SaveResult.Inserted;
+            }
+            else //existing entity
+            {
+                characterSkill = Update(entity, characterSkill, context);
+                return SaveResult.Updated;
+            }
         }
 
         private CharacterSkillDTO Update(CharacterSkill entity, CharacterSkillDTO characterSkill, OpenNosContext context)
