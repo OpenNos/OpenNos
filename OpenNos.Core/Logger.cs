@@ -13,6 +13,7 @@
  */
 
 using log4net;
+using System.Runtime.CompilerServices;
 
 namespace OpenNos.Core
 {
@@ -35,6 +36,19 @@ namespace OpenNos.Core
             set
             {
                 _log = value;
+            }
+        }
+
+        /// <summary>
+        /// Wraps up the message with the CallerMemberName
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="memberName"></param>
+        public static void Debug(string message, int sessionId = 0, [CallerMemberName] string memberName = "")
+        {
+            if(Log != null)
+            {
+                Log.Debug($"Session: {sessionId} Method: {memberName} Packet: {message}");
             }
         }
 

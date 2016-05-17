@@ -37,6 +37,7 @@ namespace OpenNos.Handler
         [Packet("$AddMonster")]
         public void AddMonster(string packet)
         {
+            Logger.Debug(packet, Session.SessionId);
             string[] packetsplit = packet.Split(' ');
             short vnum = 0, isMoving = 0;
 
@@ -67,6 +68,7 @@ namespace OpenNos.Handler
         [Packet("$Ban")]
         public void Ban(string packet)
         {
+            Logger.Debug(packet, Session.SessionId);
             string[] packetsplit = packet.Split(' ');
             if (packetsplit.Length > 2)
             {
@@ -86,6 +88,7 @@ namespace OpenNos.Handler
         [Packet("$ChangeClass")]
         public void ChangeClass(string packet)
         {
+            Logger.Debug(packet, Session.SessionId);
             string[] packetsplit = packet.Split(' ');
             byte Class;
             if (packetsplit.Length > 2)
@@ -102,6 +105,7 @@ namespace OpenNos.Handler
         [Packet("$HeroLvl")]
         public void ChangeHeroLevel(string packet)
         {
+            Logger.Debug(packet, Session.SessionId);
             string[] packetsplit = packet.Split(' ');
             byte hlevel;
             if (packetsplit.Length > 2)
@@ -126,6 +130,7 @@ namespace OpenNos.Handler
         [Packet("$JLvl")]
         public void ChangeJobLevel(string packet)
         {
+            Logger.Debug(packet, Session.SessionId);
             string[] packetsplit = packet.Split(' ');
             byte joblevel;
             if (packetsplit.Length > 2)
@@ -147,6 +152,7 @@ namespace OpenNos.Handler
         [Packet("$Lvl")]
         public void ChangeLevel(string packet)
         {
+            Logger.Debug(packet, Session.SessionId);
             string[] packetsplit = packet.Split(' ');
             byte level;
             if (packetsplit.Length > 2)
@@ -176,6 +182,7 @@ namespace OpenNos.Handler
         [Packet("$ChangeRep")]
         public void ChangeReputation(string packet)
         {
+            Logger.Debug(packet, Session.SessionId);
             string[] packetsplit = packet.Split(' ');
             long reput;
             if (packetsplit.Length != 3)
@@ -196,6 +203,7 @@ namespace OpenNos.Handler
         [Packet("$ChangeSex")]
         public void ChangeSex(string packet)
         {
+            Logger.Debug(packet, Session.SessionId);
             Session.Character.Gender = Session.Character.Gender == 1 ? (byte)0 : (byte)1;
             Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SEX_CHANGED"), 0));
             Session.Client.SendPacket(Session.Character.GenerateEq());
@@ -208,6 +216,7 @@ namespace OpenNos.Handler
         [Packet("$SPLvl")]
         public void ChangeSpecialistLevel(string packet)
         {
+            Logger.Debug(packet, Session.SessionId);
             string[] packetsplit = packet.Split(' ');
             byte splevel;
             SpecialistInstance sp = Session.Character.EquipmentList.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, (byte)InventoryType.Equipment);
@@ -230,6 +239,7 @@ namespace OpenNos.Handler
         [Packet("$SPRefill")]
         public void SPRefill(string packet)
         {
+            Logger.Debug(packet, Session.SessionId);
             Session.Character.SpPoint = 10000;
             Session.Character.SpAdditionPoint = 1000000;
 
@@ -240,6 +250,7 @@ namespace OpenNos.Handler
         [Packet("$Help")]
         public void Command(string packet)
         {
+            Logger.Debug(packet, Session.SessionId);
             Session.Client.SendPacket(Session.Character.GenerateSay("-----------Commands Info--------------", 10));
             Session.Client.SendPacket(Session.Character.GenerateSay("$Shout MESSAGE", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$Teleport Map X Y", 6));
@@ -285,6 +296,7 @@ namespace OpenNos.Handler
         [Packet("$CreateItem")]
         public void CreateItem(string packet)
         {
+            Logger.Debug(packet, Session.SessionId);
             string[] packetsplit = packet.Split(' ');
             byte amount = 1, rare = 0, upgrade = 0, design = 0;
             short vnum;
@@ -376,6 +388,7 @@ namespace OpenNos.Handler
         [Packet("$PortalTo")]
         public void CreatePortal(string packet)
         {
+            Logger.Debug(packet, Session.SessionId);
             string[] packetsplit = packet.Split(' ');
             short mapid, destx, desty = 0;
             sbyte portaltype = -1;
@@ -400,6 +413,7 @@ namespace OpenNos.Handler
         [Packet("$Effect")]
         public void Effect(string packet)
         {
+            Logger.Debug(packet, Session.SessionId);
             string[] packetsplit = packet.Split(' ');
             short arg = 0;
             if (packetsplit.Length > 2)
@@ -419,6 +433,7 @@ namespace OpenNos.Handler
         [Packet("$Gold")]
         public void Gold(string packet)
         {
+            Logger.Debug(packet, Session.SessionId);
             string[] packetsplit = packet.Split(' ');
             long gold;
             if (packetsplit.Length > 2)
@@ -442,6 +457,7 @@ namespace OpenNos.Handler
         [Packet("$Invisible")]
         public void Invisible(string packet)
         {
+            Logger.Debug(packet, Session.SessionId);
             Session.Character.Invisible = !Session.Character.Invisible;
             Session.CurrentMap?.Broadcast(Session.Character.GenerateInvisible());
             Session.Character.InvisibleGm = Session.Character.InvisibleGm ? false : true;
@@ -458,6 +474,7 @@ namespace OpenNos.Handler
         [Packet("$Kick")]
         public void Kick(string packet)
         {
+            Logger.Debug(packet, Session.SessionId);
             string[] packetsplit = packet.Split(' ');
             if (packetsplit.Length > 2)
                 ServerManager.Instance.Kick(packetsplit[2]);
@@ -468,6 +485,7 @@ namespace OpenNos.Handler
         [Packet("$Kill")]
         public void Kill(string packet)
         {
+            Logger.Debug(packet, Session.SessionId);
             string[] packetsplit = packet.Split(' ');
             if (packetsplit.Length == 3)
             {
@@ -501,6 +519,7 @@ namespace OpenNos.Handler
         [Packet("$MapDance")]
         public void MapDance(string packet)
         {
+            Logger.Debug(packet, Session.SessionId);
             Session.CurrentMap.IsDancing = Session.CurrentMap.IsDancing == 0 ? 2 : 0;
             if (Session.CurrentMap.IsDancing == 2)
             {
@@ -519,6 +538,7 @@ namespace OpenNos.Handler
         [Packet("$Morph")]
         public void Morph(string packet)
         {
+            Logger.Debug(packet, Session.SessionId);
             string[] packetsplit = packet.Split(' ');
             short[] arg = new short[4];
             bool verify = false;
@@ -562,6 +582,7 @@ namespace OpenNos.Handler
         [Packet("$PlayMusic")]
         public void PlayMusic(string packet)
         {
+            Logger.Debug(packet, Session.SessionId);
             string[] packetsplit = packet.Split(' ');
             if (packetsplit.Length > 2)
             {
@@ -579,12 +600,14 @@ namespace OpenNos.Handler
         [Packet("$Position")]
         public void Position(string packet)
         {
+            Logger.Debug(packet, Session.SessionId);
             Session.Client.SendPacket(Session.Character.GenerateSay($"Map:{Session.Character.MapId} - X:{Session.Character.MapX} - Y:{Session.Character.MapY}", 12));
         }
 
         [Packet("$Rarify")]
         public void Rarify(string packet)
         {
+            Logger.Debug(packet, Session.SessionId);
             string[] packetsplit = packet.Split(' ');
             if (packetsplit.Length != 5)
             {
@@ -615,6 +638,7 @@ namespace OpenNos.Handler
         [Packet("$Resize")]
         public void Resize(string packet)
         {
+            Logger.Debug(packet, Session.SessionId);
             string[] packetsplit = packet.Split(' ');
             short arg = -1;
 
@@ -636,6 +660,7 @@ namespace OpenNos.Handler
         [Packet("$Shout")]
         public void Shout(string packet)
         {
+            Logger.Debug(packet, Session.SessionId);
             string[] packetsplit = packet.Split(' ');
             string message = String.Empty;
             if (packetsplit.Length > 2)
@@ -650,6 +675,7 @@ namespace OpenNos.Handler
         [Packet("$Shutdown")]
         public void Shutdown(string packet)
         {
+            Logger.Debug(packet, Session.SessionId);
             if (ServerManager.Instance.TaskShutdown != null)
             {
                 ServerManager.Instance.ShutdownStop = true;
@@ -665,6 +691,7 @@ namespace OpenNos.Handler
         [Packet("$Speed")]
         public void Speed(string packet)
         {
+            Logger.Debug(packet, Session.SessionId);
             string[] packetsplit = packet.Split(' ');
             byte arg = 0;
             bool verify = false;
@@ -691,12 +718,14 @@ namespace OpenNos.Handler
         [Packet("$Stat")]
         public void Stat(string packet)
         {
+            Logger.Debug(packet, Session.SessionId);
             Session.Client.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("TOTAL_SESSION")}: {ServerManager.Instance.Sessions.Count()} ", 13));
         }
 
         [Packet("$Summon")]
         public void Summon(string packet)
         {
+            Logger.Debug(packet, Session.SessionId);
             string[] packetsplit = packet.Split(' ');
             short vnum = 0;
             byte qty = 1, move = 0;
@@ -729,6 +758,7 @@ namespace OpenNos.Handler
         [Packet("$Teleport")]
         public void Teleport(string packet)
         {
+            Logger.Debug(packet, Session.SessionId);
             string[] packetsplit = packet.Split(' ');
             short[] arg = new short[3];
             bool verify = false;
@@ -781,6 +811,7 @@ namespace OpenNos.Handler
         [Packet("$TeleportToMe")]
         public void TeleportToMe(string packet)
         {
+            Logger.Debug(packet, Session.SessionId);
             string[] packetsplit = packet.Split(' ');
 
             if (packetsplit.Length == 3)
@@ -809,6 +840,7 @@ namespace OpenNos.Handler
         [Packet("$Upgrade")]
         public void Upgrade(string packet)
         {
+            Logger.Debug(packet, Session.SessionId);
             string[] packetsplit = packet.Split(' ');
             if (packetsplit.Length != 5)
             {

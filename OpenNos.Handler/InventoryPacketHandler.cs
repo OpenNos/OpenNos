@@ -52,6 +52,7 @@ namespace OpenNos.Handler
         [Packet("#req_exc")]
         public void AcceptExchange(string packet)
         {
+            Logger.Debug(packet, Session.SessionId);
             string[] packetsplit = packet.Split(' ', '^');
             byte mode;
             long charId;
@@ -89,6 +90,7 @@ namespace OpenNos.Handler
         [Packet("#b_i")]
         public void AnswerToDelete(string packet)
         {
+            Logger.Debug(packet, Session.SessionId);
             string[] packetsplit = packet.Split(' ', '^');
             byte type; byte.TryParse(packetsplit[2], out type);
             short slot; short.TryParse(packetsplit[3], out slot);
@@ -108,6 +110,7 @@ namespace OpenNos.Handler
         [Packet("b_i")]
         public void AskToDelete(string packet)
         {
+            Logger.Debug(packet, Session.SessionId);
             string[] packetsplit = packet.Split(' ');
             byte type; byte.TryParse(packetsplit[2], out type);
             short slot; short.TryParse(packetsplit[3], out slot);
@@ -117,6 +120,7 @@ namespace OpenNos.Handler
         [Packet("eqinfo")]
         public void EqInfo(string packet)
         {
+            Logger.Debug(packet, Session.SessionId);
             string[] packetsplit = packet.Split(' ');
             if (packetsplit.Length <= 3) return;
 
@@ -175,6 +179,7 @@ namespace OpenNos.Handler
         [Packet("req_exc")]
         public void Exchange(string packet)
         {
+            Logger.Debug(packet, Session.SessionId);
             string[] packetsplit = packet.Split(' ');
             short mode;
             if (!short.TryParse(packetsplit[2], out mode)) return;
@@ -335,6 +340,7 @@ namespace OpenNos.Handler
         [Packet("exc_list")]
         public void ExchangeList(string packet)
         {
+            Logger.Debug(packet, Session.SessionId);
             string[] packetsplit = packet.Split(' ');
             long Gold = 0; long.TryParse(packetsplit[2], out Gold);
             byte[] type = new byte[10];
@@ -371,6 +377,7 @@ namespace OpenNos.Handler
         [Packet("get")]
         public void GetItem(string packet)
         {
+            Logger.Debug(packet, Session.SessionId);
             string[] packetsplit = packet.Split(' ');
             long DropId; long.TryParse(packetsplit[4], out DropId);
             MapItem mapitem;
@@ -421,6 +428,7 @@ namespace OpenNos.Handler
         [Packet("mve")]
         public void MoveInventory(string packet)
         {
+            Logger.Debug(packet, Session.SessionId);
             string[] packetsplit = packet.Split(' ');
             byte type; byte.TryParse(packetsplit[2], out type);
             short slot; short.TryParse(packetsplit[3], out slot);
@@ -442,6 +450,7 @@ namespace OpenNos.Handler
         [Packet("mvi")]
         public void MoveItem(string packet)
         {
+            Logger.Debug(packet, Session.SessionId);
             string[] packetsplit = packet.Split(' ');
             byte type; byte.TryParse(packetsplit[2], out type);
             short slot; short.TryParse(packetsplit[3], out slot);
@@ -467,6 +476,7 @@ namespace OpenNos.Handler
         [Packet("put")]
         public void PutItem(string packet)
         {
+            Logger.Debug(packet, Session.SessionId);
             string[] packetsplit = packet.Split(' ');
             byte type; byte.TryParse(packetsplit[2], out type);
             short slot; short.TryParse(packetsplit[3], out slot);
@@ -503,6 +513,7 @@ namespace OpenNos.Handler
         [Packet("remove")]
         public void Remove(string packet)
         {
+            Logger.Debug(packet, Session.SessionId);
             // Undress Equipment
             string[] packetsplit = packet.Split(' ');
             if (packetsplit.Length > 3 && Session.CurrentMap.UserShops.FirstOrDefault(mapshop => mapshop.Value.OwnerId.Equals(Session.Character.CharacterId)).Value == null && (Session.Character.ExchangeInfo == null || Session.Character.ExchangeInfo?.ExchangeList.Count() == 0))
@@ -541,6 +552,7 @@ namespace OpenNos.Handler
         [Packet("sortopen")]
         public void SortOpen(string packet)
         {
+            Logger.Debug(packet, Session.SessionId);
             Boolean gravity = true;
             byte type;
             while (gravity)
@@ -572,6 +584,7 @@ namespace OpenNos.Handler
         [Packet("sl")]
         public void SpTransform(string packet)
         {
+            Logger.Debug(packet, Session.SessionId);
             string[] packetsplit = packet.Split(' ');
 
             SpecialistInstance specialistInstance = Session.Character.EquipmentList.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, (byte)InventoryType.Equipment);
@@ -946,6 +959,7 @@ namespace OpenNos.Handler
         [Packet("up_gr")]
         public void UpgradeCommand(string packet)
         {
+            Logger.Debug(packet, Session.SessionId);
             string[] packetsplit = packet.Split(' ');
             if ((Session.Character.ExchangeInfo != null && Session.Character.ExchangeInfo?.ExchangeList.Count() != 0) || Session.Character.Speed == 0)
                 return;
@@ -1025,6 +1039,7 @@ namespace OpenNos.Handler
         [Packet("u_i")]
         public void UseItem(string packet)
         {
+            Logger.Debug(packet, Session.SessionId);
             string[] packetsplit = packet.Split(' ');
             byte type; byte.TryParse(packetsplit[4], out type);
             short slot; short.TryParse(packetsplit[5], out slot);
@@ -1038,6 +1053,7 @@ namespace OpenNos.Handler
         [Packet("wear")]
         public void Wear(string packet)
         {
+            Logger.Debug(packet, Session.SessionId);
             string[] packetsplit = packet.Split(' ');
             if ((Session.Character.ExchangeInfo != null && Session.Character.ExchangeInfo?.ExchangeList.Count() != 0) || Session.Character.Speed == 0)
                 return;
@@ -1057,6 +1073,7 @@ namespace OpenNos.Handler
 
         private void ChangeSP()
         {
+            Logger.Debug("ChangeSP", Session.SessionId);
             Session.Client.SendPacket("delay 5000 3 #sl^1");
             Session.CurrentMap?.Broadcast($"guri 2 1 {Session.Character.CharacterId}");
             Thread.Sleep(5000);
@@ -1121,6 +1138,7 @@ namespace OpenNos.Handler
 
         private async void RemoveSP(short vnum)
         {
+            Logger.Debug(vnum.ToString(), Session.SessionId);
             SpecialistInstance sp = Session.Character.EquipmentList.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, (byte)InventoryType.Equipment);
             Session.Character.Speed -= ServerManager.GetItem(vnum).Speed;
             Session.Character.UseSp = false;

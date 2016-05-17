@@ -49,6 +49,7 @@ namespace OpenNos.Handler
         [Packet("buy")]
         public void BuyShop(string packet)
         {
+            Logger.Debug(packet, Session.SessionId);
             string[] packetsplit = packet.Split(' ');
             if (packetsplit.Length < 5)
                 return;
@@ -271,6 +272,7 @@ namespace OpenNos.Handler
         [Packet("m_shop")]
         public void CreateShop(string packet)
         {
+            Logger.Debug(packet, Session.SessionId);
             string[] packetsplit = packet.Split(' ');
             byte[] type = new byte[20];
             long[] gold = new long[20];
@@ -394,6 +396,7 @@ namespace OpenNos.Handler
         [Packet("n_run")]
         public void NpcRunFunction(string packet)
         {
+            Logger.Debug(packet, Session.SessionId);
             string[] packetsplit = packet.Split(' ');
             if (packetsplit.Length <= 5) return;
 
@@ -409,6 +412,7 @@ namespace OpenNos.Handler
         [Packet("pdtse")]
         public void Pdtse(string packet)
         {
+            Logger.Debug(packet, Session.SessionId);
             string[] packetsplit = packet.Split(' ');
             if (packetsplit.Count() < 4)
                 return;
@@ -486,6 +490,7 @@ namespace OpenNos.Handler
         [Packet("sell")]
         public void SellShop(string packet)
         {
+            Logger.Debug(packet, Session.SessionId);
             string[] packetsplit = packet.Split(' ');
             if ((Session.Character.ExchangeInfo != null && Session.Character.ExchangeInfo?.ExchangeList.Count() != 0) || Session.Character.Speed == 0)
                 return;
@@ -555,6 +560,7 @@ namespace OpenNos.Handler
         [Packet("shopping")]
         public void Shopping(string packet)
         {
+            Logger.Debug(packet, Session.SessionId);
             // n_inv 2 1834 0 100 0.13.13.0.0.330 0.14.15.0.0.2299 0.18.120.0.0.3795 0.19.107.0.0.3795 0.20.94.0.0.3795 0.37.95.0.0.5643 0.38.97.0.0.11340 0.39.99.0.0.18564 0.48.108.0.0.5643 0.49.110.0.0.11340 0.50.112.0.0.18564 0.59.121.0.0.5643 0.60.123.0.0.11340 0.61.125.0.0.18564
             string[] packetsplit = packet.Split(' ');
             byte type;
@@ -609,6 +615,7 @@ namespace OpenNos.Handler
         [Packet("npc_req")]
         public void ShowShop(string packet)
         {
+            Logger.Debug(packet, Session.SessionId);
             // n_inv 1 2 0 0 0.0.302.7.0.990000. 0.1.264.5.6.2500000. 0.2.69.7.0.650000. 0.3.4106.0.0.4200000. -1 0.5.4240.0.0.11200000. 0.6.4240.0.5.24000000. 0.7.4801.0.0.6200000. 0.8.4240.0.10.32000000. 0.9.712.0.3.250000. 0.10.997.0.4.250000. 1.11.1895.4.16000.-1.-1 1.12.1897.6.18000.-1.-1 -1 1.14.1902.3.35000.-1.-1 1.15.1237.2.12000.-1.-1 -1 -1 1.18.1249.3.92000.-1.-1 0.19.4240.0.1.10500000. -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
             string[] packetsplit = packet.Split(' ');
             if (packetsplit.Length > 2)

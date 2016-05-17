@@ -253,7 +253,6 @@ namespace OpenNos.GameObject
             if (_encryptor.HasCustomParameter && this.SessionId == 0)
             {
                 string sessionPacket = _encryptor.DecryptCustomParameter(packetData);
-                Logger.Log.DebugFormat(Language.Instance.GetMessageFromKey("PACKET_ARRIVED"), sessionPacket);
 
                 string[] sessionParts = sessionPacket.Split(' ');
                 if (sessionParts.Count() < 1)
@@ -287,7 +286,6 @@ namespace OpenNos.GameObject
                         ServerManager.Instance.Broadcast(this, Encoding.UTF8.GetString(Convert.FromBase64String("bXNnIDEwIFRoaXMgaXMgYSBHUEwgUFJPSkVDVCAtIE9QRU5OT1Mh")), ReceiverType.All);
                         return;
                     }
-                    Logger.Log.DebugFormat(Language.Instance.GetMessageFromKey("MESSAGE_RECEIVED"), packet, _client.ClientId);
                 }
 
                 if (_encryptor.HasCustomParameter)

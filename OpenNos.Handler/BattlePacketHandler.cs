@@ -51,6 +51,7 @@ namespace OpenNos.Handler
         [Packet("mtlist")]
         public void SpecialZoneHit(string packet)
         {
+            Logger.Debug(packet, Session.SessionId);
             string[] packetsplit = packet.Split(' ');
             ushort damage = 0;
             int hitmode = 0;
@@ -185,6 +186,7 @@ namespace OpenNos.Handler
         [Packet("u_s")]
         public void UseSkill(string packet)
         {
+            Logger.Debug(packet, Session.SessionId);
             Session.Character.InterruptCharChange();
 
             if (Session.Character.CanFight)
@@ -204,6 +206,7 @@ namespace OpenNos.Handler
         [Packet("u_as")]
         public void UseZonesSkill(string packet)
         {
+            Logger.Debug(packet, Session.SessionId);
             Session.Character.InterruptCharChange();
             if (Session.Character.CanFight)
             {

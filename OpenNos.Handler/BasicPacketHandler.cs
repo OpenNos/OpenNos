@@ -56,6 +56,7 @@ namespace OpenNos.Handler
         [Packet("compl")]
         public void Compliment(string packet)
         {
+            Logger.Debug(packet, Session.SessionId);
             string[] packetsplit = packet.Split(' ');
             long complimentCharacterId = 0;
             if (long.TryParse(packetsplit[3], out complimentCharacterId))
@@ -95,6 +96,7 @@ namespace OpenNos.Handler
         [Packet("Char_NEW")]
         public void CreateCharacter(string packet)
         {
+            Logger.Debug(packet, Session.SessionId);
             if (Session.CurrentMap != null)
                 return;
             // TODO: Hold Account Information in Authorized object
@@ -221,6 +223,7 @@ namespace OpenNos.Handler
         [Packet("Char_DEL")]
         public void DeleteCharacter(string packet)
         {
+            Logger.Debug(packet, Session.SessionId);
             if (Session.CurrentMap != null)
                 return;
             string[] packetsplit = packet.Split(' ');
@@ -242,6 +245,7 @@ namespace OpenNos.Handler
         [Packet("dir")]
         public void Dir(string packet)
         {
+            Logger.Debug(packet, Session.SessionId);
             string[] packetsplit = packet.Split(' ');
 
             if (Convert.ToInt32(packetsplit[4]) == Session.Character.CharacterId)
@@ -287,6 +291,7 @@ namespace OpenNos.Handler
         [Packet("npinfo")]
         public void GetStats(string packet)
         {
+            Logger.Debug(packet, Session.SessionId);
             Session.Client.SendPacket(Session.Character.GenerateStatChar());
         }
 
@@ -562,6 +567,7 @@ namespace OpenNos.Handler
         [Packet("pjoin")]
         public void PlayerJoin(string packet)
         {
+            Logger.Debug(packet, Session.SessionId);
             string[] packetsplit = packet.Split(' ');
             if (packetsplit.Length > 3)
             {
@@ -621,12 +627,14 @@ namespace OpenNos.Handler
         [Packet("pleave")]
         public void PlayerLeave(string packet)
         {
+            Logger.Debug(packet, Session.SessionId);
             ServerManager.Instance.GroupLeave(Session);
         }
 
         [Packet("preq")]
         public void Preq(string packet)
         {
+            Logger.Debug(packet, Session.SessionId);
             double currentRunningSeconds = (DateTime.Now - Process.GetCurrentProcess().StartTime.AddSeconds(-50)).TotalSeconds;
             double timeSpanSinceLastPortal = currentRunningSeconds - Session.Character.LastPortal;
             if (!(timeSpanSinceLastPortal >= 4))
@@ -685,6 +693,7 @@ namespace OpenNos.Handler
         [Packet("qset")]
         public void QuicklistSet(string packet)
         {
+            Logger.Debug(packet, Session.SessionId);
             string[] packetsplit = packet.Split(' ');
             if (packetsplit.Length > 4)
             {
@@ -771,6 +780,7 @@ namespace OpenNos.Handler
         [Packet("req_info")]
         public void ReqInfo(string packet)
         {
+            Logger.Debug(packet, Session.SessionId);
             string[] packetsplit = packet.Split(' ');
             if (packetsplit[2] == "5")
             {
@@ -787,6 +797,7 @@ namespace OpenNos.Handler
         [Packet("rest")]
         public void Rest(string packet)
         {
+            Logger.Debug(packet, Session.SessionId);
             Session.Character.IsSitting = !Session.Character.IsSitting;
             if (Session.Character.IsVehicled)
                 Session.Character.IsSitting = false;
@@ -798,6 +809,7 @@ namespace OpenNos.Handler
         [Packet("#revival")]
         public void Revive(string packet)
         {
+            Logger.Debug(packet, Session.SessionId);
             string[] packetsplit = packet.Split(' ', '^');
             byte type;
             if (packetsplit.Length > 2)
@@ -855,6 +867,7 @@ namespace OpenNos.Handler
         {
             try
             {
+                Logger.Debug(packet, Session.SessionId);
                 if (Session != null && Session.Account != null && Session.Character == null)
                 {
                     string[] packetsplit = packet.Split(' ');
@@ -1005,6 +1018,7 @@ namespace OpenNos.Handler
         [Packet("#pjoin")]
         public void ValidPJoin(string packet)
         {
+            Logger.Debug(packet, Session.SessionId);
             string[] packetsplit = packet.Split(' ', '^');
             int type = -1;
             long charId = -1;
