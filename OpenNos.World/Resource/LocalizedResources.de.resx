@@ -651,4 +651,7 @@
   <data name="CONNECTION_LOST" xml:space="preserve">
     <value>Die Verbindung zum Server wurde unterbrochen.</value>
   </data>
+  <data name="CLIENTSESSION_DISPOSING" xml:space="preserve">
+    <value>Die ClientSession wird derzeit geschlossen, das packet wird nichtmehr verarbeitet.</value>
+  </data>
 </root>

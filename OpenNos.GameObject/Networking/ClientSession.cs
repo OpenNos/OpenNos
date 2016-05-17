@@ -348,9 +348,9 @@ namespace OpenNos.GameObject
                             else
                             if (permit == 1)
                             {
-                                if (packetHeader != "0" && !TriggerHandler(packetHeader, packet, false))
+                                if (packetHeader != "0")
                                 {
-                                    Logger.Log.WarnFormat(Language.Instance.GetMessageFromKey("HANDLER_NOT_FOUND"), packetHeader);
+                                    TriggerHandler(packetHeader, packet, false);
                                 }
                             }
                         }
@@ -365,10 +365,7 @@ namespace OpenNos.GameObject
                         TriggerHandler(packetHeader[0].ToString(), packet, false);
                     }
                     else
-                    if (!TriggerHandler(packetHeader, packet, false))
-                    {
-                        Logger.Log.WarnFormat(Language.Instance.GetMessageFromKey("HANDLER_NOT_FOUND"), packetHeader);
-                    }
+                        TriggerHandler(packetHeader, packet, false);
                 }
             }
         }
@@ -389,32 +386,40 @@ namespace OpenNos.GameObject
             _queue.EnqueueMessage(message.MessageData);
         }
 
-        private bool TriggerHandler(string packetHeader, string packet, bool force)
+        private void TriggerHandler(string packetHeader, string packet, bool force)
         {
-            KeyValuePair<Packet, Tuple<Action<object, string>, object>> action = HandlerMethods.FirstOrDefault(h => h.Key.Header.Equals(packetHeader));
-
-            if (action.Value != null)
+            if (!IsDisposing)
             {
-                if (!force && action.Key.Amount > 1 && !_waitForPacketsAmount.HasValue)
-                {
-                    //we need to wait for more
-                    _waitForPacketsAmount = action.Key.Amount;
-                    _waitForPacketList.Add(packet != String.Empty ? packet : $"1 {packetHeader} ");
-                    return false;
-                }
-                try
-                {
-                    //call actual handler method
-                    action.Value.Item1(action.Value.Item2, packet);
-                }
-                catch (Exception ex)
-                {
-                    Logger.Log.Error("Handler Error", ex);
-                }
-                return true;
-            }
+                KeyValuePair<Packet, Tuple<Action<object, string>, object>> action = HandlerMethods.FirstOrDefault(h => h.Key.Header.Equals(packetHeader));
 
-            return false;
+                if (action.Value != null)
+                {
+                    if (!force && action.Key.Amount > 1 && !_waitForPacketsAmount.HasValue)
+                    {
+                        //we need to wait for more
+                        _waitForPacketsAmount = action.Key.Amount;
+                        _waitForPacketList.Add(packet != String.Empty ? packet : $"1 {packetHeader} ");
+                        return;
+                    }
+                    try
+                    {
+                        //call actual handler method
+                        action.Value.Item1(action.Value.Item2, packet);
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.Log.Error("Handler Error", ex);
+                    }
+                }
+                else
+                {
+                    Logger.Log.WarnFormat(Language.Instance.GetMessageFromKey("HANDLER_NOT_FOUND"), packetHeader);
+                }
+            }
+            else
+            {
+                Logger.Log.WarnFormat(Language.Instance.GetMessageFromKey("CLIENTSESSION_DISPOSING"), packetHeader);
+            }
         }
 
         #endregion

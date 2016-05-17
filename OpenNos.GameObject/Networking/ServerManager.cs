@@ -397,11 +397,11 @@ namespace OpenNos.GameObject
                 if (session.Character.InvisibleGm == false)
                     Broadcast(session, session.Character.GenerateIn(), ReceiverType.AllExceptMe);
                 if (session.CurrentMap.IsDancing == 2 && session.Character.IsDancing == 0)
-                    session.CurrentMap.Broadcast("dance 2");
+                    session.CurrentMap?.Broadcast("dance 2");
                 else if (session.CurrentMap.IsDancing == 0 && session.Character.IsDancing == 1)
                 {
                     session.Character.IsDancing = 0;
-                    session.CurrentMap.Broadcast("dance");
+                    session.CurrentMap?.Broadcast("dance");
                 }
                 foreach (String ShopPacket in session.Character.GenerateShopOnMap())
                     session.Client.SendPacket(ShopPacket);
@@ -589,7 +589,7 @@ namespace OpenNos.GameObject
             foreach (ClientSession session in Sessions.Where(s => s.Character != null && s.Character.CharacterId == id))
             {
                 session.Client.SendPacket(session.Character.GenerateMapOut());
-                session.CurrentMap.Broadcast(session, session.Character.GenerateOut(), ReceiverType.AllExceptMe);
+                session.CurrentMap?.Broadcast(session, session.Character.GenerateOut(), ReceiverType.AllExceptMe);
             }
         }
 

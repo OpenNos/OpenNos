@@ -25,7 +25,7 @@ namespace OpenNos.GameObject
         public void Regenerate(ClientSession session, Item item)
         {
             session.Character.IsSitting = true;
-            session.CurrentMap.Broadcast(session, session.Character.GenerateRest(), ReceiverType.All);
+            session.CurrentMap?.Broadcast(session, session.Character.GenerateRest(), ReceiverType.All);
 
             session.Client.SendPacket(session.Character.GenerateEff(6000));
             session.Character.SnackAmount++;
@@ -48,7 +48,7 @@ namespace OpenNos.GameObject
                 session.Character.Mp += session.Character.SnackHp;
                 session.Character.Hp += session.Character.SnackMp;
                 if ((session.Character.SnackHp > 0 && session.Character.SnackHp > 0) && (session.Character.Hp < session.Character.HPLoad() || session.Character.Mp < session.Character.MPLoad()))
-                    session.CurrentMap.Broadcast(session, session.Character.GenerateRc(session.Character.SnackHp), ReceiverType.All);
+                    session.CurrentMap?.Broadcast(session, session.Character.GenerateRc(session.Character.SnackHp), ReceiverType.All);
                 if (session.Client.CommunicationState == CommunicationStates.Connected)
                     session.Client.SendPacket(session.Character.GenerateStat());
                 else return;

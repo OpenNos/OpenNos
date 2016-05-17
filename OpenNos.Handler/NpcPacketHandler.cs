@@ -359,8 +359,8 @@ namespace OpenNos.Handler
                         Session.CurrentMap.UserShops.Add(Session.CurrentMap.UserShops.Count(), myShop);
                         Session.Character.HasShopOpened = true;
 
-                        Session.CurrentMap.Broadcast(Session, Session.Character.GeneratePlayerFlag(Session.CurrentMap.UserShops.Count()), ReceiverType.AllExceptMe);
-                        Session.CurrentMap.Broadcast(Session.Character.GenerateShop(shopname));
+                        Session.CurrentMap?.Broadcast(Session, Session.Character.GeneratePlayerFlag(Session.CurrentMap.UserShops.Count()), ReceiverType.AllExceptMe);
+                        Session.CurrentMap?.Broadcast(Session.Character.GenerateShop(shopname));
 
                         Session.Client.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("SHOP_OPEN")));
                         Session.Character.IsSitting = true;
@@ -368,7 +368,7 @@ namespace OpenNos.Handler
                         Session.Character.Speed = 0;
                         Session.Client.SendPacket(Session.Character.GenerateCond());
 
-                        Session.CurrentMap.Broadcast(Session.Character.GenerateRest());
+                        Session.CurrentMap?.Broadcast(Session.Character.GenerateRest());
                     }
                     else
                     {
@@ -381,12 +381,12 @@ namespace OpenNos.Handler
                     KeyValuePair<long, MapShop> shop = Session.CurrentMap.UserShops.FirstOrDefault(mapshop => mapshop.Value.OwnerId.Equals(Session.Character.CharacterId));
                     Session.CurrentMap.UserShops.Remove(shop.Key);
 
-                    Session.CurrentMap.Broadcast(Session.Character.GenerateShopEnd());
-                    Session.CurrentMap.Broadcast(Session, Session.Character.GeneratePlayerFlag(0), ReceiverType.AllExceptMe);
+                    Session.CurrentMap?.Broadcast(Session.Character.GenerateShopEnd());
+                    Session.CurrentMap?.Broadcast(Session, Session.Character.GeneratePlayerFlag(0), ReceiverType.AllExceptMe);
                     Session.Character.Speed = Session.Character.LastSpeed != 0 ? Session.Character.LastSpeed : Session.Character.Speed;
                     Session.Character.IsSitting = false;
                     Session.Client.SendPacket(Session.Character.GenerateCond());
-                    Session.CurrentMap.Broadcast(Session.Character.GenerateRest());
+                    Session.CurrentMap?.Broadcast(Session.Character.GenerateRest());
                 }
             }
         }

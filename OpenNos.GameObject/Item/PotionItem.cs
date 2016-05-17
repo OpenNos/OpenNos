@@ -44,7 +44,7 @@ namespace OpenNos.GameObject
                         session.Character.Hp = (int)session.Character.HPLoad();
 
                     if (session.Character.Hp < session.Character.HPLoad() || session.Character.Mp < session.Character.MPLoad())
-                        session.CurrentMap.Broadcast(session.Character.GenerateRc(item.Hp));
+                        session.CurrentMap?.Broadcast(session.Character.GenerateRc(item.Hp));
                     session.Client.SendPacket(session.Character.GenerateStat());
                     break;
             }

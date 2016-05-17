@@ -199,14 +199,14 @@ namespace OpenNos.GameObject
                 session.Client.SendPacket(session.Character.GenerateTit());
 
                 //eq 37 0 1 0 9 3 -1.120.46.86.-1.-1.-1.-1 0 0
-                session.CurrentMap.Broadcast(session.Character.GenerateEq());
+                Session.CurrentMap?.Broadcast(session.Character.GenerateEq());
 
                 //equip 0 0 0.46.0.0.0 1.120.0.0.0 5.86.0.0.
                 session.Client.SendPacket(session.Character.GenerateLev());
                 session.Client.SendPacket(session.Character.GenerateStat());
-                session.CurrentMap.Broadcast(session, session.Character.GenerateEff(8), ReceiverType.All);
+                Session.CurrentMap?.Broadcast(session, session.Character.GenerateEff(8), ReceiverType.All);
                 session.Client.SendPacket(session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("JOB_CHANGED"), 0));
-                session.CurrentMap.Broadcast(session, session.Character.GenerateEff(196), ReceiverType.All);
+                Session.CurrentMap?.Broadcast(session, session.Character.GenerateEff(196), ReceiverType.All);
                 Random rand = new Random();
                 int faction = 1 + (int)rand.Next(0, 2);
                 session.Character.Faction = faction;
@@ -218,9 +218,9 @@ namespace OpenNos.GameObject
 
                 session.Client.SendPacket(session.Character.GenerateEff(4799 + faction));
                 session.Client.SendPacket(session.Character.GenerateLev());
-                session.CurrentMap.Broadcast(session, session.Character.GenerateIn(), ReceiverType.AllExceptMe);
-                session.CurrentMap.Broadcast(session, session.Character.GenerateEff(6), ReceiverType.All);
-                session.CurrentMap.Broadcast(session, session.Character.GenerateEff(198), ReceiverType.All);
+                Session.CurrentMap?.Broadcast(session, session.Character.GenerateIn(), ReceiverType.AllExceptMe);
+                Session.CurrentMap?.Broadcast(session, session.Character.GenerateEff(6), ReceiverType.All);
+                Session.CurrentMap?.Broadcast(session, session.Character.GenerateEff(198), ReceiverType.All);
 
                 session.Character.Skills = new List<CharacterSkill>();
                 session.Character.Skills.Add(new CharacterSkill { SkillVNum = (short)(200 + 20 * session.Character.Class), CharacterId = session.Character.CharacterId });
@@ -257,12 +257,12 @@ namespace OpenNos.GameObject
                 if (!shop.Equals(default(KeyValuePair<long, MapShop>)))
                 {
                     this.Session.CurrentMap.UserShops.Remove(shop.Key);
-                    this.Session.CurrentMap.Broadcast(GenerateShopEnd());
-                    this.Session.CurrentMap.Broadcast(Session, GeneratePlayerFlag(0), ReceiverType.AllExceptMe);
+                    this.Session.CurrentMap?.Broadcast(GenerateShopEnd());
+                    this.Session.CurrentMap?.Broadcast(Session, GeneratePlayerFlag(0), ReceiverType.AllExceptMe);
                     Speed = Session.Character.LastSpeed != 0 ? Session.Character.LastSpeed : Session.Character.Speed;
                     IsSitting = false;
                     Session.Client.SendPacket(Session.Character.GenerateCond());
-                    Session.CurrentMap.Broadcast(Session.Character.GenerateRest());
+                    Session.CurrentMap?.Broadcast(Session.Character.GenerateRest());
                     Session.Client.SendPacket("shop_end 0");
                 }
 
