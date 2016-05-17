@@ -678,11 +678,12 @@ namespace OpenNos.GameObject
         //Server
         private async void SaveAllProcess()
         {
-            while (true)
-            {
-                SaveAll();
-                await Task.Delay(60000 * 4);
-            }
+            //activate when fixed
+            //while (true)
+            //{
+            //    SaveAll();
+            //    await Task.Delay(60000 * 4);
+            //}
         }
 
         //Map ??
