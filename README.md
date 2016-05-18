@@ -1,6 +1,15 @@
 [![Build Status](http://134.255.238.79:8080/job/OpenNos/badge/icon)](http://134.255.238.79:8080/job/OpenNos/)
 #Instructions to contribute
 
+
+##Disclaimer##
+This project is a community project not for commercial use. The emulator itself is proof of concept of our idea to try out anything what's not possible on original servers. The result is to learn and program together for prove the study. 
+
+#Attention!#
+This emulation software is not open source to host any private servers. It is open source to work together community-based.
+
+We do not provide any modified client files. The alorithms are based on our logic.
+
 ###Contribution is only possible with Visual Studio 2015 (Community or other editions) and MySQL.
 #NOTE BEFORE INSTALL#
 - Error listen point : - This is WCF error install it or run opennos on visual studio
