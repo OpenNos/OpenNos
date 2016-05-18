@@ -1388,7 +1388,7 @@ namespace OpenNos.GameObject
             }
             catch (Exception e)
             {
-                Logger.Log.Error("Save Character failed.",e);
+                Logger.Log.Error("Save Character failed. SessionId: " + Session.SessionId, e);
             }
         }
 

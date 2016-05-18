@@ -406,7 +406,7 @@ namespace OpenNos.GameObject
                     }
                     catch (Exception ex)
                     {
-                        Logger.Log.Error("Handler Error", ex);
+                        Logger.Log.Error("Handler Error SessionId: " + SessionId, ex);
                     }
                 }
                 else

@@ -114,7 +114,7 @@ namespace OpenNos.Handler
                                         }
                                         catch (Exception ex)
                                         {
-                                            Logger.Log.Error("General Error", ex);
+                                            Logger.Log.Error("General Error SessionId: " + newSessionId, ex);
                                         }
                                         _session.Client.SendPacket(BuildServersPacket(newSessionId));
                                     }

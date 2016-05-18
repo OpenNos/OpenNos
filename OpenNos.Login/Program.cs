@@ -65,7 +65,7 @@ namespace OpenNos.Login
                     }
                     catch (Exception ex)
                     {
-                        Logger.Log.Error("General Error", ex);
+                        Logger.Log.Error("General Error Server", ex);
                     }
                 }
                 catch (Exception ex)
