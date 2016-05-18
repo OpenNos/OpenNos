@@ -221,31 +221,20 @@ namespace OpenNos.World
             int EncCodepage = 1252;
             byte[] StrBytes = System.Text.Encoding.Convert(System.Text.Encoding.UTF8, System.Text.Encoding.GetEncoding(EncCodepage), System.Text.Encoding.UTF8.GetBytes(str));
             int BytesLength = StrBytes.Length;
+            
+            byte[] encryptedData = new byte[BytesLength + (int)Math.Ceiling((decimal)BytesLength / 0x7E) +1];
 
-            String encryptedString = String.Empty;
-
+            int ii = 0;
             for (int i = 0; i < BytesLength; i++)
             {
-                if (i % 0x7A == 0)
+                if (i % 0x7E == 0)
                 {
-                    if ((BytesLength - i) > 0x7A)
-                    {
-                        encryptedString += Convert.ToChar(0x7A);
-                    }
-                    else
-                    {
-                        encryptedString += Convert.ToChar(BytesLength - i);
-                    }
+                    encryptedData[i + ii] = (byte)((BytesLength - i) > 0x7E ? 0x7E : BytesLength - i);
+                    ii++;
                 }
-
-                encryptedString += Convert.ToChar(StrBytes[i] ^ 0xFF);
+                encryptedData[i + ii] = (byte)~StrBytes[i];
             }
-            encryptedString += Convert.ToChar(0xFF);
-
-            byte[] encryptedData = new byte[encryptedString.Length];
-
-            for (int i = 0; i < encryptedString.Length; i++)
-                encryptedData[i] = (byte)encryptedString[i];
+            encryptedData[encryptedData.Length - 1] = 0xFF;
 
             return encryptedData;
         }
