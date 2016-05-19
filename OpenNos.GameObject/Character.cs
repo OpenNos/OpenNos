@@ -1120,6 +1120,7 @@ namespace OpenNos.GameObject
 
         public int GetCP()
         {
+            int cpmax = (Class > 0 ? 40 : 0) + JobLevel * 2;
             int cpused = 0;
             foreach (CharacterSkill ski in Skills)
             {
@@ -1127,7 +1128,7 @@ namespace OpenNos.GameObject
                 if (skillinfo != null)
                     cpused += skillinfo.CPCost;
             }
-            return (JobLevel - 1) * 2 - cpused;
+            return cpmax - cpused;
         }
 
         public int GetDamage(int damage)
