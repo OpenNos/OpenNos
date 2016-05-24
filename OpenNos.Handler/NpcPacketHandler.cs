@@ -159,7 +159,7 @@ namespace OpenNos.Handler
                         for (int i = Session.Character.Skills.Count - 1; i >= 0; i--)
                         {
                             Skill skinfo = ServerManager.GetSkill(Session.Character.Skills[i].SkillVNum);
-                            if (skillinfo.CastId == skinfo.CastId)
+                            if ((skillinfo.CastId == skinfo.CastId) && (skinfo.SkillVNum < 200))
                                 Session.Character.Skills.Remove(Session.Character.Skills[i]);
                         }
                     }
