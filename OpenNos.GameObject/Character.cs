@@ -222,7 +222,12 @@ namespace OpenNos.GameObject
                 Session.CurrentMap?.Broadcast(session, session.Character.GenerateEff(6), ReceiverType.All);
                 Session.CurrentMap?.Broadcast(session, session.Character.GenerateEff(198), ReceiverType.All);
 
-                session.Character.Skills = new List<CharacterSkill>();
+                for (int i = Session.Character.Skills.Count - 1; i >= 0; i--)
+                {
+                    if (Session.Character.Skills[i].SkillVNum >= 200)
+                        Session.Character.Skills.Remove(Session.Character.Skills[i]);
+                }
+
                 session.Character.Skills.Add(new CharacterSkill { SkillVNum = (short)(200 + 20 * session.Character.Class), CharacterId = session.Character.CharacterId });
                 session.Character.Skills.Add(new CharacterSkill { SkillVNum = (short)(201 + 20 * session.Character.Class), CharacterId = session.Character.CharacterId });
 
