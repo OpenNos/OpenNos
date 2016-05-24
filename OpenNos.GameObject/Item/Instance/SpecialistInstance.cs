@@ -286,8 +286,8 @@ namespace OpenNos.GameObject
             }
             else
             {
-                Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("PERFECTSP_FAILED"), 11));
-                Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("PERFECTSP_FAILED"), 0));
+                Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("PERFECTSP_FAILURE"), 11));
+                Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("PERFECTSP_FAILURE"), 0));
             }
             Session.Character.Gold = Session.Character.Gold - goldprice[upmode];
             Session.Client.SendPacket(Session.Character.GenerateGold());
