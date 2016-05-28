@@ -130,7 +130,7 @@
     <value>Jestes juz w innej grupie</value>
   </data>
   <data name="ALREADY_TAKEN" xml:space="preserve">
-    <value>To imie jest zajete!</value>
+    <value>Ta nazwa jest zajęta!</value>
   </data>
   <data name="ARCHER" xml:space="preserve">
     <value>Lucznik</value>
@@ -166,7 +166,7 @@
     <value>Tlumaczyl^MasterDomino</value>
   </data>
   <data name="BN5" xml:space="preserve">
-    <value>Team:^0Lucifer0,^chucktheripper,^Ciapa1,^MasterDomino,^genyx,^martazza</value>
+    <value>Team:^0Lucifer0,^chucktheripper,^Ciapa1,^MasterDomino,^genyx,^Martazza,^KrisYiu</value>
   </data>
   <data name="BN6" xml:space="preserve">
     <value>Chcesz^wziasc^udzial^naszym^projekcie?^github.com/OpenNos/OpenNos</value>
@@ -181,7 +181,7 @@
     <value>Gracz: {0} zakupil &lt;{1} {2}: sztuk &gt;</value>
   </data>
   <data name="BUY_ITEM_VALIDE" xml:space="preserve">
-    <value>Kupiles {1} sztuk {0}</value>
+    <value>Kupileś {1} sztuk {0}</value>
   </data>
   <data name="CANT_MOVE" xml:space="preserve">
     <value>Teleportacja zablokowana.</value>
@@ -268,7 +268,7 @@
     <value>Jestes pod wplywem mocy demona.</value>
   </data>
   <data name="GOLD_SET" xml:space="preserve">
-    <value>Ilosc zlota zostala zmieniona</value>
+    <value>Ilość zlota zostala zmieniona!</value>
   </data>
   <data name="GROUP_BLOCKED" xml:space="preserve">
     <value>Uzytkownik zablokowal zaproszenia do grupy</value>
@@ -283,7 +283,7 @@
     <value>Grupa jest pelna</value>
   </data>
   <data name="GROUP_LEFT" xml:space="preserve">
-    <value>Opusciles grupe</value>
+    <value>Opuściles grupe</value>
   </data>
   <data name="GROUP_REQUEST" xml:space="preserve">
     <value>Gracz {0} zostal zaproszony do grupy</value>
@@ -310,22 +310,22 @@
     <value>Stan zycia widoczny</value>
   </data>
   <data name="INCOMING_EXCHANGE" xml:space="preserve">
-    <value>{0} chce sie z toba wymienic!</value>
+    <value>{0} chce się z tobą wymienić!</value>
   </data>
   <data name="INSERT_ERROR" xml:space="preserve">
-    <value>Blad zapisywania badź odswiezania postaci {0} , {1}</value>
+    <value>Błąd zapisywania badź odświeżania postaci {0} , {1}</value>
   </data>
   <data name="INVALID_CHARNAME" xml:space="preserve">
-    <value>Zle znaki w nazwie postaci</value>
+    <value>Złe znaki w nazwie postaci</value>
   </data>
   <data name="INVITED_YOU" xml:space="preserve">
-    <value>{0} zaprasza cie do grupy</value>
+    <value>{0} zaprasza cię do grupy!</value>
   </data>
   <data name="IN_WAITING_FOR" xml:space="preserve">
     <value>Oczekujesz na gracza {0}</value>
   </data>
   <data name="ITEM_ACQUIRED" xml:space="preserve">
-    <value>Otrzymales przedmiot</value>
+    <value>Otrzymaleś przedmiot</value>
   </data>
   <data name="ITEM_IS_FIXED" xml:space="preserve">
     <value>Poziom ulepszenia przedmiotu zablokowany.</value>
@@ -493,7 +493,8 @@
     <value>Punkty specjalisty zostaly przypisane</value>
   </data>
   <data name="PORTAL_BLOCKED" xml:space="preserve">
-    <value>Portal zablokowany, nie moge go uzyc</value>
+    <value>Portal zablokowany, nie moge go użyć.</value>
+    <comment>Dla wiadomosci wysylanych przez postać powinniśmy używać 1 osoby.</comment>
   </data>
   <data name="QUICK_GET_UP_DISABLED" xml:space="preserve">
     <value>Szybkie wstawanie wylaczone</value>
@@ -622,13 +623,13 @@
     <value>Uzytkownik nieznaleziony</value>
   </data>
   <data name="USER_NOT_HERO" xml:space="preserve">
-    <value>Tylko bohaterowie moga uzywac czatu bohaterów.</value>
+    <value>Tylko bohaterowie moga uzywać czatu bohaterów.</value>
   </data>
   <data name="WELCOME_MUSIC_INFO" xml:space="preserve">
     <value>Wiosenna Melodia</value>
   </data>
   <data name="WHISPERED_BLOCKED" xml:space="preserve">
-    <value>Uzytkownik zablokowal prywatne wiadomosci</value>
+    <value>Uzytkownik zablokowal prywatne wiadomości</value>
   </data>
   <data name="WHISPER_BLOCKED" xml:space="preserve">
     <value>Szept zablokowany</value>
@@ -637,10 +638,10 @@
     <value>Szept widoczny</value>
   </data>
   <data name="WRONG_VALUE" xml:space="preserve">
-    <value>Zla wartosc</value>
+    <value>Zla wartość</value>
   </data>
   <data name="YOU_ASK_FOR_EXCHANGE" xml:space="preserve">
-    <value>poprosiles o wymiane od</value>
+    <value>Poprosileś o wymianę od</value>
   </data>
   <data name="CHARACTER_LOGGED_IN" xml:space="preserve">
     <value>{0} polaczyl sie.</value>
@@ -658,16 +659,16 @@
     <value>Uzyles ziarna mocy</value>
   </data>
   <data name="ASK_REVIVE" xml:space="preserve">
-    <value>Czy chcesz sie ozywic? bedzie cie to kosztowac 10 ziaren mocy</value>
+    <value>Czy chcesz się wskrzesić? będzie cię to kosztować 10 ziaren mocy</value>
   </data>
   <data name="ASK_REVIVE_FREE" xml:space="preserve">
-    <value>Czy chcesz sie ozywic? bedzie to darmowy proces</value>
+    <value>Czy chcesz się wskrzesić? będzie to darmowy proces</value>
   </data>
   <data name="LOSE_DIGNITY" xml:space="preserve">
     <value>Straciles godnosc</value>
   </data>
   <data name="HEROLEVEL_CHANGED" xml:space="preserve">
-    <value>Poziom bohatera twojej postaci zostal zmieniony!</value>
+    <value>Poziom bohatera zostal zmieniony!</value>
   </data>
   <data name="REFUSED" xml:space="preserve">
     <value>odrzucil wymiane</value>
@@ -676,6 +677,12 @@
     <value>Utracono polaczenie z serwerem.</value>
   </data>
   <data name="SHOP_PRIVATE_SHOP" xml:space="preserve">
-    <value>Private shop</value>
+    <value>Sklep prywatny</value>
+  </data>
+  <data name="CLIENTSESSION_DISPOSING" xml:space="preserve">
+    <value>Pozbywam sie sesji, packet nie bedzie operowany.</value>
+  </data>
+  <data name="SHOP_ONLY_TRADABLE_ITEMS" xml:space="preserve">
+    <value>Mozesz sprzedawać tylko wymienialne przedmioty w sklepie prywatnym.</value>
   </data>
 </root>

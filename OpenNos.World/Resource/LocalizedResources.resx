@@ -145,13 +145,13 @@
     <value>You can't wear this item!</value>
   </data>
   <data name="BAD_FAIRY" xml:space="preserve">
-    <value>The fairy element is not the same like sp!</value>
+    <value>The fairy element is different with sp element!</value>
   </data>
   <data name="BAD_PASSWORD" xml:space="preserve">
-    <value>Bad Password</value>
+    <value>Wrong password</value>
   </data>
   <data name="BN0" xml:space="preserve">
-    <value>Read^our^License</value>
+    <value>Read^our^LICENSE</value>
   </data>
   <data name="BN1" xml:space="preserve">
     <value>Don't^give^your^password^to^anyone</value>
@@ -166,7 +166,7 @@
     <value>Do^you^want^to^contribute?^https://github.com/OpenNos/OpenNos</value>
   </data>
   <data name="BN5" xml:space="preserve">
-    <value>Team:^0Lucifer0,^chucktheripper,^Ciapa1,^MasterDomino,^genyx,^martazza</value>
+    <value>Team:^0Lucifer0,^chucktheripper,^Ciapa1,^MasterDomino,^genyx,^Martazza,^KrisYiu</value>
   </data>
   <data name="BN6" xml:space="preserve">
     <value>Check^out:^https://github.com/OpenNos/OpenNos^for^latest^updates.</value>
@@ -325,7 +325,7 @@
     <value>In Waiting for {0}</value>
   </data>
   <data name="ITEM_ACQUIRED" xml:space="preserve">
-    <value>You get item</value>
+    <value>Acquired</value>
   </data>
   <data name="ITEM_IS_FIXED" xml:space="preserve">
     <value>Item upgrade level is locked.</value>
@@ -493,7 +493,8 @@
     <value>Points set</value>
   </data>
   <data name="PORTAL_BLOCKED" xml:space="preserve">
-    <value>This portal is locked, i can't use it</value>
+    <value>This portal is locked, i can't use it.</value>
+    <comment>As for character messages we should use 1 person(little bubbles above character head).</comment>
   </data>
   <data name="QUICK_GET_UP_DISABLED" xml:space="preserve">
     <value>Quick get up disabled</value>
@@ -514,7 +515,7 @@
     <value>{0} Recipes Loaded!</value>
   </data>
   <data name="YOU_REFUSED" xml:space="preserve">
-    <value>Exchange Refused</value>
+    <value>Exchange refused</value>
   </data>
   <data name="REMOVE_SP" xml:space="preserve">
     <value>If you want to learn skill you need to remove your sp card</value>
@@ -532,7 +533,7 @@
     <value>Sex has been changed</value>
   </data>
   <data name="SHARING" xml:space="preserve">
-    <value>Sharing with everyone in group</value>
+    <value>Sharing with everyone</value>
   </data>
   <data name="SHARING_BY_ORDER" xml:space="preserve">
     <value>Sharing by order</value>
@@ -550,10 +551,10 @@
     <value>Shop has been opened</value>
   </data>
   <data name="SHUTDOWN_MIN" xml:space="preserve">
-    <value>Server will be shut in {0} Minutes.</value>
+    <value>Server will be shutdown in {0} Minutes.</value>
   </data>
   <data name="SHUTDOWN_SEC" xml:space="preserve">
-    <value>Server will be shut in {0} Seconds.</value>
+    <value>Server will be shutdown in {0} Seconds.</value>
   </data>
   <data name="SKILLS_LOADED" xml:space="preserve">
     <value>{0} Skills Loaded!</value>
@@ -580,7 +581,7 @@
     <value>Wait {0} seconds!</value>
   </data>
   <data name="STARTED" xml:space="preserve">
-    <value>Server is started successfully.</value>
+    <value>Server has been started successfully.</value>
   </data>
   <data name="STAY_TIME" xml:space="preserve">
     <value>SP transformation needs cooldown, {0} seconds</value>
@@ -598,7 +599,7 @@
     <value>Total number of sessions</value>
   </data>
   <data name="TRADE_BLOCKED" xml:space="preserve">
-    <value>User has blocked trading option</value>
+    <value>User has blocked exchanges</value>
   </data>
   <data name="TRANSFORM_DISAPEAR" xml:space="preserve">
     <value>Cooldown finished.</value>
@@ -654,9 +655,6 @@
   <data name="CHARACTER_LOGGED_OUT" xml:space="preserve">
     <value>{0} has logged out.</value>
   </data>
-  <data name="POST_APOCALIPSE" xml:space="preserve">
-    <value>Gameforge made us stop project donate to acquire gold.</value>
-  </data>
   <data name="NOT_ENOUGH_POWER_SEED" xml:space="preserve">
     <value>You dont have enough power seeds</value>
   </data>
@@ -664,7 +662,7 @@
     <value>I don't have enough power seeds</value>
   </data>
   <data name="SEED_USED" xml:space="preserve">
-    <value>You used power seeds</value>
+    <value>Seeds of power used</value>
   </data>
   <data name="ASK_REVIVE" xml:space="preserve">
     <value>Do you want to revive? it will cost you 10 power seeds</value>
@@ -685,7 +683,7 @@
     <value>Private shop</value>
   </data>
   <data name="SHOP_ONLY_TRADABLE_ITEMS" xml:space="preserve">
-    <value>Yous can only sell tradable items in a private shop.</value>
+    <value>You can only sell tradable items in a private shop.</value>
   </data>
   <data name="CONNECTION_LOST" xml:space="preserve">
     <value>Connection to the server has been lost.</value>
