@@ -585,6 +585,9 @@
   <data name="UPGRADE_FAILED" xml:space="preserve">
     <value>Die Verbesserung ist fehlgeschlagen. Das Item ist verschwunden.</value>
   </data>
+    <data name="UPGRADESP_SUCCES" xml:space="preserve">
+    <value>Die Verbesserung war Erfolgreich.</value>
+  </data>
   <data name="UPGRADE_FAILED_ITEM_SAVED" xml:space="preserve">
     <value>Die Verbesserung ist fehlgeschlagen, doch das Item wurde vor der Zerstörung geschützt.</value>
   </data>
