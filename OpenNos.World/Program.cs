@@ -66,8 +66,6 @@ namespace OpenNos.World
             Assembly assembly = Assembly.GetExecutingAssembly();
             FileVersionInfo fileVersionInfo = FileVersionInfo.GetVersionInfo(assembly.Location);
             Console.Title = $"OpenNos World Server v{fileVersionInfo.ProductVersion}";
-
-            string ip = System.Configuration.ConfigurationManager.AppSettings["WorldIp"];
             int port = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["WorldPort"]);
             string text = $"WORLD SERVER VERSION {fileVersionInfo.ProductVersion} - PORT : {port} by OpenNos Team";
             int offset = (Console.WindowWidth - text.Length) / 2;
@@ -98,7 +96,7 @@ namespace OpenNos.World
                 ServiceFactory.Instance.CommunicationService.Open();
                 exitHandler += new EventHandler(ExitHandler);
                 SetConsoleCtrlHandler(exitHandler, true);
-                NetworkManager<WorldEncryption> networkManager = new NetworkManager<WorldEncryption>(ip, port, typeof(CommandPacketHandler), typeof(LoginEncryption), true);
+                NetworkManager<WorldEncryption> networkManager = new NetworkManager<WorldEncryption>("127.0.0.1", port, typeof(CommandPacketHandler), typeof(LoginEncryption), true);
             }
             catch (Exception ex)
             {
