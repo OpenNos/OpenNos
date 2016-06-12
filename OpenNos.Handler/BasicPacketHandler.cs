@@ -369,7 +369,7 @@ namespace OpenNos.Handler
 
                     if (accountDTO != null)
                     {
-                        if (accountDTO.Password.Equals(EncryptionBase.sha256(loginPacketParts[6])))
+                        if (accountDTO.Password.Equals(EncryptionBase.sha512(loginPacketParts[6])))
                         {
                             var account = new GameObject.Account()
                             {

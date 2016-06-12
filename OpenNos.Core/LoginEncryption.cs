@@ -29,7 +29,7 @@ namespace OpenNos.Core
 
         #region Methods
 
-        public static string GetPassword(string passcrypt)
+    /*    public static string GetPassword(string passcrypt)
         {
             bool equal = passcrypt.Length % 2 == 0 ? true : false;
             string str = equal == true ? passcrypt.Remove(0, 3) : passcrypt.Remove(0, 4);
@@ -44,11 +44,12 @@ namespace OpenNos.Core
             }
 
             StringBuilder temp = new StringBuilder();
-            for (int i = 0; i < decpass.Length; i += 2) temp.Append(Convert.ToChar(Convert.ToUInt32(decpass.Substring(i, 2), 16)));
+            for (int i = 0; i < decpass.Length; i += 2)
+                temp.Append(Convert.ToChar(Convert.ToUInt32(decpass.Substring(i, 2), 16)));
             decpass = temp.ToString();
 
             return decpass;
-        }
+        }*/
 
         public override string Decrypt(byte[] packet, int customParameter = 0)
         {

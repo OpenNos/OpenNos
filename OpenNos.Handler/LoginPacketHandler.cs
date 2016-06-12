@@ -67,7 +67,7 @@ namespace OpenNos.Handler
         public void VerifyLogin(string packet)
         {
             string[] userPacket = packet.Split(' ');
-            UserDTO user = new UserDTO() { Name = userPacket[2], PasswordEncrypted = userPacket[3] };
+            UserDTO user = new UserDTO() { Name = userPacket[2], Password = userPacket[3] };
             //closed
             bool flag = true;
             if (flag)
@@ -78,7 +78,7 @@ namespace OpenNos.Handler
                 {
                     AccountDTO loadedAccount = DAOFactory.AccountDAO.LoadByName(user.Name);
 
-                    if (loadedAccount != null && loadedAccount.Password.Equals(user.PasswordDecrypted))
+                    if (loadedAccount != null && loadedAccount.Password.ToUpper().Equals(user.Password))
                     {
                         DAOFactory.AccountDAO.WriteGeneralLog(loadedAccount.AccountId, _session.Client.RemoteEndPoint.ToString(), null, "Connection", "LoginServer");
 

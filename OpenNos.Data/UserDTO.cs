@@ -22,15 +22,8 @@ namespace OpenNos.Data
 
         public string Name { get; set; }
 
-        public string PasswordDecrypted
-        {
-            get
-            {
-                return EncryptionBase.sha256(LoginEncryption.GetPassword(PasswordEncrypted));
-            }
-        }
-
-        public string PasswordEncrypted { get; set; }
+        public string Password { get; set; }
+        
         public string Unknown { get; set; }
 
         #endregion
