@@ -179,6 +179,10 @@ namespace OpenNos.GameObject
         #endregion
 
         #region Methods
+        public Character DeepCopy()
+        {
+            return (Character)this.MemberwiseClone();
+        }
 
         public void ChangeClass(long id, byte characterClass)
         {
