@@ -16,7 +16,7 @@ namespace OpenNos.Data
 {
     public class CellonOptionDTO
     {
-        #region Properties
+        #region Public Properties
 
         public int CellonOptionId { get; set; }
         public long InventoryItemId { get; set; }

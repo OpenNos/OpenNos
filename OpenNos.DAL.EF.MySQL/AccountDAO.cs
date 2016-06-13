@@ -27,13 +27,13 @@ namespace OpenNos.DAL.EF.MySQL
 {
     public class AccountDAO : IAccountDAO
     {
-        #region Members
+        #region Private Members
 
         private IMapper _mapper;
 
         #endregion
 
-        #region Instantiation
+        #region Public Instantiation
 
         public AccountDAO()
         {
@@ -48,7 +48,7 @@ namespace OpenNos.DAL.EF.MySQL
 
         #endregion
 
-        #region Methods
+        #region Public Methods
 
         public DeleteResult Delete(long accountId)
         {
@@ -97,7 +97,7 @@ namespace OpenNos.DAL.EF.MySQL
             }
             catch (Exception e)
             {
-                Logger.Log.Error(String.Format(Language.Instance.GetMessageFromKey("UPDATE_Account_ERROR"), account.AccountId, e.Message),e);
+                Logger.Log.Error(String.Format(Language.Instance.GetMessageFromKey("UPDATE_Account_ERROR"), account.AccountId, e.Message), e);
                 return SaveResult.Error;
             }
         }
@@ -194,6 +194,10 @@ namespace OpenNos.DAL.EF.MySQL
                 context.SaveChanges();
             }
         }
+
+        #endregion
+
+        #region Private Methods
 
         private AccountDTO Insert(AccountDTO account, OpenNosContext context)
         {

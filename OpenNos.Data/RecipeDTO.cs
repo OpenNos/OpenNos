@@ -16,7 +16,7 @@ namespace OpenNos.Data
 {
     public class RecipeDTO
     {
-        #region Properties
+        #region Public Properties
 
         public byte Amount { get; set; }
         public short ItemVNum { get; set; }

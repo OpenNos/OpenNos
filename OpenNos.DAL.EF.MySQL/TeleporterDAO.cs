@@ -24,13 +24,13 @@ namespace OpenNos.DAL.EF.MySQL
 {
     public class TeleporterDAO : ITeleporterDAO
     {
-        #region Members
+        #region Private Members
 
         private IMapper _mapper;
 
         #endregion
 
-        #region Instantiation
+        #region Public Instantiation
 
         public TeleporterDAO()
         {
@@ -45,7 +45,7 @@ namespace OpenNos.DAL.EF.MySQL
 
         #endregion
 
-        #region Methods
+        #region Public Methods
 
         public TeleporterDTO Insert(TeleporterDTO teleporter)
         {

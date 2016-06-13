@@ -30,20 +30,20 @@ namespace OpenNos.World
 {
     public class Program
     {
-        #region Members
+        #region Private Members
 
         private static EventHandler exitHandler;
         private static ManualResetEvent run = new ManualResetEvent(true);
 
         #endregion
 
-        #region Delegates
+        #region Private Delegates
 
         private delegate bool EventHandler(CtrlType sig);
 
         #endregion
 
-        #region Enums
+        #region Private Enums
 
         private enum CtrlType
         {
@@ -56,7 +56,7 @@ namespace OpenNos.World
 
         #endregion
 
-        #region Methods
+        #region Public Methods
 
         public static void Main(string[] args)
         {
@@ -103,6 +103,10 @@ namespace OpenNos.World
                 Logger.Log.Error("General Error", ex);
             }
         }
+
+        #endregion
+
+        #region Private Methods
 
         private static bool ExitHandler(CtrlType sig)
         {

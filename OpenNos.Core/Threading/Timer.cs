@@ -1,4 +1,18 @@
-﻿using System;
+﻿/*
+ * This file is part of the OpenNos Emulator Project. See AUTHORS file for Copyright information
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
+using System;
 using System.Threading;
 
 namespace OpenNos.Core.Threading
@@ -8,7 +22,7 @@ namespace OpenNos.Core.Threading
     /// </summary>
     public class Timer
     {
-        #region Members
+        #region Private Members
 
         /// <summary>
         /// This timer is used to perfom the task at spesified intervals.
@@ -28,7 +42,7 @@ namespace OpenNos.Core.Threading
 
         #endregion
 
-        #region Instantiation
+        #region Public Instantiation
 
         /// <summary>
         /// Creates a new Timer.
@@ -53,7 +67,7 @@ namespace OpenNos.Core.Threading
 
         #endregion
 
-        #region Events
+        #region Public Events
 
         /// <summary>
         /// This event is raised periodically according to Period of Timer.
@@ -62,7 +76,7 @@ namespace OpenNos.Core.Threading
 
         #endregion
 
-        #region Properties
+        #region Public Properties
 
         /// <summary>
         /// Task period of timer (as milliseconds).
@@ -77,7 +91,7 @@ namespace OpenNos.Core.Threading
 
         #endregion
 
-        #region Methods
+        #region Public Methods
 
         /// <summary>
         /// Starts the timer.
@@ -113,6 +127,10 @@ namespace OpenNos.Core.Threading
                 }
             }
         }
+
+        #endregion
+
+        #region Private Methods
 
         /// <summary>
         /// This method is called by _taskTimer.

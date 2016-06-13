@@ -23,7 +23,7 @@ namespace OpenNos.Import.Console
 {
     public class Program
     {
-        #region Methods
+        #region Private Methods
 
         private static void Main(string[] args)
         {

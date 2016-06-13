@@ -21,7 +21,7 @@ namespace OpenNos.Handler
 {
     public class ServerConfig : IConfigurationSectionHandler
     {
-        #region Methods
+        #region Public Methods
 
         public object Create(object parent, object configContext, System.Xml.XmlNode section)
         {
@@ -46,11 +46,11 @@ namespace OpenNos.Handler
 
         #endregion
 
-        #region Classes
+        #region Public Classes
 
         public class Server
         {
-            #region Properties
+            #region Public Properties
 
             public int ChannelAmount { get; set; }
             public string Name { get; set; }

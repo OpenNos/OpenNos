@@ -1,4 +1,18 @@
-﻿using OpenNos.Core.Networking.Communication.Scs.Communication;
+﻿/*
+ * This file is part of the OpenNos Emulator Project. See AUTHORS file for Copyright information
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
+using OpenNos.Core.Networking.Communication.Scs.Communication;
 using OpenNos.Core.Networking.Communication.Scs.Communication.Channels;
 using OpenNos.Core.Networking.Communication.Scs.Communication.Messages;
 using OpenNos.Core.Networking.Communication.Scs.Communication.Protocols;
@@ -12,7 +26,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Client
     /// </summary>
     public abstract class ScsClientBase : IScsClient
     {
-        #region Members
+        #region Private Members
 
         /// <summary>
         /// Default timeout value for connecting a server.
@@ -33,7 +47,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Client
 
         #endregion
 
-        #region Instantiation
+        #region Protected Instantiation
 
         //15 seconds.
         /// <summary>
@@ -49,7 +63,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Client
 
         #endregion
 
-        #region Events
+        #region Public Events
 
         /// <summary>
         /// This event is raised when communication channel closed.
@@ -74,7 +88,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Client
 
         #endregion
 
-        #region Properties
+        #region Public Properties
 
         /// <summary>
         /// Gets the communication state of the Client.
@@ -140,7 +154,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Client
 
         #endregion
 
-        #region Methods
+        #region Public Methods
 
         /// <summary>
         /// Connects to server.
@@ -194,6 +208,10 @@ namespace OpenNos.Core.Networking.Communication.Scs.Client
 
             _communicationChannel.SendMessage(message);
         }
+
+        #endregion
+
+        #region Protected Methods
 
         /// <summary>
         /// This method is implemented by derived Classs to create appropriate communication channel.
@@ -250,6 +268,10 @@ namespace OpenNos.Core.Networking.Communication.Scs.Client
                 handler(this, new MessageEventArgs(message));
             }
         }
+
+        #endregion
+
+        #region Private Methods
 
         /// <summary>
         /// Handles Disconnected event of _communicationChannel object.

@@ -24,13 +24,13 @@ namespace OpenNos.DAL.EF.MySQL
 {
     public class CellonOptionDAO : ICellonOptionDAO
     {
-        #region Members
+        #region Private Members
 
         private IMapper _mapper;
 
         #endregion
 
-        #region Instantiation
+        #region Public Instantiation
 
         public CellonOptionDAO()
         {
@@ -45,7 +45,7 @@ namespace OpenNos.DAL.EF.MySQL
 
         #endregion
 
-        #region Methods
+        #region Public Methods
 
         public IEnumerable<CellonOptionDTO> GetOptionsByWearableInstanceId(long wearableInstanceId)
         {

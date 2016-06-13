@@ -1,4 +1,18 @@
-﻿using OpenNos.Core.Networking.Communication.Scs.Communication.Messages;
+﻿/*
+ * This file is part of the OpenNos Emulator Project. See AUTHORS file for Copyright information
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
+using OpenNos.Core.Networking.Communication.Scs.Communication.Messages;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -23,7 +37,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Protocols.Bina
     /// </summary>
     public class BinarySerializationProtocol : IScsWireProtocol
     {
-        #region Members
+        #region Private Members
 
         /// <summary>
         /// Maximum length of a message.
@@ -37,7 +51,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Protocols.Bina
 
         #endregion
 
-        #region Instantiation
+        #region Public Instantiation
 
         /// <summary>
         /// Creates a new instance of BinarySerializationProtocol.
@@ -49,7 +63,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Protocols.Bina
 
         #endregion
 
-        #region Methods
+        #region Public Methods
 
         /// <summary>
         /// Builds messages from a byte array that is received from remote application.
@@ -116,6 +130,10 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Protocols.Bina
             }
         }
 
+        #endregion
+
+        #region Protected Methods
+
         /// <summary>
         /// This method is used to deserialize a IScsMessage from it's bytes.
         /// This method can be overrided by derived Classs to change deserialization strategy.
@@ -164,6 +182,10 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Protocols.Bina
                 return memoryStream.ToArray();
             }
         }
+
+        #endregion
+
+        #region Private Methods
 
         /// <summary>
         /// Reads a byte array with specified length.
@@ -279,7 +301,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Protocols.Bina
 
         #endregion
 
-        #region Classes
+        #region Protected Classes
 
         /// <summary>
         /// This class is used in deserializing to allow deserializing objects that are defined
@@ -287,7 +309,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Protocols.Bina
         /// </summary>
         protected sealed class DeserializationAppDomainBinder : SerializationBinder
         {
-            #region Methods
+            #region Public Methods
 
             public override Type BindToType(string assemblyName, string typeName)
             {

@@ -6,13 +6,16 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
 
     internal sealed class Configuration : DbMigrationsConfiguration<OpenNos.DAL.EF.MySQL.DB.OpenNosContext>
     {
-        #region Instantiation
+        #region Public Instantiation
 
         public Configuration()
         {
             AutomaticMigrationsEnabled = false;
             SetSqlGenerator("MySql.Data.MySqlClient", new MySql.Data.Entity.MySqlMigrationSqlGenerator());
         }
+
+        #endregion
+
         /*private void ScriptGenerator()
         {
             var migrator = new DbMigrator(new Configuration());
@@ -22,9 +25,7 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
             File.WriteAllText(Path.Combine(@"C:\\OpenNos.sql"), sql);
         }*/
 
-        #endregion
-
-        #region Methods
+        #region Protected Methods
 
         protected override void Seed(OpenNos.DAL.EF.MySQL.DB.OpenNosContext context)
         {

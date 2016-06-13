@@ -16,7 +16,7 @@ namespace OpenNos.Data
 {
     public class RespawnDTO
     {
-        #region Properties
+        #region Public Properties
 
         public long CharacterId { get; set; }
         public short MapId { get; set; }

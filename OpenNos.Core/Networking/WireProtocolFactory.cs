@@ -19,7 +19,7 @@ namespace OpenNos.Core
     public class WireProtocolFactory<EncryptorT> : IScsWireProtocolFactory
         where EncryptorT : EncryptionBase
     {
-        #region Instantiation
+        #region Public Instantiation
 
         public WireProtocolFactory()
         {
@@ -27,7 +27,7 @@ namespace OpenNos.Core
 
         #endregion
 
-        #region Methods
+        #region Public Methods
 
         public IScsWireProtocol CreateWireProtocol()
         {

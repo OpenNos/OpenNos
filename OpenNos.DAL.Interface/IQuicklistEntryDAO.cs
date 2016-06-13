@@ -20,7 +20,7 @@ namespace OpenNos.DAL.Interface
 {
     public interface IQuicklistEntryDAO
     {
-        #region Methods
+        #region Public Methods
 
         DeleteResult Delete(long characterId, long entryId);
 

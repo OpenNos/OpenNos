@@ -1,4 +1,18 @@
-﻿using OpenNos.Core.Networking.Communication.Scs.Communication;
+﻿/*
+ * This file is part of the OpenNos Emulator Project. See AUTHORS file for Copyright information
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
+using OpenNos.Core.Networking.Communication.Scs.Communication;
 using OpenNos.Core.Networking.Communication.Scs.Communication.EndPoints;
 using System;
 
@@ -9,7 +23,7 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Service
     /// </summary>
     public interface IScsServiceClient
     {
-        #region Events
+        #region Public Events
 
         /// <summary>
         /// This event is raised when client is disconnected from service.
@@ -18,7 +32,7 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Service
 
         #endregion
 
-        #region Properties
+        #region Public Properties
 
         /// <summary>
         /// Unique identifier for this client.
@@ -37,7 +51,7 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Service
 
         #endregion
 
-        #region Methods
+        #region Public Methods
 
         /// <summary>
         /// Closes client connection.

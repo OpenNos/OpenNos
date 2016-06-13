@@ -19,7 +19,7 @@ namespace OpenNos.GameObject
 {
     public class NpcMonsterSkill : NpcMonsterSkillDTO
     {
-        #region Instantiation
+        #region Public Instantiation
 
         public NpcMonsterSkill()
         {
@@ -30,7 +30,7 @@ namespace OpenNos.GameObject
 
         #endregion
 
-        #region Properties
+        #region Public Properties
 
         public short Hit { get; set; }
 

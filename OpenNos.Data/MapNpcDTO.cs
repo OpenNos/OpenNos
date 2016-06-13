@@ -16,7 +16,7 @@ namespace OpenNos.Data
 {
     public class MapNpcDTO
     {
-        #region Properties
+        #region Public Properties
 
         public short Dialog { get; set; }
         public short Effect { get; set; }

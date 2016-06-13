@@ -1,4 +1,18 @@
-﻿using OpenNos.Core.Networking.Communication.Scs.Communication.Messages;
+﻿/*
+ * This file is part of the OpenNos Emulator Project. See AUTHORS file for Copyright information
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
+using OpenNos.Core.Networking.Communication.Scs.Communication.Messages;
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -15,7 +29,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messengers
     /// </summary>
     public class SynchronizedMessenger<T> : RequestReplyMessenger<T> where T : IMessenger
     {
-        #region Members
+        #region Private Members
 
         /// <summary>
         /// This object is used to synchronize/wait threads.
@@ -35,7 +49,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messengers
 
         #endregion
 
-        #region Instantiation
+        #region Public Instantiation
 
         ///<summary>
         /// Creates a new SynchronizedMessenger object.
@@ -61,7 +75,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messengers
 
         #endregion
 
-        #region Properties
+        #region Public Properties
 
         ///<summary>
         /// Gets/sets capacity of the incoming message queue.
@@ -73,7 +87,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messengers
 
         #endregion
 
-        #region Methods
+        #region Public Methods
 
         /// <summary>
         /// This method is used to receive a message from remote application.
@@ -188,6 +202,10 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messengers
                 _receiveWaiter.Set();
             }
         }
+
+        #endregion
+
+        #region Protected Methods
 
         /// <summary>
         /// Overrides

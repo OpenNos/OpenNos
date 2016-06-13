@@ -18,7 +18,7 @@ namespace OpenNos.ServiceRef.Internal
 {
     public class ServiceFactory
     {
-        #region Members
+        #region Private Members
 
         private static ServiceFactory _instance;
         private CommunicationServiceReference.CommunicationServiceClient _communicationServiceClient;
@@ -27,7 +27,7 @@ namespace OpenNos.ServiceRef.Internal
 
         #endregion
 
-        #region Instantiation
+        #region Public Instantiation
 
         public ServiceFactory()
         {
@@ -38,7 +38,7 @@ namespace OpenNos.ServiceRef.Internal
 
         #endregion
 
-        #region Properties
+        #region Public Properties
 
         public static ServiceFactory Instance
         {

@@ -16,7 +16,7 @@ namespace OpenNos.GameObject
 {
     public class PotionItem : Item
     {
-        #region Methods
+        #region Public Methods
 
         public override void Use(ClientSession session, ref Inventory inv)
         {
@@ -49,7 +49,7 @@ namespace OpenNos.GameObject
                     break;
             }
         }
-    
+
         #endregion
     }
 }

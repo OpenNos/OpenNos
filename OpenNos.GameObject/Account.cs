@@ -12,14 +12,13 @@
  * GNU General Public License for more details.
  */
 
-using AutoMapper;
 using OpenNos.Data;
 
 namespace OpenNos.GameObject
 {
     public class Account : AccountDTO
     {
-        #region Instantiation
+        #region Public Instantiation
 
         public Account()
         {

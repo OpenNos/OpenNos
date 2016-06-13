@@ -16,7 +16,7 @@ namespace OpenNos.Data
 {
     public class InventoryDTO
     {
-        #region Properties
+        #region Public Properties
 
         public long CharacterId { get; set; }
         public long InventoryId { get; set; }

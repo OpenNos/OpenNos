@@ -1,4 +1,18 @@
-﻿using OpenNos.Core.Networking.Communication.Scs.Communication;
+﻿/*
+ * This file is part of the OpenNos Emulator Project. See AUTHORS file for Copyright information
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
+using OpenNos.Core.Networking.Communication.Scs.Communication;
 using OpenNos.Core.Networking.Communication.Scs.Communication.EndPoints;
 using OpenNos.Core.Networking.Communication.Scs.Communication.Messengers;
 using OpenNos.Core.Networking.Communication.Scs.Server;
@@ -14,7 +28,7 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Service
     /// </summary>
     public class ScsServiceClient : IScsServiceClient
     {
-        #region Members
+        #region Private Members
 
         /// <summary>
         /// This object is used to send messages to client.
@@ -33,7 +47,7 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Service
 
         #endregion
 
-        #region Instantiation
+        #region Public Instantiation
 
         /// <summary>
         /// Creates a new ScsServiceClient object.
@@ -49,7 +63,7 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Service
 
         #endregion
 
-        #region Events
+        #region Public Events
 
         /// <summary>
         /// This event is raised when this client is disconnected from server.
@@ -58,7 +72,7 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Service
 
         #endregion
 
-        #region Properties
+        #region Public Properties
 
         /// <summary>
         /// Unique identifier for this client.
@@ -89,7 +103,7 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Service
 
         #endregion
 
-        #region Methods
+        #region Public Methods
 
         /// <summary>
         /// Closes client connection.
@@ -109,6 +123,10 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Service
             _realProxy = new RemoteInvokeProxy<T, IScsServerClient>(_requestReplyMessenger);
             return (T)_realProxy.GetTransparentProxy();
         }
+
+        #endregion
+
+        #region Private Methods
 
         /// <summary>
         /// Handles disconnect event of _serverClient object.

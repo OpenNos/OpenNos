@@ -23,13 +23,13 @@ namespace OpenNos.DAL.EF.MySQL
 {
     public class NpcMonsterDAO : INpcMonsterDAO
     {
-        #region Members
+        #region Private Members
 
         private IMapper _mapper;
 
         #endregion
 
-        #region Instantiation
+        #region Public Instantiation
 
         public NpcMonsterDAO()
         {
@@ -44,7 +44,7 @@ namespace OpenNos.DAL.EF.MySQL
 
         #endregion
 
-        #region Methods
+        #region Public Methods
 
         public void Insert(List<NpcMonsterDTO> npcs)
         {

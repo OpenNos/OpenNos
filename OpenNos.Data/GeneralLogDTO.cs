@@ -18,7 +18,7 @@ namespace OpenNos.Data
 {
     public class GeneralLogDTO
     {
-        #region Properties
+        #region Public Properties
 
         public long AccountId { get; set; }
         public long? CharacterId { get; set; }

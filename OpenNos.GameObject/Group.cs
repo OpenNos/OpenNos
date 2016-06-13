@@ -19,7 +19,7 @@ namespace OpenNos.GameObject
 {
     public class Group
     {
-        #region Instantiation
+        #region Public Instantiation
 
         public Group()
         {
@@ -29,7 +29,7 @@ namespace OpenNos.GameObject
 
         #endregion
 
-        #region Properties
+        #region Public Properties
 
         public List<ClientSession> Characters { get; set; }
         public long GroupId { get; set; }
@@ -37,7 +37,7 @@ namespace OpenNos.GameObject
 
         #endregion
 
-        #region Methods
+        #region Public Methods
 
         public List<string> GeneratePst()
         {

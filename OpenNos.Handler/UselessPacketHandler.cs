@@ -19,13 +19,13 @@ namespace OpenNos.Handler
 {
     public class UselessPacketHandler : IPacketHandler
     {
-        #region Members
+        #region Private Members
 
         private readonly ClientSession _session;
 
         #endregion
 
-        #region Instantiation
+        #region Public Instantiation
 
         public UselessPacketHandler(ClientSession session)
         {
@@ -34,13 +34,13 @@ namespace OpenNos.Handler
 
         #endregion
 
-        #region Properties
+        #region Public Properties
 
         public ClientSession Session { get { return _session; } }
 
         #endregion
 
-        #region Methods
+        #region Public Methods
 
         [Packet("c_close")]
         public void CClose(string packet)

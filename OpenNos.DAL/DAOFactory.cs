@@ -12,16 +12,16 @@
  * GNU General Public License for more details.
  */
 
-using System;
-using OpenNos.DAL.Interface;
-using MySQL = OpenNos.DAL.EF.MySQL;
 using OpenNos.Core;
+using OpenNos.DAL.Interface;
+using System;
+using MySQL = OpenNos.DAL.EF.MySQL;
 
 namespace OpenNos.DAL
 {
     public class DAOFactory
     {
-        #region Members
+        #region Private Members
 
         private static IAccountDAO _accountDAO;
         private static ICellonOptionDAO _cellonoptionDAO;
@@ -50,7 +50,7 @@ namespace OpenNos.DAL
 
         #endregion
 
-        #region Instantiation
+        #region Public Instantiation
 
         static DAOFactory()
         {
@@ -66,7 +66,7 @@ namespace OpenNos.DAL
 
         #endregion
 
-        #region Properties
+        #region Public Properties
 
         public static IAccountDAO AccountDAO
         {

@@ -1,4 +1,18 @@
-﻿using OpenNos.Core.Networking.Communication.Scs.Client;
+﻿/*
+ * This file is part of the OpenNos Emulator Project. See AUTHORS file for Copyright information
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
+using OpenNos.Core.Networking.Communication.Scs.Client;
 using OpenNos.Core.Networking.Communication.Scs.Communication;
 using OpenNos.Core.Networking.Communication.Scs.Communication.Messages;
 using OpenNos.Core.Networking.Communication.Scs.Communication.Messengers;
@@ -15,7 +29,7 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Client
     /// <typeparam name="T">Type of service interface</typeparam>
     public class ScsServiceClient<T> : IScsServiceClient<T> where T : class
     {
-        #region Members
+        #region Private Members
 
         /// <summary>
         /// Underlying IScsClient object to communicate with server.
@@ -40,7 +54,7 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Client
 
         #endregion
 
-        #region Instantiation
+        #region Public Instantiation
 
         /// <summary>
         /// Creates a new ScsServiceClient object.
@@ -65,7 +79,7 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Client
 
         #endregion
 
-        #region Events
+        #region Public Events
 
         /// <summary>
         /// This event is raised when client connected to server.
@@ -79,7 +93,7 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Client
 
         #endregion
 
-        #region Properties
+        #region Public Properties
 
         /// <summary>
         /// Gets the current communication state.
@@ -118,7 +132,7 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Client
 
         #endregion
 
-        #region Methods
+        #region Public Methods
 
         /// <summary>
         /// Connects to server.
@@ -144,6 +158,10 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Client
         {
             Disconnect();
         }
+
+        #endregion
+
+        #region Private Methods
 
         /// <summary>
         /// Handles Connected event of _client object.

@@ -16,7 +16,7 @@ namespace OpenNos.Data
 {
     public class ComboDTO
     {
-        #region Properties
+        #region Public Properties
 
         public short Animation { get; set; }
         public int ComboId { get; set; }

@@ -26,13 +26,13 @@ namespace OpenNos.Handler
 {
     public class LoginPacketHandler : IPacketHandler
     {
-        #region Members
+        #region Private Members
 
         private readonly ClientSession _session;
 
         #endregion
 
-        #region Instantiation
+        #region Public Instantiation
 
         public LoginPacketHandler(ClientSession session)
         {
@@ -41,7 +41,7 @@ namespace OpenNos.Handler
 
         #endregion
 
-        #region Methods
+        #region Public Methods
 
         public string BuildServersPacket(int session)
         {

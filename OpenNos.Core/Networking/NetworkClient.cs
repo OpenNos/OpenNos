@@ -1,4 +1,18 @@
-﻿using OpenNos.Core.Networking.Communication.Scs.Communication.Channels;
+﻿/*
+ * This file is part of the OpenNos Emulator Project. See AUTHORS file for Copyright information
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
+using OpenNos.Core.Networking.Communication.Scs.Communication.Channels;
 using OpenNos.Core.Networking.Communication.Scs.Communication.Messages;
 using OpenNos.Core.Networking.Communication.Scs.Server;
 using System;
@@ -8,13 +22,13 @@ namespace OpenNos.Core
 {
     public class NetworkClient : ScsServerClient
     {
-        #region Members
+        #region Private Members
 
         private EncryptionBase _encryptor;
 
         #endregion
 
-        #region Instantiation
+        #region Public Instantiation
 
         public NetworkClient(ICommunicationChannel communicationChannel) : base(communicationChannel)
         {
@@ -22,13 +36,13 @@ namespace OpenNos.Core
 
         #endregion
 
-        #region Properties
+        #region Public Properties
 
         public bool IsDisposing { get; set; }
 
         #endregion
 
-        #region Methods
+        #region Public Methods
 
         public void Initialize(EncryptionBase encryptor)
         {
@@ -37,11 +51,11 @@ namespace OpenNos.Core
 
         public void Send(string packet)
         {
-            if(!IsDisposing)
+            if (!IsDisposing)
             {
                 ScsRawDataMessage rawMessage = new ScsRawDataMessage(_encryptor.Encrypt(packet));
                 SendMessage(rawMessage);
-            }           
+            }
         }
 
         public bool SendPacket(string packet)

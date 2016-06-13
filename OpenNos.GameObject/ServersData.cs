@@ -19,14 +19,14 @@ namespace OpenNos.GameObject
 {
     public class ServersData
     {
-        #region Members
+        #region Private Members
 
         private static int[,] criticalDist = null;
         private static int[,] criticalDistRate = null;
         private static int[,] criticalHit = null;
         private static int[,] criticalHitRate = null;
-        private static int[,] DistDef = null;
-        private static int[,] DistDodge = null;
+        private static int[,] distDef = null;
+        private static int[,] distDodge = null;
         private static int[,] distRate = null;
         private static double[] firstjobxpData = null;
         private static int[,] hitDef = null;
@@ -58,7 +58,7 @@ namespace OpenNos.GameObject
 
         #endregion
 
-        #region Instantiation
+        #region Private Instantiation
 
         private ServersData()
         {
@@ -77,7 +77,7 @@ namespace OpenNos.GameObject
 
         #endregion
 
-        #region Properties
+        #region Public Properties
 
         public static double[] FirstJobXPData
         {
@@ -213,7 +213,7 @@ namespace OpenNos.GameObject
 
         #endregion
 
-        #region Methods
+        #region Public Methods
 
         public static int MagicalDefence(byte @class, byte level)
         {
@@ -452,6 +452,10 @@ namespace OpenNos.GameObject
             return point;
         }
 
+        #endregion
+
+        #region Internal Methods
+
         internal static int DarkResistance(byte @class, byte level)
         {
             return 0;
@@ -469,12 +473,12 @@ namespace OpenNos.GameObject
 
         internal static int DistanceDefence(byte @class, byte level)
         {
-            return DistDef[@class, level];
+            return distDef[@class, level];
         }
 
         internal static int DistanceDefenceRate(byte @class, byte level)
         {
-            return DistDodge[@class, level];
+            return distDodge[@class, level];
         }
 
         internal static int DistanceRate(byte @class, byte level)
@@ -565,6 +569,10 @@ namespace OpenNos.GameObject
         {
             return 0;
         }
+
+        #endregion
+
+        #region Private Methods
 
         private void LoadHpData()
         {
@@ -761,8 +769,8 @@ namespace OpenNos.GameObject
             criticalDist = new int[4, 100];
             hitDef = new int[4, 100];
             hitDodge = new int[4, 100];
-            DistDef = new int[4, 100];
-            DistDodge = new int[4, 100];
+            distDef = new int[4, 100];
+            distDodge = new int[4, 100];
             magicalDef = new int[4, 100];
 
             for (int i = 0; i < 100; i++)
@@ -780,8 +788,8 @@ namespace OpenNos.GameObject
                 criticalDist[(int)ClassType.Adventurer, i] = 0;//sure
                 hitDef[(int)ClassType.Adventurer, i] = (int)(i + 9) / 2;//approx
                 hitDodge[(int)ClassType.Adventurer, i] = i + 9;//approx
-                DistDef[(int)ClassType.Adventurer, i] = (int)(i + 9) / 2;//approx
-                DistDodge[(int)ClassType.Adventurer, i] = i + 9;//approx
+                distDef[(int)ClassType.Adventurer, i] = (int)(i + 9) / 2;//approx
+                distDodge[(int)ClassType.Adventurer, i] = i + 9;//approx
                 magicalDef[(int)ClassType.Adventurer, i] = (int)(i + 9) / 2;//approx
 
                 //SWORDMAN
@@ -793,14 +801,14 @@ namespace OpenNos.GameObject
                 maxDist[(int)ClassType.Swordman, i] = i + 12;//approx
                 distRate[(int)ClassType.Swordman, i] = 2 * (i + 12);//approx
                 hitDodge[(int)ClassType.Swordman, i] = i + 12;//approx
-                DistDodge[(int)ClassType.Swordman, i] = i + 12;//approx
+                distDodge[(int)ClassType.Swordman, i] = i + 12;//approx
                 magicalDef[(int)ClassType.Swordman, i] = (i + 9) / 2;//approx
                 hitRate[(int)ClassType.Swordman, i] = i + 27;//approx
                 hitDef[(int)ClassType.Swordman, i] = i + 2;//approx
 
                 minHit[(int)ClassType.Swordman, i] = 2 * i + 5;//approx 	Numbers n such that 10n+9 is prime.
                 maxHit[(int)ClassType.Swordman, i] = 2 * i + 5;//approx  	Numbers n such that 10n+9 is prime.
-                DistDef[(int)ClassType.Swordman, i] = i;//approx
+                distDef[(int)ClassType.Swordman, i] = i;//approx
 
                 //MAGICIAN
                 hitRate[(int)ClassType.Magician, i] = 0;//sure
@@ -815,11 +823,11 @@ namespace OpenNos.GameObject
                 hitDef[(int)ClassType.Magician, i] = (int)(i + 11) / 2;//approx
                 magicalDef[(int)ClassType.Magician, i] = i + 4;//approx
                 hitDodge[(int)ClassType.Magician, i] = 24 + i;//approx
-                DistDodge[(int)ClassType.Magician, i] = 14 + i;//approx
+                distDodge[(int)ClassType.Magician, i] = 14 + i;//approx
 
                 minHit[(int)ClassType.Magician, i] = 2 * i + 9;//approx Numbers n such that n^2 is of form x^ 2 + 40y ^ 2 with positive x,y.
                 maxHit[(int)ClassType.Magician, i] = 2 * i + 9;//approx Numbers n such that n^2 is of form x^2+40y^2 with positive x,y.
-                DistDef[(int)ClassType.Magician, i] = 20 + i;//approx
+                distDef[(int)ClassType.Magician, i] = 20 + i;//approx
 
                 //ARCHER
                 criticalHitRate[(int)ClassType.Archer, i] = 0;//sure
@@ -839,8 +847,8 @@ namespace OpenNos.GameObject
                 hitDef[(int)ClassType.Archer, i] = i;//approximate;
                 magicalDef[(int)ClassType.Archer, i] = i + 2;//approximate;
                 hitDodge[(int)ClassType.Archer, i] = 41 + i;//approximate;
-                DistDodge[(int)ClassType.Archer, i] = i + 2;//approximate;
-                DistDef[(int)ClassType.Archer, i] = i;//approximate;
+                distDodge[(int)ClassType.Archer, i] = i + 2;//approximate;
+                distDef[(int)ClassType.Archer, i] = i;//approximate;
             }
         }
 

@@ -1,4 +1,18 @@
-﻿using System;
+﻿/*
+ * This file is part of the OpenNos Emulator Project. See AUTHORS file for Copyright information
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -10,7 +24,7 @@ namespace OpenNos.Core.Threading
     /// <typeparam name="TItem">Type of item to process</typeparam>
     public class SequentialItemProcessor<TItem>
     {
-        #region Members
+        #region Private Members
 
         /// <summary>
         /// The method delegate that is called to actually process items.
@@ -45,7 +59,7 @@ namespace OpenNos.Core.Threading
 
         #endregion
 
-        #region Instantiation
+        #region Public Instantiation
 
         /// <summary>
         /// Creates a new SequentialItemProcessor object.
@@ -59,7 +73,7 @@ namespace OpenNos.Core.Threading
 
         #endregion
 
-        #region Methods
+        #region Public Methods
 
         /// <summary>
         /// Adds an item to queue to process the item.
@@ -120,6 +134,10 @@ namespace OpenNos.Core.Threading
             {
             }
         }
+
+        #endregion
+
+        #region Private Methods
 
         /// <summary>
         /// This method runs on a new seperated Task (thread) to process

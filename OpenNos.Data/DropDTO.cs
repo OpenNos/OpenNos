@@ -16,7 +16,7 @@ namespace OpenNos.Data
 {
     public class DropDTO
     {
-        #region Properties
+        #region Public Properties
 
         public int Amount { get; set; }
         public int DropChance { get; set; }

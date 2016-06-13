@@ -1,4 +1,18 @@
-﻿using OpenNos.Core.Networking.Communication.Scs.Communication;
+﻿/*
+ * This file is part of the OpenNos Emulator Project. See AUTHORS file for Copyright information
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
+using OpenNos.Core.Networking.Communication.Scs.Communication;
 using OpenNos.Core.Networking.Communication.Scs.Communication.Channels;
 using OpenNos.Core.Networking.Communication.Scs.Communication.EndPoints;
 using OpenNos.Core.Networking.Communication.Scs.Communication.Messages;
@@ -12,7 +26,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Server
     /// </summary>
     public class ScsServerClient : IScsServerClient
     {
-        #region Members
+        #region Private Members
 
         /// <summary>
         /// The communication channel that is used by client to send and receive messages.
@@ -21,7 +35,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Server
 
         #endregion
 
-        #region Instantiation
+        #region Public Instantiation
 
         /// <summary>
         /// Creates a new ScsClient object.
@@ -37,7 +51,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Server
 
         #endregion
 
-        #region Events
+        #region Public Events
 
         /// <summary>
         /// This event is raised when client is disconnected from server.
@@ -57,7 +71,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Server
 
         #endregion
 
-        #region Properties
+        #region Public Properties
 
         /// <summary>
         /// Unique identifier for this client in server.
@@ -116,7 +130,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Server
 
         #endregion
 
-        #region Methods
+        #region Public Methods
 
         /// <summary>
         /// Disconnects from client and closes underlying communication channel.
@@ -135,6 +149,10 @@ namespace OpenNos.Core.Networking.Communication.Scs.Server
             _communicationChannel.SendMessage(message);
         }
 
+        #endregion
+
+        #region Protected Methods
+
         /// <summary>
         /// Raises MessageSent event.
         /// </summary>
@@ -147,6 +165,10 @@ namespace OpenNos.Core.Networking.Communication.Scs.Server
                 handler(this, new MessageEventArgs(message));
             }
         }
+
+        #endregion
+
+        #region Private Methods
 
         /// <summary>
         /// Handles Disconnected event of _communicationChannel object.

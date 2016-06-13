@@ -1,4 +1,18 @@
-﻿using log4net;
+﻿/*
+ * This file is part of the OpenNos Emulator Project. See AUTHORS file for Copyright information
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
+using log4net;
 using OpenNos.Core;
 using OpenNos.WCF.Interface;
 using System;
@@ -11,7 +25,7 @@ namespace OpenNos.WCF
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)]
     public class CommunicationService : ICommunicationService
     {
-        #region Members
+        #region Private Members
 
         private IDictionary<String, int> _connectedAccounts;
         private IDictionary<String, String> _connectedCharacters;
@@ -19,7 +33,7 @@ namespace OpenNos.WCF
 
         #endregion
 
-        #region Instantiation
+        #region Public Instantiation
 
         public CommunicationService()
         {
@@ -28,7 +42,7 @@ namespace OpenNos.WCF
 
         #endregion
 
-        #region Properties
+        #region Public Properties
 
         public IDictionary<String, int> ConnectedAccounts
         {
@@ -71,7 +85,7 @@ namespace OpenNos.WCF
 
         #endregion
 
-        #region Methods
+        #region Public Methods
 
         /// <summary>
         /// Checks if the Account has a connected Character

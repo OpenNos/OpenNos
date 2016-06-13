@@ -1,4 +1,18 @@
-﻿using System;
+﻿/*
+ * This file is part of the OpenNos Emulator Project. See AUTHORS file for Copyright information
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
+using System;
 
 namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messages
 {
@@ -8,7 +22,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messages
     [Serializable]
     public class ScsRawDataMessage : ScsMessage
     {
-        #region Instantiation
+        #region Public Instantiation
 
         /// <summary>
         /// Default empty constructor.
@@ -42,7 +56,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messages
 
         #endregion
 
-        #region Properties
+        #region Public Properties
 
         /// <summary>
         /// Message data that is being transmitted.
@@ -51,7 +65,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messages
 
         #endregion
 
-        #region Methods
+        #region Public Methods
 
         /// <summary>
         /// Creates a string to represents this object.

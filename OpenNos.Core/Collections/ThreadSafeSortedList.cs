@@ -1,4 +1,18 @@
-﻿using System.Collections.Generic;
+﻿/*
+ * This file is part of the OpenNos Emulator Project. See AUTHORS file for Copyright information
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
+using System.Collections.Generic;
 using System.Threading;
 
 namespace OpenNos.Core.Collections
@@ -11,7 +25,7 @@ namespace OpenNos.Core.Collections
     /// <typeparam name="TV">Value type</typeparam>
     public class ThreadSafeSortedList<TK, TV>
     {
-        #region Members
+        #region Protected Members
 
         /// <summary>
         /// public collection to store items.
@@ -25,7 +39,7 @@ namespace OpenNos.Core.Collections
 
         #endregion
 
-        #region Instantiation
+        #region Public Instantiation
 
         /// <summary>
         /// Creates a new ThreadSafeSortedList object.
@@ -38,7 +52,7 @@ namespace OpenNos.Core.Collections
 
         #endregion
 
-        #region Properties
+        #region Public Properties
 
         /// <summary>
         /// Gets count of items in the collection.
@@ -61,7 +75,7 @@ namespace OpenNos.Core.Collections
 
         #endregion
 
-        #region Indexers
+        #region Public Indexers
 
         /// <summary>
         /// Gets/adds/replaces an item by key.
@@ -99,7 +113,7 @@ namespace OpenNos.Core.Collections
 
         #endregion
 
-        #region Methods
+        #region Public Methods
 
         /// <summary>
         /// Removes all items from list.

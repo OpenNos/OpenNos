@@ -1,4 +1,18 @@
-﻿using System;
+﻿/*
+ * This file is part of the OpenNos Emulator Project. See AUTHORS file for Copyright information
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
+using System;
 
 namespace OpenNos.Core.Networking.Communication.ScsServices.Service
 {
@@ -8,7 +22,7 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Service
     [AttributeUsage(AttributeTargets.Interface | AttributeTargets.Class)]
     public class ScsServiceAttribute : Attribute
     {
-        #region Instantiation
+        #region Public Instantiation
 
         /// <summary>
         /// Creates a new ScsServiceAttribute object.
@@ -20,7 +34,7 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Service
 
         #endregion
 
-        #region Properties
+        #region Public Properties
 
         /// <summary>
         /// Service Version. This property can be used to indicate the code version.

@@ -21,7 +21,7 @@ namespace OpenNos.Core
 {
     public class Language
     {
-        #region Members
+        #region Private Members
 
         private static readonly object myLock = new object();
         private static Language instance = null;
@@ -30,7 +30,7 @@ namespace OpenNos.Core
 
         #endregion
 
-        #region Instantiation
+        #region Private Instantiation
 
         private Language()
         {
@@ -40,7 +40,7 @@ namespace OpenNos.Core
 
         #endregion
 
-        #region Properties
+        #region Public Properties
 
         public static Language Instance
         {
@@ -53,7 +53,7 @@ namespace OpenNos.Core
 
         #endregion
 
-        #region Methods
+        #region Public Methods
 
         public string GetMessageFromKey(string message)
         {

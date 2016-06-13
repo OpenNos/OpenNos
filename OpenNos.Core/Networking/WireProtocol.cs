@@ -23,7 +23,7 @@ namespace OpenNos.Core
 {
     public class WireProtocol : IScsWireProtocol
     {
-        #region Members
+        #region Private Members
 
         /// <summary>
         /// Maximum length of a message.
@@ -39,7 +39,7 @@ namespace OpenNos.Core
 
         #endregion
 
-        #region Instantiation
+        #region Public Instantiation
 
         public WireProtocol()
         {
@@ -49,7 +49,7 @@ namespace OpenNos.Core
 
         #endregion
 
-        #region Methods
+        #region Public Methods
 
         public IEnumerable<IScsMessage> CreateMessages(byte[] receivedBytes)
         {
@@ -81,6 +81,10 @@ namespace OpenNos.Core
                 _receiveMemoryStream = new MemoryStream();
             }
         }
+
+        #endregion
+
+        #region Private Methods
 
         /// <summary>
         /// Reads a byte array with specified length.

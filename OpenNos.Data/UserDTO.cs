@@ -12,18 +12,16 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Core;
-
 namespace OpenNos.Data
 {
     public class UserDTO
     {
-        #region Properties
+        #region Public Properties
 
         public string Name { get; set; }
 
         public string Password { get; set; }
-        
+
         public string Unknown { get; set; }
 
         #endregion

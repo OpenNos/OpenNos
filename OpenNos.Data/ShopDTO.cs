@@ -16,7 +16,7 @@ namespace OpenNos.Data
 {
     public class ShopDTO
     {
-        #region Properties
+        #region Public Properties
 
         public int MapNpcId { get; set; }
         public byte MenuType { get; set; }

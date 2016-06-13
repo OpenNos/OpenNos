@@ -19,7 +19,7 @@ namespace OpenNos.DAL.Interface
 {
     public interface IComboDAO
     {
-        #region Methods
+        #region Public Methods
 
         ComboDTO Insert(ComboDTO combo);
 

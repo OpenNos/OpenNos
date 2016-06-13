@@ -26,13 +26,13 @@ namespace OpenNos.Handler
 {
     public class InventoryPacketHandler : IPacketHandler
     {
-        #region Members
+        #region Private Members
 
         private readonly ClientSession _session;
 
         #endregion
 
-        #region Instantiation
+        #region Public Instantiation
 
         public InventoryPacketHandler(ClientSession session)
         {
@@ -41,13 +41,13 @@ namespace OpenNos.Handler
 
         #endregion
 
-        #region Properties
+        #region Public Properties
 
         public ClientSession Session { get { return _session; } }
 
         #endregion
 
-        #region Methods
+        #region Public Methods
 
         [Packet("#req_exc")]
         public void AcceptExchange(string packet)
@@ -1070,6 +1070,10 @@ namespace OpenNos.Handler
                 }
             }
         }
+
+        #endregion
+
+        #region Private Methods
 
         private void ChangeSP()
         {

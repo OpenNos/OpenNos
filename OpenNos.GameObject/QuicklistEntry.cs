@@ -19,7 +19,7 @@ namespace OpenNos.GameObject
 {
     public class QuicklistEntry : QuicklistEntryDTO
     {
-        #region Methods
+        #region Public Methods
 
         public void Save()
         {

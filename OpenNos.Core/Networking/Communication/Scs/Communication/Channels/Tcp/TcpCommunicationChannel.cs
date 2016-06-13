@@ -1,4 +1,18 @@
-﻿using OpenNos.Core.Networking.Communication.Scs.Communication.EndPoints;
+﻿/*
+ * This file is part of the OpenNos Emulator Project. See AUTHORS file for Copyright information
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
+using OpenNos.Core.Networking.Communication.Scs.Communication.EndPoints;
 using OpenNos.Core.Networking.Communication.Scs.Communication.EndPoints.Tcp;
 using OpenNos.Core.Networking.Communication.Scs.Communication.Messages;
 using System;
@@ -12,7 +26,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
     /// </summary>
     public class TcpCommunicationChannel : CommunicationChannelBase
     {
-        #region Members
+        #region Private Members
 
         /// <summary>
         /// Size of the buffer that is used to receive bytes from TCP socket.
@@ -44,7 +58,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
 
         #endregion
 
-        #region Instantiation
+        #region Public Instantiation
 
         /// <summary>
         /// Creates a new TcpCommunicationChannel object.
@@ -65,7 +79,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
 
         #endregion
 
-        #region Properties
+        #region Public Properties
 
         ///<summary>
         /// Gets the endpoint of remote application.
@@ -80,7 +94,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
 
         #endregion
 
-        #region Methods
+        #region Public Methods
 
         /// <summary>
         /// Disconnects from remote application and closes channel.
@@ -110,6 +124,10 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
             OnDisconnected();
         }
 
+        #endregion
+
+        #region Protected Methods
+
         /// <summary>
         /// Sends a message to the remote application.
         /// </summary>
@@ -125,7 +143,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
                 //Send all bytes to the remote application
                 while (totalSent < messageBytes.Length)
                 {
-                    if(_clientSocket.Connected)
+                    if (_clientSocket.Connected)
                     {
                         var sent = _clientSocket.Send(messageBytes, totalSent, messageBytes.Length - totalSent, SocketFlags.None);
                         if (sent <= 0)
@@ -150,6 +168,10 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
             _running = true;
             _clientSocket.BeginReceive(_buffer, 0, _buffer.Length, 0, new AsyncCallback(ReceiveCallback), null);
         }
+
+        #endregion
+
+        #region Private Methods
 
         /// <summary>
         /// This method is used as callback method in _clientSocket's BeginReceive method.

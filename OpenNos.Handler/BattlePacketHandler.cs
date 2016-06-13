@@ -26,13 +26,13 @@ namespace OpenNos.Handler
 {
     public class BattlePacketHandler : IPacketHandler
     {
-        #region Members
+        #region Private Members
 
         private readonly ClientSession _session;
 
         #endregion
 
-        #region Instantiation
+        #region Public Instantiation
 
         public BattlePacketHandler(ClientSession session)
         {
@@ -41,13 +41,13 @@ namespace OpenNos.Handler
 
         #endregion
 
-        #region Properties
+        #region Public Properties
 
         public ClientSession Session { get { return _session; } }
 
         #endregion
 
-        #region Methods
+        #region Public Methods
 
         [Packet("mtlist")]
         public void SpecialZoneHit(string packet)
@@ -91,7 +91,7 @@ namespace OpenNos.Handler
                 CharacterSkill ski = skills.FirstOrDefault(s => (skill = ServerManager.GetSkill(s.SkillVNum)) != null && skill?.CastId == castingId);
                 for (int i = 0; i < 25 && ski.Used; i++)
                 {
-                    Thread.Sleep(100);      
+                    Thread.Sleep(100);
                 }
 
                 if (ski != null)
@@ -163,7 +163,6 @@ namespace OpenNos.Handler
                                             damage = GenerateDamage(mon.MapMonsterId, skill, ref hitmode);
                                             Session.CurrentMap?.Broadcast($"su {1} {Session.Character.CharacterId} {3} {mon.MapMonsterId} {skill.SkillVNum} {skill.Cooldown} {skill.AttackAnimation} {skill.Effect} {Session.Character.MapX} {Session.Character.MapY} {(mon.Alive ? 1 : 0)} {(int)(((float)mon.CurrentHp / (float)ServerManager.GetNpc(mon.MonsterVNum).MaxHP) * 100)} {damage} {5} {skill.SkillType - 1}");
                                         }
-
                                 }
                             }
                         }
@@ -214,6 +213,10 @@ namespace OpenNos.Handler
                         Task.Factory.StartNew(() => ZoneHit(Convert.ToInt32(packetsplit[2]), Convert.ToInt16(packetsplit[3]), Convert.ToInt16(packetsplit[4])));
             }
         }
+
+        #endregion
+
+        #region Private Methods
 
         private ushort GenerateDamage(int monsterid, Skill skill, ref int hitmode)
         {

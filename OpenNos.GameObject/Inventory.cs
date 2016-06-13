@@ -18,11 +18,10 @@ namespace OpenNos.GameObject
 {
     public class Inventory : InventoryDTO
     {
-        #region Instantiation
+        #region Public Instantiation
 
         public Inventory()
         {
-            
         }
 
         public Inventory(InventoryDTO inventory)

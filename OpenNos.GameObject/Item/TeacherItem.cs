@@ -19,7 +19,7 @@ namespace OpenNos.GameObject
 {
     public class TeacherItem : Item
     {
-        #region Methods
+        #region Public Methods
 
         public override void Use(ClientSession Session, ref Inventory Inv)
         {

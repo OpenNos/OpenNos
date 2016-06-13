@@ -16,13 +16,12 @@ using OpenNos.Core;
 using OpenNos.Domain;
 using System;
 using System.Diagnostics;
-using System.Threading;
 
 namespace OpenNos.GameObject
 {
     public class WearableItem : Item
     {
-        #region Methods
+        #region Public Methods
 
         public override void Use(ClientSession session, ref Inventory inventory)
         {
@@ -99,8 +98,7 @@ namespace OpenNos.GameObject
                     Inventory equip = session.Character.EquipmentList.LoadInventoryBySlotAndType(iteminfo.EquipmentSlot, (byte)InventoryType.Equipment);
                     if (equip == null)
                     {
-
-                        session.Character.EquipmentList.AddToInventoryWithSlotAndType( inventory.ItemInstance as ItemInstance, (byte)InventoryType.Equipment, iteminfo.EquipmentSlot);
+                        session.Character.EquipmentList.AddToInventoryWithSlotAndType(inventory.ItemInstance as ItemInstance, (byte)InventoryType.Equipment, iteminfo.EquipmentSlot);
                         session.Client.SendPacket(session.Character.GenerateInventoryAdd(-1, 0, type, slot, 0, 0, 0));
                         session.Character.InventoryList.DeleteFromSlotAndType(inventory.Slot, inventory.Type);
 
@@ -111,7 +109,6 @@ namespace OpenNos.GameObject
                     }
                     else
                     {
-                     
                         session.Character.InventoryList.DeleteFromSlotAndType(inventory.Slot, inventory.Type);
                         session.Character.EquipmentList.DeleteFromSlotAndType(equip.Slot, equip.Type);
 

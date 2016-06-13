@@ -28,7 +28,7 @@ namespace OpenNos.DAL.EF.MySQL
 {
     public class InventoryDAO : IInventoryDAO
     {
-        #region Members
+        #region Private Members
 
         private Type _baseType;
         private IMapper _mapper;
@@ -36,7 +36,7 @@ namespace OpenNos.DAL.EF.MySQL
 
         #endregion
 
-        #region Instantiation
+        #region Public Instantiation
 
         public InventoryDAO()
         {
@@ -51,7 +51,7 @@ namespace OpenNos.DAL.EF.MySQL
 
         #endregion
 
-        #region Methods
+        #region Public Methods
 
         public DeleteResult DeleteFromSlotAndType(long characterId, short slot, byte type)
         {
@@ -195,6 +195,10 @@ namespace OpenNos.DAL.EF.MySQL
             Type itemInstanceType = typeof(ItemInstance);
             itemInstanceMappings.Add(gameObjectType, targetType);
         }
+
+        #endregion
+
+        #region Private Methods
 
         private InventoryDTO Insert(InventoryDTO inventory, OpenNosContext context)
         {

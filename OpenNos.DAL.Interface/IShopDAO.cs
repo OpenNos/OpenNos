@@ -19,7 +19,7 @@ namespace OpenNos.DAL.Interface
 {
     public interface IShopDAO
     {
-        #region Methods
+        #region Public Methods
 
         ShopDTO Insert(ShopDTO shop);
 

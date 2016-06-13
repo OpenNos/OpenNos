@@ -1,4 +1,18 @@
-﻿using OpenNos.Core.Networking.Communication.Scs.Communication.Messages;
+﻿/*
+ * This file is part of the OpenNos Emulator Project. See AUTHORS file for Copyright information
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
+using OpenNos.Core.Networking.Communication.Scs.Communication.Messages;
 using OpenNos.Core.Networking.Communication.Scs.Communication.Protocols;
 using OpenNos.Core.Threading;
 using System;
@@ -15,7 +29,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messengers
     /// <typeparam name="T">Type of IMessenger object to use as underlying communication</typeparam>
     public class RequestReplyMessenger<T> : IMessenger, IDisposable where T : IMessenger
     {
-        #region Members
+        #region Private Members
 
         /// <summary>
         /// Default Timeout value.
@@ -42,7 +56,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messengers
 
         #endregion
 
-        #region Instantiation
+        #region Public Instantiation
 
         /// <summary>
         /// Creates a new RequestReplyMessenger.
@@ -60,7 +74,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messengers
 
         #endregion
 
-        #region Events
+        #region Public Events
 
         /// <summary>
         /// This event is raised when a new message is received from underlying messenger.
@@ -75,7 +89,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messengers
 
         #endregion
 
-        #region Enums
+        #region Private Enums
 
         /// <summary>
         /// This enum is used to store the state of a waiting message.
@@ -100,7 +114,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messengers
 
         #endregion
 
-        #region Properties
+        #region Public Properties
 
         /// <summary>
         /// Gets the time of the last succesfully received message.
@@ -147,7 +161,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messengers
 
         #endregion
 
-        #region Methods
+        #region Public Methods
 
         /// <summary>
         /// Calls Stop method of this object.
@@ -274,6 +288,10 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messengers
             }
         }
 
+        #endregion
+
+        #region Protected Methods
+
         /// <summary>
         /// Raises MessageReceived event.
         /// </summary>
@@ -299,6 +317,10 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messengers
                 handler(this, new MessageEventArgs(message));
             }
         }
+
+        #endregion
+
+        #region Private Methods
 
         /// <summary>
         /// Handles MessageReceived event of Messenger object.
@@ -344,7 +366,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messengers
 
         #endregion
 
-        #region Classes
+        #region Private Classes
 
         /// <summary>
         /// This class is used to store messaging context for a request message
@@ -352,7 +374,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messengers
         /// </summary>
         private sealed class WaitingMessage
         {
-            #region Instantiation
+            #region Public Instantiation
 
             /// <summary>
             /// Creates a new WaitingMessage object.
@@ -365,7 +387,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messengers
 
             #endregion
 
-            #region Properties
+            #region Public Properties
 
             /// <summary>
             /// Response message for request message

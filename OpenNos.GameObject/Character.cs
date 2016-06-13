@@ -27,7 +27,7 @@ namespace OpenNos.GameObject
 {
     public class Character : CharacterDTO
     {
-        #region Members
+        #region Private Members
 
         private readonly ClientSession _session;
         private AuthorityType _authority;
@@ -49,7 +49,7 @@ namespace OpenNos.GameObject
 
         #endregion
 
-        #region Instantiation
+        #region Public Instantiation
 
         public Character(ClientSession Session)
         {
@@ -62,7 +62,7 @@ namespace OpenNos.GameObject
 
         #endregion
 
-        #region Properties
+        #region Public Properties
 
         public AuthorityType Authority { get { return _authority; } set { _authority = value; } }
 
@@ -178,11 +178,7 @@ namespace OpenNos.GameObject
 
         #endregion
 
-        #region Methods
-        public Character DeepCopy()
-        {
-            return (Character)this.MemberwiseClone();
-        }
+        #region Public Methods
 
         public void ChangeClass(long id, byte characterClass)
         {
@@ -283,6 +279,11 @@ namespace OpenNos.GameObject
         {
             IsDancing = IsDancing == 0 ? 1 : 0;
             return string.Empty;
+        }
+
+        public Character DeepCopy()
+        {
+            return (Character)this.MemberwiseClone();
         }
 
         public void DeleteItem(byte type, short slot)
@@ -1427,6 +1428,10 @@ namespace OpenNos.GameObject
         {
             return ServersData.XPData[Level - 1];
         }
+
+        #endregion
+
+        #region Private Methods
 
         private object HeroXPLoad()
         {

@@ -16,7 +16,7 @@ namespace OpenNos.Data
 {
     public class PortalDTO
     {
-        #region Properties
+        #region Public Properties
 
         public short DestinationMapId { get; set; }
         public short DestinationX { get; set; }

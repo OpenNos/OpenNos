@@ -25,13 +25,13 @@ namespace OpenNos.DAL.EF.MySQL
 {
     public class ShopItemDAO : IShopItemDAO
     {
-        #region Members
+        #region Private Members
 
         private IMapper _mapper;
 
         #endregion
 
-        #region Instantiation
+        #region Public Instantiation
 
         public ShopItemDAO()
         {
@@ -46,7 +46,7 @@ namespace OpenNos.DAL.EF.MySQL
 
         #endregion
 
-        #region Methods
+        #region Public Methods
 
         public DeleteResult DeleteById(int itemId)
         {
@@ -107,6 +107,10 @@ namespace OpenNos.DAL.EF.MySQL
                 }
             }
         }
+
+        #endregion
+
+        #region Private Methods
 
         private ShopItemDTO Update(ShopItem entity, ShopItemDTO shopItem, OpenNosContext context)
         {

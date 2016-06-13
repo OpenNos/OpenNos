@@ -20,7 +20,7 @@ namespace OpenNos.DAL.Interface
 {
     public interface IShopItemDAO
     {
-        #region Methods
+        #region Public Methods
 
         DeleteResult DeleteById(int ItemId);
 

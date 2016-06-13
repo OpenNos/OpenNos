@@ -19,7 +19,7 @@ namespace OpenNos.ServiceRef.Internal
 {
     public class CommunicationCallback : ICommunicationServiceCallback, IDisposable
     {
-        #region Events
+        #region Public Events
 
         public event EventHandler AccountConnectedEvent;
 
@@ -31,7 +31,7 @@ namespace OpenNos.ServiceRef.Internal
 
         #endregion
 
-        #region Methods
+        #region Public Methods
 
         public void ConnectAccountCallback(string accountName, int sessionId)
         {
@@ -75,6 +75,10 @@ namespace OpenNos.ServiceRef.Internal
                 CharacterDisconnectedEvent(characterName, new EventArgs());
             }
         }
+
+        #endregion
+
+        #region Private Methods
 
         private void OnAccountConnected(string accountName)
         {

@@ -19,7 +19,7 @@ namespace OpenNos.DAL.Interface
 {
     public interface INpcMonsterDAO
     {
-        #region Methods
+        #region Public Methods
 
         NpcMonsterDTO Insert(NpcMonsterDTO npc);
 

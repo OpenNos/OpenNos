@@ -1,4 +1,18 @@
-﻿using System;
+﻿/*
+ * This file is part of the OpenNos Emulator Project. See AUTHORS file for Copyright information
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -6,7 +20,7 @@ namespace OpenNos.Core.Threading
 {
     public class ThreadedBase<TValue>
     {
-        #region Members
+        #region Private Members
 
         private Action<TValue> _action;
         private SequentialItemProcessor<TValue> _queue;
@@ -15,7 +29,7 @@ namespace OpenNos.Core.Threading
 
         //private Task _task;
 
-        #region Instantiation
+        #region Public Instantiation
 
         public ThreadedBase(long milliseconds, Action<TValue> triggeredMethod)
         {
@@ -30,7 +44,7 @@ namespace OpenNos.Core.Threading
 
         #endregion
 
-        #region Properties
+        #region Public Properties
 
         public SequentialItemProcessor<TValue> Queue
         {
@@ -54,7 +68,7 @@ namespace OpenNos.Core.Threading
 
     internal static class CancellationTokenExtensions
     {
-        #region Methods
+        #region Public Methods
 
         public static bool WaitCancellationRequested(
             this CancellationToken token,
@@ -68,7 +82,7 @@ namespace OpenNos.Core.Threading
 
     internal static class Repeat
     {
-        #region Methods
+        #region Public Methods
 
         public static Task Interval(
             TimeSpan pollInterval,

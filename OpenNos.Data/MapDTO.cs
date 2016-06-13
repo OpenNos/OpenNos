@@ -16,7 +16,7 @@ namespace OpenNos.Data
 {
     public class MapDTO : IMapDTO
     {
-        #region Properties
+        #region Public Properties
 
         public byte[] Data { get; set; }
         public short MapId { get; set; }

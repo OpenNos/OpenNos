@@ -1,4 +1,18 @@
-﻿using OpenNos.Core;
+﻿/*
+ * This file is part of the OpenNos Emulator Project. See AUTHORS file for Copyright information
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
+using OpenNos.Core;
 using OpenNos.DAL;
 using OpenNos.Data;
 using OpenNos.Domain;
@@ -11,13 +25,13 @@ namespace OpenNos.Handler
 {
     public class CommandPacketHandler : IPacketHandler
     {
-        #region Members
+        #region Private Members
 
         private readonly ClientSession _session;
 
         #endregion
 
-        #region Instantiation
+        #region Public Instantiation
 
         public CommandPacketHandler(ClientSession session)
         {
@@ -26,13 +40,13 @@ namespace OpenNos.Handler
 
         #endregion
 
-        #region Properties
+        #region Public Properties
 
         public ClientSession Session { get { return _session; } }
 
         #endregion
 
-        #region Methods
+        #region Public Methods
 
         [Packet("$AddMonster")]
         public void AddMonster(string packet)
@@ -234,17 +248,6 @@ namespace OpenNos.Handler
             else
 
                 Session.Client.SendPacket(Session.Character.GenerateSay("$SPLvl SPLEVEL", 10));
-        }
-
-        [Packet("$SPRefill")]
-        public void SPRefill(string packet)
-        {
-            Logger.Debug(packet, Session.SessionId);
-            Session.Character.SpPoint = 10000;
-            Session.Character.SpAdditionPoint = 1000000;
-
-            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SP_REFILL"), 0));
-            Session.Client.SendPacket(Session.Character.GenerateSpPoint());
         }
 
         [Packet("$Help")]
@@ -715,6 +718,17 @@ namespace OpenNos.Handler
             }
         }
 
+        [Packet("$SPRefill")]
+        public void SPRefill(string packet)
+        {
+            Logger.Debug(packet, Session.SessionId);
+            Session.Character.SpPoint = 10000;
+            Session.Character.SpAdditionPoint = 1000000;
+
+            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SP_REFILL"), 0));
+            Session.Client.SendPacket(Session.Character.GenerateSpPoint());
+        }
+
         [Packet("$Stat")]
         public void Stat(string packet)
         {
@@ -865,6 +879,10 @@ namespace OpenNos.Handler
                 }
             }
         }
+
+        #endregion
+
+        #region Private Methods
 
         private void DeleteItem(byte type, short slot)
         {

@@ -18,17 +18,17 @@ namespace OpenNos.Data
 {
     public class ItemInstanceDTO : IItemInstance
     {
-        #region Properties
+        #region Public Properties
 
-        public bool IsUsed { get; set; }
         public int Amount { get; set; }
+        public byte Design { get; set; }
+        public bool IsUsed { get; set; }
         public DateTime? ItemDeleteTime { get; set; }
         public long ItemInstanceId { get; set; }
         public short ItemVNum { get; set; }
 
         public byte Rare { get; set; }
         public byte Upgrade { get; set; }
-        public byte Design { get; set; }
 
         #endregion
     }

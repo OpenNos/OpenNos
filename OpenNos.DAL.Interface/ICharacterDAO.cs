@@ -20,7 +20,7 @@ namespace OpenNos.DAL.Interface
 {
     public interface ICharacterDAO
     {
-        #region Methods
+        #region Public Methods
 
         DeleteResult DeleteByPrimaryKey(long accountId, byte characterSlot);
 

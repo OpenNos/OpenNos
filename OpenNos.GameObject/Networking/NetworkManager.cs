@@ -25,7 +25,7 @@ namespace OpenNos.GameObject
     public class NetworkManager<EncryptorT>
         where EncryptorT : EncryptionBase
     {
-        #region Members
+        #region Private Members
 
         private EncryptorT _encryptor;
         private EncryptionBase _fallbackEncryptor;
@@ -36,7 +36,7 @@ namespace OpenNos.GameObject
 
         #endregion
 
-        #region Instantiation
+        #region Public Instantiation
 
         public NetworkManager(string ipAddress, int port, Type packetHandler, Type fallbackEncryptor, bool isWorldServer)
         {
@@ -60,7 +60,7 @@ namespace OpenNos.GameObject
 
         #endregion
 
-        #region Properties
+        #region Public Properties
 
         public IDictionary<string, DateTime> GeneralLog
         {
@@ -86,7 +86,7 @@ namespace OpenNos.GameObject
 
         #endregion
 
-        #region Methods
+        #region Private Methods
 
         private bool CheckGeneralLog(NetworkClient client)
         {
@@ -152,7 +152,6 @@ namespace OpenNos.GameObject
             if (session != null)
             {
                 session.IsDisposing = true;
-
 
                 if (IsWorldServer)
                 {

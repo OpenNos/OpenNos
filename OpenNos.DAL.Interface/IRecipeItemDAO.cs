@@ -19,7 +19,7 @@ namespace OpenNos.DAL.Interface
 {
     public interface IRecipeItemDAO
     {
-        #region Methods
+        #region Public Methods
 
         RecipeItemDTO Insert(RecipeItemDTO recipeitem);
 

@@ -24,7 +24,7 @@ namespace OpenNos.GameObject
 {
     public class InventoryList
     {
-        #region Instantiation
+        #region Public Instantiation
 
         public InventoryList(Character Character)
         {
@@ -34,14 +34,14 @@ namespace OpenNos.GameObject
 
         #endregion
 
-        #region Properties
+        #region Public Properties
 
         public List<Inventory> Inventory { get; set; }
         public Character Owner { get; set; }
 
         #endregion
 
-        #region Methods
+        #region Public Methods
 
         public static ItemInstance CreateItemInstance(short vnum, long itemInstanceId)
         {
@@ -411,6 +411,10 @@ namespace OpenNos.GameObject
         {
             Inventory = DAOFactory.InventoryDAO.InsertOrUpdate(Inventory).Select(i => new Inventory(i)).ToList();
         }
+
+        #endregion
+
+        #region Private Methods
 
         private short GetFirstPlace(byte type, int backPack)
         {

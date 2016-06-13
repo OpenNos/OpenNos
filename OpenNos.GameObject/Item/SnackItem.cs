@@ -20,7 +20,7 @@ namespace OpenNos.GameObject
 {
     public class SnackItem : Item
     {
-        #region Methods
+        #region Public Methods
 
         public void regen(ClientSession session, Item item)
         {
@@ -56,8 +56,6 @@ namespace OpenNos.GameObject
                 Thread.Sleep(1800);
             }
         }
-
-      
 
         public override void Use(ClientSession session, ref Inventory inv)
         {

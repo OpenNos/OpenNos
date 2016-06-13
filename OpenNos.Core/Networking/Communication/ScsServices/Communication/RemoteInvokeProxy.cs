@@ -1,4 +1,18 @@
-﻿using OpenNos.Core.Networking.Communication.Scs.Communication.Messengers;
+﻿/*
+ * This file is part of the OpenNos Emulator Project. See AUTHORS file for Copyright information
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
+using OpenNos.Core.Networking.Communication.Scs.Communication.Messengers;
 using OpenNos.Core.Networking.Communication.ScsServices.Communication.Messages;
 using System.Runtime.Remoting.Messaging;
 using System.Runtime.Remoting.Proxies;
@@ -13,7 +27,7 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Communication
     /// <typeparam name="TMessenger">Type of the messenger object that is used to send/receive messages</typeparam>
     public class RemoteInvokeProxy<TProxy, TMessenger> : RealProxy where TMessenger : IMessenger
     {
-        #region Members
+        #region Private Members
 
         /// <summary>
         /// Messenger object that is used to send/receive messages.
@@ -22,7 +36,7 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Communication
 
         #endregion
 
-        #region Instantiation
+        #region Public Instantiation
 
         /// <summary>
         /// Creates a new RemoteInvokeProxy object.
@@ -36,7 +50,7 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Communication
 
         #endregion
 
-        #region Methods
+        #region Public Methods
 
         /// <summary>
         /// Overrides message calls and translates them to messages to remote application.
