@@ -18,7 +18,7 @@ namespace OpenNos.GameObject
 {
     public class ExchangeInfo
     {
-        #region Public Instantiation
+        #region Instantiation
 
         public ExchangeInfo()
         {
@@ -31,7 +31,7 @@ namespace OpenNos.GameObject
 
         #endregion
 
-        #region Public Properties
+        #region Properties
 
         public long CharId { get; set; }
         public bool Confirm { get; set; }

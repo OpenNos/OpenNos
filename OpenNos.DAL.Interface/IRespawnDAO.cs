@@ -20,7 +20,7 @@ namespace OpenNos.DAL.Interface
 {
     public interface IRespawnDAO
     {
-        #region Public Methods
+        #region Methods
 
         SaveResult InsertOrUpdate(ref RespawnDTO respawn);
 

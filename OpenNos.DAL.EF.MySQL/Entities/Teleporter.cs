@@ -16,7 +16,7 @@ namespace OpenNos.DAL.EF.MySQL
 {
     public class Teleporter
     {
-        #region Public Properties
+        #region Properties
 
         public short Index { get; set; }
         public virtual Map Map { get; set; }

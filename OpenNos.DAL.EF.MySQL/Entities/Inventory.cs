@@ -18,7 +18,7 @@ namespace OpenNos.DAL.EF.MySQL
 {
     public class Inventory
     {
-        #region Public Properties
+        #region Properties
 
         public virtual Character Character { get; set; }
 

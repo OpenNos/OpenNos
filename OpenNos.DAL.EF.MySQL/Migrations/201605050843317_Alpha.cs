@@ -4,7 +4,7 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
 
     public partial class Alpha : DbMigration
     {
-        #region Public Methods
+        #region Methods
 
         public override void Down()
         {

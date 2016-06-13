@@ -21,7 +21,7 @@ namespace OpenNos.DAL.EF.MySQL
 
     public class Account
     {
-        #region Public Instantiation
+        #region Instantiation
 
         public Account()
         {
@@ -31,7 +31,7 @@ namespace OpenNos.DAL.EF.MySQL
 
         #endregion
 
-        #region Public Properties
+        #region Properties
 
         public long AccountId { get; set; }
 

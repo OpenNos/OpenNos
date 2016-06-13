@@ -24,7 +24,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels
     /// </summary>
     public abstract class CommunicationChannelBase : ICommunicationChannel
     {
-        #region Protected Instantiation
+        #region Instantiation
 
         /// <summary>
         /// Constructor.
@@ -38,7 +38,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels
 
         #endregion
 
-        #region Public Events
+        #region Events
 
         /// <summary>
         /// This event is raised when communication channel closed.
@@ -58,7 +58,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels
 
         #endregion
 
-        #region Public Properties
+        #region Properties
 
         /// <summary>
         /// Gets the current communication state.
@@ -88,7 +88,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels
 
         #endregion
 
-        #region Public Methods
+        #region Methods
 
         /// <summary>
         /// Disconnects from remote application and closes this channel.
@@ -118,10 +118,6 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels
             Startpublic();
             CommunicationState = CommunicationStates.Connected;
         }
-
-        #endregion
-
-        #region Protected Methods
 
         /// <summary>
         /// Raises Disconnected event.

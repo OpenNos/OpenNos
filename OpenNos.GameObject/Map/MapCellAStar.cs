@@ -19,7 +19,7 @@ namespace OpenNos.GameObject
 {
     public class MapCellAStar : MapCell
     {
-        #region Public Members
+        #region Members
 
         public int g;
 
@@ -27,15 +27,11 @@ namespace OpenNos.GameObject
 
         public MapCellAStar parentcell;
 
-        #endregion
-
-        #region Private Members
-
         private MapCellAStar _goalcell;
 
         #endregion
 
-        #region Public Instantiation
+        #region Instantiation
 
         public MapCellAStar(MapCellAStar parentcell, MapCellAStar goalcell, short x, short y, short MapId)
         {
@@ -49,7 +45,7 @@ namespace OpenNos.GameObject
 
         #endregion
 
-        #region Public Properties
+        #region Properties
 
         public int TotalCost
         {
@@ -65,7 +61,7 @@ namespace OpenNos.GameObject
 
         #endregion
 
-        #region Public Methods
+        #region Methods
 
         public int CompareTo(object obj)
         {
@@ -100,10 +96,6 @@ namespace OpenNos.GameObject
             else
                 return false;
         }
-
-        #endregion
-
-        #region Private Methods
 
         private double Euclidean_H()
         {

@@ -21,7 +21,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messages
     /// </summary>
     public class MessageEventArgs : EventArgs
     {
-        #region Public Instantiation
+        #region Instantiation
 
         /// <summary>
         /// Creates a new MessageEventArgs object.
@@ -34,7 +34,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messages
 
         #endregion
 
-        #region Public Properties
+        #region Properties
 
         /// <summary>
         /// Message object that is associated with this event.

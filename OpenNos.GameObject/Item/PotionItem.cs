@@ -16,7 +16,7 @@ namespace OpenNos.GameObject
 {
     public class PotionItem : Item
     {
-        #region Public Methods
+        #region Methods
 
         public override void Use(ClientSession session, ref Inventory inv)
         {

@@ -16,7 +16,7 @@ namespace OpenNos.Data
 {
     public class NpcMonsterDTO
     {
-        #region Public Properties
+        #region Properties
 
         public byte AttackClass { get; set; }
         public byte AttackUpgrade { get; set; }

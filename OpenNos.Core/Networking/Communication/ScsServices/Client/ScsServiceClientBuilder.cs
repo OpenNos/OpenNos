@@ -21,7 +21,7 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Client
     /// </summary>
     public class ScsServiceClientBuilder
     {
-        #region Public Methods
+        #region Methods
 
         /// <summary>
         /// Creates a client to connect to a SCS service.

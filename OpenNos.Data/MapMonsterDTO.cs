@@ -16,7 +16,7 @@ namespace OpenNos.Data
 {
     public class MapMonsterDTO
     {
-        #region Public Properties
+        #region Properties
 
         public bool IsMoving { get; set; }
         public short MapId { get; set; }

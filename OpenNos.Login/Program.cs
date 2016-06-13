@@ -27,7 +27,7 @@ namespace OpenNos.Login
 {
     public class Program
     {
-        #region Public Methods
+        #region Methods
 
         public static void Main()
         {

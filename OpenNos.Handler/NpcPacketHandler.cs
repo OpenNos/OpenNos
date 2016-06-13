@@ -23,13 +23,13 @@ namespace OpenNos.Handler
 {
     public class NpcPacketHandler : IPacketHandler
     {
-        #region Private Members
+        #region Members
 
         private readonly ClientSession _session;
 
         #endregion
 
-        #region Public Instantiation
+        #region Instantiation
 
         public NpcPacketHandler(ClientSession session)
         {
@@ -38,13 +38,13 @@ namespace OpenNos.Handler
 
         #endregion
 
-        #region Public Properties
+        #region Properties
 
         public ClientSession Session { get { return _session; } }
 
         #endregion
 
-        #region Public Methods
+        #region Methods
 
         [Packet("buy")]
         public void BuyShop(string packet)
@@ -640,10 +640,6 @@ namespace OpenNos.Handler
                 }
             }
         }
-
-        #endregion
-
-        #region Private Methods
 
         private void LoadShopItem(long owner, KeyValuePair<long, MapShop> shop)
         {

@@ -20,7 +20,7 @@ namespace OpenNos.DAL.Interface
 {
     public interface IAccountDAO
     {
-        #region Public Methods
+        #region Methods
 
         DeleteResult Delete(long accountId);
 

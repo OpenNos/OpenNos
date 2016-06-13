@@ -19,7 +19,7 @@ namespace OpenNos.DAL.EF.MySQL
 
     public class GeneralLog
     {
-        #region Public Properties
+        #region Properties
 
         public virtual Account Account { get; set; }
 

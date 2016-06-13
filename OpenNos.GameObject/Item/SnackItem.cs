@@ -20,7 +20,7 @@ namespace OpenNos.GameObject
 {
     public class SnackItem : Item
     {
-        #region Public Methods
+        #region Methods
 
         public void regen(ClientSession session, Item item)
         {

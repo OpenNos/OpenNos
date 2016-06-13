@@ -22,7 +22,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messages
     [Serializable]
     public class ScsRawDataMessage : ScsMessage
     {
-        #region Public Instantiation
+        #region Instantiation
 
         /// <summary>
         /// Default empty constructor.
@@ -56,7 +56,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messages
 
         #endregion
 
-        #region Public Properties
+        #region Properties
 
         /// <summary>
         /// Message data that is being transmitted.
@@ -65,7 +65,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messages
 
         #endregion
 
-        #region Public Methods
+        #region Methods
 
         /// <summary>
         /// Creates a string to represents this object.

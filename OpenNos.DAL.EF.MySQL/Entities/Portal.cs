@@ -16,7 +16,7 @@ namespace OpenNos.DAL.EF.MySQL
 {
     public class Portal
     {
-        #region Public Properties
+        #region Properties
 
         public short DestinationMapId { get; set; }
         public short DestinationX { get; set; }

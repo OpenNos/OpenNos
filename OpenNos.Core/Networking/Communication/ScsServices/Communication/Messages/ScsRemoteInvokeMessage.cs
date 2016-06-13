@@ -23,7 +23,7 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Communication.Messag
     [Serializable]
     public class ScsRemoteInvokeMessage : ScsMessage
     {
-        #region Public Properties
+        #region Properties
 
         /// <summary>
         /// Method of remote application to invoke.
@@ -42,7 +42,7 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Communication.Messag
 
         #endregion
 
-        #region Public Methods
+        #region Methods
 
         /// <summary>
         /// Represents this object as string.

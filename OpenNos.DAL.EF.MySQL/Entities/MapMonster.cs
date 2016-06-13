@@ -18,7 +18,7 @@ namespace OpenNos.DAL.EF.MySQL
 
     public class MapMonster
     {
-        #region Public Properties
+        #region Properties
 
         public bool IsMoving { get; set; }
 

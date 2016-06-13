@@ -19,7 +19,7 @@ namespace OpenNos.DAL.Interface
 {
     public interface IPortalDAO
     {
-        #region Public Methods
+        #region Methods
 
         PortalDTO Insert(PortalDTO portal);
 

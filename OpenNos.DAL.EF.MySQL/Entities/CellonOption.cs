@@ -19,7 +19,7 @@ namespace OpenNos.DAL.EF.MySQL
 
     public class CellonOption
     {
-        #region Public Properties
+        #region Properties
 
         [Key]
         public int CellonOptionId { get; set; }

@@ -20,7 +20,7 @@ namespace OpenNos.Core.Threading
 {
     public class ThreadedBase<TValue>
     {
-        #region Private Members
+        #region Members
 
         private Action<TValue> _action;
         private SequentialItemProcessor<TValue> _queue;
@@ -29,7 +29,7 @@ namespace OpenNos.Core.Threading
 
         //private Task _task;
 
-        #region Public Instantiation
+        #region Instantiation
 
         public ThreadedBase(long milliseconds, Action<TValue> triggeredMethod)
         {
@@ -44,7 +44,7 @@ namespace OpenNos.Core.Threading
 
         #endregion
 
-        #region Public Properties
+        #region Properties
 
         public SequentialItemProcessor<TValue> Queue
         {
@@ -68,7 +68,7 @@ namespace OpenNos.Core.Threading
 
     internal static class CancellationTokenExtensions
     {
-        #region Public Methods
+        #region Methods
 
         public static bool WaitCancellationRequested(
             this CancellationToken token,
@@ -82,7 +82,7 @@ namespace OpenNos.Core.Threading
 
     internal static class Repeat
     {
-        #region Public Methods
+        #region Methods
 
         public static Task Interval(
             TimeSpan pollInterval,

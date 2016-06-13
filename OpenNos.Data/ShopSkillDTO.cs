@@ -16,7 +16,7 @@ namespace OpenNos.Data
 {
     public class ShopSkillDTO
     {
-        #region Public Properties
+        #region Properties
 
         public int ShopId { get; set; }
         public int ShopSkillId { get; set; }

@@ -29,7 +29,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messengers
     /// </summary>
     public class SynchronizedMessenger<T> : RequestReplyMessenger<T> where T : IMessenger
     {
-        #region Private Members
+        #region Members
 
         /// <summary>
         /// This object is used to synchronize/wait threads.
@@ -49,7 +49,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messengers
 
         #endregion
 
-        #region Public Instantiation
+        #region Instantiation
 
         ///<summary>
         /// Creates a new SynchronizedMessenger object.
@@ -75,7 +75,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messengers
 
         #endregion
 
-        #region Public Properties
+        #region Properties
 
         ///<summary>
         /// Gets/sets capacity of the incoming message queue.
@@ -87,7 +87,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messengers
 
         #endregion
 
-        #region Public Methods
+        #region Methods
 
         /// <summary>
         /// This method is used to receive a message from remote application.
@@ -202,10 +202,6 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messengers
                 _receiveWaiter.Set();
             }
         }
-
-        #endregion
-
-        #region Protected Methods
 
         /// <summary>
         /// Overrides

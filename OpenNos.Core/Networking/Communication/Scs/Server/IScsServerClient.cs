@@ -24,7 +24,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Server
     /// </summary>
     public interface IScsServerClient : IMessenger
     {
-        #region Public Events
+        #region Events
 
         /// <summary>
         /// This event is raised when client disconnected from server.
@@ -33,7 +33,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Server
 
         #endregion
 
-        #region Public Properties
+        #region Properties
 
         /// <summary>
         /// Unique identifier for this client in server.
@@ -52,7 +52,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Server
 
         #endregion
 
-        #region Public Methods
+        #region Methods
 
         /// <summary>
         /// Disconnects from server.

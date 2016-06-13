@@ -22,7 +22,7 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Service
     /// </summary>
     public abstract class ScsService
     {
-        #region Private Members
+        #region Members
 
         /// <summary>
         /// The current client for a thread that called service method.
@@ -32,7 +32,7 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Service
 
         #endregion
 
-        #region Public Properties
+        #region Properties
 
         /// <summary>
         /// Gets the current client which called this service method.

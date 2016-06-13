@@ -16,7 +16,7 @@ namespace OpenNos.GameObject
 {
     public class MapCell
     {
-        #region Public Properties
+        #region Properties
 
         public short MapId
         {

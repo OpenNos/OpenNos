@@ -19,7 +19,7 @@ namespace OpenNos.DAL.EF.MySQL
 
     public class MapNpc
     {
-        #region Public Instantiation
+        #region Instantiation
 
         public MapNpc()
         {
@@ -30,7 +30,7 @@ namespace OpenNos.DAL.EF.MySQL
 
         #endregion
 
-        #region Public Properties
+        #region Properties
 
         public short Dialog { get; set; }
 

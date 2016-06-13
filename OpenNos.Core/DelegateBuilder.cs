@@ -22,7 +22,7 @@ namespace OpenNos.Core
 {
     public class DelegateBuilder
     {
-        #region Public Methods
+        #region Methods
 
         public static T BuildDelegate<T>(MethodInfo method, params object[] missingParamValues)
         {
@@ -65,10 +65,6 @@ namespace OpenNos.Core
                 return expr.Compile();
             }
         }
-
-        #endregion
-
-        #region Private Methods
 
         private static Expression CreateParam(ParameterExpression[] paramsOfDelegate, int i, ParameterInfo callParamType, Queue<object> queueMissingParams)
         {

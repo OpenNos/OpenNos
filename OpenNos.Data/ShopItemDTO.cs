@@ -16,7 +16,7 @@ namespace OpenNos.Data
 {
     public class ShopItemDTO
     {
-        #region Public Properties
+        #region Properties
 
         public byte Color { get; set; }
         public short ItemVNum { get; set; }

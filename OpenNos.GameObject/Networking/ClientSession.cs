@@ -28,13 +28,9 @@ namespace OpenNos.GameObject
 {
     public class ClientSession
     {
-        #region Public Members
+        #region Members
 
         public Boolean healthStop = false;
-
-        #endregion
-
-        #region Private Members
 
         private static EncryptionBase _encryptor;
         private Account _account;
@@ -51,7 +47,7 @@ namespace OpenNos.GameObject
 
         #endregion
 
-        #region Public Instantiation
+        #region Instantiation
 
         public ClientSession(NetworkClient client)
         {
@@ -74,7 +70,7 @@ namespace OpenNos.GameObject
 
         #endregion
 
-        #region Public Properties
+        #region Properties
 
         public Account Account
         {
@@ -162,7 +158,7 @@ namespace OpenNos.GameObject
 
         #endregion
 
-        #region Public Methods
+        #region Methods
 
         /// <summary>
         /// Destroy ClientSession
@@ -206,10 +202,6 @@ namespace OpenNos.GameObject
             Account = account;
             ServiceFactory.Instance.CommunicationService.ConnectAccount(account.Name, SessionId);
         }
-
-        #endregion
-
-        #region Private Methods
 
         private void CommunicationCallback_CharacterConnectedEvent(object sender, EventArgs e)
         {

@@ -18,7 +18,7 @@ namespace OpenNos.WCF.Interface
 {
     public interface ICommunicationCallback
     {
-        #region Public Methods
+        #region Methods
 
         [OperationContract(IsOneWay = true)]
         void ConnectAccountCallback(string accountName, int sessionId);

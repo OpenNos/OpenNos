@@ -22,7 +22,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Protocols
     /// </summary>
     public interface IScsWireProtocol
     {
-        #region Public Methods
+        #region Methods
 
         /// <summary>
         /// Builds messages from a byte array that is received from remote application.

@@ -16,14 +16,14 @@ namespace OpenNos.Core
 {
     public class SessionFactory
     {
-        #region Private Members
+        #region Members
 
         private static SessionFactory _instance;
         private int _sessionCounter;
 
         #endregion
 
-        #region Private Instantiation
+        #region Instantiation
 
         private SessionFactory()
         {
@@ -31,13 +31,13 @@ namespace OpenNos.Core
 
         #endregion
 
-        #region Public Properties
+        #region Properties
 
         public static SessionFactory Instance => _instance ?? (_instance = new SessionFactory());
 
         #endregion
 
-        #region Public Methods
+        #region Methods
 
         public int GenerateSessionId()
         {

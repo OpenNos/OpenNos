@@ -16,7 +16,7 @@ namespace OpenNos.Data
 {
     public class ItemDTO
     {
-        #region Public Properties
+        #region Properties
 
         public byte BasicUpgrade { get; set; }
         public byte CellonLvl { get; set; }

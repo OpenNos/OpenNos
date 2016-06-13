@@ -19,7 +19,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Protocols.Bina
     /// </summary>
     public class BinarySerializationProtocolFactory : IScsWireProtocolFactory
     {
-        #region Public Methods
+        #region Methods
 
         /// <summary>
         /// Creates a new Wire Protocol object.

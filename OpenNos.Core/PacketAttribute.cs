@@ -17,14 +17,14 @@ namespace OpenNos.Core
     [System.AttributeUsage(System.AttributeTargets.Method)]
     public class Packet : System.Attribute
     {
-        #region Private Members
+        #region Members
 
         private int _amount;
         private string _header;
 
         #endregion
 
-        #region Public Instantiation
+        #region Instantiation
 
         public Packet(string header, int amount = 1)
         {
@@ -34,7 +34,7 @@ namespace OpenNos.Core
 
         #endregion
 
-        #region Public Properties
+        #region Properties
 
         public int Amount
         {

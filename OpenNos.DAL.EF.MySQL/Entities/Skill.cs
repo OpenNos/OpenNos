@@ -20,7 +20,7 @@ namespace OpenNos.DAL.EF.MySQL
 
     public class Skill
     {
-        #region Public Instantiation
+        #region Instantiation
 
         public Skill()
         {
@@ -32,7 +32,7 @@ namespace OpenNos.DAL.EF.MySQL
 
         #endregion
 
-        #region Public Properties
+        #region Properties
 
         public short AttackAnimation { get; set; }
 

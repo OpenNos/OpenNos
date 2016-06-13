@@ -16,7 +16,7 @@ namespace OpenNos.DAL.EF.MySQL
 {
     public class ShopItem
     {
-        #region Public Properties
+        #region Properties
 
         public byte Color { get; set; }
         public virtual Item Item { get; set; }

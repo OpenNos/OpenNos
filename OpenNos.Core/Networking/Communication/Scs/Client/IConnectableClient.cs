@@ -22,7 +22,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Client
     /// </summary>
     public interface IConnectableClient : IDisposable
     {
-        #region Public Events
+        #region Events
 
         /// <summary>
         /// This event is raised when client connected to server.
@@ -36,7 +36,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Client
 
         #endregion
 
-        #region Public Properties
+        #region Properties
 
         /// <summary>
         /// Gets the current communication state.
@@ -51,7 +51,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Client
 
         #endregion
 
-        #region Public Methods
+        #region Methods
 
         /// <summary>
         /// Connects to server.

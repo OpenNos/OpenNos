@@ -19,7 +19,7 @@ namespace OpenNos.DAL.Interface
 {
     public interface ITeleporterDAO
     {
-        #region Public Methods
+        #region Methods
 
         TeleporterDTO Insert(TeleporterDTO teleporter);
 

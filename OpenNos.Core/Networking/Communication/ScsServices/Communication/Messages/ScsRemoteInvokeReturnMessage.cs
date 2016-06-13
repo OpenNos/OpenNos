@@ -24,7 +24,7 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Communication.Messag
     [Serializable]
     public class ScsRemoteInvokeReturnMessage : ScsMessage
     {
-        #region Public Properties
+        #region Properties
 
         /// <summary>
         /// If any exception occured during method invocation, this field contains Exception object.
@@ -39,7 +39,7 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Communication.Messag
 
         #endregion
 
-        #region Public Methods
+        #region Methods
 
         /// <summary>
         /// Represents this object as string.

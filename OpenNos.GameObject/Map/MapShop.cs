@@ -18,7 +18,7 @@ namespace OpenNos.GameObject
 {
     public class MapShop
     {
-        #region Public Instantiation
+        #region Instantiation
 
         public MapShop()
         {
@@ -28,7 +28,7 @@ namespace OpenNos.GameObject
 
         #endregion
 
-        #region Public Properties
+        #region Properties
 
         public List<PersonalShopItem> Items { get; set; }
         public string Name { get; set; }

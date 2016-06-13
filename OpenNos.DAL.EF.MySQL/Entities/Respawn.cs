@@ -16,7 +16,7 @@ namespace OpenNos.DAL.EF.MySQL
 {
     public class Respawn
     {
-        #region Public Properties
+        #region Properties
 
         public virtual Character Character { get; set; }
         public long CharacterId { get; set; }

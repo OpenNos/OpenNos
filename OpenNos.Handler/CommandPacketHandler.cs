@@ -25,13 +25,13 @@ namespace OpenNos.Handler
 {
     public class CommandPacketHandler : IPacketHandler
     {
-        #region Private Members
+        #region Members
 
         private readonly ClientSession _session;
 
         #endregion
 
-        #region Public Instantiation
+        #region Instantiation
 
         public CommandPacketHandler(ClientSession session)
         {
@@ -40,13 +40,13 @@ namespace OpenNos.Handler
 
         #endregion
 
-        #region Public Properties
+        #region Properties
 
         public ClientSession Session { get { return _session; } }
 
         #endregion
 
-        #region Public Methods
+        #region Methods
 
         [Packet("$AddMonster")]
         public void AddMonster(string packet)
@@ -879,10 +879,6 @@ namespace OpenNos.Handler
                 }
             }
         }
-
-        #endregion
-
-        #region Private Methods
 
         private void DeleteItem(byte type, short slot)
         {

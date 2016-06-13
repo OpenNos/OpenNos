@@ -29,7 +29,7 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Client
     /// <typeparam name="T">Type of service interface</typeparam>
     public class ScsServiceClient<T> : IScsServiceClient<T> where T : class
     {
-        #region Private Members
+        #region Members
 
         /// <summary>
         /// Underlying IScsClient object to communicate with server.
@@ -54,7 +54,7 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Client
 
         #endregion
 
-        #region Public Instantiation
+        #region Instantiation
 
         /// <summary>
         /// Creates a new ScsServiceClient object.
@@ -79,7 +79,7 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Client
 
         #endregion
 
-        #region Public Events
+        #region Events
 
         /// <summary>
         /// This event is raised when client connected to server.
@@ -93,7 +93,7 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Client
 
         #endregion
 
-        #region Public Properties
+        #region Properties
 
         /// <summary>
         /// Gets the current communication state.
@@ -132,7 +132,7 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Client
 
         #endregion
 
-        #region Public Methods
+        #region Methods
 
         /// <summary>
         /// Connects to server.
@@ -158,10 +158,6 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Client
         {
             Disconnect();
         }
-
-        #endregion
-
-        #region Private Methods
 
         /// <summary>
         /// Handles Connected event of _client object.

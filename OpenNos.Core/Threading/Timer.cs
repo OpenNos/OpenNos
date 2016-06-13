@@ -22,7 +22,7 @@ namespace OpenNos.Core.Threading
     /// </summary>
     public class Timer
     {
-        #region Private Members
+        #region Members
 
         /// <summary>
         /// This timer is used to perfom the task at spesified intervals.
@@ -42,7 +42,7 @@ namespace OpenNos.Core.Threading
 
         #endregion
 
-        #region Public Instantiation
+        #region Instantiation
 
         /// <summary>
         /// Creates a new Timer.
@@ -67,7 +67,7 @@ namespace OpenNos.Core.Threading
 
         #endregion
 
-        #region Public Events
+        #region Events
 
         /// <summary>
         /// This event is raised periodically according to Period of Timer.
@@ -76,7 +76,7 @@ namespace OpenNos.Core.Threading
 
         #endregion
 
-        #region Public Properties
+        #region Properties
 
         /// <summary>
         /// Task period of timer (as milliseconds).
@@ -91,7 +91,7 @@ namespace OpenNos.Core.Threading
 
         #endregion
 
-        #region Public Methods
+        #region Methods
 
         /// <summary>
         /// Starts the timer.
@@ -127,10 +127,6 @@ namespace OpenNos.Core.Threading
                 }
             }
         }
-
-        #endregion
-
-        #region Private Methods
 
         /// <summary>
         /// This method is called by _taskTimer.

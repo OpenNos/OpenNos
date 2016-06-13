@@ -21,7 +21,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Server
     /// </summary>
     public static class ScsServerFactory
     {
-        #region Public Methods
+        #region Methods
 
         /// <summary>
         /// Creates a new SCS Server using an EndPoint.

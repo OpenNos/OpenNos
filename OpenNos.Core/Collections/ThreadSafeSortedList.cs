@@ -25,7 +25,7 @@ namespace OpenNos.Core.Collections
     /// <typeparam name="TV">Value type</typeparam>
     public class ThreadSafeSortedList<TK, TV>
     {
-        #region Protected Members
+        #region Members
 
         /// <summary>
         /// public collection to store items.
@@ -39,7 +39,7 @@ namespace OpenNos.Core.Collections
 
         #endregion
 
-        #region Public Instantiation
+        #region Instantiation
 
         /// <summary>
         /// Creates a new ThreadSafeSortedList object.
@@ -52,7 +52,7 @@ namespace OpenNos.Core.Collections
 
         #endregion
 
-        #region Public Properties
+        #region Properties
 
         /// <summary>
         /// Gets count of items in the collection.
@@ -75,7 +75,7 @@ namespace OpenNos.Core.Collections
 
         #endregion
 
-        #region Public Indexers
+        #region Indexers
 
         /// <summary>
         /// Gets/adds/replaces an item by key.
@@ -113,7 +113,7 @@ namespace OpenNos.Core.Collections
 
         #endregion
 
-        #region Public Methods
+        #region Methods
 
         /// <summary>
         /// Removes all items from list.

@@ -18,7 +18,7 @@ namespace OpenNos.DAL.EF.MySQL
 
     public class ItemInstance
     {
-        #region Public Properties
+        #region Properties
 
         public int Amount { get; set; }
 

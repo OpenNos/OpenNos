@@ -16,7 +16,7 @@ namespace OpenNos.DAL.EF.MySQL
 {
     public class ShopSkill
     {
-        #region Public Properties
+        #region Properties
 
         public virtual Shop Shop { get; set; }
         public int ShopId { get; set; }

@@ -19,7 +19,7 @@ namespace OpenNos.DAL.Interface
 {
     public interface IDropDAO
     {
-        #region Public Methods
+        #region Methods
 
         DropDTO Insert(DropDTO drop);
 

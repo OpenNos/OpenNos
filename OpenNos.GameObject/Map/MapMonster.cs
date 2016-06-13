@@ -23,7 +23,7 @@ namespace OpenNos.GameObject
 {
     public class MapMonster : MapMonsterDTO
     {
-        #region Public Instantiation
+        #region Instantiation
 
         public MapMonster(Map parent)
         {
@@ -36,7 +36,7 @@ namespace OpenNos.GameObject
 
         #endregion
 
-        #region Public Properties
+        #region Properties
 
         public bool Alive { get; set; }
         public int CurrentHp { get; set; }
@@ -53,7 +53,7 @@ namespace OpenNos.GameObject
 
         #endregion
 
-        #region Public Methods
+        #region Methods
 
         public static int GenerateMapMonsterId()
         {
@@ -83,10 +83,6 @@ namespace OpenNos.GameObject
                 return $"in 3 {MonsterVNum} {MapMonsterId} {MapX} {MapY} {Position} {(int)(((float)CurrentHp / (float)monsterinfo.MaxHP) * 100)} {(int)(((float)CurrentMp / (float)monsterinfo.MaxMP) * 100)} 0 0 0 -1 1 0 -1 - 0 -1 0 0 0 0 0 0 0 0";
             else return "";
         }
-
-        #endregion
-
-        #region Internal Methods
 
         internal void MonsterLife()
         {

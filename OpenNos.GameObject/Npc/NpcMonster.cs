@@ -23,7 +23,7 @@ namespace OpenNos.GameObject
 {
     public class NpcMonster : NpcMonsterDTO
     {
-        #region Public Instantiation
+        #region Instantiation
 
         public NpcMonster(short npcMonsterVNum)
         {
@@ -38,7 +38,7 @@ namespace OpenNos.GameObject
 
         #endregion
 
-        #region Public Properties
+        #region Properties
 
         public IEnumerable<DropDTO> Drops { get; set; }
         public short FirstX { get; set; }
@@ -50,7 +50,7 @@ namespace OpenNos.GameObject
 
         #endregion
 
-        #region Public Methods
+        #region Methods
 
         public string GenerateEInfo()
         {

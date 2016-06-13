@@ -19,7 +19,7 @@ namespace OpenNos.GameObject
 {
     public class CharacterSkill : CharacterSkillDTO
     {
-        #region Public Instantiation
+        #region Instantiation
 
         public CharacterSkill(CharacterSkillDTO dto)
         {
@@ -41,7 +41,7 @@ namespace OpenNos.GameObject
 
         #endregion
 
-        #region Public Properties
+        #region Properties
 
         public short Hit { get; set; }
 

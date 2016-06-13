@@ -20,7 +20,7 @@ namespace OpenNos.DAL.EF.MySQL
 
     public class Item
     {
-        #region Public Instantiation
+        #region Instantiation
 
         public Item()
         {
@@ -32,7 +32,7 @@ namespace OpenNos.DAL.EF.MySQL
 
         #endregion
 
-        #region Public Properties
+        #region Properties
 
         public byte BasicUpgrade { get; set; }
 

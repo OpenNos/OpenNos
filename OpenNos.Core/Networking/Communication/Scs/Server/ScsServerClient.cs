@@ -26,7 +26,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Server
     /// </summary>
     public class ScsServerClient : IScsServerClient
     {
-        #region Private Members
+        #region Members
 
         /// <summary>
         /// The communication channel that is used by client to send and receive messages.
@@ -35,7 +35,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Server
 
         #endregion
 
-        #region Public Instantiation
+        #region Instantiation
 
         /// <summary>
         /// Creates a new ScsClient object.
@@ -51,7 +51,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Server
 
         #endregion
 
-        #region Public Events
+        #region Events
 
         /// <summary>
         /// This event is raised when client is disconnected from server.
@@ -71,7 +71,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Server
 
         #endregion
 
-        #region Public Properties
+        #region Properties
 
         /// <summary>
         /// Unique identifier for this client in server.
@@ -130,7 +130,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Server
 
         #endregion
 
-        #region Public Methods
+        #region Methods
 
         /// <summary>
         /// Disconnects from client and closes underlying communication channel.
@@ -149,10 +149,6 @@ namespace OpenNos.Core.Networking.Communication.Scs.Server
             _communicationChannel.SendMessage(message);
         }
 
-        #endregion
-
-        #region Protected Methods
-
         /// <summary>
         /// Raises MessageSent event.
         /// </summary>
@@ -165,10 +161,6 @@ namespace OpenNos.Core.Networking.Communication.Scs.Server
                 handler(this, new MessageEventArgs(message));
             }
         }
-
-        #endregion
-
-        #region Private Methods
 
         /// <summary>
         /// Handles Disconnected event of _communicationChannel object.

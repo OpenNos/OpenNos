@@ -18,7 +18,7 @@ namespace OpenNos.GameObject
 {
     public class GeneralLog : GeneralLogDTO
     {
-        #region Public Instantiation
+        #region Instantiation
 
         public GeneralLog()
         {

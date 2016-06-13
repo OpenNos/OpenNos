@@ -23,7 +23,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Server
     /// </summary>
     public interface IScsServer
     {
-        #region Public Events
+        #region Events
 
         /// <summary>
         /// This event is raised when a new client connected to the server.
@@ -37,7 +37,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Server
 
         #endregion
 
-        #region Public Properties
+        #region Properties
 
         /// <summary>
         /// A collection of clients that are connected to the server.
@@ -51,7 +51,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Server
 
         #endregion
 
-        #region Public Methods
+        #region Methods
 
         /// <summary>
         /// Starts the server.

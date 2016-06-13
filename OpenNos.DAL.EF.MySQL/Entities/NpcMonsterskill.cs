@@ -18,7 +18,7 @@ namespace OpenNos.DAL.EF.MySQL
 
     public class NpcMonsterSkill
     {
-        #region Public Properties
+        #region Properties
 
         [Key]
         public long CharacterSkillId { get; set; }

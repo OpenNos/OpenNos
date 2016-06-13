@@ -16,7 +16,7 @@ namespace OpenNos.Data
 {
     public class SkillDTO
     {
-        #region Public Properties
+        #region Properties
 
         public short AttackAnimation { get; set; }
         public short BuffId { get; set; }

@@ -21,7 +21,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Server
     /// </summary>
     public class ServerClientEventArgs : EventArgs
     {
-        #region Public Instantiation
+        #region Instantiation
 
         /// <summary>
         /// Creates a new ServerClientEventArgs object.
@@ -34,7 +34,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Server
 
         #endregion
 
-        #region Public Properties
+        #region Properties
 
         /// <summary>
         /// Client that is associated with this event.

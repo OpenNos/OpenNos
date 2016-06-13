@@ -20,7 +20,7 @@ namespace OpenNos.DAL.EF.MySQL
 
     public class Map
     {
-        #region Public Instantiation
+        #region Instantiation
 
         public Map()
         {
@@ -34,7 +34,7 @@ namespace OpenNos.DAL.EF.MySQL
 
         #endregion
 
-        #region Public Properties
+        #region Properties
 
         public virtual ICollection<Character> Character { get; set; }
 

@@ -21,7 +21,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels
     /// </summary>
     public class CommunicationChannelEventArgs : EventArgs
     {
-        #region Public Instantiation
+        #region Instantiation
 
         /// <summary>
         /// Creates a new CommunicationChannelEventArgs object.
@@ -34,7 +34,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels
 
         #endregion
 
-        #region Public Properties
+        #region Properties
 
         /// <summary>
         /// Communication channel that is associated with this event.

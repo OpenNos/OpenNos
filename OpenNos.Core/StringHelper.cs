@@ -16,7 +16,7 @@ namespace OpenNos.Core
 {
     public static class StringHelper
     {
-        #region Public Methods
+        #region Methods
 
         public static string Truncate(string source, int length)
         {

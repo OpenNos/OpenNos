@@ -19,7 +19,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messages
     /// </summary>
     public interface IScsMessage
     {
-        #region Public Properties
+        #region Properties
 
         /// <summary>
         /// Unique identified for this message.

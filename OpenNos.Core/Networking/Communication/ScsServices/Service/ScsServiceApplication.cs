@@ -28,7 +28,7 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Service
     /// </summary>
     public class ScsServiceApplication : IScsServiceApplication
     {
-        #region Private Members
+        #region Members
 
         /// <summary>
         /// Underlying IScsServer object to accept and manage client connections.
@@ -51,7 +51,7 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Service
 
         #endregion
 
-        #region Public Instantiation
+        #region Instantiation
 
         /// <summary>
         /// Creates a new ScsServiceApplication object.
@@ -74,7 +74,7 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Service
 
         #endregion
 
-        #region Public Events
+        #region Events
 
         /// <summary>
         /// This event is raised when a new client connected to the service.
@@ -88,7 +88,7 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Service
 
         #endregion
 
-        #region Public Methods
+        #region Methods
 
         /// <summary>
         /// Adds a service object to this service application.
@@ -144,10 +144,6 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Service
         {
             _scsServer.Stop();
         }
-
-        #endregion
-
-        #region Private Methods
 
         /// <summary>
         /// Sends response to the remote application that invoked a service method.
@@ -309,7 +305,7 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Service
 
         #endregion
 
-        #region Private Classes
+        #region Classes
 
         /// <summary>
         /// Represents a user service object.
@@ -317,7 +313,7 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Service
         /// </summary>
         private sealed class ServiceObject
         {
-            #region Private Members
+            #region Members
 
             /// <summary>
             /// This collection stores a list of all methods of service object.
@@ -328,7 +324,7 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Service
 
             #endregion
 
-            #region Public Instantiation
+            #region Instantiation
 
             /// <summary>
             /// Creates a new ServiceObject.
@@ -354,7 +350,7 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Service
 
             #endregion
 
-            #region Public Properties
+            #region Properties
 
             /// <summary>
             /// The service object that is used to invoke methods on.
@@ -368,7 +364,7 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Service
 
             #endregion
 
-            #region Public Methods
+            #region Methods
 
             /// <summary>
             /// Invokes a method of Service object.

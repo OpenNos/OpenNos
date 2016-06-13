@@ -19,7 +19,7 @@ namespace OpenNos.GameObject
 {
     public class UsableInstance : UsableInstanceDTO
     {
-        #region Public Instantiation
+        #region Instantiation
 
         public UsableInstance(UsableInstanceDTO usableInstance)
         {
@@ -29,7 +29,7 @@ namespace OpenNos.GameObject
 
         #endregion
 
-        #region Public Methods
+        #region Methods
 
         public void Save()
         {

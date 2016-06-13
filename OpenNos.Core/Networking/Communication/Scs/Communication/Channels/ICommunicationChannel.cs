@@ -24,7 +24,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels
     /// </summary>
     public interface ICommunicationChannel : IMessenger
     {
-        #region Public Events
+        #region Events
 
         /// <summary>
         /// This event is raised when client disconnected from server.
@@ -33,7 +33,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels
 
         #endregion
 
-        #region Public Properties
+        #region Properties
 
         /// <summary>
         /// Gets the current communication state.
@@ -47,7 +47,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels
 
         #endregion
 
-        #region Public Methods
+        #region Methods
 
         /// <summary>
         /// Closes messenger.

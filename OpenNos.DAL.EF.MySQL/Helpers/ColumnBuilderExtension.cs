@@ -20,7 +20,7 @@ namespace System.Data.Entity.Migrations
 {
     public static class ColumnBuilderExtensions
     {
-        #region Public Methods
+        #region Methods
 
         public static ColumnModel SByte(this ColumnBuilder c, bool? nullable = null, bool identity = false, byte? defaultValue = null, string defaultValueSql = null, string name = null, string storeType = null, IDictionary<string, System.Data.Entity.Infrastructure.Annotations.AnnotationValues> annotations = null)
         {

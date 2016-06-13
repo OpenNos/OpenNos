@@ -18,7 +18,7 @@ namespace OpenNos.GameObject
 {
     internal class MapCellComparer : IComparer
     {
-        #region Public Methods
+        #region Methods
 
         public int Compare(object x, object y)
         {

@@ -28,13 +28,13 @@ namespace OpenNos.DAL.EF.MySQL
 {
     public class CharacterDAO : ICharacterDAO
     {
-        #region Private Members
+        #region Members
 
         private IMapper _mapper;
 
         #endregion
 
-        #region Public Instantiation
+        #region Instantiation
 
         public CharacterDAO()
         {
@@ -49,7 +49,7 @@ namespace OpenNos.DAL.EF.MySQL
 
         #endregion
 
-        #region Public Methods
+        #region Methods
 
         public DeleteResult DeleteByPrimaryKey(long accountId, byte characterSlot)
         {
@@ -216,10 +216,6 @@ namespace OpenNos.DAL.EF.MySQL
                                                                                         && c.State.Equals(state)));
             }
         }
-
-        #endregion
-
-        #region Private Methods
 
         private CharacterDTO Insert(CharacterDTO character, OpenNosContext context)
         {

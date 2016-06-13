@@ -24,7 +24,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.EndPoints
     ///</summary>
     public abstract class ScsEndPoint
     {
-        #region Public Methods
+        #region Methods
 
         /// <summary>
         /// Create a Scs End Point from a string.

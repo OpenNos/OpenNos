@@ -22,7 +22,7 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Service
     [AttributeUsage(AttributeTargets.Interface | AttributeTargets.Class)]
     public class ScsServiceAttribute : Attribute
     {
-        #region Public Instantiation
+        #region Instantiation
 
         /// <summary>
         /// Creates a new ScsServiceAttribute object.
@@ -34,7 +34,7 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Service
 
         #endregion
 
-        #region Public Properties
+        #region Properties
 
         /// <summary>
         /// Service Version. This property can be used to indicate the code version.

@@ -16,7 +16,7 @@ namespace OpenNos.Data
 {
     public interface ISpecialistInstance : IWearableInstance
     {
-        #region Public Properties
+        #region Properties
 
         short SlDamage { get; set; }
         short SlDefence { get; set; }

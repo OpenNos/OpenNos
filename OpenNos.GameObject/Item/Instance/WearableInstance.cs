@@ -21,7 +21,7 @@ namespace OpenNos.GameObject
 {
     public class WearableInstance : ItemInstance, IWearableInstance
     {
-        #region Public Instantiation
+        #region Instantiation
 
         public WearableInstance()
         {
@@ -38,7 +38,7 @@ namespace OpenNos.GameObject
 
         #endregion
 
-        #region Public Properties
+        #region Properties
 
         public byte Ammo { get; set; }
 
@@ -87,7 +87,7 @@ namespace OpenNos.GameObject
 
         #endregion
 
-        #region Public Methods
+        #region Methods
 
         public void RarifyItem(ClientSession Session, RarifyMode mode, RarifyProtection protection)
         {

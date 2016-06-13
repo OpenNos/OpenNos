@@ -24,7 +24,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Client
     /// </summary>
     public class ClientReConnecter : IDisposable
     {
-        #region Private Members
+        #region Members
 
         /// <summary>
         /// Reference to client object.
@@ -43,7 +43,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Client
 
         #endregion
 
-        #region Public Instantiation
+        #region Instantiation
 
         /// <summary>
         /// Creates a new ClientReConnecter object.
@@ -68,7 +68,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Client
 
         #endregion
 
-        #region Public Properties
+        #region Properties
 
         /// <summary>
         /// Reconnect check period.
@@ -82,7 +82,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Client
 
         #endregion
 
-        #region Public Methods
+        #region Methods
 
         /// <summary>
         /// Disposes this object.
@@ -99,10 +99,6 @@ namespace OpenNos.Core.Networking.Communication.Scs.Client
             _client.Disconnected -= Client_Disconnected;
             _reconnectTimer.Stop();
         }
-
-        #endregion
-
-        #region Private Methods
 
         /// <summary>
         /// Handles Disconnected event of _client object.

@@ -21,7 +21,7 @@ namespace OpenNos.DAL.EF.MySQL.DB
     [DbConfigurationType(typeof(MySqlEFConfiguration))]
     public partial class OpenNosContext : DbContext
     {
-        #region Public Instantiation
+        #region Instantiation
 
         public OpenNosContext() : base("name=OpenNosContext")
         {
@@ -32,7 +32,7 @@ namespace OpenNos.DAL.EF.MySQL.DB
 
         #endregion
 
-        #region Public Properties
+        #region Properties
 
         public virtual DbSet<Account> Account { get; set; }
         public virtual DbSet<CellonOption> CellonOption { get; set; }
@@ -62,7 +62,7 @@ namespace OpenNos.DAL.EF.MySQL.DB
 
         #endregion
 
-        #region Protected Methods
+        #region Methods
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {

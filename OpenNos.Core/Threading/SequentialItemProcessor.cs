@@ -24,7 +24,7 @@ namespace OpenNos.Core.Threading
     /// <typeparam name="TItem">Type of item to process</typeparam>
     public class SequentialItemProcessor<TItem>
     {
-        #region Private Members
+        #region Members
 
         /// <summary>
         /// The method delegate that is called to actually process items.
@@ -59,7 +59,7 @@ namespace OpenNos.Core.Threading
 
         #endregion
 
-        #region Public Instantiation
+        #region Instantiation
 
         /// <summary>
         /// Creates a new SequentialItemProcessor object.
@@ -73,7 +73,7 @@ namespace OpenNos.Core.Threading
 
         #endregion
 
-        #region Public Methods
+        #region Methods
 
         /// <summary>
         /// Adds an item to queue to process the item.
@@ -134,10 +134,6 @@ namespace OpenNos.Core.Threading
             {
             }
         }
-
-        #endregion
-
-        #region Private Methods
 
         /// <summary>
         /// This method runs on a new seperated Task (thread) to process

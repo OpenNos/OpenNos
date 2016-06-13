@@ -16,7 +16,7 @@ namespace OpenNos.Data
 {
     public class NpcMonsterSkillDTO
     {
-        #region Public Properties
+        #region Properties
 
         public long CharacterSkillId { get; set; }
         public short NpcMonsterVNum { get; set; }

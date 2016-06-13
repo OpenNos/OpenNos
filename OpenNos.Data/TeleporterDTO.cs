@@ -16,7 +16,7 @@ namespace OpenNos.Data
 {
     public class TeleporterDTO
     {
-        #region Public Properties
+        #region Properties
 
         public short Index { get; set; }
         public short MapId { get; set; }

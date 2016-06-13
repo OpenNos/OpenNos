@@ -23,7 +23,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messages
     [Serializable]
     public class ScsMessage : IScsMessage
     {
-        #region Public Instantiation
+        #region Instantiation
 
         /// <summary>
         /// Creates a new ScsMessage.
@@ -48,7 +48,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messages
 
         #endregion
 
-        #region Public Properties
+        #region Properties
 
         /// <summary>
         /// Unique identified for this message.
@@ -67,7 +67,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messages
 
         #endregion
 
-        #region Public Methods
+        #region Methods
 
         /// <summary>
         /// Creates a string to represents this object.

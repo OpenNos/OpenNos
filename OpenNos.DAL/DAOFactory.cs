@@ -21,7 +21,7 @@ namespace OpenNos.DAL
 {
     public class DAOFactory
     {
-        #region Private Members
+        #region Members
 
         private static IAccountDAO _accountDAO;
         private static ICellonOptionDAO _cellonoptionDAO;
@@ -50,7 +50,7 @@ namespace OpenNos.DAL
 
         #endregion
 
-        #region Public Instantiation
+        #region Instantiation
 
         static DAOFactory()
         {
@@ -66,7 +66,7 @@ namespace OpenNos.DAL
 
         #endregion
 
-        #region Public Properties
+        #region Properties
 
         public static IAccountDAO AccountDAO
         {

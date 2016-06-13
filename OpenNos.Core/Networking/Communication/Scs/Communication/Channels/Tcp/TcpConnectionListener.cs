@@ -24,7 +24,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
     /// </summary>
     public class TcpConnectionListener : ConnectionListenerBase
     {
-        #region Private Members
+        #region Members
 
         /// <summary>
         /// The endpoint address of the server to listen incoming connections.
@@ -48,7 +48,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
 
         #endregion
 
-        #region Public Instantiation
+        #region Instantiation
 
         /// <summary>
         /// Creates a new TcpConnectionListener for given endpoint.
@@ -61,7 +61,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
 
         #endregion
 
-        #region Public Methods
+        #region Methods
 
         /// <summary>
         /// Starts listening incoming connections.
@@ -82,10 +82,6 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
             _running = false;
             StopSocket();
         }
-
-        #endregion
-
-        #region Private Methods
 
         /// <summary>
         /// Entrance point of the thread.

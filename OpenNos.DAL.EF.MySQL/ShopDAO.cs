@@ -24,13 +24,13 @@ namespace OpenNos.DAL.EF.MySQL
 {
     public class ShopDAO : IShopDAO
     {
-        #region Private Members
+        #region Members
 
         private IMapper _mapper;
 
         #endregion
 
-        #region Public Instantiation
+        #region Instantiation
 
         public ShopDAO()
         {
@@ -45,7 +45,7 @@ namespace OpenNos.DAL.EF.MySQL
 
         #endregion
 
-        #region Public Methods
+        #region Methods
 
         public void Insert(List<ShopDTO> shops)
         {

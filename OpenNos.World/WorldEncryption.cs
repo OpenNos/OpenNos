@@ -19,7 +19,7 @@ namespace OpenNos.World
 {
     public class WorldEncryption : EncryptionBase
     {
-        #region Public Instantiation
+        #region Instantiation
 
         public WorldEncryption() : base(true)
         {
@@ -27,7 +27,7 @@ namespace OpenNos.World
 
         #endregion
 
-        #region Public Methods
+        #region Methods
 
         public static string Decrypt2(char[] str)
         {

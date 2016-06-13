@@ -23,7 +23,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Client.Tcp
     /// </summary>
     public static class TcpHelper
     {
-        #region Public Methods
+        #region Methods
 
         /// <summary>
         /// This code is used to connect to a TCP socket with timeout option.

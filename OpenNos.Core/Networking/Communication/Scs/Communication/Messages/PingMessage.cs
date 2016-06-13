@@ -23,7 +23,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messages
     [Serializable]
     public sealed class ScsPingMessage : ScsMessage
     {
-        #region Public Instantiation
+        #region Instantiation
 
         ///<summary>
         /// Creates a new PingMessage object.
@@ -47,7 +47,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messages
 
         #endregion
 
-        #region Public Methods
+        #region Methods
 
         /// <summary>
         /// Creates a string to represents this object.

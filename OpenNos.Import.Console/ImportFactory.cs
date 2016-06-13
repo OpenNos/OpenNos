@@ -26,7 +26,7 @@ namespace OpenNos.Import.Console
 {
     public class ImportFactory
     {
-        #region Private Members
+        #region Members
 
         private readonly string _folder;
         private readonly List<string[]> _packetList = new List<string[]>();
@@ -34,7 +34,7 @@ namespace OpenNos.Import.Console
 
         #endregion
 
-        #region Public Instantiation
+        #region Instantiation
 
         public ImportFactory(string folder)
         {
@@ -43,7 +43,7 @@ namespace OpenNos.Import.Console
 
         #endregion
 
-        #region Public Methods
+        #region Methods
 
         public void ImportMapNpcs()
         {
@@ -1014,10 +1014,6 @@ namespace OpenNos.Import.Console
         {
             _maps = DAOFactory.MapDAO.LoadAll();
         }
-
-        #endregion
-
-        #region Internal Methods
 
         internal void ImportItems()
         {

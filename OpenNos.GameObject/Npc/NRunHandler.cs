@@ -23,7 +23,7 @@ namespace OpenNos.GameObject
 {
     public class NRunHandler
     {
-        #region Public Methods
+        #region Methods
 
         public static void NRun(ClientSession Session, byte type, short runner, short data3, short npcid)
         {

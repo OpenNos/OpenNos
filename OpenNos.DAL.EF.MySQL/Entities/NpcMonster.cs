@@ -20,7 +20,7 @@ namespace OpenNos.DAL.EF.MySQL
 
     public class NpcMonster
     {
-        #region Public Instantiation
+        #region Instantiation
 
         public NpcMonster()
         {
@@ -32,7 +32,7 @@ namespace OpenNos.DAL.EF.MySQL
 
         #endregion
 
-        #region Public Properties
+        #region Properties
 
         public byte AttackClass { get; set; }
 

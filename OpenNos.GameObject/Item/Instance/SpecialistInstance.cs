@@ -21,7 +21,7 @@ namespace OpenNos.GameObject
 {
     public class SpecialistInstance : WearableInstance, ISpecialistInstance
     {
-        #region Public Instantiation
+        #region Instantiation
 
         public SpecialistInstance()
         {
@@ -53,7 +53,7 @@ namespace OpenNos.GameObject
 
         #endregion
 
-        #region Public Properties
+        #region Properties
 
         public short SlDamage { get; set; }
 
@@ -87,7 +87,7 @@ namespace OpenNos.GameObject
 
         #endregion
 
-        #region Public Methods
+        #region Methods
 
         public void PerfectSP(ClientSession Session, UpgradeProtection protect)
         {

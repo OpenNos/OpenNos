@@ -19,7 +19,7 @@ namespace OpenNos.DAL.Interface
 {
     public interface INpcMonsterSkillDAO
     {
-        #region Public Methods
+        #region Methods
 
         NpcMonsterSkillDTO Insert(ref NpcMonsterSkillDTO npcmonsterskill);
 

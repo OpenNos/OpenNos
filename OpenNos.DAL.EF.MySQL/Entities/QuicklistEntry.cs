@@ -18,7 +18,7 @@ namespace OpenNos.DAL.EF.MySQL
 
     public class QuicklistEntry
     {
-        #region Public Properties
+        #region Properties
 
         public virtual Character Character { get; set; }
         public long CharacterId { get; set; }

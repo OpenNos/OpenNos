@@ -21,7 +21,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Server
     /// </summary>
     public static class ScsServerManager
     {
-        #region Private Members
+        #region Members
 
         /// <summary>
         /// Used to set an auto incremential unique identifier to clients.
@@ -30,7 +30,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Server
 
         #endregion
 
-        #region Public Methods
+        #region Methods
 
         /// <summary>
         /// Gets an unique number to be used as idenfitier of a client.

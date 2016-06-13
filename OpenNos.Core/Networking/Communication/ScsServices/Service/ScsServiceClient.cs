@@ -28,7 +28,7 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Service
     /// </summary>
     public class ScsServiceClient : IScsServiceClient
     {
-        #region Private Members
+        #region Members
 
         /// <summary>
         /// This object is used to send messages to client.
@@ -47,7 +47,7 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Service
 
         #endregion
 
-        #region Public Instantiation
+        #region Instantiation
 
         /// <summary>
         /// Creates a new ScsServiceClient object.
@@ -63,7 +63,7 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Service
 
         #endregion
 
-        #region Public Events
+        #region Events
 
         /// <summary>
         /// This event is raised when this client is disconnected from server.
@@ -72,7 +72,7 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Service
 
         #endregion
 
-        #region Public Properties
+        #region Properties
 
         /// <summary>
         /// Unique identifier for this client.
@@ -103,7 +103,7 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Service
 
         #endregion
 
-        #region Public Methods
+        #region Methods
 
         /// <summary>
         /// Closes client connection.
@@ -123,10 +123,6 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Service
             _realProxy = new RemoteInvokeProxy<T, IScsServerClient>(_requestReplyMessenger);
             return (T)_realProxy.GetTransparentProxy();
         }
-
-        #endregion
-
-        #region Private Methods
 
         /// <summary>
         /// Handles disconnect event of _serverClient object.

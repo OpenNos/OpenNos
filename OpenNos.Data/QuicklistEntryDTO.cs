@@ -16,7 +16,7 @@ namespace OpenNos.Data
 {
     public class QuicklistEntryDTO
     {
-        #region Public Properties
+        #region Properties
 
         public long CharacterId { get; set; }
         public long EntryId { get; set; }

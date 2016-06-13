@@ -18,7 +18,7 @@ namespace OpenNos.Core
 {
     public class LoginEncryption : EncryptionBase
     {
-        #region Public Instantiation
+        #region Instantiation
 
         public LoginEncryption() : base(false)
         {
@@ -48,7 +48,7 @@ namespace OpenNos.Core
                 return decpass;
             }*/
 
-        #region Public Methods
+        #region Methods
 
         public override string Decrypt(byte[] packet, int customParameter = 0)
         {

@@ -24,7 +24,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Server
     /// </summary>
     public abstract class ScsServerBase : IScsServer
     {
-        #region Private Members
+        #region Members
 
         /// <summary>
         /// This object is used to listen incoming connections.
@@ -33,7 +33,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Server
 
         #endregion
 
-        #region Protected Instantiation
+        #region Instantiation
 
         /// <summary>
         /// Constructor.
@@ -46,7 +46,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Server
 
         #endregion
 
-        #region Public Events
+        #region Events
 
         /// <summary>
         /// This event is raised when a new client is connected.
@@ -60,7 +60,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Server
 
         #endregion
 
-        #region Public Properties
+        #region Properties
 
         /// <summary>
         /// A collection of clients that are connected to the server.
@@ -74,7 +74,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Server
 
         #endregion
 
-        #region Public Methods
+        #region Methods
 
         /// <summary>
         /// Starts the server.
@@ -101,10 +101,6 @@ namespace OpenNos.Core.Networking.Communication.Scs.Server
                 client.Disconnect();
             }
         }
-
-        #endregion
-
-        #region Protected Methods
 
         /// <summary>
         /// This method is implemented by derived Classs to create appropriate connection listener to listen incoming connection requets.
@@ -137,10 +133,6 @@ namespace OpenNos.Core.Networking.Communication.Scs.Server
                 handler(this, new ServerClientEventArgs(client));
             }
         }
-
-        #endregion
-
-        #region Private Methods
 
         /// <summary>
         /// Handles Disconnected events of all connected clients.

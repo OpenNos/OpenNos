@@ -19,7 +19,7 @@ namespace OpenNos.WCF.Interface
     [ServiceContract(CallbackContract = typeof(ICommunicationCallback))]
     public interface ICommunicationService
     {
-        #region Public Methods
+        #region Methods
 
         [OperationContract]
         bool AccountIsConnected(string accountName);

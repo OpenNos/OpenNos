@@ -21,7 +21,7 @@ namespace OpenNos.GameObject
 {
     public class WearableItem : Item
     {
-        #region Public Methods
+        #region Methods
 
         public override void Use(ClientSession session, ref Inventory inventory)
         {

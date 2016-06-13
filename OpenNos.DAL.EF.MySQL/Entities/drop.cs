@@ -16,7 +16,7 @@ namespace OpenNos.DAL.EF.MySQL
 {
     public class Drop
     {
-        #region Public Properties
+        #region Properties
 
         public int Amount { get; set; }
         public int DropChance { get; set; }

@@ -18,7 +18,7 @@ namespace OpenNos.GameObject
 {
     public class CellonOption : CellonOptionDTO
     {
-        #region Public Instantiation
+        #region Instantiation
 
         public CellonOption()
         {

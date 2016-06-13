@@ -29,7 +29,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messengers
     /// <typeparam name="T">Type of IMessenger object to use as underlying communication</typeparam>
     public class RequestReplyMessenger<T> : IMessenger, IDisposable where T : IMessenger
     {
-        #region Private Members
+        #region Members
 
         /// <summary>
         /// Default Timeout value.
@@ -56,7 +56,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messengers
 
         #endregion
 
-        #region Public Instantiation
+        #region Instantiation
 
         /// <summary>
         /// Creates a new RequestReplyMessenger.
@@ -74,7 +74,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messengers
 
         #endregion
 
-        #region Public Events
+        #region Events
 
         /// <summary>
         /// This event is raised when a new message is received from underlying messenger.
@@ -89,7 +89,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messengers
 
         #endregion
 
-        #region Private Enums
+        #region Enums
 
         /// <summary>
         /// This enum is used to store the state of a waiting message.
@@ -114,7 +114,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messengers
 
         #endregion
 
-        #region Public Properties
+        #region Properties
 
         /// <summary>
         /// Gets the time of the last succesfully received message.
@@ -161,7 +161,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messengers
 
         #endregion
 
-        #region Public Methods
+        #region Methods
 
         /// <summary>
         /// Calls Stop method of this object.
@@ -288,10 +288,6 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messengers
             }
         }
 
-        #endregion
-
-        #region Protected Methods
-
         /// <summary>
         /// Raises MessageReceived event.
         /// </summary>
@@ -317,10 +313,6 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messengers
                 handler(this, new MessageEventArgs(message));
             }
         }
-
-        #endregion
-
-        #region Private Methods
 
         /// <summary>
         /// Handles MessageReceived event of Messenger object.
@@ -366,7 +358,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messengers
 
         #endregion
 
-        #region Private Classes
+        #region Classes
 
         /// <summary>
         /// This class is used to store messaging context for a request message
@@ -374,7 +366,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messengers
         /// </summary>
         private sealed class WaitingMessage
         {
-            #region Public Instantiation
+            #region Instantiation
 
             /// <summary>
             /// Creates a new WaitingMessage object.
@@ -387,7 +379,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messengers
 
             #endregion
 
-            #region Public Properties
+            #region Properties
 
             /// <summary>
             /// Response message for request message

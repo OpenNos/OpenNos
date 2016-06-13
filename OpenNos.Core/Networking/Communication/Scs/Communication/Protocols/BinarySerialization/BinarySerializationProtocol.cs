@@ -37,7 +37,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Protocols.Bina
     /// </summary>
     public class BinarySerializationProtocol : IScsWireProtocol
     {
-        #region Private Members
+        #region Members
 
         /// <summary>
         /// Maximum length of a message.
@@ -51,7 +51,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Protocols.Bina
 
         #endregion
 
-        #region Public Instantiation
+        #region Instantiation
 
         /// <summary>
         /// Creates a new instance of BinarySerializationProtocol.
@@ -63,7 +63,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Protocols.Bina
 
         #endregion
 
-        #region Public Methods
+        #region Methods
 
         /// <summary>
         /// Builds messages from a byte array that is received from remote application.
@@ -130,10 +130,6 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Protocols.Bina
             }
         }
 
-        #endregion
-
-        #region Protected Methods
-
         /// <summary>
         /// This method is used to deserialize a IScsMessage from it's bytes.
         /// This method can be overrided by derived Classs to change deserialization strategy.
@@ -182,10 +178,6 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Protocols.Bina
                 return memoryStream.ToArray();
             }
         }
-
-        #endregion
-
-        #region Private Methods
 
         /// <summary>
         /// Reads a byte array with specified length.
@@ -301,7 +293,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Protocols.Bina
 
         #endregion
 
-        #region Protected Classes
+        #region Classes
 
         /// <summary>
         /// This class is used in deserializing to allow deserializing objects that are defined
@@ -309,7 +301,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Protocols.Bina
         /// </summary>
         protected sealed class DeserializationAppDomainBinder : SerializationBinder
         {
-            #region Public Methods
+            #region Methods
 
             public override Type BindToType(string assemblyName, string typeName)
             {

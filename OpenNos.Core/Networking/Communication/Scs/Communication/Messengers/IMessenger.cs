@@ -23,7 +23,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messengers
     /// </summary>
     public interface IMessenger
     {
-        #region Public Events
+        #region Events
 
         /// <summary>
         /// This event is raised when a new message is received.
@@ -38,7 +38,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messengers
 
         #endregion
 
-        #region Public Properties
+        #region Properties
 
         /// <summary>
         /// Gets the time of the last succesfully received message.
@@ -57,7 +57,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Messengers
 
         #endregion
 
-        #region Public Methods
+        #region Methods
 
         /// <summary>
         /// Sends a message to the remote application.

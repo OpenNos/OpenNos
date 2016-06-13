@@ -19,7 +19,7 @@ namespace OpenNos.Core
 {
     public class Application
     {
-        #region Public Methods
+        #region Methods
 
         public static string AppPath(bool backSlash = true)
         {

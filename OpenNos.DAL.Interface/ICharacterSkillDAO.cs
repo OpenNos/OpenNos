@@ -20,7 +20,7 @@ namespace OpenNos.DAL.Interface
 {
     public interface ICharacterSkillDAO
     {
-        #region Public Methods
+        #region Methods
 
         DeleteResult Delete(long characterId, short skillVNum);
 

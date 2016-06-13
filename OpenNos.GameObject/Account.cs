@@ -18,7 +18,7 @@ namespace OpenNos.GameObject
 {
     public class Account : AccountDTO
     {
-        #region Public Instantiation
+        #region Instantiation
 
         public Account()
         {

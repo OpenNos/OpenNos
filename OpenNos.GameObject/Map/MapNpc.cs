@@ -21,7 +21,7 @@ namespace OpenNos.GameObject
 {
     public class MapNpc : MapNpcDTO
     {
-        #region Public Instantiation
+        #region Instantiation
 
         public MapNpc(int npcId, Map parent)
         {
@@ -50,7 +50,7 @@ namespace OpenNos.GameObject
 
         #endregion
 
-        #region Public Properties
+        #region Properties
 
         public short FirstX { get; set; }
         public short FirstY { get; set; }
@@ -64,7 +64,7 @@ namespace OpenNos.GameObject
 
         #endregion
 
-        #region Public Methods
+        #region Methods
 
         public string GenerateEff()
         {
@@ -79,10 +79,6 @@ namespace OpenNos.GameObject
         {
             return $"npc_req 2 {MapNpcId} {Dialog}";
         }
-
-        #endregion
-
-        #region Internal Methods
 
         internal void NpcLife()
         {

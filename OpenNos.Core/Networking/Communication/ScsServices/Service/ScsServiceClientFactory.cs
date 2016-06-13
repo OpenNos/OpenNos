@@ -22,7 +22,7 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Service
     /// </summary>
     public static class ScsServiceClientFactory
     {
-        #region Public Methods
+        #region Methods
 
         /// <summary>
         /// Creates a new service client object that is used in server-side.

@@ -24,7 +24,7 @@ namespace OpenNos.GameObject
 {
     public class Map : BroadcastableBase, IMapDTO
     {
-        #region Private Members
+        #region Members
 
         private char[,] _grid;
         private List<MapMonster> _monsters;
@@ -34,7 +34,7 @@ namespace OpenNos.GameObject
 
         #endregion
 
-        #region Public Instantiation
+        #region Instantiation
 
         public Map(short mapId, Guid uniqueIdentifier, byte[] data)
         {
@@ -108,7 +108,7 @@ namespace OpenNos.GameObject
 
         #endregion
 
-        #region Public Properties
+        #region Properties
 
         public byte[] Data { get; set; }
 
@@ -162,7 +162,7 @@ namespace OpenNos.GameObject
 
         #endregion
 
-        #region Public Methods
+        #region Methods
 
         public static int GetDistance(MapCell p, MapCell q)
         {
@@ -365,10 +365,6 @@ namespace OpenNos.GameObject
                 await Task.Delay(rnd.Next(1000 / Npcs.Count(), 1000 / Npcs.Count()));
             }
         }
-
-        #endregion
-
-        #region Internal Methods
 
         internal bool GetFreePosition(ref short firstX, ref short firstY, byte xpoint, byte ypoint)
         {

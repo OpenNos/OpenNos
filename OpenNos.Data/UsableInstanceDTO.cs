@@ -16,7 +16,7 @@ namespace OpenNos.Data
 {
     public class UsableInstanceDTO : ItemInstanceDTO
     {
-        #region Public Properties
+        #region Properties
 
         public short HP { get; set; }
         public short MP { get; set; }

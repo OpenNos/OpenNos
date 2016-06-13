@@ -6,7 +6,7 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
 
     internal sealed class Configuration : DbMigrationsConfiguration<OpenNos.DAL.EF.MySQL.DB.OpenNosContext>
     {
-        #region Public Instantiation
+        #region Instantiation
 
         public Configuration()
         {
@@ -25,7 +25,7 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
             File.WriteAllText(Path.Combine(@"C:\\OpenNos.sql"), sql);
         }*/
 
-        #region Protected Methods
+        #region Methods
 
         protected override void Seed(OpenNos.DAL.EF.MySQL.DB.OpenNosContext context)
         {

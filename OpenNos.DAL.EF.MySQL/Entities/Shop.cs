@@ -19,7 +19,7 @@ namespace OpenNos.DAL.EF.MySQL
 
     public class Shop
     {
-        #region Public Instantiation
+        #region Instantiation
 
         public Shop()
         {
@@ -29,7 +29,7 @@ namespace OpenNos.DAL.EF.MySQL
 
         #endregion
 
-        #region Public Properties
+        #region Properties
 
         public virtual MapNpc MapNpc { get; set; }
         public int MapNpcId { get; set; }

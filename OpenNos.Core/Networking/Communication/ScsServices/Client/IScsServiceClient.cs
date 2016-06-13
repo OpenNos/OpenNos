@@ -22,7 +22,7 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Client
     /// <typeparam name="T">Type of service interface</typeparam>
     public interface IScsServiceClient<out T> : IConnectableClient where T : class
     {
-        #region Public Properties
+        #region Properties
 
         /// <summary>
         /// Reference to the service proxy to invoke remote service methods.

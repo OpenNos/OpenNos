@@ -18,7 +18,7 @@ namespace OpenNos.Data
 {
     public class ItemInstanceDTO : IItemInstance
     {
-        #region Public Properties
+        #region Properties
 
         public int Amount { get; set; }
         public byte Design { get; set; }

@@ -23,7 +23,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication
     [Serializable]
     public class CommunicationStateException : CommunicationException
     {
-        #region Public Instantiation
+        #region Instantiation
 
         /// <summary>
         /// Contstructor.

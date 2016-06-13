@@ -18,7 +18,7 @@ namespace OpenNos.DAL.EF.MySQL
 {
     public class WearableInstance : ItemInstance
     {
-        #region Public Properties
+        #region Properties
 
         public byte? Ammo { get; set; }
         public byte? Cellon { get; set; }

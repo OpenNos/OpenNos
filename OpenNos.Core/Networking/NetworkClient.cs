@@ -22,13 +22,13 @@ namespace OpenNos.Core
 {
     public class NetworkClient : ScsServerClient
     {
-        #region Private Members
+        #region Members
 
         private EncryptionBase _encryptor;
 
         #endregion
 
-        #region Public Instantiation
+        #region Instantiation
 
         public NetworkClient(ICommunicationChannel communicationChannel) : base(communicationChannel)
         {
@@ -36,13 +36,13 @@ namespace OpenNos.Core
 
         #endregion
 
-        #region Public Properties
+        #region Properties
 
         public bool IsDisposing { get; set; }
 
         #endregion
 
-        #region Public Methods
+        #region Methods
 
         public void Initialize(EncryptionBase encryptor)
         {

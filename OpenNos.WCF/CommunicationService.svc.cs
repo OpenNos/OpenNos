@@ -25,7 +25,7 @@ namespace OpenNos.WCF
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)]
     public class CommunicationService : ICommunicationService
     {
-        #region Private Members
+        #region Members
 
         private IDictionary<String, int> _connectedAccounts;
         private IDictionary<String, String> _connectedCharacters;
@@ -33,7 +33,7 @@ namespace OpenNos.WCF
 
         #endregion
 
-        #region Public Instantiation
+        #region Instantiation
 
         public CommunicationService()
         {
@@ -42,7 +42,7 @@ namespace OpenNos.WCF
 
         #endregion
 
-        #region Public Properties
+        #region Properties
 
         public IDictionary<String, int> ConnectedAccounts
         {
@@ -85,7 +85,7 @@ namespace OpenNos.WCF
 
         #endregion
 
-        #region Public Methods
+        #region Methods
 
         /// <summary>
         /// Checks if the Account has a connected Character

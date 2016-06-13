@@ -26,7 +26,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Client
     /// </summary>
     public abstract class ScsClientBase : IScsClient
     {
-        #region Private Members
+        #region Members
 
         /// <summary>
         /// Default timeout value for connecting a server.
@@ -47,7 +47,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Client
 
         #endregion
 
-        #region Protected Instantiation
+        #region Instantiation
 
         //15 seconds.
         /// <summary>
@@ -63,7 +63,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Client
 
         #endregion
 
-        #region Public Events
+        #region Events
 
         /// <summary>
         /// This event is raised when communication channel closed.
@@ -88,7 +88,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Client
 
         #endregion
 
-        #region Public Properties
+        #region Properties
 
         /// <summary>
         /// Gets the communication state of the Client.
@@ -154,7 +154,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Client
 
         #endregion
 
-        #region Public Methods
+        #region Methods
 
         /// <summary>
         /// Connects to server.
@@ -208,10 +208,6 @@ namespace OpenNos.Core.Networking.Communication.Scs.Client
 
             _communicationChannel.SendMessage(message);
         }
-
-        #endregion
-
-        #region Protected Methods
 
         /// <summary>
         /// This method is implemented by derived Classs to create appropriate communication channel.
@@ -268,10 +264,6 @@ namespace OpenNos.Core.Networking.Communication.Scs.Client
                 handler(this, new MessageEventArgs(message));
             }
         }
-
-        #endregion
-
-        #region Private Methods
 
         /// <summary>
         /// Handles Disconnected event of _communicationChannel object.

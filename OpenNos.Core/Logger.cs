@@ -19,13 +19,13 @@ namespace OpenNos.Core
 {
     public class Logger
     {
-        #region Private Members
+        #region Members
 
         private static ILog _log;
 
         #endregion
 
-        #region Public Properties
+        #region Properties
 
         public static ILog Log
         {
@@ -41,7 +41,7 @@ namespace OpenNos.Core
 
         #endregion
 
-        #region Public Methods
+        #region Methods
 
         /// <summary>
         /// Wraps up the message with the CallerMemberName

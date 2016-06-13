@@ -18,7 +18,7 @@ namespace OpenNos.Data
 {
     public class AccountDTO
     {
-        #region Public Properties
+        #region Properties
 
         public long AccountId { get; set; }
         public AuthorityType Authority { get; set; }

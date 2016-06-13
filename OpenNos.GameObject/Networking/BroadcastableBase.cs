@@ -19,7 +19,7 @@ namespace OpenNos.GameObject
 {
     public abstract class BroadcastableBase
     {
-        #region Public Instantiation
+        #region Instantiation
 
         public BroadcastableBase()
         {
@@ -28,13 +28,13 @@ namespace OpenNos.GameObject
 
         #endregion
 
-        #region Public Properties
+        #region Properties
 
         public List<ClientSession> Sessions { get; set; }
 
         #endregion
 
-        #region Public Methods
+        #region Methods
 
         public bool Broadcast(string message)
         {

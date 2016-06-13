@@ -27,7 +27,7 @@ namespace OpenNos.GameObject
 {
     public class Character : CharacterDTO
     {
-        #region Private Members
+        #region Members
 
         private readonly ClientSession _session;
         private AuthorityType _authority;
@@ -49,7 +49,7 @@ namespace OpenNos.GameObject
 
         #endregion
 
-        #region Public Instantiation
+        #region Instantiation
 
         public Character(ClientSession Session)
         {
@@ -62,7 +62,7 @@ namespace OpenNos.GameObject
 
         #endregion
 
-        #region Public Properties
+        #region Properties
 
         public AuthorityType Authority { get { return _authority; } set { _authority = value; } }
 
@@ -178,7 +178,7 @@ namespace OpenNos.GameObject
 
         #endregion
 
-        #region Public Methods
+        #region Methods
 
         public void ChangeClass(long id, byte characterClass)
         {
@@ -1428,10 +1428,6 @@ namespace OpenNos.GameObject
         {
             return ServersData.XPData[Level - 1];
         }
-
-        #endregion
-
-        #region Private Methods
 
         private object HeroXPLoad()
         {

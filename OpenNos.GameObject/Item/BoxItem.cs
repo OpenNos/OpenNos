@@ -16,7 +16,7 @@ namespace OpenNos.GameObject
 {
     public class BoxItem : Item
     {
-        #region Public Methods
+        #region Methods
 
         public override void Use(ClientSession Session, ref Inventory Inv)
         {

@@ -19,7 +19,7 @@ namespace OpenNos.DAL.Interface
 {
     public interface ISkillDAO
     {
-        #region Public Methods
+        #region Methods
 
         SkillDTO Insert(SkillDTO skill);
 

@@ -16,7 +16,7 @@ namespace OpenNos.DAL.EF.MySQL
 {
     public class UsableInstance : ItemInstance
     {
-        #region Public Properties
+        #region Properties
 
         public short? HP { get; set; }
         public short? MP { get; set; }

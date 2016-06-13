@@ -26,13 +26,13 @@ namespace OpenNos.Handler
 {
     public class BattlePacketHandler : IPacketHandler
     {
-        #region Private Members
+        #region Members
 
         private readonly ClientSession _session;
 
         #endregion
 
-        #region Public Instantiation
+        #region Instantiation
 
         public BattlePacketHandler(ClientSession session)
         {
@@ -41,13 +41,13 @@ namespace OpenNos.Handler
 
         #endregion
 
-        #region Public Properties
+        #region Properties
 
         public ClientSession Session { get { return _session; } }
 
         #endregion
 
-        #region Public Methods
+        #region Methods
 
         [Packet("mtlist")]
         public void SpecialZoneHit(string packet)
@@ -213,10 +213,6 @@ namespace OpenNos.Handler
                         Task.Factory.StartNew(() => ZoneHit(Convert.ToInt32(packetsplit[2]), Convert.ToInt16(packetsplit[3]), Convert.ToInt16(packetsplit[4])));
             }
         }
-
-        #endregion
-
-        #region Private Methods
 
         private ushort GenerateDamage(int monsterid, Skill skill, ref int hitmode)
         {

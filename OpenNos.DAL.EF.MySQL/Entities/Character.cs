@@ -19,7 +19,7 @@ namespace OpenNos.DAL.EF.MySQL
 
     public class Character
     {
-        #region Public Instantiation
+        #region Instantiation
 
         public Character()
         {
@@ -32,7 +32,7 @@ namespace OpenNos.DAL.EF.MySQL
 
         #endregion
 
-        #region Public Properties
+        #region Properties
 
         public virtual Account Account { get; set; }
         public long AccountId { get; set; }

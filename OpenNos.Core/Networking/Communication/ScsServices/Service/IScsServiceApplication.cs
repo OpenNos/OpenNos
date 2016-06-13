@@ -21,7 +21,7 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Service
     /// </summary>
     public interface IScsServiceApplication
     {
-        #region Public Events
+        #region Events
 
         /// <summary>
         /// This event is raised when a new client connected to the service.
@@ -35,7 +35,7 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Service
 
         #endregion
 
-        #region Public Methods
+        #region Methods
 
         /// <summary>
         /// Adds a service object to this service application.

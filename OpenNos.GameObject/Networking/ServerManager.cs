@@ -28,13 +28,9 @@ namespace OpenNos.GameObject
 {
     public class ServerManager : BroadcastableBase
     {
-        #region Public Members
+        #region Members
 
         public Boolean ShutdownStop = false;
-
-        #endregion
-
-        #region Private Members
 
         private static ServerManager _instance;
         private static List<Item> _items = new List<Item>();
@@ -45,7 +41,7 @@ namespace OpenNos.GameObject
 
         #endregion
 
-        #region Private Instantiation
+        #region Instantiation
 
         private ServerManager()
         {
@@ -65,7 +61,7 @@ namespace OpenNos.GameObject
 
         #endregion
 
-        #region Public Properties
+        #region Properties
 
         public static List<MapMonster> Monsters { get; set; }
         public static EventHandler NotifyChildren { get; set; }
@@ -77,7 +73,7 @@ namespace OpenNos.GameObject
 
         #endregion
 
-        #region Public Methods
+        #region Methods
 
         public static ConcurrentDictionary<Guid, Map> GetAllMap()
         {
@@ -662,10 +658,6 @@ namespace OpenNos.GameObject
                 session.Client.SendPacket(str);
             }
         }
-
-        #endregion
-
-        #region Private Methods
 
         //Server
         private async void GroupProcess()

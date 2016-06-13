@@ -18,14 +18,14 @@ namespace OpenNos.GameObject
 {
     internal class SortedCostMapCellList
     {
-        #region Private Members
+        #region Members
 
         private MapCellComparer _cellComparer;
         private ArrayList _list;
 
         #endregion
 
-        #region Public Instantiation
+        #region Instantiation
 
         public SortedCostMapCellList()
         {
@@ -35,7 +35,7 @@ namespace OpenNos.GameObject
 
         #endregion
 
-        #region Public Properties
+        #region Properties
 
         public int Count
         {
@@ -47,7 +47,7 @@ namespace OpenNos.GameObject
 
         #endregion
 
-        #region Public Methods
+        #region Methods
 
         public MapCellAStar CellAt(int i)
         {

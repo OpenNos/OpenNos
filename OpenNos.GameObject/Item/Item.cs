@@ -18,7 +18,7 @@ namespace OpenNos.GameObject
 {
     public abstract class Item : ItemDTO
     {
-        #region Public Instantiation
+        #region Instantiation
 
         public Item()
         {
@@ -26,7 +26,7 @@ namespace OpenNos.GameObject
 
         #endregion
 
-        #region Public Methods
+        #region Methods
 
         public abstract void Use(ClientSession Session, ref Inventory Inv);
 

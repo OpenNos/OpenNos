@@ -20,7 +20,7 @@ namespace OpenNos.GameObject
 {
     public class Recipe : RecipeDTO
     {
-        #region Public Instantiation
+        #region Instantiation
 
         public Recipe(short RecipeId)
         {
@@ -39,7 +39,7 @@ namespace OpenNos.GameObject
 
         #endregion
 
-        #region Public Properties
+        #region Properties
 
         public List<RecipeItem> Items { get; set; }
 

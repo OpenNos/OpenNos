@@ -18,7 +18,7 @@ namespace OpenNos.GameObject
 {
     public class MapItem
     {
-        #region Public Instantiation
+        #region Instantiation
 
         public MapItem(short x, short y, bool isNew)
         {
@@ -29,7 +29,7 @@ namespace OpenNos.GameObject
 
         #endregion
 
-        #region Public Properties
+        #region Properties
 
         public bool IsNew { get; set; }
         public ItemInstance ItemInstance { get; set; }
@@ -38,7 +38,7 @@ namespace OpenNos.GameObject
 
         #endregion
 
-        #region Public Methods
+        #region Methods
 
         public void Rarify(ClientSession session)
         {

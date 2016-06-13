@@ -16,7 +16,7 @@ namespace OpenNos.DAL.EF.MySQL
 {
     public class Combo
     {
-        #region Public Properties
+        #region Properties
 
         public short Animation { get; set; }
         public int ComboId { get; set; }

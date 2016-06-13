@@ -19,7 +19,7 @@ namespace OpenNos.DAL.Interface
 {
     public interface IMapDAO
     {
-        #region Public Methods
+        #region Methods
 
         MapDTO Insert(MapDTO map);
 

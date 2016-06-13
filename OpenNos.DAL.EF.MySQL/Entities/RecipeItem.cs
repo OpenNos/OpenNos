@@ -16,7 +16,7 @@ namespace OpenNos.DAL.EF.MySQL
 {
     public class RecipeItem
     {
-        #region Public Properties
+        #region Properties
 
         public byte Amount { get; set; }
         public virtual Item Item { get; set; }

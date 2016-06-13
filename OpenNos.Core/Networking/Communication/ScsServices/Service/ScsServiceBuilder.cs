@@ -22,7 +22,7 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Service
     /// </summary>
     public static class ScsServiceBuilder
     {
-        #region Public Methods
+        #region Methods
 
         /// <summary>
         /// Creates a new SCS Service application using an EndPoint.

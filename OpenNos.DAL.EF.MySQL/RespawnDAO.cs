@@ -25,13 +25,13 @@ namespace OpenNos.DAL.EF.MySQL
 {
     public class RespawnDAO : IRespawnDAO
     {
-        #region Private Members
+        #region Members
 
         private IMapper _mapper;
 
         #endregion
 
-        #region Public Instantiation
+        #region Instantiation
 
         public RespawnDAO()
         {
@@ -46,7 +46,7 @@ namespace OpenNos.DAL.EF.MySQL
 
         #endregion
 
-        #region Public Methods
+        #region Methods
 
         public SaveResult InsertOrUpdate(ref RespawnDTO respawn)
         {
@@ -88,10 +88,6 @@ namespace OpenNos.DAL.EF.MySQL
                 return _mapper.Map<RespawnDTO>(context.Respawn.FirstOrDefault(s => s.RespawnId.Equals(respawnId)));
             }
         }
-
-        #endregion
-
-        #region Private Methods
 
         private RespawnDTO Insert(RespawnDTO respawn, OpenNosContext context)
         {

@@ -25,7 +25,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.EndPoints.Tcp
     /// </summary>
     public class ScsTcpEndPoint : ScsEndPoint
     {
-        #region Public Instantiation
+        #region Instantiation
 
         /// <summary>
         /// Creates a new ScsTcpEndPoint object with specified port number.
@@ -62,7 +62,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.EndPoints.Tcp
 
         #endregion
 
-        #region Public Properties
+        #region Properties
 
         ///<summary>
         /// IP address of the server.
@@ -76,7 +76,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.EndPoints.Tcp
 
         #endregion
 
-        #region Public Methods
+        #region Methods
 
         /// <summary>
         /// Creates a Scs Client that uses this end point to connect to server.

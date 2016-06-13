@@ -19,7 +19,7 @@ namespace OpenNos.DAL.Interface
 {
     public interface IItemDAO
     {
-        #region Public Methods
+        #region Methods
 
         ItemDTO Insert(ItemDTO item);
 

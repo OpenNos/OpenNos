@@ -23,7 +23,7 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Service
     /// </summary>
     public interface IScsServiceClient
     {
-        #region Public Events
+        #region Events
 
         /// <summary>
         /// This event is raised when client is disconnected from service.
@@ -32,7 +32,7 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Service
 
         #endregion
 
-        #region Public Properties
+        #region Properties
 
         /// <summary>
         /// Unique identifier for this client.
@@ -51,7 +51,7 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Service
 
         #endregion
 
-        #region Public Methods
+        #region Methods
 
         /// <summary>
         /// Closes client connection.

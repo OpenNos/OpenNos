@@ -30,13 +30,13 @@ namespace OpenNos.Handler
 {
     public class BasicPacketHandler : IPacketHandler
     {
-        #region Private Members
+        #region Members
 
         private readonly ClientSession _session;
 
         #endregion
 
-        #region Public Instantiation
+        #region Instantiation
 
         public BasicPacketHandler(ClientSession session)
         {
@@ -45,13 +45,13 @@ namespace OpenNos.Handler
 
         #endregion
 
-        #region Public Properties
+        #region Properties
 
         public ClientSession Session { get { return _session; } }
 
         #endregion
 
-        #region Public Methods
+        #region Methods
 
         [Packet("compl")]
         public void Compliment(string packet)
@@ -1137,10 +1137,6 @@ namespace OpenNos.Handler
             else
                 Session.Client.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("USER_NOT_CONNECTED")));
         }
-
-        #endregion
-
-        #region Private Methods
 
         private string GeneratePidx(long charId)
         {

@@ -22,13 +22,13 @@ namespace OpenNos.DAL.EF.MySQL.Helpers
 {
     public static class DataAccessHelper
     {
-        #region Private Members
+        #region Members
 
         private static OpenNosContext _context;
 
         #endregion
 
-        #region Public Instantiation
+        #region Instantiation
 
         static DataAccessHelper()
         {
@@ -36,7 +36,7 @@ namespace OpenNos.DAL.EF.MySQL.Helpers
 
         #endregion
 
-        #region Public Properties
+        #region Properties
 
         public static OpenNosContext Context
         {
@@ -52,7 +52,7 @@ namespace OpenNos.DAL.EF.MySQL.Helpers
 
         #endregion
 
-        #region Public Methods
+        #region Methods
 
         /// <summary>
         /// Begins and returns a new transaction. Be sure to commit/rollback/dispose this transaction

@@ -20,7 +20,7 @@ namespace OpenNos.DAL.Interface
 {
     public interface IGeneralLogDAO
     {
-        #region Public Methods
+        #region Methods
 
         IEnumerable<GeneralLogDTO> LoadByLogType(string LogType, Nullable<long> CharacterId);
 

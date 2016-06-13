@@ -18,7 +18,7 @@ namespace OpenNos.Data
 {
     public interface IItemInstance
     {
-        #region Public Properties
+        #region Properties
 
         int Amount { get; set; }
         byte Design { get; set; }

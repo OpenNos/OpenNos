@@ -18,7 +18,7 @@ namespace OpenNos.Data
 {
     public class CharacterDTO
     {
-        #region Public Properties
+        #region Properties
 
         public long AccountId { get; set; }
         public int Act4Dead { get; set; }

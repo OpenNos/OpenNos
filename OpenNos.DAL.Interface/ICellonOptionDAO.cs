@@ -19,7 +19,7 @@ namespace OpenNos.DAL.Interface
 {
     public interface ICellonOptionDAO
     {
-        #region Public Methods
+        #region Methods
 
         IEnumerable<CellonOptionDTO> GetOptionsByWearableInstanceId(long inventoryitemId);
 

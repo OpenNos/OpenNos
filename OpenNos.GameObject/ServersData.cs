@@ -19,7 +19,7 @@ namespace OpenNos.GameObject
 {
     public class ServersData
     {
-        #region Private Members
+        #region Members
 
         private static int[,] criticalDist = null;
         private static int[,] criticalDistRate = null;
@@ -58,7 +58,7 @@ namespace OpenNos.GameObject
 
         #endregion
 
-        #region Private Instantiation
+        #region Instantiation
 
         private ServersData()
         {
@@ -77,7 +77,7 @@ namespace OpenNos.GameObject
 
         #endregion
 
-        #region Public Properties
+        #region Properties
 
         public static double[] FirstJobXPData
         {
@@ -213,7 +213,7 @@ namespace OpenNos.GameObject
 
         #endregion
 
-        #region Public Methods
+        #region Methods
 
         public static int MagicalDefence(byte @class, byte level)
         {
@@ -452,10 +452,6 @@ namespace OpenNos.GameObject
             return point;
         }
 
-        #endregion
-
-        #region Internal Methods
-
         internal static int DarkResistance(byte @class, byte level)
         {
             return 0;
@@ -569,10 +565,6 @@ namespace OpenNos.GameObject
         {
             return 0;
         }
-
-        #endregion
-
-        #region Private Methods
 
         private void LoadHpData()
         {

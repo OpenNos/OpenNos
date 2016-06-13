@@ -21,7 +21,7 @@ namespace OpenNos.Core
 {
     public abstract class EncryptionBase
     {
-        #region Public Instantiation
+        #region Instantiation
 
         public EncryptionBase(bool hasCustomParameter)
         {
@@ -30,13 +30,13 @@ namespace OpenNos.Core
 
         #endregion
 
-        #region Public Properties
+        #region Properties
 
         public bool HasCustomParameter { get; set; }
 
         #endregion
 
-        #region Public Methods
+        #region Methods
 
         public static string sha256(string inputString)
         {

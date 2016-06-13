@@ -21,7 +21,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Client
     /// </summary>
     public static class ScsClientFactory
     {
-        #region Public Methods
+        #region Methods
 
         /// <summary>
         /// Creates a new client to connect to a server using an end point.

@@ -21,7 +21,7 @@ namespace OpenNos.DAL.Interface
 {
     public interface IInventoryDAO
     {
-        #region Public Methods
+        #region Methods
 
         DeleteResult DeleteFromSlotAndType(long characterId, short slot, byte type);
 

@@ -16,7 +16,7 @@ namespace OpenNos.Data
 {
     public class CharacterSkillDTO
     {
-        #region Public Properties
+        #region Properties
 
         public long CharacterId { get; set; }
         public long CharacterSkillId { get; set; }

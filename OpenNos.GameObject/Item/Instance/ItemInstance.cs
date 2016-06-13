@@ -18,13 +18,13 @@ namespace OpenNos.GameObject
 {
     public class ItemInstance : ItemInstanceDTO
     {
-        #region Private Members
+        #region Members
 
         private Item item;
 
         #endregion
 
-        #region Public Instantiation
+        #region Instantiation
 
         public ItemInstance()
         {
@@ -39,7 +39,7 @@ namespace OpenNos.GameObject
 
         #endregion
 
-        #region Public Properties
+        #region Properties
 
         public Item Item
         {
@@ -52,7 +52,7 @@ namespace OpenNos.GameObject
 
         #endregion
 
-        #region Public Methods
+        #region Methods
 
         public ItemInstance DeepCopy()
         {

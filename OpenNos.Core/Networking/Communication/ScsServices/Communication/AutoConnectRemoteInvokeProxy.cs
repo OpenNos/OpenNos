@@ -27,7 +27,7 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Communication
     /// <typeparam name="TMessenger">Type of the messenger object that is used to send/receive messages</typeparam>
     public class AutoConnectRemoteInvokeProxy<TProxy, TMessenger> : RemoteInvokeProxy<TProxy, TMessenger> where TMessenger : IMessenger
     {
-        #region Private Members
+        #region Members
 
         /// <summary>
         /// Reference to the client object that is used to connect/disconnect.
@@ -36,7 +36,7 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Communication
 
         #endregion
 
-        #region Public Instantiation
+        #region Instantiation
 
         /// <summary>
         /// Creates a new AutoConnectRemoteInvokeProxy object.
@@ -51,7 +51,7 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Communication
 
         #endregion
 
-        #region Public Methods
+        #region Methods
 
         /// <summary>
         /// Overrides message calls and translates them to messages to remote application.

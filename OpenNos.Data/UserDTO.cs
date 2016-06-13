@@ -16,7 +16,7 @@ namespace OpenNos.Data
 {
     public class UserDTO
     {
-        #region Public Properties
+        #region Properties
 
         public string Name { get; set; }
 

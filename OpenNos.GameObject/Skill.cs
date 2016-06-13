@@ -19,7 +19,7 @@ namespace OpenNos.GameObject
 {
     public class Skill : SkillDTO
     {
-        #region Public Instantiation
+        #region Instantiation
 
         public Skill()
         {
@@ -28,7 +28,7 @@ namespace OpenNos.GameObject
 
         #endregion
 
-        #region Public Properties
+        #region Properties
 
         public List<Combo> Combos { get; set; }
 

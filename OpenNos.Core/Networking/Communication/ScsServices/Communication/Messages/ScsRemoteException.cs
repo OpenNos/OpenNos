@@ -24,7 +24,7 @@ namespace OpenNos.Core.Networking.Communication.ScsServices.Communication.Messag
     [Serializable]
     public class ScsRemoteException : Exception
     {
-        #region Public Instantiation
+        #region Instantiation
 
         /// <summary>
         /// Contstructor.

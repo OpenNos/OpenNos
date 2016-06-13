@@ -22,7 +22,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels
     /// </summary>
     public interface IConnectionListener
     {
-        #region Public Events
+        #region Events
 
         /// <summary>
         /// This event is raised when a new communication channel connected.
@@ -31,7 +31,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels
 
         #endregion
 
-        #region Public Methods
+        #region Methods
 
         /// <summary>
         /// Starts listening incoming connections.

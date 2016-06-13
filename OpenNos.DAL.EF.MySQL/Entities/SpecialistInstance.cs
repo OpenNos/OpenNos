@@ -16,7 +16,7 @@ namespace OpenNos.DAL.EF.MySQL
 {
     public class SpecialistInstance : WearableInstance
     {
-        #region Public Properties
+        #region Properties
 
         public short? SlDamage { get; set; }
         public short? SlDefence { get; set; }

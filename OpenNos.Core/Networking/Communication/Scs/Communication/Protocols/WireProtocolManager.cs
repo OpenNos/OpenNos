@@ -21,7 +21,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Protocols
     /// </summary>
     public static class WireProtocolManager
     {
-        #region Public Methods
+        #region Methods
 
         /// <summary>
         /// Creates a default wire protocol object to be used on communicating of applications.

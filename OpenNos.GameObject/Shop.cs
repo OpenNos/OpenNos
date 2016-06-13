@@ -21,7 +21,7 @@ namespace OpenNos.GameObject
 {
     public class Shop : ShopDTO
     {
-        #region Public Instantiation
+        #region Instantiation
 
         public Shop(int shopId)
         {
@@ -40,14 +40,14 @@ namespace OpenNos.GameObject
 
         #endregion
 
-        #region Public Properties
+        #region Properties
 
         public List<ShopItem> ShopItems { get; set; }
         public List<ShopSkill> ShopSkills { get; set; }
 
         #endregion
 
-        #region Public Methods
+        #region Methods
 
         public void Save()
         {
