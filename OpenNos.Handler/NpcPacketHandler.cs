@@ -282,6 +282,8 @@ namespace OpenNos.Handler
             string shopname = String.Empty;
             if (packetsplit.Length > 2)
             {
+                if (Session.Character.InExchangeOrTrade)
+                    return;
                 foreach (Portal por in Session.CurrentMap.Portals)
                 {
                     if (Session.Character.MapX < por.SourceX + 6 && Session.Character.MapX > por.SourceX - 6 && Session.Character.MapY < por.SourceY + 6 && Session.Character.MapY > por.SourceY - 6)
