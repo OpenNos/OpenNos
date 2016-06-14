@@ -68,7 +68,7 @@ namespace OpenNos.Handler
             if (mode == 2)
             {
                 ExchangeInfo exc = ServerManager.Instance.GetProperty<ExchangeInfo>(charId, "ExchangeInfo");
-                if (exc == null || exc.ExchangeList.Count() == 0)
+                if (!Session.Character.InExchangeOrTrade)
                 {
                     if (charId == Session.Character.CharacterId) return;
                     if (Session.Character.Speed == 0)
@@ -101,7 +101,7 @@ namespace OpenNos.Handler
             }
             else if (Convert.ToInt32(packetsplit[4]) == 2)
             {
-                if ((Session.Character.ExchangeInfo != null && Session.Character.ExchangeInfo?.ExchangeList.Count() != 0) || Session.Character.Speed == 0)
+                if (Session.Character.InExchangeOrTrade)
                     return;
                 Session.Character.DeleteItem(type, slot);
             }
@@ -436,8 +436,9 @@ namespace OpenNos.Handler
             short destslot; short.TryParse(packetsplit[5], out destslot);
             if (destslot > 48 + (Session.Character.BackPack * 12))
                 return;
-            if ((Session.Character.ExchangeInfo != null && Session.Character.ExchangeInfo?.ExchangeList.Count() != 0) || Session.Character.Speed == 0)
+            if (Session.Character.InExchangeOrTrade)
                 return;
+          
 
             Inventory inv = Session.Character.InventoryList.MoveInventory(Session.Character.InventoryList.LoadInventoryBySlotAndType(slot, type), desttype, destslot);
             if (inv != null)
@@ -460,7 +461,7 @@ namespace OpenNos.Handler
             Inventory NewInventory;
             if (destslot > 48 + (Session.Character.BackPack * 12))
                 return;
-            if ((Session.Character.ExchangeInfo != null && Session.Character.ExchangeInfo?.ExchangeList.Count() != 0) || Session.Character.Speed == 0)
+            if (Session.Character.InExchangeOrTrade)
                 return;
             Session.Character.InventoryList.MoveItem(type, slot, amount, destslot, out LastInventory, out NewInventory);
             if (NewInventory == null) return;
@@ -482,7 +483,7 @@ namespace OpenNos.Handler
             short slot; short.TryParse(packetsplit[3], out slot);
             byte amount; byte.TryParse(packetsplit[4], out amount);
             Inventory invitem = Session.Character.InventoryList.LoadInventoryBySlotAndType(slot, type);
-            if (invitem != null && (invitem.ItemInstance as ItemInstance).Item.IsDroppable == true && (invitem.ItemInstance as ItemInstance).Item.IsTradable == true && (Session.CurrentMap.UserShops.FirstOrDefault(mapshop => mapshop.Value.OwnerId.Equals(Session.Character.CharacterId)).Value == null && (Session.Character.ExchangeInfo == null || Session.Character.ExchangeInfo?.ExchangeList.Count() == 0)))
+            if (invitem != null && (invitem.ItemInstance as ItemInstance).Item.IsDroppable == true && (invitem.ItemInstance as ItemInstance).Item.IsTradable == true && !Session.Character.InExchangeOrTrade)
             {
                 if (amount > 0 && amount < 100)
                 {

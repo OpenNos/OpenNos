@@ -76,6 +76,14 @@ namespace OpenNos.GameObject
             }
         }
 
+        public bool InExchangeOrTrade
+        {
+            get
+            {
+                return ((Session.Character.ExchangeInfo != null && Session.Character.ExchangeInfo?.ExchangeList.Count() != 0) || Session.Character.Speed == 0);
+            }
+        }
+
         public int DarkResistance { get; set; }
         public int Defence { get; set; }
         public int DefenceRate { get; set; }
