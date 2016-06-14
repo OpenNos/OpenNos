@@ -22,7 +22,6 @@ namespace OpenNos.GameObject
 
         public Inventory()
         {
-            
         }
 
         public Inventory(InventoryDTO inventory)

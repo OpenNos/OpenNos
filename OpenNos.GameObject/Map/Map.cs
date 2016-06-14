@@ -34,7 +34,7 @@ namespace OpenNos.GameObject
 
         #endregion
 
-        #region Instantiations
+        #region Instantiation
 
         public Map(short mapId, Guid uniqueIdentifier, byte[] data)
         {

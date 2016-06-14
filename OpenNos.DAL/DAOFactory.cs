@@ -12,10 +12,10 @@
  * GNU General Public License for more details.
  */
 
-using System;
-using OpenNos.DAL.Interface;
-using MySQL = OpenNos.DAL.EF.MySQL;
 using OpenNos.Core;
+using OpenNos.DAL.Interface;
+using System;
+using MySQL = OpenNos.DAL.EF.MySQL;
 
 namespace OpenNos.DAL
 {

@@ -153,7 +153,6 @@ namespace OpenNos.GameObject
             {
                 session.IsDisposing = true;
 
-
                 if (IsWorldServer)
                 {
                     if (session.Character != null)

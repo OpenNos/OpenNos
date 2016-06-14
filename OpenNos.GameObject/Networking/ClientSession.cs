@@ -31,6 +31,7 @@ namespace OpenNos.GameObject
         #region Members
 
         public Boolean healthStop = false;
+
         private static EncryptionBase _encryptor;
         private Account _account;
         private Character _character;

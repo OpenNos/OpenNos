@@ -13,6 +13,9 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
             AutomaticMigrationsEnabled = false;
             SetSqlGenerator("MySql.Data.MySqlClient", new MySql.Data.Entity.MySqlMigrationSqlGenerator());
         }
+
+        #endregion
+
         /*private void ScriptGenerator()
         {
             var migrator = new DbMigrator(new Configuration());
@@ -21,8 +24,6 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
             string fileName = "OpenNos.sql";
             File.WriteAllText(Path.Combine(@"C:\\OpenNos.sql"), sql);
         }*/
-
-        #endregion
 
         #region Methods
 

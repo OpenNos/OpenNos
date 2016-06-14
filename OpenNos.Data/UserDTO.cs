@@ -12,8 +12,6 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Core;
-
 namespace OpenNos.Data
 {
     public class UserDTO
@@ -23,7 +21,7 @@ namespace OpenNos.Data
         public string Name { get; set; }
 
         public string Password { get; set; }
-        
+
         public string Unknown { get; set; }
 
         #endregion

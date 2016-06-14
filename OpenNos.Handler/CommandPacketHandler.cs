@@ -1,4 +1,18 @@
-﻿using OpenNos.Core;
+﻿/*
+ * This file is part of the OpenNos Emulator Project. See AUTHORS file for Copyright information
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
+using OpenNos.Core;
 using OpenNos.DAL;
 using OpenNos.Data;
 using OpenNos.Domain;
@@ -234,17 +248,6 @@ namespace OpenNos.Handler
             else
 
                 Session.Client.SendPacket(Session.Character.GenerateSay("$SPLvl SPLEVEL", 10));
-        }
-
-        [Packet("$SPRefill")]
-        public void SPRefill(string packet)
-        {
-            Logger.Debug(packet, Session.SessionId);
-            Session.Character.SpPoint = 10000;
-            Session.Character.SpAdditionPoint = 1000000;
-
-            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SP_REFILL"), 0));
-            Session.Client.SendPacket(Session.Character.GenerateSpPoint());
         }
 
         [Packet("$Help")]
@@ -713,6 +716,17 @@ namespace OpenNos.Handler
                     Session.Client.SendPacket(Session.Character.GenerateSay("$Speed SPEED", 10));
                     break;
             }
+        }
+
+        [Packet("$SPRefill")]
+        public void SPRefill(string packet)
+        {
+            Logger.Debug(packet, Session.SessionId);
+            Session.Character.SpPoint = 10000;
+            Session.Character.SpAdditionPoint = 1000000;
+
+            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SP_REFILL"), 0));
+            Session.Client.SendPacket(Session.Character.GenerateSpPoint());
         }
 
         [Packet("$Stat")]

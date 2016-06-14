@@ -114,7 +114,7 @@ namespace OpenNos.Handler
                     return;
                 if (Session.Character.Gold < skillinfo.Price)
                     Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_MONEY"), 0));
-                else if(Session.Character.GetCP() < skillinfo.CPCost)
+                else if (Session.Character.GetCP() < skillinfo.CPCost)
                     Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_CP"), 0));
                 else
                 {
@@ -142,9 +142,7 @@ namespace OpenNos.Handler
                                 case (byte)ClassType.Magician:
                                     SkillMiniumLevel = skillinfo.MinimumMagicianLevel;
                                     break;
-
                             }
-
                         }
                         if (SkillMiniumLevel == 0)
                         {
@@ -175,7 +173,6 @@ namespace OpenNos.Handler
                             Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("LOW_JOB_LVL"), 0));
                             return;
                         }
-
                     }
 
                     if (Session.Character.Skills.FirstOrDefault(s => s.SkillVNum == slot) != null)

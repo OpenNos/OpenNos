@@ -97,7 +97,7 @@ namespace OpenNos.DAL.EF.MySQL
             }
             catch (Exception e)
             {
-                Logger.Log.Error(String.Format(Language.Instance.GetMessageFromKey("UPDATE_Account_ERROR"), account.AccountId, e.Message),e);
+                Logger.Log.Error(String.Format(Language.Instance.GetMessageFromKey("UPDATE_Account_ERROR"), account.AccountId, e.Message), e);
                 return SaveResult.Error;
             }
         }

@@ -12,9 +12,6 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.Core;
-using System;
-
 namespace OpenNos.GameObject
 {
     public class BoxItem : Item
@@ -23,7 +20,6 @@ namespace OpenNos.GameObject
 
         public override void Use(ClientSession Session, ref Inventory Inv)
         {
-            
         }
 
         #endregion

@@ -12,22 +12,19 @@
  * GNU General Public License for more details.
  */
 
-using AutoMapper;
 using OpenNos.Data;
 
 namespace OpenNos.GameObject
 {
     public class ItemInstance : ItemInstanceDTO
     {
-        #region Instantiation
+        #region Members
+
         private Item item;
-        public Item Item
-        {
-            get {
-                if (item == null) item = ServerManager.GetItem(this.ItemVNum);
-                return item;
-            }
-        }
+
+        #endregion
+
+        #region Instantiation
 
         public ItemInstance()
         {
@@ -38,22 +35,33 @@ namespace OpenNos.GameObject
             ItemInstanceId = inventoryItem.ItemInstanceId;
             Amount = inventoryItem.Amount;
             ItemVNum = inventoryItem.ItemVNum;
-            
+        }
+
+        #endregion
+
+        #region Properties
+
+        public Item Item
+        {
+            get
+            {
+                if (item == null) item = ServerManager.GetItem(this.ItemVNum);
+                return item;
+            }
         }
 
         #endregion
 
         #region Methods
 
+        public ItemInstance DeepCopy()
+        {
+            return (ItemInstance)this.MemberwiseClone();
+        }
+
         public void Save()
         {
         }
-
-        public ItemInstance DeepCopy()
-        {
-                return (ItemInstance)this.MemberwiseClone();
-        }
-        
 
         #endregion
     }

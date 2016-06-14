@@ -14,7 +14,7 @@
 
 namespace OpenNos.Data
 {
-    public class CharacterSkillDTO 
+    public class CharacterSkillDTO
     {
         #region Properties
 

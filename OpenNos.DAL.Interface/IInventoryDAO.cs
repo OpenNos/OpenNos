@@ -12,7 +12,6 @@
  * GNU General Public License for more details.
  */
 
-using AutoMapper;
 using OpenNos.Data;
 using OpenNos.Data.Enums;
 using System;
@@ -24,9 +23,9 @@ namespace OpenNos.DAL.Interface
     {
         #region Methods
 
-        void InitializeMapper(Type baseType);
-
         DeleteResult DeleteFromSlotAndType(long characterId, short slot, byte type);
+
+        void InitializeMapper(Type baseType);
 
         IEnumerable<InventoryDTO> InsertOrUpdate(IEnumerable<InventoryDTO> inventories);
 

@@ -45,6 +45,7 @@ namespace OpenNos.Core
                 return String.Join("", hash.ComputeHash(Encoding.UTF8.GetBytes(inputString)).Select(item => item.ToString("x2")));
             }
         }
+
         public static string sha512(string inputString)
         {
             using (SHA512 hash = SHA512Managed.Create())

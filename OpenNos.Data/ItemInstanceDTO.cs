@@ -20,15 +20,15 @@ namespace OpenNos.Data
     {
         #region Properties
 
-        public bool IsUsed { get; set; }
         public int Amount { get; set; }
+        public byte Design { get; set; }
+        public bool IsUsed { get; set; }
         public DateTime? ItemDeleteTime { get; set; }
         public long ItemInstanceId { get; set; }
         public short ItemVNum { get; set; }
 
         public byte Rare { get; set; }
         public byte Upgrade { get; set; }
-        public byte Design { get; set; }
 
         #endregion
     }

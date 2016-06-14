@@ -91,7 +91,7 @@ namespace OpenNos.Handler
                 CharacterSkill ski = skills.FirstOrDefault(s => (skill = ServerManager.GetSkill(s.SkillVNum)) != null && skill?.CastId == castingId);
                 for (int i = 0; i < 25 && ski.Used; i++)
                 {
-                    Thread.Sleep(100);      
+                    Thread.Sleep(100);
                 }
 
                 if (ski != null && Session.Character.Mp >= skill.MpCost)
@@ -165,7 +165,6 @@ namespace OpenNos.Handler
                                             damage = GenerateDamage(mon.MapMonsterId, skill, ref hitmode);
                                             Session.CurrentMap?.Broadcast($"su {1} {Session.Character.CharacterId} {3} {mon.MapMonsterId} {skill.SkillVNum} {skill.Cooldown} {skill.AttackAnimation} {skill.Effect} {Session.Character.MapX} {Session.Character.MapY} {(mon.Alive ? 1 : 0)} {(int)(((float)mon.CurrentHp / (float)ServerManager.GetNpc(mon.MonsterVNum).MaxHP) * 100)} {damage} {5} {skill.SkillType - 1}");
                                         }
-
                                 }
                             }
                         }

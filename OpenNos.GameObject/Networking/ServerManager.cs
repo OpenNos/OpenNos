@@ -31,6 +31,7 @@ namespace OpenNos.GameObject
         #region Members
 
         public Boolean ShutdownStop = false;
+
         private static ServerManager _instance;
         private static List<Item> _items = new List<Item>();
         private static ConcurrentDictionary<Guid, Map> _maps = new ConcurrentDictionary<Guid, Map>();

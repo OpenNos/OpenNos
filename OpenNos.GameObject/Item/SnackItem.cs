@@ -57,8 +57,6 @@ namespace OpenNos.GameObject
             }
         }
 
-      
-
         public override void Use(ClientSession session, ref Inventory inv)
         {
             Item item = ServerManager.GetItem(inv.ItemInstance.ItemVNum);

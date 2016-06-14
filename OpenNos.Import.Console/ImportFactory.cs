@@ -529,7 +529,7 @@ namespace OpenNos.Import.Console
                         };
 
                         if (DAOFactory.RecipeDAO.LoadByNpc(npc).Any(s => s.ItemVNum == recipe.ItemVNum))
-                            continue; 
+                            continue;
 
                         DAOFactory.RecipeDAO.Insert(recipe);
                         count++;

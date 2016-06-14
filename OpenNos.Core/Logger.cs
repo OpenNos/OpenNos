@@ -39,6 +39,10 @@ namespace OpenNos.Core
             }
         }
 
+        #endregion
+
+        #region Methods
+
         /// <summary>
         /// Wraps up the message with the CallerMemberName
         /// </summary>
@@ -46,15 +50,11 @@ namespace OpenNos.Core
         /// <param name="memberName"></param>
         public static void Debug(string message, int sessionId = 0, [CallerMemberName] string memberName = "")
         {
-            if(Log != null)
+            if (Log != null)
             {
                 Log.Debug($"Session: {sessionId} Method: {memberName} Packet: {message}");
             }
         }
-
-        #endregion
-
-        #region Methods
 
         public static void InitializeLogger(ILog log)
         {

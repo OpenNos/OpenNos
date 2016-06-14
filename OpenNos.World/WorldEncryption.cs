@@ -221,8 +221,8 @@ namespace OpenNos.World
             int EncCodepage = 1252;
             byte[] StrBytes = System.Text.Encoding.Convert(System.Text.Encoding.UTF8, System.Text.Encoding.GetEncoding(EncCodepage), System.Text.Encoding.UTF8.GetBytes(str));
             int BytesLength = StrBytes.Length;
-            
-            byte[] encryptedData = new byte[BytesLength + (int)Math.Ceiling((decimal)BytesLength / 0x7E) +1];
+
+            byte[] encryptedData = new byte[BytesLength + (int)Math.Ceiling((decimal)BytesLength / 0x7E) + 1];
 
             int ii = 0;
             for (int i = 0; i < BytesLength; i++)
