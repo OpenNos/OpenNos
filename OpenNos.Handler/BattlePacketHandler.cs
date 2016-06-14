@@ -94,12 +94,13 @@ namespace OpenNos.Handler
                     Thread.Sleep(100);      
                 }
 
-                if (ski != null)
+                if (ski != null && Session.Character.Mp >= skill.MpCost)
                 {
                     if (skill != null && skill.TargetType == 1 && skill.HitType == 1)
                     {
                         Session.CurrentMap?.Broadcast($"ct 1 {Session.Character.CharacterId} 1 {Session.Character.CharacterId} {skill.CastAnimation} -1 {skill.SkillVNum}");
                         ski.Used = true;
+                        Session.Character.Mp -= skill.MpCost;
                         ski.LastUse = DateTime.Now;
                         if (skill.CastEffect != 0)
                         {
@@ -123,7 +124,7 @@ namespace OpenNos.Handler
                         if (mmon != null && mmon.Alive)
                         {
                             NpcMonster monsterinfo = ServerManager.GetNpc(mmon.MonsterVNum);
-                            if (ski != null && monsterinfo != null && skill != null && !ski.Used)
+                            if (ski != null && monsterinfo != null && skill != null && !ski.Used && Session.Character.Mp >= skill.MpCost)
                             {
                                 short dX = (short)(Session.Character.MapX - mmon.MapX);
                                 short dY = (short)(Session.Character.MapY - mmon.MapY);
@@ -134,6 +135,7 @@ namespace OpenNos.Handler
                                     damage = GenerateDamage(mmon.MapMonsterId, skill, ref hitmode);
                                     ski.Used = true;
                                     notcancel = true;
+                                    Session.Character.Mp -= skill.MpCost;
                                     ski.LastUse = DateTime.Now;
                                     if (damage == 0 || (DateTime.Now - ski.LastUse).TotalSeconds > 3)
                                         ski.Hit = 0;
@@ -1049,12 +1051,13 @@ namespace OpenNos.Handler
             Skill skill = null;
             CharacterSkill ski = skills.FirstOrDefault(s => (skill = ServerManager.GetSkill(s.SkillVNum)) != null && skill.CastId == Castingid);
 
-            if (skill != null)
+            if (skill != null && Session.Character.Mp >= skill.MpCost)
             {
                 Task t = Task.Factory.StartNew((Func<Task>)(async () =>
                 {
                     Session.CurrentMap?.Broadcast($"ct_n 1 {Session.Character.CharacterId} 3 -1 {skill.CastAnimation} {skill.CastEffect} {skill.SkillVNum}");
                     ski.Used = true;
+                    Session.Character.Mp -= skill.MpCost;
                     ski.LastUse = DateTime.Now;
                     await Task.Delay(skill.CastTime * 100);
 
@@ -1071,8 +1074,8 @@ namespace OpenNos.Handler
                     Session.Client.SendPacket($"sr {Castingid}");
                 }));
             }
-
-            Session.Client.SendPacket("cancel 0 0");
+            else
+                Session.Client.SendPacket($"cancel 2 0");
         }
 
         #endregion
