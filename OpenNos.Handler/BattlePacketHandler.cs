@@ -66,7 +66,12 @@ namespace OpenNos.Handler
                     {
                         Skill skill = null;
                         CharacterSkill ski = skills.FirstOrDefault(s => (skill = ServerManager.GetSkill(s.SkillVNum)) != null && skill.CastId == short.Parse(packetsplit[i]));
-
+                        if (!Session.Character.WeaponLoaded(ski))
+                        {
+                            Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NO_AMMO"), 10));
+                            Session.Client.SendPacket($"cancel 2 0");
+                            return;
+                        }
                         MapMonster mon = Session.CurrentMap.Monsters.FirstOrDefault(s => s.MapMonsterId == short.Parse(packetsplit[i + 1]));
                         if (mon != null && skill != null)
                         {
@@ -81,7 +86,7 @@ namespace OpenNos.Handler
         {
             List<CharacterSkill> skills = Session.Character.UseSp ? Session.Character.SkillsSp : Session.Character.Skills;
             bool notcancel = false;
-
+          
             if (skills != null)
             {
                 ushort damage = 0; ;
@@ -89,6 +94,12 @@ namespace OpenNos.Handler
                 Skill skill = null;
 
                 CharacterSkill ski = skills.FirstOrDefault(s => (skill = ServerManager.GetSkill(s.SkillVNum)) != null && skill?.CastId == castingId);
+                if(!Session.Character.WeaponLoaded(ski))
+                {
+                    Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NO_AMMO"),10));
+                    Session.Client.SendPacket($"cancel 2 0");
+                    return;
+                }
                 for (int i = 0; i < 25 && ski.Used; i++)
                 {
                     Thread.Sleep(100);
@@ -1059,7 +1070,12 @@ namespace OpenNos.Handler
             int hitmode = 0;
             Skill skill = null;
             CharacterSkill ski = skills.FirstOrDefault(s => (skill = ServerManager.GetSkill(s.SkillVNum)) != null && skill.CastId == Castingid);
-
+            if (!Session.Character.WeaponLoaded(ski))
+            {
+                Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NO_AMMO"), 10));
+                Session.Client.SendPacket($"cancel 2 0");
+                return;
+            }
             if (skill != null)
             {
                 if (Session.Character.Mp >= skill.MpCost)

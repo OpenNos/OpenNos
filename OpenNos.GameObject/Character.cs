@@ -108,6 +108,92 @@ namespace OpenNos.GameObject
 
         public InventoryList InventoryList { get { return _inventorylist; } set { _inventorylist = value; } }
 
+        public bool WeaponLoaded(CharacterSkill ski)
+        {
+           switch(Class)
+            {
+                default:
+                    return false;
+
+                case 0:
+                    if(ski.Skill.Range > 3)
+                    {
+                        WearableInstance inv = EquipmentList.LoadBySlotAndType<WearableInstance>((byte)InventoryType.Equipment, (byte)EquipmentType.SecondaryWeapon);
+                        if (inv != null)
+                        {
+                            if (inv.Ammo > 0)
+                            {
+                                inv.Ammo--;
+                                return true;
+                            }
+                            else
+                            {
+                                if (Session.Character.InventoryList.CountItem(2081) < 1)
+                                    return false;
+                                Session.Character.InventoryList.RemoveItemAmount(2081, 1);
+                                inv.Ammo = 100;
+                                Session.Character.GenerateStartupInventory();
+                                return true;
+                            }
+                        }
+                        else return false;
+                    }
+                    else return true;
+                case 1:
+                     if (ski.Skill.Range > 3)
+                    {
+                        WearableInstance inv = EquipmentList.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.SecondaryWeapon,(byte)InventoryType.Equipment);
+                        if (inv != null)
+                        {
+                            if (inv.Ammo > 0)
+                            {
+                                inv.Ammo--;
+                                return true;
+                            }
+                            else
+                            {
+                                if (Session.Character.InventoryList.CountItem(2082) < 1)
+                                    return false;
+                                Session.Character.InventoryList.RemoveItemAmount(2082, 1);
+                                inv.Ammo = 100;
+
+                                Session.Character.GenerateStartupInventory();
+                                return true;
+                            }
+                        }
+                        else return false;
+                    }
+                    else return true;
+                case 2:
+                    if (ski.Skill.Range > 3)
+                    {
+                        WearableInstance inv = EquipmentList.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.MainWeapon,(byte)InventoryType.Equipment);
+                        if (inv != null)
+                        {
+                            if (inv.Ammo > 0)
+                            {
+                                inv.Ammo--;
+                                return true;
+                            }
+                            else
+                            {
+                                if (Session.Character.InventoryList.CountItem(2083) < 1)
+                                    return false;
+                                Session.Character.InventoryList.RemoveItemAmount(2083, 1);
+                                inv.Ammo = 100;
+                                Session.Character.GenerateStartupInventory();
+                                return true;
+                            }
+                        }
+                        else return false;
+                    }
+                    else return true;
+                case 3:
+                    return true;
+
+            }
+        }
+
         public bool Invisible { get { return _invisible; } set { _invisible = value; } }
 
         public bool InvisibleGm { get; set; }

@@ -49,6 +49,15 @@ namespace OpenNos.GameObject
         {
             get; set;
         }
+        private Skill skill;
+        public Skill Skill
+        {
+            get
+            {
+                if (skill == null) skill = ServerManager.GetSkill(this.SkillVNum);
+                return skill;
+            }
+        }
 
         public bool Used { get; set; }
 
