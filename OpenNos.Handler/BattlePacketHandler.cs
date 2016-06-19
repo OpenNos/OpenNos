@@ -68,7 +68,6 @@ namespace OpenNos.Handler
                         CharacterSkill ski = skills.FirstOrDefault(s => (skill = ServerManager.GetSkill(s.SkillVNum)) != null && skill.CastId == short.Parse(packetsplit[i]));
                         if (!Session.Character.WeaponLoaded(ski))
                         {
-                            Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NO_AMMO"), 10));
                             Session.Client.SendPacket($"cancel 2 0");
                             return;
                         }
@@ -96,7 +95,6 @@ namespace OpenNos.Handler
                 CharacterSkill ski = skills.FirstOrDefault(s => (skill = ServerManager.GetSkill(s.SkillVNum)) != null && skill?.CastId == castingId);
                 if(!Session.Character.WeaponLoaded(ski))
                 {
-                    Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NO_AMMO"),10));
                     Session.Client.SendPacket($"cancel 2 0");
                     return;
                 }
@@ -1072,7 +1070,6 @@ namespace OpenNos.Handler
             CharacterSkill ski = skills.FirstOrDefault(s => (skill = ServerManager.GetSkill(s.SkillVNum)) != null && skill.CastId == Castingid);
             if (!Session.Character.WeaponLoaded(ski))
             {
-                Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NO_AMMO"), 10));
                 Session.Client.SendPacket($"cancel 2 0");
                 return;
             }

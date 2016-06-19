@@ -118,7 +118,7 @@ namespace OpenNos.GameObject
                 case 0:
                     if(ski.Skill.Range > 3)
                     {
-                        WearableInstance inv = EquipmentList.LoadBySlotAndType<WearableInstance>((byte)InventoryType.Equipment, (byte)EquipmentType.SecondaryWeapon);
+                        WearableInstance inv = EquipmentList.LoadBySlotAndType<WearableInstance>( (byte)EquipmentType.SecondaryWeapon, (byte)InventoryType.Equipment);
                         if (inv != null)
                         {
                             if (inv.Ammo > 0)
@@ -129,20 +129,29 @@ namespace OpenNos.GameObject
                             else
                             {
                                 if (Session.Character.InventoryList.CountItem(2081) < 1)
+                                {
+                                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NO_AMMO"), 10));
                                     return false;
+                                }
+
                                 Session.Character.InventoryList.RemoveItemAmount(2081, 1);
                                 inv.Ammo = 100;
+                                Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("AMMO_LOADED"), 10));
                                 Session.Character.GenerateStartupInventory();
                                 return true;
                             }
                         }
-                        else return false;
+                        else
+                        {
+                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NO_WEAPON"), 10));
+                            return false;
+                        }
                     }
                     else return true;
                 case 1:
-                     if (ski.Skill.Range > 3)
+                    if (ski.Skill.Range > 3)
                     {
-                        WearableInstance inv = EquipmentList.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.SecondaryWeapon,(byte)InventoryType.Equipment);
+                        WearableInstance inv = EquipmentList.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.SecondaryWeapon, (byte)InventoryType.Equipment);
                         if (inv != null)
                         {
                             if (inv.Ammo > 0)
@@ -153,15 +162,23 @@ namespace OpenNos.GameObject
                             else
                             {
                                 if (Session.Character.InventoryList.CountItem(2082) < 1)
+                                {
+                                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NO_AMMO"), 10));
                                     return false;
+                                }
+
                                 Session.Character.InventoryList.RemoveItemAmount(2082, 1);
                                 inv.Ammo = 100;
-
+                                Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("AMMO_LOADED"), 10));
                                 Session.Character.GenerateStartupInventory();
                                 return true;
                             }
                         }
-                        else return false;
+                        else
+                        {
+                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NO_WEAPON"), 10));
+                            return false;
+                        }
                     }
                     else return true;
                 case 2:
@@ -178,14 +195,23 @@ namespace OpenNos.GameObject
                             else
                             {
                                 if (Session.Character.InventoryList.CountItem(2083) < 1)
+                                {
+                                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NO_AMMO"), 10));
                                     return false;
+                                }
+
                                 Session.Character.InventoryList.RemoveItemAmount(2083, 1);
                                 inv.Ammo = 100;
+                                Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("AMMO_LOADED"), 10));
                                 Session.Character.GenerateStartupInventory();
                                 return true;
                             }
                         }
-                        else return false;
+                        else
+                        {
+                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NO_WEAPON"), 10));
+                            return false;
+                        }
                     }
                     else return true;
                 case 3:
