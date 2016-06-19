@@ -18,6 +18,9 @@ We do not provide any modified client files. The alorithms are based on our logi
 - Can we have other files for parser? : Yes, simply by extracting them from your client : nslangdata.dat, nsgtddata.dat, nstcdata.dat
 - On login nothing happen : verify you can connect with telnet on the correct port "telnet 127.0.0.1 80". if yes you're not on the correct port of your client. If not, you installed something wrong, check if you have disabled any programs working on port 80(eg.skype).
 - If issue still hasnt been fixed look inside our troubleshooting file.
+- Password is not recognized : verify that your password is hash in sha512 and that your launcher(made it yourself) is done with the most recent nostaleX.dat
+- Monsters don't move : parse mv packets.
+- Recipe don't work : parse each recipe by click on them for packets.
 
 ##1 Install SSDT For VS
 http://go.microsoft.com/fwlink/?LinkID=393520&clcid=0x409
