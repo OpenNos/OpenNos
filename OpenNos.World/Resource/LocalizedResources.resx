@@ -677,7 +677,7 @@
     <value>Hero level has been changed!</value>
   </data>
   <data name="REFUSED" xml:space="preserve">
-    <value>refused exchange</value>
+    <value>Refused exchange</value>
   </data>
   <data name="SHOP_PRIVATE_SHOP" xml:space="preserve">
     <value>Private shop</value>
@@ -690,5 +690,17 @@
   </data>
   <data name="CLIENTSESSION_DISPOSING" xml:space="preserve">
     <value>Clientsession is currently disposing, the packet wont be handled.</value>
+  </data>
+  <data name="MUTED_FEMALE" xml:space="preserve">
+    <value>I was a very bad girl, and i got punished!</value>
+  </data>
+  <data name="MUTED_MALE" xml:space="preserve">
+    <value>I was a bad boy, soo i got punished!</value>
+  </data>
+  <data name="MUTED" xml:space="preserve">
+    <value>You have been muted!</value>
+  </data>
+  <data name="MUTE_END" xml:space="preserve">
+    <value>Your punishment has ended</value>
   </data>
 </root>

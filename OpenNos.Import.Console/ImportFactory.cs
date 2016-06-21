@@ -1123,6 +1123,7 @@ namespace OpenNos.Import.Console
                                 item.CriticalLuckRate = Convert.ToByte(currentLine[6]);
                                 item.CriticalRate = Convert.ToInt16(currentLine[7]);
                                 item.BasicUpgrade = Convert.ToByte(currentLine[10]);
+                                item.MaximumAmmo = (byte)100;
                                 break;
 
                             case (byte)ItemType.Armor:
