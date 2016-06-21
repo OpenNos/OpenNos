@@ -697,4 +697,10 @@
   <data name="MUTED_MALE" xml:space="preserve">
     <value>I was a bad boy, soo i got punished!</value>
   </data>
+  <data name="MUTED" xml:space="preserve">
+    <value>You have been muted!</value>
+  </data>
+  <data name="MUTE_END" xml:space="preserve">
+    <value>Your punishment has ended</value>
+  </data>
 </root>
