@@ -249,8 +249,6 @@ namespace OpenNos.GameObject
                                 damage = 100;
                                 bool AlreadyDead2 = chara.Hp <= 0;
                                 chara.GetDamage(damage);
-                                if (chara.Hp < 0)
-                                    chara.Hp = 0;
                                 chara.LastDefence = DateTime.Now;
                                 Map.Broadcast(null, chara.GenerateStat(), ReceiverType.OnlySomeone, "", chara.CharacterId);
                                 Map.Broadcast($"su 3 {MapMonsterId} 1 {chara.CharacterId} 0 {monster.BasicCooldown} 11 {monster.BasicSkill} 0 0 {(chara.Hp > 0 ? 1 : 0)} {(int)((double)chara.Hp / chara.HPLoad())} {damage} 0 0");

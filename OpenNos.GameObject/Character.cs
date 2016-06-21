@@ -110,15 +110,15 @@ namespace OpenNos.GameObject
 
         public bool WeaponLoaded(CharacterSkill ski)
         {
-           switch(Class)
+            switch (Class)
             {
                 default:
                     return false;
 
                 case 0:
-                    if(ski.Skill.Range > 3)
+                    if (ski.Skill.Range > 3)
                     {
-                        WearableInstance inv = EquipmentList.LoadBySlotAndType<WearableInstance>( (byte)EquipmentType.SecondaryWeapon, (byte)InventoryType.Equipment);
+                        WearableInstance inv = EquipmentList.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.SecondaryWeapon, (byte)InventoryType.Equipment);
                         if (inv != null)
                         {
                             if (inv.Ammo > 0)
@@ -184,7 +184,7 @@ namespace OpenNos.GameObject
                 case 2:
                     if (ski.Skill.Range > 3)
                     {
-                        WearableInstance inv = EquipmentList.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.MainWeapon,(byte)InventoryType.Equipment);
+                        WearableInstance inv = EquipmentList.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.MainWeapon, (byte)InventoryType.Equipment);
                         if (inv != null)
                         {
                             if (inv.Ammo > 0)
@@ -1264,9 +1264,11 @@ namespace OpenNos.GameObject
         public int GetDamage(int damage)
         {
             CloseShop();
-            if (Hp >= 0)
+
+            Hp -= damage;
+            if (Hp < 0)
             {
-                Hp -= damage;
+                Hp = 0;
             }
 
             return Hp;
