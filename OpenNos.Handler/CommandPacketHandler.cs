@@ -90,13 +90,43 @@ namespace OpenNos.Handler
                 if (DAOFactory.CharacterDAO.LoadByName(packetsplit[2]) != null)
                 {
                     DAOFactory.AccountDAO.ToggleBan(DAOFactory.CharacterDAO.LoadByName(packetsplit[2]).AccountId);
-                    Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("USER_NOT_FOUND"), 10));
-                }
-                else
                     Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
+
+                }
+                else Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("USER_NOT_FOUND"), 10));
             }
             else
                 Session.Client.SendPacket(Session.Character.GenerateSay("$Ban CHARACTERNAME", 10));
+            //Session.Client.SendPacket(Session.Character.GenerateSay("$Ban CHARACTERNAME REASON TIME", 10));
+        }
+        [Packet("$Mute")]
+        public void Mute(string packet, long targetId)
+        {
+            Logger.Debug(packet, Session.SessionId);
+            string[] packetsplit = packet.Split(' ');
+            targetId = DAOFactory.CharacterDAO.LoadByName(packetsplit[2]).CharacterId;
+            if (packetsplit.Length > 2)
+            {
+                if (DAOFactory.CharacterDAO.LoadByName(packetsplit[2]) != null)
+                {
+                    DAOFactory.CharacterDAO.ToggleMute(targetId);
+                    Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
+
+                    if (DAOFactory.CharacterDAO.LoadById(targetId).IsMuted == true)
+                    {
+                        ServerManager.Instance.Broadcast(Session, Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("MUTED")), ReceiverType.OnlySomeone, "", targetId);
+                    }
+                    else
+                    {
+                        ServerManager.Instance.Broadcast(Session, Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MUTE_END"), 12), ReceiverType.OnlySomeone, "", targetId);
+                    }
+                }
+                else Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("USER_NOT_FOUND"), 10));
+
+            }
+            else
+                Session.Client.SendPacket(Session.Character.GenerateSay("$Mute CHARACTERNAME", 10));
+            //Session.Client.SendPacket(Session.Character.GenerateSay("$Mute CHARACTERNAME REASON TIME", 10));
         }
 
         [Packet("$ChangeClass")]
@@ -273,13 +303,16 @@ namespace OpenNos.Handler
             Session.Client.SendPacket(Session.Character.GenerateSay("$ChangeSex", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$ChangeClass CLASS", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$ChangeRep REPUTATION", 6));
-            Session.Client.SendPacket(Session.Character.GenerateSay("$Kick CHARACTERNAME", 6));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$Kick CHARACTERNAME REASON", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$MapDance", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$Kill CHARACTERNAME", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$Effect EFFECTID", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$Resize SIZE", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$PlayMusic MUSIC", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$Ban CHARACTERNAME", 6));
+            //Session.Client.SendPacket(Session.Character.GenerateSay("$Ban CHARACTERNAME REASON TIME", 6));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$Mute CHARACTERNAME", 6));
+            //Session.Client.SendPacket(Session.Character.GenerateSay("$Mute CHARACTERNAME REASON TIME", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$Invisible", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$Position", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID", 6));
@@ -502,11 +535,8 @@ namespace OpenNos.Handler
                     if (Hp == 0)
                         return;
                     ServerManager.Instance.SetProperty((long)id, "Hp", 0);
-
                     ServerManager.Instance.SetProperty((long)id, "LastDefence", DateTime.Now);
-
                     Session.CurrentMap?.Broadcast($"su 1 {Session.Character.CharacterId} 1 {id} 1114 4 11 4260 0 0 0 0 {60000} 3 0");
-
                     Session.CurrentMap?.Broadcast(null, ServerManager.Instance.GetUserMethod<string>((long)id, "GenerateStat"), ReceiverType.OnlySomeone, "", (long)id);
                     ServerManager.Instance.AskRevive((long)id);
                 }
@@ -885,6 +915,11 @@ namespace OpenNos.Handler
             Session.Character.InventoryList.DeleteFromSlotAndType(slot, type);
             Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, type, slot, 0, 0, 0));
         }
+        /*private void MutedTask()
+        {
+            ServerManager.Instance.Broadcast(Session, Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MUTE_TIME"), 11), ReceiverType.OnlySomeone, "", -1);
+            //add when time in Mute finished, run every minute and tell about time TimeLeft and about Reason of punishment.
+        }*/
 
         private async void ShutdownTask()
         {

@@ -101,6 +101,7 @@ namespace OpenNos.DAL.EF.MySQL
         public int TalentSurrender { get; set; }
         public int TalentWin { get; set; }
         public bool WhisperBlocked { get; set; }
+        public bool IsMuted { get; set; }
 
         #endregion
     }

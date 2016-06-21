@@ -110,15 +110,15 @@ namespace OpenNos.GameObject
 
         public bool WeaponLoaded(CharacterSkill ski)
         {
-           switch(Class)
+            switch (Class)
             {
                 default:
                     return false;
 
                 case 0:
-                    if(ski.Skill.Range > 3)
+                    if (ski.Skill.Range > 3)
                     {
-                        WearableInstance inv = EquipmentList.LoadBySlotAndType<WearableInstance>( (byte)EquipmentType.SecondaryWeapon, (byte)InventoryType.Equipment);
+                        WearableInstance inv = EquipmentList.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.SecondaryWeapon, (byte)InventoryType.Equipment);
                         if (inv != null)
                         {
                             if (inv.Ammo > 0)
@@ -184,7 +184,7 @@ namespace OpenNos.GameObject
                 case 2:
                     if (ski.Skill.Range > 3)
                     {
-                        WearableInstance inv = EquipmentList.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.MainWeapon,(byte)InventoryType.Equipment);
+                        WearableInstance inv = EquipmentList.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.MainWeapon, (byte)InventoryType.Equipment);
                         if (inv != null)
                         {
                             if (inv.Ammo > 0)
@@ -872,7 +872,14 @@ namespace OpenNos.GameObject
 
         public string GenerateSay(string message, int type)
         {
-            return $"say 1 {CharacterId} {type} {message}";
+            if (DAOFactory.CharacterDAO.LoadById(CharacterId).IsMuted == false)
+                return $"say 1 {CharacterId} {type} {message}";
+            else
+            {
+                if (Gender == 1)
+                    return $"say 1 {CharacterId} 1 {Language.Instance.GetMessageFromKey("MUTED_FEMALE")}";
+                else return $"say 1 {CharacterId} 1 {Language.Instance.GetMessageFromKey("MUTED_MALE")}";
+            }
         }
 
         public string GenerateScal()

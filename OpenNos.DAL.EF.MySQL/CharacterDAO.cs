@@ -59,8 +59,7 @@ namespace OpenNos.DAL.EF.MySQL
                 {
                     //actually a Character wont be deleted, it just will be disabled for future traces
                     byte state = (byte)CharacterState.Active;
-                    Character Character = context.Character.FirstOrDefault(c => c.AccountId.Equals(accountId) && c.Slot.Equals(characterSlot)
-                                            && c.State.Equals(state));
+                    Character Character = context.Character.FirstOrDefault(c => c.AccountId.Equals(accountId) && c.Slot.Equals(characterSlot) && c.State.Equals(state));
 
                     if (Character != null)
                     {
@@ -139,6 +138,15 @@ namespace OpenNos.DAL.EF.MySQL
                 return SaveResult.Error;
             }
         }
+        public void ToggleMute(long characterId)
+        {
+            using (var context = DataAccessHelper.CreateContext())
+            {
+                Character Character = context.Character.FirstOrDefault(a => a.CharacterId.Equals(characterId));
+                Character.IsMuted = Character.IsMuted == false ? true : false;
+                context.SaveChanges();
+            }
+        }
 
         public int IsReputHero(long characterId)
         {
@@ -212,8 +220,7 @@ namespace OpenNos.DAL.EF.MySQL
             using (var context = DataAccessHelper.CreateContext())
             {
                 byte state = (byte)CharacterState.Active;
-                return _mapper.Map<CharacterDTO>(context.Character.FirstOrDefault(c => c.AccountId.Equals(accountId) && c.Slot.Equals(slot)
-                                                                                        && c.State.Equals(state)));
+                return _mapper.Map<CharacterDTO>(context.Character.FirstOrDefault(c => c.AccountId.Equals(accountId) && c.Slot.Equals(slot) && c.State.Equals(state)));
             }
         }
 
