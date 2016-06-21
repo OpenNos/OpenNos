@@ -390,6 +390,15 @@
   <data name="MSG_SENT" xml:space="preserve">
     <value>Messaggio inviato {0} al client {1}</value>
   </data>
+   <data name="MUTED_MALE" xml:space="preserve">
+   <value>Sono stato un cattivo ragazzo , per questo sono stato punito!</value>
+  </data>
+  <data name="MUTED" xml:space="preserve">
+    <value>Sei stato mutato!</value>
+  </data>
+  <data name="MUTE_END" xml:space="preserve">
+    <value>La tua punizione è finita</value>
+  </data>
   <data name="NEW_CONNECT" xml:space="preserve">
     <value>Un nuovo client si è connesso. ClientId =</value>
   </data>
