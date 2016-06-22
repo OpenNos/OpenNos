@@ -1273,9 +1273,11 @@ namespace OpenNos.GameObject
         public int GetDamage(int damage)
         {
             CloseShop();
-            if (Hp >= 0)
+
+            Hp -= damage;
+            if (Hp < 0)
             {
-                Hp -= damage;
+                Hp = 0;
             }
 
             return Hp;
