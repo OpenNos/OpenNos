@@ -373,7 +373,6 @@ namespace OpenNos.GameObject
                     ServerManager.Instance.Broadcast(session, $"pidx 1 1.{session.Character.CharacterId}", ReceiverType.AllExceptMe);
             }
         }
-
         public void CloseShop()
         {
             if (HasShopOpened)
@@ -872,7 +871,9 @@ namespace OpenNos.GameObject
 
         public string GenerateSay(string message, int type)
         {
-            if (DAOFactory.CharacterDAO.LoadById(CharacterId).IsMuted == false)
+            bool? isMuted = ServerManager.Instance.GetProperty<bool?>(CharacterId, "IsMuted");
+
+            if (isMuted == false)
                 return $"say 1 {CharacterId} {type} {message}";
             else
             {
