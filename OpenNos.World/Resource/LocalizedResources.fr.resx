@@ -217,13 +217,13 @@
     <value>Tu as fabriqué: {0} x {1}</value>
   </data>
   <data name="DATABASE_INITIALIZED" xml:space="preserve">
-    <value>Base de données a été initialisée.</value>
+    <value>Base de données a été initialisée !</value>
   </data>
   <data name="DELETE_ACCOUNT_ERROR" xml:space="preserve">
-    <value>Error deleting Account with Id {0} , {1}</value>
+    <value>Erreur de suppression du compte avec l'ID {0} , {1}</value>
   </data>
   <data name="DELETE_ERROR" xml:space="preserve">
-    <value>Error deleting Character with Slot {0} , {1}</value>
+    <value>Erreur de suppression du personnage dans la fente {0} , {1}</value>
   </data>
   <data name="DISCONNECT" xml:space="preserve">
     <value>Un client a été déconnecté ! ClientId =</value>
@@ -250,7 +250,7 @@
     <value>À partir de maintenant, tu débloques les invitations de famille.</value>
   </data>
   <data name="FORCED_DISCONNECT" xml:space="preserve">
-    <value>Forced Disconnecting of client {0}, too much connections.</value>
+    <value>Déconnection forcée du client {0}, Trop de connexion...</value>
   </data>
   <data name="FRIEND_REQ_BLOCKED" xml:space="preserve">
     <value>À partir de maintenant, tu bloques les demandes d'amitiées.</value>
@@ -367,7 +367,7 @@
     <value>Magicien</value>
   </data>
   <data name="MAP_LOADED" xml:space="preserve">
-    <value>{0} Carte chargés !</value>
+    <value>{0} Carte chargées !</value>
   </data>
   <data name="MAX_GOLD" xml:space="preserve">
     <value>Maximum d'or atteint.</value>
@@ -382,7 +382,7 @@
     <value>À partir de maintenant, tu débloques les invitations Mini-Pays</value>
   </data>
   <data name="MONSTERS_LOADED" xml:space="preserve">
-    <value>{0} Monstres chargés.</value>
+    <value>{0} Monstres chargés !</value>
   </data>
   <data name="MOUSE_LOCKED" xml:space="preserve">
     <value>À partir de maintenant, tu bloques le suivi de cible</value>
@@ -439,10 +439,10 @@
     <value>Aucune carte de spécialiste n'est équipée.</value>
   </data>
   <data name="NPCMONSTERS_LOADED" xml:space="preserve">
-    <value>{0} Pnj-Monstres chargés.</value>
+    <value>{0} Pnj-Monstres chargés !</value>
   </data>
   <data name="NPCS_LOADED" xml:space="preserve">
-    <value>{0} Pnj chargés.</value>
+    <value>{0} Pnj chargés !</value>
   </data>
   <data name="PACKET_ARRIVED" xml:space="preserve">
     <value>Packet arrivé, packet: {0}</value>
@@ -520,7 +520,7 @@
     <value>La collecte d'objet a été modifiée &lt;&lt; Partager en ordre &gt;&gt;</value>
   </data>
   <data name="SHOPS_LOADED" xml:space="preserve">
-    <value>{0} Magasins chargés.</value>
+    <value>{0} Magasins chargés !</value>
   </data>
   <data name="SHOP_EMPTY" xml:space="preserve">
     <value>Le magasin ne peut être vide.</value>
@@ -550,7 +550,7 @@
     <value>Durée de l'effet secondaire lié à la transformation : {0} secondes</value>
   </data>
   <data name="STARTED" xml:space="preserve">
-    <value>Le serveur s'est lancé sans problèmes.</value>
+    <value>Le serveur s'est lancé sans problèmes !</value>
   </data>
   <data name="STAY_TIME" xml:space="preserve">
     <value>Durée de l'effet secondaire lié à la transformation : {0} secondes</value>
@@ -565,16 +565,16 @@
     <value>Message is too big ({0} bytes). Max allowed length is {1} bytes.</value>
   </data>
   <data name="TOTAL_SESSION" xml:space="preserve">
-    <value>Utilisateurs totaux connectés</value>
+    <value>Utilisateurs totaux connectés :</value>
   </data>
   <data name="TRADE_BLOCKED" xml:space="preserve">
     <value>L'utilisateur a bloqué les demandes d'échanges.</value>
   </data>
   <data name="TRANSFORM_DISAPEAR" xml:space="preserve">
-    <value>L'effet secondaire de la transformation s'est dissiper</value>
+    <value>L'effet secondaire de la transformation s'est dissipé</value>
   </data>
   <data name="UPDATE_ACCOUNT_ERROR" xml:space="preserve">
-    <value>Error inserting or updating Account {0} , {1}</value>
+    <value>Erreur d'insertion ou de mise à jour du compte {0} , {1}</value>
   </data>
   <data name="UPDATE_ERROR" xml:space="preserve">
     <value>{0}</value>
@@ -583,7 +583,7 @@
     <value>L'amélioration a échoué.</value>
   </data>
   <data name="UPGRADE_FAILED_ITEM_SAVED" xml:space="preserve">
-    <value>L'amélioration a échoué. Heureusement, le parchemin protecteur a préservé.</value>
+    <value>L'amélioration a échoué. Heureusement, le parchemin protecteur a préservé l'objet.</value>
   </data>
   <data name="UPGRADE_FIXED" xml:space="preserve">
     <value>Niveau fixé.</value>
@@ -613,10 +613,10 @@
     <value>Vous avez demander un échange avec </value>
   </data>
   <data name="CHARACTER_LOGGED_IN" xml:space="preserve">
-    <value>{0} has logged in.</value>
+    <value>{0} s'est connecté </value>
   </data>
   <data name="CHARACTER_LOGGED_OUT" xml:space="preserve">
-    <value>{0} has logged out.</value>
+    <value>{0} s'est déconnecté </value>
   </data>
   <data name="NOT_ENOUGH_POWER_SEED" xml:space="preserve">
     <value>Vous n'avez pas assez de graine de pouvoir.</value>
@@ -628,6 +628,45 @@
     <value>Tu as utilisé des graine de pouvoir.</value>
   </data>
   <data name="SHOP_PRIVATE_SHOP" xml:space="preserve">
-    <value>Private shop</value>
+    <value>Magasin privé ouvert.</value>
+  </data>
+  <data name="ASK_REVIVE" xml:space="preserve">
+    <value>Continuer ici? 10 graine de pouvoir seront utilisées.</value>
+  </data>
+  <data name="ASK_REVIVE_FREE" xml:space="preserve">
+    <value>Continuer ici? Il est gratuit pour le niveau 20 et plus bas !</value>
+  </data>
+  <data name="CLIENTSESSION_DISPOSING" xml:space="preserve">
+    <value>La session client est actuellement fermée, les paquets ne sont pas traités.</value>
+  </data>
+  <data name="CONNECTION_LOST" xml:space="preserve">
+    <value>La connexion au serveur a été interrompue.</value>
+  </data>
+  <data name="HEROLEVEL_CHANGED" xml:space="preserve">
+    <value>Votre niveau héroïque a bien été changé !</value>
+  </data>
+  <data name="LOSE_DIGNITY" xml:space="preserve">
+    <value>Vous avez perdu {0} dignité.</value>
+  </data>
+  <data name="MUTED" xml:space="preserve">
+    <value>Vous avez été sanctionné.</value>
+  </data>
+  <data name="MUTE_END" xml:space="preserve">
+    <value>La sanction est terminée.</value>
+  </data>
+  <data name="MUTE_FEMALE" xml:space="preserve">
+    <value>&lt;&lt; Je subis une sanction... &gt;&gt;</value>
+  </data>
+  <data name="MUTE_MALE" xml:space="preserve">
+    <value>&lt;&lt; Je subis une sanction... &gt;&gt;</value>
+  </data>
+  <data name="RECIPES_LOADED" xml:space="preserve">
+    <value>{0} Recettes chargées !</value>
+  </data>
+  <data name="SHOP_ONLY_TRADABLE_ITEMS" xml:space="preserve">
+    <value>Vous ne pouvez vendre cet article.</value>
+  </data>
+  <data name="UPGRADESP_SUCCES" xml:space="preserve">
+    <value>L'amélioration au niveau suivant a été effectuée avec succès.</value>
   </data>
 </root>
