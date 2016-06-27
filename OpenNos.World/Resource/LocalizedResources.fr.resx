@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ACCOUNT_ARRIVED" xml:space="preserve">
-    <value>Compte avec SessionId {0} est arrivé.</value>
+    <value>Compte avec l'ID de session {0} est arrivé.</value>
   </data>
   <data name="ADMINISTRATOR" xml:space="preserve">
     <value>Administrateur</value>
@@ -127,10 +127,10 @@
     <value>Aventurier</value>
   </data>
   <data name="ALREADY_IN_GROUP" xml:space="preserve">
-    <value>Tu es déjà en groupe.</value>
+    <value>Vous êtes déjà dans un groupe.</value>
   </data>
   <data name="ALREADY_TAKEN" xml:space="preserve">
-    <value>Ce nom est déjà utilisé.</value>
+    <value>Ce pseudo est déjà utilisé.</value>
   </data>
   <data name="ARCHER" xml:space="preserve">
     <value>Archer</value>
@@ -187,7 +187,7 @@
     <value>Tu pourras bientôt te déplacer.</value>
   </data>
   <data name="CLIENT_ARRIVED" xml:space="preserve">
-    <value>Client arrived, SessionId: {0}</value>
+    <value>Le client est arrivé, avec l'ID session : {0}</value>
   </data>
   <data name="CLIENT_CLOSE" xml:space="preserve">
     <value>Connexion fermée par le client.</value>
@@ -271,7 +271,7 @@
     <value>Ce joueur a bloqué les demandes de groupe.</value>
   </data>
   <data name="GROUP_CLOSED" xml:space="preserve">
-    <value>Groupe dissous.</value>
+    <value>Le groupe a été dissous.</value>
   </data>
   <data name="GROUP_DENIED" xml:space="preserve">
     <value>La demande de groupe a été refusée.</value>
@@ -310,13 +310,13 @@
     <value>{0} t'as envoyé une demande d'échange.</value>
   </data>
   <data name="INSERT_ERROR" xml:space="preserve">
-    <value>Error inserting or updating character {0} , {1}</value>
+    <value>Erreur d'insertion ou de mise à jour du personnage {0} , {1}</value>
   </data>
   <data name="INVALID_CHARNAME" xml:space="preserve">
     <value>Ce nom contient des caractères non valides.</value>
   </data>
   <data name="INVITED_YOU" xml:space="preserve">
-    <value>{0} Vous as invité en groupe</value>
+    <value>{0} Vous a invité à rejoindre le groupe.</value>
   </data>
   <data name="IN_WAITING_FOR" xml:space="preserve">
     <value>En attente {0}</value>
@@ -415,13 +415,13 @@
     <value>Je commence à me sentir mal...</value>
   </data>
   <data name="NOT_MASTER" xml:space="preserve">
-    <value>Vous n'êtes pas le chef de groupe.</value>
+    <value>Vous n'êtes pas le chef du groupe.</value>
   </data>
   <data name="NO_ENTRY" xml:space="preserve">
     <value>Pas de point d'entrée trouvé</value>
   </data>
   <data name="NO_HANDLER_ITEM" xml:space="preserve">
-    <value>No handler found for this item in class {0}</value>
+    <value>Aucun gestionnaire trouvé pour cet objet dans la classe {0}</value>
   </data>
   <data name="NO_ITEM" xml:space="preserve">
     <value>L'objet n'existe pas.</value>
@@ -433,7 +433,7 @@
     <value>No n_run Handler implementation for {0}</value>
   </data>
   <data name="NO_PREZ_MESSAGE" xml:space="preserve">
-    <value>Aucun message de présentation.</value>
+    <value>Aucun message de présentation</value>
   </data>
   <data name="NO_SP" xml:space="preserve">
     <value>Aucune carte de spécialiste n'est équipée.</value>
@@ -445,10 +445,10 @@
     <value>{0} Pnj chargés !</value>
   </data>
   <data name="PACKET_ARRIVED" xml:space="preserve">
-    <value>Packet arrivé, packet: {0}</value>
+    <value>Paquet arrivé, paquet: {0}</value>
   </data>
   <data name="PACKET_FAILURE" xml:space="preserve">
-    <value>Failed to send packet {0} to client {1}, {2}.</value>
+    <value>Échec de l'envoi de paquets {0} au client {1}, {2}.</value>
   </data>
   <data name="PERFECTSP_ATTACK" xml:space="preserve">
     <value>Attaque</value>
@@ -460,7 +460,7 @@
     <value>Élement</value>
   </data>
   <data name="PERFECTSP_FAILURE" xml:space="preserve">
-    <value>L'amélioration avec la pierre de perfection a échouée.</value>
+    <value>Perfectionnement de la carte spécialiste a échouée !</value>
   </data>
   <data name="PERFECTSP_FIRE" xml:space="preserve">
     <value>Feu</value>
@@ -475,7 +475,7 @@
     <value>Obscurité</value>
   </data>
   <data name="PERFECTSP_SUCCESS" xml:space="preserve">
-    <value>L'amélioration avec la pierre de perfection a réussie: {0} +{1} !</value>
+    <value>Perfectionnement de la carte spécialiste réussi: {0} +{1} !</value>
   </data>
   <data name="PERFECTSP_WATER" xml:space="preserve">
     <value>Eau</value>
@@ -622,7 +622,7 @@
     <value>Vous n'avez pas assez de graine de pouvoir.</value>
   </data>
   <data name="NOT_ENOUGH_SEED_SAY" xml:space="preserve">
-    <value>Je n'ai pas assez de graine du pouvoir...</value>
+    <value>Je n'ai pas assez de graine de pouvoir...</value>
   </data>
   <data name="SEED_USED" xml:space="preserve">
     <value>Tu as utilisé des graine de pouvoir.</value>
