@@ -117,4 +117,100 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="DATABASE_INITIALIZED" xml:space="preserve">
+    <value>La base de donnée a été initialisée !</value>
+  </data>
+  <data name="DONE" xml:space="preserve">
+    <value>Analyse des fichiers finie !</value>
+  </data>
+  <data name="DROP_PARSED" xml:space="preserve">
+    <value>{0} Drop d'objets analysés !</value>
+  </data>
+  <data name="ENTER_PATH" xml:space="preserve">
+    <value>S'il vous plaît veuillez entrez le répertoire des fichiers à analyser.</value>
+  </data>
+  <data name="ITEMS_PARSED" xml:space="preserve">
+    <value>{0} Objets analysés !</value>
+  </data>
+  <data name="MAPS_PARSED" xml:space="preserve">
+    <value>{0} Cartes analysées !</value>
+  </data>
+  <data name="MONSTERS_PARSED" xml:space="preserve">
+    <value>{0} Monstres analysés !</value>
+  </data>
+  <data name="NEED_TREE" xml:space="preserve">
+    <value>Vous avez besoin de répertoires comme ceci :</value>
+  </data>
+  <data name="NO_ITEM" xml:space="preserve">
+    <value>L'ID de cet objet n'est pas valide.</value>
+  </data>
+  <data name="NPCMONSTERS_PARSED" xml:space="preserve">
+    <value>{0} Pnj-Monstres analysés !</value>
+  </data>
+  <data name="NPCS_PARSED" xml:space="preserve">
+    <value>{0} Pnj analysés !</value>
+  </data>
+  <data name="PARSE_ALL" xml:space="preserve">
+    <value>Voulez-vous tout analyser ?</value>
+  </data>
+  <data name="PARSE_DROP" xml:space="preserve">
+    <value>Voulez-vous analyser les drops ?</value>
+  </data>
+  <data name="PARSE_ITEMS" xml:space="preserve">
+    <value>Voulez-vous analyser les objets ?</value>
+  </data>
+  <data name="PARSE_MAPNPCS" xml:space="preserve">
+    <value>Voulez-vous analyser les cartes-pnj ?</value>
+  </data>
+  <data name="PARSE_MAPS" xml:space="preserve">
+    <value>Voulez-vous analyser les cartes ?</value>
+  </data>
+  <data name="PARSE_MONSTERS" xml:space="preserve">
+    <value>Voulez-vous analyser les monstres ?</value>
+  </data>
+  <data name="PARSE_NPCS" xml:space="preserve">
+    <value>Voulez-vous analyser les pnj ?</value>
+  </data>
+  <data name="PARSE_PORTALS" xml:space="preserve">
+    <value>Voulez-vous analyser les portails ?</value>
+  </data>
+  <data name="PARSE_RECIPES" xml:space="preserve">
+    <value>Voulez-vous analyser les recettes ?</value>
+  </data>
+  <data name="PARSE_SHOPITEMS" xml:space="preserve">
+    <value>Voulez-vous analyser les magasins d'objets ?</value>
+  </data>
+  <data name="PARSE_SHOPS" xml:space="preserve">
+    <value>Voulez-vous analyser les magasins ?</value>
+  </data>
+  <data name="PARSE_SHOPSKILLS" xml:space="preserve">
+    <value>Voulez-vous analyser les magasins de compétences ?</value>
+  </data>
+  <data name="PARSE_SKILLS" xml:space="preserve">
+    <value>Voulez-vous analyser les compétences ?</value>
+  </data>
+  <data name="PARSE_TELEPORTERS" xml:space="preserve">
+    <value>Voulez-vous analyser les téléporteurs ?</value>
+  </data>
+  <data name="PORTALS_PARSED" xml:space="preserve">
+    <value>{0} Portails analaysés</value>
+  </data>
+  <data name="RECIPES_PARSED" xml:space="preserve">
+    <value>{0} Recettes analysées</value>
+  </data>
+  <data name="SHOPITEMS_PARSED" xml:space="preserve">
+    <value>{0} Magasins d'objets analysés</value>
+  </data>
+  <data name="SHOPSKILLS_PARSED" xml:space="preserve">
+    <value>{0} Magasins de compétence analysés</value>
+  </data>
+  <data name="SHOPS_PARSED" xml:space="preserve">
+    <value>{0} Magasins analysés</value>
+  </data>
+  <data name="SKILLS_PARSED" xml:space="preserve">
+    <value>{0} Coméptences analysées</value>
+  </data>
+  <data name="TELEPORTERS_PARSED" xml:space="preserve">
+    <value>{0} Téléporteurs analysés</value>
+  </data>
 </root>
