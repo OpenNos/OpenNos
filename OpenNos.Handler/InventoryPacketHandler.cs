@@ -592,15 +592,7 @@ namespace OpenNos.Handler
 
             if (packetsplit.Length == 10 && packetsplit[2] == "10")
             {
-                // There you go, SP!
-
-                if (Session.Character.Skills.Where(s => s.Used == true).Any())
-                {
-                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SKILLS_IN_LOADING"), 0));
-                    return;
-                }
-
-
+              
                 if (!Session.Character.UseSp || specialistInstance == null || int.Parse(packetsplit[5]) != specialistInstance.ItemInstanceId)
                 {
                     Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SPUSE_NEEDED"), 0));
@@ -934,6 +926,13 @@ namespace OpenNos.Handler
             }
             else if (!Session.Character.IsSitting)
             {
+                if (Session.Character.Skills.Where(s => s.Used == true).Any())
+                {
+                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SKILLS_IN_LOADING"), 0));
+                    return;
+                }
+
+
                 if (specialistInstance == null)
                 {
                     Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NO_SP"), 0));
