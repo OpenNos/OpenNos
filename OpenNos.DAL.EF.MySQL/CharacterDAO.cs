@@ -138,15 +138,6 @@ namespace OpenNos.DAL.EF.MySQL
                 return SaveResult.Error;
             }
         }
-        public void ToggleMute(long characterId)
-        {
-            using (var context = DataAccessHelper.CreateContext())
-            {
-                Character Character = context.Character.FirstOrDefault(a => a.CharacterId.Equals(characterId));
-                Character.IsMuted = Character.IsMuted == false ? true : false;
-                context.SaveChanges();
-            }
-        }
 
         public int IsReputHero(long characterId)
         {

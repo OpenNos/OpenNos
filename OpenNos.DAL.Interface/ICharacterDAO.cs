@@ -42,8 +42,6 @@ namespace OpenNos.DAL.Interface
 
         CharacterDTO LoadBySlot(long accountId, byte slot);
 
-        void ToggleMute(long characterId);
-
         #endregion
     }
 }
