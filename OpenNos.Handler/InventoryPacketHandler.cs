@@ -594,6 +594,13 @@ namespace OpenNos.Handler
             {
                 // There you go, SP!
 
+                if (Session.Character.Skills.Where(s => s.Used == true).Any())
+                {
+                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SKILLS_IN_LOADING"), 0));
+                    return;
+                }
+
+
                 if (!Session.Character.UseSp || specialistInstance == null || int.Parse(packetsplit[5]) != specialistInstance.ItemInstanceId)
                 {
                     Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SPUSE_NEEDED"), 0));
