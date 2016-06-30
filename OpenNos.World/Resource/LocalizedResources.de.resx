@@ -585,7 +585,7 @@
   <data name="UPGRADE_FAILED" xml:space="preserve">
     <value>Die Verbesserung ist fehlgeschlagen. Das Item ist verschwunden.</value>
   </data>
-    <data name="UPGRADESP_SUCCES" xml:space="preserve">
+  <data name="UPGRADESP_SUCCES" xml:space="preserve">
     <value>Die Verbesserung war Erfolgreich.</value>
   </data>
   <data name="UPGRADE_FAILED_ITEM_SAVED" xml:space="preserve">
@@ -657,7 +657,7 @@
   <data name="CLIENTSESSION_DISPOSING" xml:space="preserve">
     <value>Die ClientSession wird derzeit geschlossen, das packet wird nichtmehr verarbeitet.</value>
   </data>
-    <data name="MUTED_FEMALE" xml:space="preserve">
+  <data name="MUTED_FEMALE" xml:space="preserve">
     <value>Ich war ein böses Mädchen, ich bin bestraft!</value>
   </data>
   <data name="MUTED_MALE" xml:space="preserve">
@@ -668,5 +668,8 @@
   </data>
   <data name="MUTE_END" xml:space="preserve">
     <value>Deine Strafe ist vollendet.</value>
+  </data>
+  <data name="SKILLS_IN_LOADING" xml:space="preserve">
+    <value>Sie müssen warten, bis die Fähigkeiten wieder aufgeladen werden</value>
   </data>
 </root>

@@ -610,7 +610,7 @@
     <value>Mauvaise valeur.</value>
   </data>
   <data name="YOU_ASK_FOR_EXCHANGE" xml:space="preserve">
-    <value>Vous avez demander un échange avec </value>
+    <value>Tu as fait une demande d'échange</value>
   </data>
   <data name="CHARACTER_LOGGED_IN" xml:space="preserve">
     <value>{0} s'est connecté </value>
@@ -668,5 +668,11 @@
   </data>
   <data name="UPGRADESP_SUCCES" xml:space="preserve">
     <value>L'amélioration au niveau suivant a été effectuée avec succès.</value>
+  </data>
+  <data name="SKILLS_IN_LOADING" xml:space="preserve">
+    <value>Tu peux te transformer une fois que tous les temps de rechargement des compétences sont écoulés.</value>
+  </data>
+  <data name="SKILL_LEARNED" xml:space="preserve">
+    <value>Vous avez appris une nouvelle compétence !</value>
   </data>
 </root>
