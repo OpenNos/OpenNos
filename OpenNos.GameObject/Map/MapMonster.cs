@@ -199,15 +199,15 @@ namespace OpenNos.GameObject
                     sk = ServerManager.GetSkill(ski.SkillVNum);
                 }
 
-                ClientSession targetSession = Map.Sessions.Single(s => s.Character.CharacterId == Target);
+                ClientSession targetSession = Map.Sessions.SingleOrDefault(s => s.Character.CharacterId == Target);
 
-                Thread thread = targetSession.Character.ThreadCharChange;
-
-                if (thread != null && thread.IsAlive)
-                    thread.Abort();
-
-                if ((sk != null && Map.GetDistance(new MapCell() { X = this.MapX, Y = this.MapY }, new MapCell() { X = (short)MapX, Y = (short)MapY }) < sk.Range) || (Map.GetDistance(new MapCell() { X = this.MapX, Y = this.MapY }, new MapCell() { X = (short)MapX, Y = (short)MapY }) <= monster.BasicRange))
+                if (targetSession != null && (sk != null && Map.GetDistance(new MapCell() { X = this.MapX, Y = this.MapY }, new MapCell() { X = (short)MapX, Y = (short)MapY }) < sk.Range) || (Map.GetDistance(new MapCell() { X = this.MapX, Y = this.MapY }, new MapCell() { X = (short)MapX, Y = (short)MapY }) <= monster.BasicRange))
                 {
+                    Thread thread = targetSession.Character.ThreadCharChange;
+
+                    if (thread != null && thread.IsAlive)
+                        thread.Abort();
+
                     if ((sk != null && ((DateTime.Now - LastEffect).TotalMilliseconds >= sk.Cooldown * 100 + 1000)) || ((DateTime.Now - LastEffect).TotalMilliseconds >= (monster.BasicCooldown < 4 ? 4 : monster.BasicCooldown) * 100 + 100))
                     {
                         if (ski != null)
