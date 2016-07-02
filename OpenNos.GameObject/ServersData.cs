@@ -289,6 +289,9 @@ namespace OpenNos.GameObject
                 case 7:
                     p = 10;
                     break;
+                case 8:
+                    p = 14;
+                    break;
             }
             return p * (1 + lvl / 5);
         }
