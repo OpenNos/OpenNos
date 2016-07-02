@@ -57,7 +57,9 @@ namespace OpenNos.DAL.EF.MySQL
                     Combo entity = _mapper.Map<Combo>(Combo);
                     context.Combo.Add(entity);
                 }
+                context.Configuration.AutoDetectChangesEnabled = true;
                 context.SaveChanges();
+               
             }
         }
 

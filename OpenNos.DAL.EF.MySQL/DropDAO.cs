@@ -57,7 +57,9 @@ namespace OpenNos.DAL.EF.MySQL
                     Drop entity = _mapper.Map<Drop>(Drop);
                     context.Drop.Add(entity);
                 }
+                context.Configuration.AutoDetectChangesEnabled = true;
                 context.SaveChanges();
+
             }
         }
 

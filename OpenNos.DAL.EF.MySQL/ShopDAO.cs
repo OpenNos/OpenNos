@@ -57,6 +57,7 @@ namespace OpenNos.DAL.EF.MySQL
                     Shop entity = _mapper.Map<Shop>(Item);
                     context.Shop.Add(entity);
                 }
+                context.Configuration.AutoDetectChangesEnabled = true;
                 context.SaveChanges();
             }
         }
