@@ -1100,10 +1100,8 @@ namespace OpenNos.Handler
             if (packetsplit.Length <= 5)
                 return;
 
-            if (Session.Character.Speed >= Convert.ToByte(packetsplit[5]))
+            if (Session.Character.Speed >= Convert.ToByte(packetsplit[5]) && !(Map.GetDistance(new MapCell() { X = Session.Character.MapX, Y = Session.Character.MapY }, new MapCell() { X = Convert.ToInt16(packetsplit[2]), Y = Convert.ToInt16(packetsplit[3]) }) > 30))
             {
-                if (Map.GetDistance(new MapCell() { X = Session.Character.MapX, Y = Session.Character.MapY }, new MapCell() { X = Convert.ToInt16(packetsplit[2]), Y = Convert.ToInt16(packetsplit[3]) }) > 20)
-                    Session.Client.Disconnect();
                 Session.Character.MapX = Convert.ToInt16(packetsplit[2]);
                 Session.Character.MapY = Convert.ToInt16(packetsplit[3]);
                 Session.CurrentMap?.Broadcast(Session.Character.GenerateMv());
