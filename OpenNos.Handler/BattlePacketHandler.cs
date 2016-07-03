@@ -150,7 +150,7 @@ namespace OpenNos.Handler
                                         short dX = (short)(Session.Character.MapX - mmon.MapX);
                                         short dY = (short)(Session.Character.MapY - mmon.MapY);
 
-                                        if (Map.GetDistance(new MapCell() { X = Session.Character.MapX, Y = Session.Character.MapY }, new MapCell() { X = mmon.MapX, Y = mmon.MapY }) <= skill.Range + (DateTime.Now - mmon.LastMove).TotalSeconds*10 || skill.TargetRange != 0)
+                                        if (Map.GetDistance(new MapCell() { X = Session.Character.MapX, Y = Session.Character.MapY }, new MapCell() { X = mmon.MapX, Y = mmon.MapY }) <= skill.Range + (DateTime.Now - mmon.LastMove).TotalSeconds*2*monsterinfo.Speed || skill.TargetRange != 0)
                                         {
                                             Session.CurrentMap?.Broadcast($"ct 1 {Session.Character.CharacterId} 3 {mmon.MapMonsterId} {skill.CastAnimation} -1 {skill.SkillVNum}");
                                             damage = GenerateDamage(mmon.MapMonsterId, skill, ref hitmode);
