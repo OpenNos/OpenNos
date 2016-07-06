@@ -68,6 +68,7 @@ namespace OpenNos.DAL.EF.MySQL
                     NpcMonsterSkill entity = _mapper.Map<NpcMonsterSkill>(Skill);
                     context.NpcMonsterSkill.Add(entity);
                 }
+                context.Configuration.AutoDetectChangesEnabled = true;
                 context.SaveChanges();
             }
         }

@@ -390,8 +390,8 @@
   <data name="MSG_SENT" xml:space="preserve">
     <value>Messaggio inviato {0} al client {1}</value>
   </data>
-   <data name="MUTED_MALE" xml:space="preserve">
-   <value>Sono stato un cattivo ragazzo , per questo sono stato punito!</value>
+  <data name="MUTED_MALE" xml:space="preserve">
+    <value>Sono stato un cattivo ragazzo , per questo sono stato punito!</value>
   </data>
   <data name="MUTED" xml:space="preserve">
     <value>Sei stato mutato!</value>
@@ -547,10 +547,10 @@
     <value>Il server si spegnerà in {0} Secondi.</value>
   </data>
   <data name="SKILL_LEARNED" xml:space="preserve">
-     <value>Hai imparato una nuova skill</value>
-   </data>
+    <value>Hai imparato una nuova skill</value>
+  </data>
   <data name="SKILL_CANT_LEARN" xml:space="preserve">
-   <value>Non puoi imparare questa skill</value>
+    <value>Non puoi imparare questa skill</value>
   </data>
   <data name="SPLEVEL_CHANGED" xml:space="preserve">
     <value>Il livello della carta dello specialista è cambiato!</value>
@@ -559,8 +559,8 @@
     <value>Devi mettere la SP prima di applicare i punti</value>
   </data>
   <data name="SP_REFILL" xml:space="preserve">
-   <value>Punti specialista assegnati</value>
-   </data>
+    <value>Punti specialista assegnati</value>
+  </data>
   <data name="SP_BLOCKED" xml:space="preserve">
     <value>Non puoi cambiare una Carta Speciale durante la trasformazione.</value>
   </data>
@@ -647,5 +647,8 @@
   </data>
   <data name="SHOP_PRIVATE_SHOP" xml:space="preserve">
     <value>Bottega Privata</value>
+  </data>
+  <data name="SKILLS_IN_LOADING" xml:space="preserve">
+    <value>È necessario attendere che le competenze vengono ricaricate</value>
   </data>
 </root>

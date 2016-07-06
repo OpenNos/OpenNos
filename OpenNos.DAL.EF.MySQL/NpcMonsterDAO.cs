@@ -56,6 +56,7 @@ namespace OpenNos.DAL.EF.MySQL
                     NpcMonster entity = _mapper.Map<NpcMonster>(Item);
                     context.NpcMonster.Add(entity);
                 }
+                context.Configuration.AutoDetectChangesEnabled = true;
                 context.SaveChanges();
             }
         }

@@ -68,6 +68,7 @@ namespace OpenNos.DAL.EF.MySQL
                     ShopSkill entity = _mapper.Map<ShopSkill>(Skill);
                     context.ShopSkill.Add(entity);
                 }
+                context.Configuration.AutoDetectChangesEnabled = true;
                 context.SaveChanges();
             }
         }

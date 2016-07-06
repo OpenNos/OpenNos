@@ -85,6 +85,7 @@ namespace OpenNos.DAL.EF.MySQL
                     ShopItem entity = _mapper.Map<ShopItem>(Item);
                     context.ShopItem.Add(entity);
                 }
+                context.Configuration.AutoDetectChangesEnabled = true;
                 context.SaveChanges();
             }
         }

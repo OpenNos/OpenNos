@@ -57,6 +57,7 @@ namespace OpenNos.DAL.EF.MySQL
                     Skill entity = _mapper.Map<Skill>(Skill);
                     context.Skill.Add(entity);
                 }
+                context.Configuration.AutoDetectChangesEnabled = true;
                 context.SaveChanges();
             }
         }

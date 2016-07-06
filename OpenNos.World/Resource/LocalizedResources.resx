@@ -703,4 +703,7 @@
   <data name="MUTE_END" xml:space="preserve">
     <value>Your punishment has ended</value>
   </data>
+  <data name="SKILLS_IN_LOADING" xml:space="preserve">
+    <value>You must wait until the skills are recharged</value>
+  </data>
 </root>

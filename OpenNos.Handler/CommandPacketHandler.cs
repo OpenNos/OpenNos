@@ -159,7 +159,7 @@ namespace OpenNos.Handler
             byte hlevel;
             if (packetsplit.Length > 2)
             {
-                if (Byte.TryParse(packetsplit[2], out hlevel) && hlevel < 31 && hlevel > 0)
+                if (Byte.TryParse(packetsplit[2], out hlevel) && hlevel < 51 && hlevel > 0)
                 {
                     Session.Character.HeroLevel = hlevel;
                     Session.Character.HeroXp = 0;
