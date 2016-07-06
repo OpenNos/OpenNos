@@ -107,9 +107,9 @@
     <Compile Include="Entities\NpcMonster.cs" />
     <Compile Include="Entities\NpcMonsterskill.cs" />
     <Compile Include="MapTypeDAO.cs" />
-    <Compile Include="Migrations\201607061912352_Hera.cs" />
-    <Compile Include="Migrations\201607061912352_Hera.Designer.cs">
-      <DependentUpon>201607061912352_Hera.cs</DependentUpon>
+    <Compile Include="Migrations\201607062158019_Poseidon.cs" />
+    <Compile Include="Migrations\201607062158019_Poseidon.Designer.cs">
+      <DependentUpon>201607062158019_Poseidon.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="NpcMonsterSkillDAO.cs" />
@@ -188,8 +188,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201607061912352_Hera.resx">
-      <DependentUpon>201607061912352_Hera.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201607062158019_Poseidon.resx">
+      <DependentUpon>201607062158019_Poseidon.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

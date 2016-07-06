@@ -172,7 +172,7 @@ namespace OpenNos.DAL.EF.MySQL.DB
                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<Map>()
-                .HasRequired(e => e.MapType)
+                .HasOptional(e => e.MapType)
                 .WithMany(e => e.Maps)
                 .HasForeignKey(e => e.MapTypeId)
                 .WillCascadeOnDelete(false);
