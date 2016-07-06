@@ -24,7 +24,13 @@ namespace OpenNos.DAL.EF.MySQL
 {
     public class MapTypeDAO : IMapTypeDAO
     {
+        #region Members
+
         private IMapper _mapper;
+
+        #endregion
+
+        #region Instantiation
 
         public MapTypeDAO()
         {
@@ -37,6 +43,10 @@ namespace OpenNos.DAL.EF.MySQL
             _mapper = config.CreateMapper();
         }
 
+        #endregion
+
+        #region Methods
+
         public IEnumerable<MapTypeDTO> LoadFromMapType(short mapId)
         {
             using (var context = DataAccessHelper.CreateContext())
@@ -47,5 +57,7 @@ namespace OpenNos.DAL.EF.MySQL
                 }
             }
         }
+
+        #endregion
     }
 }

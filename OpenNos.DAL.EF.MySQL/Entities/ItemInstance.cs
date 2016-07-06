@@ -19,6 +19,7 @@ namespace OpenNos.DAL.EF.MySQL
     public class ItemInstance
     {
         #region Properties
+
         public int Amount { get; set; }
         public short Design { get; set; }
         public virtual Inventory Inventory { get; set; }

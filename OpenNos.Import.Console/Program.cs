@@ -15,10 +15,8 @@
 using log4net;
 using OpenNos.Core;
 using OpenNos.DAL.EF.MySQL.Helpers;
-using System;
 using System.Diagnostics;
 using System.Reflection;
-using System.Threading;
 
 namespace OpenNos.Import.Console
 {
@@ -65,7 +63,7 @@ namespace OpenNos.Import.Console
             System.Console.WriteLine("----------0");
             System.Console.WriteLine("----------1");
             System.Console.WriteLine("----------...");
-        
+
             try
             {
                 Logger.Log.Warn(Language.Instance.GetMessageFromKey("ENTER_PATH"));
@@ -172,8 +170,6 @@ namespace OpenNos.Import.Console
                 Logger.Log.Error(Language.Instance.GetMessageFromKey("AT_LEAST_ONE_FILE_MISSING"));
                 System.Threading.Thread.Sleep(5000);
             }
-
-
         }
 
         #endregion

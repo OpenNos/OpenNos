@@ -12,8 +12,6 @@
  * GNU General Public License for more details.
  */
 
-
-
 namespace OpenNos.DAL.EF.MySQL
 {
     using System.ComponentModel.DataAnnotations;
@@ -21,11 +19,18 @@ namespace OpenNos.DAL.EF.MySQL
 
     public class MapTypeMap
     {
+        #region Properties
+
+        public virtual Map Map { get; set; }
+
         [Key, Column(Order = 0)]
         public short MapId { get; set; }
+
+        public virtual MapType MapType { get; set; }
+
         [Key, Column(Order = 1)]
         public short MapTypeId { get; set; }
-        public virtual Map Map { get; set; }
-        public virtual MapType MapType { get; set; }
+
+        #endregion
     }
 }

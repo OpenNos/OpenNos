@@ -86,8 +86,10 @@ namespace OpenNos.DAL.EF.MySQL
         public short Morph { get; set; }
         public short Mp { get; set; }
         public short MpRegeneration { get; set; }
+
         [MaxLength(255)]
         public string Name { get; set; }
+
         public long Price { get; set; }
         public short PvpDefence { get; set; }
         public byte PvpStrength { get; set; }
@@ -102,9 +104,11 @@ namespace OpenNos.DAL.EF.MySQL
         public byte Speed { get; set; }
         public byte SpType { get; set; }
         public byte Type { get; set; }
+
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public short VNum { get; set; }
+
         public byte WaterElement { get; set; }
         public byte WaterResistance { get; set; }
 

@@ -59,7 +59,6 @@ namespace OpenNos.DAL.EF.MySQL
                 }
                 context.Configuration.AutoDetectChangesEnabled = true;
                 context.SaveChanges();
-               
             }
         }
 

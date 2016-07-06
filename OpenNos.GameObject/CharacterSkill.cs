@@ -19,6 +19,12 @@ namespace OpenNos.GameObject
 {
     public class CharacterSkill : CharacterSkillDTO
     {
+        #region Members
+
+        private Skill skill;
+
+        #endregion
+
         #region Instantiation
 
         public CharacterSkill(CharacterSkillDTO dto)
@@ -49,7 +55,7 @@ namespace OpenNos.GameObject
         {
             get; set;
         }
-        private Skill skill;
+
         public Skill Skill
         {
             get

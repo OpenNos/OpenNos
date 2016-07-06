@@ -17,7 +17,6 @@ using AutoMapper;
 using OpenNos.DAL.EF.MySQL.Helpers;
 using OpenNos.DAL.Interface;
 using OpenNos.Data;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -60,7 +59,6 @@ namespace OpenNos.DAL.EF.MySQL
                 }
                 context.Configuration.AutoDetectChangesEnabled = true;
                 context.SaveChanges();
-
             }
         }
 
@@ -75,6 +73,17 @@ namespace OpenNos.DAL.EF.MySQL
             }
         }
 
+        public IEnumerable<DropDTO> LoadAllGeneral()
+        {
+            using (var context = DataAccessHelper.CreateContext())
+            {
+                foreach (Drop Drop in context.Drop.ToList().Where(s => s.MonsterVNum == null))
+                {
+                    yield return _mapper.Map<DropDTO>(Drop);
+                }
+            }
+        }
+
         public IEnumerable<DropDTO> LoadByMonster(short monsterVNum)
         {
             using (var context = DataAccessHelper.CreateContext())
@@ -86,16 +95,6 @@ namespace OpenNos.DAL.EF.MySQL
             }
         }
 
-        public IEnumerable<DropDTO> LoadAllGeneral()
-        {
-            using (var context = DataAccessHelper.CreateContext())
-            {
-                foreach (Drop Drop in context.Drop.ToList().Where(s => s.MonsterVNum == null))
-                {
-                    yield return _mapper.Map<DropDTO>(Drop);
-                }
-            }
-        }
         #endregion
     }
 }

@@ -43,6 +43,7 @@ namespace OpenNos.DAL.EF.MySQL
 
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public short MapId { get; set; }
+
         public virtual ICollection<MapMonster> MapMonster { get; set; }
         public virtual ICollection<MapNpc> MapNpc { get; set; }
         public virtual MapType MapType { get; set; }

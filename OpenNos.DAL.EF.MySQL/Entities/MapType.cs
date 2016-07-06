@@ -31,13 +31,13 @@ namespace OpenNos.DAL.EF.MySQL
 
         #region Properties
 
+        public virtual ICollection<Drop> Drops { get; set; }
         public virtual Map Map { get; set; }
 
         [ForeignKey(nameof(Map))]
         public short MapId { get; set; }
 
         public virtual ICollection<Map> Maps { get; set; }
-        public virtual ICollection<Drop> Drops { get; set; }
         public short MapTypeId { get; set; }
         public virtual ICollection<MapTypeMap> MapTypeMaps { get; set; }
 

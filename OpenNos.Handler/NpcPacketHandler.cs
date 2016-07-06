@@ -51,7 +51,7 @@ namespace OpenNos.Handler
         {
             if (Session.Character.InExchangeOrTrade)
                 return;
-            
+
             Logger.Debug(packet, Session.SessionId);
             string[] packetsplit = packet.Split(' ');
             if (packetsplit.Length < 5)

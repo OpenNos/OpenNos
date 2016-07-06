@@ -30,6 +30,7 @@ namespace OpenNos.GameObject
     {
         #region Members
 
+        public static List<DropDTO> Drops = new List<DropDTO>();
         public Boolean ShutdownStop = false;
 
         private static ServerManager _instance;
@@ -37,7 +38,6 @@ namespace OpenNos.GameObject
         private static ConcurrentDictionary<Guid, Map> _maps = new ConcurrentDictionary<Guid, Map>();
         private static List<NpcMonster> _npcs = new List<NpcMonster>();
         private static List<Skill> _skills = new List<Skill>();
-        public static List<DropDTO> Drops = new List<DropDTO>();
         private long lastGroupId;
 
         #endregion
@@ -57,7 +57,6 @@ namespace OpenNos.GameObject
             Task TaskController = new Task(() => TaskLauncherProcess());
             TaskController.Start();
             lastGroupId = 1;
-
         }
 
         #endregion
@@ -79,7 +78,6 @@ namespace OpenNos.GameObject
             return _maps;
         }
 
-
         public static IEnumerable<Skill> GetAllSkill()
         {
             return _skills;
@@ -99,10 +97,12 @@ namespace OpenNos.GameObject
         {
             return _npcs.FirstOrDefault(m => m.NpcMonsterVNum.Equals(npcVNum));
         }
+
         public static Skill GetSkill(short skillVNum)
         {
             return _skills.FirstOrDefault(m => m.SkillVNum.Equals(skillVNum));
         }
+
         public static void Initialize()
         {
             foreach (ItemDTO itemDTO in DAOFactory.ItemDAO.LoadAll())
