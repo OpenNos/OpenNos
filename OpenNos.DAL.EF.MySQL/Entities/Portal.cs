@@ -25,10 +25,8 @@ namespace OpenNos.DAL.EF.MySQL
         public virtual Map Map { get; set; }
         public virtual Map Map1 { get; set; }
         public int PortalId { get; set; }
-
         public short SourceMapId { get; set; }
         public short SourceX { get; set; }
-
         public short SourceY { get; set; }
         public sbyte Type { get; set; }
 

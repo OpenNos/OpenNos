@@ -37,6 +37,7 @@ namespace OpenNos.GameObject
         private static ConcurrentDictionary<Guid, Map> _maps = new ConcurrentDictionary<Guid, Map>();
         private static List<NpcMonster> _npcs = new List<NpcMonster>();
         private static List<Skill> _skills = new List<Skill>();
+        public static List<DropDTO> Drops = new List<DropDTO>();
         private long lastGroupId;
 
         #endregion
@@ -55,8 +56,8 @@ namespace OpenNos.GameObject
 
             Task TaskController = new Task(() => TaskLauncherProcess());
             TaskController.Start();
-
             lastGroupId = 1;
+
         }
 
         #endregion
@@ -66,9 +67,7 @@ namespace OpenNos.GameObject
         public static List<MapMonster> Monsters { get; set; }
         public static EventHandler NotifyChildren { get; set; }
         public List<Group> Groups { get; set; }
-
         public static ServerManager Instance => _instance ?? (_instance = new ServerManager());
-
         public Task TaskShutdown { get; set; }
 
         #endregion
@@ -79,6 +78,7 @@ namespace OpenNos.GameObject
         {
             return _maps;
         }
+
 
         public static IEnumerable<Skill> GetAllSkill()
         {
@@ -99,12 +99,10 @@ namespace OpenNos.GameObject
         {
             return _npcs.FirstOrDefault(m => m.NpcMonsterVNum.Equals(npcVNum));
         }
-
         public static Skill GetSkill(short skillVNum)
         {
             return _skills.FirstOrDefault(m => m.SkillVNum.Equals(skillVNum));
         }
-
         public static void Initialize()
         {
             foreach (ItemDTO itemDTO in DAOFactory.ItemDAO.LoadAll())
@@ -227,6 +225,9 @@ namespace OpenNos.GameObject
                 _npcs.Add(Mapper.DynamicMap<NpcMonster>(npcmonsterDTO));
             }
             Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("NPCMONSTERS_LOADED"), _npcs.Count()));
+
+            Drops = DAOFactory.DropDAO.LoadAllGeneral().ToList();
+
             try
             {
                 int i = 0;

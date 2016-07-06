@@ -26,6 +26,7 @@ namespace OpenNos.Handler
 {
     public class BattlePacketHandler : IPacketHandler
     {
+        private Dictionary<short, int> generaldrop;
         #region Members
 
         private readonly ClientSession _session;
@@ -85,7 +86,7 @@ namespace OpenNos.Handler
         {
             List<CharacterSkill> skills = Session.Character.UseSp ? Session.Character.SkillsSp : Session.Character.Skills;
             bool notcancel = false;
-          
+
             if (skills != null)
             {
                 ushort damage = 0; ;
@@ -93,7 +94,7 @@ namespace OpenNos.Handler
                 Skill skill = null;
 
                 CharacterSkill ski = skills.FirstOrDefault(s => (skill = ServerManager.GetSkill(s.SkillVNum)) != null && skill?.CastId == castingId);
-                if(!Session.Character.WeaponLoaded(ski))
+                if (!Session.Character.WeaponLoaded(ski))
                 {
                     Session.Client.SendPacket($"cancel 2 0");
                     return;
@@ -105,7 +106,7 @@ namespace OpenNos.Handler
 
                 if (ski != null && Session.Character.Mp >= skill.MpCost)
                 {
-                    if(skill !=null)
+                    if (skill != null)
                     {
                         Task t = Task.Factory.StartNew((Func<Task>)(async () =>
                         {
@@ -906,7 +907,9 @@ namespace OpenNos.Handler
                 mmon.Death = DateTime.Now;
                 Random rnd;
                 int i = 1;
-                foreach (DropDTO drop in monsterinfo.Drops)
+                List<DropDTO> droplist = monsterinfo.Drops.ToList();
+                droplist.AddRange(ServerManager.Drops);
+                foreach (DropDTO drop in droplist)
                 {
                     i++;
                     rnd = new Random(i * (int)DateTime.Now.Ticks & 0x0000FFFF);
@@ -916,7 +919,6 @@ namespace OpenNos.Handler
                         Session.CurrentMap.DropItemByMonster(drop, mmon.MapX, mmon.MapY);
                     }
                 }
-
                 rnd = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
                 short gold = Convert.ToInt16((rnd.Next(1, 8) >= 7 ? 1 : 0) * rnd.Next(6 * monsterinfo.Level, 12 * monsterinfo.Level));
                 if (gold != 0)

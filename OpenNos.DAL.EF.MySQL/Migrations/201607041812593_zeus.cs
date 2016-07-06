@@ -3,7 +3,7 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class Beta : DbMigration
+    public partial class zeus : DbMigration
     {
         public override void Up()
         {
@@ -215,7 +215,7 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
                         Amount = c.Int(nullable: false),
                         DropChance = c.Int(nullable: false),
                         ItemVNum = c.Short(nullable: false),
-                        MonsterVNum = c.Short(nullable: false),
+                        MonsterVNum = c.Short(nullable: true),
                     })
                 .PrimaryKey(t => t.DropId)
                 .ForeignKey("dbo.Item", t => t.ItemVNum)

@@ -226,7 +226,7 @@
     <value>Error deleting Character with Slot {0} , {1}</value>
   </data>
   <data name="DISCONNECT" xml:space="preserve">
-    <value>A client has been disconnected! ClientId =</value>
+    <value>A client has been disconnected! ClientId = </value>
   </data>
   <data name="DONE" xml:space="preserve">
     <value>Done</value>
@@ -397,7 +397,7 @@
     <value>Message sent {0} to client {1}</value>
   </data>
   <data name="NEW_CONNECT" xml:space="preserve">
-    <value>A new client is connected. ClientId =</value>
+    <value>A new client is connected. ClientId = </value>
   </data>
   <data name="NEW_LEADER" xml:space="preserve">
     <value>You are the new party leader</value>

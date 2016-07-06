@@ -395,6 +395,7 @@ namespace OpenNos.Import.Console
                     }
                     else if (currentLine.Length > 3 && currentLine[1] == "ITEM")
                     {
+                        //TODO: add general drop parsing (Hardcode)
                         if (DAOFactory.NpcMonsterDAO.LoadByVnum(npc.NpcMonsterVNum) == null)
                         {
                             npcs.Add(npc);
@@ -406,8 +407,7 @@ namespace OpenNos.Import.Console
                             if (vnum == -1)
                                 break;
                             if (DAOFactory.DropDAO.LoadByMonster(npc.NpcMonsterVNum).Count(s => s.ItemVNum == vnum) != 0)
-                                continue; // only add new drops when there are 0
-
+                                continue;
                             drops.Add(new DropDTO
                             {
                                 ItemVNum = vnum,

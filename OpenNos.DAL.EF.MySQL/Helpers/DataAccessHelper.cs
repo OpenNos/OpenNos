@@ -121,6 +121,7 @@ namespace OpenNos.DAL.EF.MySQL.Helpers
                     context.CharacterSkill.Any();
                     context.NpcMonsterSkill.Any();
                     context.Combo.Any();
+
                     Logger.Log.Info(Language.Instance.GetMessageFromKey("DATABASE_INITIALIZED"));
                 }
                 catch (Exception ex)

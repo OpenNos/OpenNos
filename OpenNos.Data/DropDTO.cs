@@ -22,8 +22,7 @@ namespace OpenNos.Data
         public int DropChance { get; set; }
         public short DropId { get; set; }
         public short ItemVNum { get; set; }
-        public short MonsterVNum { get; set; }
-
+        public short? MonsterVNum { get; set; }
         #endregion
     }
 }

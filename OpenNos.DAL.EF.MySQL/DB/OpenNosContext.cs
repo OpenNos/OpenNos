@@ -76,8 +76,8 @@ namespace OpenNos.DAL.EF.MySQL.DB
                  .Map<UsableInstance>(m => m.Requires("UsableInstance"));
 
             modelBuilder.Entity<ItemInstance>()
-               .HasOptional(ii => ii.Inventory) // Mark Address property optional in Student entity
-               .WithRequired(inv => inv.ItemInstance); // mark Student property as required in StudentAddress entity. Cannot save StudentAddress without Student
+               .HasOptional(ii => ii.Inventory)
+               .WithRequired(inv => inv.ItemInstance);
 
             modelBuilder.Entity<Account>()
                 .Property(e => e.Password)

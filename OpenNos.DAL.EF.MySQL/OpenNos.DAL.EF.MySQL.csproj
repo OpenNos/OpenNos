@@ -104,9 +104,9 @@
     <Compile Include="MapNpcDAO.cs" />
     <Compile Include="Entities\NpcMonster.cs" />
     <Compile Include="Entities\NpcMonsterskill.cs" />
-    <Compile Include="Migrations\201606211530301_Beta.cs" />
-    <Compile Include="Migrations\201606211530301_Beta.Designer.cs">
-      <DependentUpon>201606211530301_Beta.cs</DependentUpon>
+    <Compile Include="Migrations\201607041812593_zeus.cs" />
+    <Compile Include="Migrations\201607041812593_zeus.Designer.cs">
+      <DependentUpon>201607041812593_zeus.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="NpcMonsterSkillDAO.cs" />
@@ -185,8 +185,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201606211530301_Beta.resx">
-      <DependentUpon>201606211530301_Beta.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201607041812593_zeus.resx">
+      <DependentUpon>201607041812593_zeus.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
