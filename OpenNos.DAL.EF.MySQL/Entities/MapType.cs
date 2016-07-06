@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the OpenNos Emulator Project. See AUTHORS file for Copyright information
  *
  * This program is free software; you can redistribute it and/or modify
@@ -14,21 +14,32 @@
 
 namespace OpenNos.DAL.EF.MySQL
 {
-    using System;
+    using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations.Schema;
 
-    public class ItemInstance
+    public class MapType
     {
+        #region Instantiation
+
+        public MapType()
+        {
+            Maps = new HashSet<Map>();
+            MapTypeMaps = new HashSet<MapTypeMap>();
+        }
+
+        #endregion
+
         #region Properties
-        public int Amount { get; set; }
-        public short Design { get; set; }
-        public virtual Inventory Inventory { get; set; }
-        public bool IsUsed { get; set; }
-        public virtual Item Item { get; set; }
-        public DateTime? ItemDeleteTime { get; set; }
-        public long ItemInstanceId { get; set; }
-        public short ItemVNum { get; set; }
-        public byte Rare { get; set; }
-        public byte Upgrade { get; set; }
+
+        public virtual Map Map { get; set; }
+
+        [ForeignKey(nameof(Map))]
+        public short MapId { get; set; }
+
+        public virtual ICollection<Map> Maps { get; set; }
+        public virtual ICollection<Drop> Drops { get; set; }
+        public short MapTypeId { get; set; }
+        public virtual ICollection<MapTypeMap> MapTypeMaps { get; set; }
 
         #endregion
     }

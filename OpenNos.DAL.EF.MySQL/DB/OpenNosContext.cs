@@ -47,6 +47,7 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public virtual DbSet<Map> Map { get; set; }
         public virtual DbSet<MapMonster> MapMonster { get; set; }
         public virtual DbSet<MapNpc> MapNpc { get; set; }
+        public virtual DbSet<MapType> MapType { get; set; }
         public virtual DbSet<NpcMonster> NpcMonster { get; set; }
         public virtual DbSet<NpcMonsterSkill> NpcMonsterSkill { get; set; }
         public virtual DbSet<Portal> Portal { get; set; }
@@ -120,6 +121,7 @@ namespace OpenNos.DAL.EF.MySQL.DB
             modelBuilder.Entity<Item>()
                 .HasMany(e => e.Drop)
                 .WithRequired(e => e.Item)
+                .HasForeignKey(e => e.ItemVNum)
                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<Item>()
@@ -169,6 +171,36 @@ namespace OpenNos.DAL.EF.MySQL.DB
                 .WithRequired(e => e.Map)
                 .WillCascadeOnDelete(false);
 
+            modelBuilder.Entity<Map>()
+                .HasRequired(e => e.MapType)
+                .WithMany(e => e.Maps)
+                .HasForeignKey(e => e.MapTypeId)
+                .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<MapTypeMap>()
+                .HasRequired(e => e.Map)
+                .WithMany(e => e.MapTypeMap)
+                .HasForeignKey(e => e.MapId)
+                .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<MapTypeMap>()
+                .HasRequired(e => e.MapType)
+                .WithMany(e => e.MapTypeMaps)
+                .HasForeignKey(e => e.MapTypeId)
+                .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<MapType>()
+                .HasRequired(e => e.Map)
+                .WithMany(e => e.MapTypes)
+                .HasForeignKey(e => e.MapId)
+                .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<MapType>()
+                .HasMany(e => e.Drops)
+                .WithOptional(e => e.MapType)
+                .HasForeignKey(e => e.MapTypeId)
+                .WillCascadeOnDelete(false);
+
             modelBuilder.Entity<MapNpc>()
                 .HasMany(e => e.Recipe)
                 .WithRequired(e => e.MapNpc)
@@ -186,7 +218,7 @@ namespace OpenNos.DAL.EF.MySQL.DB
 
             modelBuilder.Entity<NpcMonster>()
                 .HasMany(e => e.Drop)
-                .WithRequired(e => e.NpcMonster)
+                .WithOptional(e => e.NpcMonster)
                 .HasForeignKey(e => e.MonsterVNum)
                 .WillCascadeOnDelete(false);
 

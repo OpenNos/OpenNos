@@ -3,7 +3,7 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class zeus : DbMigration
+    public partial class Hera : DbMigration
     {
         public override void Up()
         {
@@ -215,12 +215,15 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
                         Amount = c.Int(nullable: false),
                         DropChance = c.Int(nullable: false),
                         ItemVNum = c.Short(nullable: false),
-                        MonsterVNum = c.Short(nullable: true),
+                        MapTypeId = c.Short(),
+                        MonsterVNum = c.Short(),
                     })
                 .PrimaryKey(t => t.DropId)
                 .ForeignKey("dbo.Item", t => t.ItemVNum)
+                .ForeignKey("dbo.MapType", t => t.MapTypeId)
                 .ForeignKey("dbo.NpcMonster", t => t.MonsterVNum)
                 .Index(t => t.ItemVNum)
+                .Index(t => t.MapTypeId)
                 .Index(t => t.MonsterVNum);
             
             CreateTable(
@@ -339,10 +342,13 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
                     {
                         MapId = c.Short(nullable: false),
                         Data = c.Binary(),
+                        MapTypeId = c.Short(nullable: false),
                         Music = c.Int(nullable: false),
                         Name = c.String(maxLength: 255, storeType: "nvarchar"),
                     })
-                .PrimaryKey(t => t.MapId);
+                .PrimaryKey(t => t.MapId)
+                .ForeignKey("dbo.MapType", t => t.MapTypeId)
+                .Index(t => t.MapTypeId);
             
             CreateTable(
                 "dbo.MapMonster",
@@ -361,6 +367,30 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
                 .ForeignKey("dbo.NpcMonster", t => t.MonsterVNum)
                 .Index(t => t.MapId)
                 .Index(t => t.MonsterVNum);
+            
+            CreateTable(
+                "dbo.MapType",
+                c => new
+                    {
+                        MapTypeId = c.Short(nullable: false, identity: true),
+                        MapId = c.Short(nullable: false),
+                    })
+                .PrimaryKey(t => t.MapTypeId)
+                .ForeignKey("dbo.Map", t => t.MapId)
+                .Index(t => t.MapId);
+            
+            CreateTable(
+                "dbo.MapTypeMap",
+                c => new
+                    {
+                        MapId = c.Short(nullable: false),
+                        MapTypeId = c.Short(nullable: false),
+                    })
+                .PrimaryKey(t => new { t.MapId, t.MapTypeId })
+                .ForeignKey("dbo.Map", t => t.MapId)
+                .ForeignKey("dbo.MapType", t => t.MapTypeId)
+                .Index(t => t.MapId)
+                .Index(t => t.MapTypeId);
             
             CreateTable(
                 "dbo.Portal",
@@ -637,6 +667,11 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
             DropForeignKey("dbo.Teleporter", "MapId", "dbo.Map");
             DropForeignKey("dbo.Portal", "SourceMapId", "dbo.Map");
             DropForeignKey("dbo.Portal", "DestinationMapId", "dbo.Map");
+            DropForeignKey("dbo.Map", "MapTypeId", "dbo.MapType");
+            DropForeignKey("dbo.MapTypeMap", "MapTypeId", "dbo.MapType");
+            DropForeignKey("dbo.MapTypeMap", "MapId", "dbo.Map");
+            DropForeignKey("dbo.MapType", "MapId", "dbo.Map");
+            DropForeignKey("dbo.Drop", "MapTypeId", "dbo.MapType");
             DropForeignKey("dbo.MapNpc", "MapId", "dbo.Map");
             DropForeignKey("dbo.MapMonster", "MapId", "dbo.Map");
             DropForeignKey("dbo.Character", "MapId", "dbo.Map");
@@ -662,13 +697,18 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
             DropIndex("dbo.Teleporter", new[] { "MapId" });
             DropIndex("dbo.Portal", new[] { "SourceMapId" });
             DropIndex("dbo.Portal", new[] { "DestinationMapId" });
+            DropIndex("dbo.MapTypeMap", new[] { "MapTypeId" });
+            DropIndex("dbo.MapTypeMap", new[] { "MapId" });
+            DropIndex("dbo.MapType", new[] { "MapId" });
             DropIndex("dbo.MapMonster", new[] { "MonsterVNum" });
             DropIndex("dbo.MapMonster", new[] { "MapId" });
+            DropIndex("dbo.Map", new[] { "MapTypeId" });
             DropIndex("dbo.MapNpc", new[] { "NpcVNum" });
             DropIndex("dbo.MapNpc", new[] { "MapId" });
             DropIndex("dbo.Recipe", new[] { "MapNpcId" });
             DropIndex("dbo.Recipe", new[] { "ItemVNum" });
             DropIndex("dbo.Drop", new[] { "MonsterVNum" });
+            DropIndex("dbo.Drop", new[] { "MapTypeId" });
             DropIndex("dbo.Drop", new[] { "ItemVNum" });
             DropIndex("dbo.NpcMonsterSkill", new[] { "SkillVNum" });
             DropIndex("dbo.NpcMonsterSkill", new[] { "NpcMonsterVNum" });
@@ -689,6 +729,8 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
             DropTable("dbo.Shop");
             DropTable("dbo.Teleporter");
             DropTable("dbo.Portal");
+            DropTable("dbo.MapTypeMap");
+            DropTable("dbo.MapType");
             DropTable("dbo.MapMonster");
             DropTable("dbo.Map");
             DropTable("dbo.MapNpc");
