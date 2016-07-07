@@ -834,12 +834,13 @@ namespace OpenNos.Handler
                                 Session.Client.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("SEED_USED"), 10), 10));
                             Session.Character.Hp = (int)(Session.Character.HPLoad() / 2);
                             Session.Character.Mp = (int)(Session.Character.MPLoad() / 2);
+                            Session.Client.SendPacket(Session.Character.GenerateStat()); //this is what you need to add :)
                             Session.Client.SendPacket(Session.Character.GenerateTp());
                             Session.CurrentMap?.Broadcast(Session.Character.GenerateTp());
                             Session.CurrentMap?.Broadcast(Session.Character.GenerateRevive());
                             Session.Character.InventoryList.RemoveItemAmount(seed, 10);
                             Session.Character.GenerateStartupInventory();
-                        }
+                            }
                         break;
 
                     case 1:
@@ -973,7 +974,7 @@ namespace OpenNos.Handler
             }
             Session.Character.LoadSkills();
             Session.Client.SendPacket(Session.Character.GenerateTit());
-            if (Session.Character.Hp <= 0)
+            if (Session.Character.Hp <= 0) 
                 ServerManager.Instance.ReviveFirstPosition(Session.Character.CharacterId);
             else
                 ServerManager.Instance.ChangeMap(Session.Character.CharacterId);
