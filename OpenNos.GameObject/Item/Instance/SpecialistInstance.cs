@@ -239,7 +239,7 @@ namespace OpenNos.GameObject
                 {
                     count = 2;
                 }
-                if (count == 5)
+                if (upmode == 5)
                 {
                     count = (byte)r.Next(3, 6);
                 }
