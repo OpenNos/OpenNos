@@ -834,7 +834,7 @@ namespace OpenNos.Handler
                                 Session.Client.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("SEED_USED"), 10), 10));
                             Session.Character.Hp = (int)(Session.Character.HPLoad() / 2);
                             Session.Character.Mp = (int)(Session.Character.MPLoad() / 2);
-                            Session.Client.SendPacket(Session.Character.GenerateStat()); //Problem revive HP #646 bugfix
+                            Session.Client.SendPacket(Session.Character.GenerateStat());
                             Session.Client.SendPacket(Session.Character.GenerateTp());
                             Session.CurrentMap?.Broadcast(Session.Character.GenerateTp());
                             Session.CurrentMap?.Broadcast(Session.Character.GenerateRevive());
