@@ -234,7 +234,6 @@ namespace OpenNos.GameObject
             if (rnd <= upsuccess[upmode])
             {
                 byte type = (byte)r.Next(16), count = 1;
-
                 if (upmode == 4)
                 {
                     count = 2;
