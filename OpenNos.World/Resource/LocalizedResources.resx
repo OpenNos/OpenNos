@@ -706,4 +706,7 @@
   <data name="SKILLS_IN_LOADING" xml:space="preserve">
     <value>You must wait until the skills are recharged</value>
   </data>
+  <data name="ALREADY_EXCHANGE" xml:space="preserve">
+    <value>User is actually in exchange</value>
+  </data>
 </root>

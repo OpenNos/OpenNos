@@ -51,11 +51,13 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (var context = DataAccessHelper.CreateContext())
             {
+                context.Configuration.AutoDetectChangesEnabled = false;
                 foreach (MapDTO Item in maps)
                 {
                     Map entity = _mapper.Map<Map>(Item);
                     context.Map.Add(entity);
                 }
+                context.Configuration.AutoDetectChangesEnabled = true;
                 context.SaveChanges();
             }
         }
