@@ -1,0 +1,81 @@
+﻿/*
+ * This file is part of the OpenNos Emulator Project. See AUTHORS file for Copyright information
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
+using AutoMapper;
+using OpenNos.DAL.EF.MySQL.Helpers;
+using OpenNos.DAL.Interface;
+using OpenNos.Data;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace OpenNos.DAL.EF.MySQL
+{
+    public class PenaltyLogDAO : IPenaltyLogDAO
+    {
+        #region Members
+
+        private IMapper _mapper;
+
+        #endregion
+
+        #region Instantiation
+
+        public PenaltyLogDAO()
+        {
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<PenaltyLog, PenaltyLogDTO>();
+                cfg.CreateMap<PenaltyLogDTO, PenaltyLog>();
+            });
+
+            _mapper = config.CreateMapper();
+        }
+
+        #endregion
+
+        #region Methods
+
+        public PenaltyLogDTO Insert(PenaltyLogDTO penaltylog)
+        {
+            using (var context = DataAccessHelper.CreateContext())
+            {
+                PenaltyLog entity = _mapper.Map<PenaltyLog>(penaltylog);
+                context.PenaltyLog.Add(entity);
+                context.SaveChanges();
+                return _mapper.Map<PenaltyLogDTO>(penaltylog);
+            }
+        }
+
+        public IEnumerable<PenaltyLogDTO> LoadByAccount(long accountId)
+        {
+            using (var context = DataAccessHelper.CreateContext())
+            {
+                foreach (PenaltyLog PenaltyLog in context.PenaltyLog.Where(s => s.AccountId.Equals(accountId)))
+                {
+                    yield return _mapper.Map<PenaltyLogDTO>(PenaltyLog);
+                }
+            }
+        }
+
+        public PenaltyLogDTO LoadById(int penaltylogId)
+        {
+            using (var context = DataAccessHelper.CreateContext())
+            {
+                return _mapper.Map<PenaltyLogDTO>(context.PenaltyLog.FirstOrDefault(s => s.PenaltyLogId.Equals(penaltylogId)));
+            }
+        }
+
+        #endregion
+    }
+}

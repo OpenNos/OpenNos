@@ -41,6 +41,7 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public virtual DbSet<Combo> Combo { get; set; }
         public virtual DbSet<Drop> Drop { get; set; }
         public virtual DbSet<GeneralLog> GeneralLog { get; set; }
+        public virtual DbSet<PenaltyLog> PenaltyLog { get; set; }
         public virtual DbSet<Inventory> Inventory { get; set; }
         public virtual DbSet<Item> Item { get; set; }
         public virtual DbSet<ItemInstance> ItemInstance { get; set; }
@@ -90,8 +91,14 @@ namespace OpenNos.DAL.EF.MySQL.DB
                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<Account>()
+                .HasMany(e => e.PenaltyLog)
+                .WithRequired(e => e.Account)
+                .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<Account>()
                 .HasMany(e => e.GeneralLog)
                 .WithRequired(e => e.Account)
+                .HasForeignKey(e => e.AccountId)
                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<Character>()
