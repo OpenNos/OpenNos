@@ -13,7 +13,6 @@
  */
 
 using AutoMapper;
-
 using OpenNos.DAL.EF.MySQL.Helpers;
 using OpenNos.DAL.Interface;
 using OpenNos.Data;
@@ -22,7 +21,7 @@ using System.Linq;
 
 namespace OpenNos.DAL.EF.MySQL
 {
-    public class MapDAO : IMapDAO
+    public class PenaltyLogDAO : IPenaltyLogDAO
     {
         #region Members
 
@@ -32,12 +31,12 @@ namespace OpenNos.DAL.EF.MySQL
 
         #region Instantiation
 
-        public MapDAO()
+        public PenaltyLogDAO()
         {
             var config = new MapperConfiguration(cfg =>
             {
-                cfg.CreateMap<Map, MapDTO>();
-                cfg.CreateMap<MapDTO, Map>();
+                cfg.CreateMap<PenaltyLog, PenaltyLogDTO>();
+                cfg.CreateMap<PenaltyLogDTO, PenaltyLog>();
             });
 
             _mapper = config.CreateMapper();
@@ -47,52 +46,33 @@ namespace OpenNos.DAL.EF.MySQL
 
         #region Methods
 
-        public void Insert(List<MapDTO> maps)
+        public PenaltyLogDTO Insert(PenaltyLogDTO penaltylog)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                context.Configuration.AutoDetectChangesEnabled = false;
-                foreach (MapDTO Item in maps)
-                {
-                    Map entity = _mapper.Map<Map>(Item);
-                    context.Map.Add(entity);
-                }
-                context.Configuration.AutoDetectChangesEnabled = true;
+                PenaltyLog entity = _mapper.Map<PenaltyLog>(penaltylog);
+                context.PenaltyLog.Add(entity);
                 context.SaveChanges();
+                return _mapper.Map<PenaltyLogDTO>(penaltylog);
             }
         }
 
-        public MapDTO Insert(MapDTO map)
+        public IEnumerable<PenaltyLogDTO> LoadByAccount(long accountId)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                if (context.Map.FirstOrDefault(c => c.MapId.Equals(map.MapId)) == null)
+                foreach (PenaltyLog PenaltyLog in context.PenaltyLog.Where(s => s.AccountId.Equals(accountId)))
                 {
-                    Map entity = _mapper.Map<Map>(map);
-                    context.Map.Add(entity);
-                    context.SaveChanges();
-                    return _mapper.Map<MapDTO>(entity);
-                }
-                else return new MapDTO();
-            }
-        }
-
-        public IEnumerable<MapDTO> LoadAll()
-        {
-            using (var context = DataAccessHelper.CreateContext())
-            {
-                foreach (Map Map in context.Map)
-                {
-                    yield return _mapper.Map<MapDTO>(Map);
+                    yield return _mapper.Map<PenaltyLogDTO>(PenaltyLog);
                 }
             }
         }
 
-        public MapDTO LoadById(short mapId)
+        public PenaltyLogDTO LoadById(int penaltylogId)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                return _mapper.Map<MapDTO>(context.Map.FirstOrDefault(c => c.MapId.Equals(mapId)));
+                return _mapper.Map<PenaltyLogDTO>(context.PenaltyLog.FirstOrDefault(s => s.PenaltyLogId.Equals(penaltylogId)));
             }
         }
 

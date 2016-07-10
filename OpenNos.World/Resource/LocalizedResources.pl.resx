@@ -515,7 +515,7 @@
     <value>{0} Załadowanych przepisów!</value>
   </data>
   <data name="YOU_REFUSED" xml:space="preserve">
-    <value>Wymiana odrzucona</value>
+    <value>Odrzuciłeś wymianę</value>
   </data>
   <data name="REMOVE_SP" xml:space="preserve">
     <value>Jesli chcesz nauczyc sie umiejetnosci zdejmij karte specialisty</value>
@@ -686,6 +686,9 @@
     <value>Mozesz sprzedawać tylko wymienialne przedmioty w sklepie prywatnym.</value>
   </data>
   <data name="SKILLS_IN_LOADING" xml:space="preserve">
-    <value>Musisz poczekać, aż umiejętności są ładowane</value>
+    <value>Musisz poczekać aż umiejętności się odnowią</value>
+  </data>
+  <data name="ALREADY_EXCHANGE" xml:space="preserve">
+    <value>Użytkownik przeprowadza aktualnie wymianę</value>
   </data>
 </root>

@@ -96,6 +96,7 @@
     <Compile Include="Entities\MapMonster.cs" />
     <Compile Include="Entities\MapType.cs" />
     <Compile Include="Entities\MapTypeMap.cs" />
+    <Compile Include="Entities\PenaltyLog.cs" />
     <Compile Include="Entities\SpecialistInstance.cs" />
     <Compile Include="Entities\UsableInstance.cs" />
     <Compile Include="Entities\WearableInstance.cs" />
@@ -107,15 +108,16 @@
     <Compile Include="Entities\NpcMonster.cs" />
     <Compile Include="Entities\NpcMonsterskill.cs" />
     <Compile Include="MapTypeDAO.cs" />
-    <Compile Include="Migrations\201607062158019_Poseidon.cs" />
-    <Compile Include="Migrations\201607062158019_Poseidon.Designer.cs">
-      <DependentUpon>201607062158019_Poseidon.cs</DependentUpon>
+    <Compile Include="Migrations\201607092012339_Succubus.cs" />
+    <Compile Include="Migrations\201607092012339_Succubus.Designer.cs">
+      <DependentUpon>201607092012339_Succubus.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="NpcMonsterSkillDAO.cs" />
     <Compile Include="DB\OpenNosContext.cs" />
     <Compile Include="Entities\Portal.cs" />
     <Compile Include="Entities\QuicklistEntry.cs" />
+    <Compile Include="PenaltyLogDAO.cs" />
     <Compile Include="QuicklistEntryDAO.cs" />
     <Compile Include="Entities\Recipe.cs" />
     <Compile Include="RecipeDAO.cs" />
@@ -188,8 +190,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201607062158019_Poseidon.resx">
-      <DependentUpon>201607062158019_Poseidon.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201607092012339_Succubus.resx">
+      <DependentUpon>201607092012339_Succubus.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

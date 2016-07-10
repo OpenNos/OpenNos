@@ -106,6 +106,7 @@ namespace OpenNos.DAL.EF.MySQL.Helpers
                     context.MapType.Any();
                     context.Portal.Any();
                     context.GeneralLog.Any();
+                    context.PenaltyLog.Any();
                     context.Character.Any();
                     context.NpcMonster.Any();
                     context.MapNpc.Any();

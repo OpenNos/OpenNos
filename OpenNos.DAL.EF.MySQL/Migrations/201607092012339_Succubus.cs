@@ -3,7 +3,7 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class Poseidon : DbMigration
+    public partial class Succubus : DbMigration
     {
         public override void Up()
         {
@@ -635,10 +635,26 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
                 .ForeignKey("dbo.Character", t => t.CharacterId)
                 .Index(t => t.CharacterId);
             
+            CreateTable(
+                "dbo.PenaltyLog",
+                c => new
+                    {
+                        PenaltyLogId = c.Int(nullable: false, identity: true),
+                        AccountId = c.Long(nullable: false),
+                        DateEnd = c.DateTime(nullable: false, precision: 0),
+                        DateStart = c.DateTime(nullable: false, precision: 0),
+                        Reason = c.String(maxLength: 255, storeType: "nvarchar"),
+                        Penatly = c.Byte(nullable: false),
+                    })
+                .PrimaryKey(t => t.PenaltyLogId)
+                .ForeignKey("dbo.Account", t => t.AccountId)
+                .Index(t => t.AccountId);
+            
         }
         
         public override void Down()
         {
+            DropForeignKey("dbo.PenaltyLog", "AccountId", "dbo.Account");
             DropForeignKey("dbo.GeneralLog", "AccountId", "dbo.Account");
             DropForeignKey("dbo.Character", "AccountId", "dbo.Account");
             DropForeignKey("dbo.Respawn", "CharacterId", "dbo.Character");
@@ -678,6 +694,7 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
             DropForeignKey("dbo.Drop", "ItemVNum", "dbo.Item");
             DropForeignKey("dbo.Combo", "SkillVNum", "dbo.Skill");
             DropForeignKey("dbo.CharacterSkill", "SkillVNum", "dbo.Skill");
+            DropIndex("dbo.PenaltyLog", new[] { "AccountId" });
             DropIndex("dbo.Respawn", new[] { "CharacterId" });
             DropIndex("dbo.QuicklistEntry", new[] { "CharacterId" });
             DropIndex("dbo.CellonOption", new[] { "WearableInstanceId" });
@@ -717,6 +734,7 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
             DropIndex("dbo.CharacterSkill", new[] { "CharacterId" });
             DropIndex("dbo.Character", new[] { "MapId" });
             DropIndex("dbo.Character", new[] { "AccountId" });
+            DropTable("dbo.PenaltyLog");
             DropTable("dbo.Respawn");
             DropTable("dbo.QuicklistEntry");
             DropTable("dbo.CellonOption");

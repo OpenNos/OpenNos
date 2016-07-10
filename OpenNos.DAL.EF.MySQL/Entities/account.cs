@@ -27,6 +27,7 @@ namespace OpenNos.DAL.EF.MySQL
         {
             Character = new HashSet<Character>();
             GeneralLog = new HashSet<GeneralLog>();
+            PenaltyLog = new HashSet<PenaltyLog>();
         }
 
         #endregion
@@ -40,6 +41,7 @@ namespace OpenNos.DAL.EF.MySQL
         public virtual ICollection<Character> Character { get; set; }
 
         public virtual ICollection<GeneralLog> GeneralLog { get; set; }
+        public virtual ICollection<PenaltyLog> PenaltyLog { get; set; }
 
         public DateTime LastCompliment { get; set; }
 

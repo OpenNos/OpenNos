@@ -48,7 +48,7 @@ namespace OpenNos.DAL
         private static IShopSkillDAO _shopskillDAO;
         private static ISkillDAO _skillDAO;
         private static ITeleporterDAO _teleporterDAO;
-
+        private static IPenaltyLogDAO _penaltylogDAO;
         #endregion
 
         #region Instantiation
@@ -157,6 +157,18 @@ namespace OpenNos.DAL
                 }
 
                 return _generallogDAO;
+            }
+        }
+        public static IPenaltyLogDAO PenaltyLogDAO
+        {
+            get
+            {
+                if (_penaltylogDAO == null)
+                {
+                    _penaltylogDAO = new MySQL.PenaltyLogDAO();
+                }
+
+                return _penaltylogDAO;
             }
         }
 

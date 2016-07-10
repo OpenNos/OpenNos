@@ -704,6 +704,9 @@
     <value>Your punishment has ended</value>
   </data>
   <data name="SKILLS_IN_LOADING" xml:space="preserve">
-    <value>You must wait until the skills are recharged</value>
+    <value>You need to wait until skill cooldown finishes</value>
+  </data>
+  <data name="ALREADY_EXCHANGE" xml:space="preserve">
+    <value>User is actually in exchange</value>
   </data>
 </root>
