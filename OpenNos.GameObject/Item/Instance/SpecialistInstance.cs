@@ -304,6 +304,7 @@ namespace OpenNos.GameObject
             Session.Client.SendPacket(Session.Character.GenerateGold());
             Session.Character.InventoryList.RemoveItemAmount(stonevnum, stoneprice[upmode]);
             Session.Character.GenerateStartupInventory();
+            Session.Client.SendPacket("shop_end 1");
         }
 
         public void UpgradeSp(ClientSession Session, UpgradeProtection protect)
