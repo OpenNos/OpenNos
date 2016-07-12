@@ -205,24 +205,51 @@ namespace OpenNos.GameObject
 
         #region Methods
 
-         public void GenerateClassItems(short vnum)
+        public void GenerateClassItems(short vnum, int amount, string type)
         {
-            Inventory inv = Session.Character.InventoryList.AddNewItemToInventory(vnum);
-            inv.ItemInstance.Amount = 1;
-            inv.ItemInstance.Rare = 0;
-            inv.ItemInstance.Upgrade = 0;
-            inv.ItemInstance.Design = 0;
+            // 1 = Wear . 2 = Etc
 
-            if (inv != null)
+            switch (type)
             {
-                short Slot = inv.Slot;
-                if (Slot != -1)
-                    Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(vnum, inv.ItemInstance.Amount, (byte)InventoryType.Wear, Slot, 0, 0, 0));
-                   
-                    if (inv != null && inv.ItemInstance != null && (inv.ItemInstance as ItemInstance).Item != null)
-                    (inv.ItemInstance as ItemInstance).Item.Use(Session, ref inv);
-                    
-                
+                case "EQUIP":
+                    Inventory inv = Session.Character.InventoryList.AddNewItemToInventory(vnum);
+                    inv.ItemInstance.Amount = amount;
+                    inv.ItemInstance.Rare = 0;
+                    inv.ItemInstance.Upgrade = 0;
+                    inv.ItemInstance.Design = 0;
+
+                    if (inv != null)
+                    {
+                        short Slot = inv.Slot;
+                        if (Slot != -1)
+                            Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(vnum, inv.ItemInstance.Amount, (byte)InventoryType.Wear, Slot, 0, 0, 0));
+
+                        if (inv != null && inv.ItemInstance != null && (inv.ItemInstance as ItemInstance).Item != null)
+                            (inv.ItemInstance as ItemInstance).Item.Use(Session, ref inv);
+
+
+                    }
+                    break;
+
+                case "AMMO":
+                    inv = Session.Character.InventoryList.AddNewItemToInventory(vnum);
+                    inv.ItemInstance.Amount = amount;
+                    inv.ItemInstance.Rare = 0;
+                    inv.ItemInstance.Upgrade = 0;
+                    inv.ItemInstance.Design = 0;
+
+                    if (inv != null)
+                    {
+                        short Slot = inv.Slot;
+                        if (Slot != -1)
+                            Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(vnum, inv.ItemInstance.Amount, (byte)InventoryType.Etc, Slot, 0, 0, 0));
+
+                        if (inv != null && inv.ItemInstance != null && (inv.ItemInstance as ItemInstance).Item != null)
+                            (inv.ItemInstance as ItemInstance).Item.Use(Session, ref inv);
+
+
+                    }
+                    break;
             }
 
         }
@@ -246,51 +273,27 @@ namespace OpenNos.GameObject
                 // 18 94 68  32 107 78  46 120 86
                 if (session.Character.Class == 1)
                 {
-                    GenerateClassItems(18);
-                    GenerateClassItems(94);
-                    GenerateClassItems(68);
-
-                    Inventory inv = Session.Character.InventoryList.AddNewItemToInventory(2082);
-                    inv.ItemInstance.Amount = 10;
-                    inv.ItemInstance.Rare = 0;
-                    inv.ItemInstance.Upgrade = 0;
-                    inv.ItemInstance.Design = 0;
-
-                    if (inv != null)
-                    {
-                        short Slot = inv.Slot;
-                        if (Slot != -1)
-                            Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(2082, inv.ItemInstance.Amount, (byte)InventoryType.Etc, Slot, 0, 0, 0));
-                    }
-
+                    GenerateClassItems(18, 1, "EQUIP");
+                    GenerateClassItems(94, 1, "EQUIP");
+                    GenerateClassItems(68, 1, "EQUIP");
+                    GenerateClassItems(2082, 10, "AMMO");
                 }
 
                 if (session.Character.Class == 2)
                 {
-                    GenerateClassItems(32);
-                    GenerateClassItems(107);
-                    GenerateClassItems(78);
-
-                    Inventory inv = Session.Character.InventoryList.AddNewItemToInventory(2083);
-                    inv.ItemInstance.Amount = 10;
-                    inv.ItemInstance.Rare = 0;
-                    inv.ItemInstance.Upgrade = 0;
-                    inv.ItemInstance.Design = 0;
-
-                    if (inv != null)
-                    {
-                        short Slot = inv.Slot;
-                        if (Slot != -1)
-                            Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(2083, inv.ItemInstance.Amount, (byte)InventoryType.Etc, Slot, 0, 0, 0));
-                    }
+                    GenerateClassItems(32, 1, "EQUIP");
+                    GenerateClassItems(107, 1, "EQUIP");
+                    GenerateClassItems(78, 1, "EQUIP");
+                    GenerateClassItems(2083, 10, "AMMO");
                 }
+
                  if (session.Character.Class == 3)
                  {
-                      GenerateClassItems(46);
-                      GenerateClassItems(120);
-                      GenerateClassItems(86);
-
+                      GenerateClassItems(46, 1, "EQUIP");
+                      GenerateClassItems(120, 1, "EQUIP");
+                      GenerateClassItems(86, 1, "EQUIP");
                  }
+
                         //eq 37 0 1 0 9 3 -1.120.46.86.-1.-1.-1.-1 0 0
                         Session.CurrentMap?.Broadcast(session.Character.GenerateEq());
 
