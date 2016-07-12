@@ -250,7 +250,7 @@ namespace OpenNos.GameObject
                             Session.Character.EquipmentList.AddToInventoryWithSlotAndType(newItem46, (byte)InventoryType.Equipment, newItem46.Item.EquipmentSlot);
                             ItemInstance newItem120 = Session.Character.InventoryList.CreateItemInstance(120);
                             Session.Character.EquipmentList.AddToInventoryWithSlotAndType(newItem120, (byte)InventoryType.Equipment, newItem120.Item.EquipmentSlot);
-                            ItemInstance newItem86 = Session.Character.InventoryList.CreateItemInstance(78);
+                            ItemInstance newItem86 = Session.Character.InventoryList.CreateItemInstance(86);
                             Session.Character.EquipmentList.AddToInventoryWithSlotAndType(newItem86, (byte)InventoryType.Equipment, newItem86.Item.EquipmentSlot);
                             break;
                     }
