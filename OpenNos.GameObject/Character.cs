@@ -209,7 +209,7 @@ namespace OpenNos.GameObject
         {
             if (characterClass < 4)
             {
-                if (Session.Character.EquipmentList.Inventory.Any())
+                if (!Session.Character.EquipmentList.Inventory.Any())
                 {
                     ClientSession session = ServerManager.Instance.Sessions.SingleOrDefault(s => s.Character != null && s.Character.CharacterId.Equals(id));
                     session.Character.JobLevel = 1;
@@ -309,11 +309,12 @@ namespace OpenNos.GameObject
                     if (ServerManager.Instance.Groups.FirstOrDefault(s => s.IsMemberOfGroup(session)) != null)
                         ServerManager.Instance.Broadcast(session, $"pidx 1 1.{session.Character.CharacterId}", ReceiverType.AllExceptMe);
                 }
+                else
+                {
+                    Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UNWEAR_ALL"), 10);
+                }
             }
-            else
-            {
-                Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UNWEAR_ALL"), 10);
-            }
+
         }
 
         public void CloseShop()
