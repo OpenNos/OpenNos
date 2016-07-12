@@ -93,7 +93,7 @@ namespace OpenNos.GameObject
         {
             short[] upsuccess = { 50, 40, 30, 20, 10 };
 
-            int[] goldprice = { 5000, 1000, 20000, 50000, 100000 };
+            int[] goldprice = { 5000, 10000, 20000, 50000, 100000 };
             short[] stoneprice = { 1, 2, 3, 4, 5 };
             short stonevnum;
             byte upmode = 1;
@@ -304,6 +304,7 @@ namespace OpenNos.GameObject
             Session.Client.SendPacket(Session.Character.GenerateGold());
             Session.Character.InventoryList.RemoveItemAmount(stonevnum, stoneprice[upmode]);
             Session.Character.GenerateStartupInventory();
+            Session.Client.SendPacket("shop_end 1");
         }
 
         public void UpgradeSp(ClientSession Session, UpgradeProtection protect)
