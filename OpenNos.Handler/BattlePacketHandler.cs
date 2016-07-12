@@ -964,16 +964,15 @@ namespace OpenNos.Handler
                 Session.Client.SendPacket(Session.Character.GenerateEff(5));
             }
             int RateXP = int.Parse(System.Configuration.ConfigurationManager.AppSettings["RateXP"]);
-            int RateJXP = int.Parse(System.Configuration.ConfigurationManager.AppSettings["RateJXP"]);
             SpecialistInstance specialist = Session.Character.EquipmentList.LoadBySlotAndType<SpecialistInstance>((short)EquipmentType.Sp, (byte)InventoryType.Equipment);
             if (Session.Character.Level < 99)
                 Session.Character.LevelXp += monsterinfo.XP * RateXP;
             if ((Session.Character.Class == 0 && Session.Character.JobLevel < 20) || (Session.Character.Class != 0 && Session.Character.JobLevel < 80))
             {
                 if (specialist != null && Session.Character.UseSp && specialist.SpLevel < 99)
-                    Session.Character.JobLevelXp += ((int)((double)monsterinfo.JobXP / (double)100 * specialist.SpLevel)) * RateJXP;
+                    Session.Character.JobLevelXp += ((int)((double)monsterinfo.JobXP / (double)100 * specialist.SpLevel)) * RateXP;
                 else
-                    Session.Character.JobLevelXp += monsterinfo.JobXP * RateJXP;
+                    Session.Character.JobLevelXp += monsterinfo.JobXP * RateXP;
 
             }
             if (specialist != null && Session.Character.UseSp && specialist.SpLevel < 99)
