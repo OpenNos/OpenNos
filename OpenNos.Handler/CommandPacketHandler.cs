@@ -91,12 +91,47 @@ namespace OpenNos.Handler
                 {
                     DAOFactory.AccountDAO.ToggleBan(DAOFactory.CharacterDAO.LoadByName(packetsplit[2]).AccountId);
                     Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
+
                 }
                 else Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("USER_NOT_FOUND"), 10));
             }
             else
                 Session.Client.SendPacket(Session.Character.GenerateSay("$Ban CHARACTERNAME", 10));
             //Session.Client.SendPacket(Session.Character.GenerateSay("$Ban CHARACTERNAME REASON TIME", 10));
+        }
+        [Packet("$Mute")]
+        public void Mute(string packet)
+        {
+            Logger.Debug(packet, Session.SessionId);
+            string[] packetsplit = packet.Split(' ');
+
+            string name = packetsplit[2];
+            long? id = ServerManager.Instance.GetProperty<long?>(name, "CharacterId");
+            bool? isMuted = ServerManager.Instance.GetProperty<bool?>(name, "IsMuted");
+
+            if (packetsplit.Length > 2)
+            {
+                if (id != null)
+                {
+                    Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
+
+                    if (isMuted == false)
+                    {
+                        ServerManager.Instance.Broadcast(Session, Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("MUTED")), ReceiverType.OnlySomeone, "", (long)id);
+                        ServerManager.Instance.SetProperty((long)id, "IsMuted", true);
+                    }
+                    else
+                    {
+                        ServerManager.Instance.Broadcast(Session, Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MUTE_END"), 12), ReceiverType.OnlySomeone, "", (long)id);
+                        ServerManager.Instance.SetProperty((long)id, "IsMuted", false);
+                    }
+                }
+                else Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("USER_NOT_FOUND"), 10));
+
+            }
+            else
+                Session.Client.SendPacket(Session.Character.GenerateSay("$Mute CHARACTERNAME", 10));
+            //Session.Client.SendPacket(Session.Character.GenerateSay("$Mute CHARACTERNAME REASON TIME", 10));
         }
 
         [Packet("$ChangeClass")]
@@ -582,40 +617,6 @@ namespace OpenNos.Handler
             }
         }
 
-        [Packet("$Mute")]
-        public void Mute(string packet)
-        {
-            Logger.Debug(packet, Session.SessionId);
-            string[] packetsplit = packet.Split(' ');
-
-            string name = packetsplit[2];
-            long? id = ServerManager.Instance.GetProperty<long?>(name, "CharacterId");
-            bool? isMuted = ServerManager.Instance.GetProperty<bool?>(name, "IsMuted");
-
-            if (packetsplit.Length > 2)
-            {
-                if (id != null)
-                {
-                    Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
-
-                    if (isMuted == false)
-                    {
-                        ServerManager.Instance.Broadcast(Session, Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("MUTED")), ReceiverType.OnlySomeone, "", (long)id);
-                        ServerManager.Instance.SetProperty((long)id, "IsMuted", true);
-                    }
-                    else
-                    {
-                        ServerManager.Instance.Broadcast(Session, Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MUTE_END"), 12), ReceiverType.OnlySomeone, "", (long)id);
-                        ServerManager.Instance.SetProperty((long)id, "IsMuted", false);
-                    }
-                }
-                else Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("USER_NOT_FOUND"), 10));
-            }
-            else
-                Session.Client.SendPacket(Session.Character.GenerateSay("$Mute CHARACTERNAME", 10));
-            //Session.Client.SendPacket(Session.Character.GenerateSay("$Mute CHARACTERNAME REASON TIME", 10));
-        }
-
         [Packet("$PlayMusic")]
         public void PlayMusic(string packet)
         {
@@ -919,7 +920,6 @@ namespace OpenNos.Handler
             Session.Character.InventoryList.DeleteFromSlotAndType(slot, type);
             Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, type, slot, 0, 0, 0));
         }
-
         /*private void MutedTask()
         {
             ServerManager.Instance.Broadcast(Session, Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MUTE_TIME"), 11), ReceiverType.OnlySomeone, "", -1);
