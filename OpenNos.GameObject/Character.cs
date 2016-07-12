@@ -23,6 +23,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 
+
 namespace OpenNos.GameObject
 {
     public class Character : CharacterDTO
@@ -204,6 +205,36 @@ namespace OpenNos.GameObject
 
         #region Methods
 
+        /* public void GenerateClassItems(short vnum)
+        {
+            Inventory inv = Session.Character.InventoryList.AddNewItemToInventory(vnum);
+            inv.ItemInstance.Amount = 1;
+            inv.ItemInstance.Rare = 0;
+            inv.ItemInstance.Upgrade = 0;
+            inv.ItemInstance.Design = 0;
+
+            WearableInstance wearable = Session.Character.InventoryList.LoadBySlotAndType<WearableInstance>(inv.Slot, (byte)InventoryType.Wear);
+
+            if (wearable != null)
+            {
+                //ROLL
+                wearable.SetRarityPoint();
+            }
+
+            if (inv != null)
+            {
+                short Slot = inv.Slot;
+                if (Slot != -1)
+                {
+
+                    Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(vnum, inv.ItemInstance.Amount, (byte)InventoryType.Wear, Slot, 0, 0, 0));
+                    Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(vnum, inv.ItemInstance.Amount, (byte)InventoryType.Wear, Slot, 0, 0, 0));
+
+                   Session.Character.InventoryList.MoveItem((byte)InventoryType.Wear, Slot, 1, 15, inv, inv);
+                }
+            }
+
+        } */
         public void ChangeClass(long id, byte characterClass)
         {
             if (characterClass < 4)
@@ -221,7 +252,29 @@ namespace OpenNos.GameObject
                 session.Character.Hp = (int)session.Character.HPLoad();
                 session.Character.Mp = (int)session.Character.MPLoad();
                 session.Client.SendPacket(session.Character.GenerateTit());
+                // 18 94 68  32 107 78  46 120 86
+                /* if (session.Character.Class == 1)
+                {
+                     GenerateClassItems(18);
+                      GenerateClassItems(94);
+                      GenerateClassItems(68);
 
+                  }
+
+                  if (session.Character.Class == 2)
+                  {
+                     GenerateClassItems(32);
+                      GenerateClassItems(107);
+                      GenerateClassItems(78); 
+
+                  }
+                  if (session.Character.Class == 3)
+                  {
+                  GenerateClassItems(46);
+                      GenerateClassItems(120);
+                      GenerateClassItems(86); 
+
+                  }*/
                 //eq 37 0 1 0 9 3 -1.120.46.86.-1.-1.-1.-1 0 0
                 Session.CurrentMap?.Broadcast(session.Character.GenerateEq());
 
@@ -236,6 +289,7 @@ namespace OpenNos.GameObject
                 session.Character.Faction = faction;
                 session.Client.SendPacket(session.Character.GenerateMsg(Language.Instance.GetMessageFromKey($"GET_PROTECTION_POWER_{faction}"), 0));
                 session.Client.SendPacket("scr 0 0 0 0 0 0");
+               
 
                 session.Client.SendPacket(session.Character.GenerateFaction());
                 session.Client.SendPacket(session.Character.GenerateStatChar());
