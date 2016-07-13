@@ -47,11 +47,11 @@ namespace OpenNos.GameObject
                     }
                     if (!Session.Character.EquipmentList.Inventory.Any())
                     {
-                        ItemInstance newItem1 = Session.Character.InventoryList.CreateItemInstance((short)(4 + Session.Character.Class * 14));
+                        ItemInstance newItem1 = Session.Character.InventoryList.CreateItemInstance((short)(4 + type * 14));
                         Session.Character.EquipmentList.AddToInventoryWithSlotAndType(newItem1, (byte)InventoryType.Equipment, newItem1.Item.EquipmentSlot);
-                        ItemInstance newItem2 = Session.Character.InventoryList.CreateItemInstance((short)(81 + Session.Character.Class * 13));
+                        ItemInstance newItem2 = Session.Character.InventoryList.CreateItemInstance((short)(81 + type * 13));
                         Session.Character.EquipmentList.AddToInventoryWithSlotAndType(newItem2, (byte)InventoryType.Equipment, newItem2.Item.EquipmentSlot);
-                        switch (Session.Character.Class)
+                        switch (type)
                         {
                             case 1:
                                 ItemInstance newItem68 = Session.Character.InventoryList.CreateItemInstance(68);
