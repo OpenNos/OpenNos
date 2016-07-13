@@ -256,7 +256,7 @@ namespace OpenNos.GameObject
                     }
                     session.CurrentMap?.Broadcast(GenerateEq());
                     session.Client.SendPacket(GenerateEquipment());
-
+                    GenerateStartupInventory();
                     //equip 0 0 0.46.0.0.0 1.120.0.0.0 5.86.0.0.
                     session.Client.SendPacket(session.Character.GenerateLev());
                     session.Client.SendPacket(session.Character.GenerateStat());
@@ -311,7 +311,7 @@ namespace OpenNos.GameObject
                 }
                 else
                 {
-                    Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UNWEAR_ALL"), 10);
+                    Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UNWEAR_ALL"), 10));
                 }
             }
 
