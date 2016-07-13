@@ -45,9 +45,42 @@ namespace OpenNos.GameObject
                     {
                         return;
                     }
-                    if (Session.Character.EquipmentList.IsEmpty())
+                    if (!Session.Character.EquipmentList.Inventory.Any())
                     {
-                        Session.Character.ChangeClass(Session.Character.CharacterId, Convert.ToByte(type));
+
+                        switch (Session.Character.Class)
+                        {
+                            case 1:
+                                ItemInstance newItem18 = Session.Character.InventoryList.CreateItemInstance(18);
+                                Session.Character.EquipmentList.AddToInventoryWithSlotAndType(newItem18, (byte)InventoryType.Equipment, newItem18.Item.EquipmentSlot);
+                                ItemInstance newItem94 = Session.Character.InventoryList.CreateItemInstance(94);
+                                Session.Character.EquipmentList.AddToInventoryWithSlotAndType(newItem94, (byte)InventoryType.Equipment, newItem94.Item.EquipmentSlot);
+                                ItemInstance newItem68 = Session.Character.InventoryList.CreateItemInstance(68);
+                                Session.Character.EquipmentList.AddToInventoryWithSlotAndType(newItem68, (byte)InventoryType.Equipment, newItem68.Item.EquipmentSlot);
+                                Session.Character.InventoryList.AddNewItemToInventory(2082, 10);
+                                break;
+                            case 2:
+                                ItemInstance newItem32 = Session.Character.InventoryList.CreateItemInstance(32);
+                                Session.Character.EquipmentList.AddToInventoryWithSlotAndType(newItem32, (byte)InventoryType.Equipment, newItem32.Item.EquipmentSlot);
+                                ItemInstance newItem107 = Session.Character.InventoryList.CreateItemInstance(107);
+                                Session.Character.EquipmentList.AddToInventoryWithSlotAndType(newItem107, (byte)InventoryType.Equipment, newItem107.Item.EquipmentSlot);
+                                ItemInstance newItem78 = Session.Character.InventoryList.CreateItemInstance(78);
+                                Session.Character.EquipmentList.AddToInventoryWithSlotAndType(newItem78, (byte)InventoryType.Equipment, newItem78.Item.EquipmentSlot);
+                                Session.Character.InventoryList.AddNewItemToInventory(2083, 10);
+                                break;
+                            case 3:
+                                ItemInstance newItem46 = Session.Character.InventoryList.CreateItemInstance(46);
+                                Session.Character.EquipmentList.AddToInventoryWithSlotAndType(newItem46, (byte)InventoryType.Equipment, newItem46.Item.EquipmentSlot);
+                                ItemInstance newItem120 = Session.Character.InventoryList.CreateItemInstance(120);
+                                Session.Character.EquipmentList.AddToInventoryWithSlotAndType(newItem120, (byte)InventoryType.Equipment, newItem120.Item.EquipmentSlot);
+                                ItemInstance newItem86 = Session.Character.InventoryList.CreateItemInstance(86);
+                                Session.Character.EquipmentList.AddToInventoryWithSlotAndType(newItem86, (byte)InventoryType.Equipment, newItem86.Item.EquipmentSlot);
+                                break;
+                        }
+                        Session.CurrentMap?.Broadcast(Session.Character.GenerateEq());
+                        Session.Client.SendPacket(Session.Character.GenerateEquipment());
+                        Session.Character.GenerateStartupInventory();
+                        Session.Character.ChangeClass(Convert.ToByte(type));
                     }
                     else
                     {

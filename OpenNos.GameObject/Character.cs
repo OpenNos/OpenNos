@@ -205,99 +205,64 @@ namespace OpenNos.GameObject
 
         #region Methods
 
-        public void ChangeClass(long id, byte characterClass)
+        public void ChangeClass(byte characterClass)
         {
             if (characterClass < 4)
             {
-                if (!Session.Character.EquipmentList.Inventory.Any())
+                Session.Character.JobLevel = 1;
+                Session.Client.SendPacket("npinfo 0");
+                Session.Client.SendPacket("p_clear");
+
+                Session.Character.Class = characterClass;
+                if (ServersData.SpeedData.Contains(characterClass))
+                    Session.Character.Speed = ServersData.SpeedData[Session.Character.Class];
+
+                Session.Client.SendPacket(Session.Character.GenerateCond());
+                Session.Character.Hp = (int)Session.Character.HPLoad();
+                Session.Character.Mp = (int)Session.Character.MPLoad();
+                Session.Client.SendPacket(Session.Character.GenerateTit());
+
+                //equip 0 0 0.46.0.0.0 1.120.0.0.0 5.86.0.0.
+                Session.Client.SendPacket(Session.Character.GenerateLev());
+                Session.Client.SendPacket(Session.Character.GenerateStat());
+                Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateEff(8), ReceiverType.All);
+                Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("JOB_CHANGED"), 0));
+                Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateEff(196), ReceiverType.All);
+                Random rand = new Random();
+                int faction = 1 + (int)rand.Next(0, 2);
+                Session.Character.Faction = faction;
+                Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey($"GET_PROTECTION_POWER_{faction}"), 0));
+                Session.Client.SendPacket("scr 0 0 0 0 0 0");
+
+
+                Session.Client.SendPacket(Session.Character.GenerateFaction());
+                Session.Client.SendPacket(Session.Character.GenerateStatChar());
+
+                Session.Client.SendPacket(Session.Character.GenerateEff(4799 + faction));
+                Session.Client.SendPacket(Session.Character.GenerateLev());
+                Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
+                Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateEff(6), ReceiverType.All);
+                Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateEff(198), ReceiverType.All);
+
+                for (int i = Session.Character.Skills.Count - 1; i >= 0; i--)
                 {
-                    ClientSession session = ServerManager.Instance.Sessions.SingleOrDefault(s => s.Character != null && s.Character.CharacterId.Equals(id));
-                    session.Character.JobLevel = 1;
-                    session.Client.SendPacket("npinfo 0");
-                    session.Client.SendPacket("p_clear");
+                    if (Session.Character.Skills[i].SkillVNum >= 200)
+                        Session.Character.Skills.Remove(Session.Character.Skills[i]);
+                }
 
-                    session.Character.Class = characterClass;
-                    if (ServersData.SpeedData.Contains(characterClass))
-                        session.Character.Speed = ServersData.SpeedData[session.Character.Class];
+                Session.Character.Skills.Add(new CharacterSkill { SkillVNum = (short)(200 + 20 * Session.Character.Class), CharacterId = Session.Character.CharacterId });
+                Session.Character.Skills.Add(new CharacterSkill { SkillVNum = (short)(201 + 20 * Session.Character.Class), CharacterId = Session.Character.CharacterId });
 
-                    session.Client.SendPacket(session.Character.GenerateCond());
-                    session.Character.Hp = (int)session.Character.HPLoad();
-                    session.Character.Mp = (int)session.Character.MPLoad();
-                    session.Client.SendPacket(session.Character.GenerateTit());
+                Session.Client.SendPacket(Session.Character.GenerateSki());
 
-                    switch (session.Character.Class)
-                    {
-                        case 1:
-                            ItemInstance newItem18 = Session.Character.InventoryList.CreateItemInstance(18);
-                            Session.Character.EquipmentList.AddToInventoryWithSlotAndType(newItem18, (byte)InventoryType.Equipment, newItem18.Item.EquipmentSlot);
-                            ItemInstance newItem94 = Session.Character.InventoryList.CreateItemInstance(94);
-                            Session.Character.EquipmentList.AddToInventoryWithSlotAndType(newItem94, (byte)InventoryType.Equipment, newItem94.Item.EquipmentSlot);
-                            ItemInstance newItem68 = Session.Character.InventoryList.CreateItemInstance(68);
-                            Session.Character.EquipmentList.AddToInventoryWithSlotAndType(newItem68, (byte)InventoryType.Equipment, newItem68.Item.EquipmentSlot);
-                            Session.Character.InventoryList.AddNewItemToInventory(2082, 10);
-                            break;
-                        case 2:
-                            ItemInstance newItem32 = Session.Character.InventoryList.CreateItemInstance(32);
-                            Session.Character.EquipmentList.AddToInventoryWithSlotAndType(newItem32, (byte)InventoryType.Equipment, newItem32.Item.EquipmentSlot);
-                            ItemInstance newItem107 = Session.Character.InventoryList.CreateItemInstance(107);
-                            Session.Character.EquipmentList.AddToInventoryWithSlotAndType(newItem107, (byte)InventoryType.Equipment, newItem107.Item.EquipmentSlot);
-                            ItemInstance newItem78 = Session.Character.InventoryList.CreateItemInstance(78);
-                            Session.Character.EquipmentList.AddToInventoryWithSlotAndType(newItem78, (byte)InventoryType.Equipment, newItem78.Item.EquipmentSlot);
-                            Session.Character.InventoryList.AddNewItemToInventory(2083, 10);
-                            break;
-                        case 3:
-                            ItemInstance newItem46 = Session.Character.InventoryList.CreateItemInstance(46);
-                            Session.Character.EquipmentList.AddToInventoryWithSlotAndType(newItem46, (byte)InventoryType.Equipment, newItem46.Item.EquipmentSlot);
-                            ItemInstance newItem120 = Session.Character.InventoryList.CreateItemInstance(120);
-                            Session.Character.EquipmentList.AddToInventoryWithSlotAndType(newItem120, (byte)InventoryType.Equipment, newItem120.Item.EquipmentSlot);
-                            ItemInstance newItem86 = Session.Character.InventoryList.CreateItemInstance(86);
-                            Session.Character.EquipmentList.AddToInventoryWithSlotAndType(newItem86, (byte)InventoryType.Equipment, newItem86.Item.EquipmentSlot);
-                            break;
-                    }
-                    session.CurrentMap?.Broadcast(GenerateEq());
-                    session.Client.SendPacket(GenerateEquipment());
-                    GenerateStartupInventory();
-                    //equip 0 0 0.46.0.0.0 1.120.0.0.0 5.86.0.0.
-                    session.Client.SendPacket(session.Character.GenerateLev());
-                    session.Client.SendPacket(session.Character.GenerateStat());
-                    Session.CurrentMap?.Broadcast(session, session.Character.GenerateEff(8), ReceiverType.All);
-                    session.Client.SendPacket(session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("JOB_CHANGED"), 0));
-                    Session.CurrentMap?.Broadcast(session, session.Character.GenerateEff(196), ReceiverType.All);
-                    Random rand = new Random();
-                    int faction = 1 + (int)rand.Next(0, 2);
-                    session.Character.Faction = faction;
-                    session.Client.SendPacket(session.Character.GenerateMsg(Language.Instance.GetMessageFromKey($"GET_PROTECTION_POWER_{faction}"), 0));
-                    session.Client.SendPacket("scr 0 0 0 0 0 0");
-
-
-                    session.Client.SendPacket(session.Character.GenerateFaction());
-                    session.Client.SendPacket(session.Character.GenerateStatChar());
-
-                    session.Client.SendPacket(session.Character.GenerateEff(4799 + faction));
-                    session.Client.SendPacket(session.Character.GenerateLev());
-                    Session.CurrentMap?.Broadcast(session, session.Character.GenerateIn(), ReceiverType.AllExceptMe);
-                    Session.CurrentMap?.Broadcast(session, session.Character.GenerateEff(6), ReceiverType.All);
-                    Session.CurrentMap?.Broadcast(session, session.Character.GenerateEff(198), ReceiverType.All);
-
-                    for (int i = Session.Character.Skills.Count - 1; i >= 0; i--)
-                    {
-                        if (Session.Character.Skills[i].SkillVNum >= 200)
-                            Session.Character.Skills.Remove(Session.Character.Skills[i]);
-                    }
-
-                    session.Character.Skills.Add(new CharacterSkill { SkillVNum = (short)(200 + 20 * session.Character.Class), CharacterId = session.Character.CharacterId });
-                    session.Character.Skills.Add(new CharacterSkill { SkillVNum = (short)(201 + 20 * session.Character.Class), CharacterId = session.Character.CharacterId });
-
-                    session.Client.SendPacket(session.Character.GenerateSki());
-
-                    // TODO Reset Quicklist (just add Rest-on-T Item)
-                    foreach (QuicklistEntryDTO quicklists in DAOFactory.QuicklistEntryDAO.Load(session.Character.CharacterId).Where(quicklists => session.Character.QuicklistEntries.Any(qle => qle.EntryId == quicklists.EntryId)))
-                        DAOFactory.QuicklistEntryDAO.Delete(session.Character.CharacterId, quicklists.EntryId);
-                    session.Character.QuicklistEntries = new List<QuicklistEntry>
+                // TODO Reset Quicklist (just add Rest-on-T Item)
+                foreach (QuicklistEntryDTO quicklists in DAOFactory.QuicklistEntryDAO.Load(Session.Character.CharacterId).Where(quicklists => Session.Character.QuicklistEntries.Any(qle => qle.EntryId == quicklists.EntryId)))
+                    DAOFactory.QuicklistEntryDAO.Delete(Session.Character.CharacterId, quicklists.EntryId);
+                Session.Character.QuicklistEntries = new List<QuicklistEntry>
                 {
                     new QuicklistEntry
                     {
-                        CharacterId = session.Character.CharacterId,
+                        CharacterId = Session.Character.CharacterId,
                         Q1 = 0,
                         Q2 = 9,
                         Type = 1,
@@ -306,13 +271,10 @@ namespace OpenNos.GameObject
                     }
                 };
 
-                    if (ServerManager.Instance.Groups.FirstOrDefault(s => s.IsMemberOfGroup(session)) != null)
-                        ServerManager.Instance.Broadcast(session, $"pidx 1 1.{session.Character.CharacterId}", ReceiverType.AllExceptMe);
-                }
-                else
-                {
-                    Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UNWEAR_ALL"), 10));
-                }
+                if (ServerManager.Instance.Groups.FirstOrDefault(s => s.IsMemberOfGroup(Session)) != null)
+                    ServerManager.Instance.Broadcast(Session, $"pidx 1 1.{Session.Character.CharacterId}", ReceiverType.AllExceptMe);
+
+
             }
 
         }
