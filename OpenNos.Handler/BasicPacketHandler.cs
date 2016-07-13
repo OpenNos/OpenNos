@@ -1110,8 +1110,8 @@ namespace OpenNos.Handler
             }
             else
             {
-                // Session.Client.Disconnect();
-                Session.Client.SendPacket(Session.Character.GenerateCond());
+                Session.Client.Disconnect();
+                //Session.Client.SendPacket(Session.Character.GenerateCond());
             }
         }
 

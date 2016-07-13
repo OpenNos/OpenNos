@@ -601,12 +601,9 @@ namespace OpenNos.Handler
                         else
                         {
                             Session.Character.UseSp = false;
-
                             Session.Client.SendPacket(Session.Character.GenerateCond());
                             Session.Client.SendPacket(Session.Character.GenerateLev());
-
                             Session.CurrentMap?.Broadcast(Session.Character.GenerateCMode());
-                            Session.CurrentMap?.Broadcast($"guri 6 1 {Session.Character.CharacterId} 0 0");
                         }
                     }
                     break;
