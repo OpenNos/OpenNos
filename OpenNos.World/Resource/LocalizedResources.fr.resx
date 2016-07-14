@@ -685,6 +685,6 @@
     <value>Joueur introuvable</value>
   </data>
   <data name="WELCOME_MUSIC_INFO" xml:space="preserve">
-    <value>Mélodie du pringtemps</value>
+    <value>Mélodie^du^pringtemps </value>
   </data>
 </root>
