@@ -99,7 +99,7 @@ namespace OpenNos.Handler
                     Session.Client.SendPacket($"cancel 2 0");
                     return;
                 }
-                for (int i = 0; i < 25 && ski.Used; i++)
+                for (int i = 0; i < 100 && ski.Used; i++)
                 {
                     Thread.Sleep(100);
                 }
