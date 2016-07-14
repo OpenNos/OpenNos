@@ -687,4 +687,7 @@
   <data name="WELCOME_MUSIC_INFO" xml:space="preserve">
     <value>Mélodie^du^pringtemps </value>
   </data>
+  <data name="RESTORE_DIGNITY" xml:space="preserve">
+    <value>Dignité : +1</value>
+  </data>
 </root>

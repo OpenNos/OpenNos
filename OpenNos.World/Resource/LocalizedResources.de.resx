@@ -672,4 +672,7 @@
   <data name="SKILLS_IN_LOADING" xml:space="preserve">
     <value>Sie müssen warten, bis die Fähigkeiten wieder aufgeladen werden</value>
   </data>
+  <data name="RESTORE_DIGNITY" xml:space="preserve">
+    <value />
+  </data>
 </root>
