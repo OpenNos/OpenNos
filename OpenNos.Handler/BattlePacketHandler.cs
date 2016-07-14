@@ -956,10 +956,9 @@ namespace OpenNos.Handler
 
         private void GenerateXp(NpcMonster monsterinfo)
         {
-
-            if(Session.Character.Level +5 > monsterinfo.Level +2 && Session.Character.Dignite < 100)
+            if (Session.Character.Level < monsterinfo.Level && Session.Character.Dignite < 100)
             {
-                // Not finish, float needed (restore dignity 1x/2) Need Review
+                // Not finish, float needed (restore dignity 1x/2) Need Review it
                 Session.Character.Dignite++;
                 Session.Client.SendPacket(Session.Character.GenerateFd());
                 Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
