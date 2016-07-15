@@ -381,10 +381,10 @@ namespace OpenNos.Handler
                     }
                 }
                 else if (typePacket == 1)
+
                 {
                     KeyValuePair<long, MapShop> shop = Session.CurrentMap.UserShops.FirstOrDefault(mapshop => mapshop.Value.OwnerId.Equals(Session.Character.CharacterId));
                     Session.CurrentMap.UserShops.Remove(shop.Key);
-
                     Session.CurrentMap?.Broadcast(Session.Character.GenerateShopEnd());
                     Session.CurrentMap?.Broadcast(Session, Session.Character.GeneratePlayerFlag(0), ReceiverType.AllExceptMe);
                     Session.Character.Speed = Session.Character.LastSpeed != 0 ? Session.Character.LastSpeed : Session.Character.Speed;

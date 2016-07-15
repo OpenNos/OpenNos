@@ -96,7 +96,10 @@ namespace OpenNos.GameObject
                     }
 
                     Inventory equip = session.Character.EquipmentList.LoadInventoryBySlotAndType(iteminfo.EquipmentSlot, (byte)InventoryType.Equipment);
+                    if (iteminfo.EquipmentSlot == (byte)EquipmentType.Amulet)
+                        session.Client.SendPacket(session.Character.GenerateEff(39));
                     if (equip == null)
+
                     {
                         session.Character.EquipmentList.AddToInventoryWithSlotAndType(inventory.ItemInstance as ItemInstance, (byte)InventoryType.Equipment, iteminfo.EquipmentSlot);
                         session.Client.SendPacket(session.Character.GenerateInventoryAdd(-1, 0, type, slot, 0, 0, 0));

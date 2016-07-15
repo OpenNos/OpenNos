@@ -708,4 +708,7 @@
   <data name="WELCOME_MUSIC_INFO" xml:space="preserve">
     <value>Melodia Primaverile</value>
   </data>
+  <data name="RESTORE_DIGNITY" xml:space="preserve">
+    <value />
+  </data>
 </root>

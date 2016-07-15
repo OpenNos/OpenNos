@@ -397,7 +397,7 @@
     <value>Un nouveau client est connecté. ClientId =</value>
   </data>
   <data name="NEW_LEADER" xml:space="preserve">
-    <value>Vous êtes le chef du groupe.</value>
+    <value>Vous êtes maintenant le chef du groupe.</value>
   </data>
   <data name="NOT_ADVENTURER" xml:space="preserve">
     <value>Tu ne peux changer de classe qu'une seule fois.</value>
@@ -511,7 +511,7 @@
     <value>{0}: vendu &lt;{1} : pièces &gt;</value>
   </data>
   <data name="SEX_CHANGED" xml:space="preserve">
-    <value>Ton sexe a été changé.</value>
+    <value>Tu as changé de sexe.</value>
   </data>
   <data name="SHARING" xml:space="preserve">
     <value>La collecte d'objet a été modifiée &lt;&lt; Partager en tant que groupe &gt;&gt;</value>
@@ -639,15 +639,13 @@
   <data name="CLIENTSESSION_DISPOSING" xml:space="preserve">
     <value>La session client est actuellement fermée, les paquets ne sont pas traités.</value>
   </data>
-  <data name="
-        " xml:space="preserve">
+  <data name="&#xD;&#xA;        " xml:space="preserve">
     <value>La connexion au serveur a été interrompue.</value>
   </data>
   <data name="HEROLEVEL_CHANGED" xml:space="preserve">
     <value>Votre niveau héroïque a bien été changé !</value>
   </data>
-  <data name="LOSE_
-        " xml:space="preserve">
+  <data name="LOSE_&#xD;&#xA;        " xml:space="preserve">
     <value>Vous avez perdu {0} dignité.</value>
   </data>
   <data name="MUTED" xml:space="preserve">
@@ -679,5 +677,17 @@
   </data>
   <data name="YOU_REFUSED" xml:space="preserve">
     <value>Tu as refusé la demande d'échange.</value>
+  </data>
+  <data name="SP_REFILL" xml:space="preserve">
+    <value>Les points de spécialiste ont bien été ajoutés !</value>
+  </data>
+  <data name="USER_NOT_FOUND" xml:space="preserve">
+    <value>Joueur introuvable</value>
+  </data>
+  <data name="WELCOME_MUSIC_INFO" xml:space="preserve">
+    <value>Mélodie^du^pringtemps </value>
+  </data>
+  <data name="RESTORE_DIGNITY" xml:space="preserve">
+    <value>Dignité : +1</value>
   </data>
 </root>
