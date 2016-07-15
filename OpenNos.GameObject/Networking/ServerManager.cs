@@ -295,13 +295,15 @@ namespace OpenNos.GameObject
             if (Session != null && Session.Character != null)
             {
                 Session.Client.SendPacket(Session.Character.GenerateDialog($"#revival^0 #revival^1 {(Session.Character.Level > 20 ? Language.Instance.GetMessageFromKey("ASK_REVIVE") : Language.Instance.GetMessageFromKey("ASK_REVIVE_FREE"))}"));
-                Session.Character.Dignite -= (short)(Session.Character.Level < 50 ? Session.Character.Level : 50);
-                if (Session.Character.Dignite < -1000)
-                    Session.Character.Dignite = -1000;
+                if (Session.Character.Level > 20)
+                {
+                    Session.Character.Dignite -= (short)(Session.Character.Level < 50 ? Session.Character.Level : 50);
+                    if (Session.Character.Dignite < -1000)
+                        Session.Character.Dignite = -1000;
 
-                Session.Client.SendPacket(Session.Character.GenerateFd());
-                Session.Client.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("LOSE_DIGNITY"), (short)(Session.Character.Level < 50 ? Session.Character.Level : 50)), 11));
-
+                    Session.Client.SendPacket(Session.Character.GenerateFd());
+                    Session.Client.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("LOSE_DIGNITY"), (short)(Session.Character.Level < 50 ? Session.Character.Level : 50)), 11));
+                }
                 Task.Factory.StartNew(async () =>
                 {
                     for (int i = 1; i <= 30; i++)
