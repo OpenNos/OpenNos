@@ -710,6 +710,6 @@
     <value>User is actually in exchange</value>
   </data>
   <data name="RESTORE_DIGNITY" xml:space="preserve">
-    <value />
+    <value>Dignity +1</value>
   </data>
 </root>

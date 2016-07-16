@@ -645,7 +645,7 @@
   <data name="HEROLEVEL_CHANGED" xml:space="preserve">
     <value>Votre niveau héroïque a bien été changé !</value>
   </data>
-  <data name="LOSE_&#xD;&#xA;        " xml:space="preserve">
+  <data name="LOSE_DIGNITY" xml:space="preserve">
     <value>Vous avez perdu {0} dignité.</value>
   </data>
   <data name="MUTED" xml:space="preserve">
@@ -688,6 +688,22 @@
     <value>Mélodie^du^pringtemps </value>
   </data>
   <data name="RESTORE_DIGNITY" xml:space="preserve">
-    <value>Dignité : +1</value>
+    <value>Dignité +1</value>
+  </data>
+  <data name="DONE" xml:space="preserve">
+    <value>Le joueur a été sanctionné</value>
+    <comment>(Mute commande message)</comment>
+  </data>
+  <data name="NOT_ENOUGH_CP" xml:space="preserve">
+    <value>Vous n'avez pas assez de CP</value>
+  </data>
+  <data name="NOT_ENOUGH_REPUT" xml:space="preserve">
+    <value>Vous n'avez pas assez de réputation</value>
+  </data>
+  <data name="REMOVE_SP" xml:space="preserve">
+    <value>Si vous voulez apprendre cette compétence, vous devez enlever votre transformation.</value>
+  </data>
+  <data name="REPUT_DECREASED" xml:space="preserve">
+    <value>Réputation diminuée !</value>
   </data>
 </root>
