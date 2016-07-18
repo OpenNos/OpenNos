@@ -374,6 +374,7 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
                     {
                         MapTypeId = c.Short(nullable: false, identity: true),
                         MapId = c.Short(nullable: false),
+                        PotionDelay = c.Short(nullable: false),
                     })
                 .PrimaryKey(t => t.MapTypeId)
                 .ForeignKey("dbo.Map", t => t.MapId)
@@ -568,6 +569,7 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
                         MP1 = c.Short(),
                         WaterElement = c.Byte(),
                         WaterResistance = c.SByte(),
+                        XP = c.Long(),
                         SlDamage = c.Short(),
                         SlDefence = c.Short(),
                         SlElement = c.Short(),
@@ -582,7 +584,6 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
                         SpLight = c.Byte(),
                         SpStoneUpgrade = c.Byte(),
                         SpWater = c.Byte(),
-                        SpXp = c.Long(),
                         Discriminator = c.String(nullable: false, maxLength: 128, storeType: "nvarchar"),
                     })
                 .PrimaryKey(t => t.ItemInstanceId)

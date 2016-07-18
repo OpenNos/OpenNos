@@ -32,7 +32,6 @@ namespace OpenNos.Data
         byte SpLight { get; set; }
         byte SpStoneUpgrade { get; set; }
         byte SpWater { get; set; }
-        long SpXp { get; set; }
 
         #endregion
     }

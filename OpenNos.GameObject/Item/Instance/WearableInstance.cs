@@ -34,6 +34,7 @@ namespace OpenNos.GameObject
 
         public WearableInstance(WearableInstanceDTO wearableInstance)
         {
+            XP = wearableInstance.XP;
         }
 
         #endregion
@@ -84,6 +85,7 @@ namespace OpenNos.GameObject
         public byte WaterElement { get; set; }
 
         public byte WaterResistance { get; set; }
+        public long XP { get; set; }
 
         #endregion
 

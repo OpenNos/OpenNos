@@ -49,6 +49,7 @@ namespace OpenNos.DAL.EF.MySQL
         public short? MP { get; set; }
         public byte? WaterElement { get; set; }
         public sbyte? WaterResistance { get; set; }
+        public long? XP { get; set; }
 
         #endregion
     }

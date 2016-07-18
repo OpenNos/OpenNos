@@ -43,7 +43,6 @@ namespace OpenNos.GameObject
             SpLight = specialistInstance.SpLight;
             SpStoneUpgrade = specialistInstance.SpStoneUpgrade;
             SpWater = specialistInstance.SpWater;
-            SpXp = specialistInstance.SpXp;
             SpLevel = specialistInstance.SpLevel;
             SlDefence = specialistInstance.SlDefence;
             SlElement = specialistInstance.SlElement;
@@ -82,8 +81,6 @@ namespace OpenNos.GameObject
         public byte SpStoneUpgrade { get; set; }
 
         public byte SpWater { get; set; }
-
-        public long SpXp { get; set; }
 
         #endregion
 

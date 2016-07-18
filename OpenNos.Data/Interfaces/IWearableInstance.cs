@@ -45,6 +45,7 @@ namespace OpenNos.Data
         short MP { get; set; }
         byte WaterElement { get; set; }
         byte WaterResistance { get; set; }
+        long XP { get; set; }
 
         #endregion
     }

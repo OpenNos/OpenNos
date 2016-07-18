@@ -32,7 +32,6 @@ namespace OpenNos.DAL.EF.MySQL
         public byte? SpLight { get; set; }
         public byte? SpStoneUpgrade { get; set; }
         public byte? SpWater { get; set; }
-        public long? SpXp { get; set; }
 
         #endregion
     }

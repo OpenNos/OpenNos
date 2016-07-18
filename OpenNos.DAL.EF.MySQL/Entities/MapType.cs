@@ -37,6 +37,7 @@ namespace OpenNos.DAL.EF.MySQL
         [ForeignKey(nameof(Map))]
         public short MapId { get; set; }
 
+        public short PotionDelay { get; set; }
         public virtual ICollection<Map> Maps { get; set; }
         public short MapTypeId { get; set; }
         public virtual ICollection<MapTypeMap> MapTypeMaps { get; set; }

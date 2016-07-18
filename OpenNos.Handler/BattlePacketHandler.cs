@@ -976,7 +976,7 @@ namespace OpenNos.Handler
 
             }
             if (specialist != null && Session.Character.UseSp && specialist.SpLevel < 99)
-                specialist.SpXp += monsterinfo.JobXP * (100 - specialist.SpLevel);
+                specialist.XP += monsterinfo.JobXP * (100 - specialist.SpLevel);
             double t = Session.Character.XPLoad();
             while (Session.Character.LevelXp >= t)
             {
@@ -1044,9 +1044,9 @@ namespace OpenNos.Handler
             }
             if (specialist != null)
                 t = Session.Character.SPXPLoad();
-            while (specialist != null && specialist.SpXp >= t)
+            while (specialist != null && specialist.XP >= t)
             {
-                specialist.SpXp -= (long)t;
+                specialist.XP -= (long)t;
                 specialist.SpLevel++;
                 t = Session.Character.SPXPLoad();
                 Session.Client.SendPacket(Session.Character.GenerateStat());
