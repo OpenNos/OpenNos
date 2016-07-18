@@ -919,7 +919,7 @@ namespace OpenNos.Handler
                     if (rndamount <= ((double)drop.DropChance * RateDrop) / 5000.000)
                     {
                         Session.CurrentMap.DropItemByMonster(drop, mmon.MapX, mmon.MapY);
-                       
+
                     }
                 }
                 rnd = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
@@ -956,6 +956,16 @@ namespace OpenNos.Handler
 
         private void GenerateXp(NpcMonster monsterinfo)
         {
+            if (Session.Character.Level < monsterinfo.Level && Session.Character.Dignite < 100)
+            {
+                // Not finish, float needed (restore dignity 1x/2) Need Review it
+                Session.Character.Dignite++;
+                Session.Client.SendPacket(Session.Character.GenerateFd());
+                Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
+                Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("RESTORE_DIGNITY"), 11));
+            }
+
+
             if ((int)(Session.Character.LevelXp / (Session.Character.XPLoad() / 10)) < (int)((Session.Character.LevelXp + monsterinfo.XP) / (Session.Character.XPLoad() / 10)))
             {
                 Session.Character.Hp = (int)Session.Character.HPLoad();
@@ -965,6 +975,7 @@ namespace OpenNos.Handler
             }
             int RateXP = int.Parse(System.Configuration.ConfigurationManager.AppSettings["RateXP"]);
             SpecialistInstance specialist = Session.Character.EquipmentList.LoadBySlotAndType<SpecialistInstance>((short)EquipmentType.Sp, (byte)InventoryType.Equipment);
+
             if (Session.Character.Level < 99)
                 Session.Character.LevelXp += monsterinfo.XP * RateXP;
             if ((Session.Character.Class == 0 && Session.Character.JobLevel < 20) || (Session.Character.Class != 0 && Session.Character.JobLevel < 80))

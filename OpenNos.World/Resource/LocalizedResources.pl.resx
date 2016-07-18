@@ -691,4 +691,7 @@
   <data name="ALREADY_EXCHANGE" xml:space="preserve">
     <value>Użytkownik przeprowadza aktualnie wymianę</value>
   </data>
+  <data name="RESTORE_DIGNITY" xml:space="preserve">
+    <value />
+  </data>
 </root>
