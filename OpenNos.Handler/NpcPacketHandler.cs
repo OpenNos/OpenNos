@@ -203,20 +203,20 @@ namespace OpenNos.Handler
                 Item iteminfo = ServerManager.GetItem(item.ItemVNum);
                 long price = iteminfo.Price * amount;
                 long Reputprice = iteminfo.ReputPrice * amount;
-                double pourcent = 1;
-                if (Session.Character.GetDigniteIco() == 3)
-                    pourcent = 1.10;
-                else if (Session.Character.GetDigniteIco() == 4)
-                    pourcent = 1.20;
-                else if (Session.Character.GetDigniteIco() == 5 || Session.Character.GetDigniteIco() == 6)
-                    pourcent = 1.5;
+                double percent = 1;
+                if (Session.Character.GetDignityIco() == 3)
+                    percent = 1.10;
+                else if (Session.Character.GetDignityIco() == 4)
+                    percent = 1.20;
+                else if (Session.Character.GetDignityIco() == 5 || Session.Character.GetDignityIco() == 6)
+                    percent = 1.5;
                 byte rare = item.Rare;
                 if (iteminfo.Type == 0)
                     amount = 1;
 
                 if (iteminfo.ReputPrice == 0)
                 {
-                    if (price < 0 || price * pourcent > Session.Character.Gold)
+                    if (price < 0 || price * percent > Session.Character.Gold)
                     {
                         Session.Client.SendPacket(Session.Character.GenerateShopMemo(3, Language.Instance.GetMessageFromKey("NOT_ENOUGH_MONEY")));
                         return;
@@ -253,7 +253,7 @@ namespace OpenNos.Handler
                     if (iteminfo.ReputPrice == 0)
                     {
                         Session.Client.SendPacket(Session.Character.GenerateShopMemo(1, string.Format(Language.Instance.GetMessageFromKey("BUY_ITEM_VALIDE"), ServerManager.GetItem(item.ItemVNum).Name, amount)));
-                        Session.Character.Gold -= (long)(price * pourcent);
+                        Session.Character.Gold -= (long)(price * percent);
                         Session.Client.SendPacket(Session.Character.GenerateGold());
                     }
                     else
@@ -579,22 +579,22 @@ namespace OpenNos.Handler
             foreach (ShopItem item in mapnpc.Shop.ShopItems.Where(s => s.Type.Equals(type)))
             {
                 Item iteminfo = ServerManager.GetItem(item.ItemVNum);
-                double pourcent = 1;
-                if (Session.Character.GetDigniteIco() == 3)
-                    pourcent = 1.10;
-                else if (Session.Character.GetDigniteIco() == 4)
-                    pourcent = 1.20;
-                else if (Session.Character.GetDigniteIco() == 5 || Session.Character.GetDigniteIco() == 6)
-                    pourcent = 1.5;
+                double percent = 1;
+                if (Session.Character.GetDignityIco() == 3)
+                    percent = 1.10;
+                else if (Session.Character.GetDignityIco() == 4)
+                    percent = 1.20;
+                else if (Session.Character.GetDignityIco() == 5 || Session.Character.GetDignityIco() == 6)
+                    percent = 1.5;
 
                 if (iteminfo.ReputPrice > 0 && iteminfo.Type == 0)
                     shoplist += $" {iteminfo.Type}.{item.Slot}.{item.ItemVNum}.{item.Rare}.{(iteminfo.IsColored ? item.Color : item.Upgrade)}.{ServerManager.GetItem(item.ItemVNum).ReputPrice}";
                 else if (iteminfo.ReputPrice > 0 && iteminfo.Type != 0)
                     shoplist += $" {iteminfo.Type}.{item.Slot}.{item.ItemVNum}.{-1}.{ServerManager.GetItem(item.ItemVNum).ReputPrice}";
                 else if (iteminfo.Type != 0)
-                    shoplist += $" {iteminfo.Type}.{item.Slot}.{item.ItemVNum}.{-1}.{ServerManager.GetItem(item.ItemVNum).Price * pourcent}";
+                    shoplist += $" {iteminfo.Type}.{item.Slot}.{item.ItemVNum}.{-1}.{ServerManager.GetItem(item.ItemVNum).Price * percent}";
                 else
-                    shoplist += $" {iteminfo.Type}.{item.Slot}.{item.ItemVNum}.{item.Rare}.{(iteminfo.IsColored ? item.Color : item.Upgrade)}.{ServerManager.GetItem(item.ItemVNum).Price * pourcent}";
+                    shoplist += $" {iteminfo.Type}.{item.Slot}.{item.ItemVNum}.{item.Rare}.{(iteminfo.IsColored ? item.Color : item.Upgrade)}.{ServerManager.GetItem(item.ItemVNum).Price * percent}";
             }
 
             foreach (ShopSkill skill in mapnpc.Shop.ShopSkills.Where(s => s.Type.Equals(type)))

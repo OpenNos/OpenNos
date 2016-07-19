@@ -879,7 +879,7 @@ namespace OpenNos.Handler
                             AccountId = characterDTO.AccountId,
                             CharacterId = characterDTO.CharacterId,
                             Class = characterDTO.Class,
-                            Dignite = characterDTO.Dignite,
+                            Dignity = characterDTO.Dignity,
                             Gender = characterDTO.Gender,
                             Gold = characterDTO.Gold,
                             HairColor = characterDTO.HairColor,

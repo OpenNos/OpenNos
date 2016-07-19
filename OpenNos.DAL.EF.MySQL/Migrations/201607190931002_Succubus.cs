@@ -34,7 +34,7 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
                         BuffBlocked = c.Boolean(nullable: false),
                         Class = c.Byte(nullable: false),
                         Compliment = c.Short(nullable: false),
-                        Dignite = c.Short(nullable: false),
+                        Dignity = c.Single(nullable: false),
                         EmoticonsBlocked = c.Boolean(nullable: false),
                         ExchangeBlocked = c.Boolean(nullable: false),
                         Faction = c.Int(nullable: false),

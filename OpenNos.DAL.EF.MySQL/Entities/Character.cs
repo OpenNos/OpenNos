@@ -46,7 +46,7 @@ namespace OpenNos.DAL.EF.MySQL
         public virtual ICollection<CharacterSkill> CharacterSkill { get; set; }
         public byte Class { get; set; }
         public short Compliment { get; set; }
-        public short Dignite { get; set; }
+        public float Dignity { get; set; }
         public bool EmoticonsBlocked { get; set; }
         public bool ExchangeBlocked { get; set; }
         public int Faction { get; set; }

@@ -31,7 +31,7 @@ namespace OpenNos.Data
         public byte Class { get; set; }
         public ClassType Classnum { get { return (ClassType)Class; } set { Class = (byte)value; } }
         public short Compliment { get; set; }
-        public short Dignite { get; set; }
+        public float Dignity { get; set; }
         public bool EmoticonsBlocked { get; set; }
         public bool ExchangeBlocked { get; set; }
         public int Faction { get; set; }

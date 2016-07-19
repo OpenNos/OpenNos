@@ -108,9 +108,9 @@
     <Compile Include="Entities\NpcMonster.cs" />
     <Compile Include="Entities\NpcMonsterskill.cs" />
     <Compile Include="MapTypeDAO.cs" />
-    <Compile Include="Migrations\201607181924082_Succubus.cs" />
-    <Compile Include="Migrations\201607181924082_Succubus.Designer.cs">
-      <DependentUpon>201607181924082_Succubus.cs</DependentUpon>
+    <Compile Include="Migrations\201607190931002_Succubus.cs" />
+    <Compile Include="Migrations\201607190931002_Succubus.Designer.cs">
+      <DependentUpon>201607190931002_Succubus.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="NpcMonsterSkillDAO.cs" />
@@ -190,8 +190,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201607181924082_Succubus.resx">
-      <DependentUpon>201607181924082_Succubus.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201607190931002_Succubus.resx">
+      <DependentUpon>201607190931002_Succubus.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
