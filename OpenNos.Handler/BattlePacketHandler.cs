@@ -958,10 +958,13 @@ namespace OpenNos.Handler
         {
             if (Session.Character.Level < monsterinfo.Level && Session.Character.Dignity < 100)
             {
-                Session.Character.Dignity++;
-                Session.Client.SendPacket(Session.Character.GenerateFd());
-                Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
-                Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("RESTORE_DIGNITY"), 11));
+                Session.Character.Dignity += (float)0.5;
+                if (Session.Character.Dignity == (int)Session.Character.Dignity)
+                {
+                    Session.Client.SendPacket(Session.Character.GenerateFd());
+                    Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
+                    Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("RESTORE_DIGNITY"), 11));
+                }
             }
 
 

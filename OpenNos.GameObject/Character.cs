@@ -581,7 +581,7 @@ namespace OpenNos.GameObject
 
         public string GenerateFd()
         {
-            return $"fd {Reput} {GetReputIco()} {Dignity} {Math.Abs(GetDignityIco())}";
+            return $"fd {Reput} {GetReputIco()} {(int)Dignity} {Math.Abs(GetDignityIco())}";
         }
 
         public string GenerateGender()
