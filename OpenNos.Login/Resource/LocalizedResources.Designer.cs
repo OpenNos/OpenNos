@@ -214,7 +214,7 @@ namespace OpenNos.Login.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Server is started successfully..
+        ///   Looks up a localized string similar to LoginServer has been started successfully..
         /// </summary>
         internal static string STARTED {
             get {

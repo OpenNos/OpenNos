@@ -581,7 +581,7 @@
     <value>Wait {0} seconds!</value>
   </data>
   <data name="STARTED" xml:space="preserve">
-    <value>Server has been started successfully.</value>
+    <value>WorldServer has been started successfully.</value>
   </data>
   <data name="STAY_TIME" xml:space="preserve">
     <value>SP transformation needs cooldown, {0} seconds</value>
@@ -710,6 +710,6 @@
     <value>User is actually in exchange</value>
   </data>
   <data name="RESTORE_DIGNITY" xml:space="preserve">
-    <value>Dignity +1</value>
+    <value>You've restored some of your dignity</value>
   </data>
 </root>
