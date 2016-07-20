@@ -956,7 +956,7 @@ namespace OpenNos.Handler
 
         private void GenerateXp(NpcMonster monsterinfo)
         {
-            if (Session.Character.Level < monsterinfo.Level && Session.Character.Dignity < 100)
+            if (Session.Character.Level < monsterinfo.Level && Session.Character.Dignity < 100 && Session.Character.Level < 20)
             {
                 Session.Character.Dignity += (float)0.5;
                 if (Session.Character.Dignity == (int)Session.Character.Dignity)

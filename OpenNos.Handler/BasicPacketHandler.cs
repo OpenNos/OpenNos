@@ -129,7 +129,6 @@ namespace OpenNos.Handler
                             CharacterDTO newCharacter = new CharacterDTO()
                             {
                                 Class = (byte)ClassType.Adventurer,
-                                Dignity = 100F,
                                 Gender = (Convert.ToByte(packetsplit[4]) >= 0 && Convert.ToByte(packetsplit[4]) <= 1 ? Convert.ToByte(packetsplit[4]) : Convert.ToByte(0)),
                                 Gold = 0,
                                 HairColor = Enum.IsDefined(typeof(HairColorType), Convert.ToByte(packetsplit[6])) ? Convert.ToByte(packetsplit[6]) : Convert.ToByte(0),
