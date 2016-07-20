@@ -638,7 +638,7 @@
     <value>Szept widoczny</value>
   </data>
   <data name="WRONG_VALUE" xml:space="preserve">
-    <value>Zla wartość</value>
+    <value>Zła wartość</value>
   </data>
   <data name="YOU_ASK_FOR_EXCHANGE" xml:space="preserve">
     <value>Poprosileś o wymianę od</value>
@@ -692,6 +692,6 @@
     <value>Użytkownik przeprowadza aktualnie wymianę</value>
   </data>
   <data name="RESTORE_DIGNITY" xml:space="preserve">
-    <value />
+    <value>Odzyskaleś troche swojej godności</value>
   </data>
 </root>
