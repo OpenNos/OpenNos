@@ -276,6 +276,7 @@ namespace OpenNos.Handler
                     sp.SpLevel = splevel;
                     Session.Client.SendPacket(Session.Character.GenerateLev());
                     Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SPLEVEL_CHANGED"), 0));
+                    Session.Client.SendPacket(Session.Character.GenerateSki());
                     Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
                     Session.CurrentMap?.Broadcast(Session.Character.GenerateEff(8));
                 }

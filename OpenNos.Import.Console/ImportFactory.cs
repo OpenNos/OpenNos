@@ -779,6 +779,95 @@ namespace OpenNos.Import.Console
                     else if (currentLine.Length > 2 && currentLine[1] == "LEVEL")
                     {
                         skill.LevelMinimum = currentLine[2] != "-1" ? byte.Parse(currentLine[2]) : (byte)0;
+                        if (skill.Class > 31)
+                        {
+                            switch (skill.Class)
+                            {
+                                case 8:
+                                    switch (skills.Where(s => s.Class == skill.Class).Count())
+                                    {
+                                        case 3:
+                                            skill.LevelMinimum = 20;
+                                            break;
+                                        case 2:
+                                            skill.LevelMinimum = 10;
+                                            break;
+                                        default:
+                                            skill.LevelMinimum = 0;
+                                            break;
+                                    }
+                                    break;
+                                case 9:
+                                    switch (skills.Where(s => s.Class == skill.Class).Count())
+                                    {
+                                        case 9:
+                                            skill.LevelMinimum = 20;
+                                            break;
+                                        case 8:
+                                            skill.LevelMinimum = 16;
+                                            break;
+                                        case 7:
+                                            skill.LevelMinimum = 12;
+                                            break;
+                                        case 6:
+                                            skill.LevelMinimum = 8;
+                                            break;
+                                        case 5:
+                                            skill.LevelMinimum = 4;
+                                            break;
+                                        default:
+                                            skill.LevelMinimum = 0;
+                                            break;
+                                    }
+                                    break;
+                                case 16:
+                                    switch (skills.Where(s => s.Class == skill.Class).Count())
+                                    {
+                                        case 6:
+                                            skill.LevelMinimum = 20;
+                                            break;
+                                        case 5:
+                                            skill.LevelMinimum = 15;
+                                            break;
+                                        case 4:
+                                            skill.LevelMinimum = 10;
+                                            break;
+                                        case 3:
+                                            skill.LevelMinimum = 5;
+                                            break;
+                                        case 2:
+                                            skill.LevelMinimum = 3;
+                                            break;
+                                        default:
+                                            skill.LevelMinimum = 0;
+                                            break;
+                                    }
+                                    break;
+                                default:
+                                    switch (skills.Where(s => s.Class == skill.Class).Count())
+                                    {
+                                        case 10:
+                                            skill.LevelMinimum = 20;
+                                            break;
+                                        case 9:
+                                            skill.LevelMinimum = 16;
+                                            break;
+                                        case 8:
+                                            skill.LevelMinimum = 12;
+                                            break;
+                                        case 7:
+                                            skill.LevelMinimum = 8;
+                                            break;
+                                        case 6:
+                                            skill.LevelMinimum = 4;
+                                            break;
+                                        default:
+                                            skill.LevelMinimum = 0;
+                                            break;
+                                    }
+                                    break;
+                            }
+                        }
                         skill.MinimumAdventurerLevel = currentLine[3] != "-1" ? byte.Parse(currentLine[3]) : (byte)0;
                         skill.MinimumSwordmanLevel = currentLine[4] != "-1" ? byte.Parse(currentLine[4]) : (byte)0;
                         skill.MinimumArcherLevel = currentLine[5] != "-1" ? byte.Parse(currentLine[5]) : (byte)0;
