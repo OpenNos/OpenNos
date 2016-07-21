@@ -38,6 +38,9 @@ namespace OpenNos.GameObject
         private static ConcurrentDictionary<Guid, Map> _maps = new ConcurrentDictionary<Guid, Map>();
         private static List<NpcMonster> _npcs = new List<NpcMonster>();
         private static List<Skill> _skills = new List<Skill>();
+        public static int XPRate { get; set; }
+        public static int DropRate { get; set; }
+        public static int GoldRate { get; set; }
         private long lastGroupId;
 
         #endregion
@@ -73,6 +76,7 @@ namespace OpenNos.GameObject
 
         #region Methods
 
+     
         public static ConcurrentDictionary<Guid, Map> GetAllMap()
         {
             return _maps;
@@ -105,6 +109,12 @@ namespace OpenNos.GameObject
 
         public static void Initialize()
         {
+            XPRate = int.Parse(System.Configuration.ConfigurationManager.AppSettings["RateXp"]);
+       
+                DropRate = int.Parse(System.Configuration.ConfigurationManager.AppSettings["RateDrop"]);
+
+                    GoldRate = int.Parse(System.Configuration.ConfigurationManager.AppSettings["RateGold"]);
+
             foreach (ItemDTO itemDTO in DAOFactory.ItemDAO.LoadAll())
             {
                 Item ItemGO = null;
