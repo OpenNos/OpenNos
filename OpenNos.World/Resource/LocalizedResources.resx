@@ -712,4 +712,13 @@
   <data name="RESTORE_DIGNITY" xml:space="preserve">
     <value>You've restored some of your dignity</value>
   </data>
+  <data name="DROP_INCREASE" xml:space="preserve">
+    <value>Drop rate modify with succes</value>
+  </data>
+  <data name="GOLD_INCREASE" xml:space="preserve">
+    <value>Gold rate modify with succes</value>
+  </data>
+  <data name="XP_INCREASE" xml:space="preserve">
+    <value>Xp rate modify with succes</value>
+  </data>
 </root>

@@ -694,4 +694,13 @@
   <data name="RESTORE_DIGNITY" xml:space="preserve">
     <value>Odzyskaleś troche swojej godności</value>
   </data>
+  <data name="DROP_INCREASE" xml:space="preserve">
+    <value>Tempo spadku został pomyślnie zmieniony</value>
+  </data>
+  <data name="GOLD_INCREASE" xml:space="preserve">
+    <value>Stosunek złoty został pomyślnie zmieniony</value>
+  </data>
+  <data name="XP_INCREASE" xml:space="preserve">
+    <value>Stopa doświadczenia został pomyślnie zmieniony</value>
+  </data>
 </root>

@@ -117,23 +117,11 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="DATABASE_INITIALIZED" xml:space="preserve">
-    <value>La base de donnée a été initialisée !</value>
-  </data>
   <data name="DONE" xml:space="preserve">
     <value>Analyse des fichiers finie !</value>
   </data>
-  <data name="DROP_INCREASE" xml:space="preserve">
-    <value>Les taux de drops ont été modifié avec succès</value>
-  </data>
-  <data name="DROP_PARSED" xml:space="preserve">
-    <value>{0} Drop d'objets analysés !</value>
-  </data>
   <data name="ENTER_PATH" xml:space="preserve">
     <value>S'il vous plaît veuillez entrez le répertoire des fichiers à analyser.</value>
-  </data>
-  <data name="GOLD_INCREASE" xml:space="preserve">
-    <value>Le taux d'or a été modifié avec succès</value>
   </data>
   <data name="ITEMS_PARSED" xml:space="preserve">
     <value>{0} Objets analysés !</value>
@@ -218,8 +206,5 @@
   </data>
   <data name="TELEPORTERS_PARSED" xml:space="preserve">
     <value>{0} Téléporteurs analysés</value>
-  </data>
-  <data name="XP_INCREASE" xml:space="preserve">
-    <value>Le taux d'expérience a été modifié avec succès</value>
   </data>
 </root>

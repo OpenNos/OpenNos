@@ -79,15 +79,6 @@ namespace OpenNos.Import.Console.Resource {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Drop rate modify with succes.
-        /// </summary>
-        internal static string DROP_INCREASE {
-            get {
-                return ResourceManager.GetString("DROP_INCREASE", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Recherche une chaîne localisée semblable à {0} drop items parsed.
         /// </summary>
         internal static string DROP_PARSED {
@@ -102,15 +93,6 @@ namespace OpenNos.Import.Console.Resource {
         internal static string ENTER_PATH {
             get {
                 return ResourceManager.GetString("ENTER_PATH", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à Gold rate modify with succes.
-        /// </summary>
-        internal static string GOLD_INCREASE {
-            get {
-                return ResourceManager.GetString("GOLD_INCREASE", resourceCulture);
             }
         }
         
@@ -363,15 +345,6 @@ namespace OpenNos.Import.Console.Resource {
         internal static string TELEPORTERS_PARSED {
             get {
                 return ResourceManager.GetString("TELEPORTERS_PARSED", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à Xp rate modify with succes.
-        /// </summary>
-        internal static string XP_INCREASE {
-            get {
-                return ResourceManager.GetString("XP_INCREASE", resourceCulture);
             }
         }
     }

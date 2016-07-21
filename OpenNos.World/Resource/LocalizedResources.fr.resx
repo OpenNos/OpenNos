@@ -709,4 +709,13 @@
   <data name="SKILLS_LOADED" xml:space="preserve">
     <value>{0} Compétences chargées !</value>
   </data>
+  <data name="DROP_INCREASE" xml:space="preserve">
+    <value>Le taux de drop a été modifié avec succès</value>
+  </data>
+  <data name="GOLD_INCREASE" xml:space="preserve">
+    <value>Le taux d'or a été modifié avec succès</value>
+  </data>
+  <data name="XP_INCREASE" xml:space="preserve">
+    <value>Le taux d'expérience a été modifié avec succès</value>
+  </data>
 </root>
