@@ -76,7 +76,7 @@ namespace OpenNos.GameObject
 
         #region Methods
 
-     
+
         public static ConcurrentDictionary<Guid, Map> GetAllMap()
         {
             return _maps;
@@ -110,10 +110,10 @@ namespace OpenNos.GameObject
         public static void Initialize()
         {
             XPRate = int.Parse(System.Configuration.ConfigurationManager.AppSettings["RateXp"]);
-       
-                DropRate = int.Parse(System.Configuration.ConfigurationManager.AppSettings["RateDrop"]);
 
-                    GoldRate = int.Parse(System.Configuration.ConfigurationManager.AppSettings["RateGold"]);
+            DropRate = int.Parse(System.Configuration.ConfigurationManager.AppSettings["RateDrop"]);
+
+            GoldRate = int.Parse(System.Configuration.ConfigurationManager.AppSettings["RateGold"]);
 
             foreach (ItemDTO itemDTO in DAOFactory.ItemDAO.LoadAll())
             {

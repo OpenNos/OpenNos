@@ -123,8 +123,14 @@
   <data name="DONE" xml:space="preserve">
     <value>Importieren der Daten ist fertigestellt!</value>
   </data>
+  <data name="DROP_INCREASE" xml:space="preserve">
+    <value>Drop Rate geändert erfolgreich</value>
+  </data>
   <data name="ENTER_PATH" xml:space="preserve">
     <value>Verzeichnis der Daten eingeben:</value>
+  </data>
+  <data name="GOLD_INCREASE" xml:space="preserve">
+    <value>Gold Rate geändert erfolgreich</value>
   </data>
   <data name="ITEMS_PARSED" xml:space="preserve">
     <value>{0} Items importiert</value>
@@ -194,5 +200,8 @@
   </data>
   <data name="TELEPORTERS_PARSED" xml:space="preserve">
     <value>{0} Teleporter importiert</value>
+  </data>
+  <data name="XP_INCREASE" xml:space="preserve">
+    <value>Xp Rate geändert erfolgreich</value>
   </data>
 </root>

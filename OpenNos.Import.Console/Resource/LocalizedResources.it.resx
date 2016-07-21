@@ -123,8 +123,14 @@
   <data name="DONE" xml:space="preserve">
     <value>Parsing Completato !</value>
   </data>
+  <data name="DROP_INCREASE" xml:space="preserve">
+    <value>Drop tasso modificato con successo</value>
+  </data>
   <data name="ENTER_PATH" xml:space="preserve">
     <value>Immetti la directory dei file da sincronizzare</value>
+  </data>
+  <data name="GOLD_INCREASE" xml:space="preserve">
+    <value>Oro tasso modificato con successo</value>
   </data>
   <data name="ITEMS_PARSED" xml:space="preserve">
     <value>{0} Items sincronizzati </value>
@@ -164,5 +170,11 @@
   </data>
   <data name="SHOPS_PARSED" xml:space="preserve">
     <value>{0} Shops sincronizzati</value>
+  </data>
+  <data name="String" xml:space="preserve">
+    <value />
+  </data>
+  <data name="XP_INCREASE" xml:space="preserve">
+    <value>Xp tasso modificato con successo</value>
   </data>
 </root>

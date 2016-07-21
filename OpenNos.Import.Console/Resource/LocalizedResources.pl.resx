@@ -123,11 +123,17 @@
   <data name="DONE" xml:space="preserve">
     <value>Wprowadzanie ukończone!</value>
   </data>
+  <data name="DROP_INCREASE" xml:space="preserve">
+    <value>Rzuć powodzeniem zmodyfikowaną stawkę</value>
+  </data>
   <data name="DROP_PARSED" xml:space="preserve">
     <value>{0} przedmitów dropu wprowadzonych</value>
   </data>
   <data name="ENTER_PATH" xml:space="preserve">
     <value>Podaj ściezkę pliku aby przeprowadzić rozbiór danych</value>
+  </data>
+  <data name="GOLD_INCREASE" xml:space="preserve">
+    <value>Złoto pomyślnej modyfikacji stopy</value>
   </data>
   <data name="ITEMS_PARSED" xml:space="preserve">
     <value>{0} przedmiotów wprowadzonych</value>
@@ -212,5 +218,8 @@
   </data>
   <data name="TELEPORTERS_PARSED" xml:space="preserve">
     <value>{0} teleporterów wprowadzonych</value>
+  </data>
+  <data name="XP_INCREASE" xml:space="preserve">
+    <value>pomyślnej modyfikacji doświadczenie stopa</value>
   </data>
 </root>

@@ -975,7 +975,7 @@ namespace OpenNos.Handler
                 Session.Client.SendPacket(Session.Character.GenerateStat());
                 Session.Client.SendPacket(Session.Character.GenerateEff(5));
             }
-           
+
             SpecialistInstance specialist = Session.Character.EquipmentList.LoadBySlotAndType<SpecialistInstance>((short)EquipmentType.Sp, (byte)InventoryType.Equipment);
 
             if (Session.Character.Level < 99)

@@ -517,6 +517,7 @@ namespace OpenNos.Handler
             }
             else
                 Session.Client.SendPacket(Session.Character.GenerateSay("$RateXp RATE", 10));
+            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("XP_INCREASE"), 0));
         }
 
         [Packet("$RateDrop")]
@@ -537,10 +538,11 @@ namespace OpenNos.Handler
             }
             else
                 Session.Client.SendPacket(Session.Character.GenerateSay("$RateDrop RATE", 10));
+            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("DROP_INCREASE"), 0));
 
         }
 
-                 [Packet("$RateGold")]
+        [Packet("$RateGold")]
         public void RateGold(string packet)
         {
             Logger.Debug(packet, Session.SessionId);
@@ -558,6 +560,7 @@ namespace OpenNos.Handler
             }
             else
                 Session.Client.SendPacket(Session.Character.GenerateSay("$RateGold RATE", 10));
+            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("GOLD_INCREASE"), 0));
         }
 
         [Packet("$Invisible")]

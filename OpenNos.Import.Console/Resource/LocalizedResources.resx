@@ -123,11 +123,17 @@
   <data name="DONE" xml:space="preserve">
     <value>Parsing done!</value>
   </data>
+  <data name="DROP_INCREASE" xml:space="preserve">
+    <value>Drop rate modify with succes</value>
+  </data>
   <data name="DROP_PARSED" xml:space="preserve">
     <value>{0} drop items parsed</value>
   </data>
   <data name="ENTER_PATH" xml:space="preserve">
     <value>Please enter the directory of files to parse</value>
+  </data>
+  <data name="GOLD_INCREASE" xml:space="preserve">
+    <value>Gold rate modify with succes</value>
   </data>
   <data name="ITEMS_PARSED" xml:space="preserve">
     <value>{0} items parsed</value>
@@ -212,5 +218,8 @@
   </data>
   <data name="TELEPORTERS_PARSED" xml:space="preserve">
     <value>{0} teleporters parsed</value>
+  </data>
+  <data name="XP_INCREASE" xml:space="preserve">
+    <value>Xp rate modify with succes</value>
   </data>
 </root>
