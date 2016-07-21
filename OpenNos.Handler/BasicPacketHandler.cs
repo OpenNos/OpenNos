@@ -129,7 +129,6 @@ namespace OpenNos.Handler
                             CharacterDTO newCharacter = new CharacterDTO()
                             {
                                 Class = (byte)ClassType.Adventurer,
-                                Dignity = 100F,
                                 Gender = (Convert.ToByte(packetsplit[4]) >= 0 && Convert.ToByte(packetsplit[4]) <= 1 ? Convert.ToByte(packetsplit[4]) : Convert.ToByte(0)),
                                 Gold = 0,
                                 HairColor = Enum.IsDefined(typeof(HairColorType), Convert.ToByte(packetsplit[6])) ? Convert.ToByte(packetsplit[6]) : Convert.ToByte(0),
@@ -832,16 +831,24 @@ namespace OpenNos.Handler
                         else
                         {
                             if (Session.Character.Level > 20)
+                            {
                                 Session.Client.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("SEED_USED"), 10), 10));
-                            Session.Character.Hp = (int)(Session.Character.HPLoad() / 2);
-                            Session.Character.Mp = (int)(Session.Character.MPLoad() / 2);
+                                Session.Character.Hp = (int)(Session.Character.HPLoad() / 2);
+                                Session.Character.Mp = (int)(Session.Character.MPLoad() / 2);
+                            }
+                            else
+                            {
+                                Session.Character.Hp = (int)Session.Character.HPLoad();
+                                Session.Character.Mp = (int)Session.Character.MPLoad();
+                            }
+
                             Session.Client.SendPacket(Session.Character.GenerateStat());
                             Session.Client.SendPacket(Session.Character.GenerateTp());
                             Session.CurrentMap?.Broadcast(Session.Character.GenerateTp());
                             Session.CurrentMap?.Broadcast(Session.Character.GenerateRevive());
                             Session.Character.InventoryList.RemoveItemAmount(seed, 10);
                             Session.Character.GenerateStartupInventory();
-                            }
+                        }
                         break;
 
                     case 1:
@@ -975,7 +982,7 @@ namespace OpenNos.Handler
             }
             Session.Character.LoadSkills();
             Session.Client.SendPacket(Session.Character.GenerateTit());
-            if (Session.Character.Hp <= 0) 
+            if (Session.Character.Hp <= 0)
                 ServerManager.Instance.ReviveFirstPosition(Session.Character.CharacterId);
             else
                 ServerManager.Instance.ChangeMap(Session.Character.CharacterId);

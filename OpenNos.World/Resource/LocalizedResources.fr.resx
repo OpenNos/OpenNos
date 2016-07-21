@@ -706,4 +706,7 @@
   <data name="REPUT_DECREASED" xml:space="preserve">
     <value>Réputation diminuée !</value>
   </data>
+  <data name="SKILLS_LOADED" xml:space="preserve">
+    <value>{0} Compétences chargées !</value>
+  </data>
 </root>
