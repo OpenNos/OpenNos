@@ -507,7 +507,7 @@ namespace OpenNos.Handler
             int rate;
             if (packetsplit.Length > 2)
             {
-                if (int.TryParse(packetsplit[2], out rate))
+                if (int.TryParse(packetsplit[2], out rate) && rate <= 1000)
                 {
                     ServerManager.XPRate = rate;
 
@@ -528,7 +528,7 @@ namespace OpenNos.Handler
             int rate;
             if (packetsplit.Length > 2)
             {
-                if (int.TryParse(packetsplit[2], out rate))
+                if (int.TryParse(packetsplit[2], out rate) && rate <= 1000)
                 {
                     ServerManager.DropRate = rate;
 
@@ -550,7 +550,7 @@ namespace OpenNos.Handler
             int rate;
             if (packetsplit.Length > 2)
             {
-                if (int.TryParse(packetsplit[2], out rate))
+                if (int.TryParse(packetsplit[2], out rate) && rate <= 1000)
                 {
                     ServerManager.GoldRate = rate;
 
