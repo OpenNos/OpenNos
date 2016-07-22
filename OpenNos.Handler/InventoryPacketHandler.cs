@@ -945,8 +945,16 @@ namespace OpenNos.Handler
                 }
                 else
                 {
-                    Session.Client.SendPacket("delay 5000 3 #sl^1");
-                    Session.CurrentMap?.Broadcast($"guri 2 1 {Session.Character.CharacterId}");
+                    double timeSpanSinceLastSpUsage = currentRunningSeconds - Session.Character.LastSp;
+                    if (timeSpanSinceLastSpUsage >= Session.Character.SpCooldown)
+                    {
+                        Session.Client.SendPacket("delay 5000 3 #sl^1");
+                        Session.CurrentMap?.Broadcast($"guri 2 1 {Session.Character.CharacterId}");
+                    }
+                    else
+                    {
+                        Session.Client.SendPacket(Session.Character.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("SP_INLOADING"), Session.Character.SpCooldown - (int)Math.Round(timeSpanSinceLastSpUsage, 0)), 0));
+                    }
                 }
             }
         }
@@ -965,10 +973,6 @@ namespace OpenNos.Handler
                 if (timeSpanSinceLastSpUsage >= Session.Character.SpCooldown)
                 {
                     ChangeSP();
-                }
-                else
-                {
-                    Session.Client.SendPacket(Session.Character.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("SP_INLOADING"), Session.Character.SpCooldown - (int)Math.Round(timeSpanSinceLastSpUsage, 0)), 0));
                 }
             }
         }
