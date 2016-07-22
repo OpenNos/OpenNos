@@ -989,13 +989,18 @@ namespace OpenNos.Handler
 
             }
             if (specialist != null && Session.Character.UseSp && specialist.SpLevel < 99)
-                specialist.XP += monsterinfo.JobXP * (100 - specialist.SpLevel);
+                specialist.XP += monsterinfo.JobXP * ServerManager.XPRate * (100 - specialist.SpLevel);
             double t = Session.Character.XPLoad();
             while (Session.Character.LevelXp >= t)
             {
                 Session.Character.LevelXp -= (long)t;
                 Session.Character.Level++;
                 t = Session.Character.XPLoad();
+                if (Session.Character.Level >= 99)
+                {
+                    Session.Character.Level = 99;
+                    Session.Character.LevelXp = 0;
+                }
                 Session.Character.Hp = (int)Session.Character.HPLoad();
                 Session.Character.Mp = (int)Session.Character.MPLoad();
                 Session.Client.SendPacket(Session.Character.GenerateStat());
@@ -1013,6 +1018,11 @@ namespace OpenNos.Handler
                 if (Session.Character.JobLevel >= 20 && Session.Character.Class == 0)
                 {
                     Session.Character.JobLevel = 20;
+                    Session.Character.JobLevelXp = 0;
+                }
+                else if (Session.Character.JobLevel >= 80)
+                {
+                    Session.Character.JobLevel = 80;
                     Session.Character.JobLevelXp = 0;
                 }
                 Session.Character.Hp = (int)Session.Character.HPLoad();
@@ -1069,7 +1079,11 @@ namespace OpenNos.Handler
                 t = Session.Character.SPXPLoad();
                 Session.Client.SendPacket(Session.Character.GenerateStat());
                 Session.Client.SendPacket($"levelup {Session.Character.CharacterId}");
-
+                if (specialist.SpLevel >= 99)
+                {
+                    specialist.SpLevel = 99;
+                    specialist.XP = 0;
+                }
                 byte SkillSpCount = (byte)Session.Character.SkillsSp.Count;
                 foreach (Skill ski in ServerManager.GetAllSkill())
                 {
