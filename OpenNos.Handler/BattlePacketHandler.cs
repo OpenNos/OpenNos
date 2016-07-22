@@ -1010,6 +1010,11 @@ namespace OpenNos.Handler
                 Session.Character.JobLevelXp -= (long)t;
                 Session.Character.JobLevel++;
                 t = Session.Character.JobXPLoad();
+                if (Session.Character.JobLevel >= 20 && Session.Character.Class == 0)
+                {
+                    Session.Character.JobLevel = 20;
+                    Session.Character.JobLevelXp = 0;
+                }
                 Session.Character.Hp = (int)Session.Character.HPLoad();
                 Session.Character.Mp = (int)Session.Character.MPLoad();
                 Session.Client.SendPacket(Session.Character.GenerateStat());
