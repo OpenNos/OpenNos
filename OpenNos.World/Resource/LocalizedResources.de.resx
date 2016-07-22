@@ -684,4 +684,7 @@
   <data name="XP_INCREASE" xml:space="preserve">
     <value>Die Erfahrung Rate wurde erfolgreich geändert</value>
   </data>
+  <data name="CANT_ATTACKNOW" xml:space="preserve">
+    <value>Sie können weiterhin verwenden</value>
+  </data>
 </root>
