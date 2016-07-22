@@ -1091,6 +1091,7 @@ namespace OpenNos.Handler
         private void ChangeSP()
         {
             Logger.Debug("ChangeSP", Session.SessionId);
+            Session.Character.LastTransform = DateTime.Now;
             SpecialistInstance sp = Session.Character.EquipmentList.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, (byte)InventoryType.Equipment);
             WearableInstance fairy = Session.Character.EquipmentList.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Fairy, (byte)InventoryType.Equipment);
             if (sp == null)
