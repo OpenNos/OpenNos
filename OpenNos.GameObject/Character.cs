@@ -848,7 +848,7 @@ namespace OpenNos.GameObject
             List<CharacterSkill> skillsSp = new List<CharacterSkill>();
             foreach (Skill ski in ServerManager.GetAllSkill())
             {
-                if (ski.Class == iteminfo.Morph + 31)
+                if (ski.Class == iteminfo.Morph + 31 && ski.LevelMinimum <= inventoryItem.SpLevel)
                     skillsSp.Add(new CharacterSkill() { SkillVNum = ski.SkillVNum, CharacterId = CharacterId });
             }
 
