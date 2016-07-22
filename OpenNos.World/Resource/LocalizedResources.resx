@@ -721,4 +721,7 @@
   <data name="XP_INCREASE" xml:space="preserve">
     <value>XP rate have been changed!</value>
   </data>
+  <data name="CANT_ATTACKNOW" xml:space="preserve">
+    <value>You can not still use</value>
+  </data>
 </root>
