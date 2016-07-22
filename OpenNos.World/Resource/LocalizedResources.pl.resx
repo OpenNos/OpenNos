@@ -694,4 +694,14 @@
   <data name="RESTORE_DIGNITY" xml:space="preserve">
     <value>Odzyskaleś troche swojej godności</value>
   </data>
+  <data name="DROP_INCREASE" xml:space="preserve">
+    <value>Drop rate itemków zmieniony!</value>
+    <comment>Użyto angielskiego z powodu długości zdania &lt;patrz: XP_INCREASE&gt;</comment>
+  </data>
+  <data name="GOLD_INCREASE" xml:space="preserve">
+    <value>Drop rate złota zmieniony!</value>
+  </data>
+  <data name="XP_INCREASE" xml:space="preserve">
+    <value>Wartość zdobywanego doświadczenia została zmieniona!</value>
+  </data>
 </root>

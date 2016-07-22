@@ -373,7 +373,7 @@
     <value>{0} Maps Loaded!</value>
   </data>
   <data name="MAX_GOLD" xml:space="preserve">
-    <value>Maximum of gold reached!</value>
+    <value>Maximum amount of gold reached!</value>
   </data>
   <data name="MESSAGE_RECEIVED" xml:space="preserve">
     <value>Message received {0} on client {1}</value>
@@ -711,5 +711,14 @@
   </data>
   <data name="RESTORE_DIGNITY" xml:space="preserve">
     <value>You've restored some of your dignity</value>
+  </data>
+  <data name="DROP_INCREASE" xml:space="preserve">
+    <value>Drop rate have been changed!</value>
+  </data>
+  <data name="GOLD_INCREASE" xml:space="preserve">
+    <value>Gold drop rate have been changed!</value>
+  </data>
+  <data name="XP_INCREASE" xml:space="preserve">
+    <value>XP rate have been changed!</value>
   </data>
 </root>
