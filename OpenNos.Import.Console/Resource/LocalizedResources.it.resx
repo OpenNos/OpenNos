@@ -165,4 +165,7 @@
   <data name="SHOPS_PARSED" xml:space="preserve">
     <value>{0} Shops sincronizzati</value>
   </data>
+  <data name="String" xml:space="preserve">
+    <value />
+  </data>
 </root>

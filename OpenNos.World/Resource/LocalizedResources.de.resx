@@ -675,4 +675,13 @@
   <data name="RESTORE_DIGNITY" xml:space="preserve">
     <value />
   </data>
+  <data name="DROP_INCREASE" xml:space="preserve">
+    <value>Die Drop-Rate wurde erfolgreich geänder</value>
+  </data>
+  <data name="GOLD_INCREASE" xml:space="preserve">
+    <value>Das goldene Verhältnis wurde erfolgreich geändert</value>
+  </data>
+  <data name="XP_INCREASE" xml:space="preserve">
+    <value>Die Erfahrung Rate wurde erfolgreich geändert</value>
+  </data>
 </root>

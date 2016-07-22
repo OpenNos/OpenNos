@@ -909,7 +909,7 @@ namespace OpenNos.Handler
                 int i = 1;
                 List<DropDTO> droplist = monsterinfo.Drops.ToList();
                 droplist.AddRange(ServerManager.Drops);
-                int RateDrop = int.Parse(System.Configuration.ConfigurationManager.AppSettings["RateDrop"]);
+                int RateDrop = ServerManager.DropRate;
 
                 foreach (DropDTO drop in droplist)
                 {
@@ -923,7 +923,7 @@ namespace OpenNos.Handler
                     }
                 }
                 rnd = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
-                int RateGold = int.Parse(System.Configuration.ConfigurationManager.AppSettings["RateGold"]);
+                int RateGold = ServerManager.GoldRate;
                 short gold = Convert.ToInt16((rnd.Next(1, 8) >= 7 ? 1 : 0) * rnd.Next(6 * monsterinfo.Level, 12 * monsterinfo.Level) * RateGold);
                 if (gold != 0)
                 {
@@ -975,17 +975,17 @@ namespace OpenNos.Handler
                 Session.Client.SendPacket(Session.Character.GenerateStat());
                 Session.Client.SendPacket(Session.Character.GenerateEff(5));
             }
-            int RateXP = int.Parse(System.Configuration.ConfigurationManager.AppSettings["RateXP"]);
+
             SpecialistInstance specialist = Session.Character.EquipmentList.LoadBySlotAndType<SpecialistInstance>((short)EquipmentType.Sp, (byte)InventoryType.Equipment);
 
             if (Session.Character.Level < 99)
-                Session.Character.LevelXp += monsterinfo.XP * RateXP;
+                Session.Character.LevelXp += monsterinfo.XP * ServerManager.XPRate;
             if ((Session.Character.Class == 0 && Session.Character.JobLevel < 20) || (Session.Character.Class != 0 && Session.Character.JobLevel < 80))
             {
                 if (specialist != null && Session.Character.UseSp && specialist.SpLevel < 99)
-                    Session.Character.JobLevelXp += ((int)((double)monsterinfo.JobXP / (double)100 * specialist.SpLevel)) * RateXP;
+                    Session.Character.JobLevelXp += ((int)((double)monsterinfo.JobXP / (double)100 * specialist.SpLevel)) * ServerManager.XPRate;
                 else
-                    Session.Character.JobLevelXp += monsterinfo.JobXP * RateXP;
+                    Session.Character.JobLevelXp += monsterinfo.JobXP * ServerManager.XPRate;
 
             }
             if (specialist != null && Session.Character.UseSp && specialist.SpLevel < 99)

@@ -123,9 +123,6 @@
   <data name="DONE" xml:space="preserve">
     <value>Wprowadzanie ukończone!</value>
   </data>
-  <data name="DROP_PARSED" xml:space="preserve">
-    <value>{0} przedmitów dropu wprowadzonych</value>
-  </data>
   <data name="ENTER_PATH" xml:space="preserve">
     <value>Podaj ściezkę pliku aby przeprowadzić rozbiór danych</value>
   </data>

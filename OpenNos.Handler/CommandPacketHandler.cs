@@ -301,6 +301,9 @@ namespace OpenNos.Handler
             Session.Client.SendPacket(Session.Character.GenerateSay("$Morph MORPHID UPGRADE WINGS ARENA", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$Gold AMOUNT", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$Stat", 6));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$RateXp RATE", 6));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$RateGold RATE", 6));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$RateDrop RATE", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$Lvl LEVEL", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$JLvl JOBLEVEL", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$SPLvl SPLEVEL", 6));
@@ -494,6 +497,70 @@ namespace OpenNos.Handler
             }
             else
                 Session.Client.SendPacket(Session.Character.GenerateSay("$Gold AMOUNT", 10));
+        }
+
+        [Packet("$RateXp")]
+        public void RateXp(string packet)
+        {
+            Logger.Debug(packet, Session.SessionId);
+            string[] packetsplit = packet.Split(' ');
+            int rate;
+            if (packetsplit.Length > 2)
+            {
+                if (int.TryParse(packetsplit[2], out rate))
+                {
+                    ServerManager.XPRate = rate;
+
+                }
+                else
+                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("WRONG_VALUE"), 0));
+            }
+            else
+                Session.Client.SendPacket(Session.Character.GenerateSay("$RateXp RATE", 10));
+            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("XP_INCREASE"), 0));
+        }
+
+        [Packet("$RateDrop")]
+        public void RateDrop(string packet)
+        {
+            Logger.Debug(packet, Session.SessionId);
+            string[] packetsplit = packet.Split(' ');
+            int rate;
+            if (packetsplit.Length > 2)
+            {
+                if (int.TryParse(packetsplit[2], out rate))
+                {
+                    ServerManager.DropRate = rate;
+
+                }
+                else
+                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("WRONG_VALUE"), 0));
+            }
+            else
+                Session.Client.SendPacket(Session.Character.GenerateSay("$RateDrop RATE", 10));
+            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("DROP_INCREASE"), 0));
+
+        }
+
+        [Packet("$RateGold")]
+        public void RateGold(string packet)
+        {
+            Logger.Debug(packet, Session.SessionId);
+            string[] packetsplit = packet.Split(' ');
+            int rate;
+            if (packetsplit.Length > 2)
+            {
+                if (int.TryParse(packetsplit[2], out rate))
+                {
+                    ServerManager.GoldRate = rate;
+
+                }
+                else
+                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("WRONG_VALUE"), 0));
+            }
+            else
+                Session.Client.SendPacket(Session.Character.GenerateSay("$RateGold RATE", 10));
+            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("GOLD_INCREASE"), 0));
         }
 
         [Packet("$Invisible")]

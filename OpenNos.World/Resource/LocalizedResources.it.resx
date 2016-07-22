@@ -711,4 +711,13 @@
   <data name="RESTORE_DIGNITY" xml:space="preserve">
     <value />
   </data>
+  <data name="DROP_INCREASE" xml:space="preserve">
+    <value>Il tasso di abbandono è stato cambiato con successo</value>
+  </data>
+  <data name="GOLD_INCREASE" xml:space="preserve">
+    <value>Il rapporto aureo è stato modificato con successo</value>
+  </data>
+  <data name="XP_INCREASE" xml:space="preserve">
+    <value>Il tasso di esperienza è stato cambiato con successo</value>
+  </data>
 </root>
