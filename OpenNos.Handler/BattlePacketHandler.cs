@@ -220,7 +220,6 @@ namespace OpenNos.Handler
         public void UseSkill(string packet)
         {
             Logger.Debug(packet, Session.SessionId);
-            Session.Character.InterruptCharChange();
 
             if (Session.Character.CanFight)
             {
@@ -246,7 +245,6 @@ namespace OpenNos.Handler
                 return;
             }
             Logger.Debug(packet, Session.SessionId);
-            Session.Character.InterruptCharChange();
             if (Session.Character.CanFight)
             {
                 string[] packetsplit = packet.Split(' ');

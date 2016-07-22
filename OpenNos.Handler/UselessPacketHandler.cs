@@ -66,12 +66,6 @@ namespace OpenNos.Handler
             // Not needed for now.
         }
 
-        [Packet("#sl")]
-        public void Sl(string packet)
-        {
-            // idk
-        }
-
         [Packet("snap")]
         public void Snap(string packet)
         {
