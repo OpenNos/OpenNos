@@ -801,7 +801,6 @@ namespace OpenNos.Handler
             Session.Character.IsSitting = !Session.Character.IsSitting;
             if (Session.Character.IsVehicled)
                 Session.Character.IsSitting = false;
-            Session.Character.InterruptCharChange();
 
             Session.CurrentMap?.Broadcast(Session.Character.GenerateRest());
         }
@@ -1103,7 +1102,6 @@ namespace OpenNos.Handler
         [Packet("walk")]
         public void Walk(string packet)
         {
-            Session.Character.InterruptCharChange();
 
             string[] packetsplit = packet.Split(' ');
             if (packetsplit.Length <= 5)

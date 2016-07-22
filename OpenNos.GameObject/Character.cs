@@ -195,8 +195,6 @@ namespace OpenNos.GameObject
 
         public byte Speed { get { return _speed; } set { if (value > 59) { _speed = 59; } else { _speed = value; } } }
 
-        public Thread ThreadCharChange { get; set; }
-
         public bool UseSp { get; set; }
 
         public int WaterResistance { get; set; }
@@ -1299,12 +1297,6 @@ namespace OpenNos.GameObject
                 }
             }
             return (int)((ServersData.HPData[Class, Level] + hp) * multiplicator);
-        }
-
-        public void InterruptCharChange()
-        {
-            if (ThreadCharChange != null && ThreadCharChange.IsAlive)
-                ThreadCharChange.Suspend();
         }
 
         public double JobXPLoad()

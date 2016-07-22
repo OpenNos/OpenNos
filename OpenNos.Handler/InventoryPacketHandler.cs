@@ -945,17 +945,30 @@ namespace OpenNos.Handler
                 }
                 else
                 {
-                    double timeSpanSinceLastSpUsage = currentRunningSeconds - Session.Character.LastSp;
-                    if (timeSpanSinceLastSpUsage >= Session.Character.SpCooldown)
-                    {
-                        Session.Character.InterruptCharChange();
-                        Session.Character.ThreadCharChange = new Thread(ChangeSP);
-                        Session.Character.ThreadCharChange.Start();
-                    }
-                    else
-                    {
-                        Session.Client.SendPacket(Session.Character.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("SP_INLOADING"), Session.Character.SpCooldown - (int)Math.Round(timeSpanSinceLastSpUsage, 0)), 0));
-                    }
+                    Session.Client.SendPacket("delay 5000 3 #sl^1");
+                    Session.CurrentMap?.Broadcast($"guri 2 1 {Session.Character.CharacterId}");
+                }
+            }
+        }
+
+        [Packet("#sl")]
+        public void Sl(string packet)
+        {
+            Logger.Debug(packet, Session.SessionId);
+            string[] packetsplit = packet.Split(' ', '^');
+            byte mode;
+            if (!byte.TryParse(packetsplit[2], out mode)) return;
+            if (!Session.Character.UseSp)
+            {
+                double currentRunningSeconds = (DateTime.Now - Process.GetCurrentProcess().StartTime.AddSeconds(-50)).TotalSeconds;
+                double timeSpanSinceLastSpUsage = currentRunningSeconds - Session.Character.LastSp;
+                if (timeSpanSinceLastSpUsage >= Session.Character.SpCooldown)
+                {
+                    ChangeSP();
+                }
+                else
+                {
+                    Session.Client.SendPacket(Session.Character.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("SP_INLOADING"), Session.Character.SpCooldown - (int)Math.Round(timeSpanSinceLastSpUsage, 0)), 0));
                 }
             }
         }
@@ -1078,10 +1091,6 @@ namespace OpenNos.Handler
         private void ChangeSP()
         {
             Logger.Debug("ChangeSP", Session.SessionId);
-            Session.Client.SendPacket("delay 5000 3 #sl^1");
-            Session.CurrentMap?.Broadcast($"guri 2 1 {Session.Character.CharacterId}");
-            Thread.Sleep(5000);
-
             SpecialistInstance sp = Session.Character.EquipmentList.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, (byte)InventoryType.Equipment);
             WearableInstance fairy = Session.Character.EquipmentList.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Fairy, (byte)InventoryType.Equipment);
             if (sp == null)
