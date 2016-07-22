@@ -1081,7 +1081,7 @@ namespace OpenNos.Handler
             Session.Client.SendPacket("delay 5000 3 #sl^1");
             Session.CurrentMap?.Broadcast($"guri 2 1 {Session.Character.CharacterId}");
             Thread.Sleep(5000);
-
+            Session.Character.LastTransform = DateTime.Now;
             SpecialistInstance sp = Session.Character.EquipmentList.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, (byte)InventoryType.Equipment);
             WearableInstance fairy = Session.Character.EquipmentList.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Fairy, (byte)InventoryType.Equipment);
             if (sp == null)

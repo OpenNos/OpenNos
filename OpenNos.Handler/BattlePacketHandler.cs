@@ -57,7 +57,12 @@ namespace OpenNos.Handler
             string[] packetsplit = packet.Split(' ');
             ushort damage = 0;
             int hitmode = 0;
-
+            if ((DateTime.Now - Session.Character.LastTransform).TotalSeconds > 3)
+            {
+                Session.Client.SendPacket($"cancel 0");
+                Session.Client.SendPacket(Session.Character.GenerateMsg($"{ Language.Instance.GetMessageFromKey("CANT_ATTACKNOW")}", 1));
+                return;
+            }
             if (packetsplit.Length > 3)
                 for (int i = 3; i < packetsplit.Length - 1; i += 2)
                 {
@@ -86,7 +91,12 @@ namespace OpenNos.Handler
         {
             List<CharacterSkill> skills = Session.Character.UseSp ? Session.Character.SkillsSp : Session.Character.Skills;
             bool notcancel = false;
-
+            if ((DateTime.Now - Session.Character.LastTransform).TotalSeconds > 3)
+            {
+                Session.Client.SendPacket($"cancel 0");
+                Session.Client.SendPacket(Session.Character.GenerateMsg($"{ Language.Instance.GetMessageFromKey("CANT_ATTACKNOW")}", 1));
+                return;
+            }
             if (skills != null)
             {
                 ushort damage = 0; ;
@@ -229,6 +239,12 @@ namespace OpenNos.Handler
         [Packet("u_as")]
         public void UseZonesSkill(string packet)
         {
+            if ((DateTime.Now - Session.Character.LastTransform).TotalSeconds > 3)
+            {
+                Session.Client.SendPacket($"cancel 0");
+                Session.Client.SendPacket(Session.Character.GenerateMsg($"{ Language.Instance.GetMessageFromKey("CANT_ATTACKNOW")}", 1));
+                return;
+            }
             Logger.Debug(packet, Session.SessionId);
             Session.Character.InterruptCharChange();
             if (Session.Character.CanFight)

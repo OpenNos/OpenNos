@@ -127,6 +127,8 @@ namespace OpenNos.GameObject
 
         public bool Invisible { get { return _invisible; } set { _invisible = value; } }
 
+        public DateTime LastTransform { get; set; }
+
         public bool InvisibleGm { get; set; }
 
         public int IsDancing { get { return _isDancing; } set { _isDancing = value; } }
