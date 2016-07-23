@@ -42,12 +42,12 @@ namespace OpenNos.GameObject
                     inventory.ItemInstance.IsUsed = true;
                     double timeSpanSinceLastSpUsage = (DateTime.Now - Process.GetCurrentProcess().StartTime.AddSeconds(-50)).TotalSeconds -
                                                       session.Character.LastSp;
-                    if (iteminfo.EquipmentSlot == (byte)EquipmentType.Sp && timeSpanSinceLastSpUsage < 30)
+                    if (iteminfo.EquipmentSlot == (byte)EquipmentType.Sp && timeSpanSinceLastSpUsage >= session.Character.SpCooldown)
                     {
                         session.Client.SendPacket(
                             session.Character.GenerateMsg(
                                 string.Format(Language.Instance.GetMessageFromKey("SP_INLOADING"),
-                                    30 - (int)Math.Round(timeSpanSinceLastSpUsage)),
+                                    session.Character.SpCooldown - (int)Math.Round(timeSpanSinceLastSpUsage)),
                                 0));
                         return;
                     }
