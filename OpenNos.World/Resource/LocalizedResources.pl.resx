@@ -704,7 +704,7 @@
   <data name="XP_INCREASE" xml:space="preserve">
     <value>Wartość zdobywanego doświadczenia została zmieniona!</value>
   </data>
-  <data name="CANT_ATTACKNOW" xml:space="preserve">
-    <value>Można nadal używać</value>
+  <data name="CANT_ATTACK" xml:space="preserve">
+    <value>Nie możesz teraz atakować</value>
   </data>
 </root>

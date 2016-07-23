@@ -719,7 +719,7 @@
   <data name="XP_INCREASE" xml:space="preserve">
     <value>Le taux d'expérience a été modifié avec succès</value>
   </data>
-  <data name="CANT_ATTACKNOW" xml:space="preserve">
+  <data name="CANT_ATTACK" xml:space="preserve">
     <value>Tu ne peux pas encore l'utiliser.</value>
   </data>
 </root>

@@ -93,13 +93,13 @@ namespace OpenNos.Handler
             bool notcancel = false;
             if ((DateTime.Now - Session.Character.LastTransform).TotalSeconds < 3)
             {
-                  Session.Client.SendPacket($"cancel 0 0");
-                Session.Client.SendPacket(Session.Character.GenerateMsg($"{ Language.Instance.GetMessageFromKey("CANT_ATTACKNOW")}", 0));
+                Session.Client.SendPacket($"cancel 0 0");
+                Session.Client.SendPacket(Session.Character.GenerateMsg($"{ Language.Instance.GetMessageFromKey("CANT_ATTACK")}", 0));
                 return;
             }
             if (skills != null)
             {
-                ushort damage = 0; ;
+                ushort damage = 0;
                 int hitmode = 0;
                 Skill skill = null;
 
@@ -241,7 +241,7 @@ namespace OpenNos.Handler
             if ((DateTime.Now - Session.Character.LastTransform).TotalSeconds < 3)
             {
                 Session.Client.SendPacket($"cancel 0 0");
-                Session.Client.SendPacket(Session.Character.GenerateMsg($"{ Language.Instance.GetMessageFromKey("CANT_ATTACKNOW")}", 0));
+                Session.Client.SendPacket(Session.Character.GenerateMsg($"{Language.Instance.GetMessageFromKey("CANT_ATTACK")}", 0));
                 return;
             }
             Logger.Debug(packet, Session.SessionId);
@@ -933,7 +933,6 @@ namespace OpenNos.Handler
                     if (rndamount <= ((double)drop.DropChance * RateDrop) / 5000.000)
                     {
                         Session.CurrentMap.DropItemByMonster(drop, mmon.MapX, mmon.MapY);
-
                     }
                 }
                 rnd = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
@@ -981,7 +980,6 @@ namespace OpenNos.Handler
                 }
             }
 
-
             if ((int)(Session.Character.LevelXp / (Session.Character.XPLoad() / 10)) < (int)((Session.Character.LevelXp + monsterinfo.XP) / (Session.Character.XPLoad() / 10)))
             {
                 Session.Character.Hp = (int)Session.Character.HPLoad();
@@ -1000,7 +998,6 @@ namespace OpenNos.Handler
                     Session.Character.JobLevelXp += ((int)((double)monsterinfo.JobXP / (double)100 * specialist.SpLevel)) * ServerManager.XPRate;
                 else
                     Session.Character.JobLevelXp += monsterinfo.JobXP * ServerManager.XPRate;
-
             }
             if (specialist != null && Session.Character.UseSp && specialist.SpLevel < 99)
                 specialist.XP += monsterinfo.JobXP * ServerManager.XPRate * (100 - specialist.SpLevel);
