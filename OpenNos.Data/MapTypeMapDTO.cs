@@ -14,14 +14,12 @@
 
 namespace OpenNos.Data
 {
-    public class MapDTO : IMapDTO
+    public class MapTypeMapDTO
     {
         #region Properties
 
-        public byte[] Data { get; set; }
         public short MapId { get; set; }
-        public int Music { get; set; }
-        public string Name { get; set; }
+        public short MapTypeId { get; set; }
 
         #endregion
     }

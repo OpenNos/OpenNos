@@ -66,6 +66,7 @@
     <Compile Include="IMapMonsterDAO.cs" />
     <Compile Include="IMapNpcDAO.cs" />
     <Compile Include="IMapTypeDAO.cs" />
+    <Compile Include="IMapTypeMapDAO.cs" />
     <Compile Include="INpcMonsterSkillDAO.cs" />
     <Compile Include="IPenaltyLogDAO.cs" />
     <Compile Include="IQuicklistEntryDAO.cs" />

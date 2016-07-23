@@ -35,6 +35,7 @@ namespace OpenNos.DAL
         private static IMapDAO _mapDAO;
         private static IMapMonsterDAO _mapmonsterDAO;
         private static IMapNpcDAO _mapnpcDAO;
+        private static IMapTypeMapDAO _maptypemapDAO;
         private static IMapTypeDAO _maptypeDAO;
         private static INpcMonsterDAO _npcmonsterDAO;
         private static INpcMonsterSkillDAO _npcmonsterskillDAO;
@@ -234,6 +235,18 @@ namespace OpenNos.DAL
                 }
 
                 return _mapnpcDAO;
+            }
+        }
+        public static IMapTypeMapDAO MapTypeMapDAO
+        {
+            get
+            {
+                if (_maptypemapDAO == null)
+                {
+                    _maptypemapDAO = new MySQL.MapTypeMapDAO();
+                }
+
+                return _maptypemapDAO;
             }
         }
 

@@ -30,7 +30,6 @@ namespace OpenNos.DAL.EF.MySQL
             Portal = new HashSet<Portal>();
             Portal1 = new HashSet<Portal>();
             Teleporter = new HashSet<Teleporter>();
-            MapTypes = new HashSet<MapType>();
             MapTypeMap = new HashSet<MapTypeMap>();
         }
 
@@ -46,13 +45,8 @@ namespace OpenNos.DAL.EF.MySQL
 
         public virtual ICollection<MapMonster> MapMonster { get; set; }
         public virtual ICollection<MapNpc> MapNpc { get; set; }
-        public virtual MapType MapType { get; set; }
-
-        [ForeignKey(nameof(MapType))]
-        public short? MapTypeId { get; set; }
 
         public virtual ICollection<MapTypeMap> MapTypeMap { get; set; }
-        public virtual ICollection<MapType> MapTypes { get; set; }
         public int Music { get; set; }
 
         [MaxLength(255)]

@@ -168,8 +168,7 @@ namespace OpenNos.Import.Console
                     Name = name,
                     Music = music,
                     MapId = short.Parse(file.Name),
-                    Data = File.ReadAllBytes(file.FullName),
-                    MapTypeId = null
+                    Data = File.ReadAllBytes(file.FullName)
                 };
 
                 if (DAOFactory.MapDAO.LoadById(map.MapId) != null) continue; // Map already exists in list

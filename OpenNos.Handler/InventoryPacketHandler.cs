@@ -407,19 +407,20 @@ namespace OpenNos.Handler
                     }
                     else
                     {
+                        Item iteminfo = ServerManager.GetItem(mapitem.ItemInstance.ItemVNum);
                         if (Session.Character.Gold + mapitem.ItemInstance.Amount <= 1000000000)
                         {
-                            Item iteminfo = ServerManager.GetItem(mapitem.ItemInstance.ItemVNum);
                             Session.Character.Gold += mapitem.ItemInstance.Amount;
-                            Session.CurrentMap.DroppedList.Remove(DropId);
-                            Session.CurrentMap?.Broadcast(Session.Character.GenerateGet(DropId));
                             Session.Client.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {iteminfo.Name} x {amount}", 12));
-                            Session.Client.SendPacket(Session.Character.GenerateGold());
                         }
                         else
                         {
+                            Session.Character.Gold = 1000000000;
                             Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("MAX_GOLD"), 0));
                         }
+                        Session.Client.SendPacket(Session.Character.GenerateGold());
+                        Session.CurrentMap.DroppedList.Remove(DropId);
+                        Session.CurrentMap?.Broadcast(Session.Character.GenerateGet(DropId));
                     }
                 }
             }

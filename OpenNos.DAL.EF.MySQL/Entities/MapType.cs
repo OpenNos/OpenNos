@@ -23,24 +23,19 @@ namespace OpenNos.DAL.EF.MySQL
 
         public MapType()
         {
-            Maps = new HashSet<Map>();
-            MapTypeMaps = new HashSet<MapTypeMap>();
+            MapTypeMap = new HashSet<MapTypeMap>();
+            Drops = new HashSet<Drop>();
         }
 
         #endregion
 
         #region Properties
 
+        public string MapTypeName { get; set; }
         public virtual ICollection<Drop> Drops { get; set; }
-        public virtual Map Map { get; set; }
-
-        [ForeignKey(nameof(Map))]
-        public short MapId { get; set; }
-
         public short PotionDelay { get; set; }
-        public virtual ICollection<Map> Maps { get; set; }
         public short MapTypeId { get; set; }
-        public virtual ICollection<MapTypeMap> MapTypeMaps { get; set; }
+        public virtual ICollection<MapTypeMap> MapTypeMap { get; set; }
 
         #endregion
     }

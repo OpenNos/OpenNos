@@ -249,7 +249,7 @@ namespace OpenNos.GameObject
             }
 
             ItemInstance newInstance = InventoryList.CreateItemInstance(drop.ItemVNum, 0);
-            newInstance.Amount = (short)drop.Amount;
+            newInstance.Amount = drop.Amount;
 
             droppedItem = new MapItem(MapX, MapY, true)
             {

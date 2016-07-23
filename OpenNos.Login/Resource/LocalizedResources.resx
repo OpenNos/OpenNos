@@ -172,6 +172,6 @@
     <value>Connection to the server has been lost.</value>
   </data>
   <data name="DATABASE_NOT_UPTODATE" xml:space="preserve">
-    <value>Database may not up to date. Please consider updating your database.</value>
+    <value>Database may not be up to date. Please consider updating your database.</value>
   </data>
 </root>

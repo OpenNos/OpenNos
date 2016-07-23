@@ -49,6 +49,7 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public virtual DbSet<MapMonster> MapMonster { get; set; }
         public virtual DbSet<MapNpc> MapNpc { get; set; }
         public virtual DbSet<MapType> MapType { get; set; }
+        public virtual DbSet<MapTypeMap> MapTypeMap { get; set; }
         public virtual DbSet<NpcMonster> NpcMonster { get; set; }
         public virtual DbSet<NpcMonsterSkill> NpcMonsterSkill { get; set; }
         public virtual DbSet<Portal> Portal { get; set; }
@@ -178,12 +179,6 @@ namespace OpenNos.DAL.EF.MySQL.DB
                 .WithRequired(e => e.Map)
                 .WillCascadeOnDelete(false);
 
-            modelBuilder.Entity<Map>()
-                .HasOptional(e => e.MapType)
-                .WithMany(e => e.Maps)
-                .HasForeignKey(e => e.MapTypeId)
-                .WillCascadeOnDelete(false);
-
             modelBuilder.Entity<MapTypeMap>()
                 .HasRequired(e => e.Map)
                 .WithMany(e => e.MapTypeMap)
@@ -192,14 +187,8 @@ namespace OpenNos.DAL.EF.MySQL.DB
 
             modelBuilder.Entity<MapTypeMap>()
                 .HasRequired(e => e.MapType)
-                .WithMany(e => e.MapTypeMaps)
+                .WithMany(e => e.MapTypeMap)
                 .HasForeignKey(e => e.MapTypeId)
-                .WillCascadeOnDelete(false);
-
-            modelBuilder.Entity<MapType>()
-                .HasRequired(e => e.Map)
-                .WithMany(e => e.MapTypes)
-                .HasForeignKey(e => e.MapId)
                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<MapType>()

@@ -12,16 +12,18 @@
  * GNU General Public License for more details.
  */
 
-namespace OpenNos.Data
-{
-    public class MapDTO : IMapDTO
-    {
-        #region Properties
+using OpenNos.Data;
+using System.Collections.Generic;
 
-        public byte[] Data { get; set; }
-        public short MapId { get; set; }
-        public int Music { get; set; }
-        public string Name { get; set; }
+namespace OpenNos.DAL.Interface
+{
+    public interface IMapTypeMapDAO
+    {
+        #region Methods
+
+        IEnumerable<MapTypeMapDTO> LoadAll();
+        IEnumerable<MapTypeMapDTO> LoadByMapId(short mapId);
+        IEnumerable<MapTypeMapDTO> LoadByMapTypeId(short maptypeId);
 
         #endregion
     }
