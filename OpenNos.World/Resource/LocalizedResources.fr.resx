@@ -639,7 +639,7 @@
   <data name="CLIENTSESSION_DISPOSING" xml:space="preserve">
     <value>La session client est actuellement fermée, les paquets ne sont pas traités.</value>
   </data>
-  <data name="&#xD;&#xA;        " xml:space="preserve">
+  <data name="CONNECTION_LOST" xml:space="preserve">
     <value>La connexion au serveur a été interrompue.</value>
   </data>
   <data name="HEROLEVEL_CHANGED" xml:space="preserve">
@@ -686,6 +686,7 @@
   </data>
   <data name="WELCOME_MUSIC_INFO" xml:space="preserve">
     <value>Mélodie^du^pringtemps </value>
+    <comment>//Not work?, why don't appear on game ?</comment>
   </data>
   <data name="RESTORE_DIGNITY" xml:space="preserve">
     <value>Dignité +1</value>
@@ -698,7 +699,7 @@
     <value>Vous n'avez pas assez de CP</value>
   </data>
   <data name="NOT_ENOUGH_REPUT" xml:space="preserve">
-    <value>Vous n'avez pas assez de réputation</value>
+    <value>Vous n'avez pas assez de réputation !</value>
   </data>
   <data name="REMOVE_SP" xml:space="preserve">
     <value>Si vous voulez apprendre cette compétence, vous devez enlever votre transformation.</value>

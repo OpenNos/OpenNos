@@ -374,7 +374,7 @@ namespace OpenNos.GameObject
                 }
                 else
                 {
-                    Session.Client.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("LVL_REQUIERED"), 40), 11));
+                    Session.Client.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("LVL_REQUIERED"), 41), 11));
 
                     return;
                 }
