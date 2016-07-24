@@ -1155,7 +1155,6 @@ namespace OpenNos.Handler
                 stri = "";
             return stri;
         }
-
         private async void HealthTask()
         {
             int x = 1;

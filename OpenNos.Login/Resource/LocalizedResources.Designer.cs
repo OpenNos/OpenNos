@@ -133,7 +133,7 @@ namespace OpenNos.Login.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Database may not up to date. Please consider updating your database..
+        ///   Looks up a localized string similar to Database may not be up to date. Please consider updating your database..
         /// </summary>
         internal static string DATABASE_NOT_UPTODATE {
             get {

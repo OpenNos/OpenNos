@@ -18,8 +18,8 @@ namespace OpenNos.Data
     {
         #region Properties
 
+        public string MapTypeName { get; set; }
         public short PotionDelay { get; set; }
-        public short MapId { get; set; }
         public short MapTypeId { get; set; }
 
         #endregion

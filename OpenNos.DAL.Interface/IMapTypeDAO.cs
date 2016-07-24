@@ -21,7 +21,8 @@ namespace OpenNos.DAL.Interface
     {
         #region Methods
 
-        IEnumerable<MapTypeDTO> LoadFromMapType(short mapId);
+        IEnumerable<MapTypeDTO> LoadAll();
+        IEnumerable<MapTypeDTO> LoadById(short maptypeId);
 
         #endregion
     }

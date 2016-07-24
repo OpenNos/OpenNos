@@ -22,7 +22,7 @@ using System.Linq;
 
 namespace OpenNos.DAL.EF.MySQL
 {
-    public class MapTypeDAO : IMapTypeDAO
+    public class MapTypeMapDAO : IMapTypeMapDAO
     {
         #region Members
 
@@ -32,12 +32,12 @@ namespace OpenNos.DAL.EF.MySQL
 
         #region Instantiation
 
-        public MapTypeDAO()
+        public MapTypeMapDAO()
         {
             var config = new MapperConfiguration(cfg =>
             {
-                cfg.CreateMap<MapType, MapTypeDTO>();
-                cfg.CreateMap<MapTypeDTO, MapType>();
+                cfg.CreateMap<MapTypeMap, MapTypeMapDTO>();
+                cfg.CreateMap<MapTypeMapDTO, MapTypeMap>();
             });
 
             _mapper = config.CreateMapper();
@@ -46,24 +46,36 @@ namespace OpenNos.DAL.EF.MySQL
         #endregion
 
         #region Methods
-        public IEnumerable<MapTypeDTO> LoadAll()
+
+        public IEnumerable<MapTypeMapDTO> LoadAll()
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                foreach (MapType MapType in context.MapType)
+                foreach (MapTypeMap MapTypeMap in context.MapTypeMap)
                 {
-                    yield return _mapper.Map<MapTypeDTO>(MapType);
+                    yield return _mapper.Map<MapTypeMapDTO>(MapTypeMap);
                 }
             }
         }
 
-        public IEnumerable<MapTypeDTO> LoadById(short maptypeId)
+        public IEnumerable<MapTypeMapDTO> LoadByMapId(short mapId)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                foreach (MapType MapType in context.MapType.Where(c => c.MapTypeId.Equals(maptypeId)))
+                foreach (MapTypeMap MapTypeMap in context.MapTypeMap.Where(c => c.MapId.Equals(mapId)))
                 {
-                    yield return _mapper.Map<MapTypeDTO>(MapType);
+                    yield return _mapper.Map<MapTypeMapDTO>(MapTypeMap);
+                }
+            }
+        }
+
+        public IEnumerable<MapTypeMapDTO> LoadByMapTypeId(short maptypeId)
+        {
+            using (var context = DataAccessHelper.CreateContext())
+            {
+                foreach (MapTypeMap MapTypeMap in context.MapTypeMap.Where(c => c.MapTypeId.Equals(maptypeId)))
+                {
+                    yield return _mapper.Map<MapTypeMapDTO>(MapTypeMap);
                 }
             }
         }
