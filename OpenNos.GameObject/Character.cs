@@ -208,12 +208,13 @@ namespace OpenNos.GameObject
         {
             SpecialistInstance specialist = EquipmentList.LoadBySlotAndType<SpecialistInstance>((short)EquipmentType.Sp, (byte)InventoryType.Equipment);
             byte SkillSpCount = (byte)SkillsSp.Count;
+            SkillsSp = new List<CharacterSkill>();
             foreach (Skill ski in ServerManager.GetAllSkill())
             {
-                if (ski.Class == Morph + 31 && specialist.SpLevel >= ski.LevelMinimum && SkillSpCount <= ski.CastId)
+                if (ski.Class == Morph + 31 && specialist.SpLevel >= ski.LevelMinimum)
                     SkillsSp.Add(new CharacterSkill() { SkillVNum = ski.SkillVNum, CharacterId = CharacterId });
             }
-            if (SkillsSp.Count > SkillSpCount)
+            if (SkillsSp.Count != SkillSpCount)
             {
                 Session.Client.SendPacket(GenerateMsg(Language.Instance.GetMessageFromKey("SKILL_LEARNED"), 0));
                 Session.Client.SendPacket(GenerateSki());

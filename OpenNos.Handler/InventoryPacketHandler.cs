@@ -524,13 +524,20 @@ namespace OpenNos.Handler
 
                 ItemInstance inventory = (slot != (byte)EquipmentType.Sp) ? Session.Character.EquipmentList.LoadBySlotAndType<WearableInstance>(slot, (byte)InventoryType.Equipment) : Session.Character.EquipmentList.LoadBySlotAndType<SpecialistInstance>(slot, (byte)InventoryType.Equipment);
                 if (inventory == null) return; // This eqslot is not equipped
+                double currentRunningSeconds = (DateTime.Now - Process.GetCurrentProcess().StartTime.AddSeconds(-50)).TotalSeconds;
+
+                double timeSpanSinceLastSpUsage = currentRunningSeconds - Session.Character.LastSp;
 
                 if (slot == (byte)EquipmentType.Sp && Session.Character.UseSp)
                 {
                     Session.Character.LastSp = (DateTime.Now - Process.GetCurrentProcess().StartTime.AddSeconds(-50)).TotalSeconds;
                     new Task(() => RemoveSP(inventory.ItemVNum)).Start();
                 }
-
+                else if (slot == (byte)EquipmentType.Sp && !Session.Character.UseSp && timeSpanSinceLastSpUsage <= Session.Character.SpCooldown)
+                {
+                    Session.Client.SendPacket(Session.Character.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("SP_INLOADING"), Session.Character.SpCooldown - (int)Math.Round(timeSpanSinceLastSpUsage, 0)), 0));
+                    return;
+                }
                 // Put item back to inventory
                 Inventory inv = Session.Character.InventoryList.AddToInventory(inventory);
                 if (inv == null) return;
