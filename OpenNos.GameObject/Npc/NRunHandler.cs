@@ -125,7 +125,7 @@ namespace OpenNos.GameObject
                                 ServerManager.Instance.ChangeMap(Session.Character.CharacterId);
                             }
                             else
-                                Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_MONEY"), 0));
+                                Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NOT_ENOUGH_MONEY"), 10));
                         }
                     }
                     break;
