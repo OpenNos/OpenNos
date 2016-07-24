@@ -940,7 +940,6 @@ namespace OpenNos.Handler
                 int gold = Convert.ToInt32((rnd.Next(1, 8) >= 7 ? 1 : 0) * rnd.Next(6 * monsterinfo.Level, 12 * monsterinfo.Level) * RateGold);
                 gold = gold > 1000000000 ? 1000000000 : gold;
                 gold = gold < 0 ? 69 : gold;
-                gold = 1073741823;
                 if (gold != 0)
                 {
                     DropDTO drop2 = new DropDTO()
