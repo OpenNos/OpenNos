@@ -274,6 +274,7 @@ namespace OpenNos.Handler
                 if (Byte.TryParse(packetsplit[2], out splevel) && splevel <= 99 && splevel > 0)
                 {
                     sp.SpLevel = splevel;
+                    Session.Character.LevelXp = 0;
                     Session.Client.SendPacket(Session.Character.GenerateLev());
                     Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SPLEVEL_CHANGED"), 0));
                     Session.Client.SendPacket(Session.Character.GenerateSki());
