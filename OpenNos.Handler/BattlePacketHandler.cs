@@ -939,7 +939,6 @@ namespace OpenNos.Handler
                 int RateGold = ServerManager.GoldRate;
                 int gold = Convert.ToInt32((rnd.Next(1, 8) >= 7 ? 1 : 0) * rnd.Next(6 * monsterinfo.Level, 12 * monsterinfo.Level) * RateGold);
                 gold = gold > 1000000000 ? 1000000000 : gold;
-                gold = gold < 0 ? 69 : gold;
                 if (gold != 0)
                 {
                     DropDTO drop2 = new DropDTO()
@@ -1043,79 +1042,30 @@ namespace OpenNos.Handler
                 Session.Client.SendPacket(Session.Character.GenerateStat());
                 Session.Client.SendPacket($"levelup {Session.Character.CharacterId}");
 
-                if (Session.Character.Class == 0)
-                {
-                    byte NewSkill = 0;
-                    for (int i = 200; i <= 210; i++)
-                    {
-                        if (i == 209)
-                            i++;
-
-                        Skill skinfo = ServerManager.GetSkill((short)i);
-                        if (skinfo.Class == 0 && Session.Character.JobLevel >= skinfo.LevelMinimum)
-                        {
-                            byte NewSkillVNum = (byte)i;
-                            for (int ii = Session.Character.Skills.Count - 1; ii >= 0; ii--)
-                            {
-                                Skill myskinfo = ServerManager.GetSkill(Session.Character.Skills[ii].SkillVNum);
-                                if (skinfo.SkillVNum == myskinfo.SkillVNum)
-                                {
-                                    NewSkillVNum = 0;
-                                    break;
-                                }
-                            }
-                            if (NewSkillVNum > 0)
-                            {
-                                NewSkill = 1;
-                                Session.Character.Skills.Add(new CharacterSkill() { SkillVNum = NewSkillVNum, CharacterId = Session.Character.CharacterId });
-                            }
-                        }
-                    }
-                    if (NewSkill > 0)
-                    {
-                        Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SKILL_LEARNED"), 0));
-                        Session.Client.SendPacket(Session.Character.GenerateSki());
-                        string[] quicklistpackets = Session.Character.GenerateQuicklist();
-                        foreach (string quicklist in quicklistpackets)
-                            Session.Client.SendPacket(quicklist);
-                    }
-                }
+                Session.Character.LearnAdventurerSkill();
                 Session.CurrentMap?.Broadcast(Session.Character.GenerateEff(6));
                 Session.CurrentMap?.Broadcast(Session.Character.GenerateEff(198));
             }
             if (specialist != null)
-                t = Session.Character.SPXPLoad();
-            while (specialist != null && specialist.XP >= t)
-            {
-                specialist.XP -= (long)t;
-                specialist.SpLevel++;
-                t = Session.Character.SPXPLoad();
-                Session.Client.SendPacket(Session.Character.GenerateStat());
-                Session.Client.SendPacket($"levelup {Session.Character.CharacterId}");
-                if (specialist.SpLevel >= 99)
+                    t = Session.Character.SPXPLoad();
+                while (specialist != null && specialist.XP >= t)
                 {
-                    specialist.SpLevel = 99;
-                    specialist.XP = 0;
+                    specialist.XP -= (long)t;
+                    specialist.SpLevel++;
+                    t = Session.Character.SPXPLoad();
+                    Session.Client.SendPacket(Session.Character.GenerateStat());
+                    Session.Client.SendPacket($"levelup {Session.Character.CharacterId}");
+                    if (specialist.SpLevel >= 99)
+                    {
+                        specialist.SpLevel = 99;
+                        specialist.XP = 0;
+                    }
+                    Session.Character.LearnSPSkill();
+                    Session.CurrentMap?.Broadcast(Session.Character.GenerateEff(6));
+                    Session.CurrentMap?.Broadcast(Session.Character.GenerateEff(198));
                 }
-                byte SkillSpCount = (byte)Session.Character.SkillsSp.Count;
-                foreach (Skill ski in ServerManager.GetAllSkill())
-                {
-                    if (ski.Class == Session.Character.Morph + 31 && specialist.SpLevel >= ski.LevelMinimum && SkillSpCount <= ski.CastId)
-                        Session.Character.SkillsSp.Add(new CharacterSkill() { SkillVNum = ski.SkillVNum, CharacterId = Session.Character.CharacterId });
-                }
-                if (Session.Character.SkillsSp.Count > SkillSpCount)
-                {
-                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SKILL_LEARNED"), 0));
-                    Session.Client.SendPacket(Session.Character.GenerateSki());
-                    string[] quicklistpackets = Session.Character.GenerateQuicklist();
-                    foreach (string quicklist in quicklistpackets)
-                        Session.Client.SendPacket(quicklist);
-                }
-                Session.CurrentMap?.Broadcast(Session.Character.GenerateEff(6));
-                Session.CurrentMap?.Broadcast(Session.Character.GenerateEff(198));
+                Session.Client.SendPacket(Session.Character.GenerateLev());
             }
-            Session.Client.SendPacket(Session.Character.GenerateLev());
-        }
 
         private void ZoneHit(int Castingid, short x, short y)
         {
