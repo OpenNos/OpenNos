@@ -579,7 +579,7 @@ namespace OpenNos.GameObject
                 HP[(int)ClassType.Adventurer, i] = (int)(1 / 2.0 * i * i + 31 / 2.0 * i + 205);
             }
 
-            //Swordman HP
+            //Swordsman HP
             for (int i = 0; i < HP.GetLength(1); i++)
             {
                 int j = 16;
@@ -688,7 +688,7 @@ namespace OpenNos.GameObject
                 baseAdventurer++;
             }
 
-            //SWORDMAN MP
+            //SWORDSMAN MP
             for (int i = 1; i < MP.GetLength(1) - 1; i++)
             {
                 MP[(int)ClassType.Swordman, i] = MP[(int)ClassType.Adventurer, i];

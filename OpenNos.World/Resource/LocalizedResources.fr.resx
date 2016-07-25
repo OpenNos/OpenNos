@@ -719,7 +719,7 @@
     <value>Tu ne peux pas encore l'utiliser.</value>
   </data>
   <data name="LVL_REQUIRED" xml:space="preserve">
-    <value>Le niveau n'est pas assez élevé</value>
+    <value>{0} niveaux sont nécessaire pour améliorer la carte spécialiste</value>
   </data>
   <data name="UPGRADESP_DESTROY" xml:space="preserve">
     <value>La carte spécialiste a été détruite !</value>

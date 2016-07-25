@@ -163,8 +163,10 @@ namespace OpenNos.Handler
                             SaveResult insertResult = DAOFactory.CharacterDAO.InsertOrUpdate(ref newCharacter);
                             CharacterSkillDTO sk1 = new CharacterSkillDTO { CharacterId = newCharacter.CharacterId, SkillVNum = 200 };
                             CharacterSkillDTO sk2 = new CharacterSkillDTO { CharacterId = newCharacter.CharacterId, SkillVNum = 201 };
+                            CharacterSkillDTO sk3 = new CharacterSkillDTO { CharacterId = newCharacter.CharacterId, SkillVNum = 209 };
                             DAOFactory.CharacterSkillDAO.InsertOrUpdate(ref sk1);
                             DAOFactory.CharacterSkillDAO.InsertOrUpdate(ref sk2);
+                            DAOFactory.CharacterSkillDAO.InsertOrUpdate(ref sk3);
 
                             IList<InventoryDTO> startupInventory = new List<InventoryDTO>();
                             InventoryDTO inventory = new InventoryDTO() //first weapon
