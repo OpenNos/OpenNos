@@ -719,16 +719,16 @@
     <value>Tu ne peux pas encore l'utiliser.</value>
   </data>
   <data name="LVL_REQUIRED" xml:space="preserve">
-    <value />
+    <value>Le niveau n'est pas assez élevé</value>
   </data>
   <data name="UPGRADESP_DESTROY" xml:space="preserve">
-    <value />
+    <value>La carte spécialiste a été détruite !</value>
   </data>
   <data name="UPGRADESP_FAILED" xml:space="preserve">
-    <value />
+    <value>L'amélioration au niveau suivant a échoué !</value>
   </data>
   <data name="UPGRADESP_FAILED_SAVED" xml:space="preserve">
-    <value />
+    <value>L'amélioration au niveau suivant a échoué. Heureusement, le parchemin protecteur a préservé l'objet.</value>
   </data>
   <data name="UPGRADESP_SUCCESS" xml:space="preserve">
     <value>L'amélioration au niveau suivant a été effectuée avec succès.</value>
