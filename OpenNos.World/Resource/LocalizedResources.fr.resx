@@ -403,7 +403,7 @@
     <value>Tu ne peux changer de classe qu'une seule fois.</value>
   </data>
   <data name="NOT_ENOUGH_MONEY" xml:space="preserve">
-    <value>Vous n'avez pas assez d'or.</value>
+    <value>Tu n'as pas assez d'or.</value>
   </data>
   <data name="NOT_ENOUGH_PLACE" xml:space="preserve">
     <value>Vous n'avez pas assez de place.</value>
