@@ -252,13 +252,13 @@ namespace OpenNos.Handler
                         newItem.ItemInstance.Amount, newItem.Type, newItem.Slot, newItem.ItemInstance.Rare, newItem.ItemInstance.Design, newItem.ItemInstance.Upgrade));
                     if (iteminfo.ReputPrice == 0)
                     {
-                        Session.Client.SendPacket(Session.Character.GenerateShopMemo(1, string.Format(Language.Instance.GetMessageFromKey("BUY_ITEM_VALIDE"), ServerManager.GetItem(item.ItemVNum).Name, amount)));
+                        Session.Client.SendPacket(Session.Character.GenerateShopMemo(1, string.Format(Language.Instance.GetMessageFromKey("BUY_ITEM_VALID"), ServerManager.GetItem(item.ItemVNum).Name, amount)));
                         Session.Character.Gold -= (long)(price * percent);
                         Session.Client.SendPacket(Session.Character.GenerateGold());
                     }
                     else
                     {
-                        Session.Client.SendPacket(Session.Character.GenerateShopMemo(1, string.Format(Language.Instance.GetMessageFromKey("BUY_ITEM_VALIDE"), ServerManager.GetItem(item.ItemVNum).Name, amount)));
+                        Session.Client.SendPacket(Session.Character.GenerateShopMemo(1, string.Format(Language.Instance.GetMessageFromKey("BUY_ITEM_VALID"), ServerManager.GetItem(item.ItemVNum).Name, amount)));
                         Session.Character.Reput -= (long)(Reputprice);
                         Session.Client.SendPacket(Session.Character.GenerateFd());
                         Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("REPUT_DECREASED"), 11));

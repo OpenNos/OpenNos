@@ -180,7 +180,7 @@
   <data name="BUY_ITEM" xml:space="preserve">
     <value>{0}: Acheté &lt;{1} {2}: pièces &gt;</value>
   </data>
-  <data name="BUY_ITEM_VALIDE" xml:space="preserve">
+  <data name="BUY_ITEM_VALID" xml:space="preserve">
     <value>Objet acheté(s)</value>
   </data>
   <data name="CANT_MOVE" xml:space="preserve">
@@ -570,7 +570,7 @@
   <data name="TRADE_BLOCKED" xml:space="preserve">
     <value>L'utilisateur a bloqué les demandes d'échanges.</value>
   </data>
-  <data name="TRANSFORM_DISAPEAR" xml:space="preserve">
+  <data name="TRANSFORM_DISAPPEAR" xml:space="preserve">
     <value>L'effet secondaire de la transformation s'est dissipé</value>
   </data>
   <data name="UPDATE_ACCOUNT_ERROR" xml:space="preserve">
@@ -666,9 +666,6 @@
   <data name="SHOP_ONLY_TRADABLE_ITEMS" xml:space="preserve">
     <value>Vous ne pouvez vendre cet article.</value>
   </data>
-  <data name="UPGRADESP_SUCCES" xml:space="preserve">
-    <value>L'amélioration au niveau suivant a été effectuée avec succès.</value>
-  </data>
   <data name="SKILLS_IN_LOADING" xml:space="preserve">
     <value>Tu peux te transformer une fois que tous les temps de rechargement des compétences sont écoulés.</value>
   </data>
@@ -686,7 +683,6 @@
   </data>
   <data name="WELCOME_MUSIC_INFO" xml:space="preserve">
     <value>Mélodie^du^pringtemps </value>
-    <comment>//Not work?, why don't appear on game ?</comment>
   </data>
   <data name="RESTORE_DIGNITY" xml:space="preserve">
     <value>Dignité +1</value>
@@ -721,5 +717,20 @@
   </data>
   <data name="CANT_ATTACK" xml:space="preserve">
     <value>Tu ne peux pas encore l'utiliser.</value>
+  </data>
+  <data name="LVL_REQUIRED" xml:space="preserve">
+    <value />
+  </data>
+  <data name="UPGRADESP_DESTROY" xml:space="preserve">
+    <value />
+  </data>
+  <data name="UPGRADESP_FAILED" xml:space="preserve">
+    <value />
+  </data>
+  <data name="UPGRADESP_FAILED_SAVED" xml:space="preserve">
+    <value />
+  </data>
+  <data name="UPGRADESP_SUCCESS" xml:space="preserve">
+    <value>L'amélioration au niveau suivant a été effectuée avec succès.</value>
   </data>
 </root>

@@ -1212,7 +1212,7 @@ namespace OpenNos.Handler
             await Task.Delay(Session.Character.SpCooldown * 1000);
             if (Session == null || Session.Client == null)
                 return;
-            Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("TRANSFORM_DISAPEAR")), 11));
+            Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("TRANSFORM_DISAPPEAR")), 11));
             Session.Client.SendPacket("sd 0");
         }
 

@@ -180,7 +180,7 @@
   <data name="BUY_ITEM" xml:space="preserve">
     <value>{0}: Kaufe &lt;{1} {2}: Stück &gt;</value>
   </data>
-  <data name="BUY_ITEM_VALIDE" xml:space="preserve">
+  <data name="BUY_ITEM_VALID" xml:space="preserve">
     <value>Handel war erfolgreich</value>
   </data>
   <data name="CANT_MOVE" xml:space="preserve">
@@ -573,7 +573,7 @@
   <data name="TRADE_BLOCKED" xml:space="preserve">
     <value>Dein Gegenüber blockiert Tauschgeschäfte.</value>
   </data>
-  <data name="TRANSFORM_DISAPEAR" xml:space="preserve">
+  <data name="TRANSFORM_DISAPPEAR" xml:space="preserve">
     <value>Der Nebeneffekt der Transformation ist vorüber.</value>
   </data>
   <data name="UPDATE_ACCOUNT_ERROR" xml:space="preserve">
@@ -584,9 +584,6 @@
   </data>
   <data name="UPGRADE_FAILED" xml:space="preserve">
     <value>Die Verbesserung ist fehlgeschlagen. Das Item ist verschwunden.</value>
-  </data>
-  <data name="UPGRADESP_SUCCES" xml:space="preserve">
-    <value>Die Verbesserung war Erfolgreich.</value>
   </data>
   <data name="UPGRADE_FAILED_ITEM_SAVED" xml:space="preserve">
     <value>Die Verbesserung ist fehlgeschlagen, doch das Item wurde vor der Zerstörung geschützt.</value>
@@ -686,5 +683,20 @@
   </data>
   <data name="CANT_ATTACK" xml:space="preserve">
     <value>Sie können weiterhin verwenden</value>
+  </data>
+  <data name="LVL_REQUIRED" xml:space="preserve">
+    <value />
+  </data>
+  <data name="UPGRADESP_DESTROY" xml:space="preserve">
+    <value />
+  </data>
+  <data name="UPGRADESP_FAILED" xml:space="preserve">
+    <value />
+  </data>
+  <data name="UPGRADESP_FAILED_SAVED" xml:space="preserve">
+    <value />
+  </data>
+  <data name="UPGRADESP_SUCCESS" xml:space="preserve">
+    <value>Die Verbesserung war Erfolgreich.</value>
   </data>
 </root>

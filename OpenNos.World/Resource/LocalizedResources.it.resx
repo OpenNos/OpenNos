@@ -180,7 +180,7 @@
   <data name="BUY_ITEM" xml:space="preserve">
     <value>{0}: compra &lt;{1} {2}: pezzo &gt;</value>
   </data>
-  <data name="BUY_ITEM_VALIDE" xml:space="preserve">
+  <data name="BUY_ITEM_VALID" xml:space="preserve">
     <value>L'item è stato acquistato con successo</value>
   </data>
   <data name="CANT_MOVE" xml:space="preserve">
@@ -588,7 +588,7 @@
   <data name="TRADE_BLOCKED" xml:space="preserve">
     <value>L'altra persona ha il commercio bloccato</value>
   </data>
-  <data name="TRANSFORM_DISAPEAR" xml:space="preserve">
+  <data name="TRANSFORM_DISAPPEAR" xml:space="preserve">
     <value>L'effetto collaterale della trasformazione è terminato.</value>
   </data>
   <data name="UPDATE_ACCOUNT_ERROR" xml:space="preserve">
@@ -722,5 +722,20 @@
   </data>
   <data name="CANT_ATTACK" xml:space="preserve">
     <value>È comunque possibile utilizzare</value>
+  </data>
+  <data name="LVL_REQUIRED" xml:space="preserve">
+    <value />
+  </data>
+  <data name="UPGRADESP_DESTROY" xml:space="preserve">
+    <value />
+  </data>
+  <data name="UPGRADESP_FAILED" xml:space="preserve">
+    <value />
+  </data>
+  <data name="UPGRADESP_FAILED_SAVED" xml:space="preserve">
+    <value />
+  </data>
+  <data name="UPGRADESP_SUCCESS" xml:space="preserve">
+    <value />
   </data>
 </root>

@@ -180,7 +180,7 @@
   <data name="BUY_ITEM" xml:space="preserve">
     <value>Gracz: {0} zakupil &lt;{1} {2}: sztuk &gt;</value>
   </data>
-  <data name="BUY_ITEM_VALIDE" xml:space="preserve">
+  <data name="BUY_ITEM_VALID" xml:space="preserve">
     <value>Kupileś {1} sztuk {0}</value>
   </data>
   <data name="CANT_MOVE" xml:space="preserve">
@@ -595,7 +595,7 @@
   <data name="TRADE_BLOCKED" xml:space="preserve">
     <value>Uzytkownik zablokowal opcje wymiany.</value>
   </data>
-  <data name="TRANSFORM_DISAPEAR" xml:space="preserve">
+  <data name="TRANSFORM_DISAPPEAR" xml:space="preserve">
     <value>Odblokowano transformacje!</value>
   </data>
   <data name="UPDATE_ACCOUNT_ERROR" xml:space="preserve">
@@ -706,5 +706,20 @@
   </data>
   <data name="CANT_ATTACK" xml:space="preserve">
     <value>Nie możesz teraz atakować</value>
+  </data>
+  <data name="LVL_REQUIRED" xml:space="preserve">
+    <value>{0} Poziom SP potrzebny do ulepszenia</value>
+  </data>
+  <data name="UPGRADESP_DESTROY" xml:space="preserve">
+    <value>Karta specjalisty zniszczona</value>
+  </data>
+  <data name="UPGRADESP_FAILED" xml:space="preserve">
+    <value>Ulepszanie karty specjalisty nie powiodło się</value>
+  </data>
+  <data name="UPGRADESP_FAILED_SAVED" xml:space="preserve">
+    <value>Ulepszanie karty specjalisty nie powiodło się, ale karta została ocalona.</value>
+  </data>
+  <data name="UPGRADESP_SUCCESS" xml:space="preserve">
+    <value>Ulepszanie karty specjalisty powiodło się!</value>
   </data>
 </root>

@@ -180,7 +180,7 @@
   <data name="BUY_ITEM" xml:space="preserve">
     <value>Player: {0} buy &lt;{1} {2}: piece &gt;</value>
   </data>
-  <data name="BUY_ITEM_VALIDE" xml:space="preserve">
+  <data name="BUY_ITEM_VALID" xml:space="preserve">
     <value>You bought {1} of {0}</value>
   </data>
   <data name="CANT_MOVE" xml:space="preserve">
@@ -601,7 +601,7 @@
   <data name="TRADE_BLOCKED" xml:space="preserve">
     <value>User has blocked exchanges</value>
   </data>
-  <data name="TRANSFORM_DISAPEAR" xml:space="preserve">
+  <data name="TRANSFORM_DISAPPEAR" xml:space="preserve">
     <value>Cooldown finished.</value>
   </data>
   <data name="UPDATE_ACCOUNT_ERROR" xml:space="preserve">
@@ -617,10 +617,10 @@
     <value>Upgrade failed but item was saved.</value>
   </data>
   <data name="UPGRADE_FIXED" xml:space="preserve">
-    <value>Upgrade fixed</value>
+    <value>Item level has been locked!</value>
   </data>
   <data name="UPGRADE_SUCCESS" xml:space="preserve">
-    <value>Upgrade Success</value>
+    <value>Upgrade succesed!</value>
   </data>
   <data name="USER_NOT_CONNECTED" xml:space="preserve">
     <value>User is not connected.</value>
@@ -726,5 +726,20 @@
   </data>
   <data name="DATABASE_NOT_UPTODATE" xml:space="preserve">
     <value>Database may not be up to date. Please consider updating your database.</value>
+  </data>
+  <data name="LVL_REQUIRED" xml:space="preserve">
+    <value>SPLvl {0} required for upgrade</value>
+  </data>
+  <data name="UPGRADESP_DESTROY" xml:space="preserve">
+    <value>SP destroyed</value>
+  </data>
+  <data name="UPGRADESP_FAILED" xml:space="preserve">
+    <value>SP upgrading failed!</value>
+  </data>
+  <data name="UPGRADESP_FAILED_SAVED" xml:space="preserve">
+    <value>SP upgrading failed but item was saved.</value>
+  </data>
+  <data name="UPGRADESP_SUCCESS" xml:space="preserve">
+    <value>SP upgrading succesed!</value>
   </data>
 </root>
