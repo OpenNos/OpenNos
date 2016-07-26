@@ -685,7 +685,7 @@
     <value>Mélodie^du^pringtemps </value>
   </data>
   <data name="RESTORE_DIGNITY" xml:space="preserve">
-    <value>Dignité +1</value>
+    <value>Dignité augmentée : +1</value>
   </data>
   <data name="DONE" xml:space="preserve">
     <value>Le joueur a été sanctionné</value>
@@ -728,7 +728,7 @@
     <value>L'amélioration au niveau suivant a échoué !</value>
   </data>
   <data name="UPGRADESP_FAILED_SAVED" xml:space="preserve">
-    <value>L'amélioration au niveau suivant a échoué. Heureusement, le parchemin protecteur a préservé l'objet.</value>
+    <value>L'amélioration a échoué. Heureusement, le parchemin protecteur a préservé l'objet.</value>
   </data>
   <data name="UPGRADESP_SUCCESS" xml:space="preserve">
     <value>L'amélioration au niveau suivant a été effectuée avec succès.</value>

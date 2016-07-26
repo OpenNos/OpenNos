@@ -1435,7 +1435,7 @@ namespace OpenNos.GameObject
         {
             Session.Client.SendPacket(GenerateSay(String.Format(Language.Instance.GetMessageFromKey("RARIFY_SUCCESS"), rare), 12));
             Session.Client.SendPacket(GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("RARIFY_SUCCESS"), rare), 0));
-            Session.Client.SendPacket(GenerateEff(3005));
+            ServerManager.Instance.Broadcast(Session.Character.GenerateEff(3005));
         }
 
         public void Save()
