@@ -632,7 +632,7 @@
     <value>Only heroes may use hero messages.</value>
   </data>
   <data name="WELCOME_MUSIC_INFO" xml:space="preserve">
-    <value>Spring Melody</value>
+    <value>Spring^Melody</value>
   </data>
   <data name="WHISPERED_BLOCKED" xml:space="preserve">
     <value>User has blocked private messages</value>
@@ -741,5 +741,17 @@
   </data>
   <data name="UPGRADESP_SUCCESS" xml:space="preserve">
     <value>SP upgrading succesed!</value>
+  </data>
+  <data name="MINILAND_WELCOME_MESSAGE" xml:space="preserve">
+    <value>Welcome</value>
+  </data>
+  <data name="RATEDROP_NOW" xml:space="preserve">
+    <value>Drop rate</value>
+  </data>
+  <data name="RATEGOLD_NOW" xml:space="preserve">
+    <value>Gold amount drop rate</value>
+  </data>
+  <data name="RATEXP_NOW" xml:space="preserve">
+    <value>Exp rate </value>
   </data>
 </root>

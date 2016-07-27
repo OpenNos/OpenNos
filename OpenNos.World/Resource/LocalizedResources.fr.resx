@@ -565,7 +565,7 @@
     <value>Message is too big ({0} bytes). Max allowed length is {1} bytes.</value>
   </data>
   <data name="TOTAL_SESSION" xml:space="preserve">
-    <value>Utilisateurs totaux connectés :</value>
+    <value>Utilisateurs totaux connectés </value>
   </data>
   <data name="TRADE_BLOCKED" xml:space="preserve">
     <value>L'utilisateur a bloqué les demandes d'échanges.</value>
@@ -682,7 +682,7 @@
     <value>Joueur introuvable</value>
   </data>
   <data name="WELCOME_MUSIC_INFO" xml:space="preserve">
-    <value>Mélodie^du^pringtemps </value>
+    <value>Mélodie^du^pringtemps</value>
   </data>
   <data name="RESTORE_DIGNITY" xml:space="preserve">
     <value>Dignité augmentée : +1</value>
@@ -732,5 +732,17 @@
   </data>
   <data name="UPGRADESP_SUCCESS" xml:space="preserve">
     <value>L'amélioration au niveau suivant a été effectuée avec succès.</value>
+  </data>
+  <data name="MINILAND_WELCOME_MESSAGE" xml:space="preserve">
+    <value>Bienvenue</value>
+  </data>
+  <data name="RATEDROP_NOW" xml:space="preserve">
+    <value>Taux de drop </value>
+  </data>
+  <data name="RATEGOLD_NOW" xml:space="preserve">
+    <value>Taux d'or </value>
+  </data>
+  <data name="RATEXP_NOW" xml:space="preserve">
+    <value>Taux d'expérience </value>
   </data>
 </root>

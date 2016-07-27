@@ -988,10 +988,17 @@ namespace OpenNos.Handler
             else
                 ServerManager.Instance.ChangeMap(Session.Character.CharacterId);
 
+            Session.Client.SendPacket("scr 0 0 0 0 0 0");
+
+            Session.Client.SendPacket(Session.Character.GenerateGold());
+
+            Session.Client.SendPacket(Session.Character.GenerateSki());
+
+            Session.CurrentMap?.Broadcast(Session.Character.GeneratePairy());
             Session.Client.SendPacket("rage 0 250000");
             Session.Client.SendPacket("rank_cool 0 0 18000");
-
-            Session.Client.SendPacket("scr 0 0 0 0 0 0");
+            Session.CurrentMap?.Broadcast(Session.Character.GenerateSpPoint());
+            Session.Character.GenerateStartupInventory();
 
             Session.Client.SendPacket($"bn 0 {Language.Instance.GetMessageFromKey("BN0")}");
             Session.Client.SendPacket($"bn 1 {Language.Instance.GetMessageFromKey("BN1")}");
@@ -1000,27 +1007,20 @@ namespace OpenNos.Handler
             Session.Client.SendPacket($"bn 4 {Language.Instance.GetMessageFromKey("BN4")}");
             Session.Client.SendPacket($"bn 5 {Language.Instance.GetMessageFromKey("BN5")}");
             Session.Client.SendPacket($"bn 6 {Language.Instance.GetMessageFromKey("BN6")}");
-
             Session.Client.SendPacket(Session.Character.GenerateExts());
-            Session.Client.SendPacket(Session.Character.GenerateGold());
-
-            Session.Client.SendPacket(Session.Character.GenerateSki());
-
-            string[] quicklistpackets = Session.Character.GenerateQuicklist();
-            foreach (string quicklist in quicklistpackets)
-                Session.Client.SendPacket(quicklist);
-
-            Session.CurrentMap?.Broadcast(Session.Character.GeneratePairy());
-            Session.CurrentMap?.Broadcast(Session.Character.GenerateSpPoint());
-            Session.Character.GenerateStartupInventory();
             // gidx
-            Session.Client.SendPacket($"mlinfo 3800 2000 100 0 0 10 0 {Language.Instance.GetMessageFromKey("WELCOME_MUSIC_INFO")}");
+            //                          mlinfo 3800 2000 100 0 1556 25 0 Mélodie^du^printemps Maison^de^Chacha^&^Upper^:3
+            Session.Client.SendPacket($"mlinfo 3800 2000 100 0 0 10 0 {Language.Instance.GetMessageFromKey("WELCOME_MUSIC_INFO")} {Language.Instance.GetMessageFromKey("MINILAND_WELCOME_MESSAGE")}");
             // cond
             Session.Client.SendPacket("p_clear");
             // sc_p pet
             Session.Client.SendPacket("pinit 0");
             Session.Client.SendPacket("zzim");
             Session.Client.SendPacket($"twk 1 {Session.Character.CharacterId} {Session.Account.Name} {Session.Character.Name} shtmxpdlfeoqkr");
+            string[] quicklistpackets = Session.Character.GenerateQuicklist();
+            foreach (string quicklist in quicklistpackets)
+                Session.Client.SendPacket(quicklist);
+            Session.Client.SendPacket("act6");
 
             Session.Character.DeleteTimeout();
         }

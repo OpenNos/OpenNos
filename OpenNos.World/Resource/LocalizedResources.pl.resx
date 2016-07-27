@@ -722,4 +722,16 @@
   <data name="UPGRADESP_SUCCESS" xml:space="preserve">
     <value>Ulepszanie karty specjalisty powiodło się!</value>
   </data>
+  <data name="MINILAND_WELCOME_MESSAGE" xml:space="preserve">
+    <value>Witamy</value>
+  </data>
+  <data name="RATEDROP_NOW" xml:space="preserve">
+    <value>Drop rate</value>
+  </data>
+  <data name="RATEGOLD_NOW" xml:space="preserve">
+    <value>Wartość wypadającego złota</value>
+  </data>
+  <data name="RATEXP_NOW" xml:space="preserve">
+    <value>Exp rate</value>
+  </data>
 </root>

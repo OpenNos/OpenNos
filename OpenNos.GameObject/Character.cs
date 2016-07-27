@@ -313,6 +313,7 @@ namespace OpenNos.GameObject
 
                 Skills.Add(new CharacterSkill { SkillVNum = (short)(200 + 20 * Class), CharacterId = CharacterId });
                 Skills.Add(new CharacterSkill { SkillVNum = (short)(201 + 20 * Class), CharacterId = CharacterId });
+                Skills.Add(new CharacterSkill { SkillVNum = 236, CharacterId = CharacterId });
 
                 Session.Client.SendPacket(GenerateSki());
 

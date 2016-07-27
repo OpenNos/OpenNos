@@ -738,4 +738,16 @@
   <data name="UPGRADESP_SUCCESS" xml:space="preserve">
     <value />
   </data>
+  <data name="MINILAND_WELCOME_MESSAGE" xml:space="preserve">
+    <value />
+  </data>
+  <data name="RATEDROP_NOW" xml:space="preserve">
+    <value />
+  </data>
+  <data name="RATEGOLD_NOW" xml:space="preserve">
+    <value />
+  </data>
+  <data name="RATEXP_NOW" xml:space="preserve">
+    <value />
+  </data>
 </root>
