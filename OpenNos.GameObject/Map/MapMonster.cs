@@ -260,7 +260,7 @@ namespace OpenNos.GameObject
                 {
                     if (IsMoving == true)
                     {
-                        short maxdistance = 20;
+                        short maxdistance = 22;
 
                         if (path.Count() == 0)
                         {

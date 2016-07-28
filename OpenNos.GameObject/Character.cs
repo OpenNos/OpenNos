@@ -129,6 +129,8 @@ namespace OpenNos.GameObject
 
         public DateTime LastTransform { get; set; }
 
+        public DateTime LastWalk { get; set; }
+
         public bool InvisibleGm { get; set; }
 
         public int IsDancing { get { return _isDancing; } set { _isDancing = value; } }
