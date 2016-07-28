@@ -729,7 +729,7 @@ namespace OpenNos.Handler
                             Morph = Session.Character.UseSp ? (short)Session.Character.Morph : (short)0
                         });
 
-                        Session.Client.SendPacket($"qset {q1} {q2} {type}.{data1}.{data2}.0");
+                        Session.Client.SendPacket(string.Format("qset {0} {1} {2}.{3}.{4}.0", q1, q2, type, data1, data2));
 
                         break;
 
@@ -748,18 +748,18 @@ namespace OpenNos.Handler
                         if (qlTo == null)
                         {
                             // Put 'from' to new position (datax)
-                            Session.Client.SendPacket($"qset {qlFrom.Q1} {qlFrom.Q2} {qlFrom.Type}.{qlFrom.Slot}.{qlFrom.Pos}.0");
+                            Session.Client.SendPacket(string.Format("qset {0} {1} {2}.{3}.{4}.0", qlFrom.Q1, qlFrom.Q2, qlFrom.Type, qlFrom.Slot, qlFrom.Pos));
                             // old 'from' is now empty.
-                            Session.Client.SendPacket($"qset {data1} {data2} 7.7.-1.0");
+                            Session.Client.SendPacket(string.Format("qset {0} {1} 7.7.-1.0", data1, data2));
                         }
                         else
                         {
                             // Put 'from' to new position (datax)
-                            Session.Client.SendPacket($"qset {qlFrom.Q1} {qlFrom.Q2} {qlFrom.Type}.{qlFrom.Slot}.{qlFrom.Pos}.0");
+                            Session.Client.SendPacket(string.Format("qset {0} {1} {2}.{3}.{4}.0", qlFrom.Q1, qlFrom.Q2, qlFrom.Type, qlFrom.Slot, qlFrom.Pos));
                             // 'from' is now 'to' because they exchanged
                             qlTo.Q1 = data1;
                             qlTo.Q2 = data2;
-                            Session.Client.SendPacket($"qset {qlTo.Q1} {qlTo.Q2} {qlTo.Type}.{qlTo.Slot}.{qlTo.Pos}.0");
+                            Session.Client.SendPacket(string.Format("qset {0} {1} {2}.{3}.{4}.0", qlTo.Q1, qlTo.Q2, qlTo.Type, qlTo.Slot, qlTo.Pos));
                         }
 
                         break;
@@ -769,7 +769,7 @@ namespace OpenNos.Handler
 
                         Session.Character.QuicklistEntries.RemoveAll(n => n.Q1 == q1 && n.Q2 == q2 && (Session.Character.UseSp ? n.Morph == Session.Character.Morph : n.Morph == 0));
 
-                        Session.Client.SendPacket($"qset {q1} {q2} 7.7.-1.0");
+                        Session.Client.SendPacket(string.Format("qset {0} {1} 7.7.-1.0", q1, q2));
 
                         break;
 
@@ -987,21 +987,19 @@ namespace OpenNos.Handler
                 ServerManager.Instance.ReviveFirstPosition(Session.Character.CharacterId);
             else
                 ServerManager.Instance.ChangeMap(Session.Character.CharacterId);
-            Session.Client.SendPacket(Session.Character.GenerateCInfo());
-            Session.Client.SendPacket(Session.Character.GenerateEquipment());
-            Session.Client.SendPacket(Session.Character.GenerateLev());
-            Session.Client.SendPacket(Session.Character.GenerateStat());
+
+            Session.Client.SendPacket("scr 0 0 0 0 0 0");
+
+            Session.Client.SendPacket(Session.Character.GenerateGold());
+
             Session.Client.SendPacket(Session.Character.GenerateSki());
-            Session.Client.SendPacket(Session.Character.GenerateAt());
-            Session.Client.SendPacket(Session.Character.GenerateCMap());
-            Session.Client.SendPacket(Session.Character.GenerateStatChar());
-            Session.Client.SendPacket(Session.Character.GenerateCond());
+
             Session.CurrentMap?.Broadcast(Session.Character.GeneratePairy());
-            //rsfi
             Session.Client.SendPacket("rage 0 250000");
             Session.Client.SendPacket("rank_cool 0 0 18000");
             Session.CurrentMap?.Broadcast(Session.Character.GenerateSpPoint());
-            Session.Client.SendPacket("scr 0 0 0 0 0 0");
+            Session.Character.GenerateStartupInventory();
+
             Session.Client.SendPacket($"bn 0 {Language.Instance.GetMessageFromKey("BN0")}");
             Session.Client.SendPacket($"bn 1 {Language.Instance.GetMessageFromKey("BN1")}");
             Session.Client.SendPacket($"bn 2 {Language.Instance.GetMessageFromKey("BN2")}");
@@ -1011,11 +1009,11 @@ namespace OpenNos.Handler
             Session.Client.SendPacket($"bn 6 {Language.Instance.GetMessageFromKey("BN6")}");
             Session.Client.SendPacket(Session.Character.GenerateExts());
             // gidx
+            //                          mlinfo 3800 2000 100 0 1556 25 0 Mélodie^du^printemps Maison^de^Chacha^&^Upper^:3
             Session.Client.SendPacket($"mlinfo 3800 2000 100 0 0 10 0 {Language.Instance.GetMessageFromKey("WELCOME_MUSIC_INFO")} {Language.Instance.GetMessageFromKey("MINILAND_WELCOME_MESSAGE")}");
-            // cond 2
+            // cond
             Session.Client.SendPacket("p_clear");
             // sc_p pet
-            Session.Client.SendPacket("sc_p_stc 0");
             Session.Client.SendPacket("pinit 0");
             Session.Client.SendPacket("zzim");
             Session.Client.SendPacket($"twk 1 {Session.Character.CharacterId} {Session.Account.Name} {Session.Character.Name} shtmxpdlfeoqkr");
@@ -1023,8 +1021,7 @@ namespace OpenNos.Handler
             foreach (string quicklist in quicklistpackets)
                 Session.Client.SendPacket(quicklist);
             Session.Client.SendPacket("act6");
-            Session.Character.GenerateStartupInventory();
-            Session.Client.SendPacket(Session.Character.GenerateGold());
+
             Session.Character.DeleteTimeout();
         }
 
@@ -1121,8 +1118,7 @@ namespace OpenNos.Handler
             }
             else
             {
-                Console.WriteLine($"Speed : Packet = {Session.Character.Speed} : {packetsplit[5]}");
-                //Session.Client.Disconnect();
+                Session.Client.Disconnect();
                 //Session.Client.SendPacket(Session.Character.GenerateCond());
             }
         }
