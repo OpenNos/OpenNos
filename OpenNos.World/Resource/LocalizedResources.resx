@@ -760,4 +760,7 @@
   <data name="FAIRY_LEVELUP" xml:space="preserve">
     <value>Your {0} have win a level !</value>
   </data>
+  <data name="JOB_LEVELUP" xml:space="preserve">
+    <value>Job level up !</value>
+  </data>
 </root>

@@ -751,4 +751,7 @@
   <data name="FAIRY_LEVELUP" xml:space="preserve">
     <value>Votre {0} a gagné en niveau d'attribut d'esprit !</value>
   </data>
+  <data name="JOB_LEVELUP" xml:space="preserve">
+    <value>Ton niveau de métier a augmenté !</value>
+  </data>
 </root>

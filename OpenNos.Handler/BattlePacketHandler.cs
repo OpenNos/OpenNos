@@ -1056,6 +1056,7 @@ namespace OpenNos.Handler
                 Session.Character.Mp = (int)Session.Character.MPLoad();
                 Session.Client.SendPacket(Session.Character.GenerateStat());
                 Session.Client.SendPacket($"levelup {Session.Character.CharacterId}");
+                Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("JOB_LEVELUP"), 0));
                 Session.Character.LearnAdventurerSkill();
                 Session.CurrentMap?.Broadcast(Session.Character.GenerateEff(6));
                 Session.CurrentMap?.Broadcast(Session.Character.GenerateEff(198));
