@@ -750,4 +750,10 @@
   <data name="RATEXP_NOW" xml:space="preserve">
     <value />
   </data>
+  <data name="SP_LEVELUP" xml:space="preserve">
+    <value />
+  </data>
+  <data name="FAIRY_LEVELUP" xml:space="preserve">
+    <value />
+  </data>
 </root>

@@ -754,4 +754,10 @@
   <data name="RATEXP_NOW" xml:space="preserve">
     <value>Exp rate </value>
   </data>
+  <data name="SP_LEVELUP" xml:space="preserve">
+    <value>The specialist level is increased</value>
+  </data>
+  <data name="FAIRY_LEVELUP" xml:space="preserve">
+    <value>Your {0} have win a level !</value>
+  </data>
 </root>

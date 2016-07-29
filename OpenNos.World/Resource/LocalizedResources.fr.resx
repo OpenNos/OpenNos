@@ -481,7 +481,7 @@
     <value>Eau</value>
   </data>
   <data name="POINTS_SET" xml:space="preserve">
-    <value>Points ajoutés</value>
+    <value>Statut appliqué.</value>
   </data>
   <data name="PORTAL_BLOCKED" xml:space="preserve">
     <value>Vous ne pouvez pas utiliser ce portail... Il est bloqué !</value>
@@ -744,5 +744,11 @@
   </data>
   <data name="RATEXP_NOW" xml:space="preserve">
     <value>Taux d'expérience </value>
+  </data>
+  <data name="SP_LEVELUP" xml:space="preserve">
+    <value>Le niveau spécialiste est augmenté.</value>
+  </data>
+  <data name="FAIRY_LEVELUP" xml:space="preserve">
+    <value>Votre {0} a gagné en niveau d'attribut d'esprit !</value>
   </data>
 </root>
