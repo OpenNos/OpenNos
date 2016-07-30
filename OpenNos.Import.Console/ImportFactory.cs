@@ -425,9 +425,9 @@ namespace OpenNos.Import.Console
                 Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("NPCMONSTERS_PARSED"), counter));
                 npcIdStream.Close();
             }
-            drops.Add(new DropDTO { ItemVNum = 1012, Amount = 1, MonsterVNum = null, DropChance = 75000 });// drop chance approximate
-            drops.Add(new DropDTO { ItemVNum = 1114, Amount = 1, MonsterVNum = null, DropChance = 5000 });// drop chance approximate
-            drops.Add(new DropDTO { ItemVNum = 5119, Amount = 1, MonsterVNum = null, DropChance = 5000 });// drop chance approximate
+            drops.Add(new DropDTO { ItemVNum = 1012, Amount = 1, MonsterVNum = null, DropChance = 50000 });// drop chance approximate
+            drops.Add(new DropDTO { ItemVNum = 1114, Amount = 1, MonsterVNum = null, DropChance = 1000 });// drop chance approximate
+            drops.Add(new DropDTO { ItemVNum = 5119, Amount = 1, MonsterVNum = null, DropChance = 1000 });// drop chance approximate
             DAOFactory.DropDAO.Insert(drops);
         }
 
@@ -1239,7 +1239,10 @@ namespace OpenNos.Import.Console
                                 item.DistanceDefence = Convert.ToInt16(currentLine[4]);
                                 item.MagicDefence = Convert.ToInt16(currentLine[5]);
                                 item.DefenceDodge = Convert.ToInt16(currentLine[6]);
-                                item.ItemValidTime = Convert.ToInt32(currentLine[13]) * 3600;
+                                if (item.EquipmentSlot.Equals((byte)EquipmentType.CostumeHat) || item.EquipmentSlot.Equals((byte)EquipmentType.CostumeSuit))
+                                    item.ItemValidTime = Convert.ToInt32(currentLine[13]) * 3600;
+                                //else
+                                //    item.Unknown = Convert.ToInt32(currentLine[13]);
                                 break;
 
                             case (byte)ItemType.Food:
