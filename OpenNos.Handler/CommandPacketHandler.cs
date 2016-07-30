@@ -517,13 +517,13 @@ namespace OpenNos.Handler
                 {
                     ServerManager.XPRate = rate;
 
+                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("XP_INCREASE"), 0));
                 }
                 else
                     Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("WRONG_VALUE"), 0));
             }
             else
                 Session.Client.SendPacket(Session.Character.GenerateSay("$RateXp RATE", 10));
-            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("XP_INCREASE"), 0));
         }
 
         [Packet("$RateDrop")]
@@ -538,13 +538,13 @@ namespace OpenNos.Handler
                 {
                     ServerManager.DropRate = rate;
 
+                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("DROP_INCREASE"), 0));
                 }
                 else
                     Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("WRONG_VALUE"), 0));
             }
             else
                 Session.Client.SendPacket(Session.Character.GenerateSay("$RateDrop RATE", 10));
-            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("DROP_INCREASE"), 0));
 
         }
 
@@ -560,13 +560,13 @@ namespace OpenNos.Handler
                 {
                     ServerManager.GoldRate = rate;
 
+                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("GOLD_INCREASE"), 0));
                 }
                 else
                     Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("WRONG_VALUE"), 0));
             }
             else
                 Session.Client.SendPacket(Session.Character.GenerateSay("$RateGold RATE", 10));
-            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("GOLD_INCREASE"), 0));
         }
 
         [Packet("$RateFairyXp")]
@@ -577,17 +577,16 @@ namespace OpenNos.Handler
             int rate;
             if (packetsplit.Length > 2)
             {
-                if (int.TryParse(packetsplit[2], out rate) && rate <= 1000 )
+                if (int.TryParse(packetsplit[2], out rate) && rate <= 1000)
                 {
                     ServerManager.FairyXpRate = rate;
-
+                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("FAIRYXP_INCREASE"), 0));
                 }
                 else
                     Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("WRONG_VALUE"), 0));
             }
             else
                 Session.Client.SendPacket(Session.Character.GenerateSay("$RateFairyXp RATE", 10));
-            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("FAIRYXP_INCREASE"), 0));
         }
 
         [Packet("$Invisible")]
