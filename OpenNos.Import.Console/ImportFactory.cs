@@ -1254,6 +1254,29 @@ namespace OpenNos.Import.Console
                                 {
                                     item.Element = Convert.ToByte(currentLine[2]);
                                     item.ElementRate = Convert.ToInt16(currentLine[3]);
+                                    if (item.VNum <= 256)
+                                        item.MaxElementRate = 50;
+                                    else
+                                    {
+                                        if (item.ElementRate == 0)
+                                            if (item.VNum >= 800 && item.VNum <= 804)
+                                                item.MaxElementRate = 50;
+                                            else
+                                                item.MaxElementRate = 70;
+                                        else if (item.ElementRate == 30)
+                                        {
+                                            if (item.VNum >= 884 && item.VNum <= 887)
+                                                item.MaxElementRate = 50;
+                                            else
+                                                item.MaxElementRate = 30;
+                                        }
+                                        else if (item.ElementRate == 35)
+                                            item.MaxElementRate = 35;
+                                        else if (item.ElementRate == 40)
+                                            item.MaxElementRate = 70;
+                                        else if (item.ElementRate == 50)
+                                            item.MaxElementRate = 80;
+                                    }
                                 }
                                 else
                                 {

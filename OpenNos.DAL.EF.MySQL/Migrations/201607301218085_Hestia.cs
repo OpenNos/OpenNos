@@ -3,7 +3,7 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class Succubus : DbMigration
+    public partial class Hestia : DbMigration
     {
         public override void Up()
         {
@@ -250,8 +250,8 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
                         EffectValue = c.Int(nullable: false),
                         Element = c.Byte(nullable: false),
                         ElementRate = c.Short(nullable: false),
+                        MaxElementRate = c.Byte(nullable: false),
                         EquipmentSlot = c.Byte(nullable: false),
-                        FairyMaximumLevel = c.Byte(nullable: false),
                         FireElement = c.Byte(nullable: false),
                         FireResistance = c.Byte(nullable: false),
                         HitRate = c.Short(nullable: false),
@@ -552,6 +552,7 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
                         DistanceDefence = c.Short(),
                         DistanceDefenceDodge = c.Short(),
                         ElementRate = c.Short(),
+                        MaxElementRate = c.Byte(),
                         FireElement = c.Byte(),
                         FireResistance = c.SByte(),
                         HitRate = c.Short(),

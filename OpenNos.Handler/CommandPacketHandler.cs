@@ -290,6 +290,27 @@ namespace OpenNos.Handler
                 Session.Client.SendPacket(Session.Character.GenerateSay("$SPLvl SPLEVEL", 10));
         }
 
+        [Packet("$FLvl")]
+        public void ChangeFairyLevel(string packet)
+        {
+            Logger.Debug(packet, Session.SessionId);
+            string[] packetsplit = packet.Split(' ');
+            byte fairylevel;
+            WearableInstance fairy = Session.Character.EquipmentList.LoadBySlotAndType<WearableInstance>((short)EquipmentType.Fairy, (byte)InventoryType.Equipment);
+            if (fairy != null && packetsplit.Length > 2)
+            {
+                if (Byte.TryParse(packetsplit[2], out fairylevel) && fairylevel <= fairy.Item.MaxElementRate)
+                {
+                    fairy.ElementRate = fairylevel;
+                    fairy.XP = 0;
+                    Session.Client.SendPacket(Session.Character.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("FAIRY_LEVEL_CHANGE"), fairy.Item.Name), 10));
+                    Session.Client.SendPacket(Session.Character.GeneratePairy());
+                }
+            }
+            else
+                Session.Client.SendPacket(Session.Character.GenerateSay("$FLvl FAIRYLEVEL", 10));
+        }
+
         [Packet("$Help")]
         public void Command(string packet)
         {
@@ -312,6 +333,7 @@ namespace OpenNos.Handler
             Session.Client.SendPacket(Session.Character.GenerateSay("$Lvl LEVEL", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$JLvl JOBLEVEL", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$SPLvl SPLEVEL", 6));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$FLvl FAIRYLEVEL", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$SPRefill", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$HeroLvl HEROLEVEL", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$ChangeSex", 6));

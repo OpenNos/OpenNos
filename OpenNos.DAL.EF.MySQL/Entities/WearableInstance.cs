@@ -37,6 +37,7 @@ namespace OpenNos.DAL.EF.MySQL
         public short? DistanceDefence { get; set; }
         public short? DistanceDefenceDodge { get; set; }
         public short? ElementRate { get; set; }
+        public byte? MaxElementRate { get; set; }
         public byte? FireElement { get; set; }
         public sbyte? FireResistance { get; set; }
         public short? HitRate { get; set; }
