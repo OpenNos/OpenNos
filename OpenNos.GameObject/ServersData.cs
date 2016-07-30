@@ -773,14 +773,14 @@ namespace OpenNos.GameObject
             {
                 if (i < 40)
                 {
-                    fairyxpData[i] = (int) Math.Pow(i+1, 2) +50;
+                    fairyxpData[i] = (int)Math.Pow(i + 1, 2) + 50;
                 }
                 else
                 {
-                    fairyxpData[i] = (int) Math.Pow(i+1, 2)*3+50;
+                    fairyxpData[i] = (int)Math.Pow(i + 1, 2) * 3 + 50;
                 }
             }
-        }  
+        }
 
         //TODO Change or Verify
         private void LoadStats()
