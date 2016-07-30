@@ -362,7 +362,6 @@ namespace OpenNos.Handler
             Session.Client.SendPacket(Session.Character.GenerateSay("$PortalTo MAPID DESTX DESTY", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$AddMonster VNUM MOVE", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$Shutdown", 6));
-            Session.Client.SendPacket(Session.Character.GenerateSay("XPFairy", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("-----------------------------------------------", 10));
         }
 
@@ -902,16 +901,18 @@ namespace OpenNos.Handler
                 NpcMonster npcmonster = ServerManager.GetNpc(vnum);
                 if (npcmonster == null)
                     return;
+                Map map = ServerManager.GetMap(Session.Character.MapId);
                 for (int i = 0; i < qty; i++)
                 {
-                    short mapx = (short)rnd.Next((Session.Character.MapX - qty) % Session.CurrentMap.XLength, (Session.Character.MapX + qty / 3) % Session.CurrentMap.YLength);
-                    short mapy = (short)rnd.Next((Session.Character.MapY - qty) % Session.CurrentMap.XLength, (Session.Character.MapY + qty / 3) % Session.CurrentMap.YLength);
-                    for (int j = 100; j > 0 && Session.CurrentMap != null && Session.CurrentMap.IsBlockedZone(mapx, mapy); j--)
+                    short mapx = (short)rnd.Next(1, map.XLength);
+                    short mapy = (short)rnd.Next(1, map.YLength);
+
+                    while (Session.CurrentMap.IsBlockedZone(mapx, mapy))
                     {
-                        mapx = (short)rnd.Next((Session.Character.MapX - qty) % Session.CurrentMap.XLength, (Session.Character.MapX + qty / 3) % Session.CurrentMap.YLength);
-                        mapy = (short)rnd.Next((Session.Character.MapY - qty) % Session.CurrentMap.XLength, (Session.Character.MapY + qty / 3) % Session.CurrentMap.YLength);
+                        mapx = (short)rnd.Next(1, map.XLength);
+                        mapy = (short)rnd.Next(1, map.YLength);
                     }
-                    Map map = ServerManager.GetMap(Session.Character.MapId);
+
                     MapMonster monst = new MapMonster(map) { MonsterVNum = vnum, Alive = true, CurrentHp = npcmonster.MaxHP, CurrentMp = npcmonster.MaxMP, MapY = mapy, MapX = mapx, MapId = Session.Character.MapId, firstX = mapx, firstY = mapy, MapMonsterId = MapMonster.GenerateMapMonsterId(), Position = 1, IsMoving = move != 0 ? true : false };
                     ServerManager.GetMap(Session.Character.MapId).Monsters.Add(monst);
                     ServerManager.Monsters.Add(monst);
@@ -1031,25 +1032,7 @@ namespace OpenNos.Handler
                 }
             }
         }
-
-        [Packet("$XPFairy")]
-        public void XPFairy(string packet)
-        {
-            Logger.Debug(packet, Session.SessionId);
-            string[] packetsplit = packet.Split(' ');
-            if (packetsplit.Length != 2)
-            {
-                Session.Client.SendPacket(Session.Character.GenerateSay("$XPFairy", 10));
-            }
-            else
-            {
-                WearableInstance fairy = Session.Character.InventoryList.LoadBySlotAndType<WearableInstance>((short)EquipmentType.Fairy, (byte)InventoryType.Equipment);
-                if (fairy != null)
-                {
-                    Session.Client.SendPacket(Session.Character.GenerateSay(String.Format("Fairy XP: {0}\nExp Needed for Fairy Lvl UP", fairy.XP, fairy.XP * fairy.XP + 50), 10));
-                }
-            }
-        }
+        
 
         private void DeleteItem(byte type, short slot)
         {

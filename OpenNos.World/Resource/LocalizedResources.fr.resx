@@ -749,7 +749,7 @@
     <value>Le niveau spécialiste est augmenté.</value>
   </data>
   <data name="FAIRY_LEVELUP" xml:space="preserve">
-    <value>Votre {0} a gagné en niveau d'attribut d'esprit !</value>
+    <value>{0} a gagné un niveau élémentaire !</value>
   </data>
   <data name="JOB_LEVELUP" xml:space="preserve">
     <value>Ton niveau de métier a augmenté !</value>
@@ -759,5 +759,11 @@
   </data>
   <data name="FAIRYXP_RATE_NOW" xml:space="preserve">
     <value>Taux d'expérience des fées</value>
+  </data>
+  <data name="FAIRYMAX" xml:space="preserve">
+    <value>Votre fée a atteint le niveau maximum !</value>
+  </data>
+  <data name="FAIRYSTAT" xml:space="preserve">
+    <value>Fée Exp : {0}/{1}</value>
   </data>
 </root>

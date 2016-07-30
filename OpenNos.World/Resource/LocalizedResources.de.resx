@@ -723,4 +723,10 @@
   <data name="FAIRYXP_RATE_NOW" xml:space="preserve">
     <value />
   </data>
+  <data name="FAIRYMAX" xml:space="preserve">
+    <value />
+  </data>
+  <data name="FAIRYSTAT" xml:space="preserve">
+    <value />
+  </data>
 </root>

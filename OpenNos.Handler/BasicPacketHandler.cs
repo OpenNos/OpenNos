@@ -264,7 +264,8 @@ namespace OpenNos.Handler
 
             if (packetsplit[2] == "1")
             {
-                ServerManager.Instance.RequireBroadcastFromUser(Session, Convert.ToInt64(packetsplit[3]), "GenerateStatInfo");
+                long charId = 0;
+                if(Int64.TryParse(packetsplit[3], out charId)) ServerManager.Instance.RequireBroadcastFromUser(Session, charId, "GenerateStatInfo");
             }
             if (packetsplit[2] == "2")
             {

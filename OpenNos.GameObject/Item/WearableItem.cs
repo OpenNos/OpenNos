@@ -51,7 +51,6 @@ namespace OpenNos.GameObject
                                 0));
                         return;
                     }
-
                     if ((iteminfo.ItemType != (byte)Domain.ItemType.Weapon
                          && iteminfo.ItemType != (byte)Domain.ItemType.Armor
                          && iteminfo.ItemType != (byte)Domain.ItemType.Fashion
@@ -80,7 +79,7 @@ namespace OpenNos.GameObject
                             session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("BAD_FAIRY"), 0));
                         return;
                     }
-
+                  
                     if (session.Character.UseSp && iteminfo.EquipmentSlot == (byte)EquipmentType.Sp)
                     {
                         session.Client.SendPacket(
@@ -131,7 +130,12 @@ namespace OpenNos.GameObject
                         session.Client.SendPacket(session.Character.GenerateEquipment());
                         session.CurrentMap?.Broadcast(session.Character.GeneratePairy());
                     }
-
+                    
+                    if (iteminfo.EquipmentSlot == (byte)EquipmentType.Fairy)
+                    {
+                        WearableInstance fairy = session.Character.EquipmentList.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Fairy, (byte)InventoryType.Equipment);
+                        session.Client.SendPacket(session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("FAIRYSTATS"), fairy.XP, ServersData.LoadFairyXpData((fairy.ElementRate + fairy.Item.ElementRate))), 10));
+                    }
                     break;
             }
         }

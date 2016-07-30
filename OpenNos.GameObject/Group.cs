@@ -45,7 +45,7 @@ namespace OpenNos.GameObject
             List<string> str = new List<string>();
             foreach (ClientSession session in Characters)
             {
-                str.Add($"pst 1 {session.Character.CharacterId} {++i} { session.Character.Hp / session.Character.HPLoad() * 100 } {(int)(session.Character.Mp / session.Character.MPLoad() * 100) } {session.Character.HPLoad()} {session.Character.MPLoad()} {session.Character.Class} {session.Character.Gender} {(session.Character.UseSp ? session.Character.Morph : 0)}");
+                str.Add($"pst 1 {session.Character.CharacterId} {++i} { (int)(session.Character.Hp / session.Character.HPLoad() * 100) } {(int)(session.Character.Mp / session.Character.MPLoad() * 100) } {session.Character.HPLoad()} {session.Character.MPLoad()} {session.Character.Class} {session.Character.Gender} {(session.Character.UseSp ? session.Character.Morph : 0)}");
             }
             return str;
         }
