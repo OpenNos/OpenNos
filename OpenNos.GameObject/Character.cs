@@ -1277,7 +1277,7 @@ namespace OpenNos.GameObject
             WearableInstance fairy = Session.Character.EquipmentList.LoadBySlotAndType<WearableInstance>((short)EquipmentType.Fairy, (byte)InventoryType.Equipment);
             if (fairy != null)
             {
-                if (fairy.ElementRate < 80 && Session.Character.Level <= monsterinfo.Level + 15 && Session.Character.Level >= monsterinfo.Level - 15)
+                if ((fairy.ElementRate + fairy.Item.ElementRate) < fairy.Item.MaxElementRate && Session.Character.Level <= monsterinfo.Level + 15 && Session.Character.Level >= monsterinfo.Level - 15)
                 {
                     fairy.XP += ServerManager.FairyXpRate;
                 }
@@ -1286,11 +1286,20 @@ namespace OpenNos.GameObject
                 {
                     fairy.XP -= (int)t;
                     fairy.ElementRate++;
+                    if ((fairy.ElementRate+ fairy.Item.ElementRate) == fairy.Item.MaxElementRate)
+                    {
+
+                        fairy.XP = 0;
+                        Session.Client.SendPacket(Session.Character.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("FAIRYMAX"), fairy.Item.Name), 10));
+                    }
+                    else
                     Session.Client.SendPacket(Session.Character.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("FAIRY_LEVELUP"), fairy.Item.Name), 10));
                     Session.Client.SendPacket(Session.Character.GeneratePairy());
 
                 }
+               
             }
+            
             t = Session.Character.JobXPLoad();
             while (Session.Character.JobLevelXp >= t)
             {

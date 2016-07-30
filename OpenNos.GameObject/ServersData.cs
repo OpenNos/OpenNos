@@ -753,16 +753,14 @@ namespace OpenNos.GameObject
 
         public static int LoadFairyXpData(int i)
         {
-
             if (i < 40)
             {
-                return (int)Math.Pow(i + 1, 2) + 50;
+                return i * i + 50;
             }
             else
             {
-                return (int)Math.Pow(i + 1, 2) * 3 + 50;
+                return i*i * 3 + 50;
             }
-
         }
 
         //TODO Change or Verify
