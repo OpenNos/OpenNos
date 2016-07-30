@@ -717,4 +717,10 @@
   <data name="FAIRY_LEVELUP" xml:space="preserve">
     <value />
   </data>
+  <data name="FAIRYXP_INCREASE" xml:space="preserve">
+    <value />
+  </data>
+  <data name="FAIRYXP_NOW" xml:space="preserve">
+    <value />
+  </data>
 </root>

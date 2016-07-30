@@ -41,6 +41,7 @@ namespace OpenNos.GameObject
         public static int XPRate { get; set; }
         public static int DropRate { get; set; }
         public static int GoldRate { get; set; }
+        public static int FairyXpRate { get; set; }
         private long lastGroupId;
 
         #endregion
@@ -114,6 +115,8 @@ namespace OpenNos.GameObject
             DropRate = int.Parse(System.Configuration.ConfigurationManager.AppSettings["RateDrop"]);
 
             GoldRate = int.Parse(System.Configuration.ConfigurationManager.AppSettings["RateGold"]);
+
+            FairyXpRate = int.Parse(System.Configuration.ConfigurationManager.AppSettings["RateFairyXp"]);
 
             foreach (ItemDTO itemDTO in DAOFactory.ItemDAO.LoadAll())
             {
@@ -557,7 +560,7 @@ namespace OpenNos.GameObject
                         foreach (ClientSession groupSessionForId in grp.Characters)
                         {
                             i++;
-                            str += $" 1|{groupSessionForId.Character.CharacterId}|{i}|{groupSessionForId.Character.Level}|{groupSessionForId.Character.Name}|11|{groupSessionForId.Character.Gender}|{groupSessionForId.Character.Class}|{(groupSessionForId.Character.UseSp ? groupSessionForId.Character.Morph : 0)}";
+                            str += $" 1|{groupSessionForId.Character.CharacterId}|{i}|{groupSessionForId.Character.Level}|{groupSessionForId.Character.Name}|0|{groupSessionForId.Character.Gender}|{groupSessionForId.Character.Class}|{(groupSessionForId.Character.UseSp ? groupSessionForId.Character.Morph : 0)}|{groupSessionForId.Character.HeroLevel}";
                         }
                         foreach (ClientSession sess in Sessions.Where(s => s != null && s.Character != null && s.Character.CharacterId == groupSession.Character.CharacterId))
                         {
@@ -663,7 +666,7 @@ namespace OpenNos.GameObject
             foreach (ClientSession session in Groups.FirstOrDefault(s => s.IsMemberOfGroup(charId))?.Characters)
             {
                 i++;
-                str += $" 1|{session.Character.CharacterId}|{i}|{session.Character.Level}|{session.Character.Name}|11|{session.Character.Gender}|{session.Character.Class}|{(session.Character.UseSp ? session.Character.Morph : 0)}";
+                str += $" 1|{session.Character.CharacterId}|{i}|{session.Character.Level}|{session.Character.Name}|11|{session.Character.Gender}|{session.Character.Class}|{(session.Character.UseSp ? session.Character.Morph : 0)}|{session.Character.HeroLevel}";
             }
 
             foreach (ClientSession session in myGroup.Characters)

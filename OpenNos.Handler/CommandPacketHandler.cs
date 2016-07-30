@@ -329,6 +329,7 @@ namespace OpenNos.Handler
             Session.Client.SendPacket(Session.Character.GenerateSay("$RateXp RATE", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$RateGold RATE", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$RateDrop RATE", 6));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$RateFairyXp RATE", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$Lvl LEVEL", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$JLvl JOBLEVEL", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$SPLvl SPLEVEL", 6));
@@ -361,6 +362,7 @@ namespace OpenNos.Handler
             Session.Client.SendPacket(Session.Character.GenerateSay("$PortalTo MAPID DESTX DESTY", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$AddMonster VNUM MOVE", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$Shutdown", 6));
+            Session.Client.SendPacket(Session.Character.GenerateSay("XPFairy", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("-----------------------------------------------", 10));
         }
 
@@ -537,13 +539,13 @@ namespace OpenNos.Handler
                 {
                     ServerManager.XPRate = rate;
 
+                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("XP_INCREASE"), 0));
                 }
                 else
                     Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("WRONG_VALUE"), 0));
             }
             else
                 Session.Client.SendPacket(Session.Character.GenerateSay("$RateXp RATE", 10));
-            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("XP_INCREASE"), 0));
         }
 
         [Packet("$RateDrop")]
@@ -558,13 +560,13 @@ namespace OpenNos.Handler
                 {
                     ServerManager.DropRate = rate;
 
+                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("DROP_INCREASE"), 0));
                 }
                 else
                     Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("WRONG_VALUE"), 0));
             }
             else
                 Session.Client.SendPacket(Session.Character.GenerateSay("$RateDrop RATE", 10));
-            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("DROP_INCREASE"), 0));
 
         }
 
@@ -580,13 +582,33 @@ namespace OpenNos.Handler
                 {
                     ServerManager.GoldRate = rate;
 
+                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("GOLD_INCREASE"), 0));
                 }
                 else
                     Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("WRONG_VALUE"), 0));
             }
             else
                 Session.Client.SendPacket(Session.Character.GenerateSay("$RateGold RATE", 10));
-            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("GOLD_INCREASE"), 0));
+        }
+
+        [Packet("$RateFairyXp")]
+        public void RateFairyXp(string packet)
+        {
+            Logger.Debug(packet, Session.SessionId);
+            string[] packetsplit = packet.Split(' ');
+            int rate;
+            if (packetsplit.Length > 2)
+            {
+                if (int.TryParse(packetsplit[2], out rate) && rate <= 1000)
+                {
+                    ServerManager.FairyXpRate = rate;
+                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("FAIRYXP_INCREASE"), 0));
+                }
+                else
+                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("WRONG_VALUE"), 0));
+            }
+            else
+                Session.Client.SendPacket(Session.Character.GenerateSay("$RateFairyXp RATE", 10));
         }
 
         [Packet("$Invisible")]
@@ -863,6 +885,8 @@ namespace OpenNos.Handler
             Session.Client.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("RATEXP_NOW")}: {ServerManager.XPRate} ", 13));
             Session.Client.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("RATEDROP_NOW")}: {ServerManager.DropRate} ", 13));
             Session.Client.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("RATEGOLD_NOW")}: {ServerManager.GoldRate} ", 13));
+            Session.Client.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("FAIRYXP_NOW")}: {ServerManager.FairyXpRate} ", 13));
+
         }
 
         [Packet("$Summon")]
@@ -1004,6 +1028,25 @@ namespace OpenNos.Handler
                     {
                         wearableInstance.UpgradeItem(Session, (UpgradeMode)mode, (UpgradeProtection)protection);
                     }
+                }
+            }
+        }
+
+        [Packet("$XPFairy")]
+        public void XPFairy(string packet)
+        {
+            Logger.Debug(packet, Session.SessionId);
+            string[] packetsplit = packet.Split(' ');
+            if (packetsplit.Length != 2)
+            {
+                Session.Client.SendPacket(Session.Character.GenerateSay("$XPFairy", 10));
+            }
+            else
+            {
+                WearableInstance fairy = Session.Character.InventoryList.LoadBySlotAndType<WearableInstance>((short)EquipmentType.Fairy, (byte)InventoryType.Equipment);
+                if (fairy != null)
+                {
+                    Session.Client.SendPacket(Session.Character.GenerateSay(String.Format("Fairy XP: {0}\nExp Needed for Fairy Lvl UP", fairy.XP, fairy.XP * fairy.XP + 50), 10));
                 }
             }
         }

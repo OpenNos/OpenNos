@@ -763,4 +763,10 @@
   <data name="JOB_LEVELUP" xml:space="preserve">
     <value>Job level up !</value>
   </data>
+  <data name="FAIRYXP_NOW" xml:space="preserve">
+    <value>Rate fairy xp</value>
+  </data>
+  <data name="FAIRYXP_INCREASE" xml:space="preserve">
+    <value>The fairy rate have been increased</value>
+  </data>
 </root>
