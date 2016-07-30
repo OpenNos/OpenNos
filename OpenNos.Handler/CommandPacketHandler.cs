@@ -340,6 +340,7 @@ namespace OpenNos.Handler
             Session.Client.SendPacket(Session.Character.GenerateSay("$PortalTo MAPID DESTX DESTY", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$AddMonster VNUM MOVE", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$Shutdown", 6));
+            Session.Client.SendPacket(Session.Character.GenerateSay("XPFairy", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("-----------------------------------------------", 10));
         }
 
@@ -1006,6 +1007,25 @@ namespace OpenNos.Handler
                     {
                         wearableInstance.UpgradeItem(Session, (UpgradeMode)mode, (UpgradeProtection)protection);
                     }
+                }
+            }
+        }
+
+        [Packet("$XPFairy")]
+        public void XPFairy(string packet)
+        {
+            Logger.Debug(packet, Session.SessionId);
+            string[] packetsplit = packet.Split(' ');
+            if (packetsplit.Length != 2)
+            {
+                Session.Client.SendPacket(Session.Character.GenerateSay("$XPFairy", 10));
+            }
+            else
+            {
+                WearableInstance fairy = Session.Character.InventoryList.LoadBySlotAndType<WearableInstance>((short)EquipmentType.Fairy, (byte)InventoryType.Equipment);
+                if (fairy != null)
+                {
+                    Session.Client.SendPacket(Session.Character.GenerateSay(String.Format("Fairy XP: {0}\nExp Needed for Fairy Lvl UP", fairy.XP, fairy.XP * fairy.XP + 50), 10));
                 }
             }
         }
