@@ -956,8 +956,8 @@ namespace OpenNos.Handler
                     double timeSpanSinceLastSpUsage = currentRunningSeconds - Session.Character.LastSp;
                     if (timeSpanSinceLastSpUsage >= Session.Character.SpCooldown)
                     {
-                        Session.Client.SendPacket("delay 5000 3 #sl^1");
-                        Session.CurrentMap?.Broadcast($"guri 2 1 {Session.Character.CharacterId}");
+                            Session.Client.SendPacket("delay 5000 3 #sl^1");
+                            Session.CurrentMap?.Broadcast($"guri 2 1 {Session.Character.CharacterId}");
                     }
                     else
                     {
@@ -1108,13 +1108,11 @@ namespace OpenNos.Handler
             WearableInstance fairy = Session.Character.EquipmentList.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Fairy, (byte)InventoryType.Equipment);
             if (sp == null)
                 return;
-
             if (Session.Character.GetReputIco() < ServerManager.GetItem(sp.ItemVNum).ReputationMinimum)
             {
                 Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("LOW_REP"), 0));
                 return;
             }
-
             if (fairy != null && ServerManager.GetItem(fairy.ItemVNum).Element != ServerManager.GetItem(sp.ItemVNum).Element && ServerManager.GetItem(fairy.ItemVNum).Element != ServerManager.GetItem(sp.ItemVNum).SecondaryElement)
             {
                 Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("BAD_FAIRY"), 0));
@@ -1145,7 +1143,6 @@ namespace OpenNos.Handler
             Session.CurrentMap?.Broadcast($"guri 6 1 {Session.Character.CharacterId} 0 0");
             Session.Client.SendPacket(Session.Character.GenerateSpPoint());
             Session.Character.Speed += ServerManager.GetItem(sp.ItemVNum).Speed;
-            Session.Client.SendPacket(Session.Character.GenerateCond());
             Session.Client.SendPacket(Session.Character.GenerateLev());
             Session.Client.SendPacket(Session.Character.GenerateStat());
             Session.Client.SendPacket(Session.Character.GenerateStatChar());

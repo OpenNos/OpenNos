@@ -5,6 +5,10 @@
 ##Disclaimer##
 This project is a community project not for commercial use. The emulator itself is proof of concept of our idea to try out anything what's not possible on original servers. The result is to learn and program together for prove the study. 
 
+##Legal##
+
+This Website and Project is in no way affiliated with, authorized, maintained, sponsored or endorsed by Gameforge or any of its affiliates or subsidiaries. This is an independent and unofficial server for educational use ONLY. Using the Project might be against the TOS.
+
 #Attention!#
 This emulation software is not open source to host any private servers. It is open source to work together community-based.
 

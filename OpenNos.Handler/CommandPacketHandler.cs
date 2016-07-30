@@ -875,7 +875,6 @@ namespace OpenNos.Handler
             else
                 Session.Client.SendPacket(Session.Character.GenerateSay("$Summon VNUM AMOUNT MOVE", 10));
         }
-
         [Packet("$Teleport")]
         public void Teleport(string packet)
         {

@@ -50,7 +50,7 @@ namespace OpenNos.GameObject
 
         //STAT DATA
         private static byte[] speedData = null;
-
+        private static int[] fairyxpData = null;
         private static double[] spxpData = null;
 
         //same for all class
@@ -65,6 +65,7 @@ namespace OpenNos.GameObject
             LoadSpeedData();
             LoadJobXpData();
             LoadSpXpData();
+            LoadFairyXpData();
             LoadXpData();
             LoadHpData();
             LoadMpData();
@@ -197,6 +198,20 @@ namespace OpenNos.GameObject
                 }
                 return spxpData;
             }
+        }
+
+        public static int[] FairyXPData
+        {
+            get
+            {
+                if (fairyxpData == null)
+                {
+                    new ServersData();
+                }
+
+                return fairyxpData;
+            }
+
         }
 
         public static double[] XPData
@@ -749,6 +764,23 @@ namespace OpenNos.GameObject
                 spxpData[i] = spxpData[i - 1] + 6 * (3 * i * (i + 1) + 1);
             }
         }
+
+        private void LoadFairyXpData()
+        {
+            //Load FairyData
+            fairyxpData = new int[80];
+            for (int i = 0; i < fairyxpData.Length; i++)
+            {
+                if (i < 40)
+                {
+                    fairyxpData[i] = (int) Math.Pow(i+1, 2) +50;
+                }
+                else
+                {
+                    fairyxpData[i] = (int) Math.Pow(i+1, 2)*3+50;
+                }
+            }
+        }  
 
         //TODO Change or Verify
         private void LoadStats()

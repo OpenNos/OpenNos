@@ -129,6 +129,8 @@ namespace OpenNos.GameObject
 
         public DateTime LastTransform { get; set; }
 
+        public DateTime LastWalk { get; set; }
+
         public bool InvisibleGm { get; set; }
 
         public int IsDancing { get { return _isDancing; } set { _isDancing = value; } }
@@ -1210,6 +1212,13 @@ namespace OpenNos.GameObject
                 }
             }
             return $"sc {type} {weaponUpgrade} {MinHit} {MaxHit} {HitRate} {HitCriticalRate} {HitCritical} {type2} {secondaryUpgrade} {MinDistance} {MaxDistance} {DistanceRate} {DistanceCriticalRate} {DistanceCritical} {armorUpgrade} {Defence} {DefenceRate} {DistanceDefence} {DistanceDefenceRate} {MagicalDefence} {FireResistance} {WaterResistance} {LightResistance} {DarkResistance}";
+        }
+
+        public int LevelFairyXp()
+        {
+            WearableInstance fairy = EquipmentList.LoadBySlotAndType<WearableInstance>((short)EquipmentType.Fairy, (byte)InventoryType.Equipment);
+
+            return ServersData.FairyXPData[fairy.ElementRate];
         }
 
         public string GenerateStatInfo()

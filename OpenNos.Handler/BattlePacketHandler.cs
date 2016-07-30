@@ -1021,7 +1021,22 @@ namespace OpenNos.Handler
                 Session.CurrentMap?.Broadcast(Session.Character.GenerateEff(198));
                 ServerManager.Instance.UpdateGroup(Session.Character.CharacterId);
             }
-            t = Session.Character.JobXPLoad();
+
+            WearableInstance fairy = Session.Character.EquipmentList.LoadBySlotAndType<WearableInstance>((short)EquipmentType.Fairy, (byte)InventoryType.Equipment);
+            if (fairy.ElementRate < 80 && Session.Character.Level <= monsterinfo.Level+15 && Session.Character.Level >= monsterinfo.Level-15)
+            {
+                fairy.XP++;       
+            }
+            t = Session.Character.LevelFairyXp();
+            if(fairy.XP >= t)
+            {
+                fairy.XP = 0;
+                fairy.ElementRate++;
+                Session.Client.SendPacket(Session.Character.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("FAIRY_LEVELUP"), fairy.Item.Name), 10));
+                Session.Client.SendPacket(Session.Character.GeneratePairy());
+
+            }
+                t = Session.Character.JobXPLoad();
             while (Session.Character.JobLevelXp >= t)
             {
                 Session.Character.JobLevelXp -= (long)t;
@@ -1041,33 +1056,34 @@ namespace OpenNos.Handler
                 Session.Character.Mp = (int)Session.Character.MPLoad();
                 Session.Client.SendPacket(Session.Character.GenerateStat());
                 Session.Client.SendPacket($"levelup {Session.Character.CharacterId}");
-
+                Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("JOB_LEVELUP"), 0));
                 Session.Character.LearnAdventurerSkill();
                 Session.CurrentMap?.Broadcast(Session.Character.GenerateEff(6));
                 Session.CurrentMap?.Broadcast(Session.Character.GenerateEff(198));
             }
             if (specialist != null)
-                    t = Session.Character.SPXPLoad();
-                while (specialist != null && specialist.XP >= t)
+                t = Session.Character.SPXPLoad();
+            while (specialist != null && specialist.XP >= t)
+            {
+                specialist.XP -= (long)t;
+                specialist.SpLevel++;
+                t = Session.Character.SPXPLoad();
+                Session.Client.SendPacket(Session.Character.GenerateStat());
+                Session.Client.SendPacket($"levelup {Session.Character.CharacterId}");
+                if (specialist.SpLevel >= 99)
                 {
-                    specialist.XP -= (long)t;
-                    specialist.SpLevel++;
-                    t = Session.Character.SPXPLoad();
-                    Session.Client.SendPacket(Session.Character.GenerateStat());
-                    Session.Client.SendPacket($"levelup {Session.Character.CharacterId}");
-                    if (specialist.SpLevel >= 99)
-                    {
-                        specialist.SpLevel = 99;
-                        specialist.XP = 0;
-                    }
-                    Session.Character.LearnSPSkill();
-                    Session.CurrentMap?.Broadcast(Session.Character.GenerateEff(6));
-                    Session.CurrentMap?.Broadcast(Session.Character.GenerateEff(198));
+                    specialist.SpLevel = 99;
+                    specialist.XP = 0;
                 }
-                Session.Client.SendPacket(Session.Character.GenerateLev());
-            }
+                 Session.Character.LearnSPSkill();
 
-        private void ZoneHit(int Castingid, short x, short y)
+                Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SP_LEVELUP"), 0));
+                Session.CurrentMap?.Broadcast(Session.Character.GenerateEff(6));
+                Session.CurrentMap?.Broadcast(Session.Character.GenerateEff(198));
+            }
+            Session.Client.SendPacket(Session.Character.GenerateLev());
+        }
+private void ZoneHit(int Castingid, short x, short y)
         {
             List<CharacterSkill> skills = Session.Character.UseSp ? Session.Character.SkillsSp : Session.Character.Skills;
             ushort damage = 0;
