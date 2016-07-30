@@ -235,7 +235,7 @@ namespace OpenNos.Handler
                     {
                         TargetHit(Convert.ToInt32(packetsplit[2]), Convert.ToInt32(packetsplit[3]), Convert.ToInt32(packetsplit[4]));
                     }
-                       
+
             }
         }
 
@@ -980,7 +980,7 @@ namespace OpenNos.Handler
         }
 
 
-private void ZoneHit(int Castingid, short x, short y)
+        private void ZoneHit(int Castingid, short x, short y)
         {
             List<CharacterSkill> skills = Session.Character.UseSp ? Session.Character.SkillsSp : Session.Character.Skills;
             ushort damage = 0;
