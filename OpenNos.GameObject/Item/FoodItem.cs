@@ -14,6 +14,7 @@
 
 using OpenNos.Core;
 using OpenNos.Core.Networking.Communication.Scs.Communication;
+using System;
 using System.Threading;
 
 namespace OpenNos.GameObject
@@ -56,42 +57,46 @@ namespace OpenNos.GameObject
             }
         }
 
-        public override void Use(ClientSession Session, ref Inventory Inv)
+        public override void Use(ClientSession session, ref Inventory Inv)
         {
+            if ((DateTime.Now - session.Character.LastUse).TotalMilliseconds < 750)
+                return;
+            else
+                session.Character.LastUse = DateTime.Now;
             Item item = ServerManager.GetItem(Inv.ItemInstance.ItemVNum);
             switch (Effect)
             {
                 default:
-                    if (Session.Character.IsSitting == false)
+                    if (session.Character.IsSitting == false)
                     {
-                        Session.Character.SnackAmount = 0;
-                        Session.Character.SnackHp = 0;
-                        Session.Character.SnackMp = 0;
+                        session.Character.SnackAmount = 0;
+                        session.Character.SnackHp = 0;
+                        session.Character.SnackMp = 0;
                     }
-                    int amount = Session.Character.SnackAmount;
+                    int amount = session.Character.SnackAmount;
                     if (amount < 5)
                     {
-                        Thread workerThread = new Thread(() => Regenerate(Session, item));
+                        Thread workerThread = new Thread(() => Regenerate(session, item));
                         workerThread.Start();
                         Inv.ItemInstance.Amount--;
                         if (Inv.ItemInstance.Amount > 0)
-                            Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(Inv.ItemInstance.ItemVNum, Inv.ItemInstance.Amount, Inv.Type, Inv.Slot, 0, 0, 0));
+                            session.Client.SendPacket(session.Character.GenerateInventoryAdd(Inv.ItemInstance.ItemVNum, Inv.ItemInstance.Amount, Inv.Type, Inv.Slot, 0, 0, 0));
                         else
                         {
-                            Session.Character.InventoryList.DeleteFromSlotAndType(Inv.Slot, Inv.Type);
-                            Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(1, 0, Inv.Type, Inv.Slot, 0, 0, 0));
+                            session.Character.InventoryList.DeleteFromSlotAndType(Inv.Slot, Inv.Type);
+                            session.Client.SendPacket(session.Character.GenerateInventoryAdd(1, 0, Inv.Type, Inv.Slot, 0, 0, 0));
                         }
                     }
                     else
                     {
-                        if (Session.Character.Gender == 1)
-                            Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NOT_HUNGRY_FEMALE"), 1));
+                        if (session.Character.Gender == 1)
+                            session.Client.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NOT_HUNGRY_FEMALE"), 1));
                         else
-                            Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NOT_HUNGRY_MALE"), 1));
+                            session.Client.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NOT_HUNGRY_MALE"), 1));
                     }
                     if (amount == 0)
                     {
-                        Thread workerThread2 = new Thread(() => Sync(Session, item));
+                        Thread workerThread2 = new Thread(() => Sync(session, item));
                         workerThread2.Start();
                     }
                     break;

@@ -11,17 +11,20 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  */
-
+using System;
 namespace OpenNos.GameObject
 {
     public class PotionItem : Item
     {
-        #region Methods
 
+        #region Methods
         public override void Use(ClientSession session, ref Inventory inv)
         {
+            if ((DateTime.Now - session.Character.LastUse).TotalMilliseconds < 750)
+                return;
+            else
+                session.Character.LastUse = DateTime.Now;
             Item item = ServerManager.GetItem(inv.ItemInstance.ItemVNum);
-
             switch (Effect)
             {
                 default:

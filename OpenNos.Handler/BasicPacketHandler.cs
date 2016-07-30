@@ -164,6 +164,46 @@ namespace OpenNos.Handler
                             CharacterSkillDTO sk1 = new CharacterSkillDTO { CharacterId = newCharacter.CharacterId, SkillVNum = 200 };
                             CharacterSkillDTO sk2 = new CharacterSkillDTO { CharacterId = newCharacter.CharacterId, SkillVNum = 201 };
                             CharacterSkillDTO sk3 = new CharacterSkillDTO { CharacterId = newCharacter.CharacterId, SkillVNum = 209 };
+                            QuicklistEntryDTO qlst1 = new QuicklistEntryDTO
+                            {
+                                CharacterId = newCharacter.CharacterId,
+                                Q1 = 0,
+                                Q2 = 0,
+                                Type = 1,
+                                Slot = 1,
+                                Pos = 1
+                            };
+                            QuicklistEntryDTO qlst2 = new QuicklistEntryDTO
+                            {
+                                CharacterId = newCharacter.CharacterId,
+                                Q1 = 0,
+                                Q2 = 1,
+                                Type = 0,
+                                Slot = 2,
+                                Pos = 0
+                            };
+                            QuicklistEntryDTO qlst3 = new QuicklistEntryDTO
+                            {
+                                CharacterId = newCharacter.CharacterId,
+                                Q1 = 0,
+                                Q2 = 8,
+                                Type = 1,
+                                Slot = 1,
+                                Pos = 16
+                            };
+                            QuicklistEntryDTO qlst4 = new QuicklistEntryDTO
+                            {
+                                CharacterId = newCharacter.CharacterId,
+                                Q1 = 0,
+                                Q2 = 9,
+                                Type = 1,
+                                Slot = 3,
+                                Pos = 1
+                            };
+                            DAOFactory.QuicklistEntryDAO.InsertOrUpdate(ref qlst1);
+                            DAOFactory.QuicklistEntryDAO.InsertOrUpdate(ref qlst2);
+                            DAOFactory.QuicklistEntryDAO.InsertOrUpdate(ref qlst3);
+                            DAOFactory.QuicklistEntryDAO.InsertOrUpdate(ref qlst4);
                             DAOFactory.CharacterSkillDAO.InsertOrUpdate(ref sk1);
                             DAOFactory.CharacterSkillDAO.InsertOrUpdate(ref sk2);
                             DAOFactory.CharacterSkillDAO.InsertOrUpdate(ref sk3);
@@ -265,7 +305,7 @@ namespace OpenNos.Handler
             if (packetsplit[2] == "1")
             {
                 long charId = 0;
-                if(Int64.TryParse(packetsplit[3], out charId)) ServerManager.Instance.RequireBroadcastFromUser(Session, charId, "GenerateStatInfo");
+                if (Int64.TryParse(packetsplit[3], out charId)) ServerManager.Instance.RequireBroadcastFromUser(Session, charId, "GenerateStatInfo");
             }
             if (packetsplit[2] == "2")
             {
@@ -727,8 +767,7 @@ namespace OpenNos.Handler
                             Pos = data2,
                             Morph = Session.Character.UseSp ? (short)Session.Character.Morph : (short)0
                         });
-
-                        Session.Client.SendPacket(string.Format("qset {0} {1} {2}.{3}.{4}.0", q1, q2, type, data1, data2));
+                        Session.Client.SendPacket($"qset {q1} {q2} {type}.{data1}.{data2}.0");
 
                         break;
 
@@ -747,18 +786,18 @@ namespace OpenNos.Handler
                         if (qlTo == null)
                         {
                             // Put 'from' to new position (datax)
-                            Session.Client.SendPacket(string.Format("qset {0} {1} {2}.{3}.{4}.0", qlFrom.Q1, qlFrom.Q2, qlFrom.Type, qlFrom.Slot, qlFrom.Pos));
+                            Session.Client.SendPacket($"qset {qlFrom.Q1} {qlFrom.Q2} {qlFrom.Type}.{qlFrom.Slot}.{qlFrom.Pos}.0");
                             // old 'from' is now empty.
-                            Session.Client.SendPacket(string.Format("qset {0} {1} 7.7.-1.0", data1, data2));
+                            Session.Client.SendPacket($"qset {data1} {data2} 7.7.-1.0");
                         }
                         else
                         {
                             // Put 'from' to new position (datax)
-                            Session.Client.SendPacket(string.Format("qset {0} {1} {2}.{3}.{4}.0", qlFrom.Q1, qlFrom.Q2, qlFrom.Type, qlFrom.Slot, qlFrom.Pos));
+                            Session.Client.SendPacket($"qset {qlFrom.Q1} {qlFrom.Q2} {qlFrom.Type}.{qlFrom.Slot}.{qlFrom.Pos}.0");
                             // 'from' is now 'to' because they exchanged
                             qlTo.Q1 = data1;
                             qlTo.Q2 = data2;
-                            Session.Client.SendPacket(string.Format("qset {0} {1} {2}.{3}.{4}.0", qlTo.Q1, qlTo.Q2, qlTo.Type, qlTo.Slot, qlTo.Pos));
+                            Session.Client.SendPacket($"qset {qlTo.Q1} {qlTo.Q2} {qlTo.Type}.{qlTo.Slot}.{qlTo.Pos}.0");
                         }
 
                         break;
@@ -768,7 +807,7 @@ namespace OpenNos.Handler
 
                         Session.Character.QuicklistEntries.RemoveAll(n => n.Q1 == q1 && n.Q2 == q2 && (Session.Character.UseSp ? n.Morph == Session.Character.Morph : n.Morph == 0));
 
-                        Session.Client.SendPacket(string.Format("qset {0} {1} 7.7.-1.0", q1, q2));
+                        Session.Client.SendPacket($"qset {q1} {q2} 7.7.-1.0");
 
                         break;
 
@@ -1095,7 +1134,7 @@ namespace OpenNos.Handler
                     if (p != "")
                         Session.CurrentMap?.Broadcast(p);
 
-                    
+
                 }
                 else if (type == 4)
                 {

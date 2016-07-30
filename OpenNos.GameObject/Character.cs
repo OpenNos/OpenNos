@@ -202,6 +202,7 @@ namespace OpenNos.GameObject
         public bool UseSp { get; set; }
 
         public int WaterResistance { get; set; }
+        public DateTime LastUse { get; set; }
 
         #endregion
 
@@ -319,7 +320,7 @@ namespace OpenNos.GameObject
 
                 Session.Client.SendPacket(GenerateSki());
 
-                // TODO Reset Quicklist (just add Rest-on-T Item)
+                //TODO: Reset Quicklist (just add Rest-on-T Item)
                 foreach (QuicklistEntryDTO quicklists in DAOFactory.QuicklistEntryDAO.Load(CharacterId).Where(quicklists => QuicklistEntries.Any(qle => qle.EntryId == quicklists.EntryId)))
                     DAOFactory.QuicklistEntryDAO.Delete(CharacterId, quicklists.EntryId);
                 QuicklistEntries = new List<QuicklistEntry>
@@ -334,13 +335,9 @@ namespace OpenNos.GameObject
                         Pos = 1
                     }
                 };
-
                 if (ServerManager.Instance.Groups.FirstOrDefault(s => s.IsMemberOfGroup(Session)) != null)
                     ServerManager.Instance.Broadcast(Session, $"pidx 1 1.{CharacterId}", ReceiverType.AllExceptMe);
-
-
             }
-
         }
 
         public void CloseShop()
@@ -1286,20 +1283,20 @@ namespace OpenNos.GameObject
                 {
                     fairy.XP -= (int)t;
                     fairy.ElementRate++;
-                    if ((fairy.ElementRate+ fairy.Item.ElementRate) == fairy.Item.MaxElementRate)
+                    if ((fairy.ElementRate + fairy.Item.ElementRate) == fairy.Item.MaxElementRate)
                     {
 
                         fairy.XP = 0;
                         Session.Client.SendPacket(Session.Character.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("FAIRYMAX"), fairy.Item.Name), 10));
                     }
                     else
-                    Session.Client.SendPacket(Session.Character.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("FAIRY_LEVELUP"), fairy.Item.Name), 10));
+                        Session.Client.SendPacket(Session.Character.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("FAIRY_LEVELUP"), fairy.Item.Name), 10));
                     Session.Client.SendPacket(Session.Character.GeneratePairy());
 
                 }
-               
+
             }
-            
+
             t = Session.Character.JobXPLoad();
             while (Session.Character.JobLevelXp >= t)
             {

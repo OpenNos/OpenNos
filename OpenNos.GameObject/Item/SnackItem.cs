@@ -14,6 +14,7 @@
 
 using OpenNos.Core;
 using OpenNos.Core.Networking.Communication.Scs.Communication;
+using System;
 using System.Threading;
 
 namespace OpenNos.GameObject
@@ -59,8 +60,11 @@ namespace OpenNos.GameObject
 
         public override void Use(ClientSession session, ref Inventory inv)
         {
+            if ((DateTime.Now - session.Character.LastUse).TotalMilliseconds < 750)
+                return;
+            else
+                session.Character.LastUse = DateTime.Now;
             Item item = ServerManager.GetItem(inv.ItemInstance.ItemVNum);
-
             switch (Effect)
             {
                 default:
