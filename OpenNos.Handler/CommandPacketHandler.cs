@@ -295,11 +295,11 @@ namespace OpenNos.Handler
         {
             Logger.Debug(packet, Session.SessionId);
             string[] packetsplit = packet.Split(' ');
-            byte fairylevel;
+            short fairylevel;
             WearableInstance fairy = Session.Character.EquipmentList.LoadBySlotAndType<WearableInstance>((short)EquipmentType.Fairy, (byte)InventoryType.Equipment);
             if (fairy != null && packetsplit.Length > 2)
             {
-                if (Byte.TryParse(packetsplit[2], out fairylevel) /*&& fairylevel + fairy.Item.ElementRate <= fairy.Item.MaxElementRate*/)//use if you want to block max fairy level for admin
+                if (short.TryParse(packetsplit[2], out fairylevel) && fairylevel <= 9999 /*&& fairylevel + fairy.Item.ElementRate <= fairy.Item.MaxElementRate*/)//use if you want to block max fairy level for admin
                 {
                     fairy.ElementRate = fairylevel;
                     fairy.XP = 0;
