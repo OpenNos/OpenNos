@@ -20,10 +20,10 @@ namespace OpenNos.GameObject
         #region Methods
         public override void Use(ClientSession session, ref Inventory inv)
         {
-            if ((DateTime.Now - session.Character.LastUse).TotalMilliseconds < 750)
+            if ((DateTime.Now - session.Character.LastPotion).TotalMilliseconds < 750)
                 return;
             else
-                session.Character.LastUse = DateTime.Now;
+                session.Character.LastPotion = DateTime.Now;
             Item item = ServerManager.GetItem(inv.ItemInstance.ItemVNum);
             switch (Effect)
             {

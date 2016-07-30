@@ -21,8 +21,6 @@ using OpenNos.Domain;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
-
 
 namespace OpenNos.GameObject
 {
@@ -129,8 +127,6 @@ namespace OpenNos.GameObject
 
         public DateTime LastTransform { get; set; }
 
-        public DateTime LastWalk { get; set; }
-
         public bool InvisibleGm { get; set; }
 
         public int IsDancing { get { return _isDancing; } set { _isDancing = value; } }
@@ -202,7 +198,7 @@ namespace OpenNos.GameObject
         public bool UseSp { get; set; }
 
         public int WaterResistance { get; set; }
-        public DateTime LastUse { get; set; }
+        public DateTime LastPotion { get; set; }
 
         #endregion
 

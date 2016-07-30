@@ -86,7 +86,7 @@
     <Compile Include="Networking\BroadcastableBase.cs" />
     <Compile Include="NpcMonsterSkill.cs" />
     <Compile Include="Map\MapNpc.cs" />
-    <Compile Include="Npc\NRunHandler.cs" />
+    <Compile Include="Networking\Npc\NRunHandler.cs" />
     <Compile Include="QuicklistEntry.cs" />
     <Compile Include="Recipe.cs" />
     <Compile Include="RecipeItem.cs" />
@@ -104,7 +104,7 @@
     <Compile Include="Networking\BroadcastPacket.cs" />
     <Compile Include="Networking\NetworkManager.cs" />
     <Compile Include="Networking\ReceiverType.cs" />
-    <Compile Include="Npc\NpcMonster.cs" />
+    <Compile Include="Networking\Npc\NpcMonster.cs" />
     <Compile Include="Portal.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ServersData.cs" />
