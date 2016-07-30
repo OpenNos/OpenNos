@@ -109,9 +109,9 @@
     <Compile Include="Entities\NpcMonsterskill.cs" />
     <Compile Include="MapTypeDAO.cs" />
     <Compile Include="MapTypeMapDAO.cs" />
-    <Compile Include="Migrations\201607301218085_Hestia.cs" />
-    <Compile Include="Migrations\201607301218085_Hestia.Designer.cs">
-      <DependentUpon>201607301218085_Hestia.cs</DependentUpon>
+    <Compile Include="Migrations\201607302014260_Hera.cs" />
+    <Compile Include="Migrations\201607302014260_Hera.Designer.cs">
+      <DependentUpon>201607302014260_Hera.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="NpcMonsterSkillDAO.cs" />
@@ -191,8 +191,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201607301218085_Hestia.resx">
-      <DependentUpon>201607301218085_Hestia.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201607302014260_Hera.resx">
+      <DependentUpon>201607302014260_Hera.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

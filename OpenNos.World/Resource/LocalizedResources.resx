@@ -775,4 +775,10 @@
   <data name="FAIRYSTATS" xml:space="preserve">
     <value>Fairy XP: {0}/{1}</value>
   </data>
+  <data name="AMMO_LOADED" xml:space="preserve">
+    <value>Ammo loaded!</value>
+  </data>
+  <data name="FAIRY_LEVEL_CHANGED" xml:space="preserve">
+    <value>Level of your {0} has been changed</value>
+  </data>
 </root>

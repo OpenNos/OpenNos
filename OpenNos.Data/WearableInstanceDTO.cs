@@ -33,7 +33,7 @@ namespace OpenNos.Data
         public short DistanceDefence { get; set; }
         public short DistanceDefenceDodge { get; set; }
         public short ElementRate { get; set; }
-        public byte MaxElementRate { get; set; }
+        public short MaxElementRate { get; set; }
         public byte FireElement { get; set; }
         public byte FireResistance { get; set; }
         public short HitRate { get; set; }

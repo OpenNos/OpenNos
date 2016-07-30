@@ -37,7 +37,7 @@ namespace OpenNos.Data
         public int EffectValue { get; set; }
         public byte Element { get; set; }
         public short ElementRate { get; set; }
-        public byte MaxElementRate { get; set; }
+        public short MaxElementRate { get; set; }
         public byte EquipmentSlot { get; set; }
         public byte FireElement { get; set; }
         public byte FireResistance { get; set; }

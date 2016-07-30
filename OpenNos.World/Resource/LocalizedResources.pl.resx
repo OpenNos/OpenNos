@@ -754,4 +754,10 @@
   <data name="FAIRYSTAT" xml:space="preserve">
     <value>Doświadczenie wróżki: {0}/{1}</value>
   </data>
+  <data name="AMMO_LOADED" xml:space="preserve">
+    <value>Amunicja załadowana</value>
+  </data>
+  <data name="FAIRY_LEVEL_CHANGED" xml:space="preserve">
+    <value>Poziom twojej wróżki {0} został zmieniony</value>
+  </data>
 </root>

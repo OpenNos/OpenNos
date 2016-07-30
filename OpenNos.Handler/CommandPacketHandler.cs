@@ -299,11 +299,11 @@ namespace OpenNos.Handler
             WearableInstance fairy = Session.Character.EquipmentList.LoadBySlotAndType<WearableInstance>((short)EquipmentType.Fairy, (byte)InventoryType.Equipment);
             if (fairy != null && packetsplit.Length > 2)
             {
-                if (Byte.TryParse(packetsplit[2], out fairylevel) && fairylevel <= fairy.Item.MaxElementRate)
+                if (Byte.TryParse(packetsplit[2], out fairylevel) /*&& fairylevel + fairy.Item.ElementRate <= fairy.Item.MaxElementRate*/)//use if you want to block max fairy level for admin
                 {
                     fairy.ElementRate = fairylevel;
                     fairy.XP = 0;
-                    Session.Client.SendPacket(Session.Character.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("FAIRY_LEVEL_CHANGE"), fairy.Item.Name), 10));
+                    Session.Client.SendPacket(Session.Character.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("FAIRY_LEVEL_CHANGED"), fairy.Item.Name), 10));
                     Session.Client.SendPacket(Session.Character.GeneratePairy());
                 }
             }
