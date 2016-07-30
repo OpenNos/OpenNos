@@ -91,7 +91,7 @@ namespace OpenNos.Handler
         {
             List<CharacterSkill> skills = Session.Character.UseSp ? Session.Character.SkillsSp : Session.Character.Skills;
             bool notcancel = false;
-            Logger.Debug("Entrato TargetHit");
+
             if ((DateTime.Now - Session.Character.LastTransform).TotalSeconds < 3)
             {
                 Session.Client.SendPacket($"cancel 0 0");
@@ -100,7 +100,6 @@ namespace OpenNos.Handler
             }
             if (skills != null)
             {
-                Logger.Debug("Entrato skill!=null");
                 ushort damage = 0;
                 int hitmode = 0;
                 Skill skill = null;
@@ -225,7 +224,6 @@ namespace OpenNos.Handler
 
             if (Session.Character.CanFight)
             {
-                Logger.Debug("Entrato CanFight");
                 string[] packetsplit = packet.Split(' ');
                 if (packetsplit.Length > 6)
                 {
@@ -235,14 +233,9 @@ namespace OpenNos.Handler
                 if (packetsplit.Length > 4)
                     if (Session.Character.Hp > 0)
                     {
-                        Logger.Debug("Entrato prima TargetHit");
                         TargetHit(Convert.ToInt32(packetsplit[2]), Convert.ToInt32(packetsplit[3]), Convert.ToInt32(packetsplit[4]));
                     }
                        
-            }
-            else
-            {
-                Logger.Debug(String.Format("Else CanFight IsSitting: {0} ExchangeInfo: {1}", Session.Character.IsSitting, Session.Character.ExchangeInfo));
             }
         }
 
