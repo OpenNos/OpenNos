@@ -283,7 +283,7 @@
     <value>Vous avez quitté le groupe.</value>
   </data>
   <data name="GROUP_REQUEST" xml:space="preserve">
-    <value>Vous avez invité en groupe : {0}</value>
+    <value> {0} a été invité à rejoindre votre groupe.</value>
   </data>
   <data name="GROUP_REQ_BLOCKED" xml:space="preserve">
     <value>À partir de maintenant, tu bloques les demandes de groupe.</value>
@@ -316,7 +316,7 @@
     <value>Ce nom contient des caractères non valides.</value>
   </data>
   <data name="INVITED_YOU" xml:space="preserve">
-    <value>{0} Vous a invité à rejoindre le groupe.</value>
+    <value>{0} vous a invité à rejoindre le groupe.</value>
   </data>
   <data name="IN_WAITING_FOR" xml:space="preserve">
     <value>En attente {0}</value>
