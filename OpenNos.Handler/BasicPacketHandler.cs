@@ -615,8 +615,6 @@ namespace OpenNos.Handler
                         }
                         else
                         {
-                            Session.Character.ExchangeInfo = new ExchangeInfo { CharId = charId, Confirm = false };
-
                             charName = (string)ServerManager.Instance.GetProperty<string>(charId, "Name");
                             Session.Client.SendPacket(Session.Character.GenerateInfo(String.Format(Language.Instance.GetMessageFromKey("GROUP_REQUEST"), charName)));
                             Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateDialog($"#pjoin^3^{ Session.Character.CharacterId} #pjoin^4^{Session.Character.CharacterId} {String.Format(Language.Instance.GetMessageFromKey("INVITED_YOU"), Session.Character.Name)}"), ReceiverType.OnlySomeone, charName);
@@ -1056,6 +1054,7 @@ namespace OpenNos.Handler
                     }
                     foreach (Group group in ServerManager.Instance.Groups)
                     {
+
                         if (group.Characters.Count == 3)
                         {
                             Session.Client.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("GROUP_FULL")));
@@ -1075,6 +1074,7 @@ namespace OpenNos.Handler
                             newgroup = 0;
                         }
                     }
+
                     if (newgroup == 1)
                     {
                         Group group = new Group();
@@ -1093,6 +1093,8 @@ namespace OpenNos.Handler
                     string p = GeneratePidx(Session.Character.CharacterId);
                     if (p != "")
                         Session.CurrentMap?.Broadcast(p);
+
+                    
                 }
                 else if (type == 4)
                 {
