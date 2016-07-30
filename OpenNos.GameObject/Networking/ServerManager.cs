@@ -41,6 +41,7 @@ namespace OpenNos.GameObject
         public static int XPRate { get; set; }
         public static int DropRate { get; set; }
         public static int GoldRate { get; set; }
+        public static int FairyXpRate { get; set; }
         private long lastGroupId;
 
         #endregion
@@ -114,6 +115,8 @@ namespace OpenNos.GameObject
             DropRate = int.Parse(System.Configuration.ConfigurationManager.AppSettings["RateDrop"]);
 
             GoldRate = int.Parse(System.Configuration.ConfigurationManager.AppSettings["RateGold"]);
+
+            FairyXpRate = int.Parse(System.Configuration.ConfigurationManager.AppSettings["RateFairyXp"]);
 
             foreach (ItemDTO itemDTO in DAOFactory.ItemDAO.LoadAll())
             {

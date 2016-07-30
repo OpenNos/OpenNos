@@ -754,4 +754,7 @@
   <data name="JOB_LEVELUP" xml:space="preserve">
     <value>Ton niveau de métier a augmenté !</value>
   </data>
+  <data name="FAIRYXP_NOW" xml:space="preserve">
+    <value>Taux d'expérience des fées</value>
+  </data>
 </root>

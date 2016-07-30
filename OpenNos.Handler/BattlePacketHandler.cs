@@ -1023,20 +1023,20 @@ namespace OpenNos.Handler
             }
 
             WearableInstance fairy = Session.Character.EquipmentList.LoadBySlotAndType<WearableInstance>((short)EquipmentType.Fairy, (byte)InventoryType.Equipment);
-            if (fairy.ElementRate < 80 && Session.Character.Level <= monsterinfo.Level+15 && Session.Character.Level >= monsterinfo.Level-15)
+            if (fairy.ElementRate < 80 && Session.Character.Level <= monsterinfo.Level + 15 && Session.Character.Level >= monsterinfo.Level - 15)
             {
-                fairy.XP++;       
+                fairy.XP+=ServerManager.FairyXpRate;
             }
-            t = Session.Character.LevelFairyXp();
-            if(fairy.XP >= t)
+            t = ServersData.LoadFairyXpData(fairy.ElementRate);
+            while (fairy.XP >= t)
             {
-                fairy.XP = 0;
+                fairy.XP -= (int)t;
                 fairy.ElementRate++;
                 Session.Client.SendPacket(Session.Character.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("FAIRY_LEVELUP"), fairy.Item.Name), 10));
                 Session.Client.SendPacket(Session.Character.GeneratePairy());
 
             }
-                t = Session.Character.JobXPLoad();
+            t = Session.Character.JobXPLoad();
             while (Session.Character.JobLevelXp >= t)
             {
                 Session.Character.JobLevelXp -= (long)t;
@@ -1075,7 +1075,7 @@ namespace OpenNos.Handler
                     specialist.SpLevel = 99;
                     specialist.XP = 0;
                 }
-                 Session.Character.LearnSPSkill();
+                Session.Character.LearnSPSkill();
 
                 Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SP_LEVELUP"), 0));
                 Session.CurrentMap?.Broadcast(Session.Character.GenerateEff(6));
@@ -1083,7 +1083,7 @@ namespace OpenNos.Handler
             }
             Session.Client.SendPacket(Session.Character.GenerateLev());
         }
-private void ZoneHit(int Castingid, short x, short y)
+        private void ZoneHit(int Castingid, short x, short y)
         {
             List<CharacterSkill> skills = Session.Character.UseSp ? Session.Character.SkillsSp : Session.Character.Skills;
             ushort damage = 0;

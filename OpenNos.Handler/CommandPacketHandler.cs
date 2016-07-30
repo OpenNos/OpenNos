@@ -308,6 +308,7 @@ namespace OpenNos.Handler
             Session.Client.SendPacket(Session.Character.GenerateSay("$RateXp RATE", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$RateGold RATE", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$RateDrop RATE", 6));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$RateFairyXp RATE", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$Lvl LEVEL", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$JLvl JOBLEVEL", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$SPLvl SPLEVEL", 6));
@@ -565,6 +566,27 @@ namespace OpenNos.Handler
             else
                 Session.Client.SendPacket(Session.Character.GenerateSay("$RateGold RATE", 10));
             Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("GOLD_INCREASE"), 0));
+        }
+
+        [Packet("$RateFairyXp")]
+        public void RateFairyXp(string packet)
+        {
+            Logger.Debug(packet, Session.SessionId);
+            string[] packetsplit = packet.Split(' ');
+            int rate;
+            if (packetsplit.Length > 2)
+            {
+                if (int.TryParse(packetsplit[2], out rate) && rate <= 1000 )
+                {
+                    ServerManager.FairyXpRate = rate;
+
+                }
+                else
+                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("WRONG_VALUE"), 0));
+            }
+            else
+                Session.Client.SendPacket(Session.Character.GenerateSay("$RateFairyXp RATE", 10));
+            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("FAIRYXP_INCREASE"), 0));
         }
 
         [Packet("$Invisible")]
@@ -841,6 +863,8 @@ namespace OpenNos.Handler
             Session.Client.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("RATEXP_NOW")}: {ServerManager.XPRate} ", 13));
             Session.Client.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("RATEDROP_NOW")}: {ServerManager.DropRate} ", 13));
             Session.Client.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("RATEGOLD_NOW")}: {ServerManager.GoldRate} ", 13));
+            Session.Client.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("FAIRYXP_NOW")}: {ServerManager.FairyXpRate} ", 13));
+
         }
 
         [Packet("$Summon")]
