@@ -1277,7 +1277,7 @@ namespace OpenNos.GameObject
             WearableInstance fairy = Session.Character.EquipmentList.LoadBySlotAndType<WearableInstance>((short)EquipmentType.Fairy, (byte)InventoryType.Equipment);
             if (fairy != null)
             {
-                if (fairy.ElementRate < 80 && Session.Character.Level <= monsterinfo.Level + 15 && Session.Character.Level >= monsterinfo.Level - 15)
+                if (fairy.ElementRate < fairy.Item.MaxElementRate && Session.Character.Level <= monsterinfo.Level + 15 && Session.Character.Level >= monsterinfo.Level - 15)
                 {
                     fairy.XP += ServerManager.FairyXpRate;
                 }
