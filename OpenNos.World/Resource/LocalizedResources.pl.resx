@@ -151,10 +151,10 @@
     <value>Zle haslo</value>
   </data>
   <data name="BN0" xml:space="preserve">
-    <value>Przeczytaj^regulamin</value>
+    <value>Przeczytaj^README.md</value>
   </data>
   <data name="BN1" xml:space="preserve">
-    <value>Nigdy^nie^podawaj^nikomu^hasla,^adminstrator^nigdy^nie^poprosi^cie^o^haslo</value>
+    <value>Nigdy^nie^podawaj^nikomu^hasła,^adminstracja^nigdy^nie^poprosi^cię^o^hasło!</value>
   </data>
   <data name="BN2" xml:space="preserve">
     <value>Potrzebujesz^pomocy^gm'a?^zajrzyj^na^nasza^strone!</value>
@@ -166,10 +166,10 @@
     <value>Tlumaczyl^MasterDomino</value>
   </data>
   <data name="BN5" xml:space="preserve">
-    <value>Team:^0Lucifer0,^chucktheripper,^Ciapa1,^MasterDomino,^genyx,^Martazza,^KrisYiu</value>
+    <value>Team:^0Lucifer0,^chucktheripper,^Ciapa1,^MasterDomino,^genyx,^Martazza,^KrisYiu,^Anthony,^Sl4yZ</value>
   </data>
   <data name="BN6" xml:space="preserve">
-    <value>Chcesz^wziasc^udzial^naszym^projekcie?^github.com/OpenNos/OpenNos</value>
+    <value>Chcesz^wziaść^udziać^w^naszym^projekcie?^github.com/OpenNos/OpenNos</value>
   </data>
   <data name="BUFF_BLOCKED" xml:space="preserve">
     <value>Ikony buff'ów zablokowane</value>
@@ -199,7 +199,7 @@
     <value>Mozesz skomplementowac tylko jednego gracza na dzień.</value>
   </data>
   <data name="COMPLIMENT_GIVEN" xml:space="preserve">
-    <value>Skomplementowales {0} graczy.</value>
+    <value>Skomplementowałeś {0} graczy.</value>
   </data>
   <data name="COMPLIMENT_LOGIN_COOLDOWN" xml:space="preserve">
     <value>Musisz poczekac {0} minut, zanim znów bedziesz mogl kogos skomplementowac.</value>
@@ -212,9 +212,10 @@
   </data>
   <data name="CORRUPTED_KEEPALIVE" xml:space="preserve">
     <value>Corrupted Keepalive on client {0}.</value>
+    <comment>Użyto angielskiego z powodu ułatwionego debugowania</comment>
   </data>
   <data name="CRAFTED_OBJECT" xml:space="preserve">
-    <value>Stworzyles: {0} x {1}</value>
+    <value>Stworzyłes: {0} x {1}</value>
   </data>
   <data name="DATABASE_INITIALIZED" xml:space="preserve">
     <value>Baza danych została załadowana.</value>
@@ -283,7 +284,7 @@
     <value>Grupa jest pelna</value>
   </data>
   <data name="GROUP_LEFT" xml:space="preserve">
-    <value>Opuściles grupe</value>
+    <value>Opuściłeś grupe</value>
   </data>
   <data name="GROUP_REQUEST" xml:space="preserve">
     <value>Gracz {0} zostal zaproszony do grupy</value>
@@ -296,6 +297,7 @@
   </data>
   <data name="HANDLER_NOT_FOUND" xml:space="preserve">
     <value>Could not found Handler implementation for Packet with Header {0}</value>
+    <comment>Patrz CORRUPTED_KEEPALIVE</comment>
   </data>
   <data name="HERO_CHAT_BLOCKED" xml:space="preserve">
     <value>Czat bohaterów zablokowany</value>
@@ -304,10 +306,10 @@
     <value>Czat bohaterów widoczny</value>
   </data>
   <data name="HP_BLOCKED" xml:space="preserve">
-    <value>Stan zycia ukryty</value>
+    <value>Stan życia ukryty</value>
   </data>
   <data name="HP_UNLOCKED" xml:space="preserve">
-    <value>Stan zycia widoczny</value>
+    <value>Stan życia widoczny</value>
   </data>
   <data name="INCOMING_EXCHANGE" xml:space="preserve">
     <value>{0} chce się z tobą wymienić!</value>
@@ -325,7 +327,7 @@
     <value>Oczekujesz na gracza {0}</value>
   </data>
   <data name="ITEM_ACQUIRED" xml:space="preserve">
-    <value>Otrzymaleś przedmiot</value>
+    <value>Otrzymałeś przedmiot</value>
   </data>
   <data name="ITEM_IS_FIXED" xml:space="preserve">
     <value>Poziom ulepszenia przedmiotu zablokowany.</value>
@@ -340,7 +342,7 @@
     <value>Nie mozesz sprzedac tego przedmiotu.</value>
   </data>
   <data name="ITEM_NOT_TRADABLE" xml:space="preserve">
-    <value>Nie mozesz wymieniac sie tym przedmiotem!</value>
+    <value>Nie mozesz wymienić sie tym przedmiotem!</value>
   </data>
   <data name="ITEM_TIMEOUT" xml:space="preserve">
     <value>Waznosc przedmiotu przeminela</value>
@@ -349,7 +351,7 @@
     <value>Poziom profesji zostal zmieniony!</value>
   </data>
   <data name="CLASS_CHANGED" xml:space="preserve">
-    <value>Zawod zostal zmieniony!</value>
+    <value>Zawod został zmieniony!</value>
   </data>
   <data name="LEAVE_GROUP" xml:space="preserve">
     <value>Gracz {0} opuscil grupe</value>
@@ -394,7 +396,7 @@
     <value>Wskaźnik myszy z wspomaganym celowaniem wylaczony</value>
   </data>
   <data name="MSG_SENT" xml:space="preserve">
-    <value>Packet wysłany {0} do użytkownika {1}</value>
+    <value>Pakiet wysłany {0} do użytkownika {1}</value>
   </data>
   <data name="NEW_CONNECT" xml:space="preserve">
     <value>Połaczono użytkownika. ClientId = </value>
@@ -403,16 +405,16 @@
     <value>Jestes nowym liderem grupy</value>
   </data>
   <data name="NOT_ADVENTURER" xml:space="preserve">
-    <value>Mozesz zmienic klase tylko raz.</value>
+    <value>Mozesz zmienic klase tylko raz</value>
   </data>
   <data name="NOT_ENOUGH_CP" xml:space="preserve">
     <value>Niewystarczajaca ilosci punktow CP</value>
   </data>
   <data name="NOT_ENOUGH_MONEY" xml:space="preserve">
-    <value>Niewystarczajaca ilosc zlota.</value>
+    <value>Niewystarczajaca ilosc złota</value>
   </data>
   <data name="NOT_ENOUGH_PLACE" xml:space="preserve">
-    <value>Niewystarczajaca ilosc miejsc.</value>
+    <value>Niewystarczajaca ilosc miejsc</value>
   </data>
   <data name="NOT_ENOUGH_REPUT" xml:space="preserve">
     <value>Niewystarczajaca ilosc reputacji</value>
@@ -445,7 +447,7 @@
     <value>Brak opisu.</value>
   </data>
   <data name="NO_SP" xml:space="preserve">
-    <value>Nie zalozyles karty specjalisty!</value>
+    <value>Nie założyłeś karty specjalisty!</value>
   </data>
   <data name="NPCMONSTERS_LOADED" xml:space="preserve">
     <value>{0} Załadowanych npc-potworów!</value>
@@ -454,7 +456,7 @@
     <value>{0} Załadowanych npc!</value>
   </data>
   <data name="PACKET_ARRIVED" xml:space="preserve">
-    <value>Wysłano packet, packet: {0}</value>
+    <value>Odebrano pakiet, packet: {0}</value>
   </data>
   <data name="PACKET_FAILURE" xml:space="preserve">
     <value>Nie udało sie wysłac packet {0} do użytkownika {1}, {2}.</value>
@@ -478,7 +480,7 @@
     <value>HP/MP</value>
   </data>
   <data name="PERFECTSP_LIGHT" xml:space="preserve">
-    <value>Swiatlo</value>
+    <value>Swiatło</value>
   </data>
   <data name="PERFECTSP_SHADOW" xml:space="preserve">
     <value>Mrok</value>
@@ -527,10 +529,10 @@
     <value>Reputacja zmieniona</value>
   </data>
   <data name="SELL_ITEM_VALIDE" xml:space="preserve">
-    <value>Sprzedano: {0} &lt;{1} : sztuk &gt;</value>
+    <value>Sprzedałeś: {0} &lt;{1} : sztuk &gt;</value>
   </data>
   <data name="SEX_CHANGED" xml:space="preserve">
-    <value>Plec zmieniona</value>
+    <value>Płeć zmieniona</value>
   </data>
   <data name="SHARING" xml:space="preserve">
     <value>Dzielenie ze wszystkimi</value>
@@ -542,19 +544,19 @@
     <value>{0} Załadowanych sklepów!</value>
   </data>
   <data name="SHOP_EMPTY" xml:space="preserve">
-    <value>Sklep nie moze byc pusty!</value>
+    <value>Sklep nie moze być pusty!</value>
   </data>
   <data name="SHOP_NEAR_PORTAL" xml:space="preserve">
-    <value>Nie mozesz ustawic sklepu tak blisko portalu!</value>
+    <value>Nie mozesz ustawić sklepu tak blisko portalu!</value>
   </data>
   <data name="SHOP_OPEN" xml:space="preserve">
-    <value>Sklep zostal otwarty</value>
+    <value>Sklep został otwarty</value>
   </data>
   <data name="SHUTDOWN_MIN" xml:space="preserve">
-    <value>Server zostanie wylaczony za {0} Minut.</value>
+    <value>Server zostanie wyłaczony za {0} Minut.</value>
   </data>
   <data name="SHUTDOWN_SEC" xml:space="preserve">
-    <value>Server zostanie wylaczony za {0} Sekund.</value>
+    <value>Server zostanie wyłaczony za {0} Sekund.</value>
   </data>
   <data name="SKILLS_LOADED" xml:space="preserve">
     <value>{0} Załadowanych umiejętności!</value>
@@ -569,7 +571,7 @@
     <value>Musisz zmienic sie w specjaliste aby zatwierdzic zmiane punktów</value>
   </data>
   <data name="SP_BLOCKED" xml:space="preserve">
-    <value>Nie mozesz teraz zmienic karty specjalisty.</value>
+    <value>Nie mozesz teraz zmienić karty specjalisty.</value>
   </data>
   <data name="SP_INLOADING" xml:space="preserve">
     <value>Ladowanie karty specjalisty, pozostalo {0} sekund.</value>
@@ -644,13 +646,13 @@
     <value>Poprosileś o wymianę od</value>
   </data>
   <data name="CHARACTER_LOGGED_IN" xml:space="preserve">
-    <value>{0} polaczyl sie.</value>
+    <value>{0} połączył się.</value>
   </data>
   <data name="CHARACTER_LOGGED_OUT" xml:space="preserve">
-    <value>{0} rozlaczyl sie.</value>
+    <value>{0} rozłączył się.</value>
   </data>
   <data name="NOT_ENOUGH_POWER_SEED" xml:space="preserve">
-    <value>Niewystarczajaca ilosc ziaren mocy </value>
+    <value>Niewystarczajaca ilosc ziaren mocy</value>
   </data>
   <data name="NOT_ENOUGH_SEED_SAY" xml:space="preserve">
     <value>Nie mam wystarczajacej ilosci ziaren mocy</value>
@@ -692,7 +694,7 @@
     <value>Użytkownik przeprowadza aktualnie wymianę</value>
   </data>
   <data name="RESTORE_DIGNITY" xml:space="preserve">
-    <value>Odzyskaleś troche swojej godności</value>
+    <value>Odzyskałeś troche swojej godności</value>
   </data>
   <data name="DROP_RATE_CHANGED" xml:space="preserve">
     <value>Drop rate itemków zmieniony!</value>
@@ -711,7 +713,7 @@
     <value>{0} Poziom SP potrzebny do ulepszenia</value>
   </data>
   <data name="UPGRADESP_DESTROY" xml:space="preserve">
-    <value>Karta specjalisty zniszczona</value>
+    <value>Karta specjalisty została zniszczona</value>
   </data>
   <data name="UPGRADESP_FAILED" xml:space="preserve">
     <value>Ulepszanie karty specjalisty nie powiodło się</value>
@@ -735,21 +737,21 @@
     <value>Exp rate</value>
   </data>
   <data name="SP_LEVELUP" xml:space="preserve">
-    <value />
+    <value>Twój specjalista zdobył kolejny poziom</value>
   </data>
   <data name="FAIRY_LEVELUP" xml:space="preserve">
-    <value />
+    <value>Twoja wróżka {0} zdobyła kolejny poziom!</value>
   </data>
   <data name="FAIRYXP_RATE_CHANGED" xml:space="preserve">
-    <value />
+    <value>Ilość zdobywanego doświadczenia wróżki została zmieniona!</value>
   </data>
   <data name="FAIRYXP_RATE_NOW" xml:space="preserve">
-    <value />
+    <value>Exp rate wróżek</value>
   </data>
   <data name="FAIRYMAX" xml:space="preserve">
-    <value />
+    <value>Twoja wróżka zdobyła maksymalny poziom!</value>
   </data>
   <data name="FAIRYSTAT" xml:space="preserve">
-    <value />
+    <value>Doświadczenie wróżki: {0}/{1}</value>
   </data>
 </root>

@@ -770,7 +770,7 @@
     <value>Fairy xp rate changed</value>
   </data>
   <data name="FAIRYMAX" xml:space="preserve">
-    <value>Your fairy is level max</value>
+    <value>Your fairy reached max level!</value>
   </data>
   <data name="FAIRYSTATS" xml:space="preserve">
     <value>Fairy XP: {0}/{1}</value>
