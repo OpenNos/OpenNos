@@ -345,7 +345,7 @@
   <data name="JOBLEVEL_CHANGED" xml:space="preserve">
     <value>Ton niveau de métier a augmenté.</value>
   </data>
-  <data name="JOB_CHANGED" xml:space="preserve">
+  <data name="CLASS_CHANGED" xml:space="preserve">
     <value>Félicitations. Tu as changé de métier !</value>
   </data>
   <data name="LEAVE_GROUP" xml:space="preserve">
@@ -706,13 +706,13 @@
   <data name="SKILLS_LOADED" xml:space="preserve">
     <value>{0} Compétences chargées !</value>
   </data>
-  <data name="DROP_INCREASE" xml:space="preserve">
+  <data name="DROP_RATE_CHANGED" xml:space="preserve">
     <value>Le taux de drop a été modifié avec succès</value>
   </data>
-  <data name="GOLD_INCREASE" xml:space="preserve">
+  <data name="GOLD_RATE_CHANGED" xml:space="preserve">
     <value>Le taux d'or a été modifié avec succès</value>
   </data>
-  <data name="XP_INCREASE" xml:space="preserve">
+  <data name="XP_RATE_CHANGED" xml:space="preserve">
     <value>Le taux d'expérience a été modifié avec succès</value>
   </data>
   <data name="CANT_ATTACK" xml:space="preserve">
@@ -736,13 +736,13 @@
   <data name="MINILAND_WELCOME_MESSAGE" xml:space="preserve">
     <value>Bienvenue</value>
   </data>
-  <data name="RATEDROP_NOW" xml:space="preserve">
+  <data name="DROP_RATE_NOW" xml:space="preserve">
     <value>Taux de drop </value>
   </data>
-  <data name="RATEGOLD_NOW" xml:space="preserve">
+  <data name="GOLD_RATE_NOW" xml:space="preserve">
     <value>Taux d'or </value>
   </data>
-  <data name="RATEXP_NOW" xml:space="preserve">
+  <data name="XP_RATE_NOW" xml:space="preserve">
     <value>Taux d'expérience </value>
   </data>
   <data name="SP_LEVELUP" xml:space="preserve">
@@ -754,10 +754,10 @@
   <data name="JOB_LEVELUP" xml:space="preserve">
     <value>Ton niveau de métier a augmenté !</value>
   </data>
-  <data name="FAIRYXP_INCREASE" xml:space="preserve">
+  <data name="FAIRYXP_RATE_CHANGED" xml:space="preserve">
     <value>Le taux d'expérience des fées a bien été modifié !</value>
   </data>
-  <data name="FAIRYXP_NOW" xml:space="preserve">
+  <data name="FAIRYXP_RATE_NOW" xml:space="preserve">
     <value>Taux d'expérience des fées</value>
   </data>
 </root>

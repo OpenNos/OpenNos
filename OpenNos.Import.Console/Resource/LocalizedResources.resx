@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AT_LEAST_ONE_FILE_MISSING" xml:space="preserve">
+    <value>At least on of required files is missing</value>
+  </data>
   <data name="DATABASE_INITIALIZED" xml:space="preserve">
     <value>Database has been initialized.</value>
   </data>

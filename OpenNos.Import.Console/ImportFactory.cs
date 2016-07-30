@@ -395,7 +395,8 @@ namespace OpenNos.Import.Console
                     }
                     else if (currentLine.Length > 3 && currentLine[1] == "ITEM")
                     {
-                        //TODO: add general drop parsing (Hardcode)
+                        //TODO: add missing general drop if found
+                        //TODO: add map dependant drops eg. angel wings.
                         if (DAOFactory.NpcMonsterDAO.LoadByVnum(npc.NpcMonsterVNum) == null)
                         {
                             npcs.Add(npc);
@@ -416,16 +417,18 @@ namespace OpenNos.Import.Console
                                 DropChance = int.Parse(currentLine[i + 1])
                             });
                         }
-
                         itemAreaBegin = false;
                     }
                 }
                 DAOFactory.NpcMonsterDAO.Insert(npcs);
-                DAOFactory.DropDAO.Insert(drops);
                 DAOFactory.NpcMonsterSkillDAO.Insert(skills);
                 Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("NPCMONSTERS_PARSED"), counter));
                 npcIdStream.Close();
             }
+            drops.Add(new DropDTO { ItemVNum = 1012, Amount = 1, MonsterVNum = null, DropChance = 75000 });// drop chance approximate
+            drops.Add(new DropDTO { ItemVNum = 1114, Amount = 1, MonsterVNum = null, DropChance = 5000 });// drop chance approximate
+            drops.Add(new DropDTO { ItemVNum = 5119, Amount = 1, MonsterVNum = null, DropChance = 5000 });// drop chance approximate
+            DAOFactory.DropDAO.Insert(drops);
         }
 
         public void ImportPackets()

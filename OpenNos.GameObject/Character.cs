@@ -287,7 +287,7 @@ namespace OpenNos.GameObject
                 Session.Client.SendPacket(GenerateStat());
                 Session.CurrentMap?.Broadcast(GenerateEq());
                 Session.CurrentMap?.Broadcast(Session, GenerateEff(8), ReceiverType.All);
-                Session.Client.SendPacket(GenerateMsg(Language.Instance.GetMessageFromKey("JOB_CHANGED"), 0));
+                Session.Client.SendPacket(GenerateMsg(Language.Instance.GetMessageFromKey("CLASS_CHANGED"), 0));
                 Session.CurrentMap?.Broadcast(Session, GenerateEff(196), ReceiverType.All);
                 Random rand = new Random();
                 int faction = 1 + (int)rand.Next(0, 2);

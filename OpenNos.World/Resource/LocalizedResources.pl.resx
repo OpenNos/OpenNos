@@ -348,7 +348,7 @@
   <data name="JOBLEVEL_CHANGED" xml:space="preserve">
     <value>Poziom profesji zostal zmieniony!</value>
   </data>
-  <data name="JOB_CHANGED" xml:space="preserve">
+  <data name="CLASS_CHANGED" xml:space="preserve">
     <value>Zawod zostal zmieniony!</value>
   </data>
   <data name="LEAVE_GROUP" xml:space="preserve">
@@ -694,14 +694,14 @@
   <data name="RESTORE_DIGNITY" xml:space="preserve">
     <value>Odzyskaleś troche swojej godności</value>
   </data>
-  <data name="DROP_INCREASE" xml:space="preserve">
+  <data name="DROP_RATE_CHANGED" xml:space="preserve">
     <value>Drop rate itemków zmieniony!</value>
-    <comment>Użyto angielskiego z powodu długości zdania &lt;patrz: XP_INCREASE&gt;</comment>
+    <comment>Użyto angielskiego z powodu długości zdania &lt;patrz: XP_RATE_CHANGED&gt;</comment>
   </data>
-  <data name="GOLD_INCREASE" xml:space="preserve">
+  <data name="GOLD_RATE_CHANGED" xml:space="preserve">
     <value>Drop rate złota zmieniony!</value>
   </data>
-  <data name="XP_INCREASE" xml:space="preserve">
+  <data name="XP_RATE_CHANGED" xml:space="preserve">
     <value>Wartość zdobywanego doświadczenia została zmieniona!</value>
   </data>
   <data name="CANT_ATTACK" xml:space="preserve">
@@ -725,13 +725,13 @@
   <data name="MINILAND_WELCOME_MESSAGE" xml:space="preserve">
     <value>Witamy</value>
   </data>
-  <data name="RATEDROP_NOW" xml:space="preserve">
+  <data name="DROP_RATE_NOW" xml:space="preserve">
     <value>Drop rate</value>
   </data>
-  <data name="RATEGOLD_NOW" xml:space="preserve">
+  <data name="GOLD_RATE_NOW" xml:space="preserve">
     <value>Wartość wypadającego złota</value>
   </data>
-  <data name="RATEXP_NOW" xml:space="preserve">
+  <data name="XP_RATE_NOW" xml:space="preserve">
     <value>Exp rate</value>
   </data>
   <data name="SP_LEVELUP" xml:space="preserve">
@@ -740,10 +740,10 @@
   <data name="FAIRY_LEVELUP" xml:space="preserve">
     <value />
   </data>
-  <data name="FAIRYXP_INCREASE" xml:space="preserve">
+  <data name="FAIRYXP_RATE_CHANGED" xml:space="preserve">
     <value />
   </data>
-  <data name="FAIRYXP_NOW" xml:space="preserve">
+  <data name="FAIRYXP_RATE_NOW" xml:space="preserve">
     <value />
   </data>
 </root>

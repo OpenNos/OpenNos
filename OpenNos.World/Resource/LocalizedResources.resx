@@ -346,16 +346,16 @@
     <value>Item is no longer valid</value>
   </data>
   <data name="JOBLEVEL_CHANGED" xml:space="preserve">
-    <value>Job level has been changed!</value>
+    <value>Your job level has been changed!</value>
   </data>
-  <data name="JOB_CHANGED" xml:space="preserve">
-    <value>Job has been changed.</value>
+  <data name="CLASS_CHANGED" xml:space="preserve">
+    <value>Your class has been changed.</value>
   </data>
   <data name="LEAVE_GROUP" xml:space="preserve">
     <value>{0} left the party</value>
   </data>
   <data name="LEVEL_CHANGED" xml:space="preserve">
-    <value>Level has been changed!</value>
+    <value>Your level has been changed!</value>
   </data>
   <data name="LOW_JOB_LVL" xml:space="preserve">
     <value>Joblevel is too low</value>
@@ -712,14 +712,14 @@
   <data name="RESTORE_DIGNITY" xml:space="preserve">
     <value>You've restored some of your dignity</value>
   </data>
-  <data name="DROP_INCREASE" xml:space="preserve">
+  <data name="DROP_RATE_CHANGED" xml:space="preserve">
     <value>Drop rate have been changed!</value>
   </data>
-  <data name="GOLD_INCREASE" xml:space="preserve">
-    <value>Gold drop rate have been changed!</value>
+  <data name="GOLD_RATE_CHANGED" xml:space="preserve">
+    <value>Gold drop rate changed!</value>
   </data>
-  <data name="XP_INCREASE" xml:space="preserve">
-    <value>XP rate have been changed!</value>
+  <data name="XP_RATE_CHANGED" xml:space="preserve">
+    <value>XP rate changed!</value>
   </data>
   <data name="CANT_ATTACK" xml:space="preserve">
     <value>You can not still use</value>
@@ -745,28 +745,28 @@
   <data name="MINILAND_WELCOME_MESSAGE" xml:space="preserve">
     <value>Welcome</value>
   </data>
-  <data name="RATEDROP_NOW" xml:space="preserve">
+  <data name="DROP_RATE_NOW" xml:space="preserve">
     <value>Drop rate</value>
   </data>
   <data name="RATEGOLD_NOW" xml:space="preserve">
     <value>Gold amount drop rate</value>
   </data>
-  <data name="RATEXP_NOW" xml:space="preserve">
+  <data name="XP_RATE_NOW" xml:space="preserve">
     <value>Exp rate </value>
   </data>
   <data name="SP_LEVELUP" xml:space="preserve">
-    <value>The specialist level is increased</value>
+    <value>SP level increased</value>
   </data>
   <data name="FAIRY_LEVELUP" xml:space="preserve">
-    <value>Your {0} have win a level !</value>
+    <value>Your {0} level increased</value>
   </data>
   <data name="JOB_LEVELUP" xml:space="preserve">
-    <value>Job level up !</value>
+    <value>Job level up!</value>
   </data>
   <data name="FAIRYXP_NOW" xml:space="preserve">
-    <value>Rate fairy xp</value>
+    <value>Fairy xp rate</value>
   </data>
-  <data name="FAIRYXP_INCREASE" xml:space="preserve">
-    <value>The fairy rate have been increased</value>
+  <data name="FAIRYXP_RATE_CHANGED" xml:space="preserve">
+    <value>Fairy xp rate changed</value>
   </data>
 </root>

@@ -104,8 +104,10 @@ namespace OpenNos.Import.Console
                     System.Console.WriteLine($"{Language.Instance.GetMessageFromKey("PARSE_MAPS")} [Y/n]");
                     key = System.Console.ReadKey(true);
                     if (key.KeyChar != 'n')
+                    {
                         factory.ImportMaps();
-                    factory.LoadMaps();
+                        factory.LoadMaps();
+                    }
 
                     System.Console.WriteLine($"{Language.Instance.GetMessageFromKey("PARSE_PORTALS")} [Y/n]");
                     key = System.Console.ReadKey(true);
