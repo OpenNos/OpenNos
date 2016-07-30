@@ -1279,12 +1279,12 @@ namespace OpenNos.GameObject
             {
                 if (fairy.ElementRate < 80 && Session.Character.Level <= monsterinfo.Level + 15 && Session.Character.Level >= monsterinfo.Level - 15)
                 {
-                    fairy.XP++;
+                    fairy.XP += ServerManager.FairyXpRate;
                 }
-                t = Session.Character.LevelFairyXp();
-                if (fairy.XP >= t)
+                t = ServersData.LoadFairyXpData(fairy.ElementRate);
+                while (fairy.XP >= t)
                 {
-                    fairy.XP = 0;
+                    fairy.XP -= (int)t;
                     fairy.ElementRate++;
                     Session.Client.SendPacket(Session.Character.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("FAIRY_LEVELUP"), fairy.Item.Name), 10));
                     Session.Client.SendPacket(Session.Character.GeneratePairy());
@@ -1339,12 +1339,6 @@ namespace OpenNos.GameObject
             Session.Client.SendPacket(Session.Character.GenerateLev());
         }
 
-        public int LevelFairyXp()
-        {
-            WearableInstance fairy = EquipmentList.LoadBySlotAndType<WearableInstance>((short)EquipmentType.Fairy, (byte)InventoryType.Equipment);
-
-            return ServersData.FairyXPData[fairy.ElementRate];
-        }
 
         public string GenerateStatInfo()
         {
