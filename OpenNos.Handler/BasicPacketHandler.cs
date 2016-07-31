@@ -652,7 +652,7 @@ namespace OpenNos.Handler
 
                         if (isBlocked)
                         {
-                            Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("GROUP_BLOCKED"), 11));
+                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("GROUP_BLOCKED"), 0));
                         }
                         else
                         {

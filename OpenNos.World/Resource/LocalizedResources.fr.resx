@@ -538,7 +538,7 @@
     <value>Le serveur sera fermé dans {0} secondes.</value>
   </data>
   <data name="SPLEVEL_CHANGED" xml:space="preserve">
-    <value>Le niveau de votre SP a bien été changé.</value>
+    <value>Le niveau de votre carte spécialiste a bien été changé.</value>
   </data>
   <data name="SPUSE_NEEDED" xml:space="preserve">
     <value>Vous devez vous transformer en spécialiste pour accepter les changements de points.</value>
@@ -767,6 +767,6 @@
     <value>Fée Exp : {0}/{1}</value>
   </data>
   <data name="FAIRY_LEVEL_CHANGED" xml:space="preserve">
-    <value>Le niveau de  votre {0} a été modifié !</value>
+    <value>Le niveau de votre {0} a été modifié !</value>
   </data>
 </root>
