@@ -343,7 +343,7 @@
     <value>La durée de cet objet est expirée.</value>
   </data>
   <data name="JOBLEVEL_CHANGED" xml:space="preserve">
-    <value>Ton niveau de métier a augmenté.</value>
+    <value>Ton niveau de métier a été changé !</value>
   </data>
   <data name="CLASS_CHANGED" xml:space="preserve">
     <value>Félicitations. Tu as changé de métier !</value>
@@ -352,7 +352,7 @@
     <value>{0} a quitté le groupe.</value>
   </data>
   <data name="LEVEL_CHANGED" xml:space="preserve">
-    <value>Ton niveau a augmenté.</value>
+    <value>Ton niveau de combat a augmenté.</value>
   </data>
   <data name="LOW_JOB_LVL" xml:space="preserve">
     <value>Votre niveau de métier est trop bas.</value>
@@ -719,7 +719,7 @@
     <value>Tu ne peux pas encore l'utiliser.</value>
   </data>
   <data name="LVL_REQUIRED" xml:space="preserve">
-    <value>{0} niveaux sont nécessaire pour améliorer la carte spécialiste</value>
+    <value>{0} niveaux sont nécessaire pour améliorer la carte spécialiste.</value>
   </data>
   <data name="UPGRADESP_DESTROY" xml:space="preserve">
     <value>La carte spécialiste a été détruite !</value>
@@ -767,15 +767,15 @@
     <value>Fée Exp : {0}/{1}</value>
   </data>
   <data name="FAIRY_LEVEL_CHANGED" xml:space="preserve">
-    <value>Le niveau de votre {0} a été modifié !</value>
+    <value>Le niveau élémentaire de votre {0} a été modifié !</value>
   </data>
   <data name="AMMO_LOADED" xml:space="preserve">
     <value>Munitions rechargées.</value>
   </data>
   <data name="NO_AMMO" xml:space="preserve">
-    <value>Vous n'avez pas de munitions.</value>
+    <value>Tu n'as pas de munitions.</value>
   </data>
   <data name="NO_WEAPON" xml:space="preserve">
-    <value>Vous n'avez pas d'arme.</value>
+    <value>Tu n'as pas d'arme à utiliser.</value>
   </data>
 </root>
