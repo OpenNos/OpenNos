@@ -781,4 +781,10 @@
   <data name="FAIRY_LEVEL_CHANGED" xml:space="preserve">
     <value>Level of your {0} has been changed</value>
   </data>
+  <data name="FAIRYXP_RATE_NOW" xml:space="preserve">
+    <value>Fairy exp rate</value>
+  </data>
+  <data name="GOLD_RATE_NOW" xml:space="preserve">
+    <value>Gold drop amount rate</value>
+  </data>
 </root>

@@ -286,7 +286,6 @@ namespace OpenNos.Handler
                 }
             }
             else
-
                 Session.Client.SendPacket(Session.Character.GenerateSay("$SPLvl SPLEVEL", 10));
         }
 
@@ -299,8 +298,9 @@ namespace OpenNos.Handler
             WearableInstance fairy = Session.Character.EquipmentList.LoadBySlotAndType<WearableInstance>((short)EquipmentType.Fairy, (byte)InventoryType.Equipment);
             if (fairy != null && packetsplit.Length > 2)
             {
-                if (short.TryParse(packetsplit[2], out fairylevel) && fairylevel <= 9999 /*&& fairylevel + fairy.Item.ElementRate <= fairy.Item.MaxElementRate*/)//use if you want to block max fairy level for admin
+                if (short.TryParse(packetsplit[2], out fairylevel) && fairylevel <= 9999) /*&& fairylevel + fairy.Item.ElementRate <= fairy.Item.MaxElementRate*/
                 {
+                    fairylevel -= fairy.Item.ElementRate;
                     fairy.ElementRate = fairylevel;
                     fairy.XP = 0;
                     Session.Client.SendPacket(Session.Character.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("FAIRY_LEVEL_CHANGED"), fairy.Item.Name), 10));
