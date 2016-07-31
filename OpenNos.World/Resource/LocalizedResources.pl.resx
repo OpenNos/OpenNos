@@ -760,4 +760,7 @@
   <data name="FAIRY_LEVEL_CHANGED" xml:space="preserve">
     <value>Poziom twojej wróżki {0} został zmieniony</value>
   </data>
+  <data name="SCROLL_PROTECT_USED" xml:space="preserve">
+    <value>Pergamin ochronna została wykorzystana</value>
+  </data>
 </root>

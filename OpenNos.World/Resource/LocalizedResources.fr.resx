@@ -586,7 +586,7 @@
     <value>L'amélioration a échoué. Heureusement, le parchemin protecteur a préservé l'objet.</value>
   </data>
   <data name="UPGRADE_FIXED" xml:space="preserve">
-    <value>Niveau fixé.</value>
+    <value>Niveau fixé !</value>
   </data>
   <data name="UPGRADE_SUCCESS" xml:space="preserve">
     <value>L'amélioration au niveau suivant a réussi avec succès !</value>
@@ -722,7 +722,7 @@
     <value>{0} niveaux sont nécessaire pour améliorer la carte spécialiste.</value>
   </data>
   <data name="UPGRADESP_DESTROY" xml:space="preserve">
-    <value>La carte spécialiste a été détruite !</value>
+    <value>L'âme de la carte spécialiste est détruite !</value>
   </data>
   <data name="UPGRADESP_FAILED" xml:space="preserve">
     <value>L'amélioration au niveau suivant a échoué !</value>
@@ -777,5 +777,8 @@
   </data>
   <data name="NO_WEAPON" xml:space="preserve">
     <value>Tu n'as pas d'arme à utiliser.</value>
+  </data>
+  <data name="SCROLL_PROTECT_USED" xml:space="preserve">
+    <value>Le parchemin protecteur a été utilisé.</value>
   </data>
 </root>

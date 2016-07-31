@@ -174,4 +174,7 @@
   <data name="DATABASE_NOT_UPTODATE" xml:space="preserve">
     <value>Votre base de donnée n'est pas pas à jour. S'il vous plaît envisager de mettre à jour votre base de données.</value>
   </data>
+  <data name="SCROLL_PROTECT_USED" xml:space="preserve">
+    <value>Le parchemin protecteur a été utilisé.</value>
+  </data>
 </root>
