@@ -235,7 +235,7 @@
     <value>À partir de maintenant, tu débloques les émoticônes.</value>
   </data>
   <data name="EQ_NOT_EMPTY" xml:space="preserve">
-    <value>Votre équipement n'est pas vide.</value>
+    <value>Éliminez l'équipement que vous portez</value>
   </data>
   <data name="EXCHANGE_BLOCKED" xml:space="preserve">
     <value>À partir de maintenant, tu bloques les demandes d'échanges.</value>
@@ -259,10 +259,10 @@
     <value>À partir de maintenant, tu débloques les demandes d'amitiées</value>
   </data>
   <data name="GET_PROTECTION_POWER_1" xml:space="preserve">
-    <value>Tu as obtenu le pouvoir de Ange grâce à l'oeuf de Latheore.</value>
+    <value>Tu as obtenu le pouvoir de l'Ange grâce à l'Oeuf de Latheore.</value>
   </data>
   <data name="GET_PROTECTION_POWER_2" xml:space="preserve">
-    <value>Tu as obtenu le pouvoir du démon grâce à l'oeuf de Latheore.</value>
+    <value>Tu as obtenu le pouvoir du Démon grâce à l'Oeuf de Latheore.</value>
   </data>
   <data name="GOLD_SET" xml:space="preserve">
     <value>Or obtenue !</value>
@@ -292,7 +292,7 @@
     <value>À partir de maintenant, tu débloques les demandes de groupe</value>
   </data>
   <data name="HANDLER_NOT_FOUND" xml:space="preserve">
-    <value>Could not found Handler implementation for Packet with Header {0}</value>
+    <value>Impossible de trouver "Handler" la mise en œuvre pour Packet avec en-tête {0}</value>
   </data>
   <data name="HERO_CHAT_BLOCKED" xml:space="preserve">
     <value>Chat Héros caché.</value>
@@ -373,7 +373,7 @@
     <value>Maximum d'or atteint.</value>
   </data>
   <data name="MESSAGE_RECEIVED" xml:space="preserve">
-    <value>Message reçu {0} on client {1}</value>
+    <value>Message reçu {0} sur le client {1}</value>
   </data>
   <data name="MINI_INV_BLOCKED" xml:space="preserve">
     <value>À partir de maintenant, tu bloques les invitations Mini-Pays</value>
@@ -505,7 +505,7 @@
     <value>Échange refusé.</value>
   </data>
   <data name="REP_CHANGED" xml:space="preserve">
-    <value>Réputation changée.</value>
+    <value>Réputation modifiée !</value>
   </data>
   <data name="SELL_ITEM_VALIDE" xml:space="preserve">
     <value>{0}: vendu &lt;{1} : pièces &gt;</value>
@@ -598,7 +598,7 @@
     <value>Seuls les héros peuvent utiliser des messages de héros.</value>
   </data>
   <data name="WHISPERED_BLOCKED" xml:space="preserve">
-    <value>L'utilisateur a bloqué les messages privés.</value>
+    <value>Ce joueur ne veut pas qu'on lui chuchote des choses.</value>
   </data>
   <data name="WHISPER_BLOCKED" xml:space="preserve">
     <value>À partir de maintenant, tu bloques les chuchotements.</value>
@@ -637,7 +637,7 @@
     <value>Continuer ici? Il est gratuit pour le niveau 20 et plus bas !</value>
   </data>
   <data name="CLIENTSESSION_DISPOSING" xml:space="preserve">
-    <value>La session client est actuellement fermée, les paquets ne sont pas traités.</value>
+    <value>La session du client est actuellement fermée, les paquets ne sont pas traités.</value>
   </data>
   <data name="CONNECTION_LOST" xml:space="preserve">
     <value>La connexion au serveur a été interrompue.</value>
@@ -664,7 +664,7 @@
     <value>{0} Recettes chargées !</value>
   </data>
   <data name="SHOP_ONLY_TRADABLE_ITEMS" xml:space="preserve">
-    <value>Vous ne pouvez vendre cet article.</value>
+    <value>Vous ne pouvez vendre cet objet.</value>
   </data>
   <data name="SKILLS_IN_LOADING" xml:space="preserve">
     <value>Tu peux te transformer une fois que tous les temps de rechargement des compétences sont écoulés.</value>
@@ -689,7 +689,7 @@
   </data>
   <data name="DONE" xml:space="preserve">
     <value>Le joueur a été sanctionné</value>
-    <comment>(Mute commande message)</comment>
+    <comment>(Mute commande message signalant que le joueur a bien été sanctionné)</comment>
   </data>
   <data name="NOT_ENOUGH_CP" xml:space="preserve">
     <value>Vous n'avez pas assez de CP</value>
@@ -734,7 +734,7 @@
     <value>L'amélioration au niveau suivant a été effectuée avec succès.</value>
   </data>
   <data name="MINILAND_WELCOME_MESSAGE" xml:space="preserve">
-    <value>Bienvenue</value>
+    <value>Bienvenue.</value>
   </data>
   <data name="DROP_RATE_NOW" xml:space="preserve">
     <value>Taux de drop </value>
@@ -758,12 +758,15 @@
     <value>Le taux d'expérience des fées a bien été modifié !</value>
   </data>
   <data name="FAIRYXP_RATE_NOW" xml:space="preserve">
-    <value>Taux d'expérience des fées</value>
+    <value>Taux d'expérience des fées </value>
   </data>
   <data name="FAIRYMAX" xml:space="preserve">
     <value>Votre fée a atteint le niveau maximum !</value>
   </data>
   <data name="FAIRYSTAT" xml:space="preserve">
     <value>Fée Exp : {0}/{1}</value>
+  </data>
+  <data name="FAIRY_LEVEL_CHANGED" xml:space="preserve">
+    <value>Le niveau de  votre {0} a été modifié !</value>
   </data>
 </root>
