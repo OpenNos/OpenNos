@@ -271,7 +271,7 @@
     <value>Ce joueur a bloqué les demandes de groupe.</value>
   </data>
   <data name="GROUP_CLOSED" xml:space="preserve">
-    <value>Le groupe a été dissous.</value>
+    <value>Groupe disous.</value>
   </data>
   <data name="GROUP_DENIED" xml:space="preserve">
     <value>La demande de groupe a été refusée.</value>
@@ -773,7 +773,7 @@
     <value>Munitions rechargées.</value>
   </data>
   <data name="NO_AMMO" xml:space="preserve">
-    <value>Tu n'as pas de munitions.</value>
+    <value>Tu n'as pas assez de munitions.</value>
   </data>
   <data name="NO_WEAPON" xml:space="preserve">
     <value>Tu n'as pas d'arme à utiliser.</value>
