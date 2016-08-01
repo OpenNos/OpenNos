@@ -54,7 +54,7 @@ namespace OpenNos.Handler
         public void SpecialZoneHit(string packet)
         {
             PenaltyLogDTO penalty = Session.Account.PenaltyLogs.FirstOrDefault();
-            if (Session.Account.PenaltyLogs.Any(s => s.Penalty == PenaltyType.Muted && s.DateEnd > DateTime.Now))
+            if (Session.Character.IsMuted())
             {
                 if (Session.Character.Gender == 1)
                 {
@@ -300,7 +300,7 @@ namespace OpenNos.Handler
                     Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).Minutes), 12));
                 }
             }
-            if (Session.Account.PenaltyLogs.Any(s => s.Penalty == PenaltyType.Muted && s.DateEnd < DateTime.Now))
+            if (Session.Character.IsMuted())
             {
                 if ((DateTime.Now - Session.Character.LastTransform).TotalSeconds < 3)
                 {

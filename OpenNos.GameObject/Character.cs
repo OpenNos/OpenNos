@@ -225,7 +225,7 @@ namespace OpenNos.GameObject
 
         public bool IsMuted()
         { 
-            return Session.Account.PenaltyLogs.Any(s => s.Penalty == PenaltyType.Muted && s.DateEnd < DateTime.Now);
+            return Session.Account.PenaltyLogs.Any(s => s.Penalty == PenaltyType.Muted && s.DateEnd > DateTime.Now);
         }
 
         public void LearnAdventurerSkill()
