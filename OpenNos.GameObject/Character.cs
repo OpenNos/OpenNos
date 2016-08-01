@@ -1613,6 +1613,18 @@ namespace OpenNos.GameObject
                 if (QuicklistEntries != null)
                     for (int i = QuicklistEntries.Count() - 1; i >= 0; i--)
                         QuicklistEntries.ElementAt(i).Save();
+                foreach (GeneralLog general in Session.Account.GeneralLogs)
+                {
+                    if (!DAOFactory.GeneralLogDAO.LoadByAccount(Session.Account.AccountId).Any(s => s.LogId == general.LogId))
+                        DAOFactory.GeneralLogDAO.Insert(Mapper.DynamicMap<GeneralLogDTO>(general));
+
+                }
+                foreach (PenaltyLog penalty in Session.Account.PenaltyLogs)
+                {
+                    if (!DAOFactory.PenaltyLogDAO.LoadByAccount(Session.Account.AccountId).Any(s => s.PenaltyLogId == penalty.PenaltyLogId))
+                        DAOFactory.PenaltyLogDAO.Insert(Mapper.DynamicMap<PenaltyLogDTO>(penalty));
+
+                }
             }
             catch (Exception e)
             {

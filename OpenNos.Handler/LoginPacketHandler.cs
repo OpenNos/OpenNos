@@ -21,6 +21,7 @@ using OpenNos.ServiceRef.Internal;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Linq;
 
 namespace OpenNos.Handler
 {
@@ -66,8 +67,8 @@ namespace OpenNos.Handler
         [Packet("NoS0575")]
         public void VerifyLogin(string packet)
         {
-            string[] userPacket = packet.Split(' ');
-            UserDTO user = new UserDTO() { Name = userPacket[2], Password = userPacket[3] };
+            string[] packetsplit = packet.Split(' ');
+            UserDTO user = new UserDTO() { Name = packetsplit[2], Password = packetsplit[3] };
             //closed
             bool flag = true;
             if (flag)
@@ -84,42 +85,42 @@ namespace OpenNos.Handler
 
                         if (!ServiceFactory.Instance.CommunicationService.AccountIsConnected(loadedAccount.Name))
                         {
-                            AuthorityType type = loadedAccount.Authority; //0 banned 1 registered 2 user 3 GM
-
-                            switch (type)
+                            AuthorityType type = loadedAccount.Authority;
+                            PenaltyLogDTO penalty = DAOFactory.PenaltyLogDAO.LoadByAccount(loadedAccount.AccountId).FirstOrDefault(s => s.DateEnd < DateTime.Now && s.Penalty == PenaltyType.Banned);
+                            if (penalty != null)
                             {
-                                case AuthorityType.Banned:
-                                    {
-                                        _session.Client.SendPacket($"fail {Language.Instance.GetMessageFromKey("BANNED")}");
-                                    }
-                                    break;
-
-                                case AuthorityType.Unknown:
-                                    {
-                                        _session.Client.SendPacket($"fail {Language.Instance.GetMessageFromKey("NOTVALIDATE")}");
-                                    }
-                                    break;
-
-                                default:
-                                    {
-                                        int newSessionId = SessionFactory.Instance.GenerateSessionId();
-
-                                        DAOFactory.AccountDAO.UpdateLastSessionAndIp(user.Name, newSessionId, _session.Client.RemoteEndPoint.ToString());
-                                        Logger.Log.DebugFormat(Language.Instance.GetMessageFromKey("CONNECTION"), user.Name, newSessionId);
-
-                                        //inform communication service about new player from login server
-                                        try
-                                        {
-                                            ServiceFactory.Instance.CommunicationService.RegisterAccountLogin(user.Name, newSessionId);
-                                        }
-                                        catch (Exception ex)
-                                        {
-                                            Logger.Log.Error("General Error SessionId: " + newSessionId, ex);
-                                        }
-                                        _session.Client.SendPacket(BuildServersPacket(newSessionId));
-                                    }
-                                    break;
+                                _session.Client.SendPacket($"fail {String.Format(Language.Instance.GetMessageFromKey("BANNED"), penalty.Reason, penalty.DateEnd - DateTime.Now)}");
                             }
+                            else
+                                switch (type)
+                                {
+
+                                    case AuthorityType.Unknown:
+                                        {
+                                            _session.Client.SendPacket($"fail {Language.Instance.GetMessageFromKey("NOTVALIDATE")}");
+                                        }
+                                        break;
+
+                                    default:
+                                        {
+                                            int newSessionId = SessionFactory.Instance.GenerateSessionId();
+
+                                            DAOFactory.AccountDAO.UpdateLastSessionAndIp(user.Name, newSessionId, _session.Client.RemoteEndPoint.ToString());
+                                            Logger.Log.DebugFormat(Language.Instance.GetMessageFromKey("CONNECTION"), user.Name, newSessionId);
+
+                                            //inform communication service about new player from login server
+                                            try
+                                            {
+                                                ServiceFactory.Instance.CommunicationService.RegisterAccountLogin(user.Name, newSessionId);
+                                            }
+                                            catch (Exception ex)
+                                            {
+                                                Logger.Log.Error("General Error SessionId: " + newSessionId, ex);
+                                            }
+                                            _session.Client.SendPacket(BuildServersPacket(newSessionId));
+                                        }
+                                        break;
+                                }
                         }
                         else
                         {

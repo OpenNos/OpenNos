@@ -698,7 +698,7 @@
     <value>I was a bad boy, soo i got punished!</value>
   </data>
   <data name="MUTED" xml:space="preserve">
-    <value>You have been muted!</value>
+    <value>You have been muted! Reason: {0} For: {1} days</value>
   </data>
   <data name="MUTE_END" xml:space="preserve">
     <value>Your punishment has ended</value>
@@ -789,5 +789,8 @@
   </data>
   <data name="SCROLL_PROTECT_USED" xml:space="preserve">
     <value>Protector scroll has been used</value>
+  </data>
+  <data name="MUTE_TIME" xml:space="preserve">
+    <value>Punishment duration: {0}</value>
   </data>
 </root>

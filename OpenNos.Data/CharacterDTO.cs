@@ -47,7 +47,6 @@ namespace OpenNos.Data
         public long HeroXp { get; set; }
         public int Hp { get; set; }
         public bool HpBlocked { get; set; }
-        public bool IsMuted { get; set; }
         public byte JobLevel { get; set; }
         public long JobLevelXp { get; set; }
         public byte Level { get; set; }

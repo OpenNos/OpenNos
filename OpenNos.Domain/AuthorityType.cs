@@ -16,9 +16,9 @@ namespace OpenNos.Domain
 {
     public enum AuthorityType : byte
     {
-        Banned = 0,
+        Unknown = 0,
         User = 1,
-        Admin = 2,
-        Unknown = 3
+        Admin = 2
+
     }
 }

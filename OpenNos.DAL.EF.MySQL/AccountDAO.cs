@@ -156,16 +156,6 @@ namespace OpenNos.DAL.EF.MySQL
             }
         }
 
-        public void ToggleBan(long id)
-        {
-            using (var context = DataAccessHelper.CreateContext())
-            {
-                Account Account = context.Account.FirstOrDefault(a => a.AccountId.Equals(id));
-                Account.Authority = Account.Authority == AuthorityType.User ? AuthorityType.Banned : AuthorityType.User;
-                context.SaveChanges();
-            }
-        }
-
         public void UpdateLastSessionAndIp(string name, int session, string ip)
         {
             using (var context = DataAccessHelper.CreateContext())
@@ -194,6 +184,7 @@ namespace OpenNos.DAL.EF.MySQL
                 context.SaveChanges();
             }
         }
+
 
         private AccountDTO Insert(AccountDTO account, OpenNosContext context)
         {

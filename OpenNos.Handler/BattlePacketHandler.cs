@@ -235,7 +235,6 @@ namespace OpenNos.Handler
                     {
                         TargetHit(Convert.ToInt32(packetsplit[2]), Convert.ToInt32(packetsplit[3]), Convert.ToInt32(packetsplit[4]));
                     }
-
             }
         }
 

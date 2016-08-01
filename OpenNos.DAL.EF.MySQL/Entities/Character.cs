@@ -64,7 +64,6 @@ namespace OpenNos.DAL.EF.MySQL
         public int Hp { get; set; }
         public bool HpBlocked { get; set; }
         public virtual ICollection<Inventory> Inventory { get; set; }
-        public bool IsMuted { get; set; }
         public byte JobLevel { get; set; }
         public long JobLevelXp { get; set; }
         public byte Level { get; set; }

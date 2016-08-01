@@ -22,7 +22,11 @@ namespace OpenNos.DAL.Interface
     {
         #region Methods
 
+        GeneralLogDTO Insert(GeneralLogDTO generallog);
+
         IEnumerable<GeneralLogDTO> LoadByLogType(string LogType, Nullable<long> CharacterId);
+
+        IEnumerable<GeneralLogDTO> LoadByAccount(long accountId);
 
         void SetCharIdNull(Nullable<long> CharacterId);
 

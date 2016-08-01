@@ -414,15 +414,39 @@ namespace OpenNos.Handler
                     {
                         if (accountDTO.Password.Equals(EncryptionBase.sha512(loginPacketParts[6])))
                         {
-                            var account = new GameObject.Account()
+                            var account = new Account()
                             {
                                 AccountId = accountDTO.AccountId,
                                 Name = accountDTO.Name,
                                 Password = accountDTO.Password,
                                 Authority = accountDTO.Authority,
-                                LastCompliment = accountDTO.LastCompliment
+                                LastCompliment = accountDTO.LastCompliment,
                             };
-
+                            foreach (PenaltyLogDTO penalty in DAOFactory.PenaltyLogDAO.LoadByAccount(accountDTO.AccountId))
+                            {
+                                account.PenaltyLogs.Add(new PenaltyLog()
+                                {
+                                    AccountId = penalty.AccountId,
+                                    DateEnd = penalty.DateEnd,
+                                    DateStart = penalty.DateStart,
+                                    Reason = penalty.Reason,
+                                    Penalty = penalty.Penalty,
+                                    PenaltyLogId = penalty.PenaltyLogId
+                                });
+                            }
+                            foreach (GeneralLogDTO general in DAOFactory.GeneralLogDAO.LoadByAccount(accountDTO.AccountId))
+                            {
+                                account.GeneralLogs.Add(new GeneralLog()
+                                {
+                                    AccountId = general.AccountId,
+                                    LogData = general.LogData,
+                                    IpAddress = general.IpAddress,
+                                    LogType = general.LogType,
+                                    LogId = general.LogId,
+                                    Timestamp = general.Timestamp,
+                                    CharacterId = general.CharacterId
+                                });
+                            }
                             Session.InitializeAccount(account);
                         }
                         else
@@ -900,25 +924,25 @@ namespace OpenNos.Handler
         [Packet("say")]
         public void Say(string packet)
         {
-            bool? isMuted = ServerManager.Instance.GetProperty<bool?>(Session.Character.CharacterId, "IsMuted");
+            PenaltyLogDTO penalty = Session.Account.PenaltyLogs.FirstOrDefault();
             string[] packetsplit = packet.Split(' ');
             string message = "";
             for (int i = 2; i < packetsplit.Length; i++)
                 message += packetsplit[i] + " ";
 
-            if (isMuted == true)
+            if (Session.Account.PenaltyLogs.Any(s => s.Penalty == PenaltyType.Muted && s.DateEnd > DateTime.Now))
             {
                 if (Session.Character.Gender == 1)
                 {
                     Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MUTED_FEMALE"), 1));
-                    //Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MUTE_TIME"), 11));// add when time for mute is done
-                    //Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MUTE_TIME"), 12));
+                    Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), penalty.DateEnd - DateTime.Now), 11));
+                    Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), penalty.DateEnd - DateTime.Now), 12));
                 }
                 else
                 {
                     Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MUTED_MALE"), 1));
-                    //Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MUTE_TIME"), 11));
-                    //Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MUTE_TIME"), 12));
+                    Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), penalty.DateEnd - DateTime.Now), 11));
+                    Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), penalty.DateEnd - DateTime.Now), 12));
                 }
             }
             else

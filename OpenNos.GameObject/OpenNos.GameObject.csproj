@@ -59,10 +59,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Account.cs" />
     <Compile Include="CellonOption.cs" />
     <Compile Include="Combo.cs" />
     <Compile Include="GeneralLog.cs" />
-    <Compile Include="Account.cs" />
     <Compile Include="Character.cs" />
     <Compile Include="ExchangeInfo.cs" />
     <Compile Include="Item\FoodItem.cs" />
@@ -87,6 +87,7 @@
     <Compile Include="NpcMonsterSkill.cs" />
     <Compile Include="Map\MapNpc.cs" />
     <Compile Include="Networking\Npc\NRunHandler.cs" />
+    <Compile Include="PenaltyLog.cs" />
     <Compile Include="QuicklistEntry.cs" />
     <Compile Include="Recipe.cs" />
     <Compile Include="RecipeItem.cs" />

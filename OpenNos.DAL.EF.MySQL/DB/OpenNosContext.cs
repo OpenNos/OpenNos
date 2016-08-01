@@ -94,6 +94,7 @@ namespace OpenNos.DAL.EF.MySQL.DB
             modelBuilder.Entity<Account>()
                 .HasMany(e => e.PenaltyLog)
                 .WithRequired(e => e.Account)
+                .HasForeignKey(e => e.AccountId)
                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<Account>()

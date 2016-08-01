@@ -13,6 +13,7 @@
  */
 
 using OpenNos.Data;
+using OpenNos.Domain;
 using System.Collections.Generic;
 
 namespace OpenNos.DAL.Interface

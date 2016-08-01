@@ -3,7 +3,7 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class Hera : DbMigration
+    public partial class Aphrodite : DbMigration
     {
         public override void Up()
         {
@@ -50,7 +50,6 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
                         HeroXp = c.Long(nullable: false),
                         Hp = c.Int(nullable: false),
                         HpBlocked = c.Boolean(nullable: false),
-                        IsMuted = c.Boolean(nullable: false),
                         JobLevel = c.Byte(nullable: false),
                         JobLevelXp = c.Long(nullable: false),
                         Level = c.Byte(nullable: false),
@@ -641,7 +640,7 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
                         DateEnd = c.DateTime(nullable: false, precision: 0),
                         DateStart = c.DateTime(nullable: false, precision: 0),
                         Reason = c.String(maxLength: 255, storeType: "nvarchar"),
-                        Penatly = c.Byte(nullable: false),
+                        Penalty = c.Byte(nullable: false),
                     })
                 .PrimaryKey(t => t.PenaltyLogId)
                 .ForeignKey("dbo.Account", t => t.AccountId)

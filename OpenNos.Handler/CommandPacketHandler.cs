@@ -84,20 +84,47 @@ namespace OpenNos.Handler
         {
             Logger.Debug(packet, Session.SessionId);
             string[] packetsplit = packet.Split(' ');
-            if (packetsplit.Length > 2)
+            string reason = packetsplit[3];
+            byte duration;
+            if (packetsplit.Length == 3)
             {
                 ServerManager.Instance.Kick(packetsplit[2]);
                 if (DAOFactory.CharacterDAO.LoadByName(packetsplit[2]) != null)
                 {
-                    DAOFactory.AccountDAO.ToggleBan(DAOFactory.CharacterDAO.LoadByName(packetsplit[2]).AccountId);
+                    DAOFactory.PenaltyLogDAO.Insert(new PenaltyLogDTO()
+                    {
+                        AccountId = DAOFactory.CharacterDAO.LoadByName(packetsplit[2]).AccountId,
+                        Reason = reason,
+                        Penalty = PenaltyType.Banned,
+                        DateStart = DateTime.Now,
+                        DateEnd = DateTime.Now.AddYears(15)
+                    });
                     Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
-
                 }
                 else Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("USER_NOT_FOUND"), 10));
             }
+            if (packetsplit.Length > 4)
+            {
+                if (byte.TryParse(packetsplit[4], out duration))
+                {
+                    ServerManager.Instance.Kick(packetsplit[2]);
+                    if (DAOFactory.CharacterDAO.LoadByName(packetsplit[2]) != null)
+                    {
+                        DAOFactory.PenaltyLogDAO.Insert(new PenaltyLogDTO()
+                        {
+                            AccountId = DAOFactory.CharacterDAO.LoadByName(packetsplit[2]).AccountId,
+                            Reason = reason,
+                            Penalty = PenaltyType.Banned,
+                            DateStart = DateTime.Now,
+                            DateEnd = DateTime.Now.AddDays(duration)
+                        });
+                        Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
+                    }
+                    else Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("USER_NOT_FOUND"), 10));
+                }
+            }
             else
-                Session.Client.SendPacket(Session.Character.GenerateSay("$Ban CHARACTERNAME", 10));
-            //Session.Client.SendPacket(Session.Character.GenerateSay("$Ban CHARACTERNAME REASON TIME", 10));
+                Session.Client.SendPacket(Session.Character.GenerateSay("$Ban CHARACTERNAME REASON TIME", 10));
         }
         [Packet("$Mute")]
         public void Mute(string packet)
@@ -106,32 +133,75 @@ namespace OpenNos.Handler
             string[] packetsplit = packet.Split(' ');
 
             string name = packetsplit[2];
-            long? id = ServerManager.Instance.GetProperty<long?>(name, "CharacterId");
-            bool? isMuted = ServerManager.Instance.GetProperty<bool?>(name, "IsMuted");
-
-            if (packetsplit.Length > 2)
+            string reason = packetsplit[3];
+            byte duration;
+            ClientSession session = ServerManager.Instance.Sessions.FirstOrDefault(s => s.Character?.Name == name);
+            if (packetsplit.Length == 4)
             {
-                if (id != null)
+                if (session != null)
                 {
+                    session.Account.PenaltyLogs.Add(new PenaltyLog()
+                    {
+                        AccountId = DAOFactory.CharacterDAO.LoadByName(packetsplit[2]).AccountId,
+                        Reason = reason,
+                        Penalty = PenaltyType.Muted,
+                        DateStart = DateTime.Now,
+                        DateEnd = DateTime.Now.AddDays(1)
+                    });
                     Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
+                    ServerManager.Instance.Broadcast(Session, Session.Character.GenerateInfo(String.Format(Language.Instance.GetMessageFromKey("MUTED"), reason, 1)), ReceiverType.OnlySomeone, name);
 
-                    if (isMuted == false)
+                }
+                else if (DAOFactory.CharacterDAO.LoadByName(name) != null)
+                {
+                    DAOFactory.PenaltyLogDAO.Insert(new PenaltyLogDTO()
                     {
-                        ServerManager.Instance.Broadcast(Session, Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("MUTED")), ReceiverType.OnlySomeone, "", (long)id);
-                        ServerManager.Instance.SetProperty((long)id, "IsMuted", true);
-                    }
-                    else
-                    {
-                        ServerManager.Instance.Broadcast(Session, Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MUTE_END"), 12), ReceiverType.OnlySomeone, "", (long)id);
-                        ServerManager.Instance.SetProperty((long)id, "IsMuted", false);
-                    }
+                        AccountId = DAOFactory.CharacterDAO.LoadByName(packetsplit[2]).AccountId,
+                        Reason = reason,
+                        Penalty = PenaltyType.Muted,
+                        DateStart = DateTime.Now,
+                        DateEnd = DateTime.Now.AddDays(1)
+                    });
+                    Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
+                    ServerManager.Instance.Broadcast(Session, Session.Character.GenerateInfo(String.Format(Language.Instance.GetMessageFromKey("MUTED"), reason, 1)), ReceiverType.OnlySomeone, name);
                 }
                 else Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("USER_NOT_FOUND"), 10));
-
+            }
+            else if (packetsplit.Length > 4)
+            {
+                if (byte.TryParse(packetsplit[4], out duration))
+                {
+                    if (session != null)
+                    {
+                        session.Account.PenaltyLogs.Add(new PenaltyLog()
+                        {
+                            AccountId = DAOFactory.CharacterDAO.LoadByName(packetsplit[2]).AccountId,
+                            Reason = reason,
+                            Penalty = PenaltyType.Muted,
+                            DateStart = DateTime.Now,
+                            DateEnd = DateTime.Now.AddDays(duration)
+                        });
+                        Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
+                        ServerManager.Instance.Broadcast(Session, Session.Character.GenerateInfo(String.Format(Language.Instance.GetMessageFromKey("MUTED"), reason, duration)), ReceiverType.OnlySomeone, name);
+                    }
+                    else if (DAOFactory.CharacterDAO.LoadByName(name) != null)
+                    {
+                        DAOFactory.PenaltyLogDAO.Insert(new PenaltyLogDTO()
+                        {
+                            AccountId = DAOFactory.CharacterDAO.LoadByName(packetsplit[2]).AccountId,
+                            Reason = reason,
+                            Penalty = PenaltyType.Muted,
+                            DateStart = DateTime.Now,
+                            DateEnd = DateTime.Now.AddDays(duration)
+                        });
+                        Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
+                        ServerManager.Instance.Broadcast(Session, Session.Character.GenerateInfo(String.Format(Language.Instance.GetMessageFromKey("MUTED"), reason, duration)), ReceiverType.OnlySomeone, name);
+                    }
+                    else Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("USER_NOT_FOUND"), 10));
+                }
             }
             else
-                Session.Client.SendPacket(Session.Character.GenerateSay("$Mute CHARACTERNAME", 10));
-            //Session.Client.SendPacket(Session.Character.GenerateSay("$Mute CHARACTERNAME REASON TIME", 10));
+                Session.Client.SendPacket(Session.Character.GenerateSay("$Mute CHARACTERNAME REASON TIME", 10));
         }
 
         [Packet("$ChangeClass")]
@@ -345,10 +415,10 @@ namespace OpenNos.Handler
             Session.Client.SendPacket(Session.Character.GenerateSay("$Effect EFFECTID", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$Resize SIZE", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$PlayMusic MUSIC", 6));
-            Session.Client.SendPacket(Session.Character.GenerateSay("$Ban CHARACTERNAME", 6));
-            //Session.Client.SendPacket(Session.Character.GenerateSay("$Ban CHARACTERNAME REASON TIME", 6));
-            Session.Client.SendPacket(Session.Character.GenerateSay("$Mute CHARACTERNAME", 6));
-            //Session.Client.SendPacket(Session.Character.GenerateSay("$Mute CHARACTERNAME REASON TIME", 6));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$Ban CHARACTERNAME REASON", 6));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$Ban CHARACTERNAME REASON TIME", 6));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$Mute CHARACTERNAME REASON", 6));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$Mute CHARACTERNAME REASON TIME", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$Invisible", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$Position", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID", 6));
@@ -1032,7 +1102,7 @@ namespace OpenNos.Handler
                 }
             }
         }
-        
+
 
         private void DeleteItem(byte type, short slot)
         {

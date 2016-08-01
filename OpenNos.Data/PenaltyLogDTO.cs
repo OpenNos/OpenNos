@@ -24,7 +24,7 @@ namespace OpenNos.Data
         public DateTime DateEnd { get; set; }
         public DateTime DateStart { get; set; }
         public string Reason { get; set; }
-        public PenaltyType Penatly { get; set; }
+        public PenaltyType Penalty { get; set; }
 
     }
 }

@@ -12,26 +12,17 @@
  * GNU General Public License for more details.
  */
 
-namespace OpenNos.DAL.EF.MySQL
+using OpenNos.Data;
+
+namespace OpenNos.GameObject
 {
-    using System;
-    using Domain;
-    using System.ComponentModel.DataAnnotations;
-    using System.ComponentModel.DataAnnotations.Schema;
-
-    public class PenaltyLog
+    public class PenaltyLog : PenaltyLogDTO
     {
-        #region Properties
+        #region Instantiation
 
-        [Key]
-        public int PenaltyLogId { get; set; }
-        public long AccountId{get;set;}
-        public DateTime DateEnd { get; set; }
-        public DateTime DateStart { get; set; }
-        [MaxLength(255)]
-        public string Reason { get; set; }
-        public PenaltyType Penalty { get; set; }
-        public virtual Account Account { get; set; }
+        public PenaltyLog()
+        {
+        }
 
         #endregion
     }

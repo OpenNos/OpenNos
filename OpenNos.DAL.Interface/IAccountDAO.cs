@@ -14,6 +14,7 @@
 
 using OpenNos.Data;
 using OpenNos.Data.Enums;
+using OpenNos.Domain;
 using System;
 
 namespace OpenNos.DAL.Interface
@@ -33,8 +34,6 @@ namespace OpenNos.DAL.Interface
         AccountDTO LoadBySessionId(int sessionId);
 
         void LogIn(string name);
-
-        void ToggleBan(long id);
 
         void UpdateLastSessionAndIp(string name, int session, string ip);
 

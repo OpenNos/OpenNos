@@ -16,6 +16,8 @@ using AutoMapper;
 using OpenNos.DAL.EF.MySQL.Helpers;
 using OpenNos.DAL.Interface;
 using OpenNos.Data;
+using OpenNos.Domain;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -75,7 +77,6 @@ namespace OpenNos.DAL.EF.MySQL
                 return _mapper.Map<PenaltyLogDTO>(context.PenaltyLog.FirstOrDefault(s => s.PenaltyLogId.Equals(penaltylogId)));
             }
         }
-
         #endregion
     }
 }

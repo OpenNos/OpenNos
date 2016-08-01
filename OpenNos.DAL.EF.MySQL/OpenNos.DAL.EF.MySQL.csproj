@@ -109,9 +109,9 @@
     <Compile Include="Entities\NpcMonsterskill.cs" />
     <Compile Include="MapTypeDAO.cs" />
     <Compile Include="MapTypeMapDAO.cs" />
-    <Compile Include="Migrations\201607302014260_Hera.cs" />
-    <Compile Include="Migrations\201607302014260_Hera.Designer.cs">
-      <DependentUpon>201607302014260_Hera.cs</DependentUpon>
+    <Compile Include="Migrations\201608011137016_Aphrodite.cs" />
+    <Compile Include="Migrations\201608011137016_Aphrodite.Designer.cs">
+      <DependentUpon>201608011137016_Aphrodite.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="NpcMonsterSkillDAO.cs" />
@@ -191,8 +191,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201607302014260_Hera.resx">
-      <DependentUpon>201607302014260_Hera.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201608011137016_Aphrodite.resx">
+      <DependentUpon>201608011137016_Aphrodite.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

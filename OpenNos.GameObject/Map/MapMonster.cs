@@ -81,7 +81,7 @@ namespace OpenNos.GameObject
             NpcMonster monsterinfo = ServerManager.GetNpc(this.MonsterVNum);
             if (monsterinfo != null && Alive)
                 return $"in 3 {MonsterVNum} {MapMonsterId} {MapX} {MapY} {Position} {(int)(((float)CurrentHp / (float)monsterinfo.MaxHP) * 100)} {(int)(((float)CurrentMp / (float)monsterinfo.MaxMP) * 100)} 0 0 0 -1 1 0 -1 - 0 -1 0 0 0 0 0 0 0 0";
-            else return "";
+            else return String.Empty;
         }
 
         internal void MonsterLife()
