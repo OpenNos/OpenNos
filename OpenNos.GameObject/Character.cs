@@ -117,7 +117,7 @@ namespace OpenNos.GameObject
         {
             get
             {
-                return ((ExchangeInfo != null && ExchangeInfo?.ExchangeList.Count() != 0) || Speed == 0);
+                return (ExchangeInfo != null || Speed == 0);
             }
         }
 
