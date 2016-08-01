@@ -62,6 +62,7 @@ namespace OpenNos.Handler
                     ServerManager.Instance.Broadcast(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MUTED_FEMALE"), 1));
                     Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).Minutes), 11));
                     Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).Minutes), 12));
+                    return;
                 }
                 else
                 {
@@ -69,14 +70,14 @@ namespace OpenNos.Handler
                     ServerManager.Instance.Broadcast(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MUTED_MALE"), 1));
                     Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).Minutes), 11));
                     Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).Minutes), 12));
+                    return;
                 }
             }
             Logger.Debug(packet, Session.SessionId);
             string[] packetsplit = packet.Split(' ');
             ushort damage = 0;
             int hitmode = 0;
-            if (Session.Character.IsMuted())
-            {
+          
                 if ((DateTime.Now - Session.Character.LastTransform).TotalSeconds < 3)
                 {
                     Session.Client.SendPacket($"cancel 0 0");
@@ -105,7 +106,7 @@ namespace OpenNos.Handler
                             }
                         }
                     }
-            }
+            
         }
 
         public void TargetHit(int castingId, int targetObject, int targetId)
@@ -243,7 +244,7 @@ namespace OpenNos.Handler
         {
             Logger.Debug(packet, Session.SessionId);
             PenaltyLogDTO penalty = Session.Account.PenaltyLogs.FirstOrDefault();
-            if (Session.Account.PenaltyLogs.Any(s => s.Penalty == PenaltyType.Muted && s.DateEnd > DateTime.Now))
+            if (Session.Character.IsMuted())
             {
                 if (Session.Character.Gender == 1)
                 {
@@ -257,11 +258,11 @@ namespace OpenNos.Handler
                     Session.Client.SendPacket($"cancel 0 0");
                     ServerManager.Instance.Broadcast(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MUTED_MALE"), 1));
                     Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).Minutes), 11));
-                    Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).Minutes), 12));
+                    Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).Minutes), 12));  
                 }
+                return;
             }
-            if (Session.Character.IsMuted())
-            {
+           
                 if (Session.Character.CanFight)
                 {
                     string[] packetsplit = packet.Split(' ');
@@ -275,7 +276,7 @@ namespace OpenNos.Handler
                         {
                             TargetHit(Convert.ToInt32(packetsplit[2]), Convert.ToInt32(packetsplit[3]), Convert.ToInt32(packetsplit[4]));
                         }
-                }
+                
             }
         }
 
@@ -283,7 +284,7 @@ namespace OpenNos.Handler
         public void UseZonesSkill(string packet)
         {
             PenaltyLogDTO penalty = Session.Account.PenaltyLogs.FirstOrDefault();
-            if (Session.Account.PenaltyLogs.Any(s => s.Penalty == PenaltyType.Muted && s.DateEnd > DateTime.Now))
+            if (Session.Character.IsMuted())
             {
                 if (Session.Character.Gender == 1)
                 {
@@ -300,7 +301,7 @@ namespace OpenNos.Handler
                     Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).Minutes), 12));
                 }
             }
-            if (Session.Character.IsMuted())
+            else
             {
                 if ((DateTime.Now - Session.Character.LastTransform).TotalSeconds < 3)
                 {

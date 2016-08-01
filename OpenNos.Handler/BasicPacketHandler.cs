@@ -930,7 +930,7 @@ namespace OpenNos.Handler
             for (int i = 2; i < packetsplit.Length; i++)
                 message += packetsplit[i] + " ";
 
-            if (Session.Account.PenaltyLogs.Any(s => s.Penalty == PenaltyType.Muted && s.DateEnd > DateTime.Now))
+            if (Session.Character.IsMuted())
             {
                 if (Session.Character.Gender == 1)
                 {
