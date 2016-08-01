@@ -649,16 +649,10 @@
     <value>Vous avez perdu {0} dignité.</value>
   </data>
   <data name="MUTED" xml:space="preserve">
-    <value>Vous avez été sanctionné.</value>
+    <value>Vous avez été sanctionné ! </value>
   </data>
   <data name="MUTE_END" xml:space="preserve">
     <value>La sanction est terminée.</value>
-  </data>
-  <data name="MUTE_FEMALE" xml:space="preserve">
-    <value>&lt;&lt; Je subis une sanction... &gt;&gt;</value>
-  </data>
-  <data name="MUTE_MALE" xml:space="preserve">
-    <value>&lt;&lt; Je subis une sanction... &gt;&gt;</value>
   </data>
   <data name="RECIPES_LOADED" xml:space="preserve">
     <value>{0} Recettes chargées !</value>
@@ -780,5 +774,14 @@
   </data>
   <data name="SCROLL_PROTECT_USED" xml:space="preserve">
     <value>Le parchemin protecteur a été utilisé.</value>
+  </data>
+  <data name="MUTED_FEMALE" xml:space="preserve">
+    <value>&lt;&lt;Je subis une pénalité.&gt;&gt;</value>
+  </data>
+  <data name="MUTED_MALE" xml:space="preserve">
+    <value>&lt;&lt;Je subis une pénalité.&gt;&gt;</value>
+  </data>
+  <data name="MUTE_TIME" xml:space="preserve">
+    <value>Délai de pénalité restant : {0}</value>
   </data>
 </root>
