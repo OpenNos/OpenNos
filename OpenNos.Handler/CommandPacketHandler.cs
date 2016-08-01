@@ -86,26 +86,13 @@ namespace OpenNos.Handler
             string[] packetsplit = packet.Split(' ');
             string reason = packetsplit[3];
             byte duration;
-            if (packetsplit.Length == 3)
+            if (packetsplit.Length >= 4)
             {
-                ServerManager.Instance.Kick(packetsplit[2]);
-                if (DAOFactory.CharacterDAO.LoadByName(packetsplit[2]) != null)
-                {
-                    DAOFactory.PenaltyLogDAO.Insert(new PenaltyLogDTO()
-                    {
-                        AccountId = DAOFactory.CharacterDAO.LoadByName(packetsplit[2]).AccountId,
-                        Reason = reason,
-                        Penalty = PenaltyType.Banned,
-                        DateStart = DateTime.Now,
-                        DateEnd = DateTime.Now.AddYears(15)
-                    });
-                    Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
-                }
-                else Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("USER_NOT_FOUND"), 10));
-            }
-            if (packetsplit.Length > 4)
-            {
-                if (byte.TryParse(packetsplit[4], out duration))
+                if (packetsplit.Length == 4)
+                    duration = 1;
+                else
+                    byte.TryParse(packetsplit[4], out duration);
+                if (duration != 0)
                 {
                     ServerManager.Instance.Kick(packetsplit[2]);
                     if (DAOFactory.CharacterDAO.LoadByName(packetsplit[2]) != null)
@@ -136,40 +123,13 @@ namespace OpenNos.Handler
             string reason = packetsplit[3];
             byte duration;
             ClientSession session = ServerManager.Instance.Sessions.FirstOrDefault(s => s.Character?.Name == name);
-            if (packetsplit.Length == 4)
+             if (packetsplit.Length >= 4)
             {
-                if (session != null)
-                {
-                    session.Account.PenaltyLogs.Add(new PenaltyLog()
-                    {
-                        AccountId = DAOFactory.CharacterDAO.LoadByName(packetsplit[2]).AccountId,
-                        Reason = reason,
-                        Penalty = PenaltyType.Muted,
-                        DateStart = DateTime.Now,
-                        DateEnd = DateTime.Now.AddHours(1)
-                    });
-                    Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
-                    ServerManager.Instance.Broadcast(Session, Session.Character.GenerateInfo(String.Format(Language.Instance.GetMessageFromKey("MUTED"), reason, 1)), ReceiverType.OnlySomeone, name);
-
-                }
-                else if (DAOFactory.CharacterDAO.LoadByName(name) != null)
-                {
-                    DAOFactory.PenaltyLogDAO.Insert(new PenaltyLogDTO()
-                    {
-                        AccountId = DAOFactory.CharacterDAO.LoadByName(packetsplit[2]).AccountId,
-                        Reason = reason,
-                        Penalty = PenaltyType.Muted,
-                        DateStart = DateTime.Now,
-                        DateEnd = DateTime.Now.AddHours(1)
-                    });
-                    Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
-                    ServerManager.Instance.Broadcast(Session, Session.Character.GenerateInfo(String.Format(Language.Instance.GetMessageFromKey("MUTED"), reason, 1)), ReceiverType.OnlySomeone, name);
-                }
-                else Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("USER_NOT_FOUND"), 10));
-            }
-            else if (packetsplit.Length > 4)
-            {
-                if (byte.TryParse(packetsplit[4], out duration))
+                if (packetsplit.Length == 4)
+                    duration = 1;
+                else
+                    byte.TryParse(packetsplit[4], out duration);
+                if(duration !=0)
                 {
                     if (session != null)
                     {
