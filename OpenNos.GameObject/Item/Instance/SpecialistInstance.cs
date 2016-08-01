@@ -202,33 +202,33 @@ namespace OpenNos.GameObject
             }
             if (this.SpStoneUpgrade > 99)
                 return;
-            if (this.SpStoneUpgrade > 80)
+            else if (this.SpStoneUpgrade > 80)
             {
                 upmode = 5;
             }
-            if (this.SpStoneUpgrade > 60)
+            else if(this.SpStoneUpgrade > 60)
             {
                 upmode = 4;
             }
-            if (this.SpStoneUpgrade > 40)
+            else if(this.SpStoneUpgrade > 40)
             {
                 upmode = 3;
             }
-            if (this.SpStoneUpgrade > 20)
+            else if(this.SpStoneUpgrade > 20)
             {
                 upmode = 2;
             }
 
             if (this.IsFixed)
                 return;
-            if (Session.Character.Gold < goldprice[upmode])
+            if (Session.Character.Gold < goldprice[upmode - 1])
                 return;
-            if (Session.Character.InventoryList.CountItem(stonevnum) < stoneprice[upmode])
+            if (Session.Character.InventoryList.CountItem(stonevnum) < stoneprice[upmode - 1])
                 return;
 
             Random r = new Random();
             int rnd = r.Next(100);
-            if (rnd <= upsuccess[upmode])
+            if (rnd <= upsuccess[upmode - 1])
             {
                 byte type = (byte)r.Next(16), count = 1;
                 if (upmode == 4)
@@ -297,9 +297,9 @@ namespace OpenNos.GameObject
                 Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("PERFECTSP_FAILURE"), 11));
                 Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("PERFECTSP_FAILURE"), 0));
             }
-            Session.Character.Gold = Session.Character.Gold - goldprice[upmode];
+            Session.Character.Gold = Session.Character.Gold - goldprice[upmode - 1];
             Session.Client.SendPacket(Session.Character.GenerateGold());
-            Session.Character.InventoryList.RemoveItemAmount(stonevnum, stoneprice[upmode]);
+            Session.Character.InventoryList.RemoveItemAmount(stonevnum, stoneprice[upmode - 1]);
             Session.Character.GenerateStartupInventory();
             Session.Client.SendPacket("shop_end 1");
         }
