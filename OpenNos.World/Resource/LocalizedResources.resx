@@ -634,7 +634,7 @@
   <data name="WELCOME_MUSIC_INFO" xml:space="preserve">
     <value>Spring^Melody</value>
   </data>
-  <data name="WHISPERED_BLOCKED" xml:space="preserve">
+  <data name="USER_WHISPER_BLOCKED" xml:space="preserve">
     <value>User has blocked private messages</value>
   </data>
   <data name="WHISPER_BLOCKED" xml:space="preserve">

@@ -597,7 +597,7 @@
   <data name="USER_NOT_HERO" xml:space="preserve">
     <value>Seuls les héros peuvent utiliser des messages de héros.</value>
   </data>
-  <data name="WHISPERED_BLOCKED" xml:space="preserve">
+  <data name="USER_WHISPER_BLOCKED" xml:space="preserve">
     <value>L'utilisateur a bloqué les messages privés.</value>
   </data>
   <data name="WHISPER_BLOCKED" xml:space="preserve">

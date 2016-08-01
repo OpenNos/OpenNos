@@ -615,7 +615,7 @@
   <data name="USER_NOT_HERO" xml:space="preserve">
     <value>Solo gli eroi possono utilizzare questo tipo di messaggio.</value>
   </data>
-  <data name="WHISPERED_BLOCKED" xml:space="preserve">
+  <data name="USER_WHISPER_BLOCKED" xml:space="preserve">
     <value>L'altro giocatore ha la chat privata bloccata</value>
   </data>
   <data name="WHISPER_BLOCKED" xml:space="preserve">

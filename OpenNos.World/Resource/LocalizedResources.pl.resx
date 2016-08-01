@@ -630,7 +630,7 @@
   <data name="WELCOME_MUSIC_INFO" xml:space="preserve">
     <value>Wiosenna Melodia</value>
   </data>
-  <data name="WHISPERED_BLOCKED" xml:space="preserve">
+  <data name="USER_WHISPER_BLOCKED" xml:space="preserve">
     <value>Uzytkownik zablokowal prywatne wiadomości</value>
   </data>
   <data name="WHISPER_BLOCKED" xml:space="preserve">

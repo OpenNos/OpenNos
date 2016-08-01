@@ -12,6 +12,9 @@
  * GNU General Public License for more details.
  */
 
+using OpenNos.Core;
+using System;
+
 namespace OpenNos.GameObject
 {
     public class BoxItem : Item
@@ -20,6 +23,12 @@ namespace OpenNos.GameObject
 
         public override void Use(ClientSession Session, ref Inventory Inv)
         {
+            switch (Effect)
+            {
+                default:
+                    Logger.Log.Warn(String.Format(Language.Instance.GetMessageFromKey("NO_HANDLER_ITEM"), this.GetType().ToString()));
+                    break;
+            }
         }
 
         #endregion

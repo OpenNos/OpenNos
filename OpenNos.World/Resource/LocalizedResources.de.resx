@@ -600,7 +600,7 @@
   <data name="USER_NOT_HERO" xml:space="preserve">
     <value>Nur Helden dürfen die Heldennachrichten benutzen.</value>
   </data>
-  <data name="WHISPERED_BLOCKED" xml:space="preserve">
+  <data name="USER_WHISPER_BLOCKED" xml:space="preserve">
     <value>Der Kontakt will nicht angeflüstert werden.</value>
   </data>
   <data name="WHISPER_BLOCKED" xml:space="preserve">
