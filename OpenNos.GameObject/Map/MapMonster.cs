@@ -123,7 +123,7 @@ namespace OpenNos.GameObject
                     MoveFrequent = 1;
                 if (IsMoving)
                 {
-                    if (path.Count > 0)
+                    if (path.Where(s=>s !=null).ToList().Count > 0)//fix a path problem
                     {
                         if ((DateTime.Now - LastMove).TotalSeconds > 1.0 / monster.Speed)
                         {

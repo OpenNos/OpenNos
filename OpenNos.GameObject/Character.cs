@@ -1537,7 +1537,8 @@ namespace OpenNos.GameObject
             IEnumerable<CharacterSkillDTO> characterskillDTO = DAOFactory.CharacterSkillDAO.LoadByCharacterId(CharacterId);
             foreach (CharacterSkillDTO characterskill in characterskillDTO.OrderBy(s => s.SkillVNum))
             {
-                Skills.Add(Mapper.DynamicMap<CharacterSkill>(characterskill));
+                if (Skills.FirstOrDefault(s => s.SkillVNum == characterskill.SkillVNum) == null)
+                    Skills.Add(Mapper.DynamicMap<CharacterSkill>(characterskill));
             }
         }
 

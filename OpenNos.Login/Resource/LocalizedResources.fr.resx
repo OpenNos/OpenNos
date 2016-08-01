@@ -121,7 +121,7 @@
     <value>Cet ID est déjà utilisé.</value>
   </data>
   <data name="BANNED" xml:space="preserve">
-    <value>Échec. Votre compte à été banni. Veuillez contactez l'équipe du jeu.</value>
+    <value>Échec. Votre compte à été banni. Veuillez contacter l'équipe du jeu.</value>
   </data>
   <data name="CLIENT_CLOSE" xml:space="preserve">
     <value>Connexion fermée par le client !</value>
@@ -173,5 +173,8 @@
   </data>
   <data name="DATABASE_NOT_UPTODATE" xml:space="preserve">
     <value>Votre base de donnée n'est pas pas à jour. S'il vous plaît envisager de mettre à jour votre base de données.</value>
+  </data>
+  <data name="SCROLL_PROTECT_USED" xml:space="preserve">
+    <value>Le parchemin protecteur a été utilisé.</value>
   </data>
 </root>

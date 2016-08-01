@@ -787,4 +787,7 @@
   <data name="GOLD_RATE_NOW" xml:space="preserve">
     <value>Gold drop amount rate</value>
   </data>
+  <data name="SCROLL_PROTECT_USED" xml:space="preserve">
+    <value>Protector scroll has been used</value>
+  </data>
 </root>

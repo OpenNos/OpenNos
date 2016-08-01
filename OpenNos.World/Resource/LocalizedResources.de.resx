@@ -729,4 +729,7 @@
   <data name="FAIRYSTAT" xml:space="preserve">
     <value />
   </data>
+  <data name="SCROLL_PROTECT_USED" xml:space="preserve">
+    <value />
+  </data>
 </root>

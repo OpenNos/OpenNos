@@ -187,24 +187,24 @@
     <value>Voulez-vous analyser les téléporteurs ?</value>
   </data>
   <data name="PORTALS_PARSED" xml:space="preserve">
-    <value>{0} Portails analaysés</value>
+    <value>{0} Portails analaysés !</value>
   </data>
   <data name="RECIPES_PARSED" xml:space="preserve">
-    <value>{0} Recettes analysées</value>
+    <value>{0} Recettes analysées !</value>
   </data>
   <data name="SHOPITEMS_PARSED" xml:space="preserve">
-    <value>{0} Magasins d'objets analysés</value>
+    <value>{0} Magasins d'objets analysés !</value>
   </data>
   <data name="SHOPSKILLS_PARSED" xml:space="preserve">
-    <value>{0} Magasins de compétence analysés</value>
+    <value>{0} Magasins de compétence analysés !</value>
   </data>
   <data name="SHOPS_PARSED" xml:space="preserve">
-    <value>{0} Magasins analysés</value>
+    <value>{0} Magasins analysés ! </value>
   </data>
   <data name="SKILLS_PARSED" xml:space="preserve">
-    <value>{0} Coméptences analysées</value>
+    <value>{0} Coméptences analysées !</value>
   </data>
   <data name="TELEPORTERS_PARSED" xml:space="preserve">
-    <value>{0} Téléporteurs analysés</value>
+    <value>{0} Téléporteurs analysés !</value>
   </data>
 </root>
