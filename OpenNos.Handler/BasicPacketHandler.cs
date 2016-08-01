@@ -900,14 +900,29 @@ namespace OpenNos.Handler
         [Packet("say")]
         public void Say(string packet)
         {
+            bool? isMuted = ServerManager.Instance.GetProperty<bool?>(Session.Character.CharacterId, "IsMuted");
             string[] packetsplit = packet.Split(' ');
             string message = "";
             for (int i = 2; i < packetsplit.Length; i++)
                 message += packetsplit[i] + " ";
 
-            Session.CurrentMap?.Broadcast(Session,
-                Session.Character.GenerateSay(message.Trim(), 0),
-                ReceiverType.AllExceptMe);
+            if (isMuted == true)
+            {
+                if (Session.Character.Gender == 1)
+                {
+                    Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MUTED_FEMALE"), 1));
+                    //Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MUTE_TIME"), 11));// add when time for mute is done
+                    //Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MUTE_TIME"), 12));
+                }
+                else
+                {
+                    Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MUTED_MALE"), 1));
+                    //Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MUTE_TIME"), 11));
+                    //Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MUTE_TIME"), 12));
+                }
+            }
+            else
+                Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateSay(message.Trim(), 0), ReceiverType.AllExceptMe);
         }
 
         [Packet("select")]

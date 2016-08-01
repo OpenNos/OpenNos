@@ -836,16 +836,7 @@ namespace OpenNos.GameObject
 
         public string GenerateSay(string message, int type)
         {
-            bool? isMuted = ServerManager.Instance.GetProperty<bool?>(CharacterId, "IsMuted");
-
-            if (isMuted == false)
-                return $"say 1 {CharacterId} {type} {message}";
-            else
-            {
-                if (Gender == 1)
-                    return $"say 1 {CharacterId} 1 {Language.Instance.GetMessageFromKey("MUTED_FEMALE")}";
-                else return $"say 1 {CharacterId} 1 {Language.Instance.GetMessageFromKey("MUTED_MALE")}";
-            }
+            return $"say 1 {CharacterId} {type} {message}";
         }
 
         public string GenerateScal()
