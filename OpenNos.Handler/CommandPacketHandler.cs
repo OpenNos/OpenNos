@@ -146,7 +146,7 @@ namespace OpenNos.Handler
                         Reason = reason,
                         Penalty = PenaltyType.Muted,
                         DateStart = DateTime.Now,
-                        DateEnd = DateTime.Now.AddDays(1)
+                        DateEnd = DateTime.Now.AddHours(1)
                     });
                     Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
                     ServerManager.Instance.Broadcast(Session, Session.Character.GenerateInfo(String.Format(Language.Instance.GetMessageFromKey("MUTED"), reason, 1)), ReceiverType.OnlySomeone, name);
@@ -160,7 +160,7 @@ namespace OpenNos.Handler
                         Reason = reason,
                         Penalty = PenaltyType.Muted,
                         DateStart = DateTime.Now,
-                        DateEnd = DateTime.Now.AddDays(1)
+                        DateEnd = DateTime.Now.AddHours(1)
                     });
                     Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
                     ServerManager.Instance.Broadcast(Session, Session.Character.GenerateInfo(String.Format(Language.Instance.GetMessageFromKey("MUTED"), reason, 1)), ReceiverType.OnlySomeone, name);
@@ -179,7 +179,7 @@ namespace OpenNos.Handler
                             Reason = reason,
                             Penalty = PenaltyType.Muted,
                             DateStart = DateTime.Now,
-                            DateEnd = DateTime.Now.AddDays(duration)
+                            DateEnd = DateTime.Now.AddHours(duration)
                         });
                         Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
                         ServerManager.Instance.Broadcast(Session, Session.Character.GenerateInfo(String.Format(Language.Instance.GetMessageFromKey("MUTED"), reason, duration)), ReceiverType.OnlySomeone, name);
@@ -192,7 +192,7 @@ namespace OpenNos.Handler
                             Reason = reason,
                             Penalty = PenaltyType.Muted,
                             DateStart = DateTime.Now,
-                            DateEnd = DateTime.Now.AddDays(duration)
+                            DateEnd = DateTime.Now.AddHours(duration)
                         });
                         Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
                         ServerManager.Instance.Broadcast(Session, Session.Character.GenerateInfo(String.Format(Language.Instance.GetMessageFromKey("MUTED"), reason, duration)), ReceiverType.OnlySomeone, name);

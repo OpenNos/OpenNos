@@ -790,6 +790,9 @@
   <data name="SCROLL_PROTECT_USED" xml:space="preserve">
     <value>Protector scroll has been used</value>
   </data>
+  <data name="BANNED" xml:space="preserve">
+    <value>You have been banned. Reason {0}, duration {1}</value>
+  </data>
   <data name="MUTE_TIME" xml:space="preserve">
     <value>Punishment duration: {0}</value>
   </data>

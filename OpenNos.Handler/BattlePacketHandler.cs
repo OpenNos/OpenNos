@@ -53,45 +53,65 @@ namespace OpenNos.Handler
         [Packet("mtlist")]
         public void SpecialZoneHit(string packet)
         {
+            PenaltyLogDTO penalty = Session.Account.PenaltyLogs.FirstOrDefault();
+            if (Session.Account.PenaltyLogs.Any(s => s.Penalty == PenaltyType.Muted && s.DateEnd > DateTime.Now))
+            {
+                if (Session.Character.Gender == 1)
+                {
+                    Session.Client.SendPacket($"cancel 0 0");
+                    Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MUTED_FEMALE"), 1));
+                    Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).Minutes), 11));
+                    Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).Minutes), 12));
+                }
+                else
+                {
+                    Session.Client.SendPacket($"cancel 0 0");
+                    Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MUTED_MALE"), 1));
+                    Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).Minutes), 11));
+                    Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).Minutes), 12));
+                }
+            }
             Logger.Debug(packet, Session.SessionId);
             string[] packetsplit = packet.Split(' ');
             ushort damage = 0;
             int hitmode = 0;
-            if ((DateTime.Now - Session.Character.LastTransform).TotalSeconds < 3)
+            if (Session.Character.IsMuted())
             {
-                Session.Client.SendPacket($"cancel 0 0");
-                Session.Client.SendPacket(Session.Character.GenerateMsg($"{ Language.Instance.GetMessageFromKey("CANT_ATTACKNOW")}", 0));
-                return;
-            }
-            if (packetsplit.Length > 3)
-                for (int i = 3; i < packetsplit.Length - 1; i += 2)
+                if ((DateTime.Now - Session.Character.LastTransform).TotalSeconds < 3)
                 {
-                    List<CharacterSkill> skills = Session.Character.UseSp ? Session.Character.SkillsSp : Session.Character.Skills;
-
-                    if (skills != null)
+                    Session.Client.SendPacket($"cancel 0 0");
+                    Session.Client.SendPacket(Session.Character.GenerateMsg($"{ Language.Instance.GetMessageFromKey("CANT_ATTACKNOW")}", 0));
+                    return;
+                }
+                if (packetsplit.Length > 3)
+                    for (int i = 3; i < packetsplit.Length - 1; i += 2)
                     {
-                        Skill skill = null;
-                        CharacterSkill ski = skills.FirstOrDefault(s => (skill = ServerManager.GetSkill(s.SkillVNum)) != null && skill.CastId == short.Parse(packetsplit[i]));
-                        if (!Session.Character.WeaponLoaded(ski))
+                        List<CharacterSkill> skills = Session.Character.UseSp ? Session.Character.SkillsSp : Session.Character.Skills;
+
+                        if (skills != null)
                         {
-                            Session.Client.SendPacket($"cancel 2 0");
-                            return;
-                        }
-                        MapMonster mon = Session.CurrentMap.Monsters.FirstOrDefault(s => s.MapMonsterId == short.Parse(packetsplit[i + 1]));
-                        if (mon != null && skill != null)
-                        {
-                            damage = GenerateDamage(mon.MapMonsterId, skill, ref hitmode);
-                            Session.CurrentMap?.Broadcast($"su {1} {Session.Character.CharacterId} {3} {mon.MapMonsterId} {skill.SkillVNum} {skill.Cooldown} {skill.AttackAnimation} {skill.Effect} {Session.Character.MapX} {Session.Character.MapY} {(mon.Alive ? 1 : 0)} {(int)(((float)mon.CurrentHp / (float)ServerManager.GetNpc(mon.MonsterVNum).MaxHP) * 100)} {damage} {5} {skill.SkillType - 1}");
+                            Skill skill = null;
+                            CharacterSkill ski = skills.FirstOrDefault(s => (skill = ServerManager.GetSkill(s.SkillVNum)) != null && skill.CastId == short.Parse(packetsplit[i]));
+                            if (!Session.Character.WeaponLoaded(ski))
+                            {
+                                Session.Client.SendPacket($"cancel 2 0");
+                                return;
+                            }
+                            MapMonster mon = Session.CurrentMap.Monsters.FirstOrDefault(s => s.MapMonsterId == short.Parse(packetsplit[i + 1]));
+                            if (mon != null && skill != null)
+                            {
+                                damage = GenerateDamage(mon.MapMonsterId, skill, ref hitmode);
+                                Session.CurrentMap?.Broadcast($"su {1} {Session.Character.CharacterId} {3} {mon.MapMonsterId} {skill.SkillVNum} {skill.Cooldown} {skill.AttackAnimation} {skill.Effect} {Session.Character.MapX} {Session.Character.MapY} {(mon.Alive ? 1 : 0)} {(int)(((float)mon.CurrentHp / (float)ServerManager.GetNpc(mon.MonsterVNum).MaxHP) * 100)} {damage} {5} {skill.SkillType - 1}");
+                            }
                         }
                     }
-                }
+            }
         }
 
         public void TargetHit(int castingId, int targetObject, int targetId)
         {
             List<CharacterSkill> skills = Session.Character.UseSp ? Session.Character.SkillsSp : Session.Character.Skills;
             bool notcancel = false;
-
             if ((DateTime.Now - Session.Character.LastTransform).TotalSeconds < 3)
             {
                 Session.Client.SendPacket($"cancel 0 0");
@@ -215,45 +235,87 @@ namespace OpenNos.Handler
             }
             if (!notcancel)
                 Session.Client.SendPacket($"cancel 2 {targetId}");
+
         }
 
         [Packet("u_s")]
         public void UseSkill(string packet)
         {
             Logger.Debug(packet, Session.SessionId);
-
-            if (Session.Character.CanFight)
+            PenaltyLogDTO penalty = Session.Account.PenaltyLogs.FirstOrDefault();
+            if (Session.Account.PenaltyLogs.Any(s => s.Penalty == PenaltyType.Muted && s.DateEnd > DateTime.Now))
             {
-                string[] packetsplit = packet.Split(' ');
-                if (packetsplit.Length > 6)
+                if (Session.Character.Gender == 1)
                 {
-                    Session.Character.MapX = Convert.ToInt16(packetsplit[5]);
-                    Session.Character.MapY = Convert.ToInt16(packetsplit[6]);
+                    Session.Client.SendPacket($"cancel 0 0");
+                    Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MUTED_FEMALE"), 1));
+                    Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).Minutes), 11));
+                    Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).Minutes), 12));
                 }
-                if (packetsplit.Length > 4)
-                    if (Session.Character.Hp > 0)
+                else
+                {
+                    Session.Client.SendPacket($"cancel 0 0");
+                    Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MUTED_MALE"), 1));
+                    Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).Minutes), 11));
+                    Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).Minutes), 12));
+                }
+            }
+            if (Session.Character.IsMuted())
+            {
+                if (Session.Character.CanFight)
+                {
+                    string[] packetsplit = packet.Split(' ');
+                    if (packetsplit.Length > 6)
                     {
-                        TargetHit(Convert.ToInt32(packetsplit[2]), Convert.ToInt32(packetsplit[3]), Convert.ToInt32(packetsplit[4]));
+                        Session.Character.MapX = Convert.ToInt16(packetsplit[5]);
+                        Session.Character.MapY = Convert.ToInt16(packetsplit[6]);
                     }
+                    if (packetsplit.Length > 4)
+                        if (Session.Character.Hp > 0)
+                        {
+                            TargetHit(Convert.ToInt32(packetsplit[2]), Convert.ToInt32(packetsplit[3]), Convert.ToInt32(packetsplit[4]));
+                        }
+                }
             }
         }
 
         [Packet("u_as")]
         public void UseZonesSkill(string packet)
         {
-            if ((DateTime.Now - Session.Character.LastTransform).TotalSeconds < 3)
+            PenaltyLogDTO penalty = Session.Account.PenaltyLogs.FirstOrDefault();
+            if (Session.Account.PenaltyLogs.Any(s => s.Penalty == PenaltyType.Muted && s.DateEnd > DateTime.Now))
             {
-                Session.Client.SendPacket($"cancel 0 0");
-                Session.Client.SendPacket(Session.Character.GenerateMsg($"{Language.Instance.GetMessageFromKey("CANT_ATTACK")}", 0));
-                return;
+                if (Session.Character.Gender == 1)
+                {
+                    Session.Client.SendPacket($"cancel 0 0");
+                    Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MUTED_FEMALE"), 1));
+                    Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).Minutes), 11));
+                    Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).Minutes), 12));
+                }
+                else
+                {
+                    Session.Client.SendPacket($"cancel 0 0");
+                    Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MUTED_MALE"), 1));
+                    Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).Minutes), 11));
+                    Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).Minutes), 12));
+                }
             }
-            Logger.Debug(packet, Session.SessionId);
-            if (Session.Character.CanFight)
+            if (Session.Account.PenaltyLogs.Any(s => s.Penalty == PenaltyType.Muted && s.DateEnd < DateTime.Now))
             {
-                string[] packetsplit = packet.Split(' ');
-                if (packetsplit.Length > 4)
-                    if (Session.Character.Hp > 0)
-                        ZoneHit(Convert.ToInt32(packetsplit[2]), Convert.ToInt16(packetsplit[3]), Convert.ToInt16(packetsplit[4]));
+                if ((DateTime.Now - Session.Character.LastTransform).TotalSeconds < 3)
+                {
+                    Session.Client.SendPacket($"cancel 0 0");
+                    Session.Client.SendPacket(Session.Character.GenerateMsg($"{Language.Instance.GetMessageFromKey("CANT_ATTACK")}", 0));
+                    return;
+                }
+                Logger.Debug(packet, Session.SessionId);
+                if (Session.Character.CanFight)
+                {
+                    string[] packetsplit = packet.Split(' ');
+                    if (packetsplit.Length > 4)
+                        if (Session.Character.Hp > 0)
+                            ZoneHit(Convert.ToInt32(packetsplit[2]), Convert.ToInt16(packetsplit[3]), Convert.ToInt16(packetsplit[4]));
+                }
             }
         }
 
