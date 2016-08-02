@@ -571,7 +571,7 @@
     <value>L'utilisateur a bloqué les demandes d'échanges.</value>
   </data>
   <data name="TRANSFORM_DISAPPEAR" xml:space="preserve">
-    <value>L'effet secondaire de la transformation s'est dissipé</value>
+    <value>L'effet secondaire de la transformation s'est dissipé.</value>
   </data>
   <data name="UPDATE_ACCOUNT_ERROR" xml:space="preserve">
     <value>Erreur d'insertion ou de mise à jour du compte {0} , {1}</value>
@@ -649,7 +649,7 @@
     <value>Vous avez perdu {0} dignité.</value>
   </data>
   <data name="MUTED" xml:space="preserve">
-    <value>Vous avez été sanctionné ! </value>
+    <value>Vous avez été sanctionné.</value>
   </data>
   <data name="MUTE_END" xml:space="preserve">
     <value>La sanction est terminée.</value>
@@ -757,7 +757,7 @@
   <data name="FAIRYMAX" xml:space="preserve">
     <value>Votre fée a atteint le niveau maximum !</value>
   </data>
-  <data name="FAIRYSTAT" xml:space="preserve">
+  <data name="FAIRYSTATS" xml:space="preserve">
     <value>Fée Exp : {0}/{1}</value>
   </data>
   <data name="FAIRY_LEVEL_CHANGED" xml:space="preserve">
