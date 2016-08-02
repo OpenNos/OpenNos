@@ -924,7 +924,7 @@ namespace OpenNos.Handler
         [Packet("say")]
         public void Say(string packet)
         {
-            PenaltyLogDTO penalty = Session.Account.PenaltyLogs.FirstOrDefault();
+            PenaltyLogDTO penalty = Session.Account.PenaltyLogs.LastOrDefault();
             string[] packetsplit = packet.Split(' ');
             string message = "";
             for (int i = 2; i < packetsplit.Length; i++)

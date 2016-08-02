@@ -86,7 +86,7 @@ namespace OpenNos.Handler
                         if (!ServiceFactory.Instance.CommunicationService.AccountIsConnected(loadedAccount.Name))
                         {
                             AuthorityType type = loadedAccount.Authority;
-                            PenaltyLogDTO penalty = DAOFactory.PenaltyLogDAO.LoadByAccount(loadedAccount.AccountId).FirstOrDefault(s => s.DateEnd < DateTime.Now && s.Penalty == PenaltyType.Banned);
+                            PenaltyLogDTO penalty = DAOFactory.PenaltyLogDAO.LoadByAccount(loadedAccount.AccountId).FirstOrDefault(s => s.DateEnd > DateTime.Now && s.Penalty == PenaltyType.Banned);
                             if (penalty != null)
                             {
                                 _session.Client.SendPacket($"fail {String.Format(Language.Instance.GetMessageFromKey("BANNED"), penalty.Reason, (penalty.DateEnd).ToString("yyyy-MM-dd-HH:mm"))}");

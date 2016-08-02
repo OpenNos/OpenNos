@@ -121,7 +121,7 @@
     <value>Account is already connected.</value>
   </data>
   <data name="BANNED" xml:space="preserve">
-    <value>Account Banned!</value>
+    <value>You have been banned. Reason {0}, duration {1}</value>
   </data>
   <data name="CLIENT_CLOSE" xml:space="preserve">
     <value>Connection closed by Client.</value>

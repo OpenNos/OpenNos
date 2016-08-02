@@ -70,7 +70,7 @@ namespace OpenNos.Login.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Account Banned!.
+        ///   Looks up a localized string similar to You have been banned. Reason {0}, duration {1}.
         /// </summary>
         internal static string BANNED {
             get {

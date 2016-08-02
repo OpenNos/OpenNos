@@ -85,7 +85,7 @@ namespace OpenNos.Handler
             Logger.Debug(packet, Session.SessionId);
             string[] packetsplit = packet.Split(' ');
             byte duration;
-            if (packetsplit.Length > 3)
+            if (packetsplit.Length >= 3)
             {
                 string name = packetsplit[2];
                 string reason = packetsplit[3];
@@ -119,9 +119,9 @@ namespace OpenNos.Handler
         public void Mute(string packet)
         {
             Logger.Debug(packet, Session.SessionId);
-            string[] packetsplit = packet.Split(' ');    
+            string[] packetsplit = packet.Split(' ');
             byte duration;
-             if (packetsplit.Length > 3)
+            if (packetsplit.Length >= 3)
             {
                 string name = packetsplit[2];
                 string reason = packetsplit[3];
@@ -130,7 +130,7 @@ namespace OpenNos.Handler
                     duration = 1;
                 else
                     byte.TryParse(packetsplit[4], out duration);
-                if(duration !=0)
+                if (duration != 0)
                 {
                     if (session != null)
                     {
