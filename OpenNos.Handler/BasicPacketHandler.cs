@@ -880,7 +880,7 @@ namespace OpenNos.Handler
                 if (!byte.TryParse(packetsplit[2], out type))
                     return;
                 if (Session.Character.Hp > 0)
-                    Session.Character.Hp = 0;
+                    return;
                 switch (type)
                 {
                     case 0:
