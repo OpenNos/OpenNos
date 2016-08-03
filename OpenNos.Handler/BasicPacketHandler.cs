@@ -1149,7 +1149,7 @@ namespace OpenNos.Handler
                         else if (group.IsMemberOfGroup(Session.Character.CharacterId))
                         {
                             group.JoinGroup(charId);
-                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("JOINED_GROUP"), 10));
+                            Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("JOINED_GROUP"), 10), ReceiverType.OnlySomeone, "", charId);
                             newgroup = 0;
                         }
                     }
