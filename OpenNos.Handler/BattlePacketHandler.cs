@@ -231,7 +231,7 @@ namespace OpenNos.Handler
                 else
                 {
                     notcancel = false;
-                    Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NOT_ENOUGHT_MP"), 10));
+                    Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NOT_ENOUGH_MP"), 10));
                 }
             }
             if (!notcancel)
@@ -1082,7 +1082,7 @@ namespace OpenNos.Handler
                 }
                 else
                 {
-                    Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NOT_ENOUGHT_MP"), 10));
+                    Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NOT_ENOUGH_MP"), 10));
                     Session.Client.SendPacket($"cancel 2 0");
                 }
             }

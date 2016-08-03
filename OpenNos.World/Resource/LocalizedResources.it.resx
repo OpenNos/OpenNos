@@ -666,7 +666,7 @@
   <data name="FAIRY_LEVELUP" xml:space="preserve">
     <value>La potenza della tua fata è aumentata</value>
   </data>
-  <data name="NOT_ENOUGHT_MP" xml:space="preserve">
+  <data name="NOT_ENOUGH_MP" xml:space="preserve">
     <value>Non hai abbastanza mp</value>
   </data>
   <data name="SP_LEVELUP" xml:space="preserve">
