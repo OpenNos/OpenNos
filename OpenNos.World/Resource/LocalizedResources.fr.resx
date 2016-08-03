@@ -136,7 +136,7 @@
     <value>Archer</value>
   </data>
   <data name="ASK_TO_DELETE" xml:space="preserve">
-    <value>Voulez-vous supprimer ?</value>
+    <value>L'objet va être détruit.</value>
   </data>
   <data name="BAD_DROP_AMOUNT" xml:space="preserve">
     <value>Mauvaise quantité d'objet.</value>
@@ -235,13 +235,13 @@
     <value>À partir de maintenant, tu débloques les émoticônes.</value>
   </data>
   <data name="EQ_NOT_EMPTY" xml:space="preserve">
-    <value>Éliminez l'équipement que vous portez</value>
+    <value>Éliminez l'équipement que vous portez.</value>
   </data>
   <data name="EXCHANGE_BLOCKED" xml:space="preserve">
     <value>À partir de maintenant, tu bloques les demandes d'échanges.</value>
   </data>
   <data name="EXCHANGE_UNLOCKED" xml:space="preserve">
-    <value>À partir de maintenant, tu débloques les demandes d'échange</value>
+    <value>À partir de maintenant, tu débloques les demandes d'échange.</value>
   </data>
   <data name="FAMILY_REQ_LOCKED" xml:space="preserve">
     <value>À partir de maintenant, tu bloques les invitations de famille.</value>
@@ -271,25 +271,25 @@
     <value>Ce joueur a bloqué les demandes de groupe.</value>
   </data>
   <data name="GROUP_CLOSED" xml:space="preserve">
-    <value>Groupe disous.</value>
+    <value>Groupe dissous.</value>
   </data>
   <data name="GROUP_DENIED" xml:space="preserve">
-    <value>La demande de groupe a été refusée.</value>
+    <value>{0} a refusé ton invitation.</value>
   </data>
   <data name="GROUP_FULL" xml:space="preserve">
     <value>Le groupe est plein.</value>
   </data>
   <data name="GROUP_LEFT" xml:space="preserve">
-    <value>Vous avez quitté le groupe.</value>
+    <value>Tu as quitté le groupe.</value>
   </data>
   <data name="GROUP_REQUEST" xml:space="preserve">
-    <value> {0} a été invité à rejoindre votre groupe.</value>
+    <value> {0} a été invité.</value>
   </data>
   <data name="GROUP_REQ_BLOCKED" xml:space="preserve">
     <value>À partir de maintenant, tu bloques les demandes de groupe.</value>
   </data>
   <data name="GROUP_REQ_UNLOCKED" xml:space="preserve">
-    <value>À partir de maintenant, tu débloques les demandes de groupe</value>
+    <value>À partir de maintenant, tu débloques les demandes de groupe.</value>
   </data>
   <data name="HANDLER_NOT_FOUND" xml:space="preserve">
     <value>Impossible de trouver "Handler" la mise en œuvre pour le "Packet" avec en-tête {0}</value>
@@ -316,7 +316,7 @@
     <value>Ce nom contient des caractères non valides.</value>
   </data>
   <data name="INVITED_YOU" xml:space="preserve">
-    <value>{0} vous a invité à rejoindre le groupe.</value>
+    <value>{0} t'a invité dans un groupe.</value>
   </data>
   <data name="IN_WAITING_FOR" xml:space="preserve">
     <value>En attente {0}</value>
@@ -376,19 +376,19 @@
     <value>Message reçu {0} sur le client {1}</value>
   </data>
   <data name="MINI_INV_BLOCKED" xml:space="preserve">
-    <value>À partir de maintenant, tu bloques les invitations Mini-Pays</value>
+    <value>À partir de maintenant, tu bloques les invitations Mini-Pays.</value>
   </data>
   <data name="MINI_INV_UNLOCKED" xml:space="preserve">
-    <value>À partir de maintenant, tu débloques les invitations Mini-Pays</value>
+    <value>À partir de maintenant, tu débloques les invitations Mini-Pays.</value>
   </data>
   <data name="MONSTERS_LOADED" xml:space="preserve">
     <value>{0} Monstres chargés !</value>
   </data>
   <data name="MOUSE_LOCKED" xml:space="preserve">
-    <value>À partir de maintenant, tu bloques le suivi de cible</value>
+    <value>À partir de maintenant, tu bloques le suivi de cible.</value>
   </data>
   <data name="MOUSE_UNLOCKED" xml:space="preserve">
-    <value>À partir de maintenant, tu débloques le suivi de cible</value>
+    <value>À partir de maintenant, tu débloques le suivi de cible.</value>
   </data>
   <data name="MSG_SENT" xml:space="preserve">
     <value>Message envoyé {0} au client {1}</value>
@@ -415,7 +415,7 @@
     <value>Je commence à me sentir mal...</value>
   </data>
   <data name="NOT_MASTER" xml:space="preserve">
-    <value>Vous n'êtes pas le chef du groupe.</value>
+    <value>Tu ne peux pas changer le mode du groupe si tu n'es pas le maïtre du groupe.</value>
   </data>
   <data name="NO_ENTRY" xml:space="preserve">
     <value>Pas de point d'entrée trouvé</value>
@@ -487,7 +487,7 @@
     <value>Vous ne pouvez pas utiliser ce portail... Il est bloqué !</value>
   </data>
   <data name="QUICK_GET_UP_DISABLED" xml:space="preserve">
-    <value>Tu ne peux pas te lever tout de suite quand tu te reposes</value>
+    <value>Tu ne peux pas te lever tout de suite quand tu te reposes.</value>
   </data>
   <data name="QUICK_GET_UP_ENABLED" xml:space="preserve">
     <value>Pour te lever, clique sur un endroit aléatoire.</value>
@@ -502,7 +502,7 @@
     <value>Pari réussi ! Niveau de rareté : {0}</value>
   </data>
   <data name="REFUSED" xml:space="preserve">
-    <value>Échange refusé.</value>
+    <value>Ta demande d'échange a été refusée.</value>
   </data>
   <data name="REP_CHANGED" xml:space="preserve">
     <value>Réputation modifiée !</value>
@@ -547,13 +547,13 @@
     <value>C'est impossible d'échanger les cartes de spécialiste pendent la transformation.</value>
   </data>
   <data name="SP_INLOADING" xml:space="preserve">
-    <value>Durée de l'effet secondaire lié à la transformation : {0} secondes</value>
+    <value>Durée de l'effet secondaire lié à la transformation : {0} secondes.</value>
   </data>
   <data name="STARTED" xml:space="preserve">
     <value>Le serveur s'est lancé sans problèmes !</value>
   </data>
   <data name="STAY_TIME" xml:space="preserve">
-    <value>Durée de l'effet secondaire lié à la transformation : {0} secondes</value>
+    <value>Durée de l'effet secondaire lié à la transformation : {0} secondes.</value>
   </data>
   <data name="SURE_TO_DELETE" xml:space="preserve">
     <value>Êtes-vous sûr de vouloir supprimer cet objet ?</value>
@@ -565,13 +565,13 @@
     <value>Message is too big ({0} bytes). Max allowed length is {1} bytes.</value>
   </data>
   <data name="TOTAL_SESSION" xml:space="preserve">
-    <value>Utilisateurs totaux connectés </value>
+    <value>Utilisateurs connectés</value>
   </data>
   <data name="TRADE_BLOCKED" xml:space="preserve">
     <value>L'utilisateur a bloqué les demandes d'échanges.</value>
   </data>
   <data name="TRANSFORM_DISAPPEAR" xml:space="preserve">
-    <value>L'effet secondaire de la transformation s'est dissipé</value>
+    <value>L'effet secondaire de la transformation s'est dissipé.</value>
   </data>
   <data name="UPDATE_ACCOUNT_ERROR" xml:space="preserve">
     <value>Erreur d'insertion ou de mise à jour du compte {0} , {1}</value>
@@ -592,7 +592,7 @@
     <value>L'amélioration au niveau suivant a réussi avec succès !</value>
   </data>
   <data name="USER_NOT_CONNECTED" xml:space="preserve">
-    <value>Le joueur n'est pas connecté</value>
+    <value>Ce joueur n'est pas connecté.</value>
   </data>
   <data name="USER_NOT_HERO" xml:space="preserve">
     <value>Seuls les héros peuvent utiliser des messages de héros.</value>
@@ -611,6 +611,7 @@
   </data>
   <data name="YOU_ASK_FOR_EXCHANGE" xml:space="preserve">
     <value>Tu as fait une demande d'échange avec </value>
+    <comment>à voir, peut être {0} a besoin d'être ajouté.</comment>
   </data>
   <data name="CHARACTER_LOGGED_IN" xml:space="preserve">
     <value>{0} s'est connecté </value>
@@ -649,7 +650,7 @@
     <value>Vous avez perdu {0} dignité.</value>
   </data>
   <data name="MUTED" xml:space="preserve">
-    <value>Vous avez été sanctionné ! </value>
+    <value>Vous avez été sanctionné.</value>
   </data>
   <data name="MUTE_END" xml:space="preserve">
     <value>La sanction est terminée.</value>
@@ -673,7 +674,7 @@
     <value>Les points de spécialiste ont bien été ajoutés !</value>
   </data>
   <data name="USER_NOT_FOUND" xml:space="preserve">
-    <value>Joueur introuvable</value>
+    <value>Joueur introuvable.</value>
   </data>
   <data name="WELCOME_MUSIC_INFO" xml:space="preserve">
     <value>Mélodie^du^pringtemps</value>
@@ -686,7 +687,7 @@
     <comment>(Mute commande message signalant que le joueur a bien été sanctionné)</comment>
   </data>
   <data name="NOT_ENOUGH_CP" xml:space="preserve">
-    <value>Vous n'avez pas assez de CP</value>
+    <value>Vous n'avez pas assez de CP.</value>
   </data>
   <data name="NOT_ENOUGH_REPUT" xml:space="preserve">
     <value>Vous n'avez pas assez de réputation !</value>
@@ -701,13 +702,13 @@
     <value>{0} Compétences chargées !</value>
   </data>
   <data name="DROP_RATE_CHANGED" xml:space="preserve">
-    <value>Le taux de drop a été modifié avec succès</value>
+    <value>Le taux de drop a été modifié avec succès.</value>
   </data>
   <data name="GOLD_RATE_CHANGED" xml:space="preserve">
-    <value>Le taux d'or a été modifié avec succès</value>
+    <value>Le taux d'or a été modifié avec succès.</value>
   </data>
   <data name="XP_RATE_CHANGED" xml:space="preserve">
-    <value>Le taux d'expérience a été modifié avec succès</value>
+    <value>Le taux d'expérience a été modifié avec succès.</value>
   </data>
   <data name="CANT_ATTACK" xml:space="preserve">
     <value>Tu ne peux pas encore l'utiliser.</value>
@@ -757,17 +758,17 @@
   <data name="FAIRYMAX" xml:space="preserve">
     <value>Votre fée a atteint le niveau maximum !</value>
   </data>
-  <data name="FAIRYSTAT" xml:space="preserve">
+  <data name="FAIRYSTATS" xml:space="preserve">
     <value>Fée Exp : {0}/{1}</value>
   </data>
   <data name="FAIRY_LEVEL_CHANGED" xml:space="preserve">
     <value>Le niveau élémentaire de votre {0} a été modifié !</value>
   </data>
-  <data name="AMMO_LOADED" xml:space="preserve">
-    <value>Munitions rechargées.</value>
+  <data name="AMMO_LOADED_ADVENTURER" xml:space="preserve">
+    <value>Les munitions ont été rechargées.</value>
   </data>
-  <data name="NO_AMMO" xml:space="preserve">
-    <value>Tu n'as pas assez de munitions.</value>
+  <data name="NO_AMMO_ADVENTURER" xml:space="preserve">
+    <value>Tu n'as pas assez de munitions. Achètes-en dans le magasin d'équipement.</value>
   </data>
   <data name="NO_WEAPON" xml:space="preserve">
     <value>Tu n'as pas d'arme à utiliser.</value>
@@ -783,5 +784,20 @@
   </data>
   <data name="MUTE_TIME" xml:space="preserve">
     <value>Délai de pénalité restant : {0}</value>
+  </data>
+  <data name="AMMO_LOADED_ARCHER" xml:space="preserve">
+    <value>Les flèches sont rechargées.</value>
+  </data>
+  <data name="AMMO_LOADED_SWORDSMAN" xml:space="preserve">
+    <value>Les carreaux sont rechargés.</value>
+  </data>
+  <data name="NO_AMMO_ARCHER" xml:space="preserve">
+    <value>Tu n'as pas assez de flèches. Achètes-en dans le magasin d'équipement.</value>
+  </data>
+  <data name="NO_AMMO_SWORDSMAN" xml:space="preserve">
+    <value>Tu n'as pas assez de carreaux. Achètes-en dans le magasin d'équipement.</value>
+  </data>
+  <data name="REFUSED_REQUEST" xml:space="preserve">
+    <value>L'invitation de groupe a été refusée.</value>
   </data>
 </root>

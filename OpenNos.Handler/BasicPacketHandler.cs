@@ -1176,7 +1176,7 @@ namespace OpenNos.Handler
                 }
                 else if (type == 4)
                 {
-                    Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateInfo(String.Format(Language.Instance.GetMessageFromKey("REFUSED_REQUEST"), Session.Character.Name)), ReceiverType.OnlySomeone, "", charId);
+                    Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("REFUSED_REQUEST"), Session.Character.Name), 10), ReceiverType.OnlySomeone, "", charId);
                 }
             }
         }
