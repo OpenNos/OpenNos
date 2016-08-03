@@ -781,7 +781,16 @@
   <data name="REFUSED_GROUP_REQUEST" xml:space="preserve">
     <value>Gracz {0} odrzucił twoje zaproszenie do grupy.</value>
   </data>
+  <data name="BANNED" xml:space="preserve">
+    <value>To konto zostało zablokowane do {1} za {0}</value>
+  </data>
   <data name="GROUP_ADMIN" xml:space="preserve">
-    <value>Jesteś zarządcą tej grupy</value>
+    <value>Jesteś zarządcą tej grupy.</value>
+  </data>
+  <data name="MUTED_PLURAL" xml:space="preserve">
+    <value>Zostałeś wyciszony za {0} na {1} godzin/y.</value>
+  </data>
+  <data name="MUTED_SINGULAR" xml:space="preserve">
+    <value>Zostałeś wyciszony za {0} na 1 godzinę.</value>
   </data>
 </root>
