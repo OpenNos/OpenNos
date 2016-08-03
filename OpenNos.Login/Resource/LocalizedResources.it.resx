@@ -123,10 +123,10 @@
   <data name="BANNED" xml:space="preserve">
     <value>Questo account è stato bannato!</value>
   </data>
-  <data name="CLIENT_CLOSE" xml:space="preserve">
+  <data name="CLIENT_CLOSED" xml:space="preserve">
     <value>Il client ha interrotto la connessione.</value>
   </data>
-  <data name="CLIENT_CLOSED" xml:space="preserve">
+  <data name="CLIENT_DISCONNECTED" xml:space="preserve">
     <value>Connessione persa.</value>
   </data>
   <data name="CONFIG_LOADED" xml:space="preserve">

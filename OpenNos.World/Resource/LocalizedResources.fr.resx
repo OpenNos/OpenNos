@@ -189,10 +189,10 @@
   <data name="CLIENT_ARRIVED" xml:space="preserve">
     <value>Le client est arrivé, avec l'ID session : {0}</value>
   </data>
-  <data name="CLIENT_CLOSE" xml:space="preserve">
+  <data name="CLIENT_CLOSED" xml:space="preserve">
     <value>Connexion fermée par le client.</value>
   </data>
-  <data name="CLIENT_CLOSED" xml:space="preserve">
+  <data name="CLIENT_DISCONNECTED" xml:space="preserve">
     <value>Connexion fermée par le client.</value>
   </data>
   <data name="COMPLIMENT_COOLDOWN" xml:space="preserve">
@@ -415,7 +415,7 @@
     <value>Je commence à me sentir mal...</value>
   </data>
   <data name="NOT_MASTER" xml:space="preserve">
-    <value>Tu ne peux pas changer le mode du groupe si tu n'es pas le maître du groupe.</value>
+    <value>Tu ne peux pas changer le mode du groupe si tu n'es pas le maïtre du groupe.</value>
   </data>
   <data name="NO_ENTRY" xml:space="preserve">
     <value>Pas de point d'entrée trouvé</value>
@@ -502,7 +502,7 @@
     <value>Pari réussi ! Niveau de rareté : {0}</value>
   </data>
   <data name="EXCHANGE_REFUSED" xml:space="preserve">
-    <value>{0} a refusé ta demande d'échange.</value>
+    <value>Ta demande d'échange a été refusée.</value>
   </data>
   <data name="REP_CHANGED" xml:space="preserve">
     <value>Réputation modifiée !</value>
@@ -797,13 +797,7 @@
   <data name="NO_AMMO_SWORDSMAN" xml:space="preserve">
     <value>Tu n'as pas assez de carreaux. Achètes-en dans le magasin d'équipement.</value>
   </data>
-  <data name="REFUSED_REQUEST" xml:space="preserve">
+  <data name="REFUSED_GROUP_REQUEST" xml:space="preserve">
     <value>L'invitation de groupe a été refusée.</value>
-  </data>
-  <data name="GROUP_ADMIN" xml:space="preserve">
-    <value>Tu es le maÎtre du groupe.</value>
-  </data>
-  <data name="MAINTENANCE" xml:space="preserve">
-    <value>Le serveur est en cours de maintenance. Temps estimé : {0}&lt;</value>
   </data>
 </root>

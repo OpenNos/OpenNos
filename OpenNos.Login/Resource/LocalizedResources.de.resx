@@ -123,10 +123,10 @@
   <data name="BANNED" xml:space="preserve">
     <value>Account ist gesperrt!</value>
   </data>
-  <data name="CLIENT_CLOSE" xml:space="preserve">
+  <data name="CLIENT_CLOSED" xml:space="preserve">
     <value>Verbindung wurde vom Client getrennt.</value>
   </data>
-  <data name="CLIENT_CLOSED" xml:space="preserve">
+  <data name="CLIENT_DISCONNECTED" xml:space="preserve">
     <value>Verbindung zum Client getrennt.</value>
   </data>
   <data name="CONFIG_LOADED" xml:space="preserve">
@@ -173,5 +173,8 @@
   </data>
   <data name="DATABASE_NOT_UPTODATE" xml:space="preserve">
     <value>Die Datenbank könnte nicht aktuell sein. Sie muss upgedated werden um eine Verbindung herstellen zu können.</value>
+  </data>
+  <data name="CONNECTION_CLOSED" xml:space="preserve">
+    <value />
   </data>
 </root>
