@@ -817,4 +817,7 @@
   <data name="GROUP_ADMIN" xml:space="preserve">
     <value>You're group admin</value>
   </data>
+  <data name="NOT_ENOUGH_MP" xml:space="preserve">
+    <value>Not enough mp to use that skill</value>
+  </data>
 </root>

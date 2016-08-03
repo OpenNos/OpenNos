@@ -880,7 +880,7 @@ namespace OpenNos.Handler
                 if (!byte.TryParse(packetsplit[2], out type))
                     return;
                 if (Session.Character.Hp > 0)
-                    return;
+                    Session.Character.Hp = 0;
                 switch (type)
                 {
                     case 0:
@@ -896,6 +896,7 @@ namespace OpenNos.Handler
                             if (Session.Character.Level > 20)
                             {
                                 Session.Client.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("SEED_USED"), 10), 10));
+                                Session.Character.InventoryList.RemoveItemAmount(seed, 10);
                                 Session.Character.Hp = (int)(Session.Character.HPLoad() / 2);
                                 Session.Character.Mp = (int)(Session.Character.MPLoad() / 2);
                             }
@@ -904,13 +905,13 @@ namespace OpenNos.Handler
                                 Session.Character.Hp = (int)Session.Character.HPLoad();
                                 Session.Character.Mp = (int)Session.Character.MPLoad();
                             }
-
-                            Session.Client.SendPacket(Session.Character.GenerateStat());
-                            Session.Client.SendPacket(Session.Character.GenerateTp());
+                            //Session.Client.SendPacket(Session.Character.GenerateTp());
+                            //Session.Client.SendPacket(Session.Character.GenerateRevive());
                             Session.CurrentMap?.Broadcast(Session.Character.GenerateTp());
                             Session.CurrentMap?.Broadcast(Session.Character.GenerateRevive());
-                            Session.Character.InventoryList.RemoveItemAmount(seed, 10);
-                            Session.Character.GenerateStartupInventory();
+                            Session.Client.SendPacket("pinit 0");
+                            Session.Client.SendPacket(Session.Character.GenerateStat());
+                            //Session.Character.GenerateStartupInventory();
                         }
                         break;
 
@@ -1160,7 +1161,7 @@ namespace OpenNos.Handler
                         group.JoinGroup(charId);
                         group.JoinGroup(Session.Character.CharacterId);
                         ServerManager.Instance.Groups.Add(group);
-                        Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("GROUP_ADMIN"), 10),ReceiverType.OnlySomeone, "", charId);
+                        Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("GROUP_ADMIN"), 10), ReceiverType.OnlySomeone, "", charId);
 
                         //set back reference to group
                         Session.Character.Group = group;

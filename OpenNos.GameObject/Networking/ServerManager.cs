@@ -307,16 +307,25 @@ namespace OpenNos.GameObject
             ClientSession Session = Sessions.FirstOrDefault(s => s.Character != null && s.Character.CharacterId == Target);
             if (Session != null && Session.Character != null)
             {
-                Session.Client.SendPacket(Session.Character.GenerateDialog($"#revival^0 #revival^1 {(Session.Character.Level > 20 ? Language.Instance.GetMessageFromKey("ASK_REVIVE") : Language.Instance.GetMessageFromKey("ASK_REVIVE_FREE"))}"));
+                Session.Client.SendPacket("cancel 0 0");
+                Session.Client.SendPacket("cancel 2 0");
+                Session.Client.SendPacket(Session.Character.GenerateStat());
+                Session.Client.SendPacket("vb 340 0 0");
+                Session.Client.SendPacket("vb 339 0 0");
+                Session.Client.SendPacket("vb 472 0 0");
+                Session.Client.SendPacket("vb 471 0 0");
                 if (Session.Character.Level > 20)
                 {
                     Session.Character.Dignity -= (short)(Session.Character.Level < 50 ? Session.Character.Level : 50);
                     if (Session.Character.Dignity < -1000)
                         Session.Character.Dignity = -1000;
 
-                    Session.Client.SendPacket(Session.Character.GenerateFd());
                     Session.Client.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("LOSE_DIGNITY"), (short)(Session.Character.Level < 50 ? Session.Character.Level : 50)), 11));
+                    Session.Client.SendPacket(Session.Character.GenerateFd());
                 }
+                Session.Client.SendPacket("eff_ob -1 -1 0 4269");
+                Session.Client.SendPacket(Session.Character.GenerateDialog($"#revival^0 #revival^1 {(Session.Character.Level > 20 ? Language.Instance.GetMessageFromKey("ASK_REVIVE") : Language.Instance.GetMessageFromKey("ASK_REVIVE_FREE"))}"));
+
                 Task.Factory.StartNew(async () =>
                 {
                     for (int i = 1; i <= 30; i++)

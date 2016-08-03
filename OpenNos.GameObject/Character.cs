@@ -784,7 +784,7 @@ namespace OpenNos.GameObject
 
             return fairy != null
                 ? $"pairy 1 {CharacterId} 4 {iteminfo.Element} {fairy.ElementRate + iteminfo.ElementRate} {iteminfo.Morph}"
-                : $"pairy 1 {CharacterId} 0 0 0 40";
+                : $"pairy 1 {CharacterId} 0 0 0 0";
         }
 
         public string GeneratePlayerFlag(long pflag)
