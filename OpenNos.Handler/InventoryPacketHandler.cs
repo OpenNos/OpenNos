@@ -92,7 +92,7 @@ namespace OpenNos.Handler
                 Session.Character.ExchangeInfo = null;
 
                 Session.Client.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("YOU_REFUSED")}", 10));
-                Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateSay($"{charName} {Language.Instance.GetMessageFromKey("REFUSED")}", 10), ReceiverType.OnlySomeone, "", charId);
+                Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("REFUSED")}", 10), ReceiverType.OnlySomeone,"", charId);
             }
         }
 

@@ -1680,13 +1680,13 @@ namespace OpenNos.GameObject
                             {
                                 if (InventoryList.CountItem(2081) < 1)
                                 {
-                                    Session.Client.SendPacket(GenerateMsg(Language.Instance.GetMessageFromKey("NO_AMMO"), 10));
+                                    Session.Client.SendPacket(GenerateMsg(Language.Instance.GetMessageFromKey("NO_AMMO_ADVENTURER"), 10));
                                     return false;
                                 }
 
                                 InventoryList.RemoveItemAmount(2081, 1);
                                 inv.Ammo = 100;
-                                Session.Client.SendPacket(GenerateSay(Language.Instance.GetMessageFromKey("AMMO_LOADED"), 10));
+                                Session.Client.SendPacket(GenerateSay(Language.Instance.GetMessageFromKey("AMMO_LOADED_ADVENTURER"), 10));
                                 GenerateStartupInventory();
                                 return true;
                             }
@@ -1713,13 +1713,13 @@ namespace OpenNos.GameObject
                             {
                                 if (InventoryList.CountItem(2082) < 1)
                                 {
-                                    Session.Client.SendPacket(GenerateMsg(Language.Instance.GetMessageFromKey("NO_AMMO"), 10));
+                                    Session.Client.SendPacket(GenerateMsg(Language.Instance.GetMessageFromKey("NO_AMMO_SWORDSMAN"), 10));
                                     return false;
                                 }
 
                                 InventoryList.RemoveItemAmount(2082, 1);
                                 inv.Ammo = 100;
-                                Session.Client.SendPacket(GenerateSay(Language.Instance.GetMessageFromKey("AMMO_LOADED"), 10));
+                                Session.Client.SendPacket(GenerateSay(Language.Instance.GetMessageFromKey("AMMO_LOADED_SWORDSMAN"), 10));
                                 GenerateStartupInventory();
                                 return true;
                             }
@@ -1746,13 +1746,13 @@ namespace OpenNos.GameObject
                             {
                                 if (InventoryList.CountItem(2083) < 1)
                                 {
-                                    Session.Client.SendPacket(GenerateMsg(Language.Instance.GetMessageFromKey("NO_AMMO"), 10));
+                                    Session.Client.SendPacket(GenerateMsg(Language.Instance.GetMessageFromKey("NO_AMMO_ARCHER"), 10));
                                     return false;
                                 }
 
                                 InventoryList.RemoveItemAmount(2083, 1);
                                 inv.Ammo = 100;
-                                Session.Client.SendPacket(GenerateSay(Language.Instance.GetMessageFromKey("AMMO_LOADED"), 10));
+                                Session.Client.SendPacket(GenerateSay(Language.Instance.GetMessageFromKey("AMMO_LOADED_ARCHER"), 10));
                                 GenerateStartupInventory();
                                 return true;
                             }

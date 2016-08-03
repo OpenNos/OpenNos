@@ -754,13 +754,31 @@
   <data name="FAIRYSTAT" xml:space="preserve">
     <value>Doświadczenie wróżki: {0}/{1}</value>
   </data>
-  <data name="AMMO_LOADED" xml:space="preserve">
-    <value>Amunicja załadowana</value>
-  </data>
   <data name="FAIRY_LEVEL_CHANGED" xml:space="preserve">
     <value>Poziom twojej wróżki {0} został zmieniony</value>
   </data>
   <data name="SCROLL_PROTECT_USED" xml:space="preserve">
     <value>Pergamin ochronna została wykorzystana</value>
+  </data>
+  <data name="AMMO_LOADED_ADVENTURER" xml:space="preserve">
+    <value />
+  </data>
+  <data name="AMMO_LOADED_ARCHER" xml:space="preserve">
+    <value />
+  </data>
+  <data name="AMMO_LOADED_SWORDSMAN" xml:space="preserve">
+    <value />
+  </data>
+  <data name="NO_AMMO_ADVENTURER" xml:space="preserve">
+    <value />
+  </data>
+  <data name="NO_AMMO_ARCHER" xml:space="preserve">
+    <value />
+  </data>
+  <data name="NO_AMMO_SWORDSMAN" xml:space="preserve">
+    <value />
+  </data>
+  <data name="REFUSED_REQUEST" xml:space="preserve">
+    <value />
   </data>
 </root>
