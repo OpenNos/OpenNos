@@ -680,7 +680,7 @@ namespace OpenNos.Handler
                         }
                         else
                         {
-                            charName = (string)ServerManager.Instance.GetProperty<string>(charId, "Name");
+                            charName = ServerManager.Instance.GetProperty<string>(charId, "Name");
                             Session.Client.SendPacket(Session.Character.GenerateInfo(String.Format(Language.Instance.GetMessageFromKey("GROUP_REQUEST"), charName)));
                             Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateDialog($"#pjoin^3^{ Session.Character.CharacterId} #pjoin^4^{Session.Character.CharacterId} {String.Format(Language.Instance.GetMessageFromKey("INVITED_YOU"), Session.Character.Name)}"), ReceiverType.OnlySomeone, charName);
                         }
@@ -1149,6 +1149,7 @@ namespace OpenNos.Handler
                         else if (group.IsMemberOfGroup(Session.Character.CharacterId))
                         {
                             group.JoinGroup(charId);
+                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("JOINED_GROUP"), 10));
                             newgroup = 0;
                         }
                     }
@@ -1159,6 +1160,7 @@ namespace OpenNos.Handler
                         group.JoinGroup(charId);
                         group.JoinGroup(Session.Character.CharacterId);
                         ServerManager.Instance.Groups.Add(group);
+                        Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("GROUP_ADMIN"), 10),ReceiverType.OnlySomeone, "", charId);
 
                         //set back reference to group
                         Session.Character.Group = group;
@@ -1176,7 +1178,7 @@ namespace OpenNos.Handler
                 }
                 else if (type == 4)
                 {
-                    Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("REFUSED_REQUEST"), Session.Character.Name), 10), ReceiverType.OnlySomeone, "", charId);
+                    Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("REFUSED_GROUP_REQUEST"), Session.Character.Name), 10), ReceiverType.OnlySomeone, "", charId);
                 }
             }
         }

@@ -189,10 +189,10 @@
   <data name="CLIENT_ARRIVED" xml:space="preserve">
     <value>Client connesso, SessionId: {0}</value>
   </data>
-  <data name="CLIENT_CLOSE" xml:space="preserve">
+  <data name="CLIENT_CLOSED" xml:space="preserve">
     <value>Il client ha interrotto la connessione.</value>
   </data>
-  <data name="CLIENT_CLOSED" xml:space="preserve">
+  <data name="CLIENT_DISCONNECTED" xml:space="preserve">
     <value>Il client ha interrotto la connessione.</value>
   </data>
   <data name="COMPLIMENT_COOLDOWN" xml:space="preserve">
@@ -501,7 +501,7 @@
   <data name="RECIPES_LOADED" xml:space="preserve">
     <value>{0} Ricette Caricate!</value>
   </data>
-  <data name="REFUSED" xml:space="preserve">
+  <data name="EXCHANGE_REFUSED" xml:space="preserve">
     <value>Commercio rifiutato</value>
   </data>
   <data name="REP_CHANGED" xml:space="preserve">
@@ -696,7 +696,7 @@
   <data name="NO_AMMO_SWORDSMAN" xml:space="preserve">
     <value />
   </data>
-  <data name="REFUSED_REQUEST" xml:space="preserve">
+  <data name="REFUSED_GROUP_REQUEST" xml:space="preserve">
     <value />
   </data>
 </root>

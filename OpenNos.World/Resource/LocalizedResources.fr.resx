@@ -189,10 +189,10 @@
   <data name="CLIENT_ARRIVED" xml:space="preserve">
     <value>Le client est arrivé, avec l'ID session : {0}</value>
   </data>
-  <data name="CLIENT_CLOSE" xml:space="preserve">
+  <data name="CLIENT_CLOSED" xml:space="preserve">
     <value>Connexion fermée par le client.</value>
   </data>
-  <data name="CLIENT_CLOSED" xml:space="preserve">
+  <data name="CLIENT_DISCONNECTED" xml:space="preserve">
     <value>Connexion fermée par le client.</value>
   </data>
   <data name="COMPLIMENT_COOLDOWN" xml:space="preserve">
@@ -501,7 +501,7 @@
   <data name="RARIFY_SUCCESS" xml:space="preserve">
     <value>Pari réussi ! Niveau de rareté : {0}</value>
   </data>
-  <data name="REFUSED" xml:space="preserve">
+  <data name="EXCHANGE_REFUSED" xml:space="preserve">
     <value>Ta demande d'échange a été refusée.</value>
   </data>
   <data name="REP_CHANGED" xml:space="preserve">
@@ -797,7 +797,7 @@
   <data name="NO_AMMO_SWORDSMAN" xml:space="preserve">
     <value>Tu n'as pas assez de carreaux. Achètes-en dans le magasin d'équipement.</value>
   </data>
-  <data name="REFUSED_REQUEST" xml:space="preserve">
+  <data name="REFUSED_GROUP_REQUEST" xml:space="preserve">
     <value>L'invitation de groupe a été refusée.</value>
   </data>
 </root>

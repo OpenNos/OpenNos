@@ -123,10 +123,10 @@
   <data name="BANNED" xml:space="preserve">
     <value>Konto zablokowane!</value>
   </data>
-  <data name="CLIENT_CLOSE" xml:space="preserve">
+  <data name="CLIENT_CLOSED" xml:space="preserve">
     <value>Połaczenie zakończone przez użytkownika</value>
   </data>
-  <data name="CLIENT_CLOSED" xml:space="preserve">
+  <data name="CLIENT_DISCONNECTED" xml:space="preserve">
     <value>Użytkownik rozłaczony</value>
   </data>
   <data name="CONFIG_LOADED" xml:space="preserve">

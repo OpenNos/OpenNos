@@ -124,22 +124,22 @@ namespace OpenNos.Handler
                         }
                         else
                         {
-                            _session.Client.SendPacket($"fail {Language.Instance.GetMessageFromKey("ALREADY_CONNECTED").ToString()}");
+                            _session.Client.SendPacket($"fail {String.Format(Language.Instance.GetMessageFromKey("ALREADY_CONNECTED"))}");
                         }
                     }
                     else
                     {
-                        _session.Client.SendPacket($"fail {Language.Instance.GetMessageFromKey("IDERROR").ToString()}");
+                        _session.Client.SendPacket($"fail {String.Format(Language.Instance.GetMessageFromKey("IDERROR"))}");
                     }
                 }
                 else
                 {
-                    _session.Client.SendPacket($"fail {Language.Instance.GetMessageFromKey("CLOSE").ToString()}");
+                    _session.Client.SendPacket($"fail {String.Format(Language.Instance.GetMessageFromKey("MAINTENANCE"))}");//add estimated time of maintenance/end of maintenance
                 }
             }
             else
             {
-                _session.Client.SendPacket($"fail {Language.Instance.GetMessageFromKey("WAITING").ToString()}");
+                _session.Client.SendPacket($"fail {String.Format(Language.Instance.GetMessageFromKey("CLIENT_DISCONNECTED"))}");
             }
         }
 
