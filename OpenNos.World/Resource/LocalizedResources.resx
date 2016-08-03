@@ -697,8 +697,8 @@
   <data name="MUTED_MALE" xml:space="preserve">
     <value>I was a bad boy, soo i got punished!</value>
   </data>
-  <data name="MUTED" xml:space="preserve">
-    <value>You have been muted! Reason: {0} For: {1} days</value>
+  <data name="MUTED_SINGULAR" xml:space="preserve">
+    <value>You have been muted! Reason: {0} For: 1 hour</value>
   </data>
   <data name="MUTE_END" xml:space="preserve">
     <value>Your punishment has ended</value>
@@ -792,5 +792,8 @@
   </data>
   <data name="MUTE_TIME" xml:space="preserve">
     <value>Punishment duration: {0}</value>
+  </data>
+  <data name="MUTED_PLURAL" xml:space="preserve">
+    <value>You have been muted! Reason: {0} For: {1} hours</value>
   </data>
 </root>

@@ -1086,7 +1086,6 @@ namespace OpenNos.Handler
             Session.Client.SendPacket($"bn 6 {Language.Instance.GetMessageFromKey("BN6")}");
             Session.Client.SendPacket(Session.Character.GenerateExts());
             // gidx
-            //                          mlinfo 3800 2000 100 0 1556 25 0 Mélodie^du^printemps Maison^de^Chacha^&^Upper^:3
             Session.Client.SendPacket($"mlinfo 3800 2000 100 0 0 10 0 {Language.Instance.GetMessageFromKey("WELCOME_MUSIC_INFO")} {Language.Instance.GetMessageFromKey("MINILAND_WELCOME_MESSAGE")}");
             // cond
             Session.Client.SendPacket("p_clear");
