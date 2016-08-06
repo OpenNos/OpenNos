@@ -473,7 +473,7 @@ namespace OpenNos.Handler
                         if (Slot != -1)
                         {
                             Session.Client.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {iteminfo.Name} x {amount}", 12));
-                            Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(vnum, inv.ItemInstance.Amount, iteminfo.Type, Slot, rare, design, upgrade));
+                            Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(vnum, inv.ItemInstance.Amount, iteminfo.Type, Slot, rare, design, upgrade, 0));
                         }
                     }
                     else
@@ -1068,7 +1068,7 @@ namespace OpenNos.Handler
         private void DeleteItem(byte type, short slot)
         {
             Session.Character.InventoryList.DeleteFromSlotAndType(slot, type);
-            Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, type, slot, 0, 0, 0));
+            Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, type, slot, 0, 0, 0, 0));
         }
         /*private void MutedTask()
         {

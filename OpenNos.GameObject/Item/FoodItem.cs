@@ -80,11 +80,11 @@ namespace OpenNos.GameObject
                         workerThread.Start();
                         Inv.ItemInstance.Amount--;
                         if (Inv.ItemInstance.Amount > 0)
-                            session.Client.SendPacket(session.Character.GenerateInventoryAdd(Inv.ItemInstance.ItemVNum, Inv.ItemInstance.Amount, Inv.Type, Inv.Slot, 0, 0, 0));
+                            session.Client.SendPacket(session.Character.GenerateInventoryAdd(Inv.ItemInstance.ItemVNum, Inv.ItemInstance.Amount, Inv.Type, Inv.Slot, 0, 0, 0, 0));
                         else
                         {
                             session.Character.InventoryList.DeleteFromSlotAndType(Inv.Slot, Inv.Type);
-                            session.Client.SendPacket(session.Character.GenerateInventoryAdd(1, 0, Inv.Type, Inv.Slot, 0, 0, 0));
+                            session.Client.SendPacket(session.Character.GenerateInventoryAdd(1, 0, Inv.Type, Inv.Slot, 0, 0, 0, 0));
                         }
                     }
                     else

@@ -32,12 +32,12 @@ namespace OpenNos.GameObject
                         return;
                     inv.ItemInstance.Amount--;
                     if (inv.ItemInstance.Amount > 0)
-                        session.Client.SendPacket(session.Character.GenerateInventoryAdd(inv.ItemInstance.ItemVNum, inv.ItemInstance.Amount, inv.Type, inv.Slot, 0, 0, 0));
+                        session.Client.SendPacket(session.Character.GenerateInventoryAdd(inv.ItemInstance.ItemVNum, inv.ItemInstance.Amount, inv.Type, inv.Slot, 0, 0, 0, 0));
                     else
                     {
                         session.Character.InventoryList.DeleteFromSlotAndType(inv.
                             Slot, inv.Type);
-                        session.Client.SendPacket(session.Character.GenerateInventoryAdd(-1, 0, inv.Type, inv.Slot, 0, 0, 0));
+                        session.Client.SendPacket(session.Character.GenerateInventoryAdd(-1, 0, inv.Type, inv.Slot, 0, 0, 0, 0));
                     }
                     session.Character.Mp += item.Mp;
                     session.Character.Hp += item.Hp;

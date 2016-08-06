@@ -94,7 +94,7 @@ namespace OpenNos.Handler
                 if (inv != null)
                 {
                     Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(inv.ItemInstance.ItemVNum,
-                        inv.ItemInstance.Amount, inv.Type, inv.Slot, inv.ItemInstance.Rare, inv.ItemInstance.Design, inv.ItemInstance.Upgrade));
+                        inv.ItemInstance.Amount, inv.Type, inv.Slot, inv.ItemInstance.Rare, inv.ItemInstance.Design, inv.ItemInstance.Upgrade, 0));
                     Session.Character.Gold -= item.Price * amount;
                     Session.Client.SendPacket(Session.Character.GenerateGold());
                     ServerManager.Instance.BuyValidate(Session, shop, slot, amount);
@@ -249,7 +249,7 @@ namespace OpenNos.Handler
                 if (newItem != null && newItem.Slot != -1)
                 {
                     Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(newItem.ItemInstance.ItemVNum,
-                        newItem.ItemInstance.Amount, newItem.Type, newItem.Slot, newItem.ItemInstance.Rare, newItem.ItemInstance.Design, newItem.ItemInstance.Upgrade));
+                        newItem.ItemInstance.Amount, newItem.Type, newItem.Slot, newItem.ItemInstance.Rare, newItem.ItemInstance.Design, newItem.ItemInstance.Upgrade, 0));
                     if (iteminfo.ReputPrice == 0)
                     {
                         Session.Client.SendPacket(Session.Character.GenerateShopMemo(1, string.Format(Language.Instance.GetMessageFromKey("BUY_ITEM_VALID"), ServerManager.GetItem(item.ItemVNum).Name, amount)));
@@ -523,12 +523,12 @@ namespace OpenNos.Handler
                 if (inv != null)
                 {
                     // Send reduced-amount to owners inventory
-                    Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(inv.ItemInstance.ItemVNum, inv.ItemInstance.Amount, inv.Type, inv.Slot, inv.ItemInstance.Rare, inv.ItemInstance.Design, inv.ItemInstance.Upgrade));
+                    Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(inv.ItemInstance.ItemVNum, inv.ItemInstance.Amount, inv.Type, inv.Slot, inv.ItemInstance.Rare, inv.ItemInstance.Design, inv.ItemInstance.Upgrade, 0));
                 }
                 else
                 {
                     // Send empty slot to owners inventory
-                    Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, type, slot, 0, 0, 0));
+                    Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, type, slot, 0, 0, 0, 0));
                 }
                 Session.Client.SendPacket(Session.Character.GenerateGold());
             }

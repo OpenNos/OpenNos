@@ -224,7 +224,7 @@ namespace OpenNos.GameObject
         }
 
         public bool IsMuted()
-        { 
+        {
             return Session.Account.PenaltyLogs.Any(s => s.Penalty == PenaltyType.Muted && s.DateEnd > DateTime.Now);
         }
 
@@ -376,13 +376,13 @@ namespace OpenNos.GameObject
         public void DeleteItem(byte type, short slot)
         {
             InventoryList.DeleteFromSlotAndType(slot, type);
-            Session.Client.SendPacket(GenerateInventoryAdd(-1, 0, type, slot, 0, 0, 0));
+            Session.Client.SendPacket(GenerateInventoryAdd(-1, 0, type, slot, 0, 0, 0, 0));
         }
 
         public void DeleteItemByItemInstanceId(long itemInstanceId)
         {
             Tuple<short, byte> result = InventoryList.DeleteByInventoryItemId(itemInstanceId);
-            Session.Client.SendPacket(GenerateInventoryAdd(-1, 0, result.Item2, result.Item1, 0, 0, 0));
+            Session.Client.SendPacket(GenerateInventoryAdd(-1, 0, result.Item2, result.Item1, 0, 0, 0, 0));
         }
 
         public void DeleteTimeout()
@@ -395,7 +395,7 @@ namespace OpenNos.GameObject
                     if (item.ItemInstance.IsUsed && item.ItemInstance.ItemDeleteTime != null && item.ItemInstance.ItemDeleteTime < DateTime.Now)
                     {
                         InventoryList.DeleteByInventoryItemId(item.ItemInstance.ItemInstanceId);
-                        Session.Client.SendPacket(GenerateInventoryAdd(-1, 0, item.Type, item.Slot, 0, 0, 0));
+                        Session.Client.SendPacket(GenerateInventoryAdd(-1, 0, item.Type, item.Slot, 0, 0, 0, 0));
                         Session.Client.SendPacket(GenerateSay(Language.Instance.GetMessageFromKey("ITEM_TIMEOUT"), 10));
                     }
                 }
@@ -704,25 +704,25 @@ namespace OpenNos.GameObject
             return $"info {message}";
         }
 
-        public string GenerateInventoryAdd(short vnum, int amount, byte type, short slot, byte rare, short color, byte upgrade)
+        public string GenerateInventoryAdd(short vnum, int amount, byte type, short slot, byte rare, short color, byte upgrade, byte upgrade2)
         {
             Item item = ServerManager.GetItem(vnum);
             switch (type)
             {
                 case (byte)InventoryType.Costume:
-                    return $"ivn 7 {slot}.{vnum}.{rare}.{upgrade}";
+                    return $"ivn 7 {slot}.{vnum}.{rare}.{upgrade}.{upgrade2}";
 
                 case (byte)InventoryType.Wear:
-                    return $"ivn 0 {slot}.{vnum}.{rare}.{(item != null ? (item.IsColored ? color : upgrade) : upgrade)}";
+                    return $"ivn 0 {slot}.{vnum}.{rare}.{(item != null ? (item.IsColored ? color : upgrade) : upgrade)}.{upgrade2}";
 
                 case (byte)InventoryType.Main:
-                    return $"ivn 1 {slot}.{vnum}.{amount}";
+                    return $"ivn 1 {slot}.{vnum}.{amount}.0";
 
                 case (byte)InventoryType.Etc:
-                    return $"ivn 2 {slot}.{vnum}.{amount}";
+                    return $"ivn 2 {slot}.{vnum}.{amount}.0";
 
                 case (byte)InventoryType.Sp:
-                    return $"ivn 6 {slot}.{vnum}.{rare}.{upgrade}";
+                    return $"ivn 6 {slot}.{vnum}.{rare}.{upgrade}.{upgrade2}";
             }
             return string.Empty;
         }
@@ -938,12 +938,20 @@ namespace OpenNos.GameObject
                 {
                     case (byte)InventoryType.Costume:
                         var costumeInstance = inv.ItemInstance as WearableInstance;
-                        inv7 += $" {inv.Slot}.{inv.ItemInstance.ItemVNum}.{costumeInstance.Rare}.{costumeInstance.Upgrade}";
+                        inv7 += $" {inv.Slot}.{inv.ItemInstance.ItemVNum}.{costumeInstance.Rare}.{costumeInstance.Upgrade}.0";
                         break;
 
                     case (byte)InventoryType.Wear:
-                        var wearableInstance = inv.ItemInstance as WearableInstance;
-                        inv0 += $" {inv.Slot}.{inv.ItemInstance.ItemVNum}.{wearableInstance.Rare}.{(item.IsColored ? wearableInstance.Design : wearableInstance.Upgrade)}";
+                        if (item.EquipmentSlot == (byte)EquipmentType.Sp)
+                        {
+                            var specialistInstance = inv.ItemInstance as SpecialistInstance;
+                            inv0 += $" {inv.Slot}.{inv.ItemInstance.ItemVNum}.{specialistInstance.Rare}.{specialistInstance.Upgrade}.{specialistInstance.SpStoneUpgrade}";
+                        }
+                        else
+                        {
+                            var wearableInstance = inv.ItemInstance as WearableInstance;
+                            inv0 += $" {inv.Slot}.{inv.ItemInstance.ItemVNum}.{wearableInstance.Rare}.{(item.IsColored ? wearableInstance.Design : wearableInstance.Upgrade)}.0";
+                        }
                         break;
 
                     case (byte)InventoryType.Main:
@@ -956,7 +964,7 @@ namespace OpenNos.GameObject
 
                     case (byte)InventoryType.Sp:
                         var specialist = inv.ItemInstance as SpecialistInstance;
-                        inv6 += $" {inv.Slot}.{inv.ItemInstance.ItemVNum}.{specialist.Rare}.{specialist.Upgrade}";
+                        inv6 += $" {inv.Slot}.{inv.ItemInstance.ItemVNum}.{specialist.Rare}.{specialist.Upgrade}.{specialist.SpStoneUpgrade}";
                         break;
 
                     case (byte)InventoryType.Equipment:
