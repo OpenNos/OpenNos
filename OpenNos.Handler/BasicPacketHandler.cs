@@ -111,14 +111,10 @@ namespace OpenNos.Handler
                 if (characterName.Length > 3 && characterName.Length < 15)
                 {
                     bool isIllegalCharacter = false;
-                    for (int i = 0; i < characterName.Length; i++)
-                    {
-                        if (characterName[i] < 0x23 || characterName[i] > 0x7E)
-                        {
-                            isIllegalCharacter = true;
-                        }
-                    }
 
+                    System.Text.RegularExpressions.Regex rg = new System.Text.RegularExpressions.Regex(@"^[a-zA-Z0-9]*$");
+                    isIllegalCharacter = rg.IsMatch(characterName);
+                    
                     if (!isIllegalCharacter)
                     {
                         if (DAOFactory.CharacterDAO.LoadByName(characterName) == null)
