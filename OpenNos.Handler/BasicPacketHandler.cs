@@ -112,8 +112,8 @@ namespace OpenNos.Handler
                 {
                     bool isIllegalCharacter = false;
 
-                    System.Text.RegularExpressions.Regex rg = new System.Text.RegularExpressions.Regex(@"^[a-zA-Z0-9áàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ.¤*-|#²§µß™€=$^<>£!()&~{}@]*$");
-                    isIllegalCharacter = rg.IsMatch(characterName);
+                    System.Text.RegularExpressions.Regex rg = new System.Text.RegularExpressions.Regex(@"^[a-zA-Z0-9ąáàâäãåçćéèêëęíìîïłńñóòôöõúùûüśźżýÿæœĄÁÀÂÄÃÅĆÇĘÉÈÊËÍÌÎÏŁŃÑÓÒÔÖÕÚÙÛÜŚŹŻÝŸÆŒ.¤*-|#²§µß™€=$^<>£!()&~{}@]*$`~");
+                    isIllegalCharacter = !rg.IsMatch(characterName);
                     
                     if (!isIllegalCharacter)
                     {
