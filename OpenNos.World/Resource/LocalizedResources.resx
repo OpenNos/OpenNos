@@ -313,7 +313,7 @@
     <value>{0} wants to exchange with you</value>
   </data>
   <data name="INSERT_ERROR" xml:space="preserve">
-    <value>Error inserting or updating character {0} , {1}</value>
+    <value>Error inserting or updating character: {0} , {1}</value>
   </data>
   <data name="INVALID_CHARNAME" xml:space="preserve">
     <value>Invalid characters in nickname</value>

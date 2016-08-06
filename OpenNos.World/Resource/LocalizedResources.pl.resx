@@ -315,7 +315,7 @@
     <value>{0} chce się z tobą wymienić!</value>
   </data>
   <data name="INSERT_ERROR" xml:space="preserve">
-    <value>Błąd zapisywania badź odświeżania postaci {0} , {1}</value>
+    <value>Błąd zapisywania badź odświeżania postaci: {0} , {1}</value>
   </data>
   <data name="INVALID_CHARNAME" xml:space="preserve">
     <value>Złe znaki w nazwie postaci</value>
