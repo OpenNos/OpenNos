@@ -221,10 +221,10 @@
     <value>Baza danych została załadowana.</value>
   </data>
   <data name="DELETE_ACCOUNT_ERROR" xml:space="preserve">
-    <value>Bład usuwania konta z Id {0} , {1}</value>
+    <value>Błąd usuwania konta z Id: {0} , {1}</value>
   </data>
-  <data name="DELETE_ERROR" xml:space="preserve">
-    <value>Bład usuwania postaci ze Slotem {0} , {1}</value>
+  <data name="DELETE_CHARACTER_ERROR" xml:space="preserve">
+    <value>Błąd usuwania postaci ze Slotem: {0} , {1}</value>
   </data>
   <data name="DISCONNECT" xml:space="preserve">
     <value>Użytkownik został rozłaczony! ClientId = </value>
@@ -798,5 +798,8 @@
   </data>
   <data name="NOT_ENOUGH_MP" xml:space="preserve">
     <value>Niewystarczająca ilość many, aby użyć tej umiejętności.</value>
+  </data>
+  <data name="DELETE_PENALTYLOG_ERROR" xml:space="preserve">
+    <value>Błąd usuwania postaci z Id: {0} , {1}</value>
   </data>
 </root>

@@ -13,10 +13,11 @@
  */
 
 using AutoMapper;
+using OpenNos.Core;
 using OpenNos.DAL.EF.MySQL.Helpers;
 using OpenNos.DAL.Interface;
 using OpenNos.Data;
-using OpenNos.Domain;
+using OpenNos.Data.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -47,6 +48,30 @@ namespace OpenNos.DAL.EF.MySQL
         #endregion
 
         #region Methods
+
+        public DeleteResult Delete(int penaltylogid)
+        {
+            try
+            {
+                using (var context = DataAccessHelper.CreateContext())
+                {
+                    PenaltyLog PenaltyLog = context.PenaltyLog.FirstOrDefault(c => c.PenaltyLogId.Equals(penaltylogid));
+
+                    if (PenaltyLog != null)
+                    {
+                        context.PenaltyLog.Remove(PenaltyLog);
+                        context.SaveChanges();
+                    }
+
+                    return DeleteResult.Deleted;
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Log.Error(String.Format(Language.Instance.GetMessageFromKey("DELETE_PENALTYLOG_ERROR"), penaltylogid, e.Message), e);
+                return DeleteResult.Error;
+            }
+        }
 
         public PenaltyLogDTO Insert(PenaltyLogDTO penaltylog)
         {

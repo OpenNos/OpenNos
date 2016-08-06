@@ -222,7 +222,7 @@
   <data name="DELETE_ACCOUNT_ERROR" xml:space="preserve">
     <value>È stato riscontrato un'errore nell'eliminazione dell'Account con ID {0} , {1}</value>
   </data>
-  <data name="DELETE_ERROR" xml:space="preserve">
+  <data name="DELETE_CHARACTER_ERROR" xml:space="preserve">
     <value>È stato riscontrato un'errire nell'eliminazione del personaggio dello Slot {0} , {1}</value>
   </data>
   <data name="DISCONNECT" xml:space="preserve">

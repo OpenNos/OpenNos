@@ -73,7 +73,7 @@ namespace OpenNos.DAL.EF.MySQL
             }
             catch (Exception e)
             {
-                Logger.Log.Error(String.Format("CHARACTER_DELETE_ERROR", characterSlot, e.Message), e);
+                Logger.Log.Error(String.Format("DELETE_CHARACTER_ERROR", characterSlot, e.Message), e);
                 return DeleteResult.Error;
             }
         }

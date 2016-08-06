@@ -13,7 +13,7 @@
  */
 
 using OpenNos.Data;
-using OpenNos.Domain;
+using OpenNos.Data.Enums;
 using System.Collections.Generic;
 
 namespace OpenNos.DAL.Interface
@@ -21,6 +21,8 @@ namespace OpenNos.DAL.Interface
     public interface IPenaltyLogDAO
     {
         #region Methods
+
+        DeleteResult Delete(int penaltylogId);
 
         PenaltyLogDTO Insert(PenaltyLogDTO penaltylog);
 
