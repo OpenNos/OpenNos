@@ -62,7 +62,7 @@ namespace OpenNos.Handler
             if (mode == 2)
             {
                 bool otherInExchangeOrTrade = ServerManager.Instance.GetProperty<bool>(charId, "InExchangeOrTrade");
-                
+
                 if (!Session.Character.InExchangeOrTrade || !otherInExchangeOrTrade)
                 {
                     if (charId == Session.Character.CharacterId) return;
@@ -77,7 +77,7 @@ namespace OpenNos.Handler
                         Confirm = false
                     };
                     Session.Character.ExchangeInfo = exc;
-                    ServerManager.Instance.SetProperty(charId, "ExchangeInfo", new ExchangeInfo { CharId = Session.Character.CharacterId, Confirm  = false });
+                    ServerManager.Instance.SetProperty(charId, "ExchangeInfo", new ExchangeInfo { CharId = Session.Character.CharacterId, Confirm = false });
 
 
                     Session.CurrentMap?.Broadcast(Session, $"exc_list 1 {Session.Character.CharacterId} -1", ReceiverType.OnlySomeone, "", charId);
@@ -86,13 +86,13 @@ namespace OpenNos.Handler
             }
             else if (mode == 5)
             {
-                charName = (string)ServerManager.Instance.GetProperty<string>(charId, "Name");
+                charName = ServerManager.Instance.GetProperty<string>(charId, "Name");
 
                 ServerManager.Instance.SetProperty(charId, "ExchangeInfo", null);
                 Session.Character.ExchangeInfo = null;
 
-                Session.Client.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("YOU_REFUSED")}", 10));
-                Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateSay($"{charName} {Language.Instance.GetMessageFromKey("REFUSED")}", 10), ReceiverType.OnlySomeone, "", charId);
+                Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("YOU_REFUSED"), 10));
+                Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("EXCHANGE_REFUSED"), Session.Character.Name), 10), ReceiverType.OnlySomeone, "", charId);
             }
         }
 
@@ -215,7 +215,7 @@ namespace OpenNos.Handler
                 {
 
                     bool InExchangeOrTrade = Session.Character.InExchangeOrTrade, otherInExchangeOrTrade = ServerManager.Instance.GetProperty<bool>(charId, "InExchangeOrTrade");
-                    if (InExchangeOrTrade || otherInExchangeOrTrade)                        Session.Client.SendPacket(Session.Character.GenerateModal($"refused {Language.Instance.GetMessageFromKey("ALREADY_EXCHANGE")}", 0));
+                    if (InExchangeOrTrade || otherInExchangeOrTrade) Session.Client.SendPacket(Session.Character.GenerateModal($"refused {Language.Instance.GetMessageFromKey("ALREADY_EXCHANGE")}", 0));
                     else
                     {
                         if (Session.Character.Speed == 0)
@@ -974,8 +974,8 @@ namespace OpenNos.Handler
                     double timeSpanSinceLastSpUsage = currentRunningSeconds - Session.Character.LastSp;
                     if (timeSpanSinceLastSpUsage >= Session.Character.SpCooldown)
                     {
-                            Session.Client.SendPacket("delay 5000 3 #sl^1");
-                            Session.CurrentMap?.Broadcast($"guri 2 1 {Session.Character.CharacterId}");
+                        Session.Client.SendPacket("delay 5000 3 #sl^1");
+                        Session.CurrentMap?.Broadcast($"guri 2 1 {Session.Character.CharacterId}");
                     }
                     else
                     {

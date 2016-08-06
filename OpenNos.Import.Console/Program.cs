@@ -46,12 +46,12 @@ namespace OpenNos.Import.Console
             System.Console.BackgroundColor = System.ConsoleColor.Blue;
             System.Console.WriteLine("Root");
             System.Console.ResetColor();
-            // System.Console.WriteLine($"-----_code_{System.Configuration.ConfigurationManager.AppSettings["language"]}_BCard.txt");
+            //System.Console.WriteLine($"-----_code_{System.Configuration.ConfigurationManager.AppSettings["language"]}_BCard.txt");
             System.Console.WriteLine($"-----_code_{System.Configuration.ConfigurationManager.AppSettings["language"]}_Item.txt");
             System.Console.WriteLine($"-----_code_{System.Configuration.ConfigurationManager.AppSettings["language"]}_MapIDData.txt");
             System.Console.WriteLine($"-----_code_{System.Configuration.ConfigurationManager.AppSettings["language"]}_monster.txt");
             System.Console.WriteLine($"-----_code_{System.Configuration.ConfigurationManager.AppSettings["language"]}_Skill.txt");
-            // System.Console.WriteLine("-----BCard.dat");
+            //System.Console.WriteLine("-----BCard.dat");
             System.Console.WriteLine("-----Item.dat");
             System.Console.WriteLine("-----MapIDData.dat");
             System.Console.WriteLine("-----monster.dat");
@@ -71,7 +71,6 @@ namespace OpenNos.Import.Console
                 if (args.Length == 0)
                 {
                     folder = System.Console.ReadLine();
-                    // Confirmation: All at once, or every step
                     System.Console.WriteLine($"{Language.Instance.GetMessageFromKey("PARSE_ALL")} [Y/n]");
                     key = System.Console.ReadKey(true);
                 }
@@ -87,6 +86,7 @@ namespace OpenNos.Import.Console
                 {
                     factory.ImportMaps();
                     factory.LoadMaps();
+                    factory.ImportAccounts();
                     factory.ImportPortals();
                     factory.ImportItems();
                     factory.ImportSkills();
@@ -98,6 +98,7 @@ namespace OpenNos.Import.Console
                     factory.ImportShopItems();
                     factory.ImportShopSkills();
                     factory.ImportRecipe();
+
                 }
                 else
                 {
@@ -108,6 +109,11 @@ namespace OpenNos.Import.Console
                         factory.ImportMaps();
                         factory.LoadMaps();
                     }
+
+                    System.Console.WriteLine($"{Language.Instance.GetMessageFromKey("PARSE_ACCOUNTS")} [Y/n]");
+                    key = System.Console.ReadKey(true);
+                    if (key.KeyChar != 'n')
+                        factory.ImportAccounts();
 
                     System.Console.WriteLine($"{Language.Instance.GetMessageFromKey("PARSE_PORTALS")} [Y/n]");
                     key = System.Console.ReadKey(true);

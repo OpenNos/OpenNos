@@ -121,12 +121,12 @@
     <value>Account is already connected.</value>
   </data>
   <data name="BANNED" xml:space="preserve">
-    <value>Account Banned!</value>
-  </data>
-  <data name="CLIENT_CLOSE" xml:space="preserve">
-    <value>Connection closed by Client.</value>
+    <value>You have been banned. Reason {0}, until {1}</value>
   </data>
   <data name="CLIENT_CLOSED" xml:space="preserve">
+    <value>Connection closed by Client.</value>
+  </data>
+  <data name="CONNECTION_CLOSED" xml:space="preserve">
     <value>Connection closed.</value>
   </data>
   <data name="CONFIG_LOADED" xml:space="preserve">
@@ -139,7 +139,7 @@
     <value>Database has been initialized!</value>
   </data>
   <data name="DISCONNECT" xml:space="preserve">
-    <value>A client has been disconnected! ClientId = </value>
+    <value>Client disconnected! ClientId = </value>
   </data>
   <data name="FORCED_DISCONNECT" xml:space="preserve">
     <value>Forced Disconnecting of client {0}, too much connections.</value>
@@ -154,7 +154,7 @@
     <value>Message sent to client </value>
   </data>
   <data name="NEW_CONNECT" xml:space="preserve">
-    <value>A new client is connected. ClientId = </value>
+    <value>New client connected. ClientId = </value>
   </data>
   <data name="NOTVALIDATE" xml:space="preserve">
     <value>Account not validate!</value>
@@ -163,7 +163,7 @@
     <value>Failed to send packet {0} to client {1}, {2}.</value>
   </data>
   <data name="STARTED" xml:space="preserve">
-    <value>LoginServer has been started successfully.</value>
+    <value>LoginServer started successfully.</value>
   </data>
   <data name="TOO_BIG" xml:space="preserve">
     <value>Message is too big ({0} bytes). Max allowed length is {1} bytes.</value>
@@ -173,5 +173,11 @@
   </data>
   <data name="DATABASE_NOT_UPTODATE" xml:space="preserve">
     <value>Database may not be up to date. Please consider updating your database.</value>
+  </data>
+  <data name="CLIENT_DISCONNECTED" xml:space="preserve">
+    <value>Connection closed.</value>
+  </data>
+  <data name="MAINTENANCE" xml:space="preserve">
+    <value>Server is currently under maintenance. Maintenance estimated time {0}</value>
   </data>
 </root>

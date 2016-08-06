@@ -70,7 +70,7 @@ namespace OpenNos.Login.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Account Banned!.
+        ///   Looks up a localized string similar to You have been banned. Reason {0}, until {1}.
         /// </summary>
         internal static string BANNED {
             get {
@@ -81,18 +81,18 @@ namespace OpenNos.Login.Resource {
         /// <summary>
         ///   Looks up a localized string similar to Connection closed by Client..
         /// </summary>
-        internal static string CLIENT_CLOSE {
+        internal static string CLIENT_CLOSED {
             get {
-                return ResourceManager.GetString("CLIENT_CLOSE", resourceCulture);
+                return ResourceManager.GetString("CLIENT_CLOSED", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Connection closed..
         /// </summary>
-        internal static string CLIENT_CLOSED {
+        internal static string CLIENT_DISCONNECTED {
             get {
-                return ResourceManager.GetString("CLIENT_CLOSED", resourceCulture);
+                return ResourceManager.GetString("CLIENT_DISCONNECTED", resourceCulture);
             }
         }
         
@@ -111,6 +111,15 @@ namespace OpenNos.Login.Resource {
         internal static string CONNECTION {
             get {
                 return ResourceManager.GetString("CONNECTION", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Connection closed..
+        /// </summary>
+        internal static string CONNECTION_CLOSED {
+            get {
+                return ResourceManager.GetString("CONNECTION_CLOSED", resourceCulture);
             }
         }
         
@@ -142,7 +151,7 @@ namespace OpenNos.Login.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A client has been disconnected! ClientId = .
+        ///   Looks up a localized string similar to Client disconnected! ClientId = .
         /// </summary>
         internal static string DISCONNECT {
             get {
@@ -169,6 +178,15 @@ namespace OpenNos.Login.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Server is currently under maintenance. Maintenance estimated time {0}.
+        /// </summary>
+        internal static string MAINTENANCE {
+            get {
+                return ResourceManager.GetString("MAINTENANCE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Message received {0} on client {1}.
         /// </summary>
         internal static string MESSAGE_RECEIVED {
@@ -187,7 +205,7 @@ namespace OpenNos.Login.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A new client is connected. ClientId = .
+        ///   Looks up a localized string similar to New client connected. ClientId = .
         /// </summary>
         internal static string NEW_CONNECT {
             get {
@@ -214,7 +232,7 @@ namespace OpenNos.Login.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to LoginServer has been started successfully..
+        ///   Looks up a localized string similar to LoginServer started successfully..
         /// </summary>
         internal static string STARTED {
             get {

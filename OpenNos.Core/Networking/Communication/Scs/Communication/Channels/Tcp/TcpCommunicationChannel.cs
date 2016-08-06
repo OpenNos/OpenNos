@@ -200,7 +200,7 @@ namespace OpenNos.Core.Networking.Communication.Scs.Communication.Channels.Tcp
                 }
                 else
                 {
-                    Logger.Log.Warn(Language.Instance.GetMessageFromKey("CLIENT_CLOSED"));
+                    Logger.Log.Warn(Language.Instance.GetMessageFromKey("CLIENT_DISCONNECTED"));
                     Disconnect();
                 }
 

@@ -680,7 +680,7 @@ namespace OpenNos.Handler
                         }
                         else
                         {
-                            charName = (string)ServerManager.Instance.GetProperty<string>(charId, "Name");
+                            charName = ServerManager.Instance.GetProperty<string>(charId, "Name");
                             Session.Client.SendPacket(Session.Character.GenerateInfo(String.Format(Language.Instance.GetMessageFromKey("GROUP_REQUEST"), charName)));
                             Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateDialog($"#pjoin^3^{ Session.Character.CharacterId} #pjoin^4^{Session.Character.CharacterId} {String.Format(Language.Instance.GetMessageFromKey("INVITED_YOU"), Session.Character.Name)}"), ReceiverType.OnlySomeone, charName);
                         }
@@ -896,6 +896,7 @@ namespace OpenNos.Handler
                             if (Session.Character.Level > 20)
                             {
                                 Session.Client.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("SEED_USED"), 10), 10));
+                                Session.Character.InventoryList.RemoveItemAmount(seed, 10);
                                 Session.Character.Hp = (int)(Session.Character.HPLoad() / 2);
                                 Session.Character.Mp = (int)(Session.Character.MPLoad() / 2);
                             }
@@ -904,13 +905,13 @@ namespace OpenNos.Handler
                                 Session.Character.Hp = (int)Session.Character.HPLoad();
                                 Session.Character.Mp = (int)Session.Character.MPLoad();
                             }
-
-                            Session.Client.SendPacket(Session.Character.GenerateStat());
-                            Session.Client.SendPacket(Session.Character.GenerateTp());
+                            //Session.Client.SendPacket(Session.Character.GenerateTp());
+                            //Session.Client.SendPacket(Session.Character.GenerateRevive());
                             Session.CurrentMap?.Broadcast(Session.Character.GenerateTp());
                             Session.CurrentMap?.Broadcast(Session.Character.GenerateRevive());
-                            Session.Character.InventoryList.RemoveItemAmount(seed, 10);
-                            Session.Character.GenerateStartupInventory();
+                            Session.Client.SendPacket("pinit 0");
+                            Session.Client.SendPacket(Session.Character.GenerateStat());
+                            //Session.Character.GenerateStartupInventory();
                         }
                         break;
 
@@ -924,7 +925,7 @@ namespace OpenNos.Handler
         [Packet("say")]
         public void Say(string packet)
         {
-            PenaltyLogDTO penalty = Session.Account.PenaltyLogs.FirstOrDefault();
+            PenaltyLogDTO penalty = Session.Account.PenaltyLogs.LastOrDefault();
             string[] packetsplit = packet.Split(' ');
             string message = "";
             for (int i = 2; i < packetsplit.Length; i++)
@@ -935,14 +936,14 @@ namespace OpenNos.Handler
                 if (Session.Character.Gender == 1)
                 {
                     ServerManager.Instance.Broadcast(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MUTED_FEMALE"), 1));
-                    Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).Minutes), 11));
-                    Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).Minutes), 12));
+                    Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).ToString("hh\\:mm\\:ss")), 11));
+                    Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).ToString("hh\\:mm\\:ss")), 12));
                 }
                 else
                 {
                     ServerManager.Instance.Broadcast(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MUTED_MALE"), 1));
-                    Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).Minutes), 11));
-                    Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).Minutes), 12));
+                    Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).ToString("hh\\:mm\\:ss")), 11));
+                    Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).ToString("hh\\:mm\\:ss")), 12));
                 }
             }
             else
@@ -1086,7 +1087,6 @@ namespace OpenNos.Handler
             Session.Client.SendPacket($"bn 6 {Language.Instance.GetMessageFromKey("BN6")}");
             Session.Client.SendPacket(Session.Character.GenerateExts());
             // gidx
-            //                          mlinfo 3800 2000 100 0 1556 25 0 Mélodie^du^printemps Maison^de^Chacha^&^Upper^:3
             Session.Client.SendPacket($"mlinfo 3800 2000 100 0 0 10 0 {Language.Instance.GetMessageFromKey("WELCOME_MUSIC_INFO")} {Language.Instance.GetMessageFromKey("MINILAND_WELCOME_MESSAGE")}");
             // cond
             Session.Client.SendPacket("p_clear");
@@ -1150,6 +1150,7 @@ namespace OpenNos.Handler
                         else if (group.IsMemberOfGroup(Session.Character.CharacterId))
                         {
                             group.JoinGroup(charId);
+                            Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("JOINED_GROUP"), 10), ReceiverType.OnlySomeone, "", charId);
                             newgroup = 0;
                         }
                     }
@@ -1160,6 +1161,7 @@ namespace OpenNos.Handler
                         group.JoinGroup(charId);
                         group.JoinGroup(Session.Character.CharacterId);
                         ServerManager.Instance.Groups.Add(group);
+                        Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("GROUP_ADMIN"), 10), ReceiverType.OnlySomeone, "", charId);
 
                         //set back reference to group
                         Session.Character.Group = group;
@@ -1177,7 +1179,7 @@ namespace OpenNos.Handler
                 }
                 else if (type == 4)
                 {
-                    Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateInfo(String.Format(Language.Instance.GetMessageFromKey("REFUSED_REQUEST"), Session.Character.Name)), ReceiverType.OnlySomeone, "", charId);
+                    Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("REFUSED_GROUP_REQUEST"), Session.Character.Name), 10), ReceiverType.OnlySomeone, "", charId);
                 }
             }
         }

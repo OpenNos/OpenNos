@@ -691,7 +691,7 @@ namespace OpenNos.GameObject
 
         public List<string> GenerateIn2()
         {
-            return ServerManager.GetMap(MapId).Npcs.Select(npc => $"in 2 {npc.NpcVNum} {npc.MapNpcId} {npc.MapX} {npc.MapY} {npc.Position} 100 100 {npc.Dialog} 0 0 - {(npc.IsSitting ? 0 : 1)} 0 0 - 1 - 0 - 1 0 0 0 0 0 0 0 0").ToList();
+            return ServerManager.GetMap(MapId).Npcs.Select(npc => $"in 2 {npc.NpcVNum} {npc.MapNpcId} {npc.MapX} {npc.MapY} {npc.Position} 100 100 {npc.Dialog} 0 0 -{(npc.IsSitting ? 0 : 1)} 0 0 -1 - 0 -1 0 0 0 0 0 0 0 0").ToList();
         }
 
         public List<string> GenerateIn3()
@@ -784,7 +784,7 @@ namespace OpenNos.GameObject
 
             return fairy != null
                 ? $"pairy 1 {CharacterId} 4 {iteminfo.Element} {fairy.ElementRate + iteminfo.ElementRate} {iteminfo.Morph}"
-                : $"pairy 1 {CharacterId} 0 0 0 40";
+                : $"pairy 1 {CharacterId} 0 0 0 0";
         }
 
         public string GeneratePlayerFlag(long pflag)
@@ -1688,13 +1688,13 @@ namespace OpenNos.GameObject
                             {
                                 if (InventoryList.CountItem(2081) < 1)
                                 {
-                                    Session.Client.SendPacket(GenerateMsg(Language.Instance.GetMessageFromKey("NO_AMMO"), 10));
+                                    Session.Client.SendPacket(GenerateMsg(Language.Instance.GetMessageFromKey("NO_AMMO_ADVENTURER"), 10));
                                     return false;
                                 }
 
                                 InventoryList.RemoveItemAmount(2081, 1);
                                 inv.Ammo = 100;
-                                Session.Client.SendPacket(GenerateSay(Language.Instance.GetMessageFromKey("AMMO_LOADED"), 10));
+                                Session.Client.SendPacket(GenerateSay(Language.Instance.GetMessageFromKey("AMMO_LOADED_ADVENTURER"), 10));
                                 GenerateStartupInventory();
                                 return true;
                             }
@@ -1721,13 +1721,13 @@ namespace OpenNos.GameObject
                             {
                                 if (InventoryList.CountItem(2082) < 1)
                                 {
-                                    Session.Client.SendPacket(GenerateMsg(Language.Instance.GetMessageFromKey("NO_AMMO"), 10));
+                                    Session.Client.SendPacket(GenerateMsg(Language.Instance.GetMessageFromKey("NO_AMMO_SWORDSMAN"), 10));
                                     return false;
                                 }
 
                                 InventoryList.RemoveItemAmount(2082, 1);
                                 inv.Ammo = 100;
-                                Session.Client.SendPacket(GenerateSay(Language.Instance.GetMessageFromKey("AMMO_LOADED"), 10));
+                                Session.Client.SendPacket(GenerateSay(Language.Instance.GetMessageFromKey("AMMO_LOADED_SWORDSMAN"), 10));
                                 GenerateStartupInventory();
                                 return true;
                             }
@@ -1754,13 +1754,13 @@ namespace OpenNos.GameObject
                             {
                                 if (InventoryList.CountItem(2083) < 1)
                                 {
-                                    Session.Client.SendPacket(GenerateMsg(Language.Instance.GetMessageFromKey("NO_AMMO"), 10));
+                                    Session.Client.SendPacket(GenerateMsg(Language.Instance.GetMessageFromKey("NO_AMMO_ARCHER"), 10));
                                     return false;
                                 }
 
                                 InventoryList.RemoveItemAmount(2083, 1);
                                 inv.Ammo = 100;
-                                Session.Client.SendPacket(GenerateSay(Language.Instance.GetMessageFromKey("AMMO_LOADED"), 10));
+                                Session.Client.SendPacket(GenerateSay(Language.Instance.GetMessageFromKey("AMMO_LOADED_ARCHER"), 10));
                                 GenerateStartupInventory();
                                 return true;
                             }

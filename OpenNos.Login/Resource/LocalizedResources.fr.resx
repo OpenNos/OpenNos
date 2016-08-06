@@ -123,10 +123,10 @@
   <data name="BANNED" xml:space="preserve">
     <value>Échec. Votre compte à été banni. Veuillez contacter l'équipe du jeu.</value>
   </data>
-  <data name="CLIENT_CLOSE" xml:space="preserve">
+  <data name="CLIENT_CLOSED" xml:space="preserve">
     <value>Connexion fermée par le client !</value>
   </data>
-  <data name="CLIENT_CLOSED" xml:space="preserve">
+  <data name="CLIENT_DISCONNECTED" xml:space="preserve">
     <value>La connexion est fermée.</value>
   </data>
   <data name="CONFIG_LOADED" xml:space="preserve">

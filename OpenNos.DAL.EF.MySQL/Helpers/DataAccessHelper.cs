@@ -114,8 +114,13 @@ namespace OpenNos.DAL.EF.MySQL.Helpers
                     context.MapMonster.Any();
                     context.Inventory.Any();
                     context.ItemInstance.Any();
+                    context.Teleporter.Any();
                     context.Item.Any();
                     context.Respawn.Any();
+                    context.Recipe.Any();
+                    context.RecipeItem.Any();
+                    context.QuicklistEntry.Any();
+                    context.CellonOption.Any();
                     context.Shop.Any();
                     context.ShopItem.Any();
                     context.Drop.Any();

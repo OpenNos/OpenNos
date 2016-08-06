@@ -189,11 +189,11 @@
   <data name="CLIENT_ARRIVED" xml:space="preserve">
     <value>Client arrived, SessionId: {0}</value>
   </data>
-  <data name="CLIENT_CLOSE" xml:space="preserve">
-    <value>Connection closed by Client.</value>
-  </data>
   <data name="CLIENT_CLOSED" xml:space="preserve">
     <value>Connection closed by Client.</value>
+  </data>
+  <data name="CLIENT_DISCONNECTED" xml:space="preserve">
+    <value>Connection closed.</value>
   </data>
   <data name="COMPLIMENT_COOLDOWN" xml:space="preserve">
     <value>You can only compliment one player per day.</value>
@@ -217,7 +217,7 @@
     <value>You've crafted: {0} x {1}</value>
   </data>
   <data name="DATABASE_INITIALIZED" xml:space="preserve">
-    <value>Database has been initialized.</value>
+    <value>Database initialized.</value>
   </data>
   <data name="DELETE_ACCOUNT_ERROR" xml:space="preserve">
     <value>Error deleting Account with Id {0} , {1}</value>
@@ -226,7 +226,7 @@
     <value>Error deleting Character with Slot {0} , {1}</value>
   </data>
   <data name="DISCONNECT" xml:space="preserve">
-    <value>A client has been disconnected! ClientId = </value>
+    <value>Client disconnected! ClientId = </value>
   </data>
   <data name="DONE" xml:space="preserve">
     <value>Done</value>
@@ -397,7 +397,7 @@
     <value>Message sent {0} to client {1}</value>
   </data>
   <data name="NEW_CONNECT" xml:space="preserve">
-    <value>A new client is connected. ClientId = </value>
+    <value>Client connected. ClientId = </value>
   </data>
   <data name="NEW_LEADER" xml:space="preserve">
     <value>You are the new party leader</value>
@@ -418,13 +418,13 @@
     <value>Insufficient reputation</value>
   </data>
   <data name="NOT_HUNGRY_FEMALE" xml:space="preserve">
-    <value>I think, I'm not hungry</value>
+    <value>I'm not hungry</value>
   </data>
   <data name="NOT_HUNGRY_MALE" xml:space="preserve">
     <value>I'm not hungry</value>
   </data>
   <data name="NOT_MASTER" xml:space="preserve">
-    <value>You are not leader of group</value>
+    <value>You are not group leader</value>
   </data>
   <data name="NO_ENTRY" xml:space="preserve">
     <value>No EntryPoint found</value>
@@ -581,13 +581,13 @@
     <value>Wait {0} seconds!</value>
   </data>
   <data name="STARTED" xml:space="preserve">
-    <value>WorldServer has been started successfully.</value>
+    <value>WorldServer started successfully.</value>
   </data>
   <data name="STAY_TIME" xml:space="preserve">
     <value>SP transformation needs cooldown, {0} seconds</value>
   </data>
   <data name="SURE_TO_DELETE" xml:space="preserve">
-    <value>Are you sure you want to delete?</value>
+    <value>Are you sure you want to delete this item?</value>
   </data>
   <data name="SWORDMAN" xml:space="preserve">
     <value>Swordsman</value>
@@ -676,8 +676,8 @@
   <data name="HEROLEVEL_CHANGED" xml:space="preserve">
     <value>Hero level has been changed!</value>
   </data>
-  <data name="REFUSED" xml:space="preserve">
-    <value>Refused exchange</value>
+  <data name="EXCHANGE_REFUSED" xml:space="preserve">
+    <value>{0} refused your exchange request.</value>
   </data>
   <data name="SHOP_PRIVATE_SHOP" xml:space="preserve">
     <value>Private shop</value>
@@ -697,8 +697,8 @@
   <data name="MUTED_MALE" xml:space="preserve">
     <value>I was a bad boy, soo i got punished!</value>
   </data>
-  <data name="MUTED" xml:space="preserve">
-    <value>You have been muted! Reason: {0} For: {1} days</value>
+  <data name="MUTED_SINGULAR" xml:space="preserve">
+    <value>You have been muted! Reason: {0} For: 1 hour</value>
   </data>
   <data name="MUTE_END" xml:space="preserve">
     <value>Your punishment has ended</value>
@@ -775,9 +775,6 @@
   <data name="FAIRYSTATS" xml:space="preserve">
     <value>Fairy XP: {0}/{1}</value>
   </data>
-  <data name="AMMO_LOADED" xml:space="preserve">
-    <value>Ammo loaded!</value>
-  </data>
   <data name="FAIRY_LEVEL_CHANGED" xml:space="preserve">
     <value>Level of your {0} has been changed</value>
   </data>
@@ -790,10 +787,37 @@
   <data name="SCROLL_PROTECT_USED" xml:space="preserve">
     <value>Protector scroll has been used</value>
   </data>
-  <data name="BANNED" xml:space="preserve">
-    <value>You have been banned. Reason {0}, duration {1}</value>
-  </data>
   <data name="MUTE_TIME" xml:space="preserve">
     <value>Punishment duration: {0}</value>
+  </data>
+  <data name="AMMO_LOADED_ADVENTURER" xml:space="preserve">
+    <value>Ammo loaded</value>
+  </data>
+  <data name="AMMO_LOADED_ARCHER" xml:space="preserve">
+    <value>Arrows loaded</value>
+  </data>
+  <data name="AMMO_LOADED_SWORDSMAN" xml:space="preserve">
+    <value>Crossbow bolts loaded</value>
+  </data>
+  <data name="NO_AMMO_ADVENTURER" xml:space="preserve">
+    <value>You don't have enough ammo. Buy it in equipment shop</value>
+  </data>
+  <data name="NO_AMMO_ARCHER" xml:space="preserve">
+    <value>You don't have enough arrows. Buy it in equipment shop</value>
+  </data>
+  <data name="NO_AMMO_SWORDSMAN" xml:space="preserve">
+    <value>You don't have enough crossbow bolts. Buy it in equipment shop</value>
+  </data>
+  <data name="REFUSED_GROUP_REQUEST" xml:space="preserve">
+    <value>{0} refused your group request.</value>
+  </data>
+  <data name="MUTED_PLURAL" xml:space="preserve">
+    <value>You have been muted! Reason: {0} For: {1} hours</value>
+  </data>
+  <data name="GROUP_ADMIN" xml:space="preserve">
+    <value>You're group admin</value>
+  </data>
+  <data name="NOT_ENOUGH_MP" xml:space="preserve">
+    <value>Not enough mp to use that skill</value>
   </data>
 </root>
