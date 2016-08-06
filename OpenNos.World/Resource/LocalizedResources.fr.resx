@@ -265,7 +265,7 @@
     <value>Tu as obtenu le pouvoir du Démon grâce à l'Oeuf de Latheore.</value>
   </data>
   <data name="GOLD_SET" xml:space="preserve">
-    <value>Or obtenue !</value>
+    <value>Or obtenue.</value>
   </data>
   <data name="GROUP_BLOCKED" xml:space="preserve">
     <value>Ce joueur a bloqué les demandes de groupe.</value>
@@ -322,7 +322,7 @@
     <value>En attente {0}</value>
   </data>
   <data name="ITEM_ACQUIRED" xml:space="preserve">
-    <value>Tu as reçu un objet</value>
+    <value>Tu as reçu un objet </value>
   </data>
   <data name="ITEM_IS_FIXED" xml:space="preserve">
     <value>Niveau de mise à niveau d'objet est verrouillé.</value>
@@ -331,7 +331,7 @@
     <value>{0} Objets chargés !</value>
   </data>
   <data name="ITEM_NOT_DROPPABLE" xml:space="preserve">
-    <value>Vous ne pouvez pas jeter cet objet.</value>
+    <value>Tu ne peux pas abandonner cet objet.</value>
   </data>
   <data name="ITEM_NOT_SOLDABLE" xml:space="preserve">
     <value>Ce objet ne peut pas être vendu.</value>
@@ -340,7 +340,7 @@
     <value>Tu ne peux pas échanger cet objet.</value>
   </data>
   <data name="ITEM_TIMEOUT" xml:space="preserve">
-    <value>La durée de cet objet est expirée.</value>
+    <value>La durée de cet équipement est expirée.</value>
   </data>
   <data name="JOBLEVEL_CHANGED" xml:space="preserve">
     <value>Ton niveau de métier a été changé !</value>
@@ -355,10 +355,10 @@
     <value>Ton niveau de combat a augmenté.</value>
   </data>
   <data name="LOW_JOB_LVL" xml:space="preserve">
-    <value>Votre niveau de métier est trop bas.</value>
+    <value>Votre niveau de métier n'est pas assez élevé.</value>
   </data>
   <data name="LOW_LVL" xml:space="preserve">
-    <value>Votre niveau est trop bas.</value>
+    <value>Votre niveau de combat n'est pas assez élevé.</value>
   </data>
   <data name="LOW_REP" xml:space="preserve">
     <value>Ton personnage ne remplit pas les conditions d'utilisation de cet objet.</value>
@@ -406,7 +406,7 @@
     <value>Tu n'as pas assez d'or.</value>
   </data>
   <data name="NOT_ENOUGH_PLACE" xml:space="preserve">
-    <value>Vous n'avez pas assez de place.</value>
+    <value>Tu n'as pas assez de place dans ton inventaire.</value>
   </data>
   <data name="NOT_HUNGRY_FEMALE" xml:space="preserve">
     <value>Je commence à me sentir mal...</value>
@@ -415,7 +415,7 @@
     <value>Je commence à me sentir mal...</value>
   </data>
   <data name="NOT_MASTER" xml:space="preserve">
-    <value>Tu ne peux pas changer le mode du groupe si tu n'es pas le maïtre du groupe.</value>
+    <value>Tu ne peux pas changer le mode du groupe si tu n'es pas le maître du groupe.</value>
   </data>
   <data name="NO_ENTRY" xml:space="preserve">
     <value>Pas de point d'entrée trouvé</value>
@@ -460,7 +460,7 @@
     <value>Élement</value>
   </data>
   <data name="PERFECTSP_FAILURE" xml:space="preserve">
-    <value>Perfectionnement de la carte spécialiste a échouée !</value>
+    <value>Perfectionnement de la carte spécialiste a échoué !</value>
   </data>
   <data name="PERFECTSP_FIRE" xml:space="preserve">
     <value>Feu</value>
@@ -475,7 +475,7 @@
     <value>Obscurité</value>
   </data>
   <data name="PERFECTSP_SUCCESS" xml:space="preserve">
-    <value>Perfectionnement de la carte spécialiste réussi: {0} +{1} !</value>
+    <value>Perfectionnement de la carte spécialiste réussi : {0} +{1} !</value>
   </data>
   <data name="PERFECTSP_WATER" xml:space="preserve">
     <value>Eau</value>
@@ -505,7 +505,7 @@
     <value>Ta demande d'échange a été refusée.</value>
   </data>
   <data name="REP_CHANGED" xml:space="preserve">
-    <value>Réputation modifiée !</value>
+    <value>Réputation modifiée.</value>
   </data>
   <data name="SELL_ITEM_VALIDE" xml:space="preserve">
     <value>{0}: vendu &lt;{1} : pièces &gt;</value>
@@ -523,19 +523,19 @@
     <value>{0} Magasins chargés !</value>
   </data>
   <data name="SHOP_EMPTY" xml:space="preserve">
-    <value>Le magasin ne peut être vide.</value>
+    <value>Aucun objet ne peut être vendu.</value>
   </data>
   <data name="SHOP_NEAR_PORTAL" xml:space="preserve">
-    <value>Vous ne pouvez pas crée un magasin si près du portail.</value>
+    <value>Tu ne peux pas ouvrir le magasin près du portail.</value>
   </data>
   <data name="SHOP_OPEN" xml:space="preserve">
     <value>Magasin ouvert.</value>
   </data>
   <data name="SHUTDOWN_MIN" xml:space="preserve">
-    <value>Le serveur sera fermé dans {0} minutes.</value>
+    <value>Le serveur sera déconnecté dans {0} minutes.</value>
   </data>
   <data name="SHUTDOWN_SEC" xml:space="preserve">
-    <value>Le serveur sera fermé dans {0} secondes.</value>
+    <value>Le serveur sera déconnecté dans {0} secondes.</value>
   </data>
   <data name="SPLEVEL_CHANGED" xml:space="preserve">
     <value>Le niveau de votre carte spécialiste a bien été changé.</value>
@@ -556,7 +556,7 @@
     <value>Durée de l'effet secondaire lié à la transformation : {0} secondes.</value>
   </data>
   <data name="SURE_TO_DELETE" xml:space="preserve">
-    <value>Êtes-vous sûr de vouloir supprimer cet objet ?</value>
+    <value>L'objet va être détruit.</value>
   </data>
   <data name="SWORDMAN" xml:space="preserve">
     <value>Escrimeur</value>
@@ -626,10 +626,10 @@
     <value>Je n'ai pas assez de graine de pouvoir...</value>
   </data>
   <data name="SEED_USED" xml:space="preserve">
-    <value>Tu as utilisé des graine de pouvoir.</value>
+    <value>Tu as utilisé des Graines de Pouvoir.</value>
   </data>
   <data name="SHOP_PRIVATE_SHOP" xml:space="preserve">
-    <value>Magasin privé ouvert.</value>
+    <value>Tu as ouvert un magasin.</value>
   </data>
   <data name="ASK_REVIVE" xml:space="preserve">
     <value>Continuer ici? 10 graine de pouvoir seront utilisées.</value>
@@ -647,7 +647,7 @@
     <value>Votre niveau héroïque a bien été changé !</value>
   </data>
   <data name="LOSE_DIGNITY" xml:space="preserve">
-    <value>Vous avez perdu {0} dignité.</value>
+    <value>Dignité réduite : -{0}</value>
   </data>
   <data name="MUTED" xml:space="preserve">
     <value>Vous avez été sanctionné.</value>
@@ -659,7 +659,7 @@
     <value>{0} Recettes chargées !</value>
   </data>
   <data name="SHOP_ONLY_TRADABLE_ITEMS" xml:space="preserve">
-    <value>Vous ne pouvez vendre cet objet.</value>
+    <value>Tu ne peux pas vendre cet objet.</value>
   </data>
   <data name="SKILLS_IN_LOADING" xml:space="preserve">
     <value>Tu peux te transformer une fois que tous les temps de rechargement des compétences sont écoulés.</value>
@@ -683,20 +683,20 @@
     <value>Dignité augmentée : +1</value>
   </data>
   <data name="DONE" xml:space="preserve">
-    <value>Le joueur a été sanctionné</value>
+    <value>La sanction a été appliquée.</value>
     <comment>(Mute commande message signalant que le joueur a bien été sanctionné)</comment>
   </data>
   <data name="NOT_ENOUGH_CP" xml:space="preserve">
-    <value>Vous n'avez pas assez de CP.</value>
+    <value>Vous n'avez pas assez de PC.</value>
   </data>
   <data name="NOT_ENOUGH_REPUT" xml:space="preserve">
-    <value>Vous n'avez pas assez de réputation !</value>
+    <value>Vous n'avez pas assez de réputation.</value>
   </data>
   <data name="REMOVE_SP" xml:space="preserve">
     <value>Si vous voulez apprendre cette compétence, vous devez enlever votre transformation.</value>
   </data>
   <data name="REPUT_DECREASED" xml:space="preserve">
-    <value>Réputation diminuée !</value>
+    <value>Réputation réduite.</value>
   </data>
   <data name="SKILLS_LOADED" xml:space="preserve">
     <value>{0} Compétences chargées !</value>
@@ -750,7 +750,7 @@
     <value>Ton niveau de métier a augmenté !</value>
   </data>
   <data name="FAIRYXP_RATE_CHANGED" xml:space="preserve">
-    <value>Le taux d'expérience des fées a bien été modifié !</value>
+    <value>Le taux d'expérience des fées a bien été modifié.</value>
   </data>
   <data name="FAIRYXP_RATE_NOW" xml:space="preserve">
     <value>Taux d'expérience des fées </value>
@@ -762,7 +762,7 @@
     <value>Fée Exp : {0}/{1}</value>
   </data>
   <data name="FAIRY_LEVEL_CHANGED" xml:space="preserve">
-    <value>Le niveau élémentaire de votre {0} a été modifié !</value>
+    <value>Le niveau élémentaire de votre {0} a été modifié.</value>
   </data>
   <data name="AMMO_LOADED_ADVENTURER" xml:space="preserve">
     <value>Les munitions ont été rechargées.</value>
