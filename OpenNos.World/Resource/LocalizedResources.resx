@@ -823,4 +823,13 @@
   <data name="DELETE_PENALTYLOG_ERROR" xml:space="preserve">
     <value>Error deleting PenaltyLog with Id {0} , {1}</value>
   </data>
+  <data name="CANT_EQUIP_DESTROYED_SP" xml:space="preserve">
+    <value />
+  </data>
+  <data name="CANT_UPGRADE_DESTROYED_SP" xml:space="preserve">
+    <value />
+  </data>
+  <data name="UPGRADESP_DESTROYED" xml:space="preserve">
+    <value />
+  </data>
 </root>

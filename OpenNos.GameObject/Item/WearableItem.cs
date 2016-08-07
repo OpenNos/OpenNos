@@ -40,8 +40,14 @@ namespace OpenNos.GameObject
                         inventory.ItemInstance.ItemDeleteTime = DateTime.Now.AddSeconds(iteminfo.ItemValidTime);
                     }
                     inventory.ItemInstance.IsUsed = true;
-                    double timeSpanSinceLastSpUsage = (DateTime.Now - Process.GetCurrentProcess().StartTime.AddSeconds(-50)).TotalSeconds -
-                                                      session.Character.LastSp;
+                    double timeSpanSinceLastSpUsage = (DateTime.Now - Process.GetCurrentProcess().StartTime.AddSeconds(-50)).TotalSeconds - session.Character.LastSp;
+
+                    if (iteminfo.EquipmentSlot == (byte)EquipmentType.Sp && inventory.ItemInstance.Rare == -2)
+                    {
+                        session.Client.SendPacket(session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("CANT_EQUIP_DESTROYED_SP"), 0));
+                        return;
+                    }
+
                     if (iteminfo.EquipmentSlot == (byte)EquipmentType.Sp && timeSpanSinceLastSpUsage <= session.Character.SpCooldown)
                     {
                         session.Client.SendPacket(
@@ -79,7 +85,7 @@ namespace OpenNos.GameObject
                             session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("BAD_FAIRY"), 0));
                         return;
                     }
-                  
+
                     if (session.Character.UseSp && iteminfo.EquipmentSlot == (byte)EquipmentType.Sp)
                     {
                         session.Client.SendPacket(
@@ -130,7 +136,7 @@ namespace OpenNos.GameObject
                         session.Client.SendPacket(session.Character.GenerateEquipment());
                         session.CurrentMap?.Broadcast(session.Character.GeneratePairy());
                     }
-                    
+
                     if (iteminfo.EquipmentSlot == (byte)EquipmentType.Fairy)
                     {
                         WearableInstance fairy = session.Character.EquipmentList.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Fairy, (byte)InventoryType.Equipment);

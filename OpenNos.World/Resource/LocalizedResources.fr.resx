@@ -716,9 +716,6 @@
   <data name="LVL_REQUIRED" xml:space="preserve">
     <value>{0} niveaux sont nécessaire pour améliorer la carte spécialiste.</value>
   </data>
-  <data name="UPGRADESP_DESTROY" xml:space="preserve">
-    <value>L'âme de la carte spécialiste est détruite !</value>
-  </data>
   <data name="UPGRADESP_FAILED" xml:space="preserve">
     <value>L'amélioration au niveau suivant a échoué !</value>
   </data>
@@ -799,5 +796,14 @@
   </data>
   <data name="REFUSED_GROUP_REQUEST" xml:space="preserve">
     <value>L'invitation de groupe a été refusée.</value>
+  </data>
+  <data name="CANT_EQUIP_DESTROYED_SP" xml:space="preserve">
+    <value>C'est maintenant impossible de l'utiliser, car l'âme a été détruite.</value>
+  </data>
+  <data name="CANT_UPGRADE_DESTROYED_SP" xml:space="preserve">
+    <value>Tu ne peux pas l'améliorer car l'âme est détruite.</value>
+  </data>
+  <data name="UPGRADESP_DESTROYED" xml:space="preserve">
+    <value>L'âme de la carte spécialiste est détruite.</value>
   </data>
 </root>

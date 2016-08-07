@@ -626,7 +626,7 @@ namespace OpenNos.Import.Console
                                     Type = type,
                                     Slot = byte.Parse(item[1]),
                                     ItemVNum = short.Parse(item[2]),
-                                    Rare = byte.Parse(item[3]),
+                                    Rare = sbyte.Parse(item[3]),
                                     Upgrade = byte.Parse(item[4])
                                 };
                             }

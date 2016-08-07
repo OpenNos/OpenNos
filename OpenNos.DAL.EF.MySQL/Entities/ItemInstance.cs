@@ -28,7 +28,7 @@ namespace OpenNos.DAL.EF.MySQL
         public DateTime? ItemDeleteTime { get; set; }
         public long ItemInstanceId { get; set; }
         public short ItemVNum { get; set; }
-        public byte Rare { get; set; }
+        public sbyte Rare { get; set; }
         public byte Upgrade { get; set; }
 
         #endregion

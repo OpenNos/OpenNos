@@ -404,7 +404,8 @@ namespace OpenNos.Handler
         {
             Logger.Debug(packet, Session.SessionId);
             string[] packetsplit = packet.Split(' ');
-            byte amount = 1, rare = 0, upgrade = 0, design = 0;
+            byte amount = 1,  upgrade = 0, design = 0;
+            sbyte rare = 0;
             short vnum;
             ItemDTO iteminfo = null;
             if (packetsplit.Length != 5 && packetsplit.Length != 4 && packetsplit.Length != 3)
@@ -430,7 +431,7 @@ namespace OpenNos.Handler
                     {
                         if (packetsplit.Length == 4)
                         {
-                            byte.TryParse(packetsplit[3], out rare);
+                            sbyte.TryParse(packetsplit[3], out rare);
                         }
                         else if (packetsplit.Length == 5)
                         {
@@ -441,7 +442,7 @@ namespace OpenNos.Handler
                             }
                             else
                             {
-                                byte.TryParse(packetsplit[3], out rare);
+                                sbyte.TryParse(packetsplit[3], out rare);
                                 byte.TryParse(packetsplit[4], out upgrade);
                                 if (upgrade == 0)
                                     if (iteminfo.BasicUpgrade != 0)

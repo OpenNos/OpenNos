@@ -430,12 +430,15 @@ namespace OpenNos.GameObject
                 }
                 else
                 {
-                    Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADESP_DESTROY"), 11));
-                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADESP_DESTROY"), 0));
+                    Session.Character.InventoryList.LoadByItemInstance<WearableInstance>(this.ItemInstanceId).Rare = (sbyte)-2;
+                    Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADESP_DESTROYED"), 11));
+                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADESP_DESTROYED"), 0));
+
                 }
             }
             Session.Character.Gold = Session.Character.Gold - goldprice[this.Upgrade];
             Session.Client.SendPacket(Session.Character.GenerateGold());
+            Session.Client.SendPacket(Session.Character.GenerateEq());
             Session.Character.InventoryList.RemoveItemAmount(featherVnum, (feather[this.Upgrade]));
             Session.Character.InventoryList.RemoveItemAmount(fullmoonVnum, (fullmoon[this.Upgrade]));
             Session.Character.GenerateStartupInventory();

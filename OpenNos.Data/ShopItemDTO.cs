@@ -20,7 +20,7 @@ namespace OpenNos.Data
 
         public byte Color { get; set; }
         public short ItemVNum { get; set; }
-        public byte Rare { get; set; }
+        public sbyte Rare { get; set; }
         public int ShopId { get; set; }
         public int ShopItemId { get; set; }
         public byte Slot { get; set; }

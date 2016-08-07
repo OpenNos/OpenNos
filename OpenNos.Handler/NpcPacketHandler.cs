@@ -210,7 +210,7 @@ namespace OpenNos.Handler
                     percent = 1.20;
                 else if (Session.Character.GetDignityIco() == 5 || Session.Character.GetDignityIco() == 6)
                     percent = 1.5;
-                byte rare = item.Rare;
+                sbyte rare = (sbyte)item.Rare;
                 if (iteminfo.Type == 0)
                     amount = 1;
 
@@ -230,14 +230,14 @@ namespace OpenNos.Handler
                         return;
                     }
                     Random rnd = new Random();
-                    byte ra = (byte)rnd.Next(0, 100);
+                   byte ra = (byte)rnd.Next(0, 100);
 
                     int[] rareprob = { 100, 100, 70, 50, 30, 15, 5, 1 };
                     if (iteminfo.ReputPrice != 0)
                         for (int i = 0; i < rareprob.Length; i++)
                         {
                             if (ra <= rareprob[i])
-                                rare = (byte)i;
+                                rare = (sbyte)i;
                         }
                 }
 

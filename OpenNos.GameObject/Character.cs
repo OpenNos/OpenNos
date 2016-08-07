@@ -574,9 +574,9 @@ namespace OpenNos.GameObject
 
         public string GenerateEqRareUpgradeForPacket()
         {
-            byte weaponRare = 0;
+            sbyte weaponRare = 0;
             byte weaponUpgrade = 0;
-            byte armorRare = 0;
+            sbyte armorRare = 0;
             byte armorUpgrade = 0;
             for (short i = 0; i < 15; i++)
             {
@@ -602,9 +602,9 @@ namespace OpenNos.GameObject
         {
             //equip 86 0 0.4903.6.8.0 2.340.0.0.0 3.4931.0.5.0 4.4845.3.5.0 5.4912.7.9.0 6.4848.1.0.0 7.4849.3.0.0 8.4850.2.0.0 9.227.0.0.0 10.281.0.0.0 11.347.0.0.0 13.4150.0.0.0 14.4076.0.0.0
             string eqlist = string.Empty;
-            byte weaponRare = 0;
+            sbyte weaponRare = 0;
             byte weaponUpgrade = 0;
-            byte armorRare = 0;
+            sbyte armorRare = 0;
             byte armorUpgrade = 0;
 
             for (short i = 0; i < 15; i++)
@@ -704,7 +704,7 @@ namespace OpenNos.GameObject
             return $"info {message}";
         }
 
-        public string GenerateInventoryAdd(short vnum, int amount, byte type, short slot, byte rare, short color, byte upgrade, byte upgrade2)
+        public string GenerateInventoryAdd(short vnum, int amount, byte type, short slot, sbyte rare, short color, byte upgrade, byte upgrade2)
         {
             Item item = ServerManager.GetItem(vnum);
             switch (type)
@@ -903,7 +903,9 @@ namespace OpenNos.GameObject
                 if (ski.Class == iteminfo.Morph + 31 && ski.LevelMinimum <= inventoryItem.SpLevel)
                     skillsSp.Add(new CharacterSkill() { SkillVNum = ski.SkillVNum, CharacterId = CharacterId });
             }
-
+            byte spdestroyed = 0;
+            if (inventoryItem.Rare == -2)
+                spdestroyed = 1;
             if (skillsSp.Count == 0)
                 skill = "-1";
             for (int i = 1; i < 11; i++)
@@ -914,7 +916,7 @@ namespace OpenNos.GameObject
             //0 0 0 0 0 0 0 '2' <- PS - 'number' after reputationminimum
             //10 9 8 '0 0 0 0'<- bonusdamage bonusarmor bonuselement bonushpmp its after upgrade and 3 first values are not important
             skill = skill.TrimEnd('.');
-            return $"slinfo {type} {inventoryItem.ItemVNum} {iteminfo.Morph} {inventoryItem.SpLevel} {iteminfo.LevelJobMinimum} {iteminfo.ReputationMinimum + 1} 0 0 0 0 0 0 0 2 {iteminfo.FireResistance} {iteminfo.WaterResistance} {iteminfo.LightResistance} {iteminfo.DarkResistance} {inventoryItem.XP} {ServersData.SpXPData[inventoryItem.SpLevel - 1]} {skill} {inventoryItem.ItemInstanceId} {freepoint} {slHit} {slDefence} {slElement} {slHp} {inventoryItem.Upgrade} 0 0 0 0 0 0 0 {inventoryItem.SpStoneUpgrade} {inventoryItem.SpDamage} {inventoryItem.SpDefence} {inventoryItem.SpElement} {inventoryItem.SpHP} {inventoryItem.SpFire} {inventoryItem.SpWater} {inventoryItem.SpLight} {inventoryItem.SpDark}";
+            return $"slinfo {type} {inventoryItem.ItemVNum} {iteminfo.Morph} {inventoryItem.SpLevel} {iteminfo.LevelJobMinimum} {iteminfo.ReputationMinimum} 0 0 0 0 0 0 0 2 {iteminfo.FireResistance} {iteminfo.WaterResistance} {iteminfo.LightResistance} {iteminfo.DarkResistance} {inventoryItem.XP} {ServersData.SpXPData[inventoryItem.SpLevel - 1]} {skill} {inventoryItem.ItemInstanceId} {freepoint} {slHit} {slDefence} {slElement} {slHp} {inventoryItem.Upgrade} 0 0 {spdestroyed} 0 0 0 0 {inventoryItem.SpStoneUpgrade} {inventoryItem.SpDamage} {inventoryItem.SpDefence} {inventoryItem.SpElement} {inventoryItem.SpHP} {inventoryItem.SpFire} {inventoryItem.SpWater} {inventoryItem.SpLight} {inventoryItem.SpDark}";
         }
 
         public string GenerateSpk(object message, int v)

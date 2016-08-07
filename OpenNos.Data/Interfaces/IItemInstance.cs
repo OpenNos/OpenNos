@@ -26,7 +26,7 @@ namespace OpenNos.Data
         DateTime? ItemDeleteTime { get; set; }
         long ItemInstanceId { get; set; }
         short ItemVNum { get; set; }
-        byte Rare { get; set; }
+        sbyte Rare { get; set; }
         byte Upgrade { get; set; }
 
         #endregion
