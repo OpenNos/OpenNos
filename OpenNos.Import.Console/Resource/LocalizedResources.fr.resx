@@ -150,6 +150,9 @@
   <data name="NPCS_PARSED" xml:space="preserve">
     <value>{0} Pnj analysés !</value>
   </data>
+  <data name="PARSE_ACCOUNTS" xml:space="preserve">
+    <value>Vous-vous analyser les comptes ?</value>
+  </data>
   <data name="PARSE_ALL" xml:space="preserve">
     <value>Voulez-vous tout analyser ?</value>
   </data>

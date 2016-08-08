@@ -444,7 +444,7 @@ namespace OpenNos.Import.Console
                 Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("NPCMONSTERS_PARSED"), counter));
                 npcIdStream.Close();
             }
-            drops.Add(new DropDTO { ItemVNum = 1012, Amount = 1, MonsterVNum = null, DropChance = 50000 });// drop chance approximate
+            drops.Add(new DropDTO { ItemVNum = 1012, Amount = 1, MonsterVNum = null, DropChance = 20000 });// drop chance approximate
             drops.Add(new DropDTO { ItemVNum = 1114, Amount = 1, MonsterVNum = null, DropChance = 1000 });// drop chance approximate
             drops.Add(new DropDTO { ItemVNum = 5119, Amount = 1, MonsterVNum = null, DropChance = 1000 });// drop chance approximate
             DAOFactory.DropDAO.Insert(drops);
@@ -1087,7 +1087,7 @@ namespace OpenNos.Import.Console
         {
             int teleporterCounter = 0;
             TeleporterDTO teleporter = null;
-            foreach (string[] currentPacket in _packetList.Where(o => o[0].Equals("at") || (o[0].Equals("n_run") && (o[1].Equals("16") || o[1].Equals("26")))))
+            foreach (string[] currentPacket in _packetList.Where(o => o[0].Equals("at") || (o[0].Equals("n_run") && (o[1].Equals("16") || o[1].Equals("26") ||  o[1].Equals("45")))))
             {
                 if (currentPacket.Length > 4 && currentPacket[0] == "n_run")
                 {

@@ -152,7 +152,30 @@ namespace OpenNos.GameObject
                             }
                         }
                     }
+                    break;
 
+                case 45:
+                    if (npc != null)
+                    {
+                        TeleporterDTO tp = npc.Teleporters?.FirstOrDefault(s => s.Index == type);
+                        if (tp != null)
+                        {
+                            if (Session.Character.Gold >= 500)
+                            {
+                                ServerManager.Instance.MapOut(Session.Character.CharacterId);
+                                Session.Character.Gold -= 500;
+                                Session.Client.SendPacket(Session.Character.GenerateGold());
+                                Session.Character.MapY = tp.MapY;
+                                Session.Character.MapX = tp.MapX;
+                                Session.Character.MapId = tp.MapId;
+                                ServerManager.Instance.ChangeMap(Session.Character.CharacterId);
+                            }
+                            else
+                            {
+                                Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NOT_ENOUGH_MONEY"), 10));
+                            }
+                        }
+                    }
                     break;
 
                 default:

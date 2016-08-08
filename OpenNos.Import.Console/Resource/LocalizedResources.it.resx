@@ -138,6 +138,9 @@
   <data name="NPCS_PARSED" xml:space="preserve">
     <value>{0} NPCs sincronizzati</value>
   </data>
+  <data name="PARSE_ACCOUNTS" xml:space="preserve">
+    <value />
+  </data>
   <data name="PARSE_ALL" xml:space="preserve">
     <value>Vuoi sincronizzare TUTTO?</value>
   </data>
@@ -164,8 +167,5 @@
   </data>
   <data name="SHOPS_PARSED" xml:space="preserve">
     <value>{0} Shops sincronizzati</value>
-  </data>
-  <data name="String" xml:space="preserve">
-    <value />
   </data>
 </root>
