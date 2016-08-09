@@ -47,6 +47,20 @@ namespace OpenNos.DAL.EF.MySQL
 
         #region Methods
 
+        public void Insert(List<MapTypeMapDTO> maptypemaps)
+        {
+            using (var context = DataAccessHelper.CreateContext())
+            {
+                context.Configuration.AutoDetectChangesEnabled = false;
+                foreach (MapTypeMapDTO MapTypeMap in maptypemaps)
+                {
+                    MapTypeMap entity = _mapper.Map<MapTypeMap>(MapTypeMap);
+                    context.MapTypeMap.Add(entity);
+                }
+                context.Configuration.AutoDetectChangesEnabled = true;
+                context.SaveChanges();
+            }
+        }
         public IEnumerable<MapTypeMapDTO> LoadAll()
         {
             using (var context = DataAccessHelper.CreateContext())

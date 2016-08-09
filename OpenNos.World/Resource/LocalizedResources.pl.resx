@@ -715,9 +715,6 @@
   <data name="LVL_REQUIRED" xml:space="preserve">
     <value>{0} Poziom SP potrzebny do ulepszenia</value>
   </data>
-  <data name="UPGRADESP_DESTROY" xml:space="preserve">
-    <value>Karta specjalisty została zniszczona</value>
-  </data>
   <data name="UPGRADESP_FAILED" xml:space="preserve">
     <value>Ulepszanie karty specjalisty nie powiodło się</value>
   </data>
@@ -803,12 +800,12 @@
     <value>Błąd usuwania postaci z Id: {0} , {1}</value>
   </data>
   <data name="CANT_EQUIP_DESTROYED_SP" xml:space="preserve">
-    <value />
+    <value>Nie możesz nosić zniszczonego sp</value>
   </data>
   <data name="CANT_UPGRADE_DESTROYED_SP" xml:space="preserve">
-    <value />
+    <value>Nie możesz ulepszyć sp z martwą duszą</value>
   </data>
   <data name="UPGRADESP_DESTROYED" xml:space="preserve">
-    <value />
+    <value>Dusza specjalisty została zniszczona</value>
   </data>
 </root>

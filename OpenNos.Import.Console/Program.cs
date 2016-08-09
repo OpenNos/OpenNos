@@ -86,6 +86,8 @@ namespace OpenNos.Import.Console
                 {
                     factory.ImportMaps();
                     factory.LoadMaps();
+                    factory.ImportMapType();
+                    factory.ImportMapTypeMap();
                     factory.ImportAccounts();
                     factory.ImportPortals();
                     factory.ImportItems();
@@ -109,6 +111,16 @@ namespace OpenNos.Import.Console
                         factory.ImportMaps();
                         factory.LoadMaps();
                     }
+
+                    System.Console.WriteLine($"{Language.Instance.GetMessageFromKey("PARSE_MAPTYPES")} [Y/n]");
+                    key = System.Console.ReadKey(true);
+                    if (key.KeyChar != 'n')
+                        factory.ImportMapType();
+
+                    System.Console.WriteLine($"{Language.Instance.GetMessageFromKey("PARSE_MAPTYPEMAPS")} [Y/n]");
+                    key = System.Console.ReadKey(true);
+                    if (key.KeyChar != 'n')
+                        factory.ImportMapTypeMap();
 
                     System.Console.WriteLine($"{Language.Instance.GetMessageFromKey("PARSE_ACCOUNTS")} [Y/n]");
                     key = System.Console.ReadKey(true);

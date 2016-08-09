@@ -124,6 +124,24 @@ namespace OpenNos.Import.Console.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to my name&apos;s jeff....
+        /// </summary>
+        internal static string MAPTYPEMAPS_PARSED {
+            get {
+                return ResourceManager.GetString("MAPTYPEMAPS_PARSED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Some MapTypes parsed.
+        /// </summary>
+        internal static string MAPTYPES_PARSED {
+            get {
+                return ResourceManager.GetString("MAPTYPES_PARSED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0} monsters parsed.
         /// </summary>
         internal static string MONSTERS_PARSED {
@@ -178,7 +196,7 @@ namespace OpenNos.Import.Console.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Do you want to parse Drop?.
+        ///   Looks up a localized string similar to Do you want to parse Drop? !for MapType dependant drop use MapTypes!.
         /// </summary>
         internal static string PARSE_DROP {
             get {
@@ -210,6 +228,24 @@ namespace OpenNos.Import.Console.Resource {
         internal static string PARSE_MAPS {
             get {
                 return ResourceManager.GetString("PARSE_MAPS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Do you want to parse MapTypeMaps? we suggest using with MapTypes.
+        /// </summary>
+        internal static string PARSE_MAPTYPEMAPS {
+            get {
+                return ResourceManager.GetString("PARSE_MAPTYPEMAPS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Do you want to parse MapTypes? we suggest using with MapTypeMaps.
+        /// </summary>
+        internal static string PARSE_MAPTYPES {
+            get {
+                return ResourceManager.GetString("PARSE_MAPTYPES", resourceCulture);
             }
         }
         

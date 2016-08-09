@@ -20,7 +20,7 @@ namespace OpenNos.DAL.Interface
     public interface IMapTypeMapDAO
     {
         #region Methods
-
+        void Insert(List<MapTypeMapDTO> maptypemap);
         IEnumerable<MapTypeMapDTO> LoadAll();
         IEnumerable<MapTypeMapDTO> LoadByMapId(short mapId);
         IEnumerable<MapTypeMapDTO> LoadByMapTypeId(short maptypeId);

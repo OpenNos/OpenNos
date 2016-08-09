@@ -126,6 +126,9 @@
   <data name="DONE" xml:space="preserve">
     <value>Wprowadzanie ukończone!</value>
   </data>
+  <data name="DROP_PARSED" xml:space="preserve">
+    <value>{0} dropów wprowadzonych</value>
+  </data>
   <data name="ENTER_PATH" xml:space="preserve">
     <value>Podaj ściezkę pliku aby przeprowadzić rozbiór danych</value>
   </data>
@@ -134,6 +137,12 @@
   </data>
   <data name="MAPS_PARSED" xml:space="preserve">
     <value>{0} map wprowadzonych</value>
+  </data>
+  <data name="MAPTYPEMAPS_PARSED" xml:space="preserve">
+    <value>Kilka MapTypeMaps wprowadzonych</value>
+  </data>
+  <data name="MAPTYPES_PARSED" xml:space="preserve">
+    <value>Kilka typów map wprowadzonych</value>
   </data>
   <data name="MONSTERS_PARSED" xml:space="preserve">
     <value>{0} potworów wprowadzonych</value>
@@ -154,7 +163,7 @@
     <value>Czy chcesz wprowadzić WSZYSTKIE?</value>
   </data>
   <data name="PARSE_DROP" xml:space="preserve">
-    <value>Czy chcesz wprowadzić Drop?</value>
+    <value>Czy chcesz wprowadzić Dropy?</value>
   </data>
   <data name="PARSE_ITEMS" xml:space="preserve">
     <value>Czy chcesz wprowadzić Przedmioty?</value>
@@ -164,6 +173,12 @@
   </data>
   <data name="PARSE_MAPS" xml:space="preserve">
     <value>Czy chcesz wprowadzić Mapy?</value>
+  </data>
+  <data name="PARSE_MAPTYPEMAPS" xml:space="preserve">
+    <value>Czy chcesz wprowadzić MapTypeMaps? sugerujemy także użyć MapTypes</value>
+  </data>
+  <data name="PARSE_MAPTYPES" xml:space="preserve">
+    <value>Czy chcesz wprowadzić MapTypes? sugerujemy także aby użyć MapTypeMaps</value>
   </data>
   <data name="PARSE_MONSTERS" xml:space="preserve">
     <value>Czy chcesz wprowadzić NpcMonster?</value>
