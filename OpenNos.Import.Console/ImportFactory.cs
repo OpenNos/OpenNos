@@ -1311,7 +1311,20 @@ namespace OpenNos.Import.Console
                         item.ItemSubType = Convert.ToByte(currentLine[4]);
                         item.EquipmentSlot = Convert.ToByte(currentLine[5] != "-1" ? currentLine[5] : "0");
                         //item.DesignId = Convert.ToInt16(currentLine[6]);
-                        item.Morph = Convert.ToInt16(currentLine[7]);
+                        switch(item.VNum)
+                        {
+                            case 1906:
+                                item.Morph = 1368;
+                                break;
+
+                            case 1907:
+                                item.Morph = 1370;
+                                break;
+
+                            default:
+                                item.Morph = Convert.ToInt16(currentLine[7]);
+                                break;
+                        }
                     }
                     else if (currentLine.Length > 3 && currentLine[1] == "TYPE")
                     {
