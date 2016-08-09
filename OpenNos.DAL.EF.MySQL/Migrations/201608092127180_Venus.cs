@@ -3,7 +3,7 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class Aphrodite : DbMigration
+    public partial class Venus : DbMigration
     {
         public override void Up()
         {
@@ -445,7 +445,7 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
                         ShopItemId = c.Int(nullable: false, identity: true),
                         Color = c.Byte(nullable: false),
                         ItemVNum = c.Short(nullable: false),
-                        Rare = c.Byte(nullable: false),
+                        Rare = c.SByte(nullable: false),
                         ShopId = c.Int(nullable: false),
                         Slot = c.Byte(nullable: false),
                         Type = c.Byte(nullable: false),
@@ -531,7 +531,7 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
                         IsUsed = c.Boolean(nullable: false),
                         ItemDeleteTime = c.DateTime(precision: 0),
                         ItemVNum = c.Short(nullable: false),
-                        Rare = c.Byte(nullable: false),
+                        Rare = c.SByte(nullable: false),
                         Upgrade = c.Byte(nullable: false),
                         HP = c.Short(),
                         MP = c.Short(),

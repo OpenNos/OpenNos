@@ -138,6 +138,12 @@
   <data name="MAPS_PARSED" xml:space="preserve">
     <value>{0} maps parsed</value>
   </data>
+  <data name="MAPTYPEMAPS_PARSED" xml:space="preserve">
+    <value>my name's jeff...</value>
+  </data>
+  <data name="MAPTYPES_PARSED" xml:space="preserve">
+    <value>Some MapTypes parsed</value>
+  </data>
   <data name="MONSTERS_PARSED" xml:space="preserve">
     <value>{0} monsters parsed</value>
   </data>
@@ -157,7 +163,7 @@
     <value>Do you want to parse ALL?</value>
   </data>
   <data name="PARSE_DROP" xml:space="preserve">
-    <value>Do you want to parse Drop?</value>
+    <value>Do you want to parse Drop? !for MapType dependant drop use MapTypes!</value>
   </data>
   <data name="PARSE_ITEMS" xml:space="preserve">
     <value>Do you want to parse Items?</value>
@@ -167,6 +173,12 @@
   </data>
   <data name="PARSE_MAPS" xml:space="preserve">
     <value>Do you want to parse Maps?</value>
+  </data>
+  <data name="PARSE_MAPTYPEMAPS" xml:space="preserve">
+    <value>Do you want to parse MapTypeMaps? we suggest using with MapTypes</value>
+  </data>
+  <data name="PARSE_MAPTYPES" xml:space="preserve">
+    <value>Do you want to parse MapTypes? we suggest using with MapTypeMaps</value>
   </data>
   <data name="PARSE_MONSTERS" xml:space="preserve">
     <value>Do you want to parse NpcMonsters?</value>

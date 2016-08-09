@@ -730,9 +730,6 @@
   <data name="LVL_REQUIRED" xml:space="preserve">
     <value>SPLvl {0} required for upgrade</value>
   </data>
-  <data name="UPGRADESP_DESTROY" xml:space="preserve">
-    <value>SP destroyed</value>
-  </data>
   <data name="UPGRADESP_FAILED" xml:space="preserve">
     <value>SP upgrading failed!</value>
   </data>
@@ -824,12 +821,12 @@
     <value>Error deleting PenaltyLog with Id {0} , {1}</value>
   </data>
   <data name="CANT_EQUIP_DESTROYED_SP" xml:space="preserve">
-    <value />
+    <value>You can't equip destroyed sp</value>
   </data>
   <data name="CANT_UPGRADE_DESTROYED_SP" xml:space="preserve">
-    <value />
+    <value>You can't upgrade sp with dead soul</value>
   </data>
   <data name="UPGRADESP_DESTROYED" xml:space="preserve">
-    <value />
+    <value>SP destroyed.</value>
   </data>
 </root>
