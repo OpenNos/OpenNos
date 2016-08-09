@@ -1087,7 +1087,7 @@ namespace OpenNos.Import.Console
         {
             int teleporterCounter = 0;
             TeleporterDTO teleporter = null;
-            foreach (string[] currentPacket in _packetList.Where(o => o[0].Equals("at") || (o[0].Equals("n_run") && (o[1].Equals("16") || o[1].Equals("26") ||  o[1].Equals("45")))))
+            foreach (string[] currentPacket in _packetList.Where(o => o[0].Equals("at") || (o[0].Equals("n_run") && (o[1].Equals("16") || o[1].Equals("26") ||  o[1].Equals("45") || o[1].Equals("5002")))))
             {
                 if (currentPacket.Length > 4 && currentPacket[0] == "n_run")
                 {
@@ -1186,7 +1186,24 @@ namespace OpenNos.Import.Console
                         item.ItemSubType = Convert.ToByte(currentLine[4]);
                         item.EquipmentSlot = Convert.ToByte(currentLine[5] != "-1" ? currentLine[5] : "0");
                         //item.DesignId = Convert.ToInt16(currentLine[6]);
-                        item.Morph = Convert.ToInt16(currentLine[7]);
+
+                        switch (item.VNum)
+                        {
+                            case 1906:
+                                item.Morph = 1368;
+                                break;
+
+                            case 1907:
+                                item.Morph = 1370;
+                                break;
+
+                            default:
+                                item.Morph = Convert.ToInt16(currentLine[7]);
+                                break;
+                        }
+
+
+
                     }
                     else if (currentLine.Length > 3 && currentLine[1] == "TYPE")
                     {
