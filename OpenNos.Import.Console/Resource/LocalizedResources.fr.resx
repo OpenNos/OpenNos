@@ -135,6 +135,12 @@
   <data name="MAPS_PARSED" xml:space="preserve">
     <value>{0} Cartes analysées !</value>
   </data>
+  <data name="MAPTYPEMAPS_PARSED" xml:space="preserve">
+    <value>Carte type des cartes analysées !</value>
+  </data>
+  <data name="MAPTYPES_PARSED" xml:space="preserve">
+    <value>Type de cartes analysées !</value>
+  </data>
   <data name="MONSTERS_PARSED" xml:space="preserve">
     <value>{0} Monstres analysés !</value>
   </data>
@@ -167,6 +173,12 @@
   </data>
   <data name="PARSE_MAPS" xml:space="preserve">
     <value>Voulez-vous analyser les cartes ?</value>
+  </data>
+  <data name="PARSE_MAPTYPEMAPS" xml:space="preserve">
+    <value>Voulez-vous analysez carte des types de cartes ?</value>
+  </data>
+  <data name="PARSE_MAPTYPES" xml:space="preserve">
+    <value>Voulez-vous anlysez les types de cartes ?</value>
   </data>
   <data name="PARSE_MONSTERS" xml:space="preserve">
     <value>Voulez-vous analyser les monstres ?</value>

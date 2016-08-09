@@ -44,6 +44,7 @@ namespace OpenNos.Import.Console
         #endregion
 
         #region Methods
+
         public void ImportAccounts()
         {
             AccountDTO acc1 = new AccountDTO
@@ -53,6 +54,7 @@ namespace OpenNos.Import.Console
                 Name = "admin",
                 Password = "ee26b0dd4af7e749aa1a8ee3c10ae9923f618980772e473f8819a5d4940e0db27ac185f8a0e1d5f84f88bc887fd67b143732c304cc5fa9ad8e6f57f50028a8ff"
             };
+            DAOFactory.AccountDAO.InsertOrUpdate(ref acc1);
             AccountDTO acc2 = new AccountDTO
             {
                 AccountId = 2,
@@ -60,7 +62,6 @@ namespace OpenNos.Import.Console
                 Name = "test",
                 Password = "ee26b0dd4af7e749aa1a8ee3c10ae9923f618980772e473f8819a5d4940e0db27ac185f8a0e1d5f84f88bc887fd67b143732c304cc5fa9ad8e6f57f50028a8ff"
             };
-            DAOFactory.AccountDAO.InsertOrUpdate(ref acc1);
             DAOFactory.AccountDAO.InsertOrUpdate(ref acc2);
         }
 
@@ -197,6 +198,110 @@ namespace OpenNos.Import.Console
             }
             DAOFactory.MapDAO.Insert(maps);
             Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("MAPS_PARSED"), i));
+        }
+
+        public void ImportMapType()
+        {
+            // Need to hardcode, because no real source of this abomination.
+            MapTypeDTO mt1 = new MapTypeDTO
+            {
+                MapTypeId = 1,
+                MapTypeName = "Act1",
+                PotionDelay = 500
+            };
+            DAOFactory.MapTypeDAO.Insert(ref mt1);
+            MapTypeDTO mt2 = new MapTypeDTO
+            {
+                MapTypeId = 2,
+                MapTypeName = "Act2",
+                PotionDelay = 500
+            };
+            DAOFactory.MapTypeDAO.Insert(ref mt2);
+            MapTypeDTO mt3 = new MapTypeDTO
+            {
+                MapTypeId = 3,
+                MapTypeName = "Act3",
+                PotionDelay = 500
+            };
+            DAOFactory.MapTypeDAO.Insert(ref mt3);
+            MapTypeDTO mt4 = new MapTypeDTO
+            {
+                MapTypeId = 4,
+                MapTypeName = "Act4",
+                PotionDelay = 5000
+            };
+            DAOFactory.MapTypeDAO.Insert(ref mt4);
+            MapTypeDTO mt5 = new MapTypeDTO
+            {
+                MapTypeId = 5,
+                MapTypeName = "Act5.1",
+                PotionDelay = 500
+            };
+            DAOFactory.MapTypeDAO.Insert(ref mt5);
+            MapTypeDTO mt6 = new MapTypeDTO
+            {
+                MapTypeId = 6,
+                MapTypeName = "Act5.2",
+                PotionDelay = 500
+            };
+            DAOFactory.MapTypeDAO.Insert(ref mt6);
+            MapTypeDTO mt7 = new MapTypeDTO
+            {
+                MapTypeId = 7,
+                MapTypeName = "Act6.1",
+                PotionDelay = 500
+            };
+            DAOFactory.MapTypeDAO.Insert(ref mt7);
+            MapTypeDTO mt8 = new MapTypeDTO
+            {
+                MapTypeId = 8,
+                MapTypeName = "Act6.2",
+                PotionDelay = 500
+            };
+            DAOFactory.MapTypeDAO.Insert(ref mt8);
+            Logger.Log.Info(Language.Instance.GetMessageFromKey("MAPTYPES_PARSED"));
+        }
+
+        public void ImportMapTypeMap()
+        {
+            List<MapTypeMapDTO> maptypemaps = new List<MapTypeMapDTO>();
+            for (int i = 1; i < 300; i++)
+            {
+                if ((i < 18) || (i > 48 && i < 53) || (i > 67 && i < 85) || (i > 102 && i < 105) || (i > 144 && i < 149)) // "act1"
+                {
+                    maptypemaps.Add(new MapTypeMapDTO { MapId = (short)i, MapTypeId = 1 });
+                }
+                if ((i > 19 && i < 34) || (i > 52 && i < 68) || (i > 84 && i < 101)) // "act2"
+                {
+                    maptypemaps.Add(new MapTypeMapDTO { MapId = (short)i, MapTypeId = 2 });
+                }
+                if ((i == 41) || (i == 100 && i == 101) || (i > 104 && i < 128)) // "act3"
+                {
+                    maptypemaps.Add(new MapTypeMapDTO { MapId = (short)i, MapTypeId = 3 });
+                }
+                if ((i > 129 && i < 135)) // "act4"
+                {
+                    maptypemaps.Add(new MapTypeMapDTO { MapId = (short)i, MapTypeId = 4 });
+                }
+                if ((i > 169 && i < 205)) // "act5.1"
+                {
+                    maptypemaps.Add(new MapTypeMapDTO { MapId = (short)i, MapTypeId = 5 });
+                }
+                if ((i > 204 && i < 221)) // "act5.2"
+                {
+                    maptypemaps.Add(new MapTypeMapDTO { MapId = (short)i, MapTypeId = 6 });
+                }
+                if ((i > 227 && i < 241)) // "act6.1"
+                {
+                    maptypemaps.Add(new MapTypeMapDTO { MapId = (short)i, MapTypeId = 7 });
+                }
+                if ((i > 239 && i < 251) || (i == 299)) // "act6.2"
+                {
+                    //maptypemaps.Add(new MapTypeMapDTO { MapId = (short)i, MapTypeId = 8 }); // uncomment on 2016/08/10
+                }
+            }
+            DAOFactory.MapTypeMapDAO.Insert(maptypemaps);
+            Logger.Log.Info(Language.Instance.GetMessageFromKey("MAPTYPEMAPS_PARSED"));
         }
 
         public void ImportMonsters()
@@ -810,78 +915,98 @@ namespace OpenNos.Import.Console
                                         case 3:
                                             skill.LevelMinimum = 20;
                                             break;
+
                                         case 2:
                                             skill.LevelMinimum = 10;
                                             break;
+
                                         default:
                                             skill.LevelMinimum = 0;
                                             break;
                                     }
                                     break;
+
                                 case 9:
                                     switch (skills.Where(s => s.Class == skill.Class).Count())
                                     {
                                         case 9:
                                             skill.LevelMinimum = 20;
                                             break;
+
                                         case 8:
                                             skill.LevelMinimum = 16;
                                             break;
+
                                         case 7:
                                             skill.LevelMinimum = 12;
                                             break;
+
                                         case 6:
                                             skill.LevelMinimum = 8;
                                             break;
+
                                         case 5:
                                             skill.LevelMinimum = 4;
                                             break;
+
                                         default:
                                             skill.LevelMinimum = 0;
                                             break;
                                     }
                                     break;
+
                                 case 16:
                                     switch (skills.Where(s => s.Class == skill.Class).Count())
                                     {
                                         case 6:
                                             skill.LevelMinimum = 20;
                                             break;
+
                                         case 5:
                                             skill.LevelMinimum = 15;
                                             break;
+
                                         case 4:
                                             skill.LevelMinimum = 10;
                                             break;
+
                                         case 3:
                                             skill.LevelMinimum = 5;
                                             break;
+
                                         case 2:
                                             skill.LevelMinimum = 3;
                                             break;
+
                                         default:
                                             skill.LevelMinimum = 0;
                                             break;
                                     }
                                     break;
+
                                 default:
                                     switch (skills.Where(s => s.Class == skill.Class).Count())
                                     {
                                         case 10:
                                             skill.LevelMinimum = 20;
                                             break;
+
                                         case 9:
                                             skill.LevelMinimum = 16;
                                             break;
+
                                         case 8:
                                             skill.LevelMinimum = 12;
                                             break;
+
                                         case 7:
                                             skill.LevelMinimum = 8;
                                             break;
+
                                         case 6:
                                             skill.LevelMinimum = 4;
                                             break;
+
                                         default:
                                             skill.LevelMinimum = 0;
                                             break;
@@ -1087,7 +1212,7 @@ namespace OpenNos.Import.Console
         {
             int teleporterCounter = 0;
             TeleporterDTO teleporter = null;
-            foreach (string[] currentPacket in _packetList.Where(o => o[0].Equals("at") || (o[0].Equals("n_run") && (o[1].Equals("16") || o[1].Equals("26") ||  o[1].Equals("45") || o[1].Equals("5002")))))
+            foreach (string[] currentPacket in _packetList.Where(o => o[0].Equals("at") || (o[0].Equals("n_run") && (o[1].Equals("16") || o[1].Equals("26") || o[1].Equals("45")))))
             {
                 if (currentPacket.Length > 4 && currentPacket[0] == "n_run")
                 {
@@ -1189,6 +1314,14 @@ namespace OpenNos.Import.Console
 
                         switch (item.VNum)
                         {
+                            case 5238:
+                                item.Morph = 817;
+                                break;
+
+                            case 5240:
+                                item.Morph = 819;
+                                break;
+
                             case 1906:
                                 item.Morph = 1368;
                                 break;
@@ -1197,12 +1330,90 @@ namespace OpenNos.Import.Console
                                 item.Morph = 1370;
                                 break;
 
+                            case 1965:
+                                item.Morph = 1406;
+                                break;
+
+                            case 5008:
+                                item.Morph = 1411;
+                                break;
+
+                            case 5117:
+                                item.Morph = 1429;
+                                break;
+
+                            case 5152:
+                                item.Morph = 1432;
+                                break;
+
+                            case 5173:
+                                item.Morph = 1511;
+                                break;
+
+                            case 5914:
+                                item.Morph = 1513;
+                                break;
+
+                            case 5196:
+                                item.Morph = 1517;
+                                break;
+
+                            case 5232:
+                                item.Morph = 1520;
+                                break;
+
+                            case 5319:
+                                item.Morph = 1526;
+                                break;
+
+                            case 5321:
+                                item.Morph = 1528;
+                                break;
+
+                            case 5323:
+                                item.Morph = 130;
+                                break;
+
+                            case 5330:
+                                item.Morph = 1928;
+                                break;
+
+                            case 5332:
+                                item.Morph = 1930;
+                                break;
+
+                            case 5360:
+                                item.Morph = 1932;
+                                break;
+
+                            case 5386:
+                                item.Morph = 1934;
+                                break;
+
+                            case 5387:
+                                item.Morph = 1936;
+                                break;
+
+                            case 5388:
+                                item.Morph = 1938;
+                                break;
+
+                            case 5389:
+                                item.Morph = 1940;
+                                break;
+
+                            case 5390:
+                                item.Morph = 1942;
+                                break;
+
+                            case 5391:
+                                item.Morph = 1944;
+                                break;
+
                             default:
                                 item.Morph = Convert.ToInt16(currentLine[7]);
                                 break;
                         }
-
-
 
                     }
                     else if (currentLine.Length > 3 && currentLine[1] == "TYPE")
