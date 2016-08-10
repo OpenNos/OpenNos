@@ -30,6 +30,7 @@ namespace OpenNos.Domain
         Amulet = 11,
         Sp = 12,
         CostumeSuit = 13,
-        CostumeHat = 14
+        CostumeHat = 14,
+        WeaponSkin = 15
     }
 }

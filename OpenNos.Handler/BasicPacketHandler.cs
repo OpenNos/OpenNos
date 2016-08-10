@@ -473,7 +473,7 @@ namespace OpenNos.Handler
             {
                 IEnumerable<InventoryDTO> inventory = DAOFactory.InventoryDAO.LoadByType(character.CharacterId, (byte)InventoryType.Equipment);
 
-                WearableInstance[] equipment = new WearableInstance[15];
+                WearableInstance[] equipment = new WearableInstance[16];
                 foreach (InventoryDTO equipmentEntry in inventory)
                 {
                     WearableInstance currentInstance = equipmentEntry.ItemInstance as WearableInstance;

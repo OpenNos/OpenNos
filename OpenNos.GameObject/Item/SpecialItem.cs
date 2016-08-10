@@ -26,6 +26,26 @@ namespace OpenNos.GameObject
             switch (Effect)
             {
                 default:
+                    Item iteminfo = ServerManager.GetItem(Inv.ItemInstance.ItemVNum);
+                    if (iteminfo.Morph != 0 && iteminfo.Speed != 0)
+                    {
+                        if (Session.Character.IsVehicled == false)
+                        {
+                            Session.Client.SendPacket($"delay 3000 3 #u_i^1^{Session.Character.CharacterId}^{Inv.Type}^{Inv.Slot}^2");
+                            Session.Character.IsVehicled = true;
+                            Session.Client.SendPacket("pinit 0");
+                            Session.CurrentMap?.Broadcast(Session.Character.GenerateCMode());
+                            // change speed
+                            Session.Client.SendPacket(Session.Character.GenerateCond());
+                        }
+                        else
+                        {
+                            Session.Client.SendPacket("pinit 0");
+                            Session.CurrentMap?.Broadcast(Session.Character.GenerateCMode());
+                            // revert speed change
+                            Session.Client.SendPacket(Session.Character.GenerateCond());
+                        }
+                    }
                     Logger.Log.Warn(String.Format(Language.Instance.GetMessageFromKey("NO_HANDLER_ITEM"), this.GetType().ToString()));
                     break;
             }

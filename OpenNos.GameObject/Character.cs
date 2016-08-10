@@ -558,8 +558,8 @@ namespace OpenNos.GameObject
 
         public string GenerateEqListForPacket()
         {
-            string[] invarray = new string[15];
-            for (short i = 0; i < 15; i++)
+            string[] invarray = new string[16];
+            for (short i = 0; i < 16; i++)
             {
                 Inventory inv = EquipmentList.LoadInventoryBySlotAndType(i, (byte)InventoryType.Equipment);
                 if (inv != null)
@@ -569,7 +569,7 @@ namespace OpenNos.GameObject
                 else invarray[i] = "-1";
             }
 
-            return $"{invarray[(byte)EquipmentType.Hat]}.{invarray[(byte)EquipmentType.Armor]}.{invarray[(byte)EquipmentType.MainWeapon]}.{invarray[(byte)EquipmentType.SecondaryWeapon]}.{invarray[(byte)EquipmentType.Mask]}.{invarray[(byte)EquipmentType.Fairy]}.{invarray[(byte)EquipmentType.CostumeSuit]}.{invarray[(byte)EquipmentType.CostumeHat]}";
+            return $"{invarray[(byte)EquipmentType.Hat]}.{invarray[(byte)EquipmentType.Armor]}.{invarray[(byte)EquipmentType.MainWeapon]}.{invarray[(byte)EquipmentType.SecondaryWeapon]}.{invarray[(byte)EquipmentType.Mask]}.{invarray[(byte)EquipmentType.Fairy]}.{invarray[(byte)EquipmentType.CostumeSuit]}.{invarray[(byte)EquipmentType.CostumeHat]}.{invarray[(byte)EquipmentType.WeaponSkin]}";
         }
 
         public string GenerateEqRareUpgradeForPacket()
@@ -607,7 +607,7 @@ namespace OpenNos.GameObject
             sbyte armorRare = 0;
             byte armorUpgrade = 0;
 
-            for (short i = 0; i < 15; i++)
+            for (short i = 0; i < 16; i++)
             {
                 ItemInstance wearable = EquipmentList.LoadBySlotAndType<WearableInstance>(i, (byte)InventoryType.Equipment);
                 if (wearable == null)

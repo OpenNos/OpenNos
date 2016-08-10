@@ -1314,100 +1314,125 @@ namespace OpenNos.Import.Console
 
                         switch (item.VNum)
                         {
-                            case 5238:
-                                item.Morph = 817;
-                                break;
-
-                            case 5240:
-                                item.Morph = 819;
-                                break;
 
                             case 1906:
                                 item.Morph = 1368;
+                                item.Speed = 20;
                                 break;
 
                             case 1907:
                                 item.Morph = 1370;
+                                item.Speed = 20;
                                 break;
 
                             case 1965:
                                 item.Morph = 1406;
+                                item.Speed = 20;
                                 break;
 
                             case 5008:
                                 item.Morph = 1411;
+                                item.Speed = 20;
                                 break;
 
                             case 5117:
                                 item.Morph = 1429;
+                                item.Speed = 21;
                                 break;
 
                             case 5152:
                                 item.Morph = 1432;
+                                item.Speed = 21;
                                 break;
 
                             case 5173:
                                 item.Morph = 1511;
+                                item.Speed = 16;
+                                break;
+
+                            case 5238:
+                                item.Morph = 817;
+                                item.Speed = 20;
+                                break;
+
+                            case 5240:
+                                item.Morph = 819;
+                                item.Speed = 20;
                                 break;
 
                             case 5914:
                                 item.Morph = 1513;
+                                item.Speed = 14;
                                 break;
 
                             case 5196:
                                 item.Morph = 1517;
+                                item.Speed = 21;
                                 break;
 
                             case 5232:
                                 item.Morph = 1520;
+                                item.Speed = 21;
                                 break;
 
                             case 5319:
                                 item.Morph = 1526;
+                                item.Speed = 22;
                                 break;
 
                             case 5321:
                                 item.Morph = 1528;
+                                item.Speed = 21;
                                 break;
 
                             case 5323:
-                                item.Morph = 130;
+                                item.Morph = 1530;
+                                item.Speed = 22;
                                 break;
 
                             case 5330:
                                 item.Morph = 1928;
+                                item.Speed = 22;
                                 break;
 
                             case 5332:
                                 item.Morph = 1930;
+                                item.Speed = 14;
                                 break;
 
                             case 5360:
                                 item.Morph = 1932;
+                                item.Speed = 22;
                                 break;
 
                             case 5386:
                                 item.Morph = 1934;
+                                item.Speed = 21;
                                 break;
 
                             case 5387:
                                 item.Morph = 1936;
+                                item.Speed = 21;
                                 break;
 
                             case 5388:
                                 item.Morph = 1938;
+                                item.Speed = 21;
                                 break;
 
                             case 5389:
                                 item.Morph = 1940;
+                                item.Speed = 21;
                                 break;
 
                             case 5390:
                                 item.Morph = 1942;
+                                item.Speed = 21;
                                 break;
 
                             case 5391:
                                 item.Morph = 1944;
+                                item.Speed = 21;
                                 break;
 
                             default:
