@@ -691,7 +691,7 @@ namespace OpenNos.GameObject
 
         public List<string> GenerateIn2()
         {
-            return ServerManager.GetMap(MapId).Npcs.Select(npc => $"in 2 {npc.NpcVNum} {npc.MapNpcId} {npc.MapX} {npc.MapY} {npc.Position} 100 100 {npc.Dialog} 0 0 -{(npc.IsSitting ? 0 : 1)} 0 0 -1 - 0 -1 0 0 0 0 0 0 0 0").ToList();
+            return ServerManager.GetMap(MapId).Npcs.Select(npc => npc.GenerateIn2()).ToList();
         }
 
         public List<string> GenerateIn3()

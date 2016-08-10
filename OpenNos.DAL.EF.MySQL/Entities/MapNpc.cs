@@ -42,6 +42,8 @@ namespace OpenNos.DAL.EF.MySQL
 
         public bool IsSitting { get; set; }
 
+        public bool IsDisabled { get; set; }
+
         public virtual Map Map { get; set; }
 
         public short MapId { get; set; }

@@ -29,6 +29,7 @@ namespace OpenNos.DAL.EF.MySQL
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int MapMonsterId { get; set; }
 
+        public bool IsDisabled { get; set; }
         public short MapX { get; set; }
         public short MapY { get; set; }
         public short MonsterVNum { get; set; }

@@ -21,6 +21,7 @@ namespace OpenNos.Data
         public short Dialog { get; set; }
         public short Effect { get; set; }
         public short EffectDelay { get; set; }
+        public bool IsDisabled { get; set; }
         public bool IsMoving { get; set; }
         public bool IsSitting { get; set; }
         public short MapId { get; set; }

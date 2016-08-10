@@ -37,7 +37,6 @@ namespace OpenNos.Data
         public int EffectValue { get; set; }
         public byte Element { get; set; }
         public short ElementRate { get; set; }
-        public short MaxElementRate { get; set; }
         public byte EquipmentSlot { get; set; }
         public byte FireElement { get; set; }
         public byte FireResistance { get; set; }
@@ -63,6 +62,7 @@ namespace OpenNos.Data
         public short MagicDefence { get; set; }
         public byte MaxCellon { get; set; }
         public byte MaxCellonLvl { get; set; }
+        public short MaxElementRate { get; set; }
         public byte MaximumAmmo { get; set; }
         public short MoreHp { get; set; }
         public short MoreMp { get; set; }
@@ -82,8 +82,10 @@ namespace OpenNos.Data
         public byte SpType { get; set; }
         public byte Type { get; set; }
         public short VNum { get; set; }
+        public short WaitDelay { get; set; }
         public byte WaterElement { get; set; }
         public byte WaterResistance { get; set; }
+
         #endregion
     }
 }

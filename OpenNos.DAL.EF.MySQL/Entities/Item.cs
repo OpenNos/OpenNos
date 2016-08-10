@@ -20,8 +20,6 @@ namespace OpenNos.DAL.EF.MySQL
 
     public class Item
     {
-        #region Instantiation
-
         public Item()
         {
             Drop = new HashSet<Drop>();
@@ -29,10 +27,6 @@ namespace OpenNos.DAL.EF.MySQL
             RecipeItem = new HashSet<RecipeItem>();
             ShopItem = new HashSet<ShopItem>();
         }
-
-        #endregion
-
-        #region Properties
 
         public byte BasicUpgrade { get; set; }
         public byte CellonLvl { get; set; }
@@ -54,7 +48,6 @@ namespace OpenNos.DAL.EF.MySQL
         public int EffectValue { get; set; }
         public byte Element { get; set; }
         public short ElementRate { get; set; }
-        public short MaxElementRate { get; set; }
         public byte EquipmentSlot { get; set; }
         public byte FireElement { get; set; }
         public byte FireResistance { get; set; }
@@ -80,6 +73,7 @@ namespace OpenNos.DAL.EF.MySQL
         public short MagicDefence { get; set; }
         public byte MaxCellon { get; set; }
         public byte MaxCellonLvl { get; set; }
+        public short MaxElementRate { get; set; }
         public byte MaximumAmmo { get; set; }
         public short MoreHp { get; set; }
         public short MoreMp { get; set; }
@@ -109,9 +103,8 @@ namespace OpenNos.DAL.EF.MySQL
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public short VNum { get; set; }
 
+        public short WaitDelay { get; set; }
         public byte WaterElement { get; set; }
         public byte WaterResistance { get; set; }
-
-        #endregion
     }
 }

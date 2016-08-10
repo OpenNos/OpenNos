@@ -3,7 +3,7 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class Venus : DbMigration
+    public partial class Succubus : DbMigration
     {
         public override void Up()
         {
@@ -249,7 +249,6 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
                         EffectValue = c.Int(nullable: false),
                         Element = c.Byte(nullable: false),
                         ElementRate = c.Short(nullable: false),
-                        MaxElementRate = c.Short(nullable: false),
                         EquipmentSlot = c.Byte(nullable: false),
                         FireElement = c.Byte(nullable: false),
                         FireResistance = c.Byte(nullable: false),
@@ -275,6 +274,7 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
                         MagicDefence = c.Short(nullable: false),
                         MaxCellon = c.Byte(nullable: false),
                         MaxCellonLvl = c.Byte(nullable: false),
+                        MaxElementRate = c.Short(nullable: false),
                         MaximumAmmo = c.Byte(nullable: false),
                         MoreHp = c.Short(nullable: false),
                         MoreMp = c.Short(nullable: false),
@@ -293,6 +293,7 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
                         Speed = c.Byte(nullable: false),
                         SpType = c.Byte(nullable: false),
                         Type = c.Byte(nullable: false),
+                        WaitDelay = c.Short(nullable: false),
                         WaterElement = c.Byte(nullable: false),
                         WaterResistance = c.Byte(nullable: false),
                     })
@@ -323,6 +324,7 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
                         EffectDelay = c.Short(nullable: false),
                         IsMoving = c.Boolean(nullable: false),
                         IsSitting = c.Boolean(nullable: false),
+                        IsDisabled = c.Boolean(nullable: false),
                         MapId = c.Short(nullable: false),
                         MapX = c.Short(nullable: false),
                         MapY = c.Short(nullable: false),
@@ -353,6 +355,7 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
                         MapMonsterId = c.Int(nullable: false),
                         IsMoving = c.Boolean(nullable: false),
                         MapId = c.Short(nullable: false),
+                        IsDisabled = c.Boolean(nullable: false),
                         MapX = c.Short(nullable: false),
                         MapY = c.Short(nullable: false),
                         MonsterVNum = c.Short(nullable: false),

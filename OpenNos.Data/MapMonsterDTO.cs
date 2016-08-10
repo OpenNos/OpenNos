@@ -18,6 +18,7 @@ namespace OpenNos.Data
     {
         #region Properties
 
+        public bool IsDisabled { get; set; }
         public bool IsMoving { get; set; }
         public short MapId { get; set; }
         public int MapMonsterId { get; set; }

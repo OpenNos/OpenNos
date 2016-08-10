@@ -71,8 +71,15 @@ namespace OpenNos.GameObject
             NpcMonster npc = ServerManager.GetNpc(this.NpcVNum);
             if (npc != null)
                 return $"eff 2 {MapNpcId} {Effect}";
-            else
-                return "";
+            else return String.Empty;
+        }
+
+        public string GenerateIn2()
+        {
+            NpcMonster npcinfo = ServerManager.GetNpc(this.NpcVNum);
+            if (npcinfo != null && !IsDisabled)
+                return $"in 2 {NpcVNum} {MapNpcId} {MapX} {MapY} {Position} 100 100 {Dialog} 0 0 -1 1 {(IsSitting ? 0 : 1)} -1 - 0 -1 0 0 0 0 0 0 0 0";
+            else return String.Empty;
         }
 
         public string GetNpcDialog()

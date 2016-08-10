@@ -111,6 +111,7 @@ namespace OpenNos.Import.Console
                     npctest.Position = byte.Parse(currentPacket[6]);
                     npctest.Dialog = short.Parse(currentPacket[9]);
                     npctest.IsSitting = currentPacket[13] != "1";
+                    npctest.IsDisabled = false;
 
                     if (DAOFactory.NpcMonsterDAO.LoadByVnum(npctest.NpcVNum) == null) continue;
                     if (DAOFactory.MapNpcDAO.LoadById(npctest.MapNpcId) != null) continue;
@@ -332,7 +333,8 @@ namespace OpenNos.Import.Console
                         MapY = short.Parse(currentPacket[5]),
                         MapId = map,
                         MonsterVNum = short.Parse(currentPacket[2]),
-                        MapMonsterId = int.Parse(currentPacket[3])
+                        MapMonsterId = int.Parse(currentPacket[3]),
+                        IsDisabled = false
                     };
                     monster.IsMoving = mobMvPacketsList.Contains(monster.MapMonsterId);
 
@@ -1314,132 +1316,154 @@ namespace OpenNos.Import.Console
 
                         switch (item.VNum)
                         {
-
                             case 1906:
                                 item.Morph = 1368;
                                 item.Speed = 20;
+                                item.WaitDelay = 3000;
                                 break;
 
                             case 1907:
                                 item.Morph = 1370;
                                 item.Speed = 20;
+                                item.WaitDelay = 3000;
                                 break;
 
                             case 1965:
                                 item.Morph = 1406;
                                 item.Speed = 20;
+                                item.WaitDelay = 3000;
                                 break;
 
                             case 5008:
                                 item.Morph = 1411;
                                 item.Speed = 20;
+                                item.WaitDelay = 3000;
                                 break;
 
                             case 5117:
                                 item.Morph = 1429;
                                 item.Speed = 21;
+                                item.WaitDelay = 3000;
                                 break;
 
                             case 5152:
                                 item.Morph = 1432;
                                 item.Speed = 21;
+                                item.WaitDelay = 3000;
                                 break;
 
                             case 5173:
                                 item.Morph = 1511;
                                 item.Speed = 16;
+                                item.WaitDelay = 3000;
                                 break;
 
                             case 5238:
                                 item.Morph = 817;
                                 item.Speed = 20;
+                                item.WaitDelay = 3000;
                                 break;
 
                             case 5240:
                                 item.Morph = 819;
                                 item.Speed = 20;
+                                item.WaitDelay = 3000;
                                 break;
 
                             case 5914:
                                 item.Morph = 1513;
                                 item.Speed = 14;
+                                item.WaitDelay = 3000;
                                 break;
 
                             case 5196:
                                 item.Morph = 1517;
                                 item.Speed = 21;
+                                item.WaitDelay = 3000;
                                 break;
 
                             case 5232:
                                 item.Morph = 1520;
                                 item.Speed = 21;
+                                item.WaitDelay = 3000;
                                 break;
 
                             case 5319:
                                 item.Morph = 1526;
                                 item.Speed = 22;
+                                item.WaitDelay = 3000;
                                 break;
 
                             case 5321:
                                 item.Morph = 1528;
                                 item.Speed = 21;
+                                item.WaitDelay = 3000;
                                 break;
 
                             case 5323:
                                 item.Morph = 1530;
                                 item.Speed = 22;
+                                item.WaitDelay = 3000;
                                 break;
 
                             case 5330:
                                 item.Morph = 1928;
                                 item.Speed = 22;
+                                item.WaitDelay = 3000;
                                 break;
 
                             case 5332:
                                 item.Morph = 1930;
                                 item.Speed = 14;
+                                item.WaitDelay = 3000;
                                 break;
 
                             case 5360:
                                 item.Morph = 1932;
                                 item.Speed = 22;
+                                item.WaitDelay = 3000;
                                 break;
 
                             case 5386:
                                 item.Morph = 1934;
                                 item.Speed = 21;
+                                item.WaitDelay = 3000;
                                 break;
 
                             case 5387:
                                 item.Morph = 1936;
                                 item.Speed = 21;
+                                item.WaitDelay = 3000;
                                 break;
 
                             case 5388:
                                 item.Morph = 1938;
                                 item.Speed = 21;
+                                item.WaitDelay = 3000;
                                 break;
 
                             case 5389:
                                 item.Morph = 1940;
                                 item.Speed = 21;
+                                item.WaitDelay = 3000;
                                 break;
 
                             case 5390:
                                 item.Morph = 1942;
                                 item.Speed = 21;
+                                item.WaitDelay = 3000;
                                 break;
 
                             case 5391:
                                 item.Morph = 1944;
                                 item.Speed = 21;
+                                item.WaitDelay = 3000;
                                 break;
 
                             default:
                                 item.Morph = Convert.ToInt16(currentLine[7]);
                                 break;
                         }
-
                     }
                     else if (currentLine.Length > 3 && currentLine[1] == "TYPE")
                     {
@@ -1567,6 +1591,7 @@ namespace OpenNos.Import.Console
                             case (byte)ItemType.Special:
                                 item.Effect = Convert.ToInt16(currentLine[2]);
                                 item.EffectValue = Convert.ToInt32(currentLine[4]);
+                                item.WaitDelay = 5000;
                                 break;
 
                             case (byte)ItemType.Magical:
