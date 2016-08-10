@@ -297,7 +297,7 @@ namespace OpenNos.Import.Console
                 }
                 if ((i > 239 && i < 251) || (i == 299)) // "act6.2"
                 {
-                    //maptypemaps.Add(new MapTypeMapDTO { MapId = (short)i, MapTypeId = 8 }); // uncomment on 2016/08/10
+                    maptypemaps.Add(new MapTypeMapDTO { MapId = (short)i, MapTypeId = 8 }); // It's this day \o/ new maps!
                 }
             }
             DAOFactory.MapTypeMapDAO.Insert(maptypemaps);
