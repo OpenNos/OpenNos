@@ -178,6 +178,26 @@ namespace OpenNos.GameObject
                     }
                     break;
 
+                case 132:
+                    if (npc != null)
+                    {
+                        TeleporterDTO tp = npc.Teleporters?.FirstOrDefault(s => s.Index == type);
+                        if (tp != null)
+                        {
+                            if (Session.Character.Gold >= 0)
+                            {
+                                ServerManager.Instance.MapOut(Session.Character.CharacterId);
+                                Session.Character.Gold -= 0;
+                                Session.Client.SendPacket(Session.Character.GenerateGold());
+                                Session.Character.MapY = tp.MapY;
+                                Session.Character.MapX = tp.MapX;
+                                Session.Character.MapId = tp.MapId;
+                                ServerManager.Instance.ChangeMap(Session.Character.CharacterId);
+                            }
+                        }
+                    }
+                    break;
+
                 case 5002:
                     if (npc != null)
                     {
@@ -198,6 +218,25 @@ namespace OpenNos.GameObject
                     }
                     break;
 
+                case 5012:
+                    if (npc != null)
+                    {
+                        TeleporterDTO tp = npc.Teleporters?.FirstOrDefault(s => s.Index == type);
+                        if (tp != null)
+                        {
+                            if (Session.Character.Gold >= 0)
+                            {
+                                ServerManager.Instance.MapOut(Session.Character.CharacterId);
+                                Session.Character.Gold -= 0;
+                                Session.Client.SendPacket(Session.Character.GenerateGold());
+                                Session.Character.MapY = tp.MapY;
+                                Session.Character.MapX = tp.MapX;
+                                Session.Character.MapId = tp.MapId;
+                                ServerManager.Instance.ChangeMap(Session.Character.CharacterId);
+                            }
+                        }
+                    }
+                    break;
 
                 default:
                     Logger.Log.Warn(String.Format(Language.Instance.GetMessageFromKey("NO_NRUN_HANDLER"), runner));
