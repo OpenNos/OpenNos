@@ -13,6 +13,7 @@
  */
 
 using OpenNos.Core;
+using OpenNos.Domain;
 using System;
 
 namespace OpenNos.GameObject
@@ -23,8 +24,48 @@ namespace OpenNos.GameObject
 
         public override void Use(ClientSession Session, ref Inventory Inv)
         {
+            Item iteminfo = ServerManager.GetItem(Inv.ItemInstance.ItemVNum);
+            Random rnd = new Random();
             switch (Effect)
             {
+                case 10:
+                    if (iteminfo != null)
+                    {
+                        if (EffectValue == 99)
+                            Session.Character.HairColor = (byte)rnd.Next(0, 127);
+                        else
+                            Session.Character.HairColor = (byte)EffectValue;
+                        Session.Client.SendPacket(Session.Character.GenerateEq());
+                        Session.CurrentMap?.Broadcast(Session.Character.GenerateIn());
+                        Inv.ItemInstance.Amount--;
+                        if (Inv.ItemInstance.Amount > 0)
+                            Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(Inv.ItemInstance.ItemVNum, Inv.ItemInstance.Amount, Inv.Type, Inv.Slot, 0, 0, 0, 0));
+                        else
+                        {
+                            Session.Character.InventoryList.DeleteFromSlotAndType(Inv.Slot, Inv.Type);
+                            Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, Inv.Type, Inv.Slot, 0, 0, 0, 0));
+                        }
+                    }
+                    break;
+                case 11:
+                    if (Session.Character.Class == (byte)ClassType.Adventurer && EffectValue > 1)
+                        Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("ADVENTURERS_CANT_USE"), 10));
+                    else
+                    {
+                        Session.Character.HairStyle = Session.Character.HairStyle != (byte)EffectValue ? (byte)EffectValue : (byte)1;
+                        Session.Client.SendPacket(Session.Character.GenerateEq());
+                        Session.CurrentMap?.Broadcast(Session.Character.GenerateIn());
+                        Inv.ItemInstance.Amount--;
+                        if (Inv.ItemInstance.Amount > 0)
+                            Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(Inv.ItemInstance.ItemVNum, Inv.ItemInstance.Amount, Inv.Type, Inv.Slot, 0, 0, 0, 0));
+                        else
+                        {
+                            Session.Character.InventoryList.DeleteFromSlotAndType(Inv.Slot, Inv.Type);
+                            Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, Inv.Type, Inv.Slot, 0, 0, 0, 0));
+                        }
+                    }
+                    break;
+
                 default:
                     Logger.Log.Warn(String.Format(Language.Instance.GetMessageFromKey("NO_HANDLER_ITEM"), this.GetType().ToString()));
                     break;

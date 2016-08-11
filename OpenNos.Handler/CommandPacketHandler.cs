@@ -332,7 +332,7 @@ namespace OpenNos.Handler
             WearableInstance fairy = Session.Character.EquipmentList.LoadBySlotAndType<WearableInstance>((short)EquipmentType.Fairy, (byte)InventoryType.Equipment);
             if (fairy != null && packetsplit.Length > 2)
             {
-                if (short.TryParse(packetsplit[2], out fairylevel) && fairylevel <= 9999) /*&& fairylevel + fairy.Item.ElementRate <= fairy.Item.MaxElementRate*/
+                if (short.TryParse(packetsplit[2], out fairylevel) && fairylevel <= 9999)
                 {
                     fairylevel -= fairy.Item.ElementRate;
                     fairy.ElementRate = fairylevel;
@@ -343,6 +343,33 @@ namespace OpenNos.Handler
             }
             else
                 Session.Client.SendPacket(Session.Character.GenerateSay("$FLvl FAIRYLEVEL", 10));
+        }
+
+        [Packet("$HairColor")]
+        public void Haircolor(string packet)
+        {
+            Logger.Debug(packet, Session.SessionId);
+            string[] packetsplit = packet.Split(' ');
+            byte haircolor;
+            if (byte.TryParse(packetsplit[2], out haircolor))
+            {
+                Session.Character.HairColor = haircolor;
+                Session.Client.SendPacket(Session.Character.GenerateEq());
+                Session.CurrentMap?.Broadcast(Session.Character.GenerateIn());
+            }
+        }
+        [Packet("$HairStyle")]
+        public void Hairstyle(string packet)
+        {
+            Logger.Debug(packet, Session.SessionId);
+            string[] packetsplit = packet.Split(' ');
+            byte hairstyle;
+            if (byte.TryParse(packetsplit[2], out hairstyle))
+            {
+                Session.Character.HairStyle = hairstyle;
+                Session.Client.SendPacket(Session.Character.GenerateEq());
+                Session.CurrentMap?.Broadcast(Session.Character.GenerateIn());
+            }
         }
 
         [Packet("$Help")]
@@ -404,7 +431,7 @@ namespace OpenNos.Handler
         {
             Logger.Debug(packet, Session.SessionId);
             string[] packetsplit = packet.Split(' ');
-            byte amount = 1,  upgrade = 0, design = 0;
+            byte amount = 1, upgrade = 0, design = 0;
             sbyte rare = 0;
             short vnum;
             ItemDTO iteminfo = null;
@@ -1074,11 +1101,6 @@ namespace OpenNos.Handler
             Session.Character.InventoryList.DeleteFromSlotAndType(slot, type);
             Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, type, slot, 0, 0, 0, 0));
         }
-        /*private void MutedTask()
-        {
-            ServerManager.Instance.Broadcast(Session, Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MUTE_TIME"), 11), ReceiverType.OnlySomeone, "", -1);
-            //add when time in Mute finished, run every minute and tell about time TimeLeft and about Reason of punishment.
-        }*/
 
         private async void ShutdownTask()
         {

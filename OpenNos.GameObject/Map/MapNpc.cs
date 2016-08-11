@@ -78,7 +78,7 @@ namespace OpenNos.GameObject
         {
             NpcMonster npcinfo = ServerManager.GetNpc(this.NpcVNum);
             if (npcinfo != null && !IsDisabled)
-                return $"in 2 {NpcVNum} {MapNpcId} {MapX} {MapY} {Position} 100 100 {Dialog} 0 0 -1 1 {(IsSitting ? 0 : 1)} -1 - 0 -1 0 0 0 0 0 0 0 0";
+                return $"in 2 {NpcVNum} {MapNpcId} {MapX} {MapY} {Position} 100 100 {Dialog} 0 0 -1 1 {(IsSitting ? 1 : 0)} -1 - 0 -1 0 0 0 0 0 0 0 0";
             else return String.Empty;
         }
 

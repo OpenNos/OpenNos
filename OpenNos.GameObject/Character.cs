@@ -277,6 +277,9 @@ namespace OpenNos.GameObject
                 Session.Client.SendPacket("npinfo 0");
                 Session.Client.SendPacket("p_clear");
 
+                if (characterClass == (byte)ClassType.Adventurer)
+                    Session.Character.HairStyle = Session.Character.HairStyle > 1 ? (byte)0 : (byte)1;
+
                 Class = characterClass;
                 if (ServersData.SpeedData.Contains(characterClass))
                     Speed = ServersData.SpeedData[Class];
@@ -365,7 +368,7 @@ namespace OpenNos.GameObject
         public string Dance()
         {
             IsDancing = IsDancing == 0 ? 1 : 0;
-            return string.Empty;
+            return String.Empty;
         }
 
         public Character DeepCopy()
@@ -724,7 +727,7 @@ namespace OpenNos.GameObject
                 case (byte)InventoryType.Sp:
                     return $"ivn 6 {slot}.{vnum}.{rare}.{upgrade}.{upgrade2}";
             }
-            return string.Empty;
+            return String.Empty;
         }
 
         public string GenerateInvisible()

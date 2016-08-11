@@ -1595,7 +1595,10 @@ namespace OpenNos.Import.Console
                                 break;
 
                             case (byte)ItemType.Magical:
-                                item.Effect = Convert.ToInt16(currentLine[2]);
+                                if (item.VNum > 2059 && item.VNum < 2070)
+                                    item.Effect = 10;
+                                else
+                                    item.Effect = Convert.ToInt16(currentLine[2]);
                                 item.EffectValue = Convert.ToInt32(currentLine[4]);
                                 break;
 
@@ -1713,11 +1716,11 @@ namespace OpenNos.Import.Console
                             item.LightResistance = Convert.ToByte(currentLine[9]);
                             item.DarkResistance = Convert.ToByte(currentLine[11]);
                         }
-                        else
-                        {
-                            item.Effect = Convert.ToInt16(currentLine[2]);
-                            item.EffectValue = Convert.ToInt32(currentLine[8]);
-                        }
+                        //else // thanks to this sometimes we have 0 where we shouldnt, add verification on where you need it.
+                        //{
+                        //    item.Effect = Convert.ToInt16(currentLine[2]);
+                        //    item.EffectValue = Convert.ToInt32(currentLine[8]);
+                        //}
                     }
                     else if (currentLine.Length > 1 && currentLine[1] == "BUFF")
                     {
