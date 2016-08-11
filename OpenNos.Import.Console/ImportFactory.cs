@@ -268,37 +268,40 @@ namespace OpenNos.Import.Console
             List<MapTypeMapDTO> maptypemaps = new List<MapTypeMapDTO>();
             for (int i = 1; i < 300; i++)
             {
-                if ((i < 18) || (i > 48 && i < 53) || (i > 67 && i < 85) || (i > 102 && i < 105) || (i > 144 && i < 149)) // "act1"
+                if (DAOFactory.MapDAO.LoadById((short)i) != null)
                 {
-                    maptypemaps.Add(new MapTypeMapDTO { MapId = (short)i, MapTypeId = 1 });
-                }
-                if ((i > 19 && i < 34) || (i > 52 && i < 68) || (i > 84 && i < 101)) // "act2"
-                {
-                    maptypemaps.Add(new MapTypeMapDTO { MapId = (short)i, MapTypeId = 2 });
-                }
-                if ((i == 41) || (i == 100 && i == 101) || (i > 104 && i < 128)) // "act3"
-                {
-                    maptypemaps.Add(new MapTypeMapDTO { MapId = (short)i, MapTypeId = 3 });
-                }
-                if ((i > 129 && i < 135)) // "act4"
-                {
-                    maptypemaps.Add(new MapTypeMapDTO { MapId = (short)i, MapTypeId = 4 });
-                }
-                if ((i > 169 && i < 205)) // "act5.1"
-                {
-                    maptypemaps.Add(new MapTypeMapDTO { MapId = (short)i, MapTypeId = 5 });
-                }
-                if ((i > 204 && i < 221)) // "act5.2"
-                {
-                    maptypemaps.Add(new MapTypeMapDTO { MapId = (short)i, MapTypeId = 6 });
-                }
-                if ((i > 227 && i < 241)) // "act6.1"
-                {
-                    maptypemaps.Add(new MapTypeMapDTO { MapId = (short)i, MapTypeId = 7 });
-                }
-                if ((i > 239 && i < 251) || (i == 299)) // "act6.2"
-                {
-                    maptypemaps.Add(new MapTypeMapDTO { MapId = (short)i, MapTypeId = 8 }); // It's this day \o/ new maps!
+                    if ((i < 18) || (i > 48 && i < 53) || (i > 67 && i < 85) || (i > 102 && i < 105) || (i > 144 && i < 149)) // "act1"
+                    {
+                        maptypemaps.Add(new MapTypeMapDTO { MapId = (short)i, MapTypeId = 1 });
+                    }
+                    if ((i > 19 && i < 34) || (i > 52 && i < 68) || (i > 84 && i < 101)) // "act2"
+                    {
+                        maptypemaps.Add(new MapTypeMapDTO { MapId = (short)i, MapTypeId = 2 });
+                    }
+                    if ((i == 41) || (i == 100 && i == 101) || (i > 104 && i < 128)) // "act3"
+                    {
+                        maptypemaps.Add(new MapTypeMapDTO { MapId = (short)i, MapTypeId = 3 });
+                    }
+                    if ((i > 129 && i < 135)) // "act4"
+                    {
+                        maptypemaps.Add(new MapTypeMapDTO { MapId = (short)i, MapTypeId = 4 });
+                    }
+                    if ((i > 169 && i < 205)) // "act5.1"
+                    {
+                        maptypemaps.Add(new MapTypeMapDTO { MapId = (short)i, MapTypeId = 5 });
+                    }
+                    if ((i > 204 && i < 221)) // "act5.2"
+                    {
+                        maptypemaps.Add(new MapTypeMapDTO { MapId = (short)i, MapTypeId = 6 });
+                    }
+                    if ((i > 227 && i < 241)) // "act6.1"
+                    {
+                        maptypemaps.Add(new MapTypeMapDTO { MapId = (short)i, MapTypeId = 7 });
+                    }
+                    if ((i > 239 && i < 251) || (i == 299)) // "act6.2"
+                    {
+                        maptypemaps.Add(new MapTypeMapDTO { MapId = (short)i, MapTypeId = 8 }); // It's this day \o/ new maps!
+                    }
                 }
             }
             DAOFactory.MapTypeMapDAO.Insert(maptypemaps);

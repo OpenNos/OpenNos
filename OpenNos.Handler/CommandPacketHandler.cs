@@ -351,12 +351,17 @@ namespace OpenNos.Handler
             Logger.Debug(packet, Session.SessionId);
             string[] packetsplit = packet.Split(' ');
             byte haircolor;
-            if (byte.TryParse(packetsplit[2], out haircolor))
+            if (packetsplit.Length > 2)
             {
-                Session.Character.HairColor = haircolor;
-                Session.Client.SendPacket(Session.Character.GenerateEq());
-                Session.CurrentMap?.Broadcast(Session.Character.GenerateIn());
+                if (byte.TryParse(packetsplit[2], out haircolor) && haircolor < 128)
+                {
+                    Session.Character.HairColor = haircolor;
+                    Session.Client.SendPacket(Session.Character.GenerateEq());
+                    Session.CurrentMap?.Broadcast(Session.Character.GenerateIn());
+                }
             }
+            else
+                Session.Client.SendPacket(Session.Character.GenerateSay("$HairColor COLORID", 10));
         }
         [Packet("$HairStyle")]
         public void Hairstyle(string packet)
@@ -364,12 +369,17 @@ namespace OpenNos.Handler
             Logger.Debug(packet, Session.SessionId);
             string[] packetsplit = packet.Split(' ');
             byte hairstyle;
-            if (byte.TryParse(packetsplit[2], out hairstyle))
+            if (packetsplit.Length > 2)
             {
-                Session.Character.HairStyle = hairstyle;
-                Session.Client.SendPacket(Session.Character.GenerateEq());
-                Session.CurrentMap?.Broadcast(Session.Character.GenerateIn());
+                if (byte.TryParse(packetsplit[2], out hairstyle))
+                {
+                    Session.Character.HairStyle = hairstyle;
+                    Session.Client.SendPacket(Session.Character.GenerateEq());
+                    Session.CurrentMap?.Broadcast(Session.Character.GenerateIn());
+                }
             }
+            else
+                Session.Client.SendPacket(Session.Character.GenerateSay("$HairStyle STYLEID", 10));
         }
 
         [Packet("$Help")]
@@ -395,6 +405,8 @@ namespace OpenNos.Handler
             Session.Client.SendPacket(Session.Character.GenerateSay("$JLvl JOBLEVEL", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$SPLvl SPLEVEL", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$FLvl FAIRYLEVEL", 6));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$HairColor COLORID", 6));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$HairStyle STYLEID", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$SPRefill", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$HeroLvl HEROLEVEL", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$ChangeSex", 6));

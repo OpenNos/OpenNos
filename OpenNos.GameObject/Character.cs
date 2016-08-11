@@ -278,7 +278,7 @@ namespace OpenNos.GameObject
                 Session.Client.SendPacket("p_clear");
 
                 if (characterClass == (byte)ClassType.Adventurer)
-                    Session.Character.HairStyle = Session.Character.HairStyle > 1 ? (byte)0 : (byte)1;
+                    Session.Character.HairStyle = Session.Character.HairStyle > 1 ? (byte)0 : Session.Character.HairStyle;
 
                 Class = characterClass;
                 if (ServersData.SpeedData.Contains(characterClass))
