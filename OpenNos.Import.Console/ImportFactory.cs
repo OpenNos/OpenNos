@@ -268,7 +268,7 @@ namespace OpenNos.Import.Console
             List<MapTypeMapDTO> maptypemaps = new List<MapTypeMapDTO>();
             for (int i = 1; i < 300; i++)
             {
-                if (DAOFactory.MapDAO.LoadById((short)i) != null)
+                if (DAOFactory.MapDAO.LoadById((short)i) != null && DAOFactory.MapTypeMapDAO.LoadByMapId((short)i) == null)
                 {
                     if ((i < 18) || (i > 48 && i < 53) || (i > 67 && i < 85) || (i > 102 && i < 105) || (i > 144 && i < 149)) // "act1"
                     {
