@@ -268,7 +268,7 @@ namespace OpenNos.Import.Console
             List<MapTypeMapDTO> maptypemaps = new List<MapTypeMapDTO>();
             for (int i = 1; i < 300; i++)
             {
-                if (DAOFactory.MapDAO.LoadById((short)i) != null && DAOFactory.MapTypeMapDAO.LoadByMapId((short)i) == null)
+                if (DAOFactory.MapDAO.LoadById((short)i) != null)
                 {
                     if ((i < 18) || (i > 48 && i < 53) || (i > 67 && i < 85) || (i > 102 && i < 105) || (i > 144 && i < 149)) // "act1"
                     {
@@ -561,7 +561,9 @@ namespace OpenNos.Import.Console
             //Act1 (need some information)
 
             //Act2
-            drops.Add(new DropDTO { ItemVNum = 1004, Amount = 1, MonsterVNum = null, DropChance = 1000, MapTypeId = 2 });
+
+
+            /*drops.Add(new DropDTO { ItemVNum = 1004, Amount = 1, MonsterVNum = null, DropChance = 1000, MapTypeId = 2 });//Disable, in wait of the correction.
             drops.Add(new DropDTO { ItemVNum = 1007, Amount = 1, MonsterVNum = null, DropChance = 1000, MapTypeId = 2 });
             drops.Add(new DropDTO { ItemVNum = 1086, Amount = 1, MonsterVNum = null, DropChance = 200, MapTypeId = 2 });
             drops.Add(new DropDTO { ItemVNum = 1092, Amount = 1, MonsterVNum = null, DropChance = 1500, MapTypeId = 2 });
@@ -684,7 +686,7 @@ namespace OpenNos.Import.Console
             drops.Add(new DropDTO { ItemVNum = 2379, Amount = 1, MonsterVNum = null, DropChance = 8000, MapTypeId = 6 });
             drops.Add(new DropDTO { ItemVNum = 2380, Amount = 1, MonsterVNum = null, DropChance = 15000, MapTypeId = 6 });
             drops.Add(new DropDTO { ItemVNum = 2900, Amount = 2, MonsterVNum = null, DropChance = 9000, MapTypeId = 6 });
-            drops.Add(new DropDTO { ItemVNum = 2901, Amount = 1, MonsterVNum = null, DropChance = 9000, MapTypeId = 6 });
+            drops.Add(new DropDTO { ItemVNum = 2901, Amount = 1, MonsterVNum = null, DropChance = 9000, MapTypeId = 6 });*/
 
             //Act6 (need some information)
             //Act6.2 (need some information)
