@@ -583,11 +583,10 @@ namespace OpenNos.Import.Console
             drops.Add(new DropDTO { ItemVNum = 1012, Amount = 1, MonsterVNum = null, DropChance = 9000 });
             drops.Add(new DropDTO { ItemVNum = 1114, Amount = 1, MonsterVNum = null, DropChance = 500 });
             drops.Add(new DropDTO { ItemVNum = 5119, Amount = 1, MonsterVNum = null, DropChance = 500 });
-
-            //Act1 (need more information)
+            //Act1 (need some information)
 
             //Act2
-            /*drops.Add(new DropDTO { ItemVNum = 1004, Amount = 1, MonsterVNum = null, DropChance = 1000, MapTypeId = 2 });
+            /*drops.Add(new DropDTO { ItemVNum = 1004, Amount = 1, MonsterVNum = null, DropChance = 1000, MapTypeId = 2 });//Disable, in wait of the correction.
             drops.Add(new DropDTO { ItemVNum = 1007, Amount = 1, MonsterVNum = null, DropChance = 1000, MapTypeId = 2 });
             drops.Add(new DropDTO { ItemVNum = 1086, Amount = 1, MonsterVNum = null, DropChance = 200, MapTypeId = 2 });
             drops.Add(new DropDTO { ItemVNum = 1092, Amount = 1, MonsterVNum = null, DropChance = 1500, MapTypeId = 2 });
@@ -595,7 +594,10 @@ namespace OpenNos.Import.Console
             drops.Add(new DropDTO { ItemVNum = 1094, Amount = 1, MonsterVNum = null, DropChance = 900, MapTypeId = 2 });
             drops.Add(new DropDTO { ItemVNum = 1095, Amount = 1, MonsterVNum = null, DropChance = 800, MapTypeId = 2 });
             drops.Add(new DropDTO { ItemVNum = 1237, Amount = 1, MonsterVNum = null, DropChance = 1000, MapTypeId = 2 });
-            drops.Add(new DropDTO { ItemVNum = 1239, Amount = 1, MonsterVNum = null, DropChance = 1000, MapTypeId = 2 });
+            drops.Add(new DropDTO { ItemVNum = 1238, Amount = 1, MonsterVNum = null, DropChance = 100, MapTypeId = 3 });
+            drops.Add(new DropDTO { ItemVNum = 1239, Amount = 1, MonsterVNum = null, DropChance = 1000, MapTypeId = 3 });
+            drops.Add(new DropDTO { ItemVNum = 1240, Amount = 1, MonsterVNum = null, DropChance = 100, MapTypeId = 3 });
+            drops.Add(new DropDTO { ItemVNum = 1241, Amount = 1, MonsterVNum = null, DropChance = 1000, MapTypeId = 3 });
             drops.Add(new DropDTO { ItemVNum = 2098, Amount = 1, MonsterVNum = null, DropChance = 400, MapTypeId = 2 });
             drops.Add(new DropDTO { ItemVNum = 2099, Amount = 1, MonsterVNum = null, DropChance = 800, MapTypeId = 2 });
             drops.Add(new DropDTO { ItemVNum = 2100, Amount = 1, MonsterVNum = null, DropChance = 400, MapTypeId = 2 });
@@ -609,7 +611,6 @@ namespace OpenNos.Import.Console
             drops.Add(new DropDTO { ItemVNum = 2283, Amount = 1, MonsterVNum = null, DropChance = 2000, MapTypeId = 2 });
             drops.Add(new DropDTO { ItemVNum = 2284, Amount = 1, MonsterVNum = null, DropChance = 1000, MapTypeId = 2 });
             drops.Add(new DropDTO { ItemVNum = 2296, Amount = 1, MonsterVNum = null, DropChance = 1000, MapTypeId = 2 });
-
             //Act3
             drops.Add(new DropDTO { ItemVNum = 1004, Amount = 1, MonsterVNum = null, DropChance = 1000, MapTypeId = 3 });
             drops.Add(new DropDTO { ItemVNum = 1007, Amount = 1, MonsterVNum = null, DropChance = 1000, MapTypeId = 3 });
@@ -620,16 +621,17 @@ namespace OpenNos.Import.Console
             drops.Add(new DropDTO { ItemVNum = 1093, Amount = 1, MonsterVNum = null, DropChance = 500, MapTypeId = 3 });
             drops.Add(new DropDTO { ItemVNum = 1094, Amount = 1, MonsterVNum = null, DropChance = 600, MapTypeId = 3 });
             drops.Add(new DropDTO { ItemVNum = 1095, Amount = 1, MonsterVNum = null, DropChance = 700, MapTypeId = 3 });
+            drops.Add(new DropDTO { ItemVNum = 1095, Amount = 1, MonsterVNum = null, DropChance = 300, MapTypeId = 3 });
             drops.Add(new DropDTO { ItemVNum = 1235, Amount = 1, MonsterVNum = null, DropChance = 900, MapTypeId = 3 });
             drops.Add(new DropDTO { ItemVNum = 1237, Amount = 1, MonsterVNum = null, DropChance = 1000, MapTypeId = 3 });
             drops.Add(new DropDTO { ItemVNum = 1238, Amount = 1, MonsterVNum = null, DropChance = 250, MapTypeId = 3 });
             drops.Add(new DropDTO { ItemVNum = 1239, Amount = 1, MonsterVNum = null, DropChance = 1000, MapTypeId = 3 });
             drops.Add(new DropDTO { ItemVNum = 1240, Amount = 1, MonsterVNum = null, DropChance = 250, MapTypeId = 3 });
+            drops.Add(new DropDTO { ItemVNum = 1241, Amount = 1, MonsterVNum = null, DropChance = 1000, MapTypeId = 3 });
             drops.Add(new DropDTO { ItemVNum = 1317, Amount = 1, MonsterVNum = null, DropChance = 700, MapTypeId = 3 });
             drops.Add(new DropDTO { ItemVNum = 1318, Amount = 1, MonsterVNum = null, DropChance = 700, MapTypeId = 3 });
             drops.Add(new DropDTO { ItemVNum = 1319, Amount = 1, MonsterVNum = null, DropChance = 700, MapTypeId = 3 });
             drops.Add(new DropDTO { ItemVNum = 1320, Amount = 1, MonsterVNum = null, DropChance = 700, MapTypeId = 3 });
-            drops.Add(new DropDTO { ItemVNum = 1322, Amount = 1, MonsterVNum = null, DropChance = 600, MapTypeId = 3 });
             drops.Add(new DropDTO { ItemVNum = 2098, Amount = 1, MonsterVNum = null, DropChance = 400, MapTypeId = 3 });
             drops.Add(new DropDTO { ItemVNum = 2099, Amount = 1, MonsterVNum = null, DropChance = 800, MapTypeId = 3 });
             drops.Add(new DropDTO { ItemVNum = 2100, Amount = 1, MonsterVNum = null, DropChance = 800, MapTypeId = 3 });
@@ -648,20 +650,20 @@ namespace OpenNos.Import.Console
             drops.Add(new DropDTO { ItemVNum = 2284, Amount = 1, MonsterVNum = null, DropChance = 2000, MapTypeId = 3 });
             drops.Add(new DropDTO { ItemVNum = 2285, Amount = 1, MonsterVNum = null, DropChance = 1000, MapTypeId = 3 });
             drops.Add(new DropDTO { ItemVNum = 2296, Amount = 1, MonsterVNum = null, DropChance = 1000, MapTypeId = 3 });
-
             //Act4
             drops.Add(new DropDTO { ItemVNum = 1004, Amount = 1, MonsterVNum = null, DropChance = 2000, MapTypeId = 4 });
             drops.Add(new DropDTO { ItemVNum = 1007, Amount = 1, MonsterVNum = null, DropChance = 2000, MapTypeId = 4 });
             drops.Add(new DropDTO { ItemVNum = 1010, Amount = 3, MonsterVNum = null, DropChance = 3000, MapTypeId = 4 });
             drops.Add(new DropDTO { ItemVNum = 1012, Amount = 2, MonsterVNum = null, DropChance = 10000, MapTypeId = 4 });
+            drops.Add(new DropDTO { ItemVNum = 1041, Amount = 3, MonsterVNum = null, DropChance = 4000, MapTypeId = 4 });
             drops.Add(new DropDTO { ItemVNum = 1078, Amount = 3, MonsterVNum = null, DropChance = 3000, MapTypeId = 4 });
             drops.Add(new DropDTO { ItemVNum = 1246, Amount = 1, MonsterVNum = null, DropChance = 7000, MapTypeId = 4 });
             drops.Add(new DropDTO { ItemVNum = 1247, Amount = 1, MonsterVNum = null, DropChance = 7000, MapTypeId = 4 });
             drops.Add(new DropDTO { ItemVNum = 1248, Amount = 1, MonsterVNum = null, DropChance = 7000, MapTypeId = 4 });
             drops.Add(new DropDTO { ItemVNum = 1429, Amount = 1, MonsterVNum = null, DropChance = 6000, MapTypeId = 4 });
+            drops.Add(new DropDTO { ItemVNum = 2296, Amount = 1, MonsterVNum = null, DropChance = 2000, MapTypeId = 4 });
             drops.Add(new DropDTO { ItemVNum = 2307, Amount = 1, MonsterVNum = null, DropChance = 3000, MapTypeId = 4 });
             drops.Add(new DropDTO { ItemVNum = 2308, Amount = 1, MonsterVNum = null, DropChance = 2000, MapTypeId = 4 });
-
             //Act5
             drops.Add(new DropDTO { ItemVNum = 1004, Amount = 1, MonsterVNum = null, DropChance = 1500, MapTypeId = 5 });
             drops.Add(new DropDTO { ItemVNum = 1007, Amount = 1, MonsterVNum = null, DropChance = 1500, MapTypeId = 5 });
@@ -691,7 +693,6 @@ namespace OpenNos.Import.Console
             drops.Add(new DropDTO { ItemVNum = 2285, Amount = 1, MonsterVNum = null, DropChance = 1000, MapTypeId = 5 });
             drops.Add(new DropDTO { ItemVNum = 2351, Amount = 1, MonsterVNum = null, DropChance = 7000, MapTypeId = 5 });
             drops.Add(new DropDTO { ItemVNum = 2379, Amount = 1, MonsterVNum = null, DropChance = 3000, MapTypeId = 5 });
-
             //Act5.2
             drops.Add(new DropDTO { ItemVNum = 1004, Amount = 1, MonsterVNum = null, DropChance = 1000, MapTypeId = 6 });
             drops.Add(new DropDTO { ItemVNum = 1007, Amount = 1, MonsterVNum = null, DropChance = 1000, MapTypeId = 6 });
@@ -711,9 +712,8 @@ namespace OpenNos.Import.Console
             drops.Add(new DropDTO { ItemVNum = 2380, Amount = 1, MonsterVNum = null, DropChance = 15000, MapTypeId = 6 });
             drops.Add(new DropDTO { ItemVNum = 2900, Amount = 2, MonsterVNum = null, DropChance = 9000, MapTypeId = 6 });
             drops.Add(new DropDTO { ItemVNum = 2901, Amount = 1, MonsterVNum = null, DropChance = 9000, MapTypeId = 6 });*/
-
-            //Act6 (need more information)
-            //Act6.2 (need more information)
+            //Act6 (need some information)
+            //Act6.2 (need some information))
 
             DAOFactory.DropDAO.Insert(drops);
         }
