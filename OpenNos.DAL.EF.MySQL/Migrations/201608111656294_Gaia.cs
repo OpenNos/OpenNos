@@ -3,7 +3,7 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class Succubus : DbMigration
+    public partial class Gaia : DbMigration
     {
         public override void Up()
         {
@@ -203,6 +203,7 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
                         Speed = c.Byte(nullable: false),
                         WaterResistance = c.SByte(nullable: false),
                         XP = c.Int(nullable: false),
+                        NoAggresiveIcon = c.Boolean(nullable: false),
                     })
                 .PrimaryKey(t => t.NpcMonsterVNum);
             

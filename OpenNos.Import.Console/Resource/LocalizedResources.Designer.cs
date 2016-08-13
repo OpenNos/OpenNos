@@ -187,6 +187,15 @@ namespace OpenNos.Import.Console.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Do you want to parse Accounts?.
+        /// </summary>
+        internal static string PARSE_ACCOUNTS {
+            get {
+                return ResourceManager.GetString("PARSE_ACCOUNTS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Do you want to parse ALL?.
         /// </summary>
         internal static string PARSE_ALL {

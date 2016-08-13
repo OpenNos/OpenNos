@@ -159,6 +159,9 @@
   <data name="NPCS_PARSED" xml:space="preserve">
     <value>{0} npcs parsed</value>
   </data>
+  <data name="PARSE_ACCOUNTS" xml:space="preserve">
+    <value>Do you want to parse Accounts?</value>
+  </data>
   <data name="PARSE_ALL" xml:space="preserve">
     <value>Do you want to parse ALL?</value>
   </data>
