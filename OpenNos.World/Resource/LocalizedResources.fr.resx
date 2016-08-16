@@ -806,4 +806,10 @@
   <data name="UPGRADESP_DESTROYED" xml:space="preserve">
     <value>L'âme de la carte spécialiste est détruite.</value>
   </data>
+  <data name="GROUP_ADMIN" xml:space="preserve">
+    <value>Tu es le maître du groupe.</value>
+  </data>
+  <data name="GROUP_JOIN" xml:space="preserve">
+    <value>Vous avez rejoint le groupe de {0}</value>
+  </data>
 </root>

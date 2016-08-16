@@ -829,4 +829,7 @@
   <data name="UPGRADESP_DESTROYED" xml:space="preserve">
     <value>SP destroyed.</value>
   </data>
+  <data name="GROUP_JOIN" xml:space="preserve">
+    <value>You joined {0}'s group</value>
+  </data>
 </root>

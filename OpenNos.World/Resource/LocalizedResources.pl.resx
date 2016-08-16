@@ -808,4 +808,7 @@
   <data name="UPGRADESP_DESTROYED" xml:space="preserve">
     <value>Dusza specjalisty została zniszczona</value>
   </data>
+  <data name="GROUP_JOIN" xml:space="preserve">
+    <value>Dołączyłeś do grupy użytkownika {0}</value>
+  </data>
 </root>

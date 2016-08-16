@@ -759,4 +759,7 @@
   <data name="UPGRADESP_DESTROYED" xml:space="preserve">
     <value />
   </data>
+  <data name="GROUP_JOIN" xml:space="preserve">
+    <value />
+  </data>
 </root>

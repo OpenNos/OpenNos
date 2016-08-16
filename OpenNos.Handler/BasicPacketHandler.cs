@@ -1155,9 +1155,10 @@ namespace OpenNos.Handler
                     {
                         Group group = new Group();
                         group.JoinGroup(charId);
+                        Session.Client.SendPacket(Session.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("GROUP_JOIN"), ServerManager.Instance.GetProperty<string>(charId, "Name")), 10));
                         group.JoinGroup(Session.Character.CharacterId);
                         ServerManager.Instance.Groups.Add(group);
-                        Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("GROUP_ADMIN"), 10), ReceiverType.OnlySomeone, "", charId);
+                        Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("GROUP_ADMIN")), ReceiverType.OnlySomeone, "", charId);
 
                         //set back reference to group
                         Session.Character.Group = group;
