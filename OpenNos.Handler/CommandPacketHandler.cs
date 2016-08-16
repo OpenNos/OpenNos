@@ -85,15 +85,17 @@ namespace OpenNos.Handler
             Logger.Debug(packet, Session.SessionId);
             string[] packetsplit = packet.Split(' ');
             byte duration;
-            if (packetsplit.Length >= 3)
+            if (packetsplit.Length > 3)
             {
                 string name = packetsplit[2];
                 string reason = packetsplit[3];
-                ClientSession session = ServerManager.Instance.Sessions.FirstOrDefault(s => s.Character?.Name == name);
-                if (packetsplit.Length == 3)
+
+                if (packetsplit.Length <= 4)
                     duration = 1;
                 else
-                    byte.TryParse(packetsplit[4], out duration);
+                    Byte.TryParse(packetsplit[4], out duration);
+
+                ClientSession session = ServerManager.Instance.Sessions.FirstOrDefault(s => s.Character?.Name == name);
                 if (duration != 0)
                 {
                     ServerManager.Instance.Kick(packetsplit[2]);
@@ -113,7 +115,10 @@ namespace OpenNos.Handler
                 }
             }
             else
+            {
                 Session.Client.SendPacket(Session.Character.GenerateSay("$Ban CHARACTERNAME REASON TIME", 10));
+                Session.Client.SendPacket(Session.Character.GenerateSay("$Ban CHARACTERNAME REASON", 10));
+            }
         }
         [Packet("$Mute")]
         public void Mute(string packet)
@@ -121,15 +126,17 @@ namespace OpenNos.Handler
             Logger.Debug(packet, Session.SessionId);
             string[] packetsplit = packet.Split(' ');
             byte duration;
-            if (packetsplit.Length >= 3)
+            if (packetsplit.Length > 3)
             {
                 string name = packetsplit[2];
                 string reason = packetsplit[3];
-                ClientSession session = ServerManager.Instance.Sessions.FirstOrDefault(s => s.Character?.Name == name);
-                if (packetsplit.Length == 3)
+
+                if (packetsplit.Length <= 4)
                     duration = 1;
                 else
-                    byte.TryParse(packetsplit[4], out duration);
+                    Byte.TryParse(packetsplit[4], out duration);
+
+                ClientSession session = ServerManager.Instance.Sessions.FirstOrDefault(s => s.Character?.Name == name);
                 if (duration != 0)
                 {
                     if (session != null)
@@ -165,7 +172,10 @@ namespace OpenNos.Handler
                 }
             }
             else
+            {
                 Session.Client.SendPacket(Session.Character.GenerateSay("$Mute CHARACTERNAME REASON TIME", 10));
+                Session.Client.SendPacket(Session.Character.GenerateSay("$Mute CHARACTERNAME REASON", 10));
+            }
         }
 
         [Packet("$ChangeClass")]
@@ -176,7 +186,7 @@ namespace OpenNos.Handler
             byte Class;
             if (packetsplit.Length > 2)
             {
-                if (byte.TryParse(packetsplit[2], out Class) && Class < 4)
+                if (Byte.TryParse(packetsplit[2], out Class) && Class < 4)
                 {
                     Session.Character.ChangeClass(Class);
                 }
@@ -353,7 +363,7 @@ namespace OpenNos.Handler
             byte haircolor;
             if (packetsplit.Length > 2)
             {
-                if (byte.TryParse(packetsplit[2], out haircolor) && haircolor < 128)
+                if (Byte.TryParse(packetsplit[2], out haircolor) && haircolor < 128)
                 {
                     Session.Character.HairColor = haircolor;
                     Session.Client.SendPacket(Session.Character.GenerateEq());
@@ -371,7 +381,7 @@ namespace OpenNos.Handler
             byte hairstyle;
             if (packetsplit.Length > 2)
             {
-                if (byte.TryParse(packetsplit[2], out hairstyle))
+                if (Byte.TryParse(packetsplit[2], out hairstyle))
                 {
                     Session.Character.HairStyle = hairstyle;
                     Session.Client.SendPacket(Session.Character.GenerateEq());
@@ -586,7 +596,8 @@ namespace OpenNos.Handler
             {
                 if (Int64.TryParse(packetsplit[2], out gold))
                 {
-                    if (gold <= 1000000000 && gold >= 0)
+                    gold = gold > 1000000000 ? 1000000000 : gold;
+                    if (gold >= 0)
                     {
                         Session.Character.Gold = gold;
                         Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("GOLD_SET"), 0));
@@ -996,6 +1007,7 @@ namespace OpenNos.Handler
             else
                 Session.Client.SendPacket(Session.Character.GenerateSay("$Summon VNUM AMOUNT MOVE", 10));
         }
+
         [Packet("$Teleport")]
         public void Teleport(string packet)
         {
