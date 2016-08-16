@@ -670,7 +670,7 @@
     <value>Sie müssen warten, bis die Fähigkeiten wieder aufgeladen werden</value>
   </data>
   <data name="RESTORE_DIGNITY" xml:space="preserve">
-    <value />
+    <value Du hast ein Teil deiner Würde wieder bekommen./>
   </data>
   <data name="DROP_RATE_CHANGED" xml:space="preserve">
     <value>Die Drop-Rate wurde erfolgreich geänder</value>
@@ -685,13 +685,13 @@
     <value>Sie können weiterhin verwenden</value>
   </data>
   <data name="LVL_REQUIRED" xml:space="preserve">
-    <value />
+    <value Du benötigst Joblevel {0} für die Verbesserung der Spezialistenkarte./>
   </data>
   <data name="UPGRADESP_FAILED" xml:space="preserve">
-    <value />
+    <value Die Verbesserung ist Fehlgeschlagen./>
   </data>
   <data name="UPGRADESP_FAILED_SAVED" xml:space="preserve">
-    <value />
+    <value Verbesserung Fehlgeschlagen, wurde nicht zerstört./>
   </data>
   <data name="UPGRADESP_SUCCESS" xml:space="preserve">
     <value>Die Verbesserung war Erfolgreich.</value>
@@ -700,66 +700,66 @@
     <value>Willkommen</value>
   </data>
   <data name="DROP_RATE_NOW" xml:space="preserve">
-    <value />
+    <value Drop Rate/>
   </data>
   <data name="GOLD_RATE_NOW" xml:space="preserve">
-    <value />
+    <value Gold-Anzahl Drop Rate/>
   </data>
   <data name="XP_RATE_NOW" xml:space="preserve">
-    <value />
+    <value EXP Rate/>
   </data>
   <data name="SP_LEVELUP" xml:space="preserve">
-    <value />
+    <value Joblevel der Spezialistenkarte wurde erhöht./>
   </data>
   <data name="FAIRY_LEVELUP" xml:space="preserve">
-    <value />
+    <value Deine Fee ist aufgestiegen./>
   </data>
   <data name="FAIRYXP_RATE_CHANGED" xml:space="preserve">
-    <value />
+    <value FEEN-EXP Rate wurde verändert./>
   </data>
   <data name="FAIRYXP_RATE_NOW" xml:space="preserve">
-    <value />
+    <value Feen EXP Rate/>
   </data>
   <data name="FAIRYMAX" xml:space="preserve">
-    <value />
+    <value Deine Fee hat das Maximale Level erreicht./>
   </data>
   <data name="FAIRYSTAT" xml:space="preserve">
-    <value />
+    <value Feen XP: {0}/{1}/>
   </data>
   <data name="SCROLL_PROTECT_USED" xml:space="preserve">
     <value />
   </data>
   <data name="AMMO_LOADED_ADVENTURER" xml:space="preserve">
-    <value />
+    <value Steine wurden geladen./>
   </data>
   <data name="AMMO_LOADED_ARCHER" xml:space="preserve">
-    <value />
+    <value Pfeile wurden geladen./>
   </data>
   <data name="AMMO_LOADED_SWORDSMAN" xml:space="preserve">
-    <value />
+    <value Bolzen wurden geladen./>
   </data>
   <data name="NO_AMMO_ADVENTURER" xml:space="preserve">
-    <value />
+    <value Keine Steine vorhanden - Kaufe welche im Shop. />
   </data>
   <data name="NO_AMMO_ARCHER" xml:space="preserve">
-    <value />
+    <value Keine Pfeile vorhanden - Kaufe welche im Shop./>
   </data>
   <data name="NO_AMMO_SWORDSMAN" xml:space="preserve">
-    <value />
+    <value Keine Bolzen vorhanden - Kaufe welche im Shop./>
   </data>
   <data name="REFUSED_GROUP_REQUEST" xml:space="preserve">
-    <value />
+    <value Gruppenanfrage wurde abgelehnt./>
   </data>
   <data name="CANT_EQUIP_DESTROYED_SP" xml:space="preserve">
-    <value />
+    <value Du kannst keine Zerstörte Spezialistenkarte anziehen./>
   </data>
   <data name="CANT_UPGRADE_DESTROYED_SP" xml:space="preserve">
-    <value />
+    <value Du kannst keine Zerstörte Spezialistenkarte Verbessern./>
   </data>
   <data name="UPGRADESP_DESTROYED" xml:space="preserve">
-    <value />
+    <value Spezialistenkarte wurde zerstört./>
   </data>
   <data name="GROUP_JOIN" xml:space="preserve">
-    <value />
+    <value {0} ist der Gruppe beigetreten./>
   </data>
 </root>
