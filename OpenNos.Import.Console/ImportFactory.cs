@@ -1416,7 +1416,7 @@ namespace OpenNos.Import.Console
         {
             int teleporterCounter = 0;
             TeleporterDTO teleporter = null;
-            foreach (string[] currentPacket in _packetList.Where(o => o[0].Equals("at") || (o[0].Equals("n_run") && (o[1].Equals("16") || o[1].Equals("26") || o[1].Equals("45") || o[1].Equals("132") || o[1].Equals("5002") || o[1].Equals("5012")))))
+            foreach (string[] currentPacket in _packetList.Where(o => o[0].Equals("at") || (o[0].Equals("n_run") && (o[1].Equals("16") || o[1].Equals("26") || o[1].Equals("45") || o[1].Equals("301") || o[1].Equals("132") || o[1].Equals("5002") || o[1].Equals("5012")))))
             {
                 if (currentPacket.Length > 4 && currentPacket[0] == "n_run")
                 {

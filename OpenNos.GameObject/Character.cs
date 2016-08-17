@@ -420,7 +420,7 @@ namespace OpenNos.GameObject
 
         public string GenerateAt()
         {
-            return $"at {CharacterId} {MapId} {MapX} {MapY} 2 0 {ServerManager.GetMap(MapId).Music} 1";
+            return $"at {CharacterId} {MapId} {MapX} {MapY} 2 0 {ServerManager.GetMap(MapId).Music} -1";
         }
 
         public string GenerateCInfo()
@@ -660,7 +660,7 @@ namespace OpenNos.GameObject
 
         public string GenerateGold()
         {
-            return $"gold {Gold}";
+            return $"gold {Gold} 0";
         }
 
         public List<string> GenerateGp()
@@ -712,8 +712,6 @@ namespace OpenNos.GameObject
             Item item = ServerManager.GetItem(vnum);
             switch (type)
             {
-                case (byte)InventoryType.Costume:
-                    return $"ivn 7 {slot}.{vnum}.{rare}.{upgrade}.{upgrade2}";
 
                 case (byte)InventoryType.Wear:
                     return $"ivn 0 {slot}.{vnum}.{rare}.{(item != null ? (item.IsColored ? color : upgrade) : upgrade)}.{upgrade2}";
@@ -724,8 +722,13 @@ namespace OpenNos.GameObject
                 case (byte)InventoryType.Etc:
                     return $"ivn 2 {slot}.{vnum}.{amount}.0";
 
+                //inv 3 miniland inventory eg."inv 3 0.3104.1"
+
                 case (byte)InventoryType.Sp:
                     return $"ivn 6 {slot}.{vnum}.{rare}.{upgrade}.{upgrade2}";
+
+                case (byte)InventoryType.Costume:
+                    return $"ivn 7 {slot}.{vnum}.{rare}.{upgrade}.{upgrade2}";
             }
             return String.Empty;
         }
@@ -829,7 +832,7 @@ namespace OpenNos.GameObject
             WearableInstance weapon = EquipmentList.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.MainWeapon, (byte)InventoryType.Equipment);
             //tc_info 0  name   0 0  0 0 -1 - 0  0 0 0 0 0 0 0 0 0 0 wins deaths reput 0 0 0 morph talentwin talentlose capitul rankingpoints arenapoints 0 0 ispvpprimary ispvpsecondary ispvparmor herolvl desc
 
-            return $"tc_info {Level} {Name} {(fairy != null ? ServerManager.GetItem(fairy.ItemVNum).Element : 0)} {ElementRate} {Class} {Gender} -1 - {GetReputIco()} {GetDignityIco()} {(weapon != null ? 1 : 0)} {weapon?.Rare ?? 0} {weapon?.Upgrade ?? 0} {(weapon2 != null ? 1 : 0)} {weapon2?.Rare ?? 0} {weapon2?.Upgrade ?? 0} {(armor != null ? 1 : 0)} {armor?.Rare ?? 0} {armor?.Upgrade ?? 0} 0 0 {Reput} 0 0 0 {(UseSp ? Morph : 0)} 0 0 0 0 0 {Compliment} 0 0 0 0 {HeroLevel} {Language.Instance.GetMessageFromKey("NO_PREZ_MESSAGE")}";
+            return $"tc_info {Level} {Name} {(fairy != null ? ServerManager.GetItem(fairy.ItemVNum).Element : 0)} {ElementRate} {Class} {Gender} -1 - {GetReputIco()} {GetDignityIco()} {(weapon != null ? 1 : 0)} {weapon?.Rare ?? 0} {weapon?.Upgrade ?? 0} {(weapon2 != null ? 1 : 0)} {weapon2?.Rare ?? 0} {weapon2?.Upgrade ?? 0} {(armor != null ? 1 : 0)} {armor?.Rare ?? 0} {armor?.Upgrade ?? 0} 0 0 {Reput} 0 0 0 {(UseSp ? Morph : 0)} {TalentWin} {TalentLose} {TalentSurrender} 0 0 {Compliment} 0 0 0 0 {HeroLevel} {Language.Instance.GetMessageFromKey("NO_PREZ_MESSAGE")}";
         }
 
         public string GenerateRest()
@@ -919,7 +922,7 @@ namespace OpenNos.GameObject
             //0 0 0 0 0 0 0 '2' <- PS - 'number' after reputationminimum
             //10 9 8 '0 0 0 0'<- bonusdamage bonusarmor bonuselement bonushpmp its after upgrade and 3 first values are not important
             skill = skill.TrimEnd('.');
-            return $"slinfo {type} {inventoryItem.ItemVNum} {iteminfo.Morph} {inventoryItem.SpLevel} {iteminfo.LevelJobMinimum} {iteminfo.ReputationMinimum} 0 0 0 0 0 0 0 2 {iteminfo.FireResistance} {iteminfo.WaterResistance} {iteminfo.LightResistance} {iteminfo.DarkResistance} {inventoryItem.XP} {ServersData.SpXPData[inventoryItem.SpLevel - 1]} {skill} {inventoryItem.ItemInstanceId} {freepoint} {slHit} {slDefence} {slElement} {slHp} {inventoryItem.Upgrade} 0 0 {spdestroyed} 0 0 0 0 {inventoryItem.SpStoneUpgrade} {inventoryItem.SpDamage} {inventoryItem.SpDefence} {inventoryItem.SpElement} {inventoryItem.SpHP} {inventoryItem.SpFire} {inventoryItem.SpWater} {inventoryItem.SpLight} {inventoryItem.SpDark}";
+            return $"slinfo {type} {inventoryItem.ItemVNum} {iteminfo.Morph} {inventoryItem.SpLevel} {iteminfo.LevelJobMinimum} {iteminfo.ReputationMinimum} 0 0 0 0 0 0 0 {iteminfo.SpType} {iteminfo.FireResistance} {iteminfo.WaterResistance} {iteminfo.LightResistance} {iteminfo.DarkResistance} {inventoryItem.XP} {ServersData.SpXPData[inventoryItem.SpLevel - 1]} {skill} {inventoryItem.ItemInstanceId} {freepoint} {slHit} {slDefence} {slElement} {slHp} {inventoryItem.Upgrade} 0 0 {spdestroyed} 0 0 0 0 {inventoryItem.SpStoneUpgrade} {inventoryItem.SpDamage} {inventoryItem.SpDefence} {inventoryItem.SpElement} {inventoryItem.SpHP} {inventoryItem.SpFire} {inventoryItem.SpWater} {inventoryItem.SpLight} {inventoryItem.SpDark}";
         }
 
         public string GenerateSpk(object message, int v)
@@ -934,7 +937,7 @@ namespace OpenNos.GameObject
 
         public void GenerateStartupInventory()
         {
-            string inv0 = "inv 0", inv1 = "inv 1", inv2 = "inv 2", inv6 = "inv 6", inv7 = "inv 7";
+            string inv0 = "inv 0", inv1 = "inv 1", inv2 = "inv 2", inv6 = "inv 6", inv7 = "inv 7"; // inv 3 used for miniland objects
 
             foreach (Inventory inv in InventoryList.Inventory)
             {

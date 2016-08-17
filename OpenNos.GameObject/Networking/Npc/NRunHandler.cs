@@ -184,16 +184,26 @@ namespace OpenNos.GameObject
                         TeleporterDTO tp = npc.Teleporters?.FirstOrDefault(s => s.Index == type);
                         if (tp != null)
                         {
-                            if (Session.Character.Gold >= 0)
-                            {
-                                ServerManager.Instance.MapOut(Session.Character.CharacterId);
-                                Session.Character.Gold -= 0;
-                                Session.Client.SendPacket(Session.Character.GenerateGold());
-                                Session.Character.MapY = tp.MapY;
-                                Session.Character.MapX = tp.MapX;
-                                Session.Character.MapId = tp.MapId;
-                                ServerManager.Instance.ChangeMap(Session.Character.CharacterId);
-                            }
+                            ServerManager.Instance.MapOut(Session.Character.CharacterId);
+                            Session.Character.MapY = tp.MapY;
+                            Session.Character.MapX = tp.MapX;
+                            Session.Character.MapId = tp.MapId;
+                            ServerManager.Instance.ChangeMap(Session.Character.CharacterId);
+                        }
+                    }
+                    break;
+
+                case 301:
+                    if (npc != null)
+                    {
+                        TeleporterDTO tp = npc.Teleporters?.FirstOrDefault(s => s.Index == type);
+                        if (tp != null)
+                        {
+                            ServerManager.Instance.MapOut(Session.Character.CharacterId);
+                            Session.Character.MapY = tp.MapY;
+                            Session.Character.MapX = tp.MapX;
+                            Session.Character.MapId = tp.MapId;
+                            ServerManager.Instance.ChangeMap(Session.Character.CharacterId);
                         }
                     }
                     break;
@@ -204,16 +214,11 @@ namespace OpenNos.GameObject
                         TeleporterDTO tp = npc.Teleporters?.FirstOrDefault(s => s.Index == type);
                         if (tp != null)
                         {
-                            if (Session.Character.Gold >= 0)
-                            {
-                                ServerManager.Instance.MapOut(Session.Character.CharacterId);
-                                Session.Character.Gold -= 0;
-                                Session.Client.SendPacket(Session.Character.GenerateGold());
-                                Session.Character.MapY = tp.MapY;
-                                Session.Character.MapX = tp.MapX;
-                                Session.Character.MapId = tp.MapId;
-                                ServerManager.Instance.ChangeMap(Session.Character.CharacterId);
-                            }
+                            ServerManager.Instance.MapOut(Session.Character.CharacterId);
+                            Session.Character.MapY = tp.MapY;
+                            Session.Character.MapX = tp.MapX;
+                            Session.Character.MapId = tp.MapId;
+                            ServerManager.Instance.ChangeMap(Session.Character.CharacterId);
                         }
                     }
                     break;
@@ -224,16 +229,11 @@ namespace OpenNos.GameObject
                         TeleporterDTO tp = npc.Teleporters?.FirstOrDefault(s => s.Index == type);
                         if (tp != null)
                         {
-                            if (Session.Character.Gold >= 0)
-                            {
-                                ServerManager.Instance.MapOut(Session.Character.CharacterId);
-                                Session.Character.Gold -= 0;
-                                Session.Client.SendPacket(Session.Character.GenerateGold());
-                                Session.Character.MapY = tp.MapY;
-                                Session.Character.MapX = tp.MapX;
-                                Session.Character.MapId = tp.MapId;
-                                ServerManager.Instance.ChangeMap(Session.Character.CharacterId);
-                            }
+                            ServerManager.Instance.MapOut(Session.Character.CharacterId);
+                            Session.Character.MapY = tp.MapY;
+                            Session.Character.MapX = tp.MapX;
+                            Session.Character.MapId = tp.MapId;
+                            ServerManager.Instance.ChangeMap(Session.Character.CharacterId);
                         }
                     }
                     break;

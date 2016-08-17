@@ -154,10 +154,10 @@
     <value>Read^our^LICENSE</value>
   </data>
   <data name="BN1" xml:space="preserve">
-    <value>Don't^give^your^password^to^anyone</value>
+    <value>If^you^have^problems^read^Troubleshooting.md</value>
   </data>
   <data name="BN2" xml:space="preserve">
-    <value>Need^a^GM^help?^check^out^our^website:</value>
+    <value>Need^help?^Use^our^official^discord^server:^https://discordapp.com/invite/N8eqPUh</value>
   </data>
   <data name="BN3" xml:space="preserve">
     <value>Greetings^from^OpenNos^Team!</value>
@@ -166,7 +166,7 @@
     <value>Do^you^want^to^contribute?^https://github.com/OpenNos/OpenNos</value>
   </data>
   <data name="BN5" xml:space="preserve">
-    <value>Team:^0Lucifer0,^chucktheripper,^Ciapa1,^MasterDomino,^genyx,^Martazza,^KrisYiu</value>
+    <value>Team:^0Lucifer0,^chucktheripper,^Ciapa1,^MasterDomino,^genyx,^Martazza,^KrisYiu,^Uppermost</value>
   </data>
   <data name="BN6" xml:space="preserve">
     <value>Check^out:^https://github.com/OpenNos/OpenNos^for^latest^updates.</value>
@@ -831,5 +831,14 @@
   </data>
   <data name="GROUP_JOIN" xml:space="preserve">
     <value>You joined {0}'s group</value>
+  </data>
+  <data name="BN7" xml:space="preserve">
+    <value>We^don't^support^private^servers!</value>
+  </data>
+  <data name="BN8" xml:space="preserve">
+    <value>That's^a^cool^message!</value>
+  </data>
+  <data name="BN9" xml:space="preserve">
+    <value>Thanks^for^all^of^your^contributions!</value>
   </data>
 </root>

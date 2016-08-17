@@ -396,32 +396,41 @@ namespace OpenNos.GameObject
                 session.CurrentMap.RegisterSession(session);
                 session.Client.SendPacket(session.Character.GenerateCInfo());
                 session.Client.SendPacket(session.Character.GenerateCMode());
-                session.Client.SendPacket(session.Character.GenerateFaction());
-                session.Client.SendPacket(session.Character.GenerateFd());
+                session.Client.SendPacket(session.Character.GenerateEquipment());
                 session.Client.SendPacket(session.Character.GenerateLev());
                 session.Client.SendPacket(session.Character.GenerateStat());
                 session.Client.SendPacket(session.Character.GenerateAt());
+                session.Client.SendPacket(session.Character.GenerateCond());
                 session.Client.SendPacket(session.Character.GenerateCMap());
-                if (session.Character.Size != 10)
-                    session.Client.SendPacket(session.Character.GenerateScal());
+                session.Client.SendPacket(session.Character.GenerateStatChar());
+                session.Client.SendPacket($"gidx 1 {session.Character.CharacterId} -1 - 0");
+                //session.Client.SendPacket($"rsfi 1 1 0 9 0 9"); // Act completion
+                session.Client.SendPacket("rsfi 0 -1");
+                session.Client.SendPacket("pinit 0");
+                session.Client.SendPacket(session.Character.GeneratePairy());
+                Broadcast(session, session.Character.GeneratePairy(), ReceiverType.AllExceptMe);
+                session.Client.SendPacket("act6 0");//act6 1 0 14 0 0 0 14 0 0 0
+
                 foreach (String portalPacket in session.Character.GenerateGp())
                     session.Client.SendPacket(portalPacket);
-                foreach (String npcPacket in session.Character.GenerateIn2())
-                    session.Client.SendPacket(npcPacket);
                 foreach (String monsterPacket in session.Character.GenerateIn3())
                     session.Client.SendPacket(monsterPacket);
+                foreach (String npcPacket in session.Character.GenerateIn2())
+                    session.Client.SendPacket(npcPacket);
                 foreach (String ShopPacket in session.Character.GenerateNPCShopOnMap())
                     session.Client.SendPacket(ShopPacket);
                 foreach (String droppedPacket in session.Character.GenerateDroppedItem())
                     session.Client.SendPacket(droppedPacket);
+                foreach (String ShopPacket in session.Character.GenerateShopOnMap())
+                    session.Client.SendPacket(ShopPacket);
+                foreach (String ShopPacketChar in session.Character.GeneratePlayerShopOnMap())
+                    session.Client.SendPacket(ShopPacketChar);
 
-                session.Client.SendPacket(session.Character.GenerateStatChar());
-                session.Client.SendPacket(session.Character.GenerateCond());
-                Broadcast(session, session.Character.GeneratePairy(), ReceiverType.All);
-                session.Client.SendPacket($"rsfi 1 1 0 9 0 9"); // Act completion
                 ServerManager.Instance.Sessions.Where(s => s.Character != null && s.Character.MapId.Equals(session.Character.MapId) && s.Character.Name != session.Character.Name && !session.Character.InvisibleGm).ToList().ForEach(s => RequireBroadcastFromUser(session, s.Character.CharacterId, "GenerateIn"));
                 if (session.Character.InvisibleGm == false)
                     Broadcast(session, session.Character.GenerateIn(), ReceiverType.AllExceptMe);
+                if (session.Character.Size != 10)
+                    session.Client.SendPacket(session.Character.GenerateScal());
                 if (session.CurrentMap.IsDancing == 2 && session.Character.IsDancing == 0)
                     session.CurrentMap?.Broadcast("dance 2");
                 else if (session.CurrentMap.IsDancing == 0 && session.Character.IsDancing == 1)
@@ -429,34 +438,6 @@ namespace OpenNos.GameObject
                     session.Character.IsDancing = 0;
                     session.CurrentMap?.Broadcast("dance");
                 }
-                foreach (String ShopPacket in session.Character.GenerateShopOnMap())
-                    session.Client.SendPacket(ShopPacket);
-
-                foreach (String ShopPacketChar in session.Character.GeneratePlayerShopOnMap())
-                    session.Client.SendPacket(ShopPacketChar);
-
-                Broadcast(session, session.Character.GenerateEq(), ReceiverType.All);
-                session.Client.SendPacket(session.Character.GenerateEquipment());
-                string clinit = "clinit";
-                string flinit = "flinit";
-                string kdlinit = "kdlinit";
-
-                foreach (CharacterDTO character in DAOFactory.CharacterDAO.GetTopComplimented())
-                {
-                    clinit += $" {character.CharacterId}|{character.Level}|{character.HeroLevel}|{character.Compliment}|{character.Name}";
-                }
-                foreach (CharacterDTO character in DAOFactory.CharacterDAO.GetTopReputation())
-                {
-                    flinit += $" {character.CharacterId}|{character.Level}|{character.HeroLevel}|{character.Reput}|{character.Name}";
-                }
-                foreach (CharacterDTO character in DAOFactory.CharacterDAO.GetTopPoints())
-                {
-                    kdlinit += $" {character.CharacterId}|{character.Level}|{character.HeroLevel}|{character.Act4Points}|{character.Name}";
-                }
-
-                session.Client.SendPacket(clinit);
-                session.Client.SendPacket(flinit);
-                session.Client.SendPacket(kdlinit);
 
                 foreach (Group g in Groups)
                 {

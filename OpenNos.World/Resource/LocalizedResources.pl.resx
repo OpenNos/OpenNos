@@ -151,13 +151,13 @@
     <value>Złe id, badź hasło.</value>
   </data>
   <data name="BN0" xml:space="preserve">
-    <value>Przeczytaj^README.md</value>
+    <value>Przeczytaj^LICENSE</value>
   </data>
   <data name="BN1" xml:space="preserve">
-    <value>Nigdy^nie^podawaj^nikomu^hasła,^adminstracja^nigdy^nie^poprosi^cię^o^hasło!</value>
+    <value>Coś^nie^działa?^Zajrzyj^do^Troubleshooting.md</value>
   </data>
   <data name="BN2" xml:space="preserve">
-    <value>Potrzebujesz^pomocy^gm'a?^zajrzyj^na^nasza^strone!</value>
+    <value>Potrzebujesz^pomocy?^Użyj^naszego^servera^Discord:^https://discordapp.com/invite/N8eqPUh</value>
   </data>
   <data name="BN3" xml:space="preserve">
     <value>Pozdrowienia^od^Teamu^OpenNos!</value>
@@ -810,5 +810,14 @@
   </data>
   <data name="GROUP_JOIN" xml:space="preserve">
     <value>Dołączyłeś do grupy użytkownika {0}</value>
+  </data>
+  <data name="BN7" xml:space="preserve">
+    <value>Nie^wspomagamy^prywatnych^serverów!</value>
+  </data>
+  <data name="BN8" xml:space="preserve">
+    <value>To^jest^fajna^wiadomość!^xD</value>
+  </data>
+  <data name="BN9" xml:space="preserve">
+    <value>Dziekujemy^za^waszą^pomoc!</value>
   </data>
 </root>
