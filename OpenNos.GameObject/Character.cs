@@ -1688,7 +1688,7 @@ namespace OpenNos.GameObject
                     return false;
 
                 case 0:
-                    if (ski.Skill.Range > 3)
+                    if (ski.Skill.Type == 1)
                     {
                         WearableInstance inv = EquipmentList.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.SecondaryWeapon, (byte)InventoryType.Equipment);
                         if (inv != null)
@@ -1721,7 +1721,7 @@ namespace OpenNos.GameObject
                     }
                     else return true;
                 case 1:
-                    if (ski.Skill.Range > 3)
+                    if (ski.Skill.Type == 1)
                     {
                         WearableInstance inv = EquipmentList.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.SecondaryWeapon, (byte)InventoryType.Equipment);
                         if (inv != null)
@@ -1754,7 +1754,7 @@ namespace OpenNos.GameObject
                     }
                     else return true;
                 case 2:
-                    if (ski.Skill.Range > 3)
+                    if (ski.Skill.Type == 1)
                     {
                         WearableInstance inv = EquipmentList.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.MainWeapon, (byte)InventoryType.Equipment);
                         if (inv != null)

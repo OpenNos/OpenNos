@@ -139,10 +139,10 @@
     <value>{0} maps parsed</value>
   </data>
   <data name="MAPTYPEMAPS_PARSED" xml:space="preserve">
-    <value>my name's jeff...</value>
+    <value>MapTypeMaps parsed</value>
   </data>
   <data name="MAPTYPES_PARSED" xml:space="preserve">
-    <value>Some MapTypes parsed</value>
+    <value>MapTypes parsed</value>
   </data>
   <data name="MONSTERS_PARSED" xml:space="preserve">
     <value>{0} monsters parsed</value>
