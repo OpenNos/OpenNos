@@ -68,6 +68,8 @@ namespace OpenNos.GameObject
             switch (Effect)
             {
                 default:
+                    if (session.Character.Hp <= 0)
+                        return;
                     int amount = session.Character.SnackAmount;
                     if (amount < 5)
                     {

@@ -67,6 +67,8 @@ namespace OpenNos.GameObject
             switch (Effect)
             {
                 default:
+                    if (session.Character.Hp <= 0)
+                        return;
                     if (session.Character.IsSitting == false)
                     {
                         session.Character.SnackAmount = 0;
