@@ -114,7 +114,7 @@ namespace OpenNos.Handler
 
                     System.Text.RegularExpressions.Regex rg = new System.Text.RegularExpressions.Regex(@"^[a-zA-Z0-9ąáàâäãåçćéèêëęíìîïłńñóòôöõúùûüśźżýÿæœĄÁÀÂÄÃÅĆÇĘÉÈÊËÍÌÎÏŁŃÑÓÒÔÖÕÚÙÛÜŚŹŻÝŸÆŒ.¤*-|#²§µß™€=$^<>£!()&~{}@]*$`~");
                     isIllegalCharacter = rg.IsMatch(characterName);
-                    
+
                     if (!isIllegalCharacter)
                     {
                         if (DAOFactory.CharacterDAO.LoadByName(characterName) == null)
@@ -901,13 +901,10 @@ namespace OpenNos.Handler
                                 Session.Character.Hp = (int)Session.Character.HPLoad();
                                 Session.Character.Mp = (int)Session.Character.MPLoad();
                             }
-                            //Session.Client.SendPacket(Session.Character.GenerateTp());
-                            //Session.Client.SendPacket(Session.Character.GenerateRevive());
-                            Session.CurrentMap?.Broadcast(Session.Character.GenerateTp());
-                            Session.CurrentMap?.Broadcast(Session.Character.GenerateRevive());
+                            Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateTp(), ReceiverType.All);
+                            Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateRevive(), ReceiverType.All);
                             Session.Client.SendPacket("pinit 0");
                             Session.Client.SendPacket(Session.Character.GenerateStat());
-                            //Session.Character.GenerateStartupInventory();
                         }
                         break;
 
@@ -1057,12 +1054,13 @@ namespace OpenNos.Handler
             Session.Character.LoadSkills();
             Session.Client.SendPacket(Session.Character.GenerateTit());
             Session.Client.SendPacket($"fd {Session.Character.Reput} 0 {(int)Session.Character.Dignity} {Math.Abs(Session.Character.GetDignityIco())}");
-            Session.Client.SendPacket(Session.Character.GenerateFd());
+            Session.Client.SendPacket(Session.Character.GenerateFd()); // leave packets in comment for future soo we can reorder them if fixed
             //Session.Client.SendPacket(Session.Character.GenerateCInfo());
             //Session.Client.SendPacket(Session.Character.GenerateEquipment());
             //Session.Client.SendPacket(Session.Character.GenerateLev());
             //Session.Client.SendPacket(Session.Character.GenerateStat());
             Session.Client.SendPacket(Session.Character.GenerateSki());
+            Session.Client.SendPacket($"rsfi 1 1 0 9 0 9"); // Act completion
             //ServerManager.Instance.ChangeMap(Session.Character.CharacterId);
             //Session.Client.SendPacket(Session.Character.GenerateAt());
             //Session.Client.SendPacket(Session.Character.GenerateCMap());

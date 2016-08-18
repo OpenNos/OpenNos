@@ -389,6 +389,7 @@ namespace OpenNos.Handler
                     {
                         wig.Design = wigcolor;
                         Session.Client.SendPacket(Session.Character.GenerateEq());
+                        Session.Client.SendPacket(Session.Character.GenerateEquipment());
                         Session.CurrentMap?.Broadcast(Session.Character.GenerateIn());
                     }
                     else

@@ -556,7 +556,7 @@ namespace OpenNos.GameObject
             if (head != null && head.Item.IsColored)
                 color = head.Design;
 
-            return $"eq {CharacterId} {(Authority == AuthorityType.Admin ? 2 : 0)} {Gender} {HairStyle} {color} {Class} {GenerateEqListForPacket()} {GenerateEqRareUpgradeForPacket()}";
+            return $"eq {CharacterId} {(byte)Authority} {Gender} {HairStyle} {color} {Class} {GenerateEqListForPacket()} {GenerateEqRareUpgradeForPacket()}";
         }
 
         public string GenerateEqListForPacket()

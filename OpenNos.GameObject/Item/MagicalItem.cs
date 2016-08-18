@@ -77,6 +77,7 @@ namespace OpenNos.GameObject
                         {
                             wig.Design = (byte)rnd.Next(0, 15);
                             Session.Client.SendPacket(Session.Character.GenerateEq());
+                            Session.Client.SendPacket(Session.Character.GenerateEquipment());
                             Session.CurrentMap?.Broadcast(Session.Character.GenerateIn());
                             Inv.ItemInstance.Amount--;
                             if (Inv.ItemInstance.Amount > 0)

@@ -396,6 +396,7 @@ namespace OpenNos.GameObject
                 session.CurrentMap.RegisterSession(session);
                 session.Client.SendPacket(session.Character.GenerateCInfo());
                 session.Client.SendPacket(session.Character.GenerateCMode());
+                session.CurrentMap?.Broadcast(session, session.Character.GenerateEq(), ReceiverType.All);
                 session.Client.SendPacket(session.Character.GenerateEquipment());
                 session.Client.SendPacket(session.Character.GenerateLev());
                 session.Client.SendPacket(session.Character.GenerateStat());
@@ -404,11 +405,10 @@ namespace OpenNos.GameObject
                 session.Client.SendPacket(session.Character.GenerateCMap());
                 session.Client.SendPacket(session.Character.GenerateStatChar());
                 session.Client.SendPacket($"gidx 1 {session.Character.CharacterId} -1 - 0");
-                session.Client.SendPacket($"rsfi 1 1 0 9 0 9"); // Act completion
-                //session.Client.SendPacket("rsfi 0 -1");
+                session.Client.SendPacket("rsfi 0 -1");
                 session.Client.SendPacket("pinit 0");
                 session.Client.SendPacket(session.Character.GeneratePairy());
-                Broadcast(session, session.Character.GeneratePairy(), ReceiverType.AllExceptMe);
+                session.CurrentMap?.Broadcast(session, session.Character.GeneratePairy(), ReceiverType.AllExceptMe);
                 session.Client.SendPacket("act6 0");//act6 1 0 14 0 0 0 14 0 0 0
 
                 foreach (String portalPacket in session.Character.GenerateGp())
@@ -428,7 +428,7 @@ namespace OpenNos.GameObject
 
                 ServerManager.Instance.Sessions.Where(s => s.Character != null && s.Character.MapId.Equals(session.Character.MapId) && s.Character.Name != session.Character.Name && !session.Character.InvisibleGm).ToList().ForEach(s => RequireBroadcastFromUser(session, s.Character.CharacterId, "GenerateIn"));
                 if (session.Character.InvisibleGm == false)
-                    Broadcast(session, session.Character.GenerateIn(), ReceiverType.AllExceptMe);
+                    session.CurrentMap?.Broadcast(session, session.Character.GenerateIn(), ReceiverType.AllExceptMe);
                 if (session.Character.Size != 10)
                     session.Client.SendPacket(session.Character.GenerateScal());
                 if (session.CurrentMap.IsDancing == 2 && session.Character.IsDancing == 0)
@@ -450,7 +450,7 @@ namespace OpenNos.GameObject
                         }
                         if (groupSession.Character.CharacterId == groupSession.Character.CharacterId)
                         {
-                            Broadcast(groupSession, $"pidx 1 1.{groupSession.Character.CharacterId}", ReceiverType.All);
+                            session.CurrentMap?.Broadcast(groupSession, $"pidx 1 1.{groupSession.Character.CharacterId}", ReceiverType.All);
                         }
                     }
                 }
