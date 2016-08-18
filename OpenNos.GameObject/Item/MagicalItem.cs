@@ -48,20 +48,49 @@ namespace OpenNos.GameObject
                     }
                     break;
                 case 11:
-                    if (Session.Character.Class == (byte)ClassType.Adventurer && EffectValue > 1)
-                        Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("ADVENTURERS_CANT_USE"), 10));
-                    else
+                    if (iteminfo != null)
                     {
-                        Session.Character.HairStyle = Session.Character.HairStyle != (byte)EffectValue ? (byte)EffectValue : (byte)1;
-                        Session.Client.SendPacket(Session.Character.GenerateEq());
-                        Session.CurrentMap?.Broadcast(Session.Character.GenerateIn());
-                        Inv.ItemInstance.Amount--;
-                        if (Inv.ItemInstance.Amount > 0)
-                            Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(Inv.ItemInstance.ItemVNum, Inv.ItemInstance.Amount, Inv.Type, Inv.Slot, 0, 0, 0, 0));
+                        if (Session.Character.Class == (byte)ClassType.Adventurer && EffectValue > 1)
+                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("ADVENTURERS_CANT_USE"), 10));
                         else
                         {
-                            Session.Character.InventoryList.DeleteFromSlotAndType(Inv.Slot, Inv.Type);
-                            Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, Inv.Type, Inv.Slot, 0, 0, 0, 0));
+                            Session.Character.HairStyle = Session.Character.HairStyle != (byte)EffectValue ? (byte)EffectValue : (byte)1;
+                            Session.Client.SendPacket(Session.Character.GenerateEq());
+                            Session.CurrentMap?.Broadcast(Session.Character.GenerateIn());
+                            Inv.ItemInstance.Amount--;
+                            if (Inv.ItemInstance.Amount > 0)
+                                Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(Inv.ItemInstance.ItemVNum, Inv.ItemInstance.Amount, Inv.Type, Inv.Slot, 0, 0, 0, 0));
+                            else
+                            {
+                                Session.Character.InventoryList.DeleteFromSlotAndType(Inv.Slot, Inv.Type);
+                                Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, Inv.Type, Inv.Slot, 0, 0, 0, 0));
+                            }
+                        }
+                    }
+                    break;
+
+                case 30:
+                    if (iteminfo != null)
+                    {
+                        WearableInstance wig = Session.Character.EquipmentList.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Hat, (byte)InventoryType.Equipment);
+                        if (wig != null)
+                        {
+                            wig.Design = (byte)rnd.Next(0, 15);
+                            Session.Client.SendPacket(Session.Character.GenerateEq());
+                            Session.CurrentMap?.Broadcast(Session.Character.GenerateIn());
+                            Inv.ItemInstance.Amount--;
+                            if (Inv.ItemInstance.Amount > 0)
+                                Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(Inv.ItemInstance.ItemVNum, Inv.ItemInstance.Amount, Inv.Type, Inv.Slot, 0, 0, 0, 0));
+                            else
+                            {
+                                Session.Character.InventoryList.DeleteFromSlotAndType(Inv.Slot, Inv.Type);
+                                Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, Inv.Type, Inv.Slot, 0, 0, 0, 0));
+                            }
+                        }
+                        else
+                        {
+                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NO_WIG"), 0));
+                            return;
                         }
                     }
                     break;

@@ -373,6 +373,35 @@ namespace OpenNos.Handler
             else
                 Session.Client.SendPacket(Session.Character.GenerateSay("$HairColor COLORID", 10));
         }
+
+        [Packet("$WigColor")]
+        public void WigColor(string packet)
+        {
+            Logger.Debug(packet, Session.SessionId);
+            string[] packetsplit = packet.Split(' ');
+            byte wigcolor = 0;
+            if (packetsplit.Length > 2)
+            {
+                if (Byte.TryParse(packetsplit[2], out wigcolor))
+                {
+                    WearableInstance wig = Session.Character.EquipmentList.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Hat, (byte)InventoryType.Equipment);
+                    if (wig != null)
+                    {
+                        wig.Design = wigcolor;
+                        Session.Client.SendPacket(Session.Character.GenerateEq());
+                        Session.CurrentMap?.Broadcast(Session.Character.GenerateIn());
+                    }
+                    else
+                    {
+                        Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NO_WIG"), 0));
+                        return;
+                    }
+                }
+            }
+            else
+                Session.Client.SendPacket(Session.Character.GenerateSay("$WigColor COLORID", 10));
+        }
+
         [Packet("$HairStyle")]
         public void Hairstyle(string packet)
         {
@@ -416,6 +445,7 @@ namespace OpenNos.Handler
             Session.Client.SendPacket(Session.Character.GenerateSay("$SPLvl SPLEVEL", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$FLvl FAIRYLEVEL", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$HairColor COLORID", 6));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$WigColor COLORID", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$HairStyle STYLEID", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$SPRefill", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$HeroLvl HEROLEVEL", 6));
