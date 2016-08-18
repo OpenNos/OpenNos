@@ -405,7 +405,7 @@ namespace OpenNos.GameObject
                 session.Client.SendPacket(session.Character.GenerateStatChar());
                 session.Client.SendPacket($"gidx 1 {session.Character.CharacterId} -1 - 0");
                 session.Client.SendPacket($"rsfi 1 1 0 9 0 9"); // Act completion
-                session.Client.SendPacket("rsfi 0 -1");
+                //session.Client.SendPacket("rsfi 0 -1");
                 session.Client.SendPacket("pinit 0");
                 session.Client.SendPacket(session.Character.GeneratePairy());
                 Broadcast(session, session.Character.GeneratePairy(), ReceiverType.AllExceptMe);

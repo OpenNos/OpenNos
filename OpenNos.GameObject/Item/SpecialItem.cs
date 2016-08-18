@@ -26,18 +26,18 @@ namespace OpenNos.GameObject
         {
             switch (Effect)
             {
-                case 650:
+                case 650: //wings
 
                     if (Session.Character.UseSp)
                     {
                         Item iteminfo = ServerManager.GetItem(Inv.ItemInstance.ItemVNum);
                         SpecialistInstance specialistInstance = Session.Character.EquipmentList.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, (byte)InventoryType.Equipment);
-                        specialistInstance.Design = (byte)iteminfo.EffectValue;
-                        Session.Character.MorphUpgrade2 = iteminfo.EffectValue;
+                        specialistInstance.Design = (byte)iteminfo.EffectValue;// change item design in instance 
+                        Session.Character.MorphUpgrade2 = iteminfo.EffectValue;// change item design in session
                         Session.Client.SendPacket(Session.Character.GenerateCMode());
                         Session.Client.SendPacket(Session.Character.GenerateStat());
                         Session.Client.SendPacket(Session.Character.GenerateStatChar());
-                        Inv.ItemInstance.Amount--;
+                        Inv.ItemInstance.Amount--; // subtract item amount
                         if (Inv.ItemInstance.Amount > 0)
                             Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(Inv.ItemInstance.ItemVNum, Inv.ItemInstance.Amount, Inv.Type, Inv.Slot, 0, 0, 0, 0));
                         else
