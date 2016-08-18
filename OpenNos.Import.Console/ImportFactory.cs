@@ -487,7 +487,7 @@ namespace OpenNos.Import.Console
                     else if (currentLine.Length > 7 && currentLine[1] == "ETC")
                     {
                         unknownData = Convert.ToInt64(currentLine[2]);
-                        //if (unknownData == -2147483616 || unknownData == -2147483647 || unknownData == Int32.MinValue)
+                        //if (unknownData == -2147483616 || unknownData == -2147483647 || unknownData == -2147483646)
                         //{
                         //    if (race == 8 && racetype == 0)
                         //    {
@@ -1805,16 +1805,17 @@ namespace OpenNos.Import.Console
                                 break;
 
                             case (byte)ItemType.Specialist:
-                                //item.isSpecialist = Convert.ToByte(linesave[2]);
-                                //item.Unknown = Convert.ToInt16(linesave[3]));
+                                //item.isSpecialist = Convert.ToByte(currentLine[2]);
+                                //item.Unknown = Convert.ToInt16(currentLine[3]);
+                                item.ElementRate = Convert.ToInt16(currentLine[4]);
                                 item.Speed = Convert.ToByte(currentLine[5]);
                                 item.SpType = Convert.ToByte(currentLine[13]);
-                                //item.Morph = Convert.ToInt16(linesave[14]) + 1; // idk whats that, its useless
+                                //item.Morph = Convert.ToInt16(currentLine[14]) + 1; // idk whats that, its useless
                                 item.FireResistance = Convert.ToByte(currentLine[15]);
                                 item.WaterResistance = Convert.ToByte(currentLine[16]);
                                 item.LightResistance = Convert.ToByte(currentLine[17]);
                                 item.DarkResistance = Convert.ToByte(currentLine[18]);
-                                //item.PartnerClass = Convert.ToInt16(linesave[19]);
+                                //item.PartnerClass = Convert.ToInt16(currentLine[19]);
                                 item.LevelJobMinimum = Convert.ToByte(currentLine[20]);
                                 item.ReputationMinimum = Convert.ToByte(currentLine[21]);
 
@@ -1832,15 +1833,15 @@ namespace OpenNos.Import.Console
                                 {
                                     item.SecondaryElement = (byte)elementdic.OrderByDescending(s => s.Value).ElementAt(1).Key;
                                 }
-                                if (item.VNum == 903) // need to hardcode...
-                                    item.Element = 2;
-                                else if (item.VNum == 901)// need to hardcode...
+                                
+                                if (item.VNum == 901)// need to hardcode...
                                     item.Element = 1;
+                                else if (item.VNum == 903) // need to hardcode...
+                                    item.Element = 2;
                                 else if (item.VNum == 906)// need to hardcode...
                                     item.Element = 3;
                                 else if (item.VNum == 909)// need to hardcode...
                                     item.Element = 3;
-
                                 break;
 
                             case (byte)ItemType.Shell:

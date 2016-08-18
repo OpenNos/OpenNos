@@ -144,19 +144,6 @@ namespace OpenNos.Handler
                         inventory = Session.Character.EquipmentList.LoadBySlotAndType<SpecialistInstance>(slot, (byte)InventoryType.Equipment);
                     break;
 
-                case 5:
-                    if (Session.Character.ExchangeInfo != null)
-                    {
-                        byte inven; ;
-
-                        if (byte.TryParse(packetsplit[3], out inven) && short.TryParse(packetsplit[4], out slot))
-                        {
-                            InventoryList inv = ServerManager.Instance.GetProperty<InventoryList>(Session.Character.ExchangeInfo.CharId, "InventoryList");
-                            inventory = inv.LoadBySlotAndType<WearableInstance>(slot, inven);
-                        }
-                    }
-                    break;
-
                 case 1:
                     inventory = Session.Character.InventoryList.LoadBySlotAndType<WearableInstance>(slot, (byte)InventoryType.Wear);
                     if (inventory == null)
@@ -165,6 +152,22 @@ namespace OpenNos.Handler
 
                 case 2:
                     inventory = new WearableInstance(Session.Character.InventoryList.GenerateItemInstanceId());
+                    break;
+
+                case 5:
+                    if (Session.Character.ExchangeInfo != null)
+                    {
+                        byte inven;
+                        if (byte.TryParse(packetsplit[3], out inven) && short.TryParse(packetsplit[4], out slot))
+                        {
+                            InventoryList inv = ServerManager.Instance.GetProperty<InventoryList>(Session.Character.ExchangeInfo.CharId, "InventoryList");
+                            inventory = inv.LoadBySlotAndType<WearableInstance>(slot, inven);
+                        }
+                    }
+                    break;
+
+                case 7:
+                    inventory = Session.Character.InventoryList.LoadBySlotAndType<SpecialistInstance>(slot, (byte)InventoryType.Sp); // for future purposes inv in partner
                     break;
 
                 case 10:
@@ -178,10 +181,7 @@ namespace OpenNos.Handler
 
             if (inventory != null && inventory.Item != null)
             {
-                Session.Client.SendPacket(
-                    inventory.Item.EquipmentSlot != (byte)EquipmentType.Sp
-                        ? Session.Character.GenerateEInfo(inventory)
-                        : Session.Character.GenerateSlInfo(inventory as SpecialistInstance, 0));
+                Session.Client.SendPacket(inventory.Item.EquipmentSlot != (byte)EquipmentType.Sp ? Session.Character.GenerateEInfo(inventory) : inventory.Item.SpType == 0 ? Session.Character.GeneratePslInfo(inventory as SpecialistInstance, 0) :  Session.Character.GenerateSlInfo(inventory as SpecialistInstance, 0));
             }
         }
 

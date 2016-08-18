@@ -13,6 +13,7 @@
  */
 
 using OpenNos.Core;
+using OpenNos.Domain;
 using System;
 
 namespace OpenNos.GameObject
@@ -25,6 +26,29 @@ namespace OpenNos.GameObject
         {
             switch (Effect)
             {
+                case 650:
+
+                    if (Session.Character.UseSp)
+                    {
+                        Item iteminfo = ServerManager.GetItem(Inv.ItemInstance.ItemVNum);
+                        SpecialistInstance specialistInstance = Session.Character.EquipmentList.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, (byte)InventoryType.Equipment);
+                        specialistInstance.Design = (byte)iteminfo.EffectValue;
+                        Session.Character.MorphUpgrade2 = iteminfo.EffectValue;
+                        Session.Client.SendPacket(Session.Character.GenerateCMode());
+                        Session.Client.SendPacket(Session.Character.GenerateStat());
+                        Session.Client.SendPacket(Session.Character.GenerateStatChar());
+                        Inv.ItemInstance.Amount--;
+                        if (Inv.ItemInstance.Amount > 0)
+                            Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(Inv.ItemInstance.ItemVNum, Inv.ItemInstance.Amount, Inv.Type, Inv.Slot, 0, 0, 0, 0));
+                        else
+                        {
+                            Session.Character.InventoryList.DeleteFromSlotAndType(Inv.Slot, Inv.Type);
+                            Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, Inv.Type, Inv.Slot, 0, 0, 0, 0));
+                        }
+                    }
+                    else
+                        Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NO_SP"), 0));
+                    break;
                 default:
                     //Item iteminfo = ServerManager.GetItem(Inv.ItemInstance.ItemVNum);
                     //if (iteminfo.Morph != 0 && iteminfo.Speed != 0)

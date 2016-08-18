@@ -1097,7 +1097,7 @@ namespace OpenNos.Handler
             Session.Client.SendPacket("p_clear");
             // sc_p pet
             // sc_n nospartner
-            Session.Client.SendPacket("sc_p_stc 0"); // end pet and partner
+            //Session.Client.SendPacket("sc_p_stc 0"); // end pet and partner
             Session.Client.SendPacket("pinit 0");
             Session.Character.DeleteTimeout();
             Session.Client.SendPacket("zzim");
