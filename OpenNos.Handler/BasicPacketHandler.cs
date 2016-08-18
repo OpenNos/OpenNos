@@ -1070,7 +1070,7 @@ namespace OpenNos.Handler
             //Session.Client.SendPacket(Session.Character.GenerateCond());
             //Session.Client.SendPacket(Session.Character.GeneratePairy());
             //Session.CurrentMap?.Broadcast(Session, Session.Character.GeneratePairy(), ReceiverType.AllExceptMe);
-            //Session.Client.SendPacket("rsfi 0 -1");
+            Session.Client.SendPacket("rsfi 0 -1");
             if (Session.Character.Hp <= 0)
                 ServerManager.Instance.ReviveFirstPosition(Session.Character.CharacterId);
             else
