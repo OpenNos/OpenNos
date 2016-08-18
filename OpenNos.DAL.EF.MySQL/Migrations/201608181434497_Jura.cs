@@ -3,7 +3,7 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class Gaia : DbMigration
+    public partial class Jura : DbMigration
     {
         public override void Up()
         {
@@ -12,7 +12,7 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
                 c => new
                     {
                         AccountId = c.Long(nullable: false, identity: true),
-                        Authority = c.Byte(nullable: false),
+                        Authority = c.Short(nullable: false),
                         LastCompliment = c.DateTime(nullable: false, precision: 0),
                         LastSession = c.Int(nullable: false),
                         Name = c.String(maxLength: 255, storeType: "nvarchar"),

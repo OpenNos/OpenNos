@@ -109,9 +109,9 @@
     <Compile Include="Entities\NpcMonsterskill.cs" />
     <Compile Include="MapTypeDAO.cs" />
     <Compile Include="MapTypeMapDAO.cs" />
-    <Compile Include="Migrations\201608111656294_Gaia.cs" />
-    <Compile Include="Migrations\201608111656294_Gaia.Designer.cs">
-      <DependentUpon>201608111656294_Gaia.cs</DependentUpon>
+    <Compile Include="Migrations\201608181434497_Jura.cs" />
+    <Compile Include="Migrations\201608181434497_Jura.Designer.cs">
+      <DependentUpon>201608181434497_Jura.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="NpcMonsterSkillDAO.cs" />
@@ -191,8 +191,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201608111656294_Gaia.resx">
-      <DependentUpon>201608111656294_Gaia.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201608181434497_Jura.resx">
+      <DependentUpon>201608181434497_Jura.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

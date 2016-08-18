@@ -1515,7 +1515,6 @@ namespace OpenNos.Import.Console
                         item.ItemSubType = Convert.ToByte(currentLine[4]);
                         item.EquipmentSlot = Convert.ToByte(currentLine[5] != "-1" ? currentLine[5] : "0");
                         //item.DesignId = Convert.ToInt16(currentLine[6]);
-
                         switch (item.VNum)
                         {
                             case 1906:
@@ -1663,13 +1662,16 @@ namespace OpenNos.Import.Console
                                 break;
 
                             default:
-                                item.Morph = Convert.ToInt16(currentLine[7]);
+                                if (item.EquipmentSlot.Equals((byte)EquipmentType.Amulet))
+                                    item.EffectValue = Convert.ToInt16(currentLine[7]);
+                                else
+                                    item.Morph = Convert.ToInt16(currentLine[7]);
                                 break;
                         }
                     }
                     else if (currentLine.Length > 3 && currentLine[1] == "TYPE")
                     {
-                        //linesave[2] 0-range 2-range 3-magic
+                        //currentLine[2] 0-range 2-range 3-magic
                         if (item.EquipmentSlot == (byte)EquipmentType.Fairy)
                             item.Class = 15;
                         else
@@ -1833,7 +1835,7 @@ namespace OpenNos.Import.Console
                                 {
                                     item.SecondaryElement = (byte)elementdic.OrderByDescending(s => s.Value).ElementAt(1).Key;
                                 }
-                                
+
                                 if (item.VNum == 901)// need to hardcode...
                                     item.Element = 1;
                                 else if (item.VNum == 903) // need to hardcode...

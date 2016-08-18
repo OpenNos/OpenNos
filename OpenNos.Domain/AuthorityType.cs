@@ -14,11 +14,11 @@
 
 namespace OpenNos.Domain
 {
-    public enum AuthorityType : byte
+    public enum AuthorityType : short
     {
-        Unknown = 0,
-        User = 1,
+        Unknown = -1,
+        User = 0,
+        Moderator = 1,
         Admin = 2
-
     }
 }
