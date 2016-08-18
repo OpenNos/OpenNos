@@ -841,4 +841,7 @@
   <data name="BN9" xml:space="preserve">
     <value>Thanks^for^all^of^your^contributions!</value>
   </data>
+  <data name="NO_WIG" xml:space="preserve">
+    <value>You're not wearing that cool afro ;)</value>
+  </data>
 </root>
