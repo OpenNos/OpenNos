@@ -433,7 +433,7 @@
     <value>No n_run Handler implementation for {0}</value>
   </data>
   <data name="NO_PREZ_MESSAGE" xml:space="preserve">
-    <value>Aucun message de présentation</value>
+    <value>Aucun message de présentation.</value>
   </data>
   <data name="NO_SP" xml:space="preserve">
     <value>Aucune carte de spécialiste n'est équipée.</value>
@@ -717,10 +717,10 @@
     <value>{0} niveaux sont nécessaire pour améliorer la carte spécialiste.</value>
   </data>
   <data name="UPGRADESP_FAILED" xml:space="preserve">
-    <value>L'amélioration au niveau suivant a échoué !</value>
+    <value>L'amélioration de la carte spécialiste a échoué.</value>
   </data>
   <data name="UPGRADESP_FAILED_SAVED" xml:space="preserve">
-    <value>L'amélioration a échoué. Heureusement, le parchemin protecteur a préservé l'objet.</value>
+    <value>L'amélioration de la carte spécialiste a échoué. Heureusement, le parchemin protecteur a préservé l'objet.</value>
   </data>
   <data name="UPGRADESP_SUCCESS" xml:space="preserve">
     <value>L'amélioration au niveau suivant a été effectuée avec succès.</value>
@@ -811,5 +811,8 @@
   </data>
   <data name="GROUP_JOIN" xml:space="preserve">
     <value>Vous avez rejoint le groupe de {0}</value>
+  </data>
+  <data name="NO_WIG" xml:space="preserve">
+    <value>Tu ne portes pas de coiffures spéciales</value>
   </data>
 </root>
