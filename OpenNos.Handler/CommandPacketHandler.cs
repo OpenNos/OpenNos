@@ -1020,15 +1020,13 @@ namespace OpenNos.Handler
                 Map map = ServerManager.GetMap(Session.Character.MapId);
                 for (int i = 0; i < qty; i++)
                 {
-                    short mapx = (short)rnd.Next(1, map.XLength);
-                    short mapy = (short)rnd.Next(1, map.YLength);
-
+                    short mapx = (short)rnd.Next(Session.Character.MapX - 4, Session.Character.MapX + 4);
+                    short mapy = (short)rnd.Next(Session.Character.MapY - 4, Session.Character.MapY + 4);
                     while (Session.CurrentMap.IsBlockedZone(mapx, mapy))
                     {
-                        mapx = (short)rnd.Next(1, map.XLength);
-                        mapy = (short)rnd.Next(1, map.YLength);
+                        mapx = (short)rnd.Next(Session.Character.MapX - 4, Session.Character.MapX + 4);
+                        mapy = (short)rnd.Next(Session.Character.MapY - 4, Session.Character.MapY + 4);
                     }
-
                     MapMonster monst = new MapMonster(map) { MonsterVNum = vnum, Alive = true, CurrentHp = npcmonster.MaxHP, CurrentMp = npcmonster.MaxMP, MapY = mapy, MapX = mapx, MapId = Session.Character.MapId, firstX = mapx, firstY = mapy, MapMonsterId = MapMonster.GenerateMapMonsterId(), Position = 1, IsMoving = move != 0 ? true : false };
                     ServerManager.GetMap(Session.Character.MapId).Monsters.Add(monst);
                     ServerManager.Monsters.Add(monst);
