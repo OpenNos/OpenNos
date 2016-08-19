@@ -620,7 +620,7 @@ namespace OpenNos.Handler
             byte arg = 0;
             if (packetsplit.Length > 2 && byte.TryParse(packetsplit[2], out arg))
             {
-                Session.Client.SendPacket($"guri 15 {(arg > 5 ? 0 : arg)} 0 0");
+                Session.Client.SendPacket($"guri 15 {arg} 0");
             }
             else
             {
