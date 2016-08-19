@@ -404,15 +404,17 @@ namespace OpenNos.GameObject
                 session.Client.SendPacket(session.Character.GenerateCond());
                 session.Client.SendPacket(session.Character.GenerateCMap());
                 session.Client.SendPacket(session.Character.GenerateStatChar());
-                session.Client.SendPacket($"gidx 1 {session.Character.CharacterId} -1 - 0");
-                session.Client.SendPacket("rsfi 0 -1");
-                session.Client.SendPacket("pinit 0");
+                session.Client.SendPacket($"gidx 1 {session.Character.CharacterId} -1 - 0"); // family
+                session.Client.SendPacket("rsfp 0 -1");
+                //cond 2 // partner only send when partner present
+                session.Client.SendPacket("pinit 0"); // partner initialization
                 session.Client.SendPacket(session.Character.GeneratePairy());
                 session.CurrentMap?.Broadcast(session, session.Character.GeneratePairy(), ReceiverType.AllExceptMe);
-                session.Client.SendPacket("act6 0");//act6 1 0 14 0 0 0 14 0 0 0
+                session.Client.SendPacket("act6");// act6 1 0 14 0 0 0 14 0 0 0
 
                 foreach (String portalPacket in session.Character.GenerateGp())
                     session.Client.SendPacket(portalPacket);
+                // wp 23 124 4 4 12 99
                 foreach (String monsterPacket in session.Character.GenerateIn3())
                     session.Client.SendPacket(monsterPacket);
                 foreach (String npcPacket in session.Character.GenerateIn2())
@@ -425,7 +427,6 @@ namespace OpenNos.GameObject
                     session.Client.SendPacket(ShopPacket);
                 foreach (String ShopPacketChar in session.Character.GeneratePlayerShopOnMap())
                     session.Client.SendPacket(ShopPacketChar);
-
                 ServerManager.Instance.Sessions.Where(s => s.Character != null && s.Character.MapId.Equals(session.Character.MapId) && s.Character.Name != session.Character.Name && !session.Character.InvisibleGm).ToList().ForEach(s => RequireBroadcastFromUser(session, s.Character.CharacterId, "GenerateIn"));
                 if (session.Character.InvisibleGm == false)
                     session.CurrentMap?.Broadcast(session, session.Character.GenerateIn(), ReceiverType.AllExceptMe);
@@ -437,8 +438,8 @@ namespace OpenNos.GameObject
                 {
                     session.Character.IsDancing = 0;
                     session.CurrentMap?.Broadcast("dance");
-                }
 
+                }
                 foreach (Group g in Groups)
                 {
                     foreach (ClientSession groupSession in g.Characters)

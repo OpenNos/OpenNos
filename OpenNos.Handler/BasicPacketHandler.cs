@@ -725,14 +725,14 @@ namespace OpenNos.Handler
                             Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("PORTAL_BLOCKED"), 10));
                             return;
                     }
+                    Session.Client.SendPacket(Session.Character.GenerateCMap());
 
                     ServerManager.Instance.MapOut(Session.Character.CharacterId);
                     Session.Character.MapId = portal.DestinationMapId;
                     Session.Character.MapX = portal.DestinationX;
                     Session.Character.MapY = portal.DestinationY;
-
                     Session.Character.LastPortal = currentRunningSeconds;
-                    Session.Client.SendPacket(Session.Character.GenerateCMap());
+
                     ServerManager.Instance.ChangeMap(Session.Character.CharacterId);
                     break;
                 }
@@ -1045,70 +1045,47 @@ namespace OpenNos.Handler
             if (System.Configuration.ConfigurationManager.AppSettings["SceneOnCreate"].ToLower() == "true" & DAOFactory.GeneralLogDAO.LoadByLogType("Connection", Session.Character.CharacterId).Count() == 1) Session.Client.SendPacket("scene 40");
             if (System.Configuration.ConfigurationManager.AppSettings["WorldInformation"].ToLower() == "true")
             {
-                Session.Client.SendPacket(Session.Character.GenerateSay("---------- World Information ----------", 10));
                 Assembly assembly = Assembly.GetEntryAssembly();
                 FileVersionInfo fileVersionInfo = FileVersionInfo.GetVersionInfo(assembly.Location);
+                Session.Client.SendPacket(Session.Character.GenerateSay("---------- World Information ----------", 10));
                 Session.Client.SendPacket(Session.Character.GenerateSay($"OpenNos by OpenNos Team\nVersion: v{fileVersionInfo.ProductVersion}", 6));
                 Session.Client.SendPacket(Session.Character.GenerateSay("-----------------------------------------------", 10));
             }
             Session.Character.LoadSkills();
             Session.Client.SendPacket(Session.Character.GenerateTit());
-            Session.Client.SendPacket($"fd {Session.Character.Reput} 0 {(int)Session.Character.Dignity} {Math.Abs(Session.Character.GetDignityIco())}");
-            Session.Client.SendPacket(Session.Character.GenerateFd()); // leave packets in comment for future soo we can reorder them if fixed
-            //Session.Client.SendPacket(Session.Character.GenerateCInfo());
-            //Session.Client.SendPacket(Session.Character.GenerateEquipment());
-            //Session.Client.SendPacket(Session.Character.GenerateLev());
-            //Session.Client.SendPacket(Session.Character.GenerateStat());
-            Session.Client.SendPacket(Session.Character.GenerateSki());
-            Session.Client.SendPacket($"rsfi 1 1 0 9 0 9"); // Act completion
-            //ServerManager.Instance.ChangeMap(Session.Character.CharacterId);
-            //Session.Client.SendPacket(Session.Character.GenerateAt());
-            //Session.Client.SendPacket(Session.Character.GenerateCMap());
-            //Session.Client.SendPacket(Session.Character.GenerateStatChar());
-            //Session.Client.SendPacket(Session.Character.GenerateCond());
-            //Session.Client.SendPacket(Session.Character.GeneratePairy());
-            //Session.CurrentMap?.Broadcast(Session, Session.Character.GeneratePairy(), ReceiverType.AllExceptMe);
-            Session.Client.SendPacket("rsfi 0 -1");
+            Session.Client.SendPacket($"rsfi 1 1 0 9 0 9");
             if (Session.Character.Hp <= 0)
                 ServerManager.Instance.ReviveFirstPosition(Session.Character.CharacterId);
             else
                 ServerManager.Instance.ChangeMap(Session.Character.CharacterId);
+            Session.Client.SendPacket(Session.Character.GenerateSki());
+            Session.Client.SendPacket($"fd {Session.Character.Reput} 0 {(int)Session.Character.Dignity} {Math.Abs(Session.Character.GetDignityIco())}");
+            Session.Client.SendPacket(Session.Character.GenerateFd());
             Session.Client.SendPacket("rage 0 250000");
             Session.Client.SendPacket("rank_cool 0 0 18000");
             Session.Client.SendPacket(Session.Character.GenerateSpPoint());
-            Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateSpPoint(), ReceiverType.AllExceptMe);
             Session.Client.SendPacket("scr 0 0 0 0 0 0");
-            Session.Client.SendPacket($"bn 0 {Language.Instance.GetMessageFromKey("BN0")}");
-            Session.Client.SendPacket($"bn 1 {Language.Instance.GetMessageFromKey("BN1")}");
-            Session.Client.SendPacket($"bn 2 {Language.Instance.GetMessageFromKey("BN2")}");
-            Session.Client.SendPacket($"bn 3 {Language.Instance.GetMessageFromKey("BN3")}");
-            Session.Client.SendPacket($"bn 4 {Language.Instance.GetMessageFromKey("BN4")}");
-            Session.Client.SendPacket($"bn 5 {Language.Instance.GetMessageFromKey("BN5")}");
-            Session.Client.SendPacket($"bn 6 {Language.Instance.GetMessageFromKey("BN6")}");
-            Session.Client.SendPacket($"bn 7 {Language.Instance.GetMessageFromKey("BN7")}");
-            Session.Client.SendPacket($"bn 8 {Language.Instance.GetMessageFromKey("BN8")}");
-            Session.Client.SendPacket($"bn 9 {Language.Instance.GetMessageFromKey("BN9")}");
+            for (int i = 0; i < 10; i++)
+                Session.Client.SendPacket($"bn {i} {Language.Instance.GetMessageFromKey($"BN{i}")}");
             Session.Client.SendPacket(Session.Character.GenerateExts());
-            //Session.Client.SendPacket($"gidx 1 {Session.Character.CharacterId} -1 - 0");// family
-            Session.Client.SendPacket($"mlinfo 3800 2000 100 0 0 10 0 {Language.Instance.GetMessageFromKey("WELCOME_MUSIC_INFO")} {Language.Instance.GetMessageFromKey("MINILAND_WELCOME_MESSAGE")}");
-            // cond 2
+            Session.Client.SendPacket($"mlinfo 3800 2000 100 0 0 10 0 {Language.Instance.GetMessageFromKey("WELCOME_MUSIC_INFO")} {Language.Instance.GetMessageFromKey("MINILAND_WELCOME_MESSAGE")}"); // 0 before 10 = visitors
             Session.Client.SendPacket("p_clear");
             // sc_p pet
             // sc_n nospartner
             //Session.Client.SendPacket("sc_p_stc 0"); // end pet and partner
-            Session.Client.SendPacket("pinit 0");
+            Session.Client.SendPacket("pinit 0"); // partner initialization
             Session.Character.DeleteTimeout();
+            // blinit
             Session.Client.SendPacket("zzim");
-            Session.Client.SendPacket($"twk 1 {Session.Character.CharacterId} {Session.Account.Name} {Session.Character.Name} shtmxpdlfeoqkr");
+            Session.Client.SendPacket($"twk 2 {Session.Character.CharacterId} {Session.Account.Name} {Session.Character.Name} shtmxpdlfeoqkr");
             // qstlist
             // target
             // sqst
             // bf
             Session.Client.SendPacket("act6");
             Session.Client.SendPacket(Session.Character.GenerateFaction());
-            Session.Client.SendPacket("p_clear");
-            //Session.Client.SendPacket(Session.Character.GenerateMv());
             // sc_p pet again
+            // sc_n nospartner again
             Session.Character.GenerateStartupInventory();
             // mlobjlst - miniland object list
             Session.Client.SendPacket(Session.Character.GenerateGold());
@@ -1116,6 +1093,7 @@ namespace OpenNos.Handler
             foreach (string quicklist in quicklistpackets)
                 Session.Client.SendPacket(quicklist);
             // string finit = "finit";
+            // string blinit = "blinit";
             string clinit = "clinit";
             string flinit = "flinit";
             string kdlinit = "kdlinit";
@@ -1136,7 +1114,7 @@ namespace OpenNos.Handler
             Session.Client.SendPacket(flinit);
             Session.Client.SendPacket(kdlinit);
             // finfo - friends info
-            // ServerManager.Instance.ChangeMap(Session.Character.CharacterId);
+            Session.Client.SendPacket("p_clear");
         }
 
         [Packet("#pjoin")]

@@ -741,7 +741,6 @@ namespace OpenNos.GameObject
         public string GenerateLev()
         {
             SpecialistInstance specialist = EquipmentList.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, (byte)InventoryType.Equipment);
-
             return $"lev {Level} {LevelXp} {(!UseSp || specialist == null ? JobLevel : specialist.SpLevel)} {(!UseSp || specialist == null ? JobLevelXp : specialist.XP)} {XPLoad()} {(!UseSp || specialist == null ? JobXPLoad() : SPXPLoad())} {Reput} {GetCP()} {HeroXp} {HeroLevel} {HeroXPLoad()}";
         }
 
@@ -830,9 +829,8 @@ namespace OpenNos.GameObject
             WearableInstance armor = EquipmentList.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Armor, (byte)InventoryType.Equipment);
             WearableInstance weapon2 = EquipmentList.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.SecondaryWeapon, (byte)InventoryType.Equipment);
             WearableInstance weapon = EquipmentList.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.MainWeapon, (byte)InventoryType.Equipment);
-            //tc_info 0  name   0 0  0 0 -1 - 0  0 0 0 0 0 0 0 0 0 0 wins deaths reput 0 0 0 morph talentwin talentlose capitul rankingpoints arenapoints 0 0 ispvpprimary ispvpsecondary ispvparmor herolvl desc
-
-            return $"tc_info {Level} {Name} {(fairy != null ? ServerManager.GetItem(fairy.ItemVNum).Element : 0)} {ElementRate} {Class} {Gender} -1 - {GetReputIco()} {GetDignityIco()} {(weapon != null ? 1 : 0)} {weapon?.Rare ?? 0} {weapon?.Upgrade ?? 0} {(weapon2 != null ? 1 : 0)} {weapon2?.Rare ?? 0} {weapon2?.Upgrade ?? 0} {(armor != null ? 1 : 0)} {armor?.Rare ?? 0} {armor?.Upgrade ?? 0} 0 0 {Reput} 0 0 0 {(UseSp ? Morph : 0)} {TalentWin} {TalentLose} {TalentSurrender} 0 0 {Compliment} 0 0 0 0 {HeroLevel} {Language.Instance.GetMessageFromKey("NO_PREZ_MESSAGE")}";
+            //tc_info 0 name 0 0 0 0 -1 - 0 0 0 0 0 0 0 0 0 0 0 wins deaths reput 0 0 0 morph talentwin talentlose capitul rankingpoints arenapoints 0 0 ispvpprimary ispvpsecondary ispvparmor herolvl desc
+            return $"tc_info {Level} {Name} {(fairy != null ? ServerManager.GetItem(fairy.ItemVNum).Element : 0)} {ElementRate} {Class} {Gender} -1 - {GetReputIco()} {GetDignityIco()} {(weapon != null ? 1 : 0)} {weapon?.Rare ?? 0} {weapon?.Upgrade ?? 0} {(weapon2 != null ? 1 : 0)} {weapon2?.Rare ?? 0} {weapon2?.Upgrade ?? 0} {(armor != null ? 1 : 0)} {armor?.Rare ?? 0} {armor?.Upgrade ?? 0} 0 0 {Reput} 0 0 0 {(UseSp ? Morph : 0)} {TalentWin} {TalentLose} {TalentSurrender} 0 {MasterPoints} {Compliment} 0 0 0 0 {HeroLevel} {Language.Instance.GetMessageFromKey("NO_PREZ_MESSAGE")}";
         }
 
         public string GenerateRest()
@@ -923,7 +921,7 @@ namespace OpenNos.GameObject
             skill = skill.TrimEnd('.');
             return $"slinfo {type} {inventoryItem.ItemVNum} {iteminfo.Morph} {inventoryItem.SpLevel} {iteminfo.LevelJobMinimum} {iteminfo.ReputationMinimum} 0 0 0 0 0 0 0 {iteminfo.SpType} {iteminfo.FireResistance} {iteminfo.WaterResistance} {iteminfo.LightResistance} {iteminfo.DarkResistance} {inventoryItem.XP} {ServersData.SpXPData[inventoryItem.SpLevel - 1]} {skill} {inventoryItem.ItemInstanceId} {freepoint} {slHit} {slDefence} {slElement} {slHp} {inventoryItem.Upgrade} 0 0 {spdestroyed} 0 0 0 0 {inventoryItem.SpStoneUpgrade} {inventoryItem.SpDamage} {inventoryItem.SpDefence} {inventoryItem.SpElement} {inventoryItem.SpHP} {inventoryItem.SpFire} {inventoryItem.SpWater} {inventoryItem.SpLight} {inventoryItem.SpDark}";
         }
-        
+
         public string GeneratePslInfo(SpecialistInstance inventoryItem, int type)
         {
             Item iteminfo = ServerManager.GetItem(inventoryItem.ItemVNum);
@@ -944,17 +942,11 @@ namespace OpenNos.GameObject
         public void GenerateStartupInventory()
         {
             string inv0 = "inv 0", inv1 = "inv 1", inv2 = "inv 2", inv6 = "inv 6", inv7 = "inv 7"; // inv 3 used for miniland objects
-
             foreach (Inventory inv in InventoryList.Inventory)
             {
                 Item item = ServerManager.GetItem(inv.ItemInstance.ItemVNum);
                 switch (inv.Type)
                 {
-                    case (byte)InventoryType.Costume:
-                        var costumeInstance = inv.ItemInstance as WearableInstance;
-                        inv7 += $" {inv.Slot}.{inv.ItemInstance.ItemVNum}.{costumeInstance.Rare}.{costumeInstance.Upgrade}.0";
-                        break;
-
                     case (byte)InventoryType.Wear:
                         if (item.EquipmentSlot == (byte)EquipmentType.Sp)
                         {
@@ -981,11 +973,15 @@ namespace OpenNos.GameObject
                         inv6 += $" {inv.Slot}.{inv.ItemInstance.ItemVNum}.{specialist.Rare}.{specialist.Upgrade}.{specialist.SpStoneUpgrade}";
                         break;
 
+                    case (byte)InventoryType.Costume:
+                        var costumeInstance = inv.ItemInstance as WearableInstance;
+                        inv7 += $" {inv.Slot}.{inv.ItemInstance.ItemVNum}.{costumeInstance.Rare}.{costumeInstance.Upgrade}.0";
+                        break;
+
                     case (byte)InventoryType.Equipment:
                         break;
                 }
             }
-
             Session.Client.SendPacket(inv0);
             Session.Client.SendPacket(inv1);
             Session.Client.SendPacket(inv2);
