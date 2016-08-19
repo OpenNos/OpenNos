@@ -123,7 +123,7 @@ namespace OpenNos.GameObject
                     MoveFrequent = 1;
                 if (IsMoving)
                 {
-                    if (path.Where(s=>s !=null).ToList().Count > 0)//fix a path problem
+                    if (path.Where(s => s != null).ToList().Count > 0)//fix a path problem
                     {
                         if ((DateTime.Now - LastMove).TotalSeconds > 1.0 / monster.Speed)
                         {
@@ -175,7 +175,8 @@ namespace OpenNos.GameObject
                         if (Map.GetDistance(new MapCell() { X = character.MapX, Y = character.MapY }, new MapCell() { X = MapX, Y = MapY }) < 7)
                         {
                             Target = character.CharacterId;
-                            ServerManager.Instance.Sessions.FirstOrDefault(s => s != null && s.Client != null && s.Character != null && s.Character.CharacterId.Equals(Target)).Client.SendPacket(GenerateEff(5000));
+                            if (!monster.NoAggresiveIcon)
+                                ServerManager.Instance.Sessions.FirstOrDefault(s => s != null && s.Client != null && s.Character != null && s.Character.CharacterId.Equals(Target)).Client.SendPacket(GenerateEff(5000));
                         }
                     }
                 }

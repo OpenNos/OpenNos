@@ -53,7 +53,8 @@ namespace OpenNos.Data
         public sbyte WaterResistance { get; set; }
         public int XP { get; set; }
         public bool NoAggresiveIcon { get; set; }
-
+        public byte Race { get; set; }
+        public byte RaceType { get; set; }
         #endregion
     }
 }

@@ -445,7 +445,6 @@ namespace OpenNos.Import.Console
                 while ((line = npcIdStream.ReadLine()) != null)
                 {
                     long unknownData = 0;
-                    //byte race = 0, racetype = 0;
                     string[] currentLine = line.Split('\t');
 
                     if (currentLine.Length > 2 && currentLine[1] == "VNUM")
@@ -454,6 +453,10 @@ namespace OpenNos.Import.Console
                         npc.NpcMonsterVNum = Convert.ToInt16(currentLine[2]);
                         itemAreaBegin = true;
                     }
+                    else if (currentLine.Length > 2 && currentLine[1] == "NAME")
+                    {
+                        npc.Name = dictionaryIdLang.ContainsKey(currentLine[2]) ? dictionaryIdLang[currentLine[2]] : "";
+                    }
                     else if (currentLine.Length > 2 && currentLine[1] == "LEVEL")
                     {
                         if (!itemAreaBegin) continue;
@@ -461,17 +464,22 @@ namespace OpenNos.Import.Console
                     }
                     else if (currentLine.Length > 3 && currentLine[1] == "RACE")
                     {
-                        //race = byte.Parse(currentLine[2]);
-                        //racetype = Convert.ToByte(currentLine[3]);
+                        npc.Race = Convert.ToByte(currentLine[2]);
+                        npc.RaceType = Convert.ToByte(currentLine[3]);
+                    }
+                    else if (currentLine.Length > 7 && currentLine[1] == "ATTRIB")
+                    {
+                        npc.Element = Convert.ToByte(currentLine[2]);
+                        npc.ElementRate = Convert.ToInt16(currentLine[3]);
+                        npc.FireResistance = Convert.ToSByte(currentLine[4]);
+                        npc.WaterResistance = Convert.ToSByte(currentLine[5]);
+                        npc.LightResistance = Convert.ToSByte(currentLine[6]);
+                        npc.DarkResistance = Convert.ToSByte(currentLine[7]);
                     }
                     else if (currentLine.Length > 3 && currentLine[1] == "HP/MP")
                     {
                         npc.MaxHP = Convert.ToInt32(currentLine[2]) + basicHp[npc.Level];
                         npc.MaxMP = Convert.ToInt32(currentLine[3]) + basicMp[npc.Level];
-                    }
-                    else if (currentLine.Length > 2 && currentLine[1] == "NAME")
-                    {
-                        npc.Name = dictionaryIdLang.ContainsKey(currentLine[2]) ? dictionaryIdLang[currentLine[2]] : "";
                     }
                     else if (currentLine.Length > 2 && currentLine[1] == "EXP")
                     {
@@ -484,29 +492,25 @@ namespace OpenNos.Import.Console
                         npc.Speed = Convert.ToByte(currentLine[5]);
                         npc.RespawnTime = Convert.ToInt32(currentLine[6]);
                     }
+                    //setting
                     else if (currentLine.Length > 7 && currentLine[1] == "ETC")
                     {
                         unknownData = Convert.ToInt64(currentLine[2]);
-                        //if (unknownData == -2147483616 || unknownData == -2147483647 || unknownData == -2147483646)
-                        //{
-                        //    if (race == 8 && racetype == 0)
-                        //    {
-                        //        npc.NoAggresiveIcon = true;
-                        //    }
-                        //    else
-                        //    {
-                        //        npc.NoAggresiveIcon = false;
-                        //    }
-                        //}
+                        if (unknownData == (long)-2147483616 || unknownData == (long)-2147483647 || unknownData == (long)-2147483646)
+                        {
+                            if (npc.Race == (byte)8 && npc.RaceType == (byte)0)
+                            {
+                                npc.NoAggresiveIcon = true;
+                            }
+                            else
+                            {
+                                npc.NoAggresiveIcon = false;
+                            }
+                        }
                     }
-                    else if (currentLine.Length > 7 && currentLine[1] == "ATTRIB")
+                    else if (currentLine.Length > 2 && currentLine[1] == "EFF")
                     {
-                        npc.Element = Convert.ToByte(currentLine[2]);
-                        npc.ElementRate = Convert.ToInt16(currentLine[3]);
-                        npc.FireResistance = Convert.ToSByte(currentLine[4]);
-                        npc.WaterResistance = Convert.ToSByte(currentLine[5]);
-                        npc.LightResistance = Convert.ToSByte(currentLine[6]);
-                        npc.DarkResistance = Convert.ToSByte(currentLine[7]);
+                        npc.BasicSkill = Convert.ToInt16(currentLine[2]);
                     }
                     else if (currentLine.Length > 8 && currentLine[1] == "ZSKILL")
                     {
@@ -517,16 +521,11 @@ namespace OpenNos.Import.Console
                     }
                     else if (currentLine.Length > 4 && currentLine[1] == "WINFO")
                     {
-                        // Stupid way of saving data ex.	0	0	10 and	2	0	0, because logic!
                         npc.AttackUpgrade = Convert.ToByte(unknownData == 1 ? currentLine[2] : currentLine[4]);
                     }
                     else if (currentLine.Length > 3 && currentLine[1] == "AINFO")
                     {
                         npc.DefenceUpgrade = Convert.ToByte(unknownData == 1 ? currentLine[2] : currentLine[3]);
-                    }
-                    else if (currentLine.Length > 2 && currentLine[1] == "EFF")
-                    {
-                        npc.BasicSkill = Convert.ToInt16(currentLine[2]);
                     }
                     else if (currentLine.Length > 1 && currentLine[1] == "SKILL")
                     {
