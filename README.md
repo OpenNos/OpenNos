@@ -1,7 +1,7 @@
 [![discord](https://img.shields.io/badge/discord-OpenNos-blue.svg?style=flat)](https://discord.gg/N8eqPUh)
 [![Build Status](http://134.255.238.79:8080/job/OpenNos/badge/icon)](http://134.255.238.79:8080/job/OpenNos/)
 
-#Instructions to contribute
+#Instructions to contribute#
 
 
 ##Disclaimer##
@@ -16,7 +16,9 @@ This emulation software is not open source to host any private servers. It is op
 
 We do not provide any modified client files. The alorithms are based on our logic.
 
-###Contribution is only possible with Visual Studio 2015 (Community or other editions) and MySQL.
+##Before creating issue, you can contact us on Discord.##
+
+###Contribution is only possible with Visual Studio 2015 (Community or other editions) and MySQL.###
 #NOTE BEFORE INSTALL#
 - Error listen point : - This is WCF error install it or run opennos on visual studio
 - What're the commands? : $Help
@@ -28,10 +30,10 @@ We do not provide any modified client files. The alorithms are based on our logi
 - Monsters don't move : parse mv packets.
 - Recipe don't work : parse each recipe by click on them for packets.
 
-##1 Install SSDT For VS
+##1 Install SSDT For VS##
 http://go.microsoft.com/fwlink/?LinkID=393520&clcid=0x409
 
-##2 Install MySQL Installer (Just navigate thru Installer)
+##2 Install MySQL Installer (Just navigate thru Installer)##
 
 http://dev.mysql.com/downloads/windows/installer/
 
@@ -47,11 +49,11 @@ Installer Packages:
 - User: test
 - Password. test
 
-##3 Create new schema (opennos)
+##3 Create new schema (opennos)##
 
-##4 Install MYSQL for Visual Studio
+##4 Install MYSQL for Visual Studio##
 
-##5 Use the NuGet Package Manager to Update the Database
+##5 Use the NuGet Package Manager to Update the Database##
 
 - Go to Tools -> NuGet Package Manager -> Package Manager Console
 - Choose Project OpenNos.DAL.EF.MySQL
