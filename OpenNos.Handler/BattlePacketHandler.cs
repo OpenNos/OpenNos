@@ -77,39 +77,39 @@ namespace OpenNos.Handler
             string[] packetsplit = packet.Split(' ');
             ushort damage = 0;
             int hitmode = 0;
-          
-                if ((DateTime.Now - Session.Character.LastTransform).TotalSeconds < 3)
-                {
-                    Session.Client.SendPacket($"cancel 0 0");
-                    Session.Client.SendPacket(Session.Character.GenerateMsg($"{ Language.Instance.GetMessageFromKey("CANT_ATTACKNOW")}", 0));
-                    return;
-                }
-                if (packetsplit.Length > 3)
-                    for (int i = 3; i < packetsplit.Length - 1; i += 2)
-                    {
-                        List<CharacterSkill> skills = Session.Character.UseSp ? Session.Character.SkillsSp : Session.Character.Skills;
 
-                        if (skills != null)
+            if ((DateTime.Now - Session.Character.LastTransform).TotalSeconds < 3)
+            {
+                Session.Client.SendPacket($"cancel 0 0");
+                Session.Client.SendPacket(Session.Character.GenerateMsg($"{ Language.Instance.GetMessageFromKey("CANT_ATTACKNOW")}", 0));
+                return;
+            }
+            if (packetsplit.Length > 3)
+                for (int i = 3; i < packetsplit.Length - 1; i += 2)
+                {
+                    List<CharacterSkill> skills = Session.Character.UseSp ? Session.Character.SkillsSp : Session.Character.Skills;
+
+                    if (skills != null)
+                    {
+                        Skill skill = null;
+                        CharacterSkill ski = skills.FirstOrDefault(s => (skill = ServerManager.GetSkill(s.SkillVNum)) != null && skill.CastId == short.Parse(packetsplit[i]));
+                        if (!Session.Character.WeaponLoaded(ski))
                         {
-                            Skill skill = null;
-                            CharacterSkill ski = skills.FirstOrDefault(s => (skill = ServerManager.GetSkill(s.SkillVNum)) != null && skill.CastId == short.Parse(packetsplit[i]));
-                            if (!Session.Character.WeaponLoaded(ski))
-                            {
-                                Session.Client.SendPacket($"cancel 2 0");
-                                return;
-                            }
-                            MapMonster mon = Session.CurrentMap.Monsters.FirstOrDefault(s => s.MapMonsterId == short.Parse(packetsplit[i + 1]));
-                            if (mon != null && skill != null)
-                            {
-                                damage = GenerateDamage(mon.MapMonsterId, skill, ref hitmode);
-                                Session.CurrentMap?.Broadcast($"su 1 {Session.Character.CharacterId} 3 {mon.MapMonsterId} {skill.SkillVNum} {skill.Cooldown} {skill.AttackAnimation} {skill.Effect} {Session.Character.MapX} {Session.Character.MapY} {(mon.Alive ? 1 : 0)} {(int)(((float)mon.CurrentHp / (float)ServerManager.GetNpc(mon.MonsterVNum).MaxHP) * 100)} {damage} 0 {skill.SkillType - 1}");
-                            }
+                            Session.Client.SendPacket($"cancel 2 0");
+                            return;
+                        }
+                        MapMonster mon = Session.CurrentMap.Monsters.FirstOrDefault(s => s.MapMonsterId == short.Parse(packetsplit[i + 1]));
+                        if (mon != null && skill != null)
+                        {
+                            damage = GenerateDamage(mon.MapMonsterId, skill, ref hitmode);
+                            Session.CurrentMap?.Broadcast($"su 1 {Session.Character.CharacterId} 3 {mon.MapMonsterId} {skill.SkillVNum} {skill.Cooldown} {skill.AttackAnimation} {skill.Effect} {Session.Character.MapX} {Session.Character.MapY} {(mon.Alive ? 1 : 0)} {(int)(((float)mon.CurrentHp / (float)ServerManager.GetNpc(mon.MonsterVNum).MaxHP) * 100)} {damage} 0 {skill.SkillType - 1}");
                         }
                     }
-            
+                }
+
         }
 
-        public void TargetHit(int castingId, int targetObject, int targetId)
+        public void TargetHit(int castingId, int targetId)
         {
             List<CharacterSkill> skills = Session.Character.UseSp ? Session.Character.SkillsSp : Session.Character.Skills;
             bool notcancel = false;
@@ -258,25 +258,36 @@ namespace OpenNos.Handler
                     Session.Client.SendPacket($"cancel 0 0");
                     ServerManager.Instance.Broadcast(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MUTED_MALE"), 1));
                     Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).ToString("hh\\:mm\\:ss")), 11));
-                    Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).ToString("hh\\:mm\\:ss")), 12));  
+                    Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).ToString("hh\\:mm\\:ss")), 12));
                 }
                 return;
             }
-           
-                if (Session.Character.CanFight)
+
+            if (Session.Character.CanFight)
+            {
+                string[] packetsplit = packet.Split(' ');
+                if (packetsplit.Length > 6)
                 {
-                    string[] packetsplit = packet.Split(' ');
-                    if (packetsplit.Length > 6)
-                    {
-                        Session.Character.MapX = Convert.ToInt16(packetsplit[5]);
-                        Session.Character.MapY = Convert.ToInt16(packetsplit[6]);
-                    }
-                    if (packetsplit.Length > 4)
-                        if (Session.Character.Hp > 0)
+                    Session.Character.MapX = Convert.ToInt16(packetsplit[5]);
+                    Session.Character.MapY = Convert.ToInt16(packetsplit[6]);
+                }
+
+                byte usertype = byte.Parse(packetsplit[3]);
+                switch (usertype)
+                {
+                    case (byte)UserType.Monster:
+                        if (packetsplit.Length > 4)
                         {
-                            TargetHit(Convert.ToInt32(packetsplit[2]), Convert.ToInt32(packetsplit[3]), Convert.ToInt32(packetsplit[4]));
+                            if (Session.Character.Hp > 0)
+                            {
+                                TargetHit(Convert.ToInt32(packetsplit[2]), Convert.ToInt32(packetsplit[4]));
+                            }
                         }
-                
+                        break;
+                    default:
+                        Session.Client.SendPacket($"cancel 0 0");
+                        return;
+                }
             }
         }
 

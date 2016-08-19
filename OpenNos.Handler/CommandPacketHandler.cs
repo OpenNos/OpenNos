@@ -210,10 +210,10 @@ namespace OpenNos.Handler
                     Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("HEROLEVEL_CHANGED"), 0));
                     Session.Client.SendPacket(Session.Character.GenerateLev());
                     Session.Client.SendPacket(Session.Character.GenerateStatInfo());
+                    Session.Client.SendPacket(Session.Character.GenerateStatChar());
                     Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
                     Session.CurrentMap?.Broadcast(Session.Character.GenerateEff(6));
                     Session.CurrentMap?.Broadcast(Session.Character.GenerateEff(198));
-                    this.GetStats(String.Empty);
                 }
             }
             else
@@ -260,13 +260,12 @@ namespace OpenNos.Handler
                     Session.Character.Mp = (int)Session.Character.MPLoad();
                     Session.Client.SendPacket(Session.Character.GenerateStat());
                     Session.Client.SendPacket(Session.Character.GenerateStatInfo());
+                    Session.Client.SendPacket(Session.Character.GenerateStatChar());
                     Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("LEVEL_CHANGED"), 0));
                     Session.Client.SendPacket(Session.Character.GenerateLev());
                     Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
                     Session.CurrentMap?.Broadcast(Session.Character.GenerateEff(6));
                     Session.CurrentMap?.Broadcast(Session.Character.GenerateEff(198));
-                    this.GetStats(String.Empty);
-
                     ServerManager.Instance.UpdateGroup(Session.Character.CharacterId);
                 }
             }
@@ -610,11 +609,6 @@ namespace OpenNos.Handler
             }
             else
                 Session.Client.SendPacket(Session.Character.GenerateSay("$Effect EFFECT", 10));
-        }
-
-        public void GetStats(string packet)
-        {
-            Session.Client.SendPacket(Session.Character.GenerateStatChar());
         }
 
         [Packet("$Gold")]
