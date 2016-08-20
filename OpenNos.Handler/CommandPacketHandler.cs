@@ -474,6 +474,7 @@ namespace OpenNos.Handler
             Session.Client.SendPacket(Session.Character.GenerateSay("$PortalTo MAPID DESTX DESTY PORTALTYPE", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$PortalTo MAPID DESTX DESTY", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$AddMonster VNUM MOVE", 6));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$Zoom VALUE", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$Shutdown", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("-----------------------------------------------", 10));
         }
@@ -610,6 +611,23 @@ namespace OpenNos.Handler
             else
                 Session.Client.SendPacket(Session.Character.GenerateSay("$Effect EFFECT", 10));
         }
+
+        [Packet("$Zoom")]
+        public void Zoom(string packet)
+        {
+            Logger.Debug(packet, Session.SessionId);
+            string[] packetsplit = packet.Split(' ');
+            byte arg = 0;
+            if (packetsplit.Length > 2 && byte.TryParse(packetsplit[2], out arg))
+            {
+                Session.Client.SendPacket($"guri 15 {arg} 0");
+            }
+            else
+            {
+                Session.Client.SendPacket(Session.Character.GenerateSay("$Zoom VALUE", 0));
+            }
+        }
+
 
         [Packet("$Gold")]
         public void Gold(string packet)
