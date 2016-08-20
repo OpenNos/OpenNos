@@ -29,6 +29,7 @@ We do not provide any modified client files. The alorithms are based on our logi
 - Password is not recognized : verify that your password is hash in sha512 and that your launcher(made it yourself) is done with the most recent nostaleX.dat
 - Monsters don't move : parse mv packets.
 - Recipe don't work : parse each recipe by click on them for packets.
+- The emulator will close after a few seconds : Please check if you port is not already use (eg.skype...)
 
 ##1 Install SSDT For VS##
 http://go.microsoft.com/fwlink/?LinkID=393520&clcid=0x409

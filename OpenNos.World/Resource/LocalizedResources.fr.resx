@@ -816,6 +816,6 @@
     <value>Tu ne portes pas de coiffures spéciales</value>
   </data>
   <data name="SERVER_WORKING_TIME" xml:space="preserve">
-    <value>Serveur connecté depuis</value>
+    <value>Serveur connecté depuis </value>
   </data>
 </root>
