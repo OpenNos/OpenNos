@@ -3,7 +3,7 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class Jura : DbMigration
+    public partial class Aion : DbMigration
     {
         public override void Up()
         {
@@ -133,6 +133,7 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
                         TargetType = c.Byte(nullable: false),
                         Type = c.Byte(nullable: false),
                         UpgradeSkill = c.Short(nullable: false),
+                        UpgradeType = c.Short(nullable: false),
                     })
                 .PrimaryKey(t => t.SkillVNum);
             

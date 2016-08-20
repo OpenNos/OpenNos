@@ -110,6 +110,7 @@ namespace OpenNos.DAL.EF.MySQL
         public byte TargetType { get; set; }
         public byte Type { get; set; }
         public short UpgradeSkill { get; set; }
+        public short UpgradeType { get; set; }
 
         #endregion
     }

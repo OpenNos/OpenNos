@@ -181,11 +181,21 @@ namespace OpenNos.Handler
                     if (Session.Character.Skills.FirstOrDefault(s => s.SkillVNum == slot) != null)
                         return;
 
-                    Session.Character.Gold -= skillinfo.Price;
-                    Session.Client.SendPacket(Session.Character.GenerateGold());
+                    if (skillinfo.UpgradeSkill != 0)
+                    {
+                        CharacterSkill oldupgrade = Session.Character.Skills.FirstOrDefault(s => s.Skill.UpgradeSkill == skillinfo.UpgradeSkill && s.Skill.UpgradeType == skillinfo.UpgradeType && s.Skill.UpgradeSkill != 0);
+                        if (oldupgrade != null)
+                        {
+                            Session.Character.Skills.Remove(oldupgrade);
+                        }
+                    }
 
                     Session.Character.Skills.Add(new CharacterSkill() { SkillVNum = slot, CharacterId = Session.Character.CharacterId });
+
+                    Session.Character.Gold -= skillinfo.Price;
+                    Session.Client.SendPacket(Session.Character.GenerateGold());
                     Session.Client.SendPacket(Session.Character.GenerateSki());
+
                     string[] quicklistpackets = Session.Character.GenerateQuicklist();
                     foreach (string quicklist in quicklistpackets)
                         Session.Client.SendPacket(quicklist);
@@ -230,7 +240,7 @@ namespace OpenNos.Handler
                         return;
                     }
                     Random rnd = new Random();
-                   byte ra = (byte)rnd.Next(0, 100);
+                    byte ra = (byte)rnd.Next(0, 100);
 
                     int[] rareprob = { 100, 100, 70, 50, 30, 15, 5, 1 };
                     if (iteminfo.ReputPrice != 0)
@@ -381,7 +391,6 @@ namespace OpenNos.Handler
                     }
                 }
                 else if (typePacket == 1)
-
                 {
                     KeyValuePair<long, MapShop> shop = Session.CurrentMap.UserShops.FirstOrDefault(mapshop => mapshop.Value.OwnerId.Equals(Session.Character.CharacterId));
                     Session.CurrentMap.UserShops.Remove(shop.Key);

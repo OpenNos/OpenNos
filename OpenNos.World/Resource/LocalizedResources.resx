@@ -844,4 +844,7 @@
   <data name="NO_WIG" xml:space="preserve">
     <value>You're not wearing that cool afro ;)</value>
   </data>
+  <data name="SERVER_WORKING_TIME" xml:space="preserve">
+    <value>Server working time</value>
+  </data>
 </root>

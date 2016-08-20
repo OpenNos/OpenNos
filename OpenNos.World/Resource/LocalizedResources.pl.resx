@@ -823,4 +823,7 @@
   <data name="NO_WIG" xml:space="preserve">
     <value>Ubierz afro!</value>
   </data>
+  <data name="SERVER_WORKING_TIME" xml:space="preserve">
+    <value>Czas działania servera</value>
+  </data>
 </root>
