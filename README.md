@@ -1,5 +1,4 @@
 [![discord](https://img.shields.io/badge/discord-OpenNos-blue.svg?style=flat)](https://discord.gg/N8eqPUh)
-[![Build Status](http://134.255.238.79:8080/job/OpenNos/badge/icon)](http://134.255.238.79:8080/job/OpenNos/)
 
 #Instructions to contribute#
 
@@ -29,13 +28,12 @@ We do not provide any modified client files. The alorithms are based on our logi
 - Password is not recognized : verify that your password is hash in sha512 and that your launcher(made it yourself) is done with the most recent nostaleX.dat
 - Monsters don't move : parse mv packets.
 - Recipe don't work : parse each recipe by click on them for packets.
-- The emulator will close after a few seconds : Please check if you port is not already use (eg.skype...)
+- The emulator closes after a few seconds : Please check if port 80 is not already in use (eg.skype...)
 
 ##1 Install SSDT For VS##
 http://go.microsoft.com/fwlink/?LinkID=393520&clcid=0x409
 
 ##2 Install MySQL Installer (Just navigate thru Installer)##
-
 http://dev.mysql.com/downloads/windows/installer/
 
 Installer Packages:
@@ -48,13 +46,11 @@ Installer Packages:
   
 - Port: 3306
 - User: test
-- Password. test
+- Password: test
 
-##3 Create new schema (opennos)##
+##3 Install MYSQL for Visual Studio##
 
-##4 Install MYSQL for Visual Studio##
-
-##5 Use the NuGet Package Manager to Update the Database##
+##4 Use the NuGet Package Manager to Update the Database##
 
 - Go to Tools -> NuGet Package Manager -> Package Manager Console
 - Choose Project OpenNos.DAL.EF.MySQL
