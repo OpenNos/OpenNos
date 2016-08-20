@@ -28,4 +28,4 @@
 
 #Unexpected behavior#
 - If project behaves unstable/improperly or something is off try to open a new issue explaining in details your problem with server
-- You can also contact us on our discord server(link in the Readme.md)
+- You can also contact us on [our discord server](https://discordapp.com/invite/N8eqPUh).
