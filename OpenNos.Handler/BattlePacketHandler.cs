@@ -284,6 +284,17 @@ namespace OpenNos.Handler
                             }
                         }
                         break;
+
+                    case (byte)UserType.Player:
+                            if (packetsplit.Length > 4)
+                            {
+                                if (Session.Character.Hp > 0 && Convert.ToInt64(packetsplit[4]) == Session.Character.CharacterId)
+                                {
+                                    TargetHit(Convert.ToInt32(packetsplit[2]), Convert.ToInt32(packetsplit[4]));
+                                }
+                            }
+                        break;
+
                     default:
                         Session.Client.SendPacket($"cancel 0 0");
                         return;
