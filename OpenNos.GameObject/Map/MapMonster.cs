@@ -203,11 +203,8 @@ namespace OpenNos.GameObject
                 ClientSession targetSession = Map.Sessions.SingleOrDefault(s => s.Character.CharacterId == Target);
 
                 int damage = 100;
-                // deal 0 damage to GM with GodMode (not saved in db)
-                if (targetSession.Character.HasGodMode)
-                    damage = 0;
-                else
-                    damage = 100;
+                // deal 0 damage to GM with GodMode
+                damage = targetSession.Character.HasGodMode ? 0 : 100;
 
                 if (targetSession != null && (sk != null && Map.GetDistance(new MapCell() { X = this.MapX, Y = this.MapY }, new MapCell() { X = (short)MapX, Y = (short)MapY }) < sk.Range) || (Map.GetDistance(new MapCell() { X = this.MapX, Y = this.MapY }, new MapCell() { X = (short)MapX, Y = (short)MapY }) <= monster.BasicRange))
                 {
@@ -250,7 +247,7 @@ namespace OpenNos.GameObject
                         {
                             foreach (Character chara in ServerManager.GetMap(MapId).GetListPeopleInRange(sk.TargetRange == 0 ? this.MapX : (short)MapX, sk.TargetRange == 0 ? this.MapY : (short)MapY, (byte)(sk.TargetRange + sk.Range)).Where(s => s.CharacterId != Target))
                             {
-                                //damage = 100; doesnt work
+                                damage = chara.HasGodMode ? 0 : 100;
                                 bool AlreadyDead2 = chara.Hp <= 0;
                                 chara.GetDamage(damage);
                                 chara.LastDefence = DateTime.Now;

@@ -197,6 +197,8 @@ namespace OpenNos.GameObject
 
         public bool UseSp { get; set; }
 
+        public bool HasGodMode { get; set; }
+
         public int WaterResistance { get; set; }
         public DateTime LastPotion { get; set; }
 
