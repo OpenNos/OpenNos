@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the OpenNos Emulator Project. See AUTHORS file for Copyright information
  *
  * This program is free software; you can redistribute it and/or modify
@@ -77,7 +77,7 @@ namespace OpenNos.Handler
                 }
             }
             else
-                Session.Client.SendPacket(Session.Character.GenerateSay("[Server]: $AddMonster <Vnum> <Move>", 10));
+                Session.Client.SendPacket(Session.Character.GenerateSay("$AddMonster VNUM MOVE", 10));
         }
 
         [Packet("$Ban")]
@@ -117,8 +117,8 @@ namespace OpenNos.Handler
             }
             else
             {
-                Session.Client.SendPacket(Session.Character.GenerateSay("[Server]: $Ban <Charactername> <Reason>", 10));
-                Session.Client.SendPacket(Session.Character.GenerateSay("[Server]: $Ban <Charactername> <Reason> <Time>", 10));
+                Session.Client.SendPacket(Session.Character.GenerateSay("$Ban CHARACTERNAME REASON TIME", 10));
+                Session.Client.SendPacket(Session.Character.GenerateSay("$Ban CHARACTERNAME REASON", 10));
             }
         }
         [Packet("$Mute")]
@@ -174,8 +174,8 @@ namespace OpenNos.Handler
             }
             else
             {
-                Session.Client.SendPacket(Session.Character.GenerateSay("[Server]: $Mute <Charactername> <Reason>", 10));
-                Session.Client.SendPacket(Session.Character.GenerateSay("[Server]: $Mute <Charactername> <Reason> <Time>", 10));
+                Session.Client.SendPacket(Session.Character.GenerateSay("$Mute CHARACTERNAME REASON TIME", 10));
+                Session.Client.SendPacket(Session.Character.GenerateSay("$Mute CHARACTERNAME REASON", 10));
             }
         }
 
@@ -193,7 +193,7 @@ namespace OpenNos.Handler
                 }
             }
             else
-                Session.Client.SendPacket(Session.Character.GenerateSay("[Server]: $ChangeClass <1-3>", 10));
+                Session.Client.SendPacket(Session.Character.GenerateSay("$ChangeClass CLASS", 10));
         }
 
         [Packet("$GodMode")]
@@ -226,7 +226,7 @@ namespace OpenNos.Handler
                 }
             }
             else
-                Session.Client.SendPacket(Session.Character.GenerateSay("[Server]: $HeroLvl <1-50>", 10));
+                Session.Client.SendPacket(Session.Character.GenerateSay("$HeroLvl HEROLEVEL", 10));
         }
 
         [Packet("$JLvl")]
@@ -250,7 +250,7 @@ namespace OpenNos.Handler
                 }
             }
             else
-                Session.Client.SendPacket(Session.Character.GenerateSay("[Server]: $JLvl <Joblvl>", 10));
+                Session.Client.SendPacket(Session.Character.GenerateSay("$JLvl JOBLEVEL", 10));
         }
 
         [Packet("$Lvl")]
@@ -279,7 +279,7 @@ namespace OpenNos.Handler
                 }
             }
             else
-                Session.Client.SendPacket(Session.Character.GenerateSay("[Server]: $Lvl <1-99>", 10));
+                Session.Client.SendPacket(Session.Character.GenerateSay("$Lvl LEVEL", 10));
         }
 
         [Packet("$ChangeRep")]
@@ -290,7 +290,7 @@ namespace OpenNos.Handler
             long reput;
             if (packetsplit.Length != 3)
             {
-                Session.Client.SendPacket(Session.Character.GenerateSay("[Server]: $ChangeRep <Reputation>", 10));
+                Session.Client.SendPacket(Session.Character.GenerateSay("$ChangeRep REPUTATION", 10));
                 return;
             }
 
@@ -338,7 +338,7 @@ namespace OpenNos.Handler
                 }
             }
             else
-                Session.Client.SendPacket(Session.Character.GenerateSay("[Server]: $SPLvl <1-99>", 10));
+                Session.Client.SendPacket(Session.Character.GenerateSay("$SPLvl SPLEVEL", 10));
         }
 
         [Packet("$FLvl")]
@@ -360,7 +360,7 @@ namespace OpenNos.Handler
                 }
             }
             else
-                Session.Client.SendPacket(Session.Character.GenerateSay("[Server]: $FLvl <FairyLvl>", 10));
+                Session.Client.SendPacket(Session.Character.GenerateSay("$FLvl FAIRYLEVEL", 10));
         }
 
         [Packet("$HairColor")]
@@ -379,7 +379,7 @@ namespace OpenNos.Handler
                 }
             }
             else
-                Session.Client.SendPacket(Session.Character.GenerateSay("[Server]: $HairColor <ColorID>", 10));
+                Session.Client.SendPacket(Session.Character.GenerateSay("$HairColor COLORID", 10));
         }
 
         [Packet("$WigColor")]
@@ -408,7 +408,7 @@ namespace OpenNos.Handler
                 }
             }
             else
-                Session.Client.SendPacket(Session.Character.GenerateSay("[Server]: $WigColor <ColorID>", 10));
+                Session.Client.SendPacket(Session.Character.GenerateSay("$WigColor COLORID", 10));
         }
 
         [Packet("$HairStyle")]
@@ -427,67 +427,66 @@ namespace OpenNos.Handler
                 }
             }
             else
-                Session.Client.SendPacket(Session.Character.GenerateSay("[Server]: $HairStyle <StyleID>", 10));
+                Session.Client.SendPacket(Session.Character.GenerateSay("$HairStyle STYLEID", 10));
         }
 
         [Packet("$Help")]
         public void Command(string packet)
         {
             Logger.Debug(packet, Session.SessionId);
-            Session.Client.SendPacket(Session.Character.GenerateSay("-----------|Commands|-----------", 11));
-            Session.Client.SendPacket(Session.Character.GenerateSay("[Server]: $Shout <Message>", 10));
-            Session.Client.SendPacket(Session.Character.GenerateSay("[Server]: $Teleport <MapID> <X> <Y>", 10));
-            Session.Client.SendPacket(Session.Character.GenerateSay("[Server]: $Teleport <Charactername>", 10));
-            Session.Client.SendPacket(Session.Character.GenerateSay("[Server]: $TeleportToMe <Charactername>", 10));
-            Session.Client.SendPacket(Session.Character.GenerateSay("[Server]: $Speed <1-59>", 10));
-            Session.Client.SendPacket(Session.Character.GenerateSay("[Server]: $Rarify <Slot> <Mode> <Protection>", 10));
-            Session.Client.SendPacket(Session.Character.GenerateSay("[Server]: $Upgrade <Slot> <Mode> <Protection>", 10));
-            Session.Client.SendPacket(Session.Character.GenerateSay("[Server]: $Morph <MorphID> <Upgrade> <Wings> <ArenaWings>", 10));
-            Session.Client.SendPacket(Session.Character.GenerateSay("[Server]: $Gold <Amount>", 10));
-            Session.Client.SendPacket(Session.Character.GenerateSay("[Server]: $Stat", 10));
-            Session.Client.SendPacket(Session.Character.GenerateSay("[Server]: $RateXp <Rate>", 10));
-            Session.Client.SendPacket(Session.Character.GenerateSay("[Server]: $RateGold <Rate>", 10));
-            Session.Client.SendPacket(Session.Character.GenerateSay("[Server]: $RateDrop <Rate>", 10));
-            Session.Client.SendPacket(Session.Character.GenerateSay("[Server]: $RateFairyXp <Rate>", 10));
-            Session.Client.SendPacket(Session.Character.GenerateSay("[Server]: $Lvl <1-99>", 10));
-            Session.Client.SendPacket(Session.Character.GenerateSay("[Server]: $JLvl <Joblvl>", 10));
-            Session.Client.SendPacket(Session.Character.GenerateSay("[Server]: $SPLvl <1-99>", 10));
-            Session.Client.SendPacket(Session.Character.GenerateSay("[Server]: $FLvl <FairyLvl>", 10));
-            Session.Client.SendPacket(Session.Character.GenerateSay("[Server]: $HairColor <ColorID>", 10));
-            Session.Client.SendPacket(Session.Character.GenerateSay("[Server]: $WigColor <ColorID>", 10));
-            Session.Client.SendPacket(Session.Character.GenerateSay("[Server]: $HairStyle <StyleID>", 10));
-            Session.Client.SendPacket(Session.Character.GenerateSay("[Server]: $SPRefill", 10));
-            Session.Client.SendPacket(Session.Character.GenerateSay("[Server]: $HeroLvl <1-50>", 10));
-            Session.Client.SendPacket(Session.Character.GenerateSay("[Server]: $ChangeSex", 10));
-            Session.Client.SendPacket(Session.Character.GenerateSay("[Server]: $ChangeClass <1-3>", 10));
-            Session.Client.SendPacket(Session.Character.GenerateSay("[Server]: $ChangeRep <Reputation>", 10));
-            Session.Client.SendPacket(Session.Character.GenerateSay("[Server]: $Kick <Charactername> <Reason>", 10));
-            Session.Client.SendPacket(Session.Character.GenerateSay("[Server]: $MapDance", 10));
-            Session.Client.SendPacket(Session.Character.GenerateSay("[Server]: $Kill <Charactername>", 10));
-            Session.Client.SendPacket(Session.Character.GenerateSay("[Server]: $GodMode", 10));
-            Session.Client.SendPacket(Session.Character.GenerateSay("[Server]: $Effect <EffectID>", 10));
-            Session.Client.SendPacket(Session.Character.GenerateSay("[Server]: $Resize <Size>", 10));
-            Session.Client.SendPacket(Session.Character.GenerateSay("[Server]: $PlayMusic <BGM>", 10));
-            Session.Client.SendPacket(Session.Character.GenerateSay("[Server]: $Ban <Charactername> <Reason>", 10));
-            Session.Client.SendPacket(Session.Character.GenerateSay("[Server]: $Ban <Charactername> <Reason> <Time>", 10));
-            Session.Client.SendPacket(Session.Character.GenerateSay("[Server]: $Mute <Charactername> <Reason>", 10));
-            Session.Client.SendPacket(Session.Character.GenerateSay("[Server]: $Mute <Charactername> <Reason> <Time>", 10));
-            Session.Client.SendPacket(Session.Character.GenerateSay("[Server]: $Invisible", 10));
-            Session.Client.SendPacket(Session.Character.GenerateSay("[Server]: $Position", 10));
-            Session.Client.SendPacket(Session.Character.GenerateSay("[Server]: $CreateItem <ItemID>", 10));
-            Session.Client.SendPacket(Session.Character.GenerateSay("[Server]: $CreateItem <ItemID> <Rare> <Upgrade>", 10));
-            Session.Client.SendPacket(Session.Character.GenerateSay("[Server]: $CreateItem <ItemID> <Rare>", 10));
-            Session.Client.SendPacket(Session.Character.GenerateSay("[Server]: $CreateItem <ItemID> <Color>", 10));
-            Session.Client.SendPacket(Session.Character.GenerateSay("[Server]: $CreateItem <ItemID> <Amount>", 10));
-            Session.Client.SendPacket(Session.Character.GenerateSay("[Server]: $CreateItem <SpID> <Upgrade> <Wings>", 10));
-            Session.Client.SendPacket(Session.Character.GenerateSay("[Server]: $Summon <Vnum> <Amount> <Move>", 10));
-            Session.Client.SendPacket(Session.Character.GenerateSay("[Server]: $PortalTo <MapID> <DestX> <DestY> <PortalType>", 10));
-            Session.Client.SendPacket(Session.Character.GenerateSay("[Server]: $PortalTo <MapID> <DestX> <DestY>", 10));
-            Session.Client.SendPacket(Session.Character.GenerateSay("[Server]: $AddMonster <Vnum> <Move>", 10));
-            Session.Client.SendPacket(Session.Character.GenerateSay("[Server]: $Zoom <Value>", 10));
-            Session.Client.SendPacket(Session.Character.GenerateSay("[Server]: $Shutdown", 10));
-            Session.Client.SendPacket(Session.Character.GenerateSay("----------------------------------------------------------", 11));
-                                                                                
+            Session.Client.SendPacket(Session.Character.GenerateSay("-----------Commands Info--------------", 10));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$Shout MESSAGE", 6));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$Teleport Map X Y", 6));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$Teleport CHARACTERNAME", 6));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$TeleportToMe CHARACTERNAME", 6));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$Speed SPEED", 6));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$Rarify SLOT MODE PROTECTION", 6));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$Upgrade SLOT MODE PROTECTION", 6));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$Morph MORPHID UPGRADE WINGS ARENA", 6));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$Gold AMOUNT", 6));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$Stat", 6));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$RateXp RATE", 6));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$RateGold RATE", 6));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$RateDrop RATE", 6));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$RateFairyXp RATE", 6));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$Lvl LEVEL", 6));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$JLvl JOBLEVEL", 6));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$SPLvl SPLEVEL", 6));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$FLvl FAIRYLEVEL", 6));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$HairColor COLORID", 6));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$WigColor COLORID", 6));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$HairStyle STYLEID", 6));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$SPRefill", 6));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$HeroLvl HEROLEVEL", 6));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$ChangeSex", 6));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$ChangeClass CLASS", 6));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$ChangeRep REPUTATION", 6));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$Kick CHARACTERNAME REASON", 6));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$MapDance", 6));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$Kill CHARACTERNAME", 6));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$GodMode", 6));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$Effect EFFECTID", 6));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$Resize SIZE", 6));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$PlayMusic MUSIC", 6));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$Ban CHARACTERNAME REASON", 6));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$Ban CHARACTERNAME REASON TIME", 6));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$Mute CHARACTERNAME REASON", 6));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$Mute CHARACTERNAME REASON TIME", 6));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$Invisible", 6));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$Position", 6));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID", 6));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID RARE UPGRADE", 6));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID RARE", 6));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID COLOR", 6));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID AMOUNT", 6));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$CreateItem SPID UPGRADE WINGS", 6));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$Summon VNUM AMOUNT MOVE", 6));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$PortalTo MAPID DESTX DESTY PORTALTYPE", 6));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$PortalTo MAPID DESTX DESTY", 6));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$AddMonster VNUM MOVE", 6));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$Zoom VALUE", 6));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$Shutdown", 6));
+            Session.Client.SendPacket(Session.Character.GenerateSay("-----------------------------------------------", 10));
         }
 
         [Packet("$CreateItem")]
@@ -501,12 +500,12 @@ namespace OpenNos.Handler
             ItemDTO iteminfo = null;
             if (packetsplit.Length != 5 && packetsplit.Length != 4 && packetsplit.Length != 3)
             {
-                Session.Client.SendPacket(Session.Character.GenerateSay("[Server]: $CreateItem <ItemID>", 10));
-                Session.Client.SendPacket(Session.Character.GenerateSay("[Server]: $CreateItem <ItemID> <Rare> <Upgrade>", 10));
-                Session.Client.SendPacket(Session.Character.GenerateSay("[Server]: $CreateItem <ItemID> <Rare>", 10));
-                Session.Client.SendPacket(Session.Character.GenerateSay("[Server]: $CreateItem <ItemID> <Color>", 10));
-                Session.Client.SendPacket(Session.Character.GenerateSay("[Server]: $CreateItem <ItemID> <Amount>", 10));
-                Session.Client.SendPacket(Session.Character.GenerateSay("[Server]: $CreateItem <SpID> <Upgrade> <Wings>", 10));
+                Session.Client.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID", 10));
+                Session.Client.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID RARE UPGRADE", 10));
+                Session.Client.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID RARE", 10));
+                Session.Client.SendPacket(Session.Character.GenerateSay("$CreateItem SPID UPGRADE WINGS", 10));
+                Session.Client.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID COLOR", 10));
+                Session.Client.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID AMOUNT", 10));
             }
             else if (short.TryParse(packetsplit[2], out vnum))
             {
@@ -605,7 +604,7 @@ namespace OpenNos.Handler
                 Session.CurrentMap?.Broadcast(Session.Character.GenerateGp(portal));
             }
             else
-                Session.Client.SendPacket(Session.Character.GenerateSay("[Server]: $PortalTo <MapID> <DestX> <DestY> <PortalType>", 10));
+                Session.Client.SendPacket(Session.Character.GenerateSay("$PortalTo MAPID DESTX DESTY PORTALTYPE", 10));
         }
 
         [Packet("$Effect")]
@@ -620,7 +619,7 @@ namespace OpenNos.Handler
                 Session.CurrentMap?.Broadcast(Session.Character.GenerateEff(arg));
             }
             else
-                Session.Client.SendPacket(Session.Character.GenerateSay("[Server]: $Effect <EffectID>", 10));
+                Session.Client.SendPacket(Session.Character.GenerateSay("$Effect EFFECT", 10));
         }
 
         [Packet("$Zoom")]
@@ -635,7 +634,7 @@ namespace OpenNos.Handler
             }
             else
             {
-                Session.Client.SendPacket(Session.Character.GenerateSay("[Server]: $Zoom <Value>", 10));
+                Session.Client.SendPacket(Session.Character.GenerateSay("$Zoom VALUE", 0));
             }
         }
 
@@ -662,7 +661,7 @@ namespace OpenNos.Handler
                 }
             }
             else
-                Session.Client.SendPacket(Session.Character.GenerateSay("[Server]: $Gold <Amount>", 10));
+                Session.Client.SendPacket(Session.Character.GenerateSay("$Gold AMOUNT", 10));
         }
 
         [Packet("$RateXp")]
@@ -683,7 +682,7 @@ namespace OpenNos.Handler
                     Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("WRONG_VALUE"), 0));
             }
             else
-                Session.Client.SendPacket(Session.Character.GenerateSay("[Server]: $RateXp <Rate>", 10));
+                Session.Client.SendPacket(Session.Character.GenerateSay("$RateXp RATE", 10));
         }
 
         [Packet("$RateDrop")]
@@ -704,7 +703,7 @@ namespace OpenNos.Handler
                     Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("WRONG_VALUE"), 0));
             }
             else
-                Session.Client.SendPacket(Session.Character.GenerateSay("[Server]: $RateDrop <Rate>", 10));
+                Session.Client.SendPacket(Session.Character.GenerateSay("$RateDrop RATE", 10));
 
         }
 
@@ -726,7 +725,7 @@ namespace OpenNos.Handler
                     Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("WRONG_VALUE"), 0));
             }
             else
-                Session.Client.SendPacket(Session.Character.GenerateSay("[Server]: $RateGold <Rate>", 10));
+                Session.Client.SendPacket(Session.Character.GenerateSay("$RateGold RATE", 10));
         }
 
         [Packet("$RateFairyXp")]
@@ -746,7 +745,7 @@ namespace OpenNos.Handler
                     Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("WRONG_VALUE"), 0));
             }
             else
-                Session.Client.SendPacket(Session.Character.GenerateSay("[Server]: $RateFairyXp <Rate>", 10));
+                Session.Client.SendPacket(Session.Character.GenerateSay("$RateFairyXp RATE", 10));
         }
 
         [Packet("$Invisible")]
@@ -774,7 +773,7 @@ namespace OpenNos.Handler
             if (packetsplit.Length > 2)
                 ServerManager.Instance.Kick(packetsplit[2]);
             else
-                Session.Client.SendPacket(Session.Character.GenerateSay("[Server]: $Kick <Charactername> <Reason>", 10));
+                Session.Client.SendPacket(Session.Character.GenerateSay("$Kick CHARACTERNAME", 10));
         }
 
         [Packet("$Kill")]
@@ -805,7 +804,7 @@ namespace OpenNos.Handler
                 }
             }
             else
-                Session.Client.SendPacket(Session.Character.GenerateSay("[Server]: $Kill <Charactername>", 10));
+                Session.Client.SendPacket(Session.Character.GenerateSay("$Kill CHARACTERNAME", 10));
         }
 
         [Packet("$MapDance")]
@@ -863,7 +862,7 @@ namespace OpenNos.Handler
                     break;
 
                 default:
-                    Session.Client.SendPacket(Session.Character.GenerateSay("[Server]: $Morph <MorphID> <Upgrade> <Wings> <ArenaWings>", 10));
+                    Session.Client.SendPacket(Session.Character.GenerateSay("$Morph MORPHID UPGRADE WINGS ARENA", 10));
                     break;
             }
         }
@@ -883,7 +882,7 @@ namespace OpenNos.Handler
                     Session.CurrentMap?.Broadcast($"bgm {arg}");
             }
             else
-                Session.Client.SendPacket(Session.Character.GenerateSay("[Server]: $PlayMusic <BGM>", 10));
+                Session.Client.SendPacket(Session.Character.GenerateSay("$PlayMusic BGMUSIC", 10));
         }
 
         [Packet("$Position")]
@@ -900,7 +899,7 @@ namespace OpenNos.Handler
             string[] packetsplit = packet.Split(' ');
             if (packetsplit.Length != 5)
             {
-                Session.Client.SendPacket(Session.Character.GenerateSay("[Server]: $Rarify <Slot> <Mode> <Protection>", 10));
+                Session.Client.SendPacket(Session.Character.GenerateSay("$Rarify SLOT MODE PROTECTION", 10));
             }
             else
             {
@@ -942,7 +941,7 @@ namespace OpenNos.Handler
                 }
             }
             else
-                Session.Client.SendPacket(Session.Character.GenerateSay("[Server]: $Resize <Size>", 10));
+                Session.Client.SendPacket(Session.Character.GenerateSay("$Resize SIZE", 10));
         }
 
         [Packet("$Shout")]
@@ -998,7 +997,7 @@ namespace OpenNos.Handler
                     break;
 
                 default:
-                    Session.Client.SendPacket(Session.Character.GenerateSay("[Server]: $Speed <1-59>", 10));
+                    Session.Client.SendPacket(Session.Character.GenerateSay("$Speed SPEED", 10));
                     break;
             }
         }
@@ -1055,7 +1054,7 @@ namespace OpenNos.Handler
                 }
             }
             else
-                Session.Client.SendPacket(Session.Character.GenerateSay("[Server]: $Summon <Vnum> <Amount> <Move>", 10));
+                Session.Client.SendPacket(Session.Character.GenerateSay("$Summon VNUM AMOUNT MOVE", 10));
         }
 
         [Packet("$Teleport")]
@@ -1105,8 +1104,8 @@ namespace OpenNos.Handler
                     break;
 
                 default:
-                    Session.Client.SendPacket(Session.Character.GenerateSay("[Server]: $Teleport <MapID> <X> <Y>", 10));
-                    Session.Client.SendPacket(Session.Character.GenerateSay("[Server]: $Teleport <Charactername>", 10));
+                    Session.Client.SendPacket(Session.Character.GenerateSay("$Teleport MAP X Y", 10));
+                    Session.Client.SendPacket(Session.Character.GenerateSay("$Teleport CHARACTERNAME", 10));
                     break;
             }
         }
@@ -1137,7 +1136,7 @@ namespace OpenNos.Handler
                 }
             }
             else
-                Session.Client.SendPacket(Session.Character.GenerateSay("[Server]: $TeleportToMe <Charactername>", 10));
+                Session.Client.SendPacket(Session.Character.GenerateSay("$TeleportToMe CHARACTERNAME", 10));
         }
 
         [Packet("$Upgrade")]
@@ -1147,7 +1146,7 @@ namespace OpenNos.Handler
             string[] packetsplit = packet.Split(' ');
             if (packetsplit.Length != 5)
             {
-                Session.Client.SendPacket(Session.Character.GenerateSay("[Server]: $Upgrade <Slot> <Mode> <Protection>", 10));
+                Session.Client.SendPacket(Session.Character.GenerateSay("$Upgrade SLOT MODE PROTECTION", 10));
             }
             else
             {
