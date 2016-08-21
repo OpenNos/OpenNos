@@ -72,6 +72,7 @@ namespace OpenNos.Data
         public int TalentSurrender { get; set; }
         public int TalentWin { get; set; }
         public bool WhisperBlocked { get; set; }
+        public bool HasGodMode { get; set; }
 
         #endregion
     }

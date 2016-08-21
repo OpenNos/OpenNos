@@ -826,4 +826,10 @@
   <data name="SERVER_WORKING_TIME" xml:space="preserve">
     <value>Czas działania servera</value>
   </data>
+  <data name="LEVELUP" xml:space="preserve">
+    <value>Osiągnąłeś następny poziom!</value>
+  </data>
+  <data name="NO_WEAPON" xml:space="preserve">
+    <value>Nie nosisz odpowiedniego uzbrojenia!</value>
+  </data>
 </root>

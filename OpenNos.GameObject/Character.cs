@@ -287,27 +287,25 @@ namespace OpenNos.GameObject
                 Hp = (int)HPLoad();
                 Mp = (int)MPLoad();
                 Session.Client.SendPacket(GenerateTit());
-
-                //equip 0 0 0.46.0.0.0 1.120.0.0.0 5.86.0.0.
+                //Session.Client.SendPacket(GenerateEquipment());
                 Session.Client.SendPacket(GenerateStat());
-                Session.CurrentMap?.Broadcast(GenerateEq());
+                Session.CurrentMap?.Broadcast(Session, GenerateEq(), ReceiverType.All);
                 Session.CurrentMap?.Broadcast(Session, GenerateEff(8), ReceiverType.All);
                 Session.Client.SendPacket(GenerateMsg(Language.Instance.GetMessageFromKey("CLASS_CHANGED"), 0));
                 Session.CurrentMap?.Broadcast(Session, GenerateEff(196), ReceiverType.All);
+
                 Random rand = new Random();
                 int faction = 1 + (int)rand.Next(0, 2);
                 Faction = faction;
                 Session.Client.SendPacket(GenerateMsg(Language.Instance.GetMessageFromKey($"GET_PROTECTION_POWER_{faction}"), 0));
+
                 Session.Client.SendPacket("scr 0 0 0 0 0 0");
-
-
                 Session.Client.SendPacket(GenerateFaction());
                 Session.Client.SendPacket(GenerateStatChar());
-
                 Session.Client.SendPacket(GenerateEff(4799 + faction));
                 Session.Client.SendPacket(GenerateCond());
                 Session.Client.SendPacket(GenerateLev());
-                Session.CurrentMap?.Broadcast(GenerateCMode());
+                Session.CurrentMap?.Broadcast(Session, GenerateCMode(), ReceiverType.All);
                 Session.CurrentMap?.Broadcast(Session, GenerateIn(), ReceiverType.AllExceptMe);
                 Session.CurrentMap?.Broadcast(Session, GenerateEff(6), ReceiverType.All);
                 Session.CurrentMap?.Broadcast(Session, GenerateEff(198), ReceiverType.All);
@@ -1276,6 +1274,7 @@ namespace OpenNos.GameObject
                 Session.Character.Mp = (int)Session.Character.MPLoad();
                 Session.Client.SendPacket(Session.Character.GenerateStat());
                 Session.Client.SendPacket($"levelup {Session.Character.CharacterId}");
+                Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("LEVELUP"), 0));
                 Session.CurrentMap?.Broadcast(Session.Character.GenerateEff(6));
                 Session.CurrentMap?.Broadcast(Session.Character.GenerateEff(198));
                 ServerManager.Instance.UpdateGroup(Session.Character.CharacterId);

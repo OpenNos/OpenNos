@@ -191,7 +191,7 @@ namespace OpenNos.GameObject
 
                 if (MapX == null || MapY == null || Hp <= 0 || invisible != null && (bool)invisible) { Target = -1; LifeTaskIsRunning = false; return; }
 
-                int damage = 100;
+
                 Random r = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
                 NpcMonsterSkill ski = monster.Skills.Where(s => !s.Used && (DateTime.Now - s.LastUse).TotalMilliseconds >= 100 * ServerManager.GetSkill(s.SkillVNum).Cooldown).OrderBy(rnd => r.Next()).FirstOrDefault();
                 Skill sk = null;
@@ -202,9 +202,15 @@ namespace OpenNos.GameObject
 
                 ClientSession targetSession = Map.Sessions.SingleOrDefault(s => s.Character.CharacterId == Target);
 
+                int damage = 100;
+                // deal 0 damage to GM with GodMode (not saved in db)
+                if (targetSession.Character.HasGodMode)
+                    damage = 0;
+                else
+                    damage = 100;
+
                 if (targetSession != null && (sk != null && Map.GetDistance(new MapCell() { X = this.MapX, Y = this.MapY }, new MapCell() { X = (short)MapX, Y = (short)MapY }) < sk.Range) || (Map.GetDistance(new MapCell() { X = this.MapX, Y = this.MapY }, new MapCell() { X = (short)MapX, Y = (short)MapY }) <= monster.BasicRange))
                 {
-
                     if ((sk != null && ((DateTime.Now - LastEffect).TotalMilliseconds >= sk.Cooldown * 100 + 1000)) || ((DateTime.Now - LastEffect).TotalMilliseconds >= (monster.BasicCooldown < 4 ? 4 : monster.BasicCooldown) * 100 + 100))
                     {
                         if (ski != null)
@@ -241,9 +247,10 @@ namespace OpenNos.GameObject
                             Target = -1;
                         }
                         if ((sk != null && (sk.Range > 0 || sk.TargetRange > 0)))
+                        {
                             foreach (Character chara in ServerManager.GetMap(MapId).GetListPeopleInRange(sk.TargetRange == 0 ? this.MapX : (short)MapX, sk.TargetRange == 0 ? this.MapY : (short)MapY, (byte)(sk.TargetRange + sk.Range)).Where(s => s.CharacterId != Target))
                             {
-                                damage = 100;
+                                //damage = 100; doesnt work
                                 bool AlreadyDead2 = chara.Hp <= 0;
                                 chara.GetDamage(damage);
                                 chara.LastDefence = DateTime.Now;
@@ -255,6 +262,7 @@ namespace OpenNos.GameObject
                                     ServerManager.Instance.AskRevive(chara.CharacterId);
                                 }
                             }
+                        }
                     }
                 }
                 else

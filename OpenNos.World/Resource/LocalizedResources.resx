@@ -847,4 +847,10 @@
   <data name="SERVER_WORKING_TIME" xml:space="preserve">
     <value>Server working time</value>
   </data>
+  <data name="LEVELUP" xml:space="preserve">
+    <value>Your level has been increased!</value>
+  </data>
+  <data name="NO_WEAPON" xml:space="preserve">
+    <value>You're not wearing appropriate weapon!</value>
+  </data>
 </root>

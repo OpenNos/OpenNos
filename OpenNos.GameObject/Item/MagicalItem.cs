@@ -36,7 +36,7 @@ namespace OpenNos.GameObject
                         else
                             Session.Character.HairColor = (byte)EffectValue;
                         Session.Client.SendPacket(Session.Character.GenerateEq());
-                        Session.CurrentMap?.Broadcast(Session.Character.GenerateIn());
+                        Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.All);
                         Inv.ItemInstance.Amount--;
                         if (Inv.ItemInstance.Amount > 0)
                             Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(Inv.ItemInstance.ItemVNum, Inv.ItemInstance.Amount, Inv.Type, Inv.Slot, 0, 0, 0, 0));
@@ -56,7 +56,7 @@ namespace OpenNos.GameObject
                         {
                             Session.Character.HairStyle = Session.Character.HairStyle != (byte)EffectValue ? (byte)EffectValue : (byte)1;
                             Session.Client.SendPacket(Session.Character.GenerateEq());
-                            Session.CurrentMap?.Broadcast(Session.Character.GenerateIn());
+                            Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.All);
                             Inv.ItemInstance.Amount--;
                             if (Inv.ItemInstance.Amount > 0)
                                 Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(Inv.ItemInstance.ItemVNum, Inv.ItemInstance.Amount, Inv.Type, Inv.Slot, 0, 0, 0, 0));
@@ -78,7 +78,7 @@ namespace OpenNos.GameObject
                             wig.Design = (byte)rnd.Next(0, 15);
                             Session.Client.SendPacket(Session.Character.GenerateEq());
                             Session.Client.SendPacket(Session.Character.GenerateEquipment());
-                            Session.CurrentMap?.Broadcast(Session.Character.GenerateIn());
+                            Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.All);
                             Inv.ItemInstance.Amount--;
                             if (Inv.ItemInstance.Amount > 0)
                                 Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(Inv.ItemInstance.ItemVNum, Inv.ItemInstance.Amount, Inv.Type, Inv.Slot, 0, 0, 0, 0));

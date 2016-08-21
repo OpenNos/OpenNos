@@ -818,4 +818,7 @@
   <data name="SERVER_WORKING_TIME" xml:space="preserve">
     <value>Serveur connecté depuis </value>
   </data>
+  <data name="LEVELUP" xml:space="preserve">
+    <value>Ton niveau de combat a augmenté.</value>
+  </data>
 </root>

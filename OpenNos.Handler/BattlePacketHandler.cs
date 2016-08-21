@@ -124,7 +124,6 @@ namespace OpenNos.Handler
                 ushort damage = 0;
                 int hitmode = 0;
                 Skill skill = null;
-
                 CharacterSkill ski = skills.FirstOrDefault(s => (skill = ServerManager.GetSkill(s.SkillVNum)) != null && skill?.CastId == castingId);
                 if (!Session.Character.WeaponLoaded(ski))
                 {
@@ -286,13 +285,13 @@ namespace OpenNos.Handler
                         break;
 
                     case (byte)UserType.Player:
-                            if (packetsplit.Length > 4)
+                        if (packetsplit.Length > 4)
+                        {
+                            if (Session.Character.Hp > 0 && Convert.ToInt64(packetsplit[4]) == Session.Character.CharacterId)
                             {
-                                if (Session.Character.Hp > 0 && Convert.ToInt64(packetsplit[4]) == Session.Character.CharacterId)
-                                {
-                                    TargetHit(Convert.ToInt32(packetsplit[2]), Convert.ToInt32(packetsplit[4]));
-                                }
+                                TargetHit(Convert.ToInt32(packetsplit[2]), Convert.ToInt32(packetsplit[4]));
                             }
+                        }
                         break;
 
                     default:
@@ -988,7 +987,12 @@ namespace OpenNos.Handler
 
             #endregion
 
-            int intdamage = random.Next(MinDmg, MaxDmg + 1);
+            int intdamage;
+            if (Session.Character.HasGodMode)
+                intdamage = 67107840;// this sets dmg for GodMode command
+            else
+                intdamage = random.Next(MinDmg, MaxDmg + 1);
+
             //unchanged from here on
             if (generated < CritChance)
             {
@@ -1012,7 +1016,6 @@ namespace OpenNos.Handler
                 List<DropDTO> droplist = monsterinfo.Drops.ToList();
                 droplist.AddRange(ServerManager.Drops);
                 int RateDrop = ServerManager.DropRate;
-
                 foreach (DropDTO drop in droplist)
                 {
                     i++;
@@ -1062,7 +1065,6 @@ namespace OpenNos.Handler
             mmon.Target = Session.Character.CharacterId;
             return damage;
         }
-
 
         private void ZoneHit(int Castingid, short x, short y)
         {

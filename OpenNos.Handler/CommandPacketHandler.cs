@@ -196,6 +196,14 @@ namespace OpenNos.Handler
                 Session.Client.SendPacket(Session.Character.GenerateSay("$ChangeClass CLASS", 10));
         }
 
+        [Packet("$GodMode")]
+        public void GodMode(string packet)
+        {
+            Logger.Debug(packet, Session.SessionId);
+            Session.Character.HasGodMode = Session.Character.HasGodMode == true ? false : true;
+            Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
+        }
+
         [Packet("$HeroLvl")]
         public void ChangeHeroLevel(string packet)
         {
@@ -342,7 +350,7 @@ namespace OpenNos.Handler
             WearableInstance fairy = Session.Character.EquipmentList.LoadBySlotAndType<WearableInstance>((short)EquipmentType.Fairy, (byte)InventoryType.Equipment);
             if (fairy != null && packetsplit.Length > 2)
             {
-                if (short.TryParse(packetsplit[2], out fairylevel) && fairylevel <= 9999)
+                if (short.TryParse(packetsplit[2], out fairylevel) && fairylevel <= 25565)
                 {
                     fairylevel -= fairy.Item.ElementRate;
                     fairy.ElementRate = fairylevel;
@@ -456,6 +464,7 @@ namespace OpenNos.Handler
             Session.Client.SendPacket(Session.Character.GenerateSay("$Kick CHARACTERNAME REASON", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$MapDance", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$Kill CHARACTERNAME", 6));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$GodMode", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$Effect EFFECTID", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$Resize SIZE", 6));
             Session.Client.SendPacket(Session.Character.GenerateSay("$PlayMusic MUSIC", 6));
@@ -909,7 +918,6 @@ namespace OpenNos.Handler
                         wearableInstance.RarifyItem(Session, (RarifyMode)mode, (RarifyProtection)protection);
                     }
                 }
-
                 Session.Character.GenerateStartupInventory();
             }
         }
