@@ -611,7 +611,6 @@
   </data>
   <data name="YOU_ASK_FOR_EXCHANGE" xml:space="preserve">
     <value>Tu as fait une demande d'échange avec </value>
-    <comment>à voir, peut être {0} a besoin d'être ajouté.</comment>
   </data>
   <data name="CHARACTER_LOGGED_IN" xml:space="preserve">
     <value>{0} s'est connecté </value>
@@ -683,8 +682,7 @@
     <value>Dignité augmentée : +1</value>
   </data>
   <data name="DONE" xml:space="preserve">
-    <value>La sanction a été appliquée.</value>
-    <comment>(Mute commande message signalant que le joueur a bien été sanctionné)</comment>
+    <value>La commande a été appliquée avec succès.</value>
   </data>
   <data name="NOT_ENOUGH_CP" xml:space="preserve">
     <value>Vous n'avez pas assez de PC.</value>
@@ -820,5 +818,17 @@
   </data>
   <data name="LEVELUP" xml:space="preserve">
     <value>Ton niveau de combat a augmenté.</value>
+  </data>
+  <data name="BN7" xml:space="preserve">
+    <value />
+    <comment>Vide </comment>
+  </data>
+  <data name="BN8" xml:space="preserve">
+    <value />
+    <comment>Vide</comment>
+  </data>
+  <data name="BN9" xml:space="preserve">
+    <value />
+    <comment>Vide</comment>
   </data>
 </root>
