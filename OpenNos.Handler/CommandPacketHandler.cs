@@ -121,63 +121,6 @@ namespace OpenNos.Handler
                 Session.Client.SendPacket(Session.Character.GenerateSay("$Ban CHARACTERNAME REASON", 10));
             }
         }
-        [Packet("$Mute")]
-        public void Mute(string packet)
-        {
-            Logger.Debug(packet, Session.SessionId);
-            string[] packetsplit = packet.Split(' ');
-            byte duration;
-            if (packetsplit.Length > 3)
-            {
-                string name = packetsplit[2];
-                string reason = packetsplit[3];
-
-                if (packetsplit.Length <= 4)
-                    duration = 1;
-                else
-                    Byte.TryParse(packetsplit[4], out duration);
-
-                ClientSession session = ServerManager.Instance.Sessions.FirstOrDefault(s => s.Character?.Name == name);
-                if (duration != 0)
-                {
-                    if (session != null)
-                    {
-                        session.Account.PenaltyLogs.Add(new PenaltyLog()
-                        {
-                            AccountId = DAOFactory.CharacterDAO.LoadByName(packetsplit[2]).AccountId,
-                            Reason = reason,
-                            Penalty = PenaltyType.Muted,
-                            DateStart = DateTime.Now,
-                            DateEnd = DateTime.Now.AddHours(duration)
-                        });
-                        Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
-                        if (duration == 1)
-                            ServerManager.Instance.Broadcast(Session, Session.Character.GenerateInfo(String.Format(Language.Instance.GetMessageFromKey("MUTED_SINGULAR"), reason)), ReceiverType.OnlySomeone, name);
-                        else
-                            ServerManager.Instance.Broadcast(Session, Session.Character.GenerateInfo(String.Format(Language.Instance.GetMessageFromKey("MUTED_PLURAL"), reason, duration)), ReceiverType.OnlySomeone, name);
-                    }
-                    else if (DAOFactory.CharacterDAO.LoadByName(name) != null)
-                    {
-                        DAOFactory.PenaltyLogDAO.Insert(new PenaltyLogDTO()
-                        {
-                            AccountId = DAOFactory.CharacterDAO.LoadByName(packetsplit[2]).AccountId,
-                            Reason = reason,
-                            Penalty = PenaltyType.Muted,
-                            DateStart = DateTime.Now,
-                            DateEnd = DateTime.Now.AddHours(duration)
-                        });
-                        Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
-                        ServerManager.Instance.Broadcast(Session, Session.Character.GenerateInfo(String.Format(Language.Instance.GetMessageFromKey("MUTED"), reason, duration)), ReceiverType.OnlySomeone, name);
-                    }
-                    else Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("USER_NOT_FOUND"), 10));
-                }
-            }
-            else
-            {
-                Session.Client.SendPacket(Session.Character.GenerateSay("$Mute CHARACTERNAME REASON TIME", 10));
-                Session.Client.SendPacket(Session.Character.GenerateSay("$Mute CHARACTERNAME REASON", 10));
-            }
-        }
 
         [Packet("$ChangeClass")]
         public void ChangeClass(string packet)
@@ -196,12 +139,26 @@ namespace OpenNos.Handler
                 Session.Client.SendPacket(Session.Character.GenerateSay("$ChangeClass CLASS", 10));
         }
 
-        [Packet("$GodMode")]
-        public void GodMode(string packet)
+        [Packet("$FLvl")]
+        public void ChangeFairyLevel(string packet)
         {
             Logger.Debug(packet, Session.SessionId);
-            Session.Character.HasGodMode = Session.Character.HasGodMode == true ? false : true;
-            Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
+            string[] packetsplit = packet.Split(' ');
+            short fairylevel;
+            WearableInstance fairy = Session.Character.EquipmentList.LoadBySlotAndType<WearableInstance>((short)EquipmentType.Fairy, (byte)InventoryType.Equipment);
+            if (fairy != null && packetsplit.Length > 2)
+            {
+                if (short.TryParse(packetsplit[2], out fairylevel) && fairylevel <= 25565)
+                {
+                    fairylevel -= fairy.Item.ElementRate;
+                    fairy.ElementRate = fairylevel;
+                    fairy.XP = 0;
+                    Session.Client.SendPacket(Session.Character.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("FAIRY_LEVEL_CHANGED"), fairy.Item.Name), 10));
+                    Session.Client.SendPacket(Session.Character.GeneratePairy());
+                }
+            }
+            else
+                Session.Client.SendPacket(Session.Character.GenerateSay("$FLvl FAIRYLEVEL", 10));
         }
 
         [Packet("$HeroLvl")]
@@ -341,95 +298,6 @@ namespace OpenNos.Handler
                 Session.Client.SendPacket(Session.Character.GenerateSay("$SPLvl SPLEVEL", 10));
         }
 
-        [Packet("$FLvl")]
-        public void ChangeFairyLevel(string packet)
-        {
-            Logger.Debug(packet, Session.SessionId);
-            string[] packetsplit = packet.Split(' ');
-            short fairylevel;
-            WearableInstance fairy = Session.Character.EquipmentList.LoadBySlotAndType<WearableInstance>((short)EquipmentType.Fairy, (byte)InventoryType.Equipment);
-            if (fairy != null && packetsplit.Length > 2)
-            {
-                if (short.TryParse(packetsplit[2], out fairylevel) && fairylevel <= 25565)
-                {
-                    fairylevel -= fairy.Item.ElementRate;
-                    fairy.ElementRate = fairylevel;
-                    fairy.XP = 0;
-                    Session.Client.SendPacket(Session.Character.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("FAIRY_LEVEL_CHANGED"), fairy.Item.Name), 10));
-                    Session.Client.SendPacket(Session.Character.GeneratePairy());
-                }
-            }
-            else
-                Session.Client.SendPacket(Session.Character.GenerateSay("$FLvl FAIRYLEVEL", 10));
-        }
-
-        [Packet("$HairColor")]
-        public void Haircolor(string packet)
-        {
-            Logger.Debug(packet, Session.SessionId);
-            string[] packetsplit = packet.Split(' ');
-            byte haircolor;
-            if (packetsplit.Length > 2)
-            {
-                if (Byte.TryParse(packetsplit[2], out haircolor) && haircolor < 128)
-                {
-                    Session.Character.HairColor = haircolor;
-                    Session.Client.SendPacket(Session.Character.GenerateEq());
-                    Session.CurrentMap?.Broadcast(Session.Character.GenerateIn());
-                }
-            }
-            else
-                Session.Client.SendPacket(Session.Character.GenerateSay("$HairColor COLORID", 10));
-        }
-
-        [Packet("$WigColor")]
-        public void WigColor(string packet)
-        {
-            Logger.Debug(packet, Session.SessionId);
-            string[] packetsplit = packet.Split(' ');
-            byte wigcolor = 0;
-            if (packetsplit.Length > 2)
-            {
-                if (Byte.TryParse(packetsplit[2], out wigcolor))
-                {
-                    WearableInstance wig = Session.Character.EquipmentList.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Hat, (byte)InventoryType.Equipment);
-                    if (wig != null)
-                    {
-                        wig.Design = wigcolor;
-                        Session.Client.SendPacket(Session.Character.GenerateEq());
-                        Session.Client.SendPacket(Session.Character.GenerateEquipment());
-                        Session.CurrentMap?.Broadcast(Session.Character.GenerateIn());
-                    }
-                    else
-                    {
-                        Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NO_WIG"), 0));
-                        return;
-                    }
-                }
-            }
-            else
-                Session.Client.SendPacket(Session.Character.GenerateSay("$WigColor COLORID", 10));
-        }
-
-        [Packet("$HairStyle")]
-        public void Hairstyle(string packet)
-        {
-            Logger.Debug(packet, Session.SessionId);
-            string[] packetsplit = packet.Split(' ');
-            byte hairstyle;
-            if (packetsplit.Length > 2)
-            {
-                if (Byte.TryParse(packetsplit[2], out hairstyle))
-                {
-                    Session.Character.HairStyle = hairstyle;
-                    Session.Client.SendPacket(Session.Character.GenerateEq());
-                    Session.CurrentMap?.Broadcast(Session.Character.GenerateIn());
-                }
-            }
-            else
-                Session.Client.SendPacket(Session.Character.GenerateSay("$HairStyle STYLEID", 10));
-        }
-
         [Packet("$Help")]
         public void Command(string packet)
         {
@@ -557,7 +425,6 @@ namespace OpenNos.Handler
 
                     if (wearable != null)
                     {
-                        //ROLL
                         wearable.SetRarityPoint();
                     }
 
@@ -622,22 +489,13 @@ namespace OpenNos.Handler
                 Session.Client.SendPacket(Session.Character.GenerateSay("$Effect EFFECT", 10));
         }
 
-        [Packet("$Zoom")]
-        public void Zoom(string packet)
+        [Packet("$GodMode")]
+        public void GodMode(string packet)
         {
             Logger.Debug(packet, Session.SessionId);
-            string[] packetsplit = packet.Split(' ');
-            byte arg = 0;
-            if (packetsplit.Length > 2 && byte.TryParse(packetsplit[2], out arg))
-            {
-                Session.Client.SendPacket($"guri 15 {arg} 0");
-            }
-            else
-            {
-                Session.Client.SendPacket(Session.Character.GenerateSay("$Zoom VALUE", 0));
-            }
+            Session.Character.HasGodMode = Session.Character.HasGodMode == true ? false : true;
+            Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
         }
-
 
         [Packet("$Gold")]
         public void Gold(string packet)
@@ -664,88 +522,42 @@ namespace OpenNos.Handler
                 Session.Client.SendPacket(Session.Character.GenerateSay("$Gold AMOUNT", 10));
         }
 
-        [Packet("$RateXp")]
-        public void RateXp(string packet)
+        [Packet("$HairColor")]
+        public void Haircolor(string packet)
         {
             Logger.Debug(packet, Session.SessionId);
             string[] packetsplit = packet.Split(' ');
-            int rate;
+            byte haircolor;
             if (packetsplit.Length > 2)
             {
-                if (int.TryParse(packetsplit[2], out rate) && rate <= 1000)
+                if (Byte.TryParse(packetsplit[2], out haircolor) && haircolor < 128)
                 {
-                    ServerManager.XPRate = rate;
-
-                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("XP_RATE_CHANGED"), 0));
+                    Session.Character.HairColor = haircolor;
+                    Session.Client.SendPacket(Session.Character.GenerateEq());
+                    Session.CurrentMap?.Broadcast(Session.Character.GenerateIn());
                 }
-                else
-                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("WRONG_VALUE"), 0));
             }
             else
-                Session.Client.SendPacket(Session.Character.GenerateSay("$RateXp RATE", 10));
+                Session.Client.SendPacket(Session.Character.GenerateSay("$HairColor COLORID", 10));
         }
 
-        [Packet("$RateDrop")]
-        public void RateDrop(string packet)
+        [Packet("$HairStyle")]
+        public void Hairstyle(string packet)
         {
             Logger.Debug(packet, Session.SessionId);
             string[] packetsplit = packet.Split(' ');
-            int rate;
+            byte hairstyle;
             if (packetsplit.Length > 2)
             {
-                if (int.TryParse(packetsplit[2], out rate) && rate <= 1000)
+                if (Byte.TryParse(packetsplit[2], out hairstyle))
                 {
-                    ServerManager.DropRate = rate;
-
-                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("DROP_RATE_CHANGED"), 0));
+                    Session.Character.HairStyle = hairstyle;
+                    Session.Client.SendPacket(Session.Character.GenerateEq());
+                    Session.CurrentMap?.Broadcast(Session.Character.GenerateIn());
                 }
-                else
-                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("WRONG_VALUE"), 0));
             }
             else
-                Session.Client.SendPacket(Session.Character.GenerateSay("$RateDrop RATE", 10));
-
-        }
-
-        [Packet("$RateGold")]
-        public void RateGold(string packet)
-        {
-            Logger.Debug(packet, Session.SessionId);
-            string[] packetsplit = packet.Split(' ');
-            int rate;
-            if (packetsplit.Length > 2)
-            {
-                if (int.TryParse(packetsplit[2], out rate) && rate <= 1000)
-                {
-                    ServerManager.GoldRate = rate;
-
-                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("GOLD_RATE_CHANGED"), 0));
-                }
-                else
-                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("WRONG_VALUE"), 0));
-            }
-            else
-                Session.Client.SendPacket(Session.Character.GenerateSay("$RateGold RATE", 10));
-        }
-
-        [Packet("$RateFairyXp")]
-        public void RateFairyXp(string packet)
-        {
-            Logger.Debug(packet, Session.SessionId);
-            string[] packetsplit = packet.Split(' ');
-            int rate;
-            if (packetsplit.Length > 2)
-            {
-                if (int.TryParse(packetsplit[2], out rate) && rate <= 1000)
-                {
-                    ServerManager.FairyXpRate = rate;
-                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("FAIRYXP_RATE_CHANGED"), 0));
-                }
-                else
-                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("WRONG_VALUE"), 0));
-            }
-            else
-                Session.Client.SendPacket(Session.Character.GenerateSay("$RateFairyXp RATE", 10));
+                Session.Client.SendPacket(Session.Character.GenerateSay("$HairStyle STYLEID", 10));
         }
 
         [Packet("$Invisible")]
@@ -867,6 +679,64 @@ namespace OpenNos.Handler
             }
         }
 
+        [Packet("$Mute")]
+        public void Mute(string packet)
+        {
+            Logger.Debug(packet, Session.SessionId);
+            string[] packetsplit = packet.Split(' ');
+            byte duration;
+            if (packetsplit.Length > 3)
+            {
+                string name = packetsplit[2];
+                string reason = packetsplit[3];
+
+                if (packetsplit.Length <= 4)
+                    duration = 1;
+                else
+                    Byte.TryParse(packetsplit[4], out duration);
+
+                ClientSession session = ServerManager.Instance.Sessions.FirstOrDefault(s => s.Character?.Name == name);
+                if (duration != 0)
+                {
+                    if (session != null)
+                    {
+                        session.Account.PenaltyLogs.Add(new PenaltyLog()
+                        {
+                            AccountId = DAOFactory.CharacterDAO.LoadByName(packetsplit[2]).AccountId,
+                            Reason = reason,
+                            Penalty = PenaltyType.Muted,
+                            DateStart = DateTime.Now,
+                            DateEnd = DateTime.Now.AddHours(duration)
+                        });
+                        Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
+                        if (duration == 1)
+                            ServerManager.Instance.Broadcast(Session, Session.Character.GenerateInfo(String.Format(Language.Instance.GetMessageFromKey("MUTED_SINGULAR"), reason)), ReceiverType.OnlySomeone, name);
+                        else
+                            ServerManager.Instance.Broadcast(Session, Session.Character.GenerateInfo(String.Format(Language.Instance.GetMessageFromKey("MUTED_PLURAL"), reason, duration)), ReceiverType.OnlySomeone, name);
+                    }
+                    else if (DAOFactory.CharacterDAO.LoadByName(name) != null)
+                    {
+                        DAOFactory.PenaltyLogDAO.Insert(new PenaltyLogDTO()
+                        {
+                            AccountId = DAOFactory.CharacterDAO.LoadByName(packetsplit[2]).AccountId,
+                            Reason = reason,
+                            Penalty = PenaltyType.Muted,
+                            DateStart = DateTime.Now,
+                            DateEnd = DateTime.Now.AddHours(duration)
+                        });
+                        Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
+                        ServerManager.Instance.Broadcast(Session, Session.Character.GenerateInfo(String.Format(Language.Instance.GetMessageFromKey("MUTED"), reason, duration)), ReceiverType.OnlySomeone, name);
+                    }
+                    else Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("USER_NOT_FOUND"), 10));
+                }
+            }
+            else
+            {
+                Session.Client.SendPacket(Session.Character.GenerateSay("$Mute CHARACTERNAME REASON TIME", 10));
+                Session.Client.SendPacket(Session.Character.GenerateSay("$Mute CHARACTERNAME REASON", 10));
+            }
+        }
+
         [Packet("$PlayMusic")]
         public void PlayMusic(string packet)
         {
@@ -920,6 +790,89 @@ namespace OpenNos.Handler
                 }
                 Session.Character.GenerateStartupInventory();
             }
+        }
+
+        [Packet("$RateDrop")]
+        public void RateDrop(string packet)
+        {
+            Logger.Debug(packet, Session.SessionId);
+            string[] packetsplit = packet.Split(' ');
+            int rate;
+            if (packetsplit.Length > 2)
+            {
+                if (int.TryParse(packetsplit[2], out rate) && rate <= 1000)
+                {
+                    ServerManager.DropRate = rate;
+
+                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("DROP_RATE_CHANGED"), 0));
+                }
+                else
+                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("WRONG_VALUE"), 0));
+            }
+            else
+                Session.Client.SendPacket(Session.Character.GenerateSay("$RateDrop RATE", 10));
+        }
+
+        [Packet("$RateFairyXp")]
+        public void RateFairyXp(string packet)
+        {
+            Logger.Debug(packet, Session.SessionId);
+            string[] packetsplit = packet.Split(' ');
+            int rate;
+            if (packetsplit.Length > 2)
+            {
+                if (int.TryParse(packetsplit[2], out rate) && rate <= 1000)
+                {
+                    ServerManager.FairyXpRate = rate;
+                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("FAIRYXP_RATE_CHANGED"), 0));
+                }
+                else
+                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("WRONG_VALUE"), 0));
+            }
+            else
+                Session.Client.SendPacket(Session.Character.GenerateSay("$RateFairyXp RATE", 10));
+        }
+
+        [Packet("$RateGold")]
+        public void RateGold(string packet)
+        {
+            Logger.Debug(packet, Session.SessionId);
+            string[] packetsplit = packet.Split(' ');
+            int rate;
+            if (packetsplit.Length > 2)
+            {
+                if (int.TryParse(packetsplit[2], out rate) && rate <= 1000)
+                {
+                    ServerManager.GoldRate = rate;
+
+                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("GOLD_RATE_CHANGED"), 0));
+                }
+                else
+                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("WRONG_VALUE"), 0));
+            }
+            else
+                Session.Client.SendPacket(Session.Character.GenerateSay("$RateGold RATE", 10));
+        }
+
+        [Packet("$RateXp")]
+        public void RateXp(string packet)
+        {
+            Logger.Debug(packet, Session.SessionId);
+            string[] packetsplit = packet.Split(' ');
+            int rate;
+            if (packetsplit.Length > 2)
+            {
+                if (int.TryParse(packetsplit[2], out rate) && rate <= 1000)
+                {
+                    ServerManager.XPRate = rate;
+
+                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("XP_RATE_CHANGED"), 0));
+                }
+                else
+                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("WRONG_VALUE"), 0));
+            }
+            else
+                Session.Client.SendPacket(Session.Character.GenerateSay("$RateXp RATE", 10));
         }
 
         [Packet("$Resize")]
@@ -1168,11 +1121,49 @@ namespace OpenNos.Handler
             }
         }
 
-
-        private void DeleteItem(byte type, short slot)
+        [Packet("$WigColor")]
+        public void WigColor(string packet)
         {
-            Session.Character.InventoryList.DeleteFromSlotAndType(slot, type);
-            Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, type, slot, 0, 0, 0, 0));
+            Logger.Debug(packet, Session.SessionId);
+            string[] packetsplit = packet.Split(' ');
+            byte wigcolor = 0;
+            if (packetsplit.Length > 2)
+            {
+                if (Byte.TryParse(packetsplit[2], out wigcolor))
+                {
+                    WearableInstance wig = Session.Character.EquipmentList.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Hat, (byte)InventoryType.Equipment);
+                    if (wig != null)
+                    {
+                        wig.Design = wigcolor;
+                        Session.Client.SendPacket(Session.Character.GenerateEq());
+                        Session.Client.SendPacket(Session.Character.GenerateEquipment());
+                        Session.CurrentMap?.Broadcast(Session.Character.GenerateIn());
+                    }
+                    else
+                    {
+                        Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NO_WIG"), 0));
+                        return;
+                    }
+                }
+            }
+            else
+                Session.Client.SendPacket(Session.Character.GenerateSay("$WigColor COLORID", 10));
+        }
+
+        [Packet("$Zoom")]
+        public void Zoom(string packet)
+        {
+            Logger.Debug(packet, Session.SessionId);
+            string[] packetsplit = packet.Split(' ');
+            byte arg = 0;
+            if (packetsplit.Length > 2 && byte.TryParse(packetsplit[2], out arg))
+            {
+                Session.Client.SendPacket($"guri 15 {arg} 0");
+            }
+            else
+            {
+                Session.Client.SendPacket(Session.Character.GenerateSay("$Zoom VALUE", 0));
+            }
         }
 
         private async void ShutdownTask()

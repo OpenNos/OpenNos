@@ -1578,7 +1578,7 @@ namespace OpenNos.GameObject
             return (int)((ServersData.MPData[Class, Level] + mp) * multiplicator);
         }
 
-        public void NotiyRarifyResult(int rare)
+        public void NotiyRarifyResult(sbyte rare)
         {
             Session.Client.SendPacket(GenerateSay(String.Format(Language.Instance.GetMessageFromKey("RARIFY_SUCCESS"), rare), 12));
             Session.Client.SendPacket(GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("RARIFY_SUCCESS"), rare), 0));
