@@ -1045,7 +1045,8 @@ namespace OpenNos.Handler
                     Group grp = ServerManager.Instance.Groups.FirstOrDefault(g => g.IsMemberOfGroup(Session.Character.CharacterId));
                     if (grp != null)
                     {
-                        grp.Characters.ForEach(g => g.Character.GenerateXp(monsterinfo));
+                        if (grp.Characters.TrueForAll(g => g.Character.MapId == Session.Character.MapId))
+                            grp.Characters.ForEach(g => g.Character.GenerateXp(monsterinfo));
                     }
                     else Session.Character.GenerateXp(monsterinfo);
                 }

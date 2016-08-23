@@ -94,13 +94,17 @@ namespace OpenNos.GameObject
 
         public void RarifyItem(ClientSession Session, RarifyMode mode, RarifyProtection protection)
         {
-            double rare1 = 50;
-            double rare2 = 35;
-            double rare3 = 25;
-            double rare4 = 10;
+            double raren2 = 80;
+            double raren1 = 70;
+            double rare0 = 60;
+            double rare1 = 35;
+            double rare2 = 25;
+            double rare3 = 20;
+            double rare4 = 15;
             double rare5 = 10;
             double rare6 = 5;
             double rare7 = 1;
+            double rare8 = 0;
             double reducedchancefactor = 1.1;
 
             //short itempricevnum = 0;
@@ -112,6 +116,9 @@ namespace OpenNos.GameObject
 
             if (protection == RarifyProtection.RedAmulet)
             {
+                raren2 = raren1 * reducedchancefactor;
+                raren1 = raren1 * reducedchancefactor;
+                rare0 = rare0 * reducedchancefactor;
                 rare1 = rare1 * reducedchancefactor;
                 rare2 = rare2 * reducedchancefactor;
                 rare3 = rare3 * reducedchancefactor;
@@ -119,6 +126,7 @@ namespace OpenNos.GameObject
                 rare5 = rare5 * reducedchancefactor;
                 rare6 = rare6 * reducedchancefactor;
                 rare7 = rare7 * reducedchancefactor;
+                rare8 = rare8 * reducedchancefactor;
             }
             switch (mode)
             {
@@ -148,8 +156,18 @@ namespace OpenNos.GameObject
                     break;
             }
 
-            Random r = new Random();
-            int rnd = r.Next(100);
+            Random r = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
+            int rnd = r.Next(0, 100);
+            if (rnd <= rare8 && !(protection == RarifyProtection.Scroll && this.Rare >= 8))
+            {
+                if (mode != RarifyMode.Drop)
+                {
+                    Session.Character.NotiyRarifyResult(7);
+                }
+
+                this.Rare = 8;
+                SetRarityPoint();
+            }
             if (rnd <= rare7 && !(protection == RarifyProtection.Scroll && this.Rare >= 7))
             {
                 if (mode != RarifyMode.Drop)
@@ -214,6 +232,21 @@ namespace OpenNos.GameObject
                 this.Rare = 1;
                 SetRarityPoint();
             }
+            else if (rnd <= rare0 && !(protection == RarifyProtection.Scroll && this.Rare >= 0) && mode == RarifyMode.Drop)
+            {
+                this.Rare = 0;
+                SetRarityPoint();
+            }
+            else if (rnd <= raren1 && !(protection == RarifyProtection.Scroll && this.Rare >= -1) && mode == RarifyMode.Drop)
+            {
+                this.Rare = -1;
+                SetRarityPoint();
+            }
+            else if (rnd <= raren2 && !(protection == RarifyProtection.Scroll && this.Rare >= -2) && mode == RarifyMode.Drop)
+            {
+                this.Rare = -2;
+                SetRarityPoint();
+            }
             else
             {
                 if (mode != RarifyMode.Drop)
@@ -229,7 +262,7 @@ namespace OpenNos.GameObject
                         Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("RARIFY_FAILED_ITEM_SAVED"), 11));
                         Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("RARIFY_FAILED_ITEM_SAVED"), 0));
                         ServerManager.Instance.Broadcast(Session.Character.GenerateEff(3004));
-                        Session.Character.InventoryList.LoadByItemInstance<WearableInstance>(this.ItemInstanceId).IsFixed = true;
+                        //Session.Character.InventoryList.LoadByItemInstance<WearableInstance>(this.ItemInstanceId).IsFixed = true;
                     }
                 }
             }

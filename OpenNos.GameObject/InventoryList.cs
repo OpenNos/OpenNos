@@ -345,12 +345,12 @@ namespace OpenNos.GameObject
             int random = 0;
             int i = 0;
             MapItem droppedItem = null;
-            short MapX = (short)(rnd.Next(Owner.MapX - 1, Owner.MapX + 1));
-            short MapY = (short)(rnd.Next(Owner.MapY - 1, Owner.MapY + 1));
+            short MapX = (short)(rnd.Next(Owner.MapX - 1, Owner.MapX + 2));
+            short MapY = (short)(rnd.Next(Owner.MapY - 1, Owner.MapY + 2));
             while (ServerManager.GetMap(Owner.MapId).IsBlockedZone(MapX, MapY) && i < 5)
             {
-                MapX = (short)(rnd.Next(Owner.MapX - 1, Owner.MapX + 1));
-                MapY = (short)(rnd.Next(Owner.MapY - 1, Owner.MapY + 1));
+                MapX = (short)(rnd.Next(Owner.MapX - 1, Owner.MapX + 2));
+                MapY = (short)(rnd.Next(Owner.MapY - 1, Owner.MapY + 2));
                 i++;
             }
             if (i == 5)
