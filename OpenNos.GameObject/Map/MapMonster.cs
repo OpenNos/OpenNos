@@ -204,7 +204,6 @@ namespace OpenNos.GameObject
 
                 int damage = 100;
                 // deal 0 damage to GM with GodMode
-                damage = targetSession.Character.HasGodMode ? 0 : 100;
 
                 if (targetSession != null && (sk != null && Map.GetDistance(new MapCell() { X = this.MapX, Y = this.MapY }, new MapCell() { X = (short)MapX, Y = (short)MapY }) < sk.Range) || (Map.GetDistance(new MapCell() { X = this.MapX, Y = this.MapY }, new MapCell() { X = (short)MapX, Y = (short)MapY }) <= monster.BasicRange))
                 {
@@ -218,6 +217,7 @@ namespace OpenNos.GameObject
                         }
 
                         LastMove = DateTime.Now;
+                        damage = targetSession.Character.HasGodMode ? 0 : 100;
 
                         if (sk != null && sk.CastEffect != 0)
                         {

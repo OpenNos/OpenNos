@@ -1016,6 +1016,7 @@ namespace OpenNos.Handler
                 List<DropDTO> droplist = monsterinfo.Drops.ToList();
                 droplist.AddRange(ServerManager.Drops);
                 int RateDrop = ServerManager.DropRate;
+
                 foreach (DropDTO drop in droplist)
                 {
                     i++;
