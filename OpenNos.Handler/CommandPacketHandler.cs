@@ -564,9 +564,10 @@ namespace OpenNos.Handler
         public void Invisible(string packet)
         {
             Logger.Debug(packet, Session.SessionId);
-            Session.Character.Invisible = !Session.Character.Invisible;
+            Session.Character.Invisible = Session.Character.Invisible ? false : true;
             Session.CurrentMap?.Broadcast(Session.Character.GenerateInvisible());
             Session.Character.InvisibleGm = Session.Character.InvisibleGm ? false : true;
+            Session.Client.SendPacket(Session.Character.GenerateEq());
             if (Session.Character.InvisibleGm == true)
             {
                 Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateOut(), ReceiverType.AllExceptMe);

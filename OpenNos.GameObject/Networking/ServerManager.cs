@@ -426,7 +426,7 @@ namespace OpenNos.GameObject
                     session.Client.SendPacket(ShopPacket);
                 foreach (String ShopPacketChar in session.Character.GeneratePlayerShopOnMap())
                     session.Client.SendPacket(ShopPacketChar);
-                ServerManager.Instance.Sessions.Where(s => s.Character != null && s.Character.MapId.Equals(session.Character.MapId) && s.Character.Name != session.Character.Name && !session.Character.InvisibleGm).ToList().ForEach(s => RequireBroadcastFromUser(session, s.Character.CharacterId, "GenerateIn"));
+                ServerManager.Instance.Sessions.Where(s => s.Character != null && s.Character.MapId.Equals(session.Character.MapId) && s.Character.Name != session.Character.Name && !s.Character.InvisibleGm).ToList().ForEach(s => RequireBroadcastFromUser(session, s.Character.CharacterId, "GenerateIn"));
                 if (session.Character.InvisibleGm == false)
                     session.CurrentMap?.Broadcast(session, session.Character.GenerateIn(), ReceiverType.AllExceptMe);
                 if (session.Character.Size != 10)
