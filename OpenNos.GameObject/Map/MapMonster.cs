@@ -216,7 +216,10 @@ namespace OpenNos.GameObject
 
                         LastMove = DateTime.Now;
                         // deal 0 damage to GM with GodMode
-                        damage = targetSession.Character.HasGodMode ? 0 : 100;
+                        if (targetSession == null)
+                            damage = 0;
+                        else
+                            damage = targetSession.Character.HasGodMode ? 0 : 100;
 
                         if (sk != null && sk.CastEffect != 0)
                         {
