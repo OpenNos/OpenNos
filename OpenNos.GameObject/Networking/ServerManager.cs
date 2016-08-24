@@ -409,7 +409,7 @@ namespace OpenNos.GameObject
                 session.Client.SendPacket("pinit 0"); // partner initialization
                 session.Client.SendPacket(session.Character.GeneratePairy());
                 session.CurrentMap?.Broadcast(session, session.Character.GeneratePairy(), ReceiverType.AllExceptMe);
-                session.Client.SendPacket("act6");// act6 1 0 14 0 0 0 14 0 0 0
+                session.Client.SendPacket("act6"); // act6 1 0 14 0 0 0 14 0 0 0
 
                 foreach (String portalPacket in session.Character.GenerateGp())
                     session.Client.SendPacket(portalPacket);

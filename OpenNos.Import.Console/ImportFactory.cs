@@ -1331,13 +1331,11 @@ namespace OpenNos.Import.Console
 
                             case "1":
                                 skill.ElementalDamage = short.Parse(currentLine[5]); // Divide by 4(?)
-                                                                                     /*
-                                                                                     skill.Unknown = short.Parse(currentLine[2]);
-                                                                                     skill.Unknown = short.Parse(currentLine[3]);
-                                                                                     skill.Unknown = short.Parse(currentLine[4]);
-                                                                                     skill.Unknown = short.Parse(currentLine[6]);
-                                                                                     skill.Unknown = short.Parse(currentLine[7]);
-                                                                                     */
+                                //skill.Unknown = short.Parse(currentLine[2]);
+                                //skill.Unknown = short.Parse(currentLine[3]);
+                                //skill.Unknown = short.Parse(currentLine[4]);
+                                //skill.Unknown = short.Parse(currentLine[6]);
+                                //skill.Unknown = short.Parse(currentLine[7]);
                                 break;
 
                             case "2":

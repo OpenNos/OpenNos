@@ -291,11 +291,15 @@ namespace OpenNos.Handler
                             {
                                 TargetHit(Convert.ToInt32(packetsplit[2]), Convert.ToInt32(packetsplit[4]));
                             }
+                            else
+                            {
+                                Session.Client.SendPacket($"cancel 2 0");
+                            }
                         }
                         break;
 
                     default:
-                        Session.Client.SendPacket($"cancel 0 0");
+                        Session.Client.SendPacket("cancel 2 0");
                         return;
                 }
             }

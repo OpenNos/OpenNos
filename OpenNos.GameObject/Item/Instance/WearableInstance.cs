@@ -155,111 +155,114 @@ namespace OpenNos.GameObject
 
             Random r = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
             int rnd = r.Next(0, 100);
-            if (rnd <= rare8 && !(protection == RarifyProtection.Scroll && this.Rare >= 8))
+            if (this.Item.EquipmentSlot == (byte)EquipmentType.MainWeapon || this.Item.EquipmentSlot == (byte)EquipmentType.SecondaryWeapon || this.Item.EquipmentSlot == (byte)EquipmentType.Armor)
             {
-                if (mode != RarifyMode.Drop)
+                if (rnd <= rare8 && !(protection == RarifyProtection.Scroll && this.Rare >= 8))
                 {
-                    Session.Character.NotiyRarifyResult(7);
-                }
-
-                this.Rare = 8;
-                SetRarityPoint();
-            }
-            if (rnd <= rare7 && !(protection == RarifyProtection.Scroll && this.Rare >= 7))
-            {
-                if (mode != RarifyMode.Drop)
-                {
-                    Session.Character.NotiyRarifyResult(7);
-                }
-
-                this.Rare = 7;
-                SetRarityPoint();
-            }
-            else if (rnd <= rare6 && !(protection == RarifyProtection.Scroll && this.Rare >= 6))
-            {
-                if (mode != RarifyMode.Drop)
-                {
-                    Session.Character.NotiyRarifyResult(6);
-                }
-                this.Rare = 6;
-                SetRarityPoint();
-            }
-            else if (rnd <= rare5 && !(protection == RarifyProtection.Scroll && this.Rare >= 5))
-            {
-                if (mode != RarifyMode.Drop)
-                {
-                    Session.Character.NotiyRarifyResult(5);
-                }
-                this.Rare = 5;
-                SetRarityPoint();
-            }
-            else if (rnd <= rare4 && !(protection == RarifyProtection.Scroll && this.Rare >= 4))
-            {
-                if (mode != RarifyMode.Drop)
-                {
-                    Session.Character.NotiyRarifyResult(4);
-                }
-                this.Rare = 4;
-                SetRarityPoint();
-            }
-            else if (rnd <= rare3 && !(protection == RarifyProtection.Scroll && this.Rare >= 3))
-            {
-                if (mode != RarifyMode.Drop)
-                {
-                    Session.Character.NotiyRarifyResult(3);
-                }
-                this.Rare = 3;
-                SetRarityPoint();
-            }
-            else if (rnd <= rare2 && !(protection == RarifyProtection.Scroll && this.Rare >= 2))
-            {
-                if (mode != RarifyMode.Drop)
-                {
-                    Session.Character.NotiyRarifyResult(2);
-                }
-                this.Rare = 2;
-                SetRarityPoint();
-            }
-            else if (rnd <= rare1 && !(protection == RarifyProtection.Scroll && this.Rare >= 1))
-            {
-                if (mode != RarifyMode.Drop)
-                {
-                    Session.Character.NotiyRarifyResult(1);
-                }
-                this.Rare = 1;
-                SetRarityPoint();
-            }
-            else if (rnd <= rare0 && !(protection == RarifyProtection.Scroll && this.Rare >= 0) && mode == RarifyMode.Drop)
-            {
-                this.Rare = 0;
-                SetRarityPoint();
-            }
-            else if (rnd <= raren1 && !(protection == RarifyProtection.Scroll && this.Rare >= -1) && mode == RarifyMode.Drop)
-            {
-                this.Rare = -1;
-                SetRarityPoint();
-            }
-            else if (rnd <= raren2 && !(protection == RarifyProtection.Scroll && this.Rare >= -2) && mode == RarifyMode.Drop)
-            {
-                this.Rare = -2;
-                SetRarityPoint();
-            }
-            else
-            {
-                if (mode != RarifyMode.Drop)
-                {
-                    if (protection == RarifyProtection.None)
+                    if (mode != RarifyMode.Drop)
                     {
-                        Session.Character.DeleteItemByItemInstanceId(this.ItemInstanceId);
-                        Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("RARIFY_FAILED"), 11));
-                        Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("RARIFY_FAILED"), 0));
+                        Session.Character.NotiyRarifyResult(8);
                     }
-                    else
+
+                    this.Rare = 8;
+                    SetRarityPoint();
+                }
+                if (rnd <= rare7 && !(protection == RarifyProtection.Scroll && this.Rare >= 7))
+                {
+                    if (mode != RarifyMode.Drop)
                     {
-                        Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("RARIFY_FAILED_ITEM_SAVED"), 11));
-                        Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("RARIFY_FAILED_ITEM_SAVED"), 0));
-                        ServerManager.Instance.Broadcast(Session.Character.GenerateEff(3004));
-                        //Session.Character.InventoryList.LoadByItemInstance<WearableInstance>(this.ItemInstanceId).IsFixed = true;
+                        Session.Character.NotiyRarifyResult(7);
+                    }
+
+                    this.Rare = 7;
+                    SetRarityPoint();
+                }
+                else if (rnd <= rare6 && !(protection == RarifyProtection.Scroll && this.Rare >= 6))
+                {
+                    if (mode != RarifyMode.Drop)
+                    {
+                        Session.Character.NotiyRarifyResult(6);
+                    }
+                    this.Rare = 6;
+                    SetRarityPoint();
+                }
+                else if (rnd <= rare5 && !(protection == RarifyProtection.Scroll && this.Rare >= 5))
+                {
+                    if (mode != RarifyMode.Drop)
+                    {
+                        Session.Character.NotiyRarifyResult(5);
+                    }
+                    this.Rare = 5;
+                    SetRarityPoint();
+                }
+                else if (rnd <= rare4 && !(protection == RarifyProtection.Scroll && this.Rare >= 4))
+                {
+                    if (mode != RarifyMode.Drop)
+                    {
+                        Session.Character.NotiyRarifyResult(4);
+                    }
+                    this.Rare = 4;
+                    SetRarityPoint();
+                }
+                else if (rnd <= rare3 && !(protection == RarifyProtection.Scroll && this.Rare >= 3))
+                {
+                    if (mode != RarifyMode.Drop)
+                    {
+                        Session.Character.NotiyRarifyResult(3);
+                    }
+                    this.Rare = 3;
+                    SetRarityPoint();
+                }
+                else if (rnd <= rare2 && !(protection == RarifyProtection.Scroll && this.Rare >= 2))
+                {
+                    if (mode != RarifyMode.Drop)
+                    {
+                        Session.Character.NotiyRarifyResult(2);
+                    }
+                    this.Rare = 2;
+                    SetRarityPoint();
+                }
+                else if (rnd <= rare1 && !(protection == RarifyProtection.Scroll && this.Rare >= 1))
+                {
+                    if (mode != RarifyMode.Drop)
+                    {
+                        Session.Character.NotiyRarifyResult(1);
+                    }
+                    this.Rare = 1;
+                    SetRarityPoint();
+                }
+                else if (rnd <= rare0 && !(protection == RarifyProtection.Scroll && this.Rare >= 0) && mode == RarifyMode.Drop)
+                {
+                    this.Rare = 0;
+                    SetRarityPoint();
+                }
+                else if (rnd <= raren1 && !(protection == RarifyProtection.Scroll && this.Rare >= -1) && mode == RarifyMode.Drop)
+                {
+                    this.Rare = -1;
+                    SetRarityPoint();
+                }
+                else if (rnd <= raren2 && !(protection == RarifyProtection.Scroll && this.Rare >= -2) && mode == RarifyMode.Drop)
+                {
+                    this.Rare = -2;
+                    SetRarityPoint();
+                }
+                else
+                {
+                    if (mode != RarifyMode.Drop)
+                    {
+                        if (protection == RarifyProtection.None)
+                        {
+                            Session.Character.DeleteItemByItemInstanceId(this.ItemInstanceId);
+                            Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("RARIFY_FAILED"), 11));
+                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("RARIFY_FAILED"), 0));
+                        }
+                        else
+                        {
+                            Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("RARIFY_FAILED_ITEM_SAVED"), 11));
+                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("RARIFY_FAILED_ITEM_SAVED"), 0));
+                            ServerManager.Instance.Broadcast(Session.Character.GenerateEff(3004));
+                            //Session.Character.InventoryList.LoadByItemInstance<WearableInstance>(this.ItemInstanceId).IsFixed = true;
+                        }
                     }
                 }
             }
