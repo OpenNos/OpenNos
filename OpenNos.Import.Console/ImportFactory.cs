@@ -94,7 +94,7 @@ namespace OpenNos.Import.Console
                 {
                     map = short.Parse(currentPacket[2]);
                     continue;
-                }
+                }//in 3 1174 10618 120 40 2 100 100 0 0 0 -1 1 0 -1 - 0 -1 0 0 0 0 0 0 0 0
                 if (currentPacket.Length > 7 && currentPacket[0] == "in" && currentPacket[1] == "2")
                 {
                     MapNpcDTO npctest = new MapNpcDTO();
@@ -848,21 +848,22 @@ namespace OpenNos.Import.Console
                     int.TryParse(currentPacket[4], out npc);
                     continue;
                 }
-                if (currentPacket.Length > 1 && currentPacket[0] == "m_list" && currentPacket[1] == "2")
+                if (currentPacket.Length > 1 && currentPacket[0] == "m_list" && (currentPacket[1] == "2" || currentPacket[1] == "4"))
                 {
                     for (int i = 2; i < currentPacket.Length - 1; i++)
                     {
-                        recipe = new RecipeDTO
+                        if (DAOFactory.RecipeDAO.LoadByNpc(npc).FirstOrDefault(s => s.MapNpcId == npc) != null)
                         {
-                            ItemVNum = short.Parse(currentPacket[i]),
-                            MapNpcId = npc
-                        };
-
-                        if (DAOFactory.RecipeDAO.LoadByNpc(npc).Any(s => s.ItemVNum == recipe.ItemVNum))
-                            continue;
-
-                        DAOFactory.RecipeDAO.Insert(recipe);
-                        count++;
+                            recipe = new RecipeDTO
+                            {
+                                ItemVNum = short.Parse(currentPacket[i]),
+                                MapNpcId = npc
+                            };
+                            if (DAOFactory.RecipeDAO.LoadByNpc(npc).Any(s => s.ItemVNum == recipe.ItemVNum))
+                                continue;
+                            DAOFactory.RecipeDAO.Insert(recipe);
+                            count++;
+                        }
                     }
                     continue;
                 }
@@ -894,25 +895,6 @@ namespace OpenNos.Import.Console
                         }
                     }
                     item = -1;
-                }
-                if (currentPacket.Length > 1 && currentPacket[0] == "m_list" && currentPacket[1] == "4")
-                {
-                    for (int i = 2; i < currentPacket.Length - 1; i++)
-                    {
-                        if (DAOFactory.RecipeItemDAO.LoadAll().FirstOrDefault(s => s.ItemVNum == short.Parse(currentPacket[i])) != null && DAOFactory.RecipeDAO.LoadByNpc(npc).FirstOrDefault(s => s.MapNpcId == npc) != null)
-                        {
-                            recipe = new RecipeDTO
-                            {
-                                ItemVNum = short.Parse(currentPacket[i]),
-                                MapNpcId = npc
-                            };
-                            if (DAOFactory.RecipeDAO.LoadByNpc(npc).Any(s => s.ItemVNum == recipe.ItemVNum))
-                                continue;
-                            DAOFactory.RecipeDAO.Insert(recipe);
-                            count++;
-                        }
-                    }
-                    continue;
                 }
             }
             Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("RECIPES_PARSED"), count));
@@ -1338,13 +1320,13 @@ namespace OpenNos.Import.Console
 
                             case "1":
                                 skill.ElementalDamage = short.Parse(currentLine[5]); // Divide by 4(?)
-                                /*
-                                skill.Unknown = short.Parse(currentLine[2]);
-                                skill.Unknown = short.Parse(currentLine[3]);
-                                skill.Unknown = short.Parse(currentLine[4]);
-                                skill.Unknown = short.Parse(currentLine[6]);
-                                skill.Unknown = short.Parse(currentLine[7]);
-                                */
+                                                                                     /*
+                                                                                     skill.Unknown = short.Parse(currentLine[2]);
+                                                                                     skill.Unknown = short.Parse(currentLine[3]);
+                                                                                     skill.Unknown = short.Parse(currentLine[4]);
+                                                                                     skill.Unknown = short.Parse(currentLine[6]);
+                                                                                     skill.Unknown = short.Parse(currentLine[7]);
+                                                                                     */
                                 break;
 
                             case "2":
