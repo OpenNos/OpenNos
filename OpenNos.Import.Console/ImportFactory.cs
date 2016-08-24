@@ -507,6 +507,17 @@ namespace OpenNos.Import.Console
                                 npc.NoAggresiveIcon = false;
                             }
                         }
+                        if (unknownData == (long)-2147481593 || unknownData == (long)-2147481599)
+                        {
+                            if (npc.Race == (byte)8 && (npc.RaceType == (byte)7 || npc.RaceType == (byte)5))
+                            {
+                                npc.IsMapObject = true;
+                            }
+                            else
+                            {
+                                npc.IsMapObject = false;
+                            }
+                        }
                     }
                     else if (currentLine.Length > 2 && currentLine[1] == "EFF")
                     {

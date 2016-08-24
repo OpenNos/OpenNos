@@ -55,6 +55,7 @@ namespace OpenNos.Data
         public byte Speed { get; set; }
         public sbyte WaterResistance { get; set; }
         public int XP { get; set; }
+        public bool IsMapObject { get; set; }
 
         #endregion
     }

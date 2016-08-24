@@ -648,10 +648,14 @@ namespace OpenNos.Handler
                 }
                 else
                 {
-                    // Npc Shop
+
+                    // Npc Shop , ignore if (IsMapObject)
                     MapNpc npc = ServerManager.GetMap(Session.Character.MapId).Npcs.FirstOrDefault(n => n.MapNpcId.Equals(Convert.ToInt16(packetsplit[3])));
-                    if (!string.IsNullOrEmpty(npc?.GetNpcDialog()))
+                    NpcMonster mapobject = ServerManager.GetNpc(npc.NpcVNum);
+                    if (!string.IsNullOrEmpty(npc?.GetNpcDialog()) && !mapobject.IsMapObject)
+                    {
                         Session.Client.SendPacket(npc.GetNpcDialog());
+                    }
                 }
             }
         }
