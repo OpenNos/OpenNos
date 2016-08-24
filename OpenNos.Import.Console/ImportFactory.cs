@@ -94,7 +94,7 @@ namespace OpenNos.Import.Console
                 {
                     map = short.Parse(currentPacket[2]);
                     continue;
-                }//in 3 1174 10618 120 40 2 100 100 0 0 0 -1 1 0 -1 - 0 -1 0 0 0 0 0 0 0 0
+                }
                 if (currentPacket.Length > 7 && currentPacket[0] == "in" && currentPacket[1] == "2")
                 {
                     MapNpcDTO npctest = new MapNpcDTO();
@@ -837,7 +837,7 @@ namespace OpenNos.Import.Console
         public void ImportRecipe()
         {
             int count = 0;
-            int npc = 0;
+            int mapnpcid = 0;
             short item = 0;
             RecipeDTO recipe;
 
@@ -845,21 +845,21 @@ namespace OpenNos.Import.Console
             {
                 if (currentPacket.Length > 4 && currentPacket[0] == "n_run")
                 {
-                    int.TryParse(currentPacket[4], out npc);
+                    int.TryParse(currentPacket[4], out mapnpcid);
                     continue;
                 }
                 if (currentPacket.Length > 1 && currentPacket[0] == "m_list" && (currentPacket[1] == "2" || currentPacket[1] == "4"))
                 {
                     for (int i = 2; i < currentPacket.Length - 1; i++)
                     {
-                        if (DAOFactory.RecipeDAO.LoadByNpc(npc).FirstOrDefault(s => s.MapNpcId == npc) != null)
+                        if (DAOFactory.MapNpcDAO.LoadById(mapnpcid) != null)
                         {
                             recipe = new RecipeDTO
                             {
                                 ItemVNum = short.Parse(currentPacket[i]),
-                                MapNpcId = npc
+                                MapNpcId = mapnpcid
                             };
-                            if (DAOFactory.RecipeDAO.LoadByNpc(npc).Any(s => s.ItemVNum == recipe.ItemVNum))
+                            if (DAOFactory.RecipeDAO.LoadByNpc(mapnpcid).Any(s => s.ItemVNum == recipe.ItemVNum))
                                 continue;
                             DAOFactory.RecipeDAO.Insert(recipe);
                             count++;
@@ -876,12 +876,12 @@ namespace OpenNos.Import.Console
                 {
                     for (int i = 3; i < currentPacket.Length - 1; i += 2)
                     {
-                        RecipeDTO rec = DAOFactory.RecipeDAO.LoadByNpc(npc).FirstOrDefault(s => s.ItemVNum == item);
+                        RecipeDTO rec = DAOFactory.RecipeDAO.LoadByNpc(mapnpcid).FirstOrDefault(s => s.ItemVNum == item);
                         if (rec != null)
                         {
                             rec.Amount = byte.Parse(currentPacket[2]);
                             DAOFactory.RecipeDAO.Update(rec);
-                            short recipeId = DAOFactory.RecipeDAO.LoadByNpc(npc).FirstOrDefault(s => s.ItemVNum == item).RecipeId;
+                            short recipeId = DAOFactory.RecipeDAO.LoadByNpc(mapnpcid).FirstOrDefault(s => s.ItemVNum == item).RecipeId;
 
                             RecipeItemDTO recipeitem = new RecipeItemDTO
                             {
