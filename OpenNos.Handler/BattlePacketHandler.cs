@@ -149,7 +149,8 @@ namespace OpenNos.Handler
                         {
                             Session.CurrentMap?.Broadcast($"ct 1 {Session.Character.CharacterId} 1 {Session.Character.CharacterId} {skill.CastAnimation} -1 {skill.SkillVNum}");
                             ski.Used = true;
-                            Session.Character.Mp -= skill.MpCost;
+                            if (!Session.Character.HasGodMode)
+                                Session.Character.Mp -= skill.MpCost;
                             Session.Client.SendPacket(Session.Character.GenerateStat());
                             ski.LastUse = DateTime.Now;
                             if (skill.CastEffect != 0)
@@ -187,7 +188,8 @@ namespace OpenNos.Handler
                                             damage = GenerateDamage(mmon.MapMonsterId, skill, ref hitmode);
                                             ski.Used = true;
                                             notcancel = true;
-                                            Session.Character.Mp -= skill.MpCost;
+                                            if (!Session.Character.HasGodMode)
+                                                Session.Character.Mp -= skill.MpCost;
                                             Session.Client.SendPacket(Session.Character.GenerateStat());
 
                                             ski.LastUse = DateTime.Now;
@@ -1086,7 +1088,8 @@ namespace OpenNos.Handler
                     {
                         Session.CurrentMap?.Broadcast($"ct_n 1 {Session.Character.CharacterId} 3 -1 {skill.CastAnimation} {skill.CastEffect} {skill.SkillVNum}");
                         ski.Used = true;
-                        Session.Character.Mp -= skill.MpCost;
+                        if (!Session.Character.HasGodMode)
+                            Session.Character.Mp -= skill.MpCost;
                         Session.Client.SendPacket(Session.Character.GenerateStat());
                         ski.LastUse = DateTime.Now;
                         await Task.Delay(skill.CastTime * 100);
