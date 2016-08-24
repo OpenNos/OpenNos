@@ -35,10 +35,11 @@ namespace OpenNos.DAL
         private static IMapDAO _mapDAO;
         private static IMapMonsterDAO _mapmonsterDAO;
         private static IMapNpcDAO _mapnpcDAO;
-        private static IMapTypeMapDAO _maptypemapDAO;
         private static IMapTypeDAO _maptypeDAO;
+        private static IMapTypeMapDAO _maptypemapDAO;
         private static INpcMonsterDAO _npcmonsterDAO;
         private static INpcMonsterSkillDAO _npcmonsterskillDAO;
+        private static IPenaltyLogDAO _penaltylogDAO;
         private static IPortalDAO _portalDAO;
         private static IQuicklistEntryDAO _quicklistDAO;
         private static IRecipeDAO _recipeDAO;
@@ -49,7 +50,7 @@ namespace OpenNos.DAL
         private static IShopSkillDAO _shopskillDAO;
         private static ISkillDAO _skillDAO;
         private static ITeleporterDAO _teleporterDAO;
-        private static IPenaltyLogDAO _penaltylogDAO;
+
         #endregion
 
         #region Instantiation
@@ -160,18 +161,6 @@ namespace OpenNos.DAL
                 return _generallogDAO;
             }
         }
-        public static IPenaltyLogDAO PenaltyLogDAO
-        {
-            get
-            {
-                if (_penaltylogDAO == null)
-                {
-                    _penaltylogDAO = new MySQL.PenaltyLogDAO();
-                }
-
-                return _penaltylogDAO;
-            }
-        }
 
         public static IInventoryDAO InventoryDAO
         {
@@ -237,18 +226,6 @@ namespace OpenNos.DAL
                 return _mapnpcDAO;
             }
         }
-        public static IMapTypeMapDAO MapTypeMapDAO
-        {
-            get
-            {
-                if (_maptypemapDAO == null)
-                {
-                    _maptypemapDAO = new MySQL.MapTypeMapDAO();
-                }
-
-                return _maptypemapDAO;
-            }
-        }
 
         public static IMapTypeDAO MapTypeDAO
         {
@@ -260,6 +237,19 @@ namespace OpenNos.DAL
                 }
 
                 return _maptypeDAO;
+            }
+        }
+
+        public static IMapTypeMapDAO MapTypeMapDAO
+        {
+            get
+            {
+                if (_maptypemapDAO == null)
+                {
+                    _maptypemapDAO = new MySQL.MapTypeMapDAO();
+                }
+
+                return _maptypemapDAO;
             }
         }
 
@@ -286,6 +276,19 @@ namespace OpenNos.DAL
                 }
 
                 return _npcmonsterskillDAO;
+            }
+        }
+
+        public static IPenaltyLogDAO PenaltyLogDAO
+        {
+            get
+            {
+                if (_penaltylogDAO == null)
+                {
+                    _penaltylogDAO = new MySQL.PenaltyLogDAO();
+                }
+
+                return _penaltylogDAO;
             }
         }
 

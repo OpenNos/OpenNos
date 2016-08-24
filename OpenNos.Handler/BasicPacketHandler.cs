@@ -1148,7 +1148,6 @@ namespace OpenNos.Handler
                     }
                     foreach (Group group in ServerManager.Instance.Groups)
                     {
-
                         if (group.Characters.Count == 3)
                         {
                             Session.Client.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("GROUP_FULL")));
@@ -1190,8 +1189,6 @@ namespace OpenNos.Handler
                     string p = GeneratePidx(Session.Character.CharacterId);
                     if (p != "")
                         Session.CurrentMap?.Broadcast(p);
-
-
                 }
                 else if (type == 4)
                 {
@@ -1203,7 +1200,6 @@ namespace OpenNos.Handler
         [Packet("walk")]
         public void Walk(string packet)
         {
-
             string[] packetsplit = packet.Split(' ');
             if (packetsplit.Length <= 5)
                 return;
@@ -1256,6 +1252,7 @@ namespace OpenNos.Handler
                 stri = "";
             return stri;
         }
+
         private async void HealthTask()
         {
             int x = 1;

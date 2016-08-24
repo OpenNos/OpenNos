@@ -37,7 +37,6 @@ namespace OpenNos.DAL.EF.MySQL
         public short? DistanceDefence { get; set; }
         public short? DistanceDefenceDodge { get; set; }
         public short? ElementRate { get; set; }
-        public short? MaxElementRate { get; set; }
         public byte? FireElement { get; set; }
         public sbyte? FireResistance { get; set; }
         public short? HitRate { get; set; }
@@ -47,6 +46,7 @@ namespace OpenNos.DAL.EF.MySQL
         public byte? LightElement { get; set; }
         public sbyte? LightResistance { get; set; }
         public short? MagicDefence { get; set; }
+        public short? MaxElementRate { get; set; }
         public short? MP { get; set; }
         public byte? WaterElement { get; set; }
         public sbyte? WaterResistance { get; set; }

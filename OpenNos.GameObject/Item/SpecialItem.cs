@@ -32,7 +32,7 @@ namespace OpenNos.GameObject
                     {
                         Item iteminfo = ServerManager.GetItem(Inv.ItemInstance.ItemVNum);
                         SpecialistInstance specialistInstance = Session.Character.EquipmentList.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, (byte)InventoryType.Equipment);
-                        specialistInstance.Design = (byte)iteminfo.EffectValue;// change item design in instance 
+                        specialistInstance.Design = (byte)iteminfo.EffectValue;// change item design in instance
                         Session.Character.MorphUpgrade2 = iteminfo.EffectValue;// change item design in session
                         Session.Client.SendPacket(Session.Character.GenerateCMode());
                         Session.Client.SendPacket(Session.Character.GenerateStat());
@@ -49,6 +49,7 @@ namespace OpenNos.GameObject
                     else
                         Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NO_SP"), 0));
                     break;
+
                 default:
                     //Item iteminfo = ServerManager.GetItem(Inv.ItemInstance.ItemVNum);
                     //if (iteminfo.Morph != 0 && iteminfo.Speed != 0)

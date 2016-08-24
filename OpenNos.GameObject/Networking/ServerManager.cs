@@ -38,10 +38,6 @@ namespace OpenNos.GameObject
         private static ConcurrentDictionary<Guid, Map> _maps = new ConcurrentDictionary<Guid, Map>();
         private static List<NpcMonster> _npcs = new List<NpcMonster>();
         private static List<Skill> _skills = new List<Skill>();
-        public static int XPRate { get; set; }
-        public static int DropRate { get; set; }
-        public static int GoldRate { get; set; }
-        public static int FairyXpRate { get; set; }
         private long lastGroupId;
 
         #endregion
@@ -67,8 +63,12 @@ namespace OpenNos.GameObject
 
         #region Properties
 
+        public static int DropRate { get; set; }
+        public static int FairyXpRate { get; set; }
+        public static int GoldRate { get; set; }
         public static List<MapMonster> Monsters { get; set; }
         public static EventHandler NotifyChildren { get; set; }
+        public static int XPRate { get; set; }
         public List<Group> Groups { get; set; }
         public static ServerManager Instance => _instance ?? (_instance = new ServerManager());
         public Task TaskShutdown { get; set; }
@@ -76,7 +76,6 @@ namespace OpenNos.GameObject
         #endregion
 
         #region Methods
-
 
         public static ConcurrentDictionary<Guid, Map> GetAllMap()
         {
@@ -438,7 +437,6 @@ namespace OpenNos.GameObject
                 {
                     session.Character.IsDancing = 0;
                     session.CurrentMap?.Broadcast("dance");
-
                 }
                 foreach (Group g in Groups)
                 {

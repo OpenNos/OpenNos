@@ -46,6 +46,7 @@ namespace OpenNos.DAL.EF.MySQL
         #endregion
 
         #region Methods
+
         public MapTypeDTO Insert(ref MapTypeDTO mapType)
         {
             using (var context = DataAccessHelper.CreateContext())
@@ -56,6 +57,7 @@ namespace OpenNos.DAL.EF.MySQL
                 return _mapper.Map<MapTypeDTO>(entity);
             }
         }
+
         public IEnumerable<MapTypeDTO> LoadAll()
         {
             using (var context = DataAccessHelper.CreateContext())

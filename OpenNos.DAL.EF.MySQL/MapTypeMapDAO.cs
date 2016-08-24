@@ -61,6 +61,7 @@ namespace OpenNos.DAL.EF.MySQL
                 context.SaveChanges();
             }
         }
+
         public IEnumerable<MapTypeMapDTO> LoadAll()
         {
             using (var context = DataAccessHelper.CreateContext())

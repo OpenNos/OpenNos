@@ -58,7 +58,6 @@ namespace OpenNos.Handler
             string charName;
             if (!byte.TryParse(packetsplit[2], out mode) || !long.TryParse(packetsplit[3], out charId)) return;
 
-
             if (mode == 2)
             {
                 bool otherInExchangeOrTrade = ServerManager.Instance.GetProperty<bool>(charId, "InExchangeOrTrade");
@@ -78,7 +77,6 @@ namespace OpenNos.Handler
                     };
                     Session.Character.ExchangeInfo = exc;
                     ServerManager.Instance.SetProperty(charId, "ExchangeInfo", new ExchangeInfo { CharId = Session.Character.CharacterId, Confirm = false });
-
 
                     Session.CurrentMap?.Broadcast(Session, $"exc_list 1 {Session.Character.CharacterId} -1", ReceiverType.OnlySomeone, "", charId);
                 }
@@ -181,7 +179,7 @@ namespace OpenNos.Handler
 
             if (inventory != null && inventory.Item != null)
             {
-                Session.Client.SendPacket(inventory.Item.EquipmentSlot != (byte)EquipmentType.Sp ? Session.Character.GenerateEInfo(inventory) : inventory.Item.SpType == 0 ? Session.Character.GeneratePslInfo(inventory as SpecialistInstance, 0) :  Session.Character.GenerateSlInfo(inventory as SpecialistInstance, 0));
+                Session.Client.SendPacket(inventory.Item.EquipmentSlot != (byte)EquipmentType.Sp ? Session.Character.GenerateEInfo(inventory) : inventory.Item.SpType == 0 ? Session.Character.GeneratePslInfo(inventory as SpecialistInstance, 0) : Session.Character.GenerateSlInfo(inventory as SpecialistInstance, 0));
             }
         }
 
@@ -200,7 +198,6 @@ namespace OpenNos.Handler
             {
                 if (!long.TryParse(packetsplit[3], out charId)) return;
 
-
                 otherBlocked = ServerManager.Instance.GetProperty<bool>(charId, "ExchangeBlocked");
                 Blocked = Session.Character.ExchangeBlocked;
 
@@ -213,7 +210,6 @@ namespace OpenNos.Handler
                 }
                 else
                 {
-
                     bool InExchangeOrTrade = Session.Character.InExchangeOrTrade, otherInExchangeOrTrade = ServerManager.Instance.GetProperty<bool>(charId, "InExchangeOrTrade");
                     if (InExchangeOrTrade || otherInExchangeOrTrade) Session.Client.SendPacket(Session.Character.GenerateModal($"refused {Language.Instance.GetMessageFromKey("ALREADY_EXCHANGE")}", 0));
                     else
@@ -224,7 +220,6 @@ namespace OpenNos.Handler
                         charName = (string)ServerManager.Instance.GetProperty<string>(charId, "Name");
                         Session.Client.SendPacket(Session.Character.GenerateModal($"{Language.Instance.GetMessageFromKey("YOU_ASK_FOR_EXCHANGE")} {charName}", 0));
                         Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateDialog($"#req_exc^2^{Session.Character.CharacterId} #req_exc^5^{Session.Character.CharacterId} {String.Format(Language.Instance.GetMessageFromKey("INCOMING_EXCHANGE"), Session.Character.Name)}"), ReceiverType.OnlySomeone, charName);
-
                     }
                 }
             }
@@ -572,6 +567,24 @@ namespace OpenNos.Handler
                 Session.CurrentMap?.Broadcast(Session.Character.GenerateEq());
                 Session.Client.SendPacket(Session.Character.GenerateEquipment());
                 Session.CurrentMap?.Broadcast(Session.Character.GeneratePairy());
+            }
+        }
+
+        [Packet("#sl")]
+        public void Sl(string packet)
+        {
+            Logger.Debug(packet, Session.SessionId);
+            string[] packetsplit = packet.Split(' ', '^');
+            byte mode;
+            if (!byte.TryParse(packetsplit[2], out mode)) return;
+            if (!Session.Character.UseSp)
+            {
+                double currentRunningSeconds = (DateTime.Now - Process.GetCurrentProcess().StartTime.AddSeconds(-50)).TotalSeconds;
+                double timeSpanSinceLastSpUsage = currentRunningSeconds - Session.Character.LastSp;
+                if (timeSpanSinceLastSpUsage >= Session.Character.SpCooldown)
+                {
+                    ChangeSP();
+                }
             }
         }
 
@@ -981,24 +994,6 @@ namespace OpenNos.Handler
                     {
                         Session.Client.SendPacket(Session.Character.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("SP_INLOADING"), Session.Character.SpCooldown - (int)Math.Round(timeSpanSinceLastSpUsage, 0)), 0));
                     }
-                }
-            }
-        }
-
-        [Packet("#sl")]
-        public void Sl(string packet)
-        {
-            Logger.Debug(packet, Session.SessionId);
-            string[] packetsplit = packet.Split(' ', '^');
-            byte mode;
-            if (!byte.TryParse(packetsplit[2], out mode)) return;
-            if (!Session.Character.UseSp)
-            {
-                double currentRunningSeconds = (DateTime.Now - Process.GetCurrentProcess().StartTime.AddSeconds(-50)).TotalSeconds;
-                double timeSpanSinceLastSpUsage = currentRunningSeconds - Session.Character.LastSp;
-                if (timeSpanSinceLastSpUsage >= Session.Character.SpCooldown)
-                {
-                    ChangeSP();
                 }
             }
         }

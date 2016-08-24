@@ -55,7 +55,7 @@ namespace OpenNos.Core
 
                 for (int i = 0; i < packet.Length; i++)
                 {
-                    if (packet[i] > 14)// (x - 15) ^ 195
+                    if (packet[i] > 14) // (x - 15) ^ 195
                     {
                         decryptedPacket += Convert.ToChar((packet[i] - 15) ^ 195);
                     }

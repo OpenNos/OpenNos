@@ -47,14 +47,15 @@ namespace OpenNos.Data
         public int MaxHP { get; set; }
         public int MaxMP { get; set; }
         public string Name { get; set; }
+        public bool NoAggresiveIcon { get; set; }
         public short NpcMonsterVNum { get; set; }
+        public byte Race { get; set; }
+        public byte RaceType { get; set; }
         public int RespawnTime { get; set; }
         public byte Speed { get; set; }
         public sbyte WaterResistance { get; set; }
         public int XP { get; set; }
-        public bool NoAggresiveIcon { get; set; }
-        public byte Race { get; set; }
-        public byte RaceType { get; set; }
+
         #endregion
     }
 }

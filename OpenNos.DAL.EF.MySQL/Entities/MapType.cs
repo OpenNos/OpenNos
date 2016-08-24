@@ -15,7 +15,6 @@
 namespace OpenNos.DAL.EF.MySQL
 {
     using System.Collections.Generic;
-    using System.ComponentModel.DataAnnotations.Schema;
 
     public class MapType
     {
@@ -31,11 +30,11 @@ namespace OpenNos.DAL.EF.MySQL
 
         #region Properties
 
-        public string MapTypeName { get; set; }
         public virtual ICollection<Drop> Drops { get; set; }
-        public short PotionDelay { get; set; }
         public short MapTypeId { get; set; }
         public virtual ICollection<MapTypeMap> MapTypeMap { get; set; }
+        public string MapTypeName { get; set; }
+        public short PotionDelay { get; set; }
 
         #endregion
     }

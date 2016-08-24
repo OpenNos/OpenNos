@@ -47,6 +47,7 @@ namespace OpenNos.DAL.EF.MySQL
         #endregion
 
         #region Methods
+
         public GeneralLogDTO Insert(GeneralLogDTO generallog)
         {
             using (var context = DataAccessHelper.CreateContext())
@@ -55,6 +56,17 @@ namespace OpenNos.DAL.EF.MySQL
                 context.GeneralLog.Add(entity);
                 context.SaveChanges();
                 return _mapper.Map<GeneralLogDTO>(generallog);
+            }
+        }
+
+        public IEnumerable<GeneralLogDTO> LoadByAccount(long accountId)
+        {
+            using (var context = DataAccessHelper.CreateContext())
+            {
+                foreach (GeneralLog GeneralLog in context.GeneralLog.Where(s => s.AccountId.Equals(accountId)))
+                {
+                    yield return _mapper.Map<GeneralLogDTO>(GeneralLog);
+                }
             }
         }
 
@@ -100,16 +112,6 @@ namespace OpenNos.DAL.EF.MySQL
             }
         }
 
-        public IEnumerable<GeneralLogDTO> LoadByAccount(long accountId)
-        {
-            using (var context = DataAccessHelper.CreateContext())
-            {
-                foreach (GeneralLog GeneralLog in context.GeneralLog.Where(s => s.AccountId.Equals(accountId)))
-                {
-                    yield return _mapper.Map<GeneralLogDTO>(GeneralLog);
-                }
-            }
-        }
         #endregion
     }
 }

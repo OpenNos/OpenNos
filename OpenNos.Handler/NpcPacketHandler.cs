@@ -293,7 +293,7 @@ namespace OpenNos.Handler
             if (packetsplit.Length > 2)
             {
                 short typePacket; short.TryParse(packetsplit[2], out typePacket);
-                if (Session.Character.InExchangeOrTrade && typePacket!=1)
+                if (Session.Character.InExchangeOrTrade && typePacket != 1)
                     return;
                 foreach (Portal por in Session.CurrentMap.Portals)
                 {
@@ -303,7 +303,7 @@ namespace OpenNos.Handler
                         return;
                     }
                 }
-               
+
                 if (typePacket == 2)
                 {
                     Session.Client.SendPacket("ishop");
@@ -391,7 +391,6 @@ namespace OpenNos.Handler
                         Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("SHOP_EMPTY"), 10));
                     }
                 }
-
                 else if (typePacket == 1)
                 {
                     KeyValuePair<long, MapShop> shop = Session.CurrentMap.UserShops.FirstOrDefault(mapshop => mapshop.Value.OwnerId.Equals(Session.Character.CharacterId));

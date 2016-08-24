@@ -41,10 +41,7 @@ namespace OpenNos.DAL.EF.MySQL
         public virtual ICollection<Character> Character { get; set; }
 
         public virtual ICollection<GeneralLog> GeneralLog { get; set; }
-        public virtual ICollection<PenaltyLog> PenaltyLog { get; set; }
-
         public DateTime LastCompliment { get; set; }
-
         public int LastSession { get; set; }
 
         [MaxLength(255)]
@@ -52,6 +49,8 @@ namespace OpenNos.DAL.EF.MySQL
 
         [MaxLength(255)]
         public string Password { get; set; }
+
+        public virtual ICollection<PenaltyLog> PenaltyLog { get; set; }
 
         #endregion
     }

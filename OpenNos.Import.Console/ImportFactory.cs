@@ -749,7 +749,7 @@ namespace OpenNos.Import.Console
             drops.Add(new DropDTO { ItemVNum = 2815, Amount = 1, MonsterVNum = null, DropChance = 450, MapTypeId = 7 }); //Only for angel camp need group act6.1 angel
             drops.Add(new DropDTO { ItemVNum = 2816, Amount = 1, MonsterVNum = null, DropChance = 450, MapTypeId = 7 });
             drops.Add(new DropDTO { ItemVNum = 2818, Amount = 1, MonsterVNum = null, DropChance = 900, MapTypeId = 7 });
-            drops.Add(new DropDTO { ItemVNum = 2819, Amount = 1, MonsterVNum = null, DropChance = 450, MapTypeId = 7 }); 
+            drops.Add(new DropDTO { ItemVNum = 2819, Amount = 1, MonsterVNum = null, DropChance = 450, MapTypeId = 7 });
             drops.Add(new DropDTO { ItemVNum = 5880, Amount = 1, MonsterVNum = null, DropChance = 500, MapTypeId = 7 });
             drops.Add(new DropDTO { ItemVNum = 5881, Amount = 1, MonsterVNum = null, DropChance = 450, MapTypeId = 7 });*/ //Only for demon camp need group act6.1 demon
 
@@ -871,7 +871,7 @@ namespace OpenNos.Import.Console
                     item = short.Parse(currentPacket[2]);
                     continue;
                 }
-                if (currentPacket.Length > 1 && currentPacket[0] == "m_list" && currentPacket[1] == "3")
+                if (currentPacket.Length > 1 && currentPacket[0] == "m_list" && (currentPacket[1] == "3" || currentPacket[1] == "5"))
                 {
                     for (int i = 3; i < currentPacket.Length - 1; i += 2)
                     {
@@ -895,8 +895,26 @@ namespace OpenNos.Import.Console
                     }
                     item = -1;
                 }
+                if (currentPacket.Length > 1 && currentPacket[0] == "m_list" && currentPacket[1] == "4")
+                {
+                    for (int i = 2; i < currentPacket.Length - 1; i++)
+                    {
+                        if (DAOFactory.RecipeItemDAO.LoadAll().FirstOrDefault(s => s.ItemVNum == short.Parse(currentPacket[i])) != null && DAOFactory.RecipeDAO.LoadByNpc(npc).FirstOrDefault(s => s.MapNpcId == npc) != null)
+                        {
+                            recipe = new RecipeDTO
+                            {
+                                ItemVNum = short.Parse(currentPacket[i]),
+                                MapNpcId = npc
+                            };
+                            if (DAOFactory.RecipeDAO.LoadByNpc(npc).Any(s => s.ItemVNum == recipe.ItemVNum))
+                                continue;
+                            DAOFactory.RecipeDAO.Insert(recipe);
+                            count++;
+                        }
+                    }
+                    continue;
+                }
             }
-
             Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("RECIPES_PARSED"), count));
         }
 

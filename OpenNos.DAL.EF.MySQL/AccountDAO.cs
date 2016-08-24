@@ -19,7 +19,6 @@ using OpenNos.DAL.EF.MySQL.Helpers;
 using OpenNos.DAL.Interface;
 using OpenNos.Data;
 using OpenNos.Data.Enums;
-using OpenNos.Domain;
 using System;
 using System.Linq;
 
@@ -184,7 +183,6 @@ namespace OpenNos.DAL.EF.MySQL
                 context.SaveChanges();
             }
         }
-
 
         private AccountDTO Insert(AccountDTO account, OpenNosContext context)
         {

@@ -50,6 +50,7 @@ namespace OpenNos.GameObject
 
         //STAT DATA
         private static byte[] speedData = null;
+
         private static double[] spxpData = null;
 
         //same for all class
@@ -198,8 +199,6 @@ namespace OpenNos.GameObject
             }
         }
 
-
-
         public static double[] XPData
         {
             get
@@ -215,6 +214,18 @@ namespace OpenNos.GameObject
         #endregion
 
         #region Methods
+
+        public static int LoadFairyXpData(int i)
+        {
+            if (i < 40)
+            {
+                return i * i + 50;
+            }
+            else
+            {
+                return i * i * 3 + 50;
+            }
+        }
 
         public static int MagicalDefence(byte @class, byte level)
         {
@@ -748,18 +759,6 @@ namespace OpenNos.GameObject
             for (int i = 20; i < spxpData.Length; i++)
             {
                 spxpData[i] = spxpData[i - 1] + 6 * (3 * i * (i + 1) + 1);
-            }
-        }
-
-        public static int LoadFairyXpData(int i)
-        {
-            if (i < 40)
-            {
-                return i * i + 50;
-            }
-            else
-            {
-                return i*i * 3 + 50;
             }
         }
 

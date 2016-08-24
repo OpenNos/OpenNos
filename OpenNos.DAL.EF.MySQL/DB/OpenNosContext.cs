@@ -41,7 +41,6 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public virtual DbSet<Combo> Combo { get; set; }
         public virtual DbSet<Drop> Drop { get; set; }
         public virtual DbSet<GeneralLog> GeneralLog { get; set; }
-        public virtual DbSet<PenaltyLog> PenaltyLog { get; set; }
         public virtual DbSet<Inventory> Inventory { get; set; }
         public virtual DbSet<Item> Item { get; set; }
         public virtual DbSet<ItemInstance> ItemInstance { get; set; }
@@ -52,6 +51,7 @@ namespace OpenNos.DAL.EF.MySQL.DB
         public virtual DbSet<MapTypeMap> MapTypeMap { get; set; }
         public virtual DbSet<NpcMonster> NpcMonster { get; set; }
         public virtual DbSet<NpcMonsterSkill> NpcMonsterSkill { get; set; }
+        public virtual DbSet<PenaltyLog> PenaltyLog { get; set; }
         public virtual DbSet<Portal> Portal { get; set; }
         public virtual DbSet<QuicklistEntry> QuicklistEntry { get; set; }
         public virtual DbSet<Recipe> Recipe { get; set; }

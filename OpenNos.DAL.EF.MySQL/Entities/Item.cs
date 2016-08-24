@@ -20,6 +20,8 @@ namespace OpenNos.DAL.EF.MySQL
 
     public class Item
     {
+        #region Instantiation
+
         public Item()
         {
             Drop = new HashSet<Drop>();
@@ -27,6 +29,10 @@ namespace OpenNos.DAL.EF.MySQL
             RecipeItem = new HashSet<RecipeItem>();
             ShopItem = new HashSet<ShopItem>();
         }
+
+        #endregion
+
+        #region Properties
 
         public byte BasicUpgrade { get; set; }
         public byte CellonLvl { get; set; }
@@ -106,5 +112,7 @@ namespace OpenNos.DAL.EF.MySQL
         public short WaitDelay { get; set; }
         public byte WaterElement { get; set; }
         public byte WaterResistance { get; set; }
+
+        #endregion
     }
 }

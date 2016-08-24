@@ -11,13 +11,15 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  */
+
 using System;
+
 namespace OpenNos.GameObject
 {
     public class PotionItem : Item
     {
-
         #region Methods
+
         public override void Use(ClientSession session, ref Inventory inv)
         {
             if ((DateTime.Now - session.Character.LastPotion).TotalMilliseconds < 750)

@@ -47,6 +47,7 @@ namespace OpenNos.GameObject
                         }
                     }
                     break;
+
                 case 11:
                     if (iteminfo != null)
                     {

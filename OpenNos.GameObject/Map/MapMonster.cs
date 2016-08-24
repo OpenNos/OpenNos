@@ -191,7 +191,6 @@ namespace OpenNos.GameObject
 
                 if (MapX == null || MapY == null || Hp <= 0 || invisible != null && (bool)invisible) { Target = -1; LifeTaskIsRunning = false; return; }
 
-
                 Random r = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
                 NpcMonsterSkill ski = monster.Skills.Where(s => !s.Used && (DateTime.Now - s.LastUse).TotalMilliseconds >= 100 * ServerManager.GetSkill(s.SkillVNum).Cooldown).OrderBy(rnd => r.Next()).FirstOrDefault();
                 Skill sk = null;

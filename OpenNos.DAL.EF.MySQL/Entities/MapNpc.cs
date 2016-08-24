@@ -38,12 +38,10 @@ namespace OpenNos.DAL.EF.MySQL
 
         public short EffectDelay { get; set; }
 
+        public bool IsDisabled { get; set; }
         public bool IsMoving { get; set; }
 
         public bool IsSitting { get; set; }
-
-        public bool IsDisabled { get; set; }
-
         public virtual Map Map { get; set; }
 
         public short MapId { get; set; }

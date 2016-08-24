@@ -206,15 +206,15 @@ namespace OpenNos.GameObject
             {
                 upmode = 5;
             }
-            else if(this.SpStoneUpgrade > 60)
+            else if (this.SpStoneUpgrade > 60)
             {
                 upmode = 4;
             }
-            else if(this.SpStoneUpgrade > 40)
+            else if (this.SpStoneUpgrade > 40)
             {
                 upmode = 3;
             }
-            else if(this.SpStoneUpgrade > 20)
+            else if (this.SpStoneUpgrade > 20)
             {
                 upmode = 2;
             }
@@ -406,14 +406,14 @@ namespace OpenNos.GameObject
             if (rnd <= upfail[this.Upgrade])
             {
                 if (protect == UpgradeProtection.Protected)
-                ServerManager.Instance.Broadcast(Session, Session.Character.GenerateEff(3004), ReceiverType.All);
+                    ServerManager.Instance.Broadcast(Session, Session.Character.GenerateEff(3004), ReceiverType.All);
                 Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADESP_FAILED"), 11));
                 Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADESP_FAILED"), 0));
             }
             else if (rnd <= upsuccess[this.Upgrade])
             {
                 if (protect == UpgradeProtection.Protected)
-                ServerManager.Instance.Broadcast(Session, Session.Character.GenerateEff(3004), ReceiverType.All);
+                    ServerManager.Instance.Broadcast(Session, Session.Character.GenerateEff(3004), ReceiverType.All);
                 ServerManager.Instance.Broadcast(Session, Session.Character.GenerateEff(3005), ReceiverType.All);
                 Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADESP_SUCCESS"), 12));
                 Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADESP_SUCCESS"), 0));
@@ -433,7 +433,6 @@ namespace OpenNos.GameObject
                     Session.Character.InventoryList.LoadByItemInstance<WearableInstance>(this.ItemInstanceId).Rare = (sbyte)-2;
                     Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADESP_DESTROYED"), 11));
                     Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADESP_DESTROYED"), 0));
-
                 }
             }
             Session.Character.Gold = Session.Character.Gold - goldprice[this.Upgrade];

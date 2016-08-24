@@ -106,7 +106,6 @@ namespace OpenNos.Handler
                         }
                     }
                 }
-
         }
 
         public void TargetHit(int castingId, int targetId)
@@ -235,7 +234,6 @@ namespace OpenNos.Handler
             }
             if (!notcancel)
                 Session.Client.SendPacket($"cancel 2 {targetId}");
-
         }
 
         [Packet("u_s")]

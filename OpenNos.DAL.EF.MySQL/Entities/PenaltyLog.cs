@@ -14,24 +14,29 @@
 
 namespace OpenNos.DAL.EF.MySQL
 {
-    using System;
     using Domain;
+    using System;
     using System.ComponentModel.DataAnnotations;
-    using System.ComponentModel.DataAnnotations.Schema;
 
     public class PenaltyLog
     {
         #region Properties
 
+        public virtual Account Account { get; set; }
+
+        public long AccountId { get; set; }
+
+        public DateTime DateEnd { get; set; }
+
+        public DateTime DateStart { get; set; }
+
+        public PenaltyType Penalty { get; set; }
+
         [Key]
         public int PenaltyLogId { get; set; }
-        public long AccountId{get;set;}
-        public DateTime DateEnd { get; set; }
-        public DateTime DateStart { get; set; }
+
         [MaxLength(255)]
         public string Reason { get; set; }
-        public PenaltyType Penalty { get; set; }
-        public virtual Account Account { get; set; }
 
         #endregion
     }

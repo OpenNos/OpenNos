@@ -105,6 +105,7 @@ namespace OpenNos.GameObject
 
         public Group Group { get; set; }
 
+        public bool HasGodMode { get; set; }
         public bool HasShopOpened { get; set; }
 
         public int HitCritical { get; set; }
@@ -125,30 +126,19 @@ namespace OpenNos.GameObject
 
         public bool Invisible { get { return _invisible; } set { _invisible = value; } }
 
-        public DateTime LastTransform { get; set; }
-
         public bool InvisibleGm { get; set; }
-
         public int IsDancing { get { return _isDancing; } set { _isDancing = value; } }
-
         public bool IsSitting { get { return _issitting; } set { _issitting = value; } }
-
         public bool IsVehicled { get; set; }
-
         public DateTime LastDefence { get; set; }
-
         public DateTime LastLogin { get; set; }
-
         public short LastNRunId { get; set; }
-
         public double LastPortal { get { return _lastPortal; } set { _lastPortal = value; } }
-
+        public DateTime LastPotion { get; set; }
         public int LastPulse { get { return _lastPulse; } set { _lastPulse = value; } }
-
         public double LastSp { get; set; }
-
         public byte LastSpeed { get; set; }
-
+        public DateTime LastTransform { get; set; }
         public int LightResistance { get; set; }
 
         public int MagicalDefence { get; set; }
@@ -196,80 +186,11 @@ namespace OpenNos.GameObject
         public byte Speed { get { return _speed; } set { if (value > 59) { _speed = 59; } else { _speed = value; } } }
 
         public bool UseSp { get; set; }
-
-        public bool HasGodMode { get; set; }
-
         public int WaterResistance { get; set; }
-        public DateTime LastPotion { get; set; }
 
         #endregion
 
         #region Methods
-        public void LearnSPSkill()
-        {
-            SpecialistInstance specialist = EquipmentList.LoadBySlotAndType<SpecialistInstance>((short)EquipmentType.Sp, (byte)InventoryType.Equipment);
-            byte SkillSpCount = (byte)SkillsSp.Count;
-            SkillsSp = new List<CharacterSkill>();
-            foreach (Skill ski in ServerManager.GetAllSkill())
-            {
-                if (ski.Class == Morph + 31 && specialist.SpLevel >= ski.LevelMinimum)
-                    SkillsSp.Add(new CharacterSkill() { SkillVNum = ski.SkillVNum, CharacterId = CharacterId });
-            }
-            if (SkillsSp.Count != SkillSpCount)
-            {
-                Session.Client.SendPacket(GenerateMsg(Language.Instance.GetMessageFromKey("SKILL_LEARNED"), 0));
-                Session.Client.SendPacket(GenerateSki());
-                string[] quicklistpackets = GenerateQuicklist();
-                foreach (string quicklist in quicklistpackets)
-                    Session.Client.SendPacket(quicklist);
-            }
-        }
-
-        public bool IsMuted()
-        {
-            return Session.Account.PenaltyLogs.Any(s => s.Penalty == PenaltyType.Muted && s.DateEnd > DateTime.Now);
-        }
-
-        public void LearnAdventurerSkill()
-        {
-            if (Class == 0)
-            {
-                byte NewSkill = 0;
-                for (int i = 200; i <= 210; i++)
-                {
-                    if (i == 209)
-                        i++;
-
-                    Skill skinfo = ServerManager.GetSkill((short)i);
-                    if (skinfo.Class == 0 && JobLevel >= skinfo.LevelMinimum)
-                    {
-                        byte NewSkillVNum = (byte)i;
-                        for (int ii = Skills.Count - 1; ii >= 0; ii--)
-                        {
-                            Skill myskinfo = ServerManager.GetSkill(Skills[ii].SkillVNum);
-                            if (skinfo.SkillVNum == myskinfo.SkillVNum)
-                            {
-                                NewSkillVNum = 0;
-                                break;
-                            }
-                        }
-                        if (NewSkillVNum > 0)
-                        {
-                            NewSkill = 1;
-                            Skills.Add(new CharacterSkill() { SkillVNum = NewSkillVNum, CharacterId = CharacterId });
-                        }
-                    }
-                }
-                if (NewSkill > 0)
-                {
-                    Session.Client.SendPacket(GenerateMsg(Language.Instance.GetMessageFromKey("SKILL_LEARNED"), 0));
-                    Session.Client.SendPacket(GenerateSki());
-                    string[] quicklistpackets = GenerateQuicklist();
-                    foreach (string quicklist in quicklistpackets)
-                        Session.Client.SendPacket(quicklist);
-                }
-            }
-        }
 
         public void ChangeClass(byte characterClass)
         {
@@ -712,7 +633,6 @@ namespace OpenNos.GameObject
             Item item = ServerManager.GetItem(vnum);
             switch (type)
             {
-
                 case (byte)InventoryType.Wear:
                     return $"ivn 0 {slot}.{vnum}.{rare}.{(item != null ? (item.IsColored ? color : upgrade) : upgrade)}.{upgrade2}";
 
@@ -800,6 +720,13 @@ namespace OpenNos.GameObject
         public List<string> GeneratePlayerShopOnMap()
         {
             return ServerManager.GetMap(MapId).UserShops.Select(shop => $"pflag 1 {shop.Value.OwnerId} {shop.Key + 1}").ToList();
+        }
+
+        public string GeneratePslInfo(SpecialistInstance inventoryItem, int type)
+        {
+            Item iteminfo = ServerManager.GetItem(inventoryItem.ItemVNum);
+            // 1235.3 1237.4 1239.5 <= skills SkillVNum.Grade
+            return $"pslinfo {iteminfo.VNum} {iteminfo.Element} {iteminfo.ElementRate} {iteminfo.LevelJobMinimum} {iteminfo.Speed} {iteminfo.FireResistance} {iteminfo.WaterResistance} {iteminfo.LightResistance} {iteminfo.DarkResistance} 0.0 0.0 0.0";
         }
 
         public string[] GenerateQuicklist()
@@ -920,13 +847,6 @@ namespace OpenNos.GameObject
             //10 9 8 '0 0 0 0'<- bonusdamage bonusarmor bonuselement bonushpmp its after upgrade and 3 first values are not important
             skill = skill.TrimEnd('.');
             return $"slinfo {type} {inventoryItem.ItemVNum} {iteminfo.Morph} {inventoryItem.SpLevel} {iteminfo.LevelJobMinimum} {iteminfo.ReputationMinimum} 0 0 0 0 0 0 0 {iteminfo.SpType} {iteminfo.FireResistance} {iteminfo.WaterResistance} {iteminfo.LightResistance} {iteminfo.DarkResistance} {inventoryItem.XP} {ServersData.SpXPData[inventoryItem.SpLevel - 1]} {skill} {inventoryItem.ItemInstanceId} {freepoint} {slHit} {slDefence} {slElement} {slHp} {inventoryItem.Upgrade} 0 0 {spdestroyed} 0 0 0 0 {inventoryItem.SpStoneUpgrade} {inventoryItem.SpDamage} {inventoryItem.SpDefence} {inventoryItem.SpElement} {inventoryItem.SpHP} {inventoryItem.SpFire} {inventoryItem.SpWater} {inventoryItem.SpLight} {inventoryItem.SpDark}";
-        }
-
-        public string GeneratePslInfo(SpecialistInstance inventoryItem, int type)
-        {
-            Item iteminfo = ServerManager.GetItem(inventoryItem.ItemVNum);
-            // 1235.3 1237.4 1239.5 <= skills SkillVNum.Grade
-            return $"pslinfo {iteminfo.VNum} {iteminfo.Element} {iteminfo.ElementRate} {iteminfo.LevelJobMinimum} {iteminfo.Speed} {iteminfo.FireResistance} {iteminfo.WaterResistance} {iteminfo.LightResistance} {iteminfo.DarkResistance} 0.0 0.0 0.0";
         }
 
         public string GenerateSpk(object message, int v)
@@ -1221,13 +1141,26 @@ namespace OpenNos.GameObject
             return $"sc {type} {weaponUpgrade} {MinHit} {MaxHit} {HitRate} {HitCriticalRate} {HitCritical} {type2} {secondaryUpgrade} {MinDistance} {MaxDistance} {DistanceRate} {DistanceCriticalRate} {DistanceCritical} {armorUpgrade} {Defence} {DefenceRate} {DistanceDefence} {DistanceDefenceRate} {MagicalDefence} {FireResistance} {WaterResistance} {LightResistance} {DarkResistance}";
         }
 
+        public string GenerateStatInfo()
+        {
+            return $"st 1 {CharacterId} {Level} {HeroLevel} {(int)(Hp / (float)HPLoad() * 100)} {(int)(Mp / (float)MPLoad() * 100)} {Hp} {Mp}";
+        }
+
+        public string GenerateTit()
+        {
+            return $"tit {Language.Instance.GetMessageFromKey(Class == (byte)ClassType.Adventurer ? ClassType.Adventurer.ToString().ToUpper() : Class == (byte)ClassType.Swordman ? ClassType.Swordman.ToString().ToUpper() : Class == (byte)ClassType.Archer ? ClassType.Archer.ToString().ToUpper() : ClassType.Magician.ToString().ToUpper())} {Name}";
+        }
+
+        public string GenerateTp()
+        {
+            return $"tp 1 {CharacterId} {MapX} {MapY} 0";
+        }
+
         public void GenerateXp(NpcMonster monsterinfo)
         {
             int partySize = 1;
             Group grp = ServerManager.Instance.Groups.FirstOrDefault(g => g.IsMemberOfGroup(Session.Character.CharacterId));
             if (grp != null) partySize = grp.Characters.Count;
-
-
 
             if (Session.Character.Level < monsterinfo.Level && Session.Character.Dignity < 100 && Session.Character.Level > 20)
             {
@@ -1296,16 +1229,13 @@ namespace OpenNos.GameObject
                     fairy.ElementRate++;
                     if ((fairy.ElementRate + fairy.Item.ElementRate) == fairy.Item.MaxElementRate)
                     {
-
                         fairy.XP = 0;
                         Session.Client.SendPacket(Session.Character.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("FAIRYMAX"), fairy.Item.Name), 10));
                     }
                     else
                         Session.Client.SendPacket(Session.Character.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("FAIRY_LEVELUP"), fairy.Item.Name), 10));
                     Session.Client.SendPacket(Session.Character.GeneratePairy());
-
                 }
-
             }
 
             t = Session.Character.JobXPLoad();
@@ -1354,22 +1284,6 @@ namespace OpenNos.GameObject
                 Session.CurrentMap?.Broadcast(Session.Character.GenerateEff(198));
             }
             Session.Client.SendPacket(Session.Character.GenerateLev());
-        }
-
-
-        public string GenerateStatInfo()
-        {
-            return $"st 1 {CharacterId} {Level} {HeroLevel} {(int)(Hp / (float)HPLoad() * 100)} {(int)(Mp / (float)MPLoad() * 100)} {Hp} {Mp}";
-        }
-
-        public string GenerateTit()
-        {
-            return $"tit {Language.Instance.GetMessageFromKey(Class == (byte)ClassType.Adventurer ? ClassType.Adventurer.ToString().ToUpper() : Class == (byte)ClassType.Swordman ? ClassType.Swordman.ToString().ToUpper() : Class == (byte)ClassType.Archer ? ClassType.Archer.ToString().ToUpper() : ClassType.Magician.ToString().ToUpper())} {Name}";
-        }
-
-        public string GenerateTp()
-        {
-            return $"tp 1 {CharacterId} {MapX} {MapY} 0";
         }
 
         public int GetCP()
@@ -1507,11 +1421,77 @@ namespace OpenNos.GameObject
             return (int)((ServersData.HPData[Class, Level] + hp) * multiplicator);
         }
 
+        public bool IsMuted()
+        {
+            return Session.Account.PenaltyLogs.Any(s => s.Penalty == PenaltyType.Muted && s.DateEnd > DateTime.Now);
+        }
+
         public double JobXPLoad()
         {
             if (Class == (byte)ClassType.Adventurer)
                 return ServersData.FirstJobXPData[JobLevel - 1];
             return ServersData.SecondJobXPData[JobLevel - 1];
+        }
+
+        public void LearnAdventurerSkill()
+        {
+            if (Class == 0)
+            {
+                byte NewSkill = 0;
+                for (int i = 200; i <= 210; i++)
+                {
+                    if (i == 209)
+                        i++;
+
+                    Skill skinfo = ServerManager.GetSkill((short)i);
+                    if (skinfo.Class == 0 && JobLevel >= skinfo.LevelMinimum)
+                    {
+                        byte NewSkillVNum = (byte)i;
+                        for (int ii = Skills.Count - 1; ii >= 0; ii--)
+                        {
+                            Skill myskinfo = ServerManager.GetSkill(Skills[ii].SkillVNum);
+                            if (skinfo.SkillVNum == myskinfo.SkillVNum)
+                            {
+                                NewSkillVNum = 0;
+                                break;
+                            }
+                        }
+                        if (NewSkillVNum > 0)
+                        {
+                            NewSkill = 1;
+                            Skills.Add(new CharacterSkill() { SkillVNum = NewSkillVNum, CharacterId = CharacterId });
+                        }
+                    }
+                }
+                if (NewSkill > 0)
+                {
+                    Session.Client.SendPacket(GenerateMsg(Language.Instance.GetMessageFromKey("SKILL_LEARNED"), 0));
+                    Session.Client.SendPacket(GenerateSki());
+                    string[] quicklistpackets = GenerateQuicklist();
+                    foreach (string quicklist in quicklistpackets)
+                        Session.Client.SendPacket(quicklist);
+                }
+            }
+        }
+
+        public void LearnSPSkill()
+        {
+            SpecialistInstance specialist = EquipmentList.LoadBySlotAndType<SpecialistInstance>((short)EquipmentType.Sp, (byte)InventoryType.Equipment);
+            byte SkillSpCount = (byte)SkillsSp.Count;
+            SkillsSp = new List<CharacterSkill>();
+            foreach (Skill ski in ServerManager.GetAllSkill())
+            {
+                if (ski.Class == Morph + 31 && specialist.SpLevel >= ski.LevelMinimum)
+                    SkillsSp.Add(new CharacterSkill() { SkillVNum = ski.SkillVNum, CharacterId = CharacterId });
+            }
+            if (SkillsSp.Count != SkillSpCount)
+            {
+                Session.Client.SendPacket(GenerateMsg(Language.Instance.GetMessageFromKey("SKILL_LEARNED"), 0));
+                Session.Client.SendPacket(GenerateSki());
+                string[] quicklistpackets = GenerateQuicklist();
+                foreach (string quicklist in quicklistpackets)
+                    Session.Client.SendPacket(quicklist);
+            }
         }
 
         public IEnumerable<ItemInstance> LoadBySlotAllowed(short itemVNum, int amount)
@@ -1641,13 +1621,11 @@ namespace OpenNos.GameObject
                 {
                     if (!DAOFactory.GeneralLogDAO.LoadByAccount(Session.Account.AccountId).Any(s => s.LogId == general.LogId))
                         DAOFactory.GeneralLogDAO.Insert(Mapper.DynamicMap<GeneralLogDTO>(general));
-
                 }
                 foreach (PenaltyLog penalty in Session.Account.PenaltyLogs)
                 {
                     if (!DAOFactory.PenaltyLogDAO.LoadByAccount(Session.Account.AccountId).Any(s => s.PenaltyLogId == penalty.PenaltyLogId))
                         DAOFactory.PenaltyLogDAO.Insert(Mapper.DynamicMap<PenaltyLogDTO>(penalty));
-
                 }
             }
             catch (Exception e)

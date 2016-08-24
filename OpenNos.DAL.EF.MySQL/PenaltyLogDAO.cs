@@ -102,6 +102,7 @@ namespace OpenNos.DAL.EF.MySQL
                 return _mapper.Map<PenaltyLogDTO>(context.PenaltyLog.FirstOrDefault(s => s.PenaltyLogId.Equals(penaltylogId)));
             }
         }
+
         #endregion
     }
 }

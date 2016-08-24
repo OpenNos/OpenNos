@@ -100,7 +100,6 @@ namespace OpenNos.Import.Console
                     factory.ImportShopItems();
                     factory.ImportShopSkills();
                     factory.ImportRecipe();
-
                 }
                 else
                 {

@@ -99,6 +99,7 @@ namespace OpenNos.DAL.EF.MySQL
         [MaxLength(255)]
         public string Name { get; set; }
 
+        public bool NoAggresiveIcon { get; set; }
         public virtual ICollection<NpcMonsterSkill> NpcMonsterSkill { get; set; }
 
         [Key]
@@ -109,7 +110,6 @@ namespace OpenNos.DAL.EF.MySQL
         public byte Speed { get; set; }
         public sbyte WaterResistance { get; set; }
         public int XP { get; set; }
-        public bool NoAggresiveIcon { get; set; }
 
         #endregion
     }
