@@ -820,15 +820,12 @@
     <value>Ton niveau de combat a augmenté.</value>
   </data>
   <data name="BN7" xml:space="preserve">
-    <value />
-    <comment>Vide </comment>
+    <value>Lisez^le^règlement,^vous^éviterez^des^embêtements^!</value>
   </data>
   <data name="BN8" xml:space="preserve">
-    <value />
-    <comment>Vide</comment>
+    <value>Ne^donnez^JAMAIS^vos^identifiants^de^connexion^!</value>
   </data>
   <data name="BN9" xml:space="preserve">
-    <value />
-    <comment>Vide</comment>
+    <value>OpenNos^version^1.0.4^!</value>
   </data>
 </root>
