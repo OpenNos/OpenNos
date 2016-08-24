@@ -507,7 +507,7 @@ namespace OpenNos.Import.Console
                                 npc.NoAggresiveIcon = false;
                             }
                         }
-                        if (unknownData == (long)-2147481593 || unknownData == (long)-2147481599)
+                        if (unknownData == (long)-2147481593 || unknownData == (long)-2147481599 || unknownData == (long)-1610610681)
                         {
                             if (npc.Race == (byte)8 && (npc.RaceType == (byte)7 || npc.RaceType == (byte)5))
                             {
