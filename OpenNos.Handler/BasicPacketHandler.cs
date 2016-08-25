@@ -1204,17 +1204,19 @@ namespace OpenNos.Handler
             if (packetsplit.Length <= 5)
                 return;
 
-            if (Session.Character.Speed >= Convert.ToByte(packetsplit[5]) && !(Map.GetDistance(new MapCell() { X = Session.Character.MapX, Y = Session.Character.MapY }, new MapCell() { X = Convert.ToInt16(packetsplit[2]), Y = Convert.ToInt16(packetsplit[3]) }) > 30))
+            float prediction = 0.0f;
+            int distance = Map.GetDistance(new MapCell() { X = Session.Character.MapX, Y = Session.Character.MapY }, new MapCell() { X = Convert.ToInt16(packetsplit[2]), Y = Convert.ToInt16(packetsplit[3]) }); // get distance to target point
+            prediction = ((float)distance / (float)Session.Character.Speed) * 2.0f; // predicting walking time. 1 second per 5 cells on speed 10.
+            DateTime NextMove = DateTime.Now.AddSeconds(prediction); // add predicted time of walking to current time
+
+            if (Session.Character.Speed >= Convert.ToByte(packetsplit[5]) &&
+                !(distance > 30) &&
+                NextMove > Session.Character.LastMove.AddSeconds(prediction + 0.02d)) // if lastmove + predicted walking time and 2/100 double is smaller than NextMove send packets
             {
                 Session.Character.MapX = Convert.ToInt16(packetsplit[2]);
                 Session.Character.MapY = Convert.ToInt16(packetsplit[3]);
                 Session.CurrentMap?.Broadcast(Session.Character.GenerateMv());
                 Session.Client.SendPacket(Session.Character.GenerateCond());
-            }
-            else
-            {
-                Session.Client.Disconnect();
-                //Session.Client.SendPacket(Session.Character.GenerateCond());
             }
         }
 

@@ -106,6 +106,7 @@ namespace OpenNos.GameObject
         public Group Group { get; set; }
 
         public bool HasGodMode { get; set; }
+        public DateTime LastMove { get; set; }
         public bool HasShopOpened { get; set; }
 
         public int HitCritical { get; set; }
@@ -362,6 +363,7 @@ namespace OpenNos.GameObject
 
         public string GenerateCond()
         {
+            Session.Character.LastMove = DateTime.Now;
             return $"cond 1 {CharacterId} 0 0 {Speed}";
         }
 

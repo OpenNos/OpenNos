@@ -215,6 +215,7 @@ namespace OpenNos.GameObject
                         }
 
                         LastMove = DateTime.Now;
+
                         // deal 0 damage to GM with GodMode
                         if (targetSession == null)
                             damage = 0;
