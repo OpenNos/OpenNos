@@ -755,8 +755,6 @@ namespace OpenNos.Import.Console
             drops.Add(new DropDTO { ItemVNum = 2805, Amount = 1, MonsterVNum = null, DropChance = 700, MapTypeId = 7 });
             drops.Add(new DropDTO { ItemVNum = 2806, Amount = 1, MonsterVNum = null, DropChance = 1000, MapTypeId = 7 });
             drops.Add(new DropDTO { ItemVNum = 2807, Amount = 1, MonsterVNum = null, DropChance = 500, MapTypeId = 7 });
-            drops.Add(new DropDTO { ItemVNum = 2811, Amount = 1, MonsterVNum = null, DropChance = 1200, MapTypeId = 7 });
-            drops.Add(new DropDTO { ItemVNum = 2812, Amount = 1, MonsterVNum = null, DropChance = 700, MapTypeId = 7 });
             drops.Add(new DropDTO { ItemVNum = 2815, Amount = 1, MonsterVNum = null, DropChance = 450, MapTypeId = 7 }); //Only for angel camp need group act6.1 angel
             drops.Add(new DropDTO { ItemVNum = 2816, Amount = 1, MonsterVNum = null, DropChance = 450, MapTypeId = 7 });
             drops.Add(new DropDTO { ItemVNum = 2818, Amount = 1, MonsterVNum = null, DropChance = 900, MapTypeId = 7 });
