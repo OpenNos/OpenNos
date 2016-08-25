@@ -1210,13 +1210,31 @@ namespace OpenNos.Handler
             DateTime NextMove = DateTime.Now.AddSeconds(prediction); // add predicted time of walking to current time
 
             if (Session.Character.Speed >= Convert.ToByte(packetsplit[5]) &&
-                !(distance > 30) &&
-                NextMove > Session.Character.LastMove.AddSeconds(prediction + 0.02d)) // if lastmove + predicted walking time and 2/100 double is smaller than NextMove send packets
+                !(distance > 60) &&
+                NextMove > Session.Character.LastMove.AddSeconds(prediction + 0.02f)) // if lastmove + predicted walking time and 2/100 double is smaller than NextMove send packets
             {
                 Session.Character.MapX = Convert.ToInt16(packetsplit[2]);
                 Session.Character.MapY = Convert.ToInt16(packetsplit[3]);
                 Session.CurrentMap?.Broadcast(Session.Character.GenerateMv());
                 Session.Client.SendPacket(Session.Character.GenerateCond());
+                Session.Character.LastMove = DateTime.Now;
+            }
+            else
+            {
+                if (Session.Character.Authority == AuthorityType.Admin)
+                { 
+                    // leave for debug purposes, remove when finished, send info about wrong speed to admin
+                    //if (NextMove <= Session.Character.LastMove.AddSeconds(prediction + 0.02f))
+                    //    Session.Client.SendPacket(Session.Character.GenerateSay($"Detected time: NextMove: {(NextMove - DateTime.Now).Milliseconds}ms LastMove: {(Session.Character.LastMove.AddSeconds(prediction + 0.02f) - DateTime.Now).Milliseconds}ms", 10));
+                    //if (distance > 60)
+                    //    Session.Client.SendPacket(Session.Character.GenerateSay($"Detected distance: {distance}", 10));
+                }
+                else
+                { 
+                    // kick user
+                    if (NextMove <= Session.Character.LastMove.AddSeconds(prediction + 0.02f))
+                        Session.Client.Disconnect();
+                }
             }
         }
 

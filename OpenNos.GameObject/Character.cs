@@ -363,7 +363,6 @@ namespace OpenNos.GameObject
 
         public string GenerateCond()
         {
-            Session.Character.LastMove = DateTime.Now;
             return $"cond 1 {CharacterId} 0 0 {Speed}";
         }
 
