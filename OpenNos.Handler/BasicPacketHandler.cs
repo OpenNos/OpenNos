@@ -376,12 +376,12 @@ namespace OpenNos.Handler
                         NpcMonster mapobject = ServerManager.GetNpc(npc.NpcVNum);
                         if (mapobject.Drops.Any())
                         {
-                            if (Session.Character.InventoryList.CountItem(mapobject.VNumRequired) < mapobject.AmountRequired)
+                            if (mapobject.VNumRequired > 10 && Session.Character.InventoryList.CountItem(mapobject.VNumRequired) < mapobject.AmountRequired)
                             {
                                 Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_ITEM"), 0));
                                 return;
                             }
-                        } 
+                        }
                         Session.Character.InventoryList.AddNewItemToInventory(mapobject.Drops.FirstOrDefault(s => s.MonsterVNum == npc.NpcVNum).ItemVNum);
                         Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("RECEIVED_ITEM"), 11));
                         Session.Character.GenerateStartupInventory();

@@ -652,15 +652,15 @@ namespace OpenNos.Handler
                     MapNpc npc = ServerManager.GetMap(Session.Character.MapId).Npcs.FirstOrDefault(n => n.MapNpcId.Equals(Convert.ToInt16(packetsplit[3])));
                     NpcMonster mapobject = ServerManager.GetNpc(npc.NpcVNum);
 
-                    if (mapobject.Drops.Any()) // mining mapobjects
+                    if (mapobject.Drops.Any() && mapobject.Race == 8 && (mapobject.RaceType == 7 || mapobject.RaceType == 5)) // mining mapobjects
                     {
-                        Session.Client.SendPacket(Session.Character.GenerateDelay(5000,4, $"#guri^400^{npc.MapNpcId}"));
+                        Session.Client.SendPacket(Session.Character.GenerateDelay(5000, 4, $"#guri^400^{npc.MapNpcId}"));
                     }
-                    else if (mapobject.VNumRequired > 0) // mapobject with required item to use
+                    else if (mapobject.VNumRequired > 0 && mapobject.Race == 8 && (mapobject.RaceType == 7 || mapobject.RaceType == 5)) // mapobject with required item to use
                     {
                         Session.Client.SendPacket(Session.Character.GenerateDelay(6000, 4, $"#guri^400^{npc.MapNpcId}"));
                     }
-                    else if (mapobject.MaxHP == 0 && !mapobject.Drops.Any()) // mapobject teleporter
+                    else if (mapobject.MaxHP == 0 && !mapobject.Drops.Any() && mapobject.Race == 8 && (mapobject.RaceType == 7 || mapobject.RaceType == 5)) // mapobject teleporter
                     {
                         // #guri^710^X^Y^MapNpcId
                         Session.Client.SendPacket(Session.Character.GenerateDelay(5000, 1, $"#guri^710^162^85^{npc.MapNpcId}"));
