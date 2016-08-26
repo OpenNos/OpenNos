@@ -360,6 +360,45 @@ namespace OpenNos.Handler
                 Session.CurrentMap?.Broadcast($"guri 2 1 {Session.Character.CharacterId}");
         }
 
+        [Packet("#guri")]
+        public void GuriAnswer(string packet)
+        {
+            Logger.Debug(packet, Session.SessionId);
+            string[] packetsplit = packet.Split(' ', '^');
+            if (packetsplit.Length > 3 && packetsplit.Length < 5)
+            {
+                MapNpc npc = ServerManager.GetMap(Session.Character.MapId).Npcs.FirstOrDefault(n => n.MapNpcId.Equals(Convert.ToInt16(packetsplit[3])));
+                NpcMonster mapobject = ServerManager.GetNpc(npc.NpcVNum);
+                if (mapobject.Drops.Any())
+                {
+                    if (mapobject.VNumRequired > 10)
+                    {
+                        if (Session.Character.InventoryList.CountItem(mapobject.VNumRequired) < mapobject.AmountRequired)
+                        {
+                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_ITEM"), 0));
+                        }
+                        else
+                        {
+                            Session.Character.InventoryList.RemoveItemAmount(mapobject.VNumRequired, mapobject.AmountRequired);
+                            //teleport
+                        }
+                    }
+                    else
+                    {
+                        Session.Character.InventoryList.AddNewItemToInventory(mapobject.Drops.FirstOrDefault(s => s.MonsterVNum == npc.NpcVNum).ItemVNum);
+                        Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("RECEIVED_ITEM"), 11));
+                        Session.Character.GenerateStartupInventory();
+                    }
+
+                }
+            }
+            if (packetsplit.Length > 5)
+            {
+                MapNpc npc = ServerManager.GetMap(Session.Character.MapId).Npcs.FirstOrDefault(n => n.MapNpcId.Equals(Convert.ToInt16(packetsplit[5])));
+                NpcMonster mapobject = ServerManager.GetNpc(npc.NpcVNum);
+                //teleport free
+            }
+        }
         [Packet("hero")]
         public void Hero(string packet)
         {
@@ -1206,12 +1245,11 @@ namespace OpenNos.Handler
 
             float prediction = 0.0f;
             int distance = Map.GetDistance(new MapCell() { X = Session.Character.MapX, Y = Session.Character.MapY }, new MapCell() { X = Convert.ToInt16(packetsplit[2]), Y = Convert.ToInt16(packetsplit[3]) }); // get distance to target point
-            prediction = ((float)distance / (float)Session.Character.Speed) * 2.0f; // predicting walking time. 1 second per 5 cells on speed 10.
-            DateTime NextMove = DateTime.Now.AddSeconds(prediction); // add predicted time of walking to current time
-
+            prediction = ((float)distance / (float)Session.Character.Speed) * 2.0f;
+            DateTime NextMove = DateTime.Now.AddSeconds(prediction);
             if (Session.Character.Speed >= Convert.ToByte(packetsplit[5]) &&
                 !(distance > 60) &&
-                NextMove > Session.Character.LastMove.AddSeconds(prediction + 0.02f)) // if lastmove + predicted walking time and 2/100 double is smaller than NextMove send packets
+                NextMove > Session.Character.LastMove.AddSeconds(prediction + 0.020d))
             {
                 Session.Character.MapX = Convert.ToInt16(packetsplit[2]);
                 Session.Character.MapY = Convert.ToInt16(packetsplit[3]);
@@ -1222,17 +1260,16 @@ namespace OpenNos.Handler
             else
             {
                 if (Session.Character.Authority == AuthorityType.Admin)
-                { 
-                    // leave for debug purposes, remove when finished, send info about wrong speed to admin
-                    //if (NextMove <= Session.Character.LastMove.AddSeconds(prediction + 0.02f))
-                    //    Session.Client.SendPacket(Session.Character.GenerateSay($"Detected time: NextMove: {(NextMove - DateTime.Now).Milliseconds}ms LastMove: {(Session.Character.LastMove.AddSeconds(prediction + 0.02f) - DateTime.Now).Milliseconds}ms", 10));
-                    //if (distance > 60)
-                    //    Session.Client.SendPacket(Session.Character.GenerateSay($"Detected distance: {distance}", 10));
+                {
+                    if (NextMove <= Session.Character.LastMove.AddSeconds(prediction + 0.020d))
+                        Session.Client.SendPacket(Session.Character.GenerateSay($"Detected time: NextMove: {(NextMove - DateTime.Now).Milliseconds}ms LastMove: {(Session.Character.LastMove.AddSeconds(prediction + 0.020d) - DateTime.Now).Milliseconds}ms", 10));
+                    if (distance > 60)
+                        Session.Client.SendPacket(Session.Character.GenerateSay($"Detected distance: {distance}", 10));
                 }
                 else
-                { 
+                {
                     // kick user
-                    if (NextMove <= Session.Character.LastMove.AddSeconds(prediction + 0.02f))
+                    if (NextMove <= Session.Character.LastMove.AddSeconds(prediction + 0.020d))
                         Session.Client.Disconnect();
                 }
             }

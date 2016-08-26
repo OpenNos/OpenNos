@@ -444,7 +444,6 @@ namespace OpenNos.Import.Console
             {
                 while ((line = npcIdStream.ReadLine()) != null)
                 {
-                    long unknownData = 0;
                     string[] currentLine = line.Split('\t');
 
                     if (currentLine.Length > 2 && currentLine[1] == "VNUM")
@@ -492,11 +491,10 @@ namespace OpenNos.Import.Console
                         npc.Speed = Convert.ToByte(currentLine[5]);
                         npc.RespawnTime = Convert.ToInt32(currentLine[6]);
                     }
-                    //setting
                     else if (currentLine.Length > 7 && currentLine[1] == "ETC")
                     {
-                        unknownData = Convert.ToInt64(currentLine[2]);
-                        if (unknownData == (long)-2147483616 || unknownData == (long)-2147483647 || unknownData == (long)-2147483646)
+                        npc.unknownData = Convert.ToInt64(currentLine[2]);
+                        if (npc.unknownData == (long)-2147483616 || npc.unknownData == (long)-2147483647 || npc.unknownData == (long)-2147483646)
                         {
                             if (npc.Race == (byte)8 && npc.RaceType == (byte)0)
                             {
@@ -507,16 +505,21 @@ namespace OpenNos.Import.Console
                                 npc.NoAggresiveIcon = false;
                             }
                         }
-                        if (unknownData == (long)-2147481593 || unknownData == (long)-2147481599 || unknownData == (long)-1610610681)
+                    }
+                    else if (currentLine.Length > 7 && currentLine[1] == "SETTING")
+                    {
+                        if (currentLine[4] != "0" && (npc.unknownData == (long)-2147481593 || npc.unknownData == (long)-2147481599 || npc.unknownData == (long)-1610610681))
                         {
-                            if (npc.Race == (byte)8 && (npc.RaceType == (byte)7 || npc.RaceType == (byte)5))
-                            {
-                                npc.IsMapObject = true;
-                            }
-                            else
-                            {
-                                npc.IsMapObject = false;
-                            }
+                            npc.VNumRequired = Convert.ToInt16(currentLine[4]);
+                            npc.AmountRequired = 1;
+                        }
+                    }
+                    else if (currentLine.Length > 5 && currentLine[1] == "PETINFO")
+                    {
+                        if (npc.VNumRequired == (short)0 && (npc.unknownData == (long)-2147481593 || npc.unknownData == (long)-2147481599 || npc.unknownData == (long)-1610610681))
+                        {
+                            npc.VNumRequired = Convert.ToInt16(currentLine[2]);
+                            npc.AmountRequired = Convert.ToByte(currentLine[3]);
                         }
                     }
                     else if (currentLine.Length > 2 && currentLine[1] == "EFF")
@@ -532,11 +535,11 @@ namespace OpenNos.Import.Console
                     }
                     else if (currentLine.Length > 4 && currentLine[1] == "WINFO")
                     {
-                        npc.AttackUpgrade = Convert.ToByte(unknownData == 1 ? currentLine[2] : currentLine[4]);
+                        npc.AttackUpgrade = Convert.ToByte(npc.unknownData == 1 ? currentLine[2] : currentLine[4]);
                     }
                     else if (currentLine.Length > 3 && currentLine[1] == "AINFO")
                     {
-                        npc.DefenceUpgrade = Convert.ToByte(unknownData == 1 ? currentLine[2] : currentLine[3]);
+                        npc.DefenceUpgrade = Convert.ToByte(npc.unknownData == 1 ? currentLine[2] : currentLine[3]);
                     }
                     else if (currentLine.Length > 1 && currentLine[1] == "SKILL")
                     {
@@ -1566,19 +1569,19 @@ namespace OpenNos.Import.Console
                                 item.WaitDelay = 3000;
                                 break;
 
-                       /*  case 5226: //Invisible locomotion, only 5 seconds with booster
-                                item.Morph = 817;
-                                item.Speed = 20;
-                                item.WaitDelay = 3000;
-                                break;
+                            /*  case 5226: //Invisible locomotion, only 5 seconds with booster
+                                     item.Morph = 817;
+                                     item.Speed = 20;
+                                     item.WaitDelay = 3000;
+                                     break;
 
-                            case 5228: //Invisible locoomotion, only 5 seconds with booster
-                                item.Morph = 819;
-                                item.Speed = 20;
-                                item.WaitDelay = 3000;
-                                break;
+                                 case 5228: //Invisible locoomotion, only 5 seconds with booster
+                                     item.Morph = 819;
+                                     item.Speed = 20;
+                                     item.WaitDelay = 3000;
+                                     break;
 
-                                */
+                                     */
 
                             case 5238:
                                 item.Morph = 817;

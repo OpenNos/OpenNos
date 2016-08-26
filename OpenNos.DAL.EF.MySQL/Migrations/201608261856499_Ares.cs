@@ -3,7 +3,7 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class Artemis : DbMigration
+    public partial class Ares : DbMigration
     {
         public override void Up()
         {
@@ -205,7 +205,8 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
                         Speed = c.Byte(nullable: false),
                         WaterResistance = c.SByte(nullable: false),
                         XP = c.Int(nullable: false),
-                        IsMapObject = c.Boolean(nullable: false),
+                        VNumRequired = c.Short(nullable: false),
+                        AmountRequired = c.Byte(nullable: false),
                     })
                 .PrimaryKey(t => t.NpcMonsterVNum);
             
