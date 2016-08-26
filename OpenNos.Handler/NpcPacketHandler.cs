@@ -649,10 +649,24 @@ namespace OpenNos.Handler
                 else
                 {
 
-                    // Npc Shop , ignore if (IsMapObject)
+                    // Npc Shop , ignore if has drop
                     MapNpc npc = ServerManager.GetMap(Session.Character.MapId).Npcs.FirstOrDefault(n => n.MapNpcId.Equals(Convert.ToInt16(packetsplit[3])));
                     NpcMonster mapobject = ServerManager.GetNpc(npc.NpcVNum);
-                    if (!string.IsNullOrEmpty(npc?.GetNpcDialog()) && !mapobject.IsMapObject)
+
+                    if (mapobject.Drops.Any()) // mining mapobjects
+                    {
+                        Session.Client.SendPacket($"delay 5000 4 #guri^400^{npc.MapNpcId}");
+                    }
+                    else if (mapobject.VNumRequired != 0 && mapobject.VNumRequired > 0) // mapobject with required item to use
+                    {
+                        Session.Client.SendPacket($"delay 6000 4 #guri^400^{npc.MapNpcId}");
+                    }
+                    else if (mapobject.MaxHP == 0 && !mapobject.Drops.Any()) // mapobject only use
+                    {
+                        // #guri^710^X^Y^MapNpcId 
+                        Session.Client.SendPacket($"delay 5000 1 #guri^710^162^85^{npc.MapNpcId}");
+                    }
+                    else if (!string.IsNullOrEmpty(npc?.GetNpcDialog()))
                     {
                         Session.Client.SendPacket(npc.GetNpcDialog());
                     }

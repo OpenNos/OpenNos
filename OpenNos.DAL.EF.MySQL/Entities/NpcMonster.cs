@@ -110,7 +110,8 @@ namespace OpenNos.DAL.EF.MySQL
         public byte Speed { get; set; }
         public sbyte WaterResistance { get; set; }
         public int XP { get; set; }
-        public bool IsMapObject { get; set; }
+        public short VNumRequired { get; set; }
+        public byte AmountRequired { get; set; }
 
         #endregion
     }
