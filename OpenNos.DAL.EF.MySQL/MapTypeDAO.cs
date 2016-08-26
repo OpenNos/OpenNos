@@ -69,14 +69,11 @@ namespace OpenNos.DAL.EF.MySQL
             }
         }
 
-        public IEnumerable<MapTypeDTO> LoadById(short maptypeId)
+        public MapTypeDTO LoadById(short maptypeId)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                foreach (MapType MapType in context.MapType.Where(c => c.MapTypeId.Equals(maptypeId)))
-                {
-                    yield return _mapper.Map<MapTypeDTO>(MapType);
-                }
+                return _mapper.Map<MapTypeDTO>(context.MapType.FirstOrDefault(s => s.MapTypeId.Equals(maptypeId)));
             }
         }
 

@@ -1017,7 +1017,7 @@ namespace OpenNos.Handler
                 mmon.Death = DateTime.Now;
                 Random rnd;
                 int i = 1;
-                List<DropDTO> droplist = monsterinfo.Drops.ToList();
+                List<DropDTO> droplist = monsterinfo.Drops.Where(s=> Session.Character.Map.MapTypes.FirstOrDefault(m=>m.MapTypeId == s.MapTypeId) != null || s.MapTypeId == null).ToList();
                 droplist.AddRange(ServerManager.Drops);
                 int RateDrop = ServerManager.DropRate;
 
