@@ -374,7 +374,7 @@ namespace OpenNos.Handler
                     {
                         MapNpc npc = ServerManager.GetMap(Session.Character.MapId).Npcs.FirstOrDefault(n => n.MapNpcId.Equals(Convert.ToInt16(packetsplit[3])));
                         NpcMonster mapobject = ServerManager.GetNpc(npc.NpcVNum);
-                        if (mapobject.Drops.Any(s=>s.MonsterVNum ))
+                        if (mapobject.Drops.Any(s=>s.MonsterVNum !=null))
                         {
                             if (mapobject.VNumRequired > 10 && Session.Character.InventoryList.CountItem(mapobject.VNumRequired) < mapobject.AmountRequired)
                             {
@@ -386,7 +386,12 @@ namespace OpenNos.Handler
                         Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("RECEIVED_ITEM"), 11));
                         Session.Character.GenerateStartupInventory();
                     }
-                    break;
+                    else
+                    {
+                        //Need to add failed try and time needed if you spam (You want to wait it show you a msg with the time needed like SP time needed)
+                        Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("TRY_FAILED"), 11));
+                    }
+                        break;
                 case "710":
                     if (packetsplit.Length > 5)
                     {
