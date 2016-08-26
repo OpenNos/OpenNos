@@ -45,7 +45,7 @@ namespace OpenNos.GameObject
             IEnumerable<PortalDTO> portalsDTO = DAOFactory.PortalDAO.LoadByMap(MapId);
             _portals = new List<Portal>();
             DroppedList = new Dictionary<long, MapItem>();
-            
+            MapTypes = new List<MapType>();
             foreach (MapTypeMapDTO maptypemap in DAOFactory.MapTypeMapDAO.LoadByMapId(mapId))
             {
                
