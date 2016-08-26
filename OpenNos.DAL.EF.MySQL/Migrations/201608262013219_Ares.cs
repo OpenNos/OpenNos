@@ -171,6 +171,7 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
                 c => new
                     {
                         NpcMonsterVNum = c.Short(nullable: false),
+                        AmountRequired = c.Byte(nullable: false),
                         AttackClass = c.Byte(nullable: false),
                         AttackUpgrade = c.Byte(nullable: false),
                         BasicArea = c.Byte(nullable: false),
@@ -201,12 +202,13 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
                         MaxMP = c.Int(nullable: false),
                         Name = c.String(maxLength: 255, storeType: "nvarchar"),
                         NoAggresiveIcon = c.Boolean(nullable: false),
+                        Race = c.Byte(nullable: false),
+                        RaceType = c.Byte(nullable: false),
                         RespawnTime = c.Int(nullable: false),
                         Speed = c.Byte(nullable: false),
+                        VNumRequired = c.Short(nullable: false),
                         WaterResistance = c.SByte(nullable: false),
                         XP = c.Int(nullable: false),
-                        VNumRequired = c.Short(nullable: false),
-                        AmountRequired = c.Byte(nullable: false),
                     })
                 .PrimaryKey(t => t.NpcMonsterVNum);
             

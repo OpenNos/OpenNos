@@ -34,6 +34,7 @@ namespace OpenNos.DAL.EF.MySQL
 
         #region Properties
 
+        public byte AmountRequired { get; set; }
         public byte AttackClass { get; set; }
 
         public byte AttackUpgrade { get; set; }
@@ -106,12 +107,13 @@ namespace OpenNos.DAL.EF.MySQL
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public short NpcMonsterVNum { get; set; }
 
+        public byte Race { get; set; }
+        public byte RaceType { get; set; }
         public int RespawnTime { get; set; }
         public byte Speed { get; set; }
+        public short VNumRequired { get; set; }
         public sbyte WaterResistance { get; set; }
         public int XP { get; set; }
-        public short VNumRequired { get; set; }
-        public byte AmountRequired { get; set; }
 
         #endregion
     }

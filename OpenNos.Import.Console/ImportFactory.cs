@@ -428,7 +428,7 @@ namespace OpenNos.Import.Console
             string line;
             bool itemAreaBegin = false;
             int counter = 0;
-
+            long unknownData = 0;
             using (StreamReader npcIdLangStream = new StreamReader(fileNpcLang, Encoding.GetEncoding(1252)))
             {
                 while ((line = npcIdLangStream.ReadLine()) != null)
@@ -439,7 +439,6 @@ namespace OpenNos.Import.Console
                 }
                 npcIdLangStream.Close();
             }
-
             using (StreamReader npcIdStream = new StreamReader(fileNpcId, Encoding.GetEncoding(1252)))
             {
                 while ((line = npcIdStream.ReadLine()) != null)
@@ -451,6 +450,7 @@ namespace OpenNos.Import.Console
                         npc = new NpcMonsterDTO();
                         npc.NpcMonsterVNum = Convert.ToInt16(currentLine[2]);
                         itemAreaBegin = true;
+                        unknownData = 0;
                     }
                     else if (currentLine.Length > 2 && currentLine[1] == "NAME")
                     {
@@ -493,8 +493,8 @@ namespace OpenNos.Import.Console
                     }
                     else if (currentLine.Length > 7 && currentLine[1] == "ETC")
                     {
-                        npc.unknownData = Convert.ToInt64(currentLine[2]);
-                        if (npc.unknownData == (long)-2147483616 || npc.unknownData == (long)-2147483647 || npc.unknownData == (long)-2147483646)
+                        unknownData = Convert.ToInt64(currentLine[2]);
+                        if (unknownData == (long)-2147483616 || unknownData == (long)-2147483647 || unknownData == (long)-2147483646)
                         {
                             if (npc.Race == (byte)8 && npc.RaceType == (byte)0)
                             {
@@ -506,9 +506,9 @@ namespace OpenNos.Import.Console
                             }
                         }
                     }
-                    else if (currentLine.Length > 7 && currentLine[1] == "SETTING")
+                    else if (currentLine.Length > 7 && currentLine[1] == "SETTING") 
                     {
-                        if (currentLine[4] != "0" && (npc.unknownData == (long)-2147481593 || npc.unknownData == (long)-2147481599 || npc.unknownData == (long)-1610610681))
+                        if (currentLine[4] != "0" && (unknownData == (long)-2147481593 || unknownData == (long)-2147481599 || unknownData == (long)-1610610681))
                         {
                             npc.VNumRequired = Convert.ToInt16(currentLine[4]);
                             npc.AmountRequired = 1;
@@ -516,7 +516,7 @@ namespace OpenNos.Import.Console
                     }
                     else if (currentLine.Length > 5 && currentLine[1] == "PETINFO")
                     {
-                        if (npc.VNumRequired == (short)0 && (npc.unknownData == (long)-2147481593 || npc.unknownData == (long)-2147481599 || npc.unknownData == (long)-1610610681))
+                        if (npc.VNumRequired == (short)0 && (unknownData == (long)-2147481593 || unknownData == (long)-2147481599 ||unknownData == (long)-1610610681))
                         {
                             npc.VNumRequired = Convert.ToInt16(currentLine[2]);
                             npc.AmountRequired = Convert.ToByte(currentLine[3]);
@@ -535,11 +535,11 @@ namespace OpenNos.Import.Console
                     }
                     else if (currentLine.Length > 4 && currentLine[1] == "WINFO")
                     {
-                        npc.AttackUpgrade = Convert.ToByte(npc.unknownData == 1 ? currentLine[2] : currentLine[4]);
+                        npc.AttackUpgrade = Convert.ToByte(unknownData == 1 ? currentLine[2] : currentLine[4]);
                     }
                     else if (currentLine.Length > 3 && currentLine[1] == "AINFO")
                     {
-                        npc.DefenceUpgrade = Convert.ToByte(npc.unknownData == 1 ? currentLine[2] : currentLine[3]);
+                        npc.DefenceUpgrade = Convert.ToByte(unknownData == 1 ? currentLine[2] : currentLine[3]);
                     }
                     else if (currentLine.Length > 1 && currentLine[1] == "SKILL")
                     {
@@ -600,7 +600,7 @@ namespace OpenNos.Import.Console
             //Act1 (need some information)
 
             //Act2
-            /*drops.Add(new DropDTO { ItemVNum = 1004, Amount = 1, MonsterVNum = null, DropChance = 1000, MapTypeId = 2 });//Disable, in wait of the correction.
+            drops.Add(new DropDTO { ItemVNum = 1004, Amount = 1, MonsterVNum = null, DropChance = 1000, MapTypeId = 2 });//Disable, in wait of the correction.
             drops.Add(new DropDTO { ItemVNum = 1007, Amount = 1, MonsterVNum = null, DropChance = 1000, MapTypeId = 2 });
             drops.Add(new DropDTO { ItemVNum = 1028, Amount = 1, MonsterVNum = null, DropChance = 400, MapTypeId = 2 });
             drops.Add(new DropDTO { ItemVNum = 1086, Amount = 1, MonsterVNum = null, DropChance = 200, MapTypeId = 2 });
@@ -763,7 +763,7 @@ namespace OpenNos.Import.Console
             drops.Add(new DropDTO { ItemVNum = 2818, Amount = 1, MonsterVNum = null, DropChance = 900, MapTypeId = 7 });
             drops.Add(new DropDTO { ItemVNum = 2819, Amount = 1, MonsterVNum = null, DropChance = 450, MapTypeId = 7 });
             drops.Add(new DropDTO { ItemVNum = 5880, Amount = 1, MonsterVNum = null, DropChance = 500, MapTypeId = 7 });
-            drops.Add(new DropDTO { ItemVNum = 5881, Amount = 1, MonsterVNum = null, DropChance = 450, MapTypeId = 7 });*/ //Only for demon camp need group act6.1 demon
+            drops.Add(new DropDTO { ItemVNum = 5881, Amount = 1, MonsterVNum = null, DropChance = 450, MapTypeId = 7 }); //Only for demon camp need group act6.1 demon
 
             //Act6.2 (need some information))
 

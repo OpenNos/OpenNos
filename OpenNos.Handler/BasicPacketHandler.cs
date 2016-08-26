@@ -365,39 +365,38 @@ namespace OpenNos.Handler
         {
             Logger.Debug(packet, Session.SessionId);
             string[] packetsplit = packet.Split(' ', '^');
-            if (packetsplit.Length > 3 && packetsplit.Length < 5)
+
+            switch (packetsplit[2])
             {
-                MapNpc npc = ServerManager.GetMap(Session.Character.MapId).Npcs.FirstOrDefault(n => n.MapNpcId.Equals(Convert.ToInt16(packetsplit[3])));
-                NpcMonster mapobject = ServerManager.GetNpc(npc.NpcVNum);
-                if (mapobject.Drops.Any())
-                {
-                    if (mapobject.VNumRequired > 10)
+
+                case "400":
+                    if (packetsplit.Length > 3)
                     {
-                        if (Session.Character.InventoryList.CountItem(mapobject.VNumRequired) < mapobject.AmountRequired)
+                        MapNpc npc = ServerManager.GetMap(Session.Character.MapId).Npcs.FirstOrDefault(n => n.MapNpcId.Equals(Convert.ToInt16(packetsplit[3])));
+                        NpcMonster mapobject = ServerManager.GetNpc(npc.NpcVNum);
+                        if (mapobject.Drops.Any())
                         {
-                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_ITEM"), 0));
-                        }
-                        else
-                        {
-                            Session.Character.InventoryList.RemoveItemAmount(mapobject.VNumRequired, mapobject.AmountRequired);
-                            //teleport
-                        }
-                    }
-                    else
-                    {
+                            if (Session.Character.InventoryList.CountItem(mapobject.VNumRequired) < mapobject.AmountRequired)
+                            {
+                                Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_ITEM"), 0));
+                                return;
+                            }
+                        } 
                         Session.Character.InventoryList.AddNewItemToInventory(mapobject.Drops.FirstOrDefault(s => s.MonsterVNum == npc.NpcVNum).ItemVNum);
                         Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("RECEIVED_ITEM"), 11));
                         Session.Character.GenerateStartupInventory();
                     }
+                    break;
+                case "710":
+                    if (packetsplit.Length > 5)
+                    {
+                        MapNpc npc = ServerManager.GetMap(Session.Character.MapId).Npcs.FirstOrDefault(n => n.MapNpcId.Equals(Convert.ToInt16(packetsplit[5])));
+                        NpcMonster mapobject = ServerManager.GetNpc(npc.NpcVNum);
+                        //teleport free
+                    }
+                    break;
+            }
 
-                }
-            }
-            if (packetsplit.Length > 5)
-            {
-                MapNpc npc = ServerManager.GetMap(Session.Character.MapId).Npcs.FirstOrDefault(n => n.MapNpcId.Equals(Convert.ToInt16(packetsplit[5])));
-                NpcMonster mapobject = ServerManager.GetNpc(npc.NpcVNum);
-                //teleport free
-            }
         }
         [Packet("hero")]
         public void Hero(string packet)

@@ -730,6 +730,11 @@ namespace OpenNos.GameObject
             return $"pslinfo {iteminfo.VNum} {iteminfo.Element} {iteminfo.ElementRate} {iteminfo.LevelJobMinimum} {iteminfo.Speed} {iteminfo.FireResistance} {iteminfo.WaterResistance} {iteminfo.LightResistance} {iteminfo.DarkResistance} 0.0 0.0 0.0";
         }
 
+        public string GenerateDelay(int delay, int type, string argument)
+        {
+          return $"delay {delay} {type} {argument}";
+        }
+
         public string[] GenerateQuicklist()
         {
             string[] pktQs = new[] { "qslot 0", "qslot 1", "qslot 2" };
