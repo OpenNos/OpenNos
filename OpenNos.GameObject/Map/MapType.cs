@@ -12,20 +12,21 @@
  * GNU General Public License for more details.
  */
 
+using OpenNos.DAL;
 using OpenNos.Data;
+using System;
 using System.Collections.Generic;
 
-namespace OpenNos.DAL.Interface
+namespace OpenNos.GameObject
 {
-    public interface IMapTypeDAO
+    public class MapType : MapTypeDTO
     {
-        #region Methods
+        #region Instantiation
 
-        MapTypeDTO Insert(ref MapTypeDTO mapType);
+        public MapType()
+        {
 
-        IEnumerable<MapTypeDTO> LoadAll();
-
-        MapTypeDTO LoadById(short maptypeId);
+        }
 
         #endregion
     }

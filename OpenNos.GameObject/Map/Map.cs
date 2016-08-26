@@ -45,8 +45,20 @@ namespace OpenNos.GameObject
             IEnumerable<PortalDTO> portalsDTO = DAOFactory.PortalDAO.LoadByMap(MapId);
             _portals = new List<Portal>();
             DroppedList = new Dictionary<long, MapItem>();
-
-            UserShops = new Dictionary<long, MapShop>();
+            
+            foreach (MapTypeMapDTO maptypemap in DAOFactory.MapTypeMapDAO.LoadByMapId(mapId))
+            {
+               
+                MapTypeDTO MT = DAOFactory.MapTypeDAO.LoadById(maptypemap.MapTypeId);
+                MapType maptype = new MapType()
+                {
+                    MapTypeId = MT.MapTypeId,
+                    MapTypeName = MT.MapTypeName,
+                    PotionDelay = MT.PotionDelay
+                };
+                MapTypes.Add(maptype);
+            }
+                UserShops = new Dictionary<long, MapShop>();
             foreach (PortalDTO portal in portalsDTO)
             {
                 _portals.Add(new GameObject.Portal()
@@ -124,6 +136,10 @@ namespace OpenNos.GameObject
             {
                 return _monsters;
             }
+        }
+        public List<MapType> MapTypes
+        {
+            get; set;
         }
 
         public int Music { get; set; }
