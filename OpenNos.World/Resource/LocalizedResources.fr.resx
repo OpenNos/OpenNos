@@ -828,4 +828,8 @@
   <data name="BN9" xml:space="preserve">
     <value>OpenNos^version^1.0.4^!</value>
   </data>
+  <data name="RECEIVED_ITEM" xml:space="preserve">
+    <value>Tu as reçu un nouvel objet.</value>
+    <comment>Nous avons besoin du nom de l'objet pour optimiser ça.</comment>
+  </data>
 </root>

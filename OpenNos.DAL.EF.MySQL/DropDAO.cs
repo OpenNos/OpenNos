@@ -73,22 +73,11 @@ namespace OpenNos.DAL.EF.MySQL
             }
         }
 
-        public IEnumerable<DropDTO> LoadAllGeneral()
-        {
-            using (var context = DataAccessHelper.CreateContext())
-            {
-                foreach (Drop Drop in context.Drop.ToList().Where(s => s.MonsterVNum == null))
-                {
-                    yield return _mapper.Map<DropDTO>(Drop);
-                }
-            }
-        }
-
         public IEnumerable<DropDTO> LoadByMonster(short monsterVNum)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                foreach (Drop Drop in context.Drop.Where(s => s.MonsterVNum == monsterVNum))
+                foreach (Drop Drop in context.Drop.Where(s => s.MonsterVNum == monsterVNum || s.MonsterVNum == null))
                 {
                     yield return _mapper.Map<DropDTO>(Drop);
                 }

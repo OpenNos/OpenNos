@@ -374,7 +374,7 @@ namespace OpenNos.Handler
                     {
                         MapNpc npc = ServerManager.GetMap(Session.Character.MapId).Npcs.FirstOrDefault(n => n.MapNpcId.Equals(Convert.ToInt16(packetsplit[3])));
                         NpcMonster mapobject = ServerManager.GetNpc(npc.NpcVNum);
-                        if (mapobject.Drops.Any())
+                        if (mapobject.Drops.Any(s=>s.MonsterVNum ))
                         {
                             if (mapobject.VNumRequired > 10 && Session.Character.InventoryList.CountItem(mapobject.VNumRequired) < mapobject.AmountRequired)
                             {

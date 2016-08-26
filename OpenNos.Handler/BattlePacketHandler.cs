@@ -29,7 +29,6 @@ namespace OpenNos.Handler
         #region Members
 
         private readonly ClientSession _session;
-        private Dictionary<short, int> generaldrop;
 
         #endregion
 
@@ -1017,8 +1016,8 @@ namespace OpenNos.Handler
                 mmon.Death = DateTime.Now;
                 Random rnd;
                 int i = 1;
-                List<DropDTO> droplist = monsterinfo.Drops.Where(s => Session.CurrentMap.MapTypes.FirstOrDefault(m => m.MapTypeId == s.MapTypeId) != null || (s.MapTypeId == null)).ToList();
-                droplist.AddRange(ServerManager.Drops);
+                 List<DropDTO> droplist = monsterinfo.Drops.Where(s => Session.CurrentMap.MapTypes.FirstOrDefault(m => m.MapTypeId == s.MapTypeId) != null || (s.MapTypeId == null)).ToList();
+              
                 int RateDrop = ServerManager.DropRate;
 
                 foreach (DropDTO drop in droplist)

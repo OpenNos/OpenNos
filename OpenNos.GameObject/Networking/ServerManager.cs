@@ -30,7 +30,7 @@ namespace OpenNos.GameObject
     {
         #region Members
 
-        public static List<DropDTO> Drops = new List<DropDTO>();
+     
         public Boolean ShutdownStop = false;
 
         private static ServerManager _instance;
@@ -238,7 +238,6 @@ namespace OpenNos.GameObject
             }
             Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("NPCMONSTERS_LOADED"), _npcs.Count()));
 
-            Drops = DAOFactory.DropDAO.LoadAllGeneral().ToList();
 
             try
             {
