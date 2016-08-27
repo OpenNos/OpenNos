@@ -21,7 +21,7 @@ namespace OpenNos.GameObject
     {
         #region Methods
 
-        public override void Use(ClientSession Session, ref Inventory Inv)
+        public override void Use(ClientSession Session, ref Inventory Inv, bool DelayUsed = false)
         {
             switch (Effect)
             {

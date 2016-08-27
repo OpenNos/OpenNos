@@ -22,7 +22,7 @@ namespace OpenNos.GameObject
     {
         #region Methods
 
-        public override void Use(ClientSession Session, ref Inventory Inv)
+        public override void Use(ClientSession Session, ref Inventory Inv, bool DelayUsed = false)
         {
             Item iteminfo = ServerManager.GetItem(Inv.ItemInstance.ItemVNum);
             Random rnd = new Random();

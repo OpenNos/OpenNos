@@ -28,7 +28,7 @@ namespace OpenNos.GameObject
 
         #region Methods
 
-        public abstract void Use(ClientSession Session, ref Inventory Inv);
+        public abstract void Use(ClientSession Session, ref Inventory Inv, bool DelayUsed = false);
 
         #endregion
     }

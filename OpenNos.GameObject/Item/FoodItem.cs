@@ -57,7 +57,7 @@ namespace OpenNos.GameObject
             }
         }
 
-        public override void Use(ClientSession session, ref Inventory Inv)
+        public override void Use(ClientSession session, ref Inventory Inv, bool DelayUsed = false)
         {
             if ((DateTime.Now - session.Character.LastPotion).TotalMilliseconds < 750)
                 return;

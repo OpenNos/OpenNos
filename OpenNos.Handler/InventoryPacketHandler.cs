@@ -1083,18 +1083,26 @@ namespace OpenNos.Handler
                 }
             }
         }
+        [Packet("#u_i")]
+        public void SpecialUseItem(string packet)
+        {
+            UseItem(packet);
+        }
 
         [Packet("u_i")]
         public void UseItem(string packet)
         {
             Logger.Debug(packet, Session.SessionId);
-            string[] packetsplit = packet.Split(' ');
-            byte type; byte.TryParse(packetsplit[4], out type);
-            short slot; short.TryParse(packetsplit[5], out slot);
-            Inventory inv = Session.Character.InventoryList.LoadInventoryBySlotAndType(slot, type);
-            if (inv != null)
+            string[] packetsplit = packet.Split(' ', '^');
+            if (packetsplit.Length > 5)
             {
-                (inv.ItemInstance as ItemInstance).Item.Use(Session, ref inv);
+                byte type; byte.TryParse(packetsplit[4], out type);
+                short slot; short.TryParse(packetsplit[5], out slot);
+                Inventory inv = Session.Character.InventoryList.LoadInventoryBySlotAndType(slot, type);
+                if (inv != null)
+                {
+                    (inv.ItemInstance as ItemInstance).Item.Use(Session, ref inv, packetsplit[1].ElementAt(0) == '#');
+                }
             }
         }
 
@@ -1180,6 +1188,8 @@ namespace OpenNos.Handler
 
         private async void RemoveSP(short vnum)
         {
+            if (Session.Character.IsVehicled)
+                return;
             Logger.Debug(vnum.ToString(), Session.SessionId);
             SpecialistInstance sp = Session.Character.EquipmentList.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, (byte)InventoryType.Equipment);
             Session.Character.Speed -= ServerManager.GetItem(vnum).Speed;
