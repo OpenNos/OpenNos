@@ -1253,9 +1253,7 @@ namespace OpenNos.Handler
 
             //double prediction = ((double)distance / (double)Session.Character.Speed) * 2.000d;
 
-            if (Session.Character.Speed >= Convert.ToByte(packetsplit[5]) &&
-                !(distance > 60 && timeSpanSinceLastPortal > 5) &&
-                 (DateTime.Now - Session.Character.LastMove).TotalMilliseconds > 39)
+            if (Session.Character.Speed >= Convert.ToByte(packetsplit[5]) && !(distance > 60 && timeSpanSinceLastPortal > 5))
             {
                 Session.Character.MapX = Convert.ToInt16(packetsplit[2]);
                 Session.Character.MapY = Convert.ToInt16(packetsplit[3]);
