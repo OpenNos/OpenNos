@@ -1040,8 +1040,8 @@ namespace OpenNos.Handler
                 }
                 rnd = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
                 int RateGold = ServerManager.GoldRate;
-                int gold = Convert.ToInt32((rnd.Next(1, 8) >= 7 ? 1 : 0) * rnd.Next(6 * monsterinfo.Level, 12 * monsterinfo.Level) * RateGold);
-                gold = gold > 1000000000 ? 1000000000 : gold;
+                int gold = Convert.ToInt32((rnd.Next(1, 8) >= 7 ? 1 : 0) * rnd.Next(6 * monsterinfo.Level, 12 * monsterinfo.Level)  * RateGold * (Session.CurrentMap.MapTypes.FirstOrDefault(s => s.MapTypeId == (short)MapTypeEnum.Act52) != null ? 10 : 1));
+                gold = gold > 1000000000 ? 1000000000 : gold;    
                 if (gold != 0)
                 {
                     DropDTO drop2 = new DropDTO()
