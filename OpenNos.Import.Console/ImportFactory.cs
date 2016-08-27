@@ -741,8 +741,8 @@ namespace OpenNos.Import.Console
             drops.Add(new DropDTO { ItemVNum = 2206, Amount = 1, MonsterVNum = null, DropChance = 4000, MapTypeId = 6 });
             drops.Add(new DropDTO { ItemVNum = 2379, Amount = 1, MonsterVNum = null, DropChance = 8000, MapTypeId = 6 });
             drops.Add(new DropDTO { ItemVNum = 2380, Amount = 1, MonsterVNum = null, DropChance = 15000, MapTypeId = 6 });
-            drops.Add(new DropDTO { ItemVNum = 2900, Amount = 2, MonsterVNum = null, DropChance = 9000, MapTypeId = 6 });
-            drops.Add(new DropDTO { ItemVNum = 2901, Amount = 1, MonsterVNum = null, DropChance = 9000, MapTypeId = 6 });
+            drops.Add(new DropDTO { ItemVNum = 2900, Amount = 2, MonsterVNum = null, DropChance = 3000, MapTypeId = 6 });
+            drops.Add(new DropDTO { ItemVNum = 2901, Amount = 1, MonsterVNum = null, DropChance = 1000, MapTypeId = 6 });
             ////Act6.1
             drops.Add(new DropDTO { ItemVNum = 1004, Amount = 1, MonsterVNum = null, DropChance = 1000, MapTypeId = 7 });
             drops.Add(new DropDTO { ItemVNum = 1007, Amount = 1, MonsterVNum = null, DropChance = 1000, MapTypeId = 7 });
@@ -1537,43 +1537,43 @@ namespace OpenNos.Import.Console
                         switch (item.VNum)
                         {
                             case 1906:
-                                item.Morph = 1368;
+                                item.Morph = 2368;
                                 item.Speed = 20;
                                 item.WaitDelay = 3000;
                                 break;
 
                             case 1907:
-                                item.Morph = 1370;
+                                item.Morph = 2370;
                                 item.Speed = 20;
                                 item.WaitDelay = 3000;
                                 break;
 
                             case 1965:
-                                item.Morph = 1406;
+                                item.Morph = 2406;
                                 item.Speed = 20;
                                 item.WaitDelay = 3000;
                                 break;
 
                             case 5008:
-                                item.Morph = 1411;
+                                item.Morph = 2411;
                                 item.Speed = 20;
                                 item.WaitDelay = 3000;
                                 break;
 
                             case 5117:
-                                item.Morph = 1429;
+                                item.Morph = 2429;
                                 item.Speed = 21;
                                 item.WaitDelay = 3000;
                                 break;
 
                             case 5152:
-                                item.Morph = 1432;
+                                item.Morph = 2432;
                                 item.Speed = 21;
                                 item.WaitDelay = 3000;
                                 break;
 
                             case 5173:
-                                item.Morph = 1511;
+                                item.Morph = 2511;
                                 item.Speed = 16;
                                 item.WaitDelay = 3000;
                                 break;
@@ -1593,103 +1593,103 @@ namespace OpenNos.Import.Console
                                      */
 
                             case 5238:
-                                item.Morph = 817;
+                                item.Morph = 1817;
                                 item.Speed = 20;
                                 item.WaitDelay = 3000;
                                 break;
 
                             case 5240:
-                                item.Morph = 819;
+                                item.Morph = 1819;
                                 item.Speed = 20;
                                 item.WaitDelay = 3000;
                                 break;
 
                             case 5914:
-                                item.Morph = 1513;
+                                item.Morph = 2513;
                                 item.Speed = 14;
                                 item.WaitDelay = 3000;
                                 break;
 
                             case 5196:
-                                item.Morph = 1517;
+                                item.Morph = 2517;
                                 item.Speed = 21;
                                 item.WaitDelay = 3000;
                                 break;
 
                             case 5232:
-                                item.Morph = 1520;
+                                item.Morph = 2520;
                                 item.Speed = 21;
                                 item.WaitDelay = 3000;
                                 break;
 
                             case 5319:
-                                item.Morph = 1526;
+                                item.Morph = 2526;
                                 item.Speed = 22;
                                 item.WaitDelay = 3000;
                                 break;
 
                             case 5321:
-                                item.Morph = 1528;
+                                item.Morph = 2528;
                                 item.Speed = 21;
                                 item.WaitDelay = 3000;
                                 break;
 
                             case 5323:
-                                item.Morph = 1530;
+                                item.Morph = 2530;
                                 item.Speed = 22;
                                 item.WaitDelay = 3000;
                                 break;
 
                             case 5330:
-                                item.Morph = 1928;
+                                item.Morph = 2928;
                                 item.Speed = 22;
                                 item.WaitDelay = 3000;
                                 break;
 
                             case 5332:
-                                item.Morph = 1930;
+                                item.Morph = 2930;
                                 item.Speed = 14;
                                 item.WaitDelay = 3000;
                                 break;
 
                             case 5360:
-                                item.Morph = 1932;
+                                item.Morph = 2932;
                                 item.Speed = 22;
                                 item.WaitDelay = 3000;
                                 break;
 
                             case 5386:
-                                item.Morph = 1934;
+                                item.Morph = 2934;
                                 item.Speed = 21;
                                 item.WaitDelay = 3000;
                                 break;
 
                             case 5387:
-                                item.Morph = 1936;
+                                item.Morph = 2936;
                                 item.Speed = 21;
                                 item.WaitDelay = 3000;
                                 break;
 
                             case 5388:
-                                item.Morph = 1938;
+                                item.Morph = 2938;
                                 item.Speed = 21;
                                 item.WaitDelay = 3000;
                                 break;
 
                             case 5389:
-                                item.Morph = 1940;
+                                item.Morph = 2940;
                                 item.Speed = 21;
                                 item.WaitDelay = 3000;
                                 break;
 
                             case 5390:
-                                item.Morph = 1942;
+                                item.Morph = 2942;
                                 item.Speed = 21;
                                 item.WaitDelay = 3000;
                                 break;
 
                             case 5391:
-                                item.Morph = 1944;
+                                item.Morph = 2944;
                                 item.Speed = 21;
                                 item.WaitDelay = 3000;
                                 break;
