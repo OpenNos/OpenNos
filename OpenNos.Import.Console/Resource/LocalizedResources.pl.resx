@@ -123,6 +123,9 @@
   <data name="DATABASE_INITIALIZED" xml:space="preserve">
     <value>Baza danych została załadowana!</value>
   </data>
+  <data name="DATABASE_NOT_UPTODATE" xml:space="preserve">
+    <value>Baza danych jest nie aktualna. prosze przeprowadzić aktualizację.</value>
+  </data>
   <data name="DONE" xml:space="preserve">
     <value>Wprowadzanie ukończone!</value>
   </data>
@@ -176,9 +179,6 @@
   </data>
   <data name="PARSE_MAPS" xml:space="preserve">
     <value>Czy chcesz wprowadzić Mapy?</value>
-  </data>
-  <data name="PARSE_MAPTYPEMAPS" xml:space="preserve">
-    <value>Czy chcesz wprowadzić MapTypeMaps? sugerujemy także użyć MapTypes</value>
   </data>
   <data name="PARSE_MAPTYPES" xml:space="preserve">
     <value>Czy chcesz wprowadzić MapTypes? sugerujemy także aby użyć MapTypeMaps</value>

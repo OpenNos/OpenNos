@@ -79,6 +79,15 @@ namespace OpenNos.Import.Console.Resource {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Database may not be up to date. Please consider updating your database..
+        /// </summary>
+        internal static string DATABASE_NOT_UPTODATE {
+            get {
+                return ResourceManager.GetString("DATABASE_NOT_UPTODATE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Parsing done!.
         /// </summary>
         internal static string DONE {
@@ -237,15 +246,6 @@ namespace OpenNos.Import.Console.Resource {
         internal static string PARSE_MAPS {
             get {
                 return ResourceManager.GetString("PARSE_MAPS", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Do you want to parse MapTypeMaps? we suggest using with MapTypes.
-        /// </summary>
-        internal static string PARSE_MAPTYPEMAPS {
-            get {
-                return ResourceManager.GetString("PARSE_MAPTYPEMAPS", resourceCulture);
             }
         }
         

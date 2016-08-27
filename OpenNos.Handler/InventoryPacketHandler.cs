@@ -635,7 +635,6 @@ namespace OpenNos.Handler
                     Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SPUSE_NEEDED"), 0));
                     return;
                 }
-
                 if (ServersData.SpPoint(specialistInstance.SpLevel, specialistInstance.Upgrade)
                     - specialistInstance.SlDamage - specialistInstance.SlHP
                     - specialistInstance.SlElement - specialistInstance.SlDefence
@@ -985,10 +984,14 @@ namespace OpenNos.Handler
                 else
                 {
                     double timeSpanSinceLastSpUsage = currentRunningSeconds - Session.Character.LastSp;
-                    if (timeSpanSinceLastSpUsage >= Session.Character.SpCooldown)
+                    if (timeSpanSinceLastSpUsage >= Session.Character.SpCooldown && !Session.Character.IsVehicled)
                     {
                         Session.Client.SendPacket("delay 5000 3 #sl^1");
                         Session.CurrentMap?.Broadcast($"guri 2 1 {Session.Character.CharacterId}");
+                    }
+                    else if (Session.Character.IsVehicled)
+                    {
+                        return;
                     }
                     else
                     {
