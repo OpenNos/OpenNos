@@ -1014,20 +1014,24 @@ namespace OpenNos.Handler
                 mmon.CurrentHp = 0;
                 mmon.CurrentMp = 0;
                 mmon.Death = DateTime.Now;
-                Random rnd;
+                Random rnd = new Random();
                 int i = 1;
-                 List<DropDTO> droplist = monsterinfo.Drops.Where(s => Session.CurrentMap.MapTypes.FirstOrDefault(m => m.MapTypeId == s.MapTypeId) != null || (s.MapTypeId == null)).ToList();
-              
-                int RateDrop = ServerManager.DropRate;
+                List<DropDTO> droplist = monsterinfo.Drops.Where(s => Session.CurrentMap.MapTypes.FirstOrDefault(m => m.MapTypeId == s.MapTypeId) != null || (s.MapTypeId == null)).ToList();
 
-                foreach (DropDTO drop in droplist)
+                int RateDrop = ServerManager.DropRate;
+                int x = 0;
+                foreach (DropDTO drop in droplist.OrderBy(s => rnd.Next()))
                 {
-                    i++;
-                    rnd = new Random(i * (int)DateTime.Now.Ticks & 0x0000FFFF);
-                    double rndamount = rnd.Next(0, 100) * rnd.NextDouble();
-                    if (rndamount <= ((double)drop.DropChance * RateDrop) / 5000.000)
+                    if (x < 4)
                     {
-                        Session.CurrentMap.DropItemByMonster(drop, mmon.MapX, mmon.MapY);
+                        i++;
+                        rnd = new Random(i * (int)DateTime.Now.Ticks & 0x0000FFFF);
+                        double rndamount = rnd.Next(0, 100) * rnd.NextDouble();
+                        if (rndamount <= ((double)drop.DropChance * RateDrop) / 5000.000)
+                        {
+                            x++;
+                            Session.CurrentMap.DropItemByMonster(drop, mmon.MapX, mmon.MapY);
+                        }
                     }
                 }
                 rnd = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
