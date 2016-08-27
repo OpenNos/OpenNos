@@ -374,7 +374,7 @@ namespace OpenNos.Handler
                     {
                         MapNpc npc = ServerManager.GetMap(Session.Character.MapId).Npcs.FirstOrDefault(n => n.MapNpcId.Equals(Convert.ToInt16(packetsplit[3])));
                         NpcMonster mapobject = ServerManager.GetNpc(npc.NpcVNum);
-                        if (mapobject.Drops.Any(s=>s.MonsterVNum !=null))
+                        if (mapobject.Drops.Any(s => s.MonsterVNum != null))
                         {
                             if (mapobject.VNumRequired > 10 && Session.Character.InventoryList.CountItem(mapobject.VNumRequired) < mapobject.AmountRequired)
                             {
@@ -391,7 +391,7 @@ namespace OpenNos.Handler
                         //Need to add failed try and time needed if you spam (You want to wait it show you a msg with the time needed like SP time needed)
                         Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("TRY_FAILED"), 11));
                     }
-                        break;
+                    break;
                 case "710":
                     if (packetsplit.Length > 5)
                     {
@@ -1248,11 +1248,13 @@ namespace OpenNos.Handler
                 return;
 
             float prediction = 0.0f;
+            double currentRunningSeconds = (DateTime.Now - Process.GetCurrentProcess().StartTime.AddSeconds(-50)).TotalSeconds;
+            double timeSpanSinceLastPortal = currentRunningSeconds - Session.Character.LastPortal;
             int distance = Map.GetDistance(new MapCell() { X = Session.Character.MapX, Y = Session.Character.MapY }, new MapCell() { X = Convert.ToInt16(packetsplit[2]), Y = Convert.ToInt16(packetsplit[3]) }); // get distance to target point
             prediction = ((float)distance / (float)Session.Character.Speed) * 2.0f;
             DateTime NextMove = DateTime.Now.AddSeconds(prediction);
             if (Session.Character.Speed >= Convert.ToByte(packetsplit[5]) &&
-                !(distance > 60) &&
+                !(distance > 60 && timeSpanSinceLastPortal > 5) &&
                 NextMove > Session.Character.LastMove.AddSeconds(prediction + 0.020d))
             {
                 Session.Character.MapX = Convert.ToInt16(packetsplit[2]);
@@ -1263,19 +1265,7 @@ namespace OpenNos.Handler
             }
             else
             {
-                if (Session.Character.Authority == AuthorityType.Admin)
-                {
-                    if (NextMove <= Session.Character.LastMove.AddSeconds(prediction + 0.020d))
-                        Session.Client.SendPacket(Session.Character.GenerateSay($"Detected time: NextMove: {(NextMove - DateTime.Now).Milliseconds}ms LastMove: {(Session.Character.LastMove.AddSeconds(prediction + 0.020d) - DateTime.Now).Milliseconds}ms", 10));
-                    if (distance > 60)
-                        Session.Client.SendPacket(Session.Character.GenerateSay($"Detected distance: {distance}", 10));
-                }
-                else
-                {
-                    // kick user
-                    if (NextMove <= Session.Character.LastMove.AddSeconds(prediction + 0.020d))
-                        Session.Client.Disconnect();
-                }
+                    Session.Client.Disconnect();
             }
         }
 
