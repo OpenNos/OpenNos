@@ -67,11 +67,8 @@ namespace OpenNos.GameObject
                         if (Session.Character.IsVehicled == false)
                         {
                             Session.Character.IsVehicled = true;
-                            if (sp != null)
-                            {
-                                Session.Character.MorphUpgrade = 0;
-                                Session.Character.MorphUpgrade2 = 0;
-                            }
+                            Session.Character.MorphUpgrade = 0;
+                            Session.Character.MorphUpgrade2 = 0;
                             Session.Character.Morph = Morph + Session.Character.Gender;
                             Session.Character.LastSpeed = Session.Character.Speed;
                             Session.Character.Speed = Speed;
