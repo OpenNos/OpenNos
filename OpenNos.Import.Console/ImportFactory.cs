@@ -332,9 +332,7 @@ namespace OpenNos.Import.Console
                     maptypemaps.Add(new MapTypeMapDTO { MapId = (short)i, MapTypeId = mapTypeId });
                 }
             }
-
             DAOFactory.MapTypeMapDAO.Insert(maptypemaps);
-            Logger.Log.Info(Language.Instance.GetMessageFromKey("MAPTYPEMAPS_PARSED"));
         }
 
         public void ImportMonsters()

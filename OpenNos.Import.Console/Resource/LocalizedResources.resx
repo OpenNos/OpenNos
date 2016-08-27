@@ -123,6 +123,9 @@
   <data name="DATABASE_INITIALIZED" xml:space="preserve">
     <value>Database has been initialized.</value>
   </data>
+  <data name="DATABASE_NOT_UPTODATE" xml:space="preserve">
+    <value>Database may not be up to date. Please consider updating your database.</value>
+  </data>
   <data name="DONE" xml:space="preserve">
     <value>Parsing done!</value>
   </data>
@@ -176,9 +179,6 @@
   </data>
   <data name="PARSE_MAPS" xml:space="preserve">
     <value>Do you want to parse Maps?</value>
-  </data>
-  <data name="PARSE_MAPTYPEMAPS" xml:space="preserve">
-    <value>Do you want to parse MapTypeMaps? we suggest using with MapTypes</value>
   </data>
   <data name="PARSE_MAPTYPES" xml:space="preserve">
     <value>Do you want to parse MapTypes? we suggest using with MapTypeMaps</value>

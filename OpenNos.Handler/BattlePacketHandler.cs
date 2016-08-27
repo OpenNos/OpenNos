@@ -260,7 +260,11 @@ namespace OpenNos.Handler
                 }
                 return;
             }
-
+            if (Session.Character.IsVehicled)
+            {
+                Session.Client.SendPacket($"cancel 2 0");
+                return;
+            }
             if (Session.Character.CanFight)
             {
                 string[] packetsplit = packet.Split(' ');

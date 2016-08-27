@@ -832,4 +832,13 @@
   <data name="NO_WEAPON" xml:space="preserve">
     <value>Nie nosisz odpowiedniego uzbrojenia!</value>
   </data>
+  <data name="DATABASE_NOT_UPTODATE" xml:space="preserve">
+    <value>Baza danych jest nie aktualna. prosze przeprowadzić aktualizację.</value>
+  </data>
+  <data name="ALREADY_MORPHED" xml:space="preserve">
+    <value>Nosisz juz pojazd</value>
+  </data>
+  <data name="ASK_WINGS_CHANGE" xml:space="preserve">
+    <value>Czy chesz zmienić skrzydła na swojej karcie specjalisty?</value>
+  </data>
 </root>

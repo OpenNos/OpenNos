@@ -27,40 +27,51 @@ namespace OpenNos.GameObject
             switch (Effect)
             {
                 case 650: //wings
-
-                    if (Session.Character.UseSp)
+                    SpecialistInstance specialistInstance = Session.Character.EquipmentList.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, (byte)InventoryType.Equipment);
+                    if (Session.Character.UseSp && specialistInstance != null)
                     {
-                        SpecialistInstance specialistInstance = Session.Character.EquipmentList.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, (byte)InventoryType.Equipment);
-                        specialistInstance.Design = (byte)EffectValue;// change item design in instance
-                        Session.Character.MorphUpgrade2 = EffectValue;// change item design in session
-                        Session.Client.SendPacket(Session.Character.GenerateCMode());
-                        Session.Client.SendPacket(Session.Character.GenerateStat());
-                        Session.Client.SendPacket(Session.Character.GenerateStatChar());
-                        Inv.ItemInstance.Amount--; // subtract item amount
-                        if (Inv.ItemInstance.Amount > 0)
-                            Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(Inv.ItemInstance.ItemVNum, Inv.ItemInstance.Amount, Inv.Type, Inv.Slot, 0, 0, 0, 0));
+                        if (!DelayUsed)
+                        {
+                            Session.Client.SendPacket($"qna #u_i^1^{Session.Character.CharacterId}^{Inv.Type}^{Inv.Slot}^3 {Language.Instance.GetMessageFromKey("ASK_WINGS_CHANGE")}");
+                        }
                         else
                         {
-                            Session.Character.InventoryList.DeleteFromSlotAndType(Inv.Slot, Inv.Type);
-                            Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, Inv.Type, Inv.Slot, 0, 0, 0, 0));
+                            specialistInstance.Design = (byte)EffectValue;
+                            Session.Character.MorphUpgrade2 = EffectValue;
+                            Session.Client.SendPacket(Session.Character.GenerateCMode());
+                            Session.Client.SendPacket(Session.Character.GenerateStat());
+                            Session.Client.SendPacket(Session.Character.GenerateStatChar());
+                            Inv.ItemInstance.Amount--;
+                            if (Inv.ItemInstance.Amount > 0)
+                                Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(Inv.ItemInstance.ItemVNum, Inv.ItemInstance.Amount, Inv.Type, Inv.Slot, 0, 0, 0, 0));
+                            else
+                            {
+                                Session.Character.InventoryList.DeleteFromSlotAndType(Inv.Slot, Inv.Type);
+                                Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, Inv.Type, Inv.Slot, 0, 0, 0, 0));
+                            }
                         }
                     }
                     else
                         Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NO_SP"), 0));
                     break;
 
-                case 1000:
+                case 1000: // vehicles
+                    SpecialistInstance sp = Session.Character.EquipmentList.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, (byte)InventoryType.Equipment);
                     if (!DelayUsed && Session.Character.IsVehicled == false)
                     {
                         Session.Client.SendPacket(Session.Character.GenerateDelay(3000, 3, $"#u_i^1^{Session.Character.CharacterId}^{Inv.Type}^{Inv.Slot}^2"));
                     }
                     else
                     {
-
                         Session.Client.SendPacket("pinit 0");
                         if (Session.Character.IsVehicled == false)
                         {
                             Session.Character.IsVehicled = true;
+                            if (sp != null)
+                            {
+                                Session.Character.MorphUpgrade = 0;
+                                Session.Character.MorphUpgrade2 = 0;
+                            }
                             Session.Character.Morph = Morph + Session.Character.Gender;
                             Session.Character.LastSpeed = Session.Character.Speed;
                             Session.Character.Speed = Speed;
@@ -73,12 +84,12 @@ namespace OpenNos.GameObject
                             Session.Character.Speed = Session.Character.LastSpeed;
                             if (Session.Character.UseSp)
                             {
-                                SpecialistInstance sp = Session.Character.EquipmentList.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, (byte)InventoryType.Equipment);
-                                if (sp == null)
-                                    return;
-                                Session.Character.Morph = ServerManager.GetItem(sp.ItemVNum).Morph;
-                                Session.Character.MorphUpgrade = sp.Upgrade;
-                                Session.Character.MorphUpgrade2 = sp.Design;
+                                if (sp != null)
+                                {
+                                    Session.Character.Morph = ServerManager.GetItem(sp.ItemVNum).Morph;
+                                    Session.Character.MorphUpgrade = sp.Upgrade;
+                                    Session.Character.MorphUpgrade2 = sp.Design;
+                                }
                             }
                             else
                             {
@@ -89,6 +100,7 @@ namespace OpenNos.GameObject
                         Session.Client.SendPacket(Session.Character.GenerateCond());
                     }
                     break;
+
                 default:
                     Logger.Log.Warn(String.Format(Language.Instance.GetMessageFromKey("NO_HANDLER_ITEM"), this.GetType().ToString()));
                     break;

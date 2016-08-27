@@ -1247,15 +1247,15 @@ namespace OpenNos.Handler
             if (packetsplit.Length <= 5)
                 return;
 
-            float prediction = 0.0f;
             double currentRunningSeconds = (DateTime.Now - Process.GetCurrentProcess().StartTime.AddSeconds(-50)).TotalSeconds;
             double timeSpanSinceLastPortal = currentRunningSeconds - Session.Character.LastPortal;
-            int distance = Map.GetDistance(new MapCell() { X = Session.Character.MapX, Y = Session.Character.MapY }, new MapCell() { X = Convert.ToInt16(packetsplit[2]), Y = Convert.ToInt16(packetsplit[3]) }); // get distance to target point
-            prediction = ((float)distance / (float)Session.Character.Speed) * 2.0f;
-            DateTime NextMove = DateTime.Now.AddSeconds(prediction);
+            int distance = Map.GetDistance(new MapCell() { X = Session.Character.MapX, Y = Session.Character.MapY }, new MapCell() { X = Convert.ToInt16(packetsplit[2]), Y = Convert.ToInt16(packetsplit[3]) });
+
+            //double prediction = ((double)distance / (double)Session.Character.Speed) * 2.000d;
+
             if (Session.Character.Speed >= Convert.ToByte(packetsplit[5]) &&
                 !(distance > 60 && timeSpanSinceLastPortal > 5) &&
-                NextMove > Session.Character.LastMove.AddSeconds(prediction + 0.020d))
+                 (DateTime.Now - Session.Character.LastMove).TotalMilliseconds > 39)
             {
                 Session.Character.MapX = Convert.ToInt16(packetsplit[2]);
                 Session.Character.MapY = Convert.ToInt16(packetsplit[3]);
@@ -1265,7 +1265,7 @@ namespace OpenNos.Handler
             }
             else
             {
-                    Session.Client.Disconnect();
+                Session.Client.Disconnect();
             }
         }
 

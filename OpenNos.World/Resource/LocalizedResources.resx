@@ -853,4 +853,10 @@
   <data name="NO_WEAPON" xml:space="preserve">
     <value>You're not wearing appropriate weapon!</value>
   </data>
+  <data name="ALREADY_MORPHED" xml:space="preserve">
+    <value>You are already morphed</value>
+  </data>
+  <data name="ASK_WINGS_CHANGE" xml:space="preserve">
+    <value>Do you want to change your wings?</value>
+  </data>
 </root>

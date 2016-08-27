@@ -832,4 +832,7 @@
     <value>Tu as reçu un nouvel objet.</value>
     <comment>Nous avons besoin du nom de l'objet pour optimiser ça.</comment>
   </data>
+  <data name="ASK_WINGS_CHANGE" xml:space="preserve">
+    <value>Voulez-vous changer vos ailes ?</value>
+  </data>
 </root>
