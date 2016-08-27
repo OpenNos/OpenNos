@@ -589,6 +589,7 @@ namespace OpenNos.Handler
             foreach (ShopItem item in mapnpc.Shop.ShopItems.Where(s => s.Type.Equals(type)))
             {
                 Item iteminfo = ServerManager.GetItem(item.ItemVNum);
+                typeshop = 100;
                 double percent = 1;
                 if (Session.Character.GetDignityIco() == 3)
                     percent = 1.10;
@@ -596,7 +597,11 @@ namespace OpenNos.Handler
                     percent = 1.20;
                 else if (Session.Character.GetDignityIco() == 5 || Session.Character.GetDignityIco() == 6)
                     percent = 1.5;
-
+                if (Session.CurrentMap.MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act4))
+                {
+                    percent *= 1.5;
+                    typeshop = 150;
+                }
                 if (iteminfo.ReputPrice > 0 && iteminfo.Type == 0)
                     shoplist += $" {iteminfo.Type}.{item.Slot}.{item.ItemVNum}.{item.Rare}.{(iteminfo.IsColored ? item.Color : item.Upgrade)}.{ServerManager.GetItem(item.ItemVNum).ReputPrice}";
                 else if (iteminfo.ReputPrice > 0 && iteminfo.Type != 0)
@@ -605,6 +610,8 @@ namespace OpenNos.Handler
                     shoplist += $" {iteminfo.Type}.{item.Slot}.{item.ItemVNum}.{-1}.{ServerManager.GetItem(item.ItemVNum).Price * percent}";
                 else
                     shoplist += $" {iteminfo.Type}.{item.Slot}.{item.ItemVNum}.{item.Rare}.{(iteminfo.IsColored ? item.Color : item.Upgrade)}.{ServerManager.GetItem(item.ItemVNum).Price * percent}";
+
+
             }
 
             foreach (ShopSkill skill in mapnpc.Shop.ShopSkills.Where(s => s.Type.Equals(type)))
