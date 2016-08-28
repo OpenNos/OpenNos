@@ -204,76 +204,97 @@ namespace OpenNos.Import.Console
 
         public void ImportMapType()
         {
+            IEnumerable<MapTypeDTO>list = DAOFactory.MapTypeDAO.LoadAll();
             MapTypeDTO mt1 = new MapTypeDTO
             {
                 MapTypeId = 1,
                 MapTypeName = "Act1",
                 PotionDelay = 500
             };
-            DAOFactory.MapTypeDAO.Insert(ref mt1);
+            if (!list.Any(s => s.MapTypeId == mt1.MapTypeId))
+                DAOFactory.MapTypeDAO.Insert(ref mt1);
+
             MapTypeDTO mt2 = new MapTypeDTO
             {
                 MapTypeId = 2,
                 MapTypeName = "Act2",
                 PotionDelay = 500
             };
-            DAOFactory.MapTypeDAO.Insert(ref mt2);
+            if (!list.Any(s => s.MapTypeId == mt2.MapTypeId))
+                DAOFactory.MapTypeDAO.Insert(ref mt2);
+
             MapTypeDTO mt3 = new MapTypeDTO
             {
                 MapTypeId = 3,
                 MapTypeName = "Act3",
                 PotionDelay = 500
             };
-            DAOFactory.MapTypeDAO.Insert(ref mt3);
+            if (!list.Any(s => s.MapTypeId == mt3.MapTypeId))
+                DAOFactory.MapTypeDAO.Insert(ref mt3);
+
             MapTypeDTO mt4 = new MapTypeDTO
             {
                 MapTypeId = 4,
                 MapTypeName = "Act4",
                 PotionDelay = 5000
             };
-            DAOFactory.MapTypeDAO.Insert(ref mt4);
+            if (!list.Any(s => s.MapTypeId == mt4.MapTypeId))
+                DAOFactory.MapTypeDAO.Insert(ref mt4);
+
             MapTypeDTO mt5 = new MapTypeDTO
             {
                 MapTypeId = 5,
                 MapTypeName = "Act5.1",
                 PotionDelay = 500
             };
-            DAOFactory.MapTypeDAO.Insert(ref mt5);
+            if (!list.Any(s => s.MapTypeId == mt5.MapTypeId))
+                DAOFactory.MapTypeDAO.Insert(ref mt5);
+
             MapTypeDTO mt6 = new MapTypeDTO
             {
                 MapTypeId = 6,
                 MapTypeName = "Act5.2",
                 PotionDelay = 500
             };
-            DAOFactory.MapTypeDAO.Insert(ref mt6);
+            if (!list.Any(s => s.MapTypeId == mt6.MapTypeId))
+                DAOFactory.MapTypeDAO.Insert(ref mt6);
+
             MapTypeDTO mt7 = new MapTypeDTO
             {
                 MapTypeId = 7,
                 MapTypeName = "Act6.1",
                 PotionDelay = 500
             };
-            DAOFactory.MapTypeDAO.Insert(ref mt7);
+            if (!list.Any(s => s.MapTypeId == mt7.MapTypeId))
+                DAOFactory.MapTypeDAO.Insert(ref mt7);
+
             MapTypeDTO mt8 = new MapTypeDTO
             {
                 MapTypeId = 8,
                 MapTypeName = "Act6.2",
                 PotionDelay = 500
             };
-            DAOFactory.MapTypeDAO.Insert(ref mt8);
+            if (!list.Any(s => s.MapTypeId == mt8.MapTypeId))
+                DAOFactory.MapTypeDAO.Insert(ref mt8);
+
             MapTypeDTO mt9 = new MapTypeDTO
             {
                 MapTypeId = 9,
-                MapTypeName = "Act6.1a",// angel
+                MapTypeName = "Act6.1a",// angel camp
                 PotionDelay = 500
             };
-            DAOFactory.MapTypeDAO.Insert(ref mt9);
+            if (!list.Any(s => s.MapTypeId == mt9.MapTypeId))
+                DAOFactory.MapTypeDAO.Insert(ref mt9);
+
             MapTypeDTO mt10 = new MapTypeDTO
             {
                 MapTypeId = 10,
-                MapTypeName = "Act6.1d",// demon
+                MapTypeName = "Act6.1d",// demon camp
                 PotionDelay = 500
             };
-            DAOFactory.MapTypeDAO.Insert(ref mt10);
+            if (!list.Any(s => s.MapTypeId == mt10.MapTypeId))
+                DAOFactory.MapTypeDAO.Insert(ref mt10);
+
             Logger.Log.Info(Language.Instance.GetMessageFromKey("MAPTYPES_PARSED"));
         }
 
@@ -518,7 +539,7 @@ namespace OpenNos.Import.Console
                             }
                         }
                     }
-                    else if (currentLine.Length > 7 && currentLine[1] == "SETTING") 
+                    else if (currentLine.Length > 7 && currentLine[1] == "SETTING")
                     {
                         if (currentLine[4] != "0" && (unknownData == (long)-2147481593 || unknownData == (long)-2147481599 || unknownData == (long)-1610610681))
                         {
@@ -528,7 +549,7 @@ namespace OpenNos.Import.Console
                     }
                     else if (currentLine.Length > 5 && currentLine[1] == "PETINFO")
                     {
-                        if (npc.VNumRequired == (short)0 && (unknownData == (long)-2147481593 || unknownData == (long)-2147481599 ||unknownData == (long)-1610610681))
+                        if (npc.VNumRequired == (short)0 && (unknownData == (long)-2147481593 || unknownData == (long)-2147481599 || unknownData == (long)-1610610681))
                         {
                             npc.VNumRequired = Convert.ToInt16(currentLine[2]);
                             npc.AmountRequired = Convert.ToByte(currentLine[3]);
@@ -638,7 +659,7 @@ namespace OpenNos.Import.Console
             drops.Add(new DropDTO { ItemVNum = 2283, Amount = 1, MonsterVNum = null, DropChance = 800, MapTypeId = 2 });
             drops.Add(new DropDTO { ItemVNum = 2284, Amount = 1, MonsterVNum = null, DropChance = 400, MapTypeId = 2 });
             drops.Add(new DropDTO { ItemVNum = 2296, Amount = 1, MonsterVNum = null, DropChance = 950, MapTypeId = 2 });
-            drops.Add(new DropDTO { ItemVNum = 5119, Amount = 1, MonsterVNum = null, DropChance = 500, MapTypeId = 2});
+            drops.Add(new DropDTO { ItemVNum = 5119, Amount = 1, MonsterVNum = null, DropChance = 500, MapTypeId = 2 });
             ////Act3
             drops.Add(new DropDTO { ItemVNum = 1004, Amount = 1, MonsterVNum = null, DropChance = 700, MapTypeId = 3 });
             drops.Add(new DropDTO { ItemVNum = 1007, Amount = 1, MonsterVNum = null, DropChance = 700, MapTypeId = 3 });
