@@ -762,4 +762,7 @@
   <data name="GROUP_JOIN" xml:space="preserve">
     <value> {0} ist der Gruppe beigetreten.</value>
   </data>
+  <data name="IN_BATTLE" xml:space="preserve">
+    <value />
+  </data>
 </root>
