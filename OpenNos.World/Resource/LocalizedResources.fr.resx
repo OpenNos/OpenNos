@@ -610,7 +610,7 @@
     <value>Mauvaise valeur.</value>
   </data>
   <data name="YOU_ASK_FOR_EXCHANGE" xml:space="preserve">
-    <value>Tu as fait une demande d'échange avec </value>
+    <value>Tu as fait une demande d'échange avec {0}</value>
   </data>
   <data name="CHARACTER_LOGGED_IN" xml:space="preserve">
     <value>{0} s'est connecté </value>

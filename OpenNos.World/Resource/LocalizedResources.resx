@@ -647,7 +647,7 @@
     <value>Wrong value</value>
   </data>
   <data name="YOU_ASK_FOR_EXCHANGE" xml:space="preserve">
-    <value>You ask for an exchange with</value>
+    <value>You ask for an exchange with: {0}</value>
   </data>
   <data name="CHARACTER_LOGGED_IN" xml:space="preserve">
     <value>{0} has logged in.</value>
@@ -864,5 +864,11 @@
   </data>
   <data name="ASK_BIND" xml:space="preserve">
     <value>Do you want to wear that item? this will bind that item to your character.</value>
+  </data>
+  <data name="IN_BATTLE" xml:space="preserve">
+    <value>You can't invite players when battling.</value>
+  </data>
+  <data name="PLAYER_IN_BATTLE" xml:space="preserve">
+    <value>Player {0} is in battle</value>
   </data>
 </root>

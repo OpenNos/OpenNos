@@ -197,12 +197,24 @@ namespace OpenNos.Handler
             if (mode == 1)
             {
                 if (!long.TryParse(packetsplit[3], out charId)) return;
-
+                charName = (string)ServerManager.Instance.GetProperty<string>(charId, "Name");
                 otherBlocked = ServerManager.Instance.GetProperty<bool>(charId, "ExchangeBlocked");
                 Blocked = Session.Character.ExchangeBlocked;
 
                 if (Session.Character.Speed == 0 || ServerManager.Instance.GetProperty<byte>(charId, "Speed") == 0)
                     Blocked = true;
+
+                if (ServerManager.Instance.GetProperty<DateTime>(charId, "LastSkill").AddSeconds(20) > DateTime.Now)
+                {
+                    Session.Client.SendPacket(Session.Character.GenerateInfo(String.Format(Language.Instance.GetMessageFromKey("PLAYER_IN_BATTLE"), charName)));
+                    return;
+                }
+
+                if (Session.Character.LastSkill.AddSeconds(20) > DateTime.Now)
+                {
+                    Session.Client.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("IN_BATTLE")));
+                    return;
+                }
 
                 if (otherBlocked || Blocked)
                 {
@@ -217,8 +229,7 @@ namespace OpenNos.Handler
                         if (Session.Character.Speed == 0)
                             return;
 
-                        charName = (string)ServerManager.Instance.GetProperty<string>(charId, "Name");
-                        Session.Client.SendPacket(Session.Character.GenerateModal($"{Language.Instance.GetMessageFromKey("YOU_ASK_FOR_EXCHANGE")} {charName}", 0));
+                        Session.Client.SendPacket(Session.Character.GenerateModal(String.Format(Language.Instance.GetMessageFromKey("YOU_ASK_FOR_EXCHANGE"), charName), 0));
                         Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateDialog($"#req_exc^2^{Session.Character.CharacterId} #req_exc^5^{Session.Character.CharacterId} {String.Format(Language.Instance.GetMessageFromKey("INCOMING_EXCHANGE"), Session.Character.Name)}"), ReceiverType.OnlySomeone, charName);
                     }
                 }
@@ -510,7 +521,7 @@ namespace OpenNos.Handler
             short slot; short.TryParse(packetsplit[3], out slot);
             byte amount; byte.TryParse(packetsplit[4], out amount);
             Inventory invitem = Session.Character.InventoryList.LoadInventoryBySlotAndType(slot, type);
-            if (invitem != null && (invitem.ItemInstance as ItemInstance).Item.IsDroppable && (invitem.ItemInstance as ItemInstance).Item.IsTradable && !Session.Character.InExchangeOrTrade)//!(invitem.ItemInstance as ItemInstance).IsUsed
+            if (invitem != null && (invitem.ItemInstance as ItemInstance).Item.IsDroppable && (invitem.ItemInstance as ItemInstance).Item.IsTradable && !Session.Character.InExchangeOrTrade)
             {
                 if (amount > 0 && amount < 100)
                 {

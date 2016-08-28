@@ -646,7 +646,7 @@
     <value>Zła wartość</value>
   </data>
   <data name="YOU_ASK_FOR_EXCHANGE" xml:space="preserve">
-    <value>Poprosileś o wymianę od</value>
+    <value>Poprosileś o wymianę z graczem: {0}</value>
   </data>
   <data name="CHARACTER_LOGGED_IN" xml:space="preserve">
     <value>{0} połączył się.</value>
@@ -846,5 +846,11 @@
   </data>
   <data name="ASK_USE" xml:space="preserve">
     <value>Czy chesz użyć tego przedmiotu?</value>
+  </data>
+  <data name="IN_BATTLE" xml:space="preserve">
+    <value>Nie możesz zapraszać graczy bedąc w walce.</value>
+  </data>
+  <data name="PLAYER_IN_BATTLE" xml:space="preserve">
+    <value>Gracz {0} aktualnie walczy.</value>
   </data>
 </root>

@@ -613,7 +613,7 @@
     <value>Falscher Wert</value>
   </data>
   <data name="YOU_ASK_FOR_EXCHANGE" xml:space="preserve">
-    <value>Nach einem Tausch gefragt:</value>
+    <value>Nach einem Tausch gefragt: {0]</value>
   </data>
   <data name="CHARACTER_LOGGED_IN" xml:space="preserve">
     <value>{0} hat sich gerade eingeloggt.</value>

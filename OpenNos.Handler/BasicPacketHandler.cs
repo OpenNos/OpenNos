@@ -368,7 +368,6 @@ namespace OpenNos.Handler
 
             switch (packetsplit[2])
             {
-
                 case "400":
                     if (packetsplit.Length > 3)
                     {
@@ -392,6 +391,7 @@ namespace OpenNos.Handler
                         Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("TRY_FAILED"), 11));
                     }
                     break;
+
                 case "710":
                     if (packetsplit.Length > 5)
                     {
@@ -910,7 +910,6 @@ namespace OpenNos.Handler
             Session.Character.IsSitting = !Session.Character.IsSitting;
             if (Session.Character.IsVehicled)
                 Session.Character.IsSitting = false;
-            Session.Character.LastSkill = DateTime.Now;
             Session.CurrentMap?.Broadcast(Session.Character.GenerateRest());
         }
 
