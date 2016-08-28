@@ -204,13 +204,13 @@ namespace OpenNos.Handler
                 if (Session.Character.Speed == 0 || ServerManager.Instance.GetProperty<byte>(charId, "Speed") == 0)
                     Blocked = true;
 
-                if (ServerManager.Instance.GetProperty<DateTime>(charId, "LastSkill").AddSeconds(20) > DateTime.Now)
+                if (ServerManager.Instance.GetProperty<DateTime>(charId, "LastSkill").AddSeconds(20) > DateTime.Now || ServerManager.Instance.GetProperty<DateTime>(charId, "LastDefence").AddSeconds(20) > DateTime.Now)
                 {
                     Session.Client.SendPacket(Session.Character.GenerateInfo(String.Format(Language.Instance.GetMessageFromKey("PLAYER_IN_BATTLE"), charName)));
                     return;
                 }
 
-                if (Session.Character.LastSkill.AddSeconds(20) > DateTime.Now)
+                if (Session.Character.LastSkill.AddSeconds(20) > DateTime.Now || Session.Character.LastDefence.AddSeconds(20) > DateTime.Now)
                 {
                     Session.Client.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("IN_BATTLE")));
                     return;
