@@ -235,7 +235,7 @@ namespace OpenNos.GameObject
             Session.Client.SendPacket(Session.Character.GenerateGender());
             Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
             Session.CurrentMap?.Broadcast(Session.Character.GenerateCMode());
-            Session.CurrentMap?.Broadcast(Session.Character.GenerateEff(198));
+            Session.CurrentMap?.Broadcast(Session.Character.GenerateEff(196));
         }
 
         public void CloseShop()
