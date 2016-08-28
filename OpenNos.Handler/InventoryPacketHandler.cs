@@ -405,17 +405,25 @@ namespace OpenNos.Handler
                 {
                     if (mapitem.ItemInstance.ItemVNum != 1046)
                     {
-                        Inventory newInv = Session.Character.InventoryList.AddToInventory(mapitem.ItemInstance);
-                        if (newInv != null)
+                        if (mapitem.ItemInstance.Item.ItemType == (byte)ItemType.Map)
                         {
                             Session.CurrentMap.DroppedList.Remove(DropId);
                             Session.CurrentMap?.Broadcast(Session.Character.GenerateGet(DropId));
-                            Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(newInv.ItemInstance.ItemVNum, newInv.ItemInstance.Amount, newInv.Type, newInv.Slot, mapitem.ItemInstance.Rare, mapitem.ItemInstance.Design, mapitem.ItemInstance.Upgrade, 0));
-                            Session.Client.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {(newInv.ItemInstance as ItemInstance).Item.Name} x {amount}", 12));
                         }
                         else
                         {
-                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_PLACE"), 0));
+                            Inventory newInv = Session.Character.InventoryList.AddToInventory(mapitem.ItemInstance);
+                            if (newInv != null)
+                            {
+                                Session.CurrentMap.DroppedList.Remove(DropId);
+                                Session.CurrentMap?.Broadcast(Session.Character.GenerateGet(DropId));
+                                Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(newInv.ItemInstance.ItemVNum, newInv.ItemInstance.Amount, newInv.Type, newInv.Slot, mapitem.ItemInstance.Rare, mapitem.ItemInstance.Design, mapitem.ItemInstance.Upgrade, 0));
+                                Session.Client.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {(newInv.ItemInstance as ItemInstance).Item.Name} x {amount}", 12));
+                            }
+                            else
+                            {
+                                Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_PLACE"), 0));
+                            }
                         }
                     }
                     else
