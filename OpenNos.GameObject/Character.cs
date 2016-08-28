@@ -64,7 +64,6 @@ namespace OpenNos.GameObject
         #region Properties
 
         public AuthorityType Authority { get { return _authority; } set { _authority = value; } }
-
         public int BackPack { get { return _backpack; } set { _backpack = value; } }
 
         public bool CanFight
@@ -76,43 +75,24 @@ namespace OpenNos.GameObject
         }
 
         public int DarkResistance { get; set; }
-
         public int Defence { get; set; }
-
         public int DefenceRate { get; set; }
-
         public int Direction { get { return _direction; } set { _direction = value; } }
-
         public int DistanceCritical { get; set; }
-
         public int DistanceCriticalRate { get; set; }
-
         public int DistanceDefence { get; set; }
-
         public int DistanceDefenceRate { get; set; }
-
         public int DistanceRate { get; set; }
-
         public int Element { get; set; }
-
         public int ElementRate { get; set; }
-
         public InventoryList EquipmentList { get { return _equipmentlist; } set { _equipmentlist = value; } }
-
         public ExchangeInfo ExchangeInfo { get; set; }
-
         public int FireResistance { get; set; }
-
         public Group Group { get; set; }
-
         public bool HasGodMode { get; set; }
-        public DateTime LastMove { get; set; }
         public bool HasShopOpened { get; set; }
-
         public int HitCritical { get; set; }
-
         public int HitCriticalRate { get; set; }
-
         public int HitRate { get; set; }
 
         public bool InExchangeOrTrade
@@ -124,68 +104,45 @@ namespace OpenNos.GameObject
         }
 
         public InventoryList InventoryList { get { return _inventorylist; } set { _inventorylist = value; } }
-
         public bool Invisible { get { return _invisible; } set { _invisible = value; } }
-
         public bool InvisibleGm { get; set; }
         public int IsDancing { get { return _isDancing; } set { _isDancing = value; } }
         public bool IsSitting { get { return _issitting; } set { _issitting = value; } }
         public bool IsVehicled { get; set; }
         public DateTime LastDefence { get; set; }
         public DateTime LastLogin { get; set; }
+        public DateTime LastMove { get; set; }
         public short LastNRunId { get; set; }
         public double LastPortal { get { return _lastPortal; } set { _lastPortal = value; } }
         public DateTime LastPotion { get; set; }
         public int LastPulse { get { return _lastPulse; } set { _lastPulse = value; } }
+        public DateTime LastSkill { get; set; }
         public double LastSp { get; set; }
         public byte LastSpeed { get; set; }
         public DateTime LastTransform { get; set; }
         public int LightResistance { get; set; }
-
         public int MagicalDefence { get; set; }
-
         public Map Map { get; set; }
-
         public int MaxDistance { get; set; }
-
         public int MaxHit { get; set; }
-
         public int MaxSnack { get; set; }
-
         public int MinDistance { get; set; }
-
         public int MinHit { get; set; }
-
         public int Morph { get { return _morph; } set { _morph = value; } }
-
         public int MorphUpgrade { get { return _morphUpgrade; } set { _morphUpgrade = value; } }
-
         public int MorphUpgrade2 { get { return _morphUpgrade2; } set { _morphUpgrade2 = value; } }
-
         public List<QuicklistEntry> QuicklistEntries { get; set; }
-
         public short SaveX { get; set; }
-
         public short SaveY { get; set; }
-
         public ClientSession Session { get { return _session; } }
-
         public int Size { get { return _size; } set { _size = value; } }
-
         public List<CharacterSkill> Skills { get; set; }
-
         public List<CharacterSkill> SkillsSp { get; set; }
-
         public int SnackAmount { get; set; }
-
         public int SnackHp { get; set; }
-
         public int SnackMp { get; set; }
-
         public int SpCooldown { get; set; }
-
         public byte Speed { get { return _speed; } set { if (value > 59) { _speed = 59; } else { _speed = value; } } }
-
         public bool UseSp { get; set; }
         public int WaterResistance { get; set; }
 
@@ -266,6 +223,21 @@ namespace OpenNos.GameObject
             }
         }
 
+        public void ChangeSex()
+        {
+            Session.Character.Gender = Session.Character.Gender == 1 ? (byte)0 : (byte)1;
+            if (Session.Character.IsVehicled)
+            {
+                Session.Character.Morph = Session.Character.Gender == 1 ? Session.Character.Morph + 1 : Session.Character.Morph - 1;
+            }
+            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SEX_CHANGED"), 0));
+            Session.Client.SendPacket(Session.Character.GenerateEq());
+            Session.Client.SendPacket(Session.Character.GenerateGender());
+            Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
+            Session.CurrentMap?.Broadcast(Session.Character.GenerateCMode());
+            Session.CurrentMap?.Broadcast(Session.Character.GenerateEff(198));
+        }
+
         public void CloseShop()
         {
             if (HasShopOpened)
@@ -285,20 +257,6 @@ namespace OpenNos.GameObject
 
                 HasShopOpened = false;
             }
-        }
-        public void ChangeSex()
-        {
-            Session.Character.Gender = Session.Character.Gender == 1 ? (byte)0 : (byte)1;
-            if (Session.Character.IsVehicled)
-            {
-                Session.Character.Morph = Session.Character.Gender == 1 ? Session.Character.Morph + 1 : Session.Character.Morph - 1;
-            }
-            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SEX_CHANGED"), 0));
-            Session.Client.SendPacket(Session.Character.GenerateEq());
-            Session.Client.SendPacket(Session.Character.GenerateGender());
-            Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
-            Session.CurrentMap?.Broadcast(Session.Character.GenerateCMode());
-            Session.CurrentMap?.Broadcast(Session.Character.GenerateEff(198));
         }
 
         public string Dance()
@@ -378,6 +336,11 @@ namespace OpenNos.GameObject
         public string GenerateCond()
         {
             return $"cond 1 {CharacterId} 0 0 {Speed}";
+        }
+
+        public string GenerateDelay(int delay, int type, string argument)
+        {
+            return $"delay {delay} {type} {argument}";
         }
 
         public string GenerateDialog(string dialog)
@@ -742,11 +705,6 @@ namespace OpenNos.GameObject
             Item iteminfo = ServerManager.GetItem(inventoryItem.ItemVNum);
             // 1235.3 1237.4 1239.5 <= skills SkillVNum.Grade
             return $"pslinfo {iteminfo.VNum} {iteminfo.Element} {iteminfo.ElementRate} {iteminfo.LevelJobMinimum} {iteminfo.Speed} {iteminfo.FireResistance} {iteminfo.WaterResistance} {iteminfo.LightResistance} {iteminfo.DarkResistance} 0.0 0.0 0.0";
-        }
-
-        public string GenerateDelay(int delay, int type, string argument)
-        {
-          return $"delay {delay} {type} {argument}";
         }
 
         public string[] GenerateQuicklist()

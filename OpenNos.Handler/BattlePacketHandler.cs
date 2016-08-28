@@ -283,6 +283,7 @@ namespace OpenNos.Handler
                             if (Session.Character.Hp > 0)
                             {
                                 TargetHit(Convert.ToInt32(packetsplit[2]), Convert.ToInt32(packetsplit[4]));
+                                Session.Character.LastSkill = DateTime.Now;
                             }
                         }
                         break;
@@ -293,6 +294,7 @@ namespace OpenNos.Handler
                             if (Session.Character.Hp > 0 && Convert.ToInt64(packetsplit[4]) == Session.Character.CharacterId)
                             {
                                 TargetHit(Convert.ToInt32(packetsplit[2]), Convert.ToInt32(packetsplit[4]));
+                                Session.Character.LastSkill = DateTime.Now;
                             }
                             else
                             {

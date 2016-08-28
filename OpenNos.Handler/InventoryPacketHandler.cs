@@ -392,6 +392,12 @@ namespace OpenNos.Handler
         {
             Logger.Debug(packet, Session.SessionId);
             string[] packetsplit = packet.Split(' ');
+
+            if (Session.Character.LastSkill.AddSeconds(1) > DateTime.Now)
+            {
+                return;
+            }
+
             long DropId; long.TryParse(packetsplit[4], out DropId);
             MapItem mapitem;
             if (Session.CurrentMap.DroppedList.TryGetValue(DropId, out mapitem))
@@ -973,6 +979,11 @@ namespace OpenNos.Handler
                 if (Session.Character.Skills.Where(s => s.Used == true).Any())
                 {
                     Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SKILLS_IN_LOADING"), 0));
+                    return;
+                }
+
+                if (Session.Character.LastMove.AddSeconds(1) >= DateTime.Now || Session.Character.LastSkill.AddSeconds(2) >= DateTime.Now)
+                {
                     return;
                 }
 

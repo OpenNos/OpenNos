@@ -901,10 +901,16 @@ namespace OpenNos.Handler
         public void Rest(string packet)
         {
             Logger.Debug(packet, Session.SessionId);
+
+            if (Session.Character.LastSkill.AddSeconds(1) > DateTime.Now)
+            {
+                return;
+            }
+
             Session.Character.IsSitting = !Session.Character.IsSitting;
             if (Session.Character.IsVehicled)
                 Session.Character.IsSitting = false;
-
+            Session.Character.LastSkill = DateTime.Now;
             Session.CurrentMap?.Broadcast(Session.Character.GenerateRest());
         }
 
