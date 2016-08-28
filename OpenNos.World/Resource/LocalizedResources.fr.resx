@@ -658,7 +658,7 @@
     <value>{0} Recettes chargées !</value>
   </data>
   <data name="SHOP_ONLY_TRADABLE_ITEMS" xml:space="preserve">
-    <value>Tu ne peux pas vendre cet objet.</value>
+    <value>Ton magasin contient des objets qui ne peuvent pas être vendus.</value>
   </data>
   <data name="SKILLS_IN_LOADING" xml:space="preserve">
     <value>Tu peux te transformer une fois que tous les temps de rechargement des compétences sont écoulés.</value>
@@ -847,5 +847,8 @@ Veux-tu le porter ?</value>
   </data>
   <data name="PLAYER_IN_BATTLE" xml:space="preserve">
     <value>C'est impossible de faire un commerce avec {0} par ce qu'il est en plein combat.</value>
+  </data>
+  <data name="ALREADY_EXCHANGE" xml:space="preserve">
+    <value>Le joueur est déjà en train d'effectué un échange.</value>
   </data>
 </root>
