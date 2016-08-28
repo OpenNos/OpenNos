@@ -835,4 +835,17 @@
   <data name="ASK_WINGS_CHANGE" xml:space="preserve">
     <value>Voulez-vous changer vos ailes ?</value>
   </data>
+  <data name="ASK_BIND" xml:space="preserve">
+    <value>Cet objet ne peut pas être commercé.
+Veux-tu le porter ?</value>
+  </data>
+  <data name="ASK_USE" xml:space="preserve">
+    <value>Voulez-vous utiliser cet objet ?</value>
+  </data>
+  <data name="IN_BATTLE" xml:space="preserve">
+    <value>C'est impossible de faire du commerce avec un joueur en plein combat.</value>
+  </data>
+  <data name="PLAYER_IN_BATTLE" xml:space="preserve">
+    <value>C'est impossible de faire un commerce avec {0} par ce qu'il est en plein combat.</value>
+  </data>
 </root>
