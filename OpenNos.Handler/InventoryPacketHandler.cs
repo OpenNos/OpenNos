@@ -392,6 +392,12 @@ namespace OpenNos.Handler
                     else
                         packetList += $"{i}.{type[i]}.{it.ItemVNum}.0.0 ";
                 }
+                if (it.IsUsed)
+                {
+                    Session.Client.SendPacket("exc_close 0");
+                    Session.CurrentMap?.Broadcast(Session, $"exc_close 0", ReceiverType.OnlySomeone, "", Session.Character.ExchangeInfo.CharId);
+                    return;
+                }
             }
             Session.Character.ExchangeInfo.Gold = Gold;
             Session.CurrentMap?.Broadcast(Session, $"exc_list 1 {Session.Character.CharacterId} {Gold} {packetList}", ReceiverType.OnlySomeone, "", Session.Character.ExchangeInfo.CharId);
@@ -1116,6 +1122,7 @@ namespace OpenNos.Handler
                 }
             }
         }
+
         [Packet("#u_i")]
         public void SpecialUseItem(string packet)
         {

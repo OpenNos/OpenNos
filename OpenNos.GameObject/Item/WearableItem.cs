@@ -42,7 +42,7 @@ namespace OpenNos.GameObject
 
                     if (iteminfo.EquipmentSlot == (byte)EquipmentType.Fairy)
                     {
-                        if ((iteminfo.MaxElementRate == 70 || iteminfo.MaxElementRate == 80) && !DelayUsed && !inventory.ItemInstance.IsUsed)
+                        if ((iteminfo.MaxElementRate == 70 || iteminfo.MaxElementRate == 80) && !DelayUsed && !inventory.ItemInstance.IsUsed && IsTradable)
                         {
 
                             session.Client.SendPacket($"qna #u_i^1^{session.Character.CharacterId}^{type}^{slot}^1 {Language.Instance.GetMessageFromKey("ASK_BIND")}");
@@ -53,7 +53,7 @@ namespace OpenNos.GameObject
                             inventory.ItemInstance.IsUsed = true;
                         }
                     }
-                    if (iteminfo.EquipmentSlot == (byte)EquipmentType.CostumeHat || iteminfo.EquipmentSlot == (byte)EquipmentType.CostumeSuit && !DelayUsed && !inventory.ItemInstance.IsUsed)
+                    if ((iteminfo.EquipmentSlot == (byte)EquipmentType.CostumeHat || iteminfo.EquipmentSlot == (byte)EquipmentType.CostumeSuit) && !DelayUsed && !inventory.ItemInstance.IsUsed && IsTradable)
                     {
                         session.Client.SendPacket($"qna #u_i^1^{session.Character.CharacterId}^{type}^{slot}^1 {Language.Instance.GetMessageFromKey("ASK_BIND")}");
                         return;

@@ -332,9 +332,10 @@ namespace OpenNos.Handler
 
                                 if (inv.ItemInstance.Amount < qty[i])
                                     return;
-                                if (!((ItemInstance)inv.ItemInstance).Item.IsTradable)
+                                if (!((ItemInstance)inv.ItemInstance).Item.IsTradable || inv.ItemInstance.IsUsed)
                                 {
                                     Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SHOP_ONLY_TRADABLE_ITEMS"), 0));
+                                    Session.Client.SendPacket("shop_end 0");
                                     return;
                                 }
 
