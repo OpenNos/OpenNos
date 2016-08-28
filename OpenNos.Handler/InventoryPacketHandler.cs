@@ -283,7 +283,7 @@ namespace OpenNos.Handler
                             foreach (ItemInstance item in Session.Character.ExchangeInfo.ExchangeList)
                             {
                                 Inventory inv = Session.Character.InventoryList.GetInventoryByItemInstanceId(item.ItemInstanceId);
-                                if (inv != null && ServerManager.GetItem(inv.ItemInstance.ItemVNum).IsTradable != true)
+                                if (inv != null && (!ServerManager.GetItem(inv.ItemInstance.ItemVNum).IsTradable || inv.ItemInstance.IsUsed))
                                 {
                                     Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("ITEM_NOT_TRADABLE"), 0));
                                     Session.Client.SendPacket("exc_close 0");
@@ -504,7 +504,7 @@ namespace OpenNos.Handler
             short slot; short.TryParse(packetsplit[3], out slot);
             byte amount; byte.TryParse(packetsplit[4], out amount);
             Inventory invitem = Session.Character.InventoryList.LoadInventoryBySlotAndType(slot, type);
-            if (invitem != null && (invitem.ItemInstance as ItemInstance).Item.IsDroppable == true && (invitem.ItemInstance as ItemInstance).Item.IsTradable == true && !Session.Character.InExchangeOrTrade)
+            if (invitem != null && (invitem.ItemInstance as ItemInstance).Item.IsDroppable && (invitem.ItemInstance as ItemInstance).Item.IsTradable && !Session.Character.InExchangeOrTrade)//!(invitem.ItemInstance as ItemInstance).IsUsed
             {
                 if (amount > 0 && amount < 100)
                 {

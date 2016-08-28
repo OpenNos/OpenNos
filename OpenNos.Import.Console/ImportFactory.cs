@@ -204,7 +204,7 @@ namespace OpenNos.Import.Console
 
         public void ImportMapType()
         {
-            IEnumerable<MapTypeDTO>list = DAOFactory.MapTypeDAO.LoadAll();
+            IEnumerable<MapTypeDTO> list = DAOFactory.MapTypeDAO.LoadAll();
             MapTypeDTO mt1 = new MapTypeDTO
             {
                 MapTypeId = 1,
@@ -1863,7 +1863,18 @@ namespace OpenNos.Import.Console
                                 break;
 
                             case (byte)ItemType.Special:
-                                item.Effect = Convert.ToInt16(currentLine[2]);
+                                switch (item.VNum)
+                                {
+                                    case 5105:
+                                        item.Effect = 651;
+                                        break;
+                                    case 5115:
+                                        item.Effect = 652;
+                                        break;
+                                    default:
+                                        item.Effect = Convert.ToInt16(currentLine[2]);
+                                        break;
+                                }
                                 item.EffectValue = Convert.ToInt32(currentLine[4]);
                                 item.WaitDelay = 5000;
                                 break;

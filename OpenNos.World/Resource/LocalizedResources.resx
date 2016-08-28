@@ -859,4 +859,10 @@
   <data name="ASK_WINGS_CHANGE" xml:space="preserve">
     <value>Do you want to change your wings?</value>
   </data>
+  <data name="ASK_USE" xml:space="preserve">
+    <value>Do you want to use that item?</value>
+  </data>
+  <data name="ASK_BIND" xml:space="preserve">
+    <value>Do you want to wear that item? this will bind that item to your character.</value>
+  </data>
 </root>

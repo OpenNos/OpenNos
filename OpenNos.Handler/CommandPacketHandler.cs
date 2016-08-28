@@ -261,21 +261,10 @@ namespace OpenNos.Handler
         }
 
         [Packet("$ChangeSex")]
-        public void ChangeSex(string packet)
+        public void ChangeGender(string packet)
         {
             Logger.Debug(packet, Session.SessionId);
-            Session.Character.Gender = Session.Character.Gender == 1 ? (byte)0 : (byte)1;
-            if (Session.Character.IsVehicled)
-            {
-                Session.Character.Morph = Session.Character.Gender == 1 ? Session.Character.Morph + 1 : Session.Character.Morph - 1;
-            }
-            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SEX_CHANGED"), 0));
-            Session.Client.SendPacket(Session.Character.GenerateEq());
-            Session.Client.SendPacket(Session.Character.GenerateGender());
-            Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
-            Session.CurrentMap?.Broadcast(Session.Character.GenerateCMode());
-            Session.CurrentMap?.Broadcast(Session.Character.GenerateEff(198));
-           
+            Session.Character.ChangeSex();
         }
 
         [Packet("$SPLvl")]

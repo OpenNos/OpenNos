@@ -841,4 +841,10 @@
   <data name="ASK_WINGS_CHANGE" xml:space="preserve">
     <value>Czy chesz zmienić skrzydła na swojej karcie specjalisty?</value>
   </data>
+  <data name="ASK_BIND" xml:space="preserve">
+    <value>Czy chesz założyć ten przedmiot? czynność ta uniemożliwi późniejsza wymiane!</value>
+  </data>
+  <data name="ASK_USE" xml:space="preserve">
+    <value>Czy chesz użyć tego przedmiotu?</value>
+  </data>
 </root>

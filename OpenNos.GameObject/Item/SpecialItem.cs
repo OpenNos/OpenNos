@@ -15,6 +15,7 @@
 using OpenNos.Core;
 using OpenNos.Domain;
 using System;
+using System.Linq;
 
 namespace OpenNos.GameObject
 {
@@ -26,6 +27,7 @@ namespace OpenNos.GameObject
         {
             switch (Effect)
             {
+
                 case 650: //wings
                     SpecialistInstance specialistInstance = Session.Character.EquipmentList.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, (byte)InventoryType.Equipment);
                     if (Session.Character.UseSp && specialistInstance != null)
@@ -53,6 +55,32 @@ namespace OpenNos.GameObject
                     }
                     else
                         Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NO_SP"), 0));
+                    break;
+
+                case 651: // magic lamp (hardcoded)
+                    if (!Session.Character.EquipmentList.Inventory.Any())
+                    {
+                        if (!DelayUsed)
+                        {
+                            Session.Client.SendPacket($"qna #u_i^1^{Session.Character.CharacterId}^{Inv.Type}^{Inv.Slot}^3 {Language.Instance.GetMessageFromKey("ASK_USE")}");
+                        }
+                        else
+                        {
+                            Session.Character.ChangeSex();
+                            Inv.ItemInstance.Amount--;
+                            if (Inv.ItemInstance.Amount > 0)
+                                Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(Inv.ItemInstance.ItemVNum, Inv.ItemInstance.Amount, Inv.Type, Inv.Slot, 0, 0, 0, 0));
+                            else
+                            {
+                                Session.Character.InventoryList.DeleteFromSlotAndType(Inv.Slot, Inv.Type);
+                                Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, Inv.Type, Inv.Slot, 0, 0, 0, 0));
+                            }
+                        }
+                    }
+                    else
+                    {
+                        Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("EQ_NOT_EMPTY"), 0));
+                    }
                     break;
 
                 case 1000: // vehicles
