@@ -854,4 +854,7 @@ Veux-tu le porter ?</value>
   <data name="HAS_SHOP_OPENED" xml:space="preserve">
     <value>Tu ne peux pas faire d'échanger avec ce joueur car il est déjà en magasin.</value>
   </data>
+  <data name="JOINED_GROUP" xml:space="preserve">
+    <value>Groupe rejoint</value>
+  </data>
 </root>

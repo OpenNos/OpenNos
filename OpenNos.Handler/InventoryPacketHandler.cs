@@ -86,7 +86,7 @@ namespace OpenNos.Handler
                         Session.CurrentMap?.Broadcast(Session, $"exc_list 1 {Session.Character.CharacterId} -1", ReceiverType.OnlySomeone, "", charId);
                     }
                     else
-                        Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateModal($"refused {Language.Instance.GetMessageFromKey("ALREADY_EXCHANGE")}", 0), ReceiverType.OnlySomeone, "", charId);
+                        Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateModal(Language.Instance.GetMessageFromKey("ALREADY_EXCHANGE"), 0), ReceiverType.OnlySomeone, "", charId);
                 }
                 else if (mode == 5)
                 {
@@ -228,7 +228,7 @@ namespace OpenNos.Handler
                     if (Session.Character.HasShopOpened || ServerManager.Instance.GetProperty<bool>(charId, "HasShopOpened"))
                         Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("HAS_SHOP_OPENED"), 10));
                     else
-                    Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("TRADE_BLOCKED"), 11));
+                        Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("TRADE_BLOCKED"), 11));
                 }
                 else
                 {

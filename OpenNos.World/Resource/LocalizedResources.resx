@@ -874,4 +874,7 @@
   <data name="HAS_SHOP_OPENED" xml:space="preserve">
     <value>You can't exchange with shop keepers.</value>
   </data>
+  <data name="JOINED_GROUP" xml:space="preserve">
+    <value>You joined the group.</value>
+  </data>
 </root>

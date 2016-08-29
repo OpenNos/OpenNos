@@ -856,4 +856,7 @@
   <data name="HAS_SHOP_OPENED" xml:space="preserve">
     <value>Nie możesz wymieniać sie z właścicielami sklepów.</value>
   </data>
+  <data name="JOINED_GROUP" xml:space="preserve">
+    <value>Dołączyłeś do grupy!</value>
+  </data>
 </root>
