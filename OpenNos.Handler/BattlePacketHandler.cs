@@ -100,6 +100,7 @@ namespace OpenNos.Handler
                         MapMonster mon = Session.CurrentMap.Monsters.FirstOrDefault(s => s.MapMonsterId == short.Parse(packetsplit[i + 1]));
                         if (mon != null && skill != null)
                         {
+                            Session.Character.LastSkill = DateTime.Now;
                             damage = GenerateDamage(mon.MapMonsterId, skill, ref hitmode);
                             Session.CurrentMap?.Broadcast($"su 1 {Session.Character.CharacterId} 3 {mon.MapMonsterId} {skill.SkillVNum} {skill.Cooldown} {skill.AttackAnimation} {skill.Effect} {Session.Character.MapX} {Session.Character.MapY} {(mon.Alive ? 1 : 0)} {(int)(((float)mon.CurrentHp / (float)ServerManager.GetNpc(mon.MonsterVNum).MaxHP) * 100)} {damage} 0 {skill.SkillType - 1}");
                         }
@@ -345,7 +346,10 @@ namespace OpenNos.Handler
                     string[] packetsplit = packet.Split(' ');
                     if (packetsplit.Length > 4)
                         if (Session.Character.Hp > 0)
+                        {
                             ZoneHit(Convert.ToInt32(packetsplit[2]), Convert.ToInt16(packetsplit[3]), Convert.ToInt16(packetsplit[4]));
+                            Session.Character.LastSkill = DateTime.Now;
+                        }
                 }
             }
         }
@@ -1042,8 +1046,8 @@ namespace OpenNos.Handler
                 }
                 rnd = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
                 int RateGold = ServerManager.GoldRate;
-                int gold = Convert.ToInt32((rnd.Next(1, 8) >= 7 ? 1 : 0) * rnd.Next(6 * monsterinfo.Level, 12 * monsterinfo.Level)  * RateGold * (Session.CurrentMap.MapTypes.FirstOrDefault(s => s.MapTypeId == (short)MapTypeEnum.Act52) != null ? 10 : 1));
-                gold = gold > 1000000000 ? 1000000000 : gold;    
+                int gold = Convert.ToInt32((rnd.Next(1, 8) >= 7 ? 1 : 0) * rnd.Next(6 * monsterinfo.Level, 12 * monsterinfo.Level) * RateGold * (Session.CurrentMap.MapTypes.FirstOrDefault(s => s.MapTypeId == (short)MapTypeEnum.Act52) != null ? 10 : 1));
+                gold = gold > 1000000000 ? 1000000000 : gold;
                 if (gold != 0)
                 {
                     DropDTO drop2 = new DropDTO()

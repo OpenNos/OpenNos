@@ -577,6 +577,10 @@ namespace OpenNos.Handler
 
                 if (slot == (byte)EquipmentType.Sp && Session.Character.UseSp)
                 {
+                    if (Session.Character.LastSkill.AddSeconds(2) > DateTime.Now)
+                    {
+                        return;
+                    }
                     Session.Character.LastSp = (DateTime.Now - Process.GetCurrentProcess().StartTime.AddSeconds(-50)).TotalSeconds;
                     new Task(() => RemoveSP(inventory.ItemVNum)).Start();
                 }
