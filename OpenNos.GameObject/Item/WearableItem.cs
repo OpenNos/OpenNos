@@ -71,13 +71,9 @@ namespace OpenNos.GameObject
                         return;
                     }
 
-                    if (iteminfo.EquipmentSlot == (byte)EquipmentType.Sp && timeSpanSinceLastSpUsage <= session.Character.SpCooldown)
+                    if (iteminfo.EquipmentSlot == (byte)EquipmentType.Sp && timeSpanSinceLastSpUsage <= session.Character.SpCooldown && session.Character.EquipmentList.LoadInventoryBySlotAndType((byte)EquipmentType.Sp, (byte)InventoryType.Sp) != null)
                     {
-                        session.Client.SendPacket(
-                            session.Character.GenerateMsg(
-                                string.Format(Language.Instance.GetMessageFromKey("SP_INLOADING"),
-                                    session.Character.SpCooldown - (int)Math.Round(timeSpanSinceLastSpUsage)),
-                                0));
+                        session.Client.SendPacket(session.Character.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("SP_INLOADING"), session.Character.SpCooldown - (int)Math.Round(timeSpanSinceLastSpUsage)), 0));
                         return;
                     }
                     if ((iteminfo.ItemType != (byte)Domain.ItemType.Weapon
