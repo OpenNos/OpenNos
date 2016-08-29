@@ -61,7 +61,7 @@ namespace OpenNos.GameObject
             return iteminstance;
         }
 
-        public Inventory AddNewItemToInventory(short vnum, int amount = 1)
+        public Inventory AddNewItemToInventory(short vnum, int amount = 1, bool rarify = false)
         {
             Logger.Debug(vnum.ToString(), Owner.Session.SessionId);
             short Slot = -1;
@@ -69,6 +69,10 @@ namespace OpenNos.GameObject
             Inventory inv = null;
             ItemInstance newItem = CreateItemInstance(vnum);
             newItem.Amount = amount;
+            if (rarify = true && newItem.Item.Type == (byte)InventoryType.Wear && newItem.Item.ItemType != (byte)ItemType.Specialist)
+            {
+                ((WearableInstance)newItem).RarifyItem(Owner.Session, RarifyMode.Drop, RarifyProtection.None);
+            }
             if (newItem.Item.Type != 0)
             {
                 slotfree = Owner.LoadBySlotAllowed(newItem.ItemVNum, newItem.Amount);

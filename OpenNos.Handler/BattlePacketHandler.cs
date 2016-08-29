@@ -1041,8 +1041,8 @@ namespace OpenNos.Handler
                             x++;
                             if (ServerManager.GetMap(Session.Character.MapId).MapTypes.Any(s => s.MapTypeId == 4))
                             {
-                                Session.Character.InventoryList.AddNewItemToInventory(drop.ItemVNum, drop.Amount);
-                                Session.Client.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {ServerManager.GetItem(drop.ItemVNum).Name} x {drop.Amount}", 12));
+                                Session.Character.InventoryList.AddNewItemToInventory(drop.ItemVNum, drop.Amount, true);
+                                Session.Client.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {ServerManager.GetItem(drop.ItemVNum).Name} x {drop.Amount}", 10));
                                 Session.Character.GenerateStartupInventory();
                             }
                             else
@@ -1064,7 +1064,7 @@ namespace OpenNos.Handler
                     if (ServerManager.GetMap(Session.Character.MapId).MapTypes.Any(s => s.MapTypeId == 4))
                     {
                         Session.Character.Gold += drop2.Amount;
-                        Session.Client.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {ServerManager.GetItem(drop2.ItemVNum).Name} x {drop2.Amount}", 12));
+                        Session.Client.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {ServerManager.GetItem(drop2.ItemVNum).Name} x {drop2.Amount}", 10));
                         Session.Client.SendPacket(Session.Character.GenerateGold());
                     }
                     else
