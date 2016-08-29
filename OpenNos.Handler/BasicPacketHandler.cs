@@ -1329,38 +1329,41 @@ namespace OpenNos.Handler
                     Session.healthStop = false;
                     return;
                 }
-                if (x == 0)
-                    x = 1;
 
-                if (Session.Character.Hp + Session.Character.HealthHPLoad() < Session.Character.HPLoad())
+                if (Session.Character.LastDefence.AddSeconds(2) <= DateTime.Now && Session.Character.LastSkill.AddSeconds(2) <= DateTime.Now)
                 {
-                    change = true;
-                    Session.Character.Hp += Session.Character.HealthHPLoad();
-                }
-                else
-                {
-                    if (Session.Character.Hp != (int)Session.Character.HPLoad())
-                        change = true;
-                    Session.Character.Hp = (int)Session.Character.HPLoad();
-                }
-                if (x == 1)
-                {
-                    if (Session.Character.Mp + Session.Character.HealthMPLoad() < Session.Character.MPLoad())
+                    if (x == 0)
+                        x = 1;
+                    if (Session.Character.Hp + Session.Character.HealthHPLoad() < Session.Character.HPLoad())
                     {
-                        Session.Character.Mp += Session.Character.HealthMPLoad();
                         change = true;
+                        Session.Character.Hp += Session.Character.HealthHPLoad();
                     }
                     else
                     {
-                        if (Session.Character.Mp != (int)Session.Character.MPLoad())
+                        if (Session.Character.Hp != (int)Session.Character.HPLoad())
                             change = true;
-                        Session.Character.Mp = (int)Session.Character.MPLoad();
+                        Session.Character.Hp = (int)Session.Character.HPLoad();
                     }
-                    x = 0;
-                }
-                if (change)
-                {
-                    Session.Client.SendPacket(Session.Character.GenerateStat());
+                    if (x == 1)
+                    {
+                        if (Session.Character.Mp + Session.Character.HealthMPLoad() < Session.Character.MPLoad())
+                        {
+                            Session.Character.Mp += Session.Character.HealthMPLoad();
+                            change = true;
+                        }
+                        else
+                        {
+                            if (Session.Character.Mp != (int)Session.Character.MPLoad())
+                                change = true;
+                            Session.Character.Mp = (int)Session.Character.MPLoad();
+                        }
+                        x = 0;
+                    }
+                    if (change)
+                    {
+                        Session.Client.SendPacket(Session.Character.GenerateStat());
+                    }
                 }
             }
         }
