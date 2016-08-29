@@ -722,7 +722,7 @@
     <value>XP rate changed!</value>
   </data>
   <data name="CANT_ATTACK" xml:space="preserve">
-    <value>You can not still use</value>
+    <value>You can't attack right now.</value>
   </data>
   <data name="DATABASE_NOT_UPTODATE" xml:space="preserve">
     <value>Database may not be up to date. Please consider updating your database.</value>
