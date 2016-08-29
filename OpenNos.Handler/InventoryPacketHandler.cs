@@ -1006,7 +1006,7 @@ namespace OpenNos.Handler
                     return;
                 }
 
-                if ((Session.Character.LastMove.AddSeconds(1) >= DateTime.Now || Session.Character.LastSkill.AddSeconds(2) >= DateTime.Now) && !Session.Character.UseSp)
+                if ((Session.Character.LastMove.AddSeconds(1) >= DateTime.Now || Session.Character.LastSkill.AddSeconds(2) >= DateTime.Now))
                 {
                     return;
                 }

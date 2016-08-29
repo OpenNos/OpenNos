@@ -147,6 +147,7 @@ namespace OpenNos.Handler
 
                         if (skill.TargetType == 1 && skill.HitType == 1)
                         {
+                            Session.Character.LastSkill = DateTime.Now;
                             Session.CurrentMap?.Broadcast($"ct 1 {Session.Character.CharacterId} 1 {Session.Character.CharacterId} {skill.CastAnimation} -1 {skill.SkillVNum}");
                             ski.Used = true;
                             if (!Session.Character.HasGodMode)
@@ -284,7 +285,6 @@ namespace OpenNos.Handler
                             if (Session.Character.Hp > 0)
                             {
                                 TargetHit(Convert.ToInt32(packetsplit[2]), Convert.ToInt32(packetsplit[4]));
-                                Session.Character.LastSkill = DateTime.Now;
                             }
                         }
                         break;
@@ -295,7 +295,6 @@ namespace OpenNos.Handler
                             if (Session.Character.Hp > 0 && Convert.ToInt64(packetsplit[4]) == Session.Character.CharacterId)
                             {
                                 TargetHit(Convert.ToInt32(packetsplit[2]), Convert.ToInt32(packetsplit[4]));
-                                Session.Character.LastSkill = DateTime.Now;
                             }
                             else
                             {
@@ -1063,7 +1062,7 @@ namespace OpenNos.Handler
                     if (grp != null)
                     {
                         if (grp.Characters.TrueForAll(g => g.Character.MapId == Session.Character.MapId))
-                            grp.Characters.ForEach(g => g.Character.GenerateXp(monsterinfo));
+                            grp.Characters.Where(g=>g.Character.MapId == Session.Character.MapId).ToList().ForEach(g => g.Character.GenerateXp(monsterinfo));
                     }
                     else Session.Character.GenerateXp(monsterinfo);
                 }
