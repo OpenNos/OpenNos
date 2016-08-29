@@ -231,20 +231,36 @@ namespace OpenNos.GameObject
                     this.Rare = 1;
                     SetRarityPoint();
                 }
-                else if (rnd <= rare0 && !(protection == RarifyProtection.Scroll && this.Rare >= 0) && mode == RarifyMode.Drop)
+                else if (rnd <= rare0 && !(protection == RarifyProtection.Scroll && this.Rare >= 0) && mode == RarifyMode.Drop && this.Item.ItemType != (byte)ItemType.Shell)
                 {
+                    if (mode != RarifyMode.Drop)
+                    {
+                        Session.Character.NotifyRarifyResult(0);
+                    }
                     this.Rare = 0;
                     SetRarityPoint();
                 }
-                else if (rnd <= raren1 && !(protection == RarifyProtection.Scroll && this.Rare >= -1) && mode == RarifyMode.Drop)
+                else if (rnd <= raren1 && !(protection == RarifyProtection.Scroll && this.Rare >= -1) && mode == RarifyMode.Drop && this.Item.ItemType != (byte)ItemType.Shell)
                 {
+                    if (mode != RarifyMode.Drop)
+                    {
+                        Session.Character.NotifyRarifyResult(-1);
+                    }
                     this.Rare = -1;
                     SetRarityPoint();
                 }
-                else if (rnd <= raren2 && !(protection == RarifyProtection.Scroll && this.Rare >= -2) && mode == RarifyMode.Drop)
+                else if (rnd <= raren2 && !(protection == RarifyProtection.Scroll && this.Rare >= -2) && mode == RarifyMode.Drop && this.Item.ItemType != (byte)ItemType.Shell)
                 {
+                    if (mode != RarifyMode.Drop)
+                    {
+                        Session.Character.NotifyRarifyResult(-2);
+                    }
                     this.Rare = -2;
                     SetRarityPoint();
+                }
+                else if (this.Rare == 0 && this.Item.ItemType == (byte)ItemType.Shell)
+                {
+                    this.Rare = 1;
                 }
                 else
                 {
