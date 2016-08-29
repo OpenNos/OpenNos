@@ -483,7 +483,7 @@ namespace OpenNos.Handler
                                 {
                                     Session.Character.InventoryList.RemoveItemAmount(ite.ItemVNum, ite.Amount);
                                 }
-                                Session.Character.GenerateStartupInventory();
+                                Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(inv.ItemInstance.ItemVNum, inv.ItemInstance.Amount, inv.Type, inv.Slot, 0, inv.ItemInstance.Rare, inv.ItemInstance.Upgrade, 0));
 
                                 Session.Client.SendPacket($"pdti 11 {inv.ItemInstance.ItemVNum} {rec.Amount} 29 {inv.ItemInstance.Upgrade} 0");
                                 Session.Client.SendPacket($"guri 19 1 {Session.Character.CharacterId} 1324");

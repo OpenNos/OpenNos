@@ -829,7 +829,7 @@
     <value>OpenNos^version^1.0.4^!</value>
   </data>
   <data name="RECEIVED_ITEM" xml:space="preserve">
-    <value>Tu as reçu un nouvel objet.</value>
+    <value>Tu as reçu : {0}</value>
     <comment>Nous avons besoin du nom de l'objet pour optimiser ça.</comment>
   </data>
   <data name="ASK_WINGS_CHANGE" xml:space="preserve">

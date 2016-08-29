@@ -1043,7 +1043,6 @@ namespace OpenNos.Handler
                             {
                                 Session.Character.InventoryList.AddNewItemToInventory(drop.ItemVNum, drop.Amount, true);
                                 Session.Client.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {ServerManager.GetItem(drop.ItemVNum).Name} x {drop.Amount}", 10));
-                                Session.Character.GenerateStartupInventory();
                             }
                             else
                                 Session.CurrentMap.DropItemByMonster(drop, mmon.MapX, mmon.MapY);

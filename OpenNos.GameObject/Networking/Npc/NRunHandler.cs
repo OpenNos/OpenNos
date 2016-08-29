@@ -72,7 +72,6 @@ namespace OpenNos.GameObject
                         }
                         Session.CurrentMap?.Broadcast(Session.Character.GenerateEq());
                         Session.Client.SendPacket(Session.Character.GenerateEquipment());
-                        Session.Character.GenerateStartupInventory();
                         Session.Character.ChangeClass(Convert.ToByte(type));
                     }
                     else

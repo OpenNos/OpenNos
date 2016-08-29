@@ -1083,7 +1083,9 @@ namespace OpenNos.Handler
                         {
                             Item iteminfo = ServerManager.GetItem(inventory.ItemVNum);
                             if (iteminfo.EquipmentSlot == (byte)EquipmentType.Armor || iteminfo.EquipmentSlot == (byte)EquipmentType.MainWeapon || iteminfo.EquipmentSlot == (byte)EquipmentType.SecondaryWeapon)
+                            {
                                 inventory.UpgradeItem(Session, UpgradeMode.Normal, UpgradeProtection.None);
+                            }
                         }
                         break;
 
@@ -1093,9 +1095,9 @@ namespace OpenNos.Handler
                         {
                             Item iteminfo = ServerManager.GetItem(inventory.ItemVNum);
                             if (iteminfo.EquipmentSlot == (byte)EquipmentType.Armor || iteminfo.EquipmentSlot == (byte)EquipmentType.MainWeapon || iteminfo.EquipmentSlot == (byte)EquipmentType.SecondaryWeapon)
-
+                            {
                                 inventory.RarifyItem(Session, RarifyMode.Normal, RarifyProtection.None);
-                            Session.Character.GenerateStartupInventory();
+                            }
                             Session.Client.SendPacket("shop_end 1");
                         }
                         break;
@@ -1118,9 +1120,13 @@ namespace OpenNos.Handler
                             if (specialist.Rare != -2)
                             {
                                 if (iteminfo.EquipmentSlot == (byte)EquipmentType.Sp)
+                                {
                                     specialist.UpgradeSp(Session, UpgradeProtection.None);
+                                    Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(specialist.ItemVNum, 1, type, slot, specialist.Rare, specialist.Design, specialist.Upgrade, 0));
+                                }
                             }
-                            else Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("CANT_UPGRADE_DESTROYED_SP"), 0));
+                            else
+                                Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("CANT_UPGRADE_DESTROYED_SP"), 0));
                         }
                         break;
 
@@ -1132,7 +1138,11 @@ namespace OpenNos.Handler
                             if (specialist.Rare != -2)
                             {
                                 if (iteminfo.EquipmentSlot == (byte)EquipmentType.Sp)
+                                {
                                     specialist.PerfectSP(Session, UpgradeProtection.None);
+                                    Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(specialist.ItemVNum, 1, type, slot, specialist.Rare, specialist.Design, specialist.Upgrade, 0));
+                                }
+
                             }
                             else Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("CANT_UPGRADE_DESTROYED_SP"), 0));
                         }

@@ -381,9 +381,9 @@ namespace OpenNos.Handler
                                 return;
                             }
                         }
-                        Session.Character.InventoryList.AddNewItemToInventory(mapobject.Drops.FirstOrDefault(s => s.MonsterVNum == npc.NpcVNum).ItemVNum);
-                        Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("RECEIVED_ITEM"), 11));
-                        Session.Character.GenerateStartupInventory();
+                        short vnum = mapobject.Drops.FirstOrDefault(s => s.MonsterVNum == npc.NpcVNum).ItemVNum;
+                        Session.Character.InventoryList.AddNewItemToInventory(vnum);
+                        Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("RECEIVED_ITEM"), ServerManager.GetItem(vnum).Name), 11));
                     }
                     else
                     {

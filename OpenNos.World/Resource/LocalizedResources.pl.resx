@@ -859,4 +859,7 @@
   <data name="JOINED_GROUP" xml:space="preserve">
     <value>Dołączyłeś do grupy!</value>
   </data>
+  <data name="RECEIVED_ITEM" xml:space="preserve">
+    <value>Otrzymałeś: </value>
+  </data>
 </root>

@@ -55,7 +55,7 @@ namespace OpenNos.GameObject
             SpCooldown = 30;
             SaveX = 0;
             SaveY = 0;
-            //LastDefence = DateTime.Now;
+            LastDefence = DateTime.Now.AddSeconds(-21);
             _session = Session;
         }
 
@@ -1536,7 +1536,7 @@ namespace OpenNos.GameObject
             return (int)((ServersData.MPData[Class, Level] + mp) * multiplicator);
         }
 
-        public void NotiyRarifyResult(sbyte rare)
+        public void NotifyRarifyResult(sbyte rare)
         {
             Session.Client.SendPacket(GenerateSay(String.Format(Language.Instance.GetMessageFromKey("RARIFY_SUCCESS"), rare), 12));
             Session.Client.SendPacket(GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("RARIFY_SUCCESS"), rare), 0));
@@ -1662,7 +1662,6 @@ namespace OpenNos.GameObject
                                 InventoryList.RemoveItemAmount(2081, 1);
                                 inv.Ammo = 100;
                                 Session.Client.SendPacket(GenerateSay(Language.Instance.GetMessageFromKey("AMMO_LOADED_ADVENTURER"), 10));
-                                GenerateStartupInventory();
                                 return true;
                             }
                         }
@@ -1695,7 +1694,6 @@ namespace OpenNos.GameObject
                                 InventoryList.RemoveItemAmount(2082, 1);
                                 inv.Ammo = 100;
                                 Session.Client.SendPacket(GenerateSay(Language.Instance.GetMessageFromKey("AMMO_LOADED_SWORDSMAN"), 10));
-                                GenerateStartupInventory();
                                 return true;
                             }
                         }
@@ -1728,7 +1726,6 @@ namespace OpenNos.GameObject
                                 InventoryList.RemoveItemAmount(2083, 1);
                                 inv.Ammo = 100;
                                 Session.Client.SendPacket(GenerateSay(Language.Instance.GetMessageFromKey("AMMO_LOADED_ARCHER"), 10));
-                                GenerateStartupInventory();
                                 return true;
                             }
                         }

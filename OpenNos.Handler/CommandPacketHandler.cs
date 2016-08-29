@@ -406,10 +406,14 @@ namespace OpenNos.Handler
                     }
                     else
                     {
-                        if (packetsplit.Length > 3)
-                            byte.TryParse(packetsplit[3], out amount);
+                        if (packetsplit.Length > 3 && !byte.TryParse(packetsplit[3], out amount))
+                        {
+                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("WRONG_VALUE"), 0));
+                            return;
+                        }
                     }
-                    Inventory inv = Session.Character.InventoryList.AddNewItemToInventory(vnum);
+                    amount = amount > 99 ? (byte)99 : amount;
+                    Inventory inv = Session.Character.InventoryList.AddNewItemToInventory(vnum, amount);
                     inv.ItemInstance.Amount = amount;
                     inv.ItemInstance.Rare = rare;
                     inv.ItemInstance.Upgrade = upgrade;
@@ -428,7 +432,7 @@ namespace OpenNos.Handler
                         if (Slot != -1)
                         {
                             Session.Client.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {iteminfo.Name} x {amount}", 12));
-                            Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(vnum, inv.ItemInstance.Amount, iteminfo.Type, Slot, rare, design, upgrade, 0));
+                            //Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(vnum, inv.ItemInstance.Amount, iteminfo.Type, Slot, rare, design, upgrade, 0));
                         }
                     }
                     else
@@ -781,9 +785,9 @@ namespace OpenNos.Handler
                     if (wearableInstance != null)
                     {
                         wearableInstance.RarifyItem(Session, (RarifyMode)mode, (RarifyProtection)protection);
+                        Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(wearableInstance.ItemVNum, 1, 0, itemslot, wearableInstance.Rare, 0, wearableInstance.Upgrade, 0));
                     }
                 }
-                Session.Character.GenerateStartupInventory();
             }
         }
 

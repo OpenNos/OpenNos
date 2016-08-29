@@ -94,14 +94,14 @@ namespace OpenNos.GameObject
             double raren2 = 80;
             double raren1 = 70;
             double rare0 = 60;
-            double rare1 = 35;
-            double rare2 = 25;
-            double rare3 = 20;
-            double rare4 = 15;
-            double rare5 = 10;
-            double rare6 = 5;
-            double rare7 = 1;
-            double rare8 = 0;
+            double rare1 = 40;
+            double rare2 = 30;
+            double rare3 = 15;
+            double rare4 = 10;
+            double rare5 = 5;
+            double rare6 = 2;
+            double rare7 = 0;
+            //double rare8 = 0; //disabled for now
             double reducedchancefactor = 1.1;
 
             //short itempricevnum = 0;
@@ -123,7 +123,7 @@ namespace OpenNos.GameObject
                 rare5 = rare5 * reducedchancefactor;
                 rare6 = rare6 * reducedchancefactor;
                 rare7 = rare7 * reducedchancefactor;
-                rare8 = rare8 * reducedchancefactor;
+                //rare8 = rare8 * reducedchancefactor;
             }
             switch (mode)
             {
@@ -157,21 +157,21 @@ namespace OpenNos.GameObject
             int rnd = r.Next(0, 100);
             if (this.Item.EquipmentSlot == (byte)EquipmentType.MainWeapon || this.Item.EquipmentSlot == (byte)EquipmentType.SecondaryWeapon || this.Item.EquipmentSlot == (byte)EquipmentType.Armor)
             {
-                if (rnd <= rare8 && !(protection == RarifyProtection.Scroll && this.Rare >= 8))
-                {
-                    if (mode != RarifyMode.Drop)
-                    {
-                        Session.Character.NotiyRarifyResult(8);
-                    }
+                //if (rnd <= rare8 && !(protection == RarifyProtection.Scroll && this.Rare >= 8))
+                //{
+                //    if (mode != RarifyMode.Drop)
+                //    {
+                //        Session.Character.NotifyRarifyResult(8);
+                //    }
 
-                    this.Rare = 8;
-                    SetRarityPoint();
-                }
+                //    this.Rare = 8;
+                //    SetRarityPoint();
+                //}
                 if (rnd <= rare7 && !(protection == RarifyProtection.Scroll && this.Rare >= 7))
                 {
                     if (mode != RarifyMode.Drop)
                     {
-                        Session.Character.NotiyRarifyResult(7);
+                        Session.Character.NotifyRarifyResult(7);
                     }
 
                     this.Rare = 7;
@@ -181,7 +181,7 @@ namespace OpenNos.GameObject
                 {
                     if (mode != RarifyMode.Drop)
                     {
-                        Session.Character.NotiyRarifyResult(6);
+                        Session.Character.NotifyRarifyResult(6);
                     }
                     this.Rare = 6;
                     SetRarityPoint();
@@ -190,7 +190,7 @@ namespace OpenNos.GameObject
                 {
                     if (mode != RarifyMode.Drop)
                     {
-                        Session.Character.NotiyRarifyResult(5);
+                        Session.Character.NotifyRarifyResult(5);
                     }
                     this.Rare = 5;
                     SetRarityPoint();
@@ -199,7 +199,7 @@ namespace OpenNos.GameObject
                 {
                     if (mode != RarifyMode.Drop)
                     {
-                        Session.Character.NotiyRarifyResult(4);
+                        Session.Character.NotifyRarifyResult(4);
                     }
                     this.Rare = 4;
                     SetRarityPoint();
@@ -208,7 +208,7 @@ namespace OpenNos.GameObject
                 {
                     if (mode != RarifyMode.Drop)
                     {
-                        Session.Character.NotiyRarifyResult(3);
+                        Session.Character.NotifyRarifyResult(3);
                     }
                     this.Rare = 3;
                     SetRarityPoint();
@@ -217,7 +217,7 @@ namespace OpenNos.GameObject
                 {
                     if (mode != RarifyMode.Drop)
                     {
-                        Session.Character.NotiyRarifyResult(2);
+                        Session.Character.NotifyRarifyResult(2);
                     }
                     this.Rare = 2;
                     SetRarityPoint();
@@ -226,7 +226,7 @@ namespace OpenNos.GameObject
                 {
                     if (mode != RarifyMode.Drop)
                     {
-                        Session.Character.NotiyRarifyResult(1);
+                        Session.Character.NotifyRarifyResult(1);
                     }
                     this.Rare = 1;
                     SetRarityPoint();
@@ -265,6 +265,9 @@ namespace OpenNos.GameObject
                         }
                     }
                 }
+                Inventory inventory = Session.Character.InventoryList.GetInventoryByItemInstanceId(this.ItemInstanceId);
+                if (inventory != null)
+                    Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(this.ItemVNum, 1, inventory.Type, inventory.Slot, this.Rare, 0, this.Upgrade, 0));
             }
         }
 
@@ -351,8 +354,9 @@ namespace OpenNos.GameObject
                     Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SUM_SUCCESS"), 0));
                     Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("SUM_SUCCESS"), 12));
                     Session.Client.SendPacket($"guri 19 1 {Session.Character.CharacterId} 1324");
+                    Inventory inventory = Session.Character.InventoryList.GetInventoryByItemInstanceId(this.ItemInstanceId);
+                    Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(inventory.ItemInstance.ItemVNum, 1, inventory.Type, inventory.Slot, 0, 0, 0, 0));
                     Session.Client.SendPacket(Session.Character.GenerateGold());
-                    Session.Character.GenerateStartupInventory();
                 }
                 else
                 {
@@ -387,8 +391,6 @@ namespace OpenNos.GameObject
                 if (this.IsFixed)
                 {
                     Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("ITEM_IS_FIXED"), 10));
-
-                    Session.Character.GenerateStartupInventory();
                     Session.Client.SendPacket("shop_end 1");
                     return;
                 }
@@ -443,13 +445,14 @@ namespace OpenNos.GameObject
                         Session.Client.SendPacket(Session.Character.GenerateGold());
                         break;
                 }
-
+                WearableInstance wearable = Session.Character.InventoryList.LoadByItemInstance<WearableInstance>(this.ItemInstanceId);
+                Inventory inventory = Session.Character.InventoryList.GetInventoryByItemInstanceId(this.ItemInstanceId);
                 Random r = new Random();
                 int rnd = r.Next(100);
                 if (rnd <= upfix[this.Upgrade])
                 {
                     ServerManager.Instance.Broadcast(Session, Session.Character.GenerateEff(3004), ReceiverType.All);
-                    Session.Character.InventoryList.LoadByItemInstance<WearableInstance>(this.ItemInstanceId).IsFixed = true;
+                    wearable.IsFixed = true;
                     Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADE_FIXED"), 11));
                     Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADE_FIXED"), 0));
                 }
@@ -458,7 +461,8 @@ namespace OpenNos.GameObject
                     ServerManager.Instance.Broadcast(Session, Session.Character.GenerateEff(3005), ReceiverType.All);
                     Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADE_SUCCESS"), 12));
                     Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADE_SUCCESS"), 0));
-                    Session.Character.InventoryList.LoadByItemInstance<WearableInstance>(this.ItemInstanceId).Upgrade++;
+                    wearable.Upgrade++;
+                    Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(this.ItemVNum, 1, inventory.Type, inventory.Slot, this.Rare, 0, this.Upgrade, 0));
                 }
                 else
                 {
@@ -482,7 +486,6 @@ namespace OpenNos.GameObject
                 Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("SCROLL_PROTECT_USED"), 11));
                 Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADE_FAILED_ITEM_SAVED"), 0));
             }
-            Session.Character.GenerateStartupInventory();
             Session.Client.SendPacket("shop_end 1");
         }
 
