@@ -55,7 +55,7 @@ namespace OpenNos.GameObject
             SpCooldown = 30;
             SaveX = 0;
             SaveY = 0;
-            LastDefence = DateTime.Now;
+            //LastDefence = DateTime.Now;
             _session = Session;
         }
 

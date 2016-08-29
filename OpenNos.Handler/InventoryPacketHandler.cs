@@ -396,6 +396,9 @@ namespace OpenNos.Handler
                 {
                     Session.Client.SendPacket("exc_close 0");
                     Session.CurrentMap?.Broadcast(Session, $"exc_close 0", ReceiverType.OnlySomeone, "", Session.Character.ExchangeInfo.CharId);
+
+                    ServerManager.Instance.SetProperty(Session.Character.ExchangeInfo.CharId, "ExchangeInfo", null);
+                    Session.Character.ExchangeInfo = null;
                     return;
                 }
             }
