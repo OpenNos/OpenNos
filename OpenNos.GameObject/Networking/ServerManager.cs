@@ -30,7 +30,7 @@ namespace OpenNos.GameObject
     {
         #region Members
 
-     
+
         public Boolean ShutdownStop = false;
 
         private static ServerManager _instance;
@@ -444,17 +444,51 @@ namespace OpenNos.GameObject
                         ClientSession chara = Sessions.FirstOrDefault(s => s.Character != null && s.Character.CharacterId == groupSession.Character.CharacterId && s.CurrentMap.MapId == groupSession.CurrentMap.MapId);
                         if (chara != null)
                         {
-                            groupSession.Client.SendPacket($"pidx 1 1.{chara.Character.CharacterId}");
+                            groupSession.Client.SendPacket(GeneratePinit(groupSession.Character.CharacterId));
                         }
                         if (groupSession.Character.CharacterId == groupSession.Character.CharacterId)
                         {
-                            session.CurrentMap?.Broadcast(groupSession, $"pidx 1 1.{groupSession.Character.CharacterId}", ReceiverType.All);
+                            session.CurrentMap?.Broadcast(groupSession, GeneratePidx(groupSession.Character.CharacterId), ReceiverType.AllExceptMe);
                         }
                     }
                 }
             }
         }
 
+        public string GeneratePidx(long charId)
+        {
+            int? count = ServerManager.Instance.Groups.FirstOrDefault(s => s.IsMemberOfGroup(charId)).Characters?.Select(c => c.Character.CharacterId).Count();
+            string str = "";
+            if (count != null)
+            {
+                str = $"pidx {count}";
+                int i = 0;
+                foreach (long Id in ServerManager.Instance.Groups.FirstOrDefault(s => s.IsMemberOfGroup(charId)).Characters?.Select(c => c.Character.CharacterId))
+                {
+                    i++;
+                    str += $" {i}.{Id} ";
+                }
+            }
+            if (str == $"pidx {count}")
+                str = "";
+            return str;
+        }
+
+        public string GeneratePinit(long charId)
+        {
+            Group grp = ServerManager.Instance.Groups.FirstOrDefault(s => s.IsMemberOfGroup(charId));
+
+            string str = $"pinit {grp.Characters.Count()}";
+            int i = 0;
+            foreach (ClientSession groupSessionForId in grp.Characters)
+            {
+                i++;
+                str += $" 1|{groupSessionForId.Character.CharacterId}|{i}|{groupSessionForId.Character.Level}|{groupSessionForId.Character.Name}|0|{groupSessionForId.Character.Gender}|{groupSessionForId.Character.Class}|{(groupSessionForId.Character.UseSp ? groupSessionForId.Character.Morph : 0)}|{groupSessionForId.Character.HeroLevel}";
+            }
+            if (str == $"pinit {grp.Characters.Count()}")
+                str = "";
+            return str;
+        }
         //PacketHandler
         public void ExchangeValidate(ClientSession c1Session, long charId)
         {
@@ -543,21 +577,15 @@ namespace OpenNos.GameObject
                     grp.LeaveGroup(session);
                     foreach (ClientSession groupSession in grp.Characters)
                     {
-                        string str = $"pinit {grp.Characters.Count()}";
-                        int i = 0;
-                        foreach (ClientSession groupSessionForId in grp.Characters)
-                        {
-                            i++;
-                            str += $" 1|{groupSessionForId.Character.CharacterId}|{i}|{groupSessionForId.Character.Level}|{groupSessionForId.Character.Name}|0|{groupSessionForId.Character.Gender}|{groupSessionForId.Character.Class}|{(groupSessionForId.Character.UseSp ? groupSessionForId.Character.Morph : 0)}|{groupSessionForId.Character.HeroLevel}";
-                        }
                         foreach (ClientSession sess in Sessions.Where(s => s != null && s.Character != null && s.Character.CharacterId == groupSession.Character.CharacterId))
                         {
-                            sess.Client.SendPacket(str);
+                            sess.Client.SendPacket(GeneratePinit(groupSession.Character.CharacterId));
                             sess.Client.SendPacket(sess.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("LEAVE_GROUP"), session.Character.Name), 0));
                         }
                     }
-                    session.Client.SendPacket("pinit 0");
-                    Broadcast(session, $"pidx -1 1.{session.Character.CharacterId}", ReceiverType.All);
+                    //session.Client.SendPacket("pinit 0");
+                    session.Client.SendPacket($"pidx -1 1.{ session.Character.CharacterId}");
+                    Broadcast(session, $"pidx -1 1.{session.Character.CharacterId}", ReceiverType.AllExceptMe);
                     session.Client.SendPacket(session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("GROUP_LEFT"), 0));
                 }
                 else

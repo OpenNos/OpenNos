@@ -1234,7 +1234,7 @@ namespace OpenNos.Handler
                     //player join group
                     ServerManager.Instance.UpdateGroup(charId);
 
-                    string p = GeneratePidx(Session.Character.CharacterId);
+                    string p = ServerManager.Instance.GeneratePidx(Session.Character.CharacterId);
                     if (p != "")
                         Session.CurrentMap?.Broadcast(p);
                 }
@@ -1293,18 +1293,6 @@ namespace OpenNos.Handler
             }
             else
                 Session.Client.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("USER_NOT_CONNECTED")));
-        }
-
-        private string GeneratePidx(long charId)
-        {
-            string stri = "pidx 1";
-            foreach (long Id in ServerManager.Instance.Groups.FirstOrDefault(s => s.IsMemberOfGroup(charId)).Characters?.Select(c => c.Character.CharacterId))
-            {
-                stri += $" 1.{Id} ";
-            }
-            if (stri == "pidx 1")
-                stri = "";
-            return stri;
         }
 
         private async void HealthTask()
