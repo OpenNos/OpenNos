@@ -1039,7 +1039,14 @@ namespace OpenNos.Handler
                         if (rndamount <= ((double)drop.DropChance * RateDrop) / 5000.000)
                         {
                             x++;
-                            Session.CurrentMap.DropItemByMonster(drop, mmon.MapX, mmon.MapY);
+                            if (ServerManager.GetMap(Session.Character.MapId).MapTypes.Any(s => s.MapTypeId == 4))
+                            {
+                                Session.Character.InventoryList.AddNewItemToInventory(drop.ItemVNum, drop.Amount);
+                                Session.Client.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {ServerManager.GetItem(drop.ItemVNum).Name} x {drop.Amount}", 12));
+                                Session.Character.GenerateStartupInventory();
+                            }
+                            else
+                                Session.CurrentMap.DropItemByMonster(drop, mmon.MapX, mmon.MapY);
                         }
                     }
                 }
@@ -1054,7 +1061,14 @@ namespace OpenNos.Handler
                         Amount = gold,
                         ItemVNum = 1046
                     };
-                    Session.CurrentMap.DropItemByMonster(drop2, mmon.MapX, mmon.MapY);
+                    if (ServerManager.GetMap(Session.Character.MapId).MapTypes.Any(s => s.MapTypeId == 4))
+                    {
+                        Session.Character.Gold += drop2.Amount;
+                        Session.Client.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {ServerManager.GetItem(drop2.ItemVNum).Name} x {drop2.Amount}", 12));
+                        Session.Client.SendPacket(Session.Character.GenerateGold());
+                    }
+                    else
+                        Session.CurrentMap.DropItemByMonster(drop2, mmon.MapX, mmon.MapY);
                 }
                 if (Session.Character.Hp > 0)
                 {
@@ -1062,7 +1076,7 @@ namespace OpenNos.Handler
                     if (grp != null)
                     {
                         if (grp.Characters.TrueForAll(g => g.Character.MapId == Session.Character.MapId))
-                            grp.Characters.Where(g=>g.Character.MapId == Session.Character.MapId).ToList().ForEach(g => g.Character.GenerateXp(monsterinfo));
+                            grp.Characters.Where(g => g.Character.MapId == Session.Character.MapId).ToList().ForEach(g => g.Character.GenerateXp(monsterinfo));
                     }
                     else Session.Character.GenerateXp(monsterinfo);
                 }
