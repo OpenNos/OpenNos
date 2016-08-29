@@ -871,4 +871,7 @@
   <data name="PLAYER_IN_BATTLE" xml:space="preserve">
     <value>Player {0} is in battle</value>
   </data>
+  <data name="HAS_SHOP_OPENED" xml:space="preserve">
+    <value>You can't exchange with shop keepers.</value>
+  </data>
 </root>

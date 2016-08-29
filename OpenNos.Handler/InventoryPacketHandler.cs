@@ -225,6 +225,9 @@ namespace OpenNos.Handler
 
                 if (otherBlocked || Blocked)
                 {
+                    if (Session.Character.HasShopOpened || ServerManager.Instance.GetProperty<bool>(charId, "HasShopOpened"))
+                        Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("HAS_SHOP_OPENED"), 10));
+                    else
                     Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("TRADE_BLOCKED"), 11));
                 }
                 else

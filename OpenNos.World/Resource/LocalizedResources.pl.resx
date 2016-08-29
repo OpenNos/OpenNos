@@ -853,4 +853,7 @@
   <data name="PLAYER_IN_BATTLE" xml:space="preserve">
     <value>Gracz {0} aktualnie walczy.</value>
   </data>
+  <data name="HAS_SHOP_OPENED" xml:space="preserve">
+    <value>Nie możesz wymieniać sie z właścicielami sklepów.</value>
+  </data>
 </root>
