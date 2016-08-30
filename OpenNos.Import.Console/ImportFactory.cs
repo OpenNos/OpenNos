@@ -319,7 +319,7 @@ namespace OpenNos.Import.Console
                 MapTypeName = "Mine2",
                 PotionDelay = 300
             };
-            if (!list.Any(s => s.MapTypeId == mt11.MapTypeId))
+            if (!list.Any(s => s.MapTypeId == mt13.MapTypeId))
                 DAOFactory.MapTypeDAO.Insert(ref mt13);
 
             MapTypeDTO mt14 = new MapTypeDTO
@@ -328,7 +328,7 @@ namespace OpenNos.Import.Console
                 MapTypeName = "MeadownOfPlain",
                 PotionDelay = 300
             };
-            if (!list.Any(s => s.MapTypeId == mt11.MapTypeId))
+            if (!list.Any(s => s.MapTypeId == mt14.MapTypeId))
                 DAOFactory.MapTypeDAO.Insert(ref mt14);
 
             MapTypeDTO mt15 = new MapTypeDTO
@@ -337,7 +337,7 @@ namespace OpenNos.Import.Console
                 MapTypeName = "SunnyPlain",
                 PotionDelay = 300
             };
-            if (!list.Any(s => s.MapTypeId == mt11.MapTypeId))
+            if (!list.Any(s => s.MapTypeId == mt15.MapTypeId))
                 DAOFactory.MapTypeDAO.Insert(ref mt15);
 
             MapTypeDTO mt16 = new MapTypeDTO
@@ -346,7 +346,7 @@ namespace OpenNos.Import.Console
                 MapTypeName = "Fernon",
                 PotionDelay = 300
             };
-            if (!list.Any(s => s.MapTypeId == mt11.MapTypeId))
+            if (!list.Any(s => s.MapTypeId == mt16.MapTypeId))
                 DAOFactory.MapTypeDAO.Insert(ref mt16);
 
             MapTypeDTO mt17 = new MapTypeDTO
@@ -355,7 +355,7 @@ namespace OpenNos.Import.Console
                 MapTypeName = "FernonF",
                 PotionDelay = 300
             };
-            if (!list.Any(s => s.MapTypeId == mt11.MapTypeId))
+            if (!list.Any(s => s.MapTypeId == mt17.MapTypeId))
                 DAOFactory.MapTypeDAO.Insert(ref mt17);
 
             MapTypeDTO mt18 = new MapTypeDTO
@@ -364,7 +364,7 @@ namespace OpenNos.Import.Console
                 MapTypeName = "Cliff",
                 PotionDelay = 300
             };
-            if (!list.Any(s => s.MapTypeId == mt11.MapTypeId))
+            if (!list.Any(s => s.MapTypeId == mt18.MapTypeId))
                 DAOFactory.MapTypeDAO.Insert(ref mt18);
 
             MapTypeDTO mt19 = new MapTypeDTO
@@ -373,7 +373,7 @@ namespace OpenNos.Import.Console
                 MapTypeName = "LandOfTheDead",
                 PotionDelay = 300
             };
-            if (!list.Any(s => s.MapTypeId == mt11.MapTypeId))
+            if (!list.Any(s => s.MapTypeId == mt19.MapTypeId))
                 DAOFactory.MapTypeDAO.Insert(ref mt19);
 
             Logger.Log.Info(Language.Instance.GetMessageFromKey("MAPTYPES_PARSED"));
