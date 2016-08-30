@@ -402,7 +402,7 @@ namespace OpenNos.Import.Console
                     mapTypeId = 3;
                     objectset = true;
                 }
-                else if ((i > 129 && i < 135) || (i > 150 && i < 155)) // "act4"
+                else if ((i > 129 && i < 143) || (i > 150 && i < 155)) // "act4"
                 {
                     mapTypeId = 4;
                     objectset = true;
@@ -1069,7 +1069,7 @@ namespace OpenNos.Import.Console
             drops.Add(new DropDTO { ItemVNum = 1021, Amount = 1, MonsterVNum = null, DropChance = 500, MapTypeId = 19 });
             drops.Add(new DropDTO { ItemVNum = 1022, Amount = 1, MonsterVNum = null, DropChance = 250, MapTypeId = 19 });
             drops.Add(new DropDTO { ItemVNum = 1211, Amount = 1, MonsterVNum = null, DropChance = 800, MapTypeId = 19 });
-
+            drops.Add(new DropDTO { ItemVNum = 5119, Amount = 1, MonsterVNum = null, DropChance = 150, MapTypeId = 19 });
 
 
 

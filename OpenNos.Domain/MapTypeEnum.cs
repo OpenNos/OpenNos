@@ -40,5 +40,6 @@ namespace OpenNos.Domain
         // Future group : Raid | Time-Space | Land Of The Dead |
         LandOfTheDead = 19,
 
+
     }
 }
