@@ -367,7 +367,7 @@ namespace OpenNos.Import.Console
             if (!list.Any(s => s.MapTypeId == mt18.MapTypeId))
                 DAOFactory.MapTypeDAO.Insert(ref mt18);
 
-            MapTypeDTO mt19 = new MapTypeDTO
+            MapTypeDTO mt30 = new MapTypeDTO
             {
                 MapTypeId = 30,
                 MapTypeName = "LandOfTheDead",
