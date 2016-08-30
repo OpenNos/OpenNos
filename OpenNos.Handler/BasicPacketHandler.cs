@@ -401,8 +401,8 @@ namespace OpenNos.Handler
                     }
                     break;
             }
-
         }
+
         [Packet("hero")]
         public void Hero(string packet)
         {

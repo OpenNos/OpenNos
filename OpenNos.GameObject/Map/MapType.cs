@@ -12,10 +12,7 @@
  * GNU General Public License for more details.
  */
 
-using OpenNos.DAL;
 using OpenNos.Data;
-using System;
-using System.Collections.Generic;
 
 namespace OpenNos.GameObject
 {
@@ -25,7 +22,6 @@ namespace OpenNos.GameObject
 
         public MapType()
         {
-
         }
 
         #endregion

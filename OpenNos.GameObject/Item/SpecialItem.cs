@@ -27,7 +27,6 @@ namespace OpenNos.GameObject
         {
             switch (Effect)
             {
-
                 case 650: //wings
                     SpecialistInstance specialistInstance = Session.Character.EquipmentList.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, (byte)InventoryType.Equipment);
                     if (Session.Character.UseSp && specialistInstance != null)

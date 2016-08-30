@@ -277,13 +277,12 @@ namespace OpenNos.GameObject
                             Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("RARIFY_FAILED_ITEM_SAVED"), 11));
                             Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("RARIFY_FAILED_ITEM_SAVED"), 0));
                             ServerManager.Instance.Broadcast(Session.Character.GenerateEff(3004));
-                            //Session.Character.InventoryList.LoadByItemInstance<WearableInstance>(this.ItemInstanceId).IsFixed = true;
                         }
                     }
                 }
                 Inventory inventory = Session.Character.InventoryList.GetInventoryByItemInstanceId(this.ItemInstanceId);
                 if (inventory != null)
-                    Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(this.ItemVNum, 1, inventory.Type, inventory.Slot, this.Rare, 0, this.Upgrade, 0));
+                    Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(this.ItemVNum, 1, inventory.Type, inventory.Slot, inventory.ItemInstance.Rare, 0, inventory.ItemInstance.Upgrade, 0));
             }
         }
 
