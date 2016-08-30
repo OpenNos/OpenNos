@@ -1080,7 +1080,9 @@ namespace OpenNos.Handler
                         if (grp.Characters.TrueForAll(g => g.Character.MapId == Session.Character.MapId))
                             grp.Characters.Where(g => g.Character.MapId == Session.Character.MapId).ToList().ForEach(g => g.Character.GenerateXp(monsterinfo));
                     }
-                    else Session.Character.GenerateXp(monsterinfo);
+                    else
+                        Session.Character.GenerateXp(monsterinfo);
+                    Session.Character.GenerateDignity(monsterinfo);
                 }
             }
             else
