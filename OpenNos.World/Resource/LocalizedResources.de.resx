@@ -763,12 +763,15 @@
     <value> {0} ist der Gruppe beigetreten.</value>
   </data>
   <data name="IN_BATTLE" xml:space="preserve">
-    <value />
+    <value>Du kannst Spieler nicht einladen, wenn sie kämpfen.</value> />
+  </data>
+   <data name="PLAYER_IN_BATTLE" xml:space="preserve">
+    <value>Spieler {0} befindet sich in einem Kampf.</value>
   </data>
   <data name="USER_NOT_BANNED" xml:space="preserve">
-    <value />
+    <value>Spieler ist nicht gesperrt.</value>
   </data>
   <data name="USER_NOT_MUTED" xml:space="preserve">
-    <value />
+    <value>Spieler ist nicht bestraft.</value>/>
   </data>
 </root>
