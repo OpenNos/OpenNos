@@ -25,6 +25,7 @@ namespace OpenNos.Domain
         Act61 = 7,
         Act62 = 8,
         Act61a = 9,
-        Act61d = 10
+        Act61d = 10,
+        CometPlain = 11,
     }
 }

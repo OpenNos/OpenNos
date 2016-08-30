@@ -209,7 +209,7 @@ namespace OpenNos.Import.Console
             {
                 MapTypeId = 1,
                 MapTypeName = "Act1",
-                PotionDelay = 500
+                PotionDelay = 300
             };
             if (!list.Any(s => s.MapTypeId == mt1.MapTypeId))
                 DAOFactory.MapTypeDAO.Insert(ref mt1);
@@ -218,7 +218,7 @@ namespace OpenNos.Import.Console
             {
                 MapTypeId = 2,
                 MapTypeName = "Act2",
-                PotionDelay = 500
+                PotionDelay = 300
             };
             if (!list.Any(s => s.MapTypeId == mt2.MapTypeId))
                 DAOFactory.MapTypeDAO.Insert(ref mt2);
@@ -227,7 +227,7 @@ namespace OpenNos.Import.Console
             {
                 MapTypeId = 3,
                 MapTypeName = "Act3",
-                PotionDelay = 500
+                PotionDelay = 300
             };
             if (!list.Any(s => s.MapTypeId == mt3.MapTypeId))
                 DAOFactory.MapTypeDAO.Insert(ref mt3);
@@ -245,7 +245,7 @@ namespace OpenNos.Import.Console
             {
                 MapTypeId = 5,
                 MapTypeName = "Act5.1",
-                PotionDelay = 500
+                PotionDelay = 300
             };
             if (!list.Any(s => s.MapTypeId == mt5.MapTypeId))
                 DAOFactory.MapTypeDAO.Insert(ref mt5);
@@ -254,7 +254,7 @@ namespace OpenNos.Import.Console
             {
                 MapTypeId = 6,
                 MapTypeName = "Act5.2",
-                PotionDelay = 500
+                PotionDelay = 300
             };
             if (!list.Any(s => s.MapTypeId == mt6.MapTypeId))
                 DAOFactory.MapTypeDAO.Insert(ref mt6);
@@ -263,7 +263,7 @@ namespace OpenNos.Import.Console
             {
                 MapTypeId = 7,
                 MapTypeName = "Act6.1",
-                PotionDelay = 500
+                PotionDelay = 300
             };
             if (!list.Any(s => s.MapTypeId == mt7.MapTypeId))
                 DAOFactory.MapTypeDAO.Insert(ref mt7);
@@ -272,7 +272,7 @@ namespace OpenNos.Import.Console
             {
                 MapTypeId = 8,
                 MapTypeName = "Act6.2",
-                PotionDelay = 500
+                PotionDelay = 300
             };
             if (!list.Any(s => s.MapTypeId == mt8.MapTypeId))
                 DAOFactory.MapTypeDAO.Insert(ref mt8);
@@ -281,7 +281,7 @@ namespace OpenNos.Import.Console
             {
                 MapTypeId = 9,
                 MapTypeName = "Act6.1a",// angel camp
-                PotionDelay = 500
+                PotionDelay = 300
             };
             if (!list.Any(s => s.MapTypeId == mt9.MapTypeId))
                 DAOFactory.MapTypeDAO.Insert(ref mt9);
@@ -290,10 +290,19 @@ namespace OpenNos.Import.Console
             {
                 MapTypeId = 10,
                 MapTypeName = "Act6.1d",// demon camp
-                PotionDelay = 500
+                PotionDelay = 300
             };
             if (!list.Any(s => s.MapTypeId == mt10.MapTypeId))
                 DAOFactory.MapTypeDAO.Insert(ref mt10);
+
+            MapTypeDTO mt11 = new MapTypeDTO
+            {
+                MapTypeId = 11,
+                MapTypeName = "CometPlain",
+                PotionDelay = 300
+            };
+            if (!list.Any(s => s.MapTypeId == mt11.MapTypeId))
+                DAOFactory.MapTypeDAO.Insert(ref mt11);
 
             Logger.Log.Info(Language.Instance.GetMessageFromKey("MAPTYPES_PARSED"));
         }
@@ -307,7 +316,7 @@ namespace OpenNos.Import.Console
             {
                 objectset = false;
 
-                if ((i < 18) || (i > 48 && i < 53) || (i > 67 && i < 85) || (i > 102 && i < 105) || (i > 144 && i < 149)) // "act1"
+                if ((i < 18) || (i > 48 && i < 53) || (i > 67 && i < 85) || (i == 102 && i > 103 && i < 105) || (i > 144 && i < 149)) // "act1"
                 {
                     mapTypeId = 1;
                     objectset = true;
@@ -322,7 +331,7 @@ namespace OpenNos.Import.Console
                     mapTypeId = 3;
                     objectset = true;
                 }
-                else if ((i > 129 && i < 135)) // "act4"
+                else if ((i > 129 && i < 135) || (i > 150 && i < 155)) // "act4"
                 {
                     mapTypeId = 4;
                     objectset = true;
@@ -345,6 +354,11 @@ namespace OpenNos.Import.Console
                 else if ((i > 239 && i < 251) || (i == 299)) // "act6.2"
                 {
                     mapTypeId = 8;
+                    objectset = true;
+                }
+                else if (i == 103) // "comet plain group"
+                {
+                    mapTypeId = 9;
                     objectset = true;
                 }
                 // add "act6.1a" and "act6.1d" when ids found
@@ -652,9 +666,10 @@ namespace OpenNos.Import.Console
             drops.Add(new DropDTO { ItemVNum = 2117, Amount = 1, MonsterVNum = null, DropChance = 1500, MapTypeId = 2 });
             drops.Add(new DropDTO { ItemVNum = 2118, Amount = 1, MonsterVNum = null, DropChance = 1500, MapTypeId = 2 });
             drops.Add(new DropDTO { ItemVNum = 2129, Amount = 1, MonsterVNum = null, DropChance = 300, MapTypeId = 2 });
+            drops.Add(new DropDTO { ItemVNum = 2205, Amount = 1, MonsterVNum = null, DropChance = 900, MapTypeId = 2 });
             drops.Add(new DropDTO { ItemVNum = 2206, Amount = 1, MonsterVNum = null, DropChance = 900, MapTypeId = 2 });
             drops.Add(new DropDTO { ItemVNum = 2207, Amount = 1, MonsterVNum = null, DropChance = 900, MapTypeId = 2 });
-            drops.Add(new DropDTO { ItemVNum = 2208, Amount = 1, MonsterVNum = null, DropChance = 1400, MapTypeId = 2 });
+            drops.Add(new DropDTO { ItemVNum = 2208, Amount = 1, MonsterVNum = null, DropChance = 900, MapTypeId = 2 });
             drops.Add(new DropDTO { ItemVNum = 2282, Amount = 1, MonsterVNum = null, DropChance = 1200, MapTypeId = 2 });
             drops.Add(new DropDTO { ItemVNum = 2283, Amount = 1, MonsterVNum = null, DropChance = 800, MapTypeId = 2 });
             drops.Add(new DropDTO { ItemVNum = 2284, Amount = 1, MonsterVNum = null, DropChance = 400, MapTypeId = 2 });
@@ -684,9 +699,10 @@ namespace OpenNos.Import.Console
             drops.Add(new DropDTO { ItemVNum = 2117, Amount = 1, MonsterVNum = null, DropChance = 1500, MapTypeId = 3 });
             drops.Add(new DropDTO { ItemVNum = 2118, Amount = 1, MonsterVNum = null, DropChance = 1500, MapTypeId = 3 });
             drops.Add(new DropDTO { ItemVNum = 2129, Amount = 1, MonsterVNum = null, DropChance = 150, MapTypeId = 3 });
+            drops.Add(new DropDTO { ItemVNum = 2205, Amount = 1, MonsterVNum = null, DropChance = 800, MapTypeId = 3 });
             drops.Add(new DropDTO { ItemVNum = 2206, Amount = 1, MonsterVNum = null, DropChance = 800, MapTypeId = 3 });
             drops.Add(new DropDTO { ItemVNum = 2207, Amount = 1, MonsterVNum = null, DropChance = 800, MapTypeId = 3 });
-            drops.Add(new DropDTO { ItemVNum = 2208, Amount = 1, MonsterVNum = null, DropChance = 2000, MapTypeId = 3 });
+            drops.Add(new DropDTO { ItemVNum = 2208, Amount = 1, MonsterVNum = null, DropChance = 800, MapTypeId = 3 });
             drops.Add(new DropDTO { ItemVNum = 2282, Amount = 1, MonsterVNum = null, DropChance = 3800, MapTypeId = 3 });
             drops.Add(new DropDTO { ItemVNum = 2283, Amount = 1, MonsterVNum = null, DropChance = 1900, MapTypeId = 3 });
             drops.Add(new DropDTO { ItemVNum = 2284, Amount = 1, MonsterVNum = null, DropChance = 950, MapTypeId = 3 });
@@ -797,6 +813,25 @@ namespace OpenNos.Import.Console
 
             //Act6.2 (need some information))
 
+            //Comet plain
+            drops.Add(new DropDTO { ItemVNum = 1004, Amount = 1, MonsterVNum = null, DropChance = 500, MapTypeId = 9 });
+            drops.Add(new DropDTO { ItemVNum = 1007, Amount = 1, MonsterVNum = null, DropChance = 500, MapTypeId = 9 });
+            drops.Add(new DropDTO { ItemVNum = 1012, Amount = 1, MonsterVNum = null, DropChance = 12000, MapTypeId = 9 });
+            drops.Add(new DropDTO { ItemVNum = 2098, Amount = 1, MonsterVNum = null, DropChance = 400, MapTypeId = 9 });
+            drops.Add(new DropDTO { ItemVNum = 2099, Amount = 1, MonsterVNum = null, DropChance = 400, MapTypeId = 9 });
+            drops.Add(new DropDTO { ItemVNum = 2100, Amount = 1, MonsterVNum = null, DropChance = 400, MapTypeId = 9 });
+            drops.Add(new DropDTO { ItemVNum = 2101, Amount = 1, MonsterVNum = null, DropChance = 400, MapTypeId = 9 });
+            drops.Add(new DropDTO { ItemVNum = 2102, Amount = 1, MonsterVNum = null, DropChance = 800, MapTypeId = 9 });
+            drops.Add(new DropDTO { ItemVNum = 2102, Amount = 1, MonsterVNum = null, DropChance = 000, MapTypeId = 9 });
+            drops.Add(new DropDTO { ItemVNum = 2114, Amount = 1, MonsterVNum = null, DropChance = 1800, MapTypeId = 9 });
+            drops.Add(new DropDTO { ItemVNum = 2115, Amount = 1, MonsterVNum = null, DropChance = 1800, MapTypeId = 9 });
+            drops.Add(new DropDTO { ItemVNum = 2116, Amount = 1, MonsterVNum = null, DropChance = 1800, MapTypeId = 9 });
+            drops.Add(new DropDTO { ItemVNum = 2117, Amount = 1, MonsterVNum = null, DropChance = 1800, MapTypeId = 9 });
+            drops.Add(new DropDTO { ItemVNum = 2205, Amount = 1, MonsterVNum = null, DropChance = 800, MapTypeId = 9 });
+            drops.Add(new DropDTO { ItemVNum = 2206, Amount = 1, MonsterVNum = null, DropChance = 800, MapTypeId = 9 });
+            drops.Add(new DropDTO { ItemVNum = 2207, Amount = 1, MonsterVNum = null, DropChance = 800, MapTypeId = 9 });
+            drops.Add(new DropDTO { ItemVNum = 2208, Amount = 1, MonsterVNum = null, DropChance = 800, MapTypeId = 9 });
+            drops.Add(new DropDTO { ItemVNum = 2296, Amount = 1, MonsterVNum = null, DropChance = 400, MapTypeId = 9 });
             DAOFactory.DropDAO.Insert(drops);
         }
 

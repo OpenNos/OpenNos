@@ -406,7 +406,7 @@
     <value>Tu n'as pas assez d'or.</value>
   </data>
   <data name="NOT_ENOUGH_PLACE" xml:space="preserve">
-    <value>Tu n'as pas assez de place dans ton inventaire.</value>
+    <value>Ton inventaire est plein !</value>
   </data>
   <data name="NOT_HUNGRY_FEMALE" xml:space="preserve">
     <value>Je commence à me sentir mal...</value>
@@ -851,15 +851,21 @@ Veux-tu le porter ?</value>
     <value>Le joueur est déjà en train d'effectué un échange.</value>
   </data>
   <data name="HAS_SHOP_OPENED" xml:space="preserve">
-    <value>Tu ne peux pas faire d'échanger avec ce joueur car il est en magasin.</value>
+    <value>Tu ne peux pas faire d'échanger avec ce joueur, car il a ouvert un magasin.</value>
   </data>
   <data name="JOINED_GROUP" xml:space="preserve">
     <value>Groupe rejoint</value>
   </data>
   <data name="USER_NOT_BANNED" xml:space="preserve">
-    <value />
+    <value>Le joueur a été débanni.</value>
   </data>
   <data name="USER_NOT_MUTED" xml:space="preserve">
-    <value />
+    <value>Le joueur ne subis plus la sourdine.</value>
+  </data>
+  <data name="MUTED_PLURAL" xml:space="preserve">
+    <value>Tu as été sanctionné  ! Raison : {0} pour : {1} heures.</value>
+  </data>
+  <data name="MUTED_SINGULAR" xml:space="preserve">
+    <value>Tu as été sanctionné  ! Raison : {0} pour : 1 heures.</value>
   </data>
 </root>
