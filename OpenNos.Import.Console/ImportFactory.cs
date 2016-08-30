@@ -322,7 +322,7 @@ namespace OpenNos.Import.Console
                     mapTypeId = 3;
                     objectset = true;
                 }
-                else if ((i > 129 && i < 135)) // "act4"
+                else if ((i > 129 && i < 135) || (i > 150 && i < 155)) // "act4"
                 {
                     mapTypeId = 4;
                     objectset = true;
