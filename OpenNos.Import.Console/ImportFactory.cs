@@ -373,8 +373,8 @@ namespace OpenNos.Import.Console
                 MapTypeName = "LandOfTheDead",
                 PotionDelay = 300
             };
-            if (!list.Any(s => s.MapTypeId == mt19.MapTypeId))
-                DAOFactory.MapTypeDAO.Insert(ref mt19);
+            if (!list.Any(s => s.MapTypeId == mt30.MapTypeId))
+                DAOFactory.MapTypeDAO.Insert(ref mt30);
 
             Logger.Log.Info(Language.Instance.GetMessageFromKey("MAPTYPES_PARSED"));
         }
