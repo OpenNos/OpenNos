@@ -142,7 +142,7 @@
     <value>Un client s'est déconnecté ! ClientId =</value>
   </data>
   <data name="FORCED_DISCONNECT" xml:space="preserve">
-    <value>Déconnexion forcée du client {0}, Trop de connexion...</value>
+    <value>Déconnexion forcée du client {0}</value>
   </data>
   <data name="IDERROR" xml:space="preserve">
     <value>Erreur : Votre identifiant ou mot de passe est incorrect.</value>
@@ -157,7 +157,7 @@
     <value>Un nouveau client est connecté. ClientId =</value>
   </data>
   <data name="NOTVALIDATE" xml:space="preserve">
-    <value>Ce compte n'est pas valide.</value>
+    <value>Le compte n'est pas valide.</value>
   </data>
   <data name="PACKET_FAILURE" xml:space="preserve">
     <value>Échec de l'envoi de paquets {0} au client {1}, {2}.</value>
@@ -173,8 +173,5 @@
   </data>
   <data name="DATABASE_NOT_UPTODATE" xml:space="preserve">
     <value>Votre base de donnée n'est pas pas à jour. S'il vous plaît envisager de mettre à jour votre base de données.</value>
-  </data>
-  <data name="SCROLL_PROTECT_USED" xml:space="preserve">
-    <value>Le parchemin protecteur a été utilisé.</value>
   </data>
 </root>
