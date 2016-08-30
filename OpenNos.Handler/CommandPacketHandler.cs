@@ -18,6 +18,7 @@ using OpenNos.Data;
 using OpenNos.Domain;
 using OpenNos.GameObject;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
@@ -93,20 +94,27 @@ namespace OpenNos.Handler
                 if (session != null)
                 {
                     long acc = session.Account.AccountId;
-                    if (session.Account.PenaltyLogs.Where(s => s.AccountId == acc && s.Penalty == (byte)PenaltyType.Muted).FirstOrDefault() != null)
+                    if (session.Account.PenaltyLogs.Where(s => s.AccountId == acc && s.Penalty == (byte)PenaltyType.Muted && s.DateEnd > DateTime.Now).LastOrDefault() != null)
                     {
-                        session.Account.PenaltyLogs.RemoveAt(session.Account.PenaltyLogs.Where(s => s.AccountId == acc && s.Penalty == (byte)PenaltyType.Muted).FirstOrDefault().PenaltyLogId);
+                        PenaltyLog log = session.Account.PenaltyLogs.Where(s => s.AccountId == acc && s.Penalty == (byte)PenaltyType.Muted && s.DateEnd > DateTime.Now).LastOrDefault();
+                        log.DateEnd = DateTime.Now.AddSeconds(-1);
                         Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
                     }
+                    else
+                        Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("USER_NOT_MUTED"), 10));
                 }
                 else if (DAOFactory.CharacterDAO.LoadByName(packetsplit[2]) != null)
                 {
                     long acc = DAOFactory.CharacterDAO.LoadByName(packetsplit[2]).AccountId;
-                    if (DAOFactory.PenaltyLogDAO.LoadByAccount(acc).FirstOrDefault(s => s.Penalty == (byte)PenaltyType.Muted) != null)
+                    if (DAOFactory.PenaltyLogDAO.LoadByAccount(acc).LastOrDefault(s => s.Penalty == (byte)PenaltyType.Muted && s.DateEnd > DateTime.Now) != null)
                     {
-                        DAOFactory.PenaltyLogDAO.Delete(DAOFactory.PenaltyLogDAO.LoadByAccount(acc).FirstOrDefault(s => s.Penalty == (byte)PenaltyType.Muted).PenaltyLogId);
+                        PenaltyLogDTO log = DAOFactory.PenaltyLogDAO.LoadByAccount(acc).LastOrDefault(s => s.Penalty == (byte)PenaltyType.Muted && s.DateEnd > DateTime.Now);
+                        log.DateEnd = DateTime.Now.AddSeconds(-1);
+                        DAOFactory.PenaltyLogDAO.Update(log);
                         Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
                     }
+                    else
+                        Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("USER_NOT_MUTED"), 10));
                 }
                 else
                     Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("USER_NOT_FOUND"), 10));
@@ -185,11 +193,15 @@ namespace OpenNos.Handler
                 if (DAOFactory.CharacterDAO.LoadByName(packetsplit[2]) != null)
                 {
                     long acc = DAOFactory.CharacterDAO.LoadByName(packetsplit[2]).AccountId;
-                    if (DAOFactory.PenaltyLogDAO.LoadByAccount(acc).FirstOrDefault(s => s.Penalty == PenaltyType.Banned) != null)
+                    if (DAOFactory.PenaltyLogDAO.LoadByAccount(acc).FirstOrDefault(s => s.Penalty == PenaltyType.Banned && s.DateEnd > DateTime.Now) != null)
                     {
-                        DAOFactory.PenaltyLogDAO.Delete(DAOFactory.PenaltyLogDAO.LoadByAccount(acc).FirstOrDefault(s => s.Penalty == PenaltyType.Banned).PenaltyLogId);
+                        PenaltyLogDTO log = DAOFactory.PenaltyLogDAO.LoadByAccount(acc).FirstOrDefault(s => s.Penalty == PenaltyType.Banned && s.DateEnd > DateTime.Now);
+                        log.DateEnd = DateTime.Now.AddSeconds(-1);
+                        DAOFactory.PenaltyLogDAO.Update(log);
                         Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("DONE"), 10));
                     }
+                    else
+                        Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("USER_NOT_BANNED"), 10));
                 }
                 else
                     Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("USER_NOT_FOUND"), 10));

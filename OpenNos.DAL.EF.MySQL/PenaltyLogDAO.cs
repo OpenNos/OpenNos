@@ -14,6 +14,7 @@
 
 using AutoMapper;
 using OpenNos.Core;
+using OpenNos.DAL.EF.MySQL.DB;
 using OpenNos.DAL.EF.MySQL.Helpers;
 using OpenNos.DAL.Interface;
 using OpenNos.Data;
@@ -70,6 +71,20 @@ namespace OpenNos.DAL.EF.MySQL
             {
                 Logger.Log.Error(String.Format(Language.Instance.GetMessageFromKey("DELETE_PENALTYLOG_ERROR"), penaltylogid, e.Message), e);
                 return DeleteResult.Error;
+            }
+        }
+
+        public void Update(PenaltyLogDTO penaltylog)
+        {
+            using (var context = DataAccessHelper.CreateContext())
+            {
+                PenaltyLog result = context.PenaltyLog.FirstOrDefault(c => c.AccountId == penaltylog.AccountId && c.PenaltyLogId == penaltylog.PenaltyLogId);
+                if (result != null)
+                {
+                    penaltylog.PenaltyLogId = result.PenaltyLogId;
+                    _mapper.Map(penaltylog, result);
+                    context.SaveChanges();
+                }
             }
         }
 

@@ -880,4 +880,10 @@
   <data name="RECEIVED_ITEM" xml:space="preserve">
     <value>You received: {0}</value>
   </data>
+  <data name="USER_NOT_BANNED" xml:space="preserve">
+    <value>User is not banned.</value>
+  </data>
+  <data name="USER_NOT_MUTED" xml:space="preserve">
+    <value>User is not muted.</value>
+  </data>
 </root>

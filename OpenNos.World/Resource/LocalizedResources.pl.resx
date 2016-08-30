@@ -862,4 +862,10 @@
   <data name="RECEIVED_ITEM" xml:space="preserve">
     <value>Otrzymałeś: </value>
   </data>
+  <data name="USER_NOT_BANNED" xml:space="preserve">
+    <value>Gracz nie jest zbanowany.</value>
+  </data>
+  <data name="USER_NOT_MUTED" xml:space="preserve">
+    <value>Gracz nie jest wyciszony.</value>
+  </data>
 </root>
