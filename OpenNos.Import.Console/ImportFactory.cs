@@ -403,22 +403,22 @@ namespace OpenNos.Import.Console
                     mapTypeId = 3;
                     objectset = true;
                 }
-                else if ((i > 129 && i < 135) || (i > 150 && i < 155)) // "act4"
+                else if ((i > 129 && i < 135) || (i > 151 && i < 155)) // "act4"
                 {
                     mapTypeId = 4;
                     objectset = true;
                 }
-                else if ((i > 169 && i < 205)) // "act5.1"
+                else if (i > 169 && i < 205) // "act5.1"
                 {
                     mapTypeId = 5;
                     objectset = true;
                 }
-                else if ((i > 204 && i < 221)) // "act5.2"
+                else if (i > 204 && i < 221) // "act5.2"
                 {
                     mapTypeId = 6;
                     objectset = true;
                 }
-                else if ((i > 227 && i < 241)) // "act6.1"
+                else if (i > 227 && i < 241) // "act6.1"
                 {
                     mapTypeId = 7;
                     objectset = true;
@@ -458,7 +458,7 @@ namespace OpenNos.Import.Console
                     mapTypeId = 16;
                     objectset = true;
                 }
-                else if (i > 9 && i < 19 || i > 79 && i < 85) // "FernonF"
+                else if ((i > 9 && i < 19) || (i > 79 && i < 85)) // "FernonF"
                 {
                     mapTypeId = 17;
                     objectset = true;
