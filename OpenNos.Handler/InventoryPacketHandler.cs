@@ -669,6 +669,12 @@ namespace OpenNos.Handler
             }
         }
 
+        [Packet("#u_i")]
+        public void SpecialUseItem(string packet)
+        {
+            UseItem(packet);
+        }
+
         [Packet("sl")]
         public void SpTransform(string packet)
         {
@@ -1142,19 +1148,12 @@ namespace OpenNos.Handler
                                     specialist.PerfectSP(Session, UpgradeProtection.None);
                                     Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(specialist.ItemVNum, 1, type, slot, specialist.Rare, specialist.Design, specialist.Upgrade, 0));
                                 }
-
                             }
                             else Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("CANT_UPGRADE_DESTROYED_SP"), 0));
                         }
                         break;
                 }
             }
-        }
-
-        [Packet("#u_i")]
-        public void SpecialUseItem(string packet)
-        {
-            UseItem(packet);
         }
 
         [Packet("u_i")]

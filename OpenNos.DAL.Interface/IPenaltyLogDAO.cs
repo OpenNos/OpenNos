@@ -26,11 +26,11 @@ namespace OpenNos.DAL.Interface
 
         PenaltyLogDTO Insert(PenaltyLogDTO penaltylog);
 
-        void Update(PenaltyLogDTO penaltylog);
-
         IEnumerable<PenaltyLogDTO> LoadByAccount(long accountId);
 
         PenaltyLogDTO LoadById(int penaltylogId);
+
+        void Update(PenaltyLogDTO penaltylog);
 
         #endregion
     }

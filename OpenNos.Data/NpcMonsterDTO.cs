@@ -18,6 +18,7 @@ namespace OpenNos.Data
     {
         #region Properties
 
+        public byte AmountRequired { get; set; }
         public byte AttackClass { get; set; }
         public byte AttackUpgrade { get; set; }
         public byte BasicArea { get; set; }
@@ -53,10 +54,9 @@ namespace OpenNos.Data
         public byte RaceType { get; set; }
         public int RespawnTime { get; set; }
         public byte Speed { get; set; }
+        public short VNumRequired { get; set; }
         public sbyte WaterResistance { get; set; }
         public int XP { get; set; }
-        public short VNumRequired { get; set; }
-        public byte AmountRequired { get; set; }
 
         #endregion
     }

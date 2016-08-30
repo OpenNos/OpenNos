@@ -860,7 +860,7 @@
     <value>Dołączyłeś do grupy!</value>
   </data>
   <data name="RECEIVED_ITEM" xml:space="preserve">
-    <value>Otrzymałeś: </value>
+    <value>Otrzymałeś: {0}</value>
   </data>
   <data name="USER_NOT_BANNED" xml:space="preserve">
     <value>Gracz nie jest zbanowany.</value>

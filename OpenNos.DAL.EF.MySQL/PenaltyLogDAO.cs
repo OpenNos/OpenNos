@@ -14,7 +14,6 @@
 
 using AutoMapper;
 using OpenNos.Core;
-using OpenNos.DAL.EF.MySQL.DB;
 using OpenNos.DAL.EF.MySQL.Helpers;
 using OpenNos.DAL.Interface;
 using OpenNos.Data;
@@ -74,20 +73,6 @@ namespace OpenNos.DAL.EF.MySQL
             }
         }
 
-        public void Update(PenaltyLogDTO penaltylog)
-        {
-            using (var context = DataAccessHelper.CreateContext())
-            {
-                PenaltyLog result = context.PenaltyLog.FirstOrDefault(c => c.AccountId == penaltylog.AccountId && c.PenaltyLogId == penaltylog.PenaltyLogId);
-                if (result != null)
-                {
-                    penaltylog.PenaltyLogId = result.PenaltyLogId;
-                    _mapper.Map(penaltylog, result);
-                    context.SaveChanges();
-                }
-            }
-        }
-
         public PenaltyLogDTO Insert(PenaltyLogDTO penaltylog)
         {
             using (var context = DataAccessHelper.CreateContext())
@@ -115,6 +100,20 @@ namespace OpenNos.DAL.EF.MySQL
             using (var context = DataAccessHelper.CreateContext())
             {
                 return _mapper.Map<PenaltyLogDTO>(context.PenaltyLog.FirstOrDefault(s => s.PenaltyLogId.Equals(penaltylogId)));
+            }
+        }
+
+        public void Update(PenaltyLogDTO penaltylog)
+        {
+            using (var context = DataAccessHelper.CreateContext())
+            {
+                PenaltyLog result = context.PenaltyLog.FirstOrDefault(c => c.AccountId == penaltylog.AccountId && c.PenaltyLogId == penaltylog.PenaltyLogId);
+                if (result != null)
+                {
+                    penaltylog.PenaltyLogId = result.PenaltyLogId;
+                    _mapper.Map(penaltylog, result);
+                    context.SaveChanges();
+                }
             }
         }
 

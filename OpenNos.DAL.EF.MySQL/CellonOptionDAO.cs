@@ -28,7 +28,7 @@ namespace OpenNos.DAL.EF.MySQL
 
         private IMapper _mapper;
 
-        #endregion
+        #endregion Members
 
         #region Instantiation
 
@@ -43,7 +43,7 @@ namespace OpenNos.DAL.EF.MySQL
             _mapper = config.CreateMapper();
         }
 
-        #endregion
+        #endregion Instantiation
 
         #region Methods
 
@@ -58,6 +58,6 @@ namespace OpenNos.DAL.EF.MySQL
             }
         }
 
-        #endregion
+        #endregion Methods
     }
 }

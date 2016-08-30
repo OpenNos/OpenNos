@@ -23,7 +23,7 @@ namespace OpenNos.DAL.Interface
 
         DropDTO Insert(DropDTO drop);
 
-        void Insert(List<DropDTO> drops);       
+        void Insert(List<DropDTO> drops);
 
         IEnumerable<DropDTO> LoadByMonster(short monsterVNum);
 
