@@ -38,7 +38,7 @@ namespace OpenNos.Domain
         Cliff = 18,
 
         // Future, instance map, special map
-        LandOfTheDead = 30,
+        LandOfTheDead = 19,
 
     }
 }
