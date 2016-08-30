@@ -1134,12 +1134,8 @@ namespace OpenNos.GameObject
             return $"tp 1 {CharacterId} {MapX} {MapY} 0";
         }
 
-        public void GenerateXp(NpcMonster monsterinfo)
+        public void GenerateDignity(NpcMonster monsterinfo)
         {
-            int partySize = 1;
-            Group grp = ServerManager.Instance.Groups.FirstOrDefault(g => g.IsMemberOfGroup(Session.Character.CharacterId));
-            if (grp != null) partySize = grp.Characters.Count;
-
             if (Session.Character.Level < monsterinfo.Level && Session.Character.Dignity < 100 && Session.Character.Level > 20)
             {
                 Session.Character.Dignity += (float)0.5;
@@ -1150,6 +1146,13 @@ namespace OpenNos.GameObject
                     Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("RESTORE_DIGNITY"), 11));
                 }
             }
+        }
+
+        public void GenerateXp(NpcMonster monsterinfo)
+        {
+            int partySize = 1;
+            Group grp = ServerManager.Instance.Groups.FirstOrDefault(g => g.IsMemberOfGroup(Session.Character.CharacterId));
+            if (grp != null) partySize = grp.Characters.Count;
 
             if ((int)(Session.Character.LevelXp / (Session.Character.XPLoad() / 10)) < (int)((Session.Character.LevelXp + monsterinfo.XP) / (Session.Character.XPLoad() / 10)))
             {
