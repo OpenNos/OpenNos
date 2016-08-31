@@ -402,7 +402,7 @@ namespace OpenNos.Import.Console
                     mapTypeId = 3;
                     objectset = true;
                 }
-                else if ((i > 129 && i < 143) || (i > 150 && i < 155)) // "act4"
+                else if ((i > 129 && i <= 134) || (i == 135) || (i == 137) || (i == 139) || (i == 141) || (i > 150 && i < 155)) // "act4"
                 {
                     mapTypeId = 4;
                     objectset = true;
@@ -427,22 +427,22 @@ namespace OpenNos.Import.Console
                     mapTypeId = 8;
                     objectset = true;
                 }
-                else if ((i == 103)) // "Comet plain"
+                else if (i == 103) // "Comet plain"
                 {
                     mapTypeId = 11;
                     objectset = true;
                 }
-                else if ((i == 6)) // "Mine1"
+                else if (i == 6) // "Mine1"
                 {
                     mapTypeId = 12;
                     objectset = true;
                 }
-                else if ((i > 6 && i < 9)) // "Mine2"
+                else if (i > 6 && i < 9) // "Mine2"
                 {
                     mapTypeId = 13;
                     objectset = true;
                 }
-                else if ((i == 3)) // "Meadown of mine"
+                else if (i == 3) // "Meadown of mine"
                 {
                     mapTypeId = 14;
                     objectset = true;
