@@ -403,7 +403,7 @@ namespace OpenNos.GameObject
                 session.Client.SendPacket($"gidx 1 {session.Character.CharacterId} -1 - 0"); // family
                 session.Client.SendPacket("rsfp 0 -1");
                 //cond 2 // partner only send when partner present
-                session.Client.SendPacket("pinit 0"); // partner initialization
+                session.Client.SendPacket("pinit 0"); // clean party list
                 session.Client.SendPacket(session.Character.GeneratePairy());
                 session.CurrentMap?.Broadcast(session, session.Character.GeneratePairy(), ReceiverType.AllExceptMe);
                 session.Client.SendPacket("act6"); // act6 1 0 14 0 0 0 14 0 0 0
@@ -582,7 +582,6 @@ namespace OpenNos.GameObject
                             sess.Client.SendPacket(sess.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("LEAVE_GROUP"), session.Character.Name), 0));
                         }
                     }
-                    //session.Client.SendPacket("pinit 0");
                     session.Client.SendPacket($"pidx -1 1.{ session.Character.CharacterId}");
                     Broadcast(session, $"pidx -1 1.{session.Character.CharacterId}", ReceiverType.AllExceptMe);
                     session.Client.SendPacket(session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("GROUP_LEFT"), 0));

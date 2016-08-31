@@ -868,4 +868,10 @@
   <data name="USER_NOT_MUTED" xml:space="preserve">
     <value>Gracz nie jest wyciszony.</value>
   </data>
+  <data name="TRY_FAILED" xml:space="preserve">
+    <value>Nic nie znalazłeś.</value>
+  </data>
+  <data name="TRY_FAILED_WAIT" xml:space="preserve">
+    <value>Próba nieudana, spróbuj za: {0}</value>
+  </data>
 </root>

@@ -886,4 +886,10 @@
   <data name="USER_NOT_MUTED" xml:space="preserve">
     <value>User is not muted.</value>
   </data>
+  <data name="TRY_FAILED" xml:space="preserve">
+    <value>You found nothing.</value>
+  </data>
+  <data name="TRY_FAILED_WAIT" xml:space="preserve">
+    <value>Try after: {0}s</value>
+  </data>
 </root>

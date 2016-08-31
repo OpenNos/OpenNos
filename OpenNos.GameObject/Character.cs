@@ -109,6 +109,7 @@ namespace OpenNos.GameObject
         public int IsDancing { get { return _isDancing; } set { _isDancing = value; } }
         public bool IsSitting { get { return _issitting; } set { _issitting = value; } }
         public bool IsVehicled { get; set; }
+        public DateTime LastMapObject { get; set; }
         public DateTime LastDefence { get; set; }
         public DateTime LastLogin { get; set; }
         public DateTime LastMove { get; set; }
