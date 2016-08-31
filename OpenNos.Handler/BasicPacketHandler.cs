@@ -365,7 +365,6 @@ namespace OpenNos.Handler
         {
             Logger.Debug(packet, Session.SessionId);
             string[] packetsplit = packet.Split(' ', '^');
-
             switch (packetsplit[2])
             {
                 case "400":
@@ -373,22 +372,33 @@ namespace OpenNos.Handler
                     {
                         MapNpc npc = ServerManager.GetMap(Session.Character.MapId).Npcs.FirstOrDefault(n => n.MapNpcId.Equals(Convert.ToInt16(packetsplit[3])));
                         NpcMonster mapobject = ServerManager.GetNpc(npc.NpcVNum);
-                        if (mapobject.Drops.Any(s => s.MonsterVNum != null))
+                        Random rnd = new Random();
+                        int RateDrop = ServerManager.DropRate;
+                        if (Session.Character.LastMapObject.AddSeconds(6) < DateTime.Now)
                         {
-                            if (mapobject.VNumRequired > 10 && Session.Character.InventoryList.CountItem(mapobject.VNumRequired) < mapobject.AmountRequired)
+                            rnd = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
+                            double rndamount = rnd.Next(0, 100) * rnd.NextDouble();
+                            int dropChance = mapobject.Drops.FirstOrDefault(s => s.MonsterVNum == npc.NpcVNum).DropChance;
+                            if (rndamount <= ((double)dropChance * RateDrop) / 5000.000)
                             {
-                                Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_ITEM"), 0));
-                                return;
+                                if (mapobject.Drops.Any(s => s.MonsterVNum != null))
+                                {
+                                    if (mapobject.VNumRequired > 10 && Session.Character.InventoryList.CountItem(mapobject.VNumRequired) < mapobject.AmountRequired)
+                                    {
+                                        Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_ITEM"), 0));
+                                        return;
+                                    }
+                                }
+                                short vnum = mapobject.Drops.FirstOrDefault(s => s.MonsterVNum == npc.NpcVNum).ItemVNum;
+                                Session.Character.InventoryList.AddNewItemToInventory(vnum);
+                                Session.Character.LastMapObject = DateTime.Now;
+                                Session.Client.SendPacket(Session.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("RECEIVED_ITEM"), ServerManager.GetItem(vnum).Name), 10));
                             }
+                            else
+                                Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("TRY_FAILED"), 10));
                         }
-                        short vnum = mapobject.Drops.FirstOrDefault(s => s.MonsterVNum == npc.NpcVNum).ItemVNum;
-                        Session.Character.InventoryList.AddNewItemToInventory(vnum);
-                        Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("RECEIVED_ITEM"), ServerManager.GetItem(vnum).Name), 11));
-                    }
-                    else
-                    {
-                        //Need to add failed try and time needed if you spam (You want to wait it show you a msg with the time needed like SP time needed)
-                        Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("TRY_FAILED"), 11));
+                        else // make it like official, more than 6 seconds propably multiplied by amount of tries
+                            Session.Client.SendPacket(Session.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("TRY_FAILED_WAIT"), (int)(Session.Character.LastMapObject.AddSeconds(6) - DateTime.Now).TotalSeconds), 10));
                     }
                     break;
 
@@ -401,8 +411,8 @@ namespace OpenNos.Handler
                     }
                     break;
             }
-
         }
+
         [Packet("hero")]
         public void Hero(string packet)
         {
@@ -951,7 +961,6 @@ namespace OpenNos.Handler
                             }
                             Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateTp(), ReceiverType.All);
                             Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateRevive(), ReceiverType.All);
-                            Session.Client.SendPacket("pinit 0");
                             Session.Client.SendPacket(Session.Character.GenerateStat());
                         }
                         break;
@@ -1121,7 +1130,7 @@ namespace OpenNos.Handler
             // sc_p pet
             // sc_n nospartner
             //Session.Client.SendPacket("sc_p_stc 0"); // end pet and partner
-            Session.Client.SendPacket("pinit 0"); // partner initialization
+            Session.Client.SendPacket("pinit 0"); // clean party list
             Session.Character.DeleteTimeout();
             // blinit
             Session.Client.SendPacket("zzim");

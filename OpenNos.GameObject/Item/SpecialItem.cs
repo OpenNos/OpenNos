@@ -27,7 +27,6 @@ namespace OpenNos.GameObject
         {
             switch (Effect)
             {
-
                 case 650: //wings
                     SpecialistInstance specialistInstance = Session.Character.EquipmentList.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, (byte)InventoryType.Equipment);
                     if (Session.Character.UseSp && specialistInstance != null)
@@ -91,7 +90,6 @@ namespace OpenNos.GameObject
                     }
                     else
                     {
-                        Session.Client.SendPacket("pinit 0");
                         if (Session.Character.IsVehicled == false)
                         {
                             Session.Character.IsVehicled = true;
@@ -105,7 +103,6 @@ namespace OpenNos.GameObject
                         else
                         {
                             Session.Character.IsVehicled = false;
-                            Session.CurrentMap?.Broadcast(Session.Character.GenerateCMode());
                             Session.Character.Speed = Session.Character.LastSpeed;
                             if (Session.Character.UseSp)
                             {

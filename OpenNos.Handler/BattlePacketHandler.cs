@@ -1041,7 +1041,10 @@ namespace OpenNos.Handler
                             x++;
                             if (ServerManager.GetMap(Session.Character.MapId).MapTypes.Any(s => s.MapTypeId == 4))
                             {
-                                Session.Character.InventoryList.AddNewItemToInventory(drop.ItemVNum, drop.Amount, true);
+                                ItemInstance newItem = Session.Character.InventoryList.CreateItemInstance(drop.ItemVNum);
+                                if (newItem.Item.ItemType == (byte)ItemType.Armor || newItem.Item.ItemType == (byte)ItemType.Weapon || newItem.Item.ItemType == (byte)ItemType.Shell)
+                                    ((WearableInstance)newItem).RarifyItem(Session, RarifyMode.Drop, RarifyProtection.None);
+                                Inventory newInv = Session.Character.InventoryList.AddToInventory(newItem);
                                 Session.Client.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {ServerManager.GetItem(drop.ItemVNum).Name} x {drop.Amount}", 10));
                             }
                             else
@@ -1077,7 +1080,9 @@ namespace OpenNos.Handler
                         if (grp.Characters.TrueForAll(g => g.Character.MapId == Session.Character.MapId))
                             grp.Characters.Where(g => g.Character.MapId == Session.Character.MapId).ToList().ForEach(g => g.Character.GenerateXp(monsterinfo));
                     }
-                    else Session.Character.GenerateXp(monsterinfo);
+                    else
+                        Session.Character.GenerateXp(monsterinfo);
+                    Session.Character.GenerateDignity(monsterinfo);
                 }
             }
             else

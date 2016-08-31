@@ -61,7 +61,7 @@ namespace OpenNos.GameObject
             return iteminstance;
         }
 
-        public Inventory AddNewItemToInventory(short vnum, int amount = 1, bool rarify = false)
+        public Inventory AddNewItemToInventory(short vnum, int amount = 1)
         {
             Logger.Debug(vnum.ToString(), Owner.Session.SessionId);
             short Slot = -1;
@@ -69,10 +69,6 @@ namespace OpenNos.GameObject
             Inventory inv = null;
             ItemInstance newItem = CreateItemInstance(vnum);
             newItem.Amount = amount;
-            if (rarify = true && newItem.Item.Type == (byte)InventoryType.Wear && newItem.Item.ItemType != (byte)ItemType.Specialist)
-            {
-                ((WearableInstance)newItem).RarifyItem(Owner.Session, RarifyMode.Drop, RarifyProtection.None);
-            }
             if (newItem.Item.Type != 0)
             {
                 slotfree = Owner.LoadBySlotAllowed(newItem.ItemVNum, newItem.Amount);
@@ -81,7 +77,7 @@ namespace OpenNos.GameObject
             if (inv != null)
             {
                 inv.ItemInstance.Amount += newItem.Amount;
-                Owner.Session.Client.SendPacket(Owner.Session.Character.GenerateInventoryAdd(vnum, inv.ItemInstance.Amount, newItem.Item.Type, inv.Slot, newItem.Rare, newItem.Design, 0, 0));
+                Owner.Session.Client.SendPacket(Owner.Session.Character.GenerateInventoryAdd(vnum, inv.ItemInstance.Amount, inv.Type, inv.Slot, inv.ItemInstance.Rare, inv.ItemInstance.Design, inv.ItemInstance.Upgrade, 0));
             }
             else
             {
@@ -89,7 +85,6 @@ namespace OpenNos.GameObject
                 if (Slot != -1)
                 {
                     inv = AddToInventoryWithSlotAndType(newItem, newItem.Item.Type, Slot);
-                    Owner.Session.Client.SendPacket(Owner.Session.Character.GenerateInventoryAdd(vnum, amount, newItem.Item.Type, Slot, newItem.Rare, newItem.Design, 0, 0));
                 }
             }
             return inv;
@@ -125,6 +120,7 @@ namespace OpenNos.GameObject
         {
             Logger.Debug($"Slot: {slot} Type: {type} VNUM: {iteminstance.ItemVNum}", Owner.Session.SessionId);
             Inventory inv = new Inventory() { Type = type, Slot = slot, ItemInstance = iteminstance, CharacterId = Owner.CharacterId, InventoryId = GenerateInventoryId() };
+            Owner.Session.Client.SendPacket(Owner.Session.Character.GenerateInventoryAdd(iteminstance.ItemVNum, inv.ItemInstance.Amount, type, slot, iteminstance.Rare, iteminstance.Design, 0, 0));
             if (Inventory.Any(s => s.Slot == slot && s.Type == type))
                 return null;
             Inventory.Add(inv);

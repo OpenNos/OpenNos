@@ -172,7 +172,7 @@ namespace OpenNos.Handler
                     break;
 
                 case 7:
-                    inventory = Session.Character.InventoryList.LoadBySlotAndType<SpecialistInstance>(slot, (byte)InventoryType.Sp); // for future purposes inv in partner
+                    inventory = Session.Character.InventoryList.LoadBySlotAndType<SpecialistInstance>(slot, (byte)InventoryType.Sp); // Partner inv
                     break;
 
                 case 10:
@@ -669,6 +669,12 @@ namespace OpenNos.Handler
             }
         }
 
+        [Packet("#u_i")]
+        public void SpecialUseItem(string packet)
+        {
+            UseItem(packet);
+        }
+
         [Packet("sl")]
         public void SpTransform(string packet)
         {
@@ -1142,19 +1148,12 @@ namespace OpenNos.Handler
                                     specialist.PerfectSP(Session, UpgradeProtection.None);
                                     Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(specialist.ItemVNum, 1, type, slot, specialist.Rare, specialist.Design, specialist.Upgrade, 0));
                                 }
-
                             }
                             else Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("CANT_UPGRADE_DESTROYED_SP"), 0));
                         }
                         break;
                 }
             }
-        }
-
-        [Packet("#u_i")]
-        public void SpecialUseItem(string packet)
-        {
-            UseItem(packet);
         }
 
         [Packet("u_i")]
@@ -1220,19 +1219,11 @@ namespace OpenNos.Handler
             Session.Character.MorphUpgrade2 = sp.Design;
             Session.CurrentMap?.Broadcast(Session.Character.GenerateCMode());
 
-            // TODO: Send SP Skills here
-
-            /*s = "ski 833 833 833 834 835 836 837 838 839 840 841 21 25 28 37 41 44 49 53 56 340 341 345 352";
-            MainFile.maps.SendMap(chara, s, true);
-            /*
-                qslot 0 1.1.2 1.1.1 1.1.3 0.7.-1 1.1.0 0.7.-1 0.7.-1 0.1.10 1.3.2 1.3.1
-
-                qslot 1 1.1.2 1.1.3 1.1.4 1.1.5 1.1.6 7.7.-1 7.7.-1 7.7.-1 7.7.-1 7.7.-1
-
-                qslot 2 7.7.-1 7.7.-1 7.7.-1 7.7.-1 7.7.-1 7.7.-1 7.7.-1 7.7.-1 7.7.-1 7.7.-1
-                */
-
-            // lev 40 2288403 14 72745 3221180 145000 20086 5
+            
+            //qslot 0 1.1.2 1.1.1 1.1.3 0.7.-1 1.1.0 0.7.-1 0.7.-1 0.1.10 1.3.2 1.3.1
+            //qslot 1 1.1.2 1.1.3 1.1.4 1.1.5 1.1.6 7.7.-1 7.7.-1 7.7.-1 7.7.-1 7.7.-1
+            //qslot 2 7.7.-1 7.7.-1 7.7.-1 7.7.-1 7.7.-1 7.7.-1 7.7.-1 7.7.-1 7.7.-1 7.7.-1
+            
 
             Session.CurrentMap?.Broadcast(Session.Character.GenerateEff(196));
             Session.CurrentMap?.Broadcast($"guri 6 1 {Session.Character.CharacterId} 0 0");
@@ -1263,16 +1254,9 @@ namespace OpenNos.Handler
             Session.Character.Speed -= ServerManager.GetItem(vnum).Speed;
             Session.Character.UseSp = false;
 
-            /* string s2 = "c_info " + chara.name + " - -1 -1 - " + chara.id + " " + ((chara.isGm) ? 2 : 0) + " " + +chara.sex + " " + +chara.Hair.style + " " + +chara.Hair.color + " " + chara.user_class + " " + Stats.GetReput(chara.Reput, chara.dignite.ToString()) + " " + (chara.Sp.inUsing ? chara.Sp.sprite : 0) + " 0 - " + (chara.Sp.inUsing ? chara.Sp.upgrade == 15 ? chara.Sp.wings > 4 ? 0 : 15 : chara.Sp.upgrade : 0) + " " + (chara.Sp.inUsing ? (chara.Sp.wings > 4) ? chara.Sp.wings - 4 : chara.Sp.wings : 0) + " " + (chara.Sp.wings_arena ? 1 : 0);
-            chara.Send(s2);
-            s2 = "at " + chara.id + " " + chara.MapPoint.map + " " + chara.MapPoint.x + " " + +chara.MapPoint.y + " 2 0 0 1";
-            chara.Send(s2); */
-
             Session.Client.SendPacket(Session.Character.GenerateCond());
             Session.Client.SendPacket(Session.Character.GenerateLev());
 
-            /* string s="sl 0";
-               chara.Send(s); */
             Session.Character.SpCooldown = 30;
             if (Session.Character != null && Session.Character.SkillsSp != null)
             {
@@ -1292,10 +1276,9 @@ namespace OpenNos.Handler
             Session.CurrentMap?.Broadcast(Session.Character.GenerateCMode());
             Session.CurrentMap?.Broadcast($"guri 6 1 {Session.Character.CharacterId} 0 0");
 
-            /* s="ms_c";
-            chara.Send(s); */
+            //s="ms_c";
+            //chara.Send(s);
 
-            // lev 40 2288403 23 47450 3221180 113500 20086 5
             Session.Client.SendPacket(Session.Character.GenerateSki());
             string[] quicklistpackets = Session.Character.GenerateQuicklist();
             foreach (string quicklist in quicklistpackets)

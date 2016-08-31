@@ -28,7 +28,7 @@ namespace OpenNos.GameObject
             Random rnd = new Random();
             switch (Effect)
             {
-                case 10:
+                case 10: // dyes
                     if (iteminfo != null)
                     {
                         if (EffectValue == 99)
@@ -48,7 +48,7 @@ namespace OpenNos.GameObject
                     }
                     break;
 
-                case 11:
+                case 11: // waxes
                     if (iteminfo != null)
                     {
                         if (Session.Character.Class == (byte)ClassType.Adventurer && EffectValue > 1)
@@ -70,7 +70,7 @@ namespace OpenNos.GameObject
                     }
                     break;
 
-                case 30:
+                case 30: // wigs
                     if (iteminfo != null)
                     {
                         WearableInstance wig = Session.Character.EquipmentList.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Hat, (byte)InventoryType.Equipment);

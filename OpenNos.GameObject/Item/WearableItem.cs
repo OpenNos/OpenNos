@@ -44,7 +44,6 @@ namespace OpenNos.GameObject
                     {
                         if ((iteminfo.MaxElementRate == 70 || iteminfo.MaxElementRate == 80) && !DelayUsed && !inventory.ItemInstance.IsUsed && IsTradable)
                         {
-
                             session.Client.SendPacket($"qna #u_i^1^{session.Character.CharacterId}^{type}^{slot}^1 {Language.Instance.GetMessageFromKey("ASK_BIND")}");
                             return;
                         }
