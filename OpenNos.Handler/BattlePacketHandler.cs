@@ -1039,12 +1039,14 @@ namespace OpenNos.Handler
                         if (rndamount <= ((double)drop.DropChance * RateDrop) / 5000.000)
                         {
                             x++;
-                            if (ServerManager.GetMap(Session.Character.MapId).MapTypes.Any(s => s.MapTypeId == 4))
+                            if (ServerManager.GetMap(Session.Character.MapId).MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act4))
                             {
                                 ItemInstance newItem = Session.Character.InventoryList.CreateItemInstance(drop.ItemVNum);
                                 if (newItem.Item.ItemType == (byte)ItemType.Armor || newItem.Item.ItemType == (byte)ItemType.Weapon || newItem.Item.ItemType == (byte)ItemType.Shell)
                                     ((WearableInstance)newItem).RarifyItem(Session, RarifyMode.Drop, RarifyProtection.None);
-                                Inventory newInv = Session.Character.InventoryList.AddToInventory(newItem);
+                                newItem.Amount = drop.Amount;
+                                Inventory newInv = Session.Character.InventoryList.AddToInventory(newItem); 
+                                Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(newInv.ItemInstance.ItemVNum, newInv.ItemInstance.Amount, newInv.Type, newInv.Slot, newItem.Rare, newItem.Design, newItem.Upgrade, 0));
                                 Session.Client.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {ServerManager.GetItem(drop.ItemVNum).Name} x {drop.Amount}", 10));
                             }
                             else
@@ -1063,7 +1065,7 @@ namespace OpenNos.Handler
                         Amount = gold,
                         ItemVNum = 1046
                     };
-                    if (ServerManager.GetMap(Session.Character.MapId).MapTypes.Any(s => s.MapTypeId == 4))
+                    if (ServerManager.GetMap(Session.Character.MapId).MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act4))
                     {
                         Session.Character.Gold += drop2.Amount;
                         Session.Client.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {ServerManager.GetItem(drop2.ItemVNum).Name} x {drop2.Amount}", 10));

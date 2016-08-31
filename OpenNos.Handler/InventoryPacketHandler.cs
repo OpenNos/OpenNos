@@ -1049,8 +1049,9 @@ namespace OpenNos.Handler
                         Session.Client.SendPacket("delay 5000 3 #sl^1");
                         Session.CurrentMap?.Broadcast($"guri 2 1 {Session.Character.CharacterId}");
                     }
-                    else if (Session.Character.IsVehicled)
+                    else if (Session.Character.IsVehicled && (!Session.Character.IsSitting))
                     {
+                        Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("YOU_CANT_USE_HERE"), 10));
                         return;
                     }
                     else
