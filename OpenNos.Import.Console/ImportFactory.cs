@@ -207,7 +207,7 @@ namespace OpenNos.Import.Console
             IEnumerable<MapTypeDTO> list = DAOFactory.MapTypeDAO.LoadAll();
             MapTypeDTO mt1 = new MapTypeDTO
             {
-                MapTypeId = 1,
+                MapTypeId = (short)MapTypeEnum.Act1,
                 MapTypeName = "Act1",
                 PotionDelay = 300
             };
@@ -216,7 +216,7 @@ namespace OpenNos.Import.Console
 
             MapTypeDTO mt2 = new MapTypeDTO
             {
-                MapTypeId = 2,
+                MapTypeId = (short)MapTypeEnum.Act2,
                 MapTypeName = "Act2",
                 PotionDelay = 300
             };
@@ -225,7 +225,7 @@ namespace OpenNos.Import.Console
 
             MapTypeDTO mt3 = new MapTypeDTO
             {
-                MapTypeId = 3,
+                MapTypeId = (short)MapTypeEnum.Act3,
                 MapTypeName = "Act3",
                 PotionDelay = 300
             };
@@ -234,7 +234,7 @@ namespace OpenNos.Import.Console
 
             MapTypeDTO mt4 = new MapTypeDTO
             {
-                MapTypeId = 4,
+                MapTypeId = (short)MapTypeEnum.Act4,
                 MapTypeName = "Act4",
                 PotionDelay = 5000
             };
@@ -243,7 +243,7 @@ namespace OpenNos.Import.Console
 
             MapTypeDTO mt5 = new MapTypeDTO
             {
-                MapTypeId = 5,
+                MapTypeId = (short)MapTypeEnum.Act51,
                 MapTypeName = "Act5.1",
                 PotionDelay = 300
             };
@@ -252,7 +252,7 @@ namespace OpenNos.Import.Console
 
             MapTypeDTO mt6 = new MapTypeDTO
             {
-                MapTypeId = 6,
+                MapTypeId = (short)MapTypeEnum.Act52,
                 MapTypeName = "Act5.2",
                 PotionDelay = 300
             };
@@ -261,7 +261,7 @@ namespace OpenNos.Import.Console
 
             MapTypeDTO mt7 = new MapTypeDTO
             {
-                MapTypeId = 7,
+                MapTypeId = (short)MapTypeEnum.Act61,
                 MapTypeName = "Act6.1",
                 PotionDelay = 300
             };
@@ -270,7 +270,7 @@ namespace OpenNos.Import.Console
 
             MapTypeDTO mt8 = new MapTypeDTO
             {
-                MapTypeId = 8,
+                MapTypeId = (short)MapTypeEnum.Act62,
                 MapTypeName = "Act6.2",
                 PotionDelay = 300
             };
@@ -279,7 +279,7 @@ namespace OpenNos.Import.Console
 
             MapTypeDTO mt9 = new MapTypeDTO
             {
-                MapTypeId = 9,
+                MapTypeId = (short)MapTypeEnum.Act61a,
                 MapTypeName = "Act6.1a",// angel camp
                 PotionDelay = 300
             };
@@ -288,7 +288,7 @@ namespace OpenNos.Import.Console
 
             MapTypeDTO mt10 = new MapTypeDTO
             {
-                MapTypeId = 10,
+                MapTypeId = (short)MapTypeEnum.Act61d,
                 MapTypeName = "Act6.1d",// demon camp
                 PotionDelay = 300
             };
@@ -297,7 +297,7 @@ namespace OpenNos.Import.Console
 
             MapTypeDTO mt11 = new MapTypeDTO
             {
-                MapTypeId = 11,
+                MapTypeId = (short)MapTypeEnum.CometPlain,
                 MapTypeName = "CometPlain",
                 PotionDelay = 300
             };
@@ -306,7 +306,7 @@ namespace OpenNos.Import.Console
 
             MapTypeDTO mt12 = new MapTypeDTO
             {
-                MapTypeId = 12,
+                MapTypeId = (short)MapTypeEnum.Mine1,
                 MapTypeName = "Mine1",
                 PotionDelay = 300
             };
@@ -315,7 +315,7 @@ namespace OpenNos.Import.Console
 
             MapTypeDTO mt13 = new MapTypeDTO
             {
-                MapTypeId = 13,
+                MapTypeId = (short)MapTypeEnum.Mine2,
                 MapTypeName = "Mine2",
                 PotionDelay = 300
             };
@@ -324,7 +324,7 @@ namespace OpenNos.Import.Console
 
             MapTypeDTO mt14 = new MapTypeDTO
             {
-                MapTypeId = 14,
+                MapTypeId = (short)MapTypeEnum.MeadowOfMine,
                 MapTypeName = "MeadownOfPlain",
                 PotionDelay = 300
             };
@@ -333,7 +333,7 @@ namespace OpenNos.Import.Console
 
             MapTypeDTO mt15 = new MapTypeDTO
             {
-                MapTypeId = 15,
+                MapTypeId = (short)MapTypeEnum.SunnyPlain,
                 MapTypeName = "SunnyPlain",
                 PotionDelay = 300
             };
@@ -342,7 +342,7 @@ namespace OpenNos.Import.Console
 
             MapTypeDTO mt16 = new MapTypeDTO
             {
-                MapTypeId = 16,
+                MapTypeId = (short)MapTypeEnum.Fernon,
                 MapTypeName = "Fernon",
                 PotionDelay = 300
             };
@@ -351,7 +351,7 @@ namespace OpenNos.Import.Console
 
             MapTypeDTO mt17 = new MapTypeDTO
             {
-                MapTypeId = 17,
+                MapTypeId = (short)MapTypeEnum.FernonF,
                 MapTypeName = "FernonF",
                 PotionDelay = 300
             };
@@ -360,7 +360,7 @@ namespace OpenNos.Import.Console
 
             MapTypeDTO mt18 = new MapTypeDTO
             {
-                MapTypeId = 18,
+                MapTypeId = (short)MapTypeEnum.Cliff,
                 MapTypeName = "Cliff",
                 PotionDelay = 300
             };
@@ -369,7 +369,7 @@ namespace OpenNos.Import.Console
 
             MapTypeDTO mt19 = new MapTypeDTO
             {
-                MapTypeId = 19,
+                MapTypeId = (short)MapTypeEnum.LandOfTheDead,
                 MapTypeName = "LandOfTheDead",
                 PotionDelay = 300
             };
