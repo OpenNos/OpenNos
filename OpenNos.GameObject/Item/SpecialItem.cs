@@ -90,7 +90,6 @@ namespace OpenNos.GameObject
                     }
                     else
                     {
-                        Session.Client.SendPacket("pinit 0");
                         if (Session.Character.IsVehicled == false)
                         {
                             Session.Character.IsVehicled = true;
@@ -104,7 +103,6 @@ namespace OpenNos.GameObject
                         else
                         {
                             Session.Character.IsVehicled = false;
-                            Session.CurrentMap?.Broadcast(Session.Character.GenerateCMode());
                             Session.Character.Speed = Session.Character.LastSpeed;
                             if (Session.Character.UseSp)
                             {

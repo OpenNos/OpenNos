@@ -386,12 +386,14 @@ namespace OpenNos.Handler
                             if (iteminfo.EquipmentSlot == Convert.ToByte((byte)EquipmentType.Sp))
                             {
                                 byte.TryParse(packetsplit[3], out upgrade);
+                                upgrade = upgrade > 15 ? (byte)15 : upgrade;
                                 byte.TryParse(packetsplit[4], out design);
                             }
                             else
                             {
                                 sbyte.TryParse(packetsplit[3], out rare);
                                 byte.TryParse(packetsplit[4], out upgrade);
+                                upgrade = upgrade > 10 ? (byte)10 : upgrade;
                                 if (upgrade == 0)
                                     if (iteminfo.BasicUpgrade != 0)
                                     {
