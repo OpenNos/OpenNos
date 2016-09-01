@@ -916,11 +916,13 @@ namespace OpenNos.Handler
             {
                 return;
             }
-
-            Session.Character.IsSitting = !Session.Character.IsSitting;
-            if (Session.Character.IsVehicled)
-                Session.Character.IsSitting = false;
-            Session.CurrentMap?.Broadcast(Session.Character.GenerateRest());
+            if (!Session.Character.IsVehicled)
+            {
+                Session.Character.IsSitting = !Session.Character.IsSitting;
+                Session.CurrentMap?.Broadcast(Session.Character.GenerateRest());
+            }
+            else
+                Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("IMPOSSIBLE_TO_USE"), 10));
         }
 
         [Packet("#revival")]

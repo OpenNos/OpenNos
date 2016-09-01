@@ -892,4 +892,7 @@
   <data name="TRY_FAILED_WAIT" xml:space="preserve">
     <value>Try after: {0}s</value>
   </data>
+  <data name="IMPOSSIBLE_TO_USE" xml:space="preserve">
+    <value>Impossible to use.</value>
+  </data>
 </root>
