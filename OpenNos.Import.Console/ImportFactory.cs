@@ -786,7 +786,6 @@ namespace OpenNos.Import.Console
             drops.Add(new DropDTO { ItemVNum = 2284, Amount = 1, MonsterVNum = null, DropChance = 400, MapTypeId = (short)MapTypeEnum.Act2 });
             drops.Add(new DropDTO { ItemVNum = 2296, Amount = 1, MonsterVNum = null, DropChance = 750, MapTypeId = (short)MapTypeEnum.Act2 });
             drops.Add(new DropDTO { ItemVNum = 5119, Amount = 1, MonsterVNum = null, DropChance = 150, MapTypeId = (short)MapTypeEnum.Act2 });
-            drops.Add(new DropDTO { ItemVNum = 5502, Amount = 1, MonsterVNum = null, DropChance = 150, MapTypeId = (short)MapTypeEnum.Act2 });
             //Act3
             drops.Add(new DropDTO { ItemVNum = 1004, Amount = 1, MonsterVNum = null, DropChance = 700, MapTypeId = (short)MapTypeEnum.Act3 });
             drops.Add(new DropDTO { ItemVNum = 1007, Amount = 1, MonsterVNum = null, DropChance = 700, MapTypeId = (short)MapTypeEnum.Act3 });
