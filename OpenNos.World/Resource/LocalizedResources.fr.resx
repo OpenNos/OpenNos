@@ -829,7 +829,7 @@
     <value>OpenNos^version^1.0.4^!</value>
   </data>
   <data name="RECEIVED_ITEM" xml:space="preserve">
-    <value>Tu as reçu l'objet : {0} x 1</value>
+    <value>Tu as obtenu cet objet : {0} x 1</value>
   </data>
   <data name="ASK_WINGS_CHANGE" xml:space="preserve">
     <value>Voulez-vous changer vos ailes ?</value>
@@ -870,5 +870,11 @@ Veux-tu le porter ?</value>
   </data>
   <data name="IMPOSSIBLE_TO_USE" xml:space="preserve">
     <value>C'est impossible de l'utiliser.</value>
+  </data>
+  <data name="TRY_FAILED" xml:space="preserve">
+    <value>La tentative a échoué !</value>
+  </data>
+  <data name="TRY_FAILED_WAIT" xml:space="preserve">
+    <value>Réessayez dans :  {0} secondes.</value>
   </data>
 </root>
