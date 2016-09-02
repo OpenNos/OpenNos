@@ -89,7 +89,7 @@ namespace OpenNos.GameObject
                         if (Session.Character.IsSitting)
                         {
                             Session.Character.IsSitting = false;
-                            Session.Client.SendPacket(Session.Character.GenerateRest());
+                            Session.CurrentMap?.Broadcast(Session.Character.GenerateRest());
                         }
                         Session.Client.SendPacket(Session.Character.GenerateDelay(3000, 3, $"#u_i^1^{Session.Character.CharacterId}^{Inv.Type}^{Inv.Slot}^2"));
                     }

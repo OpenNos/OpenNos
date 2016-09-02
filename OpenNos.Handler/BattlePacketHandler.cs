@@ -92,7 +92,7 @@ namespace OpenNos.Handler
                     {
                         Skill skill = null;
                         CharacterSkill ski = skills.FirstOrDefault(s => (skill = ServerManager.GetSkill(s.SkillVNum)) != null && skill.CastId == short.Parse(packetsplit[i]));
-                        if (!Session.Character.WeaponLoaded(ski))
+                        if (!Session.Character.WeaponLoaded(ski) || Session.Character.LastRest.AddSeconds(1) > DateTime.Now)
                         {
                             Session.Client.SendPacket($"cancel 2 0");
                             return;
@@ -262,7 +262,7 @@ namespace OpenNos.Handler
                 }
                 return;
             }
-            if (Session.Character.IsVehicled)
+            if (Session.Character.IsVehicled || Session.Character.LastRest.AddSeconds(1) > DateTime.Now)
             {
                 Session.Client.SendPacket($"cancel 2 0");
                 return;
@@ -275,7 +275,6 @@ namespace OpenNos.Handler
                     Session.Character.MapX = Convert.ToInt16(packetsplit[5]);
                     Session.Character.MapY = Convert.ToInt16(packetsplit[6]);
                 }
-
                 byte usertype = byte.Parse(packetsplit[3]);
                 switch (usertype)
                 {
@@ -333,10 +332,15 @@ namespace OpenNos.Handler
             }
             else
             {
-                if ((DateTime.Now - Session.Character.LastTransform).TotalSeconds < 3)
+                if (Session.Character.LastTransform.AddSeconds(3) > DateTime.Now)
                 {
                     Session.Client.SendPacket($"cancel 0 0");
                     Session.Client.SendPacket(Session.Character.GenerateMsg($"{Language.Instance.GetMessageFromKey("CANT_ATTACK")}", 0));
+                    return;
+                }
+                if (Session.Character.LastRest.AddSeconds(1) > DateTime.Now)
+                {
+                    Session.Client.SendPacket($"cancel 0 0");
                     return;
                 }
                 Logger.Debug(packet, Session.SessionId);
@@ -1045,7 +1049,7 @@ namespace OpenNos.Handler
                                 if (newItem.Item.ItemType == (byte)ItemType.Armor || newItem.Item.ItemType == (byte)ItemType.Weapon || newItem.Item.ItemType == (byte)ItemType.Shell)
                                     ((WearableInstance)newItem).RarifyItem(Session, RarifyMode.Drop, RarifyProtection.None);
                                 newItem.Amount = drop.Amount;
-                                Inventory newInv = Session.Character.InventoryList.AddToInventory(newItem); 
+                                Inventory newInv = Session.Character.InventoryList.AddToInventory(newItem);
                                 Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(newInv.ItemInstance.ItemVNum, newInv.ItemInstance.Amount, newInv.Type, newInv.Slot, newItem.Rare, newItem.Design, newItem.Upgrade, 0));
                                 Session.Client.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {ServerManager.GetItem(drop.ItemVNum).Name} x {drop.Amount}", 10));
                             }
