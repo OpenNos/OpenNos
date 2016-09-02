@@ -892,4 +892,10 @@
   <data name="TRY_FAILED_WAIT" xml:space="preserve">
     <value>Try after: {0}s</value>
   </data>
+  <data name="IMPOSSIBLE_TO_USE" xml:space="preserve">
+    <value>Impossible to use.</value>
+  </data>
+  <data name="NOT_ENOUGH_ITEM" xml:space="preserve">
+    <value>You dont have required item to harvest.</value>
+  </data>
 </root>

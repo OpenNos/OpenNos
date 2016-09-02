@@ -342,7 +342,7 @@ namespace OpenNos.GameObject
 
                             if (packetHeader[1][0] == '/' || packetHeader[1][0] == ':' || packetHeader[1][0] == ';')
                             {
-                                TriggerHandler(packetHeader[0].ToString(), packet, false);
+                                TriggerHandler(packetHeader[1][0].ToString(), packet, false);
                             }
                             else
                             if (permit == 1)
