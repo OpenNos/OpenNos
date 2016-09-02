@@ -913,12 +913,12 @@ namespace OpenNos.Handler
         {
             Logger.Debug(packet, Session.SessionId);
 
-            if (Session.Character.LastSkill.AddSeconds(1) > DateTime.Now)
+            if (Session.Character.LastSkill.AddSeconds(4) > DateTime.Now || Session.Character.LastDefence.AddSeconds(4) > DateTime.Now)
             {
                 return;
             }
             if (!Session.Character.IsVehicled)
-            { 
+            {
                 Session.Character.IsSitting = !Session.Character.IsSitting;
                 Session.Character.LastRest = DateTime.Now;
                 Session.CurrentMap?.Broadcast(Session.Character.GenerateRest());
