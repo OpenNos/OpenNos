@@ -376,19 +376,19 @@ namespace OpenNos.Handler
                         int RateDrop = ServerManager.DropRate;
                         if (Session.Character.LastMapObject.AddSeconds(6) < DateTime.Now)
                         {
+                            if (mapobject.Drops.Any(s => s.MonsterVNum != null))
+                            {
+                                if (mapobject.VNumRequired > 10 && Session.Character.InventoryList.CountItem(mapobject.VNumRequired) < mapobject.AmountRequired)
+                                {
+                                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_ITEM"), 0));
+                                    return;
+                                }
+                            }
                             rnd = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
                             double rndamount = rnd.Next(0, 100) * rnd.NextDouble();
                             int dropChance = mapobject.Drops.FirstOrDefault(s => s.MonsterVNum == npc.NpcVNum).DropChance;
                             if (rndamount <= ((double)dropChance * RateDrop) / 5000.000)
                             {
-                                if (mapobject.Drops.Any(s => s.MonsterVNum != null))
-                                {
-                                    if (mapobject.VNumRequired > 10 && Session.Character.InventoryList.CountItem(mapobject.VNumRequired) < mapobject.AmountRequired)
-                                    {
-                                        Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_ITEM"), 0));
-                                        return;
-                                    }
-                                }
                                 short vnum = mapobject.Drops.FirstOrDefault(s => s.MonsterVNum == npc.NpcVNum).ItemVNum;
                                 Session.Character.InventoryList.AddNewItemToInventory(vnum);
                                 Session.Character.LastMapObject = DateTime.Now;

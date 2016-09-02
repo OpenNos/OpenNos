@@ -874,4 +874,7 @@
   <data name="TRY_FAILED_WAIT" xml:space="preserve">
     <value>Próba nieudana, spróbuj za: {0}</value>
   </data>
+  <data name="NOT_ENOUGH_ITEM" xml:space="preserve">
+    <value>Nie masz wystarczającej ilości potrzebnych przedmiotów, aby rozpocząć zbieranie.</value>
+  </data>
 </root>

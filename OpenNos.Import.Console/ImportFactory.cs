@@ -664,15 +664,15 @@ namespace OpenNos.Import.Console
                             }
                         }
                     }
-                    else if (currentLine.Length > 7 && currentLine[1] == "SETTING")
+                    else if (currentLine.Length > 6 && currentLine[1] == "SETTING")
                     {
-                        if (currentLine[4] != "0" && (unknownData == (long)-2147481593 || unknownData == (long)-2147481599 || unknownData == (long)-1610610681))
+                        if (currentLine[4] != "0")
                         {
                             npc.VNumRequired = Convert.ToInt16(currentLine[4]);
                             npc.AmountRequired = 1;
                         }
                     }
-                    else if (currentLine.Length > 5 && currentLine[1] == "PETINFO")
+                    else if (currentLine.Length > 4 && currentLine[1] == "PETINFO")
                     {
                         if (npc.VNumRequired == (short)0 && (unknownData == (long)-2147481593 || unknownData == (long)-2147481599 || unknownData == (long)-1610610681))
                         {
