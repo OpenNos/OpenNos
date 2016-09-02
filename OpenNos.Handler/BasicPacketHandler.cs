@@ -920,7 +920,6 @@ namespace OpenNos.Handler
             if (!Session.Character.IsVehicled)
             {
                 Session.Character.IsSitting = !Session.Character.IsSitting;
-                Session.Character.LastRest = DateTime.Now;
                 Session.CurrentMap?.Broadcast(Session.Character.GenerateRest());
             }
             else
