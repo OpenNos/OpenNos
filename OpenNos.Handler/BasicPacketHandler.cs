@@ -392,13 +392,14 @@ namespace OpenNos.Handler
                                 short vnum = mapobject.Drops.FirstOrDefault(s => s.MonsterVNum == npc.NpcVNum).ItemVNum;
                                 Session.Character.InventoryList.AddNewItemToInventory(vnum);
                                 Session.Character.LastMapObject = DateTime.Now;
-                                Session.Client.SendPacket(Session.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("RECEIVED_ITEM"), ServerManager.GetItem(vnum).Name), 10));
+                                Session.Client.SendPacket(Session.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("RECEIVED_ITEM"), ServerManager.GetItem(vnum).Name), 0));
+                                Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("RECEIVED_ITEM"), ServerManager.GetItem(vnum).Name), 11));
                             }
                             else
-                                Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("TRY_FAILED"), 10));
+                                Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("TRY_FAILED"), 0));
                         }
                         else // make it like official, more than 6 seconds propably multiplied by amount of tries
-                            Session.Client.SendPacket(Session.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("TRY_FAILED_WAIT"), (int)(Session.Character.LastMapObject.AddSeconds(6) - DateTime.Now).TotalSeconds), 10));
+                            Session.Client.SendPacket(Session.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("TRY_FAILED_WAIT"), (int)(Session.Character.LastMapObject.AddSeconds(6) - DateTime.Now).TotalSeconds), 0));
                     }
                     break;
 
@@ -916,11 +917,13 @@ namespace OpenNos.Handler
             {
                 return;
             }
-
-            Session.Character.IsSitting = !Session.Character.IsSitting;
-            if (Session.Character.IsVehicled)
-                Session.Character.IsSitting = false;
-            Session.CurrentMap?.Broadcast(Session.Character.GenerateRest());
+            if (!Session.Character.IsVehicled)
+            { 
+                Session.Character.IsSitting = !Session.Character.IsSitting;
+                Session.CurrentMap?.Broadcast(Session.Character.GenerateRest());
+            }
+            else
+                Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("IMPOSSIBLE_TO_USE"), 10));
         }
 
         [Packet("#revival")]
