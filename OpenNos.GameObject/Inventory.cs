@@ -30,7 +30,7 @@ namespace OpenNos.GameObject
             this.Slot = inventory.Slot;
             this.Type = inventory.Type;
             this.ItemInstance = inventory.ItemInstance;
-            this.InventoryId = inventory.InventoryId;
+            this.Id = inventory.Id;
         }
 
         #endregion

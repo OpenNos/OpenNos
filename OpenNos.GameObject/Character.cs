@@ -205,8 +205,8 @@ namespace OpenNos.GameObject
                 Session.Client.SendPacket(GenerateSki());
 
                 //TODO: Reset Quicklist (just add Rest-on-T Item)
-                foreach (QuicklistEntryDTO quicklists in DAOFactory.QuicklistEntryDAO.Load(CharacterId).Where(quicklists => QuicklistEntries.Any(qle => qle.EntryId == quicklists.EntryId)))
-                    DAOFactory.QuicklistEntryDAO.Delete(CharacterId, quicklists.EntryId);
+                foreach (QuicklistEntryDTO quicklists in DAOFactory.QuicklistEntryDAO.Load(CharacterId).Where(quicklists => QuicklistEntries.Any(qle => qle.Id == quicklists.Id)))
+                    DAOFactory.QuicklistEntryDAO.Delete(CharacterId, quicklists.Id);
                 QuicklistEntries = new List<QuicklistEntry>
                 {
                     new QuicklistEntry
@@ -277,9 +277,9 @@ namespace OpenNos.GameObject
             Session.Client.SendPacket(GenerateInventoryAdd(-1, 0, type, slot, 0, 0, 0, 0));
         }
 
-        public void DeleteItemByItemInstanceId(long itemInstanceId)
+        public void DeleteItemByItemInstanceId(Guid id)
         {
-            Tuple<short, byte> result = InventoryList.DeleteByInventoryItemId(itemInstanceId);
+            Tuple<short, byte> result = InventoryList.DeleteByInventoryItemId(id);
             Session.Client.SendPacket(GenerateInventoryAdd(-1, 0, result.Item2, result.Item1, 0, 0, 0, 0));
         }
 
@@ -292,7 +292,7 @@ namespace OpenNos.GameObject
                 {
                     if (item.ItemInstance.IsUsed && item.ItemInstance.ItemDeleteTime != null && item.ItemInstance.ItemDeleteTime < DateTime.Now)
                     {
-                        InventoryList.DeleteByInventoryItemId(item.ItemInstance.ItemInstanceId);
+                        InventoryList.DeleteByInventoryItemId(item.ItemInstance.Id);
                         Session.Client.SendPacket(GenerateInventoryAdd(-1, 0, item.Type, item.Slot, 0, 0, 0, 0));
                         Session.Client.SendPacket(GenerateSay(Language.Instance.GetMessageFromKey("ITEM_TIMEOUT"), 10));
                     }
@@ -305,7 +305,7 @@ namespace OpenNos.GameObject
                 {
                     if (item.ItemInstance.IsUsed && item.ItemInstance.ItemDeleteTime != null && item.ItemInstance.ItemDeleteTime < DateTime.Now)
                     {
-                        EquipmentList.DeleteByInventoryItemId(item.ItemInstance.ItemInstanceId);
+                        EquipmentList.DeleteByInventoryItemId(item.ItemInstance.Id);
                         Session.Client.SendPacket(GenerateEquipment());
                         Session.Client.SendPacket(GenerateSay(Language.Instance.GetMessageFromKey("ITEM_TIMEOUT"), 10));
                     }
@@ -825,7 +825,7 @@ namespace OpenNos.GameObject
             }
             //10 9 8 '0 0 0 0'<- bonusdamage bonusarmor bonuselement bonushpmp its after upgrade and 3 first values are not important
             skill = skill.TrimEnd('.');
-            return $"slinfo {type} {inventoryItem.ItemVNum} {iteminfo.Morph} {inventoryItem.SpLevel} {iteminfo.LevelJobMinimum} {iteminfo.ReputationMinimum} 0 0 0 0 0 0 0 {iteminfo.SpType} {iteminfo.FireResistance} {iteminfo.WaterResistance} {iteminfo.LightResistance} {iteminfo.DarkResistance} {inventoryItem.XP} {ServersData.SpXPData[inventoryItem.SpLevel - 1]} {skill} {inventoryItem.ItemInstanceId} {freepoint} {slHit} {slDefence} {slElement} {slHp} {inventoryItem.Upgrade} 0 0 {spdestroyed} 0 0 0 0 {inventoryItem.SpStoneUpgrade} {inventoryItem.SpDamage} {inventoryItem.SpDefence} {inventoryItem.SpElement} {inventoryItem.SpHP} {inventoryItem.SpFire} {inventoryItem.SpWater} {inventoryItem.SpLight} {inventoryItem.SpDark}";
+            return $"slinfo {type} {inventoryItem.ItemVNum} {iteminfo.Morph} {inventoryItem.SpLevel} {iteminfo.LevelJobMinimum} {iteminfo.ReputationMinimum} 0 0 0 0 0 0 0 {iteminfo.SpType} {iteminfo.FireResistance} {iteminfo.WaterResistance} {iteminfo.LightResistance} {iteminfo.DarkResistance} {inventoryItem.XP} {ServersData.SpXPData[inventoryItem.SpLevel - 1]} {skill} {inventoryItem.Id} {freepoint} {slHit} {slDefence} {slElement} {slHp} {inventoryItem.Upgrade} 0 0 {spdestroyed} 0 0 0 0 {inventoryItem.SpStoneUpgrade} {inventoryItem.SpDamage} {inventoryItem.SpDefence} {inventoryItem.SpElement} {inventoryItem.SpHP} {inventoryItem.SpFire} {inventoryItem.SpWater} {inventoryItem.SpLight} {inventoryItem.SpDark}";
         }
 
         public string GenerateSpk(object message, int v)
@@ -1583,8 +1583,8 @@ namespace OpenNos.GameObject
                 if (QuicklistEntries != null)
                 {
                     foreach (QuicklistEntryDTO quicklists in DAOFactory.QuicklistEntryDAO.Load(CharacterId))
-                        if (QuicklistEntries.FirstOrDefault(s => s.EntryId == quicklists.EntryId) == null)
-                            DAOFactory.QuicklistEntryDAO.Delete(CharacterId, quicklists.EntryId);
+                        if (QuicklistEntries.FirstOrDefault(s => s.Id == quicklists.Id) == null)
+                            DAOFactory.QuicklistEntryDAO.Delete(CharacterId, quicklists.Id);
                 }
 
                 // ... then save the new

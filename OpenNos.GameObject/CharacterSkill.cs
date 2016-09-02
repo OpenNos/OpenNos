@@ -30,7 +30,7 @@ namespace OpenNos.GameObject
         public CharacterSkill(CharacterSkillDTO dto)
         {
             this.CharacterId = dto.CharacterId;
-            this.CharacterSkillId = dto.CharacterSkillId;
+            this.Id = dto.Id;
             this.SkillVNum = dto.SkillVNum;
             this.NpcMonsterVNum = dto.NpcMonsterVNum;
             LastUse = DateTime.Now.AddHours(-1);

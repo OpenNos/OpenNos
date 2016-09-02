@@ -127,8 +127,8 @@ namespace OpenNos.DAL.EF.MySQL
 
         private SaveResult InsertOrUpdate(ref CharacterSkillDTO characterSkill, OpenNosContext context)
         {
-            long characterSkillId = characterSkill.CharacterSkillId;
-            CharacterSkill entity = context.CharacterSkill.FirstOrDefault(i => i.CharacterSkillId == characterSkillId);
+            Guid primaryKey = characterSkill.Id;
+            CharacterSkill entity = context.CharacterSkill.FirstOrDefault(i => i.Id == primaryKey);
             if (entity == null) //new entity
             {
                 characterSkill = Insert(characterSkill, context);

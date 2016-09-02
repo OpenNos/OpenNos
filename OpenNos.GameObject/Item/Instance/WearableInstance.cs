@@ -27,9 +27,9 @@ namespace OpenNos.GameObject
         {
         }
 
-        public WearableInstance(long itemInstanceId)
+        public WearableInstance(Guid id)
         {
-            ItemInstanceId = itemInstanceId;
+            Id = id;
         }
 
         public WearableInstance(WearableInstanceDTO wearableInstance)
@@ -268,7 +268,7 @@ namespace OpenNos.GameObject
                     {
                         if (protection == RarifyProtection.None)
                         {
-                            Session.Character.DeleteItemByItemInstanceId(this.ItemInstanceId);
+                            Session.Character.DeleteItemByItemInstanceId(this.Id);
                             Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("RARIFY_FAILED"), 11));
                             Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("RARIFY_FAILED"), 0));
                         }
@@ -280,7 +280,7 @@ namespace OpenNos.GameObject
                         }
                     }
                 }
-                Inventory inventory = Session.Character.InventoryList.GetInventoryByItemInstanceId(this.ItemInstanceId);
+                Inventory inventory = Session.Character.InventoryList.GetInventoryByItemInstanceId(this.Id);
                 if (inventory != null)
                     Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(this.ItemVNum, 1, inventory.Type, inventory.Slot, inventory.ItemInstance.Rare, 0, inventory.ItemInstance.Upgrade, 0));
             }
@@ -364,12 +364,12 @@ namespace OpenNos.GameObject
                     this.LightResistance += (byte)(itemToSum.LightResistance + iteminfo2.LightResistance);
                     this.WaterResistance += (byte)(itemToSum.WaterResistance + iteminfo2.WaterResistance);
                     this.FireResistance += (byte)(itemToSum.FireResistance + iteminfo2.FireResistance);
-                    Session.Character.DeleteItemByItemInstanceId(itemToSum.ItemInstanceId);
+                    Session.Character.DeleteItemByItemInstanceId(itemToSum.Id);
                     Session.Client.SendPacket($"pdti 10 {this.ItemVNum} 1 27 {this.Upgrade} 0");
                     Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SUM_SUCCESS"), 0));
                     Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("SUM_SUCCESS"), 12));
                     Session.Client.SendPacket($"guri 19 1 {Session.Character.CharacterId} 1324");
-                    Inventory inventory = Session.Character.InventoryList.GetInventoryByItemInstanceId(this.ItemInstanceId);
+                    Inventory inventory = Session.Character.InventoryList.GetInventoryByItemInstanceId(this.Id);
                     Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(inventory.ItemInstance.ItemVNum, 1, inventory.Type, inventory.Slot, 0, 0, 0, 0));
                     Session.Client.SendPacket(Session.Character.GenerateGold());
                 }
@@ -378,8 +378,8 @@ namespace OpenNos.GameObject
                     Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SUM_FAILED"), 0));
                     Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("SUM_FAILED"), 11));
                     Session.Client.SendPacket($"guri 19 1 {Session.Character.CharacterId} 1332");
-                    Session.Character.DeleteItemByItemInstanceId(itemToSum.ItemInstanceId);
-                    Session.Character.DeleteItemByItemInstanceId(this.ItemInstanceId);
+                    Session.Character.DeleteItemByItemInstanceId(itemToSum.Id);
+                    Session.Character.DeleteItemByItemInstanceId(this.Id);
                 }
                 Session.Client.SendPacket("shop_end 1");
             }
@@ -460,8 +460,8 @@ namespace OpenNos.GameObject
                         Session.Client.SendPacket(Session.Character.GenerateGold());
                         break;
                 }
-                WearableInstance wearable = Session.Character.InventoryList.LoadByItemInstance<WearableInstance>(this.ItemInstanceId);
-                Inventory inventory = Session.Character.InventoryList.GetInventoryByItemInstanceId(this.ItemInstanceId);
+                WearableInstance wearable = Session.Character.InventoryList.LoadByItemInstance<WearableInstance>(this.Id);
+                Inventory inventory = Session.Character.InventoryList.GetInventoryByItemInstanceId(this.Id);
                 Random r = new Random();
                 int rnd = r.Next(100);
                 if (rnd <= upfix[this.Upgrade])
@@ -485,7 +485,7 @@ namespace OpenNos.GameObject
                     {
                         Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADE_FAILED"), 11));
                         Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADE_FAILED"), 0));
-                        Session.Character.DeleteItemByItemInstanceId(this.ItemInstanceId);
+                        Session.Character.DeleteItemByItemInstanceId(this.Id);
                     }
                     else
                     {

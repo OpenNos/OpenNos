@@ -16,7 +16,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace OpenNos.DAL.EF.MySQL
 {
-    public class Inventory
+    public class Inventory : SynchronizableBaseEntity
     {
         #region Properties
 
@@ -24,8 +24,6 @@ namespace OpenNos.DAL.EF.MySQL
 
         [Index("IX_SlotAndType", 1, IsUnique = true, Order = 0)]
         public long CharacterId { get; set; }
-
-        public long InventoryId { get; set; }
 
         public virtual ItemInstance ItemInstance { get; set; }
 

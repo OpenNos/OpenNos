@@ -14,12 +14,11 @@
 
 namespace OpenNos.Data
 {
-    public class InventoryDTO
+    public class InventoryDTO : SynchronizeableBaseDTO
     {
         #region Properties
 
         public long CharacterId { get; set; }
-        public long InventoryId { get; set; }
         public ItemInstanceDTO ItemInstance { get; set; }
         public short Slot { get; set; }
         public byte Type { get; set; }

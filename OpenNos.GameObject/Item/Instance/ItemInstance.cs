@@ -32,7 +32,7 @@ namespace OpenNos.GameObject
 
         public ItemInstance(ItemInstanceDTO inventoryItem)
         {
-            ItemInstanceId = inventoryItem.ItemInstanceId;
+            Id = inventoryItem.Id;
             Amount = inventoryItem.Amount;
             ItemVNum = inventoryItem.ItemVNum;
         }
@@ -49,6 +49,8 @@ namespace OpenNos.GameObject
                 return item;
             }
         }
+
+        public long TransportId { get; set; } //TODO create Interface
 
         #endregion
 

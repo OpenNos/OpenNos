@@ -58,7 +58,7 @@ namespace OpenNos.DAL.EF.MySQL
             using (var context = DataAccessHelper.CreateContext())
             {
                 Inventory inv = context.Inventory.FirstOrDefault(i => i.Slot.Equals(slot) && i.Type.Equals(type) && i.CharacterId.Equals(characterId));
-                ItemInstance invItem = context.ItemInstance.FirstOrDefault(i => i.Inventory.InventoryId == inv.InventoryId);
+                ItemInstance invItem = context.ItemInstance.FirstOrDefault(i => i.Inventory.Id == inv.Id);
                 if (inv != null)
                 {
                     context.Inventory.Remove(inv);
@@ -74,7 +74,7 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                var itemInstance = context.ItemInstance.Include(nameof(Inventory)).FirstOrDefault(i => i.Inventory.InventoryId.Equals(inventoryId));
+                var itemInstance = context.ItemInstance.Include(nameof(Inventory)).FirstOrDefault(i => i.Inventory.Id.Equals(inventoryId));
                 return _mapper.Map<ItemInstanceDTO>(itemInstance);
             }
         }
@@ -166,7 +166,7 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                return _mapper.Map<InventoryDTO>(context.Inventory.Include(nameof(ItemInstance)).FirstOrDefault(i => i.InventoryId.Equals(inventoryId)));
+                return _mapper.Map<InventoryDTO>(context.Inventory.Include(nameof(ItemInstance)).FirstOrDefault(i => i.Id.Equals(inventoryId)));
             }
         }
 
@@ -214,17 +214,17 @@ namespace OpenNos.DAL.EF.MySQL
 
         private InventoryDTO InsertOrUpdate(OpenNosContext context, InventoryDTO inventory)
         {
-            long InventoryId = inventory.InventoryId;
+            Guid primaryKey = inventory.Id;
             byte Type = inventory.Type;
             short Slot = inventory.Slot;
             long CharacterId = inventory.CharacterId;
-            Inventory entity = context.Inventory.FirstOrDefault(c => c.InventoryId == InventoryId);
+            Inventory entity = context.Inventory.FirstOrDefault(c => c.Id == primaryKey);
             if (entity == null) //new entity
             {
                 Inventory delete = context.Inventory.FirstOrDefault(s => s.CharacterId == CharacterId && s.Slot == Slot && s.Type == Type);
                 if (delete != null)
                 {
-                    ItemInstance deleteItem = context.ItemInstance.FirstOrDefault(s => s.Inventory.InventoryId == delete.InventoryId);
+                    ItemInstance deleteItem = context.ItemInstance.FirstOrDefault(s => s.Inventory.Id == delete.Id);
                     context.ItemInstance.Remove(deleteItem);
                     context.Inventory.Remove(delete);
                     context.SaveChanges();
@@ -233,7 +233,7 @@ namespace OpenNos.DAL.EF.MySQL
             }
             else //existing entity
             {
-                entity.ItemInstance = context.ItemInstance.FirstOrDefault(c => c.Inventory.InventoryId == entity.InventoryId);
+                entity.ItemInstance = context.ItemInstance.FirstOrDefault(c => c.Inventory.Id == entity.Id);
                 inventory = Update(entity, inventory, context);
             }
 

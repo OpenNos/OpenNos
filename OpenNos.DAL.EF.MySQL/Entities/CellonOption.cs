@@ -12,17 +12,15 @@
  * GNU General Public License for more details.
  */
 
+using System;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace OpenNos.DAL.EF.MySQL
 {
-    using System.ComponentModel.DataAnnotations;
-    using System.ComponentModel.DataAnnotations.Schema;
-
-    public class CellonOption
+    public class CellonOption : SynchronizableBaseEntity
     {
         #region Properties
-
-        [Key]
-        public int CellonOptionId { get; set; }
 
         public byte Level { get; set; }
 
@@ -33,7 +31,7 @@ namespace OpenNos.DAL.EF.MySQL
         [ForeignKey(nameof(WearableInstanceId))]
         public virtual WearableInstance WearableInstance { get; set; }
 
-        public long WearableInstanceId { get; set; }
+        public Guid WearableInstanceId { get; set; }
 
         #endregion
     }

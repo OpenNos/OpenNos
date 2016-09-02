@@ -341,7 +341,7 @@ namespace OpenNos.GameObject
             PersonalShopItem itemshop = clientSession.CurrentMap.UserShops[shop.Key].Items.FirstOrDefault(i => i.Slot.Equals(slot));
             if (itemshop == null)
                 return;
-            long id = itemshop.InventoryId;
+            Guid id = itemshop.Id;
             itemshop.Amount -= amount;
             if (itemshop.Amount <= 0)
                 clientSession.CurrentMap.UserShops[shop.Key].Items.Remove(itemshop);
@@ -462,11 +462,11 @@ namespace OpenNos.GameObject
 
                 foreach (ItemInstance item in c2Session.Character.ExchangeInfo.ExchangeList)
                 {
-                    Inventory invtemp = c2Session.Character.InventoryList.Inventory.FirstOrDefault(s => s.ItemInstance.ItemInstanceId == item.ItemInstanceId);
+                    Inventory invtemp = c2Session.Character.InventoryList.Inventory.FirstOrDefault(s => s.ItemInstance.Id == item.Id);
                     short slot = invtemp.Slot;
                     byte type = invtemp.Type;
 
-                    Inventory inv = c2Session.Character.InventoryList.RemoveItemAmountFromInventory((byte)item.Amount, invtemp.InventoryId);
+                    Inventory inv = c2Session.Character.InventoryList.RemoveItemAmountFromInventory((byte)item.Amount, invtemp.Id);
                     if (inv != null)
                     {
                         // Send reduced-amount to owners inventory
@@ -482,7 +482,7 @@ namespace OpenNos.GameObject
                 foreach (ItemInstance item in c1Session.Character.ExchangeInfo.ExchangeList)
                 {
                     ItemInstance item2 = item.DeepCopy();
-                    item2.ItemInstanceId = c2Session.Character.InventoryList.GenerateItemInstanceId();
+                    item2.Id = Guid.NewGuid();//TODO take GUID generation to GO
                     Inventory inv = c2Session.Character.InventoryList.AddToInventory(item2);
                     if (inv == null) continue;
                     if (inv.Slot == -1) continue;

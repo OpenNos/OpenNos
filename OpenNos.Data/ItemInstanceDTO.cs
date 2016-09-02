@@ -16,7 +16,7 @@ using System;
 
 namespace OpenNos.Data
 {
-    public class ItemInstanceDTO : IItemInstance
+    public class ItemInstanceDTO : SynchronizeableBaseDTO, IItemInstance
     {
         #region Properties
 
@@ -24,7 +24,6 @@ namespace OpenNos.Data
         public byte Design { get; set; }
         public bool IsUsed { get; set; }
         public DateTime? ItemDeleteTime { get; set; }
-        public long ItemInstanceId { get; set; }
         public short ItemVNum { get; set; }
 
         public sbyte Rare { get; set; }

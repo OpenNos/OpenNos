@@ -256,8 +256,8 @@ namespace OpenNos.GameObject
         public void DropItemByMonster(DropDTO drop, short mapX, short mapY)
         {
             Random rnd = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
-            int random = 0;
             MapItem droppedItem = null;
+            Guid random = Guid.NewGuid();
             short MapX = (short)(rnd.Next(mapX - 1, mapX + 1));
             short MapY = (short)(rnd.Next(mapY - 1, mapY + 1));
             while (IsBlockedZone(MapX, MapY))
@@ -266,7 +266,7 @@ namespace OpenNos.GameObject
                 MapY = (short)(rnd.Next(mapY - 1, mapY + 1));
             }
 
-            ItemInstance newInstance = InventoryList.CreateItemInstance(drop.ItemVNum, 0);
+            ItemInstance newInstance = InventoryList.CreateItemInstance(drop.ItemVNum, Guid.NewGuid()); //TODO take GUID generation to GO
             newInstance.Amount = drop.Amount;
 
             droppedItem = new MapItem(MapX, MapY, true)
@@ -274,12 +274,10 @@ namespace OpenNos.GameObject
                 ItemInstance = newInstance
             };
 
-            while (ServerManager.GetMap(MapId).DroppedList.ContainsKey(random = rnd.Next(1, 999999)))
-            { }
-            droppedItem.ItemInstance.ItemInstanceId = random;
-            ServerManager.GetMap(MapId).DroppedList.Add(random, droppedItem);
+            droppedItem.ItemInstance.Id = Guid.NewGuid();
+            ServerManager.GetMap(MapId).DroppedList.Add(droppedItem.ItemInstance.TransportId, droppedItem);
 
-            Broadcast($"drop {droppedItem.ItemInstance.ItemVNum} {random} {droppedItem.PositionX} {droppedItem.PositionY} {droppedItem.ItemInstance.Amount} 0 0 -1");
+            Broadcast($"drop {droppedItem.ItemInstance.ItemVNum} {random} {droppedItem.PositionX} {droppedItem.PositionY} {droppedItem.ItemInstance.Amount} 0 0 -1");//TODO UseTransportId
         }
 
         public List<MapMonster> GetListMonsterInRange(short mapX, short mapY, byte distance)

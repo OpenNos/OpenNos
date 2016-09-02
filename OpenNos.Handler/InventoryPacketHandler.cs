@@ -156,7 +156,7 @@ namespace OpenNos.Handler
                     break;
 
                 case 2:
-                    inventory = new WearableInstance(Session.Character.InventoryList.GenerateItemInstanceId());
+                    inventory = new WearableInstance(Guid.NewGuid());//TODO take GUID generation to GO
                     break;
 
                 case 5:
@@ -304,7 +304,7 @@ namespace OpenNos.Handler
                         {
                             foreach (ItemInstance item in Session.Character.ExchangeInfo.ExchangeList)
                             {
-                                Inventory inv = Session.Character.InventoryList.GetInventoryByItemInstanceId(item.ItemInstanceId);
+                                Inventory inv = Session.Character.InventoryList.GetInventoryByItemInstanceId(item.Id);
                                 if (inv != null && (!ServerManager.GetItem(inv.ItemInstance.ItemVNum).IsTradable || inv.ItemInstance.IsUsed))
                                 {
                                     Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("ITEM_NOT_TRADABLE"), 0));
@@ -322,10 +322,10 @@ namespace OpenNos.Handler
                                 foreach (ItemInstance item in Session.Character.ExchangeInfo.ExchangeList)
                                 {
                                     // Delete items from their owners
-                                    Inventory invtemp = Session.Character.InventoryList.Inventory.FirstOrDefault(s => s.ItemInstance.ItemInstanceId == item.ItemInstanceId);
+                                    Inventory invtemp = Session.Character.InventoryList.Inventory.FirstOrDefault(s => s.ItemInstance.Id == item.Id);
                                     short slot = invtemp.Slot;
                                     byte type = invtemp.Type;
-                                    Inventory inv = Session.Character.InventoryList.RemoveItemAmountFromInventory((byte)item.Amount, invtemp.InventoryId);
+                                    Inventory inv = Session.Character.InventoryList.RemoveItemAmountFromInventory((byte)item.Amount, invtemp.Id);
                                     if (inv != null)
                                     {
                                         // Send reduced-amount to owners inventory
@@ -429,9 +429,9 @@ namespace OpenNos.Handler
                 return;
             }
 
-            long DropId; long.TryParse(packetsplit[4], out DropId);
+            long transportId; long.TryParse(packetsplit[4], out transportId);
             MapItem mapitem;
-            if (Session.CurrentMap.DroppedList.TryGetValue(DropId, out mapitem))
+            if (Session.CurrentMap.DroppedList.TryGetValue(transportId, out mapitem))
             {
                 //rarify
                 mapitem.Rarify(Session);
@@ -444,16 +444,16 @@ namespace OpenNos.Handler
                     {
                         if (mapitem.ItemInstance.Item.ItemType == (byte)ItemType.Map)
                         {
-                            Session.CurrentMap.DroppedList.Remove(DropId);
-                            Session.CurrentMap?.Broadcast(Session.Character.GenerateGet(DropId));
+                            Session.CurrentMap.DroppedList.Remove(transportId);
+                            Session.CurrentMap?.Broadcast(Session.Character.GenerateGet(transportId));
                         }
                         else
                         {
                             Inventory newInv = Session.Character.InventoryList.AddToInventory(mapitem.ItemInstance);
                             if (newInv != null)
                             {
-                                Session.CurrentMap.DroppedList.Remove(DropId);
-                                Session.CurrentMap?.Broadcast(Session.Character.GenerateGet(DropId));
+                                Session.CurrentMap.DroppedList.Remove(transportId);
+                                Session.CurrentMap?.Broadcast(Session.Character.GenerateGet(transportId));
                                 Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(newInv.ItemInstance.ItemVNum, newInv.ItemInstance.Amount, newInv.Type, newInv.Slot, mapitem.ItemInstance.Rare, mapitem.ItemInstance.Design, mapitem.ItemInstance.Upgrade, 0));
                                 Session.Client.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {(newInv.ItemInstance as ItemInstance).Item.Name} x {amount}", 12));
                             }
@@ -477,8 +477,8 @@ namespace OpenNos.Handler
                             Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("MAX_GOLD"), 0));
                         }
                         Session.Client.SendPacket(Session.Character.GenerateGold());
-                        Session.CurrentMap.DroppedList.Remove(DropId);
-                        Session.CurrentMap?.Broadcast(Session.Character.GenerateGet(DropId));
+                        Session.CurrentMap.DroppedList.Remove(transportId);
+                        Session.CurrentMap?.Broadcast(Session.Character.GenerateGet(transportId));
                     }
                 }
             }
@@ -556,7 +556,7 @@ namespace OpenNos.Handler
                     if (invitem.ItemInstance.Amount == 0)
                         Session.Character.DeleteItem(invitem.Type, invitem.Slot);
                     if (DroppedItem != null)
-                        Session.CurrentMap?.Broadcast($"drop {DroppedItem.ItemInstance.ItemVNum} {DroppedItem.ItemInstance.ItemInstanceId} {DroppedItem.PositionX} {DroppedItem.PositionY} {DroppedItem.ItemInstance.Amount} 0 -1");
+                        Session.CurrentMap?.Broadcast($"drop {DroppedItem.ItemInstance.ItemVNum} {DroppedItem.ItemInstance.Id} {DroppedItem.PositionX} {DroppedItem.PositionY} {DroppedItem.ItemInstance.Amount} 0 -1");
                 }
                 else
                 {
@@ -685,7 +685,7 @@ namespace OpenNos.Handler
 
             if (packetsplit.Length == 10 && packetsplit[2] == "10")
             {
-                if (!Session.Character.UseSp || specialistInstance == null || int.Parse(packetsplit[5]) != specialistInstance.ItemInstanceId)
+                if (!Session.Character.UseSp || specialistInstance == null || int.Parse(packetsplit[5]) != specialistInstance.TransportId)
                 {
                     Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SPUSE_NEEDED"), 0));
                     return;

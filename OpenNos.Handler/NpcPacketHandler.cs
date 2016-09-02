@@ -88,7 +88,7 @@ namespace OpenNos.Handler
 
                 ItemInstance item2 = (item.ItemInstance as ItemInstance).DeepCopy();
                 item2.Amount = amount;
-                item2.ItemInstanceId = Session.Character.InventoryList.GenerateItemInstanceId();
+                item2.Id = Guid.NewGuid();//TODO take GUID generation to GO
                 Inventory inv = Session.Character.InventoryList.AddToInventory(item2);
 
                 if (inv != null)
@@ -344,7 +344,7 @@ namespace OpenNos.Handler
                                     Slot = slot[i],
                                     Type = type[i],
                                     Price = gold[i],
-                                    InventoryId = inv.InventoryId,
+                                    Id = inv.Id,
                                     CharacterId = inv.CharacterId,
                                     Amount = qty[i],
                                     ItemInstance = inv.ItemInstance
@@ -530,7 +530,7 @@ namespace OpenNos.Handler
                 Session.Character.Gold += ((inv.ItemInstance as ItemInstance).Item.Price / 20) * amount;
                 Session.Client.SendPacket(Session.Character.GenerateShopMemo(1, string.Format(Language.Instance.GetMessageFromKey("SELL_ITEM_VALIDE"), (inv.ItemInstance as ItemInstance).Item.Name, amount)));
 
-                inv = Session.Character.InventoryList.RemoveItemAmountFromInventory(amount, inv.InventoryId);
+                inv = Session.Character.InventoryList.RemoveItemAmountFromInventory(amount, inv.Id);
                 if (inv != null)
                 {
                     // Send reduced-amount to owners inventory

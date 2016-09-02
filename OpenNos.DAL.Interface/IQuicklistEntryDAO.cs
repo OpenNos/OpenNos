@@ -14,6 +14,7 @@
 
 using OpenNos.Data;
 using OpenNos.Data.Enums;
+using System;
 using System.Collections.Generic;
 
 namespace OpenNos.DAL.Interface
@@ -22,7 +23,7 @@ namespace OpenNos.DAL.Interface
     {
         #region Methods
 
-        DeleteResult Delete(long characterId, long entryId);
+        DeleteResult Delete(long characterId, Guid primaryKey);
 
         SaveResult InsertOrUpdate(ref QuicklistEntryDTO characterquicklist);
 

@@ -16,7 +16,7 @@ namespace OpenNos.DAL.EF.MySQL
 {
     using System;
 
-    public class ItemInstance
+    public class ItemInstance : SynchronizableBaseEntity
     {
         #region Properties
 
@@ -26,7 +26,6 @@ namespace OpenNos.DAL.EF.MySQL
         public bool IsUsed { get; set; }
         public virtual Item Item { get; set; }
         public DateTime? ItemDeleteTime { get; set; }
-        public long ItemInstanceId { get; set; }
         public short ItemVNum { get; set; }
         public sbyte Rare { get; set; }
         public byte Upgrade { get; set; }

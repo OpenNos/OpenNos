@@ -50,11 +50,11 @@ namespace OpenNos.DAL.EF.MySQL
 
         #region Methods
 
-        public DeleteResult Delete(long characterId, long entryId)
+        public DeleteResult Delete(long characterId, Guid primaryKey)
         {
             using (OpenNosContext context = DataAccessHelper.CreateContext())
             {
-                QuicklistEntry QuicklistEntryItem = context.QuicklistEntry.FirstOrDefault(i => i.CharacterId == characterId && i.EntryId == entryId);
+                QuicklistEntry QuicklistEntryItem = context.QuicklistEntry.FirstOrDefault(i => i.CharacterId == characterId && i.Id == primaryKey);
                 if (QuicklistEntryItem != null)
                 {
                     context.QuicklistEntry.Remove(QuicklistEntryItem);
@@ -71,8 +71,8 @@ namespace OpenNos.DAL.EF.MySQL
             {
                 using (OpenNosContext context = DataAccessHelper.CreateContext())
                 {
-                    long entryId = quickListEntry.EntryId;
-                    QuicklistEntry dbentry = context.QuicklistEntry.FirstOrDefault(c => c.EntryId == entryId);
+                    Guid primaryKey = quickListEntry.Id;
+                    QuicklistEntry dbentry = context.QuicklistEntry.FirstOrDefault(c => c.Id == primaryKey);
                     if (dbentry == null)
                     {
                         // new entity
