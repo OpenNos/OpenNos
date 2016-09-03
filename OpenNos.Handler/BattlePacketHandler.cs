@@ -1083,8 +1083,7 @@ namespace OpenNos.Handler
                     Group grp = ServerManager.Instance.Groups.FirstOrDefault(g => g.IsMemberOfGroup(Session.Character.CharacterId));
                     if (grp != null)
                     {
-                        if (grp.Characters.TrueForAll(g => g.Character.MapId == Session.Character.MapId))
-                            grp.Characters.Where(g => g.Character.MapId == Session.Character.MapId).ToList().ForEach(g => g.Character.GenerateXp(monsterinfo));
+                        grp.Characters.Where(g => g.Character.MapId == Session.Character.MapId).ToList().ForEach(g => g.Character.GenerateXp(monsterinfo));
                     }
                     else
                         Session.Character.GenerateXp(monsterinfo);

@@ -1154,7 +1154,8 @@ namespace OpenNos.GameObject
         {
             int partySize = 1;
             Group grp = ServerManager.Instance.Groups.FirstOrDefault(g => g.IsMemberOfGroup(Session.Character.CharacterId));
-            if (grp != null) partySize = grp.Characters.Count;
+            if (grp != null)
+                partySize = grp.Characters.Count(gr => gr.Character.MapId == Session.Character.MapId);
 
             if ((int)(Session.Character.LevelXp / (Session.Character.XPLoad() / 10)) < (int)((Session.Character.LevelXp + monsterinfo.XP) / (Session.Character.XPLoad() / 10)))
             {
