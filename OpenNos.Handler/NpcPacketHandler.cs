@@ -380,7 +380,6 @@ namespace OpenNos.Handler
 
                         Session.Client.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("SHOP_OPEN")));
                         Session.Character.IsSitting = true;
-                        Session.Character.LastSpeed = Session.Character.Speed;
                         Session.Character.Speed = 0;
                         Session.Client.SendPacket(Session.Character.GenerateCond());
 
@@ -398,7 +397,7 @@ namespace OpenNos.Handler
                     Session.CurrentMap.UserShops.Remove(shop.Key);
                     Session.CurrentMap?.Broadcast(Session.Character.GenerateShopEnd());
                     Session.CurrentMap?.Broadcast(Session, Session.Character.GeneratePlayerFlag(0), ReceiverType.AllExceptMe);
-                    Session.Character.Speed = Session.Character.LastSpeed != 0 ? Session.Character.LastSpeed : Session.Character.Speed;
+                    Session.Character.SpeedLoad();
                     Session.Character.IsSitting = false;
                     Session.Client.SendPacket(Session.Character.GenerateCond());
                     Session.CurrentMap?.Broadcast(Session.Character.GenerateRest());

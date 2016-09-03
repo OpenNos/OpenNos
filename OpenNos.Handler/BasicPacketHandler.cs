@@ -1053,7 +1053,6 @@ namespace OpenNos.Handler
                             Direction = 0,
                             IsSitting = false,
                             BackPack = characterDTO.Backpack,
-                            Speed = ServersData.SpeedData[characterDTO.Class],
                             Compliment = characterDTO.Compliment,
                             Backpack = characterDTO.Backpack,
                             BuffBlocked = characterDTO.BuffBlocked,
@@ -1076,7 +1075,7 @@ namespace OpenNos.Handler
                             HeroLevel = characterDTO.HeroLevel,
                             HeroXp = characterDTO.HeroXp
                         };
-
+                    Session.Character.SpeedLoad();
                     Session.Character.Update();
                     Session.Character.LoadInventory();
                     Session.Character.LoadQuicklists();

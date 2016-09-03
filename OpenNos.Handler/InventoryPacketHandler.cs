@@ -1228,7 +1228,7 @@ namespace OpenNos.Handler
             Session.CurrentMap?.Broadcast(Session.Character.GenerateEff(196));
             Session.CurrentMap?.Broadcast($"guri 6 1 {Session.Character.CharacterId} 0 0");
             Session.Client.SendPacket(Session.Character.GenerateSpPoint());
-            Session.Character.Speed += ServerManager.GetItem(sp.ItemVNum).Speed;
+            Session.Character.SpeedLoad();
             Session.Client.SendPacket(Session.Character.GenerateLev());
             Session.Client.SendPacket(Session.Character.GenerateStat());
             Session.Client.SendPacket(Session.Character.GenerateStatChar());

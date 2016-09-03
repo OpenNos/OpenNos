@@ -373,7 +373,7 @@ namespace OpenNos.GameObject
 
                     Broadcast(shopOwnerSession, shopOwnerSession.Character.GenerateShopEnd(), ReceiverType.All);
                     Broadcast(shopOwnerSession, shopOwnerSession.Character.GeneratePlayerFlag(0), ReceiverType.AllExceptMe);
-                    shopOwnerSession.Character.Speed = shopOwnerSession.Character.LastSpeed != 0 ? shopOwnerSession.Character.LastSpeed : shopOwnerSession.Character.Speed;
+                    shopOwnerSession.Character.SpeedLoad();
                     shopOwnerSession.Character.IsSitting = false;
                     shopOwnerSession.Client.SendPacket(shopOwnerSession.Character.GenerateCond());
                     Broadcast(shopOwnerSession, shopOwnerSession.Character.GenerateRest(), ReceiverType.All);

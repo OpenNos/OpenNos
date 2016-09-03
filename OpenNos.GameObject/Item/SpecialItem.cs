@@ -101,14 +101,13 @@ namespace OpenNos.GameObject
                             Session.Character.MorphUpgrade = 0;
                             Session.Character.MorphUpgrade2 = 0;
                             Session.Character.Morph = Morph + Session.Character.Gender;
-                            Session.Character.LastSpeed = Session.Character.Speed;
                             Session.Character.Speed = Speed;
                             Session.CurrentMap?.Broadcast(Session.Character.GenerateEff(196));
                         }
                         else
                         {
                             Session.Character.IsVehicled = false;
-                            Session.Character.Speed = Session.Character.LastSpeed;
+                            Session.Character.SpeedLoad();
                             if (Session.Character.UseSp)
                             {
                                 if (sp != null)
