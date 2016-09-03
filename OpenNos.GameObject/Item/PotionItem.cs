@@ -43,6 +43,16 @@ namespace OpenNos.GameObject
                             Slot, inv.Type);
                         session.Client.SendPacket(session.Character.GenerateInventoryAdd(-1, 0, inv.Type, inv.Slot, 0, 0, 0, 0));
                     }
+                    if ((int)session.Character.HPLoad() - session.Character.Hp < item.Hp ||
+                         (int)session.Character.MPLoad() - session.Character.Mp < item.Mp)
+                    {
+                        session.CurrentMap?.Broadcast(session.Character.GenerateRc((int)session.Character.HPLoad() - session.Character.Hp));
+                    }
+                    if ((int)session.Character.HPLoad() - session.Character.Hp > item.Hp ||
+                        (int)session.Character.MPLoad() - session.Character.Mp > item.Mp)
+                    {
+                        session.CurrentMap?.Broadcast(session.Character.GenerateRc(item.Hp));
+                    }
                     session.Character.Mp += item.Mp;
                     session.Character.Hp += item.Hp;
                     if (session.Character.Mp > session.Character.MPLoad())
@@ -50,8 +60,6 @@ namespace OpenNos.GameObject
                     if (session.Character.Hp > session.Character.HPLoad())
                         session.Character.Hp = (int)session.Character.HPLoad();
 
-                    if (session.Character.Hp < session.Character.HPLoad() || session.Character.Mp < session.Character.MPLoad())
-                        session.CurrentMap?.Broadcast(session.Character.GenerateRc(item.Hp));
                     session.Client.SendPacket(session.Character.GenerateStat());
                     break;
             }
