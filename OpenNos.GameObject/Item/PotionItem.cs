@@ -48,8 +48,8 @@ namespace OpenNos.GameObject
                     {
                         session.CurrentMap?.Broadcast(session.Character.GenerateRc((int)session.Character.HPLoad() - session.Character.Hp));
                     }
-                    if ((int)session.Character.HPLoad() - session.Character.Hp > item.Hp ||
-                        (int)session.Character.MPLoad() - session.Character.Mp > item.Mp)
+                    else if ((int)session.Character.HPLoad() - session.Character.Hp > item.Hp ||
+                         (int)session.Character.MPLoad() - session.Character.Mp > item.Mp)
                     {
                         session.CurrentMap?.Broadcast(session.Character.GenerateRc(item.Hp));
                     }

@@ -261,8 +261,7 @@ namespace OpenNos.GameObject
         {
             if (!IsVehicled)
             {
-                if (ServersData.SpeedData.Contains(Class))
-                    Speed = ServersData.SpeedData[Class];
+                Speed = ServersData.SpeedData[Class];
 
                 if (UseSp)
                 {
