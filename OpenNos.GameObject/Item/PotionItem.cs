@@ -43,13 +43,11 @@ namespace OpenNos.GameObject
                             Slot, inv.Type);
                         session.Client.SendPacket(session.Character.GenerateInventoryAdd(-1, 0, inv.Type, inv.Slot, 0, 0, 0, 0));
                     }
-                    if ((int)session.Character.HPLoad() - session.Character.Hp < item.Hp ||
-                         (int)session.Character.MPLoad() - session.Character.Mp < item.Mp)
+                    if ((int)session.Character.HPLoad() - session.Character.Hp < item.Hp)
                     {
                         session.CurrentMap?.Broadcast(session.Character.GenerateRc((int)session.Character.HPLoad() - session.Character.Hp));
                     }
-                    else if ((int)session.Character.HPLoad() - session.Character.Hp > item.Hp ||
-                         (int)session.Character.MPLoad() - session.Character.Mp > item.Mp)
+                    else if ((int)session.Character.HPLoad() - session.Character.Hp > item.Hp)
                     {
                         session.CurrentMap?.Broadcast(session.Character.GenerateRc(item.Hp));
                     }
