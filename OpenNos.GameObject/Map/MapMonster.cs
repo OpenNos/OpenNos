@@ -223,7 +223,6 @@ namespace OpenNos.GameObject
                             damage = targetSession.Character.HasGodMode ? 0 : 100;
                         if (targetSession.Character.IsSitting)
                         {
-
                             targetSession.Character.IsSitting = false;
                             Map.Broadcast(null, targetSession.Character.GenerateRest(), ReceiverType.OnlySomeone, "", targetSession.Character.CharacterId);
                         }
@@ -249,7 +248,7 @@ namespace OpenNos.GameObject
                         if (targetSession.Character.Hp <= 0)
                         {
                             Thread.Sleep(1000);
-                            ServerManager.Instance.AskRevive(Target);
+                            ServerManager.Instance.AskRevive(targetSession.Character.CharacterId);
                             Target = -1;
                         }
                         if ((sk != null && (sk.Range > 0 || sk.TargetRange > 0)))

@@ -298,9 +298,9 @@ namespace OpenNos.GameObject
         }
 
         //PacketHandler -> with Callback?
-        public void AskRevive(long Target)
+        public void AskRevive(long characterId)
         {
-            ClientSession Session = Sessions.FirstOrDefault(s => s.Character != null && s.Character.CharacterId == Target);
+            ClientSession Session = Sessions.FirstOrDefault(s => s.Character != null && s.Character.CharacterId == characterId);
             if (Session != null && Session.Character != null)
             {
                 Session.Client.SendPacket("cancel 0 0");
