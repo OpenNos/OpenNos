@@ -221,7 +221,12 @@ namespace OpenNos.GameObject
                             damage = 0;
                         else
                             damage = targetSession.Character.HasGodMode ? 0 : 100;
+                        if (targetSession.Character.IsSitting)
+                        {
 
+                            targetSession.Character.IsSitting = false;
+                            Map.Broadcast(null, targetSession.Character.GenerateRest(), ReceiverType.OnlySomeone, "", targetSession.Character.CharacterId);
+                        }
                         if (sk != null && sk.CastEffect != 0)
                         {
                             Map.Broadcast(GenerateEff(sk.CastEffect));
@@ -251,6 +256,11 @@ namespace OpenNos.GameObject
                         {
                             foreach (Character chara in ServerManager.GetMap(MapId).GetListPeopleInRange(sk.TargetRange == 0 ? this.MapX : (short)MapX, sk.TargetRange == 0 ? this.MapY : (short)MapY, (byte)(sk.TargetRange + sk.Range)).Where(s => s.CharacterId != Target))
                             {
+                                if (chara.IsSitting)
+                                { 
+                                    chara.IsSitting = false;
+                                    Map.Broadcast(null, chara.GenerateRest(), ReceiverType.OnlySomeone, "", chara.CharacterId);
+                                }
                                 damage = chara.HasGodMode ? 0 : 100;
                                 bool AlreadyDead2 = chara.Hp <= 0;
                                 chara.GetDamage(damage);

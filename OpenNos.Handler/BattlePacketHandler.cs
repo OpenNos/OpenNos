@@ -92,11 +92,6 @@ namespace OpenNos.Handler
                     {
                         Skill skill = null;
                         CharacterSkill ski = skills.FirstOrDefault(s => (skill = ServerManager.GetSkill(s.SkillVNum)) != null && skill.CastId == short.Parse(packetsplit[i]));
-                        if (!Session.Character.WeaponLoaded(ski) || Session.Character.LastRest.AddSeconds(1) > DateTime.Now)
-                        {
-                            Session.Client.SendPacket($"cancel 2 0");
-                            return;
-                        }
                         MapMonster mon = Session.CurrentMap.Monsters.FirstOrDefault(s => s.MapMonsterId == short.Parse(packetsplit[i + 1]));
                         if (mon != null && skill != null)
                         {
@@ -262,11 +257,6 @@ namespace OpenNos.Handler
                 }
                 return;
             }
-            if (Session.Character.IsVehicled || Session.Character.LastRest.AddSeconds(1) > DateTime.Now)
-            {
-                Session.Client.SendPacket($"cancel 2 0");
-                return;
-            }
             if (Session.Character.CanFight)
             {
                 string[] packetsplit = packet.Split(' ');
@@ -336,11 +326,6 @@ namespace OpenNos.Handler
                 {
                     Session.Client.SendPacket($"cancel 0 0");
                     Session.Client.SendPacket(Session.Character.GenerateMsg($"{Language.Instance.GetMessageFromKey("CANT_ATTACK")}", 0));
-                    return;
-                }
-                if (Session.Character.LastRest.AddSeconds(1) > DateTime.Now)
-                {
-                    Session.Client.SendPacket($"cancel 0 0");
                     return;
                 }
                 Logger.Debug(packet, Session.SessionId);
