@@ -359,26 +359,30 @@ namespace OpenNos.GameObject
             }
         }
 
-        public void MonsterLifeManager()
+        public async void MonsterLifeManager()
         {
             var rnd = new Random();
-            Task MonsterLifeTask = null;
+            List<Task> MonsterLifeTask = new List<Task>();
             foreach (MapMonster monster in Monsters.OrderBy(i => rnd.Next()))
             {
-                MonsterLifeTask = new Task(() => monster.MonsterLife());
-                MonsterLifeTask.Start();
+                MonsterLifeTask.Add(new Task(() => monster.MonsterLife()));
+                MonsterLifeTask.Last().Start();
             }
+            if (MonsterLifeTask.Count > 0)
+                await MonsterLifeTask.ElementAt(0);
         }
 
-        public void NpcLifeManager()
+        public async void NpcLifeManager()
         {
             var rnd = new Random();
-            Task NpcLifeTask = null;
+            List<Task> NpcLifeTask = new List<Task>();
             foreach (MapNpc npc in Npcs.OrderBy(i => rnd.Next()))           
             {
-                NpcLifeTask = new Task(() => npc.NpcLife());
-                NpcLifeTask.Start();
+                NpcLifeTask.Add(new Task(() => npc.NpcLife()));
+                NpcLifeTask.Last().Start();
             }
+            if (NpcLifeTask.Count > 0)
+                await NpcLifeTask.ElementAt(0);
         }
 
         internal bool GetFreePosition(ref short firstX, ref short firstY, byte xpoint, byte ypoint)

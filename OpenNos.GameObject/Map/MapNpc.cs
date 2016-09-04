@@ -16,6 +16,7 @@ using OpenNos.DAL;
 using OpenNos.Data;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace OpenNos.GameObject
 {
@@ -89,8 +90,9 @@ namespace OpenNos.GameObject
             return $"npc_req 2 {MapNpcId} {Dialog}";
         }
 
-        internal void NpcLife()
+        internal async void NpcLife()
         {
+            await Task.Delay((1000 / ServerManager.GetMap(MapId).Npcs.Count));
             double time = (DateTime.Now - LastEffect).TotalMilliseconds;
             if (Effect > 0 && time > EffectDelay)
             {
