@@ -202,7 +202,11 @@ namespace OpenNos.GameObject
             MapCellAStar cell_start = new MapCellAStar(null, null, cell1.X, cell1.Y, cell1.MapId);
             MapCellAStar cell_goal = new MapCellAStar(null, null, cell2.X, cell2.Y, cell2.MapId);
             OPEN.Push(cell_start);
-
+            if (cell1.MapId != cell2.MapId)
+            {
+                SolutionPathList.Insert(0, cell_start);
+                return SolutionPathList;
+            }
             while (OPEN.Count > 0)
             {
                 MapCellAStar cell_current = OPEN.Pop();
