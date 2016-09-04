@@ -80,13 +80,12 @@ namespace OpenNos.GameObject
             foreach (MapMonsterDTO monster in DAOFactory.MapMonsterDAO.LoadFromMap(MapId).ToList())
             {
                 NpcMonster npcmonster = ServerManager.GetNpc(monster.MonsterVNum);
-                _monsters.Add(new MapMonster(this)
+                _monsters.Add(new MapMonster(this, monster.MonsterVNum)
                 {
                     MapId = monster.MapId,
                     MapX = monster.MapX,
                     MapMonsterId = monster.MapMonsterId,
                     MapY = monster.MapY,
-                    MonsterVNum = monster.MonsterVNum,
                     Position = monster.Position,
                     firstX = monster.MapX,
                     firstY = monster.MapY,
@@ -368,7 +367,6 @@ namespace OpenNos.GameObject
             {
                 MonsterLifeTask = new Task(() => monster.MonsterLife());
                 MonsterLifeTask.Start();
-
             }
         }
 
@@ -376,7 +374,7 @@ namespace OpenNos.GameObject
         {
             var rnd = new Random();
             Task NpcLifeTask = null;
-            foreach (MapNpc npc in Npcs.Where(s=>s.Effect !=0).Concat(Npcs.Where(s => s.Effect == 0).OrderBy(i => rnd.Next())).ToList())
+            foreach (MapNpc npc in Npcs.OrderBy(i => rnd.Next()))           
             {
                 NpcLifeTask = new Task(() => npc.NpcLife());
                 NpcLifeTask.Start();

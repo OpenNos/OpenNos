@@ -25,12 +25,13 @@ namespace OpenNos.GameObject
     {
         #region Instantiation
 
-        public MapMonster(Map parent)
+        public MapMonster(Map parent,short VNum)
         {
             LastEffect = LastMove = DateTime.Now;
             Target = -1;
             path = new List<MapCell>();
             Map = parent;
+            MonsterVNum = VNum;
             Monster = ServerManager.GetNpc(MonsterVNum);
         }
 
@@ -76,10 +77,8 @@ namespace OpenNos.GameObject
         }
 
         public string GenerateIn3()
-        {
-            NpcMonster monsterinfo = ServerManager.GetNpc(this.MonsterVNum);
-            if (monsterinfo != null && Alive && !IsDisabled)
-                return $"in 3 {MonsterVNum} {MapMonsterId} {MapX} {MapY} {Position} {(int)(((float)CurrentHp / (float)monsterinfo.MaxHP) * 100)} {(int)(((float)CurrentMp / (float)monsterinfo.MaxMP) * 100)} 0 0 0 -1 1 0 -1 - 0 -1 0 0 0 0 0 0 0 0";
+        {      if ( Alive && !IsDisabled)
+                return $"in 3 {MonsterVNum} {MapMonsterId} {MapX} {MapY} {Position} {(int)(((float)CurrentHp / (float)Monster.MaxHP) * 100)} {(int)(((float)CurrentMp / (float)Monster.MaxMP) * 100)} 0 0 0 -1 1 0 -1 - 0 -1 0 0 0 0 0 0 0 0";
             else return String.Empty;
         }
 
