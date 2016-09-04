@@ -168,6 +168,7 @@ namespace OpenNos.GameObject
                     {
                         if (Map.GetDistance(new MapCell() { X = character.MapX, Y = character.MapY }, new MapCell() { X = MapX, Y = MapY }) < 7)
                         {
+                            Target = character.CharacterId;
                             if (!Monster.NoAggresiveIcon)
                                 character.Session.Client.SendPacket(GenerateEff(5000));
                         }
