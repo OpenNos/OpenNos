@@ -180,6 +180,7 @@ namespace OpenNos.Handler
 
                                         if (Map.GetDistance(new MapCell() { X = Session.Character.MapX, Y = Session.Character.MapY }, new MapCell() { X = mmon.MapX, Y = mmon.MapY }) <= skill.Range + (DateTime.Now - mmon.LastMove).TotalSeconds * 2 * monsterinfo.Speed || skill.TargetRange != 0)
                                         {
+                                            Session.Character.LastSkill = DateTime.Now;
                                             Session.CurrentMap?.Broadcast($"ct 1 {Session.Character.CharacterId} 3 {mmon.MapMonsterId} {skill.CastAnimation} -1 {skill.SkillVNum}");
                                             damage = GenerateDamage(mmon.MapMonsterId, skill, ref hitmode);
                                             ski.Used = true;
@@ -257,6 +258,7 @@ namespace OpenNos.Handler
                 }
                 return;
             }
+
             if (Session.Character.CanFight)
             {
                 string[] packetsplit = packet.Split(' ');
@@ -266,6 +268,8 @@ namespace OpenNos.Handler
                     Session.Character.MapY = Convert.ToInt16(packetsplit[6]);
                 }
                 byte usertype = byte.Parse(packetsplit[3]);
+                if (Session.Character.IsSitting)
+                    Session.Character.Rest();
                 switch (usertype)
                 {
                     case (byte)UserType.Monster:
@@ -336,7 +340,6 @@ namespace OpenNos.Handler
                         if (Session.Character.Hp > 0)
                         {
                             ZoneHit(Convert.ToInt32(packetsplit[2]), Convert.ToInt16(packetsplit[3]), Convert.ToInt16(packetsplit[4]));
-                            Session.Character.LastSkill = DateTime.Now;
                         }
                 }
             }
@@ -1117,6 +1120,7 @@ namespace OpenNos.Handler
                         Session.Client.SendPacket(Session.Character.GenerateStat());
                         ski.LastUse = DateTime.Now;
                         await Task.Delay(skill.CastTime * 100);
+                        Session.Character.LastSkill = DateTime.Now;
 
                         Session.CurrentMap?.Broadcast($"bs 1 {Session.Character.CharacterId} {x} {y} {skill.SkillVNum} {skill.Cooldown} {skill.AttackAnimation} {skill.Effect} 0 0 1 1 0 0 0");
 

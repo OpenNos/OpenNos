@@ -912,18 +912,7 @@ namespace OpenNos.Handler
         public void Rest(string packet)
         {
             Logger.Debug(packet, Session.SessionId);
-
-            if (Session.Character.LastSkill.AddSeconds(4) > DateTime.Now || Session.Character.LastDefence.AddSeconds(4) > DateTime.Now)
-            {
-                return;
-            }
-            if (!Session.Character.IsVehicled)
-            {
-                Session.Character.IsSitting = !Session.Character.IsSitting;
-                Session.CurrentMap?.Broadcast(Session.Character.GenerateRest());
-            }
-            else
-                Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("IMPOSSIBLE_TO_USE"), 10));
+            Session.Character.Rest();
         }
 
         [Packet("#revival")]

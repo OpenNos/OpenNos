@@ -1472,6 +1472,21 @@ namespace OpenNos.GameObject
             }
         }
 
+        public void Rest()
+        {
+            if (LastSkill.AddSeconds(4) > DateTime.Now || LastDefence.AddSeconds(4) > DateTime.Now)
+            {
+                return;
+            }
+            if (!IsVehicled)
+            {
+                IsSitting = !IsSitting;
+                Session.CurrentMap?.Broadcast(GenerateRest());
+            }
+            else
+                Session.Client.SendPacket(GenerateSay(Language.Instance.GetMessageFromKey("IMPOSSIBLE_TO_USE"), 10));
+        }
+
         public void LearnSPSkill()
         {
             SpecialistInstance specialist = EquipmentList.LoadBySlotAndType<SpecialistInstance>((short)EquipmentType.Sp, (byte)InventoryType.Equipment);
