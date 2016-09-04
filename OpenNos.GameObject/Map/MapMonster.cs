@@ -30,8 +30,8 @@ namespace OpenNos.GameObject
             LastEffect = LastMove = DateTime.Now;
             Target = -1;
             path = new List<MapCell>();
-            LifeTaskIsRunning = false;
             Map = parent;
+            Monster = ServerManager.GetNpc(MonsterVNum);
         }
 
         #endregion
@@ -46,11 +46,10 @@ namespace OpenNos.GameObject
         public short firstY { get; set; }
         public DateTime LastEffect { get; private set; }
         public DateTime LastMove { get; private set; }
-        public bool LifeTaskIsRunning { get; internal set; }
         public Map Map { get; set; }
         public List<MapCell> path { get; set; }
         public long Target { get; set; }
-
+        public NpcMonster Monster { get; set; }
         #endregion
 
         #region Methods
@@ -86,52 +85,47 @@ namespace OpenNos.GameObject
 
         internal void MonsterLife()
         {
-            LifeTaskIsRunning = true;
-            NpcMonster monster = ServerManager.GetNpc(this.MonsterVNum);
-
             //Respawn
             if (!Alive)
             {
                 double timeDeath = (DateTime.Now - Death).TotalSeconds;
-                if (timeDeath >= monster.RespawnTime / 10)
+                if (timeDeath >= Monster.RespawnTime / 10)
                 {
                     Alive = true;
                     Target = -1;
-                    CurrentHp = monster.MaxHP;
-                    CurrentMp = monster.MaxMP;
+                    CurrentHp = Monster.MaxHP;
+                    CurrentMp = Monster.MaxMP;
                     MapX = firstX;
                     MapY = firstY;
 
                     Map.Broadcast(GenerateIn3());
                     Map.Broadcast(GenerateEff(7));
                 }
-                LifeTaskIsRunning = false;
                 return;
             }
             else if (Target == -1)
             {
                 //Normal Move Mode
-                if (monster == null || Alive == false)
+                if (Alive == false)
                 {
-                    LifeTaskIsRunning = false;
                     return;
                 }
                 Random r = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
                 double time = (DateTime.Now - LastMove).TotalSeconds;
-                int MoveFrequent = 5 - (int)Math.Round((double)(monster.Speed / 5));
+                int MoveFrequent = 5 - (int)Math.Round((double)(Monster.Speed / 5));
                 if (MoveFrequent < 1)
                     MoveFrequent = 1;
                 if (IsMoving)
                 {
                     if (path.Where(s => s != null).ToList().Count > 0)//fix a path problem
                     {
-                        if ((DateTime.Now - LastMove).TotalSeconds > 1.0 / monster.Speed)
+                        if ((DateTime.Now - LastMove).TotalSeconds > 1.0 / Monster.Speed)
                         {
                             short MapX = path.ElementAt(0).X;
                             short MapY = path.ElementAt(0).Y;
                             path.RemoveAt(0);
                             LastMove = DateTime.Now;
-                            Map.Broadcast($"mv 3 {this.MapMonsterId} {this.MapX} {this.MapY} {monster.Speed}");
+                            Map.Broadcast($"mv 3 {this.MapMonsterId} {this.MapX} {this.MapY} {Monster.Speed}");
 
                             Task.Factory.StartNew(async () =>
                             {
@@ -139,13 +133,12 @@ namespace OpenNos.GameObject
                                 this.MapX = MapX;
                                 this.MapY = MapY;
                             });
-                            LifeTaskIsRunning = false;
                             return;
                         }
                     }
                     else if (time > r.Next(1, MoveFrequent) + 1)
                     {
-                        int MoveDistance = (int)Math.Round((double)monster.Speed / 2);
+                        int MoveDistance = (int)Math.Round((double)Monster.Speed / 2);
                         byte xpoint = (byte)(r.Next(1, MoveDistance));
                         byte ypoint = (byte)(r.Next(1, MoveDistance));
 
@@ -155,7 +148,7 @@ namespace OpenNos.GameObject
                         {
                             LastMove = DateTime.Now;
 
-                            string movepacket = $"mv 3 {this.MapMonsterId} {MapX} {MapY} {monster.Speed}";
+                            string movepacket = $"mv 3 {this.MapMonsterId} {MapX} {MapY} {Monster.Speed}";
                             Map.Broadcast(movepacket);
 
                             Task.Factory.StartNew(async () =>
@@ -167,7 +160,7 @@ namespace OpenNos.GameObject
                         }
                     }
                 }
-                if (monster.IsHostile)
+                if (Monster.IsHostile)
                 {
                     Character character = ServerManager.Instance.Sessions.Where(s => s.Character != null && s.Character.Hp > 0).OrderBy(s => Map.GetDistance(new MapCell() { X = MapX, Y = MapY }, new MapCell() { X = s.Character.MapX, Y = s.Character.MapY })).FirstOrDefault(s => s.Character != null && !s.Character.Invisible && s.Character.MapId == MapId)?.Character;
                     if (character != null)
@@ -175,7 +168,7 @@ namespace OpenNos.GameObject
                         if (Map.GetDistance(new MapCell() { X = character.MapX, Y = character.MapY }, new MapCell() { X = MapX, Y = MapY }) < 7)
                         {
                             Target = character.CharacterId;
-                            if (!monster.NoAggresiveIcon)
+                            if (!Monster.NoAggresiveIcon)
                                 ServerManager.Instance.Sessions.FirstOrDefault(s => s != null && s.Client != null && s.Character != null && s.Character.CharacterId.Equals(Target)).Client.SendPacket(GenerateEff(5000));
                         }
                     }
@@ -189,10 +182,10 @@ namespace OpenNos.GameObject
                 short? mapId = ServerManager.Instance.GetProperty<short?>(Target, "MapId");
                 bool? invisible = ServerManager.Instance.GetProperty<bool?>(Target, "Invisible");
 
-                if (MapX == null || MapY == null || Hp <= 0 || invisible != null && (bool)invisible) { Target = -1; LifeTaskIsRunning = false; return; }
+                if (MapX == null || MapY == null || Hp <= 0 || invisible != null && (bool)invisible) { Target = -1; return; }
 
                 Random r = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
-                NpcMonsterSkill ski = monster.Skills.Where(s => !s.Used && (DateTime.Now - s.LastUse).TotalMilliseconds >= 100 * ServerManager.GetSkill(s.SkillVNum).Cooldown).OrderBy(rnd => r.Next()).FirstOrDefault();
+                NpcMonsterSkill ski = Monster.Skills.Where(s => !s.Used && (DateTime.Now - s.LastUse).TotalMilliseconds >= 100 * ServerManager.GetSkill(s.SkillVNum).Cooldown).OrderBy(rnd => r.Next()).FirstOrDefault();
                 Skill sk = null;
                 if (ski != null)
                 {
@@ -203,9 +196,9 @@ namespace OpenNos.GameObject
 
                 int damage = 100;
 
-                if (targetSession != null && (sk != null && Map.GetDistance(new MapCell() { X = this.MapX, Y = this.MapY }, new MapCell() { X = (short)MapX, Y = (short)MapY }) < sk.Range) || (Map.GetDistance(new MapCell() { X = this.MapX, Y = this.MapY }, new MapCell() { X = (short)MapX, Y = (short)MapY }) <= monster.BasicRange))
+                if (targetSession != null && (sk != null && Map.GetDistance(new MapCell() { X = this.MapX, Y = this.MapY }, new MapCell() { X = (short)MapX, Y = (short)MapY }) < sk.Range) || (Map.GetDistance(new MapCell() { X = this.MapX, Y = this.MapY }, new MapCell() { X = (short)MapX, Y = (short)MapY }) <= Monster.BasicRange))
                 {
-                    if ((sk != null && ((DateTime.Now - LastEffect).TotalMilliseconds >= sk.Cooldown * 100 + 1000)) || ((DateTime.Now - LastEffect).TotalMilliseconds >= (monster.BasicCooldown < 4 ? 4 : monster.BasicCooldown) * 100 + 100))
+                    if ((sk != null && ((DateTime.Now - LastEffect).TotalMilliseconds >= sk.Cooldown * 100 + 1000)) || ((DateTime.Now - LastEffect).TotalMilliseconds >= (Monster.BasicCooldown < 4 ? 4 : Monster.BasicCooldown) * 100 + 100))
                     {
                         if (ski != null)
                         {
@@ -240,7 +233,7 @@ namespace OpenNos.GameObject
                         if (sk != null)
                             Map.Broadcast($"su 3 {MapMonsterId} 1 {Target} {ski.SkillVNum} {sk.Cooldown} {sk.AttackAnimation} {sk.Effect} {this.MapX} {this.MapY} {(targetSession.Character.Hp > 0 ? 1 : 0)} {(int)((double)targetSession.Character.Hp / ServerManager.Instance.GetUserMethod<double>(Target, "HPLoad"))} {damage} 0 0");
                         else
-                            Map.Broadcast($"su 3 {MapMonsterId} 1 {Target} 0 {monster.BasicCooldown} 11 {monster.BasicSkill} 0 0 {(targetSession.Character.Hp > 0 ? 1 : 0)} {(int)((double)targetSession.Character.Hp / ServerManager.Instance.GetUserMethod<double>(Target, "HPLoad"))} {damage} 0 0");
+                            Map.Broadcast($"su 3 {MapMonsterId} 1 {Target} 0 {Monster.BasicCooldown} 11 {Monster.BasicSkill} 0 0 {(targetSession.Character.Hp > 0 ? 1 : 0)} {(int)((double)targetSession.Character.Hp / ServerManager.Instance.GetUserMethod<double>(Target, "HPLoad"))} {damage} 0 0");
 
                         if (ski != null)
                             ski.Used = false;
@@ -265,7 +258,7 @@ namespace OpenNos.GameObject
                                 chara.GetDamage(damage);
                                 chara.LastDefence = DateTime.Now;
                                 Map.Broadcast(null, chara.GenerateStat(), ReceiverType.OnlySomeone, "", chara.CharacterId);
-                                Map.Broadcast($"su 3 {MapMonsterId} 1 {chara.CharacterId} 0 {monster.BasicCooldown} 11 {monster.BasicSkill} 0 0 {(chara.Hp > 0 ? 1 : 0)} {(int)((double)chara.Hp / chara.HPLoad())} {damage} 0 0");
+                                Map.Broadcast($"su 3 {MapMonsterId} 1 {chara.CharacterId} 0 {Monster.BasicCooldown} 11 {Monster.BasicSkill} 0 0 {(chara.Hp > 0 ? 1 : 0)} {(int)((double)chara.Hp / chara.HPLoad())} {damage} 0 0");
                                 if (chara.Hp <= 0 && !AlreadyDead2)
                                 {
                                     Thread.Sleep(1000);
@@ -298,16 +291,15 @@ namespace OpenNos.GameObject
                         }
                         else
                         {
-                            if ((DateTime.Now - LastMove).TotalSeconds > 1.0 / monster.Speed)
+                            if ((DateTime.Now - LastMove).TotalSeconds > 1.0 / Monster.Speed)
                             {
                                 LastMove = DateTime.Now;
-                                Map.Broadcast($"mv 3 {this.MapMonsterId} {this.MapX} {this.MapY} {monster.Speed}");
+                                Map.Broadcast($"mv 3 {this.MapMonsterId} {this.MapX} {this.MapY} {Monster.Speed}");
                             }
                         }
                     }
                 }
             }
-            LifeTaskIsRunning = false;
         }
 
         #endregion

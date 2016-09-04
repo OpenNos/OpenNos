@@ -360,31 +360,26 @@ namespace OpenNos.GameObject
             }
         }
 
-        public async void MonsterLifeManager()
+        public void MonsterLifeManager()
         {
             var rnd = new Random();
             Task MonsterLifeTask = null;
             foreach (MapMonster monster in Monsters.OrderBy(i => rnd.Next()))
             {
-                if (!monster.LifeTaskIsRunning)
-                {
-                    MonsterLifeTask = new Task(() => monster.MonsterLife());
-                    MonsterLifeTask.Start();
-                    await Task.Delay(rnd.Next(1000 / Monsters.Count(), 1000 / Monsters.Count()));
-                }
+                MonsterLifeTask = new Task(() => monster.MonsterLife());
+                MonsterLifeTask.Start();
+
             }
         }
 
-        public async void NpcLifeManager()
+        public void NpcLifeManager()
         {
             var rnd = new Random();
             Task NpcLifeTask = null;
-            foreach (MapNpc npc in Npcs.OrderBy(i => rnd.Next()))
+            foreach (MapNpc npc in Npcs.Where(s=>s.Effect !=0).Concat(Npcs.Where(s => s.Effect == 0).OrderBy(i => rnd.Next())).ToList())
             {
                 NpcLifeTask = new Task(() => npc.NpcLife());
                 NpcLifeTask.Start();
-
-                await Task.Delay(rnd.Next(1000 / Npcs.Count(), 1000 / Npcs.Count()));
             }
         }
 
@@ -422,7 +417,7 @@ namespace OpenNos.GameObject
 
         internal IEnumerable<Character> GetListPeopleInRange(short mapX, short mapY, byte distance)
         {
-            List<Character> listch = new List<Character>();          
+            List<Character> listch = new List<Character>();
             IEnumerable<ClientSession> cl = Sessions.Where(s => s.Character != null && s.Character.Hp > 0);
             for (int i = cl.Count() - 1; i >= 0; i--)
             {
