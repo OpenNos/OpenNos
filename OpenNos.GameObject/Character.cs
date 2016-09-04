@@ -162,7 +162,7 @@ namespace OpenNos.GameObject
                     HairStyle = HairStyle > 1 ? (byte)0 : HairStyle;
 
                 SpeedLoad();
-                Session.Character.Class = characterClass;
+                Class = characterClass;
                 Hp = (int)HPLoad();
                 Mp = (int)MPLoad();
                 Session.Client.SendPacket(GenerateTit());
