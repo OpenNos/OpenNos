@@ -107,7 +107,7 @@ namespace OpenNos.Import.Console
                     npctest.MapNpcId = short.Parse(currentPacket[3]);
                     if (effPacketsDictionary.ContainsKey(npctest.MapNpcId))
                         npctest.Effect = effPacketsDictionary[npctest.MapNpcId];
-                    npctest.EffectDelay = 5000;
+                    npctest.EffectDelay = 4750;
                     npctest.IsMoving = npcMvPacketsList.Contains(npctest.MapNpcId);
                     npctest.Position = byte.Parse(currentPacket[6]);
                     npctest.Dialog = short.Parse(currentPacket[9]);
@@ -505,11 +505,12 @@ namespace OpenNos.Import.Console
                 {
                     MapMonsterDTO monster = new MapMonsterDTO
                     {
-                        MapX = short.Parse(currentPacket[4]),
-                        MapY = short.Parse(currentPacket[5]),
                         MapId = map,
                         MonsterVNum = short.Parse(currentPacket[2]),
                         MapMonsterId = int.Parse(currentPacket[3]),
+                        MapX = short.Parse(currentPacket[4]),
+                        MapY = short.Parse(currentPacket[5]),
+                        Position = (byte)(currentPacket[6]==""?0 : byte.Parse(currentPacket[6])),
                         IsDisabled = false
                     };
                     monster.IsMoving = mobMvPacketsList.Contains(monster.MapMonsterId);
