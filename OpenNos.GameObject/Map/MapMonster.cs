@@ -163,7 +163,7 @@ namespace OpenNos.GameObject
                 }
                 if (Monster.IsHostile)
                 {
-                    Character character = ServerManager.GetMap(MapId).Sessions.Where(s => s.Character != null && s.Character.Hp > 0).OrderBy(s => Map.GetDistance(new MapCell() { X = MapX, Y = MapY }, new MapCell() { X = s.Character.MapX, Y = s.Character.MapY })).FirstOrDefault(s => s.Character != null && !s.Character.Invisible && s.Character.MapId == MapId)?.Character;
+                    Character character = ServerManager.Instance.Sessions.Where(s => s.Character != null && s.Character.Hp > 0).OrderBy(s => Map.GetDistance(new MapCell() { X = MapX, Y = MapY }, new MapCell() { X = s.Character.MapX, Y = s.Character.MapY })).FirstOrDefault(s => s.Character != null && !s.Character.Invisible && s.Character.MapId == MapId)?.Character;
                     if (character != null)
                     {
                         if (Map.GetDistance(new MapCell() { X = character.MapX, Y = character.MapY }, new MapCell() { X = MapX, Y = MapY }) < 7)
@@ -177,9 +177,13 @@ namespace OpenNos.GameObject
             }
             else
             {
-                ClientSession targetSession = Map.Sessions.SingleOrDefault(s => s.Character.CharacterId == Target);
+                short? MapX = ServerManager.Instance.GetProperty<short?>(Target, "MapX");
+                short? MapY = ServerManager.Instance.GetProperty<short?>(Target, "MapY");
+                int? Hp = ServerManager.Instance.GetProperty<int?>(Target, "Hp");
+                short? mapId = ServerManager.Instance.GetProperty<short?>(Target, "MapId");
+                bool? invisible = ServerManager.Instance.GetProperty<bool?>(Target, "Invisible");
 
-                if (targetSession == null) { Target = -1; return; }
+                if (MapX == null || MapY == null || Hp <= 0 || invisible != null && (bool)invisible) { Target = -1; return; }
 
                 Random r = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
                 NpcMonsterSkill ski = Monster.Skills.Where(s => !s.Used && (DateTime.Now - s.LastUse).TotalMilliseconds >= 100 * ServerManager.GetSkill(s.SkillVNum).Cooldown).OrderBy(rnd => r.Next()).FirstOrDefault();
@@ -189,11 +193,13 @@ namespace OpenNos.GameObject
                     sk = ServerManager.GetSkill(ski.SkillVNum);
                 }
 
+                ClientSession targetSession = Map.Sessions.SingleOrDefault(s => s.Character.CharacterId == Target);
+
                 int damage = 100;
 
-                if (sk != null && (( Map.GetDistance(new MapCell() { X = this.MapX, Y = this.MapY }, new MapCell() { X = (short)MapX, Y = (short)MapY }) < sk.Range) || (Map.GetDistance(new MapCell() { X = this.MapX, Y = this.MapY }, new MapCell() { X = (short)MapX, Y = (short)MapY }) <= Monster.BasicRange)))
+                if (targetSession != null && ((sk != null && Map.GetDistance(new MapCell() { X = this.MapX, Y = this.MapY }, new MapCell() { X = (short)MapX, Y = (short)MapY }) < sk.Range) || (Map.GetDistance(new MapCell() { X = this.MapX, Y = this.MapY }, new MapCell() { X = (short)MapX, Y = (short)MapY }) <= Monster.BasicRange)))
                 {
-                    if ((((DateTime.Now - LastEffect).TotalMilliseconds >= sk.Cooldown * 100 + 1000)) || ((DateTime.Now - LastEffect).TotalMilliseconds >= (Monster.BasicCooldown < 4 ? 4 : Monster.BasicCooldown) * 100 + 100))
+                    if ((sk != null && ((DateTime.Now - LastEffect).TotalMilliseconds >= sk.Cooldown * 100 + 1000)) || ((DateTime.Now - LastEffect).TotalMilliseconds >= (Monster.BasicCooldown < 4 ? 4 : Monster.BasicCooldown) * 100 + 100))
                     {
                         if (ski != null)
                         {
@@ -212,7 +218,7 @@ namespace OpenNos.GameObject
                             targetSession.Character.IsSitting = false;
                             Map.Broadcast(null, targetSession.Character.GenerateRest(), ReceiverType.OnlySomeone, "", targetSession.Character.CharacterId);
                         }
-                        if (sk.CastEffect != 0)
+                        if (sk != null && sk.CastEffect != 0)
                         {
                             Map.Broadcast(GenerateEff(sk.CastEffect));
                             Thread.Sleep(sk.CastTime * 100);
@@ -223,10 +229,10 @@ namespace OpenNos.GameObject
 
                         Map.Broadcast(null, ServerManager.Instance.GetUserMethod<string>(Target, "GenerateStat"), ReceiverType.OnlySomeone, "", Target);
 
-                        //if (sk != null)
-                        Map.Broadcast($"su 3 {MapMonsterId} 1 {Target} {ski.SkillVNum} {sk.Cooldown} {sk.AttackAnimation} {sk.Effect} {this.MapX} {this.MapY} {(targetSession.Character.Hp > 0 ? 1 : 0)} {(int)((double)targetSession.Character.Hp / ServerManager.Instance.GetUserMethod<double>(Target, "HPLoad"))} {damage} 0 0");
-                        //else
-                        //    Map.Broadcast($"su 3 {MapMonsterId} 1 {Target} 0 {Monster.BasicCooldown} 11 {Monster.BasicSkill} 0 0 {(targetSession.Character.Hp > 0 ? 1 : 0)} {(int)((double)targetSession.Character.Hp / ServerManager.Instance.GetUserMethod<double>(Target, "HPLoad"))} {damage} 0 0");
+                        if (sk != null)
+                            Map.Broadcast($"su 3 {MapMonsterId} 1 {Target} {ski.SkillVNum} {sk.Cooldown} {sk.AttackAnimation} {sk.Effect} {this.MapX} {this.MapY} {(targetSession.Character.Hp > 0 ? 1 : 0)} {(int)((double)targetSession.Character.Hp / ServerManager.Instance.GetUserMethod<double>(Target, "HPLoad"))} {damage} 0 0");
+                        else
+                            Map.Broadcast($"su 3 {MapMonsterId} 1 {Target} 0 {Monster.BasicCooldown} 11 {Monster.BasicSkill} 0 0 {(targetSession.Character.Hp > 0 ? 1 : 0)} {(int)((double)targetSession.Character.Hp / ServerManager.Instance.GetUserMethod<double>(Target, "HPLoad"))} {damage} 0 0");
 
                         if (ski != null)
                             ski.Used = false;
@@ -237,7 +243,7 @@ namespace OpenNos.GameObject
                             ServerManager.Instance.AskRevive(targetSession.Character.CharacterId);
                             Target = -1;
                         }
-                        if  (sk.Range > 0 || sk.TargetRange > 0)
+                        if ((sk != null && (sk.Range > 0 || sk.TargetRange > 0)))
                         {
                             foreach (Character chara in ServerManager.GetMap(MapId).GetListPeopleInRange(sk.TargetRange == 0 ? this.MapX : (short)MapX, sk.TargetRange == 0 ? this.MapY : (short)MapY, (byte)(sk.TargetRange + sk.Range)).Where(s => s.CharacterId != Target))
                             {
@@ -277,7 +283,7 @@ namespace OpenNos.GameObject
                             this.MapY = path.ElementAt(0).Y;
                             path.RemoveAt(0);
                         }
-                        if (MapId != targetSession.Character.MapId || (Map.GetDistance(new MapCell() { X = this.MapX, Y = this.MapY }, new MapCell() { X = (short)MapX, Y = (short)MapY }) > maxdistance))
+                        if (MapId != mapId || (Map.GetDistance(new MapCell() { X = this.MapX, Y = this.MapY }, new MapCell() { X = (short)MapX, Y = (short)MapY }) > maxdistance))
                         {
                             path = ServerManager.GetMap(MapId).AStar(new MapCell() { X = this.MapX, Y = this.MapY, MapId = this.MapId }, new MapCell() { X = firstX, Y = firstY, MapId = this.MapId });
                             Target = -1;
