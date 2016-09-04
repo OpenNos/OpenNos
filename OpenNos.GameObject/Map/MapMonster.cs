@@ -195,7 +195,7 @@ namespace OpenNos.GameObject
 
                 int damage = 100;
 
-                if (targetSession != null && (sk != null && Map.GetDistance(new MapCell() { X = this.MapX, Y = this.MapY }, new MapCell() { X = (short)MapX, Y = (short)MapY }) < sk.Range) || (Map.GetDistance(new MapCell() { X = this.MapX, Y = this.MapY }, new MapCell() { X = (short)MapX, Y = (short)MapY }) <= Monster.BasicRange))
+                if (targetSession != null && ((sk != null && Map.GetDistance(new MapCell() { X = this.MapX, Y = this.MapY }, new MapCell() { X = (short)MapX, Y = (short)MapY }) < sk.Range) || (Map.GetDistance(new MapCell() { X = this.MapX, Y = this.MapY }, new MapCell() { X = (short)MapX, Y = (short)MapY }) <= Monster.BasicRange)))
                 {
                     if ((sk != null && ((DateTime.Now - LastEffect).TotalMilliseconds >= sk.Cooldown * 100 + 1000)) || ((DateTime.Now - LastEffect).TotalMilliseconds >= (Monster.BasicCooldown < 4 ? 4 : Monster.BasicCooldown) * 100 + 100))
                     {
@@ -209,10 +209,8 @@ namespace OpenNos.GameObject
                         LastMove = DateTime.Now;
 
                         // deal 0 damage to GM with GodMode
-                        if (targetSession == null)
-                            damage = 0;
-                        else
-                            damage = targetSession.Character.HasGodMode ? 0 : 100;
+                      
+                        damage = targetSession.Character.HasGodMode ? 0 : 100;
                         if (targetSession.Character.IsSitting)
                         {
                             targetSession.Character.IsSitting = false;
