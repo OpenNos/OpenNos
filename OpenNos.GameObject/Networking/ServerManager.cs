@@ -725,11 +725,9 @@ namespace OpenNos.GameObject
             {
                 foreach (var GroupedSession in Sessions.Where(s => s.Character != null).GroupBy(s => s.Character.MapId))
                 {
-                    foreach (ClientSession Session in GroupedSession)
-                    {
-                        TaskMap = new Task(() => ServerManager.GetMap(Session.Character.MapId).MapTaskManager());
+                    TaskMap = new Task(() => ServerManager.GetMap(GroupedSession.First().Character.MapId).MapTaskManager());
                         TaskMap.Start();
-                    }
+                    
                 }
                 if (TaskMap != null)
                     await TaskMap;
