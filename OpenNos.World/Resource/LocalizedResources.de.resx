@@ -777,4 +777,13 @@
   <data name="IMPOSSIBLE_TO_USE" xml:space="preserve">
     <value />
   </data>
+  <data name="NOT_ENOUGH_POINTS" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SPEAKER" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TRANSFORMATION_NEEDED" xml:space="preserve">
+    <value />
+  </data>
 </root>

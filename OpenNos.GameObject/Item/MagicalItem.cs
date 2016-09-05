@@ -97,67 +97,60 @@ namespace OpenNos.GameObject
                     }
                     break;
 
-                default:
-                    Logger.Log.Warn(String.Format(Language.Instance.GetMessageFromKey("NO_HANDLER_ITEM"), this.GetType().ToString()));
+                case 14:
+                    switch (iteminfo.VNum)
+                    {
+                        case 2156: //Holy sphere(Malcolm Mix sphere +100 dignity)
+                            if (Session.Character.Dignity < 100)
+                            {
+                                Session.Character.Dignity += 100;
+
+                                if (Session.Character.Dignity > 100) Session.Character.Dignity = 100;
+
+                                Session.Client.SendPacket(Session.Character.GenerateFd());
+                                Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
+                                Inv.ItemInstance.Amount--;
+                                if (Inv.ItemInstance.Amount > 0)
+                                    Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(Inv.ItemInstance.ItemVNum, Inv.ItemInstance.Amount, Inv.Type, Inv.Slot, 0, 0, 0, 0));
+                                else
+                                {
+                                    Session.Character.InventoryList.DeleteFromSlotAndType(Inv.Slot, Inv.Type);
+                                    Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, Inv.Type, Inv.Slot, 0, 0, 0, 0));
+                                }
+                            }
+                            break;
+
+                        case 2168:
+                            Session.Character.Dignity = 100;
+                            Session.Client.SendPacket(Session.Character.GenerateFd());
+                            Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
+                            Session.Character.InventoryList.RemoveItemAmount(iteminfo.VNum, 1);
+                            if (Inv.ItemInstance.Amount - 1 > 0)
+                                Inv.ItemInstance.Amount--;
+                            if (Inv.ItemInstance.Amount > 0)
+                                Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(Inv.ItemInstance.ItemVNum, Inv.ItemInstance.Amount, Inv.Type, Inv.Slot, 0, 0, 0, 0));
+                            else
+                            {
+                                Session.Character.InventoryList.DeleteFromSlotAndType(Inv.Slot, Inv.Type);
+                                Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, Inv.Type, Inv.Slot, 0, 0, 0, 0));
+                            }
+                            break;
+
+                        default:
+                            Logger.Debug("NO_HANDLER_ITEM");
+                            break;
+                    }
                     break;
 
-                    //Need maybe some modifications (Martazza work)
-                    /* case 14: 
-                          switch (iteminfo.VNum)
-                          {
-                              case 2156: //Holy sphere(Malcolm Mix sphere +100 dignity)
-                                  if (Session.Character.Dignity < 100)
-                                  {
-                                      Session.Character.Dignity += 100;
-
-                                      if (Session.Character.Dignity > 100) Session.Character.Dignity = 100;
-
-                                      Session.Client.SendPacket(Session.Character.GenerateFd());
-                                      Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
-                                      Inv.ItemInstance.Amount--;
-                                      if (Inv.ItemInstance.Amount > 0)
-                                          Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(Inv.ItemInstance.ItemVNum, Inv.ItemInstance.Amount, Inv.Type, Inv.Slot, 0, 0, 0, 0));
-                                      else
-                                      {
-                                          Session.Character.InventoryList.DeleteFromSlotAndType(Inv.Slot, Inv.Type);
-                                          Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, Inv.Type, Inv.Slot, 0, 0, 0, 0));
-                                      }
-                                  }
-                                  break;
-                              case 2168:
-                                  Session.Character.Dignity = 100;
-                                  Session.Client.SendPacket(Session.Character.GenerateFd());
-                                  Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
-                                  Session.Character.InventoryList.RemoveItemAmount(iteminfo.VNum, 1);
-                                  if (Inv.ItemInstance.Amount - 1 > 0)
-                                      Inv.ItemInstance.Amount--;
-                                  if (Inv.ItemInstance.Amount > 0)
-                                      Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(Inv.ItemInstance.ItemVNum, Inv.ItemInstance.Amount, Inv.Type, Inv.Slot, 0, 0, 0, 0));
-                                  else
-                                  {
-                                      Session.Character.InventoryList.DeleteFromSlotAndType(Inv.Slot, Inv.Type);
-                                      Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, Inv.Type, Inv.Slot, 0, 0, 0, 0));
-                                  }
-
-                                  break;
-                              default:
-                                  Logger.Debug("NO_HANDLER_ITEM");
-                                  break;
-                          }
-
-                      case 15: //Speaker
-                          if (iteminfo != null)
-                          {
-                              if (!DelayUsed)
-                              {
-                                  Session.Client.SendPacket($"guri 10 3 1 {Session.Character.CharacterId}");
-                              }
-                          }
-                          break;
-
-         #endregion
-                          */
-
+                case 15: //Speaker
+                    if (iteminfo != null)
+                    {
+                        if (!DelayUsed)
+                        {
+                            Session.Client.SendPacket($"guri 10 3 1 {Session.Character.CharacterId}");
+                        }
+                    }
+                    break;
             }
         }
 

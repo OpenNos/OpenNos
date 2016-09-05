@@ -353,35 +353,32 @@ namespace OpenNos.Handler
             if (packetsplit[2] == "10" && Convert.ToInt32(packetsplit[5]) >= 973 && Convert.ToInt32(packetsplit[5]) <= 999 && !Session.Character.EmoticonsBlocked)
             {
                 Session.Client.SendPacket(Session.Character.GenerateEff(Convert.ToInt32(packetsplit[5]) + 4099));
-                Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateEff(Convert.ToInt32(packetsplit[5]) + 4099),
-                    ReceiverType.AllNoEmoBlocked);
+                Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateEff(Convert.ToInt32(packetsplit[5]) + 4099), ReceiverType.AllNoEmoBlocked);
             }
             if (packetsplit[2] == "2")
+            {
                 Session.CurrentMap?.Broadcast($"guri 2 1 {Session.Character.CharacterId}");
-
-            // Maybe need some modifications (Martazza work)
-            /*
-             #region Potion restore sp points			
+            }
             else if (packetsplit[2] == "4")
             {
-                int vnumTotale = 2173;
+                int speakerVNum = 2173;
                 if (packetsplit[3] == "3") //Speaker
                 {
-                    if (Session.Character.InventoryList.CountItem(vnumTotale) > 0)
+                    if (Session.Character.InventoryList.CountItem(speakerVNum) > 0)
                     {
 
                         string message = String.Empty;
-                        message = $"<Altoparlante> [{Session.Character.Name}]:";
+                        message = $"<{Language.Instance.GetMessageFromKey("SPEAKER")}> [{Session.Character.Name}]:";
                         for (int i = 6; i < packetsplit.Length; i++)
                             message += packetsplit[i] + " ";
                         message.Trim();
 
-                        Session.Character.InventoryList.RemoveItemAmount(vnumTotale, 1);
+                        Session.Character.InventoryList.RemoveItemAmount(speakerVNum, 1);
                         ServerManager.Instance.Broadcast(Session.Character.GenerateSay(message, 13));
                     }
                 }
             }
-			else if (packetsplit[2] == "203" && packetsplit[3] == "0")
+            else if (packetsplit[2] == "203" && packetsplit[3] == "0")
             {
                 int[] ListPotionResetVNums = new int[3] { 1366, 1427, 5115 };
                 int VNumToUse = -1;
@@ -429,16 +426,11 @@ namespace OpenNos.Handler
 
                         }
                     }
-                    else Session.Client.SendPacket(Session.Character.GenerateSay("Uhmmmm mi devo vestire!~~", 10));
+                    else Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("TRANSFORMATION_NEEDED"), 10));
                 }
-                else Session.Client.SendPacket(Session.Character.GenerateSay("Non ho abbastanza pozioni :((", 10));
+                else Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NOT_ENOUGH_POINTS"), 10));
 
             }
-			
-        
-#endregion
-
-             */
         }
 
         [Packet("#guri")]

@@ -186,7 +186,9 @@ namespace OpenNos.Handler
 
             if (inventory != null && inventory.Item != null)
             {
-                Session.Client.SendPacket(inventory.Item.EquipmentSlot != (byte)EquipmentType.Sp ? Session.Character.GenerateEInfo(inventory) : inventory.Item.SpType == 0 ? Session.Character.GeneratePslInfo(inventory as SpecialistInstance, 0) : Session.Character.GenerateSlInfo(inventory as SpecialistInstance, 0));
+                Session.Client.SendPacket(inventory.Item.EquipmentSlot != (byte)EquipmentType.Sp ?
+                    Session.Character.GenerateEInfo(inventory) : inventory.Item.SpType == 0 && inventory.Item.ItemSubType == 4 ?
+                    Session.Character.GeneratePslInfo(inventory as SpecialistInstance, 0) : Session.Character.GenerateSlInfo(inventory as SpecialistInstance, 0));
             }
         }
 
@@ -1219,11 +1221,11 @@ namespace OpenNos.Handler
             Session.Character.MorphUpgrade2 = sp.Design;
             Session.CurrentMap?.Broadcast(Session.Character.GenerateCMode());
 
-            
+
             //qslot 0 1.1.2 1.1.1 1.1.3 0.7.-1 1.1.0 0.7.-1 0.7.-1 0.1.10 1.3.2 1.3.1
             //qslot 1 1.1.2 1.1.3 1.1.4 1.1.5 1.1.6 7.7.-1 7.7.-1 7.7.-1 7.7.-1 7.7.-1
             //qslot 2 7.7.-1 7.7.-1 7.7.-1 7.7.-1 7.7.-1 7.7.-1 7.7.-1 7.7.-1 7.7.-1 7.7.-1
-            
+
 
             Session.CurrentMap?.Broadcast(Session.Character.GenerateEff(196));
             Session.CurrentMap?.Broadcast($"guri 6 1 {Session.Character.CharacterId} 0 0");
