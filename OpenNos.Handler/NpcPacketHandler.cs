@@ -380,7 +380,7 @@ namespace OpenNos.Handler
 
                         Session.Client.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("SHOP_OPEN")));
                         Session.Character.IsSitting = true;
-                        Session.Character.Speed = 0;
+                        Session.Character.IsShopping = true;
                         Session.Client.SendPacket(Session.Character.GenerateCond());
 
                         Session.CurrentMap?.Broadcast(Session.Character.GenerateRest());
@@ -398,6 +398,7 @@ namespace OpenNos.Handler
                     Session.CurrentMap?.Broadcast(Session.Character.GenerateShopEnd());
                     Session.CurrentMap?.Broadcast(Session, Session.Character.GeneratePlayerFlag(0), ReceiverType.AllExceptMe);
                     Session.Character.SpeedLoad();
+                    Session.Character.IsShopping = false;
                     Session.Character.IsSitting = false;
                     Session.Client.SendPacket(Session.Character.GenerateCond());
                     Session.CurrentMap?.Broadcast(Session.Character.GenerateRest());
@@ -504,7 +505,7 @@ namespace OpenNos.Handler
         {
             Logger.Debug(packet, Session.SessionId);
             string[] packetsplit = packet.Split(' ');
-            if ((Session.Character.ExchangeInfo != null && Session.Character.ExchangeInfo?.ExchangeList.Count() != 0) || Session.Character.Speed == 0)
+            if ((Session.Character.ExchangeInfo != null && Session.Character.ExchangeInfo?.ExchangeList.Count() != 0) || Session.Character.Session.Character.IsShopping)
                 return;
             if (packetsplit.Length > 6)
             {
@@ -579,7 +580,7 @@ namespace OpenNos.Handler
             int NpcId;
             byte typeshop = 0;
             if (!int.TryParse(packetsplit[5], out NpcId) || !byte.TryParse(packetsplit[2], out type)) return;
-            if (Session.Character.Speed == 0)
+            if (Session.Character.IsShopping)
                 return;
             MapNpc mapnpc = Session.CurrentMap.Npcs.FirstOrDefault(n => n.MapNpcId.Equals(NpcId));
             NpcMonster npc = ServerManager.GetNpc(mapnpc.NpcVNum);
