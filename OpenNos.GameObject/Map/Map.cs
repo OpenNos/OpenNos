@@ -368,21 +368,21 @@ namespace OpenNos.GameObject
                 MonsterLifeTask.Add(new Task(() => monster.MonsterLife()));
                 MonsterLifeTask.Last().Start();
             }
-            if (MonsterLifeTask.Count > 0)
-                await MonsterLifeTask.ElementAt(0);
+            foreach (Task t in MonsterLifeTask)
+                await t;
         }
 
         public async void NpcLifeManager()
         {
             var rnd = new Random();
             List<Task> NpcLifeTask = new List<Task>();
-            foreach (MapNpc npc in Npcs.OrderBy(i => rnd.Next()))           
+            foreach (MapNpc npc in Npcs.OrderBy(i => rnd.Next()))
             {
                 NpcLifeTask.Add(new Task(() => npc.NpcLife()));
                 NpcLifeTask.Last().Start();
             }
-            if (NpcLifeTask.Count > 0)
-                await NpcLifeTask.ElementAt(0);
+            foreach (Task t in NpcLifeTask)
+                await t;
         }
 
         internal bool GetFreePosition(ref short firstX, ref short firstY, byte xpoint, byte ypoint)
