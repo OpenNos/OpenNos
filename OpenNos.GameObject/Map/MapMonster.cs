@@ -83,9 +83,8 @@ namespace OpenNos.GameObject
             else return String.Empty;
         }
 
-        internal async void MonsterLife()
+        internal void MonsterLife()
         {
-            await Task.Delay((1000 / ServerManager.GetMap(this.MapId).Monsters.Count));
             //Respawn
             if (!Alive)
             {

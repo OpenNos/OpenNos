@@ -28,7 +28,7 @@ namespace OpenNos.GameObject
             Random rnd = new Random();
             switch (Effect)
             {
-                case 10: // dyes
+                case 10: //dyes
                     if (iteminfo != null)
                     {
                         if (EffectValue == 99)
@@ -48,7 +48,7 @@ namespace OpenNos.GameObject
                     }
                     break;
 
-                case 11: // waxes
+                case 11: //waxes
                     if (iteminfo != null)
                     {
                         if (Session.Character.Class == (byte)ClassType.Adventurer && EffectValue > 1)
@@ -70,7 +70,51 @@ namespace OpenNos.GameObject
                     }
                     break;
 
-                case 30: // wigs
+                case 14: //Is not good we need to parse it. Asap
+                    switch (iteminfo.VNum)
+                    {
+                        case 2156:
+                            if (Session.Character.Dignity < 100)
+                            {
+                                Session.Character.Dignity += 100;
+
+                                if (Session.Character.Dignity > 100) Session.Character.Dignity = 100;
+
+                                Session.Client.SendPacket(Session.Character.GenerateFd());
+                                Session.Client.SendPacket(Session.Character.GenerateEff(48));
+                                Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
+                                Inv.ItemInstance.Amount--;
+                                if (Inv.ItemInstance.Amount > 0)
+                                    Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(Inv.ItemInstance.ItemVNum, Inv.ItemInstance.Amount, Inv.Type, Inv.Slot, 0, 0, 0, 0));
+                                else
+                                {
+                                    Session.Character.InventoryList.DeleteFromSlotAndType(Inv.Slot, Inv.Type);
+                                    Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, Inv.Type, Inv.Slot, 0, 0, 0, 0));
+                                }
+                            }
+                            break;
+
+                        case 15: //Speaker
+                    if (iteminfo != null)
+                    {
+                        if (!DelayUsed)
+                        {
+                            Session.Client.SendPacket(Session.Character.GenerateGuri(10, 3, 1));
+                        }
+                    }
+                    break;
+
+                case 16: //Bubble (Not implemented yet)
+                    if (iteminfo != null)
+                    {
+                        if (!DelayUsed)
+                        {
+                            Session.Client.SendPacket(Session.Character.GenerateGuri(10, 4, 1));
+                        }
+                    }
+                    break;
+
+                case 30: //wigs
                     if (iteminfo != null)
                     {
                         WearableInstance wig = Session.Character.EquipmentList.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Hat, (byte)InventoryType.Equipment);
@@ -97,26 +141,12 @@ namespace OpenNos.GameObject
                     }
                     break;
 
-                case 14: // Is not good we need to parse it. Asap
-                    switch (iteminfo.VNum)
-                    {
-                        case 2156:
-                            if (Session.Character.Dignity < 100)
+                        case 203: //Presentation message
+                            if (iteminfo != null)
                             {
-                                Session.Character.Dignity += 100;
-
-                                if (Session.Character.Dignity > 100) Session.Character.Dignity = 100;
-
-                                Session.Client.SendPacket(Session.Character.GenerateFd());
-                                Session.Client.SendPacket(Session.Character.GenerateEff(48));
-                                Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
-                                Inv.ItemInstance.Amount--;
-                                if (Inv.ItemInstance.Amount > 0)
-                                    Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(Inv.ItemInstance.ItemVNum, Inv.ItemInstance.Amount, Inv.Type, Inv.Slot, 0, 0, 0, 0));
-                                else
+                                if (!DelayUsed)
                                 {
-                                    Session.Character.InventoryList.DeleteFromSlotAndType(Inv.Slot, Inv.Type);
-                                    Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, Inv.Type, Inv.Slot, 0, 0, 0, 0));
+                                    Session.Client.SendPacket(Session.Character.GenerateGuri(10, 2, 2));
                                 }
                             }
                             break;
@@ -144,25 +174,7 @@ namespace OpenNos.GameObject
                     }
                     break;
 
-                case 15: //Speaker
-                    if (iteminfo != null)
-                    {
-                        if (!DelayUsed)
-                        {
-                            Session.Client.SendPacket(Session.Character.GenerateGuri(10, 3, 1));
-                        }
-                    }
-                    break;
-
-                case 16: //Bubble (Not implemented yet)
-                    if (iteminfo != null)
-                    {
-                        if (!DelayUsed)
-                        {
-                            Session.Client.SendPacket(Session.Character.GenerateGuri(10, 4, 1));
-                        }
-                    }
-                    break;
+                
             }
         }
 
