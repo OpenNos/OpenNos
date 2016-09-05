@@ -358,6 +358,87 @@ namespace OpenNos.Handler
             }
             if (packetsplit[2] == "2")
                 Session.CurrentMap?.Broadcast($"guri 2 1 {Session.Character.CharacterId}");
+
+            // Maybe need some modifications (Martazza work)
+            /*
+             #region Potion restore sp points			
+            else if (packetsplit[2] == "4")
+            {
+                int vnumTotale = 2173;
+                if (packetsplit[3] == "3") //Speaker
+                {
+                    if (Session.Character.InventoryList.CountItem(vnumTotale) > 0)
+                    {
+
+                        string message = String.Empty;
+                        message = $"<Altoparlante> [{Session.Character.Name}]:";
+                        for (int i = 6; i < packetsplit.Length; i++)
+                            message += packetsplit[i] + " ";
+                        message.Trim();
+
+                        Session.Character.InventoryList.RemoveItemAmount(vnumTotale, 1);
+                        ServerManager.Instance.Broadcast(Session.Character.GenerateSay(message, 13));
+                    }
+                }
+            }
+			else if (packetsplit[2] == "203" && packetsplit[3] == "0")
+            {
+                int[] ListPotionResetVNums = new int[3] { 1366, 1427, 5115 };
+                int VNumToUse = -1;
+                foreach (int vnum in ListPotionResetVNums)
+                {
+                    if (Session.Character.InventoryList.CountItem(vnum) > 0)
+                    {
+                        VNumToUse = vnum;
+                    }
+                }
+                if (VNumToUse != -1)
+                {
+                    if (Session.Character.UseSp)
+                    {
+                        SpecialistInstance specialistInstance = Session.Character.EquipmentList.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, (byte)InventoryType.Equipment);
+                        if (specialistInstance != null)
+                        {
+                            specialistInstance.SlDamage = 0;
+                            specialistInstance.SlDefence = 0;
+                            specialistInstance.SlElement = 0;
+                            specialistInstance.SlHP = 0;
+
+                            specialistInstance.DamageMinimum = 0;
+                            specialistInstance.DamageMaximum = 0;
+                            specialistInstance.HitRate = 0;
+                            specialistInstance.CriticalLuckRate = 0;
+                            specialistInstance.CriticalRate = 0;
+                            specialistInstance.DefenceDodge = 0;
+                            specialistInstance.DistanceDefenceDodge = 0;
+                            specialistInstance.ElementRate = 0;
+                            specialistInstance.DarkResistance = 0;
+                            specialistInstance.LightResistance = 0;
+                            specialistInstance.FireResistance = 0;
+                            specialistInstance.WaterResistance = 0;
+                            specialistInstance.CriticalDodge = 0;
+                            specialistInstance.MagicDefence = 0;
+                            specialistInstance.HP = 0;
+                            specialistInstance.MP = 0;
+
+                            Session.Character.InventoryList.RemoveItemAmount(VNumToUse, 1);
+                            Session.Character.EquipmentList.DeleteFromSlotAndType((byte)EquipmentType.Sp, (byte)InventoryType.Equipment);
+                            Session.Character.EquipmentList.AddToInventoryWithSlotAndType(specialistInstance, (byte)InventoryType.Equipment, (byte)EquipmentType.Sp);
+                            Session.Client.SendPacket(Session.Character.GenerateSlInfo(specialistInstance, 2));
+                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("POINTS_RESET"), 0));
+
+                        }
+                    }
+                    else Session.Client.SendPacket(Session.Character.GenerateSay("Uhmmmm mi devo vestire!~~", 10));
+                }
+                else Session.Client.SendPacket(Session.Character.GenerateSay("Non ho abbastanza pozioni :((", 10));
+
+            }
+			
+        
+#endregion
+
+             */
         }
 
         [Packet("#guri")]

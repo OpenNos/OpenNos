@@ -60,6 +60,18 @@ namespace OpenNos.GameObject
 
                     session.Client.SendPacket(session.Character.GenerateStat());
                     break;
+
+                    //Maybe need some modification (Martazza work)
+                    /*#region FullPotion
+                    if (inv.ItemInstance.ItemVNum == 1242) session.Character.Hp = (int)session.Character.HPLoad();
+                    else if (inv.ItemInstance.ItemVNum == 1243) session.Character.Mp = (int)session.Character.MPLoad();
+                    else if (inv.ItemInstance.ItemVNum == 1244)
+                    {
+                        session.Character.Hp = (int)session.Character.HPLoad();
+                        session.Character.Mp = (int)session.Character.MPLoad();
+                    }
+                    session.Client.SendPacket(session.Character.GenerateStat());
+                    #endregion*/
             }
         }
 
