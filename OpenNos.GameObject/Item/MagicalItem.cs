@@ -153,6 +153,16 @@ namespace OpenNos.GameObject
                         }
                     }
                     break;
+
+                case 16: //Bubble (Not implemented yet)
+                    if (iteminfo != null)
+                    {
+                        if (!DelayUsed)
+                        {
+                            Session.Client.SendPacket($"guri 10 4 1 {Session.Character.CharacterId}");
+                        }
+                    }
+                    break;
             }
         }
 

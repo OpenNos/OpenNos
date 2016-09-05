@@ -878,12 +878,12 @@ Veux-tu le porter ?</value>
     <value>Réessayez dans :  {0} secondes.</value>
   </data>
   <data name="NOT_ENOUGH_POINTS" xml:space="preserve">
-    <value />
+    <value>Tu n'as pas assez de points.</value>
   </data>
   <data name="SPEAKER" xml:space="preserve">
-    <value />
+    <value>Total</value>
   </data>
   <data name="TRANSFORMATION_NEEDED" xml:space="preserve">
-    <value />
+    <value>Tu dois équiper ta carte de spécialiste pour pouvoir utiliser cet objet.</value>
   </data>
 </root>
