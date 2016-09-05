@@ -145,6 +145,7 @@ namespace OpenNos.GameObject
         public byte Speed { get { return _speed; } set { if (value > 59) { _speed = 59; } else { _speed = value; } } }
         public bool UseSp { get; set; }
         public int WaterResistance { get; set; }
+        public bool IsShopping { get; set; }
 
         #endregion
 
@@ -273,7 +274,10 @@ namespace OpenNos.GameObject
                 }
 
             }
-
+            if (IsShopping)
+            {
+                Speed = 0;
+            }
         }
 
         public string Dance()
