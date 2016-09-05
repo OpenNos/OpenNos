@@ -181,7 +181,7 @@
     <value>{0}: Acheté &lt;{1} {2}: pièces &gt;</value>
   </data>
   <data name="BUY_ITEM_VALID" xml:space="preserve">
-    <value>Objet acheté(s)</value>
+    <value>Commerce effectué.</value>
   </data>
   <data name="CANT_MOVE" xml:space="preserve">
     <value>Tu pourras bientôt te déplacer.</value>
@@ -265,7 +265,7 @@
     <value>Tu as obtenu le pouvoir du Démon grâce à l'Oeuf de Latheore.</value>
   </data>
   <data name="GOLD_SET" xml:space="preserve">
-    <value>Or obtenue.</value>
+    <value>Tu as obtenu de l'or.</value>
   </data>
   <data name="GROUP_BLOCKED" xml:space="preserve">
     <value>Ce joueur a bloqué les demandes de groupe.</value>
@@ -343,7 +343,7 @@
     <value>La limite de temps d'utilisation de cet objet est expirée.</value>
   </data>
   <data name="JOBLEVEL_CHANGED" xml:space="preserve">
-    <value>Ton niveau de métier a été modifié !</value>
+    <value>Ton niveau de métier a été modifié.</value>
   </data>
   <data name="CLASS_CHANGED" xml:space="preserve">
     <value>Félicitations. Tu as changé de métier !</value>
@@ -352,7 +352,7 @@
     <value>{0} a quitté le groupe.</value>
   </data>
   <data name="LEVEL_CHANGED" xml:space="preserve">
-    <value>Ton niveau de combat a augmenté.</value>
+    <value>Ton niveau de combat a été modifié.</value>
   </data>
   <data name="LOW_JOB_LVL" xml:space="preserve">
     <value>Votre niveau de métier n'est pas assez élevé.</value>
@@ -586,7 +586,7 @@
     <value>L'amélioration a échoué. Heureusement, le parchemin protecteur a préservé l'objet.</value>
   </data>
   <data name="UPGRADE_FIXED" xml:space="preserve">
-    <value>Niveau fixé !</value>
+    <value>Niveau fixe.</value>
   </data>
   <data name="UPGRADE_SUCCESS" xml:space="preserve">
     <value>L'amélioration au niveau suivant a réussi avec succès !</value>
@@ -616,7 +616,7 @@
     <value>{0} est en ligne.</value>
   </data>
   <data name="CHARACTER_LOGGED_OUT" xml:space="preserve">
-    <value>{0} est maintenant déconnecté.</value>
+    <value>{0} est hors ligne.</value>
   </data>
   <data name="NOT_ENOUGH_POWER_SEED" xml:space="preserve">
     <value>Vous n'avez pas assez de graine de pouvoir.</value>
@@ -664,7 +664,7 @@
     <value>Tu peux te transformer une fois que tous les temps de rechargement des compétences sont écoulés.</value>
   </data>
   <data name="SKILL_LEARNED" xml:space="preserve">
-    <value>Vous avez appris une nouvelle compétence !</value>
+    <value>Tu as appris une nouvelle compétence !</value>
   </data>
   <data name="YOU_REFUSED" xml:space="preserve">
     <value>Tu as refusé la demande d'échange.</value>
@@ -673,7 +673,7 @@
     <value>Les points de spécialiste ont bien été ajoutés !</value>
   </data>
   <data name="USER_NOT_FOUND" xml:space="preserve">
-    <value>Joueur introuvable.</value>
+    <value>L'utilisateur est introuvable.</value>
   </data>
   <data name="WELCOME_MUSIC_INFO" xml:space="preserve">
     <value>Mélodie^du^pringtemps</value>
@@ -685,10 +685,10 @@
     <value>La commande a été appliquée avec succès.</value>
   </data>
   <data name="NOT_ENOUGH_CP" xml:space="preserve">
-    <value>Vous n'avez pas assez de PC.</value>
+    <value>Tu n'as pas assez de PC.</value>
   </data>
   <data name="NOT_ENOUGH_REPUT" xml:space="preserve">
-    <value>Vous n'avez pas assez de réputation.</value>
+    <value>Tu n'as pas assez de réputation.</value>
   </data>
   <data name="REMOVE_SP" xml:space="preserve">
     <value>Si vous voulez apprendre cette compétence, vous devez enlever votre transformation.</value>
@@ -817,7 +817,7 @@
     <value>Serveur connecté depuis </value>
   </data>
   <data name="LEVELUP" xml:space="preserve">
-    <value>Ton niveau de combat a augmenté.</value>
+    <value>Ton niveau de combat a augmenté !</value>
   </data>
   <data name="BN7" xml:space="preserve">
     <value>Lisez^le^règlement,^vous^éviterez^des^embêtements^!</value>
@@ -832,7 +832,7 @@
     <value>Tu as obtenu cet objet : {0} x 1</value>
   </data>
   <data name="ASK_WINGS_CHANGE" xml:space="preserve">
-    <value>Voulez-vous changer vos ailes ?</value>
+    <value>Voulez-vous changer l'apparence vos ailes ?</value>
   </data>
   <data name="ASK_BIND" xml:space="preserve">
     <value>Cet objet ne pourra plus être commercé.
@@ -884,6 +884,9 @@ Veux-tu le porter ?</value>
     <value>Total</value>
   </data>
   <data name="TRANSFORMATION_NEEDED" xml:space="preserve">
-    <value>Tu dois équiper ta carte de spécialiste pour pouvoir utiliser cet objet.</value>
+    <value>Tu dois équiper ta Carte de Spécialiste pour pouvoir utiliser cet objet.</value>
+  </data>
+  <data name="POINTS_RESET" xml:space="preserve">
+    <value>Les points ont été rénitialisés.</value>
   </data>
 </root>

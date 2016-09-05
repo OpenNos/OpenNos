@@ -357,7 +357,7 @@ namespace OpenNos.Handler
             }
             if (packetsplit[2] == "2")
             {
-                Session.CurrentMap?.Broadcast(Session.Character.GenerateGuri(2, 1 ,0));
+                Session.CurrentMap?.Broadcast(Session.Character.GenerateGuri(2, 1));
             }
             else if (packetsplit[2] == "4")
             {

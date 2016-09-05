@@ -133,6 +133,24 @@ namespace OpenNos.Handler
                 Session.Client.SendPacket(Session.Character.GenerateSay("$ChangeClass CLASS", 10));
         }
 
+        [Packet("$Guri")]
+        public void TestGuri(string packet)
+        {
+            Logger.Debug(packet, Session.SessionId);
+            string[] packetsplit = packet.Split(' ');
+            byte type = 0, argument = 0;
+            short value = 0;
+            if (packetsplit.Length > 3)
+            {
+                if (byte.TryParse(packetsplit[2], out type) && byte.TryParse(packetsplit[3], out argument) && short.TryParse(packetsplit[4], out value))
+                {
+                    Session.Client.SendPacket(Session.Character.GenerateGuri(type, argument, value));
+                }
+            }
+            else
+                Session.Client.SendPacket(Session.Character.GenerateSay("$Guri TYPE ARGUMENT VALUE", 10));
+        }
+
         [Packet("$FLvl")]
         public void ChangeFairyLevel(string packet)
         {
@@ -291,59 +309,61 @@ namespace OpenNos.Handler
         {
             Logger.Debug(packet, Session.SessionId);
             Session.Client.SendPacket(Session.Character.GenerateSay("-------------Commands Info-------------", 11));
-            Session.Client.SendPacket(Session.Character.GenerateSay("$Shout MESSAGE", 12));
-            Session.Client.SendPacket(Session.Character.GenerateSay("$Teleport Map X Y", 12));
-            Session.Client.SendPacket(Session.Character.GenerateSay("$Teleport CHARACTERNAME", 12));
-            Session.Client.SendPacket(Session.Character.GenerateSay("$TeleportToMe CHARACTERNAME", 12));
-            Session.Client.SendPacket(Session.Character.GenerateSay("$Speed SPEED", 12));
-            Session.Client.SendPacket(Session.Character.GenerateSay("$Rarify SLOT MODE PROTECTION", 12));
-            Session.Client.SendPacket(Session.Character.GenerateSay("$Upgrade SLOT MODE PROTECTION", 12));
-            Session.Client.SendPacket(Session.Character.GenerateSay("$Morph MORPHID UPGRADE WINGS ARENA", 12));
-            Session.Client.SendPacket(Session.Character.GenerateSay("$Gold AMOUNT", 12));
-            Session.Client.SendPacket(Session.Character.GenerateSay("$Stat", 12));
-            Session.Client.SendPacket(Session.Character.GenerateSay("$RateXp RATE", 12));
-            Session.Client.SendPacket(Session.Character.GenerateSay("$RateGold RATE", 12));
-            Session.Client.SendPacket(Session.Character.GenerateSay("$RateDrop RATE", 12));
-            Session.Client.SendPacket(Session.Character.GenerateSay("$RateFairyXp RATE", 12));
-            Session.Client.SendPacket(Session.Character.GenerateSay("$Lvl LEVEL", 12));
-            Session.Client.SendPacket(Session.Character.GenerateSay("$JLvl JOBLEVEL", 12));
-            Session.Client.SendPacket(Session.Character.GenerateSay("$SPLvl SPLEVEL", 12));
-            Session.Client.SendPacket(Session.Character.GenerateSay("$FLvl FAIRYLEVEL", 12));
-            Session.Client.SendPacket(Session.Character.GenerateSay("$HairColor COLORID", 12));
-            Session.Client.SendPacket(Session.Character.GenerateSay("$WigColor COLORID", 12));
-            Session.Client.SendPacket(Session.Character.GenerateSay("$HairStyle STYLEID", 12));
-            Session.Client.SendPacket(Session.Character.GenerateSay("$SPRefill", 12));
-            Session.Client.SendPacket(Session.Character.GenerateSay("$HeroLvl HEROLEVEL", 12));
-            Session.Client.SendPacket(Session.Character.GenerateSay("$ChangeSex", 12));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$AddMonster VNUM MOVE", 12));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$Ban CHARACTERNAME REASON TIME", 12));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$Ban CHARACTERNAME REASON", 12));
             Session.Client.SendPacket(Session.Character.GenerateSay("$ChangeClass CLASS", 12));
             Session.Client.SendPacket(Session.Character.GenerateSay("$ChangeRep REPUTATION", 12));
-            Session.Client.SendPacket(Session.Character.GenerateSay("$Kick CHARACTERNAME REASON", 12));
-            Session.Client.SendPacket(Session.Character.GenerateSay("$MapDance", 12));
-            Session.Client.SendPacket(Session.Character.GenerateSay("$Kill CHARACTERNAME", 12));
-            Session.Client.SendPacket(Session.Character.GenerateSay("$GodMode", 12));
-            Session.Client.SendPacket(Session.Character.GenerateSay("$Effect EFFECTID", 12));
-            Session.Client.SendPacket(Session.Character.GenerateSay("$Resize SIZE", 12));
-            Session.Client.SendPacket(Session.Character.GenerateSay("$PlayMusic MUSIC", 12));
-            Session.Client.SendPacket(Session.Character.GenerateSay("$Ban CHARACTERNAME REASON", 12));
-            Session.Client.SendPacket(Session.Character.GenerateSay("$Ban CHARACTERNAME REASON TIME", 12));
-            Session.Client.SendPacket(Session.Character.GenerateSay("$Unban CHARACTERNAME", 12));
-            Session.Client.SendPacket(Session.Character.GenerateSay("$Mute CHARACTERNAME REASON", 12));
-            Session.Client.SendPacket(Session.Character.GenerateSay("$Mute CHARACTERNAME REASON TIME", 12));
-            Session.Client.SendPacket(Session.Character.GenerateSay("$Unmute CHARACTERNAME", 12));
-            Session.Client.SendPacket(Session.Character.GenerateSay("$Invisible", 12));
-            Session.Client.SendPacket(Session.Character.GenerateSay("$Position", 12));
-            Session.Client.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID", 12));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$ChangeSex", 12));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID AMOUNT", 12));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID COLOR", 12));
             Session.Client.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID RARE UPGRADE", 12));
             Session.Client.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID RARE", 12));
-            Session.Client.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID COLOR", 12));
-            Session.Client.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID AMOUNT", 12));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID", 12));
             Session.Client.SendPacket(Session.Character.GenerateSay("$CreateItem SPID UPGRADE WINGS", 12));
-            Session.Client.SendPacket(Session.Character.GenerateSay("$Summon VNUM AMOUNT MOVE", 12));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$Effect EFFECTID", 12));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$FLvl FAIRYLEVEL", 12));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$GodMode", 12));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$Gold AMOUNT", 12));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$Guri TYPE ARGUMENT VALUE", 12));
+            //Session.Client.SendPacket(Session.Character.GenerateSay("$Guri TYPE CHARACTERNAME VALUE", 12));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$HairColor COLORID", 12));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$HairStyle STYLEID", 12));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$HeroLvl HEROLEVEL", 12));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$Invisible", 12));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$JLvl JOBLEVEL", 12));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$Kick CHARACTERNAME REASON", 12));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$Kill CHARACTERNAME", 12));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$Lvl LEVEL", 12));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$MapDance", 12));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$Morph MORPHID UPGRADE WINGS ARENA", 12));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$Mute CHARACTERNAME REASON TIME", 12));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$Mute CHARACTERNAME REASON", 12));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$PlayMusic MUSIC", 12));
             Session.Client.SendPacket(Session.Character.GenerateSay("$PortalTo MAPID DESTX DESTY PORTALTYPE", 12));
             Session.Client.SendPacket(Session.Character.GenerateSay("$PortalTo MAPID DESTX DESTY", 12));
-            Session.Client.SendPacket(Session.Character.GenerateSay("$AddMonster VNUM MOVE", 12));
-            Session.Client.SendPacket(Session.Character.GenerateSay("$Zoom VALUE", 12));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$Position", 12));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$Rarify SLOT MODE PROTECTION", 12));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$RateDrop RATE", 12));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$RateFairyXp RATE", 12));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$RateGold RATE", 12));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$RateXp RATE", 12));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$Resize SIZE", 12));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$SPLvl SPLEVEL", 12));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$SPRefill", 12));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$Shout MESSAGE", 12));
             Session.Client.SendPacket(Session.Character.GenerateSay("$Shutdown", 12));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$Speed SPEED", 12));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$Stat", 12));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$Summon VNUM AMOUNT MOVE", 12));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$Teleport CHARACTERNAME", 12));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$Teleport Map X Y", 12));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$TeleportToMe CHARACTERNAME", 12));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$Unban CHARACTERNAME", 12));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$Unmute CHARACTERNAME", 12));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$Upgrade SLOT MODE PROTECTION", 12));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$WigColor COLORID", 12));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$Zoom VALUE", 12));
             Session.Client.SendPacket(Session.Character.GenerateSay("-----------------------------------------------", 11));
         }
 
@@ -1222,7 +1242,7 @@ namespace OpenNos.Handler
             byte arg = 0;
             if (packetsplit.Length > 2 && byte.TryParse(packetsplit[2], out arg))
             {
-                Session.Client.SendPacket(Session.Character.GenerateGuri(15, arg, 0));
+                Session.Client.SendPacket(Session.Character.GenerateGuri(15, arg));
             }
             else
             {
