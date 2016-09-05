@@ -85,6 +85,7 @@
     <Compile Include="Map\MapType.cs" />
     <Compile Include="Map\SortedCostMapCellList.cs" />
     <Compile Include="Networking\BroadcastableBase.cs" />
+    <Compile Include="Networking\TransportFactory.cs" />
     <Compile Include="NpcMonsterSkill.cs" />
     <Compile Include="Map\MapNpc.cs" />
     <Compile Include="Networking\Npc\NRunHandler.cs" />

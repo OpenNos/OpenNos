@@ -43,18 +43,18 @@ namespace OpenNos.GameObject
 
         #region Methods
 
-        public static ItemInstance CreateItemInstance(short vnum, Guid id)
+        public static ItemInstance CreateItemInstance(short vnum)
         {
-            ItemInstance iteminstance = new ItemInstance() { ItemVNum = vnum, Amount = 1, Id = id };
+            ItemInstance iteminstance = new ItemInstance() { ItemVNum = vnum, Amount = 1};
             if (iteminstance.Item != null)
             {
                 switch (iteminstance.Item.Type)
                 {
                     case (byte)InventoryType.Wear:
                         if (iteminstance.Item.ItemType == (byte)ItemType.Specialist)
-                            iteminstance = new SpecialistInstance() { ItemVNum = vnum, SpLevel = 1, Amount = 1, Id = id };
+                            iteminstance = new SpecialistInstance() { ItemVNum = vnum, SpLevel = 1, Amount = 1};
                         else
-                            iteminstance = new WearableInstance() { ItemVNum = vnum, Amount = 1, Id = id };
+                            iteminstance = new WearableInstance() { ItemVNum = vnum, Amount = 1 };
                         break;
                 }
             }
@@ -135,11 +135,6 @@ namespace OpenNos.GameObject
                 count += inv.ItemInstance.Amount;
             }
             return count;
-        }
-
-        public ItemInstance CreateItemInstance(short vnum)
-        {
-            return CreateItemInstance(vnum, Guid.NewGuid());
         }
 
         public Tuple<short, byte> DeleteByInventoryItemId(Guid id)

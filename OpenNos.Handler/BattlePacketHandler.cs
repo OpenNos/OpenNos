@@ -1041,7 +1041,7 @@ namespace OpenNos.Handler
                             x++;
                             if (ServerManager.GetMap(Session.Character.MapId).MapTypes.Any(s => s.MapTypeId == 4))
                             {
-                                ItemInstance newItem = Session.Character.InventoryList.CreateItemInstance(drop.ItemVNum);
+                                ItemInstance newItem = InventoryList.CreateItemInstance(drop.ItemVNum);
                                 if (newItem.Item.ItemType == (byte)ItemType.Armor || newItem.Item.ItemType == (byte)ItemType.Weapon || newItem.Item.ItemType == (byte)ItemType.Shell)
                                     ((WearableInstance)newItem).RarifyItem(Session, RarifyMode.Drop, RarifyProtection.None);
                                 Inventory newInv = Session.Character.InventoryList.AddToInventory(newItem);

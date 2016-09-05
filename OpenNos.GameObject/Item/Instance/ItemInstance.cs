@@ -20,6 +20,7 @@ namespace OpenNos.GameObject
     {
         #region Members
 
+        private long _transportId;
         private Item item;
 
         #endregion
@@ -50,9 +51,30 @@ namespace OpenNos.GameObject
             }
         }
 
-        public long TransportId { get; set; } //TODO create Interface
+        public long TransportId
+        {
+            get
+            {
+                if (_transportId == 0)
+                {
+                    //create transportId thru factory
+                    _transportId = TransportFactory.Instance.GenerateTransportId();
+                }
+
+                return _transportId;
+            }
+            set
+            {
+                if (value != _transportId)
+                {
+                    _transportId = value;
+                }
+            }
+        }
 
         #endregion
+
+        //TODO create Interface
 
         #region Methods
 
