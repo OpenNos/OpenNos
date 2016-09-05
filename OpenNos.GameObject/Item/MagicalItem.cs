@@ -149,7 +149,7 @@ namespace OpenNos.GameObject
                     {
                         if (!DelayUsed)
                         {
-                            Session.Client.SendPacket($"guri 10 3 1 {Session.Character.CharacterId}");
+                            Session.Client.SendPacket(Session.Character.GenerateGuri(10, 3, 1));
                         }
                     }
                     break;
@@ -159,7 +159,7 @@ namespace OpenNos.GameObject
                     {
                         if (!DelayUsed)
                         {
-                            Session.Client.SendPacket($"guri 10 4 1 {Session.Character.CharacterId}");
+                            Session.Client.SendPacket(Session.Character.GenerateGuri(10, 4, 1));
                         }
                     }
                     break;

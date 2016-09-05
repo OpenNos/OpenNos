@@ -70,7 +70,7 @@ namespace OpenNos.Handler
                 if (DAOFactory.MapMonsterDAO.LoadById(monst.MapMonsterId) == null)
                 {
                     DAOFactory.MapMonsterDAO.Insert(monst);
-                    monster = new MapMonster(map,vnum) {MapY = monst.MapY, Alive = true, CurrentHp = npcmonster.MaxHP, CurrentMp = npcmonster.MaxMP, MapX = monst.MapX, MapId = Session.Character.MapId, firstX = monst.MapX, firstY = monst.MapY, MapMonsterId = monst.MapMonsterId, Position = 1, IsMoving = isMoving == 1 ? true : false };
+                    monster = new MapMonster(map, vnum) { MapY = monst.MapY, Alive = true, CurrentHp = npcmonster.MaxHP, CurrentMp = npcmonster.MaxMP, MapX = monst.MapX, MapId = Session.Character.MapId, firstX = monst.MapX, firstY = monst.MapY, MapMonsterId = monst.MapMonsterId, Position = 1, IsMoving = isMoving == 1 ? true : false };
                     ServerManager.Monsters.Add(monster);
                     ServerManager.GetMap(Session.Character.MapId).Monsters.Add(monster);
                     Session.CurrentMap?.Broadcast(monster.GenerateIn3());
@@ -997,7 +997,7 @@ namespace OpenNos.Handler
                         mapx = (short)rnd.Next(Session.Character.MapX - 4, Session.Character.MapX + 4);
                         mapy = (short)rnd.Next(Session.Character.MapY - 4, Session.Character.MapY + 4);
                     }
-                    MapMonster monst = new MapMonster(map,vnum) { Alive = true, CurrentHp = npcmonster.MaxHP, CurrentMp = npcmonster.MaxMP, MapY = mapy, MapX = mapx, MapId = Session.Character.MapId, firstX = mapx, firstY = mapy, MapMonsterId = MapMonster.GenerateMapMonsterId(), Position = 1, IsMoving = move != 0 ? true : false };
+                    MapMonster monst = new MapMonster(map, vnum) { Alive = true, CurrentHp = npcmonster.MaxHP, CurrentMp = npcmonster.MaxMP, MapY = mapy, MapX = mapx, MapId = Session.Character.MapId, firstX = mapx, firstY = mapy, MapMonsterId = MapMonster.GenerateMapMonsterId(), Position = 1, IsMoving = move != 0 ? true : false };
                     ServerManager.GetMap(Session.Character.MapId).Monsters.Add(monst);
                     ServerManager.Monsters.Add(monst);
                     Session.CurrentMap?.Broadcast(monst.GenerateIn3());
@@ -1222,7 +1222,7 @@ namespace OpenNos.Handler
             byte arg = 0;
             if (packetsplit.Length > 2 && byte.TryParse(packetsplit[2], out arg))
             {
-                Session.Client.SendPacket($"guri 15 {arg} 0");
+                Session.Client.SendPacket(Session.Character.GenerateGuri(15, arg, 0));
             }
             else
             {
