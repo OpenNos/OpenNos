@@ -1049,7 +1049,7 @@ namespace OpenNos.Handler
                     if (timeSpanSinceLastSpUsage >= Session.Character.SpCooldown && !Session.Character.IsVehicled)
                     {
                         Session.Client.SendPacket("delay 5000 3 #sl^1");
-                        Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateGuri(2, 1, 0), ReceiverType.All);
+                        Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateGuri(2, 1), ReceiverType.All);
 
                     }
                     else if (Session.Character.IsVehicled)
@@ -1229,7 +1229,7 @@ namespace OpenNos.Handler
 
 
             Session.CurrentMap?.Broadcast(Session.Character.GenerateEff(196));
-            Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateGuri(6, 1, 0), ReceiverType.All);
+            Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateGuri(6, 1), ReceiverType.All);
             Session.Client.SendPacket(Session.Character.GenerateSpPoint());
             Session.Character.SpeedLoad();
             Session.Client.SendPacket(Session.Character.GenerateLev());
@@ -1277,7 +1277,7 @@ namespace OpenNos.Handler
             Session.Client.SendPacket($"sd {Session.Character.SpCooldown}");
 
             Session.CurrentMap?.Broadcast(Session.Character.GenerateCMode());
-            Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateGuri(6, 1, 0), ReceiverType.All);
+            Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateGuri(6, 1), ReceiverType.All);
 
 
             //s="ms_c";

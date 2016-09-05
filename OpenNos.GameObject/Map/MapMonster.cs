@@ -176,22 +176,24 @@ namespace OpenNos.GameObject
             }
             else
             {
-               
                 ClientSession targetSession = Map.Sessions.SingleOrDefault(s => s.Character.CharacterId == Target);
 
-                if ( targetSession == null || (bool)targetSession.Character.Invisible) { Target = -1; return; }
+                if (targetSession == null || (bool)targetSession.Character.Invisible)
+                {
+                    Target = -1;
+                    return;
+                }
 
                 Random r = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
                 NpcMonsterSkill ski = Monster.Skills.Where(s => !s.Used && (DateTime.Now - s.LastUse).TotalMilliseconds >= 100 * ServerManager.GetSkill(s.SkillVNum).Cooldown).OrderBy(rnd => r.Next()).FirstOrDefault();
                 Skill sk = null;
+
                 if (ski != null)
                 {
                     sk = ServerManager.GetSkill(ski.SkillVNum);
                 }
 
-               
                 int damage = 100;
-
                 if (targetSession != null && ((sk != null && Map.GetDistance(new MapCell() { X = this.MapX, Y = this.MapY }, new MapCell() { X = targetSession.Character.MapX, Y = targetSession.Character.MapY }) < sk.Range) || (Map.GetDistance(new MapCell() { X = this.MapX, Y = this.MapY }, new MapCell() { X = targetSession.Character.MapX, Y = targetSession.Character.MapY }) <= Monster.BasicRange)))
                 {
                     if ((sk != null && ((DateTime.Now - LastEffect).TotalMilliseconds >= sk.Cooldown * 100 + 1000)) || ((DateTime.Now - LastEffect).TotalMilliseconds >= (Monster.BasicCooldown < 4 ? 4 : Monster.BasicCooldown) * 100 + 100))
@@ -202,11 +204,9 @@ namespace OpenNos.GameObject
                             ski.LastUse = DateTime.Now;
                             Map.Broadcast($"ct 3 {MapMonsterId} 1 {Target} {sk.CastAnimation} -1 {sk.SkillVNum}");
                         }
-
                         LastMove = DateTime.Now;
 
                         // deal 0 damage to GM with GodMode
-
                         damage = targetSession.Character.HasGodMode ? 0 : 100;
                         if (targetSession.Character.IsSitting)
                         {

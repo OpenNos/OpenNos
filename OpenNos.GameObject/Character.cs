@@ -329,7 +329,7 @@ namespace OpenNos.GameObject
             }
         }
 
-        public string GenerateGuri(int type, int argument, int value)
+        public string GenerateGuri(byte type, byte argument, int value = 0, string name = "")
         {
             string str = String.Empty;
             switch (type)
@@ -338,8 +338,14 @@ namespace OpenNos.GameObject
                     str = $"guri 10 {argument} {value} {Session.Character.CharacterId}";
                     break;
                 case 15:
-                    str = $"guri 15 {argument} 0";
+                    str = $"guri 15 {argument} 0 0";
                     break;
+                //case 29:
+                //    str = $"guri 29 {name} {value} 0";
+                //    break;
+                //case 30:
+                //    str = $"guri 30 {name} {value} 0";
+                //    break;
                 default:
                     str = $"guri {type} {argument} {Session.Character.CharacterId} {value}";
                     break;
