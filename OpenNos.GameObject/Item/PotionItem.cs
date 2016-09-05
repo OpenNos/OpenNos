@@ -39,8 +39,7 @@ namespace OpenNos.GameObject
                         session.Client.SendPacket(session.Character.GenerateInventoryAdd(inv.ItemInstance.ItemVNum, inv.ItemInstance.Amount, inv.Type, inv.Slot, 0, 0, 0, 0));
                     else
                     {
-                        session.Character.InventoryList.DeleteFromSlotAndType(inv.
-                            Slot, inv.Type);
+                        session.Character.InventoryList.DeleteFromSlotAndType(inv.Slot, inv.Type);
                         session.Client.SendPacket(session.Character.GenerateInventoryAdd(-1, 0, inv.Type, inv.Slot, 0, 0, 0, 0));
                     }
                     if ((int)session.Character.HPLoad() - session.Character.Hp < item.Hp)
@@ -57,21 +56,21 @@ namespace OpenNos.GameObject
                         session.Character.Mp = (int)session.Character.MPLoad();
                     if (session.Character.Hp > session.Character.HPLoad())
                         session.Character.Hp = (int)session.Character.HPLoad();
-
-                    session.Client.SendPacket(session.Character.GenerateStat());
-                    break;
-
-                    //Maybe need some modification (Martazza work)
-                    /*#region FullPotion
-                    if (inv.ItemInstance.ItemVNum == 1242) session.Character.Hp = (int)session.Character.HPLoad();
-                    else if (inv.ItemInstance.ItemVNum == 1243) session.Character.Mp = (int)session.Character.MPLoad();
-                    else if (inv.ItemInstance.ItemVNum == 1244)
+                    if (inv.ItemInstance.ItemVNum == 1242 || inv.ItemInstance.ItemVNum == 5582)
                     {
+                        session.CurrentMap?.Broadcast(session.Character.GenerateRc((int)session.Character.HPLoad() - session.Character.Hp));
+                        session.Character.Hp = (int)session.Character.HPLoad();
+                    }
+                    else if (inv.ItemInstance.ItemVNum == 1243 || inv.ItemInstance.ItemVNum == 5583)
+                        session.Character.Mp = (int)session.Character.MPLoad();
+                    else if (inv.ItemInstance.ItemVNum == 1244 || inv.ItemInstance.ItemVNum == 5584)
+                    {
+                        session.CurrentMap?.Broadcast(session.Character.GenerateRc((int)session.Character.HPLoad() - session.Character.Hp));
                         session.Character.Hp = (int)session.Character.HPLoad();
                         session.Character.Mp = (int)session.Character.MPLoad();
                     }
                     session.Client.SendPacket(session.Character.GenerateStat());
-                    #endregion*/
+                    break;
             }
         }
 

@@ -898,4 +898,13 @@
   <data name="NOT_ENOUGH_ITEM" xml:space="preserve">
     <value>You dont have required item to harvest.</value>
   </data>
+  <data name="NOT_ENOUGH_POINTS" xml:space="preserve">
+    <value>You don't have enough sp points to do this.</value>
+  </data>
+  <data name="SPEAKER" xml:space="preserve">
+    <value>Speaker</value>
+  </data>
+  <data name="TRANSFORMATION_NEEDED" xml:space="preserve">
+    <value>You need to be transformed to reset your sp points.</value>
+  </data>
 </root>
