@@ -97,10 +97,10 @@ namespace OpenNos.GameObject
                     }
                     break;
 
-                case 14:
+                case 14: // Is not good we need to parse it. Asap
                     switch (iteminfo.VNum)
                     {
-                        case 2156: //Holy sphere(Malcolm Mix sphere +100 dignity)
+                        case 2156:
                             if (Session.Character.Dignity < 100)
                             {
                                 Session.Character.Dignity += 100;
@@ -108,6 +108,7 @@ namespace OpenNos.GameObject
                                 if (Session.Character.Dignity > 100) Session.Character.Dignity = 100;
 
                                 Session.Client.SendPacket(Session.Character.GenerateFd());
+                                Session.Client.SendPacket(Session.Character.GenerateEff(48));
                                 Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
                                 Inv.ItemInstance.Amount--;
                                 if (Inv.ItemInstance.Amount > 0)
@@ -123,6 +124,7 @@ namespace OpenNos.GameObject
                         case 2168:
                             Session.Character.Dignity = 100;
                             Session.Client.SendPacket(Session.Character.GenerateFd());
+                            Session.Client.SendPacket(Session.Character.GenerateEff(48));
                             Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
                             Session.Character.InventoryList.RemoveItemAmount(iteminfo.VNum, 1);
                             if (Inv.ItemInstance.Amount - 1 > 0)
