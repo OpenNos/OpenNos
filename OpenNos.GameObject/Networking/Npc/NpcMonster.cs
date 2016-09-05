@@ -38,6 +38,23 @@ namespace OpenNos.GameObject
 
         #endregion
 
+        public float GetRes(int skillelement)
+        {
+            switch (skillelement)
+            {
+                case 0:
+                    return FireResistance / 100;
+                case 1:
+                    return WaterResistance / 100;
+                case 2:
+                    return LightResistance / 100;
+                case 3:
+                    return DarkResistance / 100;
+                default:
+                    return 0f;
+            }
+        }
+
         #region Properties
 
         public IEnumerable<DropDTO> Drops { get; set; }

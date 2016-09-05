@@ -373,13 +373,15 @@ namespace OpenNos.Handler
             int SecMaxDmg = 0;
             int SecHitRate = 0;
 
+
             int CritChance = 0;
             int CritHit = 0;
+            /*
             int MinDmg = 0;
             int MaxDmg = 0;
             int HitRate = 0;
             sbyte Upgrade = 0;
-
+            */
             #endregion
 
             #region Get Weapon Stats
@@ -414,600 +416,188 @@ namespace OpenNos.Handler
             {
                 case 0:
                     MonsterDefense = monsterinfo.CloseDefence;
-                    if (Session.Character.Class == (byte)ClassType.Archer)
+                    if (Session.Character.Class == 2)
                     {
-                        Upgrade = Convert.ToSByte(SecUpgrade - monsterinfo.DefenceUpgrade);
-                        MinDmg = ServersData.MinHit(Session.Character.Class, Session.Character.Level) + SecMinDmg;
-                        MaxDmg = ServersData.MaxHit(Session.Character.Class, Session.Character.Level) + SecMaxDmg;
-
-                        #region Upgrade Boost Calculation
-
-                        switch (Upgrade)
-                        {
-                            case -10:
-                                MonsterDefense += (int)(MonsterDefense * 2);
-                                break;
-
-                            case -9:
-                                MonsterDefense += (int)(MonsterDefense * 1.2);
-                                break;
-
-                            case -8:
-                                MonsterDefense += (int)(MonsterDefense * 0.9);
-                                break;
-
-                            case -7:
-                                MonsterDefense += (int)(MonsterDefense * 0.65);
-                                break;
-
-                            case -6:
-                                MonsterDefense += (int)(MonsterDefense * 0.54);
-                                break;
-
-                            case -5:
-                                MonsterDefense += (int)(MonsterDefense * 0.43);
-                                break;
-
-                            case -4:
-                                MonsterDefense += (int)(MonsterDefense * 0.32);
-                                break;
-
-                            case -3:
-                                MonsterDefense += (int)(MonsterDefense * 0.22);
-                                break;
-
-                            case -2:
-                                MonsterDefense += (int)(MonsterDefense * 0.15);
-                                break;
-
-                            case -1:
-                                MonsterDefense += (int)(MonsterDefense * 0.1);
-                                break;
-
-                            case 0:
-                                break;
-
-                            case 1:
-                                MinDmg += (int)(MinDmg * 0.1);
-                                MaxDmg += (int)(MaxDmg * 0.1);
-                                break;
-
-                            case 2:
-                                MinDmg += (int)(MinDmg * 0.15);
-                                MaxDmg += (int)(MaxDmg * 0.15);
-                                break;
-
-                            case 3:
-                                MinDmg += (int)(MinDmg * 0.22);
-                                MaxDmg += (int)(MaxDmg * 0.22);
-                                break;
-
-                            case 4:
-                                MinDmg += (int)(MinDmg * 0.32);
-                                MaxDmg += (int)(MaxDmg * 0.32);
-                                break;
-
-                            case 5:
-                                MinDmg += (int)(MinDmg * 0.43);
-                                MaxDmg += (int)(MaxDmg * 0.43);
-                                break;
-
-                            case 6:
-                                MinDmg += (int)(MinDmg * 0.54);
-                                MaxDmg += (int)(MaxDmg * 0.54);
-                                break;
-
-                            case 7:
-                                MinDmg += (int)(MinDmg * 0.65);
-                                MaxDmg += (int)(MaxDmg * 0.65);
-                                break;
-
-                            case 8:
-                                MinDmg += (int)(MinDmg * 0.9);
-                                MaxDmg += (int)(MaxDmg * 0.9);
-                                break;
-
-                            case 9:
-                                MinDmg += (int)(MinDmg * 1.2);
-                                MaxDmg += (int)(MaxDmg * 1.2);
-                                break;
-
-                            case 10:
-                                MinDmg += (int)(MinDmg * 2);
-                                MaxDmg += (int)(MaxDmg * 2);
-                                break;
-                        }
-
-                        #endregion
-
-                        MinDmg -= MonsterDefense;
-                        MaxDmg -= MonsterDefense;
-
-                        HitRate = SecHitRate;
-                        CritChance = SecCritChance;
-                        CritHit = SecCritHit;
+                        MainCritHit = SecCritHit;
+                        MainCritChance = SecCritChance;
+                        MainHitRate = SecHitRate;
+                        MainMaxDmg = SecMaxDmg;
+                        MainMinDmg = SecMinDmg;
+                        MainUpgrade = SecUpgrade;
                     }
-                    else
-                    {
-                        Upgrade = Convert.ToSByte(MainUpgrade - monsterinfo.DefenceUpgrade);
-                        MinDmg = ServersData.MinHit(Session.Character.Class, Session.Character.Level) + MainMinDmg;
-                        MaxDmg = ServersData.MaxHit(Session.Character.Class, Session.Character.Level) + MainMaxDmg;
-
-                        #region Upgrade Boost Calculation
-
-                        switch (Upgrade)
-                        {
-                            case -10:
-                                MonsterDefense += (int)(MonsterDefense * 2);
-                                break;
-
-                            case -9:
-                                MonsterDefense += (int)(MonsterDefense * 1.2);
-                                break;
-
-                            case -8:
-                                MonsterDefense += (int)(MonsterDefense * 0.9);
-                                break;
-
-                            case -7:
-                                MonsterDefense += (int)(MonsterDefense * 0.65);
-                                break;
-
-                            case -6:
-                                MonsterDefense += (int)(MonsterDefense * 0.54);
-                                break;
-
-                            case -5:
-                                MonsterDefense += (int)(MonsterDefense * 0.43);
-                                break;
-
-                            case -4:
-                                MonsterDefense += (int)(MonsterDefense * 0.32);
-                                break;
-
-                            case -3:
-                                MonsterDefense += (int)(MonsterDefense * 0.22);
-                                break;
-
-                            case -2:
-                                MonsterDefense += (int)(MonsterDefense * 0.15);
-                                break;
-
-                            case -1:
-                                MonsterDefense += (int)(MonsterDefense * 0.1);
-                                break;
-
-                            case 0:
-                                break;
-
-                            case 1:
-                                MinDmg += (int)(MinDmg * 0.1);
-                                MaxDmg += (int)(MaxDmg * 0.1);
-                                break;
-
-                            case 2:
-                                MinDmg += (int)(MinDmg * 0.15);
-                                MaxDmg += (int)(MaxDmg * 0.15);
-                                break;
-
-                            case 3:
-                                MinDmg += (int)(MinDmg * 0.22);
-                                MaxDmg += (int)(MaxDmg * 0.22);
-                                break;
-
-                            case 4:
-                                MinDmg += (int)(MinDmg * 0.32);
-                                MaxDmg += (int)(MaxDmg * 0.32);
-                                break;
-
-                            case 5:
-                                MinDmg += (int)(MinDmg * 0.43);
-                                MaxDmg += (int)(MaxDmg * 0.43);
-                                break;
-
-                            case 6:
-                                MinDmg += (int)(MinDmg * 0.54);
-                                MaxDmg += (int)(MaxDmg * 0.54);
-                                break;
-
-                            case 7:
-                                MinDmg += (int)(MinDmg * 0.65);
-                                MaxDmg += (int)(MaxDmg * 0.65);
-                                break;
-
-                            case 8:
-                                MinDmg += (int)(MinDmg * 0.9);
-                                MaxDmg += (int)(MaxDmg * 0.9);
-                                break;
-
-                            case 9:
-                                MinDmg += (int)(MinDmg * 1.2);
-                                MaxDmg += (int)(MaxDmg * 1.2);
-                                break;
-
-                            case 10:
-                                MinDmg += (int)(MinDmg * 2);
-                                MaxDmg += (int)(MaxDmg * 2);
-                                break;
-                        }
-
-                        #endregion
-
-                        MinDmg -= MonsterDefense;
-                        MaxDmg -= MonsterDefense;
-
-                        HitRate = MainHitRate;
-                        CritChance = MainCritChance;
-                        CritHit = MainCritHit;
-                    }
-                    miss_chance /= (int)(1 + HitRate / 100.0);//unsure
                     break;
 
                 case 1:
-                    MonsterDefense = monsterinfo.CloseDefence;
-                    if (Session.Character.Class != (byte)ClassType.Archer)
+                    MonsterDefense = monsterinfo.DistanceDefence;
+                    if (Session.Character.Class == 1 || Session.Character.Class == 0)
                     {
-                        Upgrade = Convert.ToSByte(SecUpgrade - monsterinfo.DefenceUpgrade);
-                        MinDmg = ServersData.MinHit(Session.Character.Class, Session.Character.Level) + SecMinDmg;
-                        MaxDmg = ServersData.MaxHit(Session.Character.Class, Session.Character.Level) + SecMaxDmg;
-
-                        #region Upgrade Boost Calculation
-
-                        switch (Upgrade)
-                        {
-                            case -10:
-                                MonsterDefense += (int)(MonsterDefense * 2);
-                                break;
-
-                            case -9:
-                                MonsterDefense += (int)(MonsterDefense * 1.2);
-                                break;
-
-                            case -8:
-                                MonsterDefense += (int)(MonsterDefense * 0.9);
-                                break;
-
-                            case -7:
-                                MonsterDefense += (int)(MonsterDefense * 0.65);
-                                break;
-
-                            case -6:
-                                MonsterDefense += (int)(MonsterDefense * 0.54);
-                                break;
-
-                            case -5:
-                                MonsterDefense += (int)(MonsterDefense * 0.43);
-                                break;
-
-                            case -4:
-                                MonsterDefense += (int)(MonsterDefense * 0.32);
-                                break;
-
-                            case -3:
-                                MonsterDefense += (int)(MonsterDefense * 0.22);
-                                break;
-
-                            case -2:
-                                MonsterDefense += (int)(MonsterDefense * 0.15);
-                                break;
-
-                            case -1:
-                                MonsterDefense += (int)(MonsterDefense * 0.1);
-                                break;
-
-                            case 0:
-                                break;
-
-                            case 1:
-                                MinDmg += (int)(MinDmg * 0.1);
-                                MaxDmg += (int)(MaxDmg * 0.1);
-                                break;
-
-                            case 2:
-                                MinDmg += (int)(MinDmg * 0.15);
-                                MaxDmg += (int)(MaxDmg * 0.15);
-                                break;
-
-                            case 3:
-                                MinDmg += (int)(MinDmg * 0.22);
-                                MaxDmg += (int)(MaxDmg * 0.22);
-                                break;
-
-                            case 4:
-                                MinDmg += (int)(MinDmg * 0.32);
-                                MaxDmg += (int)(MaxDmg * 0.32);
-                                break;
-
-                            case 5:
-                                MinDmg += (int)(MinDmg * 0.43);
-                                MaxDmg += (int)(MaxDmg * 0.43);
-                                break;
-
-                            case 6:
-                                MinDmg += (int)(MinDmg * 0.54);
-                                MaxDmg += (int)(MaxDmg * 0.54);
-                                break;
-
-                            case 7:
-                                MinDmg += (int)(MinDmg * 0.65);
-                                MaxDmg += (int)(MaxDmg * 0.65);
-                                break;
-
-                            case 8:
-                                MinDmg += (int)(MinDmg * 0.9);
-                                MaxDmg += (int)(MaxDmg * 0.9);
-                                break;
-
-                            case 9:
-                                MinDmg += (int)(MinDmg * 1.2);
-                                MaxDmg += (int)(MaxDmg * 1.2);
-                                break;
-
-                            case 10:
-                                MinDmg += (int)(MinDmg * 2);
-                                MaxDmg += (int)(MaxDmg * 2);
-                                break;
-                        }
-
-                        #endregion
-
-                        MinDmg -= MonsterDefense;
-                        MaxDmg -= MonsterDefense;
-
-                        HitRate = SecHitRate;
-                        CritChance = SecCritChance;
-                        CritHit = SecCritHit;
+                        MainCritHit = SecCritHit;
+                        MainCritChance = SecCritChance;
+                        MainHitRate = SecHitRate;
+                        MainMaxDmg = SecMaxDmg;
+                        MainMinDmg = SecMinDmg;
+                        MainUpgrade = SecUpgrade;
                     }
-                    else
-                    {
-                        Upgrade = Convert.ToSByte(MainUpgrade - monsterinfo.DefenceUpgrade);
-                        MinDmg = ServersData.MinHit(Session.Character.Class, Session.Character.Level) + MainMinDmg;
-                        MaxDmg = ServersData.MaxHit(Session.Character.Class, Session.Character.Level) + MainMaxDmg;
-
-                        #region Upgrade Boost Calculation
-
-                        switch (Upgrade)
-                        {
-                            case -10:
-                                MonsterDefense += (int)(MonsterDefense * 2);
-                                break;
-
-                            case -9:
-                                MonsterDefense += (int)(MonsterDefense * 1.2);
-                                break;
-
-                            case -8:
-                                MonsterDefense += (int)(MonsterDefense * 0.9);
-                                break;
-
-                            case -7:
-                                MonsterDefense += (int)(MonsterDefense * 0.65);
-                                break;
-
-                            case -6:
-                                MonsterDefense += (int)(MonsterDefense * 0.54);
-                                break;
-
-                            case -5:
-                                MonsterDefense += (int)(MonsterDefense * 0.43);
-                                break;
-
-                            case -4:
-                                MonsterDefense += (int)(MonsterDefense * 0.32);
-                                break;
-
-                            case -3:
-                                MonsterDefense += (int)(MonsterDefense * 0.22);
-                                break;
-
-                            case -2:
-                                MonsterDefense += (int)(MonsterDefense * 0.15);
-                                break;
-
-                            case -1:
-                                MonsterDefense += (int)(MonsterDefense * 0.1);
-                                break;
-
-                            case 0:
-                                break;
-
-                            case 1:
-                                MinDmg += (int)(MinDmg * 0.1);
-                                MaxDmg += (int)(MaxDmg * 0.1);
-                                break;
-
-                            case 2:
-                                MinDmg += (int)(MinDmg * 0.15);
-                                MaxDmg += (int)(MaxDmg * 0.15);
-                                break;
-
-                            case 3:
-                                MinDmg += (int)(MinDmg * 0.22);
-                                MaxDmg += (int)(MaxDmg * 0.22);
-                                break;
-
-                            case 4:
-                                MinDmg += (int)(MinDmg * 0.32);
-                                MaxDmg += (int)(MaxDmg * 0.32);
-                                break;
-
-                            case 5:
-                                MinDmg += (int)(MinDmg * 0.43);
-                                MaxDmg += (int)(MaxDmg * 0.43);
-                                break;
-
-                            case 6:
-                                MinDmg += (int)(MinDmg * 0.54);
-                                MaxDmg += (int)(MaxDmg * 0.54);
-                                break;
-
-                            case 7:
-                                MinDmg += (int)(MinDmg * 0.65);
-                                MaxDmg += (int)(MaxDmg * 0.65);
-                                break;
-
-                            case 8:
-                                MinDmg += (int)(MinDmg * 0.9);
-                                MaxDmg += (int)(MaxDmg * 0.9);
-                                break;
-
-                            case 9:
-                                MinDmg += (int)(MinDmg * 1.2);
-                                MaxDmg += (int)(MaxDmg * 1.2);
-                                break;
-
-                            case 10:
-                                MinDmg += (int)(MinDmg * 2);
-                                MaxDmg += (int)(MaxDmg * 2);
-                                break;
-                        }
-
-                        #endregion
-
-                        MinDmg -= MonsterDefense;
-                        MaxDmg -= MonsterDefense;
-
-                        HitRate = MainHitRate;
-                        CritChance = MainCritChance;
-                        CritHit = MainCritHit;
-                    }
-                    miss_chance /= (int)(1 + HitRate / 100.0);//unsure
                     break;
 
                 case 2:
-                    Upgrade = Convert.ToSByte(MainUpgrade - monsterinfo.MagicDefence);
-                    MinDmg = ServersData.MinHit(Session.Character.Class, Session.Character.Level) + MainMinDmg;
-                    MaxDmg = ServersData.MaxHit(Session.Character.Class, Session.Character.Level) + MainMaxDmg;
-
-                    #region Upgrade Boost Calculation
-
-                    switch (Upgrade)
-                    {
-                        case -10:
-                            MonsterDefense += (int)(MonsterDefense * 2);
-                            break;
-
-                        case -9:
-                            MonsterDefense += (int)(MonsterDefense * 1.2);
-                            break;
-
-                        case -8:
-                            MonsterDefense += (int)(MonsterDefense * 0.9);
-                            break;
-
-                        case -7:
-                            MonsterDefense += (int)(MonsterDefense * 0.65);
-                            break;
-
-                        case -6:
-                            MonsterDefense += (int)(MonsterDefense * 0.54);
-                            break;
-
-                        case -5:
-                            MonsterDefense += (int)(MonsterDefense * 0.43);
-                            break;
-
-                        case -4:
-                            MonsterDefense += (int)(MonsterDefense * 0.32);
-                            break;
-
-                        case -3:
-                            MonsterDefense += (int)(MonsterDefense * 0.22);
-                            break;
-
-                        case -2:
-                            MonsterDefense += (int)(MonsterDefense * 0.15);
-                            break;
-
-                        case -1:
-                            MonsterDefense += (int)(MonsterDefense * 0.1);
-                            break;
-
-                        case 0:
-                            break;
-
-                        case 1:
-                            MinDmg += (int)(MinDmg * 0.1);
-                            MaxDmg += (int)(MaxDmg * 0.1);
-                            break;
-
-                        case 2:
-                            MinDmg += (int)(MinDmg * 0.15);
-                            MaxDmg += (int)(MaxDmg * 0.15);
-                            break;
-
-                        case 3:
-                            MinDmg += (int)(MinDmg * 0.22);
-                            MaxDmg += (int)(MaxDmg * 0.22);
-                            break;
-
-                        case 4:
-                            MinDmg += (int)(MinDmg * 0.32);
-                            MaxDmg += (int)(MaxDmg * 0.32);
-                            break;
-
-                        case 5:
-                            MinDmg += (int)(MinDmg * 0.43);
-                            MaxDmg += (int)(MaxDmg * 0.43);
-                            break;
-
-                        case 6:
-                            MinDmg += (int)(MinDmg * 0.54);
-                            MaxDmg += (int)(MaxDmg * 0.54);
-                            break;
-
-                        case 7:
-                            MinDmg += (int)(MinDmg * 0.65);
-                            MaxDmg += (int)(MaxDmg * 0.65);
-                            break;
-
-                        case 8:
-                            MinDmg += (int)(MinDmg * 0.9);
-                            MaxDmg += (int)(MaxDmg * 0.9);
-                            break;
-
-                        case 9:
-                            MinDmg += (int)(MinDmg * 1.2);
-                            MaxDmg += (int)(MaxDmg * 1.2);
-                            break;
-
-                        case 10:
-                            MinDmg += (int)(MinDmg * 2);
-                            MaxDmg += (int)(MaxDmg * 2);
-                            break;
-                    }
-
-                    #endregion
-
-                    MinDmg -= MonsterDefense;
-                    MaxDmg -= MonsterDefense;
-
-                    HitRate = MainHitRate;
-                    CritChance = 0;
-                    CritHit = 0;
-                    miss_chance = 0;
+                    MonsterDefense = monsterinfo.MagicDefence;
                     break;
             }
 
             #endregion
 
+            float[] Bonus = new float[10] { 0.1f, 0.15f, 0.22f, 0.32f, 0.43f, 0.54f, 0.65f, 0.90f, 1.20f, 2f };
+
+            int AEq = Convert.ToInt16(random.Next(MainMinDmg, MainMaxDmg) * (1 + (MainUpgrade > monsterinfo.DefenceUpgrade ? Bonus[MainUpgrade - monsterinfo.DefenceUpgrade - 1] : 0)));
+            int DEq = Convert.ToInt16(MonsterDefense * (1 + (MainUpgrade < monsterinfo.DefenceUpgrade ? Bonus[monsterinfo.DefenceUpgrade - MainUpgrade - 1] : 0)));
+            int ABase = Convert.ToInt16(random.Next(ServersData.MinHit(Session.Character.Class, Session.Character.Level), ServersData.MaxHit(Session.Character.Class, Session.Character.Level)));
+            int Aeff = 0;            // Attack of equip given by effects like weapons, jewelry, masks, hats, res, etc .. (eg. X mask: +13 attack // Crossbow
+            SpecialistInstance specialistInstance = Session.Character.EquipmentList.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, (byte)InventoryType.Equipment);
+            int Bsp6 = 0;            // Attack power increased (IMPORTANT) This already Added when SP Point has been set
+            int Bsp7 = 0;            // Attack power increased (IMPORTANT) This already Added when SP Point has been set
+            int Asp = Convert.ToInt16((Session.Character.UseSp ? Convert.ToInt16(random.Next(specialistInstance.DamageMinimum, specialistInstance.DamageMaximum + 1)) + Bsp6 + Bsp7 + (specialistInstance.SlDamage * 10) / 200 : 0));
+            int Br7 = 0;            // Improved Damage (Bonus Rune)
+            int Br22 = 0;           //% Of damage in pvp (Bonus Rune)
+            int APg = Convert.ToInt16(((AEq + ABase + Aeff + Asp + Br7) * (1 + Br22)));
+            ////Logger.Debug(String.Format("APg = (AEq({0}) +  ABase({1}) + Aeff({2}) + Asp({3}) + Br7({4})) * (1 + Br22({5})) = {6}", AEq, ABase, Aeff, Asp, Br7, Br22, APg));
+
+            int DBase = 0;           //Defense Of Pg Convert.ToInt16 Base (Monster Defense);
+            int Deff = 0;            // Defense given by effects of equip as weapons, jewelry, masks, hats, res, etc .. (eg. Balestra 90: +150 Defense)
+            int Dsp = 0;             // The mob have no defense given by sp points and the sl
+            int Br21 = 0;            // It reduces the opponent's defense% in PvP
+            int Br28 = 0;            // Defense for long-rage improved
+            int Br29 = 0;            // Defense for melee improved
+            int Br30 = 0;            // Improved magic defense
+            int Br31 = 0;            // % To all defense
+            int Br32 = 0;            // % To all defense in PvP
+            int DPg = Convert.ToInt16((DEq + DBase + Deff + Dsp + Br28 + Br29 + Br30) * (1 + (Br31 + Br32) - Br21));
+            ////Logger.Debug(String.Format("DPg = (DEq({0}) +  DBase({1}) + Deff({2}) + Dsp({3}) + Br28({4}) + Br29({5}) + Br30({6})) * (1 + (Br31({7}) + + Br32({8}) - Br21({9}))) = {10}", DEq, DBase, Deff, Dsp, Br28, Br29, Br30, Br31, Br32, Br21, DPg));
+
+
+            int Br6 = 0;             // % of Damage
+            int Br8 = 0;             // Damage on monster with animal type
+            int Br9 = 0;             // Damage increase to enemy (demons)
+            int Br10 = 0;            // Damage increase to plant
+            int Br11 = 0;            // Damage increase on undead
+            int Br12 = 0;            // Increase damage on small monster
+            int Br13 = 0;            // Increase damage on tall monster
+            int BonusEq = 0;         // Bonus% of the weapons, known as bug 90 (ex. Arc 90 -> With a 25% probability increases damage up to 40%.
+            int At = Convert.ToInt16(((APg + skill.Damage) * (1 + (Br6 + Br8 + Br9 + Br10 + Br11 + Br12 + Br13))) * (1 + BonusEq));
+            ////Logger.Debug(String.Format("At = ((APg {0} + skill.Damage {1} + 15) * (1 + (Br6 {2} + Br8 {3} + Br9 {4} + Br10 {5} + Br11 {6} + Br12 {7} + Br13 {8}))) * (1 + BonusEq{9}) = {10}", APg, skill.Damage, Br6, Br8, Br9, Br10, Br11, Br12, Br13, BonusEq, At));
+
+
+            int DSkill = 0;          // base defense (not basic) given by the skill (eg. light protection Caster Defense + lv = * 2)
+            int EffectPetPvp = 0;    //
+            int DefensePotion = 0;   //
+            int DVestito = 0;        //
+            int DPet = 0;            //
+            int DifesaOlioFiore = 0; // Defense given by the oil flower
+            int Dt = Convert.ToInt16((DPg + DSkill) * (1 + EffectPetPvp) + (1 + (DifesaOlioFiore != 0 ? DifesaOlioFiore : (DefensePotion + DVestito + DPet))));
+            ////Logger.Debug(String.Format("Dt = (DPg{0} + DSkill{1}) * (1 + EffectPetPvp{2}) + (1 + (DifesaOlioFiore{3} != 0 ? DifesaOlioFiore{4} : (DefensePotion{5} + DVestito{6} + DPet{7})) = {8}", DPg, DSkill, EffectPetPvp, DifesaOlioFiore, DifesaOlioFiore, DefensePotion, DVestito, DPet, Dt));
+            int AttaccoOlioFiore = 0;
+            int Bskl8 = 0;           // of the Iron Warrior Skin
+            int Bskl5 = 0;           // Hawkeye ranger
+            int Danno = Convert.ToInt16((At - Dt) * (1 + AttaccoOlioFiore) * (1 + Bskl8) * (1 - Bskl5));
+            ////Logger.Debug(String.Format("Danno: {0}", Danno));
+
+            int F = Convert.ToInt16(Session.Character.ElementRate / 100);
+            int Bsp5 = 0;            // Bonus SP (IMPORTANT) This already Added when SP Point has been set
+            int SLPerfect = 0;       // Bonus SP (IMPORTANT) This already Added when Perfect SP has been done
+            int Esp = Convert.ToInt16((Session.Character.UseSp ? Convert.ToInt16(specialistInstance.SlElement + Bsp5 + SLPerfect) / 200 : 0));
+            int E = Convert.ToInt16((At + 0) * (1 + (F + Esp)));
+            int Eeff = 0;            // Element given by effects of equip as weapons, jewelry, masks, hats, res
+            int ESkill = Convert.ToInt16(skill.ElementalDamage);
+            int Br1 = 0;             //  Fire properties increased
+            int Br2 = 0;             //  Water properties increased
+            int Br3 = 0;             //  Light properties increased
+            int Br4 = 0;             //  Properties of Dark increased
+            int Br5 = 0;             // Elemental properties of increased
+            int Et = Convert.ToInt16(E + Eeff + ESkill + Br1 + Br2 + Br3 + Br4 + Br5);
+            ////Logger.Debug(String.Format("Et = E{0} + Eeff{1} + ESkill{2} + Br1{3} + Br2{4} + Br3{5} + Br4{6} + Br5{7} = {8}", E, Eeff, ESkill, Br1, Br2, Br3, Br4, Br5, Et));
+
+
+
+            float Eele = 0;
+            float EPg = Session.Character.Element;
+            float EMob = monsterinfo.Element;
+            if ((EPg == 0 && EMob == 3) || (EPg == 3 && EMob == 1) || (EPg == 1 && EMob == 2) || (EPg == 2 && EMob == 0) || (EPg == 3 && EMob == 0) || (EPg == 1 && EMob == 3) || (EPg == 2 && EMob == 1) || (EPg == 0 && EMob == 2)) Eele = 1.5f;
+            else if ((EPg == 1 && EMob == 0) || (EPg == 0 && EMob == 1)) Eele = 2f;
+            else if ((EPg == 2 && EMob == 3) || (EPg == 3 && EMob == 2)) Eele = 3f;
+            else Eele = 1.3f;
+            float RGuanto = monsterinfo.GetRes(skill.Element); // Resistance given by glove (eg. Fire glove comb B s4 = 50%)
+            float RScarpa = 0;           // Resistance given by shoes
+            float DReff = 0;             // Resistance give by mask (eg. mask x give all resistance +4)
+            float DRskill = 0;           // Resistance given by the skill (eg. sp4 for bowman buff)
+            float Rsp = 0;               // Resistance given by the SP
+            float Rperf = 0;             // data of improvements resistance
+            float Bsp4 = 0;              // Resistance (water,fire,light and darkness
+            float Br23 = 0;              // Increase fire resistance
+            float Br24 = 0;              // Incrase water resistance
+            float Br25 = 0;              // Increase light resistance
+            float Br26 = 0;              // Increase darkness resistance
+            float Br27 = 0;              // Increase resistance
+            float Dres = RGuanto + RScarpa + DReff + DRskill + Rsp + Rperf + Bsp4 + Br23 + Br24 + Br25 + Br26 + Br27;
+            int AReff = 0;            // Drop in resistance given by effects of equip as weapons, jewelry, masks, hats, res, etc .. (eg. Sword 90 = -15 res to all elements)
+            int ARskill = 0;         // Drop in resistance given by the skill (es.Calo the WK = -40 res to all elements)
+            int Br16 = 0;            // Reduce all resistance of the enemy in PvP
+            int Br17 = 0;            // Reduce water resistance of enemy in PvP
+            int Br18 = 0;            // Reduce light resistance of enemy in PvP
+            int Br19 = 0;            // Reduce darkness resistance of enemy in PvP
+            int Br20 = 0;            // Reduce all defense of enemy in PvP
+            float Ares = AReff + ARskill + Br16 + Br17 + Br18 + Br19 + Br20;
+            int Ef = Convert.ToInt16((Et * Eele) * (1 - (Dres - Ares) / 100));
+            // //Logger.Debug(String.Format("Ef = (Et {0} * Eele{1}) * (1 - (Dres{2} - Ares{3})) = {4}", Et, Eele, Dres, Ares, Ef));
+
+            int differenza_morale = Session.Character.Level + /*Session.Character.Morale */ -monsterinfo.Level; //Morale Atk pg - Morale def pg
+            //short Danno = 0;
+            //unchanged from here on
+            if (Session.Character.Class != 3)
+                if (generated < CritChance)
+                {
+                    hitmode = 3;
+                    MainMinDmg = (MainMinDmg + ((MainMaxDmg - MainMinDmg) / 2));
+                    short Br14 = 0; //(Except sticks) Increase critical damage
+                    short Bsp1 = 0; // They give the death blow (increase critical damage)
+                    short DcrEq = 0; // Decrease of critical damage from the effects of equip given as weapons, jewelry, masks, hats, res, etc .. (eg. Sword luminaire is 90 = -60% critical damage)
+                    short Bsp2 = 0; // Decreased deathblow (decreases the critical damage)
+                    Danno = Convert.ToInt16(Danno * (1 + (MainCritHit / 100) + Br14 + Bsp1) - (DcrEq + Bsp2));
+                }
+
+            int Dmob = 0; //Base damage of monster, varies in function of the lvl of the monster
+            if (monsterinfo.Level >= 1 && monsterinfo.Level <= 44) Dmob = 0;
+            else if (monsterinfo.Level >= 45 && monsterinfo.Level <= 55) Dmob = Convert.ToInt16(monsterinfo.Level * 2);
+            else if (monsterinfo.Level >= 56 && monsterinfo.Level <= 69) Dmob = Convert.ToInt16(monsterinfo.Level * 3);
+            else Dmob = Convert.ToInt16(monsterinfo.Level * 5);
+            int Bsp3 = 0; // Decrease magic damage
+            int AttackPotion = 0;
+            int Acappello = 0; // Attack% given by hair (eg. + 5% Santa Hat)
+            int Apet = 0; // Attack% given by the pet (eg. + 10% Fibi)
+            float distanza_arciere = 1;
+            if (Session.Character.Class == 2)
+            {
+                distanza_arciere = 0.75f;
+                for (int i = 1; i < Map.GetDistance(new MapCell { X = Session.Character.MapX, MapId = Session.Character.MapId, Y = Session.Character.MapY }, new MapCell { MapId = mmon.MapId, X = mmon.MapX, Y = mmon.MapY }); i++)
+                    distanza_arciere += 0.0232f;
+            }
+
+            if (Session.Character.Class != 2) distanza_arciere = 1;
+            int DannoFinale = Convert.ToUInt16((Danno + Ef + differenza_morale + Dmob) * (1 - Bsp3) * (1 + (AttackPotion + Acappello + Apet)) * distanza_arciere);
+            ////Logger.Debug(String.Format("DannoFinale = (Danno {0} + Ef {1}  + differenza_morale{2} + Dmob{3})  (1 - Bsp3{4})  (1 + (AttackPotion{5} + Acappello{6} + Apet{7})) * distanza_arciere{8} = {9}", Danno, Ef, differenza_morale, Dmob, Bsp3, AttackPotion, Acappello, Apet, distanza_arciere, DannoFinale));
+
+
+            if (Session.Character.Class != 3)
+                if (generated > 100 - miss_chance)
+                {
+                    hitmode = 1;
+                    DannoFinale = 0;
+                }
+
             int intdamage;
             if (Session.Character.HasGodMode)
                 intdamage = 67107840;// this sets dmg for GodMode command
-            else
-                intdamage = random.Next(MinDmg, MaxDmg + 1);
+            else intdamage = DannoFinale;
 
-            //unchanged from here on
-            if (generated < CritChance)
-            {
-                hitmode = 3;
-                intdamage *= 2;
-            }
-            if (generated > 100 - miss_chance)
-            {
-                hitmode = 1;
-                intdamage = 0;
-            }
 
             if (mmon.CurrentHp <= intdamage)
             {
@@ -1072,6 +662,7 @@ namespace OpenNos.Handler
                     if (grp != null)
                     {
                         grp.Characters.Where(g => g.Character.MapId == Session.Character.MapId).ToList().ForEach(g => g.Character.GenerateXp(monsterinfo));
+
                     }
                     else
                         Session.Character.GenerateXp(monsterinfo);
