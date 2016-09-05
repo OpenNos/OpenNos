@@ -485,7 +485,7 @@ namespace OpenNos.Handler
                                 Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(inv.ItemInstance.ItemVNum, inv.ItemInstance.Amount, inv.Type, inv.Slot, 0, inv.ItemInstance.Rare, inv.ItemInstance.Upgrade, 0));
 
                                 Session.Client.SendPacket($"pdti 11 {inv.ItemInstance.ItemVNum} {rec.Amount} 29 {inv.ItemInstance.Upgrade} 0");
-                                Session.Client.SendPacket($"guri 19 1 {Session.Character.CharacterId} 1324");
+                                Session.Client.SendPacket(Session.Character.GenerateGuri(19, 1, 1324));
 
                                 Session.Client.SendPacket(Session.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("CRAFTED_OBJECT"), (inv.ItemInstance as ItemInstance).Item.Name, rec.Amount), 0));
                             }

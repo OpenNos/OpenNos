@@ -328,7 +328,32 @@ namespace OpenNos.GameObject
                 }
             }
         }
-
+        public string GenerateGuri(int type, int argument, int value)
+        {
+            string str = "";
+            switch (type)
+            {
+                case 2:
+                    str = $"guri 2 {argument} {Session.Character.CharacterId}";
+                    break;
+                case 6:
+                    str = $"guri 6 {argument} {Session.Character.CharacterId} 0 0";
+                    break;
+                case 10:
+                    str = $"guri 10 {argument} {value} {Session.Character.CharacterId}";
+                    break;
+                case 11:
+                    str = "";
+                    break;
+                case 15:
+                    str = $"guri 15 {argument} 0";
+                    break;
+                case 19:
+                    str = $"guri 19 {argument} {Session.Character.CharacterId} {value}";
+                    break;
+            }
+            return str;
+        }
         public string GenerateAt()
         {
             return $"at {CharacterId} {MapId} {MapX} {MapY} 2 0 {ServerManager.GetMap(MapId).Music} -1";
