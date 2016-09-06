@@ -128,22 +128,20 @@ namespace OpenNos.Handler
                     Session.Client.SendPacket("cancel 2 0");
                     return;
                 }
-                for (int i = 0; i < 100 && ski.Used; i++)
+                for (int i = 0; i < 10 && ski.Used; i++)
                 {
                     Thread.Sleep(100);
+                    if (i == 10)
+                    {
+                        Session.Client.SendPacket("cancel 2 0");
+                        return;
+                    }
                 }
 
                 if (ski != null && Session.Character.Mp >= skill.MpCost)
                 {
                     if (skill != null)
                     {
-                        Task t = Task.Factory.StartNew((Func<Task>)(async () =>
-                        {
-                            await Task.Delay((skill.Cooldown) * 100);
-                            ski.Used = false;
-                            Session.Client.SendPacket($"sr {castingId}");
-                        }));
-
                         if (skill.TargetType == 1 && skill.HitType == 1)
                         {
                             Session.Character.LastSkill = DateTime.Now;
@@ -227,6 +225,12 @@ namespace OpenNos.Handler
                                 }
                             }
                         }
+                        Task t = Task.Factory.StartNew((Func<Task>)(async () =>
+                        {
+                            await Task.Delay((skill.Cooldown) * 100);
+                            ski.Used = false;
+                            Session.Client.SendPacket($"sr {castingId}");
+                        }));
                     }
                 }
                 else
