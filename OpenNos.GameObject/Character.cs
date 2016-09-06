@@ -107,11 +107,12 @@ namespace OpenNos.GameObject
         public bool Invisible { get { return _invisible; } set { _invisible = value; } }
         public bool InvisibleGm { get; set; }
         public int IsDancing { get { return _isDancing; } set { _isDancing = value; } }
+        public bool IsShopping { get; set; }
         public bool IsSitting { get { return _issitting; } set { _issitting = value; } }
         public bool IsVehicled { get; set; }
-        public DateTime LastMapObject { get; set; }
         public DateTime LastDefence { get; set; }
         public DateTime LastLogin { get; set; }
+        public DateTime LastMapObject { get; set; }
         public DateTime LastMove { get; set; }
         public short LastNRunId { get; set; }
         public double LastPortal { get { return _lastPortal; } set { _lastPortal = value; } }
@@ -145,7 +146,6 @@ namespace OpenNos.GameObject
         public byte Speed { get { return _speed; } set { if (value > 59) { _speed = 59; } else { _speed = value; } } }
         public bool UseSp { get; set; }
         public int WaterResistance { get; set; }
-        public bool IsShopping { get; set; }
 
         #endregion
 
@@ -258,28 +258,6 @@ namespace OpenNos.GameObject
             }
         }
 
-        public void SpeedLoad()
-        {
-            if (!IsVehicled)
-            {
-                Speed = ServersData.SpeedData[Class];
-
-                if (UseSp)
-                {
-                    SpecialistInstance sp = EquipmentList.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, (byte)InventoryType.Equipment);
-                    if (sp != null)
-                    {
-                        Speed += ServerManager.GetItem(sp.ItemVNum).Speed;
-                    }
-                }
-
-            }
-            if (IsShopping)
-            {
-                Speed = 0;
-            }
-        }
-
         public string Dance()
         {
             IsDancing = IsDancing == 0 ? 1 : 0;
@@ -333,30 +311,6 @@ namespace OpenNos.GameObject
             }
         }
 
-        public string GenerateGuri(byte type, byte argument, int value = 0, string name = "")
-        {
-            string str = String.Empty;
-            switch (type)
-            {
-                case 10:
-                    str = $"guri 10 {argument} {value} {Session.Character.CharacterId}";
-                    break;
-                case 15:
-                    str = $"guri 15 {argument} 0 0";
-                    break;
-                //case 29:
-                //    str = $"guri 29 {name} {value} 0";
-                //    break;
-                //case 30:
-                //    str = $"guri 30 {name} {value} 0";
-                //    break;
-                default:
-                    str = $"guri {type} {argument} {Session.Character.CharacterId} {value}";
-                    break;
-            }
-            return str;
-        }
-
         public string GenerateAt()
         {
             return $"at {CharacterId} {MapId} {MapX} {MapY} 2 0 {ServerManager.GetMap(MapId).Music} -1";
@@ -391,6 +345,20 @@ namespace OpenNos.GameObject
         public string GenerateDialog(string dialog)
         {
             return $"dlg {dialog}";
+        }
+
+        public void GenerateDignity(NpcMonster monsterinfo)
+        {
+            if (Level < monsterinfo.Level && Dignity < 100 && Level > 20)
+            {
+                Dignity += (float)0.5;
+                if (Dignity == (int)Dignity)
+                {
+                    Session.Client.SendPacket(GenerateFd());
+                    Session.CurrentMap?.Broadcast(Session, GenerateIn(), ReceiverType.AllExceptMe);
+                    Session.Client.SendPacket(GenerateSay(Language.Instance.GetMessageFromKey("RESTORE_DIGNITY"), 11));
+                }
+            }
         }
 
         public string GenerateDir()
@@ -625,6 +593,19 @@ namespace OpenNos.GameObject
             return $"gp {portal.SourceX} {portal.SourceY} {portal.DestinationMapId} {portal.Type} {ServerManager.GetMap(MapId).Portals.Count} {(portal.IsDisabled ? 1 : 0)}";
         }
 
+        public string GenerateGuri(byte type, byte argument, int value = 0)
+        {
+            switch (type)
+            {
+                case 10:
+                    return $"guri 10 {argument} {value} {Session.Character.CharacterId}";
+                case 15:
+                    return $"guri 15 {argument} 0 0";
+                default:
+                    return $"guri {type} {argument} {Session.Character.CharacterId} {value}";
+            }
+        }
+
         public string GenerateIn()
         {
             int color = HairColor;
@@ -854,7 +835,7 @@ namespace OpenNos.GameObject
             List<CharacterSkill> skillsSp = new List<CharacterSkill>();
             foreach (Skill ski in ServerManager.GetAllSkill())
             {
-                if (ski.Class == iteminfo.Morph + 31 && ski.LevelMinimum <= inventoryItem.SpLevel && !skillsSp.Any(s=>s.Skill.Name.StartsWith(ski.Name.Split(' ').FirstOrDefault())))
+                if (ski.Class == iteminfo.Morph + 31 && ski.LevelMinimum <= inventoryItem.SpLevel && !skillsSp.Any(s => s.Skill.Name.StartsWith(ski.Name.Split(' ').FirstOrDefault())))
                     skillsSp.Add(new CharacterSkill() { SkillVNum = ski.SkillVNum, CharacterId = CharacterId });
             }
             byte spdestroyed = 0;
@@ -1179,20 +1160,6 @@ namespace OpenNos.GameObject
             return $"tp 1 {CharacterId} {MapX} {MapY} 0";
         }
 
-        public void GenerateDignity(NpcMonster monsterinfo)
-        {
-            if (Level < monsterinfo.Level && Dignity < 100 && Level > 20)
-            {
-                Dignity += (float)0.5;
-                if (Dignity == (int)Dignity)
-                {
-                    Session.Client.SendPacket(GenerateFd());
-                    Session.CurrentMap?.Broadcast(Session, GenerateIn(), ReceiverType.AllExceptMe);
-                    Session.Client.SendPacket(GenerateSay(Language.Instance.GetMessageFromKey("RESTORE_DIGNITY"), 11));
-                }
-            }
-        }
-
         public void GenerateXp(NpcMonster monsterinfo)
         {
             int partySize = 1;
@@ -1500,21 +1467,6 @@ namespace OpenNos.GameObject
             }
         }
 
-        public void Rest()
-        {
-            if (LastSkill.AddSeconds(4) > DateTime.Now || LastDefence.AddSeconds(4) > DateTime.Now)
-            {
-                return;
-            }
-            if (!IsVehicled)
-            {
-                IsSitting = !IsSitting;
-                Session.CurrentMap?.Broadcast(GenerateRest());
-            }
-            else
-                Session.Client.SendPacket(GenerateSay(Language.Instance.GetMessageFromKey("IMPOSSIBLE_TO_USE"), 10));
-        }
-
         public void LearnSPSkill()
         {
             SpecialistInstance specialist = EquipmentList.LoadBySlotAndType<SpecialistInstance>((short)EquipmentType.Sp, (byte)InventoryType.Equipment);
@@ -1606,6 +1558,21 @@ namespace OpenNos.GameObject
             ServerManager.Instance.Broadcast(Session, GenerateEff(3005), ReceiverType.All);
         }
 
+        public void Rest()
+        {
+            if (LastSkill.AddSeconds(4) > DateTime.Now || LastDefence.AddSeconds(4) > DateTime.Now)
+            {
+                return;
+            }
+            if (!IsVehicled)
+            {
+                IsSitting = !IsSitting;
+                Session.CurrentMap?.Broadcast(GenerateRest());
+            }
+            else
+                Session.Client.SendPacket(GenerateSay(Language.Instance.GetMessageFromKey("IMPOSSIBLE_TO_USE"), 10));
+        }
+
         public void Save()
         {
             try
@@ -1672,6 +1639,27 @@ namespace OpenNos.GameObject
             catch (Exception e)
             {
                 Logger.Log.Error("Save Character failed. SessionId: " + Session.SessionId, e);
+            }
+        }
+
+        public void SpeedLoad()
+        {
+            if (!IsVehicled)
+            {
+                Speed = ServersData.SpeedData[Class];
+
+                if (UseSp)
+                {
+                    SpecialistInstance sp = EquipmentList.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, (byte)InventoryType.Equipment);
+                    if (sp != null)
+                    {
+                        Speed += ServerManager.GetItem(sp.ItemVNum).Speed;
+                    }
+                }
+            }
+            if (IsShopping)
+            {
+                Speed = 0;
             }
         }
 

@@ -128,22 +128,20 @@ namespace OpenNos.Handler
                     Session.Client.SendPacket("cancel 2 0");
                     return;
                 }
-                for (int i = 0; i < 100 && ski.Used; i++)
+                for (int i = 0; i < 10 && ski.Used; i++)
                 {
                     Thread.Sleep(100);
+                    if (i == 10)
+                    {
+                        Session.Client.SendPacket("cancel 2 0");
+                        return;
+                    }
                 }
 
                 if (ski != null && Session.Character.Mp >= skill.MpCost)
                 {
                     if (skill != null)
                     {
-                        Task t = Task.Factory.StartNew((Func<Task>)(async () =>
-                        {
-                            await Task.Delay((skill.Cooldown) * 100);
-                            ski.Used = false;
-                            Session.Client.SendPacket($"sr {castingId}");
-                        }));
-
                         if (skill.TargetType == 1 && skill.HitType == 1)
                         {
                             Session.Character.LastSkill = DateTime.Now;
@@ -227,6 +225,12 @@ namespace OpenNos.Handler
                                 }
                             }
                         }
+                        Task t = Task.Factory.StartNew((Func<Task>)(async () =>
+                        {
+                            await Task.Delay((skill.Cooldown) * 100);
+                            ski.Used = false;
+                            Session.Client.SendPacket($"sr {castingId}");
+                        }));
                     }
                 }
                 else
@@ -492,7 +496,7 @@ namespace OpenNos.Handler
             int Br11 = 0;            // Damage increase on undead
             int Br12 = 0;            // Increase damage on small monster
             int Br13 = 0;            // Increase damage on tall monster
-            int BonusEq = 0;         // Bonus% of the weapons, known as bug 90 (ex. Arc 90 -> With a 25% probability increases damage up to 40%.
+            int BonusEq = 0;         // Bonus% of the weapons, known as bug 90 (ex. Arc 90 -> With a 25% probability increases damage up to 40%. and add effect 15 when damage have the bonus (damage up)
             int At = Convert.ToInt16(((APg + skill.Damage) * (1 + (Br6 + Br8 + Br9 + Br10 + Br11 + Br12 + Br13))) * (1 + BonusEq));
             //Logger.Debug(String.Format("At = ((APg {0} + skill.Damage {1} + 15) * (1 + (Br6 {2} + Br8 {3} + Br9 {4} + Br10 {5} + Br11 {6} + Br12 {7} + Br13 {8}))) * (1 + BonusEq{9}) = {10}", APg, skill.Damage, Br6, Br8, Br9, Br10, Br11, Br12, Br13, BonusEq, At));
 
