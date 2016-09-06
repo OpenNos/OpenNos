@@ -80,7 +80,7 @@ namespace OpenNos.GameObject
         {
             if (Alive && !IsDisabled)
                 return $"in 3 {MonsterVNum} {MapMonsterId} {MapX} {MapY} {Position} {(int)(((float)CurrentHp / (float)Monster.MaxHP) * 100)} {(int)(((float)CurrentMp / (float)Monster.MaxMP) * 100)} 0 0 0 -1 1 0 -1 - 0 -1 0 0 0 0 0 0 0 0";
-            else return String.Empty;
+            else return string.Empty;
         }
 
         internal void MonsterLife()
