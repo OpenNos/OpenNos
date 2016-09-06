@@ -93,8 +93,10 @@ namespace OpenNos.GameObject
                                 }
                             }
                             break;
+                    }
+                    break;
 
-                        case 15: //Speaker
+                case 15: //Speaker
                     if (iteminfo != null)
                     {
                         if (!DelayUsed)
@@ -141,40 +143,36 @@ namespace OpenNos.GameObject
                     }
                     break;
 
-                        case 203: //Presentation message
-                            if (iteminfo != null)
-                            {
-                                if (!DelayUsed)
-                                {
-                                    Session.Client.SendPacket(Session.Character.GenerateGuri(10, 2, 2));
-                                }
-                            }
-                            break;
-
-                        case 2168:
-                            Session.Character.Dignity = 100;
-                            Session.Client.SendPacket(Session.Character.GenerateFd());
-                            Session.Client.SendPacket(Session.Character.GenerateEff(48));
-                            Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
-                            Session.Character.InventoryList.RemoveItemAmount(iteminfo.VNum, 1);
-                            if (Inv.ItemInstance.Amount - 1 > 0)
-                                Inv.ItemInstance.Amount--;
-                            if (Inv.ItemInstance.Amount > 0)
-                                Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(Inv.ItemInstance.ItemVNum, Inv.ItemInstance.Amount, Inv.Type, Inv.Slot, 0, 0, 0, 0));
-                            else
-                            {
-                                Session.Character.InventoryList.DeleteFromSlotAndType(Inv.Slot, Inv.Type);
-                                Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, Inv.Type, Inv.Slot, 0, 0, 0, 0));
-                            }
-                            break;
-
-                        default:
-                            Logger.Debug("NO_HANDLER_ITEM");
-                            break;
+                case 203: //Presentation message
+                    if (iteminfo != null)
+                    {
+                        if (!DelayUsed)
+                        {
+                            Session.Client.SendPacket(Session.Character.GenerateGuri(10, 2, 2));
+                        }
                     }
                     break;
 
-                
+                case 2168:
+                    Session.Character.Dignity = 100;
+                    Session.Client.SendPacket(Session.Character.GenerateFd());
+                    Session.Client.SendPacket(Session.Character.GenerateEff(48));
+                    Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
+                    Session.Character.InventoryList.RemoveItemAmount(iteminfo.VNum, 1);
+                    if (Inv.ItemInstance.Amount - 1 > 0)
+                        Inv.ItemInstance.Amount--;
+                    if (Inv.ItemInstance.Amount > 0)
+                        Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(Inv.ItemInstance.ItemVNum, Inv.ItemInstance.Amount, Inv.Type, Inv.Slot, 0, 0, 0, 0));
+                    else
+                    {
+                        Session.Character.InventoryList.DeleteFromSlotAndType(Inv.Slot, Inv.Type);
+                        Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, Inv.Type, Inv.Slot, 0, 0, 0, 0));
+                    }
+                    break;
+
+                default:
+                    Logger.Debug("NO_HANDLER_ITEM");
+                    break;
             }
         }
 

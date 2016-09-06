@@ -366,7 +366,6 @@ namespace OpenNos.Handler
                 {
                     if (Session.Character.InventoryList.CountItem(speakerVNum) > 0)
                     {
-
                         string message = String.Empty;
                         message = $"<{Language.Instance.GetMessageFromKey("SPEAKER")}> [{Session.Character.Name}]:";
                         for (int i = 6; i < packetsplit.Length; i++)
