@@ -15,6 +15,7 @@
 using OpenNos.Core;
 using OpenNos.DAL;
 using OpenNos.Data;
+using OpenNos.Data.Enums;
 using OpenNos.Domain;
 using System;
 using System.Collections.Generic;
@@ -510,7 +511,7 @@ namespace OpenNos.Import.Console
                         MapMonsterId = int.Parse(currentPacket[3]),
                         MapX = short.Parse(currentPacket[4]),
                         MapY = short.Parse(currentPacket[5]),
-                        Position = (byte)(currentPacket[6] == "" ? 0 : byte.Parse(currentPacket[6])),
+                        Position = (byte)(currentPacket[6]==""?0 : byte.Parse(currentPacket[6])),
                         IsDisabled = false
                     };
                     monster.IsMoving = mobMvPacketsList.Contains(monster.MapMonsterId);
@@ -664,6 +665,39 @@ namespace OpenNos.Import.Console
                                 npc.NoAggresiveIcon = false;
                             }
                         }
+
+                        switch (unknownData)
+                        {
+                            case 1:
+                                npc.MonsterType = MonsterType.NPC;
+                                // zts50 have the ETC 1 so need to have there particular cases :D
+                                if (npc.Name.Equals("zts50") || npc.Name.Equals("zts51"))
+                                    npc.MonsterType = MonsterType.Peapod;
+                                break;
+                            case 2052:
+                                npc.MonsterType = MonsterType.Elite;
+                                break;
+                            case 0:
+                                npc.MonsterType = MonsterType.Partner;
+                                break;
+                            case 3:
+                                npc.MonsterType = MonsterType.Peapod;
+                                break;
+                            case -2147483647:
+                                npc.MonsterType = MonsterType.GemSpaceTime;
+                                break;
+                        }
+                        if(currentLine[2].Length > 4 && currentLine[2].StartsWith("1073"))
+                        {
+                            npc.MonsterType = MonsterType.Boss;
+                        }
+
+                        if (unknownData == -2147481599 && npc.Race == 8 && npc.RaceType != 3)
+                        {
+                            npc.MonsterType = MonsterType.Portal;
+                        }
+                        if (unknownData == -2147481593 && npc.Race == 8 && npc.RaceType == 7)
+                            npc.MonsterType = MonsterType.Well;
                     }
                     else if (currentLine.Length > 6 && currentLine[1] == "SETTING")
                     {
@@ -675,7 +709,8 @@ namespace OpenNos.Import.Console
                     }
                     else if (currentLine.Length > 4 && currentLine[1] == "PETINFO")
                     {
-                        if (npc.VNumRequired == (short)0 && (unknownData == (long)-2147481593 || unknownData == (long)-2147481599 || unknownData == (long)-1610610681))
+                        if (npc.VNumRequired == (short)0 && (unknownData == (long)-2147481593 || unknownData == (long)-2147481599 || unknownData == (long)-1610610681)
+                            || npc.MonsterType == MonsterType.Portal)
                         {
                             npc.VNumRequired = Convert.ToInt16(currentLine[2]);
                             npc.AmountRequired = Convert.ToByte(currentLine[3]);
