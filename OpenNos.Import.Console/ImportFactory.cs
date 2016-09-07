@@ -682,8 +682,7 @@ namespace OpenNos.Import.Console
                     }
                     else if (currentLine.Length > 4 && currentLine[1] == "PETINFO")
                     {
-                        if (npc.VNumRequired == (short)0 && (unknownData == (long)-2147481593 || unknownData == (long)-2147481599 || unknownData == (long)-1610610681)
-                            || npc.MonsterType == MonsterType.Portal)
+                        if (npc.VNumRequired == (short)0 && (unknownData == (long)-2147481593 || unknownData == (long)-2147481599 || unknownData == (long)-1610610681))
                         {
                             npc.VNumRequired = Convert.ToInt16(currentLine[2]);
                             npc.AmountRequired = Convert.ToByte(currentLine[3]);
