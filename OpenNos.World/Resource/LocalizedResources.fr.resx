@@ -889,4 +889,10 @@ Veux-tu le porter ?</value>
   <data name="POINTS_RESET" xml:space="preserve">
     <value>Les points ont été rénitialisés.</value>
   </data>
+  <data name="SUM_FAILED" xml:space="preserve">
+    <value>La combinaison a échouée.</value>
+  </data>
+  <data name="SUM_SUCCESS" xml:space="preserve">
+    <value>La combinaison a réussi !</value>
+  </data>
 </root>
