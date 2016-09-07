@@ -216,6 +216,9 @@
   <data name="RECIPES_PARSED" xml:space="preserve">
     <value>{0} przepisów wprowadzonych</value>
   </data>
+  <data name="REMOVE_VEHICLE" xml:space="preserve">
+    <value>Zanim przejdziesz transformację powinieneś najpierw zdjąć swój pojazd</value>
+  </data>
   <data name="SHOPITEMS_PARSED" xml:space="preserve">
     <value>{0} artykulów sklepowych wprowadzonych</value>
   </data>

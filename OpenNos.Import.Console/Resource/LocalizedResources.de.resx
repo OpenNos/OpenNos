@@ -186,6 +186,9 @@
   <data name="RECIPES_PARSED" xml:space="preserve">
     <value>{0} Rezepte importiert</value>
   </data>
+  <data name="REMOVE_VEHICLE" xml:space="preserve">
+    <value />
+  </data>
   <data name="SHOPITEMS_PARSED" xml:space="preserve">
     <value>{0} Shop-Items importiert</value>
   </data>

@@ -590,6 +590,11 @@ namespace OpenNos.Handler
 
                 if (slot == (byte)EquipmentType.Sp && Session.Character.UseSp)
                 {
+                    if (Session.Character.IsVehicled)
+                    {
+                        Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("REMOVE_VEHICLE"), 0));
+                        return;
+                    }
                     if (Session.Character.LastSkill.AddSeconds(2) > DateTime.Now)
                     {
                         return;
@@ -1024,16 +1029,20 @@ namespace OpenNos.Handler
                     Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SKILLS_IN_LOADING"), 0));
                     return;
                 }
-
-                if ((Session.Character.LastMove.AddSeconds(1) >= DateTime.Now || Session.Character.LastSkill.AddSeconds(2) >= DateTime.Now))
+                if (Session.Character.LastMove.AddSeconds(1) >= DateTime.Now || Session.Character.LastSkill.AddSeconds(2) >= DateTime.Now)
                 {
                     return;
                 }
-
                 if (specialistInstance == null)
                 {
                     Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NO_SP"), 0));
                     return;
+                }
+                if (Session.Character.IsVehicled)
+                {
+                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("REMOVE_VEHICLE"), 0));
+                    return;
+
                 }
 
                 double currentRunningSeconds = (DateTime.Now - Process.GetCurrentProcess().StartTime.AddSeconds(-50)).TotalSeconds;
@@ -1046,15 +1055,11 @@ namespace OpenNos.Handler
                 else
                 {
                     double timeSpanSinceLastSpUsage = currentRunningSeconds - Session.Character.LastSp;
-                    if (timeSpanSinceLastSpUsage >= Session.Character.SpCooldown && !Session.Character.IsVehicled)
+                    if (timeSpanSinceLastSpUsage >= Session.Character.SpCooldown)
                     {
                         Session.Client.SendPacket("delay 5000 3 #sl^1");
                         Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateGuri(2, 1), ReceiverType.All);
 
-                    }
-                    else if (Session.Character.IsVehicled)
-                    {
-                        return;
                     }
                     else
                     {
