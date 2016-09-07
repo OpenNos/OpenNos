@@ -886,4 +886,7 @@
   <data name="TRANSFORMATION_NEEDED" xml:space="preserve">
     <value>Muszisz się transformować aby zresetować swoje punkty specjalisty.</value>
   </data>
+  <data name="REMOVE_VEHICLE" xml:space="preserve">
+    <value>Zanim przejdziesz transformację powinieneś najpierw zdjąć swój pojazd</value>
+  </data>
 </root>

@@ -358,15 +358,6 @@ namespace OpenNos.Import.Console.Resource {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à Before transforming you should remove your vehicle.
-        /// </summary>
-        internal static string REMOVE_VEHICLE {
-            get {
-                return ResourceManager.GetString("REMOVE_VEHICLE", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Recherche une chaîne localisée semblable à {0} shopitems parsed.
         /// </summary>
         internal static string SHOPITEMS_PARSED {

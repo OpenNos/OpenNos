@@ -895,4 +895,7 @@ Veux-tu le porter ?</value>
   <data name="SUM_SUCCESS" xml:space="preserve">
     <value>La combinaison a réussi !</value>
   </data>
+  <data name="REMOVE_VEHICLE" xml:space="preserve">
+    <value>Tu ne peux pas faire ça tant que tu n'as pas enlever ta locomotion.</value>
+  </data>
 </root>

@@ -907,4 +907,7 @@
   <data name="TRANSFORMATION_NEEDED" xml:space="preserve">
     <value>You need to be transformed to reset your sp points.</value>
   </data>
+  <data name="REMOVE_VEHICLE" xml:space="preserve">
+    <value>Before transforming you should remove your vehicle</value>
+  </data>
 </root>

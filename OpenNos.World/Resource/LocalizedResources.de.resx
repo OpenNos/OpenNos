@@ -786,4 +786,7 @@
   <data name="TRANSFORMATION_NEEDED" xml:space="preserve">
     <value />
   </data>
+  <data name="REMOVE_VEHICLE" xml:space="preserve">
+    <value />
+  </data>
 </root>
