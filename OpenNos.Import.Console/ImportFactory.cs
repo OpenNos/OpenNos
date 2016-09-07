@@ -665,39 +665,13 @@ namespace OpenNos.Import.Console
                                 npc.NoAggresiveIcon = false;
                             }
                         }
-
-                        switch (unknownData)
+                        if (npc.NpcMonsterVNum >= 588 && npc.NpcMonsterVNum <= 607)
                         {
-                            case 1:
-                                npc.MonsterType = MonsterType.NPC;
-                                // zts50 have the ETC 1 so need to have there particular cases :D
-                                if (npc.Name.Equals("zts50") || npc.Name.Equals("zts51"))
-                                    npc.MonsterType = MonsterType.Peapod;
-                                break;
-                            case 2052:
+                            for(int i = 588; i <= 608; i++)
+                            {
                                 npc.MonsterType = MonsterType.Elite;
-                                break;
-                            case 0:
-                                npc.MonsterType = MonsterType.Partner;
-                                break;
-                            case 3:
-                                npc.MonsterType = MonsterType.Peapod;
-                                break;
-                            case -2147483647:
-                                npc.MonsterType = MonsterType.GemSpaceTime;
-                                break;
+                            }
                         }
-                        if(currentLine[2].Length > 4 && currentLine[2].StartsWith("1073"))
-                        {
-                            npc.MonsterType = MonsterType.Boss;
-                        }
-
-                        if (unknownData == -2147481599 && npc.Race == 8 && npc.RaceType != 3)
-                        {
-                            npc.MonsterType = MonsterType.Portal;
-                        }
-                        if (unknownData == -2147481593 && npc.Race == 8 && npc.RaceType == 7)
-                            npc.MonsterType = MonsterType.Well;
                     }
                     else if (currentLine.Length > 6 && currentLine[1] == "SETTING")
                     {
