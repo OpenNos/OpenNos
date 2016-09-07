@@ -697,7 +697,7 @@
     <value />
   </data>
   <data name="REFUSED_GROUP_REQUEST" xml:space="preserve">
-    <value />
+    <value>Richiesta gruppo rifiutata</value>
   </data>
   <data name="CANT_EQUIP_DESTROYED_SP" xml:space="preserve">
     <value />
@@ -730,9 +730,9 @@
     <value />
   </data>
   <data name="SPEAKER" xml:space="preserve">
-    <value />
+    <value>&lt;Altoparlante&gt;</value>
   </data>
   <data name="REMOVE_VEHICLE" xml:space="preserve">
-    <value />
+    <value>Prima di trasformarti devi rimuovere il veicolo.</value>
   </data>
 </root>
