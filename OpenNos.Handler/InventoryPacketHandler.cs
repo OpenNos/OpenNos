@@ -426,7 +426,7 @@ namespace OpenNos.Handler
             Logger.Debug(packet, Session.SessionId);
             string[] packetsplit = packet.Split(' ');
 
-            if (Session.Character.LastSkill.AddSeconds(1) > DateTime.Now)
+            if (Session.Character.LastSkill.AddSeconds(1) > DateTime.Now || Session.Character.IsVehicled)
             {
                 return;
             }
