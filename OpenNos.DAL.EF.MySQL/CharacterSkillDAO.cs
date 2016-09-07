@@ -25,20 +25,6 @@ namespace OpenNos.DAL.EF.MySQL
 {
     public class CharacterSkillDAO : SynchronizableBaseDAO<CharacterSkill, CharacterSkillDTO>, ICharacterSkillDAO
     {
-        #region Instantiation
-
-        public CharacterSkillDAO()
-        {
-            var config = new MapperConfiguration(cfg =>
-            {
-                cfg.CreateMap<CharacterSkill, CharacterSkillDTO>();
-                cfg.CreateMap<CharacterSkillDTO, CharacterSkill>();
-            });
-
-            _mapper = config.CreateMapper();
-        }
-
-        #endregion
 
         #region Methods
 

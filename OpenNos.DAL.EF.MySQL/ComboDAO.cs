@@ -92,6 +92,17 @@ namespace OpenNos.DAL.EF.MySQL
             }
         }
 
+        public IEnumerable<ComboDTO> LoadBySkillVnum(short skillVNum)
+        {
+            using (var context = DataAccessHelper.CreateContext())
+            {
+                foreach (Combo Combo in context.Combo.Where(c => c.SkillVNum == skillVNum))
+                {
+                    yield return _mapper.Map<ComboDTO>(Combo);
+                }
+            }
+        }
+
         #endregion
     }
 }

@@ -34,6 +34,7 @@ namespace OpenNos.GameObject
 
         private static ServerManager _instance;
         private static List<Item> _items = new List<Item>();
+        private static IMapper _mapper;
         private static ConcurrentDictionary<Guid, Map> _maps = new ConcurrentDictionary<Guid, Map>();
         private static List<NpcMonster> _npcs = new List<NpcMonster>();
         private static List<Skill> _skills = new List<Skill>();
@@ -42,6 +43,29 @@ namespace OpenNos.GameObject
         #endregion
 
         #region Instantiation
+
+        static ServerManager()
+        {
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<ItemDTO, NoFunctionItem>();
+                cfg.CreateMap<ItemDTO, WearableItem>();
+                cfg.CreateMap<ItemDTO, BoxItem>();
+                cfg.CreateMap<ItemDTO, MagicalItem>();
+                cfg.CreateMap<ItemDTO, FoodItem>();
+                cfg.CreateMap<ItemDTO, PotionItem>();
+                cfg.CreateMap<ItemDTO, ProduceItem>();
+                cfg.CreateMap<ItemDTO, SnackItem>();
+                cfg.CreateMap<ItemDTO, SpecialItem>();
+                cfg.CreateMap<ItemDTO, TeacherItem>();
+                cfg.CreateMap<ItemDTO, UpgradeItem>();
+                cfg.CreateMap<SkillDTO, Skill>();
+                cfg.CreateMap<ComboDTO, Combo>();
+                cfg.CreateMap<NpcMonsterDTO, NpcMonster>();
+            });
+
+            _mapper = config.CreateMapper();
+        }
 
         private ServerManager()
         {
@@ -56,6 +80,26 @@ namespace OpenNos.GameObject
             Task TaskController = new Task(() => TaskLauncherProcess());
             TaskController.Start();
             lastGroupId = 1;
+
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<ItemDTO, NoFunctionItem>();
+                cfg.CreateMap<ItemDTO, WearableItem>();
+                cfg.CreateMap<ItemDTO, BoxItem>();
+                cfg.CreateMap<ItemDTO, MagicalItem>();
+                cfg.CreateMap<ItemDTO, FoodItem>();
+                cfg.CreateMap<ItemDTO, PotionItem>();
+                cfg.CreateMap<ItemDTO, ProduceItem>();
+                cfg.CreateMap<ItemDTO, SnackItem>();
+                cfg.CreateMap<ItemDTO, SpecialItem>();
+                cfg.CreateMap<ItemDTO, TeacherItem>();
+                cfg.CreateMap<ItemDTO, UpgradeItem>();
+                cfg.CreateMap<SkillDTO, Skill>();
+                cfg.CreateMap<ComboDTO, Combo>();
+                cfg.CreateMap<NpcMonsterDTO, NpcMonster>();
+            });
+
+            _mapper = config.CreateMapper();
         }
 
         #endregion
@@ -123,99 +167,99 @@ namespace OpenNos.GameObject
                 switch (itemDTO.ItemType)
                 {
                     case (byte)Domain.ItemType.Ammo:
-                        ItemGO = Mapper.DynamicMap<NoFunctionItem>(itemDTO);
+                        ItemGO = _mapper.Map<NoFunctionItem>(itemDTO);
                         break;
 
                     case (byte)Domain.ItemType.Armor:
-                        ItemGO = Mapper.DynamicMap<WearableItem>(itemDTO);
+                        ItemGO = _mapper.Map<WearableItem>(itemDTO);
                         break;
 
                     case (byte)Domain.ItemType.Box:
-                        ItemGO = Mapper.DynamicMap<BoxItem>(itemDTO);
+                        ItemGO = _mapper.Map<BoxItem>(itemDTO);
                         break;
 
                     case (byte)Domain.ItemType.Event:
-                        ItemGO = Mapper.DynamicMap<MagicalItem>(itemDTO);
+                        ItemGO = _mapper.Map<MagicalItem>(itemDTO);
                         break;
 
                     case (byte)Domain.ItemType.Fashion:
-                        ItemGO = Mapper.DynamicMap<WearableItem>(itemDTO);
+                        ItemGO = _mapper.Map<WearableItem>(itemDTO);
                         break;
 
                     case (byte)Domain.ItemType.Food:
-                        ItemGO = Mapper.DynamicMap<FoodItem>(itemDTO);
+                        ItemGO = _mapper.Map<FoodItem>(itemDTO);
                         break;
 
                     case (byte)Domain.ItemType.Jewelery:
-                        ItemGO = Mapper.DynamicMap<WearableItem>(itemDTO);
+                        ItemGO = _mapper.Map<WearableItem>(itemDTO);
                         break;
 
                     case (byte)Domain.ItemType.Magical:
-                        ItemGO = Mapper.DynamicMap<MagicalItem>(itemDTO);
+                        ItemGO = _mapper.Map<MagicalItem>(itemDTO);
                         break;
 
                     case (byte)Domain.ItemType.Main:
-                        ItemGO = Mapper.DynamicMap<NoFunctionItem>(itemDTO);
+                        ItemGO = _mapper.Map<NoFunctionItem>(itemDTO);
                         break;
 
                     case (byte)Domain.ItemType.Map:
-                        ItemGO = Mapper.DynamicMap<NoFunctionItem>(itemDTO);
+                        ItemGO = _mapper.Map<NoFunctionItem>(itemDTO);
                         break;
 
                     case (byte)Domain.ItemType.Part:
-                        ItemGO = Mapper.DynamicMap<NoFunctionItem>(itemDTO);
+                        ItemGO = _mapper.Map<NoFunctionItem>(itemDTO);
                         break;
 
                     case (byte)Domain.ItemType.Potion:
-                        ItemGO = Mapper.DynamicMap<PotionItem>(itemDTO);
+                        ItemGO = _mapper.Map<PotionItem>(itemDTO);
                         break;
 
                     case (byte)Domain.ItemType.Production:
-                        ItemGO = Mapper.DynamicMap<ProduceItem>(itemDTO);
+                        ItemGO = _mapper.Map<ProduceItem>(itemDTO);
                         break;
 
                     case (byte)Domain.ItemType.Quest1:
-                        ItemGO = Mapper.DynamicMap<NoFunctionItem>(itemDTO);
+                        ItemGO = _mapper.Map<NoFunctionItem>(itemDTO);
                         break;
 
                     case (byte)Domain.ItemType.Quest2:
-                        ItemGO = Mapper.DynamicMap<NoFunctionItem>(itemDTO);
+                        ItemGO = _mapper.Map<NoFunctionItem>(itemDTO);
                         break;
 
                     case (byte)Domain.ItemType.Sell:
-                        ItemGO = Mapper.DynamicMap<NoFunctionItem>(itemDTO);
+                        ItemGO = _mapper.Map<NoFunctionItem>(itemDTO);
                         break;
 
                     case (byte)Domain.ItemType.Shell:
-                        ItemGO = Mapper.DynamicMap<MagicalItem>(itemDTO);
+                        ItemGO = _mapper.Map<MagicalItem>(itemDTO);
                         break;
 
                     case (byte)Domain.ItemType.Snack:
-                        ItemGO = Mapper.DynamicMap<SnackItem>(itemDTO);
+                        ItemGO = _mapper.Map<SnackItem>(itemDTO);
                         break;
 
                     case (byte)Domain.ItemType.Special:
-                        ItemGO = Mapper.DynamicMap<SpecialItem>(itemDTO);
+                        ItemGO = _mapper.Map<SpecialItem>(itemDTO);
                         break;
 
                     case (byte)Domain.ItemType.Specialist:
-                        ItemGO = Mapper.DynamicMap<WearableItem>(itemDTO);
+                        ItemGO = _mapper.Map<WearableItem>(itemDTO);
                         break;
 
                     case (byte)Domain.ItemType.Teacher:
-                        ItemGO = Mapper.DynamicMap<TeacherItem>(itemDTO);
+                        ItemGO = _mapper.Map<TeacherItem>(itemDTO);
                         break;
 
                     case (byte)Domain.ItemType.Upgrade:
-                        ItemGO = Mapper.DynamicMap<UpgradeItem>(itemDTO);
+                        ItemGO = _mapper.Map<UpgradeItem>(itemDTO);
                         break;
 
                     case (byte)Domain.ItemType.Weapon:
-                        ItemGO = Mapper.DynamicMap<WearableItem>(itemDTO);
+                        ItemGO = _mapper.Map<WearableItem>(itemDTO);
                         break;
 
                     default:
-                        ItemGO = Mapper.DynamicMap<NoFunctionItem>(itemDTO);
+                        ItemGO = _mapper.Map<NoFunctionItem>(itemDTO);
                         break;
                 }
                 _items.Add(ItemGO);
@@ -224,16 +268,16 @@ namespace OpenNos.GameObject
             Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("ITEM_LOADED"), _items.Count()));
             foreach (SkillDTO skillDTO in DAOFactory.SkillDAO.LoadAll())
             {
-                Skill skill = Mapper.DynamicMap<Skill>(skillDTO);
-                foreach (ComboDTO com in DAOFactory.ComboDAO.LoadAll().Where(s => s.SkillVNum == skill.SkillVNum))
+                Skill skill = _mapper.Map<Skill>(skillDTO);
+                foreach (ComboDTO com in DAOFactory.ComboDAO.LoadBySkillVnum(skill.SkillVNum))
                 {
-                    skill.Combos.Add(Mapper.DynamicMap<Combo>(com));
+                    skill.Combos.Add(_mapper.Map<Combo>(com));
                 }
                 _skills.Add(skill);
             }
             foreach (NpcMonsterDTO npcmonsterDTO in DAOFactory.NpcMonsterDAO.LoadAll())
             {
-                _npcs.Add(Mapper.DynamicMap<NpcMonster>(npcmonsterDTO));
+                _npcs.Add(_mapper.Map<NpcMonster>(npcmonsterDTO));
             }
             Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("NPCMONSTERS_LOADED"), _npcs.Count()));
 
@@ -709,12 +753,11 @@ namespace OpenNos.GameObject
         //Server
         private async void SaveAllProcess()
         {
-            //activate when fixed
-            //while (true)
-            //{
-            //    SaveAll();
-            //    await Task.Delay(60000 * 4);
-            //}
+            while (true)
+            {
+                SaveAll();
+                await Task.Delay(60000 * 4);
+            }
         }
 
         //Map ??
