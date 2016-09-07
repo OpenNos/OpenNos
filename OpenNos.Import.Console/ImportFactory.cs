@@ -510,7 +510,7 @@ namespace OpenNos.Import.Console
                         MapMonsterId = int.Parse(currentPacket[3]),
                         MapX = short.Parse(currentPacket[4]),
                         MapY = short.Parse(currentPacket[5]),
-                        Position = (byte)(currentPacket[6]==""?0 : byte.Parse(currentPacket[6])),
+                        Position = (byte)(currentPacket[6] == "" ? 0 : byte.Parse(currentPacket[6])),
                         IsDisabled = false
                     };
                     monster.IsMoving = mobMvPacketsList.Contains(monster.MapMonsterId);
