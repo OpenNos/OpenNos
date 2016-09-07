@@ -556,7 +556,7 @@ namespace OpenNos.Handler
                     if (invitem.ItemInstance.Amount == 0)
                         Session.Character.DeleteItem(invitem.Type, invitem.Slot);
                     if (DroppedItem != null)
-                        Session.CurrentMap?.Broadcast($"drop {DroppedItem.ItemInstance.ItemVNum} {DroppedItem.ItemInstance.Id} {DroppedItem.PositionX} {DroppedItem.PositionY} {DroppedItem.ItemInstance.Amount} 0 -1");
+                        Session.CurrentMap?.Broadcast($"drop {DroppedItem.ItemInstance.ItemVNum} {DroppedItem.ItemInstance.TransportId} {DroppedItem.PositionX} {DroppedItem.PositionY} {DroppedItem.ItemInstance.Amount} 0 -1");
                 }
                 else
                 {
