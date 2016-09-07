@@ -412,19 +412,19 @@ namespace OpenNos.Handler
                     }
                     amount = amount > 99 ? (byte)99 : amount;
                     Inventory inv = Session.Character.InventoryList.AddNewItemToInventory(vnum, amount);
-                    inv.ItemInstance.Rare = rare;
-                    inv.ItemInstance.Upgrade = upgrade;
-                    inv.ItemInstance.Design = design;
-
-                    WearableInstance wearable = Session.Character.InventoryList.LoadBySlotAndType<WearableInstance>(inv.Slot, inv.Type);
-
-                    if (wearable != null)
-                    {
-                        wearable.SetRarityPoint();
-                    }
-
                     if (inv != null)
                     {
+                        inv.ItemInstance.Rare = rare;
+                        inv.ItemInstance.Upgrade = upgrade;
+                        inv.ItemInstance.Design = design;
+
+                        WearableInstance wearable = Session.Character.InventoryList.LoadBySlotAndType<WearableInstance>(inv.Slot, inv.Type);
+
+                        if (wearable != null)
+                        {
+                            wearable.SetRarityPoint();
+                        }
+
                         short Slot = inv.Slot;
                         if (Slot != -1)
                         {

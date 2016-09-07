@@ -526,7 +526,7 @@ namespace OpenNos.GameObject
                 foreach (ItemInstance item in c1Session.Character.ExchangeInfo.ExchangeList)
                 {
                     ItemInstance item2 = item.DeepCopy();
-                    item2.Id = Guid.NewGuid();//TODO take GUID generation to GO
+                    item2.Id = Guid.NewGuid();
                     Inventory inv = c2Session.Character.InventoryList.AddToInventory(item2);
                     if (inv == null) continue;
                     if (inv.Slot == -1) continue;
