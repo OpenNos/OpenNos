@@ -31,6 +31,7 @@ namespace OpenNos.DAL.Interface
 
         IEnumerable<ComboDTO> LoadBySkillVnum(short skillVNum);
 
+        IEnumerable<ComboDTO> LoadByVNumHitAndEffect(short skillVNum, short hit, short effect);
         #endregion
     }
 }

@@ -52,9 +52,9 @@ namespace OpenNos.DAL.EF.MySQL
             using (var context = DataAccessHelper.CreateContext())
             {
                 context.Configuration.AutoDetectChangesEnabled = false;
-                foreach (ComboDTO Combo in combos)
+                foreach (ComboDTO combo in combos)
                 {
-                    Combo entity = _mapper.Map<Combo>(Combo);
+                    Combo entity = _mapper.Map<Combo>(combo);
                     context.Combo.Add(entity);
                 }
                 context.Configuration.AutoDetectChangesEnabled = true;
@@ -77,9 +77,9 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                foreach (Combo Combo in context.Combo)
+                foreach (Combo combo in context.Combo)
                 {
-                    yield return _mapper.Map<ComboDTO>(Combo);
+                    yield return _mapper.Map<ComboDTO>(combo);
                 }
             }
         }
@@ -96,9 +96,19 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                foreach (Combo Combo in context.Combo.Where(c => c.SkillVNum == skillVNum))
+                foreach (Combo combo in context.Combo.Where(c => c.SkillVNum == skillVNum))
                 {
-                    yield return _mapper.Map<ComboDTO>(Combo);
+                    yield return _mapper.Map<ComboDTO>(combo);
+                }
+            }
+        }
+        public IEnumerable<ComboDTO> LoadByVNumHitAndEffect(short skillVNum, short hit, short effect)
+        {
+            using (var context = DataAccessHelper.CreateContext())
+            {
+                foreach (Combo combo in context.Combo.Where(s => s.SkillVNum == skillVNum && s.Hit == hit && s.Effect == effect))
+                {
+                    yield return _mapper.Map<ComboDTO>(combo);
                 }
             }
         }

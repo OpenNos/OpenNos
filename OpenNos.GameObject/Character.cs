@@ -220,7 +220,7 @@ namespace OpenNos.GameObject
                         Pos = 1
                     }
                 };
-                if (ServerManager.Instance.Groups.FirstOrDefault(s => s.IsMemberOfGroup(Session)) != null)
+                if (ServerManager.Instance.Groups.Any(s => s.IsMemberOfGroup(Session)))
                     ServerManager.Instance.Broadcast(Session, $"pidx 1 1.{CharacterId}", ReceiverType.AllExceptMe);
             }
         }
@@ -1515,7 +1515,7 @@ namespace OpenNos.GameObject
             IEnumerable<CharacterSkillDTO> characterskillDTO = DAOFactory.CharacterSkillDAO.LoadByCharacterId(CharacterId);
             foreach (CharacterSkillDTO characterskill in characterskillDTO.OrderBy(s => s.SkillVNum))
             {
-                if (Skills.FirstOrDefault(s => s.SkillVNum == characterskill.SkillVNum) == null)
+                if (!Skills.Any(s => s.SkillVNum == characterskill.SkillVNum))
                     Skills.Add(Mapper.DynamicMap<CharacterSkill>(characterskill));
             }
         }

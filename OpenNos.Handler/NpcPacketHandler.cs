@@ -178,7 +178,7 @@ namespace OpenNos.Handler
                         }
                     }
 
-                    if (Session.Character.Skills.FirstOrDefault(s => s.SkillVNum == slot) != null)
+                    if (Session.Character.Skills.Any(s => s.SkillVNum == slot))
                         return;
 
                     if (skillinfo.UpgradeSkill != 0)

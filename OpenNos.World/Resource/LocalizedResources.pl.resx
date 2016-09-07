@@ -874,4 +874,7 @@
   <data name="TRY_FAILED_WAIT" xml:space="preserve">
     <value>Próba nieudana, spróbuj za: {0}</value>
   </data>
+  <data name="SAVING_ALL" xml:space="preserve">
+    <value>W trakcie zapisu</value>
+  </data>
 </root>
