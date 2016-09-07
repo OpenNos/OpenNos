@@ -218,6 +218,7 @@
   </data>
   <data name="REMOVE_VEHICLE" xml:space="preserve">
     <value>Zanim przejdziesz transformację powinieneś najpierw zdjąć swój pojazd</value>
+    <comment>.</comment>
   </data>
   <data name="SHOPITEMS_PARSED" xml:space="preserve">
     <value>{0} artykulów sklepowych wprowadzonych</value>

@@ -215,6 +215,7 @@
   </data>
   <data name="REMOVE_VEHICLE" xml:space="preserve">
     <value>Tu dois enlever ta locomotion si tu veux pouvoir enlever ta Carte de Spécialiste.</value>
+    <comment>.</comment>
   </data>
   <data name="SHOPITEMS_PARSED" xml:space="preserve">
     <value>{0} Magasins d'objets analysés !</value>
