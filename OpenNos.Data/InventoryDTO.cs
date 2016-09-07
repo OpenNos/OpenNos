@@ -14,7 +14,7 @@
 
 namespace OpenNos.Data
 {
-    public class InventoryDTO : SynchronizeableBaseDTO
+    public class InventoryDTO : SynchronizableBaseDTO
     {
         #region Properties
 

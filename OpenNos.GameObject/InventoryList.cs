@@ -407,11 +407,6 @@ namespace OpenNos.GameObject
             return inv;
         }
 
-        public void Save()
-        {
-            Inventory = DAOFactory.InventoryDAO.InsertOrUpdate(Inventory).Select(i => new Inventory(i)).ToList();
-        }
-
         private short GetFirstPlace(byte type, int backPack)
         {
             Inventory result;

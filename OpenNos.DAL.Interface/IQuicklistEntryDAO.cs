@@ -13,21 +13,18 @@
  */
 
 using OpenNos.Data;
-using OpenNos.Data.Enums;
 using System;
 using System.Collections.Generic;
 
 namespace OpenNos.DAL.Interface
 {
-    public interface IQuicklistEntryDAO
+    public interface IQuicklistEntryDAO : ISynchronizableBaseDAO<QuicklistEntryDTO>
     {
         #region Methods
 
-        DeleteResult Delete(long characterId, Guid primaryKey);
+        IEnumerable<QuicklistEntryDTO> LoadByCharacterId(long characterId);
 
-        SaveResult InsertOrUpdate(ref QuicklistEntryDTO characterquicklist);
-
-        IEnumerable<QuicklistEntryDTO> Load(long characterId);
+        IEnumerable<Guid> LoadKeysByCharacterId(long characterId);
 
         #endregion
     }

@@ -51,7 +51,7 @@ namespace OpenNos.DAL
         private static ISkillDAO _skillDAO;
         private static ITeleporterDAO _teleporterDAO;
 
-        #endregion Members
+        #endregion
 
         #region Instantiation
 
@@ -67,7 +67,7 @@ namespace OpenNos.DAL
             }
         }
 
-        #endregion Instantiation
+        #endregion
 
         #region Properties
 
@@ -421,6 +421,6 @@ namespace OpenNos.DAL
             }
         }
 
-        #endregion Properties
+        #endregion
     }
 }

@@ -32,6 +32,8 @@ namespace OpenNos.DAL.Interface
 
         void WriteGeneralLog(long accountId, string ipAddress, Nullable<long> characterId, string logType, string logData);
 
+        bool IdAlreadySet(long id);
+
         #endregion
     }
 }

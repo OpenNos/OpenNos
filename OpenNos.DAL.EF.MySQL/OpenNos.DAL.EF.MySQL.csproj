@@ -79,6 +79,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Base\SynchronizableBaseDAO.cs" />
     <Compile Include="Entities\Account.cs" />
     <Compile Include="Entities\Base\SynchronizableBaseEntity.cs" />
     <Compile Include="Entities\CellonOption.cs" />

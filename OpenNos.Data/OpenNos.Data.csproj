@@ -49,7 +49,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Base\SynchronizeableBaseDTO.cs" />
+    <Compile Include="Base\SynchronizableBaseDTO.cs" />
     <Compile Include="CellonOptionDTO.cs" />
     <Compile Include="ComboDTO.cs" />
     <Compile Include="DropDTO.cs" />

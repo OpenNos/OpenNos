@@ -19,14 +19,5 @@ namespace OpenNos.GameObject
 {
     public class QuicklistEntry : QuicklistEntryDTO
     {
-        #region Methods
-
-        public void Save()
-        {
-            QuicklistEntryDTO tempsave = this;
-            DAOFactory.QuicklistEntryDAO.InsertOrUpdate(ref tempsave);
-        }
-
-        #endregion
     }
 }

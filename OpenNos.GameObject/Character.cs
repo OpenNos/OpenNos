@@ -109,9 +109,9 @@ namespace OpenNos.GameObject
         public int IsDancing { get { return _isDancing; } set { _isDancing = value; } }
         public bool IsSitting { get { return _issitting; } set { _issitting = value; } }
         public bool IsVehicled { get; set; }
-        public DateTime LastMapObject { get; set; }
         public DateTime LastDefence { get; set; }
         public DateTime LastLogin { get; set; }
+        public DateTime LastMapObject { get; set; }
         public DateTime LastMove { get; set; }
         public short LastNRunId { get; set; }
         public double LastPortal { get { return _lastPortal; } set { _lastPortal = value; } }
@@ -205,8 +205,9 @@ namespace OpenNos.GameObject
                 Session.Client.SendPacket(GenerateSki());
 
                 //TODO: Reset Quicklist (just add Rest-on-T Item)
-                foreach (QuicklistEntryDTO quicklists in DAOFactory.QuicklistEntryDAO.Load(CharacterId).Where(quicklists => QuicklistEntries.Any(qle => qle.Id == quicklists.Id)))
-                    DAOFactory.QuicklistEntryDAO.Delete(CharacterId, quicklists.Id);
+                foreach (QuicklistEntryDTO quicklists in DAOFactory.QuicklistEntryDAO.LoadByCharacterId(CharacterId).Where(quicklists => QuicklistEntries.Any(qle => qle.Id == quicklists.Id)))
+                    DAOFactory.QuicklistEntryDAO.Delete(quicklists.Id);
+
                 QuicklistEntries = new List<QuicklistEntry>
                 {
                     new QuicklistEntry
@@ -347,6 +348,20 @@ namespace OpenNos.GameObject
         public string GenerateDialog(string dialog)
         {
             return $"dlg {dialog}";
+        }
+
+        public void GenerateDignity(NpcMonster monsterinfo)
+        {
+            if (Session.Character.Level < monsterinfo.Level && Session.Character.Dignity < 100 && Session.Character.Level > 20)
+            {
+                Session.Character.Dignity += (float)0.5;
+                if (Session.Character.Dignity == (int)Session.Character.Dignity)
+                {
+                    Session.Client.SendPacket(Session.Character.GenerateFd());
+                    Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
+                    Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("RESTORE_DIGNITY"), 11));
+                }
+            }
         }
 
         public string GenerateDir()
@@ -1135,20 +1150,6 @@ namespace OpenNos.GameObject
             return $"tp 1 {CharacterId} {MapX} {MapY} 0";
         }
 
-        public void GenerateDignity(NpcMonster monsterinfo)
-        {
-            if (Session.Character.Level < monsterinfo.Level && Session.Character.Dignity < 100 && Session.Character.Level > 20)
-            {
-                Session.Character.Dignity += (float)0.5;
-                if (Session.Character.Dignity == (int)Session.Character.Dignity)
-                {
-                    Session.Client.SendPacket(Session.Character.GenerateFd());
-                    Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
-                    Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("RESTORE_DIGNITY"), 11));
-                }
-            }
-        }
-
         public void GenerateXp(NpcMonster monsterinfo)
         {
             int partySize = 1;
@@ -1483,11 +1484,11 @@ namespace OpenNos.GameObject
 
         public void LoadInventory()
         {
-            IEnumerable<InventoryDTO> inventorysDTO = DAOFactory.InventoryDAO.LoadByCharacterId(CharacterId).ToList();
+            IEnumerable<InventoryDTO> inventories = DAOFactory.InventoryDAO.LoadByCharacterId(CharacterId).ToList();
 
             InventoryList = new InventoryList(this);
             EquipmentList = new InventoryList(this);
-            foreach (InventoryDTO inventory in inventorysDTO)
+            foreach (InventoryDTO inventory in inventories)
             {
                 inventory.CharacterId = CharacterId;
 
@@ -1501,7 +1502,7 @@ namespace OpenNos.GameObject
         public void LoadQuicklists()
         {
             QuicklistEntries = new List<QuicklistEntry>();
-            IEnumerable<QuicklistEntryDTO> quicklistDTO = DAOFactory.QuicklistEntryDAO.Load(CharacterId);
+            IEnumerable<QuicklistEntryDTO> quicklistDTO = DAOFactory.QuicklistEntryDAO.LoadByCharacterId(CharacterId);
             foreach (QuicklistEntryDTO qle in quicklistDTO)
             {
                 QuicklistEntries.Add(Mapper.DynamicMap<QuicklistEntry>(qle));
@@ -1554,60 +1555,61 @@ namespace OpenNos.GameObject
                 CharacterDTO tempsave = this;
                 SaveResult insertResult = DAOFactory.CharacterDAO.InsertOrUpdate(ref tempsave); // unused variable, check for success?
 
-                // First remove the old...
+                //load and concat inventory with equipment
+                IEnumerable<InventoryDTO> inventories = InventoryList.Inventory.Concat(EquipmentList.Inventory);
+                IEnumerable<Guid> currentlySavedInventories = DAOFactory.InventoryDAO.LoadKeysByCharacterId(CharacterId).ToList();
 
-                // Character's Inventories
-                foreach (InventoryDTO inv in DAOFactory.InventoryDAO.LoadByCharacterId(CharacterId))
+                //remove all which are saved but not in our current enumerable
+                foreach (Guid inventoryToDeleteId in currentlySavedInventories.Except(inventories.Select(i => i.Id)))
                 {
-                    if (inv.Type == (byte)InventoryType.Equipment)
-                    {
-                        if (EquipmentList.LoadInventoryBySlotAndType(inv.Slot, inv.Type) == null)
-                            DAOFactory.InventoryDAO.DeleteFromSlotAndType(CharacterId, inv.Slot, inv.Type);
-                    }
-                    else
-                    {
-                        if (InventoryList.LoadInventoryBySlotAndType(inv.Slot, inv.Type) == null)
-                            DAOFactory.InventoryDAO.DeleteFromSlotAndType(CharacterId, inv.Slot, inv.Type);
-                    }
+                    DAOFactory.InventoryDAO.Delete(inventoryToDeleteId);
                 }
 
-                // Character's Skills
-                if (Skills != null)
+                //create or update all which are new or do still exist
+                foreach (InventoryDTO inventory in inventories)
                 {
-                    foreach (CharacterSkillDTO skill in DAOFactory.CharacterSkillDAO.LoadByCharacterId(CharacterId))
-                        if (Skills.FirstOrDefault(s => s.SkillVNum == skill.SkillVNum) == null)
-                            DAOFactory.CharacterSkillDAO.Delete(CharacterId, skill.SkillVNum);
+                    DAOFactory.InventoryDAO.InsertOrUpdate(inventory);
                 }
-
-                // Character's QuicklistEntries
-                if (QuicklistEntries != null)
-                {
-                    foreach (QuicklistEntryDTO quicklists in DAOFactory.QuicklistEntryDAO.Load(CharacterId))
-                        if (QuicklistEntries.FirstOrDefault(s => s.Id == quicklists.Id) == null)
-                            DAOFactory.QuicklistEntryDAO.Delete(CharacterId, quicklists.Id);
-                }
-
-                // ... then save the new
-                InventoryList.Save();
-                EquipmentList.Save();
 
                 if (Skills != null)
                 {
-                    Skills = DAOFactory.CharacterSkillDAO.InsertOrUpdate(Skills).Select(cs => new CharacterSkill(cs)).ToList();
+                    IEnumerable<Guid> currentlySavedCharacterSkills = DAOFactory.CharacterSkillDAO.LoadKeysByCharacterId(CharacterId).ToList();
+
+                    foreach (Guid characterSkillToDeleteId in currentlySavedCharacterSkills.Except(Skills.Select(s => s.Id)))
+                    {
+                        DAOFactory.CharacterSkillDAO.Delete(characterSkillToDeleteId);
+                    }
+
+                    foreach (CharacterSkillDTO characterSkill in Skills)
+                    {
+                        DAOFactory.CharacterSkillDAO.InsertOrUpdate(characterSkill);
+                    }
                 }
 
                 if (QuicklistEntries != null)
-                    for (int i = QuicklistEntries.Count() - 1; i >= 0; i--)
-                        QuicklistEntries.ElementAt(i).Save();
+                {
+                    IEnumerable<Guid> currentlySavedQuicklistEntries = DAOFactory.QuicklistEntryDAO.LoadKeysByCharacterId(CharacterId).ToList();
+
+                    foreach (Guid quicklistEntryToDelete in currentlySavedQuicklistEntries.Except(Skills.Select(s => s.Id)))
+                    {
+                        DAOFactory.QuicklistEntryDAO.Delete(quicklistEntryToDelete);
+                    }
+
+                    foreach (QuicklistEntryDTO quicklistEntry in QuicklistEntries)
+                    {
+                        DAOFactory.QuicklistEntryDAO.InsertOrUpdate(quicklistEntry);
+                    }
+                }
+
                 foreach (GeneralLog general in Session.Account.GeneralLogs)
                 {
-                    if (!DAOFactory.GeneralLogDAO.LoadByAccount(Session.Account.AccountId).Any(s => s.LogId == general.LogId))
-                        DAOFactory.GeneralLogDAO.Insert(Mapper.DynamicMap<GeneralLogDTO>(general));
+                    if (!DAOFactory.GeneralLogDAO.IdAlreadySet(general.LogId))
+                        DAOFactory.GeneralLogDAO.Insert(general);
                 }
                 foreach (PenaltyLog penalty in Session.Account.PenaltyLogs)
                 {
-                    if (!DAOFactory.PenaltyLogDAO.LoadByAccount(Session.Account.AccountId).Any(s => s.PenaltyLogId == penalty.PenaltyLogId))
-                        DAOFactory.PenaltyLogDAO.Insert(Mapper.DynamicMap<PenaltyLogDTO>(penalty));
+                    if (!DAOFactory.PenaltyLogDAO.IdAlreadySet(penalty.PenaltyLogId))
+                        DAOFactory.PenaltyLogDAO.Insert(penalty);
                 }
             }
             catch (Exception e)

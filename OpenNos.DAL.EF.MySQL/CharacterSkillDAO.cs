@@ -13,8 +13,6 @@
  */
 
 using AutoMapper;
-using OpenNos.Core;
-using OpenNos.DAL.EF.MySQL.DB;
 using OpenNos.DAL.EF.MySQL.Helpers;
 using OpenNos.DAL.Interface;
 using OpenNos.Data;
@@ -25,14 +23,8 @@ using System.Linq;
 
 namespace OpenNos.DAL.EF.MySQL
 {
-    public class CharacterSkillDAO : ICharacterSkillDAO
+    public class CharacterSkillDAO : SynchronizableBaseDAO<CharacterSkill, CharacterSkillDTO>, ICharacterSkillDAO
     {
-        #region Members
-
-        private IMapper _mapper;
-
-        #endregion
-
         #region Instantiation
 
         public CharacterSkillDAO()
@@ -65,91 +57,29 @@ namespace OpenNos.DAL.EF.MySQL
             }
         }
 
-        public IEnumerable<CharacterSkillDTO> InsertOrUpdate(IEnumerable<CharacterSkillDTO> characterSkills)
-        {
-            try
-            {
-                List<CharacterSkillDTO> returnSkills = new List<CharacterSkillDTO>();
-
-                using (var context = DataAccessHelper.CreateContext())
-                {
-                    foreach (CharacterSkillDTO skill in characterSkills)
-                    {
-                        CharacterSkillDTO returnSkill = skill;
-                        SaveResult result = InsertOrUpdate(ref returnSkill, context);
-                        returnSkills.Add(returnSkill);
-                    }
-                }
-
-                return returnSkills;
-            }
-            catch (Exception e)
-            {
-                Logger.Log.Error(String.Format(Language.Instance.GetMessageFromKey("UPDATE_ERROR"), e.Message), e);
-                return Enumerable.Empty<CharacterSkillDTO>();
-            }
-        }
-
-        public SaveResult InsertOrUpdate(ref CharacterSkillDTO characterSkill)
-        {
-            try
-            {
-                using (var context = DataAccessHelper.CreateContext())
-                {
-                    return InsertOrUpdate(ref characterSkill, context);
-                }
-            }
-            catch (Exception e)
-            {
-                Logger.Log.Error(String.Format(Language.Instance.GetMessageFromKey("UPDATE_ERROR"), e.Message), e);
-                return SaveResult.Error;
-            }
-        }
-
         public IEnumerable<CharacterSkillDTO> LoadByCharacterId(long characterId)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                foreach (CharacterSkill Inventoryobject in context.CharacterSkill.Where(i => i.CharacterId == characterId))
+                foreach (CharacterSkill entity in context.CharacterSkill.Where(i => i.CharacterId == characterId))
                 {
-                    yield return _mapper.Map<CharacterSkillDTO>(Inventoryobject);
+                    yield return _mapper.Map<CharacterSkillDTO>(entity);
                 }
             }
         }
 
-        private CharacterSkillDTO Insert(CharacterSkillDTO characterSkill, OpenNosContext context)
+        public IEnumerable<Guid> LoadKeysByCharacterId(long characterId)
         {
-            CharacterSkill entity = _mapper.Map<CharacterSkill>(characterSkill);
-            context.CharacterSkill.Add(entity);
-            context.SaveChanges();
-            return _mapper.Map<CharacterSkillDTO>(entity);
-        }
-
-        private SaveResult InsertOrUpdate(ref CharacterSkillDTO characterSkill, OpenNosContext context)
-        {
-            Guid primaryKey = characterSkill.Id;
-            CharacterSkill entity = context.CharacterSkill.FirstOrDefault(i => i.Id == primaryKey);
-            if (entity == null) //new entity
+            using (var context = DataAccessHelper.CreateContext())
             {
-                characterSkill = Insert(characterSkill, context);
-                return SaveResult.Inserted;
-            }
-            else //existing entity
-            {
-                characterSkill = Update(entity, characterSkill, context);
-                return SaveResult.Updated;
+                return context.CharacterSkill.Where(i => i.CharacterId == characterId).Select(c => c.Id).ToList();
             }
         }
 
-        private CharacterSkillDTO Update(CharacterSkill entity, CharacterSkillDTO characterSkill, OpenNosContext context)
+        protected override CharacterSkill MapEntity(CharacterSkillDTO dto)
         {
-            if (entity != null)
-            {
-                _mapper.Map(characterSkill, entity);
-                context.SaveChanges();
-            }
-
-            return _mapper.Map<CharacterSkillDTO>(characterSkill);
+            CharacterSkill entity = _mapper.Map<CharacterSkill>(dto);
+            return entity;
         }
 
         #endregion

@@ -16,7 +16,7 @@ using System;
 
 namespace OpenNos.Data
 {
-    public class ItemInstanceDTO : SynchronizeableBaseDTO, IItemInstance
+    public class ItemInstanceDTO : SynchronizableBaseDTO, IItemInstance
     {
         #region Properties
 

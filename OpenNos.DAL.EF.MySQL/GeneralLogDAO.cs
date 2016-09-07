@@ -48,6 +48,14 @@ namespace OpenNos.DAL.EF.MySQL
 
         #region Methods
 
+        public bool IdAlreadySet(long id)
+        {
+            using (var context = DataAccessHelper.CreateContext())
+            {
+                return context.GeneralLog.Any(gl => gl.LogId == id);
+            }
+        }
+
         public GeneralLogDTO Insert(GeneralLogDTO generallog)
         {
             using (var context = DataAccessHelper.CreateContext())

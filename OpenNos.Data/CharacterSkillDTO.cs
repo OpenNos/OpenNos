@@ -14,7 +14,7 @@
 
 namespace OpenNos.Data
 {
-    public class CharacterSkillDTO : SynchronizeableBaseDTO
+    public class CharacterSkillDTO : SynchronizableBaseDTO
     {
         #region Properties
 

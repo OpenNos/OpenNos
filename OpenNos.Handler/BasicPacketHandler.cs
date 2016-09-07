@@ -196,13 +196,13 @@ namespace OpenNos.Handler
                                 Slot = 3,
                                 Pos = 1
                             };
-                            DAOFactory.QuicklistEntryDAO.InsertOrUpdate(ref qlst1);
-                            DAOFactory.QuicklistEntryDAO.InsertOrUpdate(ref qlst2);
-                            DAOFactory.QuicklistEntryDAO.InsertOrUpdate(ref qlst3);
-                            DAOFactory.QuicklistEntryDAO.InsertOrUpdate(ref qlst4);
-                            DAOFactory.CharacterSkillDAO.InsertOrUpdate(ref sk1);
-                            DAOFactory.CharacterSkillDAO.InsertOrUpdate(ref sk2);
-                            DAOFactory.CharacterSkillDAO.InsertOrUpdate(ref sk3);
+                            qlst1 = DAOFactory.QuicklistEntryDAO.InsertOrUpdate(qlst1);
+                            qlst2 = DAOFactory.QuicklistEntryDAO.InsertOrUpdate(qlst2);
+                            qlst3 = DAOFactory.QuicklistEntryDAO.InsertOrUpdate(qlst3);
+                            qlst4 = DAOFactory.QuicklistEntryDAO.InsertOrUpdate(qlst4);
+                            sk1 = DAOFactory.CharacterSkillDAO.InsertOrUpdate(sk1);
+                            sk2 = DAOFactory.CharacterSkillDAO.InsertOrUpdate(sk2);
+                            sk3 = DAOFactory.CharacterSkillDAO.InsertOrUpdate(sk3);
 
                             IList<InventoryDTO> startupInventory = new List<InventoryDTO>();
                             InventoryDTO inventory = new InventoryDTO() //first weapon
@@ -519,6 +519,7 @@ namespace OpenNos.Handler
                 }
             }
 
+            //TODO Wrap Database access up to GO
             IEnumerable<CharacterDTO> characters = DAOFactory.CharacterDAO.LoadByAccount(Session.Account.AccountId);
             Logger.Log.InfoFormat(Language.Instance.GetMessageFromKey("ACCOUNT_ARRIVED"), Session.SessionId);
             Session.Client.SendPacket("clist_start 0");
@@ -529,6 +530,7 @@ namespace OpenNos.Handler
                 WearableInstance[] equipment = new WearableInstance[16];
                 foreach (InventoryDTO equipmentEntry in inventory)
                 {
+                    //explicit load of iteminstance
                     WearableInstance currentInstance = equipmentEntry.ItemInstance as WearableInstance;
                     equipment[currentInstance.Item.EquipmentSlot] = currentInstance;
                 }
