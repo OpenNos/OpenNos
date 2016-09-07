@@ -95,6 +95,15 @@ namespace OpenNos.DAL.EF.MySQL
             }
         }
 
+        public MapTypeMapDTO LoadByMapAndMapType(short mapId, short maptypeId)
+        {
+            using (var context = DataAccessHelper.CreateContext())
+            {
+                return _mapper.Map<MapTypeMapDTO>(context.MapTypeMap.FirstOrDefault(i => i.MapId.Equals(mapId) && i.MapTypeId.Equals(maptypeId)));
+            }
+
+        }
+
         #endregion
     }
 }

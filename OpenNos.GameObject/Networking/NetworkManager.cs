@@ -157,7 +157,7 @@ namespace OpenNos.GameObject
                 {
                     if (session.Character != null)
                     {
-                        if (ServerManager.Instance.Groups.FirstOrDefault(s => s.IsMemberOfGroup(session.Character.CharacterId)) != null)
+                        if (ServerManager.Instance.Groups.Any(s => s.IsMemberOfGroup(session.Character.CharacterId)))
                         {
                             ServerManager.Instance.GroupLeave(session);
                         }

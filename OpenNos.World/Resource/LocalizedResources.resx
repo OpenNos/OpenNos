@@ -892,4 +892,7 @@
   <data name="TRY_FAILED_WAIT" xml:space="preserve">
     <value>Try after: {0}s</value>
   </data>
+  <data name="SAVING_ALL" xml:space="preserve">
+    <value>Saving all data</value>
+  </data>
 </root>

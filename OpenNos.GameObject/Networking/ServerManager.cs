@@ -755,8 +755,9 @@ namespace OpenNos.GameObject
         {
             while (true)
             {
-                SaveAll();
                 await Task.Delay(60000 * 4);
+                Logger.Log.Info(Language.Instance.GetMessageFromKey("SAVING_ALL"));
+                SaveAll();
             }
         }
 

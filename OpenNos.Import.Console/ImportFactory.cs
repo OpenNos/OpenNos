@@ -473,7 +473,7 @@ namespace OpenNos.Import.Console
                     objectset = true;
                 }
                 // add "act6.1a" and "act6.1d" when ids found
-                if (objectset && DAOFactory.MapDAO.LoadById((short)i) != null && DAOFactory.MapTypeMapDAO.LoadAll().FirstOrDefault(s => s.MapId == (short)i && s.MapTypeId == mapTypeId) == null)
+                if (objectset && DAOFactory.MapDAO.LoadById((short)i) != null && DAOFactory.MapTypeMapDAO.LoadByMapAndMapType((short)i, mapTypeId) == null)
                 {
                     maptypemaps.Add(new MapTypeMapDTO { MapId = (short)i, MapTypeId = mapTypeId });
                 }
@@ -1119,9 +1119,9 @@ namespace OpenNos.Import.Console
                         IsDisabled = false
                     };
 
-                    if (listPortals1.FirstOrDefault(s => s.SourceMapId == map && s.SourceX == portal.SourceX && s.SourceY == portal.SourceY && s.DestinationMapId == portal.DestinationMapId) != null
-                        || _maps.FirstOrDefault(s => s.MapId == portal.SourceMapId) == null
-                        || _maps.FirstOrDefault(s => s.MapId == portal.DestinationMapId) == null)
+                    if (listPortals1.Any(s => s.SourceMapId == map && s.SourceX == portal.SourceX && s.SourceY == portal.SourceY && s.DestinationMapId == portal.DestinationMapId)
+                        || !_maps.Any(s => s.MapId == portal.SourceMapId)
+                        || !_maps.Any(s => s.MapId == portal.DestinationMapId))
                         continue; // Portal already in list
 
                     listPortals1.Add(portal);
@@ -1210,7 +1210,7 @@ namespace OpenNos.Import.Console
                                 RecipeId = recipeId
                             };
 
-                            if (!DAOFactory.RecipeItemDAO.LoadAll().Any(s => s.RecipeId == recipeId && s.ItemVNum == recipeitem.ItemVNum))
+                            if (!DAOFactory.RecipeItemDAO.LoadByRecipeAndItem(recipeId, recipeitem.ItemVNum).Any())
                                 DAOFactory.RecipeItemDAO.Insert(recipeitem);
                         }
                     }
@@ -1259,7 +1259,7 @@ namespace OpenNos.Import.Console
                                 };
                             }
 
-                            if (sitem == null || shopitems.FirstOrDefault(s => s.ItemVNum.Equals(sitem.ItemVNum) && s.ShopId.Equals(sitem.ShopId)) != null || DAOFactory.ShopItemDAO.LoadByShopId(sitem.ShopId).FirstOrDefault(s => s.ItemVNum.Equals(sitem.ItemVNum)) != null)
+                            if (sitem == null || shopitems.Any(s => s.ItemVNum.Equals(sitem.ItemVNum) && s.ShopId.Equals(sitem.ShopId)) || DAOFactory.ShopItemDAO.LoadByShopId(sitem.ShopId).Any(s => s.ItemVNum.Equals(sitem.ItemVNum)))
                                 continue;
 
                             shopitems.Add(sitem);
@@ -1334,7 +1334,7 @@ namespace OpenNos.Import.Console
                                     SkillVNum = short.Parse(currentPacket[i])
                                 };
 
-                                if (sskill == null || shopskills.FirstOrDefault(s => s.SkillVNum.Equals(sskill.SkillVNum) && s.ShopId.Equals(sskill.ShopId)) != null || DAOFactory.ShopSkillDAO.LoadByShopId(sskill.ShopId).FirstOrDefault(s => s.SkillVNum.Equals(sskill.SkillVNum)) != null)
+                                if (sskill == null || shopskills.Any(s => s.SkillVNum.Equals(sskill.SkillVNum) && s.ShopId.Equals(sskill.ShopId))|| DAOFactory.ShopSkillDAO.LoadByShopId(sskill.ShopId).Any(s => s.SkillVNum.Equals(sskill.SkillVNum)))
                                     continue;
 
                                 shopskills.Add(sskill);
@@ -1414,7 +1414,7 @@ namespace OpenNos.Import.Console
                             };
 
                             if (comb.Hit != 0 || comb.Animation != 0 || comb.Effect != 0)
-                                if (DAOFactory.ComboDAO.LoadAll().FirstOrDefault(s => s.SkillVNum == comb.SkillVNum && s.Hit == comb.Hit && s.Effect == comb.Effect) == null)
+                                if (!DAOFactory.ComboDAO.LoadByVNumHitAndEffect(comb.SkillVNum, comb.Hit, comb.Effect).Any())
                                 {
                                     Combo.Add(comb);
                                 }
