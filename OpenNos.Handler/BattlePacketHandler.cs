@@ -533,10 +533,10 @@ namespace OpenNos.Handler
             float Eele = 0;
             float EPg = Session.Character.Element;
             float EMob = monsterinfo.Element;
-            if ((EPg == 0 && EMob == 3) || (EPg == 3 && EMob == 1) || (EPg == 1 && EMob == 2) || (EPg == 2 && EMob == 0) || (EPg == 3 && EMob == 0) || (EPg == 1 && EMob == 3) || (EPg == 2 && EMob == 1) || (EPg == 0 && EMob == 2)) Eele = 1.5f;
-            else if ((EPg == 1 && EMob == 0) || (EPg == 0 && EMob == 1)) Eele = 2f;
-            else if ((EPg == 2 && EMob == 3) || (EPg == 3 && EMob == 2)) Eele = 3f;
-            else Eele = 1.3f;
+            if ((EPg == 0 && EMob >= 0 && EMob < 5) || (EPg == 1 && EMob == 3) || (EPg == 2 && EMob == 4) || (EPg == 3 && EMob == 2) || (EPg == 4 && EMob == 1)) Eele = 1f; // 0 No Element | 1 Fire | 2 Water | 3 Light | Darkness
+            else if ((EPg == 1 && EMob >= 0) || (EPg == 2 && EMob == 0) || (EPg == 3 && EMob == 0) || (EPg == 4 && EMob == 0)) Eele = 1.3f;
+            else if ((EPg == 1 && EMob == 4) || (EPg == 2 && EMob == 3) || (EPg == 3 && EMob == 1) || (EPg == 4 && EMob == 2)) Eele = 1.5f;
+            else if ((EPg == 1 && EMob == 2) || (EPg == 2 && EMob == 1) || (EPg == 3 && EMob == 4) || (EPg == 4 && EMob == 3)) Eele = 2;
             float RGloves = monsterinfo.GetRes(skill.Element); // Resistance given by glove (eg. Fire glove comb B s4 = 50%)
             float RShoes = 0;            // Resistance given by shoes
             float DReff = 0;             // Resistance give by mask (eg. mask x give all resistance +4)
