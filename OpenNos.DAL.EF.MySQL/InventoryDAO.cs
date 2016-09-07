@@ -187,7 +187,7 @@ namespace OpenNos.DAL.EF.MySQL
 
         protected override Inventory MapEntity(InventoryDTO dto)
         {
-            Inventory entity = Mapper.Map<Inventory>(dto);
+            Inventory entity = _mapper.Map<Inventory>(dto);
             KeyValuePair<Type, Type> targetMapping = itemInstanceMappings.FirstOrDefault(k => k.Key.Equals(dto.ItemInstance.GetType()));
             if (targetMapping.Key != null)
             {

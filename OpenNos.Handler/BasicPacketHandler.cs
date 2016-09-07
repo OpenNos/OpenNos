@@ -209,42 +209,45 @@ namespace OpenNos.Handler
                             {
                                 CharacterId = newCharacter.CharacterId,
                                 Slot = (short)EquipmentType.MainWeapon,
-                                Type = (byte)InventoryType.Equipment,
-                                ItemInstance = new WearableInstance() { Amount = 1, ItemVNum = 1 },
+                                Type = (byte)InventoryType.Equipment
                             };
+                            inventory.ItemInstance = new WearableInstance() { Amount = 1, ItemVNum = 1, Id = inventory.Id };
                             startupInventory.Add(inventory);
+
                             inventory = new InventoryDTO() //second weapon
                             {
                                 CharacterId = newCharacter.CharacterId,
                                 Slot = (short)EquipmentType.SecondaryWeapon,
-                                Type = (byte)InventoryType.Equipment,
-                                ItemInstance = new WearableInstance() { Amount = 1, ItemVNum = 8 },
+                                Type = (byte)InventoryType.Equipment
                             };
+                            inventory.ItemInstance = new WearableInstance() { Amount = 1, ItemVNum = 8, Id = inventory.Id };
                             startupInventory.Add(inventory);
 
                             inventory = new InventoryDTO() //armor
                             {
                                 CharacterId = newCharacter.CharacterId,
                                 Slot = (short)EquipmentType.Armor,
-                                Type = (byte)InventoryType.Equipment,
-                                ItemInstance = new WearableInstance() { Amount = 1, ItemVNum = 12 },
+                                Type = (byte)InventoryType.Equipment
                             };
+                            inventory.ItemInstance = new WearableInstance() { Amount = 1, ItemVNum = 12, Id = inventory.Id };
                             startupInventory.Add(inventory);
+
                             inventory = new InventoryDTO() //snack
                             {
                                 CharacterId = newCharacter.CharacterId,
                                 Slot = 0,
-                                Type = (byte)InventoryType.Etc,
-                                ItemInstance = new ItemInstance() { Amount = 10, ItemVNum = 2024 },
+                                Type = (byte)InventoryType.Etc
                             };
+                            inventory.ItemInstance = new ItemInstance() { Amount = 10, ItemVNum = 2024 };
                             startupInventory.Add(inventory);
+
                             inventory = new InventoryDTO() //ammo
                             {
                                 CharacterId = newCharacter.CharacterId,
                                 Slot = 1,
-                                Type = (byte)InventoryType.Etc,
-                                ItemInstance = new ItemInstance() { Amount = 1, ItemVNum = 2081 },
+                                Type = (byte)InventoryType.Etc
                             };
+                            inventory.ItemInstance = new ItemInstance() { Amount = 1, ItemVNum = 2081 };
                             startupInventory.Add(inventory);
 
                             DAOFactory.InventoryDAO.InsertOrUpdate(startupInventory);
