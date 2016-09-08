@@ -28,6 +28,7 @@ namespace OpenNos.DAL.EF.MySQL
             MapMonster = new HashSet<MapMonster>();
             MapNpc = new HashSet<MapNpc>();
             NpcMonsterSkill = new HashSet<NpcMonsterSkill>();
+            MonsterType = Domain.MonsterType.Unkown;
         }
 
         #endregion
@@ -114,7 +115,7 @@ namespace OpenNos.DAL.EF.MySQL
         public short VNumRequired { get; set; }
         public sbyte WaterResistance { get; set; }
         public int XP { get; set; }
-
+        public Domain.MonsterType MonsterType { get; set; }
         #endregion
     }
 }
