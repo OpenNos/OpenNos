@@ -377,8 +377,8 @@ namespace OpenNos.Handler
             int MonsterDefense = 0;
 
             byte MainUpgrade = 0;
-            int MainCritChance = 0;
-            int MainCritHit = 0;
+            int MainCritChance = 4;
+            int MainCritHit = 70;
             int MainMinDmg = 0;
             int MainMaxDmg = 0;
             int MainHitRate = 0;
@@ -390,13 +390,18 @@ namespace OpenNos.Handler
             int SecMaxDmg = 0;
             int SecHitRate = 0;
 
-            int CritChance = 0;
-            //int CritHit = 0;
+            int CritChance = 4;
+            //int CritHit = 70;
             //int MinDmg = 0;
             //int MaxDmg = 0;
             //int HitRate = 0;
             //sbyte Upgrade = 0;
 
+            #endregion
+
+            #region Sp
+            SpecialistInstance specialistInstance = Session.Character.EquipmentList.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, (byte)InventoryType.Equipment);
+            // Sp point region, not implemented yet.
             #endregion
 
             #region Get Weapon Stats
@@ -464,20 +469,19 @@ namespace OpenNos.Handler
 
             float[] Bonus = new float[10] { 0.1f, 0.15f, 0.22f, 0.32f, 0.43f, 0.54f, 0.65f, 0.90f, 1.20f, 2f };
 
-            int AEq = Convert.ToInt16(random.Next(MainMinDmg, MainMaxDmg) * (1 + (MainUpgrade > monsterinfo.DefenceUpgrade ? Bonus[MainUpgrade - monsterinfo.DefenceUpgrade - 1] : 0)));
-            int DEq = Convert.ToInt16(MonsterDefense * (1 + (MainUpgrade < monsterinfo.DefenceUpgrade ? Bonus[monsterinfo.DefenceUpgrade - MainUpgrade - 1] : 0)));
-            int ABase = Convert.ToInt16(random.Next(ServersData.MinHit(Session.Character.Class, Session.Character.Level), ServersData.MaxHit(Session.Character.Class, Session.Character.Level)));
+            int AEq = Convert.ToInt32(random.Next(MainMinDmg, MainMaxDmg) * (1 + (MainUpgrade > monsterinfo.DefenceUpgrade ? Bonus[MainUpgrade - monsterinfo.DefenceUpgrade - 1] : 0)));
+            int DEq = Convert.ToInt32(MonsterDefense * (1 + (MainUpgrade < monsterinfo.DefenceUpgrade ? Bonus[monsterinfo.DefenceUpgrade - MainUpgrade - 1] : 0)));
+            int ABase = Convert.ToInt32(random.Next(ServersData.MinHit(Session.Character.Class, Session.Character.Level), ServersData.MaxHit(Session.Character.Class, Session.Character.Level)));
             int Aeff = 0;            // Attack of equip given by effects like weapons, jewelry, masks, hats, res, etc .. (eg. X mask: +13 attack // Crossbow
-            SpecialistInstance specialistInstance = Session.Character.EquipmentList.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, (byte)InventoryType.Equipment);
             int Bsp6 = 0;            // Attack power increased (IMPORTANT) This already Added when SP Point has been set
             int Bsp7 = 0;            // Attack power increased (IMPORTANT) This already Added when SP Point has been set
-            int Asp = Convert.ToInt16((Session.Character.UseSp ? Convert.ToInt16(random.Next(specialistInstance.DamageMinimum, specialistInstance.DamageMaximum + 1)) + Bsp6 + Bsp7 + (specialistInstance.SlDamage * 10) / 200 : 0));
+            int Asp = Convert.ToInt32((Session.Character.UseSp ? Convert.ToInt32(random.Next(specialistInstance.DamageMinimum, specialistInstance.DamageMaximum + 1)) + Bsp6 + Bsp7 + (specialistInstance.SlDamage * 10) / 200 : 0));
             int Br7 = 0;             // Improved Damage (Bonus Rune)
             int Br22 = 0;            // % Of damage in pvp (Bonus Rune)
-            int APg = Convert.ToInt16(((AEq + ABase + Aeff + Asp + Br7) * (1 + Br22)));
+            int APg = Convert.ToInt32(((AEq + ABase + Aeff + Asp + Br7) * (1 + Br22)));
             //Logger.Debug(String.Format("APg = (AEq({0}) +  ABase({1}) + Aeff({2}) + Asp({3}) + Br7({4})) * (1 + Br22({5})) = {6}", AEq, ABase, Aeff, Asp, Br7, Br22, APg));
 
-            int DBase = 0;           // Defense Of Pg Convert.ToInt16 Base (Monster Defense);
+            int DBase = 0;           // Defense Of Pg Convert.ToInt32 Base (Monster Defense);
             int Deff = 0;            // Defense given by effects of equip as weapons, jewelry, masks, hats, res, etc .. (eg. Balestra 90: +150 Defense)
             int Dsp = 0;             // The mob have no defense given by sp points and the sl
             int Br21 = 0;            // It reduces the opponent's defense% in PvP
@@ -486,7 +490,7 @@ namespace OpenNos.Handler
             int Br30 = 0;            // Improved magic defense
             int Br31 = 0;            // % To all defense
             int Br32 = 0;            // % To all defense in PvP
-            int DPg = Convert.ToInt16((DEq + DBase + Deff + Dsp + Br28 + Br29 + Br30) * (1 + (Br31 + Br32) - Br21));
+            int DPg = Convert.ToInt32((DEq + DBase + Deff + Dsp + Br28 + Br29 + Br30) * (1 + (Br31 + Br32) - Br21));
             //Logger.Debug(String.Format("DPg = (DEq({0}) +  DBase({1}) + Deff({2}) + Dsp({3}) + Br28({4}) + Br29({5}) + Br30({6})) * (1 + (Br31({7}) + + Br32({8}) - Br21({9}))) = {10}", DEq, DBase, Deff, Dsp, Br28, Br29, Br30, Br31, Br32, Br21, DPg));
 
             int Br6 = 0;             // % of Damage
@@ -497,7 +501,7 @@ namespace OpenNos.Handler
             int Br12 = 0;            // Increase damage on small monster
             int Br13 = 0;            // Increase damage on tall monster
             int BonusEq = 0;         // Bonus% of the weapons, known as bug 90 (ex. Arc 90 -> With a 25% probability increases damage up to 40%. and add effect 15 when damage have the bonus (damage up)
-            int At = Convert.ToInt16(((APg + skill.Damage) * (1 + (Br6 + Br8 + Br9 + Br10 + Br11 + Br12 + Br13))) * (1 + BonusEq));
+            int At = Convert.ToInt32(((APg + skill.Damage) * (1 + (Br6 + Br8 + Br9 + Br10 + Br11 + Br12 + Br13))) * (1 + BonusEq));
             //Logger.Debug(String.Format("At = ((APg {0} + skill.Damage {1} + 15) * (1 + (Br6 {2} + Br8 {3} + Br9 {4} + Br10 {5} + Br11 {6} + Br12 {7} + Br13 {8}))) * (1 + BonusEq{9}) = {10}", APg, skill.Damage, Br6, Br8, Br9, Br10, Br11, Br12, Br13, BonusEq, At));
 
             int DSkill = 0;          // base defense (not basic) given by the skill (eg. light protection Caster Defense + lv = * 2)
@@ -506,28 +510,28 @@ namespace OpenNos.Handler
             int DArmor = 0;          // Defence given by armor
             int DPet = 0;            // Defence given by pet
             int DOilFlower = 0;      // Defense given by the oil flower(?)
-            int Dt = Convert.ToInt16((DPg + DSkill) * (1 + EffectPetPvp) + (1 + (DOilFlower != 0 ? DOilFlower : (DefensePotion + DArmor + DPet))));
+            int Dt = Convert.ToInt32((DPg + DSkill) * (1 + EffectPetPvp) + (1 + (DOilFlower != 0 ? DOilFlower : (DefensePotion + DArmor + DPet))));
             //Logger.Debug(String.Format("Dt = (DPg{0} + DSkill{1}) * (1 + EffectPetPvp{2}) + (1 + (DOilFlower{3} != 0 ? DOilFlower{4} : (DefensePotion{5} + DArmor{6} + DPet{7})) = {8}", DPg, DSkill, EffectPetPvp, DOilFlower, DOilFlower, DefensePotion, DArmor, DPet, Dt));
 
             int AOilFlower = 0;      // Attack given by the oil flower(?)
             int Bskl8 = 0;           // of the Iron Warrior Skin
             int Bskl5 = 0;           // Hawkeye ranger
-            int Damage = Convert.ToInt16((At - Dt) * (1 + AOilFlower) * (1 + Bskl8) * (1 - Bskl5));
+            int Damage = Convert.ToInt32((At - Dt) * (1 + AOilFlower) * (1 + Bskl8) * (1 - Bskl5));
             //Logger.Debug(String.Format("Damage: {0}", Damage));
 
-            int F = Convert.ToInt16(Session.Character.ElementRate / 100);
+            int F = Convert.ToInt32(Session.Character.ElementRate / 100);
             int Bsp5 = 0;            // Bonus SP (IMPORTANT) This already Added when SP Point has been set
             int SLPerfect = 0;       // Bonus SP (IMPORTANT) This already Added when Perfect SP has been done
-            int Esp = Convert.ToInt16((Session.Character.UseSp ? Convert.ToInt16(specialistInstance.SlElement + Bsp5 + SLPerfect) / 200 : 0));
-            int E = Convert.ToInt16((At + 0) * (1 + (F + Esp)));
+            int Esp = Convert.ToInt32((Session.Character.UseSp ? Convert.ToInt32(specialistInstance.SlElement + Bsp5 + SLPerfect) / 200 : 0));
+            int E = Convert.ToInt32((At + 0) * (1 + (F + Esp)));
             int Eeff = 0;            // Element given by effects of equip as weapons, jewelry, masks, hats, res
-            int ESkill = Convert.ToInt16(skill.ElementalDamage);
+            int ESkill = Convert.ToInt32(skill.ElementalDamage);
             int Br1 = 0;             // Fire properties increased
             int Br2 = 0;             // Water properties increased
             int Br3 = 0;             // Light properties increased
             int Br4 = 0;             // Properties of Dark increased
             int Br5 = 0;             // Elemental properties of increased
-            int Et = Convert.ToInt16(E + Eeff + ESkill + Br1 + Br2 + Br3 + Br4 + Br5);
+            int Et = Convert.ToInt32(E + Eeff + ESkill + Br1 + Br2 + Br3 + Br4 + Br5);
             //Logger.Debug(String.Format("Et = E{0} + Eeff{1} + ESkill{2} + Br1{3} + Br2{4} + Br3{5} + Br4{6} + Br5{7} = {8}", E, Eeff, ESkill, Br1, Br2, Br3, Br4, Br5, Et));
 
             float Eele = 0;
@@ -536,7 +540,8 @@ namespace OpenNos.Handler
             if ((EPg == 0 && EMob >= 0 && EMob < 5) || (EPg == 1 && EMob == 3) || (EPg == 2 && EMob == 4) || (EPg == 3 && EMob == 2) || (EPg == 4 && EMob == 1)) Eele = 1f; // 0 No Element | 1 Fire | 2 Water | 3 Light | Darkness
             else if ((EPg == 1 && EMob >= 0) || (EPg == 2 && EMob == 0) || (EPg == 3 && EMob == 0) || (EPg == 4 && EMob == 0)) Eele = 1.3f;
             else if ((EPg == 1 && EMob == 4) || (EPg == 2 && EMob == 3) || (EPg == 3 && EMob == 1) || (EPg == 4 && EMob == 2)) Eele = 1.5f;
-            else if ((EPg == 1 && EMob == 2) || (EPg == 2 && EMob == 1) || (EPg == 3 && EMob == 4) || (EPg == 4 && EMob == 3)) Eele = 2;
+            else if ((EPg == 1 && EMob == 2) || (EPg == 2 && EMob == 1)) Eele = 2;
+            else if ((EPg == 3 && EMob == 4) || (EPg == 4 && EMob == 3)) Eele = 3;
             float RGloves = monsterinfo.GetRes(skill.Element); // Resistance given by glove (eg. Fire glove comb B s4 = 50%)
             float RShoes = 0;            // Resistance given by shoes
             float DReff = 0;             // Resistance give by mask (eg. mask x give all resistance +4)
@@ -558,7 +563,7 @@ namespace OpenNos.Handler
             int Br19 = 0;            // Reduce darkness resistance of enemy in PvP
             int Br20 = 0;            // Reduce all defense of enemy in PvP
             float Ares = AReff + ARskill + Br16 + Br17 + Br18 + Br19 + Br20;
-            int Ef = Convert.ToInt16((Et * Eele) * (1 - (Dres - Ares) / 100));
+            int Ef = Convert.ToInt32((Et * Eele) * (1 - (Dres - Ares) / 100));
             //Logger.Debug(String.Format("Ef = (Et {0} * Eele{1}) * (1 - (Dres{2} - Ares{3})) = {4}", Et, Eele, Dres, Ares, Ef));
 
             int MoralDifference = Session.Character.Level + /*Session.Character.Morale */ -monsterinfo.Level; //Morale Atk pg - Morale def pg
@@ -574,15 +579,15 @@ namespace OpenNos.Handler
                     short Bsp1 = 0;  // They give the death blow (increase critical damage)
                     short DcrEq = 0; // Decrease of critical damage from the effects of equip given as weapons, jewelry, masks, hats, res, etc .. (eg. Sword luminaire is 90 = -60% critical damage)
                     short Bsp2 = 0;  // Decreased deathblow (decreases the critical damage)
-                    Damage = Convert.ToInt16(Damage * (1 + (MainCritHit / 100) + Br14 + Bsp1) - (DcrEq + Bsp2));
+                    Damage = Convert.ToInt32(Damage * (1 + (MainCritHit / 100) + Br14 + Bsp1) - (DcrEq + Bsp2));
                 }
             }
 
             int Dmob = 0; // Base damage of monster, varies in function of the lvl of the monster
             if (monsterinfo.Level >= 1 && monsterinfo.Level <= 44) Dmob = 0;
-            else if (monsterinfo.Level >= 45 && monsterinfo.Level <= 55) Dmob = Convert.ToInt16(monsterinfo.Level * 2);
-            else if (monsterinfo.Level >= 56 && monsterinfo.Level <= 69) Dmob = Convert.ToInt16(monsterinfo.Level * 3);
-            else Dmob = Convert.ToInt16(monsterinfo.Level * 5);
+            else if (monsterinfo.Level >= 45 && monsterinfo.Level <= 55) Dmob = Convert.ToInt32(monsterinfo.Level * 2);
+            else if (monsterinfo.Level >= 56 && monsterinfo.Level <= 69) Dmob = Convert.ToInt32(monsterinfo.Level * 3);
+            else Dmob = Convert.ToInt32(monsterinfo.Level * 5);
             int Bsp3 = 0;         // Decrease magic damage
             int AttackPotion = 0; // attack given by potion
             int Ahair = 0;        // Attack% given by hair (eg. + 5% Santa Hat)
@@ -597,7 +602,7 @@ namespace OpenNos.Handler
             }
             if (Session.Character.Class != 2) RangedDistance = 1;
 
-            int FinalDamage = Convert.ToUInt16((Damage + Ef + MoralDifference + Dmob) * (1 - Bsp3) * (1 + (AttackPotion + Ahair + Apet)) * RangedDistance);
+            int FinalDamage = Convert.ToInt32((Damage + Ef + MoralDifference + Dmob) * (1 - Bsp3) * (1 + (AttackPotion + Ahair + Apet)) * RangedDistance);
             //Logger.Debug(String.Format("FinalDamage = (Damage {0} + Ef {1}  + MoralDifference{2} + Dmob{3})  (1 - Bsp3{4})  (1 + (AttackPotion{5} + Ahair{6} + Apet{7})) * RangedDistance{8} = {9}", Damage, Ef, MoralDifference, Dmob, Bsp3, AttackPotion, Ahair, Apet, RangedDistance, FinalDamage));
 
             if (Session.Character.Class != 3)
