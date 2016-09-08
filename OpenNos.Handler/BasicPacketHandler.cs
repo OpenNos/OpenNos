@@ -238,7 +238,7 @@ namespace OpenNos.Handler
                                 Slot = 0,
                                 Type = (byte)InventoryType.Etc
                             };
-                            inventory.ItemInstance = new ItemInstance() { Amount = 10, ItemVNum = 2024 };
+                            inventory.ItemInstance = new ItemInstance() { Amount = 10, ItemVNum = 2024, Id = inventory.Id };
                             startupInventory.Add(inventory);
 
                             inventory = new InventoryDTO() //ammo
@@ -247,7 +247,7 @@ namespace OpenNos.Handler
                                 Slot = 1,
                                 Type = (byte)InventoryType.Etc
                             };
-                            inventory.ItemInstance = new ItemInstance() { Amount = 1, ItemVNum = 2081 };
+                            inventory.ItemInstance = new ItemInstance() { Amount = 1, ItemVNum = 2081, Id = inventory.Id };
                             startupInventory.Add(inventory);
 
                             DAOFactory.InventoryDAO.InsertOrUpdate(startupInventory);

@@ -393,7 +393,6 @@ namespace OpenNos.Handler
                 if (qty[i] <= 0 || item.ItemInstance.Amount < qty[i])
                     return;
                 ItemInstance it = (item.ItemInstance as ItemInstance).DeepCopy();
-                it.Id = Guid.NewGuid();
                 if (it.Item.IsTradable)
                 {
                     it.Amount = qty[i];

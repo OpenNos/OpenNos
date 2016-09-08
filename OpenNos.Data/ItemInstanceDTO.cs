@@ -16,12 +16,13 @@ using System;
 
 namespace OpenNos.Data
 {
-    public class ItemInstanceDTO : SynchronizableBaseDTO, IItemInstance
+    public class ItemInstanceDTO : IItemInstance
     {
         #region Properties
 
         public int Amount { get; set; }
         public byte Design { get; set; }
+        public Guid Id { get; set; }
         public bool IsUsed { get; set; }
         public DateTime? ItemDeleteTime { get; set; }
         public short ItemVNum { get; set; }

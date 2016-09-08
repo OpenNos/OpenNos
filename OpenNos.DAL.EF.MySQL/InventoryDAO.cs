@@ -164,6 +164,7 @@ namespace OpenNos.DAL.EF.MySQL
             short Slot = inventory.Slot;
             long CharacterId = inventory.CharacterId;
             Inventory entity = context.Inventory.FirstOrDefault(c => c.Id == primaryKey);
+
             if (entity == null) //new entity
             {
                 Inventory delete = context.Inventory.FirstOrDefault(s => s.CharacterId == CharacterId && s.Slot == Slot && s.Type == Type);
