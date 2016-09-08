@@ -791,6 +791,7 @@
   </data>
   <data name="SAVING_ALL" xml:space="preserve">
     <value>Speichern aller Daten wird durchgeführt</value>
+    </data>
       <data name="SKILL_LEARNED" xml:space="preserve">
     <value>Du hast ein neuen Skill erlernt.</value>
   </data>
