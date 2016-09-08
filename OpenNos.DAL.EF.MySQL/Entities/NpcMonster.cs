@@ -98,6 +98,8 @@ namespace OpenNos.DAL.EF.MySQL
 
         public int MaxMP { get; set; }
 
+        public Domain.MonsterType MonsterType { get; set; }
+
         [MaxLength(255)]
         public string Name { get; set; }
 
@@ -115,7 +117,7 @@ namespace OpenNos.DAL.EF.MySQL
         public short VNumRequired { get; set; }
         public sbyte WaterResistance { get; set; }
         public int XP { get; set; }
-        public Domain.MonsterType MonsterType { get; set; }
+
         #endregion
     }
 }
