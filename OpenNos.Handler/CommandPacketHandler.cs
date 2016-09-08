@@ -926,7 +926,7 @@ namespace OpenNos.Handler
             message.Trim();
 
             ServerManager.Instance.Broadcast($"say 1 0 10 ({Language.Instance.GetMessageFromKey("ADMINISTRATOR")}){message}");
-            ServerManager.Instance.Broadcast(Session.Character.GenerateMsg(message, 2));
+            ServerManager.Instance.Broadcast(Session, $"msg 2 [Administrator]: {message}");
         }
 
         [Packet("$Shutdown")]
