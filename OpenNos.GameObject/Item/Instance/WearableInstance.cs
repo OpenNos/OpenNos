@@ -369,7 +369,7 @@ namespace OpenNos.GameObject
                     Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SUM_SUCCESS"), 0));
                     Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("SUM_SUCCESS"), 12));
                     Session.Client.SendPacket(Session.Character.GenerateGuri(19, 1, 1324));
-                    Inventory inventory = Session.Character.InventoryList.GetInventoryByItemInstanceId(this.ItemInstanceId);
+                    Inventory inventory = Session.Character.InventoryList.GetInventoryByItemInstanceId(this.Id);
                     Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(inventory.ItemInstance.ItemVNum, 1, inventory.Type, inventory.Slot, 0, 0, 0, 0));
                     Session.Client.SendPacket(Session.Character.GenerateGold());
                 }
@@ -378,8 +378,8 @@ namespace OpenNos.GameObject
                     Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SUM_FAILED"), 0));
                     Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("SUM_FAILED"), 11));
                     Session.Client.SendPacket(Session.Character.GenerateGuri(19, 1 , 1332));
-                    Session.Character.DeleteItemByItemInstanceId(itemToSum.ItemInstanceId);
-                    Session.Character.DeleteItemByItemInstanceId(this.ItemInstanceId);
+                    Session.Character.DeleteItemByItemInstanceId(itemToSum.Id);
+                    Session.Character.DeleteItemByItemInstanceId(this.Id);
                 }
                 Session.Client.SendPacket("shop_end 1");
             }
