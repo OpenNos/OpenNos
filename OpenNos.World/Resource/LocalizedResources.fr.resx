@@ -898,4 +898,28 @@ Veux-tu le porter ?</value>
   <data name="REMOVE_VEHICLE" xml:space="preserve">
     <value>Tu ne peux pas faire ça tant que tu n'as pas enlever ta locomotion.</value>
   </data>
+  <data name="ALREADY_MORPHED" xml:space="preserve">
+    <value>Tu es déjà sous l'effet de la transformation.</value>
+  </data>
+  <data name="DATABASE_NOT_UPTODATE" xml:space="preserve">
+    <value>Votre base de données n'est pas à jour. Réssayez après l'avoir mise à jour.</value>
+  </data>
+  <data name="DELETE_PENALTYLOG_ERROR" xml:space="preserve">
+    <value>Erreur de suppression de type PenaltyLog avec l' id {0} , {1}</value>
+  </data>
+  <data name="FAIRYXP_NOW" xml:space="preserve">
+    <value>Taux d'expérience des fées</value>
+  </data>
+  <data name="NOT_ENOUGH_ITEM" xml:space="preserve">
+    <value>Tu n'as pas les éléments requis pour la récolte.</value>
+  </data>
+  <data name="NOT_ENOUGH_MP" xml:space="preserve">
+    <value>Tu n'as pas assez de mp pour lancer ce sort.</value>
+  </data>
+  <data name="RATEGOLD_NOW" xml:space="preserve">
+    <value>Gold amount drop rate</value>
+  </data>
+  <data name="SKILL_CANT_LEARN" xml:space="preserve">
+    <value>Tu ne peux pas apprendre cette compétence.</value>
+  </data>
 </root>
