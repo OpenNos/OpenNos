@@ -186,7 +186,9 @@ namespace OpenNos.Handler
 
             if (inventory != null && inventory.Item != null)
             {
-                Session.Client.SendPacket(inventory.Item.EquipmentSlot != (byte)EquipmentType.Sp ? Session.Character.GenerateEInfo(inventory) : inventory.Item.SpType == 0 ? Session.Character.GeneratePslInfo(inventory as SpecialistInstance, 0) : Session.Character.GenerateSlInfo(inventory as SpecialistInstance, 0));
+                Session.Client.SendPacket(inventory.Item.EquipmentSlot != (byte)EquipmentType.Sp ?
+                    Session.Character.GenerateEInfo(inventory) : inventory.Item.SpType == 0 && inventory.Item.ItemSubType == 4 ?
+                    Session.Character.GeneratePslInfo(inventory as SpecialistInstance, 0) : Session.Character.GenerateSlInfo(inventory as SpecialistInstance, 0));
             }
         }
 
@@ -423,7 +425,7 @@ namespace OpenNos.Handler
             Logger.Debug(packet, Session.SessionId);
             string[] packetsplit = packet.Split(' ');
 
-            if (Session.Character.LastSkill.AddSeconds(1) > DateTime.Now)
+            if (Session.Character.LastSkill.AddSeconds(1) > DateTime.Now || Session.Character.IsVehicled)
             {
                 return;
             }
@@ -587,6 +589,11 @@ namespace OpenNos.Handler
 
                 if (slot == (byte)EquipmentType.Sp && Session.Character.UseSp)
                 {
+                    if (Session.Character.IsVehicled)
+                    {
+                        Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("REMOVE_VEHICLE"), 0));
+                        return;
+                    }
                     if (Session.Character.LastSkill.AddSeconds(2) > DateTime.Now)
                     {
                         return;
@@ -1021,16 +1028,20 @@ namespace OpenNos.Handler
                     Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SKILLS_IN_LOADING"), 0));
                     return;
                 }
-
-                if ((Session.Character.LastMove.AddSeconds(1) >= DateTime.Now || Session.Character.LastSkill.AddSeconds(2) >= DateTime.Now))
+                if (Session.Character.LastMove.AddSeconds(1) >= DateTime.Now || Session.Character.LastSkill.AddSeconds(2) >= DateTime.Now)
                 {
                     return;
                 }
-
                 if (specialistInstance == null)
                 {
                     Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NO_SP"), 0));
                     return;
+                }
+                if (Session.Character.IsVehicled)
+                {
+                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("REMOVE_VEHICLE"), 0));
+                    return;
+
                 }
 
                 double currentRunningSeconds = (DateTime.Now - Process.GetCurrentProcess().StartTime.AddSeconds(-50)).TotalSeconds;
@@ -1043,14 +1054,11 @@ namespace OpenNos.Handler
                 else
                 {
                     double timeSpanSinceLastSpUsage = currentRunningSeconds - Session.Character.LastSp;
-                    if (timeSpanSinceLastSpUsage >= Session.Character.SpCooldown && !Session.Character.IsVehicled)
+                    if (timeSpanSinceLastSpUsage >= Session.Character.SpCooldown)
                     {
                         Session.Client.SendPacket("delay 5000 3 #sl^1");
-                        Session.CurrentMap?.Broadcast($"guri 2 1 {Session.Character.CharacterId}");
-                    }
-                    else if (Session.Character.IsVehicled)
-                    {
-                        return;
+                        Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateGuri(2, 1), ReceiverType.All);
+
                     }
                     else
                     {
@@ -1218,16 +1226,16 @@ namespace OpenNos.Handler
             Session.Character.MorphUpgrade2 = sp.Design;
             Session.CurrentMap?.Broadcast(Session.Character.GenerateCMode());
 
-            
+
             //qslot 0 1.1.2 1.1.1 1.1.3 0.7.-1 1.1.0 0.7.-1 0.7.-1 0.1.10 1.3.2 1.3.1
             //qslot 1 1.1.2 1.1.3 1.1.4 1.1.5 1.1.6 7.7.-1 7.7.-1 7.7.-1 7.7.-1 7.7.-1
             //qslot 2 7.7.-1 7.7.-1 7.7.-1 7.7.-1 7.7.-1 7.7.-1 7.7.-1 7.7.-1 7.7.-1 7.7.-1
-            
+
 
             Session.CurrentMap?.Broadcast(Session.Character.GenerateEff(196));
-            Session.CurrentMap?.Broadcast($"guri 6 1 {Session.Character.CharacterId} 0 0");
+            Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateGuri(6, 1), ReceiverType.All);
             Session.Client.SendPacket(Session.Character.GenerateSpPoint());
-            Session.Character.Speed += ServerManager.GetItem(sp.ItemVNum).Speed;
+            Session.Character.SpeedLoad();
             Session.Client.SendPacket(Session.Character.GenerateLev());
             Session.Client.SendPacket(Session.Character.GenerateStat());
             Session.Client.SendPacket(Session.Character.GenerateStatChar());
@@ -1273,7 +1281,8 @@ namespace OpenNos.Handler
             Session.Client.SendPacket($"sd {Session.Character.SpCooldown}");
 
             Session.CurrentMap?.Broadcast(Session.Character.GenerateCMode());
-            Session.CurrentMap?.Broadcast($"guri 6 1 {Session.Character.CharacterId} 0 0");
+            Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateGuri(6, 1), ReceiverType.All);
+
 
             //s="ms_c";
             //chara.Send(s);

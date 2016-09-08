@@ -763,7 +763,7 @@
     <value>{0} ist der Gruppe beigetreten.</value>
   </data>
   <data name="IN_BATTLE" xml:space="preserve">
-    <value />
+    <value>/&gt;</value>
   </data>
   <data name="PLAYER_IN_BATTLE" xml:space="preserve">
     <value>Spieler {0} befindet sich in einem Kampf.</value>
@@ -772,6 +772,22 @@
     <value>Spieler ist nicht gesperrt.</value>
   </data>
   <data name="USER_NOT_MUTED" xml:space="preserve">
+    <value>/&gt;</value>
+  </data>
+  <data name="IMPOSSIBLE_TO_USE" xml:space="preserve">
+    <value />
+  </data>
+  <data name="NOT_ENOUGH_POINTS" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SPEAKER" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TRANSFORMATION_NEEDED" xml:space="preserve">
+    <value />
+  </data>
+  <data name="REMOVE_VEHICLE" xml:space="preserve">
+    <value />
     <value />
   </data>
   <data name="SAVING_ALL" xml:space="preserve">

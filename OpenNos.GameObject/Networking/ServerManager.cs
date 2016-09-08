@@ -342,9 +342,9 @@ namespace OpenNos.GameObject
         }
 
         //PacketHandler -> with Callback?
-        public void AskRevive(long Target)
+        public void AskRevive(long characterId)
         {
-            ClientSession Session = Sessions.FirstOrDefault(s => s.Character != null && s.Character.CharacterId == Target);
+            ClientSession Session = Sessions.FirstOrDefault(s => s.Character != null && s.Character.CharacterId == characterId);
             if (Session != null && Session.Character != null)
             {
                 Session.Client.SendPacket("cancel 0 0");
@@ -417,7 +417,7 @@ namespace OpenNos.GameObject
 
                     Broadcast(shopOwnerSession, shopOwnerSession.Character.GenerateShopEnd(), ReceiverType.All);
                     Broadcast(shopOwnerSession, shopOwnerSession.Character.GeneratePlayerFlag(0), ReceiverType.AllExceptMe);
-                    shopOwnerSession.Character.Speed = shopOwnerSession.Character.LastSpeed != 0 ? shopOwnerSession.Character.LastSpeed : shopOwnerSession.Character.Speed;
+                    shopOwnerSession.Character.SpeedLoad();
                     shopOwnerSession.Character.IsSitting = false;
                     shopOwnerSession.Client.SendPacket(shopOwnerSession.Character.GenerateCond());
                     Broadcast(shopOwnerSession, shopOwnerSession.Character.GenerateRest(), ReceiverType.All);
@@ -769,11 +769,9 @@ namespace OpenNos.GameObject
             {
                 foreach (var GroupedSession in Sessions.Where(s => s.Character != null).GroupBy(s => s.Character.MapId))
                 {
-                    foreach (ClientSession Session in GroupedSession)
-                    {
-                        TaskMap = new Task(() => ServerManager.GetMap(Session.Character.MapId).MapTaskManager());
+                    TaskMap = new Task(() => ServerManager.GetMap(GroupedSession.First().Character.MapId).MapTaskManager());
                         TaskMap.Start();
-                    }
+                    
                 }
                 if (TaskMap != null)
                     await TaskMap;

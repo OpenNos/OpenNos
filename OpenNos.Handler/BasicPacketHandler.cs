@@ -356,11 +356,83 @@ namespace OpenNos.Handler
             if (packetsplit[2] == "10" && Convert.ToInt32(packetsplit[5]) >= 973 && Convert.ToInt32(packetsplit[5]) <= 999 && !Session.Character.EmoticonsBlocked)
             {
                 Session.Client.SendPacket(Session.Character.GenerateEff(Convert.ToInt32(packetsplit[5]) + 4099));
-                Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateEff(Convert.ToInt32(packetsplit[5]) + 4099),
-                    ReceiverType.AllNoEmoBlocked);
+                Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateEff(Convert.ToInt32(packetsplit[5]) + 4099), ReceiverType.AllNoEmoBlocked);
             }
             if (packetsplit[2] == "2")
-                Session.CurrentMap?.Broadcast($"guri 2 1 {Session.Character.CharacterId}");
+            {
+                Session.CurrentMap?.Broadcast(Session.Character.GenerateGuri(2, 1));
+            }
+            else if (packetsplit[2] == "4")
+            {
+                int speakerVNum = 2173;
+                if (packetsplit[3] == "3") //Speaker
+                {
+                    if (Session.Character.InventoryList.CountItem(speakerVNum) > 0)
+                    {
+                        string message = String.Empty;
+                        message = $"<{Language.Instance.GetMessageFromKey("SPEAKER")}> [{Session.Character.Name}]:";
+                        for (int i = 6; i < packetsplit.Length; i++)
+                            message += packetsplit[i] + " ";
+                        message.Trim();
+
+                        Session.Character.InventoryList.RemoveItemAmount(speakerVNum, 1);
+                        ServerManager.Instance.Broadcast(Session.Character.GenerateSay(message, 13));
+                    }
+                }
+            }
+            else if (packetsplit[2] == "203" && packetsplit[3] == "0")
+            {
+                int[] ListPotionResetVNums = new int[3] { 1366, 1427, 5115 };
+                int VNumToUse = -1;
+                foreach (int vnum in ListPotionResetVNums)
+                {
+                    if (Session.Character.InventoryList.CountItem(vnum) > 0)
+                    {
+                        VNumToUse = vnum;
+                    }
+                }
+                if (VNumToUse != -1)
+                {
+                    if (Session.Character.UseSp)
+                    {
+                        SpecialistInstance specialistInstance = Session.Character.EquipmentList.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, (byte)InventoryType.Equipment);
+                        if (specialistInstance != null)
+                        {
+                            specialistInstance.SlDamage = 0;
+                            specialistInstance.SlDefence = 0;
+                            specialistInstance.SlElement = 0;
+                            specialistInstance.SlHP = 0;
+
+                            specialistInstance.DamageMinimum = 0;
+                            specialistInstance.DamageMaximum = 0;
+                            specialistInstance.HitRate = 0;
+                            specialistInstance.CriticalLuckRate = 0;
+                            specialistInstance.CriticalRate = 0;
+                            specialistInstance.DefenceDodge = 0;
+                            specialistInstance.DistanceDefenceDodge = 0;
+                            specialistInstance.ElementRate = 0;
+                            specialistInstance.DarkResistance = 0;
+                            specialistInstance.LightResistance = 0;
+                            specialistInstance.FireResistance = 0;
+                            specialistInstance.WaterResistance = 0;
+                            specialistInstance.CriticalDodge = 0;
+                            specialistInstance.MagicDefence = 0;
+                            specialistInstance.HP = 0;
+                            specialistInstance.MP = 0;
+
+                            Session.Character.InventoryList.RemoveItemAmount(VNumToUse, 1);
+                            Session.Character.EquipmentList.DeleteFromSlotAndType((byte)EquipmentType.Sp, (byte)InventoryType.Equipment);
+                            Session.Character.EquipmentList.AddToInventoryWithSlotAndType(specialistInstance, (byte)InventoryType.Equipment, (byte)EquipmentType.Sp);
+                            Session.Client.SendPacket(Session.Character.GenerateSlInfo(specialistInstance, 2));
+                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("POINTS_RESET"), 0));
+
+                        }
+                    }
+                    else Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("TRANSFORMATION_NEEDED"), 10));
+                }
+                else Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NOT_ENOUGH_POINTS"), 10));
+
+            }
         }
 
         [Packet("#guri")]
@@ -379,29 +451,30 @@ namespace OpenNos.Handler
                         int RateDrop = ServerManager.DropRate;
                         if (Session.Character.LastMapObject.AddSeconds(6) < DateTime.Now)
                         {
+                            if (mapobject.Drops.Any(s => s.MonsterVNum != null))
+                            {
+                                if (mapobject.VNumRequired > 10 && Session.Character.InventoryList.CountItem(mapobject.VNumRequired) < mapobject.AmountRequired)
+                                {
+                                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_ITEM"), 0));
+                                    return;
+                                }
+                            }
                             rnd = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
                             double rndamount = rnd.Next(0, 100) * rnd.NextDouble();
                             int dropChance = mapobject.Drops.FirstOrDefault(s => s.MonsterVNum == npc.NpcVNum).DropChance;
                             if (rndamount <= ((double)dropChance * RateDrop) / 5000.000)
                             {
-                                if (mapobject.Drops.Any(s => s.MonsterVNum != null))
-                                {
-                                    if (mapobject.VNumRequired > 10 && Session.Character.InventoryList.CountItem(mapobject.VNumRequired) < mapobject.AmountRequired)
-                                    {
-                                        Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_ITEM"), 0));
-                                        return;
-                                    }
-                                }
                                 short vnum = mapobject.Drops.FirstOrDefault(s => s.MonsterVNum == npc.NpcVNum).ItemVNum;
                                 Session.Character.InventoryList.AddNewItemToInventory(vnum);
                                 Session.Character.LastMapObject = DateTime.Now;
-                                Session.Client.SendPacket(Session.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("RECEIVED_ITEM"), ServerManager.GetItem(vnum).Name), 10));
+                                Session.Client.SendPacket(Session.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("RECEIVED_ITEM"), ServerManager.GetItem(vnum).Name), 0));
+                                Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("RECEIVED_ITEM"), ServerManager.GetItem(vnum).Name), 11));
                             }
                             else
-                                Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("TRY_FAILED"), 10));
+                                Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("TRY_FAILED"), 0));
                         }
                         else // make it like official, more than 6 seconds propably multiplied by amount of tries
-                            Session.Client.SendPacket(Session.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("TRY_FAILED_WAIT"), (int)(Session.Character.LastMapObject.AddSeconds(6) - DateTime.Now).TotalSeconds), 10));
+                            Session.Client.SendPacket(Session.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("TRY_FAILED_WAIT"), (int)(Session.Character.LastMapObject.AddSeconds(6) - DateTime.Now).TotalSeconds), 0));
                     }
                     break;
 
@@ -916,16 +989,7 @@ namespace OpenNos.Handler
         public void Rest(string packet)
         {
             Logger.Debug(packet, Session.SessionId);
-
-            if (Session.Character.LastSkill.AddSeconds(1) > DateTime.Now)
-            {
-                return;
-            }
-
-            Session.Character.IsSitting = !Session.Character.IsSitting;
-            if (Session.Character.IsVehicled)
-                Session.Character.IsSitting = false;
-            Session.CurrentMap?.Broadcast(Session.Character.GenerateRest());
+            Session.Character.Rest();
         }
 
         [Packet("#revival")]
@@ -1055,7 +1119,6 @@ namespace OpenNos.Handler
                             Direction = 0,
                             IsSitting = false,
                             BackPack = characterDTO.Backpack,
-                            Speed = ServersData.SpeedData[characterDTO.Class],
                             Compliment = characterDTO.Compliment,
                             Backpack = characterDTO.Backpack,
                             BuffBlocked = characterDTO.BuffBlocked,
@@ -1078,7 +1141,6 @@ namespace OpenNos.Handler
                             HeroLevel = characterDTO.HeroLevel,
                             HeroXp = characterDTO.HeroXp
                         };
-
                     Session.Character.Update();
                     Session.Character.LoadInventory();
                     Session.Character.LoadQuicklists();
@@ -1113,6 +1175,7 @@ namespace OpenNos.Handler
                 Session.Client.SendPacket(Session.Character.GenerateSay($"OpenNos by OpenNos Team\nVersion : v{fileVersionInfo.ProductVersion}", 11));
                 Session.Client.SendPacket(Session.Character.GenerateSay("-----------------------------------------------", 10));
             }
+            Session.Character.SpeedLoad();
             Session.Character.LoadSkills();
             Session.Client.SendPacket(Session.Character.GenerateTit());
             Session.Client.SendPacket($"rsfi 1 1 0 9 0 9");

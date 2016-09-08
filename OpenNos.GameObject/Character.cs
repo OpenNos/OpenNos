@@ -57,6 +57,7 @@ namespace OpenNos.GameObject
             SaveY = 0;
             LastDefence = DateTime.Now.AddSeconds(-21);
             _session = Session;
+            Group = null;
         }
 
         #endregion
@@ -107,6 +108,7 @@ namespace OpenNos.GameObject
         public bool Invisible { get { return _invisible; } set { _invisible = value; } }
         public bool InvisibleGm { get; set; }
         public int IsDancing { get { return _isDancing; } set { _isDancing = value; } }
+        public bool IsShopping { get; set; }
         public bool IsSitting { get { return _issitting; } set { _issitting = value; } }
         public bool IsVehicled { get; set; }
         public DateTime LastDefence { get; set; }
@@ -119,7 +121,6 @@ namespace OpenNos.GameObject
         public int LastPulse { get { return _lastPulse; } set { _lastPulse = value; } }
         public DateTime LastSkill { get; set; }
         public double LastSp { get; set; }
-        public byte LastSpeed { get; set; }
         public DateTime LastTransform { get; set; }
         public int LightResistance { get; set; }
         public int MagicalDefence { get; set; }
@@ -160,12 +161,10 @@ namespace OpenNos.GameObject
                 Session.Client.SendPacket("p_clear");
 
                 if (characterClass == (byte)ClassType.Adventurer)
-                    Session.Character.HairStyle = Session.Character.HairStyle > 1 ? (byte)0 : Session.Character.HairStyle;
+                    HairStyle = HairStyle > 1 ? (byte)0 : HairStyle;
 
+                SpeedLoad();
                 Class = characterClass;
-                if (ServersData.SpeedData.Contains(characterClass))
-                    Speed = ServersData.SpeedData[Class];
-
                 Hp = (int)HPLoad();
                 Mp = (int)MPLoad();
                 Session.Client.SendPacket(GenerateTit());
@@ -227,17 +226,17 @@ namespace OpenNos.GameObject
 
         public void ChangeSex()
         {
-            Session.Character.Gender = Session.Character.Gender == 1 ? (byte)0 : (byte)1;
-            if (Session.Character.IsVehicled)
+            Gender = Gender == 1 ? (byte)0 : (byte)1;
+            if (IsVehicled)
             {
-                Session.Character.Morph = Session.Character.Gender == 1 ? Session.Character.Morph + 1 : Session.Character.Morph - 1;
+                Morph = Gender == 1 ? Morph + 1 : Morph - 1;
             }
-            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SEX_CHANGED"), 0));
-            Session.Client.SendPacket(Session.Character.GenerateEq());
-            Session.Client.SendPacket(Session.Character.GenerateGender());
-            Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
-            Session.CurrentMap?.Broadcast(Session.Character.GenerateCMode());
-            Session.CurrentMap?.Broadcast(Session.Character.GenerateEff(196));
+            Session.Client.SendPacket(GenerateMsg(Language.Instance.GetMessageFromKey("SEX_CHANGED"), 0));
+            Session.Client.SendPacket(GenerateEq());
+            Session.Client.SendPacket(GenerateGender());
+            Session.CurrentMap?.Broadcast(Session, GenerateIn(), ReceiverType.AllExceptMe);
+            Session.CurrentMap?.Broadcast(GenerateCMode());
+            Session.CurrentMap?.Broadcast(GenerateEff(196));
         }
 
         public void CloseShop()
@@ -250,7 +249,7 @@ namespace OpenNos.GameObject
                     this.Session.CurrentMap.UserShops.Remove(shop.Key);
                     this.Session.CurrentMap?.Broadcast(GenerateShopEnd());
                     this.Session.CurrentMap?.Broadcast(Session, GeneratePlayerFlag(0), ReceiverType.AllExceptMe);
-                    Speed = LastSpeed != 0 ? LastSpeed : Speed;
+                    SpeedLoad();
                     IsSitting = false;
                     Session.Client.SendPacket(GenerateCond());
                     Session.CurrentMap?.Broadcast(GenerateRest());
@@ -321,7 +320,7 @@ namespace OpenNos.GameObject
 
         public string GenerateCInfo()
         {
-            return $"c_info {Name} - -1 -1 - {CharacterId} {(Invisible ? 6 : (byte)Authority)} {Gender} {HairStyle} {HairColor} {Class} {GetReputIco()} {Compliment} {(UseSp || IsVehicled ? Morph : 0)} {(Invisible ? 1 : 0)} 0 {(UseSp ? MorphUpgrade : 0)} {ArenaWinner}";
+            return $"c_info {Name} - -1 -1 - {CharacterId} {(Invisible ? 6 : (byte)Authority)} {Gender} {HairStyle} {HairColor} {Class} {((GetDignityIco() == 1) ? GetReputIco() : -GetDignityIco())} {Compliment} {(UseSp || IsVehicled ? Morph : 0)} {(Invisible ? 1 : 0)} 0 {(UseSp ? MorphUpgrade : 0)} {ArenaWinner}";
         }
 
         public string GenerateCMap()
@@ -352,14 +351,14 @@ namespace OpenNos.GameObject
 
         public void GenerateDignity(NpcMonster monsterinfo)
         {
-            if (Session.Character.Level < monsterinfo.Level && Session.Character.Dignity < 100 && Session.Character.Level > 20)
+            if (Level < monsterinfo.Level && Dignity < 100 && Level > 20)
             {
-                Session.Character.Dignity += (float)0.5;
-                if (Session.Character.Dignity == (int)Session.Character.Dignity)
+                Dignity += (float)0.5;
+                if (Dignity == (int)Dignity)
                 {
-                    Session.Client.SendPacket(Session.Character.GenerateFd());
-                    Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
-                    Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("RESTORE_DIGNITY"), 11));
+                    Session.Client.SendPacket(GenerateFd());
+                    Session.CurrentMap?.Broadcast(Session, GenerateIn(), ReceiverType.AllExceptMe);
+                    Session.Client.SendPacket(GenerateSay(Language.Instance.GetMessageFromKey("RESTORE_DIGNITY"), 11));
                 }
             }
         }
@@ -596,6 +595,19 @@ namespace OpenNos.GameObject
             return $"gp {portal.SourceX} {portal.SourceY} {portal.DestinationMapId} {portal.Type} {ServerManager.GetMap(MapId).Portals.Count} {(portal.IsDisabled ? 1 : 0)}";
         }
 
+        public string GenerateGuri(byte type, byte argument, int value = 0)
+        {
+            switch (type)
+            {
+                case 10:
+                    return $"guri 10 {argument} {value} {Session.Character.CharacterId}";
+                case 15:
+                    return $"guri 15 {argument} 0 0";
+                default:
+                    return $"guri {type} {argument} {Session.Character.CharacterId} {value}";
+            }
+        }
+
         public string GenerateIn()
         {
             int color = HairColor;
@@ -825,7 +837,7 @@ namespace OpenNos.GameObject
             List<CharacterSkill> skillsSp = new List<CharacterSkill>();
             foreach (Skill ski in ServerManager.GetAllSkill())
             {
-                if (ski.Class == iteminfo.Morph + 31 && ski.LevelMinimum <= inventoryItem.SpLevel)
+                if (ski.Class == iteminfo.Morph + 31 && ski.LevelMinimum <= inventoryItem.SpLevel && !skillsSp.Any(s => s.Skill.Name.StartsWith(ski.Name.Split(' ').FirstOrDefault())))
                     skillsSp.Add(new CharacterSkill() { SkillVNum = ski.SkillVNum, CharacterId = CharacterId });
             }
             byte spdestroyed = 0;
@@ -1153,55 +1165,55 @@ namespace OpenNos.GameObject
         public void GenerateXp(NpcMonster monsterinfo)
         {
             int partySize = 1;
-            Group grp = ServerManager.Instance.Groups.FirstOrDefault(g => g.IsMemberOfGroup(Session.Character.CharacterId));
+            Group grp = ServerManager.Instance.Groups.FirstOrDefault(g => g.IsMemberOfGroup(CharacterId));
             if (grp != null) partySize = grp.Characters.Count;
 
-            if ((int)(Session.Character.LevelXp / (Session.Character.XPLoad() / 10)) < (int)((Session.Character.LevelXp + monsterinfo.XP) / (Session.Character.XPLoad() / 10)))
+            if ((int)(LevelXp / (XPLoad() / 10)) < (int)((LevelXp + monsterinfo.XP) / (XPLoad() / 10)))
             {
-                Session.Character.Hp = (int)Session.Character.HPLoad();
-                Session.Character.Mp = (int)Session.Character.MPLoad();
-                Session.Client.SendPacket(Session.Character.GenerateStat());
-                Session.Client.SendPacket(Session.Character.GenerateEff(5));
+                Hp = (int)HPLoad();
+                Mp = (int)MPLoad();
+                Session.Client.SendPacket(GenerateStat());
+                Session.Client.SendPacket(GenerateEff(5));
             }
 
-            SpecialistInstance specialist = Session.Character.EquipmentList.LoadBySlotAndType<SpecialistInstance>((short)EquipmentType.Sp, (byte)InventoryType.Equipment);
+            SpecialistInstance specialist = EquipmentList.LoadBySlotAndType<SpecialistInstance>((short)EquipmentType.Sp, (byte)InventoryType.Equipment);
 
-            if (Session.Character.Level < 99)
-                Session.Character.LevelXp += monsterinfo.XP * ServerManager.XPRate / partySize;
-            if ((Session.Character.Class == 0 && Session.Character.JobLevel < 20) || (Session.Character.Class != 0 && Session.Character.JobLevel < 80))
+            if (Level < 99)
+                LevelXp += monsterinfo.XP * ServerManager.XPRate / partySize;
+            if ((Class == 0 && JobLevel < 20) || (Class != 0 && JobLevel < 80))
             {
-                if (specialist != null && Session.Character.UseSp && specialist.SpLevel < 99)
-                    Session.Character.JobLevelXp += ((int)((double)monsterinfo.JobXP / (double)100 * specialist.SpLevel)) * ServerManager.XPRate / partySize;
+                if (specialist != null && UseSp && specialist.SpLevel < 99)
+                    JobLevelXp += ((int)((double)monsterinfo.JobXP / (double)100 * specialist.SpLevel)) * ServerManager.XPRate / partySize;
                 else
-                    Session.Character.JobLevelXp += monsterinfo.JobXP * ServerManager.XPRate / partySize;
+                    JobLevelXp += monsterinfo.JobXP * ServerManager.XPRate / partySize;
             }
-            if (specialist != null && Session.Character.UseSp && specialist.SpLevel < 99)
+            if (specialist != null && UseSp && specialist.SpLevel < 99)
                 specialist.XP += monsterinfo.JobXP * ServerManager.XPRate * (100 - specialist.SpLevel) / partySize;
-            double t = Session.Character.XPLoad();
-            while (Session.Character.LevelXp >= t)
+            double t = XPLoad();
+            while (LevelXp >= t)
             {
-                Session.Character.LevelXp -= (long)t;
-                Session.Character.Level++;
-                t = Session.Character.XPLoad();
-                if (Session.Character.Level >= 99)
+                LevelXp -= (long)t;
+                Level++;
+                t = XPLoad();
+                if (Level >= 99)
                 {
-                    Session.Character.Level = 99;
-                    Session.Character.LevelXp = 0;
+                    Level = 99;
+                    LevelXp = 0;
                 }
-                Session.Character.Hp = (int)Session.Character.HPLoad();
-                Session.Character.Mp = (int)Session.Character.MPLoad();
-                Session.Client.SendPacket(Session.Character.GenerateStat());
-                Session.Client.SendPacket($"levelup {Session.Character.CharacterId}");
-                Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("LEVELUP"), 0));
-                Session.CurrentMap?.Broadcast(Session.Character.GenerateEff(6));
-                Session.CurrentMap?.Broadcast(Session.Character.GenerateEff(198));
-                ServerManager.Instance.UpdateGroup(Session.Character.CharacterId);
+                Hp = (int)HPLoad();
+                Mp = (int)MPLoad();
+                Session.Client.SendPacket(GenerateStat());
+                Session.Client.SendPacket($"levelup {CharacterId}");
+                Session.Client.SendPacket(GenerateMsg(Language.Instance.GetMessageFromKey("LEVELUP"), 0));
+                Session.CurrentMap?.Broadcast(GenerateEff(6));
+                Session.CurrentMap?.Broadcast(GenerateEff(198));
+                ServerManager.Instance.UpdateGroup(CharacterId);
             }
 
-            WearableInstance fairy = Session.Character.EquipmentList.LoadBySlotAndType<WearableInstance>((short)EquipmentType.Fairy, (byte)InventoryType.Equipment);
+            WearableInstance fairy = EquipmentList.LoadBySlotAndType<WearableInstance>((short)EquipmentType.Fairy, (byte)InventoryType.Equipment);
             if (fairy != null)
             {
-                if ((fairy.ElementRate + fairy.Item.ElementRate) < fairy.Item.MaxElementRate && Session.Character.Level <= monsterinfo.Level + 15 && Session.Character.Level >= monsterinfo.Level - 15)
+                if ((fairy.ElementRate + fairy.Item.ElementRate) < fairy.Item.MaxElementRate && Level <= monsterinfo.Level + 15 && Level >= monsterinfo.Level - 15)
                 {
                     fairy.XP += ServerManager.FairyXpRate;
                 }
@@ -1213,60 +1225,60 @@ namespace OpenNos.GameObject
                     if ((fairy.ElementRate + fairy.Item.ElementRate) == fairy.Item.MaxElementRate)
                     {
                         fairy.XP = 0;
-                        Session.Client.SendPacket(Session.Character.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("FAIRYMAX"), fairy.Item.Name), 10));
+                        Session.Client.SendPacket(GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("FAIRYMAX"), fairy.Item.Name), 10));
                     }
                     else
-                        Session.Client.SendPacket(Session.Character.GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("FAIRY_LEVELUP"), fairy.Item.Name), 10));
-                    Session.Client.SendPacket(Session.Character.GeneratePairy());
+                        Session.Client.SendPacket(GenerateMsg(string.Format(Language.Instance.GetMessageFromKey("FAIRY_LEVELUP"), fairy.Item.Name), 10));
+                    Session.Client.SendPacket(GeneratePairy());
                 }
             }
 
-            t = Session.Character.JobXPLoad();
-            while (Session.Character.JobLevelXp >= t)
+            t = JobXPLoad();
+            while (JobLevelXp >= t)
             {
-                Session.Character.JobLevelXp -= (long)t;
-                Session.Character.JobLevel++;
-                t = Session.Character.JobXPLoad();
-                if (Session.Character.JobLevel >= 20 && Session.Character.Class == 0)
+                JobLevelXp -= (long)t;
+                JobLevel++;
+                t = JobXPLoad();
+                if (JobLevel >= 20 && Class == 0)
                 {
-                    Session.Character.JobLevel = 20;
-                    Session.Character.JobLevelXp = 0;
+                    JobLevel = 20;
+                    JobLevelXp = 0;
                 }
-                else if (Session.Character.JobLevel >= 80)
+                else if (JobLevel >= 80)
                 {
-                    Session.Character.JobLevel = 80;
-                    Session.Character.JobLevelXp = 0;
+                    JobLevel = 80;
+                    JobLevelXp = 0;
                 }
-                Session.Character.Hp = (int)Session.Character.HPLoad();
-                Session.Character.Mp = (int)Session.Character.MPLoad();
-                Session.Client.SendPacket(Session.Character.GenerateStat());
-                Session.Client.SendPacket($"levelup {Session.Character.CharacterId}");
-                Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("JOB_LEVELUP"), 0));
-                Session.Character.LearnAdventurerSkill();
-                Session.CurrentMap?.Broadcast(Session.Character.GenerateEff(6));
-                Session.CurrentMap?.Broadcast(Session.Character.GenerateEff(198));
+                Hp = (int)HPLoad();
+                Mp = (int)MPLoad();
+                Session.Client.SendPacket(GenerateStat());
+                Session.Client.SendPacket($"levelup {CharacterId}");
+                Session.Client.SendPacket(GenerateMsg(Language.Instance.GetMessageFromKey("JOB_LEVELUP"), 0));
+                LearnAdventurerSkill();
+                Session.CurrentMap?.Broadcast(GenerateEff(6));
+                Session.CurrentMap?.Broadcast(GenerateEff(198));
             }
             if (specialist != null)
-                t = Session.Character.SPXPLoad();
+                t = SPXPLoad();
             while (specialist != null && specialist.XP >= t)
             {
                 specialist.XP -= (long)t;
                 specialist.SpLevel++;
-                t = Session.Character.SPXPLoad();
-                Session.Client.SendPacket(Session.Character.GenerateStat());
-                Session.Client.SendPacket($"levelup {Session.Character.CharacterId}");
+                t = SPXPLoad();
+                Session.Client.SendPacket(GenerateStat());
+                Session.Client.SendPacket($"levelup {CharacterId}");
                 if (specialist.SpLevel >= 99)
                 {
                     specialist.SpLevel = 99;
                     specialist.XP = 0;
                 }
-                Session.Character.LearnSPSkill();
+                LearnSPSkill();
 
-                Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SP_LEVELUP"), 0));
-                Session.CurrentMap?.Broadcast(Session.Character.GenerateEff(6));
-                Session.CurrentMap?.Broadcast(Session.Character.GenerateEff(198));
+                Session.Client.SendPacket(GenerateMsg(Language.Instance.GetMessageFromKey("SP_LEVELUP"), 0));
+                Session.CurrentMap?.Broadcast(GenerateEff(6));
+                Session.CurrentMap?.Broadcast(GenerateEff(198));
             }
-            Session.Client.SendPacket(Session.Character.GenerateLev());
+            Session.Client.SendPacket(GenerateLev());
         }
 
         public int GetCP()
@@ -1545,7 +1557,22 @@ namespace OpenNos.GameObject
         {
             Session.Client.SendPacket(GenerateSay(String.Format(Language.Instance.GetMessageFromKey("RARIFY_SUCCESS"), rare), 12));
             Session.Client.SendPacket(GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("RARIFY_SUCCESS"), rare), 0));
-            ServerManager.Instance.Broadcast(Session, Session.Character.GenerateEff(3005), ReceiverType.All);
+            ServerManager.Instance.Broadcast(Session, GenerateEff(3005), ReceiverType.All);
+        }
+
+        public void Rest()
+        {
+            if (LastSkill.AddSeconds(4) > DateTime.Now || LastDefence.AddSeconds(4) > DateTime.Now)
+            {
+                return;
+            }
+            if (!IsVehicled)
+            {
+                IsSitting = !IsSitting;
+                Session.CurrentMap?.Broadcast(GenerateRest());
+            }
+            else
+                Session.Client.SendPacket(GenerateSay(Language.Instance.GetMessageFromKey("IMPOSSIBLE_TO_USE"), 10));
         }
 
         public void Save()
@@ -1615,6 +1642,27 @@ namespace OpenNos.GameObject
             catch (Exception e)
             {
                 Logger.Log.Error("Save Character failed. SessionId: " + Session.SessionId, e);
+            }
+        }
+
+        public void SpeedLoad()
+        {
+            if (!IsVehicled)
+            {
+                Speed = ServersData.SpeedData[Class];
+
+                if (UseSp)
+                {
+                    SpecialistInstance sp = EquipmentList.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, (byte)InventoryType.Equipment);
+                    if (sp != null)
+                    {
+                        Speed += ServerManager.GetItem(sp.ItemVNum).Speed;
+                    }
+                }
+            }
+            if (IsShopping)
+            {
+                Speed = 0;
             }
         }
 

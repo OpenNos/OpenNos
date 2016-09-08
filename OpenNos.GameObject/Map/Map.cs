@@ -80,13 +80,12 @@ namespace OpenNos.GameObject
             foreach (MapMonsterDTO monster in DAOFactory.MapMonsterDAO.LoadFromMap(MapId).ToList())
             {
                 NpcMonster npcmonster = ServerManager.GetNpc(monster.MonsterVNum);
-                _monsters.Add(new MapMonster(this)
+                _monsters.Add(new MapMonster(this, monster.MonsterVNum)
                 {
                     MapId = monster.MapId,
                     MapX = monster.MapX,
                     MapMonsterId = monster.MapMonsterId,
                     MapY = monster.MapY,
-                    MonsterVNum = monster.MonsterVNum,
                     Position = monster.Position,
                     firstX = monster.MapX,
                     firstY = monster.MapY,
@@ -202,7 +201,11 @@ namespace OpenNos.GameObject
             MapCellAStar cell_start = new MapCellAStar(null, null, cell1.X, cell1.Y, cell1.MapId);
             MapCellAStar cell_goal = new MapCellAStar(null, null, cell2.X, cell2.Y, cell2.MapId);
             OPEN.Push(cell_start);
-
+            if (cell1.MapId != cell2.MapId)
+            {
+                SolutionPathList.Insert(0, cell_start);
+                return SolutionPathList;
+            }
             while (OPEN.Count > 0)
             {
                 MapCellAStar cell_current = OPEN.Pop();
@@ -355,29 +358,27 @@ namespace OpenNos.GameObject
         public async void MonsterLifeManager()
         {
             var rnd = new Random();
-            Task MonsterLifeTask = null;
+            List<Task> MonsterLifeTask = new List<Task>();
             foreach (MapMonster monster in Monsters.OrderBy(i => rnd.Next()))
             {
-                if (!monster.LifeTaskIsRunning)
-                {
-                    MonsterLifeTask = new Task(() => monster.MonsterLife());
-                    MonsterLifeTask.Start();
-                    await Task.Delay(rnd.Next(1000 / Monsters.Count(), 1000 / Monsters.Count()));
-                }
+                MonsterLifeTask.Add(new Task(() => monster.MonsterLife()));
+                MonsterLifeTask.Last().Start();
             }
+            foreach (Task t in MonsterLifeTask)
+                await t;
         }
 
         public async void NpcLifeManager()
         {
             var rnd = new Random();
-            Task NpcLifeTask = null;
+            List<Task> NpcLifeTask = new List<Task>();
             foreach (MapNpc npc in Npcs.OrderBy(i => rnd.Next()))
             {
-                NpcLifeTask = new Task(() => npc.NpcLife());
-                NpcLifeTask.Start();
-
-                await Task.Delay(rnd.Next(1000 / Npcs.Count(), 1000 / Npcs.Count()));
+                NpcLifeTask.Add(new Task(() => npc.NpcLife()));
+                NpcLifeTask.Last().Start();
             }
+            foreach (Task t in NpcLifeTask)
+                await t;
         }
 
         internal bool GetFreePosition(ref short firstX, ref short firstY, byte xpoint, byte ypoint)
@@ -415,7 +416,7 @@ namespace OpenNos.GameObject
         internal IEnumerable<Character> GetListPeopleInRange(short mapX, short mapY, byte distance)
         {
             List<Character> listch = new List<Character>();
-            IEnumerable<ClientSession> cl = ServerManager.Instance.Sessions.Where(s => s.Character != null && s.Character.Hp > 0);
+            IEnumerable<ClientSession> cl = Sessions.Where(s => s.Character != null && s.Character.Hp > 0);
             for (int i = cl.Count() - 1; i >= 0; i--)
             {
                 if (GetDistance(new MapCell() { X = mapX, Y = mapY }, new MapCell() { X = cl.ElementAt(i).Character.MapX, Y = cl.ElementAt(i).Character.MapY }) <= distance + 1)

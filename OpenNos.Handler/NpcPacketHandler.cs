@@ -380,8 +380,7 @@ namespace OpenNos.Handler
 
                         Session.Client.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("SHOP_OPEN")));
                         Session.Character.IsSitting = true;
-                        Session.Character.LastSpeed = Session.Character.Speed;
-                        Session.Character.Speed = 0;
+                        Session.Character.IsShopping = true;
                         Session.Client.SendPacket(Session.Character.GenerateCond());
 
                         Session.CurrentMap?.Broadcast(Session.Character.GenerateRest());
@@ -398,7 +397,8 @@ namespace OpenNos.Handler
                     Session.CurrentMap.UserShops.Remove(shop.Key);
                     Session.CurrentMap?.Broadcast(Session.Character.GenerateShopEnd());
                     Session.CurrentMap?.Broadcast(Session, Session.Character.GeneratePlayerFlag(0), ReceiverType.AllExceptMe);
-                    Session.Character.Speed = Session.Character.LastSpeed != 0 ? Session.Character.LastSpeed : Session.Character.Speed;
+                    Session.Character.SpeedLoad();
+                    Session.Character.IsShopping = false;
                     Session.Character.IsSitting = false;
                     Session.Client.SendPacket(Session.Character.GenerateCond());
                     Session.CurrentMap?.Broadcast(Session.Character.GenerateRest());
@@ -486,7 +486,7 @@ namespace OpenNos.Handler
                                 Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(inv.ItemInstance.ItemVNum, inv.ItemInstance.Amount, inv.Type, inv.Slot, 0, inv.ItemInstance.Rare, inv.ItemInstance.Upgrade, 0));
 
                                 Session.Client.SendPacket($"pdti 11 {inv.ItemInstance.ItemVNum} {rec.Amount} 29 {inv.ItemInstance.Upgrade} 0");
-                                Session.Client.SendPacket($"guri 19 1 {Session.Character.CharacterId} 1324");
+                                Session.Client.SendPacket(Session.Character.GenerateGuri(19, 1, 1324));
 
                                 Session.Client.SendPacket(Session.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("CRAFTED_OBJECT"), (inv.ItemInstance as ItemInstance).Item.Name, rec.Amount), 0));
                             }
@@ -505,7 +505,7 @@ namespace OpenNos.Handler
         {
             Logger.Debug(packet, Session.SessionId);
             string[] packetsplit = packet.Split(' ');
-            if ((Session.Character.ExchangeInfo != null && Session.Character.ExchangeInfo?.ExchangeList.Count() != 0) || Session.Character.Speed == 0)
+            if ((Session.Character.ExchangeInfo != null && Session.Character.ExchangeInfo?.ExchangeList.Count() != 0) || Session.Character.Session.Character.IsShopping)
                 return;
             if (packetsplit.Length > 6)
             {
@@ -580,7 +580,7 @@ namespace OpenNos.Handler
             int NpcId;
             byte typeshop = 0;
             if (!int.TryParse(packetsplit[5], out NpcId) || !byte.TryParse(packetsplit[2], out type)) return;
-            if (Session.Character.Speed == 0)
+            if (Session.Character.IsShopping)
                 return;
             MapNpc mapnpc = Session.CurrentMap.Npcs.FirstOrDefault(n => n.MapNpcId.Equals(NpcId));
             NpcMonster npc = ServerManager.GetNpc(mapnpc.NpcVNum);
@@ -593,15 +593,51 @@ namespace OpenNos.Handler
                 typeshop = 100;
                 double percent = 1;
                 if (Session.Character.GetDignityIco() == 3)
-                    percent = 1.10;
+                {
+                    percent = 1.1;
+                    typeshop = 110;
+                }
                 else if (Session.Character.GetDignityIco() == 4)
-                    percent = 1.20;
-                else if (Session.Character.GetDignityIco() == 5 || Session.Character.GetDignityIco() == 6)
+                {
+                    percent = 1.2;
+                    typeshop = 120;
+                }
+                else if (Session.Character.GetDignityIco() == 5)
+                {
                     percent = 1.5;
-                if (Session.CurrentMap.MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act4))
+                    typeshop = 150;
+                }
+                else if
+                    (Session.Character.GetDignityIco() == 6)
+                {
+                    percent = 1.5;
+                    typeshop = 150;
+                }
+                else if (Session.CurrentMap.MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act4))
                 {
                     percent *= 1.5;
                     typeshop = 150;
+                }
+                if (Session.CurrentMap.MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act4 && Session.Character.GetDignityIco() == 3))
+                {
+                    percent = 1.6;
+                    typeshop = 160;
+                }
+                else if (Session.CurrentMap.MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act4 && Session.Character.GetDignityIco() == 4))
+                {
+                    percent = 1.7;
+                    typeshop = 170;
+                }
+                else if (Session.CurrentMap.MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act4 && Session.Character.GetDignityIco() == 5))
+                {
+                    percent = 2;
+                    typeshop = 200;
+                }
+                else if
+                    (Session.CurrentMap.MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act4 && Session.Character.GetDignityIco() == 6))
+                {
+                    percent = 2;
+                    typeshop = 200;
                 }
                 if (iteminfo.ReputPrice > 0 && iteminfo.Type == 0)
                     shoplist += $" {iteminfo.Type}.{item.Slot}.{item.ItemVNum}.{item.Rare}.{(iteminfo.IsColored ? item.Color : item.Upgrade)}.{ServerManager.GetItem(item.ItemVNum).ReputPrice}";

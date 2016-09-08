@@ -86,24 +86,28 @@ namespace OpenNos.GameObject
                     SpecialistInstance sp = Session.Character.EquipmentList.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, (byte)InventoryType.Equipment);
                     if (!DelayUsed && Session.Character.IsVehicled == false)
                     {
+                        if (Session.Character.IsSitting)
+                        {
+                            Session.Character.IsSitting = false;
+                            Session.CurrentMap?.Broadcast(Session.Character.GenerateRest());
+                        }
                         Session.Client.SendPacket(Session.Character.GenerateDelay(3000, 3, $"#u_i^1^{Session.Character.CharacterId}^{Inv.Type}^{Inv.Slot}^2"));
                     }
                     else
                     {
-                        if (Session.Character.IsVehicled == false)
+                        if (!Session.Character.IsVehicled)
                         {
                             Session.Character.IsVehicled = true;
                             Session.Character.MorphUpgrade = 0;
                             Session.Character.MorphUpgrade2 = 0;
                             Session.Character.Morph = Morph + Session.Character.Gender;
-                            Session.Character.LastSpeed = Session.Character.Speed;
                             Session.Character.Speed = Speed;
                             Session.CurrentMap?.Broadcast(Session.Character.GenerateEff(196));
                         }
                         else
                         {
                             Session.Character.IsVehicled = false;
-                            Session.Character.Speed = Session.Character.LastSpeed;
+                            Session.Character.SpeedLoad();
                             if (Session.Character.UseSp)
                             {
                                 if (sp != null)
