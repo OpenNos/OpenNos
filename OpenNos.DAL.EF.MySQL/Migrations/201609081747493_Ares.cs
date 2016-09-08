@@ -31,6 +31,7 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
                         Act4Points = c.Int(nullable: false),
                         ArenaWinner = c.Int(nullable: false),
                         Backpack = c.Int(nullable: false),
+                        Biography = c.String(unicode: false),
                         BuffBlocked = c.Boolean(nullable: false),
                         Class = c.Byte(nullable: false),
                         Compliment = c.Short(nullable: false),
