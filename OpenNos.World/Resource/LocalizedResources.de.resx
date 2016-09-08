@@ -775,22 +775,29 @@
     <value>/&gt;</value>
   </data>
   <data name="IMPOSSIBLE_TO_USE" xml:space="preserve">
-    <value />
+    <value>Unmöglich zu verwenden.</value>
   </data>
   <data name="NOT_ENOUGH_POINTS" xml:space="preserve">
-    <value />
+    <value>Nicht genügend Punkte vorhanden..</value>
   </data>
   <data name="SPEAKER" xml:space="preserve">
-    <value />
+    <value>Lautsprecher</value>
   </data>
   <data name="TRANSFORMATION_NEEDED" xml:space="preserve">
-    <value />
+    <value>Du mussst Transformiert sein, um die SP-Punkte zurückzusetzen.</value>
   </data>
   <data name="REMOVE_VEHICLE" xml:space="preserve">
-    <value />
-    <value />
+    <value>Steige von deinem Reittier herrunter, damit du deine Spezialistenkarte anziehen kannst.</value>
   </data>
   <data name="SAVING_ALL" xml:space="preserve">
     <value>Speichern aller Daten wird durchgeführt</value>
+      <data name="SKILL_LEARNED" xml:space="preserve">
+    <value>Du hast ein neuen Skill erlernt.</value>
+  </data>
+    <data name="ASK_BIND" xml:space="preserve">
+    <value>Möchtest du das Item benutzen? Das Item wird dann an deinen Charackter gebunden sein.</value>
+  </data>
+      <data name="WELCOME_MUSIC_INFO" xml:space="preserve">
+    <value>Frühlings^Melodie</value>
   </data>
 </root>
