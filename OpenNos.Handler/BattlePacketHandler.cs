@@ -639,7 +639,7 @@ namespace OpenNos.Handler
                         if (rndamount <= ((double)drop.DropChance * RateDrop) / 5000.000)
                         {
                             x++;
-                            if (ServerManager.GetMap(Session.Character.MapId).MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act4))
+                            if (ServerManager.GetMap(Session.Character.MapId).MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act4) || monsterinfo.MonsterType == MonsterType.Elite )
                             {
                                 ItemInstance newItem = InventoryList.CreateItemInstance(drop.ItemVNum);
                                 if (newItem.Item.ItemType == (byte)ItemType.Armor || newItem.Item.ItemType == (byte)ItemType.Weapon || newItem.Item.ItemType == (byte)ItemType.Shell)
@@ -665,7 +665,7 @@ namespace OpenNos.Handler
                         Amount = gold,
                         ItemVNum = 1046
                     };
-                    if (ServerManager.GetMap(Session.Character.MapId).MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act4))
+                    if (ServerManager.GetMap(Session.Character.MapId).MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act4) || monsterinfo.MonsterType == MonsterType.Elite)
                     {
                         Session.Character.Gold += drop2.Amount;
                         Session.Client.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {ServerManager.GetItem(drop2.ItemVNum).Name} x {drop2.Amount}", 10));

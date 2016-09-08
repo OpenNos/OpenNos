@@ -28,6 +28,7 @@ namespace OpenNos.DAL.EF.MySQL
             MapMonster = new HashSet<MapMonster>();
             MapNpc = new HashSet<MapNpc>();
             NpcMonsterSkill = new HashSet<NpcMonsterSkill>();
+            MonsterType = Domain.MonsterType.Unkown;
         }
 
         #endregion
@@ -96,6 +97,8 @@ namespace OpenNos.DAL.EF.MySQL
         public int MaxHP { get; set; }
 
         public int MaxMP { get; set; }
+
+        public Domain.MonsterType MonsterType { get; set; }
 
         [MaxLength(255)]
         public string Name { get; set; }

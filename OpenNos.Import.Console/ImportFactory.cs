@@ -664,6 +664,13 @@ namespace OpenNos.Import.Console
                                 npc.NoAggresiveIcon = false;
                             }
                         }
+                        if (npc.NpcMonsterVNum >= 588 && npc.NpcMonsterVNum <= 607)
+                        {
+                            for(int i = 588; i <= 608; i++)
+                            {
+                                npc.MonsterType = MonsterType.Elite;
+                            }
+                        }
                     }
                     else if (currentLine.Length > 6 && currentLine[1] == "SETTING")
                     {

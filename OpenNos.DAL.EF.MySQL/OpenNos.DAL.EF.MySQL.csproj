@@ -111,9 +111,9 @@
     <Compile Include="Entities\NpcMonsterskill.cs" />
     <Compile Include="MapTypeDAO.cs" />
     <Compile Include="MapTypeMapDAO.cs" />
-    <Compile Include="Migrations\201609081747493_Ares.cs" />
-    <Compile Include="Migrations\201609081747493_Ares.Designer.cs">
-      <DependentUpon>201609081747493_Ares.cs</DependentUpon>
+    <Compile Include="Migrations\201609081759184_Ares.cs" />
+    <Compile Include="Migrations\201609081759184_Ares.Designer.cs">
+      <DependentUpon>201609081759184_Ares.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="NpcMonsterSkillDAO.cs" />
@@ -193,8 +193,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201609081747493_Ares.resx">
-      <DependentUpon>201609081747493_Ares.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201609081759184_Ares.resx">
+      <DependentUpon>201609081759184_Ares.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
