@@ -57,6 +57,7 @@ namespace OpenNos.GameObject
             SaveY = 0;
             LastDefence = DateTime.Now.AddSeconds(-21);
             _session = Session;
+            Group = null;
         }
 
         #endregion
