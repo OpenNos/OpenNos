@@ -57,9 +57,9 @@ namespace OpenNos.Handler
         public void Compliment(string packet)
         {
             Logger.Debug(packet, Session.SessionId);
-            string[] packetsplit = packet.Split(' ');
-            long complimentCharacterId = 0;
-            if (long.TryParse(packetsplit[3], out complimentCharacterId))
+            string[] complimentPacket = packet.Split(' ');
+            long complimentedCharacterId = 0;
+            if (long.TryParse(complimentPacket[3], out complimentedCharacterId))
             {
                 if (Session.Character.Level >= 30)
                 {
@@ -67,14 +67,14 @@ namespace OpenNos.Handler
                     {
                         if (Session.Account.LastCompliment.Date.AddDays(1) <= DateTime.Now.Date)
                         {
-                            short? compliment = ServerManager.Instance.GetProperty<short?>(complimentCharacterId, nameof(Character.Compliment));
+                            short? compliment = ServerManager.Instance.GetProperty<short?>(complimentedCharacterId, nameof(Character.Compliment));
                             compliment++;
                             ServerManager.Instance.SetProperty(complimentCharacterId, nameof(Character.Compliment), compliment);
                             Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("COMPLIMENT_GIVEN"), ServerManager.Instance.GetProperty<string>(complimentCharacterId, nameof(Character.Name))), 12));
                             AccountDTO account = Session.Account;
                             account.LastCompliment = DateTime.Now;
                             DAOFactory.AccountDAO.InsertOrUpdate(ref account);
-                            Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("COMPLIMENT_RECEIVED"), Session.Character.Name), 12), ReceiverType.OnlySomeone, packetsplit[1].Substring(1));
+                            Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("COMPLIMENT_RECEIVED"), Session.Character.Name), 12), ReceiverType.OnlySomeone, complimentPacket[1].Substring(1));
                         }
                         else
                         {
@@ -251,7 +251,6 @@ namespace OpenNos.Handler
                             startupInventory.Add(inventory);
 
                             DAOFactory.InventoryDAO.InsertOrUpdate(startupInventory);
-
                             LoadCharacters(packet);
                         }
                         else Session.Client.SendPacketFormat($"info {Language.Instance.GetMessageFromKey("ALREADY_TAKEN")}");
@@ -265,16 +264,17 @@ namespace OpenNos.Handler
         public void DeleteCharacter(string packet)
         {
             Logger.Debug(packet, Session.SessionId);
-            if (Session.CurrentMap != null)
+
+            if (Session.HasCurrentMap)
                 return;
-            string[] packetsplit = packet.Split(' ');
+            string[] deleteCharacterPacket = packet.Split(' ');
             AccountDTO account = DAOFactory.AccountDAO.LoadBySessionId(Session.SessionId);
-            if (packetsplit.Length <= 3)
+            if (deleteCharacterPacket.Length <= 3)
                 return;
-            if (account != null && account.Password == OpenNos.Core.EncryptionBase.sha512(packetsplit[3]))
+            if (account != null && account.Password == EncryptionBase.sha512(deleteCharacterPacket[3]))
             {
-                DAOFactory.GeneralLogDAO.SetCharIdNull((long?)Convert.ToInt64(DAOFactory.CharacterDAO.LoadBySlot(account.AccountId, Convert.ToByte(packetsplit[2])).CharacterId));
-                DAOFactory.CharacterDAO.DeleteByPrimaryKey(account.AccountId, Convert.ToByte(packetsplit[2]));
+                DAOFactory.GeneralLogDAO.SetCharIdNull(Convert.ToInt64(DAOFactory.CharacterDAO.LoadBySlot(account.AccountId, Convert.ToByte(deleteCharacterPacket[2])).CharacterId));
+                DAOFactory.CharacterDAO.DeleteByPrimaryKey(account.AccountId, Convert.ToByte(deleteCharacterPacket[2]));
                 LoadCharacters(packet);
             }
             else
@@ -287,11 +287,11 @@ namespace OpenNos.Handler
         public void Dir(string packet)
         {
             Logger.Debug(packet, Session.SessionId);
-            string[] packetsplit = packet.Split(' ');
+            string[] dirPacket = packet.Split(' ');
 
-            if (Convert.ToInt32(packetsplit[4]) == Session.Character.CharacterId)
+            if (Convert.ToInt32(dirPacket[4]) == Session.Character.CharacterId)
             {
-                Session.Character.Direction = Convert.ToInt32(packetsplit[2]);
+                Session.Character.Direction = Convert.ToInt32(dirPacket[2]);
                 Session.CurrentMap?.Broadcast(Session.Character.GenerateDir());
             }
         }
@@ -299,33 +299,33 @@ namespace OpenNos.Handler
         [Packet("ncif")]
         public void GetNamedCharacterInformation(string packet)
         {
-            string[] packetsplit = packet.Split(' ');
+            string[] characterInformationPacket = packet.Split(' ');
 
-            if (packetsplit[2] == "1")
+            if (characterInformationPacket[2] == "1")
             {
                 long charId = 0;
-                if (Int64.TryParse(packetsplit[3], out charId)) ServerManager.Instance.RequireBroadcastFromUser(Session, charId, "GenerateStatInfo");
+                if (Int64.TryParse(characterInformationPacket[3], out charId)) ServerManager.Instance.RequireBroadcastFromUser(Session, charId, "GenerateStatInfo");
             }
-            if (packetsplit[2] == "2")
+            if (characterInformationPacket[2] == "2")
             {
                 foreach (MapNpc npc in ServerManager.GetMap(Session.Character.MapId).Npcs)
-                    if (npc.MapNpcId == Convert.ToInt32(packetsplit[3]))
+                    if (npc.MapNpcId == Convert.ToInt32(characterInformationPacket[3]))
                     {
                         NpcMonster npcinfo = ServerManager.GetNpc(npc.NpcVNum);
                         if (npcinfo == null)
                             return;
-                        Session.Client.SendPacket($"st 2 {packetsplit[3]} {npcinfo.Level} {npcinfo.HeroLevel} 100 100 50000 50000");
+                        Session.Client.SendPacket($"st 2 {characterInformationPacket[3]} {npcinfo.Level} {npcinfo.HeroLevel} 100 100 50000 50000");
                     }
             }
-            if (packetsplit[2] == "3")
+            if (characterInformationPacket[2] == "3")
             {
                 foreach (MapMonster monster in ServerManager.GetMap(Session.Character.MapId).Monsters)
-                    if (monster.MapMonsterId == Convert.ToInt32(packetsplit[3]))
+                    if (monster.MapMonsterId == Convert.ToInt32(characterInformationPacket[3]))
                     {
                         NpcMonster monsterinfo = ServerManager.GetNpc(monster.MonsterVNum);
                         if (monsterinfo == null)
                             return;
-                        Session.Client.SendPacket($"st 3 {packetsplit[3]} {monsterinfo.Level} {monsterinfo.HeroLevel} {(int)((float)monster.CurrentHp / (float)monsterinfo.MaxHP * 100)} {(int)((float)monster.CurrentMp / (float)monsterinfo.MaxMP * 100)} {monster.CurrentHp} {monster.CurrentMp}");
+                        Session.Client.SendPacket($"st 3 {characterInformationPacket[3]} {monsterinfo.Level} {monsterinfo.HeroLevel} {(int)((float)monster.CurrentHp / (float)monsterinfo.MaxHP * 100)} {(int)((float)monster.CurrentMp / (float)monsterinfo.MaxMP * 100)} {monster.CurrentHp} {monster.CurrentMp}");
                     }
             }
         }
@@ -352,27 +352,27 @@ namespace OpenNos.Handler
         [Packet("guri")]
         public void Guri(string packet)
         {
-            string[] packetsplit = packet.Split(' ');
-            if (packetsplit[2] == "10" && Convert.ToInt32(packetsplit[5]) >= 973 && Convert.ToInt32(packetsplit[5]) <= 999 && !Session.Character.EmoticonsBlocked)
+            string[] guriPacket = packet.Split(' ');
+            if (guriPacket[2] == "10" && Convert.ToInt32(guriPacket[5]) >= 973 && Convert.ToInt32(guriPacket[5]) <= 999 && !Session.Character.EmoticonsBlocked)
             {
-                Session.Client.SendPacket(Session.Character.GenerateEff(Convert.ToInt32(packetsplit[5]) + 4099));
-                Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateEff(Convert.ToInt32(packetsplit[5]) + 4099), ReceiverType.AllNoEmoBlocked);
+                Session.Client.SendPacket(Session.Character.GenerateEff(Convert.ToInt32(guriPacket[5]) + 4099));
+                Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateEff(Convert.ToInt32(guriPacket[5]) + 4099), ReceiverType.AllNoEmoBlocked);
             }
-            if (packetsplit[2] == "2")
+            if (guriPacket[2] == "2")
             {
                 Session.CurrentMap?.Broadcast(Session.Character.GenerateGuri(2, 1));
             }
-            else if (packetsplit[2] == "4")
+            else if (guriPacket[2] == "4")
             {
                 int speakerVNum = 2173;
-                if (packetsplit[3] == "3") //Speaker
+                if (guriPacket[3] == "3") //Speaker
                 {
                     if (Session.Character.InventoryList.CountItem(speakerVNum) > 0)
                     {
                         string message = String.Empty;
                         message = $"<{Language.Instance.GetMessageFromKey("SPEAKER")}> [{Session.Character.Name}]:";
-                        for (int i = 6; i < packetsplit.Length; i++)
-                            message += packetsplit[i] + " ";
+                        for (int i = 6; i < guriPacket.Length; i++)
+                            message += guriPacket[i] + " ";
                         message.Trim();
 
                         Session.Character.InventoryList.RemoveItemAmount(speakerVNum, 1);
@@ -380,18 +380,18 @@ namespace OpenNos.Handler
                     }
                 }
             }
-            else if (packetsplit[2] == "203" && packetsplit[3] == "0")
+            else if (guriPacket[2] == "203" && guriPacket[3] == "0")
             {
-                int[] ListPotionResetVNums = new int[3] { 1366, 1427, 5115 };
-                int VNumToUse = -1;
-                foreach (int vnum in ListPotionResetVNums)
+                int[] listPotionResetVNums = new int[3] { 1366, 1427, 5115 };
+                int vnumToUse = -1;
+                foreach (int vnum in listPotionResetVNums)
                 {
                     if (Session.Character.InventoryList.CountItem(vnum) > 0)
                     {
-                        VNumToUse = vnum;
+                        vnumToUse = vnum;
                     }
                 }
-                if (VNumToUse != -1)
+                if (vnumToUse != -1)
                 {
                     if (Session.Character.UseSp)
                     {
@@ -420,7 +420,7 @@ namespace OpenNos.Handler
                             specialistInstance.HP = 0;
                             specialistInstance.MP = 0;
 
-                            Session.Character.InventoryList.RemoveItemAmount(VNumToUse, 1);
+                            Session.Character.InventoryList.RemoveItemAmount(vnumToUse, 1);
                             Session.Character.EquipmentList.DeleteFromSlotAndType((byte)EquipmentType.Sp, (byte)InventoryType.Equipment);
                             Session.Character.EquipmentList.AddToInventoryWithSlotAndType(specialistInstance, (byte)InventoryType.Equipment, (byte)EquipmentType.Sp);
                             Session.Client.SendPacket(Session.Character.GenerateSlInfo(specialistInstance, 2));
@@ -460,9 +460,9 @@ namespace OpenNos.Handler
                                 }
                             }
                             rnd = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
-                            double rndamount = rnd.Next(0, 100) * rnd.NextDouble();
+                            double randomAmount = rnd.Next(0, 100) * rnd.NextDouble();
                             int dropChance = mapobject.Drops.FirstOrDefault(s => s.MonsterVNum == npc.NpcVNum).DropChance;
-                            if (rndamount <= ((double)dropChance * RateDrop) / 5000.000)
+                            if (randomAmount <= ((double)dropChance * RateDrop) / 5000.000)
                             {
                                 short vnum = mapobject.Drops.FirstOrDefault(s => s.MonsterVNum == npc.NpcVNum).ItemVNum;
                                 Session.Character.InventoryList.AddNewItemToInventory(vnum);
@@ -481,8 +481,8 @@ namespace OpenNos.Handler
                 case "710":
                     if (packetsplit.Length > 5)
                     {
-                        MapNpc npc = ServerManager.GetMap(Session.Character.MapId).Npcs.FirstOrDefault(n => n.MapNpcId.Equals(Convert.ToInt16(packetsplit[5])));
-                        NpcMonster mapobject = ServerManager.GetNpc(npc.NpcVNum);
+                        //MapNpc npc = ServerManager.GetMap(Session.Character.MapId).Npcs.FirstOrDefault(n => n.MapNpcId.Equals(Convert.ToInt16(packetsplit[5])));
+                        //NpcMonster mapObject = ServerManager.GetNpc(npc.NpcVNum);
                         //teleport free
                     }
                     break;
@@ -883,7 +883,7 @@ namespace OpenNos.Handler
         }
 
         [Packet("qset")]
-        public void QuicklistSet(string packet)
+        public void SetQuicklist(string packet)
         {
             Logger.Debug(packet, Session.SessionId);
             string[] packetsplit = packet.Split(' ');

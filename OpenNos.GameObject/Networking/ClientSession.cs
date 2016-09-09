@@ -108,6 +108,14 @@ namespace OpenNos.GameObject
             }
         }
 
+        public bool HasCurrentMap
+        {
+            get
+            {
+                return CurrentMap != null;
+            }
+        }
+
         public Map CurrentMap { get; set; }
 
         public IDictionary<Packet, Tuple<Action<object, string>, object>> HandlerMethods

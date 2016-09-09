@@ -1199,6 +1199,8 @@ namespace OpenNos.Handler
                     (inv.ItemInstance as ItemInstance).Item.Use(Session, ref inv);
                 }
             }
+            
+            
         }
 
         private void ChangeSP()
