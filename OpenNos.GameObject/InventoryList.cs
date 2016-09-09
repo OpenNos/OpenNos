@@ -123,9 +123,15 @@ namespace OpenNos.GameObject
         {
             Logger.Debug($"Slot: {slot} Type: {type} VNUM: {iteminstance.ItemVNum}", Owner.Session.SessionId);
             Inventory inv = new Inventory() { Type = type, Slot = slot, ItemInstance = iteminstance, CharacterId = Owner.CharacterId };
-            Owner.Session.Client.SendPacket(Owner.Session.Character.GenerateInventoryAdd(iteminstance.ItemVNum, inv.ItemInstance.Amount, type, slot, iteminstance.Rare, iteminstance.Design, 0, 0));
+            string inventoryPacket = Owner.Session.Character.GenerateInventoryAdd(iteminstance.ItemVNum, inv.ItemInstance.Amount, type, slot, iteminstance.Rare, iteminstance.Design, 0, 0);
+            if (!String.IsNullOrEmpty(inventoryPacket))
+            {
+                Owner.Session.Client.SendPacket(inventoryPacket);
+            }
+
             if (Inventory.Any(s => s.Slot == slot && s.Type == type))
                 return null;
+
             inv.ItemInstance.Id = inv.Id; //set id because its a one to one
             Inventory.Add(inv);
             return inv;

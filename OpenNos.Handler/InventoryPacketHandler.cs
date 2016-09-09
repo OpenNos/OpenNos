@@ -1199,8 +1199,8 @@ namespace OpenNos.Handler
                     (inv.ItemInstance as ItemInstance).Item.Use(Session, ref inv);
                 }
             }
-            
-            
+
+            Session.Client.SendPacket(Session.Character.GenerateEff(123));
         }
 
         private void ChangeSP()

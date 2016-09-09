@@ -132,11 +132,8 @@ namespace OpenNos.GameObject
                     {
                         session.Character.InventoryList.DeleteFromSlotAndType(inventory.Slot, inventory.Type);
                         session.Character.EquipmentList.DeleteFromSlotAndType(equip.Slot, equip.Type);
-                        session.Client.SendPacket(session.Character.GenerateInventoryAdd(-1, 0, inventory.Type, inventory.Slot, 0, 0, 0, 0));
                         session.Character.EquipmentList.AddToInventoryWithSlotAndType(inventory.ItemInstance as ItemInstance, (byte)InventoryType.Equipment, iteminfo.EquipmentSlot);
                         session.Character.InventoryList.AddToInventoryWithSlotAndType(equip.ItemInstance as ItemInstance, type, slot);
-
-                        session.Client.SendPacket(session.Character.GenerateInventoryAdd(equip.ItemInstance.ItemVNum, equip.ItemInstance.Amount, type, slot, equip.ItemInstance.Rare, equip.ItemInstance.Design, equip.ItemInstance.Upgrade, 0));
 
                         session.Client.SendPacket(session.Character.GenerateStatChar());
                         session.CurrentMap?.Broadcast(session.Character.GenerateEq());
