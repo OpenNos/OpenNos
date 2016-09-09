@@ -802,9 +802,9 @@ namespace OpenNos.GameObject
             return $"s_memo {type} {message}";
         }
 
-        public List<string> GenerateShopOnMap()
+        public IEnumerable<string> GenerateShopOnMap()
         {
-            return ServerManager.GetMap(MapId).UserShops.Select(shop => $"shop 1 {shop.Key + 1} 1 3 0 {shop.Value.Name}").ToList();
+            return ServerManager.GetMap(MapId).GenerateUserShops();
         }
 
         public string GenerateSki()

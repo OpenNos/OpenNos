@@ -441,6 +441,8 @@ namespace OpenNos.GameObject
                 session.CurrentMap?.Broadcast(session, session.Character.GeneratePairy(), ReceiverType.AllExceptMe);
                 session.Client.SendPacket("act6"); // act6 1 0 14 0 0 0 14 0 0 0
 
+                ServerManager.Instance.Sessions.Where(s => s.Character != null && s.Character.MapId.Equals(session.Character.MapId) && s.Character.Name != session.Character.Name && !s.Character.InvisibleGm).ToList().ForEach(s => RequireBroadcastFromUser(session, s.Character.CharacterId, "GenerateIn"));
+
                 foreach (String portalPacket in session.Character.GenerateGp())
                     session.Client.SendPacket(portalPacket);
                 // wp 23 124 4 4 12 99
@@ -448,16 +450,15 @@ namespace OpenNos.GameObject
                     session.Client.SendPacket(monsterPacket);
                 foreach (String npcPacket in session.Character.GenerateIn2())
                     session.Client.SendPacket(npcPacket);
-                foreach (String ShopPacket in session.Character.GenerateNPCShopOnMap())
-                    session.Client.SendPacket(ShopPacket);
+                foreach (String npcShopPacket in session.Character.GenerateNPCShopOnMap())
+                    session.Client.SendPacket(npcShopPacket);
                 foreach (String droppedPacket in session.Character.GenerateDroppedItem())
                     session.Client.SendPacket(droppedPacket);
-                foreach (String ShopPacket in session.Character.GenerateShopOnMap())
-                    session.Client.SendPacket(ShopPacket);
+                foreach (String userShopPacket in session.Character.GenerateShopOnMap())
+                    session.Client.SendPacket(userShopPacket);
                 foreach (String ShopPacketChar in session.Character.GeneratePlayerShopOnMap())
                     session.Client.SendPacket(ShopPacketChar);
-                ServerManager.Instance.Sessions.Where(s => s.Character != null && s.Character.MapId.Equals(session.Character.MapId) && s.Character.Name != session.Character.Name && !s.Character.InvisibleGm).ToList().ForEach(s => RequireBroadcastFromUser(session, s.Character.CharacterId, "GenerateIn"));
-                if (session.Character.InvisibleGm == false)
+                               if (session.Character.InvisibleGm == false)
                     session.CurrentMap?.Broadcast(session, session.Character.GenerateIn(), ReceiverType.AllExceptMe);
                 if (session.Character.Size != 10)
                     session.Client.SendPacket(session.Character.GenerateScal());

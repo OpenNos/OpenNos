@@ -69,8 +69,8 @@ namespace OpenNos.Handler
                         {
                             short? compliment = ServerManager.Instance.GetProperty<short?>(complimentedCharacterId, nameof(Character.Compliment));
                             compliment++;
-                            ServerManager.Instance.SetProperty(complimentCharacterId, nameof(Character.Compliment), compliment);
-                            Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("COMPLIMENT_GIVEN"), ServerManager.Instance.GetProperty<string>(complimentCharacterId, nameof(Character.Name))), 12));
+                            ServerManager.Instance.SetProperty(complimentedCharacterId, nameof(Character.Compliment), compliment);
+                            Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("COMPLIMENT_GIVEN"), ServerManager.Instance.GetProperty<string>(complimentedCharacterId, nameof(Character.Name))), 12));
                             AccountDTO account = Session.Account;
                             account.LastCompliment = DateTime.Now;
                             DAOFactory.AccountDAO.InsertOrUpdate(ref account);

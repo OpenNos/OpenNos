@@ -281,6 +281,11 @@ namespace OpenNos.GameObject
             Broadcast($"drop {droppedItem.ItemInstance.ItemVNum} {droppedItem.ItemInstance.TransportId} {droppedItem.PositionX} {droppedItem.PositionY} {droppedItem.ItemInstance.Amount} 0 0 -1");//TODO UseTransportId
         }
 
+        public IEnumerable<string> GenerateUserShops()
+        {
+            return UserShops.Select(shop => $"shop 1 {shop.Key + 1} 1 3 0 {shop.Value.Name}").ToList();
+        }
+
         public List<MapMonster> GetListMonsterInRange(short mapX, short mapY, byte distance)
         {
             List<MapMonster> listmon = new List<MapMonster>();
