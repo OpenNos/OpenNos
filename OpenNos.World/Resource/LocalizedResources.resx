@@ -913,4 +913,7 @@
   <data name="SAVING_ALL" xml:space="preserve">
     <value>Saving all data</value>
   </data>
+  <data name="MEMORY" xml:space="preserve">
+    <value>Used memory</value>
+  </data>
 </root>

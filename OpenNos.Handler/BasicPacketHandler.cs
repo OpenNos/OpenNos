@@ -1310,10 +1310,7 @@ namespace OpenNos.Handler
 
                     //player join group
                     ServerManager.Instance.UpdateGroup(charId);
-
-                    string p = ServerManager.Instance.GeneratePidx(Session.Character.CharacterId);
-                    if (p != "")
-                        Session.CurrentMap?.Broadcast(p);
+                    Session.CurrentMap?.Broadcast(Session.Character.GeneratePidx());
                 }
                 else if (type == 4)
                 {

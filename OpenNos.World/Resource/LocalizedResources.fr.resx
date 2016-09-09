@@ -922,4 +922,7 @@ Veux-tu le porter ?</value>
   <data name="SKILL_CANT_LEARN" xml:space="preserve">
     <value>Tu ne peux pas apprendre cette compétence.</value>
   </data>
+  <data name="MEMORY" xml:space="preserve">
+    <value>Mémoire utilisée</value>
+  </data>
 </root>

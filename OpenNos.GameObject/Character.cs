@@ -1162,6 +1162,39 @@ namespace OpenNos.GameObject
             return $"tp 1 {CharacterId} {MapX} {MapY} 0";
         }
 
+        public string GeneratePidx()
+        {
+            int? count = ServerManager.Instance.Groups.FirstOrDefault(s => s.IsMemberOfGroup(CharacterId)).Characters?.Select(c => c.Character.CharacterId).Count();
+            string str = String.Empty;
+            if (count != null)
+            {
+                str = $"pidx {count}";
+                int i = 0;
+                foreach (long Id in ServerManager.Instance.Groups.FirstOrDefault(s => s.IsMemberOfGroup(CharacterId)).Characters?.Select(c => c.Character.CharacterId))
+                {
+                    i++;
+                    str += $" {i}.{Id} ";
+                }
+            }
+            if (str == $"pidx {count}")
+                return String.Empty;
+            else
+                return str;
+        }
+
+        public string GeneratePinit()
+        {
+            Group grp = ServerManager.Instance.Groups.FirstOrDefault(s => s.IsMemberOfGroup(CharacterId));
+            string str = $"pinit {grp.Characters.Count()}";
+            int i = 0;
+            foreach (ClientSession groupSessionForId in grp.Characters)
+            {
+                i++;
+                str += $" 1|{groupSessionForId.Character.CharacterId}|{i}|{groupSessionForId.Character.Level}|{groupSessionForId.Character.Name}|0|{groupSessionForId.Character.Gender}|{groupSessionForId.Character.Class}|{(groupSessionForId.Character.UseSp ? groupSessionForId.Character.Morph : 0)}|{groupSessionForId.Character.HeroLevel}";
+            }
+            return str;
+        }
+
         public void GenerateXp(NpcMonster monsterinfo)
         {
             int partySize = 1;

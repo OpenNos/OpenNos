@@ -735,4 +735,7 @@
   <data name="REMOVE_VEHICLE" xml:space="preserve">
     <value>Prima di trasformarti devi rimuovere il veicolo.</value>
   </data>
+  <data name="MEMORY" xml:space="preserve">
+    <value />
+  </data>
 </root>

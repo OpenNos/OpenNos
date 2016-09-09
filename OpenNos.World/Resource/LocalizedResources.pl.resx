@@ -892,4 +892,7 @@
   <data name="SAVING_ALL" xml:space="preserve">
     <value>W trakcie zapisu</value>
   </data>
+  <data name="MEMORY" xml:space="preserve">
+    <value>Użycie pamięci</value>
+  </data>
 </root>
