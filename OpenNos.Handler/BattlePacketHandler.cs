@@ -654,7 +654,7 @@ namespace OpenNos.Handler
                                 newItem.Amount = drop.Amount;
                                 Inventory newInv = Session.Character.InventoryList.AddToInventory(newItem);
                                 Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(newInv.ItemInstance.ItemVNum, newInv.ItemInstance.Amount, newInv.Type, newInv.Slot, newItem.Rare, newItem.Design, newItem.Upgrade, 0));
-                                Session.Client.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {ServerManager.GetItem(drop.ItemVNum).Name} x {drop.Amount}", 10));
+                                Session.Client.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {newItem.Item.Name} x {drop.Amount}", 10));
                             }
                             else
                                 Session.CurrentMap.DropItemByMonster(drop, mmon.MapX, mmon.MapY);

@@ -23,7 +23,7 @@ namespace OpenNos.Data
         int Amount { get; set; }
         byte Design { get; set; }
         Guid Id { get; set; }
-        bool IsUsed { get; set; }
+        long? BoundCharacterId { get; set; }
         DateTime? ItemDeleteTime { get; set; }
         short ItemVNum { get; set; }
         sbyte Rare { get; set; }

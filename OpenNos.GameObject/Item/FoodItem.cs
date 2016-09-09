@@ -60,7 +60,7 @@ namespace OpenNos.GameObject
                 return;
             else
                 session.Character.LastPotion = DateTime.Now;
-            Item item = ServerManager.GetItem(Inv.ItemInstance.ItemVNum);
+            Item item = ((ItemInstance)Inv.ItemInstance).Item;
             switch (Effect)
             {
                 default:

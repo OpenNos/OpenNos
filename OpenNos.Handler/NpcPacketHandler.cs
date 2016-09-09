@@ -262,13 +262,13 @@ namespace OpenNos.Handler
                         newItem.ItemInstance.Amount, newItem.Type, newItem.Slot, newItem.ItemInstance.Rare, newItem.ItemInstance.Design, newItem.ItemInstance.Upgrade, 0));
                     if (iteminfo.ReputPrice == 0)
                     {
-                        Session.Client.SendPacket(Session.Character.GenerateShopMemo(1, string.Format(Language.Instance.GetMessageFromKey("BUY_ITEM_VALID"), ServerManager.GetItem(item.ItemVNum).Name, amount)));
+                        Session.Client.SendPacket(Session.Character.GenerateShopMemo(1, string.Format(Language.Instance.GetMessageFromKey("BUY_ITEM_VALID"), iteminfo.Name, amount)));
                         Session.Character.Gold -= (long)(price * percent);
                         Session.Client.SendPacket(Session.Character.GenerateGold());
                     }
                     else
                     {
-                        Session.Client.SendPacket(Session.Character.GenerateShopMemo(1, string.Format(Language.Instance.GetMessageFromKey("BUY_ITEM_VALID"), ServerManager.GetItem(item.ItemVNum).Name, amount)));
+                        Session.Client.SendPacket(Session.Character.GenerateShopMemo(1, string.Format(Language.Instance.GetMessageFromKey("BUY_ITEM_VALID"), iteminfo.Name, amount)));
                         Session.Character.Reput -= (long)(Reputprice);
                         Session.Client.SendPacket(Session.Character.GenerateFd());
                         Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("REPUT_DECREASED"), 11));
@@ -332,7 +332,7 @@ namespace OpenNos.Handler
 
                                 if (inv.ItemInstance.Amount < qty[i])
                                     return;
-                                if (!((ItemInstance)inv.ItemInstance).Item.IsTradable || inv.ItemInstance.IsUsed)
+                                if (!((ItemInstance)inv.ItemInstance).Item.IsTradable || ((ItemInstance)inv.ItemInstance).IsBound)
                                 {
                                     Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SHOP_ONLY_TRADABLE_ITEMS"), 0));
                                     Session.Client.SendPacket("shop_end 0");
@@ -640,13 +640,13 @@ namespace OpenNos.Handler
                     typeshop = 200;
                 }
                 if (iteminfo.ReputPrice > 0 && iteminfo.Type == 0)
-                    shoplist += $" {iteminfo.Type}.{item.Slot}.{item.ItemVNum}.{item.Rare}.{(iteminfo.IsColored ? item.Color : item.Upgrade)}.{ServerManager.GetItem(item.ItemVNum).ReputPrice}";
+                    shoplist += $" {iteminfo.Type}.{item.Slot}.{item.ItemVNum}.{item.Rare}.{(iteminfo.IsColored ? item.Color : item.Upgrade)}.{iteminfo.ReputPrice}";
                 else if (iteminfo.ReputPrice > 0 && iteminfo.Type != 0)
-                    shoplist += $" {iteminfo.Type}.{item.Slot}.{item.ItemVNum}.{-1}.{ServerManager.GetItem(item.ItemVNum).ReputPrice}";
+                    shoplist += $" {iteminfo.Type}.{item.Slot}.{item.ItemVNum}.{-1}.{iteminfo.ReputPrice}";
                 else if (iteminfo.Type != 0)
-                    shoplist += $" {iteminfo.Type}.{item.Slot}.{item.ItemVNum}.{-1}.{ServerManager.GetItem(item.ItemVNum).Price * percent}";
+                    shoplist += $" {iteminfo.Type}.{item.Slot}.{item.ItemVNum}.{-1}.{iteminfo.Price * percent}";
                 else
-                    shoplist += $" {iteminfo.Type}.{item.Slot}.{item.ItemVNum}.{item.Rare}.{(iteminfo.IsColored ? item.Color : item.Upgrade)}.{ServerManager.GetItem(item.ItemVNum).Price * percent}";
+                    shoplist += $" {iteminfo.Type}.{item.Slot}.{item.ItemVNum}.{item.Rare}.{(iteminfo.IsColored ? item.Color : item.Upgrade)}.{iteminfo.Price * percent}";
             }
 
             foreach (ShopSkill skill in mapnpc.Shop.ShopSkills.Where(s => s.Type.Equals(type)))

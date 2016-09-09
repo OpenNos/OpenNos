@@ -307,7 +307,7 @@ namespace OpenNos.Handler
                             foreach (ItemInstance item in Session.Character.ExchangeInfo.ExchangeList)
                             {
                                 Inventory inv = Session.Character.InventoryList.GetInventoryByItemInstanceId(item.Id);
-                                if (inv != null && (!ServerManager.GetItem(inv.ItemInstance.ItemVNum).IsTradable || inv.ItemInstance.IsUsed))
+                                if (inv != null && (!((ItemInstance)inv.ItemInstance).Item.IsTradable || ((ItemInstance)inv.ItemInstance).IsBound))
                                 {
                                     Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("ITEM_NOT_TRADABLE"), 0));
                                     Session.Client.SendPacket("exc_close 0");
@@ -395,7 +395,7 @@ namespace OpenNos.Handler
                 if (qty[i] <= 0 || item.ItemInstance.Amount < qty[i])
                     return;
                 ItemInstance it = (item.ItemInstance as ItemInstance).DeepCopy();
-                if (it.Item.IsTradable)
+                if (it.Item.IsTradable && !it.IsBound)
                 {
                     it.Amount = qty[i];
                     Session.Character.ExchangeInfo.ExchangeList.Add(it);
@@ -404,7 +404,7 @@ namespace OpenNos.Handler
                     else
                         packetList += $"{i}.{type[i]}.{it.ItemVNum}.0.0 ";
                 }
-                if (it.IsUsed)
+                else if (it.IsBound)
                 {
                     Session.Client.SendPacket("exc_close 0");
                     Session.CurrentMap?.Broadcast(Session, $"exc_close 0", ReceiverType.OnlySomeone, "", Session.Character.ExchangeInfo.CharId);
@@ -466,11 +466,10 @@ namespace OpenNos.Handler
                     }
                     else
                     {
-                        Item iteminfo = ServerManager.GetItem(mapitem.ItemInstance.ItemVNum);
                         if (Session.Character.Gold + mapitem.ItemInstance.Amount <= 1000000000)
                         {
                             Session.Character.Gold += mapitem.ItemInstance.Amount;
-                            Session.Client.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {iteminfo.Name} x {amount}", 12));
+                            Session.Client.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {mapitem.ItemInstance.Item.Name} x {amount}", 12));
                         }
                         else
                         {
@@ -1094,8 +1093,7 @@ namespace OpenNos.Handler
                         inventory = Session.Character.InventoryList.LoadBySlotAndType<WearableInstance>(slot, type);
                         if (inventory != null)
                         {
-                            Item iteminfo = ServerManager.GetItem(inventory.ItemVNum);
-                            if (iteminfo.EquipmentSlot == (byte)EquipmentType.Armor || iteminfo.EquipmentSlot == (byte)EquipmentType.MainWeapon || iteminfo.EquipmentSlot == (byte)EquipmentType.SecondaryWeapon)
+                            if (inventory.Item.EquipmentSlot == (byte)EquipmentType.Armor || inventory.Item.EquipmentSlot == (byte)EquipmentType.MainWeapon || inventory.Item.EquipmentSlot == (byte)EquipmentType.SecondaryWeapon)
                             {
                                 inventory.UpgradeItem(Session, UpgradeMode.Normal, UpgradeProtection.None);
                             }
@@ -1106,8 +1104,7 @@ namespace OpenNos.Handler
                         inventory = Session.Character.InventoryList.LoadBySlotAndType<WearableInstance>(slot, type);
                         if (inventory != null)
                         {
-                            Item iteminfo = ServerManager.GetItem(inventory.ItemVNum);
-                            if (iteminfo.EquipmentSlot == (byte)EquipmentType.Armor || iteminfo.EquipmentSlot == (byte)EquipmentType.MainWeapon || iteminfo.EquipmentSlot == (byte)EquipmentType.SecondaryWeapon)
+                            if (inventory.Item.EquipmentSlot == (byte)EquipmentType.Armor || inventory.Item.EquipmentSlot == (byte)EquipmentType.MainWeapon || inventory.Item.EquipmentSlot == (byte)EquipmentType.SecondaryWeapon)
                             {
                                 inventory.RarifyItem(Session, RarifyMode.Normal, RarifyProtection.None);
                             }
@@ -1129,10 +1126,9 @@ namespace OpenNos.Handler
                         SpecialistInstance specialist = Session.Character.InventoryList.LoadBySlotAndType<SpecialistInstance>(slot, type);
                         if (specialist != null)
                         {
-                            Item iteminfo = ServerManager.GetItem(specialist.ItemVNum);
                             if (specialist.Rare != -2)
                             {
-                                if (iteminfo.EquipmentSlot == (byte)EquipmentType.Sp)
+                                if (specialist.Item.EquipmentSlot == (byte)EquipmentType.Sp)
                                 {
                                     specialist.UpgradeSp(Session, UpgradeProtection.None);
                                     Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(specialist.ItemVNum, 1, type, slot, specialist.Rare, specialist.Design, specialist.Upgrade, 0));
@@ -1147,10 +1143,9 @@ namespace OpenNos.Handler
                         specialist = Session.Character.InventoryList.LoadBySlotAndType<SpecialistInstance>(slot, type);
                         if (specialist != null)
                         {
-                            Item iteminfo = ServerManager.GetItem(specialist.ItemVNum);
                             if (specialist.Rare != -2)
                             {
-                                if (iteminfo.EquipmentSlot == (byte)EquipmentType.Sp)
+                                if (specialist.Item.EquipmentSlot == (byte)EquipmentType.Sp)
                                 {
                                     specialist.PerfectSP(Session, UpgradeProtection.None);
                                     Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(specialist.ItemVNum, 1, type, slot, specialist.Rare, specialist.Design, specialist.Upgrade, 0));
@@ -1211,19 +1206,19 @@ namespace OpenNos.Handler
             WearableInstance fairy = Session.Character.EquipmentList.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Fairy, (byte)InventoryType.Equipment);
             if (sp == null)
                 return;
-            if (Session.Character.GetReputIco() < ServerManager.GetItem(sp.ItemVNum).ReputationMinimum)
+            if (Session.Character.GetReputIco() < sp.Item.ReputationMinimum)
             {
                 Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("LOW_REP"), 0));
                 return;
             }
-            if (fairy != null && ServerManager.GetItem(fairy.ItemVNum).Element != ServerManager.GetItem(sp.ItemVNum).Element && ServerManager.GetItem(fairy.ItemVNum).Element != ServerManager.GetItem(sp.ItemVNum).SecondaryElement)
+            if (fairy != null && fairy.Item.Element != sp.Item.Element && fairy.Item.Element !=sp.Item.SecondaryElement)
             {
                 Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("BAD_FAIRY"), 0));
                 return;
             }
 
             Session.Character.UseSp = true;
-            Session.Character.Morph = ServerManager.GetItem(sp.ItemVNum).Morph;
+            Session.Character.Morph = sp.Item.Morph;
             Session.Character.MorphUpgrade = sp.Upgrade;
             Session.Character.MorphUpgrade2 = sp.Design;
             Session.CurrentMap?.Broadcast(Session.Character.GenerateCMode());
@@ -1260,7 +1255,7 @@ namespace OpenNos.Handler
                 return;
             Logger.Debug(vnum.ToString(), Session.SessionId);
             SpecialistInstance sp = Session.Character.EquipmentList.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, (byte)InventoryType.Equipment);
-            Session.Character.Speed -= ServerManager.GetItem(vnum).Speed;
+            Session.Character.Speed -= sp.Item.Speed;
             Session.Character.UseSp = false;
 
             Session.Client.SendPacket(Session.Character.GenerateCond());

@@ -112,7 +112,7 @@ namespace OpenNos.GameObject
                             {
                                 if (sp != null)
                                 {
-                                    Session.Character.Morph = ServerManager.GetItem(sp.ItemVNum).Morph;
+                                    Session.Character.Morph = sp.Item.Morph;
                                     Session.Character.MorphUpgrade = sp.Upgrade;
                                     Session.Character.MorphUpgrade2 = sp.Design;
                                 }

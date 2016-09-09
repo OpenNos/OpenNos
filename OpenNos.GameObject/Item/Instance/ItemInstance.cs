@@ -50,7 +50,13 @@ namespace OpenNos.GameObject
                 return item;
             }
         }
-
+        public bool IsBound
+        {
+            get
+            {
+                return BoundCharacterId.HasValue;
+            }
+        }
         public long TransportId
         {
             get

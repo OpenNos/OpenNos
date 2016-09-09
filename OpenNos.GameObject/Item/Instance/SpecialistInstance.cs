@@ -95,7 +95,7 @@ namespace OpenNos.GameObject
             short stonevnum;
             byte upmode = 1;
 
-            switch (ServerManager.GetItem(this.ItemVNum).Morph)
+            switch (this.Item.Morph)
             {
                 case 2:
                     stonevnum = 2514;
@@ -336,7 +336,7 @@ namespace OpenNos.GameObject
             {
                 if (this.SpLevel > 20)
                 {
-                    if (ServerManager.GetItem(this.ItemVNum).Morph <= 15)
+                    if (this.Item.Morph <= 15)
                     {
                         if (Session.Character.InventoryList.CountItem(greenSoulVnum) < soul[this.Upgrade])
                             return;
@@ -359,7 +359,7 @@ namespace OpenNos.GameObject
             {
                 if (this.SpLevel > 40)
                 {
-                    if (ServerManager.GetItem(this.ItemVNum).Morph <= 15)
+                    if (this.Item.Morph <= 15)
                     {
                         if (Session.Character.InventoryList.CountItem(redSoulVnum) < soul[this.Upgrade])
                             return;
@@ -382,7 +382,7 @@ namespace OpenNos.GameObject
             {
                 if (this.SpLevel > 50)
                 {
-                    if (ServerManager.GetItem(this.ItemVNum).Morph <= 15)
+                    if (this.Item.Morph <= 15)
                     {
                         if (Session.Character.InventoryList.CountItem(blueSoulVnum) < soul[this.Upgrade])
                             return;
