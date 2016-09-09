@@ -157,6 +157,7 @@ namespace OpenNos.GameObject
             if (characterClass < 4)
             {
                 JobLevel = 1;
+                JobLevelXp = 0;
                 Session.Client.SendPacket("npinfo 0");
                 Session.Client.SendPacket("p_clear");
 
