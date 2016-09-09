@@ -160,7 +160,7 @@ namespace OpenNos.Handler
                             }
                             notcancel = true;
                             MapMonster mmon;
-                            Session.CurrentMap?.Broadcast($"su 1 {Session.Character.CharacterId} 1 {Session.Character.CharacterId} {skill.SkillVNum} {skill.Cooldown} {skill.AttackAnimation} {skill.Effect} 0 0 1 {(((double)Session.Character.Hp / Session.Character.HPLoad()) * 100)} 0 -2 {skill.SkillType - 1}");
+                            Session.CurrentMap?.Broadcast($"su 1 {Session.Character.CharacterId} 1 {Session.Character.CharacterId} {skill.SkillVNum} {skill.Cooldown} {skill.AttackAnimation} {skill.Effect} 0 0 1 {((int)((double)Session.Character.Hp / Session.Character.HPLoad()) * 100)} 0 -2 {skill.SkillType - 1}");
                             if (skill.TargetRange != 0)
                             {
                                 foreach (MapMonster mon in ServerManager.GetMap(Session.Character.MapId).GetListMonsterInRange(Session.Character.MapX, Session.Character.MapY, skill.TargetRange))
@@ -217,14 +217,14 @@ namespace OpenNos.Handler
                                             }
                                             else
                                             {
-                                                Session.CurrentMap?.Broadcast($"su 1 {Session.Character.CharacterId} 3 {mmon.MapMonsterId} {skill.SkillVNum} {skill.Cooldown} {skill.AttackAnimation} {skill.Effect} 0 0 {(mmon.Alive ? 1 : 0)} {(int)(((float)mmon.CurrentHp / (float)monsterinfo.MaxHP) * 100)} {damage} {hitmode} {skill.SkillType - 1}");
+                                                Session.CurrentMap?.Broadcast($"su 1 {Session.Character.CharacterId} 3 {mmon.MapMonsterId} {skill.SkillVNum} {skill.Cooldown} {skill.AttackAnimation} {skill.Effect} {Session.Character.MapX} {Session.Character.MapY} {(mmon.Alive ? 1 : 0)} {(int)(((float)mmon.CurrentHp / (float)monsterinfo.MaxHP) * 100)} {damage} {hitmode} {skill.SkillType - 1}");
                                             }
                                             if (skill.TargetRange != 0)
                                             {
                                                 foreach (MapMonster mon in ServerManager.GetMap(Session.Character.MapId).GetListMonsterInRange(mmon.MapX, mmon.MapY, skill.TargetRange))
                                                 {
-                                                    Session.CurrentMap?.Broadcast($"su 1 {Session.Character.CharacterId} 3 {mon.MapMonsterId} {skill.SkillVNum} {skill.Cooldown} {skill.AttackAnimation} {skill.Effect} 0 0 {(mon.Alive ? 1 : 0)} {(int)(((float)mon.CurrentHp / (float)ServerManager.GetNpc(mon.MonsterVNum).MaxHP) * 100)} {damage} 5 {skill.SkillType - 1}");
                                                     damage = GenerateDamage(mon.MapMonsterId, skill, ref hitmode);
+                                                    Session.CurrentMap?.Broadcast($"su 1 {Session.Character.CharacterId} 3 {mon.MapMonsterId} {skill.SkillVNum} {skill.Cooldown} {skill.AttackAnimation} {skill.Effect} 0 0 {(mon.Alive ? 1 : 0)} {(int)(((float)mon.CurrentHp / (float)ServerManager.GetNpc(mon.MonsterVNum).MaxHP) * 100)} {damage} 5 {skill.SkillType - 1}");
                                                 }
                                             }
                                         }
