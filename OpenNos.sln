@@ -32,9 +32,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenNos.Import.Console", "OpenNos.Import.Console\OpenNos.Import.Console.csproj", "{C2D0CDB2-FDF9-4D33-A9C4-424E765F41C6}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{B3FA8DB1-01C6-4015-B682-5B635CD71710}"
-	ProjectSection(SolutionItems) = preProject
-		Performance1.psess = Performance1.psess
-	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
