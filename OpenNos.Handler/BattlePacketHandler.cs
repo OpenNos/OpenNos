@@ -217,7 +217,7 @@ namespace OpenNos.Handler
                                             }
                                             else
                                             {
-                                                Session.CurrentMap?.Broadcast($"su 1 {Session.Character.CharacterId} 3 {mmon.MapMonsterId} {skill.SkillVNum} {skill.Cooldown} {skill.AttackAnimation} {skill.Effect} 0 0 {(mmon.Alive ? 1 : 0)} {(int)(((float)mmon.CurrentHp / (float)monsterinfo.MaxHP) * 100)} {damage} {hitmode} {skill.SkillType - 1}");
+                                                Session.CurrentMap?.Broadcast($"su 1 {Session.Character.CharacterId} 3 {mmon.MapMonsterId} {skill.SkillVNum} {skill.Cooldown} {skill.AttackAnimation} {skill.Effect} {Session.Character.MapX} {Session.Character.MapY} {(mmon.Alive ? 1 : 0)} {(int)(((float)mmon.CurrentHp / (float)monsterinfo.MaxHP) * 100)} {damage} {hitmode} {skill.SkillType - 1}");
                                             }
                                             if (skill.TargetRange != 0)
                                             {
