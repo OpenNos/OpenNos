@@ -49,8 +49,6 @@ namespace OpenNos.Login
                     Console.WriteLine(text + "\n" +
                     "===============================================================================\n");
 
-                    Task memory = new Task(() => ServerManager.MemoryWatch("OpenNos Login Server"));
-                    memory.Start();
                     //initialize DB
                     DataAccessHelper.Initialize();
 

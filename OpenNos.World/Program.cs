@@ -73,9 +73,6 @@ namespace OpenNos.World
             Console.SetCursorPosition(offset < 0 ? 0 : offset, Console.CursorTop);
             Console.WriteLine(text + "\n" +
             "===============================================================================\n");
-
-            Task memory = new Task(() => ServerManager.MemoryWatch("OpenNos World Server"));
-            memory.Start();
             //initialize DB
             if (DataAccessHelper.Initialize())
                 //initialilize maps

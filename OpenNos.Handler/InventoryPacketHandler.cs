@@ -58,16 +58,16 @@ namespace OpenNos.Handler
             string charName;
             if (!byte.TryParse(packetsplit[2], out mode) || !long.TryParse(packetsplit[3], out charId)) return;
 
-            if (Session.Character.MapId != ServerManager.Instance.GetProperty<short>(charId, "MapId"))
+            if (Session.Character.MapId != ServerManager.Instance.GetProperty<short>(charId, nameof(Character.MapId)))
             {
-                ServerManager.Instance.SetProperty(charId, "ExchangeInfo", null);
+                ServerManager.Instance.SetProperty(charId, nameof(Character.ExchangeInfo), null);
                 Session.Character.ExchangeInfo = null;
             }
             else
             {
                 if (mode == 2)
                 {
-                    bool otherInExchangeOrTrade = ServerManager.Instance.GetProperty<bool>(charId, "InExchangeOrTrade");
+                    bool otherInExchangeOrTrade = ServerManager.Instance.GetProperty<bool>(charId, nameof(Character.InExchangeOrTrade));
 
                     if (!Session.Character.InExchangeOrTrade || !otherInExchangeOrTrade)
                     {
@@ -82,7 +82,7 @@ namespace OpenNos.Handler
                             Confirm = false
                         };
                         Session.Character.ExchangeInfo = exc;
-                        ServerManager.Instance.SetProperty(charId, "ExchangeInfo", new ExchangeInfo { CharId = Session.Character.CharacterId, Confirm = false });
+                        ServerManager.Instance.SetProperty(charId, nameof(Character.ExchangeInfo), new ExchangeInfo { CharId = Session.Character.CharacterId, Confirm = false });
                         Session.CurrentMap?.Broadcast(Session, $"exc_list 1 {Session.Character.CharacterId} -1", ReceiverType.OnlySomeone, "", charId);
                     }
                     else
@@ -90,9 +90,9 @@ namespace OpenNos.Handler
                 }
                 else if (mode == 5)
                 {
-                    charName = ServerManager.Instance.GetProperty<string>(charId, "Name");
+                    charName = ServerManager.Instance.GetProperty<string>(charId, nameof(Character.Name));
 
-                    ServerManager.Instance.SetProperty(charId, "ExchangeInfo", null);
+                    ServerManager.Instance.SetProperty(charId, nameof(Character.ExchangeInfo), null);
                     Session.Character.ExchangeInfo = null;
 
                     Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("YOU_REFUSED"), 10));
@@ -165,7 +165,7 @@ namespace OpenNos.Handler
                         byte inven;
                         if (byte.TryParse(packetsplit[3], out inven) && short.TryParse(packetsplit[4], out slot))
                         {
-                            InventoryList inv = ServerManager.Instance.GetProperty<InventoryList>(Session.Character.ExchangeInfo.CharId, "InventoryList");
+                            InventoryList inv = ServerManager.Instance.GetProperty<InventoryList>(Session.Character.ExchangeInfo.CharId, nameof(Character.InventoryList));
                             inventory = inv.LoadBySlotAndType<WearableInstance>(slot, inven);
                         }
                     }
@@ -206,14 +206,14 @@ namespace OpenNos.Handler
             if (mode == 1)
             {
                 if (!long.TryParse(packetsplit[3], out charId)) return;
-                charName = (string)ServerManager.Instance.GetProperty<string>(charId, "Name");
-                otherBlocked = ServerManager.Instance.GetProperty<bool>(charId, "ExchangeBlocked");
+                charName = (string)ServerManager.Instance.GetProperty<string>(charId, nameof(Character.Name));
+                otherBlocked = ServerManager.Instance.GetProperty<bool>(charId, nameof(Character.ExchangeBlocked));
                 Blocked = Session.Character.ExchangeBlocked;
 
-                if (Session.Character.Speed == 0 || ServerManager.Instance.GetProperty<byte>(charId, "Speed") == 0)
+                if (Session.Character.Speed == 0 || ServerManager.Instance.GetProperty<byte>(charId, nameof(Character.Speed)) == 0)
                     Blocked = true;
 
-                if (ServerManager.Instance.GetProperty<DateTime>(charId, "LastSkill").AddSeconds(20) > DateTime.Now || ServerManager.Instance.GetProperty<DateTime>(charId, "LastDefence").AddSeconds(20) > DateTime.Now)
+                if (ServerManager.Instance.GetProperty<DateTime>(charId, nameof(Character.LastSkill)).AddSeconds(20) > DateTime.Now || ServerManager.Instance.GetProperty<DateTime>(charId, nameof(Character.LastDefence)).AddSeconds(20) > DateTime.Now)
                 {
                     Session.Client.SendPacket(Session.Character.GenerateInfo(String.Format(Language.Instance.GetMessageFromKey("PLAYER_IN_BATTLE"), charName)));
                     return;
@@ -227,14 +227,14 @@ namespace OpenNos.Handler
 
                 if (otherBlocked || Blocked)
                 {
-                    if (Session.Character.HasShopOpened || ServerManager.Instance.GetProperty<bool>(charId, "HasShopOpened"))
+                    if (Session.Character.HasShopOpened || ServerManager.Instance.GetProperty<bool>(charId, nameof(Character.HasShopOpened)))
                         Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("HAS_SHOP_OPENED"), 10));
                     else
                         Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("TRADE_BLOCKED"), 11));
                 }
                 else
                 {
-                    bool InExchangeOrTrade = Session.Character.InExchangeOrTrade, otherInExchangeOrTrade = ServerManager.Instance.GetProperty<bool>(charId, "InExchangeOrTrade");
+                    bool InExchangeOrTrade = Session.Character.InExchangeOrTrade, otherInExchangeOrTrade = ServerManager.Instance.GetProperty<bool>(charId, nameof(Character.InExchangeOrTrade));
                     if (InExchangeOrTrade || otherInExchangeOrTrade)
                         Session.Client.SendPacket(Session.Character.GenerateModal(Language.Instance.GetMessageFromKey("ALREADY_EXCHANGE"), 0));
                     else
@@ -250,10 +250,10 @@ namespace OpenNos.Handler
             else if (mode == 3)
             {
                 if (Session.Character.ExchangeInfo.CharId == Session.Character.CharacterId) return;
-                ExchangeInfo exchange = ServerManager.Instance.GetProperty<ExchangeInfo>(Session.Character.ExchangeInfo.CharId, "ExchangeInfo");
-                long gold = ServerManager.Instance.GetProperty<long>(Session.Character.ExchangeInfo.CharId, "Gold");
-                int backpack = ServerManager.Instance.GetProperty<int>(Session.Character.ExchangeInfo.CharId, "BackPack");
-                InventoryList inventory = ServerManager.Instance.GetProperty<InventoryList>(Session.Character.ExchangeInfo.CharId, "InventoryList");
+                ExchangeInfo exchange = ServerManager.Instance.GetProperty<ExchangeInfo>(Session.Character.ExchangeInfo.CharId, nameof(Character.ExchangeInfo));
+                long gold = ServerManager.Instance.GetProperty<long>(Session.Character.ExchangeInfo.CharId, nameof(Character.Gold));
+                int backpack = ServerManager.Instance.GetProperty<int>(Session.Character.ExchangeInfo.CharId, nameof(Character.BackPack));
+                InventoryList inventory = ServerManager.Instance.GetProperty<InventoryList>(Session.Character.ExchangeInfo.CharId, nameof(Character.InventoryList));
                 if (Session.Character.ExchangeInfo.Validate && exchange.Validate)
                 {
                     Session.Character.ExchangeInfo.Confirm = true;
@@ -287,7 +287,7 @@ namespace OpenNos.Handler
                             Session.Client.SendPacket("exc_close 0");
                             Session.CurrentMap?.Broadcast(Session, "exc_close 0", ReceiverType.OnlySomeone, "", Session.Character.ExchangeInfo.CharId);
 
-                            ServerManager.Instance.SetProperty(Session.Character.ExchangeInfo.CharId, "ExchangeInfo", null);
+                            ServerManager.Instance.SetProperty(Session.Character.ExchangeInfo.CharId, nameof(Character.ExchangeInfo), null);
                             Session.Character.ExchangeInfo = null;
                         }
                         else if (goldmax == true)
@@ -299,7 +299,7 @@ namespace OpenNos.Handler
                             Session.Client.SendPacket("exc_close 0");
                             Session.CurrentMap?.Broadcast(Session, "exc_close 0", ReceiverType.OnlySomeone, "", Session.Character.ExchangeInfo.CharId);
 
-                            ServerManager.Instance.SetProperty(Session.Character.ExchangeInfo.CharId, "ExchangeInfo", null);
+                            ServerManager.Instance.SetProperty(Session.Character.ExchangeInfo.CharId, nameof(Character.ExchangeInfo), null);
                             Session.Character.ExchangeInfo = null;
                         }
                         else
@@ -313,7 +313,7 @@ namespace OpenNos.Handler
                                     Session.Client.SendPacket("exc_close 0");
                                     Session.CurrentMap?.Broadcast(Session, "exc_close 0", ReceiverType.OnlySomeone, "", Session.Character.ExchangeInfo.CharId);
 
-                                    ServerManager.Instance.SetProperty(Session.Character.ExchangeInfo.CharId, "ExchangeInfo", null);
+                                    ServerManager.Instance.SetProperty(Session.Character.ExchangeInfo.CharId, nameof(Character.ExchangeInfo), null);
                                     Session.Character.ExchangeInfo = null;
                                     notsold = true;
                                     break;
@@ -359,7 +359,7 @@ namespace OpenNos.Handler
                     }
                     else
                     {
-                        charName = ServerManager.Instance.GetProperty<string>(charId, "Name");
+                        charName = ServerManager.Instance.GetProperty<string>(charId, nameof(Character.Name));
                         Session.Client.SendPacket(Session.Character.GenerateInfo(String.Format(Language.Instance.GetMessageFromKey("IN_WAITING_FOR"), charName)));
                     }
                 }
@@ -369,7 +369,7 @@ namespace OpenNos.Handler
                 Session.Client.SendPacket("exc_close 0");
                 Session.CurrentMap?.Broadcast(Session, "exc_close 0", ReceiverType.OnlySomeone, "", Session.Character.ExchangeInfo.CharId);
 
-                ServerManager.Instance.SetProperty(Session.Character.ExchangeInfo.CharId, "ExchangeInfo", null);
+                ServerManager.Instance.SetProperty(Session.Character.ExchangeInfo.CharId, nameof(Character.ExchangeInfo), null);
                 Session.Character.ExchangeInfo = null;
             }
         }
@@ -409,7 +409,7 @@ namespace OpenNos.Handler
                     Session.Client.SendPacket("exc_close 0");
                     Session.CurrentMap?.Broadcast(Session, $"exc_close 0", ReceiverType.OnlySomeone, "", Session.Character.ExchangeInfo.CharId);
 
-                    ServerManager.Instance.SetProperty(Session.Character.ExchangeInfo.CharId, "ExchangeInfo", null);
+                    ServerManager.Instance.SetProperty(Session.Character.ExchangeInfo.CharId, nameof(Character.ExchangeInfo), null);
                     Session.Character.ExchangeInfo = null;
                     return;
                 }

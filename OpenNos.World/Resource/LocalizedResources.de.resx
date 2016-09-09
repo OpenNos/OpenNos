@@ -791,14 +791,17 @@
   </data>
   <data name="SAVING_ALL" xml:space="preserve">
     <value>Speichern aller Daten wird durchgeführt</value>
-    </data>
-      <data name="SKILL_LEARNED" xml:space="preserve">
+  </data>
+  <data name="SKILL_LEARNED" xml:space="preserve">
     <value>Du hast ein neuen Skill erlernt.</value>
   </data>
-    <data name="ASK_BIND" xml:space="preserve">
+  <data name="ASK_BIND" xml:space="preserve">
     <value>Möchtest du das Item benutzen? Das Item wird dann an deinen Charackter gebunden sein.</value>
   </data>
-      <data name="WELCOME_MUSIC_INFO" xml:space="preserve">
+  <data name="WELCOME_MUSIC_INFO" xml:space="preserve">
     <value>Frühlings^Melodie</value>
+  </data>
+  <data name="MEMORY" xml:space="preserve">
+    <value />
   </data>
 </root>

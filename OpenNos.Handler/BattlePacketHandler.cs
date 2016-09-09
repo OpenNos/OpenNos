@@ -612,7 +612,7 @@ namespace OpenNos.Handler
             int FinalDamage = Convert.ToInt32((Damage + Ef + MoralDifference + Dmob) * (1 - Bsp3) * (1 + (AttackPotion + Ahair + Apet)) * RangedDistance);
             //Logger.Debug(String.Format("FinalDamage = (Damage {0} + Ef {1}  + MoralDifference{2} + Dmob{3})  (1 - Bsp3{4})  (1 + (AttackPotion{5} + Ahair{6} + Apet{7})) * RangedDistance{8} = {9}", Damage, Ef, MoralDifference, Dmob, Bsp3, AttackPotion, Ahair, Apet, RangedDistance, FinalDamage));
 
-            if (Session.Character.Class != 3)
+            if (Session.Character.Class != 3 && !Session.Character.HasGodMode)
                 if (generated > 100 - miss_chance)
                 {
                     hitmode = 1;

@@ -613,17 +613,17 @@ namespace OpenNos.Handler
             {
                 string name = packetsplit[2];
 
-                long? id = ServerManager.Instance.GetProperty<long?>(name, "CharacterId");
+                long? id = ServerManager.Instance.GetProperty<long?>(name, nameof(Character.CharacterId));
 
                 if (id != null)
                 {
-                    int? Hp = ServerManager.Instance.GetProperty<int?>((long)id, "Hp");
+                    int? Hp = ServerManager.Instance.GetProperty<int?>((long)id, nameof(Character.Hp));
                     if (Hp == 0)
                         return;
-                    ServerManager.Instance.SetProperty((long)id, "Hp", 0);
-                    ServerManager.Instance.SetProperty((long)id, "LastDefence", DateTime.Now);
+                    ServerManager.Instance.SetProperty((long)id, nameof(Character.Hp), 0);
+                    ServerManager.Instance.SetProperty((long)id, nameof(Character.LastDefence), DateTime.Now);
                     Session.CurrentMap?.Broadcast($"su 1 {Session.Character.CharacterId} 1 {id} 1114 4 11 4260 0 0 0 0 {60000} 3 0");
-                    Session.CurrentMap?.Broadcast(null, ServerManager.Instance.GetUserMethod<string>((long)id, "GenerateStat"), ReceiverType.OnlySomeone, "", (long)id);
+                    Session.CurrentMap?.Broadcast(null, ServerManager.Instance.GetUserMethod<string>((long)id, nameof(Character.GenerateStat)), ReceiverType.OnlySomeone, "", (long)id);
                     ServerManager.Instance.AskRevive((long)id);
                 }
                 else
@@ -991,7 +991,8 @@ namespace OpenNos.Handler
             Session.Client.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("DROP_RATE_NOW")}: {ServerManager.DropRate} ", 13));
             Session.Client.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("GOLD_RATE_NOW")}: {ServerManager.GoldRate} ", 13));
             Session.Client.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("FAIRYXP_RATE_NOW")}: {ServerManager.FairyXpRate} ", 13));
-            Session.Client.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("SERVER_WORKING_TIME")}: {(Process.GetCurrentProcess().StartTime - DateTime.Now).ToString("hh\\:mm\\:ss")} ", 13));
+            Session.Client.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("SERVER_WORKING_TIME")}: {(Process.GetCurrentProcess().StartTime - DateTime.Now).ToString("d\\ hh\\:mm\\:ss")} ", 13));
+            Session.Client.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("MEMORY")}: {(GC.GetTotalMemory(true) / (1024 * 1024))}MB ", 13));
         }
 
         [Packet("$Summon")]
@@ -1043,9 +1044,9 @@ namespace OpenNos.Handler
             {
                 case 3:
                     string name = packetsplit[2];
-                    short? mapy = ServerManager.Instance.GetProperty<short?>(name, "MapY");
-                    short? mapx = ServerManager.Instance.GetProperty<short?>(name, "MapX");
-                    short? mapId = ServerManager.Instance.GetProperty<short?>(name, "MapId");
+                    short? mapId = ServerManager.Instance.GetProperty<short?>(name, nameof(Character.MapId));
+                    short? mapx = ServerManager.Instance.GetProperty<short?>(name, nameof(Character.MapX));
+                    short? mapy = ServerManager.Instance.GetProperty<short?>(name, nameof(Character.MapY));
                     if (mapy != null && mapx != null && mapId != null)
                     {
                         ServerManager.Instance.MapOut(Session.Character.CharacterId);
@@ -1090,14 +1091,14 @@ namespace OpenNos.Handler
             {
                 string name = packetsplit[2];
 
-                long? id = ServerManager.Instance.GetProperty<long?>(name, "CharacterId");
+                long? id = ServerManager.Instance.GetProperty<long?>(name, nameof(Character.CharacterId));
 
                 if (id != null)
                 {
                     ServerManager.Instance.MapOut((long)id);
-                    ServerManager.Instance.SetProperty((long)id, "MapY", (short)((Session.Character.MapY) + (short)1));
-                    ServerManager.Instance.SetProperty((long)id, "MapX", (short)((Session.Character.MapX) + (short)1));
-                    ServerManager.Instance.SetProperty((long)id, "MapId", Session.Character.MapId);
+                    ServerManager.Instance.SetProperty((long)id, nameof(Character.MapId), Session.Character.MapId);
+                    ServerManager.Instance.SetProperty((long)id, nameof(Character.MapX), (short)((Session.Character.MapX) + (short)1));
+                    ServerManager.Instance.SetProperty((long)id, nameof(Character.MapY), (short)((Session.Character.MapY) + (short)1));
                     ServerManager.Instance.ChangeMap((long)id);
                 }
                 else

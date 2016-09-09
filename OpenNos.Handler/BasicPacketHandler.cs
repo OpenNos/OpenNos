@@ -69,8 +69,8 @@ namespace OpenNos.Handler
                         {
                             short? compliment = ServerManager.Instance.GetProperty<short?>(complimentedCharacterId, nameof(Character.Compliment));
                             compliment++;
-                            ServerManager.Instance.SetProperty(complimentedCharacterId, "Compliment", compliment);
-                            Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("COMPLIMENT_GIVEN"), ServerManager.Instance.GetProperty<string>(complimentedCharacterId, "Name")), 12));
+                            ServerManager.Instance.SetProperty(complimentCharacterId, nameof(Character.Compliment), compliment);
+                            Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("COMPLIMENT_GIVEN"), ServerManager.Instance.GetProperty<string>(complimentCharacterId, nameof(Character.Name))), 12));
                             AccountDTO account = Session.Account;
                             account.LastCompliment = DateTime.Now;
                             DAOFactory.AccountDAO.InsertOrUpdate(ref account);
@@ -799,7 +799,7 @@ namespace OpenNos.Handler
                     if (Session.Character.CharacterId != charId)
                     {
                         if (!long.TryParse(packetsplit[3], out charId)) return;
-                        isBlocked = ServerManager.Instance.GetProperty<bool>(charId, "GroupRequestBlocked");
+                        isBlocked = ServerManager.Instance.GetProperty<bool>(charId, nameof(Character.GroupRequestBlocked));
 
                         if (isBlocked)
                         {
@@ -807,7 +807,7 @@ namespace OpenNos.Handler
                         }
                         else
                         {
-                            charName = ServerManager.Instance.GetProperty<string>(charId, "Name");
+                            charName = ServerManager.Instance.GetProperty<string>(charId, nameof(Character.Name));
                             Session.Client.SendPacket(Session.Character.GenerateInfo(String.Format(Language.Instance.GetMessageFromKey("GROUP_REQUEST"), charName)));
                             Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateDialog($"#pjoin^3^{ Session.Character.CharacterId} #pjoin^4^{Session.Character.CharacterId} {String.Format(Language.Instance.GetMessageFromKey("INVITED_YOU"), Session.Character.Name)}"), ReceiverType.OnlySomeone, charName);
                         }
@@ -1258,7 +1258,7 @@ namespace OpenNos.Handler
                     return;
                 long.TryParse(packetsplit[3], out charId);
 
-                if (type == 3 && ServerManager.Instance.GetProperty<string>(charId, "Name") != null)
+                if (type == 3 && ServerManager.Instance.GetProperty<string>(charId, nameof(Character.Name)) != null)
                 {
                     foreach (Group group in ServerManager.Instance.Groups)
                     {
@@ -1298,7 +1298,7 @@ namespace OpenNos.Handler
                     {
                         Group group = new Group();
                         group.JoinGroup(charId);
-                        Session.Client.SendPacket(Session.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("GROUP_JOIN"), ServerManager.Instance.GetProperty<string>(charId, "Name")), 10));
+                        Session.Client.SendPacket(Session.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("GROUP_JOIN"), ServerManager.Instance.GetProperty<string>(charId, nameof(Character.Name))), 10));
                         group.JoinGroup(Session.Character.CharacterId);
                         ServerManager.Instance.Groups.Add(group);
                         Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("GROUP_ADMIN")), ReceiverType.OnlySomeone, "", charId);
@@ -1310,10 +1310,7 @@ namespace OpenNos.Handler
 
                     //player join group
                     ServerManager.Instance.UpdateGroup(charId);
-
-                    string p = ServerManager.Instance.GeneratePidx(Session.Character.CharacterId);
-                    if (p != "")
-                        Session.CurrentMap?.Broadcast(p);
+                    Session.CurrentMap?.Broadcast(Session.Character.GeneratePidx());
                 }
                 else if (type == 4)
                 {
@@ -1360,7 +1357,7 @@ namespace OpenNos.Handler
 
             Session.Client.SendPacket(Session.Character.GenerateSpk(message, 5));
 
-            bool? whisperBlocked = ServerManager.Instance.GetProperty<bool?>(packetsplit[1].Substring(1), "WhisperBlocked");
+            bool? whisperBlocked = ServerManager.Instance.GetProperty<bool?>(packetsplit[1].Substring(1), nameof(Character.WhisperBlocked));
             if (whisperBlocked.HasValue)
             {
                 if (!whisperBlocked.Value)
