@@ -23,15 +23,15 @@ namespace OpenNos.DAL.EF.MySQL
 
         public virtual Character Character { get; set; }
 
-        [Index("IX_SlotAndType", 1, IsUnique = true, Order = 0)]
+        [Index("IX_SlotAndType", 1, IsUnique = false, Order = 0)]
         public long CharacterId { get; set; }
 
         public virtual ItemInstance ItemInstance { get; set; }
 
-        [Index("IX_SlotAndType", 2, IsUnique = true, Order = 1)]
+        [Index("IX_SlotAndType", 2, IsUnique = false, Order = 1)]
         public short Slot { get; set; }
 
-        [Index("IX_SlotAndType", 3, IsUnique = true, Order = 2)]
+        [Index("IX_SlotAndType", 3, IsUnique = false, Order = 2)]
         public InventoryType Type { get; set; }
 
         #endregion

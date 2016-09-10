@@ -107,7 +107,7 @@ namespace OpenNos.GameObject
                         else
                         {
                             Session.Character.IsVehicled = false;
-                            Session.Character.SpeedLoad();
+                            Session.Character.LoadSpeed();
                             if (Session.Character.UseSp)
                             {
                                 if (sp != null)

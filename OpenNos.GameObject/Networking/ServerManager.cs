@@ -295,6 +295,7 @@ namespace OpenNos.GameObject
                     Guid guid = Guid.NewGuid();
                     Map newMap = new Map(Convert.ToInt16(map.MapId), guid, map.Data);
                     newMap.Music = map.Music;
+                    newMap.ShopAllowed = map.ShopAllowed;
                     //register for broadcast
                     _maps.TryAdd(guid, newMap);
                     i++;
@@ -407,7 +408,7 @@ namespace OpenNos.GameObject
 
                     Broadcast(shopOwnerSession, shopOwnerSession.Character.GenerateShopEnd(), ReceiverType.All);
                     Broadcast(shopOwnerSession, shopOwnerSession.Character.GeneratePlayerFlag(0), ReceiverType.AllExceptMe);
-                    shopOwnerSession.Character.SpeedLoad();
+                    shopOwnerSession.Character.LoadSpeed();
                     shopOwnerSession.Character.IsSitting = false;
                     shopOwnerSession.Client.SendPacket(shopOwnerSession.Character.GenerateCond());
                     Broadcast(shopOwnerSession, shopOwnerSession.Character.GenerateRest(), ReceiverType.All);

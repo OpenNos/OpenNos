@@ -1232,7 +1232,7 @@ namespace OpenNos.Handler
             Session.CurrentMap?.Broadcast(Session.Character.GenerateEff(196));
             Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateGuri(6, 1), ReceiverType.All);
             Session.Client.SendPacket(Session.Character.GenerateSpPoint());
-            Session.Character.SpeedLoad();
+            Session.Character.LoadSpeed();
             Session.Client.SendPacket(Session.Character.GenerateLev());
             Session.Client.SendPacket(Session.Character.GenerateStat());
             Session.Client.SendPacket(Session.Character.GenerateStatChar());
