@@ -250,13 +250,12 @@ namespace OpenNos.GameObject
                     Session.CurrentMap.UserShops.Remove(shop.Key);
                     Session.CurrentMap?.Broadcast(GenerateShopEnd());
                     Session.CurrentMap?.Broadcast(Session, GeneratePlayerFlag(0), ReceiverType.AllExceptMe);
-                    SpeedLoad();
                     IsSitting = false;
+                    SpeedLoad();
                     Session.Client.SendPacket(GenerateCond());
                     Session.CurrentMap?.Broadcast(GenerateRest());
                     Session.Client.SendPacket("shop_end 0");
                 }
-
                 HasShopOpened = false;
             }
         }

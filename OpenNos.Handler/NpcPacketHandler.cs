@@ -379,6 +379,7 @@ namespace OpenNos.Handler
                         Session.Character.IsSitting = true;
                         Session.Character.IsShopping = true;
 
+                        Session.Character.SpeedLoad();
                         Session.Client.SendPacket(Session.Character.GenerateCond());
                         Session.CurrentMap?.Broadcast(Session.Character.GenerateRest());
                     }
@@ -394,11 +395,11 @@ namespace OpenNos.Handler
                     Session.CurrentMap.UserShops.Remove(shop.Key);
                     Session.CurrentMap?.Broadcast(Session.Character.GenerateShopEnd());
                     Session.CurrentMap?.Broadcast(Session, Session.Character.GeneratePlayerFlag(0), ReceiverType.AllExceptMe);
-                    Session.Character.SpeedLoad();
 
                     Session.Character.IsShopping = false;
                     Session.Character.IsSitting = false;
 
+                    Session.Character.SpeedLoad();
                     Session.Client.SendPacket(Session.Character.GenerateCond());
                     Session.CurrentMap?.Broadcast(Session.Character.GenerateRest());
                 }
