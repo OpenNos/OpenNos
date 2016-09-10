@@ -160,8 +160,8 @@ namespace OpenNos.Handler
                         }
                         for (int i = Session.Character.Skills.Count - 1; i >= 0; i--)
                         {
-                            Skill skinfo = ServerManager.GetSkill(Session.Character.Skills[i].SkillVNum);
-                            if ((skillinfo.CastId == skinfo.CastId) && (skinfo.SkillVNum < 200))
+
+                            if ((skillinfo.CastId == Session.Character.Skills[i].Skill.CastId) && (Session.Character.Skills[i].Skill.SkillVNum < 200))
                                 Session.Character.Skills.Remove(Session.Character.Skills[i]);
                         }
                     }
@@ -550,17 +550,15 @@ namespace OpenNos.Handler
             {
                 short vnum = -1;
                 short.TryParse(packetsplit[4], out vnum);
-                Skill skillinfo = ServerManager.GetSkill(vnum);
                 CharacterSkill skill = Session.Character.Skills.FirstOrDefault(s => s.SkillVNum == vnum);
-                if (skill == null || skillinfo == null || vnum == (200 + 20 * Session.Character.Class) || vnum == (201 + 20 * Session.Character.Class))
+                if (skill == null || vnum == (200 + 20 * Session.Character.Class) || vnum == (201 + 20 * Session.Character.Class))
                     return;
-                Session.Character.Gold -= skillinfo.Price;
+                Session.Character.Gold -= skill.Skill.Price;
                 Session.Client.SendPacket(Session.Character.GenerateGold());
 
                 for (int i = Session.Character.Skills.Count - 1; i >= 0; i--)
                 {
-                    Skill skinfo = ServerManager.GetSkill(Session.Character.Skills[i].SkillVNum);
-                    if (skillinfo.SkillVNum == skinfo.UpgradeSkill)
+                    if (skill.Skill.SkillVNum == Session.Character.Skills[i].Skill.UpgradeSkill)
                         Session.Character.Skills.Remove(Session.Character.Skills[i]);
                 }
 

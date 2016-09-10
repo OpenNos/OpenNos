@@ -1262,7 +1262,7 @@ namespace OpenNos.Handler
             {
                 foreach (CharacterSkill ski in Session.Character.SkillsSp.Where(s => s.Used))
                 {
-                    short time = ServerManager.GetSkill(ski.SkillVNum).Cooldown;
+                    short time = ski.Skill.Cooldown;
                     double temp = (ski.LastUse - DateTime.Now).TotalMilliseconds + time * 100;
                     temp /= 1000;
                     Session.Character.SpCooldown = temp > Session.Character.SpCooldown ? (int)(temp) : (int)(Session.Character.SpCooldown);

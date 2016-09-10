@@ -239,7 +239,7 @@ namespace OpenNos.GameObject
 
         public Inventory LoadInventoryBySlotAndType(short slot, InventoryType type)
         {
-            return Inventory.FirstOrDefault(i => i.Slot.Equals(slot) && i.Type.Equals(type));
+            return Inventory.SingleOrDefault(i => i.Slot.Equals(slot) && i.Type.Equals(type));
         }
 
         public Inventory MoveInventory(Inventory inv, InventoryType desttype, short destslot)

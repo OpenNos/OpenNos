@@ -1320,9 +1320,7 @@ namespace OpenNos.GameObject
             int cpused = 0;
             foreach (CharacterSkill ski in Skills)
             {
-                Skill skillinfo = ServerManager.GetSkill(ski.SkillVNum);
-                if (skillinfo != null)
-                    cpused += skillinfo.CPCost;
+                    cpused += ski.Skill.CPCost;
             }
             return cpmax - cpused;
         }
@@ -1477,8 +1475,8 @@ namespace OpenNos.GameObject
                         byte NewSkillVNum = (byte)i;
                         for (int ii = Skills.Count - 1; ii >= 0; ii--)
                         {
-                            Skill myskinfo = ServerManager.GetSkill(Skills[ii].SkillVNum);
-                            if (skinfo.SkillVNum == myskinfo.SkillVNum)
+
+                            if (skinfo.SkillVNum == Skills[ii].Skill.SkillVNum)
                             {
                                 NewSkillVNum = 0;
                                 break;
