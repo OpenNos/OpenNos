@@ -23,7 +23,7 @@ namespace OpenNos.GameObject
     {
         #region Methods
 
-        public override void Use(ClientSession Session, ref Inventory Inv, bool DelayUsed = false)
+        public override void Use(ClientSession Session, ref Inventory inventory, bool DelayUsed = false)
         {
             switch (Effect)
             {
@@ -33,7 +33,7 @@ namespace OpenNos.GameObject
                     {
                         if (!DelayUsed)
                         {
-                            Session.Client.SendPacket($"qna #u_i^1^{Session.Character.CharacterId}^{Inv.Type}^{Inv.Slot}^3 {Language.Instance.GetMessageFromKey("ASK_WINGS_CHANGE")}");
+                            Session.Client.SendPacket($"qna #u_i^1^{Session.Character.CharacterId}^{(byte)inventory.Type}^{inventory.Slot}^3 {Language.Instance.GetMessageFromKey("ASK_WINGS_CHANGE")}");
                         }
                         else
                         {
@@ -42,13 +42,13 @@ namespace OpenNos.GameObject
                             Session.Client.SendPacket(Session.Character.GenerateCMode());
                             Session.Client.SendPacket(Session.Character.GenerateStat());
                             Session.Client.SendPacket(Session.Character.GenerateStatChar());
-                            Inv.ItemInstance.Amount--;
-                            if (Inv.ItemInstance.Amount > 0)
-                                Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(Inv.ItemInstance.ItemVNum, Inv.ItemInstance.Amount, Inv.Type, Inv.Slot, 0, 0, 0, 0));
+                            inventory.ItemInstance.Amount--;
+                            if (inventory.ItemInstance.Amount > 0)
+                                Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(inventory.ItemInstance.ItemVNum, inventory.ItemInstance.Amount, inventory.Type, inventory.Slot, 0, 0, 0, 0));
                             else
                             {
-                                Session.Character.InventoryList.DeleteFromSlotAndType(Inv.Slot, Inv.Type);
-                                Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, Inv.Type, Inv.Slot, 0, 0, 0, 0));
+                                Session.Character.InventoryList.DeleteFromSlotAndType(inventory.Slot, inventory.Type);
+                                Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, inventory.Type, inventory.Slot, 0, 0, 0, 0));
                             }
                         }
                     }
@@ -61,18 +61,18 @@ namespace OpenNos.GameObject
                     {
                         if (!DelayUsed)
                         {
-                            Session.Client.SendPacket($"qna #u_i^1^{Session.Character.CharacterId}^{Inv.Type}^{Inv.Slot}^3 {Language.Instance.GetMessageFromKey("ASK_USE")}");
+                            Session.Client.SendPacket($"qna #u_i^1^{Session.Character.CharacterId}^{(byte)inventory.Type}^{inventory.Slot}^3 {Language.Instance.GetMessageFromKey("ASK_USE")}");
                         }
                         else
                         {
                             Session.Character.ChangeSex();
-                            Inv.ItemInstance.Amount--;
-                            if (Inv.ItemInstance.Amount > 0)
-                                Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(Inv.ItemInstance.ItemVNum, Inv.ItemInstance.Amount, Inv.Type, Inv.Slot, 0, 0, 0, 0));
+                            inventory.ItemInstance.Amount--;
+                            if (inventory.ItemInstance.Amount > 0)
+                                Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(inventory.ItemInstance.ItemVNum, inventory.ItemInstance.Amount, inventory.Type, inventory.Slot, 0, 0, 0, 0));
                             else
                             {
-                                Session.Character.InventoryList.DeleteFromSlotAndType(Inv.Slot, Inv.Type);
-                                Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, Inv.Type, Inv.Slot, 0, 0, 0, 0));
+                                Session.Character.InventoryList.DeleteFromSlotAndType(inventory.Slot, inventory.Type);
+                                Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, inventory.Type, inventory.Slot, 0, 0, 0, 0));
                             }
                         }
                     }
@@ -91,7 +91,7 @@ namespace OpenNos.GameObject
                             Session.Character.IsSitting = false;
                             Session.CurrentMap?.Broadcast(Session.Character.GenerateRest());
                         }
-                        Session.Client.SendPacket(Session.Character.GenerateDelay(3000, 3, $"#u_i^1^{Session.Character.CharacterId}^{Inv.Type}^{Inv.Slot}^2"));
+                        Session.Client.SendPacket(Session.Character.GenerateDelay(3000, 3, $"#u_i^1^{Session.Character.CharacterId}^{(byte)inventory.Type}^{inventory.Slot}^2"));
                     }
                     else
                     {

@@ -76,7 +76,7 @@ namespace OpenNos.GameObject
             if (inv != null)
             {
                 inv.ItemInstance.Amount += newItem.Amount;
-                Owner.Session.Client.SendPacket(Owner.Session.Character.GenerateInventoryAdd(vnum, inv.ItemInstance.Amount, (InventoryType)inv.Type, inv.Slot, inv.ItemInstance.Rare, inv.ItemInstance.Design, inv.ItemInstance.Upgrade, 0));
+                Owner.Session.Client.SendPacket(Owner.Session.Character.GenerateInventoryAdd(vnum, inv.ItemInstance.Amount, inv.Type, inv.Slot, inv.ItemInstance.Rare, inv.ItemInstance.Design, inv.ItemInstance.Upgrade, 0));
             }
             else
             {
@@ -352,13 +352,13 @@ namespace OpenNos.GameObject
                 {
                     inv.ItemInstance.Amount -= (byte)amount;
                     amount = 0;
-                    Owner.Session.Client.SendPacket(Owner.Session.Character.GenerateInventoryAdd(inv.ItemInstance.ItemVNum, inv.ItemInstance.Amount, (InventoryType)inv.Type, inv.Slot, inv.ItemInstance.Rare, inv.ItemInstance.Design, inv.ItemInstance.Upgrade, 0));
+                    Owner.Session.Client.SendPacket(Owner.Session.Character.GenerateInventoryAdd(inv.ItemInstance.ItemVNum, inv.ItemInstance.Amount, inv.Type, inv.Slot, inv.ItemInstance.Rare, inv.ItemInstance.Design, inv.ItemInstance.Upgrade, 0));
                 }
                 else
                 {
                     amount -= inv.ItemInstance.Amount;
                     DeleteByInventoryItemId(inv.ItemInstance.Id);
-                    Owner.Session.Client.SendPacket(Owner.Session.Character.GenerateInventoryAdd(-1, 0, (InventoryType)inv.Type, inv.Slot, 0, 0, 0, 0));
+                    Owner.Session.Client.SendPacket(Owner.Session.Character.GenerateInventoryAdd(-1, 0, inv.Type, inv.Slot, 0, 0, 0, 0));
                 }
             }
         }
