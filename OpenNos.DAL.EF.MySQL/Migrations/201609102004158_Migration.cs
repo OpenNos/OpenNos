@@ -3,7 +3,7 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class Theia : DbMigration
+    public partial class Migration : DbMigration
     {
         public override void Up()
         {
@@ -531,7 +531,7 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
                 .ForeignKey("dbo.ItemInstance", t => t.Id)
                 .ForeignKey("dbo.Character", t => t.CharacterId)
                 .Index(t => t.Id)
-                .Index(t => new { t.CharacterId, t.Slot, t.Type }, unique: true, name: "IX_SlotAndType");
+                .Index(t => new { t.CharacterId, t.Slot, t.Type }, name: "IX_SlotAndType");
             
             CreateTable(
                 "dbo.ItemInstance",

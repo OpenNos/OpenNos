@@ -1622,8 +1622,8 @@ namespace OpenNos.GameObject
         {
             try
             {
-                CharacterDTO tempsave = this;
-                SaveResult insertResult = DAOFactory.CharacterDAO.InsertOrUpdate(ref tempsave); // unused variable, check for success?
+                CharacterDTO character = this;
+                SaveResult insertResult = DAOFactory.CharacterDAO.InsertOrUpdate(ref character); // unused variable, check for success?
 
                 //load and concat inventory with equipment
                 IEnumerable<InventoryDTO> inventories = InventoryList.Inventory.Concat(EquipmentList.Inventory);
