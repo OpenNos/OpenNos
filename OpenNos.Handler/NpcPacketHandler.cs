@@ -281,11 +281,11 @@ namespace OpenNos.Handler
             long[] gold = new long[20];
             short[] slot = new short[20];
             byte[] qty = new byte[20];
-
+            short typePacket;
             string shopname = String.Empty;
             if (packetsplit.Length > 2)
             {
-                short typePacket; short.TryParse(packetsplit[2], out typePacket);
+                short.TryParse(packetsplit[2], out typePacket);
                 if (Session.Character.InExchangeOrTrade && typePacket != 1)
                     return;
                 foreach (Portal por in Session.CurrentMap.Portals)
@@ -296,11 +296,11 @@ namespace OpenNos.Handler
                         return;
                     }
                 }
-                //if (!Session.CurrentMap.ShopAllowed)
-                //{
-                //    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SHOP_NOT_ALLOWED"), 0));
-                //    return;
-                //}
+                if (!Session.CurrentMap.ShopAllowed)
+                {
+                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SHOP_NOT_ALLOWED"), 0));
+                    return;
+                }
                 if (typePacket == 2)
                 {
                     Session.Client.SendPacket("ishop");
@@ -326,9 +326,9 @@ namespace OpenNos.Handler
                             if (qty[i] > 0)
                             {
                                 Inventory inv = Session.Character.InventoryList.LoadInventoryBySlotAndType(slot[i], type[i]);
-
                                 if (inv.ItemInstance.Amount < qty[i])
                                     return;
+
                                 if (!((ItemInstance)inv.ItemInstance).Item.IsTradable || ((ItemInstance)inv.ItemInstance).IsBound)
                                 {
                                     Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SHOP_ONLY_TRADABLE_ITEMS"), 0));
@@ -507,7 +507,7 @@ namespace OpenNos.Handler
         {
             Logger.Debug(packet, Session.SessionId);
             string[] packetsplit = packet.Split(' ');
-            if ((Session.Character.ExchangeInfo != null && Session.Character.ExchangeInfo?.ExchangeList.Count() != 0) || Session.Character.Session.Character.IsShopping)
+            if ((Session.Character.ExchangeInfo != null && Session.Character.ExchangeInfo?.ExchangeList.Count() != 0) || Session.Character.IsShopping)
                 return;
             if (packetsplit.Length > 6)
             {
@@ -575,9 +575,8 @@ namespace OpenNos.Handler
             Logger.Debug(packet, Session.SessionId);
             // n_inv 2 1834 0 100 0.13.13.0.0.330 0.14.15.0.0.2299 0.18.120.0.0.3795 0.19.107.0.0.3795 0.20.94.0.0.3795 0.37.95.0.0.5643 0.38.97.0.0.11340 0.39.99.0.0.18564 0.48.108.0.0.5643 0.49.110.0.0.11340 0.50.112.0.0.18564 0.59.121.0.0.5643 0.60.123.0.0.11340 0.61.125.0.0.18564
             string[] packetsplit = packet.Split(' ');
-            byte type;
+            byte type, typeshop = 0;
             int NpcId;
-            byte typeshop = 0;
             if (!int.TryParse(packetsplit[5], out NpcId) || !byte.TryParse(packetsplit[2], out type)) return;
             if (Session.Character.IsShopping)
                 return;

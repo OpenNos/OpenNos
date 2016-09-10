@@ -295,6 +295,7 @@ namespace OpenNos.GameObject
                     Guid guid = Guid.NewGuid();
                     Map newMap = new Map(Convert.ToInt16(map.MapId), guid, map.Data);
                     newMap.Music = map.Music;
+                    newMap.ShopAllowed = map.ShopAllowed;
                     //register for broadcast
                     _maps.TryAdd(guid, newMap);
                     i++;

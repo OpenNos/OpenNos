@@ -925,4 +925,7 @@ Veux-tu le porter ?</value>
   <data name="MEMORY" xml:space="preserve">
     <value>Mémoire utilisée</value>
   </data>
+  <data name="SHOP_NOT_ALLOWED" xml:space="preserve">
+    <value />
+  </data>
 </root>
