@@ -196,6 +196,7 @@ namespace OpenNos.Handler
                                             if (Session.Character.UseSp && skill.CastEffect != -1)
                                                 Session.Client.SendPackets(Session.Character.GenerateQuicklist());
                                             Session.CurrentMap?.Broadcast($"ct 1 {Session.Character.CharacterId} 3 {mmon.MapMonsterId} {skill.CastAnimation} {skill.CastEffect} {skill.SkillVNum}");
+                                            Session.Character.Skills.Where(s => s.Id != ski.Id).ToList().ForEach(i => i.Hit = 0);
                                             //Generate scp
                                             ski.LastUse = DateTime.Now;
                                             if (damage == 0 || (DateTime.Now - ski.LastUse).TotalSeconds > 3)
