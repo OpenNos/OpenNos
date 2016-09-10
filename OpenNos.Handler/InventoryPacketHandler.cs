@@ -250,6 +250,7 @@ namespace OpenNos.Handler
             else if (mode == 3)
             {
                 if (Session.Character.ExchangeInfo.CharId == Session.Character.CharacterId) return;
+                charName = (string)ServerManager.Instance.GetProperty<string>(Session.Character.ExchangeInfo.CharId, nameof(Character.Name));
                 ExchangeInfo exchange = ServerManager.Instance.GetProperty<ExchangeInfo>(Session.Character.ExchangeInfo.CharId, nameof(Character.ExchangeInfo));
                 long gold = ServerManager.Instance.GetProperty<long>(Session.Character.ExchangeInfo.CharId, nameof(Character.Gold));
                 int backpack = ServerManager.Instance.GetProperty<int>(Session.Character.ExchangeInfo.CharId, nameof(Character.BackPack));
@@ -359,7 +360,6 @@ namespace OpenNos.Handler
                     }
                     else
                     {
-                        charName = ServerManager.Instance.GetProperty<string>(charId, nameof(Character.Name));
                         Session.Client.SendPacket(Session.Character.GenerateInfo(String.Format(Language.Instance.GetMessageFromKey("IN_WAITING_FOR"), charName)));
                     }
                 }
@@ -1278,7 +1278,7 @@ namespace OpenNos.Handler
             Session.Client.SendPacket(Session.Character.GenerateStat());
             Session.Client.SendPacket(Session.Character.GenerateStatChar());
             await Task.Delay(Session.Character.SpCooldown * 1000);
-            Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("TRANSFORM_DISAPPEAR")), 11));
+            Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("TRANSFORM_DISAPPEAR"), 11));
             Session.Client.SendPacket("sd 0");
         }
 
