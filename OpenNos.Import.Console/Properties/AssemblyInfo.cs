@@ -3,11 +3,11 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-[assembly: AssemblyVersion("1.0.0.0")]
+[assembly: AssemblyVersion("1.0.3.*")]
 [assembly: Debuggable(DebuggableAttribute.DebuggingModes.Default | DebuggableAttribute.DebuggingModes.DisableOptimizations | DebuggableAttribute.DebuggingModes.IgnoreSymbolStoreSequencePoints | DebuggableAttribute.DebuggingModes.EnableEditAndContinue)]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyDescription("")]
-[assembly: AssemblyFileVersion("1.0.3.0")]
+//[assembly: AssemblyFileVersion("1.0.3.0")]
 [assembly: AssemblyProduct("Import.Console")]
 [assembly: AssemblyTitle("Import.Console")]
 [assembly: AssemblyTrademark("")]

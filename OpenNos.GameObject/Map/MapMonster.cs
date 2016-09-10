@@ -97,7 +97,7 @@ namespace OpenNos.GameObject
                     CurrentMp = Monster.MaxMP;
                     MapX = firstX;
                     MapY = firstY;
-
+                    path = new List<MapCell>();
                     Map.Broadcast(GenerateIn3());
                     Map.Broadcast(GenerateEff(7));
                 }
