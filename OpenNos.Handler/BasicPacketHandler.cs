@@ -1169,7 +1169,7 @@ namespace OpenNos.Handler
                 Session.Client.SendPacket(Session.Character.GenerateSay($"OpenNos by OpenNos Team\nVersion : v{fileVersionInfo.ProductVersion}", 11));
                 Session.Client.SendPacket(Session.Character.GenerateSay("-----------------------------------------------", 10));
             }
-            Session.Character.SpeedLoad();
+            Session.Character.LoadSpeed();
             Session.Character.LoadSkills();
             Session.Client.SendPacket(Session.Character.GenerateTit());
             Session.Client.SendPacket($"rsfi 1 1 0 9 0 9");

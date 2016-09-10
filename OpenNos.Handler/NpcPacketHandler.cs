@@ -378,7 +378,7 @@ namespace OpenNos.Handler
                         Session.Character.IsSitting = true;
                         Session.Character.IsShopping = true;
 
-                        Session.Character.SpeedLoad();
+                        Session.Character.LoadSpeed();
                         Session.Client.SendPacket(Session.Character.GenerateCond());
                         Session.CurrentMap?.Broadcast(Session.Character.GenerateRest());
                     }
@@ -398,7 +398,7 @@ namespace OpenNos.Handler
                     Session.Character.IsShopping = false;
                     Session.Character.IsSitting = false;
 
-                    Session.Character.SpeedLoad();
+                    Session.Character.LoadSpeed();
                     Session.Client.SendPacket(Session.Character.GenerateCond());
                     Session.CurrentMap?.Broadcast(Session.Character.GenerateRest());
                 }
