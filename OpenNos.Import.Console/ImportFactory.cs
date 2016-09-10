@@ -176,6 +176,7 @@ namespace OpenNos.Import.Console
 
             foreach (FileInfo file in new DirectoryInfo(folderMap).GetFiles())
             {
+
                 string name = String.Empty;
                 int music = 0;
 
@@ -190,9 +191,9 @@ namespace OpenNos.Import.Console
                     Name = name,
                     Music = music,
                     MapId = short.Parse(file.Name),
-                    Data = File.ReadAllBytes(file.FullName)
+                    Data = File.ReadAllBytes(file.FullName),
+                    ShopAllowed = short.Parse(file.Name) == 147 ? true : false
                 };
-
                 if (DAOFactory.MapDAO.LoadById(map.MapId) != null) continue; // Map already exists in list
 
                 maps.Add(map);
