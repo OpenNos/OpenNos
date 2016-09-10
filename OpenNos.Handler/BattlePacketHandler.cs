@@ -202,6 +202,7 @@ namespace OpenNos.Handler
                                             CharacterSkill skillinfo = Session.Character.Skills.FirstOrDefault(s => s.Skill.UpgradeSkill == skill.SkillVNum && s.Skill.CastEffect > 0);
 
                                             Session.CurrentMap?.Broadcast($"ct 1 {Session.Character.CharacterId} 3 {mmon.MapMonsterId} {skill.CastAnimation} {(skillinfo != null ? skillinfo.Skill.CastEffect : skill.CastEffect)} {skill.SkillVNum}");
+                                            Session.Character.Skills.Where(s => s.Id != ski.Id).ToList().ForEach(i => i.Hit = 0);
                                             //Generate scp
                                             ski.LastUse = DateTime.Now;
                                             if (damage == 0 || (DateTime.Now - ski.LastUse).TotalSeconds > 3)
