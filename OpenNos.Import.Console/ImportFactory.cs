@@ -666,7 +666,7 @@ namespace OpenNos.Import.Console
                         }
                         if (npc.NpcMonsterVNum >= 588 && npc.NpcMonsterVNum <= 607)
                         {
-                            for(int i = 588; i <= 608; i++)
+                            for (int i = 588; i <= 608; i++)
                             {
                                 npc.MonsterType = MonsterType.Elite;
                             }
@@ -1329,7 +1329,7 @@ namespace OpenNos.Import.Console
                                     SkillVNum = short.Parse(currentPacket[i])
                                 };
 
-                                if (sskill == null || shopskills.Any(s => s.SkillVNum.Equals(sskill.SkillVNum) && s.ShopId.Equals(sskill.ShopId))|| DAOFactory.ShopSkillDAO.LoadByShopId(sskill.ShopId).Any(s => s.SkillVNum.Equals(sskill.SkillVNum)))
+                                if (sskill == null || shopskills.Any(s => s.SkillVNum.Equals(sskill.SkillVNum) && s.ShopId.Equals(sskill.ShopId)) || DAOFactory.ShopSkillDAO.LoadByShopId(sskill.ShopId).Any(s => s.SkillVNum.Equals(sskill.SkillVNum)))
                                     continue;
 
                                 shopskills.Add(sskill);

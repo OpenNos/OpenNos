@@ -177,14 +177,13 @@ namespace OpenNos.Handler
                             Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("LOW_JOB_LVL"), 0));
                             return;
                         }
-                    }
-
-                    if (skillinfo.UpgradeSkill != 0)
-                    {
-                        CharacterSkill oldupgrade = Session.Character.Skills.FirstOrDefault(s => s.Skill.UpgradeSkill == skillinfo.UpgradeSkill && s.Skill.UpgradeType == skillinfo.UpgradeType && s.Skill.UpgradeSkill != 0);
-                        if (oldupgrade != null)
+                        if (skillinfo.UpgradeSkill != 0)
                         {
-                            Session.Character.Skills.Remove(oldupgrade);
+                            CharacterSkill oldupgrade = Session.Character.Skills.FirstOrDefault(s => s.Skill.UpgradeSkill == skillinfo.UpgradeSkill && s.Skill.UpgradeType == skillinfo.UpgradeType && s.Skill.UpgradeSkill != 0);
+                            if (oldupgrade != null)
+                            {
+                                Session.Character.Skills.Remove(oldupgrade);
+                            }
                         }
                     }
 
