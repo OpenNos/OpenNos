@@ -152,7 +152,7 @@ namespace OpenNos.DAL.EF.MySQL
 
         public void RegisterMapping(Type gameObjectType)
         {
-            Type targetType = Assembly.GetExecutingAssembly().GetTypes().FirstOrDefault(t => t.Name.Equals(gameObjectType.Name));
+            Type targetType = Assembly.GetExecutingAssembly().GetTypes().SingleOrDefault(t => t.Name.Equals(gameObjectType.Name));
             Type itemInstanceType = typeof(ItemInstance);
             itemInstanceMappings.Add(gameObjectType, targetType);
         }
