@@ -107,6 +107,7 @@ namespace OpenNos.GameObject
         public InventoryList InventoryList { get { return _inventorylist; } set { _inventorylist = value; } }
         public bool Invisible { get { return _invisible; } set { _invisible = value; } }
         public bool InvisibleGm { get; set; }
+        public bool IsCustomSpeed { get; set; }
         public int IsDancing { get { return _isDancing; } set { _isDancing = value; } }
         public bool IsShopping { get; set; }
         public bool IsSitting { get { return _issitting; } set { _issitting = value; } }
@@ -144,7 +145,19 @@ namespace OpenNos.GameObject
         public int SnackHp { get; set; }
         public int SnackMp { get; set; }
         public int SpCooldown { get; set; }
-        public byte Speed { get { return _speed; } set { if (value > 59) { _speed = 59; } else { _speed = value; } } }
+
+        public byte Speed
+        {
+            get
+            {
+                return _speed;
+            }
+            set
+            {
+                if (value > 59) { _speed = 59; } else { _speed = value; }
+            }
+        }
+
         public bool UseSp { get; set; }
         public int WaterResistance { get; set; }
 
@@ -1320,7 +1333,7 @@ namespace OpenNos.GameObject
             int cpused = 0;
             foreach (CharacterSkill ski in Skills)
             {
-                    cpused += ski.Skill.CPCost;
+                cpused += ski.Skill.CPCost;
             }
             return cpmax - cpused;
         }
@@ -1475,7 +1488,6 @@ namespace OpenNos.GameObject
                         byte NewSkillVNum = (byte)i;
                         for (int ii = Skills.Count - 1; ii >= 0; ii--)
                         {
-
                             if (skinfo.SkillVNum == Skills[ii].Skill.SkillVNum)
                             {
                                 NewSkillVNum = 0;
@@ -1678,19 +1690,20 @@ namespace OpenNos.GameObject
 
         public void SpeedLoad()
         {
-            if (!IsVehicled)
+            if (!IsVehicled && !IsCustomSpeed)
             {
                 Speed = ServersData.SpeedData[Class];
 
                 if (UseSp)
                 {
-                    SpecialistInstance sp = EquipmentList.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Equipment);
-                    if (sp != null)
+                    SpecialistInstance specialist = EquipmentList.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Equipment);
+                    if (specialist != null)
                     {
-                        Speed += sp.Item.Speed;
+                        Speed += specialist.Item.Speed;
                     }
                 }
             }
+
             if (IsShopping)
             {
                 Speed = 0;

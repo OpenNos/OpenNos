@@ -961,6 +961,7 @@ namespace OpenNos.Handler
                     if (verify && arg < 60)
                     {
                         Session.Character.Speed = arg;
+                        Session.Character.IsCustomSpeed = true;
                         Session.Client.SendPacket(Session.Character.GenerateCond());
                     }
                     break;

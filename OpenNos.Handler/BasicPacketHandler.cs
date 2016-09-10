@@ -1342,7 +1342,7 @@ namespace OpenNos.Handler
             }
             else
             {
-                Session.Client.Disconnect();
+                Session.Destroy();
             }
         }
 
