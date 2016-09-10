@@ -42,9 +42,9 @@ namespace OpenNos.Import.Console
             }
 
             DataAccessHelper.Initialize();
-            System.ConsoleKeyInfo key = new System.ConsoleKeyInfo();
+            ConsoleKeyInfo key = new ConsoleKeyInfo();
             Logger.Log.Warn(Language.Instance.GetMessageFromKey("NEED_TREE"));
-            System.Console.BackgroundColor = System.ConsoleColor.Blue;
+            System.Console.BackgroundColor = ConsoleColor.Blue;
             System.Console.WriteLine("Root");
             System.Console.ResetColor();
             //System.Console.WriteLine($"-----_code_{System.Configuration.ConfigurationManager.AppSettings["language"]}_BCard.txt");
@@ -58,7 +58,7 @@ namespace OpenNos.Import.Console
             System.Console.WriteLine("-----monster.dat");
             System.Console.WriteLine("-----Skill.dat");
             System.Console.WriteLine("-----packet.txt");
-            System.Console.BackgroundColor = System.ConsoleColor.Blue;
+            System.Console.BackgroundColor = ConsoleColor.Blue;
             System.Console.WriteLine("-----map");
             System.Console.ResetColor();
             System.Console.WriteLine("----------0");

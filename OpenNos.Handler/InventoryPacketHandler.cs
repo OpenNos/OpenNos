@@ -646,7 +646,7 @@ namespace OpenNos.Handler
         public void SortOpen(string packet)
         {
             Logger.Debug(packet, Session.SessionId);
-            Boolean gravity = true;
+            bool gravity = true;
             byte type;
             while (gravity)
             {
@@ -1040,7 +1040,6 @@ namespace OpenNos.Handler
                 {
                     Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("REMOVE_VEHICLE"), 0));
                     return;
-
                 }
 
                 double currentRunningSeconds = (DateTime.Now - Process.GetCurrentProcess().StartTime.AddSeconds(-50)).TotalSeconds;
@@ -1057,7 +1056,6 @@ namespace OpenNos.Handler
                     {
                         Session.Client.SendPacket("delay 5000 3 #sl^1");
                         Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateGuri(2, 1), ReceiverType.All);
-
                     }
                     else
                     {
@@ -1257,7 +1255,7 @@ namespace OpenNos.Handler
                     short time = ski.Skill.Cooldown;
                     double temp = (ski.LastUse - DateTime.Now).TotalMilliseconds + time * 100;
                     temp /= 1000;
-                    Session.Character.SpCooldown = temp > Session.Character.SpCooldown ? (int)(temp) : (int)(Session.Character.SpCooldown);
+                    Session.Character.SpCooldown = temp > Session.Character.SpCooldown ? (int)temp : Session.Character.SpCooldown;
                 }
             }
             Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("STAY_TIME"), Session.Character.SpCooldown), 11));

@@ -411,6 +411,7 @@ namespace OpenNos.GameObject
                             {
                                 case 1:
                                     return $"e_info 1 {item.ItemVNum} {item.Rare} {item.Upgrade} {(item.IsFixed ? 1 : 0)} {iteminfo.LevelMinimum} {iteminfo.DamageMinimum + item.DamageMinimum} {iteminfo.DamageMaximum + item.DamageMaximum} {iteminfo.HitRate + item.HitRate} {iteminfo.CriticalLuckRate + item.CriticalLuckRate} {iteminfo.CriticalRate + item.CriticalRate} {item.Ammo} {iteminfo.MaximumAmmo} {iteminfo.Price} -1 0 0 0";
+
                                 case 2:
                                     return $"e_info 1 {item.ItemVNum} {item.Rare} {item.Upgrade} {(item.IsFixed ? 1 : 0)} {iteminfo.LevelMinimum} {iteminfo.DamageMinimum + item.DamageMinimum} {iteminfo.DamageMaximum + item.DamageMaximum} {iteminfo.HitRate + item.HitRate} {iteminfo.CriticalLuckRate + item.CriticalLuckRate} {iteminfo.CriticalRate + item.CriticalRate} {item.Ammo} {iteminfo.MaximumAmmo} {iteminfo.Price} -1 0 0 0";
 
@@ -428,6 +429,7 @@ namespace OpenNos.GameObject
                     {
                         case (byte)EquipmentType.CostumeHat:
                             return $"e_info 3 {item.ItemVNum} {iteminfo.LevelMinimum} {iteminfo.CloseDefence + item.CloseDefence} {iteminfo.DistanceDefence + item.DistanceDefence} {iteminfo.MagicDefence + item.MagicDefence} {iteminfo.DefenceDodge + item.DefenceDodge} {iteminfo.FireResistance + item.FireResistance} {iteminfo.WaterResistance + item.WaterResistance} {iteminfo.LightResistance + item.LightResistance} {iteminfo.DarkResistance + item.DarkResistance} {iteminfo.Price} {(iteminfo.ItemValidTime == 0 ? -1 : 0)} 2 {(iteminfo.ItemValidTime == 0 ? -1 : seconds / (3600))}";
+
                         case (byte)EquipmentType.CostumeSuit:
                             return $"e_info 2 {item.ItemVNum} {item.Rare} {item.Upgrade} {(item.IsFixed ? 1 : 0)} {iteminfo.LevelMinimum} {iteminfo.CloseDefence + item.CloseDefence} {iteminfo.DistanceDefence + item.DistanceDefence} {iteminfo.MagicDefence + item.MagicDefence} {iteminfo.DefenceDodge + item.DefenceDodge} {iteminfo.Price} {(iteminfo.ItemValidTime == 0 ? -1 : 0)} 1 {(iteminfo.ItemValidTime == 0 ? -1 : seconds / (3600))}"; // 1 = IsCosmetic -1 = no shells
 
@@ -439,6 +441,7 @@ namespace OpenNos.GameObject
                     {
                         case (byte)EquipmentType.Amulet:
                             return $"e_info 4 {item.ItemVNum} {iteminfo.LevelMinimum} {seconds * 10} 0 0 {iteminfo.Price}";
+
                         case (byte)EquipmentType.Fairy:
                             return $"e_info 4 {item.ItemVNum} {iteminfo.Element} {item.ElementRate + iteminfo.ElementRate} 0 0 0 0 0"; // last IsNosmall
 
@@ -455,7 +458,6 @@ namespace OpenNos.GameObject
                         default:
                             return $"e_info 8 {item.ItemVNum} {item.Design} {item.Rare}";
                     }
-
 
                 case (byte)ItemType.Shell:
                     return $"e_info 4 {item.ItemVNum} {iteminfo.LevelMinimum} {item.Rare} {iteminfo.Price} 0"; //0 = Number of effects
@@ -600,11 +602,13 @@ namespace OpenNos.GameObject
             switch (type)
             {
                 case 10:
-                    return $"guri 10 {argument} {value} {Session.Character.CharacterId}";
+                    return $"guri 10 {argument} {value} {CharacterId}";
+
                 case 15:
                     return $"guri 15 {argument} 0 0";
+
                 default:
-                    return $"guri {type} {argument} {Session.Character.CharacterId} {value}";
+                    return $"guri {type} {argument} {CharacterId} {value}";
             }
         }
 
@@ -715,6 +719,39 @@ namespace OpenNos.GameObject
             return fairy != null
                 ? $"pairy 1 {CharacterId} 4 {fairy.Item.Element} {fairy.ElementRate + fairy.Item.ElementRate} {fairy.Item.Morph}"
                 : $"pairy 1 {CharacterId} 0 0 0 0";
+        }
+
+        public string GeneratePidx()
+        {
+            int? count = ServerManager.Instance.Groups.FirstOrDefault(s => s.IsMemberOfGroup(CharacterId)).Characters?.Select(c => c.Character.CharacterId).Count();
+            string str = String.Empty;
+            if (count != null)
+            {
+                str = $"pidx {count}";
+                int i = 0;
+                foreach (long Id in ServerManager.Instance.Groups.FirstOrDefault(s => s.IsMemberOfGroup(CharacterId)).Characters?.Select(c => c.Character.CharacterId))
+                {
+                    i++;
+                    str += $" {i}.{Id} ";
+                }
+            }
+            if (str == $"pidx {count}")
+                return String.Empty;
+            else
+                return str;
+        }
+
+        public string GeneratePinit()
+        {
+            Group grp = ServerManager.Instance.Groups.FirstOrDefault(s => s.IsMemberOfGroup(CharacterId));
+            string str = $"pinit {grp.Characters.Count()}";
+            int i = 0;
+            foreach (ClientSession groupSessionForId in grp.Characters)
+            {
+                i++;
+                str += $" 1|{groupSessionForId.Character.CharacterId}|{i}|{groupSessionForId.Character.Level}|{groupSessionForId.Character.Name}|0|{groupSessionForId.Character.Gender}|{groupSessionForId.Character.Class}|{(groupSessionForId.Character.UseSp ? groupSessionForId.Character.Morph : 0)}|{groupSessionForId.Character.HeroLevel}";
+            }
+            return str;
         }
 
         public string GeneratePlayerFlag(long pflag)
@@ -1158,39 +1195,6 @@ namespace OpenNos.GameObject
             return $"tp 1 {CharacterId} {MapX} {MapY} 0";
         }
 
-        public string GeneratePidx()
-        {
-            int? count = ServerManager.Instance.Groups.FirstOrDefault(s => s.IsMemberOfGroup(CharacterId)).Characters?.Select(c => c.Character.CharacterId).Count();
-            string str = String.Empty;
-            if (count != null)
-            {
-                str = $"pidx {count}";
-                int i = 0;
-                foreach (long Id in ServerManager.Instance.Groups.FirstOrDefault(s => s.IsMemberOfGroup(CharacterId)).Characters?.Select(c => c.Character.CharacterId))
-                {
-                    i++;
-                    str += $" {i}.{Id} ";
-                }
-            }
-            if (str == $"pidx {count}")
-                return String.Empty;
-            else
-                return str;
-        }
-
-        public string GeneratePinit()
-        {
-            Group grp = ServerManager.Instance.Groups.FirstOrDefault(s => s.IsMemberOfGroup(CharacterId));
-            string str = $"pinit {grp.Characters.Count()}";
-            int i = 0;
-            foreach (ClientSession groupSessionForId in grp.Characters)
-            {
-                i++;
-                str += $" 1|{groupSessionForId.Character.CharacterId}|{i}|{groupSessionForId.Character.Level}|{groupSessionForId.Character.Name}|0|{groupSessionForId.Character.Gender}|{groupSessionForId.Character.Class}|{(groupSessionForId.Character.UseSp ? groupSessionForId.Character.Morph : 0)}|{groupSessionForId.Character.HeroLevel}";
-            }
-            return str;
-        }
-
         public void GenerateXp(NpcMonster monsterinfo)
         {
             int partySize = 1;
@@ -1316,7 +1320,7 @@ namespace OpenNos.GameObject
             int cpused = 0;
             foreach (CharacterSkill ski in Skills)
             {
-                    cpused += ski.Skill.CPCost;
+                cpused += ski.Skill.CPCost;
             }
             return cpmax - cpused;
         }
@@ -1471,7 +1475,6 @@ namespace OpenNos.GameObject
                         byte NewSkillVNum = (byte)i;
                         for (int ii = Skills.Count - 1; ii >= 0; ii--)
                         {
-
                             if (skinfo.SkillVNum == Skills[ii].Skill.SkillVNum)
                             {
                                 NewSkillVNum = 0;
@@ -1489,9 +1492,7 @@ namespace OpenNos.GameObject
                 {
                     Session.Client.SendPacket(GenerateMsg(Language.Instance.GetMessageFromKey("SKILL_LEARNED"), 0));
                     Session.Client.SendPacket(GenerateSki());
-                    string[] quicklistpackets = GenerateQuicklist();
-                    foreach (string quicklist in quicklistpackets)
-                        Session.Client.SendPacket(quicklist);
+                    Session.Client.SendPackets(GenerateQuicklist());
                 }
             }
         }
@@ -1510,9 +1511,7 @@ namespace OpenNos.GameObject
             {
                 Session.Client.SendPacket(GenerateMsg(Language.Instance.GetMessageFromKey("SKILL_LEARNED"), 0));
                 Session.Client.SendPacket(GenerateSki());
-                string[] quicklistpackets = GenerateQuicklist();
-                foreach (string quicklist in quicklistpackets)
-                    Session.Client.SendPacket(quicklist);
+                Session.Client.SendPackets(GenerateQuicklist());
             }
         }
 

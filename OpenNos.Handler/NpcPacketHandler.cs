@@ -262,7 +262,7 @@ namespace OpenNos.Handler
                     else
                     {
                         Session.Client.SendPacket(Session.Character.GenerateShopMemo(1, string.Format(Language.Instance.GetMessageFromKey("BUY_ITEM_VALID"), iteminfo.Name, amount)));
-                        Session.Character.Reput -= (long)(Reputprice);
+                        Session.Character.Reput -= Reputprice;
                         Session.Client.SendPacket(Session.Character.GenerateFd());
                         Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("REPUT_DECREASED"), 11));
                     }
@@ -296,7 +296,7 @@ namespace OpenNos.Handler
                         return;
                     }
                 }
-                //if (!Session.CurrentMap.ShopAllowed) // enable when parsing implemented
+                //if (!Session.CurrentMap.ShopAllowed)
                 //{
                 //    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SHOP_NOT_ALLOWED"), 0));
                 //    return;
@@ -314,7 +314,7 @@ namespace OpenNos.Handler
                     MapShop myShop = new MapShop();
 
                     if (packetsplit.Length > 2)
-                        for (short j = 3, i = 0; j <= packetsplit.Length - 5; j += 4, i++)
+                        for (short j = 3, i = 0; j < 82; j += 4, i++)
                         {
                             byte.TryParse(packetsplit[j], out type[i]);
                             short.TryParse(packetsplit[j + 1], out slot[i]);

@@ -458,7 +458,7 @@ namespace OpenNos.GameObject
                     session.Client.SendPacket(userShopPacket);
                 foreach (String ShopPacketChar in session.Character.GeneratePlayerShopOnMap())
                     session.Client.SendPacket(ShopPacketChar);
-                               if (session.Character.InvisibleGm == false)
+                if (session.Character.InvisibleGm == false)
                     session.CurrentMap?.Broadcast(session, session.Character.GenerateIn(), ReceiverType.AllExceptMe);
                 if (session.Character.Size != 10)
                     session.Client.SendPacket(session.Character.GenerateScal());

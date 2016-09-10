@@ -300,15 +300,16 @@ namespace OpenNos.Handler
         public void GetNamedCharacterInformation(string packet)
         {
             string[] characterInformationPacket = packet.Split(' ');
-
+            long charId = 0;
             if (characterInformationPacket[2] == "1")
             {
-                long charId = 0;
-                if (Int64.TryParse(characterInformationPacket[3], out charId)) ServerManager.Instance.RequireBroadcastFromUser(Session, charId, "GenerateStatInfo");
+                if (Int64.TryParse(characterInformationPacket[3], out charId))
+                    ServerManager.Instance.RequireBroadcastFromUser(Session, charId, "GenerateStatInfo");
             }
             if (characterInformationPacket[2] == "2")
             {
                 foreach (MapNpc npc in ServerManager.GetMap(Session.Character.MapId).Npcs)
+                {
                     if (npc.MapNpcId == Convert.ToInt32(characterInformationPacket[3]))
                     {
                         NpcMonster npcinfo = ServerManager.GetNpc(npc.NpcVNum);
@@ -316,17 +317,20 @@ namespace OpenNos.Handler
                             return;
                         Session.Client.SendPacket($"st 2 {characterInformationPacket[3]} {npcinfo.Level} {npcinfo.HeroLevel} 100 100 50000 50000");
                     }
+                }
             }
             if (characterInformationPacket[2] == "3")
             {
                 foreach (MapMonster monster in ServerManager.GetMap(Session.Character.MapId).Monsters)
+                {
                     if (monster.MapMonsterId == Convert.ToInt32(characterInformationPacket[3]))
                     {
                         NpcMonster monsterinfo = ServerManager.GetNpc(monster.MonsterVNum);
                         if (monsterinfo == null)
                             return;
-                        Session.Client.SendPacket($"st 3 {characterInformationPacket[3]} {monsterinfo.Level} {monsterinfo.HeroLevel} {(int)((float)monster.CurrentHp / (float)monsterinfo.MaxHP * 100)} {(int)((float)monster.CurrentMp / (float)monsterinfo.MaxMP * 100)} {monster.CurrentHp} {monster.CurrentMp}");
+                        Session.Client.SendPacket($"st 3 {characterInformationPacket[3]} {monsterinfo.Level} {monsterinfo.HeroLevel} {(monster.CurrentHp / monsterinfo.MaxHP * 100)} {(monster.CurrentMp / monsterinfo.MaxMP * 100)} {monster.CurrentHp} {monster.CurrentMp}");
                     }
+                }
             }
         }
 
@@ -380,7 +384,7 @@ namespace OpenNos.Handler
                     }
                 }
             }
-            else if (guriPacket[2] == "203" && guriPacket[3] == "0")
+            else if (guriPacket[2] == "203" && guriPacket[3] == "0") // SP points initialization
             {
                 int[] listPotionResetVNums = new int[3] { 1366, 1427, 5115 };
                 int vnumToUse = -1;
@@ -595,7 +599,7 @@ namespace OpenNos.Handler
                 }
             }
 
-            //TODO Wrap Database access up to GO
+            //TODO: Wrap Database access up to GO
             IEnumerable<CharacterDTO> characters = DAOFactory.CharacterDAO.LoadByAccount(Session.Account.AccountId);
             Logger.Log.InfoFormat(Language.Instance.GetMessageFromKey("ACCOUNT_ARRIVED"), Session.SessionId);
             Session.Client.SendPacket("clist_start 0");
@@ -751,7 +755,6 @@ namespace OpenNos.Handler
                             ServerManager.Instance.Groups.FirstOrDefault(s => s.IsMemberOfGroup(Session.Character.CharacterId)).SharingMode = 0;
                             Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SHARING_BY_ORDER"), 0), ReceiverType.Group);
                         }
-
                         break;
                 }
             }
@@ -765,13 +768,11 @@ namespace OpenNos.Handler
             string[] packetsplit = packet.Split(' ');
             if (packetsplit.Length > 3)
             {
-                bool isBlocked = false;
                 string charName;
                 long charId = -1;
+                bool grouped1 = false, grouped2 = false, isBlocked = false;
                 if (!long.TryParse(packetsplit[3], out charId))
                     return;
-                bool grouped1 = false;
-                bool grouped2 = false;
                 foreach (Group group in ServerManager.Instance.Groups)
                 {
                     if ((group.IsMemberOfGroup(charId) || group.IsMemberOfGroup(Session.Character.CharacterId)) && group.Characters.Count == 3)
@@ -834,7 +835,6 @@ namespace OpenNos.Handler
                 Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("CANT_MOVE"), 10));
                 return;
             }
-
             foreach (Portal portal in ServerManager.GetMap(Session.Character.MapId).Portals)
             {
                 if (Session.Character.MapY >= portal.SourceY - 1 && Session.Character.MapY <= portal.SourceY + 1
@@ -898,8 +898,6 @@ namespace OpenNos.Handler
                     short.TryParse(packetsplit[5], out data1);
                     short.TryParse(packetsplit[6], out data2);
                 }
-                // qset type q1 q2 data1 data2
-
                 switch (type)
                 {
                     case 0:
@@ -918,8 +916,8 @@ namespace OpenNos.Handler
                             Pos = data2,
                             Morph = Session.Character.UseSp ? (short)Session.Character.Morph : (short)0
                         });
-                        Session.Client.SendPacket($"qset {q1} {q2} {type}.{data1}.{data2}.0");
 
+                        Session.Client.SendPacket($"qset {q1} {q2} {type}.{data1}.{data2}.0");
                         break;
 
                     case 2:
@@ -950,16 +948,12 @@ namespace OpenNos.Handler
                             qlTo.Q2 = data2;
                             Session.Client.SendPacket($"qset {qlTo.Q1} {qlTo.Q2} {qlTo.Type}.{qlTo.Slot}.{qlTo.Pos}.0");
                         }
-
                         break;
 
                     case 3:
                         // Remove from Quicklist
-
                         Session.Character.QuicklistEntries.RemoveAll(n => n.Q1 == q1 && n.Q2 == q2 && (Session.Character.UseSp ? n.Morph == Session.Character.Morph : n.Morph == 0));
-
                         Session.Client.SendPacket($"qset {q1} {q2} 7.7.-1.0");
-
                         break;
 
                     default:
@@ -1214,9 +1208,7 @@ namespace OpenNos.Handler
             Session.Character.GenerateStartupInventory();
             // mlobjlst - miniland object list
             Session.Client.SendPacket(Session.Character.GenerateGold());
-            string[] quicklistpackets = Session.Character.GenerateQuicklist();
-            foreach (string quicklist in quicklistpackets)
-                Session.Client.SendPacket(quicklist);
+            Session.Client.SendPackets(Session.Character.GenerateQuicklist());
             // string finit = "finit";
             // string blinit = "blinit";
             string clinit = "clinit";
@@ -1247,11 +1239,9 @@ namespace OpenNos.Handler
         {
             Logger.Debug(packet, Session.SessionId);
             string[] packetsplit = packet.Split(' ', '^');
-            int type = -1;
+            int type = -1, newgroup = 1;
             long charId = -1;
-            int newgroup = 1;
-            Boolean blocked1 = false;
-            Boolean blocked2 = false;
+            bool blocked1 = false, blocked2 = false;
             if (packetsplit.Length > 3)
             {
                 if (!int.TryParse(packetsplit[2], out type))

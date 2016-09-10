@@ -250,7 +250,7 @@ namespace OpenNos.GameObject
                 Item iteminfo = (inv.ItemInstance as ItemInstance).Item;
                 Inventory invdest = LoadInventoryBySlotAndType(destslot, desttype);
 
-                if (invdest == null && ((desttype == 6 && iteminfo.ItemType == 4) || (desttype == 7 && iteminfo.ItemType == 2) || desttype == 0))
+                if (invdest == null && ((desttype == 6 && iteminfo.ItemType == (byte)ItemType.Specialist) || (desttype == 7 && iteminfo.ItemType == (byte)ItemType.Fashion) || desttype == 0))
                 {
                     inv.Slot = destslot;
                     inv.Type = desttype;
