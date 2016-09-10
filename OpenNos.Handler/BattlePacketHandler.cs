@@ -152,7 +152,7 @@ namespace OpenNos.Handler
                             if (Session.Character.UseSp && skill.CastEffect != -1)
                                 Session.Client.SendPackets(Session.Character.GenerateQuicklist());
 
-                            CharacterSkill skillinfo = Session.Character.Skills.FirstOrDefault(s => s.Skill.UpgradeSkill == skill.SkillVNum && s.Skill.CastEffect > 0);
+                            CharacterSkill skillinfo = Session.Character.Skills.OrderBy(o => o.SkillVNum).FirstOrDefault(s => s.Skill.UpgradeSkill == skill.SkillVNum && s.Skill.Effect > 0 && s.Skill.SkillType == 2);
 
                             Session.CurrentMap?.Broadcast($"ct 1 {Session.Character.CharacterId} 1 {Session.Character.CharacterId} {skill.CastAnimation} {(skillinfo != null ? skillinfo.Skill.CastEffect : skill.CastEffect)} {skill.SkillVNum}");
                             //Generate scp
@@ -199,7 +199,7 @@ namespace OpenNos.Handler
                                             if (Session.Character.UseSp && skill.CastEffect != -1)
                                                 Session.Client.SendPackets(Session.Character.GenerateQuicklist());
 
-                                            CharacterSkill skillinfo = Session.Character.Skills.FirstOrDefault(s => s.Skill.UpgradeSkill == skill.SkillVNum && s.Skill.CastEffect > 0);
+                                            CharacterSkill skillinfo = Session.Character.Skills.OrderBy(o => o.SkillVNum).FirstOrDefault(s => s.Skill.UpgradeSkill == skill.SkillVNum && s.Skill.Effect > 0 && s.Skill.SkillType == 2);
 
                                             Session.CurrentMap?.Broadcast($"ct 1 {Session.Character.CharacterId} 3 {mmon.MapMonsterId} {skill.CastAnimation} {(skillinfo != null ? skillinfo.Skill.CastEffect : skill.CastEffect)} {skill.SkillVNum}");
                                             Session.Character.Skills.Where(s => s.Id != ski.Id).ToList().ForEach(i => i.Hit = 0);
