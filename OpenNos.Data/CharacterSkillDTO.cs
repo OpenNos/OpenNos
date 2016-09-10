@@ -19,7 +19,6 @@ namespace OpenNos.Data
         #region Properties
 
         public long CharacterId { get; set; }
-        public short? NpcMonsterVNum { get; set; }
         public short SkillVNum { get; set; }
 
         #endregion
