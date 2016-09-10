@@ -118,7 +118,7 @@ namespace OpenNos.GameObject
                 case 30: //wigs
                     if (this != null)
                     {
-                        WearableInstance wig = Session.Character.EquipmentList.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Hat, (byte)InventoryType.Equipment);
+                        WearableInstance wig = Session.Character.EquipmentList.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Hat, InventoryType.Equipment);
                         if (wig != null)
                         {
                             wig.Design = (byte)rnd.Next(0, 15);

@@ -277,7 +277,7 @@ namespace OpenNos.Handler
         {
             Logger.Debug(packet, Session.SessionId);
             string[] packetsplit = packet.Split(' ');
-            byte[] type = new byte[20];
+            InventoryType[] type = new InventoryType[20];
             long[] gold = new long[20];
             short[] slot = new short[20];
             byte[] qty = new byte[20];
@@ -316,7 +316,7 @@ namespace OpenNos.Handler
                     if (packetsplit.Length > 2)
                         for (short j = 3, i = 0; j < 82; j += 4, i++)
                         {
-                            byte.TryParse(packetsplit[j], out type[i]);
+                            Enum.TryParse<InventoryType>(packetsplit[j], out type[i]);
                             short.TryParse(packetsplit[j + 1], out slot[i]);
                             byte.TryParse(packetsplit[j + 2], out qty[i]);
 
@@ -511,8 +511,9 @@ namespace OpenNos.Handler
                 return;
             if (packetsplit.Length > 6)
             {
-                byte type, amount, slot;
-                if (!byte.TryParse(packetsplit[4], out type) || !byte.TryParse(packetsplit[5], out slot) || !byte.TryParse(packetsplit[6], out amount)) return;
+                InventoryType type;
+                byte amount, slot;
+                if (!Enum.TryParse<InventoryType>(packetsplit[4], out type) || !byte.TryParse(packetsplit[5], out slot) || !byte.TryParse(packetsplit[6], out amount)) return;
 
                 Inventory inv = Session.Character.InventoryList.LoadInventoryBySlotAndType(slot, type);
                 if (inv == null || amount > inv.ItemInstance.Amount) return;
@@ -638,13 +639,13 @@ namespace OpenNos.Handler
                     typeshop = 200;
                 }
                 if (iteminfo.ReputPrice > 0 && iteminfo.Type == 0)
-                    shoplist += $" {iteminfo.Type}.{item.Slot}.{item.ItemVNum}.{item.Rare}.{(iteminfo.IsColored ? item.Color : item.Upgrade)}.{iteminfo.ReputPrice}";
+                    shoplist += $" {(byte)iteminfo.Type}.{item.Slot}.{item.ItemVNum}.{item.Rare}.{(iteminfo.IsColored ? item.Color : item.Upgrade)}.{iteminfo.ReputPrice}";
                 else if (iteminfo.ReputPrice > 0 && iteminfo.Type != 0)
-                    shoplist += $" {iteminfo.Type}.{item.Slot}.{item.ItemVNum}.{-1}.{iteminfo.ReputPrice}";
+                    shoplist += $" {(byte)iteminfo.Type}.{item.Slot}.{item.ItemVNum}.{-1}.{iteminfo.ReputPrice}";
                 else if (iteminfo.Type != 0)
-                    shoplist += $" {iteminfo.Type}.{item.Slot}.{item.ItemVNum}.{-1}.{iteminfo.Price * percent}";
+                    shoplist += $" {(byte)iteminfo.Type}.{item.Slot}.{item.ItemVNum}.{-1}.{iteminfo.Price * percent}";
                 else
-                    shoplist += $" {iteminfo.Type}.{item.Slot}.{item.ItemVNum}.{item.Rare}.{(iteminfo.IsColored ? item.Color : item.Upgrade)}.{iteminfo.Price * percent}";
+                    shoplist += $" {(byte)iteminfo.Type}.{item.Slot}.{item.ItemVNum}.{item.Rare}.{(iteminfo.IsColored ? item.Color : item.Upgrade)}.{iteminfo.Price * percent}";
             }
 
             foreach (ShopSkill skill in mapnpc.Shop.ShopSkills.Where(s => s.Type.Equals(type)))
@@ -717,7 +718,7 @@ namespace OpenNos.Handler
                     if ((item.ItemInstance as ItemInstance).Item.Type == 0)
                         packetToSend += $" 0.{i}.{item.ItemInstance.ItemVNum}.{item.ItemInstance.Rare}.{item.ItemInstance.Upgrade}.{item.Price}.";
                     else
-                        packetToSend += $" {(item.ItemInstance as ItemInstance).Item.Type}.{i}.{item.ItemInstance.ItemVNum}.{item.Amount}.{item.Price}.-1.";
+                        packetToSend += $" {(byte)(item.ItemInstance as ItemInstance).Item.Type}.{i}.{item.ItemInstance.ItemVNum}.{item.Amount}.{item.Price}.-1.";
                 }
                 else
                 {

@@ -157,7 +157,7 @@ namespace OpenNos.Handler
             Logger.Debug(packet, Session.SessionId);
             string[] packetsplit = packet.Split(' ');
             short fairylevel;
-            WearableInstance fairy = Session.Character.EquipmentList.LoadBySlotAndType<WearableInstance>((short)EquipmentType.Fairy, (byte)InventoryType.Equipment);
+            WearableInstance fairy = Session.Character.EquipmentList.LoadBySlotAndType<WearableInstance>((short)EquipmentType.Fairy, InventoryType.Equipment);
             if (fairy != null && packetsplit.Length > 2)
             {
                 if (short.TryParse(packetsplit[2], out fairylevel) && fairylevel <= 25565)
@@ -285,7 +285,7 @@ namespace OpenNos.Handler
             Logger.Debug(packet, Session.SessionId);
             string[] packetsplit = packet.Split(' ');
             byte splevel;
-            SpecialistInstance sp = Session.Character.EquipmentList.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, (byte)InventoryType.Equipment);
+            SpecialistInstance sp = Session.Character.EquipmentList.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Equipment);
             if (sp != null && packetsplit.Length > 2 && Session.Character.UseSp)
             {
                 if (Byte.TryParse(packetsplit[2], out splevel) && splevel <= 99 && splevel > 0)
@@ -961,6 +961,7 @@ namespace OpenNos.Handler
                     if (verify && arg < 60)
                     {
                         Session.Character.Speed = arg;
+                        Session.Character.IsCustomSpeed = true;
                         Session.Client.SendPacket(Session.Character.GenerateCond());
                     }
                     break;
@@ -1215,7 +1216,7 @@ namespace OpenNos.Handler
             {
                 if (Byte.TryParse(packetsplit[2], out wigcolor))
                 {
-                    WearableInstance wig = Session.Character.EquipmentList.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Hat, (byte)InventoryType.Equipment);
+                    WearableInstance wig = Session.Character.EquipmentList.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Hat, InventoryType.Equipment);
                     if (wig != null)
                     {
                         wig.Design = wigcolor;

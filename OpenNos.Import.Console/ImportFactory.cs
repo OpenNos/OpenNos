@@ -280,7 +280,7 @@ namespace OpenNos.Import.Console
             MapTypeDTO mt9 = new MapTypeDTO
             {
                 MapTypeId = (short)MapTypeEnum.Act61a,
-                MapTypeName = "Act6.1a",
+                MapTypeName = "Act6.1a",// angel camp
                 PotionDelay = 300
             };
             if (!list.Any(s => s.MapTypeId == mt9.MapTypeId))
@@ -289,7 +289,7 @@ namespace OpenNos.Import.Console
             MapTypeDTO mt10 = new MapTypeDTO
             {
                 MapTypeId = (short)MapTypeEnum.Act61d,
-                MapTypeName = "Act6.1d",
+                MapTypeName = "Act6.1d",// demon camp
                 PotionDelay = 300
             };
             if (!list.Any(s => s.MapTypeId == mt10.MapTypeId))
@@ -447,7 +447,7 @@ namespace OpenNos.Import.Console
                     mapTypeId = 14;
                     objectset = true;
                 }
-                else if (i == 4) // "Sunny plains"
+                else if (i == 4) // "Sunny plain"
                 {
                     mapTypeId = 15;
                     objectset = true;
@@ -729,6 +729,8 @@ namespace OpenNos.Import.Console
                     }
                     else if (currentLine.Length > 3 && currentLine[1] == "ITEM")
                     {
+                        //TODO: add missing general drop if found
+                        //TODO: add map dependant drops eg. angel wings.
                         if (DAOFactory.NpcMonsterDAO.LoadByVnum(npc.NpcMonsterVNum) == null)
                         {
                             npcs.Add(npc);
@@ -757,7 +759,6 @@ namespace OpenNos.Import.Console
                 Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("NPCMONSTERS_PARSED"), counter));
                 npcIdStream.Close();
             }
-            // Little bit of hardcoding all map group dependand drops
             //Act 1
             drops.Add(new DropDTO { ItemVNum = 1012, Amount = 1, MonsterVNum = null, DropChance = 13000, MapTypeId = (short)MapTypeEnum.Act1 });
 
@@ -925,7 +926,7 @@ namespace OpenNos.Import.Console
             drops.Add(new DropDTO { ItemVNum = 5119, Amount = 1, MonsterVNum = null, DropChance = 150, MapTypeId = (short)MapTypeEnum.Act61 });
             //drops.Add(new DropDTO { ItemVNum = 5881, Amount = 1, MonsterVNum = null, DropChance = 450, MapTypeId = 10 }); //Only for demon camp need group act6.1 demon
 
-            //Act6.2 (need some information) > soon)
+            //Act6.2 (need some information) > soon )
 
             //Comet plain
             drops.Add(new DropDTO { ItemVNum = 1004, Amount = 1, MonsterVNum = null, DropChance = 300, MapTypeId = (short)MapTypeEnum.CometPlain });
@@ -1546,6 +1547,8 @@ namespace OpenNos.Import.Console
                     }
                     else if (currentLine.Length > 2 && currentLine[1] == "TARGET")
                     {
+                        //1&2 used as type
+                        //third unknown
                         skill.TargetType = byte.Parse(currentLine[2]);
                         skill.HitType = byte.Parse(currentLine[3]);
                         skill.TargetRange = byte.Parse(currentLine[5]);
@@ -1641,55 +1644,63 @@ namespace OpenNos.Import.Console
 
                             case "2":
                                 //unknown
-                                //skill.Unknown = short.Parse(currentLine[2]);
-                                //skill.Unknown = short.Parse(currentLine[3]);
-                                //skill.Unknown = short.Parse(currentLine[4]);
-                                //skill.Unknown = short.Parse(currentLine[5]);
-                                //skill.Unknown = short.Parse(currentLine[6]);
-                                //skill.Unknown = short.Parse(currentLine[7]);
+                                /*
+                                skill.Unknown = short.Parse(currentLine[2]);
+                                skill.Unknown = short.Parse(currentLine[3]);
+                                skill.Unknown = short.Parse(currentLine[4]);
+                                skill.Unknown = short.Parse(currentLine[5]);
+                                skill.Unknown = short.Parse(currentLine[6]);
+                                skill.Unknown = short.Parse(currentLine[7]);
+                                */
                                 break;
 
                             case "3":
                                 //unknown
-                                //skill.Unknown = short.Parse(currentLine[2]);
-                                //skill.Unknown = short.Parse(currentLine[3]);
-                                //skill.Unknown = short.Parse(currentLine[4]);
-                                //skill.Unknown = short.Parse(currentLine[5]);
-                                //skill.Unknown = short.Parse(currentLine[6]);
-                                //skill.Unknown = short.Parse(currentLine[7]);
+                                /*
+                                skill.Unknown = short.Parse(currentLine[2]);
+                                skill.Unknown = short.Parse(currentLine[3]);
+                                skill.Unknown = short.Parse(currentLine[4]);
+                                skill.Unknown = short.Parse(currentLine[5]);
+                                skill.Unknown = short.Parse(currentLine[6]);
+                                skill.Unknown = short.Parse(currentLine[7]);
+                                */
                                 break;
 
                             case "4":
                                 //unknown
-                                //skill.Unknown = short.Parse(currentLine[2]);
-                                //skill.Unknown = short.Parse(currentLine[3]);
-                                //skill.Unknown = short.Parse(currentLine[4]);
-                                //skill.Unknown = short.Parse(currentLine[5]);
-                                //skill.Unknown = short.Parse(currentLine[6]);
-                                //skill.Unknown = short.Parse(currentLine[7]);
+                                /*
+                                skill.Unknown = short.Parse(currentLine[2]);
+                                skill.Unknown = short.Parse(currentLine[3]);
+                                skill.Unknown = short.Parse(currentLine[4]);
+                                skill.Unknown = short.Parse(currentLine[5]);
+                                skill.Unknown = short.Parse(currentLine[6]);
+                                skill.Unknown = short.Parse(currentLine[7]);
+                                */
                                 break;
                         }
                     }
                     else if (currentLine.Length > 2 && currentLine[1] == "FCOMBO")
                     {
-                        //if (currentLine[2] == "1")
-                        //{
-                        //    combo.FirstActivationHit = byte.Parse(currentLine[3]);
-                        //    combo.FirstComboAttackAnimation = short.Parse(currentLine[4]);
-                        //    combo.FirstComboEffect = short.Parse(currentLine[5]);
-                        //    combo.SecondActivationHit = byte.Parse(currentLine[3]);
-                        //    combo.SecondComboAttackAnimation = short.Parse(currentLine[4]);
-                        //    combo.SecondComboEffect = short.Parse(currentLine[5]);
-                        //    combo.ThirdActivationHit = byte.Parse(currentLine[3]);
-                        //    combo.ThirdComboAttackAnimation = short.Parse(currentLine[4]);
-                        //    combo.ThirdComboEffect = short.Parse(currentLine[5]);
-                        //    combo.FourthActivationHit = byte.Parse(currentLine[3]);
-                        //    combo.FourthComboAttackAnimation = short.Parse(currentLine[4]);
-                        //    combo.FourthComboEffect = short.Parse(currentLine[5]);
-                        //    combo.FifthActivationHit = byte.Parse(currentLine[3]);
-                        //    combo.FifthComboAttackAnimation = short.Parse(currentLine[4]);
-                        //    combo.FifthComboEffect = short.Parse(currentLine[5]);
-                        //}
+                        /* Parse when done
+                        if (currentLine[2] == "1")
+                        {
+                            combo.FirstActivationHit = byte.Parse(currentLine[3]);
+                            combo.FirstComboAttackAnimation = short.Parse(currentLine[4]);
+                            combo.FirstComboEffect = short.Parse(currentLine[5]);
+                            combo.SecondActivationHit = byte.Parse(currentLine[3]);
+                            combo.SecondComboAttackAnimation = short.Parse(currentLine[4]);
+                            combo.SecondComboEffect = short.Parse(currentLine[5]);
+                            combo.ThirdActivationHit = byte.Parse(currentLine[3]);
+                            combo.ThirdComboAttackAnimation = short.Parse(currentLine[4]);
+                            combo.ThirdComboEffect = short.Parse(currentLine[5]);
+                            combo.FourthActivationHit = byte.Parse(currentLine[3]);
+                            combo.FourthComboAttackAnimation = short.Parse(currentLine[4]);
+                            combo.FourthComboEffect = short.Parse(currentLine[5]);
+                            combo.FifthActivationHit = byte.Parse(currentLine[3]);
+                            combo.FifthComboAttackAnimation = short.Parse(currentLine[4]);
+                            combo.FifthComboEffect = short.Parse(currentLine[5]);
+                        }
+                        */
                     }
                     else if (currentLine.Length > 2 && currentLine[1] == "CELL")
                     {
@@ -1811,8 +1822,9 @@ namespace OpenNos.Import.Console
                     }
                     else if (currentLine.Length > 7 && currentLine[1] == "INDEX")
                     {
-                        item.Type = Convert.ToByte(currentLine[2]) != 4 ? Convert.ToByte(currentLine[2]) : (byte)0;
-                        item.ItemType = currentLine[3] != "-1" ? Convert.ToByte($"{item.Type}{currentLine[3]}") : (byte)0;
+                        item.Type = (InventoryType)(Convert.ToByte(currentLine[2]) != 4 ? Convert.ToByte(currentLine[2]) : (byte)0);
+
+                        item.ItemType = currentLine[3] != "-1" ? Convert.ToByte($"{(byte)item.Type}{currentLine[3]}") : (byte)0;
                         item.ItemSubType = Convert.ToByte(currentLine[4]);
                         item.EquipmentSlot = Convert.ToByte(currentLine[5] != "-1" ? currentLine[5] : "0");
                         //item.DesignId = Convert.ToInt16(currentLine[6]);
@@ -1860,17 +1872,19 @@ namespace OpenNos.Import.Console
                                 item.WaitDelay = 3000;
                                 break;
 
-                            //case 5226: //Invisible (in glacernon) locomotion, 5 seconds with booster.
-                            //    item.Morph = 817;
-                            //    item.Speed = 20;
-                            //    item.WaitDelay = 3000;
-                            //    break;
+                            /*  case 5226: //Invisible locomotion, only 5 seconds with booster
+                                     item.Morph = 817;
+                                     item.Speed = 20;
+                                     item.WaitDelay = 3000;
+                                     break;
 
-                            //case 5228: //Invisible (in glacernon) locomotion, 5 seconds with booster.
-                            //    item.Morph = 819;
-                            //    item.Speed = 20;
-                            //    item.WaitDelay = 3000;
-                            //    break;
+                                 case 5228: //Invisible locoomotion, only 5 seconds with booster
+                                     item.Morph = 819;
+                                     item.Speed = 20;
+                                     item.WaitDelay = 3000;
+                                     break;
+
+                                     */
 
                             case 5234:
                                 item.Morph = 2522;
@@ -2012,11 +2026,12 @@ namespace OpenNos.Import.Console
                         item.IsWarehouse = currentLine[10] == "1";
                         item.IsColored = currentLine[16] == "1";
                         item.Sex = currentLine[18] == "1" ? (byte)1 : currentLine[17] == "1" ? (byte)2 : (byte)0;
-                        if (currentLine[21] == "1") item.ReputPrice = item.Price;
+                        if (currentLine[21] == "1")
+                            item.ReputPrice = item.Price;
                         item.IsHeroic = currentLine[22] == "1";
                         /*
-                        item.IsVehicle = currentLine[11] == "1" ? true : false;
-                        item.BoxedVehicle = currentLine[12] == "1" ? true : false;
+                        item.IsVehicle = currentLine[11] == "1" ? true : false; // (?)
+                        item.BoxedVehicle = currentLine[12] == "1" ? true : false; // (?)
                         linesave[4]  unknown
                         linesave[11] unknown
                         linesave[12] unknown
@@ -2065,6 +2080,8 @@ namespace OpenNos.Import.Console
                                 item.DefenceDodge = Convert.ToInt16(currentLine[6]);
                                 if (item.EquipmentSlot.Equals((byte)EquipmentType.CostumeHat) || item.EquipmentSlot.Equals((byte)EquipmentType.CostumeSuit))
                                     item.ItemValidTime = Convert.ToInt32(currentLine[13]) * 3600;
+                                //else
+                                //    item.Unknown = Convert.ToInt32(currentLine[13]);
                                 break;
 
                             case (byte)ItemType.Food:
@@ -2142,12 +2159,12 @@ namespace OpenNos.Import.Console
                                 break;
 
                             case (byte)ItemType.Specialist:
-                                //item.IsSpecialist = Convert.ToByte(currentLine[2]);
+                                //item.isSpecialist = Convert.ToByte(currentLine[2]);
                                 //item.Unknown = Convert.ToInt16(currentLine[3]);
                                 item.ElementRate = Convert.ToInt16(currentLine[4]);
                                 item.Speed = Convert.ToByte(currentLine[5]);
                                 item.SpType = Convert.ToByte(currentLine[13]);
-                                //item.Morph = Convert.ToInt16(currentLine[14]) + 1;
+                                //item.Morph = Convert.ToInt16(currentLine[14]) + 1; // idk whats that, its useless
                                 item.FireResistance = Convert.ToByte(currentLine[15]);
                                 item.WaterResistance = Convert.ToByte(currentLine[16]);
                                 item.LightResistance = Convert.ToByte(currentLine[17]);
@@ -2171,13 +2188,13 @@ namespace OpenNos.Import.Console
                                     item.SecondaryElement = (byte)elementdic.OrderByDescending(s => s.Value).ElementAt(1).Key;
                                 }
 
-                                if (item.VNum == 901)
+                                if (item.VNum == 901)// need to hardcode...
                                     item.Element = 1;
-                                else if (item.VNum == 903)
+                                else if (item.VNum == 903) // need to hardcode...
                                     item.Element = 2;
-                                else if (item.VNum == 906)
+                                else if (item.VNum == 906)// need to hardcode...
                                     item.Element = 3;
-                                else if (item.VNum == 909)
+                                else if (item.VNum == 909)// need to hardcode...
                                     item.Element = 3;
                                 break;
 
@@ -2256,7 +2273,7 @@ namespace OpenNos.Import.Console
                             item.LightResistance = Convert.ToByte(currentLine[9]);
                             item.DarkResistance = Convert.ToByte(currentLine[11]);
                         }
-                        //else // uncomment when verified
+                        //else // thanks to this sometimes we have 0 where we shouldnt, add verification on where you need it.
                         //{
                         //    item.Effect = Convert.ToInt16(currentLine[2]);
                         //    item.EffectValue = Convert.ToInt32(currentLine[8]);
@@ -2267,6 +2284,7 @@ namespace OpenNos.Import.Console
                         //need to see how to use them :D (we know how to get the buff from bcard ect)
                     }
                 }
+
                 DAOFactory.ItemDAO.Insert(items);
                 Logger.Log.Info(string.Format(Language.Instance.GetMessageFromKey("ITEMS_PARSED"), itemCounter));
                 npcIdStream.Close();
