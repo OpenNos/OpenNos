@@ -928,8 +928,8 @@ namespace OpenNos.Handler
                         // qset type to1 to2 from1 from2
                         // vars ->   q1  q2  data1 data2
 
-                        QuicklistEntry qlFrom = Session.Character.QuicklistEntries.Single(n => n.Q1 == data1 && n.Q2 == data2 && (Session.Character.UseSp ? n.Morph == Session.Character.Morph : n.Morph == 0));
-                        QuicklistEntry qlTo = Session.Character.QuicklistEntries.SingleOrDefault(n => n.Q1 == q1 && n.Q2 == q2 && (Session.Character.UseSp ? n.Morph == Session.Character.Morph : n.Morph == 0));
+                        QuicklistEntry qlFrom = Session.Character.QuicklistEntries.First(n => n.Q1 == data1 && n.Q2 == data2 && (Session.Character.UseSp ? n.Morph == Session.Character.Morph : n.Morph == 0));
+                        QuicklistEntry qlTo = Session.Character.QuicklistEntries.FirstOrDefault(n => n.Q1 == q1 && n.Q2 == q2 && (Session.Character.UseSp ? n.Morph == Session.Character.Morph : n.Morph == 0));
 
                         qlFrom.Q1 = q1;
                         qlFrom.Q2 = q2;
@@ -1305,7 +1305,7 @@ namespace OpenNos.Handler
 
                         //set back reference to group
                         Session.Character.Group = group;
-                        ServerManager.Instance.Sessions.SingleOrDefault(c => c.Character.CharacterId.Equals(charId)).Character.Group = group;
+                        ServerManager.Instance.Sessions.FirstOrDefault(c => c.Character.CharacterId.Equals(charId)).Character.Group = group;
                     }
 
                     //player join group
