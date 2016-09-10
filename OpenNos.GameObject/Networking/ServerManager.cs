@@ -295,6 +295,7 @@ namespace OpenNos.GameObject
                     Guid guid = Guid.NewGuid();
                     Map newMap = new Map(Convert.ToInt16(map.MapId), guid, map.Data);
                     newMap.Music = map.Music;
+                    newMap.ShopAllowed = map.ShopAllowed;
                     //register for broadcast
                     _maps.TryAdd(guid, newMap);
                     i++;
@@ -459,7 +460,7 @@ namespace OpenNos.GameObject
                     session.Client.SendPacket(userShopPacket);
                 foreach (String ShopPacketChar in session.Character.GeneratePlayerShopOnMap())
                     session.Client.SendPacket(ShopPacketChar);
-                               if (session.Character.InvisibleGm == false)
+                if (session.Character.InvisibleGm == false)
                     session.CurrentMap?.Broadcast(session, session.Character.GenerateIn(), ReceiverType.AllExceptMe);
                 if (session.Character.Size != 10)
                     session.Client.SendPacket(session.Character.GenerateScal());

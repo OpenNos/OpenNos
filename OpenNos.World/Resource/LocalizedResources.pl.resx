@@ -895,4 +895,7 @@
   <data name="MEMORY" xml:space="preserve">
     <value>Użycie pamięci</value>
   </data>
+  <data name="SHOP_NOT_ALLOWED" xml:space="preserve">
+    <value>Nie możesz otwierac sklepów na głównych mapach.</value>
+  </data>
 </root>

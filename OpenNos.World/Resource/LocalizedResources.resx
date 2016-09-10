@@ -916,4 +916,7 @@
   <data name="MEMORY" xml:space="preserve">
     <value>Used memory</value>
   </data>
+  <data name="SHOP_NOT_ALLOWED" xml:space="preserve">
+    <value>You can't open shops on global maps.</value>
+  </data>
 </root>

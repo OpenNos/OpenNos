@@ -617,16 +617,15 @@ namespace OpenNos.Handler
             //Logger.Debug(String.Format("FinalDamage = (Damage {0} + Ef {1}  + MoralDifference{2} + Dmob{3})  (1 - Bsp3{4})  (1 + (AttackPotion{5} + Ahair{6} + Apet{7})) * RangedDistance{8} = {9}", Damage, Ef, MoralDifference, Dmob, Bsp3, AttackPotion, Ahair, Apet, RangedDistance, FinalDamage));
 
             if (Session.Character.Class != 3 && !Session.Character.HasGodMode)
+            {
                 if (generated > 100 - miss_chance)
                 {
                     hitmode = 1;
                     FinalDamage = 0;
                 }
+            }
 
-            int intdamage;
-            if (Session.Character.HasGodMode)
-                intdamage = 67107840; // this sets dmg for GodMode command
-            else intdamage = FinalDamage;
+            int intdamage = Session.Character.HasGodMode ? 67107840 : FinalDamage;
 
             if (mmon.CurrentHp <= intdamage)
             {
