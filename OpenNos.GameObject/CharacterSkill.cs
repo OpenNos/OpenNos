@@ -32,7 +32,6 @@ namespace OpenNos.GameObject
             this.CharacterId = dto.CharacterId;
             this.Id = dto.Id;
             this.SkillVNum = dto.SkillVNum;
-            this.NpcMonsterVNum = dto.NpcMonsterVNum;
             LastUse = DateTime.Now.AddHours(-1);
             Used = false;
             Hit = 0;

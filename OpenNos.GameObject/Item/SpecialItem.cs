@@ -28,7 +28,7 @@ namespace OpenNos.GameObject
             switch (Effect)
             {
                 case 650: //wings
-                    SpecialistInstance specialistInstance = Session.Character.EquipmentList.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, (byte)InventoryType.Equipment);
+                    SpecialistInstance specialistInstance = Session.Character.EquipmentList.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Equipment);
                     if (Session.Character.UseSp && specialistInstance != null)
                     {
                         if (!DelayUsed)
@@ -83,7 +83,7 @@ namespace OpenNos.GameObject
                     break;
 
                 case 1000: // vehicles
-                    SpecialistInstance sp = Session.Character.EquipmentList.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, (byte)InventoryType.Equipment);
+                    SpecialistInstance sp = Session.Character.EquipmentList.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Equipment);
                     if (!DelayUsed && Session.Character.IsVehicled == false)
                     {
                         if (Session.Character.IsSitting)

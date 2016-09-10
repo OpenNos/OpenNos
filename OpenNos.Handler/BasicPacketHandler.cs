@@ -209,7 +209,7 @@ namespace OpenNos.Handler
                             {
                                 CharacterId = newCharacter.CharacterId,
                                 Slot = (short)EquipmentType.MainWeapon,
-                                Type = (byte)InventoryType.Equipment
+                                Type = InventoryType.Equipment
                             };
                             inventory.ItemInstance = new WearableInstance() { Amount = 1, ItemVNum = 1, Id = inventory.Id };
                             startupInventory.Add(inventory);
@@ -218,7 +218,7 @@ namespace OpenNos.Handler
                             {
                                 CharacterId = newCharacter.CharacterId,
                                 Slot = (short)EquipmentType.SecondaryWeapon,
-                                Type = (byte)InventoryType.Equipment
+                                Type = InventoryType.Equipment
                             };
                             inventory.ItemInstance = new WearableInstance() { Amount = 1, ItemVNum = 8, Id = inventory.Id };
                             startupInventory.Add(inventory);
@@ -227,7 +227,7 @@ namespace OpenNos.Handler
                             {
                                 CharacterId = newCharacter.CharacterId,
                                 Slot = (short)EquipmentType.Armor,
-                                Type = (byte)InventoryType.Equipment
+                                Type = InventoryType.Equipment
                             };
                             inventory.ItemInstance = new WearableInstance() { Amount = 1, ItemVNum = 12, Id = inventory.Id };
                             startupInventory.Add(inventory);
@@ -236,7 +236,7 @@ namespace OpenNos.Handler
                             {
                                 CharacterId = newCharacter.CharacterId,
                                 Slot = 0,
-                                Type = (byte)InventoryType.Etc
+                                Type = InventoryType.Etc
                             };
                             inventory.ItemInstance = new ItemInstance() { Amount = 10, ItemVNum = 2024, Id = inventory.Id };
                             startupInventory.Add(inventory);
@@ -245,7 +245,7 @@ namespace OpenNos.Handler
                             {
                                 CharacterId = newCharacter.CharacterId,
                                 Slot = 1,
-                                Type = (byte)InventoryType.Etc
+                                Type = InventoryType.Etc
                             };
                             inventory.ItemInstance = new ItemInstance() { Amount = 1, ItemVNum = 2081, Id = inventory.Id };
                             startupInventory.Add(inventory);
@@ -395,7 +395,7 @@ namespace OpenNos.Handler
                 {
                     if (Session.Character.UseSp)
                     {
-                        SpecialistInstance specialistInstance = Session.Character.EquipmentList.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, (byte)InventoryType.Equipment);
+                        SpecialistInstance specialistInstance = Session.Character.EquipmentList.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Equipment);
                         if (specialistInstance != null)
                         {
                             specialistInstance.SlDamage = 0;
@@ -421,8 +421,8 @@ namespace OpenNos.Handler
                             specialistInstance.MP = 0;
 
                             Session.Character.InventoryList.RemoveItemAmount(vnumToUse, 1);
-                            Session.Character.EquipmentList.DeleteFromSlotAndType((byte)EquipmentType.Sp, (byte)InventoryType.Equipment);
-                            Session.Character.EquipmentList.AddToInventoryWithSlotAndType(specialistInstance, (byte)InventoryType.Equipment, (byte)EquipmentType.Sp);
+                            Session.Character.EquipmentList.DeleteFromSlotAndType((byte)EquipmentType.Sp, InventoryType.Equipment);
+                            Session.Character.EquipmentList.AddToInventoryWithSlotAndType(specialistInstance, InventoryType.Equipment, (byte)EquipmentType.Sp);
                             Session.Client.SendPacket(Session.Character.GenerateSlInfo(specialistInstance, 2));
                             Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("POINTS_RESET"), 0));
 
@@ -601,7 +601,7 @@ namespace OpenNos.Handler
             Session.Client.SendPacket("clist_start 0");
             foreach (CharacterDTO character in characters)
             {
-                IEnumerable<InventoryDTO> inventory = DAOFactory.InventoryDAO.LoadByType(character.CharacterId, (byte)InventoryType.Equipment);
+                IEnumerable<InventoryDTO> inventory = DAOFactory.InventoryDAO.LoadByType(character.CharacterId, InventoryType.Equipment);
 
                 WearableInstance[] equipment = new WearableInstance[16];
                 foreach (InventoryDTO equipmentEntry in inventory)

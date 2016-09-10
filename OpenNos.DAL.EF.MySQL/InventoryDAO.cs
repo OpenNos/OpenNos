@@ -18,6 +18,7 @@ using OpenNos.DAL.EF.MySQL.Helpers;
 using OpenNos.DAL.Interface;
 using OpenNos.Data;
 using OpenNos.Data.Enums;
+using OpenNos.Domain;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -53,7 +54,7 @@ namespace OpenNos.DAL.EF.MySQL
             }
         }
 
-        public DeleteResult DeleteFromSlotAndType(long characterId, short slot, byte type)
+        public DeleteResult DeleteFromSlotAndType(long characterId, short slot, InventoryType type)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
@@ -123,19 +124,19 @@ namespace OpenNos.DAL.EF.MySQL
             }
         }
 
-        public InventoryDTO LoadBySlotAndType(long characterId, short slot, byte type)
+        public InventoryDTO LoadBySlotAndType(long characterId, short slot, InventoryType type)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                return _mapper.Map<InventoryDTO>(context.Inventory.Include(nameof(ItemInstance)).FirstOrDefault(i => i.Slot.Equals(slot) && i.Type.Equals(type) && i.CharacterId.Equals(characterId)));
+                return _mapper.Map<InventoryDTO>(context.Inventory.Include(nameof(ItemInstance)).FirstOrDefault(i => i.Slot.Equals(slot) && i.Type == type && i.CharacterId.Equals(characterId)));
             }
         }
 
-        public IEnumerable<InventoryDTO> LoadByType(long characterId, byte type)
+        public IEnumerable<InventoryDTO> LoadByType(long characterId, InventoryType type)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                foreach (Inventory inventoryEntry in context.Inventory.Include(nameof(ItemInstance)).Where(i => i.Type.Equals(type) && i.CharacterId.Equals(characterId)))
+                foreach (Inventory inventoryEntry in context.Inventory.Include(nameof(ItemInstance)).Where(i => i.Type == type && i.CharacterId.Equals(characterId)))
                 {
                     yield return _mapper.Map<InventoryDTO>(inventoryEntry);
                 }
@@ -160,7 +161,7 @@ namespace OpenNos.DAL.EF.MySQL
         protected override InventoryDTO InsertOrUpdate(OpenNosContext context, InventoryDTO inventory)
         {
             Guid primaryKey = inventory.Id;
-            byte Type = inventory.Type;
+            InventoryType Type = inventory.Type;
             short Slot = inventory.Slot;
             long CharacterId = inventory.CharacterId;
             Inventory entity = context.Inventory.FirstOrDefault(c => c.Id == primaryKey);

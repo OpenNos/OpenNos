@@ -12,6 +12,8 @@
  * GNU General Public License for more details.
  */
 
+using OpenNos.Domain;
+
 namespace OpenNos.Data
 {
     public class InventoryDTO : SynchronizableBaseDTO
@@ -21,7 +23,7 @@ namespace OpenNos.Data
         public long CharacterId { get; set; }
         public ItemInstanceDTO ItemInstance { get; set; }
         public short Slot { get; set; }
-        public byte Type { get; set; }
+        public InventoryType Type { get; set; }
 
         #endregion
     }

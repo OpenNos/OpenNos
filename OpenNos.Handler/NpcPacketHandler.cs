@@ -277,7 +277,7 @@ namespace OpenNos.Handler
         {
             Logger.Debug(packet, Session.SessionId);
             string[] packetsplit = packet.Split(' ');
-            byte[] type = new byte[20];
+            InventoryType[] type = new InventoryType[20];
             long[] gold = new long[20];
             short[] slot = new short[20];
             byte[] qty = new byte[20];
@@ -316,7 +316,7 @@ namespace OpenNos.Handler
                     if (packetsplit.Length > 2)
                         for (short j = 3, i = 0; j <= packetsplit.Length - 5; j += 4, i++)
                         {
-                            byte.TryParse(packetsplit[j], out type[i]);
+                            Enum.TryParse<InventoryType>(packetsplit[j], out type[i]);
                             short.TryParse(packetsplit[j + 1], out slot[i]);
                             byte.TryParse(packetsplit[j + 2], out qty[i]);
 
@@ -511,8 +511,9 @@ namespace OpenNos.Handler
                 return;
             if (packetsplit.Length > 6)
             {
-                byte type, amount, slot;
-                if (!byte.TryParse(packetsplit[4], out type) || !byte.TryParse(packetsplit[5], out slot) || !byte.TryParse(packetsplit[6], out amount)) return;
+                InventoryType type;
+                byte amount, slot;
+                if (!Enum.TryParse<InventoryType>(packetsplit[4], out type) || !byte.TryParse(packetsplit[5], out slot) || !byte.TryParse(packetsplit[6], out amount)) return;
 
                 Inventory inv = Session.Character.InventoryList.LoadInventoryBySlotAndType(slot, type);
                 if (inv == null || amount > inv.ItemInstance.Amount) return;

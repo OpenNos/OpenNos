@@ -16,6 +16,7 @@ using AutoMapper;
 using OpenNos.Core;
 using OpenNos.DAL;
 using OpenNos.Data;
+using OpenNos.Domain;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -498,7 +499,7 @@ namespace OpenNos.GameObject
                 {
                     Inventory invtemp = c2Session.Character.InventoryList.Inventory.FirstOrDefault(s => s.ItemInstance.Id == item.Id);
                     short slot = invtemp.Slot;
-                    byte type = invtemp.Type;
+                    InventoryType type = invtemp.Type;
 
                     Inventory inv = c2Session.Character.InventoryList.RemoveItemAmountFromInventory((byte)item.Amount, invtemp.Id);
                     if (inv != null)

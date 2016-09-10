@@ -12,6 +12,7 @@
  * GNU General Public License for more details.
  */
 
+using OpenNos.Domain;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace OpenNos.DAL.EF.MySQL
@@ -31,7 +32,7 @@ namespace OpenNos.DAL.EF.MySQL
         public short Slot { get; set; }
 
         [Index("IX_SlotAndType", 3, IsUnique = true, Order = 2)]
-        public byte Type { get; set; }
+        public InventoryType Type { get; set; }
 
         #endregion
     }

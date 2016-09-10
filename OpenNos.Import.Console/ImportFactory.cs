@@ -176,7 +176,6 @@ namespace OpenNos.Import.Console
 
             foreach (FileInfo file in new DirectoryInfo(folderMap).GetFiles())
             {
-
                 string name = String.Empty;
                 int music = 0;
 
@@ -1823,7 +1822,7 @@ namespace OpenNos.Import.Console
                     }
                     else if (currentLine.Length > 7 && currentLine[1] == "INDEX")
                     {
-                        item.Type = Convert.ToByte(currentLine[2]) != 4 ? Convert.ToByte(currentLine[2]) : (byte)0;
+                        item.Type = (InventoryType)(Convert.ToByte(currentLine[2]) != 4 ? Convert.ToByte(currentLine[2]) : (byte)0);
 
                         item.ItemType = currentLine[3] != "-1" ? Convert.ToByte($"{item.Type}{currentLine[3]}") : (byte)0;
                         item.ItemSubType = Convert.ToByte(currentLine[4]);
@@ -2138,9 +2137,11 @@ namespace OpenNos.Import.Console
                                     case 5105:
                                         item.Effect = 651;
                                         break;
+
                                     case 5115:
                                         item.Effect = 652;
                                         break;
+
                                     default:
                                         item.Effect = Convert.ToInt16(currentLine[2]);
                                         break;

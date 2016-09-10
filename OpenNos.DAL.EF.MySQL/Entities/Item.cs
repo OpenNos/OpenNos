@@ -14,6 +14,7 @@
 
 namespace OpenNos.DAL.EF.MySQL
 {
+    using Domain;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
@@ -103,7 +104,7 @@ namespace OpenNos.DAL.EF.MySQL
         public virtual ICollection<ShopItem> ShopItem { get; set; }
         public byte Speed { get; set; }
         public byte SpType { get; set; }
-        public byte Type { get; set; }
+        public InventoryType Type { get; set; }
 
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
