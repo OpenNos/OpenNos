@@ -176,7 +176,7 @@ namespace OpenNos.Import.Console
 
             foreach (FileInfo file in new DirectoryInfo(folderMap).GetFiles())
             {
-                string name = "";
+                string name = String.Empty;
                 int music = 0;
 
                 if (dictionaryId.ContainsKey(int.Parse(file.Name)) && dictionaryIdLang.ContainsKey(dictionaryId[int.Parse(file.Name)]))
@@ -510,7 +510,7 @@ namespace OpenNos.Import.Console
                         MapMonsterId = int.Parse(currentPacket[3]),
                         MapX = short.Parse(currentPacket[4]),
                         MapY = short.Parse(currentPacket[5]),
-                        Position = (byte)(currentPacket[6] == "" ? 0 : byte.Parse(currentPacket[6])),
+                        Position = (byte)(currentPacket[6] == String.Empty ? 0 : byte.Parse(currentPacket[6])),
                         IsDisabled = false
                     };
                     monster.IsMoving = mobMvPacketsList.Contains(monster.MapMonsterId);
@@ -613,7 +613,7 @@ namespace OpenNos.Import.Console
                     }
                     else if (currentLine.Length > 2 && currentLine[1] == "NAME")
                     {
-                        npc.Name = dictionaryIdLang.ContainsKey(currentLine[2]) ? dictionaryIdLang[currentLine[2]] : "";
+                        npc.Name = dictionaryIdLang.ContainsKey(currentLine[2]) ? dictionaryIdLang[currentLine[2]] : String.Empty;
                     }
                     else if (currentLine.Length > 2 && currentLine[1] == "LEVEL")
                     {
@@ -1282,7 +1282,7 @@ namespace OpenNos.Import.Console
                 MapNpcDTO npc = DAOFactory.MapNpcDAO.LoadById(short.Parse(currentPacket[2]));
                 if (npc == null) continue;
 
-                string named = "";
+                string named = String.Empty;
                 for (int j = 6; j < currentPacket.Length; j++)
                     named += $"{currentPacket[j]} ";
                 named = named.Trim();

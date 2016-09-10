@@ -42,6 +42,14 @@ namespace OpenNos.GameObject
 
         #region Properties
 
+        public bool IsBound
+        {
+            get
+            {
+                return BoundCharacterId.HasValue;
+            }
+        }
+
         public Item Item
         {
             get
@@ -50,13 +58,7 @@ namespace OpenNos.GameObject
                 return item;
             }
         }
-        public bool IsBound
-        {
-            get
-            {
-                return BoundCharacterId.HasValue;
-            }
-        }
+
         public long TransportId
         {
             get

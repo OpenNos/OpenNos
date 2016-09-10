@@ -211,7 +211,7 @@ namespace OpenNos.GameObject
                         if (targetSession.Character.IsSitting)
                         {
                             targetSession.Character.IsSitting = false;
-                            Map.Broadcast(null, targetSession.Character.GenerateRest(), ReceiverType.OnlySomeone, "", targetSession.Character.CharacterId);
+                            Map.Broadcast(null, targetSession.Character.GenerateRest(), ReceiverType.OnlySomeone, String.Empty, targetSession.Character.CharacterId);
                         }
                         if (sk != null && sk.CastEffect != 0)
                         {
@@ -222,7 +222,7 @@ namespace OpenNos.GameObject
                         targetSession.Character.LastDefence = DateTime.Now;
                         targetSession.Character.GetDamage(damage);
 
-                        Map.Broadcast(null, ServerManager.Instance.GetUserMethod<string>(Target, "GenerateStat"), ReceiverType.OnlySomeone, "", Target);
+                        Map.Broadcast(null, ServerManager.Instance.GetUserMethod<string>(Target, "GenerateStat"), ReceiverType.OnlySomeone, String.Empty, Target);
 
                         if (sk != null)
                             Map.Broadcast($"su 3 {MapMonsterId} 1 {Target} {ski.SkillVNum} {sk.Cooldown} {sk.AttackAnimation} {sk.Effect} {this.MapX} {this.MapY} {(targetSession.Character.Hp > 0 ? 1 : 0)} {(int)((double)targetSession.Character.Hp / ServerManager.Instance.GetUserMethod<double>(Target, "HPLoad"))} {damage} 0 0");
@@ -245,13 +245,13 @@ namespace OpenNos.GameObject
                                 if (chara.IsSitting)
                                 {
                                     chara.IsSitting = false;
-                                    Map.Broadcast(null, chara.GenerateRest(), ReceiverType.OnlySomeone, "", chara.CharacterId);
+                                    Map.Broadcast(null, chara.GenerateRest(), ReceiverType.OnlySomeone, String.Empty, chara.CharacterId);
                                 }
                                 damage = chara.HasGodMode ? 0 : 100;
                                 bool AlreadyDead2 = chara.Hp <= 0;
                                 chara.GetDamage(damage);
                                 chara.LastDefence = DateTime.Now;
-                                Map.Broadcast(null, chara.GenerateStat(), ReceiverType.OnlySomeone, "", chara.CharacterId);
+                                Map.Broadcast(null, chara.GenerateStat(), ReceiverType.OnlySomeone, String.Empty, chara.CharacterId);
                                 Map.Broadcast($"su 3 {MapMonsterId} 1 {chara.CharacterId} 0 {Monster.BasicCooldown} 11 {Monster.BasicSkill} 0 0 {(chara.Hp > 0 ? 1 : 0)} {(int)((double)chara.Hp / chara.HPLoad())} {damage} 0 0");
                                 if (chara.Hp <= 0 && !AlreadyDead2)
                                 {

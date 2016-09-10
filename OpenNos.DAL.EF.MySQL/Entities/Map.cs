@@ -51,6 +51,7 @@ namespace OpenNos.DAL.EF.MySQL
 
         [MaxLength(255)]
         public string Name { get; set; }
+        public bool ShopAllowed { get; set; }
 
         public virtual ICollection<Portal> Portal { get; set; }
         public virtual ICollection<Portal> Portal1 { get; set; }

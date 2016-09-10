@@ -353,6 +353,7 @@ namespace OpenNos.DAL.EF.MySQL.Migrations
                         Data = c.Binary(),
                         Music = c.Int(nullable: false),
                         Name = c.String(maxLength: 255, storeType: "nvarchar"),
+                        ShopAllowed = c.Boolean(nullable: false),
                     })
                 .PrimaryKey(t => t.MapId);
             

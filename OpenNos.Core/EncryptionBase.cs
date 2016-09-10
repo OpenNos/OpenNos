@@ -38,19 +38,11 @@ namespace OpenNos.Core
 
         #region Methods
 
-        public static string sha256(string inputString)
-        {
-            using (SHA256 hash = SHA256Managed.Create())
-            {
-                return String.Join("", hash.ComputeHash(Encoding.UTF8.GetBytes(inputString)).Select(item => item.ToString("x2")));
-            }
-        }
-
         public static string sha512(string inputString)
         {
             using (SHA512 hash = SHA512Managed.Create())
             {
-                return String.Join("", hash.ComputeHash(Encoding.UTF8.GetBytes(inputString)).Select(item => item.ToString("x2")));
+                return String.Join(String.Empty, hash.ComputeHash(Encoding.UTF8.GetBytes(inputString)).Select(item => item.ToString("x2")));
             }
         }
 

@@ -623,7 +623,7 @@ namespace OpenNos.Handler
                     ServerManager.Instance.SetProperty((long)id, nameof(Character.Hp), 0);
                     ServerManager.Instance.SetProperty((long)id, nameof(Character.LastDefence), DateTime.Now);
                     Session.CurrentMap?.Broadcast($"su 1 {Session.Character.CharacterId} 1 {id} 1114 4 11 4260 0 0 0 0 {60000} 3 0");
-                    Session.CurrentMap?.Broadcast(null, ServerManager.Instance.GetUserMethod<string>((long)id, nameof(Character.GenerateStat)), ReceiverType.OnlySomeone, "", (long)id);
+                    Session.CurrentMap?.Broadcast(null, ServerManager.Instance.GetUserMethod<string>((long)id, nameof(Character.GenerateStat)), ReceiverType.OnlySomeone, String.Empty, (long)id);
                     ServerManager.Instance.AskRevive((long)id);
                 }
                 else
@@ -803,7 +803,6 @@ namespace OpenNos.Handler
                     if (wearableInstance != null)
                     {
                         wearableInstance.RarifyItem(Session, (RarifyMode)mode, (RarifyProtection)protection);
-                        //Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(wearableInstance.ItemVNum, 1, 0, itemslot, wearableInstance.Rare, 0, wearableInstance.Upgrade, 0));
                     }
                 }
             }

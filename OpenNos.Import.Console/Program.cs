@@ -15,6 +15,7 @@
 using log4net;
 using OpenNos.Core;
 using OpenNos.DAL.EF.MySQL.Helpers;
+using System;
 using System.Diagnostics;
 using System.Reflection;
 
@@ -67,7 +68,7 @@ namespace OpenNos.Import.Console
             try
             {
                 Logger.Log.Warn(Language.Instance.GetMessageFromKey("ENTER_PATH"));
-                string folder = "";
+                string folder = String.Empty;
                 if (args.Length == 0)
                 {
                     folder = System.Console.ReadLine();

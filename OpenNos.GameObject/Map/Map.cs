@@ -144,9 +144,7 @@ namespace OpenNos.GameObject
         }
 
         public int Music { get; set; }
-
         public string Name { get; set; }
-
         public EventHandler NotifyClients { get; set; }
 
         public List<MapNpc> Npcs
@@ -164,18 +162,13 @@ namespace OpenNos.GameObject
                 return _portals;
             }
         }
-
         public Dictionary<long, MapShop> UserShops { get; set; }
 
-        public int XLength
-        {
-            get; set;
-        }
+        public int XLength { get; set; }
 
-        public int YLength
-        {
-            get; set;
-        }
+        public int YLength { get; set; }
+
+        public bool ShopAllowed { get; set; }
 
         #endregion
 

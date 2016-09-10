@@ -111,9 +111,9 @@
     <Compile Include="Entities\NpcMonsterskill.cs" />
     <Compile Include="MapTypeDAO.cs" />
     <Compile Include="MapTypeMapDAO.cs" />
-    <Compile Include="Migrations\201609092116365_Theia.cs" />
-    <Compile Include="Migrations\201609092116365_Theia.Designer.cs">
-      <DependentUpon>201609092116365_Theia.cs</DependentUpon>
+    <Compile Include="Migrations\201609100812018_Theia.cs" />
+    <Compile Include="Migrations\201609100812018_Theia.Designer.cs">
+      <DependentUpon>201609100812018_Theia.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="NpcMonsterSkillDAO.cs" />
@@ -193,8 +193,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201609092116365_Theia.resx">
-      <DependentUpon>201609092116365_Theia.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201609100812018_Theia.resx">
+      <DependentUpon>201609100812018_Theia.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

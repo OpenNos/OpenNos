@@ -570,7 +570,7 @@ namespace OpenNos.GameObject
                 {
                     if (grp.Characters.ElementAt(0) == session)
                     {
-                        Broadcast(session, session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("NEW_LEADER")), ReceiverType.OnlySomeone, "", grp.Characters.ElementAt(1).Character.CharacterId);
+                        Broadcast(session, session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("NEW_LEADER")), ReceiverType.OnlySomeone, String.Empty, grp.Characters.ElementAt(1).Character.CharacterId);
                     }
                     grp.LeaveGroup(session);
                     foreach (ClientSession groupSession in grp.Characters)
