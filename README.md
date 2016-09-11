@@ -42,7 +42,7 @@ Installer Packages:
   - MySQL Workbench x64 (Data Edtiting)
   - MySQL Notifier x86 (Taskbar Icon Status)
   - MySQL for Visual Studio x86
-  - Connector/NET x86
+  - Connector/NET x86 (according to our test theres a issue with 6.9.9 version please use [6.9.8 instead](https://downloads.mysql.com/archives/get/file/mysql-connector-net-6.9.8.msi))
   
 - Port: 3306
 - User: test
