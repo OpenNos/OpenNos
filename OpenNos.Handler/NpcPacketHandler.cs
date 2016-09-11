@@ -81,8 +81,7 @@ namespace OpenNos.Handler
 
                 if (item.Price * amount >= Session.Character.Gold)
                 {
-                    Session.Client.SendPacket(Session.Character.GenerateShopMemo(3,
-                        Language.Instance.GetMessageFromKey("NOT_ENOUGH_MONEY")));
+                    Session.Client.SendPacket(Session.Character.GenerateShopMemo(3,Language.Instance.GetMessageFromKey("NOT_ENOUGH_MONEY")));
                     return;
                 }
 
