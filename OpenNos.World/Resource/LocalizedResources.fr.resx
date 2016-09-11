@@ -926,9 +926,6 @@ Veux-tu le porter ?</value>
     <value>Mémoire utilisée</value>
   </data>
   <data name="SHOP_NOT_ALLOWED" xml:space="preserve">
-    <value />
-  </data>
-  <data name="String1" xml:space="preserve">
     <value>Tu ne peux pas ouvrir de magasin dans cette zone.</value>
   </data>
 </root>
