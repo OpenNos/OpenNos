@@ -21,7 +21,6 @@ using OpenNos.ServiceRef.Internal;
 using System;
 using System.Diagnostics;
 using System.Reflection;
-using System.Threading.Tasks;
 
 namespace OpenNos.Login
 {
@@ -35,11 +34,13 @@ namespace OpenNos.Login
             {
                 try
                 {
-                    //initialize Logger
                     System.Globalization.CultureInfo.DefaultThreadCurrentUICulture = System.Globalization.CultureInfo.GetCultureInfo("en-US");
+
+                    //initialize Logger
                     Logger.InitializeLogger(LogManager.GetLogger(typeof(Program)));
                     Assembly assembly = Assembly.GetExecutingAssembly();
                     FileVersionInfo fileVersionInfo = FileVersionInfo.GetVersionInfo(assembly.Location);
+
                     Console.Title = $"OpenNos Login Server v{fileVersionInfo.ProductVersion}";
                     int port = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["LoginPort"]);
                     string text = $"LOGIN SERVER VERSION {fileVersionInfo.ProductVersion} - PORT : {port} by OpenNos Team";
