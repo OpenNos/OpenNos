@@ -923,9 +923,12 @@ Veux-tu le porter ?</value>
     <value>Tu ne peux pas apprendre cette compétence.</value>
   </data>
   <data name="MEMORY" xml:space="preserve">
-    <value>Mémoire utilisée</value>
+    <value>Mémoire utilisée </value>
   </data>
   <data name="SHOP_NOT_ALLOWED" xml:space="preserve">
     <value>Tu ne peux pas ouvrir de magasin dans cette zone.</value>
+  </data>
+  <data name="SKILL_ALREADY_EXIST" xml:space="preserve">
+    <value>Tu possèdes déjà cette compétence.</value>
   </data>
 </root>

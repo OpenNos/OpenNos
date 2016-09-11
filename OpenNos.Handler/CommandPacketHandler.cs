@@ -349,6 +349,7 @@ namespace OpenNos.Handler
             Session.Client.SendPacket(Session.Character.GenerateSay("$RateGold RATE", 12));
             Session.Client.SendPacket(Session.Character.GenerateSay("$RateXp RATE", 12));
             Session.Client.SendPacket(Session.Character.GenerateSay("$Resize SIZE", 12));
+            Session.Client.SendPacket(Session.Character.GenerateSay("$SkillAdd SKILLID", 12));
             Session.Client.SendPacket(Session.Character.GenerateSay("$SPLvl SPLEVEL", 12));
             Session.Client.SendPacket(Session.Character.GenerateSay("$SPRefill", 12));
             Session.Client.SendPacket(Session.Character.GenerateSay("$Shout MESSAGE", 12));
@@ -911,6 +912,58 @@ namespace OpenNos.Handler
             }
             else
                 Session.Client.SendPacket(Session.Character.GenerateSay("$Resize SIZE", 10));
+        }
+
+        [Packet("$SkillAdd")]
+        public void SkillAdd(string packet)
+        {
+            Logger.Debug(packet, Session.SessionId);
+            string[] packetsplit = packet.Split(' ');
+            short vnum = 0;
+            if (packetsplit.Length > 2 && short.TryParse(packetsplit[2], out vnum))
+            {
+                Skill skillinfo = ServerManager.GetSkill(vnum);
+                if (skillinfo.SkillVNum < 200)
+                {
+                    for (int i = Session.Character.Skills.Count - 1; i >= 0; i--)
+                    {
+                        if ((skillinfo.CastId == Session.Character.Skills[i].Skill.CastId) && (Session.Character.Skills[i].Skill.SkillVNum < 200))
+                        {
+                            Session.Character.Skills.Remove(Session.Character.Skills[i]);
+                        }
+                    }
+                }
+                else
+                {
+                    if (Session.Character.Skills.Any(s => s.SkillVNum == vnum))
+                    {
+                        Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("SKILL_ALREADY_EXIST"), 11));
+                        return;
+                    }
+                    if (Session.Character.Class != skillinfo.Class)
+                    {
+                        Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SKILL_CANT_LEARN"), 0));
+                        return;
+                    }
+                    if (skillinfo.UpgradeSkill != 0)
+                    {
+                        CharacterSkill oldupgrade = Session.Character.Skills.FirstOrDefault(s => s.Skill.UpgradeSkill == skillinfo.UpgradeSkill && s.Skill.UpgradeType == skillinfo.UpgradeType && s.Skill.UpgradeSkill != 0);
+                        if (oldupgrade != null)
+                        {
+                            Session.Character.Skills.Remove(oldupgrade);
+                        }
+                    }
+                }
+
+                Session.Character.Skills.Add(new CharacterSkill() { SkillVNum = vnum, CharacterId = Session.Character.CharacterId });
+
+                Session.Client.SendPacket(Session.Character.GenerateSki());
+                Session.Client.SendPackets(Session.Character.GenerateQuicklist());
+                Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SKILL_LEARNED"), 0));
+                Session.Client.SendPacket(Session.Character.GenerateLev());
+            }
+            else
+                Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("WRONG_VALUE"), 0));
         }
 
         [Packet("$Shout")]

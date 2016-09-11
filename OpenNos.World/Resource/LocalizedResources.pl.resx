@@ -898,4 +898,7 @@
   <data name="SHOP_NOT_ALLOWED" xml:space="preserve">
     <value>Nie możesz otwierac sklepów na głównych mapach.</value>
   </data>
+  <data name="SKILL_ALREADY_EXIST" xml:space="preserve">
+    <value>Nauczyłeś się już tej umiejętności!</value>
+  </data>
 </root>

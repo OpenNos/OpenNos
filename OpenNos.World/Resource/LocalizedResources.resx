@@ -919,4 +919,7 @@
   <data name="SHOP_NOT_ALLOWED" xml:space="preserve">
     <value>You can't open shops on global maps.</value>
   </data>
+  <data name="SKILL_ALREADY_EXIST" xml:space="preserve">
+    <value>Skill already exists!</value>
+  </data>
 </root>
