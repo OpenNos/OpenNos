@@ -34,7 +34,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("ec300279-181e-4e6e-a94c-e8baf0eab2ad")]
+// [assembly: Guid("ec300279-181e-4e6e-a94c-e8baf0eab2ad")]
 
 [assembly: Debuggable(DebuggableAttribute.DebuggingModes.Default | DebuggableAttribute.DebuggingModes.DisableOptimizations | DebuggableAttribute.DebuggingModes.IgnoreSymbolStoreSequencePoints | DebuggableAttribute.DebuggingModes.EnableEditAndContinue)]
 [assembly: CompilationRelaxations(8)]
