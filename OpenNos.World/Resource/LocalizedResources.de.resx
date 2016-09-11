@@ -819,4 +819,7 @@
   <data name="SKILL_ALREADY_EXIST" xml:space="preserve">
     <value />
   </data>
+  <data name="SKILL_DOES_NOT_EXIST" xml:space="preserve">
+    <value>Der Skill existiert nicht.</value>
+  </data>
 </root>

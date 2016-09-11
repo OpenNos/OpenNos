@@ -923,6 +923,13 @@ namespace OpenNos.Handler
             if (packetsplit.Length > 2 && short.TryParse(packetsplit[2], out vnum))
             {
                 Skill skillinfo = ServerManager.GetSkill(vnum);
+                if (skillinfo == null)
+                {
+                    Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("SKILL_DOES_NOT_EXIST"), 11));
+                    return;
+                }
+
+
                 if (skillinfo.SkillVNum < 200)
                 {
                     for (int i = Session.Character.Skills.Count - 1; i >= 0; i--)

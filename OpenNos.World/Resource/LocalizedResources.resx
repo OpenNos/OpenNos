@@ -922,4 +922,7 @@
   <data name="SKILL_ALREADY_EXIST" xml:space="preserve">
     <value>Skill already exists!</value>
   </data>
+  <data name="SKILL_DOES_NOT_EXIST" xml:space="preserve">
+    <value>Skill does not exist.</value>
+  </data>
 </root>

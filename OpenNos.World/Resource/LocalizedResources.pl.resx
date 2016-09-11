@@ -901,4 +901,7 @@
   <data name="SKILL_ALREADY_EXIST" xml:space="preserve">
     <value>Nauczyłeś się już tej umiejętności!</value>
   </data>
+  <data name="SKILL_DOES_NOT_EXIST" xml:space="preserve">
+    <value />
+  </data>
 </root>
