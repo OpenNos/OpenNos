@@ -328,7 +328,7 @@ namespace OpenNos.Handler
                         NpcMonster monsterinfo = ServerManager.GetNpc(monster.MonsterVNum);
                         if (monsterinfo == null)
                             return;
-                        Session.Client.SendPacket($"st 3 {characterInformationPacket[3]} {monsterinfo.Level} {monsterinfo.HeroLevel} {(monster.CurrentHp / monsterinfo.MaxHP * 100)} {(monster.CurrentMp / monsterinfo.MaxMP * 100)} {monster.CurrentHp} {monster.CurrentMp}");
+                        Session.Client.SendPacket($"st 3 {characterInformationPacket[3]} {monsterinfo.Level} {monsterinfo.HeroLevel} {((int)((float)monster.CurrentHp / (float)monsterinfo.MaxHP * 100))} {((int)((float)monster.CurrentMp / (float)monsterinfo.MaxMP * 100))} {monster.CurrentHp} {monster.CurrentMp}");
                     }
                 }
             }
@@ -1169,7 +1169,7 @@ namespace OpenNos.Handler
                 Session.Client.SendPacket(Session.Character.GenerateSay($"OpenNos by OpenNos Team\nVersion : v{fileVersionInfo.ProductVersion}", 11));
                 Session.Client.SendPacket(Session.Character.GenerateSay("-----------------------------------------------", 10));
             }
-            Session.Character.SpeedLoad();
+            Session.Character.LoadSpeed();
             Session.Character.LoadSkills();
             Session.Client.SendPacket(Session.Character.GenerateTit());
             Session.Client.SendPacket($"rsfi 1 1 0 9 0 9");

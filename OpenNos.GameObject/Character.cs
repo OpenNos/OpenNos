@@ -177,7 +177,7 @@ namespace OpenNos.GameObject
                 if (characterClass == (byte)ClassType.Adventurer)
                     HairStyle = HairStyle > 1 ? (byte)0 : HairStyle;
 
-                SpeedLoad();
+                LoadSpeed();
                 Class = characterClass;
                 Hp = (int)HPLoad();
                 Mp = (int)MPLoad();
@@ -264,7 +264,7 @@ namespace OpenNos.GameObject
                     Session.CurrentMap?.Broadcast(GenerateShopEnd());
                     Session.CurrentMap?.Broadcast(Session, GeneratePlayerFlag(0), ReceiverType.AllExceptMe);
                     IsSitting = false;
-                    SpeedLoad();
+                    LoadSpeed();
                     Session.Client.SendPacket(GenerateCond());
                     Session.CurrentMap?.Broadcast(GenerateRest());
                     Session.Client.SendPacket("shop_end 0");
@@ -1575,6 +1575,30 @@ namespace OpenNos.GameObject
             }
         }
 
+        public void LoadSpeed()
+        {
+            //only load speed if you dont use custom speed
+            if (!IsVehicled && !IsCustomSpeed)
+            {
+                Speed = ServersData.SpeedData[Class];
+
+                if (UseSp)
+                {
+                    SpecialistInstance specialist = EquipmentList.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Equipment);
+                    if (specialist != null)
+                    {
+                        Speed += specialist.Item.Speed;
+                    }
+                }
+            }
+
+            if (IsShopping)
+            {
+                Speed = 0;
+                IsCustomSpeed = false;
+            }
+        }
+
         public double MPLoad()
         {
             int mp = 0;
@@ -1622,8 +1646,8 @@ namespace OpenNos.GameObject
         {
             try
             {
-                CharacterDTO tempsave = this;
-                SaveResult insertResult = DAOFactory.CharacterDAO.InsertOrUpdate(ref tempsave); // unused variable, check for success?
+                CharacterDTO character = this;
+                SaveResult insertResult = DAOFactory.CharacterDAO.InsertOrUpdate(ref character); // unused variable, check for success?
 
                 //load and concat inventory with equipment
                 IEnumerable<InventoryDTO> inventories = InventoryList.Inventory.Concat(EquipmentList.Inventory);
@@ -1685,28 +1709,6 @@ namespace OpenNos.GameObject
             catch (Exception e)
             {
                 Logger.Log.Error("Save Character failed. SessionId: " + Session.SessionId, e);
-            }
-        }
-
-        public void SpeedLoad()
-        {
-            if (!IsVehicled && !IsCustomSpeed)
-            {
-                Speed = ServersData.SpeedData[Class];
-
-                if (UseSp)
-                {
-                    SpecialistInstance specialist = EquipmentList.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Equipment);
-                    if (specialist != null)
-                    {
-                        Speed += specialist.Item.Speed;
-                    }
-                }
-            }
-
-            if (IsShopping)
-            {
-                Speed = 0;
             }
         }
 

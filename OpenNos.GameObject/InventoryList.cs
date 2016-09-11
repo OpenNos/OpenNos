@@ -226,13 +226,13 @@ namespace OpenNos.GameObject
         }
 
         public T LoadByItemInstance<T>(Guid id)
-            where T : ItemInstanceDTO
+                    where T : ItemInstanceDTO
         {
             return (T)Inventory.FirstOrDefault(i => i.ItemInstance.Id.Equals(id))?.ItemInstance;
         }
 
         public T LoadBySlotAndType<T>(short slot, InventoryType type)
-            where T : ItemInstance
+                    where T : ItemInstance
         {
             return (T)Inventory.FirstOrDefault(i => i.ItemInstance.GetType().Equals(typeof(T)) && i.Slot == slot && i.Type == type)?.ItemInstance;
         }
@@ -298,17 +298,37 @@ namespace OpenNos.GameObject
                         {
                             destinationInventory.ItemInstance.Amount += amount;
                             sourceInventory.ItemInstance.Amount -= amount;
+
+                            //item with amount of 0 should be removed
+                            if(sourceInventory.ItemInstance.Amount == 0)
+                            {
+                                DeleteFromSlotAndType(sourceInventory.Slot, sourceInventory.Type);
+                            }
                         }
                     }
                     else
                     {
+                        //add and remove save inventory
+                        destinationInventory = TakeInventory(destinationInventory.Slot, destinationInventory.Type);
                         destinationInventory.Slot = sourceSlot;
+                        sourceInventory = TakeInventory(sourceInventory.Slot, sourceInventory.Type);
                         sourceInventory.Slot = destinationSlot;
+                        PutInventory(destinationInventory);
+                        PutInventory(sourceInventory);
                     }
                 }
             }
             sourceInventory = LoadInventoryBySlotAndType(sourceSlot, type);
             destinationInventory = LoadInventoryBySlotAndType(destinationSlot, type);
+        }
+
+        /// <summary>
+        /// Puts a Single Invenory including ItemInstance to the List
+        /// </summary>
+        /// <param name="inventory"></param>
+        public void PutInventory(Inventory inventory)
+        {
+            Inventory.Add(inventory);
         }
 
         public MapItem PutItem(byte type, short slot, byte amount, ref Inventory inv)
@@ -379,6 +399,19 @@ namespace OpenNos.GameObject
             }
 
             return inv;
+        }
+
+        /// <summary>
+        /// Takes a Single Inventory including ItemInstance from the List and removes it.
+        /// </summary>
+        /// <param name="slot"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public Inventory TakeInventory(short slot, InventoryType type)
+        {
+            Inventory inventoryToTake = Inventory.SingleOrDefault(i => i.Slot == slot && i.Type == type);
+            Inventory.Remove(inventoryToTake);
+            return inventoryToTake;
         }
 
         private short GetFirstPlace(InventoryType type, int backPack)

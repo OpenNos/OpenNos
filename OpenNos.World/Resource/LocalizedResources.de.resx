@@ -802,9 +802,18 @@
     <value>Frühlings^Melodie</value>
   </data>
   <data name="MEMORY" xml:space="preserve">
-    <value />
+    <value>Aktueller Verbrauch: </value> 
   </data>
   <data name="SHOP_NOT_ALLOWED" xml:space="preserve">
-    <value />
+    <value>Shop kann auf der Karte nicht geöffnet werden.</value>
+  </data>
+    <data name="MUTE_TIME" xml:space="preserve">
+    <value>Deine Strafzeit: {0}</value>
+  </data>
+      <data name="MUTED_PLURAL" xml:space="preserve">
+    <value>Du wurdest bestraft! Grund: {0} für {1} Stunden</value>
+  </data>
+      <data name="MUTED_SINGULAR" xml:space="preserve">
+    <value>Du wurdest bestraft! Grund: {0} für {1} Stunde</value>
   </data>
 </root>

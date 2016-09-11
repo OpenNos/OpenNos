@@ -27,6 +27,7 @@ namespace OpenNos.Import.Console
 
         private static void Main(string[] args)
         {
+            //initialize logger
             Logger.InitializeLogger(LogManager.GetLogger(typeof(Program)));
             Assembly assembly = Assembly.GetExecutingAssembly();
             FileVersionInfo fileVersionInfo = FileVersionInfo.GetVersionInfo(assembly.Location);
