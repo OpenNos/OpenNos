@@ -37,11 +37,11 @@ namespace OpenNos.GameObject
                 Recipes.Add(new GameObject.Recipe(rec.RecipeId) { ItemVNum = rec.ItemVNum, MapNpcId = rec.MapNpcId, RecipeId = rec.RecipeId, Amount = rec.Amount });
             }
 
-            IEnumerable<TeleporterDTO> Teleporter = DAOFactory.TeleporterDAO.LoadFromNpc(MapNpcId);
+            IEnumerable<TeleporterDTO> teleporters = DAOFactory.TeleporterDAO.LoadFromNpc(MapNpcId);
             Teleporters = new List<Teleporter>();
-            foreach (TeleporterDTO telep in Teleporter)
+            foreach (TeleporterDTO teleporter in teleporters)
             {
-                Teleporters.Add(new GameObject.Teleporter() { MapId = telep.MapId, Index = telep.Index, MapNpcId = telep.MapNpcId, MapX = telep.MapX, MapY = telep.MapY, TeleporterId = telep.TeleporterId });
+                Teleporters.Add(new GameObject.Teleporter() { MapId = teleporter.MapId, Index = teleporter.Index, MapNpcId = teleporter.MapNpcId, MapX = teleporter.MapX, MapY = teleporter.MapY, TeleporterId = teleporter.TeleporterId });
             }
             ShopDTO shop = DAOFactory.ShopDAO.LoadByNpc(MapNpcId);
             if (shop != null)
@@ -100,14 +100,14 @@ namespace OpenNos.GameObject
                 LastEffect = DateTime.Now;
             }
 
-            Random r = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
+            Random random = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
             time = (DateTime.Now - LastMove).TotalSeconds;
-            if (IsMoving && time > r.Next(1, 3) * (0.5 + r.NextDouble()))
+            if (IsMoving && time > random.Next(1, 3) * (0.5 + random.NextDouble()))
             {
-                byte point = (byte)r.Next(2, 5);
-                byte fpoint = (byte)r.Next(0, 2);
+                byte point = (byte)random.Next(2, 5);
+                byte fpoint = (byte)random.Next(0, 2);
 
-                byte xpoint = (byte)r.Next(fpoint, point);
+                byte xpoint = (byte)random.Next(fpoint, point);
                 byte ypoint = (byte)(point - xpoint);
 
                 short mapX = FirstX;
@@ -118,8 +118,8 @@ namespace OpenNos.GameObject
                     this.MapY = mapY;
                     LastMove = DateTime.Now;
 
-                    string movepacket = $"mv 2 {this.MapNpcId} {this.MapX} {this.MapY} {Npc.Speed}";
-                    Map.Broadcast(movepacket);
+                    string movePacket = $"mv 2 {this.MapNpcId} {this.MapX} {this.MapY} {Npc.Speed}";
+                    Map.Broadcast(movePacket);
                 }
             }
         }

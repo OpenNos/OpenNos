@@ -42,7 +42,7 @@ namespace OpenNos.GameObject
             _uniqueIdentifier = uniqueIdentifier;
             Data = data;
             LoadZone();
-            IEnumerable<PortalDTO> portalsDTO = DAOFactory.PortalDAO.LoadByMap(MapId);
+            IEnumerable<PortalDTO> portals = DAOFactory.PortalDAO.LoadByMap(MapId);
             _portals = new List<Portal>();
             DroppedList = new Dictionary<long, MapItem>();
 
@@ -60,7 +60,7 @@ namespace OpenNos.GameObject
             }
 
             UserShops = new Dictionary<long, MapShop>();
-            foreach (PortalDTO portal in portalsDTO)
+            foreach (PortalDTO portal in portals)
             {
                 _portals.Add(new GameObject.Portal()
                 {
@@ -162,13 +162,13 @@ namespace OpenNos.GameObject
                 return _portals;
             }
         }
+
+        public bool ShopAllowed { get; set; }
         public Dictionary<long, MapShop> UserShops { get; set; }
 
         public int XLength { get; set; }
 
         public int YLength { get; set; }
-
-        public bool ShopAllowed { get; set; }
 
         #endregion
 
@@ -253,18 +253,18 @@ namespace OpenNos.GameObject
         {
             Random rnd = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
             MapItem droppedItem = null;
-            short MapX = (short)(rnd.Next(mapX - 1, mapX + 1));
-            short MapY = (short)(rnd.Next(mapY - 1, mapY + 1));
-            while (IsBlockedZone(MapX, MapY))
+            short localMapX = (short)(rnd.Next(mapX - 1, mapX + 1));
+            short localMapY = (short)(rnd.Next(mapY - 1, mapY + 1));
+            while (IsBlockedZone(localMapX, localMapY))
             {
-                MapX = (short)(rnd.Next(mapX - 1, mapX + 1));
-                MapY = (short)(rnd.Next(mapY - 1, mapY + 1));
+                localMapX = (short)(rnd.Next(mapX - 1, mapX + 1));
+                localMapY = (short)(rnd.Next(mapY - 1, mapY + 1));
             }
 
-            ItemInstance newInstance = InventoryList.CreateItemInstance(drop.ItemVNum); //TODO take GUID generation to GO
+            ItemInstance newInstance = InventoryList.CreateItemInstance(drop.ItemVNum);
             newInstance.Amount = drop.Amount;
 
-            droppedItem = new MapItem(MapX, MapY, true)
+            droppedItem = new MapItem(localMapX, localMapY, true)
             {
                 ItemInstance = newInstance
             };
@@ -281,13 +281,13 @@ namespace OpenNos.GameObject
 
         public List<MapMonster> GetListMonsterInRange(short mapX, short mapY, byte distance)
         {
-            List<MapMonster> listmon = new List<MapMonster>();
-            foreach (MapMonster mo in Monsters.Where(s => s.Alive))
+            List<MapMonster> monsters = new List<MapMonster>();
+            foreach (MapMonster monster in Monsters.Where(s => s.Alive))
             {
-                if (GetDistance(new MapCell() { X = mapX, Y = mapY }, new MapCell() { X = mo.MapX, Y = mo.MapY }) <= distance + 1)
-                    listmon.Add(mo);
+                if (GetDistance(new MapCell() { X = mapX, Y = mapY }, new MapCell() { X = monster.MapX, Y = monster.MapY }) <= distance + 1)
+                    monsters.Add(monster);
             }
-            return listmon;
+            return monsters;
         }
 
         public bool IsBlockedZone(int x, int y)
@@ -300,19 +300,19 @@ namespace OpenNos.GameObject
             return false;
         }
 
-        public bool IsBlockedZone(int firstX, int firstY, int MapX, int MapY)
+        public bool IsBlockedZone(int firstX, int firstY, int mapX, int mapY)
         {
-            for (int i = 1; i <= Math.Abs(MapX - firstX); i++)
+            for (int i = 1; i <= Math.Abs(mapX - firstX); i++)
             {
-                if (IsBlockedZone(firstX + Math.Sign(MapX - firstX) * i, firstY))
+                if (IsBlockedZone(firstX + Math.Sign(mapX - firstX) * i, firstY))
                 {
                     return true;
                 }
             }
 
-            for (int i = 1; i <= Math.Abs(MapY - firstY); i++)
+            for (int i = 1; i <= Math.Abs(mapY - firstY); i++)
             {
-                if (IsBlockedZone(firstX, firstY + Math.Sign(MapY - firstY) * i))
+                if (IsBlockedZone(firstX, firstY + Math.Sign(mapY - firstY) * i))
                 {
                     return true;
                 }
@@ -362,8 +362,8 @@ namespace OpenNos.GameObject
                 MonsterLifeTask.Add(new Task(() => monster.MonsterLife()));
                 MonsterLifeTask.Last().Start();
             }
-            foreach (Task t in MonsterLifeTask)
-                await t;
+            foreach (Task monsterLiveTask in MonsterLifeTask)
+                await monsterLiveTask;
         }
 
         public async void NpcLifeManager()
@@ -413,25 +413,25 @@ namespace OpenNos.GameObject
 
         internal IEnumerable<Character> GetListPeopleInRange(short mapX, short mapY, byte distance)
         {
-            List<Character> listch = new List<Character>();
+            List<Character> characters = new List<Character>();
             IEnumerable<ClientSession> cl = Sessions.Where(s => s.Character != null && s.Character.Hp > 0);
             for (int i = cl.Count() - 1; i >= 0; i--)
             {
                 if (GetDistance(new MapCell() { X = mapX, Y = mapY }, new MapCell() { X = cl.ElementAt(i).Character.MapX, Y = cl.ElementAt(i).Character.MapY }) <= distance + 1)
-                    listch.Add(cl.ElementAt(i).Character);
+                    characters.Add(cl.ElementAt(i).Character);
             }
-            return listch;
+            return characters;
         }
 
         internal async void MapTaskManager()
         {
-            Task NpcMoveTask = new Task(() => NpcLifeManager());
-            NpcMoveTask.Start();
-            Task MonsterMoveTask = new Task(() => MonsterLifeManager());
-            MonsterMoveTask.Start();
+            Task npcMoveTask = new Task(() => NpcLifeManager());
+            npcMoveTask.Start();
+            Task monsterMoveTask = new Task(() => MonsterLifeManager());
+            monsterMoveTask.Start();
 
-            await NpcMoveTask;
-            await MonsterMoveTask;
+            await npcMoveTask;
+            await monsterMoveTask;
         }
 
         #endregion

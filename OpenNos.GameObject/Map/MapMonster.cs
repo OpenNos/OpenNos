@@ -29,7 +29,7 @@ namespace OpenNos.GameObject
         {
             LastEffect = LastMove = DateTime.Now;
             Target = -1;
-            path = new List<MapCell>();
+            Path = new List<MapCell>();
             Map = parent;
             MonsterVNum = VNum;
             Monster = ServerManager.GetNpc(MonsterVNum);
@@ -48,9 +48,10 @@ namespace OpenNos.GameObject
         public DateTime LastEffect { get; private set; }
         public DateTime LastMove { get; private set; }
         public Map Map { get; set; }
-        public List<MapCell> path { get; set; }
-        public long Target { get; set; }
         public NpcMonster Monster { get; set; }
+        public List<MapCell> Path { get; set; }
+        public long Target { get; set; }
+
         #endregion
 
         #region Methods
@@ -58,22 +59,22 @@ namespace OpenNos.GameObject
         public static int GenerateMapMonsterId()
         {
             Random rnd = new Random();
-            List<int> test = new List<int>();
+            List<int> monsterIds = new List<int>();
 
             for (int i = ServerManager.Monsters.Count - 1; i >= 0; i--)
             {
-                test.Add(ServerManager.Monsters[i].MapMonsterId);
+                monsterIds.Add(ServerManager.Monsters[i].MapMonsterId);
             }
 
             for (int i = 20000; i < int.MaxValue; i++)
-                if (!test.Contains(i))
+                if (!monsterIds.Contains(i))
                     return i;
             return -1;
         }
 
-        public string GenerateEff(int Effect)
+        public string GenerateEff(int effect)
         {
-            return $"eff 3 {MapMonsterId} {Effect}";
+            return $"eff 3 {MapMonsterId} {effect}";
         }
 
         public string GenerateIn3()
@@ -97,7 +98,7 @@ namespace OpenNos.GameObject
                     CurrentMp = Monster.MaxMP;
                     MapX = firstX;
                     MapY = firstY;
-                    path = new List<MapCell>();
+                    Path = new List<MapCell>();
                     Map.Broadcast(GenerateIn3());
                     Map.Broadcast(GenerateEff(7));
                 }
@@ -110,52 +111,52 @@ namespace OpenNos.GameObject
                 {
                     return;
                 }
-                Random r = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
+                Random random = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
                 double time = (DateTime.Now - LastMove).TotalSeconds;
                 int MoveFrequent = 5 - (int)Math.Round((double)(Monster.Speed / 5));
                 if (MoveFrequent < 1)
                     MoveFrequent = 1;
                 if (IsMoving)
                 {
-                    if (path.Where(s => s != null).ToList().Count > 0)//fix a path problem
+                    if (Path.Where(s => s != null).ToList().Count > 0)//fix a path problem
                     {
                         if ((DateTime.Now - LastMove).TotalSeconds > 1.0 / Monster.Speed)
                         {
-                            short MapX = path.ElementAt(0).X;
-                            short MapY = path.ElementAt(0).Y;
-                            path.RemoveAt(0);
+                            short mapX = Path.ElementAt(0).X;
+                            short mapY = Path.ElementAt(0).Y;
+                            Path.RemoveAt(0);
                             LastMove = DateTime.Now;
                             Map.Broadcast($"mv 3 {this.MapMonsterId} {this.MapX} {this.MapY} {Monster.Speed}");
 
                             Task.Factory.StartNew(async () =>
                             {
                                 await Task.Delay(500);
-                                this.MapX = MapX;
-                                this.MapY = MapY;
+                                this.MapX = mapX;
+                                this.MapY = mapY;
                             });
                             return;
                         }
                     }
-                    else if (time > r.Next(1, MoveFrequent) + 1)
+                    else if (time > random.Next(1, MoveFrequent) + 1)
                     {
-                        int MoveDistance = (int)Math.Round((double)Monster.Speed / 2);
-                        byte xpoint = (byte)(r.Next(1, MoveDistance));
-                        byte ypoint = (byte)(r.Next(1, MoveDistance));
+                        int moveDistance = (int)Math.Round((double)Monster.Speed / 2);
+                        byte xpoint = (byte)(random.Next(1, moveDistance));
+                        byte ypoint = (byte)(random.Next(1, moveDistance));
 
-                        short MapX = firstX;
-                        short MapY = firstY;
-                        if (ServerManager.GetMap(MapId).GetFreePosition(ref MapX, ref MapY, xpoint, ypoint))
+                        short mapX = firstX;
+                        short mapY = firstY;
+                        if (ServerManager.GetMap(MapId).GetFreePosition(ref mapX, ref mapY, xpoint, ypoint))
                         {
                             LastMove = DateTime.Now;
 
-                            string movepacket = $"mv 3 {this.MapMonsterId} {MapX} {MapY} {Monster.Speed}";
-                            Map.Broadcast(movepacket);
+                            string movePacket = $"mv 3 {this.MapMonsterId} {mapX} {mapY} {Monster.Speed}";
+                            Map.Broadcast(movePacket);
 
                             Task.Factory.StartNew(async () =>
                             {
                                 await Task.Delay(500);
-                                this.MapX = MapX;
-                                this.MapY = MapY;
+                                this.MapX = mapX;
+                                this.MapY = mapY;
                             });
                         }
                     }
@@ -184,25 +185,25 @@ namespace OpenNos.GameObject
                     return;
                 }
 
-                Random r = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
-                NpcMonsterSkill ski = Monster.Skills.Where(s => !s.Used && (DateTime.Now - s.LastUse).TotalMilliseconds >= 100 * ServerManager.GetSkill(s.SkillVNum).Cooldown).OrderBy(rnd => r.Next()).FirstOrDefault();
-                Skill sk = null;
+                Random random = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
+                NpcMonsterSkill npcMonsterSkill = Monster.Skills.Where(s => !s.Used && (DateTime.Now - s.LastUse).TotalMilliseconds >= 100 * ServerManager.GetSkill(s.SkillVNum).Cooldown).OrderBy(rnd => random.Next()).FirstOrDefault();
+                Skill skill = null;
 
-                if (ski != null)
+                if (npcMonsterSkill != null)
                 {
-                    sk = ServerManager.GetSkill(ski.SkillVNum);
+                    skill = ServerManager.GetSkill(npcMonsterSkill.SkillVNum);
                 }
 
                 int damage = 100;
-                if (targetSession != null && ((sk != null && Map.GetDistance(new MapCell() { X = this.MapX, Y = this.MapY }, new MapCell() { X = targetSession.Character.MapX, Y = targetSession.Character.MapY }) < sk.Range) || (Map.GetDistance(new MapCell() { X = this.MapX, Y = this.MapY }, new MapCell() { X = targetSession.Character.MapX, Y = targetSession.Character.MapY }) <= Monster.BasicRange)))
+                if (targetSession != null && ((skill != null && Map.GetDistance(new MapCell() { X = this.MapX, Y = this.MapY }, new MapCell() { X = targetSession.Character.MapX, Y = targetSession.Character.MapY }) < skill.Range) || (Map.GetDistance(new MapCell() { X = this.MapX, Y = this.MapY }, new MapCell() { X = targetSession.Character.MapX, Y = targetSession.Character.MapY }) <= Monster.BasicRange)))
                 {
-                    if ((sk != null && ((DateTime.Now - LastEffect).TotalMilliseconds >= sk.Cooldown * 100 + 1000)) || ((DateTime.Now - LastEffect).TotalMilliseconds >= (Monster.BasicCooldown < 4 ? 4 : Monster.BasicCooldown) * 300 + 100)) // Need more information about cooldown time of monster attack(In waiting)
+                    if ((skill != null && ((DateTime.Now - LastEffect).TotalMilliseconds >= skill.Cooldown * 100 + 1000)) || ((DateTime.Now - LastEffect).TotalMilliseconds >= (Monster.BasicCooldown < 4 ? 4 : Monster.BasicCooldown) * 300 + 100)) // Need more information about cooldown time of monster attack(In waiting)
                     {
-                        if (ski != null)
+                        if (npcMonsterSkill != null)
                         {
-                            ski.Used = true;
-                            ski.LastUse = DateTime.Now;
-                            Map.Broadcast($"ct 3 {MapMonsterId} 1 {Target} {sk.CastAnimation} -1 {sk.SkillVNum}");
+                            npcMonsterSkill.Used = true;
+                            npcMonsterSkill.LastUse = DateTime.Now;
+                            Map.Broadcast($"ct 3 {MapMonsterId} 1 {Target} {skill.CastAnimation} -1 {skill.SkillVNum}");
                         }
                         LastMove = DateTime.Now;
 
@@ -213,24 +214,24 @@ namespace OpenNos.GameObject
                             targetSession.Character.IsSitting = false;
                             Map.Broadcast(null, targetSession.Character.GenerateRest(), ReceiverType.OnlySomeone, "", targetSession.Character.CharacterId);
                         }
-                        if (sk != null && sk.CastEffect != 0)
+                        if (skill != null && skill.CastEffect != 0)
                         {
-                            Map.Broadcast(GenerateEff(sk.CastEffect));
-                            Thread.Sleep(sk.CastTime * 100);
+                            Map.Broadcast(GenerateEff(skill.CastEffect));
+                            Thread.Sleep(skill.CastTime * 100);
                         }
-                        path = new List<MapCell>();
+                        Path = new List<MapCell>();
                         targetSession.Character.LastDefence = DateTime.Now;
                         targetSession.Character.GetDamage(damage);
 
                         Map.Broadcast(null, ServerManager.Instance.GetUserMethod<string>(Target, "GenerateStat"), ReceiverType.OnlySomeone, "", Target);
 
-                        if (sk != null)
-                            Map.Broadcast($"su 3 {MapMonsterId} 1 {Target} {ski.SkillVNum} {sk.Cooldown} {sk.AttackAnimation} {sk.Effect} {this.MapX} {this.MapY} {(targetSession.Character.Hp > 0 ? 1 : 0)} {(int)((double)targetSession.Character.Hp / ServerManager.Instance.GetUserMethod<double>(Target, "HPLoad"))} {damage} 0 0");
+                        if (skill != null)
+                            Map.Broadcast($"su 3 {MapMonsterId} 1 {Target} {npcMonsterSkill.SkillVNum} {skill.Cooldown} {skill.AttackAnimation} {skill.Effect} {this.MapX} {this.MapY} {(targetSession.Character.Hp > 0 ? 1 : 0)} {(int)((double)targetSession.Character.Hp / ServerManager.Instance.GetUserMethod<double>(Target, "HPLoad"))} {damage} 0 0");
                         else
                             Map.Broadcast($"su 3 {MapMonsterId} 1 {Target} 0 {Monster.BasicCooldown} 11 {Monster.BasicSkill} 0 0 {(targetSession.Character.Hp > 0 ? 1 : 0)} {(int)((double)targetSession.Character.Hp / ServerManager.Instance.GetUserMethod<double>(Target, "HPLoad"))} {damage} 0 0");
 
-                        if (ski != null)
-                            ski.Used = false;
+                        if (npcMonsterSkill != null)
+                            npcMonsterSkill.Used = false;
                         LastEffect = DateTime.Now;
                         if (targetSession.Character.Hp <= 0)
                         {
@@ -238,9 +239,9 @@ namespace OpenNos.GameObject
                             ServerManager.Instance.AskRevive(targetSession.Character.CharacterId);
                             Target = -1;
                         }
-                        if ((sk != null && (sk.Range > 0 || sk.TargetRange > 0)))
+                        if ((skill != null && (skill.Range > 0 || skill.TargetRange > 0)))
                         {
-                            foreach (Character chara in ServerManager.GetMap(MapId).GetListPeopleInRange(sk.TargetRange == 0 ? this.MapX : targetSession.Character.MapX, sk.TargetRange == 0 ? this.MapY : targetSession.Character.MapY, (byte)(sk.TargetRange + sk.Range)).Where(s => s.CharacterId != Target))
+                            foreach (Character chara in ServerManager.GetMap(MapId).GetListPeopleInRange(skill.TargetRange == 0 ? this.MapX : targetSession.Character.MapX, skill.TargetRange == 0 ? this.MapY : targetSession.Character.MapY, (byte)(skill.TargetRange + skill.Range)).Where(s => s.CharacterId != Target))
                             {
                                 if (chara.IsSitting)
                                 {
@@ -266,21 +267,21 @@ namespace OpenNos.GameObject
                 {
                     if (IsMoving == true)
                     {
-                        short maxdistance = 22;
+                        short maxDistance = 22;
 
-                        if (path.Count() == 0 && targetSession != null && (Map.GetDistance(new MapCell() { X = this.MapX, Y = this.MapY }, new MapCell() { X = targetSession.Character.MapX, Y = targetSession.Character.MapY }) < maxdistance))
+                        if (Path.Count() == 0 && targetSession != null && (Map.GetDistance(new MapCell() { X = this.MapX, Y = this.MapY }, new MapCell() { X = targetSession.Character.MapX, Y = targetSession.Character.MapY }) < maxDistance))
                         {
-                            path = ServerManager.GetMap(MapId).AStar(new MapCell() { X = this.MapX, Y = this.MapY, MapId = this.MapId }, new MapCell() { X = targetSession.Character.MapX, Y = targetSession.Character.MapY, MapId = this.MapId });
+                            Path = ServerManager.GetMap(MapId).AStar(new MapCell() { X = this.MapX, Y = this.MapY, MapId = this.MapId }, new MapCell() { X = targetSession.Character.MapX, Y = targetSession.Character.MapY, MapId = this.MapId });
                         }
-                        if (path.Count > 0 && Map.GetDistance(new MapCell() { X = this.MapX, Y = this.MapY, MapId = this.MapId }, new MapCell() { X = targetSession.Character.MapX, Y = targetSession.Character.MapY, MapId = this.MapId }) > 1)
+                        if (Path.Count > 0 && Map.GetDistance(new MapCell() { X = this.MapX, Y = this.MapY, MapId = this.MapId }, new MapCell() { X = targetSession.Character.MapX, Y = targetSession.Character.MapY, MapId = this.MapId }) > 1)
                         {
-                            this.MapX = path.ElementAt(0).X;
-                            this.MapY = path.ElementAt(0).Y;
-                            path.RemoveAt(0);
+                            this.MapX = Path.ElementAt(0).X;
+                            this.MapY = Path.ElementAt(0).Y;
+                            Path.RemoveAt(0);
                         }
-                        if (targetSession == null || MapId != targetSession.Character.MapId || (Map.GetDistance(new MapCell() { X = this.MapX, Y = this.MapY }, new MapCell() { X = targetSession.Character.MapX, Y = targetSession.Character.MapY }) > maxdistance))
+                        if (targetSession == null || MapId != targetSession.Character.MapId || (Map.GetDistance(new MapCell() { X = this.MapX, Y = this.MapY }, new MapCell() { X = targetSession.Character.MapX, Y = targetSession.Character.MapY }) > maxDistance))
                         {
-                            path = ServerManager.GetMap(MapId).AStar(new MapCell() { X = this.MapX, Y = this.MapY, MapId = this.MapId }, new MapCell() { X = firstX, Y = firstY, MapId = this.MapId });
+                            Path = ServerManager.GetMap(MapId).AStar(new MapCell() { X = this.MapX, Y = this.MapY, MapId = this.MapId }, new MapCell() { X = firstX, Y = firstY, MapId = this.MapId });
                             Target = -1;
                         }
                         else
