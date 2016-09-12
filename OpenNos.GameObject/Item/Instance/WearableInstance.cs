@@ -340,7 +340,7 @@ namespace OpenNos.GameObject
 
         public void SumItem(ClientSession Session, WearableInstance itemToSum)
         {
-            short[] upsuccess = { 100, 100, 100, 85, 70, 50, 20 };
+            short[] upsuccess = { 100, 100, 85, 70, 50, 20 };
             int[] goldprice = { 1500, 3000, 6000, 12000, 24000, 48000 };
             short[] sand = { 5, 10, 15, 20, 25, 30 };
             int sandVnum = 1027;
