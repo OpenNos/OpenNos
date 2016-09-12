@@ -932,6 +932,6 @@ Veux-tu le porter ?</value>
     <value>Tu possèdes déjà cette compétence.</value>
   </data>
   <data name="SKILL_DOES_NOT_EXIST" xml:space="preserve">
-    <value />
+    <value>La compétence n'existe pas !</value>
   </data>
 </root>
