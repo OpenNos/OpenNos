@@ -105,7 +105,10 @@ namespace OpenNos.GameObject
 
                     Inventory equip = session.Character.EquipmentList.LoadInventoryBySlotAndType(EquipmentSlot, InventoryType.Equipment);
                     if (EquipmentSlot == (byte)EquipmentType.Amulet)
+                    {
                         session.Client.SendPacket(session.Character.GenerateEff(39));
+                        inventory.ItemInstance.BoundCharacterId = session.Character.CharacterId;
+                    }
 
                     if (equip == null)
                     {
