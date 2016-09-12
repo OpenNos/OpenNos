@@ -1356,10 +1356,6 @@ namespace OpenNos.Handler
             else
                 Session.Client.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("USER_NOT_CONNECTED")));
         }
-
-       
-        
-
         #endregion
     }
 }

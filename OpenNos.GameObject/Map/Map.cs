@@ -14,6 +14,7 @@
 
 using OpenNos.DAL;
 using OpenNos.Data;
+using OpenNos.Domain;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -430,6 +431,7 @@ namespace OpenNos.GameObject
             Task monsterLifeTask = new Task(() => MonsterLifeManager());
             monsterLifeTask.Start();
             Task characterLifeTask = new Task(() => CharacterLifeManager());
+            characterLifeTask.Start();
 
             await npcLifeTask;
             await monsterLifeTask;
@@ -439,7 +441,7 @@ namespace OpenNos.GameObject
         private void CharacterLifeManager()
         {
             List<Task> NpcLifeTask = new List<Task>();
-            foreach (ClientSession Session in Sessions.Where(s=>s?.Character !=null))
+            foreach (ClientSession Session in Sessions.Where(s => s?.Character != null))
             {
                 int x = 1;
                 bool change = false;
@@ -450,7 +452,7 @@ namespace OpenNos.GameObject
                     Session.Character.LastHealth = DateTime.Now;
                     continue;
                 }
-                if ((Session.Character.LastHealth.AddSeconds(2) <= DateTime.Now) || (Session.Character.IsSitting && Session.Character.LastHealth.AddSeconds(1.5) <= DateTime.Now))
+                if ((Session.Character.LastHealth.AddSeconds(2) <= DateTime.Now) || (Session.Character.IsSitting && Session.Character.LastHealth.AddSeconds(1.5) <= DateTime.Now) || (Session.Character.LastHealth.AddSeconds(2) <= DateTime.Now && amulet != null))
                 {
                     Session.Character.LastHealth = DateTime.Now;
                     if (Session.healthStop == true)
@@ -495,8 +497,6 @@ namespace OpenNos.GameObject
                         }
                     }
                 }
-               
-                
             }
         }
 

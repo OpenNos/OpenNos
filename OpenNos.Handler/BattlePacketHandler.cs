@@ -148,6 +148,7 @@ namespace OpenNos.Handler
                             Session.Character.Mp -= ski.Skill.MpCost;
                         if (Session.Character.UseSp && ski.Skill.CastEffect != -1)
                             Session.Client.SendPackets(Session.Character.GenerateQuicklist());
+                        Session.Client.SendPacket(Session.Character.GenerateStat());
 
                         CharacterSkill skillinfo = Session.Character.Skills.OrderBy(o => o.SkillVNum).FirstOrDefault(s => s.Skill.UpgradeSkill == ski.Skill.SkillVNum && s.Skill.Effect > 0 && s.Skill.SkillType == 2);
 
@@ -195,6 +196,7 @@ namespace OpenNos.Handler
                                             Session.Character.Mp -= ski.Skill.MpCost;
                                         if (Session.Character.UseSp && ski.Skill.CastEffect != -1)
                                             Session.Client.SendPackets(Session.Character.GenerateQuicklist());
+                                        Session.Client.SendPacket(Session.Character.GenerateStat());
 
                                         CharacterSkill skillinfo = Session.Character.Skills.OrderBy(o => o.SkillVNum).FirstOrDefault(s => s.Skill.UpgradeSkill == ski.Skill.SkillVNum && s.Skill.Effect > 0 && s.Skill.SkillType == 2);
 
