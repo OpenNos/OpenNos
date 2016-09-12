@@ -425,13 +425,79 @@ namespace OpenNos.GameObject
 
         internal async void MapTaskManager()
         {
-            Task npcMoveTask = new Task(() => NpcLifeManager());
-            npcMoveTask.Start();
-            Task monsterMoveTask = new Task(() => MonsterLifeManager());
-            monsterMoveTask.Start();
+            Task npcLifeTask = new Task(() => NpcLifeManager());
+            npcLifeTask.Start();
+            Task monsterLifeTask = new Task(() => MonsterLifeManager());
+            monsterLifeTask.Start();
+            Task characterLifeTask = new Task(() => CharacterLifeManager());
 
-            await npcMoveTask;
-            await monsterMoveTask;
+            await npcLifeTask;
+            await monsterLifeTask;
+            await characterLifeTask;
+        }
+
+        private void CharacterLifeManager()
+        {
+            List<Task> NpcLifeTask = new List<Task>();
+            foreach (ClientSession Session in Sessions.Where(s=>s?.Character !=null))
+            {
+                int x = 1;
+                bool change = false;
+                if (Session.Character.Hp == 0 && Session.Character.LastHealth.AddSeconds(2) <= DateTime.Now)
+                {
+                    Session.Character.Mp = 0;
+                    Session.Client.SendPacket(Session.Character.GenerateStat());
+                    Session.Character.LastHealth = DateTime.Now;
+                    continue;
+                }
+                if ((Session.Character.LastHealth.AddSeconds(2) <= DateTime.Now) || (Session.Character.IsSitting && Session.Character.LastHealth.AddSeconds(1.5) <= DateTime.Now))
+                {
+                    Session.Character.LastHealth = DateTime.Now;
+                    if (Session.healthStop == true)
+                    {
+                        Session.healthStop = false;
+                        return;
+                    }
+
+                    if (Session.Character.LastDefence.AddSeconds(2) <= DateTime.Now && Session.Character.LastSkill.AddSeconds(2) <= DateTime.Now && Session.Character.Hp > 0)
+                    {
+                        if (x == 0)
+                            x = 1;
+                        if (Session.Character.Hp + Session.Character.HealthHPLoad() < Session.Character.HPLoad())
+                        {
+                            change = true;
+                            Session.Character.Hp += Session.Character.HealthHPLoad();
+                        }
+                        else
+                        {
+                            if (Session.Character.Hp != (int)Session.Character.HPLoad())
+                                change = true;
+                            Session.Character.Hp = (int)Session.Character.HPLoad();
+                        }
+                        if (x == 1)
+                        {
+                            if (Session.Character.Mp + Session.Character.HealthMPLoad() < Session.Character.MPLoad())
+                            {
+                                Session.Character.Mp += Session.Character.HealthMPLoad();
+                                change = true;
+                            }
+                            else
+                            {
+                                if (Session.Character.Mp != (int)Session.Character.MPLoad())
+                                    change = true;
+                                Session.Character.Mp = (int)Session.Character.MPLoad();
+                            }
+                            x = 0;
+                        }
+                        if (change)
+                        {
+                            Session.Client.SendPacket(Session.Character.GenerateStat());
+                        }
+                    }
+                }
+               
+                
+            }
         }
 
         #endregion

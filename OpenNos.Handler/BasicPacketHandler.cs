@@ -1140,10 +1140,8 @@ namespace OpenNos.Handler
                     Session.Character.LoadQuicklists();
                     DAOFactory.AccountDAO.WriteGeneralLog(Session.Character.AccountId, Session.Client.RemoteEndPoint.ToString(), Session.Character.CharacterId, "Connection", "World");
                     Session.Client.SendPacket("OK");
-                    Session.HealthTask = new Task(() => HealthTask());
 
-                    Session.HealthTask.Start();
-
+                 
                     // Inform everyone about connected character
                     ServiceFactory.Instance.CommunicationService.ConnectCharacter(Session.Character.Name, Session.Account.Name);
                 }
@@ -1359,66 +1357,8 @@ namespace OpenNos.Handler
                 Session.Client.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("USER_NOT_CONNECTED")));
         }
 
-        private async void HealthTask()
-        {
-            int x = 1;
-            while (true)
-            {
-                bool change = false;
-                if (Session.Character.Hp == 0)
-                {
-                    Session.Character.Mp = 0;
-                    Session.Client.SendPacket(Session.Character.GenerateStat());
-                    await Task.Delay(2000);
-                    continue;
-                }
-                if (Session.Character.IsSitting)
-                    await Task.Delay(1500);
-                else
-                    await Task.Delay(2000);
-                if (Session.healthStop == true)
-                {
-                    Session.healthStop = false;
-                    return;
-                }
-
-                if (Session.Character.LastDefence.AddSeconds(2) <= DateTime.Now && Session.Character.LastSkill.AddSeconds(2) <= DateTime.Now && Session.Character.Hp > 0)
-                {
-                    if (x == 0)
-                        x = 1;
-                    if (Session.Character.Hp + Session.Character.HealthHPLoad() < Session.Character.HPLoad())
-                    {
-                        change = true;
-                        Session.Character.Hp += Session.Character.HealthHPLoad();
-                    }
-                    else
-                    {
-                        if (Session.Character.Hp != (int)Session.Character.HPLoad())
-                            change = true;
-                        Session.Character.Hp = (int)Session.Character.HPLoad();
-                    }
-                    if (x == 1)
-                    {
-                        if (Session.Character.Mp + Session.Character.HealthMPLoad() < Session.Character.MPLoad())
-                        {
-                            Session.Character.Mp += Session.Character.HealthMPLoad();
-                            change = true;
-                        }
-                        else
-                        {
-                            if (Session.Character.Mp != (int)Session.Character.MPLoad())
-                                change = true;
-                            Session.Character.Mp = (int)Session.Character.MPLoad();
-                        }
-                        x = 0;
-                    }
-                    if (change)
-                    {
-                        Session.Client.SendPacket(Session.Character.GenerateStat());
-                    }
-                }
-            }
-        }
+       
+        
 
         #endregion
     }

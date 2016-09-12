@@ -43,7 +43,6 @@ namespace OpenNos.GameObject
         //Packetwait Packets
         private int? _waitForPacketsAmount;
 
-        private Task healthTask;
 
         #endregion
 
@@ -133,18 +132,6 @@ namespace OpenNos.GameObject
             set
             {
                 _handlerMethods = value;
-            }
-        }
-
-        public Task HealthTask
-        {
-            get
-            {
-                return healthTask;
-            }
-            set
-            {
-                healthTask = value;
             }
         }
 

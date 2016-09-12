@@ -56,6 +56,7 @@ namespace OpenNos.GameObject
             SaveX = 0;
             SaveY = 0;
             LastDefence = DateTime.Now.AddSeconds(-21);
+            LastHealth = DateTime.Now;
             _session = Session;
             Group = null;
         }
@@ -160,6 +161,7 @@ namespace OpenNos.GameObject
 
         public bool UseSp { get; set; }
         public int WaterResistance { get; set; }
+        public DateTime LastHealth { get; set; }
 
         #endregion
 
