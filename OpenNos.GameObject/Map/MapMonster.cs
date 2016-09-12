@@ -192,7 +192,7 @@ namespace OpenNos.GameObject
                 if (random.Next(10) > 8 || inWaiting)
                 {
                     inWaiting = false;
-                    if ((DateTime.Now - LastEffect).TotalMilliseconds >= Monster.BasicCooldown * 100)
+                    if ((DateTime.Now - LastEffect).TotalMilliseconds <= Monster.BasicCooldown * 100)
                     {
                         inWaiting = true;
                     }
