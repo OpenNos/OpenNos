@@ -23,8 +23,7 @@ namespace OpenNos.GameObject
 
         public NpcMonsterSkill()
         {
-            LastUse = DateTime.Now.AddHours(-1);
-            Used = false;
+            LastUse = DateTime.Now;
             Hit = 0;
         }
 
@@ -33,13 +32,20 @@ namespace OpenNos.GameObject
         #region Properties
 
         public short Hit { get; set; }
+        private Skill skill;
+        public Skill Skill
+        {
+            get
+            {
+                if (skill == null) skill = ServerManager.GetSkill(this.SkillVNum);
+                return skill;
+            }
+        }
 
         public DateTime LastUse
         {
             get; set;
         }
-
-        public bool Used { get; set; }
 
         #endregion
     }
