@@ -271,7 +271,12 @@ namespace OpenNos.GameObject
 
                         if (Path.Count() == 0 && targetSession != null && (Map.GetDistance(new MapCell() { X = this.MapX, Y = this.MapY }, new MapCell() { X = targetSession.Character.MapX, Y = targetSession.Character.MapY }) < maxDistance))
                         {
-                            Path = ServerManager.GetMap(MapId).AStar(new MapCell() { X = this.MapX, Y = this.MapY, MapId = this.MapId }, new MapCell() { X = targetSession.Character.MapX, Y = targetSession.Character.MapY, MapId = this.MapId });
+
+                            Path = ServerManager.GetMap(MapId).StraightPath(new MapCell() { X = this.MapX, Y = this.MapY, MapId = this.MapId }, new MapCell() { X = targetSession.Character.MapX, Y = targetSession.Character.MapY, MapId = this.MapId });
+                            if (!Path.Any())
+                            {
+                                Path = ServerManager.GetMap(MapId).AStar(new MapCell() { X = this.MapX, Y = this.MapY, MapId = this.MapId }, new MapCell() { X = targetSession.Character.MapX, Y = targetSession.Character.MapY, MapId = this.MapId });
+                            }
                         }
                         if (Path.Count > 0 && Map.GetDistance(new MapCell() { X = this.MapX, Y = this.MapY, MapId = this.MapId }, new MapCell() { X = targetSession.Character.MapX, Y = targetSession.Character.MapY, MapId = this.MapId }) > 1)
                         {

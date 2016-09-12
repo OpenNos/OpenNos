@@ -412,6 +412,52 @@ namespace OpenNos.GameObject
             return false;
         }
 
+        internal List<MapCell> StraightPath(MapCell mapCell1, MapCell mapCell2)
+        {
+            List<MapCell> Path = new List<MapCell>();
+            Path.Add(mapCell1);
+            do
+            {
+                if (Path.Last().X < mapCell2.X && Path.Last().Y < mapCell2.Y)
+                {
+                    Path.Add(new MapCell() { MapId = MapId, X = (short)(Path.Last().X + 1), Y = (short)(Path.Last().Y + 1) });
+                }
+                else if (Path.Last().X > mapCell2.X && Path.Last().Y > mapCell2.Y)
+                {
+                    Path.Add(new MapCell() { MapId = MapId, X = (short)(Path.Last().X - 1), Y = (short)(Path.Last().Y - 1) });
+                }
+                else if (Path.Last().X < mapCell2.X && Path.Last().Y > mapCell2.Y)
+                {
+                    Path.Add(new MapCell() { MapId = MapId, X = (short)(Path.Last().X + 1), Y = (short)(Path.Last().Y - 1) });
+                }
+                else if (Path.Last().X > mapCell2.X && Path.Last().Y < mapCell2.Y)
+                {
+                    Path.Add(new MapCell() { MapId = MapId, X = (short)(Path.Last().X - 1), Y = (short)(Path.Last().Y + 1) });
+                }
+                else if (Path.Last().X > mapCell2.X)
+                {
+                    Path.Add(new MapCell() { MapId = MapId, X = (short)(Path.Last().X - 1), Y = (short)(Path.Last().Y) });
+                }
+                else if (Path.Last().X < mapCell2.X)
+                {
+                    Path.Add(new MapCell() { MapId = MapId, X = (short)(Path.Last().X + 1), Y = (short)(Path.Last().Y) });
+                }
+                else if (Path.Last().Y > mapCell2.Y)
+                {
+                    Path.Add(new MapCell() { MapId = MapId, X = (short)(Path.Last().X), Y = (short)(Path.Last().Y - 1) });
+                }
+                else if (Path.Last().Y < mapCell2.Y)
+                {
+                    Path.Add(new MapCell() { MapId = MapId, X = (short)(Path.Last().X), Y = (short)(Path.Last().Y + 1) });
+                }
+            }
+            while ((Path.Last().X != mapCell2.X || Path.Last().Y != mapCell2.Y) && (!IsBlockedZone(Path.Last().X, Path.Last().Y)));
+            if (IsBlockedZone(Path.Last().X, Path.Last().Y))
+                Path.Remove(Path.Last());
+            Path.RemoveAt(0);
+            return Path;
+        }
+
         internal IEnumerable<Character> GetListPeopleInRange(short mapX, short mapY, byte distance)
         {
             List<Character> characters = new List<Character>();
