@@ -140,8 +140,8 @@ namespace OpenNos.GameObject
                     else if (time > random.Next(1, MoveFrequent) + 1)
                     {
                         int moveDistance = (int)Math.Round((double)Monster.Speed / 2);
-                        byte xpoint = (byte)(random.Next(1, moveDistance));
-                        byte ypoint = (byte)(random.Next(1, moveDistance));
+                        byte xpoint = (byte)(random.Next(1, moveDistance + 1));
+                        byte ypoint = (byte)(random.Next(1, moveDistance + 1));
 
                         short mapX = firstX;
                         short mapY = firstY;
