@@ -925,4 +925,10 @@
   <data name="SKILL_DOES_NOT_EXIST" xml:space="preserve">
     <value>Skill does not exist.</value>
   </data>
+  <data name="SUM_FAILED" xml:space="preserve">
+    <value>Summing failed.</value>
+  </data>
+  <data name="SUM_SUCCESS" xml:space="preserve">
+    <value>Summing successed!</value>
+  </data>
 </root>

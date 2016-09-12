@@ -45,10 +45,10 @@ namespace OpenNos.GameObject
                             session.Client.SendPacket($"qna #u_i^1^{session.Character.CharacterId}^{type}^{slot}^1 {Language.Instance.GetMessageFromKey("ASK_BIND")}");
                             return;
                         }
-                        else if(DelayUsed)
+                        else if (DelayUsed)
                         {
                             inventory.ItemInstance.BoundCharacterId = session.Character.CharacterId;
-                        } 
+                        }
                     }
 
                     double timeSpanSinceLastSpUsage = (DateTime.Now - Process.GetCurrentProcess().StartTime.AddSeconds(-50)).TotalSeconds - session.Character.LastSp;
@@ -105,7 +105,10 @@ namespace OpenNos.GameObject
 
                     Inventory equip = session.Character.EquipmentList.LoadInventoryBySlotAndType(EquipmentSlot, InventoryType.Equipment);
                     if (EquipmentSlot == (byte)EquipmentType.Amulet)
+                    {
                         session.Client.SendPacket(session.Character.GenerateEff(39));
+                        inventory.ItemInstance.BoundCharacterId = session.Character.CharacterId;
+                    }
 
                     if (equip == null)
                     {

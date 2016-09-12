@@ -2005,10 +2005,10 @@ namespace OpenNos.Import.Console
                                     switch (item.VNum)
                                     {
                                         case 4503:
-                                            item.EffectValue = 4545;
+                                            item.EffectValue = 4544;
                                             break;
                                         case 4504:
-                                            item.EffectValue = 4295;
+                                            item.EffectValue = 4294;
                                             break;
                                         default:
                                             item.EffectValue = Convert.ToInt16(currentLine[7]);
@@ -2105,7 +2105,13 @@ namespace OpenNos.Import.Console
                                 if (item.EquipmentSlot.Equals((byte)EquipmentType.Amulet))
                                 {
                                     item.LevelMinimum = Convert.ToByte(currentLine[2]);
-                                    item.ItemValidTime = Convert.ToInt32(currentLine[3]) / 10;
+                                    // needed to hardcode some missing ItemValidTime
+                                    if ((item.VNum > 4055 && item.VNum < 4061) || (item.VNum > 4172 && item.VNum < 4176))
+                                        item.ItemValidTime = 10800;
+                                    else if ((item.VNum > 4045 && item.VNum < 4056) || item.VNum == 967 || item.VNum == 968) // (item.VNum > 8104 && item.VNum < 8115) <= disaled for now because doesn't work!
+                                        item.ItemValidTime = 3600;
+                                    else
+                                        item.ItemValidTime = Convert.ToInt32(currentLine[3]) / 10;
                                 }
                                 else if (item.EquipmentSlot.Equals((byte)EquipmentType.Fairy))
                                 {
