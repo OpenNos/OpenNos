@@ -192,7 +192,7 @@ namespace OpenNos.GameObject
                 if (random.Next(10) > 8 || inWaiting)
                 {
                     inWaiting = false;
-                    if ((DateTime.Now - LastEffect).TotalMilliseconds <= Monster.BasicCooldown * 100)
+                    if ((DateTime.Now - LastEffect).TotalMilliseconds <= Monster.BasicCooldown * 400)
                     {
                         inWaiting = true;
                     }
@@ -202,7 +202,7 @@ namespace OpenNos.GameObject
                 int damage = 100;
                 if (targetSession != null && ((npcMonsterSkill != null && Map.GetDistance(new MapCell() { X = this.MapX, Y = this.MapY }, new MapCell() { X = targetSession.Character.MapX, Y = targetSession.Character.MapY }) < npcMonsterSkill.Skill.Range) || (Map.GetDistance(new MapCell() { X = this.MapX, Y = this.MapY }, new MapCell() { X = targetSession.Character.MapX, Y = targetSession.Character.MapY }) <= Monster.BasicRange)))
                 {
-                    if ((DateTime.Now - LastEffect).TotalMilliseconds >= Monster.BasicCooldown * 100 && !inWaiting)
+                    if ((DateTime.Now - LastEffect).TotalMilliseconds >= Monster.BasicCooldown * 400 && !inWaiting)
                     {
                         if (npcMonsterSkill != null)
                         {
