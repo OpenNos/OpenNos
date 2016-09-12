@@ -186,14 +186,17 @@ namespace OpenNos.GameObject
                     Target = -1;
                     return;
                 }
-
-                Random random = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
-                NpcMonsterSkill npcMonsterSkill = Skills.Where(s => (DateTime.Now - s.LastUse).TotalMilliseconds >= 100 *s.Skill.Cooldown).OrderBy(rnd => random.Next()).FirstOrDefault();
-
-                int damage = 100;
-                if (targetSession != null && ((npcMonsterSkill != null && Map.GetDistance(new MapCell() { X = this.MapX, Y = this.MapY }, new MapCell() { X = targetSession.Character.MapX, Y = targetSession.Character.MapY }) < npcMonsterSkill.Skill.Range) || (Map.GetDistance(new MapCell() { X = this.MapX, Y = this.MapY }, new MapCell() { X = targetSession.Character.MapX, Y = targetSession.Character.MapY }) <= Monster.BasicRange)))
+                if ((DateTime.Now - LastEffect).TotalMilliseconds >= Monster.BasicCooldown * 100)
                 {
-                    if ((npcMonsterSkill != null) || ((DateTime.Now - LastEffect).TotalMilliseconds >= (Monster.BasicCooldown < 4 ? 4 : Monster.BasicCooldown) * 300 + 100)) // Need more information about cooldown time of monster attack(In waiting)
+                    Random random = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
+                    NpcMonsterSkill npcMonsterSkill = null;
+                    if (random.Next(10) > 8)
+                    {
+                        npcMonsterSkill = Skills.Where(s => (DateTime.Now - s.LastUse).TotalMilliseconds >= 100 * s.Skill.Cooldown).OrderBy(rnd => random.Next()).FirstOrDefault();
+                    }
+
+                    int damage = 100;
+                    if (targetSession != null && ((npcMonsterSkill != null && Map.GetDistance(new MapCell() { X = this.MapX, Y = this.MapY }, new MapCell() { X = targetSession.Character.MapX, Y = targetSession.Character.MapY }) < npcMonsterSkill.Skill.Range) || (Map.GetDistance(new MapCell() { X = this.MapX, Y = this.MapY }, new MapCell() { X = targetSession.Character.MapX, Y = targetSession.Character.MapY }) <= Monster.BasicRange)))
                     {
                         if (npcMonsterSkill != null)
                         {
@@ -225,7 +228,7 @@ namespace OpenNos.GameObject
                         else
                             Map.Broadcast($"su 3 {MapMonsterId} 1 {Target} 0 {Monster.BasicCooldown} 11 {Monster.BasicSkill} 0 0 {(targetSession.Character.Hp > 0 ? 1 : 0)} {(int)((double)targetSession.Character.Hp / ServerManager.Instance.GetUserMethod<double>(Target, "HPLoad"))} {damage} 0 0");
 
-                     
+
                         LastEffect = DateTime.Now;
                         if (targetSession.Character.Hp <= 0)
                         {
@@ -233,7 +236,7 @@ namespace OpenNos.GameObject
                             ServerManager.Instance.AskRevive(targetSession.Character.CharacterId);
                             Target = -1;
                         }
-                        if (npcMonsterSkill !=null && (npcMonsterSkill.Skill.Range > 0 || npcMonsterSkill.Skill.TargetRange > 0))
+                        if (npcMonsterSkill != null && (npcMonsterSkill.Skill.Range > 0 || npcMonsterSkill.Skill.TargetRange > 0))
                         {
                             foreach (Character chara in ServerManager.GetMap(MapId).GetListPeopleInRange(npcMonsterSkill.Skill.TargetRange == 0 ? this.MapX : targetSession.Character.MapX, npcMonsterSkill.Skill.TargetRange == 0 ? this.MapY : targetSession.Character.MapY, (byte)(npcMonsterSkill.Skill.TargetRange + npcMonsterSkill.Skill.Range)).Where(s => s.CharacterId != Target))
                             {
