@@ -20,7 +20,6 @@ using OpenNos.Domain;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -490,45 +489,41 @@ namespace OpenNos.GameObject
         }
 
         //PacketHandler
-        public void ExchangeValidate(ClientSession c1Session, long charId)
+        public void ExchangeValidate(ClientSession Session, long charId)
         {
-            ClientSession c2Session = Sessions.FirstOrDefault(s => s.Character.CharacterId.Equals(charId));
+            ClientSession otherSession = Sessions.FirstOrDefault(s => s.Character.CharacterId.Equals(charId));
+            if (otherSession != null)
             {
-                if (c2Session == null) return;
-
-                foreach (ItemInstance item in c2Session.Character.ExchangeInfo.ExchangeList)
+                foreach (ItemInstance item in otherSession.Character.ExchangeInfo.ExchangeList)
                 {
-                    Inventory invtemp = c2Session.Character.InventoryList.Inventory.FirstOrDefault(s => s.ItemInstance.Id == item.Id);
+                    Inventory invtemp = otherSession.Character.InventoryList.Inventory.FirstOrDefault(s => s.ItemInstance.Id == item.Id);
                     short slot = invtemp.Slot;
                     InventoryType type = invtemp.Type;
 
-                    Inventory inv = c2Session.Character.InventoryList.RemoveItemAmountFromInventory((byte)item.Amount, invtemp.Id);
+                    Inventory inv = otherSession.Character.InventoryList.RemoveItemAmountFromInventory((byte)item.Amount, invtemp.Id);
                     if (inv != null)
                     {
                         // Send reduced-amount to owners inventory
-                        c2Session.Client.SendPacket(c2Session.Character.GenerateInventoryAdd(inv.ItemInstance.ItemVNum, inv.ItemInstance.Amount, inv.Type, inv.Slot, inv.ItemInstance.Rare, inv.ItemInstance.Design, inv.ItemInstance.Upgrade, 0));
+                        otherSession.Client.SendPacket(otherSession.Character.GenerateInventoryAdd(inv.ItemInstance.ItemVNum, inv.ItemInstance.Amount, inv.Type, inv.Slot, inv.ItemInstance.Rare, inv.ItemInstance.Design, inv.ItemInstance.Upgrade, 0));
                     }
                     else
                     {
                         // Send empty slot to owners inventory
-                        c2Session.Client.SendPacket(c2Session.Character.GenerateInventoryAdd(-1, 0, type, slot, 0, 0, 0, 0));
+                        otherSession.Client.SendPacket(otherSession.Character.GenerateInventoryAdd(-1, 0, type, slot, 0, 0, 0, 0));
                     }
                 }
-
-                foreach (ItemInstance item in c1Session.Character.ExchangeInfo.ExchangeList)
+                foreach (ItemInstance item in Session.Character.ExchangeInfo.ExchangeList)
                 {
                     ItemInstance item2 = item.DeepCopy();
                     item2.Id = Guid.NewGuid();
-                    Inventory inv = c2Session.Character.InventoryList.AddToInventory(item2);
-                    if (inv == null) continue;
-                    if (inv.Slot == -1) continue;
-                    c2Session.Client.SendPacket(c2Session.Character.GenerateInventoryAdd(inv.ItemInstance.ItemVNum, inv.ItemInstance.Amount, inv.Type, inv.Slot, inv.ItemInstance.Rare, inv.ItemInstance.Design, inv.ItemInstance.Upgrade, 0));
+                    Inventory inv = otherSession.Character.InventoryList.AddToInventory(item2);
+                    if (inv == null || inv.Slot == -1) continue;
+                    otherSession.Client.SendPacket(otherSession.Character.GenerateInventoryAdd(inv.ItemInstance.ItemVNum, inv.ItemInstance.Amount, inv.Type, inv.Slot, inv.ItemInstance.Rare, inv.ItemInstance.Design, inv.ItemInstance.Upgrade, 0));
                 }
-
-                c2Session.Character.Gold = c2Session.Character.Gold - c2Session.Character.ExchangeInfo.Gold + c1Session.Character.ExchangeInfo.Gold;
-                c2Session.Client.SendPacket(c2Session.Character.GenerateGold());
-                c1Session.Character.ExchangeInfo = null;
-                c2Session.Character.ExchangeInfo = null;
+                otherSession.Character.Gold = otherSession.Character.Gold - otherSession.Character.ExchangeInfo.Gold + Session.Character.ExchangeInfo.Gold;
+                otherSession.Client.SendPacket(otherSession.Character.GenerateGold());
+                Session.Character.ExchangeInfo = null;
+                otherSession.Character.ExchangeInfo = null;
             }
         }
 
@@ -728,7 +723,6 @@ namespace OpenNos.GameObject
                 {
                     TaskMap = new Task(() => ServerManager.GetMap(GroupedSession.First().Character.MapId).MapTaskManager());
                     TaskMap.Start();
-
                 }
                 if (TaskMap != null)
                     await TaskMap;
