@@ -96,6 +96,7 @@ namespace OpenNos.GameObject
         public int HitCritical { get; set; }
         public int HitCriticalRate { get; set; }
         public int HitRate { get; set; }
+        public DateTime LastEffect { get; set; }
 
         public bool InExchangeOrTrade
         {

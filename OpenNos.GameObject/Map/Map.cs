@@ -452,6 +452,12 @@ namespace OpenNos.GameObject
                     Session.Character.LastHealth = DateTime.Now;
                     continue;
                 }
+                WearableInstance amulet = Session.Character.EquipmentList.LoadBySlotAndType<WearableInstance>((short)EquipmentType.Amulet, InventoryType.Equipment);
+                if (Session.Character.LastEffect.AddSeconds(5) <= DateTime.Now && amulet != null)
+                {
+                    Session.Client.SendPacket(Session.Character.GenerateEff(amulet.Item.EffectValue));
+                    Session.Character.LastEffect = DateTime.Now;
+                }
                 if ((Session.Character.LastHealth.AddSeconds(2) <= DateTime.Now) || (Session.Character.IsSitting && Session.Character.LastHealth.AddSeconds(1.5) <= DateTime.Now))
                 {
                     Session.Character.LastHealth = DateTime.Now;
