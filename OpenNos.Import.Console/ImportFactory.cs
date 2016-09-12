@@ -1823,7 +1823,6 @@ namespace OpenNos.Import.Console
                     else if (currentLine.Length > 7 && currentLine[1] == "INDEX")
                     {
                         item.Type = (InventoryType)(Convert.ToByte(currentLine[2]) != 4 ? Convert.ToByte(currentLine[2]) : (byte)0);
-
                         item.ItemType = currentLine[3] != "-1" ? Convert.ToByte($"{(byte)item.Type}{currentLine[3]}") : (byte)0;
                         item.ItemSubType = Convert.ToByte(currentLine[4]);
                         item.EquipmentSlot = Convert.ToByte(currentLine[5] != "-1" ? currentLine[5] : "0");
@@ -2002,7 +2001,20 @@ namespace OpenNos.Import.Console
 
                             default:
                                 if (item.EquipmentSlot.Equals((byte)EquipmentType.Amulet))
-                                    item.EffectValue = Convert.ToInt16(currentLine[7]);
+                                {
+                                    switch (item.VNum)
+                                    {
+                                        case 4503:
+                                            item.EffectValue = 4545;
+                                            break;
+                                        case 4504:
+                                            item.EffectValue = 4295;
+                                            break;
+                                        default:
+                                            item.EffectValue = Convert.ToInt16(currentLine[7]);
+                                            break;
+                                    }
+                                }
                                 else
                                     item.Morph = Convert.ToInt16(currentLine[7]);
                                 break;
