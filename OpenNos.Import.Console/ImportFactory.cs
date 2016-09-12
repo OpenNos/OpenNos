@@ -176,7 +176,7 @@ namespace OpenNos.Import.Console
 
             foreach (FileInfo file in new DirectoryInfo(folderMap).GetFiles())
             {
-                string name = "";
+                string name = String.Empty;
                 int music = 0;
 
                 if (dictionaryId.ContainsKey(int.Parse(file.Name)) && dictionaryIdLang.ContainsKey(dictionaryId[int.Parse(file.Name)]))
@@ -190,9 +190,9 @@ namespace OpenNos.Import.Console
                     Name = name,
                     Music = music,
                     MapId = short.Parse(file.Name),
-                    Data = File.ReadAllBytes(file.FullName)
+                    Data = File.ReadAllBytes(file.FullName),
+                    ShopAllowed = short.Parse(file.Name) == 147 ? true : false
                 };
-
                 if (DAOFactory.MapDAO.LoadById(map.MapId) != null) continue; // Map already exists in list
 
                 maps.Add(map);
@@ -473,7 +473,7 @@ namespace OpenNos.Import.Console
                     objectset = true;
                 }
                 // add "act6.1a" and "act6.1d" when ids found
-                if (objectset && DAOFactory.MapDAO.LoadById((short)i) != null && DAOFactory.MapTypeMapDAO.LoadAll().FirstOrDefault(s => s.MapId == (short)i && s.MapTypeId == mapTypeId) == null)
+                if (objectset && DAOFactory.MapDAO.LoadById((short)i) != null && DAOFactory.MapTypeMapDAO.LoadByMapAndMapType((short)i, mapTypeId) == null)
                 {
                     maptypemaps.Add(new MapTypeMapDTO { MapId = (short)i, MapTypeId = mapTypeId });
                 }
@@ -510,7 +510,7 @@ namespace OpenNos.Import.Console
                         MapMonsterId = int.Parse(currentPacket[3]),
                         MapX = short.Parse(currentPacket[4]),
                         MapY = short.Parse(currentPacket[5]),
-                        Position = (byte)(currentPacket[6] == "" ? 0 : byte.Parse(currentPacket[6])),
+                        Position = (byte)(currentPacket[6] == String.Empty ? 0 : byte.Parse(currentPacket[6])),
                         IsDisabled = false
                     };
                     monster.IsMoving = mobMvPacketsList.Contains(monster.MapMonsterId);
@@ -613,7 +613,7 @@ namespace OpenNos.Import.Console
                     }
                     else if (currentLine.Length > 2 && currentLine[1] == "NAME")
                     {
-                        npc.Name = dictionaryIdLang.ContainsKey(currentLine[2]) ? dictionaryIdLang[currentLine[2]] : "";
+                        npc.Name = dictionaryIdLang.ContainsKey(currentLine[2]) ? dictionaryIdLang[currentLine[2]] : String.Empty;
                     }
                     else if (currentLine.Length > 2 && currentLine[1] == "LEVEL")
                     {
@@ -666,7 +666,7 @@ namespace OpenNos.Import.Console
                         }
                         if (npc.NpcMonsterVNum >= 588 && npc.NpcMonsterVNum <= 607)
                         {
-                            for(int i = 588; i <= 608; i++)
+                            for (int i = 588; i <= 608; i++)
                             {
                                 npc.MonsterType = MonsterType.Elite;
                             }
@@ -1114,9 +1114,9 @@ namespace OpenNos.Import.Console
                         IsDisabled = false
                     };
 
-                    if (listPortals1.FirstOrDefault(s => s.SourceMapId == map && s.SourceX == portal.SourceX && s.SourceY == portal.SourceY && s.DestinationMapId == portal.DestinationMapId) != null
-                        || _maps.FirstOrDefault(s => s.MapId == portal.SourceMapId) == null
-                        || _maps.FirstOrDefault(s => s.MapId == portal.DestinationMapId) == null)
+                    if (listPortals1.Any(s => s.SourceMapId == map && s.SourceX == portal.SourceX && s.SourceY == portal.SourceY && s.DestinationMapId == portal.DestinationMapId)
+                        || !_maps.Any(s => s.MapId == portal.SourceMapId)
+                        || !_maps.Any(s => s.MapId == portal.DestinationMapId))
                         continue; // Portal already in list
 
                     listPortals1.Add(portal);
@@ -1205,7 +1205,7 @@ namespace OpenNos.Import.Console
                                 RecipeId = recipeId
                             };
 
-                            if (!DAOFactory.RecipeItemDAO.LoadAll().Any(s => s.RecipeId == recipeId && s.ItemVNum == recipeitem.ItemVNum))
+                            if (!DAOFactory.RecipeItemDAO.LoadByRecipeAndItem(recipeId, recipeitem.ItemVNum).Any())
                                 DAOFactory.RecipeItemDAO.Insert(recipeitem);
                         }
                     }
@@ -1254,7 +1254,7 @@ namespace OpenNos.Import.Console
                                 };
                             }
 
-                            if (sitem == null || shopitems.FirstOrDefault(s => s.ItemVNum.Equals(sitem.ItemVNum) && s.ShopId.Equals(sitem.ShopId)) != null || DAOFactory.ShopItemDAO.LoadByShopId(sitem.ShopId).FirstOrDefault(s => s.ItemVNum.Equals(sitem.ItemVNum)) != null)
+                            if (sitem == null || shopitems.Any(s => s.ItemVNum.Equals(sitem.ItemVNum) && s.ShopId.Equals(sitem.ShopId)) || DAOFactory.ShopItemDAO.LoadByShopId(sitem.ShopId).Any(s => s.ItemVNum.Equals(sitem.ItemVNum)))
                                 continue;
 
                             shopitems.Add(sitem);
@@ -1282,7 +1282,7 @@ namespace OpenNos.Import.Console
                 MapNpcDTO npc = DAOFactory.MapNpcDAO.LoadById(short.Parse(currentPacket[2]));
                 if (npc == null) continue;
 
-                string named = "";
+                string named = String.Empty;
                 for (int j = 6; j < currentPacket.Length; j++)
                     named += $"{currentPacket[j]} ";
                 named = named.Trim();
@@ -1329,7 +1329,7 @@ namespace OpenNos.Import.Console
                                     SkillVNum = short.Parse(currentPacket[i])
                                 };
 
-                                if (sskill == null || shopskills.FirstOrDefault(s => s.SkillVNum.Equals(sskill.SkillVNum) && s.ShopId.Equals(sskill.ShopId)) != null || DAOFactory.ShopSkillDAO.LoadByShopId(sskill.ShopId).FirstOrDefault(s => s.SkillVNum.Equals(sskill.SkillVNum)) != null)
+                                if (sskill == null || shopskills.Any(s => s.SkillVNum.Equals(sskill.SkillVNum) && s.ShopId.Equals(sskill.ShopId)) || DAOFactory.ShopSkillDAO.LoadByShopId(sskill.ShopId).Any(s => s.SkillVNum.Equals(sskill.SkillVNum)))
                                     continue;
 
                                 shopskills.Add(sskill);
@@ -1409,7 +1409,7 @@ namespace OpenNos.Import.Console
                             };
 
                             if (comb.Hit != 0 || comb.Animation != 0 || comb.Effect != 0)
-                                if (DAOFactory.ComboDAO.LoadAll().FirstOrDefault(s => s.SkillVNum == comb.SkillVNum && s.Hit == comb.Hit && s.Effect == comb.Effect) == null)
+                                if (!DAOFactory.ComboDAO.LoadByVNumHitAndEffect(comb.SkillVNum, comb.Hit, comb.Effect).Any())
                                 {
                                     Combo.Add(comb);
                                 }
@@ -1822,9 +1822,8 @@ namespace OpenNos.Import.Console
                     }
                     else if (currentLine.Length > 7 && currentLine[1] == "INDEX")
                     {
-                        item.Type = Convert.ToByte(currentLine[2]) != 4 ? Convert.ToByte(currentLine[2]) : (byte)0;
-
-                        item.ItemType = currentLine[3] != "-1" ? Convert.ToByte($"{item.Type}{currentLine[3]}") : (byte)0;
+                        item.Type = (InventoryType)(Convert.ToByte(currentLine[2]) != 4 ? Convert.ToByte(currentLine[2]) : (byte)0);
+                        item.ItemType = currentLine[3] != "-1" ? Convert.ToByte($"{(byte)item.Type}{currentLine[3]}") : (byte)0;
                         item.ItemSubType = Convert.ToByte(currentLine[4]);
                         item.EquipmentSlot = Convert.ToByte(currentLine[5] != "-1" ? currentLine[5] : "0");
                         //item.DesignId = Convert.ToInt16(currentLine[6]);
@@ -2002,7 +2001,20 @@ namespace OpenNos.Import.Console
 
                             default:
                                 if (item.EquipmentSlot.Equals((byte)EquipmentType.Amulet))
-                                    item.EffectValue = Convert.ToInt16(currentLine[7]);
+                                {
+                                    switch (item.VNum)
+                                    {
+                                        case 4503:
+                                            item.EffectValue = 4544;
+                                            break;
+                                        case 4504:
+                                            item.EffectValue = 4294;
+                                            break;
+                                        default:
+                                            item.EffectValue = Convert.ToInt16(currentLine[7]);
+                                            break;
+                                    }
+                                }
                                 else
                                     item.Morph = Convert.ToInt16(currentLine[7]);
                                 break;
@@ -2093,7 +2105,13 @@ namespace OpenNos.Import.Console
                                 if (item.EquipmentSlot.Equals((byte)EquipmentType.Amulet))
                                 {
                                     item.LevelMinimum = Convert.ToByte(currentLine[2]);
-                                    item.ItemValidTime = Convert.ToInt32(currentLine[3]) / 10;
+                                    // needed to hardcode some missing ItemValidTime
+                                    if ((item.VNum > 4055 && item.VNum < 4061) || (item.VNum > 4172 && item.VNum < 4176))
+                                        item.ItemValidTime = 10800;
+                                    else if ((item.VNum > 4045 && item.VNum < 4056) || item.VNum == 967 || item.VNum == 968) // (item.VNum > 8104 && item.VNum < 8115) <= disaled for now because doesn't work!
+                                        item.ItemValidTime = 3600;
+                                    else
+                                        item.ItemValidTime = Convert.ToInt32(currentLine[3]) / 10;
                                 }
                                 else if (item.EquipmentSlot.Equals((byte)EquipmentType.Fairy))
                                 {
@@ -2137,9 +2155,11 @@ namespace OpenNos.Import.Console
                                     case 5105:
                                         item.Effect = 651;
                                         break;
+
                                     case 5115:
                                         item.Effect = 652;
                                         break;
+
                                     default:
                                         item.Effect = Convert.ToInt16(currentLine[2]);
                                         break;

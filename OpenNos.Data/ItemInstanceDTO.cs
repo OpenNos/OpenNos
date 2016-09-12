@@ -22,9 +22,9 @@ namespace OpenNos.Data
 
         public int Amount { get; set; }
         public byte Design { get; set; }
-        public bool IsUsed { get; set; }
+        public Guid Id { get; set; }
+        public long? BoundCharacterId { get; set; }
         public DateTime? ItemDeleteTime { get; set; }
-        public long ItemInstanceId { get; set; }
         public short ItemVNum { get; set; }
 
         public sbyte Rare { get; set; }

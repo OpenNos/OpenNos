@@ -22,6 +22,7 @@ namespace OpenNos.Data
         short MapId { get; set; }
         int Music { get; set; }
         string Name { get; set; }
+        bool ShopAllowed { get; set; }
 
         #endregion
     }

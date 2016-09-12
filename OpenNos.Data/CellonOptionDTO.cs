@@ -14,11 +14,10 @@
 
 namespace OpenNos.Data
 {
-    public class CellonOptionDTO
+    public class CellonOptionDTO : SynchronizableBaseDTO
     {
         #region Properties
 
-        public int CellonOptionId { get; set; }
         public long InventoryItemId { get; set; }
         public byte Level { get; set; }
         public byte Type { get; set; }

@@ -907,4 +907,28 @@
   <data name="TRANSFORMATION_NEEDED" xml:space="preserve">
     <value>You need to be transformed to reset your sp points.</value>
   </data>
+  <data name="REMOVE_VEHICLE" xml:space="preserve">
+    <value>Before transforming you should remove your vehicle</value>
+  </data>
+  <data name="SAVING_ALL" xml:space="preserve">
+    <value>Saving all data</value>
+  </data>
+  <data name="MEMORY" xml:space="preserve">
+    <value>Used memory</value>
+  </data>
+  <data name="SHOP_NOT_ALLOWED" xml:space="preserve">
+    <value>You can't open shops on global maps.</value>
+  </data>
+  <data name="SKILL_ALREADY_EXIST" xml:space="preserve">
+    <value>Skill already exists!</value>
+  </data>
+  <data name="SKILL_DOES_NOT_EXIST" xml:space="preserve">
+    <value>Skill does not exist.</value>
+  </data>
+  <data name="SUM_FAILED" xml:space="preserve">
+    <value>Summing failed.</value>
+  </data>
+  <data name="SUM_SUCCESS" xml:space="preserve">
+    <value>Summing successed!</value>
+  </data>
 </root>

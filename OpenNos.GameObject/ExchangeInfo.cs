@@ -24,7 +24,7 @@ namespace OpenNos.GameObject
         {
             Confirm = false;
             Gold = 0;
-            CharId = -1;
+            CharacterId = -1;
             ExchangeList = new List<ItemInstance>();
             Validate = false;
         }
@@ -33,7 +33,7 @@ namespace OpenNos.GameObject
 
         #region Properties
 
-        public long CharId { get; set; }
+        public long CharacterId { get; set; }
         public bool Confirm { get; set; }
         public List<ItemInstance> ExchangeList { get; set; }
         public long Gold { get; set; }

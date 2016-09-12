@@ -8,7 +8,7 @@ namespace OpenNos.Domain
 {
     public enum MonsterType : int
     {
-        Unkown,
+        Unknown,
         Partner,
         NPC,
         Well,

@@ -14,6 +14,7 @@
 
 using OpenNos.DAL;
 using OpenNos.Data;
+using OpenNos.Domain;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -42,7 +43,7 @@ namespace OpenNos.GameObject
             _uniqueIdentifier = uniqueIdentifier;
             Data = data;
             LoadZone();
-            IEnumerable<PortalDTO> portalsDTO = DAOFactory.PortalDAO.LoadByMap(MapId);
+            IEnumerable<PortalDTO> portals = DAOFactory.PortalDAO.LoadByMap(MapId);
             _portals = new List<Portal>();
             DroppedList = new Dictionary<long, MapItem>();
 
@@ -60,7 +61,7 @@ namespace OpenNos.GameObject
             }
 
             UserShops = new Dictionary<long, MapShop>();
-            foreach (PortalDTO portal in portalsDTO)
+            foreach (PortalDTO portal in portals)
             {
                 _portals.Add(new GameObject.Portal()
                 {
@@ -144,9 +145,7 @@ namespace OpenNos.GameObject
         }
 
         public int Music { get; set; }
-
         public string Name { get; set; }
-
         public EventHandler NotifyClients { get; set; }
 
         public List<MapNpc> Npcs
@@ -165,17 +164,12 @@ namespace OpenNos.GameObject
             }
         }
 
+        public bool ShopAllowed { get; set; }
         public Dictionary<long, MapShop> UserShops { get; set; }
 
-        public int XLength
-        {
-            get; set;
-        }
+        public int XLength { get; set; }
 
-        public int YLength
-        {
-            get; set;
-        }
+        public int YLength { get; set; }
 
         #endregion
 
@@ -259,41 +253,42 @@ namespace OpenNos.GameObject
         public void DropItemByMonster(DropDTO drop, short mapX, short mapY)
         {
             Random rnd = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
-            int random = 0;
             MapItem droppedItem = null;
-            short MapX = (short)(rnd.Next(mapX - 1, mapX + 1));
-            short MapY = (short)(rnd.Next(mapY - 1, mapY + 1));
-            while (IsBlockedZone(MapX, MapY))
+            short localMapX = (short)(rnd.Next(mapX - 1, mapX + 1));
+            short localMapY = (short)(rnd.Next(mapY - 1, mapY + 1));
+            while (IsBlockedZone(localMapX, localMapY))
             {
-                MapX = (short)(rnd.Next(mapX - 1, mapX + 1));
-                MapY = (short)(rnd.Next(mapY - 1, mapY + 1));
+                localMapX = (short)(rnd.Next(mapX - 1, mapX + 1));
+                localMapY = (short)(rnd.Next(mapY - 1, mapY + 1));
             }
 
-            ItemInstance newInstance = InventoryList.CreateItemInstance(drop.ItemVNum, 0);
+            ItemInstance newInstance = InventoryList.CreateItemInstance(drop.ItemVNum);
             newInstance.Amount = drop.Amount;
 
-            droppedItem = new MapItem(MapX, MapY, true)
+            droppedItem = new MapItem(localMapX, localMapY, true)
             {
                 ItemInstance = newInstance
             };
 
-            while (ServerManager.GetMap(MapId).DroppedList.ContainsKey(random = rnd.Next(1, 999999)))
-            { }
-            droppedItem.ItemInstance.ItemInstanceId = random;
-            ServerManager.GetMap(MapId).DroppedList.Add(random, droppedItem);
+            ServerManager.GetMap(MapId).DroppedList.Add(droppedItem.ItemInstance.TransportId, droppedItem);
 
-            Broadcast($"drop {droppedItem.ItemInstance.ItemVNum} {random} {droppedItem.PositionX} {droppedItem.PositionY} {droppedItem.ItemInstance.Amount} 0 0 -1");
+            Broadcast($"drop {droppedItem.ItemInstance.ItemVNum} {droppedItem.ItemInstance.TransportId} {droppedItem.PositionX} {droppedItem.PositionY} {droppedItem.ItemInstance.Amount} 0 0 -1");//TODO UseTransportId
+        }
+
+        public IEnumerable<string> GenerateUserShops()
+        {
+            return UserShops.Select(shop => $"shop 1 {shop.Key + 1} 1 3 0 {shop.Value.Name}").ToList();
         }
 
         public List<MapMonster> GetListMonsterInRange(short mapX, short mapY, byte distance)
         {
-            List<MapMonster> listmon = new List<MapMonster>();
-            foreach (MapMonster mo in Monsters.Where(s => s.Alive))
+            List<MapMonster> monsters = new List<MapMonster>();
+            foreach (MapMonster monster in Monsters.Where(s => s.Alive))
             {
-                if (GetDistance(new MapCell() { X = mapX, Y = mapY }, new MapCell() { X = mo.MapX, Y = mo.MapY }) <= distance + 1)
-                    listmon.Add(mo);
+                if (GetDistance(new MapCell() { X = mapX, Y = mapY }, new MapCell() { X = monster.MapX, Y = monster.MapY }) <= distance + 1)
+                    monsters.Add(monster);
             }
-            return listmon;
+            return monsters;
         }
 
         public bool IsBlockedZone(int x, int y)
@@ -306,19 +301,19 @@ namespace OpenNos.GameObject
             return false;
         }
 
-        public bool IsBlockedZone(int firstX, int firstY, int MapX, int MapY)
+        public bool IsBlockedZone(int firstX, int firstY, int mapX, int mapY)
         {
-            for (int i = 1; i <= Math.Abs(MapX - firstX); i++)
+            for (int i = 1; i <= Math.Abs(mapX - firstX); i++)
             {
-                if (IsBlockedZone(firstX + Math.Sign(MapX - firstX) * i, firstY))
+                if (IsBlockedZone(firstX + Math.Sign(mapX - firstX) * i, firstY))
                 {
                     return true;
                 }
             }
 
-            for (int i = 1; i <= Math.Abs(MapY - firstY); i++)
+            for (int i = 1; i <= Math.Abs(mapY - firstY); i++)
             {
-                if (IsBlockedZone(firstX, firstY + Math.Sign(MapY - firstY) * i))
+                if (IsBlockedZone(firstX, firstY + Math.Sign(mapY - firstY) * i))
                 {
                     return true;
                 }
@@ -368,8 +363,8 @@ namespace OpenNos.GameObject
                 MonsterLifeTask.Add(new Task(() => monster.MonsterLife()));
                 MonsterLifeTask.Last().Start();
             }
-            foreach (Task t in MonsterLifeTask)
-                await t;
+            foreach (Task monsterLiveTask in MonsterLifeTask)
+                await monsterLiveTask;
         }
 
         public async void NpcLifeManager()
@@ -417,27 +412,147 @@ namespace OpenNos.GameObject
             return false;
         }
 
+        internal List<MapCell> StraightPath(MapCell mapCell1, MapCell mapCell2)
+        {
+            List<MapCell> Path = new List<MapCell>();
+            Path.Add(mapCell1);
+            do
+            {
+                if (Path.Last().X < mapCell2.X && Path.Last().Y < mapCell2.Y)
+                {
+                    Path.Add(new MapCell() { MapId = MapId, X = (short)(Path.Last().X + 1), Y = (short)(Path.Last().Y + 1) });
+                }
+                else if (Path.Last().X > mapCell2.X && Path.Last().Y > mapCell2.Y)
+                {
+                    Path.Add(new MapCell() { MapId = MapId, X = (short)(Path.Last().X - 1), Y = (short)(Path.Last().Y - 1) });
+                }
+                else if (Path.Last().X < mapCell2.X && Path.Last().Y > mapCell2.Y)
+                {
+                    Path.Add(new MapCell() { MapId = MapId, X = (short)(Path.Last().X + 1), Y = (short)(Path.Last().Y - 1) });
+                }
+                else if (Path.Last().X > mapCell2.X && Path.Last().Y < mapCell2.Y)
+                {
+                    Path.Add(new MapCell() { MapId = MapId, X = (short)(Path.Last().X - 1), Y = (short)(Path.Last().Y + 1) });
+                }
+                else if (Path.Last().X > mapCell2.X)
+                {
+                    Path.Add(new MapCell() { MapId = MapId, X = (short)(Path.Last().X - 1), Y = (short)(Path.Last().Y) });
+                }
+                else if (Path.Last().X < mapCell2.X)
+                {
+                    Path.Add(new MapCell() { MapId = MapId, X = (short)(Path.Last().X + 1), Y = (short)(Path.Last().Y) });
+                }
+                else if (Path.Last().Y > mapCell2.Y)
+                {
+                    Path.Add(new MapCell() { MapId = MapId, X = (short)(Path.Last().X), Y = (short)(Path.Last().Y - 1) });
+                }
+                else if (Path.Last().Y < mapCell2.Y)
+                {
+                    Path.Add(new MapCell() { MapId = MapId, X = (short)(Path.Last().X), Y = (short)(Path.Last().Y + 1) });
+                }
+            }
+            while ((Path.Last().X != mapCell2.X || Path.Last().Y != mapCell2.Y) && (!IsBlockedZone(Path.Last().X, Path.Last().Y)));
+            if (IsBlockedZone(Path.Last().X, Path.Last().Y))
+                Path.Remove(Path.Last());
+            Path.RemoveAt(0);
+            return Path;
+        }
+
         internal IEnumerable<Character> GetListPeopleInRange(short mapX, short mapY, byte distance)
         {
-            List<Character> listch = new List<Character>();
+            List<Character> characters = new List<Character>();
             IEnumerable<ClientSession> cl = Sessions.Where(s => s.Character != null && s.Character.Hp > 0);
             for (int i = cl.Count() - 1; i >= 0; i--)
             {
                 if (GetDistance(new MapCell() { X = mapX, Y = mapY }, new MapCell() { X = cl.ElementAt(i).Character.MapX, Y = cl.ElementAt(i).Character.MapY }) <= distance + 1)
-                    listch.Add(cl.ElementAt(i).Character);
+                    characters.Add(cl.ElementAt(i).Character);
             }
-            return listch;
+            return characters;
         }
 
         internal async void MapTaskManager()
         {
-            Task NpcMoveTask = new Task(() => NpcLifeManager());
-            NpcMoveTask.Start();
-            Task MonsterMoveTask = new Task(() => MonsterLifeManager());
-            MonsterMoveTask.Start();
+            Task npcLifeTask = new Task(() => NpcLifeManager());
+            npcLifeTask.Start();
+            Task monsterLifeTask = new Task(() => MonsterLifeManager());
+            monsterLifeTask.Start();
+            Task characterLifeTask = new Task(() => CharacterLifeManager());
+            characterLifeTask.Start();
 
-            await NpcMoveTask;
-            await MonsterMoveTask;
+            await npcLifeTask;
+            await monsterLifeTask;
+            await characterLifeTask;
+        }
+
+        private void CharacterLifeManager()
+        {
+            List<Task> NpcLifeTask = new List<Task>();
+            foreach (ClientSession Session in Sessions.Where(s => s?.Character != null))
+            {
+                int x = 1;
+                bool change = false;
+                if (Session.Character.Hp == 0 && Session.Character.LastHealth.AddSeconds(2) <= DateTime.Now)
+                {
+                    Session.Character.Mp = 0;
+                    Session.Client.SendPacket(Session.Character.GenerateStat());
+                    Session.Character.LastHealth = DateTime.Now;
+                    continue;
+                }
+                WearableInstance amulet = Session.Character.EquipmentList.LoadBySlotAndType<WearableInstance>((short)EquipmentType.Amulet, InventoryType.Equipment);
+                if (Session.Character.LastEffect.AddSeconds(5) <= DateTime.Now && amulet != null)
+                {
+                    if (amulet.ItemVNum == 4503 || amulet.ItemVNum == 4504)
+                        Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateEff(amulet.Item.EffectValue + (Session.Character.Class == (byte)ClassType.Adventurer ? 0 : Session.Character.Class - 1)), ReceiverType.All);
+                    else
+                        Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateEff(amulet.Item.EffectValue), ReceiverType.All);
+                    Session.Character.LastEffect = DateTime.Now;
+                }
+                if ((Session.Character.LastHealth.AddSeconds(2) <= DateTime.Now) || (Session.Character.IsSitting && Session.Character.LastHealth.AddSeconds(1.5) <= DateTime.Now))
+                {
+                    Session.Character.LastHealth = DateTime.Now;
+                    if (Session.healthStop == true)
+                    {
+                        Session.healthStop = false;
+                        return;
+                    }
+
+                    if (Session.Character.LastDefence.AddSeconds(2) <= DateTime.Now && Session.Character.LastSkill.AddSeconds(2) <= DateTime.Now && Session.Character.Hp > 0)
+                    {
+                        if (x == 0)
+                            x = 1;
+                        if (Session.Character.Hp + Session.Character.HealthHPLoad() < Session.Character.HPLoad())
+                        {
+                            change = true;
+                            Session.Character.Hp += Session.Character.HealthHPLoad();
+                        }
+                        else
+                        {
+                            if (Session.Character.Hp != (int)Session.Character.HPLoad())
+                                change = true;
+                            Session.Character.Hp = (int)Session.Character.HPLoad();
+                        }
+                        if (x == 1)
+                        {
+                            if (Session.Character.Mp + Session.Character.HealthMPLoad() < Session.Character.MPLoad())
+                            {
+                                Session.Character.Mp += Session.Character.HealthMPLoad();
+                                change = true;
+                            }
+                            else
+                            {
+                                if (Session.Character.Mp != (int)Session.Character.MPLoad())
+                                    change = true;
+                                Session.Character.Mp = (int)Session.Character.MPLoad();
+                            }
+                            x = 0;
+                        }
+                        if (change)
+                        {
+                            Session.Client.SendPacket(Session.Character.GenerateStat());
+                        }
+                    }
+                }
+            }
         }
 
         #endregion

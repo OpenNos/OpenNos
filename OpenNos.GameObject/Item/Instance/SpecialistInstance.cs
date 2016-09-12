@@ -27,9 +27,9 @@ namespace OpenNos.GameObject
         {
         }
 
-        public SpecialistInstance(long itemInstanceId)
+        public SpecialistInstance(Guid id)
         {
-            ItemInstanceId = itemInstanceId;
+            Id = id;
         }
 
         public SpecialistInstance(SpecialistInstanceDTO specialistInstance)
@@ -95,7 +95,7 @@ namespace OpenNos.GameObject
             short stonevnum;
             byte upmode = 1;
 
-            switch (ServerManager.GetItem(this.ItemVNum).Morph)
+            switch (this.Item.Morph)
             {
                 case 2:
                     stonevnum = 2514;
@@ -226,7 +226,7 @@ namespace OpenNos.GameObject
             if (Session.Character.InventoryList.CountItem(stonevnum) < stoneprice[upmode - 1])
                 return;
 
-            SpecialistInstance specialist = Session.Character.InventoryList.LoadByItemInstance<SpecialistInstance>(this.ItemInstanceId);
+            SpecialistInstance specialist = Session.Character.InventoryList.LoadByItemInstance<SpecialistInstance>(this.Id);
 
             Random r = new Random();
             int rnd = r.Next(100);
@@ -336,7 +336,7 @@ namespace OpenNos.GameObject
             {
                 if (this.SpLevel > 20)
                 {
-                    if (ServerManager.GetItem(this.ItemVNum).Morph <= 15)
+                    if (this.Item.Morph <= 15)
                     {
                         if (Session.Character.InventoryList.CountItem(greenSoulVnum) < soul[this.Upgrade])
                             return;
@@ -359,7 +359,7 @@ namespace OpenNos.GameObject
             {
                 if (this.SpLevel > 40)
                 {
-                    if (ServerManager.GetItem(this.ItemVNum).Morph <= 15)
+                    if (this.Item.Morph <= 15)
                     {
                         if (Session.Character.InventoryList.CountItem(redSoulVnum) < soul[this.Upgrade])
                             return;
@@ -382,7 +382,7 @@ namespace OpenNos.GameObject
             {
                 if (this.SpLevel > 50)
                 {
-                    if (ServerManager.GetItem(this.ItemVNum).Morph <= 15)
+                    if (this.Item.Morph <= 15)
                     {
                         if (Session.Character.InventoryList.CountItem(blueSoulVnum) < soul[this.Upgrade])
                             return;
@@ -402,8 +402,8 @@ namespace OpenNos.GameObject
                     return;
                 }
             }
-            WearableInstance wearable = Session.Character.InventoryList.LoadByItemInstance<WearableInstance>(this.ItemInstanceId);
-            Inventory inventory = Session.Character.InventoryList.GetInventoryByItemInstanceId(this.ItemInstanceId);
+            WearableInstance wearable = Session.Character.InventoryList.LoadByItemInstance<WearableInstance>(this.Id);
+            Inventory inventory = Session.Character.InventoryList.GetInventoryByItemInstanceId(this.Id);
             Random r = new Random();
             int rnd = r.Next(100);
             if (rnd <= upfail[this.Upgrade])

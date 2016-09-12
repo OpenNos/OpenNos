@@ -16,10 +16,10 @@ using AutoMapper;
 using OpenNos.Core;
 using OpenNos.DAL;
 using OpenNos.Data;
+using OpenNos.Domain;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -34,6 +34,7 @@ namespace OpenNos.GameObject
 
         private static ServerManager _instance;
         private static List<Item> _items = new List<Item>();
+        private static IMapper _mapper;
         private static ConcurrentDictionary<Guid, Map> _maps = new ConcurrentDictionary<Guid, Map>();
         private static List<NpcMonster> _npcs = new List<NpcMonster>();
         private static List<Skill> _skills = new List<Skill>();
@@ -42,6 +43,29 @@ namespace OpenNos.GameObject
         #endregion
 
         #region Instantiation
+
+        static ServerManager()
+        {
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<ItemDTO, NoFunctionItem>();
+                cfg.CreateMap<ItemDTO, WearableItem>();
+                cfg.CreateMap<ItemDTO, BoxItem>();
+                cfg.CreateMap<ItemDTO, MagicalItem>();
+                cfg.CreateMap<ItemDTO, FoodItem>();
+                cfg.CreateMap<ItemDTO, PotionItem>();
+                cfg.CreateMap<ItemDTO, ProduceItem>();
+                cfg.CreateMap<ItemDTO, SnackItem>();
+                cfg.CreateMap<ItemDTO, SpecialItem>();
+                cfg.CreateMap<ItemDTO, TeacherItem>();
+                cfg.CreateMap<ItemDTO, UpgradeItem>();
+                cfg.CreateMap<SkillDTO, Skill>();
+                cfg.CreateMap<ComboDTO, Combo>();
+                cfg.CreateMap<NpcMonsterDTO, NpcMonster>();
+            });
+
+            _mapper = config.CreateMapper();
+        }
 
         private ServerManager()
         {
@@ -56,6 +80,26 @@ namespace OpenNos.GameObject
             Task TaskController = new Task(() => TaskLauncherProcess());
             TaskController.Start();
             lastGroupId = 1;
+
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<ItemDTO, NoFunctionItem>();
+                cfg.CreateMap<ItemDTO, WearableItem>();
+                cfg.CreateMap<ItemDTO, BoxItem>();
+                cfg.CreateMap<ItemDTO, MagicalItem>();
+                cfg.CreateMap<ItemDTO, FoodItem>();
+                cfg.CreateMap<ItemDTO, PotionItem>();
+                cfg.CreateMap<ItemDTO, ProduceItem>();
+                cfg.CreateMap<ItemDTO, SnackItem>();
+                cfg.CreateMap<ItemDTO, SpecialItem>();
+                cfg.CreateMap<ItemDTO, TeacherItem>();
+                cfg.CreateMap<ItemDTO, UpgradeItem>();
+                cfg.CreateMap<SkillDTO, Skill>();
+                cfg.CreateMap<ComboDTO, Combo>();
+                cfg.CreateMap<NpcMonsterDTO, NpcMonster>();
+            });
+
+            _mapper = config.CreateMapper();
         }
 
         #endregion
@@ -123,99 +167,99 @@ namespace OpenNos.GameObject
                 switch (itemDTO.ItemType)
                 {
                     case (byte)Domain.ItemType.Ammo:
-                        ItemGO = Mapper.DynamicMap<NoFunctionItem>(itemDTO);
+                        ItemGO = _mapper.Map<NoFunctionItem>(itemDTO);
                         break;
 
                     case (byte)Domain.ItemType.Armor:
-                        ItemGO = Mapper.DynamicMap<WearableItem>(itemDTO);
+                        ItemGO = _mapper.Map<WearableItem>(itemDTO);
                         break;
 
                     case (byte)Domain.ItemType.Box:
-                        ItemGO = Mapper.DynamicMap<BoxItem>(itemDTO);
+                        ItemGO = _mapper.Map<BoxItem>(itemDTO);
                         break;
 
                     case (byte)Domain.ItemType.Event:
-                        ItemGO = Mapper.DynamicMap<MagicalItem>(itemDTO);
+                        ItemGO = _mapper.Map<MagicalItem>(itemDTO);
                         break;
 
                     case (byte)Domain.ItemType.Fashion:
-                        ItemGO = Mapper.DynamicMap<WearableItem>(itemDTO);
+                        ItemGO = _mapper.Map<WearableItem>(itemDTO);
                         break;
 
                     case (byte)Domain.ItemType.Food:
-                        ItemGO = Mapper.DynamicMap<FoodItem>(itemDTO);
+                        ItemGO = _mapper.Map<FoodItem>(itemDTO);
                         break;
 
                     case (byte)Domain.ItemType.Jewelery:
-                        ItemGO = Mapper.DynamicMap<WearableItem>(itemDTO);
+                        ItemGO = _mapper.Map<WearableItem>(itemDTO);
                         break;
 
                     case (byte)Domain.ItemType.Magical:
-                        ItemGO = Mapper.DynamicMap<MagicalItem>(itemDTO);
+                        ItemGO = _mapper.Map<MagicalItem>(itemDTO);
                         break;
 
                     case (byte)Domain.ItemType.Main:
-                        ItemGO = Mapper.DynamicMap<NoFunctionItem>(itemDTO);
+                        ItemGO = _mapper.Map<NoFunctionItem>(itemDTO);
                         break;
 
                     case (byte)Domain.ItemType.Map:
-                        ItemGO = Mapper.DynamicMap<NoFunctionItem>(itemDTO);
+                        ItemGO = _mapper.Map<NoFunctionItem>(itemDTO);
                         break;
 
                     case (byte)Domain.ItemType.Part:
-                        ItemGO = Mapper.DynamicMap<NoFunctionItem>(itemDTO);
+                        ItemGO = _mapper.Map<NoFunctionItem>(itemDTO);
                         break;
 
                     case (byte)Domain.ItemType.Potion:
-                        ItemGO = Mapper.DynamicMap<PotionItem>(itemDTO);
+                        ItemGO = _mapper.Map<PotionItem>(itemDTO);
                         break;
 
                     case (byte)Domain.ItemType.Production:
-                        ItemGO = Mapper.DynamicMap<ProduceItem>(itemDTO);
+                        ItemGO = _mapper.Map<ProduceItem>(itemDTO);
                         break;
 
                     case (byte)Domain.ItemType.Quest1:
-                        ItemGO = Mapper.DynamicMap<NoFunctionItem>(itemDTO);
+                        ItemGO = _mapper.Map<NoFunctionItem>(itemDTO);
                         break;
 
                     case (byte)Domain.ItemType.Quest2:
-                        ItemGO = Mapper.DynamicMap<NoFunctionItem>(itemDTO);
+                        ItemGO = _mapper.Map<NoFunctionItem>(itemDTO);
                         break;
 
                     case (byte)Domain.ItemType.Sell:
-                        ItemGO = Mapper.DynamicMap<NoFunctionItem>(itemDTO);
+                        ItemGO = _mapper.Map<NoFunctionItem>(itemDTO);
                         break;
 
                     case (byte)Domain.ItemType.Shell:
-                        ItemGO = Mapper.DynamicMap<MagicalItem>(itemDTO);
+                        ItemGO = _mapper.Map<MagicalItem>(itemDTO);
                         break;
 
                     case (byte)Domain.ItemType.Snack:
-                        ItemGO = Mapper.DynamicMap<SnackItem>(itemDTO);
+                        ItemGO = _mapper.Map<SnackItem>(itemDTO);
                         break;
 
                     case (byte)Domain.ItemType.Special:
-                        ItemGO = Mapper.DynamicMap<SpecialItem>(itemDTO);
+                        ItemGO = _mapper.Map<SpecialItem>(itemDTO);
                         break;
 
                     case (byte)Domain.ItemType.Specialist:
-                        ItemGO = Mapper.DynamicMap<WearableItem>(itemDTO);
+                        ItemGO = _mapper.Map<WearableItem>(itemDTO);
                         break;
 
                     case (byte)Domain.ItemType.Teacher:
-                        ItemGO = Mapper.DynamicMap<TeacherItem>(itemDTO);
+                        ItemGO = _mapper.Map<TeacherItem>(itemDTO);
                         break;
 
                     case (byte)Domain.ItemType.Upgrade:
-                        ItemGO = Mapper.DynamicMap<UpgradeItem>(itemDTO);
+                        ItemGO = _mapper.Map<UpgradeItem>(itemDTO);
                         break;
 
                     case (byte)Domain.ItemType.Weapon:
-                        ItemGO = Mapper.DynamicMap<WearableItem>(itemDTO);
+                        ItemGO = _mapper.Map<WearableItem>(itemDTO);
                         break;
 
                     default:
-                        ItemGO = Mapper.DynamicMap<NoFunctionItem>(itemDTO);
+                        ItemGO = _mapper.Map<NoFunctionItem>(itemDTO);
                         break;
                 }
                 _items.Add(ItemGO);
@@ -224,16 +268,16 @@ namespace OpenNos.GameObject
             Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("ITEM_LOADED"), _items.Count()));
             foreach (SkillDTO skillDTO in DAOFactory.SkillDAO.LoadAll())
             {
-                Skill skill = Mapper.DynamicMap<Skill>(skillDTO);
-                foreach (ComboDTO com in DAOFactory.ComboDAO.LoadAll().Where(s => s.SkillVNum == skill.SkillVNum))
+                Skill skill = _mapper.Map<Skill>(skillDTO);
+                foreach (ComboDTO com in DAOFactory.ComboDAO.LoadBySkillVnum(skill.SkillVNum))
                 {
-                    skill.Combos.Add(Mapper.DynamicMap<Combo>(com));
+                    skill.Combos.Add(_mapper.Map<Combo>(com));
                 }
                 _skills.Add(skill);
             }
             foreach (NpcMonsterDTO npcmonsterDTO in DAOFactory.NpcMonsterDAO.LoadAll())
             {
-                _npcs.Add(Mapper.DynamicMap<NpcMonster>(npcmonsterDTO));
+                _npcs.Add(_mapper.Map<NpcMonster>(npcmonsterDTO));
             }
             Logger.Log.Info(String.Format(Language.Instance.GetMessageFromKey("NPCMONSTERS_LOADED"), _npcs.Count()));
 
@@ -250,6 +294,7 @@ namespace OpenNos.GameObject
                     Guid guid = Guid.NewGuid();
                     Map newMap = new Map(Convert.ToInt16(map.MapId), guid, map.Data);
                     newMap.Music = map.Music;
+                    newMap.ShopAllowed = map.ShopAllowed;
                     //register for broadcast
                     _maps.TryAdd(guid, newMap);
                     i++;
@@ -278,17 +323,6 @@ namespace OpenNos.GameObject
             catch (Exception ex)
             {
                 Logger.Log.Error("General Error", ex);
-            }
-        }
-
-        public static async void MemoryWatch(string type)
-        {
-            Assembly assembly = Assembly.GetEntryAssembly();
-            FileVersionInfo fileVersionInfo = FileVersionInfo.GetVersionInfo(assembly.Location);
-            while (true)
-            {
-                Console.Title = $"{type} v{fileVersionInfo.ProductVersion} - Memory: {GC.GetTotalMemory(true) / (1024 * 1024)}MB";
-                await Task.Delay(1000);
             }
         }
 
@@ -341,7 +375,7 @@ namespace OpenNos.GameObject
             PersonalShopItem itemshop = clientSession.CurrentMap.UserShops[shop.Key].Items.FirstOrDefault(i => i.Slot.Equals(slot));
             if (itemshop == null)
                 return;
-            long id = itemshop.InventoryId;
+            Guid id = itemshop.Id;
             itemshop.Amount -= amount;
             if (itemshop.Amount <= 0)
                 clientSession.CurrentMap.UserShops[shop.Key].Items.Remove(itemshop);
@@ -373,7 +407,7 @@ namespace OpenNos.GameObject
 
                     Broadcast(shopOwnerSession, shopOwnerSession.Character.GenerateShopEnd(), ReceiverType.All);
                     Broadcast(shopOwnerSession, shopOwnerSession.Character.GeneratePlayerFlag(0), ReceiverType.AllExceptMe);
-                    shopOwnerSession.Character.SpeedLoad();
+                    shopOwnerSession.Character.LoadSpeed();
                     shopOwnerSession.Character.IsSitting = false;
                     shopOwnerSession.Client.SendPacket(shopOwnerSession.Character.GenerateCond());
                     Broadcast(shopOwnerSession, shopOwnerSession.Character.GenerateRest(), ReceiverType.All);
@@ -408,6 +442,8 @@ namespace OpenNos.GameObject
                 session.CurrentMap?.Broadcast(session, session.Character.GeneratePairy(), ReceiverType.AllExceptMe);
                 session.Client.SendPacket("act6"); // act6 1 0 14 0 0 0 14 0 0 0
 
+                ServerManager.Instance.Sessions.Where(s => s.Character != null && s.Character.MapId.Equals(session.Character.MapId) && s.Character.Name != session.Character.Name && !s.Character.InvisibleGm).ToList().ForEach(s => RequireBroadcastFromUser(session, s.Character.CharacterId, "GenerateIn"));
+
                 foreach (String portalPacket in session.Character.GenerateGp())
                     session.Client.SendPacket(portalPacket);
                 // wp 23 124 4 4 12 99
@@ -415,15 +451,14 @@ namespace OpenNos.GameObject
                     session.Client.SendPacket(monsterPacket);
                 foreach (String npcPacket in session.Character.GenerateIn2())
                     session.Client.SendPacket(npcPacket);
-                foreach (String ShopPacket in session.Character.GenerateNPCShopOnMap())
-                    session.Client.SendPacket(ShopPacket);
+                foreach (String npcShopPacket in session.Character.GenerateNPCShopOnMap())
+                    session.Client.SendPacket(npcShopPacket);
                 foreach (String droppedPacket in session.Character.GenerateDroppedItem())
                     session.Client.SendPacket(droppedPacket);
-                foreach (String ShopPacket in session.Character.GenerateShopOnMap())
-                    session.Client.SendPacket(ShopPacket);
+                foreach (String userShopPacket in session.Character.GenerateShopOnMap())
+                    session.Client.SendPacket(userShopPacket);
                 foreach (String ShopPacketChar in session.Character.GeneratePlayerShopOnMap())
                     session.Client.SendPacket(ShopPacketChar);
-                ServerManager.Instance.Sessions.Where(s => s.Character != null && s.Character.MapId.Equals(session.Character.MapId) && s.Character.Name != session.Character.Name && !s.Character.InvisibleGm).ToList().ForEach(s => RequireBroadcastFromUser(session, s.Character.CharacterId, "GenerateIn"));
                 if (session.Character.InvisibleGm == false)
                     session.CurrentMap?.Broadcast(session, session.Character.GenerateIn(), ReceiverType.AllExceptMe);
                 if (session.Character.Size != 10)
@@ -442,11 +477,11 @@ namespace OpenNos.GameObject
                         ClientSession chara = Sessions.FirstOrDefault(s => s.Character != null && s.Character.CharacterId == groupSession.Character.CharacterId && s.CurrentMap.MapId == groupSession.CurrentMap.MapId);
                         if (chara != null)
                         {
-                            groupSession.Client.SendPacket(GeneratePinit(groupSession.Character.CharacterId));
+                            groupSession.Client.SendPacket(groupSession.Character.GeneratePinit());
                         }
                         if (groupSession.Character.CharacterId == groupSession.Character.CharacterId)
                         {
-                            session.CurrentMap?.Broadcast(groupSession, GeneratePidx(groupSession.Character.CharacterId), ReceiverType.AllExceptMe);
+                            session.CurrentMap?.Broadcast(groupSession, groupSession.Character.GeneratePidx(), ReceiverType.AllExceptMe);
                         }
                     }
                 }
@@ -454,81 +489,42 @@ namespace OpenNos.GameObject
         }
 
         //PacketHandler
-        public void ExchangeValidate(ClientSession c1Session, long charId)
+        public void ExchangeValidate(ClientSession Session, long charId)
         {
-            ClientSession c2Session = Sessions.FirstOrDefault(s => s.Character.CharacterId.Equals(charId));
+            ClientSession otherSession = Sessions.FirstOrDefault(s => s.Character.CharacterId.Equals(charId));
+            if (otherSession != null)
             {
-                if (c2Session == null) return;
-
-                foreach (ItemInstance item in c2Session.Character.ExchangeInfo.ExchangeList)
+                foreach (ItemInstance item in otherSession.Character.ExchangeInfo.ExchangeList)
                 {
-                    Inventory invtemp = c2Session.Character.InventoryList.Inventory.FirstOrDefault(s => s.ItemInstance.ItemInstanceId == item.ItemInstanceId);
+                    Inventory invtemp = otherSession.Character.InventoryList.Inventory.FirstOrDefault(s => s.ItemInstance.Id == item.Id);
                     short slot = invtemp.Slot;
-                    byte type = invtemp.Type;
+                    InventoryType type = invtemp.Type;
 
-                    Inventory inv = c2Session.Character.InventoryList.RemoveItemAmountFromInventory((byte)item.Amount, invtemp.InventoryId);
+                    Inventory inv = otherSession.Character.InventoryList.RemoveItemAmountFromInventory((byte)item.Amount, invtemp.Id);
                     if (inv != null)
                     {
                         // Send reduced-amount to owners inventory
-                        c2Session.Client.SendPacket(c2Session.Character.GenerateInventoryAdd(inv.ItemInstance.ItemVNum, inv.ItemInstance.Amount, inv.Type, inv.Slot, inv.ItemInstance.Rare, inv.ItemInstance.Design, inv.ItemInstance.Upgrade, 0));
+                        otherSession.Client.SendPacket(otherSession.Character.GenerateInventoryAdd(inv.ItemInstance.ItemVNum, inv.ItemInstance.Amount, inv.Type, inv.Slot, inv.ItemInstance.Rare, inv.ItemInstance.Design, inv.ItemInstance.Upgrade, 0));
                     }
                     else
                     {
                         // Send empty slot to owners inventory
-                        c2Session.Client.SendPacket(c2Session.Character.GenerateInventoryAdd(-1, 0, type, slot, 0, 0, 0, 0));
+                        otherSession.Client.SendPacket(otherSession.Character.GenerateInventoryAdd(-1, 0, type, slot, 0, 0, 0, 0));
                     }
                 }
-
-                foreach (ItemInstance item in c1Session.Character.ExchangeInfo.ExchangeList)
+                foreach (ItemInstance item in Session.Character.ExchangeInfo.ExchangeList)
                 {
                     ItemInstance item2 = item.DeepCopy();
-                    item2.ItemInstanceId = c2Session.Character.InventoryList.GenerateItemInstanceId();
-                    Inventory inv = c2Session.Character.InventoryList.AddToInventory(item2);
-                    if (inv == null) continue;
-                    if (inv.Slot == -1) continue;
-                    c2Session.Client.SendPacket(c2Session.Character.GenerateInventoryAdd(inv.ItemInstance.ItemVNum, inv.ItemInstance.Amount, inv.Type, inv.Slot, inv.ItemInstance.Rare, inv.ItemInstance.Design, inv.ItemInstance.Upgrade, 0));
+                    item2.Id = Guid.NewGuid();
+                    Inventory inv = otherSession.Character.InventoryList.AddToInventory(item2);
+                    if (inv == null || inv.Slot == -1) continue;
+                    otherSession.Client.SendPacket(otherSession.Character.GenerateInventoryAdd(inv.ItemInstance.ItemVNum, inv.ItemInstance.Amount, inv.Type, inv.Slot, inv.ItemInstance.Rare, inv.ItemInstance.Design, inv.ItemInstance.Upgrade, 0));
                 }
-
-                c2Session.Character.Gold = c2Session.Character.Gold - c2Session.Character.ExchangeInfo.Gold + c1Session.Character.ExchangeInfo.Gold;
-                c2Session.Client.SendPacket(c2Session.Character.GenerateGold());
-                c1Session.Character.ExchangeInfo = null;
-                c2Session.Character.ExchangeInfo = null;
+                otherSession.Character.Gold = otherSession.Character.Gold - otherSession.Character.ExchangeInfo.Gold + Session.Character.ExchangeInfo.Gold;
+                otherSession.Client.SendPacket(otherSession.Character.GenerateGold());
+                Session.Character.ExchangeInfo = null;
+                otherSession.Character.ExchangeInfo = null;
             }
-        }
-
-        public string GeneratePidx(long charId)
-        {
-            int? count = ServerManager.Instance.Groups.FirstOrDefault(s => s.IsMemberOfGroup(charId)).Characters?.Select(c => c.Character.CharacterId).Count();
-            string str = "";
-            if (count != null)
-            {
-                str = $"pidx {count}";
-                int i = 0;
-                foreach (long Id in ServerManager.Instance.Groups.FirstOrDefault(s => s.IsMemberOfGroup(charId)).Characters?.Select(c => c.Character.CharacterId))
-                {
-                    i++;
-                    str += $" {i}.{Id} ";
-                }
-            }
-            if (str == $"pidx {count}")
-                str = "";
-            return str;
-        }
-
-        public string GeneratePinit(long charId)
-        {
-            Group grp = ServerManager.Instance.Groups.FirstOrDefault(s => s.IsMemberOfGroup(charId));
-
-            string str = $"pinit {grp.Characters.Count()}";
-            int i = 0;
-            foreach (ClientSession groupSessionForId in grp.Characters)
-            {
-                i++;
-                str += $" 1|{groupSessionForId.Character.CharacterId}|{i}|{groupSessionForId.Character.Level}|{groupSessionForId.Character.Name}|0|{groupSessionForId.Character.Gender}|{groupSessionForId.Character.Class}|{(groupSessionForId.Character.UseSp ? groupSessionForId.Character.Morph : 0)}|{groupSessionForId.Character.HeroLevel}";
-            }
-            if (str == $"pinit {grp.Characters.Count()}")
-                str = "";
-            return str;
         }
 
         public long GetNextGroupId()
@@ -571,14 +567,14 @@ namespace OpenNos.GameObject
                 {
                     if (grp.Characters.ElementAt(0) == session)
                     {
-                        Broadcast(session, session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("NEW_LEADER")), ReceiverType.OnlySomeone, "", grp.Characters.ElementAt(1).Character.CharacterId);
+                        Broadcast(session, session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("NEW_LEADER")), ReceiverType.OnlySomeone, String.Empty, grp.Characters.ElementAt(1).Character.CharacterId);
                     }
                     grp.LeaveGroup(session);
                     foreach (ClientSession groupSession in grp.Characters)
                     {
                         foreach (ClientSession sess in Sessions.Where(s => s != null && s.Character != null && s.Character.CharacterId == groupSession.Character.CharacterId))
                         {
-                            sess.Client.SendPacket(GeneratePinit(groupSession.Character.CharacterId));
+                            sess.Client.SendPacket(sess.Character.GeneratePinit());
                             sess.Client.SendPacket(sess.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("LEAVE_GROUP"), session.Character.Name), 0));
                         }
                     }
@@ -709,12 +705,12 @@ namespace OpenNos.GameObject
         //Server
         private async void SaveAllProcess()
         {
-            //activate when fixed
-            //while (true)
-            //{
-            //    SaveAll();
-            //    await Task.Delay(60000 * 4);
-            //}
+            while (true)
+            {
+                await Task.Delay(60000 * 4);
+                Logger.Log.Info(Language.Instance.GetMessageFromKey("SAVING_ALL"));
+                SaveAll();
+            }
         }
 
         //Map ??
@@ -726,8 +722,7 @@ namespace OpenNos.GameObject
                 foreach (var GroupedSession in Sessions.Where(s => s.Character != null).GroupBy(s => s.Character.MapId))
                 {
                     TaskMap = new Task(() => ServerManager.GetMap(GroupedSession.First().Character.MapId).MapTaskManager());
-                        TaskMap.Start();
-                    
+                    TaskMap.Start();
                 }
                 if (TaskMap != null)
                     await TaskMap;

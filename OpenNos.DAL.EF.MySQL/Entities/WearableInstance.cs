@@ -12,6 +12,7 @@
  * GNU General Public License for more details.
  */
 
+using System;
 using System.Collections.Generic;
 
 namespace OpenNos.DAL.EF.MySQL
@@ -23,7 +24,7 @@ namespace OpenNos.DAL.EF.MySQL
         public byte? Ammo { get; set; }
         public byte? Cellon { get; set; }
         public virtual ICollection<CellonOption> CellonOption { get; set; }
-        public int? CellonOptionId { get; set; }
+        public Guid? CellonOptionId { get; set; }
         public short? CloseDefence { get; set; }
         public short? Concentrate { get; set; }
         public short? CriticalDodge { get; set; }

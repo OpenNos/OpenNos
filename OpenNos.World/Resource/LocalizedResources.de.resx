@@ -607,7 +607,7 @@
     <value>Von jetzt an blockst du Flüstern.</value>
   </data>
   <data name="WHISPER_UNLOCKED" xml:space="preserve">
-    <value> Von jetzt an akzeptierst du Flüstern.</value>
+    <value>Von jetzt an akzeptierst du Flüstern.</value>
   </data>
   <data name="WRONG_VALUE" xml:space="preserve">
     <value>Falscher Wert</value>
@@ -670,7 +670,7 @@
     <value>Sie müssen warten, bis die Fähigkeiten wieder aufgeladen werden</value>
   </data>
   <data name="RESTORE_DIGNITY" xml:space="preserve">
-    <value> Du hast ein Teil deiner Würde wieder bekommen.</value>
+    <value>Du hast ein Teil deiner Würde wieder bekommen.</value>
   </data>
   <data name="DROP_RATE_CHANGED" xml:space="preserve">
     <value>Die Drop-Rate wurde erfolgreich geänder</value>
@@ -685,13 +685,13 @@
     <value>Sie können weiterhin verwenden</value>
   </data>
   <data name="LVL_REQUIRED" xml:space="preserve">
-    <value> Du benötigst Joblevel {0} für die Verbesserung der Spezialistenkarte.</value>
+    <value>Du benötigst Joblevel {0} für die Verbesserung der Spezialistenkarte.</value>
   </data>
   <data name="UPGRADESP_FAILED" xml:space="preserve">
-    <value> Die Verbesserung ist Fehlgeschlagen.</value>
+    <value>Die Verbesserung ist Fehlgeschlagen.</value>
   </data>
   <data name="UPGRADESP_FAILED_SAVED" xml:space="preserve">
-    <value> Verbesserung Fehlgeschlagen, wurde nicht zerstört.</value>
+    <value>Verbesserung Fehlgeschlagen, wurde nicht zerstört.</value>
   </data>
   <data name="UPGRADESP_SUCCESS" xml:space="preserve">
     <value>Die Verbesserung war Erfolgreich.</value>
@@ -700,7 +700,7 @@
     <value>Willkommen</value>
   </data>
   <data name="DROP_RATE_NOW" xml:space="preserve">
-    <value> Drop Rate</value>
+    <value>Drop Rate</value>
   </data>
   <data name="GOLD_RATE_NOW" xml:space="preserve">
     <value> Gold-Anzahl Drop Rate</value>
@@ -709,46 +709,46 @@
     <value>EXP Rate</value>
   </data>
   <data name="SP_LEVELUP" xml:space="preserve">
-    <value> Joblevel der Spezialistenkarte wurde erhöht.</value>
+    <value>Joblevel der Spezialistenkarte wurde erhöht.</value>
   </data>
   <data name="FAIRY_LEVELUP" xml:space="preserve">
-    <value> Deine Fee ist aufgestiegen.</value>
+    <value>Deine Fee ist aufgestiegen.</value>
   </data>
   <data name="FAIRYXP_RATE_CHANGED" xml:space="preserve">
-    <value> FEEN-EXP Rate wurde verändert.</value>
+    <value>FEEN-EXP Rate wurde verändert.</value>
   </data>
   <data name="FAIRYXP_RATE_NOW" xml:space="preserve">
-    <value> Feen EXP Rate</value>
+    <value>Feen EXP Rate</value>
   </data>
   <data name="FAIRYMAX" xml:space="preserve">
-    <value> Deine Fee hat das Maximale Level erreicht.</value>
+    <value>Deine Fee hat das Maximale Level erreicht.</value>
   </data>
   <data name="FAIRYSTAT" xml:space="preserve">
-    <value> Feen XP: {0}/{1}</value>
+    <value>Feen XP: {0}/{1}</value>
   </data>
   <data name="SCROLL_PROTECT_USED" xml:space="preserve">
     <value />
   </data>
   <data name="AMMO_LOADED_ADVENTURER" xml:space="preserve">
-    <value> Steine wurden geladen.</value>
+    <value>Steine wurden geladen.</value>
   </data>
   <data name="AMMO_LOADED_ARCHER" xml:space="preserve">
-    <value> Pfeile wurden geladen.</value>
+    <value>Pfeile wurden geladen.</value>
   </data>
   <data name="AMMO_LOADED_SWORDSMAN" xml:space="preserve">
-    <value> Bolzen wurden geladen.</value>
+    <value>Bolzen wurden geladen.</value>
   </data>
   <data name="NO_AMMO_ADVENTURER" xml:space="preserve">
     <value>Keine Steine vorhanden - Kaufe welche im Shop.</value>
   </data>
   <data name="NO_AMMO_ARCHER" xml:space="preserve">
-    <value> Keine Pfeile vorhanden - Kaufe welche im Shop.</value>
+    <value>Keine Pfeile vorhanden - Kaufe welche im Shop.</value>
   </data>
   <data name="NO_AMMO_SWORDSMAN" xml:space="preserve">
-    <value> Keine Bolzen vorhanden - Kaufe welche im Shop.</value>
+    <value>Keine Bolzen vorhanden - Kaufe welche im Shop.</value>
   </data>
   <data name="REFUSED_GROUP_REQUEST" xml:space="preserve">
-    <value> Gruppenanfrage wurde abgelehnt.</value>
+    <value>Gruppenanfrage wurde abgelehnt.</value>
   </data>
   <data name="CANT_EQUIP_DESTROYED_SP" xml:space="preserve">
     <value>Du kannst keine Zerstörte Spezialistenkarte anziehen.</value>
@@ -757,10 +757,10 @@
     <value>Du kannst keine Zerstörte Spezialistenkarte Verbessern.</value>
   </data>
   <data name="UPGRADESP_DESTROYED" xml:space="preserve">
-    <value> Spezialistenkarte wurde zerstört.</value>
+    <value>Spezialistenkarte wurde zerstört.</value>
   </data>
   <data name="GROUP_JOIN" xml:space="preserve">
-    <value> {0} ist der Gruppe beigetreten.</value>
+    <value>{0} ist der Gruppe beigetreten.</value>
   </data>
   <data name="IN_BATTLE" xml:space="preserve">
     <value>/&gt;</value>
@@ -775,15 +775,51 @@
     <value>/&gt;</value>
   </data>
   <data name="IMPOSSIBLE_TO_USE" xml:space="preserve">
-    <value />
+    <value>Unmöglich zu verwenden.</value>
   </data>
   <data name="NOT_ENOUGH_POINTS" xml:space="preserve">
-    <value />
+    <value>Nicht genügend Punkte vorhanden..</value>
   </data>
   <data name="SPEAKER" xml:space="preserve">
-    <value />
+    <value>Lautsprecher</value>
   </data>
   <data name="TRANSFORMATION_NEEDED" xml:space="preserve">
+    <value>Du mussst Transformiert sein, um die SP-Punkte zurückzusetzen.</value>
+  </data>
+  <data name="REMOVE_VEHICLE" xml:space="preserve">
+    <value>Steige von deinem Reittier herrunter, damit du deine Spezialistenkarte anziehen kannst.</value>
+  </data>
+  <data name="SAVING_ALL" xml:space="preserve">
+    <value>Speichern aller Daten wird durchgeführt</value>
+  </data>
+  <data name="SKILL_LEARNED" xml:space="preserve">
+    <value>Du hast ein neuen Skill erlernt.</value>
+  </data>
+  <data name="ASK_BIND" xml:space="preserve">
+    <value>Möchtest du das Item benutzen? Das Item wird dann an deinen Charackter gebunden sein.</value>
+  </data>
+  <data name="WELCOME_MUSIC_INFO" xml:space="preserve">
+    <value>Frühlings^Melodie</value>
+  </data>
+  <data name="MEMORY" xml:space="preserve">
+    <value>Aktueller Verbrauch: </value>
+  </data>
+  <data name="SHOP_NOT_ALLOWED" xml:space="preserve">
+    <value>Shop kann auf der Karte nicht geöffnet werden.</value>
+  </data>
+  <data name="MUTE_TIME" xml:space="preserve">
+    <value>Deine Strafzeit: {0}</value>
+  </data>
+  <data name="MUTED_PLURAL" xml:space="preserve">
+    <value>Du wurdest bestraft! Grund: {0} für {1} Stunden</value>
+  </data>
+  <data name="MUTED_SINGULAR" xml:space="preserve">
+    <value>Du wurdest bestraft! Grund: {0} für {1} Stunde</value>
+  </data>
+  <data name="SKILL_ALREADY_EXIST" xml:space="preserve">
     <value />
+  </data>
+  <data name="SKILL_DOES_NOT_EXIST" xml:space="preserve">
+    <value>Der Skill existiert nicht.</value>
   </data>
 </root>

@@ -62,9 +62,9 @@ namespace OpenNos.DAL.EF.MySQL
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                foreach (RecipeItem rec in context.RecipeItem)
+                foreach (RecipeItem recipeItem in context.RecipeItem)
                 {
-                    yield return _mapper.Map<RecipeItemDTO>(rec);
+                    yield return _mapper.Map<RecipeItemDTO>(recipeItem);
                 }
             }
         }
@@ -77,13 +77,24 @@ namespace OpenNos.DAL.EF.MySQL
             }
         }
 
+        public IEnumerable<RecipeItemDTO> LoadByRecipeAndItem(short recipeId, short itemVNum)
+        {
+            using (var context = DataAccessHelper.CreateContext())
+            {
+                foreach (RecipeItem recipeItem in context.RecipeItem.Where(s => s.ItemVNum.Equals(itemVNum) && s.RecipeId.Equals(recipeId)))
+                {
+                    yield return _mapper.Map<RecipeItemDTO>(recipeItem);
+                }
+            }
+        }
+
         public IEnumerable<RecipeItemDTO> LoadByRecipe(short recipeId)
         {
             using (var context = DataAccessHelper.CreateContext())
             {
-                foreach (RecipeItem RecipeItem in context.RecipeItem.Where(s => s.RecipeId.Equals(recipeId)))
+                foreach (RecipeItem recipeItem in context.RecipeItem.Where(s => s.RecipeId.Equals(recipeId)))
                 {
-                    yield return _mapper.Map<RecipeItemDTO>(RecipeItem);
+                    yield return _mapper.Map<RecipeItemDTO>(recipeItem);
                 }
             }
         }

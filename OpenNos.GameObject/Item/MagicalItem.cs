@@ -24,12 +24,11 @@ namespace OpenNos.GameObject
 
         public override void Use(ClientSession Session, ref Inventory Inv, bool DelayUsed = false)
         {
-            Item iteminfo = ServerManager.GetItem(Inv.ItemInstance.ItemVNum);
             Random rnd = new Random();
             switch (Effect)
             {
                 case 10: //dyes
-                    if (iteminfo != null)
+                    if (this != null)
                     {
                         if (EffectValue == 99)
                             Session.Character.HairColor = (byte)rnd.Next(0, 127);
@@ -49,7 +48,7 @@ namespace OpenNos.GameObject
                     break;
 
                 case 11: //waxes
-                    if (iteminfo != null)
+                    if (this != null)
                     {
                         if (Session.Character.Class == (byte)ClassType.Adventurer && EffectValue > 1)
                             Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("ADVENTURERS_CANT_USE"), 10));
@@ -71,7 +70,7 @@ namespace OpenNos.GameObject
                     break;
 
                 case 14: //Is not good we need to parse it. Asap
-                    switch (iteminfo.VNum)
+                    switch (this.VNum)
                     {
                         case 2156:
                             if (Session.Character.Dignity < 100)
@@ -97,7 +96,7 @@ namespace OpenNos.GameObject
                     break;
 
                 case 15: //Speaker
-                    if (iteminfo != null)
+                    if (this != null)
                     {
                         if (!DelayUsed)
                         {
@@ -107,7 +106,7 @@ namespace OpenNos.GameObject
                     break;
 
                 case 16: //Bubble (Not implemented yet)
-                    if (iteminfo != null)
+                    if (this != null)
                     {
                         if (!DelayUsed)
                         {
@@ -117,9 +116,9 @@ namespace OpenNos.GameObject
                     break;
 
                 case 30: //wigs
-                    if (iteminfo != null)
+                    if (this != null)
                     {
-                        WearableInstance wig = Session.Character.EquipmentList.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Hat, (byte)InventoryType.Equipment);
+                        WearableInstance wig = Session.Character.EquipmentList.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.Hat, InventoryType.Equipment);
                         if (wig != null)
                         {
                             wig.Design = (byte)rnd.Next(0, 15);
@@ -144,7 +143,7 @@ namespace OpenNos.GameObject
                     break;
 
                 case 203: //Presentation message
-                    if (iteminfo != null)
+                    if (this != null)
                     {
                         if (!DelayUsed)
                         {
@@ -158,7 +157,7 @@ namespace OpenNos.GameObject
                     Session.Client.SendPacket(Session.Character.GenerateFd());
                     Session.Client.SendPacket(Session.Character.GenerateEff(48));
                     Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateIn(), ReceiverType.AllExceptMe);
-                    Session.Character.InventoryList.RemoveItemAmount(iteminfo.VNum, 1);
+                    Session.Character.InventoryList.RemoveItemAmount(this.VNum, 1);
                     if (Inv.ItemInstance.Amount - 1 > 0)
                         Inv.ItemInstance.Amount--;
                     if (Inv.ItemInstance.Amount > 0)

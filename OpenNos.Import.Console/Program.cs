@@ -15,6 +15,7 @@
 using log4net;
 using OpenNos.Core;
 using OpenNos.DAL.EF.MySQL.Helpers;
+using System;
 using System.Diagnostics;
 using System.Reflection;
 
@@ -26,6 +27,7 @@ namespace OpenNos.Import.Console
 
         private static void Main(string[] args)
         {
+            //initialize logger
             Logger.InitializeLogger(LogManager.GetLogger(typeof(Program)));
             Assembly assembly = Assembly.GetExecutingAssembly();
             FileVersionInfo fileVersionInfo = FileVersionInfo.GetVersionInfo(assembly.Location);
@@ -41,9 +43,9 @@ namespace OpenNos.Import.Console
             }
 
             DataAccessHelper.Initialize();
-            System.ConsoleKeyInfo key = new System.ConsoleKeyInfo();
+            ConsoleKeyInfo key = new ConsoleKeyInfo();
             Logger.Log.Warn(Language.Instance.GetMessageFromKey("NEED_TREE"));
-            System.Console.BackgroundColor = System.ConsoleColor.Blue;
+            System.Console.BackgroundColor = ConsoleColor.Blue;
             System.Console.WriteLine("Root");
             System.Console.ResetColor();
             //System.Console.WriteLine($"-----_code_{System.Configuration.ConfigurationManager.AppSettings["language"]}_BCard.txt");
@@ -57,7 +59,7 @@ namespace OpenNos.Import.Console
             System.Console.WriteLine("-----monster.dat");
             System.Console.WriteLine("-----Skill.dat");
             System.Console.WriteLine("-----packet.txt");
-            System.Console.BackgroundColor = System.ConsoleColor.Blue;
+            System.Console.BackgroundColor = ConsoleColor.Blue;
             System.Console.WriteLine("-----map");
             System.Console.ResetColor();
             System.Console.WriteLine("----------0");
@@ -67,7 +69,7 @@ namespace OpenNos.Import.Console
             try
             {
                 Logger.Log.Warn(Language.Instance.GetMessageFromKey("ENTER_PATH"));
-                string folder = "";
+                string folder = String.Empty;
                 if (args.Length == 0)
                 {
                     folder = System.Console.ReadLine();

@@ -12,6 +12,8 @@
  * GNU General Public License for more details.
  */
 
+using OpenNos.Domain;
+
 namespace OpenNos.Data
 {
     public class ItemDTO
@@ -80,7 +82,7 @@ namespace OpenNos.Data
         public byte Sex { get; set; }
         public byte Speed { get; set; }
         public byte SpType { get; set; }
-        public byte Type { get; set; }
+        public InventoryType Type { get; set; }
         public short VNum { get; set; }
         public short WaitDelay { get; set; }
         public byte WaterElement { get; set; }

@@ -26,6 +26,7 @@ namespace OpenNos.Data
         public int Act4Points { get; set; }
         public int ArenaWinner { get; set; }
         public int Backpack { get; set; }
+        public string Biography { get; set; }
         public bool BuffBlocked { get; set; }
         public long CharacterId { get; set; }
         public byte Class { get; set; }

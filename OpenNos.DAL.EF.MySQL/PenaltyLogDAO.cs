@@ -73,6 +73,14 @@ namespace OpenNos.DAL.EF.MySQL
             }
         }
 
+        public bool IdAlreadySet(long id)
+        {
+            using (var context = DataAccessHelper.CreateContext())
+            {
+                return context.PenaltyLog.Any(gl => gl.PenaltyLogId == id);
+            }
+        }
+
         public PenaltyLogDTO Insert(PenaltyLogDTO penaltylog)
         {
             using (var context = DataAccessHelper.CreateContext())

@@ -123,8 +123,14 @@
   <data name="DATABASE_INITIALIZED" xml:space="preserve">
     <value>La base de données a été initialisée !</value>
   </data>
+  <data name="DATABASE_NOT_UPTODATE" xml:space="preserve">
+    <value>La base de données n'est pas à jour, essayez à nouveau après l'avoir mise à jour.</value>
+  </data>
   <data name="DONE" xml:space="preserve">
     <value>Analyse des fichiers finie !</value>
+  </data>
+  <data name="DROP_PARSED" xml:space="preserve">
+    <value>{0} Drops d'objets analysés !</value>
   </data>
   <data name="ENTER_PATH" xml:space="preserve">
     <value>S'il vous plaît veuillez entrez le répertoire des fichiers à analyser.</value>

@@ -11,7 +11,9 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  */
+
 using OpenNos.Domain;
+
 namespace OpenNos.Data
 {
     public class NpcMonsterDTO
@@ -47,6 +49,7 @@ namespace OpenNos.Data
         public short MagicDefence { get; set; }
         public int MaxHP { get; set; }
         public int MaxMP { get; set; }
+        public MonsterType MonsterType { get; set; }
         public string Name { get; set; }
         public bool NoAggresiveIcon { get; set; }
         public short NpcMonsterVNum { get; set; }
@@ -57,7 +60,7 @@ namespace OpenNos.Data
         public short VNumRequired { get; set; }
         public sbyte WaterResistance { get; set; }
         public int XP { get; set; }
-        public MonsterType MonsterType { get; set; }
+
         #endregion
     }
 }

@@ -20,6 +20,7 @@ namespace OpenNos.GameObject
     {
         #region Members
 
+        private long _transportId;
         private Item item;
 
         #endregion
@@ -32,7 +33,7 @@ namespace OpenNos.GameObject
 
         public ItemInstance(ItemInstanceDTO inventoryItem)
         {
-            ItemInstanceId = inventoryItem.ItemInstanceId;
+            Id = inventoryItem.Id;
             Amount = inventoryItem.Amount;
             ItemVNum = inventoryItem.ItemVNum;
         }
@@ -40,6 +41,14 @@ namespace OpenNos.GameObject
         #endregion
 
         #region Properties
+
+        public bool IsBound
+        {
+            get
+            {
+                return BoundCharacterId.HasValue;
+            }
+        }
 
         public Item Item
         {
@@ -50,7 +59,30 @@ namespace OpenNos.GameObject
             }
         }
 
+        public long TransportId
+        {
+            get
+            {
+                if (_transportId == 0)
+                {
+                    //create transportId thru factory
+                    _transportId = TransportFactory.Instance.GenerateTransportId();
+                }
+
+                return _transportId;
+            }
+            set
+            {
+                if (value != _transportId)
+                {
+                    _transportId = value;
+                }
+            }
+        }
+
         #endregion
+
+        //TODO create Interface
 
         #region Methods
 
