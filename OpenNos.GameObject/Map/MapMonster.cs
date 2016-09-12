@@ -53,6 +53,7 @@ namespace OpenNos.GameObject
         public List<MapCell> Path { get; set; }
         public List<NpcMonsterSkill> Skills { get; set; }
         public long Target { get; set; }
+        public bool inWaiting { get; set; }
 
         #endregion
 
@@ -186,17 +187,22 @@ namespace OpenNos.GameObject
                     Target = -1;
                     return;
                 }
-                if ((DateTime.Now - LastEffect).TotalMilliseconds >= Monster.BasicCooldown * 100)
+                Random random = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
+                NpcMonsterSkill npcMonsterSkill = null;
+                if (random.Next(10) > 8 || inWaiting)
                 {
-                    Random random = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
-                    NpcMonsterSkill npcMonsterSkill = null;
-                    if (random.Next(10) > 8)
+                    inWaiting = false;
+                    if ((DateTime.Now - LastEffect).TotalMilliseconds >= Monster.BasicCooldown * 100)
                     {
-                        npcMonsterSkill = Skills.Where(s => (DateTime.Now - s.LastUse).TotalMilliseconds >= 100 * s.Skill.Cooldown).OrderBy(rnd => random.Next()).FirstOrDefault();
+                        inWaiting = true;
                     }
+                    npcMonsterSkill = Skills.Where(s => (DateTime.Now - s.LastUse).TotalMilliseconds >= 100 * s.Skill.Cooldown).OrderBy(rnd => random.Next()).FirstOrDefault();
+                }
 
-                    int damage = 100;
-                    if (targetSession != null && ((npcMonsterSkill != null && Map.GetDistance(new MapCell() { X = this.MapX, Y = this.MapY }, new MapCell() { X = targetSession.Character.MapX, Y = targetSession.Character.MapY }) < npcMonsterSkill.Skill.Range) || (Map.GetDistance(new MapCell() { X = this.MapX, Y = this.MapY }, new MapCell() { X = targetSession.Character.MapX, Y = targetSession.Character.MapY }) <= Monster.BasicRange)))
+                int damage = 100;
+                if (targetSession != null && ((npcMonsterSkill != null && Map.GetDistance(new MapCell() { X = this.MapX, Y = this.MapY }, new MapCell() { X = targetSession.Character.MapX, Y = targetSession.Character.MapY }) < npcMonsterSkill.Skill.Range) || (Map.GetDistance(new MapCell() { X = this.MapX, Y = this.MapY }, new MapCell() { X = targetSession.Character.MapX, Y = targetSession.Character.MapY }) <= Monster.BasicRange)))
+                {
+                    if ((DateTime.Now - LastEffect).TotalMilliseconds >= Monster.BasicCooldown * 100 && !inWaiting)
                     {
                         if (npcMonsterSkill != null)
                         {
