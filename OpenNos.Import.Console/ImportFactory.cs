@@ -2005,10 +2005,10 @@ namespace OpenNos.Import.Console
                                     switch (item.VNum)
                                     {
                                         case 4503:
-                                            item.EffectValue = 4545;
+                                            item.EffectValue = 4544;
                                             break;
                                         case 4504:
-                                            item.EffectValue = 4295;
+                                            item.EffectValue = 4294;
                                             break;
                                         default:
                                             item.EffectValue = Convert.ToInt16(currentLine[7]);

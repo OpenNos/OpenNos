@@ -57,6 +57,7 @@ namespace OpenNos.GameObject
             SaveY = 0;
             LastDefence = DateTime.Now.AddSeconds(-21);
             LastHealth = DateTime.Now;
+            LastEffect = DateTime.Now;
             _session = Session;
             Group = null;
         }

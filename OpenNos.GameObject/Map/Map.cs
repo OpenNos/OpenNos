@@ -455,7 +455,10 @@ namespace OpenNos.GameObject
                 WearableInstance amulet = Session.Character.EquipmentList.LoadBySlotAndType<WearableInstance>((short)EquipmentType.Amulet, InventoryType.Equipment);
                 if (Session.Character.LastEffect.AddSeconds(5) <= DateTime.Now && amulet != null)
                 {
-                    Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateEff(amulet.Item.EffectValue), ReceiverType.All);
+                    if (amulet.ItemVNum == 4503 || amulet.ItemVNum == 4504)
+                        Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateEff(amulet.Item.EffectValue + (Session.Character.Class == (byte)ClassType.Adventurer ? 0 : Session.Character.Class - 1)), ReceiverType.All);
+                    else
+                        Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateEff(amulet.Item.EffectValue), ReceiverType.All);
                     Session.Character.LastEffect = DateTime.Now;
                 }
                 if ((Session.Character.LastHealth.AddSeconds(2) <= DateTime.Now) || (Session.Character.IsSitting && Session.Character.LastHealth.AddSeconds(1.5) <= DateTime.Now))
