@@ -1004,7 +1004,7 @@ namespace OpenNos.Handler
             }
 
             damage = Convert.ToUInt16(intdamage);
-
+            if(mmon.IsMoving)
             mmon.Target = Session.Character.CharacterId;
             return damage;
         }
