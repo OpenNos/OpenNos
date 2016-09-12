@@ -23,7 +23,7 @@ namespace OpenNos.GameObject
 
         public NpcMonsterSkill()
         {
-            LastUse = DateTime.Now;
+            LastUse = DateTime.Now.AddHours(-1);
             Hit = 0;
         }
 
