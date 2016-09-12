@@ -340,7 +340,7 @@ namespace OpenNos.GameObject
 
         public void SumItem(ClientSession Session, WearableInstance itemToSum)
         {
-            short[] upsuccess = { 100, 100, 85, 70, 50, 20 };
+            short[] upsuccess = { 100, 100, 100, 85, 70, 50, 20 };
             int[] goldprice = { 1500, 3000, 6000, 12000, 24000, 48000 };
             short[] sand = { 5, 10, 15, 20, 25, 30 };
             int sandVnum = 1027;
@@ -367,6 +367,7 @@ namespace OpenNos.GameObject
                     Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SUM_SUCCESS"), 0));
                     Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("SUM_SUCCESS"), 12));
                     Session.Client.SendPacket(Session.Character.GenerateGuri(19, 1, 1324));
+                    Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateGuri(6, 1), ReceiverType.All);
                     Inventory inventory = Session.Character.InventoryList.GetInventoryByItemInstanceId(this.Id);
                     Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(inventory.ItemInstance.ItemVNum, 1, inventory.Type, inventory.Slot, 0, 0, 0, 0));
                     Session.Client.SendPacket(Session.Character.GenerateGold());
@@ -376,6 +377,7 @@ namespace OpenNos.GameObject
                     Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SUM_FAILED"), 0));
                     Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("SUM_FAILED"), 11));
                     Session.Client.SendPacket(Session.Character.GenerateGuri(19, 1 , 1332));
+                    Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateGuri(6, 1), ReceiverType.All);
                     Session.Character.DeleteItemByItemInstanceId(itemToSum.Id);
                     Session.Character.DeleteItemByItemInstanceId(this.Id);
                 }
