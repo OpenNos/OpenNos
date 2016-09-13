@@ -948,20 +948,20 @@ namespace OpenNos.Handler
                             if (ServerManager.GetMap(Session.Character.MapId).MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act4) || monsterinfo.MonsterType == MonsterType.Elite)
                             {
                                 ItemInstance newItem = InventoryList.CreateItemInstance(drop.ItemVNum);
-                                    if (newItem.Item.ItemType == (byte)ItemType.Armor || newItem.Item.ItemType == (byte)ItemType.Weapon || newItem.Item.ItemType == (byte)ItemType.Shell)
+                                if (newItem.Item.ItemType == (byte)ItemType.Armor || newItem.Item.ItemType == (byte)ItemType.Weapon || newItem.Item.ItemType == (byte)ItemType.Shell)
                                     ((WearableInstance)newItem).RarifyItem(Session, RarifyMode.Drop, RarifyProtection.None);
                                 newItem.Amount = drop.Amount;
                                 Inventory newInv = Session.Character.InventoryList.AddToInventory(newItem);
                                 Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(newInv.ItemInstance.ItemVNum, newInv.ItemInstance.Amount, newInv.Type, newInv.Slot, newItem.Rare, newItem.Design, newItem.Upgrade, 0));
                                 Session.Client.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {newItem.Item.Name} x {drop.Amount}", 10));
                             }
-                        }
-                        else
-                        {
-                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("InventoryFullWaitParcel"), 0));
+                            else
+                            {
+                                Session.CurrentMap.DropItemByMonster(drop, mmon.MapX, mmon.MapY);
+                            }
                         }
                     }
-                 }
+                }
 
                 rnd = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
                 int RateGold = ServerManager.GoldRate;
