@@ -376,7 +376,7 @@ namespace OpenNos.Handler
             byte amount = 1, upgrade = 0, design = 0;
             sbyte rare = 0;
             short vnum;
-            ItemDTO iteminfo = null;
+            Item iteminfo = null;
             if (packetsplit.Length != 5 && packetsplit.Length != 4 && packetsplit.Length != 3)
             {
                 Session.Client.SendPacket(Session.Character.GenerateSay("$CreateItem ITEMID", 10));
@@ -441,7 +441,7 @@ namespace OpenNos.Handler
 
                         WearableInstance wearable = Session.Character.InventoryList.LoadBySlotAndType<WearableInstance>(inv.Slot, inv.Type);
 
-                        if (wearable != null)
+                        if (wearable != null && (wearable.Item.EquipmentSlot == (byte)EquipmentType.Armor || wearable.Item.EquipmentSlot == (byte)EquipmentType.MainWeapon || wearable.Item.EquipmentSlot == (byte)EquipmentType.SecondaryWeapon))
                         {
                             wearable.SetRarityPoint();
                         }

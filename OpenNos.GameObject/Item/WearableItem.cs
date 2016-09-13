@@ -42,7 +42,7 @@ namespace OpenNos.GameObject
                     {
                         if (!DelayUsed && ((EquipmentSlot == (byte)EquipmentType.Fairy && (MaxElementRate == 70 || MaxElementRate == 80)) || (EquipmentSlot == (byte)EquipmentType.CostumeHat || EquipmentSlot == (byte)EquipmentType.CostumeSuit || EquipmentSlot == (byte)EquipmentType.WeaponSkin)))
                         {
-                            session.Client.SendPacket($"qna #u_i^1^{session.Character.CharacterId}^{type}^{slot}^1 {Language.Instance.GetMessageFromKey("ASK_BIND")}");
+                            session.Client.SendPacket($"qna #u_i^1^{session.Character.CharacterId}^{(byte)type}^{slot}^1 {Language.Instance.GetMessageFromKey("ASK_BIND")}");
                             return;
                         }
                         else if (DelayUsed)
