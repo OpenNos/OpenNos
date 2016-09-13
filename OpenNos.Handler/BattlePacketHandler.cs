@@ -958,7 +958,7 @@ namespace OpenNos.Handler
                         }
                         else
                         {
-                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_PLACE"), 0));
+                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("InventoryFullWaitParcel"), 0));
                         }
                     }
                  }
