@@ -24,14 +24,12 @@ namespace OpenNos.GameObject
         {
             PositionX = x;
             PositionY = y;
-            IsNew = isNew;
         }
 
         #endregion
 
         #region Properties
-
-        public bool IsNew { get; set; }
+        
         public ItemInstance ItemInstance { get; set; }
         public short PositionX { get; set; }
         public short PositionY { get; set; }
@@ -42,7 +40,7 @@ namespace OpenNos.GameObject
 
         public void Rarify(ClientSession session)
         {
-            if (IsNew && ItemInstance is WearableInstance)
+            if (ItemInstance is WearableInstance)
             {
                 ((WearableInstance)ItemInstance).RarifyItem(session, RarifyMode.Drop, RarifyProtection.None);
             }

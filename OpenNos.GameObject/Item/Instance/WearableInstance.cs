@@ -280,9 +280,12 @@ namespace OpenNos.GameObject
                         }
                     }
                 }
-                Inventory inventory = Session.Character.InventoryList.GetInventoryByItemInstanceId(this.Id);
-                if (inventory != null)
-                    Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(this.ItemVNum, 1, inventory.Type, inventory.Slot, inventory.ItemInstance.Rare, 0, inventory.ItemInstance.Upgrade, 0));
+                if (mode != RarifyMode.Drop)
+                {
+                    Inventory inventory = Session.Character.InventoryList.GetInventoryByItemInstanceId(this.Id);
+                    if (inventory != null)
+                        Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(this.ItemVNum, 1, inventory.Type, inventory.Slot, inventory.ItemInstance.Rare, 0, inventory.ItemInstance.Upgrade, 0));
+                }
             }
         }
 

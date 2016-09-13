@@ -269,6 +269,9 @@ namespace OpenNos.GameObject
             {
                 ItemInstance = newInstance
             };
+            //rarify
+            if (droppedItem.ItemInstance.Item.EquipmentSlot == (byte)EquipmentType.Armor || droppedItem.ItemInstance.Item.EquipmentSlot == (byte)EquipmentType.MainWeapon || droppedItem.ItemInstance.Item.EquipmentSlot == (byte)EquipmentType.SecondaryWeapon)
+                droppedItem.Rarify(null);
 
             ServerManager.GetMap(MapId).DroppedList.Add(droppedItem.ItemInstance.TransportId, droppedItem);
 

@@ -441,9 +441,7 @@ namespace OpenNos.Handler
             }
             if (long.TryParse(packetsplit[4], out transportId) && Session.CurrentMap.DroppedList.TryGetValue(transportId, out mapitem))
             {
-                //rarify
-                mapitem.Rarify(Session);
-
+             
                 int amount = mapitem.ItemInstance.Amount;
 
                 if (mapitem.PositionX < Session.Character.MapX + 3 && mapitem.PositionX > Session.Character.MapX - 3 && mapitem.PositionY < Session.Character.MapY + 3 && mapitem.PositionY > Session.Character.MapY - 3)
