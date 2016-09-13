@@ -1281,7 +1281,8 @@ namespace OpenNos.Handler
                 Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateGuri(6, 1), ReceiverType.All);
                 //ms_c
                 Session.Client.SendPacket(Session.Character.GenerateSki());
-                Session.Client.SendPackets(Session.Character.GenerateQuicklist());
+                foreach (string quicklist in Session.Character.GenerateQuicklist())
+                    Session.Client.SendPacket(quicklist);
                 Session.Client.SendPacket(Session.Character.GenerateStat());
                 Session.Client.SendPacket(Session.Character.GenerateStatChar());
                 await Task.Delay(Session.Character.SpCooldown * 1000);
