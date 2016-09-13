@@ -496,7 +496,7 @@ namespace OpenNos.GameObject
         {
             for(int i = DroppedList.Count()-1;i >=0;i--)
             {
-                if (DroppedList.ElementAt(i).Value.CreateDate != null && ((DateTime)DroppedList.ElementAt(0).Value.CreateDate).AddMinutes(3) < DateTime.Now)
+                if (DroppedList.ElementAt(i).Value.CreateDate != null && ((DateTime)DroppedList.ElementAt(i).Value.CreateDate).AddMinutes(3) < DateTime.Now)
                 {
                     Broadcast(DroppedList.ElementAt(i).Value.GenerateOut(DroppedList.ElementAt(i).Key));
                     DroppedList.Remove(i);    
