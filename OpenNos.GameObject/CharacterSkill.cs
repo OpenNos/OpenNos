@@ -33,14 +33,12 @@ namespace OpenNos.GameObject
             this.Id = dto.Id;
             this.SkillVNum = dto.SkillVNum;
             LastUse = DateTime.Now.AddHours(-1);
-            Used = false;
             Hit = 0;
         }
 
         public CharacterSkill()
         {
             LastUse = DateTime.Now.AddHours(-1);
-            Used = false;
             Hit = 0;
         }
 
@@ -63,8 +61,7 @@ namespace OpenNos.GameObject
                 return skill;
             }
         }
-
-        public bool Used { get; set; }
+        
 
         #endregion
     }

@@ -127,7 +127,7 @@ namespace OpenNos.Handler
                     Session.Client.SendPacket("cancel 2 0");
                     return;
                 }
-                for (int i = 0; i < 10 && ski.Used; i++)
+                for (int i = 0; i < 10 && (ski.LastUse.AddMilliseconds((ski.Skill.Cooldown) * 100) > DateTime.Now); i++)
                 {
                     Thread.Sleep(100);
                     if (i == 10)
@@ -143,7 +143,6 @@ namespace OpenNos.Handler
                     if (ski.Skill.TargetType == 1 && ski.Skill.HitType == 1)
                     {
                         Session.Character.LastSkill = DateTime.Now;
-                        ski.Used = true;
                         if (!Session.Character.HasGodMode)
                             Session.Character.Mp -= ski.Skill.MpCost;
                         if (Session.Character.UseSp && ski.Skill.CastEffect != -1)
@@ -180,7 +179,7 @@ namespace OpenNos.Handler
                         if (mmon != null && mmon.Alive)
                         {
                             NpcMonster monsterinfo = ServerManager.GetNpc(mmon.MonsterVNum);
-                            if (ski != null && monsterinfo != null && ski.Skill != null && !ski.Used)
+                            if (ski != null && monsterinfo != null && ski.Skill != null && (ski.LastUse.AddMilliseconds((ski.Skill.Cooldown) * 100) < DateTime.Now))
                             {
                                 if (Session.Character.Mp >= ski.Skill.MpCost)
                                 {
@@ -191,7 +190,7 @@ namespace OpenNos.Handler
                                     {
                                         Session.Character.LastSkill = DateTime.Now;
                                         damage = GenerateDamage(mmon.MapMonsterId, ski.Skill, ref hitmode);
-                                        ski.Used = true;
+                                        ski.LastUse = DateTime.Now;
                                         notcancel = true;
                                         if (!Session.Character.HasGodMode)
                                             Session.Character.Mp -= ski.Skill.MpCost;
@@ -243,7 +242,6 @@ namespace OpenNos.Handler
                     Task t = Task.Factory.StartNew((Func<Task>)(async () =>
                     {
                         await Task.Delay((ski.Skill.Cooldown) * 100);
-                        ski.Used = false;
                         Session.Client.SendPacket($"sr {castingId}");
                     }));
 
@@ -621,6 +619,7 @@ namespace OpenNos.Handler
                 mmon.CurrentHp = 0;
                 mmon.CurrentMp = 0;
                 mmon.Death = DateTime.Now;
+                
                 Random rnd = new Random();
                 int i = 1;
                 List<DropDTO> droplist = monsterinfo.Drops.Where(s => Session.CurrentMap.MapTypes.FirstOrDefault(m => m.MapTypeId == s.MapTypeId) != null || (s.MapTypeId == null)).ToList();
@@ -639,10 +638,10 @@ namespace OpenNos.Handler
                             x++;
                             if (ServerManager.GetMap(Session.Character.MapId).MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act4) || monsterinfo.MonsterType == MonsterType.Elite)
                             {
-                                Session.Character.GiftAdd(drop.ItemVNum,drop.Amount);
+                                Session.Character.GiftAdd(drop.ItemVNum, drop.Amount);
                             }
                             else
-                                Session.CurrentMap.DropItemByMonster(drop, mmon.MapX, mmon.MapY);
+                                Session.CurrentMap.DropItemByMonster(mmon.DamageList.Any() ? mmon.DamageList.First().Key : (long?)null, drop, mmon.MapX, mmon.MapY);
                         }
                     }
                 }
@@ -670,7 +669,7 @@ namespace OpenNos.Handler
                         Session.Client.SendPacket(Session.Character.GenerateGold());
                     }
                     else
-                        Session.CurrentMap.DropItemByMonster(drop2, mmon.MapX, mmon.MapY);
+                        Session.CurrentMap.DropItemByMonster(mmon.DamageList.Any() ? mmon.DamageList.First().Key : (long?)null,drop2, mmon.MapX, mmon.MapY);
                 }
                 if (Session.Character.Hp > 0)
                 {
@@ -701,7 +700,7 @@ namespace OpenNos.Handler
             return damage;
         }
 
-        private void ZoneHit(int Castingid, short x, short y)
+        private void ZoneHit(int Castingid,short x,short y)
         {
             List<CharacterSkill> skills = Session.Character.UseSp ? Session.Character.SkillsSp : Session.Character.Skills;
             ushort damage = 0;
@@ -719,7 +718,7 @@ namespace OpenNos.Handler
                     Task t = Task.Factory.StartNew((Func<Task>)(async () =>
                     {
                         Session.CurrentMap?.Broadcast($"ct_n 1 {Session.Character.CharacterId} 3 -1 {ski.Skill.CastAnimation} {ski.Skill.CastEffect} {ski.Skill.SkillVNum}");
-                        ski.Used = true;
+                        ski.LastUse = DateTime.Now;
                         if (!Session.Character.HasGodMode)
                             Session.Character.Mp -= ski.Skill.MpCost;
                         Session.Client.SendPacket(Session.Character.GenerateStat());
@@ -728,7 +727,7 @@ namespace OpenNos.Handler
                         Session.Character.LastSkill = DateTime.Now;
 
                         Session.CurrentMap?.Broadcast($"bs 1 {Session.Character.CharacterId} {x} {y} {ski.Skill.SkillVNum} {ski.Skill.Cooldown} {ski.Skill.AttackAnimation} {ski.Skill.Effect} 0 0 1 1 0 0 0");
-
+                  
                         foreach (MapMonster mon in ServerManager.GetMap(Session.Character.MapId).GetListMonsterInRange(x, y, ski.Skill.TargetRange))
                         {
                             damage = GenerateDamage(mon.MapMonsterId, ski.Skill, ref hitmode);
@@ -736,7 +735,6 @@ namespace OpenNos.Handler
                         }
 
                         await Task.Delay((ski.Skill.Cooldown) * 100);
-                        ski.Used = false;
                         Session.Client.SendPacket($"sr {Castingid}");
                     }));
                 }

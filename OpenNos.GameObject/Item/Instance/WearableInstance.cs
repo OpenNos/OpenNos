@@ -155,8 +155,7 @@ namespace OpenNos.GameObject
 
             Random r = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
             int rnd = r.Next(0, 100);
-            if (this.Item.EquipmentSlot == (byte)EquipmentType.MainWeapon || this.Item.EquipmentSlot == (byte)EquipmentType.SecondaryWeapon || this.Item.EquipmentSlot == (byte)EquipmentType.Armor)
-            {
+            
                 //if (rnd <= rare8 && !(protection == RarifyProtection.Scroll && this.Rare >= 8))
                 //{
                 //    if (mode != RarifyMode.Drop)
@@ -279,7 +278,7 @@ namespace OpenNos.GameObject
                             ServerManager.Instance.Broadcast(Session.Character.GenerateEff(3004));
                         }
                     }
-                }
+                
                 if (mode != RarifyMode.Drop)
                 {
                     Inventory inventory = Session.Character.InventoryList.GetInventoryByItemInstanceId(this.Id);

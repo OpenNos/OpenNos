@@ -250,7 +250,7 @@ namespace OpenNos.GameObject
             return SolutionPathList;
         }
 
-        public void DropItemByMonster(DropDTO drop, short mapX, short mapY)
+        public void DropItemByMonster(long? Owner, DropDTO drop, short mapX, short mapY)
         {
             Random rnd = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
             MapItem droppedItem = null;
@@ -265,10 +265,13 @@ namespace OpenNos.GameObject
             ItemInstance newInstance = InventoryList.CreateItemInstance(drop.ItemVNum);
             newInstance.Amount = drop.Amount;
 
-            droppedItem = new MapItem(localMapX, localMapY, true)
+            droppedItem = new MapItem(localMapX, localMapY)
             {
-                ItemInstance = newInstance
+                ItemInstance = newInstance,
+                CreateDate = DateTime.Now,
+                Owner = Owner
             };
+
             //rarify
             if (droppedItem.ItemInstance.Item.EquipmentSlot == (byte)EquipmentType.Armor || droppedItem.ItemInstance.Item.EquipmentSlot == (byte)EquipmentType.MainWeapon || droppedItem.ItemInstance.Item.EquipmentSlot == (byte)EquipmentType.SecondaryWeapon)
                 droppedItem.Rarify(null);
@@ -482,9 +485,23 @@ namespace OpenNos.GameObject
             Task characterLifeTask = new Task(() => CharacterLifeManager());
             characterLifeTask.Start();
 
+            RemoveMapItem();
+
             await npcLifeTask;
             await monsterLifeTask;
             await characterLifeTask;
+        }
+
+        private void RemoveMapItem()
+        {
+            for(int i = DroppedList.Count()-1;i >=0;i--)
+            {
+                if (DroppedList.ElementAt(i).Value.CreateDate != null && ((DateTime)DroppedList.ElementAt(0).Value.CreateDate).AddMinutes(3) < DateTime.Now)
+                {
+                    Broadcast(DroppedList.ElementAt(i).Value.GenerateOut(DroppedList.ElementAt(i).Key));
+                    DroppedList.Remove(i);    
+                }
+            }
         }
 
         private void CharacterLifeManager()

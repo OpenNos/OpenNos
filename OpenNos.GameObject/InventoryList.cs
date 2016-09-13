@@ -349,7 +349,7 @@ namespace OpenNos.GameObject
                 return null;
             if (amount > 0 && amount <= inv.ItemInstance.Amount)
             {
-                droppedItem = new MapItem(MapX, MapY, false)
+                droppedItem = new MapItem(MapX, MapY)
                 {
                     ItemInstance = (inv.ItemInstance as ItemInstance).DeepCopy()
                 };

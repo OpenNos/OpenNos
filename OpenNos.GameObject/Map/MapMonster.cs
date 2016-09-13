@@ -34,6 +34,7 @@ namespace OpenNos.GameObject
             MonsterVNum = VNum;
             Monster = ServerManager.GetNpc(MonsterVNum);
             Skills = Monster.Skills.ToList();
+            DamageList = new Dictionary<long, long>();
         }
 
         #endregion
@@ -54,6 +55,7 @@ namespace OpenNos.GameObject
         public List<NpcMonsterSkill> Skills { get; set; }
         public long Target { get; set; }
         public bool inWaiting { get; set; }
+        public IDictionary<long, long> DamageList { get; set; }
 
         #endregion
 
@@ -95,6 +97,7 @@ namespace OpenNos.GameObject
                 double timeDeath = (DateTime.Now - Death).TotalSeconds;
                 if (timeDeath >= Monster.RespawnTime / 10)
                 {
+                    DamageList = new Dictionary<long, long>();
                     Alive = true;
                     Target = -1;
                     CurrentHp = Monster.MaxHP;

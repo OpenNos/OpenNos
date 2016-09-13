@@ -590,6 +590,7 @@ namespace OpenNos.GameObject
         {
             return $"get 1 {CharacterId} {id} 0";
         }
+       
 
         public string GenerateGold()
         {

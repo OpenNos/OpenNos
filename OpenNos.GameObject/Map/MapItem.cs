@@ -13,6 +13,7 @@
  */
 
 using OpenNos.Domain;
+using System;
 
 namespace OpenNos.GameObject
 {
@@ -20,7 +21,7 @@ namespace OpenNos.GameObject
     {
         #region Instantiation
 
-        public MapItem(short x, short y, bool isNew)
+        public MapItem(short x, short y)
         {
             PositionX = x;
             PositionY = y;
@@ -33,7 +34,8 @@ namespace OpenNos.GameObject
         public ItemInstance ItemInstance { get; set; }
         public short PositionX { get; set; }
         public short PositionY { get; set; }
-
+        public DateTime? CreateDate { get; set; }
+        public long? Owner { get; set; }
         #endregion
 
         #region Methods
@@ -44,6 +46,11 @@ namespace OpenNos.GameObject
             {
                 ((WearableInstance)ItemInstance).RarifyItem(session, RarifyMode.Drop, RarifyProtection.None);
             }
+        }
+
+        public string GenerateOut(long id)
+        {
+            return $"in 9 {id}";
         }
 
         #endregion
