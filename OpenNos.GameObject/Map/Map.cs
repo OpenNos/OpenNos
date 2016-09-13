@@ -499,7 +499,7 @@ namespace OpenNos.GameObject
                 if (DroppedList.ElementAt(i).Value.CreateDate != null && ((DateTime)DroppedList.ElementAt(i).Value.CreateDate).AddMinutes(3) < DateTime.Now)
                 {
                     Broadcast(DroppedList.ElementAt(i).Value.GenerateOut(DroppedList.ElementAt(i).Key));
-                    DroppedList.Remove(i);    
+                    DroppedList.Remove(DroppedList.ElementAt(i).Key);    
                 }
             }
         }

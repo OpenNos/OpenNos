@@ -50,7 +50,7 @@ namespace OpenNos.GameObject
 
         public string GenerateOut(long id)
         {
-            return $"in 9 {id}";
+            return $"out 9 {id}";
         }
 
         #endregion
