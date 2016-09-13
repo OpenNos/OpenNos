@@ -1233,9 +1233,7 @@ namespace OpenNos.Handler
                 Session.Character.Morph = sp.Item.Morph;
                 Session.Character.MorphUpgrade = sp.Upgrade;
                 Session.Character.MorphUpgrade2 = sp.Design;
-                Session.CurrentMap?.Broadcast(Session.Character.GenerateCMode());
-                foreach (string quicklist in Session.Character.GenerateQuicklist())
-                    Session.Client.SendPacket(quicklist);
+                Session.CurrentMap?.Broadcast(Session.Character.GenerateCMode());     
                 Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateEff(196), ReceiverType.All);
                 Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateGuri(6, 1), ReceiverType.All);
                 Session.Client.SendPacket(Session.Character.GenerateSpPoint());
@@ -1250,6 +1248,8 @@ namespace OpenNos.Handler
                         Session.Character.SkillsSp.Add(new CharacterSkill() { SkillVNum = ski.SkillVNum, CharacterId = Session.Character.CharacterId });
                 }
                 Session.Client.SendPacket(Session.Character.GenerateSki());
+                foreach (string quicklist in Session.Character.GenerateQuicklist())
+                    Session.Client.SendPacket(quicklist);
             }
         }
 
