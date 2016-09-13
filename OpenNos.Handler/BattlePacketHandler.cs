@@ -844,7 +844,7 @@ namespace OpenNos.Handler
             // Need to add skill element
             float EMob = monsterinfo.Element;
             if ((EPg == 0 && EMob >= 0 && EMob < 5) || (EPg == 1 && EMob == 3) || (EPg == 2 && EMob == 4) || (EPg == 3 && EMob == 2) || (EPg == 4 && EMob == 1)) Eele = 1f; // 0 No Element | 1 Fire | 2 Water | 3 Light | Darkness
-            else if ((EPg == 1 && EMob == 1) || (EPg == 2 && EMob == 2) || (EPg == 3 && EMob == 3) || (EPg == 4 && EMob == 4)) Eele = 1f; 
+            else if ((EPg == 1 && EMob == 1) || (EPg == 2 && EMob == 2) || (EPg == 3 && EMob == 3) || (EPg == 4 && EMob == 4)) Eele = 1f;
             else if ((EPg == 1 && EMob >= 0) || (EPg == 2 && EMob == 0) || (EPg == 3 && EMob == 0) || (EPg == 4 && EMob == 0)) Eele = 1.3f;
             else if ((EPg == 1 && EMob == 4) || (EPg == 2 && EMob == 3) || (EPg == 3 && EMob == 1) || (EPg == 4 && EMob == 2)) Eele = 1.5f;
             else if ((EPg == 1 && EMob == 2) || (EPg == 2 && EMob == 1)) Eele = 2f;
@@ -952,14 +952,18 @@ namespace OpenNos.Handler
                                     ((WearableInstance)newItem).RarifyItem(Session, RarifyMode.Drop, RarifyProtection.None);
                                 newItem.Amount = drop.Amount;
                                 Inventory newInv = Session.Character.InventoryList.AddToInventory(newItem);
-                                Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(newInv.ItemInstance.ItemVNum, newInv.ItemInstance.Amount, newInv.Type, newInv.Slot, newItem.Rare, newItem.Design, newItem.Upgrade, 0));
-                                Session.Client.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {newItem.Item.Name} x {drop.Amount}", 10));
+                                if (newInv != null)
+                                {
+                                    Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(newInv.ItemInstance.ItemVNum, newInv.ItemInstance.Amount, newInv.Type, newInv.Slot, newItem.Rare, newItem.Design, newItem.Upgrade, 0));
+                                    Session.Client.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {newItem.Item.Name} x {drop.Amount}", 10));
+                                }
+                                else
+                                    Session.Client.SendPacket(Session.Character.GenerateMsg("Error:: NULL REFERENCE: ParcelSystem.NotFound", 0));
                             }
-                            else
-                                Session.CurrentMap.DropItemByMonster(drop, mmon.MapX, mmon.MapY);
                         }
                     }
                 }
+
                 rnd = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
                 int RateGold = ServerManager.GoldRate;
                 int gold = Convert.ToInt32((rnd.Next(1, 8) >= 7 ? 1 : 0) * rnd.Next(6 * monsterinfo.Level, 12 * monsterinfo.Level) * RateGold * (Session.CurrentMap.MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act52) ? 10 : 1));
@@ -1004,8 +1008,8 @@ namespace OpenNos.Handler
             }
 
             damage = Convert.ToUInt16(intdamage);
-            if(mmon.IsMoving)
-            mmon.Target = Session.Character.CharacterId;
+            if (mmon.IsMoving)
+                mmon.Target = Session.Character.CharacterId;
             return damage;
         }
 

@@ -84,10 +84,9 @@ namespace OpenNos.GameObject
                 if (Slot != -1)
                 {
                     inv = AddToInventoryWithSlotAndType(newItem, newItem.Item.Type, Slot);
+                    inv.ItemInstance.Id = inv.Id; //set id because its a one to one
                 }
             }
-
-            inv.ItemInstance.Id = inv.Id; //set id because its a one to one
             return inv;
         }
 
@@ -112,10 +111,10 @@ namespace OpenNos.GameObject
                 if (Slot != -1)
                 {
                     inv = AddToInventoryWithSlotAndType(newItem, newItem.Item.Type, Slot);
+                    inv.ItemInstance.Id = inv.Id; //set id because its a one to one
                 }
             }
 
-            inv.ItemInstance.Id = inv.Id; //set id because its a one to one
             return inv;
         }
 
@@ -300,7 +299,7 @@ namespace OpenNos.GameObject
                             sourceInventory.ItemInstance.Amount -= amount;
 
                             //item with amount of 0 should be removed
-                            if(sourceInventory.ItemInstance.Amount == 0)
+                            if (sourceInventory.ItemInstance.Amount == 0)
                             {
                                 DeleteFromSlotAndType(sourceInventory.Slot, sourceInventory.Type);
                             }

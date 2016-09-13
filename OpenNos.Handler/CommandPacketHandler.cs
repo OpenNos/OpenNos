@@ -947,6 +947,11 @@ namespace OpenNos.Handler
                         Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("SKILL_ALREADY_EXIST"), 11));
                         return;
                     }
+                    if (Session.Character.Class != skillinfo.Class)
+                    {
+                        Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SKILL_CANT_LEARN"), 0));
+                        return;
+                    }
                     if (skillinfo.UpgradeSkill != 0)
                     {
                         CharacterSkill oldupgrade = Session.Character.Skills.FirstOrDefault(s => s.Skill.UpgradeSkill == skillinfo.UpgradeSkill && s.Skill.UpgradeType == skillinfo.UpgradeType && s.Skill.UpgradeSkill != 0);
