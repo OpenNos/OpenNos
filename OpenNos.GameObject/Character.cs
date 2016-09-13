@@ -1688,7 +1688,7 @@ namespace OpenNos.GameObject
                 {
                     IEnumerable<Guid> currentlySavedQuicklistEntries = DAOFactory.QuicklistEntryDAO.LoadKeysByCharacterId(CharacterId).ToList();
 
-                    foreach (Guid quicklistEntryToDelete in currentlySavedQuicklistEntries.Except(Skills.Select(s => s.Id)))
+                    foreach (Guid quicklistEntryToDelete in currentlySavedQuicklistEntries.Except(QuicklistEntries.Select(s => s.Id)))
                     {
                         DAOFactory.QuicklistEntryDAO.Delete(quicklistEntryToDelete);
                     }
