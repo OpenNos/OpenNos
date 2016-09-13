@@ -112,10 +112,10 @@ namespace OpenNos.GameObject
                 if (Slot != -1)
                 {
                     inv = AddToInventoryWithSlotAndType(newItem, newItem.Item.Type, Slot);
+                    inv.ItemInstance.Id = inv.Id; //set id because its a one to one
                 }
             }
 
-            inv.ItemInstance.Id = inv.Id; //set id because its a one to one
             return inv;
         }
 

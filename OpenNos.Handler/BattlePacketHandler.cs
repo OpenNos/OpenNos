@@ -952,12 +952,13 @@ namespace OpenNos.Handler
                                     ((WearableInstance)newItem).RarifyItem(Session, RarifyMode.Drop, RarifyProtection.None);
                                 newItem.Amount = drop.Amount;
                                 Inventory newInv = Session.Character.InventoryList.AddToInventory(newItem);
-                                Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(newInv.ItemInstance.ItemVNum, newInv.ItemInstance.Amount, newInv.Type, newInv.Slot, newItem.Rare, newItem.Design, newItem.Upgrade, 0));
-                                Session.Client.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {newItem.Item.Name} x {drop.Amount}", 10));
-                            }
-                            else
-                            {
-                                Session.CurrentMap.DropItemByMonster(drop, mmon.MapX, mmon.MapY);
+                                if (newInv != null)
+                                {
+                                    Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(newInv.ItemInstance.ItemVNum, newInv.ItemInstance.Amount, newInv.Type, newInv.Slot, newItem.Rare, newItem.Design, newItem.Upgrade, 0));
+                                    Session.Client.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {newItem.Item.Name} x {drop.Amount}", 10));
+                                }
+                                else
+                                    Session.Client.SendPacket(Session.Character.GenerateMsg("Error:: NULL REFERENCE: ParcelSystem.NotFound", 0));
                             }
                         }
                     }
@@ -1007,8 +1008,8 @@ namespace OpenNos.Handler
             }
 
             damage = Convert.ToUInt16(intdamage);
-            if(mmon.IsMoving)
-            mmon.Target = Session.Character.CharacterId;
+            if (mmon.IsMoving)
+                mmon.Target = Session.Character.CharacterId;
             return damage;
         }
 
