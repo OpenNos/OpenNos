@@ -1515,7 +1515,23 @@ namespace OpenNos.GameObject
                 }
             }
         }
-
+        public void GiftAdd(short itemVNum, int amount)
+        {
+            ItemInstance newItem = InventoryList.CreateItemInstance(itemVNum);
+            if (newItem.Item.ItemType == (byte)ItemType.Armor || newItem.Item.ItemType == (byte)ItemType.Weapon || newItem.Item.ItemType == (byte)ItemType.Shell)
+                ((WearableInstance)newItem).RarifyItem(Session, RarifyMode.Drop, RarifyProtection.None);
+            newItem.Amount = amount;
+            Inventory newInv = InventoryList.AddToInventory(newItem);
+            if (newInv != null)
+            {
+                Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(newInv.ItemInstance.ItemVNum, newInv.ItemInstance.Amount, newInv.Type, newInv.Slot, newItem.Rare, newItem.Design, newItem.Upgrade, 0));
+                Session.Client.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {newItem.Item.Name} x {amount}", 10));
+            }
+            else
+            {
+                //parcel add
+            }
+        }
         public void LearnSPSkill()
         {
             SpecialistInstance specialist = EquipmentList.LoadBySlotAndType<SpecialistInstance>((short)EquipmentType.Sp, InventoryType.Equipment);

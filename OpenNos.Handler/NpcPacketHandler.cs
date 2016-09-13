@@ -191,7 +191,8 @@ namespace OpenNos.Handler
                     Session.Character.Gold -= skillinfo.Price;
                     Session.Client.SendPacket(Session.Character.GenerateGold());
                     Session.Client.SendPacket(Session.Character.GenerateSki());
-                    Session.Client.SendPackets(Session.Character.GenerateQuicklist());
+                    foreach (string quicklist in Session.Character.GenerateQuicklist())
+                        Session.Client.SendPacket(quicklist);
                     Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SKILL_LEARNED"), 0));
                     Session.Client.SendPacket(Session.Character.GenerateLev());
                 }
@@ -563,7 +564,8 @@ namespace OpenNos.Handler
 
                 Session.Character.Skills.Remove(skill);
                 Session.Client.SendPacket(Session.Character.GenerateSki());
-                Session.Client.SendPackets(Session.Character.GenerateQuicklist());
+                foreach (string quicklist in Session.Character.GenerateQuicklist())
+                    Session.Client.SendPacket(quicklist);
                 Session.Client.SendPacket(Session.Character.GenerateLev());
             }
         }

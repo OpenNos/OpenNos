@@ -1206,7 +1206,9 @@ namespace OpenNos.Handler
             Session.Character.GenerateStartupInventory();
             // mlobjlst - miniland object list
             Session.Client.SendPacket(Session.Character.GenerateGold());
-            Session.Client.SendPackets(Session.Character.GenerateQuicklist());
+
+            foreach (string quicklist in Session.Character.GenerateQuicklist())
+                Session.Client.SendPacket(quicklist);
             // string finit = "finit";
             // string blinit = "blinit";
             string clinit = "clinit";

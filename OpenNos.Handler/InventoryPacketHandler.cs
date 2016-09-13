@@ -1234,7 +1234,8 @@ namespace OpenNos.Handler
                 Session.Character.MorphUpgrade = sp.Upgrade;
                 Session.Character.MorphUpgrade2 = sp.Design;
                 Session.CurrentMap?.Broadcast(Session.Character.GenerateCMode());
-                Session.Client.SendPackets(Session.Character.GenerateQuicklist());
+                foreach (string quicklist in Session.Character.GenerateQuicklist())
+                    Session.Client.SendPacket(quicklist);
                 Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateEff(196), ReceiverType.All);
                 Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateGuri(6, 1), ReceiverType.All);
                 Session.Client.SendPacket(Session.Character.GenerateSpPoint());
