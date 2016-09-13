@@ -414,14 +414,32 @@ namespace OpenNos.Handler
 
             #region Sp
             SpecialistInstance specialistInstance = Session.Character.EquipmentList.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Equipment);
-         
+
             #endregion
 
             #region Get Weapon Stats
 
             WearableInstance weapon = Session.Character.EquipmentList.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.MainWeapon, InventoryType.Equipment);
+            if (weapon != null)
+            {
+                MainUpgrade = weapon.Upgrade;
+                MainMinDmg += weapon.DamageMinimum + weapon.Item.DamageMinimum;
+                MainMaxDmg += weapon.DamageMaximum + weapon.Item.DamageMaximum;
+                MainHitRate += weapon.HitRate + weapon.Item.HitRate;
+                MainCritChance += weapon.CriticalLuckRate + weapon.Item.CriticalLuckRate;
+                MainCritHit += weapon.CriticalRate + weapon.Item.CriticalRate;
+            }
+
             WearableInstance weapon2 = Session.Character.EquipmentList.LoadBySlotAndType<WearableInstance>((byte)EquipmentType.SecondaryWeapon, InventoryType.Equipment);
-            
+            if (weapon2 != null)
+            {
+                SecUpgrade = weapon2.Upgrade;
+                SecMinDmg += weapon2.DamageMinimum + weapon2.Item.DamageMinimum;
+                SecMaxDmg += weapon2.DamageMaximum + weapon2.Item.DamageMaximum;
+                SecHitRate += weapon2.HitRate + weapon2.Item.HitRate;
+                SecCritChance += weapon2.CriticalLuckRate + weapon2.Item.CriticalLuckRate;
+                SecCritHit += weapon2.CriticalRate + weapon2.Item.CriticalRate;
+            }
 
             #endregion
 
