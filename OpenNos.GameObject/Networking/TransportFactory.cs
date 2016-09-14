@@ -17,7 +17,7 @@ namespace OpenNos.GameObject
 
         public TransportFactory()
         {
-              _transportIds = new List<long>();
+            _transportIds = new List<long>();
         }
 
         #endregion

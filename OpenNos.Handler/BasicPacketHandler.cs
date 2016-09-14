@@ -24,7 +24,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
 
 namespace OpenNos.Handler
 {
@@ -429,13 +428,11 @@ namespace OpenNos.Handler
                             Session.Character.EquipmentList.AddToInventoryWithSlotAndType(specialistInstance, InventoryType.Equipment, (byte)EquipmentType.Sp);
                             Session.SendPacket(Session.Character.GenerateSlInfo(specialistInstance, 2));
                             Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("POINTS_RESET"), 0));
-
                         }
                     }
                     else Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("TRANSFORMATION_NEEDED"), 10));
                 }
                 else Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NOT_ENOUGH_POINTS"), 10));
-
             }
         }
 
@@ -880,86 +877,6 @@ namespace OpenNos.Handler
             Session.Character.DeleteTimeout();
         }
 
-        [Packet("qset")]
-        public void SetQuicklist(string packet)
-        {
-            Logger.Debug(packet, Session.SessionId);
-            string[] packetsplit = packet.Split(' ');
-            if (packetsplit.Length > 4)
-            {
-                short type, q1, q2, data1 = 0, data2 = 0;
-                if (!short.TryParse(packetsplit[2], out type) ||
-                    !short.TryParse(packetsplit[3], out q1) || !short.TryParse(packetsplit[4], out q2))
-                    return;
-                if (packetsplit.Length > 6)
-                {
-                    short.TryParse(packetsplit[5], out data1);
-                    short.TryParse(packetsplit[6], out data2);
-                }
-                switch (type)
-                {
-                    case 0:
-                    case 1:
-                        // client says  qset 0 1 3 2 6
-                        // answer    -> qset 1 3 0.2.6.0
-                        Session.Character.QuicklistEntries.RemoveAll(n => n.Q1 == q1 && n.Q2 == q2 && (Session.Character.UseSp ? n.Morph == Session.Character.Morph : n.Morph == 0));
-
-                        Session.Character.QuicklistEntries.Add(new QuicklistEntry
-                        {
-                            CharacterId = Session.Character.CharacterId,
-                            Type = type,
-                            Q1 = q1,
-                            Q2 = q2,
-                            Slot = data1,
-                            Pos = data2,
-                            Morph = Session.Character.UseSp ? (short)Session.Character.Morph : (short)0
-                        });
-
-                        Session.SendPacket($"qset {q1} {q2} {type}.{data1}.{data2}.0");
-                        break;
-
-                    case 2:
-                        // DragDrop / Reorder
-
-                        // qset type to1 to2 from1 from2
-                        // vars ->   q1  q2  data1 data2
-
-                        QuicklistEntry qlFrom = Session.Character.QuicklistEntries.Single(n => n.Q1 == data1 && n.Q2 == data2 && (Session.Character.UseSp ? n.Morph == Session.Character.Morph : n.Morph == 0));
-                        QuicklistEntry qlTo = Session.Character.QuicklistEntries.SingleOrDefault(n => n.Q1 == q1 && n.Q2 == q2 && (Session.Character.UseSp ? n.Morph == Session.Character.Morph : n.Morph == 0));
-
-                        qlFrom.Q1 = q1;
-                        qlFrom.Q2 = q2;
-
-                        if (qlTo == null)
-                        {
-                            // Put 'from' to new position (datax)
-                            Session.SendPacket($"qset {qlFrom.Q1} {qlFrom.Q2} {qlFrom.Type}.{qlFrom.Slot}.{qlFrom.Pos}.0");
-                            // old 'from' is now empty.
-                            Session.SendPacket($"qset {data1} {data2} 7.7.-1.0");
-                        }
-                        else
-                        {
-                            // Put 'from' to new position (datax)
-                            Session.SendPacket($"qset {qlFrom.Q1} {qlFrom.Q2} {qlFrom.Type}.{qlFrom.Slot}.{qlFrom.Pos}.0");
-                            // 'from' is now 'to' because they exchanged
-                            qlTo.Q1 = data1;
-                            qlTo.Q2 = data2;
-                            Session.SendPacket($"qset {qlTo.Q1} {qlTo.Q2} {qlTo.Type}.{qlTo.Slot}.{qlTo.Pos}.0");
-                        }
-                        break;
-
-                    case 3:
-                        // Remove from Quicklist
-                        Session.Character.QuicklistEntries.RemoveAll(n => n.Q1 == q1 && n.Q2 == q2 && (Session.Character.UseSp ? n.Morph == Session.Character.Morph : n.Morph == 0));
-                        Session.SendPacket($"qset {q1} {q2} 7.7.-1.0");
-                        break;
-
-                    default:
-                        return;
-                }
-            }
-        }
-
         [Packet("req_info")]
         public void ReqInfo(string packet)
         {
@@ -1139,7 +1056,6 @@ namespace OpenNos.Handler
                     DAOFactory.AccountDAO.WriteGeneralLog(Session.Character.AccountId, Session.IpAddress, Session.Character.CharacterId, "Connection", "World");
                     Session.SendPacket("OK");
 
-                 
                     // Inform everyone about connected character
                     ServiceFactory.Instance.CommunicationService.ConnectCharacter(Session.Character.Name, Session.Account.Name);
                 }
@@ -1147,6 +1063,86 @@ namespace OpenNos.Handler
             catch (Exception ex)
             {
                 Logger.Log.Error("Select character failed.", ex);
+            }
+        }
+
+        [Packet("qset")]
+        public void SetQuicklist(string packet)
+        {
+            Logger.Debug(packet, Session.SessionId);
+            string[] packetsplit = packet.Split(' ');
+            if (packetsplit.Length > 4)
+            {
+                short type, q1, q2, data1 = 0, data2 = 0;
+                if (!short.TryParse(packetsplit[2], out type) ||
+                    !short.TryParse(packetsplit[3], out q1) || !short.TryParse(packetsplit[4], out q2))
+                    return;
+                if (packetsplit.Length > 6)
+                {
+                    short.TryParse(packetsplit[5], out data1);
+                    short.TryParse(packetsplit[6], out data2);
+                }
+                switch (type)
+                {
+                    case 0:
+                    case 1:
+                        // client says  qset 0 1 3 2 6
+                        // answer    -> qset 1 3 0.2.6.0
+                        Session.Character.QuicklistEntries.RemoveAll(n => n.Q1 == q1 && n.Q2 == q2 && (Session.Character.UseSp ? n.Morph == Session.Character.Morph : n.Morph == 0));
+
+                        Session.Character.QuicklistEntries.Add(new QuicklistEntry
+                        {
+                            CharacterId = Session.Character.CharacterId,
+                            Type = type,
+                            Q1 = q1,
+                            Q2 = q2,
+                            Slot = data1,
+                            Pos = data2,
+                            Morph = Session.Character.UseSp ? (short)Session.Character.Morph : (short)0
+                        });
+
+                        Session.SendPacket($"qset {q1} {q2} {type}.{data1}.{data2}.0");
+                        break;
+
+                    case 2:
+                        // DragDrop / Reorder
+
+                        // qset type to1 to2 from1 from2
+                        // vars ->   q1  q2  data1 data2
+
+                        QuicklistEntry qlFrom = Session.Character.QuicklistEntries.Single(n => n.Q1 == data1 && n.Q2 == data2 && (Session.Character.UseSp ? n.Morph == Session.Character.Morph : n.Morph == 0));
+                        QuicklistEntry qlTo = Session.Character.QuicklistEntries.SingleOrDefault(n => n.Q1 == q1 && n.Q2 == q2 && (Session.Character.UseSp ? n.Morph == Session.Character.Morph : n.Morph == 0));
+
+                        qlFrom.Q1 = q1;
+                        qlFrom.Q2 = q2;
+
+                        if (qlTo == null)
+                        {
+                            // Put 'from' to new position (datax)
+                            Session.SendPacket($"qset {qlFrom.Q1} {qlFrom.Q2} {qlFrom.Type}.{qlFrom.Slot}.{qlFrom.Pos}.0");
+                            // old 'from' is now empty.
+                            Session.SendPacket($"qset {data1} {data2} 7.7.-1.0");
+                        }
+                        else
+                        {
+                            // Put 'from' to new position (datax)
+                            Session.SendPacket($"qset {qlFrom.Q1} {qlFrom.Q2} {qlFrom.Type}.{qlFrom.Slot}.{qlFrom.Pos}.0");
+                            // 'from' is now 'to' because they exchanged
+                            qlTo.Q1 = data1;
+                            qlTo.Q2 = data2;
+                            Session.SendPacket($"qset {qlTo.Q1} {qlTo.Q2} {qlTo.Type}.{qlTo.Slot}.{qlTo.Pos}.0");
+                        }
+                        break;
+
+                    case 3:
+                        // Remove from Quicklist
+                        Session.Character.QuicklistEntries.RemoveAll(n => n.Q1 == q1 && n.Q2 == q2 && (Session.Character.UseSp ? n.Morph == Session.Character.Morph : n.Morph == 0));
+                        Session.SendPacket($"qset {q1} {q2} 7.7.-1.0");
+                        break;
+
+                    default:
+                        return;
+                }
             }
         }
 
@@ -1308,20 +1304,17 @@ namespace OpenNos.Handler
         [Packet("walk")]
         public void Walk(string packet)
         {
-            string[] packetsplit = packet.Split(' ');
-            if (packetsplit.Length <= 5)
-                return;
+            WalkPacket walkPacket = PacketFactory.Deserialize<WalkPacket>(packet);
 
             double currentRunningSeconds = (DateTime.Now - Process.GetCurrentProcess().StartTime.AddSeconds(-50)).TotalSeconds;
             double timeSpanSinceLastPortal = currentRunningSeconds - Session.Character.LastPortal;
-            int distance = Map.GetDistance(new MapCell() { X = Session.Character.MapX, Y = Session.Character.MapY }, new MapCell() { X = Convert.ToInt16(packetsplit[2]), Y = Convert.ToInt16(packetsplit[3]) });
+            int distance = Map.GetDistance(new MapCell() { X = Session.Character.MapX, Y = Session.Character.MapY },
+                new MapCell() { X = walkPacket.XCoordinate, Y = walkPacket.YCoordinate });
 
-            //double prediction = ((double)distance / (double)Session.Character.Speed) * 2.000d;
-
-            if (Session.Character.Speed >= Convert.ToByte(packetsplit[5]) && !(distance > 60 && timeSpanSinceLastPortal > 5))
+            if (Session.Character.Speed >= walkPacket.Speed && !(distance > 60 && timeSpanSinceLastPortal > 5))
             {
-                Session.Character.MapX = Convert.ToInt16(packetsplit[2]);
-                Session.Character.MapY = Convert.ToInt16(packetsplit[3]);
+                Session.Character.MapX = walkPacket.XCoordinate;
+                Session.Character.MapY = walkPacket.YCoordinate;
                 Session.CurrentMap?.Broadcast(Session.Character.GenerateMv());
                 Session.SendPacket(Session.Character.GenerateCond());
                 Session.Character.LastMove = DateTime.Now;
@@ -1354,6 +1347,7 @@ namespace OpenNos.Handler
             else
                 Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("USER_NOT_CONNECTED")));
         }
+
         #endregion
     }
 }
