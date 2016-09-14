@@ -16,7 +16,7 @@ namespace OpenNos.Domain
 {
     public enum GroupSharingType : byte
     {
-        ByOrder = 1,
-        Everyone = 2
+        ByOrder = 0,
+        Everyone = 1
     }
 }

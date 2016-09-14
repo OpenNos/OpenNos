@@ -25,6 +25,7 @@ namespace OpenNos.GameObject
         {
             Characters = new List<ClientSession>();
             GroupId = ServerManager.Instance.GetNextGroupId();
+            order = 0;
         }
 
         #endregion
@@ -34,7 +35,17 @@ namespace OpenNos.GameObject
         public List<ClientSession> Characters { get; set; }
         public long GroupId { get; set; }
         public byte SharingMode { get; set; }
-
+        private int order;
+        public long OrderedCharacterId
+        {
+            get
+            {
+                order++;
+                if (order > Characters.Count - 1)
+                    order = 0;
+                return Characters.ElementAt(order).Character.CharacterId;
+            }
+        }
         #endregion
 
         #region Methods

@@ -434,7 +434,6 @@ namespace OpenNos.Handler
             string[] packetsplit = packet.Split(' ');
             long transportId;
             MapItem mapitem;
-
             if (Session.Character.LastSkill.AddSeconds(1) > DateTime.Now || Session.Character.IsVehicled)
             {
                 return;
@@ -446,6 +445,14 @@ namespace OpenNos.Handler
 
                 if (mapitem.PositionX < Session.Character.MapX + 3 && mapitem.PositionX > Session.Character.MapX - 3 && mapitem.PositionY < Session.Character.MapY + 3 && mapitem.PositionY > Session.Character.MapY - 3)
                 {
+                    Group gr = null;
+                    if(mapitem.Owner !=null)
+                      gr=  ServerManager.Instance.Groups.FirstOrDefault(g => g.IsMemberOfGroup((long)mapitem.Owner) && g.IsMemberOfGroup(Session.Character.CharacterId));
+                    if (mapitem.CreateDate.AddSeconds(20) > DateTime.Now && !(mapitem.Owner == Session.Character.CharacterId || (gr!=null && gr.SharingMode == (byte)GroupSharingType.Everyone)))
+                    {
+                        Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NOT_YOUR_ITEM"),10));
+                        return;
+                    }
                     if (mapitem.ItemInstance.ItemVNum != 1046)
                     {
                         if (mapitem.ItemInstance.Item.ItemType == (byte)ItemType.Map)

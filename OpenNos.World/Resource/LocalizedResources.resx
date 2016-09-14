@@ -931,4 +931,10 @@
   <data name="SUM_SUCCESS" xml:space="preserve">
     <value>Summing successed!</value>
   </data>
+  <data name="DROPPED_ITEM" xml:space="preserve">
+    <value>dropped {0} x {1}</value>
+  </data>
+  <data name="ITEM_BOUNDED_TO" xml:space="preserve">
+    <value>{1} dropped {0} x {2}</value>
+  </data>
 </root>
