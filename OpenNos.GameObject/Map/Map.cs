@@ -269,6 +269,7 @@ namespace OpenNos.GameObject
             {
                 ItemInstance = newInstance,
                 Owner = Owner
+
             };
 
             //rarify

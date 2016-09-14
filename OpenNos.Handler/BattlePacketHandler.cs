@@ -630,14 +630,21 @@ namespace OpenNos.Handler
             }
 
             int intdamage = Session.Character.HasGodMode ? 67107840 : FinalDamage;
-
+            if (mmon.DamageList.ContainsKey(Session.Character.CharacterId))
+            {
+                mmon.DamageList[Session.Character.CharacterId]+=intdamage;
+            }
+            else
+            {
+                mmon.DamageList.Add(Session.Character.CharacterId, intdamage);
+            }
             if (mmon.CurrentHp <= intdamage)
             {
                 mmon.Alive = false;
                 mmon.CurrentHp = 0;
                 mmon.CurrentMp = 0;
                 mmon.Death = DateTime.Now;
-                
+
                 Random rnd = new Random();
                 int i = 1;
                 List<DropDTO> droplist = monsterinfo.Drops.Where(s => Session.CurrentMap.MapTypes.FirstOrDefault(m => m.MapTypeId == s.MapTypeId) != null || (s.MapTypeId == null)).ToList();
@@ -687,7 +694,7 @@ namespace OpenNos.Handler
                         Session.Client.SendPacket(Session.Character.GenerateGold());
                     }
                     else
-                        Session.CurrentMap.DropItemByMonster(mmon.DamageList.Any() ? mmon.DamageList.First().Key : (long?)null,drop2, mmon.MapX, mmon.MapY);
+                        Session.CurrentMap.DropItemByMonster(mmon.DamageList.Any() ? mmon.DamageList.First().Key : (long?)null, drop2, mmon.MapX, mmon.MapY);
                 }
                 if (Session.Character.Hp > 0)
                 {
@@ -718,7 +725,7 @@ namespace OpenNos.Handler
             return damage;
         }
 
-        private void ZoneHit(int Castingid,short x,short y)
+        private void ZoneHit(int Castingid, short x, short y)
         {
             List<CharacterSkill> skills = Session.Character.UseSp ? Session.Character.SkillsSp : Session.Character.Skills;
             ushort damage = 0;
@@ -745,7 +752,7 @@ namespace OpenNos.Handler
                         Session.Character.LastSkill = DateTime.Now;
 
                         Session.CurrentMap?.Broadcast($"bs 1 {Session.Character.CharacterId} {x} {y} {ski.Skill.SkillVNum} {ski.Skill.Cooldown} {ski.Skill.AttackAnimation} {ski.Skill.Effect} 0 0 1 1 0 0 0");
-                  
+
                         foreach (MapMonster mon in ServerManager.GetMap(Session.Character.MapId).GetListMonsterInRange(x, y, ski.Skill.TargetRange))
                         {
                             damage = GenerateDamage(mon.MapMonsterId, ski.Skill, ref hitmode);
