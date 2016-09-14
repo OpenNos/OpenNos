@@ -339,7 +339,7 @@ namespace OpenNos.GameObject
             MapItem droppedItem = null;
             short MapX = (short)(rnd.Next(Owner.MapX - 1, Owner.MapX + 2));
             short MapY = (short)(rnd.Next(Owner.MapY - 1, Owner.MapY + 2));
-            while (ServerManager.GetMap(Owner.MapId).IsBlockedZone(MapX, MapY) && i < 5)
+            while (Owner.Session.CurrentMap.IsBlockedZone(MapX, MapY) && i < 5)
             {
                 MapX = (short)(rnd.Next(Owner.MapX - 1, Owner.MapX + 2));
                 MapY = (short)(rnd.Next(Owner.MapY - 1, Owner.MapY + 2));
@@ -352,11 +352,15 @@ namespace OpenNos.GameObject
                 droppedItem = new MapItem(MapX, MapY)
                 {
                     ItemInstance = (inv.ItemInstance as ItemInstance).DeepCopy()
-                    
                 };
                 droppedItem.ItemInstance.Id = random;
                 droppedItem.ItemInstance.Amount = amount;
-                ServerManager.GetMap(Owner.MapId).DroppedList.Add(droppedItem.ItemInstance.TransportId, droppedItem);
+                while (Owner.Session.CurrentMap.DroppedList.ContainsKey(droppedItem.ItemInstance.TransportId))
+                {
+                    droppedItem.ItemInstance.TransportId = 0; //reset transportId
+                }
+
+                Owner.Session.CurrentMap.DroppedList.Add(droppedItem.ItemInstance.TransportId, droppedItem);
                 inv.ItemInstance.Amount -= amount;
             }
             return droppedItem;
@@ -425,8 +429,6 @@ namespace OpenNos.GameObject
             }
             return -1;
         }
-
-      
 
         #endregion
     }

@@ -98,6 +98,11 @@ namespace OpenNos.Core.Threading
             }
         }
 
+        public void ClearQueue()
+        {
+            _queue.Clear();
+        }
+
         /// <summary>
         /// Starts processing of items.
         /// </summary>
