@@ -352,6 +352,7 @@ namespace OpenNos.GameObject
                 droppedItem = new MapItem(MapX, MapY)
                 {
                     ItemInstance = (inv.ItemInstance as ItemInstance).DeepCopy()
+                    
                 };
                 droppedItem.ItemInstance.Id = random;
                 droppedItem.ItemInstance.Amount = amount;
