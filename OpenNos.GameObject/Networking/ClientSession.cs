@@ -95,11 +95,16 @@ namespace OpenNos.GameObject
                 return _client != null;
             }
         }
+
         public long ClientId
         {
             get
             {
                 return _client.ClientId;
+            }
+            set
+            {
+                _client.ClientId = value;
             }
         }
 
