@@ -25,6 +25,7 @@ namespace OpenNos.GameObject
         {
             PositionX = x;
             PositionY = y;
+            CreateDate = DateTime.Now;
         }
 
         #endregion
@@ -34,7 +35,7 @@ namespace OpenNos.GameObject
         public ItemInstance ItemInstance { get; set; }
         public short PositionX { get; set; }
         public short PositionY { get; set; }
-        public DateTime? CreateDate { get; set; }
+        public DateTime CreateDate { get; set; }
         public long? Owner { get; set; }
         #endregion
 
