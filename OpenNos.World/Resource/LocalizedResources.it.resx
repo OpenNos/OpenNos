@@ -180,9 +180,6 @@
   <data name="BUY_ITEM" xml:space="preserve">
     <value>{0}: compra &lt;{1} {2}: pezzo &gt;</value>
   </data>
-  <data name="BUY_ITEM_VALIDE" xml:space="preserve">
-    <value>L'item è stato acquistato con successo</value>
-  </data>
   <data name="CANT_MOVE" xml:space="preserve">
     <value>Il personaggio non può moversi.</value>
   </data>
@@ -307,7 +304,7 @@
     <value>Barra degli HP abilitata</value>
   </data>
   <data name="INCOMING_EXCHANGE" xml:space="preserve">
-    <value>Qualcuno vuole scambiare con te</value>
+    <value>{0} vuole scambiare con te.</value>
   </data>
   <data name="INSERT_ERROR" xml:space="preserve">
     <value>Errore nell'inserimento o nell'aggiornamento del personaggio {0} , {1}</value>
@@ -344,9 +341,6 @@
   </data>
   <data name="JOBLEVEL_CHANGED" xml:space="preserve">
     <value>Il tuo livello di lavoro è stato incrementato.</value>
-  </data>
-  <data name="JOB_CHANGED" xml:space="preserve">
-    <value>Il livello di lavoro è stato cambiato.</value>
   </data>
   <data name="LEAVE_GROUP" xml:space="preserve">
     <value>{0} ha lasciato il gruppo</value>
@@ -502,7 +496,7 @@
     <value>{0} Ricette Caricate!</value>
   </data>
   <data name="EXCHANGE_REFUSED" xml:space="preserve">
-    <value>Commercio rifiutato</value>
+    <value>{0} ha rifiutato il commercio</value>
   </data>
   <data name="REP_CHANGED" xml:space="preserve">
     <value>La tua reputazione è cambiata.</value>
@@ -532,10 +526,10 @@
     <value>Il negozio è stato aperto</value>
   </data>
   <data name="SHUTDOWN_MIN" xml:space="preserve">
-    <value>Il server si spegnerà a breve</value>
+    <value>Il server si spegnerà in {0} Minuti!</value>
   </data>
   <data name="SHUTDOWN_SEC" xml:space="preserve">
-    <value>Il server si spegnerà in {0} Secondi.</value>
+    <value>Il server si spegnerà in {0} Secondi!</value>
   </data>
   <data name="SKILL_LEARNED" xml:space="preserve">
     <value>Hai imparato una nuova skill</value>
@@ -579,9 +573,6 @@
   <data name="TRADE_BLOCKED" xml:space="preserve">
     <value>L'altra persona ha il commercio bloccato</value>
   </data>
-  <data name="TRANSFORM_DISAPEAR" xml:space="preserve">
-    <value>L'effetto collaterale della trasformazione è terminato.</value>
-  </data>
   <data name="UPDATE_ACCOUNT_ERROR" xml:space="preserve">
     <value>Errore nell'inserimento o aggiornamento dell'Account {0} , {1}</value>
   </data>
@@ -605,9 +596,6 @@
   </data>
   <data name="USER_NOT_HERO" xml:space="preserve">
     <value>Solo gli eroi possono utilizzare questo tipo di messaggio.</value>
-  </data>
-  <data name="WHISPERED_BLOCKED" xml:space="preserve">
-    <value>L'altro giocatore ha la chat privata bloccata</value>
   </data>
   <data name="WHISPER_BLOCKED" xml:space="preserve">
     <value>Adesso la chat privata è stata bloccata</value>
@@ -639,24 +627,6 @@
   <data name="SHOP_PRIVATE_SHOP" xml:space="preserve">
     <value>Bottega Privata</value>
   </data>
-  <data name="DIGNITY_CHANGED" xml:space="preserve">
-    <value>Dignità recuperata</value>
-  </data>
-  <data name="DROP_INCREASE" xml:space="preserve">
-    <value>Rate Drop Cambiata</value>
-  </data>
-  <data name="GOLD_INCREASE" xml:space="preserve">
-    <value>Rate Gold Cambiata</value>
-  </data>
-  <data name="NO_WEAPON&quot;" xml:space="preserve">
-    <value>Equipaggia un arma</value>
-  </data>
-  <data name="XP_INCREASE" xml:space="preserve">
-    <value>Rate Xp cambiata</value>
-  </data>
-  <data name="BAN_DONE" xml:space="preserve">
-    <value>Ban Effettuato a {0}</value>
-  </data>
   <data name="CANT_ATTACK" xml:space="preserve">
     <value>Non puoi ancora attaccare</value>
   </data>
@@ -664,7 +634,7 @@
     <value>Livello Lavoro Aumentato</value>
   </data>
   <data name="FAIRY_LEVELUP" xml:space="preserve">
-    <value>La potenza della tua fata è aumentata</value>
+    <value>La potenza della tua fata è aumentata di {0} livello.</value>
   </data>
   <data name="NOT_ENOUGH_MP" xml:space="preserve">
     <value>Non hai abbastanza mp</value>
@@ -672,62 +642,59 @@
   <data name="SP_LEVELUP" xml:space="preserve">
     <value>Il lavoro del tuo specialista è aumentato</value>
   </data>
-  <data name="TRASFORM_DISAPPEAR" xml:space="preserve">
-    <value>L'effetto collaterare è terminato</value>
-  </data>
   <data name="NO_WEAPON" xml:space="preserve">
     <value>Equipaggia un arma</value>
   </data>
   <data name="AMMO_LOADED_ADVENTURER" xml:space="preserve">
-    <value />
+    <value>Munizioni caricate!</value>
   </data>
   <data name="AMMO_LOADED_ARCHER" xml:space="preserve">
-    <value />
+    <value>Frecce caricate!</value>
   </data>
   <data name="AMMO_LOADED_SWORDSMAN" xml:space="preserve">
-    <value />
+    <value>Dardi caricati!</value>
   </data>
   <data name="NO_AMMO_ADVENTURER" xml:space="preserve">
-    <value />
+    <value>Non hai abbastanza Munizioni... Comprali al Negozio d'Armi!</value>
   </data>
   <data name="NO_AMMO_ARCHER" xml:space="preserve">
-    <value />
+    <value>Non hai abbastanza Frecce... Comprale al Negozio d'Armi!</value>
   </data>
   <data name="NO_AMMO_SWORDSMAN" xml:space="preserve">
-    <value />
+    <value>Non hai abbastanza Dardi... Comprali al Negozio d'Armi!</value>
   </data>
   <data name="REFUSED_GROUP_REQUEST" xml:space="preserve">
-    <value>Richiesta gruppo rifiutata</value>
+    <value>{0} ha rifiutato l'invito al gruppo!</value>
   </data>
   <data name="CANT_EQUIP_DESTROYED_SP" xml:space="preserve">
-    <value />
+    <value>Non puoi equipaggiare una SP distrutta.</value>
   </data>
   <data name="CANT_UPGRADE_DESTROYED_SP" xml:space="preserve">
-    <value />
+    <value>Non puoi migliorare una SP distrutta.</value>
   </data>
   <data name="UPGRADESP_DESTROYED" xml:space="preserve">
-    <value />
+    <value>La SP si è distrutta.</value>
   </data>
   <data name="GROUP_JOIN" xml:space="preserve">
-    <value />
+    <value>Sei entrato nel gruppo di {0}.</value>
   </data>
   <data name="NO_WIG" xml:space="preserve">
-    <value />
+    <value>Non puoi indossare i capelli afro :)</value>
   </data>
   <data name="IN_BATTLE" xml:space="preserve">
-    <value />
+    <value>Non puoi invitare i giocatori mentre combattono!</value>
   </data>
   <data name="USER_NOT_BANNED" xml:space="preserve">
-    <value />
+    <value>L'utente non è bannato</value>
   </data>
   <data name="USER_NOT_MUTED" xml:space="preserve">
-    <value />
+    <value>L'utente non è silenziato.</value>
   </data>
   <data name="NOT_ENOUGH_POINTS" xml:space="preserve">
-    <value />
+    <value>Non hai abbastanza punti sp.</value>
   </data>
   <data name="TRANSFORMATION_NEEDED" xml:space="preserve">
-    <value />
+    <value>Devi essere trasformato per resettare i punti sp!</value>
   </data>
   <data name="SPEAKER" xml:space="preserve">
     <value>&lt;Altoparlante&gt;</value>
@@ -736,12 +703,231 @@
     <value>Prima di trasformarti devi rimuovere il veicolo.</value>
   </data>
   <data name="MEMORY" xml:space="preserve">
-    <value />
+    <value>Memoria usata!</value>
   </data>
   <data name="SHOP_NOT_ALLOWED" xml:space="preserve">
-    <value />
+    <value>Non puoi aprire il negozio nelle mappe generali.</value>
   </data>
   <data name="SKILL_DOES_NOT_EXIST" xml:space="preserve">
-    <value />
+    <value>La skill non esiste!</value>
+  </data>
+  <data name="ALREADY_EXCHANGE" xml:space="preserve">
+    <value>L'utente sta già scambiando.</value>
+  </data>
+  <data name="ALREADY_MORPHED" xml:space="preserve">
+    <value>Sei già trasformato!</value>
+  </data>
+  <data name="ASK_BIND" xml:space="preserve">
+    <value>Vuoi davvero usare questo oggetto? L'oggetto sarà di uso esclusivo tuo.</value>
+  </data>
+  <data name="ASK_REVIVE" xml:space="preserve">
+    <value>Vuoi rivivere? Ti costerà 10 semi della potenza.</value>
+  </data>
+  <data name="ASK_REVIVE_FREE" xml:space="preserve">
+    <value>Vuoi rivivere? E' gratuito.</value>
+  </data>
+  <data name="ASK_USE" xml:space="preserve">
+    <value>Vuoi davvero usare quest'oggetto?</value>
+  </data>
+  <data name="ASK_WINGS_CHANGE" xml:space="preserve">
+    <value>Vuoi davvero cambiare le tue ali?</value>
+  </data>
+  <data name="BN7" xml:space="preserve">
+    <value>Noi^non^supportiamo^i^server^privati!</value>
+  </data>
+  <data name="BN8" xml:space="preserve">
+    <value>Questo^è^un^messaggio^figo!</value>
+  </data>
+  <data name="BN9" xml:space="preserve">
+    <value>Grazie^a^tutti^per^il^contributo!</value>
+  </data>
+  <data name="CLASS_CHANGED" xml:space="preserve">
+    <value>La tua classe è stata cambiata.</value>
+  </data>
+  <data name="CLIENTSESSION_DISPOSING" xml:space="preserve">
+    <value>La sessione si sta svuotando, perciò non verrà gestito il pacchetto!</value>
+  </data>
+  <data name="XP_RATE_CHANGED" xml:space="preserve">
+    <value>Rate Esperienza cambiate!</value>
+  </data>
+  <data name="XP_RATE_NOW" xml:space="preserve">
+    <value>Tassp Esperienza </value>
+  </data>
+  <data name="YOU_REFUSED" xml:space="preserve">
+    <value>Lo scambio è stato rifiutato!</value>
+  </data>
+  <data name="BUY_ITEM_VALID" xml:space="preserve">
+    <value>Hai comprato {1} di {0}</value>
+  </data>
+  <data name="DONE" xml:space="preserve">
+    <value>Il comando è stato applicato!.</value>
+  </data>
+  <data name="MONSTERS_LOADED" xml:space="preserve">
+    <value>{0} Mostri caricati!</value>
+  </data>
+  <data name="NOT_ENOUGH_CP" xml:space="preserve">
+    <value>Non hai abbastanza punti CP.</value>
+  </data>
+  <data name="NOT_ENOUGH_REPUT" xml:space="preserve">
+    <value>Reputazione insufficiente</value>
+  </data>
+  <data name="REMOVE_SP" xml:space="preserve">
+    <value>Se vuoi imparare questa skill, devi prima rimuovere la SP!</value>
+  </data>
+  <data name="REPUT_DECREASED" xml:space="preserve">
+    <value>Reputazione diminuita!</value>
+  </data>
+  <data name="SKILLS_LOADED" xml:space="preserve">
+    <value>{0} Skill caricate!</value>
+  </data>
+  <data name="TRANSFORM_DISAPPEAR" xml:space="preserve">
+    <value>L'effetto secondario della trasformazione è finito</value>
+  </data>
+  <data name="USER_NOT_FOUND" xml:space="preserve">
+    <value>Utente non trovato!</value>
+  </data>
+  <data name="WELCOME_MUSIC_INFO" xml:space="preserve">
+    <value>Melodia^Primaverile</value>
+  </data>
+  <data name="USER_WHISPER_BLOCKED" xml:space="preserve">
+    <value>L'utente ha bloccato la chat privata!</value>
+  </data>
+  <data name="LOSE_DIGNITY" xml:space="preserve">
+    <value>Hai perso {0} di dignità!</value>
+  </data>
+  <data name="HEROLEVEL_CHANGED" xml:space="preserve">
+    <value>Il livello eroe è stato cambiato!</value>
+  </data>
+  <data name="SHOP_ONLY_TRADABLE_ITEMS" xml:space="preserve">
+    <value>Puoi solo vendere gli item commerciabili!</value>
+  </data>
+  <data name="CONNECTION_LOST" xml:space="preserve">
+    <value>La connessione al server è stata persa!</value>
+  </data>
+  <data name="MUTED_FEMALE" xml:space="preserve">
+    <value>Sono stata una ragazza cattiva, mi sono meritata questa punizione!</value>
+  </data>
+  <data name="MUTED_MALE" xml:space="preserve">
+    <value>Sono stato un cattivo ragazzo e mi hanno silenziato!</value>
+  </data>
+  <data name="MUTED_SINGULAR" xml:space="preserve">
+    <value>Sei stato mutato! Ragione: {0}. Tempo: 1 Ora.</value>
+  </data>
+  <data name="MUTE_END" xml:space="preserve">
+    <value>La punizione è terminata!</value>
+  </data>
+  <data name="SKILLS_IN_LOADING" xml:space="preserve">
+    <value>Devi aspettare finchè le skill si ricaricano</value>
+  </data>
+  <data name="RESTORE_DIGNITY" xml:space="preserve">
+    <value>Dignità aumentata: +1</value>
+  </data>
+  <data name="DROP_RATE_CHANGED" xml:space="preserve">
+    <value>La tassa di drop è stata modificata.</value>
+  </data>
+  <data name="GOLD_RATE_CHANGED" xml:space="preserve">
+    <value>La tassa d'oro è stata modificata!</value>
+  </data>
+  <data name="DATABASE_NOT_UPTODATE" xml:space="preserve">
+    <value>Il database può non essere aggiornato. Considera di aggiornarlo!</value>
+  </data>
+  <data name="LVL_REQUIRED" xml:space="preserve">
+    <value>Lo specialista deve essere almeno di livello {0} per essere migliorato!</value>
+  </data>
+  <data name="UPGRADESP_FAILED" xml:space="preserve">
+    <value>Miglioramento dell'SP fallito</value>
+  </data>
+  <data name="UPGRADESP_FAILED_SAVED" xml:space="preserve">
+    <value>Miglioramento dell'SP fallito ma l'item ha protetto la SP!</value>
+  </data>
+  <data name="UPGRADESP_SUCCESS" xml:space="preserve">
+    <value>Miglioramento del SP riuscito!</value>
+  </data>
+  <data name="MINILAND_WELCOME_MESSAGE" xml:space="preserve">
+    <value>Benvenuto!</value>
+  </data>
+  <data name="DROP_RATE_NOW" xml:space="preserve">
+    <value>Tasso di drop</value>
+  </data>
+  <data name="RATEGOLD_NOW" xml:space="preserve">
+    <value>Tasso d'oro</value>
+  </data>
+  <data name="FAIRYXP_NOW" xml:space="preserve">
+    <value>Tasso Esperieza Fata</value>
+  </data>
+  <data name="FAIRYXP_RATE_CHANGED" xml:space="preserve">
+    <value>Il tasso dell'esperienza della fata è stato cambiato.</value>
+  </data>
+  <data name="FAIRYMAX" xml:space="preserve">
+    <value>La tua fata è salita al massimo livello!</value>
+  </data>
+  <data name="FAIRYSTATS" xml:space="preserve">
+    <value>Esperienza Fata: {0}/{1}</value>
+  </data>
+  <data name="SUM_SUCCESS" xml:space="preserve">
+    <value>La somma è riuscita!</value>
+  </data>
+  <data name="SUM_FAILED" xml:space="preserve">
+    <value>La somma è fallita!</value>
+  </data>
+  <data name="SKILL_ALREADY_EXIST" xml:space="preserve">
+    <value>Possiedi già questa skill!</value>
+  </data>
+  <data name="SAVING_ALL" xml:space="preserve">
+    <value>Sto salvando i dati!</value>
+  </data>
+  <data name="NOT_ENOUGH_ITEM" xml:space="preserve">
+    <value>Non hai abbastanza item!</value>
+  </data>
+  <data name="IMPOSSIBLE_TO_USE" xml:space="preserve">
+    <value>Non è possibile utilizzarlo al momento</value>
+  </data>
+  <data name="TRY_FAILED_WAIT" xml:space="preserve">
+    <value>Riprova tra: {0} secondi!</value>
+  </data>
+  <data name="TRY_FAILED" xml:space="preserve">
+    <value>Non hai trovato niente :(</value>
+  </data>
+  <data name="RECEIVED_ITEM" xml:space="preserve">
+    <value>Hai ricevuto: {0}</value>
+  </data>
+  <data name="JOINED_GROUP" xml:space="preserve">
+    <value>Sei entrato nel gruppo.</value>
+  </data>
+  <data name="HAS_SHOP_OPENED" xml:space="preserve">
+    <value>Non puoi scambiare con uno che ha il negozio aperto.</value>
+  </data>
+  <data name="PLAYER_IN_BATTLE" xml:space="preserve">
+    <value>Il giocatore {0} è in battaglia!</value>
+  </data>
+  <data name="LEVELUP" xml:space="preserve">
+    <value>Sei salito di livello di combattimento!</value>
+  </data>
+  <data name="SERVER_WORKING_TIME" xml:space="preserve">
+    <value>Tempo dall'avvio del server</value>
+  </data>
+  <data name="DELETE_PENALTYLOG_ERROR" xml:space="preserve">
+    <value>Errore nell'eliminazione PenaltyLog con Id {0},{1}</value>
+  </data>
+  <data name="GROUP_ADMIN" xml:space="preserve">
+    <value>Sei il capogruppo!</value>
+  </data>
+  <data name="MUTED_PLURAL" xml:space="preserve">
+    <value>Sei stato mutato! Ragione: {0}. Tempo: {1} Ore!</value>
+  </data>
+  <data name="MUTE_TIME" xml:space="preserve">
+    <value>Durata punizione: {0}</value>
+  </data>
+  <data name="SCROLL_PROTECT_USED" xml:space="preserve">
+    <value>La pergamena della protezione è stata usata!</value>
+  </data>
+  <data name="GOLD_RATE_NOW" xml:space="preserve">
+    <value>Tasso d'oro</value>
+  </data>
+  <data name="FAIRYXP_RATE_NOW" xml:space="preserve">
+    <value>Tasso exp fata</value>
+  </data>
+  <data name="FAIRY_LEVEL_CHANGED" xml:space="preserve">
+    <value>Il  livello della fata({0}) è stato cambiato!</value>
   </data>
 </root>
