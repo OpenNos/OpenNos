@@ -440,18 +440,20 @@ namespace OpenNos.Handler
             }
             if (long.TryParse(packetsplit[4], out transportId) && Session.CurrentMap.DroppedList.TryGetValue(transportId, out mapitem))
             {
-             
+
                 int amount = mapitem.ItemInstance.Amount;
 
                 if (mapitem.PositionX < Session.Character.MapX + 3 && mapitem.PositionX > Session.Character.MapX - 3 && mapitem.PositionY < Session.Character.MapY + 3 && mapitem.PositionY > Session.Character.MapY - 3)
                 {
                     Group gr = null;
-                    if(mapitem.Owner !=null)
-                      gr=  ServerManager.Instance.Groups.FirstOrDefault(g => g.IsMemberOfGroup((long)mapitem.Owner) && g.IsMemberOfGroup(Session.Character.CharacterId));
-                    if (mapitem.CreateDate.AddSeconds(30) > DateTime.Now && !(mapitem.Owner == Session.Character.CharacterId || (gr!=null && gr.SharingMode == (byte)GroupSharingType.Everyone)))
+                    if (mapitem.Owner != null)
                     {
-                        Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NOT_YOUR_ITEM"),10));
-                        return;
+                        gr = ServerManager.Instance.Groups.FirstOrDefault(g => g.IsMemberOfGroup((long)mapitem.Owner) && g.IsMemberOfGroup(Session.Character.CharacterId));
+                        if (mapitem.CreateDate.AddSeconds(30) > DateTime.Now && !(mapitem.Owner == Session.Character.CharacterId || (gr != null && gr.SharingMode == (byte)GroupSharingType.Everyone)))
+                        {
+                            Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NOT_YOUR_ITEM"), 10));
+                            return;
+                        }
                     }
                     if (mapitem.ItemInstance.ItemVNum != 1046)
                     {
@@ -1238,7 +1240,7 @@ namespace OpenNos.Handler
                 Session.Character.Morph = sp.Item.Morph;
                 Session.Character.MorphUpgrade = sp.Upgrade;
                 Session.Character.MorphUpgrade2 = sp.Design;
-                Session.CurrentMap?.Broadcast(Session.Character.GenerateCMode());     
+                Session.CurrentMap?.Broadcast(Session.Character.GenerateCMode());
                 Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateEff(196), ReceiverType.All);
                 Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateGuri(6, 1), ReceiverType.All);
                 Session.SendPacket(Session.Character.GenerateSpPoint());
