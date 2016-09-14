@@ -23,7 +23,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace OpenNos.GameObject
 {
@@ -43,7 +42,6 @@ namespace OpenNos.GameObject
 
         //Packetwait Packets
         private int? _waitForPacketsAmount;
-
 
         #endregion
 
@@ -72,38 +70,6 @@ namespace OpenNos.GameObject
 
         #region Properties
 
-        public string IpAddress
-        {
-            get
-            {
-                return _client.RemoteEndPoint.ToString();
-            }
-        }
-
-        public CommunicationStates CommunicationState
-        {
-            get
-            {
-                return _client.CommunicationState;
-            }
-        }
-
-        public bool HasSession
-        {
-            get
-            {
-                return _client != null;
-            }
-        }
-
-        public long ClientId
-        {
-            get
-            {
-                return _client.ClientId;
-            }
-        }
-
         public Account Account
         {
             get
@@ -128,11 +94,19 @@ namespace OpenNos.GameObject
             }
         }
 
-        public bool HasCurrentMap
+        public long ClientId
         {
             get
             {
-                return CurrentMap != null;
+                return _client.ClientId;
+            }
+        }
+
+        public CommunicationStates CommunicationState
+        {
+            get
+            {
+                return _client.CommunicationState;
             }
         }
 
@@ -156,6 +130,30 @@ namespace OpenNos.GameObject
             }
         }
 
+        public bool HasCurrentMap
+        {
+            get
+            {
+                return CurrentMap != null;
+            }
+        }
+
+        public bool HasSession
+        {
+            get
+            {
+                return _client != null;
+            }
+        }
+
+        public string IpAddress
+        {
+            get
+            {
+                return _client.RemoteEndPoint.ToString();
+            }
+        }
+
         public bool IsDisposing
         {
             get
@@ -176,9 +174,6 @@ namespace OpenNos.GameObject
 
         #region Methods
 
-        /// <summary>
-        /// Destroy ClientSession
-        /// </summary>
         public void Destroy()
         {
             //unregister from WCF events
@@ -186,7 +181,6 @@ namespace OpenNos.GameObject
             ServiceFactory.Instance.CommunicationCallback.CharacterDisconnectedEvent -= CommunicationCallback_CharacterDisconnectedEvent;
 
             //do everything necessary before removing client, DB save, Whatever
-
             if (Character != null)
             {
                 Character.CloseShop();
@@ -202,21 +196,7 @@ namespace OpenNos.GameObject
                 ServiceFactory.Instance.CommunicationService.DisconnectAccount(Account.Name);
             }
             ServerManager.Instance.UnregisterSession(this);
-        }
-
-        public void SendPacket(string packet)
-        {
-            _client.SendPacket(packet);
-        }
-
-        public void SendPacketFormat(string packet, params object[] param)
-        {
-            _client.SendPacketFormat(packet, param);
-        }
-
-        public void SendPackets(IEnumerable<String> packets)
-        {
-            _client.SendPackets(packets);
+            _queue.ClearQueue();
         }
 
         public void Disconnect()
@@ -237,6 +217,21 @@ namespace OpenNos.GameObject
         {
             Account = account;
             ServiceFactory.Instance.CommunicationService.ConnectAccount(account.Name, SessionId);
+        }
+
+        public void SendPacket(string packet)
+        {
+            _client.SendPacket(packet);
+        }
+
+        public void SendPacketFormat(string packet, params object[] param)
+        {
+            _client.SendPacketFormat(packet, param);
+        }
+
+        public void SendPackets(IEnumerable<String> packets)
+        {
+            _client.SendPackets(packets);
         }
 
         private void CommunicationCallback_CharacterConnectedEvent(object sender, EventArgs e)

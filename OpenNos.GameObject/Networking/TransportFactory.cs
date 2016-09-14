@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 
 namespace OpenNos.GameObject
@@ -8,14 +7,17 @@ namespace OpenNos.GameObject
     {
         #region Members
 
-        private IList<long> _transportIds;
         private static TransportFactory instance;
-        private Random _random;
+        private IList<long> _transportIds;
+        private long lastTransportId = 1;
+
+        #endregion
+
+        #region Instantiation
 
         public TransportFactory()
         {
-            _transportIds = new List<long>();
-            _random = new Random();
+              _transportIds = new List<long>();
         }
 
         #endregion
@@ -36,18 +38,20 @@ namespace OpenNos.GameObject
 
         #endregion
 
+        #region Methods
+
         public long GenerateTransportId()
         {
-            long newTransportId = _random.Next(1, 999999);
+            lastTransportId = lastTransportId + 1;
 
-            while(_transportIds.Contains(newTransportId))
-            {
-                newTransportId = _random.Next(1, 999999);
-            }
+            if (lastTransportId > 9999999)
+                lastTransportId = 1;
 
-            _transportIds.Add(newTransportId);
+            _transportIds.Add(lastTransportId);
 
-            return newTransportId;
+            return lastTransportId;
         }
+
+        #endregion
     }
 }
