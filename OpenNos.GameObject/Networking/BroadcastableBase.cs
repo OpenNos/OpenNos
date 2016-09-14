@@ -48,13 +48,13 @@ namespace OpenNos.GameObject
                 case ReceiverType.All:
                     for (int i = Sessions.Where(s => s != null && s.Character != null && !s.IsDisposing).Count() - 1; i >= 0; i--)
                     {
-                        Sessions.Where(s => s != null).ElementAt(i).Client.SendPacket(message);
+                        Sessions.Where(s => s != null).ElementAt(i).SendPacket(message);
                     }
                     break;
 
                 case ReceiverType.AllExceptMe:
                     for (int i = Sessions.Where(s => s != null && s.Character != null && s != client && !s.IsDisposing).Count() - 1; i >= 0; i--)
-                        Sessions.Where(s => s != null && s != client).ElementAt(i).Client.SendPacket(message);
+                        Sessions.Where(s => s != null && s != client).ElementAt(i).SendPacket(message);
                     break;
 
                 case ReceiverType.OnlySomeone:
@@ -62,22 +62,22 @@ namespace OpenNos.GameObject
 
                     if (targetSession == null) return false;
 
-                    targetSession.Client.SendPacket(message);
+                    targetSession.SendPacket(message);
                     return true;
 
                 case ReceiverType.AllNoEmoBlocked:
                     foreach (ClientSession session in Sessions.Where(s => s.Character != null && !s.IsDisposing && s.Character.MapId.Equals(client.Character.MapId) && !s.Character.EmoticonsBlocked))
-                        session.Client.SendPacket(message);
+                        session.SendPacket(message);
                     break;
 
                 case ReceiverType.AllNoHeroBlocked:
                     foreach (ClientSession session in Sessions.Where(s => s.Character != null && !s.IsDisposing && !s.Character.HeroChatBlocked))
-                        session.Client.SendPacket(message);
+                        session.SendPacket(message);
                     break;
 
                 case ReceiverType.Group:
                     foreach (ClientSession session in Sessions.Where(s => s.Character != null && !s.IsDisposing && s.Character.Group != null && s.Character.Group.GroupId.Equals(client.Character.Group.GroupId)))
-                        session.Client.SendPacket(message);
+                        session.SendPacket(message);
                     break;
             }
 

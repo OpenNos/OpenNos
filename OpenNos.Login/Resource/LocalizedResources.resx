@@ -133,7 +133,7 @@
     <value>Config loaded!</value>
   </data>
   <data name="CONNECTION" xml:space="preserve">
-    <value>CONNECT {0} Connected -- session:{1}</value>
+    <value>CONNECT {0} Connected -- SessionId: {1}</value>
   </data>
   <data name="DATABASE_INITIALIZED" xml:space="preserve">
     <value>Database has been initialized!</value>

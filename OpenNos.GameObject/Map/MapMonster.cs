@@ -176,7 +176,7 @@ namespace OpenNos.GameObject
                         {
                             Target = character.CharacterId;
                             if (!Monster.NoAggresiveIcon)
-                                character.Session.Client.SendPacket(GenerateEff(5000));
+                                character.Session.SendPacket(GenerateEff(5000));
                         }
                     }
                 }

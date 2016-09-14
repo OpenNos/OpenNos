@@ -81,7 +81,7 @@ namespace OpenNos.Handler
 
                     if (loadedAccount != null && loadedAccount.Password.ToUpper().Equals(user.Password))
                     {
-                        DAOFactory.AccountDAO.WriteGeneralLog(loadedAccount.AccountId, _session.Client.RemoteEndPoint.ToString(), null, "Connection", "LoginServer");
+                        DAOFactory.AccountDAO.WriteGeneralLog(loadedAccount.AccountId, _session.IpAddress, null, "Connection", "LoginServer");
 
                         if (!ServiceFactory.Instance.CommunicationService.AccountIsConnected(loadedAccount.Name))
                         {
@@ -89,14 +89,14 @@ namespace OpenNos.Handler
                             PenaltyLogDTO penalty = DAOFactory.PenaltyLogDAO.LoadByAccount(loadedAccount.AccountId).FirstOrDefault(s => s.DateEnd > DateTime.Now && s.Penalty == PenaltyType.Banned);
                             if (penalty != null)
                             {
-                                _session.Client.SendPacket($"fail {String.Format(Language.Instance.GetMessageFromKey("BANNED"), penalty.Reason, (penalty.DateEnd).ToString("yyyy-MM-dd-HH:mm"))}");
+                                _session.SendPacket($"fail {String.Format(Language.Instance.GetMessageFromKey("BANNED"), penalty.Reason, (penalty.DateEnd).ToString("yyyy-MM-dd-HH:mm"))}");
                             }
                             else
                                 switch (type)
                                 {
                                     case AuthorityType.Unknown:
                                         {
-                                            _session.Client.SendPacket($"fail {Language.Instance.GetMessageFromKey("NOTVALIDATE")}");
+                                            _session.SendPacket($"fail {Language.Instance.GetMessageFromKey("NOTVALIDATE")}");
                                         }
                                         break;
 
@@ -104,7 +104,7 @@ namespace OpenNos.Handler
                                         {
                                             int newSessionId = SessionFactory.Instance.GenerateSessionId();
 
-                                            DAOFactory.AccountDAO.UpdateLastSessionAndIp(user.Name, newSessionId, _session.Client.RemoteEndPoint.ToString());
+                                            DAOFactory.AccountDAO.UpdateLastSessionAndIp(user.Name, newSessionId, _session.IpAddress);
                                             Logger.Log.DebugFormat(Language.Instance.GetMessageFromKey("CONNECTION"), user.Name, newSessionId);
 
                                             //inform communication service about new player from login server
@@ -116,29 +116,29 @@ namespace OpenNos.Handler
                                             {
                                                 Logger.Log.Error("General Error SessionId: " + newSessionId, ex);
                                             }
-                                            _session.Client.SendPacket(BuildServersPacket(newSessionId));
+                                            _session.SendPacket(BuildServersPacket(newSessionId));
                                         }
                                         break;
                                 }
                         }
                         else
                         {
-                            _session.Client.SendPacket($"fail {String.Format(Language.Instance.GetMessageFromKey("ALREADY_CONNECTED"))}");
+                            _session.SendPacket($"fail {String.Format(Language.Instance.GetMessageFromKey("ALREADY_CONNECTED"))}");
                         }
                     }
                     else
                     {
-                        _session.Client.SendPacket($"fail {String.Format(Language.Instance.GetMessageFromKey("IDERROR"))}");
+                        _session.SendPacket($"fail {String.Format(Language.Instance.GetMessageFromKey("IDERROR"))}");
                     }
                 }
                 else
                 {
-                    _session.Client.SendPacket($"fail {String.Format(Language.Instance.GetMessageFromKey("MAINTENANCE"))}");//add estimated time of maintenance/end of maintenance
+                    _session.SendPacket($"fail {String.Format(Language.Instance.GetMessageFromKey("MAINTENANCE"))}");//add estimated time of maintenance/end of maintenance
                 }
             }
             else
             {
-                _session.Client.SendPacket($"fail {String.Format(Language.Instance.GetMessageFromKey("CLIENT_DISCONNECTED"))}");
+                _session.SendPacket($"fail {String.Format(Language.Instance.GetMessageFromKey("CLIENT_DISCONNECTED"))}");
             }
         }
 

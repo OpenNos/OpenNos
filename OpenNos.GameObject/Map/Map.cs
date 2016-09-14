@@ -513,7 +513,7 @@ namespace OpenNos.GameObject
                 if (Session.Character.Hp == 0 && Session.Character.LastHealth.AddSeconds(2) <= DateTime.Now)
                 {
                     Session.Character.Mp = 0;
-                    Session.Client.SendPacket(Session.Character.GenerateStat());
+                    Session.SendPacket(Session.Character.GenerateStat());
                     Session.Character.LastHealth = DateTime.Now;
                     continue;
                 }
@@ -568,7 +568,7 @@ namespace OpenNos.GameObject
                         }
                         if (change)
                         {
-                            Session.Client.SendPacket(Session.Character.GenerateStat());
+                            Session.SendPacket(Session.Character.GenerateStat());
                         }
                     }
                 }

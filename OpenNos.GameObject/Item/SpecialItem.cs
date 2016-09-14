@@ -33,27 +33,27 @@ namespace OpenNos.GameObject
                     {
                         if (!DelayUsed)
                         {
-                            Session.Client.SendPacket($"qna #u_i^1^{Session.Character.CharacterId}^{(byte)inventory.Type}^{inventory.Slot}^3 {Language.Instance.GetMessageFromKey("ASK_WINGS_CHANGE")}");
+                            Session.SendPacket($"qna #u_i^1^{Session.Character.CharacterId}^{(byte)inventory.Type}^{inventory.Slot}^3 {Language.Instance.GetMessageFromKey("ASK_WINGS_CHANGE")}");
                         }
                         else
                         {
                             specialistInstance.Design = (byte)EffectValue;
                             Session.Character.MorphUpgrade2 = EffectValue;
-                            Session.Client.SendPacket(Session.Character.GenerateCMode());
-                            Session.Client.SendPacket(Session.Character.GenerateStat());
-                            Session.Client.SendPacket(Session.Character.GenerateStatChar());
+                            Session.SendPacket(Session.Character.GenerateCMode());
+                            Session.SendPacket(Session.Character.GenerateStat());
+                            Session.SendPacket(Session.Character.GenerateStatChar());
                             inventory.ItemInstance.Amount--;
                             if (inventory.ItemInstance.Amount > 0)
-                                Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(inventory.ItemInstance.ItemVNum, inventory.ItemInstance.Amount, inventory.Type, inventory.Slot, 0, 0, 0, 0));
+                                Session.SendPacket(Session.Character.GenerateInventoryAdd(inventory.ItemInstance.ItemVNum, inventory.ItemInstance.Amount, inventory.Type, inventory.Slot, 0, 0, 0, 0));
                             else
                             {
                                 Session.Character.InventoryList.DeleteFromSlotAndType(inventory.Slot, inventory.Type);
-                                Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, inventory.Type, inventory.Slot, 0, 0, 0, 0));
+                                Session.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, inventory.Type, inventory.Slot, 0, 0, 0, 0));
                             }
                         }
                     }
                     else
-                        Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NO_SP"), 0));
+                        Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NO_SP"), 0));
                     break;
 
                 case 651: // magic lamp (hardcoded)
@@ -61,24 +61,24 @@ namespace OpenNos.GameObject
                     {
                         if (!DelayUsed)
                         {
-                            Session.Client.SendPacket($"qna #u_i^1^{Session.Character.CharacterId}^{(byte)inventory.Type}^{inventory.Slot}^3 {Language.Instance.GetMessageFromKey("ASK_USE")}");
+                            Session.SendPacket($"qna #u_i^1^{Session.Character.CharacterId}^{(byte)inventory.Type}^{inventory.Slot}^3 {Language.Instance.GetMessageFromKey("ASK_USE")}");
                         }
                         else
                         {
                             Session.Character.ChangeSex();
                             inventory.ItemInstance.Amount--;
                             if (inventory.ItemInstance.Amount > 0)
-                                Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(inventory.ItemInstance.ItemVNum, inventory.ItemInstance.Amount, inventory.Type, inventory.Slot, 0, 0, 0, 0));
+                                Session.SendPacket(Session.Character.GenerateInventoryAdd(inventory.ItemInstance.ItemVNum, inventory.ItemInstance.Amount, inventory.Type, inventory.Slot, 0, 0, 0, 0));
                             else
                             {
                                 Session.Character.InventoryList.DeleteFromSlotAndType(inventory.Slot, inventory.Type);
-                                Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, inventory.Type, inventory.Slot, 0, 0, 0, 0));
+                                Session.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, inventory.Type, inventory.Slot, 0, 0, 0, 0));
                             }
                         }
                     }
                     else
                     {
-                        Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("EQ_NOT_EMPTY"), 0));
+                        Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("EQ_NOT_EMPTY"), 0));
                     }
                     break;
 
@@ -91,7 +91,7 @@ namespace OpenNos.GameObject
                             Session.Character.IsSitting = false;
                             Session.CurrentMap?.Broadcast(Session.Character.GenerateRest());
                         }
-                        Session.Client.SendPacket(Session.Character.GenerateDelay(3000, 3, $"#u_i^1^{Session.Character.CharacterId}^{(byte)inventory.Type}^{inventory.Slot}^2"));
+                        Session.SendPacket(Session.Character.GenerateDelay(3000, 3, $"#u_i^1^{Session.Character.CharacterId}^{(byte)inventory.Type}^{inventory.Slot}^2"));
                     }
                     else
                     {
@@ -123,7 +123,7 @@ namespace OpenNos.GameObject
                             }
                         }
                         Session.CurrentMap?.Broadcast(Session.Character.GenerateCMode());
-                        Session.Client.SendPacket(Session.Character.GenerateCond());
+                        Session.SendPacket(Session.Character.GenerateCond());
                     }
                     break;
 

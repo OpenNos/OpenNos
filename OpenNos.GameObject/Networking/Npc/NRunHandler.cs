@@ -33,12 +33,12 @@ namespace OpenNos.GameObject
                 case 1:
                     if (Session.Character.Class != (byte)ClassType.Adventurer)
                     {
-                        Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ADVENTURER"), 0));
+                        Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ADVENTURER"), 0));
                         return;
                     }
                     if (Session.Character.Level < 15 || Session.Character.JobLevel < 20)
                     {
-                        Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("LOW_LVL"), 0));
+                        Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("LOW_LVL"), 0));
                         return;
                     }
                     if (type == Session.Character.Class)
@@ -71,29 +71,29 @@ namespace OpenNos.GameObject
                                 break;
                         }
                         Session.CurrentMap?.Broadcast(Session.Character.GenerateEq());
-                        Session.Client.SendPacket(Session.Character.GenerateEquipment());
+                        Session.SendPacket(Session.Character.GenerateEquipment());
                         Session.Character.ChangeClass(Convert.ToByte(type));
                     }
                     else
                     {
-                        Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("EQ_NOT_EMPTY"), 0));
+                        Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("EQ_NOT_EMPTY"), 0));
                     }
                     break;
 
                 case 2:
-                    Session.Client.SendPacket($"wopen 1 0");
+                    Session.SendPacket($"wopen 1 0");
                     break;
 
                 case 10:
-                    Session.Client.SendPacket($"wopen 3 0");
+                    Session.SendPacket($"wopen 3 0");
                     break;
 
                 case 12:
-                    Session.Client.SendPacket($"wopen {type} 0");
+                    Session.SendPacket($"wopen {type} 0");
                     break;
 
                 case 14:
-                    Session.Client.SendPacket($"wopen 27 0");
+                    Session.SendPacket($"wopen 27 0");
                     string recipelist = "m_list 2";
 
                     if (npc != null)
@@ -105,7 +105,7 @@ namespace OpenNos.GameObject
                             recipelist += String.Format(" {0}", rec.ItemVNum);
                         }
                         recipelist += " -100";
-                        Session.Client.SendPacket(recipelist);
+                        Session.SendPacket(recipelist);
                     }
                     break;
 
@@ -119,14 +119,14 @@ namespace OpenNos.GameObject
                             {
                                 ServerManager.Instance.MapOut(Session.Character.CharacterId);
                                 Session.Character.Gold -= 1000 * type;
-                                Session.Client.SendPacket(Session.Character.GenerateGold());
+                                Session.SendPacket(Session.Character.GenerateGold());
                                 Session.Character.MapY = tp.MapY;
                                 Session.Character.MapX = tp.MapX;
                                 Session.Character.MapId = tp.MapId;
                                 ServerManager.Instance.ChangeMap(Session.Character.CharacterId);
                             }
                             else
-                                Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NOT_ENOUGH_MONEY"), 10));
+                                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NOT_ENOUGH_MONEY"), 10));
                         }
                     }
                     break;
@@ -141,7 +141,7 @@ namespace OpenNos.GameObject
                             {
                                 ServerManager.Instance.MapOut(Session.Character.CharacterId);
                                 Session.Character.Gold -= 5000 * type;
-                                Session.Client.SendPacket(Session.Character.GenerateGold());
+                                Session.SendPacket(Session.Character.GenerateGold());
                                 Session.Character.MapY = tp.MapY;
                                 Session.Character.MapX = tp.MapX;
                                 Session.Character.MapId = tp.MapId;
@@ -149,7 +149,7 @@ namespace OpenNos.GameObject
                             }
                             else
                             {
-                                Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NOT_ENOUGH_MONEY"), 10));
+                                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NOT_ENOUGH_MONEY"), 10));
                             }
                         }
                     }
@@ -165,7 +165,7 @@ namespace OpenNos.GameObject
                             {
                                 ServerManager.Instance.MapOut(Session.Character.CharacterId);
                                 Session.Character.Gold -= 500;
-                                Session.Client.SendPacket(Session.Character.GenerateGold());
+                                Session.SendPacket(Session.Character.GenerateGold());
                                 Session.Character.MapY = tp.MapY;
                                 Session.Character.MapX = tp.MapX;
                                 Session.Character.MapId = tp.MapId;
@@ -173,7 +173,7 @@ namespace OpenNos.GameObject
                             }
                             else
                             {
-                                Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NOT_ENOUGH_MONEY"), 10));
+                                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NOT_ENOUGH_MONEY"), 10));
                             }
                         }
                     }

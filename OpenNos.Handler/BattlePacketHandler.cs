@@ -57,30 +57,30 @@ namespace OpenNos.Handler
             {
                 if (Session.Character.Gender == 1)
                 {
-                    Session.Client.SendPacket("cancel 0 0");
+                    Session.SendPacket("cancel 0 0");
                     ServerManager.Instance.Broadcast(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MUTED_FEMALE"), 1));
-                    Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).ToString("hh\\:mm\\:ss")), 11));
-                    Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).ToString("hh\\:mm\\:ss")), 12));
+                    Session.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).ToString("hh\\:mm\\:ss")), 11));
+                    Session.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).ToString("hh\\:mm\\:ss")), 12));
                     return;
                 }
                 else
                 {
-                    Session.Client.SendPacket("cancel 0 0");
+                    Session.SendPacket("cancel 0 0");
                     ServerManager.Instance.Broadcast(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MUTED_MALE"), 1));
-                    Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).ToString("hh\\:mm\\:ss")), 11));
-                    Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).ToString("hh\\:mm\\:ss")), 12));
+                    Session.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).ToString("hh\\:mm\\:ss")), 11));
+                    Session.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).ToString("hh\\:mm\\:ss")), 12));
                     return;
                 }
             }
             if ((DateTime.Now - Session.Character.LastTransform).TotalSeconds < 3)
             {
-                Session.Client.SendPacket("cancel 0 0");
-                Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("CANT_ATTACKNOW"), 0));
+                Session.SendPacket("cancel 0 0");
+                Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("CANT_ATTACKNOW"), 0));
                 return;
             }
             if (Session.Character.IsVehicled)
             {
-                Session.Client.SendPacket("cancel 0 0");
+                Session.SendPacket("cancel 0 0");
                 return;
             }
             Logger.Debug(packet, Session.SessionId);
@@ -112,8 +112,8 @@ namespace OpenNos.Handler
             bool notcancel = false;
             if ((DateTime.Now - Session.Character.LastTransform).TotalSeconds < 3)
             {
-                Session.Client.SendPacket("cancel 0 0");
-                Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("CANT_ATTACK"), 0));
+                Session.SendPacket("cancel 0 0");
+                Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("CANT_ATTACK"), 0));
                 return;
             }
             if (skills != null)
@@ -121,10 +121,10 @@ namespace OpenNos.Handler
                 ushort damage = 0;
                 int hitmode = 0;
                 CharacterSkill ski = skills.FirstOrDefault(s => s.Skill?.CastId == castingId && s.Skill?.UpgradeSkill == 0);
-                Session.Client.SendPacket("ms_c 0");
+                Session.SendPacket("ms_c 0");
                 if (!Session.Character.WeaponLoaded(ski))
                 {
-                    Session.Client.SendPacket("cancel 2 0");
+                    Session.SendPacket("cancel 2 0");
                     return;
                 }
                 for (int i = 0; i < 10 && (ski.LastUse.AddMilliseconds((ski.Skill.Cooldown) * 100) > DateTime.Now); i++)
@@ -132,7 +132,7 @@ namespace OpenNos.Handler
                     Thread.Sleep(100);
                     if (i == 10)
                     {
-                        Session.Client.SendPacket("cancel 2 0");
+                        Session.SendPacket("cancel 2 0");
                         return;
                     }
                 }
@@ -146,9 +146,8 @@ namespace OpenNos.Handler
                         if (!Session.Character.HasGodMode)
                             Session.Character.Mp -= ski.Skill.MpCost;
                         if (Session.Character.UseSp && ski.Skill.CastEffect != -1)
-                            foreach (string quicklist in Session.Character.GenerateQuicklist())
-                                Session.Client.SendPacket(quicklist);
-                        Session.Client.SendPacket(Session.Character.GenerateStat());
+                            Session.SendPackets(Session.Character.GenerateQuicklist());
+                        Session.SendPacket(Session.Character.GenerateStat());
 
                         CharacterSkill skillinfo = Session.Character.Skills.OrderBy(o => o.SkillVNum).FirstOrDefault(s => s.Skill.UpgradeSkill == ski.Skill.SkillVNum && s.Skill.Effect > 0 && s.Skill.SkillType == 2);
 
@@ -195,9 +194,8 @@ namespace OpenNos.Handler
                                         if (!Session.Character.HasGodMode)
                                             Session.Character.Mp -= ski.Skill.MpCost;
                                         if (Session.Character.UseSp && ski.Skill.CastEffect != -1)
-                                            foreach (string quicklist in Session.Character.GenerateQuicklist())
-                                                Session.Client.SendPacket(quicklist);
-                                        Session.Client.SendPacket(Session.Character.GenerateStat());
+                                            Session.SendPackets(Session.Character.GenerateQuicklist());
+                                        Session.SendPacket(Session.Character.GenerateStat());
 
                                         CharacterSkill skillinfo = Session.Character.Skills.OrderBy(o => o.SkillVNum).FirstOrDefault(s => s.Skill.UpgradeSkill == ski.Skill.SkillVNum && s.Skill.Effect > 0 && s.Skill.SkillType == 2);
 
@@ -242,18 +240,18 @@ namespace OpenNos.Handler
                     Task t = Task.Factory.StartNew((Func<Task>)(async () =>
                     {
                         await Task.Delay((ski.Skill.Cooldown) * 100);
-                        Session.Client.SendPacket($"sr {castingId}");
+                        Session.SendPacket($"sr {castingId}");
                     }));
 
                 }
                 else
                 {
                     notcancel = false;
-                    Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NOT_ENOUGH_MP"), 10));
+                    Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NOT_ENOUGH_MP"), 10));
                 }
             }
             if (!notcancel)
-                Session.Client.SendPacket($"cancel 2 {targetId}");
+                Session.SendPacket($"cancel 2 {targetId}");
         }
 
         [Packet("u_s")]
@@ -264,17 +262,17 @@ namespace OpenNos.Handler
             {
                 if (Session.Character.Gender == 1)
                 {
-                    Session.Client.SendPacket("cancel 0 0");
+                    Session.SendPacket("cancel 0 0");
                     ServerManager.Instance.Broadcast(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MUTED_FEMALE"), 1));
-                    Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).ToString("hh\\:mm\\:ss")), 11));
-                    Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).ToString("hh\\:mm\\:ss")), 12));
+                    Session.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).ToString("hh\\:mm\\:ss")), 11));
+                    Session.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).ToString("hh\\:mm\\:ss")), 12));
                 }
                 else
                 {
-                    Session.Client.SendPacket("cancel 0 0");
+                    Session.SendPacket("cancel 0 0");
                     ServerManager.Instance.Broadcast(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MUTED_MALE"), 1));
-                    Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).ToString("hh\\:mm\\:ss")), 11));
-                    Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).ToString("hh\\:mm\\:ss")), 12));
+                    Session.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).ToString("hh\\:mm\\:ss")), 11));
+                    Session.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).ToString("hh\\:mm\\:ss")), 12));
                 }
                 return;
             }
@@ -292,7 +290,7 @@ namespace OpenNos.Handler
                     Session.Character.Rest();
                 if (Session.Character.IsVehicled)
                 {
-                    Session.Client.SendPacket("cancel 0 0");
+                    Session.SendPacket("cancel 0 0");
                     return;
                 }
                 switch (usertype)
@@ -316,13 +314,13 @@ namespace OpenNos.Handler
                             }
                             else
                             {
-                                Session.Client.SendPacket("cancel 2 0");
+                                Session.SendPacket("cancel 2 0");
                             }
                         }
                         break;
 
                     default:
-                        Session.Client.SendPacket("cancel 2 0");
+                        Session.SendPacket("cancel 2 0");
                         return;
                 }
             }
@@ -336,30 +334,30 @@ namespace OpenNos.Handler
             {
                 if (Session.Character.Gender == 1)
                 {
-                    Session.Client.SendPacket("cancel 0 0");
+                    Session.SendPacket("cancel 0 0");
                     ServerManager.Instance.Broadcast(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MUTED_FEMALE"), 1));
-                    Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).ToString("hh\\:mm\\:ss")), 11));
-                    Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).ToString("hh\\:mm\\:ss")), 12));
+                    Session.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).ToString("hh\\:mm\\:ss")), 11));
+                    Session.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).ToString("hh\\:mm\\:ss")), 12));
                 }
                 else
                 {
-                    Session.Client.SendPacket("cancel 0 0");
+                    Session.SendPacket("cancel 0 0");
                     ServerManager.Instance.Broadcast(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("MUTED_MALE"), 1));
-                    Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).ToString("hh\\:mm\\:ss")), 11));
-                    Session.Client.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).ToString("hh\\:mm\\:ss")), 12));
+                    Session.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).ToString("hh\\:mm\\:ss")), 11));
+                    Session.SendPacket(Session.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("MUTE_TIME"), (penalty.DateEnd - DateTime.Now).ToString("hh\\:mm\\:ss")), 12));
                 }
             }
             else
             {
                 if (Session.Character.LastTransform.AddSeconds(3) > DateTime.Now)
                 {
-                    Session.Client.SendPacket("cancel 0 0");
-                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("CANT_ATTACK"), 0));
+                    Session.SendPacket("cancel 0 0");
+                    Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("CANT_ATTACK"), 0));
                     return;
                 }
                 if (Session.Character.IsVehicled)
                 {
-                    Session.Client.SendPacket("cancel 0 0");
+                    Session.SendPacket("cancel 0 0");
                     return;
                 }
                 Logger.Debug(packet, Session.SessionId);
@@ -681,10 +679,10 @@ namespace OpenNos.Handler
                         if (Session.Character.Gold > 1000000000)
                         {
                             Session.Character.Gold = 1000000000;
-                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("MAX_GOLD"), 0));
+                            Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("MAX_GOLD"), 0));
                         }
-                        Session.Client.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {ServerManager.GetItem(drop2.ItemVNum).Name} x {drop2.Amount}", 10));
-                        Session.Client.SendPacket(Session.Character.GenerateGold());
+                        Session.SendPacket(Session.Character.GenerateSay($"{Language.Instance.GetMessageFromKey("ITEM_ACQUIRED")}: {ServerManager.GetItem(drop2.ItemVNum).Name} x {drop2.Amount}", 10));
+                        Session.SendPacket(Session.Character.GenerateGold());
                     }
                     else
                         Session.CurrentMap.DropItemByMonster(mmon.DamageList.Any() ? mmon.DamageList.First().Key : (long?)null,drop2, mmon.MapX, mmon.MapY);
@@ -726,7 +724,7 @@ namespace OpenNos.Handler
             CharacterSkill ski = skills.FirstOrDefault(s => s.Skill.CastId == Castingid);
             if (!Session.Character.WeaponLoaded(ski))
             {
-                Session.Client.SendPacket("cancel 2 0");
+                Session.SendPacket("cancel 2 0");
                 return;
             }
             if (ski != null)
@@ -739,7 +737,7 @@ namespace OpenNos.Handler
                         ski.LastUse = DateTime.Now;
                         if (!Session.Character.HasGodMode)
                             Session.Character.Mp -= ski.Skill.MpCost;
-                        Session.Client.SendPacket(Session.Character.GenerateStat());
+                        Session.SendPacket(Session.Character.GenerateStat());
                         ski.LastUse = DateTime.Now;
                         await Task.Delay(ski.Skill.CastTime * 100);
                         Session.Character.LastSkill = DateTime.Now;
@@ -753,17 +751,17 @@ namespace OpenNos.Handler
                         }
 
                         await Task.Delay((ski.Skill.Cooldown) * 100);
-                        Session.Client.SendPacket($"sr {Castingid}");
+                        Session.SendPacket($"sr {Castingid}");
                     }));
                 }
                 else
                 {
-                    Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NOT_ENOUGH_MP"), 10));
-                    Session.Client.SendPacket("cancel 2 0");
+                    Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NOT_ENOUGH_MP"), 10));
+                    Session.SendPacket("cancel 2 0");
                 }
             }
             else
-                Session.Client.SendPacket("cancel 2 0");
+                Session.SendPacket("cancel 2 0");
         }
 
         #endregion

@@ -106,7 +106,7 @@ namespace OpenNos.Login.Resource {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to CONNECT {0} Connected -- session:{1}.
+        ///   Looks up a localized string similar to CONNECT {0} Connected -- SessionId: {1}.
         /// </summary>
         internal static string CONNECTION {
             get {

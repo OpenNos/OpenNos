@@ -74,14 +74,14 @@ namespace OpenNos.Handler
 
                 if (item.Price * amount + ServerManager.Instance.GetProperty<long>(shop.Value.OwnerId, nameof(Character.Gold)) > 1000000000)
                 {
-                    Session.Client.SendPacket(Session.Character.GenerateShopMemo(3,
+                    Session.SendPacket(Session.Character.GenerateShopMemo(3,
                         Language.Instance.GetMessageFromKey("MAX_GOLD")));
                     return;
                 }
 
                 if (item.Price * amount >= Session.Character.Gold)
                 {
-                    Session.Client.SendPacket(Session.Character.GenerateShopMemo(3,Language.Instance.GetMessageFromKey("NOT_ENOUGH_MONEY")));
+                    Session.SendPacket(Session.Character.GenerateShopMemo(3,Language.Instance.GetMessageFromKey("NOT_ENOUGH_MONEY")));
                     return;
                 }
 
@@ -92,22 +92,22 @@ namespace OpenNos.Handler
 
                 if (inv != null)
                 {
-                    Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(inv.ItemInstance.ItemVNum,
+                    Session.SendPacket(Session.Character.GenerateInventoryAdd(inv.ItemInstance.ItemVNum,
                         inv.ItemInstance.Amount, inv.Type, inv.Slot, inv.ItemInstance.Rare, inv.ItemInstance.Design, inv.ItemInstance.Upgrade, 0));
                     Session.Character.Gold -= item.Price * amount;
-                    Session.Client.SendPacket(Session.Character.GenerateGold());
+                    Session.SendPacket(Session.Character.GenerateGold());
                     ServerManager.Instance.BuyValidate(Session, shop, slot, amount);
                     KeyValuePair<long, MapShop> shop2 = Session.CurrentMap.UserShops.FirstOrDefault(s => s.Value.OwnerId.Equals(owner));
                     LoadShopItem(owner, shop2);
                 }
                 else
-                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_PLACE"), 0));
+                    Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_PLACE"), 0));
             }
             else if (packetsplit.Length == 5) // skill shop
             {
                 if (Session.Character.UseSp)
                 {
-                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("REMOVE_SP"), 0));
+                    Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("REMOVE_SP"), 0));
                     return;
                 }
                 Skill skillinfo = ServerManager.GetSkill(slot);
@@ -116,9 +116,9 @@ namespace OpenNos.Handler
                 if (skillinfo == null)
                     return;
                 if (Session.Character.Gold < skillinfo.Price)
-                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_MONEY"), 0));
+                    Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_MONEY"), 0));
                 else if (Session.Character.GetCP() < skillinfo.CPCost)
-                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_CP"), 0));
+                    Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_CP"), 0));
                 else
                 {
                     if (skillinfo.SkillVNum < 200)
@@ -149,12 +149,12 @@ namespace OpenNos.Handler
                         }
                         if (SkillMiniumLevel == 0)
                         {
-                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SKILL_CANT_LEARN"), 0));
+                            Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SKILL_CANT_LEARN"), 0));
                             return;
                         }
                         else if (Session.Character.Level < SkillMiniumLevel)
                         {
-                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("LOW_LVL"), 0));
+                            Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("LOW_LVL"), 0));
                             return;
                         }
                         for (int i = Session.Character.Skills.Count - 1; i >= 0; i--)
@@ -168,12 +168,12 @@ namespace OpenNos.Handler
                     {
                         if (Session.Character.Class != skillinfo.Class)
                         {
-                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SKILL_CANT_LEARN"), 0));
+                            Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SKILL_CANT_LEARN"), 0));
                             return;
                         }
                         else if (Session.Character.JobLevel < skillinfo.LevelMinimum)
                         {
-                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("LOW_JOB_LVL"), 0));
+                            Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("LOW_JOB_LVL"), 0));
                             return;
                         }
                         if (skillinfo.UpgradeSkill != 0)
@@ -189,12 +189,11 @@ namespace OpenNos.Handler
                     Session.Character.Skills.Add(new CharacterSkill() { SkillVNum = slot, CharacterId = Session.Character.CharacterId });
 
                     Session.Character.Gold -= skillinfo.Price;
-                    Session.Client.SendPacket(Session.Character.GenerateGold());
-                    Session.Client.SendPacket(Session.Character.GenerateSki());
-                    foreach (string quicklist in Session.Character.GenerateQuicklist())
-                        Session.Client.SendPacket(quicklist);
-                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SKILL_LEARNED"), 0));
-                    Session.Client.SendPacket(Session.Character.GenerateLev());
+                    Session.SendPacket(Session.Character.GenerateGold());
+                    Session.SendPacket(Session.Character.GenerateSki());
+                    Session.SendPackets(Session.Character.GenerateQuicklist());
+                    Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SKILL_LEARNED"), 0));
+                    Session.SendPacket(Session.Character.GenerateLev());
                 }
             }
             else
@@ -221,7 +220,7 @@ namespace OpenNos.Handler
                 {
                     if (price < 0 || price * percent > Session.Character.Gold)
                     {
-                        Session.Client.SendPacket(Session.Character.GenerateShopMemo(3, Language.Instance.GetMessageFromKey("NOT_ENOUGH_MONEY")));
+                        Session.SendPacket(Session.Character.GenerateShopMemo(3, Language.Instance.GetMessageFromKey("NOT_ENOUGH_MONEY")));
                         return;
                     }
                 }
@@ -229,7 +228,7 @@ namespace OpenNos.Handler
                 {
                     if (Reputprice <= 0 || Reputprice > Session.Character.Reput)
                     {
-                        Session.Client.SendPacket(Session.Character.GenerateShopMemo(3, Language.Instance.GetMessageFromKey("NOT_ENOUGH_REPUT")));
+                        Session.SendPacket(Session.Character.GenerateShopMemo(3, Language.Instance.GetMessageFromKey("NOT_ENOUGH_REPUT")));
                         return;
                     }
                     Random rnd = new Random();
@@ -251,24 +250,24 @@ namespace OpenNos.Handler
 
                 if (newItem != null && newItem.Slot != -1)
                 {
-                    Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(newItem.ItemInstance.ItemVNum,
+                    Session.SendPacket(Session.Character.GenerateInventoryAdd(newItem.ItemInstance.ItemVNum,
                         newItem.ItemInstance.Amount, newItem.Type, newItem.Slot, newItem.ItemInstance.Rare, newItem.ItemInstance.Design, newItem.ItemInstance.Upgrade, 0));
                     if (iteminfo.ReputPrice == 0)
                     {
-                        Session.Client.SendPacket(Session.Character.GenerateShopMemo(1, string.Format(Language.Instance.GetMessageFromKey("BUY_ITEM_VALID"), iteminfo.Name, amount)));
+                        Session.SendPacket(Session.Character.GenerateShopMemo(1, string.Format(Language.Instance.GetMessageFromKey("BUY_ITEM_VALID"), iteminfo.Name, amount)));
                         Session.Character.Gold -= (long)(price * percent);
-                        Session.Client.SendPacket(Session.Character.GenerateGold());
+                        Session.SendPacket(Session.Character.GenerateGold());
                     }
                     else
                     {
-                        Session.Client.SendPacket(Session.Character.GenerateShopMemo(1, string.Format(Language.Instance.GetMessageFromKey("BUY_ITEM_VALID"), iteminfo.Name, amount)));
+                        Session.SendPacket(Session.Character.GenerateShopMemo(1, string.Format(Language.Instance.GetMessageFromKey("BUY_ITEM_VALID"), iteminfo.Name, amount)));
                         Session.Character.Reput -= Reputprice;
-                        Session.Client.SendPacket(Session.Character.GenerateFd());
-                        Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("REPUT_DECREASED"), 11));
+                        Session.SendPacket(Session.Character.GenerateFd());
+                        Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("REPUT_DECREASED"), 11));
                     }
                 }
                 else
-                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_PLACE"), 0));
+                    Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_PLACE"), 0));
             }
         }
 
@@ -292,18 +291,18 @@ namespace OpenNos.Handler
                 {
                     if (Session.Character.MapX < por.SourceX + 6 && Session.Character.MapX > por.SourceX - 6 && Session.Character.MapY < por.SourceY + 6 && Session.Character.MapY > por.SourceY - 6)
                     {
-                        Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SHOP_NEAR_PORTAL"), 0));
+                        Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SHOP_NEAR_PORTAL"), 0));
                         return;
                     }
                 }
                 if (!Session.CurrentMap.ShopAllowed)
                 {
-                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SHOP_NOT_ALLOWED"), 0));
+                    Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SHOP_NOT_ALLOWED"), 0));
                     return;
                 }
                 if (typePacket == 2)
                 {
-                    Session.Client.SendPacket("ishop");
+                    Session.SendPacket("ishop");
                 }
                 else if (typePacket == 0)
                 {
@@ -331,8 +330,8 @@ namespace OpenNos.Handler
 
                                 if (!((ItemInstance)inv.ItemInstance).Item.IsTradable || ((ItemInstance)inv.ItemInstance).IsBound)
                                 {
-                                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SHOP_ONLY_TRADABLE_ITEMS"), 0));
-                                    Session.Client.SendPacket("shop_end 0");
+                                    Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SHOP_ONLY_TRADABLE_ITEMS"), 0));
+                                    Session.SendPacket("shop_end 0");
                                     return;
                                 }
 
@@ -373,19 +372,19 @@ namespace OpenNos.Handler
 
                         Session.CurrentMap?.Broadcast(Session, Session.Character.GeneratePlayerFlag(Session.CurrentMap.UserShops.Count()), ReceiverType.AllExceptMe);
                         Session.CurrentMap?.Broadcast(Session.Character.GenerateShop(shopname));
-                        Session.Client.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("SHOP_OPEN")));
+                        Session.SendPacket(Session.Character.GenerateInfo(Language.Instance.GetMessageFromKey("SHOP_OPEN")));
 
                         Session.Character.IsSitting = true;
                         Session.Character.IsShopping = true;
 
                         Session.Character.LoadSpeed();
-                        Session.Client.SendPacket(Session.Character.GenerateCond());
+                        Session.SendPacket(Session.Character.GenerateCond());
                         Session.CurrentMap?.Broadcast(Session.Character.GenerateRest());
                     }
                     else
                     {
-                        Session.Client.SendPacket("shop_end 0");
-                        Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("SHOP_EMPTY"), 10));
+                        Session.SendPacket("shop_end 0");
+                        Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("SHOP_EMPTY"), 10));
                     }
                 }
                 else if (typePacket == 1)
@@ -399,7 +398,7 @@ namespace OpenNos.Handler
                     Session.Character.IsSitting = false;
 
                     Session.Character.LoadSpeed();
-                    Session.Client.SendPacket(Session.Character.GenerateCond());
+                    Session.SendPacket(Session.Character.GenerateCond());
                     Session.CurrentMap?.Broadcast(Session.Character.GenerateRest());
                 }
             }
@@ -449,7 +448,7 @@ namespace OpenNos.Handler
                                 rece += $" {ite.ItemVNum} {ite.Amount}";
                         }
                         rece += " -1";
-                        Session.Client.SendPacket(rece);
+                        Session.SendPacket(rece);
                     }
                 }
             }
@@ -488,17 +487,17 @@ namespace OpenNos.Handler
                                 {
                                     Session.Character.InventoryList.RemoveItemAmount(ite.ItemVNum, ite.Amount);
                                 }
-                                Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(inv.ItemInstance.ItemVNum, inv.ItemInstance.Amount, inv.Type, inv.Slot, 0, inv.ItemInstance.Rare, inv.ItemInstance.Upgrade, 0));
+                                Session.SendPacket(Session.Character.GenerateInventoryAdd(inv.ItemInstance.ItemVNum, inv.ItemInstance.Amount, inv.Type, inv.Slot, 0, inv.ItemInstance.Rare, inv.ItemInstance.Upgrade, 0));
 
-                                Session.Client.SendPacket($"pdti 11 {inv.ItemInstance.ItemVNum} {rec.Amount} 29 {inv.ItemInstance.Upgrade} 0");
-                                Session.Client.SendPacket(Session.Character.GenerateGuri(19, 1, 1324));
+                                Session.SendPacket($"pdti 11 {inv.ItemInstance.ItemVNum} {rec.Amount} 29 {inv.ItemInstance.Upgrade} 0");
+                                Session.SendPacket(Session.Character.GenerateGuri(19, 1, 1324));
 
-                                Session.Client.SendPacket(Session.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("CRAFTED_OBJECT"), (inv.ItemInstance as ItemInstance).Item.Name, rec.Amount), 0));
+                                Session.SendPacket(Session.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("CRAFTED_OBJECT"), (inv.ItemInstance as ItemInstance).Item.Name, rec.Amount), 0));
                             }
                         }
                         else
                         {
-                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_PLACE"), 0));
+                            Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("NOT_ENOUGH_PLACE"), 0));
                         }
                     }
                 }
@@ -523,31 +522,31 @@ namespace OpenNos.Handler
 
                 if (!(inv.ItemInstance as ItemInstance).Item.IsSoldable)
                 {
-                    Session.Client.SendPacket(Session.Character.GenerateShopMemo(2, string.Format(Language.Instance.GetMessageFromKey("ITEM_NOT_SOLDABLE"))));
+                    Session.SendPacket(Session.Character.GenerateShopMemo(2, string.Format(Language.Instance.GetMessageFromKey("ITEM_NOT_SOLDABLE"))));
                     return;
                 }
 
                 if (Session.Character.Gold + (inv.ItemInstance as ItemInstance).Item.Price * amount > 1000000000)
                 {
                     string message = Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("MAX_GOLD"), 0);
-                    Session.Client.SendPacket(message);
+                    Session.SendPacket(message);
                     return;
                 }
                 Session.Character.Gold += ((inv.ItemInstance as ItemInstance).Item.Price / 20) * amount;
-                Session.Client.SendPacket(Session.Character.GenerateShopMemo(1, string.Format(Language.Instance.GetMessageFromKey("SELL_ITEM_VALIDE"), (inv.ItemInstance as ItemInstance).Item.Name, amount)));
+                Session.SendPacket(Session.Character.GenerateShopMemo(1, string.Format(Language.Instance.GetMessageFromKey("SELL_ITEM_VALIDE"), (inv.ItemInstance as ItemInstance).Item.Name, amount)));
 
                 inv = Session.Character.InventoryList.RemoveItemAmountFromInventory(amount, inv.Id);
                 if (inv != null)
                 {
                     // Send reduced-amount to owners inventory
-                    Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(inv.ItemInstance.ItemVNum, inv.ItemInstance.Amount, inv.Type, inv.Slot, inv.ItemInstance.Rare, inv.ItemInstance.Design, inv.ItemInstance.Upgrade, 0));
+                    Session.SendPacket(Session.Character.GenerateInventoryAdd(inv.ItemInstance.ItemVNum, inv.ItemInstance.Amount, inv.Type, inv.Slot, inv.ItemInstance.Rare, inv.ItemInstance.Design, inv.ItemInstance.Upgrade, 0));
                 }
                 else
                 {
                     // Send empty slot to owners inventory
-                    Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, type, slot, 0, 0, 0, 0));
+                    Session.SendPacket(Session.Character.GenerateInventoryAdd(-1, 0, type, slot, 0, 0, 0, 0));
                 }
-                Session.Client.SendPacket(Session.Character.GenerateGold());
+                Session.SendPacket(Session.Character.GenerateGold());
             }
             else if (packetsplit.Length == 5)
             {
@@ -557,7 +556,7 @@ namespace OpenNos.Handler
                 if (skill == null || vnum == (200 + 20 * Session.Character.Class) || vnum == (201 + 20 * Session.Character.Class))
                     return;
                 Session.Character.Gold -= skill.Skill.Price;
-                Session.Client.SendPacket(Session.Character.GenerateGold());
+                Session.SendPacket(Session.Character.GenerateGold());
 
                 for (int i = Session.Character.Skills.Count - 1; i >= 0; i--)
                 {
@@ -566,10 +565,9 @@ namespace OpenNos.Handler
                 }
 
                 Session.Character.Skills.Remove(skill);
-                Session.Client.SendPacket(Session.Character.GenerateSki());
-                foreach (string quicklist in Session.Character.GenerateQuicklist())
-                    Session.Client.SendPacket(quicklist);
-                Session.Client.SendPacket(Session.Character.GenerateLev());
+                Session.SendPacket(Session.Character.GenerateSki());
+                Session.SendPackets(Session.Character.GenerateQuicklist());
+                Session.SendPacket(Session.Character.GenerateLev());
             }
         }
 
@@ -665,7 +663,7 @@ namespace OpenNos.Handler
                     shoplist += $" {skillinfo.SkillVNum}";
             }
 
-            Session.Client.SendPacket($"n_inv 2 {mapnpc.MapNpcId} 0 {typeshop}{shoplist}");
+            Session.SendPacket($"n_inv 2 {mapnpc.MapNpcId} 0 {typeshop}{shoplist}");
         }
 
         [Packet("npc_req")]
@@ -692,19 +690,19 @@ namespace OpenNos.Handler
 
                     if (mapobject.Drops.Any(s => s.MonsterVNum != null) && mapobject.Race == 8 && (mapobject.RaceType == 7 || mapobject.RaceType == 5)) // mining mapobjects
                     {
-                        Session.Client.SendPacket(Session.Character.GenerateDelay(5000, 4, $"#guri^400^{npc.MapNpcId}"));
+                        Session.SendPacket(Session.Character.GenerateDelay(5000, 4, $"#guri^400^{npc.MapNpcId}"));
                     }
                     else if (mapobject.VNumRequired > 0 && mapobject.Race == 8 && (mapobject.RaceType == 7 || mapobject.RaceType == 5)) // mapobject with required item to use
                     {
-                        Session.Client.SendPacket(Session.Character.GenerateDelay(6000, 4, $"#guri^400^{npc.MapNpcId}"));
+                        Session.SendPacket(Session.Character.GenerateDelay(6000, 4, $"#guri^400^{npc.MapNpcId}"));
                     }
                     else if (mapobject.MaxHP == 0 && !mapobject.Drops.Any(s => s.MonsterVNum != null) && mapobject.Race == 8 && (mapobject.RaceType == 7 || mapobject.RaceType == 5)) // mapobject teleporter
                     {
-                        Session.Client.SendPacket(Session.Character.GenerateDelay(5000, 1, $"#guri^710^162^85^{npc.MapNpcId}")); // #guri^710^X^Y^MapNpcId
+                        Session.SendPacket(Session.Character.GenerateDelay(5000, 1, $"#guri^710^162^85^{npc.MapNpcId}")); // #guri^710^X^Y^MapNpcId
                     }
                     else if (!string.IsNullOrEmpty(npc?.GetNpcDialog()))
                     {
-                        Session.Client.SendPacket(npc.GetNpcDialog());
+                        Session.SendPacket(npc.GetNpcDialog());
                     }
                 }
             }
@@ -730,7 +728,7 @@ namespace OpenNos.Handler
             }
             packetToSend += " -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1";
 
-            Session.Client.SendPacket(packetToSend);
+            Session.SendPacket(packetToSend);
         }
 
         #endregion
