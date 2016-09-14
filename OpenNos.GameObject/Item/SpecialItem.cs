@@ -29,7 +29,7 @@ namespace OpenNos.GameObject
             {
                 case 650: //wings
                     SpecialistInstance specialistInstance = Session.Character.EquipmentList.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Equipment);
-                    if (Session.Character.UseSp && specialistInstance != null && !Session.Character.IsVehicled)
+                    if (Session.Character.UseSp && specialistInstance != null)
                     {
                         if (!DelayUsed)
                         {
@@ -57,7 +57,7 @@ namespace OpenNos.GameObject
                     break;
 
                 case 651: // magic lamp (hardcoded)
-                    if (!Session.Character.EquipmentList.Inventory.Any() && !Session.Character.IsVehicled)
+                    if (!Session.Character.EquipmentList.Inventory.Any())
                     {
                         if (!DelayUsed)
                         {
@@ -84,7 +84,7 @@ namespace OpenNos.GameObject
 
                 case 1000: // vehicles
                     SpecialistInstance sp = Session.Character.EquipmentList.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Equipment);
-                    if (!DelayUsed && !Session.Character.IsVehicled)
+                    if (!DelayUsed && Session.Character.IsVehicled == false)
                     {
                         if (Session.Character.IsSitting)
                         {
@@ -106,21 +106,7 @@ namespace OpenNos.GameObject
                         }
                         else
                         {
-                            Session.Character.IsVehicled = false;
-                            Session.Character.LoadSpeed();
-                            if (Session.Character.UseSp)
-                            {
-                                if (sp != null)
-                                {
-                                    Session.Character.Morph = sp.Item.Morph;
-                                    Session.Character.MorphUpgrade = sp.Upgrade;
-                                    Session.Character.MorphUpgrade2 = sp.Design;
-                                }
-                            }
-                            else
-                            {
-                                Session.Character.Morph = 0;
-                            }
+                            Session.Character.RemoveVehicle();
                         }
                         Session.CurrentMap?.Broadcast(Session.Character.GenerateCMode());
                         Session.SendPacket(Session.Character.GenerateCond());

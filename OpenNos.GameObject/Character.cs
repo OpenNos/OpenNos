@@ -395,6 +395,26 @@ namespace OpenNos.GameObject
             return $"eff 1 {CharacterId} {effectid}";
         }
 
+        public void RemoveVehicle()
+        {
+            SpecialistInstance sp = Session.Character.EquipmentList.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Equipment);
+            IsVehicled = false;
+            LoadSpeed();
+            if (Session.Character.UseSp)
+            {
+                if (sp != null)
+                {
+                    Morph = sp.Item.Morph;
+                    MorphUpgrade = sp.Upgrade;
+                    MorphUpgrade2 = sp.Design;
+                }
+            }
+            else
+            {
+                Morph = 0;
+            }
+        }
+
         public string GenerateEInfo(WearableInstance item)
         {
             Item iteminfo = item.Item;
