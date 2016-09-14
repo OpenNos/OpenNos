@@ -118,19 +118,19 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AT_LEAST_ONE_FILE_MISSING" xml:space="preserve">
-    <value />
+    <value>Manca almeno un file richiesto</value>
   </data>
   <data name="DATABASE_INITIALIZED" xml:space="preserve">
     <value>Il Database è stato avviato !</value>
   </data>
   <data name="DATABASE_NOT_UPTODATE" xml:space="preserve">
-    <value />
+    <value>Il database non sembra aggiornato... Considera di aggiornarlo</value>
   </data>
   <data name="DONE" xml:space="preserve">
     <value>Parsing Completato !</value>
   </data>
   <data name="DROP_PARSED" xml:space="preserve">
-    <value />
+    <value>{0} Oggetti Drop sincronizzati</value>
   </data>
   <data name="ENTER_PATH" xml:space="preserve">
     <value>Immetti la directory dei file da sincronizzare</value>
@@ -142,49 +142,49 @@
     <value>{0} Mappe sincronizzate</value>
   </data>
   <data name="MAPTYPEMAPS_PARSED" xml:space="preserve">
-    <value />
+    <value>Mappe Tipi di mappe sincronizzati</value>
   </data>
   <data name="MAPTYPES_PARSED" xml:space="preserve">
-    <value />
+    <value>Tipi di mappe sincronizzati</value>
   </data>
   <data name="MONSTERS_PARSED" xml:space="preserve">
-    <value />
+    <value>{0} Mostri sincronizzati</value>
   </data>
   <data name="NEED_TREE" xml:space="preserve">
     <value>Hai bisogno di una directory come questa :</value>
   </data>
   <data name="NO_ITEM" xml:space="preserve">
-    <value />
+    <value>Questo ID dell'oggetto è invalido!</value>
   </data>
   <data name="NPCMONSTERS_PARSED" xml:space="preserve">
-    <value />
+    <value>{0} Nemici sincronizzati</value>
   </data>
   <data name="NPCS_PARSED" xml:space="preserve">
     <value>{0} NPCs sincronizzati</value>
   </data>
   <data name="PARSE_ACCOUNTS" xml:space="preserve">
-    <value />
+    <value>Vuoi sincronizzare gli Account?</value>
   </data>
   <data name="PARSE_ALL" xml:space="preserve">
     <value>Vuoi sincronizzare TUTTO?</value>
   </data>
   <data name="PARSE_DROP" xml:space="preserve">
-    <value />
+    <value>Vuoi sincronizzare i Drop?</value>
   </data>
   <data name="PARSE_ITEMS" xml:space="preserve">
     <value>Vuoi sincronizzare Items?</value>
   </data>
   <data name="PARSE_MAPNPCS" xml:space="preserve">
-    <value />
+    <value>Vuoi sincronizzare gli NPC nella Mappa?</value>
   </data>
   <data name="PARSE_MAPS" xml:space="preserve">
-    <value>Vuoi sincronizzare Maps?</value>
+    <value>Vuoi sincronizzare le Mappe?</value>
   </data>
   <data name="PARSE_MAPTYPES" xml:space="preserve">
-    <value />
+    <value>Vuoi sincronizzare i Tipi delle Mappe?</value>
   </data>
   <data name="PARSE_MONSTERS" xml:space="preserve">
-    <value />
+    <value>Vuoi sincronizzare i Nemici?</value>
   </data>
   <data name="PARSE_NPCS" xml:space="preserve">
     <value>Vuoi sincronizzare Npcs?</value>
@@ -193,7 +193,7 @@
     <value>Vuoi sincronizzare Portals?</value>
   </data>
   <data name="PARSE_RECIPES" xml:space="preserve">
-    <value />
+    <value>Vuoi sincronizzare le Ricette?</value>
   </data>
   <data name="PARSE_SHOPITEMS" xml:space="preserve">
     <value>Vuoi sincronizzare Shopitems?</value>
@@ -202,33 +202,33 @@
     <value>Vuoi sincronizzare Shops?</value>
   </data>
   <data name="PARSE_SHOPSKILLS" xml:space="preserve">
-    <value />
+    <value>Vuoi sincronizzare le Skill negli Shop?</value>
   </data>
   <data name="PARSE_SKILLS" xml:space="preserve">
-    <value />
+    <value>Vuoi sincronizzare le Skill?</value>
   </data>
   <data name="PARSE_TELEPORTERS" xml:space="preserve">
-    <value />
+    <value>Vuoi sincronizzare i Portali?</value>
   </data>
   <data name="PORTALS_PARSED" xml:space="preserve">
-    <value>{0} Portali sincronizzati</value>
+    <value>{0} Portali sincronizzati !</value>
   </data>
   <data name="RECIPES_PARSED" xml:space="preserve">
-    <value />
+    <value>{0} Ricette sincronizzate !</value>
   </data>
   <data name="SHOPITEMS_PARSED" xml:space="preserve">
-    <value />
+    <value>{0} Oggetti dei negozi sincronizzati !</value>
   </data>
   <data name="SHOPSKILLS_PARSED" xml:space="preserve">
-    <value />
+    <value>{0} Skill nei Negozi sincronizzati</value>
   </data>
   <data name="SHOPS_PARSED" xml:space="preserve">
     <value>{0} Shops sincronizzati</value>
   </data>
   <data name="SKILLS_PARSED" xml:space="preserve">
-    <value />
+    <value>{0} Skill sincronizzate</value>
   </data>
   <data name="TELEPORTERS_PARSED" xml:space="preserve">
-    <value />
+    <value>{0} Portali Sincronizzati</value>
   </data>
 </root>

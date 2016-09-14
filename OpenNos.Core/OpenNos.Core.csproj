@@ -126,7 +126,10 @@
     <Compile Include="PacketAttribute.cs" />
     <Compile Include="Networking\WireProtocol.cs" />
     <Compile Include="Networking\WireProtocolFactory.cs" />
+    <Compile Include="Serializing\PacketBase.cs" />
+    <Compile Include="Serializing\PacketFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Serializing\IndexAttribute.cs" />
     <Compile Include="SessionFactory.cs" />
     <Compile Include="StringHelper.cs" />
     <Compile Include="Threading\SequentialItemProcessor.cs" />

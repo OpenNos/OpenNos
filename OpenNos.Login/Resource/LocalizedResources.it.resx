@@ -121,7 +121,7 @@
     <value>Il tuo account e' gia' connesso.</value>
   </data>
   <data name="BANNED" xml:space="preserve">
-    <value>Questo account è stato bannato!</value>
+    <value>Questo account è stato bannato. Ragione: {0}, Fino al {1}. </value>
   </data>
   <data name="CLIENT_CLOSED" xml:space="preserve">
     <value>Il client ha interrotto la connessione.</value>
@@ -173,5 +173,11 @@
   </data>
   <data name="DATABASE_NOT_UPTODATE" xml:space="preserve">
     <value>Il database non può aggiornarsi. Per favore considera di aggiornare il tuo database.</value>
+  </data>
+  <data name="CONNECTION_CLOSED" xml:space="preserve">
+    <value>Connessione chiusa</value>
+  </data>
+  <data name="MAINTENANCE" xml:space="preserve">
+    <value>Il server è in manutenzione fino alle {0}</value>
   </data>
 </root>

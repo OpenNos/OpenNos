@@ -50,7 +50,7 @@ namespace OpenNos.GameObject
                 if (session.Character.Hp > session.Character.HPLoad())
                     session.Character.Hp = (int)session.Character.HPLoad();
                 if (session.Character.Hp < session.Character.HPLoad() || session.Character.Mp < session.Character.MPLoad())
-                    session.CurrentMap?.Broadcast(session.Character.GenerateRc(session.Character.SnackHp));
+                    session.CurrentMap?.Broadcast(session, session.Character.GenerateRc(session.Character.SnackHp), ReceiverType.All);
                 if (session.CommunicationState == CommunicationStates.Connected)
                     session.SendPacket(session.Character.GenerateStat());
                 else return;

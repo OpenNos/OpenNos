@@ -683,6 +683,7 @@ namespace OpenNos.Handler
                         else
                         {
                             Session.Character.UseSp = false;
+                            Session.Character.ArenaWinner = 0;
                             Session.SendPacket(Session.Character.GenerateCond());
                             Session.SendPacket(Session.Character.GenerateLev());
                             Session.CurrentMap?.Broadcast(Session.Character.GenerateCMode());
@@ -929,7 +930,6 @@ namespace OpenNos.Handler
                     return;
                 }
 
-
                 if (skillinfo.SkillVNum < 200)
                 {
                     for (int i = Session.Character.Skills.Count - 1; i >= 0; i--)
@@ -947,11 +947,11 @@ namespace OpenNos.Handler
                         Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("SKILL_ALREADY_EXIST"), 11));
                         return;
                     }
-                    if (Session.Character.Class != skillinfo.Class)
-                    {
-                        Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SKILL_CANT_LEARN"), 0));
-                        return;
-                    }
+                    //if (Session.Character.Class != skillinfo.Class)
+                    //{
+                    //    Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SKILL_CANT_LEARN"), 0));
+                    //    return;
+                    //}
                     if (skillinfo.UpgradeSkill != 0)
                     {
                         CharacterSkill oldupgrade = Session.Character.Skills.FirstOrDefault(s => s.Skill.UpgradeSkill == skillinfo.UpgradeSkill && s.Skill.UpgradeType == skillinfo.UpgradeType && s.Skill.UpgradeSkill != 0);

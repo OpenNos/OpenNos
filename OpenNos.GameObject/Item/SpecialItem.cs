@@ -106,21 +106,7 @@ namespace OpenNos.GameObject
                         }
                         else
                         {
-                            Session.Character.IsVehicled = false;
-                            Session.Character.LoadSpeed();
-                            if (Session.Character.UseSp)
-                            {
-                                if (sp != null)
-                                {
-                                    Session.Character.Morph = sp.Item.Morph;
-                                    Session.Character.MorphUpgrade = sp.Upgrade;
-                                    Session.Character.MorphUpgrade2 = sp.Design;
-                                }
-                            }
-                            else
-                            {
-                                Session.Character.Morph = 0;
-                            }
+                            Session.Character.RemoveVehicle();
                         }
                         Session.CurrentMap?.Broadcast(Session.Character.GenerateCMode());
                         Session.SendPacket(Session.Character.GenerateCond());

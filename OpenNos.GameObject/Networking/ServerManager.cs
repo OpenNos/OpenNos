@@ -350,7 +350,12 @@ namespace OpenNos.GameObject
                     Session.Character.Dignity -= (short)(Session.Character.Level < 50 ? Session.Character.Level : 50);
                     if (Session.Character.Dignity < -1000)
                         Session.Character.Dignity = -1000;
-
+                    if (Session.Character.IsVehicled)
+                    {
+                        Session.Character.RemoveVehicle();
+                        Session.CurrentMap?.Broadcast(Session.Character.GenerateCMode());
+                        Session.SendPacket(Session.Character.GenerateCond());
+                    }
                     Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("LOSE_DIGNITY"), (short)(Session.Character.Level < 50 ? Session.Character.Level : 50)), 11));
                     Session.SendPacket(Session.Character.GenerateFd());
                 }
