@@ -683,6 +683,7 @@ namespace OpenNos.Handler
                         else
                         {
                             Session.Character.UseSp = false;
+                            Session.Character.ArenaWinner = 0;
                             Session.SendPacket(Session.Character.GenerateCond());
                             Session.SendPacket(Session.Character.GenerateLev());
                             Session.CurrentMap?.Broadcast(Session.Character.GenerateCMode());
