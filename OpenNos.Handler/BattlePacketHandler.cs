@@ -669,6 +669,10 @@ namespace OpenNos.Handler
                             x++;
                             if (ServerManager.GetMap(Session.Character.MapId).MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act4) || monsterinfo.MonsterType == MonsterType.Elite)
                             {
+                                Session.Character.GiftAdd(drop.ItemVNum, drop.Amount);
+                            }
+                            else
+                            {
                                 if (gr != null)
                                 {
                                     if (gr.SharingMode == (byte)GroupSharingType.ByOrder)
@@ -679,10 +683,9 @@ namespace OpenNos.Handler
                                     else
                                         gr.Characters.ForEach(s => s.SendPacket(s.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("DROPPED_ITEM"), ServerManager.GetItem(drop.ItemVNum).Name, drop.Amount), 10)));
                                 }
-                                Session.Character.GiftAdd(drop.ItemVNum, drop.Amount);
-                            }
-                            else
                                 Session.CurrentMap.DropItemByMonster(Owner, drop, mmon.MapX, mmon.MapY);
+                            }
+                               
                         }
                     }
                 }
@@ -698,19 +701,9 @@ namespace OpenNos.Handler
                         Amount = gold,
                         ItemVNum = 1046
                     };
-                   
+
                     if (ServerManager.GetMap(Session.Character.MapId).MapTypes.Any(s => s.MapTypeId == (short)MapTypeEnum.Act4) || monsterinfo.MonsterType == MonsterType.Elite)
                     {
-                        if (gr != null)
-                        {
-                            if (gr.SharingMode == (byte)GroupSharingType.ByOrder)
-                            {
-                                Owner = gr.OrderedCharacterId(Session.Character);
-                                gr.Characters.ForEach(s => s.SendPacket(s.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("ITEM_BOUNDED_TO"), ServerManager.GetItem(drop2.ItemVNum).Name, gr.Characters.Single(c => c.Character.CharacterId == (long)Owner).Character.Name, drop2.Amount), 10)));
-                            }
-                            else
-                                gr.Characters.ForEach(s => s.SendPacket(s.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("DROPPED_ITEM"), ServerManager.GetItem(drop2.ItemVNum).Name, drop2.Amount), 10)));
-                        }
                         Session.Character.Gold += drop2.Amount;
                         if (Session.Character.Gold > 1000000000)
                         {
@@ -721,7 +714,20 @@ namespace OpenNos.Handler
                         Session.SendPacket(Session.Character.GenerateGold());
                     }
                     else
+                    {
+
+                        if (gr != null)
+                        {
+                            if (gr.SharingMode == (byte)GroupSharingType.ByOrder)
+                            {
+                                Owner = gr.OrderedCharacterId(Session.Character);
+                                gr.Characters.ForEach(s => s.SendPacket(s.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("ITEM_BOUNDED_TO"), ServerManager.GetItem(drop2.ItemVNum).Name, gr.Characters.Single(c => c.Character.CharacterId == (long)Owner).Character.Name, drop2.Amount), 10)));
+                            }
+                            else
+                                gr.Characters.ForEach(s => s.SendPacket(s.Character.GenerateSay(String.Format(Language.Instance.GetMessageFromKey("DROPPED_ITEM"), ServerManager.GetItem(drop2.ItemVNum).Name, drop2.Amount), 10)));
+                        }
                         Session.CurrentMap.DropItemByMonster(Owner, drop2, mmon.MapX, mmon.MapY);
+                    }
                 }
                 if (Session.Character.Hp > 0)
                 {
