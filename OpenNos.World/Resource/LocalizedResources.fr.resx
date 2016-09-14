@@ -934,4 +934,13 @@ Veux-tu le porter ?</value>
   <data name="SKILL_DOES_NOT_EXIST" xml:space="preserve">
     <value>La compétence n'existe pas !</value>
   </data>
+  <data name="DROPPED_ITEM" xml:space="preserve">
+    <value>Tu as reçu un objet : {0} x {1}</value>
+  </data>
+  <data name="ITEM_BOUNDED_TO" xml:space="preserve">
+    <value>{1} a obtenu :  {0} x {2}</value>
+  </data>
+  <data name="NOT_YOUR_ITEM" xml:space="preserve">
+    <value>Cet objet ne t'appartient pas.</value>
+  </data>
 </root>
