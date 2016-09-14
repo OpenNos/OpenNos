@@ -15,7 +15,7 @@
 namespace OpenNos.Core
 {
     [System.AttributeUsage(System.AttributeTargets.Method)]
-    public class Packet : System.Attribute
+    public class PacketAttribute : System.Attribute
     {
         #region Members
 
@@ -26,7 +26,7 @@ namespace OpenNos.Core
 
         #region Instantiation
 
-        public Packet(string header, int amount = 1)
+        public PacketAttribute(string header, int amount = 1)
         {
             this._header = header;
             this._amount = amount;

@@ -57,6 +57,7 @@
   <ItemGroup>
     <Compile Include="NpcPacketHandler.cs" />
     <Compile Include="BattlePacketHandler.cs" />
+    <Compile Include="Packets\ClientPackets\WalkPacket.cs" />
     <Compile Include="UselessPacketHandler.cs" />
     <Compile Include="InventoryPacketHandler.cs" />
     <Compile Include="CommandPacketHandler.cs" />
@@ -99,6 +100,9 @@
       <Project>{d30674c8-15a6-4fee-8a79-82416f078725}</Project>
       <Name>OpenNos.WCF</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Packets\ServerPackets\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

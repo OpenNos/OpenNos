@@ -36,7 +36,7 @@ namespace OpenNos.GameObject
         private Account _account;
         private Character _character;
         private NetworkClient _client;
-        private IDictionary<Packet, Tuple<Action<object, string>, object>> _handlerMethods;
+        private IDictionary<PacketAttribute, Tuple<Action<object, string>, object>> _handlerMethods;
         private SequentialItemProcessor<byte[]> _queue;
         private IList<String> _waitForPacketList = new List<String>();
 
@@ -112,13 +112,13 @@ namespace OpenNos.GameObject
 
         public Map CurrentMap { get; set; }
 
-        public IDictionary<Packet, Tuple<Action<object, string>, object>> HandlerMethods
+        public IDictionary<PacketAttribute, Tuple<Action<object, string>, object>> HandlerMethods
         {
             get
             {
                 if (_handlerMethods == null)
                 {
-                    _handlerMethods = new Dictionary<Packet, Tuple<Action<object, string>, object>>();
+                    _handlerMethods = new Dictionary<PacketAttribute, Tuple<Action<object, string>, object>>();
                 }
 
                 return _handlerMethods;
@@ -263,13 +263,13 @@ namespace OpenNos.GameObject
             {
                 object handler = Activator.CreateInstance(handlerType, new object[] { this });
 
-                foreach (MethodInfo methodInfo in handlerType.GetMethods().Where(x => x.GetCustomAttributes(false).OfType<Packet>().Any()))
+                foreach (MethodInfo methodInfo in handlerType.GetMethods().Where(x => x.GetCustomAttributes(false).OfType<PacketAttribute>().Any()))
                 {
-                    Packet packetAttribute = methodInfo.GetCustomAttributes(false).OfType<Packet>().FirstOrDefault();
+                    PacketAttribute Packet = methodInfo.GetCustomAttributes(false).OfType<PacketAttribute>().FirstOrDefault();
 
-                    if (packetAttribute != null)
+                    if (Packet != null)
                     {
-                        HandlerMethods.Add(packetAttribute, new Tuple<Action<object, string>, object>(DelegateBuilder.BuildDelegate<Action<object, string>>(methodInfo), handler));
+                        HandlerMethods.Add(Packet, new Tuple<Action<object, string>, object>(DelegateBuilder.BuildDelegate<Action<object, string>>(methodInfo), handler));
                     }
                 }
             }
@@ -420,7 +420,7 @@ namespace OpenNos.GameObject
         {
             if (!IsDisposing)
             {
-                KeyValuePair<Packet, Tuple<Action<object, string>, object>> action = HandlerMethods.FirstOrDefault(h => h.Key.Header.Equals(packetHeader));
+                KeyValuePair<PacketAttribute, Tuple<Action<object, string>, object>> action = HandlerMethods.FirstOrDefault(h => h.Key.Header.Equals(packetHeader));
 
                 if (action.Value != null)
                 {

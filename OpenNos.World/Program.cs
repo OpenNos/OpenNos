@@ -88,6 +88,9 @@ namespace OpenNos.World
             //initialize ClientLinkManager
             //TODO
 
+            //initialize PacketSerialization
+            PacketFactory.Initialize<WalkPacket>();
+
             try
             {
                 ServiceFactory.Instance.CommunicationService.Open();
