@@ -13,10 +13,11 @@
  */
 
 using AutoMapper;
-
+using OpenNos.Core;
 using OpenNos.DAL.EF.MySQL.Helpers;
 using OpenNos.DAL.Interface;
 using OpenNos.Data;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -49,27 +50,42 @@ namespace OpenNos.DAL.EF.MySQL
 
         public void Insert(List<DropDTO> drops)
         {
-            using (var context = DataAccessHelper.CreateContext())
+            try
             {
-                context.Configuration.AutoDetectChangesEnabled = false;
-                foreach (DropDTO Drop in drops)
+                using (var context = DataAccessHelper.CreateContext())
                 {
-                    Drop entity = _mapper.Map<Drop>(Drop);
-                    context.Drop.Add(entity);
+                    context.Configuration.AutoDetectChangesEnabled = false;
+                    foreach (DropDTO Drop in drops)
+                    {
+                        Drop entity = _mapper.Map<Drop>(Drop);
+                        context.Drop.Add(entity);
+                    }
+                    context.Configuration.AutoDetectChangesEnabled = true;
+                    context.SaveChanges();
                 }
-                context.Configuration.AutoDetectChangesEnabled = true;
-                context.SaveChanges();
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
             }
         }
 
         public DropDTO Insert(DropDTO drop)
         {
-            using (var context = DataAccessHelper.CreateContext())
+            try
             {
-                Drop entity = _mapper.Map<Drop>(drop);
-                context.Drop.Add(entity);
-                context.SaveChanges();
-                return _mapper.Map<DropDTO>(drop);
+                using (var context = DataAccessHelper.CreateContext())
+                {
+                    Drop entity = _mapper.Map<Drop>(drop);
+                    context.Drop.Add(entity);
+                    context.SaveChanges();
+                    return _mapper.Map<DropDTO>(drop);
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
+                return null;
             }
         }
 

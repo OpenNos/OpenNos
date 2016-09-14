@@ -16,6 +16,8 @@ using AutoMapper;
 using OpenNos.DAL.EF.MySQL.Helpers;
 using OpenNos.DAL.Interface;
 using OpenNos.Data;
+using OpenNos.Core;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -48,27 +50,42 @@ namespace OpenNos.DAL.EF.MySQL
 
         public void Insert(List<NpcMonsterDTO> npcs)
         {
-            using (var context = DataAccessHelper.CreateContext())
+            try
             {
-                context.Configuration.AutoDetectChangesEnabled = false;
-                foreach (NpcMonsterDTO Item in npcs)
+                using (var context = DataAccessHelper.CreateContext())
                 {
-                    NpcMonster entity = _mapper.Map<NpcMonster>(Item);
-                    context.NpcMonster.Add(entity);
+                    context.Configuration.AutoDetectChangesEnabled = false;
+                    foreach (NpcMonsterDTO Item in npcs)
+                    {
+                        NpcMonster entity = _mapper.Map<NpcMonster>(Item);
+                        context.NpcMonster.Add(entity);
+                    }
+                    context.Configuration.AutoDetectChangesEnabled = true;
+                    context.SaveChanges();
                 }
-                context.Configuration.AutoDetectChangesEnabled = true;
-                context.SaveChanges();
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
             }
         }
 
         public NpcMonsterDTO Insert(NpcMonsterDTO npc)
         {
-            using (var context = DataAccessHelper.CreateContext())
+            try
             {
-                NpcMonster entity = _mapper.Map<NpcMonster>(npc);
-                context.NpcMonster.Add(entity);
-                context.SaveChanges();
-                return _mapper.Map<NpcMonsterDTO>(entity);
+                using (var context = DataAccessHelper.CreateContext())
+                {
+                    NpcMonster entity = _mapper.Map<NpcMonster>(npc);
+                    context.NpcMonster.Add(entity);
+                    context.SaveChanges();
+                    return _mapper.Map<NpcMonsterDTO>(entity);
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
+                return null;
             }
         }
 
@@ -85,9 +102,17 @@ namespace OpenNos.DAL.EF.MySQL
 
         public NpcMonsterDTO LoadByVnum(short vnum)
         {
-            using (var context = DataAccessHelper.CreateContext())
+            try
             {
-                return _mapper.Map<NpcMonsterDTO>(context.NpcMonster.FirstOrDefault(i => i.NpcMonsterVNum.Equals(vnum)));
+                using (var context = DataAccessHelper.CreateContext())
+                {
+                    return _mapper.Map<NpcMonsterDTO>(context.NpcMonster.FirstOrDefault(i => i.NpcMonsterVNum.Equals(vnum)));
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
+                return null;
             }
         }
 

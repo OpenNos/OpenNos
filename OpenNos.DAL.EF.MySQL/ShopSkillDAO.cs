@@ -13,10 +13,11 @@
  */
 
 using AutoMapper;
-
+using OpenNos.Core;
 using OpenNos.DAL.EF.MySQL.Helpers;
 using OpenNos.DAL.Interface;
 using OpenNos.Data;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -49,27 +50,42 @@ namespace OpenNos.DAL.EF.MySQL
 
         public ShopSkillDTO Insert(ShopSkillDTO shopSkill)
         {
-            using (var context = DataAccessHelper.CreateContext())
+            try
             {
-                ShopSkill entity = _mapper.Map<ShopSkill>(shopSkill);
-                context.ShopSkill.Add(entity);
-                context.SaveChanges();
-                return _mapper.Map<ShopSkillDTO>(entity);
+                using (var context = DataAccessHelper.CreateContext())
+                {
+                    ShopSkill entity = _mapper.Map<ShopSkill>(shopSkill);
+                    context.ShopSkill.Add(entity);
+                    context.SaveChanges();
+                    return _mapper.Map<ShopSkillDTO>(entity);
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
+                return null;
             }
         }
 
         public void Insert(List<ShopSkillDTO> skills)
         {
-            using (var context = DataAccessHelper.CreateContext())
+            try
             {
-                context.Configuration.AutoDetectChangesEnabled = false;
-                foreach (ShopSkillDTO Skill in skills)
+                using (var context = DataAccessHelper.CreateContext())
                 {
-                    ShopSkill entity = _mapper.Map<ShopSkill>(Skill);
-                    context.ShopSkill.Add(entity);
+                    context.Configuration.AutoDetectChangesEnabled = false;
+                    foreach (ShopSkillDTO Skill in skills)
+                    {
+                        ShopSkill entity = _mapper.Map<ShopSkill>(Skill);
+                        context.ShopSkill.Add(entity);
+                    }
+                    context.Configuration.AutoDetectChangesEnabled = true;
+                    context.SaveChanges();
                 }
-                context.Configuration.AutoDetectChangesEnabled = true;
-                context.SaveChanges();
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
             }
         }
 

@@ -493,12 +493,12 @@ namespace OpenNos.GameObject
 
         private void RemoveMapItem()
         {
-            for(int i = DroppedList.Count()-1;i >=0;i--)
+            for (int i = DroppedList.Count() - 1; i >= 0; i--)
             {
-                if ( DroppedList.ElementAt(i).Value.CreateDate.AddMinutes(3) < DateTime.Now)
+                if (DroppedList.ElementAt(i).Value.CreateDate.AddMinutes(3) < DateTime.Now)
                 {
                     Broadcast(DroppedList.ElementAt(i).Value.GenerateOut(DroppedList.ElementAt(i).Key));
-                    DroppedList.Remove(DroppedList.ElementAt(i).Key);    
+                    DroppedList.Remove(DroppedList.ElementAt(i).Key);
                 }
             }
         }

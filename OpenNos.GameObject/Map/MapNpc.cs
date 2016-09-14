@@ -26,26 +26,36 @@ namespace OpenNos.GameObject
 
         public MapNpc(int npcId, Map parent)
         {
-           
+
             MapNpcId = npcId;
             Npc = ServerManager.GetNpc(this.NpcVNum);
             LastEffect = LastMove = DateTime.Now;
-            IEnumerable<RecipeDTO> Recipe = DAOFactory.RecipeDAO.LoadByNpc(MapNpcId);
-            Recipes = new List<Recipe>();
-            foreach (RecipeDTO rec in Recipe)
+
+            IEnumerable<RecipeDTO> recipe = DAOFactory.RecipeDAO.LoadByNpc(MapNpcId);
+            if (recipe != null)
             {
-                Recipes.Add(new GameObject.Recipe(rec.RecipeId) { ItemVNum = rec.ItemVNum, MapNpcId = rec.MapNpcId, RecipeId = rec.RecipeId, Amount = rec.Amount });
+                Recipes = new List<Recipe>();
+                foreach (RecipeDTO rec in recipe)
+                {
+                    Recipes.Add(new GameObject.Recipe(rec.RecipeId) { ItemVNum = rec.ItemVNum, MapNpcId = rec.MapNpcId, RecipeId = rec.RecipeId, Amount = rec.Amount });
+                }
             }
 
             IEnumerable<TeleporterDTO> teleporters = DAOFactory.TeleporterDAO.LoadFromNpc(MapNpcId);
-            Teleporters = new List<Teleporter>();
-            foreach (TeleporterDTO teleporter in teleporters)
+            if (teleporters != null)
             {
-                Teleporters.Add(new GameObject.Teleporter() { MapId = teleporter.MapId, Index = teleporter.Index, MapNpcId = teleporter.MapNpcId, MapX = teleporter.MapX, MapY = teleporter.MapY, TeleporterId = teleporter.TeleporterId });
+                Teleporters = new List<Teleporter>();
+                foreach (TeleporterDTO teleporter in teleporters)
+                {
+                    Teleporters.Add(new GameObject.Teleporter() { MapId = teleporter.MapId, Index = teleporter.Index, MapNpcId = teleporter.MapNpcId, MapX = teleporter.MapX, MapY = teleporter.MapY, TeleporterId = teleporter.TeleporterId });
+                }
             }
+
             ShopDTO shop = DAOFactory.ShopDAO.LoadByNpc(MapNpcId);
             if (shop != null)
+            {
                 Shop = new Shop(shop.ShopId) { Name = shop.Name, MapNpcId = MapNpcId, MenuType = shop.MenuType, ShopType = shop.ShopType };
+            }
 
             Map = parent;
         }
@@ -62,7 +72,7 @@ namespace OpenNos.GameObject
         public List<Recipe> Recipes { get; set; }
         public Shop Shop { get; set; }
         public List<Teleporter> Teleporters { get; set; }
-        public NpcMonster Npc;      
+        public NpcMonster Npc;
 
 
         #endregion

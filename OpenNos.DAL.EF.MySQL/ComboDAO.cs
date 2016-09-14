@@ -13,10 +13,11 @@
  */
 
 using AutoMapper;
-
+using OpenNos.Core;
 using OpenNos.DAL.EF.MySQL.Helpers;
 using OpenNos.DAL.Interface;
 using OpenNos.Data;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -49,27 +50,42 @@ namespace OpenNos.DAL.EF.MySQL
 
         public void Insert(List<ComboDTO> combos)
         {
-            using (var context = DataAccessHelper.CreateContext())
+            try
             {
-                context.Configuration.AutoDetectChangesEnabled = false;
-                foreach (ComboDTO combo in combos)
+                using (var context = DataAccessHelper.CreateContext())
                 {
-                    Combo entity = _mapper.Map<Combo>(combo);
-                    context.Combo.Add(entity);
+                    context.Configuration.AutoDetectChangesEnabled = false;
+                    foreach (ComboDTO combo in combos)
+                    {
+                        Combo entity = _mapper.Map<Combo>(combo);
+                        context.Combo.Add(entity);
+                    }
+                    context.Configuration.AutoDetectChangesEnabled = true;
+                    context.SaveChanges();
                 }
-                context.Configuration.AutoDetectChangesEnabled = true;
-                context.SaveChanges();
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
             }
         }
 
         public ComboDTO Insert(ComboDTO combo)
         {
-            using (var context = DataAccessHelper.CreateContext())
+            try
             {
-                Combo entity = _mapper.Map<Combo>(combo);
-                context.Combo.Add(entity);
-                context.SaveChanges();
-                return _mapper.Map<ComboDTO>(entity);
+                using (var context = DataAccessHelper.CreateContext())
+                {
+                    Combo entity = _mapper.Map<Combo>(combo);
+                    context.Combo.Add(entity);
+                    context.SaveChanges();
+                    return _mapper.Map<ComboDTO>(entity);
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
+                return null;
             }
         }
 
@@ -86,9 +102,17 @@ namespace OpenNos.DAL.EF.MySQL
 
         public ComboDTO LoadById(short comboId)
         {
-            using (var context = DataAccessHelper.CreateContext())
+            try
             {
-                return _mapper.Map<ComboDTO>(context.Combo.FirstOrDefault(s => s.SkillVNum.Equals(comboId)));
+                using (var context = DataAccessHelper.CreateContext())
+                {
+                    return _mapper.Map<ComboDTO>(context.Combo.FirstOrDefault(s => s.SkillVNum.Equals(comboId)));
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
+                return null;
             }
         }
 

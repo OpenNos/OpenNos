@@ -13,10 +13,11 @@
  */
 
 using AutoMapper;
-
+using OpenNos.Core;
 using OpenNos.DAL.EF.MySQL.Helpers;
 using OpenNos.DAL.Interface;
 using OpenNos.Data;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -49,12 +50,20 @@ namespace OpenNos.DAL.EF.MySQL
 
         public MapTypeDTO Insert(ref MapTypeDTO mapType)
         {
-            using (var context = DataAccessHelper.CreateContext())
+            try
             {
-                MapType entity = _mapper.Map<MapType>(mapType);
-                context.MapType.Add(entity);
-                context.SaveChanges();
-                return _mapper.Map<MapTypeDTO>(entity);
+                using (var context = DataAccessHelper.CreateContext())
+                {
+                    MapType entity = _mapper.Map<MapType>(mapType);
+                    context.MapType.Add(entity);
+                    context.SaveChanges();
+                    return _mapper.Map<MapTypeDTO>(entity);
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
+                return null;
             }
         }
 
@@ -71,9 +80,17 @@ namespace OpenNos.DAL.EF.MySQL
 
         public MapTypeDTO LoadById(short maptypeId)
         {
-            using (var context = DataAccessHelper.CreateContext())
+            try
             {
-                return _mapper.Map<MapTypeDTO>(context.MapType.FirstOrDefault(s => s.MapTypeId.Equals(maptypeId)));
+                using (var context = DataAccessHelper.CreateContext())
+                {
+                    return _mapper.Map<MapTypeDTO>(context.MapType.FirstOrDefault(s => s.MapTypeId.Equals(maptypeId)));
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
+                return null;
             }
         }
 

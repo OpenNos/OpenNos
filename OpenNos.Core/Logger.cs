@@ -13,6 +13,7 @@
  */
 
 using log4net;
+using System;
 using System.Runtime.CompilerServices;
 
 namespace OpenNos.Core
@@ -59,6 +60,19 @@ namespace OpenNos.Core
         public static void InitializeLogger(ILog log)
         {
             Log = log;
+        }
+
+        /// <summary>
+        /// Wraps up the error message with the CallerMemberName
+        /// </summary>
+        /// <param name="memberName"></param>
+        /// <param name="innerException"></param>
+        public static void Error(Exception innerException = null, [CallerMemberName]string memberName = "")
+        {
+            if (Log != null)
+            {
+                Log.Error($"{memberName}: {innerException.Message}", innerException);
+            }
         }
 
         #endregion

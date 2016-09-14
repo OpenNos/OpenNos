@@ -13,10 +13,11 @@
  */
 
 using AutoMapper;
-
+using OpenNos.Core;
 using OpenNos.DAL.EF.MySQL.Helpers;
 using OpenNos.DAL.Interface;
 using OpenNos.Data;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -49,47 +50,78 @@ namespace OpenNos.DAL.EF.MySQL
 
         public void Insert(List<ShopDTO> shops)
         {
-            using (var context = DataAccessHelper.CreateContext())
+            try
             {
-                context.Configuration.AutoDetectChangesEnabled = false;
-                foreach (ShopDTO Item in shops)
+                using (var context = DataAccessHelper.CreateContext())
                 {
-                    Shop entity = _mapper.Map<Shop>(Item);
-                    context.Shop.Add(entity);
+                    context.Configuration.AutoDetectChangesEnabled = false;
+                    foreach (ShopDTO Item in shops)
+                    {
+                        Shop entity = _mapper.Map<Shop>(Item);
+                        context.Shop.Add(entity);
+                    }
+                    context.Configuration.AutoDetectChangesEnabled = true;
+                    context.SaveChanges();
                 }
-                context.Configuration.AutoDetectChangesEnabled = true;
-                context.SaveChanges();
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
             }
         }
 
         public ShopDTO Insert(ShopDTO shop)
         {
-            using (var context = DataAccessHelper.CreateContext())
+            try
             {
-                if (context.Shop.FirstOrDefault(c => c.MapNpcId.Equals(shop.MapNpcId)) == null)
+                using (var context = DataAccessHelper.CreateContext())
                 {
-                    Shop entity = _mapper.Map<Shop>(shop);
-                    context.Shop.Add(entity);
-                    context.SaveChanges();
-                    return _mapper.Map<ShopDTO>(entity);
+                    if (context.Shop.FirstOrDefault(c => c.MapNpcId.Equals(shop.MapNpcId)) == null)
+                    {
+                        Shop entity = _mapper.Map<Shop>(shop);
+                        context.Shop.Add(entity);
+                        context.SaveChanges();
+                        return _mapper.Map<ShopDTO>(entity);
+                    }
+                    else return new ShopDTO();
                 }
-                else return new ShopDTO();
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
+                return null;
             }
         }
 
         public ShopDTO LoadById(int shopId)
         {
-            using (var context = DataAccessHelper.CreateContext())
+            try
             {
-                return _mapper.Map<ShopDTO>(context.Shop.FirstOrDefault(s => s.ShopId.Equals(shopId)));
+                using (var context = DataAccessHelper.CreateContext())
+                {
+                    return _mapper.Map<ShopDTO>(context.Shop.FirstOrDefault(s => s.ShopId.Equals(shopId)));
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
+                return null;
             }
         }
 
         public ShopDTO LoadByNpc(int npcId)
         {
-            using (var context = DataAccessHelper.CreateContext())
+            try
             {
-                return _mapper.Map<ShopDTO>(context.Shop.FirstOrDefault(s => s.MapNpcId.Equals(npcId)));
+                using (var context = DataAccessHelper.CreateContext())
+                {
+                    return _mapper.Map<ShopDTO>(context.Shop.FirstOrDefault(s => s.MapNpcId.Equals(npcId)));
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
+                return null;
             }
         }
 

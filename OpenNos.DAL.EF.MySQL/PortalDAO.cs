@@ -17,6 +17,8 @@ using AutoMapper;
 using OpenNos.DAL.EF.MySQL.Helpers;
 using OpenNos.DAL.Interface;
 using OpenNos.Data;
+using OpenNos.Core;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -49,27 +51,42 @@ namespace OpenNos.DAL.EF.MySQL
 
         public void Insert(List<PortalDTO> portals)
         {
-            using (var context = DataAccessHelper.CreateContext())
+            try
             {
-                context.Configuration.AutoDetectChangesEnabled = false;
-                foreach (PortalDTO Item in portals)
+                using (var context = DataAccessHelper.CreateContext())
                 {
-                    Portal entity = _mapper.Map<Portal>(Item);
-                    context.Portal.Add(entity);
+                    context.Configuration.AutoDetectChangesEnabled = false;
+                    foreach (PortalDTO Item in portals)
+                    {
+                        Portal entity = _mapper.Map<Portal>(Item);
+                        context.Portal.Add(entity);
+                    }
+                    context.Configuration.AutoDetectChangesEnabled = true;
+                    context.SaveChanges();
                 }
-                context.Configuration.AutoDetectChangesEnabled = true;
-                context.SaveChanges();
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
             }
         }
 
         public PortalDTO Insert(PortalDTO portal)
         {
-            using (var context = DataAccessHelper.CreateContext())
+            try
             {
-                Portal entity = _mapper.Map<Portal>(portal);
-                context.Portal.Add(entity);
-                context.SaveChanges();
-                return _mapper.Map<PortalDTO>(entity);
+                using (var context = DataAccessHelper.CreateContext())
+                {
+                    Portal entity = _mapper.Map<Portal>(portal);
+                    context.Portal.Add(entity);
+                    context.SaveChanges();
+                    return _mapper.Map<PortalDTO>(entity);
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
+                return null;
             }
         }
 

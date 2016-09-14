@@ -13,11 +13,13 @@
  */
 
 using AutoMapper;
+using OpenNos.Core;
 using OpenNos.DAL.EF.MySQL.DB;
 using OpenNos.DAL.EF.MySQL.Helpers;
 using OpenNos.DAL.Interface;
 using OpenNos.Data;
 using OpenNos.Data.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -50,23 +52,31 @@ namespace OpenNos.DAL.EF.MySQL
 
         public SaveResult InsertOrUpdate(ref RespawnDTO respawn)
         {
-            using (var context = DataAccessHelper.CreateContext())
+            try
             {
-                long CharacterId = respawn.CharacterId;
-                short RespawnType = respawn.RespawnType;
-                Respawn entity = context.Respawn.FirstOrDefault(c => c.RespawnType.Equals(RespawnType) && c.CharacterId.Equals(CharacterId));
+                using (var context = DataAccessHelper.CreateContext())
+                {
+                    long CharacterId = respawn.CharacterId;
+                    short RespawnType = respawn.RespawnType;
+                    Respawn entity = context.Respawn.FirstOrDefault(c => c.RespawnType.Equals(RespawnType) && c.CharacterId.Equals(CharacterId));
 
-                if (entity == null) //new entity
-                {
-                    respawn = Insert(respawn, context);
-                    return SaveResult.Inserted;
+                    if (entity == null) //new entity
+                    {
+                        respawn = Insert(respawn, context);
+                        return SaveResult.Inserted;
+                    }
+                    else //existing entity
+                    {
+                        respawn.RespawnId = entity.RespawnId;
+                        respawn = Update(entity, respawn, context);
+                        return SaveResult.Updated;
+                    }
                 }
-                else //existing entity
-                {
-                    respawn.RespawnId = entity.RespawnId;
-                    respawn = Update(entity, respawn, context);
-                    return SaveResult.Updated;
-                }
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
+                return SaveResult.Error;
             }
         }
 
@@ -83,18 +93,34 @@ namespace OpenNos.DAL.EF.MySQL
 
         public RespawnDTO LoadById(long respawnId)
         {
-            using (var context = DataAccessHelper.CreateContext())
+            try
             {
-                return _mapper.Map<RespawnDTO>(context.Respawn.FirstOrDefault(s => s.RespawnId.Equals(respawnId)));
+                using (var context = DataAccessHelper.CreateContext())
+                {
+                    return _mapper.Map<RespawnDTO>(context.Respawn.FirstOrDefault(s => s.RespawnId.Equals(respawnId)));
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
+                return null;
             }
         }
 
         private RespawnDTO Insert(RespawnDTO respawn, OpenNosContext context)
         {
-            Respawn entity = new Respawn() { CharacterId = respawn.CharacterId };
-            context.Respawn.Add(entity);
-            context.SaveChanges();
-            return _mapper.Map<RespawnDTO>(entity);
+            try
+            {
+                Respawn entity = new Respawn() { CharacterId = respawn.CharacterId };
+                context.Respawn.Add(entity);
+                context.SaveChanges();
+                return _mapper.Map<RespawnDTO>(entity);
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
+                return null;
+            }
         }
 
         private RespawnDTO Update(Respawn entity, RespawnDTO respawn, OpenNosContext context)
@@ -104,7 +130,6 @@ namespace OpenNos.DAL.EF.MySQL
                 _mapper.Map(respawn, entity);
                 context.SaveChanges();
             }
-
             return _mapper.Map<RespawnDTO>(entity);
         }
 

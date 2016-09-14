@@ -13,10 +13,11 @@
  */
 
 using AutoMapper;
-
+using OpenNos.Core;
 using OpenNos.DAL.EF.MySQL.Helpers;
 using OpenNos.DAL.Interface;
 using OpenNos.Data;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -49,31 +50,46 @@ namespace OpenNos.DAL.EF.MySQL
 
         public void Insert(List<MapDTO> maps)
         {
-            using (var context = DataAccessHelper.CreateContext())
+            try
             {
-                context.Configuration.AutoDetectChangesEnabled = false;
-                foreach (MapDTO Item in maps)
+                using (var context = DataAccessHelper.CreateContext())
                 {
-                    Map entity = _mapper.Map<Map>(Item);
-                    context.Map.Add(entity);
+                    context.Configuration.AutoDetectChangesEnabled = false;
+                    foreach (MapDTO Item in maps)
+                    {
+                        Map entity = _mapper.Map<Map>(Item);
+                        context.Map.Add(entity);
+                    }
+                    context.Configuration.AutoDetectChangesEnabled = true;
+                    context.SaveChanges();
                 }
-                context.Configuration.AutoDetectChangesEnabled = true;
-                context.SaveChanges();
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
             }
         }
 
         public MapDTO Insert(MapDTO map)
         {
-            using (var context = DataAccessHelper.CreateContext())
+            try
             {
-                if (context.Map.FirstOrDefault(c => c.MapId.Equals(map.MapId)) == null)
+                using (var context = DataAccessHelper.CreateContext())
                 {
-                    Map entity = _mapper.Map<Map>(map);
-                    context.Map.Add(entity);
-                    context.SaveChanges();
-                    return _mapper.Map<MapDTO>(entity);
+                    if (context.Map.FirstOrDefault(c => c.MapId.Equals(map.MapId)) == null)
+                    {
+                        Map entity = _mapper.Map<Map>(map);
+                        context.Map.Add(entity);
+                        context.SaveChanges();
+                        return _mapper.Map<MapDTO>(entity);
+                    }
+                    else return new MapDTO();
                 }
-                else return new MapDTO();
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
+                return null;
             }
         }
 
@@ -90,9 +106,17 @@ namespace OpenNos.DAL.EF.MySQL
 
         public MapDTO LoadById(short mapId)
         {
-            using (var context = DataAccessHelper.CreateContext())
+            try
             {
-                return _mapper.Map<MapDTO>(context.Map.FirstOrDefault(c => c.MapId.Equals(mapId)));
+                using (var context = DataAccessHelper.CreateContext())
+                {
+                    return _mapper.Map<MapDTO>(context.Map.FirstOrDefault(c => c.MapId.Equals(mapId)));
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
+                return null;
             }
         }
 

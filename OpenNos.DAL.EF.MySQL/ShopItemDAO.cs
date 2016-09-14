@@ -13,11 +13,13 @@
  */
 
 using AutoMapper;
+using OpenNos.Core;
 using OpenNos.DAL.EF.MySQL.DB;
 using OpenNos.DAL.EF.MySQL.Helpers;
 using OpenNos.DAL.Interface;
 using OpenNos.Data;
 using OpenNos.Data.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -50,51 +52,82 @@ namespace OpenNos.DAL.EF.MySQL
 
         public DeleteResult DeleteById(int itemId)
         {
-            using (var context = DataAccessHelper.CreateContext())
+            try
             {
-                ShopItem Item = context.ShopItem.FirstOrDefault(i => i.ShopItemId.Equals(itemId));
-
-                if (Item != null)
+                using (var context = DataAccessHelper.CreateContext())
                 {
-                    context.ShopItem.Remove(Item);
-                    context.SaveChanges();
-                }
+                    ShopItem Item = context.ShopItem.FirstOrDefault(i => i.ShopItemId.Equals(itemId));
 
-                return DeleteResult.Deleted;
+                    if (Item != null)
+                    {
+                        context.ShopItem.Remove(Item);
+                        context.SaveChanges();
+                    }
+
+                    return DeleteResult.Deleted;
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
+                return DeleteResult.Error;
             }
         }
 
         public ShopItemDTO Insert(ShopItemDTO item)
         {
-            using (var context = DataAccessHelper.CreateContext())
+            try
             {
-                ShopItem entity = _mapper.Map<ShopItem>(item);
-                context.ShopItem.Add(entity);
-                context.SaveChanges();
-                return _mapper.Map<ShopItemDTO>(entity);
+                using (var context = DataAccessHelper.CreateContext())
+                {
+                    ShopItem entity = _mapper.Map<ShopItem>(item);
+                    context.ShopItem.Add(entity);
+                    context.SaveChanges();
+                    return _mapper.Map<ShopItemDTO>(entity);
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
+                return null;
             }
         }
 
         public void Insert(List<ShopItemDTO> items)
         {
-            using (var context = DataAccessHelper.CreateContext())
+            try
             {
-                context.Configuration.AutoDetectChangesEnabled = false;
-                foreach (ShopItemDTO Item in items)
+                using (var context = DataAccessHelper.CreateContext())
                 {
-                    ShopItem entity = _mapper.Map<ShopItem>(Item);
-                    context.ShopItem.Add(entity);
+                    context.Configuration.AutoDetectChangesEnabled = false;
+                    foreach (ShopItemDTO Item in items)
+                    {
+                        ShopItem entity = _mapper.Map<ShopItem>(Item);
+                        context.ShopItem.Add(entity);
+                    }
+                    context.Configuration.AutoDetectChangesEnabled = true;
+                    context.SaveChanges();
                 }
-                context.Configuration.AutoDetectChangesEnabled = true;
-                context.SaveChanges();
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
             }
         }
 
         public ShopItemDTO LoadById(int itemId)
         {
-            using (var context = DataAccessHelper.CreateContext())
+            try
             {
-                return _mapper.Map<ShopItemDTO>(context.ShopItem.FirstOrDefault(i => i.ShopItemId.Equals(itemId)));
+                using (var context = DataAccessHelper.CreateContext())
+                {
+                    return _mapper.Map<ShopItemDTO>(context.ShopItem.FirstOrDefault(i => i.ShopItemId.Equals(itemId)));
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
+                return null;
             }
         }
 
@@ -116,7 +149,6 @@ namespace OpenNos.DAL.EF.MySQL
                 _mapper.Map(shopItem, entity);
                 context.SaveChanges();
             }
-
             return _mapper.Map<ShopItemDTO>(entity);
         }
 

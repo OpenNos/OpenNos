@@ -96,91 +96,127 @@ namespace OpenNos.DAL.EF.MySQL
             }
             catch (Exception e)
             {
-                Logger.Log.Error(String.Format(Language.Instance.GetMessageFromKey("UPDATE_Account_ERROR"), account.AccountId, e.Message), e);
+                Logger.Log.Error(String.Format(Language.Instance.GetMessageFromKey("UPDATE_ACCOUNT_ERROR"), account.AccountId, e.Message), e);
                 return SaveResult.Error;
             }
         }
 
         public AccountDTO LoadById(long accountId)
         {
-            using (var context = DataAccessHelper.CreateContext())
+            try
             {
-                Account Account = context.Account.FirstOrDefault(a => a.AccountId.Equals(accountId));
-
-                if (Account != null)
+                using (var context = DataAccessHelper.CreateContext())
                 {
-                    return _mapper.Map<AccountDTO>(Account);
+                    Account account = context.Account.FirstOrDefault(a => a.AccountId.Equals(accountId));
+                    if (account != null)
+                    {
+                        return _mapper.Map<AccountDTO>(account);
+                    }
                 }
             }
-
+            catch (Exception e)
+            {
+                Logger.Error(e);
+            }
             return null;
         }
 
         public AccountDTO LoadByName(string name)
         {
-            using (var context = DataAccessHelper.CreateContext())
+            try
             {
-                Account Account = context.Account.FirstOrDefault(a => a.Name.Equals(name));
-
-                if (Account != null)
+                using (var context = DataAccessHelper.CreateContext())
                 {
-                    return _mapper.Map<AccountDTO>(Account);
+                    Account Account = context.Account.FirstOrDefault(a => a.Name.Equals(name));
+                    if (Account != null)
+                    {
+                        return _mapper.Map<AccountDTO>(Account);
+                    }
                 }
             }
-
+            catch (Exception e)
+            {
+                Logger.Error(e);
+            }
             return null;
         }
 
         public AccountDTO LoadBySessionId(int sessionId)
         {
-            using (var context = DataAccessHelper.CreateContext())
+            try
             {
-                Account Account = context.Account.FirstOrDefault(a => a.LastSession.Equals(sessionId));
-
-                if (Account != null)
+                using (var context = DataAccessHelper.CreateContext())
                 {
-                    return _mapper.Map<AccountDTO>(Account);
+                    Account Account = context.Account.FirstOrDefault(a => a.LastSession.Equals(sessionId));
+                    if (Account != null)
+                    {
+                        return _mapper.Map<AccountDTO>(Account);
+                    }
                 }
             }
-
+            catch (Exception e)
+            {
+                Logger.Error(e);
+            }
             return null;
         }
 
         public void LogIn(string name)
         {
-            using (var context = DataAccessHelper.CreateContext())
+            try
             {
-                Account Account = context.Account.FirstOrDefault(a => a.Name.Equals(name));
-                context.SaveChanges();
+                using (var context = DataAccessHelper.CreateContext())
+                {
+                    Account Account = context.Account.FirstOrDefault(a => a.Name.Equals(name));
+                    context.SaveChanges();
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
             }
         }
 
         public void UpdateLastSessionAndIp(string name, int session, string ip)
         {
-            using (var context = DataAccessHelper.CreateContext())
+            try
             {
-                Account Account = context.Account.FirstOrDefault(a => a.Name.Equals(name));
-                Account.LastSession = session;
-                context.SaveChanges();
+                using (var context = DataAccessHelper.CreateContext())
+                {
+                    Account Account = context.Account.FirstOrDefault(a => a.Name.Equals(name));
+                    Account.LastSession = session;
+                    context.SaveChanges();
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
             }
         }
 
         public void WriteGeneralLog(long accountId, string ipAddress, long? CharacterId, string logType, string logData)
         {
-            using (var context = DataAccessHelper.CreateContext())
+            try
             {
-                GeneralLog log = new GeneralLog()
+                using (var context = DataAccessHelper.CreateContext())
                 {
-                    AccountId = accountId,
-                    IpAddress = ipAddress,
-                    Timestamp = DateTime.Now,
-                    LogType = logType,
-                    LogData = logData,
-                    CharacterId = CharacterId
-                };
+                    GeneralLog log = new GeneralLog()
+                    {
+                        AccountId = accountId,
+                        IpAddress = ipAddress,
+                        Timestamp = DateTime.Now,
+                        LogType = logType,
+                        LogData = logData,
+                        CharacterId = CharacterId
+                    };
 
-                context.GeneralLog.Add(log);
-                context.SaveChanges();
+                    context.GeneralLog.Add(log);
+                    context.SaveChanges();
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
             }
         }
 
