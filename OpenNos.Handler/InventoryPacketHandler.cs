@@ -448,7 +448,7 @@ namespace OpenNos.Handler
                     Group gr = null;
                     if(mapitem.Owner !=null)
                       gr=  ServerManager.Instance.Groups.FirstOrDefault(g => g.IsMemberOfGroup((long)mapitem.Owner) && g.IsMemberOfGroup(Session.Character.CharacterId));
-                    if (mapitem.CreateDate.AddSeconds(20) > DateTime.Now && !(mapitem.Owner == Session.Character.CharacterId || (gr!=null && gr.SharingMode == (byte)GroupSharingType.Everyone)))
+                    if (mapitem.CreateDate.AddSeconds(30) > DateTime.Now && !(mapitem.Owner == Session.Character.CharacterId || (gr!=null && gr.SharingMode == (byte)GroupSharingType.Everyone)))
                     {
                         Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NOT_YOUR_ITEM"),10));
                         return;
