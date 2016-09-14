@@ -29,7 +29,7 @@ namespace OpenNos.GameObject
             {
                 case 650: //wings
                     SpecialistInstance specialistInstance = Session.Character.EquipmentList.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Equipment);
-                    if (Session.Character.UseSp && specialistInstance != null)
+                    if (Session.Character.UseSp && specialistInstance != null && !Session.Character.IsVehicled)
                     {
                         if (!DelayUsed)
                         {
@@ -57,7 +57,7 @@ namespace OpenNos.GameObject
                     break;
 
                 case 651: // magic lamp (hardcoded)
-                    if (!Session.Character.EquipmentList.Inventory.Any())
+                    if (!Session.Character.EquipmentList.Inventory.Any() && !Session.Character.IsVehicled)
                     {
                         if (!DelayUsed)
                         {
@@ -84,7 +84,7 @@ namespace OpenNos.GameObject
 
                 case 1000: // vehicles
                     SpecialistInstance sp = Session.Character.EquipmentList.LoadBySlotAndType<SpecialistInstance>((byte)EquipmentType.Sp, InventoryType.Equipment);
-                    if (!DelayUsed && Session.Character.IsVehicled == false)
+                    if (!DelayUsed && !Session.Character.IsVehicled)
                     {
                         if (Session.Character.IsSitting)
                         {
