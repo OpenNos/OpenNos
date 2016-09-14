@@ -30,9 +30,7 @@ namespace OpenNos.Core
 
         #region Instantiation
 
-        public NetworkClient(ICommunicationChannel communicationChannel) : base(communicationChannel)
-        {
-        }
+        public NetworkClient(ICommunicationChannel communicationChannel) : base(communicationChannel) { }
 
         #endregion
 
@@ -49,7 +47,7 @@ namespace OpenNos.Core
             _encryptor = encryptor;
         }
 
-        public void Send(string packet)
+        public void SendPacket(string packet)
         {
             if (!IsDisposing)
             {
@@ -58,35 +56,18 @@ namespace OpenNos.Core
             }
         }
 
-        public bool SendPacket(string packet)
+        public void SendPacketFormat(string packet, params object[] param)
         {
-            try
-            {
-                Send(packet);
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
+            SendPacket(String.Format(packet, param));
         }
 
-        public bool SendPacketFormat(string packet, params object[] param)
+        public void SendPackets(IEnumerable<String> packets)
         {
-            return SendPacket(String.Format(packet, param));
-        }
-
-        public bool SendPackets(IEnumerable<String> packets)
-        {
-            bool result = true;
-
-            //TODO maybe send at once with delimiter
+            //TODO: maybe send at once with delimiter
             foreach (string packet in packets)
             {
-                result = result && SendPacket(packet);
+                SendPacket(packet);
             }
-
-            return result;
         }
 
         #endregion

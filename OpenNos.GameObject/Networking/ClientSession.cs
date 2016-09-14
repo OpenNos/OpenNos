@@ -13,6 +13,7 @@
  */
 
 using OpenNos.Core;
+using OpenNos.Core.Networking.Communication.Scs.Communication;
 using OpenNos.Core.Networking.Communication.Scs.Communication.Messages;
 using OpenNos.Core.Threading;
 using OpenNos.Domain;
@@ -71,6 +72,38 @@ namespace OpenNos.GameObject
 
         #region Properties
 
+        public string IpAddress
+        {
+            get
+            {
+                return _client.RemoteEndPoint.ToString();
+            }
+        }
+
+        public CommunicationStates CommunicationState
+        {
+            get
+            {
+                return _client.CommunicationState;
+            }
+        }
+
+        public bool HasSession
+        {
+            get
+            {
+                return _client != null;
+            }
+        }
+
+        public long ClientId
+        {
+            get
+            {
+                return _client.ClientId;
+            }
+        }
+
         public Account Account
         {
             get
@@ -92,18 +125,6 @@ namespace OpenNos.GameObject
             set
             {
                 _character = value;
-            }
-        }
-
-        public NetworkClient Client
-        {
-            get
-            {
-                return _client;
-            }
-            set
-            {
-                _client = value;
             }
         }
 
@@ -139,11 +160,11 @@ namespace OpenNos.GameObject
         {
             get
             {
-                return Client.IsDisposing;
+                return _client.IsDisposing;
             }
             set
             {
-                Client.IsDisposing = value;
+                _client.IsDisposing = value;
             }
         }
 
@@ -181,6 +202,26 @@ namespace OpenNos.GameObject
                 ServiceFactory.Instance.CommunicationService.DisconnectAccount(Account.Name);
             }
             ServerManager.Instance.UnregisterSession(this);
+        }
+
+        public void SendPacket(string packet)
+        {
+            _client.SendPacket(packet);
+        }
+
+        public void SendPacketFormat(string packet, params object[] param)
+        {
+            _client.SendPacketFormat(packet, param);
+        }
+
+        public void SendPackets(IEnumerable<String> packets)
+        {
+            _client.SendPackets(packets);
+        }
+
+        public void Disconnect()
+        {
+            _client.Disconnect();
         }
 
         public void Initialize(EncryptionBase encryptor, Type packetHandler)

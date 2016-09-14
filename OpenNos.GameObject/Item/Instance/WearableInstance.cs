@@ -138,7 +138,7 @@ namespace OpenNos.GameObject
                     if (Session.Character.InventoryList.CountItem(cellavnum) < cella * reducedpricefactor)
                         return;
                     Session.Character.InventoryList.RemoveItemAmount(cellavnum, (int)(cella * reducedpricefactor));
-                    Session.Client.SendPacket(Session.Character.GenerateGold());
+                    Session.SendPacket(Session.Character.GenerateGold());
                     break;
 
                 case RarifyMode.Normal:
@@ -149,7 +149,7 @@ namespace OpenNos.GameObject
                     if (Session.Character.InventoryList.CountItem(cellavnum) < cella)
                         return;
                     Session.Character.InventoryList.RemoveItemAmount(cellavnum, cella);
-                    Session.Client.SendPacket(Session.Character.GenerateGold());
+                    Session.SendPacket(Session.Character.GenerateGold());
                     break;
             }
 
@@ -268,13 +268,13 @@ namespace OpenNos.GameObject
                         if (protection == RarifyProtection.None)
                         {
                             Session.Character.DeleteItemByItemInstanceId(this.Id);
-                            Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("RARIFY_FAILED"), 11));
-                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("RARIFY_FAILED"), 0));
+                            Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("RARIFY_FAILED"), 11));
+                            Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("RARIFY_FAILED"), 0));
                         }
                         else
                         {
-                            Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("RARIFY_FAILED_ITEM_SAVED"), 11));
-                            Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("RARIFY_FAILED_ITEM_SAVED"), 0));
+                            Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("RARIFY_FAILED_ITEM_SAVED"), 11));
+                            Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("RARIFY_FAILED_ITEM_SAVED"), 0));
                             ServerManager.Instance.Broadcast(Session.Character.GenerateEff(3004));
                         }
                     }
@@ -283,7 +283,7 @@ namespace OpenNos.GameObject
                 {
                     Inventory inventory = Session.Character.InventoryList.GetInventoryByItemInstanceId(this.Id);
                     if (inventory != null)
-                        Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(this.ItemVNum, 1, inventory.Type, inventory.Slot, inventory.ItemInstance.Rare, 0, inventory.ItemInstance.Upgrade, 0));
+                        Session.SendPacket(Session.Character.GenerateInventoryAdd(this.ItemVNum, 1, inventory.Type, inventory.Slot, inventory.ItemInstance.Rare, 0, inventory.ItemInstance.Upgrade, 0));
                 }
             }
         }
@@ -365,25 +365,25 @@ namespace OpenNos.GameObject
                     this.WaterResistance += (byte)(itemToSum.WaterResistance + itemToSum.Item.WaterResistance);
                     this.FireResistance += (byte)(itemToSum.FireResistance + itemToSum.Item.FireResistance);
                     Session.Character.DeleteItemByItemInstanceId(itemToSum.Id);
-                    Session.Client.SendPacket($"pdti 10 {this.ItemVNum} 1 27 {this.Upgrade} 0");
-                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SUM_SUCCESS"), 0));
-                    Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("SUM_SUCCESS"), 12));
-                    Session.Client.SendPacket(Session.Character.GenerateGuri(19, 1, 1324));
+                    Session.SendPacket($"pdti 10 {this.ItemVNum} 1 27 {this.Upgrade} 0");
+                    Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SUM_SUCCESS"), 0));
+                    Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("SUM_SUCCESS"), 12));
+                    Session.SendPacket(Session.Character.GenerateGuri(19, 1, 1324));
                     Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateGuri(6, 1), ReceiverType.All);
                     Inventory inventory = Session.Character.InventoryList.GetInventoryByItemInstanceId(this.Id);
-                    Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(inventory.ItemInstance.ItemVNum, 1, inventory.Type, inventory.Slot, 0, 0, 0, 0));
-                    Session.Client.SendPacket(Session.Character.GenerateGold());
+                    Session.SendPacket(Session.Character.GenerateInventoryAdd(inventory.ItemInstance.ItemVNum, 1, inventory.Type, inventory.Slot, 0, 0, 0, 0));
+                    Session.SendPacket(Session.Character.GenerateGold());
                 }
                 else
                 {
-                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SUM_FAILED"), 0));
-                    Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("SUM_FAILED"), 11));
-                    Session.Client.SendPacket(Session.Character.GenerateGuri(19, 1 , 1332));
+                    Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("SUM_FAILED"), 0));
+                    Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("SUM_FAILED"), 11));
+                    Session.SendPacket(Session.Character.GenerateGuri(19, 1 , 1332));
                     Session.CurrentMap?.Broadcast(Session, Session.Character.GenerateGuri(6, 1), ReceiverType.All);
                     Session.Character.DeleteItemByItemInstanceId(itemToSum.Id);
                     Session.Character.DeleteItemByItemInstanceId(this.Id);
                 }
-                Session.Client.SendPacket("shop_end 1");
+                Session.SendPacket("shop_end 1");
             }
         }
 
@@ -407,8 +407,8 @@ namespace OpenNos.GameObject
 
                 if (this.IsFixed)
                 {
-                    Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("ITEM_IS_FIXED"), 10));
-                    Session.Client.SendPacket("shop_end 1");
+                    Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("ITEM_IS_FIXED"), 10));
+                    Session.SendPacket("shop_end 1");
                     return;
                 }
                 switch (mode)
@@ -436,7 +436,7 @@ namespace OpenNos.GameObject
                                 return;
                             Session.Character.InventoryList.RemoveItemAmount(gemFullVnum, (int)(gem[this.Upgrade] * reducedpricefactor));
                         }
-                        Session.Client.SendPacket(Session.Character.GenerateGold());
+                        Session.SendPacket(Session.Character.GenerateGold());
                         break;
 
                     case UpgradeMode.Normal:
@@ -459,7 +459,7 @@ namespace OpenNos.GameObject
                                 return;
                             Session.Character.InventoryList.RemoveItemAmount(gemFullVnum, (gem[this.Upgrade]));
                         }
-                        Session.Client.SendPacket(Session.Character.GenerateGold());
+                        Session.SendPacket(Session.Character.GenerateGold());
                         break;
                 }
                 WearableInstance wearable = Session.Character.InventoryList.LoadByItemInstance<WearableInstance>(this.Id);
@@ -470,40 +470,40 @@ namespace OpenNos.GameObject
                 {
                     ServerManager.Instance.Broadcast(Session, Session.Character.GenerateEff(3004), ReceiverType.All);
                     wearable.IsFixed = true;
-                    Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADE_FIXED"), 11));
-                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADE_FIXED"), 0));
+                    Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADE_FIXED"), 11));
+                    Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADE_FIXED"), 0));
                 }
                 else if (rnd <= upsuccess[this.Upgrade])
                 {
                     ServerManager.Instance.Broadcast(Session, Session.Character.GenerateEff(3005), ReceiverType.All);
-                    Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADE_SUCCESS"), 12));
-                    Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADE_SUCCESS"), 0));
+                    Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADE_SUCCESS"), 12));
+                    Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADE_SUCCESS"), 0));
                     wearable.Upgrade++;
-                    Session.Client.SendPacket(Session.Character.GenerateInventoryAdd(this.ItemVNum, 1, inventory.Type, inventory.Slot, this.Rare, 0, this.Upgrade, 0));
+                    Session.SendPacket(Session.Character.GenerateInventoryAdd(this.ItemVNum, 1, inventory.Type, inventory.Slot, this.Rare, 0, this.Upgrade, 0));
                 }
                 else
                 {
                     if (protection == UpgradeProtection.None)
                     {
-                        Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADE_FAILED"), 11));
-                        Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADE_FAILED"), 0));
+                        Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("UPGRADE_FAILED"), 11));
+                        Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADE_FAILED"), 0));
                         Session.Character.DeleteItemByItemInstanceId(this.Id);
                     }
                     else
                     {
                         ServerManager.Instance.Broadcast(Session, Session.Character.GenerateEff(3004), ReceiverType.All);
-                        Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("SCROLL_PROTECT_USED"), 11));
-                        Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADE_FAILED_ITEM_SAVED"), 0));
+                        Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("SCROLL_PROTECT_USED"), 11));
+                        Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADE_FAILED_ITEM_SAVED"), 0));
                     }
                 }
             }
             else
             {
                 ServerManager.Instance.Broadcast(Session, Session.Character.GenerateEff(3004), ReceiverType.All);
-                Session.Client.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("SCROLL_PROTECT_USED"), 11));
-                Session.Client.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADE_FAILED_ITEM_SAVED"), 0));
+                Session.SendPacket(Session.Character.GenerateSay(Language.Instance.GetMessageFromKey("SCROLL_PROTECT_USED"), 11));
+                Session.SendPacket(Session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("UPGRADE_FAILED_ITEM_SAVED"), 0));
             }
-            Session.Client.SendPacket("shop_end 1");
+            Session.SendPacket("shop_end 1");
         }
 
         #endregion

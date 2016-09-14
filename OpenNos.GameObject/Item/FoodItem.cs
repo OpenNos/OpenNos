@@ -25,7 +25,7 @@ namespace OpenNos.GameObject
 
         public void Regenerate(ClientSession session, Item item)
         {
-            session.Client.SendPacket(session.Character.GenerateEff(6000));
+            session.SendPacket(session.Character.GenerateEff(6000));
             session.Character.SnackAmount++;
             session.Character.MaxSnack = 0;
             session.Character.SnackHp += item.Hp / 5;
@@ -47,8 +47,8 @@ namespace OpenNos.GameObject
                 session.Character.Hp += session.Character.SnackMp;
                 if ((session.Character.SnackHp > 0 && session.Character.SnackHp > 0) && (session.Character.Hp < session.Character.HPLoad() || session.Character.Mp < session.Character.MPLoad()))
                     session.CurrentMap?.Broadcast(session, session.Character.GenerateRc(session.Character.SnackHp), ReceiverType.All);
-                if (session.Client.CommunicationState == CommunicationStates.Connected)
-                    session.Client.SendPacket(session.Character.GenerateStat());
+                if (session.CommunicationState == CommunicationStates.Connected)
+                    session.SendPacket(session.Character.GenerateStat());
                 else return;
                 Thread.Sleep(1800);
             }
@@ -82,19 +82,19 @@ namespace OpenNos.GameObject
                         workerThread.Start();
                         Inv.ItemInstance.Amount--;
                         if (Inv.ItemInstance.Amount > 0)
-                            session.Client.SendPacket(session.Character.GenerateInventoryAdd(Inv.ItemInstance.ItemVNum, Inv.ItemInstance.Amount, Inv.Type, Inv.Slot, 0, 0, 0, 0));
+                            session.SendPacket(session.Character.GenerateInventoryAdd(Inv.ItemInstance.ItemVNum, Inv.ItemInstance.Amount, Inv.Type, Inv.Slot, 0, 0, 0, 0));
                         else
                         {
                             session.Character.InventoryList.DeleteFromSlotAndType(Inv.Slot, Inv.Type);
-                            session.Client.SendPacket(session.Character.GenerateInventoryAdd(1, 0, Inv.Type, Inv.Slot, 0, 0, 0, 0));
+                            session.SendPacket(session.Character.GenerateInventoryAdd(1, 0, Inv.Type, Inv.Slot, 0, 0, 0, 0));
                         }
                     }
                     else
                     {
                         if (session.Character.Gender == 1)
-                            session.Client.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NOT_HUNGRY_FEMALE"), 1));
+                            session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NOT_HUNGRY_FEMALE"), 1));
                         else
-                            session.Client.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NOT_HUNGRY_MALE"), 1));
+                            session.SendPacket(session.Character.GenerateSay(Language.Instance.GetMessageFromKey("NOT_HUNGRY_MALE"), 1));
                     }
                     if (amount == 0)
                     {

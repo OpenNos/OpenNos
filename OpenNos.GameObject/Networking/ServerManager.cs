@@ -338,24 +338,24 @@ namespace OpenNos.GameObject
             ClientSession Session = Sessions.FirstOrDefault(s => s.Character != null && s.Character.CharacterId == characterId);
             if (Session != null && Session.Character != null)
             {
-                Session.Client.SendPacket("cancel 0 0");
-                Session.Client.SendPacket("cancel 2 0");
-                Session.Client.SendPacket(Session.Character.GenerateStat());
-                Session.Client.SendPacket("vb 340 0 0");
-                Session.Client.SendPacket("vb 339 0 0");
-                Session.Client.SendPacket("vb 472 0 0");
-                Session.Client.SendPacket("vb 471 0 0");
+                Session.SendPacket("cancel 0 0");
+                Session.SendPacket("cancel 2 0");
+                Session.SendPacket(Session.Character.GenerateStat());
+                Session.SendPacket("vb 340 0 0");
+                Session.SendPacket("vb 339 0 0");
+                Session.SendPacket("vb 472 0 0");
+                Session.SendPacket("vb 471 0 0");
                 if (Session.Character.Level > 20)
                 {
                     Session.Character.Dignity -= (short)(Session.Character.Level < 50 ? Session.Character.Level : 50);
                     if (Session.Character.Dignity < -1000)
                         Session.Character.Dignity = -1000;
 
-                    Session.Client.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("LOSE_DIGNITY"), (short)(Session.Character.Level < 50 ? Session.Character.Level : 50)), 11));
-                    Session.Client.SendPacket(Session.Character.GenerateFd());
+                    Session.SendPacket(Session.Character.GenerateSay(string.Format(Language.Instance.GetMessageFromKey("LOSE_DIGNITY"), (short)(Session.Character.Level < 50 ? Session.Character.Level : 50)), 11));
+                    Session.SendPacket(Session.Character.GenerateFd());
                 }
-                Session.Client.SendPacket("eff_ob -1 -1 0 4269");
-                Session.Client.SendPacket(Session.Character.GenerateDialog($"#revival^0 #revival^1 {(Session.Character.Level > 20 ? Language.Instance.GetMessageFromKey("ASK_REVIVE") : Language.Instance.GetMessageFromKey("ASK_REVIVE_FREE"))}"));
+                Session.SendPacket("eff_ob -1 -1 0 4269");
+                Session.SendPacket(Session.Character.GenerateDialog($"#revival^0 #revival^1 {(Session.Character.Level > 20 ? Language.Instance.GetMessageFromKey("ASK_REVIVE") : Language.Instance.GetMessageFromKey("ASK_REVIVE_FREE"))}"));
 
                 Task.Factory.StartNew(async () =>
                 {
@@ -385,32 +385,32 @@ namespace OpenNos.GameObject
             if (shopOwnerSession == null) return;
 
             shopOwnerSession.Character.Gold += itemshop.Price * amount;
-            shopOwnerSession.Client.SendPacket(shopOwnerSession.Character.GenerateGold());
-            shopOwnerSession.Client.SendPacket(shopOwnerSession.Character.GenerateShopMemo(1,
+            shopOwnerSession.SendPacket(shopOwnerSession.Character.GenerateGold());
+            shopOwnerSession.SendPacket(shopOwnerSession.Character.GenerateShopMemo(1,
                 string.Format(Language.Instance.GetMessageFromKey("BUY_ITEM"), shopOwnerSession.Character.Name, (itemshop.ItemInstance as ItemInstance).Item.Name, amount)));
             clientSession.CurrentMap.UserShops[shop.Key].Sell += itemshop.Price * amount;
-            shopOwnerSession.Client.SendPacket($"sell_list {shop.Value.Sell} {slot}.{amount}.{itemshop.Amount}");
+            shopOwnerSession.SendPacket($"sell_list {shop.Value.Sell} {slot}.{amount}.{itemshop.Amount}");
 
             Inventory inv = shopOwnerSession.Character.InventoryList.RemoveItemAmountFromInventory(amount, id);
 
             if (inv != null)
             {
                 // Send reduced-amount to owners inventory
-                shopOwnerSession.Client.SendPacket(shopOwnerSession.Character.GenerateInventoryAdd(inv.ItemInstance.ItemVNum, inv.ItemInstance.Amount, inv.Type, inv.Slot, inv.ItemInstance.Rare, inv.ItemInstance.Design, inv.ItemInstance.Upgrade, 0));
+                shopOwnerSession.SendPacket(shopOwnerSession.Character.GenerateInventoryAdd(inv.ItemInstance.ItemVNum, inv.ItemInstance.Amount, inv.Type, inv.Slot, inv.ItemInstance.Rare, inv.ItemInstance.Design, inv.ItemInstance.Upgrade, 0));
             }
             else
             {
                 // Send empty slot to owners inventory
-                shopOwnerSession.Client.SendPacket(shopOwnerSession.Character.GenerateInventoryAdd(-1, 0, itemshop.Type, itemshop.Slot, 0, 0, 0, 0));
+                shopOwnerSession.SendPacket(shopOwnerSession.Character.GenerateInventoryAdd(-1, 0, itemshop.Type, itemshop.Slot, 0, 0, 0, 0));
                 if (clientSession.CurrentMap.UserShops[shop.Key].Items.Count == 0)
                 {
-                    clientSession.Client.SendPacket("shop_end 0");
+                    clientSession.SendPacket("shop_end 0");
 
                     Broadcast(shopOwnerSession, shopOwnerSession.Character.GenerateShopEnd(), ReceiverType.All);
                     Broadcast(shopOwnerSession, shopOwnerSession.Character.GeneratePlayerFlag(0), ReceiverType.AllExceptMe);
                     shopOwnerSession.Character.LoadSpeed();
                     shopOwnerSession.Character.IsSitting = false;
-                    shopOwnerSession.Client.SendPacket(shopOwnerSession.Character.GenerateCond());
+                    shopOwnerSession.SendPacket(shopOwnerSession.Character.GenerateCond());
                     Broadcast(shopOwnerSession, shopOwnerSession.Character.GenerateRest(), ReceiverType.All);
                 }
             }
@@ -425,45 +425,38 @@ namespace OpenNos.GameObject
                 session.CurrentMap.UnregisterSession(session);
                 session.CurrentMap = ServerManager.GetMap(session.Character.MapId);
                 session.CurrentMap.RegisterSession(session);
-                session.Client.SendPacket(session.Character.GenerateCInfo());
-                session.Client.SendPacket(session.Character.GenerateCMode());
+                session.SendPacket(session.Character.GenerateCInfo());
+                session.SendPacket(session.Character.GenerateCMode());
                 session.CurrentMap?.Broadcast(session, session.Character.GenerateEq(), ReceiverType.All);
-                session.Client.SendPacket(session.Character.GenerateEquipment());
-                session.Client.SendPacket(session.Character.GenerateLev());
-                session.Client.SendPacket(session.Character.GenerateStat());
-                session.Client.SendPacket(session.Character.GenerateAt());
-                session.Client.SendPacket(session.Character.GenerateCond());
-                session.Client.SendPacket(session.Character.GenerateCMap());
-                session.Client.SendPacket(session.Character.GenerateStatChar());
-                session.Client.SendPacket($"gidx 1 {session.Character.CharacterId} -1 - 0"); // family
-                session.Client.SendPacket("rsfp 0 -1");
+                session.SendPacket(session.Character.GenerateEquipment());
+                session.SendPacket(session.Character.GenerateLev());
+                session.SendPacket(session.Character.GenerateStat());
+                session.SendPacket(session.Character.GenerateAt());
+                session.SendPacket(session.Character.GenerateCond());
+                session.SendPacket(session.Character.GenerateCMap());
+                session.SendPacket(session.Character.GenerateStatChar());
+                session.SendPacket($"gidx 1 {session.Character.CharacterId} -1 - 0"); // family
+                session.SendPacket("rsfp 0 -1");
                 //cond 2 // partner only send when partner present
-                session.Client.SendPacket("pinit 0"); // clean party list
-                session.Client.SendPacket(session.Character.GeneratePairy());
+                session.SendPacket("pinit 0"); // clean party list
+                session.SendPacket(session.Character.GeneratePairy());
                 session.CurrentMap?.Broadcast(session, session.Character.GeneratePairy(), ReceiverType.AllExceptMe);
-                session.Client.SendPacket("act6"); // act6 1 0 14 0 0 0 14 0 0 0
+                session.SendPacket("act6"); // act6 1 0 14 0 0 0 14 0 0 0
 
                 ServerManager.Instance.Sessions.Where(s => s.Character != null && s.Character.MapId.Equals(session.Character.MapId) && s.Character.Name != session.Character.Name && !s.Character.InvisibleGm).ToList().ForEach(s => RequireBroadcastFromUser(session, s.Character.CharacterId, "GenerateIn"));
 
-                foreach (String portalPacket in session.Character.GenerateGp())
-                    session.Client.SendPacket(portalPacket);
+                session.SendPackets(session.Character.GenerateGp());
                 // wp 23 124 4 4 12 99
-                foreach (String monsterPacket in session.Character.GenerateIn3())
-                    session.Client.SendPacket(monsterPacket);
-                foreach (String npcPacket in session.Character.GenerateIn2())
-                    session.Client.SendPacket(npcPacket);
-                foreach (String npcShopPacket in session.Character.GenerateNPCShopOnMap())
-                    session.Client.SendPacket(npcShopPacket);
-                foreach (String droppedPacket in session.Character.GenerateDroppedItem())
-                    session.Client.SendPacket(droppedPacket);
-                foreach (String userShopPacket in session.Character.GenerateShopOnMap())
-                    session.Client.SendPacket(userShopPacket);
-                foreach (String ShopPacketChar in session.Character.GeneratePlayerShopOnMap())
-                    session.Client.SendPacket(ShopPacketChar);
+                session.SendPackets(session.Character.GenerateIn3());
+                session.SendPackets(session.Character.GenerateIn2());
+                session.SendPackets(session.Character.GenerateNPCShopOnMap());
+                session.SendPackets(session.Character.GenerateDroppedItem());
+                session.SendPackets(session.Character.GenerateShopOnMap());
+                session.SendPackets(session.Character.GeneratePlayerShopOnMap());
                 if (session.Character.InvisibleGm == false)
                     session.CurrentMap?.Broadcast(session, session.Character.GenerateIn(), ReceiverType.AllExceptMe);
                 if (session.Character.Size != 10)
-                    session.Client.SendPacket(session.Character.GenerateScal());
+                    session.SendPacket(session.Character.GenerateScal());
                 if (session.CurrentMap.IsDancing == 2 && session.Character.IsDancing == 0)
                     session.CurrentMap?.Broadcast("dance 2");
                 else if (session.CurrentMap.IsDancing == 0 && session.Character.IsDancing == 1)
@@ -478,7 +471,7 @@ namespace OpenNos.GameObject
                         ClientSession chara = Sessions.FirstOrDefault(s => s.Character != null && s.Character.CharacterId == groupSession.Character.CharacterId && s.CurrentMap.MapId == groupSession.CurrentMap.MapId);
                         if (chara != null)
                         {
-                            groupSession.Client.SendPacket(groupSession.Character.GeneratePinit());
+                            groupSession.SendPacket(groupSession.Character.GeneratePinit());
                         }
                         if (groupSession.Character.CharacterId == groupSession.Character.CharacterId)
                         {
@@ -506,12 +499,12 @@ namespace OpenNos.GameObject
                     if (inv != null)
                     {
                         // Send reduced-amount to owners inventory
-                        c2Session.Client.SendPacket(c2Session.Character.GenerateInventoryAdd(inv.ItemInstance.ItemVNum, inv.ItemInstance.Amount, inv.Type, inv.Slot, inv.ItemInstance.Rare, inv.ItemInstance.Design, inv.ItemInstance.Upgrade, 0));
+                        c2Session.SendPacket(c2Session.Character.GenerateInventoryAdd(inv.ItemInstance.ItemVNum, inv.ItemInstance.Amount, inv.Type, inv.Slot, inv.ItemInstance.Rare, inv.ItemInstance.Design, inv.ItemInstance.Upgrade, 0));
                     }
                     else
                     {
                         // Send empty slot to owners inventory
-                        c2Session.Client.SendPacket(c2Session.Character.GenerateInventoryAdd(-1, 0, type, slot, 0, 0, 0, 0));
+                        c2Session.SendPacket(c2Session.Character.GenerateInventoryAdd(-1, 0, type, slot, 0, 0, 0, 0));
                     }
                 }
 
@@ -522,11 +515,11 @@ namespace OpenNos.GameObject
                     Inventory inv = c2Session.Character.InventoryList.AddToInventory(item2);
                     if (inv == null) continue;
                     if (inv.Slot == -1) continue;
-                    c2Session.Client.SendPacket(c2Session.Character.GenerateInventoryAdd(inv.ItemInstance.ItemVNum, inv.ItemInstance.Amount, inv.Type, inv.Slot, inv.ItemInstance.Rare, inv.ItemInstance.Design, inv.ItemInstance.Upgrade, 0));
+                    c2Session.SendPacket(c2Session.Character.GenerateInventoryAdd(inv.ItemInstance.ItemVNum, inv.ItemInstance.Amount, inv.Type, inv.Slot, inv.ItemInstance.Rare, inv.ItemInstance.Design, inv.ItemInstance.Upgrade, 0));
                 }
 
                 c2Session.Character.Gold = c2Session.Character.Gold - c2Session.Character.ExchangeInfo.Gold + c1Session.Character.ExchangeInfo.Gold;
-                c2Session.Client.SendPacket(c2Session.Character.GenerateGold());
+                c2Session.SendPacket(c2Session.Character.GenerateGold());
                 c1Session.Character.ExchangeInfo = null;
                 c2Session.Character.ExchangeInfo = null;
             }
@@ -579,13 +572,13 @@ namespace OpenNos.GameObject
                     {
                         foreach (ClientSession sess in Sessions.Where(s => s != null && s.Character != null && s.Character.CharacterId == groupSession.Character.CharacterId))
                         {
-                            sess.Client.SendPacket(sess.Character.GeneratePinit());
-                            sess.Client.SendPacket(sess.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("LEAVE_GROUP"), session.Character.Name), 0));
+                            sess.SendPacket(sess.Character.GeneratePinit());
+                            sess.SendPacket(sess.Character.GenerateMsg(String.Format(Language.Instance.GetMessageFromKey("LEAVE_GROUP"), session.Character.Name), 0));
                         }
                     }
-                    session.Client.SendPacket($"pidx -1 1.{ session.Character.CharacterId}");
+                    session.SendPacket($"pidx -1 1.{ session.Character.CharacterId}");
                     Broadcast(session, $"pidx -1 1.{session.Character.CharacterId}", ReceiverType.AllExceptMe);
-                    session.Client.SendPacket(session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("GROUP_LEFT"), 0));
+                    session.SendPacket(session.Character.GenerateMsg(Language.Instance.GetMessageFromKey("GROUP_LEFT"), 0));
                 }
                 else
                 {
@@ -593,8 +586,8 @@ namespace OpenNos.GameObject
                     {
                         foreach (ClientSession sess in Sessions.Where(s => s != null && s.Character != null && s.Character.CharacterId == targetSession.Character.CharacterId))
                         {
-                            sess.Client.SendPacket("pinit 0");
-                            sess.Client.SendPacket(sess.Character.GenerateMsg(Language.Instance.GetMessageFromKey("GROUP_CLOSED"), 0));
+                            sess.SendPacket("pinit 0");
+                            sess.SendPacket(sess.Character.GenerateMsg(Language.Instance.GetMessageFromKey("GROUP_CLOSED"), 0));
                             Broadcast(sess, $"pidx -1 1.{targetSession.Character.CharacterId}", ReceiverType.All);
                         }
                     }
@@ -611,7 +604,7 @@ namespace OpenNos.GameObject
             ClientSession session = Sessions.FirstOrDefault(s => s.Character != null && s.Character.Name.Equals(characterName));
             if (session == null) return false;
 
-            session.Client.Disconnect();
+            session.Disconnect();
             return true;
         }
 
@@ -620,7 +613,7 @@ namespace OpenNos.GameObject
         {
             foreach (ClientSession session in Sessions.Where(s => s.Character != null && s.Character.CharacterId == id))
             {
-                session.Client.SendPacket(session.Character.GenerateMapOut());
+                session.SendPacket(session.Character.GenerateMapOut());
                 session.CurrentMap?.Broadcast(session, session.Character.GenerateOut(), ReceiverType.AllExceptMe);
             }
         }
@@ -632,7 +625,7 @@ namespace OpenNos.GameObject
 
             MethodInfo method = session.Character.GetType().GetMethod(methodName);
             string result = (string)method.Invoke(session.Character, null);
-            client.Client.SendPacket(result);
+            client.SendPacket(result);
         }
 
         //Map
@@ -650,13 +643,13 @@ namespace OpenNos.GameObject
                 ChangeMap(Session.Character.CharacterId);
                 Broadcast(Session, Session.Character.GenerateTp(), ReceiverType.All);
                 Broadcast(Session, Session.Character.GenerateRevive(), ReceiverType.All);
-                Session.Client.SendPacket(Session.Character.GenerateStat());
+                Session.SendPacket(Session.Character.GenerateStat());
             }
         }
 
         public void SaveAll()
         {
-            List<ClientSession> sessions = Sessions.Where(c => c.Client.CommunicationState == Core.Networking.Communication.Scs.Communication.CommunicationStates.Connected).ToList();
+            List<ClientSession> sessions = Sessions.Where(c => c.CommunicationState == Core.Networking.Communication.Scs.Communication.CommunicationStates.Connected).ToList();
             sessions.ForEach(s => s.Character?.DeepCopy().Save());
         }
 
@@ -686,7 +679,7 @@ namespace OpenNos.GameObject
 
             foreach (ClientSession session in myGroup.Characters)
             {
-                session.Client.SendPacket(str);
+                session.SendPacket(str);
             }
         }
 
@@ -699,8 +692,7 @@ namespace OpenNos.GameObject
                 {
                     foreach (ClientSession session in grp.Characters)
                     {
-                        foreach (string str in grp.GeneratePst())
-                            session.Client.SendPacket(str);
+                        session.SendPackets(grp.GeneratePst());
                     }
                 }
                 await Task.Delay(2000);
